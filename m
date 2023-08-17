@@ -2,131 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 305F077FCDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93DE77FCD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353903AbjHQRSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S1353804AbjHQRSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353922AbjHQRSJ (ORCPT
+        with ESMTP id S1353786AbjHQRRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:18:09 -0400
-Received: from out-31.mta1.migadu.com (out-31.mta1.migadu.com [IPv6:2001:41d0:203:375::1f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654ED10C8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:18:07 -0700 (PDT)
-Message-ID: <d16edaf8-1eef-f099-eb15-7599906d1492@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692292685;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oP35WFkAGM1mqUKfAAOZno6K6eolQgOYmd9Fifhu4bc=;
-        b=nQo8ZaFh4yp+bsrYRq0hie4ebKHaQlZGU0ayDy4fw+UT2srPnsKGHaDOxfutrxnFSty3xy
-        owB27Rv6A0jVF2M8vERdix/hdktvDxtiYnQsOySRG8TRjycni0KqVonZceBF5+CL8Cc8U1
-        b1FIdi7T6aopaNAnKoLgJqqxdTDkLxw=
-Date:   Fri, 18 Aug 2023 01:17:38 +0800
+        Thu, 17 Aug 2023 13:17:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67321EE;
+        Thu, 17 Aug 2023 10:17:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFA8361FD7;
+        Thu, 17 Aug 2023 17:17:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7054BC433C8;
+        Thu, 17 Aug 2023 17:17:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692292670;
+        bh=VE7jTioS63J6dT8DX8rxcZQN+MbADV02CUtWuC3SwBE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=jVzjSVqs1+lTaYG6lzHndiGFfzNDhbGLuhD19D7hgl/q0qQxl1BbmFe1MaVzxp6Tm
+         Hx/K5NG4Ij8QbVSYSytOxECnwBFD/SVWkQiVPow4n5TcVVo9fh6oi9g5G9d8xSIA9G
+         1Vb2LoMxFcL7qdfm5kMcpi2beS6ogLEqAsYIU65anIg3D6bwuhiKERVbu38RXrkxKc
+         ClUG83825XzWyvDbQZ2j1xSy8hLmJ1wio0LhVrZqjuuc6L18K5io/NAKczwTHC9k8u
+         rqRUeCVqrhU09kNwPLGvxINK5Had9eADyVMGJHpo/xK2wqkh/PerOztYdXpJCG+t7z
+         L0yz6JtHPsSfQ==
+Received: (nullmailer pid 1614972 invoked by uid 1000);
+        Thu, 17 Aug 2023 17:17:47 -0000
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] blk-mq: release scheduler resource when request
- complete
-Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>, axboe@kernel.dk, hch@lst.de
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-block@vger.kernel.org, cel@kernel.org,
-        linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <202308172100.8ce4b853-oliver.sang@intel.com>
- <af61c72c-b3ec-ce7a-4f41-bce9a9844baf@acm.org>
- <317715dc-f6e4-1847-5b78-b2d8184b446a@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <317715dc-f6e4-1847-5b78-b2d8184b446a@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Maso Huang <maso.huang@mediatek.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Trevor Wu <trevor.wu@mediatek.com>, devicetree@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        alsa-devel@alsa-project.org, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>,
+        linux-mediatek@lists.infradead.org
+In-Reply-To: <20230817101338.18782-6-maso.huang@mediatek.com>
+References: <20230817101338.18782-1-maso.huang@mediatek.com>
+ <20230817101338.18782-6-maso.huang@mediatek.com>
+Message-Id: <169229266724.1614955.5685157579196442265.robh@kernel.org>
+Subject: Re: [PATCH v4 5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add
+ mt7986-wm8960 document
+Date:   Thu, 17 Aug 2023 12:17:47 -0500
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/17 23:29, Chengming Zhou wrote:
-> On 2023/8/17 22:50, Bart Van Assche wrote:
->> On 8/17/23 07:41, kernel test robot wrote:
->>> [  222.622837][ T2216] statistics for priority 1: i 276 m 0 d 276 c 278
->>> [ 222.629307][ T2216] WARNING: CPU: 0 PID: 2216 at block/mq-deadline.c:680 dd_exit_sched (block/mq-deadline.c:680 (discriminator 3))
->>
->> The above information shows that dd_inserted_request() has been called
->> 276 times and also that dd_finish_request() has been called 278 times.
+
+On Thu, 17 Aug 2023 18:13:37 +0800, Maso Huang wrote:
+> Add document for mt7986 board with wm8960.
 > 
-> Thanks much for your help.
-> 
-> This patch indeed introduced a regression, postflush requests will be completed
-> twice, so here dd_finish_request() is more than dd_inserted_request().
-> 
-> diff --git a/block/blk-mq.c b/block/blk-mq.c
-> index a8c63bef8ff1..7cd47ffc04ce 100644
-> --- a/block/blk-mq.c
-> +++ b/block/blk-mq.c
-> @@ -686,8 +686,10 @@ static void blk_mq_finish_request(struct request *rq)
->  {
->         struct request_queue *q = rq->q;
-> 
-> -       if (rq->rq_flags & RQF_USE_SCHED)
-> +       if (rq->rq_flags & RQF_USE_SCHED) {
->                 q->elevator->type->ops.finish_request(rq);
-> +               rq->rq_flags &= ~RQF_USE_SCHED;
-> +       }
->  }
+> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
+> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../sound/mediatek,mt7986-wm8960.yaml         | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml
 > 
 
-I just tried to run LKP and xfstests, firstly failed to run LKP on my server
-which seems to miss some dependencies. Then I ran xfstests successfully.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-But xfstests generic/704 always pass and no WARN in dmesg. (I don't know why,
-maybe my server settings are some different from the test robot.)
+yamllint warnings/errors:
 
-So I try to reproduce it manually. Steps:
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/sound/sound-card-common.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.example.dtb: sound: False schema does not allow {'compatible': ['mediatek,mt7986-wm8960-sound'], 'model': ['mt7986-wm8960'], 'audio-routing': ['Headphone', 'HP_L', 'Headphone', 'HP_R', 'LINPUT1', 'AMIC', 'RINPUT1', 'AMIC'], 'platform': {'sound-dai': [[4294967295]]}, 'codec': {'sound-dai': [[4294967295]]}, '$nodename': ['sound']}
+	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt7986-wm8960.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt7986-wm8960.example.dtb: sound: Unevaluated properties are not allowed ('audio-routing', 'model' were unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt7986-wm8960.yaml#
 
-```
-echo mq-deadline > /sys/block/sdb/queue/scheduler
+doc reference errors (make refcheckdocs):
 
-mkfs.ext4 /dev/sdb
-mount /dev/sdb /fs/sdb
-cd /fs/sdb
-stress-ng --symlink 4 --timeout 60
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230817101338.18782-6-maso.huang@mediatek.com
 
-echo none > /sys/block/sdb/queue/scheduler
-```
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-This way the WARNING in mq-deadline can be reproduced easily.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Then retest with the diff, mq-deadline WARNING still happened... So there
-are still other requests which have RQF_USE_SCHED flag completed without
-being inserted into elevator.
+pip3 install dtschema --upgrade
 
-Will use some tracing and look again.
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-Thanks.
-
-> 
-> Clear RQF_USE_SCHED flag here should fix this problem, which should be ok
-> since finish_request() is the last callback, this flag isn't needed anymore.
-> 
-> Jens, should I send this diff as another patch or resend updated v3?
-> 
-> Thanks.
-> 
->> Calling dd_finish_request() more than once per request breaks the code
->> for priority handling since that code checks how many requests are
->> pending per priority level by subtracting the number of completion calls
->> from the number of insertion calls (see also dd_queued()). I think the
->> above output indicates that this patch introduced a regression.
->>
->> Bart.
->>
