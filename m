@@ -2,252 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE6C77F099
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17CBC77F09E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348271AbjHQGjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S1348274AbjHQGls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348256AbjHQGjS (ORCPT
+        with ESMTP id S241411AbjHQGlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:39:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545652701;
-        Wed, 16 Aug 2023 23:39:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692254355; x=1723790355;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rFRRVEEucSSTXNeQi/3oBg68H2cCmE1GCVvNVuJOHew=;
-  b=ZlBqf4fU3j6GjQL4bLQSugOWsvZH8zOxHEhFTPM73bAdcZmWsP937dxQ
-   hjXXxI8hjcE9q8kjcrjZNiCLobZsNstIAybW19eNHw8k6UZDG59iTn2AB
-   Brh8xoXKn8FQnY7Rr7yvVTD9oyTRHCYV6lhCGD2nsSjMB6gCN2ATqMe4F
-   U+/7kWjphVNoAzKgO8mehg6qYCkfc0/eLn96FOUUGMWW2xRHMA0xZXKqp
-   7q1F26DdeYpRNb3KnYyKMeAPUWbuUC74+UFsFgCNLH2ZPZFduW8EdvoXf
-   7c2QA6RkCKWhh5nhtH4bgkFKwlo/J2Slfcdw/XO0CuVsD6rubonlBF3wK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372727111"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="372727111"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 23:39:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065135113"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="1065135113"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 16 Aug 2023 23:39:10 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWWez-0000rX-0i;
-        Thu, 17 Aug 2023 06:39:09 +0000
-Date:   Thu, 17 Aug 2023 14:38:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Raghavendra Rao Anata <rananta@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 05/12] KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
-Message-ID: <202308171444.Q5rfJubF-lkp@intel.com>
-References: <20230817003029.3073210-6-rananta@google.com>
+        Thu, 17 Aug 2023 02:41:18 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FC12701
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:41:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LFTwuon5ouWEQcaN77X/40j3JE2keO5NBIdkJylMN/nmzGzjnAfSozIFWPpU5ROT00KGwL48zPzQggVe6udIza4+usfSZ3iUQsXpk5sZqB3iHSrJ1WKc+P2FKL0pYj4lodzc2wcB3zadFBBYFZ8z4/1ClxOdGkYT/rdDLC+alkrlFWUvosUKyrT/ZjBEoRP36NtB9rW05EmnWt35xupnqcUPXk2dNic28ybZw/uwLc7nbWxenuHYRSua8ZXZ3am7+RP5/fvnZix1DZFGw1LIGLLr0g5tgM3Q8BqWguwct+qGUlebW+B+FPcVG2553TCWkXvinhSatH14OTvd6xXCVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=87i8VhHwe929pduBgZl3a+9K0ZIunDO0ZwUz/il3RVE=;
+ b=i97FSqPTOi479ETI9X3nUpa05kIgEGLdH+y4PyUz5iWC7bmim0wYCzt1Qj6usPzYpdlenV3vrqiASSfjegVKjo+NZ9K2LehuTJKcjJY3H07U3mAq5K40hcy15Y5PHUuQ/TELdcJK2iwpFsEiuXwe8hFUQUtbt185uv+sFToCfgT819QSj7/iiwt6pd4O5nI/vcb3+dJTURSWv+zhBQsgZbwMi3A+4CAMCdkbzzFbjSoc4pATKtAEUIhbN2mSgCikwH0LOSeEfVlDwCk600L+lOGFZzZFvalWQu9YOj9F/Vq6MRbJILutt5ZpFpQ9azFUEH/+FYkqQVnXWnogBV6uZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=87i8VhHwe929pduBgZl3a+9K0ZIunDO0ZwUz/il3RVE=;
+ b=4ttyTAlvPy2hEUXxfro7byPNmCfSxshfbMseW2fO5oQtMShqJMGHpcrctLauTI3iygyKomNNdNu41hYbnMK3o6aSzf53zcHfJw6TTDq2XeaOvZF88MhmCkqyEDrQILKk6lNAynqi63EnIiY4P/Ge6BxnT2LzDKKSV5o2p+a1jCQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by DM6PR12MB4925.namprd12.prod.outlook.com (2603:10b6:5:1b7::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Thu, 17 Aug
+ 2023 06:41:12 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 06:41:12 +0000
+Message-ID: <07ef59db-da17-15cf-789a-7f5d01b2c9c9@amd.com>
+Date:   Thu, 17 Aug 2023 08:41:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v4 2/4] drm/amdgpu: Rework coredump to use memory
+ dynamically
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+References: <20230815195100.294458-1-andrealmeid@igalia.com>
+ <20230815195100.294458-3-andrealmeid@igalia.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <20230815195100.294458-3-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BEXP281CA0010.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10::20)
+ To MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817003029.3073210-6-rananta@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|DM6PR12MB4925:EE_
+X-MS-Office365-Filtering-Correlation-Id: 388e33bc-e5e5-4295-487d-08db9eecf25a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OhFFWrxP1m/DmPtPebdroYLK9xwu8FLxHiwiY3Vb7wCUfep9/F7ivYHTaPJ84nqqxjI1kyfF0qopYZCrjWmOtc5CNerFty35g0qiFlS9i2pcKQP3GdoY3cowX268mOJOsvSTvBOf1JEA4b/l4/XbIplEoPFz/eROk/zi1yoWAkFeLwyL93SvAZl18qa8e/WBZsMRyI2I8jTR2RE3OxQht1sJk0YDAGsWekmMnHhe0kPziHi1fjpgRluZIVW3KiGLj6fVsAQYf9ImUPuwF2IzCySO5+ipxVFvqSrCxPBGPvUM2RmsnoJE4e+er+sJSPuDo0lT2x38LpT0el68bJGg+Poy3py2cj5ICe0k7XY+FP7ClWfyx7WPBLKhP1HSNz23eQgoNXM1jl33U0vJ937D5/Yt0lwA50LjG1turOno/4i3cGt3Fz+YMAhAwSc7VXcKxJc2iyQmRxHi+Te+AJjGpDoz8h+1xrdalM+aN3PpWdxpLn2aUpG4bVKj0vkJIEkXrCpRYXrqTCgczty5QPs8yaFLEDb1cIeiCUZSa0Xlb1c4EEvVdGR4uSruxf65onBeMMvEp4EcZeErIB7149HHDcNneUtDJKEtIwPv3eB9wRa+eUayXb2/IsG+OUbCDz1SIGjU0nDPmrLlPkEy2cU9ug==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(396003)(136003)(366004)(451199024)(1800799009)(186009)(316002)(54906003)(66556008)(66946007)(66476007)(31686004)(5660300002)(41300700001)(44832011)(38100700002)(4326008)(8936002)(8676002)(26005)(2906002)(83380400001)(478600001)(86362001)(53546011)(6512007)(31696002)(36756003)(6506007)(6666004)(6486002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NE9yTnl4UWJsazJIOFBhWmdLVXBITHdvdU1zQzZUMjluaVdDVFVkcEs5L0lM?=
+ =?utf-8?B?dFZ5UWFuVHJ1Z0xlTExMOVBzcUN3TDNDUFdqT1Vab0szcXgxVjVhWXVhNm1r?=
+ =?utf-8?B?M3ROT0g2K21RdlcwOEovR3ZLSjVOSkRyUmRyOFpGMnNSd0FvZlY4dGFnOHkv?=
+ =?utf-8?B?YUoxT0hHRXEraW1lMGpOTHJidjNhQnJ4UmVGN0pDS1JzNHNmb1V3clZCL1FL?=
+ =?utf-8?B?L1VXY003M3ZGdXRhMHVOYmVmeVhkbEV4QXlDUE9MajkzUnRvNWhEWUNBZnB0?=
+ =?utf-8?B?ZThoL0xELzVzeitvM1pHdjVwMENQeW42ZVh6NlN4SE9VMEM4MEpoQWx6RFNK?=
+ =?utf-8?B?eWFxbE93VFdOOHJBWU1kbWIrNlkwSytpTi9YNi9CTXhDcFJjWFZyc0JGcGJQ?=
+ =?utf-8?B?ZThLU3FVdHNrdGJtVFBYVlFqYUFMd0hpekh2U28yZFRJSnhRWkF5UStiMDlB?=
+ =?utf-8?B?RitVanhpTkNrcWltQjY2VnNGZDA3SjBCSDBiSm5vSjZhVE1kcUE4aHBnbFla?=
+ =?utf-8?B?M2x6YVBNNDRiSmxBN1pOTG9vQlp1NTQ2TGp1UVVNUFpPak9rOFhtZXozNVVV?=
+ =?utf-8?B?ZGdzeXcrR01WYUFtckx4WGJBeHEwNVlmbGo3QW5sQTk1bFRpYlhBYWh4cFl3?=
+ =?utf-8?B?aWQrN0crbUFuT3pQbWU5VHhReG9pRlBzRE85WXg2NWJ2WGhtT3ZwZXdPYTha?=
+ =?utf-8?B?R3dkSUgvcEQwQm1Lb2VwOWpDbnByMEFHWUNzSWM0MFFPUkhheWZNcVRZRFV1?=
+ =?utf-8?B?VmJkZTV4ODdaQ09lcmdtaHdMTnpoQ3FRNHBXWVEzVFd6dHZsM2YxQUtueWN0?=
+ =?utf-8?B?WkFYNGc2WVVIWjVPbFNzcDFCQ1czVDBTRlRXZUtsR3pibTE4UktHVUVOZzIv?=
+ =?utf-8?B?bTRmSXg4aGg4Y3dKWFREQ3VtMVgxbGd2NTlTdUV4SUZKdkN0N2l3bXpBTk9k?=
+ =?utf-8?B?OFlHNk5xN3BCRHJWd2lqMXZhU1Y5K0dxRWZyUjJpRkpSdi9RRWk5UTB2RkRX?=
+ =?utf-8?B?WThuemJHMDJPZmtFMDA0UkxwUTNkZ0FYSTJsanU4R0h0NWVpc2VKR1BCR0Y4?=
+ =?utf-8?B?VThLTEcvU3FpeWNBdENia1JMSU50RmQrU1EwVnVVNVJKM2hsendmMWRxZDVS?=
+ =?utf-8?B?VlltbzZvTURvTkVPRjZyM21hbDk3eXp1LzVDTldiaG9ZSGZrSllhdjIyR252?=
+ =?utf-8?B?SHVzQ0IzNERFOHVIekhiVEhqWEFnSVpNYWsrQ2M1dVhHV3BCQmVvVjNxcitI?=
+ =?utf-8?B?d1hIR2UvYlFLQlp5bnU1Zkd2SmZMbGZXNzRUdHJjSUJyY29QS1JnUTQwRjZU?=
+ =?utf-8?B?Z0dyWDJENnZIaFRuWmtxMENzb3BBdjN0LzdRKzF6WExhcUgwZWxIejdQNDI5?=
+ =?utf-8?B?dVNhWHVKR3JjQ25JeGxpRXdZNlZoUHVkVmNZWlVqVkRURTd5aTdScm1sK3oy?=
+ =?utf-8?B?ZnRHMlV2ZHdxWlZmYTJtZkwrdkh4VTk0dDdUQXZ5NTNqQ3o2V3JWaWUwNndF?=
+ =?utf-8?B?SG1QdVdiNG9pejZNQ2FSOTRoQUZieHl5QTRwbzBTemt1WUI0TEFyRE45QXBa?=
+ =?utf-8?B?UXRjV0R1VDNMeVJXbUYxbU8zdzFjc3F6M2dhNVRDeWRzbTluQ0JwbXhNSjk4?=
+ =?utf-8?B?LzNRc2o5cVJWSGcxWTJKZ3dMRzc3SU9VSzNQdmsvb3o0RXlqelVzZEJaaE90?=
+ =?utf-8?B?REZ2NFhFZ2w2a3ZuYWc1c21JaFVaSlJOSlNzQXNrSVV4K1hLeHMrbnlyY2RC?=
+ =?utf-8?B?KzFPUUpKcDdPcUdzang1cjlRRjh1K3ZVaVhQeUJQQ1dWdlFlU2Z6MHNUZEp1?=
+ =?utf-8?B?TVE1cWExMldISm85eVdIcjdQaG5iSXluMWp5OURlWEk4WVJmMWdrNzM4NnhP?=
+ =?utf-8?B?bVZXait5eENhVFRhaEdwTzJGdjNJcmlQTG9zRkhEdVpCWUI3ZVNWTC9vcmJv?=
+ =?utf-8?B?R1Jhek51NXdGaU15NDQ4a1FHelk5dEd0YjRXVEZIdTVFQTRqZ0dHMlMwbVBz?=
+ =?utf-8?B?bnpxMEY1dVRGaTZrcEJ4TzF2ZU1tY25hS0N5VWpIbjk4ZUxGNFhiU0t0bGpZ?=
+ =?utf-8?B?QThPRVZxL2JORW1yamRML2h0QjJTMFhrblV4OWRNUm5YUzhpUkJ3RmtMblla?=
+ =?utf-8?Q?0yixYYme2EEP09ZNpY1l9lf32?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 388e33bc-e5e5-4295-487d-08db9eecf25a
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 06:41:12.1432
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZMUM9udjd9MODaigE25bYRRtNqxuggIJ0LBeJz+Vj57pZ5mrcA6xHTfBEhwK983idIuoMoueJ9P6aAOSA+WHlw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4925
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
+Hello Andre,
 
-kernel test robot noticed the following build errors:
+On 15/08/2023 21:50, André Almeida wrote:
+> Instead of storing coredump information inside amdgpu_device struct,
+> move if to a proper separated struct and allocate it dynamically. This
+> will make it easier to further expand the logged information.
+>
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> ---
+> v4: change kmalloc to kzalloc
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        | 14 +++--
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 63 ++++++++++++++--------
+>   2 files changed, 49 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index 9c6a332261ab..0d560b713948 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -1088,11 +1088,6 @@ struct amdgpu_device {
+>   	uint32_t                        *reset_dump_reg_list;
+>   	uint32_t			*reset_dump_reg_value;
+>   	int                             num_regs;
+> -#ifdef CONFIG_DEV_COREDUMP
+> -	struct amdgpu_task_info         reset_task_info;
+> -	bool                            reset_vram_lost;
+> -	struct timespec64               reset_time;
+> -#endif
+>   
+>   	bool                            scpm_enabled;
+>   	uint32_t                        scpm_status;
+> @@ -1105,6 +1100,15 @@ struct amdgpu_device {
+>   	uint32_t			aid_mask;
+>   };
+>   
+> +#ifdef CONFIG_DEV_COREDUMP
+> +struct amdgpu_coredump_info {
+> +	struct amdgpu_device		*adev;
+> +	struct amdgpu_task_info         reset_task_info;
+> +	struct timespec64               reset_time;
+> +	bool                            reset_vram_lost;
+> +};
 
-[auto build test ERROR on 2ccdd1b13c591d306f0401d98dedc4bdcd02b421]
+The patch looks good to me in general, but I would recommend slightly 
+different arrangement and segregation of GPU reset information.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Raghavendra-Rao-Ananta/KVM-arm64-PMU-Introduce-a-helper-to-set-the-guest-s-PMU/20230817-083353
-base:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
-patch link:    https://lore.kernel.org/r/20230817003029.3073210-6-rananta%40google.com
-patch subject: [PATCH v5 05/12] KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
-config: arm-randconfig-r046-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171444.Q5rfJubF-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171444.Q5rfJubF-lkp@intel.com/reproduce)
+Please consider a higher level structure adev->gpu_reset_info, and move 
+everything related to reset dump info into that, including this new 
+coredump_info structure, something like this:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171444.Q5rfJubF-lkp@intel.com/
+struct amdgpu_reset_info {
 
-All errors (new ones prefixed by >>):
+     uint32_t *reset_dump_reg_list;
 
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:148:44: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     148 |         [C(DTLB)][C(OP_READ)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD,
-         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:133:44: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD'
-     133 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD                         0x004E
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:149:45: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     149 |         [C(DTLB)][C(OP_WRITE)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR,
-         |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:134:44: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR'
-     134 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR                         0x004F
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:150:42: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     150 |         [C(DTLB)][C(OP_READ)][C(RESULT_MISS)]   = ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD,
-         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:131:50: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD'
-     131 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD                  0x004C
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:151:43: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     151 |         [C(DTLB)][C(OP_WRITE)][C(RESULT_MISS)]  = ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR,
-         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:132:50: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR'
-     132 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR                  0x004D
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:153:44: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     153 |         [C(NODE)][C(OP_READ)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD,
-         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:148:46: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD'
-     148 | #define ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD                      0x0060
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
-   drivers/perf/arm_pmuv3.c:154:45: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
-     154 |         [C(NODE)][C(OP_WRITE)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR,
-         |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmuv3.h:149:46: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR'
-     149 | #define ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR                      0x0061
-         |                                                                 ^~~~~~
-   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
-     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
-      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
-         |                                             ^~~~~~~~~~~~~~~~~~~~
-   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
-      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
-         |                                         ^~~~~~
->> drivers/perf/arm_pmuv3.c:1131:24: error: call to undeclared function 'FIELD_GET'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1131 |         cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
-         |                               ^
-   55 warnings and 1 error generated.
+     uint32_t *reset_dump_reg_value;
+
+     int num_regs;
+
+#ifdef CONFIG_DEV_COREDUMP
+
+    struct amdgpu_coredump_info *coredump_info;/* keep this dynamic 
+allocation */
+
+#endif
+
+}
 
 
-vim +/FIELD_GET +1131 drivers/perf/arm_pmuv3.c
+This will make sure that all the relevant information is at the same place.
 
-  1114	
-  1115	static void __armv8pmu_probe_pmu(void *info)
-  1116	{
-  1117		struct armv8pmu_probe_info *probe = info;
-  1118		struct arm_pmu *cpu_pmu = probe->pmu;
-  1119		u64 pmceid_raw[2];
-  1120		u32 pmceid[2];
-  1121		int pmuver;
-  1122	
-  1123		pmuver = read_pmuver();
-  1124		if (!pmuv3_implemented(pmuver))
-  1125			return;
-  1126	
-  1127		cpu_pmu->pmuver = pmuver;
-  1128		probe->present = true;
-  1129	
-  1130		/* Read the nb of CNTx counters supported from PMNC */
-> 1131		cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
-  1132	
-  1133		/* Add the CPU cycles counter */
-  1134		cpu_pmu->num_events += 1;
-  1135	
-  1136		pmceid[0] = pmceid_raw[0] = read_pmceid0();
-  1137		pmceid[1] = pmceid_raw[1] = read_pmceid1();
-  1138	
-  1139		bitmap_from_arr32(cpu_pmu->pmceid_bitmap,
-  1140				     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
-  1141	
-  1142		pmceid[0] = pmceid_raw[0] >> 32;
-  1143		pmceid[1] = pmceid_raw[1] >> 32;
-  1144	
-  1145		bitmap_from_arr32(cpu_pmu->pmceid_ext_bitmap,
-  1146				     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
-  1147	
-  1148		/* store PMMIR register for sysfs */
-  1149		if (is_pmuv3p4(pmuver) && (pmceid_raw[1] & BIT(31)))
-  1150			cpu_pmu->reg_pmmir = read_pmmir();
-  1151		else
-  1152			cpu_pmu->reg_pmmir = 0;
-  1153	}
-  1154	
+- Shashank
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> +#endif
+> +
+>   static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
+>   {
+>   	return container_of(ddev, struct amdgpu_device, ddev);
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index bf4781551f88..b5b879bcc5c9 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -4799,12 +4799,17 @@ static int amdgpu_reset_reg_dumps(struct amdgpu_device *adev)
+>   	return 0;
+>   }
+>   
+> -#ifdef CONFIG_DEV_COREDUMP
+> +#ifndef CONFIG_DEV_COREDUMP
+> +static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> +			    struct amdgpu_reset_context *reset_context)
+> +{
+> +}
+> +#else
+>   static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+>   		size_t count, void *data, size_t datalen)
+>   {
+>   	struct drm_printer p;
+> -	struct amdgpu_device *adev = data;
+> +	struct amdgpu_coredump_info *coredump = data;
+>   	struct drm_print_iterator iter;
+>   	int i;
+>   
+> @@ -4818,21 +4823,21 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+>   	drm_printf(&p, "**** AMDGPU Device Coredump ****\n");
+>   	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
+>   	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
+> -	drm_printf(&p, "time: %lld.%09ld\n", adev->reset_time.tv_sec, adev->reset_time.tv_nsec);
+> -	if (adev->reset_task_info.pid)
+> +	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
+> +	if (coredump->reset_task_info.pid)
+>   		drm_printf(&p, "process_name: %s PID: %d\n",
+> -			   adev->reset_task_info.process_name,
+> -			   adev->reset_task_info.pid);
+> +			   coredump->reset_task_info.process_name,
+> +			   coredump->reset_task_info.pid);
+>   
+> -	if (adev->reset_vram_lost)
+> +	if (coredump->reset_vram_lost)
+>   		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+> -	if (adev->num_regs) {
+> +	if (coredump->adev->num_regs) {
+>   		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
+>   
+> -		for (i = 0; i < adev->num_regs; i++)
+> +		for (i = 0; i < coredump->adev->num_regs; i++)
+>   			drm_printf(&p, "0x%08x: 0x%08x\n",
+> -				   adev->reset_dump_reg_list[i],
+> -				   adev->reset_dump_reg_value[i]);
+> +				   coredump->adev->reset_dump_reg_list[i],
+> +				   coredump->adev->reset_dump_reg_value[i]);
+>   	}
+>   
+>   	return count - iter.remain;
+> @@ -4840,14 +4845,32 @@ static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+>   
+>   static void amdgpu_devcoredump_free(void *data)
+>   {
+> +	kfree(data);
+>   }
+>   
+> -static void amdgpu_reset_capture_coredumpm(struct amdgpu_device *adev)
+> +static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> +			    struct amdgpu_reset_context *reset_context)
+>   {
+> +	struct amdgpu_coredump_info *coredump;
+>   	struct drm_device *dev = adev_to_drm(adev);
+>   
+> -	ktime_get_ts64(&adev->reset_time);
+> -	dev_coredumpm(dev->dev, THIS_MODULE, adev, 0, GFP_NOWAIT,
+> +	coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
+> +
+> +	if (!coredump) {
+> +		DRM_ERROR("%s: failed to allocate memory for coredump\n", __func__);
+> +		return;
+> +	}
+> +
+> +	coredump->reset_vram_lost = vram_lost;
+> +
+> +	if (reset_context->job && reset_context->job->vm)
+> +		coredump->reset_task_info = reset_context->job->vm->task_info;
+> +
+> +	coredump->adev = adev;
+> +
+> +	ktime_get_ts64(&coredump->reset_time);
+> +
+> +	dev_coredumpm(dev->dev, THIS_MODULE, coredump, 0, GFP_NOWAIT,
+>   		      amdgpu_devcoredump_read, amdgpu_devcoredump_free);
+>   }
+>   #endif
+> @@ -4955,15 +4978,9 @@ int amdgpu_do_asic_reset(struct list_head *device_list_handle,
+>   					goto out;
+>   
+>   				vram_lost = amdgpu_device_check_vram_lost(tmp_adev);
+> -#ifdef CONFIG_DEV_COREDUMP
+> -				tmp_adev->reset_vram_lost = vram_lost;
+> -				memset(&tmp_adev->reset_task_info, 0,
+> -						sizeof(tmp_adev->reset_task_info));
+> -				if (reset_context->job && reset_context->job->vm)
+> -					tmp_adev->reset_task_info =
+> -						reset_context->job->vm->task_info;
+> -				amdgpu_reset_capture_coredumpm(tmp_adev);
+> -#endif
+> +
+> +				amdgpu_coredump(tmp_adev, vram_lost, reset_context);
+> +
+>   				if (vram_lost) {
+>   					DRM_INFO("VRAM is lost due to GPU reset!\n");
+>   					amdgpu_inc_vram_lost(tmp_adev);
