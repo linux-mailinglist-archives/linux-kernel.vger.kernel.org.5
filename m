@@ -2,63 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7BA77F41B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F7D77F423
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349785AbjHQKLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:11:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
+        id S1349951AbjHQKMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234211AbjHQKLD (ORCPT
+        with ESMTP id S1350011AbjHQKMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:11:03 -0400
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3BC02D50
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:11:01 -0700 (PDT)
-Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-79af014b555so2131274241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:11:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692267061; x=1692871861;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pUE8zxkwWqoGXHeb1zOCYx+1mln/AtzyGTguaS9ON94=;
-        b=bsGBaVypJvjdmhoX/hGR0JtLCedSpRr8XIw5j5TRtSIaoeOMmpL5ZT/AKYVON6g0bh
-         9jKjhRzQdr71KYpGoUk3fAq8C/VB+ThlK+NAlSIXvASu36pln9EqA90Hh9NZObBzWNUP
-         71zg59UhuvjX/Voj1Dqp0/Z77jN5NzGIsXWOvY3D98OtUY5tru2fM2gD6VwtpJw4wU8X
-         lHX758SREfuNDmaRFHju0ovl0hJip9hWsZ6oM1PMLkf6XsrdrtD03oIeXyj8cIl0K7ZY
-         p6vaNPPFIc1at5dcsnaD+DkhbI87OR71vqzr/5UNxK0iueX2p5JeAIhcOy0Yup2F484w
-         UfAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692267061; x=1692871861;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pUE8zxkwWqoGXHeb1zOCYx+1mln/AtzyGTguaS9ON94=;
-        b=ST3W0rMDjfqXV+1bPRCIJZ1D0fMTj6HqVgf/TNL0d9000eEf0h6c5X6hX212Zib0E9
-         KyH8FOw1QhzTO1YHwrhVqQ7YhQX3ibLq1PQ0gdfUabBRHOcvUSgbswOXC2thOrPWPQiO
-         gIXHHMVvlcK0YbYpPrW7VlaW1x/LzqN1ozHBqlA5xHPGyJHHzknYEAZ79hTsA4KlwZjx
-         4YqVgDCUa0ad64tQIDm5CJ4+2tKhry0ZrF4rI2czdggleQol03UQGMmUPUoDsHueee9S
-         lky5oHlqpbzv4lqxCKsJIHd32Sl/P/hrBgreT7/BhlQHD3h24UN9Qj2sbFxgxMtN7cWD
-         /EYw==
-X-Gm-Message-State: AOJu0YyjAMa1w4SkBcV8f6kGjXM8aPdjVJqq3LNGMIZ4ACtkSsA9M+vk
-        wHtesMTrroJs3VUD907vJGXQNIhyeBTqrkw5bXpGcVlpZAY++72gaJ8=
-X-Google-Smtp-Source: AGHT+IEaqgUh29Sb8dWCa0584RGmfh818iengK6GnjPlZ0wRP0FewuRPY5l+7fsMybIw/BBvMgnpy+QqXO26U/VvIo4=
-X-Received: by 2002:a05:6102:3578:b0:447:6c24:7d86 with SMTP id
- bh24-20020a056102357800b004476c247d86mr5093992vsb.4.1692267061076; Thu, 17
- Aug 2023 03:11:01 -0700 (PDT)
+        Thu, 17 Aug 2023 06:12:12 -0400
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814DC30FC
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:11:45 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CAD7A40E0196;
+        Thu, 17 Aug 2023 10:11:43 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id KfEvzXzcj4JY; Thu, 17 Aug 2023 10:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1692267101; bh=nwRKpw2lLdAbOLqAH3ClWxZ8c53sZrQ8xdbQI4tBrGw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i3YZ450yxXJoSOZ6sWhxBbqtASp9hjH1tcfbm4vIz4lVagX79hZnSJ33l1X0fLKua
+         V0mcmNBS7/3/SYPV4fNCswxEPfQGlzO1F+mn8Jo+u/+/yGjG9BibKOBZRh+J5WacfR
+         wRbDufBVzLxKj8iSIF2oXbCG8cCeMohRZevM/A2VpRod+zLCgw+C1a4kspYu6LbYVB
+         s6NGGeDo8Cee4/IMG92FDLMVsla0byCbAUWvPRan9uCaXZs1Fol90/1ozMt2Q2JsrU
+         fITHA8YbH2y6gLdtnKHBIYEhZP0jJXF6iDZvYazujX7RmMk8ycr/jDjANbaUVlrFRK
+         djJ1BAfFv3taYdL8OLfeAiD5xYIBKCxCzIv7lWoXIEobrCN1xREzWWbjIZqmBX8iAM
+         yjMXduDYBdhwWSE+MGTqatnP+K27n6yN026l8ULeNcAHH7r78knAxhhuSm5fsMFsKG
+         rs86iRtSwjOxjZ1gM1mnrIXohpE8RuK8TSIawp2l8No/xi/0IXy49HapiyEfk9z8X7
+         fLQUm/Zs2K2Angoli50CsrBZsOH4EuT3cZgY2yj0VHjDVYsPQv1p1XNX/2zxicZrEI
+         rxYQgsOr5g+DzgC/7uzUzWUdUvxDVuoCWkt1GGz7oD4SjRKqCVnGKAoUbvX2lBbPTn
+         fYKuClmwmbIm+LSUt/OrhTWc=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 22D3740E0140;
+        Thu, 17 Aug 2023 10:11:34 +0000 (UTC)
+Date:   Thu, 17 Aug 2023 12:11:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Karol Herbst <kherbst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
+        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
+ of nouveau_connector_create
+Message-ID: <20230817101129.GCZN3yUTWHkt22Jgec@fat_crate.local>
+References: <CACO55tu8ab-rxCzxFXbUh4Z=W9E-1f8sH6BVd=P+16dQ9PQNjg@mail.gmail.com>
+ <20230816145338.GIZNzi8o3d9x9bcPzX@fat_crate.local>
+ <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
+ <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local>
+ <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
+ <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local>
+ <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
+ <20230817081032.GAZN3V+NQ1blzQC2sU@fat_crate.local>
+ <CACO55tv-dKnDzUYYFW+d2pNoAhEoEniUT=QAmD4-c_xKQw0cfw@mail.gmail.com>
+ <CACO55tuWTYngfw+MZnan+U4eYyE+SvOWgxzffaCMNGQgriq3ig@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230810144943.34976-1-yuehaibing@huawei.com>
-In-Reply-To: <20230810144943.34976-1-yuehaibing@huawei.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 17 Aug 2023 15:40:39 +0530
-Message-ID: <CAFA6WYPsaJdGT9kS4ygHNRYDpX8bRaY__EwZWuCF-x-DgWUDhQ@mail.gmail.com>
-Subject: Re: [PATCH -next] tee: Remove unused declarations
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     jens.wiklander@linaro.org, etienne.carriere@linaro.org,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACO55tuWTYngfw+MZnan+U4eYyE+SvOWgxzffaCMNGQgriq3ig@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,49 +76,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 at 20:19, Yue Haibing <yuehaibing@huawei.com> wrote:
->
-> Commit 4fb0a5eb364d ("tee: add OP-TEE driver") declared but never implemented
-> optee_supp_read()/optee_supp_write().
-> Commit 967c9cca2cc5 ("tee: generic TEE subsystem") never implemented tee_shm_init().
->
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
->  drivers/tee/optee/optee_private.h | 2 --
->  drivers/tee/tee_private.h         | 2 --
->  2 files changed, 4 deletions(-)
->
+On Thu, Aug 17, 2023 at 12:00:47PM +0200, Karol Herbst wrote:
+> btw, what would help is to know where `nvkm_uconn_uevent` actually
+> fails, or rather, are you running into this "/* TODO: support DP IRQ
+> on ANX9805 and remove this hack. */" condition?
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
+Send me a diff, I'll run it here and catch output over serial.
 
--Sumit
+Thx.
 
-> diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-> index 72685ee0d53f..6bb5cae09688 100644
-> --- a/drivers/tee/optee/optee_private.h
-> +++ b/drivers/tee/optee/optee_private.h
-> @@ -238,8 +238,6 @@ int optee_notif_send(struct optee *optee, u_int key);
->  u32 optee_supp_thrd_req(struct tee_context *ctx, u32 func, size_t num_params,
->                         struct tee_param *param);
->
-> -int optee_supp_read(struct tee_context *ctx, void __user *buf, size_t len);
-> -int optee_supp_write(struct tee_context *ctx, void __user *buf, size_t len);
->  void optee_supp_init(struct optee_supp *supp);
->  void optee_supp_uninit(struct optee_supp *supp);
->  void optee_supp_release(struct optee_supp *supp);
-> diff --git a/drivers/tee/tee_private.h b/drivers/tee/tee_private.h
-> index 409cadcc1cff..754e11dcb240 100644
-> --- a/drivers/tee/tee_private.h
-> +++ b/drivers/tee/tee_private.h
-> @@ -47,8 +47,6 @@ struct tee_device {
->         struct tee_shm_pool *pool;
->  };
->
-> -int tee_shm_init(void);
-> -
->  int tee_shm_get_fd(struct tee_shm *shm);
->
->  bool tee_device_get(struct tee_device *teedev);
-> --
-> 2.34.1
->
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
