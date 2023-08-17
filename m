@@ -2,456 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F1B77FEFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A880B77FEFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354860AbjHQUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59140 "EHLO
+        id S1354863AbjHQU1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354848AbjHQUYS (ORCPT
+        with ESMTP id S1354869AbjHQU1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:24:18 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D0630DE;
-        Thu, 17 Aug 2023 13:24:15 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe426b8583so2405185e9.2;
-        Thu, 17 Aug 2023 13:24:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692303854; x=1692908654;
-        h=in-reply-to:references:cc:to:content-language:subject:reply-to
-         :user-agent:mime-version:date:message-id:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j+5Wl3qyx4Iy9Z/PTJlsRKZSBQ3v1eW2aXxCPWi7Zak=;
-        b=eDlWWPpc3Ht22XX3A5vPmxW2Y0HvU/WV8uY9a7FaDWrT37sP67gmvfWpsnqcFYxQwp
-         eymFrvgtjP1xwg4I4Vgc81jvFBpxAZrkiusCJk8e9XNTcp47MEAMUlHKfe/B1M32foA2
-         VA/5JS5sXq8IKwqGvNCLeDKzNJwcMMnPgRVp6ClmyKUWvU56y48ljQsV7M4NTiyowq+C
-         cIl/WQ0bKFXz3uv4oHDafikfDpmrJy2Po0qrcLzeoHUwCl8+BawsGpTUse86wmb1HICB
-         PFoYLBNZSH43L7HguU16fJVu84zLAXs5+BO72kd3HLFMYW0Mp7e7JRFYbYI5b3BfbH0W
-         y24w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692303854; x=1692908654;
-        h=in-reply-to:references:cc:to:content-language:subject:reply-to
-         :user-agent:mime-version:date:message-id:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j+5Wl3qyx4Iy9Z/PTJlsRKZSBQ3v1eW2aXxCPWi7Zak=;
-        b=TCkxzldMsF/tnm1KEqoah1A0Wa5yqkRp1tOcyqzvdxZQnWlNuINdC6xJEn7e2DQO7O
-         NmKZG1qhlmL+1g5N+3pamPEj53tBvGZ9BUT2LLbbfI6WLmfUl6NLzSy40FCvPD4/SvZC
-         /cCxXzMCtNr/wXFtD6FyPVOtkbpWptUjATPoB37x5OuDGP9j3zv0A64vskZvp9Nv23wW
-         faNqmmquWwzyqCI1SwgDC/JLdRCXjYjdXnFPg7T2D79x0zYQT14DKyy4m1rhHx6d2iRC
-         /9qjXPL29h+ucVAQvi2Y83le6Q32B8wtQlEHDKWTUfH8OOVY+vXaNrQ9bejEh3lOvexx
-         qcnA==
-X-Gm-Message-State: AOJu0YwX8ueyJLlvVNsmQLkZl2l/X1eeT0U3ah/IomBYqjIZJDOmK6ce
-        yqmIGZ+B1lLman0c2OXoiYw=
-X-Google-Smtp-Source: AGHT+IGS8S6PkC+aXqO7L3JZXSQt6BCJHbhJ0z9uEQqqV+8K7aiOlmRbgiLmJtdOvezx4Yb2ujt1Iw==
-X-Received: by 2002:a05:600c:248:b0:3fe:1bef:4034 with SMTP id 8-20020a05600c024800b003fe1bef4034mr584155wmj.37.1692303853907;
-        Thu, 17 Aug 2023 13:24:13 -0700 (PDT)
-Received: from [192.168.0.160] ([170.253.40.43])
-        by smtp.gmail.com with ESMTPSA id n24-20020a7bc5d8000000b003fe17e04269sm544377wmk.40.2023.08.17.13.24.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 13:24:13 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-X-Google-Original-From: Alejandro Colomar <alx.manpages@gmail.com>
-Message-ID: <121ae7d6-db88-4ec7-a7d5-e7b1c14b49d4@gmail.com>
-Date:   Thu, 17 Aug 2023 22:24:11 +0200
+        Thu, 17 Aug 2023 16:27:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C29D359C;
+        Thu, 17 Aug 2023 13:27:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF2D261182;
+        Thu, 17 Aug 2023 20:27:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8328C433C8;
+        Thu, 17 Aug 2023 20:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692304022;
+        bh=vq2QpcRQNb8e+Lmh0hjoG6fR40fGSWsXLdAb85uymp4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Pa63xgTJLDwrTiqLIXUYrrhQPTKymqcGn6CppUTTby4L6Cpi/59FDtvRXFDzFIOE0
+         ZiTpmpcVP03d4oSIs0nEBtqZ+YP6g5myuwimzGYjNMSh1K9ibKi0qxNT3gY7HmKhuO
+         a+xlziNUxvou5pHDDqxI0f4csZAj8swIFW94KFUKvR6diY7O4CVfQVWfMsljtXXgjd
+         gkY3ymzyzSmonWho08QabPrLs0Lt+NjoQaj4T/Q6mIgFUlqGJvetLwZksXwzwRU09J
+         4gXwSqHC2Ik09/owIP7ppv2W5OiTIMsbq3EiGlRqnj1kAdf8wAjKahP4pI78ma8zP9
+         cJM1fegVlmF7g==
+Received: (nullmailer pid 2179908 invoked by uid 1000);
+        Thu, 17 Aug 2023 20:26:59 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Helen Koike <helen.koike@collabora.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] media: dt-bindings: Merge OV5695 into OV5693 binding
+Date:   Thu, 17 Aug 2023 15:26:46 -0500
+Message-Id: <20230817202647.2179609-1-robh@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Reply-To: alx@kernel.org
-Subject: Re: [PATCH 1/4] linux/array_size.h: Move ARRAY_SIZE(arr) to a
- separate header
-Content-Language: en-US
-To:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
-Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
-        andriy.shevchenko@intel.com,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
- <20230817143352.132583-2-lucas.segarra.fernandez@intel.com>
-In-Reply-To: <20230817143352.132583-2-lucas.segarra.fernandez@intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------K6EBxUhtYCvjdHouZM93UhNd"
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------K6EBxUhtYCvjdHouZM93UhNd
-Content-Type: multipart/mixed; boundary="------------LMve7cXexGde0dyAa1VwcxEd";
- protected-headers="v1"
-From: Alejandro Colomar <alx.manpages@gmail.com>
-Reply-To: alx@kernel.org
-To: Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
- herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
-Cc: linux-crypto@vger.kernel.org, qat-linux@intel.com,
- andriy.shevchenko@intel.com, Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-Message-ID: <121ae7d6-db88-4ec7-a7d5-e7b1c14b49d4@gmail.com>
-Subject: Re: [PATCH 1/4] linux/array_size.h: Move ARRAY_SIZE(arr) to a
- separate header
-References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
- <20230817143352.132583-2-lucas.segarra.fernandez@intel.com>
-In-Reply-To: <20230817143352.132583-2-lucas.segarra.fernandez@intel.com>
+The OV5695 binding is almost the same as the OV5693 binding. The only
+difference is 'clock-names' is defined for OV5695. However, the lack of
+clock-names is an omission as the Linux OV5693 driver expects the same
+'xvclk' clock name.
 
---------------LMve7cXexGde0dyAa1VwcxEd
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+'link-frequencies' is required by OV5693, but not OV5695, so make that
+conditional. Really, this shouldn't vary by device, but we're stuck with
+the existing binding use.
 
-Hi Lucas,
+The rockchip-isp1 binding example is missing required properties, so it
+has to be updated as well.
 
-On 2023-08-17 16:33, Lucas Segarra Fernandez wrote:
-> From: Alejandro Colomar <alx.manpages@gmail.com>
->=20
-> Touching files so used for the kernel,
-> forces 'make' to recompile most of the kernel.
->=20
-> Having those definitions in more granular files
-> helps avoid recompiling so much of the kernel.
->=20
-> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Make link-frequencies conditionally required
+---
+ .../devicetree/bindings/media/i2c/ov5695.txt  | 41 -------------------
+ .../bindings/media/i2c/ovti,ov5693.yaml       | 31 ++++++++++----
+ .../bindings/media/rockchip-isp1.yaml         |  1 +
+ 3 files changed, 25 insertions(+), 48 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/i2c/ov5695.txt
 
-Heh!  This is really really old, isn't it?  :p
+diff --git a/Documentation/devicetree/bindings/media/i2c/ov5695.txt b/Documentation/devicetree/bindings/media/i2c/ov5695.txt
+deleted file mode 100644
+index 640a63717d96..000000000000
+--- a/Documentation/devicetree/bindings/media/i2c/ov5695.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-* Omnivision OV5695 MIPI CSI-2 sensor
+-
+-Required Properties:
+-- compatible: shall be "ovti,ov5695"
+-- clocks: reference to the xvclk input clock
+-- clock-names: shall be "xvclk"
+-- avdd-supply: Analog voltage supply, 2.8 volts
+-- dovdd-supply: Digital I/O voltage supply, 1.8 volts
+-- dvdd-supply: Digital core voltage supply, 1.2 volts
+-- reset-gpios: Low active reset gpio
+-
+-The device node shall contain one 'port' child node with an
+-'endpoint' subnode for its digital output video port,
+-in accordance with the video interface bindings defined in
+-Documentation/devicetree/bindings/media/video-interfaces.txt.
+-The endpoint optional property 'data-lanes' shall be "<1 2>".
+-
+-Example:
+-&i2c7 {
+-	ov5695: camera-sensor@36 {
+-		compatible = "ovti,ov5695";
+-		reg = <0x36>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&clk_24m_cam>;
+-
+-		clocks = <&cru SCLK_TESTCLKOUT1>;
+-		clock-names = "xvclk";
+-
+-		avdd-supply = <&pp2800_cam>;
+-		dovdd-supply = <&pp1800>;
+-		dvdd-supply = <&pp1250_cam>;
+-		reset-gpios = <&gpio2 5 GPIO_ACTIVE_LOW>;
+-
+-		port {
+-			wcam_out: endpoint {
+-				remote-endpoint = <&mipi_in_wcam>;
+-				data-lanes = <1 2>;
+-			};
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
+index 359dc08440a8..6829a4aadd22 100644
+--- a/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
+@@ -5,26 +5,41 @@
+ $id: http://devicetree.org/schemas/media/i2c/ovti,ov5693.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Omnivision OV5693 CMOS Sensor
++title: Omnivision OV5693/OV5695 CMOS Sensors
+ 
+ maintainers:
+   - Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
+ 
+ description: |
+-  The Omnivision OV5693 is a high performance, 1/4-inch, 5 megapixel, CMOS
+-  image sensor that delivers 2592x1944 at 30fps. It provides full-frame,
++  The Omnivision OV5693/OV5695 are high performance, 1/4-inch, 5 megapixel, CMOS
++  image sensors that deliver 2592x1944 at 30fps. It provides full-frame,
+   sub-sampled, and windowed 10-bit MIPI images in various formats via the
+   Serial Camera Control Bus (SCCB) interface.
+ 
+-  OV5693 is controlled via I2C and two-wire Serial Camera Control Bus (SCCB).
+-  The sensor output is available via CSI-2 serial data output (up to 2-lane).
++  OV5693/OV5695 are controlled via I2C and two-wire Serial Camera Control Bus
++  (SCCB). The sensor output is available via CSI-2 serial data output (up to
++  2-lane).
+ 
+ allOf:
+   - $ref: /schemas/media/video-interface-devices.yaml#
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: ovti,ov5693
++    then:
++      properties:
++        port:
++          properties:
++            endpoint:
++              required:
++                - link-frequencies
+ 
+ properties:
+   compatible:
+-    const: ovti,ov5693
++    enum:
++      - ovti,ov5693
++      - ovti,ov5695
+ 
+   reg:
+     maxItems: 1
+@@ -34,6 +49,9 @@ properties:
+       System input clock (aka XVCLK). From 6 to 27 MHz.
+     maxItems: 1
+ 
++  clock-names:
++    const: xvclk
++
+   dovdd-supply:
+     description:
+       Digital I/O voltage supply, 1.8V.
+@@ -72,7 +90,6 @@ properties:
+ 
+         required:
+           - data-lanes
+-          - link-frequencies
+ 
+ required:
+   - compatible
+diff --git a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+index 0bad7e640148..e466dff8286d 100644
+--- a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
++++ b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+@@ -199,6 +199,7 @@ examples:
+             wcam: camera@36 {
+                 compatible = "ovti,ov5695";
+                 reg = <0x36>;
++                clocks = <&cru SCLK_TESTCLKOUT1>;
+ 
+                 port {
+                     wcam_out: endpoint {
+-- 
+2.40.1
 
-Would you mind updating my email to use the kernel.org address?
-
-From: Alejandro Colomar <alx@kernel.org>
-Signed-off-by: Alejandro Colomar <alx@kernel.org>
-
-Thanks for taking care of this patch!
-
-Cheers,
-Alex
-
-> ---
->  include/linux/array_size.h                    | 13 +++++++++++++
->  include/linux/clk-provider.h                  |  1 +
->  include/linux/counter.h                       |  1 +
->  include/linux/genl_magic_func.h               |  1 +
->  include/linux/hashtable.h                     |  1 +
->  include/linux/kernel.h                        |  7 +------
->  include/linux/kfifo.h                         |  1 +
->  include/linux/kvm_host.h                      |  1 +
->  include/linux/moduleparam.h                   |  2 ++
->  include/linux/mtd/rawnand.h                   |  1 +
->  include/linux/netfilter.h                     |  1 +
->  include/linux/pagemap.h                       |  1 +
->  include/linux/phy.h                           |  1 +
->  include/linux/pinctrl/machine.h               |  2 +-
->  include/linux/property.h                      |  1 +
->  include/linux/rcupdate_wait.h                 |  1 +
->  include/linux/regmap.h                        |  1 +
->  include/linux/skmsg.h                         |  1 +
->  include/linux/string.h                        |  1 +
->  include/linux/surface_aggregator/controller.h |  1 +
->  20 files changed, 33 insertions(+), 7 deletions(-)
->  create mode 100644 include/linux/array_size.h
->=20
-> diff --git a/include/linux/array_size.h b/include/linux/array_size.h
-> new file mode 100644
-> index 000000000000..06d7d83196ca
-> --- /dev/null
-> +++ b/include/linux/array_size.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _LINUX_ARRAY_SIZE_H
-> +#define _LINUX_ARRAY_SIZE_H
-> +
-> +#include <linux/compiler.h>
-> +
-> +/**
-> + * ARRAY_SIZE - get the number of elements in array @arr
-> + * @arr: array to be sized
-> + */
-> +#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_ar=
-ray(arr))
-> +
-> +#endif  /* _LINUX_ARRAY_SIZE_H */
-> diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.=
-h
-> index 0f0cd01906b4..4f4d4f4af0a6 100644
-> --- a/include/linux/clk-provider.h
-> +++ b/include/linux/clk-provider.h
-> @@ -6,6 +6,7 @@
->  #ifndef __LINUX_CLK_PROVIDER_H
->  #define __LINUX_CLK_PROVIDER_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/of.h>
->  #include <linux/of_clk.h>
-> =20
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index b63746637de2..baf4ffcd8d18 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -6,6 +6,7 @@
->  #ifndef _COUNTER_H_
->  #define _COUNTER_H_
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/cdev.h>
->  #include <linux/device.h>
->  #include <linux/kernel.h>
-> diff --git a/include/linux/genl_magic_func.h b/include/linux/genl_magic=
-_func.h
-> index 2984b0cb24b1..cec9cae51f0b 100644
-> --- a/include/linux/genl_magic_func.h
-> +++ b/include/linux/genl_magic_func.h
-> @@ -2,6 +2,7 @@
->  #ifndef GENL_MAGIC_FUNC_H
->  #define GENL_MAGIC_FUNC_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/build_bug.h>
->  #include <linux/genl_magic_struct.h>
-> =20
-> diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-> index f6c666730b8c..09c5f1522b06 100644
-> --- a/include/linux/hashtable.h
-> +++ b/include/linux/hashtable.h
-> @@ -7,6 +7,7 @@
->  #ifndef _LINUX_HASHTABLE_H
->  #define _LINUX_HASHTABLE_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/list.h>
->  #include <linux/types.h>
->  #include <linux/kernel.h>
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index 0d91e0af0125..7195c6f27a22 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -11,6 +11,7 @@
->  #ifndef _LINUX_KERNEL_H
->  #define _LINUX_KERNEL_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/stdarg.h>
->  #include <linux/align.h>
->  #include <linux/limits.h>
-> @@ -49,12 +50,6 @@
->  #define READ			0
->  #define WRITE			1
-> =20
-> -/**
-> - * ARRAY_SIZE - get the number of elements in array @arr
-> - * @arr: array to be sized
-> - */
-> -#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_ar=
-ray(arr))
-> -
->  #define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
-> =20
->  #define u64_to_user_ptr(x) (		\
-> diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-> index 0b35a41440ff..b6fdd92ccb56 100644
-> --- a/include/linux/kfifo.h
-> +++ b/include/linux/kfifo.h
-> @@ -36,6 +36,7 @@
->   * to lock the reader.
->   */
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/kernel.h>
->  #include <linux/spinlock.h>
->  #include <linux/stddef.h>
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 9d3ac7720da9..a629b398a592 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -3,6 +3,7 @@
->  #define __KVM_HOST_H
-> =20
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/types.h>
->  #include <linux/hardirq.h>
->  #include <linux/list.h>
-> diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
-> index 962cd41a2cb5..3cecef5fa1cf 100644
-> --- a/include/linux/moduleparam.h
-> +++ b/include/linux/moduleparam.h
-> @@ -2,6 +2,8 @@
->  #ifndef _LINUX_MODULE_PARAMS_H
->  #define _LINUX_MODULE_PARAMS_H
->  /* (C) Copyright 2001, 2002 Rusty Russell IBM Corporation */
-> +
-> +#include <linux/array_size.h>
->  #include <linux/init.h>
->  #include <linux/stringify.h>
->  #include <linux/kernel.h>
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 5159d692f9ce..cd27ef633a4f 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -13,6 +13,7 @@
->  #ifndef __LINUX_MTD_RAWNAND_H
->  #define __LINUX_MTD_RAWNAND_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/nand.h>
->  #include <linux/mtd/flashchip.h>
-> diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
-> index d4fed4c508ca..f9ca506c4261 100644
-> --- a/include/linux/netfilter.h
-> +++ b/include/linux/netfilter.h
-> @@ -2,6 +2,7 @@
->  #ifndef __LINUX_NETFILTER_H
->  #define __LINUX_NETFILTER_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/init.h>
->  #include <linux/skbuff.h>
->  #include <linux/net.h>
-> diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-> index 716953ee1ebd..7a3de980ed9d 100644
-> --- a/include/linux/pagemap.h
-> +++ b/include/linux/pagemap.h
-> @@ -5,6 +5,7 @@
->  /*
->   * Copyright 1995 Linus Torvalds
->   */
-> +#include <linux/array_size.h>
->  #include <linux/mm.h>
->  #include <linux/fs.h>
->  #include <linux/list.h>
-> diff --git a/include/linux/phy.h b/include/linux/phy.h
-> index 11c1e91563d4..39e88b570ead 100644
-> --- a/include/linux/phy.h
-> +++ b/include/linux/phy.h
-> @@ -11,6 +11,7 @@
->  #ifndef __PHY_H
->  #define __PHY_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/compiler.h>
->  #include <linux/spinlock.h>
->  #include <linux/ethtool.h>
-> diff --git a/include/linux/pinctrl/machine.h b/include/linux/pinctrl/ma=
-chine.h
-> index 0639b36f43c5..ee8803f6ad07 100644
-> --- a/include/linux/pinctrl/machine.h
-> +++ b/include/linux/pinctrl/machine.h
-> @@ -11,7 +11,7 @@
->  #ifndef __LINUX_PINCTRL_MACHINE_H
->  #define __LINUX_PINCTRL_MACHINE_H
-> =20
-> -#include <linux/kernel.h>	/* ARRAY_SIZE() */
-> +#include <linux/array_size.h>
-> =20
->  #include <linux/pinctrl/pinctrl-state.h>
-> =20
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 8c3c6685a2ae..f7889c7c3a66 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -10,6 +10,7 @@
->  #ifndef _LINUX_PROPERTY_H_
->  #define _LINUX_PROPERTY_H_
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/bits.h>
->  #include <linux/fwnode.h>
->  #include <linux/stddef.h>
-> diff --git a/include/linux/rcupdate_wait.h b/include/linux/rcupdate_wai=
-t.h
-> index 699b938358bf..a321404eeec0 100644
-> --- a/include/linux/rcupdate_wait.h
-> +++ b/include/linux/rcupdate_wait.h
-> @@ -6,6 +6,7 @@
->   * RCU synchronization types and methods:
->   */
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/rcupdate.h>
->  #include <linux/completion.h>
-> =20
-> diff --git a/include/linux/regmap.h b/include/linux/regmap.h
-> index 8fc0b3ebce44..af0430dc0945 100644
-> --- a/include/linux/regmap.h
-> +++ b/include/linux/regmap.h
-> @@ -10,6 +10,7 @@
->   * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
->   */
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/list.h>
->  #include <linux/rbtree.h>
->  #include <linux/ktime.h>
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index 054d7911bfc9..d7e3b9f46d58 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -4,6 +4,7 @@
->  #ifndef _LINUX_SKMSG_H
->  #define _LINUX_SKMSG_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/bpf.h>
->  #include <linux/filter.h>
->  #include <linux/scatterlist.h>
-> diff --git a/include/linux/string.h b/include/linux/string.h
-> index dbfc66400050..3c920b6d609b 100644
-> --- a/include/linux/string.h
-> +++ b/include/linux/string.h
-> @@ -2,6 +2,7 @@
->  #ifndef _LINUX_STRING_H_
->  #define _LINUX_STRING_H_
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/compiler.h>	/* for inline */
->  #include <linux/types.h>	/* for size_t */
->  #include <linux/stddef.h>	/* for NULL */
-> diff --git a/include/linux/surface_aggregator/controller.h b/include/li=
-nux/surface_aggregator/controller.h
-> index cb7980805920..dcce0b663a3a 100644
-> --- a/include/linux/surface_aggregator/controller.h
-> +++ b/include/linux/surface_aggregator/controller.h
-> @@ -12,6 +12,7 @@
->  #ifndef _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H
->  #define _LINUX_SURFACE_AGGREGATOR_CONTROLLER_H
-> =20
-> +#include <linux/array_size.h>
->  #include <linux/completion.h>
->  #include <linux/device.h>
->  #include <linux/types.h>
-
---=20
-<http://www.alejandro-colomar.es/>
-GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
-
---------------LMve7cXexGde0dyAa1VwcxEd--
-
---------------K6EBxUhtYCvjdHouZM93UhNd
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmTegesACgkQnowa+77/
-2zJnww//f77oaeF1hfR86huOIjrML990rXlZ/07x+kYEQUb0Q+Ei7Q67fmcbx4aM
-dupF8vuPCUdcvDvFMmMfIZascgZ6aHnAoayWnXiCYJVKV/4ZhhgFzaRGwtTs5Pgk
-dkD/66B6ntkE9ejR1V2MFLCIhp8AXr20YPZmAtH3KQ3JuFdesEhHwp7gTdVGzQ/C
-tiSyqgosupvsk725GziCrhNDxu0VwqlmdkdGqZUf2EuNDWWg615SruP4olyRR/77
-4H91ds1YKu5y5qppd+PjInvaGr5g4345OCAyQKVWLnR/ZOtuNDiOzEfI99V4ecpl
-99uZMZ7sIUbddwdcq/KuCmeni+uMaAZso+nwLPJf1iKrWCQnDtJTLRWq4XSVzLvx
-GSiFJO3BKeJotxeAmI6ZUmZRm32JdHYnNM472a8baj4pVfhKkpwVOhj/2LBmXwj/
-o7wHNjJFMD6OOYMyrzmT5mSkVLqqUA6SxhIKp1ou5eXlnEO2tvlMSd/33op8UXJQ
-6b9h2hlhcErJe46NqlBccfVjkNq6Dcambp+ngCLh7jBlShor/dOv4Y5OHiFAYAMz
-XwuqaBkjO3lyNqWkLwEoEBlFBVqdcNhkqUIokLJUU0tim5MB3P0R9lUN33eaDIco
-NrqZ304AsbtUvjqMvTUvsQlyMPrANiiEsPsgsnZY8Qp86Bi9MEQ=
-=DC/L
------END PGP SIGNATURE-----
-
---------------K6EBxUhtYCvjdHouZM93UhNd--
