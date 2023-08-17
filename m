@@ -2,180 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 392E877F983
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E01C77F990
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352179AbjHQOpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33312 "EHLO
+        id S1352252AbjHQOqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:46:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352230AbjHQOpF (ORCPT
+        with ESMTP id S1352378AbjHQOqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:45:05 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AFB2727
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:01 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
-        by laurent.telenet-ops.be with bizsmtp
-        id aeky2A00F4QHFyo01ekyyt; Thu, 17 Aug 2023 16:44:59 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWeF1-000u8r-8W;
-        Thu, 17 Aug 2023 16:44:58 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWeF8-007SBg-PI;
-        Thu, 17 Aug 2023 16:44:58 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 6/6] m68k: math-emu: Add missing prototypes
-Date:   Thu, 17 Aug 2023 16:44:53 +0200
-Message-Id: <96c039640d76973ea762d79018de0bc75bbdc1dc.1692283195.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692283195.git.geert@linux-m68k.org>
-References: <cover.1692283195.git.geert@linux-m68k.org>
+        Thu, 17 Aug 2023 10:46:00 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30773A93
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:45 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37HEj5ra010416
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 10:45:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692283508; bh=gqsQDXWAnHGIA5wHjYhwbJKrvhNPOC3ihUy4KEVsRbg=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=VCLuFhlGxpiG5q5PKk9rfLuahkD+JTe4C8shieNnJ+qEvLQFZ5MD7sARRyYRIUIh1
+         t6xYC9YZ/wG/LMGz770Pe3iSn0XOAGGcgKGzV+pYrfz6blivZRSeispcufwVXEswZj
+         xyAOPJEiym13NldRb6wmoLug5KhV0rqU5BoAv0MUyiVBuzC3ZNPPDTLYBk5JtPtbBj
+         YGkP7SbdQriEmBWs1jFIwpEI+IYqyZMVkcX5tihxzOhoeVNl4u5mPh7ErJUewMn2tT
+         tGO499QHqGlLi8BHiznCT13uO46P6AjauaoUUNGW71RshxHhBBz6l6P1P5895YcUF7
+         uZvjcskeFMW8w==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3D6B115C0501; Thu, 17 Aug 2023 10:45:05 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 10:45:05 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Aleksandr Nogikh <nogikh@google.com>
+Cc:     syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230817144505.GB2247938@mit.edu>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <CANp29Y7jbcOw_rS5vbfWNo7Y+ySYhYS-AWC356QN=JRVOm9B8w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANp29Y7jbcOw_rS5vbfWNo7Y+ySYhYS-AWC356QN=JRVOm9B8w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building with W=1:
+On Thu, Aug 17, 2023 at 04:28:33PM +0200, Aleksandr Nogikh wrote:
+> The console log has the following line:
+> 
+> [   60.708717][ T5061] Kernel panic - not syncing: EXT4-fs (device
+> loop0): panic forced after error
+> 
+> Can we consider a "panic forced after error" line to be a reliable
+> indicator that syzbot must ignore the report?
 
-    arch/m68k/math-emu/fp_arith.c:301:16: warning: no previous prototype for ‘fp_fsglmul’ [-Wmissing-prototypes]
-      301 | struct fp_ext *fp_fsglmul(struct fp_ext *dest, struct fp_ext *src)
-	  |                ^~~~~~~~~~
-    arch/m68k/math-emu/fp_arith.c:357:16: warning: no previous prototype for ‘fp_fsgldiv’ [-Wmissing-prototypes]
-      357 | struct fp_ext *fp_fsgldiv(struct fp_ext *dest, struct fp_ext *src)
-	  |                ^~~~~~~~~~
-      CC      arch/m68k/math-emu/fp_log.o
-    ...
+Yes.  And the file system image that generated this bug should be
+discarded, because otherwise successive mutations will generate a
+large number of crashes that syzbot will then need to ignore, thus
+consuming syzbot resources.
 
-Fix this by adding the missing prototypes to header files.
+Alternatively, you can do the moral equivalent of "tune2fs -e continue
+foo.img" on any mutated file system seed, which will clear the "panic
+on error".
 
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Link: https://lore.kernel.org/r/20230810141947.1236730-17-arnd@kernel.org/
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/math-emu/fp_arith.h |  2 ++
- arch/m68k/math-emu/fp_log.c   |  1 +
- arch/m68k/math-emu/fp_log.h   | 44 +++++++++++++++++++++++++++++++++++
- arch/m68k/math-emu/fp_trig.h  | 19 +++++++++++++++
- 4 files changed, 66 insertions(+)
- create mode 100644 arch/m68k/math-emu/fp_log.h
+(The other alternative is "tune2fs -e remount-ro", but given syzbot's
+desire to find kernel crashes, "tune2fs -e continue" is more likely
+find ways in which the kernel will find itself into trouble.  Some
+sysadmins will want to chose "remount-ro", however, since that is more
+likely to limit file system damage once the file system is discovered
+to be corrupted.)
 
-diff --git a/arch/m68k/math-emu/fp_arith.h b/arch/m68k/math-emu/fp_arith.h
-index 65b11e3f452db9d6..3f9c58b6d504f590 100644
---- a/arch/m68k/math-emu/fp_arith.h
-+++ b/arch/m68k/math-emu/fp_arith.h
-@@ -26,6 +26,8 @@ struct fp_ext *fp_fcmp(struct fp_ext *dest, struct fp_ext *src);
- struct fp_ext *fp_ftst(struct fp_ext *dest, struct fp_ext *src);
- struct fp_ext *fp_fmul(struct fp_ext *dest, struct fp_ext *src);
- struct fp_ext *fp_fdiv(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsglmul(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsgldiv(struct fp_ext *dest, struct fp_ext *src);
- 
- /* ones that do rounding and integer conversions */
- struct fp_ext *fp_fmod(struct fp_ext *dest, struct fp_ext *src);
-diff --git a/arch/m68k/math-emu/fp_log.c b/arch/m68k/math-emu/fp_log.c
-index 9f93efd5ef496770..71a8fc25575af810 100644
---- a/arch/m68k/math-emu/fp_log.c
-+++ b/arch/m68k/math-emu/fp_log.c
-@@ -17,6 +17,7 @@
- 
- #include "fp_arith.h"
- #include "fp_emu.h"
-+#include "fp_log.h"
- 
- static const struct fp_ext fp_one = {
- 	.exp = 0x3fff,
-diff --git a/arch/m68k/math-emu/fp_log.h b/arch/m68k/math-emu/fp_log.h
-new file mode 100644
-index 0000000000000000..c2bcfff11994cfb5
---- /dev/null
-+++ b/arch/m68k/math-emu/fp_log.h
-@@ -0,0 +1,44 @@
-+/*
-+
-+  fp_log.h: floating-point math routines for the Linux-m68k
-+  floating point emulator.
-+
-+  Copyright (c) 1998-1999 David Huggins-Daines / Roman Zippel.
-+
-+  I hereby give permission, free of charge, to copy, modify, and
-+  redistribute this software, in source or binary form, provided that
-+  the above copyright notice and the following disclaimer are included
-+  in all such copies.
-+
-+  THIS SOFTWARE IS PROVIDED "AS IS", WITH ABSOLUTELY NO WARRANTY, REAL
-+  OR IMPLIED.
-+
-+*/
-+
-+#ifndef _FP_LOG_H
-+#define _FP_LOG_H
-+
-+#include "fp_emu.h"
-+
-+/* floating point logarithmic instructions:
-+
-+   the arguments to these are in the "internal" extended format, that
-+   is, an "exploded" version of the 96-bit extended fp format used by
-+   the 68881.
-+
-+   they return a status code, which should end up in %d0, if all goes
-+   well.  */
-+
-+struct fp_ext *fp_fsqrt(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fetoxm1(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fetox(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_ftwotox(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_ftentox(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_flogn(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_flognp1(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_flog10(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_flog2(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fgetexp(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fgetman(struct fp_ext *dest, struct fp_ext *src);
-+
-+#endif /* _FP_LOG_H */
-diff --git a/arch/m68k/math-emu/fp_trig.h b/arch/m68k/math-emu/fp_trig.h
-index 52f0cc31cfe49cb7..1aae8ab1d41b15f2 100644
---- a/arch/m68k/math-emu/fp_trig.h
-+++ b/arch/m68k/math-emu/fp_trig.h
-@@ -29,4 +29,23 @@
-    they return a status code, which should end up in %d0, if all goes
-    well.  */
- 
-+struct fp_ext *fp_fsin(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fcos(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_ftan(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fasin(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_facos(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fatan(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsinh(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fcosh(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_ftanh(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fatanh(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos0(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos1(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos2(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos3(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos4(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos5(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos6(struct fp_ext *dest, struct fp_ext *src);
-+struct fp_ext *fp_fsincos7(struct fp_ext *dest, struct fp_ext *src);
-+
- #endif /* _FP_TRIG_H */
--- 
-2.34.1
-
+					- Ted
+					
