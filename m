@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8727A780182
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22BF780184
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355983AbjHQXN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37810 "EHLO
+        id S1356009AbjHQXOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355978AbjHQXM5 (ORCPT
+        with ESMTP id S1355986AbjHQXNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:12:57 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446432D72
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:12:55 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-40a47e8e38dso65301cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:12:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692313974; x=1692918774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IA7YPwxBGWU3V1iFmL/DUCc+Zov4T4TtSDkIsZsakoA=;
-        b=VEDRanl3LRG5IWgNPtnH7aKbOTGJhqvNpZlTbfGbC6gBsHakhza3o5gyeVCqOmmClO
-         VyG4F1CHmM5Jj8/sHsZ/gt1uyFGkChYELmF0DGKZyzBGbx2eOxkZ83y0eWzAQtexahTS
-         PeFjZ6vEC9KQGn7BcV8OcjxRyOv6Du/NlpDDjrTG3zYeaXG5RN7/JlsrErwayCTmxSlU
-         P6p+QRuCrVb2hwEGd/1PMvi3w0w7N9nabpVomDNezBWGVtVid9x7tVtnqmQBeV0MrTE4
-         flY8TuFSIyc27mov0aNl0v3vLV+cIZ155nFvNW0MNUcO4L1BLHIUxYEBSBXAQyv4YUNh
-         kwPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692313974; x=1692918774;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IA7YPwxBGWU3V1iFmL/DUCc+Zov4T4TtSDkIsZsakoA=;
-        b=QmGxSGG84EYQXRiI51ZG6q8yp7tKJSqI6/oMWslw7CaBRRF4/SZlI4GdJ9CIzuQt1i
-         3QVt/vzdHyYWLcTDaYWBKGViG8fJD4TyGqSnbvZIzG/XsR7+ZJW5h76BcFG0HjhDc9Do
-         0vT3fP06k0GtfJdqznO+tv87V0PBqTrlB8jfA0h4+jAeFSNegmSQgh8FKgGUKZ+1zr8G
-         oJu4Beyj1pSE/M21DqAbHAEr8ypjpnGnQ42ZF+4YV5JV97/gMc22EAQgK0C80LKzCf7j
-         dGKwvwI0RNIiKQR+sCnSOlLwqe3zCj/qWv7FhkZeVQgC3mA0Slyy1/keZhth9q9waoal
-         MxSw==
-X-Gm-Message-State: AOJu0YwfFyEkAghORo+AHIrjPQBafvfL+2akIMhfzAlv9l7CziMG2SzT
-        7jkkW08KdKzLtzD+9ViAbES7YeqGZ1x6cUsp0Fy5Sg==
-X-Google-Smtp-Source: AGHT+IEHjAFM/7deMaRQw6GZWPs+p73ASaZMttZmjeDR6bUOhMggX+yY+VyBMgD1bmhDiG3OKQiK960gxfVp+PcvVR0=
-X-Received: by 2002:a05:622a:15c4:b0:403:ac9c:ac2f with SMTP id
- d4-20020a05622a15c400b00403ac9cac2fmr60687qty.17.1692313974192; Thu, 17 Aug
- 2023 16:12:54 -0700 (PDT)
+        Thu, 17 Aug 2023 19:13:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4AC30C2;
+        Thu, 17 Aug 2023 16:13:35 -0700 (PDT)
+Received: from [IPV6:2405:201:0:21ea:73f6:2283:f432:3936] (unknown [IPv6:2405:201:0:21ea:73f6:2283:f432:3936])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: shreeya)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4EA1C6607079;
+        Fri, 18 Aug 2023 00:13:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692314013;
+        bh=/UpDKGb6IFxMGlLQqiPadvBniW5FOg95MfK2Qs5daoI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=IknodFnn98Mib8FSu9f/aN2AmXbs+QLD9IOLG00Mln6CLhX3iMCKc3Lzm1+PBPhYQ
+         1l2tr4QRJxKPphLc4Syy3JofsSLT+sE0c226KXKCc1e2kydgwX+EG8f2ipuW7zZfqI
+         QnLE/eRW1hQB1e0jdTcdObSbl4oD61WtvOqnXT/y1EaUNAZrwGB21ctnw1+wZAyipp
+         ngfHsS0Xu9hfa9BJUbfwyQhwfErcfHx3xLH1KA6iSI5ud4tiLoz35GGmjUhDgkCyMD
+         IzKphq9btjZxzDBfaTYHk4y4sqkf/GCGW4/oeHWGMJCUXuDb7ApKn+OC1807u0GIW3
+         hC5bTBhwzFBQw==
+Message-ID: <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
+Date:   Fri, 18 Aug 2023 04:43:23 +0530
 MIME-Version: 1.0
-References: <20230817164733.2475092-1-nphamcs@gmail.com> <20230817190126.3155299-1-nphamcs@gmail.com>
- <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com>
- <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com> <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
-In-Reply-To: <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Thu, 17 Aug 2023 17:12:17 -0600
-Message-ID: <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
-Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
-To:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
+ deferred_probe_timeout interaction
+Content-Language: en-US
+To:     Saravana Kannan <saravanak@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, John Stultz <jstultz@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo_Navarro?= 
+        <ricardo.canuelo@collabora.com>,
+        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
+        usama.anjum@collabora.com, kernelci@lists.linux.dev
+References: <20220613094924.913340374@linuxfoundation.org>
+ <20220613094928.793712131@linuxfoundation.org>
+ <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com>
+ <2023081619-slapping-congrats-8e85@gregkh>
+ <471bf84d-9d58-befc-8224-359a62e29786@collabora.com>
+ <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+In-Reply-To: <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,264 +89,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 4:50=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Thu, Aug 17, 2023 at 3:43=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.com> wro=
-te:
-> > >
-> > > On Thu, Aug 17, 2023 at 12:01=E2=80=AFPM Nhat Pham <nphamcs@gmail.com=
-> wrote:
-> > > >
-> > > > In eviction recency check, we are currently not holding a local
-> > > > reference to the memcg that the refaulted folio belonged to when it=
- was
-> > > > evicted. This could cause serious memcg lifetime issues, for e.g in=
- the
-> > > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). T=
-his
-> > > > has occurred in production:
-> > > >
-> > > > [ 155757.793456] BUG: kernel NULL pointer dereference, address: 000=
-00000000000c0
-> > > > [ 155757.807568] #PF: supervisor read access in kernel mode
-> > > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
-> > > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
-> > > > [ 155757.839985] Oops: 0000 [#1] SMP
-> > > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: l=
-oaded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
-> > > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Pas=
-sive MP, BIOS YMM16 05/24/2021
-> > > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00=
- 00 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1=
- 74 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
-> > > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
-> > > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: f=
-fff888280183000
-> > > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: f=
-fff888bbc2d1000
-> > > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: f=
-fff888ad9cedba0
-> > > > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: f=
-fff888b23a7b000
-> > > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 0=
-00007ffffc71354
-> > > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(00=
-00) knlGS:0000000000000000
-> > > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 0=
-0000000007706e0
-> > > > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0=
-000000000000000
-> > > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0=
-000000000000400
-> > > > [ 155758.091376] PKRU: 55555554
-> > > > [ 155758.096957] Call Trace:
-> > > > [ 155758.102016]  <TASK>
-> > > > [ 155758.106502]  ? __die+0x78/0xc0
-> > > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
-> > > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
-> > > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
-> > > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
-> > > > [ 155758.157133]  workingset_refault+0xca/0x1e0
-> > > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
-> > > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
-> > > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
-> > > > [ 155758.191738]  filemap_read+0x68d/0xdf0
-> > > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
-> > > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
-> > > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
-> > > > [ 155758.224601]  do_syscall_64+0x3d/0x80
-> > > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
-> > > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6=
- f7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00=
- 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
-> > > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_R=
-AX: 0000000000000011
-> > > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 0=
-0007f62c29153b5
-> > > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 0=
-000000000000076
-> > > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 0=
-000000064d5230c
-> > > > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 0=
-00000000003c041
-> > > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 0=
-00000000027d450
-> > > > [ 155758.376661]  </TASK>
-> > > >
-> > > > This patch fixes the issue by getting a local reference inside
-> > > > unpack_shadow().
-> > > >
-> > > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs =
-refault container")
-> > >
-> > > Beyond mem_cgroup_get_nr_swap_pages(), we still use the eviction_memc=
-g
-> > > without grabbing a ref to it first in workingset_test_recent() (and i=
-n
-> > > workingset_refault() before that) as well as lru_gen_test_recent().
-> > >
-> > > Wouldn't the fix go back even further? or am I misinterpreting the pr=
-oblem?
-> > Hmm I don't see eviction_memcg being used outside of *_test_recent
-> > (the rest just uses memcg =3D folio_memcg(folio), which if I'm not mist=
-aken is
-> > the memcg that is refaulting the folio into memory).
-> >
-> > Inside workingset_test_recent(), the only other place where eviction_me=
-mcg
-> > is used is for mem_cgroup_lruvec. This function call won't crash whethe=
-r
-> > eviction_memcg is valid or not.
->
-> If eviction_memcg is invalid because the memory was already freed, we
-> are basically dereferencing garbage in mem_cgroup_lruvec() aren't we?
->
-> > The crash only happens during
-> > mem_cgroup_get_nr_swap_pages, which has an upward traversal from
-> > eviction_memcg to root.
-> >
-> > Let me know if this does not make sense and/or is insufficient to ensur=
-e
-> > safe upward traversal from eviction_memcg to root!
-> > >
-> > >
-> > >
-> > > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > > > Cc: stable@vger.kernel.org
-> > > > ---
-> > > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++-------------=
-----
-> > > >  1 file changed, 43 insertions(+), 22 deletions(-)
-> > > >
-> > > > diff --git a/mm/workingset.c b/mm/workingset.c
-> > > > index da58a26d0d4d..03cadad4e484 100644
-> > > > --- a/mm/workingset.c
-> > > > +++ b/mm/workingset.c
-> > > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid, pg_data=
-_t *pgdat, unsigned long eviction,
-> > > >         return xa_mk_value(eviction);
-> > > >  }
-> > > >
-> > > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t *=
-*pgdat,
-> > > > -                         unsigned long *evictionp, bool *workingse=
-tp)
-> > > > +/*
-> > > > + * Unpacks the stored fields of a shadow entry into the given poin=
-ters.
-> > > > + *
-> > > > + * The memcg pointer is only populated if the memcg recorded in th=
-e shadow
-> > > > + * entry is valid. In this case, a reference to the memcg will be =
-acquired,
-> > > > + * and a corresponding mem_cgroup_put() will be needed when we no =
-longer
-> > > > + * need the memcg.
-> > > > + */
-> > > > +static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp=
-,
-> > > > +                       pg_data_t **pgdat, unsigned long *evictionp=
-, bool *workingsetp)
-> > > >  {
-> > > >         unsigned long entry =3D xa_to_value(shadow);
-> > > > +       struct mem_cgroup *memcg;
-> > > >         int memcgid, nid;
-> > > >         bool workingset;
-> > > >
-> > > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow, int *m=
-emcgidp, pg_data_t **pgdat,
-> > > >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
-> > > >         entry >>=3D MEM_CGROUP_ID_SHIFT;
-> > > >
-> > > > -       *memcgidp =3D memcgid;
-> > > > +       /*
-> > > > +        * Look up the memcg associated with the stored ID. It migh=
-t
-> > > > +        * have been deleted since the folio's eviction.
-> > > > +        *
-> > > > +        * Note that in rare events the ID could have been recycled
-> > > > +        * for a new cgroup that refaults a shared folio. This is
-> > > > +        * impossible to tell from the available data. However, thi=
-s
-> > > > +        * should be a rare and limited disturbance, and activation=
-s
-> > > > +        * are always speculative anyway. Ultimately, it's the agin=
-g
-> > > > +        * algorithm's job to shake out the minimum access frequenc=
-y
-> > > > +        * for the active cache.
-> > > > +        */
-> > > > +       memcg =3D mem_cgroup_from_id(memcgid);
-> > > > +       if (memcg && css_tryget(&memcg->css))
-> > > > +               *memcgp =3D memcg;
-> > > > +       else
-> > > > +               *memcgp =3D NULL;
-> > > > +
-> > > >         *pgdat =3D NODE_DATA(nid);
-> > > >         *evictionp =3D entry;
-> > > >         *workingsetp =3D workingset;
-> > > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct folio *f=
-olio)
-> > > >  static bool lru_gen_test_recent(void *shadow, bool file, struct lr=
-uvec **lruvec,
-> > > >                                 unsigned long *token, bool *working=
-set)
-> > > >  {
-> > > > -       int memcg_id;
-> > > >         unsigned long min_seq;
-> > > >         struct mem_cgroup *memcg;
-> > > >         struct pglist_data *pgdat;
-> > > >
-> > > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset)=
-;
-> > > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
-> > > > +       if (!mem_cgroup_disabled() && !memcg)
-> > > > +               return false;
-> > >
-> > > +Yu Zhao
-> > >
-> > > There is a change of behavior here, right?
-> > >
-> > > The existing code will continue if !mem_cgroup_disabled() && !memcg i=
-s
-> > > true, and mem_cgroup_lruvec() will return the lruvec of the root
-> > > memcg. Now we are just returning false.
-> > >
-> > > Is this intentional?
-> > Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
-> > get_maintainers.pl isn't always sufficient I guess :)
-> >
-> > But yeah, this behavioral change is intentional.
-> >
-> > Correct me if I'm wrong of course, but it seems like MGLRU should
-> > follow the same pattern here. That is, once we return from unpack_shado=
-w,
-> > the possible scenarios are the same as prescribed in workingset_test_re=
-cent:
-> >
-> > 1. If mem_cgroup is disabled, we can ignore this check.
-> > 2. If mem_cgroup is enabled, then the only reason why we get NULL
-> > memcg from unpack_shadow is if the eviction_memcg is no longer
-> > valid.  We should not try to get its lruvec, or substitute it with the
-> > root memcg, but return false right away (i.e not recent).
-> > >
->
-> I will leave this for Yu :)
+Hi Geert, Saravana,
 
-Thanks, Yosry.
+On 18/08/23 00:03, Saravana Kannan wrote:
+> On Thu, Aug 17, 2023 at 4:37 AM Shreeya Patel
+> <shreeya.patel@collabora.com> wrote:
+>> Hi Greg,
+>>
+>> On 16/08/23 20:33, Greg Kroah-Hartman wrote:
+>>> On Wed, Aug 16, 2023 at 03:09:27PM +0530, Shreeya Patel wrote:
+>>>> On 13/06/22 15:40, Greg Kroah-Hartman wrote:
+>>>>> From: Saravana Kannan<saravanak@google.com>
+>>>>>
+>>>>> [ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
+>>>>>
+>>>>> Mounting NFS rootfs was timing out when deferred_probe_timeout was
+>>>>> non-zero [1].  This was because ip_auto_config() initcall times out
+>>>>> waiting for the network interfaces to show up when
+>>>>> deferred_probe_timeout was non-zero. While ip_auto_config() calls
+>>>>> wait_for_device_probe() to make sure any currently running deferred
+>>>>> probe work or asynchronous probe finishes, that wasn't sufficient to
+>>>>> account for devices being deferred until deferred_probe_timeout.
+>>>>>
+>>>>> Commit 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits
+>>>>> until the deferred_probe_timeout fires") tried to fix that by making
+>>>>> sure wait_for_device_probe() waits for deferred_probe_timeout to expire
+>>>>> before returning.
+>>>>>
+>>>>> However, if wait_for_device_probe() is called from the kernel_init()
+>>>>> context:
+>>>>>
+>>>>> - Before deferred_probe_initcall() [2], it causes the boot process to
+>>>>>      hang due to a deadlock.
+>>>>>
+>>>>> - After deferred_probe_initcall() [3], it blocks kernel_init() from
+>>>>>      continuing till deferred_probe_timeout expires and beats the point of
+>>>>>      deferred_probe_timeout that's trying to wait for userspace to load
+>>>>>      modules.
+>>>>>
+>>>>> Neither of this is good. So revert the changes to
+>>>>> wait_for_device_probe().
+>>>>>
+>>>>> [1] -https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
+>>>>> [2] -https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-3990X/
+>>>>> [3] -https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
+>>>> Hi Saravana, Greg,
+>>>>
+>>>>
+>>>> KernelCI found this patch causes the baseline.bootrr.deferred-probe-empty test to fail on r8a77960-ulcb,
+>>>> see the following details for more information.
+>>>>
+>>>> KernelCI dashboard link:
+>>>> https://linux.kernelci.org/test/plan/id/64d2a6be8c1a8435e535b264/
+>>>>
+>>>> Error messages from the logs :-
+>>>>
+>>>> + UUID=11236495_1.5.2.4.5
+>>>> + set +x
+>>>> + export 'PATH=/opt/bootrr/libexec/bootrr/helpers:/lava-11236495/1/../bin:/sbin:/usr/sbin:/bin:/usr/bin'
+>>>> + cd /opt/bootrr/libexec/bootrr
+>>>> + sh helpers/bootrr-auto
+>>>> e6800000.ethernet
+>>>> e6700000.dma-controller
+>>>> e7300000.dma-controller
+>>>> e7310000.dma-controller
+>>>> ec700000.dma-controller
+>>>> ec720000.dma-controller
+>>>> fea20000.vsp
+>>>> feb00000.display
+>>>> fea28000.vsp
+>>>> fea30000.vsp
+>>>> fe9a0000.vsp
+>>>> fe9af000.fcp
+>>>> fea27000.fcp
+>>>> fea2f000.fcp
+>>>> fea37000.fcp
+>>>> sound
+>>>> ee100000.mmc
+>>>> ee140000.mmc
+>>>> ec500000.sound
+>>>> /lava-11236495/1/../bin/lava-test-case
+>>>> <8>[   17.476741] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=deferred-probe-empty RESULT=fail>
+>>>>
+>>>> Test case failing :-
+>>>> Baseline Bootrr deferred-probe-empty test -https://github.com/kernelci/bootrr/blob/main/helpers/bootrr-generic-tests
+>>>>
+>>>> Regression Reproduced :-
+>>>>
+>>>> Lava job after reverting the commit 5ee76c256e92
+>>>> https://lava.collabora.dev/scheduler/job/11292890
+>>>>
+>>>>
+>>>> Bisection report from KernelCI can be found at the bottom of the email.
+>>>>
+>>>> Thanks,
+>>>> Shreeya Patel
+>>>>
+>>>> #regzbot introduced: 5ee76c256e92
+>>>> #regzbot title: KernelCI: Multiple devices deferring on r8a77960-ulcb
+>>>>
+>>>> ---------------------------------------------------------------------------------------------------------------------------------------------------
+>>>>
+>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
+>>>> * If you do send a fix, please include this trailer: *
+>>>> * Reported-by: "kernelci.org bot" <bot@...> *
+>>>> * *
+>>>> * Hope this helps! *
+>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>>
+>>>> stable-rc/linux-5.10.y bisection: baseline.bootrr.deferred-probe-empty on
+>>>> r8a77960-ulcb
+>>> You are testing 5.10.y, yet the subject says 5.17?
+>>>
+>>> Which is it here?
+>> Sorry, I accidentally used the lore link for 5.17 while reporting this
+>> issue,
+>> but this test does fail on all the stable releases from 5.10 onwards.
+>>
+>> stable 5.15 :-
+>> https://linux.kernelci.org/test/case/id/64dd156a5ac58d0cf335b1ea/
+>> mainline :-
+>> https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
+>>
+> Shreeya, can you try the patch Geert suggested and let us know if it
+> helps? If not, then I can try to take a closer look.
 
-Hi Nhat, it seems unnecessary to me to introduce a get/put into
-lru_gen_test_recent() because it doesn't suffer from the bug this
-patch tries to fix. In theory, the extra get/put can impact
-performance, though admittedly the impact is unlikely to be
-measurable. Regardless, the general practice is to fix the bug
-locally, i.e., when the mem_cgroup_get_nr_swap_pages() path is taken,
-rather than change the unrelated path. Thank you.
+I tried to test the kernel with 9be4cbd09da8 but it didn't change the 
+result.
+https://lava.collabora.dev/scheduler/job/11311615
+
+Also, I am not sure if this can change things but just FYI, KernelCI 
+adds some kernel parameters when running these tests and one of the 
+parameter is deferred_probe_timeout=60.
+You can check this in the definition details given in the Lava job. I 
+also tried to remove this parameter and rerun the test but again I got 
+the same result.
+
+I will try to add 9be4cbd09da8 to mainline kernel and see what results I 
+get.
+
+
+Thanks,
+Shreeya Patel
+
+>
+> -Saravana
+>
