@@ -2,91 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ACE77F7E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3F977F7E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351539AbjHQNio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
+        id S1351522AbjHQNim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351490AbjHQNig (ORCPT
+        with ESMTP id S1351409AbjHQNiW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:38:36 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DD61826BC;
-        Thu, 17 Aug 2023 06:38:32 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37HDbrdwF019328, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37HDbrdwF019328
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Aug 2023 21:37:53 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Thu, 17 Aug 2023 21:38:14 +0800
-Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Thu, 17 Aug
- 2023 21:38:13 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     <kuba@kernel.org>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Justin Lai <justinlai0215@realtek.com>
-Subject: [PATCH net-next v4 2/2] MAINTAINERS: Add the rtase ethernet driver entry
-Date:   Thu, 17 Aug 2023 21:38:03 +0800
-Message-ID: <20230817133803.177698-3-justinlai0215@realtek.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230817133803.177698-1-justinlai0215@realtek.com>
-References: <20230817133803.177698-1-justinlai0215@realtek.com>
+        Thu, 17 Aug 2023 09:38:22 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269C02713
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:38:20 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D31E31F37E;
+        Thu, 17 Aug 2023 13:38:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692279498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WxeGfEKP7k5DtlvEj0Is/FM3UJz92sE6rDepFaUyGX8=;
+        b=lwRCzrl+xoPFDh7GZPPs0yclQ26ZBtASEtmESPv85T4MsYDCrf8BxdTf5DsdMDmBQ/Exc1
+        9dJskjl1LUVVd/cpCcOHLgPQ2aA0+xNMViHl/gVxPtVGhXnencEMY9aFKz5A9sitBEfHrc
+        SZgM0ZJ7oROcdkUkUT3k3CyFY2vvV80=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692279498;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WxeGfEKP7k5DtlvEj0Is/FM3UJz92sE6rDepFaUyGX8=;
+        b=z7bg/Mf0SuX6XO3mDTNTcxxu8VnhmgdUCkHnWJQ1al8cGuwhGx5Sma4YMt30KXTLlhbPBX
+        Qc5/cJHlJt8zCKAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5D44B1358B;
+        Thu, 17 Aug 2023 13:38:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id auAPFcoi3mR1BwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 17 Aug 2023 13:38:18 +0000
+Message-ID: <dcff3281-9d38-a244-4844-1633039a9076@suse.de>
+Date:   Thu, 17 Aug 2023 15:38:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.210.160]
-X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PULL for v6.6] drm-misc-next
+Content-Language: en-US
+To:     Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>, daniels@collabora.com,
+        robdclark@google.com, gustavo.padovan@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        linux-kernel@vger.kernel.org, robclark@freedesktop.org,
+        david.heidelberg@collabora.com,
+        Helen Mae Koike Fornazier <helen.koike@collabora.com>,
+        anholt@google.com, dri-devel@lists.freedesktop.org,
+        emma@anholt.net, airlied@redhat.com
+References: <389b-64db6700-1-3dc04b80@31442286>
+ <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+ <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
+ <1b9ea227-b068-9d91-1036-28a4161b1744@suse.de>
+ <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
+ <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
+ <CAF6AEGu8mRB_wiFeWx17Z12Eu+NnP6VLFBr5sypcnxjQyj7_sQ@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <CAF6AEGu8mRB_wiFeWx17Z12Eu+NnP6VLFBr5sypcnxjQyj7_sQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------TlIK8OwTrOaxUBL1tEguO0z9"
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself and Larry Chiu as the maintainer for the rtase ethernet driver.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------TlIK8OwTrOaxUBL1tEguO0z9
+Content-Type: multipart/mixed; boundary="------------DBTRdJq1R4rSVpITJ0YfCoY9";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Rob Clark <robdclark@gmail.com>, Dave Airlie <airlied@gmail.com>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>, daniels@collabora.com,
+ robdclark@google.com, gustavo.padovan@collabora.com,
+ guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+ linux-kernel@vger.kernel.org, robclark@freedesktop.org,
+ david.heidelberg@collabora.com,
+ Helen Mae Koike Fornazier <helen.koike@collabora.com>, anholt@google.com,
+ dri-devel@lists.freedesktop.org, emma@anholt.net, airlied@redhat.com
+Message-ID: <dcff3281-9d38-a244-4844-1633039a9076@suse.de>
+Subject: Re: [PULL for v6.6] drm-misc-next
+References: <389b-64db6700-1-3dc04b80@31442286>
+ <b278375f-4644-2db6-9a14-9088470d528c@suse.de>
+ <CAKMK7uF1hv3S--=jsmFWG_tkOKavgMBOkWQt6VOSV0d1U7C0VA@mail.gmail.com>
+ <1b9ea227-b068-9d91-1036-28a4161b1744@suse.de>
+ <CAF6AEGsr+2xaCeExm9wPmK=nU+jxevLcd8RDWTSFrwKR-yCvZg@mail.gmail.com>
+ <CAPM=9tx16UoYoOw4hBChVNPcj57ox1XsybPPTGZn=r2DDQBJmw@mail.gmail.com>
+ <CAF6AEGu8mRB_wiFeWx17Z12Eu+NnP6VLFBr5sypcnxjQyj7_sQ@mail.gmail.com>
+In-Reply-To: <CAF6AEGu8mRB_wiFeWx17Z12Eu+NnP6VLFBr5sypcnxjQyj7_sQ@mail.gmail.com>
 
-Signed-off-by: Justin Lai <justinlai0215@realtek.com>
----
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+--------------DBTRdJq1R4rSVpITJ0YfCoY9
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 53b7ca804465..239aae94dc0f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -18476,6 +18476,13 @@ L:	linux-remoteproc@vger.kernel.org
- S:	Maintained
- F:	drivers/tty/rpmsg_tty.c
- 
-+RTASE ETHERNET DRIVER
-+M:	Justin Lai <justinlai0215@realtek.com>
-+M:	Larry Chiu <larry.chiu@realtek.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/net/ethernet/realtek/rtase/
-+
- RTL2830 MEDIA DRIVER
- M:	Antti Palosaari <crope@iki.fi>
- L:	linux-media@vger.kernel.org
--- 
-2.34.1
+SGkNCg0KQW0gMTUuMDguMjMgdW0gMjE6NTkgc2NocmllYiBSb2IgQ2xhcms6DQo+IE9uIFR1
+ZSwgQXVnIDE1LCAyMDIzIGF0IDEyOjIz4oCvUE0gRGF2ZSBBaXJsaWUgPGFpcmxpZWRAZ21h
+aWwuY29tPiB3cm90ZToNCj4+DQo+Pj4+IE90aGVyd2lzZSwgdGhlcmUgc2hvdWxkIGJlIHNv
+bWV0aGluZyBsaWtlIGEgZHJtLWNpIHRyZWUsIGZyb20gd2hpY2ggeW91DQo+Pj4+IGNhbiBm
+ZXRjaCB0aGUgY2hhbmdlcyBkaXJlY3RseS4NCj4+Pg0KPj4+IEkgYXNrZWQgZm9yIGEgcHVs
+bCByZXF1ZXN0IHNvIHRoYXQgSSBjb3VsZCBhbHNvIG1lcmdlIGl0IHRvIG1zbS1uZXh0DQo+
+Pj4gc28gdGhhdCBJIGNhbiBkbyBDSSB0aGlzIGN5Y2xlLiAgKFVubGlrZSB0aGUgZWFybGll
+ciBvdXQtb2YtdHJlZQ0KPj4+IHZlcnNpb24gb2YgdGhlIGRybS9jaSB5bWwsIHRoaXMgdmVy
+c2lvbiBuZWVkcyB0byBiZSBpbiB0aGUgYnJhbmNoIHRoYXQNCj4+PiBDSSBydW5zIG9uLCBz
+byBJIGNhbid0IHVzZSB0aGUgd29ya2Fyb3VuZCB0aGF0IEkgaGFkIGluIHByZXZpb3VzDQo+
+Pj4gY3ljbGVzLikNCj4+Pg0KPj4+IFBlcmhhcHMgaXQgc2hvdWxkIGJlIGEgcHVsbCByZXF1
+ZXN0IHRhcmdldGluZyBkcm0tbmV4dCBpbnN0ZWFkIG9mIGRybS1taXNjLW5leHQuDQo+Pj4N
+Cj4+PiBXZSB3ZXJlIGdvaW5nIHRvIGRvIHRoaXMgb25lLW9mZiBmb3IgdGhpcyBjeWNsZSBh
+bmQgdGhlbiBldmFsdWF0ZQ0KPj4+IGdvaW5nIGZvcndhcmQgd2hldGhlciBhIGRybS1jaS1u
+ZXh0IHRyZWUgaXMgbmVlZGVkLiAgQnV0IHBlcmhhcHMgaXQgaXMNCj4+PiBhIGdvb2QgaWRl
+YS4NCj4+DQo+Pg0KPj4gSSdtIHN0aWxsIG5vdCAxMDAlIHN1cmUgaG93IHRoaXMgaXMgZ29p
+bmcgZG93biwgYW5kIEknbSBtZWFudCB0byBiZSBvZmYgdG9kYXksDQo+Pg0KPj4gRG9uJ3Qg
+c2VuZCB0aGlzIGFzIHBhdGNoZXMgdG8gZHJtLW1pc2MtbmV4dCwgYnV0IEkgdGhpbmsgd2Un
+ZCB3YW50DQo+PiB0aGlzIGluIGRybS1uZXh0IGZvciBhIGN5Y2xlIGJlZm9yZSBzZW5kaW5n
+IGl0IHRvIExpbnVzLCBidXQgbWF5YmUNCj4+IGl0J3Mgbm90IGRpcmVjdGx5IGludGVyZmVy
+aW5nIHdpdGggdGhlIGtlcm5lbCBzbyBpdCdzIGZpbmUNCj4+DQo+PiBJZGVhbGx5IHdoZW4g
+dGhlIHJlYWwgbWVyZ2Ugd2luZG93IG9wZW5zIGFuZCBkcm0tbmV4dCBpcyBtZXJnZWQgSSdk
+DQo+PiB3YW50IHRvIGhhdmUgYSBicmFuY2ggKyBQUiB3cml0dGVuIGZvciB0aGlzIGFnYWlu
+c3QgZHJtLW5leHQgdGhhdCBJDQo+PiBjYW4gc2VuZCB0byBMaW51cyBzZXBhcmF0ZWx5IGFu
+ZCBzZWUgaG93IGl0IGdvZXMuDQo+IA0KPiBUaGUgdHJpY2t5IHRoaW5nIGlzIHdlIG5lZWQg
+dGhpcyBwYXRjaCBpbi10cmVlIHRvIHJ1biBDSSBpbiB0aGUgZmlyc3QNCj4gcGxhY2UuLiBz
+byBzb2FrIHRpbWUgaW4gZHJtLW5leHQgb24gaXQncyBvd24gaXNuJ3QgaHVnZWx5IHVzZWZ1
+bC4gIChPcg0KPiBhdCBsZWFzdCBJJ2QgbmVlZCB0byBtb3ZlIG1zbS1uZXh0IGZvcndhcmQg
+dG8gZHJtLW5leHQgZm9yIGl0IHRvIGJlDQo+IHVzZWZ1bC4pDQo+IA0KPiBJIGd1ZXNzIHRo
+YXQgaXMgYSBiaXQgb2YgYW4gYWR2YW50YWdlIHRvIHRoZSBlYXJsaWVyIGFwcHJvYWNoIHRo
+YXQNCj4ga2VwdCBldmVyeXRoaW5nIGJ1dCB0aGUgZXhwZWN0YXRpb24gZmlsZXMgaW4gYSBk
+aWZmZXJlbnQgZ2l0IHRyZWUuLg0KDQpJIHNhdyB0aGF0IHRoaXMgcGF0Y2hzZXQgaGFzIGJl
+ZW4gcmV2aWV3ZWQgb24gZHJpLWRldmVsLiBJZiB5b3UgZG9uJ3QgDQp3YW50IGl0IHRvIGdv
+IHRocm91Z2ggRFJNIG1pc2MsIEkgZ3Vlc3MgaXQgc2hvdWxkIHJlYWxseSBiZSBwdWxsZWQg
+aW50byANCmRybS1uZXh0IGRpcmVjdGx5Lg0KDQpEbyB5b3UgcGxhbiB0byBzZXQgdXAgYXV0
+by1DSSBmb3IgRFJNIG1pc2MgYnJhbmNoZXM/IChTb3JyeSBpZiB0aGlzIA0KcXVlc3Rpb24g
+aGFzIGJlZW4gYW5zd2VyZWQgYmVmb3JlLikNCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0K
+PiANCj4gQlIsDQo+IC1SDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERy
+aXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0K
+RnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8g
+VG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4N
+CkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
 
+--------------DBTRdJq1R4rSVpITJ0YfCoY9--
+
+--------------TlIK8OwTrOaxUBL1tEguO0z9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTeIskFAwAAAAAACgkQlh/E3EQov+DC
+vw//c63YOLo2tM4Ncjrea7TJMtHtK1RjrK0iBKsI9ZcOzCz1g3uw7Z2UpM68Z2DntPZ3OCMGzu1b
+0y44zsrNblvgLrQ3/j0FfWNfI8DwCB0XzdzlSPblLYHTqVRTXy+nGNZcDXxMsIwVvyG+x8SCnHT2
+6YdTv9fVNAe34rtVlZT0rMqtU/8HwAXVHzwH2St3tHGx7jXxm5NqHiGZcP0yShr8om2+wCc0wyWJ
+Y1u7pKvSq+0emUoLX+yuxinDBqU9TXa2kR1vemOfJJhUyIlLj/1VFENRRLB1TVC34FFCU5I1Biji
+5jxp6KAEKo2SOQ6eXSH7sWmO8lLWBbqyh7gOS56jk7/MnuPFQGtpR595yuXCBKS6xWW2iqE/XlLe
+lppxzjsz0QrBqmO6t8Tmp52guUqbjIc4u2GYxmwhVFc9wclfc56qE4albNCc7cpyufZLJGPnRvg7
+ER2L1+lU4shF2EwCUtNxFiwK2FET8Mt4D3nTijjPILhbsTqmmdFFGH5ObSBqu9BpZAN7FybBwzKq
+Yzc1wEDF+TWYeD8eNjm09aZgWX3wUia0AyVPs4h3ZSHN3gt1K9vX/aw3wpl/v5DqgiLUaLwQpUgQ
+QdzvO4p9DC9Va57B7WdE20DO1NCNPCptr7zBDxIdlV2GxAqr+oS8h9oJCKBP4WwYbxLyxUdnnxgV
+RpA=
+=+PnC
+-----END PGP SIGNATURE-----
+
+--------------TlIK8OwTrOaxUBL1tEguO0z9--
