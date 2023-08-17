@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CE377F81A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224CD77F80D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351459AbjHQNxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
+        id S1351551AbjHQNqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:46:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243972AbjHQNwu (ORCPT
+        with ESMTP id S1351592AbjHQNqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:52:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B51E210D;
-        Thu, 17 Aug 2023 06:52:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5AC671F37F;
-        Thu, 17 Aug 2023 13:52:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692280368;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 17 Aug 2023 09:46:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C0B210D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:46:36 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 15:46:32 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692279995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yJxYoKOlaaNm5Uplf03K9+SNelS6VfaWNlFGWaSO/8g=;
-        b=TFPHDsV4p/qJHx31Hmz/xhlJBk2YVyLPDEXrlKM+m4sY9cDR1aDmE/ptNe0cyrJdmfYdrC
-        gqXG35/V2uIkPxE53IF2DmBqqjI2zu3OZCc/nxDhUjEyCX8IDv9asHbniV0+mATZEz/wqQ
-        hzLa+EzQ9MM1EX2/l9ZCHn0PMMJbvoA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692280368;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        bh=TTQFDemPIBWi9jy3PXFyN0C6IeR77vsLaflv6DSzCvI=;
+        b=w1RH2yCogWTZsNnKHi/g0ALIBufJLQoLKPtD/nhM8/EoSS3XipnkWNyEqPhV2qpLqEXt1+
+        nYVD4kY6j+MPAe4yE6FaXqbBYGbhfwVwW+U0fxt5kI0tAshAoS9fzokdoORXrDpwC5Eoxh
+        NQV7iEWyRtvcQjQmkArmRY0hcoR4TvFuEqOGUUKtLy2EBy77OWrJJMssnP3sYqm3taqPde
+        c6nqoPAu44sOPmhgZaehhskTViukjbBqASEpVfpgrUtwWTQYDjWyCiD/uVXDhB0kqJyM68
+        JhWdSdqQL35ZOrJoc5Z+/rEWxEcbiNmJlOfrpJ8bThVmQWlk1t5xFFPOcNjspw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692279995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yJxYoKOlaaNm5Uplf03K9+SNelS6VfaWNlFGWaSO/8g=;
-        b=ZqSIQav10wClwaztfZKfli6OOShBhvraqurL8rDdf3QUZ6dtKGlFw2f+IHxZjhjfSHp07p
-        j2P3sLQb0Yi7vsDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C3F731358B;
-        Thu, 17 Aug 2023 13:52:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TycXLC8m3mTbDwAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 17 Aug 2023 13:52:47 +0000
-Date:   Thu, 17 Aug 2023 15:46:18 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Sterba <dsterba@suse.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v1 1/1] fs/affs: Rename local toupper() to fn() to avoid
- confusion
-Message-ID: <20230817134618.GT2420@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20230817121217.501549-1-andriy.shevchenko@linux.intel.com>
+        bh=TTQFDemPIBWi9jy3PXFyN0C6IeR77vsLaflv6DSzCvI=;
+        b=UJbbx68eR9y3g9PPbp5TcCZm1RcLtnjRzEuiGkgud7nQezgY5la4xY99l/4PgUSa31ppDs
+        pTP2r2utrQLyKHCQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH REPOST v3 0/2] signal: Avoid preempt_disable() in
+ ptrace_stop() on PREEMPT_RT
+Message-ID: <20230817134632.jbAX7yo1@linutronix.de>
+References: <20230803100932.325870-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230817121217.501549-1-andriy.shevchenko@linux.intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230803100932.325870-1-bigeasy@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:12:17PM +0300, Andy Shevchenko wrote:
-> A compiler may see the collision with the toupper() defined in ctype.h:
-> 
->  fs/affs/namei.c:159:19: warning: unused variable 'toupper' [-Wunused-variable]
->    159 |         toupper_t toupper = affs_get_toupper(sb);
-> 
-> To prevent this from happening, rename toupper local variable to fn.
-> 
-> Initially this had been introduced by 24579a881513 ("v2.4.3.5 -> v2.4.3.6")
-> in the history.git by history group.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 2023-08-03 12:09:30 [+0200], To linux-kernel@vger.kernel.org wrote:
+> this mini series updates the comment to properly explain why the
+> preempt-disable section has been added and then disables this on
+> PREEMPT_RT explaining why it can not be done.
 
-Added to affs tree, thanks.
+ping =E2=80=A6
+
+> v3=E2=80=A6v1
+>   - Include the update comment of the second patch which was posted as
+>     v2 within the orignal thread.
+>   - Add Oleg's Acks.
+>=20
+> This is the repost of
+> 	https://lore.kernel.org/20230615105627.1311437-1-bigeasy@linutronix.de
+>=20
+> Previous post:
+> 	https://lore.kernel.org/20230606085524.2049961-1-bigeasy@linutronix.de
+
+Sebastian
