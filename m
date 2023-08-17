@@ -2,155 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675CD77FC06
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA7677FC09
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351978AbjHQQZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        id S1352479AbjHQQ0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352228AbjHQQYg (ORCPT
+        with ESMTP id S1353690AbjHQQZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:24:36 -0400
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D563A9A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:23:53 -0700 (PDT)
-Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id 375BBA56E3A4; Thu, 17 Aug 2023 09:23:09 -0700 (PDT)
-From:   Stefan Roesch <shr@devkernel.io>
-To:     kernel-team@fb.com
-Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
-        linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v3] proc/ksm: add ksm stats to /proc/pid/smaps
-Date:   Thu, 17 Aug 2023 09:23:01 -0700
-Message-Id: <20230817162301.3472457-1-shr@devkernel.io>
-X-Mailer: git-send-email 2.39.3
+        Thu, 17 Aug 2023 12:25:48 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182813599
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:25:18 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id B1F3B2185C;
+        Thu, 17 Aug 2023 16:24:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692289460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tdLhBp3be39Ow7LFRDBwp1xDxodnRBLEqLHCf0VZvMo=;
+        b=oxKwcghehfbdrUqRVj4/PzmDdMI9PoQbClDGz3mEbkgYSpgbe/Byc2L1Q0fJIA9fgmkXqR
+        3THUNz1nUZgeaIIHP943wE8UWPp3KaZlDe7Bs/NETJ4lETiZ0bmDw9XCdFfxehDPXcNLbL
+        rRI7gR9NAhESSoSh5X3MbQzZAtMtwSY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692289460;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tdLhBp3be39Ow7LFRDBwp1xDxodnRBLEqLHCf0VZvMo=;
+        b=7P/cc9/4QC3LZmv1uok8brIFiZjSikBG6Bk5V6R1NsBWHx1Cf6ADqEJ0oFAJZElSxwrgDT
+        WZ1rT9qLmLqAVLDg==
+Received: from kitsune.suse.cz (kitsune.suse.cz [10.100.12.127])
+        by relay2.suse.de (Postfix) with ESMTP id 534412C146;
+        Thu, 17 Aug 2023 16:24:18 +0000 (UTC)
+From:   Michal Suchanek <msuchanek@suse.de>
+To:     linuxppc-dev@lists.ozlabs.org
+Cc:     Michal Suchanek <msuchanek@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Timothy Pearson <tpearson@raptorengineering.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Baoquan He <bhe@redhat.com>, Li Chen <lchen@ambarella.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Russell Currey <ruscur@russell.cc>,
+        Gaurav Batra <gbatra@linux.vnet.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>,
+        Deming Wang <wangdeming@inspur.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: Move DMA64_PROPNAME define to a header
+Date:   Thu, 17 Aug 2023 18:24:08 +0200
+Message-ID: <20230817162411.429-1-msuchanek@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
-        SPF_HELO_PASS,SPF_NEUTRAL,TVD_RCVD_IP autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With madvise and prctl KSM can be enabled for different VMA's. Once it
-is enabled we can query how effective KSM is overall. However we cannot
-easily query if an individual VMA benefits from KSM.
+Avoid redefining the same value in multiple source.
 
-This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
-how many of the pages are KSM pages. The returned value for KSM is
-independent of the use of the shared zeropage.
-
-Here is a typical output:
-
-7f420a000000-7f421a000000 rw-p 00000000 00:00 0
-Size:             262144 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Rss:               51212 kB
-Pss:                8276 kB
-Shared_Clean:        172 kB
-Shared_Dirty:      42996 kB
-Private_Clean:       196 kB
-Private_Dirty:      7848 kB
-Referenced:        15388 kB
-Anonymous:         51212 kB
-KSM:               41376 kB
-LazyFree:              0 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-FilePmdMapped:         0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:             202016 kB
-SwapPss:            3882 kB
-Locked:                0 kB
-THPeligible:    0
-ProtectionKey:         0
-ksm_state:          0
-ksm_skip_base:      0
-ksm_skip_count:     0
-VmFlags: rd wr mr mw me nr mg anon
-
-This information also helps with the following workflow:
-- First enable KSM for all the VMA's of a process with prctl.
-- Then analyze with the above smaps report which VMA's benefit the most
-- Change the application (if possible) to add the corresponding madvise
-calls for the VMA's that benefit the most
-
-Signed-off-by: Stefan Roesch <shr@devkernel.io>
+Signed-off-by: Michal Suchanek <msuchanek@suse.de>
 ---
- Documentation/filesystems/proc.rst | 4 ++++
- fs/proc/task_mmu.c                 | 5 +++++
- 2 files changed, 9 insertions(+)
+ arch/powerpc/include/asm/iommu.h       | 3 +++
+ arch/powerpc/kexec/file_load_64.c      | 5 +----
+ arch/powerpc/platforms/pseries/iommu.c | 2 --
+ 3 files changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesyste=
-ms/proc.rst
-index 7897a7dafcbc..d5bdfd59f5b0 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such =
-as the following::
-     Private_Dirty:         0 kB
-     Referenced:          892 kB
-     Anonymous:             0 kB
-+    KSM:                   0 kB
-     LazyFree:              0 kB
-     AnonHugePages:         0 kB
-     ShmemPmdMapped:        0 kB
-@@ -501,6 +502,9 @@ accessed.
- a mapping associated with a file may contain anonymous pages: when MAP_P=
-RIVATE
- and a page is modified, the file page is replaced by a private anonymous=
- copy.
-=20
-+"KSM" shows the amount of anonymous memory that has been de-duplicated. =
-The
-+value is independent of the use of shared zeropage.
+diff --git a/arch/powerpc/include/asm/iommu.h b/arch/powerpc/include/asm/iommu.h
+index 34e14dfd8e04..026695943550 100644
+--- a/arch/powerpc/include/asm/iommu.h
++++ b/arch/powerpc/include/asm/iommu.h
+@@ -28,6 +28,9 @@
+ #define IOMMU_PAGE_MASK(tblptr) (~((1 << (tblptr)->it_page_shift) - 1))
+ #define IOMMU_PAGE_ALIGN(addr, tblptr) ALIGN(addr, IOMMU_PAGE_SIZE(tblptr))
+ 
++#define DIRECT64_PROPNAME "linux,direct64-ddr-window-info"
++#define DMA64_PROPNAME "linux,dma64-ddr-window-info"
 +
- "LazyFree" shows the amount of memory which is marked by madvise(MADV_FR=
-EE).
- The memory isn't freed immediately with madvise(). It's freed in memory
- pressure if the memory is clean. Please note that the printed value migh=
-t
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 51315133cdc2..f591c750ffda 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -396,6 +396,7 @@ struct mem_size_stats {
- 	unsigned long swap;
- 	unsigned long shared_hugetlb;
- 	unsigned long private_hugetlb;
-+	unsigned long ksm;
- 	u64 pss;
- 	u64 pss_anon;
- 	u64 pss_file;
-@@ -452,6 +453,9 @@ static void smaps_account(struct mem_size_stats *mss,=
- struct page *page,
- 			mss->lazyfree +=3D size;
- 	}
-=20
-+	if (PageKsm(page))
-+		mss->ksm +=3D size;
-+
- 	mss->resident +=3D size;
- 	/* Accumulate the size in pages that have been accessed. */
- 	if (young || page_is_young(page) || PageReferenced(page))
-@@ -822,6 +826,7 @@ static void __show_smap(struct seq_file *m, const str=
-uct mem_size_stats *mss,
- 	SEQ_PUT_DEC(" kB\nPrivate_Dirty:  ", mss->private_dirty);
- 	SEQ_PUT_DEC(" kB\nReferenced:     ", mss->referenced);
- 	SEQ_PUT_DEC(" kB\nAnonymous:      ", mss->anonymous);
-+	SEQ_PUT_DEC(" kB\nKSM:            ", mss->ksm);
- 	SEQ_PUT_DEC(" kB\nLazyFree:       ", mss->lazyfree);
- 	SEQ_PUT_DEC(" kB\nAnonHugePages:  ", mss->anonymous_thp);
- 	SEQ_PUT_DEC(" kB\nShmemPmdMapped: ", mss->shmem_thp);
-
-base-commit: f4a280e5bb4a764a75d3215b61bc0f02b4c26417
---=20
-2.39.3
+ /* Boot time flags */
+ extern int iommu_is_off;
+ extern int iommu_force_on;
+diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+index 110d28bede2a..17f86f93da09 100644
+--- a/arch/powerpc/kexec/file_load_64.c
++++ b/arch/powerpc/kexec/file_load_64.c
+@@ -27,6 +27,7 @@
+ #include <asm/kexec_ranges.h>
+ #include <asm/crashdump-ppc64.h>
+ #include <asm/mmzone.h>
++#include <asm/iommu.h>
+ #include <asm/prom.h>
+ #include <asm/plpks.h>
+ 
+@@ -1208,8 +1209,6 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+ 	if (ret < 0)
+ 		goto out;
+ 
+-#define DIRECT64_PROPNAME "linux,direct64-ddr-window-info"
+-#define DMA64_PROPNAME "linux,dma64-ddr-window-info"
+ 	ret = update_pci_dma_nodes(fdt, DIRECT64_PROPNAME);
+ 	if (ret < 0)
+ 		goto out;
+@@ -1217,8 +1216,6 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+ 	ret = update_pci_dma_nodes(fdt, DMA64_PROPNAME);
+ 	if (ret < 0)
+ 		goto out;
+-#undef DMA64_PROPNAME
+-#undef DIRECT64_PROPNAME
+ 
+ 	/* Update memory reserve map */
+ 	ret = get_reserved_memory_ranges(&rmem);
+diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+index d593a7227dc9..16d93b580f61 100644
+--- a/arch/powerpc/platforms/pseries/iommu.c
++++ b/arch/powerpc/platforms/pseries/iommu.c
+@@ -395,8 +395,6 @@ static LIST_HEAD(dma_win_list);
+ static DEFINE_SPINLOCK(dma_win_list_lock);
+ /* protects initializing window twice for same device */
+ static DEFINE_MUTEX(dma_win_init_mutex);
+-#define DIRECT64_PROPNAME "linux,direct64-ddr-window-info"
+-#define DMA64_PROPNAME "linux,dma64-ddr-window-info"
+ 
+ static int tce_clearrange_multi_pSeriesLP(unsigned long start_pfn,
+ 					unsigned long num_pfn, const void *arg)
+-- 
+2.41.0
 
