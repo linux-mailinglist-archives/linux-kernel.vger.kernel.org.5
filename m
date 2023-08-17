@@ -2,132 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EE577F7F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB8477F805
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351579AbjHQNnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        id S1351588AbjHQNpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351586AbjHQNnY (ORCPT
+        with ESMTP id S1351598AbjHQNoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:43:24 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07373106;
-        Thu, 17 Aug 2023 06:43:23 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bc6535027aso65044385ad.2;
-        Thu, 17 Aug 2023 06:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692279802; x=1692884602;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2ekX8+Nd4VswfjxOCjX+b1kzoOwGdMKAd1QgVJxzyBU=;
-        b=Kb9cGdIUJ0pBbOrseOO9IQ5aUYDBPMKlfAlIfS3ERPMbNVKWjoRLyYdPYxlYfnmC7l
-         E1a5RY+EERyITC8flXmGnLkL3D3IrFnF4s1bTvIYk1PMwgxiilOvCRvtS9krMRtR9q8x
-         V8VKQaRMEhaxBGxIgEQLVsjcHK2FMj+FvnqZAG8fD+1mpc/+QFwwJPC0TTmPQZZriNsW
-         wkNIRb6bMaAheQVBq6QoVaMv/wpIQSq0jObm1ZdQkOTqekemuT6lHF3aDhGqRmUzqQQg
-         5XzAsmUXL9kThS7cV+OLu1JPZEHSVYVSSQD/DVkSyuLX7ApNV93YlJ0vajgwmd849qaR
-         Kn4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692279802; x=1692884602;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ekX8+Nd4VswfjxOCjX+b1kzoOwGdMKAd1QgVJxzyBU=;
-        b=CYvPYF1i6inIpD51NR7rtdWazU3+H8+GtLfz3YxQSJdgZjPZKO+cSsdr+vDPVrB089
-         esdUAuFwanxWrSTG5RRFTvajY9tF0U29x9oqAXw8oB+v17qprj7nHxGrYF/avuJM6clS
-         BMuwnCx9f/CJG5PbLY6Y9A1iIPmkhI1Y1z8sjadxKogAcUOeaZwBn9j6Z9YPBdX5DrUP
-         lIUwkwoA0MqlxsshYnhTr9j2u3HSUPkRANadfBK2YgpApbanbd2KWdZ4sD1eVBV6RAE0
-         1h7NA2qn0/1sX/HZfaz4SFqmWLL2Pa/5M+3M2QyftktBdZTiUUeBl2u0t+lnk/LGHLo3
-         cfQg==
-X-Gm-Message-State: AOJu0YzC87ekHyZavuoNF0rYtf4clvtijJwPYp/aB2umuS9NRtPO4/C6
-        nkd7tjxp9Ck3WE6jjQ9r6gQ=
-X-Google-Smtp-Source: AGHT+IEWOn7C6DJ0dCJItiCXw8kIj+QzmbnlW0Rs/bE46okrUgBCh1xMLw4dXb20goVTRd+phIi9dQ==
-X-Received: by 2002:a17:902:ec86:b0:1b8:400a:48f2 with SMTP id x6-20020a170902ec8600b001b8400a48f2mr5532154plg.62.1692279802386;
-        Thu, 17 Aug 2023 06:43:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id n4-20020a170902d2c400b001bb6c5ff4edsm15234511plc.173.2023.08.17.06.43.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 06:43:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 17 Aug 2023 06:43:20 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH 7/7] rtc: rzn1: Report maximum alarm limit to rtc core
-Message-ID: <ab8d6d2b-f5db-4d77-82b9-f9c4f773b974@roeck-us.net>
-References: <20230816133936.2150294-1-linux@roeck-us.net>
- <20230816133936.2150294-8-linux@roeck-us.net>
- <20230817100341.15867e4d@xps-13>
+        Thu, 17 Aug 2023 09:44:55 -0400
+Received: from pegase1.c-s.fr (unknown [90.115.179.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAB52710
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:44:47 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RRR7x5bZRzB0Sh;
+        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FousFlCk6thr; Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRR7x4yfgzB0Sg;
+        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6B2A8B76C;
+        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 5gO1jEp3d6SR; Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A0208B763;
+        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HDibVq433875
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 15:44:37 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HDiYBe433828;
+        Thu, 17 Aug 2023 15:44:34 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] powerpc/4xx: Remove pika_dtm_[un]register_shutdown() to fix no previous prototype
+Date:   Thu, 17 Aug 2023 15:44:26 +0200
+Message-ID: <830923f0e0375a14609204246d302c7476a8f948.1692279855.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692279865; l=3351; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Sbyk6OxfIJ6WJXDgRx9nz8WultA2O/aRcm7QwUEwtak=; b=AnI1p6Zia0OY67ubHT1k6Hs9VRBTsgbCT6Z1jctBs/hWRBywlgggbXxivSa3Ma2NRElgHXEOS Nm8/Ew30YKEAfTsThHJKP+az1JBdpHihIVsa1w6Py1rLfnyaQMaruqv
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230817100341.15867e4d@xps-13>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,T_SPF_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 10:03:41AM +0200, Miquel Raynal wrote:
-> Hi Guenter,
-> 
-> linux@roeck-us.net wrote on Wed, 16 Aug 2023 06:39:36 -0700:
-> 
-> > RZN1 only supports alarms up to one week in the future.
-> > Report the limit to the RTC core.
-> > 
-> > Cc: Brian Norris <briannorris@chromium.org>
-> > Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> > ---
-> >  drivers/rtc/rtc-rzn1.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/rtc/rtc-rzn1.c b/drivers/rtc/rtc-rzn1.c
-> > index dca736caba85..c2cc3774ebb8 100644
-> > --- a/drivers/rtc/rtc-rzn1.c
-> > +++ b/drivers/rtc/rtc-rzn1.c
-> > @@ -351,6 +351,7 @@ static int rzn1_rtc_probe(struct platform_device *pdev)
-> >  
-> >  	rtc->rtcdev->range_min = RTC_TIMESTAMP_BEGIN_2000;
-> >  	rtc->rtcdev->range_max = RTC_TIMESTAMP_END_2099;
-> > +	rtc->rtcdev->range_max_offset = 7 * 86400;
-> 
-> When we set the alarm, we use:
-> 
-> 	farest = rtc_tm_to_time64(&tm_now) + (7 * 86400);
-> 
-> What about using range_max_offset (whatever its final name) in this
-> calculation as it will be now set in probe? It would further clarify
-> its purpose.
+ppc4xx_defconfig with W=1 results in:
 
-Excellent idea. I'll make that change.
+  CC      arch/powerpc/platforms/44x/warp.o
+arch/powerpc/platforms/44x/warp.c:369:5: error: no previous prototype for 'pika_dtm_register_shutdown' [-Werror=missing-prototypes]
+  369 | int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/platforms/44x/warp.c:374:5: error: no previous prototype for 'pika_dtm_unregister_shutdown' [-Werror=missing-prototypes]
+  374 | int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Thanks,
-Guenter
+The functions were added by commit 4ebef31fa6e0 ("[POWERPC] PIKA Warp:
+Update platform code to support Rev B boards")
 
-> 
-> >  	rtc->rtcdev->ops = &rzn1_rtc_ops;
-> >  	set_bit(RTC_FEATURE_ALARM_RES_MINUTE, rtc->rtcdev->features);
-> >  	clear_bit(RTC_FEATURE_UPDATE_INTERRUPT, rtc->rtcdev->features);
-> 
-> With the above change,
-> 
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> 
-> Thanks,
-> Miquèl
+Those functions are not used localy and allthough their symbols are
+exported they are not declared in any header file so they can't be used.
+
+Remove them, then remove the associated list as it will now remain empty
+hence becomes useless.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/platforms/44x/warp.c | 55 -------------------------------
+ 1 file changed, 55 deletions(-)
+
+diff --git a/arch/powerpc/platforms/44x/warp.c b/arch/powerpc/platforms/44x/warp.c
+index bfeb9bdc3258..bf0188dcb918 100644
+--- a/arch/powerpc/platforms/44x/warp.c
++++ b/arch/powerpc/platforms/44x/warp.c
+@@ -83,45 +83,8 @@ static int __init warp_post_info(void)
+ 
+ #ifdef CONFIG_SENSORS_AD7414
+ 
+-static LIST_HEAD(dtm_shutdown_list);
+ static void __iomem *dtm_fpga;
+ 
+-struct dtm_shutdown {
+-	struct list_head list;
+-	void (*func)(void *arg);
+-	void *arg;
+-};
+-
+-int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
+-{
+-	struct dtm_shutdown *shutdown;
+-
+-	shutdown = kmalloc(sizeof(struct dtm_shutdown), GFP_KERNEL);
+-	if (shutdown == NULL)
+-		return -ENOMEM;
+-
+-	shutdown->func = func;
+-	shutdown->arg = arg;
+-
+-	list_add(&shutdown->list, &dtm_shutdown_list);
+-
+-	return 0;
+-}
+-
+-int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
+-{
+-	struct dtm_shutdown *shutdown;
+-
+-	list_for_each_entry(shutdown, &dtm_shutdown_list, list)
+-		if (shutdown->func == func && shutdown->arg == arg) {
+-			list_del(&shutdown->list);
+-			kfree(shutdown);
+-			return 0;
+-		}
+-
+-	return -EINVAL;
+-}
+-
+ #define WARP_GREEN_LED	0
+ #define WARP_RED_LED	1
+ 
+@@ -153,17 +116,12 @@ static struct platform_device warp_gpio_leds = {
+ 
+ static irqreturn_t temp_isr(int irq, void *context)
+ {
+-	struct dtm_shutdown *shutdown;
+ 	int value = 1;
+ 
+ 	local_irq_disable();
+ 
+ 	gpiod_set_value(warp_gpio_led_pins[WARP_GREEN_LED].gpiod, 0);
+ 
+-	/* Run through the shutdown list. */
+-	list_for_each_entry(shutdown, &dtm_shutdown_list, list)
+-		shutdown->func(shutdown->arg);
+-
+ 	printk(KERN_EMERG "\n\nCritical Temperature Shutdown\n\n");
+ 
+ 	while (1) {
+@@ -366,19 +324,6 @@ machine_late_initcall(warp, pika_dtm_start);
+ 
+ #else /* !CONFIG_SENSORS_AD7414 */
+ 
+-int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
+-{
+-	return 0;
+-}
+-
+-int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
+-{
+-	return 0;
+-}
+-
+ machine_late_initcall(warp, warp_post_info);
+ 
+ #endif
+-
+-EXPORT_SYMBOL(pika_dtm_register_shutdown);
+-EXPORT_SYMBOL(pika_dtm_unregister_shutdown);
+-- 
+2.41.0
+
