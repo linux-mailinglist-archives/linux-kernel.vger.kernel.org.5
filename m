@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B1077FBE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5097D77FBE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353580AbjHQQSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:18:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57238 "EHLO
+        id S1353597AbjHQQVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353583AbjHQQRs (ORCPT
+        with ESMTP id S1353658AbjHQQVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:17:48 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37D5273F;
-        Thu, 17 Aug 2023 09:17:47 -0700 (PDT)
-Received: from notapiano (unknown [IPv6:2600:4041:5b1a:cd00:524d:e95d:1a9c:492a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A709E660721F;
-        Thu, 17 Aug 2023 17:17:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692289065;
-        bh=0Uqouu18aJtJnWmk5w1rhn0/Y7zubvIQmjLGUoT/VeI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QcbQo2iJTz/mX0oydHhXWpkB7ja3aNjvDZTn6MV8Afmqo1NdCJQfz5D7Px1PwD9LB
-         fxUuk8DkCNO6T7/q4PZI10igZRKtZknAj2oFVpIGPqOHQS+mGq13EbXiXMxnoNS5xv
-         56DvNJAvjXl2QY4gxT19+6Esoeb8HGRq7QqXH948q8dDJurnvcE1G/OmXjDnsb9ZeJ
-         axAQWy8LN0EhiceR2ydjizQ+KpLzhiE+USqkn0ooKDh7vfEulK6FhyEkro14DXAiBQ
-         oRBSK+lpHW7zABYCb72an3YoAWoD5wjrPABmBpECjMmrO2XbkNqgMyPaZoL4zLYGwP
-         CkG77/opLodqw==
-Date:   Thu, 17 Aug 2023 12:17:38 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, cocci@inria.fr,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernelci@lists.linux.dev, Julia Lawall <Julia.Lawall@inria.fr>,
-        Bjorn Andersson <andersson@kernel.org>, kernel@collabora.com,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] kselftest: Add Devicetree unprobed devices test
-Message-ID: <439f66c9-8dc1-40d0-ae36-fb8beee5a6f1@notapiano>
-References: <20230810202413.1780286-1-nfraprado@collabora.com>
- <20230810202413.1780286-3-nfraprado@collabora.com>
- <ZNY9sBgzrEQVVQT+@finisterre.sirena.org.uk>
- <b4b1f56b-94c0-4849-a7fc-9228b4e40dc7@notapiano>
- <117448a6-671e-4f30-90c6-808a319caf32@sirena.org.uk>
+        Thu, 17 Aug 2023 12:21:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80970198E
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692289274; x=1723825274;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=RWfndbU1oNEDCpHHdZg1mo+Zof4XQ0auEf8gPgbCGn8=;
+  b=kt62SG2o7DqmQMIXD0JAQoa49izuecTQrGINdTRreijIDdgXYeNC/RaP
+   2qGHMtJeYdxXAP9DoLxEDvpnjSdSNlea5IYC/bnGdnOGMpnYMKZz+WZeK
+   G8daL8Hlyrj1Hhqv1+JODdVeqGPZwDUU3qyhyLI8YRaU4K79TmkTeFh9e
+   CZI0whC7gomJC4kfRDRJXM3ESijI9K9jnIQGoI2PIPSSvoauGHYonS1MV
+   +KAEdazMjbd5QcVOJfx8HylrmCISWMG0LL24yp6f89h/9N4UiIvGkEP77
+   E/9J2VhWupSrq0D7IulH5uX1AHIQUNFL0kFvlOaJwatgNg0a3LmvzbXJ9
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403841245"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="403841245"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 09:19:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="734713801"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="734713801"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 17 Aug 2023 09:19:29 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWfia-0001Jf-2w;
+        Thu, 17 Aug 2023 16:19:28 +0000
+Date:   Fri, 18 Aug 2023 00:18:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kashyap Desai <kashyap.desai@broadcom.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leon@kernel.org>,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:73: warning: Function
+ parameter or member 'opcode' not described in 'bnxt_qplib_map_rc'
+Message-ID: <202308180055.6zM4AK6V-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <117448a6-671e-4f30-90c6-808a319caf32@sirena.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 01:26:05PM +0100, Mark Brown wrote:
-> On Fri, Aug 11, 2023 at 10:16:52AM -0400, Nícolas F. R. A. Prado wrote:
-> > On Fri, Aug 11, 2023 at 02:54:56PM +0100, Mark Brown wrote:
-> 
-> > > This doesn't appear to produce KTAP output which is going to make it
-> > > less useful for generic kselftest runners.
-> 
-> > Right, I'm going to need to rewrite it in C for that, but since I already had
-> > the shell script done, I decided to send it as is for the RFC, since I wanted to
-> > get feedback on the general approach more than anything.
-> 
-> I'm not clear why KTAP would require C?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: 3022cc15119733cebaef05feddb5d87b9e401c0e RDMA/bnxt_re: Avoid the command wait if firmware is inactive
+date:   9 weeks ago
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308180055.6zM4AK6V-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180055.6zM4AK6V-lkp@intel.com/reproduce)
 
-When going through the documentation there was only mention of the C headers for
-the kselftest framework which outputs using the KTAP format, so I thought that
-was the only acceptable option.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308180055.6zM4AK6V-lkp@intel.com/
 
-But in the meantime while looking through the other tests I saw you've recently
-added ktap output to ftrace/ftracetest. The newly added test in
-net/mptcp/mptcp_lib.sh also has its own helpers for outputting in KTAP. There
-are also a couple other cases of this in python.
+All warnings (new ones prefixed by >>):
 
-So I can definitely do the same for this test.
+>> drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:73: warning: Function parameter or member 'opcode' not described in 'bnxt_qplib_map_rc'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:105: warning: Function parameter or member 'rcfw' not described in '__wait_for_resp'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:105: warning: Function parameter or member 'cookie' not described in '__wait_for_resp'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:105: warning: Function parameter or member 'opcode' not described in '__wait_for_resp'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:147: warning: Function parameter or member 'rcfw' not described in '__block_for_resp'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:147: warning: Function parameter or member 'cookie' not described in '__block_for_resp'
+   drivers/infiniband/hw/bnxt_re/qplib_rcfw.c:147: warning: Function parameter or member 'opcode' not described in '__block_for_resp'
 
-Thanks,
-Nícolas
+
+vim +73 drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+
+    55	
+    56	/**
+    57	 * bnxt_qplib_map_rc  -  map return type based on opcode
+    58	 * @opcode    -  roce slow path opcode
+    59	 *
+    60	 * In some cases like firmware halt is detected, the driver is supposed to
+    61	 * remap the error code of the timed out command.
+    62	 *
+    63	 * It is not safe to assume hardware is really inactive so certain opcodes
+    64	 * like destroy qp etc are not safe to be returned success, but this function
+    65	 * will be called when FW already reports a timeout. This would be possible
+    66	 * only when FW crashes and resets. This will clear all the HW resources.
+    67	 *
+    68	 * Returns:
+    69	 * 0 to communicate success to caller.
+    70	 * Non zero error code to communicate failure to caller.
+    71	 */
+    72	static int bnxt_qplib_map_rc(u8 opcode)
+  > 73	{
+    74		switch (opcode) {
+    75		case CMDQ_BASE_OPCODE_DESTROY_QP:
+    76		case CMDQ_BASE_OPCODE_DESTROY_SRQ:
+    77		case CMDQ_BASE_OPCODE_DESTROY_CQ:
+    78		case CMDQ_BASE_OPCODE_DEALLOCATE_KEY:
+    79		case CMDQ_BASE_OPCODE_DEREGISTER_MR:
+    80		case CMDQ_BASE_OPCODE_DELETE_GID:
+    81		case CMDQ_BASE_OPCODE_DESTROY_QP1:
+    82		case CMDQ_BASE_OPCODE_DESTROY_AH:
+    83		case CMDQ_BASE_OPCODE_DEINITIALIZE_FW:
+    84		case CMDQ_BASE_OPCODE_MODIFY_ROCE_CC:
+    85		case CMDQ_BASE_OPCODE_SET_LINK_AGGR_MODE:
+    86			return 0;
+    87		default:
+    88			return -ETIMEDOUT;
+    89		}
+    90	}
+    91	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
