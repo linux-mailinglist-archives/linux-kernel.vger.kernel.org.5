@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C95977F844
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7025477F847
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351657AbjHQOEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S1351679AbjHQOER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351656AbjHQODm (ORCPT
+        with ESMTP id S1351663AbjHQODn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:03:42 -0400
+        Thu, 17 Aug 2023 10:03:43 -0400
 Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0EC2D64
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:29 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so123509791fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E5B10E6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:30 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2b9c0391749so124004211fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692281008; x=1692885808;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iDdSkDnAa4EA45wBy/GLSEV+l5NgSMIiiSHWvRZ2KOA=;
-        b=No0KlvABaYxw/rZPqIHVWHsDziq6x7bSxyP7ou/8aZa900Caq8T1gj8P21xYN37GBH
-         pIPtj52oMnu6T0jp4Y26t7RZneMdSofgiuyuIvAwmC9YQ8F/Bs74inq2yUFtzGvdBqwn
-         XP2b7g8/ABAfVAgudf/Ls9JV0oEPeIHXlloU/r9QWlatTA958VOQzYkq65N2hM3wGrw4
-         TmYlmgT77Ez/jjZFBDNXpGB/UdPR8cB9wlCFVofRSl0fnRhN5wpkf16PzMoKmHJEMoHr
-         O7DOG1nP9nf6nB8AqU9kS0eXYpqgDl31Z5xQdnZdXtyctlNUjA6TPOi4ukHr4/I/ANO3
-         yjpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692281008; x=1692885808;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1692281009; x=1692885809;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iDdSkDnAa4EA45wBy/GLSEV+l5NgSMIiiSHWvRZ2KOA=;
-        b=Dh7e+71ZajHiVE5AOAHFKpq03X9sXRrwkiBrhU1EmqvMhgajW99IPceWuM42QGxHdT
-         +lmmg/OnYsjcy++kB6uKCU6nuiP/BRc9XAoGuKamPjcuyIQAbNxEqCM2iHsYIi+ND2XR
-         WFPtKJ+d9Qk2Ucl+YR8Fcw9la+SNReNVRz9B058vqcRITToo6u7j1mfb2/Z6BJgFGB9u
-         n7vn8wVSalNPdxHDK9uveHph+jk46c+E2PiKkplsY1Iw+hu10ZWgp9ZKtmL6V3bGNd4D
-         hD/FNQyK9bX1n8wIgSvLNunKQ0FfPYQ449N1jJqS1Xy+UBLngI3ZfD3UbDoZ3WVOYnHm
-         IUTQ==
-X-Gm-Message-State: AOJu0YwoCQL5WydNQyjXWjtX+z3VWPunBrIHFJiZ/ZBuSNKUBxVvy5Or
-        TvNBb8hL2sd23YGhuEe3xIhGERDy/ejErVYhJ24=
-X-Google-Smtp-Source: AGHT+IG7UCqtLK72meyZRcjb0NwX5VMnpVVHQ/PTZFMBfc6PLe2Wyn/oxfUWSQoy5ABuPKOFhNLqRg==
-X-Received: by 2002:a2e:874a:0:b0:2b6:c61c:745b with SMTP id q10-20020a2e874a000000b002b6c61c745bmr4379877ljj.3.1692281008117;
-        Thu, 17 Aug 2023 07:03:28 -0700 (PDT)
+        bh=088USFovIsdoCEmzlnqhLgFZBLMNvUbAonAQf/mwAxw=;
+        b=wRf+w2hVofU/IxEx6VHKnhqF/EYCqFXdyuaJFbKv7U3n8gNC3s046jZuHdCtATWzhp
+         7U+8q70z10E91FBbXknUsa7BIRqpjTQ5hPd1GCS2pGrZlLyL6pz1pl+l0rFTBKED5yEf
+         qNoaBvGX1VuQAEsKhM1euCnfrtZPVGfaXH0VkOCThH8yZk0p8wRgSyxXILk2cE4F/fBV
+         Y0TbdJSMpiRgUQGkZqjNO1mW4Xh94qm3XAFCZ9ivTmkc6a2u74fEHaQmoR7b2S+YklNA
+         k0jO1unCHxZqyc3/6nFonNc8eBLICRKLTzZbKav5rgosKv6v5VHO6y/pxuFFa9sEED1D
+         xJkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692281009; x=1692885809;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=088USFovIsdoCEmzlnqhLgFZBLMNvUbAonAQf/mwAxw=;
+        b=l638WTpy/SREBrMVMF5uN1wF/hYqBPw00RifB7YsY1v+/zmRLXRm3H2IsMjv/l37Ap
+         IIOUv9uSLVhoMi+RU2Jb7mVa/RBJrgZKek4rAWCeKNg2k6U5SVfQuneKrr7wY6cbzeQe
+         Dvz++Yn3e0tWFmVjpBHFz3TrRbASgOKM9D7hzJJh8GcanyWc+M2jBNTYWJlNQ5fPsjDU
+         VW7sizXpvIJqKVjwobAiHnOsvTAlh8MDB/VKLY0ZxhM7V/h633iap8ceJYDyF9o9dEKc
+         vyNs1MRuO2qRW07/oSZHpwR6zM0zfPIe5ylzPVDQnOJUBBTA11M4ChnC3T6FwiJhjGfg
+         D0kA==
+X-Gm-Message-State: AOJu0YyL3tftSFuXUBAIVW3i0U8YHyI9gPsEE0VjJyJINRZUsYJh1ykM
+        VNSKg2msJXl3QoVbq1mPNfmzUA==
+X-Google-Smtp-Source: AGHT+IG2Pux8VKOdbP86Oj7Mi6rjgF8/0qq8sb4PVwu1oDpFYcRedBksyLzRLMctv2SUuMjfYx1nQw==
+X-Received: by 2002:a2e:9c99:0:b0:2b6:e618:b593 with SMTP id x25-20020a2e9c99000000b002b6e618b593mr4368277lji.31.1692281009055;
+        Thu, 17 Aug 2023 07:03:29 -0700 (PDT)
 Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id g3-20020a2eb0c3000000b002b9c3e18095sm4064645ljl.14.2023.08.17.07.03.27
+        by smtp.gmail.com with ESMTPSA id g3-20020a2eb0c3000000b002b9c3e18095sm4064645ljl.14.2023.08.17.07.03.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 07:03:27 -0700 (PDT)
+        Thu, 17 Aug 2023 07:03:28 -0700 (PDT)
 From:   Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 0/5] ASoC: Convert remaining Realtek codecs to GPIO
- descriptors
-Date:   Thu, 17 Aug 2023 16:03:16 +0200
-Message-Id: <20230817-descriptors-asoc-rt-v2-0-02fa2ca3e5b0@linaro.org>
+Date:   Thu, 17 Aug 2023 16:03:17 +0200
+Subject: [PATCH v2 1/5] ASoC: rt5640: Convert to just use GPIO descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKQo3mQC/32NSw6CQBBEr0J6bZv5oCOuvIdhQYYGOjEM6SZEQ
- +bujhzA5atUvdpBSZgU7tUOQhsrp7mAO1UQp24eCbkvDM44b242YE8ahZc1iWKnKaKs2EQTXOP
- r3ocrlOUiNPD7sD7bwhNr6X+Ok83+0v++zaLB2tfDZbAhRKLHi+dO0jnJCG3O+QsQUAiFtwAAA
- A==
+Message-Id: <20230817-descriptors-asoc-rt-v2-1-02fa2ca3e5b0@linaro.org>
+References: <20230817-descriptors-asoc-rt-v2-0-02fa2ca3e5b0@linaro.org>
+In-Reply-To: <20230817-descriptors-asoc-rt-v2-0-02fa2ca3e5b0@linaro.org>
 To:     Oder Chiou <oder_chiou@realtek.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
@@ -77,46 +75,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After dropping unused headers a few Realtek devices
-actually using the GPIO descriptors remain.
+The RT5640 driver is already using GPIO descriptors for some
+stuff, all that is needed is to convert the remaining LDO1
+control line to also use descriptors.
 
-Converting them to use optional GPIO descriptors is
-pretty straight-forward.
+Simplify the code using gpiod_get_optional() and drop the
+special "of" parsing function: these descriptors need not
+come from device tree and it's optional so hey.
+
+Keep some NULL checks around the GPIO operations even though
+gpiolib is essentially NULL-tolerant, because by checking
+for whether we have a valid GPIO descriptor or not we can
+avoid a 400 ms delay which is great.
 
 Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
-Changes in v2:
-- Rebased on asoc-6.6
-- Link to v1: https://lore.kernel.org/r/20230817-descriptors-asoc-rt-v1-0-434f5f177cee@linaro.org
+ sound/soc/codecs/rt5640.c | 55 +++++++++++++----------------------------------
+ sound/soc/codecs/rt5640.h |  2 +-
+ 2 files changed, 16 insertions(+), 41 deletions(-)
 
----
-Linus Walleij (5):
-      ASoC: rt5640: Convert to just use GPIO descriptors
-      ASoC: rt5665: Convert to use GPIO descriptors
-      ASoC: rt5668: Convert to use GPIO descriptors
-      ASoC: rt5682: Convert to use GPIO descriptors
-      ASoC: rt5682s: Convert to use GPIO descriptors
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index eceed8209787..8920726c38e8 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -12,11 +12,10 @@
+ #include <linux/init.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/acpi.h>
+@@ -2812,8 +2811,8 @@ static int rt5640_suspend(struct snd_soc_component *component)
+ 	rt5640_reset(component);
+ 	regcache_cache_only(rt5640->regmap, true);
+ 	regcache_mark_dirty(rt5640->regmap);
+-	if (gpio_is_valid(rt5640->ldo1_en))
+-		gpio_set_value_cansleep(rt5640->ldo1_en, 0);
++	if (rt5640->ldo1_en)
++		gpiod_set_value_cansleep(rt5640->ldo1_en, 0);
+ 
+ 	return 0;
+ }
+@@ -2822,8 +2821,8 @@ static int rt5640_resume(struct snd_soc_component *component)
+ {
+ 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
+ 
+-	if (gpio_is_valid(rt5640->ldo1_en)) {
+-		gpio_set_value_cansleep(rt5640->ldo1_en, 1);
++	if (rt5640->ldo1_en) {
++		gpiod_set_value_cansleep(rt5640->ldo1_en, 1);
+ 		msleep(400);
+ 	}
+ 
+@@ -2986,22 +2985,6 @@ static const struct acpi_device_id rt5640_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5640_acpi_match);
+ #endif
+ 
+-static int rt5640_parse_dt(struct rt5640_priv *rt5640, struct device_node *np)
+-{
+-	rt5640->ldo1_en = of_get_named_gpio(np, "realtek,ldo1-en-gpios", 0);
+-	/*
+-	 * LDO1_EN is optional (it may be statically tied on the board).
+-	 * -ENOENT means that the property doesn't exist, i.e. there is no
+-	 * GPIO, so is not an error. Any other error code means the property
+-	 * exists, but could not be parsed.
+-	 */
+-	if (!gpio_is_valid(rt5640->ldo1_en) &&
+-			(rt5640->ldo1_en != -ENOENT))
+-		return rt5640->ldo1_en;
+-
+-	return 0;
+-}
+-
+ static int rt5640_i2c_probe(struct i2c_client *i2c)
+ {
+ 	struct rt5640_priv *rt5640;
+@@ -3015,12 +2998,16 @@ static int rt5640_i2c_probe(struct i2c_client *i2c)
+ 		return -ENOMEM;
+ 	i2c_set_clientdata(i2c, rt5640);
+ 
+-	if (i2c->dev.of_node) {
+-		ret = rt5640_parse_dt(rt5640, i2c->dev.of_node);
+-		if (ret)
+-			return ret;
+-	} else
+-		rt5640->ldo1_en = -EINVAL;
++	rt5640->ldo1_en = devm_gpiod_get_optional(&i2c->dev,
++						  "realtek,ldo1-en",
++						  GPIOD_OUT_HIGH);
++	if (IS_ERR(rt5640->ldo1_en))
++		return PTR_ERR(rt5640->ldo1_en);
++
++	if (rt5640->ldo1_en) {
++		gpiod_set_consumer_name(rt5640->ldo1_en, "RT5640 LDO1_EN");
++		msleep(400);
++	}
+ 
+ 	rt5640->regmap = devm_regmap_init_i2c(i2c, &rt5640_regmap);
+ 	if (IS_ERR(rt5640->regmap)) {
+@@ -3030,18 +3017,6 @@ static int rt5640_i2c_probe(struct i2c_client *i2c)
+ 		return ret;
+ 	}
+ 
+-	if (gpio_is_valid(rt5640->ldo1_en)) {
+-		ret = devm_gpio_request_one(&i2c->dev, rt5640->ldo1_en,
+-					    GPIOF_OUT_INIT_HIGH,
+-					    "RT5640 LDO1_EN");
+-		if (ret < 0) {
+-			dev_err(&i2c->dev, "Failed to request LDO1_EN %d: %d\n",
+-				rt5640->ldo1_en, ret);
+-			return ret;
+-		}
+-		msleep(400);
+-	}
+-
+ 	regmap_read(rt5640->regmap, RT5640_VENDOR_ID2, &val);
+ 	if (val != RT5640_DEVICE_ID) {
+ 		dev_err(&i2c->dev,
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 9847a1ae01f4..94b9a502f7f9 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2138,7 +2138,7 @@ struct rt5640_priv {
+ 	struct regmap *regmap;
+ 	struct clk *mclk;
+ 
+-	int ldo1_en; /* GPIO for LDO1_EN */
++	struct gpio_desc *ldo1_en; /* GPIO for LDO1_EN */
+ 	int irq;
+ 	int jd_gpio_irq;
+ 	int sysclk;
 
- include/sound/rt5665.h        |  2 --
- include/sound/rt5668.h        |  3 ---
- include/sound/rt5682.h        |  3 ---
- include/sound/rt5682s.h       |  3 ---
- sound/soc/codecs/rt5640.c     | 55 ++++++++++++-------------------------------
- sound/soc/codecs/rt5640.h     |  2 +-
- sound/soc/codecs/rt5665.c     | 17 +++++++------
- sound/soc/codecs/rt5668.c     | 17 +++++++------
- sound/soc/codecs/rt5682-i2c.c | 11 ++++-----
- sound/soc/codecs/rt5682-sdw.c |  5 ++++
- sound/soc/codecs/rt5682.c     | 20 ++++++++++++----
- sound/soc/codecs/rt5682.h     |  3 +++
- sound/soc/codecs/rt5682s.c    | 16 ++++++-------
- sound/soc/codecs/rt5682s.h    |  2 ++
- 14 files changed, 68 insertions(+), 91 deletions(-)
----
-base-commit: 17b9f4387ebabb19b871bbe2d06562e48e4e7130
-change-id: 20230817-descriptors-asoc-rt-9c072934d376
-
-Best regards,
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.34.1
 
