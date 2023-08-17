@@ -2,99 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F4277EEE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3069C77EEE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347600AbjHQB4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
+        id S1347610AbjHQB7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 21:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347602AbjHQB4j (ORCPT
+        with ESMTP id S1347604AbjHQB7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:56:39 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF00E48
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:56:38 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6b9c9944da8so6148747a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692237398; x=1692842198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8hfGgviSd6nI1b/pDHpUVOT9K8aiYOPruWp9HpRf7ho=;
-        b=KfOfRyw3TWSN/rDPR+3GfdmmS7zMSFzG2rFHPqh52zVieyP6FFLBxTdQvfovBr6U+4
-         PQVmj1EThxW/4ha7bozSDBG4YQqjj3SiHhN9SCTn5vZB5W0eu9eCOqOLGMwPmsxZHi9s
-         CKI3tpS9PYQpNuRjrlko4P6fujeGqauGeKqDvY3ApRxH2E8f680LZjVmP6dgQ+gyw2P9
-         bagBAqiGEnXKyYESMV8aoAX1IwPDr/pV3pSPsQaDAvtyOnJMTnq20qnggC9Atk7iVyWf
-         tCfrRQ/2QzFn0OPBtcJS8s8W18MrYuRJeZMz4KWAdbmnh4TGk8LzxtrhFNe0QS88o4h0
-         1sog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692237398; x=1692842198;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8hfGgviSd6nI1b/pDHpUVOT9K8aiYOPruWp9HpRf7ho=;
-        b=BKCbJ8evIDYlvi7kaB9ScDDN7OUiZ4nXvQ7BIAkqET0jCXoj6qwFFd1VhfvyQVFAiG
-         hOjKrZcGIb3H0qS8yhkWNNd+o52/oLm41OJwo9PmkFGrmpsvbPnK0W2GIM2rWvzZ2+d8
-         1Mh4yutLfzw2Nu6wFDbokq34NWOH+PI9BdN/cgVshcKCSktVx+Gr0c8ZvZzi6Kk7w0nh
-         yM3QoQNmliCdNIbPWEMzNyH4+vq0I74Dwr+hAVRlXqaydMy0eKQDvh032kANB/EGaFby
-         IfvLNnK5oOhMdVnWEzUS2csRCNaq3hbdM+oh9Sa6oBKc6puQcdw37bq+ThtOxQDYa26X
-         1FNQ==
-X-Gm-Message-State: AOJu0YzgKmNVAYfc5653kcg0vrvemql+i0s40enQDLdhvUWJVkEPw0bh
-        orcJ9FYKSUf2y49oTvSkMtwUfPGNJtSRog==
-X-Google-Smtp-Source: AGHT+IGe/Zm6llH9ORhHy0C40Q22+9RifZjmwUnSlRneXimEkaJeTLszj07EQi4Md8oJYMHC+kwDng==
-X-Received: by 2002:a05:6830:12c9:b0:6bc:9dfb:43fc with SMTP id a9-20020a05683012c900b006bc9dfb43fcmr3279691otq.36.1692237397875;
-        Wed, 16 Aug 2023 18:56:37 -0700 (PDT)
-Received: from nocturne.svl.corp.google.com ([2a00:79e1:abc:100:10f9:91ea:43b9:8bba])
-        by smtp.gmail.com with ESMTPSA id t3-20020a170902bc4300b001b8c6662094sm13726338plz.188.2023.08.16.18.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 18:56:37 -0700 (PDT)
-From:   Nicklaus Choo <nicklauscyc@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        Nicklaus Choo <nicklauscyc@gmail.com>
-Subject: [PATCH] Fix print formatting warning for some functions in drivers/staging/vme_user/vme.c
-Date:   Wed, 16 Aug 2023 18:56:34 -0700
-Message-ID: <20230817015634.18428-1-nicklauscyc@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 16 Aug 2023 21:59:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE32268F;
+        Wed, 16 Aug 2023 18:59:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692237569; x=1723773569;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=95mz4kJn+bk9HpfjO3/ou3XkhgfhJRMQmj4G1Oj1CP0=;
+  b=CPHYsSse4PmaKmY+wfHMdw4X+YlLSlWmYrihpLPFSTiKCacIF0SZ/hTd
+   ElNxLSGsHHOw6T9f3+mSTtBcT0sjvXDyfs+6kULTXcCeC/9c3rs8gwH1N
+   +MsKsjqg1ekPqYOpb3dYJO75Bx1cApQf0jQrO1Dql8bwDE57usQ+WuzAT
+   DwyJ4fKDaGm4nAI7Nl6gd79L4JTunmfgGQSyqx4T+SkIwJv6CEbac0GID
+   dfV4uHiqK5qxejbKiuNxK31TR6BnHDTFKHIZLUyEUauZDo5vhQq4hOczD
+   6C0uGwuBoXJnPf+uUfB6fcR/uX1IMkKD615EDyIE5k37eKbYPIgKsmFIb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375454680"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="375454680"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:59:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727963148"
+X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
+   d="scan'208";a="727963148"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.52]) ([10.238.10.52])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:59:26 -0700
+Message-ID: <d595fad7-0d78-bdab-ee66-f1eb1d9488ed@linux.intel.com>
+Date:   Thu, 17 Aug 2023 09:59:24 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v10 9/9] KVM: x86: Expose LAM feature to userspace VMM
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+ <20230719144131.29052-10-binbin.wu@linux.intel.com>
+ <ZN1FW7krxOVs9uA8@google.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <ZN1FW7krxOVs9uA8@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue.
 
-Signed-off-by: Nicklaus Choo <nicklauscyc@gmail.com>
----
- drivers/staging/vme_user/vme.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/vme_user/vme.c b/drivers/staging/vme_user/vme.c
-index b5555683a069..d583c4abbf50 100644
---- a/drivers/staging/vme_user/vme.c
-+++ b/drivers/staging/vme_user/vme.c
-@@ -1742,12 +1742,12 @@ int vme_slot_num(struct vme_dev *vdev)
- 
- 	bridge = vdev->bridge;
- 	if (!bridge) {
--		printk(KERN_ERR "Can't find VME bus\n");
-+		pr_err("Can't find VME bus\n");
- 		return -EINVAL;
- 	}
- 
- 	if (!bridge->slot_get) {
--		printk(KERN_WARNING "vme_slot_num not supported\n");
-+		pr_warn("%s not supported\n", __func__);
- 		return -EINVAL;
- 	}
- 
--- 
-2.41.0
+On 8/17/2023 5:53 AM, Sean Christopherson wrote:
+> s/Expose/Advertise
+>
+> And I would add an "enable" in there somehwere, because to Kai's point earlier in
+> the series about kvm_cpu_cap_has(), the guest can't actually use LAM until this
+> patch.  Sometimes we do just say "Advertise", but typically only for features
+> where there's not virtualization support, e.g. AVX instructions where the guest
+> can use them irrespective of what KVM says it supports.
+>
+> This?
+>
+> KVM: x86: Advertise and enable LAM (user and supervisor)
+It looks good to me. Thanks.
+
+>
+> On Wed, Jul 19, 2023, Binbin Wu wrote:
+>> From: Robert Hoo <robert.hu@linux.intel.com>
+>>
+>> LAM feature is enumerated by CPUID.7.1:EAX.LAM[bit 26].
+>> Expose the feature to userspace as the final step after the following
+>> supports:
+>> - CR4.LAM_SUP virtualization
+>> - CR3.LAM_U48 and CR3.LAM_U57 virtualization
+>> - Check and untag 64-bit linear address when LAM applies in instruction
+>>    emulations and VMExit handlers.
+>>
+>> Exposing SGX LAM support is not supported yet. SGX LAM support is enumerated
+>> in SGX's own CPUID and there's no hard requirement that it must be supported
+>> when LAM is reported in CPUID leaf 0x7.
+>>
+>> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
+>> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
+>> Reviewed-by: Jingqi Liu <jingqi.liu@intel.com>
+>> Reviewed-by: Chao Gao <chao.gao@intel.com>
+>> Reviewed-by: Kai Huang <kai.huang@intel.com>
+>> Tested-by: Xuelian Guo <xuelian.guo@intel.com>
+>> ---
+>>   arch/x86/kvm/cpuid.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+>> index 7ebf3ce1bb5f..21d525b01d45 100644
+>> --- a/arch/x86/kvm/cpuid.c
+>> +++ b/arch/x86/kvm/cpuid.c
+>> @@ -645,7 +645,7 @@ void kvm_set_cpu_caps(void)
+>>   	kvm_cpu_cap_mask(CPUID_7_1_EAX,
+>>   		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
+>>   		F(FZRM) | F(FSRS) | F(FSRC) |
+>> -		F(AMX_FP16) | F(AVX_IFMA)
+>> +		F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
+>>   	);
+>>   
+>>   	kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
+>> -- 
+>> 2.25.1
+>>
 
