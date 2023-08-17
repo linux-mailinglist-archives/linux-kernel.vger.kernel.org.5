@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2234877F0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19877F0C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348040AbjHQGu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45980 "EHLO
+        id S1348288AbjHQGwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348395AbjHQGuu (ORCPT
+        with ESMTP id S1348319AbjHQGwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:50:50 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24DF2D50;
-        Wed, 16 Aug 2023 23:50:26 -0700 (PDT)
-Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRFsm1NdbzNn9n;
-        Thu, 17 Aug 2023 14:46:52 +0800 (CST)
-Received: from [10.67.103.231] (10.67.103.231) by
- kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 17 Aug 2023 14:50:23 +0800
-Message-ID: <007ca8aa-f0ec-8d1d-2d3f-62f370b99104@huawei.com>
-Date:   Thu, 17 Aug 2023 14:50:23 +0800
+        Thu, 17 Aug 2023 02:52:16 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21D72102;
+        Wed, 16 Aug 2023 23:52:15 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 08:52:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692255133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t6HGqXEI6+kkXONW2Fb2KoG1iVUbBSrioJF3EbDG7tE=;
+        b=CIwZsCHYaj/8QAzvV3U8EsooaPHCKnhTWfJh8ZIBK0Nf0pHgbTyeEvD4rUaVLtIQcQuURq
+        024/5gHsrZSbUB50tzzllorJnXbtq4WS6mll5Toco4SQ3zm+eiAxAF2R6CKaeTruEscpZR
+        oU9qQ5IRSqSwV+cwEVApQInC8kFEhlpJ45XkR1PEoxoM1tsbcDuW2k+q83Bb3Pb1Y9tZ0D
+        TxmJ/aLhAFnDQURGqa4U56wrNOIkIWrTVhd3zLXZoZYnYyBP78eLaL8SoG0x5bmUgGAKLm
+        ZfbKlzJRbWnt4JS2WR/l8Kyfn2rWZjMdgfeb1lu4oEaj66iDLPQ6O8FyOZZaBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692255133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t6HGqXEI6+kkXONW2Fb2KoG1iVUbBSrioJF3EbDG7tE=;
+        b=qyiQhIx09SVXTUctmvjhLVNTzYKrsZ5u9HQ6CxLAqSO2NphDFyU1brdhNduUBPuleLv6f0
+        /23IYZV5tJQI/KBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     hare@suse.de, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        dave@stgolabs.net, satishkh@cisco.com, sebaddel@cisco.com,
+        kartilak@cisco.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] scsi: fcoe: Fix potential deadlock on
+ &fip->ctlr_lock
+Message-ID: <20230817065211.ajz8zcev@linutronix.de>
+References: <20230816155524.5913-1-dg573847474@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH RESEND v4 0/2] mailbox: pcc: Support platform notification
- for type4 and shared interrupt
-To:     <rafael@kernel.org>, <rafael.j.wysocki@intel.com>
-CC:     <robbiek@xsightlabs.com>, <guohanjun@huawei.com>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wanghuiqiang@huawei.com>, <zhangzekun11@huawei.com>,
-        <wangxiongfeng2@huawei.com>, <tanxiaofei@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <liuyonglong@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-References: <20221016034043.52227-1-lihuisong@huawei.com>
- <20230801063827.25336-1-lihuisong@huawei.com>
- <20230801093831.dkamhtuvamjalhaa@bogus>
- <779c1483-5b24-5c01-6821-8699b17802c7@huawei.com>
-From:   "lihuisong (C)" <lihuisong@huawei.com>
-In-Reply-To: <779c1483-5b24-5c01-6821-8699b17802c7@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.231]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600004.china.huawei.com (7.193.23.242)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230816155524.5913-1-dg573847474@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,27 +58,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On 2023-08-16 15:55:24 [+0000], Chengfeng Ye wrote:
+> These flaws were found by an experimental static analysis tool I am
+> developing for irq-related deadlock.
 
-Can you take a look at this series?
-All be done. This series have missed two merge window.
+So you did not use lockdep or is the code path so unlikely that nobody
+stumbled upon it before?
 
+> The patch fix the potential deadlocks by spin_lock_irqsave() to
+> disable hard irq.
 
-在 2023/8/9 19:44, lihuisong (C) 写道:
-> Hi Rafael,
->
-> kindly ping.
->
->
-> 在 2023/8/1 17:38, Sudeep Holla 写道:
->> Hi Rafael,
->>
->> On Tue, Aug 01, 2023 at 02:38:25PM +0800, Huisong Li wrote:
->>> PCC supports processing platform notification for slave subspaces and
->>> shared interrupt for multiple subspaces.
->>>
->> These changes have missed last 2 merge window. Let us know if you can 
->> pull
->> this for v6.6 or you prefer to route this via mailbox.
->>
-> .
+Shouldn't this have
+
+Fixes: 794d98e77f590 ("[SCSI] libfcoe: retry rejected FLOGI to another FCF if possible")
+
+?
+
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+Sebastian
