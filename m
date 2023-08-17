@@ -2,114 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 582BA78000B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4D977FFFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355393AbjHQVkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:40:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59216 "EHLO
+        id S1355313AbjHQVh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355389AbjHQVjy (ORCPT
+        with ESMTP id S1355356AbjHQVhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:39:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44742D68
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:38:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692308317;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FqqZicTGV7T3Kk10xXAHHZqVsDBeCNcyh9Qza7vGkZ8=;
-        b=E1/nQsg7rGooTR9UYOJiuhCUCduKPRBwe9EXKiLKNEZo7SPh/sgAtMRY1DHIDUnwFyCixr
-        neoNvTILaSvV2GVfHdFxn7vi0MMe8wH4Ih96Jc8ugvvM73Es3ZiD6lLR9WUuvqrV+WfzAB
-        tnR7FMZZkCaci65kXamIAwApxfpphxc=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-376-c7zmcEJ5OW-BtAYC7FllnQ-1; Thu, 17 Aug 2023 17:38:35 -0400
-X-MC-Unique: c7zmcEJ5OW-BtAYC7FllnQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-76c83aab2c7so34208985a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:38:35 -0700 (PDT)
+        Thu, 17 Aug 2023 17:37:38 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFEF10C7;
+        Thu, 17 Aug 2023 14:37:36 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bdc8081147so10072525ad.1;
+        Thu, 17 Aug 2023 14:37:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692308256; x=1692913056;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VfBSoWR2VMdVe94DeOrM4dJxlWeWi9hCbvQq6BP8leQ=;
+        b=ooeNolDTQvVzWf2zo5DcjLo0zaFOj4KtaIyw06AM53glPonl3hUVxydutbt3d/H9CJ
+         f+vxbqJFtntaTuU4CzGcyIYDH9p+VwmFwMTTTDvjtS8v5FbxAJqMTczSApyRPW16HBnp
+         RgMFZYVwwgdE6AO9PSpytdCh18VA2I/IVKdcX5EppaTF1O3Gu0nWlFyyNFNca/eZFLyi
+         pw/BmMOH3uysAn/ltjoXjbR7KJj9xe5slf5Wxb2Kkz6WlRT0xqHOdaHRTdzYjQDoLdBV
+         /pMO4wLh9pQn/bQ77zyhrLPhMVAxCodJoQT6zkN1h0AtseHP4mU35GIY4zCkeM2kIhXt
+         ig1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692308315; x=1692913115;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FqqZicTGV7T3Kk10xXAHHZqVsDBeCNcyh9Qza7vGkZ8=;
-        b=gLfU/e+yNSNRwWXcbJRBgWOoesYCLbbTfjBlq/WWinlIm46bj0lzERpIoccUBWRTHr
-         OZThrvR+YGxOZXwo6G6lO7cBZVHZzkaMSDun6upafFVIX08xJbOuOcDOUJ03RuWyXgPx
-         o2MiqKWhdAgOQOKMIbn270XU37M6XfZc3hF8ZL7N3UB7rOfiaWzs5/P5DMWf1VpTwW92
-         YGDlpYkfSk/nOROWcyIKvNfQhdHAd5lb4KKMOgVtv6EwYWnErOSxktG6c4oMYnaxrEVI
-         gr+Raz/qlzVDsgFQ1bqCcbhrTi5UO8y/bbaMCkIamqiwjR05PJ5n/E5oEY7j25Vp1Z6/
-         tY5Q==
-X-Gm-Message-State: AOJu0YywdOMhjGwdzH4X1VPJPhmg+CafeGCJbo5Tx0bE5obDWZhJu875
-        l75wPypeFP5IKlFXyP25Fv9WYugNZkJnoIQPUNawJEzXMt1STm8NCNnsrMcKMCCdapGLOp1AI50
-        Wh9MmEGY4uxfqD3cVnPvwev5X
-X-Received: by 2002:a05:620a:4451:b0:75b:23a0:d9e1 with SMTP id w17-20020a05620a445100b0075b23a0d9e1mr1197247qkp.55.1692308314962;
-        Thu, 17 Aug 2023 14:38:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEkp3rZRvDcTzFKJ6Hqm2t/JobO+mLJ0a7jWTkq/V/9LaaPUGogroqre6KXatk72o3i6DIw8Q==
-X-Received: by 2002:a05:620a:4451:b0:75b:23a0:d9e1 with SMTP id w17-20020a05620a445100b0075b23a0d9e1mr1197225qkp.55.1692308314722;
-        Thu, 17 Aug 2023 14:38:34 -0700 (PDT)
-Received: from fedora.redhat.com ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id s1-20020ae9f701000000b0076c71c1d2f5sm96547qkg.34.2023.08.17.14.38.33
+        d=1e100.net; s=20221208; t=1692308256; x=1692913056;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VfBSoWR2VMdVe94DeOrM4dJxlWeWi9hCbvQq6BP8leQ=;
+        b=e1/AimRJYal5qLK3sxD9UASPQHDbfbUyipxgH+NZKia0rpRR3GAkJL4BWIrubsqMUi
+         i/Co2oLwFao2zoihZurv8IFkhx1n05ZxpxDHwTL/6DMAEnmioN8IDe9CWTkLnt7boIhL
+         +QOTWIBq/q1Z5mjITwpHO7XcW+l20nGrc2IviAZfEtghBjrdxrguvdxrr4jBRtSwvLj3
+         bOKv4RbX8l/ZBB7KqR0hqbqpaubZRBu84xmW7/l+bWS6zWLP3AyrCSwZM6bcKbfhMGnC
+         2UHD8LwyLoB0NDRc0q2CXJdTYB3lQGLmqQdC8Iqt6yQmsPa3hEMpdtwb+3al08OamYrR
+         cQkg==
+X-Gm-Message-State: AOJu0Yyu0Zx7cXL7LrHiSWerGmJNPAfuzQMvsnbUN7Yamjlb++y1hzoh
+        /YImVvJAfcVjw5mvOLbDujURvwMRFNM=
+X-Google-Smtp-Source: AGHT+IGhCNZ1M6WxLRZDhHgvhRaLi1UoeCIe3iYoAIHvyaW8/IAW6HFIhufDJb+oEn3k4h34lVliew==
+X-Received: by 2002:a17:903:44e:b0:1bc:210d:6365 with SMTP id iw14-20020a170903044e00b001bc210d6365mr715384plb.2.1692308256327;
+        Thu, 17 Aug 2023 14:37:36 -0700 (PDT)
+Received: from localhost ([2a00:79e1:abd:4a00:6c80:7c10:75a0:44f4])
+        by smtp.gmail.com with ESMTPSA id u18-20020a17090341d200b001b9d95945afsm232379ple.155.2023.08.17.14.37.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 14:38:34 -0700 (PDT)
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     andersson@kernel.org
-Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, brgl@bgdev.pl,
-        Andrew Halaney <ahalaney@redhat.com>
-Subject: [PATCH 2/2] arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy1 irq
-Date:   Thu, 17 Aug 2023 16:37:17 -0500
-Message-ID: <20230817213815.638189-3-ahalaney@redhat.com>
+        Thu, 17 Aug 2023 14:37:35 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Gustavo Padovan <gustavo@padovan.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        linux-media@vger.kernel.org (open list:SYNC FILE FRAMEWORK),
+        linaro-mm-sig@lists.linaro.org (moderated list:DMA BUFFER SHARING
+        FRAMEWORK), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] dma-buf/sw_sync: Avoid recursive lock during fence signal
+Date:   Thu, 17 Aug 2023 14:37:28 -0700
+Message-ID: <20230817213729.110087-1-robdclark@gmail.com>
 X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230817213815.638189-1-ahalaney@redhat.com>
-References: <20230817213815.638189-1-ahalaney@redhat.com>
 MIME-Version: 1.0
-Content-type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's an irq hooked up, so let's describe it.
+From: Rob Clark <robdclark@chromium.org>
 
-Prior to commit 9757300d2750
-("pinctrl: qcom: Add intr_target_width field to support increased number of interrupt targets")
-one would not see the IRQ fire, despite some (invasive) debugging
-showing that the GPIO was in fact asserted, resulting in the interface
-staying down.
+If a signal callback releases the sw_sync fence, that will trigger a
+deadlock as the timeline_fence_release recurses onto the fence->lock
+(used both for signaling and the the timeline tree).
 
-Now that the IRQ is properly routed we can describe it.
+To avoid that, temporarily hold an extra reference to the signalled
+fences until after we drop the lock.
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+(This is an alternative implementation of https://patchwork.kernel.org/patch/11664717/
+which avoids some potential UAF issues with the original patch.)
+
+Reported-by: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+Fixes: d3c6dd1fb30d ("dma-buf/sw_sync: Synchronize signal vs syncpt free")
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 ---
- arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/dma-buf/sw_sync.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-index 8fde6935cd6e..9760bb4b468c 100644
---- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-+++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-@@ -295,6 +295,7 @@ sgmii_phy1: phy@a {
- 			compatible = "ethernet-phy-id0141.0dd4";
- 			reg = <0xa>;
- 			device_type = "ethernet-phy";
-+			interrupts-extended = <&tlmm 26 IRQ_TYPE_EDGE_FALLING>;
- 			reset-gpios = <&pmm8654au_2_gpios 9 GPIO_ACTIVE_LOW>;
- 			reset-assert-us = <11000>;
- 			reset-deassert-us = <70000>;
+diff --git a/drivers/dma-buf/sw_sync.c b/drivers/dma-buf/sw_sync.c
+index 63f0aeb66db6..ceb6a0408624 100644
+--- a/drivers/dma-buf/sw_sync.c
++++ b/drivers/dma-buf/sw_sync.c
+@@ -191,6 +191,7 @@ static const struct dma_fence_ops timeline_fence_ops = {
+  */
+ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+ {
++	LIST_HEAD(signalled);
+ 	struct sync_pt *pt, *next;
+ 
+ 	trace_sync_timeline(obj);
+@@ -203,9 +204,13 @@ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+ 		if (!timeline_fence_signaled(&pt->base))
+ 			break;
+ 
++		dma_fence_get(&pt->base);
++
+ 		list_del_init(&pt->link);
+ 		rb_erase(&pt->node, &obj->pt_tree);
+ 
++		list_add_tail(&pt->link, &signalled);
++
+ 		/*
+ 		 * A signal callback may release the last reference to this
+ 		 * fence, causing it to be freed. That operation has to be
+@@ -218,6 +223,11 @@ static void sync_timeline_signal(struct sync_timeline *obj, unsigned int inc)
+ 	}
+ 
+ 	spin_unlock_irq(&obj->lock);
++
++	list_for_each_entry_safe(pt, next, &signalled, link) {
++		list_del(&pt->link);
++		dma_fence_put(&pt->base);
++	}
+ }
+ 
+ /**
 -- 
 2.41.0
 
