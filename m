@@ -2,145 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8678677F2BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D2A77F2BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349280AbjHQJGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S1349283AbjHQJGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:06:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349328AbjHQJFt (ORCPT
+        with ESMTP id S1349304AbjHQJG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:05:49 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7871E7C;
-        Thu, 17 Aug 2023 02:05:47 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RRJtZ5Mj7zFr28;
-        Thu, 17 Aug 2023 17:02:46 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 17 Aug
- 2023 17:05:45 +0800
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        <linux-rdma@vger.kernel.org>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com>
- <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
- <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
- <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
-Date:   Thu, 17 Aug 2023 17:05:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 17 Aug 2023 05:06:26 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB56E7C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:06:23 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DF65D40002;
+        Thu, 17 Aug 2023 09:06:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692263181;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+0sVgZsDJdvO6ZNm9NpT15IQTSW7YnPyFxYPQgJVPH8=;
+        b=FwIYdAL44GxU/4+G1yOoHEzd+g/QEteRnPeF468rd4duSOuaA74Awj7WFrNoS6D0TP72t1
+        21U9j10sZm/Utd+Tk8w9zecWCA6UryPAKhugCpW8peLliCLUbLYJQKNe3GILs5LsYo9uLb
+        PF1syT1AiQrPRndgvzVF/NqPl8roWEx5YDAm2Ic+E4nrfp48yRb6cfcW5R4TWGxEGlmZuh
+        eMaxRgz5lWttgpuxiAfDhEj37MUjcqcxF1Bdq31Gek+eDnK5MyivgLXxtHefOJ3UzPioeN
+        zVQqd1zBWFiVf0sODS5yyJw+KGIL8D69TcosOPUckFHsuQElCrKfSNxIMwHMrA==
+Date:   Thu, 17 Aug 2023 11:06:18 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: (subset) [PATCH v9 0/7] NVMEM cells in sysfs
+Message-ID: <20230817110618.623960a0@xps-13>
+In-Reply-To: <169200728874.82396.6212330367970101447.b4-ty@linaro.org>
+References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
+        <169200728874.82396.6212330367970101447.b4-ty@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/17 1:01, Ilias Apalodimas wrote:
-> On Wed, 16 Aug 2023 at 15:49, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/8/16 19:26, Ilias Apalodimas wrote:
->>> Hi Yunsheng
->>>
->>> On Mon, 14 Aug 2023 at 15:59, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>
->>>> Currently page_pool_alloc_frag() is not supported in 32-bit
->>>> arch with 64-bit DMA because of the overlap issue between
->>>> pp_frag_count and dma_addr_upper in 'struct page' for those
->>>> arches, which seems to be quite common, see [1], which means
->>>> driver may need to handle it when using frag API.
->>>
->>> That wasn't so common. IIRC it was a single TI platform that was breaking?
->>
->> I am not so sure about that as grepping 'ARM_LPAE' has a long
->> list for that.
-> 
-> Shouldn't we be grepping for CONFIG_ARCH_DMA_ADDR_T_64BIT and
-> PHYS_ADDR_T_64BIT to find the affected platforms?  Why LPAE?
+Hi Srinivas,
 
+srinivas.kandagatla@linaro.org wrote on Mon, 14 Aug 2023 11:01:28 +0100:
 
-I used the key in the  original report:
+> On Tue, 08 Aug 2023 08:29:25 +0200, Miquel Raynal wrote:
+> > As part of a previous effort, support for dynamic NVMEM layouts was
+> > brought into mainline, helping a lot in getting information from NVMEM
+> > devices at non-static locations. One common example of NVMEM cell is the
+> > MAC address that must be used. Sometimes the cell content is mainly (or
+> > only) useful to the kernel, and sometimes it is not. Users might also
+> > want to know the content of cells such as: the manufacturing place and
+> > date, the hardware version, the unique ID, etc. Two possibilities in
+> > this case: either the users re-implement their own parser to go through
+> > the whole device and search for the information they want, or the kernel
+> > can expose the content of the cells if deemed relevant. This second
+> > approach sounds way more relevant than the first one to avoid useless
+> > code duplication, so here is a series bringing NVMEM cells content to
+> > the user through sysfs.
+> >=20
+> > [...] =20
+>=20
+> Applied, thanks!
+>=20
+> [1/7] nvmem: core: Create all cells before adding the nvmem device
+>       commit: ad004687dafea0921c2551c7d3e7ad56837984fc
+> [2/7] nvmem: core: Return NULL when no nvmem layout is found
+>       commit: a29eacf7e6376a44f37cc80950c92a59ca285992
+> [3/7] nvmem: core: Do not open-code existing functions
+>       commit: 95735bc038a828d649fe7f66f9bb67099c18a47a
+> [4/7] nvmem: core: Notify when a new layout is registered
+>       commit: 0e4a8e9e49ea29af87f9f308dc3e01fab969102f
 
-https://www.spinics.net/lists/netdev/msg779890.html
+Thanks for taking these! I will soon send a v10 with a very minor
+correction. I guess you prefer to merge the "major" changes right after
+-rc1 so the series can spend more time in -next, or is there something
+that bothers you which need additional discussion?
 
->> Please see the bisection report below about a boot failure on
->> rk3288-rock2-square which is pointing to this patch.  The issue
->> appears to only happen with CONFIG_ARM_LPAE=y.
-
-grepping the 'CONFIG_PHYS_ADDR_T_64BIT' seems to be more common?
-https://elixir.free-electrons.com/linux/v6.4-rc6/K/ident/CONFIG_PHYS_ADDR_T_64BIT
-
-> 
->>
->>>
->>>>
->>>> In order to simplify the driver's work when using frag API
->>>> this patch allows page_pool_alloc_frag() to call
->>>> page_pool_alloc_pages() to return pages for those arches.
->>>
->>> Do we have any use cases of people needing this?  Those architectures
->>> should be long dead and although we have to support them in the
->>> kernel,  I don't personally see the advantage of adjusting the API to
->>> do that.  Right now we have a very clear separation between allocating
->>> pages or fragments.   Why should we hide a page allocation under a
->>> frag allocation?  A driver writer can simply allocate pages for those
->>> boards.  Am I the only one not seeing a clean win here?
->>
->> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
->> in this patchset.
-> 
-> Yes, that happens *because* of this patchset.  I am not against the
-> change.  In fact, I'll have a closer look tomorrow.  I am just trying
-> to figure out if we really need it.  When the recycling patches were
-> introduced into page pool we had a very specific reason.  Due to the
-> XDP verifier we *had* to allocate a packet per page.  That was
-
-Did you mean a xdp frame containing a frag page can not be passed to the
-xdp core?
-What is exact reason why the XDP verifier need a packet per page?
-Is there a code block that you can point me to?
-
-I wonder if it is still the case for now, as bnxt and mlx5 seems to be
-supporting frag page and xdp now.
-
-> expensive so we added the recycling capabilities to compensate and get
-> some performance back. Eventually we added page fragments and had a
-> very clear separation on the API.
-> 
-> Regards
-> /Ilias
->>
->>>
->>> Thanks
->>> /Ilias
->>>
-> .
-> 
+Thanks,
+Miqu=C3=A8l
