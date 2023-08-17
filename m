@@ -2,96 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CAD77FC89
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F18177FCA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353448AbjHQRHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        id S1353780AbjHQRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353833AbjHQRH1 (ORCPT
+        with ESMTP id S1353860AbjHQRJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:07:27 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B2830C2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:07:25 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so8651cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692292045; x=1692896845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wOrR6jLvPvNePyIC/+imo6fGglOwhNPI+mbMxjZ0VQw=;
-        b=mbmVCvZpWFNNWlbr5PyQeTm/nq6fYbpjeO9BfgwZxNpukj4mobAKlDUiQHt7H+VrtW
-         auYi6sKPedNwPgnshaQiGZn50kRJ3L+uq+AtDp3dN4Hn3DqO4Gdd4FYzguzbCJDsR1ZU
-         kn7+C6mGcepD3Nn3SwZiIvqmKoi7Da0UgG7rvfa/GxSHR2Dtd+UuBIr08uR8rpOvGJio
-         GhWXowPd/IGl1l1BU4J4SGcYDyYA+sP+1nSae2UnbsoKWTyPE7EKqCIOSWszqYbYL5Gu
-         l+/eq6ewzEEuE2VFCqydXhBCswHci6Azi7ktHX11tOD8kXHi1g8lOBOkGeozWk33tcG4
-         thiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692292045; x=1692896845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wOrR6jLvPvNePyIC/+imo6fGglOwhNPI+mbMxjZ0VQw=;
-        b=YxC87YCKe1HDlFf94Ik++MGdYVBKfm5/9UhT3tNyCiNpt+YE8lhVg6NRrMTMx8i/V6
-         zh+tSgOTbWkA6B4MFy9IK56U0QCNQo2UyVlFL5AIzRaIlOHycPWsvCFtopLWa5PSUsF1
-         1p5dEeYu/LHCYr75UTvxFGKrPzfH3dlOqmjD/5SiWUYgR3BaKO65MBdDxIE+uQQ2z/HS
-         K9qhe6AciwBq3XGUFLzlcgASbBDeTtr9W99jQIxC5mCuXQ5GOIFc2cf8FVNynAYrG4uG
-         U4nuNqYxdlowh90OZqM/nro2cHsiLNYXjpiXHh9MWxI1O7tyJnSgGVXtlXGendNwA0vW
-         0PWw==
-X-Gm-Message-State: AOJu0YxpXaPk76F8HYKu/8sHu8nJeMSZe9rCJ95r1zETCmJTwDsNaE7e
-        Lqu0OdAryhJ7D6wfH+NsK2zHgWYoe9wdOL3Wz9utlw==
-X-Google-Smtp-Source: AGHT+IG2FLtDtq9HHsFn8+IjnWSDn8a6ohvAB7pmeSpQ35VRAU2wtAHnE9fn4vA6v1FfKxnHC3jWjVzJpaNgMlwuE1s=
-X-Received: by 2002:a05:622a:180e:b0:3e0:c2dd:fd29 with SMTP id
- t14-20020a05622a180e00b003e0c2ddfd29mr12369qtc.4.1692292044789; Thu, 17 Aug
- 2023 10:07:24 -0700 (PDT)
+        Thu, 17 Aug 2023 13:09:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6394B2D7D;
+        Thu, 17 Aug 2023 10:09:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692292174; x=1723828174;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZDoG4BC7BU8zigefF8QntKolQiXhY+GRE3lIDVeLi9M=;
+  b=R0hvWEhix8E3UjFGqAYdCjp0M3De1yWXsI44xCW8JrZDmJQJNF1CktQS
+   prTPcOI7HTTvKVCa/Nqg93IFmrDovoQE0i5CHSnTRnV6BtL5ZztvfjzTV
+   96fsQj1UcYDcD9dyF5O08m7mX+52Z54ussRb6ARsH5h7tQnPIw161GGdm
+   JaXHw0YVOShWaczuCbRkVppQWAIepWdntfvbKyXO6wyh5jeJMsEeAIw6C
+   cAO4tcpkYkjtdL90HUFYjlb72bY0b92aPAtHzcPeMvhsuG5HM8nb2OKXi
+   l7V83xsFToHPqqnxYd6Ye738mzXySrZa95FhCCztGkUPxWqIoCFosVXYe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370340878"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="370340878"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 10:07:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="848944651"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="848944651"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2023 10:07:00 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 8772EDE4; Thu, 17 Aug 2023 20:06:59 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [rfc, PATCH v1 1/1] min_heap: Make use of cmp_func_t and swap_func_t types
+Date:   Thu, 17 Aug 2023 20:06:56 +0300
+Message-Id: <20230817170656.731066-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-References: <20230818000321.1.Ibca43cc8d1bcad3ac3deef5726b9745128aea634@changeid>
- <928822fd-642a-5ca7-7b42-dc7885f3cf51@arm.com>
-In-Reply-To: <928822fd-642a-5ca7-7b42-dc7885f3cf51@arm.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Fri, 18 Aug 2023 01:06:48 +0800
-Message-ID: <CAKHBV27bsDWsS_dUsj=xdTfnc0CDhcH+0ZLZ2z481BZMsBQX4w@mail.gmail.com>
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Simplify stage selection logic
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Will Deacon <will@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 12:35=E2=80=AFAM Robin Murphy <robin.murphy@arm.com=
-> wrote:
->
-> The reason it's like this is because of arm_smmu_enable_nesting(), which
-> *is* the additional thing that's going on with the stage selection logic.
->
-> Thanks,
-> Robin.
+The types.h defines standard types for comparator and swap functions.
+Convert min_heap to use it.
 
-Right, but arm_smmu_enable_nesting isn't involved in this computation
-at this point in the flow.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/min_heap.h | 8 ++++----
+ kernel/events/core.c     | 4 ++--
+ lib/test_min_heap.c      | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
 
-arm_smmu_enable_nesting returns early if smmu_domain->smmu isn't set,
-and smmu_domain->smmu is only set after arm_smmu_domain_finalise.
-So at this point, smmu_domain->stage is being initialized for the
-first time. If this code is responsible for handling some special
-nesting case, then it's probably not working as intended.
+diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+index 44077837385f..14da37caa235 100644
+--- a/include/linux/min_heap.h
++++ b/include/linux/min_heap.h
+@@ -26,8 +26,8 @@ struct min_heap {
+  */
+ struct min_heap_callbacks {
+ 	int elem_size;
+-	bool (*less)(const void *lhs, const void *rhs);
+-	void (*swp)(void *lhs, void *rhs);
++	cmp_func_t less;
++	swap_func_t swp;
+ };
+ 
+ /* Sift the element at pos down the heap. */
+@@ -55,7 +55,7 @@ void min_heapify(struct min_heap *heap, int pos,
+ 		}
+ 		if (smallest == parent)
+ 			break;
+-		func->swp(smallest, parent);
++		func->swp(smallest, parent, func->elem_size);
+ 		if (smallest == left)
+ 			pos = (pos * 2) + 1;
+ 		else
+@@ -127,7 +127,7 @@ void min_heap_push(struct min_heap *heap, const void *element,
+ 		parent = data + ((pos - 1) / 2) * func->elem_size;
+ 		if (func->less(parent, child))
+ 			break;
+-		func->swp(parent, child);
++		func->swp(parent, child, func->elem_size);
+ 	}
+ }
+ 
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 4c72a41f11af..fa344b916290 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3639,7 +3639,7 @@ void __perf_event_task_sched_out(struct task_struct *task,
+ 	perf_cgroup_switch(next);
+ }
+ 
+-static bool perf_less_group_idx(const void *l, const void *r)
++static int perf_less_group_idx(const void *l, const void *r)
+ {
+ 	const struct perf_event *le = *(const struct perf_event **)l;
+ 	const struct perf_event *re = *(const struct perf_event **)r;
+@@ -3647,7 +3647,7 @@ static bool perf_less_group_idx(const void *l, const void *r)
+ 	return le->group_index < re->group_index;
+ }
+ 
+-static void swap_ptr(void *l, void *r)
++static void swap_ptr(void *l, void *r, int size)
+ {
+ 	void **lp = l, **rp = r;
+ 
+diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
+index 7b01b4387cfb..63d0b2f6c060 100644
+--- a/lib/test_min_heap.c
++++ b/lib/test_min_heap.c
+@@ -11,17 +11,17 @@
+ #include <linux/printk.h>
+ #include <linux/random.h>
+ 
+-static __init bool less_than(const void *lhs, const void *rhs)
++static __init int less_than(const void *lhs, const void *rhs)
+ {
+ 	return *(int *)lhs < *(int *)rhs;
+ }
+ 
+-static __init bool greater_than(const void *lhs, const void *rhs)
++static __init int greater_than(const void *lhs, const void *rhs)
+ {
+ 	return *(int *)lhs > *(int *)rhs;
+ }
+ 
+-static __init void swap_ints(void *lhs, void *rhs)
++static __init void swap_ints(void *lhs, void *rhs, int size)
+ {
+ 	int temp = *(int *)lhs;
+ 
+-- 
+2.40.0.1.gaa8946217a0b
+
