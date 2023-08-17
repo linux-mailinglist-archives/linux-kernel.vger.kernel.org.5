@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F14EB77FBD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED0477FBF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352856AbjHQQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33054 "EHLO
+        id S1353639AbjHQQW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353586AbjHQQP5 (ORCPT
+        with ESMTP id S1353612AbjHQQV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:15:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D39094
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:15:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E344E63330
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:15:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7AB8C433C7;
-        Thu, 17 Aug 2023 16:15:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692288955;
-        bh=wpB7s0BF7i2OV8MyqoB+YeaFdQRuC0uvNlxwgDY03ok=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=U1gL9SuP01FjuS909LIqqQAHr+SG562qyJb2E46PZ5cCj9a0DY2Teag4z21HaWVPT
-         qLwyaE9YLhHJ8QQrY7sAvPrJ64TipjUKUxaey6T0DFeIeL0ext/sdJFTkBqaDLcWtb
-         0XKnSYuJ2vjRMmgWtQGV18dfPW+cEjNrxToDctFgBNh/GxqONtp/PLHS3HP2nxV9fQ
-         fMPG5rlBWtPhioOQAocRZaaNLDFohYfDnVYB/DRfv6pNEuXfG+EMWlEJwE4x9eHdUi
-         bkZrPAaUao0TP+QOeKbngU/wF/gZ4uwinHYAAq9Dg9eHqLKLfOoqSN3xRNQvrnsbiT
-         6LZbE0/PdvW+Q==
-Date:   Thu, 17 Aug 2023 09:15:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-Message-ID: <20230817091554.31bb3600@kernel.org>
-In-Reply-To: <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
-        <20230816100113.41034-2-linyunsheng@huawei.com>
-        <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
+        Thu, 17 Aug 2023 12:21:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45A4C358D;
+        Thu, 17 Aug 2023 09:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692289315; x=1723825315;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=Bv6xL5qkb79fBPG084R3pJENvc5/Ahe+5p+9JBEEGBI=;
+  b=LKHreA7M2M3niCYNMEJIqPdc6scOwJ3c2HYi/yRmxM/6rJ4FW+UKSS+2
+   voZmGsvAAaI8DCCaUPzQsFKwzziYfRv0/dWcEat5y2Hohen2g4kMJus4X
+   0uPvIgKnJRBou2uc3JSMCXK5FNw7ai/t3yWOqVa3OB3OWlNCkPb+XY6ZT
+   jvMmjFwyDn+xn3FC6MoH9kobi96nKGMQRi0IRvqLU2EcP6jF3VP/+qVHO
+   u59MRjh46u9pdceIIcxsY5d2AjmDEDbbrn4JuQxyZlK4k9tXScqBllC4p
+   7C7xfrnvrItr+pJ1MDuHonNzLBiUL04XHUw16zZTzEctDI9M/7BLKalsd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370325515"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="370325515"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 09:17:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="737774313"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="737774313"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.40.107])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 09:16:59 -0700
+Message-ID: <817a6dda-c227-8f90-97f3-204c7d03fb54@intel.com>
+Date:   Thu, 17 Aug 2023 19:16:53 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.14.0
+Subject: Re: [RESEND PATCH v3 2/2] ufs: poll HCS.UCRDY before issuing a UIC
+ command
+Content-Language: en-US
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, beanhuo@micron.com, sc.suh@samsung.com,
+        hy50.seo@samsung.com, sh425.lee@samsung.com,
+        kwangwon.min@samsung.com, junwoo80.lee@samsung.com,
+        wkon.kim@samsung.com
+References: <cover.1690939662.git.kwmad.kim@samsung.com>
+ <CGME20230802013852epcas2p2334d33036d7d1a0bdbefaf5bb844928e@epcas2p2.samsung.com>
+ <9c7ccbfb8fe05c29ab3e31d9cd14e6b91065b8b0.1690939662.git.kwmad.kim@samsung.com>
+ <f1e154c4-bbb3-18a2-cb7a-41adae292b48@intel.com>
+ <b9ade5d5-a160-5ecb-8dc5-777e8a586d51@acm.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <b9ade5d5-a160-5ecb-8dc5-777e8a586d51@acm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,18 +76,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 16:57:16 +0300 Ilias Apalodimas wrote:
-> Why should we care about this?  Even an architecture that's 32-bit and
-> has a 64bit DMA should be allowed to split the pages internally if it
-> decides to do so.  The trick that drivers usually do is elevate the
-> page refcnt and deal with that internally.
+On 17/08/23 18:02, Bart Van Assche wrote:
+> On 8/14/23 04:26, Adrian Hunter wrote:
+>> And perhaps the following is neater:
+>>
+>>     u32 val;
+>>
+>>     return !read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
+>>                   500, UIC_CMD_TIMEOUT * 1000, false, hba,
+>>                   REG_CONTROLLER_STATUS);
+> 
+> Would the above make readers of that code wonder whether read_poll_timeout()
+> perhaps returns a boolean? Wouldn't it be better to test the
+> read_poll_timeout() return value as follows?
+> 
+>      return read_poll_timeout(ufshcd_readl, val, val & UIC_COMMAND_READY,
+>                    500, UIC_CMD_TIMEOUT * 1000, false, hba,
+>                    REG_CONTROLLER_STATUS) == 0;
+> 
 
-Can we assume the DMA mapping of page pool is page aligned? We should
-be, right? That means we're storing 12 bits of 0 at the lower end.
-So even with 32b of space we can easily store addresses for 32b+12b =>
-16TB of memory. "Ought to be enough" to paraphrase Bill G, and the
-problem is only in our heads?
+Either is fine, otherwise:
 
-Before we go that way - Mina, are the dma-buf "chunks" you're working
-with going to be fragment-able? Or rather can driver and/or core take
-multiple references on a single buffer?
+Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
+
