@@ -2,110 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9D177FE4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1864477FE52
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354642AbjHQTCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41530 "EHLO
+        id S1354651AbjHQTFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354639AbjHQTCB (ORCPT
+        with ESMTP id S1354644AbjHQTFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:02:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74852D59
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RJpdT2TuLX3rRzXEHlG8PsweP6fxFNpA/3TiJp72Sck=; b=EyNymHEPUnKYceBO6ggRNe0dHk
-        SRAjEmv1T0PLwVNYmgMS60Wyu2dVgl5IAQAkhoP0RF4cXv+yk3KGFvARoXCaJG9rxr2gDazAolFC5
-        T1USF2yfPy2/5CX9R2MUeBYgYcyfM1dqeZkcryawIY5HdFurvfMWp5z0EBR8PzXBAhAYLE0Nd1ETz
-        0bTUzNCOxa/Kc+rWXVkvoJVPZ7V3kboycx+ZfU/xAwQTKXlYpv6e+1nywDB/8ozyIfVaJ7AwNd7xe
-        Yqe7Kv/csfiF8A1hf/c2s79i0npK20cbzmgxPaQLZrxWpSUF+EokHACH8uhH05wJ3zVxGS6PQeOf/
-        cucPPK4w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWiFg-004uCD-0q; Thu, 17 Aug 2023 19:01:48 +0000
-Date:   Thu, 17 Aug 2023 20:01:47 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Zach O'Keefe <zokeefe@google.com>
-Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Yang Shi <shy828301@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill
- __transhuge_page_enabled()"
-Message-ID: <ZN5um2yIXFcxiFjS@casper.infradead.org>
-References: <20230812210053.2325091-1-zokeefe@google.com>
- <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
- <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
- <ZNp7JDaPhT3Se4de@casper.infradead.org>
- <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
- <ZNrh6w9ICu4rMrhV@casper.infradead.org>
- <CAAa6QmTA8aADSYbpxXU8kne0KqyeY7fCw5_QYSj0T7bCtPKmfA@mail.gmail.com>
- <ZN4QFNZlx8mK9pQm@casper.infradead.org>
- <CAAa6QmTi99exY+NtNDZFi74cs7AB2xpaZ_kej3pSaZVdAtbrKA@mail.gmail.com>
+        Thu, 17 Aug 2023 15:05:02 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBE230D6;
+        Thu, 17 Aug 2023 12:05:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1692299070; x=1692903870; i=deller@gmx.de;
+ bh=R6FahYjMjq3IcNebCctTGPYLvIg8dED0+aUfIoATJT8=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=V/nPTGXx4qnZHiHLKJxJ+6MDcixcr6nO88bdvihvvSn61dUJlJrTgmmJG1VUBNu7qXdA2F4
+ ocyNUy0Ote/HT7BKAQYx3yhn1zuTDr+03SgnqeHcZZvoJiospwqYiHNUu1+uOd3lwmE2FyG/1
+ JdBiKqC5OP6CkazPdGAbr0qLXKpfnJW4oN10A0+bePVhRm7HQdHg6x4lm5jCCkBa6d1/YElU9
+ K68porNruNJfBJajKRNnHz+HZgX370VbaDuzUhojW6X/E1eE4BfMQ2l1qsA+7R40ojg4R0HeR
+ fvymJiAf85odG8TNMCMcGOvFAkvYYA4YXbXqZAl2uLotUp0kLxfg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.151.122]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MxUs7-1pZfYF1qTB-00xqnP; Thu, 17
+ Aug 2023 21:04:30 +0200
+Message-ID: <133d22a6-5fd2-49a0-50f4-7018397bdcef@gmx.de>
+Date:   Thu, 17 Aug 2023 21:04:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAa6QmTi99exY+NtNDZFi74cs7AB2xpaZ_kej3pSaZVdAtbrKA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/9] parisc: Remove <asm/ide.h>
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1692288018.git.geert@linux-m68k.org>
+ <5ea78d9c54cf94c6074fde6f277bb7a08bfe8d08.1692288018.git.geert@linux-m68k.org>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <5ea78d9c54cf94c6074fde6f277bb7a08bfe8d08.1692288018.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4pBi3eR0csmxEpYzr6TBmDopGdzbTBAizNpH1Rem4KR3poYpXQI
+ 0bdxkebh5IacK/CSmBcrqu4JrCZwQxeaz2/xVLtVO1CNMkstItNM1OsvbKu8n5HO0aU9KdV
+ ITzVZMGJOyd8Yn9W2TS+gsJWBkvNbMPQNCpb4JRz39clTnhcHp/Vzt2cToyxJwHnh+OjSkA
+ luurJWY1Iwl8wsV+jfp6w==
+UI-OutboundReport: notjunk:1;M01:P0:H8A+9oAUqKU=;PMueJpoedjum8wcq5H4m9VrHYDl
+ UJH7dvM78TjuIQ0xddxpyrzHvGuUe8Svfmu9hW9LQiBBNDyRctpJvn9jIgaoAcEmCeq1pKdB/
+ mjnXH4RAagHgr5Zm1Ti2zoHJy0pe1bcJ/WsfOsjwNTIr7cUnvLCFF4hPdyL0TYOcHlmXnEn19
+ isgLeFVo6O1B1MoCivuSY3bKCjnnKH5N+fKOqrQtNxopnptx2gSBBqrPGOS6zMKHizoXDiWj7
+ lCqiPNLaJudv09rTK1vaFvtUqhm0GSvU8FV+S53b2LVTv3T6ab/GFjW4PTR0k4vFBlrCFUrfI
+ 9D0VNcdljK1iN7yw8cqCxYX0p6KJ7FQKeQC4sXT79+NxFhUV17sZ6zCMBgsni0HklD8Wwpg0S
+ 8qwpJkoovAcmdYPaPtRlRkqVJ3Mn8N6oXjLdAUktx7tsh5sDY9mkOTaeaHH5aGFRtBlNsXXd+
+ BxBEPPvLbYlRSJI9JcrN46U2NzdBVM0LTOPvJ7UGMaE/ksWWkSBUEP8Xlvjfj036aWfCeZm7c
+ GgH+gwuYyV4cNVhyCjs7b2Hu0PPRjnK9EM91zTAWop5zIbCBf31RpVHc4AAHOpWGN1a6o0VKR
+ cdCDHt451NC8sArgYu/rRMdPforNd0eKR91ZR5TbKIYdrmxdZ0lCW5+fVSvRbQJfSzY4E44fD
+ hRaX+CsTbuUGgdYkhjOWF/RqFpfQnbcFEEy+Hzs9+cm+2Z/IMzooL3IxTsynZNS8fnQF0bPL3
+ BtUjCSxaNvarpYnZmaJdGiFHq8E07rdx/GtKz4mTDJxI0JDHO9znm1Mpgf9TziyrxTQECP3aC
+ K/Gm84l8dT25UjjwRgK8hSXDAewvI+QVwktwgPJ/Q/Qk4+o4gSkqAlDp0ctojvIIkv8QZHmRH
+ wLOejEMElPdexgLDQPXTpJPh5VdnJ64eICFUjGKXeu1paR2DB7crFIRymHip2kq6tKWHQxZBZ
+ sZtImOr5UBCG1Tlwbysh7f93k3k=
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:13:36AM -0700, Zach O'Keefe wrote:
-> > > IIUC then, there is a bug in smaps THPeligible code when
-> > > CONFIG_READ_ONLY_THP_FOR_FS is not set. Not obvious, but apparently
-> > > this config is (according to it's Kconfig desc) khugepaged-only, so it
-> > > should be fine for it to be disabled, yet allow
-> > > do_sync_mmap_readahead() to install a pmd for file-backed memory.
-> > > hugepage_vma_check() will need to be patched to fix this.
-> >
-> > I guess so ...
-> 
-> The easiest and most satisfying way to handle this -- and I think we
-> talked about this before -- is relaxing that complicated
-> file_thp_enabled() check when the file's mapping supports large
-> folios. I think that makes sense to me, though I don't know all the
-> details fs-side. Will we need any hook to give fs the chance to update
-> any internal state on collapse?
+On 8/17/23 18:07, Geert Uytterhoeven wrote:
+> As of commit b7fb14d3ac63117e ("ide: remove the legacy ide driver") in
+> v5.14, there are no more generic users of <asm/ide.h>.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-If the filesystem has per-folio metadata, we need to give the filesystem
-the chance to set that up.  I've vaguaely been wondering about using the
-->migrate_folio callback for it.  At the moment, I think it just refuses
-to work if the folio isn't order-0.
+Acked-by: Helge Deller <deller@gmx.de>
 
-> > > But I have a larger question for you: should we care about
-> > > /sys/kernel/mm/transparent_hugepage/enabled for file-fault? We
-> > > currently don't. Seems weird that we can transparently get a hugepage
-> > > when THP="never". Also, if THP="always", we might as well skip the
-> > > VM_HUGEPAGE check, and try the final pmd install (and save khugepaged
-> > > the trouble of attempting it later).
-> >
-> > I deliberately ignored the humungous complexity of the THP options.
-> > They're overgrown and make my brain hurt. [..]
-> 
-> Same
-> 
-> > [..] Instead, large folios are
-> > adaptive; they observe the behaviour of the user program and choose based
-> > on history what to do.  This is far superior to having a sysadmin tell
-> > us what to do!
-> 
-> I had written a bunch on this, but I arrived to the conclusion that
-> (a) pmd-mapping here is ~ a free win, and (b) I'm not the best  person
-> to argue for these knobs, given MADV_COLLAPSE ignores them entirely :P
-> 
-> ..But (sorry) what about MMF_DISABLE_THP?
+Thanks!
+Helge
 
-Yeah, we ignore that too.  My rationale is -- as you said -- using the
-PMDs is actually free, and it's really none of the app's business how
-the page cache chooses to cache things.
+> ---
+>   arch/parisc/include/asm/ide.h | 54 -----------------------------------
+>   1 file changed, 54 deletions(-)
+>   delete mode 100644 arch/parisc/include/asm/ide.h
+>
 
