@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B56E977F3D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35F177F3C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349810AbjHQJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        id S1349317AbjHQJpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349799AbjHQJrB (ORCPT
+        with ESMTP id S1349028AbjHQJp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:47:01 -0400
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A3B30C1;
-        Thu, 17 Aug 2023 02:46:58 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 37H9kNje085755;
-        Thu, 17 Aug 2023 17:46:23 +0800 (+08)
-        (envelope-from Huangzheng.Lai@unisoc.com)
-Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RRKpM49rVz2P3khb;
-        Thu, 17 Aug 2023 17:44:11 +0800 (CST)
-Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
- (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 17 Aug
- 2023 17:46:21 +0800
-From:   Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: [PATCH 8/8] i2c: sprd: Increase the waiting time for IIC transmission to avoid system crash issues
-Date:   Thu, 17 Aug 2023 17:45:20 +0800
-Message-ID: <20230817094520.21286-9-Huangzheng.Lai@unisoc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
-References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
+        Thu, 17 Aug 2023 05:45:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF832D57
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692265526; x=1723801526;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tONTTcjsxPEvLTsaDyGq82z/yOeG3FkPZEkL6zLsQ4E=;
+  b=DvV4Aoe9ZRsOZ25uRevLNCCmCUtHVN7FGvRDgB9TbWRxG2KnkJ3/9tXL
+   PhZaLhDaOD+zS2Ia8qQMWQOHtO6mZ9IbXtcR86WXFjWLpUaNejhGpR0gw
+   G/ZD8CyLYlPPK6lPVEo2AU/57mKTDj17rDd3AmXxQPmuok/NLgy+1lWvi
+   wMr4eLa6HEu1RLJSSybGkkrObIplp9EnBexdS2MPlV+SGyNuvwa0yb1xy
+   kq4BgIvhdP6q5xCTitqjGaZv5rDq7Dq3DhbI1inn4iyR9sa6u94VkU54y
+   seoC6X9CvhZ4q7i89s5OFQHSXV+w2o5jezWe3dSIQ8kCSn/seePzOkxBL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376501426"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="376501426"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 02:45:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="684374674"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="684374674"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2023 02:45:24 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qWZZD-005ksG-0r;
+        Thu, 17 Aug 2023 12:45:23 +0300
+Date:   Thu, 17 Aug 2023 12:45:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v3 3/8] bitmap: fix opencoded bitmap_allocate_region()
+Message-ID: <ZN3sMzYHxQyvrKMJ@smile.fi.intel.com>
+References: <20230815233628.45016-1-yury.norov@gmail.com>
+ <20230815233628.45016-4-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.13.2.29]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- shmbx04.spreadtrum.com (10.0.1.214)
-X-MAIL: SHSQR01.spreadtrum.com 37H9kNje085755
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815233628.45016-4-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to the relatively low priority of the isr_thread, when the CPU
-load is high, the execution of sprd_i2c_isr_thread will be delayed.
-After the waiting time is exceeded, the IIC driver will perform
-operations such as disabling the IIC controller. Later, when
-sprd_i2c_isr_thread is called by the CPU, there will be kernel panic
-caused by illegal access to the IIC register. After pressure testing,
-we found that increasing the IIC waiting time to 10 seconds can
-avoid this problem.
+On Tue, Aug 15, 2023 at 04:36:23PM -0700, Yury Norov wrote:
+> bitmap_find_region() opencodes bitmap_allocate_region(). Fix it.
 
-Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
----
- drivers/i2c/busses/i2c-sprd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...
 
-diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-index 6f65f28ea69d..3c7af04fa177 100644
---- a/drivers/i2c/busses/i2c-sprd.c
-+++ b/drivers/i2c/busses/i2c-sprd.c
-@@ -76,7 +76,7 @@
- /* timeout (ms) for pm runtime autosuspend */
- #define SPRD_I2C_PM_TIMEOUT	1000
- /* timeout (ms) for transfer message */
--#define I2C_XFER_TIMEOUT	1000
-+#define I2C_XFER_TIMEOUT	10000
- /* dynamic modify clk_freq flag  */
- #define	I2C_3M4_FLAG		0x0100
- #define	I2C_1M_FLAG		0x0080
+>  	for (pos = 0; (end = pos + BIT(order)) <= bits; pos = end) {
+> -		if (!__reg_op(bitmap, pos, order, REG_OP_ISFREE))
+> -			continue;
+> -		__reg_op(bitmap, pos, order, REG_OP_ALLOC);
+> -		return pos;
+> +		if (!bitmap_allocate_region(bitmap, pos, order))
+> +			return pos;
+
+You can also leave more code untouched, by replacing only first conditional
+with
+
+		if (bitmap_allocate_region(bitmap, pos, order))
+			continue;
+		return pos;
+
+>  	}
+>  	return -ENOMEM;
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
