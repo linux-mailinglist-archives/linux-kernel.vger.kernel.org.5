@@ -2,97 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2D077F436
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E21C77F446
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349976AbjHQKQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        id S1349230AbjHQKY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 06:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350091AbjHQKQd (ORCPT
+        with ESMTP id S1348253AbjHQKYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:16:33 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 09E5030FF
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:16:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8DFD6D75;
-        Thu, 17 Aug 2023 03:16:51 -0700 (PDT)
-Received: from [10.163.56.152] (unknown [10.163.56.152])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 03A4D3F64C;
-        Thu, 17 Aug 2023 03:16:05 -0700 (PDT)
-Message-ID: <f8f8ce42-889c-9a6b-5f74-121bd9dc09b1@arm.com>
-Date:   Thu, 17 Aug 2023 15:46:03 +0530
+        Thu, 17 Aug 2023 06:24:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74853213F;
+        Thu, 17 Aug 2023 03:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692267874; x=1723803874;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZyKtUMD9gZ0GFk5SzGG5YmdqE0RYJyeunkcNG4psLRQ=;
+  b=hPbGP6qJFYna5j/ZI2/+JE9qGiDRza12oRHkIO/WYUV1b6lf+t3FgMzP
+   WMy32fM6Fw2PwG6vLLyyumciXqaotWBdczTX3JtQjQ1/xlFVrAuTBSDkV
+   t88rWZnCnduOVDyTk2iry/t1FrNgXT2LiINgkW0AkUSvCRobUMJ99Gnn8
+   NQlpCfMZKsfU2FqW2jc81wDbwKCBH066loGpfuOlUYstukFgZPBmeea/2
+   xb9O8+RBK9LT6ZIT60p5cK3mea8xqLSK3WXtSDgdbn77q5WiJJcJz6izP
+   S/aePsuYIAUaFAM1ZnE+Na9x0/69i/8ir3daZF5g5apA82aIhaLBiswtX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362920566"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="362920566"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 03:24:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="728093501"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="728093501"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 17 Aug 2023 03:24:32 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id C6B3CDAB; Thu, 17 Aug 2023 13:24:30 +0300 (EEST)
+Date:   Thu, 17 Aug 2023 13:24:30 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Sanath S <sanaths2@amd.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
+        Sanjay R Mehta <sanju.mehta@amd.com>
+Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
+ the daisy chain
+Message-ID: <20230817102430.GD3465@black.fi.intel.com>
+References: <20230816051923.2287912-1-Sanath.S@amd.com>
+ <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] coresight: trbe: Allocate platform data per device
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        James Clark <james.clark@arm.com>, hejunhao3@huawei.com
-Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
-        leo.yan@linaro.org, mike.leach@linaro.org, linuxarm@huawei.com,
-        yangyicong@huawei.com, prime.zeng@hisilicon.com
-References: <20230814093813.19152-1-hejunhao3@huawei.com>
- <20230816141008.535450-1-suzuki.poulose@arm.com>
- <20230816141008.535450-2-suzuki.poulose@arm.com>
- <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
- <3f681660-a0f0-20cb-b79b-7b2e2f6a1b5c@arm.com>
- <d3a75551-8027-c95c-f83b-468877daf93d@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <d3a75551-8027-c95c-f83b-468877daf93d@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 16, 2023 at 06:48:35PM +0530, Sanath S wrote:
+> Adding Mika.
 
+Thanks!
 
-On 8/17/23 15:31, Suzuki K Poulose wrote:
-> On 17/08/2023 10:24, James Clark wrote:
->>
->>
->> On 17/08/2023 07:37, Anshuman Khandual wrote:
->>> Hi Suzuki,
->>>
->>> Seems like this patch is going to conflict with the below proposed change
->>>
->>> https://lore.kernel.org/all/20230817055405.249630-4-anshuman.khandual@arm.com/
->>>
->>> Please let me know how should we resolve this conflict.
->>
->> We could merge them both, with the fixes: one first, just to acknowledge
->> that there was a problem. But I suppose your one will have to be rebased
->> on top.
->>
->>>
->>> On 8/16/23 19:40, Suzuki K Poulose wrote:
->>>> Coresight TRBE driver shares a single platform data (which is empty btw).
->>>> However, with the commit 4e8fe7e5c3a5
->>>> ("coresight: Store pointers to connections rather than an array of them")
->>>> the coresight core would free up the pdata, resulting in multiple attempts
->>>> to free the same pdata for TRBE instances. Fix this by allocating a pdata per
->>>> coresight_device.
->>>>
->>>> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
->>>
->>> The above mentioned commit i.e 4e8fe7e5c3a5 seems to be a more recent one which
->>> has triggered this problem. But would the problem be still there without that ?
->>> Else 'Fixes:' tag would need changing.
->>>
->>
->> Yes I think the fixes tag should point to 4e8fe7e5c3a5.
-> 
-> Agreed, I will change the fixes tag and push this.
+> On 8/16/2023 10:49 AM, Sanath S wrote:
+> > In the case of Thunderbolt, it contains a PCIe switch and one or
+> > more hotplug-capable PCIe downstream ports where the daisy chain
+> > can be extended.
+> > 
+> > Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
+> > System BIOS allocates a very minimal number of buses for bridges and
+> > hot-plug capable PCIe downstream ports to enumerate the dock during
+> > boot. Because of this, we run out of bus space pretty quickly when
+> > more PCIe devices are attached to hotplug downstream ports in order
+> > to extend the chain.
+> > 
+> > Before:
+> >             +-04.0
+> >             +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
+> >             |                               +-01.0-[66]--
+> >             |                               +-02.0-[67]--
+> >             |                               +-03.0-[68]--
+> >             |                               \-04.0-[69]--
+> >             +-08.0
 
-In the first patch, the last hunk might not be required to fix the
-IPI problem and in fact might be bit problematic as well. Besides,
-could you please hold off pushing this change into coresight tree
-for some time ?
+This is something the BIOS should be doing but for some reason it is
+not on that particular system.
+
+> > In case of a thunderbolt capable bridge, reconfigure the buses allocated
+
+Thunderbolt
+
+> > by BIOS to the maximum available buses. So that the hot-plug bridges gets
+> > maximum buses and chain can be extended to accommodate more PCIe devices.
+> > This fix is necessary for all the PCIe downstream ports where the daisy
+> > chain can be extended.
+
+This is necessary only when there is no proper BIOS allocation for the
+resources.
+
+> > After:
+> >             +-04.0
+> >             +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
+> >             |                               +-01.0-[66-84]--
+> >             |                               +-02.0-[85-a3]--
+> >             |                               +-03.0-[a4-c0]--
+> >             |                               \-04.0-[c1]--
+> >             +-08.0
+> > 
+> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
+
+Did you get confirmation that this actually solves the issue?
+
+> > Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
+> > Signed-off-by: Sanath S <Sanath.S@amd.com>
+> > ---
+> >   drivers/pci/probe.c | 9 +++++++++
+> >   1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> > index 8bac3ce02609..ab7e90ef2382 100644
+> > --- a/drivers/pci/probe.c
+> > +++ b/drivers/pci/probe.c
+> > @@ -1263,6 +1263,8 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+> >   	bool fixed_buses;
+> >   	u8 fixed_sec, fixed_sub;
+> >   	int next_busnr;
+> > +	int start = bus->busn_res.start;
+> > +	int end = bus->busn_res.end;
+> >   	/*
+> >   	 * Make sure the bridge is powered on to be able to access config
+> > @@ -1292,6 +1294,13 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+> >   		broken = 1;
+> >   	}
+> > +	/* Reconfigure, If maximum buses are not allocated */
+> > +	if (!pass && start != 0 && end != 0xff && subordinate != end) {
+> > +		pci_info(dev, "Bridge has subordinate 0x%x but max busn 0x%x, reconfiguring\n",
+> > +			 subordinate, end);
+> > +		broken = 1;
+> > +	}
+> > +
+> >   	/*
+> >   	 * Disable Master-Abort Mode during probing to avoid reporting of
+> >   	 * bus errors in some architectures.
