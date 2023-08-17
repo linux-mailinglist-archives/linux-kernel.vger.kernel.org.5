@@ -2,164 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBE777FC1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D3F77FC22
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353671AbjHQQ2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:28:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45562 "EHLO
+        id S1351747AbjHQQa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353739AbjHQQ2q (ORCPT
+        with ESMTP id S1351847AbjHQQak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:28:46 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2053.outbound.protection.outlook.com [40.107.101.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E45AE2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:28:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GjjaUS2VDhbP6JN/ViJFuw+MVS4tIsmzQu3CEmYVTlEC3VO+HRfKLdv+tVkVLbIo71i7xHYkpEAxydzhomgkOA2kYprxpSKZydrhg6NWRWKzPkkQAq+TQhm7jEKRY86G6AjbUlKEB3YAAO0I41ZLC/+Bb66AW+NyjbPzFfIoL4j9IFwtCcqobBo1z7t5npIMAmi0B0a1PnExssZaxoLBXzPD3hWCy6wd+RZQPwssccvhdjM9tOY2DEE1C4KokcjxCsQ8MWO2y9u4/jY9xX7xd5wqEQJaZhbDIwZJJ9/KeW2mUzZRSqhw9R+DjHmNxieUP8Q+MatCDKS59qBlX85B4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EPljuCeY1lmI9pTrzB+xynFv4YYe3vgPJSEAY4CnZo4=;
- b=SIdpkRoOmSqV37QanOvscEBL20/TxjD3DkfZVDEZ/mm8PH2RALZm2KV7LrPJ8zNX9uz57/SB0B9eZ9yDWkZ7ulPCJsC++ZCnWhKfdURZ8Zz8CyNR3waX7zMjzGdUVTjc+OVdycClB47RsqRaGJ5DQ6JKn5NWoINeZMDBd94O7pVeJyc+JbuTk4DnYgoz/y2fZ7FSZVBB90HYApzzAGbaSpuMG//rF4LLJPmrFQHizs1/2ipt2nXboijmR96DFYy8+rZX5QSMA2Yx5ai5sfMvXMWKjNbTd/0WhvN0U7Qpi/lMopKKpIyyLMA0qAqf2wpEE+qRsZZh0zaix7FRmO5Iow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EPljuCeY1lmI9pTrzB+xynFv4YYe3vgPJSEAY4CnZo4=;
- b=IBYOIpDWk3AFMSz3dSndBhV4p93eqxn9B962T9yqGmiX5V8UtiWptX6FWCZSGn4NigFqLG3JRgboCkSN08MBDhvG9Z8w5GPi5zw3nxKe1N/wVXuGkHm/pzX9ywCvONDFcAI8DBnYuU8qUojE5CUqV1kz0xF1/zWAMkXFrsSnL+sC0pjd5DO1RWcFySiFMfGxA2WIP9mFwGqZqwHoUxQwuDbXNmuFlRrVjlafHXNzvXxnTS1YDAmsK3Vc3dJfaXUxbuQuqgRHpEb44BNHXirE4qmrnE+H2PLGmL3sIAF192NwgT5R9fLY3ODQV/Fw4aNn1g8A2dkm1IRflQ9jmHGPTQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SA3PR12MB9090.namprd12.prod.outlook.com (2603:10b6:806:397::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Thu, 17 Aug
- 2023 16:28:41 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.031; Thu, 17 Aug 2023
- 16:28:41 +0000
-Date:   Thu, 17 Aug 2023 13:28:39 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Nicolin Chen <nicolinc@nvidia.com>, will@kernel.org,
-        joro@8bytes.org, mshavit@google.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Allow default substream bypass
- with a pasid support
-Message-ID: <ZN5Kt4mEGp0XnGVI@nvidia.com>
-References: <20230817042135.32822-1-nicolinc@nvidia.com>
- <ZN46upjIBFcI4mL+@nvidia.com>
- <9ba29982-ae96-bf53-f021-21cb1b22643a@arm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9ba29982-ae96-bf53-f021-21cb1b22643a@arm.com>
-X-ClientProxiedBy: BL1PR13CA0352.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Thu, 17 Aug 2023 12:30:40 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B0E173F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:30:38 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-589a9fc7fc6so104917b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20221208.gappssmtp.com; s=20221208; t=1692289838; x=1692894638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p5Bls4+/C5LcDmAzNzwFWOesJHk+SqwnZsLNI1k6t3U=;
+        b=r9z1uQuRVKGlWrlwQEKE9lwaImr6y0OQcOvqS5EkGLQF4kmq1ciZp9fRN83sscxyU7
+         nyrZSW4Uf1lEiZWnnH1uaTEcmv2XoE7Htr+594gCAKMak1jacGxeaXMpOB/6Sik6c30e
+         Tt+Fl1/hMj2voOspgrUtpEW6WYKkITHHJERne+hrZWSxEBdoqoeKxOCcPam/txxIc57O
+         JIRtxwhfc0KptUs39Ve5bi8ev3sgphRgWSYGVeip5BNt5GGUpU+XuD4XylZ1PCBRgCKo
+         cQasfEH/XIEBVFtePtEbGMXaMrQ1fWU9BC64FfMk0MCCX1vfAlPwzIEBY8ReLxKA+6cK
+         H9iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692289838; x=1692894638;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p5Bls4+/C5LcDmAzNzwFWOesJHk+SqwnZsLNI1k6t3U=;
+        b=KElB/nJ1GLMvMUgxTaVaEcsRbUWDJ6M7jGjQlvf8WLbj7nRa2YjM7UDgWYONkQ7cUv
+         GtJ5ac+PmkYU4o2yknrd3Gvub3J0/LRt+ScqnXbmqLxdZ2+0qjFc4JEW5dHWEzr1ztJA
+         zkaZznZvX1pr7RC+d9I1BJgN98O8oNbk8kpbdmwlWRlMgPKpjvH6OP6/gM318Ibr0Rnm
+         kWQ693Eor+AAATWHaoORSQEpnY8YJdZgNtkOg+SVpegAeFLjaj6IpcqeCoL8V2P9Uefr
+         vK1a37EGWEA7Kqu16N5icYRRW3LKSrYNdTbQIhIQ6li+hZzJdJC5o42DiYkcTvIoRPWc
+         Q+4w==
+X-Gm-Message-State: AOJu0YyD178VlP9ZdVL+z2Mcu9dFNfvTfMfP4tKdWaEbvDbMSveBOdR8
+        RNu1sXUQAlf6G9h+iM5QoqTqAGeS6gkOg7jnmzeM5Q==
+X-Google-Smtp-Source: AGHT+IEmNIDuWgheKcDoBF4mUGmWuYhzGOF89AQHYMxXCDZVJ1lkiXWCK0Yn2afziUaa4tet+Kq/0I39ZjbVw81/3A8=
+X-Received: by 2002:a0d:f502:0:b0:576:896a:dbc5 with SMTP id
+ e2-20020a0df502000000b00576896adbc5mr4712419ywf.48.1692289837725; Thu, 17 Aug
+ 2023 09:30:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA3PR12MB9090:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1b46b865-b6fd-4e9f-427f-08db9f3f0465
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2bINT23Q9qVgVZtM6HSLJ868IKeYwioEG+spAm1t8ajHZ0xYAgHURkOZrKWb2GybBxPKmod7Ur15yc+NDNXhQhc5lW1agqV/bgRfgPr0E/+xaysRf/Zwt1Kf0frwuCws+e80TpC0Xzmu+1Kus8ZCngEFh6xXxafM8TsjoTt6AcLo2ATkb+J1LrQUKk32OzvzFaAd3GeBFyK5r8bUTgyE016pm56BTifEU5sJGg5ifmgLE0VCJzsK49rq3i83Y7z+A70bj3iqcpZg8UIc4tomly+O/RFSIjDMKAZMfA1SdoixpyWPI6d+ooLHqGSrlqfLjcxeXlxTbWXqoSdItyOoo6yl27ZBoCTMwri3Ms/o8wbxHGp7bgJhomDeJFiKH0lj0QT/8WK2RuFl7xJT0udMdoBNcGx91wc+/tTvtDin9w/Wu9VMpSJlHX/s1x6AQmetSnKYv6OoDq4vw10kyrAccdpicfZzMNDVViwfoe+tRIJCrCLVvIe1yPCu2c3mEleaIGEvwEPZJbG/Yph/GeJs3r9XLHD9oFD/SD6F6F8NEl9uzO2cyTgmY04/LLxnFowq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(478600001)(36756003)(6506007)(2616005)(6486002)(6512007)(5660300002)(41300700001)(316002)(66946007)(66476007)(66556008)(6916009)(4326008)(8676002)(8936002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?kzyYoAcazLMIws+GWg5wFvlis9UJ6EQ/VyHXY6vq9bl/uMgbXCuQcZ3cT3o5?=
- =?us-ascii?Q?mDX2PWD7CNGcYHz9sov5eAUZlcm9PVHXmRgh8h3XaRLhiz0Tnwpigw6M8a7b?=
- =?us-ascii?Q?caq6JrkhQGghG+S7/4e50bp6vnCo9zO1GD7QGpkBloF+QYtOtngdCEuFdnEd?=
- =?us-ascii?Q?18nridMo4iGmZS++81+VXKF9HcaxmxKwKzZCSrSxY8xDScVdubXj+nvIkzo8?=
- =?us-ascii?Q?sPk/LR3DLEDqg/tSbbeD6Be+WeSIoAHNVUxF6Tlr7uaq8h0QMDXln2eYrHMx?=
- =?us-ascii?Q?RqNlcqdMYXLd50zlRLUSsKxz36X19aKKbJ4PorA1MP7MLZ8GsBTGDf6JDJmQ?=
- =?us-ascii?Q?HREZ7Mqm/rorRaSKTBXSLPPPOvNn9uqw19yJUWUrxQnhOjJNg1qQyBT1fuEV?=
- =?us-ascii?Q?BbOEZwLQXJqbLTQ+KHjYCeQ3S8IKxF8KHsBleTZjobj1cC4cXpLdEmV0hjTI?=
- =?us-ascii?Q?nyH4IJFFaHKCzPGrp427IhFLDozEAUJTMY4fKbHrjjdb2Kq3WV1uAL0txU/Y?=
- =?us-ascii?Q?ZwSbv8GE7CGkpLftibv1eRqWvx66uwK0tEEJt3CgjLyRSN41n156gMkvLZTM?=
- =?us-ascii?Q?V3fxoXfh0WIsaTgjNRRypzhv88J+rXXakEQqknhBCKyViW/E7zrUme5eUNKW?=
- =?us-ascii?Q?GajMw+ECfy/GN8tsNrrlMJ9STp5ldvjH2Buhhod2ZfyDmFV8EIZk85W1QtFM?=
- =?us-ascii?Q?TPoj2uzhHb5uPNccZRaxMKhV2/HSKA7xaJMvRA23z/kBWSLql2RWHCv9kCfW?=
- =?us-ascii?Q?K22JpmqBZ8LMUpudIlf14a7LERzEgxorh0ouo9TkWNRRzclJ3NgR69LDO/7z?=
- =?us-ascii?Q?IvqZ2NT0LJowgaLqtieYjLb501OE6eu/u2EWBwkC1yRoPgT/xIHPNQu+gUXD?=
- =?us-ascii?Q?0ElOPM80LzwtZVEw//PqlBuaEF3nBXRb8TQtM0lHLtHEGYocWlWeSb72YPNK?=
- =?us-ascii?Q?jxZMnQZp2UO4nLDuIoWoXmknHgbHDiHUzbDxVznqic5pG0rvOxaUmC/IUTpk?=
- =?us-ascii?Q?/hj2dxrSNNRHUr/JZ2dlWQPor9OcgNx4tzXr5PQSBrAu5YWGfxMsNG8Zy954?=
- =?us-ascii?Q?Rtf2injXqADq1ULXgvxdgbD2qh8rID6d2fWwDWdTAn5vMke+i3a4HoDDsuhQ?=
- =?us-ascii?Q?BwKjAiUoOu1MpyX2LAseZnF3TQKuwbkqMB3ZhHaaPZihGR2JRTs98QJqmEuU?=
- =?us-ascii?Q?NYbik1ebsNU6gxCXzoFfe4yjjIi7fvacSq8yjdaIXHBvm58SyE8bgveri8PK?=
- =?us-ascii?Q?NGLwFcPc5DtLTo2siBVfy0HSfIDgP52WNTqCN8lIKau/oZqbotLYyNCYes6g?=
- =?us-ascii?Q?s6vkDRfuZn9nAF8EnK/zK6UXqWA0LgESm38HVgdXh63N3XN7V3jtumyZAzq+?=
- =?us-ascii?Q?zN83FuJ342UA//8K9cNkj1xv8PTixRSzJete+8KD6sBcDyIABpMzAImwQ6z/?=
- =?us-ascii?Q?rrTRtb+wfV899YR2c/vc/A4Of+3E17yq7MPD3gG0fduYY2SmJq33pCfooCmO?=
- =?us-ascii?Q?v6e9+ljvemBrqUrdG7bejEYs2P8wjwgojvUZTX7bbzMGOTa5q0yP1BpeZA4t?=
- =?us-ascii?Q?se6EH5HSm/t5H3WbRUfrhhJN4atVV1g0ekPxTpPK?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b46b865-b6fd-4e9f-427f-08db9f3f0465
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 16:28:41.0143
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0AhbweqGA0FRgA0qtsYFTwogJiTzB2940Zzw2XujJcTLVVmZxJvSmQa/WynFSktT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9090
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <0000000000008a1fbb0602d4088a@google.com> <20230814160303.41b383b0@kernel.org>
+ <20230815112821.vs7nvsgmncv6zfbw@skbuf> <20230816225759.g25x76kmgzya2gei@skbuf>
+In-Reply-To: <20230816225759.g25x76kmgzya2gei@skbuf>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Date:   Thu, 17 Aug 2023 12:30:26 -0400
+Message-ID: <CAM0EoMnux5JjmqYM_ErBZD4x3xkgYOEyn3R4oX6uBW-+OkE_sQ@mail.gmail.com>
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in unix_release
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Pedro Tammela <pctammela@mojatatu.com>,
+        Victor Nogueira <victor@mojatatu.com>,
+        syzbot <syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        edumazet@google.com, jiri@nvidia.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 05:24:51PM +0100, Robin Murphy wrote:
-> > > @@ -2435,6 +2440,16 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
-> > >   	} else if (smmu_domain->smmu != smmu)
-> > >   		ret = -EINVAL;
-> > > +	/*
-> > > +	 * When attaching an IDENTITY domain to a master with pasid capability,
-> > > +	 * the master can still enable SVA feature by allocating a multi-entry
-> > > +	 * CD table and attaching the IDENTITY domain to its default substream
-> > > +	 * that alone can be byassed using the S1DSS field of the STE.
-> > > +	 */
-> > > +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS && master->ssid_bits &&
-> > > +	    smmu->features & ARM_SMMU_FEAT_TRANS_S1)
-> > > +		smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS_S1DSS;
-> > 
-> > Then you don't technically need to do this.
-> > 
-> > Though if we can't atomically change the STE from IDENTITY to IDENTIY
-> > with a CD then you still have to do something here,
-> 
-> Strictly I think we are safe to do that - fill in all the S1* fields while
-> Config[0] is still 0 and they're ignored, sync, then set Config[0]. Adding a
-> CD table under a translation domain should be achievable as well, since
-> S1CDMax, S1ContextPtr and S1Fmt can all be updated together atomically
-> (although it's still the kind of switcheroo where I'd be scared of a massive
-> boulder suddenly rolling out of the ceiling...)
+On Wed, Aug 16, 2023 at 6:58=E2=80=AFPM Vladimir Oltean <vladimir.oltean@nx=
+p.com> wrote:
+>
+> Hi Jakub,
+>
+> On Tue, Aug 15, 2023 at 02:28:21PM +0300, Vladimir Oltean wrote:
+> > On Mon, Aug 14, 2023 at 04:03:03PM -0700, Jakub Kicinski wrote:
+> > > Hi Vladimir, any ideas for this one?
+> > > The bisection looks pooped, FWIW, looks like a taprio inf loop.
+> >
+> > I'm looking into it.
+>
+> Here's what I've found out and what help I'll need going forward.
+>
+> Indeed there is an infinite loop in taprio_dequeue() -> taprio_dequeue_tc=
+_priority(),
+> leading to an RCU stall.
+>
+> Short description of taprio_dequeue_tc_priority(): it cycles
+> q->cur_txq[tc] in the range between [ offset, offset + count ), where:
+>
+>         int offset =3D dev->tc_to_txq[tc].offset;
+>         int count =3D dev->tc_to_txq[tc].count;
+>
+> with the initial q->cur_txq[tc], aka the "first_txq" variable, being set
+> by the control path: taprio_change(), also called by taprio_init():
+>
+>         if (mqprio) {
+>                 (...)
+>                 for (i =3D 0; i < mqprio->num_tc; i++) {
+>                         (...)
+>                         q->cur_txq[i] =3D mqprio->offset[i];
+>                 }
+>         }
+>
+> In the buggy case that leads to the RCU stall, the line in taprio_change(=
+)
+> which sets q->cur_txq[i] never gets executed. So first_txq will be 0
+> (pre-initialized memory), and if that's outside of the [ offset, offset +=
+ count )
+> range that taprio_dequeue_tc_priority() -> taprio_next_tc_txq() expects
+> to cycle through, the kernel is toast.
+>
+> The nitty gritty of that is boring. What's not boring is how come the
+> control path skips the q->cur_txq[i] assignment. It's because "mqprio"
+> is NULL, and that's because taprio_change() (important: also tail-called
+> from taprio_init()) has this logic to detect a change in the traffic
+> class settings of the device, compared to the passed TCA_TAPRIO_ATTR_PRIO=
+MAP
+> netlink attribute:
+>
+>         /* no changes - no new mqprio settings */
+>         if (!taprio_mqprio_cmp(q, dev, mqprio))
+>                 mqprio =3D NULL;
+>
+> And what happens is that:
+> - we go through taprio_init()
+> - a TCA_TAPRIO_ATTR_PRIOMAP gets passed to us
+> - taprio_mqprio_cmp() sees that there's no change compared to the
+>   netdev's existing traffic class config
+> - taprio_change() sets "mqprio" to NULL, ignoring the given
+>   TCA_TAPRIO_ATTR_PRIOMAP
+> - we skip modifying q->cur_txq[i], as if it was a taprio_change() call
+>   that came straight from Qdisc_ops :: change(), rather than what it
+>   really is: one from Qdisc_ops :: init()
+>
+> So the next question: why does taprio_mqprio_cmp() see that there's no
+> change? Because there is no change. When Qdisc_ops :: init() is called,
+> the netdev really has a non-zero dev->num_tc, prio_tc_map, tc_to_txq and
+> all that.
+>
+> But why? A previous taprio, if that existed, will call taprio_destroy()
+> -> netdev_reset_tc(), so it won't leave state behind that will hinder
+> the current taprio. Checking for stuff in the netdev state is just so
+> that taprio_change() can distinguish between a direct Qdisc_ops :: change=
+()
+> call vs one coming from init().
+>
+> Finally, here's where the syzbot repro becomes relevant. It crafts the
+> RTM_NEWQDISC netlink message in such a way, that it makes tc_modify_qdisc=
+()
+> in sch_api.c call a Qdisc_ops sequence with which taprio wasn't written
+> in mind.
+>
+> With "tc qdisc replace && tc qdisc replace", tc_modify_qdisc() is
+> supposed to call init() the first time and replace() the second time.
+> What the repro does is make the above sequence call two init() methods
+> back to back.
+>
+> To create an iproute2-based reproducer rather than the C one provided by
+> syzbot, we need this iproute2 change:
+>
+> diff --git a/tc/tc_qdisc.c b/tc/tc_qdisc.c
+> index 56086c43b7fa..20d9622b6bf3 100644
+> --- a/tc/tc_qdisc.c
+> +++ b/tc/tc_qdisc.c
+> @@ -448,6 +448,8 @@ int do_qdisc(int argc, char **argv)
+>                 return tc_qdisc_modify(RTM_NEWQDISC, NLM_F_EXCL|NLM_F_CRE=
+ATE, argc-1, argv+1);
+>         if (matches(*argv, "change") =3D=3D 0)
+>                 return tc_qdisc_modify(RTM_NEWQDISC, 0, argc-1, argv+1);
+> +       if (strcmp(*argv, "replace-exclusive") =3D=3D 0)
+> +               return tc_qdisc_modify(RTM_NEWQDISC, NLM_F_CREATE|NLM_F_R=
+EPLACE|NLM_F_EXCL, argc-1, argv+1);
+>         if (matches(*argv, "replace") =3D=3D 0)
+>                 return tc_qdisc_modify(RTM_NEWQDISC, NLM_F_CREATE|NLM_F_R=
+EPLACE, argc-1, argv+1);
+>         if (matches(*argv, "link") =3D=3D 0)
+>
+> which basically implements a crafted alternative of "tc qdisc replace"
+> which also sets the NLM_F_EXCL flag in n->nlmsg_flags.
+>
+> Then, the minimal repro script can simply be expressed as:
+>
+> #!/bin/bash
+>
+> ip link add veth0 numtxqueues 16 numrxqueues 16 type veth peer name veth1
+> ip link set veth0 up && ip link set veth1 up
+>
+> for ((i =3D 0; i < 2; i++)); do
+>         tc qdisc replace-exclusive dev veth0 root stab overhead 24 taprio=
+ \
+>                 num_tc 2 map 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \
+>                 queues 8@0 4@8 \
+>                 clockid REALTIME \
+>                 base-time 0 \
+>                 cycle-time 61679 \
+>                 sched-entry S 0 54336 \
+>                 sched-entry S 0x8a27 7343 \
+>                 max-sdu 18343 18343 \
+>                 flags 0
+> done
+>
+> ip link del veth0
+>
+> Here's how things go sideways if sch_api.c goes through the Qdisc_ops :: =
+init()
+> code path instead of change() for the second Qdisc.
+>
+> The first taprio_attach() (i=3D0) will attach the root taprio Qdisc (aka =
+itself)
+> to all netdev TX queues, and qdisc_put() the existing pfifo default Qdisc=
+s.
+>
+> When the taprio_init() method executes for i=3D1, taprio_destroy() hasn't
+> been called yet. So neither has netdev_reset_tc() been called, and
+> that's part of the problem (the one that causes the infinite loop in
+> dequeue()).
+>
+> But, taprio_destroy() will finally get called for the initial taprio
+> created at i=3D0. The call trace looks like this:
+>
+>  rtnetlink_rcv_msg()
+>  -> tc_modify_qdisc()
+>     -> qdisc_graft()
+>        -> taprio_attach() for i=3D1
+>           -> qdisc_put() for the old Qdiscs attached to the TX queues, ak=
+a the taprio from i=3D0
+>              -> __qdisc_destroy()
+>                 -> taprio_destroy()
+>
+> What's more interesting is that the late taprio_destroy() for i=3D0
+> effectively destroys the netdev state - the netdev_reset_tc() call -
+> done by taprio_init() -> taprio_change() for i=3D1, and that can't be
+> too good, either. Even if there's no immediately observable hang, the
+> traffic classes are reset even though the Qdisc thinks they aren't.
+>
+> Taprio isn't the only one affected by this. Mqprio also has the pattern
+> of calling netdev_set_num_tc() from Qdisc_ops :: init() and destroy().
+> But with the possibility of destroy(i=3D0) not being serialized with
+> init(i=3D1), that's buggy.
+>
+> Sorry for the long message. This is where I'm at. For me, this is the
+> bottom of where things are intuitive. I don't understand what is
+> considered to be expected behavior from tc_modify_qdisc(), and what is
+> considered to be sane Qdisc-facing API, and I need help.
+>
+> I've completely stopped debugging when I saw that the code enters
+> through this path at i=3D1, so I really can't tell you more:
+>
+>                                 /* This magic test requires explanation.
+>                                  *
+>                                  *   We know, that some child q is alread=
+y
+>                                  *   attached to this parent and have cho=
+ice:
+>                                  *   either to change it or to create/gra=
+ft new one.
+>                                  *
+>                                  *   1. We are allowed to create/graft on=
+ly
+>                                  *   if CREATE and REPLACE flags are set.
+>                                  *
+>                                  *   2. If EXCL is set, requestor wanted =
+to say,
+>                                  *   that qdisc tcm_handle is not expecte=
+d
+>                                  *   to exist, so that we choose create/g=
+raft too.
+>                                  *
+>                                  *   3. The last case is when no flags ar=
+e set.
+>                                  *   Alas, it is sort of hole in API, we
+>                                  *   cannot decide what to do unambiguous=
+ly.
+>                                  *   For now we select create/graft, if
+>                                  *   user gave KIND, which does not match=
+ existing.
+>                                  */
+>                                 if ((n->nlmsg_flags & NLM_F_CREATE) &&
+>                                     (n->nlmsg_flags & NLM_F_REPLACE) &&
+>                                     ((n->nlmsg_flags & NLM_F_EXCL) ||
+>                                      (tca[TCA_KIND] &&
+>                                       nla_strcmp(tca[TCA_KIND], q->ops->i=
+d)))) {
+>                                         netdev_err(dev, "magic test\n");
+>                                         goto create_n_graft;
+>                                 }
+>
+> I've added more Qdisc people to the discussion. The problem description
+> is pretty much self-contained in this email, and going to the original
+> syzbot report won't bring much else.
+>
 
-That sounds pretty good then we don't have to force staying in CD mode
+I will take a look tommorow.
 
-> > but really what we
-> > want is to force a CD table for all cases if PASID is enabled, and
-> > force DMA domains to be S2 domains as well.
-> 
-> Wut? No, DMA domains really want to be stage 1, for many reasons.
-> Implementing them with stage 2 when stage 1 isn't supported was always a bit
-> of a bodge, but thankfully I'm not aware of anyone ever building a
-> stage-2-only SMMUv3 anyway.
-> 
-> The most glaringly obvious one, though, is that I think people like PASID
-> support and SVA to actually work ;)
+cheers,
+jamal
 
-Blah, I keep doing this and swapping S1/S2 in this confusing naming
-scheme (and it doesn't help that AMD is backwards, sigh) - I ment what
-you said :)
-
-Thanks,
-Jason
+> There are multiple workarounds that can be done in taprio (and mqprio)
+> depending on what is considered as being sane API. Though I don't want
+> to get ahead of myself. Maybe there is a way to fast-forward the
+> qdisc_destroy() of the previous taprio so it doesn't overlap with the
+> new one's qdisc_create().
