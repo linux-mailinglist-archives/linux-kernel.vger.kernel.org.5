@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6D377FB2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EC277FB43
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353344AbjHQPvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47760 "EHLO
+        id S1353362AbjHQPx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353374AbjHQPve (ORCPT
+        with ESMTP id S1346695AbjHQPwx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:51:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4365830E1;
-        Thu, 17 Aug 2023 08:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692287490; x=1723823490;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=mSEcYZALTQJIZt/i/ZDOECf+xJ+2HGAure6MfLyotKg=;
-  b=a1BJZaeHVEaABBmouCSaoLT06Zt8qB7wRcrUPHG+qvSTRGsfkizO/x1G
-   Tb9X8easCaBZgxp7K8YfT6BIpUlYD/gygj0Cd+YRFo0UGjM0VtOavri2P
-   L9Ok8BQqYrDaUmDaNIxEgWBZA06teHu/9x5uyEhQ68sZlmaz3LZ/+1SJR
-   mAVCGaAvg8jrN6P0SHGszo5RXs++72R6zNKPeHtHEwhyP/p41Wim7cirP
-   9GjB3QopbB/fx8e8QC2Es9H0pPLBJOClbTV6Ly4R2VRUA4Nn8SIpLO9Ji
-   rDuNlzF7icwFLGIy6yb1s/udr6GR328FaAdWduLooCjuIM6nvm17CryV9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="436767852"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="436767852"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:51:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="878280802"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Aug 2023 08:51:21 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWfHH-000gnh-1N;
-        Thu, 17 Aug 2023 18:51:15 +0300
-Date:   Thu, 17 Aug 2023 18:51:15 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yann Sionneau <yann@sionneau.net>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>
-Subject: Re: [PATCH 2/2] i2c: designware: abort the transfer if receiving
- byte count of 0
-Message-ID: <ZN5B89MpyjKxDKVP@smile.fi.intel.com>
-References: <20230811124624.12792-1-yann@sionneau.net>
- <20230811124624.12792-2-yann@sionneau.net>
- <ZNY/OL4ZKiTL3lF3@smile.fi.intel.com>
- <d493159f-8656-5777-8f77-c45504397c60@sionneau.net>
+        Thu, 17 Aug 2023 11:52:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3563530D8
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692287528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cb3vOuQ+kH0/pSZM4Qtlmw5+LiUYQstAOby+SW+Bxfk=;
+        b=ToyGIX+gFplI16cnC1/4acUyFWmSX0RjPNyWHqxHCNU0GyDNz/GdzV4v6KvvKNTGK/Mald
+        vo+h1nmLzefrlSAYQ5iCCzWXl7pfHzdwFDtdcdv1m3GNmB7ySFgpWDb+Z5hr5Fl9ALyrvr
+        N8hlLCca+1zh3iOR3yOvygqSkEN94oQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-581-AUaE4jQ9OvCDZ0u-Al1L_Q-1; Thu, 17 Aug 2023 11:52:07 -0400
+X-MC-Unique: AUaE4jQ9OvCDZ0u-Al1L_Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-978a991c3f5so119664066b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:52:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692287524; x=1692892324;
+        h=content-transfer-encoding:mime-version:user-agent:date:cc:to:from
+         :subject:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cb3vOuQ+kH0/pSZM4Qtlmw5+LiUYQstAOby+SW+Bxfk=;
+        b=QLnMvuvp3n7v7r3Yhmm+wyr3EsiSQ3rf3aOSPkCN48OHiJfwYh+bCzp6f6RWL7UBtH
+         tUsE7nkmDBBnDLe+3ckACAxbj4tHl44lKdgylvuQ3NflqKoIoGlPhH8ol68BuVpdRUh/
+         zRlSx1fpL/YYfqOyClUmjavikbMgyjL8G57gtTZoRwPe/CcZkskTNGy5xhBLn891AV7u
+         tnk0NUI3uJj8CSk49w44idsWpcYZeHsdnwTB0juy1emMOSe/nX9HsGQXmF4mepSorFCN
+         l5OWZBhiXsyLuPaDHdRGldPlBLlWou+Rc24l+hQ2ZXbkYUkkvUg21pBkUqirnBumc1jk
+         P1Gg==
+X-Gm-Message-State: AOJu0YzJBqePHE9AJNGPASle8hvQFZmMo3R3TeMq3hW0t4wJmHJg+Gq2
+        X7m2QtBgmtPjbqztY30CABXQXmHOV6etYlnlwj8OpZi++NR2mAqobhcHWov8kjyYmXOA5MNgFvL
+        HhFmUE62aDwyPHbMT2jGAvzV3Lay7zRhl
+X-Received: by 2002:a17:907:78d6:b0:994:580c:5049 with SMTP id kv22-20020a17090778d600b00994580c5049mr3921259ejc.5.1692287524483;
+        Thu, 17 Aug 2023 08:52:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGEYSuhHshTbCW1nXq3/UGD+eEan0fWSN3Vav9nH3UaSvKfRR7o325QMlMkQgHjS9vknG90yw==
+X-Received: by 2002:a17:907:78d6:b0:994:580c:5049 with SMTP id kv22-20020a17090778d600b00994580c5049mr3921251ejc.5.1692287524165;
+        Thu, 17 Aug 2023 08:52:04 -0700 (PDT)
+Received: from starship ([77.137.131.138])
+        by smtp.gmail.com with ESMTPSA id l18-20020a1709065a9200b00991e2b5a27dsm10312068ejq.37.2023.08.17.08.52.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 08:52:03 -0700 (PDT)
+Message-ID: <2d47431decaaf4bba0023c91ef0d7fd51b84333b.camel@redhat.com>
+Subject: Commit 'sunrpc: Use sendmsg(MSG_SPLICE_PAGES) rather then sendpage'
+ broke O_DIRECT over NFS
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     linux-nfs@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Date:   Thu, 17 Aug 2023 18:52:01 +0300
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d493159f-8656-5777-8f77-c45504397c60@sionneau.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 04:42:05PM +0200, Yann Sionneau wrote:
-> Le 11/08/2023 à 16:01, Andy Shevchenko a écrit :
-> > On Fri, Aug 11, 2023 at 02:46:24PM +0200, Yann Sionneau wrote:
+Hi!
 
-...
+I just updated my developement systems to 6.5-rc6 (from 6.4) and now I can't start a VM 
+with a disk which is mounted over the NFS.
 
-> > > +				if ((tmp <= I2C_SMBUS_BLOCK_MAX) && (tmp != 0))
-> > 				if (tmp && tmp <= I2C_SMBUS_BLOCK_MAX)
-> 
-> I find the tmp != 0 "more obvious", I am more used to "just tmp" when it's a
-> pointer or a boolean, but maybe it's just me!
-> 
-> I'll fix that in the V2 :)
+The VM has two qcow2 files, one depends on another and qemu opens both.
 
-IIRC it's unsigned, so you may use
+This is the command line of qemu:
 
-				if (tmp > 0 && tmp <= I2C_SMBUS_BLOCK_MAX)
+-drive if=none,id=os_image,file=./disk_s1.qcow2,aio=native,discard=unmap,cache=none
 
-which will be more explicit.
+The disk_s1.qcow2 depends on disk_s0.qcow2
 
-> > > +					len = i2c_dw_recv_len(dev, tmp);
-> > > +				else
-> > > +					i2c_dw_abort(dev);
+However this is what I get:
 
--- 
-With Best Regards,
-Andy Shevchenko
+qemu-system-x86_64: -drive if=none,id=os_image,file=./disk_s1.qcow2,aio=native,discard=unmap,cache=none: Could not open backing file: Could not open './QFI?': No such file or directory
 
+'QFI?' is qcow2 file signature, which signals that there might be some nasty corruption happening.
+
+The program was supposed to read a field inside the disk_s1.qcow2 file which should read 'disk_s0.qcow2' 
+but instead it seems to read the first 4 bytes of the file.
+
+
+Bisect leads to the above commit. Reverting it was not possible due to many changes.
+
+Both the client and the server were tested with the 6.5-rc6 kernel, but once rebooting the server into
+the 6.4, the bug disappeared, thus I did a bisect on the server.
+
+When I tested a version before the offending commit on the server, the 6.5-rc6 client was able to work with it,
+which increases the chances that the bug is in nfsd.
+
+Switching qemu to use write back paging also helps (aio=threads,discard=unmap,cache=writeback)
+The client and the server (both 6.5-rc6) work with this configuration.
+
+Running the VM on the same machine (also 6.5-rc6) where the VM disk is located (thus avoiding NFS) works as well.
+
+I tested several VMs that I have, all are affected in the same way.
+
+I run somewhat outdated qemu, but running the latest qemu doesn't make a difference.
+
+I use nfs4.
+
+I can test patches and provide more info if needed.
+
+Best regards,
+	Maxim Levitsky
 
