@@ -2,268 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF42477FCE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5468B77FCEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352479AbjHQRUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54016 "EHLO
+        id S1353928AbjHQRWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354044AbjHQRUg (ORCPT
+        with ESMTP id S1353932AbjHQRWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:20:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50131BF;
-        Thu, 17 Aug 2023 10:20:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D219666B1E;
-        Thu, 17 Aug 2023 17:20:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBD8EC433C9;
-        Thu, 17 Aug 2023 17:20:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692292834;
-        bh=Q0i/OGnnC5qzI/zu5hKUHPWm4HJuIBakje62Vw6t7tQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=gAVPj1QNcjaAYrk8JtXjNEy1ferCbuGcIgW/6EdRA3PvgIkL9UyZHDigCwYVooYPw
-         uaq2kV9b90/XE28ydMVg7nzdAmYYePYTQclebga5Lrq8fj2HEBKOzNh/qz9DVVc8em
-         l+TvVpEdFhkztSfTLM/4itCGHSX90oIWJvdh0Ewm2NtduGpGK45hPNROT6ct1IKf0q
-         FJhnjrJ+zXUmlMRKGMK8wrGBHUGQUHgE8yj7o+22Zb4clo8OWiA8yt9DUkQgAti/oE
-         kMUvKzF/RgKFUHmupB/l1Z4UiRjECYB4VLfFQs1kkr66wgacKuou4K1mWR0CHngkqt
-         /TkGvotXoIRdw==
-Date:   Thu, 17 Aug 2023 12:20:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
- dynamically
-Message-ID: <20230817172032.GA321136@bhelgaas>
+        Thu, 17 Aug 2023 13:22:32 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C499EE;
+        Thu, 17 Aug 2023 10:22:31 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso1244365e9.0;
+        Thu, 17 Aug 2023 10:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692292949; x=1692897749;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SxMhizufldjXqr2LJXmRW1fhXbnI6OJa+DaLU10aqqs=;
+        b=cE8nmPU79jz365GDzNZwMeC+RHo/75g3Hck2wL6uFmYOTaBzRFKml9H5vGH5fEcJBc
+         jYTJ4sk/kjrf+b4Z+MaLyZrEO+82tJty+a3J07Pz7mjVe+3ffew8c0W5xJspajTcpipa
+         g4IUjaDodsrhE8aX4DE0+D22u8k36Gl8IzD6FhhVQc5NEB4pAt2TTNWxqaQO/cms6r5G
+         BzsQWy5oogh9cAR3lGOrk5wHE2iFjqCNxOsaz+MHnupl6aQ3KPP8XH6U/rJcAM9owbTf
+         jJd4l4LnWgN32zKjceKvj/j1Q94MdtKYcefG8JWWNunae8yUOO47sr2eBCSEB37gu6Zf
+         5BBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692292949; x=1692897749;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SxMhizufldjXqr2LJXmRW1fhXbnI6OJa+DaLU10aqqs=;
+        b=bahiDXN/gSm/HRMHNI8tN61R4/HoTwOUXsDq2r6pI96rqzHHPdaag/hyoBJq9tJzMy
+         tsgvOLsY/0RAHqkuHM5GK2rPcaZlyw4iJmHxVbS9SvQY4gqXlUa+Sx1NufRVBIxSasze
+         whjQdUOcE71Dl3DZ+b5bTWZ7IqzAwvtYgNyP2FRvEWyFOP3zBnv94aZ1nrdGk0ULbIgO
+         g01cGGjAzFYsbIdPGFLIAvf5dOIzSNDZ6sJlwOXIu8IN1nu3zO2qEY2CpCpjafEZx/PU
+         AnuqjnPuFUqKvve4AHhbCLV3OKFSjd1eD5IJAfIj8aE7P8+RbkMjQcQ13V8KlC3tBbV9
+         +0sQ==
+X-Gm-Message-State: AOJu0YxzPgN2wFhgejy22JebuYhPF+K2eZlGyrTPKOjDVaekfqPtnG3h
+        UAeqq+PpOGjN8qAyE6FNvsFvgqFtksw=
+X-Google-Smtp-Source: AGHT+IHUcsncBbdMEjkERvYbkzbI5x/ECjIiPMT2fuyKCWabM0+Ufwa1Gdq7bs5fdXXcSgHEV3JrAQ==
+X-Received: by 2002:a7b:c84b:0:b0:3fc:616:b0db with SMTP id c11-20020a7bc84b000000b003fc0616b0dbmr327435wml.9.1692292949050;
+        Thu, 17 Aug 2023 10:22:29 -0700 (PDT)
+Received: from suse.localnet (host-79-56-101-183.retail.telecomitalia.it. [79.56.101.183])
+        by smtp.gmail.com with ESMTPSA id k9-20020a05600c0b4900b003fbd9e390e1sm3629554wmr.47.2023.08.17.10.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 10:22:28 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Deming Wang <wangdeming@inspur.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v3] Documentation/highmem: Add information about
+ kmap_local_folio()
+Date:   Thu, 17 Aug 2023 19:22:25 +0200
+Message-ID: <2898756.e9J7NaK4W3@suse>
+In-Reply-To: <87r0paxooq.fsf@meer.lwn.net>
+References: <20230708121719.8270-1-fmdefrancesco@gmail.com> <87r0paxooq.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 08:04:43AM +0530, Krishna chaitanya chundru wrote:
-> PCIe can operate on lower GEN speed if client decided based upon
-> the bandwidth & latency requirements. To support dynamic GEN speed
-> switch adding this sysfs support.
+On venerd=EC 14 luglio 2023 21:45:09 CEST Jonathan Corbet wrote:
+> "Fabio M. De Francesco" <fmdefrancesco@gmail.com> writes:
+> > The differences between kmap_local_page() and kmap_local_folio() consist
+> > only in the first taking a pointer to a page and the second taking two
+> > arguments, a pointer to a folio and the byte offset within the folio wh=
+ich
+> > identifies the page.
+> >=20
+> > The two API's can be explained at the same time in the "Temporary Virtu=
+al
+> > Mappings" section of the Highmem's documentation.
+> >=20
+> > Add information about kmap_local_folio() in the same subsection that
+> > explains kmap_local_page().
+> >
+>
+[snip]
+>=20
+> Applied, thanks.
+>=20
+> jon
 
-Who does "client" refer to?  I assume it's the system administrator,
-but of course the endpoint is involved in the hardware speed
-negotiation, so one could think of the endpoint as a "client" with its
-own speed capabilities and requirements.
+Jonathan,
 
-> To change the GEN speed the link should be in L0, so first disable
-> L0s & L1.
-> 
-> L0s needs to be disabled at both RC & EP because L0s entry is
-> independent. For enabling L0s both ends of the link needs to support
-> it, so first check if L0s is supported on both ends and then enable
-> L0s.
+Can you please tell me which release is this patch for? I see that it has n=
+ot=20
+yet reached upstream.
 
-Is there a place to document this sysfs knob?  Why should it be
-qcom-specific?  This sounds like generic PCIe functionality.
+Thanks,
 
-The ASPM stuff looks like it should be done by aspm.c, not done behind
-its back.
+=46abio
 
-Everything here looks generic (not qcom-specific) except the
-qcom_pcie_icc_update() and qcom_pcie_opp_update().  Maybe we need some
-core infrastructure around this.
 
-> This patch is dependent on "PCI: qcom: Add support for OPP"
-> https://lore.kernel.org/linux-arm-msm/1692192264-18515-1-git-send-email-quic_krichai@quicinc.com/T/#t
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 141 +++++++++++++++++++++++++++++++++
->  1 file changed, 141 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 831d158..ad67d17 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -241,10 +241,150 @@ struct qcom_pcie {
->  	const struct qcom_pcie_cfg *cfg;
->  	struct dentry *debugfs;
->  	bool suspended;
-> +	bool l0s_supported;
->  };
->  
->  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
->  
-> +static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
-> +static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
-> +
-> +static int qcom_pcie_disable_l0s(struct pci_dev *pdev, void *userdata)
-> +{
-> +	int lnkctl;
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
-> +	lnkctl &= ~(PCI_EXP_LNKCTL_ASPM_L0S);
-> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_pcie_check_l0s_support(struct pci_dev *pdev, void *userdata)
-> +{
-> +	struct pci_dev *parent = pdev->bus->self;
-> +	struct qcom_pcie *pcie = userdata;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	int lnkcap;
-> +
-> +	 /* check parent supports L0s */
-> +	if (parent) {
-> +		dev_err(pci->dev, "parent\n");
-> +		pci_read_config_dword(parent, pci_pcie_cap(parent) + PCI_EXP_LNKCAP,
-> +				  &lnkcap);
-> +		if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
-> +			dev_info(pci->dev, "Parent does not support L0s\n");
-> +			pcie->l0s_supported = false;
-> +			return 0;
-> +		}
-> +	}
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCAP,
-> +			  &lnkcap);
-> +	dev_err(pci->dev, "child %x\n", lnkcap);
-> +	if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
-> +		dev_info(pci->dev, "Device does not support L0s\n");
-> +		pcie->l0s_supported = false;
-> +		return 0;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int qcom_pcie_enable_l0s(struct pci_dev *pdev, void *userdata)
-> +{
-> +	int lnkctl;
-> +
-> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
-> +	lnkctl |= (PCI_EXP_LNKCTL_ASPM_L0S);
-> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
-> +
-> +	return 0;
-> +}
-> +
-> +static ssize_t qcom_pcie_speed_change_store(struct device *dev,
-> +			       struct device_attribute *attr,
-> +			       const char *buf,
-> +			       size_t count)
-> +{
-> +	unsigned int current_speed, target_speed, max_speed;
-> +	struct qcom_pcie *pcie = dev_get_drvdata(dev);
-> +	struct pci_bus *child, *root_bus = NULL;
-> +	struct dw_pcie_rp *pp = &pcie->pci->pp;
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct pci_dev *pdev;
-> +	u16 offset;
-> +	u32 val;
-> +	int ret;
-> +
-> +	list_for_each_entry(child, &pp->bridge->bus->children, node) {
-> +		if (child->parent == pp->bridge->bus) {
-> +			root_bus = child;
-> +			break;
-> +		}
-> +	}
-> +
-> +	pdev = root_bus->self;
-> +
-> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-> +
-> +	val = readl(pci->dbi_base + offset + PCI_EXP_LNKCAP);
-> +	max_speed = FIELD_GET(PCI_EXP_LNKCAP_SLS, val);
-> +
-> +	val = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-> +	current_speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, val);
-> +
-> +	ret = kstrtouint(buf, 10, &target_speed);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (target_speed > max_speed)
-> +		return -EINVAL;
-> +
-> +	if (current_speed == target_speed)
-> +		return count;
-> +
-> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_disable_l0s, pcie);
-> +
-> +	/* Disable L1 */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-> +	val &= ~(PCI_EXP_LNKCTL_ASPM_L1);
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-> +
-> +	/* Set target GEN speed */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL2);
-> +	val &= ~PCI_EXP_LNKCTL2_TLS;
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL2, val | target_speed);
-> +
-> +	ret = pcie_retrain_link(pdev, true);
-> +	if (ret)
-> +		dev_err(dev, "Link retrain failed %d\n", ret);
-> +
-> +	/* Enable L1 */
-> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-> +	val |= (PCI_EXP_LNKCTL_ASPM_L1);
-> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-> +
-> +	pcie->l0s_supported = true;
-> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_check_l0s_support, pcie);
-> +
-> +	if (pcie->l0s_supported)
-> +		pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_l0s, pcie);
-> +
-> +	qcom_pcie_icc_update(pcie);
-> +
-> +	qcom_pcie_opp_update(pcie);
-> +
-> +	return count;
-> +}
-> +static DEVICE_ATTR_WO(qcom_pcie_speed_change);
-> +
-> +static struct attribute *qcom_pcie_attrs[] = {
-> +	&dev_attr_qcom_pcie_speed_change.attr,
-> +	NULL,
-> +};
-> +ATTRIBUTE_GROUPS(qcom_pcie);
-> +
->  static void qcom_ep_reset_assert(struct qcom_pcie *pcie)
->  {
->  	gpiod_set_value_cansleep(pcie->reset, 1);
-> @@ -1716,6 +1856,7 @@ static struct platform_driver qcom_pcie_driver = {
->  		.of_match_table = qcom_pcie_match,
->  		.pm = &qcom_pcie_pm_ops,
->  		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-> +		.dev_groups = qcom_pcie_groups,
->  	},
->  };
->  builtin_platform_driver(qcom_pcie_driver);
-> -- 
-> 2.7.4
-> 
+
+
