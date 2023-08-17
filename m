@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC8877F3BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D66277F3C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348996AbjHQJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54038 "EHLO
+        id S1349770AbjHQJqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349110AbjHQJnr (ORCPT
+        with ESMTP id S1349028AbjHQJqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:43:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295E82D57
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692265426; x=1723801426;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=XbwI3JyLlomrBLFGmIHOSWGtp5Mg7Zvt6rSwaY/KlnQ=;
-  b=DDYYq/5Hd2MlnR7CEmm6kqDMm8CWwn3/ku53P0EFoe4xAwHXHnZLu9TH
-   zCIEoUAMzZj1TMHjCXV+ynxJ0e2ryT0uRMImNV1M1qHWAGx1hZAwMwLDU
-   qULcYr//u9Ixml2x41WM6p63jpMYx/na8H4tJ5aHODEAyR3TsjHqY711H
-   OHWfZgLs1KF2elfS0mPRv+sNo3Q7g/JMMhWDzf6uD6HWFoTRwogjKIYjj
-   MZvh4YSeA6xlL7X3caEDMi4n3QexiUVWbSkDB0pl/UgsIa6cTm4Xy1xIE
-   uD2d8zx2nqHGMZLnwt3GnlDX83EPMiqKgHEe8W2OiYy/CLy9lt4xL3rbt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="403744604"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="403744604"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 02:43:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="728074000"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="728074000"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 17 Aug 2023 02:43:44 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWZXa-005hVL-2o;
-        Thu, 17 Aug 2023 12:43:42 +0300
-Date:   Thu, 17 Aug 2023 12:43:42 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v3 2/8] bitmap: add test for bitmap_*_region() functions
-Message-ID: <ZN3rzu7HVxx4pUbR@smile.fi.intel.com>
-References: <20230815233628.45016-1-yury.norov@gmail.com>
- <20230815233628.45016-3-yury.norov@gmail.com>
+        Thu, 17 Aug 2023 05:46:18 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63072D57;
+        Thu, 17 Aug 2023 02:46:15 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 37H9jihY083854;
+        Thu, 17 Aug 2023 17:45:44 +0800 (+08)
+        (envelope-from Huangzheng.Lai@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx04.spreadtrum.com [10.0.1.214])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RRKnc1tV4z2Q0Ft2;
+        Thu, 17 Aug 2023 17:43:32 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx04.spreadtrum.com
+ (10.0.1.214) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 17 Aug
+ 2023 17:45:42 +0800
+From:   Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+CC:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Subject: [PATCH 0/8] i2c: sprd: Modification of UNIOC Platform IIC Driver
+Date:   Thu, 17 Aug 2023 17:45:12 +0800
+Message-ID: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230815233628.45016-3-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx04.spreadtrum.com (10.0.1.214)
+X-MAIL: SHSQR01.spreadtrum.com 37H9jihY083854
+X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 15, 2023 at 04:36:22PM -0700, Yury Norov wrote:
-> Test basic functionality of bitmap_{allocate,release,find_free}_region()
-> functions.
+Recently, some bugs have been discovered during use, and patch3 
+and patch5-8 are bug fixes. Also, this patchset add new features: 
+patch1 allows IIC to use more frequencies for communication, 
+patch2 allows IIC to use 'reset framework' for reset, and patch4 allows 
+IIC controller to dynamically switch frequencies during use.
 
-...
+Huangzheng Lai (8):
+  i2c: sprd: Add configurations that support 1Mhz and 3.4Mhz frequencies
+  i2c: sprd: Add I2C driver to use 'reset framework' function
+  i2c: sprd: Use global variables to record IIC ack/nack status instead
+    of local variables
+  i2c: sprd: Add IIC controller driver to support dynamic switching of
+    400K/1M/3.4M frequency
+  i2c: sprd: Configure the enable bit of the IIC controller before each
+    transmission initiation
+  i2c: sprd: Add additional IIC control bit configuration to adapt to
+    the new IP version of the UNISOC platform
+  i2c: sprd: Set I2C_RX_ACK when clear irq
+  i2c: sprd: Increase the waiting time for IIC transmission to avoid
+    system crash issues
 
-> +	for (order = 0; order < 10; order++) {
-> +		pos = bitmap_find_free_region(bmap, 1000, order);
-> +		if (order == 0)
-> +			expect_eq_uint(pos, 0);
-> +		else
-> +			expect_eq_uint(pos, BIT(order) < 512 ? BIT(order) : -ENOMEM);
-
-			expect_eq_uint(pos, order < 9 ? BIT(order) : -ENOMEM);
-
-or if the intention to show the relation to 1000,
-
-			expect_eq_uint(pos, order < ilog2(1000) ? BIT(order) : -ENOMEM);
-
-> +	}
+ drivers/i2c/busses/i2c-sprd.c | 70 +++++++++++++++++++++++++++--------
+ 1 file changed, 55 insertions(+), 15 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
