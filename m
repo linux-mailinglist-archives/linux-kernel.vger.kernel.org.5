@@ -2,60 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFDB780120
+	by mail.lfdr.de (Postfix) with ESMTP id 758ED780121
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355841AbjHQWgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        id S1355853AbjHQWg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355800AbjHQWgi (ORCPT
+        with ESMTP id S1355801AbjHQWgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:36:38 -0400
+        Thu, 17 Aug 2023 18:36:40 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30CC2722;
-        Thu, 17 Aug 2023 15:36:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22C12722
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:36:39 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 787C463292;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 673C163B77
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:36:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 645F0C433CB;
         Thu, 17 Aug 2023 22:36:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 734CEC433C9;
-        Thu, 17 Aug 2023 22:36:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692311796;
-        bh=tOGckeY7O8J6GlVuUCz6yWek4KQlNAl8jPLek4LXQ0U=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=ixjjApHpPipdtj0u9dHwmmYsUpfpqVxAkquQ6+aGs464Wm5DY+EjZ6eQ2ipAISa38
-         lM8u/+z2G4gnXHvbbO5AtHP3jsBFAXaqVJjrVFzWxsrA8vUnXhA7l5mEngiQKF0X4M
-         8kbEzXDBWs/DB3kW0IWoO5+HliFfySbiRWbdzDkqGBCeCs/GOGf520Cgxbyl9ZWUCC
-         BkaFt0OW7kd1wqm0YuY9uKAQrrY/Gdu2UQsbG4l+GXnz6JfyEmsGn0EJ5iwx6sUJ+I
-         LW7DrA3XwZYOaQRWJmfzEGHHp7qfsUwrGizgNtTySyPSVGF7GBz7u/VecwcCnON5iJ
-         KYSstiWDDvakA==
+        s=k20201202; t=1692311798;
+        bh=Z+veBRj8TkRaYvhGldqGAJAH25CBsVdPdS/M9njsKW8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ZWFUHTeqHFQQbOXHjtrpxwtkrqiiL1tWVZkVwpSx8FZFLTCuqkcrXv+NMbA5Th1dO
+         EECRtA3ViyNFKyHu1iLiVefusPLsnAAYU4t59OQw1++ggxs/tdduSxV8tL6wHO/2S+
+         xUN8ILU90UOvbqIJL6qmHF3WMSt1DiN6hDRQE4eCGsgQyFwnoA0l+N7qQW/pSEXN4P
+         fedlvUazJSrvNpFvo9m1NWXzfVKRUh9gS8OpjMqJ9+eCRrStwKHRvTpZDOqkAD8Rg8
+         hUmWXtq8Jc/P5jNhe01vVOwa2czFR7F7qTxx/Ri3YVQ/k1UfuCR9wPHK9R4b2Uhfyv
+         jL6hZRX+qIGqA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
+To:     Oder Chiou <oder_chiou@realtek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Trevor Wu <trevor.wu@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mars Chen <chenxiangrui@huaqin.corp-partner.google.com>,
-        Allen-KH Cheng <allen-kh.cheng@mediatek.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Maso Huang <maso.huang@mediatek.com>
-In-Reply-To: <20230817101338.18782-1-maso.huang@mediatek.com>
-References: <20230817101338.18782-1-maso.huang@mediatek.com>
-Subject: Re: [PATCH v4 0/6] ASoC: mediatek: Add support for MT7986 SoC
-Message-Id: <169231179319.153247.9684848124345959803.b4-ty@kernel.org>
-Date:   Thu, 17 Aug 2023 23:36:33 +0100
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230817-descriptors-asoc-rt-v1-0-434f5f177cee@linaro.org>
+References: <20230817-descriptors-asoc-rt-v1-0-434f5f177cee@linaro.org>
+Subject: Re: [PATCH 0/5] ASoC: Convert remaining Realtek codecs to GPIO
+ descriptors
+Message-Id: <169231179711.153247.17784763872682870421.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 23:36:37 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -70,15 +60,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 18:13:32 +0800, Maso Huang wrote:
-> Changes in v4:
->  - fix typo of authors and copyright
->  - refine with bitfield helper for readability [2/6]
->  - refine with human readable error message [3/6]
->  - use "mt7986-wm8960-sound" as compatible string [4/6] [5/6]
->  - refine properties based on reviewer's suggestions [5/6]
->  - remove assigned-clocks and assigned-clocks-parents [6/6]
->  - constrain clocks per variants [6/6]
+On Thu, 17 Aug 2023 15:30:14 +0200, Linus Walleij wrote:
+> After dropping unused headers a few Realtek devices
+> actually using the GPIO descriptors remain.
+> 
+> Converting them to use optional GPIO descriptors is
+> pretty straight-forward.
+> 
 > 
 > [...]
 
@@ -88,18 +76,16 @@ Applied to
 
 Thanks!
 
-[1/6] ASoC: mediatek: mt7986: add common header
-      commit: c4c3c32d088d5a432d3c40efef80d1b64743b6bc
-[2/6] ASoC: mediatek: mt7986: support etdm in platform driver
-      commit: 9f8df795ae8daa0051fe15b27c7a3b3842d3d91f
-[3/6] ASoC: mediatek: mt7986: add platform driver
-      commit: 8d0d4884ba2cdabc823dc263c987bb22aae5fa5e
-[4/6] ASoC: mediatek: mt7986: add machine driver with wm8960
-      commit: 9873277fc2ea6e517602c29cb336bb1e43ff528c
-[5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add mt7986-wm8960 document
-      commit: af835f0b49777476528be5a913e5c00fc3789f41
-[6/6] ASoC: dt-bindings: mediatek,mt7986-afe: add audio afe document
-      commit: b41efc224a5c859ce982ab73e8a05ecac73d4752
+[1/5] ASoC: rt5640: Convert to just use GPIO descriptors
+      commit: a9b5f21073c0c687068f17e23385ec43fc643b08
+[2/5] ASoC: rt5665: Convert to use GPIO descriptors
+      commit: 647a3c4c33cd2c3902cdc07c50f3129166d715f5
+[3/5] ASoC: rt5668: Convert to use GPIO descriptors
+      commit: ab2a5d17064436585807f2ece5e6b4b03769a11f
+[4/5] ASoC: rt5682: Convert to use GPIO descriptors
+      commit: ed11701751d43fb2318c625e65e0507b5234f8a5
+[5/5] ASoC: rt5682s: Convert to use GPIO descriptors
+      commit: 8793bee716452e5e2f9bf085fbe01f9e3d1e659f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
