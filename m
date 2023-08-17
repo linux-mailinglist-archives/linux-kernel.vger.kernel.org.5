@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A106E77F697
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CBC77F67E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350910AbjHQMm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
+        id S1350885AbjHQMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350900AbjHQMmo (ORCPT
+        with ESMTP id S231683AbjHQMiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:42:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07142D57;
-        Thu, 17 Aug 2023 05:42:42 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AB2CD1F898;
-        Thu, 17 Aug 2023 12:42:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692276161;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QNhTOps9azza6vFm3CqXognqOphc0naIHNC5smRzOSk=;
-        b=SJ4qIo703ie/Bpx2kEn5cNtIUAGFFvHxPME7NRYXclUhIjOyJCEchu2xBnG3asLoNrbUxw
-        TqvsAKB7P1raHqXISc2txD6z8gIDtLtHT+kiKI1zPC7hEBL7074qAjYZnoEtQn9aw6kY1M
-        HsVuL9zuk967F/kFvb76PoJTX9ynR9o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692276161;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QNhTOps9azza6vFm3CqXognqOphc0naIHNC5smRzOSk=;
-        b=wmVF+JXX2EclwZriIT8PiTNF+wU/EvzABkKyBdIxZU40im35Rl4LCmTiMwpZr68KJ/qMAx
-        feWGozBQ8+4yEuBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 780A41392B;
-        Thu, 17 Aug 2023 12:42:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vyWTHMEV3mT/ZQAAMHmgww
-        (envelope-from <dsterba@suse.cz>); Thu, 17 Aug 2023 12:42:41 +0000
-Date:   Thu, 17 Aug 2023 14:36:12 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com, corbet@lwn.net,
-        linux-btrfs@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Doc: fs: Take away the stale url
-Message-ID: <20230817123612.GO2420@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20230813065247.655287-1-unixbhaskar@gmail.com>
+        Thu, 17 Aug 2023 08:38:15 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98503271F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:38:14 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6418c819c3cso35634166d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692275893; x=1692880693;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jUdVhj0ALIzjhCaAziKr2GAojaQsEAHnyIShQwoSvjs=;
+        b=Ml1CrhZ42fDMxkxMto37w+tczDqJUjteWrLleKqCF2KvReoQMdR1bg/BP//xS/kpde
+         H3NZcnAJtGsSR1Xr4YtIQoTzj9r3bXZiASg8yj6GGj0L8AyystAmt4r64AYt5uWrgX1+
+         V2RGGyB59DHqeY/lxQi5SvJOF4ZDIJ+z/SNcU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692275893; x=1692880693;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jUdVhj0ALIzjhCaAziKr2GAojaQsEAHnyIShQwoSvjs=;
+        b=eCSm/H6AYrzI5FZlPacwsfWdKQmxHajfd8Pia8LUWrSqeAIha1sZm43dQ29YYU103z
+         cLjP6VCZOAlAZgSbKgGxkkXcjnG9Z/wD2uiVSXMaVzacwXQ6tayUmWDqoEG1T9bUQMgC
+         F6wt4jkWSkNyNRIote4tjxqJiq4g6cXaFgKlx/Ylg9iVREOtgaoGEFE05sV6EQyhFcvb
+         39dsPuBCJchX7cf/uRSq3vFduMAGRsFrO06f3ckO8LSddpfvQfV5vNrDF8h5AL7A4OwH
+         dimRr74AnanWWJ07baFVB9b6qk9eoRx08OX5nu9FMXK6UzjvSgAZciZWBuB13zJQIkff
+         H+DQ==
+X-Gm-Message-State: AOJu0YwUgccmicnfYqAYdsDCjZtgE3p7HNddhp5KXv4/4kQb+x6saif7
+        A7gJ75Tu0xFplzGg2VZ4ODaTFg==
+X-Google-Smtp-Source: AGHT+IEmdLIBX4TcduDSnebSMlZV9RYUgLFDw6JyS8Q64QUNaAtypqYuQsSEQOyKRfaSNE2ThLHmrw==
+X-Received: by 2002:a0c:aa96:0:b0:649:bf3:6dc0 with SMTP id f22-20020a0caa96000000b006490bf36dc0mr3988634qvb.39.1692275893731;
+        Thu, 17 Aug 2023 05:38:13 -0700 (PDT)
+Received: from denia.c.googlers.com (122.213.145.34.bc.googleusercontent.com. [34.145.213.122])
+        by smtp.gmail.com with ESMTPSA id o12-20020a05620a130c00b00767cd2dbd82sm5108761qkj.15.2023.08.17.05.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 05:38:13 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 17 Aug 2023 12:38:04 +0000
+Subject: [PATCH] media: uvcvideo: Fix power line control for a Chicony
+ camera
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230813065247.655287-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230817-chicony-v1-1-76bde4d6ff6b@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAKsU3mQC/x2N0QqDMAwAf0XybKDWzam/MnyoWboGRpQUZCL++
+ +oejzu4AzKbcIaxOsB4kyyLFmjqCigFfTPKqzB451vXNw+kJLTojgO19+jdraMuQqnnkBlnC0r
+ p6tdPRAsb6+VW4yjf/+U5necP/GwcPHUAAAA=
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 13, 2023 at 12:22:48PM +0530, Bhaskar Chowdhury wrote:
-> That url pointed to non-maintained place. So, take it out.
+The device does not implement the control properly.
 
-I found two more references to the wiki, in the MAINTAINERS file and in
-Kconfig, you can replace them by https://btrfs.readthedocs.io and
-resend. Thanks.
+Fixes vl2-compliance error:
+
+info: checking control 'Power Line Frequency' (0x00980918)
+fail: v4l2-test-controls.cpp(552): could not set valid menu item 3
+
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+This camera, like other Chicony devices, do not implement properly the
+Power Line Frequency control.
+
+This time, I do not have direct access to the device, just to the
+report, but since other devices from the same family are showing the
+same error, it is safe to assume that the same fix will work here.
+---
+ drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 08fcd2ffa727..db2556e95b72 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2592,6 +2592,15 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
++	/* Chicony Electronics Co., Ltd */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x04f2,
++	  .idProduct		= 0xb67c,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= (kernel_ulong_t)&uvc_ctrl_power_line_limited },
+ 	/* Chicony EasyCamera */
+ 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+ 				| USB_DEVICE_ID_MATCH_INT_INFO,
+
+---
+base-commit: 4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+change-id: 20230817-chicony-9c35f2046c6f
+
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
+
