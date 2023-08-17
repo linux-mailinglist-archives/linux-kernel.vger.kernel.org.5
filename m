@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF06677F093
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C3D77F095
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348252AbjHQGfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S1348258AbjHQGhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:37:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348256AbjHQGex (ORCPT
+        with ESMTP id S1348256AbjHQGhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:34:53 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146302700;
-        Wed, 16 Aug 2023 23:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692254089;
-        bh=QOKoW3wyRNr1RLwRnOsY4BbnnwrSfpgB6x3DEw7vRYI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=YtX6jgHNQC0nPGKx1/R/ojff9UHbjVywbxalcoJG1mImb7/m3AfOy1YxIRzmpUbXz
-         XMOqb3hmaYHVodauNH9eIpdozm6OBERMmsll7/Pw+Wl0cb9VQ/2acakYaNYNBXADU1
-         O9zbt1mjuLqWzpm2qnJy//jGVuMgsiuvuuFbOULlvWIbaDARBudQxqDQZHZgua4nNq
-         BaBkSHCqV8nZZfoFR5FIXAu/CUfAjssMfrDBv75ftIBAQM65jNufcC778EP8Y6dbTH
-         FIFgeb/6SxFuQcbuJ1QvROfVwJ9x+X54Mv9MVyQf8i0ZvwA422MnIBpZdqsUHF03T9
-         yd7OYR/Nrd/RQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRFbs15Tdz4wZn;
-        Thu, 17 Aug 2023 16:34:49 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Justin Stitt <justinstitt@google.com>,
-        Geoff Levand <geoff@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Subject: Re: [PATCH] powerpc/ps3: refactor strncpy usage
-In-Reply-To: <20230816-strncpy-arch-powerpc-platforms-ps3-repository-v1-1-88283b02fb09@google.com>
-References: <20230816-strncpy-arch-powerpc-platforms-ps3-repository-v1-1-88283b02fb09@google.com>
-Date:   Thu, 17 Aug 2023 16:34:47 +1000
-Message-ID: <87350i6ut4.fsf@mail.lhotse>
+        Thu, 17 Aug 2023 02:37:12 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 515A81B4
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:37:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2B98D75;
+        Wed, 16 Aug 2023 23:37:49 -0700 (PDT)
+Received: from [10.163.56.113] (unknown [10.163.56.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B92473F762;
+        Wed, 16 Aug 2023 23:37:04 -0700 (PDT)
+Message-ID: <9cd9f83c-7778-2d87-a175-a4cb7ceb8723@arm.com>
+Date:   Thu, 17 Aug 2023 12:07:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] coresight: trbe: Allocate platform data per device
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, hejunhao3@huawei.com
+Cc:     coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, jonathan.cameron@huawei.com,
+        leo.yan@linaro.org, mike.leach@linaro.org, james.clark@arm.com,
+        linuxarm@huawei.com, yangyicong@huawei.com,
+        prime.zeng@hisilicon.com
+References: <20230814093813.19152-1-hejunhao3@huawei.com>
+ <20230816141008.535450-1-suzuki.poulose@arm.com>
+ <20230816141008.535450-2-suzuki.poulose@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230816141008.535450-2-suzuki.poulose@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Justin Stitt <justinstitt@google.com> writes:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
->
-> `make_first_field()` should use similar implementation to `make_field()`
-> due to memcpy having more obvious behavior here. The end result yields
-> the same behavior as the previous `strncpy`-based implementation
-> including the NUL-padding.
->
-> Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note:
-> This follows up on a previous RFC which can be found here:
-> https://lore.kernel.org/all/20230811-strncpy-arch-powerpc-platforms-ps3-v1-0-301052a5663e@google.com/
-> ---
->  arch/powerpc/platforms/ps3/repository.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Hi Suzuki,
 
-This looks good to me. I'll pick this up directly, Geoff let me know if
-this breaks something somehow.
+Seems like this patch is going to conflict with the below proposed change
 
-cheers
+https://lore.kernel.org/all/20230817055405.249630-4-anshuman.khandual@arm.com/
+
+Please let me know how should we resolve this conflict.
+
+On 8/16/23 19:40, Suzuki K Poulose wrote:
+> Coresight TRBE driver shares a single platform data (which is empty btw).
+> However, with the commit 4e8fe7e5c3a5
+> ("coresight: Store pointers to connections rather than an array of them")
+> the coresight core would free up the pdata, resulting in multiple attempts
+> to free the same pdata for TRBE instances. Fix this by allocating a pdata per
+> coresight_device.
+> 
+> Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+
+The above mentioned commit i.e 4e8fe7e5c3a5 seems to be a more recent one which
+has triggered this problem. But would the problem be still there without that ?
+Else 'Fixes:' tag would need changing.
+
+> Link: https://lore.kernel.org/r/20230814093813.19152-3-hejunhao3@huawei.com
+> Reported-by: Junhao He <hejunhao3@huawei.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-trbe.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+> index 025f70adee47..d3d34a833f01 100644
+> --- a/drivers/hwtracing/coresight/coresight-trbe.c
+> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
+> @@ -1255,10 +1255,13 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+>  	if (!desc.name)
+>  		goto cpu_clear;
+>  
+> +	desc.pdata = coresight_get_platform_data(dev);
+> +	if (IS_ERR(desc.pdata))
+> +		goto cpu_clear;
+> +
+>  	desc.type = CORESIGHT_DEV_TYPE_SINK;
+>  	desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+>  	desc.ops = &arm_trbe_cs_ops;
+> -	desc.pdata = dev_get_platdata(dev);
+>  	desc.groups = arm_trbe_groups;
+>  	desc.dev = dev;
+>  	trbe_csdev = coresight_register(&desc);
+> @@ -1482,7 +1485,6 @@ static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
+>  
+>  static int arm_trbe_device_probe(struct platform_device *pdev)
+>  {
+> -	struct coresight_platform_data *pdata;
+>  	struct trbe_drvdata *drvdata;
+>  	struct device *dev = &pdev->dev;
+>  	int ret;
+> @@ -1497,12 +1499,7 @@ static int arm_trbe_device_probe(struct platform_device *pdev)
+>  	if (!drvdata)
+>  		return -ENOMEM;
+>  
+> -	pdata = coresight_get_platform_data(dev);
+> -	if (IS_ERR(pdata))
+> -		return PTR_ERR(pdata);
+> -
+>  	dev_set_drvdata(dev, drvdata);
+> -	dev->platform_data = pdata;
+>  	drvdata->pdev = pdev;
+>  	ret = arm_trbe_probe_irq(pdev, drvdata);
+>  	if (ret)
