@@ -2,131 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8BF77EF67
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A399F77EF72
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347725AbjHQDPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 23:15:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
+        id S1347796AbjHQDSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 23:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347825AbjHQDPc (ORCPT
+        with ESMTP id S1347816AbjHQDST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:15:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BBB1724;
-        Wed, 16 Aug 2023 20:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=P/kFyzCr/eSDaJkbY0OlCILEe1j9xWTLXn/yJLAYIu4=; b=A9+ZOyBLxgvkefgcCG3G+GbFOc
-        t3Q4LPTtkkpyh0LBpbAFdc+3lhG3pcvB3Tuy2cTe9/M//iW+Sx1QS7+tpwHS9HCucIDpD/RDGCGIr
-        FphyIapebkE7eEjeEnFtOi+9dwumQAvsQRYGjE0GEiZ5WBo53AxtXkFjlluHJQQSFYe1ZQ0mwCfpK
-        6X/okD9sKE4Z8iWegd56l1SCJXl6wUSJ5Uk04klLzVcTy3SNTh8mgr2aL00kPfkoj1Td2N2/Azxck
-        21ORjXTS2+GmCUfbeyQtLCC4mizooGziW6L1eBdD4Ta+hfKURTJGkPtTMCT5Ht16ny8Gi1C8JbRXm
-        mdreectQ==;
-Received: from [2601:1c2:980:9ec0::1a0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qWTTi-000tOI-Mm; Thu, 17 Aug 2023 03:15:18 +0000
-Message-ID: <86e329b1-c8d7-47bf-8be8-3326daf74eb5@infradead.org>
-Date:   Wed, 16 Aug 2023 20:15:09 -0700
+        Wed, 16 Aug 2023 23:18:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A631724
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 20:18:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 29DC363850
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:18:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E49C433C7;
+        Thu, 17 Aug 2023 03:18:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692242297;
+        bh=i5UDWEST6Iodtn/RFBSq3TRb/25kRWUgxsnalcwMP8s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pyVZap/wkaI9ku8a6GySSBKjpB7GFAME2V7JaWykuEv0vn97ZfNF0hh4Srj+xcFv9
+         BOjHIzm+TF9x5J9XBzC9phrMRxsCe9t9eBRLl1ZTzk1bqNI9J+uYUJU1VaogbevVrm
+         LUkAIiHjsmEgvHGwVRPqNf7PGXTTJYRNsoW2iPBWrWxFuDBRloWxeH7oqc9oxWnLkX
+         nceoSH2UHWHaVne1bERgtq/J4O0eUSir1NY9SZDXIF/sKYLlYVwpXsPXNSzNRIS66y
+         AFzbRZcXd2lgdKBo9j/7c903EhDNBYCvpUNqf70yg/nzMaeN/C8x8ALi/ItF91g2dp
+         OsLJ/VOpPUoQA==
+Date:   Wed, 16 Aug 2023 20:18:16 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alfred Lee <l00g33k@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrew@lunn.ch, olteanv@gmail.com, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, sgarzare@redhat.com,
+        AVKrasnov@sberdevices.ru
+Subject: Re: [PATCH net v3] net: dsa: mv88e6xxx: Wait for EEPROM done before
+ HW reset
+Message-ID: <20230816201816.29bea470@kernel.org>
+In-Reply-To: <20230815001323.24739-1-l00g33k@gmail.com>
+References: <20230815001323.24739-1-l00g33k@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] treewide: drop CONFIG_EMBEDDED
-To:     20230816055010.31534-1-rdunlap@infradead.org
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, wireguard@lists.zx2c4.com,
-        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <vgupta@kernel.org>,
-        Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        linux-openrisc@vger.kernel.org, linux-mips@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-sh@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <38e1a01b-1e8b-7c66-bafc-fc5861f08da9@gmail.com>
-Content-Language: en-US
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <38e1a01b-1e8b-7c66-bafc-fc5861f08da9@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jesse,
+On Mon, 14 Aug 2023 17:13:23 -0700 Alfred Lee wrote:
+> If the switch is reset during active EEPROM transactions, as in
+> just after an SoC reset after power up, the I2C bus transaction
+> may be cut short leaving the EEPROM internal I2C state machine
+> in the wrong state.  When the switch is reset again, the bad
+> state machine state may result in data being read from the wrong
+> memory location causing the switch to enter unexpected mode
+> rendering it inoperational.
 
-On 8/16/23 15:45, Jesse Taube wrote:
-> Hi, Randy
-> 
->> diff -- a/init/Kconfig b/init/Kconfig
->> --- a/init/Kconfig
->> +++ b/init/Kconfig
->> @@ -1790,14 +1790,6 @@ config DEBUG_RSEQ
->>
->>        If unsure, say N.
->>
->> -config EMBEDDED
->> -    bool "Embedded system"
->> -    select EXPERT
->> -    help
->> -      This option should be enabled if compiling the kernel for
->> -      an embedded system so certain expert options are available
->> -      for configuration.
-> 
-> Wouldn't removing this break many out of tree configs?
+I'll apply this instead of the v4:
 
-I'm not familiar with out-of-tree configs.
-Do you have some examples of some that use CONFIG_EMBEDDED?
-(not distros)
+https://lore.kernel.org/all/20230815220453.32035-1-l00g33k@gmail.com/
 
-> Should there be a warning here to update change it instead of removal?
-
-kconfig doesn't have a warning mechanism AFAIK.
-Do you have an idea of how this would work?
-
-We could make a smaller change to init/Kconfig, like so:
-
- config EMBEDDED
--	bool "Embedded system"
-+	bool "Embedded system (DEPRECATED)"
- 	select EXPERT
- 	help
--	  This option should be enabled if compiling the kernel for
--	  an embedded system so certain expert options are available
--	  for configuration.
-+	  This option is being removed after Linux 6.6.
-+	  Use EXPERT instead of EMBEDDED.
-
-but there is no way to produce a warning message. I.e., even with this
-change, the message will probably be overlooked.
-
----
-~Randy
-
+since you dropped Andrew's tag :( Please make sure you keep the tags
+you were given.
