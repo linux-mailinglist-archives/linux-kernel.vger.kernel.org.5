@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FD277FE67
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6D777FE66
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354394AbjHQTPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38344 "EHLO
+        id S236117AbjHQTP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354668AbjHQTPF (ORCPT
+        with ESMTP id S1354618AbjHQTPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:15:05 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D0B30F5;
-        Thu, 17 Aug 2023 12:15:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=wjawszGYwlc1+n1slj6SEY36aeLR7+yb2wb5c2CH3WE=; b=KCs8+hRICKYDwiHAC565/y4OkK
-        dGV9Ny7cicErgMbHuw1wHhFdV1s87Y5wcXmNhk8lqH+EiI/0t2QOMv4RkL81uMKrqcD52jeyx9m0G
-        LYSKpfn6PjNg5hL/1JjfpLgbvq20s/IIfQb78wKoUU15LMKDcluj3fQkHxg/8gyt4pmQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qWiS4-004Q97-Np; Thu, 17 Aug 2023 21:14:36 +0200
-Date:   Thu, 17 Aug 2023 21:14:36 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Michele Dalle Rive <dallerivemichele@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Davide Rovelli <davide.rovelli@usi.ch>,
-        rust-for-linux@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-Subject: Re: [RFC PATCH 0/7] Rust Socket abstractions
-Message-ID: <02d0771b-ba9b-4bed-afe5-9ece5100dadf@lunn.ch>
-References: <20230814092302.1903203-1-dallerivemichele@gmail.com>
- <2023081411-apache-tubeless-7bb3@gregkh>
- <0e91e3be-abbb-4bf7-be05-ba75c7522736@lunn.ch>
- <CACETy0=V9B8UOCi+BKfyrX06ca=WvC0Gvo_ouR=DjX=_-jhAwg@mail.gmail.com>
- <e3b4164a-5392-4209-99e5-560bf96df1df@lunn.ch>
- <CACETy0n0217=JOnHUWvxM_npDrdg4U=nzGYKqYbGFsvspjP6gg@mail.gmail.com>
- <CANiq72=3z+FcyYGV0upsezGAkh2J4EmzbJ=5s374gf=10AYnUQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANiq72=3z+FcyYGV0upsezGAkh2J4EmzbJ=5s374gf=10AYnUQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 15:15:02 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1CC359B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:15:00 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58c561f4ac3so1767677b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692299699; x=1692904499;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bFN9dp01RtqHwqhQI1dVarxsGtiPL2F5fMs/c+uKdWk=;
+        b=DjzAqPJrxIfw1BYw5i3FrieFrPSbaM+YcbWnz6sZAiIOz7zApNgX/BlsxaUITOB7iw
+         yCnIS239SXQ+yTqLs6JZm/h3Jvfh3dh4+oOkiUGEnKp9cLL875BN2opF+m5WNDI/TG0J
+         mPOdug1WnENIOFf5R7TJzlcr5pE5G7Gx/n0lWRxl9fk3MRMc/eWHeq+9IjPMT09mNcFa
+         PsmRvN7tq4U1WIYX7DdU2daYJB49YcuvtbHqDDIEm1A8jv2TvEyyCqt2cWIzJBHINfOj
+         cxrWVcT75yc6XmnLiK/PPsf/IBFO5mupHWPXQs3Z7Lf7+YN2wxPC8wJvtDQY27iF9rrS
+         2Z3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692299699; x=1692904499;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bFN9dp01RtqHwqhQI1dVarxsGtiPL2F5fMs/c+uKdWk=;
+        b=XloQH7PcDiLfwevH89k0RoJli4IylKbtOvXyeOJqOwxbgQYCd5BRa4zHKh9oOKwcyw
+         q0xzb5EdQ3mBq4+wYJePj3+6a3eA+mEiQiAUBhOYVvgkmljOuwvA9vdzrRPCGhk2uKV8
+         Fz84DaGbF+7zTQDZlCIsZWltzQF80b8BCg+KWnwVlbg3wmNMi7D14JOR4rMbKgwJJIJA
+         qhesyNxbYsV9aVMVdTQq4q+pCBhUZkSXWhvUsNsiw5f6saXlcfnFXuE7ZLz3uSLFlfD2
+         Dla0FcA8Lwk3vKmQf7oFBiQtUo1weHAr2VQQsT5oSMdAwynYpq9xEd/b1LmQefft7NO7
+         wphg==
+X-Gm-Message-State: AOJu0Yzs1rzRmOjxG8pe9LwvB/Ipt4jcKhlw5fQ2GSC/0rJxzIZP+0Il
+        62omOdK0TVKw9BGnX7SdObm5f69rNA==
+X-Google-Smtp-Source: AGHT+IGX5b4WQOsC3kP+cTVvJ7mVySPhcsavQyeEdDAUh6zcBnD/TXahce8aIDy43n9+rZRTSf81ojTVhw==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:690c:707:b0:58c:9fda:d043 with SMTP id
+ bs7-20020a05690c070700b0058c9fdad043mr4166ywb.10.1692299699585; Thu, 17 Aug
+ 2023 12:14:59 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 19:14:51 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230817191451.1026413-1-rmoar@google.com>
+Subject: [PATCH] kunit: fix struct kunit_attr header
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If I understood correctly from Zulip, you cannot (right now) show your
-> use case because it is confidential and therefore you cannot upstream
-> it
+Add parameter descriptions to struct kunit_attr header for the
+parameters attr_default and print.
 
-Is there a clear path for it to become public and mergable?
+Fixes: 39e92cb1e4a1 ("kunit: Add test attributes API structure")
 
-There is also a general trend that code developed behind closed doors
-needs a complete re-write when made public and reviewed by mainline
-developers. And that rewrite could involve the APIs to other
-subsystems, like sockets. So any API you define now with a 'toy' in
-kernel user, could in fact be totally useless by the time your real
-target gets merged.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308180127.VD7YRPGa-lkp@intel.com/
 
-As Jon pointed out, we kernel maintainers need to help people coming
-from a different background. Within the community it is well known
-that internal APIs are unstable. Any developer can change any API, and
-all its in kernel users if there is a need to do so. This makes
-maintaining out of tree modules hard. There are a number of 'vendor
-crap' drivers which do do this, with lots of ugly code to work around
-differences between kernel versions. To some extent, that works
-because the C APIs are not that volatile. My guess is, the Rust APIs
-are going to be a lot more volatile for a number of years while
-developers figure out what good APIs look like, and rework them again
-and again, and again. Anybody trying to maintain an out of tree rust
-module is going to be in a world of pain. In tree however, benefits
-from the fast that any developer who wants to change an API needs to
-also change all users...
+Signed-off-by: Rae Moar <rmoar@google.com>
+---
+ lib/kunit/attributes.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-       Andrew
+diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
+index 5e3034b6be99..1b512f7e1838 100644
+--- a/lib/kunit/attributes.c
++++ b/lib/kunit/attributes.c
+@@ -30,6 +30,8 @@ enum print_ops {
+  * attribute value
+  * @filter: function to indicate whether a given attribute value passes a
+  * filter
++ * @attr_default: default attribute value used during filtering
++ * @print: value of enum print_ops to indicate when to print attribute
+  */
+ struct kunit_attr {
+ 	const char *name;
+
+base-commit: 582eb3aeed2d06b122fba95518b84506d3d4ceb9
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
