@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AFB77EE21
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFA577EE27
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347250AbjHQAMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 20:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S1347273AbjHQAWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 20:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347225AbjHQAMA (ORCPT
+        with ESMTP id S235975AbjHQAWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 20:12:00 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36F3119;
-        Wed, 16 Aug 2023 17:11:56 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RR55z4RDCz4wy3;
-        Thu, 17 Aug 2023 10:11:51 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-In-Reply-To: <20230810-rtas-flash-vs-hardened-usercopy-v2-1-dcf63793a938@linux.ibm.com>
-References: <20230810-rtas-flash-vs-hardened-usercopy-v2-1-dcf63793a938@linux.ibm.com>
-Subject: Re: [PATCH v2] powerpc/rtas_flash: allow user copy to flash block cache objects
-Message-Id: <169223107895.375104.3687617958725578000.b4-ty@ellerman.id.au>
-Date:   Thu, 17 Aug 2023 10:11:18 +1000
+        Wed, 16 Aug 2023 20:22:49 -0400
+Received: from mx.treblig.org (unknown [IPv6:2a00:1098:5b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA0526AA;
+        Wed, 16 Aug 2023 17:22:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+        ; s=bytemarkmx; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:
+        Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hL96hbBANHiT64hkAT/5gUF0HzFQ4uiBU5rrtSW63yA=; b=OENBcsTCIL0oi+tvbG5uRfvcPv
+        ovkXY+Gsc/KE8/8gROY5OAJc2EcDDwIhNOqb16/FjFuqQpgdvrDvzvqgyFsHKDX6+Wl9Rh/sXMJu5
+        Stz+GcLhklQmmHucmczMJRJhaWBJOJFDsAfO55K12eQsCFioUucyFc109tnKbYC1aqenXzMoZ9Jsp
+        lpzV32rbg8DRk4bjvxdUNzvVRpf/pFXV8GLvzG/gPXLaIh5Pg+6XPn9zx0HJOmHsF1IB7gT32j7x1
+        m49kC+f7ghpUTgTFe6qoGoeZsfz82/W0a0acPedBVrjzooX6ZQMhJQCJFj69EGfJQW7db2mmpqtw8
+        d03KqN/g==;
+Received: from localhost ([127.0.0.1] helo=dalek.home.treblig.org)
+        by mx.treblig.org with esmtp (Exim 4.94.2)
+        (envelope-from <linux@treblig.org>)
+        id 1qWQmb-007LI0-FN; Thu, 17 Aug 2023 00:22:36 +0000
+From:   linux@treblig.org
+To:     smfrench@gmail.com, dave.kleikamp@oracle.com, tom@talpey.com,
+        pc@manguebit.com
+Cc:     linkinjeon@kernel.org, linux-cifs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        krisman@collabora.com, "Dr. David Alan Gilbert" <dave@treblig.org>
+Subject: [PATCH v5 0/4] dedupe smb unicode files
+Date:   Thu, 17 Aug 2023 01:22:28 +0100
+Message-ID: <20230817002232.80079-1-linux@treblig.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 22:37:55 -0500, Nathan Lynch wrote:
-> With hardened usercopy enabled (CONFIG_HARDENED_USERCOPY=y), using the
-> /proc/powerpc/rtas/firmware_update interface to prepare a system
-> firmware update yields a BUG():
-> 
-> kernel BUG at mm/usercopy.c:102!
-> Oops: Exception in kernel mode, sig: 5 [#1]
-> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
-> Modules linked in:
-> CPU: 0 PID: 2232 Comm: dd Not tainted 6.5.0-rc3+ #2
-> Hardware name: IBM,8408-E8E POWER8E (raw) 0x4b0201 0xf000004 of:IBM,FW860.50 (SV860_146) hv:phyp pSeries
-> NIP:  c0000000005991d0 LR: c0000000005991cc CTR: 0000000000000000
-> REGS: c0000000148c76a0 TRAP: 0700   Not tainted  (6.5.0-rc3+)
-> MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 24002242  XER: 0000000c
-> CFAR: c0000000001fbd34 IRQMASK: 0
-> [ ... GPRs omitted ... ]
-> NIP [c0000000005991d0] usercopy_abort+0xa0/0xb0
-> LR [c0000000005991cc] usercopy_abort+0x9c/0xb0
-> Call Trace:
-> [c0000000148c7940] [c0000000005991cc] usercopy_abort+0x9c/0xb0 (unreliable)
-> [c0000000148c79b0] [c000000000536814] __check_heap_object+0x1b4/0x1d0
-> [c0000000148c79f0] [c000000000599080] __check_object_size+0x2d0/0x380
-> [c0000000148c7a30] [c000000000045ed4] rtas_flash_write+0xe4/0x250
-> [c0000000148c7a80] [c00000000068a0fc] proc_reg_write+0xfc/0x160
-> [c0000000148c7ab0] [c0000000005a381c] vfs_write+0xfc/0x4e0
-> [c0000000148c7b70] [c0000000005a3e10] ksys_write+0x90/0x160
-> [c0000000148c7bc0] [c00000000002f2c8] system_call_exception+0x178/0x320
-> [c0000000148c7e50] [c00000000000d520] system_call_common+0x160/0x2c4
-> --- interrupt: c00 at 0x7fff9f17e5e4
-> 
-> [...]
+From: "Dr. David Alan Gilbert" <dave@treblig.org>
 
-Applied to powerpc/fixes.
+The smb client and server code have (mostly) duplicated code
+for unicode manipulation, in particular upper case handling.
 
-[1/1] powerpc/rtas_flash: allow user copy to flash block cache objects
-      https://git.kernel.org/powerpc/c/4f3175979e62de3b929bfa54a0db4b87d36257a7
+Flatten this lot into shared code.
 
-cheers
+There's some code that's slightly different between the two, and
+I've not attempted to share that - this should be strictly a no
+behaviour change set.
+
+In addition, the same tables and code are shared in jfs, however
+there's very little testing available for the unicode in there,
+so just share the raw data tables.
+
+I suspect there's more UCS-2 code that can be shared, in the NLS code
+and in the UCS-2 code used by the EFI interfaces.
+
+Lightly tested with a module and a monolithic build, and just mounting
+itself.
+
+This dupe was found using PMD:
+  https://pmd.github.io/pmd/pmd_userdocs_cpd.html
+
+Dave
+
+Version 5
+  Add some (wchar_t *) casts to keep sparse
+  happy, as spotted by kernel test robot
+
+Dr. David Alan Gilbert (4):
+  fs/smb: Remove unicode 'lower' tables
+  fs/smb: Swing unicode common code from smb->NLS
+  fs/smb/client: Use common code in client
+  fs/jfs: Use common ucs2 upper case table
+
+ fs/jfs/Kconfig                                |   1 +
+ fs/jfs/Makefile                               |   2 +-
+ fs/jfs/jfs_unicode.h                          |  17 +-
+ fs/jfs/jfs_uniupr.c                           | 121 -------
+ fs/nls/Kconfig                                |   8 +
+ fs/nls/Makefile                               |   1 +
+ fs/nls/nls_ucs2_data.h                        |  15 +
+ .../server/uniupr.h => nls/nls_ucs2_utils.c}  | 156 +--------
+ fs/nls/nls_ucs2_utils.h                       | 285 +++++++++++++++
+ fs/smb/client/Kconfig                         |   1 +
+ fs/smb/client/cifs_unicode.c                  |   1 -
+ fs/smb/client/cifs_unicode.h                  | 330 +-----------------
+ fs/smb/client/cifs_uniupr.h                   | 239 -------------
+ fs/smb/client/smb2pdu.c                       |   4 +-
+ fs/smb/server/Kconfig                         |   1 +
+ fs/smb/server/unicode.c                       |   1 -
+ fs/smb/server/unicode.h                       | 325 +----------------
+ 17 files changed, 342 insertions(+), 1166 deletions(-)
+ delete mode 100644 fs/jfs/jfs_uniupr.c
+ create mode 100644 fs/nls/nls_ucs2_data.h
+ rename fs/{smb/server/uniupr.h => nls/nls_ucs2_utils.c} (50%)
+ create mode 100644 fs/nls/nls_ucs2_utils.h
+ delete mode 100644 fs/smb/client/cifs_uniupr.h
+
+-- 
+2.41.0
+
