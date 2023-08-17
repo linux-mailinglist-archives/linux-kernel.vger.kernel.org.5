@@ -2,239 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B8177FFFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79132780005
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 23:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355215AbjHQVgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 17:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        id S1355377AbjHQVji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 17:39:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235752AbjHQVgb (ORCPT
+        with ESMTP id S1355337AbjHQVjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 17:36:31 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F078E4F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:36:29 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99d937b83efso22944666b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:36:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692308188; x=1692912988;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZqLiBJFAZXvCnssFXrBqXIi9XKkgEx0FSumuzhI7sRM=;
-        b=IZZFD3ut8GPPTBSLpgK6tRMJ8JyzqN/RWH32e8erHeapgesRA7PnXoAFLVBAO9lxLl
-         ztBi72RIaeBrRr12GiFsSWDXBwfkoL6O3ccs7HYtO1+nKl23txnn85gPMTwK7J2THXyG
-         kPfkLsHqspK42+SSoOgn7YUJPDAR+H4a2qOM4Kf3I6HLwBwcnIgnyGch/0XUuzaTlu5x
-         rbl3fXs8A2Cpid0TqQ/0c4r7RZdnz7eiazhsKzJTnbGfwIEfn8Jl3vKMG7Vj035d2BH0
-         Yucl3OIbtR7fo8wsTfPxKX4EaN5BdyqkniUv3Snwj7x+RoOTv9Egrt/ohQj57oBmdHWU
-         yR3A==
+        Thu, 17 Aug 2023 17:39:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF403E74
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692308310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aeAopVzD568TVshxf9B8QDlIPyA5uq6/h2SsMX6bHOQ=;
+        b=CFhgXKts+Ypz/MzKdSKjw+vnfUTzIYx6B4WhQrZvUofQcIecqbHSOXmWQFbz9CbEKEaG3+
+        +uomjf6+KliTDm08Km9YkLPeLl2txSHpokmAxZRTVJEM8/QWz7kuN60ElrVQIGJeJ6OVF4
+        aEbAKqFI/jNl/ImqxL2VxPnikxZgzT4=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-609-oMPd7ZcSNWy54u20CFzFVg-1; Thu, 17 Aug 2023 17:38:28 -0400
+X-MC-Unique: oMPd7ZcSNWy54u20CFzFVg-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3a831831118so245868b6e.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 14:38:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692308188; x=1692912988;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZqLiBJFAZXvCnssFXrBqXIi9XKkgEx0FSumuzhI7sRM=;
-        b=IFsoTbBnSzUmYT37REW8DTDmJZaPwdoxdw3CjUv5CU+QmABbcX0PDN+EC4fRdIiZgl
-         XE01eSgzWvoR8RCFkbYaaWbBTqg1eeCrKAjFkWTVxrjbSHb8MmtYK4bvVTMpUWn/OUm4
-         UzMY5w3SssRYoS7mJixtXK4WSri4UPjoeQtvOAH1GG/kar6oGwtu6kR3sMRtCimqj8P9
-         U0bMmpyHN+07C9nmvlMN2CrvBx2Gi91gjXoLViSrPUA0h/zvFuZp7pzY1eV6hePvxiYY
-         V8f6msPMhR2evhmH6zSmtXmp1+mW88R7VLxjzXKUKQi443mB1FdAvEXTvH3yWNOJnGsM
-         bbNA==
-X-Gm-Message-State: AOJu0Yx/uD3k9EhkfZNYKflJ2cUBxIHV1dxyU0fwKL9my7AB7PnbmvJv
-        at+mplskxhs3chDxSD/N81qRaasl91i+lGFKsf4=
-X-Google-Smtp-Source: AGHT+IFUpu3VGE6POt+emX5v8mfYaZGNc7oamfuYOcbGfZl6u6aa9puOc31oMicn0jIQAQVcAhN6KfXF/l3NZMin3XQ=
-X-Received: by 2002:a17:906:5a6e:b0:99c:2535:372d with SMTP id
- my46-20020a1709065a6e00b0099c2535372dmr475132ejc.33.1692308187710; Thu, 17
- Aug 2023 14:36:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692308307; x=1692913107;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aeAopVzD568TVshxf9B8QDlIPyA5uq6/h2SsMX6bHOQ=;
+        b=LF6VFn0cmjbeC6oldQvA3oo9Nqajx1b6/PYcVVsIW0e5bSUPQTzau+2Sfb/irHd1oF
+         65FdTLD8cMJ7BJu99XJtS/m1gzVAKN39zBEbBTuHQMFridoUD9/byFmDZnn+hp4AWKUi
+         4om1dnfbeRjJp2zlpmIh8jBCZok64UsvB5kpK1CN9r8+0yE4sAOK+LtlDOfHORtv3c8o
+         BVKzvZij5oshwdMQTaFjua+a/U2BOeLCe8lWY996WMi8d9+UKbGzYHlFkRciDlCnYgLy
+         oZUcSpEjiv5TxSiP6VrnjTzD30TPuaJ4fXzWWcRxUFRvnLKe5Yt6cEQDzXI6m+Sc2FiZ
+         AXzg==
+X-Gm-Message-State: AOJu0YysWA1NHCqGtNVB91VbmjcbyKcMaFv/E4ZPcd+AdhP7+na50+zB
+        7ltENptFq2jh+/TgzJj5cYq7TgpA5QoWYnbCfB13mMHZXWC3dsgt04gRbKjDdTVr6I2icJskDbJ
+        OVMw3/5tV8TYpt5G00TLe4mR7
+X-Received: by 2002:a05:6808:171c:b0:3a7:2c8c:349b with SMTP id bc28-20020a056808171c00b003a72c8c349bmr921235oib.37.1692308307140;
+        Thu, 17 Aug 2023 14:38:27 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPJW5TfwkgDsetnCbBa55QOOVFPM3Uo3yM8WAhR01KBK1NSTXWbo9Z4qrLH7/MW3ZAkV0ooA==
+X-Received: by 2002:a05:6808:171c:b0:3a7:2c8c:349b with SMTP id bc28-20020a056808171c00b003a72c8c349bmr921222oib.37.1692308306900;
+        Thu, 17 Aug 2023 14:38:26 -0700 (PDT)
+Received: from fedora.redhat.com ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id s1-20020ae9f701000000b0076c71c1d2f5sm96547qkg.34.2023.08.17.14.38.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 14:38:26 -0700 (PDT)
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     andersson@kernel.org
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, brgl@bgdev.pl,
+        Andrew Halaney <ahalaney@redhat.com>
+Subject: [PATCH 0/2] sa8775p-ride: Describe ethernet phy IRQs
+Date:   Thu, 17 Aug 2023 16:37:15 -0500
+Message-ID: <20230817213815.638189-1-ahalaney@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 18 Aug 2023 07:36:16 +1000
-Message-ID: <CAPM=9txN=kOYfE1a4VDrLWz+fvGuhXDuzDo7AK3-DuOEJoO41Q@mail.gmail.com>
-Subject: [git pull] drm fixes for 6.5-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Now that the hardware can detect the IRQs, let's describe them instead
+of polling the phys
 
-Regular enough week, mostly the usual amdgpu and i915 fixes. Then
-qaic, nouveau, qxl and a revert for an EDID patch that had some side
-effects, along with a couple of panel fixes.
+Andrew Halaney (2):
+  arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy0 irq
+  arm64: dts: qcom: sa8775p-ride: Describe sgmii_phy1 irq
 
-Dave.
+ arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-drm-fixes-2023-08-18-1:
-drm fixes for 6.5-rc7
+-- 
+2.41.0
 
-edid:
-- revert mode parsing fix that had side effects.
-
-i915:
-- Fix the flow for ignoring GuC SLPC efficient frequency selection
-- Fix SDVO panel_type initialization
-- Fix display probe for IVB Q and IVB D GT2 server
-
-nouveau:
-- fix use-after-free in connector code
-
-qaic:
-- integer overflow check fix
-- fix slicing memory leak
-
-panel:
-- fix JDI LT070ME05000 probing
-- fix AUO G121EAN01 timings
-
-amdgpu:
-- SMU 13.x fixes
-- Fix mcbp parameter for gfx9
-- SMU 11.x fixes
-- Temporary fix for large numbers of XCP partitions
-- S0ix fixes
-- DCN 2.0 fix
-
-qxl:
-- fix use after free race in dumb object allocation
-The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
-
-  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2023-08-18-1
-
-for you to fetch changes up to c611589b4259ed63b9b77be6872b1ce07ec0ac16:
-
-  drm/qxl: fix UAF on handle creation (2023-08-18 06:57:38 +1000)
-
-----------------------------------------------------------------
-drm fixes for 6.5-rc7
-
-edid:
-- revert mode parsing fix that had side effects.
-
-i915:
-- Fix the flow for ignoring GuC SLPC efficient frequency selection
-- Fix SDVO panel_type initialization
-- Fix display probe for IVB Q and IVB D GT2 server
-
-nouveau:
-- fix use-after-free in connector code
-
-qaic:
-- integer overflow check fix
-- fix slicing memory leak
-
-panel:
-- fix JDI LT070ME05000 probing
-- fix AUO G121EAN01 timings
-
-amdgpu:
-- SMU 13.x fixes
-- Fix mcbp parameter for gfx9
-- SMU 11.x fixes
-- Temporary fix for large numbers of XCP partitions
-- S0ix fixes
-- DCN 2.0 fix
-
-qxl:
-- fix use after free race in dumb object allocation
-
-----------------------------------------------------------------
-Alex Deucher (1):
-      Revert "Revert "drm/amdgpu/display: change pipe policy for DCN 2.0""
-
-Asad Kamal (1):
-      drm/amd/pm: Update pci link width for smu v13.0.6
-
-Dan Carpenter (1):
-      accel/qaic: Clean up integer overflow checking in map_user_pages()
-
-Dave Airlie (3):
-      Merge tag 'drm-intel-fixes-2023-08-17' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-      Merge tag 'drm-misc-fixes-2023-08-17' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'amd-drm-fixes-6.5-2023-08-16' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-David Heidelberg (1):
-      drm/panel: JDI LT070ME05000 simplify with dev_err_probe()
-
-James Zhu (1):
-      drm/amdgpu: skip xcp drm device allocation when out of drm resource
-
-Jani Nikula (3):
-      drm/i915/sdvo: fix panel_type initialization
-      drm/i915: fix display probe for IVB Q and IVB D GT2 server
-      Revert "drm/edid: Fix csync detailed mode parsing"
-
-Jiadong Zhu (1):
-      drm/amdgpu: disable mcbp if parameter zero is set
-
-Karol Herbst (1):
-      drm/nouveau/disp: fix use-after-free in error handling of
-nouveau_connector_create
-
-Kenneth Feng (1):
-      drm/amd/pm: disallow the fan setting if there is no fan on smu 13.0.0
-
-Lijo Lazar (1):
-      drm/amd/pm: Fix temperature unit of SMU v13.0.6
-
-Luca Ceresoli (1):
-      drm/panel: simple: Fix AUO G121EAN01 panel timings according to the docs
-
-Mario Limonciello (1):
-      drm/amd: flush any delayed gfxoff on suspend entry
-
-Pranjal Ramajor Asha Kanojiya (1):
-      accel/qaic: Fix slicing memory leak
-
-Tim Huang (1):
-      drm/amdgpu: skip fence GFX interrupts disable/enable for S0ix
-
-Umio Yasuno (1):
-      drm/amdgpu/pm: fix throttle_status for other than MP1 11.0.7
-
-Vinay Belgaumkar (1):
-      drm/i915/guc/slpc: Restore efficient freq earlier
-
-Wander Lairson Costa (1):
-      drm/qxl: fix UAF on handle creation
-
- drivers/accel/qaic/qaic_control.c                  | 26 +++++++++-----
- drivers/accel/qaic/qaic_data.c                     |  1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 10 +++---
- drivers/gpu/drm/amd/amdgpu/amdgpu_fence.c          | 41 ++++++++++++++++++++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_gfx.c            |  9 +----
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring_mux.c       |  2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_xcp.c            | 13 ++++++-
- drivers/gpu/drm/amd/amdkfd/kfd_topology.c          |  9 ++++-
- .../gpu/drm/amd/display/dc/dcn20/dcn20_resource.c  |  2 +-
- .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    | 14 ++++----
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_0_ppt.c   |  4 +++
- .../gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c   | 19 +++++++---
- drivers/gpu/drm/drm_edid.c                         | 29 +++++----------
- .../gpu/drm/i915/display/intel_display_device.c    | 24 +++++++++++--
- drivers/gpu/drm/i915/display/intel_sdvo.c          |  2 +-
- drivers/gpu/drm/i915/gt/uc/intel_guc_slpc.c        | 22 +++++++-----
- drivers/gpu/drm/nouveau/nouveau_connector.c        | 11 +++---
- drivers/gpu/drm/panel/panel-jdi-lt070me05000.c     | 36 ++++++++-----------
- drivers/gpu/drm/panel/panel-simple.c               | 24 ++++++-------
- drivers/gpu/drm/qxl/qxl_drv.h                      |  2 +-
- drivers/gpu/drm/qxl/qxl_dumb.c                     |  5 ++-
- drivers/gpu/drm/qxl/qxl_gem.c                      | 25 ++++++++-----
- drivers/gpu/drm/qxl/qxl_ioctl.c                    |  6 ++--
- include/drm/drm_edid.h                             | 12 ++-----
- 24 files changed, 216 insertions(+), 132 deletions(-)
