@@ -2,101 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D2A77F2BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C564C77F2BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349283AbjHQJGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43560 "EHLO
+        id S1349294AbjHQJHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349304AbjHQJG0 (ORCPT
+        with ESMTP id S1349378AbjHQJG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:06:26 -0400
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB56E7C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:06:23 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DF65D40002;
-        Thu, 17 Aug 2023 09:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692263181;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+0sVgZsDJdvO6ZNm9NpT15IQTSW7YnPyFxYPQgJVPH8=;
-        b=FwIYdAL44GxU/4+G1yOoHEzd+g/QEteRnPeF468rd4duSOuaA74Awj7WFrNoS6D0TP72t1
-        21U9j10sZm/Utd+Tk8w9zecWCA6UryPAKhugCpW8peLliCLUbLYJQKNe3GILs5LsYo9uLb
-        PF1syT1AiQrPRndgvzVF/NqPl8roWEx5YDAm2Ic+E4nrfp48yRb6cfcW5R4TWGxEGlmZuh
-        eMaxRgz5lWttgpuxiAfDhEj37MUjcqcxF1Bdq31Gek+eDnK5MyivgLXxtHefOJ3UzPioeN
-        zVQqd1zBWFiVf0sODS5yyJw+KGIL8D69TcosOPUckFHsuQElCrKfSNxIMwHMrA==
-Date:   Thu, 17 Aug 2023 11:06:18 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: (subset) [PATCH v9 0/7] NVMEM cells in sysfs
-Message-ID: <20230817110618.623960a0@xps-13>
-In-Reply-To: <169200728874.82396.6212330367970101447.b4-ty@linaro.org>
-References: <20230808062932.150588-1-miquel.raynal@bootlin.com>
-        <169200728874.82396.6212330367970101447.b4-ty@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Thu, 17 Aug 2023 05:06:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB602D40;
+        Thu, 17 Aug 2023 02:06:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1C4865B66;
+        Thu, 17 Aug 2023 09:06:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C38AC433C7;
+        Thu, 17 Aug 2023 09:06:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692263208;
+        bh=SqQbXc1eQwPHkS8qcXpAjk0yPygmpKpDzq9KX0jTsw8=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=WUj/PAgbUwqPOCkCUdR8yrwdEQnNDls8Wnt48XbsPnOFk5QN7LF0QqE9IzX1n1GLo
+         uUHnAs3QtQe5M27/xRrWgakO3RPCLhyYmTO7CxFWVEqZwqbJNx+c13+WhGeSWZbys8
+         2k6GCG15YCXEtIqu3O9ybY2w2JAhkrPXIMW8z4dpqjtGuPkodmPZYuiOdzRVAmKnuB
+         t5TqTCFiLAbzCgdRmCk4T7fNqN9LfXZJL/z21+AvdjGiAieIyNczTWB0tlXkSr6g86
+         0w6mdxUwP1IOy4PqwtDeeYVIdcATSHsTrk3bUEv/hl/jGy7E2itNghei4Gdbvhf5Cv
+         ASeagLPufNSZQ==
+From:   Lee Jones <lee@kernel.org>
+To:     lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+        claudiu.beznea@microchip.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Varshini Rajendran <varshini.rajendran@microchip.com>
+In-Reply-To: <20230728102550.266134-1-varshini.rajendran@microchip.com>
+References: <20230728102550.266134-1-varshini.rajendran@microchip.com>
+Subject: Re: (subset) [PATCH v3 17/50] dt-bindings: atmel-smc: add
+ microchip,sam9x7-smc
+Message-Id: <169226320596.930413.6357154496969671577.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 10:06:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Srinivas,
+On Fri, 28 Jul 2023 15:55:50 +0530, Varshini Rajendran wrote:
+> Add microchip,sam9x7-smc to DT bindings documentation.
+> 
+> 
 
-srinivas.kandagatla@linaro.org wrote on Mon, 14 Aug 2023 11:01:28 +0100:
+Applied, thanks!
 
-> On Tue, 08 Aug 2023 08:29:25 +0200, Miquel Raynal wrote:
-> > As part of a previous effort, support for dynamic NVMEM layouts was
-> > brought into mainline, helping a lot in getting information from NVMEM
-> > devices at non-static locations. One common example of NVMEM cell is the
-> > MAC address that must be used. Sometimes the cell content is mainly (or
-> > only) useful to the kernel, and sometimes it is not. Users might also
-> > want to know the content of cells such as: the manufacturing place and
-> > date, the hardware version, the unique ID, etc. Two possibilities in
-> > this case: either the users re-implement their own parser to go through
-> > the whole device and search for the information they want, or the kernel
-> > can expose the content of the cells if deemed relevant. This second
-> > approach sounds way more relevant than the first one to avoid useless
-> > code duplication, so here is a series bringing NVMEM cells content to
-> > the user through sysfs.
-> >=20
-> > [...] =20
->=20
-> Applied, thanks!
->=20
-> [1/7] nvmem: core: Create all cells before adding the nvmem device
->       commit: ad004687dafea0921c2551c7d3e7ad56837984fc
-> [2/7] nvmem: core: Return NULL when no nvmem layout is found
->       commit: a29eacf7e6376a44f37cc80950c92a59ca285992
-> [3/7] nvmem: core: Do not open-code existing functions
->       commit: 95735bc038a828d649fe7f66f9bb67099c18a47a
-> [4/7] nvmem: core: Notify when a new layout is registered
->       commit: 0e4a8e9e49ea29af87f9f308dc3e01fab969102f
+[17/50] dt-bindings: atmel-smc: add microchip,sam9x7-smc
+        commit: ca3fd125e95c91a779342293373aa509d1eef028
 
-Thanks for taking these! I will soon send a v10 with a very minor
-correction. I guess you prefer to merge the "major" changes right after
--rc1 so the series can spend more time in -next, or is there something
-that bothers you which need additional discussion?
+--
+Lee Jones [李琼斯]
 
-Thanks,
-Miqu=C3=A8l
