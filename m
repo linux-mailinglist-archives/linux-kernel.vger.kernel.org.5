@@ -2,183 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB8477F805
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AC077F80A
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351588AbjHQNpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S1351329AbjHQNqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351598AbjHQNoz (ORCPT
+        with ESMTP id S1351539AbjHQNpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:44:55 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAB52710
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:44:47 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RRR7x5bZRzB0Sh;
-        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id FousFlCk6thr; Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRR7x4yfgzB0Sg;
-        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A6B2A8B76C;
-        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5gO1jEp3d6SR; Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [172.19.54.59])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A0208B763;
-        Thu, 17 Aug 2023 15:44:45 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37HDibVq433875
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 15:44:37 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37HDiYBe433828;
-        Thu, 17 Aug 2023 15:44:34 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] powerpc/4xx: Remove pika_dtm_[un]register_shutdown() to fix no previous prototype
-Date:   Thu, 17 Aug 2023 15:44:26 +0200
-Message-ID: <830923f0e0375a14609204246d302c7476a8f948.1692279855.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Thu, 17 Aug 2023 09:45:45 -0400
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879C12710
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=g4xw+ubZUdy5UCfJVzSceKn+nYjWPWMzqkt6LVuLyZU=; b=jsSE7qCf0hXSEtTbihtX57rFdW
+        HGpMwMO9e17BkV8Ik2VRWEucHPtA/Ws/PTe/EqCJsGzC4NbG40DOdjzAHI9V/4mHJ3nXGzckHvs7X
+        UV9/MrGXuGcss6BG0LMQ3eNzN/fIrBswgtKObEJa0mZF4EolCAt5bdKgxCNfCwCduUDzTEOxo09bw
+        oB3WL5VUM+yXduWkYzkHpqmnKmmpqPLUB1Tkf7fqFkqafwUV5ctVWe+/jgyRpylEczugOZ+DMgYoO
+        1aoy1k0RghFaYdUfMLSd21fy79KeOUCRxOH1YEJiSU8OaIJ8KAWe+epzyQGlFCbZRjtj7VKkqOEFl
+        ybZEjnbg==;
+Received: from [191.193.179.209] (helo=[192.168.1.111])
+        by fanzine2.igalia.com with esmtpsa 
+        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+        id 1qWdJe-001vzc-TX; Thu, 17 Aug 2023 15:45:35 +0200
+Message-ID: <a6e90991-91bb-4da9-ab67-d0ec28a29680@igalia.com>
+Date:   Thu, 17 Aug 2023 10:45:30 -0300
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692279865; l=3351; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Sbyk6OxfIJ6WJXDgRx9nz8WultA2O/aRcm7QwUEwtak=; b=AnI1p6Zia0OY67ubHT1k6Hs9VRBTsgbCT6Z1jctBs/hWRBywlgggbXxivSa3Ma2NRElgHXEOS Nm8/Ew30YKEAfTsThHJKP+az1JBdpHihIVsa1w6Py1rLfnyaQMaruqv
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] drm/amdgpu: Rework coredump to use memory
+ dynamically
+Content-Language: en-US
+To:     Shashank Sharma <shashank.sharma@amd.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=C3=B3f?= <timur.kristof@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230815195100.294458-1-andrealmeid@igalia.com>
+ <20230815195100.294458-3-andrealmeid@igalia.com>
+ <07ef59db-da17-15cf-789a-7f5d01b2c9c9@amd.com>
+From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <07ef59db-da17-15cf-789a-7f5d01b2c9c9@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,T_SPF_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ppc4xx_defconfig with W=1 results in:
+Hi Shashank,
 
-  CC      arch/powerpc/platforms/44x/warp.o
-arch/powerpc/platforms/44x/warp.c:369:5: error: no previous prototype for 'pika_dtm_register_shutdown' [-Werror=missing-prototypes]
-  369 | int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-arch/powerpc/platforms/44x/warp.c:374:5: error: no previous prototype for 'pika_dtm_unregister_shutdown' [-Werror=missing-prototypes]
-  374 | int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
-      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Em 17/08/2023 03:41, Shashank Sharma escreveu:
+> Hello Andre,
+> 
+> On 15/08/2023 21:50, André Almeida wrote:
+>> Instead of storing coredump information inside amdgpu_device struct,
+>> move if to a proper separated struct and allocate it dynamically. This
+>> will make it easier to further expand the logged information.
+>>
+>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>> ---
+>> v4: change kmalloc to kzalloc
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        | 14 +++--
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 63 ++++++++++++++--------
+>>   2 files changed, 49 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> index 9c6a332261ab..0d560b713948 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> @@ -1088,11 +1088,6 @@ struct amdgpu_device {
+>>       uint32_t                        *reset_dump_reg_list;
+>>       uint32_t            *reset_dump_reg_value;
+>>       int                             num_regs;
+>> -#ifdef CONFIG_DEV_COREDUMP
+>> -    struct amdgpu_task_info         reset_task_info;
+>> -    bool                            reset_vram_lost;
+>> -    struct timespec64               reset_time;
+>> -#endif
+>>       bool                            scpm_enabled;
+>>       uint32_t                        scpm_status;
+>> @@ -1105,6 +1100,15 @@ struct amdgpu_device {
+>>       uint32_t            aid_mask;
+>>   };
+>> +#ifdef CONFIG_DEV_COREDUMP
+>> +struct amdgpu_coredump_info {
+>> +    struct amdgpu_device        *adev;
+>> +    struct amdgpu_task_info         reset_task_info;
+>> +    struct timespec64               reset_time;
+>> +    bool                            reset_vram_lost;
+>> +};
+> 
+> The patch looks good to me in general, but I would recommend slightly 
+> different arrangement and segregation of GPU reset information.
+> 
+> Please consider a higher level structure adev->gpu_reset_info, and move 
+> everything related to reset dump info into that, including this new 
+> coredump_info structure, something like this:
+> 
+> struct amdgpu_reset_info {
+> 
+>      uint32_t *reset_dump_reg_list;
+> 
+>      uint32_t *reset_dump_reg_value;
+> 
+>      int num_regs;
+> 
 
-The functions were added by commit 4ebef31fa6e0 ("[POWERPC] PIKA Warp:
-Update platform code to support Rev B boards")
+Right, I can encapsulate there reset_dump members,
 
-Those functions are not used localy and allthough their symbols are
-exported they are not declared in any header file so they can't be used.
+> #ifdef CONFIG_DEV_COREDUMP
+> 
+>     struct amdgpu_coredump_info *coredump_info;/* keep this dynamic 
+> allocation */
 
-Remove them, then remove the associated list as it will now remain empty
-hence becomes useless.
+but we don't need a pointer for amdgpu_coredump_info inside 
+amdgpu_device or inside of amdgpu_device->gpu_reset_info, right?
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- arch/powerpc/platforms/44x/warp.c | 55 -------------------------------
- 1 file changed, 55 deletions(-)
-
-diff --git a/arch/powerpc/platforms/44x/warp.c b/arch/powerpc/platforms/44x/warp.c
-index bfeb9bdc3258..bf0188dcb918 100644
---- a/arch/powerpc/platforms/44x/warp.c
-+++ b/arch/powerpc/platforms/44x/warp.c
-@@ -83,45 +83,8 @@ static int __init warp_post_info(void)
- 
- #ifdef CONFIG_SENSORS_AD7414
- 
--static LIST_HEAD(dtm_shutdown_list);
- static void __iomem *dtm_fpga;
- 
--struct dtm_shutdown {
--	struct list_head list;
--	void (*func)(void *arg);
--	void *arg;
--};
--
--int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
--{
--	struct dtm_shutdown *shutdown;
--
--	shutdown = kmalloc(sizeof(struct dtm_shutdown), GFP_KERNEL);
--	if (shutdown == NULL)
--		return -ENOMEM;
--
--	shutdown->func = func;
--	shutdown->arg = arg;
--
--	list_add(&shutdown->list, &dtm_shutdown_list);
--
--	return 0;
--}
--
--int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
--{
--	struct dtm_shutdown *shutdown;
--
--	list_for_each_entry(shutdown, &dtm_shutdown_list, list)
--		if (shutdown->func == func && shutdown->arg == arg) {
--			list_del(&shutdown->list);
--			kfree(shutdown);
--			return 0;
--		}
--
--	return -EINVAL;
--}
--
- #define WARP_GREEN_LED	0
- #define WARP_RED_LED	1
- 
-@@ -153,17 +116,12 @@ static struct platform_device warp_gpio_leds = {
- 
- static irqreturn_t temp_isr(int irq, void *context)
- {
--	struct dtm_shutdown *shutdown;
- 	int value = 1;
- 
- 	local_irq_disable();
- 
- 	gpiod_set_value(warp_gpio_led_pins[WARP_GREEN_LED].gpiod, 0);
- 
--	/* Run through the shutdown list. */
--	list_for_each_entry(shutdown, &dtm_shutdown_list, list)
--		shutdown->func(shutdown->arg);
--
- 	printk(KERN_EMERG "\n\nCritical Temperature Shutdown\n\n");
- 
- 	while (1) {
-@@ -366,19 +324,6 @@ machine_late_initcall(warp, pika_dtm_start);
- 
- #else /* !CONFIG_SENSORS_AD7414 */
- 
--int pika_dtm_register_shutdown(void (*func)(void *arg), void *arg)
--{
--	return 0;
--}
--
--int pika_dtm_unregister_shutdown(void (*func)(void *arg), void *arg)
--{
--	return 0;
--}
--
- machine_late_initcall(warp, warp_post_info);
- 
- #endif
--
--EXPORT_SYMBOL(pika_dtm_register_shutdown);
--EXPORT_SYMBOL(pika_dtm_unregister_shutdown);
--- 
-2.41.0
-
+> 
+> #endif
+> 
+> }
+> 
+> 
+> This will make sure that all the relevant information is at the same place.
+> 
+> - Shashank
+> 
+        amdgpu_inc_vram_lost(tmp_adev);
