@@ -2,55 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4E277F8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F007677F8BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351830AbjHQOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55758 "EHLO
+        id S241310AbjHQOXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351831AbjHQOWI (ORCPT
+        with ESMTP id S1351675AbjHQOW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:22:08 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9F65130D1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:22:07 -0700 (PDT)
-Received: (qmail 475804 invoked by uid 1000); 17 Aug 2023 10:22:06 -0400
-Date:   Thu, 17 Aug 2023 10:22:06 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     mathias.nyman@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xhci: Disable connect, disconnect and over-current
- wakeup on system suspend
-Message-ID: <59898e32-f2ea-4df7-947b-3d74835ff9b7@rowland.harvard.edu>
-References: <20230817093305.212821-1-kai.heng.feng@canonical.com>
- <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
+        Thu, 17 Aug 2023 10:22:29 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3CD2D78
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:22:27 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76d8598d023so10542985a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692282147; x=1692886947;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mTKJUUXOGyIJAU+qtBiufGP3U/3Kch3ieMrfhSVgec0=;
+        b=EfNT3+vt+iIsTZniixXS9HICQ3ETlydByp4X881EphJBqGj5obEWHd1x64/2BnGTxJ
+         isHZYSCt0aCKo7xnafx1RPput0UOVW/dmIt3ZFOW6wVwQecL8FHnyv6tyAJpgmAG8yaL
+         w1lCQiPaavAAZepvAcvqBDIKcNjF623xc/WNz3sj20rwfDGXlf3Pn/1AX2Ub7lsSCvOW
+         IcKyzzeB9W+C1V7TMmgwTP7ZtxmQXksEo36I3BmzuLNkDNy/WiXCSHWPO3otI28plWfw
+         Zi0UrgvApJ06wZv10w78boGHi+KciT5LcJxnZwfB2wqj90/Nt8PGplFFkJjh+Jcdorz8
+         5uIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692282147; x=1692886947;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mTKJUUXOGyIJAU+qtBiufGP3U/3Kch3ieMrfhSVgec0=;
+        b=AL//iiOLiqnbObcXuaahdoLSOlDn37L1gqs/q05D0Nfp3aaFbMh6smCNA9eEqFHnEU
+         xqrlZy3N7svvK7vmm28XQcbsHz6w6aoQFa8ircP3SoUr6NjCb5jpSSHEyN4ZZncygKtx
+         wk9dBEsQg1oiEzFVTTGrmrTntcJoUmi2Te1vzT9++YHJjmHVL5gJjLJGsbz2Cd7NOcfB
+         2hcQ1EzIMDznrm3pKpmmX/D5lpzimGEJgdIcsnPex2Vom2xxJw6zGE6Unp/R4C0iDomA
+         lnfXHegRcZUss9s5HNNOYgK8o2s0Og4cWBq3O5t+ry7hK30qPdLoN5Ws3lsR6sOvIUiN
+         QvSw==
+X-Gm-Message-State: AOJu0YzQvGpa6w+ZL9NkAW4Zqm2hvSW/QcP15a4BGAl4jH6kkSQRlLto
+        VJ1lLQBOBEF8FqOd3UC5H+o=
+X-Google-Smtp-Source: AGHT+IFocFIbRPfWFQMMde3ZYxUkNFLkWGo0GdfP/e2GZfJkVu8lxW3yNv+BqqqtwgxmbTgrgke2EA==
+X-Received: by 2002:a05:620a:4ce:b0:76c:a187:13be with SMTP id 14-20020a05620a04ce00b0076ca18713bemr4949856qks.33.1692282146798;
+        Thu, 17 Aug 2023 07:22:26 -0700 (PDT)
+Received: from localhost (72-0-147-214.static.firstlight.net. [72.0.147.214])
+        by smtp.gmail.com with ESMTPSA id pj23-20020a05620a1d9700b0076cb1eff83csm5179918qkn.5.2023.08.17.07.22.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 07:22:26 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 07:22:25 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v3 1/8] bitmap: align __reg_op() wrappers with modern
+ coding style
+Message-ID: <ZN4tIS/aYYPUr6qv@yury-ThinkPad>
+References: <20230815233628.45016-1-yury.norov@gmail.com>
+ <20230815233628.45016-2-yury.norov@gmail.com>
+ <ZN3q5bWbnKM9+gwg@smile.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZN3q5bWbnKM9+gwg@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 10:07:37AM -0400, Alan Stern wrote:
-> On Thu, Aug 17, 2023 at 05:33:05PM +0800, Kai-Heng Feng wrote:
-> > HP ProOne 440 G10 AIO sometimes cannot suspend as xHCI wakes up the
-> > system:
-> > [  445.814574] hub 2-0:1.0: hub_suspend
-> > [  445.814652] usb usb2: bus suspend, wakeup 0
-> > [  445.824629] xhci_hcd 0000:00:14.0: Port change event, 1-11, id 11, portsc: 0x202a0
+On Thu, Aug 17, 2023 at 12:39:49PM +0300, Andy Shevchenko wrote:
+> On Tue, Aug 15, 2023 at 04:36:21PM -0700, Yury Norov wrote:
+> > Fix comments so that scripts/kernel-doc doesn't warn, and fix for-loop
+> > style in bitmap_find_free_region().
 > 
-> What is the meaning of the 0x202a0 bits?  What caused this wakeup?
+> Suggested-by?
 
-And more to the point, given that the previous line says "wakeup 0", why 
-should any port change event cause a wakeup?
+Can you send a full tag?
 
-Alan Stern
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
