@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1CE7801C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0C147801C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 01:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356143AbjHQXlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 19:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S1356137AbjHQXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 19:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356142AbjHQXko (ORCPT
+        with ESMTP id S1356142AbjHQXk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 19:40:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231F830C6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692315643; x=1723851643;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=99rPeQ5/adE6x4lyPiyDxGG+LbtIfy+slgjM8qiM+yE=;
-  b=FeHDOy2vnjS7+sFc0SJdfR5GxTWTpOWYv4Plneek+Mcum2O7tqdxgCS4
-   9Ae98WBwKq6iFVj7cRUnCAebiNpYg8gnmxuJkmdOnrx/amBPS+ke+7rL1
-   VnyriXetIQ5sz0klXjlORvDu94PCH73Gzpuph2Q/FlKBqKBKsJSc+nNL7
-   JDofFpARosAe/W4+ZN+BVsMvea6pWo0xZiLzdQfleG0jfYkgG1cVEdquH
-   l2UOdO3m8x6jGfkKnudR3lWh/HwxsqJUq/NRlKu5/fJpDCAbt+LgWV5NA
-   RQyMN1VnNOWJhH9OyE1I/+K+kihOYrlMGXEoIn66f8ptXRlCPhX1o0rio
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="357928154"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="357928154"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 16:40:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="824872784"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="824872784"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 17 Aug 2023 16:40:40 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWmbX-0001YB-3B;
-        Thu, 17 Aug 2023 23:40:39 +0000
-Date:   Fri, 18 Aug 2023 07:40:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Hao Luo <haoluo@google.com>
-Subject: kernel/cgroup/rstat.c:166:22: error: no previous declaration for
- 'bpf_rstat_flush'
-Message-ID: <202308180759.iTOZ010U-lkp@intel.com>
+        Thu, 17 Aug 2023 19:40:28 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A7B30E9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:40:26 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf1935f6c2so2570365ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 16:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692315626; x=1692920426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1VCakgqASg3h9183qTuhRoaN+EGRR2UwJM9N77vDLR8=;
+        b=JImyrb2e/StN5NZPwiXTxfSJ8H055CDGNgN8XmqgLAwHdgHkLjLl8nifuytazbaktR
+         KVHi6Mjmxj4tA1TCxWnCf+IZFMrYPeX7quUzVyy4S0WUMnz967Gnwbu61lexaYJ4BJnm
+         JJQfrx1t/if1DjKRFaShzkrdejZxfqgN7prIk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692315626; x=1692920426;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1VCakgqASg3h9183qTuhRoaN+EGRR2UwJM9N77vDLR8=;
+        b=PG0PwZwp5esopRcY3H3+6PMcDGxdFwMWKRiW/Ze5znZv0HFRhDVuOhwB0+t0S3jdn0
+         EdSHKRFafF96ek83p1sYaMumky0LSskEjudILN6Uq/LMRo6zBWJufBiuIp6/MFJimXwF
+         76+Ur6KgRgn0+5YB9IiElpbbiUuzD/sZWB78cVTJTsfBnz8PVfPQFe9PIePnNnr68XoH
+         gXv7SrTA6o3prpvmCqY6iPbSmvyzYTtzXvosO4/fjhLtoVIpolSr83gUghlMe/Wx05mx
+         yAqxcuOJfjYorTv4wi9XCAVAEvqF5LB8+JCL8Y7VHSBeBxT+YTgbI6f6Fg/fseetEYzH
+         /BvQ==
+X-Gm-Message-State: AOJu0YxWST5U7XWkAuKlxQxnwn7/0tu4/xiURx6Kglo3/agddqDhC1uh
+        c+DEcW8q2zZrGgFW8HW5FGUhs1rBWVSDQGOSotY=
+X-Google-Smtp-Source: AGHT+IFPQt+NcgencYztvbHc+KfKgXvjSMi+thjcbfvjb/04TPsE7lu5R6RUGJ6v3UpZfG1jcgsgYQ==
+X-Received: by 2002:a17:902:e807:b0:1ba:fe6a:3845 with SMTP id u7-20020a170902e80700b001bafe6a3845mr966877plg.11.1692315625977;
+        Thu, 17 Aug 2023 16:40:25 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001afd821c057sm336599pli.58.2023.08.17.16.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 16:40:25 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 16:40:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yuxiao Zhang <yuxiaozhang@google.com>
+Cc:     Tony Luck <tony.luck@intel.com>,
+        "'Guilherme G . Piccoli'" <gpiccoli@igalia.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wak@google.com
+Subject: Re: [PATCH] pstore: ramoops: support pmsg size larger than kmalloc
+ limitation
+Message-ID: <202308171639.B97420B5@keescook>
+References: <20230630205358.3601280-1-yuxiaozhang@google.com>
+ <20230718202347.3320812-1-yuxiaozhang@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230718202347.3320812-1-yuxiaozhang@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   16931859a6500d360b90aeacab3b505a3560a3ed
-commit: a319185be9f5ad13c2a296d448ac52ffe45d194c cgroup: bpf: enable bpf programs to integrate with rstat
-date:   12 months ago
-config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20230818/202308180759.iTOZ010U-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180759.iTOZ010U-lkp@intel.com/reproduce)
+On Tue, Jul 18, 2023 at 01:23:47PM -0700, Yuxiao Zhang wrote:
+> Friendly ping, any update on this?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180759.iTOZ010U-lkp@intel.com/
+Hi! I finally got a chance to look this over. I added a few more
+kvzalloc() uses to generalize this for all records (not just pmsg), and
+it's testing well. Here's the resulting commit:
 
-All errors (new ones prefixed by >>):
-
->> kernel/cgroup/rstat.c:166:22: error: no previous declaration for 'bpf_rstat_flush' [-Werror=missing-declarations]
-    __weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-                         ^~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
-
-
-vim +/bpf_rstat_flush +166 kernel/cgroup/rstat.c
-
-   147	
-   148	/*
-   149	 * A hook for bpf stat collectors to attach to and flush their stats.
-   150	 * Together with providing bpf kfuncs for cgroup_rstat_updated() and
-   151	 * cgroup_rstat_flush(), this enables a complete workflow where bpf progs that
-   152	 * collect cgroup stats can integrate with rstat for efficient flushing.
-   153	 *
-   154	 * A static noinline declaration here could cause the compiler to optimize away
-   155	 * the function. A global noinline declaration will keep the definition, but may
-   156	 * optimize away the callsite. Therefore, __weak is needed to ensure that the
-   157	 * call is still emitted, by telling the compiler that we don't know what the
-   158	 * function might eventually be.
-   159	 *
-   160	 * __diag_* below are needed to dismiss the missing prototype warning.
-   161	 */
-   162	__diag_push();
-   163	__diag_ignore_all("-Wmissing-prototypes",
-   164			  "kfuncs which will be used in BPF programs");
-   165	
- > 166	__weak noinline void bpf_rstat_flush(struct cgroup *cgrp,
-   167					     struct cgroup *parent, int cpu)
-   168	{
-   169	}
-   170	
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/pstore&id=104fd0b5e948157f8e8ac88a20b46ba8641d4e95
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
