@@ -2,100 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA5D77F4AD
+	by mail.lfdr.de (Postfix) with ESMTP id D519677F4AE
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350122AbjHQLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 07:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
+        id S1350129AbjHQLBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350139AbjHQLAn (ORCPT
+        with ESMTP id S1350173AbjHQLA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 07:00:43 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D616330C2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 04:00:39 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id ada2fe7eead31-447be69ae43so2254283137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 04:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692270039; x=1692874839;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=NZfMepvXg3qvtrbHn0BjG22kHp9b7uQ/uXEZyK1q+hE=;
-        b=G2/DX7qptVpsyagL0UIvZrbSuYLIkaH0lNb5G03nLnUs19Nt1GAMlDFR1DPUHQYwf8
-         D7jYv63MYLnoL8z22BgkKDjH/Bz+y73zWTTMWpo7X6fkV6R+iGXkR7uUx1U0J7rLRksV
-         yxyA5BZU6HVfnN3FEW8ZrawF6mI8A/4tTHpXUBvvV3qoxFZW4CFTJwcKJFNN8OyQw1uh
-         UtbN0xSpd6gepWwlhgqMJRZ2IVnaKVtVzchbp9dugTT1ZAX6cYM7sDy9oJBZx6LsNoAx
-         BEjeVC7xWWo+9AN58o/g9oR+yWM0NseAUTAALWV9f9i/0x0sWclCVOK3hV9YZ4rpNvnu
-         8zKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692270039; x=1692874839;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NZfMepvXg3qvtrbHn0BjG22kHp9b7uQ/uXEZyK1q+hE=;
-        b=BsE6njFb0bUBctpN1tcoDNpmHJk7CZ3fhz7ACLuf4VFDmYv4UQSpFnwVXssvpMnk8b
-         4+jNNMv/L4HP+xfOjEFwZrecJYOMHXF4l2PGcdwcGbEKItwr5Ul+ckafY89JhRTF+QNK
-         M3QSIZh1+F42k8PgWLOrSjx/zd2DgYk1+rs9cGO40QCVuTEXFc4UGftNvpEC3MvEOd/d
-         JefP1pxd/aVxUirwCR8SXsKYbcVzbCp63UmGJq6uh0W2ZDnB/jpodLBNL9z6Xej+iH41
-         rxuoGVyi3qSgOIZ+GTyUCLTW5+ivIhG22QbjSc+FB9iDzPEfkKToUmfULFw26SCopL+V
-         pt9Q==
-X-Gm-Message-State: AOJu0Yy6YFAdokD9+xWn+DhcihvQsgj6incaY3XXvuxQ1h9U7vg1AcMD
-        ovVm+FJgT0FzZzjj7/4BIipk/vsgtW6InHQILfXuRg==
-X-Google-Smtp-Source: AGHT+IFqL6u8k9ycO0ncWBs+dW20/DPk/E5uRvud3mCrHpEvhoOVAaag9XvvewRBCOlJAMngLcBac5965k8GukIKOlw=
-X-Received: by 2002:a67:bb08:0:b0:446:9cc3:ccf with SMTP id
- m8-20020a67bb08000000b004469cc30ccfmr3337886vsn.28.1692270038874; Thu, 17 Aug
- 2023 04:00:38 -0700 (PDT)
+        Thu, 17 Aug 2023 07:00:59 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13CE32D4A;
+        Thu, 17 Aug 2023 04:00:58 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HAlaCK015999;
+        Thu, 17 Aug 2023 11:00:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=87DQzJH3rUcB74qf6X10NHHO1nTtQlAD8crmjKfqJFc=;
+ b=R2bBe40F1dKqlEmlcNv6N76UTp5mk/FaiGDb0NG/Igu/aVaRMvwODAulXiRSVSN8/6OG
+ vNnR8ygkogDnbhqzvhNom8lql9ikfVuQggKaVHJUy3ApCgxfkItNybakaU6EI2VBlI7R
+ usVu2TiuTFWsopgMgFdEezJGS8WxhyJswdz7hh3osXf+Dte6t2gOZLlPDZY/XGqhscae
+ brwFMRrrFHLT1kct/kvOp7v+2HEn4KABpLM61NIoVGq66YfyWGuOCOZsqVq7OJQrYE0B
+ nGEGKXEM0H6Z99vpOhgGBvEWqupDx9pEa5dFjvptEvBYFDpR58R3HD//u+lJmdrzItmT Uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shj3y08n7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:00:57 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37HAluqt018117;
+        Thu, 17 Aug 2023 11:00:57 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shj3y08mm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:00:57 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37HAIOlx013234;
+        Thu, 17 Aug 2023 11:00:55 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmk51sw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:00:55 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37HB0pJD23921366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Aug 2023 11:00:52 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E1A772004B;
+        Thu, 17 Aug 2023 11:00:51 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4473C20040;
+        Thu, 17 Aug 2023 11:00:51 +0000 (GMT)
+Received: from [9.152.224.236] (unknown [9.152.224.236])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Aug 2023 11:00:51 +0000 (GMT)
+Message-ID: <c6baf206-65f8-60e6-9065-5cd8c4d1be85@linux.ibm.com>
+Date:   Thu, 17 Aug 2023 13:00:50 +0200
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Aug 2023 16:30:28 +0530
-Message-ID: <CA+G9fYuW2tu3Tu_8rMoXK_anMJO8t9qw2vhxfQrLXY04rCRPqA@mail.gmail.com>
-Subject: selftests: timerfd.c:64:7: error: absolute value function 'abs' given
- an argument of type 'long long' but has parameter of type 'int' which may
- cause truncation of value
-To:     clang-built-linux <llvm@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 2/4] s390: uv: UV feature check utility
+To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20230815151415.379760-1-seiden@linux.ibm.com>
+ <20230815151415.379760-3-seiden@linux.ibm.com>
+From:   Michael Mueller <mimu@linux.ibm.com>
+In-Reply-To: <20230815151415.379760-3-seiden@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: kFGmflBMVI1KfdIw_ZP_pWAJTnOnDFlj
+X-Proofpoint-ORIG-GUID: oO9OciI3NiJ632-2GENKijanKaKd4sXq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_03,2023-08-17_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
+ malwarescore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ bulkscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308170095
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While building selftests landlock following warnings / errors noticed on the
-Linux next with clang-17 toolchain.
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Build errors:
-------------
-timens/timerfd
-timerfd.c:64:7: error: absolute value function 'abs' given an argument
-of type 'long long' but has parameter of type 'int' which may cause
-truncation of value [-Werror,-Wabsolute-value]
-   64 |                 if (abs(elapsed - 3600) > 60) {
-      |                     ^
-timerfd.c:64:7: note: use function 'llabs' instead
-   64 |                 if (abs(elapsed - 3600) > 60) {
-      |                     ^~~
-      |                     llabs
-1 error generated.
-make[4]: Leaving directory 'selftests/timens'
 
 
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7eRU4UUygecrDx/
+On 15.08.23 17:14, Steffen Eiden wrote:
+> Introduces a function to check the existence of an UV feature.
+> Refactor feature bit checks to use the new function.
+> 
+> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
+> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
-Steps to reproduce:
-tuxmake --runtime podman --target-arch arm64 --toolchain clang-17
---kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7eRU4UUygecrDx/config
-LLVM=1 LLVM_IAS=1 dtbs dtbs-legacy headers kernel kselftest modules
+Reviewed-by: Michael Mueller <mimu@linux.ibm.com>
 
---
-Linaro LKFT
-https://lkft.linaro.org
+> ---
+>   arch/s390/include/asm/uv.h | 7 +++++++
+>   arch/s390/kernel/uv.c      | 2 +-
+>   arch/s390/kvm/kvm-s390.c   | 2 +-
+>   arch/s390/mm/fault.c       | 2 +-
+>   4 files changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index d2cd42bb2c26..823adfff7315 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -397,6 +397,13 @@ struct uv_info {
+> 
+>   extern struct uv_info uv_info;
+> 
+> +static inline bool uv_has_feature(u8 feature_bit)
+> +{
+> +	if (feature_bit >= sizeof(uv_info.uv_feature_indications) * 8)
+> +		return false;
+> +	return test_bit_inv(feature_bit, &uv_info.uv_feature_indications);
+> +}
+> +
+>   #ifdef CONFIG_PROTECTED_VIRTUALIZATION_GUEST
+>   extern int prot_virt_guest;
+> 
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index b771f1b4cdd1..fc07bc39e698 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -258,7 +258,7 @@ static bool should_export_before_import(struct uv_cb_header *uvcb, struct mm_str
+>   	 * shared page from a different protected VM will automatically also
+>   	 * transfer its ownership.
+>   	 */
+> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications))
+> +	if (uv_has_feature(BIT_UV_FEAT_MISC))
+>   		return false;
+>   	if (uvcb->cmd == UVC_CMD_UNPIN_PAGE_SHARED)
+>   		return false;
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index e6511608280c..813cc3d59c90 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -2406,7 +2406,7 @@ static int kvm_s390_cpus_to_pv(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	struct kvm_vcpu *vcpu;
+> 
+>   	/* Disable the GISA if the ultravisor does not support AIV. */
+> -	if (!test_bit_inv(BIT_UV_FEAT_AIV, &uv_info.uv_feature_indications))
+> +	if (!uv_has_feature(BIT_UV_FEAT_AIV))
+>   		kvm_s390_gisa_disable(kvm);
+> 
+>   	kvm_for_each_vcpu(i, vcpu, kvm) {
+> diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> index b5e1bea9194c..8a86dd725870 100644
+> --- a/arch/s390/mm/fault.c
+> +++ b/arch/s390/mm/fault.c
+> @@ -599,7 +599,7 @@ void do_secure_storage_access(struct pt_regs *regs)
+>   	 * reliable without the misc UV feature so we need to check
+>   	 * for that as well.
+>   	 */
+> -	if (test_bit_inv(BIT_UV_FEAT_MISC, &uv_info.uv_feature_indications) &&
+> +	if (uv_has_feature(BIT_UV_FEAT_MISC) &&
+>   	    !test_bit_inv(61, &regs->int_parm_long)) {
+>   		/*
+>   		 * When this happens, userspace did something that it
