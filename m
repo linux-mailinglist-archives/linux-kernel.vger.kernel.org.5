@@ -2,248 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BA677F1E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E10677F1E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348792AbjHQILr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:11:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        id S1348767AbjHQIO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:14:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348874AbjHQILh (ORCPT
+        with ESMTP id S1348795AbjHQIOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:11:37 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B60742D5D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:11:08 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-79a2216a22fso1981597241.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 01:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692259863; x=1692864663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xnhnXpfMXVOkUdJ8XTjqlG22FaxEQYoj9IS672h/7bM=;
-        b=VamYqVM5YtUAB1bPNlGnv50ns9In+OK4nsXx1TvaHbtNVOerYEcmISzAKjpCgptdZ5
-         Z7/ONLchmQ2mERNnLJtZmUryheCtJA4k2G1TquEt2U4PU+nytlBWDnL73rM+/xqi3Iut
-         SyHaRPwV5vobvIwfAyQymJoDRGzeX2h2vib9M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692259863; x=1692864663;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xnhnXpfMXVOkUdJ8XTjqlG22FaxEQYoj9IS672h/7bM=;
-        b=TMyFruV+WnJogE7EbxNxTs3srIU7lhV7va1AjiND0cBKYrdfxrOAOeRrbKlJEi1gO5
-         08M/ZcLoBIKkiDHNDy3bmYAh5GNICtequycH6lgoiL3dn5fVBJ/fxz3/x7sxTa2AdnkR
-         o2DAj/94EJzyxieznpMnRDIQqZzdMyqES52fU1AHS2A/Pfh6AJ2n8ZMv4NS3G4bNY6m9
-         reukCIyK89R2fymzFmgiXQ9TZuTTiYeRdBd3HYWWVoRasUNIa0eHNl8K/iv5RRpVbOs6
-         its79dCqyS2EGAnLR/luVO0xxJNIAFQy0/iwFzGhk/sOASJv0j9eZ7hd/F/4sZ8nZBdU
-         lnRg==
-X-Gm-Message-State: AOJu0YyeDlcrTZ+F8uyhqBNqdO8PP4pwbjWaLS/wQr2EMOYKpoyHhbuJ
-        2CukLXmpaUTOiyy1aY/2v6B2e8iN0drwoRZNo6Edag==
-X-Google-Smtp-Source: AGHT+IFMsqL3pFYM3QtwPqpO5LX2pHlaj7if/3HlFso69UDgkdRzVb32750YVOtroJzIB9qxeEO7OeSMQcZ129EchfA=
-X-Received: by 2002:a67:f150:0:b0:445:209:cac7 with SMTP id
- t16-20020a67f150000000b004450209cac7mr3439728vsm.27.1692259863374; Thu, 17
- Aug 2023 01:11:03 -0700 (PDT)
+        Thu, 17 Aug 2023 04:14:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD682136;
+        Thu, 17 Aug 2023 01:14:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B620064959;
+        Thu, 17 Aug 2023 08:14:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50395C433C7;
+        Thu, 17 Aug 2023 08:14:00 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+Date:   Thu, 17 Aug 2023 16:13:45 +0800
+Message-Id: <20230817081345.1423-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20230602090227.7264-1-yong.wu@mediatek.com> <20230602090227.7264-6-yong.wu@mediatek.com>
- <CAGXv+5EKwvn-axETPcuxTpxRkUGLroymeDYL+kr4QW8duAymmQ@mail.gmail.com>
- <b695962fa3c3baac08f8be5202e6a5697e7826a0.camel@mediatek.com>
- <CAGXv+5EVqODJJ4Ck+EcB9sn1bTjG5yFrWLi9mHTfVa0sB4wsug@mail.gmail.com>
- <810a3cbca7e837925b5750fd2eb1d1a261e865dc.camel@mediatek.com>
- <CAGXv+5G=CM9203GR42szWXx8K7F+swkvKJ_M3ev5_bGTk_zjGg@mail.gmail.com> <2607586420f4c81a2e2fd9f3395263e85d1f83ef.camel@mediatek.com>
-In-Reply-To: <2607586420f4c81a2e2fd9f3395263e85d1f83ef.camel@mediatek.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 17 Aug 2023 16:10:52 +0800
-Message-ID: <CAGXv+5E13wFUPH9yw+JeP6-=O6ta51shUGsCH1o5Pvsd5W3h2w@mail.gmail.com>
-Subject: Re: [PATCH v12 5/7] iommu/mediatek: Add MT8188 IOMMU Support
-To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
-        <Jianjiao.Zeng@mediatek.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        =?UTF-8?B?Q2hlbmdjaSBYdSAo6K645om/6LWQKQ==?= 
-        <Chengci.Xu@mediatek.com>,
-        =?UTF-8?B?WUYgV2FuZyAo546L5LqR6aOeKQ==?= <YF.Wang@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        =?UTF-8?B?TWluZ3l1YW4gTWEgKOmprOm4o+i/nCk=?= 
-        <Mingyuan.Ma@mediatek.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "will@kernel.org" <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,HEXHASH_WORD,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 4:03=E2=80=AFPM Yong Wu (=E5=90=B4=E5=8B=87) <Yong.=
-Wu@mediatek.com> wrote:
->
-> On Mon, 2023-08-14 at 16:21 +0800, Chen-Yu Tsai wrote:
-> >
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Mon, Aug 14, 2023 at 3:14=E2=80=AFPM Yong Wu (=E5=90=B4=E5=8B=87) <=
-Yong.Wu@mediatek.com>
-> > wrote:
-> > >
-> > > On Fri, 2023-08-11 at 11:30 +0800, Chen-Yu Tsai wrote:
-> > > >
-> > > > External email : Please do not click links or open attachments
-> > until
-> > > > you have verified the sender or the content.
-> > > >  On Thu, Aug 10, 2023 at 8:23=E2=80=AFPM Yong Wu (=E5=90=B4=E5=8B=
-=87) <
-> > Yong.Wu@mediatek.com>
-> > > > wrote:
-> > > > >
-> > > > > On Tue, 2023-08-08 at 17:53 +0800, Chen-Yu Tsai wrote:
-> > > > > >
-> > > > > > External email : Please do not click links or open
-> > attachments
-> > > > until
-> > > > > > you have verified the sender or the content.
-> > > > > >  On Fri, Jun 2, 2023 at 5:04=E2=80=AFPM Yong Wu <yong.wu@mediat=
-ek.com
-> > >
-> > > > wrote:
-> > > > > > >
-> > > > > > > From: "Chengci.Xu" <chengci.xu@mediatek.com>
-> > > > > > >
-> > > > > > > MT8188 has 3 IOMMU, containing 2 MM IOMMUs, one is for vdo,
-> > the
-> > > > > > other
-> > > > > > > is for vpp. and 1 INFRA IOMMU.
-> > > > > > >
-> > > > > > > Signed-off-by: Chengci.Xu <chengci.xu@mediatek.com>
-> > > > > > > Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> > > > > > > Reviewed-by: AngeloGioacchino Del Regno <
-> > > > > > angelogioacchino.delregno@collabora.com>
-> > > > > > > ---
-> > > > > > >  drivers/iommu/mtk_iommu.c | 49
-> > > > > > +++++++++++++++++++++++++++++++++++++++
-> > > > > > >  1 file changed, 49 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/iommu/mtk_iommu.c
-> > > > b/drivers/iommu/mtk_iommu.c
-> > > > > > > index 9c89cf894a4d..5c66af0c45a8 100644
-> > > > > > > --- a/drivers/iommu/mtk_iommu.c
-> > > > > > > +++ b/drivers/iommu/mtk_iommu.c
-> > > > > > > @@ -170,6 +170,7 @@ enum mtk_iommu_plat {
-> > > > > > >         M4U_MT8173,
-> > > > > > >         M4U_MT8183,
-> > > > > > >         M4U_MT8186,
-> > > > > > > +       M4U_MT8188,
-> > > > > > >         M4U_MT8192,
-> > > > > > >         M4U_MT8195,
-> > > > > > >         M4U_MT8365,
-> > > > > > > @@ -1593,6 +1594,51 @@ static const struct
-> > mtk_iommu_plat_data
-> > > > > > mt8186_data_mm =3D {
-> > > > > > >         .iova_region_larb_msk =3D mt8186_larb_region_msk,
-> > > > > > >  };
-> > > > > > >
-> > > > > > > +static const struct mtk_iommu_plat_data mt8188_data_infra
-> > =3D {
-> > > > > > > +       .m4u_plat         =3D M4U_MT8188,
-> > > > > > > +       .flags            =3D WR_THROT_EN | DCM_DISABLE |
-> > > > > > STD_AXI_MODE | PM_CLK_AO |
-> > > > > > > +                           MTK_IOMMU_TYPE_INFRA |
-> > > > > > IFA_IOMMU_PCIE_SUPPORT |
-> > > > > > > +                           PGTABLE_PA_35_EN |
-> > > > > > CFG_IFA_MASTER_IN_ATF,
-> > > > > >
-> > > > > > FWIW, CFG_IFA_MASTER_IN_ATF should not be tied to the
-> > compatible
-> > > > > > string,
-> > > > > > but set via a DT property. The IOMMU controls are secured by
-> > > > > > firmware.
-> > > > > > It is not a property intrinsically tied to the hardware.
-> > > > >
-> > > > > The flag CFG_IFA_MASTER_IN_ATF means the registers which
-> > > > enable/disable
-> > > > > iommu are in the secure world. If the master like pcie want to
-> > > > enable
-> > > > > iommu, we have to enter secure world to configure it. It should
-> > be
-> > > > HW
-> > > > > intrinsical, right?
-> > > >
-> > > > If I understand correctly, this is forced by setting some
-> > registers.
-> > > > The registers are set by the firmware at boot time.
-> > >
-> > > The register will be set before the masters that have the "iommus=3D"
-> > > property probe. If the master doesn't have "iommus=3D" property in
-> > its
-> > > dtsi node, this register won't be set, then its iommu will be
-> > disabled
-> > > and it has to access continuous buffer.
-> > >
-> > > >
-> > > > So if a different firmware that doesn't set the registers is
-> > used,
-> > > > then the IOMMU is available to non-secure kernel, correct?
-> > >
-> > > No. The meaning of this register is whether to enable iommu. If the
-> > > register are not set, the IOMMU for that master is disabled.
-> >
-> > For clarity, I'm referring to PERI_MST_PROT [1], not the registers in
-> > the
-> > IOMMU or LARBs. So not any of the registers used in this patch.
-> >
-> > If that register doesn't restrict access to IOMMU register space to
-> > secure
-> > only, then I assume it is controlled by fuses?
->
-> Thanks for the clarification. Understand this now. If that register
-> doesn't restrict this, the register for enabling the iommu could be
-> accessed in normal world.
->
-> > [1]
-> > https://review.trustedfirmware.org/plugins/gitiles/TF-A/trusted-firmwar=
-e-a/+/be457248c6b0a7f3c61bd95af58372938d13decd/plat/mediatek/drivers/iommu/=
-mt8188/mtk_iommu_plat.c#93
-> >
-> > > >
-> > > > That's why I said that it should not be tied to a particular
-> > hardware
-> > > > platform, but set using a boolean device tree property.
-> > > >
-> > > > > >
-> > > > > > If on some other project there is no such security
-> > requirement
-> > > > and
-> > > > > > the
-> > > > > > IOMMU is opened up to non-secure world, and ATF not even
-> > having
-> > > > > > support
-> > > > > > for the SMC call, this becomes unusable and hard to rectify
-> > > > without
-> > > > > > introducing a new compatible string.
->
-> Then this make sense. Sorry, I don't know if such project exist, I
-> guess no, right? we could add it when necessary?
+The KGDB initial breakpoint gets an rcu stall warning after commit
+a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+rcu_cpu_stall_reset()").
 
-I guess that works. It would be a negative property, such as
-"mediatek,iommu-is-non-secure". However, since this lock down is orthogonal
-to the SoC model, it would be better to model it as such from the beginning=
-.
+[   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   53.487950] rcu:     3-...0: (1 ticks this GP) idle=0e2c/1/0x4000000000000000 softirq=375/375 fqs=8
+[   53.528243] rcu:     (t=12297 jiffies g=-995 q=1 ncpus=4)
+[   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.05099-beta8 08
+[   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000a0000 sp 90000001000a3710
+[   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 0000000000000001 a3 0000000000000000
+[   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000000000000002c a7 0000000000000000
+[   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900000000131c9c0 t3 fffffffffffffffa
+[   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 0000000000000004 t7 9000000001912d58
+[   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 0000000000000028 s0 9000000001d512f0
+[   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019fc410 s4 9000000001d4b488
+[   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 0000000000000078 s8 9000000001d4b450
+[   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
+[   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
+[   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+[   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
+[   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+[   54.207838]  ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
+[   54.242503] ESTAT: 00000800 [INT] (IS=11 ECode=0 EsubCode=0)
+[   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
+[   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   54.430170] Stack : 0072617764726148 0000000000000000 9000000000223504 90000001000a0000
+[   54.472308]         9000000100073a90 9000000100073a98 0000000000000000 9000000100073bd8
+[   54.514413]         9000000100073bd0 9000000100073bd0 9000000100073a00 0000000000000001
+[   54.556018]         0000000000000001 9000000100073a98 99828271f24e961a 90000001002810c0
+[   54.596924]         0000000000000001 0000000000010003 0000000000000000 0000000000000001
+[   54.637115]         ffff8000337cdb80 0000000000000001 0000000006360000 900000000131c9c0
+[   54.677049]         0000000000000000 0000000000000000 90000000017b4c98 9000000001912000
+[   54.716394]         9000000001912f68 9000000001913000 9000000001912f70 00000000000002b0
+[   54.754880]         90000000014a8840 0000000000000000 900000000022351c 0000000000000000
+[   54.792372]         00000000000002b0 000000000000000c 0000000000000000 0000000000071c1c
+[   54.829302]         ...
+[   54.859163] Call Trace:
+[   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
+[   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
+[   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
+[   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
+[   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
+[   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
+[   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
+[   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
+[   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x60
+[   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x160
+[   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
+[   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
+[   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x40
+[   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
+[   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
+[   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
+[   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
+[   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
+[   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
+[   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
+[   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
+[   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
+[   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1c0
+[   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
+[   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
+[   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
+[   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
+[   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
+[   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
+[   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
+[   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
+[   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
+[   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
+[   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
+[   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
+[   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
+[   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
+[   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
+[   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
 
-ChenYu
+Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one check
+period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiffies
+is only updated in the timer interrupt, so when kgdb_cpu_enter() begins
+to run there may already be nearly one rcu check period after jiffies.
+Since all interrupts are disabled during kgdb_cpu_enter(), jiffies will
+not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stall
+maybe already gets timeout.
+
+We can set rcu_state.jiffies_stall to two rcu check periods later, e.g.
+jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset()
+to avoid this problem. But this isn't a complete solution because kgdb
+may take a very long time in irq disabled context.
+
+Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
+solve all kinds of problems [1]. But this causes a new problem because
+updating jiffies is not NMI safe while rcu_cpu_stall_reset() may be used
+in NMI context.
+
+So we don't update the global jiffies, but only add the time 'delta' to
+jiffies locally at the beginning of rcu_cpu_stall_reset() which has the
+same effect.
+
+[1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loongson.cn/T/#t
+
+Cc: stable@vger.kernel.org
+Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+ kernel/rcu/tree_stall.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..1bf1306cae23 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -153,8 +153,12 @@ static void panic_on_rcu_stall(void)
+  */
+ void rcu_cpu_stall_reset(void)
+ {
++	unsigned long delta;
++
++	delta = nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
++
+ 	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + rcu_jiffies_till_stall_check());
++		   jiffies + delta + rcu_jiffies_till_stall_check());
+ }
+ 
+ //////////////////////////////////////////////////////////////////////////////
+-- 
+2.39.3
+
