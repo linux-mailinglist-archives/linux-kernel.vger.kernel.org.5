@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B434877F889
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D48C77F8B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351778AbjHQORm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        id S1351825AbjHQOWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351783AbjHQORP (ORCPT
+        with ESMTP id S1351822AbjHQOWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:17:15 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE512D5F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:17:13 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRRsJ0Vv8z4f3q2y
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:17:08 +0800 (CST)
-Received: from ubuntu20.huawei.com (unknown [10.67.174.33])
-        by APP1 (Coremail) with SMTP id cCh0CgB38S3OK95kF+6GAw--.40006S2;
-        Thu, 17 Aug 2023 22:17:08 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     gongruiqi1@huawei.com
-Subject: [PATCH] lkdtm: use the return value of strim()
-Date:   Thu, 17 Aug 2023 22:21:17 +0800
-Message-Id: <20230817142117.972418-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 17 Aug 2023 10:22:03 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76EE32D76
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:22:02 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76d8598d023so10511985a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692282121; x=1692886921;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=x2HbRirAdfxX4HP6fJvIL3SaqJoHj7gskE9QoxF41Uk=;
+        b=amv9eBm6Bx1mRUOUq3DyrW18WD9fiKG2ReegxgxQVG6i5v97vPeBP2IHf6wXutZHih
+         ZvamWNcB6Jy7mirjwFhhVOTcbrIyer+vYx/qUWN4nYzmctnsy3xW4tGAwLDHIhvgR5bT
+         1A5Mj0+BJQ2ZfU/NmgcDgYOWE27lfHSaxlNH9kIGrHYUjLd1ZcXC/cCPyYPCxKIqPyhT
+         s7QWSLtlqWOMAr50dRbo74/BR34BLb0AwxgzPZseGbAPtibWISEwwTUeqrW82/hz4Rfo
+         QooWT241aDNzj8eIRqlb7FkmYreRrBkcz9HlP01vjXCR0ZoUALBLwVTyY/112bmu30MR
+         L5UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692282121; x=1692886921;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x2HbRirAdfxX4HP6fJvIL3SaqJoHj7gskE9QoxF41Uk=;
+        b=PU1WCDkpEpaOcf0cHUAgFGtSyPwmkRc11eKyZW0+1IbJ38MFqOH6G4XA5yo5ETX4a0
+         IC/s8OSJaKl1uCvGlkYyJv1ZECIMXfBMBOeHTjz+HYn0RTGQo5XilyOhSilcM/ZNqZQ7
+         Rv5jiqz21aQ9ZbOwxRNZVPI/dtdsdvUy8pfFBrzCyH3VAuTs2Q7JZsQOmvcI6vMlT2YD
+         LDcCUKQjbisxVtQUJBEGEiGSbMrU8Wg2XVcbXow9qsup0hdIi+e7VdA+bxEOQfwwUjJ+
+         4lF+u0jYytun5QrRlKwJz3zZrUPYNbYdunJnZlNjYkdNIMHRPo5KEGdhF04UhQi3R/FE
+         DXAA==
+X-Gm-Message-State: AOJu0YxIu9R6rYUn9yNphzz0S42Td0YVc7iqL6gTFI5R6oYDTCLopqyd
+        6xpxUJ2+w9ctOV1e+Gz28k6yffypicU=
+X-Google-Smtp-Source: AGHT+IHtzj/QgpqMg0R8cVt/4zhUUo7JSaYm4GBM8G4FUY07K+eQRIXkl5AOz2/zvmabD0mXvEaAqw==
+X-Received: by 2002:a05:620a:c55:b0:767:1af0:e82f with SMTP id u21-20020a05620a0c5500b007671af0e82fmr5531783qki.76.1692282121423;
+        Thu, 17 Aug 2023 07:22:01 -0700 (PDT)
+Received: from localhost (72-0-147-214.static.firstlight.net. [72.0.147.214])
+        by smtp.gmail.com with ESMTPSA id t27-20020a05620a035b00b007678973eaa1sm5211904qkm.127.2023.08.17.07.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 07:22:01 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 07:21:59 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
+Message-ID: <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
+References: <20230815235934.47782-1-yury.norov@gmail.com>
+ <ZN3qQPeFtdZQrLE4@smile.fi.intel.com>
+ <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgB38S3OK95kF+6GAw--.40006S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw48JF17Jr4kCryDKFyfZwb_yoWktrX_Cw
-        4Yqr18CFsxu3WfAw1q93WUZr45ua1DWFsY9r4aqrW3ZFy7Wrs5JFyFgrn5Xw43Cr4Dur9r
-        Kr95W3yIqw42kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUboxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-        bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s
-        1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnI
-        WIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+On Thu, Aug 17, 2023 at 12:38:28PM +0300, Andy Shevchenko wrote:
+> On Thu, Aug 17, 2023 at 12:37:05PM +0300, Andy Shevchenko wrote:
+> > On Tue, Aug 15, 2023 at 04:59:34PM -0700, Yury Norov wrote:
+> 
+> ...
+> 
+> > >  		int n = bitmap_pos_to_ord(old, oldbit, nbits);
+> > >  
+> > > +		bit = (n < 0) ? oldbit :	/* identity map */
+> > 
+> > Can't you also optimize this case?
+> > 
+> > Something like
+> > 
+> >   bitmap_xor(tmp, old, new) // maybe even better approach, dunno
+> 
+> >   bitmap_empty(tmp) // can be replaced by find first bit
+> 
+> Or reuse bitmap_weight()...
 
-Make use of the return value of strim() to achieve left-trim as well as
-right-trim, which prevents the following unusual fail case:
+That way it wouldn't work, but I think something like this would:
 
- # echo " EXCEPTION" > /sys/kernel/debug/provoke-crash/DIRECT
- sh: write error: Invalid argument
+         if (dst == src)         /* following doesn't handle inplace remaps */
+                 return;
 
-Link: https://github.com/KSPP/linux/issues/337
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
----
- drivers/misc/lkdtm/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+         w = bitmap_weight(new, nbits);
+         if (w == 0) {
+                 bitmap_copy(dst, src, nbits);
+                 return;
+         }
 
-diff --git a/drivers/misc/lkdtm/core.c b/drivers/misc/lkdtm/core.c
-index 0772e4a4757e..812c96461ab2 100644
---- a/drivers/misc/lkdtm/core.c
-+++ b/drivers/misc/lkdtm/core.c
-@@ -242,7 +242,7 @@ static ssize_t lkdtm_debugfs_entry(struct file *f,
- 	}
- 	/* NULL-terminate and remove enter */
- 	buf[count] = '\0';
--	strim(buf);
-+	buf = strim(buf);
- 
- 	crashtype = find_crashtype(buf);
- 	free_page((unsigned long)buf);
-@@ -318,7 +318,7 @@ static ssize_t direct_entry(struct file *f, const char __user *user_buf,
- 	}
- 	/* NULL-terminate and remove enter */
- 	buf[count] = '\0';
--	strim(buf);
-+	buf = strim(buf);
- 
- 	crashtype = find_crashtype(buf);
- 	free_page((unsigned long) buf);
--- 
-2.25.1
+         /* Identity part */
+         bitmap_andnot(dst, src, old, nbits);
+         for_each_and_bit(oldbit, src, old, nbits) {
+                 int n = bitmap_weight(old, oldbit);
+                 __set_bit(find_nth_bit(new, nbits, n % w), dst);
+         }
 
+And it needs bitmap_weight_from() and find_nth_bit_from() to avoid
+Schlemiel the Painter's problem.
+
+You're right. This has a room for more optimizations. Thanks for
+discussion. Need to give it a run.
+
+Thanks,
+Yury
