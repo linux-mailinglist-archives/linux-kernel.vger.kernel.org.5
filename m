@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E8E77F596
+	by mail.lfdr.de (Postfix) with ESMTP id ACA5677F598
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350454AbjHQLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 07:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
+        id S1350461AbjHQLqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350428AbjHQLqU (ORCPT
+        with ESMTP id S1350426AbjHQLqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 07:46:20 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1645E4F;
-        Thu, 17 Aug 2023 04:46:16 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37HBjti7029750;
-        Thu, 17 Aug 2023 06:45:55 -0500
+        Thu, 17 Aug 2023 07:46:22 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3AA1728;
+        Thu, 17 Aug 2023 04:46:19 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37HBk1dV012142;
+        Thu, 17 Aug 2023 06:46:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692272755;
-        bh=4QeWfRm3ufr4+gPkgcTWsweQVhWwUo0PixiyoBb4+rA=;
+        s=ti-com-17Q1; t=1692272761;
+        bh=pHZH9dBdzfmxDAjTg5mDEFcO5sPKDiWYi+lW1GoD7YY=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=urbs7aIKSPf+hVgIrQZ0LEsb3dn/uVzSZwdufAcIJw+XpjEtkUmXKzcQs1CLC+Pez
-         UXY1i1ZpFYenCXsFUCoiH6/za4guG03Vjpb+rlLGQoYAfnJKWDwUElFrIDPoGoKSdo
-         b08iBSeANc7ReucW863k8It2mlCncToG/6zgIZxQ=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37HBjtVK124827
+        b=tOp2Zcna1ofm16dvS4VKxdg24sS+ZKwTR5YYjiMUFCXOdAtYLqy5jXgoK/4f0GDqW
+         hFDRtc2BudiOzZnfUaXFiQE1kg2VB6v6+9+qtJrEXJiz/9C5JMXTywkHvzCc3dL+ER
+         TtSTBnJMoNQFXyCEFv+qq+hspIxEENCIxKRL6PYY=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37HBk13e003259
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Aug 2023 06:45:55 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 17 Aug 2023 06:46:01 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 17
- Aug 2023 06:45:54 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 06:46:01 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 17 Aug 2023 06:45:54 -0500
+ Frontend Transport; Thu, 17 Aug 2023 06:46:01 -0500
 Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37HBjsua010624;
-        Thu, 17 Aug 2023 06:45:54 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37HBk18n097953;
+        Thu, 17 Aug 2023 06:46:01 -0500
 Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37HBjruL000317;
-        Thu, 17 Aug 2023 06:45:54 -0500
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 37HBk0OP000551;
+        Thu, 17 Aug 2023 06:46:00 -0500
 From:   MD Danish Anwar <danishanwar@ti.com>
 To:     Randy Dunlap <rdunlap@infradead.org>,
         Roger Quadros <rogerq@kernel.org>,
@@ -62,9 +62,9 @@ CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-omap@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH v5 3/5] net: ti: icss-iep: Add IEP driver
-Date:   Thu, 17 Aug 2023 17:15:25 +0530
-Message-ID: <20230817114527.1585631-4-danishanwar@ti.com>
+Subject: [PATCH v5 4/5] net: ti: icssg-prueth: add packet timestamping and ptp support
+Date:   Thu, 17 Aug 2023 17:15:26 +0530
+Message-ID: <20230817114527.1585631-5-danishanwar@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230817114527.1585631-1-danishanwar@ti.com>
 References: <20230817114527.1585631-1-danishanwar@ti.com>
@@ -84,1042 +84,792 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Roger Quadros <rogerq@ti.com>
 
-Add a driver for Industrial Ethernet Peripheral (IEP) block of PRUSS to
-support timestamping of ethernet packets and thus support PTP and PPS
-for PRU ethernet ports.
+Add packet timestamping TS and PTP PHC clock support.
+
+For AM65x and AM64x:
+ - IEP1 is not used
+ - IEP0 is configured in shadow mode with 1ms cycle and shared between
+Linux and FW. It provides time and TS in number cycles, so special
+conversation in ns is required.
+ - IEP0 shared between PRUeth ports.
+ - IEP0 supports PPS, periodic output.
+ - IEP0 settime() and enabling PPS required FW interraction.
+ - RX TS provided with each packet in CPPI5 descriptor.
+ - TX TS returned through separate ICSSG hw queues for each port. TX TS
+readiness is signaled by INTC IRQ. Only one packet at time can be requested
+for TX TS.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
-Signed-off-by: Lokesh Vutla <lokeshvutla@ti.com>
-Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+Co-developed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
 Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
 Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
 ---
- drivers/net/ethernet/ti/Kconfig          |  11 +
- drivers/net/ethernet/ti/Makefile         |   1 +
- drivers/net/ethernet/ti/icssg/icss_iep.c | 939 +++++++++++++++++++++++
- drivers/net/ethernet/ti/icssg/icss_iep.h |  38 +
- 4 files changed, 989 insertions(+)
- create mode 100644 drivers/net/ethernet/ti/icssg/icss_iep.c
- create mode 100644 drivers/net/ethernet/ti/icssg/icss_iep.h
+ drivers/net/ethernet/ti/Kconfig               |   1 +
+ drivers/net/ethernet/ti/icssg/icss_iep.h      |   1 +
+ drivers/net/ethernet/ti/icssg/icssg_ethtool.c |  21 +
+ drivers/net/ethernet/ti/icssg/icssg_prueth.c  | 424 +++++++++++++++++-
+ drivers/net/ethernet/ti/icssg/icssg_prueth.h  |  26 +-
+ 5 files changed, 467 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
-index 63e510b6860f..1af5a90720ec 100644
+index 1af5a90720ec..88b5b1b47779 100644
 --- a/drivers/net/ethernet/ti/Kconfig
 +++ b/drivers/net/ethernet/ti/Kconfig
-@@ -196,4 +196,15 @@ config TI_ICSSG_PRUETH
- 	  to support the Ethernet operation. Currently, it supports Ethernet
- 	  with 1G and 100M link speed.
+@@ -186,6 +186,7 @@ config CPMAC
+ config TI_ICSSG_PRUETH
+ 	tristate "TI Gigabit PRU Ethernet driver"
+ 	select PHYLIB
++	select TI_ICSS_IEP
+ 	depends on PRU_REMOTEPROC
+ 	depends on ARCH_K3 && OF && TI_K3_UDMA_GLUE_LAYER
+ 	help
+diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.h b/drivers/net/ethernet/ti/icssg/icss_iep.h
+index 9eee44ae4990..9c7f4d0a0916 100644
+--- a/drivers/net/ethernet/ti/icssg/icss_iep.h
++++ b/drivers/net/ethernet/ti/icssg/icss_iep.h
+@@ -13,6 +13,7 @@
+ #include <linux/regmap.h>
  
-+config TI_ICSS_IEP
-+	tristate "TI PRU ICSS IEP driver"
-+	depends on TI_PRUSS
-+	default TI_PRUSS
-+	help
-+	  This driver enables support for the PRU-ICSS Industrial Ethernet
-+	  Peripheral within a PRU-ICSS subsystem present on various TI SoCs.
-+
-+	  To compile this driver as a module, choose M here. The module
-+	  will be called icss_iep.
-+
- endif # NET_VENDOR_TI
-diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
-index 9176d79c36e1..34fd7a716ba6 100644
---- a/drivers/net/ethernet/ti/Makefile
-+++ b/drivers/net/ethernet/ti/Makefile
-@@ -38,3 +38,4 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
- 		  icssg/icssg_mii_cfg.o \
- 		  icssg/icssg_stats.o \
- 		  icssg/icssg_ethtool.o
-+obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.c b/drivers/net/ethernet/ti/icssg/icss_iep.c
-new file mode 100644
-index 000000000000..bcc056bf45da
---- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.c
-@@ -0,0 +1,939 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* Texas Instruments ICSSG Industrial Ethernet Peripheral (IEP) Driver
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com
-+ *
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+#include <linux/timekeeping.h>
-+#include <linux/interrupt.h>
-+#include <linux/of_irq.h>
-+
-+#include "icss_iep.h"
-+
-+#define IEP_MAX_DEF_INC		0xf
-+#define IEP_MAX_COMPEN_INC		0xfff
-+#define IEP_MAX_COMPEN_COUNT	0xffffff
-+
-+#define IEP_GLOBAL_CFG_CNT_ENABLE	BIT(0)
-+#define IEP_GLOBAL_CFG_DEFAULT_INC_MASK		GENMASK(7, 4)
-+#define IEP_GLOBAL_CFG_DEFAULT_INC_SHIFT	4
-+#define IEP_GLOBAL_CFG_COMPEN_INC_MASK		GENMASK(19, 8)
-+#define IEP_GLOBAL_CFG_COMPEN_INC_SHIFT		8
-+
-+#define IEP_GLOBAL_STATUS_CNT_OVF	BIT(0)
-+
-+#define IEP_CMP_CFG_SHADOW_EN		BIT(17)
-+#define IEP_CMP_CFG_CMP0_RST_CNT_EN	BIT(0)
-+#define IEP_CMP_CFG_CMP_EN(cmp)		(GENMASK(16, 1) & (1 << ((cmp) + 1)))
-+
-+#define IEP_CMP_STATUS(cmp)		(1 << (cmp))
-+
-+#define IEP_SYNC_CTRL_SYNC_EN		BIT(0)
-+#define IEP_SYNC_CTRL_SYNC_N_EN(n)	(GENMASK(2, 1) & (BIT(1) << (n)))
-+
-+#define IEP_MIN_CMP	0
-+#define IEP_MAX_CMP	15
-+
-+#define ICSS_IEP_64BIT_COUNTER_SUPPORT		BIT(0)
-+#define ICSS_IEP_SLOW_COMPEN_REG_SUPPORT	BIT(1)
-+#define ICSS_IEP_SHADOW_MODE_SUPPORT		BIT(2)
-+
-+#define LATCH_INDEX(ts_index)			((ts_index) + 6)
-+#define IEP_CAP_CFG_CAPNR_1ST_EVENT_EN(n)	BIT(LATCH_INDEX(n))
-+#define IEP_CAP_CFG_CAP_ASYNC_EN(n)		BIT(LATCH_INDEX(n) + 10)
-+
-+enum {
-+	ICSS_IEP_GLOBAL_CFG_REG,
-+	ICSS_IEP_GLOBAL_STATUS_REG,
-+	ICSS_IEP_COMPEN_REG,
-+	ICSS_IEP_SLOW_COMPEN_REG,
-+	ICSS_IEP_COUNT_REG0,
-+	ICSS_IEP_COUNT_REG1,
-+	ICSS_IEP_CAPTURE_CFG_REG,
-+	ICSS_IEP_CAPTURE_STAT_REG,
-+
-+	ICSS_IEP_CAP6_RISE_REG0,
-+	ICSS_IEP_CAP6_RISE_REG1,
-+
-+	ICSS_IEP_CAP7_RISE_REG0,
-+	ICSS_IEP_CAP7_RISE_REG1,
-+
-+	ICSS_IEP_CMP_CFG_REG,
-+	ICSS_IEP_CMP_STAT_REG,
-+	ICSS_IEP_CMP0_REG0,
-+	ICSS_IEP_CMP0_REG1,
-+	ICSS_IEP_CMP1_REG0,
-+	ICSS_IEP_CMP1_REG1,
-+
-+	ICSS_IEP_CMP8_REG0,
-+	ICSS_IEP_CMP8_REG1,
-+	ICSS_IEP_SYNC_CTRL_REG,
-+	ICSS_IEP_SYNC0_STAT_REG,
-+	ICSS_IEP_SYNC1_STAT_REG,
-+	ICSS_IEP_SYNC_PWIDTH_REG,
-+	ICSS_IEP_SYNC0_PERIOD_REG,
-+	ICSS_IEP_SYNC1_DELAY_REG,
-+	ICSS_IEP_SYNC_START_REG,
-+	ICSS_IEP_MAX_REGS,
-+};
-+
-+/**
-+ * struct icss_iep_plat_data - Plat data to handle SoC variants
-+ * @config: Regmap configuration data
-+ * @reg_offs: register offsets to capture offset differences across SoCs
-+ * @flags: Flags to represent IEP properties
-+ */
-+struct icss_iep_plat_data {
-+	struct regmap_config *config;
-+	u32 reg_offs[ICSS_IEP_MAX_REGS];
-+	u32 flags;
-+};
-+
-+struct icss_iep {
-+	struct device *dev;
-+	void __iomem *base;
-+	const struct icss_iep_plat_data *plat_data;
-+	struct regmap *map;
-+	struct device_node *client_np;
-+	unsigned long refclk_freq;
-+	int clk_tick_time;	/* one refclk tick time in ns */
-+	struct ptp_clock_info ptp_info;
-+	struct ptp_clock *ptp_clock;
-+	struct mutex ptp_clk_mutex;	/* PHC access serializer */
-+	spinlock_t irq_lock; /* CMP IRQ vs icss_iep_ptp_enable access */
-+	u32 def_inc;
-+	s16 slow_cmp_inc;
-+	u32 slow_cmp_count;
-+	const struct icss_iep_clockops *ops;
-+	void *clockops_data;
-+	u32 cycle_time_ns;
-+	u32 perout_enabled;
-+	bool pps_enabled;
-+	int cap_cmp_irq;
-+	u64 period;
-+	u32 latch_enable;
-+};
-+
-+/**
-+ * icss_iep_get_count_hi() - Get the upper 32 bit IEP counter
-+ * @iep: Pointer to structure representing IEP.
-+ *
-+ * Return: upper 32 bit IEP counter
-+ */
-+int icss_iep_get_count_hi(struct icss_iep *iep)
+ struct icss_iep;
++extern const struct icss_iep_clockops prueth_iep_clockops;
+ 
+ /* Firmware specific clock operations */
+ struct icss_iep_clockops {
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+index 02c312f01d10..a27ec1dcc8d5 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_ethtool.c
+@@ -109,6 +109,26 @@ static void emac_get_ethtool_stats(struct net_device *ndev,
+ 			*(data++) = emac->stats[i];
+ }
+ 
++static int emac_get_ts_info(struct net_device *ndev,
++			    struct ethtool_ts_info *info)
 +{
-+	u32 val = 0;
++	struct prueth_emac *emac = netdev_priv(ndev);
 +
-+	if (iep && (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT))
-+		val = readl(iep->base + iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG1]);
++	info->so_timestamping =
++		SOF_TIMESTAMPING_TX_HARDWARE |
++		SOF_TIMESTAMPING_TX_SOFTWARE |
++		SOF_TIMESTAMPING_RX_HARDWARE |
++		SOF_TIMESTAMPING_RX_SOFTWARE |
++		SOF_TIMESTAMPING_SOFTWARE |
++		SOF_TIMESTAMPING_RAW_HARDWARE;
 +
-+	return val;
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_get_count_hi);
++	info->phc_index = icss_iep_get_ptp_clock_idx(emac->iep);
++	info->tx_types = BIT(HWTSTAMP_TX_OFF) | BIT(HWTSTAMP_TX_ON);
++	info->rx_filters = BIT(HWTSTAMP_FILTER_NONE) | BIT(HWTSTAMP_FILTER_ALL);
 +
-+/**
-+ * icss_iep_get_count_low() - Get the lower 32 bit IEP counter
-+ * @iep: Pointer to structure representing IEP.
-+ *
-+ * Return: lower 32 bit IEP counter
-+ */
-+int icss_iep_get_count_low(struct icss_iep *iep)
-+{
-+	u32 val = 0;
-+
-+	if (iep)
-+		val = readl(iep->base + iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG0]);
-+
-+	return val;
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_get_count_low);
-+
-+/**
-+ * icss_iep_get_ptp_clock_idx() - Get PTP clock index using IEP driver
-+ * @iep: Pointer to structure representing IEP.
-+ *
-+ * Return: PTP clock index, -1 if not registered
-+ */
-+int icss_iep_get_ptp_clock_idx(struct icss_iep *iep)
-+{
-+	if (!iep || !iep->ptp_clock)
-+		return -1;
-+	return ptp_clock_index(iep->ptp_clock);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_get_ptp_clock_idx);
-+
-+static void icss_iep_set_counter(struct icss_iep *iep, u64 ns)
-+{
-+	if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+		writel(upper_32_bits(ns), iep->base +
-+		       iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG1]);
-+	writel(upper_32_bits(ns), iep->base + iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG0]);
++	return 0;
 +}
 +
-+static void icss_iep_update_to_next_boundary(struct icss_iep *iep, u64 start_ns);
+ static int emac_set_channels(struct net_device *ndev,
+ 			     struct ethtool_channels *ch)
+ {
+@@ -176,6 +196,7 @@ const struct ethtool_ops icssg_ethtool_ops = {
+ 	.get_sset_count = emac_get_sset_count,
+ 	.get_ethtool_stats = emac_get_ethtool_stats,
+ 	.get_strings = emac_get_strings,
++	.get_ts_info = emac_get_ts_info,
+ 	.get_channels = emac_get_channels,
+ 	.set_channels = emac_set_channels,
+ 	.get_link_ksettings = emac_get_link_ksettings,
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+index 47b941fb0198..1bcb4e174652 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+@@ -56,6 +56,8 @@
+ /* CTRLMMR_ICSSG_RGMII_CTRL register bits */
+ #define ICSSG_CTRL_RGMII_ID_MODE                BIT(24)
+ 
++#define IEP_DEFAULT_CYCLE_TIME_NS	1000000	/* 1 ms */
 +
-+/**
-+ * icss_iep_settime() - Set time of the PTP clock using IEP driver
-+ * @iep: Pointer to structure representing IEP.
-+ * @ns: Time to be set in nanoseconds
-+ *
-+ * This API uses writel() instead of regmap_write() for write operations as
-+ * regmap_write() is too slow and this API is time sensitive.
-+ */
-+static void icss_iep_settime(struct icss_iep *iep, u64 ns)
+ static void prueth_cleanup_rx_chns(struct prueth_emac *emac,
+ 				   struct prueth_rx_chn *rx_chn,
+ 				   int max_rflows)
+@@ -471,6 +473,37 @@ static int prueth_dma_rx_push(struct prueth_emac *emac,
+ 					desc_rx, desc_dma);
+ }
+ 
++static u64 icssg_ts_to_ns(u32 hi_sw, u32 hi, u32 lo, u32 cycle_time_ns)
 +{
-+	unsigned long flags;
++	u32 iepcount_lo, iepcount_hi, hi_rollover_count;
++	u64 ns;
 +
-+	if (iep->ops && iep->ops->settime) {
-+		iep->ops->settime(iep->clockops_data, ns);
-+		return;
++	iepcount_lo = lo & GENMASK(19, 0);
++	iepcount_hi = (hi & GENMASK(11, 0)) << 12 | lo >> 20;
++	hi_rollover_count = hi >> 11;
++
++	ns = ((u64)hi_rollover_count) << 23 | (iepcount_hi + hi_sw);
++	ns = ns * cycle_time_ns + iepcount_lo;
++
++	return ns;
++}
++
++static void emac_rx_timestamp(struct prueth_emac *emac,
++			      struct sk_buff *skb, u32 *psdata)
++{
++	struct skb_shared_hwtstamps *ssh;
++	u64 ns;
++
++	u32 hi_sw = readl(emac->prueth->shram.va +
++			  TIMESYNC_FW_WC_COUNT_HI_SW_OFFSET_OFFSET);
++	ns = icssg_ts_to_ns(hi_sw, psdata[1], psdata[0],
++			    IEP_DEFAULT_CYCLE_TIME_NS);
++
++	ssh = skb_hwtstamps(skb);
++	memset(ssh, 0, sizeof(*ssh));
++	ssh->hwtstamp = ns_to_ktime(ns);
++}
++
+ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
+ {
+ 	struct prueth_rx_chn *rx_chn = &emac->rx_chns;
+@@ -480,6 +513,7 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
+ 	struct sk_buff *skb, *new_skb;
+ 	dma_addr_t desc_dma, buf_dma;
+ 	void **swdata;
++	u32 *psdata;
+ 	int ret;
+ 
+ 	ret = k3_udma_glue_pop_rx_chn(rx_chn->rx_chn, flow_id, &desc_dma);
+@@ -497,6 +531,11 @@ static int emac_rx_packet(struct prueth_emac *emac, u32 flow_id)
+ 	swdata = cppi5_hdesc_get_swdata(desc_rx);
+ 	skb = *swdata;
+ 
++	psdata = cppi5_hdesc_get_psdata(desc_rx);
++	/* RX HW timestamp */
++	if (emac->rx_ts_enabled)
++		emac_rx_timestamp(emac, skb, psdata);
++
+ 	cppi5_hdesc_get_obuf(desc_rx, &buf_dma, &buf_dma_len);
+ 	k3_udma_glue_rx_cppi5_to_dma_addr(rx_chn->rx_chn, &buf_dma);
+ 	pkt_len = cppi5_hdesc_get_pktlen(desc_rx);
+@@ -557,6 +596,86 @@ static void prueth_rx_cleanup(void *data, dma_addr_t desc_dma)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
++static int emac_get_tx_ts(struct prueth_emac *emac,
++			  struct emac_tx_ts_response *rsp)
++{
++	struct prueth *prueth = emac->prueth;
++	int slice = prueth_emac_slice(emac);
++	int addr;
++
++	addr = icssg_queue_pop(prueth, slice == 0 ?
++			       ICSSG_TS_POP_SLICE0 : ICSSG_TS_POP_SLICE1);
++	if (addr < 0)
++		return addr;
++
++	memcpy_fromio(rsp, prueth->shram.va + addr, sizeof(*rsp));
++	/* return buffer back for to pool */
++	icssg_queue_push(prueth, slice == 0 ?
++			 ICSSG_TS_PUSH_SLICE0 : ICSSG_TS_PUSH_SLICE1, addr);
++
++	return 0;
++}
++
++static void tx_ts_work(struct prueth_emac *emac)
++{
++	struct skb_shared_hwtstamps ssh;
++	struct emac_tx_ts_response tsr;
++	struct sk_buff *skb;
++	int ret = 0;
++	u32 hi_sw;
++	u64 ns;
++
++	/* There may be more than one pending requests */
++	while (1) {
++		ret = emac_get_tx_ts(emac, &tsr);
++		if (ret) /* nothing more */
++			break;
++
++		if (tsr.cookie >= PRUETH_MAX_TX_TS_REQUESTS ||
++		    !emac->tx_ts_skb[tsr.cookie]) {
++			netdev_err(emac->ndev, "Invalid TX TS cookie 0x%x\n",
++				   tsr.cookie);
++			break;
++		}
++
++		skb = emac->tx_ts_skb[tsr.cookie];
++		emac->tx_ts_skb[tsr.cookie] = NULL;	/* free slot */
++		if (!skb) {
++			netdev_err(emac->ndev, "Driver Bug! got NULL skb\n");
++			break;
++		}
++
++		hi_sw = readl(emac->prueth->shram.va +
++			      TIMESYNC_FW_WC_COUNT_HI_SW_OFFSET_OFFSET);
++		ns = icssg_ts_to_ns(hi_sw, tsr.hi_ts, tsr.lo_ts,
++				    IEP_DEFAULT_CYCLE_TIME_NS);
++
++		memset(&ssh, 0, sizeof(ssh));
++		ssh.hwtstamp = ns_to_ktime(ns);
++
++		skb_tstamp_tx(skb, &ssh);
++		dev_consume_skb_any(skb);
++
++		if (atomic_dec_and_test(&emac->tx_ts_pending))	/* no more? */
++			break;
++	}
++}
++
++static int prueth_tx_ts_cookie_get(struct prueth_emac *emac)
++{
++	int i;
++
++	/* search and get the next free slot */
++	for (i = 0; i < PRUETH_MAX_TX_TS_REQUESTS; i++) {
++		if (!emac->tx_ts_skb[i]) {
++			emac->tx_ts_skb[i] = ERR_PTR(-EBUSY); /* reserve slot */
++			return i;
++		}
 +	}
 +
-+	spin_lock_irqsave(&iep->irq_lock, flags);
-+	if (iep->pps_enabled || iep->perout_enabled)
-+		writel(0, iep->base + iep->plat_data->reg_offs[ICSS_IEP_SYNC_CTRL_REG]);
-+
-+	icss_iep_set_counter(iep, ns);
-+
-+	if (iep->pps_enabled || iep->perout_enabled) {
-+		icss_iep_update_to_next_boundary(iep, ns);
-+		writel(IEP_SYNC_CTRL_SYNC_N_EN(0) | IEP_SYNC_CTRL_SYNC_EN,
-+		       iep->base + iep->plat_data->reg_offs[ICSS_IEP_SYNC_CTRL_REG]);
-+	}
-+	spin_unlock_irqrestore(&iep->irq_lock, flags);
++	return -EBUSY;
 +}
 +
-+/**
-+ * icss_iep_gettime() - Get time of the PTP clock using IEP driver
-+ * @iep: Pointer to structure representing IEP.
-+ * @sts: Pointer to structure representing PTP system timestamp.
-+ *
-+ * This API uses readl() instead of regmap_read() for read operations as
-+ * regmap_read() is too slow and this API is time sensitive.
-+ *
-+ * Return: The current timestamp of the PTP clock using IEP driver
-+ */
-+static u64 icss_iep_gettime(struct icss_iep *iep,
-+			    struct ptp_system_timestamp *sts)
+ /**
+  * emac_ndo_start_xmit - EMAC Transmit function
+  * @skb: SKB pointer
+@@ -577,6 +696,8 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 	struct prueth_tx_chn *tx_chn;
+ 	dma_addr_t desc_dma, buf_dma;
+ 	int i, ret = 0, q_idx;
++	bool in_tx_ts = 0;
++	int tx_ts_cookie;
+ 	void **swdata;
+ 	u32 pkt_len;
+ 	u32 *epib;
+@@ -608,6 +729,18 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 	epib = first_desc->epib;
+ 	epib[0] = 0;
+ 	epib[1] = 0;
++	if (skb_shinfo(skb)->tx_flags & SKBTX_HW_TSTAMP &&
++	    emac->tx_ts_enabled) {
++		tx_ts_cookie = prueth_tx_ts_cookie_get(emac);
++		if (tx_ts_cookie >= 0) {
++			skb_shinfo(skb)->tx_flags |= SKBTX_IN_PROGRESS;
++			/* Request TX timestamp */
++			epib[0] = (u32)tx_ts_cookie;
++			epib[1] = 0x80000000;	/* TX TS request */
++			emac->tx_ts_skb[tx_ts_cookie] = skb_get(skb);
++			in_tx_ts = 1;
++		}
++	}
+ 
+ 	/* set dst tag to indicate internal qid at the firmware which is at
+ 	 * bit8..bit15. bit0..bit7 indicates port num for directed
+@@ -629,7 +762,7 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 		if (!next_desc) {
+ 			netdev_err(ndev,
+ 				   "tx: failed to allocate frag. descriptor\n");
+-			goto free_desc_stop_q_busy;
++			goto free_desc_stop_q_busy_cleanup_tx_ts;
+ 		}
+ 
+ 		buf_dma = skb_frag_dma_map(tx_chn->dma_dev, frag, 0, frag_size,
+@@ -638,7 +771,7 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 			netdev_err(ndev, "tx: Failed to map skb page\n");
+ 			k3_cppi_desc_pool_free(tx_chn->desc_pool, next_desc);
+ 			ret = NETDEV_TX_OK;
+-			goto drop_free_descs;
++			goto cleanup_tx_ts;
+ 		}
+ 
+ 		cppi5_hdesc_reset_hbdesc(next_desc);
+@@ -670,6 +803,9 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 		goto drop_free_descs;
+ 	}
+ 
++	if (in_tx_ts)
++		atomic_inc(&emac->tx_ts_pending);
++
+ 	if (k3_cppi_desc_pool_avail(tx_chn->desc_pool) < MAX_SKB_FRAGS) {
+ 		netif_tx_stop_queue(netif_txq);
+ 		/* Barrier, so that stop_queue visible to other cpus */
+@@ -682,6 +818,12 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 
+ 	return NETDEV_TX_OK;
+ 
++cleanup_tx_ts:
++	if (in_tx_ts) {
++		dev_kfree_skb_any(emac->tx_ts_skb[tx_ts_cookie]);
++		emac->tx_ts_skb[tx_ts_cookie] = NULL;
++	}
++
+ drop_free_descs:
+ 	prueth_xmit_free(tx_chn, first_desc);
+ 
+@@ -694,7 +836,11 @@ static enum netdev_tx emac_ndo_start_xmit(struct sk_buff *skb, struct net_device
+ 
+ 	return ret;
+ 
+-free_desc_stop_q_busy:
++free_desc_stop_q_busy_cleanup_tx_ts:
++	if (in_tx_ts) {
++		dev_kfree_skb_any(emac->tx_ts_skb[tx_ts_cookie]);
++		emac->tx_ts_skb[tx_ts_cookie] = NULL;
++	}
+ 	prueth_xmit_free(tx_chn, first_desc);
+ 
+ drop_stop_q_busy:
+@@ -717,6 +863,16 @@ static void prueth_tx_cleanup(void *data, dma_addr_t desc_dma)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
++static irqreturn_t prueth_tx_ts_irq(int irq, void *dev_id)
 +{
-+	u32 ts_hi = 0, ts_lo;
++	struct prueth_emac *emac = dev_id;
++
++	/* currently only TX timestamp is being returned */
++	tx_ts_work(emac);
++
++	return IRQ_HANDLED;
++}
++
+ static irqreturn_t prueth_rx_irq(int irq, void *dev_id)
+ {
+ 	struct prueth_emac *emac = dev_id;
+@@ -820,6 +976,18 @@ static void prueth_emac_stop(struct prueth_emac *emac)
+ 	rproc_shutdown(prueth->pru[slice]);
+ }
+ 
++static void prueth_cleanup_tx_ts(struct prueth_emac *emac)
++{
++	int i;
++
++	for (i = 0; i < PRUETH_MAX_TX_TS_REQUESTS; i++) {
++		if (emac->tx_ts_skb[i]) {
++			dev_kfree_skb_any(emac->tx_ts_skb[i]);
++			emac->tx_ts_skb[i] = NULL;
++		}
++	}
++}
++
+ /* called back by PHY layer if there is change in link state of hw port*/
+ static void emac_adjust_link(struct net_device *ndev)
+ {
+@@ -881,6 +1049,7 @@ static void emac_adjust_link(struct net_device *ndev)
+ 		netif_tx_wake_all_queues(ndev);
+ 	} else {
+ 		netif_tx_stop_all_queues(ndev);
++		prueth_cleanup_tx_ts(emac);
+ 	}
+ }
+ 
+@@ -992,6 +1161,139 @@ static int emac_phy_connect(struct prueth_emac *emac)
+ 	return 0;
+ }
+ 
++static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
++{
++	u32 hi_rollover_count, hi_rollover_count_r;
++	struct prueth_emac *emac = clockops_data;
++	struct prueth *prueth = emac->prueth;
++	void __iomem *fw_hi_r_count_addr;
++	void __iomem *fw_count_hi_addr;
++	u32 iepcount_hi, iepcount_hi_r;
 +	unsigned long flags;
++	u32 iepcount_lo;
++	u64 ts = 0;
 +
-+	if (iep->ops && iep->ops->gettime)
-+		return iep->ops->gettime(iep->clockops_data, sts);
++	fw_count_hi_addr = prueth->shram.va + TIMESYNC_FW_WC_COUNT_HI_SW_OFFSET_OFFSET;
++	fw_hi_r_count_addr = prueth->shram.va + TIMESYNC_FW_WC_HI_ROLLOVER_COUNT_OFFSET;
 +
-+	/* use local_irq_x() to make it work for both RT/non-RT */
 +	local_irq_save(flags);
++	do {
++		iepcount_hi = icss_iep_get_count_hi(emac->iep);
++		iepcount_hi += readl(fw_count_hi_addr);
++		hi_rollover_count = readl(fw_hi_r_count_addr);
++		ptp_read_system_prets(sts);
++		iepcount_lo = icss_iep_get_count_low(emac->iep);
++		ptp_read_system_postts(sts);
 +
-+	/* no need to play with hi-lo, hi is latched when lo is read */
-+	ptp_read_system_prets(sts);
-+	ts_lo = readl(iep->base + iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG0]);
-+	ptp_read_system_postts(sts);
-+	if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+		ts_hi = readl(iep->base + iep->plat_data->reg_offs[ICSS_IEP_COUNT_REG1]);
-+
++		iepcount_hi_r = icss_iep_get_count_hi(emac->iep);
++		iepcount_hi_r += readl(fw_count_hi_addr);
++		hi_rollover_count_r = readl(fw_hi_r_count_addr);
++	} while ((iepcount_hi_r != iepcount_hi) ||
++		 (hi_rollover_count != hi_rollover_count_r));
 +	local_irq_restore(flags);
 +
-+	return (u64)ts_lo | (u64)ts_hi << 32;
++	ts = ((u64)hi_rollover_count) << 23 | iepcount_hi;
++	ts = ts * (u64)IEP_DEFAULT_CYCLE_TIME_NS + iepcount_lo;
++
++	return ts;
 +}
 +
-+static void icss_iep_enable(struct icss_iep *iep)
++static void prueth_iep_settime(void *clockops_data, u64 ns)
 +{
-+	regmap_update_bits(iep->map, ICSS_IEP_GLOBAL_CFG_REG,
-+			   IEP_GLOBAL_CFG_CNT_ENABLE,
-+			   IEP_GLOBAL_CFG_CNT_ENABLE);
-+}
++	struct icssg_setclock_desc __iomem *sc_descp;
++	struct prueth_emac *emac = clockops_data;
++	struct icssg_setclock_desc sc_desc;
++	u64 cyclecount;
++	u32 cycletime;
++	int timeout;
 +
-+static void icss_iep_disable(struct icss_iep *iep)
-+{
-+	regmap_update_bits(iep->map, ICSS_IEP_GLOBAL_CFG_REG,
-+			   IEP_GLOBAL_CFG_CNT_ENABLE,
-+			   0);
-+}
++	if (!emac->fw_running)
++		return;
 +
-+static void icss_iep_enable_shadow_mode(struct icss_iep *iep)
-+{
-+	u32 cycle_time;
-+	int cmp;
++	sc_descp = emac->prueth->shram.va + TIMESYNC_FW_WC_SETCLOCK_DESC_OFFSET;
 +
-+	cycle_time = iep->cycle_time_ns - iep->def_inc;
++	cycletime = IEP_DEFAULT_CYCLE_TIME_NS;
++	cyclecount = ns / cycletime;
 +
-+	icss_iep_disable(iep);
++	memset(&sc_desc, 0, sizeof(sc_desc));
++	sc_desc.margin = cycletime - 1000;
++	sc_desc.cyclecounter0_set = cyclecount & GENMASK(31, 0);
++	sc_desc.cyclecounter1_set = (cyclecount & GENMASK(63, 32)) >> 32;
++	sc_desc.iepcount_set = ns % cycletime;
++	sc_desc.CMP0_current = cycletime - 4; //Count from 0 to (cycle time)-4
 +
-+	/* disable shadow mode */
-+	regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+			   IEP_CMP_CFG_SHADOW_EN, 0);
++	memcpy_toio(sc_descp, &sc_desc, sizeof(sc_desc));
 +
-+	/* enable shadow mode */
-+	regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+			   IEP_CMP_CFG_SHADOW_EN, IEP_CMP_CFG_SHADOW_EN);
++	writeb(1, &sc_descp->request);
 +
-+	/* clear counters */
-+	icss_iep_set_counter(iep, 0);
++	timeout = 5;	/* fw should take 2-3 ms */
++	while (timeout--) {
++		if (readb(&sc_descp->acknowledgment))
++			return;
 +
-+	/* clear overflow status */
-+	regmap_update_bits(iep->map, ICSS_IEP_GLOBAL_STATUS_REG,
-+			   IEP_GLOBAL_STATUS_CNT_OVF,
-+			   IEP_GLOBAL_STATUS_CNT_OVF);
-+
-+	/* clear compare status */
-+	for (cmp = IEP_MIN_CMP; cmp < IEP_MAX_CMP; cmp++) {
-+		regmap_update_bits(iep->map, ICSS_IEP_CMP_STAT_REG,
-+				   IEP_CMP_STATUS(cmp), IEP_CMP_STATUS(cmp));
++		usleep_range(500, 1000);
 +	}
 +
-+	/* enable reset counter on CMP0 event */
-+	regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+			   IEP_CMP_CFG_CMP0_RST_CNT_EN,
-+			   IEP_CMP_CFG_CMP0_RST_CNT_EN);
-+	/* enable compare */
-+	regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+			   IEP_CMP_CFG_CMP_EN(0),
-+			   IEP_CMP_CFG_CMP_EN(0));
-+
-+	/* set CMP0 value to cycle time */
-+	regmap_write(iep->map, ICSS_IEP_CMP0_REG0, cycle_time);
-+	if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+		regmap_write(iep->map, ICSS_IEP_CMP0_REG1, cycle_time);
-+
-+	icss_iep_set_counter(iep, 0);
-+	icss_iep_enable(iep);
++	dev_err(emac->prueth->dev, "settime timeout\n");
 +}
 +
-+static void icss_iep_set_default_inc(struct icss_iep *iep, u8 def_inc)
++static int prueth_perout_enable(void *clockops_data,
++				struct ptp_perout_request *req, int on,
++				u64 *cmp)
 +{
-+	regmap_update_bits(iep->map, ICSS_IEP_GLOBAL_CFG_REG,
-+			   IEP_GLOBAL_CFG_DEFAULT_INC_MASK,
-+			   def_inc << IEP_GLOBAL_CFG_DEFAULT_INC_SHIFT);
-+}
-+
-+static void icss_iep_set_compensation_inc(struct icss_iep *iep, u16 compen_inc)
-+{
-+	struct device *dev = regmap_get_device(iep->map);
-+
-+	if (compen_inc > IEP_MAX_COMPEN_INC) {
-+		dev_err(dev, "%s: too high compensation inc %d\n",
-+			__func__, compen_inc);
-+		compen_inc = IEP_MAX_COMPEN_INC;
-+	}
-+
-+	regmap_update_bits(iep->map, ICSS_IEP_GLOBAL_CFG_REG,
-+			   IEP_GLOBAL_CFG_COMPEN_INC_MASK,
-+			   compen_inc << IEP_GLOBAL_CFG_COMPEN_INC_SHIFT);
-+}
-+
-+static void icss_iep_set_compensation_count(struct icss_iep *iep,
-+					    u32 compen_count)
-+{
-+	struct device *dev = regmap_get_device(iep->map);
-+
-+	if (compen_count > IEP_MAX_COMPEN_COUNT) {
-+		dev_err(dev, "%s: too high compensation count %d\n",
-+			__func__, compen_count);
-+		compen_count = IEP_MAX_COMPEN_COUNT;
-+	}
-+
-+	regmap_write(iep->map, ICSS_IEP_COMPEN_REG, compen_count);
-+}
-+
-+static void icss_iep_set_slow_compensation_count(struct icss_iep *iep,
-+						 u32 compen_count)
-+{
-+	regmap_write(iep->map, ICSS_IEP_SLOW_COMPEN_REG, compen_count);
-+}
-+
-+/* PTP PHC operations */
-+static int icss_iep_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
-+{
-+	struct icss_iep *iep = container_of(ptp, struct icss_iep, ptp_info);
-+	s32 ppb = scaled_ppm_to_ppb(scaled_ppm);
-+	u32 cyc_count;
-+	u16 cmp_inc;
-+
-+	mutex_lock(&iep->ptp_clk_mutex);
-+
-+	/* ppb is amount of frequency we want to adjust in 1GHz (billion)
-+	 * e.g. 100ppb means we need to speed up clock by 100Hz
-+	 * i.e. at end of 1 second (1 billion ns) clock time, we should be
-+	 * counting 100 more ns.
-+	 * We use IEP slow compensation to achieve continuous freq. adjustment.
-+	 * There are 2 parts. Cycle time and adjustment per cycle.
-+	 * Simplest case would be 1 sec Cycle time. Then adjustment
-+	 * pre cycle would be (def_inc + ppb) value.
-+	 * Cycle time will have to be chosen based on how worse the ppb is.
-+	 * e.g. smaller the ppb, cycle time has to be large.
-+	 * The minimum adjustment we can do is +-1ns per cycle so let's
-+	 * reduce the cycle time to get 1ns per cycle adjustment.
-+	 *	1ppb = 1sec cycle time & 1ns adjust
-+	 *	1000ppb = 1/1000 cycle time & 1ns adjust per cycle
-+	 */
-+
-+	if (iep->cycle_time_ns)
-+		iep->slow_cmp_inc = iep->clk_tick_time;	/* 4ns adj per cycle */
-+	else
-+		iep->slow_cmp_inc = 1;	/* 1ns adjust per cycle */
-+
-+	if (ppb < 0) {
-+		iep->slow_cmp_inc = -iep->slow_cmp_inc;
-+		ppb = -ppb;
-+	}
-+
-+	cyc_count = NSEC_PER_SEC;		/* 1s cycle time @1GHz */
-+	cyc_count /= ppb;		/* cycle time per ppb */
-+
-+	/* slow_cmp_count is decremented every clock cycle, e.g. @250MHz */
-+	if (!iep->cycle_time_ns)
-+		cyc_count /= iep->clk_tick_time;
-+	iep->slow_cmp_count = cyc_count;
-+
-+	/* iep->clk_tick_time is def_inc */
-+	cmp_inc = iep->clk_tick_time + iep->slow_cmp_inc;
-+	icss_iep_set_compensation_inc(iep, cmp_inc);
-+	icss_iep_set_slow_compensation_count(iep, iep->slow_cmp_count);
-+
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return 0;
-+}
-+
-+static int icss_iep_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
-+{
-+	struct icss_iep *iep = container_of(ptp, struct icss_iep, ptp_info);
-+	s64 ns;
-+
-+	mutex_lock(&iep->ptp_clk_mutex);
-+	if (iep->ops && iep->ops->adjtime) {
-+		iep->ops->adjtime(iep->clockops_data, delta);
-+	} else {
-+		ns = icss_iep_gettime(iep, NULL);
-+		ns += delta;
-+		icss_iep_settime(iep, ns);
-+	}
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return 0;
-+}
-+
-+static int icss_iep_ptp_gettimeex(struct ptp_clock_info *ptp,
-+				  struct timespec64 *ts,
-+				  struct ptp_system_timestamp *sts)
-+{
-+	struct icss_iep *iep = container_of(ptp, struct icss_iep, ptp_info);
-+	u64 ns;
-+
-+	mutex_lock(&iep->ptp_clk_mutex);
-+	ns = icss_iep_gettime(iep, sts);
-+	*ts = ns_to_timespec64(ns);
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return 0;
-+}
-+
-+static int icss_iep_ptp_settime(struct ptp_clock_info *ptp,
-+				const struct timespec64 *ts)
-+{
-+	struct icss_iep *iep = container_of(ptp, struct icss_iep, ptp_info);
-+	u64 ns;
-+
-+	mutex_lock(&iep->ptp_clk_mutex);
-+	ns = timespec64_to_ns(ts);
-+	icss_iep_settime(iep, ns);
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return 0;
-+}
-+
-+static void icss_iep_update_to_next_boundary(struct icss_iep *iep, u64 start_ns)
-+{
-+	u64 ns, p_ns;
-+	u32 offset;
-+
-+	ns = icss_iep_gettime(iep, NULL);
-+	if (start_ns < ns)
-+		start_ns = ns;
-+	p_ns = iep->period;
-+	/* Round up to next period boundary */
-+	start_ns += p_ns - 1;
-+	offset = do_div(start_ns, p_ns);
-+	start_ns = start_ns * p_ns;
-+	/* If it is too close to update, shift to next boundary */
-+	if (p_ns - offset < 10)
-+		start_ns += p_ns;
-+
-+	regmap_write(iep->map, ICSS_IEP_CMP1_REG0, lower_32_bits(start_ns));
-+	if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+		regmap_write(iep->map, ICSS_IEP_CMP1_REG1, upper_32_bits(start_ns));
-+}
-+
-+static int icss_iep_perout_enable_hw(struct icss_iep *iep,
-+				     struct ptp_perout_request *req, int on)
-+{
-+	int ret;
-+	u64 cmp;
-+
-+	if (iep->ops && iep->ops->perout_enable) {
-+		ret = iep->ops->perout_enable(iep->clockops_data, req, on, &cmp);
-+		if (ret)
-+			return ret;
-+
-+		if (on) {
-+			/* Configure CMP */
-+			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, lower_32_bits(cmp));
-+			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, upper_32_bits(cmp));
-+			/* Configure SYNC, 1ms pulse width */
-+			regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG, 1000000);
-+			regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
-+			regmap_write(iep->map, ICSS_IEP_SYNC_START_REG, 0);
-+			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0); /* one-shot mode */
-+			/* Enable CMP 1 */
-+			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+					   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
-+		} else {
-+			/* Disable CMP 1 */
-+			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+					   IEP_CMP_CFG_CMP_EN(1), 0);
-+
-+			/* clear regs */
-+			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, 0);
-+			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, 0);
-+		}
-+	} else {
-+		if (on) {
-+			u64 start_ns;
-+
-+			iep->period = ((u64)req->period.sec * NSEC_PER_SEC) +
-+				      req->period.nsec;
-+			start_ns = ((u64)req->period.sec * NSEC_PER_SEC)
-+				   + req->period.nsec;
-+			icss_iep_update_to_next_boundary(iep, start_ns);
-+
-+			/* Enable Sync in single shot mode  */
-+			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG,
-+				     IEP_SYNC_CTRL_SYNC_N_EN(0) | IEP_SYNC_CTRL_SYNC_EN);
-+			/* Enable CMP 1 */
-+			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+					   IEP_CMP_CFG_CMP_EN(1), IEP_CMP_CFG_CMP_EN(1));
-+		} else {
-+			/* Disable CMP 1 */
-+			regmap_update_bits(iep->map, ICSS_IEP_CMP_CFG_REG,
-+					   IEP_CMP_CFG_CMP_EN(1), 0);
-+
-+			/* clear CMP regs */
-+			regmap_write(iep->map, ICSS_IEP_CMP1_REG0, 0);
-+			if (iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT)
-+				regmap_write(iep->map, ICSS_IEP_CMP1_REG1, 0);
-+
-+			/* Disable sync */
-+			regmap_write(iep->map, ICSS_IEP_SYNC_CTRL_REG, 0);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int icss_iep_perout_enable(struct icss_iep *iep,
-+				  struct ptp_perout_request *req, int on)
-+{
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	mutex_lock(&iep->ptp_clk_mutex);
-+
-+	if (iep->pps_enabled) {
-+		ret = -EBUSY;
-+		goto exit;
-+	}
-+
-+	if (iep->perout_enabled == !!on)
-+		goto exit;
-+
-+	spin_lock_irqsave(&iep->irq_lock, flags);
-+	ret = icss_iep_perout_enable_hw(iep, req, on);
-+	if (!ret)
-+		iep->perout_enabled = !!on;
-+	spin_unlock_irqrestore(&iep->irq_lock, flags);
-+
-+exit:
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return ret;
-+}
-+
-+static int icss_iep_pps_enable(struct icss_iep *iep, int on)
-+{
-+	struct ptp_clock_request rq;
++	struct prueth_emac *emac = clockops_data;
++	u32 reduction_factor = 0, offset = 0;
 +	struct timespec64 ts;
-+	unsigned long flags;
-+	int ret = 0;
-+	u64 ns;
++	u64 ns_period;
 +
-+	mutex_lock(&iep->ptp_clk_mutex);
++	if (!on)
++		return 0;
 +
-+	if (iep->perout_enabled) {
-+		ret = -EBUSY;
-+		goto exit;
-+	}
++	/* Any firmware specific stuff for PPS/PEROUT handling */
++	ts.tv_sec = req->period.sec;
++	ts.tv_nsec = req->period.nsec;
++	ns_period = timespec64_to_ns(&ts);
 +
-+	if (iep->pps_enabled == !!on)
-+		goto exit;
++	/* f/w doesn't support period less than cycle time */
++	if (ns_period < IEP_DEFAULT_CYCLE_TIME_NS)
++		return -ENXIO;
 +
-+	spin_lock_irqsave(&iep->irq_lock, flags);
++	reduction_factor = ns_period / IEP_DEFAULT_CYCLE_TIME_NS;
++	offset = ns_period % IEP_DEFAULT_CYCLE_TIME_NS;
 +
-+	rq.perout.index = 0;
-+	if (on) {
-+		ns = icss_iep_gettime(iep, NULL);
-+		ts = ns_to_timespec64(ns);
-+		rq.perout.period.sec = 1;
-+		rq.perout.period.nsec = 0;
-+		rq.perout.start.sec = ts.tv_sec + 2;
-+		rq.perout.start.nsec = 0;
-+		ret = icss_iep_perout_enable_hw(iep, &rq.perout, on);
-+	} else {
-+		ret = icss_iep_perout_enable_hw(iep, &rq.perout, on);
-+	}
++	/* f/w requires at least 1uS within a cycle so CMP
++	 * can trigger after SYNC is enabled
++	 */
++	if (offset < 5 * NSEC_PER_USEC)
++		offset = 5 * NSEC_PER_USEC;
 +
-+	if (!ret)
-+		iep->pps_enabled = !!on;
++	/* if offset is close to cycle time then we will miss
++	 * the CMP event for last tick when IEP rolls over.
++	 * In normal mode, IEP tick is 4ns.
++	 * In slow compensation it could be 0ns or 8ns at
++	 * every slow compensation cycle.
++	 */
++	if (offset > IEP_DEFAULT_CYCLE_TIME_NS - 8)
++		offset = IEP_DEFAULT_CYCLE_TIME_NS - 8;
 +
-+	spin_unlock_irqrestore(&iep->irq_lock, flags);
++	/* we're in shadow mode so need to set upper 32-bits */
++	*cmp = (u64)offset << 32;
 +
-+exit:
-+	mutex_unlock(&iep->ptp_clk_mutex);
++	writel(reduction_factor, emac->prueth->shram.va +
++		TIMESYNC_FW_WC_SYNCOUT_REDUCTION_FACTOR_OFFSET);
 +
-+	return ret;
++	writel(0, emac->prueth->shram.va +
++		TIMESYNC_FW_WC_SYNCOUT_START_TIME_CYCLECOUNT_OFFSET);
++
++	return 0;
 +}
 +
-+static int icss_iep_extts_enable(struct icss_iep *iep, u32 index, int on)
++const struct icss_iep_clockops prueth_iep_clockops = {
++	.settime = prueth_iep_settime,
++	.gettime = prueth_iep_gettime,
++	.perout_enable = prueth_perout_enable,
++};
++
+ /**
+  * emac_ndo_open - EMAC device open
+  * @ndev: network adapter device
+@@ -1066,10 +1368,20 @@ static int emac_ndo_open(struct net_device *ndev)
+ 
+ 	icssg_mii_update_mtu(prueth->mii_rt, slice, ndev->max_mtu);
+ 
++	if (!prueth->emacs_initialized) {
++		ret = icss_iep_init(emac->iep, &prueth_iep_clockops,
++				    emac, IEP_DEFAULT_CYCLE_TIME_NS);
++	}
++
++	ret = request_threaded_irq(emac->tx_ts_irq, NULL, prueth_tx_ts_irq,
++				   IRQF_ONESHOT, dev_name(dev), emac);
++	if (ret)
++		goto stop;
++
+ 	/* Prepare RX */
+ 	ret = prueth_prepare_rx_chan(emac, &emac->rx_chns, PRUETH_MAX_PKT_SIZE);
+ 	if (ret)
+-		goto stop;
++		goto free_tx_ts_irq;
+ 
+ 	ret = k3_udma_glue_enable_rx_chn(emac->rx_chns.rx_chn);
+ 	if (ret)
+@@ -1102,6 +1414,8 @@ static int emac_ndo_open(struct net_device *ndev)
+ 	prueth_reset_tx_chan(emac, i, false);
+ reset_rx_chn:
+ 	prueth_reset_rx_chan(&emac->rx_chns, max_rx_flows, false);
++free_tx_ts_irq:
++	free_irq(emac->tx_ts_irq, emac);
+ stop:
+ 	prueth_emac_stop(emac);
+ free_rx_irq:
+@@ -1173,6 +1487,14 @@ static int emac_ndo_stop(struct net_device *ndev)
+ 	/* stop PRUs */
+ 	prueth_emac_stop(emac);
+ 
++	if (prueth->emacs_initialized == 1)
++		icss_iep_exit(emac->iep);
++
++	/* stop PRUs */
++	prueth_emac_stop(emac);
++
++	free_irq(emac->tx_ts_irq, emac);
++
+ 	free_irq(emac->rx_chns.irq[rx_flow], emac);
+ 	prueth_ndev_del_tx_napi(emac, emac->tx_ch_num);
+ 	prueth_cleanup_tx_chns(emac);
+@@ -1235,8 +1557,79 @@ static void emac_ndo_set_rx_mode(struct net_device *ndev)
+ 	queue_work(emac->cmd_wq, &emac->rx_mode_work);
+ }
+ 
++static int emac_set_ts_config(struct net_device *ndev, struct ifreq *ifr)
 +{
-+	u32 val, cap, ret = 0;
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct hwtstamp_config config;
 +
-+	mutex_lock(&iep->ptp_clk_mutex);
++	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
++		return -EFAULT;
 +
-+	if (iep->ops && iep->ops->extts_enable) {
-+		ret = iep->ops->extts_enable(iep->clockops_data, index, on);
-+		goto exit;
++	switch (config.tx_type) {
++	case HWTSTAMP_TX_OFF:
++		emac->tx_ts_enabled = 0;
++		break;
++	case HWTSTAMP_TX_ON:
++		emac->tx_ts_enabled = 1;
++		break;
++	default:
++		return -ERANGE;
 +	}
 +
-+	if (((iep->latch_enable & BIT(index)) >> index) == on)
-+		goto exit;
-+
-+	regmap_read(iep->map, ICSS_IEP_CAPTURE_CFG_REG, &val);
-+	cap = IEP_CAP_CFG_CAP_ASYNC_EN(index) | IEP_CAP_CFG_CAPNR_1ST_EVENT_EN(index);
-+	if (on) {
-+		val |= cap;
-+		iep->latch_enable |= BIT(index);
-+	} else {
-+		val &= ~cap;
-+		iep->latch_enable &= ~BIT(index);
++	switch (config.rx_filter) {
++	case HWTSTAMP_FILTER_NONE:
++		emac->rx_ts_enabled = 0;
++		break;
++	case HWTSTAMP_FILTER_ALL:
++	case HWTSTAMP_FILTER_SOME:
++	case HWTSTAMP_FILTER_PTP_V1_L4_EVENT:
++	case HWTSTAMP_FILTER_PTP_V1_L4_SYNC:
++	case HWTSTAMP_FILTER_PTP_V1_L4_DELAY_REQ:
++	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
++	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
++	case HWTSTAMP_FILTER_PTP_V2_EVENT:
++	case HWTSTAMP_FILTER_PTP_V2_SYNC:
++	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
++	case HWTSTAMP_FILTER_NTP_ALL:
++		emac->rx_ts_enabled = 1;
++		config.rx_filter = HWTSTAMP_FILTER_ALL;
++		break;
++	default:
++		return -ERANGE;
 +	}
-+	regmap_write(iep->map, ICSS_IEP_CAPTURE_CFG_REG, val);
 +
-+exit:
-+	mutex_unlock(&iep->ptp_clk_mutex);
-+
-+	return ret;
++	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ?
++		-EFAULT : 0;
 +}
 +
-+static int icss_iep_ptp_enable(struct ptp_clock_info *ptp,
-+			       struct ptp_clock_request *rq, int on)
++static int emac_get_ts_config(struct net_device *ndev, struct ifreq *ifr)
 +{
-+	struct icss_iep *iep = container_of(ptp, struct icss_iep, ptp_info);
++	struct prueth_emac *emac = netdev_priv(ndev);
++	struct hwtstamp_config config;
 +
-+	switch (rq->type) {
-+	case PTP_CLK_REQ_PEROUT:
-+		return icss_iep_perout_enable(iep, &rq->perout, on);
-+	case PTP_CLK_REQ_PPS:
-+		return icss_iep_pps_enable(iep, on);
-+	case PTP_CLK_REQ_EXTTS:
-+		return icss_iep_extts_enable(iep, rq->extts.index, on);
++	config.flags = 0;
++	config.tx_type = emac->tx_ts_enabled ? HWTSTAMP_TX_ON : HWTSTAMP_TX_OFF;
++	config.rx_filter = emac->rx_ts_enabled ? HWTSTAMP_FILTER_ALL : HWTSTAMP_FILTER_NONE;
++
++	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ?
++			    -EFAULT : 0;
++}
++
+ static int emac_ndo_ioctl(struct net_device *ndev, struct ifreq *ifr, int cmd)
+ {
++	switch (cmd) {
++	case SIOCGHWTSTAMP:
++		return emac_get_ts_config(ndev, ifr);
++	case SIOCSHWTSTAMP:
++		return emac_set_ts_config(ndev, ifr);
 +	default:
 +		break;
 +	}
 +
-+	return -EOPNOTSUPP;
-+}
+ 	return phy_do_ioctl(ndev, ifr, cmd);
+ }
+ 
+@@ -1316,6 +1709,7 @@ static int prueth_netdev_init(struct prueth *prueth,
+ 	struct prueth_emac *emac;
+ 	struct net_device *ndev;
+ 	enum prueth_port port;
++	const char *irq_name;
+ 	enum prueth_mac mac;
+ 
+ 	port = prueth_node_port(eth_node);
+@@ -1355,6 +1749,15 @@ static int prueth_netdev_init(struct prueth *prueth,
+ 
+ 	emac->tx_ch_num = 1;
+ 
++	irq_name = "tx_ts0";
++	if (emac->port_id == PRUETH_PORT_MII1)
++		irq_name = "tx_ts1";
++	emac->tx_ts_irq = platform_get_irq_byname_optional(prueth->pdev, irq_name);
++	if (emac->tx_ts_irq < 0) {
++		ret = dev_err_probe(prueth->dev, emac->tx_ts_irq, "could not get tx_ts_irq\n");
++		goto free;
++	}
 +
-+static struct ptp_clock_info icss_iep_ptp_info = {
-+	.owner		= THIS_MODULE,
-+	.name		= "ICSS IEP timer",
-+	.max_adj	= 10000000,
-+	.adjfine	= icss_iep_ptp_adjfine,
-+	.adjtime	= icss_iep_ptp_adjtime,
-+	.gettimex64	= icss_iep_ptp_gettimeex,
-+	.settime64	= icss_iep_ptp_settime,
-+	.enable		= icss_iep_ptp_enable,
-+};
+ 	SET_NETDEV_DEV(ndev, prueth->dev);
+ 	spin_lock_init(&emac->lock);
+ 	mutex_init(&emac->cmd_lock);
+@@ -1680,6 +2083,13 @@ static int prueth_probe(struct platform_device *pdev)
+ 	dev_dbg(dev, "sram: pa %llx va %p size %zx\n", prueth->msmcram.pa,
+ 		prueth->msmcram.va, prueth->msmcram.size);
+ 
++	prueth->iep0 = icss_iep_get_idx(np, 0);
++	if (IS_ERR(prueth->iep0)) {
++		ret = dev_err_probe(dev, PTR_ERR(prueth->iep0), "iep0 get failed\n");
++		prueth->iep0 = NULL;
++		goto free_pool;
++	}
 +
-+struct icss_iep *icss_iep_get_idx(struct device_node *np, int idx)
-+{
-+	struct platform_device *pdev;
-+	struct device_node *iep_np;
+ 	/* setup netdev interfaces */
+ 	if (eth0_node) {
+ 		ret = prueth_netdev_init(prueth, eth0_node);
+@@ -1688,6 +2098,7 @@ static int prueth_probe(struct platform_device *pdev)
+ 				      eth0_node->name);
+ 			goto netdev_exit;
+ 		}
++		prueth->emac[PRUETH_MAC0]->iep = prueth->iep0;
+ 	}
+ 
+ 	if (eth1_node) {
+@@ -1697,6 +2108,8 @@ static int prueth_probe(struct platform_device *pdev)
+ 				      eth1_node->name);
+ 			goto netdev_exit;
+ 		}
++
++		prueth->emac[PRUETH_MAC1]->iep = prueth->iep0;
+ 	}
+ 
+ 	/* register the network devices */
+@@ -1754,6 +2167,7 @@ static int prueth_probe(struct platform_device *pdev)
+ 		prueth_netdev_exit(prueth, eth_node);
+ 	}
+ 
++free_pool:
+ 	gen_pool_free(prueth->sram_pool,
+ 		      (unsigned long)prueth->msmcram.va, msmc_ram_size);
+ 
+@@ -1798,6 +2212,8 @@ static void prueth_remove(struct platform_device *pdev)
+ 		prueth_netdev_exit(prueth, eth_node);
+ 	}
+ 
++	icss_iep_put(prueth->iep0);
++
+ 	gen_pool_free(prueth->sram_pool,
+ 		      (unsigned long)prueth->msmcram.va,
+ 		      MSMC_RAM_SIZE);
+diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+index a8ce4d01ef16..a56ab4cdc83c 100644
+--- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
++++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+@@ -35,6 +35,7 @@
+ #include <net/devlink.h>
+ 
+ #include "icssg_config.h"
++#include "icss_iep.h"
+ #include "icssg_switch_map.h"
+ 
+ #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+@@ -122,6 +123,8 @@ struct prueth_rx_chn {
+  */
+ #define PRUETH_MAX_TX_QUEUES	4
+ 
++#define PRUETH_MAX_TX_TS_REQUESTS	50 /* Max simultaneous TX_TS requests */
++
+ /* data for each emac port */
+ struct prueth_emac {
+ 	bool fw_running;
+@@ -139,6 +142,9 @@ struct prueth_emac {
+ 	struct device_node *phy_node;
+ 	phy_interface_t phy_if;
+ 	enum prueth_port port_id;
 +	struct icss_iep *iep;
++	unsigned int rx_ts_enabled : 1;
++	unsigned int tx_ts_enabled : 1;
+ 
+ 	/* DMA related */
+ 	struct prueth_tx_chn tx_chns[PRUETH_MAX_TX_QUEUES];
+@@ -150,7 +156,15 @@ struct prueth_emac {
+ 
+ 	spinlock_t lock;	/* serialize access */
+ 
+-	unsigned long state;
++	/* TX HW Timestamping */
++	/* TX TS cookie will be index to the tx_ts_skb array */
++	struct sk_buff *tx_ts_skb[PRUETH_MAX_TX_TS_REQUESTS];
++	atomic_t tx_ts_pending;
++	int tx_ts_irq;
 +
-+	iep_np = of_parse_phandle(np, "ti,iep", idx);
-+	if (!iep_np || !of_device_is_available(iep_np))
-+		return ERR_PTR(-ENODEV);
-+
-+	pdev = of_find_device_by_node(iep_np);
-+	of_node_put(iep_np);
-+
-+	if (!pdev)
-+		/* probably IEP not yet probed */
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	iep = platform_get_drvdata(pdev);
-+	if (!iep)
-+		return ERR_PTR(-EPROBE_DEFER);
-+
-+	device_lock(iep->dev);
-+	if (iep->client_np) {
-+		device_unlock(iep->dev);
-+		dev_err(iep->dev, "IEP is already acquired by %s",
-+			iep->client_np->name);
-+		return ERR_PTR(-EBUSY);
-+	}
-+	iep->client_np = np;
-+	device_unlock(iep->dev);
-+	get_device(iep->dev);
-+
-+	return iep;
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_get_idx);
-+
-+struct icss_iep *icss_iep_get(struct device_node *np)
-+{
-+	return icss_iep_get_idx(np, 0);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_get);
-+
-+void icss_iep_put(struct icss_iep *iep)
-+{
-+	device_lock(iep->dev);
-+	iep->client_np = NULL;
-+	device_unlock(iep->dev);
-+	put_device(iep->dev);
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_put);
-+
-+int icss_iep_init(struct icss_iep *iep, const struct icss_iep_clockops *clkops,
-+		  void *clockops_data, u32 cycle_time_ns)
-+{
-+	int ret = 0;
-+
-+	iep->cycle_time_ns = cycle_time_ns;
-+	iep->clk_tick_time = iep->def_inc;
-+	iep->ops = clkops;
-+	iep->clockops_data = clockops_data;
-+	icss_iep_set_default_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_inc(iep, iep->def_inc);
-+	icss_iep_set_compensation_count(iep, 0);
-+	regmap_write(iep->map, ICSS_IEP_SYNC_PWIDTH_REG, iep->refclk_freq / 10); /* 100 ms pulse */
-+	regmap_write(iep->map, ICSS_IEP_SYNC0_PERIOD_REG, 0);
-+	if (iep->plat_data->flags & ICSS_IEP_SLOW_COMPEN_REG_SUPPORT)
-+		icss_iep_set_slow_compensation_count(iep, 0);
-+
-+	if (!(iep->plat_data->flags & ICSS_IEP_64BIT_COUNTER_SUPPORT) ||
-+	    !(iep->plat_data->flags & ICSS_IEP_SLOW_COMPEN_REG_SUPPORT))
-+		goto skip_perout;
-+
-+	if (iep->ops && iep->ops->perout_enable) {
-+		iep->ptp_info.n_per_out = 1;
-+		iep->ptp_info.pps = 1;
-+	}
-+
-+	if (iep->ops && iep->ops->extts_enable)
-+		iep->ptp_info.n_ext_ts = 2;
-+
-+skip_perout:
-+	if (cycle_time_ns)
-+		icss_iep_enable_shadow_mode(iep);
-+	else
-+		icss_iep_enable(iep);
-+	icss_iep_settime(iep, ktime_get_real_ns());
-+
-+	iep->ptp_clock = ptp_clock_register(&iep->ptp_info, iep->dev);
-+	if (IS_ERR(iep->ptp_clock)) {
-+		ret = PTR_ERR(iep->ptp_clock);
-+		iep->ptp_clock = NULL;
-+		dev_err(iep->dev, "Failed to register ptp clk %d\n", ret);
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_init);
-+
-+int icss_iep_exit(struct icss_iep *iep)
-+{
-+	if (iep->ptp_clock) {
-+		ptp_clock_unregister(iep->ptp_clock);
-+		iep->ptp_clock = NULL;
-+	}
-+	icss_iep_disable(iep);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(icss_iep_exit);
-+
-+static int icss_iep_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct icss_iep *iep;
-+	struct clk *iep_clk;
-+
-+	iep = devm_kzalloc(dev, sizeof(*iep), GFP_KERNEL);
-+	if (!iep)
-+		return -ENOMEM;
-+
-+	iep->dev = dev;
-+	iep->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(iep->base))
-+		return -ENODEV;
-+
-+	iep_clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(iep_clk))
-+		return PTR_ERR(iep_clk);
-+
-+	iep->refclk_freq = clk_get_rate(iep_clk);
-+
-+	iep->def_inc = NSEC_PER_SEC / iep->refclk_freq;	/* ns per clock tick */
-+	if (iep->def_inc > IEP_MAX_DEF_INC) {
-+		dev_err(dev, "Failed to set def_inc %d.  IEP_clock is too slow to be supported\n",
-+			iep->def_inc);
-+		return -EINVAL;
-+	}
-+
-+	iep->plat_data = device_get_match_data(dev);
-+	if (!iep->plat_data)
-+		return -EINVAL;
-+
-+	iep->map = devm_regmap_init(dev, NULL, iep, iep->plat_data->config);
-+	if (IS_ERR(iep->map)) {
-+		dev_err(dev, "Failed to create regmap for IEP %ld\n",
-+			PTR_ERR(iep->map));
-+		return PTR_ERR(iep->map);
-+	}
-+
-+	iep->ptp_info = icss_iep_ptp_info;
-+	mutex_init(&iep->ptp_clk_mutex);
-+	spin_lock_init(&iep->irq_lock);
-+	dev_set_drvdata(dev, iep);
-+	icss_iep_disable(iep);
-+
-+	return 0;
-+}
-+
-+static bool am654_icss_iep_valid_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case ICSS_IEP_GLOBAL_CFG_REG ... ICSS_IEP_SYNC_START_REG:
-+		return true;
-+	default:
-+		return false;
-+	}
-+
-+	return false;
-+}
-+
-+static int icss_iep_regmap_write(void *context, unsigned int reg,
-+				 unsigned int val)
-+{
-+	struct icss_iep *iep = context;
-+
-+	writel(val, iep->base + iep->plat_data->reg_offs[reg]);
-+
-+	return 0;
-+}
-+
-+static int icss_iep_regmap_read(void *context, unsigned int reg,
-+				unsigned int *val)
-+{
-+	struct icss_iep *iep = context;
-+
-+	*val = readl(iep->base + iep->plat_data->reg_offs[reg]);
-+
-+	return 0;
-+}
-+
-+static struct regmap_config am654_icss_iep_regmap_config = {
-+	.name = "icss iep",
-+	.reg_stride = 1,
-+	.reg_write = icss_iep_regmap_write,
-+	.reg_read = icss_iep_regmap_read,
-+	.writeable_reg = am654_icss_iep_valid_reg,
-+	.readable_reg = am654_icss_iep_valid_reg,
-+	.fast_io = 1,
++	u8 cmd_seq;
++	/* shutdown related */
++	u32 cmd_data[4];
+ 	struct completion cmd_complete;
+ 	/* Mutex to serialize access to firmware command interface */
+ 	struct mutex cmd_lock;
+@@ -193,6 +207,7 @@ struct prueth_pdata {
+  * @pdata: pointer to platform data for ICSSG driver
+  * @icssg_hwcmdseq: seq counter or HWQ messages
+  * @emacs_initialized: num of EMACs/ext ports that are up/running
++ * @iep0: pointer to IEP0 device
+  */
+ struct prueth {
+ 	struct device *dev;
+@@ -214,8 +229,15 @@ struct prueth {
+ 	struct platform_device *pdev;
+ 	struct prueth_pdata pdata;
+ 	u8 icssg_hwcmdseq;
+-
+ 	int emacs_initialized;
++	struct icss_iep *iep0;
 +};
 +
-+static const struct icss_iep_plat_data am654_icss_iep_plat_data = {
-+	.flags = ICSS_IEP_64BIT_COUNTER_SUPPORT |
-+		 ICSS_IEP_SLOW_COMPEN_REG_SUPPORT |
-+		 ICSS_IEP_SHADOW_MODE_SUPPORT,
-+	.reg_offs = {
-+		[ICSS_IEP_GLOBAL_CFG_REG] = 0x00,
-+		[ICSS_IEP_COMPEN_REG] = 0x08,
-+		[ICSS_IEP_SLOW_COMPEN_REG] = 0x0C,
-+		[ICSS_IEP_COUNT_REG0] = 0x10,
-+		[ICSS_IEP_COUNT_REG1] = 0x14,
-+		[ICSS_IEP_CAPTURE_CFG_REG] = 0x18,
-+		[ICSS_IEP_CAPTURE_STAT_REG] = 0x1c,
-+
-+		[ICSS_IEP_CAP6_RISE_REG0] = 0x50,
-+		[ICSS_IEP_CAP6_RISE_REG1] = 0x54,
-+
-+		[ICSS_IEP_CAP7_RISE_REG0] = 0x60,
-+		[ICSS_IEP_CAP7_RISE_REG1] = 0x64,
-+
-+		[ICSS_IEP_CMP_CFG_REG] = 0x70,
-+		[ICSS_IEP_CMP_STAT_REG] = 0x74,
-+		[ICSS_IEP_CMP0_REG0] = 0x78,
-+		[ICSS_IEP_CMP0_REG1] = 0x7c,
-+		[ICSS_IEP_CMP1_REG0] = 0x80,
-+		[ICSS_IEP_CMP1_REG1] = 0x84,
-+
-+		[ICSS_IEP_CMP8_REG0] = 0xc0,
-+		[ICSS_IEP_CMP8_REG1] = 0xc4,
-+		[ICSS_IEP_SYNC_CTRL_REG] = 0x180,
-+		[ICSS_IEP_SYNC0_STAT_REG] = 0x188,
-+		[ICSS_IEP_SYNC1_STAT_REG] = 0x18c,
-+		[ICSS_IEP_SYNC_PWIDTH_REG] = 0x190,
-+		[ICSS_IEP_SYNC0_PERIOD_REG] = 0x194,
-+		[ICSS_IEP_SYNC1_DELAY_REG] = 0x198,
-+		[ICSS_IEP_SYNC_START_REG] = 0x19c,
-+	},
-+	.config = &am654_icss_iep_regmap_config,
-+};
-+
-+static const struct of_device_id icss_iep_of_match[] = {
-+	{
-+		.compatible = "ti,am654-icss-iep",
-+		.data = &am654_icss_iep_plat_data,
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, icss_iep_of_match);
-+
-+static struct platform_driver icss_iep_driver = {
-+	.driver = {
-+		.name = "icss-iep",
-+		.of_match_table = icss_iep_of_match,
-+	},
-+	.probe = icss_iep_probe,
-+};
-+module_platform_driver(icss_iep_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("TI ICSS IEP driver");
-+MODULE_AUTHOR("Roger Quadros <rogerq@ti.com>");
-+MODULE_AUTHOR("Md Danish Anwar <danishanwar@ti.com>");
-diff --git a/drivers/net/ethernet/ti/icssg/icss_iep.h b/drivers/net/ethernet/ti/icssg/icss_iep.h
-new file mode 100644
-index 000000000000..9eee44ae4990
---- /dev/null
-+++ b/drivers/net/ethernet/ti/icssg/icss_iep.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/* Texas Instruments ICSSG Industrial Ethernet Peripheral (IEP) Driver
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ *
-+ */
-+
-+#ifndef __NET_TI_ICSS_IEP_H
-+#define __NET_TI_ICSS_IEP_H
-+
-+#include <linux/mutex.h>
-+#include <linux/ptp_clock_kernel.h>
-+#include <linux/regmap.h>
-+
-+struct icss_iep;
-+
-+/* Firmware specific clock operations */
-+struct icss_iep_clockops {
-+	void (*settime)(void *clockops_data, u64 ns);
-+	void (*adjtime)(void *clockops_data, s64 delta);
-+	u64 (*gettime)(void *clockops_data, struct ptp_system_timestamp *sts);
-+	int (*perout_enable)(void *clockops_data,
-+			     struct ptp_perout_request *req, int on,
-+			     u64 *cmp);
-+	int (*extts_enable)(void *clockops_data, u32 index, int on);
-+};
-+
-+struct icss_iep *icss_iep_get(struct device_node *np);
-+struct icss_iep *icss_iep_get_idx(struct device_node *np, int idx);
-+void icss_iep_put(struct icss_iep *iep);
-+int icss_iep_init(struct icss_iep *iep, const struct icss_iep_clockops *clkops,
-+		  void *clockops_data, u32 cycle_time_ns);
-+int icss_iep_exit(struct icss_iep *iep);
-+int icss_iep_get_count_low(struct icss_iep *iep);
-+int icss_iep_get_count_hi(struct icss_iep *iep);
-+int icss_iep_get_ptp_clock_idx(struct icss_iep *iep);
-+
-+#endif /* __NET_TI_ICSS_IEP_H */
++struct emac_tx_ts_response {
++	u32 reserved[2];
++	u32 cookie;
++	u32 lo_ts;
++	u32 hi_ts;
+ };
+ 
+ /* get PRUSS SLICE number from prueth_emac */
 -- 
 2.34.1
 
