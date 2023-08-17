@@ -2,190 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6419B77F84A
+	by mail.lfdr.de (Postfix) with ESMTP id DD3E577F84B
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351703AbjHQOEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:04:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
+        id S1351709AbjHQOEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351680AbjHQODq (ORCPT
+        with ESMTP id S1351690AbjHQODs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:03:46 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E81332D75
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:42 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB636D75;
-        Thu, 17 Aug 2023 07:04:23 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5322B3F6C4;
-        Thu, 17 Aug 2023 07:03:41 -0700 (PDT)
-Message-ID: <1d38e877-35ed-5f70-e51f-ea875deab903@arm.com>
-Date:   Thu, 17 Aug 2023 15:03:25 +0100
+        Thu, 17 Aug 2023 10:03:48 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AED2D5A
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:03:45 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37HE3T2c018128
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 10:03:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692281010; bh=yLQkg9fYxfjEgbacxnWLuMof6HdNp3fGqNYnwsXsDK8=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=RgvMy+BEbbBZO2mbkCOcYz8MKDPX1hdJnDY/dMQPpTJa2CzU/a0FtHwHj4PXsFH5t
+         9ztfuvLqfO0v1ob/+NYtWvonCLltveJeLDTEYC5ZV73qnzeH8Ptm3RHqxxhgLb67pQ
+         aqD4wlbonSlVBxI5228sanjzcp+tQe2BIIKcPFmZ2YNJNnZgL5YNxxQwKMfpwfxhkH
+         fWEucD2IomI8W5+a0xxNrkL5DbChUs7+k2uQ+jzb+KWQmHLwcBZuaqAVEvjZ7+i4H8
+         7amFi8M/3KB/w9rgaH3QsoxWjubzSkP1jT9rD9xRNzm5anPlKvwJ0BuJNC82JauiIG
+         whrFL7YIJ6pCg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E825615C0501; Thu, 17 Aug 2023 10:03:28 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 10:03:28 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
+ add_new_gdb_meta_bg to support non first group
+Message-ID: <20230817140328.GY2247938@mit.edu>
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-12-shikemeng@huaweicloud.com>
+ <20230816034543.GS2247938@mit.edu>
+ <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH 1/2] coresight: Fix memory leak in acpi_buffer->pointer
-Content-Language: en-US
-To:     Junhao He <hejunhao3@huawei.com>, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com
-References: <20230817085937.55590-1-hejunhao3@huawei.com>
- <20230817085937.55590-2-hejunhao3@huawei.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230817085937.55590-2-hejunhao3@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 17/08/2023 09:59, Junhao He wrote:
-> There are memory leaks reported by kmemleak:
-> ...
-> unreferenced object 0xffff00213c141000 (size 1024):
->   comm "systemd-udevd", pid 2123, jiffies 4294909467 (age 6062.160s)
->   hex dump (first 32 bytes):
->     04 00 00 00 02 00 00 00 18 10 14 3c 21 00 ff ff  ...........<!...
->     00 00 00 00 00 00 00 00 03 00 00 00 10 00 00 00  ................
->   backtrace:
->     [<000000004b7c9001>] __kmem_cache_alloc_node+0x2f8/0x348
->     [<00000000b0fc7ceb>] __kmalloc+0x58/0x108
->     [<0000000064ff4695>] acpi_os_allocate+0x2c/0x68
->     [<000000007d57d116>] acpi_ut_initialize_buffer+0x54/0xe0
->     [<0000000024583908>] acpi_evaluate_object+0x388/0x438
->     [<0000000017b2e72b>] acpi_evaluate_object_typed+0xe8/0x240
->     [<000000005df0eac2>] coresight_get_platform_data+0x1b4/0x988 [coresight]
-> ...
+On Thu, Aug 17, 2023 at 11:38:34AM +0800, Kemeng Shi wrote:
 > 
-> The ACPI buffer memory (buf.pointer) should be freed. But the buffer
-> is also used after returning from acpi_get_dsd_graph().
-> Move the temporary variables buf to acpi_coresight_parse_graph(),
-> and free it before the function return to prevent memory leak.
 > 
-> Fixes: 76ffa5ab5b79 ("coresight: Support for ACPI bindings")
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> on 8/16/2023 11:45 AM, Theodore Ts'o wrote:
+> > On Thu, Jun 29, 2023 at 08:00:42PM +0800, Kemeng Shi wrote:
+> >> In add_new_gdb_meta_bg, we assume that group could be non first
+> >> group in meta block group as we call ext4_meta_bg_first_block_no
+> >> to get first block of meta block group rather than call
+> >> ext4_group_first_block_no for passed group directly. Then ext4_bg_has_super
+> >> should be called with first group in meta group rather than new added
+> >> group. Or we can call ext4_group_first_block_no instead of
+> >> ext4_meta_bg_first_block_no to assume only first group of
+> >> meta group will be passed.
+> >> Either way, ext4_meta_bg_first_block_no will be useless and
+> >> could be removed.
+> > 
+> > Unfortunately, I spent more time trying to understand the commit
+> > description than the C code.  Perhaps this might be a better way of
+> > describing the situation?
+> > 
+> Sorry for my poor language again, :( I will try to improve this.
+> > The ext4_new descs() function calls ext4_meta_bg_first_block_no() with
+> > the group paramter when the group is the first group of a meta_bg
+> > (e.g., when (group % EXT4_DESC_PER_BLOCK) is zero.  So we can simplify
+> > things a bit by removing ext4_meta_bg_first_block_no() and an open
+> > coding its logic.
+> > 
+> > Does this make more sense to tou?
+> > 
+> This patch tries to correct gdbblock calculation in add_new_gdb_meta_bg
+> in case group from caller is not the first group of meta_bg which is
+> supposed to be handled by add_new_gdb_meta_bg.
+> We should call ext4_bg_has_super with first group in meta_bg instead
+> of group which could be non first group in meta_bg to calculate gdb
+> of meta_bg.
+> Fortunately, the only caller ext4_add_new_descs always call
+> add_new_gdb_meta_bg with first group of meta_bg and no real issue
+> will happen.
 
-I confirmed that the error gone. Thanks for the fix.
+To be clear, this doesn't have a functional change given how the code
+is going to be used, right?  It's really more of a cleanup with a goal
+of making the code easier to understand.  If so, we should make this
+explicit at the beginning of the commit description, as opposed to
+putting it at the end.
 
-Reviewed-by: James Clark <james.clark@arm.com>
+In journalism this is referred to as "burying the lede"[1], where the
+"lede" the most important/key piece of information.  In general, it is
+desirable not to "bury the lede".  That is, the most important
+information, including why people should care, and what this is doing,
+at the beginning of the commit description (or article in the case of
+journalsm).
 
-> ---
->  .../hwtracing/coresight/coresight-platform.c  | 40 ++++++++++++-------
->  1 file changed, 26 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
-> index 7d7b641c0a71..9d550f5697fa 100644
-> --- a/drivers/hwtracing/coresight/coresight-platform.c
-> +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> @@ -492,19 +492,18 @@ static inline bool acpi_validate_dsd_graph(const union acpi_object *graph)
->  
->  /* acpi_get_dsd_graph	- Find the _DSD Graph property for the given device. */
->  static const union acpi_object *
-> -acpi_get_dsd_graph(struct acpi_device *adev)
-> +acpi_get_dsd_graph(struct acpi_device *adev, struct acpi_buffer *buf)
->  {
->  	int i;
-> -	struct acpi_buffer buf = { ACPI_ALLOCATE_BUFFER };
->  	acpi_status status;
->  	const union acpi_object *dsd;
->  
->  	status = acpi_evaluate_object_typed(adev->handle, "_DSD", NULL,
-> -					    &buf, ACPI_TYPE_PACKAGE);
-> +					    buf, ACPI_TYPE_PACKAGE);
->  	if (ACPI_FAILURE(status))
->  		return NULL;
->  
-> -	dsd = buf.pointer;
-> +	dsd = buf->pointer;
->  
->  	/*
->  	 * _DSD property consists tuples { Prop_UUID, Package() }
-> @@ -555,12 +554,12 @@ acpi_validate_coresight_graph(const union acpi_object *cs_graph)
->   * returns NULL.
->   */
->  static const union acpi_object *
-> -acpi_get_coresight_graph(struct acpi_device *adev)
-> +acpi_get_coresight_graph(struct acpi_device *adev, struct acpi_buffer *buf)
->  {
->  	const union acpi_object *graph_list, *graph;
->  	int i, nr_graphs;
->  
-> -	graph_list = acpi_get_dsd_graph(adev);
-> +	graph_list = acpi_get_dsd_graph(adev, buf);
->  	if (!graph_list)
->  		return graph_list;
->  
-> @@ -661,22 +660,24 @@ static int acpi_coresight_parse_graph(struct device *dev,
->  				      struct acpi_device *adev,
->  				      struct coresight_platform_data *pdata)
->  {
-> +	int ret = 0;
->  	int i, nlinks;
->  	const union acpi_object *graph;
->  	struct coresight_connection conn, zero_conn = {};
->  	struct coresight_connection *new_conn;
-> +	struct acpi_buffer buf = { ACPI_ALLOCATE_BUFFER, NULL };
->  
-> -	graph = acpi_get_coresight_graph(adev);
-> +	graph = acpi_get_coresight_graph(adev, &buf);
->  	/*
->  	 * There are no graph connections, which is fine for some components.
->  	 * e.g., ETE
->  	 */
->  	if (!graph)
-> -		return 0;
-> +		goto free;
->  
->  	nlinks = graph->package.elements[2].integer.value;
->  	if (!nlinks)
-> -		return 0;
-> +		goto free;
->  
->  	for (i = 0; i < nlinks; i++) {
->  		const union acpi_object *link = &graph->package.elements[3 + i];
-> @@ -684,17 +685,28 @@ static int acpi_coresight_parse_graph(struct device *dev,
->  
->  		conn = zero_conn;
->  		dir = acpi_coresight_parse_link(adev, link, &conn);
-> -		if (dir < 0)
-> -			return dir;
-> +		if (dir < 0) {
-> +			ret = dir;
-> +			goto free;
-> +		}
->  
->  		if (dir == ACPI_CORESIGHT_LINK_MASTER) {
->  			new_conn = coresight_add_out_conn(dev, pdata, &conn);
-> -			if (IS_ERR(new_conn))
-> -				return PTR_ERR(new_conn);
-> +			if (IS_ERR(new_conn)) {
-> +				ret = PTR_ERR(new_conn);
-> +				goto free;
-> +			}
->  		}
->  	}
->  
-> -	return 0;
-> +free:
-> +	/*
-> +	 * When ACPI fails to alloc a buffer, it will free the buffer
-> +	 * created via ACPI_ALLOCATE_BUFFER and set to NULL.
-> +	 * ACPI_FREE can handle NULL pointers, so free it directly.
-> +	 */
-> +	ACPI_FREE(buf.pointer);
-> +	return ret;
->  }
->  
->  /*
+[1] https://www.masterclass.com/articles/bury-the-lede-explained
+
+					- Ted
