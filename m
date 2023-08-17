@@ -2,65 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C394477F482
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 12:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4E877F4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350033AbjHQKvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 06:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
+        id S1350144AbjHQLBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350044AbjHQKvb (ORCPT
+        with ESMTP id S1350157AbjHQLAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 06:51:31 -0400
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA4A2D72
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:51:30 -0700 (PDT)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-447c7607b72so2787758137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 03:51:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692269489; x=1692874289;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PwRqCw0HUOyaGtPxJbMKB04qbbd6HmPDl9unJunOuNs=;
-        b=NKajdjqWcACz7+jTBBXWsHK9nYEI6CzWcAvyNsvWKuMV0bvOUvAzto8jQrP+a5yRk9
-         HuM8dTxLXsggqjdO/5oqkqDrEgafMqnuf7pEqRCdfU44u23YJkLxO2cWlezOHun2Ed9J
-         97H7pRpjcAmsNVgybv/uTZ61ZN+laRT5AcfmPFRNWAXLRSD4Wpkdx30vXH9FNRd6Yr8x
-         C8X2bCShYgikSSEKWtvwj0OIBgWKowyMk7C66pSHf7SwWHOldYX4T3URwQJzoG1JHRmB
-         SQfF1R6gHS+nliyDFx0Vrsx+w7LFfOlnkXXcK/XrJk07dkfvjYshMzHLqAJKJZiZetL1
-         RLzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692269489; x=1692874289;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PwRqCw0HUOyaGtPxJbMKB04qbbd6HmPDl9unJunOuNs=;
-        b=FEvR+qcvSqBUTRMC83FGqsJkajj5dBbv6zhqKDzNnpgBna8mdOFJ5rl9VqOUnranMe
-         M3rjgBXVN2HbELILj1xkxFieuFMC5J+ONXLl6oSzsWi8Cfr8c247aSagxnbuRV0b+p0E
-         yo6FdE0zvyetjDcLud7IrgR+9hMkHahDhvKEMMC/57C5UaKnjt0vWXPKLWBY3AE6lNKz
-         I9C+wYMOeig3wYwtFxMUE4z9WqeN3SMaedNvENLN/roe9U3mkOMDyon0ypIMxx6gy7Ge
-         X3RwJxJj3rNESPg80P+ACIiBqtzN8rd5BS1py4jbSpg2MV78LSxW7+BxMhExfKk7VFcF
-         DEwg==
-X-Gm-Message-State: AOJu0YyDmusQiaG42EtXq2aQv6XhvTzLY9bE2h6A/3slAxRf3BpAXnvq
-        Cr1nkv0b3dGLxAP5eeqrU9THpkxtrRjUFZe58QVX6g==
-X-Google-Smtp-Source: AGHT+IGo4834Qu+hswUxKMIx1Kiswwy8W/FJPj8GnmqgXzkPnBafwOOVSsprB+brYtziKci5XXZIq8FKLRo7t2quaNY=
-X-Received: by 2002:a67:f491:0:b0:447:6c24:7d93 with SMTP id
- o17-20020a67f491000000b004476c247d93mr4177330vsn.20.1692269489522; Thu, 17
- Aug 2023 03:51:29 -0700 (PDT)
+        Thu, 17 Aug 2023 07:00:47 -0400
+X-Greylist: delayed 467 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Aug 2023 04:00:43 PDT
+Received: from mta-04.yadro.com (mta-04.yadro.com [89.207.88.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8AF30C0;
+        Thu, 17 Aug 2023 04:00:43 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-04.yadro.com 4E341C0009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yadro.com; s=mta-04;
+        t=1692269574; bh=AehP888etUrm7amHfFcvQ6JX0HnlZBk7UUTpgRujN1s=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=Fmv5SawTv711CAVIx9xFXRxB7Ue6mmxK0aBMfy333sVwh1EjxK7fdxHwdN/OSsH4l
+         EF17JKgSJpqoC+ASrZTUrGUoHhoJVTldV/jwD0sncSuHbiHCDpejBHH6eGudDmNdxo
+         dzZRsjCMeTQaIaOqwmak/cgHg+UUMWyEOzz8uDyvcv2cehgDAvlxKC/DveHpSLLE+T
+         XuQHBuwBIUBBxCdHfN89ZdboWUaJ54ry2pzaKSLKtuvFJwOucX+S1feKRF/puwCHiT
+         g4Cmu3OsabcDdW7iZhzUYVYPllbH7Xl/UgCuXZ7l450qls/H6nB9neRoMED/gexM2Q
+         gGA2RQOeQoQeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yadro.com; s=mta-03;
+        t=1692269574; bh=AehP888etUrm7amHfFcvQ6JX0HnlZBk7UUTpgRujN1s=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=L9Pss4wafQgF4+j4US+bbq98ahyzt05LdL8ktiIdf3ZsrhLTD6BQRqciiBqnrO88Y
+         0oDJlyNAmioKau5c6jB7sae9gc7xH6XsU7V5lol+QG1ESSh/kdoV86Z7mEY9TQv/8S
+         5YFHTCnjrH79S4j3Kf02DuXIY9CmVF4c80nLnqrrKlfaropWlRxn+b17R6b/+6eyTJ
+         WcMBI/91LbNyMF9RgfB4nsLrCH8IK1/U/sO1dv0F/pPG9eiAE34csMnlVMNk/4oKa4
+         V80yzQad7zvJZch2B6gBTY8F13Dbht7BQo+DxdjB8sXH4urEq28sKmGw5gPkO0UKJe
+         jOQtNqk2elE2g==
+Date:   Thu, 17 Aug 2023 13:52:52 +0300
+From:   Dmitry Bogdanov <d.bogdanov@yadro.com>
+To:     <coolrrsh@gmail.com>
+CC:     <james.smart@broadcom.com>, <ram.vegesna@broadcom.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <rdunlap@infradead.org>, <linux-scsi@vger.kernel.org>,
+        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-kernel-mentees@lists.linuxfoundation.org>
+Subject: Re: [PATCH v2] scsi: sli4: Remove the buggy code
+Message-ID: <20230817105252.GA14370@yadro.com>
+References: <20230817103751.16350-1-coolrrsh@gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 17 Aug 2023 16:21:17 +0530
-Message-ID: <CA+G9fYvFD-kE0+EGWkwcnR1DXRxh7p7OwQThJ6KWxYWVROJ4+A@mail.gmail.com>
-Subject: landlock: fs_test: fs_test.c:4524:9: error: initializer element is
- not a compile-time constant
-To:     clang-built-linux <llvm@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        lkft-triage@lists.linaro.org
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230817103751.16350-1-coolrrsh@gmail.com>
+X-ClientProxiedBy: T-EXCH-08.corp.yadro.com (172.17.11.58) To
+ T-EXCH-08.corp.yadro.com (172.17.11.58)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -70,27 +61,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While building selftests landlock following warnings / errors noticed on the
-Linux next with clang-17.
+On Thu, Aug 17, 2023 at 04:07:51PM +0530, coolrrsh@gmail.com wrote:
+> 
+> From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+> 
+> In the function sli_xmit_bls_rsp64_wqe, the 'if' and 'else' conditions
+> evaluates the same expression and gives same output. Also the variable
+> bls->local_n_port_id_dword is not used anywhere. Therefore removing the
+> redundant code.
+> 
+> This fixes coccinelle warning such as:
+> drivers/scsi/elx/libefc_sli/sli4.c:2320:2-4: WARNING: possible
+> condition with no effect (if == else)
+> 
+> Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
+> ---
+> v1->v2
+> Modified patch and verified with checkpatch.pl.
+> 
+> ---
+>  drivers/scsi/elx/libefc_sli/sli4.c | 7 -------
+>  1 file changed, 7 deletions(-)
+> 
+> diff --git a/drivers/scsi/elx/libefc_sli/sli4.c b/drivers/scsi/elx/libefc_sli/sli4.c
+> index 8f96049f62dd..af661b769464 100644
+> --- a/drivers/scsi/elx/libefc_sli/sli4.c
+> +++ b/drivers/scsi/elx/libefc_sli/sli4.c
+> @@ -2317,13 +2317,6 @@ sli_xmit_bls_rsp64_wqe(struct sli4 *sli, void *buf,
+>                 SLI4_GENERIC_CONTEXT_VPI << SLI4_BLS_RSP_WQE_CT_SHFT;
+>                 bls->context_tag = cpu_to_le16(params->vpi);
+> 
+> -               if (params->s_id != U32_MAX)
+> -                       bls->local_n_port_id_dword |=
+> -                               cpu_to_le32(params->s_id & 0x00ffffff);
+> -               else
+> -                       bls->local_n_port_id_dword |=
+> -                               cpu_to_le32(params->s_id & 0x00ffffff);
+> -
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+omg, it is not an unused variable. Whole bls is a HW descriptor, all of
+its variables are used by HW. You should keep v1 version of the patch.
+According to the comment at the beginning of the funciton s_id here shall
+be != U32_MAX. That is an explanation for your v1 patch.
 
-Build errors:
-------------
-landlock/fs_test
-fs_test.c:4524:9: error: initializer element is not a compile-time constant
- 4524 |         .mnt = mnt_tmp,
-      |                ^~~~~~~
-1 error generated.
-
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7eRU4UUygecrDx/
-
-Steps to reproduce:
-tuxmake --runtime podman --target-arch arm64 --toolchain clang-17
---kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7eRU4UUygecrDx/config
-LLVM=1 LLVM_IAS=1 dtbs dtbs-legacy headers kernel kselftest modules
-
---
-Linaro LKFT
-https://lkft.linaro.org
+>                 dw_ridflags = (dw_ridflags & ~SLI4_BLS_RSP_RID) |
+>                                (params->d_id & SLI4_BLS_RSP_RID);
+> 
+> --
+> 2.25.1
+> 
