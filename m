@@ -2,308 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A81277F153
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605E177F158
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 09:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348543AbjHQHgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 03:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
+        id S1348547AbjHQHh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 03:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbjHQHfw (ORCPT
+        with ESMTP id S1348461AbjHQHhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 03:35:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F301812B;
-        Thu, 17 Aug 2023 00:35:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692257751; x=1723793751;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=iJ+ERG1HMyhW/gOaZ67rW5tiVlX3e0f1StDiN46AJgE=;
-  b=jmvoS8FFtFaqg69bgYDXH38fRqpeg/5UU4TMMbYKEPXT/albyJOuNwwW
-   5H5AxW1KS9bZNhQLeeFzJhE1tfh/PYKj/AD2Eh5cOqf3GExB+Q82K8gtm
-   /dwOyOSm/CNwYHZfNax+/LbSL+xjiMzad7Zri9OFkvTDkW9d8fek7AuXq
-   PKgERxhzvNKorerMOFjXVrI5p9SmdolTt8FJingXRx810DohUHzqQjnES
-   qnrk5L9J0jYCryw7s/rUP/oioJD1LqVqOmXxvY6br3jIeTvCPLfwvfU+v
-   Fx5cZHFMgIvTGg+b3mMH/nroYJv+/tz8mCxGyzcpqlK/M+PFwWui9koPi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375505545"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="375505545"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:35:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="908309223"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="908309223"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.40.107])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 00:35:48 -0700
-Message-ID: <d802a8c9-aca1-ea47-f4c9-1d76e0fae9c9@intel.com>
-Date:   Thu, 17 Aug 2023 10:35:43 +0300
+        Thu, 17 Aug 2023 03:37:14 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FF932D5F;
+        Thu, 17 Aug 2023 00:37:08 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68878ca7ca0so1637366b3a.0;
+        Thu, 17 Aug 2023 00:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692257827; x=1692862627;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ULKXK6qR5c9VRBpWLFKmezxiq8+/JqbJFDTXkM6zgIY=;
+        b=ZtP8zijoeaZNhyrK2BOvwnFcaXAIBBAvfS34UhePeKzkACjxF3wIlN55Mi+h7MTU3W
+         lZZHqFb9n0QrLWraMNHQDriu5uAr0Gvc3ACPuk9aTgYUbXMnvE19Pi8Rhibvp2s7lIJH
+         Z+BQF0HSMpZpebLNtzB89ea3qhNTGpNFMI0YD73n8Cr1vlqkfymPfz5NK+BQIxDORFJa
+         A9NXFaStzLzyFb8/I6KDUOmXD0R1EbgnNdPyJ4BX8102iseWYuFsi4Wjzsdf6XJCKeRG
+         SEA0FHF/mLYBomK4PPLpuBwucWIogaqbbwCr0aqVvlS4qSaAVNmnoiYCjlXtseFS23AS
+         iFlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692257827; x=1692862627;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ULKXK6qR5c9VRBpWLFKmezxiq8+/JqbJFDTXkM6zgIY=;
+        b=OGf6IoHSwd8UsYjT98AaZQ3qQh82Iswg2kuW7/l8IsJLcD+LFF5Z8gDCX7kAxE67Ed
+         b+TeL0YxCeo+OL2ifb2LjCsEeP2vYmvA65v8SbJRZ22IXX6FJlMOkqFdMn+C0LDZFu2p
+         UCklitz4cuYFeh+CuR/x9mxWidiFIY7XVyAEkpGHST2l49LkGSw/kPbAcGYrL/zr+NxS
+         Ve+JCQqSHmGpVhLhEN15ZTBeZt20AZajqVQ4yoz7sBzUTpMfkKhXCdv8uNiLN2L7XoMD
+         CO8tTHi6HS4Mu3xDTs8tsPssfqfdeo9DW3SJNWlsOxOUnswMyaAs/zZsvjzJcZucn4xl
+         jAOQ==
+X-Gm-Message-State: AOJu0Yx4csBXrIorN1z5BopdwRnonkz7uTzte2LgMcmDakzhxzNeVxc+
+        9oRSDMszS7Xixncrsi2nTXjmBRU/dps=
+X-Google-Smtp-Source: AGHT+IFp+VczPYtP3Lkrr7z+0huyXGBRexY3/CrU2WmTcbxAUUtzsgJARGI0oo0f2z2QG2r0NgEyIw==
+X-Received: by 2002:a05:6a20:4ca4:b0:12d:f1ac:e2cd with SMTP id fq36-20020a056a204ca400b0012df1ace2cdmr3073766pzb.32.1692257827512;
+        Thu, 17 Aug 2023 00:37:07 -0700 (PDT)
+Received: from sol ([220.235.36.234])
+        by smtp.gmail.com with ESMTPSA id p1-20020aa78601000000b00687260020b1sm781878pfn.72.2023.08.17.00.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 00:37:07 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 15:37:02 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 0/5] gpio: cdev: bail out of poll() if the device goes
+ down
+Message-ID: <ZN3OHqzT3grSdefP@sol>
+References: <20230816122032.15548-1-brgl@bgdev.pl>
+ <CACRpkdaTUi0r+nY12J8sLxmvfG2xRd+OMngcMiQkr5cqerevtA@mail.gmail.com>
+ <ZN2k7gemanIpbyFh@sol>
+ <CAMRc=MfwK6_m0N4cZqkpMX0Rka4WnWmtKTjq-cwbTR5+sjw9vw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.14.0
-Subject: Re: [PATCH v8] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-To:     Liming Sun <limings@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230817010608.211329-1-limings@nvidia.com>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230817010608.211329-1-limings@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MfwK6_m0N4cZqkpMX0Rka4WnWmtKTjq-cwbTR5+sjw9vw@mail.gmail.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/23 04:06, Liming Sun wrote:
-> This commit implements the runtime PM operations to disable eMMC
-> card clock when idle.
+On Thu, Aug 17, 2023 at 09:27:37AM +0200, Bartosz Golaszewski wrote:
+> On Thu, Aug 17, 2023 at 6:41 AM Kent Gibson <warthog618@gmail.com> wrote:
+> >
+> > On Wed, Aug 16, 2023 at 11:41:06PM +0200, Linus Walleij wrote:
+> > > On Wed, Aug 16, 2023 at 2:20 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > >
+> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > >
+> > > > Wake up all three wake queues (the one associated with the character
+> > > > device file, the one for V1 line events and the V2 line request one)
+> > > > when the underlying GPIO device is unregistered. This way we won't get
+> > > > stuck in poll() after the chip is gone as user-space will be forced to
+> > > > go back into a new system call and will see that gdev->chip is NULL.
+> > > >
+> > > > Bartosz Golaszewski (5):
+> > > >   gpio: cdev: ignore notifications other than line status changes
+> > > >   gpio: cdev: rename the notifier block and notify callback
+> > > >   gpio: cdev: wake up chardev poll() on device unbind
+> > > >   gpio: cdev: wake up linereq poll() on device unbind
+> > > >   gpio: cdev: wake up lineevent poll() on device unbind
+> > >
+> > > I see why this is needed and while the whole notification chain
+> > > is a bit clunky I really cannot think about anything better so:
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > >
+> >
+> > The issue I have is with the repurposing/reuse of the existing notifier
+> > block that sends line changed events to the chardev.
+> > Correct me if I'm wrong, but now all line requests will receive those
+> > events as well.
+> > They have no business receiving those events, and it scales badly.
+> >
+> > My preference would be for a separate nb for the chip removal to keep
+> > those two classes of events distinct.
+> >
 > 
-> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> Signed-off-by: Liming Sun <limings@nvidia.com>
-> ---
-> v7->v8:
->     - Address Ulf's comment (option-1);
->     - Updates for Adrian;s comment to remove the force_suspend/resume
->       in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
->       dwcmshc_resume()/dwcmshc_suspend();
-> v6->v7:
->     - Address Ulf's comment;
-> v5->v6:
->     - Address Adrian's more comments and add coordination between
->       runtime PM and system PM;
-> v4->v5:
->     - Address Adrian's comment to move the pm_enable to the end to
->       avoid race;
-> v3->v4:
->     - Fix compiling reported by 'kernel test robot';
-> v2->v3:
->     - Revise the commit message;
-> v1->v2:
->     Updates for comments from Ulf:
->     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
-> v1: Initial version.
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 76 +++++++++++++++++++++++++++--
->  1 file changed, 73 insertions(+), 3 deletions(-)
+> I would normally agree if there was a risk of abuse of those
+> notifications by drivers but this is all private to gpiolib. And line
+> requests that receive line state notifications simply ignore them.
+> This isn't a bottleneck codepath IMO so where's the issue? We would be
+> using a second notifier head of 40 bytes to struct gpio_device for no
+> reason.
 > 
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index e68cd87998c8..2196218c9d79 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -15,6 +15,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/sizes.h>
->  
-> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  
->  	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->  
-> +	pm_runtime_get_noresume(dev);
-> +	pm_runtime_set_active(dev);
-> +	pm_runtime_enable(dev);
-> +
->  	err = sdhci_setup_host(host);
->  	if (err)
-> -		goto err_clk;
-> +		goto err_rpm;
->  
->  	if (rk_priv)
->  		dwcmshc_rk35xx_postinit(host, priv);
-> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
->  	if (err)
->  		goto err_setup_host;
->  
-> +	pm_runtime_put(dev);
-> +
->  	return 0;
->  
->  err_setup_host:
->  	sdhci_cleanup_host(host);
-> +err_rpm:
-> +	pm_runtime_disable(dev);
-> +	pm_runtime_put_noidle(dev);
->  err_clk:
->  	clk_disable_unprepare(pltfm_host->clk);
->  	clk_disable_unprepare(priv->bus_clk);
-> @@ -594,6 +604,10 @@ static int dwcmshc_remove(struct platform_device *pdev)
->  }
->  
->  #ifdef CONFIG_PM_SLEEP
-> +/*
-> + * Note, runtime suspend changes only SDHCI_CLOCK_CARD_EN which has no effect on
-> + * system suspend.
-> + */
 
-This comment isn't needed since pm_runtime_get_sync() will
-always runtime resume the device if needed.
+Yeah, this is a space/time trade-off, and you've gone with space over
+time.  I would select time over space.
+40 bytes per device is negligable, and there is never a case where the
+line request wants to see a change event - it either relates to a
+different request, or it was triggered by the request itself.
+Is there an echo in here ;-)?
 
->  static int dwcmshc_suspend(struct device *dev)
->  {
->  	struct sdhci_host *host = dev_get_drvdata(dev);
-> @@ -602,9 +616,11 @@ static int dwcmshc_suspend(struct device *dev)
->  	struct rk35xx_priv *rk_priv = priv->priv;
->  	int ret;
->  
-> +	pm_runtime_get_sync(dev);
-
-This needs a corresponding pm_runtime_put() at the end of dwcmshc_resume().
-
-> +
->  	ret = sdhci_suspend_host(host);
->  	if (ret)
-> -		return ret;
-> +		goto err_suspend;
->  
->  	clk_disable_unprepare(pltfm_host->clk);
->  	if (!IS_ERR(priv->bus_clk))
-> @@ -614,9 +630,15 @@ static int dwcmshc_suspend(struct device *dev)
->  		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
->  					   rk_priv->rockchip_clks);
->  
-> +err_suspend:
-> +	pm_runtime_put_noidle(dev);
->  	return ret;
->  }
->  
-> +/*
-> + * Note, system resume leaves SDHCI_CLOCK_INT_EN off which is consistent with
-> + * either runtime suspended or runtime resumed.
-> + */
-
-As above, this comment isn't needed.
-
->  static int dwcmshc_resume(struct device *dev)
-
-
-As mentioned above, dwcmshc_resume() needs a pm_runtime_put()
-to balance the pm_runtime_get_sync().
-
-Could fix up the error path too, but that should be a
-separate prior patch.
-
-Probably end up looking like:
-
-
-diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-index 20aa9b6327d2..c9b020b7a3f6 100644
---- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-+++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-@@ -652,17 +652,33 @@ static int dwcmshc_resume(struct device *dev)
- 	if (!IS_ERR(priv->bus_clk)) {
- 		ret = clk_prepare_enable(priv->bus_clk);
- 		if (ret)
--			return ret;
-+			goto disable_clk;
- 	}
- 
- 	if (rk_priv) {
- 		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
- 					      rk_priv->rockchip_clks);
- 		if (ret)
--			return ret;
-+			goto disable_bus_clk;
- 	}
- 
--	return sdhci_resume_host(host);
-+	ret = sdhci_resume_host(host);
-+	if (ret)
-+		goto disable_rockchip_clks;
-+
-+	pm_runtime_put(dev);
-+
-+	return 0;
-+
-+disable_rockchip_clks:
-+	if (rk_priv)
-+		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS, rk_priv->rockchip_clks);
-+disable_bus_clk:
-+	if (!IS_ERR(priv->bus_clk))
-+		clk_disable_unprepare(priv->bus_clk);
-+disable_clk:
-+	clk_disable_unprepare(pltfm_host->clk);
-+	return ret;
- }
- #endif
- 
-
-
-
->  {
->  	struct sdhci_host *host = dev_get_drvdata(dev);
-> @@ -646,7 +668,55 @@ static int dwcmshc_resume(struct device *dev)
->  }
->  #endif
->  
-> -static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
-> +#ifdef CONFIG_PM
-> +
-> +static void dwcmshc_enable_card_clk(struct sdhci_host *host)
-> +{
-> +	u16 ctrl;
-> +
-> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +	if ((ctrl & SDHCI_CLOCK_INT_EN) && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
-> +		ctrl |= SDHCI_CLOCK_CARD_EN;
-> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
-> +	}
-> +}
-> +
-> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
-> +{
-> +	u16 ctrl;
-> +
-> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
-> +	if (ctrl & SDHCI_CLOCK_CARD_EN) {
-> +		ctrl &= ~SDHCI_CLOCK_CARD_EN;
-> +		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
-> +	}
-> +}
-> +
-> +static int dwcmshc_runtime_suspend(struct device *dev)
-> +{
-> +	struct sdhci_host *host = dev_get_drvdata(dev);
-> +
-> +	dwcmshc_disable_card_clk(host);
-> +
-> +	return 0;
-> +}
-> +
-> +static int dwcmshc_runtime_resume(struct device *dev)
-> +{
-> +	struct sdhci_host *host = dev_get_drvdata(dev);
-> +
-> +	dwcmshc_enable_card_clk(host);
-> +
-> +	return 0;
-> +}
-> +
-> +#endif
-> +
-> +static const struct dev_pm_ops dwcmshc_pmops = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
-> +	SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
-> +			   dwcmshc_runtime_resume, NULL)
-> +};
->  
->  static struct platform_driver sdhci_dwcmshc_driver = {
->  	.driver	= {
+Cheers,
+Kent.
 
