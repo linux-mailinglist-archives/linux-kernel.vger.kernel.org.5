@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A109277EFA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:52:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944EF77EFAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:53:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347914AbjHQDv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 23:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        id S1347925AbjHQDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 23:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245313AbjHQDvR (ORCPT
+        with ESMTP id S1347923AbjHQDwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:51:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A1326A8;
-        Wed, 16 Aug 2023 20:51:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692244276; x=1723780276;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xwI3wmGXcs0Evg0bbeV61o6vXuck4y6AiG6Pb05I7Qw=;
-  b=R+aqwDL3I7WVp2gFIFijYWh3RnDkRw33xVBsCD/JVEkAdNftMqnonZ52
-   6W/+ZaijgawHtNBXNUDMm2EPJip4AV5gzfUD2GFZ7X5YalhFjc7lDyrx5
-   2r7iRka/CvgO6wrHzmqFxQED1Nds/yNqkXir6SpfzgtUWZ2RdvgxcL1o5
-   YOv/Bu+AJwSh5C0oJk0dTCbmHsML2Q0duNoRXMROxhReal+RP+/ytFNz2
-   yNj4q4GfJ5OBlqUrCELSWL58Jg81mHXLqV3uP0go1h9LDGzq3NPGgfEcz
-   ImdAoIQjqZz7ZNCdgpouPrf/xgVnebcjnZIguy9Zde0puDldch0LtflnS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="353020864"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="353020864"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 20:51:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="763875568"
-X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="763875568"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Aug 2023 20:51:11 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWU2R-0000lx-0m;
-        Thu, 17 Aug 2023 03:51:11 +0000
-Date:   Thu, 17 Aug 2023 11:50:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        manivannan.sadhasivam@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
-        krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
- dynamically
-Message-ID: <202308171155.o5viLJ3O-lkp@intel.com>
-References: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
+        Wed, 16 Aug 2023 23:52:49 -0400
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF6526AB;
+        Wed, 16 Aug 2023 20:52:47 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VpyHzpK_1692244315;
+Received: from localhost(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0VpyHzpK_1692244315)
+          by smtp.aliyun-inc.com;
+          Thu, 17 Aug 2023 11:52:44 +0800
+From:   Liu Song <liusong@linux.alibaba.com>
+To:     corbet@lwn.net, akpm@linux-foundation.org, paulmck@kernel.org,
+        rdunlap@infradead.org, catalin.marinas@arm.com,
+        dave.hansen@linux.intel.com, rostedt@goodmis.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, liusong@linux.alibaba.com
+Subject: [PATCH] mm/khugepaged: increase transparent_hugepage_recommend_disable parameter to disable active modification of min_free_kbytes
+Date:   Thu, 17 Aug 2023 11:51:55 +0800
+Message-Id: <20230817035155.84230-1-liusong@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+In the arm64 environment, when PAGESIZE is 4K, the "pageblock_nr_pages"
+value is 512, and the recommended min_free_kbytes in
+"set_recommended_min_free_kbytes" usually does not exceed 44MB.
 
-kernel test robot noticed the following build warnings:
+However, when PAGESIZE is 64K, the "pageblock_nr_pages" value is 8192,
+and the recommended min_free_kbytes in "set_recommended_min_free_kbytes"
+is 8192 * 2 * (2 + 9) * 64K, which directly increases to 11GB.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.5-rc6 next-20230816]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+According to this calculation method, due to the modification of min_free_kbytes,
+the reserved memory in my 128GB memory environment reaches 10GB, and MemAvailable
+is correspondingly reduced by 10GB.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-qcom-Add-sysfs-entry-to-change-link-speed-dynamically/20230817-103734
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/1692239684-12697-1-git-send-email-quic_krichai%40quicinc.com
-patch subject: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed dynamically
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230817/202308171155.o5viLJ3O-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171155.o5viLJ3O-lkp@intel.com/reproduce)
+In the case of PAGESIZE 64K, transparent hugepages are 512MB, and we only
+need them to be used on demand. If transparent hugepages cannot be allocated,
+falling back to regular 64K pages is completely acceptable.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171155.o5viLJ3O-lkp@intel.com/
+Therefore, we added the transparent_hugepage_recommend_disable parameter
+to disable active modification of min_free_kbytes, thereby meeting our
+requirements for transparent hugepages in the 64K scenario, and it will
+not excessively reduce the available memory.
 
-All warnings (new ones prefixed by >>):
+Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+---
+ .../admin-guide/kernel-parameters.txt         |  5 +++++
+ mm/khugepaged.c                               | 20 ++++++++++++++++++-
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
->> drivers/pci/controller/dwc/pcie-qcom.c:249:13: warning: 'qcom_pcie_opp_update' used but never defined
-     249 | static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
-         |             ^~~~~~~~~~~~~~~~~~~~
-
-
-vim +/qcom_pcie_opp_update +249 drivers/pci/controller/dwc/pcie-qcom.c
-
-   247	
-   248	static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
- > 249	static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
-   250	
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 654d0d921101..612bdf601cce 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6553,6 +6553,11 @@
+ 			See Documentation/admin-guide/mm/transhuge.rst
+ 			for more details.
+ 
++	transparent_hugepage_recommend_disable
++			[KNL,THP]
++			Can be used to disable transparent hugepage to actively modify
++			/proc/sys/vm/min_free_kbytes during enablement process.
++
+ 	trusted.source=	[KEYS]
+ 			Format: <string>
+ 			This parameter identifies the trust source as a backend
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 78fc1a24a1cc..ac40c618f4f6 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -88,6 +88,9 @@ static unsigned int khugepaged_max_ptes_none __read_mostly;
+ static unsigned int khugepaged_max_ptes_swap __read_mostly;
+ static unsigned int khugepaged_max_ptes_shared __read_mostly;
+ 
++/* default enable recommended */
++static unsigned int transparent_hugepage_recommend __read_mostly = 1;
++
+ #define MM_SLOTS_HASH_BITS 10
+ static DEFINE_READ_MOSTLY_HASHTABLE(mm_slots_hash, MM_SLOTS_HASH_BITS);
+ 
+@@ -2561,6 +2564,11 @@ static void set_recommended_min_free_kbytes(void)
+ 		goto update_wmarks;
+ 	}
+ 
++	if (!transparent_hugepage_recommend) {
++		pr_info("do not allow to recommend modify min_free_kbytes\n");
++		return;
++	}
++
+ 	for_each_populated_zone(zone) {
+ 		/*
+ 		 * We don't need to worry about fragmentation of
+@@ -2591,7 +2599,10 @@ static void set_recommended_min_free_kbytes(void)
+ 
+ 	if (recommended_min > min_free_kbytes) {
+ 		if (user_min_free_kbytes >= 0)
+-			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
++			pr_info("raising user specified min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
++				min_free_kbytes, recommended_min);
++		else
++			pr_info("raising default min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
+ 				min_free_kbytes, recommended_min);
+ 
+ 		min_free_kbytes = recommended_min;
+@@ -2601,6 +2612,13 @@ static void set_recommended_min_free_kbytes(void)
+ 	setup_per_zone_wmarks();
+ }
+ 
++static int __init setup_transparent_hugepage_recommend_disable(char *str)
++{
++	transparent_hugepage_recommend = 0;
++	return 1;
++}
++__setup("transparent_hugepage_recommend_disable", setup_transparent_hugepage_recommend_disable);
++
+ int start_stop_khugepaged(void)
+ {
+ 	int err = 0;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.19.1.6.gb485710b
+
