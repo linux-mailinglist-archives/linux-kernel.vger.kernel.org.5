@@ -2,337 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B16977F831
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC0577F82C
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351621AbjHQN6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33772 "EHLO
+        id S1351617AbjHQN5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351623AbjHQN54 (ORCPT
+        with ESMTP id S1351615AbjHQN5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:57:56 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A352D56
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:57:54 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4ff92e369dfso2881911e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:57:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692280672; x=1692885472;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=uvmSOUXpiz1hQHD3uDcTEd6SliWuMzO8rXci/gNt+SY=;
-        b=tO6ZWF9yYsK+Cm9Udt+XOPR9kUg+lGGV0vZX7iIdLVIzegbSsprB2knqWZI55akNAX
-         0nC2jfoVk9NwYJk1Tqd03M5/yqehTtrSvkey/HYTvL/YCl6UhFnP0CM3xdJRKDKhbKVy
-         DjveF++3aRliqCNoCU85M8YIULhUiolUhLjderHghZcErC+FAgw2GNm6U+RojHvgeZPC
-         1eGgNSysCiEedxXF6s4koG/2JAGVVdVhINXfX0X9oGy1fJ0V8i6KjRJ8w57YZIQdlwCJ
-         G9PxZ5GTfdbvHOLmdCUZcTIkYv1i4ujwFWVjNCq3F2fc3k2Ocxji1l2Pkq53vPI7eMMt
-         53yQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692280672; x=1692885472;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uvmSOUXpiz1hQHD3uDcTEd6SliWuMzO8rXci/gNt+SY=;
-        b=aBm6oDxITnTDPcnZ3X9QnQi+Ws0xNJFe25UF9zLgTQYYUBrYKmwfabrsGDcWJjl9SM
-         3489Z+dun+xJ+B31Dqkg/+7iV9GztkTC9dvwMJLOdYqFoEsMWWyOVmPK9VcuAw1sk6wz
-         Cgo3hq1lDrMQaJpHbvcjXqm7UHxH90rr6NQCPLvPQ9qrMhyMAkg1KAo9Ct0Y7chg/zru
-         Ot/oKEeN7S+m1Z+c1ecvcj16eQQXm944tGNbI1J9YPqe62zERydrbIM+VoMNbtTpD0qE
-         XjS81wIov4DkRxDdFCUg9rUB4BHFm1pQG26WGknTS+ah+X3g6Bvub9HmVz9ZY/ZgAp0Q
-         1fSw==
-X-Gm-Message-State: AOJu0YykOiuHQNf4487JaJBdjI/fJER3Tn441Ja43h6EQd7k/kKKOqWq
-        JkLLb8lakXVeLaTEGt70qbK2toRrThV2GUS76BExAA==
-X-Google-Smtp-Source: AGHT+IFWaMBxjD3lLr1Zkgp3SmT+ftoMpsi6tHM21HM2rYD440CJR9DxKB3j9JAPM0X53iqvZzH1LKraNa1Gmuqk23M=
-X-Received: by 2002:a05:6512:3b8d:b0:4f9:54f0:b6db with SMTP id
- g13-20020a0565123b8d00b004f954f0b6dbmr5138266lfv.13.1692280672390; Thu, 17
- Aug 2023 06:57:52 -0700 (PDT)
+        Thu, 17 Aug 2023 09:57:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1882724
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:57:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3C4A6171D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:57:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFDEFC433C8;
+        Thu, 17 Aug 2023 13:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692280648;
+        bh=nSes0Dxev2jKmjVyiJqfqnryQSbSiuaD2CDjuZi1QKQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WmJSgkbiQXvd9l0Soa43CJ92DPn+GulYQk2jNBxYs/fRBSSt6ckWGx8Jr16cDaG11
+         43JI3LoMStQUk3ShtbOAJPADgI7nLt6fH3G+lHnpx34ZacZbL6bevzLbY3QqtIauhD
+         OW6NNPQzC4t4MavlJHVeN0ysR7INo4uJJyXqFhvVnvm8eQmtkV7Oq+MgqWYn7Alms+
+         1Tez08RDkCTz8KL4dfwi9JqeeFkmMGajy7XqZU5x6C7FgFpB/NeLhA2w/GFlARTyHT
+         aCw1GZZcMKcBEBBDOXS2frdRHTcN7J/CFC7IDTLNhtIO0740TAN4GlB+XDaMKdvwEe
+         ca+uPTNJus89A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2FA28404DF; Thu, 17 Aug 2023 10:57:25 -0300 (-03)
+Date:   Thu, 17 Aug 2023 10:57:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RFE: perf lock contention --bpf on an RT kernel
+Message-ID: <ZN4nRfquIsQLx1lV@kernel.org>
 MIME-Version: 1.0
-References: <20230816100113.41034-1-linyunsheng@huawei.com> <20230816100113.41034-2-linyunsheng@huawei.com>
-In-Reply-To: <20230816100113.41034-2-linyunsheng@huawei.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Thu, 17 Aug 2023 16:57:16 +0300
-Message-ID: <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunsheng,
+Hi Namhyung, I noticed this when trying to use the BPF mode of perf lock
+contention on an RT kernel:
 
-On Wed, 16 Aug 2023 at 13:04, Yunsheng Lin <linyunsheng@huawei.com> wrote:
->
-> Currently page_pool_alloc_frag() is not supported in 32-bit
-> arch with 64-bit DMA because of the overlap issue between
-> pp_frag_count and dma_addr_upper in 'struct page' for those
-> arches, which seems to be quite common, see [1], which means
-> driver may need to handle it when using frag API.
->
-> In order to simplify the driver's work when using frag API
-> this patch allows page_pool_alloc_frag() to call
-> page_pool_alloc_pages() to return pages for those arches.
->
-> Add a PP_FLAG_PAGE_SPLIT_IN_DRIVER flag in order to fail the
-> page_pool creation for 32-bit arch with 64-bit DMA when driver
-> tries to do the page splitting itself.
+[root@nine perf-tools-next]# perf lock contention -ba
+libbpf: prog 'contention_begin': BPF program load failed: Invalid argument
+libbpf: prog 'contention_begin': -- BEGIN PROG LOAD LOG --
+R1 type=ctx expected=fp
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int contention_begin(u64 *ctx)
+0: (bf) r7 = r1                       ; R1=ctx(off=0,imm=0) R7_w=ctx(off=0,imm=0)
+; if (!enabled || !can_record(ctx))
+1: (18) r1 = 0xffffc077c0322000       ; R1_w=map_value(off=0,ks=4,vs=60,imm=0)
+3: (61) r1 = *(u32 *)(r1 +0)          ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (!enabled || !can_record(ctx))
+4: (15) if r1 == 0x0 goto pc+209      ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (has_cpu) {
+5: (18) r1 = 0xffffc077c0322028       ; R1_w=map_value(off=40,ks=4,vs=60,imm=0)
+7: (61) r1 = *(u32 *)(r1 +0)          ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (has_cpu) {
+8: (15) if r1 == 0x0 goto pc+8        ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; __u32 cpu = bpf_get_smp_processor_id();
+9: (85) call bpf_get_smp_processor_id#8       ; R0=scalar()
+; __u32 cpu = bpf_get_smp_processor_id();
+10: (63) *(u32 *)(r10 -32) = r0       ; R0=scalar() R10=fp0 fp-32=????mmmm
+11: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; __u32 cpu = bpf_get_smp_processor_id();
+12: (07) r2 += -32                    ; R2_w=fp-32
+; ok = bpf_map_lookup_elem(&cpu_filter, &cpu);
+13: (18) r1 = 0xffff9f260667b800      ; R1_w=map_ptr(off=0,ks=4,vs=1,imm=0)
+15: (85) call bpf_map_lookup_elem#1   ; R0_w=map_value_or_null(id=1,off=0,ks=4,vs=1,imm=0)
+16: (15) if r0 == 0x0 goto pc+197     ; R0_w=map_value(off=0,ks=4,vs=1,imm=0)
+; if (has_task) {
+17: (18) r1 = 0xffffc077c032202c      ; R1_w=map_value(off=44,ks=4,vs=60,imm=0)
+19: (61) r1 = *(u32 *)(r1 +0)         ; R1=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (has_task) {
+20: (15) if r1 == 0x0 goto pc+8       ; R1=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; __u32 pid = bpf_get_current_pid_tgid();
+21: (85) call bpf_get_current_pid_tgid#14     ; R0_w=scalar()
+; __u32 pid = bpf_get_current_pid_tgid();
+22: (63) *(u32 *)(r10 -32) = r0       ; R0_w=scalar() R10=fp0 fp-32=????mmmm
+23: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; __u32 pid = bpf_get_current_pid_tgid();
+24: (07) r2 += -32                    ; R2_w=fp-32
+; ok = bpf_map_lookup_elem(&task_filter, &pid);
+25: (18) r1 = 0xffff9f260667b400      ; R1_w=map_ptr(off=0,ks=4,vs=1,imm=0)
+27: (85) call bpf_map_lookup_elem#1   ; R0_w=map_value_or_null(id=2,off=0,ks=4,vs=1,imm=0)
+28: (15) if r0 == 0x0 goto pc+185     ; R0_w=map_value(off=0,ks=4,vs=1,imm=0)
+; if (has_type) {
+29: (18) r1 = 0xffffc077c0322030      ; R1_w=map_value(off=48,ks=4,vs=60,imm=0)
+31: (61) r1 = *(u32 *)(r1 +0)         ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (has_type) {
+32: (15) if r1 == 0x0 goto pc+8       ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; __u32 flags = (__u32)ctx[1];
+33: (79) r1 = *(u64 *)(r7 +8)         ; R1_w=scalar() R7=ctx(off=0,imm=0)
+; __u32 flags = (__u32)ctx[1];
+34: (63) *(u32 *)(r10 -32) = r1       ; R1_w=scalar() R10=fp0 fp-32=????mmmm
+35: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; __u32 flags = (__u32)ctx[1];
+36: (07) r2 += -32                    ; R2_w=fp-32
+; ok = bpf_map_lookup_elem(&type_filter, &flags);
+37: (18) r1 = 0xffff9f260667b000      ; R1_w=map_ptr(off=0,ks=4,vs=1,imm=0)
+39: (85) call bpf_map_lookup_elem#1   ; R0=map_value_or_null(id=3,off=0,ks=4,vs=1,imm=0)
+40: (15) if r0 == 0x0 goto pc+173     ; R0=map_value(off=0,ks=4,vs=1,imm=0)
+; if (has_addr) {
+41: (18) r1 = 0xffffc077c0322034      ; R1_w=map_value(off=52,ks=4,vs=60,imm=0)
+43: (61) r1 = *(u32 *)(r1 +0)         ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (has_addr) {
+44: (15) if r1 == 0x0 goto pc+8       ; R1_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; __u64 addr = ctx[0];
+45: (79) r1 = *(u64 *)(r7 +0)         ; R1_w=scalar() R7=ctx(off=0,imm=0)
+; __u64 addr = ctx[0];
+46: (7b) *(u64 *)(r10 -32) = r1       ; R1_w=scalar() R10=fp0 fp-32_w=mmmmmmmm
+47: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; __u64 addr = ctx[0];
+48: (07) r2 += -32                    ; R2_w=fp-32
+; ok = bpf_map_lookup_elem(&addr_filter, &addr);
+49: (18) r1 = 0xffff9f260667f400      ; R1_w=map_ptr(off=0,ks=8,vs=1,imm=0)
+51: (85) call bpf_map_lookup_elem#1   ; R0=map_value_or_null(id=4,off=0,ks=8,vs=1,imm=0)
+; if (!enabled || !can_record(ctx))
+52: (15) if r0 == 0x0 goto pc+161     ; R0=map_value(off=0,ks=8,vs=1,imm=0)
+; pid = bpf_get_current_pid_tgid();
+53: (85) call bpf_get_current_pid_tgid#14     ; R0_w=scalar()
+; pid = bpf_get_current_pid_tgid();
+54: (63) *(u32 *)(r10 -8) = r0        ; R0_w=scalar() R10=fp0 fp-8=????mmmm
+55: (bf) r2 = r10                     ; R2_w=fp0 R10=fp0
+; pid = bpf_get_current_pid_tgid();
+56: (07) r2 += -8                     ; R2_w=fp-8
+; pelem = bpf_map_lookup_elem(&tstamp, &pid);
+57: (18) r1 = 0xffff9f260667a800      ; R1_w=map_ptr(off=0,ks=4,vs=24,imm=0)
+59: (85) call bpf_map_lookup_elem#1   ; R0_w=map_value_or_null(id=5,off=0,ks=4,vs=24,imm=0)
+60: (bf) r6 = r0                      ; R0=map_value_or_null(id=5,off=0,ks=4,vs=24,imm=0) R6=map_value_or_null(id=5,off=0,ks=4,vs=24,imm=0)
+; if (pelem && pelem->lock)
+61: (15) if r6 == 0x0 goto pc+32      ; R6=map_value(off=0,ks=4,vs=24,imm=0)
+; if (pelem && pelem->lock)
+62: (79) r1 = *(u64 *)(r6 +8)         ; R1_w=scalar() R6=map_value(off=0,ks=4,vs=24,imm=0)
+; if (pelem && pelem->lock)
+63: (15) if r1 == 0x0 goto pc+1 65: R0=map_value(off=0,ks=4,vs=24,imm=0) R1_w=0 R6=map_value(off=0,ks=4,vs=24,imm=0) R7=ctx(off=0,imm=0) R10=fp0 fp-8=????mmmm fp-32=mmmmmmmm
+; pelem->timestamp = bpf_ktime_get_ns();
+65: (85) call bpf_ktime_get_ns#5      ; R0_w=scalar()
+; pelem->timestamp = bpf_ktime_get_ns();
+66: (7b) *(u64 *)(r6 +0) = r0         ; R0_w=scalar() R6=map_value(off=0,ks=4,vs=24,imm=0)
+; pelem->lock = (__u64)ctx[0];
+67: (79) r3 = *(u64 *)(r7 +0)         ; R3_w=scalar() R7=ctx(off=0,imm=0)
+; pelem->lock = (__u64)ctx[0];
+68: (7b) *(u64 *)(r6 +8) = r3         ; R3_w=scalar() R6=map_value(off=0,ks=4,vs=24,imm=0)
+; pelem->flags = (__u32)ctx[1];
+69: (79) r1 = *(u64 *)(r7 +8)         ; R1_w=scalar() R7=ctx(off=0,imm=0)
+; pelem->flags = (__u32)ctx[1];
+70: (63) *(u32 *)(r6 +16) = r1        ; R1_w=scalar() R6=map_value(off=0,ks=4,vs=24,imm=0)
+; if (needs_callstack) {
+71: (18) r2 = 0xffffc077c0322008      ; R2_w=map_value(off=8,ks=4,vs=60,imm=0)
+73: (61) r2 = *(u32 *)(r2 +0)         ; R2=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (needs_callstack) {
+74: (15) if r2 == 0x0 goto pc+43 118: R0=scalar() R1=scalar() R2=0 R3=scalar() R6=map_value(off=0,ks=4,vs=24,imm=0) R7=ctx(off=0,imm=0) R10=fp0 fp-8=????mmmm fp-32=mmmmmmmm
+; } else if (aggr_mode == LOCK_AGGR_TASK) {
+118: (18) r2 = 0xffffc077c0322014     ; R2_w=map_value(off=20,ks=4,vs=60,imm=0)
+120: (61) r2 = *(u32 *)(r2 +0)        ; R2_w=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; } else if (aggr_mode == LOCK_AGGR_TASK) {
+121: (55) if r2 != 0x1 goto pc+92     ; R2_w=1
+; if (lock_owner) {
+122: (18) r2 = 0xffffc077c0322018     ; R2_w=map_value(off=24,ks=4,vs=60,imm=0)
+124: (61) r2 = *(u32 *)(r2 +0)        ; R2=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (lock_owner) {
+125: (15) if r2 == 0x0 goto pc+34     ; R2=scalar(umax=4294967295,var_off=(0x0; 0xffffffff))
+; if (flags & LCB_F_MUTEX) {
+126: (bf) r2 = r1                     ; R1=scalar(id=6) R2_w=scalar(id=6)
+127: (57) r2 &= 32                    ; R2_w=scalar(umax=32,var_off=(0x0; 0x20))
+; if (flags & LCB_F_MUTEX) {
+128: (15) if r2 == 0x0 goto pc+2      ; R2_w=scalar(umax=32,var_off=(0x0; 0x20))
+129: <invalid CO-RE relocation>
+failed to resolve CO-RE relocation <byte_off> [47] struct mutex.owner.counter (0:0:0 @ offset 0)
+processed 95 insns (limit 1000000) max_states_per_insn 0 total_states 10 peak_states 10 mark_read 4
+-- END PROG LOAD LOG --
+libbpf: prog 'contention_begin': failed to load: -22
+libbpf: failed to load object 'lock_contention_bpf'
+libbpf: failed to load BPF skeleton 'lock_contention_bpf': -22
+Failed to load lock-contention BPF skeleton
+lock contention BPF setup failed
+[root@nine perf-tools-next]# uname -r
+5.14.0-284.18.1.rt14.303.el9_2.x86_64
+[root@nine perf-tools-next]# pahole mutex
+struct mutex {
+	struct rt_mutex_base       rtmutex;              /*     0    32 */
 
-Why should we care about this?  Even an architecture that's 32-bit and
-has a 64bit DMA should be allowed to split the pages internally if it
-decides to do so.  The trick that drivers usually do is elevate the
-page refcnt and deal with that internally.
+	/* size: 32, cachelines: 1, members: 1 */
+	/* last cacheline: 32 bytes */
+};
+[root@nine perf-tools-next]# pahole -E mutex
+struct mutex {
+	struct rt_mutex_base {
+		/* typedef raw_spinlock_t */ struct raw_spinlock {
+			/* typedef arch_spinlock_t */ struct qspinlock {
+				union {
+					/* typedef atomic_t */ struct {
+						int            counter;                  /*     0     4 */
+					} val; /*     0     4 */
+					struct {
+						/* typedef u8 -> __u8 */ unsigned char  locked; /*     0     1 */
+						/* typedef u8 -> __u8 */ unsigned char  pending; /*     1     1 */
+					};                                               /*     0     2 */
+					struct {
+						/* typedef u16 -> __u16 */ short unsigned int locked_pending; /*     0     2 */
+						/* typedef u16 -> __u16 */ short unsigned int tail; /*     2     2 */
+					};                                               /*     0     4 */
+				};                                                       /*     0     4 */
+			} raw_lock; /*     0     4 */
+		} wait_lock; /*     0     4 */
 
-Thanks
-/Ilias
->
-> Note that it may aggravate truesize underestimate problem for
-> skb as there is no page splitting for those pages, if driver
-> need a accurate truesize, it may calculate that according to
-> frag size, page order and PAGE_POOL_DMA_USE_PP_FRAG_COUNT
-> being true or not. And we may provide a helper for that if it
-> turns out to be helpful.
->
-> 1. https://lore.kernel.org/all/20211117075652.58299-1-linyunsheng@huawei.com/
->
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> CC: Lorenzo Bianconi <lorenzo@kernel.org>
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> CC: Liang Chen <liangchen.linux@gmail.com>
-> CC: Alexander Lobakin <aleksander.lobakin@intel.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/en_main.c |  3 +-
->  include/net/page_pool/helpers.h               | 38 +++++++++++++++--
->  include/net/page_pool/types.h                 | 42 ++++++++++++-------
->  net/core/page_pool.c                          | 15 +++----
->  4 files changed, 68 insertions(+), 30 deletions(-)
->
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index bc9d5a5bea01..ec9c5a8cbda6 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -834,7 +834,8 @@ static int mlx5e_alloc_rq(struct mlx5e_params *params,
->                 struct page_pool_params pp_params = { 0 };
->
->                 pp_params.order     = 0;
-> -               pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV | PP_FLAG_PAGE_FRAG;
-> +               pp_params.flags     = PP_FLAG_DMA_MAP | PP_FLAG_DMA_SYNC_DEV |
-> +                                       PP_FLAG_PAGE_SPLIT_IN_DRIVER;
->                 pp_params.pool_size = pool_size;
->                 pp_params.nid       = node;
->                 pp_params.dev       = rq->pdev;
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 94231533a369..cb18de55f239 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -29,8 +29,12 @@
->  #ifndef _NET_PAGE_POOL_HELPERS_H
->  #define _NET_PAGE_POOL_HELPERS_H
->
-> +#include <linux/dma-mapping.h>
->  #include <net/page_pool/types.h>
->
-> +#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT        \
-> +               (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +
->  #ifdef CONFIG_PAGE_POOL_STATS
->  int page_pool_ethtool_stats_get_count(void);
->  u8 *page_pool_ethtool_stats_get_strings(u8 *data);
-> @@ -73,6 +77,29 @@ static inline struct page *page_pool_dev_alloc_pages(struct page_pool *pool)
->         return page_pool_alloc_pages(pool, gfp);
->  }
->
-> +static inline struct page *page_pool_alloc_frag(struct page_pool *pool,
-> +                                               unsigned int *offset,
-> +                                               unsigned int size, gfp_t gfp)
-> +{
-> +       unsigned int max_size = PAGE_SIZE << pool->p.order;
-> +
-> +       size = ALIGN(size, dma_get_cache_alignment());
-> +
-> +       if (WARN_ON(size > max_size))
-> +               return NULL;
-> +
-> +       /* Don't allow page splitting and allocate one big frag
-> +        * for 32-bit arch with 64-bit DMA, corresponding to
-> +        * the checking in page_pool_is_last_frag().
-> +        */
-> +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> +               *offset = 0;
-> +               return page_pool_alloc_pages(pool, gfp);
-> +       }
-> +
-> +       return __page_pool_alloc_frag(pool, offset, size, gfp);
-> +}
-> +
->  static inline struct page *page_pool_dev_alloc_frag(struct page_pool *pool,
->                                                     unsigned int *offset,
->                                                     unsigned int size)
-> @@ -134,8 +161,14 @@ static inline long page_pool_defrag_page(struct page *page, long nr)
->  static inline bool page_pool_is_last_frag(struct page_pool *pool,
->                                           struct page *page)
->  {
-> -       /* If fragments aren't enabled or count is 0 we were the last user */
-> +       /* We assume we are the last frag user that is still holding
-> +        * on to the page if:
-> +        * 1. Fragments aren't enabled.
-> +        * 2. We are running in 32-bit arch with 64-bit DMA.
-> +        * 3. page_pool_defrag_page() indicate we are the last user.
-> +        */
->         return !(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-> +              PAGE_POOL_DMA_USE_PP_FRAG_COUNT ||
->                (page_pool_defrag_page(page, 1) == 0);
->  }
->
-> @@ -197,9 +230,6 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->         page_pool_put_full_page(pool, page, true);
->  }
->
-> -#define PAGE_POOL_DMA_USE_PP_FRAG_COUNT        \
-> -               (sizeof(dma_addr_t) > sizeof(unsigned long))
-> -
->  /**
->   * page_pool_get_dma_addr() - Retrieve the stored DMA address.
->   * @page:      page allocated from a page pool
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index 887e7946a597..079337c42aa6 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -6,21 +6,29 @@
->  #include <linux/dma-direction.h>
->  #include <linux/ptr_ring.h>
->
-> -#define PP_FLAG_DMA_MAP                BIT(0) /* Should page_pool do the DMA
-> -                                       * map/unmap
-> -                                       */
-> -#define PP_FLAG_DMA_SYNC_DEV   BIT(1) /* If set all pages that the driver gets
-> -                                       * from page_pool will be
-> -                                       * DMA-synced-for-device according to
-> -                                       * the length provided by the device
-> -                                       * driver.
-> -                                       * Please note DMA-sync-for-CPU is still
-> -                                       * device driver responsibility
-> -                                       */
-> -#define PP_FLAG_PAGE_FRAG      BIT(2) /* for page frag feature */
-> +/* Should page_pool do the DMA map/unmap */
-> +#define PP_FLAG_DMA_MAP                        BIT(0)
-> +
-> +/* If set all pages that the driver gets from page_pool will be
-> + * DMA-synced-for-device according to the length provided by the device driver.
-> + * Please note DMA-sync-for-CPU is still device driver responsibility
-> + */
-> +#define PP_FLAG_DMA_SYNC_DEV           BIT(1)
-> +
-> +/* for page frag feature */
-> +#define PP_FLAG_PAGE_FRAG              BIT(2)
-> +
-> +/* If set driver will do the page splitting itself. This is used to fail the
-> + * page_pool creation because there is overlap issue between pp_frag_count and
-> + * dma_addr_upper in 'struct page' for some arches with
-> + * PAGE_POOL_DMA_USE_PP_FRAG_COUNT being true.
-> + */
-> +#define PP_FLAG_PAGE_SPLIT_IN_DRIVER   BIT(3)
-> +
->  #define PP_FLAG_ALL            (PP_FLAG_DMA_MAP |\
->                                  PP_FLAG_DMA_SYNC_DEV |\
-> -                                PP_FLAG_PAGE_FRAG)
-> +                                PP_FLAG_PAGE_FRAG |\
-> +                                PP_FLAG_PAGE_SPLIT_IN_DRIVER)
->
->  /*
->   * Fast allocation side cache array/stack
-> @@ -45,7 +53,8 @@ struct pp_alloc_cache {
->
->  /**
->   * struct page_pool_params - page pool parameters
-> - * @flags:     PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG
-> + * @flags:     PP_FLAG_DMA_MAP, PP_FLAG_DMA_SYNC_DEV, PP_FLAG_PAGE_FRAG,
-> + *             PP_FLAG_PAGE_SPLIT_IN_DRIVER
->   * @order:     2^order pages on allocation
->   * @pool_size: size of the ptr_ring
->   * @nid:       NUMA node id to allocate from pages from
-> @@ -183,8 +192,9 @@ struct page_pool {
->  };
->
->  struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
-> -struct page *page_pool_alloc_frag(struct page_pool *pool, unsigned int *offset,
-> -                                 unsigned int size, gfp_t gfp);
-> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
-> +                                   unsigned int *offset, unsigned int size,
-> +                                   gfp_t gfp);
->  struct page_pool *page_pool_create(const struct page_pool_params *params);
->
->  struct xdp_mem_info;
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 77cb75e63aca..7d5f0512aa13 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -14,7 +14,6 @@
->  #include <net/xdp.h>
->
->  #include <linux/dma-direction.h>
-> -#include <linux/dma-mapping.h>
->  #include <linux/page-flags.h>
->  #include <linux/mm.h> /* for put_page() */
->  #include <linux/poison.h>
-> @@ -212,7 +211,7 @@ static int page_pool_init(struct page_pool *pool,
->         }
->
->         if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
-> -           pool->p.flags & PP_FLAG_PAGE_FRAG)
-> +           pool->p.flags & PP_FLAG_PAGE_SPLIT_IN_DRIVER)
->                 return -EINVAL;
->
->  #ifdef CONFIG_PAGE_POOL_STATS
-> @@ -737,18 +736,16 @@ static void page_pool_free_frag(struct page_pool *pool)
->         page_pool_return_page(pool, page);
->  }
->
-> -struct page *page_pool_alloc_frag(struct page_pool *pool,
-> -                                 unsigned int *offset,
-> -                                 unsigned int size, gfp_t gfp)
-> +struct page *__page_pool_alloc_frag(struct page_pool *pool,
-> +                                   unsigned int *offset,
-> +                                   unsigned int size, gfp_t gfp)
->  {
->         unsigned int max_size = PAGE_SIZE << pool->p.order;
->         struct page *page = pool->frag_page;
->
-> -       if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG) ||
-> -                   size > max_size))
-> +       if (WARN_ON(!(pool->p.flags & PP_FLAG_PAGE_FRAG)))
->                 return NULL;
->
-> -       size = ALIGN(size, dma_get_cache_alignment());
->         *offset = pool->frag_offset;
->
->         if (page && *offset + size > max_size) {
-> @@ -781,7 +778,7 @@ struct page *page_pool_alloc_frag(struct page_pool *pool,
->         alloc_stat_inc(pool, fast);
->         return page;
->  }
-> -EXPORT_SYMBOL(page_pool_alloc_frag);
-> +EXPORT_SYMBOL(__page_pool_alloc_frag);
->
->  static void page_pool_empty_ring(struct page_pool *pool)
->  {
-> --
-> 2.33.0
->
+		/* XXX 4 bytes hole, try to pack */
+
+		struct rb_root_cached {
+			struct rb_root {
+				struct rb_node * rb_node;                                /*     8     8 */
+			}rb_root; /*     8     8 */
+			struct rb_node * rb_leftmost;                                    /*    16     8 */
+		}waiters; /*     8    16 */
+		struct task_struct * owner;                                              /*    24     8 */
+	}rtmutex; /*     0    32 */
+
+	/* size: 32, cachelines: 1, members: 1 */
+	/* last cacheline: 32 bytes */
+};
+[root@nine perf-tools-next]# uname -r
+5.14.0-284.18.1.rt14.303.el9_2.x86_64
+[root@nine perf-tools-next]#
+
+So we need some extra logic to get at the mutex owner...
+
+[root@nine perf-tools-next]# ls -la /sys/kernel/debug/tracing/events/lock/
+contention_begin/ contention_end/   enable            filter
+[root@nine perf-tools-next]# ls -la /sys/kernel/debug/tracing/events/lock/
+total 0
+drwxr-xr-x.   4 root root 0 Aug 17 08:44 .
+drwxr-xr-x. 114 root root 0 Aug 17 08:45 ..
+drwxr-xr-x.   2 root root 0 Aug 17 08:44 contention_begin
+drwxr-xr-x.   2 root root 0 Aug 17 08:44 contention_end
+-rw-r-----.   1 root root 0 Aug 17 08:44 enable
+-rw-r-----.   1 root root 0 Aug 17 08:44 filter
+[root@nine perf-tools-next]#
+
+I tried up to now the following patch, it loads, but produces no output
+:-\
+
+diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+index 8d3cfbb3cc65..8b65391401a5 100644
+--- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
++++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+@@ -100,6 +100,18 @@ struct rw_semaphore___new {
+ 	atomic_long_t owner;
+ } __attribute__((preserve_access_index));
+ 
++struct rw_semaphore___rt {
++	struct rwbase_rt { 
++		struct rt_mutex_base { 
++			struct task_struct *owner;
++		} rtmutex;
++	} rwbase;
++} __attribute__((preserve_access_index));
++
++struct mutex___rt {
++	struct rt_mutex_base rtmutex;
++} __attribute__((preserve_access_index));
++
+ struct mm_struct___old {
+ 	struct rw_semaphore mmap_sem;
+ } __attribute__((preserve_access_index));
+@@ -202,8 +214,19 @@ static inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
+ 	__u64 owner = 0;
+ 
+ 	if (flags & LCB_F_MUTEX) {
++#if __has_builtin(__builtin_preserve_type_info) && __clang_major__ >= 15
++		if (bpf_core_type_matches(struct mutex___rt)) {
++			struct mutex___rt *mutex = (void *)lock;
++			owner = (unsigned long)BPF_CORE_READ(mutex, rtmutex.owner);
++		} else if (bpf_core_type_matches(struct mutex)) {
++			struct mutex *mutex = (void *)lock;
++			owner = BPF_CORE_READ(mutex, owner.counter);
++		}
++#else
++		/* assume non-RT struct */
+ 		struct mutex *mutex = (void *)lock;
+ 		owner = BPF_CORE_READ(mutex, owner.counter);
++#endif
+ 	} else if (flags == LCB_F_READ || flags == LCB_F_WRITE) {
+ 	/*
+ 	 * Support for the BPF_TYPE_MATCHES argument to the
+@@ -218,6 +241,9 @@ static inline struct task_struct *get_lock_owner(__u64 lock, __u32 flags)
+ 		} else if (bpf_core_type_matches(struct rw_semaphore___new)) {
+ 			struct rw_semaphore___new *rwsem = (void *)lock;
+ 			owner = BPF_CORE_READ(rwsem, owner.counter);
++		} else if (bpf_core_type_matches(struct rw_semaphore___rt)) {
++			struct rw_semaphore___rt *rwsem = (void *)lock;
++			owner = (unsigned long)BPF_CORE_READ(rwsem, rwbase.rtmutex.owner);
+ 		}
+ #else
+ 		/* assume new struct */
