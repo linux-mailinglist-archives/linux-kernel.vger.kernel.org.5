@@ -2,57 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE9777F097
+	by mail.lfdr.de (Postfix) with ESMTP id EBE6C77F099
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348266AbjHQGjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S1348271AbjHQGjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348225AbjHQGjO (ORCPT
+        with ESMTP id S1348256AbjHQGjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:39:14 -0400
+        Thu, 17 Aug 2023 02:39:18 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30B81B4
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:39:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545652701;
+        Wed, 16 Aug 2023 23:39:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692254352; x=1723790352;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=gB5KMoof55X+0asjNIfV2F8znju0t4PbHxg2RW6F1DI=;
-  b=h9ufKKNPMovvYtFmsnnLZ8tVoWiptc3KvVrEb2OyJQMJkOHaPqnPVHy7
-   wJ0UICA0FeTdC1PKibDRPdIWWo9yXCuqyfUCCkKDPNZfyXH+yV37u6gIF
-   bhucb7w8sXJRwU7nxfbMAuw8ZDGfZMJThyxM9JJ50Ekz2RqwIHC4grp69
-   SL4lIfHHaFKDyriuOMSnZ13Q4LbdNKsLuC7RifftZnZx+6z2gvJp8lTST
-   SYEJtBqdqTVL9gcpbBKWHkc6P1B8IMTFyr3DIB5eZ4OFeiNWZo7aBPpWR
-   L4Ck2gXXEiNCxgGOVZFuDHFR38ssp/+XHtB5oHdBN3P4vayJb69Qz4Ii/
+  t=1692254355; x=1723790355;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rFRRVEEucSSTXNeQi/3oBg68H2cCmE1GCVvNVuJOHew=;
+  b=ZlBqf4fU3j6GjQL4bLQSugOWsvZH8zOxHEhFTPM73bAdcZmWsP937dxQ
+   hjXXxI8hjcE9q8kjcrjZNiCLobZsNstIAybW19eNHw8k6UZDG59iTn2AB
+   Brh8xoXKn8FQnY7Rr7yvVTD9oyTRHCYV6lhCGD2nsSjMB6gCN2ATqMe4F
+   U+/7kWjphVNoAzKgO8mehg6qYCkfc0/eLn96FOUUGMWW2xRHMA0xZXKqp
+   7q1F26DdeYpRNb3KnYyKMeAPUWbuUC74+UFsFgCNLH2ZPZFduW8EdvoXf
+   7c2QA6RkCKWhh5nhtH4bgkFKwlo/J2Slfcdw/XO0CuVsD6rubonlBF3wK
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372727107"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="372727111"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="372727107"
+   d="scan'208";a="372727111"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 23:39:12 -0700
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 23:39:15 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065135115"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065135113"
 X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
-   d="scan'208";a="1065135115"
+   d="scan'208";a="1065135113"
 Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
   by fmsmga005.fm.intel.com with ESMTP; 16 Aug 2023 23:39:10 -0700
 Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qWWez-0000rV-0e;
+        id 1qWWez-0000rX-0i;
         Thu, 17 Aug 2023 06:39:09 +0000
-Date:   Thu, 17 Aug 2023 14:38:22 +0800
+Date:   Thu, 17 Aug 2023 14:38:23 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Borislav Petkov (AMD)" <bp@alien8.de>
-Subject: arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter
- or member 'var' not described in 'mtrr_overwrite_state'
-Message-ID: <202308171419.RgHfW1sc-lkp@intel.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v5 05/12] KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
+Message-ID: <202308171444.Q5rfJubF-lkp@intel.com>
+References: <20230817003029.3073210-6-rananta@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20230817003029.3073210-6-rananta@google.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
@@ -62,95 +77,176 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: 29055dc74287467bd7a053d60b4afe753832960d x86/mtrr: Support setting MTRR state for software defined MTRRs
-date:   3 months ago
-config: i386-randconfig-i011-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171419.RgHfW1sc-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171419.RgHfW1sc-lkp@intel.com/reproduce)
+Hi Raghavendra,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on 2ccdd1b13c591d306f0401d98dedc4bdcd02b421]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Raghavendra-Rao-Ananta/KVM-arm64-PMU-Introduce-a-helper-to-set-the-guest-s-PMU/20230817-083353
+base:   2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+patch link:    https://lore.kernel.org/r/20230817003029.3073210-6-rananta%40google.com
+patch subject: [PATCH v5 05/12] KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
+config: arm-randconfig-r046-20230817 (https://download.01.org/0day-ci/archive/20230817/202308171444.Q5rfJubF-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308171444.Q5rfJubF-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308171419.RgHfW1sc-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308171444.Q5rfJubF-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_fixed'
-   arch/x86/kernel/cpu/mtrr/generic.c:125: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_fixed'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'partial_end' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'repeat' not described in 'mtrr_type_lookup_variable'
-   arch/x86/kernel/cpu/mtrr/generic.c:166: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup_variable'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'num_var' not described in 'mtrr_overwrite_state'
->> arch/x86/kernel/cpu/mtrr/generic.c:259: warning: Function parameter or member 'def_type' not described in 'mtrr_overwrite_state'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'start' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'end' not described in 'mtrr_type_lookup'
-   arch/x86/kernel/cpu/mtrr/generic.c:316: warning: Function parameter or member 'uniform' not described in 'mtrr_type_lookup'
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:148:44: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     148 |         [C(DTLB)][C(OP_READ)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD,
+         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:133:44: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD'
+     133 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_RD                         0x004E
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:149:45: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     149 |         [C(DTLB)][C(OP_WRITE)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR,
+         |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:134:44: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR'
+     134 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_WR                         0x004F
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:150:42: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     150 |         [C(DTLB)][C(OP_READ)][C(RESULT_MISS)]   = ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD,
+         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:131:50: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD'
+     131 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_RD                  0x004C
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:151:43: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     151 |         [C(DTLB)][C(OP_WRITE)][C(RESULT_MISS)]  = ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR,
+         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:132:50: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR'
+     132 | #define ARMV8_IMPDEF_PERFCTR_L1D_TLB_REFILL_WR                  0x004D
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:153:44: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     153 |         [C(NODE)][C(OP_READ)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD,
+         |                                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:148:46: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD'
+     148 | #define ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_RD                      0x0060
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+   drivers/perf/arm_pmuv3.c:154:45: warning: initializer overrides prior initialization of this subobject [-Winitializer-overrides]
+     154 |         [C(NODE)][C(OP_WRITE)][C(RESULT_ACCESS)] = ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR,
+         |                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmuv3.h:149:46: note: expanded from macro 'ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR'
+     149 | #define ARMV8_IMPDEF_PERFCTR_BUS_ACCESS_WR                      0x0061
+         |                                                                 ^~~~~~
+   drivers/perf/arm_pmuv3.c:141:2: note: previous initialization is here
+     141 |         PERF_CACHE_MAP_ALL_UNSUPPORTED,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:45:31: note: expanded from macro 'PERF_CACHE_MAP_ALL_UNSUPPORTED'
+      45 |                 [0 ... C(RESULT_MAX) - 1] = CACHE_OP_UNSUPPORTED,       \
+         |                                             ^~~~~~~~~~~~~~~~~~~~
+   include/linux/perf/arm_pmu.h:37:31: note: expanded from macro 'CACHE_OP_UNSUPPORTED'
+      37 | #define CACHE_OP_UNSUPPORTED            0xFFFF
+         |                                         ^~~~~~
+>> drivers/perf/arm_pmuv3.c:1131:24: error: call to undeclared function 'FIELD_GET'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    1131 |         cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
+         |                               ^
+   55 warnings and 1 error generated.
 
 
-vim +259 arch/x86/kernel/cpu/mtrr/generic.c
+vim +/FIELD_GET +1131 drivers/perf/arm_pmuv3.c
 
-   246	
-   247	/**
-   248	 * mtrr_overwrite_state - set static MTRR state
-   249	 *
-   250	 * Used to set MTRR state via different means (e.g. with data obtained from
-   251	 * a hypervisor).
-   252	 * Is allowed only for special cases when running virtualized. Must be called
-   253	 * from the x86_init.hyper.init_platform() hook.  It can be called only once.
-   254	 * The MTRR state can't be changed afterwards.  To ensure that, X86_FEATURE_MTRR
-   255	 * is cleared.
-   256	 */
-   257	void mtrr_overwrite_state(struct mtrr_var_range *var, unsigned int num_var,
-   258				  mtrr_type def_type)
- > 259	{
-   260		unsigned int i;
-   261	
-   262		/* Only allowed to be called once before mtrr_bp_init(). */
-   263		if (WARN_ON_ONCE(mtrr_state_set))
-   264			return;
-   265	
-   266		/* Only allowed when running virtualized. */
-   267		if (!cpu_feature_enabled(X86_FEATURE_HYPERVISOR))
-   268			return;
-   269	
-   270		/*
-   271		 * Only allowed for special virtualization cases:
-   272		 * - when running as Hyper-V, SEV-SNP guest using vTOM
-   273		 * - when running as Xen PV guest
-   274		 * - when running as SEV-SNP or TDX guest to avoid unnecessary
-   275		 *   VMM communication/Virtualization exceptions (#VC, #VE)
-   276		 */
-   277		if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP) &&
-   278		    !hv_is_isolation_supported() &&
-   279		    !cpu_feature_enabled(X86_FEATURE_XENPV) &&
-   280		    !cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-   281			return;
-   282	
-   283		/* Disable MTRR in order to disable MTRR modifications. */
-   284		setup_clear_cpu_cap(X86_FEATURE_MTRR);
-   285	
-   286		if (var) {
-   287			if (num_var > MTRR_MAX_VAR_RANGES) {
-   288				pr_warn("Trying to overwrite MTRR state with %u variable entries\n",
-   289					num_var);
-   290				num_var = MTRR_MAX_VAR_RANGES;
-   291			}
-   292			for (i = 0; i < num_var; i++)
-   293				mtrr_state.var_ranges[i] = var[i];
-   294			num_var_ranges = num_var;
-   295		}
-   296	
-   297		mtrr_state.def_type = def_type;
-   298		mtrr_state.enabled |= MTRR_STATE_MTRR_ENABLED;
-   299	
-   300		mtrr_state_set = 1;
-   301	}
-   302	
+  1114	
+  1115	static void __armv8pmu_probe_pmu(void *info)
+  1116	{
+  1117		struct armv8pmu_probe_info *probe = info;
+  1118		struct arm_pmu *cpu_pmu = probe->pmu;
+  1119		u64 pmceid_raw[2];
+  1120		u32 pmceid[2];
+  1121		int pmuver;
+  1122	
+  1123		pmuver = read_pmuver();
+  1124		if (!pmuv3_implemented(pmuver))
+  1125			return;
+  1126	
+  1127		cpu_pmu->pmuver = pmuver;
+  1128		probe->present = true;
+  1129	
+  1130		/* Read the nb of CNTx counters supported from PMNC */
+> 1131		cpu_pmu->num_events = FIELD_GET(ARMV8_PMU_PMCR_N, armv8pmu_pmcr_read());
+  1132	
+  1133		/* Add the CPU cycles counter */
+  1134		cpu_pmu->num_events += 1;
+  1135	
+  1136		pmceid[0] = pmceid_raw[0] = read_pmceid0();
+  1137		pmceid[1] = pmceid_raw[1] = read_pmceid1();
+  1138	
+  1139		bitmap_from_arr32(cpu_pmu->pmceid_bitmap,
+  1140				     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+  1141	
+  1142		pmceid[0] = pmceid_raw[0] >> 32;
+  1143		pmceid[1] = pmceid_raw[1] >> 32;
+  1144	
+  1145		bitmap_from_arr32(cpu_pmu->pmceid_ext_bitmap,
+  1146				     pmceid, ARMV8_PMUV3_MAX_COMMON_EVENTS);
+  1147	
+  1148		/* store PMMIR register for sysfs */
+  1149		if (is_pmuv3p4(pmuver) && (pmceid_raw[1] & BIT(31)))
+  1150			cpu_pmu->reg_pmmir = read_pmmir();
+  1151		else
+  1152			cpu_pmu->reg_pmmir = 0;
+  1153	}
+  1154	
 
 -- 
 0-DAY CI Kernel Test Service
