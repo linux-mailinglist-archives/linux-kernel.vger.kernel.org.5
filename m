@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A0A77F69B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB91477F69F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350927AbjHQMnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S1350938AbjHQMoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350921AbjHQMn0 (ORCPT
+        with ESMTP id S1351013AbjHQMny (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:43:26 -0400
+        Thu, 17 Aug 2023 08:43:54 -0400
 Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0FD2D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:43:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B0430C6
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 05:43:46 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 53543580133;
-        Thu, 17 Aug 2023 08:43:19 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 838E2580133;
+        Thu, 17 Aug 2023 08:43:45 -0400 (EDT)
 Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 17 Aug 2023 08:43:19 -0400
+  by compute6.internal (MEProxy); Thu, 17 Aug 2023 08:43:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
         :cc:content-type:content-type:date:date:from:from:in-reply-to
         :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1692276199; x=1692283399; bh=O8
-        D64D9ZxKe4zy+hw81tbMNCuqtgmzaesO9ivpE3ArQ=; b=QuHCOO/RSMr4Llucts
-        aU3c+Kh5kz4Q0nwoCipRk+57PILjNRGQ0JAtMUsJxsf9dlqvaN86fR5I7WTsNQcX
-        hgqcUy2ZjEIpOi0SnRjpRP+p4rzMn0xoOYYq2UW4COacobEn/UrdTX0O4KRHVzWa
-        92zKUtEVjEy4LVXc6x4qCVErnyT50LV6ECLaXT/Wu7A8Q5m+Uk9qcGLRmwjazflR
-        PfzqBqIKNWYUENxHXBJggddQOaLSAC74WGZ6E/RiijfDtVyC/pgE/MkrTcaNaVhx
-        8rexWMMrFhwOeEoOL3eGdSzcqWFSgMdxU9v6pYEsn3HDZHCnOwJDZQ+RGO7GghnJ
-        AJzw==
+        :subject:subject:to:to; s=fm3; t=1692276225; x=1692283425; bh=yV
+        EqWTuuBHvfVKKWuTpdcLKJFe4ZBQt6BukSl2xV4tw=; b=XK3ztn4yhVZU6ek0hh
+        s159A2vncJlNdKOwOKv+jfVzoTR0CV6ExX5fyqqiekpE/QUzxwrUZgbIAjQLhSar
+        UZ8cSjdce3OJ/ES1FUMLUDeT1ap3WW+giMRlEEYwYyxIIBK8sS2C3r4oFTkVGZK3
+        V6rhj1TqMNhgSE/sy6Q8NQXCTG3oXk0SORORIESk5G4g01h38EFThCXY+OtOQYPa
+        Q7oYdodW2TJ5BBTRbCpa6SfqXv/NT97XGDcJwclYCNDIxzPgVOdQA+BXOzZjtKSm
+        4cpsD4QiMvOV41eKS9lMulxt9gSbVIhghYLwZnC/aH0rWubXp8RHY659fIzzi6Ki
+        05+A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:content-type:date:date
         :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
         :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692276199; x=1692283399; bh=O8D64D9ZxKe4z
-        y+hw81tbMNCuqtgmzaesO9ivpE3ArQ=; b=Rg06AqrgPniLcSm/FBOZ4hWiMmhAd
-        po1B1mXcBR7XHQ9gJxtNggS2hzlhUqFYvNYVm7SJFxt7Ev+mwquznS6a2A0Yn0XE
-        0Q1mjQB7xhiaWQLphZL/SGmWcVgYBH2Q1kCVoCzmMPxOvBQ9bEcTIl4S2y4DOxOg
-        dRY2fUdELsplLfRTjaurLwNxvowVVQnetxcYxNhxtEp+nTPf0D3sghnDJnUL9hcC
-        u/SQmluPKRZQDElJf/VyTVmodV7aLpzgL1urwLhFhSH+QqZOLVZdtz+SnK4od6sm
-        hKpC6ATl5ciGq/jWsFG2LLq6D1iHh4D1116rd2AhMfkax1SXZWRtMFU4g==
-X-ME-Sender: <xms:5xXeZKe111p5ZzkrkgiEBwKLJ6PSYTAeRO8Kuj9Lv60oo9l_Xi74Ww>
-    <xme:5xXeZEN-9gp5qo33rE6o6v4Zc1MIThazt3Y2GU1fM-ttcS-uAZWExXY63K4Tf96gm
-    xIp1DXolB6PjhpVOZI>
+        :x-sasl-enc; s=fm1; t=1692276225; x=1692283425; bh=yVEqWTuuBHvfV
+        KKWuTpdcLKJFe4ZBQt6BukSl2xV4tw=; b=soYPp0ZhU98gI/7cUtPtbx5swwFGI
+        UgNTPZKr76ecjWJVfkzgT9ldQOiqeANF9lqgl2RmfHaSPcBIOEYLfxGuOjEsg5J6
+        i3C7WZs/Q/+2aKyQRoyn0kNCpzeCBl5eJ8iaQzuDRLYMXEVwFVMQ3HTraHM+YsCy
+        gAMd2DXUMb8/P4PFRTaatlEXdr0X1GGJbSziguZ9p7eXQcowd+VHey8OgobCmYDS
+        eTnxYa4ZKdOPakjPzYviYV4j/s86j2HuINrX+64SoK7xMyF3qnqyU8LW/3MAa09f
+        gK5F0c/6yahqo2ipH6cQtS06KMHWUEmYxy907ow8DgG9aq/RATfMCDECw==
+X-ME-Sender: <xms:ARbeZGoa_fsWZ_-bW9SlrElBtNP3HArFPD6SdJYWxloZNIov7XhQJQ>
+    <xme:ARbeZEqXLT5Eyzj8WmVKVIsumh5F7Mk-qX_CYEIjaax9Hpoz43-jFuakNrE-j1YNO
+    CI_3pwW5Qb32mhEZpo>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduuddgheehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
     nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
     htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    teffnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprg
     hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:5xXeZLhMiJc1txFTs4wuJbUwjYOBDpT0CW7WD7aPlLKFUZ0IdbphLA>
-    <xmx:5xXeZH9meYiroX8E-NQFRY3SW1ydrmk-5we-b2vwW9EOGUqspvEZvA>
-    <xmx:5xXeZGuCHgnhsj8cED8n7BQ8vvt2az3wLrjXJf2HQgUX7eIDe_7Q-g>
-    <xmx:5xXeZP5RMSuNIrkwVl-5dPWbDsVToKGnK2VEzlW4dse-DNq180iAlQ>
+X-ME-Proxy: <xmx:ARbeZLM-7gpf-pqzncz_Zk3cosZPm9RJkeaPK5CEQO57lHL99C-J_Q>
+    <xmx:ARbeZF7wrP__kzgJqma0oVxodSczjF2aoA0Oo4MZcoUaZktq1zT7kw>
+    <xmx:ARbeZF6QgpOxy56_RxUa9Xff6x-EPffxiQM7F3hNu3XwkSp2kWo6Ow>
+    <xmx:ARbeZFEL4BfbqoapK1a1cC0WnMGh5-g6Hd1Ud5sOcEHf4I4wW4ZvDQ>
 Feedback-ID: i56a14606:Fastmail
 Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 10EE8B60089; Thu, 17 Aug 2023 08:43:19 -0400 (EDT)
+        id 4A488B60089; Thu, 17 Aug 2023 08:43:45 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
 Mime-Version: 1.0
-Message-Id: <6db95796-385e-48ef-a32f-a5fba63b4678@app.fastmail.com>
-In-Reply-To: <38fe1078eb403eef74dc8f29387636fd7ecdf43c.1692276041.git.christophe.leroy@csgroup.eu>
-References: <38fe1078eb403eef74dc8f29387636fd7ecdf43c.1692276041.git.christophe.leroy@csgroup.eu>
-Date:   Thu, 17 Aug 2023 14:42:57 +0200
+Message-Id: <53dc5d0f-8267-480d-a40c-97330e7a290e@app.fastmail.com>
+In-Reply-To: <0aa1141e18a84d926e199093204b37ec993f0c87.1692275185.git.christophe.leroy@csgroup.eu>
+References: <0aa1141e18a84d926e199093204b37ec993f0c87.1692275185.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 17 Aug 2023 14:43:25 +0200
 From:   "Arnd Bergmann" <arnd@arndb.de>
 To:     "Christophe Leroy" <christophe.leroy@csgroup.eu>,
         "Michael Ellerman" <mpe@ellerman.id.au>,
         "Nicholas Piggin" <npiggin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype
- error
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/8xx: Remove init_internal_rtc() to fix no previous
+ prototype error
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -85,23 +85,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023, at 14:40, Christophe Leroy wrote:
-> Building ppc40x_defconfig throws the following error:
+On Thu, Aug 17, 2023, at 14:26, Christophe Leroy wrote:
+> A W=1 build of mpc885_ads_defconfig throws the following error:
 >
->   CC      arch/powerpc/kernel/traps.o
-> arch/powerpc/kernel/traps.c:2232:29: warning: no previous prototype for 
-> 'WatchdogHandler' [-Wmissing-prototypes]
->  2232 | void __attribute__ ((weak)) WatchdogHandler(struct pt_regs 
-> *regs)
->       |                             ^~~~~~~~~~~~~~~
+>   CC      arch/powerpc/platforms/8xx/m8xx_setup.o
+> arch/powerpc/platforms/8xx/m8xx_setup.c:41:1: error: no previous 
+> prototype for 'init_internal_rtc' [-Werror=missing-prototypes]
+>    41 | init_internal_rtc(void)
+>       | ^~~~~~~~~~~~~~~~~
 >
-> This function was imported by commit 14cf11af6cf6 ("powerpc: Merge
-> enough to start building in arch/powerpc.") as a weak function but
-> never defined and/or called outside traps.c
+> init_internal_rtc() was introduced by commit df34403dcaac ("[POWERPC]
+> 8xx: Add mpc885ads support and common mpc8xx files") as a weak
+> function but has never been defined and/or used outside m8xx_setup.c
 >
-> As it has only one caller fold it inside its caller and remove it.
+> As it is called only once there, just fold it into its caller and
+> remove it.
 >
 > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 > Cc: Arnd Bergmann <arnd@arndb.de>
+> ---
 
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+
