@@ -2,54 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6A577FEEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E984877FEF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354669AbjHQUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S1354828AbjHQUVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345854AbjHQUTn (ORCPT
+        with ESMTP id S1354842AbjHQUVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:19:43 -0400
+        Thu, 17 Aug 2023 16:21:35 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DDE5359C;
-        Thu, 17 Aug 2023 13:19:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F21C359C;
+        Thu, 17 Aug 2023 13:21:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2058563036;
-        Thu, 17 Aug 2023 20:19:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15F4C433C7;
-        Thu, 17 Aug 2023 20:19:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692303581;
-        bh=iMf2k4nTwKFBthKBVaGzMKaPqXWT9IOPKgKnd4BzqjY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TyEDhq5CPlrq0hhaapkmPTDUQ7x5K7LNM9h1XUK2NoxspiSXD6mv6WyZzvGd6ueTQ
-         aIcX3SCtQjjvNC+zwsNBZKRiSd+M8yig7hs0HgsHwjfeouMOEZbt1y8BfTRs8hTg8/
-         FvjVqVQS0s74XYLm+elhrOYmTEo8DS91FPkaRiYydWzgXk6sJlg+8U6bXyi2iLkj/B
-         a1l1Ig2BZ8DoODRiYc5VcQGfUe6Ry23QfpwL1nzEvlHEw91qSM16lcOapSUvPNczvR
-         Xm14YmbXlOFW9BEPsIg/sxAIkElQKOB5ewcDfAby4mXKM8gIbRSRKht4QvfGHq6Ja5
-         VwHlg53H4v4PA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: [GIT PULL] tpmdd changes for v6.6
-Date:   Thu, 17 Aug 2023 20:19:35 +0000
-Message-Id: <20230817201935.31399-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 984E8618B6;
+        Thu, 17 Aug 2023 20:21:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CB68C433C8;
+        Thu, 17 Aug 2023 20:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692303693;
+        bh=AVB9E6shM7i4t4OfgAnlw4otMWFjpkx/eNn7I4sAfJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U6FY/4/AxH0hCAtFbHcpB8a4AvlfeLzHVkXJMGslpQ6SDLr85mgRK0eNl/Rp0hQQ6
+         36Sj9LKKOkC+s6Yvas1fsUFw9rDE1NqEx2Hr/0GcZxz0wckyg0Xl8EXhnofiBd/KUC
+         wv597R7O+bvpfZZINifToiO1z76Tm2uR0OGx3bKk=
+Date:   Thu, 17 Aug 2023 22:21:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     Lukas Wunner <lukas@wunner.de>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v3] PCI/DOE: Expose the DOE protocols via sysfs
+Message-ID: <2023081727-recent-unmade-9393@gregkh>
+References: <20230809232851.1004023-1-alistair.francis@wdc.com>
+ <20230810073457.GA26246@wunner.de>
+ <CAKmqyKPm_BFnNxVLXCO_PVRDJaVb+XOj=kEEzXd+MgkwDiZhXA@mail.gmail.com>
+ <20230812081526.GC9469@wunner.de>
+ <2023081224-famished-devotion-6e0e@gregkh>
+ <CAKmqyKPx9Oi-ZF0grdUzkHi5BjyyNQZ2r30vgShR6cOY9xZ9YQ@mail.gmail.com>
+ <2023081543-clarify-deniable-8de8@gregkh>
+ <CAKmqyKMHpo8MA9cRAzxWNT+P9poHCKbSpNF4yk8MrVg9+k8=_A@mail.gmail.com>
+ <2023081538-grab-alongside-ce24@gregkh>
+ <CAKmqyKOmYfWWxf-90k_VY_csehGhGp59HRx4uvO2ej=8XFtOig@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKmqyKOmYfWWxf-90k_VY_csehGhGp59HRx4uvO2ej=8XFtOig@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,88 +65,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Merge tag 'nfsd-6.5-4' of git://git.kernel.org/pub/scm/linux/kernel/git/cel/linux (2023-08-17 16:38:48 +0200)
+On Thu, Aug 17, 2023 at 03:41:23PM -0400, Alistair Francis wrote:
+> On Tue, Aug 15, 2023 at 4:10 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Aug 15, 2023 at 03:50:31PM -0400, Alistair Francis wrote:
+> > > On Tue, Aug 15, 2023 at 11:11 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Tue, Aug 15, 2023 at 09:44:32AM -0400, Alistair Francis wrote:
+> > > > > On Sat, Aug 12, 2023 at 4:26 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > > >
+> > > > > > On Sat, Aug 12, 2023 at 10:15:26AM +0200, Lukas Wunner wrote:
+> > > > > > > On Thu, Aug 10, 2023 at 11:34:11AM -0400, Alistair Francis wrote:
+> > > > > > > > On Thu, Aug 10, 2023 at 3:34???AM Lukas Wunner <lukas@wunner.de> wrote:
+> > > > > > > > > On Wed, Aug 09, 2023 at 07:28:51PM -0400, Alistair Francis wrote:
+> > > > > > > > > > --- a/drivers/pci/pci-sysfs.c
+> > > > > > > > > > +++ b/drivers/pci/pci-sysfs.c
+> > > > > > > > > > @@ -1226,6 +1227,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
+> > > > > > > > > >       int i;
+> > > > > > > > > >       int retval;
+> > > > > > > > > >
+> > > > > > > > > > +#ifdef CONFIG_PCI_DOE
+> > > > > > > > > > +     retval = doe_sysfs_init(pdev);
+> > > > > > > > > > +     if (retval)
+> > > > > > > > > > +             return retval;
+> > > > > > > > > > +#endif
+> > > > > > > > > > +
+> > > > > > > > >
+> > > > > > > > > The preferred way to expose PCI sysfs attributes nowadays is to add them
+> > > > > > > > > to pci_dev_attr_groups[] and use the ->is_visible callback to check
+> > > > > > > > > whether they're applicable to a particular pci_dev.  The alternative
+> > > > > > > > > via pci_create_resource_files() has race conditions which I think
+> > > > > > > > > still haven't been fixed. Bjorn recommended the ->is_visible approach
+> > > > > > > > > in response to the most recent attempt to fix the race:
+> > > > > > > > >
+> > > > > > > > > https://lore.kernel.org/linux-pci/20230427161458.GA249886@bhelgaas/
+> > > > > > > >
+> > > > > > > > The is_visible doen't seem to work in this case.
+> > > > > > > >
+> > > > > > > > AFAIK is_visible only applies to the attributes under the group. Which
+> > > > > > > > means that every PCIe device will see a `doe_protos` directory, no
+> > > > > > > > matter if DOE is supported.
+> > > > > > >
+> > > > > > > internal_create_group() in fs/sysfs/group.c does this:
+> > > > > > >
+> > > > > > >       if (grp->name) {
+> > > > > > >                       ...
+> > > > > > >                       kn = kernfs_create_dir_ns(kobj->sd, grp->name, ...
+> > > > > > >
+> > > > > > > So I'm under the impression that if you set the ->name member of
+> > > > > > > struct attribute_group, the attributes in that group appear under
+> > > > > > > a directory of that name.
+> > > > > > >
+> > > > > > > In fact, the kernel-doc for struct attribute_group claims as much:
+> > > > > > >
+> > > > > > >  * struct attribute_group - data structure used to declare an attribute group.
+> > > > > > >  * @name:     Optional: Attribute group name
+> > > > > > >  *            If specified, the attribute group will be created in
+> > > > > > >  *            a new subdirectory with this name.
+> > > > > > >
+> > > > > > > So I don't quite understand why you think that "every PCIe device will
+> > > > > > > see a `doe_protos` directory, no matter if DOE is supported"?
+> > > > > > >
+> > > > > > > Am I missing something?
+> > > > > >
+> > > > > > I think the issue might be that the directory will be created even if no
+> > > > > > attributes are present in it due to the is_visable() check not returning
+> > > > > > any valid files?
+> > > > >
+> > > > > Yes, that's what I'm seeing. I see the directory for all PCIe devices
+> > > > >
+> > > > > This is a WIP that I had:
+> > > > > https://github.com/alistair23/linux/commit/61925cd174c31386eaa7e51e3a1be606b38f847c
+> > > > >
+> > > > > >
+> > > > > > If so, I had a patch somewhere around here where I was trying to fix
+> > > > > > that up:
+> > > > > >         https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=debugfs_cleanup&id=f670945dfbaf353fe068544c31e3fa45575da5b5
+> > > > > > but it didn't seem to work properly and kept crashing.  I didn't spend
+> > > > > > much time on looking into it, but if this is an issue, I can work on
+> > > > > > fixing this properly.
+> > > > >
+> > > > > That patch sounds like it would fix the issue of empty directories
+> > > > > that I'm seeing. Do you mind fixing it up properly?
+> > > >
+> > > > I am currently unable to do so due to travel and stuff for a few weeks,
+> > > > sorry.  Feel free to take it and fix the boot crash that is seen with it
+> > > > and make it part of your patch series if you can't wait that long.
+> > >
+> > > No worries.
+> > >
+> > > It's much harder than I first thought though. There are currently lots
+> > > of users who expect the group to remain even if empty, as they
+> > > dynamically add/merge properties later. Which is what we end up doing
+> > > for DOE as well
+> > >
+> > > I'll keep looking into this and see if I can figure something out.
+> >
+> > Yeah, now that I think about it, that's where stuff fell apart for me as
+> > well.  We should be able to create the group and then only create the
+> > file when they are added/merged, so I bet I missed a codepath somewhere.
+> 
+> Yeah, it's tricky.
+> 
+> The documentation for sysfs_merge_group() specifically says
+> 
+> This function returns an error if the group doesn't exist or any of the
+> files already exist in that group, in which case none of the new files
+> are created.
+> 
+> as an empty group isn't created with your patch it doesn't work with
+> sysfs_merge_group().
+> 
+> I'm assuming we don't want to change those public functions by
+> creating the group in sysfs_merge_group() if it isn't created.
 
-are available in the Git repository at:
+Please change away!  We are allowed to change anything we want here, as
+long as you fix up all in-tree users of the functions.  Nothing is ever
+"frozen" in the in-kernel apis.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.6
+> Creating the group is just creating the directory, so I don't see a
+> way we can create the group without creating the directory
 
-for you to fetch changes up to 218a2680624cba1611e3dfc7d9b646d240e5f855:
+We can wait to actually create the directory when the first visible file
+is present.  That is what my patch was attempting to do (well, it
+removed it if non-visible) but as you point out, it's obviously broken :)
 
-  certs: Reference revocation list for all keyrings (2023-08-17 20:12:41 +0000)
+So switch it around, only create the directory when it is explicitly
+needed.
 
-----------------------------------------------------------------
-Hi,
+thanks,
 
-Contents:
-
-- Restrict linking of keys to .ima and .evm keyrings based on
-  digitalSignature attribute in the certificate.
-- PowerVM: load machine owner keys into the .machine [1] keyring.
-- PowerVM: load module signing keys into the secondary trusted keyring
-  (keys blessed by the vendor).
-- tpm_tis_spi: half-duplex transfer mode
-- tpm_tis: retry corrupted transfers
-- Apply revocation list (.mokx) to an all system keyrings (e.g. .machine
-  keyring).
-
-[1] https://blogs.oracle.com/linux/post/the-machine-keyring
-
-BR, Jarkko
-
-----------------------------------------------------------------
-Alexander Steffen (3):
-      tpm_tis: Move CRC check to generic send routine
-      tpm_tis: Use responseRetry to recover from data transfer errors
-      tpm_tis: Resend command to recover from data transfer errors
-
-Azeem Shaikh (1):
-      KEYS: Replace all non-returning strlcpy with strscpy
-
-Colin Ian King (1):
-      tpm: remove redundant variable len
-
-Eric Snowberg (3):
-      KEYS: DigitalSignature link restriction
-      integrity: Enforce digitalSignature usage in the ima and evm keyrings
-      certs: Reference revocation list for all keyrings
-
-Jarkko Sakkinen (1):
-      tpm_tis: Revert "tpm_tis: Disable interrupts on ThinkPad T490s"
-
-Krishna Yarlagadda (1):
-      tpm_tis_spi: Add hardware wait polling
-
-Li Zetao (1):
-      tpm/tpm_tis_synquacer: Use module_platform_driver macro to simplify the code
-
-Nayna Jain (6):
-      integrity: PowerVM support for loading CA keys on machine keyring
-      integrity: ignore keys failing CA restrictions on non-UEFI platform
-      integrity: remove global variable from machine_keyring.c
-      integrity: check whether imputed trust is enabled
-      integrity: PowerVM machine keyring enablement
-      integrity: PowerVM support for loading third party code signing keys
-
- Documentation/admin-guide/kernel-parameters.txt    |  7 ++
- certs/system_keyring.c                             | 91 +++++++++++++++++++--
- crypto/asymmetric_keys/restrict.c                  | 44 ++++++++++
- drivers/char/tpm/eventlog/tpm1.c                   |  3 +-
- drivers/char/tpm/tpm_tis.c                         | 93 +---------------------
- drivers/char/tpm/tpm_tis_core.c                    | 60 ++++++++++----
- drivers/char/tpm/tpm_tis_core.h                    |  1 +
- drivers/char/tpm/tpm_tis_spi_main.c                | 91 ++++++++++++++++++++-
- drivers/char/tpm/tpm_tis_synquacer.c               | 18 +----
- include/crypto/public_key.h                        | 12 +++
- include/keys/system_keyring.h                      | 14 ++++
- security/integrity/Kconfig                         |  4 +-
- security/integrity/digsig.c                        |  6 +-
- security/integrity/evm/Kconfig                     |  3 +-
- security/integrity/ima/Kconfig                     |  3 +-
- security/integrity/integrity.h                     |  5 +-
- .../integrity/platform_certs/keyring_handler.c     | 19 ++++-
- .../integrity/platform_certs/keyring_handler.h     | 10 +++
- security/integrity/platform_certs/load_powerpc.c   | 34 ++++++++
- .../integrity/platform_certs/machine_keyring.c     | 22 ++++-
- security/keys/request_key_auth.c                   |  2 +-
- 21 files changed, 394 insertions(+), 148 deletions(-)
+greg k-h
