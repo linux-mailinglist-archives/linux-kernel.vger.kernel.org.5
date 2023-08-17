@@ -2,140 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 944EF77EFAC
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A582277EFAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 05:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347925AbjHQDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 23:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        id S1347930AbjHQDyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 23:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347923AbjHQDwt (ORCPT
+        with ESMTP id S1347985AbjHQDx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 23:52:49 -0400
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF6526AB;
-        Wed, 16 Aug 2023 20:52:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0VpyHzpK_1692244315;
-Received: from localhost(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0VpyHzpK_1692244315)
-          by smtp.aliyun-inc.com;
-          Thu, 17 Aug 2023 11:52:44 +0800
-From:   Liu Song <liusong@linux.alibaba.com>
-To:     corbet@lwn.net, akpm@linux-foundation.org, paulmck@kernel.org,
-        rdunlap@infradead.org, catalin.marinas@arm.com,
-        dave.hansen@linux.intel.com, rostedt@goodmis.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, liusong@linux.alibaba.com
-Subject: [PATCH] mm/khugepaged: increase transparent_hugepage_recommend_disable parameter to disable active modification of min_free_kbytes
-Date:   Thu, 17 Aug 2023 11:51:55 +0800
-Message-Id: <20230817035155.84230-1-liusong@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
+        Wed, 16 Aug 2023 23:53:59 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E165270C;
+        Wed, 16 Aug 2023 20:53:57 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRB293Ybmz4f3jLX;
+        Thu, 17 Aug 2023 11:53:53 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgCXuGzQmd1kyy6SAw--.18720S2;
+        Thu, 17 Aug 2023 11:53:53 +0800 (CST)
+Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
+ multiple update_backups in ext4_flex_group_add
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230816034730.GT2247938@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
+Date:   Thu, 17 Aug 2023 11:53:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230816034730.GT2247938@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgCXuGzQmd1kyy6SAw--.18720S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF1xuw4Uuw18CF4ftry8AFb_yoW3Zrc_Xr
+        yIgF4DX3s5Krs3Aan3Krn0grWxCF4UA347AF18ur97WrykWrZ5XayDWrZrZryDAa47tas8
+        C343KFy7KrySvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
+        Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+        67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the arm64 environment, when PAGESIZE is 4K, the "pageblock_nr_pages"
-value is 512, and the recommended min_free_kbytes in
-"set_recommended_min_free_kbytes" usually does not exceed 44MB.
 
-However, when PAGESIZE is 64K, the "pageblock_nr_pages" value is 8192,
-and the recommended min_free_kbytes in "set_recommended_min_free_kbytes"
-is 8192 * 2 * (2 + 9) * 64K, which directly increases to 11GB.
 
-According to this calculation method, due to the modification of min_free_kbytes,
-the reserved memory in my 128GB memory environment reaches 10GB, and MemAvailable
-is correspondingly reduced by 10GB.
+on 8/16/2023 11:47 AM, Theodore Ts'o wrote:
+> On Thu, Jun 29, 2023 at 08:00:43PM +0800, Kemeng Shi wrote:
+>> Commit 0acdb8876fead ("ext4: don't call update_backups() multiple times
+>> for the same bg") add check in ext4_flex_group_add to avoid call
+>> update_backups multiple times for block group descriptors in the same
+>> group descriptor block. However, we have already call update_backups in
+>> block step, so the added check is unnecessary.
+> 
+> I'm having trouble understaind this comit.  What do you mean by the
+> "block step" in the last paragraph?
+> 
+Sorry for the confusing stuff. I mean we foreach in group descriptor block
+step instead of foreach in group descriptor step to update backup.
+So there is no chance to call update_backups for different descriptors
+in the same bg.
 
-In the case of PAGESIZE 64K, transparent hugepages are 512MB, and we only
-need them to be used on demand. If transparent hugepages cannot be allocated,
-falling back to regular 64K pages is completely acceptable.
-
-Therefore, we added the transparent_hugepage_recommend_disable parameter
-to disable active modification of min_free_kbytes, thereby meeting our
-requirements for transparent hugepages in the 64K scenario, and it will
-not excessively reduce the available memory.
-
-Signed-off-by: Liu Song <liusong@linux.alibaba.com>
----
- .../admin-guide/kernel-parameters.txt         |  5 +++++
- mm/khugepaged.c                               | 20 ++++++++++++++++++-
- 2 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 654d0d921101..612bdf601cce 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -6553,6 +6553,11 @@
- 			See Documentation/admin-guide/mm/transhuge.rst
- 			for more details.
- 
-+	transparent_hugepage_recommend_disable
-+			[KNL,THP]
-+			Can be used to disable transparent hugepage to actively modify
-+			/proc/sys/vm/min_free_kbytes during enablement process.
-+
- 	trusted.source=	[KEYS]
- 			Format: <string>
- 			This parameter identifies the trust source as a backend
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 78fc1a24a1cc..ac40c618f4f6 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -88,6 +88,9 @@ static unsigned int khugepaged_max_ptes_none __read_mostly;
- static unsigned int khugepaged_max_ptes_swap __read_mostly;
- static unsigned int khugepaged_max_ptes_shared __read_mostly;
- 
-+/* default enable recommended */
-+static unsigned int transparent_hugepage_recommend __read_mostly = 1;
-+
- #define MM_SLOTS_HASH_BITS 10
- static DEFINE_READ_MOSTLY_HASHTABLE(mm_slots_hash, MM_SLOTS_HASH_BITS);
- 
-@@ -2561,6 +2564,11 @@ static void set_recommended_min_free_kbytes(void)
- 		goto update_wmarks;
- 	}
- 
-+	if (!transparent_hugepage_recommend) {
-+		pr_info("do not allow to recommend modify min_free_kbytes\n");
-+		return;
-+	}
-+
- 	for_each_populated_zone(zone) {
- 		/*
- 		 * We don't need to worry about fragmentation of
-@@ -2591,7 +2599,10 @@ static void set_recommended_min_free_kbytes(void)
- 
- 	if (recommended_min > min_free_kbytes) {
- 		if (user_min_free_kbytes >= 0)
--			pr_info("raising min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
-+			pr_info("raising user specified min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
-+				min_free_kbytes, recommended_min);
-+		else
-+			pr_info("raising default min_free_kbytes from %d to %lu to help transparent hugepage allocations\n",
- 				min_free_kbytes, recommended_min);
- 
- 		min_free_kbytes = recommended_min;
-@@ -2601,6 +2612,13 @@ static void set_recommended_min_free_kbytes(void)
- 	setup_per_zone_wmarks();
- }
- 
-+static int __init setup_transparent_hugepage_recommend_disable(char *str)
-+{
-+	transparent_hugepage_recommend = 0;
-+	return 1;
-+}
-+__setup("transparent_hugepage_recommend_disable", setup_transparent_hugepage_recommend_disable);
-+
- int start_stop_khugepaged(void)
- {
- 	int err = 0;
--- 
-2.19.1.6.gb485710b
+> 					- Ted
+> 
 
