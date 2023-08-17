@@ -2,135 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6799F77FA8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:18:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2697977FA92
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:19:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353084AbjHQPSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
+        id S1353105AbjHQPSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:18:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353139AbjHQPR4 (ORCPT
+        with ESMTP id S1353120AbjHQPS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:17:56 -0400
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432E6106
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:17:54 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7341740E00F4;
-        Thu, 17 Aug 2023 15:17:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id QmBmwkyxKu7T; Thu, 17 Aug 2023 15:17:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692285470; bh=ub9UHmv4k4n9Fnzww3zqDAiez22GxzEYG+O3pBXVSr4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DJKLdJGakm5QLV1vCz5EbOOXhQVEpm6bNC1dVTHuka1drW77i2q2EJK+4I5XyPcq1
-         f4/AjqEpE7gb7HatHtfd+HzHtigSmxV5v34Btnpq5BnBVj3c8JrY8ttSIfOCV9JTfR
-         dUg3mBiIfN2f/CBUsF8BMgYBUDDcQyeOWvy8/ke39lDBVQMSJBAZjSs3g1N2fe2xIV
-         eTFD82YLIhNSXw9ZldQSArzNJXglxT5m9uZUwg3/XgmYVTYJlPfdVH9EYwYfSh1CmX
-         wJOy/hNBn0T1rgN/45gmWhDVBDhYgtjVaQ29Tm52jphkKKl/FhTflBcaGKHBL0MRGg
-         +o4E0nlspAo1Qc7pcLgrs7WIDcC+r6FrW+ZNtl5A8Ao29I1VKVAEYtcuBL7UdUoLfl
-         eJXqYgTnLApmp/g8IGUtOxC5qQsdR5TvMW0heU2NzoD3dOl/ndjAnFZqdMlJ/rd9xG
-         R3zqnEizgvh3/N7UY5nbESEZ11kqNv12+blNLKGz9tAKwUnS+qP/K76D9i4xnbNlYw
-         n5xCfyNXxaIsR0UZRp4FxWfBgAoSwNIqMJsCedCcPvcsr/Rmu4r96D+NnKdSF0FHf+
-         IubBZQdyEBq6HgXIlTbKK1EQV3IMl3wLMrQTjWMMkNI40oTuY1Aktvr4kr6FdcWyQK
-         RylsoRsiY5MRB2GAFojCiOwY=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 24CBE40E00B0;
-        Thu, 17 Aug 2023 15:17:43 +0000 (UTC)
-Date:   Thu, 17 Aug 2023 17:17:39 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Karol Herbst <kherbst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Ben Skeggs <bskeggs@redhat.com>,
-        Lyude Paul <lyude@redhat.com>, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] drm/nouveau/disp: fix use-after-free in error handling
- of nouveau_connector_create
-Message-ID: <20230817151739.GEZN46E2T/1GS+baIZ@fat_crate.local>
-References: <CACO55ttasKLxBTmZjN-XBOuJFC7rng2PbLgxCT8WT6ukOZNGzQ@mail.gmail.com>
- <20230816151252.GKZNzndDNySuWC+Vwz@fat_crate.local>
- <CACO55tunC5mEu3Tw64rKLqNM6MN6d=N90kYQKYwXWNMB=ahDaw@mail.gmail.com>
- <20230816221353.GXZN1KIXloRn8cGt5E@fat_crate.local>
- <CACO55ts7430tAUDC+0qY0EZ5ReO=2Rjwj1SzHaBLodmyBgrUrw@mail.gmail.com>
- <20230817081032.GAZN3V+NQ1blzQC2sU@fat_crate.local>
- <CACO55tv-dKnDzUYYFW+d2pNoAhEoEniUT=QAmD4-c_xKQw0cfw@mail.gmail.com>
- <CACO55tuWTYngfw+MZnan+U4eYyE+SvOWgxzffaCMNGQgriq3ig@mail.gmail.com>
- <20230817101129.GCZN3yUTWHkt22Jgec@fat_crate.local>
- <CACO55tt9ZLKjaTyARXQ4VePgd41nYCQBn+wAGGDJRw1QV3hPBQ@mail.gmail.com>
+        Thu, 17 Aug 2023 11:18:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B3B1AE;
+        Thu, 17 Aug 2023 08:18:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692285506; x=1723821506;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=QMgQfXBYJt0EBpimhe5IYAhnYAqWB+WrvTqlDZfpL3w=;
+  b=FOLHCzY3pqHfPw2gmRK+O3Lzov+/8YKK3aZ/6R9TCqoWH8bQ478XQ+Uz
+   HeYOWsogLVCVdw3tRKI1XeKK0h7LeHL/hPFkHmNfRxxwp0dzxbOynEAbA
+   zNsIdXg+zepLcmOEy7DQourD1ju7VsbZFwu8Q1DaPHoU/Z5MWjZahW6BJ
+   e+xlnCPRPIVKxaw7txxLWIENZvXb4R5At6JyF/eZsxdEbPnTpcyXoocXQ
+   q/OOzuZWxZItscNvI8mAdv7xH2wNjfjrISQBrAF8CKW8XxrUjqXnyqyaB
+   VzpS5w2vcY0LQmEpgeKtqN9nM69rqbtqwzVybq0zgfAFKRc2yasiKdZu5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="436756642"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="436756642"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:18:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="684448527"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="684448527"
+Received: from kaeanliu-mobl.amr.corp.intel.com (HELO himmelriiki) ([10.252.52.225])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:18:10 -0700
+Date:   Thu, 17 Aug 2023 18:18:06 +0300
+From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
+To:     Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>, kai.huang@intel.com,
+        reinette.chatre@intel.com,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        zhiquan1.li@intel.com, seanjc@google.com, bagasdotme@gmail.com,
+        linux-doc@vger.kernel.org, zhanb@microsoft.com,
+        anakrish@microsoft.com
+Subject: Re: [PATCH v3 22/28] Docs/x86/sgx: Add description for cgroup support
+Message-ID: <ZN46Lj8Ctde+QyPD@himmelriiki>
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-23-haitao.huang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACO55tt9ZLKjaTyARXQ4VePgd41nYCQBn+wAGGDJRw1QV3hPBQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230712230202.47929-23-haitao.huang@linux.intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 12:24:45PM +0200, Karol Herbst wrote:
-> simply throw a
+On Wed, Jul 12, 2023 at 04:01:56PM -0700, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
 > 
-> printk(KERN_WARNING "nvkm_uconn_uevent %u\n", outp->info.location);
+> Add initial documentation of how to regulate the distribution of
+> SGX Enclave Page Cache (EPC) memory via the Miscellaneous cgroup
+> controller.
 > 
-> inside drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c:104 after that
-> mentioned comment.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>  Documentation/arch/x86/sgx.rst | 77 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+> 
+> diff --git a/Documentation/arch/x86/sgx.rst b/Documentation/arch/x86/sgx.rst
+> index 2bcbffacbed5..f6ca5594dcf2 100644
+> --- a/Documentation/arch/x86/sgx.rst
+> +++ b/Documentation/arch/x86/sgx.rst
+> @@ -300,3 +300,80 @@ to expected failures and handle them as follows:
+>     first call.  It indicates a bug in the kernel or the userspace client
+>     if any of the second round of ``SGX_IOC_VEPC_REMOVE_ALL`` calls has
+>     a return code other than 0.
+> +
+> +
+> +Cgroup Support
+> +==============
+> +
+> +The "sgx_epc" resource within the Miscellaneous cgroup controller regulates
+> +distribution of SGX EPC memory, which is a subset of system RAM that
+> +is used to provide SGX-enabled applications with protected memory,
+> +and is otherwise inaccessible, i.e. shows up as reserved in
+> +/proc/iomem and cannot be read/written outside of an SGX enclave.
+> +
+> +Although current systems implement EPC by stealing memory from RAM,
+> +for all intents and purposes the EPC is independent from normal system
+> +memory, e.g. must be reserved at boot from RAM and cannot be converted
+> +between EPC and normal memory while the system is running.  The EPC is
+> +managed by the SGX subsystem and is not accounted by the memory
+> +controller.  Note that this is true only for EPC memory itself, i.e.
+> +normal memory allocations related to SGX and EPC memory, e.g. the
+> +backing memory for evicted EPC pages, are accounted, limited and
+> +protected by the memory controller.
+> +
+> +Much like normal system memory, EPC memory can be overcommitted via
+> +virtual memory techniques and pages can be swapped out of the EPC
+> +to their backing store (normal system memory allocated via shmem).
+> +The SGX EPC subsystem is analogous to the memory subsytem, and
+> +it implements limit and protection models for EPC memory.
+> +
+> +SGX EPC Interface Files
+> +-----------------------
+> +
+> +For a generic description of the Miscellaneous controller interface
+> +files, please see Documentation/admin-guide/cgroup-v2.rst
+> +
+> +All SGX EPC memory amounts are in bytes unless explicitly stated
+> +otherwise.  If a value which is not PAGE_SIZE aligned is written,
+> +the actual value used by the controller will be rounded down to
+> +the closest PAGE_SIZE multiple.
+> +
+> +  misc.capacity
+> +        A read-only flat-keyed file shown only in the root cgroup.
+> +        The sgx_epc resource will show the total amount of EPC
+> +        memory available on the platform.
+> +
+> +  misc.current
+> +        A read-only flat-keyed file shown in the non-root cgroups.
+> +        The sgx_epc resource will show the current active EPC memory
+> +        usage of the cgroup and its descendants. EPC pages that are
+> +        swapped out to backing RAM are not included in the current count.
+> +
+> +  misc.max
+> +        A read-write single value file which exists on non-root
+> +        cgroups. The sgx_epc resource will show the EPC usage
+> +        hard limit. The default is "max".
+> +
+> +        If a cgroup's EPC usage reaches this limit, EPC allocations,
+> +        e.g. for page fault handling, will be blocked until EPC can
+> +        be reclaimed from the cgroup.  If EPC cannot be reclaimed in
+> +        a timely manner, reclaim will be forced, e.g. by ignoring LRU.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-index 46b057fe1412..661fd0cf3b3b 100644
---- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/uconn.c
-@@ -101,6 +101,7 @@ nvkm_uconn_uevent(struct nvkm_object *object, void *argv, u32 argc, struct nvkm_
-        if (args->v0.types & NVIF_CONN_EVENT_V0_UNPLUG) bits |= NVKM_GPIO_LO;
-        if (args->v0.types & NVIF_CONN_EVENT_V0_IRQ) {
-                /* TODO: support DP IRQ on ANX9805 and remove this hack. */
-+               printk(KERN_WARNING "nvkm_uconn_uevent %u\n", outp->info.location);
-                if (!outp->info.location)
-                        return -EINVAL;
-        }
+Document the behavior when reclaim cannot happen, e.g., for the vEPC
+pages when a VMM tries to allocate more than misc.max.
 
-result:
-
-[   10.566759] ACPI: bus type drm_connector registered
-[   10.591171] Console: switching to colour dummy device 80x25
-[   10.598472] nouveau 0000:03:00.0: vgaarb: deactivate vga console
-[   10.607121] nouveau 0000:03:00.0: NVIDIA GT218 (0a8c00b1)
-[   10.728361] nouveau 0000:03:00.0: bios: version 70.18.83.00.08
-[   10.742137] nouveau 0000:03:00.0: fb: 512 MiB DDR3
-[   11.059848] nouveau 0000:03:00.0: DRM: VRAM: 512 MiB
-[   11.064911] nouveau 0000:03:00.0: DRM: GART: 1048576 MiB
-[   11.070302] nouveau 0000:03:00.0: DRM: TMDS table version 2.0
-[   11.076126] nouveau 0000:03:00.0: DRM: DCB version 4.0
-[   11.081335] nouveau 0000:03:00.0: DRM: DCB outp 00: 02000360 00000000
-[   11.087865] nouveau 0000:03:00.0: DRM: DCB outp 01: 02000362 00020010
-[   11.094395] nouveau 0000:03:00.0: DRM: DCB outp 02: 028003a6 0f220010
-[   11.100912] nouveau 0000:03:00.0: DRM: DCB outp 03: 01011380 00000000
-[   11.107422] nouveau 0000:03:00.0: DRM: DCB outp 04: 08011382 00020010
-[   11.113940] nouveau 0000:03:00.0: DRM: DCB outp 05: 088113c6 0f220010
-[   11.120457] nouveau 0000:03:00.0: DRM: DCB conn 00: 00101064
-[   11.126182] nouveau 0000:03:00.0: DRM: DCB conn 01: 00202165
-[   11.138865] nouveau 0000:03:00.0: DRM: MM: using COPY for buffer copies
-[   11.151291] nvkm_uconn_uevent 0
-[   11.154643] nvkm_uconn_uevent 0
-[   11.157975] nvkm_uconn_uevent 0
-[   11.161298] nvkm_uconn_uevent 0
-[   11.164616] nvkm_uconn_uevent 0
-[   11.167943] nvkm_uconn_uevent 0
-[   11.176010] [drm] Initialized nouveau 1.3.1 20120801 for 0000:03:00.0 on minor 0
-[   11.184186] nouveau 0000:03:00.0: [drm] Cannot find any crtc or sizes
-[   11.260527] megasas: 07.725.01.00-rc1
-[   11.264555] st: Version 20160209, fixed bufsize 32768, s/g segs 256
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+> +  misc.events
+> +	A read-write flat-keyed file which exists on non-root cgroups.
+> +	Writes to the file reset the event counters to zero.  A value
+> +	change in this file generates a file modified event.
+> +
+> +	  max
+> +		The number of times the cgroup has triggered a reclaim
+> +		due to its EPC usage approaching (or exceeding) its max
+> +		EPC boundary.
+> +
+> +Migration
+> +---------
+> +
+> +Once an EPC page is charged to a cgroup (during allocation), it
+> +remains charged to the original cgroup until the page is released
+> +or reclaimed.  Migrating a process to a different cgroup doesn't
+> +move the EPC charges that it incurred while in the previous cgroup
+> +to its new cgroup.
+> -- 
+> 2.25.1
+> 
