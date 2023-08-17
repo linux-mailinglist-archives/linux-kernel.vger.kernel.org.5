@@ -2,121 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5468B77FCEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7B877FCF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353928AbjHQRWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:22:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
+        id S1353940AbjHQRY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:24:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353932AbjHQRWc (ORCPT
+        with ESMTP id S1353964AbjHQRYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:22:32 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C499EE;
-        Thu, 17 Aug 2023 10:22:31 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fe4cdb727cso1244365e9.0;
-        Thu, 17 Aug 2023 10:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692292949; x=1692897749;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SxMhizufldjXqr2LJXmRW1fhXbnI6OJa+DaLU10aqqs=;
-        b=cE8nmPU79jz365GDzNZwMeC+RHo/75g3Hck2wL6uFmYOTaBzRFKml9H5vGH5fEcJBc
-         jYTJ4sk/kjrf+b4Z+MaLyZrEO+82tJty+a3J07Pz7mjVe+3ffew8c0W5xJspajTcpipa
-         g4IUjaDodsrhE8aX4DE0+D22u8k36Gl8IzD6FhhVQc5NEB4pAt2TTNWxqaQO/cms6r5G
-         BzsQWy5oogh9cAR3lGOrk5wHE2iFjqCNxOsaz+MHnupl6aQ3KPP8XH6U/rJcAM9owbTf
-         jJd4l4LnWgN32zKjceKvj/j1Q94MdtKYcefG8JWWNunae8yUOO47sr2eBCSEB37gu6Zf
-         5BBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692292949; x=1692897749;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SxMhizufldjXqr2LJXmRW1fhXbnI6OJa+DaLU10aqqs=;
-        b=bahiDXN/gSm/HRMHNI8tN61R4/HoTwOUXsDq2r6pI96rqzHHPdaag/hyoBJq9tJzMy
-         tsgvOLsY/0RAHqkuHM5GK2rPcaZlyw4iJmHxVbS9SvQY4gqXlUa+Sx1NufRVBIxSasze
-         whjQdUOcE71Dl3DZ+b5bTWZ7IqzAwvtYgNyP2FRvEWyFOP3zBnv94aZ1nrdGk0ULbIgO
-         g01cGGjAzFYsbIdPGFLIAvf5dOIzSNDZ6sJlwOXIu8IN1nu3zO2qEY2CpCpjafEZx/PU
-         AnuqjnPuFUqKvve4AHhbCLV3OKFSjd1eD5IJAfIj8aE7P8+RbkMjQcQ13V8KlC3tBbV9
-         +0sQ==
-X-Gm-Message-State: AOJu0YxzPgN2wFhgejy22JebuYhPF+K2eZlGyrTPKOjDVaekfqPtnG3h
-        UAeqq+PpOGjN8qAyE6FNvsFvgqFtksw=
-X-Google-Smtp-Source: AGHT+IHUcsncBbdMEjkERvYbkzbI5x/ECjIiPMT2fuyKCWabM0+Ufwa1Gdq7bs5fdXXcSgHEV3JrAQ==
-X-Received: by 2002:a7b:c84b:0:b0:3fc:616:b0db with SMTP id c11-20020a7bc84b000000b003fc0616b0dbmr327435wml.9.1692292949050;
-        Thu, 17 Aug 2023 10:22:29 -0700 (PDT)
-Received: from suse.localnet (host-79-56-101-183.retail.telecomitalia.it. [79.56.101.183])
-        by smtp.gmail.com with ESMTPSA id k9-20020a05600c0b4900b003fbd9e390e1sm3629554wmr.47.2023.08.17.10.22.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 10:22:28 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Deming Wang <wangdeming@inspur.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v3] Documentation/highmem: Add information about
- kmap_local_folio()
-Date:   Thu, 17 Aug 2023 19:22:25 +0200
-Message-ID: <2898756.e9J7NaK4W3@suse>
-In-Reply-To: <87r0paxooq.fsf@meer.lwn.net>
-References: <20230708121719.8270-1-fmdefrancesco@gmail.com> <87r0paxooq.fsf@meer.lwn.net>
+        Thu, 17 Aug 2023 13:24:07 -0400
+Received: from forward100a.mail.yandex.net (forward100a.mail.yandex.net [178.154.239.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E97BF;
+        Thu, 17 Aug 2023 10:24:05 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net [IPv6:2a02:6b8:c18:58f:0:640:3768:0])
+        by forward100a.mail.yandex.net (Yandex) with ESMTP id 8AB4542B22;
+        Thu, 17 Aug 2023 20:23:59 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id eNlanO1DeiE0-BZ6ruBVo;
+        Thu, 17 Aug 2023 20:23:58 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692293038;
+        bh=6YTQIq8NWPN5PQRtWMWS4gPfohHEdCmzLWqD6NAJA9Q=;
+        h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+        b=jKBXA2VfBZ6nR0VB2d7xFJmXh4Yo+atN/jZCG65qgU73pzixMg5N61F1Hlrz1rxF6
+         TZoUP+7fpL65aZ6X1MHGciIwGi2oG78HZQAkxG/JbdVzWyVoBZD5JK3UzgZ7kCZgxJ
+         7OhqUbRr+W3NylBuQ+7WVtzkS82LU/JI3AiibqoA=
+Authentication-Results: mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From:   Muhammed Efe Cetin <efectn@6tel.net>
+To:     krzysztof.kozlowski@linaro.org
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org, efectn@6tel.net,
+        heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
+        sebastian.reichel@collabora.com
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: Add Orange Pi 5
+Date:   Thu, 17 Aug 2023 20:23:34 +0300
+Message-ID: <20230817172334.51831-1-efectn@6tel.net>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <a80a8f73-eef4-311b-c508-726956471880@linaro.org>
+References: <a80a8f73-eef4-311b-c508-726956471880@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On venerd=EC 14 luglio 2023 21:45:09 CEST Jonathan Corbet wrote:
-> "Fabio M. De Francesco" <fmdefrancesco@gmail.com> writes:
-> > The differences between kmap_local_page() and kmap_local_folio() consist
-> > only in the first taking a pointer to a page and the second taking two
-> > arguments, a pointer to a folio and the byte offset within the folio wh=
-ich
-> > identifies the page.
-> >=20
-> > The two API's can be explained at the same time in the "Temporary Virtu=
-al
-> > Mappings" section of the Highmem's documentation.
-> >=20
-> > Add information about kmap_local_folio() in the same subsection that
-> > explains kmap_local_page().
-> >
->
-[snip]
->=20
-> Applied, thanks.
->=20
-> jon
+Hi Krzysztof,
 
-Jonathan,
+Thanks for review, i'll fix them and send v2 soon.
 
-Can you please tell me which release is this patch for? I see that it has n=
-ot=20
-yet reached upstream.
+On 15.08.2023 16:45, Krzysztof Kozlowski wrote:
+> On 15/08/2023 14:59, Muhammed Efe Cetin wrote:
+>> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
+>> Sdmmc, SPI Flash, PMIC.
+>>
+>> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
+>> ---
+>>   .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 873 ++++++++++++++++++
+> 
+> Without Makefile this won't be build, so this was not ever tested.
+> 
+>>   1 file changed, 873 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+>> new file mode 100644
+>> index 000000000000..85071084a207
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+>> @@ -0,0 +1,873 @@
+>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>> +
+>> +/dts-v1/;
+>> +
+>> +#include <dt-bindings/pinctrl/rockchip.h>
+>> +#include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/input/input.h>
+>> +#include "rk3588s.dtsi"
+>> +
+>> +/ {
+>> +	model = "Xunlong Orange Pi 5";
+>> +	compatible = "xunlong,orangepi-5", "rockchip,rk3588s";
+>> +
+>> +	aliases {
+>> +		mmc0 = &sdmmc;
+>> +		serial2 = &uart2;
+>> +	};
+>> +
+>> +	chosen {
+>> +		stdout-path = "serial2:1500000n8";
+>> +	};
+>> +
+>> +	leds {
+>> +		compatible = "gpio-leds";
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 =<&leds_gpio>;
+>> +
+>> +		led@1 {
+> 
+> Unit address is not correct here, it is not a bus. This should be
+> reported as warning, so you did not check for warnings.
+> 
+> It does not look like you tested the DTS against bindings. Please run
+> `make dtbs_check W=1` (see
+> Documentation/devicetree/bindings/writing-schema.rst or
+> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> for instructions).
+> 
+>> +			gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
+>> +			label = "status_led";
+>> +			linux,default-trigger = "heartbeat";
+>> +			linux,default-trigger-delay-ms = <0>;
+>> +		};
+>> +	};
+>> +
+>> +	adc-keys {
+>> +		compatible = "adc-keys";
+>> +		io-channels = <&saradc 1>;
+>> +		io-channel-names = "buttons";
+>> +		keyup-threshold-microvolt = <1800000>;
+>> +		poll-interval = <100>;
+>> +
+>> +		vol-up-key {
+>> +			label = "volume up";
+>> +			linux,code = <KEY_VOLUMEUP>;
+>> +			press-threshold-microvolt = <17000>;
+>> +		};
+>> +
+>> +		vol-down-key {
+>> +			label = "volume down";
+>> +			linux,code = <KEY_VOLUMEDOWN>;
+>> +			press-threshold-microvolt = <417000>;
+>> +		};
+>> +
+>> +		menu-key {
+>> +			label = "menu";
+>> +			linux,code = <KEY_MENU>;
+>> +			press-threshold-microvolt = <890000>;
+>> +		};
+>> +
+>> +		back-key {
+>> +			label = "back";
+>> +			linux,code = <KEY_BACK>;
+>> +			press-threshold-microvolt = <1235000>;
+>> +		};
+>> +	};
+>> +
+>> +	backlight: backlight {
+>> +		compatible = "pwm-backlight";
+>> +		brightness-levels = <  0  20  20  21  21  22  22  23
+>> +					  23  24  24  25  25  26  26  27
+>> +					  27  28  28  29  29  30  30  31
+>> +					  31  32  32  33  33  34  34  35
+>> +					  35  36  36  37  37  38  38  39
+>> +					  40  41  42  43  44  45  46  47
+>> +					  48  49  50  51  52  53  54  55
+>> +					  56  57  58  59  60  61  62  63
+>> +					  64  65  66  67  68  69  70  71
+>> +					  72  73  74  75  76  77  78  79
+>> +					  80  81  82  83  84  85  86  87
+>> +					  88  89  90  91  92  93  94  95
+>> +					  96  97  98  99 100 101 102 103
+>> +					  104 105 106 107 108 109 110 111
+>> +					  112 113 114 115 116 117 118 119
+>> +					  120 121 122 123 124 125 126 127
+>> +					  128 129 130 131 132 133 134 135
+>> +					  136 137 138 139 140 141 142 143
+>> +					  144 145 146 147 148 149 150 151
+>> +					  152 153 154 155 156 157 158 159
+>> +					  160 161 162 163 164 165 166 167
+>> +					  168 169 170 171 172 173 174 175
+>> +					  176 177 178 179 180 181 182 183
+>> +					  184 185 186 187 188 189 190 191
+>> +					  192 193 194 195 196 197 198 199
+>> +					  200 201 202 203 204 205 206 207
+>> +					  208 209 210 211 212 213 214 215
+>> +					  216 217 218 219 220 221 222 223
+>> +					  224 225 226 227 228 229 230 231
+>> +					  232 233 234 235 236 237 238 239
+>> +					  240 241 242 243 244 245 246 247
+>> +					  248 249 250 251 252 253 254 255>;
+>> +		default-brightness-level = <200>;
+>> +		pwms = <&pwm2 0 25000 0>;
+>> +	};
+>> +
+>> +	backlight_1: backlight_1 {
+> 
+> No underscores in node names, use -
+> 
+>> +		compatible = "pwm-backlight";
+>> +		brightness-levels = <  0  20  20  21  21  22  22  23
+>> +					  23  24  24  25  25  26  26  27
+>> +					  27  28  28  29  29  30  30  31
+> 
+> ...
+> 
+>> +
+>> +&combphy0_ps {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&combphy2_psu {
+>> +	status = "okay";
+>> +};
+>> +
+>> +&cpu_b0 {
+>> +	cpu-supply = <&vdd_cpu_big0_s0>;
+>> +	mem-supply = <&vdd_cpu_big0_mem_s0>;
+>> +};
+>> +
+>> +&cpu_b1 {
+>> +	cpu-supply = <&vdd_cpu_big0_s0>;
+>> +	mem-supply = <&vdd_cpu_big0_mem_s0>;
+>> +};
+>> +
+>> +&cpu_b2 {
+>> +	cpu-supply = <&vdd_cpu_big1_s0>;
+>> +	mem-supply = <&vdd_cpu_big1_mem_s0>;
+>> +};
+>> +
+>> +&cpu_b3 {
+>> +	cpu-supply = <&vdd_cpu_big1_s0>;
+>> +	mem-supply = <&vdd_cpu_big1_mem_s0>;
+>> +};
+>> +
+>> +&cpu_l0 {
+>> +	cpu-supply = <&vdd_cpu_lit_s0>;
+>> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
+>> +};
+>> +
+>> +&cpu_l1 {
+>> +	cpu-supply = <&vdd_cpu_lit_s0>;
+>> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
+>> +};
+>> +
+>> +&cpu_l2 {
+>> +	cpu-supply = <&vdd_cpu_lit_s0>;
+>> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
+>> +};
+>> +
+>> +&cpu_l3 {
+>> +	cpu-supply = <&vdd_cpu_lit_s0>;
+>> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
+>> +};
+>> +
+>> +&gmac1 {
+>> +	clock_in_out = "output";
+>> +	phy-handle = <&rgmii_phy1>;
+>> +	phy-mode = "rgmii-rxid";
+>> +	pinctrl-0 = <&gmac1_miim
+>> +					&gmac1_tx_bus2
+>> +					&gmac1_rx_bus2
+>> +					&gmac1_rgmii_clk
+>> +					&gmac1_rgmii_bus>;
+> 
+> Messed alignment.
+> 
+>> +	pinctrl-names = "default";
+>> +	snps,reset-gpio = <&gpio3 RK_PB2 GPIO_ACTIVE_LOW>;
+>> +	snps,reset-active-low;
+>> +	snps,reset-delays-us = <0 20000 100000>;
+>> +	tx_delay = <0x42>;
+>> +	status = "okay";
+>> +};
+>> +
+> 
+> ...
+> 
+>> +
+>> +&sfc {
+>> +	pinctrl-0 = <&fspim0_pins>;
+>> +	pinctrl-names = "default";
+>> +	max-freq = <100000000>;
+>> +	#address-cells = <1>;
+>> +	#size-cells = <0>;
+>> +	status = "okay";
+>> +
+>> +	spi_flash: spi-flash@0 {
+>> +		compatible = "jedec,spi-nor";
+>> +		reg = <0x0>;
+>> +		spi-max-frequency = <100000000>;
+>> +		spi-tx-bus-width = <1>;
+>> +		spi-rx-bus-width = <4>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		status = "okay";
+> 
+> okay is by default, was it disabled anywhere?
+> 
+>> +
+>> +		partitions {
+>> +			compatible = "fixed-partitions";
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +
+>> +			loader@0 {
+>> +				label = "loader";
+>> +				reg = <0x0 0x1000000>;
+>> +			};
+>> +		};
+>> +	};
+>> +};
+>> +
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Thanks,
-
-=46abio
-
-
-
+Regards,
+Efe
 
