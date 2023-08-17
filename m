@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C54F077F5FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A74177F5FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350644AbjHQMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51264 "EHLO
+        id S1350651AbjHQMDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350621AbjHQMDK (ORCPT
+        with ESMTP id S1350630AbjHQMDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:03:10 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDCB26A8;
-        Thu, 17 Aug 2023 05:03:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe3b86cec1so11999837e87.2;
-        Thu, 17 Aug 2023 05:03:03 -0700 (PDT)
+        Thu, 17 Aug 2023 08:03:15 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477B8273C;
+        Thu, 17 Aug 2023 05:03:06 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so121390431fa.3;
+        Thu, 17 Aug 2023 05:03:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692273782; x=1692878582;
+        d=gmail.com; s=20221208; t=1692273784; x=1692878584;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yb7oZIgg/B3E+dBegFgOfB9mM2QYvQbTAUSvlXHH+Sc=;
-        b=LuDh+fSVz9XUIj4A+4gUB/0BhP/OgCcthKsuPXon36R93RAV+YfliYwhUw8oqW/7a8
-         82ThO6+g9rzRL34VwOQLLLKcFm08VO7eSWAbyi3pgYaHG97p9GsSTR+En93P8KLceH4q
-         VJYUJnxXU24Vyt4vN+C4C8ONpihKT+UCxa5taCf9rjzhcgrfEPrAPOF1FfU72iTuCJ0t
-         nIlQkvF1pWsLQruk+rct1l15TPUe6+c2Q+1gyoIk5iTwp59ulAawCwKiF8jFfr2AQN2v
-         clgL5PJHdb/Rbv4/FFSREMdJ8YzWPQkX0pGqD4HRSKNOLWmKswgdLQtxtsTX7hqPL5kj
-         Kgww==
+        bh=SdwRwKvnz3Z20+s9tNz6mtV9CNaQwcE4bakky09bUQU=;
+        b=haqmKJNllfHprykmSlGVEYKvCV+U4b0WzYKXVtO0ZJ8iCy5QYVUxWVq31HdDUIz3h1
+         dvWOx0oiJfAI00Pmv/ZeLiLZ9B8FNR4ug1CkubsSBD5PZjXTQ6GrwZapCXw2eFz5tyPN
+         pgzgzQFWyunbdvNt/fg5M1lmccJHvFT/lp1JKHpYNWloX7+UAv92c07Q2sXsMbAuEZOS
+         dYQDcckkKlhp9g8k/uUEpHj7pz6v0W5vbbt1Cmr6XTP+fyO+9IEqFmtUYZCZm/prO0aX
+         hebzWuq+IbU7MR4mfXe0Z70TKbU3XqVXXxy2RDUlp39q634pDIXXiSWrXzEYaY29+mzj
+         Vzdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692273782; x=1692878582;
+        d=1e100.net; s=20221208; t=1692273784; x=1692878584;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yb7oZIgg/B3E+dBegFgOfB9mM2QYvQbTAUSvlXHH+Sc=;
-        b=ZdWNvANbBwc+zQfBLNNMFbXEeUILsF0r6nMPKF5RigpUjYAoXxNXmAK45KMLl2Xt8n
-         AvFRaJavhPYxWN2bZq1sio7lS3FdmmN+Km68z9IKpDoaU8lW6oxub7gTFsuPjBwU2Yep
-         ky4oNAEQuL7hvhA0I6Hr5n1p65JbDAfDAFgU/7zP0vXxc8NfZrHMuoDLewIZZj6lnGuU
-         TwSyB/DOq1u0FvlOwLnnvdHQ8Q5BihtOoTjXYXDl6n8FoYidnbZG0hXDfiftFJbEFqUw
-         bvqrzXyBp1HjDIkqfGvq1Kgzb5lniv2Qm92i9qa4n9ug4juaCwfxPv5LhH+N5RqEPCtH
-         9pNg==
-X-Gm-Message-State: AOJu0Yy7k0exDc4UD7qON2Q8J8nNX2hhuRhxUGCiTDowUZoP7NkppZf4
-        U4aQjpgBLgh5xr3LX/4kg4s=
-X-Google-Smtp-Source: AGHT+IEy7l/mUxc1HoHZnPcnAVsEONNeHw5AJ9CUE5YL7YrtnLNbv+kj1wdhAVRXnugnwVvA4nBlFA==
-X-Received: by 2002:a2e:b285:0:b0:2b4:5cad:f246 with SMTP id 5-20020a2eb285000000b002b45cadf246mr3699537ljx.7.1692273781886;
-        Thu, 17 Aug 2023 05:03:01 -0700 (PDT)
+        bh=SdwRwKvnz3Z20+s9tNz6mtV9CNaQwcE4bakky09bUQU=;
+        b=L26sr+hi3TIzlvbsHxX/gaSMYBxaWpOVu7SP+4uQwITjyOr3Z5Cu/37fyM5Sz0QKAm
+         6BUWan8Vikf0VtkX/ktvtnGpDVU7Uap2rbPUDcY78KD/gTbLIIcOslutW00M31RSfuaz
+         6od1rQkE7FIe5POxGXLfhfH2CH5KS0ms6P2iS1JqGqikFAf5Gc8BC/IX0JGZ2OaQgyt7
+         32PMAc+AKipSrZe1V6+1eM9k6XXqmSolnjA3bzTszhp8XQ12IanJ606oW2gczrYsY8U/
+         nCt4U1+rajTRynmKb3vd2r0xm890XWLIKXhQWOTuwDJreOQYhjXthBlGaGu5xGyKCPVz
+         wyZg==
+X-Gm-Message-State: AOJu0YyxBbHG4wMPBdM9E60gKmlgALiXuvNWNGjEEGJrxKfJaKR8XK7O
+        xd4PIM1DOLIdOnseud0fZbuGAMQoGJbvGsZn
+X-Google-Smtp-Source: AGHT+IFUFbj2Oz9yjX58UklqRWkJ8XBlw1BmWkcFAw/EtvA+pIm8BJbDg3KlcLTucS9jGvyDSuUHVg==
+X-Received: by 2002:a2e:9bd0:0:b0:2b6:e361:4b3c with SMTP id w16-20020a2e9bd0000000b002b6e3614b3cmr3710501ljj.14.1692273784228;
+        Thu, 17 Aug 2023 05:03:04 -0700 (PDT)
 Received: from localhost.localdomain (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002b9fec8961bsm3981213lji.123.2023.08.17.05.03.00
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002b9fec8961bsm3981213lji.123.2023.08.17.05.03.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 05:03:01 -0700 (PDT)
+        Thu, 17 Aug 2023 05:03:02 -0700 (PDT)
 From:   Marcus Folkesson <marcus.folkesson@gmail.com>
 To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
         Kent Gustavsson <kent@minoris.se>,
@@ -69,9 +69,9 @@ To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
         William Breathitt Gray <william.gray@linaro.org>
 Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 4/6] iio: adc: mcp3911: fix indentation
-Date:   Thu, 17 Aug 2023 14:05:16 +0200
-Message-ID: <20230817120518.153728-4-marcus.folkesson@gmail.com>
+Subject: [PATCH v6 5/6] iio: adc: mcp3911: avoid ambiguity parameters in macros
+Date:   Thu, 17 Aug 2023 14:05:17 +0200
+Message-ID: <20230817120518.153728-5-marcus.folkesson@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230817120518.153728-1-marcus.folkesson@gmail.com>
 References: <20230817120518.153728-1-marcus.folkesson@gmail.com>
@@ -79,7 +79,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,146 +87,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The whole file does not make use of indentation properly.
-Do something about it.
+Name macro parameters after what they represent instead of 'x'.
 
 Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
 ---
 
 Notes:
-    v4:
-        - New patch in this series
     v5:
-        - Cosmetics
+        - New patch in this series
     v6:
-        - Little rewording in commit message
+        - change 'ch' to '(ch)'
 
- drivers/iio/adc/mcp3911.c | 41 +++++++++++++++++++--------------------
- 1 file changed, 20 insertions(+), 21 deletions(-)
+ drivers/iio/adc/mcp3911.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-index 2778abde239b..06c8c5ac7781 100644
+index 06c8c5ac7781..9167f0ffa4e3 100644
 --- a/drivers/iio/adc/mcp3911.c
 +++ b/drivers/iio/adc/mcp3911.c
-@@ -33,7 +33,7 @@
- #define MCP3911_GAIN_VAL(ch, val)      ((val << 3 * ch) & MCP3911_GAIN_MASK(ch))
+@@ -29,8 +29,8 @@
+ #define MCP3911_REG_MOD			0x06
+ #define MCP3911_REG_PHASE		0x07
+ #define MCP3911_REG_GAIN		0x09
+-#define MCP3911_GAIN_MASK(ch)		(GENMASK(2, 0) << 3 * ch)
+-#define MCP3911_GAIN_VAL(ch, val)      ((val << 3 * ch) & MCP3911_GAIN_MASK(ch))
++#define MCP3911_GAIN_MASK(ch)		(GENMASK(2, 0) << 3 * (ch))
++#define MCP3911_GAIN_VAL(ch, val)      ((val << 3 * (ch)) & MCP3911_GAIN_MASK(ch))
  
  #define MCP3911_REG_STATUSCOM		0x0a
--#define MCP3911_STATUSCOM_DRHIZ         BIT(12)
-+#define MCP3911_STATUSCOM_DRHIZ		BIT(12)
- #define MCP3911_STATUSCOM_READ		GENMASK(7, 6)
- #define MCP3911_STATUSCOM_CH1_24WIDTH	BIT(4)
- #define MCP3911_STATUSCOM_CH0_24WIDTH	BIT(3)
-@@ -111,8 +111,7 @@ static int mcp3911_write(struct mcp3911 *adc, u8 reg, u32 val, u8 len)
- 	return spi_write(adc->spi, &val, len + 1);
- }
+ #define MCP3911_STATUSCOM_DRHIZ		BIT(12)
+@@ -51,8 +51,8 @@
+ #define MCP3911_REG_GAINCAL_CH1		0x17
+ #define MCP3911_REG_VREFCAL		0x1a
  
--static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
--		u32 val, u8 len)
-+static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask, u32 val, u8 len)
- {
- 	u32 tmp;
- 	int ret;
-@@ -127,8 +126,8 @@ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask,
- }
+-#define MCP3911_CHANNEL(x)		(MCP3911_REG_CHANNEL0 + x * 3)
+-#define MCP3911_OFFCAL(x)		(MCP3911_REG_OFFCAL_CH0 + x * 6)
++#define MCP3911_CHANNEL(ch)		(MCP3911_REG_CHANNEL0 + (ch) * 3)
++#define MCP3911_OFFCAL(ch)		(MCP3911_REG_OFFCAL_CH0 + (ch) * 6)
  
- static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
--					struct iio_chan_spec const *chan,
--					long mask)
-+				     struct iio_chan_spec const *chan,
-+				     long mask)
- {
- 	switch (mask) {
- 	case IIO_CHAN_INFO_SCALE:
-@@ -141,9 +140,9 @@ static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
- }
- 
- static int mcp3911_read_avail(struct iio_dev *indio_dev,
--			     struct iio_chan_spec const *chan,
--			     const int **vals, int *type, int *length,
--			     long info)
-+			      struct iio_chan_spec const *chan,
-+			      const int **vals, int *type, int *length,
-+			      long info)
- {
- 	switch (info) {
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-@@ -212,8 +211,8 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
- }
- 
- static int mcp3911_write_raw(struct iio_dev *indio_dev,
--			    struct iio_chan_spec const *channel, int val,
--			    int val2, long mask)
-+			     struct iio_chan_spec const *channel, int val,
-+			     int val2, long mask)
- {
- 	struct mcp3911 *adc = iio_priv(indio_dev);
- 	int ret = -EINVAL;
-@@ -223,12 +222,12 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 	case IIO_CHAN_INFO_SCALE:
- 		for (int i = 0; i < MCP3911_NUM_SCALES; i++) {
- 			if (val == mcp3911_scale_table[i][0] &&
--				val2 == mcp3911_scale_table[i][1]) {
-+			    val2 == mcp3911_scale_table[i][1]) {
- 
- 				adc->gain[channel->channel] = BIT(i);
- 				ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--						MCP3911_GAIN_MASK(channel->channel),
--						MCP3911_GAIN_VAL(channel->channel, i), 1);
-+						     MCP3911_GAIN_MASK(channel->channel),
-+						     MCP3911_GAIN_VAL(channel->channel, i), 1);
- 			}
- 		}
- 		break;
-@@ -246,8 +245,8 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 
- 		/* Enable offset*/
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM,
--				MCP3911_STATUSCOM_EN_OFFCAL,
--				MCP3911_STATUSCOM_EN_OFFCAL, 2);
-+				     MCP3911_STATUSCOM_EN_OFFCAL,
-+				     MCP3911_STATUSCOM_EN_OFFCAL, 2);
- 		break;
- 
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
-@@ -255,7 +254,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			if (val == mcp3911_osr_table[i]) {
- 				val = FIELD_PREP(MCP3911_CONFIG_OSR, i);
- 				ret = mcp3911_update(adc, MCP3911_REG_CONFIG, MCP3911_CONFIG_OSR,
--						val, 2);
-+						     val, 2);
- 				break;
- 			}
- 		}
-@@ -506,10 +505,10 @@ static int mcp3911_probe(struct spi_device *spi)
- 
- 	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				0, 2);
-+				     0, 2);
- 	else
- 		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				MCP3911_STATUSCOM_DRHIZ, 2);
-+				     MCP3911_STATUSCOM_DRHIZ, 2);
- 	if (ret)
- 		return ret;
- 
-@@ -517,12 +516,12 @@ static int mcp3911_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
--       /* Set gain to 1 for all channels */
-+	/* Set gain to 1 for all channels */
- 	for (int i = 0; i < MCP3911_NUM_CHANNELS; i++) {
- 		adc->gain[i] = 1;
- 		ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--				MCP3911_GAIN_MASK(i),
--				MCP3911_GAIN_VAL(i, 0), 1);
-+				     MCP3911_GAIN_MASK(i),
-+				     MCP3911_GAIN_VAL(i, 0), 1);
- 		if (ret)
- 			return ret;
- 	}
+ /* Internal voltage reference in mV */
+ #define MCP3911_INT_VREF_MV		1200
 -- 
 2.41.0
 
