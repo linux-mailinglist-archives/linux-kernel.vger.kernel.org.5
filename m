@@ -2,47 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B54277F602
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3534977F5F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 14:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244390AbjHQMFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 08:05:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S1350618AbjHQMDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 08:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350720AbjHQMFE (ORCPT
+        with ESMTP id S1350611AbjHQMDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 08:05:04 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4663599;
-        Thu, 17 Aug 2023 05:04:39 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qWbjj-0001mN-0l;
-        Thu, 17 Aug 2023 12:04:23 +0000
-Date:   Thu, 17 Aug 2023 13:04:06 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Alexander Couzens <lynxis@fe80.eu>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next] net: pcs: lynxi: fully reconfigure if link is down
-Message-ID: <e9831ec99acd5a8ab03c76fce87fa750c7041e60.1692273723.git.daniel@makrotopia.org>
+        Thu, 17 Aug 2023 08:03:08 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730382112;
+        Thu, 17 Aug 2023 05:02:58 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9fa64db41so117274041fa.1;
+        Thu, 17 Aug 2023 05:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692273777; x=1692878577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AMXrXLc0wj0xEWmwzIdD5Z8/MM23PAnf+hN4LdAZ/e4=;
+        b=JQNPVTCMeMndORrCxRNralYWboNuL5ZNfBSyQPB1jbQtYXd5KX3jK6RSM5hlgfPCxK
+         wxlvmjJWBFIn6WGNK8T5oADEBP+YtWA/91sqxDCWaXfuiaJ5LqK8Kc9SvdZLyrnrkALy
+         y95wwWeRrAautvuGT7qxLDtchK9nlNHLuQMb68T41HJf3lKDEEOKo88oUnOqDawVcopP
+         +0SoNKWAsFrrqMW7dshQn/IncGwrR3HVkUUpB33EiDURD83hN/b2Necj1e1youRIsAiQ
+         BOeM56SVPUZoHsleRZGaiPgZaaJLyFywFxxb2OeoEZz+hSbuWYQ+ZmjeE+/eVxkMlV9B
+         uIJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692273777; x=1692878577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AMXrXLc0wj0xEWmwzIdD5Z8/MM23PAnf+hN4LdAZ/e4=;
+        b=L5kAhKCMvbWFhG+Ow7TIoctIVt2Wl+a8cxdmNmUu4niGWt4+7A0Tuyi9tPjBHWB5qC
+         4BnviCrN3HoSPImGnE8VTGCa2d8lnl6okIFerUdj6S4YIcuHMI64H4tQ351qRyCUaHfO
+         RIuRM16kP+HtShF48Z3uIutaq3zFRb1Ew0thKSSaPVXlaQb3EviqdElAXlujsXe0XNn/
+         UOgoQYzC/vngubmm5FI8CtK61yATFFhfF+gUZxa/BN8MjePSnugax/OrNy6P4G52Qags
+         PVsty09xCO9i8NU48fMb70KLdEjN3iX/qpM9Nf+LWcPAowVnOscfjQ2Cv94KQWhX6bYI
+         jqSA==
+X-Gm-Message-State: AOJu0YxFfkudeJw3qmzWKnf8C08247mGhTO/uunQiGlg9MVl8yGw9+7q
+        H+q5K5tKyWtSsbXmaPmD/Js=
+X-Google-Smtp-Source: AGHT+IH0RQjh3vLiZFv8CN6AExeVHERgbftGnQ0xnAQ4Xk7c1MHPKzoDAJy4Yt0HiVkE8p5YcNptqA==
+X-Received: by 2002:a2e:97c8:0:b0:2b9:2e85:2fa0 with SMTP id m8-20020a2e97c8000000b002b92e852fa0mr3854989ljj.15.1692273776384;
+        Thu, 17 Aug 2023 05:02:56 -0700 (PDT)
+Received: from localhost.localdomain (83-233-6-197.cust.bredband2.com. [83.233.6.197])
+        by smtp.gmail.com with ESMTPSA id t18-20020a2e9d12000000b002b9fec8961bsm3981213lji.123.2023.08.17.05.02.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 05:02:55 -0700 (PDT)
+From:   Marcus Folkesson <marcus.folkesson@gmail.com>
+To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Kent Gustavsson <kent@minoris.se>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Ramona Bolboaca <ramona.bolboaca@analog.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        William Breathitt Gray <william.gray@linaro.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v6 1/6] dt-bindings: iio: adc: mcp3911: add support for the whole MCP39xx family
+Date:   Thu, 17 Aug 2023 14:05:13 +0200
+Message-ID: <20230817120518.153728-1-marcus.folkesson@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,55 +85,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On MT7988 When switching from 10GBase-R/5GBase-R/USXGMII to one of the
-interface modes provided by mtk-pcs-lynxi we need to make sure to
-always perform a full configuration of the PHYA.
-As the idea behind not doing that was mostly to prevent an existing link
-going down without any need for it to do so. Hence we can just always
-perform a full confinguration in case the link is down.
+Microchip does have many similar chips, add those to the compatible
+string as the driver support is extended.
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+The new supported chips are:
+  - microchip,mcp3910
+  - microchip,mcp3912
+  - microchip,mcp3913
+  - microchip,mcp3914
+  - microchip,mcp3918
+  - microchip,mcp3919
+
+Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/net/pcs/pcs-mtk-lynxi.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/pcs/pcs-mtk-lynxi.c b/drivers/net/pcs/pcs-mtk-lynxi.c
-index b0f3ede945d96..788c2ccde064e 100644
---- a/drivers/net/pcs/pcs-mtk-lynxi.c
-+++ b/drivers/net/pcs/pcs-mtk-lynxi.c
-@@ -108,8 +108,8 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
- 				bool permit_pause_to_mac)
- {
- 	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
--	bool mode_changed = false, changed;
--	unsigned int rgc3, sgm_mode, bmcr;
-+	bool mode_changed = false, changed, link;
-+	unsigned int bm, rgc3, sgm_mode, bmcr;
- 	int advertise, link_timer;
+Notes:
+    v2:
+        - No changes
+    v3:
+        - No changes
+    v4:
+        - No changes
+    v5:
+        - No changes
+    v6:
+        - No changes
+
+ .../devicetree/bindings/iio/adc/microchip,mcp3911.yaml      | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+index f7b3fde4115a..06951ec5f5da 100644
+--- a/Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
++++ b/Documentation/devicetree/bindings/iio/adc/microchip,mcp3911.yaml
+@@ -18,7 +18,13 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - microchip,mcp3910
+       - microchip,mcp3911
++      - microchip,mcp3912
++      - microchip,mcp3913
++      - microchip,mcp3914
++      - microchip,mcp3918
++      - microchip,mcp3919
  
- 	advertise = phylink_mii_c22_pcs_encode_advertisement(interface,
-@@ -117,6 +117,10 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
- 	if (advertise < 0)
- 		return advertise;
- 
-+	/* Check if link is currently up */
-+	regmap_read(mpcs->regmap, SGMSYS_PCS_CONTROL_1, &bm);
-+	link = !!(FIELD_GET(SGMII_BMSR, bm) & BMSR_LSTATUS);
-+
- 	/* Clearing IF_MODE_BIT0 switches the PCS to BASE-X mode, and
- 	 * we assume that fixes it's speed at bitrate = line rate (in
- 	 * other words, 1000Mbps or 2500Mbps).
-@@ -137,7 +141,10 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
- 		bmcr = 0;
- 	}
- 
--	if (mpcs->interface != interface) {
-+	/* Do a full reconfiguration only if the link is down or the interface
-+	 * mode has changed
-+	 */
-+	if (mpcs->interface != interface || !link) {
- 		link_timer = phylink_get_link_timer_ns(interface);
- 		if (link_timer < 0)
- 			return link_timer;
+   reg:
+     maxItems: 1
 -- 
 2.41.0
+
