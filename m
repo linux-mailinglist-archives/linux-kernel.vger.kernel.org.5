@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A9577F8E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C6E77F935
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351887AbjHQO15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S1351998AbjHQOfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351896AbjHQO1Y (ORCPT
+        with ESMTP id S1351958AbjHQOfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:27:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BAF2D76
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:26:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692282398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xSwgi5nYOBKBG7F7dJg6g/1QY293MG0NVMQDEeBbj4I=;
-        b=J9LaFo3X8xEMZudJ7XLtG5uandQ0s4gWYGQJisNyBHgT03LSkRYshkQ7bfjm9Z4P2IS2eW
-        0KgRjbZChg7RKG/gL7vKh+OB0DbriCI5/RFqirHx19c7VZWW1eN0/TlNptHGZ4uRVhU7gx
-        /xnZM731rO274KIix6n/Q9maewK40Rs=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-644-zvqiTbbjOpm7aV8XX542Tw-1; Thu, 17 Aug 2023 10:26:32 -0400
-X-MC-Unique: zvqiTbbjOpm7aV8XX542Tw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 366491C07842;
-        Thu, 17 Aug 2023 14:26:32 +0000 (UTC)
-Received: from segfault.boston.devel.redhat.com (segfault.boston.devel.redhat.com [10.19.60.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E9F27140E950;
-        Thu, 17 Aug 2023 14:26:31 +0000 (UTC)
-From:   Jeff Moyer <jmoyer@redhat.com>
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc:     <dan.j.williams@intel.com>, <vishal.l.verma@intel.com>,
-        <dave.jiang@intel.com>, <ira.weiny@intel.com>,
-        <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yusongping@huawei.com>, <artem.kuzin@huawei.com>
-Subject: Re: [PATCH] drivers: nvdimm: fix memleak
-References: <20230817115945.771826-1-konstantin.meskhidze@huawei.com>
-X-PGP-KeyID: 1F78E1B4
-X-PGP-CertKey: F6FE 280D 8293 F72C 65FD  5A58 1FF8 A7CA 1F78 E1B4
-Date:   Thu, 17 Aug 2023 10:32:19 -0400
-In-Reply-To: <20230817115945.771826-1-konstantin.meskhidze@huawei.com>
-        (Konstantin Meskhidze's message of "Thu, 17 Aug 2023 19:59:45 +0800")
-Message-ID: <x49fs4hu4cs.fsf@segfault.boston.devel.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 17 Aug 2023 10:35:12 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801A12D73;
+        Thu, 17 Aug 2023 07:35:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692282910; x=1723818910;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ULX7WCNz8+e7JhTCrh7iqp4Awl93HQg0jq2Qt7qguCc=;
+  b=JF2Fwl2qcTql+roSsvagOnHNm9jeWay8Q/r3RRiHbFXU8Q+DgglUXYu2
+   s0IIrTXIjctjKjkX3UvEfrJrdwkG9dxerQH3CZ78CTBBTnrAZVCEdnRMu
+   1c+vP3MMTxUZPoYstB6ALpLZvUImwmTb2RNprlR0kaVGWklvp6FgkdSob
+   L2D80Mw15yqrRSblQM8zxrE2bh2Qfr5Wjir19okQLc343Dd+fTK/TsRhi
+   GOeZYBYtZWrseR5l82EB1m5o9K+6QyQwWdvq7FXpzudKQ/6w1R9j9DYfC
+   gPX5Yq92ZuDv6nJuTH05E3pzC1TgTFlVecuJA8BaOQFmcU9oEIwM9tJKw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="357799587"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="357799587"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 07:35:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="848897987"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="848897987"
+Received: from r007s007_zp31l10c01.deacluster.intel.com (HELO fedora.deacluster.intel.com) ([10.219.171.169])
+  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2023 07:35:08 -0700
+From:   Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+To:     herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org
+Cc:     linux-crypto@vger.kernel.org, qat-linux@intel.com,
+        andriy.shevchenko@intel.com, alx.manpages@gmail.com,
+        Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+Subject: [PATCH 0/4] Add debugfs pm_status for qat driver
+Date:   Thu, 17 Aug 2023 16:33:13 +0200
+Message-ID: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konstantin Meskhidze <konstantin.meskhidze@huawei.com> writes:
+Add debugfs pm_status.
 
-> Memory pointed by 'nd_pmu->pmu.attr_groups' is allocated in function
-> 'register_nvdimm_pmu' and is lost after 'kfree(nd_pmu)' call in function
-> 'unregister_nvdimm_pmu'.
->
-> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-> ---
->  drivers/nvdimm/nd_perf.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/nvdimm/nd_perf.c b/drivers/nvdimm/nd_perf.c
-> index 433bbb68a..14881c4e0 100644
-> --- a/drivers/nvdimm/nd_perf.c
-> +++ b/drivers/nvdimm/nd_perf.c
-> @@ -323,7 +323,8 @@ EXPORT_SYMBOL_GPL(register_nvdimm_pmu);
->  void unregister_nvdimm_pmu(struct nvdimm_pmu *nd_pmu)
->  {
->  	perf_pmu_unregister(&nd_pmu->pmu);
->  	nvdimm_pmu_free_hotplug_memory(nd_pmu);
-> +	kfree(nd_pmu->pmu.attr_groups);
->  	kfree(nd_pmu);
->  }
->  EXPORT_SYMBOL_GPL(unregister_nvdimm_pmu);
+Expose power management info by providing the "pm_status" file under
+debugfs.
 
-Reviewed-by: Jeff Moyer <jmoyer@redhat.com>
+Patch #1 has been added to this pathcset in order to add
+ARRAY_SIZE_OF_FIELD() (Patch #2) without expanding kernel.h
+
+---
+
+Alejandro Colomar (1):
+  linux/array_size.h: Move ARRAY_SIZE(arr) to a separate header
+
+Lucas Segarra Fernandez (3):
+  linux/array_size.h: Add ARRAY_SIZE_OF_FIELD()
+  crypto: qat - refactor included headers
+  crypto: qat - add pm_status debugfs file
+
+ Documentation/ABI/testing/debugfs-driver-qat  |   9 +
+ drivers/crypto/intel/qat/qat_common/Makefile  |   1 +
+ .../intel/qat/qat_common/adf_accel_devices.h  |  13 +
+ .../crypto/intel/qat/qat_common/adf_admin.c   |  25 ++
+ .../intel/qat/qat_common/adf_common_drv.h     |   1 +
+ .../crypto/intel/qat/qat_common/adf_dbgfs.c   |   3 +
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.c | 265 ++++++++++++++++++
+ .../crypto/intel/qat/qat_common/adf_gen4_pm.h |  38 ++-
+ .../intel/qat/qat_common/adf_pm_dbgfs.c       |  47 ++++
+ .../intel/qat/qat_common/adf_pm_dbgfs.h       |  12 +
+ .../qat/qat_common/icp_qat_fw_init_admin.h    |  33 +++
+ include/linux/array_size.h                    |  21 ++
+ include/linux/clk-provider.h                  |   1 +
+ include/linux/counter.h                       |   1 +
+ include/linux/genl_magic_func.h               |   1 +
+ include/linux/hashtable.h                     |   1 +
+ include/linux/kernel.h                        |   7 +-
+ include/linux/kfifo.h                         |   1 +
+ include/linux/kvm_host.h                      |   1 +
+ include/linux/moduleparam.h                   |   2 +
+ include/linux/mtd/rawnand.h                   |   1 +
+ include/linux/netfilter.h                     |   1 +
+ include/linux/pagemap.h                       |   1 +
+ include/linux/phy.h                           |   1 +
+ include/linux/pinctrl/machine.h               |   2 +-
+ include/linux/property.h                      |   1 +
+ include/linux/rcupdate_wait.h                 |   1 +
+ include/linux/regmap.h                        |   1 +
+ include/linux/skmsg.h                         |   1 +
+ include/linux/string.h                        |   1 +
+ include/linux/surface_aggregator/controller.h |   1 +
+ 31 files changed, 487 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs.c
+ create mode 100644 drivers/crypto/intel/qat/qat_common/adf_pm_dbgfs.h
+ create mode 100644 include/linux/array_size.h
+
+-- 
+2.41.0
 
