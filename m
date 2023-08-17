@@ -2,86 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310C177F96B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D80077F96D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352144AbjHQOjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:39:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S1352028AbjHQOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352085AbjHQOik (ORCPT
+        with ESMTP id S1352193AbjHQOjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:38:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF08630DE
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:38:38 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so10518756a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:38:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692283117; x=1692887917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L9vWSNOyQ40/a//fJoXOBwGUU2y6drxoj4nh46dmg+4=;
-        b=FowLE3Z7QscMh4BPSbKpcGzCmdve34ej608z/fV+mvkQe0bNMCU+VWjfdb0WrWvSKI
-         DEyJ2UOInJBFQ46iFr4vVSfbjSSnQn92jYfjVHrDJzNmyB1w3DmiAEHaEipQ5vTQOzGG
-         km6doR0hZ5SUOzhVDPp6wj9eJC+yWAxE8la9s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692283117; x=1692887917;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L9vWSNOyQ40/a//fJoXOBwGUU2y6drxoj4nh46dmg+4=;
-        b=TTPOQkxgWLyvaCi91ugxgMBGX0DUjpasOsJIh0psweocrOVQG/a9eM3HU5Pme93FGE
-         oIxruDYEtCZaXHMyFFiHdeeUC4CuW9CRTzibJAgQvGL/XaWXivPxkyNJpjvANKqiFHF5
-         50h58rgxq0XGt/4H/WAF8Fnbw9DL9MhAULsO6qkksQ01btm6sZhoSKGkdwVV+IoKr7+M
-         Ls80WNvx/due0CVcKecODmgG6N5AJtX23zL/MffQm68YBguKwNtG0QcPcHZu8uCf19Q0
-         h7XNxNewq/vm7jVSviO/XPKUp71RawQOJNv0egfGJUTpxg5w1INeZ95Y2MeapM2jF95O
-         1YuA==
-X-Gm-Message-State: AOJu0Yxv21NMXJxGTZSYVIZ/2H6tVx3mXtNUbFIvm049AZY6BXUJZUtD
-        MUFknO2xCPSXsSZSb0SN6b3caNixUZzwctyNMSnum4bb
-X-Google-Smtp-Source: AGHT+IEiIBcNezlCzECyYryd7Lnao3LXYuSTxnNofuitiQ54zz0aaK0GqsNnIqwvRg19WyU9I7SWEw==
-X-Received: by 2002:a50:ec8b:0:b0:523:4996:a4f9 with SMTP id e11-20020a50ec8b000000b005234996a4f9mr5329982edr.34.1692283117240;
-        Thu, 17 Aug 2023 07:38:37 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id l26-20020aa7c31a000000b005224d15d3dfsm9815160edq.87.2023.08.17.07.38.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 07:38:36 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so252905a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:38:36 -0700 (PDT)
-X-Received: by 2002:a17:907:a067:b0:99c:570a:e23e with SMTP id
- ia7-20020a170907a06700b0099c570ae23emr5392064ejc.24.1692283115907; Thu, 17
- Aug 2023 07:38:35 -0700 (PDT)
+        Thu, 17 Aug 2023 10:39:48 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D1743A93
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:39:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D814ED75;
+        Thu, 17 Aug 2023 07:40:08 -0700 (PDT)
+Received: from [10.57.34.77] (unknown [10.57.34.77])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63D943F6C4;
+        Thu, 17 Aug 2023 07:39:26 -0700 (PDT)
+Message-ID: <16d7c933-ef2f-682e-742e-641c6a076ac0@arm.com>
+Date:   Thu, 17 Aug 2023 15:39:25 +0100
 MIME-Version: 1.0
-References: <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
- <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com>
- <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
- <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
- <665724.1692218114@warthog.procyon.org.uk> <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
- <d0232378a64a46659507e5c00d0c6599@AcuMS.aculab.com>
-In-Reply-To: <d0232378a64a46659507e5c00d0c6599@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 17 Aug 2023 16:38:18 +0200
-X-Gmail-Original-Message-ID: <CAHk-=wi4wNm-2OjjhFEqm21xTNTvksmb5N4794isjkp9+FzngA@mail.gmail.com>
-Message-ID: <CAHk-=wi4wNm-2OjjhFEqm21xTNTvksmb5N4794isjkp9+FzngA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
-To:     David Laight <David.Laight@aculab.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] coresight: core: fix memory leak in dict->fwnode_list
+To:     Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
+        leo.yan@linaro.org, james.clark@arm.com
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        jonathan.cameron@huawei.com, yangyicong@huawei.com,
+        prime.zeng@hisilicon.com
+References: <20230817085937.55590-1-hejunhao3@huawei.com>
+ <20230817085937.55590-3-hejunhao3@huawei.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <20230817085937.55590-3-hejunhao3@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,38 +48,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 at 10:42, David Laight <David.Laight@aculab.com> wrote:
->
-> Although I'm not sure the bit-fields really help.
-> There are 8 bytes at the start of the structure, might as well
-> use them :-)
+On 17/08/2023 09:59, Junhao He wrote:
+> There are memory leaks reported by kmemleak:
+> ...
+> unreferenced object 0xffff2020103c3200 (size 256):
+>    comm "insmod", pid 4476, jiffies 4294978252 (age 50072.536s)
+>    hex dump (first 32 bytes):
+>      10 60 40 06 28 20 ff ff 10 c0 59 06 20 20 ff ff  .`@.( ....Y.  ..
+>      10 e0 47 06 28 20 ff ff 10 00 49 06 28 20 ff ff  ..G.( ....I.( ..
+>    backtrace:
+>      [<0000000034ec4724>] __kmem_cache_alloc_node+0x2f8/0x348
+>      [<0000000057fbc15d>] __kmalloc_node_track_caller+0x5c/0x110
+>      [<00000055d5e34b>] krealloc+0x8c/0x178
+>      [<00000000a4635beb>] coresight_alloc_device_name+0x128/0x188 [coresight]
+>      [<00000000a92ddfee>] funnel_cs_ops+0x10/0xfffffffffffedaa0 [coresight_funnel]
+>      [<00000000449e20f8>] dynamic_funnel_ids+0x80/0xfffffffffffed840 [coresight_funnel]
+> ...
+> 
+> when remove driver, the golab variables defined by the macro
+> DEFINE_CORESIGHT_DEVLIST will be released, dict->nr_idx and
+> dict->fwnode_list are cleared to 0. The lifetime of the golab
+> variable has ended. So the buffer pointer is lost.
+> 
+> Use the callback of devm_add_action_or_reset() to free memory.
 
-Actually=C3=A7 I wrote the patch that way because it seems to improve code
-generation.
+Thanks for the report. But please see below:
 
-The bitfields are generally all set together as just plain one-time
-constants at initialization time, and gcc sees that it's a full byte
-write. And the reason 'data_source' is not a bitfield is that it's not
-a constant at iov_iter init time (it's an argument to all the init
-functions), so having that one as a separate byte at init time is good
-for code generation when you don't need to mask bits or anything like
-that.
+> 
+> Fixes: 0f5f9b6ba9e1 ("coresight: Use platform agnostic names")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> ---
+>   drivers/hwtracing/coresight/coresight-core.c | 20 +++++++++++++++++++-
+>   1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 9fabe00a40d6..6849faad697d 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1756,6 +1756,20 @@ bool coresight_loses_context_with_cpu(struct device *dev)
+>   }
+>   EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
+>   
+> +void coresight_release_dev_list(void *data)
+> +{
+> +	struct coresight_dev_list *dict = data;
+> +
+> +	mutex_lock(&coresight_mutex);
+> +
+> +	if (dict->nr_idx) {
+> +		kfree(dict->fwnode_list);
+> +		dict->nr_idx = 0;
+> +	}
+> +
+> +	mutex_unlock(&coresight_mutex);
+> +}
+> +
+>   /*
+>    * coresight_alloc_device_name - Get an index for a given device in the
+>    * device index list specific to a driver. An index is allocated for a
+> @@ -1766,12 +1780,16 @@ EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
+>   char *coresight_alloc_device_name(struct coresight_dev_list *dict,
+>   				  struct device *dev)
+>   {
+> -	int idx;
+> +	int idx, ret;
+>   	char *name = NULL;
+>   	struct fwnode_handle **list;
+>   
+>   	mutex_lock(&coresight_mutex);
+>   
+> +	ret = devm_add_action_or_reset(dev, coresight_release_dev_list, dict);
+> +	if (ret)
+> +		goto done;
 
-And once initialized, having things be dense and doing all the
-compares with a bitwise 'and' instead of doing them as some value
-compare again tends to generate good code.
+This looks wrong. The devlist should be only released on the "driver" 
+unload, not on every device release. The list retains the fwnode to
+assign the same name for a device, if it is re-probed (e.g., due to
+-EPROBE_DEFER error).
 
-Then being able to test multiple bits at the same time is just gravy
-on top of that (ie that whole "remove user_backed, because it's easier
-to just test the bit combination").
+Suzuki
 
-> OTOH the 'nofault' and 'copy_mc' flags could be put into much
-> higher bits of a 32bit value.
-
-Once you start doing that, you often get bigger constants in the code strea=
-m.
-
-I didn't do any *extensive* testing of the code generation, but the
-stuff I looked at looked good.
-
-               Linus
