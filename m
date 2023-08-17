@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E752577FE35
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A27977FE36
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354618AbjHQSyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        id S1354627AbjHQSyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354649AbjHQSyd (ORCPT
+        with ESMTP id S239507AbjHQSyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:54:33 -0400
+        Thu, 17 Aug 2023 14:54:43 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3732727;
-        Thu, 17 Aug 2023 11:54:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3E9E48
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:54:42 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45DCE67760;
-        Thu, 17 Aug 2023 18:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36824C433C8;
-        Thu, 17 Aug 2023 18:54:30 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE4F767764
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:54:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03F98C433C7;
+        Thu, 17 Aug 2023 18:54:39 +0000 (UTC)
 From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     David Spickett <David.Spickett@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] arm64/ptrace: Ensure that SME is set up for target when writing SSVE state
-Date:   Thu, 17 Aug 2023 19:54:27 +0100
-Message-Id: <169229846427.1184154.14407026846596603141.b4-ty@arm.com>
+To:     Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        David Spickett <David.Spickett@arm.com>
+Subject: Re: [PATCH v2] arm64/ptrace: Ensure that the task sees ZT writes on first use
+Date:   Thu, 17 Aug 2023 19:54:37 +0100
+Message-Id: <169229846428.1184154.5773484111290413905.b4-ty@arm.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230810-arm64-fix-ptrace-race-v1-1-a5361fad2bd6@kernel.org>
-References: <20230810-arm64-fix-ptrace-race-v1-1-a5361fad2bd6@kernel.org>
+In-Reply-To: <20230816-arm64-zt-ptrace-first-use-v2-1-00aa82847e28@kernel.org>
+References: <20230816-arm64-zt-ptrace-first-use-v2-1-00aa82847e28@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,21 +45,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 12:28:19 +0100, Mark Brown wrote:
-> When we use NT_ARM_SSVE to either enable streaming mode or change the
-> vector length for a process we do not currently do anything to ensure that
-> there is storage allocated for the SME specific register state.  If the
-> task had not previously used SME or we changed the vector length then
-> the task will not have had TIF_SME set or backing storage for ZA/ZT
-> allocated, resulting in inconsistent register sizes when saving state
-> and spurious traps which flush the newly set register state.
+On Wed, 16 Aug 2023 19:40:07 +0100, Mark Brown wrote:
+> When the value of ZT is set via ptrace we don't disable traps for SME.
+> This means that when a the task has never used SME before then the value
+> set via ptrace will never be seen by the target task since it will
+> trigger a SME access trap which will flush the register state.
+> 
+> Disable SME traps when setting ZT, this means we also need to allocate
+> storage for SVE if it is not already allocated, for the benefit of
+> streaming SVE.
 > 
 > [...]
 
 Applied to arm64 (for-next/fixes), thanks!
 
-[1/1] arm64/ptrace: Ensure that SME is set up for target when writing SSVE state
-      https://git.kernel.org/arm64/c/5d0a8d2fba50
+[1/1] arm64/ptrace: Ensure that the task sees ZT writes on first use
+      https://git.kernel.org/arm64/c/2f43f549cd0b
 
 -- 
 Catalin
