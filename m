@@ -2,203 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4094877FC0C
+	by mail.lfdr.de (Postfix) with ESMTP id 941EE77FC0D
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352801AbjHQQ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56696 "EHLO
+        id S1353018AbjHQQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353721AbjHQQ0A (ORCPT
+        with ESMTP id S1353733AbjHQQ0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:26:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CEA173AB4
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:25:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68C2AD75;
+        Thu, 17 Aug 2023 12:26:02 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC6A3ABC;
         Thu, 17 Aug 2023 09:25:39 -0700 (PDT)
-Received: from [10.57.90.41] (unknown [10.57.90.41])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10F523F64C;
-        Thu, 17 Aug 2023 09:24:56 -0700 (PDT)
-Message-ID: <9ba29982-ae96-bf53-f021-21cb1b22643a@arm.com>
-Date:   Thu, 17 Aug 2023 17:24:51 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h7e4l1jpjtDRJcqtFNsDEZQ2TOlrre7bPZ1+Ai/Xi7zWsUMMQ72Xg27UtW3zHss9hZ2zGMaykksKaGEaTtMTmvfxC1cxgGRyc/XpalhHsJgwVPuvJLbvGc8pOID+gsnTCaBALtLKoX9pNLN4zM2cf6w1p0JjlVcYfZzXgFgBj46FunMcR6qTViUXMcA6W72g81yyZWdjE4Q9pmqUpL+H8Rm7MUvcLXuR6TftZOs+W+lXWELL6ebtogsE6HSCIdwpyWTdHETFkzBG2aR7VkF6JjtFOQ2dnNjeCJaygKowl+/O6Y0t676Xq2rbLNWrfqbXLMU40HEbqu3NRJnhpihIYA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3oXVoZIprjijixi9DFm3y4XTcZNihSBJOfMRBKz/Gmw=;
+ b=HS20p+oJuVKWF8eYgysWGJSLnyZI+36vM6cPsodaIJtHGvcpfGlJwBOYp3TdT2T66RIbHKtehih4Bg2qsP5pK4GmvRZ8xNmfVl6jfqR9bWO1XaSJm1+GwewC9SFzHVDmZa7rCeWVZcPm84Xg3rEnQWbSFxOwKx0r4wekjfoy0kfKXTuRvC18YnycuqU5F//8/pWs2DenW5ubyah5RHYAnjNOgls2X3JCusSJHzY7u5msPE/6ueLay8mbilUJsvmP9nJc5b3e0jalykppjPw8oIskq5ZNf5HVXLN7+aZFPbUh/e2XJL7SAq8abiJ2xSwjvxHCsmIO6S9jSXBxRnotWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3oXVoZIprjijixi9DFm3y4XTcZNihSBJOfMRBKz/Gmw=;
+ b=uydwjvcictNWL5b/EBd2yS9XG6gctgjw9HMguj4BlREFtCOnyYjdQ9hYgGGhvBrjwOLDJh3LvyQRF4ArPrHSiSJ4TvaZ4Ywz2I2HmfIFxdjFREGHxvSRJP5blpNn9HnpeVI5xDKJ4+UuKVol9EBnuft1hLYuDFnnRu0fW8BMveQ=
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CH2PR12MB5001.namprd12.prod.outlook.com (2603:10b6:610:61::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 16:25:10 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 16:25:10 +0000
+From:   "Limonciello, Mario" <Mario.Limonciello@amd.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        August Wikerfors <git@augustwikerfors.se>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: RE: [PATCH] ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
+Thread-Topic: [PATCH] ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
+Thread-Index: AQHZwYV1Rtet55lVZky5tmm7zxZKUK/uy4QAgAAAL0A=
+Date:   Thu, 17 Aug 2023 16:25:10 +0000
+Message-ID: <MN0PR12MB610129485F9ACA8DF1321B26E21AA@MN0PR12MB6101.namprd12.prod.outlook.com>
+References: <20230728183921.17230-1-mario.limonciello@amd.com>
+ <CAJZ5v0iDJtTjZXB3HLZgLX2tLF5DW8Da2-S77zDLsBvH1A1kpA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iDJtTjZXB3HLZgLX2tLF5DW8Da2-S77zDLsBvH1A1kpA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=98e48f04-f454-4c52-bed8-d3b700a1ddd1;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-08-17T16:25:01Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR12MB6101:EE_|CH2PR12MB5001:EE_
+x-ms-office365-filtering-correlation-id: 69515fda-2d25-460b-1dd1-08db9f3e86f2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KfVOs7qfo+Umw5tixvZ8r1a+GAx3zDbdcMY3DOXxTu/XYW/0BhrcD3hyHW++2JGSzn/pptKnaA1+nT8zyJzVwkCiBq5iyBd/nb+Jj7jtzyDed6BQFD4WpRy+MfQSyTvxgdeS/sANgDrc1nR8ChYUap81jNpE7nm/tzyqd/W9C7c1insVYz+5iekYSfkBWZcpBCuoZNuvcJmj4QWPfva1Ku4Ce/0a6t4PLtAjzGosn38AcU2hsu3c0DTXRlFKXliieHXJbIxKFQrgytv3jXqLlNXmz6i9AWqFZG3tizDoUDYtTgTi00v7F0lk8p/xO+WI1c1Zm3li50gXsVfHvM6YCBT7AX8YUGsLeRE0mGwGfK5Sgozgulwpao6OPK1u+A6vtNGXd+abM8gMioAWcAKRKkNJ6ZDq2iJWYgJSAg/fbawmEtHnGLUMhi/xWZvIADkHqagFg58gMWbdbo5TZFXm9KHcHBaJDZJ01rKLeiFYMcFasD7mfChNCvsC+yxtdIUG4tp/dTAmQYoXkv8sK5vlISLy3qv1/qjDvDOLSIhfrUzyU5IRrR3fTPWZR5LMIyK60GMd4bOSGACuaykaU3u+WX+fsq6BbTSTbdaouedLE3c=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(366004)(136003)(376002)(1800799009)(451199024)(186009)(55016003)(83380400001)(38100700002)(66476007)(38070700005)(66556008)(66446008)(64756008)(54906003)(6916009)(316002)(66946007)(76116006)(478600001)(122000001)(966005)(2906002)(41300700001)(8936002)(8676002)(4326008)(52536014)(5660300002)(53546011)(9686003)(6506007)(7696005)(71200400001)(26005)(86362001)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?enRabyt4anVLTS9xWUxHOXZlR0NjNnJSWm1UTmxYVDMwOWNybnFQbzF3QVlm?=
+ =?utf-8?B?bzdxclRaM3BkeXcwY1AyZHQvV0EweUNnYWtMaUdHM2pVeExCVC82UnMxcWls?=
+ =?utf-8?B?Tk1ieDlHRmh5dUlYQy9tcGs1RisyVm1XR0h6K2M1TnNhN1BKUjZXNnJHNEli?=
+ =?utf-8?B?TjJyOG1VR2hZVjYrbm1yNnZvdzRyZzk4dGlwOEdMa2dHdGU4a1VzUUhkRWJR?=
+ =?utf-8?B?OTZLaGVmLzByV25sVVgySU5ueDVwd2YrcEJXLzU5SVBEWm5XZEl1WlNRYzRz?=
+ =?utf-8?B?MnF5cmFrdnBIVGp0dlJEdzRVUCtkV3h1WGw4cHFyV3JvRzZDUFdDbDZGeXd0?=
+ =?utf-8?B?WWlOQ0YwRnNyQnJaRW15MVE0cndPUDhWcGw4M3VKbVpzWXNYYWhqMFVIQUNB?=
+ =?utf-8?B?YjJ4bkJUd0EzSTRubXRzcW8raHQ3YUkzeTFSdUhwMGY1SnhyazBJNEp1UENR?=
+ =?utf-8?B?YTlQUWJsbVkrckFMa1VNcUdHOTBEdWZGSjQ1RmxSSkM0R2w2UERhM0w1Uk5n?=
+ =?utf-8?B?YnFjc1MxemloL09hUFRBdjJsMHBnNU9NYUNIMFF2dkR0UlFDcTVsaFF5SmZh?=
+ =?utf-8?B?Q0NnWjZjQUdBdWpmeXZLY1ErNnVYUS9qcEF5MzA4dDJ6VVl2dGU0a2RJYy8y?=
+ =?utf-8?B?Z3dYYjJqY1J3UUJjalI3Z2ZqNXd4RmdGQ25HblB4cWpCaVlDUm9DSmZ3dmtR?=
+ =?utf-8?B?MUhHL0UvQTlIWmx2aUtDNktLWmtncGpKWHV6NHM1QVZTb1BndzBiV251TVdL?=
+ =?utf-8?B?TFJFZ05nVk4xWUxSdFRoSE16dVJLanEzdmpuS3ZKZlRVQlhWdjdsVUhPSmZL?=
+ =?utf-8?B?T1ZvMVJXSzUvak1PWXY4NmZVaDRYaFlqNjZvcWlCeWpKYmhCUGdPNktSZUN6?=
+ =?utf-8?B?Y2ttdXVrbW1ud2FlOVBxNk1aNFJMQVMrVjVUQnE3ODBLTUlNbVF2OFBDcTFQ?=
+ =?utf-8?B?UFVlZlljK2pGTURTNytzSGVieE1PV0hnY1AzcW9YNjdtME1tUkhZdW1FSDcv?=
+ =?utf-8?B?R1hmQ09SbzR2N0I5eHo4NklTVUpPZlllNnAzZHFscENLYWFxUjNXOVQyaDBL?=
+ =?utf-8?B?M1VKWXp0RWc0THdFbCtWVjhCa3BMZUR2U2dsUm5kY1ErUlNnS0pEaTJJL3ZU?=
+ =?utf-8?B?WGJnUGhSdDNJZmdHYlBRNDg5eHVDZWUzcWYveFBXZUxyTnE0ck53T3ZLYUJq?=
+ =?utf-8?B?VzNpVjIxbDY3QWJ0WjI1d2pHaU4vL1UrMlpmRDQ1T0xHUHZ6MitlODB1bVRY?=
+ =?utf-8?B?MHZiOElCa09JWHRFTVBPUVF1SmZxc0MycXhpZks3SUwvZ2IzSHZzbHRZV29h?=
+ =?utf-8?B?dnNxMkUyM3ZBWDYza3Qwd2pzdlVNZU4xYXZUV0hjZTJnTUVDYU16d2k0bHlv?=
+ =?utf-8?B?aVBhbmU4Q1N0TEJvQlVOYkRHY2ZpQ1drNTdMSjZwbEwwMTJiMmNkMnIxaXlM?=
+ =?utf-8?B?dnhiSnBZYk1yYW5WYi9HUFRzZDE0bFJObUNEQVBDcUErUTY1OCtnNmxGUE9L?=
+ =?utf-8?B?WWwweEt3bkx6L3l1VGcrOXcvekprVXlPZ3Y1eUhTWjZFWXNvTmllTWM3Y3d5?=
+ =?utf-8?B?ME5ZVEdibGpsdDFLM29DeUNvU3pvWjZtTWFLME16ZjVHNUVLemIxUVFkMk5P?=
+ =?utf-8?B?dmgvQ0Q5WGlmOVVWU2pFMEJkU3Y3MEo0Zm5xU2JJcEZrZ1ovMGE2NVdKM2xx?=
+ =?utf-8?B?Tmh2b3ZNaWhob3hmeStVYlpYZVFOTmo5VEw5bnpZdG9Jd29xMEdKSHJKU1Ru?=
+ =?utf-8?B?Ym5qeC9sZTA5akdKU2Zpa1grRTVTRFU3a2hObWZtcXVmMjhLRFNFSVpFQ3pK?=
+ =?utf-8?B?THBGa2hqM3lNYmxOS05SYXFjdlMxRWJNUUxmS2ZkQlJuYWlEQzNGV0dmWjNh?=
+ =?utf-8?B?bUwvWTZFSWhMK0NQMU1XR2FUMjVhbkVvQ0M3K2tEM2FnbW9CL29VcWJQa0I5?=
+ =?utf-8?B?bWp6dnF0Z2RuMDI1RXlMcStibVdIbVdLUFVSenczcmZQenpncjVqL1orUUNU?=
+ =?utf-8?B?RFZTVFc3YkxRUGVibG9sdFRMeWlESlZSbkZzMFVFQzJGZ2ZDZlpMeHBzVFpi?=
+ =?utf-8?B?TitZODVLcHpxS3pQWFVOdGpSQWtjRUFkcWJQUTIvbnMrMXpMTWVXU1pkdmlh?=
+ =?utf-8?Q?SPCc=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Allow default substream bypass with
- a pasid support
-Content-Language: en-GB
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Cc:     will@kernel.org, joro@8bytes.org, mshavit@google.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev
-References: <20230817042135.32822-1-nicolinc@nvidia.com>
- <ZN46upjIBFcI4mL+@nvidia.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <ZN46upjIBFcI4mL+@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69515fda-2d25-460b-1dd1-08db9f3e86f2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Aug 2023 16:25:10.3857
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: e0HzaSUx6L7k/LJIW8IulIFSMeava2UZk98/CDDkHLJqzpPH/LFNEp8l3UUD1k4gzOOg+L9HbeU8pNgpOS1aLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5001
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-17 16:20, Jason Gunthorpe wrote:
-> On Wed, Aug 16, 2023 at 09:21:35PM -0700, Nicolin Chen wrote:
->> When an iommu_domain is set to IOMMU_DOMAIN_IDENTITY, the driver sets the
->> arm_smmu_domain->stage to ARM_SMMU_DOMAIN_BYPASS and skips the allocation
->> of a CD table, and then sets STRTAB_STE_0_CFG_BYPASS to the CONFIG field
->> of the STE. This works well for devices that only have one substream, i.e.
->> pasid disabled.
->>
->> With a pasid-capable device, however, there could be a use case where it
->> allows an IDENTITY domain attachment without disabling its pasid feature.
->> This requires the driver to allocate a multi-entry CD table to attach the
->> IDENTITY domain to its default substream and to configure the S1DSS filed
->> of the STE to STRTAB_STE_1_S1DSS_BYPASS. So, there is a missing link here
->> between the STE setup and an IDENTITY domain attachment.
->>
->> Add a new stage ARM_SMMU_DOMAIN_BYPASS_S1DSS to tag this configuration by
->> overriding the ARM_SMMU_DOMAIN_BYPASS if the device has pasid capability.
->> This new tag will allow the driver allocating a CD table yet skipping an
->> CD insertion from the IDENTITY domain, and setting up the STE accordingly.
->>
->> In a use case of ARM_SMMU_DOMAIN_BYPASS_S1DSS, the SHCFG field of the STE
->> should be set to STRTAB_STE_1_SHCFG_INCOMING. In other cases of having a
->> CD table, the shareability comes from a CD, not the SHCFG field: according
->> to "13.5 Summary of attribute/permission configuration fields" in the spec
->> the SHCFG field value is irrelevant. So, always configure the SHCFG field
->> of the STE to STRTAB_STE_1_SHCFG_INCOMING when a CD table is present, for
->> simplification.
->>
->> Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
->> ---
->>
->> Changelog
->> v2:
->>   * Rebased on top of Michael's series reworking CD table ownership:
->>     https://lore.kernel.org/all/20230816131925.2521220-1-mshavit@google.com/
->>   * Added a new ARM_SMMU_DOMAIN_BYPASS_S1DSS stage to tag the use case
->> v1: https://lore.kernel.org/all/20230627033326.5236-1-nicolinc@nvidia.com/
-> 
-> After rebasing there really shouldn't be a
-> ARM_SMMU_DOMAIN_BYPASS_S1DSS. I want to get to a model where the
-> identity domain is a global static, so it can't be changing depending
-> on how it is attched.
-> 
-> I continue to think that the right way to think about this is to have
-> the CD table code generate the STE it wants and when doing so it will
-> inspect what SSID0 is. If it is the IDENTITY domain then it fills
-> s1dss / etc
-
-Indeed, that's what I was getting at with "generalisation of
-ARM_SMMU_DOMAIN_BYPASS based on s1cdmax" - just one type all the way 
-down to the bowels of arm_smmu_write_strtab_ent(), which then decides 
-whether it means touching S1DSS or Config in the given STE.
-
->> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> index b27011b2bec9..860db4fbb995 100644
->> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
->> @@ -1271,6 +1271,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>   	 * 3. Update Config, sync
->>   	 */
->>   	u64 val = le64_to_cpu(dst[0]);
->> +	u8 s1dss = STRTAB_STE_1_S1DSS_SSID0;
->>   	bool ste_live = false;
->>   	struct arm_smmu_device *smmu = NULL;
->>   	struct arm_smmu_ctx_desc_cfg *cd_table = NULL;
->> @@ -1290,6 +1291,9 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->>   
->>   	if (smmu_domain) {
->>   		switch (smmu_domain->stage) {
->> +		case ARM_SMMU_DOMAIN_BYPASS_S1DSS:
->> +			s1dss = STRTAB_STE_1_S1DSS_BYPASS;
->> +			fallthrough;
->>   		case ARM_SMMU_DOMAIN_S1:
->>   			cd_table = &master->cd_table;
->>   			break;
-> 
-> Eg, I think the code looks much nicer if the logic here is more like:
-> 
-> if (master->cd_table.cdtab)
->     arm_smmu_cd_table_get_ste(master->cd_table, &ste)
-> else if (master->domain)
->     arm_smmu_domain_get_ste(master->domain, &ste);
-> else
->     ste = not attached
-> 
-> And you'd check in arm_smmu_cd_table_get_ste() to learn the CD
-> parameters and also what SSID=0 is. If SSID=0 is IDENTITY then
-> arm_smmu_cd_table_get_ste would return with S1DSS set.
-> 
-> arm_smmu_domain_get_ste() would multiplex based on the domain type.
-> 
->> @@ -2435,6 +2440,16 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->>   	} else if (smmu_domain->smmu != smmu)
->>   		ret = -EINVAL;
->>   
->> +	/*
->> +	 * When attaching an IDENTITY domain to a master with pasid capability,
->> +	 * the master can still enable SVA feature by allocating a multi-entry
->> +	 * CD table and attaching the IDENTITY domain to its default substream
->> +	 * that alone can be byassed using the S1DSS field of the STE.
->> +	 */
->> +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS && master->ssid_bits &&
->> +	    smmu->features & ARM_SMMU_FEAT_TRANS_S1)
->> +		smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS_S1DSS;
-> 
-> Then you don't technically need to do this.
-> 
-> Though if we can't atomically change the STE from IDENTITY to IDENTIY
-> with a CD then you still have to do something here,
-
-Strictly I think we are safe to do that - fill in all the S1* fields 
-while Config[0] is still 0 and they're ignored, sync, then set 
-Config[0]. Adding a CD table under a translation domain should be 
-achievable as well, since S1CDMax, S1ContextPtr and S1Fmt can all be 
-updated together atomically (although it's still the kind of switcheroo 
-where I'd be scared of a massive boulder suddenly rolling out of the 
-ceiling...)
-
-> but really what we
-> want is to force a CD table for all cases if PASID is enabled, and
-> force DMA domains to be S2 domains as well.
-
-Wut? No, DMA domains really want to be stage 1, for many reasons. 
-Implementing them with stage 2 when stage 1 isn't supported was always a 
-bit of a bodge, but thankfully I'm not aware of anyone ever building a 
-stage-2-only SMMUv3 anyway.
-
-The most glaringly obvious one, though, is that I think people like 
-PASID support and SVA to actually work ;)
-
-Thanks,
-Robin.
-
->>   	mutex_unlock(&smmu_domain->init_mutex);
->>   	if (ret)
->>   		return ret;
->> @@ -2456,7 +2471,8 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
->>   	list_add(&master->domain_head, &smmu_domain->devices);
->>   	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
->>   
->> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
->> +	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 ||
->> +	    smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS_S1DSS) {
->>   		if (!master->cd_table.cdtab) {
->>   			ret = arm_smmu_alloc_cd_tables(master);
->>   			if (ret) {
-> 
-> So more like:
-> 
->   if (smmu_domain == IDENTIY && arm_smmu_support_ssid(dev))
->       arm_smmu_alloc_cd_tables()
-> 
-> Jason
+W0FNRCBPZmZpY2lhbCBVc2UgT25seSAtIEdlbmVyYWxdDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0NCj4gRnJvbTogUmFmYWVsIEouIFd5c29ja2kgPHJhZmFlbEBrZXJuZWwub3JnPg0K
+PiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDE3LCAyMDIzIDExOjI0IEFNDQo+IFRvOiBMaW1vbmNp
+ZWxsbywgTWFyaW8gPE1hcmlvLkxpbW9uY2llbGxvQGFtZC5jb20+DQo+IENjOiByYWZhZWxAa2Vy
+bmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgtDQo+IGFjcGlAdmdl
+ci5rZXJuZWwub3JnOyByZWdyZXNzaW9uc0BsaXN0cy5saW51eC5kZXY7IEF1Z3VzdCBXaWtlcmZv
+cnMNCj4gPGdpdEBhdWd1c3R3aWtlcmZvcnMuc2U+OyBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUBy
+ZWRoYXQuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBBQ1BJOiByZXNvdXJjZTogQWRkIGEg
+cXVpcmsgZm9yIExlbm92byBZb2dhIDcgMTRBUkI3DQo+DQo+IE9uIEZyaSwgSnVsIDI4LCAyMDIz
+IGF0IDg6NTjigK9QTSBNYXJpbyBMaW1vbmNpZWxsbw0KPiA8bWFyaW8ubGltb25jaWVsbG9AYW1k
+LmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBMZW5vdm8gWW9nYSA3IG5lZWRzIHRvIGhhdmUga2V5Ym9h
+cmQgaW50ZXJydXB0IHNpZ25hbGluZyBwb2xhcml0eQ0KPiA+IGlzIGluY29ycmVjdCBpbiB0aGUg
+TUFEVCBhbmQgdGhlIHZhbHVlIGZyb20gdGhlIERTRFQgc2hvdWxkIGJlIHVzZWQuDQo+ID4NCj4g
+PiBSZXBvcnRlZC1ieTogQXVndXN0IFdpa2VyZm9ycyA8Z2l0QGF1Z3VzdHdpa2VyZm9ycy5zZT4N
+Cj4gPiBDbG9zZXM6IGh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9
+MjE3NzE4DQo+ID4gRml4ZXM6IGE5YzRhOTEyYjdkYyAoIkFDUEk6IHJlc291cmNlOiBSZW1vdmUg
+IlplbiIgc3BlY2lmaWMgbWF0Y2ggYW5kDQo+IHF1aXJrcyIpDQo+ID4gU2lnbmVkLW9mZi1ieTog
+TWFyaW8gTGltb25jaWVsbG8gPG1hcmlvLmxpbW9uY2llbGxvQGFtZC5jb20+DQo+DQo+IElzIHRo
+aXMgc3RpbGwgbmVlZGVkIGFmdGVyIHRoZSByZWNlbnQgY2hhbmdlcyBmcm9tIEhhbnM/DQoNCk5v
+LCBpdCdzIG5vdCB0aGFua3MgZm9yIGNoZWNraW5nLg0KDQo+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
+cnMvYWNwaS9yZXNvdXJjZS5jIHwgMTIgKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCAxMiBpbnNlcnRpb25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9hY3BpL3Jl
+c291cmNlLmMgYi9kcml2ZXJzL2FjcGkvcmVzb3VyY2UuYw0KPiA+IGluZGV4IDFkZDhkNWFlYmY2
+NzguLjFhODI2NDE5ZDU4MzcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9hY3BpL3Jlc291cmNl
+LmMNCj4gPiArKysgYi9kcml2ZXJzL2FjcGkvcmVzb3VyY2UuYw0KPiA+IEBAIC00ODEsNiArNDgx
+LDE3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9pZCBsZ19sYXB0b3BbXSA9IHsN
+Cj4gPiAgICAgICAgIHsgfQ0KPiA+ICB9Ow0KPiA+DQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
+ZG1pX3N5c3RlbV9pZCBsZW5vdm9fbGFwdG9wW10gPSB7DQo+ID4gKyAgICAgICB7DQo+ID4gKyAg
+ICAgICAgICAgICAgIC5pZGVudCA9ICJMZW5vdm8gWW9nYSA3IDE0QVJCNyIsDQo+ID4gKyAgICAg
+ICAgICAgICAgIC5tYXRjaGVzID0gew0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIERNSV9N
+QVRDSChETUlfU1lTX1ZFTkRPUiwgIkxFTk9WTyIpLA0KPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgIERNSV9NQVRDSChETUlfUFJPRFVDVF9OQU1FLCAiODJRRiIpLA0KPiA+ICsgICAgICAgICAg
+ICAgICB9LA0KPiA+ICsgICAgICAgfSwNCj4gPiArICAgICAgIHsgfQ0KPiA+ICt9Ow0KPiA+ICsN
+Cj4gPiAgc3RydWN0IGlycV9vdmVycmlkZV9jbXAgew0KPiA+ICAgICAgICAgY29uc3Qgc3RydWN0
+IGRtaV9zeXN0ZW1faWQgKnN5c3RlbTsNCj4gPiAgICAgICAgIHVuc2lnbmVkIGNoYXIgaXJxOw0K
+PiA+IEBAIC00OTQsNiArNTA1LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBpcnFfb3ZlcnJpZGVf
+Y21wDQo+IG92ZXJyaWRlX3RhYmxlW10gPSB7DQo+ID4gICAgICAgICB7IG1lZGlvbl9sYXB0b3As
+IDEsIEFDUElfTEVWRUxfU0VOU0lUSVZFLCBBQ1BJX0FDVElWRV9MT1csIDAsIGZhbHNlDQo+IH0s
+DQo+ID4gICAgICAgICB7IGFzdXNfbGFwdG9wLCAxLCBBQ1BJX0xFVkVMX1NFTlNJVElWRSwgQUNQ
+SV9BQ1RJVkVfTE9XLCAwLCBmYWxzZSB9LA0KPiA+ICAgICAgICAgeyBsZ19sYXB0b3AsIDEsIEFD
+UElfTEVWRUxfU0VOU0lUSVZFLCBBQ1BJX0FDVElWRV9MT1csIDAsIGZhbHNlIH0sDQo+ID4gKyAg
+ICAgICB7IGxlbm92b19sYXB0b3AsIDEsIEFDUElfTEVWRUxfU0VOU0lUSVZFLCBBQ1BJX0FDVElW
+RV9MT1csIDEsDQo+IGZhbHNlfQ0KPiA+ICB9Ow0KPiA+DQo+ID4gIHN0YXRpYyBib29sIGFjcGlf
+ZGV2X2lycV9vdmVycmlkZSh1MzIgZ3NpLCB1OCB0cmlnZ2VyaW5nLCB1OCBwb2xhcml0eSwNCj4g
+PiAtLQ0KPiA+IDIuMzQuMQ0KPiA+DQo=
