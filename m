@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5F977F781
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ADB77F789
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 15:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351343AbjHQNQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 09:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        id S1351226AbjHQNUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 09:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351454AbjHQNQZ (ORCPT
+        with ESMTP id S1351438AbjHQNUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 09:16:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77A7103;
-        Thu, 17 Aug 2023 06:16:17 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 15:16:12 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692278175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4XsU42DM/msA/Cd5i5m/J+bQMyWNBvE8v4MIojmkpuw=;
-        b=d48XWJt3B4sHnmLZskkGirccMizqbqs99ML19Gt8vNuTpvwHHgK0qDv8LwO+x2Rk8WVvuA
-        wpA3kTiVE19SLdbi9N2k0/fdYIYQrJpPRHan9iYlN9l309crHPX5uLKdhSWTkjSa7Z0/4j
-        C6OeSmhZpqpOrHvctYP2vxrNiBLXo/HfRMQUDFqfO9T2xdcf8IiwByxdj9LqgBJpQes30a
-        jlTzAnaExixQbMicm3uh9yD3IiTk2LKWlS1Ut1ZUh8s5DzjIqUTuXXYirRZ02chiaAtSqU
-        cmKDPasN0v210JPCILgMsoexKi/6q3w32wNJi8TnHIiTBecvom31dQBIImlnWA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692278175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4XsU42DM/msA/Cd5i5m/J+bQMyWNBvE8v4MIojmkpuw=;
-        b=H/3Lwjw4RY5zrazKziA3e4yQKbhpvO4c2rFkNu5MZFvj73HNeWUACNTBWGFl2wVOhjTjQ4
-        6JCHm6ybYD8RhHCQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Yan Zhai <yan@cloudflare.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
-Message-ID: <20230817131612.M_wwTr7m@linutronix.de>
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814112421.5a2fa4f6@kernel.org>
+        Thu, 17 Aug 2023 09:20:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3A62133
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692278414; x=1723814414;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=oCTVmNYrLlpnyZdSlsj8M2QXwVyMDIZGZUYhsRuF2BM=;
+  b=QU/8tmqJLjH2XlXkwU8fZws39if52t160bEHqe3nmwrp8kR2kAQ0TF4U
+   MdggIBigLQhBu682N3pMzE481iibuVslJalvMcHIFIJDtJ33z+PVPIoUp
+   0ZLwKbe9hzoqTPGNdxaoelCb4mB/n22KMFvEhl+hLVZ2CoEcVZ6Ulps9e
+   /EYeY1MP+qzZnNeHeaq9FZF8yVGIRjMaHeCxYcYUcHBI/VLBC/5AV885x
+   e/YBJqrxt5gHKMSDhYc6lLh5MddnnrkFLEGVsooqUapmC7M7uNv7Yqwwx
+   8OcqTZdvHYidLEAzIrxYwFiaP1jB32LF/WFTS/H5+mtGR7jkgOc2o5HM6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="362961457"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="362961457"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 06:17:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="1065233569"
+X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
+   d="scan'208";a="1065233569"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 06:17:42 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWcsb-00019o-02;
+        Thu, 17 Aug 2023 13:17:37 +0000
+Date:   Thu, 17 Aug 2023 21:17:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jing Zhang <jingzhangos@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>
+Subject: arch/arm64/kvm/sys_regs.c:1239: warning: Function parameter or
+ member 'vcpu' not described in 'arm64_check_features'
+Message-ID: <202308172123.fPQkVpYE-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230814112421.5a2fa4f6@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-14 11:24:21 [-0700], Jakub Kicinski wrote:
-> On Mon, 14 Aug 2023 11:35:26 +0200 Sebastian Andrzej Siewior wrote:
-> > The RPS code and "deferred skb free" both send IPI/ function call
-> > to a remote CPU in which a softirq is raised. This leads to a warning on
-> > PREEMPT_RT because raising softiqrs from function call led to undesired
-> > behaviour in the past. I had duct tape in RT for the "deferred skb free"
-> > and Wander Lairson Costa reported the RPS case.
-> 
-> Could you find a less invasive solution?
-> backlog is used by veth == most containerized environments.
-> This change has a very high risk of regression for a lot of people.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+commit: 2e8bf0cbd0589bae3a0466a3ed45f9cf9f3164eb KVM: arm64: Use arm64_ftr_bits to sanitise ID register writes
+date:   9 weeks ago
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230817/202308172123.fPQkVpYE-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172123.fPQkVpYE-lkp@intel.com/reproduce)
 
-Looking at the cloudflare ppl here in the thread, I doubt they use
-backlog but have proper NAPI so they might not need this.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308172123.fPQkVpYE-lkp@intel.com/
 
-There is no threaded NAPI for backlog and RPS. This was suggested as the
-mitigation for the highload/ DoS case. Can this become a problem or
-- backlog is used only by old drivers so they can move to proper NAPI if
-  it becomes a problem.
-- RPS spreads the load across multiple CPUs so it unlikely to become a
-  problem.
+All warnings (new ones prefixed by >>):
 
-Making this either optional in general or mandatory for threaded
-interrupts or PREEMPT_RT will probably not make the maintenance of this
-code any simpler.
+>> arch/arm64/kvm/sys_regs.c:1239: warning: Function parameter or member 'vcpu' not described in 'arm64_check_features'
+>> arch/arm64/kvm/sys_regs.c:1239: warning: Function parameter or member 'rd' not described in 'arm64_check_features'
+>> arch/arm64/kvm/sys_regs.c:1239: warning: Function parameter or member 'val' not described in 'arm64_check_features'
+   arch/arm64/kvm/sys_regs.c:2868: warning: Function parameter or member 'global' not described in 'kvm_handle_cp_64'
+   arch/arm64/kvm/sys_regs.c:2868: warning: Function parameter or member 'nr_global' not described in 'kvm_handle_cp_64'
+   arch/arm64/kvm/sys_regs.c:2868: warning: Excess function parameter 'run' description in 'kvm_handle_cp_64'
+   arch/arm64/kvm/sys_regs.c:3036: warning: Function parameter or member 'params' not described in 'kvm_handle_cp_32'
+   arch/arm64/kvm/sys_regs.c:3036: warning: Function parameter or member 'global' not described in 'kvm_handle_cp_32'
+   arch/arm64/kvm/sys_regs.c:3036: warning: Function parameter or member 'nr_global' not described in 'kvm_handle_cp_32'
+   arch/arm64/kvm/sys_regs.c:3036: warning: Excess function parameter 'run' description in 'kvm_handle_cp_32'
 
-I've been looking at veth. In the xdp case it has its own NAPI instance.
-In the non-xdp it uses backlog. This should be called from
-ndo_start_xmit and user's write() so BH is off and interrupts are
-enabled at this point and it should be kind of rate-limited. Couldn't we
-bypass backlog in this case and deliver the packet directly to the
-stack?
 
-Sebastian
+vim +1239 arch/arm64/kvm/sys_regs.c
+
+  1223	
+  1224	/**
+  1225	 * arm64_check_features() - Check if a feature register value constitutes
+  1226	 * a subset of features indicated by the idreg's KVM sanitised limit.
+  1227	 *
+  1228	 * This function will check if each feature field of @val is the "safe" value
+  1229	 * against idreg's KVM sanitised limit return from reset() callback.
+  1230	 * If a field value in @val is the same as the one in limit, it is always
+  1231	 * considered the safe value regardless For register fields that are not in
+  1232	 * writable, only the value in limit is considered the safe value.
+  1233	 *
+  1234	 * Return: 0 if all the fields are safe. Otherwise, return negative errno.
+  1235	 */
+  1236	static int arm64_check_features(struct kvm_vcpu *vcpu,
+  1237					const struct sys_reg_desc *rd,
+  1238					u64 val)
+> 1239	{
+  1240		const struct arm64_ftr_reg *ftr_reg;
+  1241		const struct arm64_ftr_bits *ftrp = NULL;
+  1242		u32 id = reg_to_encoding(rd);
+  1243		u64 writable_mask = rd->val;
+  1244		u64 limit = rd->reset(vcpu, rd);
+  1245		u64 mask = 0;
+  1246	
+  1247		/*
+  1248		 * Hidden and unallocated ID registers may not have a corresponding
+  1249		 * struct arm64_ftr_reg. Of course, if the register is RAZ we know the
+  1250		 * only safe value is 0.
+  1251		 */
+  1252		if (sysreg_visible_as_raz(vcpu, rd))
+  1253			return val ? -E2BIG : 0;
+  1254	
+  1255		ftr_reg = get_arm64_ftr_reg(id);
+  1256		if (!ftr_reg)
+  1257			return -EINVAL;
+  1258	
+  1259		ftrp = ftr_reg->ftr_bits;
+  1260	
+  1261		for (; ftrp && ftrp->width; ftrp++) {
+  1262			s64 f_val, f_lim, safe_val;
+  1263			u64 ftr_mask;
+  1264	
+  1265			ftr_mask = arm64_ftr_mask(ftrp);
+  1266			if ((ftr_mask & writable_mask) != ftr_mask)
+  1267				continue;
+  1268	
+  1269			f_val = arm64_ftr_value(ftrp, val);
+  1270			f_lim = arm64_ftr_value(ftrp, limit);
+  1271			mask |= ftr_mask;
+  1272	
+  1273			if (f_val == f_lim)
+  1274				safe_val = f_val;
+  1275			else
+  1276				safe_val = kvm_arm64_ftr_safe_value(id, ftrp, f_val, f_lim);
+  1277	
+  1278			if (safe_val != f_val)
+  1279				return -E2BIG;
+  1280		}
+  1281	
+  1282		/* For fields that are not writable, values in limit are the safe values. */
+  1283		if ((val & ~mask) != (limit & ~mask))
+  1284			return -E2BIG;
+  1285	
+  1286		return 0;
+  1287	}
+  1288	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
