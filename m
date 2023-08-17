@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC7077F861
+	by mail.lfdr.de (Postfix) with ESMTP id A704E77F860
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351726AbjHQOIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S1351551AbjHQOIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351712AbjHQOHv (ORCPT
+        with ESMTP id S1351690AbjHQOHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:07:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E6519E;
-        Thu, 17 Aug 2023 07:07:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692281270; x=1723817270;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vNdDKtouzhu9+Inu5Ih3J1Ppb7aFydQrlRApI+2a65M=;
-  b=BduJ/LweeK1T7yw/naT+GujuI/C62WGTROoKi8YmD+mu9kfES/HS9e1F
-   3znAiScRZIWjxaRWCgSTXe0lneMb6DZFX26AfqRa0V2jbMsoizY+fib5V
-   KFUBFbgu1gh0p7ja5pEmr/zRIMr4XJCpSKrQKFpsxjF8+kulEGBnPhdI1
-   a89SmxAcs6xf4lcBQy5YZd65bW8ro7qXEs8t8882MgFE+7E+JG43NZFfg
-   c7SQFJy4eFZnD+b/enkDRHYyIwuYtLlWGY2n2qfab+e5m1GfTgee791GO
-   V3CkMxanS1gB48BApbTnGX6GtAf7A5bQyocKdXKFznwSR797PW41ooLwX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="352404137"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="352404137"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 07:06:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="734671083"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="734671083"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP; 17 Aug 2023 07:06:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWddu-00Ehx4-1H;
-        Thu, 17 Aug 2023 17:06:30 +0300
-Date:   Thu, 17 Aug 2023 17:06:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "frowand.list@gmail.com" <frowand.list@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] of/platform: increase refcount of fwnode
-Message-ID: <ZN4pZqowqDLmst5Y@smile.fi.intel.com>
-References: <20230812122411.3410399-1-peng.fan@oss.nxp.com>
- <ZN39I7w4ARc0WLnI@smile.fi.intel.com>
- <ZN3+XzfK00vXPiHO@smile.fi.intel.com>
- <DU0PR04MB9417B3FE767FA06FFFEE018A881AA@DU0PR04MB9417.eurprd04.prod.outlook.com>
+        Thu, 17 Aug 2023 10:07:40 -0400
+Received: from mx4.sionneau.net (mx4.sionneau.net [51.15.250.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48DF19E;
+        Thu, 17 Aug 2023 07:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sionneau.net;
+        s=selectormx4; t=1692281256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQqO36gNDNYTmXlOgLSSVeVJ96lebd5QYS7C6qKGB5g=;
+        b=mhh6B5btWfTlejtjZYdSAW0YEvWXJnr1p9fa0BGHXUDbnplElZ3l281vh/xcDx8g+1JWqw
+        KprV3m77TUDXPDy5Vv5g1Ad4sw/X6UMRPLZNCCH7enFSRF0Y/b9h9z9hIOjY/O8XB3M7hJ
+        XjGIMaSUZVKCZl0P2n4MZYx6ZBj1vbU=
+Received: from [192.168.43.126] (hen56-1_migr-78-240-185-16.fbx.proxad.net [78.240.185.16])
+        by mx4.sionneau.net (OpenSMTPD) with ESMTPSA id 4354078a (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 17 Aug 2023 14:07:36 +0000 (UTC)
+Message-ID: <476c8dab-1b32-b781-2d6f-4335d6de7f72@sionneau.net>
+Date:   Thu, 17 Aug 2023 16:07:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU0PR04MB9417B3FE767FA06FFFEE018A881AA@DU0PR04MB9417.eurprd04.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/8] i2c: sprd: Add I2C driver to use 'reset framework'
+ function
+Content-Language: en-US
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Andi Shyti <andi.shyti@kernel.org>
+Cc:     Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
+ <20230817094520.21286-3-Huangzheng.Lai@unisoc.com>
+From:   Yann Sionneau <yann@sionneau.net>
+In-Reply-To: <20230817094520.21286-3-Huangzheng.Lai@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLACK autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 01:13:01PM +0000, Peng Fan wrote:
-> > On Thu, Aug 17, 2023 at 01:57:39PM +0300, Andy Shevchenko wrote:
-> > > On Sat, Aug 12, 2023 at 08:24:11PM +0800, Peng Fan (OSS) wrote:
+Le 17/08/2023 à 11:45, Huangzheng Lai a écrit :
 
+> This patch adds the 'reset framework' function for I2C drivers, which
+> resets the I2C controller when a timeout exception occurs.
 ...
-
-> > > > -	device_set_node(&dev->dev, of_fwnode_handle(node));
-> > > > +	device_set_node(&dev->dev, fwnode_handle_get(fwnode));
-> > >
-> > > Ditto.
-> > 
-> > Actually no, amba_device_alloc() does not use platform_device_alloc() and
-> > defines it's own .release method. There is no reference count drop there
-> > AFAICS.
-> 
-> My test only covers platform device, so ..
-> 
-> But I have a general question here. Since of_amba_device_create will use
-> the of_node or fwnode, shouldn't the refcount_t be increased and released
-> in amba device release?
-
-I believe so.
-Basically we need two changes:
-1) this one with the suggested modifications, and
-2) fix the reference count leak in amba release.
+> +		if (i2c_dev->rst != NULL) {
+if (i2c_dev->rst) {
+> +			ret = reset_control_reset(i2c_dev->rst);
+> +			if (ret < 0)
+> +				dev_err(i2c_dev->dev, "i2c soft reset failed, ret = %d\n", ret);
+> +		}
 
 -- 
-With Best Regards,
-Andy Shevchenko
 
+Yann
 
