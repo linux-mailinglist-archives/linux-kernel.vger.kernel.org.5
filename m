@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1131977FCB8
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5CF77FCB9
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353886AbjHQRKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S1353892AbjHQRKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353851AbjHQRKB (ORCPT
+        with ESMTP id S1353869AbjHQRKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:10:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1178A121;
-        Thu, 17 Aug 2023 10:10:00 -0700 (PDT)
+        Thu, 17 Aug 2023 13:10:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449472136;
+        Thu, 17 Aug 2023 10:10:03 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A3C7E675C4;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE194675C1;
+        Thu, 17 Aug 2023 17:10:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 795D1C433CC;
         Thu, 17 Aug 2023 17:09:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58620C433C8;
-        Thu, 17 Aug 2023 17:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692292199;
-        bh=v5fyU7tg4Nnh4L70QOucdCfrXw036MbbJKXSnKFoTps=;
+        s=k20201202; t=1692292202;
+        bh=IR6gUNrGlpvXPqUl6ePu23Yb6z5yLdZcfdC0Vl1Tk5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H0zd0vYzj5RIm7r4P7jqUMcvizI3Uo6SZHTMtk6YIHNxScbD8HFahRYRfgSljP0Un
-         aXAOML2bm9czAizJHttgDm0YypWO/YRsm4XgULiAvpxhLnhixTdqGUfNgFwnCqOqAk
-         uFl+D48lx12pSqgo2DLXvX82GpQhhgUGa23AEGf1DgIAX9vfj8aPcuHhVjO2aZEQ75
-         UOgkhnOK4dHbbVOSTsfMx5EcWJCMobqno8ohLwVbq6xc0aJl96cmQ4ywoyP5Z102eI
-         qNryxpTaNVxZQw9jpf30Kmu8r49lsMRqFYNRyk1Kw2vVdN1feFqb39qpYPH2Qqm+GB
-         FMG+NYF2eZt4Q==
+        b=TOgqtLSvVE7GaAYuEOY1QQVKqR/aWnRL6qArTZKkIzyUuFnur3EN4pXVMdXyyIYOF
+         MpqH4+lNowBpEX69kkTJ9u5ZRywciLVWgwl58JF6KcwE8CXAZCWSKv8akgnm9KvVxf
+         yNfhZUEHyw6xMo4a4XSkbD1ghvJV1XNN4nPgxyQ+MlyjTfoLbEjXswY1YTgBPRunkR
+         vtU2EkuO5Izs/qJlL5qkomGoI/SkEn0NMwh3mJ7Ng/BM3BXMlp/NkeEtgIYaEC1Oo4
+         KmxizblmMKBLZvZu5b2KGdEL3jZwCsRAGNSKI3lJUK8gdDoKfgIXLxCuki8g8wnyJb
+         piBqRfmbMcSWw==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -48,128 +48,108 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH net-next v5 8/9] dt-bindings: net: snps,dwmac: add per channel irq support
-Date:   Fri, 18 Aug 2023 00:57:48 +0800
-Message-Id: <20230817165749.672-9-jszhang@kernel.org>
+Subject: [PATCH net-next v5 9/9] net: stmmac: platform: support parsing per channel irq from DT
+Date:   Fri, 18 Aug 2023 00:57:49 +0800
+Message-Id: <20230817165749.672-10-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230817165749.672-1-jszhang@kernel.org>
 References: <20230817165749.672-1-jszhang@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IP supports optional per channel interrupt, add support for this
-usage case.
+The snps dwmac IP may support per channel interrupt. Add support to
+parse the per channel irq from DT.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- .../devicetree/bindings/net/snps,dwmac.yaml   | 68 ++++++++++++++++++-
- 1 file changed, 66 insertions(+), 2 deletions(-)
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++----
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 23 +++++++++++++++++++
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index ee9174f77d97..a916701474dc 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -103,7 +103,7 @@ properties:
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 64c55024d69d..d4a8d7b48ad2 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3619,7 +3619,7 @@ static int stmmac_request_irq_multi_channel(struct net_device *dev)
+ 	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
+ 		if (i >= MTL_MAX_RX_QUEUES)
+ 			break;
+-		if (priv->rx_irq[i] == 0)
++		if (priv->rx_irq[i] <= 0)
+ 			continue;
  
-   interrupts:
-     minItems: 1
--    maxItems: 5
-+    maxItems: 37
-     additionalItems: true
-     items:
-       - description: Combined signal for various interrupt events
-@@ -111,10 +111,42 @@ properties:
-       - description: The interrupt that occurs when Rx exits the LPI state
-       - description: The interrupt that occurs when Safety Feature Correctible Errors happen
-       - description: The interrupt that occurs when Safety Feature Uncorrectible Errors happen
-+      - description: rx0 per-channel interrupt
-+      - description: rx1 per-channel interrupt
-+      - description: rx2 per-channel interrupt
-+      - description: rx3 per-channel interrupt
-+      - description: rx4 per-channel interrupt
-+      - description: rx5 per-channel interrupt
-+      - description: rx6 per-channel interrupt
-+      - description: rx7 per-channel interrupt
-+      - description: rx8 per-channel interrupt
-+      - description: rx9 per-channel interrupt
-+      - description: rx10 per-channel interrupt
-+      - description: rx11 per-channel interrupt
-+      - description: rx12 per-channel interrupt
-+      - description: rx13 per-channel interrupt
-+      - description: rx14 per-channel interrupt
-+      - description: rx15 per-channel interrupt
-+      - description: tx0 per-channel interrupt
-+      - description: tx1 per-channel interrupt
-+      - description: tx2 per-channel interrupt
-+      - description: tx3 per-channel interrupt
-+      - description: tx4 per-channel interrupt
-+      - description: tx5 per-channel interrupt
-+      - description: tx6 per-channel interrupt
-+      - description: tx7 per-channel interrupt
-+      - description: tx8 per-channel interrupt
-+      - description: tx9 per-channel interrupt
-+      - description: tx10 per-channel interrupt
-+      - description: tx11 per-channel interrupt
-+      - description: tx12 per-channel interrupt
-+      - description: tx13 per-channel interrupt
-+      - description: tx14 per-channel interrupt
-+      - description: tx15 per-channel interrupt
+ 		int_name = priv->int_name_rx_irq[i];
+@@ -3644,7 +3644,7 @@ static int stmmac_request_irq_multi_channel(struct net_device *dev)
+ 	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
+ 		if (i >= MTL_MAX_TX_QUEUES)
+ 			break;
+-		if (priv->tx_irq[i] == 0)
++		if (priv->tx_irq[i] <= 0)
+ 			continue;
  
-   interrupt-names:
-     minItems: 1
--    maxItems: 5
-+    maxItems: 37
-     additionalItems: true
-     items:
-       - const: macirq
-@@ -123,6 +155,38 @@ properties:
-           - eth_lpi
-           - sfty_ce
-           - sfty_ue
-+          - rx0
-+          - rx1
-+          - rx2
-+          - rx3
-+          - rx4
-+          - rx5
-+          - rx6
-+          - rx7
-+          - rx8
-+          - rx9
-+          - rx10
-+          - rx11
-+          - rx12
-+          - rx13
-+          - rx14
-+          - rx15
-+          - tx0
-+          - tx1
-+          - tx2
-+          - tx3
-+          - tx4
-+          - tx5
-+          - tx6
-+          - tx7
-+          - tx8
-+          - tx9
-+          - tx10
-+          - tx11
-+          - tx12
-+          - tx13
-+          - tx14
-+          - tx15
+ 		int_name = priv->int_name_tx_irq[i];
+@@ -7300,8 +7300,10 @@ int stmmac_dvr_probe(struct device *device,
+ 	priv->plat = plat_dat;
+ 	priv->ioaddr = res->addr;
+ 	priv->dev->base_addr = (unsigned long)res->addr;
+-	priv->plat->dma_cfg->perch_irq_en =
+-		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
++	if (res->rx_irq[0] > 0 && res->tx_irq[0] > 0) {
++		priv->plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
++		priv->plat->dma_cfg->perch_irq_en = true;
++	}
  
-   clocks:
-     minItems: 1
+ 	priv->dev->irq = res->irq;
+ 	priv->wol_irq = res->wol_irq;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 4a2002eea870..0fb9868aeffc 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -704,6 +704,9 @@ EXPORT_SYMBOL_GPL(stmmac_remove_config_dt);
+ int stmmac_get_platform_resources(struct platform_device *pdev,
+ 				  struct stmmac_resources *stmmac_res)
+ {
++	char irq_name[8];
++	int i;
++
+ 	memset(stmmac_res, 0, sizeof(*stmmac_res));
+ 
+ 	/* Get IRQ information early to have an ability to ask for deferred
+@@ -737,6 +740,26 @@ int stmmac_get_platform_resources(struct platform_device *pdev,
+ 		dev_info(&pdev->dev, "IRQ eth_lpi not found\n");
+ 	}
+ 
++	for (i = 0; i < MTL_MAX_RX_QUEUES; i++) {
++		snprintf(irq_name, sizeof(irq_name), "rx%i", i);
++		stmmac_res->rx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
++		if (stmmac_res->rx_irq[i] < 0) {
++			if (stmmac_res->rx_irq[i] == -EPROBE_DEFER)
++				return -EPROBE_DEFER;
++			break;
++		}
++	}
++
++	for (i = 0; i < MTL_MAX_TX_QUEUES; i++) {
++		snprintf(irq_name, sizeof(irq_name), "tx%i", i);
++		stmmac_res->tx_irq[i] = platform_get_irq_byname_optional(pdev, irq_name);
++		if (stmmac_res->tx_irq[i] < 0) {
++			if (stmmac_res->tx_irq[i] == -EPROBE_DEFER)
++				return -EPROBE_DEFER;
++			break;
++		}
++	}
++
+ 	stmmac_res->sfty_ce_irq = platform_get_irq_byname_optional(pdev, "sfty_ce");
+ 	if (stmmac_res->sfty_ce_irq < 0) {
+ 		if (stmmac_res->sfty_ce_irq == -EPROBE_DEFER)
 -- 
 2.40.1
 
