@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4493B77FA62
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFE777FA63
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352854AbjHQPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
+        id S1352870AbjHQPJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352910AbjHQPJP (ORCPT
+        with ESMTP id S1352917AbjHQPJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:09:15 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9FD26BC
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:08:39 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9a828c920so119045111fa.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:08:39 -0700 (PDT)
+        Thu, 17 Aug 2023 11:09:16 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE83D2D50
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:08:40 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bb97f2c99cso33357531fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:08:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692284906; x=1692889706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZQOKLFSRw5whge5pt965xQ0um1rH9VrSs87wuRePlok=;
-        b=xGXUTZ5Q9FjqCp8/YaNNnsp21FodXU1//vTz0vURJ3RfEpWlaLoB282d1n5XO+qI+M
-         yhm798wwKu4FLRmFw+k5e7xhQWReXOKietVaGdLqovu0iKlqwkYYl/zn4edgIY/G70OR
-         0F8DWIbVGR7XJW004YSIyPShD7MvoE0eFQs1L7tz8+kxnluQ0lKrmZfx/1fG+0QmKhBH
-         zw+pYW69FuCMmQcJXLRt2e4QfjxzLOUEaaN/YUggnO4eiXuzpgo8kVbBGgQ/LCYe0CEs
-         kDSO7Xbd8aEl1UMNjp9A7Idb+7horaUT1NSdjYrvFtUcogSIRP4IgQ26NRzVhhE9gC3h
-         Klaw==
+        d=linaro.org; s=google; t=1692284907; x=1692889707;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ddjcWCgwJaLnL8ww0foMDG3MYHlwLCKKRjeLVlMd+8=;
+        b=NmS12C68Ek6FGxcL41yJMQAPpOLInT4lZJeuT198d6qei9HTL1O5AugK5oiLnbnnNo
+         rb+aJVG3ydOaASzM8WvQMOSdFNtCu0jHGTbDkx2HCi5kL2HEkbJ8orTysaFwQQQNOkbG
+         2SYp8AIRrFc9u3H+0syt/F0ww+3TX+pPqY98eQBYjR/Z9HkHLmuf4cffRy5WNxSPLRxW
+         ws2UTYL2M1TuSyK2Bp6hVDZLwb/nQpS+3AwqXh+hP984rq0NwsqwsWEVzxCTeEMa/I0u
+         WtVVzmiOqaAnjg8IR5tSVt/WdU1Cs1rkTBEdMCIC81KEraJHwcFv4fZLywOe2X1zgTlH
+         ejXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692284906; x=1692889706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZQOKLFSRw5whge5pt965xQ0um1rH9VrSs87wuRePlok=;
-        b=G0Zl3U5xOIl5Nxfoknbrj+7tiEJzIj0UOVUY6jPoZniN0+ysj8eVgkr5/sNksxXtzX
-         kHICXfbWiPyR+/8Vh6Ix2nX2saXARMnCZVxwu4UaZeFusAjxQaqmVbACCVEcKMcl7mm1
-         ynImZ52K9m2PaOSEKoibuv4/q7TbDuVJG0tWi3DaUF7EjW5wGYeOIrWU7BIfQLXh4G6B
-         DISlhJq/rBfk72yYuF7g8d63aLJ4NQu1YtbEOY9kHeRMsfX4lElcQc4kWmshJnU3Aa/d
-         ZfnUuQ8+gBv9eLwaPUI0QNrPYXqCGJSWKeNREXex1gzljD5Qs5zXlzeXTAFmekdp0tat
-         OP+Q==
-X-Gm-Message-State: AOJu0YzQxjMxqI9XNC2bbdIuL6EiEi4Sean5fwevL/MkSob9SRjCojoU
-        tmkTWg09NR6T4qvcTOH+1/KBjA==
-X-Google-Smtp-Source: AGHT+IGNqy/GmFcXkzErjwbjqgy+8GRT4/DtzlNV8TFPf8yaPghQ87/shTD6zsYd7YczRUdkwQ2rSg==
-X-Received: by 2002:a05:651c:d6:b0:2b6:e958:5700 with SMTP id 22-20020a05651c00d600b002b6e9585700mr3949207ljr.4.1692284906396;
-        Thu, 17 Aug 2023 08:08:26 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692284907; x=1692889707;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4ddjcWCgwJaLnL8ww0foMDG3MYHlwLCKKRjeLVlMd+8=;
+        b=jOYqVwXShVoVfss4hmHq2vHS5ivqolNzB6kjXvn0MCgAkob/asXvh9+j4txWnY3jDU
+         uc/HjGO4x+AiiLG7jRZFdtpPY4Pu4jq6Qf74egnWo/j3yddhuYgLpRX3qT78fL06Ie5V
+         XiCadQ1JMTccqmvPRfmQEgFLhEOwo+V3StuO487vxotJPXZ0J3U0VltcjeOcVKOZQ7am
+         No3hTFNCM05rteaxuki+RIeiWoeCEvRXFN6ZvNOLMYGCcEkgpauo0iTKGLdLrlnReXUT
+         U5DmK/0W3UEY3st/CAF5NhFgO1Ca6k+vv0p/07VjrbPKsOe1ldI+akS4mLXZv2MDTlA5
+         GejQ==
+X-Gm-Message-State: AOJu0Yxh9m5JcS7o16Afltly3eSUXJSJMSTmI1+OFDLi5tpu+gOpS8FW
+        0/slNXbpVwj3SzD58JmpSjTdew==
+X-Google-Smtp-Source: AGHT+IH+dUtUNhhf+BxvarcZxUA7ooVgEEkhp9jCXNmwcEXY+Qd+X5hRytpK9tASF6fmVJXVwoesLg==
+X-Received: by 2002:a05:651c:218:b0:2ba:cbb:47a6 with SMTP id y24-20020a05651c021800b002ba0cbb47a6mr4153573ljn.5.1692284907272;
+        Thu, 17 Aug 2023 08:08:27 -0700 (PDT)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id u8-20020a2e9b08000000b002b6ef2fca66sm4111413lji.41.2023.08.17.08.08.25
+        by smtp.gmail.com with ESMTPSA id u8-20020a2e9b08000000b002b6ef2fca66sm4111413lji.41.2023.08.17.08.08.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 08:08:25 -0700 (PDT)
+        Thu, 17 Aug 2023 08:08:26 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -59,14 +60,16 @@ To:     "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 0/2] usb: typec: qcom-pmic-typec: enable DP support
-Date:   Thu, 17 Aug 2023 18:08:22 +0300
-Message-Id: <20230817150824.14371-1-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v5 1/2] usb: typec: altmodes/displayport: add support for embedded DP cases
+Date:   Thu, 17 Aug 2023 18:08:23 +0300
+Message-Id: <20230817150824.14371-2-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230817150824.14371-1-dmitry.baryshkov@linaro.org>
+References: <20230817150824.14371-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,45 +78,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To enable DisplayPort on the platforms supported by qcom-pmic-typec
-driver, we need to register a corresponding drm_bridge for this device
-and also be able to send the OOB hotplug event to the corresponding DRM
-connector. All this is implemented by [1], but there is no direct
-dependency on that patchset.
+In the embedded cases, the DisplayPort connector is handled by the TCPM
+itself. It was proposed to add the "displayport" OF property to the DT
+bindings, but it  was rejected in favour of properly describing the
+electrical signal path using of_graph.
 
-[1] https://patchwork.freedesktop.org/series/120393/
+Fallback to the controller fwnode for HPD notifications to
+support such usecases without requiring additional DT properties.
 
-Changes since v4:
-- Put of_node field access under CONFIG_OF (LKP)
-- Changed ifdef CONFIG_DRM to IS_ENABLED(CONFIG_DRM) (Guenter)
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/usb/typec/altmodes/displayport.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Changes since v3:
-- Fixed changelog for v1 (Guenter)
-- After discussion on IRC, change connector type to
-  DRM_MODE_CONNECTOR_DisplayPort to follow i915 and amdgpu example.
-  The fact that this is a DP wrapped in the USB connector will be
-  handled separately via the subconnector property (Simon Ser, Janne
-  Grunau)
-
-Changes since v2:
-- Reworded commit message for the first patch to explicitly mention that
-  the "displayport" OF property was rejected (Bjorn)
-- Removed several #ifdefs from the qcom-pmic-typec patch (Bryan, Konrad,
-  Greg K-H)
-
-Changes since v1:
-- Properly handle CONFIG_DRM dependency. Disallow building
-  qcom-pmic-typec into the kernel if DRM is built as module (Bryan).
-
-Dmitry Baryshkov (2):
-  usb: typec: altmodes/displayport: add support for embedded DP cases
-  usb: typec: qcom-pmic-typec: register drm_bridge
-
- drivers/usb/typec/altmodes/displayport.c      |  5 ++-
- drivers/usb/typec/tcpm/Kconfig                |  1 +
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 37 +++++++++++++++++++
- 3 files changed, 42 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
+index bc4af130940d..a4cf1045b535 100644
+--- a/drivers/usb/typec/altmodes/displayport.c
++++ b/drivers/usb/typec/altmodes/displayport.c
+@@ -594,7 +594,10 @@ int dp_altmode_probe(struct typec_altmode *alt)
+ 	alt->ops = &dp_altmode_ops;
+ 
+ 	fwnode = dev_fwnode(alt->dev.parent->parent); /* typec_port fwnode */
+-	dp->connector_fwnode = fwnode_find_reference(fwnode, "displayport", 0);
++	if (fwnode_property_present(fwnode, "displayport"))
++		dp->connector_fwnode = fwnode_find_reference(fwnode, "displayport", 0);
++	else
++		dp->connector_fwnode = fwnode_handle_get(fwnode); /* embedded DP */
+ 	if (IS_ERR(dp->connector_fwnode))
+ 		dp->connector_fwnode = NULL;
+ 
 -- 
 2.39.2
 
