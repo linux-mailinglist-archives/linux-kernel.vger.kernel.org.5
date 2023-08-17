@@ -2,186 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E5777FA44
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7734977FA33
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352758AbjHQPHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S1352693AbjHQPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:04:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352742AbjHQPGn (ORCPT
+        with ESMTP id S1352761AbjHQPE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:06:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B866106
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692284801; x=1723820801;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=iQK4e/q4llsuAD9vidq4QQ9ZFfvTE3WDOhpB4WMrFnQ=;
-  b=Y+BnadAWRIVjw/+WXH82Bbu3eCTS+/KDPmRMv6zJs6GQdPCxM6vopW+B
-   EniRL/iSoPHHXafImQ6uzLzheHT4dqf9J+eJP3Zfn2lgmBqkSv2WDW+OE
-   sp/ZIWuWUT355j7kRereJoJOAgCJa9KnnmjIv0hzp4K8wNJAniFKJMcgY
-   6tfdbljqFqhzMxLdBKcJAMcfQiq81tUuubzHLcrmr5K+siJtfssLBt2FR
-   QpGCHrICEMn3S50Jg9a78wx3ywOVZmYdfN5eHG8sslGI0pimjEA5nwV3l
-   bB1FH/EVT51obDLc/9VhfjeFlNY8AUa88QTPKEEQKGExa1XUFUKc8Drg0
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="436752174"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="436752174"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:05:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="800084303"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="800084303"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Aug 2023 08:05:32 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWeYK-0001FT-2T;
-        Thu, 17 Aug 2023 15:04:57 +0000
-Date:   Thu, 17 Aug 2023 23:03:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: drivers/opp/cpu.c:45: warning: Function parameter or member
- 'opp_table' not described in 'dev_pm_opp_init_cpufreq_table'
-Message-ID: <202308172310.FzcidE4c-lkp@intel.com>
+        Thu, 17 Aug 2023 11:04:28 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2085.outbound.protection.outlook.com [40.107.243.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F102713
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:04:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j/ew+atC5yPJzu3eiv/9VprmXU1LGg0Hw7nJSn8TKAO4ZU8P/iKabRBgT5J/7aPhuz/ywkYrVBovs/aKgi7qsZ7tX1g+rZrBI+BtN55zxD67c9YPEKS9K3z3vYV6uF2lDiLnLVF5IOA3aBbEAdh6v3528gftk3diNwJiZzSdab7PqPAVrNZsYxYnR3J5HHew7+zlF6N2qcLY5RbRQZFmbXPDUqSqc/j87xzoPKGZPn9Wsxeq7Nqdu80RGqlnqu9cD/dVnx3hXWpM0yebw2ddWBsavypFG4TbFS1ZTqgrPO25WqTO58C6pkxatIsBqnyuBVvA8Gmm0vX418zrSk2ldQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+sdXfFhqwbEsnPKe+XhlYXx0isGNScnj8qVlMIZFIRo=;
+ b=gy+9Vkkw2Xv6i80qlR3ndRrdzOIZVgLxZPqlh5GKHjh/+QvtnbWF8g/YLfAlAg6JI8ow1ntF/XY0D6AkRyOIVVYmIrC5o5Tgw4Lvb82cL3vmhU2MNzXzal1QA1Ulium6YgWy4NO6X/vhycKN+B606w35qp01Pp5kYCg0sSdv0m5yJNnhs3cJjkmzoLye0EVyx9jkiUaqTE9IFF1w7cLotnsGlypPac//8pttZlEVhMNsbhD5EnKZU6PGYvUS2kki/i+w8CrhAGLtu7t/voZ9MDEHp7VU6/4c9ltImewVuZxAQvL+kxVCyfUOOnkjg3tBxuwHGlrnHgS1rU7FFsrd5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+sdXfFhqwbEsnPKe+XhlYXx0isGNScnj8qVlMIZFIRo=;
+ b=e/4DbOFJgDr0vpkTiuNl1hzUtwLsJyxqcmR2cMYDOnB4cY7z8AtcZHMzrWxfZDGwxzWREHzyLa2CgH6xM9J4E6UXlvzmXJlO5Wx6VjLpOPAjLZ8mMLqsxpHY2x0DWercJDP70RTr1h4f58VCCcCYwsBiuyjxpH/RdBYOu0Jxx4g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by SJ0PR12MB5440.namprd12.prod.outlook.com (2603:10b6:a03:3ac::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 15:04:13 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 15:04:13 +0000
+Message-ID: <eaef1599-4da3-ac10-a03e-4f2d8304c60d@amd.com>
+Date:   Thu, 17 Aug 2023 17:04:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v4 2/4] drm/amdgpu: Rework coredump to use memory
+ dynamically
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230815195100.294458-1-andrealmeid@igalia.com>
+ <20230815195100.294458-3-andrealmeid@igalia.com>
+ <07ef59db-da17-15cf-789a-7f5d01b2c9c9@amd.com>
+ <a6e90991-91bb-4da9-ab67-d0ec28a29680@igalia.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <a6e90991-91bb-4da9-ab67-d0ec28a29680@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BE1P281CA0254.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8b::7) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|SJ0PR12MB5440:EE_
+X-MS-Office365-Filtering-Correlation-Id: 767aee26-6b94-4b17-a703-08db9f3337f7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sHbFsrOhPgPTHNFnMP3CjnggcD1T0PObIpWyPZaYhfDLs5pZiwkpib/Vua4d2JvRYTZ8BBJe1kNnljdc3LMYDf2yyRJ6rrgnaVmMqWzccuLwz59Q4/Re9Xkvswb+IPQpBm9qrus0Xg1q2WOjnNfYUMwzTEDO1qNuVRJuML6sM2nmp/aey2IHZEdq2Eq5Q7k6rMPr0mFlkHypd2sWg6Es65iAZXO95LcRkbf3PhqiwmnURVOcNxVn70nQkBjzk/Eax8jmeCZb+pMLdJx5nHnWOYf+g5tWZohkx5YQBnMaHRAuWQLiR4TWsFrxY2YALRT/U3kseyBvAOiN5hSKD3dAAGlMcOsNIQDNM/ei4SbpPwYlJk1yxt39/qrl2N5iDfYJZ6sz7pKCaFZwiRvJaSI6v8OPxoT9IUpoVhk+iZ710V+/jGsCVnAtpoBBIrWeYyF1qBn4XX0peB+j8DY0O6HQ+9engQoQ4r2UO/SkyV64mLY8usRQ5LYB6KLgSUoU0OZSG8m6nYfvnB0Nqjl+QuXkZuIAHwBrPd5VhU34nLLDRZjtWXptpINSJwJEgP3NYAILYAeLqqzy2xE2feXXXJEO+kfAWDnPoe5jDBtAjxj24bh9mX/DvD8e/sizclOLIrHlGYqm1MvKFoMet1VMr/zfZg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(451199024)(1800799009)(186009)(31686004)(36756003)(86362001)(31696002)(38100700002)(5660300002)(44832011)(2616005)(66946007)(66556008)(66476007)(478600001)(6506007)(316002)(6666004)(54906003)(6486002)(6916009)(53546011)(8936002)(4326008)(41300700001)(6512007)(26005)(8676002)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXAwMHVML296N1FCc29JaXh1REkyZVk3ZnlsT0hIR3ljQ2ltZXBqRjR2U05h?=
+ =?utf-8?B?MXQ4YzVjanFrU0R0N1J2SklKMTNaYklGWW1YV2ZES0M4TFpiR0NPQm4rN01a?=
+ =?utf-8?B?NU5URVI0b2NNOFkydXNzMndZOUxtSzFKcWR6a2VoRU5XODNYcmRwOTRsd1dm?=
+ =?utf-8?B?WGd1VTIzc29uNVZ6VDN0dVkrREREQjRMcVJNRFRCWnVKUUQ4VmdFSzVUREJP?=
+ =?utf-8?B?RUkvazFNeVIvSUpseFE3ZE9tdXZ4NnFGTzFSOGVFaFZFMFNNSTBOTnJHWFlj?=
+ =?utf-8?B?RVhQd1ZKaGNOMU1iTUZteDg2SjVUWENGQm9vKzdDQ3MvQ3NhUDZ0SXk1eVBm?=
+ =?utf-8?B?M1U1MXoyY3N2Zk9XVy8rZE5pRjdGajF6ZHRBbjVQWTJNUVo3NG1HNjBqZzMz?=
+ =?utf-8?B?dzFaSmc1MDhCU1ROOWpCVm1QV3VxM2hOZTF0SGlUNVEwSm9WKzB3UHBOQitQ?=
+ =?utf-8?B?RHZPOFdYcWhPT0NIc2M0YW5NSnpWVlRmaVNFejVZaXoyVTg2NTRnVXUvdmlu?=
+ =?utf-8?B?OXJKRkcvNVdQTDVoOWZDMzJLaWZIanpzOWVSQlZKa1pZT09ReGpIY2FaSHZN?=
+ =?utf-8?B?WHdWN2pxM3RWU2I0TmtXeU5BZEFueTk4TSszcjNoV1U1bzVya2ovSEMwOGRo?=
+ =?utf-8?B?NThnNkltdlRSeUxhckl3ZzVHUXpEU296VlJadGF0NHF5US9OV1QrL29YR3ZF?=
+ =?utf-8?B?bUpHTWgrMnVuaHNpdTJ0LzVSc2FMNHNHMEVoSmhuRUxNMmoxbkdnTU1CM3hE?=
+ =?utf-8?B?YkczSzVJSE8vSW5PZHhDWVpva3JBRUhvWGlvcXZ0TW9vWUYwMk1mcVBhMzhK?=
+ =?utf-8?B?cnBBL1lkMU8xeTlWeVdqbXJ4bGxQaCtJcmJ4SnFnM0tFTUZEeHM1dkNrclVz?=
+ =?utf-8?B?VWhPa1hFZzJVVDhlNlRsYng1QmpkSHV0S24zckZKc2N5SUxWakFzaFVodEtG?=
+ =?utf-8?B?aWlSS1cweW8zMzQxMHhxMEt4ZUVvNWdqdGNmSC81RUUvcVNFci8zbmx1NnBR?=
+ =?utf-8?B?eWk3Q3N3S3NRTGZlSEhQdzlFN011RVI4cWtRbEIyS3F6ZkJkSTRFRGdaa0E5?=
+ =?utf-8?B?OUhSY01wTUdVZkE4MTJWRzROZk00b3h3SSttTkxML3BIc2VHQ1Evbi9pQmdK?=
+ =?utf-8?B?NjJNNlZ6QmxVTDBkYzVoRjFMQ1gwSFJQeTVPSzBIQmNZRXJPZzRwQXhDUkg0?=
+ =?utf-8?B?a0RhM3U1MkFGS2lka2dVY2s1QTlrSXE5OUpQRThUY2gxTUFKaXZueVFOQmVU?=
+ =?utf-8?B?SlJSQ2o3cnNJaFRxbytzcXJKcjZOcFMwdlhUOVhjRkxVOThoY0ZxQ0wzeWt4?=
+ =?utf-8?B?R2NuTXBrNXdqOSsvOTRkWlMzSXhoRzBTN25DSHZLN3dhN2IvN3FEL25FLzhh?=
+ =?utf-8?B?VGRFOENNK25tZUN4Z0ZXMnkydEFqVWRtSkNkWnhMUjRJSmFPNy9pbVZVVkRu?=
+ =?utf-8?B?RzhmbjFBU1VlTkc2V2lyaUt3RU11WnRLTFl3QkpnUVk4T1FTeE9ta01XejZQ?=
+ =?utf-8?B?bTJXajB2MjBnTjhGMndqWmtCZEVBc25OOHBCRGN1TkhlcWZldFBxdjcxNE1Y?=
+ =?utf-8?B?QUxFTHVBaW4yVHpVSXBSbFBrcG1ZVnVybTI0ZHJ0QTJGUXBuVmdGNjBLUmxP?=
+ =?utf-8?B?RmJMUHd0ejVtSTJ2dWgxMmVKSmZLcmkwcjNJcnhYNkpwZ0JyR2xVVkNUM3Bn?=
+ =?utf-8?B?QVc0WTNqVk5MaC9lMXYrVW91Qk53azdHV1ViaDdPMGk2VDFsTjNpbzlkblNQ?=
+ =?utf-8?B?M2RqOGtCY2U4MFlvbEVzc2E4Y09xUG1nSGlJNUhZa29LOEFTTnlKbWxSWVNS?=
+ =?utf-8?B?a2VZb29weHpIT0tTbzNvT05ONGQwMXMvR3RPNkc3cTU4N294VEdJUHlKSHBF?=
+ =?utf-8?B?R0ZVUitBM05xMTZlSFg5eG50Z21mZmwvRWhTTWM0TWtLOUJqWEVEeTVXVFlB?=
+ =?utf-8?B?eW1jdVhqY1ZjL1lSU2Q0bk9Pc0hUdXhBSlVnWXhjZTNLdnZSZm1JOFVWVEQ3?=
+ =?utf-8?B?L21qbnlBWUpPTW40ZEFtc3NDMGhDck9ES2VQMlRuZmtmNFpZR2UvQ3U2czlw?=
+ =?utf-8?B?WnBRVG9BbUxxOEk0K0N6MnpqL08vL2g0ZmxPci96aWNVZ3ZaNHlrTGg4Uzh5?=
+ =?utf-8?Q?nhZAu7fzjg9qQhC7bftVQhm8X?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 767aee26-6b94-4b17-a703-08db9f3337f7
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:04:13.7953
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7QugKkbGNcbjAVfnHjcmVrQsEngNgWs4DH1syxrINiVXL2J2b38e0WGI+7OP+mtytRzet/36IqQY7nkG2Bx2Sg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5440
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+On 17/08/2023 15:45, André Almeida wrote:
+> Hi Shashank,
+>
+> Em 17/08/2023 03:41, Shashank Sharma escreveu:
+>> Hello Andre,
+>>
+>> On 15/08/2023 21:50, André Almeida wrote:
+>>> Instead of storing coredump information inside amdgpu_device struct,
+>>> move if to a proper separated struct and allocate it dynamically. This
+>>> will make it easier to further expand the logged information.
+>>>
+>>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+>>> ---
+>>> v4: change kmalloc to kzalloc
+>>> ---
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        | 14 +++--
+>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 63 
+>>> ++++++++++++++--------
+>>>   2 files changed, 49 insertions(+), 28 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h 
+>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>> index 9c6a332261ab..0d560b713948 100644
+>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>> @@ -1088,11 +1088,6 @@ struct amdgpu_device {
+>>>       uint32_t                        *reset_dump_reg_list;
+>>>       uint32_t            *reset_dump_reg_value;
+>>>       int                             num_regs;
+>>> -#ifdef CONFIG_DEV_COREDUMP
+>>> -    struct amdgpu_task_info         reset_task_info;
+>>> -    bool                            reset_vram_lost;
+>>> -    struct timespec64               reset_time;
+>>> -#endif
+>>>       bool                            scpm_enabled;
+>>>       uint32_t                        scpm_status;
+>>> @@ -1105,6 +1100,15 @@ struct amdgpu_device {
+>>>       uint32_t            aid_mask;
+>>>   };
+>>> +#ifdef CONFIG_DEV_COREDUMP
+>>> +struct amdgpu_coredump_info {
+>>> +    struct amdgpu_device        *adev;
+>>> +    struct amdgpu_task_info         reset_task_info;
+>>> +    struct timespec64               reset_time;
+>>> +    bool                            reset_vram_lost;
+>>> +};
+>>
+>> The patch looks good to me in general, but I would recommend slightly 
+>> different arrangement and segregation of GPU reset information.
+>>
+>> Please consider a higher level structure adev->gpu_reset_info, and 
+>> move everything related to reset dump info into that, including this 
+>> new coredump_info structure, something like this:
+>>
+>> struct amdgpu_reset_info {
+>>
+>>      uint32_t *reset_dump_reg_list;
+>>
+>>      uint32_t *reset_dump_reg_value;
+>>
+>>      int num_regs;
+>>
+>
+> Right, I can encapsulate there reset_dump members,
+>
+>> #ifdef CONFIG_DEV_COREDUMP
+>>
+>>     struct amdgpu_coredump_info *coredump_info;/* keep this dynamic 
+>> allocation */
+>
+> but we don't need a pointer for amdgpu_coredump_info inside 
+> amdgpu_device or inside of amdgpu_device->gpu_reset_info, right?
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
-commit: d613458332ccbab83c0600145d851796787305b4 OPP: Use consistent names for OPP table instances
-date:   1 year, 1 month ago
-config: i386-buildonly-randconfig-r006-20230817 (https://download.01.org/0day-ci/archive/20230817/202308172310.FzcidE4c-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230817/202308172310.FzcidE4c-lkp@intel.com/reproduce)
+I think it would be better if we keep all of the GPU reset related data 
+in the same structure, so adev->gpu_reset_info->coredump_info sounds 
+about right to me.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308172310.FzcidE4c-lkp@intel.com/
+- Shashank
 
-All warnings (new ones prefixed by >>):
-
->> drivers/opp/cpu.c:45: warning: Function parameter or member 'opp_table' not described in 'dev_pm_opp_init_cpufreq_table'
->> drivers/opp/cpu.c:45: warning: Excess function parameter 'table' description in 'dev_pm_opp_init_cpufreq_table'
->> drivers/opp/cpu.c:98: warning: Function parameter or member 'opp_table' not described in 'dev_pm_opp_free_cpufreq_table'
->> drivers/opp/cpu.c:98: warning: Excess function parameter 'table' description in 'dev_pm_opp_free_cpufreq_table'
-
-
-vim +45 drivers/opp/cpu.c
-
-f59d3ee8480d30 drivers/base/power/opp/cpu.c  Viresh Kumar              2015-09-04   23  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   24  /**
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   25   * dev_pm_opp_init_cpufreq_table() - create a cpufreq table for a device
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   26   * @dev:	device for which we do this operation
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   27   * @table:	Cpufreq table returned back to caller
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   28   *
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   29   * Generate a cpufreq table for a provided device- this assumes that the
-2c2709dc6921c5 drivers/base/power/opp/cpu.c  Viresh Kumar              2016-02-16   30   * opp table is already initialized and ready for usage.
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   31   *
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   32   * This function allocates required memory for the cpufreq table. It is
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   33   * expected that the caller does the required maintenance such as freeing
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   34   * the table as required.
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   35   *
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   36   * Returns -EINVAL for bad pointers, -ENODEV if the device is not found, -ENOMEM
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   37   * if no memory available for the operation (table is not populated), returns 0
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   38   * if successful and table is populated.
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   39   *
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   40   * WARNING: It is  important for the callers to ensure refreshing their copy of
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   41   * the table if any of the mentioned functions have been invoked in the interim.
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   42   */
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   43  int dev_pm_opp_init_cpufreq_table(struct device *dev,
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09   44  				  struct cpufreq_frequency_table **opp_table)
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  @45  {
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   46  	struct dev_pm_opp *opp;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   47  	struct cpufreq_frequency_table *freq_table = NULL;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   48  	int i, max_opps, ret = 0;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   49  	unsigned long rate;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   50  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   51  	max_opps = dev_pm_opp_get_opp_count(dev);
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   52  	if (max_opps <= 0)
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   53  		return max_opps ? max_opps : -ENODATA;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   54  
-4a823c0be80fa9 drivers/opp/cpu.c             Jia-Ju Bai                2018-01-26   55  	freq_table = kcalloc((max_opps + 1), sizeof(*freq_table), GFP_KERNEL);
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   56  	if (!freq_table)
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   57  		return -ENOMEM;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   58  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   59  	for (i = 0, rate = 0; i < max_opps; i++, rate++) {
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   60  		/* find next rate */
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   61  		opp = dev_pm_opp_find_freq_ceil(dev, &rate);
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   62  		if (IS_ERR(opp)) {
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   63  			ret = PTR_ERR(opp);
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   64  			goto out;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   65  		}
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   66  		freq_table[i].driver_data = i;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   67  		freq_table[i].frequency = rate / 1000;
-79eea44a5d7b91 drivers/cpufreq/cpufreq_opp.c Bartlomiej Zolnierkiewicz 2015-07-29   68  
-79eea44a5d7b91 drivers/cpufreq/cpufreq_opp.c Bartlomiej Zolnierkiewicz 2015-07-29   69  		/* Is Boost/turbo opp ? */
-79eea44a5d7b91 drivers/cpufreq/cpufreq_opp.c Bartlomiej Zolnierkiewicz 2015-07-29   70  		if (dev_pm_opp_is_turbo(opp))
-79eea44a5d7b91 drivers/cpufreq/cpufreq_opp.c Bartlomiej Zolnierkiewicz 2015-07-29   71  			freq_table[i].flags = CPUFREQ_BOOST_FREQ;
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   72  
-8a31d9d94297b1 drivers/base/power/opp/cpu.c  Viresh Kumar              2017-01-23   73  		dev_pm_opp_put(opp);
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   74  	}
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   75  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   76  	freq_table[i].driver_data = i;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   77  	freq_table[i].frequency = CPUFREQ_TABLE_END;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   78  
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09   79  	*opp_table = &freq_table[0];
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   80  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   81  out:
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   82  	if (ret)
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   83  		kfree(freq_table);
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   84  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   85  	return ret;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   86  }
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   87  EXPORT_SYMBOL_GPL(dev_pm_opp_init_cpufreq_table);
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   88  
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   89  /**
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   90   * dev_pm_opp_free_cpufreq_table() - free the cpufreq table
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   91   * @dev:	device for which we do this operation
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   92   * @table:	table to free
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   93   *
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   94   * Free up the table allocated by dev_pm_opp_init_cpufreq_table
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   95   */
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05   96  void dev_pm_opp_free_cpufreq_table(struct device *dev,
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09   97  				   struct cpufreq_frequency_table **opp_table)
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  @98  {
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09   99  	if (!opp_table)
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  100  		return;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  101  
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09  102  	kfree(*opp_table);
-d613458332ccba drivers/opp/cpu.c             Viresh Kumar              2022-06-09  103  	*opp_table = NULL;
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  104  }
-a0dd7b79657bd6 drivers/cpufreq/cpufreq_opp.c Nishanth Menon            2014-05-05  105  EXPORT_SYMBOL_GPL(dev_pm_opp_free_cpufreq_table);
-33692dc381f9b8 drivers/base/power/opp/cpu.c  Viresh Kumar              2015-09-04  106  #endif	/* CONFIG_CPU_FREQ */
-f59d3ee8480d30 drivers/base/power/opp/cpu.c  Viresh Kumar              2015-09-04  107  
-
-:::::: The code at line 45 was first introduced by commit
-:::::: a0dd7b79657bd6644b914d16ce7f23468c44a7b4 PM / OPP: Move cpufreq specific OPP functions out of generic OPP library
-
-:::::: TO: Nishanth Menon <nm@ti.com>
-:::::: CC: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>
+>>
+>> #endif
+>>
+>> }
+>>
+>>
+>> This will make sure that all the relevant information is at the same 
+>> place.
+>>
+>> - Shashank
+>>
+>        amdgpu_inc_vram_lost(tmp_adev);
