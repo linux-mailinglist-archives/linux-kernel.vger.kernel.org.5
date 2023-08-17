@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8936277F056
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF8277F055
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 07:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348148AbjHQFyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 01:54:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
+        id S1348153AbjHQFy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 01:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348135AbjHQFy3 (ORCPT
+        with ESMTP id S1348136AbjHQFyg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 01:54:29 -0400
+        Thu, 17 Aug 2023 01:54:36 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C92D3211E
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:54:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6F78211E
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:54:34 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68C881063;
-        Wed, 16 Aug 2023 22:55:08 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F79D1424;
+        Wed, 16 Aug 2023 22:55:15 -0700 (PDT)
 Received: from a077893.arm.com (unknown [10.163.56.113])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 730643F762;
-        Wed, 16 Aug 2023 22:54:21 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C84A03F762;
+        Wed, 16 Aug 2023 22:54:28 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
 Cc:     yangyicong@huawei.com,
@@ -34,9 +34,9 @@ Cc:     yangyicong@huawei.com,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V5 1/4] arm_pmu: acpi: Refactor arm_spe_acpi_register_device()
-Date:   Thu, 17 Aug 2023 11:24:02 +0530
-Message-Id: <20230817055405.249630-2-anshuman.khandual@arm.com>
+Subject: [PATCH V5 2/4] arm_pmu: acpi: Add a representative platform device for TRBE
+Date:   Thu, 17 Aug 2023 11:24:03 +0530
+Message-Id: <20230817055405.249630-3-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230817055405.249630-1-anshuman.khandual@arm.com>
 References: <20230817055405.249630-1-anshuman.khandual@arm.com>
@@ -50,158 +50,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sanity checking all the GICC tables for same interrupt number, and ensuring
-a homogeneous ACPI based machine, could be used for other platform devices
-as well. Hence this refactors arm_spe_acpi_register_device() into a common
-helper arm_acpi_register_pmu_device().
+ACPI TRBE does not have a HID for identification which could create and add
+a platform device into the platform bus. Also without a platform device, it
+cannot be probed and bound to a platform driver.
+
+This creates a dummy platform device for TRBE after ascertaining that ACPI
+provides required interrupts uniformly across all cpus on the system. This
+device gets created inside drivers/perf/arm_pmu_acpi.c to accommodate TRBE
+being built as a module.
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Co-developed-by: Will Deacon <will@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- drivers/perf/arm_pmu_acpi.c | 109 +++++++++++++++++++++++-------------
- 1 file changed, 69 insertions(+), 40 deletions(-)
+ arch/arm64/include/asm/acpi.h |  3 +++
+ drivers/perf/arm_pmu_acpi.c   | 35 +++++++++++++++++++++++++++++++++++
+ include/linux/perf/arm_pmu.h  |  1 +
+ 3 files changed, 39 insertions(+)
 
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index bd68e1b7f29f..4d537d56eb84 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -42,6 +42,9 @@
+ #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	spe_interrupt) + sizeof(u16))
+ 
++#define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
++	trbe_interrupt) + sizeof(u16))
++
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+ pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
 diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-index 90815ad762eb..8a44e9e3320b 100644
+index 8a44e9e3320b..00fc41bc59f3 100644
 --- a/drivers/perf/arm_pmu_acpi.c
 +++ b/drivers/perf/arm_pmu_acpi.c
-@@ -69,6 +69,67 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
- 		acpi_unregister_gsi(gsi);
+@@ -168,6 +168,40 @@ static inline void arm_spe_acpi_register_device(void)
  }
+ #endif /* CONFIG_ARM_SPE_PMU */
  
-+static int __maybe_unused
-+arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-+			     u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
++#if IS_ENABLED(CONFIG_CORESIGHT_TRBE)
++static struct resource trbe_resources[] = {
++	{
++		/* irq */
++		.flags          = IORESOURCE_IRQ,
++	}
++};
++
++static struct platform_device trbe_dev = {
++	.name = ARMV8_TRBE_PDEV_NAME,
++	.id = -1,
++	.resource = trbe_resources,
++	.num_resources = ARRAY_SIZE(trbe_resources)
++};
++
++static u16 arm_trbe_parse_gsi(struct acpi_madt_generic_interrupt *gicc)
 +{
-+	int cpu, this_hetid, hetid, irq, ret;
-+	u16 this_gsi, gsi = 0;
++	return gicc->trbe_interrupt;
++}
 +
-+	/*
-+	 * Ensure that platform device must have IORESOURCE_IRQ
-+	 * resource to hold gsi interrupt.
-+	 */
-+	if (pdev->num_resources != 1)
-+		return -ENXIO;
-+
-+	if (pdev->resource[0].flags != IORESOURCE_IRQ)
-+		return -ENXIO;
-+
-+	/*
-+	 * Sanity check all the GICC tables for the same interrupt
-+	 * number. For now, only support homogeneous ACPI machines.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		struct acpi_madt_generic_interrupt *gicc;
-+
-+		gicc = acpi_cpu_get_madt_gicc(cpu);
-+		if (gicc->header.length < len)
-+			return gsi ? -ENXIO : 0;
-+
-+		this_gsi = parse_gsi(gicc);
-+		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-+		if (!gsi) {
-+			hetid = this_hetid;
-+			gsi = this_gsi;
-+		} else if (hetid != this_hetid || gsi != this_gsi) {
-+			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-+			return -ENXIO;
-+		}
-+	}
-+	/*
-+	 * This is a special case where no cpu on
-+	 * the system has the interrupt and which
-+	 * could not have been detected via above
-+	 * homogeneous mismatch test.
-+	 */
-+	if (!this_gsi)
-+		return 0;
-+
-+	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-+	if (irq < 0) {
-+		pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
-+		return -ENXIO;
-+	}
-+
-+	pdev->resource[0].start = irq;
-+	ret = platform_device_register(pdev);
++static void arm_trbe_acpi_register_device(void)
++{
++	int ret = arm_acpi_register_pmu_device(&trbe_dev, ACPI_MADT_GICC_TRBE,
++					       arm_trbe_parse_gsi);
 +	if (ret)
-+		acpi_unregister_gsi(gsi);
-+
-+	return ret;
++		pr_warn("ACPI: TRBE: Unable to register device\n");
 +}
-+
- #if IS_ENABLED(CONFIG_ARM_SPE_PMU)
- static struct resource spe_resources[] = {
- 	{
-@@ -84,6 +145,11 @@ static struct platform_device spe_dev = {
- 	.num_resources = ARRAY_SIZE(spe_resources)
- };
- 
-+static u16 arm_spe_parse_gsi(struct acpi_madt_generic_interrupt *gicc)
++#else
++static inline void arm_trbe_acpi_register_device(void)
 +{
-+	return gicc->spe_interrupt;
-+}
 +
- /*
-  * For lack of a better place, hook the normal PMU MADT walk
-  * and create a SPE device if we detect a recent MADT with
-@@ -91,47 +157,10 @@ static struct platform_device spe_dev = {
-  */
- static void arm_spe_acpi_register_device(void)
++}
++#endif /* CONFIG_CORESIGHT_TRBE */
++
+ static int arm_pmu_acpi_parse_irqs(void)
  {
--	int cpu, hetid, irq, ret;
--	bool first = true;
--	u16 gsi = 0;
--
--	/*
--	 * Sanity check all the GICC tables for the same interrupt number.
--	 * For now, we only support homogeneous ACPI/SPE machines.
--	 */
--	for_each_possible_cpu(cpu) {
--		struct acpi_madt_generic_interrupt *gicc;
--
--		gicc = acpi_cpu_get_madt_gicc(cpu);
--		if (gicc->header.length < ACPI_MADT_GICC_SPE)
--			return;
--
--		if (first) {
--			gsi = gicc->spe_interrupt;
--			if (!gsi)
--				return;
--			hetid = find_acpi_cpu_topology_hetero_id(cpu);
--			first = false;
--		} else if ((gsi != gicc->spe_interrupt) ||
--			   (hetid != find_acpi_cpu_topology_hetero_id(cpu))) {
--			pr_warn("ACPI: SPE must be homogeneous\n");
--			return;
--		}
--	}
--
--	irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE,
--				ACPI_ACTIVE_HIGH);
--	if (irq < 0) {
--		pr_warn("ACPI: SPE Unable to register interrupt: %d\n", gsi);
--		return;
--	}
--
--	spe_resources[0].start = irq;
--	ret = platform_device_register(&spe_dev);
--	if (ret < 0) {
-+	int ret = arm_acpi_register_pmu_device(&spe_dev, ACPI_MADT_GICC_SPE,
-+					       arm_spe_parse_gsi);
-+	if (ret)
- 		pr_warn("ACPI: SPE: Unable to register device\n");
--		acpi_unregister_gsi(gsi);
--	}
+ 	int irq, cpu, irq_cpu, err;
+@@ -403,6 +437,7 @@ static int arm_pmu_acpi_init(void)
+ 		return 0;
+ 
+ 	arm_spe_acpi_register_device();
++	arm_trbe_acpi_register_device();
+ 
+ 	return 0;
  }
- #else
- static inline void arm_spe_acpi_register_device(void)
+diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
+index a0801f68762b..143fbc10ecfe 100644
+--- a/include/linux/perf/arm_pmu.h
++++ b/include/linux/perf/arm_pmu.h
+@@ -187,5 +187,6 @@ void armpmu_free_irq(int irq, int cpu);
+ #endif /* CONFIG_ARM_PMU */
+ 
+ #define ARMV8_SPE_PDEV_NAME "arm,spe-v1"
++#define ARMV8_TRBE_PDEV_NAME "arm,trbe"
+ 
+ #endif /* __ARM_PMU_H__ */
 -- 
 2.25.1
 
