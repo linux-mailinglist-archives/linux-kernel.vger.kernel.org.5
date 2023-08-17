@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6B477FCC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E226677FCCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353293AbjHQRNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
+        id S1353294AbjHQROS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353954AbjHQRNW (ORCPT
+        with ESMTP id S1353954AbjHQRN7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:13:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38052136;
-        Thu, 17 Aug 2023 10:13:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692292386; x=1723828386;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lW4Gs99clp24g1be/o8KoTm4TvBfDD4QsWs4eUiesuQ=;
-  b=cpX/xCLdOdQYzn7WyniXwheY5C4Mz9RzqKnWTWP7ygZTSqmspzAPkgQs
-   FgELfSvzkzUul54uYfGUzfcGAgEOocKJc+wM0SPJJVHZJwBdcoyVf9DdA
-   pGXkFfTZlC7132dKI402zgXXiO7eWv9FC10yyWz9ZC1LbNdFfzLpmR7Sd
-   xFH6JaJt7TsP4rjKdio3WIk8Nm7JNJSbRTDlgXuNtkTXMN6CnXC5DbYpV
-   wfrgAvDoANw1ds+j2i5gdJH9Xk/lURj5nDSMBNHWhtyVOjN+sNlcTjoK5
-   fLjrsRarfvIggthC5GwGrey/9gyPsMyc1XnymV/qkeFLA42uFYJcEN01v
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370342240"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="370342240"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 10:12:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="848945531"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="848945531"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 17 Aug 2023 10:12:32 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWgXw-0001L9-05;
-        Thu, 17 Aug 2023 17:12:32 +0000
-Date:   Fri, 18 Aug 2023 01:11:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     johannes@gnu-linux.rocks, jikos@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, benjamin.tissoires@redhat.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        andi.shyti@kernel.org, christophe.jaillet@wanadoo.fr,
-        ak@it-klinger.de, Johannes Roith <johannes@gnu-linux.rocks>
-Subject: Re: [PATCH v4] hid-mcp2200: added driver for GPIOs of MCP2200
-Message-ID: <202308180056.nB1KSUap-lkp@intel.com>
-References: <20230817091505.213318-1-johannes@gnu-linux.rocks>
+        Thu, 17 Aug 2023 13:13:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E50BF;
+        Thu, 17 Aug 2023 10:13:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E93FA63CE6;
+        Thu, 17 Aug 2023 17:13:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 242FBC433C8;
+        Thu, 17 Aug 2023 17:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692292437;
+        bh=RXUW5V6p1RTidRORXcrQZ5eIH/N11o40GsglBEZnvbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cxs1Jbsjy0lTRs0rCLM1YU5vOHkyLFTi5aSRm2RbWwtPNaVXf+1168B82YvaY++LD
+         lXT2lwSOYDJ4aBi+tEgfjcvbNDua5uV0zMgpnGXH9/mAZDJxfaF0RwxcJMjYV1PmBW
+         FoJGT3VvO2oANemIWhzul3w7NzkMj2TSNMe3fjIK806ADHEl4ZZ3AW0kepOtEXuien
+         kyvfIfvGbRl4zowiwHJtl25f1NZf4ZWBmCwwjKZTCgUrux6yxv9Oqu+UPPR1WER9c+
+         fnWXdpWWr5kL29xEVABzUiTX8UzfxDFYSQaUVpcn8EOQ+qXF1YQyVwi+rome0uSj5+
+         jHpY1zqtoAFyQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2FC5F404DF; Thu, 17 Aug 2023 14:13:54 -0300 (-03)
+Date:   Thu, 17 Aug 2023 14:13:54 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, irogers@google.com,
+        renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH v6 6/6] perf vendor events arm64: Update N2 and V2
+ metrics and events using Arm telemetry repo
+Message-ID: <ZN5VUkswJnwTaWZj@kernel.org>
+References: <20230816114841.1679234-1-james.clark@arm.com>
+ <20230816114841.1679234-7-james.clark@arm.com>
+ <81e404fb-0eae-e4b8-299a-54ac860fd1dd@oracle.com>
+ <43e5d3e9-fe5f-655d-a6d3-44d47081e1a4@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230817091505.213318-1-johannes@gnu-linux.rocks>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <43e5d3e9-fe5f-655d-a6d3-44d47081e1a4@arm.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,48 +83,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Em Thu, Aug 17, 2023 at 03:41:11PM +0100, James Clark escreveu:
+> 
+> 
+> On 17/08/2023 12:09, John Garry wrote:
+> > On 16/08/2023 12:47, James Clark wrote:
+> >> Apart from some slight naming and grouping differences, the new metrics
+> >> are functionally the same as the existing ones. Any missing metrics were
+> >> manually appended to the end of the auto generated file.
+> >>
+> >> For the events, the new data includes descriptions that may have product
+> >> specific details and new groupings that will be consistent with other
+> >> products.
+> >>
+> >> After generating the metrics from the telemetry repo [1], the following
+> >> manual steps were performed:
+> >>
+> >>   * Change the topdown expressions to compare on CPUID and use
+> >>     #slots so that the same data can be shared between N2 and V2. Apart
+> >>     from these modifications, the expressions now match more closely with
+> >>     the Arm telemetry data which will hopefully make future updates
+> >>     easier.
+> >>
+> >>   * Append some metrics from the old N2/V2 data that aren't present in
+> >>     the telemetry data. These will possibly be added to the
+> >>     telemetry-solution repo at a later time:
+> >>
+> >>      l3d_cache_mpki, l3d_cache_miss_rate, branch_pki, ipc_rate, spec_ipc,
+> >>      retired_rate, wasted_rate, branch_immed_spec_rate,
+> >>      branch_return_spec_rate, branch_indirect_spec_rate
+> >>
+> >> [1]:https://urldefense.com/v3/__https://gitlab.arm.com/telemetry-solution/telemetry-solution/-/blob/main/data/pmu/cpu/neoverse/neoverse-n2.json__;!!ACWV5N9M2RV99hQ!NW7DYe7T69u8RFn9WLyiCcoHm-8BtlxNK3PRw19udocwlwv0vQpjcSDT5XqGbWzvPQyFrG-eRkuu_VZt7cO8-Q$ 
+> >> Signed-off-by: James Clark<james.clark@arm.com>
+> > 
+> > Reviewed-by: John Garry <john.g.garry@oracle.com>
+> 
+> Thanks for the reviews!
 
-kernel test robot noticed the following build warnings:
+Thanks everybody, patches merged, reviewed-by tags collected.
 
-[auto build test WARNING on hid/for-next]
-[also build test WARNING on linus/master v6.5-rc6 next-20230817]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/johannes-gnu-linux-rocks/hid-mcp2200-added-driver-for-GPIOs-of-MCP2200/20230817-172246
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
-patch link:    https://lore.kernel.org/r/20230817091505.213318-1-johannes%40gnu-linux.rocks
-patch subject: [PATCH v4] hid-mcp2200: added driver for GPIOs of MCP2200
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308180056.nB1KSUap-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180056.nB1KSUap-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180056.nB1KSUap-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/hid/hid-mcp2200.c: In function 'mcp2200_remove':
->> drivers/hid/hid-mcp2200.c:395:25: warning: variable 'mcp' set but not used [-Wunused-but-set-variable]
-     395 |         struct mcp2200 *mcp;
-         |                         ^~~
-
-
-vim +/mcp +395 drivers/hid/hid-mcp2200.c
-
-   392	
-   393	static void mcp2200_remove(struct hid_device *hdev)
-   394	{
- > 395		struct mcp2200 *mcp;
-   396	
-   397		mcp = hid_get_drvdata(hdev);
-   398	}
-   399	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+- Arnaldo
