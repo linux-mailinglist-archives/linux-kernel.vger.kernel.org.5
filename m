@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D8D77EEC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3708677EEC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244549AbjHQBfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
+        id S1347561AbjHQBiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 21:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347557AbjHQBfQ (ORCPT
+        with ESMTP id S1347564AbjHQBhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:35:16 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 18556271E;
-        Wed, 16 Aug 2023 18:35:12 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxTetPed1kfFQZAA--.46769S3;
-        Thu, 17 Aug 2023 09:35:11 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTSNOed1kgmVcAA--.11513S3;
-        Thu, 17 Aug 2023 09:35:10 +0800 (CST)
-Subject: Re: [PATCH v15 1/2] thermal: loongson-2: add thermal management
- support
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn,
-        zhanghongchen <zhanghongchen@loongson.cn>, zhuyinbo@loongson.cn
-References: <20230620012944.28877-1-zhuyinbo@loongson.cn>
- <da3e6348-33e0-aaa9-8f86-4b1ba1504551@linaro.org>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <4486a43d-131c-0dcb-d2e5-1f4659a873c0@loongson.cn>
-Date:   Thu, 17 Aug 2023 09:35:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 16 Aug 2023 21:37:50 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D3C2727
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:37:48 -0700 (PDT)
+Received: from kwepemm600004.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RR6zX6M5PzrS03;
+        Thu, 17 Aug 2023 09:36:24 +0800 (CST)
+Received: from [10.67.103.231] (10.67.103.231) by
+ kwepemm600004.china.huawei.com (7.193.23.242) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 17 Aug 2023 09:37:46 +0800
+Message-ID: <15c26edc-eb4f-a90c-d52c-dd532c9d12ea@huawei.com>
+Date:   Thu, 17 Aug 2023 09:37:45 +0800
 MIME-Version: 1.0
-In-Reply-To: <da3e6348-33e0-aaa9-8f86-4b1ba1504551@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH] soc: kunpeng_hccs: fix some sparse warnings about
+ incorrect type
+To:     Arnd Bergmann <arnd@arndb.de>, <xuwei5@hisilicon.com>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <soc@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <liuyonglong@huawei.com>,
+        <lihuisong@huawei.com>
+References: <20230815125233.65469-1-lihuisong@huawei.com>
+ <74f99c2f-fd9d-4cb9-a541-b699b79b928c@app.fastmail.com>
+From:   "lihuisong (C)" <lihuisong@huawei.com>
+In-Reply-To: <74f99c2f-fd9d-4cb9-a541-b699b79b928c@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8AxTSNOed1kgmVcAA--.11513S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Originating-IP: [10.67.103.231]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600004.china.huawei.com (7.193.23.242)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,50 +54,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+在 2023/8/16 21:17, Arnd Bergmann 写道:
+> On Tue, Aug 15, 2023, at 14:52, Huisong Li wrote:
+>> @@ -199,8 +200,8 @@ static int hccs_pcc_cmd_send(struct hccs_dev *hdev, u8 cmd,
+>>   			     struct hccs_desc *desc)
+>>   {
+>>   	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+>> -	struct acpi_pcct_shared_memory *comm_base = cl_info->pcc_comm_addr;
+>> -	void *comm_space = (void *)(comm_base + 1);
+>> +	void __iomem *comm_space = (u8 *)cl_info->pcc_comm_addr +
+>> +					sizeof(struct acpi_pcct_shared_memory);
+>>   	struct hccs_fw_inner_head *fw_inner_head;
+>>   	struct acpi_pcct_shared_memory tmp = {0};
+>>   	u16 comm_space_size;
+> The cast still looks wrong, while both comm_space and ->pcc_comm_addr
+> are __iomem pointers, casting to a non-__iomem u8 pointer should
+> still produce that warning. I'd suggest casting to (u8 __iomem *)
+> or (void __iomem *), I assume you still need a cast here to get
+> the correct address.
+Thanks Arnd.
 
-在 2023/8/16 下午8:46, Daniel Lezcano 写道:
-> On 20/06/2023 03:29, Yinbo Zhu wrote:
->> This patch adds the support for Loongson-2 thermal sensor controller,
->> which can support maximum four sensor selectors that corresponding to 
->> four
->> sets of thermal control registers and one set of sampling register. The
->> sensor selector can selector a speific thermal sensor as temperature 
->> input.
->> The sampling register is used to obtain the temperature in real time, the
->> control register GATE field is used to set the threshold of high or low
->> temperature, when the input temperature is higher than the high 
->> temperature
->> threshold or lower than the low temperature threshold, an interrupt will
->> occur.
->>
->> Signed-off-by: zhanghongchen <zhanghongchen@loongson.cn>
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
-> 
-> [ ... ]
-> 
->> +    if (devm_thermal_add_hwmon_sysfs(dev, tzd))
->> +        dev_warn(dev, "Failed to add hwmon sysfs attributes\n");
-> 
-> [ ... ]
-> 
-> This has been factored out by adding a message directly in 
-> devm_thermal_add_hwmon_sysfs(), so the test is not needed here neither 
-> the message.
+You are right. So I modify it by dropping (u8 *) here in patch v2.
+Please take a look at this again.
+If it is ok for you, can you apply this patch to soc/soc.git?
 
-
-okay, I got it, I will remove the message.
-
-> 
-> However, these changes have been long enough on the mailing list and the 
-> result looks nice.
-> 
-> I can pick this patch and you provide a small patch on top. Or you send 
-> a V16 with this change. It is your call.
-
-
-okay, I will send v16.
-
-Thanks,
-Yinbo.
-
+/Huisong
