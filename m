@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D02D77F232
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3296777F22D
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348963AbjHQI3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        id S1348928AbjHQI3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:29:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348953AbjHQI3R (ORCPT
+        with ESMTP id S1348952AbjHQI3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 17 Aug 2023 04:29:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62292723;
-        Thu, 17 Aug 2023 01:29:02 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A49273C;
+        Thu, 17 Aug 2023 01:29:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DBD46562E;
-        Thu, 17 Aug 2023 08:29:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF1E6C433C9;
-        Thu, 17 Aug 2023 08:28:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 685BA65648;
+        Thu, 17 Aug 2023 08:29:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1951AC433CB;
+        Thu, 17 Aug 2023 08:29:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692260941;
-        bh=BbGi2kVrkXBHhaot+Rw7YbWMiGVGl0ctmnn+aGT0E4o=;
+        s=k20201202; t=1692260943;
+        bh=BhryKMVOLHybGG2NTxAa8UP5EQFyvT233Ct/zVJuTjw=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=CynTVj+yi93r/Igaep0/WKTWTBkNtE7nW4KF/yyRu+To3Cn7uW5U48dL/7WowW9zo
-         pKFlW1MSSWfHeDeUHTW5u+FHLeDZXjgK0oUGAKawfMHShM2lzG0y986EECC4dYfu8l
-         7l+4uw+meDMz7scVoZtLtktRn2LAP7+uhCBK0SW5L3a3wz6QF1tXwvglPM0wstkybW
-         WWqraoAkR/S9bART/hkWUAWri5F8ltsefOq7Ai01YyHKcGcin4AyRfTVs8Jw0quCHU
-         ZJLK0Ne8YbfgbpLtCnR/m8iw+xEKQbJErxiRoE6CrSWext2x8ZcwwLxJOe7CyBkvC7
-         zs4d+ob3+DafA==
+        b=nYn2245aL0JJKwUADbaGYjsJKUuuFpi86L90HgF5Crlgc95k8+mF7IRlnsCn5HH8l
+         MpySQd72mtGs++VhW0euuItFlKZpG/SAxSV/pQ5tR15WxEgPQbYyJTH3YkRBmzqrcL
+         QINh1fH+3Ip9R+HyUqTLV0hBA10cVpX8fE/6AaP0aBrYPIkALQoqOeUokH2rZlv0RA
+         jPT/T1a/aMWpmluaRK4BpBL1j93Jy+1wfaxtuaixGVVjNQ9mXArc8tJzyGD4gM8tkH
+         dO8w+U/Zhrh9le5hRQNXGOapJSQTUVXzzf5Om7+rPrQUfyeWND9tzKfrVo7Pt0uJLm
+         OuCh2wopXKQSQ==
 From:   Lee Jones <lee@kernel.org>
 To:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
         Jean-Jacques Hiblot <jjhiblot@traphandler.com>
 Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230718092527.37516-1-jjhiblot@traphandler.com>
-References: <20230718092527.37516-1-jjhiblot@traphandler.com>
-Subject: Re: [PATCH v11 0/5] Add a multicolor LED driver for groups of
- monochromatic LEDs
-Message-Id: <169226093956.909741.13461014038581088073.b4-ty@kernel.org>
-Date:   Thu, 17 Aug 2023 09:28:59 +0100
+In-Reply-To: <20230728153731.3742339-5-jjhiblot@traphandler.com>
+References: <20230728153731.3742339-1-jjhiblot@traphandler.com>
+ <20230728153731.3742339-5-jjhiblot@traphandler.com>
+Subject: Re: (subset) [RESEND] [PATCH v11 4/4] leds: Add a multicolor LED
+ driver to group monochromatic LEDs
+Message-Id: <169226094184.909741.5903687328186752796.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 09:29:01 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -59,28 +60,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 Jul 2023 11:25:22 +0200, Jean-Jacques Hiblot wrote:
-> Some HW design implement multicolor LEDs with several monochromatic LEDs.
-> Grouping the monochromatic LEDs allows to configure them in sync and use
-> the triggers.
-> The PWM multicolor LED driver implements such grouping but only for
-> PWM-based LEDs. As this feature is also desirable for the other types of
-> LEDs, this series implements it for any kind of LED device.
+On Fri, 28 Jul 2023 17:37:31 +0200, Jean-Jacques Hiblot wrote:
+> Grouping multiple monochrome LEDs into a multicolor LED device has a few
+> benefits over handling the group in user-space:
+> - The state of the LEDs relative to each other is consistent. In other
+>   words, if 2 threads competes to set the LED to green and red, the
+>   end-result cannot be black or yellow.
+> - The multicolor LED as a whole can be driven through the sysfs LED
+>   interface.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/5] devres: provide devm_krealloc_array()
-      (no commit info)
-[2/5] leds: provide devm_of_led_get_optional()
-      (no commit info)
-[3/5] leds: class: store the color index in struct led_classdev
-      (no commit info)
-[4/5] dt-bindings: leds: Add binding for a multicolor group of LEDs
-      commit: 099c52d9448c1ca832b4695e982221a521282b94
-[5/5] leds: Add a multicolor LED driver to group monochromatic LEDs
-      (no commit info)
+[4/4] leds: Add a multicolor LED driver to group monochromatic LEDs
+      commit: 37d0849ed3927f7c4be6f5ee030730f9aa7439c0
 
 --
 Lee Jones [李琼斯]
