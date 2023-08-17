@@ -2,194 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4766A77FB6D
+	by mail.lfdr.de (Postfix) with ESMTP id 9177877FB6E
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353428AbjHQQB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
+        id S1353436AbjHQQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353425AbjHQQBJ (ORCPT
+        with ESMTP id S1353430AbjHQQBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:01:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B5530E9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692288068; x=1723824068;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=R6DpcSMnu2M/Qq6N9v8Y6ui7nK51U4fMYhT/anz3f8U=;
-  b=bfrOMPpR75Ev1IcbY7mqb3nbtcTusapRo/udhwupbwPwmeJECsvMxSy5
-   cnkDK4UJV7Ei1bWntwIXVanP33aeGCnBXqE7QZ7WjCUH65JdijjG21iMS
-   gWrSef2yTqxkLrquTZur87ThZINWEHFIQBkF35MpXR2HeD0zYFvp5Rd6K
-   c4i4nNETglBWMoR0dYzq1HiZQkTlURYabANRN6+Cwwjdq4k/FeTQsLHb1
-   1SOOuDoOFm+sxSCkVmJPrS9nencwBcPXw6V6ReHE2OaJ2jfROMPHgQWlu
-   rdUdjey1DtzA7gQa2mS/v9fOUYQKsA1neFe6KKd4RyMbUgVOSHm/oazgQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403832640"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="403832640"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 09:00:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="1065303496"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="1065303496"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 09:00:55 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 17 Aug 2023 09:00:55 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 17 Aug 2023 09:00:55 -0700
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 17 Aug 2023 09:00:55 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kCKakZevUqsBEh7xwMWy2XqlVJmYTMjfxdENL3SnsWX0rHLjjGwwXw5wl4XNPpqta2ZugJpY9cSUEuRhKBs9E68vViIZK1mZQyUZlq4P9AXS20duiRiIlhC0gsFu4k9fcFxBS5QOtRZ/sFK4DANym+tm5Cpwsqv086cHFHCMh0801VyFK6RjtqGpGvjsZQZyAssvCLzq5BMxDguNZTpYluYmjLXkG6kF3d5jmLgldudImNsJs0qzwvBFkcPrTtJMRbXYY2gOw7xDerC35diFIDr1AZN/vGLdXb4QfLJ0kdE0lDsf7epwlox0rTLJnSMSf5HShzWE+h31hoN6nNEWxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ci5GtkZ9sVpsGNIRx/iHkLdHHToYsZz/ZhrYDpST8JE=;
- b=KfjszQNLcSLYwNF3lvRZnDm19HmlRbpsX35sqVc7ZyVF4OekrQKNkJABEiYONAjo0lUOWpKBXUCyRIuXGjOL/om+7H9HqlpwfLXgWQQqG9taTRhwgwCZYoBJ6CDEVAVp3JzVpT8+k4W31bFqify5ZjiRdxw+3bqeW9scfjs1JxZZD6LN40hNMOrL17vpbZdGHSEUy562pmM/jwfs9dfUDJ5RFWOvE2DWpkNWWse7bwXgDmxk9YxNiTuEjHHayZ+ZviMvD3aq3EX2zYm0yE7glkQwpHygSJGyxhjnDpV/JIZ1pPjgNnV8bIYSUjr6WXk/CgI29pDrp+mA6rs14E3PKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
- by BY1PR11MB7982.namprd11.prod.outlook.com (2603:10b6:a03:530::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Thu, 17 Aug
- 2023 16:00:53 +0000
-Received: from PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::406a:8bd7:8d67:7efb]) by PH7PR11MB5984.namprd11.prod.outlook.com
- ([fe80::406a:8bd7:8d67:7efb%7]) with mapi id 15.20.6678.031; Thu, 17 Aug 2023
- 16:00:53 +0000
-Message-ID: <a5d425b0-9a23-e58a-52aa-db380234dc30@intel.com>
-Date:   Thu, 17 Aug 2023 09:00:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Betterbird/102.13.0
-Subject: Re: [PATCH] drivers: nvdimm: fix memleak
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        <dan.j.williams@intel.com>
-CC:     <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-        <nvdimm@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <yusongping@huawei.com>, <artem.kuzin@huawei.com>
-References: <20230817115945.771826-1-konstantin.meskhidze@huawei.com>
-Content-Language: en-US
-From:   Dave Jiang <dave.jiang@intel.com>
-In-Reply-To: <20230817115945.771826-1-konstantin.meskhidze@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0024.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::29) To PH7PR11MB5984.namprd11.prod.outlook.com
- (2603:10b6:510:1e3::15)
+        Thu, 17 Aug 2023 12:01:18 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4595BF2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:01:17 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564b326185bso4801709a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692288077; x=1692892877;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2X7CsNJ1XIHQIAFvP0L8mpbOrFjG7U4cylxz5W9a4o=;
+        b=gW9MS8oYjKQXJa7o3HJoTcnS9dN/7Ivm25qQg8k/zrKFFqcP4Rx2HGqrw6NEEtyX5B
+         ZSTdHUdsyJok7fLZ2f3STVZNRZ5WA4TEtB7cerYnS5oeszL3JYzsHBFcJTTEKwUOOlm9
+         DavmBowiIcUpQOKhTcD9Q6Cd2eXlUiMApxal0A8c6WA4csE8h9z0CwOSlBmD+Fr4kFAH
+         UaGmEkT023uSJl9qKMwWmAeZduHIzO2Gxklmc0GSNRbGoNqHFulVVpO8ykZEL8VVfnwr
+         Wuw2lXif76dqcsCKria+adNQX+2ojJZC61uJUfhr1kGMTOhjK9TMe6pVIhaqgHEshpw7
+         uZyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692288077; x=1692892877;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B2X7CsNJ1XIHQIAFvP0L8mpbOrFjG7U4cylxz5W9a4o=;
+        b=finCo7FKTy8Aiogwq9sEcwLP5PpNgWkm/Ka2CKEJnwHuHQVRfQv6EPXJI1fXW/A/X/
+         nXsteqmSQ3SZMYa8sldErIFiwIlq4Q8r2+7GSA/Vz0PUzx8KsNUBMxy0wGqfrYETbzeh
+         Fg3zZ4Wf68L26igsKfYv/ueiglp8PQJ0bxT/uNim4Qeq1LyVNyBG874kuytPzsRd3Pv6
+         WsqDKwjMDyYuVzWNzMkj6Y82g1uy1S+VuWaoS+1DP5xo1b9P3dmGT+CQrlIOvl/vJlFV
+         goiG63cdEVRnHYxhjaoFj1uGlR87i+dhWsGZ2FEGcc3DMc8R+IdW4IdNch/gLvLhNaT3
+         6I1g==
+X-Gm-Message-State: AOJu0YxFlI997QkmI+cHSkuOvR+tIECJ6trQtpWAqQfnuD8dXLDBSDvA
+        MmsyCMPWhy7Vh607OM4kN82svFcKz4QF0eT81WD31g==
+X-Google-Smtp-Source: AGHT+IFtKszpE/DEARQZw42hrT6B4DGNuhd4tdbSvm5elQtpzV5iYoYWhooGgxb44e9zGHETDh1SyLj3Whyj40choN8=
+X-Received: by 2002:a05:6a20:548e:b0:13e:da98:966a with SMTP id
+ i14-20020a056a20548e00b0013eda98966amr222447pzk.5.1692288076631; Thu, 17 Aug
+ 2023 09:01:16 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|BY1PR11MB7982:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6ba5c6b7-6f63-43c5-fbdc-08db9f3b2293
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I3MRyfM0Q7FOn4SwCIJcU+uUw2h+rhfEkBBy5QndNpfGRABDhKb1feu4CJec3KKGgjQflGZM43+beCIBRYmr+d0ER5JqvRuXyDSKFG+8klFcZeIVDe5GL7vQT/Dj1mcU+mEsTQaGk5Ev8+KICKph1wl6J3PyGmMDmzrD5ZZ6CyIzETtqLsP9MWRjrwzpRdQjtimcuFHIntGcyPj2Q9Pe1navfMjkCSt28hHcfAbYINoEv4EFF/n6uB2IB73LYRdkNR3khXt2Rl35i/pTmE8Y2j+GssN+2HMa78aCOnZClzfyyhsLsHBfnmjA/fyMIDXYJ16cBLmuFcHFKrOPRP/xd7XSFWn+BxZIlaEnteTpblZZPsX+dafWmteGmigQDB18w8sA7kI094gqrGTo9Wrp1+xAdf57EYOldAYfd8lsYfWoQh51R13oIbQQrowLDSmyxIBRxvmeUxiwsNGVmFzSP86r0rGBIkCgkkdVJnWyVv1ne/Ra+OFnNDSBPPD4CLzS3/mmRBVBcZW95vIem9jyvvkhZhD3PrXKDIQXI8RaaV0+6ODyrNL2ZtnaLxs66AqyIOSS4ciZ2rqg2dCs6neuaQ4RR9Kpsfn0Dw2hRd3rr7BMISeMGJloBU6leMEf1SUEYWcWs/VV+behMTHEDx+jYA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(451199024)(186009)(1800799009)(316002)(6636002)(66946007)(66476007)(66556008)(31686004)(5660300002)(41300700001)(44832011)(38100700002)(8676002)(8936002)(4326008)(82960400001)(26005)(2906002)(31696002)(478600001)(86362001)(53546011)(6512007)(36756003)(6506007)(6486002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmNNYjl0ZFNWYWFpdFZqaTI0RTZ4ZkZiM2d6TzRETVl6UHpBN3hQRnJxTHQ3?=
- =?utf-8?B?UFg3eS9wNTJSMmZvOUdJSEl3N0U2eTlHdkhFQ2N3Mm1ZQzduSEcwYmRzL1Iw?=
- =?utf-8?B?b05QRW01aFp4cGRXdTI0M3JTRTlxS213a2ZqVUEwVkpTczBLNHNzbmdTbGN5?=
- =?utf-8?B?cjJZTVlzRHBlTEwyQ1BkUkRQSmxrNm5BZm1qSEZERlRVblU4cnJ0N3pJbGlO?=
- =?utf-8?B?TVFkSTBIZThOOURNc2l2WHQwNldtaVlGNUJpQ3VoaGhodGJZQVhOY2Fac0p4?=
- =?utf-8?B?ZC9wcHhpUnZRUXgvNHNkUFJqZ3l3L2Q0b3N4UjA5MUV4ZDg5NkJWS2UrTDdH?=
- =?utf-8?B?ZFhhZEkvYWJvWW0vZ3pWL3p4cTZDNXJCUFAva0gxcFdHSjV3ZnE1Q0lXVk1S?=
- =?utf-8?B?emlPeGZmKzF0Y3ZrOXBQL0l4QXhkRFlMT0hOc2VLNWtiV3pwWHpPWW41TFh6?=
- =?utf-8?B?RWpZd3AvWDJhNmRYYVVBcDRPaFRtZDN2enh1VVNoMzVOL2tGU28yODRJSW9G?=
- =?utf-8?B?TXFSZk4vQ1lRQVlLOEl4bVFWUkdkVU5uN05MY1NYcGlpVkZhTnRKY0pocGlP?=
- =?utf-8?B?TnVRZ1NNZ1VoQU5DUkROa1d4SHYzLytaV1VnRVFjTk9WZHZJemZjdWtNelVP?=
- =?utf-8?B?U0RRcEJCamhaMmlSVWhxRnhmdTRhNmJFa2xPd3hrdlpGdm00eUF0MmpEZTMw?=
- =?utf-8?B?TG1TNDYrcS9zenJSZ1JuVy9VblJ2T3prZkwxZDhPTXRIQjkvQzJKamRmMWt1?=
- =?utf-8?B?QTFndDlpaTlwTi9sb09CYVhza1VmVkFHMUtJc25zeE91dXBmSUE4aDZUaUVK?=
- =?utf-8?B?S0w0TkE1NFNRNDFsVWFBS2M1NzhGREtVZVNqYVB2YWtYUlRVZUIzRHVGZ2E2?=
- =?utf-8?B?dGxnU0FEM3Rya1g0d0RjRjREbER0UVJXRTVRdjhjdGxPUXF4UnFLZ3ZYUWJl?=
- =?utf-8?B?S1BiQXIwMVRZV2JrbFN3NGxES29vOFU5VlVzVHJyM2ZPSWF0cmNZcTlDVitw?=
- =?utf-8?B?Y29PUDAvWUhtbzZydU9jZkdOMWlpUVlFek9sOTFOVkRRcTNxZmRQOTgzWkti?=
- =?utf-8?B?dkpteG1FZWJ1WFZuREVUVDhUd2taK0UxL1M1eS9pU0ZqdmUvOExPRGxaTmN1?=
- =?utf-8?B?cThOTXpxenU1cWZ0RDZqdUJsMDJWallQUDUyd1l4THlhSnU2dXBTYnJ1R2N2?=
- =?utf-8?B?Q0d6YlV4WDdUQlVWWCs3MzE1bEh5SHNVcHJVdUxpeGR5Yjc2MWN2cFFTemhM?=
- =?utf-8?B?eDliOXpJL2h0cENoYnBtTHBldlFnUE9rdE5TckJDck9tWU85aTUvYnlMSDJ1?=
- =?utf-8?B?bytxY0Q2MlRBdkN1eHZIL0Frb1ZNV2VHUFAwZFE1Y2QvVU5KY1V2WTJORWZ1?=
- =?utf-8?B?U3JjRVFtd2l0U1RlZHd5RU5FcXBNMXJ1VmwrWE1YaTE4aW4vbmZHSWtqdzEw?=
- =?utf-8?B?T1lSNktqNmdqclEzMHRZeEhMeWY5bEROUHU2bU5IcXluMjNFUk9NM2lGeE5I?=
- =?utf-8?B?VDEyUjMxWTB5eVQ5SXJyWW1NRjc1QnJ2NTlzOTVORTZTQjZoQzhwbzZrUFk0?=
- =?utf-8?B?NWdSdEFkZlI5Zk93UTFTZGZyb3hhOEkzRCt3c0Rkb2VJeXpVMkgyRXE1bGR6?=
- =?utf-8?B?Vlk3RXRJdms1c2xtWU9DSitoZ0c0cHlONTB4OHNaYjh4WFVXcTQyRWlzcU1J?=
- =?utf-8?B?V3lpY2d5OHpQWXFZb0doeFljYUptWDEva0sxMDZSMDRueVFkU2NjU3gyNEsz?=
- =?utf-8?B?ZXdhMitTSGNZUVdzdUh1cHBlRHZmYUtQVHRUNS9RTVdlbTJ4Q2Zta2I4T2V1?=
- =?utf-8?B?WXU4UldlSXJBSlAwanJvZEpHTXh1RXVGNi8zT1p2Wk1QN1ZIdU5BL0lHRHRh?=
- =?utf-8?B?eGxNYXRpYit0TDNORVFTQ2Z0cm5PUkFOb2NGT01rTGcrMS9OOGRtb3dtdkhs?=
- =?utf-8?B?NXFwZzI2cU5FV2ZBQU50STdia0hTNFhNNXlHdmtBZHRHQW5TamNJZHNNNGhn?=
- =?utf-8?B?OXFMUTdURG9hUjAyUXhKeHRUbis3SFRNenc0VXlCUklxc2JseDdtclg0OHJH?=
- =?utf-8?B?QlVLZjR5bTBMSURML0VMRXBsY2hnNU9yS0lDMDkvK1d1UFBPRmVacW4vTThj?=
- =?utf-8?Q?y7YoWXneUBEOtgZoQlACO4iOk?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ba5c6b7-6f63-43c5-fbdc-08db9f3b2293
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 16:00:53.6660
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nfJkdVDPh/8TWpzfz6y2XL+G42Uztimad3cnbYPPYl3HIbH21XQTfdqERa16o+8ir4LiZnmAEb/Ua/IzCHCTWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR11MB7982
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-8.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817153515.143932-1-mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230817153515.143932-1-mathieu.desnoyers@efficios.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 17 Aug 2023 18:01:05 +0200
+Message-ID: <CAKfTPtCavFCk+1cJe2=zFa7WfiX4XGMdc5AsA_2r4xqsk+4v7Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] sched: ttwu_queue_cond: perform queued wakeups
+ across different L2 caches
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/17/23 04:59, Konstantin Meskhidze wrote:
-> Memory pointed by 'nd_pmu->pmu.attr_groups' is allocated in function
-> 'register_nvdimm_pmu' and is lost after 'kfree(nd_pmu)' call in function
-> 'unregister_nvdimm_pmu'.
-> 
-> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-
-Applied and changed subject to:
-nvdimm: Fix memleak of pmu attr_groups in unregister_nvdimm_pmu()
-
-Also added fixes tag:
-Fixes: 0fab1ba6ad6b ("drivers/nvdimm: Add perf interface to expose 
-nvdimm performance stats")
-
-
+On Thu, 17 Aug 2023 at 17:34, Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
+>
+> Skipping queued wakeups for all logical CPUs sharing an LLC means that
+> on a 192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), groups
+> of 8 cores (16 hardware threads) end up grabbing runqueue locks of other
+> runqueues within the same group for each wakeup, causing contention on
+> the runqueue locks.
+>
+> Improve this by only considering hardware threads sharing an L2 cache as
+> candidates for skipping use of the queued wakeups.
+>
+> This results in the following benchmark improvements:
+>
+>     hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+>
+> from 49s to 34s. (30% speedup)
+>
+> And similarly with perf bench:
+>
+>     perf bench sched messaging -g 32 -p -t -l 100000
+>
+> from 10.9s to 7.4s (32% speedup)
+>
+> This was developed as part of the investigation into a weird regression
+> reported by AMD where adding a raw spinlock in the scheduler context
+> switch accelerated hackbench. It turned out that changing this raw
+> spinlock for a loop of 10000x cpu_relax within do_idle() had similar
+> benefits.
+>
+> This patch achieves a similar effect without busy waiting nor changing
+> anything about runqueue selection on wakeup. It considers that only
+> hardware threads sharing an L2 cache should skip the queued
+> try-to-wakeup and directly grab the target runqueue lock, rather than
+> allowing all hardware threads sharing an LLC to do so.
+>
+> I would be interested to hear feedback about performance impact of this
+> patch (improvement or regression) on other workloads and hardware,
+> especially for Intel CPUs. One thing that we might want to empirically
+> figure out from the topology is whether there is a maximum number of
+> hardware threads within an LLC below which it would make sense to use
+> the LLC rather than L2 as group within which queued wakeups can be
+> skipped.
+>
+> [ Only tested on AMD CPUs so far. ]
+>
+> Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
+> Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
+> Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
+> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <vschneid@redhat.com>
+> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+> Cc: Aaron Lu <aaron.lu@intel.com>
+> Cc: x86@kernel.org
 > ---
->   drivers/nvdimm/nd_perf.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/nvdimm/nd_perf.c b/drivers/nvdimm/nd_perf.c
-> index 433bbb68a..14881c4e0 100644
-> --- a/drivers/nvdimm/nd_perf.c
-> +++ b/drivers/nvdimm/nd_perf.c
-> @@ -323,7 +323,8 @@ EXPORT_SYMBOL_GPL(register_nvdimm_pmu);
->   void unregister_nvdimm_pmu(struct nvdimm_pmu *nd_pmu)
->   {
->   	perf_pmu_unregister(&nd_pmu->pmu);
->   	nvdimm_pmu_free_hotplug_memory(nd_pmu);
-> +	kfree(nd_pmu->pmu.attr_groups);
->   	kfree(nd_pmu);
->   }
->   EXPORT_SYMBOL_GPL(unregister_nvdimm_pmu);
+>  arch/Kconfig                   |  6 ++++++
+>  arch/x86/Kconfig               |  1 +
+>  drivers/base/Kconfig           |  1 +
+>  include/linux/sched/topology.h |  3 ++-
+>  kernel/sched/core.c            | 26 +++++++++++++++++++++++---
+>  5 files changed, 33 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 205fd23e0cad..e5aac1741712 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -340,6 +340,12 @@ config HAVE_ASM_MODVERSIONS
+>           <asm/asm-prototypes.h> to support the module versioning for symbols
+>           exported from assembly code.
+>
+> +config HAVE_CLUSTERGROUP
+> +       bool
+> +       help
+> +         This symbol should be selected by an architecture if it
+> +         implements CPU clustergroup.
+> +
+>  config HAVE_REGS_AND_STACK_ACCESS_API
+>         bool
+>         help
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index cb1031018afa..07813a1a9a58 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -299,6 +299,7 @@ config X86
+>         select FUNCTION_ALIGNMENT_4B
+>         imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
+>         select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
+> +       select HAVE_CLUSTERGROUP
+>
+>  config INSTRUCTION_DECODER
+>         def_bool y
+> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
+> index 2b8fd6bb7da0..408aaf7a4bd1 100644
+> --- a/drivers/base/Kconfig
+> +++ b/drivers/base/Kconfig
+> @@ -218,6 +218,7 @@ config DMA_FENCE_TRACE
+>
+>  config GENERIC_ARCH_TOPOLOGY
+>         bool
+> +       select HAVE_CLUSTERGROUP
+>         help
+>           Enable support for architectures common topology code: e.g., parsing
+>           CPU capacity information from DT, usage of such information for
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index 816df6cc444e..714386070463 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -178,7 +178,8 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+>  cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
+>  void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
+>
+> -bool cpus_share_cache(int this_cpu, int that_cpu);
+> +bool cpus_share_cluster(int this_cpu, int that_cpu);   /* Share L2. */
+> +bool cpus_share_cache(int this_cpu, int that_cpu);     /* Share LLC. */
+
+I think that Yicong is doing what you want with
+cpus_share_lowest_cache() which points to cluster when available or
+LLC otherwise
+https://lore.kernel.org/lkml/20220720081150.22167-1-yangyicong@hisilicon.com/t/#m0ab9fa0fe0c3779b9bbadcfbc1b643dce7cb7618
+
+>
+>  typedef const struct cpumask *(*sched_domain_mask_f)(int cpu);
+>  typedef int (*sched_domain_flags_f)(void);
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index a68d1276bab0..ce3402b81e5e 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -3904,13 +3904,33 @@ void wake_up_if_idle(int cpu)
+>         rcu_read_unlock();
+>  }
+>
+> +/*
+> + * Query whether CPUs share LLC.
+> + */
+>  bool cpus_share_cache(int this_cpu, int that_cpu)
+> +{
+> +       return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+> +}
+> +
+> +#ifdef CONFIG_HAVE_CLUSTERGROUP
+> +/*
+> + * Query whether CPUs share L2 cache.
+> + */
+> +bool cpus_share_cluster(int this_cpu, int that_cpu)
+>  {
+>         if (this_cpu == that_cpu)
+>                 return true;
+> -
+> -       return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+> +       return cpumask_test_cpu(that_cpu, cpu_clustergroup_mask(this_cpu));
+> +}
+> +#else
+> +/*
+> + * Fall-back on querying whether CPUs share LLC.
+> + */
+> +bool cpus_share_cluster(int this_cpu, int that_cpu)
+> +{
+> +       return cpus_share_cache(this_cpu, that_cpu);
+>  }
+> +#endif
+>
+>  static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+>  {
+> @@ -3929,7 +3949,7 @@ static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
+>          * If the CPU does not share cache, then queue the task on the
+>          * remote rqs wakelist to avoid accessing remote data.
+>          */
+> -       if (!cpus_share_cache(smp_processor_id(), cpu))
+> +       if (!cpus_share_cluster(smp_processor_id(), cpu))
+>                 return true;
+>
+>         if (cpu == smp_processor_id())
+> --
+> 2.39.2
+>
