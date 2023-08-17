@@ -2,133 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA7777FE3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A62377FE3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354625AbjHQS6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        id S1354635AbjHQS7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353742AbjHQS6D (ORCPT
+        with ESMTP id S1354687AbjHQS7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:58:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229DDC1;
-        Thu, 17 Aug 2023 11:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692298682; x=1723834682;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=7yo3tNXh31iOl1DRSqLjn8gRj2unBq2YatRzwFJUzDI=;
-  b=UAdcOeR7wxX3kuko9KmQOLUTNxavPGflmbrrXKDT/xAfereJa1Vtuv4S
-   tcvLQ0YSO0mFbqdAksTjwXKdBggDppayRdNYNrzK7nGLzC1Y94PefclQU
-   K6aRqUoEirnR1DJLhKDuVcOP4pzfkdSi14pf0v5fTXzh4eHose445opOA
-   3DRwibtdMcRl7yji1+BAqW17djQXo2ji21EbfqNxG84XOh5qC1x5D+E7X
-   idM8JMTvCL3w9d5wucb++qYhker/IDJIpffFKoZhvaSs0xDCUukP/SUFR
-   2S5sbhjI66Ec23jq2M3syAxB/WWjvSFkzLlP5y+CRQgt0esJiplBsOKGy
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="371805533"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="371805533"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 11:58:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="734766972"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="734766972"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 17 Aug 2023 11:57:51 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWiBp-0001Ox-34;
-        Thu, 17 Aug 2023 18:57:49 +0000
-Date:   Fri, 18 Aug 2023 02:57:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>, jdelvare@suse.com,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        corbet@lwn.net, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v7 2/2] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED
- g6 PWM/Fan tach
-Message-ID: <202308180218.lgWU1tp1-lkp@intel.com>
-References: <20230817120029.221484-3-billy_tsai@aspeedtech.com>
+        Thu, 17 Aug 2023 14:59:08 -0400
+Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871CF2722;
+        Thu, 17 Aug 2023 11:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1692298747; x=1723834747;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=NjuisVqpjoBSHXIxzEUxS1vTdeNnvezEaa/XepIm5Ug=;
+  b=pnrfsYd7ExN4NOwJU8J2WzIbjvkoiIfO884Ro7Ef59xrxRHzLe0wiZES
+   OLdy/cAAooVVk6lyovkXTWZxvwtPEG66mIxr6YP2OSZyBJu+QJ6oOmvpK
+   056rA+Jf7puwTkMLm08teRAc3yQ9xY4AyUYBVSugRXQFI7tiyzeLUDm+V
+   k=;
+X-IronPort-AV: E=Sophos;i="6.01,180,1684800000"; 
+   d="scan'208";a="357969552"
+Subject: Re: Tasks stuck jbd2 for a long time
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 18:59:06 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id 60E8880F7C;
+        Thu, 17 Aug 2023 18:59:05 +0000 (UTC)
+Received: from EX19D002UWC004.ant.amazon.com (10.13.138.186) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 17 Aug 2023 18:59:05 +0000
+Received: from [192.168.6.165] (10.187.171.32) by
+ EX19D002UWC004.ant.amazon.com (10.13.138.186) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 17 Aug 2023 18:59:04 +0000
+Message-ID: <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+Date:   Thu, 17 Aug 2023 11:59:03 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817120029.221484-3-billy_tsai@aspeedtech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+CC:     Theodore Ts'o <tytso@mit.edu>, <jack@suse.com>,
+        <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+From:   "Bhatnagar, Rishabh" <risbhat@amazon.com>
+In-Reply-To: <20230817104917.bs46doo6duo7utlm@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.187.171.32]
+X-ClientProxiedBy: EX19D044UWA003.ant.amazon.com (10.13.139.43) To
+ EX19D002UWC004.ant.amazon.com (10.13.138.186)
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
 
-kernel test robot noticed the following build warnings:
+On 8/17/23 3:49 AM, Jan Kara wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>
+>
+>
+> On Wed 16-08-23 15:53:05, Bhatnagar, Rishabh wrote:
+>> I collected dump and looked at some processes that were stuck in
+>> uninterruptible sleep.These are from upstream stable tree:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/?h=linux-5.10.y
+>> (5.10.191)
+>>
+>> One of them is the journal thread that is waiting for some other thread to
+>> close transaction handle.
+>>
+>> PID: 10642  TASK: ffff9768823f4000  CPU: 37  COMMAND: "jbd2/md0-8"
+>>   #0 [ffffbd6c40c17c60] __schedule+617 at ffffffffbb912df9
+>>   #1 [ffffbd6c40c17cf8] schedule+60 at ffffffffbb91330c
+>>   #2 [ffffbd6c40c17d08] jbd2_journal_commit_transaction+877 at
+>> ffffffffc016b90d [jbd2] (/home/ec2-user/linux/fs/jbd2/commit.c:497)
+>>   #3 [ffffbd6c40c17ea0] kjournald2+282 at ffffffffc01723ba [jbd2]
+>> (/home/ec2-user/linux/fs/jbd2/journal.c:214)
+>>   #4 [ffffbd6c40c17f10] kthread+279 at ffffffffbb0b9167
+>>   #5 [ffffbd6c40c17f50] ret_from_fork+34 at ffffffffbb003802
+> Yes, correct. This is waiting for transaction->t_updates to drop to 0.
+>
+>> One of threads that have started the handle and waiting for journal to
+>> commit and unlock the current transaction. This stack only shows
+>> ext4lazyinit but with lazyinit disabled we have seen other threads stuck in
+>> same place.
+>>
+>> PID: 10644  TASK: ffff976901010000  CPU: 37  COMMAND: "ext4lazyinit"
+>>   #0 [ffffbd6c40c1fbe0] __schedule+617 at ffffffffbb912df9
+>>   #1 [ffffbd6c40c1fc78] schedule+60 at ffffffffbb91330c
+>>   #2 [ffffbd6c40c1fc88] wait_transaction_locked+137 at ffffffffc0168089
+>> [jbd2] (/home/ec2-user/linux/fs/jbd2/transaction.c:184)
+>>   #3 [ffffbd6c40c1fcd8] add_transaction_credits+62 at ffffffffc016813e [jbd2]
+>> (/home/ec2-user/linux/fs/jbd2/transaction.c:241)
+>>   #4 [ffffbd6c40c1fd30] start_this_handle+533 at ffffffffc0168615 [jbd2]
+>> (/home/ec2-user/linux/fs/jbd2/transaction.c:416)
+>>   #5 [ffffbd6c40c1fdc0] jbd2__journal_start+244 at ffffffffc0168dc4 [jbd2]
+>>   #6 [ffffbd6c40c1fe00] __ext4_journal_start_sb+250 at ffffffffc02ef65a
+>> [ext4]
+>>   #7 [ffffbd6c40c1fe40] ext4_init_inode_table+190 at ffffffffc0302ace [ext4]
+>>   #8 [ffffbd6c40c1feb0] ext4_lazyinit_thread+906 at ffffffffc033ec9a [ext4]
+>>   #9 [ffffbd6c40c1ff10] kthread+279 at ffffffffbb0b9167
+>> #10 [ffffbd6c40c1ff50] ret_from_fork+34 at ffffffffbb003802
+> This thread actually didn't start a transaction. It is *trying* to start a
+> transaction but it has failed and we are now waiting for transaction commit
+> to proceed (i.e., for jbd2/md0-8 process). So this isn't the process jbd2
+> is waiting for.
+>
+>> To replicate the download scenario i'm just using dd to copy random data to
+>> disk. I launch a bunch of threads and try to stress the system. Many of
+>> those threads seem to be stuck in balance_dirty_pages_ratelimited as can be
+>> seen below.
+>>
+>> PID: 10709  TASK: ffff9769016f8000  CPU: 25  COMMAND: "dd"
+>>   #0 [ffffbd6c40dafa48] __schedule+617 at ffffffffbb912df9
+>>   #1 [ffffbd6c40dafae0] schedule+60 at ffffffffbb91330c
+>>   #2 [ffffbd6c40dafaf0] schedule_timeout+570 at ffffffffbb916a7a
+>>   #3 [ffffbd6c40dafb68] io_schedule_timeout+25 at ffffffffbb913619 ((inlined
+>> by) io_schedule_finish at /home/ec2-user/linux/kernel/sched/core.c:6274)
+>>   #4 [ffffbd6c40dafb80] balance_dirty_pages+654 at ffffffffbb2367ce
+>> (/home/ec2-user/linux/mm/page-writeback.c:1799)
+>>   #5 [ffffbd6c40dafcf0] balance_dirty_pages_ratelimited+763 at
+>> ffffffffbb23752b  (/home/ec2-user/linux/mm/page-writeback.c:1926)
+>>   #6 [ffffbd6c40dafd18] generic_perform_write+308 at ffffffffbb22af44
+>> (/home/ec2-user/linux/mm/filemap.c:3370)
+>>   #7 [ffffbd6c40dafd88] ext4_buffered_write_iter+161 at ffffffffc02fcba1
+>> [ext4] (/home/ec2-user/linux/fs/ext4/file.c:273)
+>>   #8 [ffffbd6c40dafdb8] ext4_file_write_iter+96 at ffffffffc02fccf0 [ext4]
+>>   #9 [ffffbd6c40dafe40] new_sync_write+287 at ffffffffbb2e0c0f
+>> #10 [ffffbd6c40dafec8] vfs_write+481 at ffffffffbb2e3161
+>> #11 [ffffbd6c40daff00] ksys_write+165 at ffffffffbb2e3385
+>> #12 [ffffbd6c40daff40] do_syscall_64+51 at ffffffffbb906213
+>> #13 [ffffbd6c40daff50] entry_SYSCALL_64_after_hwframe+103 at
+>> ffffffffbba000df
+> Yes, this is waiting for page writeback to reduce amount of dirty pages in
+> the pagecache. We are not holding transaction handle during this wait so
+> this is also not the task jbd2 is waiting for.
+>
+>> There are other dd threads that are trying to read and are handling page
+>> fault. These are in runnable state and not uninterruptible sleep.
+>>
+>> PID: 14581  TASK: ffff97c3cfdbc000  CPU: 29  COMMAND: "dd"
+>>   #0 [ffffbd6c4a1d3598] __schedule+617 at ffffffffbb912df9
+>>   #1 [ffffbd6c4a1d3630] _cond_resched+38 at ffffffffbb9133e6
+>>   #2 [ffffbd6c4a1d3638] shrink_page_list+126 at ffffffffbb2412fe
+>>   #3 [ffffbd6c4a1d36c8] shrink_inactive_list+478 at ffffffffbb24441e
+>>   #4 [ffffbd6c4a1d3768] shrink_lruvec+957 at ffffffffbb244e3d
+>>   #5 [ffffbd6c4a1d3870] shrink_node+552 at ffffffffbb2452a8
+>>   #6 [ffffbd6c4a1d38f0] do_try_to_free_pages+201 at ffffffffbb245829
+>>   #7 [ffffbd6c4a1d3940] try_to_free_pages+239 at ffffffffbb246c0f
+>>   #8 [ffffbd6c4a1d39d8] __alloc_pages_slowpath.constprop.114+913 at
+>> ffffffffbb28d741
+>>   #9 [ffffbd6c4a1d3ab8] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
+>> #10 [ffffbd6c4a1d3b28] alloc_pages_vma+124 at ffffffffbb2a734c
+>> #11 [ffffbd6c4a1d3b68] handle_mm_fault+3999 at ffffffffbb26de2f
+>> #12 [ffffbd6c4a1d3c28] exc_page_fault+708 at ffffffffbb909c84
+>> #13 [ffffbd6c4a1d3c80] asm_exc_page_fault+30 at ffffffffbba00b4e
+>>   #14 [ffffbd6c4a1d3d30] copyout+28 at ffffffffbb5160bc
+>> #15 [ffffbd6c4a1d3d38] _copy_to_iter+158 at ffffffffbb5188de
+>> #16 [ffffbd6c4a1d3d98] get_random_bytes_user+136 at ffffffffbb644608
+>> #17 [ffffbd6c4a1d3e48] new_sync_read+284 at ffffffffbb2e0a5c
+>> #18 [ffffbd6c4a1d3ed0] vfs_read+353 at ffffffffbb2e2f51
+>> #19 [ffffbd6c4a1d3f00] ksys_read+165 at ffffffffbb2e3265
+>> #20 [ffffbd6c4a1d3f40] do_syscall_64+51 at ffffffffbb906213
+>> #21 [ffffbd6c4a1d3f50] entry_SYSCALL_64_after_hwframe+103 at
+>> ffffffffbba000df
+> This process is in direct reclaim trying to free more memory. It doesn't
+> have transaction handle started so jbd2 also isn't waiting for this
+> process.
+>
+>>>> Can low available memory be a reason for a thread to not be able to close
+>>>> the transaction handle for a long time?
+>>>> Maybe some writeback thread starts the handle but is not able to complete
+>>>> writeback?
+>>> Well, even that would be a bug but low memory conditions are certainly some
+>>> of less tested paths so it is possible there's a bug lurking there.
+>> Amongst the things we have tested 2 things seem to give good improvements.
+>>
+>> One is disabling journalling. We don't see any stuck tasks. System becomes
+>> slow but eventually recovers. But its not something we want to disable.
+>>
+>> Other is enabling swap memory. Adding some swap memory also avoids system
+>> going into low memory state and system doesn't freeze.
+> OK, these are just workarounds. The question really is which process holds
+> the transaction handle jbd2 thread is waiting for. It is none of the
+> processes you have shown above. Since you have the crashdump, you can also
+> search all the processes and find those which have non-zero
+> task->journal_info. And from these processes you can select those where
+> task->journal_info points to an object from jbd2_handle_cache and then you
+> can verify whether the handles indeed point (through handle->h_transaction)
+> to the transaction jbd2 thread is trying to commit. After you've identified
+> such task it is interesting to see what is it doing...
+>
+Hi Jan
 
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.5-rc6 next-20230817]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think I found the thread that is holding the transaction handle. It 
+seems to be in runnable state though.
+It has the journal_info set to the journal handle that has the matching 
+transaction as the journal's running transaction.
+Here is the associated stack trace. It is converting unwritten extents 
+to extents.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Billy-Tsai/dt-bindings-hwmon-Support-Aspeed-g6-PWM-TACH-Control/20230817-200427
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230817120029.221484-3-billy_tsai%40aspeedtech.com
-patch subject: [PATCH v7 2/2] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED g6 PWM/Fan tach
-config: powerpc-randconfig-r011-20230818 (https://download.01.org/0day-ci/archive/20230818/202308180218.lgWU1tp1-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180218.lgWU1tp1-lkp@intel.com/reproduce)
+PID: 287    TASK: ffff976801890000  CPU: 20  COMMAND: "kworker/u96:35"
+  #0 [ffffbd6c40b3f498] __schedule+617 at ffffffffbb912df9
+  #1 [ffffbd6c40b3f530] _cond_resched+38 at ffffffffbb9133e6
+  #2 [ffffbd6c40b3f538] shrink_lruvec+670 at ffffffffbb244d1e
+  #3 [ffffbd6c40b3f640] _cond_resched+21 at ffffffffbb9133d5
+  #4 [ffffbd6c40b3f648] shrink_node+552 at ffffffffbb2452a8
+  #5 [ffffbd6c40b3f6c8] do_try_to_free_pages+201 at ffffffffbb245829
+  #6 [ffffbd6c40b3f718] try_to_free_pages+239 at ffffffffbb246c0f
+  #7 [ffffbd6c40b3f7b0] __alloc_pages_slowpath.constprop.114+913 at 
+ffffffffbb28d741
+  #8 [ffffbd6c40b3f890] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
+  #9 [ffffbd6c40b3f900] allocate_slab+726 at ffffffffbb2b0886
+#10 [ffffbd6c40b3f958] ___slab_alloc+1173 at ffffffffbb2b3ff5
+#11 [ffffbd6c40b3f988] insert_revoke_hash+37 at ffffffffc016f435 [jbd2]  
+(/home/ec2-user/linux/fs/jbd2/revoke.c:146)
+#12 [ffffbd6c40b3f9b8] kmem_cache_free+924 at ffffffffbb2b712c )(inlined 
+by) slab_alloc at /home/ec2-user/linux/mm/slub.c:2904)
+#13 [ffffbd6c40b3fa18] insert_revoke_hash+37 at ffffffffc016f435 [jbd2] 
+(/home/ec2-user/linux/fs/jbd2/revoke.c:146)
+#14 [ffffbd6c40b3fa40] kmem_cache_alloc+928 at ffffffffbb2b4590 
+(/home/ec2-user/linux/mm/slub.c:290)
+#15 [ffffbd6c40b3fa78] insert_revoke_hash+37 at ffffffffc016f435 [jbd2] 
+(/home/ec2-user/linux/fs/jbd2/revoke.c:146)
+#16 [ffffbd6c40b3faa0] __ext4_forget+338 at ffffffffc02efb32 [ext4]  
+(/home/ec2-user/linux/fs/ext4/ext4_jbd2.c:298)
+#17 [ffffbd6c40b3fae0] ext4_free_blocks+2437 at ffffffffc031fd55 [ext4] 
+(/home/ec2-user/linux/fs/ext4/mballoc.c:5709 (discriminator 2))
+#18 [ffffbd6c40b3fbb0] ext4_ext_handle_unwritten_extents+596 at 
+ffffffffc02f56a4 [ext4] ((inlined by) ext4_ext_handle_unwritten_extents 
+at /home/ec2-user/linux/fs/ext4/extents.c:3892)
+#19 [ffffbd6c40b3fc98] ext4_ext_map_blocks+1325 at ffffffffc02f710d 
+[ext4] (/home/ec2-user/linux/fs/ext4/extents.c:4165)
+#20 [ffffbd6c40b3fd60] ext4_map_blocks+813 at ffffffffc030bd0d [ext4] 
+(/home/ec2-user/linux/fs/ext4/inode.c:659)
+#21 [ffffbd6c40b3fdd0] ext4_convert_unwritten_extents+303 at 
+ffffffffc02f8adf [ext4] (/home/ec2-user/linux/fs/ext4/extents.c:4810)
+#22 [ffffbd6c40b3fe28] ext4_convert_unwritten_io_end_vec+95 at 
+ffffffffc02f8c5f [ext4] (/home/ec2-user/linux/fs/ext4/extents.c:4850)
+#23 [ffffbd6c40b3fe58] ext4_end_io_rsv_work+269 at ffffffffc032c3fd 
+[ext4] ((inlined by) ext4_do_flush_completed_IO at 
+/home/ec2-user/linux/fs/ext4/page-io.c:262)
+#24 [ffffbd6c40b3fe98] process_one_work+405 at ffffffffbb0b2725
+#25 [ffffbd6c40b3fed8] worker_thread+48 at ffffffffbb0b2920
+#26 [ffffbd6c40b3ff10] kthread+279 at ffffffffbb0b9167
+#27 [ffffbd6c40b3ff50] ret_from_fork+34 at ffffffffbb003802
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180218.lgWU1tp1-lkp@intel.com/
+Thanks
+Rishabh
 
-All warnings (new ones prefixed by >>):
-
->> drivers/hwmon/aspeed-g6-pwm-tach.c:431:6: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-     431 |         int ret, count;
-         |             ^
-   1 warning generated.
-
-
-vim +/ret +431 drivers/hwmon/aspeed-g6-pwm-tach.c
-
-   426	
-   427	static int aspeed_tach_create_fan(struct device *dev,
-   428					  struct aspeed_pwm_tach_data *priv)
-   429	{
-   430		u8 *tach_ch;
- > 431		int ret, count;
-   432	
-   433		count = of_property_count_u8_elems(dev->of_node, "aspeed,fan-tach-ch");
-   434		if (count < 1)
-   435			return -EINVAL;
-   436		tach_ch = devm_kcalloc(dev, count, sizeof(*tach_ch), GFP_KERNEL);
-   437		if (!tach_ch)
-   438			return -ENOMEM;
-   439		ret = of_property_read_u8_array(dev->of_node, "aspeed,fan-tach-ch",
-   440						tach_ch, count);
-   441	
-   442		aspeed_present_fan_tach(priv, tach_ch, count);
-   443	
-   444		return 0;
-   445	}
-   446	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
