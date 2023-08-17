@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA7A77FBA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437D577FBAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353526AbjHQQIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        id S1353567AbjHQQJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:09:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353493AbjHQQIC (ORCPT
+        with ESMTP id S1353491AbjHQQI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:08:02 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A1D35B8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:07:56 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:d85a:258d:2c59:b44])
-        by baptiste.telenet-ops.be with bizsmtp
-        id ag7i2A00B4QHFyo01g7ivk; Thu, 17 Aug 2023 18:07:55 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWfX4-000uJD-JE;
-        Thu, 17 Aug 2023 18:07:42 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qWfXC-007YFD-16;
-        Thu, 17 Aug 2023 18:07:42 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 9/9] m68k: Remove <asm/ide.h>
-Date:   Thu, 17 Aug 2023 18:07:40 +0200
-Message-Id: <3e84d9f8bf0aefcbc06a73bb9f0b98dedab0271f.1692288018.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1692288018.git.geert@linux-m68k.org>
-References: <cover.1692288018.git.geert@linux-m68k.org>
+        Thu, 17 Aug 2023 12:08:27 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9FD2D4F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:08:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1692288505;
+        bh=Vyu0yIccaebM/aIoj04Pq2AuKTpkTa2NuHZQ3PxoWik=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=XvVl1DvQfn/hoxYqK2HfgZz0OfEHi8ienJb9fhRbQ0i+dkWY3cltu53xBtX9944Fu
+         MKdwC3mArwsDfyuGEUv67OHLjdz4eLeQ5OFhhUm80iu96/JLTlz35pTEzV/uGCRz6c
+         o96PZgSR1eU+AjE3dIGrqlU3Vc2TNNjyKqzB81gyqBMQ3lvmD4RWLnJ0J52bckg6RW
+         RyZ6yVzd4A7XbsnFW6jl8kN7Hn8tmYmwos0YU6yxIaHNP7Ken7ttprcKtMlfUR6x2G
+         pPBGgyqP4foQBqqbcbLYnazZcF/LzVn1qnXSMUd8ajqcpRr/qAzu7xWGWF0Gxy87D+
+         8kju6c6AfMcRQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RRVKj1TDxz1Ls6;
+        Thu, 17 Aug 2023 12:08:25 -0400 (EDT)
+Message-ID: <e52d3f53-97dc-2081-5124-5e13e29d2603@efficios.com>
+Date:   Thu, 17 Aug 2023 12:09:30 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH 1/1] sched: ttwu_queue_cond: perform queued wakeups
+ across different L2 caches
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org
+References: <20230817153515.143932-1-mathieu.desnoyers@efficios.com>
+ <CAKfTPtCavFCk+1cJe2=zFa7WfiX4XGMdc5AsA_2r4xqsk+4v7Q@mail.gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <CAKfTPtCavFCk+1cJe2=zFa7WfiX4XGMdc5AsA_2r4xqsk+4v7Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,87 +62,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no more users of <asm/ide.h>.
+On 8/17/23 12:01, Vincent Guittot wrote:
+> On Thu, 17 Aug 2023 at 17:34, Mathieu Desnoyers
+> <mathieu.desnoyers@efficios.com> wrote:
+>>
+>> Skipping queued wakeups for all logical CPUs sharing an LLC means that
+>> on a 192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), groups
+>> of 8 cores (16 hardware threads) end up grabbing runqueue locks of other
+>> runqueues within the same group for each wakeup, causing contention on
+>> the runqueue locks.
+[...]
+>>
+>> -bool cpus_share_cache(int this_cpu, int that_cpu);
+>> +bool cpus_share_cluster(int this_cpu, int that_cpu);   /* Share L2. */
+>> +bool cpus_share_cache(int this_cpu, int that_cpu);     /* Share LLC. */
+> 
+> I think that Yicong is doing what you want with
+> cpus_share_lowest_cache() which points to cluster when available or
+> LLC otherwise
+> https://lore.kernel.org/lkml/20220720081150.22167-1-yangyicong@hisilicon.com/t/#m0ab9fa0fe0c3779b9bbadcfbc1b643dce7cb7618
+> 
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/include/asm/ide.h | 67 -------------------------------------
- 1 file changed, 67 deletions(-)
- delete mode 100644 arch/m68k/include/asm/ide.h
+AFAIU (please correct me if I'm wrong) my AMD EPYC machine has sockets 
+consisting of 12 clusters, each cluster having its own L3 cache.
 
-diff --git a/arch/m68k/include/asm/ide.h b/arch/m68k/include/asm/ide.h
-deleted file mode 100644
-index 05cc7dc00e0c1437..0000000000000000
---- a/arch/m68k/include/asm/ide.h
-+++ /dev/null
-@@ -1,67 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- *  Copyright (C) 1994-1996  Linus Torvalds & authors
-- */
--
--/* Copyright(c) 1996 Kars de Jong */
--/* Based on the ide driver from 1.2.13pl8 */
--
--/*
-- * Credits (alphabetical):
-- *
-- *  - Bjoern Brauel
-- *  - Kars de Jong
-- *  - Torsten Ebeling
-- *  - Dwight Engen
-- *  - Thorsten Floeck
-- *  - Roman Hodek
-- *  - Guenther Kelleter
-- *  - Chris Lawrence
-- *  - Michael Rausch
-- *  - Christian Sauer
-- *  - Michael Schmitz
-- *  - Jes Soerensen
-- *  - Michael Thurm
-- *  - Geert Uytterhoeven
-- */
--
--#ifndef _M68K_IDE_H
--#define _M68K_IDE_H
--
--#ifdef __KERNEL__
--#include <asm/setup.h>
--#include <asm/io.h>
--#include <asm/irq.h>
--
--#ifdef CONFIG_MMU
--
--/*
-- * Get rid of defs from io.h - ide has its private and conflicting versions
-- * Since so far no single m68k platform uses ISA/PCI I/O space for IDE, we
-- * always use the `raw' MMIO versions
-- */
--#undef readb
--#undef readw
--#undef writeb
--#undef writew
--
--#define readb				in_8
--#define readw				in_be16
--#define __ide_mm_insw(port, addr, n)	raw_insw((u16 *)port, addr, n)
--#define __ide_mm_insl(port, addr, n)	raw_insl((u32 *)port, addr, n)
--#define writeb(val, port)		out_8(port, val)
--#define writew(val, port)		out_be16(port, val)
--#define __ide_mm_outsw(port, addr, n)	raw_outsw((u16 *)port, addr, n)
--#define __ide_mm_outsl(port, addr, n)	raw_outsl((u32 *)port, addr, n)
--
--#else
--
--#define __ide_mm_insw(port, addr, n)	io_insw((unsigned int)port, addr, n)
--#define __ide_mm_insl(port, addr, n)	io_insl((unsigned int)port, addr, n)
--#define __ide_mm_outsw(port, addr, n)	io_outsw((unsigned int)port, addr, n)
--#define __ide_mm_outsl(port, addr, n)	io_outsl((unsigned int)port, addr, n)
--
--#endif /* CONFIG_MMU */
--
--#endif /* __KERNEL__ */
--#endif /* _M68K_IDE_H */
+What I am trying to achieve here is really to implement "cpus_share_l2": 
+I want this to match only when the cpus have a common L2 cache. L3 
+appears to be a group which is either:
+
+- too large (16 hw threads) or
+- have a too high access latency.
+
+I'm not certain which (or if both) of those reasons explain why
+grouping by L2 is better here.
+
+Thanks,
+
+Mathieu
+
 -- 
-2.34.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
