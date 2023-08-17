@@ -2,49 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7950977FCDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFF577FCE1
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353914AbjHQRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58150 "EHLO
+        id S1353937AbjHQRTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353939AbjHQRSP (ORCPT
+        with ESMTP id S242937AbjHQRTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:18:15 -0400
+        Thu, 17 Aug 2023 13:19:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA6330D1;
-        Thu, 17 Aug 2023 10:18:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53815358E
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:19:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5AE1D6586F;
-        Thu, 17 Aug 2023 17:18:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05F88C433C8;
-        Thu, 17 Aug 2023 17:18:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE45B66EA5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:19:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B800C433C7;
+        Thu, 17 Aug 2023 17:19:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692292692;
-        bh=PUtRgHl3t9y/PCdYajGwcmizA+UGYBohYR7AEs0pjoo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qrg+XKqtRmV4/lmX29QP+7xjp0iql30uzjiD/+IZf66y5T9KcdewLTYZLNPMLLHyM
-         zZuOu2SBecnTFBGa+i5d8VK1GcTirNqkjHGiCHxy0AtS5/VasEbdKajh/kCrAhRnB0
-         ENAHlyX5uztjNp2p+SMQATfNTA0AjNScQgDEWtxMjBJs0Nfn9AgMsEYjz6kE4bNIOq
-         cTF8302WgmW7xV7ayZzahJqkK2AT4OyN83DHtmaVZKbBwHcMOuAe5RmpNWN6yLRzw3
-         HOiC+2xAbd3s9kXKmpB+C/kqsS3s5VE9PLJWxVPFgyuO30dXs6ROSxF9HEwlIKjFta
-         iH27n6fLi5eIg==
-Date:   Thu, 17 Aug 2023 11:19:13 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v3][next] cgroup: Avoid -Wstringop-overflow warnings
-Message-ID: <ZN5WkbPelHUSTXOA@work>
+        s=k20201202; t=1692292762;
+        bh=iHIfK/mk9Pz261VmV7TPqv4tXFXcg5nMmuiazYWbCBw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=GC8cIiXAKmlBhvVE+7A2h95aT3jTrFYY9OtCYVzfJAh/vVzRiGloDobPjfNznvzGz
+         lW2Lz+Mpb/xo6CVEfRG0ug1XjJk+X+cr7oLZi4/68oweQXyENRc8cC8TRWDfrI4sct
+         7YUvgEk+m4hRmqPLvV231h7GE6twilAhwDuMIvoUYsSCvzcyrNiUYKRGQ4Sqa4U+D6
+         T3BrpK2TbzGYA0TykvjOY68APfBPgBOw1MYnvYkIoucU/43WfH2w6RGFlPmDpQ2zDT
+         JHXP3PL1wNqRAW7t/Q2PhhLJLOYAGljsF+m70p/RO1qexobTaz3uwyv32JAKuEWVYq
+         kxLR81oLB+Bhg==
+From:   Lee Jones <lee@kernel.org>
+To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        patches@opensource.cirrus.com,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+In-Reply-To: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
+References: <20230810095849.123321-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 1/9] mfd: stmpe: Fix Wvoid-pointer-to-enum-cast warning
+Message-Id: <169229275920.1072243.16297304606056880279.b4-ty@kernel.org>
+Date:   Thu, 17 Aug 2023 18:19:19 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -54,78 +65,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the notation from pointer-to-array to pointer-to-pointer.
-With this, we avoid the compiler complaining about trying
-to access a region of size zero as an argument during function
-calls.
+On Thu, 10 Aug 2023 11:58:41 +0200, Krzysztof Kozlowski wrote:
+> 'partnum' is an enum, thus cast of pointer on 64-bit compile test with W=1
+> causes:
+> 
+> stmpe-i2c.c:90:13: error: cast to smaller integer type 'enum stmpe_partnum' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
+> 
+> 
 
-This is a workaround to prevent the compiler complaining about
-accessing an array of size zero when evaluating the arguments
-of a couple of function calls. See below:
+Applied, thanks!
 
-kernel/cgroup/cgroup.c: In function 'find_css_set':
-kernel/cgroup/cgroup.c:1206:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
- 1206 |         cset = find_existing_css_set(old_cset, cgrp, template);
-      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-kernel/cgroup/cgroup.c:1206:16: note: referencing argument 3 of type 'struct cgroup_subsys_state *[0]'
-kernel/cgroup/cgroup.c:1071:24: note: in a call to function 'find_existing_css_set'
- 1071 | static struct css_set *find_existing_css_set(struct css_set *old_cset,
-      |                        ^~~~~~~~~~~~~~~~~~~~~
+[1/9] mfd: stmpe: Fix Wvoid-pointer-to-enum-cast warning
+      commit: ee1a91ee7729b56535bce753c5a8146ec58aa0c6
+[2/9] mfd: max14577: Fix Wvoid-pointer-to-enum-cast warning
+      commit: e3569bd687ebbb35339aa8699311c28770d3a3b6
+[3/9] mfd: max77541: Fix Wvoid-pointer-to-enum-cast warning
+      commit: d964ac59516ca77c0761d73681d7975e33ddfeae
+[4/9] mfd: hi6421-pmic: Fix Wvoid-pointer-to-enum-cast warning
+      commit: bbf26b17476c8528a3dc903f5550e89bdca7aa72
+[5/9] mfd: lp87565: Fix Wvoid-pointer-to-enum-cast warning
+      commit: d3cf4d705563d26e02e8997cc2cf297542abdadf
+[6/9] mfd: tc3589: Fix Wvoid-pointer-to-enum-cast warning
+      commit: 499e6c7904a5d1860651ec2437a9873e2b9aa1f0
+[7/9] mfd: wm8994: Fix Wvoid-pointer-to-enum-cast warning
+      commit: b53cd2fb2769dd8c082adaaa8f1746265a9ca732
+[8/9] mfd: wm31x: Fix Wvoid-pointer-to-enum-cast warning
+      commit: a79c1c76d726c5af9cf925ee0a5b934bd17c1496
+[9/9] mfd: mxs-lradc: Fix Wvoid-pointer-to-enum-cast warning
+      commit: 243cd47f753d57e1d6d11449056a437052560b84
 
-With the change to pointer-to-pointer, the functions are not prevented
-from being executed, and they will do what they have to do when
-CGROUP_SUBSYS_COUNT == 0.
-
-Address the following -Wstringop-overflow warnings seen when
-built with ARM architecture and aspeed_g4_defconfig configuration
-(notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
-
-kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-
-This results in no differences in binary output.
-
-Link: https://github.com/KSPP/linux/issues/316
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
-Changes in v3:
- - Update changelog text to point out that this is a workaround.
-
-Changes in v2:
- - Use pointer-to-pointer instead of pointer-to-array.
- - Update changelog text.
- - Link: https://lore.kernel.org/linux-hardening/ZN02iLcZYgxHFrEN@work/
-
-v1:
- - Link: https://lore.kernel.org/linux-hardening/ZIpm3pcs3iCP9UaR@work/
-
- kernel/cgroup/cgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index ccbbba06da5b..68e2d9812e3f 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -929,7 +929,7 @@ static void css_set_move_task(struct task_struct *task,
- #define CSS_SET_HASH_BITS	7
- static DEFINE_HASHTABLE(css_set_table, CSS_SET_HASH_BITS);
- 
--static unsigned long css_set_hash(struct cgroup_subsys_state *css[])
-+static unsigned long css_set_hash(struct cgroup_subsys_state **css)
- {
- 	unsigned long key = 0UL;
- 	struct cgroup_subsys *ss;
-@@ -1070,7 +1070,7 @@ static bool compare_css_sets(struct css_set *cset,
-  */
- static struct css_set *find_existing_css_set(struct css_set *old_cset,
- 					struct cgroup *cgrp,
--					struct cgroup_subsys_state *template[])
-+					struct cgroup_subsys_state **template)
- {
- 	struct cgroup_root *root = cgrp->root;
- 	struct cgroup_subsys *ss;
--- 
-2.34.1
+--
+Lee Jones [李琼斯]
 
