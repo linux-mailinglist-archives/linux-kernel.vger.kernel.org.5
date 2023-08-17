@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E76177FEAF
+	by mail.lfdr.de (Postfix) with ESMTP id 724BD77FEB0
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 21:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354736AbjHQTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 15:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
+        id S1354745AbjHQTpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 15:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354728AbjHQToh (ORCPT
+        with ESMTP id S1354733AbjHQToz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 15:44:37 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B7F359B
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:36 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bc7b25c699so1458315ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:36 -0700 (PDT)
+        Thu, 17 Aug 2023 15:44:55 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD65359D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:53 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 5b1f17b1804b1-3fe2fb9b4d7so2212815e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 12:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692301476; x=1692906276;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yOdpLYxoLdDmx+TSr95GHH7gDMjqei8L96nVIKirCWI=;
-        b=On9xusN8g7izznKyvse5ccEsSYnblSeWqRtkpxOK5gsVqQ5zms7D2DhmB5e51qjXqb
-         njjxN2GoUtGK//o3YuF4w9bZtAdG4CAaDmuvnwkvDLlVGqy1pID+HJSSidHDADrCEan9
-         woMrLYxmESn8f1AugKZGdsnAc+1pCOvmry1h4=
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692301492; x=1692906292;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UZLCso6zuPoBhdzbDgAWu843pgchVyTms6QlPoq9Bew=;
+        b=khPTLfujzns+b+B00amG6wdlyOi2e0rA84cAx9nGVy9MDxDdeB+o/RlxXHQJcVT/kR
+         oE2JrffnSldIsYD7G+USOFl05lYpIovbs0B2nmHgrGk46DwA1yCb+RO1C9Qmjp36dGVq
+         bC2o8fGLftdEdaGKo9MlKSfxna3I9M3KLqScwCLv8MkrgcJ13afZ/Z4KEAsv6ELm3VlE
+         44mEaU0LlY8RFm44YRsn55nAD/9B/4DoKtRZCseS0dWsGvl+rak1TnqGwB0DPL5PaslW
+         3JZ2cCS3GSJWkbXiqRiPzZQTqDv4XTpmO2Lfl2Zgb6GAyNArytHdYwUmixYlIw9BufmT
+         UKfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692301476; x=1692906276;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yOdpLYxoLdDmx+TSr95GHH7gDMjqei8L96nVIKirCWI=;
-        b=bxAQ1fssL+7JScvHMHUPges3vQoMEQxB/qRGjjDHcCMAvPTP77bciHtUYlwdw+8ngb
-         Ic7TAnMojB8UJb22TlfDI5gEmYjosnYJYz17c0rjX30CO1YkREWnkF2Fl6WHdFcbkMa4
-         Lzm1myzrD7Dm4eo2lLSQtWm1Z1o+oaknPchRNgBPR3Fn3hnS9Mey8vELOKDfjt+yWl4M
-         rG93NMaG+vOeBNFn8YcpkWfkyKUag8z2sguRaGkBtT0cXv1EkXnSVkec8SDtzFnk2LsK
-         FteQX1+Si9xHulSrjCSZ3pqUJeTiorBmTkdL4Op5pYbf19Q/VXMDAql48BTANpDN+rSP
-         3w7A==
-X-Gm-Message-State: AOJu0YxXCanQNh8CTVoh0RxgvaQPoy33PdZINPbIbz2AupIZD9JHAuKK
-        +fajKdsY/Mp2BqCZ3psviOLHYw==
-X-Google-Smtp-Source: AGHT+IFYUfkZU/56LzRQHmcIWw+gdtjTYdMJMLO2aNeokD82YcM28GMv6GtlRXUt8yv7fxFy/I5rCA==
-X-Received: by 2002:a17:903:1248:b0:1bb:d59d:8c57 with SMTP id u8-20020a170903124800b001bbd59d8c57mr405217plh.18.1692301475920;
-        Thu, 17 Aug 2023 12:44:35 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o4-20020a1709026b0400b001b06c106844sm136078plk.151.2023.08.17.12.44.35
+        d=1e100.net; s=20221208; t=1692301492; x=1692906292;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UZLCso6zuPoBhdzbDgAWu843pgchVyTms6QlPoq9Bew=;
+        b=RMmuRN3fSScu7L8JxMvEzyG8zztpeApHZ3X6x7/vlePy4ddvNcag3WjUksZFZTaHNk
+         wPOxL8c5ng+xWhQC7/BWvY+btSzZs453y841kVR6fOMhPoqqo8/B3INBkMMPzp6bf9S2
+         TcsthiSG0Mzy8zlSPL5mWAlAz4aPz5g/QuUyYKWeyCL35E7ULA5rlVduQtk2l2m3JAG2
+         rUkFi4zdp3ZKqMVEjS+S2Uop7QTWPqadK+PJ7D47kvMwrpX9+8kO9V8FLf/ArMYP6VOO
+         m9P3LYwf4XT9tbLeS5thSljZPpp8lFCvt7hvTLHgFssVdQgQStE4XxiCBUNq62f7i04t
+         c6IA==
+X-Gm-Message-State: AOJu0Ywp7TcUmkk991EYGOL10ZJjzxgN5ZzpZeNdqrBBxxji+Lm9ujNM
+        5SYe8s4BQuDSgUoAx5ZKiqjSoT4JLp9EbkuWo/zKRJIT
+X-Google-Smtp-Source: AGHT+IFoUrSyiPFnBh/EUK3V+/gt+gh2TJExw7tuToDOynOmdOg2AXMCLK21J35oNYeN+qqA3M2ZHw==
+X-Received: by 2002:a7b:cd0c:0:b0:3fe:14af:ea21 with SMTP id f12-20020a7bcd0c000000b003fe14afea21mr577743wmj.21.1692301492396;
+        Thu, 17 Aug 2023 12:44:52 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2f99:c690:b4da:e3d2])
+        by smtp.gmail.com with ESMTPSA id t12-20020a5d6a4c000000b003179d5aee63sm197177wrw.91.2023.08.17.12.44.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 12:44:35 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 12:44:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v3][next] cgroup: Avoid -Wstringop-overflow warnings
-Message-ID: <202308171244.4FCA8DB40@keescook>
-References: <ZN5WkbPelHUSTXOA@work>
+        Thu, 17 Aug 2023 12:44:52 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] gpio: pca9570: fix kerneldoc
+Date:   Thu, 17 Aug 2023 21:44:49 +0200
+Message-Id: <20230817194449.26447-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN5WkbPelHUSTXOA@work>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:19:13AM -0600, Gustavo A. R. Silva wrote:
-> Change the notation from pointer-to-array to pointer-to-pointer.
-> With this, we avoid the compiler complaining about trying
-> to access a region of size zero as an argument during function
-> calls.
-> 
-> This is a workaround to prevent the compiler complaining about
-> accessing an array of size zero when evaluating the arguments
-> of a couple of function calls. See below:
-> 
-> kernel/cgroup/cgroup.c: In function 'find_css_set':
-> kernel/cgroup/cgroup.c:1206:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
->  1206 |         cset = find_existing_css_set(old_cset, cgrp, template);
->       |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> kernel/cgroup/cgroup.c:1206:16: note: referencing argument 3 of type 'struct cgroup_subsys_state *[0]'
-> kernel/cgroup/cgroup.c:1071:24: note: in a call to function 'find_existing_css_set'
->  1071 | static struct css_set *find_existing_css_set(struct css_set *old_cset,
->       |                        ^~~~~~~~~~~~~~~~~~~~~
-> 
-> With the change to pointer-to-pointer, the functions are not prevented
-> from being executed, and they will do what they have to do when
-> CGROUP_SUBSYS_COUNT == 0.
-> 
-> Address the following -Wstringop-overflow warnings seen when
-> built with ARM architecture and aspeed_g4_defconfig configuration
-> (notice that under this configuration CGROUP_SUBSYS_COUNT == 0):
-> 
-> kernel/cgroup/cgroup.c:1208:16: warning: 'find_existing_css_set' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:1258:15: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:6089:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> kernel/cgroup/cgroup.c:6153:18: warning: 'css_set_hash' accessing 4 bytes in a region of size 0 [-Wstringop-overflow=]
-> 
-> This results in no differences in binary output.
-> 
-> Link: https://github.com/KSPP/linux/issues/316
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+While renaming one of the fields in the driver data struct, the kerneldoc
+was not updated which apparently angers the test robot now.
 
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308171538.nKKUOtbg-lkp@intel.com/
+Fixes: a3f7c1d6ddcb ("gpio: pca9570: rename platform_data to chip_data")
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpio-pca9570.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpio/gpio-pca9570.c b/drivers/gpio/gpio-pca9570.c
+index d8db80ef1293..d37ba4049368 100644
+--- a/drivers/gpio/gpio-pca9570.c
++++ b/drivers/gpio/gpio-pca9570.c
+@@ -30,7 +30,7 @@ struct pca9570_chip_data {
+ /**
+  * struct pca9570 - GPIO driver data
+  * @chip: GPIO controller chip
+- * @p_data: GPIO controller platform data
++ * @chip_data: GPIO controller platform data
+  * @lock: Protects write sequences
+  * @out: Buffer for device register
+  */
 -- 
-Kees Cook
+2.39.2
+
