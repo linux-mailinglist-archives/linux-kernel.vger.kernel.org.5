@@ -2,126 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 828BF77EE39
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D60F77EE40
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 02:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347318AbjHQA3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 20:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        id S1347365AbjHQAbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 20:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347317AbjHQA2u (ORCPT
+        with ESMTP id S1347328AbjHQAae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 20:28:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4E4E76
-        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:28:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78D3B63C74
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 00:28:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75F93C433C8;
-        Thu, 17 Aug 2023 00:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692232128;
-        bh=KuJ1u/Ptd1yFGVDRhEhDSVMIhKS60TBUWM8biRyZBv8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=WaY7wanEr2DFpfb8YQ09wFRFZgdhxiwZhJ5zXucrNmGmqQuZuJcz1ag6mmAjNkN4h
-         Q+M3SaBNqWvsaq+GLURjJPe90JpYGrR/p1VZP4Klx3lEZGG5ISuIMLOSO6HVYAuZ11
-         XKZirib3+9JvdP/ra0bpTrS7MRg40In4D+k7tK2tuc6X8mRDPUwKHN8SgEKLbDYGZ2
-         emWIFz3Q4rTVNofa9iHDDBRGWaapcATEvthJ18r7bWCsvNMGX80oxaoyA5qibJKgBL
-         OYAgElYiI4a/QUXIJUTGwGv/silN6qu5a7mhHrVDY8k0kYu1tm1RWyjWny1Xj4nVbN
-         AQO6PUofwpr4A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5A37A404DF; Wed, 16 Aug 2023 21:28:45 -0300 (-03)
-Date:   Wed, 16 Aug 2023 21:28:45 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Dumping a struct to a buffer in an strace like style using BTF
-Message-ID: <ZN1pveIr5W1ulPHh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 16 Aug 2023 20:30:34 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289002690
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:33 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589c6dc8670so71984197b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 17:30:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692232232; x=1692837032;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=b+30u7Hadsk1kKJhP450GQhawAECfldtwwLSkjuNZSo=;
+        b=oJ/CQvox3ccnSVCtz7SydIVQIcgGOxbkhaM3NDAFYe/8agaa33CyRKd6DaYgjevv6/
+         Omldr/V1HithlSuUNkL8YcsGa2PCWZ/VSieAqsiV8EV/RO8XTxCIGZ/bAONlsMPuJn1G
+         Y+GFNfVU6qDfCz1NYhAjKqbT7oaapzhySzor7xGSlcTNRayLtWpjuOXXsdIhrykFMoiL
+         +nIslcWpzEnQagjnY9lvht16YLEbpscdbhUoa+XuUzWidOwgy2dl205ZYpjVXWp6FchX
+         Y1qaK0qZzPubV329E4ccE+IHwECaQETparBdxtSOlC/oldFpJBDF4kYdyUA272YAK3ch
+         nFzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692232232; x=1692837032;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b+30u7Hadsk1kKJhP450GQhawAECfldtwwLSkjuNZSo=;
+        b=VxV5iI+GTbJJcLyZiSrkN5iu0wdzhfo9YW576wYeFasNfmYHvtetjalazojvihhzLm
+         6+RLm/Uhe6k7d8xwXpVeOLhS3fugJcAKZmOAuepqoUX/yU8mPaSeAR1PPPvfRu+cNZd6
+         /OFvCDj8lp+uNoN9kHSipBC3CyyCGOGzLqUim24FIi/AEt4d6IljgJHYrWrPMAR7mtkJ
+         NzdTN/ESaqU6OSD3g0zjTDVoNDFyVucf7knZuqDGRBHRut3hCN41bS1Ap3VIsU+THM0b
+         B37wtcM1KWMwR7amAowN6Fqsg7m67Ag5LZ+HMKOlSTbDqfnqqGpgk7pYBfi8ChhSoKai
+         m7LA==
+X-Gm-Message-State: AOJu0Yyn+X465J7OAMYsHMdCKO05vNxujahKzBYaqj7NX7NC5owdu+bv
+        UdM10aw6cYumfz8Dlec/BTja7TigNgcV
+X-Google-Smtp-Source: AGHT+IH30MLz99imuYd8az1WoxYlUm/n9smqwxGoczHOBVojWP6GDQqEWzdtTgrxqvadHBd6+52J0LjiwST6
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
+ (user=rananta job=sendgmr) by 2002:a81:b659:0:b0:583:abae:56ab with SMTP id
+ h25-20020a81b659000000b00583abae56abmr44554ywk.7.1692232232398; Wed, 16 Aug
+ 2023 17:30:32 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 00:30:17 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.694.ge786442a9b-goog
+Message-ID: <20230817003029.3073210-1-rananta@google.com>
+Subject: [PATCH v5 00/12] KVM: arm64: PMU: Allow userspace to limit the number
+ of PMCs on vCPU
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Shaoqin Huang <shahuang@redhat.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alan,
+Hello,
 
-	Something I planned to do since forever is to get the contents
-of syscall args and print in 'perf trace' using BTF, right now we have
-things like:
+With permission from Reiji Watanabe <reijiw@google.com>, the original
+author of the series, I'm posting the v5 with necessary alterations.
 
-[root@quaco ~]# perf trace -e connect* ssh localhost
-     0.000 ( 0.342 ms): ssh/438068 connect(fd: 3, uservaddr: { .family: INET, port: 22, addr: 127.0.0.1 }, addrlen: 16) = 0
-root@localhost's password:
+The goal of this series is to allow userspace to limit the number
+of PMU event counters on the vCPU.  We need this to support migration
+across systems that implement different numbers of counters.
 
-in perf-tools-next when building with BUILD_BPF_SKEL=1 that will hook
-into that specific syscall and collect the uservaddr sockaddr struct and
-then pretty print it.
+The number of PMU event counters is indicated in PMCR_EL0.N.
+For a vCPU with PMUv3 configured, its value will be the same as
+the current PE by default.  Userspace can set PMCR_EL0.N for the
+vCPU to any value even with the current KVM using KVM_SET_ONE_REG.
+However, it is practically unsupported, as KVM resets PMCR_EL0.N
+to the host value on vCPU reset and some KVM code uses the host
+value to identify (un)implemented event counters on the vCPU.
 
-That is done manually (the last leg) in
-tools/perf/trace/beauty/sockaddr.c:
+This series will ensure that the PMCR_EL0.N value is preserved
+on vCPU reset and that KVM doesn't use the host value
+to identify (un)implemented event counters on the vCPU.
+This allows userspace to limit the number of the PMU event
+counters on the vCPU.
 
-  syscall_arg__scnprintf_augmented_sockaddr
-     af_scnprintfs[family](syscall pointer contents collected via BPF)
+The series is based on v6.5-rc6.
 
-which leads to struct sockaddr_in or sockaddr_in6 specific pretty
-printers, I wanted to do what these two struct specific pretty printers
-do but using BTF.
+Patch 1 adds a helper to set a PMU for the guest. This helper will
+make it easier for the following patches to add modify codes
+for that process.
 
-I guess this is already available, but from a _really_ quick look at
-libbpf I couldn't find it, ideas?
+Patch 2 makes the default PMU for the guest set on the first
+vCPU reset.
 
-I want to try the code at the end of this message for another
-multiplexer syscall, bpf(), with this on top of what is at:
+Patch 3 fixes reset_pmu_reg() to ensure that (RAZ) bits of
+PMCNTEN{SET,CLR}_EL0, PMINTEN{SET,CLR}_EL1, and
+PMOVS{SET,CLR}_EL1 corresponding to unimplemented event
+counters on the vCPU are reset to zero.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+Patch 4 is a minor refactoring to use the default PMU register reset
+function for PMUSERENR_EL0 and PMCCFILTR_EL0.
 
-Best regards,
+Patch 5 simplifies the existing code that extracts PMCR_EL0.N by
+using FIELD_GET().
 
-- Arnaldo
+Patch 6 adds a helper to read vCPU's PMCR_EL0.
 
-diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-index 9c1d0b271b20f693..79767422efe9479c 100644
---- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-+++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-@@ -319,6 +319,27 @@ int sys_enter_perf_event_open(struct syscall_enter_args *args)
- 	return 1; /* Failure: don't filter */
- }
- 
-+SEC("tp/syscalls/sys_enter_bpf")
-+int sys_enter_bpf(struct syscall_enter_args *args)
-+{
-+	struct augmented_args_payload *augmented_args = augmented_args_payload();
-+	const void *attr = (void *)args->args[1];
-+	unsigned int size = args->args[2];
-+	unsigned int len = sizeof(augmented_args->args);
-+
-+        if (augmented_args == NULL)
-+		goto failure;
-+
-+	size &= sizeof(augmented_args->__data) - 1;
-+
-+	if (bpf_probe_read(&augmented_args->__data, size, attr) < 0)
-+		goto failure;
-+
-+	return augmented__output(args, augmented_args, len + size);
-+failure:
-+	return 1; /* Failure: don't filter */
-+}
-+
- SEC("tp/syscalls/sys_enter_clock_nanosleep")
- int sys_enter_clock_nanosleep(struct syscall_enter_args *args)
- {
+Patch 7 changes the code to use the guest's PMCR_EL0.N, instead
+of the PE's PMCR_EL0.N.
+
+Patch 8 adds support userspace modifying PMCR_EL0.N.
+
+Patch 9-12 adds a selftest to verify reading and writing PMU registers
+for implemented or unimplemented PMU event counters on the vCPU.
+
+v5:
+ - Drop the patches (v4 3,4) related to PMU version fixes as it's
+   now being handled in a separate series [1].
+ - Switch to config_lock, instead of kvm->lock, while configuring
+   the guest PMU.
+ - Instead of continuing after a WARN_ON() for the return value of
+   kvm_arm_set_vm_pmu() in kvm_arm_pmu_v3_set_pmu(), patch-1 now
+   returns from the function immediately with the error code.
+ - Fix WARN_ON() logic in kvm_host_pmu_init() (patch v4 9/14).
+ - Instead of returning 0, return -ENODEV from the
+   kvm_arm_set_vm_pmu() stub function.
+ - Do not define the PMEVN_CASE() and PMEVN_SWITCH() macros in
+   the selftest code as they are now included in the imported
+   arm_pmuv3.h header.
+ - Since the (initial) purpose of the selftest is to test the
+   accessibility of the counter registers, remove the functional
+   test at the end of test_access_pmc_regs(). It'll be added
+   later in a separate series.
+ - Introduce additional helper functions (destroy_vpmu_vm(),
+   PMC_ACC_TO_IDX()) in the selftest for ease of maintenance
+   and debugging.
+   
+v4:
+https://lore.kernel.org/all/20230211031506.4159098-1-reijiw@google.com/
+ - Fix the selftest bug in patch 13 (Have test_access_pmc_regs() to
+   specify pmc index for test_bitmap_pmu_regs() instead of bit-shifted
+   value (Thank you Raghavendra for the reporting the issue!).
+
+v3:
+https://lore.kernel.org/all/20230203040242.1792453-1-reijiw@google.com/
+ - Remove reset_pmu_reg(), and use reset_val() instead. [Marc]
+ - Fixed the initial value of PMCR_EL0.N on heterogeneous
+   PMU systems. [Oliver]
+ - Fixed PMUVer issues on heterogeneous PMU systems.
+ - Fixed typos [Shaoqin]
+
+v2:
+https://lore.kernel.org/all/20230117013542.371944-1-reijiw@google.com/
+ - Added the sys_reg's set_user() handler for the PMCR_EL0 to
+   disallow userspace to set PMCR_EL0.N for the vCPU to a value
+   that is greater than the host value (and added a new test
+   case for this behavior). [Oliver]
+ - Added to the commit log of the patch 2 that PMUSERENR_EL0 and
+   PMCCFILTR_EL0 have UNKNOWN reset values.
+
+v1:
+https://lore.kernel.org/all/20221230035928.3423990-1-reijiw@google.com/
+
+Thank you.
+Raghavendra
+
+[1]:
+https://lore.kernel.org/all/20230728181907.1759513-1-reijiw@google.com/
+
+Raghavendra Rao Ananta (1):
+  tools: Import arm_pmuv3.h
+
+Reiji Watanabe (11):
+  KVM: arm64: PMU: Introduce a helper to set the guest's PMU
+  KVM: arm64: PMU: Set the default PMU for the guest on vCPU reset
+  KVM: arm64: PMU: Clear PM{C,I}NTEN{SET,CLR} and PMOVS{SET,CLR} on vCPU
+    reset
+  KVM: arm64: PMU: Don't define the sysreg reset() for
+    PM{USERENR,CCFILTR}_EL0
+  KVM: arm64: PMU: Simplify extracting PMCR_EL0.N
+  KVM: arm64: PMU: Add a helper to read a vCPU's PMCR_EL0
+  KVM: arm64: PMU: Set PMCR_EL0.N for vCPU based on the associated PMU
+  KVM: arm64: PMU: Allow userspace to limit PMCR_EL0.N for the guest
+  KVM: selftests: aarch64: Introduce vpmu_counter_access test
+  KVM: selftests: aarch64: vPMU register test for implemented counters
+  KVM: selftests: aarch64: vPMU register test for unimplemented counters
+
+ arch/arm64/include/asm/kvm_host.h             |   6 +
+ arch/arm64/kvm/arm.c                          |   3 +-
+ arch/arm64/kvm/pmu-emul.c                     |  82 ++-
+ arch/arm64/kvm/reset.c                        |  18 +-
+ arch/arm64/kvm/sys_regs.c                     |  96 +--
+ drivers/perf/arm_pmuv3.c                      |   3 +-
+ include/kvm/arm_pmu.h                         |  12 +
+ include/linux/perf/arm_pmuv3.h                |   2 +-
+ tools/include/perf/arm_pmuv3.h                | 306 ++++++++++
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../kvm/aarch64/vpmu_counter_access.c         | 568 ++++++++++++++++++
+ .../selftests/kvm/include/aarch64/processor.h |   1 +
+ 12 files changed, 1028 insertions(+), 70 deletions(-)
+ create mode 100644 tools/include/perf/arm_pmuv3.h
+ create mode 100644 tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
+
+
+base-commit: 2ccdd1b13c591d306f0401d98dedc4bdcd02b421
+-- 
+2.41.0.694.ge786442a9b-goog
+
