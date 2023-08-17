@@ -2,254 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B3277F5B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E2577F5B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 13:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350528AbjHQLwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 07:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60440 "EHLO
+        id S1350537AbjHQLwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 07:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350516AbjHQLvo (ORCPT
+        with ESMTP id S1350591AbjHQLwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 07:51:44 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049B63593;
-        Thu, 17 Aug 2023 04:51:20 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RRNbT0Zdnz1GDV1;
-        Thu, 17 Aug 2023 19:49:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 17 Aug 2023 19:51:18 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>
-CC:     <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <mhiramat@kernel.org>,
-        <zhengyejian1@huawei.com>
-Subject: [RFC PATCH] tracing: Introduce pipe_cpumask to avoid race on trace_pipes
-Date:   Thu, 17 Aug 2023 19:50:57 +0800
-Message-ID: <20230817115057.1637676-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230816152308.5f887721@gandalf.local.home>
-References: <20230816152308.5f887721@gandalf.local.home>
+        Thu, 17 Aug 2023 07:52:09 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8054E26BC;
+        Thu, 17 Aug 2023 04:51:36 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37HBaplm017635;
+        Thu, 17 Aug 2023 11:51:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=N3G4nHVYm7yVKk+BYIEY5NbZiIgPPuKLhDVmHPcQQUw=;
+ b=G3tO/TSqO4Bqeu5udr3otgyAoDM9uOsRro5NhNECpLjpr3HGe6f1M8fAx62JvlM6iiCo
+ d/maGKW3wXLCtZxZZSvLw24GMSMsQ+R2Rljh+R1apewRFfGzsbc3jhPXxqn8Ksk59HUR
+ rwySGzHifUbTaxqwR+U/ChfMZBaygTeRkpFyENlEm1CQ8ohb9ytqpt+FDekD3BEVjvmj
+ zPAb6lBdXnmYeFG+qLF4v5suhyzxTdfxGJb/foQfHq/KMDkFpDvwi/j94FgJbxM15XBF
+ BeXdmVzb754MI4K7bpSewcle2Xp8dA3JpbHMTJVNqHP6or2M/eqxRRevvd0NMY5ZBhCl IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shjq20kk4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:51:28 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37HBamXq017069;
+        Thu, 17 Aug 2023 11:51:27 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3shjq20kjx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:51:27 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37H9lRgv003456;
+        Thu, 17 Aug 2023 11:51:27 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3semdsx8gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 11:51:26 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37HBpN1w44892626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Aug 2023 11:51:23 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29BDC20043;
+        Thu, 17 Aug 2023 11:51:23 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3FCC20040;
+        Thu, 17 Aug 2023 11:51:22 +0000 (GMT)
+Received: from [9.152.224.236] (unknown [9.152.224.236])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Aug 2023 11:51:22 +0000 (GMT)
+Message-ID: <7fb638d7-a168-65fc-1c42-19f83c02f2de@linux.ibm.com>
+Date:   Thu, 17 Aug 2023 13:51:22 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 4/4] KVM: s390: pv: Allow AP-instructions for pv-guests
+To:     Steffen Eiden <seiden@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michael Mueller <mimu@linux.vnet.ibm.com>,
+        Marc Hartmayer <mhartmay@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+References: <20230815151415.379760-1-seiden@linux.ibm.com>
+ <20230815151415.379760-5-seiden@linux.ibm.com>
+From:   Michael Mueller <mimu@linux.ibm.com>
+In-Reply-To: <20230815151415.379760-5-seiden@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DntML_C06uuhhSBYKCVpTNwKBkEbClSq
+X-Proofpoint-ORIG-GUID: Sie6_dM_BDoGXQ7zv26hIMBDeLO3KfKk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-17_03,2023-08-17_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 impostorscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 lowpriorityscore=0 suspectscore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308170104
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is race issue when concurrently splice_read main trace_pipe and
-per_cpu trace_pipes which will result in data read out being different
-from what actually writen.
 
-As suggested by Steven:
-  > I believe we should add a ref count to trace_pipe and the per_cpu
-  > trace_pipes, where if they are opened, nothing else can read it.
-  >
-  > Opening trace_pipe locks all per_cpu ref counts, if any of them are
-  > open, then the trace_pipe open will fail (and releases any ref counts
-  > it had taken).
-  >
-  > Opening a per_cpu trace_pipe will up the ref count for just that
-  > CPU buffer. This will allow multiple tasks to read different per_cpu
-  > trace_pipe files, but will prevent the main trace_pipe file from
-  > being opened.
 
-But because we only need to know whether per_cpu trace_pipe is open or
-not, using a cpumask instead of using ref count may be easier.
+On 15.08.23 17:14, Steffen Eiden wrote:
+> Introduces new feature bits and enablement flags for AP and AP IRQ
+> support.
+> 
+> Signed-off-by: Steffen Eiden <seiden@linux.ibm.com>
+> Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
 
-After this patch, users will find that:
- - Main trace_pipe can be opened by only one user, and if it is
-   opened, all per_cpu trace_pipes cannot be opened;
- - Per_cpu trace_pipes can be opened by multiple users, but each per_cpu
-   trace_pipe can only be opened by one user. And if one of them is
-   opened, main trace_pipe cannot be opened.
+Reviewed-by: Michael Mueller <mimu@linux.ibm.com>
 
-Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
-
-> Does that work for this?
-
-Hi, Steven, how about using a cpumask instead of ref count?
-This patch will also prevent main trace_pipe or anyone per_cpu trace_pipe
-from being opened by multiple people at the same time.
-
- kernel/trace/trace.c | 56 ++++++++++++++++++++++++++++++++++++++------
- kernel/trace/trace.h |  2 ++
- 2 files changed, 51 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index b8870078ef58..73f6f4d10d43 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6705,24 +6705,54 @@ tracing_max_lat_write(struct file *filp, const char __user *ubuf,
- 
- #endif
- 
-+static int open_pipe_on_cpu(struct trace_array *tr, int cpu)
-+{
-+	if (cpu == RING_BUFFER_ALL_CPUS) {
-+		if (cpumask_empty(tr->pipe_cpumask)) {
-+			cpumask_setall(tr->pipe_cpumask);
-+			return 0;
-+		}
-+	} else {
-+		if (!cpumask_test_cpu(cpu, tr->pipe_cpumask)) {
-+			cpumask_set_cpu(cpu, tr->pipe_cpumask);
-+			return 0;
-+		}
-+	}
-+	return -EBUSY;
-+}
-+
-+static void close_pipe_on_cpu(struct trace_array *tr, int cpu)
-+{
-+	if (cpu == RING_BUFFER_ALL_CPUS) {
-+		WARN_ON(!cpumask_full(tr->pipe_cpumask));
-+		cpumask_clear(tr->pipe_cpumask);
-+	} else {
-+		WARN_ON(!cpumask_test_cpu(cpu, tr->pipe_cpumask));
-+		cpumask_clear_cpu(cpu, tr->pipe_cpumask);
-+	}
-+}
-+
- static int tracing_open_pipe(struct inode *inode, struct file *filp)
- {
- 	struct trace_array *tr = inode->i_private;
- 	struct trace_iterator *iter;
- 	int ret;
-+	int cpu = tracing_get_cpu(inode);
- 
- 	ret = tracing_check_open_get_tr(tr);
- 	if (ret)
- 		return ret;
- 
- 	mutex_lock(&trace_types_lock);
-+	ret = open_pipe_on_cpu(tr, cpu);
-+	if (ret)
-+		goto fail_pipe_on_cpu;
- 
- 	/* create a buffer to store the information to pass to userspace */
- 	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
- 	if (!iter) {
- 		ret = -ENOMEM;
--		__trace_array_put(tr);
--		goto out;
-+		goto fail_alloc_iter;
- 	}
- 
- 	trace_seq_init(&iter->seq);
-@@ -6745,7 +6775,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
- 
- 	iter->tr = tr;
- 	iter->array_buffer = &tr->array_buffer;
--	iter->cpu_file = tracing_get_cpu(inode);
-+	iter->cpu_file = cpu;
- 	mutex_init(&iter->mutex);
- 	filp->private_data = iter;
- 
-@@ -6755,12 +6785,15 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
- 	nonseekable_open(inode, filp);
- 
- 	tr->trace_ref++;
--out:
-+
- 	mutex_unlock(&trace_types_lock);
- 	return ret;
- 
- fail:
- 	kfree(iter);
-+fail_alloc_iter:
-+	close_pipe_on_cpu(tr, cpu);
-+fail_pipe_on_cpu:
- 	__trace_array_put(tr);
- 	mutex_unlock(&trace_types_lock);
- 	return ret;
-@@ -6777,7 +6810,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
- 
- 	if (iter->trace->pipe_close)
- 		iter->trace->pipe_close(iter);
--
-+	close_pipe_on_cpu(tr, iter->cpu_file);
- 	mutex_unlock(&trace_types_lock);
- 
- 	free_cpumask_var(iter->started);
-@@ -9441,6 +9474,9 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
-+	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
-+		goto out_free_tr;
-+
- 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
- 
- 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
-@@ -9482,6 +9518,7 @@ static struct trace_array *trace_array_create(const char *name)
-  out_free_tr:
- 	ftrace_free_ftrace_ops(tr);
- 	free_trace_buffers(tr);
-+	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
- 	kfree(tr->name);
- 	kfree(tr);
-@@ -9584,6 +9621,7 @@ static int __remove_instance(struct trace_array *tr)
- 	}
- 	kfree(tr->topts);
- 
-+	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
- 	kfree(tr->name);
- 	kfree(tr);
-@@ -10381,12 +10419,14 @@ __init static int tracer_alloc_buffers(void)
- 	if (trace_create_savedcmd() < 0)
- 		goto out_free_temp_buffer;
- 
-+	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
-+		goto out_free_savedcmd;
-+
- 	/* TODO: make the number of buffers hot pluggable with CPUS */
- 	if (allocate_trace_buffers(&global_trace, ring_buf_size) < 0) {
- 		MEM_FAIL(1, "tracer: failed to allocate ring buffer!\n");
--		goto out_free_savedcmd;
-+		goto out_free_pipe_cpumask;
- 	}
--
- 	if (global_trace.buffer_disabled)
- 		tracing_off();
- 
-@@ -10439,6 +10479,8 @@ __init static int tracer_alloc_buffers(void)
- 
- 	return 0;
- 
-+out_free_pipe_cpumask:
-+	free_cpumask_var(global_trace.pipe_cpumask);
- out_free_savedcmd:
- 	free_saved_cmdlines_buffer(savedcmd);
- out_free_temp_buffer:
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index e1edc2197fc8..53ac0f7780c2 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -377,6 +377,8 @@ struct trace_array {
- 	struct list_head	events;
- 	struct trace_event_file *trace_marker_file;
- 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
-+	/* one per_cpu trace_pipe can be opened by only one user */
-+	cpumask_var_t		pipe_cpumask;
- 	int			ref;
- 	int			trace_ref;
- #ifdef CONFIG_FUNCTION_TRACER
--- 
-2.25.1
-
+> ---
+>   arch/s390/include/asm/uv.h | 12 +++++++++++-
+>   arch/s390/kvm/pv.c         |  6 ++++--
+>   2 files changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index 823adfff7315..0e7bd3873907 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -99,6 +99,8 @@ enum uv_cmds_inst {
+>   enum uv_feat_ind {
+>   	BIT_UV_FEAT_MISC = 0,
+>   	BIT_UV_FEAT_AIV = 1,
+> +	BIT_UV_FEAT_AP = 4,
+> +	BIT_UV_FEAT_AP_INTR = 5,
+>   };
+>   
+>   struct uv_cb_header {
+> @@ -159,7 +161,15 @@ struct uv_cb_cgc {
+>   	u64 guest_handle;
+>   	u64 conf_base_stor_origin;
+>   	u64 conf_virt_stor_origin;
+> -	u64 reserved30;
+> +	u8  reserved30[6];
+> +	union {
+> +		struct {
+> +			u16 : 14;
+> +			u16 ap_instr_intr : 1;
+> +			u16 ap_allow_instr : 1;
+> +		};
+> +		u16 raw;
+> +	} flags;
+>   	u64 guest_stor_origin;
+>   	u64 guest_stor_len;
+>   	u64 guest_sca;
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index 8570ee324607..75e81ba26d04 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -576,12 +576,14 @@ int kvm_s390_pv_init_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	uvcb.conf_base_stor_origin =
+>   		virt_to_phys((void *)kvm->arch.pv.stor_base);
+>   	uvcb.conf_virt_stor_origin = (u64)kvm->arch.pv.stor_var;
+> +	uvcb.flags.ap_allow_instr = kvm->arch.model.uv_feat_guest.ap;
+> +	uvcb.flags.ap_instr_intr = kvm->arch.model.uv_feat_guest.ap_intr;
+>   
+>   	cc = uv_call_sched(0, (u64)&uvcb);
+>   	*rc = uvcb.header.rc;
+>   	*rrc = uvcb.header.rrc;
+> -	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x",
+> -		     uvcb.guest_handle, uvcb.guest_stor_len, *rc, *rrc);
+> +	KVM_UV_EVENT(kvm, 3, "PROTVIRT CREATE VM: handle %llx len %llx rc %x rrc %x flags %04x",
+> +		     uvcb.guest_handle, uvcb.guest_stor_len, *rc, *rrc, uvcb.flags.raw);
+>   
+>   	/* Outputs */
+>   	kvm->arch.pv.handle = uvcb.guest_handle;
