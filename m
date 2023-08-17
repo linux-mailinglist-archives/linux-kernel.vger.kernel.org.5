@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3069C77EEE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE62A77EEEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347610AbjHQB7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:59:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
+        id S1347615AbjHQCGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347604AbjHQB7a (ORCPT
+        with ESMTP id S1347604AbjHQCF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:59:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE32268F;
-        Wed, 16 Aug 2023 18:59:29 -0700 (PDT)
+        Wed, 16 Aug 2023 22:05:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F402D1FD0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:05:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692237569; x=1723773569;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=95mz4kJn+bk9HpfjO3/ou3XkhgfhJRMQmj4G1Oj1CP0=;
-  b=CPHYsSse4PmaKmY+wfHMdw4X+YlLSlWmYrihpLPFSTiKCacIF0SZ/hTd
-   ElNxLSGsHHOw6T9f3+mSTtBcT0sjvXDyfs+6kULTXcCeC/9c3rs8gwH1N
-   +MsKsjqg1ekPqYOpb3dYJO75Bx1cApQf0jQrO1Dql8bwDE57usQ+WuzAT
-   DwyJ4fKDaGm4nAI7Nl6gd79L4JTunmfgGQSyqx4T+SkIwJv6CEbac0GID
-   dfV4uHiqK5qxejbKiuNxK31TR6BnHDTFKHIZLUyEUauZDo5vhQq4hOczD
-   6C0uGwuBoXJnPf+uUfB6fcR/uX1IMkKD615EDyIE5k37eKbYPIgKsmFIb
+  t=1692237955; x=1723773955;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qS88+1x1dNYl+kZ3HVtR/OE/V3f4bomUd0O5kPlz9VE=;
+  b=BVpRVVB0822CPiJN17TnpwPMGMO6qHJEfvarypsi+mpySL/RuM2mqBbg
+   GUAFTi/keY3O8pZC3P93//+sE2/048QJKE7Jph2QgOyd6YM/vKLvq9a12
+   UtR+b3FvG3ZkTZSJ1daamfNVVnJsDqxal4zCJnqQgQXVC1T1m0obuTj4c
+   QvuKfck4imbYFuFnIrw2G2QXtov37p3mWztU+sxCSLeQwmNyKXl+IqRxw
+   uXiJFng693ZYiuWKlT0uaLafqqPBkk+awWVjUWUJX+JvbUT76d5HQn3Bp
+   x/PUVGMudwcogSivgcQgD8NR/4IMviqceQ88RW9sUFFHpsZor77TPrJCo
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="375454680"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="370158835"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="375454680"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:59:28 -0700
+   d="scan'208";a="370158835"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 19:05:55 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="727963148"
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="858037664"
 X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="727963148"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.52]) ([10.238.10.52])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 18:59:26 -0700
-Message-ID: <d595fad7-0d78-bdab-ee66-f1eb1d9488ed@linux.intel.com>
-Date:   Thu, 17 Aug 2023 09:59:24 +0800
+   d="scan'208";a="858037664"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 16 Aug 2023 19:05:53 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWSOW-0000iX-1B;
+        Thu, 17 Aug 2023 02:05:52 +0000
+Date:   Thu, 17 Aug 2023 10:05:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>, intel-xe@lists.freedesktop.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Matthew Brost <matthew.brost@intel.com>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        linux-kernel@vger.kernel.org, Oak Zeng <oak.zeng@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        dri-devel@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: Re: [PATCH v2] Documentation/gpu: VM_BIND locking document
+Message-ID: <202308170916.TGY7kBpM-lkp@intel.com>
+References: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v10 9/9] KVM: x86: Expose LAM feature to userspace VMM
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
-        David.Laight@aculab.com, robert.hu@linux.intel.com,
-        guang.zeng@intel.com
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <20230719144131.29052-10-binbin.wu@linux.intel.com>
- <ZN1FW7krxOVs9uA8@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZN1FW7krxOVs9uA8@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816091547.2982-1-thomas.hellstrom@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thomas,
 
+kernel test robot noticed the following build warnings:
 
-On 8/17/2023 5:53 AM, Sean Christopherson wrote:
-> s/Expose/Advertise
->
-> And I would add an "enable" in there somehwere, because to Kai's point earlier in
-> the series about kvm_cpu_cap_has(), the guest can't actually use LAM until this
-> patch.  Sometimes we do just say "Advertise", but typically only for features
-> where there's not virtualization support, e.g. AVX instructions where the guest
-> can use them irrespective of what KVM says it supports.
->
-> This?
->
-> KVM: x86: Advertise and enable LAM (user and supervisor)
-It looks good to me. Thanks.
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm/drm-next drm-tip/drm-tip linus/master v6.5-rc6 next-20230816]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> On Wed, Jul 19, 2023, Binbin Wu wrote:
->> From: Robert Hoo <robert.hu@linux.intel.com>
->>
->> LAM feature is enumerated by CPUID.7.1:EAX.LAM[bit 26].
->> Expose the feature to userspace as the final step after the following
->> supports:
->> - CR4.LAM_SUP virtualization
->> - CR3.LAM_U48 and CR3.LAM_U57 virtualization
->> - Check and untag 64-bit linear address when LAM applies in instruction
->>    emulations and VMExit handlers.
->>
->> Exposing SGX LAM support is not supported yet. SGX LAM support is enumerated
->> in SGX's own CPUID and there's no hard requirement that it must be supported
->> when LAM is reported in CPUID leaf 0x7.
->>
->> Signed-off-by: Robert Hoo <robert.hu@linux.intel.com>
->> Signed-off-by: Binbin Wu <binbin.wu@linux.intel.com>
->> Reviewed-by: Jingqi Liu <jingqi.liu@intel.com>
->> Reviewed-by: Chao Gao <chao.gao@intel.com>
->> Reviewed-by: Kai Huang <kai.huang@intel.com>
->> Tested-by: Xuelian Guo <xuelian.guo@intel.com>
->> ---
->>   arch/x86/kvm/cpuid.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
->> index 7ebf3ce1bb5f..21d525b01d45 100644
->> --- a/arch/x86/kvm/cpuid.c
->> +++ b/arch/x86/kvm/cpuid.c
->> @@ -645,7 +645,7 @@ void kvm_set_cpu_caps(void)
->>   	kvm_cpu_cap_mask(CPUID_7_1_EAX,
->>   		F(AVX_VNNI) | F(AVX512_BF16) | F(CMPCCXADD) |
->>   		F(FZRM) | F(FSRS) | F(FSRC) |
->> -		F(AMX_FP16) | F(AVX_IFMA)
->> +		F(AMX_FP16) | F(AVX_IFMA) | F(LAM)
->>   	);
->>   
->>   	kvm_cpu_cap_init_kvm_defined(CPUID_7_1_EDX,
->> -- 
->> 2.25.1
->>
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Hellstr-m/Documentation-gpu-VM_BIND-locking-document/20230816-171911
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230816091547.2982-1-thomas.hellstrom%40linux.intel.com
+patch subject: [PATCH v2] Documentation/gpu: VM_BIND locking document
+reproduce: (https://download.01.org/0day-ci/archive/20230817/202308170916.TGY7kBpM-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308170916.TGY7kBpM-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> Documentation/gpu/drm-vm-bind-locking.rst: WARNING: document isn't included in any toctree
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
