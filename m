@@ -2,232 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB4277FF3B
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260C077FF37
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 22:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354985AbjHQUnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 16:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S1354959AbjHQUmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 16:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354967AbjHQUnP (ORCPT
+        with ESMTP id S1354929AbjHQUmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 16:43:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5CE30F7
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:43:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692304982; x=1723840982;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=TLdHQAYSQg5ovEpK49pxAPWijCO4Xjx/bhjBKTyYxdk=;
-  b=WCH1NfphAR3yBPf01ZVNYi7JQatr1WIAQX5G1wjf3OMzBhbd4bRdwVn+
-   ci+ehoNgs2+IqeP5/KR/JCiWHSaL9s0jnA4gE4uqZv9e2EXddZAI7Glgv
-   44nazVdgwY3INVPJ1qNiI4+/cxOaMMkIyRlE8nhK3mvsouaDTj9igwec7
-   hBk8Pmog/cb//YXpsKtDxvarMKLTYs/lSI0Y8kNoGGCJqt5+zR78lovRS
-   jDUAqM85Ch3z/+I6ZHFZqM8plq7jdsJ3wjwaTdXqOHtjpOhvn0UiZztib
-   5BcG0N+8sNiiacyVQouKf1Sk86e1dcyzin6+SzlDZdvf9oZsuaGCwrjxq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="371826886"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="371826886"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 13:43:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="764260032"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="764260032"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 17 Aug 2023 13:42:57 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWjpY-0001Sj-2I;
-        Thu, 17 Aug 2023 20:42:56 +0000
-Date:   Fri, 18 Aug 2023 04:42:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: kernel/bpf/helpers.c:1887:33: warning: no previous declaration for
- 'bpf_rbtree_remove'
-Message-ID: <202308180412.Tw9FNVtq-lkp@intel.com>
+        Thu, 17 Aug 2023 16:42:07 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FEA2D67
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 13:42:04 -0700 (PDT)
+Received: from eig-obgw-5002a.ext.cloudfilter.net ([10.0.29.215])
+        by cmsmtp with ESMTP
+        id Wet0qgjwVyYOwWjoiqsgzr; Thu, 17 Aug 2023 20:42:04 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id Wjohqz7coqpuuWjohqnyHE; Thu, 17 Aug 2023 20:42:04 +0000
+X-Authority-Analysis: v=2.4 cv=XOgj9CtE c=1 sm=1 tr=0 ts=64de861c
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=IpJZQVW2AAAA:8 a=VwQbUJbxAAAA:8 a=c-n4J4-pAAAA:8 a=XPfOMz_LAAAA:8
+ a=P-IC7800AAAA:8 a=pGLkceISAAAA:8 a=KKAkSRfTAAAA:8 a=QX4gbG5DAAAA:8
+ a=zu6OG0ZhAAAA:8 a=FlkJ-zHRAAAA:8 a=JfrnYn6hAAAA:8 a=voM4FWlXAAAA:8
+ a=e5mUnYsNAAAA:8 a=cm27Pg_UAAAA:8 a=mYo5tDoLIR1weVEbl60A:9 a=QEXdDO2ut3YA:10
+ a=IawgGOuG5U0WyFbmm1f5:22 a=AjGcO6oz07-iQ99wixmX:22 a=L0NDqeB7ZLmQzAogN4cw:22
+ a=mTuXyI7nMZpd5pdLa428:22 a=d3PnA9EDa4IxuAV0gXij:22 a=cvBusfyB2V15izCimMoJ:22
+ a=AbAUZ8qAyYyZVLSsDulk:22 a=pAN39diAhXWuPx0-Vjn3:22 a=rcJ5IfC3ewqtVv14NVGK:22
+ a=1CNFftbPRP8L7MoqJWF3:22 a=IC2XNlieTeVoXbcui8wp:22 a=Vxmtnl_E_bksehYqCbjh:22
+ a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9rxpK7oeGH/u4pk+tUlKyS3S2P3FaP+s+fkAyW7pq9A=; b=XOVQVo3BxnVxjOb5JTZPc40fxM
+        kKgmgj9iW/7Y4Slx9vP5PaviKcedkWxT+9RtGsQ4j/GbICmsy+bapQ8DK56v68nIRPMiXKIo1UY8a
+        XUUQS4FPcPkXiP6fkZmGdTOXdDPGD2QKagMI8kmxe6RdaUDJ4q3KxaGW6SoqC6e9APUDICSktVMMr
+        lK/EQ+ga8+iHTkymF1e7yyo+Ma0Qtrql4wrdztg9JavHJpv9+HpmYSs2MdGg52pcAY18Qf7qHI6wd
+        9sN26nXpV8jZCrIT0TNhD3B7B2KpadAofLE1SoMkAiAUZ4U0vigqXuDTyp4BrzNRms7eRvjvdA/Ew
+        yIX9zgpw==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:38244 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qWjoa-001B6O-2R;
+        Thu, 17 Aug 2023 15:41:57 -0500
+Message-ID: <00ce86aa-a5fa-6f89-6e3d-5dd2830d0665@embeddedor.com>
+Date:   Thu, 17 Aug 2023 14:42:41 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] clk: Annotate struct clk_hw_onecell_data with
+ __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Taichi Sugaya <sugaya.taichi@socionext.com>,
+        Takao Orito <orito.takao@socionext.com>,
+        Qin Jian <qinjian@cqplus1.com>, Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Samuel Holland <samuel@sholland.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-sunxi@lists.linux.dev,
+        linux-phy@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+References: <20230817203019.never.795-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230817203019.never.795-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qWjoa-001B6O-2R
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:38244
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHvQxCgG/+ZynxQ4TJkrMx8cAXQ9ac7sSJyrSjR7Vdf2uHo1HZod3x5RKpZBy1IIFVh2XCm4WuzqeOf+Zpj/aksiWqJGTDe51T6RR9BezAbmP4b6GBFh
+ f+dS4I8MdZoMNItLLfH9qKcKwjPLiPm6f9/5U+XHMqnTqADB0qNDz/AGlSsFW6+LNUJPn5f4QMI2Xc2cAq4pETOXf/PcLlRHYeepnGcuVCHltxQDBb3CUSHa
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   16931859a6500d360b90aeacab3b505a3560a3ed
-commit: bd1279ae8a691d7ec75852c6d0a22139afb034a4 bpf: Add bpf_rbtree_{add,remove,first} kfuncs
-date:   6 months ago
-config: x86_64-randconfig-x012-20230816 (https://download.01.org/0day-ci/archive/20230818/202308180412.Tw9FNVtq-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180412.Tw9FNVtq-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180412.Tw9FNVtq-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/helpers.c:1819:19: warning: no previous declaration for 'bpf_obj_new_impl' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1833:18: warning: no previous declaration for 'bpf_obj_drop_impl' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_obj_drop_impl(void *p__alloc, void *meta__ign)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1854:18: warning: no previous declaration for 'bpf_list_push_front' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_list_push_front(struct bpf_list_head *head, struct bpf_list_node *node)
-                     ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1859:18: warning: no previous declaration for 'bpf_list_push_back' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_list_push_back(struct bpf_list_head *head, struct bpf_list_node *node)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1877:35: warning: no previous declaration for 'bpf_list_pop_front' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1882:35: warning: no previous declaration for 'bpf_list_pop_back' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-                                      ^~~~~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1887:33: warning: no previous declaration for 'bpf_rbtree_remove' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1924:18: warning: no previous declaration for 'bpf_rbtree_add' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *node,
-                     ^~~~~~~~~~~~~~
->> kernel/bpf/helpers.c:1930:33: warning: no previous declaration for 'bpf_rbtree_first' [-Wmissing-declarations]
-    __bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1943:33: warning: no previous declaration for 'bpf_task_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1954:33: warning: no previous declaration for 'bpf_task_acquire_not_zero' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_acquire_not_zero(struct task_struct *p)
-                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2006:33: warning: no previous declaration for 'bpf_task_kptr_get' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_kptr_get(struct task_struct **pp)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2019:18: warning: no previous declaration for 'bpf_task_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_task_release(struct task_struct *p)
-                     ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2034:28: warning: no previous declaration for 'bpf_cgroup_acquire' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_acquire(struct cgroup *cgrp)
-                               ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2046:28: warning: no previous declaration for 'bpf_cgroup_kptr_get' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_kptr_get(struct cgroup **cgrpp)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2078:18: warning: no previous declaration for 'bpf_cgroup_release' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_cgroup_release(struct cgroup *cgrp)
-                     ^~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2093:28: warning: no previous declaration for 'bpf_cgroup_ancestor' [-Wmissing-declarations]
-    __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
-                               ^~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2112:33: warning: no previous declaration for 'bpf_task_from_pid' [-Wmissing-declarations]
-    __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
-                                    ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2125:19: warning: no previous declaration for 'bpf_cast_to_kern_ctx' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_cast_to_kern_ctx(void *obj)
-                      ^~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2130:19: warning: no previous declaration for 'bpf_rdonly_cast' [-Wmissing-declarations]
-    __bpf_kfunc void *bpf_rdonly_cast(void *obj__ign, u32 btf_id__k)
-                      ^~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2135:18: warning: no previous declaration for 'bpf_rcu_read_lock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_lock(void)
-                     ^~~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:2140:18: warning: no previous declaration for 'bpf_rcu_read_unlock' [-Wmissing-declarations]
-    __bpf_kfunc void bpf_rcu_read_unlock(void)
-                     ^~~~~~~~~~~~~~~~~~~
 
 
-vim +/bpf_rbtree_remove +1887 kernel/bpf/helpers.c
+On 8/17/23 14:30, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct clk_hw_onecell_data.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Taichi Sugaya <sugaya.taichi@socionext.com>
+> Cc: Takao Orito <orito.takao@socionext.com>
+> Cc: Qin Jian <qinjian@cqplus1.com>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Gregory Clement <gregory.clement@bootlin.com>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <andersson@kernel.org>
+> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Samuel Holland <samuel@sholland.org>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Kishon Vijay Abraham I <kishon@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-aspeed@lists.ozlabs.org
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-mediatek@lists.infradead.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-sunxi@lists.linux.dev
+> Cc: linux-phy@lists.infradead.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-  1858	
-> 1859	__bpf_kfunc void bpf_list_push_back(struct bpf_list_head *head, struct bpf_list_node *node)
-  1860	{
-  1861		return __bpf_list_add(node, head, true);
-  1862	}
-  1863	
-  1864	static struct bpf_list_node *__bpf_list_del(struct bpf_list_head *head, bool tail)
-  1865	{
-  1866		struct list_head *n, *h = (void *)head;
-  1867	
-  1868		if (unlikely(!h->next))
-  1869			INIT_LIST_HEAD(h);
-  1870		if (list_empty(h))
-  1871			return NULL;
-  1872		n = tail ? h->prev : h->next;
-  1873		list_del_init(n);
-  1874		return (struct bpf_list_node *)n;
-  1875	}
-  1876	
-  1877	__bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
-  1878	{
-  1879		return __bpf_list_del(head, false);
-  1880	}
-  1881	
-> 1882	__bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
-  1883	{
-  1884		return __bpf_list_del(head, true);
-  1885	}
-  1886	
-> 1887	__bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
-  1888							  struct bpf_rb_node *node)
-  1889	{
-  1890		struct rb_root_cached *r = (struct rb_root_cached *)root;
-  1891		struct rb_node *n = (struct rb_node *)node;
-  1892	
-  1893		rb_erase_cached(n, r);
-  1894		RB_CLEAR_NODE(n);
-  1895		return (struct bpf_rb_node *)n;
-  1896	}
-  1897	
-  1898	/* Need to copy rbtree_add_cached's logic here because our 'less' is a BPF
-  1899	 * program
-  1900	 */
-  1901	static void __bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *node,
-  1902				     void *less)
-  1903	{
-  1904		struct rb_node **link = &((struct rb_root_cached *)root)->rb_root.rb_node;
-  1905		bpf_callback_t cb = (bpf_callback_t)less;
-  1906		struct rb_node *parent = NULL;
-  1907		bool leftmost = true;
-  1908	
-  1909		while (*link) {
-  1910			parent = *link;
-  1911			if (cb((uintptr_t)node, (uintptr_t)parent, 0, 0, 0)) {
-  1912				link = &parent->rb_left;
-  1913			} else {
-  1914				link = &parent->rb_right;
-  1915				leftmost = false;
-  1916			}
-  1917		}
-  1918	
-  1919		rb_link_node((struct rb_node *)node, parent, link);
-  1920		rb_insert_color_cached((struct rb_node *)node,
-  1921				       (struct rb_root_cached *)root, leftmost);
-  1922	}
-  1923	
-  1924	__bpf_kfunc void bpf_rbtree_add(struct bpf_rb_root *root, struct bpf_rb_node *node,
-  1925					bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b))
-  1926	{
-  1927		__bpf_rbtree_add(root, node, (void *)less);
-  1928	}
-  1929	
-> 1930	__bpf_kfunc struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root)
-  1931	{
-  1932		struct rb_root_cached *r = (struct rb_root_cached *)root;
-  1933	
-  1934		return (struct bpf_rb_node *)rb_first_cached(r);
-  1935	}
-  1936	
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+--
+Gustavo
+
+> ---
+>   drivers/clk/clk-aspeed.c                    | 3 +--
+>   drivers/clk/clk-ast2600.c                   | 2 +-
+>   drivers/clk/clk-gemini.c                    | 2 +-
+>   drivers/clk/clk-milbeaut.c                  | 3 +--
+>   drivers/clk/clk-sp7021.c                    | 3 +--
+>   drivers/clk/mvebu/cp110-system-controller.c | 2 +-
+>   drivers/clk/qcom/clk-cpu-8996.c             | 2 +-
+>   drivers/clk/ralink/clk-mt7621.c             | 3 +--
+>   drivers/gpu/drm/sun4i/sun8i_tcon_top.c      | 3 +--
+>   drivers/phy/qualcomm/phy-qcom-edp.c         | 2 +-
+>   include/linux/clk-provider.h                | 2 +-
+>   11 files changed, 11 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/clk/clk-aspeed.c b/drivers/clk/clk-aspeed.c
+> index 284710adaef5..ff84191d0fe8 100644
+> --- a/drivers/clk/clk-aspeed.c
+> +++ b/drivers/clk/clk-aspeed.c
+> @@ -701,6 +701,7 @@ static void __init aspeed_cc_init(struct device_node *np)
+>   				  GFP_KERNEL);
+>   	if (!aspeed_clk_data)
+>   		return;
+> +	aspeed_clk_data->num = ASPEED_NUM_CLKS;
+>   
+>   	/*
+>   	 * This way all clocks fetched before the platform device probes,
+> @@ -732,8 +733,6 @@ static void __init aspeed_cc_init(struct device_node *np)
+>   		aspeed_ast2500_cc(map);
+>   	else
+>   		pr_err("unknown platform, failed to add clocks\n");
+> -
+> -	aspeed_clk_data->num = ASPEED_NUM_CLKS;
+>   	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, aspeed_clk_data);
+>   	if (ret)
+>   		pr_err("failed to add DT provider: %d\n", ret);
+> diff --git a/drivers/clk/clk-ast2600.c b/drivers/clk/clk-ast2600.c
+> index f9e27f95a967..909c3137c428 100644
+> --- a/drivers/clk/clk-ast2600.c
+> +++ b/drivers/clk/clk-ast2600.c
+> @@ -839,6 +839,7 @@ static void __init aspeed_g6_cc_init(struct device_node *np)
+>   				      ASPEED_G6_NUM_CLKS), GFP_KERNEL);
+>   	if (!aspeed_g6_clk_data)
+>   		return;
+> +	aspeed_g6_clk_data->num = ASPEED_G6_NUM_CLKS;
+>   
+>   	/*
+>   	 * This way all clocks fetched before the platform device probes,
+> @@ -860,7 +861,6 @@ static void __init aspeed_g6_cc_init(struct device_node *np)
+>   	}
+>   
+>   	aspeed_g6_cc(map);
+> -	aspeed_g6_clk_data->num = ASPEED_G6_NUM_CLKS;
+>   	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, aspeed_g6_clk_data);
+>   	if (ret)
+>   		pr_err("failed to add DT provider: %d\n", ret);
+> diff --git a/drivers/clk/clk-gemini.c b/drivers/clk/clk-gemini.c
+> index a23fa6d47ef1..2572d15aadd0 100644
+> --- a/drivers/clk/clk-gemini.c
+> +++ b/drivers/clk/clk-gemini.c
+> @@ -404,6 +404,7 @@ static void __init gemini_cc_init(struct device_node *np)
+>   				  GFP_KERNEL);
+>   	if (!gemini_clk_data)
+>   		return;
+> +	gemini_clk_data->num = GEMINI_NUM_CLKS;
+>   
+>   	/*
+>   	 * This way all clock fetched before the platform device probes,
+> @@ -457,7 +458,6 @@ static void __init gemini_cc_init(struct device_node *np)
+>   	gemini_clk_data->hws[GEMINI_CLK_APB] = hw;
+>   
+>   	/* Register the clocks to be accessed by the device tree */
+> -	gemini_clk_data->num = GEMINI_NUM_CLKS;
+>   	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, gemini_clk_data);
+>   }
+>   CLK_OF_DECLARE_DRIVER(gemini_cc, "cortina,gemini-syscon", gemini_cc_init);
+> diff --git a/drivers/clk/clk-milbeaut.c b/drivers/clk/clk-milbeaut.c
+> index 050fd4fb588f..18c20aff45f7 100644
+> --- a/drivers/clk/clk-milbeaut.c
+> +++ b/drivers/clk/clk-milbeaut.c
+> @@ -618,6 +618,7 @@ static void __init m10v_cc_init(struct device_node *np)
+>   
+>   	if (!m10v_clk_data)
+>   		return;
+> +	m10v_clk_data->num = M10V_NUM_CLKS;
+>   
+>   	base = of_iomap(np, 0);
+>   	if (!base) {
+> @@ -654,8 +655,6 @@ static void __init m10v_cc_init(struct device_node *np)
+>   					base + CLKSEL(1), 0, 3, 0, rclk_table,
+>   					&m10v_crglock, NULL);
+>   	m10v_clk_data->hws[M10V_RCLK_ID] = hw;
+> -
+> -	m10v_clk_data->num = M10V_NUM_CLKS;
+>   	of_clk_add_hw_provider(np, of_clk_hw_onecell_get, m10v_clk_data);
+>   }
+>   CLK_OF_DECLARE_DRIVER(m10v_cc, "socionext,milbeaut-m10v-ccu", m10v_cc_init);
+> diff --git a/drivers/clk/clk-sp7021.c b/drivers/clk/clk-sp7021.c
+> index 11d22043ddd7..01d3c4c7b0b2 100644
+> --- a/drivers/clk/clk-sp7021.c
+> +++ b/drivers/clk/clk-sp7021.c
+> @@ -621,6 +621,7 @@ static int sp7021_clk_probe(struct platform_device *pdev)
+>   				GFP_KERNEL);
+>   	if (!clk_data)
+>   		return -ENOMEM;
+> +	clk_data->num = CLK_MAX;
+>   
+>   	hws = clk_data->hws;
+>   	pd_ext.index = 0;
+> @@ -688,8 +689,6 @@ static int sp7021_clk_probe(struct platform_device *pdev)
+>   			return PTR_ERR(hws[i]);
+>   	}
+>   
+> -	clk_data->num = CLK_MAX;
+> -
+>   	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
+>   }
+>   
+> diff --git a/drivers/clk/mvebu/cp110-system-controller.c b/drivers/clk/mvebu/cp110-system-controller.c
+> index 84c8900542e4..03c59bf22106 100644
+> --- a/drivers/clk/mvebu/cp110-system-controller.c
+> +++ b/drivers/clk/mvebu/cp110-system-controller.c
+> @@ -240,9 +240,9 @@ static int cp110_syscon_common_probe(struct platform_device *pdev,
+>   				      GFP_KERNEL);
+>   	if (!cp110_clk_data)
+>   		return -ENOMEM;
+> +	cp110_clk_data->num = CP110_CLK_NUM;
+>   
+>   	cp110_clks = cp110_clk_data->hws;
+> -	cp110_clk_data->num = CP110_CLK_NUM;
+>   
+>   	/* Register the PLL0 which is the root of the hw tree */
+>   	pll0_name = ap_cp_unique_name(dev, syscon_node, "pll0");
+> diff --git a/drivers/clk/qcom/clk-cpu-8996.c b/drivers/clk/qcom/clk-cpu-8996.c
+> index 592c7c3cdeb7..72689448a653 100644
+> --- a/drivers/clk/qcom/clk-cpu-8996.c
+> +++ b/drivers/clk/qcom/clk-cpu-8996.c
+> @@ -590,6 +590,7 @@ static int qcom_cpu_clk_msm8996_driver_probe(struct platform_device *pdev)
+>   	data = devm_kzalloc(dev, struct_size(data, hws, 2), GFP_KERNEL);
+>   	if (!data)
+>   		return -ENOMEM;
+> +	data->num = 2;
+>   
+>   	base = devm_platform_ioremap_resource(pdev, 0);
+>   	if (IS_ERR(base))
+> @@ -605,7 +606,6 @@ static int qcom_cpu_clk_msm8996_driver_probe(struct platform_device *pdev)
+>   
+>   	data->hws[0] = &pwrcl_pmux.clkr.hw;
+>   	data->hws[1] = &perfcl_pmux.clkr.hw;
+> -	data->num = 2;
+>   
+>   	return devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, data);
+>   }
+> diff --git a/drivers/clk/ralink/clk-mt7621.c b/drivers/clk/ralink/clk-mt7621.c
+> index d95a33293b0a..92d14350c4b3 100644
+> --- a/drivers/clk/ralink/clk-mt7621.c
+> +++ b/drivers/clk/ralink/clk-mt7621.c
+> @@ -521,6 +521,7 @@ static int mt7621_clk_probe(struct platform_device *pdev)
+>   				GFP_KERNEL);
+>   	if (!clk_data)
+>   		return -ENOMEM;
+> +	clk_data->num = count;
+>   
+>   	for (i = 0; i < ARRAY_SIZE(mt7621_clks_base); i++)
+>   		clk_data->hws[i] = mt7621_clk_early[i];
+> @@ -537,8 +538,6 @@ static int mt7621_clk_probe(struct platform_device *pdev)
+>   		goto unreg_clk_fixed;
+>   	}
+>   
+> -	clk_data->num = count;
+> -
+>   	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get, clk_data);
+>   	if (ret) {
+>   		dev_err(dev, "Couldn't add clk hw provider\n");
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_tcon_top.c b/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
+> index 6f076cf4b403..a1ca3916f42b 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_tcon_top.c
+> @@ -141,6 +141,7 @@ static int sun8i_tcon_top_bind(struct device *dev, struct device *master,
+>   				GFP_KERNEL);
+>   	if (!clk_data)
+>   		return -ENOMEM;
+> +	clk_data->num = CLK_NUM;
+>   	tcon_top->clk_data = clk_data;
+>   
+>   	spin_lock_init(&tcon_top->reg_lock);
+> @@ -213,8 +214,6 @@ static int sun8i_tcon_top_bind(struct device *dev, struct device *master,
+>   			goto err_unregister_gates;
+>   		}
+>   
+> -	clk_data->num = CLK_NUM;
+> -
+>   	ret = of_clk_add_hw_provider(dev->of_node, of_clk_hw_onecell_get,
+>   				     clk_data);
+>   	if (ret)
+> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
+> index e0e722b9be31..8e5078304646 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-edp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
+> @@ -744,6 +744,7 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
+>   	data = devm_kzalloc(edp->dev, struct_size(data, hws, 2), GFP_KERNEL);
+>   	if (!data)
+>   		return -ENOMEM;
+> +	data->num = 2;
+>   
+>   	snprintf(name, sizeof(name), "%s::link_clk", dev_name(edp->dev));
+>   	init.ops = &qcom_edp_dp_link_clk_ops;
+> @@ -763,7 +764,6 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
+>   
+>   	data->hws[0] = &edp->dp_link_hw;
+>   	data->hws[1] = &edp->dp_pixel_hw;
+> -	data->num = 2;
+>   
+>   	return devm_of_clk_add_hw_provider(edp->dev, of_clk_hw_onecell_get, data);
+>   }
+> diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+> index 0f0cd01906b4..ec32ec58c59f 100644
+> --- a/include/linux/clk-provider.h
+> +++ b/include/linux/clk-provider.h
+> @@ -1379,7 +1379,7 @@ struct clk_onecell_data {
+>   
+>   struct clk_hw_onecell_data {
+>   	unsigned int num;
+> -	struct clk_hw *hws[];
+> +	struct clk_hw *hws[] __counted_by(num);
+>   };
+>   
+>   #define CLK_OF_DECLARE(name, compat, fn) \
