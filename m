@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A60C77FA48
+	by mail.lfdr.de (Postfix) with ESMTP id 8376F77FA49
 	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352779AbjHQPHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41040 "EHLO
+        id S1352791AbjHQPHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352804AbjHQPHB (ORCPT
+        with ESMTP id S1352807AbjHQPHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:07:01 -0400
+        Thu, 17 Aug 2023 11:07:02 -0400
 Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2064.outbound.protection.outlook.com [40.107.20.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D7326A4;
-        Thu, 17 Aug 2023 08:06:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A572926BC;
+        Thu, 17 Aug 2023 08:07:00 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HzWzzSONZL0MaEmSDIH5Cl8aEbgwsx6rqRugM1v2e9heSsxpTAusfK5U6OM1khYMH1eDjOFDpuzYdk0ZcpbDEmkl3WE3ryu27c8xadh4wY+zAXoTJQaEmhHo3xfT+wdpz8kNIBWm/wqfgjupWxw8L8uLsFpMp/06x5htZKOmwSD3Jr9Yzsaxuouy0z4V4tVHJvVUgaybgeCE+lYOVpCckKzNb9ebtnr5Y9VLw5acgqs+GVgnRX1U8+MiPstUJyUUTh2jLrPWZnDSKf4MKsZBGTA5h/vaV4LHdtYQKJvIX5X13DKY0mJMMY62wvvLuaCdpy+v5XGTYeVzG7Ib+e4JZg==
+ b=X6pnwHU+jzwV9QuFDk5wfzxTd7HeElT5PHPXe+1Q7k0rSnce/XppeSC4SEUEaZrdMW5OsTGF07RWgJDsgyFZ1MV7Twa0easrMgP/lQ4RRAoVuEmy0H5sMJFBPMD6fN7DumNyA192uEQ69Ay60c4PuRRMpDLFVauRECQwQM/wMWl3o2bvFr7PNBSk4FRFTUHlFCQZFq7lomelzf4O4x5OhRW44NcYxY+OGECIvyP0WYcCq05uA+YFuX9ZbK6aljEEzY61vsrTml/krrXoBuGRKzF8hh+hnqOmatHXSbc+K7IE0nbIJUUS1f6y8BEZqvbhj+tmKoGx5j5BY8M9DaBv0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UeRasjUOC0jOPhEMv1SmtPUBGl2kUlI2lAccRTDXIeA=;
- b=bUIyxwPEDtY48ljX0SMUn6Q4efEtkFzmWjo7eVMwqEGs9+c5RjxQyAvKNOABqQr0yLCBf0pRR9gHTl9vhkXfpysBxcBGCmjJlzRJdZPCr67aOM/ZxJstZM955LEthJXfQZWRt31MkUhcrWd2gTI302ziktCQ6zcc9LkDoGSgzo48Edo4bHnUdOsNJeU2CBZ148WpYzI6XK+UyYBGG4pqIMyRGkISuVYTt8cK2v044MwyFt41Xny8zV5TA8k5p3hWSr/K2Law9gn4WpY1yTSlBY1flNvkFd7FihAENm6e0F9hC4zuN5dUbmwZSclUfeQMwyZEdHC5/DMg4/sjl0V7Vw==
+ bh=dzeaazmO4RhbOXcSM+9AWmeLsoZ/JxIS2ypqjczS5SQ=;
+ b=FdO5a1CMlcHVaIYxNVk27PHRa0jChyddcbH3MM1ZkxKVBjBQ3Ji4ZNF5HIiSQRzhvs6wOJP4Y+5DRSrzfpk6sHvZiWskeEiAho5R3yRl4RsEOohTOsmYhg1wkZLDrXktZZeF54qIirH5YkOq+uzyMEOBYtg3srxM96gsFGWDHAYAqfFJQj09cZ9waxiJaMW0fpuA2b+q+bskMQDGWtU8kCd4/l0a74se6WNWCpDW4th6s6gOFkV/k4/4F0DP9uw0MiorAiOfV/klTaISQ8tGmuXE0BB5kIzsxmsvslcBJij+rb9EtiPqvpB0OMjK5ABpztP9BNsFu5nTt94ylQa2zA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UeRasjUOC0jOPhEMv1SmtPUBGl2kUlI2lAccRTDXIeA=;
- b=WR5iFc2Vj5ihO98/WwV1OBZPGI/qwp8/q6K8fFws+0r/MTDiUfnVl0VF476Z5Wyjd0zOkrCeW1IZI795R4ZjALmPQdvnPC5YYQJxiKK2ZK5LuEKRWqizumDqMboHN2Kn1iQ9VA25RVhA+vrFaSou8MMx09j9VE1lkLZg4Gb029o=
+ bh=dzeaazmO4RhbOXcSM+9AWmeLsoZ/JxIS2ypqjczS5SQ=;
+ b=Pz6vB1vcYxk3KyOrqC4KxUwAmHybM2rCVvNq4R7QFsvJg9AQPRP8F4Cm51KFscf/53evMS3Ihm8bIJJYrHFKFRF34TRhcTU/XMAHj7jhekCs+wZiqHyd8lmYVqathcTYFZ9MJ0ZC2UizkOleMr+gaJZ7fTz0tAK9cfarQ6KfevU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by PAXPR04MB9469.eurprd04.prod.outlook.com (2603:10a6:102:2b4::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Thu, 17 Aug
- 2023 15:06:56 +0000
+ 2023 15:06:57 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::d4ed:20a0:8c0a:d9cf]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::d4ed:20a0:8c0a:d9cf%7]) with mapi id 15.20.6678.031; Thu, 17 Aug 2023
- 15:06:56 +0000
+ 15:06:57 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org
@@ -57,10 +57,12 @@ Cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         Maxime Chevallier <maxime.chevallier@bootlin.com>,
         Vinod Koul <vkoul@kernel.org>,
         Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: [RFC PATCH net-next 0/8] Add C72/C73 copper backplane support for LX2160
-Date:   Thu, 17 Aug 2023 18:06:36 +0300
-Message-Id: <20230817150644.3605105-1-vladimir.oltean@nxp.com>
+Subject: [RFC PATCH net-next 1/8] phy: introduce the phy_check_cdr_lock() function
+Date:   Thu, 17 Aug 2023 18:06:37 +0300
+Message-Id: <20230817150644.3605105-2-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817150644.3605105-1-vladimir.oltean@nxp.com>
+References: <20230817150644.3605105-1-vladimir.oltean@nxp.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: AM0PR02CA0137.eurprd02.prod.outlook.com
@@ -69,52 +71,52 @@ X-ClientProxiedBy: AM0PR02CA0137.eurprd02.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|PAXPR04MB9469:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9970c896-5126-4c63-5af8-08db9f3398c6
+X-MS-Office365-Filtering-Correlation-Id: 155bde4c-f547-4ced-9c2d-08db9f3399ad
 X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: V/1k1geKfKuKUS00F8nloABf/BEp9CLrwUZ2rU2CqAxTb1rUSgvuxLiaZMU75fDzd9d9E5F91RNR2x8LJ+3TkR0DWSjCC1zDvh7Nk2R6lG4debNNkEMSozQmDEqp2SUtOOsaLScpxUgC6+hZ3KhO6gtSwLDt79HPfoH34Q+FhfbGtBxFxnv60EoUsXN/gm4Yj5yRtZRLCrlMonXUitkGp+WhFAHuG+Z9dE0QPpLGnRcLBN2pExx8dhDm8HTMftC5kxTAuUDd5N8TR5pXK75e0R4KhviTMYmlV9xnBQ6TXRXg2xp92vUPvrq8kpVWS992ABtArXyiVGajmazylI9+67Df0TYi/ZuG2m+JH0eJRQGRTDpAoqIAT+8BQCEhMwJBbENqngMRfN9Fha4catA2CgBFiwtXMP8EQZytHTcg1N5PhdkhWMzer0+HLXIyT5TD0MVqPxloKezUdIpoQG9zZlBBTWRkYneSuJa5Znl5I+K5Y/89bhC8Yiyu8HMVoStYOVxaPCtdxwiipkB+TtLBEau/qxt3qxQFq10kYxe0ypPM2G95+pEmaKRLLW805x+2DgymD17wVthJxZPAU3qXhbF+3H5cjCjw3WANZOkwFKE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(7416002)(478600001)(6506007)(36756003)(6666004)(2616005)(1076003)(6486002)(6512007)(52116002)(966005)(44832011)(5660300002)(41300700001)(316002)(54906003)(66946007)(66476007)(66556008)(4326008)(8676002)(8936002)(38350700002)(38100700002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: nzi5GZ5fzUDiweGM7T4DHlUC4ElMxLQ5VkCFPzMdRhassJAaWPXdD+7OoqdhX5bDfrCx62ndeiqUCSTC1hiwyWVzhz2SBFnHrAmuSZH6AhBd+CfhADblDSVhIzsA6ltYNwYtRYWROhsGvpiW/jD3Vj380jWHZJAUu/efb88AfFjQl0LU/mfQoxlSNq3DXDuz5LbJK6x7eFJUgIKasL80bnGRN0gs50ddcOp3Z32PowFjroRy/3A2wvJb4c+sQpGJbfFefJBLkxBcNoVSDK7dRFlvOZnWdem+uIOIvRXk3bZvBOQzV+iQ+ZMaJl183xWHv+Vw69IAqOpEU2DRQHmfUhIT2YvKRxHDjwPtrOVIAfXk6jpVmA/dd78BSU9NXjiyDiuebUIotkQj+dDUhjpLV331Ga8/ra9GuW/YXHYj1TQrnXXlW9ChWy06dXvGR6oYRcFwyaVcaITVVoTBn8zbghKM+qfwsfAwgUXs9tS3ioRzdm6AGsrahsKhAN3C/90uuavQwThuifa0hfG5pp3pcSv2E4npK3rqMQmOICMwhREwHe4xPefacxA62HCJ5DE7mx9hY+OYfYh+rn2uSy4yooVYRRw5H7cUB6IRAbqdu1xVhSCgGdcA32mog6iUr4Ot
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(7416002)(478600001)(6506007)(36756003)(6666004)(2616005)(1076003)(6486002)(6512007)(52116002)(44832011)(5660300002)(41300700001)(316002)(54906003)(66946007)(66476007)(66556008)(4326008)(8676002)(8936002)(38350700002)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6BgxYsmOykrLJ/jOdpQvIKawyvS8o9NpSysBcOMrLYfxc0bVnnnHHrh7/jOJ?=
- =?us-ascii?Q?FhPdUp3wuoMBcBz5bOqHeChGceDuGpioPm7OTf9d2hRNbVetsn9mka5WNaEK?=
- =?us-ascii?Q?zhgLyZixlc9KqIaHEzrh6kGBVn39gua/fWc7R1sm+px+pRY8hoK48GUb0FS4?=
- =?us-ascii?Q?ye5ns37NQXpwg9OQFJsuIJc+Y696cBZKdOkwE4zg91qI5kpotHyk6eCkSbma?=
- =?us-ascii?Q?qTlTvXN5zygT8j1HDO8zhkrKElo5DT4LC6HAbbo3Xkzqkeew+BzV0CZGo83V?=
- =?us-ascii?Q?5LRdV6NybhN+YcD4K2IYH5EmjONGKt7bkMsu3ymioArGeTkDyW4Eu00blbbb?=
- =?us-ascii?Q?SXKAwxMW5/oT3EROIUwPL1ijjT5As3+vr3OMneJ4S8ALC3IMyd0QXoXJiGz+?=
- =?us-ascii?Q?v+h+7wi7uhg73+WMa6F5SczHdOACD+FxGZuMbb+HeaURbyQlgBXQHp78Bqv/?=
- =?us-ascii?Q?CVl0plXSJRHfAlIU3ZjT3wVD9GfNIHVF+5w6tRI1ldMO2zPwW7TYXE6HTbtG?=
- =?us-ascii?Q?tSMwWATOmd6oyaojG56QiR6eeP0H/n677ktEir0ZPDbWn+7WOhy6QS2gcwbT?=
- =?us-ascii?Q?b53OzDL95V7WfFOclgAb3sfu+MSAFuBQAH9UhEDkWqC6LE1ZhrkdqMvMKqGr?=
- =?us-ascii?Q?m7A8VsNMmdHSEMui/PJZ2o5Ua5j+O2vGXJdroA6khr4+n5eymGgRbx1N979w?=
- =?us-ascii?Q?TeZr8POBe6x2A5FGI4N2YmHCOApoSMa3mDl1Wn2YdmXNrXjBT9/QKgf1ZPLm?=
- =?us-ascii?Q?/+5J2ykbTvzXY+0bkF191OzS9EFa19fMsZPPERo262zH9RdaUPmcvwIP/pxJ?=
- =?us-ascii?Q?ejVlbtobaQuYMKylqxNIYgrPf0nvEquqR46efBW9m7JCg5//FOEEzT52m/4T?=
- =?us-ascii?Q?KpiFSY1B/U0nflnGCkLOTjvAlNsmnb6ArWpcbnkduV6rBi7wjBY3jOluA3Wa?=
- =?us-ascii?Q?JFmqM7wszWN891WNjLMrf9XnSexZvIDV0BRW09B5gfKXbYk6CxVFSWlZZpJI?=
- =?us-ascii?Q?vRrySdSuTwJ/NbD5ugF/kkPULaRDX6Vq9AEd2s9Jy6J7oW2nA8nQzD53adCv?=
- =?us-ascii?Q?v6jKU1pQ6L0B3Z0O6p6M6W3jYv4NGFBtkE7mnsZYVAjyeABk6SgVVdCWqr//?=
- =?us-ascii?Q?WS7+XmZ8+ne5duCmVkMyl3TNNl2V4VhtxXcAdckSZlvaVzaENPtdh7ZSarLp?=
- =?us-ascii?Q?ztglzPj7A14t0Xz2kfuYdNRWhkHs7xAQW0hyzuBzIbg/MM3Ru9d28bJMaf9o?=
- =?us-ascii?Q?p3PdGcAWg2ve5EP6vXRH9k8lZV5wxGz0OI//ezY3a1FIk2DPRLpQqz3/1EEn?=
- =?us-ascii?Q?5beWl95j/Z+rAY7Xoxd2juca5rNyE1C0gC4QzDILxZq0H9Z2QstVfVmEx98B?=
- =?us-ascii?Q?HtKzsjb0YsMRXbXeclMfjPMtFG7LJ8jpHEnfJDygx7T8WfahJBI1SKF+SYZy?=
- =?us-ascii?Q?o5T6B6R/xZ/pJJGG58vBb0Uxqc85BZfVljRBlonKbgZQrvBYCa8AAnRS40Z+?=
- =?us-ascii?Q?VuXIsS1nz4OWaXmEVf/RLmwNoPeFKBQgcjxKWT3IeJ7XDeeB2CrTNyWZYL6f?=
- =?us-ascii?Q?A9d4kuHPbJ0DrOTaaHVVN/34JA7xYSKLhxT8DgAheQV+RQqJ5Wcy5kJfOti8?=
- =?us-ascii?Q?rA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zL/3Avk6HrR4XsjTUFwpO6Yg3LT+cR9fv70kmvUvW1K8++/CaxjxhjvvIByE?=
+ =?us-ascii?Q?kUomD14ggrbpxIatH2vR4cQj+01J8Gk8VbQtNWz1ZrrBX5nnmLue/JoSpXhc?=
+ =?us-ascii?Q?9yowwmWSE9HI22hXuafhcZZ8ZBsYtHEIsq3P3nMssaL6Ow0Je58Av/9WdHQS?=
+ =?us-ascii?Q?cKuZ5b/9xPLoRldMjxWWHzIGKK5E+YFL1+k8QPCDZbM3KzDUvjG5Ss9+deMv?=
+ =?us-ascii?Q?YezE/t41JzkX2ZukM/0CcgVZEWQJi8NWaB/CVMqwy3uaHZPHvsfWb2ZHY1e+?=
+ =?us-ascii?Q?8m07IkUU0nOcOesl+mK7r+n5zYFYnNSBq9yZIy3Ql7bQuml78j0Fksb6xNA/?=
+ =?us-ascii?Q?LDnYUdmb4qxnYwhQfzme/6ikU+hXyz1Zv/E2a4wqT99Sn89a68j6vR6e9a1F?=
+ =?us-ascii?Q?ZTnYya4Ef8hsKrTFEhWI1hxOw9q+r8j4VsTCgbsQWhHRBWcVwpbe7aE6PfYM?=
+ =?us-ascii?Q?PhPLzgI71P8RB/jPLzDmO1lTh/+CmmvWTXRGxCsaxGteKMnmr4u5G1zJZ/gW?=
+ =?us-ascii?Q?YiPnCXs6meI/RHWy88IaDCJEyhT20e9fxuTOokpD8w3CrYOC+pSSOO3+i4Dz?=
+ =?us-ascii?Q?Nqqx4zO60xH8/kDDWJToVcBjNIaDOfX+VKrfewjvU43vwIH1p8CX4UlG8G6W?=
+ =?us-ascii?Q?AmHz+t+WcaGZzitvP3/qhdm0qxNsN16H9cZGlML/PvtZRP2gLtD1DDKga5Ip?=
+ =?us-ascii?Q?Ot/pneBsy5b5RNIrXVPu+Lt6tiBV2oZmf5UC81B+F3mqfEtQ5fYRG3EL9zEy?=
+ =?us-ascii?Q?BKfg1DbZK1+g560KzTi0Ek7h+CwzCo1pGuYmPlyzGN+XTTJsqdSYSJGHO8Bq?=
+ =?us-ascii?Q?fgK5YCDjtOJwOwEtGxCjmZlSi+KwlByPsEsKacxTTJiCtAOdAE2u4Fx04de3?=
+ =?us-ascii?Q?ATruSxQVQ3WsXalzzgqfU7y0ga4+J8zgckyUvJcKh8cIBYuqmOhAywmQmfq/?=
+ =?us-ascii?Q?UIVmOEpksXtrD6Tf1MO0v6tmMhrAWWkfI2VyIJEmaXwKps1semOy+Q2LhJtj?=
+ =?us-ascii?Q?xDrOu7epF9fYyTwK5EzRqBtuUhxIgG4NYtVEgL8GibJimkKNV8+q4JYlah+8?=
+ =?us-ascii?Q?r5rBE7pfPksYWUrIX1fLWklJ7Jlv+fc26dxYNJ7jePVthVJkK/lZ2YYsZvMo?=
+ =?us-ascii?Q?AMdRfPYr1rsX55hR9qQ/kSSBVUkZsYWbN4lVssK5hMsag08ct0l0g6oayS5j?=
+ =?us-ascii?Q?5ttA8htpg71xYfPI/+tGpYCdwwDcZfVmikIl8SvNa+095hYdmGbYFckL5yZU?=
+ =?us-ascii?Q?M8k3TVfM2zgTHPwL3Mo825o+MitAEez5ll/Z28Ubf1DMCfzwaML4XdsZQO7U?=
+ =?us-ascii?Q?WLu1oEP6iLC1tr8UzzhtPg7MidvnJjK+e5Ql3k0x447BI/g4TI7cNOxNzuL5?=
+ =?us-ascii?Q?3dGuGMLUsPq0H9KRiL2jJtWzEkQdj+6/lPvCN8+Hddbvx/+uDErMeRX2WAQG?=
+ =?us-ascii?Q?/ozRA9LCwuvzfDfBzPoSzsLCAbKoEKB8ezywSkgDDY7gtq9CD3Sbc7YvdES1?=
+ =?us-ascii?Q?sUyoBTvcYcmXL2cORixpCzFwQDHS+5eGaRC0hDj3xbjd+ax6SW7KiMWAiB+Z?=
+ =?us-ascii?Q?Gg3jr5/3xQKM7GpHMwISA3LhWLtgUxBNxxvtdSSGb0Um058/7Wm5dJaWj9/d?=
+ =?us-ascii?Q?9A=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9970c896-5126-4c63-5af8-08db9f3398c6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 155bde4c-f547-4ced-9c2d-08db9f3399ad
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:06:56.1657
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 15:06:57.7414
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rPf6NDESaYFfh8An2Q3L8hfyOlcgwvRE/SrEZimDKukp6mH7Hfgdt+Ove4YpH+SU0lDSoOg3dMNX3s3vRVZHiA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4JvdF87rxmn0F9Qc2/O1iLlnwFFYFUSQ/ogPWupGdolUfses8WhNLCOy8IZVEYFdhB91FRPqQ0woJeOAmSCjBQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9469
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -126,160 +128,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-THIS PATCH SET DOES NOT WORK, AND IT ISN'T INTENDED TO WORK.
+Some modules, like the MTIP AN/LT block used as a copper backplane PHY
+driver, need this extra information from the SerDes PHY as another
+source of "link up" information.
 
-I've been tasked with maintaining the copper backplane support on
-Layerscape SoCs. There was a previous attempt to upstream that, which is
-located here:
-https://lore.kernel.org/lkml/1587732391-3374-1-git-send-email-florinel.iordache@nxp.com/
+Namely, at 25Gbps, the PCS does not have a MDIO_CTRL1_LPOWER bit
+implemented in its MDIO_MMD_PCS:MDIO_CTRL1 register, so a phy_suspend()
+procedure will not power down the link, and will not cause a link drop
+event on the link partner.
 
-Nonetheless, I am presenting here a complete rewrite based on my
-understanding. The quality of implementation is not great, and there are
-probably bugs which I've yet to identify. The reason for this RFC is to
-collect feedback for the overall design from networking PHY and generic
-PHY maintainers.
+By implementing the networking phy_suspend() as phy_power_off() in the
+SerDes and introducing phy_check_cdr_lock() as a link indication, we are
+able to detect that condition and signal it to upper layers of the
+network stack.
 
-The newly proposed generic PHY API has the mtip_backplane.c driver as a
-user (a consumer), but its actual hardware implementation (which should
-go in drivers/phy/freescale/phy-fsl-lynx-28g.c), is not included in this
-patch set. That would just have just uselessly distracted the reviewers'
-attention. This is why the patch set, as posted, does not work.
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ drivers/phy/phy-core.c  | 18 ++++++++++++++++++
+ include/linux/phy/phy.h | 22 ++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
 
-I recommend reviewing from the bottom up - dt-bindings first, those give
-an overall picture of the AN/LT block and its integration in the SoC.
-
-Future work consists of:
-
-- supporting multi-lane link modes
-
-- advertising more than a single link mode, and performing dynamic
-  SerDes protocol switching towards that link mode. Strictly speaking,
-  the hardware was intended to be used with a single link mode advertised
-  over C73 (the link mode pre-configured through the RCW - Reset
-  Configuration Word), and that is quite apparent in its design. With
-  some inventive workarounds which I've yet to try out, it might be
-  possible to circumvent the design limitations and advertise any link
-  mode that the SerDes PLLs can sustain. This is in an exploratory stage
-  and in the end it might not come to fruition, but I've identified some
-  aspects which require forethought in the driver's design.
-
-Both these features hit a wall given the current driver design, which is
-"how do we access the AN/LT block's registers?".
-
-The hardware designers were inconsistent in the way that they've
-integrated this AN/LT blocks for 1G/10G ports, vs how they did it for
-25G/40G/50G/100G ports. There is always one single AN/LT block per
-SerDes lane, but for 1G/10G modes, hardware design wanted to make it
-appear as if the AN/LT is part of the PCS. So it inherently responds to
-the same MDIO address as the PCS. Whereas in the >25G modes, it responds
-to an MDIO address defined by a different control register, and that
-address is also different from the PCS' MDIO address.
-
-In the current dt-bindings, I am requesting DT writers to put a
-phy-handle towards the MDIO address of the AN/LT block (which depends on
-a lot of things, see the dt-bindings document for details).
-
-As opposed to regular ports where the PCS and SerDes PHY are controlled
-by the MAC driver (drivers/net/ethernet/freescale/dpaa2/dpaa2-mac.c),
-with backplane, those same components are controlled by the
-mtip_backplane.c driver. The backplane AN/LT driver has a pcs-handle
-towards the PCS, and it treats it as a raw MDIO device when polling for
-link status.
-
-This gets obviously problematic when switching SerDes protocols, because
-the location of the backplane AN/LT block changes on the MDIO bus with
-the new SerDes protocol, and what's in the device tree becomes invalid
-(the phydev->mdio.addr would need to be updated). It's the same AN/LT
-block, and after a SerDes protocol change it has been reset, but it moved.
-
-The SerDes control registers for the MDIO addresses of the PCS and AN/LT blocks:
-- SGMIInCR1[MDEV_PORT]
-- SXGMIInCR1[MDEV_PORT]
-- ANLTnCR1[MDEV_PORT]
-- E25GnCR1[MDEV_PORT]
-- E40GnCR1[MDEV_PORT]
-- E50GnCR1[MDEV_PORT]
-- E100GnCR1[MDEV_PORT]
-
-are in premise all configurable, but it's an open question to me as to
-how Linux should configure them. Currently, we treat all those addresses
-as read-only and populate the device trees based on their default values.
-
-There's an additional (related) problem for 1000base-KX. The lane starts
-up at power-on reset in 1000base-X mode (non-backplane) and this means
-that the PCS which responds to MDIO commands is the one used for
-SGMII/1000Base-X by drivers/net/pcs/pcs-lynx.c. That responds to C22
-MDIO commands. The PCS for 1000Base-KX is different, and it responds to
-C45 MDIO commands. It also incorporates the AN/LT block at this C45 MDIO
-address. In the current mtip_backplane.c driver design, the lane switches
-to backplane mode (thus enabling the respective PCS) once the link mode
-was resolved to 1000base-KX through C73 autoneg, using phy_set_mode_ext().
-But that is too late with 1000base-KX, since the AN/LT block won't
-respond to C45 transactions either, if the port isn't pre-configured for
-1000base-KX. So C73 autoneg won't work to begin with... Somebody needs
-to pre-configure the SerDes lane for backplane mode, so that the
-mtip_backplane.c driver can probe, but it's not clear who and based on
-what.
-
-Finally, I reckon that in the end, the PCS should be driven using a
-struct phylink_pcs, by the lynx_pcs driver, and not as an mdio_device
-using raw accesses by the mtip_backplane.c. In premise, this AN/LT IP
-core can be integrated, to my knowledge, with any PCS and any SerDes,
-so that should be also possible in the driver design. Yet, there's a
-problem: in the 1G/10G modes, there would be 2 drivers for the same
-mdio_device: one for the PCS and the other for the AN/LT block (PHY).
-True, they are at different MMDs, but bindings multiple Linux drivers to
-mdio_devices per MMD is not a thing, I guess?
-
-Interrupt support is also missing, and that's very far away on my TODO
-list. AFAIU, PCS/ANLT interrupts are routed by the SoC to the attached
-MAC's IEVENT register, which isn't enabled as an interrupt source on any
-Layerscape platform yet. I've structured the code using an irqpoll
-thread for now, so it is more-or-less just as event-driven as an IRQ
-based driver would be.
-
-As a side note, I have analyzed the feedback previously given to Florinel,
-especially the one from Russell:
-https://lore.kernel.org/lkml/20200425105210.GZ25745@shell.armlinux.org.uk/
-
-"This uses phylib, which is a problem ..."
-
-and I still haven't changed that here. Without going into a wall of text
-explanation, I'm not fully convinced that phylib isn't, in fact, the
-best place for a backplane AN/LT driver to live. At least in the initial
-implementation shown here, I'm not sure that going straight for a
-phylink implementation of the AN/LT block would have solved any of the
-problems that I described above.
-
-Vladimir Oltean (8):
-  phy: introduce the phy_check_cdr_lock() function
-  phy: introduce the PHY_MODE_ETHERNET_PHY mode for phy_set_mode_ext()
-  phy: xgkr: add configuration interface for copper backplane Ethernet
-    PHYs
-  net: phy: add C73 base page helpers
-  net: phy: balance calls to ->suspend() and ->resume()
-  net: phy: initialize phydev->master_slave_set to
-    MASTER_SLAVE_CFG_UNKNOWN
-  net: phy: mtip_backplane: add driver for MoreThanIP backplane AN/LT
-    core
-  dt-bindings: net: fsl,backplane-anlt: new binding document
-
- .../devicetree/bindings/net/ethernet-phy.yaml |    8 +
- .../bindings/net/fsl,backplane-anlt.yaml      |  238 +++
- drivers/net/mii.c                             |   34 +-
- drivers/net/phy/Kconfig                       |    7 +
- drivers/net/phy/Makefile                      |    1 +
- drivers/net/phy/mtip_backplane.c              | 1735 +++++++++++++++++
- drivers/net/phy/phy_device.c                  |    5 +-
- drivers/phy/phy-core.c                        |   18 +
- include/linux/mii.h                           |  105 +
- include/linux/phy/phy-xgkr.h                  |  165 ++
- include/linux/phy/phy.h                       |   27 +
- 11 files changed, 2341 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/fsl,backplane-anlt.yaml
- create mode 100644 drivers/net/phy/mtip_backplane.c
- create mode 100644 include/linux/phy/phy-xgkr.h
-
+diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+index 96a0b1e111f3..e611ebe993c7 100644
+--- a/drivers/phy/phy-core.c
++++ b/drivers/phy/phy-core.c
+@@ -553,6 +553,24 @@ int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+ }
+ EXPORT_SYMBOL_GPL(phy_validate);
+ 
++int phy_check_cdr_lock(struct phy *phy, bool *cdr_locked)
++{
++	int ret;
++
++	if (!phy)
++		return -EINVAL;
++
++	if (!phy->ops->check_cdr_lock)
++		return -EOPNOTSUPP;
++
++	mutex_lock(&phy->mutex);
++	ret = phy->ops->check_cdr_lock(phy, cdr_locked);
++	mutex_unlock(&phy->mutex);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(phy_check_cdr_lock);
++
+ /**
+  * _of_phy_get() - lookup and obtain a reference to a phy by phandle
+  * @np: device_node for which to get the phy
+diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
+index f6d607ef0e80..456d21c67e4f 100644
+--- a/include/linux/phy/phy.h
++++ b/include/linux/phy/phy.h
+@@ -122,6 +122,19 @@ struct phy_ops {
+ 			    union phy_configure_opts *opts);
+ 	int	(*reset)(struct phy *phy);
+ 	int	(*calibrate)(struct phy *phy);
++
++	/**
++	 * @check_cdr_lock:
++	 *
++	 * Optional.
++	 *
++	 * Check that the CDR (Clock and Data Recovery) logic has locked onto
++	 * bit transitions in the RX stream.
++	 *
++	 * Returns: 0 if the operation was successful, negative error code
++	 * otherwise.
++	 */
++	int	(*check_cdr_lock)(struct phy *phy, bool *cdr_locked);
+ 	void	(*release)(struct phy *phy);
+ 	struct module *owner;
+ };
+@@ -236,6 +249,7 @@ int phy_set_speed(struct phy *phy, int speed);
+ int phy_configure(struct phy *phy, union phy_configure_opts *opts);
+ int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+ 		 union phy_configure_opts *opts);
++int phy_check_cdr_lock(struct phy *phy, bool *cdr_locked);
+ 
+ static inline enum phy_mode phy_get_mode(struct phy *phy)
+ {
+@@ -414,6 +428,14 @@ static inline int phy_validate(struct phy *phy, enum phy_mode mode, int submode,
+ 	return -ENOSYS;
+ }
+ 
++static inline int phy_check_cdr_lock(struct phy *phy, bool *cdr_locked)
++{
++	if (!phy)
++		return 0;
++
++	return -ENOSYS;
++}
++
+ static inline int phy_get_bus_width(struct phy *phy)
+ {
+ 	return -ENOSYS;
 -- 
 2.34.1
 
