@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FD477F017
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 07:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B2F77F038
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 07:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348073AbjHQFHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 01:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        id S1348093AbjHQFc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 01:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348065AbjHQFH3 (ORCPT
+        with ESMTP id S1348049AbjHQFbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 01:07:29 -0400
-Received: from out203-205-221-235.mail.qq.com (out203-205-221-235.mail.qq.com [203.205.221.235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A14F1BF8;
-        Wed, 16 Aug 2023 22:07:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692248840;
-        bh=qL19K6EJ7u+hGNF667ktlTV7VvwidaQUhPnALBxEre0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=hRICxlxOIzFYsCxYsIGwRuPfOlsu9Wr15FCV/Udz7Hh+9ZQVlTrDgj39SIacEf8za
-         ewTmKifgWKgs1gP87qLsyyLRyxumLoOPknhC/WT4SGt0TnHnUzDA5gU2FCrp7PYCdL
-         PjVz0Ub8PrVy0gBDjhD19C6JsMQjHSZC9J2XoEH0=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id 1CFA1469; Thu, 17 Aug 2023 13:07:15 +0800
-X-QQ-mid: xmsmtpt1692248835tz3oa29eo
-Message-ID: <tencent_0ACEA803629581931054D6E3659F8AD3AB06@qq.com>
-X-QQ-XMAILINFO: NSObNE1Kae7Zzzod1N7QKTYNY+acjUKzl/06K2ncS8K9y33OXGlwGpesmfitya
-         fSTt9mo0rUhxYbz/Au9OXBfkXe/xfLZb5GPpgldINm5LO1iuVOPsKKht+xH5c0rQUChUb1mAecKB
-         DjBTNiqPt9G9FYWCIaZF4YGNRmOn1h76R6YseHJaKyaeFdCqobb3yTZB3yyzqAsX/bmqARmu+7cI
-         HQEO31REvPx3vMb4QlegZ9yOlqBk7pBoPp/h9te572no/iZX8ukUPb1xyc1gAaXRfhjMBvxjhpgh
-         GJuer6P3FMMi5aEp1dJObM1cfOwaJM2Rs+3jHqaVP7gUc4inQ5mcqEJnoUGa6lO1eUQQxpkHMmCT
-         OTR3JIjMnU3SNLVAUuHHNQ3zyHWUUSNPQXi7m1IDPe6cDlNutR3dl8tz66FC9WfJ0i0vptDGCGeA
-         oK+vvn+3y9mDweZWYsR/zpnaQ6Kz1DRKczjOe1yNXELPgtFe4ZsgL2abUnKw3C3ZQxMUE+9XOpWQ
-         p4O55rQ8lj3GY+VSUXstAEZlPCEPRtQ3JQ5OE3Mlz8bgkUmQhmJVNHqj0e9fHTUnUhllLZ3frepD
-         okhOaNboqq9tGpocygLN1uqkN2KJzrasSG59s+lczfFStr6UxSA3I+jruCuzD/uXj67bndAnA8/H
-         +6IcnMsyzS/df6/B5XRtg+XZxd0Qj5FtYqCAEr8+RytEc02ETSiZVzcO3c+jt6XAxn6R0z1B4Ahh
-         0ByNOsjDxojPJKrkXfnyUUlr1kLEKa2xph27i+p+0S+4QiT3eGc1XDb6hxM+v0cdW75/O9z2edVJ
-         5GIre+3bCXhXzENe3kIUi+KgvvBOJdCW+aU6WN0QaxoP3kfog9hdolo2Qz3ZW7euh15Cp9FulrmZ
-         D+C2gOOvTmHilNkCCTvtgeJ97xNRA6cO5AduL2LjC4nNym9NB204vblQ46CyJHyvvjNMcAqv3ZP6
-         ikglpHVSum+Aj7vLxO0byuTlWndBiFlx5TuQaoQdHb6Dw+x/tHZDIcbSxYVCSQPFcAinfk6SA=
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     daniel@iogearbox.net
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
-        sdf@google.com, shuah@kernel.org, song@kernel.org,
-        yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v4] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date:   Thu, 17 Aug 2023 13:07:15 +0800
-X-OQ-MSGID: <20230817050715.20226-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <60da4749-3009-0e40-90bd-90cd03395e45@iogearbox.net>
-References: <60da4749-3009-0e40-90bd-90cd03395e45@iogearbox.net>
+        Thu, 17 Aug 2023 01:31:55 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A508F2D4F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:31:53 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9936b3d0286so1016071166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 22:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1692250312; x=1692855112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sxtLgJIa1RLbTpPePXFhmwlCNeczWbrDyc8vA8a49A8=;
+        b=Dwcb9tErmXCvVjYBoYcW3kHNCygFeA3lzAmCwd+kfkN+5pjVwMguvij4dluYqYB79X
+         dH5yN+OosG5FF8OXqVyYc01ub1PSQyySQ/ufAp/3VwAb0yTkTX3sizw5t/6EJH0fd809
+         64AzcIZuAVTQmUpvlCpVmWpbaQHqARn1Oa3M4TidP/ycZ/s4jj8cyc1bMSzHYI6RGS2d
+         qr9WZfCvjtsloy5r5s/IDAUwy5rshfJJYVsSPdCFBpbmUqnbh6wl1kfGyYLMixiALZsh
+         FdbrOeJrcohdvwkrm8kiGARC3DvArBdnnxjfMgo0vyo0spm9t5CB3ynkiWT6Iok/Agbb
+         m6rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692250312; x=1692855112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sxtLgJIa1RLbTpPePXFhmwlCNeczWbrDyc8vA8a49A8=;
+        b=Bb9gGWKoETJnGaZ81a8qhwji0zJBgt014/oEzh4k8xnGEHq0VTb7PqGWTjoU/SFUZY
+         m2HN0qDeec6fDBKSIio235lnYQdNEzeLZVKMkO5JInvIvAQHognJuIFZzG0Ig3gWf0x+
+         ozC7wSOiTStOIGF0v32+etY9fXcBLYPBp6j/keOHdtoSxmrCZidUcJk+FCHDG5fwX13D
+         geRabDqJWEPp7eQ0rZACZjTcBeYJIRn65KEUUybHFdNeiP/G0FgE/wNW84i+WineilVd
+         FRFewtmS3yp3KKizY45HEYyH/LAFyjg0TPKGFgFWgfp3I922gN5xFW9gEEKnActlbgFw
+         6HRQ==
+X-Gm-Message-State: AOJu0YwDM5rLENKjD03q2fVQkqdgPwWayjspn2orGF+nz+dz/ESOpGkE
+        yKOXf0EUrdE/EeyveCH3YdqkwQ==
+X-Google-Smtp-Source: AGHT+IGd2XE7EL4DOlllWQeJM9YR/hImZD2DS4HJs5yBVB5vQwAT9kfmUKJR71ROmgg0YDXHetdscQ==
+X-Received: by 2002:a17:906:698a:b0:99c:444c:e4bb with SMTP id i10-20020a170906698a00b0099c444ce4bbmr2686161ejr.42.1692250312013;
+        Wed, 16 Aug 2023 22:31:52 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.46])
+        by smtp.gmail.com with ESMTPSA id n13-20020a170906b30d00b0099b4d86fbccsm9697520ejz.141.2023.08.16.22.31.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 16 Aug 2023 22:31:51 -0700 (PDT)
+Message-ID: <43796724-4926-c7e0-9532-92b863550780@tuxon.dev>
+Date:   Thu, 17 Aug 2023 08:31:48 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ARM: dts: at91: sama5d29_curiosity: Add device tree for
+ sama5d29_curiosity board
+To:     Mihai.Sain@microchip.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Nicolas.Ferre@microchip.com, Cristian.Birsan@microchip.com,
+        alexandre.belloni@bootlin.com, andre.przywara@arm.com,
+        Jerry.Ray@microchip.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Andrei.Simion@microchip.com,
+        Varshini Rajendran <varshini.rajendran@microchip.com>
+References: <20230804101043.4063-1-mihai.sain@microchip.com>
+ <127fc712-d924-f27f-5449-33385e89d6c3@tuxon.dev>
+ <PH8PR11MB6804E49B5946F4A9D60837E18213A@PH8PR11MB6804.namprd11.prod.outlook.com>
+ <98d01db3-3eba-0731-0dd9-4310ed293bd6@tuxon.dev>
+ <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
+Content-Language: en-US
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <PH8PR11MB6804B1C6466C7A450A180D1D8215A@PH8PR11MB6804.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, Daniel
 
-I just add ksyms__free() function, it is called when ksyms__add_symbol() fails.
 
-Good Day,
-Rong Tao
+On 8/16/23 12:05, Mihai.Sain@microchip.com wrote:
+> Hi Claudiu,
+> 
+> ----------------------
+> 
+> Hi, Mihai,
+> 
+> On 8/10/23 09:47, Mihai.Sain@microchip.com wrote:
+>>> +&i2s0 {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&pinctrl_i2s0_default>;
+>>> +     status = "okay";
+>> I see no sound bindings on DT. Is there any reason for having this here?
+>> # i2s0 bus is wired to RPi 40-pin connector. I want to have this node and its pinctrl here.
+>> # i2c1, flx4-spi, pwm0, uart1 are also wired to Rpi connector, and are defined here.
+>> # The same logic we apply also for mikroBUS sockets: i2c, pwm, spi and uart nodes are defined here.
+>>
+> 
+> Can you use it (either with user space tools or other kernel consumers) w/o additional device tree bindings?
+> # Yes. We have added in dt-overlay the codec which uses the i2s0 and i2c1 nodes and pinctrls.
 
+overlay means additional DT bindings to me. So, I suggest to move the i2s
+node there, too. It is the same approach that you've taken for ethernet node.
