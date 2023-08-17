@@ -2,82 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C50C77FC5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33D077FC5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351992AbjHQQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:53:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        id S1352437AbjHQQxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:53:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351734AbjHQQx3 (ORCPT
+        with ESMTP id S1352028AbjHQQxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:53:29 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26E1FF3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:53:28 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-565439b6b3fso26812a12.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:53:28 -0700 (PDT)
+        Thu, 17 Aug 2023 12:53:31 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DE61FFF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:53:30 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d72e09f1263so92579276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:53:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692291207; x=1692896007;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wd2eEJ8bKVLE4jt9D8MWLfi2bLdIG89C4XSDUA4XuM4=;
-        b=mEGHcVfvJ1Ie/DKOGJ3cn4M75JEBivLZpO+OsJ8xCiLQ1GJQQMl36SlQjVy5cWWoaq
-         QCelzu3Ao/JQ4pT9CBZGSIUuqXTpzHjc5tspYcUQlnZQeOLtgEczpE44hcHTy8fe+Cmp
-         Ys7Fq1A1PBZe8vZ8xA4v38u9i5nGqrAggwr6Y=
+        d=google.com; s=20221208; t=1692291209; x=1692896009;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=I7rXeOmhjPgxKDblBxPwExmctn5hjyWOkPZnPOO6tEA=;
+        b=QCg2g5rmwWj+zLcHzdHJ1+EJZ/K1e3el0bmzR4K6W+/DqLyCnaEB2jXi4RVnUxQ7HA
+         zNntzNGgwdhZjtyukJHm343Kpt+depwFg3XKmq0qQTaH8fG6GomRgbFX7T3OaQ3kiejv
+         4cew6icSeaNsJFajQi2bq7r85j6lcf+8hvHK6vE3Hb82p6Zmf9kdx20OXvzC15Fw1r4t
+         bZ4fZdpX8HJ/64uTMFZCCYNw9oliMO+ovSVkPZDFo0wr3ZDbhRXieruuCaXcrMBLr55E
+         nqLc5YdgtvdoEvgz1FmuZQ36lahtcY0IiPDW2fRzLMJlOYKnkDtew0uJkPfCWNV+SxF5
+         Q7fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692291207; x=1692896007;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wd2eEJ8bKVLE4jt9D8MWLfi2bLdIG89C4XSDUA4XuM4=;
-        b=gvd7Wv+FFm563Z1m7YFa8KpgebG45f6RKP26CAdxux9rNaO6jBE+OA4dQfi4GBRuIm
-         hMcIaPzu+uC3kXuY9ijSaRVqiy9sHm6IXdDQgluQ1JtMXo13LvGvRCQmlVgka2gl4V9t
-         lBoIkRW+ygbGCG9hDoXdK5vAu/xtDrpV44D1vha3q75cSdvQjZS2BU970xIwJd7lZ9sl
-         SWFhKKxff4A3tzSPTy8mvzncc+LS08kfbf3Anpwf7wf4qBHLDq3yGAup7sQ0WVUY/yzR
-         lUl8yd9aWRHLikEydcbeWum0e3Xc8uRsJsaJm5sL3B9OZOwX63Dox/aCvnktohnSK8vc
-         wDUQ==
-X-Gm-Message-State: AOJu0YwpXi0o39KkHhGWAT5i9363Ojz+qobj3e/xbWtLRVKFnhKlPAG8
-        eFg/G4pTyz/6a6P09v1kI6tMTQ==
-X-Google-Smtp-Source: AGHT+IEBtVDJzAH7jjK/Tzl/XqL8sfAWLGYo2+wPKkU1O+/+nEh6rMeDF/flz5bgJyCIwogSa+XEHQ==
-X-Received: by 2002:a05:6a20:3a83:b0:13e:b7e9:1a71 with SMTP id d3-20020a056a203a8300b0013eb7e91a71mr263073pzh.14.1692291207506;
-        Thu, 17 Aug 2023 09:53:27 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u8-20020aa78488000000b00687227dd8f1sm13085118pfn.122.2023.08.17.09.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 09:53:26 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 09:53:26 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kill do_each_thread()
-Message-ID: <202308170953.ECBAA9A@keescook>
-References: <20230817163708.GA8248@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817163708.GA8248@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1692291209; x=1692896009;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I7rXeOmhjPgxKDblBxPwExmctn5hjyWOkPZnPOO6tEA=;
+        b=cgLM+PvFgeYNog/bmlWfLxGJjQevzzND04nVn1oQC0pbCnQ9Jl0NWPhPynIYAsFejr
+         S32xXCjRs+/ttAosOumKbOkAwMKTD88J6+01C+p9YEEI0fsPr6TorQ8rsPlVfzgs3tuH
+         Fgg3iSknVmi+ww18NV/ayLbFX3y+pvJU6bj/LS90wkR3o6RMlLh1g1iN6bpai3q5QN9J
+         nXono08npVRuyCjJX1i7t+iiTHtHl+LclWYte7A5mFvgJ1NZXZIYhlEvNZwEcDm+KUb5
+         SlYxK6P/RL9noYlXUo431vgAK05S/MbrhdR5T1ZAhQYkoem2P7PudvfzlMH3qJVm/HyF
+         fD+Q==
+X-Gm-Message-State: AOJu0YwOmQPwpf+cFKsq8JfdnZACQZvPBnmUIUHtZZjMCDrXKfrio0SM
+        5HBCZl/u7IJl69Wxn37vfEKSAFA+l7FlsA0S0A==
+X-Google-Smtp-Source: AGHT+IEBX+yMZkeBzDlPXRL1+LjipK2s6Ler1D8A2V7HQdX1BXDLPWihauoUm2Na2jqlBWq8P0DlEOIoOk9EtRDR3w==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a25:bed0:0:b0:d4d:5407:3710 with SMTP
+ id k16-20020a25bed0000000b00d4d54073710mr963ybm.4.1692291209254; Thu, 17 Aug
+ 2023 09:53:29 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 16:53:27 +0000
+In-Reply-To: <d6858d5c-7db6-6e4c-7f07-92ff3340e02b@redhat.com> (message from
+ Paolo Bonzini on Thu, 10 Aug 2023 16:03:16 +0200)
+Mime-Version: 1.0
+Message-ID: <diqz5y5dvce0.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: [RFC PATCH 08/11] KVM: x86: Let moving encryption context be configurable
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     seanjc@google.com, tglx@linutronix.de, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, shuah@kernel.org,
+        andrew.jones@linux.dev, ricarkol@google.com,
+        chao.p.peng@linux.intel.com, tabba@google.com, jarkko@kernel.org,
+        yu.c.zhang@linux.intel.com, vannapurve@google.com,
+        erdemaktas@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 06:37:08PM +0200, Oleg Nesterov wrote:
-> Eric has pointed out that we still have 3 users of do_each_thread().
-> Change them to use for_each_process_thread() and kill this helper.
-> 
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> On 8/8/23 01:01, Ackerley Tng wrote:
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 75d48379d94d..a1a28dd77b94 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -6351,7 +6351,14 @@ static int kvm_vm_move_enc_context_from(struct kvm *kvm, unsigned int source_fd)
+>>   	if (r)
+>>   		goto out_mark_migration_done;
+>>   
+>> -	r = static_call(kvm_x86_vm_move_enc_context_from)(kvm, source_kvm);
+>> +	/*
+>> +	 * Different types of VMs will allow userspace to define if moving
+>> +	 * encryption context should be supported.
+>> +	 */
+>> +	if (kvm->arch.vm_move_enc_ctxt_supported &&
+>> +	    kvm_x86_ops.vm_move_enc_context_from) {
+>> +		r = static_call(kvm_x86_vm_move_enc_context_from)(kvm, source_kvm);
+>> +	}
+>
+> Rather than "supported" this is more "required".  So  perhaps 
+> kvm->arch.use_vm_enc_ctxt_op?
+>
+> Paolo
 
--- 
-Kees Cook
+Thanks, that is a great suggestion, I'll incorporate this in the next
+revision!
