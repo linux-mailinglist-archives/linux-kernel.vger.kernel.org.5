@@ -2,197 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F5D77F989
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C447E77F98E
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 16:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352211AbjHQOpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 10:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        id S1352225AbjHQOqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 10:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352225AbjHQOpf (ORCPT
+        with ESMTP id S1352304AbjHQOp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 10:45:35 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C33730E6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:25 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe8242fc4dso69066095e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:25 -0700 (PDT)
+        Thu, 17 Aug 2023 10:45:58 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3263596
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:42 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d67a458ff66so6644543276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 07:45:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1692283524; x=1692888324;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QkGrMKame+hCoidswsD8X7nx7MG416MhB7l+Xl/0OGA=;
-        b=PK/dL7riptzY9V7e7xDyzfca2Du2t/T4guLBZFEe7DxOiKpGU/woOFka0MiigagOA8
-         hhLAbWcPuk0wY9mN/GfwQZZs/s54wynG6G8eEPwGVD0hlVlmyZJVkg24yZ4ACJohL3C4
-         rOik7pVl3dTq2hGlatHTdjbhbKcAVOrVzfK1sC45z5FIl5+eAfv7cBVYjTQ+gtvnzEfT
-         aa+bvmciy0JMrnS1pjLLJQLb3t4XpeG4NjhYcY3JstboucBfwEGQ/y/ks/MN8cRbX/hM
-         9AcK5AtGAQzSBjgRbsbvnyHsuKd7bIuxfiYjfpXq8Nas1iKPWTM3ddn8kTONYRdfmVRq
-         ukyQ==
+        d=google.com; s=20221208; t=1692283541; x=1692888341;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KM80ZNnp20PNpo/anqlhgUFa4QpjUiNpC9plwfXLRWA=;
+        b=QjPyI4XI8622SbvZoKVpJTnnqWN3JkJe21W0wVXqNzUtBrfG+OQ7URD3633OL7QUNb
+         7jK52Cwb8PjbQd4EpdX6HNBT0OAzBM8K3WLRdWFgL2S4PZ2HMxqHxr+YujCOej2Pty4W
+         VDInswRbwKMiZ9w+zvTgR9DK1Ahct/5bFssTvnmUvQnyehc/j3c3cjr+rvBUi7jmLxiK
+         rHNmYvguBJFY0mWfOysXcYsizU3Ve7O+KDqLxmK9SI9zgkKvlPxZniMOdW2ZjoN61vwN
+         sTzk1yRsuCvADiL/OUfsyZXXN7HY0VD3f6UOiRJVPera36gE0QR3vYurbsErAEYYn2fq
+         JNuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692283524; x=1692888324;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QkGrMKame+hCoidswsD8X7nx7MG416MhB7l+Xl/0OGA=;
-        b=YzZRlp3Z3KYjnCQUZkHR7mm6Zrw96YjLTFRabFP9ZRq3+zSJ/y6TX6lOhzkyWsJ8Ij
-         FAbGsqd/Oo9YRpUYzv8XMhVPcR8if56abnKQQto0rZdXzKVT7e8Q79P++l0iSrZ05n7L
-         jmjbXeAKfsQEBnwPt3tcz3DwWJKSKeXk0H1FfhShmlUnsWZWV49EyL5giyIgAUOMhdaB
-         FsI2rkviWipjecPN0VbLD2MjAT1FzYwdLwNVL0aqsnwUq3UKiC74Afs9jycJcAJX91IN
-         dULaL6ur50BjAtybF+jOMpgpVPmofp9jjB2oJrDSKpIGJoQ+lukGNhn9sI26nB8iuBYn
-         vZzw==
-X-Gm-Message-State: AOJu0YyDVF9mCMCsH9BPck0dC2B/0GM7bDxrBOdr6oqXbJ+JQZEwsQ0q
-        MV/zPtf6yL+viJlIxButqylpvw==
-X-Google-Smtp-Source: AGHT+IGL0vmFGT21e95QBA6MwvW/iOJ5YIPwapVB2rfEvO7uV1HSUBuQqEtA8kgODv93gksStkAptQ==
-X-Received: by 2002:adf:fc8b:0:b0:313:fd52:af37 with SMTP id g11-20020adffc8b000000b00313fd52af37mr4455648wrr.4.1692283523731;
-        Thu, 17 Aug 2023 07:45:23 -0700 (PDT)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id n12-20020a05600c294c00b003fbc30825fbsm3184833wmd.39.2023.08.17.07.45.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 07:45:23 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 14:45:35 +0000
-From:   Anton Protopopov <aspsk@isovalent.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     David Vernet <void@manifault.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next] bpf: Disable -Wmissing-declarations for
- globally-linked kfuncs
-Message-ID: <ZN4yj/3tSzqMyVyY@zh-lab-node-5>
-References: <20230816150634.1162838-1-void@manifault.com>
- <2d530dec-e6c2-5e3a-ccf2-d65039a9969d@linux.dev>
- <CAADnVQKtWkPWMG+F-Tkf3YXeMnC=Xwi8GA5xJMaqi725tgHSTw@mail.gmail.com>
- <20230817040107.GC1295964@maniforge>
- <d49a61ba-10c0-2094-10c9-60a723776f04@iogearbox.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d49a61ba-10c0-2094-10c9-60a723776f04@iogearbox.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1692283541; x=1692888341;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KM80ZNnp20PNpo/anqlhgUFa4QpjUiNpC9plwfXLRWA=;
+        b=hm/GCgyzzizpgET10yxRrIh8CRNu9fV0wKm/mRrhrN4/rINSCIBYp5YMNCrGGfVeQV
+         HK9qYmrh2erbIPUAkNwRCbhzUrbWO0wU4JXO33Z8kWPcqJcYNaThKQy96oyyN2GYCHRx
+         VHy/0wPrWDHTHfyIIaUhQ5Nw9vJ/YZXQp2W9C6yoZ099lmTFWKtQ8TQhWioO4QCRsYuv
+         WFiJRUFXnBDfXh+N3Ol+pSwXsfqQdgF9UKBTXn2N2GfPa6WhBFFi9XoB+YGA3uDbqSYU
+         TOGJx3tV1c7fzCvKySs1wrB/8tN7pM0nnh/ffUyqZmAI9IlCXLS7ugmBa31rDnwGE+FT
+         SEBQ==
+X-Gm-Message-State: AOJu0YztuNsS+Vf54G6VuOA6rYKBDt82JElmHOFPVPF8MNSTIa80gVFr
+        d7AmMkoKLQ1093nBwka1c/QdTGPUUps=
+X-Google-Smtp-Source: AGHT+IGHzC3HJHyiKi0mKqHVraRuZMM66a306NXB9BtkJmOJ1ZQlDhwwBy8Zkq73uiBQK9AAN/ZN0YYFZYs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1828:b0:d0e:d67d:6617 with SMTP id
+ cf40-20020a056902182800b00d0ed67d6617mr70431ybb.4.1692283541337; Thu, 17 Aug
+ 2023 07:45:41 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 07:45:39 -0700
+In-Reply-To: <998ebc6b-4654-f0d3-dc49-b2208635db48@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719024558.8539-1-guang.zeng@intel.com> <20230719024558.8539-3-guang.zeng@intel.com>
+ <ZNwBeN8mGr1sJJ6i@google.com> <e2662efe-9c53-77de-836c-a29076d3ccdc@linux.intel.com>
+ <ZNzfgxTnB6KYWENg@google.com> <998ebc6b-4654-f0d3-dc49-b2208635db48@linux.intel.com>
+Message-ID: <ZN4ykwq11h6awR2k@google.com>
+Subject: Re: [PATCH v2 2/8] KVM: x86: Use a new flag for branch instructions
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     Zeng Guang <guang.zeng@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        H Peter Anvin <hpa@zytor.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 04:35:26PM +0200, Daniel Borkmann wrote:
-> On 8/17/23 6:01 AM, David Vernet wrote:
-> > On Wed, Aug 16, 2023 at 08:48:16PM -0700, Alexei Starovoitov wrote:
-> > > On Wed, Aug 16, 2023 at 8:38 PM Yonghong Song <yonghong.song@linux.dev> wrote:
-> > > > On 8/16/23 8:06 AM, David Vernet wrote:
-> > > > > We recently got an lkp warning about missing declarations, as in e.g.
-> > > > > [0]. This warning is largely redundant with -Wmissing-prototypes, which
-> > > > > we already disable for kfuncs that have global linkage and are meant to
-> > > > > be exported in BTF, and called from BPF programs. Let's also disable
-> > > > > -Wmissing-declarations for kfuncs. For what it's worth, I wasn't able to
-> > > > > reproduce the warning even on W <= 3, so I can't actually be 100% sure
-> > > > > this fixes the issue.
-> > > > > 
-> > > > > [0]: https://lore.kernel.org/all/202308162115.Hn23vv3n-lkp@intel.com/
-> > > > 
-> > > > Okay, I just got a similar email to [0] which complains
-> > > >     bpf_obj_new_impl, ..., bpf_cast_to_kern_ctx
-> > > > missing declarations.
-> > > > 
-> > > > In the email, the used compiler is
-> > > > compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-> > > > 
-> > > > Unfortunately, I did not have gcc-7 to verify this.
-> > > > Also, what is the minimum gcc version kernel supports? 5.1?
-> > > 
-> > > pahole and BTF might be broken in such old GCC too.
-> > > Maybe we should add:
-> > > config BPF_SYSCALL
-> > >          depends on GCC_VERSION >= 90000 || CLANG_VERSION >= 130000
-> > 
-> > It seems prudent to formally declare minimum compiler versions. Though
-> > modern gcc and clang also support -Wmissing-declarations, so maybe we
-> > should merge this patch regardless? Just unfortunate to have to add even
-> > more boilerplate just to get the compiler off our backs.
-> 
-> Urgh, to restrict BPF syscall with such `depends on` would be super ugly. Why
-> can't we just move this boilerplate behind a macro instead of copying this
-> everywhere? For example the below on top of your patch builds just fine on my
-> side:
-> 
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index df64cc642074..6a873a652001 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -83,6 +83,16 @@
->   */
->  #define __bpf_kfunc __used noinline
-> 
-> +#define __bpf_kfunc_start	\
-> +	__diag_push();	\
-> +	__diag_ignore_all("-Wmissing-prototypes",	\
-> +			  "Global functions as their definitions will be in vmlinux BTF");	\
-> +	__diag_ignore_all("-Wmissing-declarations",	\
-> +			  "Global functions as their definitions will be in vmlinux BTF");
-> +
+On Thu, Aug 17, 2023, Binbin Wu wrote:
+>=20
+>=20
+> On 8/16/2023 10:38 PM, Sean Christopherson wrote:
+> > On Wed, Aug 16, 2023, Binbin Wu wrote:
+> > >=20
+> > > On 8/16/2023 6:51 AM, Sean Christopherson wrote:
+> > > > Rather than call out individual use case, I would simply state that=
+ as of this
+> > > > patch, X86EMUL_F_BRANCH and X86EMUL_F_FETCH are identical as far as=
+ KVM is
+> > > > concernered.  That let's the reader know that (a) there's no intend=
+ed change in
+> > > > behavior and (b) that the intent is to effectively split all consum=
+ption of
+> > > > X86EMUL_F_FETCH into (X86EMUL_F_FETCH | X86EMUL_F_BRANCH).
+> > > How about this:
+> > >=20
+> > >  =C2=A0=C2=A0=C2=A0 KVM: x86: Use a new flag for branch targets
+> > >=20
+> > >  =C2=A0=C2=A0=C2=A0 Use the new flag X86EMUL_F_BRANCH instead of X86E=
+MUL_F_FETCH in
+> > > assign_eip()
+> > >  =C2=A0=C2=A0=C2=A0 to distinguish instruction fetch and branch targe=
+t computation for
+> > > feature(s)
+> > Just "features", i.e. no parentheses...
+> >=20
+> > >  =C2=A0=C2=A0=C2=A0 that handle differently on them.
+> > ...and tack on ", e.g. LASS and LAM." at the end.
+> OK, but only LASS here, since LAM only applies to addresses for data
+> accesses, i.e, no need to distingush the two flag.
 
-This will not solve the robot's compain, as it fails on gcc7. The
-__diag_ignore_all for gcc is defined as
-
-    #if GCC_VERSION >= 80000
-    #define __diag_GCC_8(s)         __diag(s)
-    #else
-    #define __diag_GCC_8(s)
-    #endif
-
-    #define __diag_ignore_all(option, comment) \
-            __diag_GCC(8, ignore, option)
-
-so adding more __diag_ignore_all's will not do anything.  This is better to
-patch __diag_ignore_all to include older gcc versions if anybody needs them.
-
-> +#define __bpf_kfunc_end	\
-> +	__diag_pop();
-> +
->  /*
->   * Return the name of the passed struct, if exists, or halt the build if for
->   * example the structure gets renamed. In this way, developers have to revisit
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index c2b32b94c6bd..08dd0dd710dd 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -11724,11 +11724,7 @@ bpf_sk_base_func_proto(enum bpf_func_id func_id)
->  	return func;
->  }
-> 
-> -__diag_push();
-> -__diag_ignore_all("-Wmissing-prototypes",
-> -		  "Global functions as their definitions will be in vmlinux BTF");
-> -__diag_ignore_all("-Wmissing-declarations",
-> -		  "Global functions as their definitions will be in vmlinux BTF");
-> +__bpf_kfunc_start
->  __bpf_kfunc int bpf_dynptr_from_skb(struct sk_buff *skb, u64 flags,
->  				    struct bpf_dynptr_kern *ptr__uninit)
->  {
-> @@ -11754,7 +11750,7 @@ __bpf_kfunc int bpf_dynptr_from_xdp(struct xdp_buff *xdp, u64 flags,
-> 
->  	return 0;
->  }
-> -__diag_pop();
-> +__bpf_kfunc_end
-> 
->  int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
->  			       struct bpf_dynptr_kern *ptr__uninit)
-> 
-> Thanks,
-> Daniel
+Oh, right.   Thanks!
