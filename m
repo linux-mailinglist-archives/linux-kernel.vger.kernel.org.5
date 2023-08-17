@@ -2,152 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E2777FBF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C7E77FBFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353646AbjHQQW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37476 "EHLO
+        id S1353694AbjHQQWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353626AbjHQQWB (ORCPT
+        with ESMTP id S1353678AbjHQQWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:22:01 -0400
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2092.outbound.protection.outlook.com [40.107.249.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5461B173F;
-        Thu, 17 Aug 2023 09:21:58 -0700 (PDT)
+        Thu, 17 Aug 2023 12:22:24 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2078.outbound.protection.outlook.com [40.107.237.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8DCF173F;
+        Thu, 17 Aug 2023 09:22:22 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S44M9Asi3oJ/wbg/lAnUD2taItWuV2aIHsdBhI3QMUXohjqxRrvrb9s0PzG8BvAY9hk45jzfRX0Aemwo6F3jSPPIiDoe1qaonvu4AP+gsZnqpgPhldkupISFqqKEWRzMSZmCFGuuee41/T22iqZ2qNok06X134cKdNrGZJ1UR5zE36pIdRljJxYMIL4pLoMQhBsj5wc9CrzuyBGQYn/9GkA0rpM5LbzX/onxCM44nII1WJy+90r6qeBE9BBZXJcmxEDsM7r1DzhK9FP7msw/0QT0c/x+jpQQRg8Q98EQ0RAoxB/rvq2qKkWtdIWcnTcfcKKtB1MxqAlMBBU8wXaMvw==
+ b=hk3BaxTw8MAGrklmnJ2Kbdy76hZi2ZR0xvqq6TNXhy4hVPGyy0J6hVMQz0zpe4B5BcoIsTtyNz2RTRX8de/Pm5KT72GAIhyAGueAdJpFhROZcA7UVHLMYyCAYvjsSRkLbwpcr4hJ2TfGmgHGEFwsmXXcA/cxZ2sYK33uTi75S96k61wskPlyHhH9SJgmToJsOma7tBdINke2f0ZvG4JETyn8vE2djYnycFuhJyKBgzt3/VbWKSnEtM9qwS5t+ujBdcRfw2tHrGlNWkjBvy9KfzOdZqIS5TA1nP1VE692zfgf1sqjHLw98kSow99zMgCuhiOESJPs4ILP6NeQZSNNQg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3l5QnojYHyNhA/hv6Gl/7pYx8YkLOGALlAtjDVqctHo=;
- b=nEslf1syRHGo5BOClzwIP/j5xYecJ1SZFtL4wecGX1vss3C+BpHp7/pYjobLL152WgvJFlyReN/ZqU5O4qRLejGLVQrh0U9GyscTeal1FKl4tayvOlFd13hNQyAfGYfY3QDKJcQ5CH8KKIXnx6B1vxQDeXKQUsDGcr1hyPspTcT/hkmDKU1LpQGTVa7Zj3+6rSmtneZ1s4D7gc0x1IEPnMZHkOw9ZaiZm3DFDh+jABEgH/enemkrEbLe66zjtQ3zAsmjeIeH3Xl9tI6trQuiamBBa8HcipOA6l6grwTMhxat4FOalH43WgCVXAJUVXSLbxCixkiKmZ4yYcqS0J+yJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ bh=cDBQ2pomVxBkBdTBrk2BWYgBQ6S+N0dH83Rww5va224=;
+ b=lPsSpZs5TgRe8U5pYzfHzd+RNEunFwlA7LJB2wYa+6QEb9tSir3HrcHe3oRnafokUcUyi+Zc9IQyIcbRDBLvDuA7VCr4DJGdEiBAKEgYXZmA3VDtRb+aJ50GneuVl8dH2rv6S/iYwUgqQt1pRW5SUEEU4ffaBnD6RWoUzagpD/MEKeLoL6ATtEhOV1bNmQtPF2DFVGzxMxHXLhIcfwNMrH0fXaeTcr2t2/j8JfDkOAhuS3hYWpvNiXDEUrXrP4UgNZgxQ9i4WRnmT6Vn9Xty47kVKkBgCYniaDBk9ZeqCKer1qVxX6Hq6Ll938HuL55lv/zmmq7FozzdndHK7+DDfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3l5QnojYHyNhA/hv6Gl/7pYx8YkLOGALlAtjDVqctHo=;
- b=To1ApM7Nh6XBdEdecc2uBGFFuQ8Jcy1XQuqcMRPEpUdApGVTSrP8Md/ozq35qlD4whDzoBI9en6SGsPxkh6CMU1N2TxCr9XErW/ia3ps0lyLsLUHFGKNYqQ0SbN+yQ9DpSDgkC6bcWne+XEBWNLaQ6ozScQlZuLmImPfMlyP7jc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=axentia.se;
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com (2603:10a6:208:ed::15)
- by AS8PR02MB7318.eurprd02.prod.outlook.com (2603:10a6:20b:3b2::17) with
+ bh=cDBQ2pomVxBkBdTBrk2BWYgBQ6S+N0dH83Rww5va224=;
+ b=cQyyJRMChb1zk1TM/95m158WChHgjoOK/mZzdiUDZqTtRceoFS18jT0G7LbJQ2GdZmQyZThDMdOZUHXphpKAhWKrHXDvmGpbANap0ASkzM7dAIkAjQoJDDGb7j0PwEyTsqGRF7oVL/qIOPBbaIExj0sy+8Kq0phZrq3RgagEe3xSbUygvXKbmsG+Cmq1i58g1O770/0VkbYN7exdXM2ysaRL/mebE9lcxg34EreSqXTfxwdoksinLMcyEqbNwi9KhENVxPi/JFs/hB6ek1JWUSGw7N9ywdGftdnqJ2TsymUHQUHEMJARkmcDeu31y8u5s/I34Vca/YCm4e2XgsB06A==
+Received: from CY5PR19CA0119.namprd19.prod.outlook.com (2603:10b6:930:64::13)
+ by LV3PR12MB9117.namprd12.prod.outlook.com (2603:10b6:408:195::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14; Thu, 17 Aug
- 2023 16:21:56 +0000
-Received: from AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::7b40:7a7d:595e:623c]) by AM0PR02MB4436.eurprd02.prod.outlook.com
- ([fe80::7b40:7a7d:595e:623c%4]) with mapi id 15.20.6699.013; Thu, 17 Aug 2023
- 16:21:56 +0000
-Message-ID: <a2418f66-5def-2ec0-ef48-2e8615a499d0@axentia.se>
-Date:   Thu, 17 Aug 2023 18:21:54 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v15 1/4] dt-bindings: i2c: pca954x: Correct interrupt
- support
-Content-Language: sv-SE
-To:     Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     naresh.solanki@9elements.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230817071056.2125679-1-patrick.rudolph@9elements.com>
- <20230817071056.2125679-2-patrick.rudolph@9elements.com>
-From:   Peter Rosin <peda@axentia.se>
-In-Reply-To: <20230817071056.2125679-2-patrick.rudolph@9elements.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: GV2PEPF000000F0.SWEP280.PROD.OUTLOOK.COM
- (2603:10a6:144:1:0:1:0:f) To AM0PR02MB4436.eurprd02.prod.outlook.com
- (2603:10a6:208:ed::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 16:22:21 +0000
+Received: from CY4PEPF0000EDD5.namprd03.prod.outlook.com
+ (2603:10b6:930:64:cafe::9c) by CY5PR19CA0119.outlook.office365.com
+ (2603:10b6:930:64::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.15 via Frontend
+ Transport; Thu, 17 Aug 2023 16:22:20 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EDD5.mail.protection.outlook.com (10.167.241.209) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Thu, 17 Aug 2023 16:22:20 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 17 Aug 2023
+ 09:22:06 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Thu, 17 Aug
+ 2023 09:22:06 -0700
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Thu, 17 Aug
+ 2023 09:22:05 -0700
+From:   Liming Sun <limings@nvidia.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+CC:     Liming Sun <limings@nvidia.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v9] mmc: sdhci-of-dwcmshc: Add runtime PM operations
+Date:   Thu, 17 Aug 2023 12:21:59 -0400
+Message-ID: <20230817162159.242087-1-limings@nvidia.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR02MB4436:EE_|AS8PR02MB7318:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9c48235c-48e2-4562-cfe1-08db9f3e135a
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD5:EE_|LV3PR12MB9117:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4b4b2c4-7d6e-4162-aff1-08db9f3e21bb
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ozRtabQyC0U3OxDEwJHsASVcgwQOMOUd6niDW4p39di9nOoU8BkZvRLW0kJBu7Y34493IHwyE0vh8x/WrusYWmN6xCKwlOU8SrA7Lyv64wfQyXAN6SkUGrZmY8QXVJ/jP6f6NQoZ35E6ZVleZ2VMC7d/oPtlDfkUPwgd3NDvnRDdzGFLW3EO8zEkrHUTLcSsf8E75tZUP0KNz6B6iFAyYKclSse4tB5c8CO4mpr52ykufYWaHCSdBKF3ywNiGnMre4lrcKtHAHtO3LLk5zjB88gsYlCzh+tRm+soIidZrn/ti0zdooUlM6fZ3BnxrYykCOCrAv//eUPCvTgKRNeEib+MvInASYJ5ckd8iRyAnDksULVT3JopN0tTnWzqE1VO3MbxfY1Tdfzj70onUds11i3MS75wxCGOotHriKE6YwXIzZXLcEzFjyI3L44FiCxJ0+UR35WwKMeJ4pV1bEVBhtOlpAVRTsvp8g2OTeFnlR73Wy88RLKlZEKLXacbSxWfi5PMZAddayoySfwTFQSUeyk1y6+j7PfE1SVFX7n3heiVbyaN31tucNt0hpwGLqSmm06YnWtAxkEas2LcNqZInqDNl6oTox28yKmlGRw+4mgpcj7BmEv8pZMwov7c71WJytzVptOQlHMRSzGnSDc4zQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4436.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(39840400004)(366004)(346002)(451199024)(186009)(1800799009)(2906002)(66946007)(110136005)(66556008)(66476007)(5660300002)(8936002)(478600001)(6506007)(6486002)(4326008)(316002)(54906003)(36756003)(4744005)(8676002)(2616005)(38100700002)(26005)(6512007)(31696002)(31686004)(86362001)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDBlQnEvNlArMmFlZUZLelI1WEo2N2Y0ZnMwQ0h4SThBZDZVNU5GQkNGcFNH?=
- =?utf-8?B?bUcwWWZSUGtXNTdpQkZjRnZVS2VoNG9sdWRjVVNiOEV5VnF5UklOK0lVeGtl?=
- =?utf-8?B?cFVSWHlEL0FOcTc5Q0VsTjFjdHZSS3BuWlgwUFZ0ZE9Ea3A4TkR0cDd5Y0FP?=
- =?utf-8?B?SkhFR0RtdHA1WXp5dDlmczFqbVBtcjh1S3JrM0Q3d20wYkNER0pOaDdhd2c1?=
- =?utf-8?B?S1k0SDhVLzNGZkNSN0NpZkh1dzNUV056V3lzL29WVmpyZGIxTmdYSVZoc2pT?=
- =?utf-8?B?SksvM0hNYVJqbWJDK3lMT3hlUWxYemhFZTRSMUNsNkNvQTFtUmhqdnl4OVNn?=
- =?utf-8?B?SjBMT1B6NG50cElUUjBCSUxlVDRwOVlLbnJYY0hWUldJUm5nTHBnRE5VZ2d1?=
- =?utf-8?B?OXh6RE0waVlzelk2Q0xrVzE5Y21BaSsvN1lab1FMQ3Q1ZzgwZkFmeTlyL29L?=
- =?utf-8?B?OS9Wbm0ra3U0NHV1Z1NoNjdzT1RyMFRPSVg0Unh6N0JsOE1icThRUEk1Nldw?=
- =?utf-8?B?Q1RFekRyWnhRVkdFTG9DMk5PTjl4RHJISDN0UlFiK0FoVkdjK1Y3N1ZkZkFE?=
- =?utf-8?B?TU02NHYxd1lHeFpFRmZudTJVR0lIRVNTejRnUWFmSnNJdnp5M3RhWEswdkl0?=
- =?utf-8?B?U1REZHVva3V4bHFEYk5Ic3dYYVlpZ2V0OWh1a1E1eWlzOWNJZks5dmtjdmx0?=
- =?utf-8?B?cDdDK056MEZKcUU2bHJqSEkySXRQR21SbHhGNEdPUzRaTUl2OW5RSUxNUFE2?=
- =?utf-8?B?d0hBR3luVUhVYUVGckhCd0g3MmpwZDdWTmFUTXRUUk1ML3hXelhYdm1SaS9v?=
- =?utf-8?B?MVdkMldmNmdyNGJJd3Q5TDJLK1gxNHpQT3NMOTExR3NiSnk5YW5wcHF6dHFP?=
- =?utf-8?B?cXRrQ2o4Ri9USUVDSWczRGg2aWl2YzZFRFN5b2NhSldHS25BVEVaRXJhb1lX?=
- =?utf-8?B?VmhjTXpWV0ZGRmVtSS93R0ZHU1o0aUl6c2N6VWlETFlFR1ozV1hObVhWMllN?=
- =?utf-8?B?K2t2d3JxOTZqSm9UM1lpTmw3NENRalZLRnFpVmZtejM1eTQ5djZtemNKZlpW?=
- =?utf-8?B?bHhNU0lBd3dmSjJ5Y2ZDbFFqVEdHVW56aVA4d3lnSWlIVGo1L2I4YWxYbWlu?=
- =?utf-8?B?YWpZVlNmL25rODRXZ3ZqOGtuRXJPSFJRQXBoSG5pUkxXUlcvNlQ5ejI4Zngv?=
- =?utf-8?B?R3R2QUJIYVllbGF6VFF4NURYQ1g1NGh4MUVMcUxzRVJyTHdzZEpCMDc0alVH?=
- =?utf-8?B?Z2R3Wm92NkR5MjJsZzJOZ3Q5ekhnbnJibDgrbUZzR1RiYkREVHBaNy9yWkVt?=
- =?utf-8?B?QlZzRzJuZENKcG1ZTTFaS04zam5WSDRJb1JtL3dyM3ZubTlHN0FkSDF1OVJw?=
- =?utf-8?B?RFR1VWZTUzIwSTcvTmRzeXVsYkJsWWhkODUwVytuUzA2R1JEL3pvVDZqMXEw?=
- =?utf-8?B?RHlRM1ZYdVVSZGo1UTlLZWFDaWJnNktkQkNtWVVmV0xXd2Q0eGpGb21RS1JO?=
- =?utf-8?B?UXVERG53S0M0QjMwaVB5TEcwZEhiY2lnMTNWcXNqVER5czJZRjZJN3lCeGdR?=
- =?utf-8?B?b2M4RUdFWDdwREl6R2srWEFjaFY2aWYzdkRVdmtZdWY3WmRFd1NHNTdmem1E?=
- =?utf-8?B?bDVQVjFTUHh2UVEwQWZvcFZJQ3BmRDZ0bTgrcCtMREc0LzBHaVBkQ3RzTGh0?=
- =?utf-8?B?MEJxb2FDNFRsZWxTWGlReWptbVdkam1TVzBYZThTeGtaMXh6NVE3dUY5cHFx?=
- =?utf-8?B?Z3llWHIycEMwMkNEVmgwMkdESFJ5bzEyeCtESWdmSTFYbGJ4cTB1QUhuSlg0?=
- =?utf-8?B?cGlsMnhyQnhLd0NjZU9FaWo5VnZLTHZaOXJ6cEVzKzF1UU05VXFXRHJCQjhw?=
- =?utf-8?B?VTZmY0FNcE9kOUZVYTVFeE1ZTGhOeEpLNHRBR1VUNy83VFlBY1ZxR3BxZnYx?=
- =?utf-8?B?ak9mVXZIZ0d3emhVbnQ3N1Vna3k1dG5zQmVGN0VUK01ha0R5c3FSQmJmZEsz?=
- =?utf-8?B?dzV4bndFTm1CekpXSFdaYlpDQ2NNd3hvWDFwM3BCQW0rWkNyc0hybUd4NXFq?=
- =?utf-8?B?Rk5KVTkxYklrYmZPeGpYMWVoR1IvYjc5N2NLT0NZQ3VJN2FhdzBYelNjQnlW?=
- =?utf-8?Q?mu3PunONLpdhqetJxPVimFtgq?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9c48235c-48e2-4562-cfe1-08db9f3e135a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4436.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 16:21:56.5591
+X-Microsoft-Antispam-Message-Info: s9vuI94qsKd7AUhUtAqzGEa47x1GiSjalzvI7UkKcZkvj3EanYgPwWgEdk+CZ1oYmt/+IuRgDeUMgjl1g11jU5qDs8Ybw83U2grwneO7Xblqla+EhV9eAF7WZCBf1/SBVD5/2M1th8VBkp/T1MhheYVe5Vl2CtkvstgyyX56MLEG7CUNH1Uk3OSfWKo0dcS2pTE3lHMZl23/1h0CjZgp+vIJUtZMieYN1ZsbGU9Prvpf1IwxgVAsx7B0eqBWymYbqEZ2e/JfRQWG3huH8qHWxs+Brgyzi98GrtrK13ZMO0PhPBzAftnPukA5ijIUTUYcZfjstj1tmnaqlXwIgAnaMQr/9SBScdXDpaSw/nRdDwRoj4N6S6gpLtMn0mUt7R2jXcjjanIpUQfAq0T5V9xi5amNx1FtztQr34cMEPAfVBwKreSzwpt/0Xn7X5wtnc0gggsIg6goLe6gKpQXO0R1rgQXwB3J9B5MrxCky/60MJeOfAhs2tNtRUXz8++b8ySYI7tjz2Ucm0KoWA8kYdGmYyXI0TCDqLuCyrNXJLIz+PNtw+k7aQ3AKPZygL4aidgVPZdEXT4d0AMKG81ZNRvA608iXXS1LxkdBXbbpp3j45LMIduki9LfG2NiP6Qr9xZPZ8wRuHQQ1ezqCcP3nwaPi9ISitMclYflUfWewZKeHLdo9Y6hhVnOzEVkbrd5nSco3uydCQyU48qvM+yQ4l7LttJk4jZ4Rkz3ASucomr0MsridJ0AZwFtWDZyP4SVyaaMe3QXC060/GKdKoW4qP1Vpg==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(39860400002)(346002)(376002)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(40480700001)(40460700003)(2906002)(83380400001)(426003)(336012)(36860700001)(47076005)(478600001)(70586007)(70206006)(7696005)(54906003)(316002)(6666004)(110136005)(5660300002)(2616005)(1076003)(26005)(4326008)(8936002)(8676002)(41300700001)(86362001)(36756003)(7636003)(82740400003)(356005)(133343001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 16:22:20.4388
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EUbgB8SmnOisnTQ4RBh4X/JRlhS04WwsLMSy3m1XXZT8oN5Z7BQcC/NKjjukWW5U
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR02MB7318
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4b4b2c4-7d6e-4162-aff1-08db9f3e21bb
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD5.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9117
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+This commit implements the runtime PM operations to disable eMMC
+card clock when idle.
 
-2023-08-17 at 09:10, Patrick Rudolph wrote:
-> Only some of the PCA954x compatible ICs have interrupt
-> capability, but the binding advertises it on all ICs.
-> 
-> Sync the dt-binding with the driver and only advertise it on:
->  - nxp,pca9542
->  - nxp,pca9543
->  - nxp,pca9544
->  - nxp,pca9545
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: David Thompson <davthompson@nvidia.com>
+Signed-off-by: Liming Sun <limings@nvidia.com>
+---
+v8->v9:
+    - Address Adrian's comment to do the pm_runtime_put() in
+      dwcmshc_resume() instead; Error path changes not included yet.
+v7->v8:
+    - Address Ulf's comment (option-1);
+    - Updates for Adrian's comment to remove the force_suspend/resume
+      in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
+      dwcmshc_resume()/dwcmshc_suspend();
+v6->v7:
+    - Address Ulf's comment;
+v5->v6:
+    - Address Adrian's more comments and add coordination between
+      runtime PM and system PM;
+v4->v5:
+    - Address Adrian's comment to move the pm_enable to the end to
+      avoid race;
+v3->v4:
+    - Fix compiling reported by 'kernel test robot';
+v2->v3:
+    - Revise the commit message;
+v1->v2:
+    Updates for comments from Ulf:
+    - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+v1: Initial version.
+---
+ drivers/mmc/host/sdhci-of-dwcmshc.c | 76 +++++++++++++++++++++++++++--
+ 1 file changed, 72 insertions(+), 4 deletions(-)
 
-Acked-by: Peter Rosin <peda@axentia.se>
+diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+index e68cd87998c8..3b40f55ce2a4 100644
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -15,6 +15,7 @@
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ #include <linux/sizes.h>
+ 
+@@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
+ 
+ 	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+ 
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
+ 	err = sdhci_setup_host(host);
+ 	if (err)
+-		goto err_clk;
++		goto err_rpm;
+ 
+ 	if (rk_priv)
+ 		dwcmshc_rk35xx_postinit(host, priv);
+@@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto err_setup_host;
+ 
++	pm_runtime_put(dev);
++
+ 	return 0;
+ 
+ err_setup_host:
+ 	sdhci_cleanup_host(host);
++err_rpm:
++	pm_runtime_disable(dev);
++	pm_runtime_put_noidle(dev);
+ err_clk:
+ 	clk_disable_unprepare(pltfm_host->clk);
+ 	clk_disable_unprepare(priv->bus_clk);
+@@ -602,9 +612,13 @@ static int dwcmshc_suspend(struct device *dev)
+ 	struct rk35xx_priv *rk_priv = priv->priv;
+ 	int ret;
+ 
++	pm_runtime_get_sync(dev);
++
+ 	ret = sdhci_suspend_host(host);
+-	if (ret)
++	if (ret) {
++		pm_runtime_put(dev);
+ 		return ret;
++	}
+ 
+ 	clk_disable_unprepare(pltfm_host->clk);
+ 	if (!IS_ERR(priv->bus_clk))
+@@ -642,11 +656,65 @@ static int dwcmshc_resume(struct device *dev)
+ 			return ret;
+ 	}
+ 
+-	return sdhci_resume_host(host);
++	ret = sdhci_resume_host(host);
++	if (ret)
++		return ret;
++
++	pm_runtime_put(dev);
++
++	return 0;
+ }
+ #endif
+ 
+-static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
++#ifdef CONFIG_PM
++
++static void dwcmshc_enable_card_clk(struct sdhci_host *host)
++{
++	u16 ctrl;
++
++	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++	if ((ctrl & SDHCI_CLOCK_INT_EN) && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
++		ctrl |= SDHCI_CLOCK_CARD_EN;
++		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
++	}
++}
++
++static void dwcmshc_disable_card_clk(struct sdhci_host *host)
++{
++	u16 ctrl;
++
++	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
++	if (ctrl & SDHCI_CLOCK_CARD_EN) {
++		ctrl &= ~SDHCI_CLOCK_CARD_EN;
++		sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
++	}
++}
++
++static int dwcmshc_runtime_suspend(struct device *dev)
++{
++	struct sdhci_host *host = dev_get_drvdata(dev);
++
++	dwcmshc_disable_card_clk(host);
++
++	return 0;
++}
++
++static int dwcmshc_runtime_resume(struct device *dev)
++{
++	struct sdhci_host *host = dev_get_drvdata(dev);
++
++	dwcmshc_enable_card_clk(host);
++
++	return 0;
++}
++
++#endif
++
++static const struct dev_pm_ops dwcmshc_pmops = {
++	SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
++	SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
++			   dwcmshc_runtime_resume, NULL)
++};
+ 
+ static struct platform_driver sdhci_dwcmshc_driver = {
+ 	.driver	= {
+-- 
+2.30.1
 
-Cheers,
-Peter
