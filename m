@@ -2,320 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7B877FCF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A828077FCEB
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353940AbjHQRY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 13:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
+        id S1353943AbjHQRWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 13:22:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353964AbjHQRYH (ORCPT
+        with ESMTP id S1353940AbjHQRWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 13:24:07 -0400
-Received: from forward100a.mail.yandex.net (forward100a.mail.yandex.net [178.154.239.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E97BF;
-        Thu, 17 Aug 2023 10:24:05 -0700 (PDT)
-Received: from mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net [IPv6:2a02:6b8:c18:58f:0:640:3768:0])
-        by forward100a.mail.yandex.net (Yandex) with ESMTP id 8AB4542B22;
-        Thu, 17 Aug 2023 20:23:59 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id eNlanO1DeiE0-BZ6ruBVo;
-        Thu, 17 Aug 2023 20:23:58 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692293038;
-        bh=6YTQIq8NWPN5PQRtWMWS4gPfohHEdCmzLWqD6NAJA9Q=;
-        h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-        b=jKBXA2VfBZ6nR0VB2d7xFJmXh4Yo+atN/jZCG65qgU73pzixMg5N61F1Hlrz1rxF6
-         TZoUP+7fpL65aZ6X1MHGciIwGi2oG78HZQAkxG/JbdVzWyVoBZD5JK3UzgZ7kCZgxJ
-         7OhqUbRr+W3NylBuQ+7WVtzkS82LU/JI3AiibqoA=
-Authentication-Results: mail-nwsmtp-smtp-production-main-31.vla.yp-c.yandex.net; dkim=pass header.i=@6tel.net
-From:   Muhammed Efe Cetin <efectn@6tel.net>
-To:     krzysztof.kozlowski@linaro.org
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org, efectn@6tel.net,
-        heiko@sntech.de, krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, robh+dt@kernel.org,
-        sebastian.reichel@collabora.com
-Subject: Re: [PATCH 3/3] arm64: dts: rockchip: Add Orange Pi 5
-Date:   Thu, 17 Aug 2023 20:23:34 +0300
-Message-ID: <20230817172334.51831-1-efectn@6tel.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <a80a8f73-eef4-311b-c508-726956471880@linaro.org>
-References: <a80a8f73-eef4-311b-c508-726956471880@linaro.org>
+        Thu, 17 Aug 2023 13:22:40 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0D9EE
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:22:38 -0700 (PDT)
+Received: from eig-obgw-6010a.ext.cloudfilter.net ([10.0.30.248])
+        by cmsmtp with ESMTP
+        id WcLyqkO3Sez0CWghTqyt9n; Thu, 17 Aug 2023 17:22:24 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id WghgqgJIWJJfoWghhqSJkA; Thu, 17 Aug 2023 17:22:37 +0000
+X-Authority-Analysis: v=2.4 cv=V4lubMri c=1 sm=1 tr=0 ts=64de575d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=F_Hwzj4YBZH05EUnCpsA:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=XsIhFA6p1MkMu1lgiaxFpYzkM6VAgL0B/RLP+o3ibj0=; b=PPXTDZN3LckRmEB6i0+w8aLhVh
+        bknx7JpDqM62KROQHLSlbSJQKUE2IzMxM6axtrpJ2xUrA00LnpwKOglWINcFWkSoLC/6RO/P2i5dH
+        YJNak3Bae7X6n7PWsTS4NVAsABO6yq/RDV8DdVE90Tb92hYnCI9Il+2I12kkQP9XYyXwcxNZ1owNQ
+        c6FZ9CHc7mvrYkbtBvye2XWtMmhAX3AsC0P3GyGbxpK5INA/jUloBKpMoUcCpgfyouWMe42Lq+U7A
+        +EGL8HEDWMReC0D5mT1I86G0SI+sqt1KRWUAgAO+HP4ctNo/f11AeOFVa0SCtkw/6XuR1xoPoPRO1
+        c5LtNlPw==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:34402 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qWghg-002eWO-0c;
+        Thu, 17 Aug 2023 12:22:36 -0500
+Message-ID: <32c7ea41-8b00-c92e-02ec-d535428e55bb@embeddedor.com>
+Date:   Thu, 17 Aug 2023 11:23:38 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2][next] cgroup: Avoid -Wstringop-overflow warnings
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZN02iLcZYgxHFrEN@work> <ZN02wFqzvwP2JI-K@slm.duckdns.org>
+ <202308161356.4AED47263E@keescook> <ZN05IZBfaKkPKJfH@slm.duckdns.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <ZN05IZBfaKkPKJfH@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qWghg-002eWO-0c
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:34402
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHOoR+hCk+cLjvCQjz+8VXMsj6UTrU6GDUftdTOrU73pZuF73viE9Fvk1uf7fajU+yo98nqAhXfSQHb3tgnBs4cv+TGafEtoMeempmv4Tui/77tDA71C
+ YImowA4a/CayXs6s/O9FXMFAAq9fGjo7Y27SjbYYEvZ/DT4EOHz0dzmyaWi84MGz2bv6cjhhr15zGJlo1aprug7EVIVr/L3VK75kXwzj/+rxk4ZpBtedHEoP
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
 
-Thanks for review, i'll fix them and send v2 soon.
 
-On 15.08.2023 16:45, Krzysztof Kozlowski wrote:
-> On 15/08/2023 14:59, Muhammed Efe Cetin wrote:
->> Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
->> Sdmmc, SPI Flash, PMIC.
+On 8/16/23 15:01, Tejun Heo wrote:
+> On Wed, Aug 16, 2023 at 01:57:16PM -0700, Kees Cook wrote:
+>> On Wed, Aug 16, 2023 at 10:51:12AM -1000, Tejun Heo wrote:
+>>> Hello,
+>>>
+>>> On Wed, Aug 16, 2023 at 02:50:16PM -0600, Gustavo A. R. Silva wrote:
+>>>> Change the notation from pointer-to-array to pointer-to-pointer.
+>>>> With this, we avoid the compiler complaining about trying
+>>>> to access a region of size zero as an argument during function
+>>>> calls.
+>>>
+>>> Haha, I thought the functions were actually accessing the memory. This can't
+>>> be an intended behavior on the compiler's side, right?
 >>
->> Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
->> ---
->>   .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 873 ++++++++++++++++++
+>> I think it's a result of inlining -- the compiler ends up with a case
+>> where it looks like it might be possible to index a zero-sized array,
+>> but it is "accidentally safe".
 > 
-> Without Makefile this won't be build, so this was not ever tested.
-> 
->>   1 file changed, 873 insertions(+)
->>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
->> new file mode 100644
->> index 000000000000..85071084a207
->> --- /dev/null
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
->> @@ -0,0 +1,873 @@
->> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->> +
->> +/dts-v1/;
->> +
->> +#include <dt-bindings/pinctrl/rockchip.h>
->> +#include <dt-bindings/gpio/gpio.h>
->> +#include <dt-bindings/input/input.h>
->> +#include "rk3588s.dtsi"
->> +
->> +/ {
->> +	model = "Xunlong Orange Pi 5";
->> +	compatible = "xunlong,orangepi-5", "rockchip,rk3588s";
->> +
->> +	aliases {
->> +		mmc0 = &sdmmc;
->> +		serial2 = &uart2;
->> +	};
->> +
->> +	chosen {
->> +		stdout-path = "serial2:1500000n8";
->> +	};
->> +
->> +	leds {
->> +		compatible = "gpio-leds";
->> +		pinctrl-names = "default";
->> +		pinctrl-0 =<&leds_gpio>;
->> +
->> +		led@1 {
-> 
-> Unit address is not correct here, it is not a bus. This should be
-> reported as warning, so you did not check for warnings.
-> 
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> for instructions).
-> 
->> +			gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
->> +			label = "status_led";
->> +			linux,default-trigger = "heartbeat";
->> +			linux,default-trigger-delay-ms = <0>;
->> +		};
->> +	};
->> +
->> +	adc-keys {
->> +		compatible = "adc-keys";
->> +		io-channels = <&saradc 1>;
->> +		io-channel-names = "buttons";
->> +		keyup-threshold-microvolt = <1800000>;
->> +		poll-interval = <100>;
->> +
->> +		vol-up-key {
->> +			label = "volume up";
->> +			linux,code = <KEY_VOLUMEUP>;
->> +			press-threshold-microvolt = <17000>;
->> +		};
->> +
->> +		vol-down-key {
->> +			label = "volume down";
->> +			linux,code = <KEY_VOLUMEDOWN>;
->> +			press-threshold-microvolt = <417000>;
->> +		};
->> +
->> +		menu-key {
->> +			label = "menu";
->> +			linux,code = <KEY_MENU>;
->> +			press-threshold-microvolt = <890000>;
->> +		};
->> +
->> +		back-key {
->> +			label = "back";
->> +			linux,code = <KEY_BACK>;
->> +			press-threshold-microvolt = <1235000>;
->> +		};
->> +	};
->> +
->> +	backlight: backlight {
->> +		compatible = "pwm-backlight";
->> +		brightness-levels = <  0  20  20  21  21  22  22  23
->> +					  23  24  24  25  25  26  26  27
->> +					  27  28  28  29  29  30  30  31
->> +					  31  32  32  33  33  34  34  35
->> +					  35  36  36  37  37  38  38  39
->> +					  40  41  42  43  44  45  46  47
->> +					  48  49  50  51  52  53  54  55
->> +					  56  57  58  59  60  61  62  63
->> +					  64  65  66  67  68  69  70  71
->> +					  72  73  74  75  76  77  78  79
->> +					  80  81  82  83  84  85  86  87
->> +					  88  89  90  91  92  93  94  95
->> +					  96  97  98  99 100 101 102 103
->> +					  104 105 106 107 108 109 110 111
->> +					  112 113 114 115 116 117 118 119
->> +					  120 121 122 123 124 125 126 127
->> +					  128 129 130 131 132 133 134 135
->> +					  136 137 138 139 140 141 142 143
->> +					  144 145 146 147 148 149 150 151
->> +					  152 153 154 155 156 157 158 159
->> +					  160 161 162 163 164 165 166 167
->> +					  168 169 170 171 172 173 174 175
->> +					  176 177 178 179 180 181 182 183
->> +					  184 185 186 187 188 189 190 191
->> +					  192 193 194 195 196 197 198 199
->> +					  200 201 202 203 204 205 206 207
->> +					  208 209 210 211 212 213 214 215
->> +					  216 217 218 219 220 221 222 223
->> +					  224 225 226 227 228 229 230 231
->> +					  232 233 234 235 236 237 238 239
->> +					  240 241 242 243 244 245 246 247
->> +					  248 249 250 251 252 253 254 255>;
->> +		default-brightness-level = <200>;
->> +		pwms = <&pwm2 0 25000 0>;
->> +	};
->> +
->> +	backlight_1: backlight_1 {
-> 
-> No underscores in node names, use -
-> 
->> +		compatible = "pwm-backlight";
->> +		brightness-levels = <  0  20  20  21  21  22  22  23
->> +					  23  24  24  25  25  26  26  27
->> +					  27  28  28  29  29  30  30  31
-> 
-> ...
-> 
->> +
->> +&combphy0_ps {
->> +	status = "okay";
->> +};
->> +
->> +&combphy2_psu {
->> +	status = "okay";
->> +};
->> +
->> +&cpu_b0 {
->> +	cpu-supply = <&vdd_cpu_big0_s0>;
->> +	mem-supply = <&vdd_cpu_big0_mem_s0>;
->> +};
->> +
->> +&cpu_b1 {
->> +	cpu-supply = <&vdd_cpu_big0_s0>;
->> +	mem-supply = <&vdd_cpu_big0_mem_s0>;
->> +};
->> +
->> +&cpu_b2 {
->> +	cpu-supply = <&vdd_cpu_big1_s0>;
->> +	mem-supply = <&vdd_cpu_big1_mem_s0>;
->> +};
->> +
->> +&cpu_b3 {
->> +	cpu-supply = <&vdd_cpu_big1_s0>;
->> +	mem-supply = <&vdd_cpu_big1_mem_s0>;
->> +};
->> +
->> +&cpu_l0 {
->> +	cpu-supply = <&vdd_cpu_lit_s0>;
->> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
->> +};
->> +
->> +&cpu_l1 {
->> +	cpu-supply = <&vdd_cpu_lit_s0>;
->> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
->> +};
->> +
->> +&cpu_l2 {
->> +	cpu-supply = <&vdd_cpu_lit_s0>;
->> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
->> +};
->> +
->> +&cpu_l3 {
->> +	cpu-supply = <&vdd_cpu_lit_s0>;
->> +	mem-supply = <&vdd_cpu_lit_mem_s0>;
->> +};
->> +
->> +&gmac1 {
->> +	clock_in_out = "output";
->> +	phy-handle = <&rgmii_phy1>;
->> +	phy-mode = "rgmii-rxid";
->> +	pinctrl-0 = <&gmac1_miim
->> +					&gmac1_tx_bus2
->> +					&gmac1_rx_bus2
->> +					&gmac1_rgmii_clk
->> +					&gmac1_rgmii_bus>;
-> 
-> Messed alignment.
-> 
->> +	pinctrl-names = "default";
->> +	snps,reset-gpio = <&gpio3 RK_PB2 GPIO_ACTIVE_LOW>;
->> +	snps,reset-active-low;
->> +	snps,reset-delays-us = <0 20000 100000>;
->> +	tx_delay = <0x42>;
->> +	status = "okay";
->> +};
->> +
-> 
-> ...
-> 
->> +
->> +&sfc {
->> +	pinctrl-0 = <&fspim0_pins>;
->> +	pinctrl-names = "default";
->> +	max-freq = <100000000>;
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	status = "okay";
->> +
->> +	spi_flash: spi-flash@0 {
->> +		compatible = "jedec,spi-nor";
->> +		reg = <0x0>;
->> +		spi-max-frequency = <100000000>;
->> +		spi-tx-bus-width = <1>;
->> +		spi-rx-bus-width = <4>;
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +		status = "okay";
-> 
-> okay is by default, was it disabled anywhere?
-> 
->> +
->> +		partitions {
->> +			compatible = "fixed-partitions";
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			loader@0 {
->> +				label = "loader";
->> +				reg = <0x0 0x1000000>;
->> +			};
->> +		};
->> +	};
->> +};
->> +
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
+> Ah I see. It's not that the compiler knows that ** access is safe. It's more
+> that it only applies the check on arrays. Is that right? Gustavo, I don't
 
-Regards,
-Efe
+That's correct.
 
+> mind the patch but can you update the patch description a bit explaining a
+> bit more on what's going on with the complier? It doesn't have to be the
+> full explanation but it'd be useful to explicitly point out that we're just
+> working around the compiler being a bit silly.
+
+I just sent v3:
+
+	https://lore.kernel.org/linux-hardening/ZN5WkbPelHUSTXOA@work/
+
+Thanks
+--
+Gustavo
