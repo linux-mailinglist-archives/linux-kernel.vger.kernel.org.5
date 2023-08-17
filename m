@@ -2,428 +2,513 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0309477F1CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D7077F1CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 10:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348724AbjHQIG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 04:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        id S1348733AbjHQIHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 04:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348743AbjHQIGd (ORCPT
+        with ESMTP id S1348748AbjHQIHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 04:06:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3962D77;
-        Thu, 17 Aug 2023 01:06:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E22BE6524A;
-        Thu, 17 Aug 2023 08:06:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AF7BC433CC;
-        Thu, 17 Aug 2023 08:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692259590;
-        bh=pmoGleVhd8MZ73JWrhPmJMhOV2uZdrh3BJkC59h6O3s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uK5sXJhHdIiN3KII4z7IY95vt8enLDhsqpIFOIYx0N3xD0lL5t0oEQzLBTUswvkbv
-         B/Z884GSXDMNcFWgtfVvE1RAkE5LL+P/q2ndBYK0Cs2iwJsBXUwT8W5G/DEIn3iMCh
-         cKosDmok1D5ruq7SxKXiVsh60JmBEfOH+wDOEGjvP19AMai+pz60stltyD2lW5lwic
-         Yf3zB4tIcE9iJGgUAII/HUQLPqjNxyokGKIw68v2U0cdwj9SeKYVoZXYNPE4JG1JAp
-         mfUPPC/ur2tVsXJxQEiXDfNTWdmRsSCBM8lAfmAEVrD5cxhyN+eoFMF0bl7ce3oyuz
-         mwJ7W4ZVzESHA==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5254f9eda36so6267266a12.1;
-        Thu, 17 Aug 2023 01:06:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwwrRVrU21ResttOEkUAGjahfAURtHfoSf+/GNdgDZ8urbG6WGZ
-        8uUg85Ae8/t7dSg1KmrEjSoo4BvLaATWa2cQmyE=
-X-Google-Smtp-Source: AGHT+IGejQn44SoOokE8iZXEOHBXsByRl/rJPmnia71qLn8mK7CsGGVS+MioSfiBLIy+Dryhrs2Kcf9QPSWxacIMHhU=
-X-Received: by 2002:a05:6402:712:b0:523:3ff6:dfc2 with SMTP id
- w18-20020a056402071200b005233ff6dfc2mr3146353edx.29.1692259588270; Thu, 17
- Aug 2023 01:06:28 -0700 (PDT)
+        Thu, 17 Aug 2023 04:07:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12CF2D76;
+        Thu, 17 Aug 2023 01:07:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692259623; x=1723795623;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=zqH/R479KNyQikBtfg36CdkBuRoeOnIW0XVP0VXeiLk=;
+  b=CgPmDgFYvs8xzSR4dZ70sJUM9Api6Xv5B5yZO0OIJyAnb/ccEDdvYQU3
+   cMN1S8K0U/w0/rhRDY/sML4XhPrndgijDEe5EaVC+BSikS91DrFhJ5VoO
+   D9JtnhfIUX8m8LokM2G0NKDKIyK7eansNCuyXwTItanv69MOGguMDFiuK
+   mGJE0/0KgGFBXV8fpG0YgRG3V6hWBSWaQwI+tKUGtHUSsziX1ohNhq4ff
+   c5rGd/igS6UKyyPAnBrJUZciL+FojDNGUF8TRNakkebCuam+H0/Z77PpQ
+   SDERloSuWubAlLCEIWparz8Zjckxzdmc45jkylKvJQHdhgUkjvBIxjEHV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="357710317"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="357710317"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:07:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="804543869"
+X-IronPort-AV: E=Sophos;i="6.01,179,1684825200"; 
+   d="scan'208";a="804543869"
+Received: from lababeix-mobl1.ger.corp.intel.com ([10.251.212.52])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 01:06:58 -0700
+Date:   Thu, 17 Aug 2023 11:06:52 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Henry Shi <henryshi2018@gmail.com>
+cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, hdegoede@redhat.com, markgross@kernel.org,
+        jdelvare@suse.com, linux@roeck-us.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: Re: [PATCH] Add Silicom Platform Driver
+In-Reply-To: <20230815133759.7690-1-henryshi2018@gmail.com>
+Message-ID: <e376de55-5962-875-2c51-928a4fdfcea@linux.intel.com>
+References: <20230815133759.7690-1-henryshi2018@gmail.com>
 MIME-Version: 1.0
-References: <CAAhV-H6ejw=8afS0jmmQvKUrCw=qZm_P6SA0A+tuvvb8bsq4-Q@mail.gmail.com>
- <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
-In-Reply-To: <5777BD82-2C8D-4BAB-BDD3-C2C003DC57FB@joelfernandes.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 17 Aug 2023 16:06:15 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
-Message-ID: <CAAhV-H58OpQJapV7LDNjZ-vM7nNJrwdkBiPjFcCutO1yRsUshQ@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] rcu: Update jiffies in rcu_cpu_stall_reset()
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Z qiang <qiang.zhang1211@gmail.com>, paulmck@kernel.org,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Joel,
+On Tue, 15 Aug 2023, Henry Shi wrote:
 
-On Thu, Aug 17, 2023 at 3:27=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
-org> wrote:
->
->
->
-> > On Aug 16, 2023, at 8:29 AM, Huacai Chen <chenhuacai@kernel.org> wrote:
-> >
-> > =EF=BB=BFHi, Qiang,
-> >
-> >> On Wed, Aug 16, 2023 at 6:06=E2=80=AFPM Z qiang <qiang.zhang1211@gmail=
-.com> wrote:
-> >>
-> >>>
-> >>> Hi, Qiang,
-> >>>
-> >>> On Wed, Aug 16, 2023 at 1:09=E2=80=AFPM Z qiang <qiang.zhang1211@gmai=
-l.com> wrote:
-> >>>>
-> >>>>>
-> >>>>> Hi, Qiang,
-> >>>>>
-> >>>>> On Wed, Aug 16, 2023 at 11:16=E2=80=AFAM Z qiang <qiang.zhang1211@g=
-mail.com> wrote:
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Hi, Paul,
-> >>>>>>>
-> >>>>>>> On Tue, Aug 15, 2023 at 12:15=E2=80=AFAM Paul E. McKenney <paulmc=
-k@kernel.org> wrote:
-> >>>>>>>>
-> >>>>>>>> On Mon, Aug 14, 2023 at 10:00:45AM +0800, Huacai Chen wrote:
-> >>>>>>>>> The KGDB initial breakpoint gets an rcu stall warning after com=
-mit
-> >>>>>>>>> a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detecti=
-on in
-> >>>>>>>>> rcu_cpu_stall_reset()").
-> >>>>>>>>>
-> >>>>>>>>> [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CP=
-U
-> >>>>>>>>> [   53.487950] rcu:     3-...0: (1 ticks this GP) idle=3D0e2c/1=
-/0x4000000000000000 softirq=3D375/375 fqs=3D8
-> >>>>>>>>> [   53.528243] rcu:     (t=3D12297 jiffies g=3D-995 q=3D1 ncpus=
-=3D4)
-> >>>>>>>>> [   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-=
-rc2+ #4848
-> >>>>>>>>> [   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A200=
-0-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-=
-V2.0.05099-beta8 08
-> >>>>>>>>> [   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000=
-001000a0000 sp 90000001000a3710
-> >>>>>>>>> [   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 00000=
-00000000001 a3 0000000000000000
-> >>>>>>>>> [   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 00000=
-0000000002c a7 0000000000000000
-> >>>>>>>>> [   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 90000=
-0000131c9c0 t3 fffffffffffffffa
-> >>>>>>>>> [   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 00000=
-00000000004 t7 9000000001912d58
-> >>>>>>>>> [   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 00000=
-00000000028 s0 9000000001d512f0
-> >>>>>>>>> [   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000=
-000019fc410 s4 9000000001d4b488
-> >>>>>>>>> [   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 00000=
-00000000078 s8 9000000001d4b450
-> >>>>>>>>> [   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x6=
-40
-> >>>>>>>>> [   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x6=
-40
-> >>>>>>>>> [   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=
-=3DCC -WE)
-> >>>>>>>>> [   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
-> >>>>>>>>> [   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-> >>>>>>>>> [   54.207838]  ECFG: 00071c1c (LIE=3D2-4,10-12 VS=3D7)
-> >>>>>>>>> [   54.242503] ESTAT: 00000800 [INT] (IS=3D11 ECode=3D0 EsubCod=
-e=3D0)
-> >>>>>>>>> [   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000=
--HV)
-> >>>>>>>>> [   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-=
-rc2+ #4848
-> >>>>>>>>> [   54.430170] Stack : 0072617764726148 0000000000000000 900000=
-0000223504 90000001000a0000
-> >>>>>>>>> [   54.472308]         9000000100073a90 9000000100073a98 000000=
-0000000000 9000000100073bd8
-> >>>>>>>>> [   54.514413]         9000000100073bd0 9000000100073bd0 900000=
-0100073a00 0000000000000001
-> >>>>>>>>> [   54.556018]         0000000000000001 9000000100073a98 998282=
-71f24e961a 90000001002810c0
-> >>>>>>>>> [   54.596924]         0000000000000001 0000000000010003 000000=
-0000000000 0000000000000001
-> >>>>>>>>> [   54.637115]         ffff8000337cdb80 0000000000000001 000000=
-0006360000 900000000131c9c0
-> >>>>>>>>> [   54.677049]         0000000000000000 0000000000000000 900000=
-00017b4c98 9000000001912000
-> >>>>>>>>> [   54.716394]         9000000001912f68 9000000001913000 900000=
-0001912f70 00000000000002b0
-> >>>>>>>>> [   54.754880]         90000000014a8840 0000000000000000 900000=
-000022351c 0000000000000000
-> >>>>>>>>> [   54.792372]         00000000000002b0 000000000000000c 000000=
-0000000000 0000000000071c1c
-> >>>>>>>>> [   54.829302]         ...
-> >>>>>>>>> [   54.859163] Call Trace:
-> >>>>>>>>> [   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
-> >>>>>>>>> [   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
-> >>>>>>>>> [   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x=
-148
-> >>>>>>>>> [   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0=
-xe60
-> >>>>>>>>> [   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0=
-xc0
-> >>>>>>>>> [   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
-> >>>>>>>>> [   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/=
-0x240
-> >>>>>>>>> [   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2=
-a0
-> >>>>>>>>> [   55.139112] [<9000000000226418>] constant_timer_interrupt+0x=
-38/0x60
-> >>>>>>>>> [   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0=
-x50/0x160
-> >>>>>>>>> [   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x1=
-8/0x80
-> >>>>>>>>> [   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
-> >>>>>>>>> [   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0=
-x28/0x40
-> >>>>>>>>> [   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
-> >>>>>>>>> [   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0=
-x60
-> >>>>>>>>> [   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
-> >>>>>>>>> [   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
-> >>>>>>>>> [   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104=
-/0x180
-> >>>>>>>>> [   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/=
-0xa0
-> >>>>>>>>> [   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
-> >>>>>>>>> [   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
-> >>>>>>>>> [   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x2=
-8
-> >>>>>>>>> [   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x1=
-60/0x1c0
-> >>>>>>>>> [   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c=
-0
-> >>>>>>>>> [   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
-> >>>>>>>>> [   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
-> >>>>>>>>> [   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
-> >>>>>>>>> [   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/=
-0x140
-> >>>>>>>>> [   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x=
-120
-> >>>>>>>>> [   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc=
-/0x160
-> >>>>>>>>> [   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
-> >>>>>>>>> [   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
-> >>>>>>>>> [   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
-> >>>>>>>>> [   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
-> >>>>>>>>> [   55.930635] [<9000000000c96704>] platform_device_add+0x124/0=
-x2c0
-> >>>>>>>>> [   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
-> >>>>>>>>> [   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
-> >>>>>>>>> [   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/=
-0x2a0
-> >>>>>>>>> [   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
-> >>>>>>>>>
-> >>>>>>>>> Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to =
-one check
-> >>>>>>>>> period later, i.e. jiffies + rcu_jiffies_till_stall_check(). Bu=
-t jiffies
-> >>>>>>>>> is only updated in the timer interrupt, so when kgdb_cpu_enter(=
-) begins
-> >>>>>>>>> to run there may already be nearly one rcu check period after j=
-iffies.
-> >>>>>>>>> Since all interrupts are disabled during kgdb_cpu_enter(), jiff=
-ies will
-> >>>>>>>>> not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffie=
-s_stall
-> >>>>>>>>> maybe already gets timeout.
-> >>>>>>>>>
-> >>>>>>>>> We can set rcu_state.jiffies_stall to two rcu check periods lat=
-er, e.g.
-> >>>>>>>>> jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall=
-_reset()
-> >>>>>>>>> to avoid this problem. But this isn't a complete solution becau=
-se kgdb
-> >>>>>>>>> may take a very long time in irq disabled context.
-> >>>>>>>>>
-> >>>>>>>>> Instead, update jiffies at the beginning of rcu_cpu_stall_reset=
-() can
-> >>>>>>>>> solve all kinds of problems.
-> >>>>>>>>
-> >>>>>>>> Would it make sense for there to be a kgdb_cpu_exit()?  In that =
-case,
-> >>>>>>>> the stalls could simply be suppressed at the beginning of the de=
-bug
-> >>>>>>>> session and re-enabled upon exit, as is currently done for sysrq=
- output
-> >>>>>>>> via rcu_sysrq_start() and rcu_sysrq_end().
-> >>>>>>> Thank you for your advice, but that doesn't help. Because
-> >>>>>>> rcu_sysrq_start() and rcu_sysrq_end() try to suppress the warning=
-s
-> >>>>>>> during sysrq, but kgdb already has no warnings during kgdb_cpu_en=
-ter()
-> >>>>>>> since it is executed in irq disabled context. Instead, this patch
-> >>>>>>> wants to suppress the warnings *after* kgdb_cpu_enter() due to a =
-very
-> >>>>>>> old jiffies value.
-> >>>>>>>
-> >>>>>>
-> >>>>>> Hello, Huacai
-> >>>>>>
-> >>>>>> Is it possible to set  the rcu_cpu_stall_suppress is true in
-> >>>>>> dbg_touch_watchdogs()
-> >>>>>> and reset the rcu_cpu_stall_suppress at the beginning and end of t=
-he
-> >>>>>> RCU grace period?
-> >>>>> This is possible but not the best: 1, kgdb is not the only caller o=
-f
-> >>>>> rcu_cpu_stall_reset(); 2, it is difficult to find the "end" to rese=
-t
-> >>>>> rcu_cpu_stall_suppress.
-> >>>>>
-> >>>>
-> >>>> You can replace rcu_state.jiffies_stall update by setting rcu_cpu_st=
-all_suppress
-> >>>> in rcu_cpu_stall_reset(),  and reset rcu_cpu_stall_suppress in rcu_g=
-p_init() and
-> >>>> rcu_gp_cleanup().
-> >>> What's the advantage compared with updating jiffies? Updating jiffies
-> >>> seems more straight forward.
-> >>>
-> >>
-> >> In do_update_jiffies_64(), need to acquire jiffies_lock raw spinlock,
-> >> like you said, kgdb is not the only caller of rcu_cpu_stall_reset(),
-> >> the rcu_cpu_stall_reset() maybe invoke in NMI  (arch/x86/platform/uv/u=
-v_nmi.c)
-> > Reset rcu_cpu_stall_suppress in rcu_gp_init()/rcu_gp_cleanup() is
-> > still not so good to me, because it does a useless operation in most
-> > cases. Moreover, the rcu core is refactored again and again, something
-> > may be changed in future.
-> >
-> > If  do_update_jiffies_64() cannot be used in NMI context,
->
-> Can you not make the jiffies update conditional on whether it is called w=
-ithin NMI context?
->
-> > can we
-> > consider my old method [1]?
-> > https://lore.kernel.org/rcu/CAAhV-H7j9Y=3DVvRLm8thLw-EX1PGqBA9YfT4G1AN7=
-ucYS=3DiP+DQ@mail.gmail.com/T/#t
-> >
-> > Of course we should set rcu_state.jiffies_stall large enough, so we
-> > can do like this:
-> >
-> > void rcu_cpu_stall_reset(void)
-> > {
-> >  WRITE_ONCE(rcu_state.jiffies_stall,
-> > -   jiffies + rcu_jiffies_till_stall_check());
-> > +   jiffies + 300 * HZ);
-> > }
-> >
-> > 300s is the largest timeout value, and I think 300s is enough here in p=
-ractice.
->
-> I dislike that..
-Is this acceptable?
+> The Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products is a 
+> software solution designed to facilitate the efficient management
+> and control of devices through the integration of various Linux
+> frameworks. This platform driver provides seamless support for
+> device management via the Linux LED framework, GPIO framework,
+> Hardware Monitoring (HWMON), and device attributes. The Silicom
+> platform driver's compatibility with these Linux frameworks allows
+> applications to access and control Cordoba family devices using
+> existing software that is compatible with these frameworks. This
+> compatibility simplifies the development process, reduces
+> dependencies on proprietary solutions, and promotes
+> interoperability with other Linux-based systems and software.
+> 
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> ---
 
-void rcu_cpu_stall_reset(void)
-{
-        unsigned long delta;
+You should use version the submission (vXX should appear already in the 
+subject) and provide the version history in a list (listing version to 
+version changes).
 
-        delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
+>  drivers/platform/x86/Kconfig            |   11 +
+>  drivers/platform/x86/Makefile           |    1 +
+>  drivers/platform/x86/silicom-platform.c | 1053 +++++++++++++++++++++++
+>  3 files changed, 1065 insertions(+)
+>  create mode 100644 drivers/platform/x86/silicom-platform.c
+> 
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 22052031c719..7680c0dbcd8d 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -188,6 +188,17 @@ config ACER_WMI
+>  	  If you have an ACPI-WMI compatible Acer/ Wistron laptop, say Y or M
+>  	  here.
+>  
+> +config SILICOM_PLATFORM
+> +	tristate "Silicom Edge Networking device support"
+> +	depends on DMI
+> +	select LEDS_CLASS_MULTICOLOR
+> +	select GPIOLIB
+> +	help
+> +	  This option enables support for the LEDs/GPIO/etc downstream of the
+> +	  embedded controller on Silicom "Cordoba" hardware and derivatives.
+> +
+> +	  If you have a Silicom network appliance, say Y or M here.
+> +
+>  source "drivers/platform/x86/amd/Kconfig"
+>  
+>  config ADV_SWBUTTON
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 2cafe51ec4d8..9355ebbc56ca 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -113,6 +113,7 @@ obj-$(CONFIG_SERIAL_MULTI_INSTANTIATE)	+= serial-multi-instantiate.o
+>  obj-$(CONFIG_MLX_PLATFORM)		+= mlx-platform.o
+>  obj-$(CONFIG_TOUCHSCREEN_DMI)		+= touchscreen_dmi.o
+>  obj-$(CONFIG_WIRELESS_HOTKEY)		+= wireless-hotkey.o
+> +obj-$(CONFIG_SILICOM_PLATFORM)		+= silicom-platform.o
+>  obj-$(CONFIG_X86_ANDROID_TABLETS)	+= x86-android-tablets/
+>  
+>  # Intel uncore drivers
+> diff --git a/drivers/platform/x86/silicom-platform.c b/drivers/platform/x86/silicom-platform.c
+> new file mode 100644
+> index 000000000000..f8d1eb68b105
+> --- /dev/null
+> +++ b/drivers/platform/x86/silicom-platform.c
+> @@ -0,0 +1,1053 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +//
+> +// silicom-platform.c - Silicom MEC170x platform driver
+> +//
+> +// Copyright (C) 2023 Henry Shi <henrys@silicom-usa.com>
+> +
+> +#include <linux/dmi.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/init.h>
+> +#include <linux/ioport.h>
+> +#include <linux/io.h>
+> +#include <linux/kernel.h>
+> +#include <linux/led-class-multicolor.h>
+> +#include <linux/module.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/string.h>
+> +#include <linux/kobject.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/bits.h>
+> +#include <linux/bitfield.h>
+> +
+> +#define MEC_ADDR ((mec_io_base) + 0x02)
+> +#define MEC_DATA(offset) ((mec_io_base) + 0x04 + (offset))
+> +#define EC_ADDR_LSB MEC_ADDR
+> +#define EC_ADDR_MSB ((mec_io_base) + 0x03)
+> +#define SILICOM_MEC_MAGIC 0x5a
+> +#define OFFSET_BIT_TO_CHANNEL(off, bit) ((((off) + 0x014) << 3) | (bit))
+> +#define CHANNEL_TO_OFFSET(chan) (((chan) >> 3) - 0x14)
+> +#define IO_REG_BANK 0
+> +#define DEFAULT_CHAN_LO 0
+> +#define DEFAULT_CHAN_HI 0
+> +
+> +static DEFINE_MUTEX(mec_io_mutex);
+> +static int mec_io_base, mec_io_len;
+> +static struct device *my_dev;
+> +static int efuse_status;
+> +static int mec_uc_version;
+> +static int power_cycle;
+> +
+> +struct silicom_fan_control_data {
+> +	struct   device *hdev;
+> +	int      temp;
+> +	int      fan_speed;
+> +};
+> +
+> +static const struct hwmon_channel_info *silicom_fan_control_info[] = {
+> +	HWMON_CHANNEL_INFO(fan, HWMON_F_INPUT | HWMON_F_LABEL),
+> +	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
+> +	NULL
+> +};
+> +
+> +struct silicom_platform_info {
+> +	int io_base;
+> +	int io_len;
+> +	struct led_classdev_mc *led_info;
+> +	struct gpio_chip *gpiochip;
+> +	u8 *gpio_channels;
+> +	u16 ngpio;
+> +};
+> +
+> +static const char * const plat_0222_gpio_names[] = {
+> +	"AUTOM0_SFP_TX_FAULT",
+> +	"SLOT2_LED_OUT",
+> +	"SIM_M2_SLOT2_B_DET",
+> +	"SIM_M2_SLOT2_A_DET",
+> +	"SLOT1_LED_OUT",
+> +	"SIM_M2_SLOT1_B_DET",
+> +	"SIM_M2_SLOT1_A_DET",
+> +	"SLOT0_LED_OUT",
+> +	"WAN_SFP0_RX_LOS",
+> +	"WAN_SFP0_PRSNT_N",
+> +	"WAN_SFP0_TX_FAULT",
+> +	"AUTOM1_SFP_RX_LOS",
+> +	"AUTOM1_SFP_PRSNT_N",
+> +	"AUTOM1_SFP_TX_FAULT",
+> +	"AUTOM0_SFP_RX_LOS",
+> +	"AUTOM0_SFP_PRSNT_N",
+> +	"WAN_SFP1_RX_LOS",
+> +	"WAN_SFP1_PRSNT_N",
+> +	"WAN_SFP1_TX_FAULT",
+> +	"SIM_M2_SLOT1_MUX_SEL",
+> +	"W_DISABLE_M2_SLOT1_N",
+> +	"W_DISABLE_MPCIE_SLOT0_N",
+> +	"W_DISABLE_M2_SLOT0_N",
+> +	"BT_COMMAND_MODE",
+> +	"WAN_SFP1_TX_DISABLE",
+> +	"WAN_SFP0_TX_DISABLE",
+> +	"AUTOM1_SFP_TX_DISABLE",
+> +	"AUTOM0_SFP_TX_DISABLE",
+> +	"SIM_M2_SLOT2_MUX_SEL",
+> +	"W_DISABLE_M2_SLOT2_N",
+> +	"RST_CTL_M2_SLOT_1_N",
+> +	"RST_CTL_M2_SLOT_2_N",
+> +	"PM_USB_PWR_EN_BOT",
+> +	"PM_USB_PWR_EN_TOP",
+> +};
+> +
+> +static u8 plat_0222_gpio_channels[] = {
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x00, 7),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x01, 7),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x02, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x09, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 3),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 4),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 5),
+> +	OFFSET_BIT_TO_CHANNEL(0x0a, 6),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 0),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 1),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 2),
+> +	OFFSET_BIT_TO_CHANNEL(0x0b, 3),
+> +};
+> +
+> +static struct platform_device *silicom_platform_dev;
+> +static struct led_classdev_mc *silicom_led_info __initdata;
+> +static struct gpio_chip *silicom_gpiochip __initdata;
+> +static u8 *silicom_gpio_channels __initdata;
+> +
+> +static int silicom_mec_port_get(unsigned int offset)
+> +{
+> +	u8 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+> +	outb((offset >> 3) & 0xfc, MEC_ADDR);
+> +
+> +	/* Get the current register */
+> +	reg = inb(MEC_DATA((offset >> 3) & 0x03));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	return (reg >> (offset & 0x7)) & 0x01;
+> +}
+> +
+> +static enum led_brightness silicom_mec_led_get(int channel)
+> +{
+> +	u8 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset of the register for this LED from the channel */
+> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
+> +	/* Get the current LED settings */
+> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	/* Outputs are active low */
+> +	return silicom_mec_port_get(channel) ? LED_OFF : LED_ON;
 
-        WRITE_ONCE(rcu_state.jiffies_stall,
-                   jiffies + delta + rcu_jiffies_till_stall_check());
-}
+Why is code now done twice, first in this function and then it calls 
+silicom_mec_port_get() which does the same thing?? Perhaps you forgot to 
+remove it from this function while you added the call.
 
-This can update jiffies_stall without updating jiffies (but has the
-same effect).
+> +}
+> +
+> +static void silicom_mec_port_set(int channel, int on)
+> +{
+> +	u8 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Get the dword offset from the channel */
+> +	outb((channel >> 3) & 0xfc, MEC_ADDR);
+> +	/* Get the current port settings */
+> +	reg = inb(MEC_DATA((channel >> 3) & 0x03));
+> +	/* Outputs are active low, so clear the bit for on, or set it for off */
+> +	if (on)
+> +		reg &= ~(1 << (channel & 0x7));
+> +	else
+> +		reg |= 1 << (channel & 0x7);
+> +	/* Write back the updated register */
+> +	outb(reg, MEC_DATA((channel >> 3) & 0x03));
+> +	mutex_unlock(&mec_io_mutex);
+> +}
+> +
+> +static enum led_brightness silicom_mec_led_mc_brightness_get(struct led_classdev *led_cdev)
+> +{
+> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
+> +	enum led_brightness brightness = LED_OFF;
+> +	int i;
+> +
+> +	for (i = 0; i < mc_cdev->num_colors; i++) {
+> +		mc_cdev->subled_info[i].brightness =
+> +			silicom_mec_led_get(mc_cdev->subled_info[i].channel);
+> +		/* Mark the overall brightness as LED_ON if any of the subleds are on */
+> +		if (mc_cdev->subled_info[i].brightness != LED_OFF)
+> +			brightness = LED_ON;
+> +	}
+> +
+> +	return brightness;
+> +}
+> +
+> +static void silicom_mec_led_mc_brightness_set(struct led_classdev *led_cdev,
+> +											enum led_brightness brightness)
+> +{
+> +	struct led_classdev_mc *mc_cdev = lcdev_to_mccdev(led_cdev);
+> +	int i;
+> +
+> +	led_mc_calc_color_components(mc_cdev, brightness);
+> +	for (i = 0; i < mc_cdev->num_colors; i++) {
+> +		silicom_mec_port_set(mc_cdev->subled_info[i].channel,
+> +					mc_cdev->subled_info[i].brightness);
+
+Align the arguments to the same column please.
+
+> +	}
+> +}
+> +
+> +static int silicom_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +
+> +	/* Input registers have offsets between [0x00, 0x07] */
+> +	if (CHANNEL_TO_OFFSET(channels[offset]) < 0x08)
+> +		return GPIO_LINE_DIRECTION_IN;
+> +
+> +	return GPIO_LINE_DIRECTION_OUT;
+> +}
+> +
+> +static int silicom_gpio_direction_input(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +
+> +	return direction == GPIO_LINE_DIRECTION_IN ? 0 : -EINVAL;
+> +}
+> +
+> +static void silicom_gpio_set(struct gpio_chip *gc, unsigned int offset, int value)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +	int channel = channels[offset];
+> +
+> +	if (direction == GPIO_LINE_DIRECTION_IN)
+> +		return;
+> +
+> +	if (value)
+> +		silicom_mec_port_set(channel, 0);
+> +	else if (value == 0)
+> +		silicom_mec_port_set(channel, 1);
+> +	else
+> +		pr_err("Wrong argument value: %d\n", value);
+> +}
+> +
+> +static int silicom_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
+> +{
+> +	int direction = silicom_gpio_get_direction(gc, offset);
+> +
+> +	if (direction == GPIO_LINE_DIRECTION_IN)
+> +		return -EINVAL;
+> +
+> +	silicom_gpio_set(gc, offset, value);
+> +
+> +	return 0;
+> +}
+> +
+> +static int silicom_gpio_get(struct gpio_chip *gc, unsigned int offset)
+> +{
+> +	u8 *channels = gpiochip_get_data(gc);
+> +	int channel = channels[offset];
+> +
+> +	return silicom_mec_port_get(channel);
+> +}
+> +
+> +
 
 
+> +static ssize_t efuse_status_show(struct device *dev, struct device_attribute *attr,
+> +								char *buf)
+> +{
+> +	u32 reg;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(0x28, EC_ADDR_LSB);
 
-Huacai
->
-> Thanks,
->
->  - Joel
->
->
->
-> >
-> > Huacai
-> >
-> >>
-> >> Thanks
-> >> Zqiang
-> >>
-> >>
-> >>> Huacai
-> >>>
-> >>>>
-> >>>> Thanks
-> >>>> Zqiang
-> >>>>
-> >>>>>
-> >>>>>> or set rcupdate.rcu_cpu_stall_suppress_at_boot=3D1 in bootargs can
-> >>>>>> suppress RCU stall
-> >>>>>> in booting.
-> >>>>> This is also possible, but it suppresses all kinds of stall warning=
-s,
-> >>>>> which is not what we want.
-> >>>>>
-> >>>>> Huacai
-> >>>>>>
-> >>>>>>
-> >>>>>> Thanks
-> >>>>>> Zqiang
-> >>>>>>
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Huacai
-> >>>>>>>
-> >>>>>>>>
-> >>>>>>>>                                                        Thanx, Pa=
-ul
-> >>>>>>>>
-> >>>>>>>>> Cc: stable@vger.kernel.org
-> >>>>>>>>> Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall =
-detection in rcu_cpu_stall_reset()")
-> >>>>>>>>> Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> >>>>>>>>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> >>>>>>>>> ---
-> >>>>>>>>> kernel/rcu/tree_stall.h | 1 +
-> >>>>>>>>> 1 file changed, 1 insertion(+)
-> >>>>>>>>>
-> >>>>>>>>> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> >>>>>>>>> index b10b8349bb2a..1c7b540985bf 100644
-> >>>>>>>>> --- a/kernel/rcu/tree_stall.h
-> >>>>>>>>> +++ b/kernel/rcu/tree_stall.h
-> >>>>>>>>> @@ -153,6 +153,7 @@ static void panic_on_rcu_stall(void)
-> >>>>>>>>>  */
-> >>>>>>>>> void rcu_cpu_stall_reset(void)
-> >>>>>>>>> {
-> >>>>>>>>> +     do_update_jiffies_64(ktime_get());
-> >>>>>>>>>      WRITE_ONCE(rcu_state.jiffies_stall,
-> >>>>>>>>>                 jiffies + rcu_jiffies_till_stall_check());
-> >>>>>>>>> }
-> >>>>>>>>> --
-> >>>>>>>>> 2.39.3
-> >>>>>>>>>
+That 0x28 is some HW offset right? It should be named to what is found at 
+that address with a define. Fiven the function name, perhaps something 
+along the lines of #define MEC_EFUSE_STATUS	0x28
+
+> +
+> +	/* Get current data from the address */
+> +	reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +
+> +	efuse_status = reg & 0x1;
+> +
+> +	return sprintf(buf, "%d\n", efuse_status);
+> +}
+> +
+> +static ssize_t uc_version_show(struct device *dev,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	u32 reg;
+> +	int uc_version;
+> +
+> +	mutex_lock(&mec_io_mutex);
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(0x0, EC_ADDR_LSB);
+
+Named define for 0x0.
+
+> +
+> +	reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
+> +	mutex_unlock(&mec_io_mutex);
+> +	uc_version = FIELD_GET(GENMASK(15, 8), reg);
+
+In general, it's more useful to have #define with name for GENMASK() like 
+this, but see below...
+
+> +	if (uc_version >= 64 && uc_version < 128) {
+> +		uc_version &= ~(1 << 6);
+> +		uc_version = 100 + uc_version;
+> +	} else if (uc_version >= 128 && uc_version < 192) {
+> +		uc_version &= ~(1 << 7);
+> +		uc_version = 200 + uc_version;
+> +	}
+
+I see you probably missed what I tried to say earlier. Does this version 
+field have two distinct fields? How about this:
+
+#define	MEC_VERSION_MAJOR	GENMASK(15, 14)
+#define MEC_VERSION_MINOR	GENMASK(13, 8)
+
+	uc_version = FIELD_GET(MEC_VERSION_MAJOR, reg) * 100 +
+		     FIELD_GET(MEC_VERSION_MINOR, reg);
+
+...you might want to add something for >= 192 values (or accept they'll be 
+in 300..3xx range if that's okay, I don't know the internals of this 
+fields so I cannot tell which is preferred here).
+
+I think the results are identical to what the above code does but doesn't
+require any if()s (sans >= 192 that might need additional check).
+
+> +	mec_uc_version = uc_version;
+> +	return sprintf(buf, "%d\n", mec_uc_version);
+> +}
+> +
+> +static ssize_t power_cycle_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	return sprintf(buf, "%d\n", power_cycle);
+> +}
+> +
+> +static void powercycle_uc(void)
+> +{
+> +	mutex_lock(&mec_io_mutex);
+> +	/* Select memory region */
+> +	outb(IO_REG_BANK, EC_ADDR_MSB);
+> +	outb(0x24, EC_ADDR_LSB);
+
+Named define for 0x24.
+
+-- 
+ i.
+
+
