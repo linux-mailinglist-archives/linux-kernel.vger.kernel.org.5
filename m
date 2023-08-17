@@ -2,157 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A7E77FAEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB25277FAF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352649AbjHQPhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33806 "EHLO
+        id S241198AbjHQPhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353249AbjHQPhM (ORCPT
+        with ESMTP id S1353050AbjHQPh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:37:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B2142D6D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:37:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692286631; x=1723822631;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3g9NYsPL+yeZ8JoAC5ihq7mnEDzWlgJBSNW9r1Fnobk=;
-  b=O+v8Rprys1eM83HFIzLztxD+eOODcVMWGW26Vaf8i8EpIVneXqo4FWi7
-   w3a3xyKdcgzk75yaQ8RN5Rv1P7mA9PWZnk83qTxj0sLDp3sv5yjopLmzc
-   vLlS/eWtR0Id2wadOBUxoVjXcoKQaxzkSqeiafCy1o329qCy/CKBHginw
-   j+AJG2S/bIer9iZnp5vqPVP0DwetyMxh5CpMspwueDSheYO6NTs2W7YbF
-   ocY4XxPDAV5awXAwq/tw6gBTi/kJEs24cnTMlybEso4LgYM3NCeZCrPSH
-   V6nhAuF/ElSlwK6jwqbtb05K9IBgk7u4jF5RV2+928zDxO6bmxE6IQWwH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="375627309"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="375627309"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 08:37:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="1065297207"
-X-IronPort-AV: E=Sophos;i="6.01,180,1684825200"; 
-   d="scan'208";a="1065297207"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 08:37:03 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWf3W-000CIe-0O;
-        Thu, 17 Aug 2023 18:37:02 +0300
-Date:   Thu, 17 Aug 2023 18:37:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
-Message-ID: <ZN4+nZwBu317dVjz@smile.fi.intel.com>
-References: <20230815235934.47782-1-yury.norov@gmail.com>
- <ZN3qQPeFtdZQrLE4@smile.fi.intel.com>
- <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
- <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
+        Thu, 17 Aug 2023 11:37:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0102F2D6D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:37:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84A3266396
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:37:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8759AC433C9;
+        Thu, 17 Aug 2023 15:37:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692286646;
+        bh=FsTOQy1J00h09RqORDICXkOwRWchRTxx4z6I0fSFUFo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uE51BkgLq5R2nrgeqCvtJgTcvmmzvUBASge7HSt89nmd8mvPSRvSNydYnNd0wU6N8
+         j0eJZWNEuNC3BkoAxS0Ev0GulJxwdnD0xdzh4vhnFdLo/W1r6cCM9v16BuBPJlNqF9
+         LShOhR9Fxrec+DNc+0vJvpC58c4JTFXZAtbORgnO1EZepqyufpdZPlRsq1maBGZgtn
+         VeIuI6q8wxWHW0D0kDqcLBdcPlUwiaCYgGyQtzLwHUV0blwsZdT1Lc1WFc1VW/iU0z
+         B+eQOjQBleKRevzOWOmTfvscWIskHar38lVn0vBHH7n/1srto/MImsyR1KdjmKYnyD
+         f7UmniOxDsKig==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 986DD404DF; Thu, 17 Aug 2023 12:37:23 -0300 (-03)
+Date:   Thu, 17 Aug 2023 12:37:23 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Athira Jajeev <atrajeev@linux.vnet.ibm.com>,
+        bpf@vger.kernel.org, Brendan Gregg <brendan.d.gregg@gmail.com>,
+        Carsten Haitzler <carsten.haitzler@arm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        He Kuang <hekuang@huawei.com>, Ingo Molnar <mingo@redhat.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, llvm@lists.linux.dev,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Rob Herring <robh@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Tom Rix <trix@redhat.com>, Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Yonghong Song <yhs@fb.com>, YueHaibing <yuehaibing@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf trace: Use the augmented_raw_syscall BPF skel only
+ for tracing syscalls
+Message-ID: <ZN4+s2Wl+zYmXTDj@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 07:21:59AM -0700, Yury Norov wrote:
-> On Thu, Aug 17, 2023 at 12:38:28PM +0300, Andy Shevchenko wrote:
-> > On Thu, Aug 17, 2023 at 12:37:05PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Aug 15, 2023 at 04:59:34PM -0700, Yury Norov wrote:
+It is possible to use 'perf trace' with tracepoints and in that case we
+can't initialize/use the augmented_raw_syscalls BPF skel.
 
-...
+For instance, this usecase:
 
-> > > >  		int n = bitmap_pos_to_ord(old, oldbit, nbits);
-> > > >  
-> > > > +		bit = (n < 0) ? oldbit :	/* identity map */
-> > > 
-> > > Can't you also optimize this case?
-> > > 
-> > > Something like
-> > > 
-> > >   bitmap_xor(tmp, old, new) // maybe even better approach, dunno
-> > 
-> > >   bitmap_empty(tmp) // can be replaced by find first bit
-> > 
-> > Or reuse bitmap_weight()...
-> 
-> That way it wouldn't work,
+  # perf trace -e sched:*exec --max-events=5
+         ? (         ): NetworkManager/1183  ... [continued]: poll())                                             = 1
+     0.043 ( 0.007 ms): NetworkManager/1183 epoll_wait(epfd: 17<anon_inode:[eventpoll]>, events: 0x55555f90e920, maxevents: 6) = 0
+     0.060 ( 0.007 ms): NetworkManager/1183 write(fd: 3<anon_inode:[eventfd]>, buf: 0x7ffc5a27cd30, count: 8)     = 8
+     0.073 ( 0.005 ms): NetworkManager/1183 epoll_wait(epfd: 24<anon_inode:[eventpoll]>, events: 0x7ffc5a27cd20, maxevents: 2) = 1
+     0.082 ( 0.010 ms): NetworkManager/1183 recvmmsg(fd: 26<socket:[30298]>, mmsg: 0x7ffc5a27caa0, vlen: 8)       = 1
+  #
 
-Why not? AFAIU there are two cases when we may copy:
-1) the new mapping is empty;
-2) the old == new.
+Where we want to trace just some sched tracepoints ending in 'exec' ends
+up tracing all syscalls.
 
-The other cases we need to remap.
+Fix it by checking existing trace->trace_syscalls boolean to see if we
+need the augmenter.
 
-The case 2) is easy with xor and weight.
+A followup patch will move those sections of code used only with the
+augmenter to separate functions, to get it cleaner and remove the goto,
+done just for reviewing purposes.
 
-diff --git a/lib/bitmap.c b/lib/bitmap.c
-index 24284caadbcc..917eea5219ac 100644
---- a/lib/bitmap.c
-+++ b/lib/bitmap.c
-@@ -958,7 +958,7 @@ EXPORT_SYMBOL(bitmap_parse);
-  * gets mapped to (returns) @ord value 3 in this example, that means
-  * that bit 7 is the 3rd (starting with 0th) set bit in @buf.
-  *
-- * The bit positions 0 through @bits are valid positions in @buf.
-+ * The bit positions 0 through @nbits are valid positions in @buf.
-  */
- static int bitmap_pos_to_ord(const unsigned long *buf, unsigned int pos, unsigned int nbits)
- {
-@@ -1008,17 +1008,30 @@ void bitmap_remap(unsigned long *dst, const unsigned long *src,
+With this patch in place the previous behaviour is restored: no syscalls
+when we have other events and no syscall names:
+
+  [root@quaco ~]# perf probe do_filp_open "filename=pathname->name:string"
+  Added new event:
+    probe:do_filp_open   (on do_filp_open with filename=pathname->name:string)
+
+  You can now use it in all perf tools, such as:
+
+	  perf record -e probe:do_filp_open -aR sleep 1
+
+  [root@quaco ~]# perf trace --max-events=10 -e probe:do_filp_open sleep 1
+     0.000 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/etc/ld.so.cache")
+     0.056 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/lib64/libc.so.6")
+     0.481 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/locale-archive")
+     0.501 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/share/locale/locale.alias")
+     0.572 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_IDENTIFICATION")
+     0.581 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.utf8/LC_IDENTIFICATION")
+     0.616 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib64/gconv/gconv-modules.cache")
+     0.656 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_MEASUREMENT")
+     0.664 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.utf8/LC_MEASUREMENT")
+     0.696 sleep/455122 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/en_US.UTF-8/LC_TELEPHONE")
+  [root@quaco ~]#
+
+As well as mixing syscalls with tracepoints, getting the syscall
+tracepoints used augmented using the BPF skel:
+
+  [root@quaco ~]# perf trace --max-events=10 -e open*,probe:do_filp_open sleep 1
+     0.000 (         ): sleep/455124 openat(dfd: CWD, filename: "/etc/ld.so.cache", flags: RDONLY|CLOEXEC) ...
+     0.005 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/etc/ld.so.cache")
+     0.000 ( 0.011 ms): sleep/455124  ... [continued]: openat())                                           = 3
+     0.031 (         ): sleep/455124 openat(dfd: CWD, filename: "/lib64/libc.so.6", flags: RDONLY|CLOEXEC) ...
+     0.033 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/lib64/libc.so.6")
+     0.031 ( 0.006 ms): sleep/455124  ... [continued]: openat())                                           = 3
+     0.258 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/lib/locale/locale-archive", flags: RDONLY|CLOEXEC) ...
+     0.261 (         ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/lib/locale/locale-archive")
+     0.258 ( 0.006 ms): sleep/455124  ... [continued]: openat())                                           = -1 ENOENT (No such file or directory)
+     0.272 (         ): sleep/455124 openat(dfd: CWD, filename: "/usr/share/locale/locale.alias", flags: RDONLY|CLOEXEC) ...
+     0.273  (        ): sleep/455124 probe:do_filp_open(__probe_ip: -1186560412, filename: "/usr/share/locale/locale.alias")
+
+A final note: the probe:do_filp_open uses a kprobe (probably optimized
+as its in the start of a function) that uses the kprobe_tracer mechanism
+in the kernel to collect the pathname->name string and stash it into the
+tracepoint created by 'perf probe' for that:
+
+  [root@quaco ~]# cat /sys/kernel/debug/tracing/kprobe_events
+  p:probe/do_filp_open _text+4621920 filename=+0(+0(%si)):string
+  [root@quaco ~]#
+
+While the syscalls:sys_enter_openat tracepoint gets its string from a
+BPF program attached to raw_syscalls:sys_enter that tail calls into
+another BPF program that knows the types for the openat syscall args and
+thus can bpf_probe_read it right after the normal
+sys_enter/sys_enter_openat tracepoint payload that comes prefixed with
+whatever perf_event_open asked for (CPU, timestamp, etc):
+
+  [root@quaco ~]# bpftool prog | grep -E "sys_enter |sys_enter_opena" -A3
+  3176: tracepoint  name sys_enter  tag 0bc3fc9d11754ba1  gpl
+	loaded_at 2023-08-17T12:32:20-0300  uid 0
+	xlated 272B  jited 257B  memlock 4096B  map_ids 2462,2466,2463
+	btf_id 2976
+  --
+  3180: tracepoint  name sys_enter_opena  tag 19dd077f00ec2f58  gpl
+	  loaded_at 2023-08-17T12:32:20-0300  uid 0
+	  xlated 328B  jited 206B  memlock 4096B  map_ids 2466,2465
+	  btf_id 2976
+  [root@quaco ~]#
+
+Fixes: 42963c8bedeb864b ("perf trace: Migrate BPF augmentation to use a skeleton")
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Athira Jajeev <atrajeev@linux.vnet.ibm.com>
+Cc: bpf@vger.kernel.org
+Cc: Brendan Gregg <brendan.d.gregg@gmail.com>
+Cc: Carsten Haitzler <carsten.haitzler@arm.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Fangrui Song <maskray@google.com>
+Cc: He Kuang <hekuang@huawei.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: James Clark <james.clark@arm.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: llvm@lists.linux.dev
+Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: Tom Rix <trix@redhat.com>
+Cc: Wang Nan <wangnan0@huawei.com>
+Cc: Wang ShaoBo <bobo.shaobowang@huawei.com>
+Cc: Yang Jihong <yangjihong1@huawei.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: YueHaibing <yuehaibing@huawei.com>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/builtin-trace.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 0ebfa95895e0bf4d..3964cf44cdbcb3e8 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -3895,7 +3895,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
+ 	if (err < 0)
+ 		goto out_error_open;
+ #ifdef HAVE_BPF_SKEL
+-	{
++	if (trace->syscalls.events.bpf_output) {
+ 		struct perf_cpu cpu;
  
- 	if (dst == src)		/* following doesn't handle inplace remaps */
- 		return;
--	bitmap_zero(dst, nbits);
-+
-+	bitmap_xor(dst, old, new, nbits);
-+	if (bitmap_empty(dst, nbits))
-+		goto identity_map;
+ 		/*
+@@ -3916,7 +3916,7 @@ static int trace__run(struct trace *trace, int argc, const char **argv)
+ 		goto out_error_mem;
  
- 	w = bitmap_weight(new, nbits);
-+	if (w == 0)
-+		goto identity_map;
-+
-+	bitmap_zero(dst, nbits);
-+
- 	for_each_set_bit(oldbit, src, nbits) {
- 		int n = bitmap_pos_to_ord(old, oldbit, nbits);
+ #ifdef HAVE_BPF_SKEL
+-	if (trace->skel->progs.sys_enter)
++	if (trace->skel && trace->skel->progs.sys_enter)
+ 		trace__init_syscalls_bpf_prog_array_maps(trace);
+ #endif
  
--		if (n < 0 || w == 0)
-+		if (n < 0)
- 			set_bit(oldbit, dst);	/* identity map */
- 		else
- 			set_bit(find_nth_bit(new, nbits, n % w), dst);
+@@ -4850,6 +4850,9 @@ int cmd_trace(int argc, const char **argv)
  	}
+ 
+ #ifdef HAVE_BPF_SKEL
++	if (!trace.trace_syscalls)
++		goto skip_augmentation;
 +
-+	return;
-+
-+identity_map:
-+	bitmap_copy(dst, src, nbits);
- }
- EXPORT_SYMBOL(bitmap_remap);
-
-But this gives +89 bytes on x86_64... :-(
-
-Inside the loop we can also break when n gets equal to w, but it seems
-a special case (we don't need bitmap_weight_from() for that, do we?).
-
+ 	trace.skel = augmented_raw_syscalls_bpf__open();
+ 	if (!trace.skel) {
+ 		pr_debug("Failed to open augmented syscalls BPF skeleton");
+@@ -4884,6 +4887,7 @@ int cmd_trace(int argc, const char **argv)
+ 	}
+ 	trace.syscalls.events.bpf_output = evlist__last(trace.evlist);
+ 	assert(!strcmp(evsel__name(trace.syscalls.events.bpf_output), "__augmented_syscalls__"));
++skip_augmentation:
+ #endif
+ 	err = -1;
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.41.0
 
