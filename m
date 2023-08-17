@@ -2,163 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 516AB77FC6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 18:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6157377FC6F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 19:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353783AbjHQQ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 12:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
+        id S1353786AbjHQQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 12:59:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353772AbjHQQ55 (ORCPT
+        with ESMTP id S1352958AbjHQQ7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 12:57:57 -0400
-Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0542D72
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:57:54 -0700 (PDT)
-Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-563ab574cb5so73798a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:57:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692291474; x=1692896274;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kg0QE7WFC8jIy1ZqIe4bmipuDdvn/U9mghxu2TvRjdY=;
-        b=hSj7IpB+PahhY/Fx2ot+jnDGDfyjHp0homie/bgHSsdRy7zHtr8CqhDZkoEEwc07LR
-         KLtD3d4VJ7RAEatiNybDiBWG6UXBS71Zexuj1BqiFXOaLT4RFU7Q5go19uNHCEmZ983f
-         BTcmHgRoMm06hTPE21WtxGeXA662u6OVvvyk5W0SBOK3O/ZQofI4pPsevwN5h4zVdwkd
-         CYEnYamcMT5qF9LKXMsUE9PwkOxAq1nsKBVo6Be1qXFzYjIy2yWUoXAJN81DaGLo4WCL
-         VKkFpuQs1BTpFRwgaP2fZ/0m25SYe/DNjUeM7OAPr4SaHOQS9ozRLm6zomCGiBXYYlWC
-         Lizg==
-X-Gm-Message-State: AOJu0YwGyRBbKRShm90gxFDndLyPgMbh/dP+SWGiQ+Qn1JVYMvTLHEMb
-        qgfUR3Du4JRtrbCdlGT9oWJHiSdzTSQaYv+r8AVu3xt8sHkk
-X-Google-Smtp-Source: AGHT+IHwt0gjkRKpc97W+cfpcU7E3G/whLAz1Nq6YNHExHH4HSBlb2RVSmxU1pev+NrhTqcYtuniymiIAXbyb1Q2yGQcFbNObXPb
+        Thu, 17 Aug 2023 12:59:16 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEE72D72
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 09:59:15 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gH62pqkolvGotqjrMrfVQ8+vrJy36/LIraRpKj8ZYNYaQZ8iNX+ugNaVKvoQkKjt5+3zRUUebRRTpE15dy8MotHINiVqRi2Nu0aAcP0r8SRC6DQMyPgGrtWsc8hWEmP9KsPY+nCioxaSMc8PnF8jobLWuL+z4p4GdIOmJnZqAvm1VAJ2VQXBcFAurHGF/Nmie1UAsswRRVRg/4E3hw7JhaqqBwIUbRYERXCYIwqtjp8t2uruAJrjQ25Xhg8Hrrv44oROs1hEkW2JaVEUCh2lvWW6b3FjmXN789KlgVJ+5Y4oLergngjqm77ZG8kprdMF4IC1N8+a51GZgAsf0bjsLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=feZ4cB5LkndOhYDuGf8hzHBus2tt5LRnLatQ979U3ZI=;
+ b=Hit8+PlgmiiXXq/omQY6ExqV5uitx0Jvq+15QkukkuWrGhzJ8sKbEuW6GVooBHSs/RoLGSezSMe/NHZqrqjtdyc87Mctn0Pf5mrGh9VgitgV1uGp1YEcn0cl48LI5mGFz115RC5lRNYl3Lp17sgs8Vhma7HvdT2x7oqsEkg9iz/v+VanhLJ/tTiX+i0hx1YeXAlvz1ALLCE1TN85z4CFZz/55yDk1AO/le84X2wVt7SEviMG/8psZJok4W0DJxbSSpz/tA31kqThcJxjR59pMX+yWspHxCT/UYXNU8qEZQH4COhqVjr8jRgjkRTOwrEc+Jp4pE7iNG1+Giug9DCURw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=feZ4cB5LkndOhYDuGf8hzHBus2tt5LRnLatQ979U3ZI=;
+ b=d/bBRJRanS58B5kptL7aKGiFoIPzyFSsHU4yCwYmPrkriiBm7Hp09YwfSY5v7cDQIrIhnR6irGsg802H2jf6Zy0+4aAGECuVZ5kV/Dl/0YdIm2IB0c0cmsJkTfjtq8WI7kI3e+aD+qZTLwR6JluQsw0GJ6b0wUXJm2B+riAbt/yC05jEmw2qKVrd7ezFOYnsuXDOiBq63ZD9WSX7IoEXbIKwYobZgrXCalbpYau4Pd+2aitIidWoy9Uo40WivijSw81Lb0T8dXXTZWDVd5oFmeWeBlWW64lzaNViOGf0OMsTnxmJjfwUjW+mB4T47cA11Phku/Ad2J9ssQGUGhIwkw==
+Received: from PH0P220CA0014.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:d3::28)
+ by DS0PR12MB8786.namprd12.prod.outlook.com (2603:10b6:8:149::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Thu, 17 Aug
+ 2023 16:59:07 +0000
+Received: from SA2PEPF000015CD.namprd03.prod.outlook.com
+ (2603:10b6:510:d3:cafe::73) by PH0P220CA0014.outlook.office365.com
+ (2603:10b6:510:d3::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
+ Transport; Thu, 17 Aug 2023 16:59:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SA2PEPF000015CD.mail.protection.outlook.com (10.167.241.203) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.15 via Frontend Transport; Thu, 17 Aug 2023 16:59:07 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 17 Aug 2023
+ 09:58:56 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Thu, 17 Aug 2023 09:58:56 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 17 Aug 2023 09:58:56 -0700
+Date:   Thu, 17 Aug 2023 09:58:54 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     <will@kernel.org>, <joro@8bytes.org>, <mshavit@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>
+Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Allow default substream bypass
+ with a pasid support
+Message-ID: <ZN5RzvGhwRvVKUDy@Asurada-Nvidia>
+References: <20230817042135.32822-1-nicolinc@nvidia.com>
+ <ZN46upjIBFcI4mL+@nvidia.com>
+ <9ba29982-ae96-bf53-f021-21cb1b22643a@arm.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:ec92:b0:1b9:e8e5:b0a4 with SMTP id
- x18-20020a170902ec9200b001b9e8e5b0a4mr2156836plg.8.1692291473831; Thu, 17 Aug
- 2023 09:57:53 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 09:57:53 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000027870106032150f5@google.com>
-Subject: [syzbot] [media?] [usb?] UBSAN: shift-out-of-bounds in set_flicker
-From:   syzbot <syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com>
-To:     hverkuil@xs4all.nl, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9ba29982-ae96-bf53-f021-21cb1b22643a@arm.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015CD:EE_|DS0PR12MB8786:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0b21332c-94e9-4cf3-2e5e-08db9f43450a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: quoh3X50ZpLORmW4NpetisFKh6JQTlX19mdtl5JX/CRKCxMIFsn4LEQbNiXeovMhZdYuy9N+62Q54ieClJkqAMZnaQs/fbkFbgYBfLdMdRpMTuLLgFBMQHODBxQ/TwEZprvp4pyX7Bi6f3CoKkFlszh7nXjTIqLHObxkqwYr9OObViWILtCZIcOLzn5l7+st9Yb76y7f5e0NMvUOGTHgRK0GBwE+bcTxGFRwMF399a9RPktqhr8LbNU0Ug2+NRXgdNjvPx9TQJ2xBsc4qwsYazvJ3k7zCzSn+1/AW6L2qyjLYWF2aAHyhMTmhAOnhBll9m+nuvX4IhSIRGJ65dM9HVJ2tClTXOA/gel7En2jSCj+2El0ibeOE61qBQIWCdwgZ+UW2HB3dzzSiMnNirfstKe7q010da4e7pbnM+QSAx8kLIt76oIuBHZdTJsXXox78mjBscpk9mEcPN3LgoIALMANynZMpJ9pObJYx/7X9FAsfK8jrWlhSVR1qwEc+O4V1lS5n/z5CDpgMcEt191QohJ+YjNNe/lQD6j8v3Qpn/BYOkRXdgCb7FbjNZ17j8lmkyl8VL8dUcEU6m8iREOISmacu8/pc6B17xG690VgVQBcr3JrKIo8HF0COwgKm6cXfJRgQjns643ksOCiDSV8dqv2/O0idVO+Vy3gBAOrL4UcRrh/jDm5Z6zidyHr3Pjc5P+nEQe18MAlJKtg46Z6gWxS9taHQ5HL+mAS/CwsW8D+OFpvVCYWl1wsUc1EgH4zuPsbs4kEmwH2d8yS+hOUC4oH1sbf+MSX6qPIFz/pkdEOJ06TajD6Kj4JZIw854FRpe5ozRriMTjeLwbpraYxczAutPbDKCptS+WNBDtmmVi+Sp0wJ42g30lHJ/NkEs6M
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(136003)(396003)(82310400011)(1800799009)(186009)(451199024)(46966006)(40470700004)(36840700001)(55016003)(40480700001)(40460700003)(47076005)(426003)(83380400001)(2906002)(336012)(36860700001)(70586007)(478600001)(70206006)(54906003)(316002)(966005)(110136005)(5660300002)(8936002)(41300700001)(4326008)(8676002)(9686003)(26005)(86362001)(82740400003)(33716001)(356005)(7636003)(414714003)(473944003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 16:59:07.1727
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b21332c-94e9-4cf3-2e5e-08db9f43450a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CD.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8786
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+Thank you both for the reviews!
 
-HEAD commit:    55c3e571d2a0 USB: gadget: f_mass_storage: Fix unused varia..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=13eead53a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f7789f2bd4d1e7af
-dashboard link: https://syzkaller.appspot.com/bug?extid=e27f3dbdab04e43b9f73
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15dfaeada80000
+On Thu, Aug 17, 2023 at 05:24:51PM +0100, Robin Murphy wrote:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5ac7d16ee63e/disk-55c3e571.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ea99a7a9832f/vmlinux-55c3e571.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6848258d554d/bzImage-55c3e571.xz
+> > > Changelog
+> > > v2:
+> > >   * Rebased on top of Michael's series reworking CD table ownership:
+> > >     https://lore.kernel.org/all/20230816131925.2521220-1-mshavit@google.com/
+> > >   * Added a new ARM_SMMU_DOMAIN_BYPASS_S1DSS stage to tag the use case
+> > > v1: https://lore.kernel.org/all/20230627033326.5236-1-nicolinc@nvidia.com/
+> > 
+> > After rebasing there really shouldn't be a
+> > ARM_SMMU_DOMAIN_BYPASS_S1DSS. I want to get to a model where the
+> > identity domain is a global static, so it can't be changing depending
+> > on how it is attched.
+> > 
+> > I continue to think that the right way to think about this is to have
+> > the CD table code generate the STE it wants and when doing so it will
+> > inspect what SSID0 is. If it is the IDENTITY domain then it fills
+> > s1dss / etc
+> 
+> Indeed, that's what I was getting at with "generalisation of
+> ARM_SMMU_DOMAIN_BYPASS based on s1cdmax" - just one type all the way
+> down to the bowels of arm_smmu_write_strtab_ent(), which then decides
+> whether it means touching S1DSS or Config in the given STE.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e27f3dbdab04e43b9f73@syzkaller.appspotmail.com
+Ack. Let me retry with that.
 
-gspca_cpia1: usb_control_msg 03, error -32
-gspca_cpia1: usb_control_msg a1, error -32
-gspca_cpia1: usb_control_msg a1, error -32
-gspca_cpia1: usb_control_msg a1, error -32
-gspca_cpia1: usb_control_msg 05, error -71
-gspca_cpia1: usb_control_msg 03, error -71
-================================================================================
-UBSAN: shift-out-of-bounds in drivers/media/usb/gspca/cpia1.c:1031:27
-shift exponent 245 is too large for 32-bit type 'int'
-CPU: 1 PID: 25 Comm: kworker/1:1 Not tainted 6.5.0-rc4-syzkaller-00118-g55c3e571d2a0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_shift_out_of_bounds+0x27a/0x600 lib/ubsan.c:387
- set_flicker.cold+0x1b/0x20 drivers/media/usb/gspca/cpia1.c:1031
- sd_s_ctrl+0x2c6/0xbf0 drivers/media/usb/gspca/cpia1.c:1782
- __v4l2_ctrl_handler_setup+0x511/0x710 drivers/media/v4l2-core/v4l2-ctrls-core.c:2481
- v4l2_ctrl_handler_setup drivers/media/v4l2-core/v4l2-ctrls-core.c:2498 [inline]
- v4l2_ctrl_handler_setup+0x50/0xa0 drivers/media/v4l2-core/v4l2-ctrls-core.c:2490
- gspca_set_default_mode drivers/media/usb/gspca/gspca.c:908 [inline]
- gspca_dev_probe2+0xdd6/0x1b20 drivers/media/usb/gspca/gspca.c:1541
- gspca_dev_probe+0x18b/0x270 drivers/media/usb/gspca/gspca.c:1610
- usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:798
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:828
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:956
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1028
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x11f1/0x1b40 drivers/base/core.c:3625
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
- usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:798
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:828
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:956
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1028
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x11f1/0x1b40 drivers/base/core.c:3625
- usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2589
- hub_port_connect drivers/usb/core/hub.c:5440 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
- port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x2e62/0x4f30 drivers/usb/core/hub.c:5822
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2597
- process_scheduled_works kernel/workqueue.c:2664 [inline]
- worker_thread+0x896/0x1110 kernel/workqueue.c:2750
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-================================================================================
+> > > @@ -1290,6 +1291,9 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+> > > 
+> > >      if (smmu_domain) {
+> > >              switch (smmu_domain->stage) {
+> > > +            case ARM_SMMU_DOMAIN_BYPASS_S1DSS:
+> > > +                    s1dss = STRTAB_STE_1_S1DSS_BYPASS;
+> > > +                    fallthrough;
+> > >              case ARM_SMMU_DOMAIN_S1:
+> > >                      cd_table = &master->cd_table;
+> > >                      break;
+> > 
+> > Eg, I think the code looks much nicer if the logic here is more like:
+> > 
+> > if (master->cd_table.cdtab)
+> >     arm_smmu_cd_table_get_ste(master->cd_table, &ste)
 
+So, this means that cd_table is present, indicating either "S1
+translated" or "S1 enabled but S1DSS"...
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > else if (master->domain)
+> >     arm_smmu_domain_get_ste(master->domain, &ste);
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+... and this means that cd_table isn't present, indicating S1
+bypass or S2....
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+> > else
+> >     ste = not attached
+> > 
+> > And you'd check in arm_smmu_cd_table_get_ste() to learn the CD
+> > parameters and also what SSID=0 is. If SSID=0 is IDENTITY then
+> > arm_smmu_cd_table_get_ste would return with S1DSS set.
+> > 
+> > arm_smmu_domain_get_ste() would multiplex based on the domain type.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+... it then means we need arm_smmu_write_ctx_desc() also when
+attaching an IDENTITY domain.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Will try with that. Thanks for the guidance!
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+> > > @@ -2435,6 +2440,16 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> > >      } else if (smmu_domain->smmu != smmu)
+> > >              ret = -EINVAL;
+> > > 
+> > > +    /*
+> > > +     * When attaching an IDENTITY domain to a master with pasid capability,
+> > > +     * the master can still enable SVA feature by allocating a multi-entry
+> > > +     * CD table and attaching the IDENTITY domain to its default substream
+> > > +     * that alone can be byassed using the S1DSS field of the STE.
+> > > +     */
+> > > +    if (smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS && master->ssid_bits &&
+> > > +        smmu->features & ARM_SMMU_FEAT_TRANS_S1)
+> > > +            smmu_domain->stage = ARM_SMMU_DOMAIN_BYPASS_S1DSS;
+> > 
+> > Then you don't technically need to do this.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Yea, wasn't so confident about it either. Will drop.
+
+> > > @@ -2456,7 +2471,8 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+> > >      list_add(&master->domain_head, &smmu_domain->devices);
+> > >      spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+> > > 
+> > > -    if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+> > > +    if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1 ||
+> > > +        smmu_domain->stage == ARM_SMMU_DOMAIN_BYPASS_S1DSS) {
+> > >              if (!master->cd_table.cdtab) {
+> > >                      ret = arm_smmu_alloc_cd_tables(master);
+> > >                      if (ret) {
+> > 
+> > So more like:
+> > 
+> >   if (smmu_domain == IDENTIY && arm_smmu_support_ssid(dev))
+> >       arm_smmu_alloc_cd_tables()
+
+OK. ARM_SMMU_DOMAIN_S1 with ssid=0 still needs a cd_table though.
+
+Thanks!
+Nic
