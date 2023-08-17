@@ -2,126 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F20377FB4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD40277FB4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 17:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353389AbjHQPze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 11:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S1353390AbjHQP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 11:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353467AbjHQPz0 (ORCPT
+        with ESMTP id S1353420AbjHQP41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 11:55:26 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013F035A5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:54:53 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-643909db8f4so5230136d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 08:54:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692287693; x=1692892493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sdyk/H9C92iJ/nBsFz7KxfsAvK+nt2wqCERHewxGWDU=;
-        b=cSQl7yt9otQXr+oR1mB0nAUMSggLBbl+x+yeuUh1BRvaPLY+5BVUHA9XY5vpaXnLwQ
-         I+HaTYsLWZHnC7qtaOHGmjwLl2/5BHmdv59N00yHP6YIcH7jJklGoMStSDd1TVKHohCi
-         pampRnwpD239s80gaLdHchFzC+a0w1oyAyFF1jWVzncrcQ0lgekpayKIU84Rd1wDjF4I
-         2/9khJ3u2ek6tzpqBd6IcgbZJC/89kWqNXeD8h1HeTAz3F/rP/W+L+zXszK4BEOLJ0b4
-         3bbWj4Gz0sm0DQOMRz2udncq5GAXL9t8Thff9BLCqlRWq9CksSuetZI7++mKz8RzoAHd
-         WVkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692287693; x=1692892493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sdyk/H9C92iJ/nBsFz7KxfsAvK+nt2wqCERHewxGWDU=;
-        b=AWIVBGVuaQoeQneXX4oPdBrhuvwOUODwNgvs32mT4nnl8asoelmZPnNSj3uFh7MP9D
-         yGRc1YO0IHrxPbMqyJcmesctMNCqgW/BUENRNAYQVTxvCPXbAorUWG0jWjXc2Rr80Sgr
-         dao0ONr0nxh6h2VwNnF2w13JcgwZgOewSDhQd8q8KFvtuuesFheqNRCPvO5GFPZ5HGvp
-         F0zZmqbN9MSGKO9pSr9kGu8TMvt5YSSUmcO0IRCHG85KFaUCZhHXd2QobL/mhBnQgADW
-         wi1tjD2byu2RjyfSaZWuhex+cjj9ug3ER3xtIYy2evkf7vCbZIQEHQrpF3K6jK9ZF+18
-         Nl8w==
-X-Gm-Message-State: AOJu0Yzh4Nr5HS1Lm2KNTCqiX2u9n2UuY0FsGZhKLVVxAlo8f1kEGyoU
-        u3IhK0rRjappmPfL5Ejp/31tDCvOac9z5SZSh7OKkw==
-X-Google-Smtp-Source: AGHT+IHBoKIXOzw8g/P24SXKwipUqCn2o2dUKOdGE5ZCNm3euEjtUFmlPq+7vYSmTIjnuxYVtNffFqtgOHvxVmtNMww=
-X-Received: by 2002:a0c:e094:0:b0:61b:65f4:2a15 with SMTP id
- l20-20020a0ce094000000b0061b65f42a15mr4345292qvk.12.1692287692656; Thu, 17
- Aug 2023 08:54:52 -0700 (PDT)
+        Thu, 17 Aug 2023 11:56:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB8C30F3;
+        Thu, 17 Aug 2023 08:56:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74180611D9;
+        Thu, 17 Aug 2023 15:56:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4631C433C8;
+        Thu, 17 Aug 2023 15:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692287784;
+        bh=Jn6sZJZQZRkxbiQrF3wXC+x7uSTxGKhcmcjjGexsvAg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NyVvyXyBXhO8KojCdo4lmk7H943tN3GR/Rg5y4qZ2RmUQ174cXPKvLIiK4QVf+VHb
+         wjyf9CsffOXtmfU+kSwwQcjs1poxFES2Wv16VIRcDRDhpr12NvAgJurbvrPjIxTy2N
+         QSbNjhnHcvbDrr9PmYiqMqlYMoP5RSeTfA+WaqXaH8VkSyrI1Y0mQ8aGIWy7eqRiD1
+         UjgydbqVsgyloxasmJlc5QfWOgMVFu95p0jxNGXwExLt3ybncbkWaibbw0WPOCqpKY
+         EglXij6x8MvsJFnvS4+iLLgWulssshr5lqHUX88Kd8g5aLam5HSgSBilVVjGPDZfXu
+         jDwoGSaYg3MSQ==
+Received: (nullmailer pid 1265806 invoked by uid 1000);
+        Thu, 17 Aug 2023 15:56:22 -0000
+Date:   Thu, 17 Aug 2023 10:56:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-fsi@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        jk@ozlabs.org, joel@jms.id.au, alistair@popple.id.au,
+        andrew@aj.id.au, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 14/14] fsi: Add I2C Responder SCOM driver
+Message-ID: <20230817155622.GB1179394-robh@kernel.org>
+References: <20230612195657.245125-1-eajames@linux.ibm.com>
+ <20230612195657.245125-15-eajames@linux.ibm.com>
 MIME-Version: 1.0
-References: <CA+G9fYvFD-kE0+EGWkwcnR1DXRxh7p7OwQThJ6KWxYWVROJ4+A@mail.gmail.com>
-In-Reply-To: <CA+G9fYvFD-kE0+EGWkwcnR1DXRxh7p7OwQThJ6KWxYWVROJ4+A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 17 Aug 2023 08:54:41 -0700
-Message-ID: <CAKwvOd=h4aFisiY0w0awKkxk+i-aJM5+QbExYnboqzojLigx1Q@mail.gmail.com>
-Subject: Re: landlock: fs_test: fs_test.c:4524:9: error: initializer element
- is not a compile-time constant
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     clang-built-linux <llvm@lists.linux.dev>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
-        lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230612195657.245125-15-eajames@linux.ibm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 3:51=E2=80=AFAM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> While building selftests landlock following warnings / errors noticed on =
-the
-> Linux next with clang-17.
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Build errors:
-> ------------
-> landlock/fs_test
-> fs_test.c:4524:9: error: initializer element is not a compile-time consta=
-nt
+On Mon, Jun 12, 2023 at 02:56:57PM -0500, Eddie James wrote:
+> The I2CR has the capability to directly perform SCOM operations,
+> circumventing the need to drive the FSI2PIB engine. Add a new
+> driver to perform SCOM operations through the I2CR.
+> 
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+> ---
+>  drivers/fsi/Kconfig     |   8 +++
+>  drivers/fsi/Makefile    |   1 +
+>  drivers/fsi/i2cr-scom.c | 154 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 163 insertions(+)
+>  create mode 100644 drivers/fsi/i2cr-scom.c
+> 
+> diff --git a/drivers/fsi/Kconfig b/drivers/fsi/Kconfig
+> index 999be82720c5..79a31593618a 100644
+> --- a/drivers/fsi/Kconfig
+> +++ b/drivers/fsi/Kconfig
+> @@ -94,4 +94,12 @@ config FSI_OCC
+>  	provide the raw sensor data as well as perform thermal and power
+>  	management on the system.
+>  
+> +config I2CR_SCOM
+> +	tristate "IBM I2C Responder SCOM driver"
+> +	depends on FSI_MASTER_I2CR
+> +	help
+> +	  This option enables an I2C Responder based SCOM device driver. The
+> +	  I2CR has the capability to directly perform SCOM operations instead
+> +	  of using the FSI2PIB engine.
+> +
+>  endif
+> diff --git a/drivers/fsi/Makefile b/drivers/fsi/Makefile
+> index 34dbaa1c452e..5550aa15e0b1 100644
+> --- a/drivers/fsi/Makefile
+> +++ b/drivers/fsi/Makefile
+> @@ -9,3 +9,4 @@ obj-$(CONFIG_FSI_MASTER_AST_CF) += fsi-master-ast-cf.o
+>  obj-$(CONFIG_FSI_SCOM) += fsi-scom.o
+>  obj-$(CONFIG_FSI_SBEFIFO) += fsi-sbefifo.o
+>  obj-$(CONFIG_FSI_OCC) += fsi-occ.o
+> +obj-$(CONFIG_I2CR_SCOM) += i2cr-scom.o
+> diff --git a/drivers/fsi/i2cr-scom.c b/drivers/fsi/i2cr-scom.c
+> new file mode 100644
+> index 000000000000..cb7e02213032
+> --- /dev/null
+> +++ b/drivers/fsi/i2cr-scom.c
+> @@ -0,0 +1,154 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (C) IBM Corporation 2023 */
+> +
+> +#include <linux/cdev.h>
+> +#include <linux/device.h>
+> +#include <linux/fs.h>
+> +#include <linux/fsi.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +
+> +#include "fsi-master-i2cr.h"
+> +#include "fsi-slave.h"
+> +
+> +struct i2cr_scom {
+> +	struct device dev;
+> +	struct cdev cdev;
+> +	struct fsi_master_i2cr *i2cr;
+> +};
+> +
+> +static loff_t i2cr_scom_llseek(struct file *file, loff_t offset, int whence)
+> +{
+> +	switch (whence) {
+> +	case SEEK_CUR:
+> +		break;
+> +	case SEEK_SET:
+> +		file->f_pos = offset;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return offset;
+> +}
+> +
+> +static ssize_t i2cr_scom_read(struct file *filep, char __user *buf, size_t len, loff_t *offset)
+> +{
+> +	struct i2cr_scom *scom = filep->private_data;
+> +	u64 data;
+> +	int ret;
+> +
+> +	if (len != sizeof(data))
+> +		return -EINVAL;
+> +
+> +	ret = fsi_master_i2cr_read(scom->i2cr, (u32)*offset, &data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = copy_to_user(buf, &data, len);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t i2cr_scom_write(struct file *filep, const char __user *buf, size_t len,
+> +			       loff_t *offset)
+> +{
+> +	struct i2cr_scom *scom = filep->private_data;
+> +	u64 data;
+> +	int ret;
+> +
+> +	if (len != sizeof(data))
+> +		return -EINVAL;
+> +
+> +	ret = copy_from_user(&data, buf, len);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = fsi_master_i2cr_write(scom->i2cr, (u32)*offset, data);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return len;
+> +}
+> +
+> +static const struct file_operations i2cr_scom_fops = {
+> +	.owner		= THIS_MODULE,
+> +	.open		= simple_open,
+> +	.llseek		= i2cr_scom_llseek,
+> +	.read		= i2cr_scom_read,
+> +	.write		= i2cr_scom_write,
+> +};
+> +
+> +static int i2cr_scom_probe(struct device *dev)
+> +{
+> +	struct fsi_device *fsi_dev = to_fsi_dev(dev);
+> +	struct i2cr_scom *scom;
+> +	int didx;
+> +	int ret;
+> +
+> +	if (!is_fsi_master_i2cr(fsi_dev->slave->master))
+> +		return -ENODEV;
+> +
+> +	scom = devm_kzalloc(dev, sizeof(*scom), GFP_KERNEL);
+> +	if (!scom)
+> +		return -ENOMEM;
+> +
+> +	scom->i2cr = to_fsi_master_i2cr(fsi_dev->slave->master);
+> +	dev_set_drvdata(dev, scom);
+> +
+> +	scom->dev.type = &fsi_cdev_type;
+> +	scom->dev.parent = dev;
+> +	device_initialize(&scom->dev);
+> +
+> +	ret = fsi_get_new_minor(fsi_dev, fsi_dev_scom, &scom->dev.devt, &didx);
+> +	if (ret)
+> +		return ret;
+> +
+> +	dev_set_name(&scom->dev, "scom%d", didx);
+> +	cdev_init(&scom->cdev, &i2cr_scom_fops);
+> +	ret = cdev_device_add(&scom->cdev, &scom->dev);
+> +	if (ret)
+> +		fsi_free_minor(scom->dev.devt);
+> +
+> +	return ret;
+> +}
+> +
+> +static int i2cr_scom_remove(struct device *dev)
+> +{
+> +	struct i2cr_scom *scom = dev_get_drvdata(dev);
+> +
+> +	cdev_device_del(&scom->cdev, &scom->dev);
+> +	fsi_free_minor(scom->dev.devt);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id i2cr_scom_of_ids[] = {
+> +	{ .compatible = "ibm,i2cr-scom" },
 
-Hi Naresh,
-Can you tell me more about your specific version of clang-17?
+This is not documented. Please add a binding.
 
-I believe a fix of mine to clang should address this. It landed in
-clang-18, and was backported to clang-17 recently.
-https://github.com/llvm/llvm-project-release-prs/commit/0b2d5b967d983757938=
-97295d651f58f6fbd3034
-
-I suspect your clang-17 might need a rebuild.  Thanks for the report.
-
->  4524 |         .mnt =3D mnt_tmp,
->       |                ^~~~~~~
-> 1 error generated.
->
-> Links:
->  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7AaypfY7e=
-RU4UUygecrDx/
->
-> Steps to reproduce:
-> tuxmake --runtime podman --target-arch arm64 --toolchain clang-17
-> --kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2U69ue7A=
-aypfY7eRU4UUygecrDx/config
-> LLVM=3D1 LLVM_IAS=3D1 dtbs dtbs-legacy headers kernel kselftest modules
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
->
-
-
---=20
-Thanks,
-~Nick Desaulniers
+Rob
