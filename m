@@ -2,302 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FFC780087
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F26C780090
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355472AbjHQWAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        id S1355510AbjHQWCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355480AbjHQWAj (ORCPT
+        with ESMTP id S1355493AbjHQWCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:00:39 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BB22698
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:00:37 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 81AF15C0121;
-        Thu, 17 Aug 2023 18:00:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 17 Aug 2023 18:00:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1692309634; x=1692396034; bh=rXBTnMKvCmETwII86/lcuruVlKkdzxpp/Q0
-        LPk4s31U=; b=lDWeRP1AQmxJhQSKdB5Sc57y32VCWFmEpyJM1RwVXW2BX0FCmJK
-        FY560DXZwVXbZ0UjhS9Bhl3X5d7/TiLjpN2iQx0xsLyfrwL9Vb7iGfocSyVuiFxG
-        lZsohQYRdytby+n7S3GGvRqfhTKGYyR6tyl3sTNJ+8EcgRymU2+MnfUHR9IsZKqr
-        67mYT79rRyIFRMeypJxILnWu10B+fD+4MpCteIVbjNvMRdxGnKpDL/H9sHyutAqD
-        Ryj4ZBw8IPnzzP0fmUTRIMiQzF44nR8Pjv3jk51jLGBD9JxLz5VVhh+fFYcpoDiF
-        nTR/MIpKNytRoT1NSGydO/TTeVTFxFZoueA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692309634; x=1692396034; bh=rXBTnMKvCmETwII86/lcuruVlKkdzxpp/Q0
-        LPk4s31U=; b=BEsHJVH+tt8Vs8iG6eMRwTWKosWKVZD1G/KSKs++IW0RX5xmqnR
-        8/5l6TZI16ghjrgI3Tlpcst2t+bvZDDMRq05ggPiPuEFVCpZzAdRRoWGBB9TaWSR
-        s2k3+nLxvsseqaGOE+gUjxlmbrREDrYqAc3Y7x4gEQ94LDFoYjgm11h0bCPYhjxP
-        8ct+eRLrN0rOrRGQkQjI/G2g+xFVTsCrxGCuRoz4LU0xYgdXCCnbC9oFM4RG60oI
-        enJtWY/M8de+p5QxLhxWKjcpO4iUdD8lSaxoaXei25CX5yb7ka+Pf2MrvPIPuyjt
-        /nzatrN/iGdP2cH/iwqRWs7nhncwA8aak/Q==
-X-ME-Sender: <xms:gpjeZDS4Rx9DgQEGKLlec8LZy0V0FEVqDMmm_jQdrPmofFo8DduNFQ>
-    <xme:gpjeZExC7vB5tIRvOiC7BM7Xnie16yp5Oxk6qp13uVppSbpZC_-L8bCL5nlOQWlZI
-    YX2UaH-U8SPhGDsixU>
-X-ME-Received: <xmr:gpjeZI3acqJUpkSHqZ53pVY83Dxo7PgbAMsRpCk2oFVCjxHUaO4fEjV_fDw6VLUt2109BS1i>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduvddgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkffuhffvveffjghftgfgfgggsehtsgertddtreejnecuhfhrohhmpefnuhhk
-    vgculfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrh
-    hnpeffgfefieduuedtfedtvedufeelhfffudektddtvedtvdevgeefveeluedttefgkeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvg
-    eslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:gpjeZDAoIWBg-rwymr74ZMIf8zR5_SztdxrG0Ca1Hl6W9RYsxI307g>
-    <xmx:gpjeZMgAvaCpG2ZAg8auZvwMzqJlSM3CBxjj7Z8lvGpbk_psc3ZxpQ>
-    <xmx:gpjeZHqhc-jg5LmzbtIT-4Ajq-FTsDDYL4A8SvHo1nUnWGbZOtgnFg>
-    <xmx:gpjeZFv8fMqYwC1QPMPK4oTp6Tsej51KW8ljfuxOtwINBWpjXc4KzQ>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Aug 2023 18:00:31 -0400 (EDT)
-Message-ID: <9ba8e8c410a94022bcb1e37506a4353c12f9a7a5.camel@ljones.dev>
-Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support systems with missing
- _DSD properties
-From:   Luke Jones <luke@ljones.dev>
-To:     Stefan Binding <sbinding@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-Date:   Fri, 18 Aug 2023 10:00:25 +1200
-In-Reply-To: <20230815161033.3519-1-sbinding@opensource.cirrus.com>
-References: <20230815161033.3519-1-sbinding@opensource.cirrus.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (by Flathub.org) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 18:02:00 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 73F3030D4;
+        Thu, 17 Aug 2023 15:01:59 -0700 (PDT)
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B23D5211F7BF;
+        Thu, 17 Aug 2023 15:01:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B23D5211F7BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692309718;
+        bh=CC1H8gSwsZDwJK532vkmyVuu9tB5HbQWA6g6YV6aeeA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XKsk7cGnC/ec8uqLyWP4VTjkt+fZT9cIMhy3En31knoyiZUFageqGmaFdJGGb6GZ1
+         NlAwb5fseaUw0VIabiSWmr8ELvN6NvMPEUanB83Zt1Bt3UA5yFIujk7nPaaxIoHocb
+         LXqAK5iDIAtkF9P+gB8L1DpWzCCOmzXYOOSuFEYY=
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+To:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org
+Cc:     patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
+        wei.liu@kernel.org, haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+Subject: [PATCH v2 00/15] Introduce /dev/mshv drivers
+Date:   Thu, 17 Aug 2023 15:01:36 -0700
+Message-Id: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-15.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URI_TRY_3LD,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTA4LTE1IGF0IDE3OjEwICswMTAwLCBTdGVmYW4gQmluZGluZyB3cm90ZToK
-PiBTb21lIHN5c3RlbXMgdXNpbmcgQ1MzNUw0MSB3aXRoIEhEQSB3ZXJlIHJlbGVhc2VkIHdpdGhv
-dXQgc29tZQo+IHJlcXVpcmVkIF9EU0QgcHJvcGVydGllcyBpbiBBQ1BJLiBUbyBzdXBwb3J0IHRo
-ZXNlIHNwZWNpYWwgY2FzZXMsCj4gYWRkIGFuIGFwaSB0byBjb25maWd1cmUgdGhlIGNvcnJlY3Qg
-cHJvcGVydGllcyBmb3Igc3lzdGVtcyB3aXRoCj4gdGhpcyBpc3N1ZS4KPiAKPiBUaGlzIGluaXRp
-YWwgY29tbWl0IG1vdmVzIHRoZSBubyBfRFNEIHN1cHBvcnQgZm9yIExlbm92bwo+IExlZ2lvbiBM
-YXB0b3BzIChDTFNBMDEwMCwgQ0xTQTAxMDEpIGludG8gYSBuZXcgZnJhbWV3b3JrIHdoaWNoCj4g
-Y2FuIGJlIGV4dGVuZGVkIHRvIHN1cHBvcnQgYWRkaXRpb25hbCBsYXB0b3BzIGluIHRoZSBmdXR1
-cmUuCj4gCj4gU2lnbmVkLW9mZi1ieTogU3RlZmFuIEJpbmRpbmcgPHNiaW5kaW5nQG9wZW5zb3Vy
-Y2UuY2lycnVzLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3BjaS9oZGEvTWFrZWZpbGXCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHzCoCAyICstCj4gwqBzb3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRh
-LmPCoMKgwqDCoMKgwqDCoMKgwqAgfCA2NSArKysrKystLS0tLS0tLS0tLS0tLS0tLS0tCj4gwqBz
-b3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRhLmjCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDEgKwo+IMKg
-c291bmQvcGNpL2hkYS9jczM1bDQxX2hkYV9wcm9wZXJ0eS5jIHwgNzMKPiArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrCj4gwqBzb3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRhX3Byb3BlcnR5Lmgg
-fCAxOCArKysrKysrCj4gwqA1IGZpbGVzIGNoYW5nZWQsIDEwOCBpbnNlcnRpb25zKCspLCA1MSBk
-ZWxldGlvbnMoLSkKPiDCoGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9wY2kvaGRhL2NzMzVsNDFf
-aGRhX3Byb3BlcnR5LmMKPiDCoGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9wY2kvaGRhL2NzMzVs
-NDFfaGRhX3Byb3BlcnR5LmgKPiAKPiBkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9NYWtlZmls
-ZSBiL3NvdW5kL3BjaS9oZGEvTWFrZWZpbGUKPiBpbmRleCBjNmU2NTA5ZTdiOGUuLjU1MDYyNTVi
-ZTg5NSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9wY2kvaGRhL01ha2VmaWxlCj4gKysrIGIvc291bmQv
-cGNpL2hkYS9NYWtlZmlsZQo+IEBAIC0yOCw3ICsyOCw3IEBAIHNuZC1oZGEtY29kZWMtdmlhLW9i
-anMgOj3CoMKgwqDCoMKgcGF0Y2hfdmlhLm8KPiDCoHNuZC1oZGEtY29kZWMtaGRtaS1vYmpzIDo9
-wqDCoMKgwqDCoHBhdGNoX2hkbWkubyBoZGFfZWxkLm8KPiDCoAo+IMKgIyBzaWRlIGNvZGVjcwo+
-IC1zbmQtaGRhLXNjb2RlYy1jczM1bDQxLW9ianMgOj3CoMKgwqDCoMKgwqDCoMKgwqBjczM1bDQx
-X2hkYS5vCj4gK3NuZC1oZGEtc2NvZGVjLWNzMzVsNDEtb2JqcyA6PcKgwqDCoMKgwqDCoMKgwqDC
-oGNzMzVsNDFfaGRhLm8KPiBjczM1bDQxX2hkYV9wcm9wZXJ0eS5vCj4gwqBzbmQtaGRhLXNjb2Rl
-Yy1jczM1bDQxLWkyYy1vYmpzIDo9wqDCoMKgwqDCoGNzMzVsNDFfaGRhX2kyYy5vCj4gwqBzbmQt
-aGRhLXNjb2RlYy1jczM1bDQxLXNwaS1vYmpzIDo9wqDCoMKgwqDCoGNzMzVsNDFfaGRhX3NwaS5v
-Cj4gwqBzbmQtaGRhLXNjb2RlYy1jczM1bDU2LW9ianMgOj3CoMKgwqDCoMKgwqDCoMKgwqBjczM1
-bDU2X2hkYS5vCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvY3MzNWw0MV9oZGEuYwo+IGIv
-c291bmQvcGNpL2hkYS9jczM1bDQxX2hkYS5jCj4gaW5kZXggODI1ZTU1MWJlOWJiLi5mOWI3NzM1
-M2MyNjYgMTAwNjQ0Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9jczM1bDQxX2hkYS5jCj4gKysrIGIv
-c291bmQvcGNpL2hkYS9jczM1bDQxX2hkYS5jCj4gQEAgLTE5LDYgKzE5LDcgQEAKPiDCoCNpbmNs
-dWRlICJoZGFfY29tcG9uZW50LmgiCj4gwqAjaW5jbHVkZSAiY3MzNWw0MV9oZGEuaCIKPiDCoCNp
-bmNsdWRlICJoZGFfY3NfZHNwX2N0bC5oIgo+ICsjaW5jbHVkZSAiY3MzNWw0MV9oZGFfcHJvcGVy
-dHkuaCIKPiDCoAo+IMKgI2RlZmluZSBDUzM1TDQxX0ZJUk1XQVJFX1JPT1QgImNpcnJ1cy8iCj4g
-wqAjZGVmaW5lIENTMzVMNDFfUEFSVCAiY3MzNWw0MSIKPiBAQCAtMTMxNSw4ICsxMzE2LDcgQEAg
-c3RhdGljIGludCBjczM1bDQxX2hkYV9hcHBseV9wcm9wZXJ0aWVzKHN0cnVjdAo+IGNzMzVsNDFf
-aGRhICpjczM1bDQxKQo+IMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gY3MzNWw0MV9oZGFfY2hhbm5l
-bF9tYXAoY3MzNWw0MS0+ZGV2LCAwLCBOVUxMLCAxLAo+ICZod19jZmctPnNwa19wb3MpOwo+IMKg
-fQo+IMKgCj4gLXN0YXRpYyBpbnQgY3MzNWw0MV9nZXRfc3BlYWtlcl9pZChzdHJ1Y3QgZGV2aWNl
-ICpkZXYsIGludCBhbXBfaW5kZXgsCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW50IG51bV9hbXBzLCBpbnQgZml4ZWRf
-Z3Bpb19pZCkKPiAraW50IGNzMzVsNDFfZ2V0X3NwZWFrZXJfaWQoc3RydWN0IGRldmljZSAqZGV2
-LCBpbnQgYW1wX2luZGV4LCBpbnQKPiBudW1fYW1wcywgaW50IGZpeGVkX2dwaW9faWQpCj4gwqB7
-Cj4gwqDCoMKgwqDCoMKgwqDCoHN0cnVjdCBncGlvX2Rlc2MgKnNwZWFrZXJfaWRfZGVzYzsKPiDC
-oMKgwqDCoMKgwqDCoMKgaW50IHNwZWFrZXJfaWQgPSAtRU5PREVWOwo+IEBAIC0xMzcwLDQ5ICsx
-MzcwLDYgQEAgc3RhdGljIGludCBjczM1bDQxX2dldF9zcGVha2VyX2lkKHN0cnVjdAo+IGRldmlj
-ZSAqZGV2LCBpbnQgYW1wX2luZGV4LAo+IMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gc3BlYWtlcl9p
-ZDsKPiDCoH0KPiDCoAo+IC0vKgo+IC0gKiBEZXZpY2UgQ0xTQTAxMCgwLzEpIGRvZXNuJ3QgaGF2
-ZSBfRFNEIHNvIGEgZ3Bpb2RfZ2V0IGJ5IHRoZSBsYWJlbAo+IHJlc2V0IHdvbid0IHdvcmsuCj4g
-LSAqIEFuZCBkZXZpY2VzIGNyZWF0ZWQgYnkgc2VyaWFsLW11bHRpLWluc3RhbnRpYXRlIGRvbid0
-IGhhdmUgdGhlaXIKPiBkZXZpY2Ugc3RydWN0Cj4gLSAqIHBvaW50aW5nIHRvIHRoZSBjb3JyZWN0
-IGZ3bm9kZSwgc28gYWNwaV9kZXYgbXVzdCBiZSB1c2VkIGhlcmUuCj4gLSAqIEFuZCBkZXZtIGZ1
-bmN0aW9ucyBleHBlY3QgdGhhdCB0aGUgZGV2aWNlIHJlcXVlc3RpbmcgdGhlIHJlc291cmNlCj4g
-aGFzIHRoZSBjb3JyZWN0Cj4gLSAqIGZ3bm9kZS4KPiAtICovCj4gLXN0YXRpYyBpbnQgY3MzNWw0
-MV9ub19hY3BpX2RzZChzdHJ1Y3QgY3MzNWw0MV9oZGEgKmNzMzVsNDEsIHN0cnVjdAo+IGRldmlj
-ZSAqcGh5c2RldiwgaW50IGlkLAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnN0IGNoYXIgKmhpZCkKPiAtewo+IC3CoMKgwqDC
-oMKgwqDCoHN0cnVjdCBjczM1bDQxX2h3X2NmZyAqaHdfY2ZnID0gJmNzMzVsNDEtPmh3X2NmZzsK
-PiAtCj4gLcKgwqDCoMKgwqDCoMKgLyogY2hlY2sgSTJDIGFkZHJlc3MgdG8gYXNzaWduIHRoZSBp
-bmRleCAqLwo+IC3CoMKgwqDCoMKgwqDCoGNzMzVsNDEtPmluZGV4ID0gaWQgPT0gMHg0MCA/IDAg
-OiAxOwo+IC3CoMKgwqDCoMKgwqDCoGNzMzVsNDEtPmNoYW5uZWxfaW5kZXggPSAwOwo+IC3CoMKg
-wqDCoMKgwqDCoGNzMzVsNDEtPnJlc2V0X2dwaW8gPSBncGlvZF9nZXRfaW5kZXgocGh5c2Rldiwg
-TlVMTCwgMCwKPiBHUElPRF9PVVRfSElHSCk7Cj4gLcKgwqDCoMKgwqDCoMKgY3MzNWw0MS0+c3Bl
-YWtlcl9pZCA9IGNzMzVsNDFfZ2V0X3NwZWFrZXJfaWQocGh5c2RldiwgMCwgMCwKPiAyKTsKPiAt
-wqDCoMKgwqDCoMKgwqBod19jZmctPnNwa19wb3MgPSBjczM1bDQxLT5pbmRleDsKPiAtwqDCoMKg
-wqDCoMKgwqBod19jZmctPmdwaW8yLmZ1bmMgPSBDUzM1TDQxX0lOVEVSUlVQVDsKPiAtwqDCoMKg
-wqDCoMKgwqBod19jZmctPmdwaW8yLnZhbGlkID0gdHJ1ZTsKPiAtwqDCoMKgwqDCoMKgwqBod19j
-ZmctPnZhbGlkID0gdHJ1ZTsKPiAtCj4gLcKgwqDCoMKgwqDCoMKgaWYgKHN0cm5jbXAoaGlkLCAi
-Q0xTQTAxMDAiLCA4KSA9PSAwKSB7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGh3
-X2NmZy0+YnN0X3R5cGUgPSBDUzM1TDQxX0VYVF9CT09TVF9OT19WU1BLX1NXSVRDSDsKPiAtwqDC
-oMKgwqDCoMKgwqB9IGVsc2UgaWYgKHN0cm5jbXAoaGlkLCAiQ0xTQTAxMDEiLCA4KSA9PSAwKSB7
-Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGh3X2NmZy0+YnN0X3R5cGUgPSBDUzM1
-TDQxX0VYVF9CT09TVDsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaHdfY2ZnLT5n
-cGlvMS5mdW5jID0gQ1MzNWw0MV9WU1BLX1NXSVRDSDsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgaHdfY2ZnLT5ncGlvMS52YWxpZCA9IHRydWU7Cj4gLcKgwqDCoMKgwqDCoMKgfSBl
-bHNlIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyoKPiAtwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgICogTm90ZTogQ0xTQTAxMCgwLzEpIGFyZSBzcGVjaWFsIGNhc2Vz
-IHdoaWNoIHVzZSBhCj4gc2xpZ2h0bHkgZGlmZmVyZW50IGRlc2lnbi4KPiAtwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgICogQWxsIG90aGVyIEhJRHMgZS5nLiBDU0MzNTUxIHJlcXVpcmUg
-dmFsaWQgQUNQSQo+IF9EU0QgcHJvcGVydGllcyB0byBiZSBzdXBwb3J0ZWQuCj4gLcKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqBkZXZfZXJyKGNzMzVsNDEtPmRldiwgIkVycm9yOiBBQ1BJIF9EU0QgUHJvcGVydGllcwo+IGFy
-ZSBtaXNzaW5nIGZvciBISUQgJXMuXG4iLCBoaWQpOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBod19jZmctPnZhbGlkID0gZmFsc2U7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoGh3X2NmZy0+Z3BpbzEudmFsaWQgPSBmYWxzZTsKPiAtwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaHdfY2ZnLT5ncGlvMi52YWxpZCA9IGZhbHNlOwo+IC3CoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVJTlZBTDsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4gLQo+
-IC3CoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+IC19Cj4gLQo+IMKgc3RhdGljIGludCBjczM1bDQx
-X2hkYV9yZWFkX2FjcGkoc3RydWN0IGNzMzVsNDFfaGRhICpjczM1bDQxLCBjb25zdAo+IGNoYXIg
-KmhpZCwgaW50IGlkKQo+IMKgewo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgY3MzNWw0MV9od19j
-ZmcgKmh3X2NmZyA9ICZjczM1bDQxLT5od19jZmc7Cj4gQEAgLTE0MzgsMTIgKzEzOTUsMTcgQEAg
-c3RhdGljIGludCBjczM1bDQxX2hkYV9yZWFkX2FjcGkoc3RydWN0Cj4gY3MzNWw0MV9oZGEgKmNz
-MzVsNDEsIGNvbnN0IGNoYXIgKmhpZCwgaQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgc3ViID0gTlVMTDsKPiDCoMKgwqDCoMKgwqDCoMKgY3MzNWw0MS0+YWNwaV9zdWJzeXN0ZW1f
-aWQgPSBzdWI7Cj4gwqAKPiArwqDCoMKgwqDCoMKgwqByZXQgPSBjczM1bDQxX2FkZF9kc2RfcHJv
-cGVydGllcyhjczM1bDQxLCBwaHlzZGV2LCBpZCwgaGlkKTsKPiArwqDCoMKgwqDCoMKgwqBpZiAo
-IXJldCkgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfaW5mbyhjczM1bDQx
-LT5kZXYsICJVc2luZyBleHRyYSBfRFNEIHByb3BlcnRpZXMsCj4gYnlwYXNzaW5nIF9EU0QgaW4g
-QUNQSVxuIik7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gcHV0X3BoeXNk
-ZXY7Cj4gK8KgwqDCoMKgwqDCoMKgfQo+ICsKPiDCoMKgwqDCoMKgwqDCoMKgcHJvcGVydHkgPSAi
-Y2lycnVzLGRldi1pbmRleCI7Cj4gwqDCoMKgwqDCoMKgwqDCoHJldCA9IGRldmljZV9wcm9wZXJ0
-eV9jb3VudF91MzIocGh5c2RldiwgcHJvcGVydHkpOwo+IC3CoMKgwqDCoMKgwqDCoGlmIChyZXQg
-PD0gMCkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXQgPSBjczM1bDQxX25v
-X2FjcGlfZHNkKGNzMzVsNDEsIHBoeXNkZXYsIGlkLCBoaWQpOwo+IC3CoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqBnb3RvIGVycl9wdXRfcGh5c2RldjsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4g
-K8KgwqDCoMKgwqDCoMKgaWYgKHJldCA8PSAwKQo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBnb3RvIGVycjsKPiArCj4gwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQgPiBBUlJBWV9TSVpF
-KHZhbHVlcykpIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldCA9IC1FSU5W
-QUw7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBnb3RvIGVycjsKPiBAQCAtMTUz
-Myw3ICsxNDk1LDEwIEBAIHN0YXRpYyBpbnQgY3MzNWw0MV9oZGFfcmVhZF9hY3BpKHN0cnVjdAo+
-IGNzMzVsNDFfaGRhICpjczM1bDQxLCBjb25zdCBjaGFyICpoaWQsIGkKPiDCoAo+IMKgZXJyOgo+
-IMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGNzMzVsNDEtPmRldiwgIkZhaWxlZCBwcm9wZXJ0eSAl
-czogJWRcbiIsIHByb3BlcnR5LAo+IHJldCk7Cj4gLWVycl9wdXRfcGh5c2RldjoKPiArwqDCoMKg
-wqDCoMKgwqBod19jZmctPnZhbGlkID0gZmFsc2U7Cj4gK8KgwqDCoMKgwqDCoMKgaHdfY2ZnLT5n
-cGlvMS52YWxpZCA9IGZhbHNlOwo+ICvCoMKgwqDCoMKgwqDCoGh3X2NmZy0+Z3BpbzIudmFsaWQg
-PSBmYWxzZTsKPiArcHV0X3BoeXNkZXY6Cj4gwqDCoMKgwqDCoMKgwqDCoHB1dF9kZXZpY2UocGh5
-c2Rldik7Cj4gwqAKPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHJldDsKPiBkaWZmIC0tZ2l0IGEv
-c291bmQvcGNpL2hkYS9jczM1bDQxX2hkYS5oCj4gYi9zb3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRh
-LmgKPiBpbmRleCBiZGIzNWYzYmU2OGEuLmI5M2JmNzYyOTc2ZSAxMDA2NDQKPiAtLS0gYS9zb3Vu
-ZC9wY2kvaGRhL2NzMzVsNDFfaGRhLmgKPiArKysgYi9zb3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRh
-LmgKPiBAQCAtODMsNSArODMsNiBAQCBleHRlcm4gY29uc3Qgc3RydWN0IGRldl9wbV9vcHMgY3Mz
-NWw0MV9oZGFfcG1fb3BzOwo+IMKgaW50IGNzMzVsNDFfaGRhX3Byb2JlKHN0cnVjdCBkZXZpY2Ug
-KmRldiwgY29uc3QgY2hhciAqZGV2aWNlX25hbWUsCj4gaW50IGlkLCBpbnQgaXJxLAo+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzdHJ1Y3QgcmVnbWFwICpyZWdt
-YXApOwo+IMKgdm9pZCBjczM1bDQxX2hkYV9yZW1vdmUoc3RydWN0IGRldmljZSAqZGV2KTsKPiAr
-aW50IGNzMzVsNDFfZ2V0X3NwZWFrZXJfaWQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgYW1wX2lu
-ZGV4LCBpbnQKPiBudW1fYW1wcywgaW50IGZpeGVkX2dwaW9faWQpOwo+IMKgCj4gwqAjZW5kaWYg
-LypfX0NTMzVMNDFfSERBX0hfXyovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvY3MzNWw0
-MV9oZGFfcHJvcGVydHkuYwo+IGIvc291bmQvcGNpL2hkYS9jczM1bDQxX2hkYV9wcm9wZXJ0eS5j
-Cj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAwMDAuLjY3M2YyMzI1N2Ew
-OQo+IC0tLSAvZGV2L251bGwKPiArKysgYi9zb3VuZC9wY2kvaGRhL2NzMzVsNDFfaGRhX3Byb3Bl
-cnR5LmMKPiBAQCAtMCwwICsxLDczIEBACj4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wCj4gKy8vCj4gKy8vIENTMzVMNDEgQUxTQSBIREEgUHJvcGVydHkgZHJpdmVyCj4gKy8v
-Cj4gKy8vIENvcHlyaWdodCAyMDIzIENpcnJ1cyBMb2dpYywgSW5jLgo+ICsvLwo+ICsvLyBBdXRo
-b3I6IFN0ZWZhbiBCaW5kaW5nIDxzYmluZGluZ0BvcGVuc291cmNlLmNpcnJ1cy5jb20+Cj4gKwo+
-ICsjaW5jbHVkZSA8bGludXgvZ3Bpby9jb25zdW1lci5oPgo+ICsjaW5jbHVkZSA8bGludXgvc3Ry
-aW5nLmg+Cj4gKyNpbmNsdWRlICJjczM1bDQxX2hkYV9wcm9wZXJ0eS5oIgo+ICsKPiArLyoKPiAr
-ICogRGV2aWNlIENMU0EwMTAoMC8xKSBkb2Vzbid0IGhhdmUgX0RTRCBzbyBhIGdwaW9kX2dldCBi
-eSB0aGUgbGFiZWwKPiByZXNldCB3b24ndCB3b3JrLgo+ICsgKiBBbmQgZGV2aWNlcyBjcmVhdGVk
-IGJ5IHNlcmlhbC1tdWx0aS1pbnN0YW50aWF0ZSBkb24ndCBoYXZlIHRoZWlyCj4gZGV2aWNlIHN0
-cnVjdAo+ICsgKiBwb2ludGluZyB0byB0aGUgY29ycmVjdCBmd25vZGUsIHNvIGFjcGlfZGV2IG11
-c3QgYmUgdXNlZCBoZXJlLgo+ICsgKiBBbmQgZGV2bSBmdW5jdGlvbnMgZXhwZWN0IHRoYXQgdGhl
-IGRldmljZSByZXF1ZXN0aW5nIHRoZSByZXNvdXJjZQo+IGhhcyB0aGUgY29ycmVjdAo+ICsgKiBm
-d25vZGUuCj4gKyAqLwo+ICtzdGF0aWMgaW50IGxlbm92b19sZWdpb25fbm9fYWNwaShzdHJ1Y3Qg
-Y3MzNWw0MV9oZGEgKmNzMzVsNDEsIHN0cnVjdAo+IGRldmljZSAqcGh5c2RldiwgaW50IGlkLAo+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCBjb25zdCBjaGFyICpoaWQpCj4gK3sKPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgY3Mz
-NWw0MV9od19jZmcgKmh3X2NmZyA9ICZjczM1bDQxLT5od19jZmc7Cj4gKwo+ICvCoMKgwqDCoMKg
-wqDCoC8qIGNoZWNrIEkyQyBhZGRyZXNzIHRvIGFzc2lnbiB0aGUgaW5kZXggKi8KPiArwqDCoMKg
-wqDCoMKgwqBjczM1bDQxLT5pbmRleCA9IGlkID09IDB4NDAgPyAwIDogMTsKPiArwqDCoMKgwqDC
-oMKgwqBjczM1bDQxLT5jaGFubmVsX2luZGV4ID0gMDsKPiArwqDCoMKgwqDCoMKgwqBjczM1bDQx
-LT5yZXNldF9ncGlvID0gZ3Bpb2RfZ2V0X2luZGV4KHBoeXNkZXYsIE5VTEwsIDAsCj4gR1BJT0Rf
-T1VUX0hJR0gpOwo+ICvCoMKgwqDCoMKgwqDCoGNzMzVsNDEtPnNwZWFrZXJfaWQgPSBjczM1bDQx
-X2dldF9zcGVha2VyX2lkKHBoeXNkZXYsIDAsIDAsCj4gMik7Cj4gK8KgwqDCoMKgwqDCoMKgaHdf
-Y2ZnLT5zcGtfcG9zID0gY3MzNWw0MS0+aW5kZXg7Cj4gK8KgwqDCoMKgwqDCoMKgaHdfY2ZnLT5n
-cGlvMi5mdW5jID0gQ1MzNUw0MV9JTlRFUlJVUFQ7Cj4gK8KgwqDCoMKgwqDCoMKgaHdfY2ZnLT5n
-cGlvMi52YWxpZCA9IHRydWU7Cj4gK8KgwqDCoMKgwqDCoMKgaHdfY2ZnLT52YWxpZCA9IHRydWU7
-Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoGlmIChzdHJjbXAoaGlkLCAiQ0xTQTAxMDAiKSA9PSAwKSB7
-Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGh3X2NmZy0+YnN0X3R5cGUgPSBDUzM1
-TDQxX0VYVF9CT09TVF9OT19WU1BLX1NXSVRDSDsKPiArwqDCoMKgwqDCoMKgwqB9IGVsc2UgaWYg
-KHN0cmNtcChoaWQsICJDTFNBMDEwMSIpID09IDApIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgaHdfY2ZnLT5ic3RfdHlwZSA9IENTMzVMNDFfRVhUX0JPT1NUOwo+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBod19jZmctPmdwaW8xLmZ1bmMgPSBDUzM1bDQxX1ZTUEtf
-U1dJVENIOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBod19jZmctPmdwaW8xLnZh
-bGlkID0gdHJ1ZTsKPiArwqDCoMKgwqDCoMKgwqB9Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoHJldHVy
-biAwOwo+ICt9Cj4gKwo+ICtzdHJ1Y3QgY3MzNWw0MV9wcm9wX21vZGVsIHsKPiArwqDCoMKgwqDC
-oMKgwqBjb25zdCBjaGFyICpoaWQ7Cj4gK8KgwqDCoMKgwqDCoMKgY29uc3QgY2hhciAqc3NpZDsK
-PiArwqDCoMKgwqDCoMKgwqBpbnQgKCphZGRfcHJvcCkoc3RydWN0IGNzMzVsNDFfaGRhICpjczM1
-bDQxLCBzdHJ1Y3QgZGV2aWNlCj4gKnBoeXNkZXYsIGludCBpZCwKPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnN0IGNoYXIgKmhpZCk7Cj4gK307Cj4g
-Kwo+ICtjb25zdCBzdHJ1Y3QgY3MzNWw0MV9wcm9wX21vZGVsIGNzMzVsNDFfcHJvcF9tb2RlbF90
-YWJsZVtdID0gewo+ICvCoMKgwqDCoMKgwqDCoHsgIkNMU0EwMTAwIiwgTlVMTCwgbGVub3ZvX2xl
-Z2lvbl9ub19hY3BpIH0sCj4gK8KgwqDCoMKgwqDCoMKgeyAiQ0xTQTAxMDEiLCBOVUxMLCBsZW5v
-dm9fbGVnaW9uX25vX2FjcGkgfSwKPiArwqDCoMKgwqDCoMKgwqB7fQo+ICt9Owo+ICsKPiAraW50
-IGNzMzVsNDFfYWRkX2RzZF9wcm9wZXJ0aWVzKHN0cnVjdCBjczM1bDQxX2hkYSAqY3MzNWw0MSwg
-c3RydWN0Cj4gZGV2aWNlICpwaHlzZGV2LCBpbnQgaWQsCj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3QgY2hhciAqaGlkKQo+
-ICt7Cj4gK8KgwqDCoMKgwqDCoMKgY29uc3Qgc3RydWN0IGNzMzVsNDFfcHJvcF9tb2RlbCAqbW9k
-ZWw7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoGZvciAobW9kZWwgPSBjczM1bDQxX3Byb3BfbW9kZWxf
-dGFibGU7IG1vZGVsLT5oaWQgPiAwOwo+IG1vZGVsKyspIHsKPiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgaWYgKCFzdHJjbXAobW9kZWwtPmhpZCwgaGlkKSAmJgo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKCFtb2RlbC0+c3NpZCB8fAo+ICvCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoY3MzNWw0MS0+YWNwaV9zdWJzeXN0ZW1faWQg
-JiYKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAhc3RyY21wKG1v
-ZGVsLT5zc2lkLCBjczM1bDQxLQo+ID5hY3BpX3N1YnN5c3RlbV9pZCkpKSkKPiArwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiBtb2RlbC0+YWRkX3By
-b3AoY3MzNWw0MSwgcGh5c2RldiwgaWQsCj4gaGlkKTsKPiArwqDCoMKgwqDCoMKgwqB9Cj4gKwo+
-ICvCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PRU5UOwo+ICt9Cj4gZGlmZiAtLWdpdCBhL3NvdW5k
-L3BjaS9oZGEvY3MzNWw0MV9oZGFfcHJvcGVydHkuaAo+IGIvc291bmQvcGNpL2hkYS9jczM1bDQx
-X2hkYV9wcm9wZXJ0eS5oCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwMDAw
-MDAuLmZkODM0MDQyZTJmZAo+IC0tLSAvZGV2L251bGwKPiArKysgYi9zb3VuZC9wY2kvaGRhL2Nz
-MzVsNDFfaGRhX3Byb3BlcnR5LmgKPiBAQCAtMCwwICsxLDE4IEBACj4gKy8qIFNQRFgtTGljZW5z
-ZS1JZGVudGlmaWVyOiBHUEwtMi4wCj4gKyAqCj4gKyAqIENTMzVMNDEgQUxTQSBIREEgUHJvcGVy
-dHkgZHJpdmVyCj4gKyAqCj4gKyAqIENvcHlyaWdodCAyMDIzIENpcnJ1cyBMb2dpYywgSW5jLgo+
-ICsgKgo+ICsgKiBBdXRob3I6IFN0ZWZhbiBCaW5kaW5nIDxzYmluZGluZ0BvcGVuc291cmNlLmNp
-cnJ1cy5jb20+Cj4gKyAqLwo+ICsKPiArI2lmbmRlZiBDUzM1TDQxX0hEQV9QUk9QX0gKPiArI2Rl
-ZmluZSBDUzM1TDQxX0hEQV9QUk9QX0gKPiArCj4gKyNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4K
-PiArI2luY2x1ZGUgImNzMzVsNDFfaGRhLmgiCj4gKwo+ICtpbnQgY3MzNWw0MV9hZGRfZHNkX3By
-b3BlcnRpZXMoc3RydWN0IGNzMzVsNDFfaGRhICpjczM1bDQxLCBzdHJ1Y3QKPiBkZXZpY2UgKnBo
-eXNkZXYsIGludCBpZCwKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBjb25zdCBjaGFyICpoaWQpOwo+ICsjZW5kaWYgLyogQ1MzNUw0
-MV9IREFfUFJPUF9IICovCgpIaSBTdGVmYW4sCgpJdCdzIGdyZWF0IHRvIHNlZSBwcm9ncmVzcyBo
-ZXJlLiBJJ3ZlIGhhZCBvbmx5IGEgYnJpZWYgbG9vayBhbmQgSQpoYXZlbid0IGFwcGxpZWQgdGhl
-IHBhdGNoIGFzIG9mIHlldCBzaW5jZSBJIGhhdmUgb25seSBTUEkgY29ubmVjdGVkCmRldmljZXMs
-IHNvIEkgbXVzdCBhc2sgLSBhcmUgeW91IHBsYW5uaW5nIGFueSBraW5kIG9mIGV4dHJhIHN1cHBv
-cnQgZm9yCnRoZSBTUEkgY29ubmVjdGVkIGRldmljZXM/CgpNeSB1bmRlcnN0YW5kaW5nIG9mIHRo
-ZXNlIFNQSSBkZXZzIGFyZSB0aGF0IHRoZXkgYXJlIHN0aWxsIG1pc3NpbmcgdGhlCiJjcy1ncGlv
-cyIgYmxvY2sgaW4gdGhlIEFDUEkgYW5kIHRoYXQgdGhleSBsaWtlbHkgd29uJ3Qgd29rIHdpdGhv
-dXQgaXQKZXZlbiB3aXRoIHRoaXMgcGF0Y2guCgpDaGVlcnMsCkx1a2UuCgo=
+This series introduces support for creating and running guest machines
+while running on the Microsoft Hypervisor. [0]
+This is done via an IOCTL interface accessed through /dev/mshv, similar to
+/dev/kvm. Another series introducing this support was previously posted.
+[1]
+
+These interfaces support VMMs running in:
+1. The root patition - provided in the mshv_root module, and
+2. VTL 2 - provided in the mshv_vtl module [2]
+
+Patches breakdown
+-----------------
+The first 7 patches are refactoring and adding some helper functions.
+They provide some benefit on their own and could be applied independently
+as cleanup patches.
+
+Patches 8-12 just set things up for the driver code to come. These are very
+small. They come first so that the remaining patches are more self-contained.
+
+The final 3 patches are the meat of the series:
+- Patch 13 contains new header files used by the driver.
+  These are designed to mirror the ABI headers exported by Hyper-V. This is
+  done to avoid polluting hyperv-tlfs.h and help track changes to the ABIs
+  that are still unstable. (See FAQ below).
+- Patch 14 conditionally includes these new header files into mshyperv.h
+  and linux/hyperv.h, in order to be able to use these files in the new
+  drivers while remaining independent from hyperv-tlfs.h.
+- Patch 15 contains the new driver code located in drivers/hv. This is a
+  large amount of code and new files, but it is mostly self-contained and
+  all within drivers/hv - apart from the IOCTL interface itself in uapi.
+
+Patch 15 is rather big and has bounced back from some mailing lists. If you
+did not get a copy in your inbox, you can view it here instead:
+https://github.com/NunoDasNeves/linux/commit/4dd436f13d95a6a0daecd75da012a2caa6c57c8c
+
+FAQ on include/uapi/hyperv/*.h
+------------------------------
+Q:
+Why not just add these definitions to hyperv-tlfs.h?
+A:
+The intention of hyperv-tlfs.h is to contain stable definitions documented
+in the public TLFS document. These new definitions don't fit that criteria,
+so they should be separate.
+
+Q:
+Why are these files named hvgdk.h, hvgdk_mini.h, hvhdk.h and hvhdk_mini.h?
+A:
+The precise meaning of the names reflects conventions used internally at
+Microsoft.
+Naming them this way makes it easy to find where particular Hyper-V
+definitions come from, and check their correctness.
+It also facilitates the future work of automatically generating these files.
+
+Q:
+Why are they in uapi?
+A:
+In short, to keep things simple. There are many definitions needed in both
+the kernel and the VMM in userspace. Separating them doesn't serve much
+purpose, and makes it more laborious to import definitions from Hyper-V
+code.
+
+Q:
+The new headers redefine many things that are already in hyperv-tlfs.h - why?
+A:
+Some definitions are extended compared to what is documented in the TLFS.
+In order to avoid adding undocumented or unstable definitions to hyperv-tlfs.h,
+the new headers must compile independently.
+Therefore, the new headers must redefine many things in hyperv-tlfs.h in order
+to compile.
+
+--------------------------
+[0] "Hyper-V" is more well-known, but it really refers to the whole stack
+    including the hypervisor and other components that run in Windows
+    kernel and userspace.
+[1] Previous /dev/mshv patch series and discussion:
+    https://lore.kernel.org/linux-hyperv/1632853875-20261-1-git-send-email-nunodasneves@linux.microsoft.com/
+[2] Virtual Secure Mode (VSM) and Virtual Trust Levels (VTL):
+    https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/tlfs/vsm
+
+--------------------------
+
+Changes since v1:
+    * Clean up formatting, capitalization in commit messages
+    * Add detail to commit message for patch 15
+    * Remove errant lines in Makefile and Kconfig in patch 15
+    * Move a reference to CONFIG_MSHV_VTL from patch 9 to 15
+
+Nuno Das Neves (15):
+  hyperv-tlfs: Change shared HV_REGISTER_* defines to HV_MSR_*
+  mshyperv: Introduce hv_get_hypervisor_version function
+  mshyperv: Introduce numa_node_to_proximity_domain_info
+  asm-generic/mshyperv: Introduce hv_recommend_using_aeoi()
+  hyperv: Move hv_connection_id to hyperv-tlfs
+  hyperv-tlfs: Introduce hv_status_to_string and hv_status_to_errno
+  Drivers: hv: Move hv_call_deposit_pages and hv_call_create_vp to
+    common code
+  Drivers: hv: Introduce per-cpu event ring tail
+  Drivers: hv: Introduce hv_output_arg_exists in hv_common.c
+  x86: hyperv: Add mshv_handler irq handler and setup function
+  Drivers: hv: export vmbus_isr, hv_context and hv_post_message
+  Documentation: Reserve ioctl number for mshv driver
+  uapi: hyperv: Add mshv driver headers hvhdk.h, hvhdk_mini.h, hvgdk.h,
+    hvgdk_mini.h
+  asm-generic: hyperv: Use mshv headers conditionally. Add
+    asm-generic/hyperv-defs.h
+  Drivers: hv: Add modules to expose /dev/mshv to VMMs running on
+    Hyper-V
+
+ .../userspace-api/ioctl/ioctl-number.rst      |    2 +
+ arch/arm64/hyperv/mshyperv.c                  |   23 +-
+ arch/arm64/include/asm/hyperv-tlfs.h          |   25 +
+ arch/arm64/include/asm/mshyperv.h             |    2 +-
+ arch/x86/hyperv/hv_init.c                     |    2 +-
+ arch/x86/hyperv/hv_proc.c                     |  166 +-
+ arch/x86/include/asm/hyperv-tlfs.h            |  137 +-
+ arch/x86/include/asm/mshyperv.h               |   13 +-
+ arch/x86/kernel/cpu/mshyperv.c                |   71 +-
+ drivers/acpi/numa/srat.c                      |    1 +
+ drivers/clocksource/hyperv_timer.c            |   24 +-
+ drivers/hv/Kconfig                            |   50 +
+ drivers/hv/Makefile                           |   20 +
+ drivers/hv/hv.c                               |   46 +-
+ drivers/hv/hv_call.c                          |  119 +
+ drivers/hv/hv_common.c                        |  222 +-
+ drivers/hv/hyperv_vmbus.h                     |    2 +-
+ drivers/hv/mshv.h                             |  156 ++
+ drivers/hv/mshv_eventfd.c                     |  758 +++++++
+ drivers/hv/mshv_eventfd.h                     |   80 +
+ drivers/hv/mshv_main.c                        |  208 ++
+ drivers/hv/mshv_msi.c                         |  129 ++
+ drivers/hv/mshv_portid_table.c                |   84 +
+ drivers/hv/mshv_root.h                        |  194 ++
+ drivers/hv/mshv_root_hv_call.c                | 1064 +++++++++
+ drivers/hv/mshv_root_main.c                   | 1964 +++++++++++++++++
+ drivers/hv/mshv_synic.c                       |  689 ++++++
+ drivers/hv/mshv_vtl.h                         |   52 +
+ drivers/hv/mshv_vtl_main.c                    | 1542 +++++++++++++
+ drivers/hv/vmbus_drv.c                        |    3 +-
+ drivers/hv/xfer_to_guest.c                    |   28 +
+ include/asm-generic/hyperv-defs.h             |   26 +
+ include/asm-generic/hyperv-tlfs.h             |   77 +-
+ include/asm-generic/mshyperv.h                |   76 +-
+ include/linux/hyperv.h                        |   11 +-
+ include/uapi/hyperv/hvgdk.h                   |   41 +
+ include/uapi/hyperv/hvgdk_mini.h              | 1077 +++++++++
+ include/uapi/hyperv/hvhdk.h                   | 1352 ++++++++++++
+ include/uapi/hyperv/hvhdk_mini.h              |  164 ++
+ include/uapi/linux/mshv.h                     |  298 +++
+ 40 files changed, 10645 insertions(+), 353 deletions(-)
+ create mode 100644 drivers/hv/hv_call.c
+ create mode 100644 drivers/hv/mshv.h
+ create mode 100644 drivers/hv/mshv_eventfd.c
+ create mode 100644 drivers/hv/mshv_eventfd.h
+ create mode 100644 drivers/hv/mshv_main.c
+ create mode 100644 drivers/hv/mshv_msi.c
+ create mode 100644 drivers/hv/mshv_portid_table.c
+ create mode 100644 drivers/hv/mshv_root.h
+ create mode 100644 drivers/hv/mshv_root_hv_call.c
+ create mode 100644 drivers/hv/mshv_root_main.c
+ create mode 100644 drivers/hv/mshv_synic.c
+ create mode 100644 drivers/hv/mshv_vtl.h
+ create mode 100644 drivers/hv/mshv_vtl_main.c
+ create mode 100644 drivers/hv/xfer_to_guest.c
+ create mode 100644 include/asm-generic/hyperv-defs.h
+ create mode 100644 include/uapi/hyperv/hvgdk.h
+ create mode 100644 include/uapi/hyperv/hvgdk_mini.h
+ create mode 100644 include/uapi/hyperv/hvhdk.h
+ create mode 100644 include/uapi/hyperv/hvhdk_mini.h
+ create mode 100644 include/uapi/linux/mshv.h
+
+-- 
+2.25.1
 
