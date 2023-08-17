@@ -2,134 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F71477FDE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57D077FDE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 20:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354407AbjHQSac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 14:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S1354310AbjHQScK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 14:32:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354505AbjHQSaR (ORCPT
+        with ESMTP id S1354440AbjHQSbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 14:30:17 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3E7D3592
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:29:59 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-407db3e9669so39571cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 11:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692296999; x=1692901799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LwYh+kePTjMmxljMAz9Xt13TYo4scp9mgDZ0UyhkoJA=;
-        b=A8Oj0MA6eqOQbzanZvqIHAdaiSCKjoFGl6cNKY88LVT0R9Nzi1jbf3TkqeDF8oqfmM
-         5i9LWvb+oewmkabEd7USKmAMDaaxNGt3wjL6vV6xiz5NEuCJH0cOdUMSeobbsjQzC3XS
-         lq7XRRseqFIov2FzXG4Xvi9t+eP2akaMsNjWQ5vLAnxGueiayEc2iz+Xa5A6mFrM4cVV
-         fJIKYuJMP1n7xtm+b4IAiMWc0hzeSCgUiya9XoLOEhfMNJ0Dyn7Km27w4UPwvCQQK2jt
-         olSVfXU7FxoDopdHKQaYfc08uIKp5uFvgFk6wGag1nEwuj/iVO1P2tULRs51Ig+zGdfX
-         kxMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692296999; x=1692901799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LwYh+kePTjMmxljMAz9Xt13TYo4scp9mgDZ0UyhkoJA=;
-        b=F7mzgoWtnAefxTS3Qza/1hQBUDNDDotmCduKXWz9H8Ht9Qip6NuTCmtLnH70RFf//9
-         hxo4QiuLxwIQGpGeYHDE50/HIsEEyVa3YeZ9h2oU/qsHPfOjq9xunEfKjxUagguAHymO
-         YeLUwW9To4XXjlyp2idnabkqxD09EBnA5EpH6zznMa84V4+SanqQNnoWdFQ/ToY3DTO3
-         EC8nikYRiCw8xZdPgk8CfsMttpDwkIj3f2rldGCImMTofjRVsoKx2IQO7Pc0bsYJNTUc
-         0YrLEgp68E/Kgeq3ssS4RgkCYBX4HVl8wJeitb1pPCuh+OwXa08AuRkzDzgH2y+kEJ0C
-         2JXg==
-X-Gm-Message-State: AOJu0YwuZ9uy44WaJtT8W8WZGHcPbL+wcl5V/PBEODhzQFRtZG5NcNyk
-        4JbDgdZrLE6aVwoyxsuMt8SmTaSbnIizrcm4EQ3UCA==
-X-Google-Smtp-Source: AGHT+IGDDMM5gCD6SYSVcMwn8Bjh/47KrTKCzkFUsgyPorQbeGqAjOh0vvOtUcO4zGG5I/VRexzOoK4u8GPQqhWlwXA=
-X-Received: by 2002:ac8:7d03:0:b0:3fd:ad1b:4e8a with SMTP id
- g3-20020ac87d03000000b003fdad1b4e8amr38751qtb.22.1692296998646; Thu, 17 Aug
- 2023 11:29:58 -0700 (PDT)
+        Thu, 17 Aug 2023 14:31:41 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737ADCD;
+        Thu, 17 Aug 2023 11:31:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TQdLXx4I5LeXjkoQmeQ+KYVsuj1ONk/0k0Nppz2pcFoSKyqWlDklDuDu0d7C/IGUivg7F385gm7zKpkA8UhSd4CaCS2AxujY7nRvDMU1hfjWNHtFmCVeHpZtvfZR4Wm9Jdts4Ehj5JND/Ai3uN8UbMWbckWKKtnRVi64KCUVfRS74cQSY13YPIHmzMU8kOZWkqsisxKxgkh7QUfJv8UqHIs1aHZ9o9vqLLNvuSO2WTiqUGPPPnES69sY6+JF4UEceT7AtO5oR5vn7ROSzL4eSFJx+nSkFUT2olxzFnwQO8+2ApixgEVlHJ/XZ1duZd8wU1k/KWCqEER5ME4+NOMd6Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C5q5tOX5q8ziD59BehzbMSkwgb5RwtISLNUyMaJmThc=;
+ b=U6nF128txw2Y38HviOmm6vK78BAFawo38Bn3EUGewZV6+Yy4WVaCAsfUeBJg1Fs+wuoF3RHYmb6VkJgswSztNkg1mVy5ut/l+AUnkBoif7/sL9V7jcDXjMPKkw6obVYMIRj5h61cEWewixCYAUG7zx+hWCWG0V6iCoeWMpfJBKuYL26UsfRCKXHCmudnPXJz09CQ1Drl5J6VUI+JUlRg0bJITNwcLya6/4egvlkJgkDTDiT+erlAyLjQF+85PmMYr56NZDCHuItAoPvQ3LIqXrhNT19IIOJyViKDIMM2JzvZBfOcJ5xSaqxaTxIecF5oMX8Pr5PwpzdUfiIl9yUGgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C5q5tOX5q8ziD59BehzbMSkwgb5RwtISLNUyMaJmThc=;
+ b=PKJ+YqawOde9Pm7CurNvRokXL6iai+X8lDCYwWTbE7yU75EA4cLctZvJ6/p1yFoDcOi4AzqykA+zQ4NIUHRE0AdS7Ge9nGOoC1Y9qzCPvhIV9WasqihIGyiG/lb6uY+8VkbRu7d7O3UIsqpoAn02A5YOf2Z3wrsDeiC78x6TIes=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by CH3PR12MB7666.namprd12.prod.outlook.com (2603:10b6:610:152::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Thu, 17 Aug
+ 2023 18:31:38 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6678.029; Thu, 17 Aug 2023
+ 18:31:38 +0000
+Message-ID: <4ac4ee07-9328-415f-a4e8-30dfd9c10fee@amd.com>
+Date:   Thu, 17 Aug 2023 13:31:35 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 9/9] PCI: ACPI: Use device constraints to decide PCI
+ target state fallback policy
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+References: <20230816223831.GA291481@bhelgaas>
+ <6a91a3e1-61a2-4f33-ae01-ea4b5ad24ec6@amd.com>
+ <CAJZ5v0i46b2th2iATB-Zsfhexcva8h_KAxYtUsGDHS_3zXnn-Q@mail.gmail.com>
+Content-Language: en-US
+From:   "Limonciello, Mario" <mario.limonciello@amd.com>
+In-Reply-To: <CAJZ5v0i46b2th2iATB-Zsfhexcva8h_KAxYtUsGDHS_3zXnn-Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0128.namprd11.prod.outlook.com
+ (2603:10b6:806:131::13) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-References: <20230818000321.1.Ibca43cc8d1bcad3ac3deef5726b9745128aea634@changeid>
- <928822fd-642a-5ca7-7b42-dc7885f3cf51@arm.com> <CAKHBV27bsDWsS_dUsj=xdTfnc0CDhcH+0ZLZ2z481BZMsBQX4w@mail.gmail.com>
- <a8623bd8-1df4-42b7-4993-006316594818@arm.com>
-In-Reply-To: <a8623bd8-1df4-42b7-4993-006316594818@arm.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Fri, 18 Aug 2023 02:29:22 +0800
-Message-ID: <CAKHBV27W+7P_A1DbU0MBxQ9vzRDR+sPH2SyASKXSr5fXvUwyWg@mail.gmail.com>
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Simplify stage selection logic
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux.dev, Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Will Deacon <will@kernel.org>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|CH3PR12MB7666:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2a774ce-d0a4-4253-de8b-08db9f5031a3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OTJN6CLmmxC3w7AQ4PFEPynIeEzQVq0gR6YmMYoaMMp26d3yansRnR9Sxo39OIVGBtjBBWZpVU64+Vx7vTbpnS7Z9KFFX4KPBTftl+P7Q/ZhEmicbYthDhCmlGEPuXL/RNV+ddbkGNink9vZiu9MnlSPItJ7Yf6l4sFQAahxf3Bm7eJci1h7qRH8aHAC6p/eeGwmLqAqZ8tC8xq+yngIrBrIC8lESjAjYC0rSEL4x4XG1R4kMzcy/nH0no3yNsF8hVokTLUF9tgrvX1zmlyu6/IBoXkurPtzei0Xhm2Rl2deQjQZ2Y7jACx5eUAjl6B2jgGVAxbwyVFvNwfW2v2F8mauUDF9wrrhpF2tetkwkHLALCcOb578YgyVrReRU0qpsKqXF174Lmm0DAcLQ1cW+E78Oz26ma6+TsqHHrbqmjVGwkoIUeJzW0aNg53oW0Mp4++Ytxl7VnOeshUftoz+5XEdaC+0nqiQt1rEnUjROijs7Wb/5NGbEKI6Vu941MVnU+sfdjD/jo2KYlO9wKVoeasU3MqARA1NofxWgn2wNHEuma/Evvx3A126a9aplf3cO7B9Q451hhKwCXeuLh3iaWSkZuDFmZIF42TyfWk6ANwXigW+Dmu5eol8B7bK6ghbSbM3Vl509kZqoMZ9BBPoNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(366004)(136003)(451199024)(186009)(1800799009)(316002)(54906003)(66946007)(66476007)(66556008)(31686004)(6916009)(5660300002)(41300700001)(38100700002)(8676002)(8936002)(4326008)(26005)(2906002)(31696002)(4744005)(83380400001)(478600001)(86362001)(36756003)(6512007)(6666004)(6506007)(6486002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eTZkSFcyb2hnbU80UnBtRmpWSjhMbkZHYWVhWjUrTnJxaGZuZEVHWU9wOUV0?=
+ =?utf-8?B?SjlNZlhsZ1dvQUpaTEhPQmYrdE9EZ2dRb0h0WS9ZbkM2NTBGSWQvTjBuTG1K?=
+ =?utf-8?B?dU12eEN4WnNzQnlMa3V4M2JjQWtsSUNMNEgrVWN5YmhBS3ptQ0lmanNMbEpB?=
+ =?utf-8?B?dGRjUVpEaElzbFJYMGgzOW16MkxFOWdjZlZsbHRWYXdNc3NmTXRoOTVPTnBK?=
+ =?utf-8?B?c0FCQVpzMm9ZYm1qUlBlL1JrTFR6VlRjN2FaZERhQnVjcXNKOWcxdU9yQWNL?=
+ =?utf-8?B?MmdpQmlob3ZzTGJPY2E5ZWhyQVVRc0s2WE1VV1Z3L2Z0WjBKaTMwQ1cwY2or?=
+ =?utf-8?B?bmFmcnNsT0o0TTc2SXdFNFcrV0h6SnBZWVJxNkFSbzhkMXFiL1dzZERlcDM2?=
+ =?utf-8?B?b21sUmgrUlpxMkRIREV2ZXczM0lNWVoyVUV6emxZZVpmcG1USjlKTGZ1eFQ4?=
+ =?utf-8?B?UkVOSGpGdnlVN2RyNnVVckVJRDBEaFZWSEJVZHBvSXNnUWdoYVJnRHhqbkZG?=
+ =?utf-8?B?VXNBY0xaVk1vK0lWQmcweDNUSCtZTWIya1Rhb0dRdUlhcVRiS0I2QmZRZ2Zm?=
+ =?utf-8?B?UlgzS2ZXL2IvS1piUjZ6Uk14aVkrZzNGSytzUnJ5Zlh5ZlN5VVZwVlNncE53?=
+ =?utf-8?B?NWxVczVXeXFpWko3MnpNUDVFcUNRTE1oc0xaM081aHpra0FVeDNNWHROUEIz?=
+ =?utf-8?B?TmRTdjlRcnZHb3IvT1ZyYkN0WDcwR0xmcU50TCtYQVd4WktkcXNMcTI1Sjlp?=
+ =?utf-8?B?RzZHanBvNWZUVnlWSXEzSXBIRHlGMDFENVNhdnFBSm52Uk5rc0I0U0xGbVRm?=
+ =?utf-8?B?UFY0NXNrRTFlTFZxNG9IQW04TCs2NnJLa0ZvcDgyWFU5YUVvY2dvbkJxRis2?=
+ =?utf-8?B?aHhCOXRUbkhPemxqWS85bDNqSitwakhhdXY1UlBvUVhQdzFqbEJQcFg4TWlI?=
+ =?utf-8?B?eGNiRGtzTkRHcTRVcm96SVpZRC9rRk5NM1FYdE1BdVdyK2N4Z2tSQVJLMU5K?=
+ =?utf-8?B?MVpTdlJZZ2JsTFJOMjNoRFpkOE05VTZsYzM1aTc2dTZPMU5mdUh2OUMxMVVP?=
+ =?utf-8?B?dDBCVjJVcWNKdkQ2MU43SnVFVERDZWNLRmtJSHJrOXluRG9yQzBLdHJidENo?=
+ =?utf-8?B?RFhZeEoxSGhzaDZmMEk3K3hJZXd2ZUc5NXBLVWIzU1Z4Zkp0OFpqMkkwOXRt?=
+ =?utf-8?B?ejRGMWFWckQwUUJSRU85SW1aMjREVkptRUxlb1d4Ukt1NlhFbFBsNnZCQi83?=
+ =?utf-8?B?NWhQbVdUT1lHUkdMcHdvdjlEU0VEOEJ3VFJmMmpaQjI3L3EyMDZ5ZjhHcmNi?=
+ =?utf-8?B?ZU41WTZwT3hXT3dLVzdSWDRmNjE3SkN4Q2dLeGFjZ2VLRFdmZndKRG1kTTI1?=
+ =?utf-8?B?dTk5L2JDWW5odllzUldtRzdGR0ZaOTF1SjkwSUNkN0pTWU5HQ3A1UnRXa1A4?=
+ =?utf-8?B?Mkdhbk00L2UzcVBOUGpoSWhMUGNjekFaMTlQWUNzWnNzdU1jUDUwL1Z2QXQv?=
+ =?utf-8?B?Q3FhYmpXTDQrN2xqVkIvdmpPN3Z3VFlCOElwK0VJVy93Y2grbzJybGdKZ05I?=
+ =?utf-8?B?YkhmYnFaaFFYS0R3MTRFSHR2WXB1ZXZ5WWhIQS8yZk41a1JBTERWeXFCbmNH?=
+ =?utf-8?B?N0xRVWdNazJQV01UTU04dnBFVjlOaGJTVmtkK0JGNlJOdlRleEo1OGFKUUMw?=
+ =?utf-8?B?VDZSc215akZCNThvRHR0dU9EaXFsS0hEbWN1TFJkR2lwTjkxbnRHSjZnblA5?=
+ =?utf-8?B?RzQ0RDgwNjltVEhnM2VKTUVWdUhTVTRFTkVNR2dad1hROUtQTTcrUXVHbXRi?=
+ =?utf-8?B?cGRvVlV6MGxDK0xiZ2tJekg1K0xkRm1WdE5sbUh4U1NDaTE2MG5rUVB3bjJp?=
+ =?utf-8?B?V21zd0tkUnhtMUdxcGNaMUVkdTJpQ09zYmRIbmRrNml3UDJTdSt3b29WRllv?=
+ =?utf-8?B?M3NBNUFCZE8wZUdGbEVLZU9CVy92enk1cXZvRDBUT0c3T1JMV1dld2VOeitk?=
+ =?utf-8?B?eWRlTFNmVTNiMG1ldVc5RU1iellVRm9aWUQ4N3hiQ1RVTDZHK1hPbHBqN1FR?=
+ =?utf-8?B?L2hlVWU0Qk5OS3Avb2ZCcnh1aGl6MFE0S0hRZEF6a0N6WlF1QUx2OTEvbkll?=
+ =?utf-8?Q?6RHol0Rrt6O4m5yTPWux+ZJCC?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2a774ce-d0a4-4253-de8b-08db9f5031a3
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2023 18:31:38.3771
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aOySXcpSKsYKzyl75d85pDbS7+dGrXDZXH+Sfrs9dh7vrTbNdEregoqskym3VJvzE5RC5r9pCbxW/ifSVOiHpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7666
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 2:19=E2=80=AFAM Robin Murphy <robin.murphy@arm.com>=
- wrote:
->
-> On 2023-08-17 18:06, Michael Shavit wrote:
-> > On Fri, Aug 18, 2023 at 12:35=E2=80=AFAM Robin Murphy <robin.murphy@arm=
-.com> wrote:
-> >>
-> >> The reason it's like this is because of arm_smmu_enable_nesting(), whi=
-ch
-> >> *is* the additional thing that's going on with the stage selection log=
-ic.
-> >>
-> >> Thanks,
-> >> Robin.
-> >
-> > Right, but arm_smmu_enable_nesting isn't involved in this computation
-> > at this point in the flow.
-> >
-> > arm_smmu_enable_nesting returns early if smmu_domain->smmu isn't set,
-> > and smmu_domain->smmu is only set after arm_smmu_domain_finalise.
-> > So at this point, smmu_domain->stage is being initialized for the
-> > first time. If this code is responsible for handling some special
-> > nesting case, then it's probably not working as intended.
->
-> I think you may have misread that code...
 
-oof, yes, I did indeed misread.
+>> I was intentionally trying to leave the actual problem out of the commit
+>> from your earlier feedback and just put it in the cover letter.
+>>
+>> But if it's better to keep in the commit message I'll return those details.
+> 
+> It is.
+> 
+> If you make a change in order to address a specific problem, that
+> problem needs to be described in the changelog of the patch making
+> that change.
+> 
+> Anything else is more or less confusing IMO.
 
->
-> Anyway, the point of the logic here is that it is not "selection", it
-> is, as the comment says, "restriction" - i.e. it is checking that the
-> already-selected stage is actually supported, and coercing it if not.
-> The default selection for a newly-allocated domain is always implicitly
-> ARM_SMMU_DOMAIN_S1 (which is explicitly defined as 0 to convey that
-> significance), but it may be set to ARM_SMMU_DOMAIN_NESTED before the
-> first attach finalises the pagetable format.
-
-Thanks for the explanation, that does make sense :) .
-
-> Obviously this could be clearer, especially for anyone not so familiar
-> with all the history, but at this point I honestly don't think it's
-> worth doing anything without completely ripping out
-> arm_smmu_enable_nesting() as well. Jason already had a patch a while
-> ago, and my bus rework is now also very close to the point of finally
-> fixing iommu_domain_alloc() to be able to return working domains, such
-> that all the "domain_finalise" bodges go away and that whole "modify the
-> domain between allocation and attach" paradigm is no longer valid at all.
->
-> By this point I'm not too fussed about breaking the current meaning of
-> ARM_SMMU_DOMAIN_NESTED any more. But what I definitely don't want to do
-> is have a change like this which subtly but decisively breaks it while
-> still leaving all the now-dead code in place ;)
-
-Ack, will drop this change.
+Thanks. I'll write up a new commit message for v13 once I have some 
+feedback on the approach of 'v11' vs the 'approach of 'v12'.
