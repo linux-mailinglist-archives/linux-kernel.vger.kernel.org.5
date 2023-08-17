@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF6877F0B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02D377F0B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 08:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348306AbjHQGpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 02:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S1348310AbjHQGqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 02:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348304AbjHQGom (ORCPT
+        with ESMTP id S1348318AbjHQGqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 02:44:42 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EC52705;
-        Wed, 16 Aug 2023 23:44:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1692254679;
-        bh=Wx3nMILiB1NeGS4OwS92O58JvJol6RuBMilPby1aexs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=pz9ElAbaHeW1WlM6FirXgpjKbRPGtcW5zyN9pjls0kdL5arkLwqzNAVC2PRn8qBwa
-         H7IIeZkTzubrcVySUgmaLN+TVRI99448w/43xEZmkedXGjwkQqUrLNaZmEExYUZ3Bm
-         XYqMrfLSaC1FaZ8/j+tbrK639d5HhNFaWXxueq9xAh/P7BTLPTGv/ijFYQk9ork8Cb
-         7zE2UxOOMfQgPJPLpx84Pc0eVfEe3/KQ1eFlSzHg8H0DaTxISTWpBmNsNlo6kT5kM5
-         tD6xpCigM1TCzd9uFuB1hn9Zb+Zagh9PO32Di7yumRtEJRKfvGIKl80K3hYIMqRr7g
-         AGomz3KsKnWEA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Thu, 17 Aug 2023 02:46:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1010BA6
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 23:46:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRFqC2jtTz4wZn;
-        Thu, 17 Aug 2023 16:44:39 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     mahesh@linux.ibm.com
-Cc:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 1/2] powerpc/rtas: Rename rtas_error_rc to
- rtas_generic_errno
-In-Reply-To: <xzsx7qc3el674iyy2lsn3adm7j2vh5xj6cjaqxgjm6lwcjiz5u@evoqbrvhqf26>
-References: <169138864808.65607.6576358707894823512.stgit@jupiter>
- <877cpxdksx.fsf@mail.lhotse>
- <xzsx7qc3el674iyy2lsn3adm7j2vh5xj6cjaqxgjm6lwcjiz5u@evoqbrvhqf26>
-Date:   Thu, 17 Aug 2023 16:44:38 +1000
-Message-ID: <87zg2q5fs9.fsf@mail.lhotse>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8729A60AC1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 06:46:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D9A9C433C8;
+        Thu, 17 Aug 2023 06:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692254791;
+        bh=kGXjHIIItKcedfobgcUxtg3pCMarIyql5LXTBLsFlpM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l4aL0lJ7SR0dE9hoY4FkVsTWiCI6kza6xK1INUjId1UOv7aPcLmh4tc8QPN6FNdVw
+         vWyhIAYKlnqyLCcZ4XxveR/gvvrA2ULuHLC7Ux045lvSSr/jL0Kt/gVHOEkLioCpgB
+         hDhrEZFMJeajMn5FhYTqnSqpQxVsgWTwJdMkxmSGYF+1Jc4Dle2yWeYsRVrnQnzB20
+         LRspb2K7pNvqTWEonJN6Z+0Am5Ay3th/k0tWE5u4IcI0DEwO/yyaGyRoK5x4jRvvY2
+         eI7MWXvNFhJSyhFJMk+d0iKLxU8yZTN7Fmfb+wm/sKKoV7h7nf4vjoZF9mqpAmKzcK
+         Zlp2ZVcIreokg==
+Date:   Thu, 17 Aug 2023 12:16:27 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stanley =?utf-8?B?Q2hhbmdb5piM6IKy5b63XQ==?= 
+        <stanley_chang@realtek.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] phy: realtek: Realtek PHYs should depend on ARCH_REALTEK
+Message-ID: <ZN3CQ1Y3yC9p/01Y@matsya>
+References: <202308161422.37GEMlZkA018197@rtits1.realtek.com.tw>
+ <6c02765f89eb4455806b895a6e0cb763@realtek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6c02765f89eb4455806b895a6e0cb763@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mahesh J Salgaonkar <mahesh@linux.ibm.com> writes:
-> On 2023-08-15 13:52:14 Tue, Michael Ellerman wrote:
->> Mahesh Salgaonkar <mahesh@linux.ibm.com> writes:
-...
->> > diff --git a/arch/powerpc/include/asm/rtas.h b/arch/powerpc/include/asm/rtas.h
->> > index 3abe15ac79db1..5572a0a2f6e18 100644
->> > --- a/arch/powerpc/include/asm/rtas.h
->> > +++ b/arch/powerpc/include/asm/rtas.h
->> > @@ -202,7 +202,9 @@ typedef struct {
->> >  #define RTAS_USER_REGION_SIZE (64 * 1024)
->> >  
->> >  /* RTAS return status codes */
->> > -#define RTAS_BUSY		-2    /* RTAS Busy */
->> > +#define RTAS_HARDWARE_ERROR	(-1)  /* Hardware Error */
->> > +#define RTAS_BUSY		(-2)  /* RTAS Busy */
->> 
->> Are the brackets necessary?
->
-> During v5 changset I received offline review comment to add brackets,
-> hence continued here as well. I can take it away if Nathan is fine with
-> it.
+On 17-08-23, 02:06, Stanley Chang[昌育德] wrote:
+> Hi Geert,
+> 
+> > diff --git a/drivers/phy/realtek/Kconfig b/drivers/phy/realtek/Kconfig index
+> > 650e20ed69af41d2..75ac7e7c31aec6f2 100644
+> > --- a/drivers/phy/realtek/Kconfig
+> > +++ b/drivers/phy/realtek/Kconfig
+> > @@ -2,6 +2,9 @@
+> >  #
+> >  # Phy drivers for Realtek platforms
+> >  #
+> > +
+> > +if ARCH_REALTEK || COMPILE_TEST
+> > +
+> >  config PHY_RTK_RTD_USB2PHY
+> >         tristate "Realtek RTD USB2 PHY Transceiver Driver"
+> >         depends on USB_SUPPORT
+> > @@ -25,3 +28,5 @@ config PHY_RTK_RTD_USB3PHY
+> >           The DHC (digital home center) RTD series SoCs used the Synopsys
+> >           DWC3 USB IP. This driver will do the PHY initialization
+> >           of the parameters.
+> > +
+> > +endif # ARCH_REALTEK || COMPILE_TEST
+> 
+> Thanks for your patch.
+> Why not use "depends on"?
+> depends on ARCH_MEDIATEK || COMPILE_TEST
 
-OK. I can't think of a context where the brackets are useful, but I'm
-probably just not thinking hard enough. I don't really mind adding them,
-I was just curious what the justification for them was.
+I think this patch is better, this way all future rtek drivers will be
+fixed as well, no need to add for each driver
 
-cheers
+-- 
+~Vinod
