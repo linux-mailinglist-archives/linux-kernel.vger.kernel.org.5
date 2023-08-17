@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1457800ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D69D7800F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 00:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355688AbjHQWOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 18:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
+        id S1355695AbjHQWRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 18:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355731AbjHQWOd (ORCPT
+        with ESMTP id S1355701AbjHQWRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 18:14:33 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442A9CD
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:14:32 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fec1a30a1eso32425e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 15:14:32 -0700 (PDT)
+        Thu, 17 Aug 2023 18:17:08 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CFA8100;
+        Thu, 17 Aug 2023 15:17:07 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6bcde3d8657so73336a34.0;
+        Thu, 17 Aug 2023 15:17:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692310471; x=1692915271;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OzEx2Pvue1j+qHcvzRFUX2ohRGt7uIfYTLkJ/410OK8=;
-        b=liYZmjvgPFVrds6jM8JB6hvYYVI68/2rJv6D2q2DhjXhcTIyBGZSwkXmzTdQyEkOGG
-         p4SjVPOD5L64QMpSQzs+kONlHP9mGsQrbZrN1t64Mb8tC9bL/LBXIWM84BgW4FSRpB2T
-         pONNvWdbcFqibfHeJxuiWH4UVCIz/z7ZNFwWmDt1bWObTREY4YAmbX4UD0O8RMSMbpwK
-         qRD8pOT0Okz42C3SJKSwXK1ysUAktyrf213s4mrtWV/UgmtvD/8ZjzNl9YP0ev2aupt2
-         e5x7E+RwUWZsVPN/VdYlL7eN+1bBlM4fdn0Mr5juJgQz2Fb10Qr9X284xdn4gmFVIoO1
-         43MQ==
+        d=gmail.com; s=20221208; t=1692310626; x=1692915426;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T5MAncDaZGexQ1tmu5Qrgy4pmPtweT2noBzMsUBFHqU=;
+        b=UsxQgwNbeSqbLD9EGDrOiWwGxW+5dJfY39o357kzuUKu/gjaANup3lHFlJ/Ps6QX8K
+         2AZ8HrigZzFcBP3JYNS/6Ay6mWcZxl8+KCdJUuGoRYZl40bC0UmRVtF+1fR2/c6hf4Or
+         ZM1KX9TDUcHhnOpA5aRspQ6MQ2fCAuHl7JuqQBoGfwiIKDv/PvtkkQeWccFoFkfoZBKa
+         8xgZvPoIKiE89xyGsMjHo9pBPRDTFBj9+cPsWcjQB5vS+eko5UBankWIT7ALx6NjRRDK
+         G1+pJvllNCgQlaA6j99RmzvVx1quLhtCSwZKMw/AuORmbRXhPCliuePqvlSf3h+M5OHX
+         b1UA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692310471; x=1692915271;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OzEx2Pvue1j+qHcvzRFUX2ohRGt7uIfYTLkJ/410OK8=;
-        b=a90A5rJIl/L0IU8SVYzyh0s7PVF/bAf64nlpFOPoPLK78wuAE+/z5tywUR7SETcvz3
-         OHZcRa0wLFBW9oPjWKKtdzoVVnciR37Ds4Fc1PehuXm9ohW+Sz1QlXUMFSuTBESuPRer
-         KZD5Xmjobq6WXWT9v0PsW0k9FhVQ1LOTriOBL7JKVtvqkRW4lkDvBXeSn0AfCLnJoL79
-         RE8mGusAeqh82enTyywv4fgHcaWSnDEy3Y+6p86WR0NiKOf7uSka9qodoMjlYW1SxQf2
-         sBWT3ifz0vbTEjIDCKwsA8PISSllIBTMsnfN3GVn68ETeh3+nihbEoSymNpzq0Q8r7/W
-         MmrQ==
-X-Gm-Message-State: AOJu0Yz+uzGSs72xpE0kgMXgqa+6IxwiNirENXIhTPhISE2pogfkIJDC
-        Xy3OrNBUTU0xsXJcvLlGw4YzYb/R/nk80SQ3ZlvvXw==
-X-Google-Smtp-Source: AGHT+IF84UyU6w6Q7cDwMhnpC8ZzAnb76bktZgJUwKXrc2BTYvQuh5x72CLIUOGkAzjqqq5U8DQPVi8qqaVXZse1Fv4=
-X-Received: by 2002:a05:600c:3548:b0:3f1:73b8:b5fe with SMTP id
- i8-20020a05600c354800b003f173b8b5femr17256wmq.3.1692310470664; Thu, 17 Aug
- 2023 15:14:30 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692310626; x=1692915426;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5MAncDaZGexQ1tmu5Qrgy4pmPtweT2noBzMsUBFHqU=;
+        b=dWIJ8fppDhrVe9I0z1rFEh5cDYTSW57Opg9kFOqu8G8hVtzdhSTQBCTSY5kTgcLEHF
+         EPzOhk55G+JlFIvdwBJckaNHcLJTnNrchHY0rqsFjoK0jpbqWsWEGhR7JM0RqM8g9/Ip
+         sIL8B/JFnbYvyB3NZLD2gOcrnFmkjypTZHGizLnQsc2I6QodxRF8aNVfICqq2PKNEftF
+         +MsGgLzr5OM8SWt+JU0WdMqPBeraEG29j60K4ra6S4nozmf4SMcUKZYs+tZ6IYIlnOGG
+         ilJBBeysMxgexXOLHNIs5ywBqnQTMrslv91oXJwyt5DNd8XFlOPP7ALucrFuW/9Pu5Ys
+         TETw==
+X-Gm-Message-State: AOJu0Yw710d7M5o7zSPR780Pvv2UKbQ328t0jfTCRtkSxWQ3eAPMbG02
+        mEWXD5f+TQEI5xOptnfXJdtm1UHIXpU=
+X-Google-Smtp-Source: AGHT+IGIJKVg8WcFDAVKpuLsaZKuRmduwyuqoLk3eEzOOtHYE6jY0vAAMvkGW3kOA24i3aV8AfExkQ==
+X-Received: by 2002:a05:6870:568d:b0:1be:f764:2887 with SMTP id p13-20020a056870568d00b001bef7642887mr812902oao.2.1692310626410;
+        Thu, 17 Aug 2023 15:17:06 -0700 (PDT)
+Received: from [192.168.0.82] ([67.6.79.63])
+        by smtp.gmail.com with ESMTPSA id e9-20020a0568301e4900b006b58616daa1sm300170otj.2.2023.08.17.15.17.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 15:17:06 -0700 (PDT)
+Message-ID: <500b52ee-02e5-4809-b03b-21a9ad6d2b30@gmail.com>
+Date:   Thu, 17 Aug 2023 17:17:05 -0500
 MIME-Version: 1.0
-References: <20230817191451.1026413-1-rmoar@google.com>
-In-Reply-To: <20230817191451.1026413-1-rmoar@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Fri, 18 Aug 2023 06:14:17 +0800
-Message-ID: <CABVgOS=d1cZoJWOEZ95_X1ozEBa6X7O91UyZTDmTtajtewD+dg@mail.gmail.com>
-Subject: Re: [PATCH] kunit: fix struct kunit_attr header
-To:     Rae Moar <rmoar@google.com>
-Cc:     shuah@kernel.org, brendan.higgins@linux.dev,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000007a32c2060325bc1c"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 2/2] Input: Add Novatek NT36xxx touchscreen driver
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dang Huynh <danct12@riseup.net>,
+        Amit Pundir <amit.pundir@linaro.org>
+References: <20230808-topic-nt36xxx-v10-0-dd135dfa0b5e@linaro.org>
+ <20230808-topic-nt36xxx-v10-2-dd135dfa0b5e@linaro.org>
+ <2980f5e6-40b0-4ab2-ae73-bceeb97b4de5@gmail.com>
+ <17542518-42ff-46f6-8304-fb8a214bfa77@linaro.org>
+From:   Joel Selvaraj <joelselvaraj.oss@gmail.com>
+In-Reply-To: <17542518-42ff-46f6-8304-fb8a214bfa77@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,126 +86,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000007a32c2060325bc1c
-Content-Type: text/plain; charset="UTF-8"
+Hi Konrad,
 
-On Fri, 18 Aug 2023 at 03:15, Rae Moar <rmoar@google.com> wrote:
->
-> Add parameter descriptions to struct kunit_attr header for the
-> parameters attr_default and print.
->
-> Fixes: 39e92cb1e4a1 ("kunit: Add test attributes API structure")
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308180127.VD7YRPGa-lkp@intel.com/
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
-> ---
+On 8/16/23 12:36, Konrad Dybcio wrote:
+> Do you have your end outcome somewhere?
 
-LGTM, Thanks.
+Here is the driver changes on top of upstream 
+"drivers/input/touchscreen/novatek-nvt-ts.c"
 
-Reviewed-by: David Gow <davidgow@google.com>
+Link: 
+https://gitlab.com/sdm845-mainline/linux/-/commit/d2f7702a7f6a72eaf2655840036668398942c194
 
-Cheers,
--- David
+and here is how I specified it in the Poco F1 dts:
 
->  lib/kunit/attributes.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-> index 5e3034b6be99..1b512f7e1838 100644
-> --- a/lib/kunit/attributes.c
-> +++ b/lib/kunit/attributes.c
-> @@ -30,6 +30,8 @@ enum print_ops {
->   * attribute value
->   * @filter: function to indicate whether a given attribute value passes a
->   * filter
-> + * @attr_default: default attribute value used during filtering
-> + * @print: value of enum print_ops to indicate when to print attribute
->   */
->  struct kunit_attr {
->         const char *name;
->
-> base-commit: 582eb3aeed2d06b122fba95518b84506d3d4ceb9
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+Link: 
+https://gitlab.com/sdm845-mainline/linux/-/commit/4dd6e4578cc737d2584c7f9657f9f185effe9035
 
---0000000000007a32c2060325bc1c
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
-VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
-AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
-AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
-IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
-dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
-6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
-c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
-I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
-AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
-BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
-CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
-AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
-MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
-My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
-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
-ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
-AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
-c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
-LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
-LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
-Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
-H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
-riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
-impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
-qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
-yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
-R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
-MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCB9
-OAd2gTBa0FRipnHEgCiaQhwn9ZNVRAsSZn4icSbybDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
-MBwGCSqGSIb3DQEJBTEPFw0yMzA4MTcyMjE0MzFaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
-BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
-CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAbQMH9fSmqvwyUo2lwoOG
-QSID2+yCB5IPjRFaPECUkD/2AJEilqHiqgsRNHLyST4uUrOpcanfkWUctqcPH5dxEsytUuhuUw0K
-UzvLd2UwI1N7FoVi+DTJ1xAxX8nRVaVXJztjT08mGzrfLhEOodl9fSoY2f0KBPrBLjRs6yEamliz
-9VMCa1pfNdRZvDMPHieKE+2e1mnJsDv5StfA+VFitJzWr5i6ZWFg5mGDOyHEeFCT7MY/N6hsa32g
-TTKbVT5pIwdoqUIzXbBy07cWoTWcRTi5jm09eVYPu/Ytoh7UsAPRF2k3dWu2Jg2pmQQ+g5DfHXvP
-vs1CqjumyFvovWfPxg==
---0000000000007a32c2060325bc1c--
+Regards
+Joel Selvaraj
