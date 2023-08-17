@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB6B77F2AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964C477F2A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 11:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349237AbjHQJCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 05:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57242 "EHLO
+        id S1349216AbjHQJCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 05:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243382AbjHQJCe (ORCPT
+        with ESMTP id S232046AbjHQJCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 05:02:34 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232D82684
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 02:02:33 -0700 (PDT)
-Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRJrh2t6MzrRrF;
-        Thu, 17 Aug 2023 17:01:08 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 17 Aug 2023 17:02:30 +0800
-From:   Junhao He <hejunhao3@huawei.com>
-To:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
-        <leo.yan@linaro.org>, <james.clark@arm.com>
-CC:     <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
-        <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>
-Subject: [PATCH 2/2] coresight: core: fix memory leak in dict->fwnode_list
-Date:   Thu, 17 Aug 2023 16:59:37 +0800
-Message-ID: <20230817085937.55590-3-hejunhao3@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20230817085937.55590-1-hejunhao3@huawei.com>
-References: <20230817085937.55590-1-hejunhao3@huawei.com>
+        Thu, 17 Aug 2023 05:02:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 03A6AE7C;
+        Thu, 17 Aug 2023 02:02:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 484CDD75;
+        Thu, 17 Aug 2023 02:02:53 -0700 (PDT)
+Received: from [10.57.3.248] (unknown [10.57.3.248])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 602CF3F64C;
+        Thu, 17 Aug 2023 02:02:09 -0700 (PDT)
+Message-ID: <fecfd732-df85-1bb9-f3d2-c1e12ca2db2e@arm.com>
+Date:   Thu, 17 Aug 2023 10:02:08 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500002.china.huawei.com (7.185.36.158)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v6 2/6] perf test: Add a test for the new Arm CPU ID
+ comparison behavior
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-perf-users@vger.kernel.org, irogers@google.com,
+        john.g.garry@oracle.com, renyu.zj@linux.alibaba.com,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Sohom Datta <sohomdatta1@gmail.com>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230816114841.1679234-1-james.clark@arm.com>
+ <20230816114841.1679234-3-james.clark@arm.com> <ZNz1KNaNhct35bzd@kernel.org>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZNz1KNaNhct35bzd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are memory leaks reported by kmemleak:
-...
-unreferenced object 0xffff2020103c3200 (size 256):
-  comm "insmod", pid 4476, jiffies 4294978252 (age 50072.536s)
-  hex dump (first 32 bytes):
-    10 60 40 06 28 20 ff ff 10 c0 59 06 20 20 ff ff  .`@.( ....Y.  ..
-    10 e0 47 06 28 20 ff ff 10 00 49 06 28 20 ff ff  ..G.( ....I.( ..
-  backtrace:
-    [<0000000034ec4724>] __kmem_cache_alloc_node+0x2f8/0x348
-    [<0000000057fbc15d>] __kmalloc_node_track_caller+0x5c/0x110
-    [<00000055d5e34b>] krealloc+0x8c/0x178
-    [<00000000a4635beb>] coresight_alloc_device_name+0x128/0x188 [coresight]
-    [<00000000a92ddfee>] funnel_cs_ops+0x10/0xfffffffffffedaa0 [coresight_funnel]
-    [<00000000449e20f8>] dynamic_funnel_ids+0x80/0xfffffffffffed840 [coresight_funnel]
-...
 
-when remove driver, the golab variables defined by the macro
-DEFINE_CORESIGHT_DEVLIST will be released, dict->nr_idx and
-dict->fwnode_list are cleared to 0. The lifetime of the golab
-variable has ended. So the buffer pointer is lost.
 
-Use the callback of devm_add_action_or_reset() to free memory.
+On 16/08/2023 17:11, Arnaldo Carvalho de Melo wrote:
+> Em Wed, Aug 16, 2023 at 12:47:44PM +0100, James Clark escreveu:
+>> +++ b/tools/perf/arch/arm64/tests/cpuid-match.c
+>> @@ -0,0 +1,38 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +#include <linux/compiler.h>
+>> +
+>> +#include "arch-tests.h"
+>> +#include "tests/tests.h"
+>> +#include "util/header.h"
+>> +
+>> +int test__cpuid_match(struct test_suite *test __maybe_unused,
+>> +			     int subtest __maybe_unused)
+>> +{
+>> +	/* midr with no leading zeros matches */
+>> +	if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410fd0c0"))
+>> +		return -1;
+>> +	/* Upper case matches */
+>> +	if (strcmp_cpuid_str("0x410fd0c0", "0x00000000410FD0C0"))
+>> +		return -1;
+>> +	/* r0p0 = r0p0 matches */
+>> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd480"))
+>> +		return -1;
+>> +	/* r0p1 > r0p0 matches */
+>> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000410fd481"))
+>> +		return -1;
+>> +	/* r1p0 > r0p0 matches*/
+>> +	if (strcmp_cpuid_str("0x00000000410fd480", "0x00000000411fd480"))
+>> +		return -1;
+>> +	/* r0p0 < r0p1 doesn't match */
+>> +	if (!strcmp_cpuid_str("0x00000000410fd481", "0x00000000410fd480"))
+>> +		return -1;
+>> +	/* r0p0 < r1p0 doesn't match */
+>> +	if (!strcmp_cpuid_str("0x00000000411fd480", "0x00000000410fd480"))
+>> +		return -1;
+>> +	/* Different CPU doesn't match */
+>> +	if (!strcmp_cpuid_str("0x00000000410fd4c0", "0x00000000430f0af0"))
+>> +		return -1;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> -- 
+>> 2.34.1
+>>
+> ⬢[acme@toolbox perf-tools-next]$        git am ./v6_20230816_james_clark_perf_vendor_events_arm64_update_n2_and_v2_metrics_and_events_using_arm_telem.mbx
+> Applying: perf test: Add a test for the new Arm CPU ID comparison behavior
+> .git/rebase-apply/patch:93: new blank line at EOF.
+> +
+> warning: 1 line adds whitespace errors.
+> ⬢[acme@toolbox perf-tools-next]$
+> 
+> I'm removing it
 
-Fixes: 0f5f9b6ba9e1 ("coresight: Use platform agnostic names")
-Signed-off-by: Junhao He <hejunhao3@huawei.com>
----
- drivers/hwtracing/coresight/coresight-core.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-index 9fabe00a40d6..6849faad697d 100644
---- a/drivers/hwtracing/coresight/coresight-core.c
-+++ b/drivers/hwtracing/coresight/coresight-core.c
-@@ -1756,6 +1756,20 @@ bool coresight_loses_context_with_cpu(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
- 
-+void coresight_release_dev_list(void *data)
-+{
-+	struct coresight_dev_list *dict = data;
-+
-+	mutex_lock(&coresight_mutex);
-+
-+	if (dict->nr_idx) {
-+		kfree(dict->fwnode_list);
-+		dict->nr_idx = 0;
-+	}
-+
-+	mutex_unlock(&coresight_mutex);
-+}
-+
- /*
-  * coresight_alloc_device_name - Get an index for a given device in the
-  * device index list specific to a driver. An index is allocated for a
-@@ -1766,12 +1780,16 @@ EXPORT_SYMBOL_GPL(coresight_loses_context_with_cpu);
- char *coresight_alloc_device_name(struct coresight_dev_list *dict,
- 				  struct device *dev)
- {
--	int idx;
-+	int idx, ret;
- 	char *name = NULL;
- 	struct fwnode_handle **list;
- 
- 	mutex_lock(&coresight_mutex);
- 
-+	ret = devm_add_action_or_reset(dev, coresight_release_dev_list, dict);
-+	if (ret)
-+		goto done;
-+
- 	idx = coresight_search_device_idx(dict, dev_fwnode(dev));
- 	if (idx < 0) {
- 		/* Make space for the new entry */
--- 
-2.33.0
+Interesting that checkpatch.pl doesn't see that. Thanks for the fix.
 
