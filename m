@@ -2,212 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A32577EEFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9677EF02
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 04:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347625AbjHQCMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 22:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        id S1347631AbjHQCWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 22:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347671AbjHQCMB (ORCPT
+        with ESMTP id S1347620AbjHQCWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 22:12:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB12270C;
-        Wed, 16 Aug 2023 19:12:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692238320; x=1723774320;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wS3wknMSKBXUyq95XuRJ6F/EyBmJv4PgB9BUm1Gb3L8=;
-  b=FO/VG4M57OXaSzrtMCKF84X8PCnUrt+CJGJd9b9+15FHJ2EiG+sZ11T2
-   hkpdY9OddXcqS6fSih2VLp4if9hu2G+j9B6IhqXaJB/Q39kw8EZnk52cs
-   l5SuvdqsVBn/BdPmbDE0WAEwFkQMkMVlObmFVdUQh1et2RoABfl7bIK3l
-   1MdTAEj98nGWvf0iMCRjl/RQ3xz2W7xNy14wQC+j04//mvFj8lBltchsM
-   7/It1pTayS2NNegiQTMcSghkQRXOh94a1a6Gj5qQMbyO1+TvktiijTjLq
-   Dk8VuxXGV7t/ZIyvyi2+pa4AKQQQuh4X++T7YWA0eCbGtU62X7Qr79FLv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="376428073"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="376428073"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 19:12:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10803"; a="848713585"
-X-IronPort-AV: E=Sophos;i="6.01,178,1684825200"; 
-   d="scan'208";a="848713585"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.52]) ([10.238.10.52])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Aug 2023 19:11:58 -0700
-Message-ID: <f2031d6c-4aab-e225-d1a3-e96970f8fbfb@linux.intel.com>
-Date:   Thu, 17 Aug 2023 10:11:56 +0800
+        Wed, 16 Aug 2023 22:22:12 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C4D4269F
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 19:22:10 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RR80F0xWvz4f3mJ4
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 10:22:05 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgBnRKdMhN1ks72TAw--.40305S2;
+        Thu, 17 Aug 2023 10:22:06 +0800 (CST)
+Subject: Re: [PATCH 1/2] mm/page_alloc: remove track of active PCP lists range
+ in bulk free
+To:     Chris Li <chrisl@kernel.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        mgorman@techsingularity.net, david@redhat.com, willy@infradead.org
+References: <20230809100754.3094517-1-shikemeng@huaweicloud.com>
+ <20230809100754.3094517-2-shikemeng@huaweicloud.com>
+ <ZNu5uHhYI4QxR4au@google.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <53956bbf-844c-97da-2057-a8805360b35f@huaweicloud.com>
+Date:   Thu, 17 Aug 2023 10:22:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 01/15] KVM: x86: Add a framework for enabling
- KVM-governed x86 features
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
-References: <20230815203653.519297-1-seanjc@google.com>
- <20230815203653.519297-2-seanjc@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20230815203653.519297-2-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <ZNu5uHhYI4QxR4au@google.com>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-CM-TRANSID: gCh0CgBnRKdMhN1ks72TAw--.40305S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr4rZrWDKrW8Zw1UXFW3Awb_yoW5XFWrpr
+        WFyFnayFWkJrW0kw47ZanrW3429w4YyFWDWrW5Ja4rZwnxurySkFs7K3y0grWrArWxAFWI
+        vF42qF1SvFyUZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 
 
-On 8/16/2023 4:36 AM, Sean Christopherson wrote:
-> Introduce yet another X86_FEATURE flag framework to manage and cache KVM
-> governed features (for lack of a better name).  "Governed" in this case
-> means that KVM has some level of involvement and/or vested interest in
-> whether or not an X86_FEATURE can be used by the guest.  The intent of the
-> framework is twofold: to simplify caching of guest CPUID flags that KVM
-> needs to frequently query, and to add clarity to such caching, e.g. it
-> isn't immediately obvious that SVM's bundle of flags for "optional nested
-> SVM features" track whether or not a flag is exposed to L1.
+on 8/16/2023 1:45 AM, Chris Li wrote:
+> Hi Kemeng,
+> 
+> Can you confirm this patch has no intended functional change?
+> 
+Hi Chris, there is no functional change intended in this patch. As
+I menthioned in changelog, there is no wrap for list iteration, so
+that the active PCP lists range will never be used.
+> I have a patch sitting in my tree for a while related to this
+> count vs pcp->count.  The BPF function hook can potentially change
+> pcp->count and make count out of sync with pcp->count which causes
+> a dead loop.
+> 
+I guess pcp->count is set to bigger than it should be. In this case,
+we will keep trying get pages while all pages in pcp list were taken
+off already and dead lock will happen. In this case, dead looo will
+happen with or without this patch as the root cause is that we try
+to get pages more than pcp list owns.> Maybe I can send my out alone side with yours for discussion?
+> I don't mind my patch combined with yours.
 >
-> Begrudgingly define KVM_MAX_NR_GOVERNED_FEATURES for the size of the
-> bitmap to avoid exposing governed_features.h in arch/x86/include/asm/, but
-> add a FIXME to call out that it can and should be cleaned up once
-> "struct kvm_vcpu_arch" is no longer expose to the kernel at large.
+Either way is acceptable to me, just feel free to choose one you like
+and I'd like to see if more we could do to this.
+
+> Your change looks fine to me. There is more can be done
+> on the clean up.
 >
-> Cc: Zeng Guang <guang.zeng@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   arch/x86/include/asm/kvm_host.h  | 19 +++++++++++++
->   arch/x86/kvm/cpuid.c             |  4 +++
->   arch/x86/kvm/cpuid.h             | 46 ++++++++++++++++++++++++++++++++
->   arch/x86/kvm/governed_features.h |  9 +++++++
->   4 files changed, 78 insertions(+)
->   create mode 100644 arch/x86/kvm/governed_features.h
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 19d64f019240..60d430b4650f 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -831,6 +831,25 @@ struct kvm_vcpu_arch {
->   	struct kvm_cpuid_entry2 *cpuid_entries;
->   	struct kvm_hypervisor_cpuid kvm_cpuid;
->   
-> +	/*
-> +	 * FIXME: Drop this macro and use KVM_NR_GOVERNED_FEATURES directly
-> +	 * when "struct kvm_vcpu_arch" is no longer defined in an
-> +	 * arch/x86/include/asm header.  The max is mostly arbitrary, i.e.
-> +	 * can be increased as necessary.
-> +	 */
-> +#define KVM_MAX_NR_GOVERNED_FEATURES BITS_PER_LONG
-> +
-> +	/*
-> +	 * Track whether or not the guest is allowed to use features that are
-> +	 * governed by KVM, where "governed" means KVM needs to manage state
-> +	 * and/or explicitly enable the feature in hardware.  Typically, but
-> +	 * not always, governed features can be used by the guest if and only
-> +	 * if both KVM and userspace want to expose the feature to the guest.
-> +	 */
-> +	struct {
-> +		DECLARE_BITMAP(enabled, KVM_MAX_NR_GOVERNED_FEATURES);
-> +	} governed_features;
-> +
->   	u64 reserved_gpa_bits;
->   	int maxphyaddr;
->   
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 5a88affb2e1a..4ba43ae008cb 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -313,6 +313,10 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
->   	struct kvm_lapic *apic = vcpu->arch.apic;
->   	struct kvm_cpuid_entry2 *best;
->   
-> +	BUILD_BUG_ON(KVM_NR_GOVERNED_FEATURES > KVM_MAX_NR_GOVERNED_FEATURES);
-> +	bitmap_zero(vcpu->arch.governed_features.enabled,
-> +		    KVM_MAX_NR_GOVERNED_FEATURES);
-> +
->   	best = kvm_find_cpuid_entry(vcpu, 1);
->   	if (best && apic) {
->   		if (cpuid_entry_has(best, X86_FEATURE_TSC_DEADLINE_TIMER))
-> diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
-> index b1658c0de847..284fa4704553 100644
-> --- a/arch/x86/kvm/cpuid.h
-> +++ b/arch/x86/kvm/cpuid.h
-> @@ -232,4 +232,50 @@ static __always_inline bool guest_pv_has(struct kvm_vcpu *vcpu,
->   	return vcpu->arch.pv_cpuid.features & (1u << kvm_feature);
->   }
->   
-> +enum kvm_governed_features {
-> +#define KVM_GOVERNED_FEATURE(x) KVM_GOVERNED_##x,
-> +#include "governed_features.h"
-> +	KVM_NR_GOVERNED_FEATURES
-> +};
-> +
-> +static __always_inline int kvm_governed_feature_index(unsigned int x86_feature)
-> +{
-> +	switch (x86_feature) {
-> +#define KVM_GOVERNED_FEATURE(x) case x: return KVM_GOVERNED_##x;
-> +#include "governed_features.h"
-> +	default:
-> +		return -1;
-> +	}
-> +}
-> +
-> +static __always_inline bool kvm_is_governed_feature(unsigned int x86_feature)
-> +{
-> +	return kvm_governed_feature_index(x86_feature) >= 0;
-> +}
-> +
-> +static __always_inline void kvm_governed_feature_set(struct kvm_vcpu *vcpu,
-> +						     unsigned int x86_feature)
-> +{
-> +	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
-> +
-> +	__set_bit(kvm_governed_feature_index(x86_feature),
-> +		  vcpu->arch.governed_features.enabled);
-> +}
-> +
-> +static __always_inline void kvm_governed_feature_check_and_set(struct kvm_vcpu *vcpu,
-> +							       unsigned int x86_feature)
-> +{
-> +	if (kvm_cpu_cap_has(x86_feature) && guest_cpuid_has(vcpu, x86_feature))
-> +		kvm_governed_feature_set(vcpu, x86_feature);
-> +}
-> +
-> +static __always_inline bool guest_can_use(struct kvm_vcpu *vcpu,
-> +					  unsigned int x86_feature)
-> +{
-> +	BUILD_BUG_ON(!kvm_is_governed_feature(x86_feature));
-> +
-> +	return test_bit(kvm_governed_feature_index(x86_feature),
-> +			vcpu->arch.governed_features.enabled);
-> +}
-> +
->   #endif
-> diff --git a/arch/x86/kvm/governed_features.h b/arch/x86/kvm/governed_features.h
-> new file mode 100644
-> index 000000000000..40ce8e6608cd
-> --- /dev/null
-> +++ b/arch/x86/kvm/governed_features.h
-> @@ -0,0 +1,9 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#if !defined(KVM_GOVERNED_FEATURE) || defined(KVM_GOVERNED_X86_FEATURE)
-> +BUILD_BUG()
-> +#endif
-> +
-> +#define KVM_GOVERNED_X86_FEATURE(x) KVM_GOVERNED_FEATURE(X86_FEATURE_##x)
-> +
-> +#undef KVM_GOVERNED_X86_FEATURE
-> +#undef KVM_GOVERNED_FEATURE
+Thanks for feedback, and more clean up is welcome.
+> Chris
+> 
+> On Wed, Aug 09, 2023 at 06:07:53PM +0800, Kemeng Shi wrote:
+>> After commit fd56eef258a17 ("mm/page_alloc: simplify how many pages are
+>> selected per pcp list during bulk free"), we will drain all pages in
+>> selected pcp list. And we ensured passed count is < pcp->count. Then,
+>> the search will finish before wrap-around and track of active PCP lists
+>> range intended for wrap-around case is no longer needed.
+> 
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>  mm/page_alloc.c | 15 +++------------
+>>  1 file changed, 3 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 96b7c1a7d1f2..1ddcb2707d05 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -1207,8 +1207,6 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>>  					int pindex)
+>>  {
+>>  	unsigned long flags;
+>> -	int min_pindex = 0;
+>> -	int max_pindex = NR_PCP_LISTS - 1;
+>>  	unsigned int order;
+>>  	bool isolated_pageblocks;
+>>  	struct page *page;
+>> @@ -1231,17 +1229,10 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>>  
+>>  		/* Remove pages from lists in a round-robin fashion. */
+>>  		do {
+>> -			if (++pindex > max_pindex)
+>> -				pindex = min_pindex;
+>> +			if (++pindex > NR_PCP_LISTS - 1)
+>> +				pindex = 0;
+>>  			list = &pcp->lists[pindex];
+>> -			if (!list_empty(list))
+>> -				break;
+>> -
+>> -			if (pindex == max_pindex)
+>> -				max_pindex--;
+>> -			if (pindex == min_pindex)
+>> -				min_pindex++;
+>> -		} while (1);
+>> +		} while (list_empty(list));
+>>  
+>>  		order = pindex_to_order(pindex);
+>>  		nr_pages = 1 << order;
+>> -- 
+>> 2.30.0
+>>
+> 
 
