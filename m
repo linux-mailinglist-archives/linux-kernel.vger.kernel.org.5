@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000A777EEAB
-	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167577EEB3
+	for <lists+linux-kernel@lfdr.de>; Thu, 17 Aug 2023 03:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347491AbjHQBXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 16 Aug 2023 21:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        id S1347503AbjHQBZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 16 Aug 2023 21:25:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347490AbjHQBWm (ORCPT
+        with ESMTP id S1347518AbjHQBZT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 16 Aug 2023 21:22:42 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0244FD;
-        Wed, 16 Aug 2023 18:22:41 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RR6gd2t4Cz4f3tpq;
-        Thu, 17 Aug 2023 09:22:37 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-        by APP4 (Coremail) with SMTP id gCh0CgDHVqlbdt1kzWWQAw--.63661S3;
-        Thu, 17 Aug 2023 09:22:36 +0800 (CST)
-Message-ID: <ae62f34f-149c-77df-f864-2db653774715@huaweicloud.com>
-Date:   Thu, 17 Aug 2023 09:22:35 +0800
+        Wed, 16 Aug 2023 21:25:19 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D922723
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:25:17 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4ff09632194so6889761e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 16 Aug 2023 18:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692235516; x=1692840316;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=avXiTIG03toHWdc7WMPS+YtjXMBqex6QzMUCbC7BK54=;
+        b=Cxp0DVlHWbizHDV6rQuGcgSj47HHAzAvDbqrVzjrBtZ1ezjHcdiLb44UPA1ZWEJauS
+         Q9hxNrZtHFO0q2zQOF0AXwOGqvGspGkKUOafw5O8rswmwI1DyYSelTMyqh4xfNODhEAD
+         PBRAEMGJhQr+q+JoLQcVhuV8SB061qKjEFcRpyvcB3C3QC0PdAIMwgc5834p6yoanKkv
+         SShdqMQLcz2dIwK2tCdPXaCNxo8R7e8ZdmHsyVeS0Rch3y9YN5dzwJVvILYBkpktF3pC
+         92WuIhoveVhRJFlfwqkM4BNZ93Xg+Hb6MMZ/oLL3bJhXbbUsrrqONUfZpeYleVyd54jr
+         fMpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692235516; x=1692840316;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=avXiTIG03toHWdc7WMPS+YtjXMBqex6QzMUCbC7BK54=;
+        b=PIDCGv+luH6iHtpjmligt2pZMJt7FC3MWRi77rz8jeV1aTmKSefoCWsS9akvCwzWxh
+         ID96pI0fYo7OE59TXp7MGLo6XfW7mqCrm1nkAuSpX5uL1npCMu/fgsIy2rjJpTl8zznO
+         +38FRXGk4XUrTh+QRjAXuRhlKVQwli55L/8aXxKsx+Y/bNIjfdJDZIbN2ItCWEoOMfEf
+         HAD1ow2B0xLtrYIPHRcYQ+Ihpb9cEy4u3rc0kT99F4EB20SB5bdwSMWkmFLyKtOVNz1z
+         khMlSyyDE7LeEXCJg6n3yQ7PWxWND4NJuHillV9KTcCGNBXlwRm8GelXY6D7n7lj+ILG
+         t9Ng==
+X-Gm-Message-State: AOJu0Ywq2WvnPw4D3Hkkpq8zr9Ycg6FgGjb/JbElPVdg7q/MwO88SHRM
+        rUOYRM4Bv36taQgg6X6ESlA=
+X-Google-Smtp-Source: AGHT+IGS4aL3nfWLiddTUcmAdSQwWE+pVjKaJWyLChFPwOA+uVrg8z3TLx+83k6d70RGQLhZjnp9pg==
+X-Received: by 2002:ac2:5b85:0:b0:4ff:834b:e01b with SMTP id o5-20020ac25b85000000b004ff834be01bmr2705975lfn.19.1692235515892;
+        Wed, 16 Aug 2023 18:25:15 -0700 (PDT)
+Received: from homer.fritz.box ([185.221.151.99])
+        by smtp.googlemail.com with ESMTPSA id v10-20020aa7d64a000000b00521d2f7459fsm9006678edr.49.2023.08.16.18.25.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Aug 2023 18:25:15 -0700 (PDT)
+Message-ID: <5f12fc76188cc664ce27606b34152f6c3f4d295c.camel@gmail.com>
+Subject: Re: [tip:sched/eevdf] [sched/fair]  e0c2ff903c:
+ phoronix-test-suite.blogbench.Write.final_score -34.8% regression
+From:   Mike Galbraith <umgwanakikbuti@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Chen Yu <yu.c.chen@intel.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ingo Molnar <mingo@kernel.org>
+Date:   Thu, 17 Aug 2023 03:25:14 +0200
+In-Reply-To: <20230816200405.GA998718@hirez.programming.kicks-ass.net>
+References: <202308101628.7af4631a-oliver.sang@intel.com>
+         <ZNWKuccyWnS3UJjK@chenyu5-mobl2.bbrouter>
+         <ZNWgAeN/EVS/vOLi@chenyu5-mobl2.bbrouter>
+         <20230814132935.GK776869@hirez.programming.kicks-ass.net>
+         <bd96d883d0d1575ebbee4323f4396596adb0ad09.camel@gmail.com>
+         <20230816123716.GI980931@hirez.programming.kicks-ass.net>
+         <20230816134059.GC982867@hirez.programming.kicks-ass.net>
+         <3d10fbfb0171cc017e19adf39fa97a3160a76206.camel@gmail.com>
+         <20230816200405.GA998718@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH v4 0/4] block/badblocks: fix badblocks setting error
-To:     axboe@kernel.dk, vishal.l.verma@intel.com,
-        dan.j.williams@intel.com, ashok_raj@linux.intel.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com
-References: <20230626080913.3493135-1-linan666@huaweicloud.com>
-From:   Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <20230626080913.3493135-1-linan666@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHVqlbdt1kzWWQAw--.63661S3
-X-Coremail-Antispam: 1UD129KBjvJXoWrKryxKw13ZF4rZF13GF1kGrg_yoW8JF4UpF
-        Z5Ga1fWr40gr97ZFn3Zw17Xr1rC3WxJF4UWa13tw18u34UAw1xJrn2gr1rtryqqrWIkFWq
-        vF90gry5uryDG37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9ab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
-        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aV
-        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E
-        8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4I
-        kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-        WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWr
-        Zr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_Gr
-        UvcSsGvfC2KfnxnUUI43ZEXa7IUbJ73PUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,43 +85,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/6/26 16:09, linan666@huaweicloud.com 写道:
-> From: Li Nan <linan122@huawei.com>
+On Wed, 2023-08-16 at 22:04 +0200, Peter Zijlstra wrote:
+> > Here's hoping test bots don't have a cow. 
 > 
-> This patch series fixes some simple bugs of setting badblocks and
-> optimizing struct badblocks. Coly Li has been trying to refactor badblocks
-> in patch series "badblocks improvement for multiple bad block ranges"
-> (https://lore.kernel.org/all/20220721121152.4180-1-colyli@suse.de). but the
+> You want to write up a Changelog for this, or should I attempt to write
+> one?
 
-Coly has sent the lastest version of his patch series.
+You write way better changelogs, you took the sting out, taking the
+basic notion to solid ground.. and I'm at least as much of a lazy sod
+as the next guy, so am all for you making it a real patch :)
 
-Now this patch series can be discarded.
-
-> workload is significant. Before that, I will fix some easily triggered
-> issues and optimize some code that does not conflict with Coly's changes.
-> 
-> Changes in v4:
->   - patch 1, remove the part of reorder fields
->   - patch 3/4, improve commit log.
-> 
-> Changes in v3:
->   - delete patchs with significant changes.
-> 
-> Li Nan (4):
->    block/badblocks: change some members of badblocks to bool
->    block/badblocks: only set bb->changed/unacked_exist when badblocks
->      changes
->    block/badblocks: fix badblocks loss when badblocks combine
->    block/badblocks: fix the bug of reverse order
-> 
->   include/linux/badblocks.h |  9 +++++----
->   block/badblocks.c         | 38 ++++++++++++++++++++++----------------
->   2 files changed, 27 insertions(+), 20 deletions(-)
-> 
-
--- 
-Thanks,
-Nan
-
+	-Mike
