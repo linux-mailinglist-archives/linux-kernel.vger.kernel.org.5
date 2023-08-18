@@ -2,354 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388E2780B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134BC780B8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376785AbjHRMHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S1376789AbjHRMIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236248AbjHRMHI (ORCPT
+        with ESMTP id S1376826AbjHRMI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:07:08 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42BCD30E6;
-        Fri, 18 Aug 2023 05:07:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3B97ED75;
-        Fri, 18 Aug 2023 05:07:46 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 634F03F6C4;
-        Fri, 18 Aug 2023 05:07:02 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 13:06:59 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Martin Botka <martin.botka@somainline.org>
-Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alan Ma <tech@biqu3d.com>,
-        Luke Harrison <bttuniversity@biqu3d.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin@biqu3d.com>
-Subject: Re: [PATCH 2/3] thermal: sun8i: Add support for H616 THS controller
-Message-ID: <20230818130659.49346be5@donnerap.manchester.arm.com>
-In-Reply-To: <CB2LZR.1KPTPXNXKA5H3@somainline.org>
-References: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
-        <20230818-ths-h616-v1-2-0e1e058b9c7a@somainline.org>
-        <20230818112930.6b152491@donnerap.manchester.arm.com>
-        <CB2LZR.1KPTPXNXKA5H3@somainline.org>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+        Fri, 18 Aug 2023 08:08:28 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2045.outbound.protection.outlook.com [40.107.95.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FDF35AC;
+        Fri, 18 Aug 2023 05:08:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FOSrDh2Wmj6njRyMkcpu0avIsu2EmN8p4VzZmGCPkKIy02A+trHaaftBE6kP7ijtqot4EKaDX2jp2coBmQ7oToDOJ9yUYsBsIHzXIzq2BXkIQYp6r2ZN8DVf0D+k1xFN6VFXjwa1xWarBZh34NhlZUREqlMVrDOKFzja1GDAbV5R7aeJiLqFYd8Hs26OvYderinKNhz6ctfvfnkKYsVOQp6xxjs9Cw0wj3T58VPoLYHraMCaPkUOhbONbSPknJd53TNR6LGiDNRF2M7T4hcl9ZCysA1VL0FlrB541lZ/zNCelJ6BoJrzeLLQwGCWnrEQVC11hZIpV9KtpUSAftshww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EXDPpWmK+wm52yMQ3GyIEsdEzITJYAVeDi/66+FstZ0=;
+ b=WzhFWHE+Cg/9otJLz8+hZaOz7KYGKSMS3ssG69SSu7FJ26A634Zxyil7XU1yemuGzY7isn/o9OM6kHbJSQTv5Wbu89+XqoLv3F/nRBqdwz4eb7j++nXFsYXl5E8pvpSg4ll4s7ZIuKqhLJI2AMOMO3SZvc6ss9UO5uCKnN3ukg6wUytamIWw55yazG3jP4TUolYOljW7klB1ebVjiTvtCn4THzpL7jOBaBxvL0aB8LGz0VfGj9mKd55pTaw5NCxBRVHjxmSPxOVRxVlFEBeT9e7d54OTkLcTSiTLHzx/CYj4CtwVrepm6ObZFG5MPxT8bGJcb8/fzbT41oFBJn69yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EXDPpWmK+wm52yMQ3GyIEsdEzITJYAVeDi/66+FstZ0=;
+ b=pKps0ZZR4P8dgxgegPqusjO39pOsXgJ+e5kmWOQ0zBwBqxi21KziJZLpEsy/7KlFXcBIWSQjzxt3HWxNb5umJNHl8JsYvVe9NdiyarNfhyc+9Gb+OhiWtk0C/rVrZoF3EZmjnP9YKyA++ufAviAlPhPYIkOrD8d4YugpU2dkSnMHumodvO7/Cys3zzit7kch51mMt96y4aPt5w6qrbIagKd4oBPZJ8Py7EITQmXaaSLbg40jK0LLQ5Jt6pXl0UAjUGiuuf5YjJ6dlFEfg5ZKn91YVAZQJQfNRGS+QU38Wi6LmWL20Zl5HyM/G62Q5uocMmtxIcMWSNgWDX6y8CMj/A==
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
+ by CH3PR12MB8536.namprd12.prod.outlook.com (2603:10b6:610:15e::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.30; Fri, 18 Aug
+ 2023 12:08:24 +0000
+Received: from CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9]) by CH2PR12MB3895.namprd12.prod.outlook.com
+ ([fe80::ae25:4f33:8a19:32c9%4]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 12:08:24 +0000
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Topic: [PATCH v3 2/2] gpio: mlxbf3: Support add_pin_ranges()
+Thread-Index: AQHZ0XJW73DQtqAv20Cf0bFk539ay6/vwcOAgAA0jXA=
+Date:   Fri, 18 Aug 2023 12:08:24 +0000
+Message-ID: <CH2PR12MB3895048FF2418B8DAE059169D71BA@CH2PR12MB3895.namprd12.prod.outlook.com>
+References: <20230818012111.22947-1-asmaa@nvidia.com>
+ <20230818012111.22947-3-asmaa@nvidia.com>
+ <CAHp75VehagLZLTb4hC5J+w8JVUu-zYBDb+npeS8ZgadfF9MheA@mail.gmail.com>
+In-Reply-To: <CAHp75VehagLZLTb4hC5J+w8JVUu-zYBDb+npeS8ZgadfF9MheA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR12MB3895:EE_|CH3PR12MB8536:EE_
+x-ms-office365-filtering-correlation-id: b8b0fd0a-89fe-4192-8a61-08db9fe3d27e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: AHf1QYCA4dIuQTeAGddBtu4fnr3r1KnmEcBCsus8R638+f2WKuPkv7kVN7mzFFdhQ+jGbo2mNgBYwl9FMlnL3tnj9da24RzHfYfYOxmxBV8+7B6MMiZnEVOAiENzgkfE2LAxM17Y3cInhrZ6R4IUmma8E3SAyVCn8Zfm/h8p1YXwbmvRiooa7W42vp+olbLiKIkv5oyhyJGd2s+OxpCrnqZMjndmr0Mx2sksJyq+BAxY2VBIlBrEMOlUBmUOJ8umj80T28GdaVoNgSL5bUUoBKvHsporsqnC+QdUtyXN1OWK4p0+3aiMLsH+PRH2DcuOKJ2wKoad3SmiHA6YVAwqzpINm2tK0h6lcXfzkpu/l+5Z7SPsu9a42z8Vl6tzI/161dGW1FKzbE6cS+Br4UMVnCDMSG6Rd0sVLDN/fXyyQKjN/5D1jvlpzLPyIGJbS7CcQ4S7ggLz7l8WeLbcISblbkRno7YZ84Rdzo8vtw901lAoBa0CmXRLhSLmpcosC0XGIWIh1sMK+aBV+Yj4igKGXQGxoWyUBWoqckX2yqkhP9LuHyRt+Z7pM9Vnv74tfC32qvuNI46e7GE8IhOgOv9encS+fqqaAPFmHyIFionP8VTz32oXoYJDBxeINUvEhb+6
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(136003)(396003)(1800799009)(451199024)(186009)(316002)(8676002)(4326008)(8936002)(76116006)(6916009)(66946007)(64756008)(66556008)(54906003)(66446008)(66476007)(41300700001)(5660300002)(52536014)(2906002)(4744005)(33656002)(478600001)(38100700002)(83380400001)(38070700005)(55016003)(26005)(9686003)(71200400001)(7696005)(6506007)(122000001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a0lmTi9yd1dhQkw2S3dEWkZhc1Znc1EzTjJNaEF4T3l2aXZsbEJrNm55Z1F4?=
+ =?utf-8?B?cmFCVFdGM0wzd1NjS1ZkNks5OUZHZW5lRWZuV3pPaG4vKy9MUVZCYVVhMU9z?=
+ =?utf-8?B?bnZndVpUU29vTmtwUUF6RzQ4TDMrR2NmQkJNNjNwSHNlSGE0Z3F5b2hURSt3?=
+ =?utf-8?B?ajJmemlhbEhHNERMY0x3ekEwTmpJdmV4Q2Zzb1BwL2lJWVhBZWxyQ2FVUlNG?=
+ =?utf-8?B?MFdYM3BpK3l0TDNOY1VCakEzZXoyWGpBUkpTS3g1RnFlaHpwc3FjOUJSVERv?=
+ =?utf-8?B?dlRvWmxJNERVU2Y0eTI3S0llNVlrUWRzZFE3TDE5aDhUR2pvaEJvRE5aRFJo?=
+ =?utf-8?B?YVhYSHE1WlVEWi8zU3A3U1JKWWVyQi9IVjNrOEFMRTlzYUcvZDJtOHg3dE9q?=
+ =?utf-8?B?OSt0K1MwSWFxL0Y4Nmx2eGpSeFcrV2hHaWJWN2xSY2Z6bkQrSUxlb29zSmZD?=
+ =?utf-8?B?eVViWDRsT014NC9NTmFFSzg1d0RyTGdsaWlEemJpdHFybjdTcVRSSmF2c0J0?=
+ =?utf-8?B?QTY5eDZGVE8vcDErOGp1TW9kaFlGSjl1WDhiYkw3ZXBnSTNnMTFMLzBzUExw?=
+ =?utf-8?B?NXdpd2ZBc1hRVHRsczcyRlpqVDh0QlhGanlVcGMyd1FvK1cxMzlBNndvQzRF?=
+ =?utf-8?B?Nm5lN3d1Q0ZvVGlndVBvcTB3K0JYOTdWcjREK1JYeXVHRGEzSUhXMnUxcTJa?=
+ =?utf-8?B?N3Z6NmN5MEpFS0QvL0ozT094N1hKQW5YMnNGdlpjaWhXeU13Z0dhMkZtdzNp?=
+ =?utf-8?B?SndRTTNYTGdWRDFOMmNZTVlnOWRGcVdBdnVrWmpZOVZlM3lXWEs1VkppaTU2?=
+ =?utf-8?B?QnEvYlVsV2UvVkYxTEc2Y21VSGhvNFd0YXhGeWx4cm5qZEtBZnZtcFZ5TXBj?=
+ =?utf-8?B?WkR2eW5PQm5LTWxuR1ducUFzMzl6UzhZZTErQWMyTGZwVGlRNjAxNHdPRmZm?=
+ =?utf-8?B?TlF1V1NXQjlBY3BYODNyazRPaU96MGhJeGdZRTJmNkFOMjZFcE9tWjcvMXU2?=
+ =?utf-8?B?M2tPbXRsWU1xY1hSbjREcjNDYXhLbndiQ3lxT2xyY2pLSlhpanNzUGJhSTUz?=
+ =?utf-8?B?d1RNdUpoL1hyUUh4Kzk4WW82OVZFa09lUE5NZks3Q2hvQngxZzlnTGFUZWxw?=
+ =?utf-8?B?VFdLYnZiQWhqbFhoQ1NlNXlDT2V1VnU5aTRjZ1FVSFVuMGEwK01EWC9qSE1T?=
+ =?utf-8?B?Z2oyTFhjSHZvRWZma1JWTUhjNloweE5hYktvSFk0aUh6S3k2WDBuVTQ2a2FF?=
+ =?utf-8?B?anRPS1pFVHVTZ0R0WEJDOFNMNEVXRFpBbkRVcjdWR0w1NUYxZVFkNWphQ2gz?=
+ =?utf-8?B?UFJlS054SHRCSE5UUUJSMnlzaWJBTkVNNmlpdVFZQVZaRnVWbUpsK1I4NEk0?=
+ =?utf-8?B?MUphNlVFdzNOTDRWMTRHeTYva01Idmx3eEpWWEI2b3F3bFFkdE5SOHZBY1hm?=
+ =?utf-8?B?Z0s2RktSZUNaZStrUFpMQzRFQmMzVkY5TEFiQUU1ZU5oMG5ZVkIxdFFyN3Bu?=
+ =?utf-8?B?ME9HOS8vWFZvNXdSTERWdFllSE5XamFzcGxPamNPdzFQOUdPeHhPSUVDaU4y?=
+ =?utf-8?B?UmdUZHFqS1RJdUxLY2c0Tms2YkVPYXhTWFRqTTBkc3lhNzFCdnhsU2lJcGlh?=
+ =?utf-8?B?eXRTVDNJYlo1eEoxTEpJRVdkSnJnbFFvU05iSVFnbGFUdFR6Y1I3ejVZaTRZ?=
+ =?utf-8?B?RUdYOXUyTVlPU05hMUhOL3M1Tm16d0p6MDZDckcrYW0rUGg2SkROczhSdUFT?=
+ =?utf-8?B?U0VsVFFqRE9udXNyN2dObTVqODJTMG9qNDM2YmFUbUpBZDBrTGV2L3lKQkFi?=
+ =?utf-8?B?M0h0d0lmUjVUK25QQTNpTXRIRTluMUFZZk5DZGJ5aWZGNlpFUlFaellUVEI3?=
+ =?utf-8?B?RTZaK2FJTFB6dXpBRzZrZkRLeFNEc1Rmd0EvKzdZR1lwWUtCWlI0aGQyN21L?=
+ =?utf-8?B?MVBPU09SMGovVnpZbGl4bFBnUEJTVUhwMnh4MVlBME5DL3NVc2Zwei9heCtB?=
+ =?utf-8?B?KzRKNkNMc252QUVCQ21RRm1kVk13SVgyZlZpM2VyWUppZGdVbzNsTTJUNzRS?=
+ =?utf-8?B?dDVuU2xNWFUzQy92TEJMZUw0b0xXKzNDWTZXSk5aREU4S0hVVmk2WXVuZ3Vx?=
+ =?utf-8?Q?GPWA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8b0fd0a-89fe-4192-8a61-08db9fe3d27e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 12:08:24.0571
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: z2M+QDfIur9fd07tj6VrqXVm/dLWyuZV7BJLYO9hqUrMdl/WQFUv4iMd99ORmMfyZRvXQLB5pcV3bRFcsqT8dw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8536
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 12:54:48 +0200
-Martin Botka <martin.botka@somainline.org> wrote:
-
-Hi Martin,
-
-> On Fri, Aug 18 2023 at 11:29:30 AM +01:00:00, Andre Przywara 
-> <andre.przywara@arm.com> wrote:
-> > On Fri, 18 Aug 2023 10:43:17 +0200
-> > Martin Botka <martin.botka@somainline.org> wrote:
-> > 
-> > Hi Martin,
-> > 
-> > many thanks for the time and effort for upstreaming this!
-> >   
-> >>  Add support for the thermal sensor found in H616 SoC
-> >>  which slightly resembles the H6 thermal sensor
-> >>  controller with few changes like 4 sensors.
-> >> 
-> >>  Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> >>  ---
-> >>   drivers/thermal/sun8i_thermal.c | 115 
-> >> ++++++++++++++++++++++++++++++++++++++++
-> >>   1 file changed, 115 insertions(+)
-> >> 
-> >>  diff --git a/drivers/thermal/sun8i_thermal.c 
-> >> b/drivers/thermal/sun8i_thermal.c
-> >>  index 195f3c5d0b38..9d73e4313ad8 100644
-> >>  --- a/drivers/thermal/sun8i_thermal.c
-> >>  +++ b/drivers/thermal/sun8i_thermal.c
-> >>  @@ -108,6 +108,12 @@ static int sun50i_h5_calc_temp(struct 
-> >> ths_device *tmdev,
-> >>   		return -1590 * reg / 10 + 276000;
-> >>   }
-> >> 
-> >>  +static int sun50i_h616_calc_temp(struct ths_device *tmdev,
-> >>  +			       int id, int reg)
-> >>  +{
-> >>  +	return (reg + tmdev->chip->offset) * tmdev->chip->scale;  
-> > 
-> > So if my school maths is not letting me down, this is the same as the
-> > sun8i_ths_calc_temp() function, when using:
-> > scale = h616_scale * -10
-> > offset = h616_offset * h616_scale
-> > 
-> > So we do not need this new function, when we use:
-> > +	.offset = 263655,
-> > +	.scale = 810,
-> > below, right?  
-> That looks correct. Seems like my brain has let me down once again hehe.
-
-Well, I guess you took the code from some BSP drop, right? And "same code
-written differently" is a common pattern in those vendor kernels, because
-they work on this "new SoC, new Linux kernel" premise, and miss out in
-factoring out the commonalities. Which on the other hand is something that
-Linux maintainers tend to push for.
-
-> > Those values are not only positive, but also seem closer to the other
-> > SoC's values.
-> > This of course requires some small adjustment in the calibrate 
-> > function,
-> > to accommodate for the changed scale, but I leave this up as an 
-> > exercise
-> > to the reader ;-)
-> > 
-> > Martin, can you confirm that this works?  
-> Will do :)
-> >   
-> >>  +}
-> >>  +
-> >>   static int sun8i_ths_get_temp(struct thermal_zone_device *tz, int 
-> >> *temp)
-> >>   {
-> >>   	struct tsensor *s = thermal_zone_device_priv(tz);
-> >>  @@ -278,6 +284,64 @@ static int sun50i_h6_ths_calibrate(struct 
-> >> ths_device *tmdev,
-> >>   	return 0;
-> >>   }
-> >> 
-> >>  +static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
-> >>  +				   u16 *caldata, int callen)  
-> > 
-> > nit: alignment  
-> ack
-> >   
-> >>  +{
-> >>  +	struct device *dev = tmdev->dev;
-> >>  +	int i, ft_temp;
-> >>  +
-> >>  +	if (!caldata[0])
-> >>  +		return -EINVAL;
-> >>  +
-> >>  +	/*
-> >>  +	 * h616 efuse THS calibration data layout:
-> >>  +	 *
-> >>  +	 * 0      11  16     27   32     43   48    57
-> >>  +	 * +----------+-----------+-----------+-----------+
-> >>  +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
-> >>  +	 * +----------+-----------+-----------+-----------+
-> >>  +	 *                      ^           ^           ^
-> >>  +	 *                      |           |           |
-> >>  +	 *                      |           |           sensor3[11:8]
-> >>  +	 *                      |           sensor3[7:4]
-> >>  +	 *                      sensor3[3:0]
-> >>  +	 *
-> >>  +	 * The calibration data on the H616 is the ambient temperature and
-> >>  +	 * sensor values that are filled during the factory test stage.
-> >>  +	 *
-> >>  +	 * The unit of stored FT temperature is 0.1 degreee celusis.  
-> > 
-> > nit: degree Celsius  
-> .... I can't even legit excuse this typo (If it even can be called 
-> typo). Got it tho.
-> >   
-> >>  +	 */
-> >>  +	ft_temp = caldata[0] & FT_TEMP_MASK;
-> >>  +
-> >>  +	for (i = 0; i < tmdev->chip->sensor_num; i++) {
-> >>  +		int delta, cdata, offset, reg;
-> >>  +
-> >>  +		if (i == 3)
-> >>  +			reg = (caldata[1] >> 12)
-> >>  +			      | (caldata[2] >> 12 << 4)
-> >>  +			      | (caldata[3] >> 12 << 8);  
-> > 
-> > Can you add parentheses around the (caldata[2|3] >> 12) part? Makes 
-> > it a
-> > bit more readable.  
-> yep
-> >   
-> >>  +		else
-> >>  +			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
-> >>  +
-> >>  +		delta = (ft_temp * 100 - tmdev->chip->calc_temp(tmdev, i, reg))
-> >>  +			/ tmdev->chip->scale;  
-> > 
-> > Looks a bit odd, can you write this as over two lines?
-> > 		delta = ft_temp ...;
-> > 		delta /= tmdev->chip_scale;  
-> can do.
-> > 
-> > (And this would be the place where you adjust the calculation to use 
-> > the
-> > new scale value).  
-> yep. Tho it is bit of a spoiler for the reader ;)
-> >   
-> >>  +		cdata = CALIBRATE_DEFAULT - delta;
-> >>  +		if (cdata & ~TEMP_CALIB_MASK) {
-> >>  +			dev_warn(dev, "sensor%d is not calibrated.\n", i);
-> >>  +
-> >>  +			continue;
-> >>  +		}
-> >>  +
-> >>  +		offset = (i % 2) * 16;
-> >>  +		regmap_update_bits(tmdev->regmap,
-> >>  +				   SUN50I_H6_THS_TEMP_CALIB + (i / 2 * 4),
-> >>  +				   0xfff << offset,  
-> > 
-> > That should be TEMP_CALIB_MASK << offset, compare the H6 code.  
-> Agreed. Missed this one. Ty.
-> >   
-> >>  +				   cdata << offset);
-> >>  +	}
-> >>  +
-> >>  +	return 0;
-> >>  +}
-> >>  +
-> >>   static int sun8i_ths_calibrate(struct ths_device *tmdev)
-> >>   {
-> >>   	struct nvmem_cell *calcell;
-> >>  @@ -453,6 +517,43 @@ static int sun50i_h6_thermal_init(struct 
-> >> ths_device *tmdev)
-> >>   	return 0;
-> >>   }
-> >> 
-> >>  +static int sun50i_h616_thermal_init(struct ths_device *tmdev)
-> >>  +{
-> >>  +	int val;
-> >>  +
-> >>  +	/*
-> >>  +	 * T_acq = 20us
-> >>  +	 * clkin = 24MHz
-> >>  +	 *
-> >>  +	 * x = T_acq * clkin - 1
-> >>  +	 *   = 479
-> >>  +	 */
-> >>  +	regmap_write(tmdev->regmap, SUN50I_THS_CTRL0,
-> >>  +		     SUN8I_THS_CTRL0_T_ACQ0(47) | SUN8I_THS_CTRL2_T_ACQ1(479));  
-> > 
-> > So this whole function is the same as the H6 (diff it!), except this 
-> > line.
-> > Which is actually also the same, just written differently (47 == 
-> > 0x2f).
-> > Can you please double check this, and if you agree, remove the whole
-> > function and just use the H6 version?  
-> They are not the same. Yes the 47 can be replaced with the unknown 
-> value from H6.
-> What isnt the same is the CTRL at the end. CTRL0 in H6 and CTRL2 in 
-> H616. A very
-> small change :)
-
-But the definitions of SUN8I_THS_CTRL2_T_ACQ1 and SUN50I_THS_CTRL0_T_ACQ
-are the same, aren't they?
-I wonder if we are missing one piece of info for the H6 here, so the
-"magic" 47 isn't actually magic, but there is some formula involving
-clocks, similar to the one that results in 479.
-Because then this would be more similar across the different SoCs: there
-are *two* timing values for each SoC, and they just happen to be the same
-for the H3 (20us), but are different for the H6 and H616 (one 2us, the
-other 20us). And then your H616 line would make sense for the H6 as well:
-		2us				20us
-	SUN8I_THS_CTRL0_T_ACQ0(47) | SUN8I_THS_CTRL2_T_ACQ1(479));
-
-In any case I still believe the H6 line results in the very same bit
-pattern than your H616 line, but I am happy to stand corrected.
-In which case I would ask you to unify the code anyway, somehow, so you
-better hope I am right ;-)
-
-Cheers,
-Andre
-
-> >>  +	/* average over 4 samples */
-> >>  +	regmap_write(tmdev->regmap, SUN50I_H6_THS_MFC,
-> >>  +		     SUN50I_THS_FILTER_EN |
-> >>  +		     SUN50I_THS_FILTER_TYPE(1));
-> >>  +	/*
-> >>  +	 * clkin = 24MHz
-> >>  +	 * filter_samples = 4
-> >>  +	 * period = 0.25s
-> >>  +	 *
-> >>  +	 * x = period * clkin / 4096 / filter_samples - 1
-> >>  +	 *   = 365
-> >>  +	 */
-> >>  +	regmap_write(tmdev->regmap, SUN50I_H6_THS_PC,
-> >>  +		     SUN50I_H6_THS_PC_TEMP_PERIOD(365));
-> >>  +	/* enable sensor */
-> >>  +	val = GENMASK(tmdev->chip->sensor_num - 1, 0);
-> >>  +	regmap_write(tmdev->regmap, SUN50I_H6_THS_ENABLE, val);
-> >>  +	/* thermal data interrupt enable */
-> >>  +	val = GENMASK(tmdev->chip->sensor_num - 1, 0);
-> >>  +	regmap_write(tmdev->regmap, SUN50I_H6_THS_DIC, val);
-> >>  +
-> >>  +	return 0;
-> >>  +}
-> >>  +
-> >>   static int sun8i_ths_register(struct ths_device *tmdev)
-> >>   {
-> >>   	int i;
-> >>  @@ -608,6 +709,19 @@ static const struct ths_thermal_chip 
-> >> sun50i_h6_ths = {
-> >>   	.calc_temp = sun8i_ths_calc_temp,
-> >>   };
-> >> 
-> >>  +static const struct ths_thermal_chip sun50i_h616_ths = {
-> >>  +	.sensor_num = 4,
-> >>  +	.has_bus_clk_reset = true,
-> >>  +	.ft_deviation = 8000,
-> >>  +	.offset = -3255,
-> >>  +	.scale = -81,
-> >>  +	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
-> >>  +	.calibrate = sun50i_h616_ths_calibrate,
-> >>  +	.init = sun50i_h616_thermal_init,
-> >>  +	.irq_ack = sun50i_h6_irq_ack,
-> >>  +	.calc_temp = sun50i_h616_calc_temp,
-> >>  +};
-> >>  +
-> >>   static const struct of_device_id of_ths_match[] = {
-> >>   	{ .compatible = "allwinner,sun8i-a83t-ths", .data = 
-> >> &sun8i_a83t_ths },
-> >>   	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
-> >>  @@ -616,6 +730,7 @@ static const struct of_device_id of_ths_match[] 
-> >> = {
-> >>   	{ .compatible = "allwinner,sun50i-a100-ths", .data = 
-> >> &sun50i_a100_ths },
-> >>   	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths 
-> >> },
-> >>   	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths 
-> >> },
-> >>  +	{ .compatible = "allwinner,sun50i-h616-ths", .data = 
-> >> &sun50i_h616_ths },
-> >>   	{ /* sentinel */ },
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, of_ths_match);
-> >>   
-> >   
-> 
-> 
-
+PiBCZXR0ZXIgbm93LA0KPiBSZXZpZXdlZC1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmR5LnNoZXZj
+aGVua29AZ21haWwuY29tPg0KPiANCj4gLi4uDQo+IA0KPiA+ICAjZGVmaW5lIE1MWEJGM19HUElP
+X01BWF9QSU5TX1BFUl9CTE9DSyAzMg0KPiA+ICsjZGVmaW5lIE1MWEJGM19HUElPX01BWF9QSU5T
+X0JMT0NLMA0KPiBNTFhCRjNfR1BJT19NQVhfUElOU19QRVJfQkxPQ0sNCj4gPiArI2RlZmluZSBN
+TFhCRjNfR1BJT19NQVhfUElOU19CTE9DSzEgICAgMjQNCj4gDQo+IFNpbmNlIGl0J3MgYSBmaXgg
+Zm9yIGJhY2twb3J0aW5nLCBJJ20gbm90IGluc2lzdGluZyB0byBhbWVuZCBpdCBub3csIGJ1dCBj
+YW4gd2UNCj4gYWN0dWFsbHkgZHJvcCB0aGUgY29tbW9uIGRlZmluZSBhbmQgdXNlDQo+IA0KPiAj
+ZGVmaW5lIE1MWEJGM19HUElPX01BWF9QSU5TX0JMT0NLMCAgICAzMg0KPiAjZGVmaW5lIE1MWEJG
+M19HUElPX01BWF9QSU5TX0JMT0NLMSAgICAyNA0KPiANCj4gYW5kIG1vZGlmeSBjb2RlIGFjY29y
+ZGluZ2x5LCBwbGVhc2U/DQpTdXJlLiBXaWxsIHNlbmQgYSB2NCBhZGRyZXNzaW5nIHRoaXMuDQo=
