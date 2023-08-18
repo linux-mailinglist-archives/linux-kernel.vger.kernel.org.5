@@ -2,84 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F179780D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B69780D29
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377481AbjHRNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S1377504AbjHRN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377543AbjHRNzR (ORCPT
+        with ESMTP id S1377536AbjHRNzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:55:17 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906534211;
-        Fri, 18 Aug 2023 06:55:04 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4ff9b389677so1376858e87.3;
-        Fri, 18 Aug 2023 06:55:04 -0700 (PDT)
+        Fri, 18 Aug 2023 09:55:53 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B383C34;
+        Fri, 18 Aug 2023 06:55:28 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe426b8583so9162125e9.2;
+        Fri, 18 Aug 2023 06:55:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692366903; x=1692971703;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqOZRpA/sOgX9s7qNLK01/u1l1ZaHRKeAVuzjchXvhA=;
-        b=QHuoY3NIpW/k876nQ+vV7jF/2k4zSbkiduPJJF1C1hrmKXu4x7e5pb9x7ImSdHL7If
-         iJyLT/ekMP5/oVudColuOE5yJk8xJt/KMAodY4UmiENl5o8QLPFcaaAFC4EJJvrIwRJc
-         cfDo5bx7xVdM9Xbi+QTbYZ7OlOFecz0ONEuLRPJm3sS2Iy2jdiLn8p4thpsqNvU8h0Oo
-         BKxA8oznKkyeLF04VnePuSLMfDrKIaplfoQw322yUvU5E/VIKaBA1A1IaRQCume9nNQm
-         vhrAnPkMtcWsSTkMqw3Vc0snwVF0TRl5hNlYk/E9WI4rSPQu09+zAt5ePepicQDE+Muj
-         8GLw==
+        d=gmail.com; s=20221208; t=1692366927; x=1692971727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tnlBg8i71ZZF5vC/PdEFa3UhFBHInI/WTs75Cw2jAu0=;
+        b=SVGMKfENLrPZL4ySpDmshwozLBWz3qQUL/LzznRTsBZjvY+YbU1cGhyUR69IYuZe+9
+         Ro7x0sDMEGgCbzgdjCyholFdTLsdFOK88RU+6dlvOPWRH+tOyzrWHOj9pKPOtNuS3NLt
+         xUux0MLnL66Q9efYYE3HWpJXE9wGQHwcHyJseiEt/njdVYG5zmX3pCDTdKcGo6qxFlvy
+         UpFbRUcTbgNq6IDgzPxk4L1hKUol/5tuvTtuPfvwzJl/hZpE9RFgXONlynPCG+Nl63Xb
+         uxOcILp1gbwHefZoHugaHU0y2cNIhSzlzt2B6yOOGsSCLTJqUkm3DoCCTszWObkzC7en
+         s1dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692366903; x=1692971703;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rqOZRpA/sOgX9s7qNLK01/u1l1ZaHRKeAVuzjchXvhA=;
-        b=TqK+evR8ClkJQGLwG+13cmLZlaZ/xgIJdGejtEuhq92NTbboCdfppZ6XHwjQm36QGX
-         qQRmAVHSTOY9XqOcrjMEkjB9NnigplycTTezPTf+E4q1ZISNFHe0rZS95lOfATtidZSO
-         JjYvOd/P3qhV+Z2JiG/VuJTBCUAkA4W1ow/r8DRyRsMYO/OuqUS8rNSuWeKnF9JI1UXj
-         O2BdBaaDclZOdAeqZj6RM2UwlETxZbS3k+KYc6EFJtiJdsiwWACINKEQXmJZFVetRJEi
-         ka97T36anRayJoIA5lNJC6KMl86cnB1SgyQz6OJOnIrtoF3+vNqC0qEldvMG4kzN3imS
-         610w==
-X-Gm-Message-State: AOJu0Yyg1cwtq1chMB1Dp256rGb8fxGMt4cOYgfj07URT4+r/qVZNyjg
-        cUKhNupkdgA4AWY+0gl1cn8=
-X-Google-Smtp-Source: AGHT+IFBCMJIe6tXw9Hr2Trz4Gu0e9s26ICPKqd6btUGeso2ERHa6UCAX8DfyJ042bGbqMxnVkKIDg==
-X-Received: by 2002:a05:6512:b19:b0:4fd:ddbc:1577 with SMTP id w25-20020a0565120b1900b004fdddbc1577mr2161268lfu.2.1692366902532;
-        Fri, 18 Aug 2023 06:55:02 -0700 (PDT)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id f16-20020ac251b0000000b004fdc7ec5cbesm351776lfk.300.2023.08.18.06.55.02
+        d=1e100.net; s=20221208; t=1692366927; x=1692971727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tnlBg8i71ZZF5vC/PdEFa3UhFBHInI/WTs75Cw2jAu0=;
+        b=eW8YTmE+N+sxDzrZ69hOkLvMq1YYI4PgtJkIVqEk7XxTwZL0/6zqCq7sn3Fb1xSnNI
+         d168LA3il57epTbfb07iLZnigrcv/mvj2eEf1xEmwneS6xsnTv62Ue4iD/kAzxQXHx8O
+         935YBfLq2V4FWTmsNV+qbVq5dkfiaChgFGKBha0dVBTofMF/gnKGbyfltrv1T3AmEH4n
+         fHOiLuPurGmhNb6Kr4LkS9Si0jJaMM9YWTPz0aouyCrwO+USuRmO2B9ih9TDmQ3G/xIR
+         +y9y6WF7fjg3F/YENaAfCP5mpiWyLImGWGarPoLXcA7GHEhIte1rfzpHNip50+LME6ep
+         9wxg==
+X-Gm-Message-State: AOJu0Yz2AuBRFTu7dEo3exTpr0rvlwRNk0dlYkKQuMA6RNNXReyydtI3
+        VqAQxKfz2OND+4x+TNk81g0=
+X-Google-Smtp-Source: AGHT+IGPwVy7tTV7YnQuwXt82DLo04fv/2T9wNtuF6/+2OjG7pObR0Lfak90HHgIN2Erv+/+KOYRJg==
+X-Received: by 2002:a7b:c7c8:0:b0:3fe:2e0d:b715 with SMTP id z8-20020a7bc7c8000000b003fe2e0db715mr2306544wmk.18.1692366927240;
+        Fri, 18 Aug 2023 06:55:27 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1c7718000000b003feae747ff2sm6436557wmi.35.2023.08.18.06.55.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 06:55:02 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 16:55:00 +0300
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Sebastian Wick <sebastian.wick@redhat.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        quic_abhinavk@quicinc.com, contact@emersion.fr,
-        laurent.pinchart@ideasonboard.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
-Subject: Re: [PATCH RFC v5 02/10] drm: Introduce solid fill DRM plane
- property
-Message-ID: <20230818165500.50360195@eldfell>
-In-Reply-To: <c4b7e9eb-fb5d-4b2f-8358-f41598d7d983@linaro.org>
-References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
-        <20230728-solid-fill-v5-2-053dbefa909c@quicinc.com>
-        <CAA8EJpq=pbDoYc9wqKKrX+RahXp8zWTPFqVqA=S-0TkWXXJUjQ@mail.gmail.com>
-        <CA+hFU4y38MTTUsbri1jy=n4Vyp7xx2CosD9Nmk97z_au6NHCdQ@mail.gmail.com>
-        <CAA8EJpoFpUcQL_7pb0toDoLFsK=9GdBLQH+h_MMffrp9k7eCyw@mail.gmail.com>
-        <20230818135133.3fdeddba@eldfell>
-        <c4b7e9eb-fb5d-4b2f-8358-f41598d7d983@linaro.org>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Fri, 18 Aug 2023 06:55:26 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] btrfs: remove redundant initialization of variable dirty
+Date:   Fri, 18 Aug 2023 14:55:25 +0100
+Message-Id: <20230818135525.1206140-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/U=vUEXpdxtWCvJFEbe144qV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -90,110 +70,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/U=vUEXpdxtWCvJFEbe144qV
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+The variable dirty is initialized with a value that is never read, it
+is being re-assigned later on. Remove the redundant initialization.
+Cleans up clang scan build warning:
 
-On Fri, 18 Aug 2023 14:03:14 +0300
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+fs/btrfs/inode.c:5965:7: warning: Value stored to 'dirty' during its
+initialization is never read [deadcode.DeadStores]
 
-> On 18/08/2023 13:51, Pekka Paalanen wrote:
-> > On Fri, 4 Aug 2023 16:59:00 +0300
-> > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
-> >  =20
-> >> On Fri, 4 Aug 2023 at 16:44, Sebastian Wick <sebastian.wick@redhat.com=
-> wrote: =20
-> >>>
-> >>> On Fri, Aug 4, 2023 at 3:27=E2=80=AFPM Dmitry Baryshkov
-> >>> <dmitry.baryshkov@linaro.org> wrote: =20
-> >>>>
-> >>>> On Fri, 28 Jul 2023 at 20:03, Jessica Zhang <quic_jesszhan@quicinc.c=
-om> wrote: =20
-> >>>>>
-> >>>>> Document and add support for solid_fill property to drm_plane. In
-> >>>>> addition, add support for setting and getting the values for solid_=
-fill.
-> >>>>>
-> >>>>> To enable solid fill planes, userspace must assign a property blob =
-to
-> >>>>> the "solid_fill" plane property containing the following informatio=
-n:
-> >>>>>
-> >>>>> struct drm_mode_solid_fill {
-> >>>>>          u32 version;
-> >>>>>          u32 r, g, b;
-> >>>>> };
-> >>>>>
-> >>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> >>>>> ---
-> >>>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  9 +++++
-> >>>>>   drivers/gpu/drm/drm_atomic_uapi.c         | 55 ++++++++++++++++++=
-+++++++++++++
-> >>>>>   drivers/gpu/drm/drm_blend.c               | 30 +++++++++++++++++
-> >>>>>   include/drm/drm_blend.h                   |  1 +
-> >>>>>   include/drm/drm_plane.h                   | 35 ++++++++++++++++++=
-++
-> >>>>>   include/uapi/drm/drm_mode.h               | 24 ++++++++++++++
-> >>>>>   6 files changed, 154 insertions(+)
-> >>>>>    =20
-> >>>>
-> >>>> [skipped most of the patch]
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-...
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7d11dbd74956..6441c0053355 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -5962,7 +5962,7 @@ static int btrfs_dirty_inode(struct btrfs_inode *inode)
+ static int btrfs_update_time(struct inode *inode, int flags)
+ {
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+-	bool dirty = flags & ~S_VERSION;
++	bool dirty;
+ 
+ 	if (btrfs_root_readonly(root))
+ 		return -EROFS;
+-- 
+2.39.2
 
-> >>> Maybe another COLOR_FILL enum value
-> >>> with alpha might be better? Maybe just doing the alpha via the alpha
-> >>> property is good enough. =20
-> >>
-> >> One of our customers has a use case for setting the opaque solid fill,
-> >> while keeping the plane's alpha intact. =20
-> >=20
-> > Could you explain more about why they must keep plane alpha intact
-> > instead of reprogramming everything with atomic? Is there some
-> > combination that just cannot reach the same end result via userspace
-> > manipulation of the solid fill values with plane alpha?
-> >=20
-> > Or is it a matter of userspace architecture where you have independent
-> > components responsible for different KMS property values? =20
-
-> The latter one. The goal is to be able to switch between pixel sources=20
-> without touching any additional properties (including plane's alpha value=
-).
-
-Sorry, but that does not seem like a good justification for KMS UAPI
-design.
-
-It is even in conflict with how atomic KMS UAPI was designed to work:
-collect all your changes into a single commit, and push it at once.
-Here we are talking about separate components changing the different
-properties of the same KMS plane even. If you want to change both plane
-opacity and contents, does it mean you need two refresh cycles, one at
-a time? Could the two components be even racing with each other,
-stalling each other randomly?
-
-
-Thanks,
-pq
-
---Sig_/U=vUEXpdxtWCvJFEbe144qV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTfeDQACgkQI1/ltBGq
-qqctxg/9FrNHfSu24l0Eay/mQWxFRFTxi4VcYtO0f3lBxbhFeA3cb8q/w4TYtgDb
-rkAWpN6SyDBIK4uvXxXP6soVQg7eRmRp7flQO7xO/SKouylbN+4HGA0FImfrN05p
-SVWa5Kn7SMesPQamPiLD/CJj972to2csMOxYPkJ3CTB1i8eD7JWwVzR0hKW5x3qP
-uxLdSJZFL4p4Qf9jqRLQC6aRl3OR1fckFpurTM7n9buZBPLSW6aWWka3GLw2+mpx
-RCN//J5J4kVNOP0m9EAT51dI6O1X9CPxa7EPO/GJmUQszihFfA0pDd9yXE47LDrR
-fJ5nB0rSCozHIZNYmtU++slYD1WrCFLod7L/fkP2Mf+ID+PUMcFJyih0PRuW4IbL
-ILNmZRUgdH+ECVse9mEyubO2CnKAbg+2uXv222kyvLIQZfeoe8ts7kWKP9mDsI7A
-WxFHEOmzR2IkXX3td2Ij6AjoMqnMKL5Y4qDlz/SPyKUUwolPL4/lp8xfjtaWLl6y
-d0zOBLPuuObUNxA8KaRysDSyNfudF5vKUCrbt4lPCouDGxovcXmoyl/CdHkyQmzA
-3mccDmUyx0bufemnoncWfq6PmVsT8GyI4ueaof5V7Al2V3pX0rFWC4CSej/AMZz4
-XZyunx0mmvwAVfpU2rzjBQ2QBkT29X3IODJFkstM8rCTZpprYw8=
-=xGHs
------END PGP SIGNATURE-----
-
---Sig_/U=vUEXpdxtWCvJFEbe144qV--
