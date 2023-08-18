@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C00F0781492
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 23:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B70781497
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 23:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240100AbjHRVMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 17:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        id S240343AbjHRVOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 17:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239873AbjHRVLm (ORCPT
+        with ESMTP id S240339AbjHRVOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 17:11:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954134214;
-        Fri, 18 Aug 2023 14:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=rJjjg0/ZnxDlYEL8zqvSbEB/tj+r89an8hC6WCMDSRI=; b=S9U6VOK0v4D5Zj/tx99KZIfRg6
-        gwZUuZzuoBGkJODS231x4AmgAaGewCyUW/oTXzNDTcKDzmTK4X62mM/fSj5zBKM4WVGG+zGcjzZqe
-        f6gW/h8Js+vKI1QclS80gLkR3awxYcFVQ3xgu2jCKepesOsFxRK253vX3MRc1zjcalnUu/1nNhQCH
-        yG0A/KClEUXQ3CGXhkX14t1s3az3mVir8kSRckiyvJfthbYSE2aDPz1e8wgh/4OfTG8H7GyoBwAvn
-        YCvTIXLZazdHvoCxRDy3yjNAy0ycRQzov9nDX9CCLPjFPNGjVHZKIRgwcD/RpRaxf9PXCZgS+52vs
-        Tcv58muA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qX6kq-00A2Xb-1Y;
-        Fri, 18 Aug 2023 21:11:36 +0000
-Message-ID: <51f4b571-a5b2-b1bb-b990-fe2c4c5387bf@infradead.org>
-Date:   Fri, 18 Aug 2023 14:11:34 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V4 1/3] coresight: etm: Override TRCIDR3.CCITMIN on errata
- affected cpus
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
+        Fri, 18 Aug 2023 17:14:31 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF444216
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 14:14:30 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1bbb4bde76dso729277fac.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 14:14:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692393270; x=1692998070;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QiLNEqO3RQVovKsfrOU7Xg2I81wb5TNuTl74DFna1Vo=;
+        b=L8Uk9ewKbx9s0nuoV2ErfRIVUr73PHNpOwLkRteCyGzsmiS2c9nDkomKK4rOPOZh2C
+         krKXme801oWY2ta2hg9DO+6eE2YNddiZRpkser8c3qGBbFiNmJn3vVhH/aBvd/bnBhHR
+         SbV6GdTQSO07NT5VLG/enSBpYgL11oT8oVkU3ZIjvJQwZhc7yAdlTT3zxFXrVDHVfGIp
+         Tmk89X+lVd5F4Q89I/+h21tk2XqLfhnGEg6lAcZt72C1BQUonUb/WGfu6HchLRuOZ12z
+         E1WVWcjzyYbakaKUg7CdQTkzwllhSqxK4w9Jtl88vByFsu7MW76DhdPaWaqlKwM2qG70
+         qwuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692393270; x=1692998070;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QiLNEqO3RQVovKsfrOU7Xg2I81wb5TNuTl74DFna1Vo=;
+        b=BAKZhjMB3822pn/9SS4pUCAUNDIAMJPc8FjEvA6nYHSo7hNwfKWN0vl3NeT5Dbej50
+         m1sB5zLy5j/UPyb2jl6ml6fxY38IosVF+0sfGGLOldWoUczsN/4kTxygFYLNx4ckhJ3o
+         kvnCnl+N/z8XZgnQVR93QSVP1CbAc0s/zTWCGrnH77cafBseyaudEW6GpjhLzK4cVbHi
+         Ltw5VcZjU7nU8dEGzSeU/P2Mc/MTF8XBI4T02buGnDKM507pypHElspO2X00l766ZJiV
+         dJzdVvWQJYGB1CMIMWP4OeUm80i9hNuFr+55MBOexImsAoHsssqlHeDxdCxqzAF1QyzL
+         MaOA==
+X-Gm-Message-State: AOJu0Yz+z4XWqXg10xwVOjwVuTkv9vPhTfh7yGScVmKv7beJIomrr8hS
+        D3ggeWiAvVqZ5ERRw1sbJZpA23ptm5hcU19c
+X-Google-Smtp-Source: AGHT+IG3POy/xWG/WDyZ0XfwMnRnvgN+lvkh+bOPbSZZR+8fqC69v8m8mzODHp3Q8B1EgiFH7jNqcQ==
+X-Received: by 2002:a05:6870:b295:b0:1c0:fe16:90fa with SMTP id c21-20020a056870b29500b001c0fe1690famr489853oao.56.1692393270026;
+        Fri, 18 Aug 2023 14:14:30 -0700 (PDT)
+Received: from localhost.localdomain ([2804:56c:d7a7:4200:af4f:edcc:126f:213d])
+        by smtp.gmail.com with ESMTPSA id c5-20020a05687091c500b001b03e0c0970sm1470671oaf.2.2023.08.18.14.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 14:14:29 -0700 (PDT)
+From:   BrenoRCBrito <brenorcbrito@gmail.com>
+Cc:     brenorcbrito@gmail.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
+        linkt <xazrael@hotmail.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-References: <20230818112051.594986-1-anshuman.khandual@arm.com>
- <20230818112051.594986-2-anshuman.khandual@arm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230818112051.594986-2-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: [PATCH] ASoC: amd: yc: Add VivoBook Pro 15 to quirks list for acp6x
+Date:   Fri, 18 Aug 2023 18:14:16 -0300
+Message-Id: <20230818211417.32167-1-brenorcbrito@gmail.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+VivoBook Pro 15 Ryzen Edition uses Ryzen 6800H processor, and adding to
+ quirks list for acp6x will enable internal mic.
 
-On 8/18/23 04:20, Anshuman Khandual wrote:
-> This work arounds errata 1490853 on Cortex-A76, and Neoverse-N1, errata
-> 1491015 on Cortex-A77, errata 1502854 on Cortex-X1, and errata 1619801 on
-> Neoverse-V1, based affected cpus, where software read for TRCIDR3.CCITMIN
-> field in ETM gets an wrong value.
-> 
-> If software uses the value returned by the TRCIDR3.CCITMIN register field,
-> then it will limit the range which could be used for programming the ETM.
-> In reality, the ETM could be programmed with a much smaller value than what
-> is indicated by the TRCIDR3.CCITMIN field and still function correctly.
-> 
-> If software reads the TRCIDR3.CCITMIN register field, corresponding to the
-> instruction trace counting minimum threshold, observe the value 0x100 or a
-> minimum cycle count threshold of 256. The correct value should be 0x4 or a
-> minimum cycle count threshold of 4.
-> 
-> This work arounds the problem via storing 4 in drvdata->ccitmin on affected
-> systems where the TRCIDR3.CCITMIN has been 256, thus preserving cycle count
-> threshold granularity.
-> 
-> These errata information has been updated in arch/arm64/silicon-errata.rst,
-> but without their corresponding configs because these have been implemented
-> directly in the driver.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  Documentation/arch/arm64/silicon-errata.rst   | 10 ++++++
->  .../coresight/coresight-etm4x-core.c          | 36 +++++++++++++++++++
->  2 files changed, 46 insertions(+)
-> 
+Signed-off-by: BrenoRCBrito <brenorcbrito@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 7e307022303a..591fab73ee79 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -1131,6 +1131,39 @@ static void cpu_detect_trace_filtering(struct etmv4_drvdata *drvdata)
->  	drvdata->trfcr = trfcr;
->  }
->  
-> +/*
-> + * The following errata on applicable cpu ranges, affect the CCITMIN filed
-> + * in TCRIDR3 register. Software read for the field returns 0x100 limiting
-> + * the cycle threshold granularity, where as the right value should have
-
-                                       whereas
-
-> + * been 0x4, which is well supported in the hardware.
-> + */
-> +static struct midr_range etm_wrong_ccitmin_cpus[] = {
-> +	/* Erratum #1490853 - Cortex-A76 */
-> +	MIDR_RANGE(MIDR_CORTEX_A76, 0, 0, 4, 0),
-> +	/* Erratum #1490853 - Neoverse-N1 */
-> +	MIDR_RANGE(MIDR_NEOVERSE_N1, 0, 0, 4, 0),
-> +	/* Erratum #1491015 - Cortex-A77 */
-> +	MIDR_RANGE(MIDR_CORTEX_A77, 0, 0, 1, 0),
-> +	/* Erratum #1502854 - Cortex-X1 */
-> +	MIDR_REV(MIDR_CORTEX_X1, 0, 0),
-> +	/* Erratum #1619801 - Neoverse-V1 */
-> +	MIDR_REV(MIDR_NEOVERSE_V1, 0, 0),
-> +	{},
-> +};
-> +
-> +static bool etm4_core_reads_wrong_ccitmin(struct etmv4_drvdata *drvdata)
-> +{
-> +	/*
-> +	 * Erratum affected cpus will read 256 as the minimum
-> +	 * instruction trace cycle counting threshold where as
-
-	                                              whereas
-
-> +	 * the correct value should be 4 instead. Override the
-> +	 * recorded value for 'drvdata->ccitmin' to workaround
-> +	 * this problem.
-> +	 */
-
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index a2fe3bd4f9a1..a2661dd637a5 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -248,6 +248,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "M3402RA"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "M6500RC"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
 -- 
-~Randy
+2.40.1
+
