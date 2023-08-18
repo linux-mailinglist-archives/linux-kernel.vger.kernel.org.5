@@ -2,226 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B600780608
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 839E778060B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358095AbjHRG5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 02:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
+        id S1358107AbjHRG7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 02:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358113AbjHRG4m (ORCPT
+        with ESMTP id S239325AbjHRG7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 02:56:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66723AB2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:56:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C00862019
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:56:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8FA6C433C8;
-        Fri, 18 Aug 2023 06:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692341788;
-        bh=1oGqmSEyDntjlRGycwCGFF20u6ulfIZHH0OCa4SL2bg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ws/c86tdm/fRlUKLWh31OjThj4Vx+/Fmf57kgZOCRpZ9sDjH3wYIYW6Ux7Gr+cr5J
-         hD3W6Mp9JVwPtzrmX6hhb8wkVGKxgRqIR0tihN5FaMnjx747itBCI0Om3RIKO9+ttG
-         ja6DamX6iTryiAPk0tgHD6q7HLpjTcyG3nnFoQsT88zcRvXBmrjF1IKeRUgysNIzGT
-         cUXXAALJJuHPJl6Y7OUSJ/K1iMmk5PRmGH9lgiAp/G16DYcXNz4Zkb/mSK6nNkO/go
-         SCgG/xk2YIZtFBt/2bLVQOm/Y6o+YLFyKbT/TmaRJkRS93v+iigGU66G94kIxUx85G
-         7E0thQfxwnViw==
-Date:   Fri, 18 Aug 2023 07:56:24 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Andre Werner <andre.werner@systec-electronic.com>
-Cc:     werneazc@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mfd: (tps65086): Read DEVICE ID register 1 from
- device
-Message-ID: <20230818065624.GM986605@google.com>
-References: <20230809101429.7885-1-andre.werner@systec-electronic.com>
- <20230817170223.GI986605@google.com>
- <c4df3803-854a-8c88-f174-18eb98fed195@systec-electronic.com>
+        Fri, 18 Aug 2023 02:59:24 -0400
+Received: from out-46.mta0.migadu.com (out-46.mta0.migadu.com [91.218.175.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C268F2D72
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:59:21 -0700 (PDT)
+Message-ID: <a60de9ff-6dad-f243-6bd0-56810ef57c85@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692341959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmMGnP7L7bn/5ssBCNCkB8ryZejZU4L6IU8tNWtA8SU=;
+        b=qk7w6tviAs5Oa5HG9F4Y1FXDH7P1BeQVk9ddJEzlTyeN+JDa1EwWL6exFVAaxqWOeEyiL3
+        GJ+u9sm8V8Dpgi/mdD8dxbYG7FJgVJ/zF4fKPIUM6n3WcMmO5IRODTQA5Djyp4EDiw4VCq
+        V+e5XLxhAaI+92zrhup++X+05QLElEM=
+Date:   Fri, 18 Aug 2023 14:59:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c4df3803-854a-8c88-f174-18eb98fed195@systec-electronic.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH V2] lib/group_cpus.c: avoid to acquire cpu hotplug lock in
+ group_cpus_evenly
+Content-Language: en-US
+To:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Guangwu Zhang <guazhang@redhat.com>
+References: <20230818015244.1176929-1-ming.lei@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20230818015244.1176929-1-ming.lei@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023, Andre Werner wrote:
+Hi,
 
-> On Thu, 17 Aug 2023, Lee Jones wrote:
+On 2023/8/18 09:52, Ming Lei wrote:
+> group_cpus_evenly() could be part of storage driver's error handler,
+> such as nvme driver, when may happen during CPU hotplug, in which
+> storage queue has to drain its pending IOs because all CPUs associated
+> with the queue are offline and the queue is becoming inactive. And
+> handling IO needs error handler to provide forward progress.
 > 
-> > On Wed, 09 Aug 2023, werneazc@gmail.com wrote:
-> > 
-> > > From: Andre Werner <andre.werner@systec-electronic.com>
-> > > 
-> > > This commit prepares a following commit for the regulator part of the MFD.
-> > > The driver should support different device chips that differ in their
-> > > register definitions, for instance to control LDOA1 and SWB2.
-> > > So it is necessary to use a dedicated regulator description for a
-> > > specific device variant. Thus, the content from DEVICEID Register 1 is
-> > > used to choose a dedicated configuration between the different device
-> > > variants.
-> > > 
-> > > Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
-> > > ---
-> > >  drivers/mfd/tps65086.c       | 37 ++++++++++++++++++++++++++++++------
-> > >  include/linux/mfd/tps65086.h | 27 ++++++++++++++++++++------
-> > >  2 files changed, 52 insertions(+), 12 deletions(-)
-> > > 
-> > > diff --git a/drivers/mfd/tps65086.c b/drivers/mfd/tps65086.c
-> > > index 6a21000aad4a..38f8572c265e 100644
-> > > --- a/drivers/mfd/tps65086.c
-> > > +++ b/drivers/mfd/tps65086.c
-> > > @@ -64,7 +64,7 @@ MODULE_DEVICE_TABLE(of, tps65086_of_match_table);
-> > >  static int tps65086_probe(struct i2c_client *client)
-> > >  {
-> > >  	struct tps65086 *tps;
-> > > -	unsigned int version;
-> > > +	unsigned int version, id;
-> > >  	int ret;
-> > > 
-> > >  	tps = devm_kzalloc(&client->dev, sizeof(*tps), GFP_KERNEL);
-> > > @@ -81,16 +81,41 @@ static int tps65086_probe(struct i2c_client *client)
-> > >  		return PTR_ERR(tps->regmap);
-> > >  	}
-> > > 
-> > > -	ret = regmap_read(tps->regmap, TPS65086_DEVICEID, &version);
-> > > +	ret = regmap_read(tps->regmap, TPS65086_DEVICEID1, &id);
-> > >  	if (ret) {
-> > > -		dev_err(tps->dev, "Failed to read revision register\n");
-> > > +		dev_err(tps->dev, "Failed to read revision register 1\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	/* Store device ID to load regulator configuration that fit to IC variant */
-> > > +	switch (id) {
-> > > +	case TPS6508640_ID:
-> > > +		tps->chip_id = TPS6508640;
-> > 
-> > Why not use the meaningful TPS6508640_ID for the chip_id instead of an
-> > arbitrary enum?
+> Then dead lock is caused:
 > 
-> In the regulator part for this MFD I use this enum ID to select the
-> right configuration from an array. So the intention is using the enum as
-> the index for this table. I can move this selection into the regulator
-> part and store the meaningful TPS65086 IDs in the MFD data if you
-> prefer?
-
-That would make more sense for the reader I feel.  Thanks.
-
-> > > +		break;
-> > > +	case TPS65086401_ID:
-> > > +		tps->chip_id = TPS65086401;
-> > > +		break;
-> > > +	case TPS6508641_ID:
-> > > +		tps->chip_id = TPS6508641;
-> > > +		break;
-> > > +	case TPS65086470_ID:
-> > > +		tps->chip_id = TPS65086470;
-> > > +		break;
-> > > +	default:
-> > > +		dev_err(tps->dev, "Unknown device ID. Cannot determine regulator config.\n");
-> > > +		return -ENODEV;
-> > > +	}
-> > > +
-> > > +	ret = regmap_read(tps->regmap, TPS65086_DEVICEID2, &version);
-> > > +	if (ret) {
-> > > +		dev_err(tps->dev, "Failed to read revision register 2\n");
-> > >  		return ret;
-> > >  	}
-> > > 
-> > >  	dev_info(tps->dev, "Device: TPS65086%01lX, OTP: %c, Rev: %ld\n",
-> > > -		 (version & TPS65086_DEVICEID_PART_MASK),
-> > > -		 (char)((version & TPS65086_DEVICEID_OTP_MASK) >> 4) + 'A',
-> > > -		 (version & TPS65086_DEVICEID_REV_MASK) >> 6);
-> > > +		 (version & TPS65086_DEVICEID2_PART_MASK),
-> > > +		 (char)((version & TPS65086_DEVICEID2_OTP_MASK) >> 4) + 'A',
-> > > +		 (version & TPS65086_DEVICEID2_REV_MASK) >> 6);
-> > > 
-> > >  	if (tps->irq > 0) {
-> > >  		ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
-> > > diff --git a/include/linux/mfd/tps65086.h b/include/linux/mfd/tps65086.h
-> > > index 16f87cccc003..88df344b38df 100644
-> > > --- a/include/linux/mfd/tps65086.h
-> > > +++ b/include/linux/mfd/tps65086.h
-> > > @@ -13,8 +13,9 @@
-> > >  #include <linux/regmap.h>
-> > > 
-> > >  /* List of registers for TPS65086 */
-> > > -#define TPS65086_DEVICEID		0x01
-> > > -#define TPS65086_IRQ			0x02
-> > > +#define TPS65086_DEVICEID1		0x00
-> > > +#define TPS65086_DEVICEID2		0x01
-> > > +#define TPS65086_IRQ		0x02
-> > >  #define TPS65086_IRQ_MASK		0x03
-> > >  #define TPS65086_PMICSTAT		0x04
-> > >  #define TPS65086_SHUTDNSRC		0x05
-> > > @@ -75,16 +76,29 @@
-> > >  #define TPS65086_IRQ_SHUTDN_MASK	BIT(3)
-> > >  #define TPS65086_IRQ_FAULT_MASK		BIT(7)
-> > > 
-> > > -/* DEVICEID Register field definitions */
-> > > -#define TPS65086_DEVICEID_PART_MASK	GENMASK(3, 0)
-> > > -#define TPS65086_DEVICEID_OTP_MASK	GENMASK(5, 4)
-> > > -#define TPS65086_DEVICEID_REV_MASK	GENMASK(7, 6)
-> > > +/* DEVICEID1 Register field definitions */
-> > > +#define TPS6508640_ID			0x00
-> > > +#define TPS65086401_ID			0x01
-> > > +#define TPS6508641_ID			0x10
-> > > +#define TPS65086470_ID			0x70
-> > > +
-> > > +/* DEVICEID2 Register field definitions */
-> > > +#define TPS65086_DEVICEID2_PART_MASK	GENMASK(3, 0)
-> > > +#define TPS65086_DEVICEID2_OTP_MASK	GENMASK(5, 4)
-> > > +#define TPS65086_DEVICEID2_REV_MASK	GENMASK(7, 6)
-> > > 
-> > >  /* VID Masks */
-> > >  #define BUCK_VID_MASK			GENMASK(7, 1)
-> > >  #define VDOA1_VID_MASK			GENMASK(4, 1)
-> > >  #define VDOA23_VID_MASK			GENMASK(3, 0)
-> > > 
-> > > +enum tps65086_ids {
-> > > +	TPS6508640,
-> > > +	TPS65086401,
-> > > +	TPS6508641,
-> > > +	TPS65086470,
-> > > +};
-> > > +
-> > >  /* Define the TPS65086 IRQ numbers */
-> > >  enum tps65086_irqs {
-> > >  	TPS65086_IRQ_DIETEMP,
-> > > @@ -100,6 +114,7 @@ enum tps65086_irqs {
-> > >  struct tps65086 {
-> > >  	struct device *dev;
-> > >  	struct regmap *regmap;
-> > > +	unsigned int chip_id;
-> > > 
-> > >  	/* IRQ Data */
-> > >  	int irq;
-> > > --
-> > > 2.41.0
-> > > 
-> > 
-> > -- 
-> > Lee Jones [李琼斯]
-> > 
+> 1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
+> handler is waiting for inflight IO
 > 
-> Regards,
+> 2) error handler is waiting for CPU hotplug lock
 > 
-> André
+> 3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
+> error handling can't provide forward progress.
+> 
+> Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
+> in which two stage spreads are taken: 1) the 1st stage is over all present
+> CPUs; 2) the end stage is over all other CPUs.
+> 
+> Turns out the two stage spread just needs consistent 'cpu_present_mask', and
+> remove the CPU hotplug lock by storing it into one local cache. This way
+> doesn't change correctness, because all CPUs are still covered.
+> 
+> Cc: Keith Busch <kbusch@kernel.org>
+> Cc: linux-nvme@lists.infradead.org
+> Cc: linux-block@vger.kernel.org
+> Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> Reported-by: Guangwu Zhang <guazhang@redhat.com>
+> Tested-by: Guangwu Zhang <guazhang@redhat.com>
+> Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> ---
+> V2:
+> 	- fix "Cc: block list"
+> 	- add tested-by tag
+> 
+>  lib/group_cpus.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+> index aa3f6815bb12..15006e79196f 100644
+> --- a/lib/group_cpus.c
+> +++ b/lib/group_cpus.c
+> @@ -348,6 +348,7 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>  {
+>  	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+>  	cpumask_var_t *node_to_cpumask;
+> +	cpumask_var_t local_cpu_present_mask;
+>  	cpumask_var_t nmsk, npresmsk;
+>  	int ret = -ENOMEM;
+>  	struct cpumask *masks = NULL;
+> @@ -355,6 +356,16 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>  	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
+>  		return NULL;
+>  
+> +	if (!zalloc_cpumask_var(&local_cpu_present_mask, GFP_KERNEL))
+> +		goto fail_local_pres_mask;
+> +
+> +	/*
+> +	 * Make a local cache of 'cpu_present_mask', so the two stages
+> +	 * spread can observe consistent 'cpu_present_mask' without holding
+> +	 * cpu hotplug lock.
+> +	 */
+> +	cpumask_copy(local_cpu_present_mask, cpu_present_mask);
+> +
 
+Maybe we can reuse npresmsk instead of allocating another cpumask?
+In the first stage: npresmsk = cpu_present_mask
+In the second stage: npresmsk = cpu_possible_mask & ~npresmsk
 
--- 
-Lee Jones [李琼斯]
+>  	if (!zalloc_cpumask_var(&npresmsk, GFP_KERNEL))
+>  		goto fail_nmsk;
+>  
+> @@ -366,13 +377,11 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>  	if (!masks)
+>  		goto fail_node_to_cpumask;
+>  
+> -	/* Stabilize the cpumasks */
+> -	cpus_read_lock();
+>  	build_node_to_cpumask(node_to_cpumask);
+>  
+>  	/* grouping present CPUs first */
+>  	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+> -				  cpu_present_mask, nmsk, masks);
+> +				  local_cpu_present_mask, nmsk, masks);
+>  	if (ret < 0)
+>  		goto fail_build_affinity;
+>  	nr_present = ret;
+> @@ -387,15 +396,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>  		curgrp = 0;
+>  	else
+>  		curgrp = nr_present;
+> -	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
+> +	cpumask_andnot(npresmsk, cpu_possible_mask, local_cpu_present_mask);
+>  	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+>  				  npresmsk, nmsk, masks);
+>  	if (ret >= 0)
+>  		nr_others = ret;
+>  
+>   fail_build_affinity:
+> -	cpus_read_unlock();
+> -
+>  	if (ret >= 0)
+>  		WARN_ON(nr_present + nr_others < numgrps);
+
+This fail_build_affinity tag seems unneeded anymore.
+
+The patch looks good to me:
+
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+
+Thanks.
+
+>  
+> @@ -406,6 +413,9 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+>  	free_cpumask_var(npresmsk);
+>  
+>   fail_nmsk:
+> +	free_cpumask_var(local_cpu_present_mask);
+> +
+> + fail_local_pres_mask:
+>  	free_cpumask_var(nmsk);
+>  	if (ret < 0) {
+>  		kfree(masks);
+
