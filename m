@@ -2,166 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3240780834
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD8A780890
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359041AbjHRJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        id S1359190AbjHRJfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238613AbjHRJXC (ORCPT
+        with ESMTP id S1359191AbjHRJex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:23:02 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7430E6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:23:01 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c353a395cso84428766b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692350579; x=1692955379;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pO/NLfSXQCGnKg4+bEM0fLqxGi3J0/6qioKdfhMjmdo=;
-        b=nOTMo+/1Nw73rHt39/57JPvg8AsFjBbuGVIRDhbSLc9e9KEsQhYu2qCHwlHXrm7kUn
-         QwdXc0JDCMyvRljUROn2cOHO03isnm6xLcG0vz8OhYXxtGH6KjtC8zF+/2Ltar+s0PZm
-         vkPw8nJwF5xBeSvs84CB/vJ5uCmbdqyVdvpWWA39YIQ7tDWd5ObhOT1TPoJctvyixJWd
-         antEv6SML394RmMhEtniBfsR6ierMCyMRaZ9L9ZK+qIaoY+WvhxvlezxAeitjZfzE+GY
-         fAzGGf0gUR3Rbblxj7emd0z/pIpTZb5x58pRdZ2O7Ik46Ya7OQmsuN3tVeenahjDAXA5
-         4sFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692350579; x=1692955379;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pO/NLfSXQCGnKg4+bEM0fLqxGi3J0/6qioKdfhMjmdo=;
-        b=CKPSFksAhZuLr0t1OX5mHuaRWoUp71K9ws0/OdrIiial4Nbnz9STxYvo4SvWxMlrh0
-         gGlZtRMuONLVzEXAfsVw6/xV7J5oRJ0RWgXf+cw+lJ0Ux8hck2fc+Y3o5KGZO7chh3h9
-         d1pmQHwHXUfNKpa3ckc9Ggg+MGWXykecz4eEvrth/Hz05q9oBZ0h812Noqdibm3UDGjG
-         dbICeauijBunejaGG9aaa+/B/4N3qDbisxmx+So+kvPC1TvWVNGe9zaMZRyt2pYyzB5o
-         2mp8NQHgluh0eCaR0vfXMKspxZBr/fMDplJggV6AIx8q8MphSf4Ma5H9h3ewt/o8Jw60
-         0vCw==
-X-Gm-Message-State: AOJu0Ywjz3yqM4CiDQ21T1nC+nTLVQA6M0NwKg85K/1cCU4LIdZd1OSN
-        3EjnCEUdL7IwzzbU7KK21EiukA==
-X-Google-Smtp-Source: AGHT+IFw9N3TQC1B1E4pRPOoPEQa1tQS+7EU7C2gCPA40q+AD0dhQe3+j9nAbySNev9yshEM1YHHWg==
-X-Received: by 2002:a17:906:311b:b0:99d:e417:d6f6 with SMTP id 27-20020a170906311b00b0099de417d6f6mr1477184ejx.32.1692350579419;
-        Fri, 18 Aug 2023 02:22:59 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id k21-20020a1709063fd500b0099bcf1c07c6sm956182ejj.138.2023.08.18.02.22.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 02:22:58 -0700 (PDT)
-Message-ID: <5cde8986-1b12-a85e-b2fe-e1aa1087b429@linaro.org>
-Date:   Fri, 18 Aug 2023 11:22:57 +0200
+        Fri, 18 Aug 2023 05:34:53 -0400
+X-Greylist: delayed 619 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Aug 2023 02:34:24 PDT
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ADE4204;
+        Fri, 18 Aug 2023 02:34:24 -0700 (PDT)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 450845200CA;
+        Fri, 18 Aug 2023 11:24:03 +0200 (CEST)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.32; Fri, 18 Aug
+ 2023 11:24:03 +0200
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>, <yangyingliang@huawei.com>
+CC:     <jinpu.wang@ionos.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <erosca@de.adit-jv.com>
+Subject: [PATCH] usb: hcd: xhci: Add set command timer delay API
+Date:   Fri, 18 Aug 2023 11:23:53 +0200
+Message-ID: <20230818092353.124658-1-hgajjar@de.adit-jv.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-Content-Language: en-US
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
- <20230808-stand-cheddar-b76b0b7509a0@spud>
- <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
- <20230808-esquire-epidemic-f9bd74ffde25@spud>
- <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
- <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
- <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 10:51, Naresh Solanki wrote:
-> Hi Krzysztof,
-> 
-> On Tue, 15 Aug 2023 at 01:02, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->>
->> On 11/08/2023 18:00, Naresh Solanki wrote:
->>> Hi,
->>>
->>> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
->>>>
->>>> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
->>>>> On 8/8/23 04:46, Conor Dooley wrote:
->>>>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
->>>>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
->>>>>>>
->>>>>>> The TDA38640 chip has different output control mechanisms depending on
->>>>>>> its mode of operation. When the chip is in SVID mode, only
->>>>>>> hardware-based output control is supported via ENABLE pin. However, when
->>>>>>> it operates in PMBus mode, software control works perfectly.
->>>>>>>
->>>>>>> To enable software control as a workaround in SVID mode, add the DT
->>>>>>> property 'infineon,en-svid-control'. This property will enable the
->>>>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
->>>>>>> the chip is in SVID mode.
->>>>>>
->>>>>> Why do you need a custom property for this? How come it is not possible
->>>>>> to determine what bus you are on?
->>>>>>
->>>>>
->>>>> That is not the point. Yes, it can be detected if the control method is
->>>>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
->>>>> output, not PMBUs. This is bypassed by controlling the polarity of the
->>>>> (physical) output enable signal. We do _not_ want this enabled automatically
->>>>> in SVID mode. Its side effects on random boards using this chip are unknown.
->>>>> Thus, this needs a property which specifically enables this functionality
->>>>> for users who _really_ need to use it and (hopefully) know what they are
->>>>> doing.
->>>>
->>>> Hmm, reading this it makes a lot more sense why this is a property - I
->>>> guess I just struggled to understand the commit message here,
->>>> particularly what the benefit of using the workaround is. I'm still
->>>> having difficulty parsing the commit & property text though - its
->>>> unclear to me when you would need to use it - so I will stay out
->>>> of the way & let Rob or Krzysztof handle things.
->>>
->>> To provide context, my system employs a unique power sequence
->>> strategy utilizing a BMC (Baseboard Management Controller),
->>> rendering the reliance on the ENABLE pin unnecessary.
->>> In this configuration, the ENABLE pin is grounded in the hardware.
->>> While most regulators facilitate PMBus Operation for output control,
->>> the TDA38640 chip, when in SVID mode, is constrained by the
->>> ENABLE pin to align with Intel specifications.
->>> My communication with Infineon confirmed that the recommended
->>> approach is to invert the Enable Pin for my use case.
->>>
->>> Since this is not typically the use case for most setup & hence DT property
->>> is must for enabling the special case.
->>>
->>> For further insight into my setup's power sequence strategy, you can
->>> refer to the following link: https://github.com/9elements/pwrseqd
->>>
->>
->> This justifies to me the property, but still you described desired
->> driver behavior, not the hardware characteristic. Don't describe what
->> you want to control, but describe the entire system.
-> I guess by entire system you mean how the regulators(including
-> TDA38640) connected & operated in our setup ?
+xHCI driver starts the response timer after sending each
+command to the device. The default value of this timer is
+5 seconds (XHCI_CMD_DEFAULT_TIMEOUT = HZ*5). This seems
+too high in time crtical use case.
 
-I mean, property name and description should say what is the
-characteristic of the hardware/firmware/entire system.
+This patch provides an API to change the default value of
+the timer from the vendor USB driver.
 
+The default value will be XHCI_CMD_DEFAULT_TIMEOUT (5 sec)
 
-Best regards,
-Krzysztof
+Use case:
+According to the Smartphone integration certification
+requirement in the automotive, the phone connected via USB
+should complete enumeration and user space handshake
+within 3 sec.
+
+Reducing the response waiting time by setting the smaller
+command timer delay helps to speed up overall re-enumeration
+process of the USB device in case of device is not responding
+properly in first enumeration iteration.
+
+Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+---
+ drivers/usb/core/hcd.c       | 23 +++++++++++++++++++++++
+ drivers/usb/host/xhci-ring.c | 10 +++++-----
+ drivers/usb/host/xhci.c      | 15 +++++++++++++++
+ drivers/usb/host/xhci.h      |  1 +
+ include/linux/usb/hcd.h      |  2 ++
+ 5 files changed, 46 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index 8300baedafd2..e392e90e918c 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -3157,6 +3157,29 @@ int usb_hcd_setup_local_mem(struct usb_hcd *hcd, phys_addr_t phys_addr,
+ }
+ EXPORT_SYMBOL_GPL(usb_hcd_setup_local_mem);
+ 
++/**
++ * usb_hcd_set_cmd_timer_delay Set the delay of the command timer.
++ * @hcd - pointer to the HCD representing the controller
++ * @delay - Delay value to be used in command timer.
++ *
++ * wrapper function to call the set_cmd_timer_delay API of the host
++ * diver.
++ *
++ * return 0 on success; otherwise -ENODEV means the feature not
++ * supported by host driver.
++ */
++
++int usb_hcd_set_cmd_timer_delay(struct usb_hcd *hcd, int delay)
++{
++	int ret = -ENODEV;
++
++	if (hcd->driver->set_cmd_timer_delay)
++		ret = hcd->driver->set_cmd_timer_delay(hcd, delay);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(usb_hcd_set_cmd_timer_delay);
++
+ /*-------------------------------------------------------------------------*/
+ 
+ #if IS_ENABLED(CONFIG_USB_MON)
+diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
+index 1dde53f6eb31..f4fcac9ae692 100644
+--- a/drivers/usb/host/xhci-ring.c
++++ b/drivers/usb/host/xhci-ring.c
+@@ -366,9 +366,9 @@ void xhci_ring_cmd_db(struct xhci_hcd *xhci)
+ 	readl(&xhci->dba->doorbell[0]);
+ }
+ 
+-static bool xhci_mod_cmd_timer(struct xhci_hcd *xhci, unsigned long delay)
++static bool xhci_mod_cmd_timer(struct xhci_hcd *xhci)
+ {
+-	return mod_delayed_work(system_wq, &xhci->cmd_timer, delay);
++	return mod_delayed_work(system_wq, &xhci->cmd_timer, xhci->cmd_timer_delay);
+ }
+ 
+ static struct xhci_command *xhci_next_queued_cmd(struct xhci_hcd *xhci)
+@@ -412,7 +412,7 @@ static void xhci_handle_stopped_cmd_ring(struct xhci_hcd *xhci,
+ 	if ((xhci->cmd_ring->dequeue != xhci->cmd_ring->enqueue) &&
+ 	    !(xhci->xhc_state & XHCI_STATE_DYING)) {
+ 		xhci->current_cmd = cur_cmd;
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 		xhci_ring_cmd_db(xhci);
+ 	}
+ }
+@@ -1786,7 +1786,7 @@ static void handle_cmd_completion(struct xhci_hcd *xhci,
+ 	if (!list_is_singular(&xhci->cmd_list)) {
+ 		xhci->current_cmd = list_first_entry(&cmd->cmd_list,
+ 						struct xhci_command, cmd_list);
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 	} else if (xhci->current_cmd == cmd) {
+ 		xhci->current_cmd = NULL;
+ 	}
+@@ -4301,7 +4301,7 @@ static int queue_command(struct xhci_hcd *xhci, struct xhci_command *cmd,
+ 	/* if there are no other commands queued we start the timeout timer */
+ 	if (list_empty(&xhci->cmd_list)) {
+ 		xhci->current_cmd = cmd;
+-		xhci_mod_cmd_timer(xhci, XHCI_CMD_DEFAULT_TIMEOUT);
++		xhci_mod_cmd_timer(xhci);
+ 	}
+ 
+ 	list_add_tail(&cmd->cmd_list, &xhci->cmd_list);
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index fae994f679d4..e1920af985ed 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -449,6 +449,8 @@ static int xhci_init(struct usb_hcd *hcd)
+ 		compliance_mode_recovery_timer_init(xhci);
+ 	}
+ 
++	xhci->cmd_timer_delay = XHCI_CMD_DEFAULT_TIMEOUT;
++
+ 	return retval;
+ }
+ 
+@@ -5267,6 +5269,18 @@ static void xhci_clear_tt_buffer_complete(struct usb_hcd *hcd,
+ 	spin_unlock_irqrestore(&xhci->lock, flags);
+ }
+ 
++static int xhci_set_cmd_delay(struct usb_hcd *hcd, int cmd_delay_ms)
++{
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++
++	if (cmd_delay_ms < 150 || cmd_delay_ms > 10000)
++		return -EINVAL;
++
++	xhci->cmd_timer_delay = cmd_delay_ms;
++
++	return 0;
++}
++
+ static const struct hc_driver xhci_hc_driver = {
+ 	.description =		"xhci-hcd",
+ 	.product_desc =		"xHCI Host Controller",
+@@ -5332,6 +5346,7 @@ static const struct hc_driver xhci_hc_driver = {
+ 	.disable_usb3_lpm_timeout =	xhci_disable_usb3_lpm_timeout,
+ 	.find_raw_port_number =	xhci_find_raw_port_number,
+ 	.clear_tt_buffer_complete = xhci_clear_tt_buffer_complete,
++	.set_cmd_timer_delay = xhci_set_cmd_delay,
+ };
+ 
+ void xhci_init_driver(struct hc_driver *drv,
+diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
+index 7e282b4522c0..eb9a9b0bfa3d 100644
+--- a/drivers/usb/host/xhci.h
++++ b/drivers/usb/host/xhci.h
+@@ -1808,6 +1808,7 @@ struct xhci_hcd {
+ 	struct list_head        cmd_list;
+ 	unsigned int		cmd_ring_reserved_trbs;
+ 	struct delayed_work	cmd_timer;
++	unsigned long		cmd_timer_delay;
+ 	struct completion	cmd_ring_stop_completion;
+ 	struct xhci_command	*current_cmd;
+ 
+diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
+index 4e9623e8492b..b6b0a0bbf9fc 100644
+--- a/include/linux/usb/hcd.h
++++ b/include/linux/usb/hcd.h
+@@ -405,6 +405,7 @@ struct hc_driver {
+ #define EHSET_TEST_SINGLE_STEP_SET_FEATURE 0x06
+ 	int	(*submit_single_step_set_feature)(struct usb_hcd *,
+ 			struct urb *, int);
++	int	(*set_cmd_timer_delay)(struct usb_hcd *hcd, int delay);
+ };
+ 
+ static inline int hcd_giveback_urb_in_bh(struct usb_hcd *hcd)
+@@ -466,6 +467,7 @@ extern void usb_remove_hcd(struct usb_hcd *hcd);
+ extern int usb_hcd_find_raw_port_number(struct usb_hcd *hcd, int port1);
+ int usb_hcd_setup_local_mem(struct usb_hcd *hcd, phys_addr_t phys_addr,
+ 			    dma_addr_t dma, size_t size);
++int usb_hcd_set_cmd_timer_delay(struct usb_hcd *hcd, int delay);
+ 
+ struct platform_device;
+ extern void usb_hcd_platform_shutdown(struct platform_device *dev);
+-- 
+2.17.1
 
