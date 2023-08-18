@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D81C8780291
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E651780293
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356634AbjHRAKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:10:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60702 "EHLO
+        id S1356622AbjHRALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356668AbjHRAKg (ORCPT
+        with ESMTP id S1356773AbjHRALT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:10:36 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A483C0A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:18 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c6dd0e46a52so442444276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:18 -0700 (PDT)
+        Thu, 17 Aug 2023 20:11:19 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C2E3A87
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:56 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589b0bbc290so4487687b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692317417; x=1692922217;
+        d=google.com; s=20221208; t=1692317447; x=1692922247;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RGYnYnVbUYYSVjFpVMoKW4GyT9YCBE6+MRRcctXwEms=;
-        b=OwwpahlSHn2WsIv1jkm4dgZeh3mellgfhBb+bvzTHjWkiT+62ofbR17Ov4Vln/EL95
-         +GZK48JqTNYW8cVAOeMYt0FYg7M7t014+KHZMsKaktOCA0yzf6qzJvkrc0KdxNgwSpOi
-         i5jgTWnJXc07CQC4ahI2mJT+F8kg3Gc0yeQTWWmrX2Au+8wMspjdo6FTFSJszTF3m13p
-         +Qjr/EBF5Y8m+9rLgXZIOz1ZohfkR8EHgonAVSAqhQd+R4g/EpPnhQ6EnRVEM44/4HKU
-         LHfU+8kMBuA9Qz4IrWdO4O/gADP2+fggFNyyAIhH9UaTYVZ/JxxdDvvIQOpDRvrBmJbH
-         YrEg==
+        bh=oyapjbDI9Y2xcGuEE3bsShb0ut9gM8qaZ4OyzlK0nfQ=;
+        b=pm57qfR503UwOTOW86AsUmhpMR0vUk/Az1lcs8zsVy8J7AbcVyl51tv8B1lnsWvHy2
+         8BZ7EMkmyazfgC4oPSMhtyl5wghvAOJz60qF8SOWgm++2JZzwTq0zrLx0uvhpQsFax3B
+         vGIKn+sKZec0XOddIuiSzHe1R9IkQMXXGICAlBultYxZMk72x0ftjfoQFv4w+m6f7/kM
+         FLCP2Zy14hBQ2QLzjq34/magRoBdV7haHWZuJigJxhoxSacSO5LrxPo4ghHw1V+VXlq5
+         UiHxc0VnPbDpDcqSn7Fp51XQTEcdiO5N3nZPXxKIkY42txYNhg97eUnE+EbS72cZFwVA
+         xj2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317417; x=1692922217;
+        d=1e100.net; s=20221208; t=1692317447; x=1692922247;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RGYnYnVbUYYSVjFpVMoKW4GyT9YCBE6+MRRcctXwEms=;
-        b=P3A6Ppt3GC6BZ10ELcEGDIwTG2GxRZ6B2KGMXlmXXX1Ia0D4AgpevHTQ6fvY8ENR0U
-         XHmToVbiyWkL3nIS/2EGRSq1FC2K40SLRGtgdc6A43YLei4HHqsZkf3EkkNA+GCq9hiK
-         a2OQDMDb6cLMAs592Bv2myqorBk0QG0fjPj7JGIeWVlu/5tIP+ZaLS1MbzajBld457so
-         bsVexg4zn6P++bQIN9666qpHGF2QIToqXXQsJLzx0EDSYMWcH3th6D/Gf3pwc4TVXA1L
-         ehI1SaQwxbaO/LDjtTdw9Xrgi4n9JZG627vRwjfF41F0SDg/kUZ0BUkwHH+0HaOOZL6a
-         UcOg==
-X-Gm-Message-State: AOJu0YyMUelAELnLuiGvR+Mlo3VgmE4Q5JnXLH0Bot+HCEgyCNcIAxbj
-        HaZFoV5SQQlXRoC4cHb4tw0XZ2xftwE=
-X-Google-Smtp-Source: AGHT+IFqs4TVheY2Zgf/ctECuRnI/YyIKKz9RpWYLL1cdECAJN9/STpqQHHXgnjfGW+ewzuoY9b6f0Ta13Q=
+        bh=oyapjbDI9Y2xcGuEE3bsShb0ut9gM8qaZ4OyzlK0nfQ=;
+        b=acFo7DPWO8VxR487rXLui6Z28vw6HeDkcWBVb7WXKLiUMeHcpn8bJe7LIuGckHL2HA
+         FGU/uHewtNvJrkqFH3nAp2hrTCj0+5kn61hUpBhMMaURtnL/6VePd7SOLNPK4QP7wB1t
+         HYGcx3706dofYt5DXwaBFFmDNNd3W1oP5rMSlIwxQkfi7cPV9lncR5vZpV7qa9h+mNei
+         GWZk4ka7vsawdd0aJIUNWcFK8bhRzx60MLx9rU5psOyxUPdRpZODnj2gohUvmXQIJ1oU
+         2rxwDb7fDDJfLi/aQKBsifKfOV5MyLyo1pzlBR7yzUyalb4LER+7B/sHCv7lxD94h1hC
+         SsjA==
+X-Gm-Message-State: AOJu0YzGKW2R+Rq9VQSm/ebvFzzBHSCE7qrANao7KsWJfZf72OM2sKwM
+        qpr6KKPL5gRbAIqxS1VLpeAbU2bKCWo=
+X-Google-Smtp-Source: AGHT+IF2K0HByTDqyxoAtNi3GKaEK1a+torqvRYfb2RcCLxRqUDddKGNT4/z5MKmnYArvwNj1pqm0rfzxwo=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1813:b0:d0c:1f08:5fef with SMTP id
- cf19-20020a056902181300b00d0c1f085fefmr13826ybb.12.1692317417588; Thu, 17 Aug
- 2023 17:10:17 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:09:22 -0700
-In-Reply-To: <20230808232057.2498287-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6902:168a:b0:c4e:1c21:e642 with SMTP id
+ bx10-20020a056902168a00b00c4e1c21e642mr17453ybb.3.1692317447814; Thu, 17 Aug
+ 2023 17:10:47 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 17:09:24 -0700
+In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
 Mime-Version: 1.0
-References: <20230808232057.2498287-1-seanjc@google.com>
+References: <20230815203653.519297-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <169229705756.1237266.17952019495946517627.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: x86: Remove WARN sanity check on hypervisor timer
- vs. UNINITIALIZED vCPU
+Message-ID: <169229954681.1259376.195379194594068800.b4-ty@google.com>
+Subject: Re: [PATCH v3 00/15] KVM: x86: Add "governed" X86_FEATURE framework
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
 Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yikebaer Aizezi <yikebaer61@gmail.com>
+        Zeng Guang <guang.zeng@intel.com>,
+        Yuan Yao <yuan.yao@intel.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Aug 2023 16:20:57 -0700, Sean Christopherson wrote:
-> Drop the WARN in KVM_RUN that asserts that KVM isn't using the hypervisor
-> timer, a.k.a. the VMX preemption timer, for a vCPU that is in the
-> UNINITIALIZIED activity state.  The intent of the WARN is to sanity check
-> that KVM won't drop a timer interrupt due to an unexpected transition to
-> UNINITIALIZED, but unfortunately userspace can use various ioctl()s to
-> force the unexpected state.
+On Tue, 15 Aug 2023 13:36:38 -0700, Sean Christopherson wrote:
+> Third and hopefully final version of the framework to manage and cache
+> KVM-governed features, i.e. CPUID based features that require explicit
+> KVM enabling and/or need to be queried semi-frequently by KVM.
+> 
+> This version is just the governed features patches, as I kept the TSC
+> scaling patches in kvm-x86/misc but blasted away the goverend features
+> with a forced push.
 > 
 > [...]
 
-Applied to kvm-x86 misc, with a tweaked comment to avoid "smother".
+Applied to kvm-x86 misc, with a blurb added to the nVMX changelog to explain
+how "nested" is factored in.
 
-[1/1] KVM: x86: Remove WARN sanity check on hypervisor timer vs. UNINITIALIZED vCPU
-      https://github.com/kvm-x86/linux/commit/7b0151caf73a
+[01/15] KVM: x86: Add a framework for enabling KVM-governed x86 features
+        https://github.com/kvm-x86/linux/commit/42764413d195
+[02/15] KVM: x86/mmu: Use KVM-governed feature framework to track "GBPAGES enabled"
+        https://github.com/kvm-x86/linux/commit/ccf31d6e6cc5
+[03/15] KVM: VMX: Recompute "XSAVES enabled" only after CPUID update
+        https://github.com/kvm-x86/linux/commit/1143c0b85c07
+[04/15] KVM: VMX: Check KVM CPU caps, not just VMX MSR support, for XSAVE enabling
+        https://github.com/kvm-x86/linux/commit/0497d2ac9b26
+[05/15] KVM: VMX: Rename XSAVES control to follow KVM's preferred "ENABLE_XYZ"
+        https://github.com/kvm-x86/linux/commit/662f6815786e
+[06/15] KVM: x86: Use KVM-governed feature framework to track "XSAVES enabled"
+        https://github.com/kvm-x86/linux/commit/fe60e8f65f79
+[07/15] KVM: nVMX: Use KVM-governed feature framework to track "nested VMX enabled"
+        https://github.com/kvm-x86/linux/commit/1c18efdaa314
+[08/15] KVM: nSVM: Use KVM-governed feature framework to track "NRIPS enabled"
+        https://github.com/kvm-x86/linux/commit/7a6a6a3bf5d8
+[09/15] KVM: nSVM: Use KVM-governed feature framework to track "TSC scaling enabled"
+        https://github.com/kvm-x86/linux/commit/4365a45571c7
+[10/15] KVM: nSVM: Use KVM-governed feature framework to track "vVM{SAVE,LOAD} enabled"
+        https://github.com/kvm-x86/linux/commit/4d2a1560ffc2
+[11/15] KVM: nSVM: Use KVM-governed feature framework to track "LBRv enabled"
+        https://github.com/kvm-x86/linux/commit/e183d17ac362
+[12/15] KVM: nSVM: Use KVM-governed feature framework to track "Pause Filter enabled"
+        https://github.com/kvm-x86/linux/commit/59d67fc1f0db
+[13/15] KVM: nSVM: Use KVM-governed feature framework to track "vGIF enabled"
+        https://github.com/kvm-x86/linux/commit/b89456aee78d
+[14/15] KVM: nSVM: Use KVM-governed feature framework to track "vNMI enabled"
+        https://github.com/kvm-x86/linux/commit/ee785c870d6f
+[15/15] KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
+        https://github.com/kvm-x86/linux/commit/9717efbe5ba3
 
 --
 https://github.com/kvm-x86/linux/tree/next
