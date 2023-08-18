@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C47DE7803AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2867803B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357190AbjHRCKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        id S1357199AbjHRCL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357187AbjHRCKm (ORCPT
+        with ESMTP id S1357198AbjHRCLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:10:42 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73EAC30FE;
-        Thu, 17 Aug 2023 19:10:41 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-689e6fce70dso387546b3a.1;
-        Thu, 17 Aug 2023 19:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692324641; x=1692929441;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wsj2zNj3xkOCvdWvIxiq3aCWKIVsXzUeqck+9IunsAc=;
-        b=jHlL0o0V1LTQeWAo+KNlFfRAv/jd6lTaog8cCSKfDTDEwHOrkaTqcPmoUmqRJBJjls
-         lZBL8YRCVda8i+gbzx816gCP7Sib/Ek+8MvlP5aDXSNmo9vncFdWDfQl8RiWsCMpl125
-         JpK7jG+A93A8bO36o0hQybAkud2Xf8AdSRijcTWLpr6I6ms83Ja9ANwehcp3s1zdxZIQ
-         uNSDYtGfmxVJ3LINfFmA/DkciALcdfU6W6yd6wjvvt9Vjm6JdRF1ZQCt7QNWpAK7d3xB
-         vFbcQGr+qItjkOtnK23pyxVCOKVjsPSAjC9v+QV15VTKz+8FjJbN3+OZAxGXnG0U7kRm
-         1f/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692324641; x=1692929441;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wsj2zNj3xkOCvdWvIxiq3aCWKIVsXzUeqck+9IunsAc=;
-        b=O8b2KmrfXN0rKVY2WVP+6Iys9kalHJ9tGAIvKi1EBlJc6ImvLOnY/TI1UVt+h/xGwL
-         N8AnP4uglqARk7U62PB8CdcvKVlIeWR8U4rovQm4Hd5Tm0GMIUS5nzsTAF2etqpzE37M
-         t3Zai0feOx780+EqD/fLHwL5/j1kuHipzGdk6Wp1Rz9vwCMpFRfJXSy+ri75qxhA5CiJ
-         x2wWGtVs8QefRBaNatfpw9UdjlXlsH/AiyRaa3eQS/wFueMsvrHnQZTmGsKt2OAsJ0wr
-         t1a/IU56dIINWnk7+85javWa2oBnZwbZGHe3L93cSZ5i/onjslxNu2bZ/ZiOYFJIzB+9
-         2GCw==
-X-Gm-Message-State: AOJu0Yzvca/Shk+hj2W3E1EMwAQdhwn/Kme90yJBGuetfl57AQ+uhleU
-        SF4ha1TJAqoGXlAGBnicQMo=
-X-Google-Smtp-Source: AGHT+IGuSeE4KmfNgan/3FH0662SMQS1YQkxWfN4l4PzfLryD1ZsnCd7EuNnUHT56oa64CZ8k00oaQ==
-X-Received: by 2002:a05:6a00:134a:b0:687:e02b:e3c with SMTP id k10-20020a056a00134a00b00687e02b0e3cmr1630698pfu.17.1692324640752;
-        Thu, 17 Aug 2023 19:10:40 -0700 (PDT)
-Received: from [10.22.68.146] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id n22-20020a62e516000000b006870ccfbb54sm400622pff.196.2023.08.17.19.10.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 19:10:40 -0700 (PDT)
-Message-ID: <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
-Date:   Fri, 18 Aug 2023 10:10:33 +0800
+        Thu, 17 Aug 2023 22:11:03 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD1130F7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:11:02 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I2Acvu020102
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 22:10:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692324641; bh=LpT20QH/hu7wFLRE2zsy7cC3Q44uuq8Hmr2dybBwTxk=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=DnGHoNCnT4NHxG4T1TjOqGIhDKNqnSMGhGJB64sBbM6STLDyxzBwu0KeBQePPR++3
+         6ivYBU3VTxxDXWxki5wv2CL2y16WO0j7ftOxm8my/XU33gv1RkbS5WDARdYdgsoUZD
+         BvybOX0CjFbBT+GXa+YxNfruzgvt6ETcg9WeJVRLbgJK7kDnt799aMkBhcQjqZg1ld
+         RhYCuF5eFFXxx5xqn2oczbZrF22SJ56S7Thr+pbs7AIpBrOVbZL1KVMeNxrsp54jWV
+         G10ZJyWkJx1H7Oz6/ghBTd0f9l2vK2thwN6M5kR7+1k5c4HkN7rE2WF9mvksEyBABa
+         lyAb8w56jLa9g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 10C8615C0501; Thu, 17 Aug 2023 22:10:38 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 22:10:38 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     sandeen@redhat.com,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230818021038.GC3464136@mit.edu>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+ <20230817161118.GC2247938@mit.edu>
+ <20230817164739.GC1483@sol.localdomain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
-Content-Language: en-US
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, x86@kernel.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, mykolal@fb.com, shuah@kernel.org,
-        davem@davemloft.net, dsahern@kernel.org, tangyeechou@gmail.com,
-        kernel-patches-bot@fb.com, maciej.fijalkowski@intel.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230814134147.70289-1-hffilwlqm@gmail.com>
- <20230814134147.70289-2-hffilwlqm@gmail.com>
- <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com>
-From:   Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817164739.GC1483@sol.localdomain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 18/8/23 06:31, Alexei Starovoitov wrote:
-> On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
->> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
->>  	struct module *tgt_mod;
->>  	const char *tgt_name;
->>  	const struct btf_type *tgt_type;
->> +	bool tail_call_ctx;
+On Thu, Aug 17, 2023 at 09:47:39AM -0700, Eric Biggers wrote:
 > 
-> Instead of extra flag here can you check tgt_prog->aux->tail_call_reachable in check_attach_btf_id()
-> and set tr->flags there?
+> Eric S. is correct that for a filesystem image to enable panic on error, support
+> for panic on error should have to be properly consented to by the kernel
+> configuration, for example through an fs.allow_panic_on_error sysctl.
 
-Should we check tgt_prog->aux->func[subprog]->is_func? Or, tgt_prog->aux->tail_call_reachable
-is enough?
+I disagree.  It's up to the system administrator, not the kernel ---
+and the system adminsitrator is perfectly free to run e2fsck on a
+random file system, or to use tune2fs to adjust the panic on error
+setting on the file system, befure using their root powers to mount
+the file system.
 
-I think tgt_prog->aux->func[subprog]->is_func is required to check. It's because it's a bug
-about subprog instead of tgt_prog.
+Root can do many things that cause the system to reboot.  For example,
+the system adminsirtator could run /sbin/reboot.  Should the kernel
+"consent" by setting fs.allow_reboot_system_call_to_work before the
+root user can run the /sbin/reboot binary?  Hopefully it's obvious why
+this makes absolutely no sense.
 
-In check_attach_btf_id():
+> It can be argued that this not important, or not worth implementing when the
+> default will need to remain 1 for backwards compatibility.  Or even that
+> syzkaller should work around it in the mean time.  But it is incorrect to write
+> "This is fundamentally a syzbot bug."
 
-bool tail_call_ctx;
-// ...
-ret = bpf_check_attach_target(&env->log, prog, tgt_prog, btf_id, &tgt_info, &tail_call_ctx);
-// ...
-tr->flags = (tail_call_ctx ? BPF_TRAMP_F_TAIL_CALL_CTX : 0);
+Well, the current behaviour is Working as Intended.  And if syzbot is
+going about whining about things that are Working as Intended, it's
+not fit for the upostream developers' purpose.
 
-How about changing like this? However, it's bad to change bpf_check_attach_target() declaration.
+As another example, root can set a real-time priority of a process to
+be at a level where it will prempt all other processes, including
+kernel threads.  Do enough of these, and you *will* lock up the
+kernel.  Again, should there be a sysctl that allows real-time
+priorities to work?  Or do we teach syzbot that doing things that are
+documented to cause the kernel to lock up are not something that's
+worthy of a report.  In the past, syzbot issued a *huge* amount of
+noise caused by precisely to this.  Upstream developers complained
+that it was a false positive, and syzbot was adjusted to Stop Doing
+That.
 
-> Other than this the fix makes sense.
-> Please trim your cc list when you respin.> Just maintainers, Maciej (author of fixes tag) and bpf@vger is enough.
-
-I'll trim it.
-
-Thanks,
-Leon
-
+						- Ted
