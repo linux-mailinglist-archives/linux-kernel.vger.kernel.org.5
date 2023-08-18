@@ -2,155 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A25780288
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CED8780260
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356604AbjHRAJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        id S1356440AbjHRAEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:04:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356564AbjHRAJQ (ORCPT
+        with ESMTP id S1356572AbjHRAEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:09:16 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841173AB0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:08:50 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68866e64bceso268827b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692317318; x=1692922118;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NC/8wS4E+U+x06AU4gX4E6qCdkVp40klqA0jeKErXPo=;
-        b=g704C2h6GYIxjInJTKA/FnY6+rfPDG5j1XzFWY5B/q4Ve69EQ5ifrmXqKSZ4yJlVuC
-         L1vrGlTrSLu4FzGxH0VjiIND5KbGMWcP+/CLN9EaNQHLa9z8y+mjmq0xZ5FvA5J+d8bH
-         AvOOEN5NAMFEHzMWe9HkuB026ROd2q2yDrwMQ=
+        Thu, 17 Aug 2023 20:04:12 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFEE3ABE
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:03:42 -0700 (PDT)
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E0EA13FA7D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:02:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1692316928;
+        bh=Tmnlfhs95EL6waz9oCG9J1eFGjBYGw5AvYaX1Beaazg=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=sXnTLxO81kRpdGmMUNbf0PvrIpqEBnSeB0jyo2OB6InweEetK+qtfLYxBm0ShQy4i
+         MHID4FqTYxy9M6pIoyUptFPu+pOIZiCfFgbHHVPlnm3AC5EwYZCvBJbTod8Wp4VQsk
+         rpFB/xfZdc22uu+QAyG1QiPKTsxThzKehI4TBGE6FxXKMc3SFVeo2k8WRHBF+YIMZ6
+         sa/Y+ZrcIdQMmaQLOfDq14rE28IwVRigdgbjqzU+X2dFR/UOJRbGUFyclbHCi1vRI5
+         FPHrdJXwE5/L7pxE6e5696pjh5nIyOYU0aGsXMhb+cOl7Itvw2UuBRCX4VbfYS5aYb
+         EPikjPjuDwU+g==
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-268441d0e64so490502a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:02:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317318; x=1692922118;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692316927; x=1692921727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NC/8wS4E+U+x06AU4gX4E6qCdkVp40klqA0jeKErXPo=;
-        b=bNah3tmVx/1d3wWhsjnJT64mXXcJ7+H+9nbgZ4/fnYkfVvgrxxzfplqmoYN445ZCfg
-         7gMd8pfIu//iiCI48oKMy/EoKg/D0S41NaPZW6/NlOOuPRVH9G0cfLi7uLDO/CuaRP7f
-         b7V4E1yTXryrwfqotkK/Pn+hnwg9AIC9wfY9ZXjBkxFdRAphz+4RPJRmhO9dH8th/QMU
-         oTaGsoyulBXtt8+0PiIhL+1uBpXuOcNy2cztioVW68QFJLQT1Kg3Woupw7m0A+ya1mO/
-         PaAPar6yWU/c5PgHkYV19Y8FDNNXvWW2XPc6p7gdEds09YflcA4chaSVdzqx3N86LlX/
-         oH6g==
-X-Gm-Message-State: AOJu0Yx18pd66xQ4QxQF+OIfF3RiGAPli0KAe6HHUGL4X/KVEClVR/zc
-        rgsu+yLmqqGFrBmZvuO2fs7n3g==
-X-Google-Smtp-Source: AGHT+IF8+0sOvpzh2S++9Gld77ion3LJ0vBuHR01Sdz45qfUXSxfnCpMtZxXVIqRA118ewYlXUkYRw==
-X-Received: by 2002:a05:6a00:1ac9:b0:688:6d56:521e with SMTP id f9-20020a056a001ac900b006886d56521emr1317235pfv.33.1692317318596;
-        Thu, 17 Aug 2023 17:08:38 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g24-20020a62e318000000b0068890a249a7sm320566pfh.21.2023.08.17.17.08.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 17:08:35 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Yu Kuai <yukuai3@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Tudor Ambarus <tudor.ambarus@linaro.org>,
-        dmaengine@vger.kernel.org, Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Green Wan <green.wan@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 21/21] dmaengine: usb-dmac: Annotate struct usb_dmac_desc with __counted_by
-Date:   Thu, 17 Aug 2023 16:58:58 -0700
-Message-Id: <20230817235859.49846-21-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230817235428.never.111-kees@kernel.org>
-References: <20230817235428.never.111-kees@kernel.org>
+        bh=Tmnlfhs95EL6waz9oCG9J1eFGjBYGw5AvYaX1Beaazg=;
+        b=UwqdqEwc/JMn+dKX5FEn/NuAKJmUS5HjFIny2Y5UDrisa5vN4vDT5VWf3jg8cdXkZi
+         Qu0ruPqS5Wtd7P3jPFBQpt4nUd/TSEYYcBmquTxd+kUP+YZpQ8TswlGSsCXy2JAbXyXP
+         BZMAovlWZgZET6IYNIV0deoKPouLUT3M0vk8prXBOLHDcVHy+g9k9Cn/DplR5t6OpRRM
+         pqkx4oPUtx0CPoSQ0+al3ahk1CXLH1AYbUIuW3tLAQg/b1NxrJlZoIWPce8P+ZTU6cVm
+         TeixwVvxmKLWRo6/PRzuACcMPT9IC3wqmzaTueN1SqW5ukds/CgtQ39M0vHue2eMM+LD
+         qyFw==
+X-Gm-Message-State: AOJu0YyOdgWaDLk2//dbNQJksCaoNH3BvX2dBveQI9Vl/vbutvDnrovQ
+        4ebaG3GQrse6RD6sd9Muz13SSYVeLwXygJQ4ffEhoaI4cDbLENRZjbY6iHcMO9ij0J5XN5Y5tDZ
+        EtOw48NAC9e+IVitT4KntapMjkq2WSFrl5I+6uhF3XIBLd+UsBBLFiDWP7Q==
+X-Received: by 2002:a17:90a:7486:b0:26b:c3f:1503 with SMTP id p6-20020a17090a748600b0026b0c3f1503mr1064245pjk.17.1692316927388;
+        Thu, 17 Aug 2023 17:02:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+7EIVypmed5RGIhj0djV4fI4FSoK8WKnbipAJ8Tz7OsrmqWJYy2cffgUm1RSouUyrs3uw9e0d2WvEVxKlJsU=
+X-Received: by 2002:a17:90a:7486:b0:26b:c3f:1503 with SMTP id
+ p6-20020a17090a748600b0026b0c3f1503mr1064228pjk.17.1692316927159; Thu, 17 Aug
+ 2023 17:02:07 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1376; i=keescook@chromium.org;
- h=from:subject; bh=4hPk4/3zaGHWUOFawsMJcft57ZMEf+1nR8QKiVCA4No=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3rRBx2JZWreayfOXQj+zy3mCR8g7RE9H3jYXD
- QMZ4dudGRKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN60QQAKCRCJcvTf3G3A
- Jp9HD/9n5ghwAXv8nh4Qxc3XxAqZYeaVe7x9jiT60JfcdraN+/WY5bCHGWqSG+fEhFggmfo5FzD
- 6GTpkvqX4ivg0We7ceDtG9SqkhPKEwBoWXm5kM3ufbbJwiEqbpLxXE6rGBWN3mdgA5blDa8bbWc
- KLb++Nzd5KDDkGXg/axNw6uWdNsFTdjs2mEYp5W1xlwxEi0epibZy0UbOMb6nxKlJkjNhczwCqq
- IWq1Bw/Ae3nCP438KrwWZnn/JF2WlRIPvE8xs/0SKRCj98Z+48u05ACIA9QHLOxZndnbvgxOl8M
- foh7xCqYg5eM/WEPWppoyzbLHGJSV9/qaPNMwP2jrQwvmcnXBAHldywCU4ph8Qwg6sZVGPDToXo
- XCxB37cp4A3dlZMKY7xLwUfHC3SuDR+QdUzRIoDvEXkp1TyCKi++OiBC0uTaKct2ByLXJPSVQR+
- uy3fKNevuOa90s32XtmeSp7MXKeob7Q9/OCUebWEjkp99oIw0wOYS+1w2IzcA6sN2HpB5BF7cZZ
- 4UAMrAMw7McvG4xOSA/GpJYEWADYtQ5vLhrRp6Y8iZ0oJ7Edber817/7F6PO9r2jFJfXsuJhDG3
- ouohBYPImYbsHXqZvi2GsrhhdFI0GpWJ+WKPDAuoIZdvIq1pl5K5No6qWy49KQhB8FH+nfUe9ye H7z7nLEZJUAVhhQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20230817093305.212821-1-kai.heng.feng@canonical.com>
+ <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu> <59898e32-f2ea-4df7-947b-3d74835ff9b7@rowland.harvard.edu>
+In-Reply-To: <59898e32-f2ea-4df7-947b-3d74835ff9b7@rowland.harvard.edu>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 18 Aug 2023 08:01:54 +0800
+Message-ID: <CAAd53p5pxGfS0y260NsMF+m_Ota+d1ZKbtdq4dfM5s+T1z14bw@mail.gmail.com>
+Subject: Re: [PATCH] xhci: Disable connect, disconnect and over-current wakeup
+ on system suspend
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     mathias.nyman@intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Thu, Aug 17, 2023 at 10:22=E2=80=AFPM Alan Stern <stern@rowland.harvard.=
+edu> wrote:
+>
+> On Thu, Aug 17, 2023 at 10:07:37AM -0400, Alan Stern wrote:
+> > On Thu, Aug 17, 2023 at 05:33:05PM +0800, Kai-Heng Feng wrote:
+> > > HP ProOne 440 G10 AIO sometimes cannot suspend as xHCI wakes up the
+> > > system:
+> > > [  445.814574] hub 2-0:1.0: hub_suspend
+> > > [  445.814652] usb usb2: bus suspend, wakeup 0
+> > > [  445.824629] xhci_hcd 0000:00:14.0: Port change event, 1-11, id 11,=
+ portsc: 0x202a0
+> >
+> > What is the meaning of the 0x202a0 bits?  What caused this wakeup?
+>
+> And more to the point, given that the previous line says "wakeup 0", why
+> should any port change event cause a wakeup?
 
-As found with Coccinelle[1], add __counted_by for struct usb_dmac_desc.
+I think the controller and roothub have to deal with the interrupt
+about disconnecting regardless of the remote wakeup setting.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+Kai-Heng
 
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Yu Kuai <yukuai3@huawei.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jordy Zomer <jordy@pwning.systems>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc: dmaengine@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/dma/sh/usb-dmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-index b14cf350b669..4cfcd23e3268 100644
---- a/drivers/dma/sh/usb-dmac.c
-+++ b/drivers/dma/sh/usb-dmac.c
-@@ -57,7 +57,7 @@ struct usb_dmac_desc {
- 	u32 residue;
- 	struct list_head node;
- 	dma_cookie_t done_cookie;
--	struct usb_dmac_sg sg[];
-+	struct usb_dmac_sg sg[] __counted_by(sg_allocated_len);
- };
- 
- #define to_usb_dmac_desc(vd)	container_of(vd, struct usb_dmac_desc, vd)
--- 
-2.34.1
-
+>
+> Alan Stern
