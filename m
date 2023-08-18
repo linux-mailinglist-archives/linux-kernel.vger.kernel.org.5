@@ -2,167 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FA20780ECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C83780EE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378060AbjHRPNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S1378084AbjHRPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378106AbjHRPMu (ORCPT
+        with ESMTP id S1378146AbjHRPPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:12:50 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197864691;
-        Fri, 18 Aug 2023 08:12:38 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9fa64db41so17195911fa.1;
-        Fri, 18 Aug 2023 08:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1692371556; x=1692976356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nrjf0t8/+tWorDt5ATsu0uwkTQCJ3AKC0mV+zReeAks=;
-        b=C6aXLHqXPydc67rzEejZehoy1UgVUKujAoxb7mHuAy8TuIaaqkLYGDAl6/SlUrlZVv
-         F+6Ki8z5pVgTaj0GdcVBVcbpY87iVFlePwbYTyLRpYo160fag1pAYHbfaLzPwQVOMJBO
-         QUMzXK8GFLBlFIzmAeTGz6lEB6jaTI3cAriCxIHy0L9eBjkEmohn2DfsDu0R/FBTSSOa
-         8B8TllObHGwdhg7+XYA3nIieg1sp1aUqxz9Q5YW97WmDs3AlDhxzqnZgJ4+aQU57OOow
-         /awE7TPAUhMEOSsoAjhhKssoyFX+N9fLEZ6j0NaIR6PCPhAsNfAIew19EVomv0oGuLPn
-         m6cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692371556; x=1692976356;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Nrjf0t8/+tWorDt5ATsu0uwkTQCJ3AKC0mV+zReeAks=;
-        b=XbjcK64PmaTW+TCxTMmOBGVwdKIg+RRoDdqxagWmIfuRCQitLIjRdUlYDwFotK/MuX
-         xdnX666dAexY37/PDcx/RQMaLk2Jd48NZWujotjEovMZzFYXLsN1H0DqYQbonUkgDvNA
-         V/Je1MobAZDmThzkZse9cPz5RS+hr/oqicSBh8qdy3spaRHI+Oh8fzgqsLJuXQMiN2oB
-         K2SzV66InoDrnhgGQTlzMVj9GuweYyxXadsMcgeK36ct7lBlwv0XpWZnEsB0jg+untqz
-         2hIHp04GnK+BL+TXWkMBZZw0juRqNegwp9M0EfpKabUAEeD2qom0N8ByX+cVYTGd1TLX
-         Es9Q==
-X-Gm-Message-State: AOJu0Yy7L3/aAZiPjdHxsu7+v0emM6v0+wLZTOjh+WCPGVhFksU80cG3
-        AJiaYg6e2ic2+YdpdwjNL674akD8051txQ==
-X-Google-Smtp-Source: AGHT+IF5HJOYkcnwtOi2QbJfJiI7iE60S+GXRtNvGBLqt7zvaC2ojE2nlEQhzztp7oyjFgI5oWaYIw==
-X-Received: by 2002:a2e:9283:0:b0:2b6:d603:7667 with SMTP id d3-20020a2e9283000000b002b6d6037667mr1793342ljh.8.1692371555528;
-        Fri, 18 Aug 2023 08:12:35 -0700 (PDT)
-Received: from debian_development.DebianHome (dynamic-095-116-071-217.95.116.pool.telefonica.de. [95.116.71.217])
-        by smtp.gmail.com with ESMTPSA id sa19-20020a170906edb300b0099ca4f61a8bsm1285913ejb.92.2023.08.18.08.12.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 08:12:35 -0700 (PDT)
-From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
-To:     selinux@vger.kernel.org
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] selinux: print sum of chain lengths^2 for hash tables
-Date:   Fri, 18 Aug 2023 17:12:18 +0200
-Message-Id: <20230818151220.166215-6-cgzones@googlemail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230818151220.166215-1-cgzones@googlemail.com>
-References: <20230818151220.166215-1-cgzones@googlemail.com>
+        Fri, 18 Aug 2023 11:15:07 -0400
+Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C654490;
+        Fri, 18 Aug 2023 08:14:38 -0700 (PDT)
+Received: from jerom (unknown [128.107.241.169])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: serge)
+        by mail.hallyn.com (Postfix) with ESMTPSA id 7061E746;
+        Fri, 18 Aug 2023 10:14:15 -0500 (CDT)
+Date:   Fri, 18 Aug 2023 10:14:12 -0500
+From:   Serge Hallyn <serge@hallyn.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
+        jmorris@namei.org, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, mic@digikod.net
+Subject: Re: [PATCH v13 08/11] Smack: implement setselfattr and getselfattr
+ hooks
+Message-ID: <ZN+KxAMILtSvlKdK@jerom>
+References: <20230802174435.11928-1-casey@schaufler-ca.com>
+ <20230802174435.11928-9-casey@schaufler-ca.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802174435.11928-9-casey@schaufler-ca.com>
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print the sum of chain lengths squared as a metric for hash tables to
-provide more insights, similar to avtabs.
+On Wed, Aug 02, 2023 at 10:44:31AM -0700, Casey Schaufler wrote:
+> Implement Smack support for security_[gs]etselfattr.
+> Refactor the setprocattr hook to avoid code duplication.
+> 
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> ---
+>  security/smack/smack_lsm.c | 94 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 89 insertions(+), 5 deletions(-)
+> 
+> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> index f3e4b26c8a87..71c773fff971 100644
+> --- a/security/smack/smack_lsm.c
+> +++ b/security/smack/smack_lsm.c
+> @@ -3565,6 +3565,45 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
+>  	return;
+>  }
+>  
+> +/**
+> + * smack_getselfattr - Smack current process attribute
+> + * @attr: which attribute to fetch
+> + * @ctx: buffer to receive the result
+> + * @size: available size in, actual size out
+> + * @flags: unused
+> + *
+> + * Fill the passed user space @ctx with the details of the requested
+> + * attribute.
+> + *
+> + * Returns 1, the number of attributes, on success, an error code otherwise.
 
-While on it add a comma in the avtab message to improve readability of
-the output.
+This comment is confusing.  is it saying that 1 is always the number
+of attributes?  Because the "if (rc >= 0) return 1;" ensure that
+it only ever returns 1 or < 0.
 
-Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
----
- security/selinux/ss/avtab.c    | 2 +-
- security/selinux/ss/hashtab.c  | 5 +++++
- security/selinux/ss/hashtab.h  | 1 +
- security/selinux/ss/policydb.c | 4 ++--
- 4 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/security/selinux/ss/avtab.c b/security/selinux/ss/avtab.c
-index 86d98a8e291b..955cfe495606 100644
---- a/security/selinux/ss/avtab.c
-+++ b/security/selinux/ss/avtab.c
-@@ -349,7 +349,7 @@ void avtab_hash_eval(struct avtab *h, const char *tag)
- 	}
- 
- 	pr_debug("SELinux: %s:  %d entries and %d/%d buckets used, "
--	       "longest chain length %d sum of chain length^2 %llu\n",
-+	       "longest chain length %d, sum of chain length^2 %llu\n",
- 	       tag, h->nel, slots_used, h->nslot, max_chain_len,
- 	       chain2_len_sum);
- }
-diff --git a/security/selinux/ss/hashtab.c b/security/selinux/ss/hashtab.c
-index ac5cdddfbf78..c05d8346a94a 100644
---- a/security/selinux/ss/hashtab.c
-+++ b/security/selinux/ss/hashtab.c
-@@ -107,10 +107,12 @@ int hashtab_map(struct hashtab *h,
- void hashtab_stat(struct hashtab *h, struct hashtab_info *info)
- {
- 	u32 i, chain_len, slots_used, max_chain_len;
-+	u64 chain2_len_sum;
- 	struct hashtab_node *cur;
- 
- 	slots_used = 0;
- 	max_chain_len = 0;
-+	chain2_len_sum = 0;
- 	for (i = 0; i < h->size; i++) {
- 		cur = h->htable[i];
- 		if (cur) {
-@@ -123,11 +125,14 @@ void hashtab_stat(struct hashtab *h, struct hashtab_info *info)
- 
- 			if (chain_len > max_chain_len)
- 				max_chain_len = chain_len;
-+
-+			chain2_len_sum += (u64)chain_len * chain_len;
- 		}
- 	}
- 
- 	info->slots_used = slots_used;
- 	info->max_chain_len = max_chain_len;
-+	info->chain2_len_sum = chain2_len_sum;
- }
- #endif /* CONFIG_SECURITY_SELINUX_DEBUG */
- 
-diff --git a/security/selinux/ss/hashtab.h b/security/selinux/ss/hashtab.h
-index f9713b56d3d0..09b0a3744937 100644
---- a/security/selinux/ss/hashtab.h
-+++ b/security/selinux/ss/hashtab.h
-@@ -38,6 +38,7 @@ struct hashtab {
- struct hashtab_info {
- 	u32 slots_used;
- 	u32 max_chain_len;
-+	u64 chain2_len_sum;
- };
- 
- /*
-diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-index 28bd75dc6f71..84f02d4f8093 100644
---- a/security/selinux/ss/policydb.c
-+++ b/security/selinux/ss/policydb.c
-@@ -684,9 +684,9 @@ static void hash_eval(struct hashtab *h, const char *hash_name)
- 	struct hashtab_info info;
- 
- 	hashtab_stat(h, &info);
--	pr_debug("SELinux: %s:  %d entries and %d/%d buckets used, longest chain length %d\n",
-+	pr_debug("SELinux: %s:  %d entries and %d/%d buckets used, longest chain length %d, sum of chain length^2 %llu\n",
- 		 hash_name, h->nel, info.slots_used, h->size,
--		 info.max_chain_len);
-+		 info.max_chain_len, info.chain2_len_sum);
- }
- 
- static void symtab_hash_eval(struct symtab *s)
--- 
-2.40.1
-
+> + */
+> +static int smack_getselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
+> +			     size_t *size, u32 flags)
+> +{
+> +	struct smack_known *skp = smk_of_current();
+> +	int total;
+> +	int slen;
+> +	int rc;
+> +
+> +	if (attr != LSM_ATTR_CURRENT)
+> +		return -EOPNOTSUPP;
+> +
+> +	slen = strlen(skp->smk_known) + 1;
+> +	total = ALIGN(slen + sizeof(*ctx), 8);
+> +	if (total > *size)
+> +		rc = -E2BIG;
+> +	else if (ctx)
+> +		rc = lsm_fill_user_ctx(ctx, skp->smk_known, slen, LSM_ID_SMACK,
+> +				       0);
+> +	else
+> +		rc = 1;
+> +
+> +	*size = total;
+> +	if (rc >= 0)
+> +		return 1;
+> +	return rc;
+> +}
+> +
+>  /**
+>   * smack_getprocattr - Smack process attribute access
+>   * @p: the object task
+> @@ -3594,8 +3633,8 @@ static int smack_getprocattr(struct task_struct *p, const char *name, char **val
+>  }
+>  
+>  /**
+> - * smack_setprocattr - Smack process attribute setting
+> - * @name: the name of the attribute in /proc/.../attr
+> + * do_setattr - Smack process attribute setting
+> + * @attr: the ID of the attribute
+>   * @value: the value to set
+>   * @size: the size of the value
+>   *
+> @@ -3604,7 +3643,7 @@ static int smack_getprocattr(struct task_struct *p, const char *name, char **val
+>   *
+>   * Returns the length of the smack label or an error code
+>   */
+> -static int smack_setprocattr(const char *name, void *value, size_t size)
+> +static int do_setattr(u64 attr, void *value, size_t size)
+>  {
+>  	struct task_smack *tsp = smack_cred(current_cred());
+>  	struct cred *new;
+> @@ -3618,8 +3657,8 @@ static int smack_setprocattr(const char *name, void *value, size_t size)
+>  	if (value == NULL || size == 0 || size >= SMK_LONGLABEL)
+>  		return -EINVAL;
+>  
+> -	if (strcmp(name, "current") != 0)
+> -		return -EINVAL;
+> +	if (attr != LSM_ATTR_CURRENT)
+> +		return -EOPNOTSUPP;
+>  
+>  	skp = smk_import_entry(value, size);
+>  	if (IS_ERR(skp))
+> @@ -3658,6 +3697,49 @@ static int smack_setprocattr(const char *name, void *value, size_t size)
+>  	return size;
+>  }
+>  
+> +/**
+> + * smack_setselfattr - Set a Smack process attribute
+> + * @attr: which attribute to set
+> + * @ctx: buffer containing the data
+> + * @size: size of @ctx
+> + * @flags: unused
+> + *
+> + * Fill the passed user space @ctx with the details of the requested
+> + * attribute.
+> + *
+> + * Returns 0 on success, an error code otherwise.
+> + */
+> +static int smack_setselfattr(unsigned int attr, struct lsm_ctx *ctx,
+> +			     size_t size, u32 flags)
+> +{
+> +	int rc;
+> +
+> +	rc = do_setattr(attr, ctx->ctx, ctx->ctx_len);
+> +	if (rc > 0)
+> +		return 0;
+> +	return rc;
+> +}
+> +
+> +/**
+> + * smack_setprocattr - Smack process attribute setting
+> + * @name: the name of the attribute in /proc/.../attr
+> + * @value: the value to set
+> + * @size: the size of the value
+> + *
+> + * Sets the Smack value of the task. Only setting self
+> + * is permitted and only with privilege
+> + *
+> + * Returns the length of the smack label or an error code
+> + */
+> +static int smack_setprocattr(const char *name, void *value, size_t size)
+> +{
+> +	int attr = lsm_name_to_attr(name);
+> +
+> +	if (attr != LSM_ATTR_UNDEF)
+> +		return do_setattr(attr, value, size);
+> +	return -EINVAL;
+> +}
+> +
+>  /**
+>   * smack_unix_stream_connect - Smack access on UDS
+>   * @sock: one sock
+> @@ -4970,6 +5052,8 @@ static struct security_hook_list smack_hooks[] __ro_after_init = {
+>  
+>  	LSM_HOOK_INIT(d_instantiate, smack_d_instantiate),
+>  
+> +	LSM_HOOK_INIT(getselfattr, smack_getselfattr),
+> +	LSM_HOOK_INIT(setselfattr, smack_setselfattr),
+>  	LSM_HOOK_INIT(getprocattr, smack_getprocattr),
+>  	LSM_HOOK_INIT(setprocattr, smack_setprocattr),
+>  
+> -- 
+> 2.41.0
+> 
+> 
