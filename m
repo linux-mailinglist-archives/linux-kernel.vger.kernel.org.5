@@ -2,112 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 045E9780C18
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D47780C1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376899AbjHRMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:47:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S1376966AbjHRMrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:47:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351167AbjHRMql (ORCPT
+        with ESMTP id S1376959AbjHRMr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:46:41 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F294681
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:46:28 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 502901F893;
-        Fri, 18 Aug 2023 12:46:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692362787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vXKnC7PgS3pfYLWoJGbz5hBnBfPUvu8CHeHNfOXqw3Y=;
-        b=pwvQSO4C6xwxU5+rC5dhJcW/OCJ4CopXPvGsv32TGpUYnMGUlts/FP6vwpjpyB1ZoLk5W9
-        BABfNv16Pu3XmCKzOGqoDRxxl7Y4NzGjoaZkE13rgQmdXqYfgpJgZl24vuC8o+enr3E4kg
-        cUsRw/BnW2UtUslrA/JJnVxvnRAnuCQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692362787;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vXKnC7PgS3pfYLWoJGbz5hBnBfPUvu8CHeHNfOXqw3Y=;
-        b=oCr7vIJfm+tGq0QCcZ2n8+dsbMWt8kyt5P9Wxr814tuTecdVUS3S2u7jWR+1PCJCpto8BA
-        UtZduY73TpLXrnCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE49C138F0;
-        Fri, 18 Aug 2023 12:46:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id sLUEOSJo32RkDgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 12:46:26 +0000
-Date:   Fri, 18 Aug 2023 14:46:26 +0200
-Message-ID: <87350gjz6l.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Maarten Lankhorst <dev@lankhorst.se>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Alsa-devel <alsa-devel@alsa-project.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v3 8/9] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
-In-Reply-To: <alpine.DEB.2.22.394.2308181522050.3532114@eliteleevi.tm.intel.com>
-References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
-        <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
-        <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
-        <87a5uwr7ya.wl-tiwai@suse.de>
-        <e88d139f-e62b-1654-0d35-a46c698298c6@lankhorst.se>
-        <87il9ck52l.wl-tiwai@suse.de>
-        <alpine.DEB.2.22.394.2308181522050.3532114@eliteleevi.tm.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 18 Aug 2023 08:47:29 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52D9422D;
+        Fri, 18 Aug 2023 05:47:27 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RS1nk1SSHzkXJy;
+        Fri, 18 Aug 2023 20:46:02 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
+ 2023 20:47:25 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <jinpu.wang@cloud.ionos.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <john.garry@huawei.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yuehaibing@huawei.com>
+Subject: [PATCH -next] scsi: pm8001: Remove unused declarations
+Date:   Fri, 18 Aug 2023 20:47:00 +0800
+Message-ID: <20230818124700.49724-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 14:24:14 +0200,
-Kai Vehmanen wrote:
-> 
-> Hi,
-> 
-> On Fri, 18 Aug 2023, Takashi Iwai wrote:
-> 
-> > On Mon, 14 Aug 2023 16:26:01 +0200,
-> > Maarten Lankhorst wrote:
-> > > 
-> > > Ping on this?
-> > 
-> > Pierre?  Does one of your recent patch sets achieves the suggested
-> > thing?  Or do we need another rewrite/respin of this series?
-> > Currently it's blocking the merge for 6.6.
-> 
-> this is likely to require another spin. Pierre did a draft of
-> the new ops at https://github.com/thesofproject/linux/pull/4527
-> and Maarten is looking to adapt the series to this.
+Commit 4fcf812ca392 ("[SCSI] libsas: export sas_alloc_task()")
+removed these implementations but not the declarations.
 
-OK, then it can be too late for 6.6, unfortunately.
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+---
+ drivers/scsi/pm8001/pm8001_sas.h | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
+index 953572fc0d9e..2fadd353f1c1 100644
+--- a/drivers/scsi/pm8001/pm8001_sas.h
++++ b/drivers/scsi/pm8001/pm8001_sas.h
+@@ -702,8 +702,6 @@ int pm8001_mpi_fw_flash_update_resp(struct pm8001_hba_info *pm8001_ha,
+ 							void *piomb);
+ int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha, void *piomb);
+ int pm8001_mpi_task_abort_resp(struct pm8001_hba_info *pm8001_ha, void *piomb);
+-struct sas_task *pm8001_alloc_task(void);
+-void pm8001_free_task(struct sas_task *task);
+ void pm8001_tag_free(struct pm8001_hba_info *pm8001_ha, u32 tag);
+ struct pm8001_device *pm8001_find_dev(struct pm8001_hba_info *pm8001_ha,
+ 					u32 device_id);
+-- 
+2.34.1
 
-Takashi
