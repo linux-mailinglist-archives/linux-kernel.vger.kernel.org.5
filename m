@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFD878125E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1BE78125F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378995AbjHRRvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42460 "EHLO
+        id S1354920AbjHRRwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379330AbjHRRvI (ORCPT
+        with ESMTP id S1379094AbjHRRvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:51:08 -0400
-X-Greylist: delayed 128519 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Aug 2023 10:50:37 PDT
-Received: from out-44.mta1.migadu.com (out-44.mta1.migadu.com [95.215.58.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AF13C27
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:50:37 -0700 (PDT)
-Message-ID: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692381035; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hqxWvBhaCsyfEq5wGsBx9n9QLyA/MnvQvOYFUo4ueBs=;
-        b=PWqcNg7ZjSYdMSk9lLy7m8evQejk3eQNAdF2jUKrwyNYzB1dfFUnxIm99B5i4eQOnjCFc7
-        GYQRWZbolKNGfrgQqufAl0cZiULtTUY1Su+VDfkW5hOcuZTnB4FZgOp6U9jX35MSwsln4K
-        7mvSW8C3LmSC00nhdVV9wBbaHqPxm40=
-Date:   Fri, 18 Aug 2023 10:50:30 -0700
+        Fri, 18 Aug 2023 13:51:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E4126A8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:51:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ACAB565812
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 17:51:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F886C433CD;
+        Fri, 18 Aug 2023 17:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692381106;
+        bh=iLvN5LUFc3qzwimwDQQmeQYT6TSxJS88Gz7h4Iz66/A=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=pOokOidFvAk3Pz6im4cQ5KDv3GlICSkoGkuXTlsRn2/Q5hOgU+3plZGnQIJ+vR6Wm
+         702mNoxaR0/dwxU4Kp8n4Q25QakrrFw3S1wzQYd7SMZfifDahmMjSyG1dJS0Nkpa3+
+         LHkZn47TI67o/HjgIDpN2bT2iSBbfCKoV/877C/Ud1YRhAqTMWf5WPspFBXk9L5YvS
+         RcrewrbSEhbz8mmVN1KQgIDRlonulEGCfQmLLE3LYqBWqvanj7bGd/VuvPl939/f17
+         tUCOmkvD3DxcPUcoLIpMDIokJdkm1IdGfq6A+qO1mQpfEskkHKKMBjiHDeqivELXBr
+         l5WDTJVGULs4A==
+From:   Mark Brown <broonie@kernel.org>
+To:     alsa-devel@alsa-project.org,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+In-Reply-To: <20230818080314.32991-1-alpernebiyasak@gmail.com>
+References: <20230818080314.32991-1-alpernebiyasak@gmail.com>
+Subject: Re: [PATCH] ASoC: amd: acp: Add kcontrols and widgets per-codec in
+ common code
+Message-Id: <169238110424.55727.14056670602872102489.b4-ty@kernel.org>
+Date:   Fri, 18 Aug 2023 18:51:44 +0100
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-Content-Language: en-US
-To:     Rong Tao <rtoax@foxmail.com>, olsajiri@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, rongtao@cestc.cn, sdf@google.com, shuah@kernel.org,
-        song@kernel.org
-References: <ZN9iDSj3/vdk5pRX@krava>
- <tencent_6F0CBE858CB29E2E63544C5FF7461710E909@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <tencent_6F0CBE858CB29E2E63544C5FF7461710E909@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/18/23 8:36 AM, Rong Tao wrote:
-> Hi, jirka
+On Fri, 18 Aug 2023 11:03:14 +0300, Alper Nebi Yasak wrote:
+> Commit 7ac3404c2e21 ("ASoC: amd: acp: Map missing jack kcontrols") adds
+> card kcontrols and DAPM widgets corresponding to jacks for Headphone and
+> Headset Mic. But these were already being added in acp-legacy-mach.c and
+> acp-sof-mach.c, so this causes a probe error:
 > 
-> Sadly, we can't include libbpf_internal.h in trace_helpers.{h,c}.
-> we only have the following headers when compile samples/bpf/:
+>   sof_mach rt5682s-hs-rt1019: control 2:0:0:Headphone Jack Switch:0 is already present
+>   sof_mach rt5682s-hs-rt1019: ASoC: Failed to add Headphone Jack Switch: -16
+>   sof_mach rt5682s-hs-rt1019: devm_snd_soc_register_card(sof-rt5682s-hs-rt1019) failed: -16
+>   sof_mach: probe of rt5682s-hs-rt1019 failed with error -16
 > 
-> tree of samples/bpf/libbpf/
->      +-- bpf_helper_defs.h
->      +-- include
->      |   '-- bpf
->      |       +-- bpf_core_read.h
->      |       +-- bpf_endian.h
->      |       +-- bpf.h
->      |       +-- bpf_helper_defs.h
->      |       +-- bpf_helpers.h
->      |       +-- bpf_tracing.h
->      |       +-- btf.h
->      |       +-- libbpf_common.h
->      |       +-- libbpf.h
->      |       +-- libbpf_legacy.h
->      |       +-- libbpf_version.h
->      |       +-- skel_internal.h
->      |       '-- usdt.bpf.h
->      +-- libbpf.a
-> 
-> No libbpf_internal.h here.
-> 
-> What if we add a declaration to libbpf_ensure_mem() in trace_helpers.c?
+> [...]
 
-[~/work/bpf-next/tools/testing/selftests/bpf/prog_tests (master)]$ grep 
-libbpf_internal.h *
-cpu_mask.c:#include "bpf/libbpf_internal.h"
-kprobe_multi_test.c:#include "bpf/libbpf_internal.h"
-kprobe_multi_testmod_test.c:#include "bpf/libbpf_internal.h"
-module_fentry_shadow.c:#include "bpf/libbpf_internal.h"
-perf_branches.c:#include "bpf/libbpf_internal.h"
-perf_buffer.c:#include "bpf/libbpf_internal.h"
-raw_tp_test_run.c:#include "bpf/libbpf_internal.h"
-[~/work/bpf-next/tools/testing/selftests/bpf/prog_tests (master)]$ grep 
-libbpf_ensure_mem *.c
-kprobe_multi_test.c:            err = libbpf_ensure_mem((void **) &syms, 
-&cap,
-[~/work/bpf-next/tools/testing/selftests/bpf/prog_tests (master)]$
+Applied to
 
-Looks like it is already used for selftets.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-The libbpf_internal.h exists in the following directory when you build
-the selftest.
+Thanks!
 
-[~/work/bpf-next/tools/testing/selftests/bpf/tools/include/bpf (master)]$ ls
-bpf_core_read.h  bpf.h              bpf_helpers.h  btf.h 
-libbpf_common.h  libbpf_internal.h  libbpf_version.h  relo_core.h 
-usdt.bpf.h
-bpf_endian.h     bpf_helper_defs.h  bpf_tracing.h  hashmap.h  libbpf.h 
-       libbpf_legacy.h    nlattr.h          skel_internal.h
+[1/1] ASoC: amd: acp: Add kcontrols and widgets per-codec in common code
+      commit: 919a4a941863c539e982d34903e93d9777316f7d
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> 
-> Good Day,
-> Rong Tao
-> 
-> 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
