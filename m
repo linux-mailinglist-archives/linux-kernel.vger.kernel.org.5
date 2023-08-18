@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 758B378028C
+	by mail.lfdr.de (Postfix) with ESMTP id C8DE878028D
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356685AbjHRAJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S1356690AbjHRAJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356630AbjHRAJa (ORCPT
+        with ESMTP id S1356659AbjHRAJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:09:30 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F7D3A9A
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:09:04 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d61e9cb310dso461308276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:09:04 -0700 (PDT)
+        Thu, 17 Aug 2023 20:09:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AF43AAA
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:09:13 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d672f55d48dso428837276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692317333; x=1692922133;
+        d=google.com; s=20221208; t=1692317353; x=1692922153;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mE3f+VMf8SgNE6cCbkcfMUP8Hiy9b4N5xYpI+7a+l+E=;
-        b=2oU9BIaw0ILeiNHyHsZk7TDIJto4bfSl6FpDcbZRzJHFWDHvsw1Tpz4Q9Z++SpwVVm
-         JmUyxEgAq2LjZzc+OkhyeF0ADm+bu03vFWElhLKmVcXuodsBknHK0n2IWaJQr+FjH/Z4
-         ly63wavRjg8vLggYRlwWHybAT9gNxWq5j3pZ0p0w2xXzXTZlhASOY+NoRS2/AtMtjhTQ
-         nTZWu9PlR/5rleTIvIDNYwbMF6iZSL/aHkUyyZqrHDOanbSxez20kKr5PC6Ct3iYGtdC
-         ypG1bXEpsnYr9lf8V1DpKfNV0BYeA2in/OciIOL0bd/uD0xPHtdS27L3UXNyt2X2G1Wi
-         /49g==
+        bh=BLLO+u/OT5chdoeLR8F8hFvDKYI8Fp7aAauLQAtPX1A=;
+        b=BGaFvA2Zuc3NZdVSHTtuulR9e/pDkx3JhhBtIMyK9tqIE8ZSUBJjoqaZF3k69VEi2q
+         kNpZYy3sitD2xuPxGOlRb/hCABn484oxq9SrAgG+LizBFuYG+tivd16AoQ5lbLlCLIQ4
+         bWsVUUqrr7Ht37ztZnf8+uy4kUvhtY4i6NLYrd34DIxeUARUIt8ZE1Xj/enJylspblk6
+         FWGGDkZsDZ+zOkdQykvQ4AEpTnnNq6MW+zfAo4n8AH4baez6olBZQJ6Cs7wWH2R/nL7F
+         PfqAOa+GJN+JD6Uj8rE9bOnauV830shzIAQRjgfU1sNzXl7Ule/sfhNsfXt5xpGk4h+F
+         fFGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317333; x=1692922133;
+        d=1e100.net; s=20221208; t=1692317353; x=1692922153;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mE3f+VMf8SgNE6cCbkcfMUP8Hiy9b4N5xYpI+7a+l+E=;
-        b=Z+AJu0vFPXMkaE/Je8MUbxopwppkM3ZYGuCEjqo4Udb4rwsByOL38OIKVbJrOQ26Yq
-         un44h6V7FATRfm9UuXaUjz/p2t6fjRHYA1KHI89Q8Z5Rrgdi/J7tfRpN2kv5mP+P7lfh
-         ZTjgZlS818JaXidyWO8XVginFpUIl2BJaM4eWlrMuBB6fVcWvWKZcdAwC9HyjaINBmIR
-         m3FSQeaNWUiHQvqPJSAqWjprH+qkFtNijKEapJdVG/k0V8q0+iEz9CyKVzTMIArs22E1
-         VLoLdkPTSxqfxZO05epRxeYneP+bQ0AtUJjm+Bnory50Ych4OWPpC2Z5bfbUZIO5ZUc0
-         5N+g==
-X-Gm-Message-State: AOJu0Yx9p8VIIldpZPDj/PAUZEl1nk75OWSdV56vRwln7YrrtjsEiTTE
-        4kuTtlySPinoK8BGQoRbahT/J+uNfYA=
-X-Google-Smtp-Source: AGHT+IGvQyAfQmNzh/hNJU4kHU1VAazzXRBOVugeRSHej1YWD5+faOfCNQeeq5lvAq2y2Br8ZKMaZLXhQjo=
+        bh=BLLO+u/OT5chdoeLR8F8hFvDKYI8Fp7aAauLQAtPX1A=;
+        b=CoWM8Bc+h9qlfOw3eFL6+sHdiFnNvVnVFZjSNzcEnQkGy+rMlDC2I8VL8/NA0q36lJ
+         amvt90hNMTUuS68KM9V+/u90CSNnxm/QhHqxcgfHbdUcGARg8gM+tL+KUNknI2MmGoI9
+         wF3GYwpCb3p3rNK8HUGsq2XWyDSZ6CETz+jCStg57WOC6jmxn11hWkFCtFwy3Y12OUHt
+         /K9fqKBHsKQK6HU/HCYYpJYOqmvUaX03EvAJb/bWh1b5QADVGEMLkqXEevmO1BDl5Ezx
+         snJU0uIf3OXTnFyQNCbilsaF1rENAvVzusKno264phykCSEzCoC+YpVyqyqqdWXdQgBu
+         yIMQ==
+X-Gm-Message-State: AOJu0YycFm5BueOIhVu3wyI4vzpg8wvwi9pQHd7J/2AuXdWQa/j07u1R
+        1XE8smxaBfkLoIRRzI54jnfuiB+NQtg=
+X-Google-Smtp-Source: AGHT+IHKHrf99ixJMKRLXpufhlfXlQffDae9waK57qBJdE0W8LSMBtBoy/QMDtjZaYiVnEPiucbkhKBjnuU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:4113:0:b0:d4b:99ce:5e51 with SMTP id
- o19-20020a254113000000b00d4b99ce5e51mr13582yba.6.1692317333678; Thu, 17 Aug
- 2023 17:08:53 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:08:36 -0700
-In-Reply-To: <20230729004144.1054885-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a25:d8c5:0:b0:d4f:22c:69a3 with SMTP id
+ p188-20020a25d8c5000000b00d4f022c69a3mr13874ybg.10.1692317353082; Thu, 17 Aug
+ 2023 17:09:13 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 17:08:38 -0700
+In-Reply-To: <20230814140339.47732-1-yuehaibing@huawei.com>
 Mime-Version: 1.0
-References: <20230729004144.1054885-1-seanjc@google.com>
+References: <20230814140339.47732-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <169229683179.1234886.15097906251075154792.b4-ty@google.com>
-Subject: Re: [PATCH] KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
+Message-ID: <169229955442.1259727.3577431568257591049.b4-ty@google.com>
+Subject: Re: [PATCH v2 -next] kvm_host: Remove unused declarations
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>
+To:     Sean Christopherson <seanjc@google.com>, pbonzini@redhat.com,
+        Yue Haibing <yuehaibing@huawei.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nitesh@redhat.com, scottwood@freescale.com
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -78,22 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 17:41:44 -0700, Sean Christopherson wrote:
-> Wrap kvm_{gfn,hva}_range.pte in a union so that future notifier events can
-> pass event specific information up and down the stack without needing to
-> constantly expand and churn the APIs.  Lockless aging of SPTEs will pass
-> around a bitmap, and support for memory attributes will pass around the
-> new attributes for the range.
+On Mon, 14 Aug 2023 22:03:39 +0800, Yue Haibing wrote:
+> Commit 07f0a7bdec5c ("kvm: destroy emulated devices on VM exit") removed the
+> functions but not these declarations.
+> Commit 7ee30bc132c6 ("KVM: x86: deliver KVM IOAPIC scan request to target vCPUs")
+> declared but never implemented kvm_make_cpus_request_mask()
 > 
-> Add a "KVM_NO_ARG" placeholder to simplify handling events without an
-> argument (creating a dummy union variable is midly annoying).
 > 
-> [...]
 
-Applied to kvm-x86 generic, with KVM_MMU_NOTIFIER_NO_ARG as suggested by Oliver.
+Applied to kvm-x86 generic, though I split it into two patches.  The removal
+of kvm_make_cpus_request_mask() is surprisingly interesting, and likely related
+to the spurious declaration.  The exclusive/all versions use "cpus", whereas
+the inclusive mask helper uses "vcpus".  I'm guessing the spurious declaration
+came in because the original author tried to match the exclusive/all versions.
 
-[1/1] KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
-      https://github.com/kvm-x86/linux/commit/3e1efe2b67d3
+IMO, "vcpus" is obviously better terminology, e.g. differentiates from
+kvm_kick_many_cpus(), which targets physical CPUs.  I think we should rename
+kvm_make_all_cpus_request() and kvm_make_all_cpus_request_except() to use
+"vcpus", but that's a much larger patch (trivial, but large).  I'll send that
+cleanup for the 6.7 cycle.
+
+Thanks!
+
+[1/2] KVM: Remove unused kvm_device_{get,put}() declarations
+      https://github.com/kvm-x86/linux/commit/1f8403953f05
+[2/2] KVM: Remove unused kvm_make_cpus_request_mask() declaration
+      https://github.com/kvm-x86/linux/commit/458933d33af2
 
 --
 https://github.com/kvm-x86/linux/tree/next
