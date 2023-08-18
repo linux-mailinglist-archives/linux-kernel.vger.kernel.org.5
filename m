@@ -2,572 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C1E7810A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 287E57810B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378611AbjHRQma convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Aug 2023 12:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
+        id S1378687AbjHRQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378865AbjHRQmG (ORCPT
+        with ESMTP id S1378830AbjHRQnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:42:06 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5B446BC;
-        Fri, 18 Aug 2023 09:41:45 -0700 (PDT)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-56d67c5e87cso193360eaf.0;
-        Fri, 18 Aug 2023 09:41:45 -0700 (PDT)
+        Fri, 18 Aug 2023 12:43:51 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B753C2D;
+        Fri, 18 Aug 2023 09:43:27 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so1748128e87.1;
+        Fri, 18 Aug 2023 09:43:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692376992; x=1692981792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oYtXL0NSPo2Sx9mZURNXbPMFWhwK0lv2QJZL2BTRUR4=;
+        b=qSJtTnZdvdHBXYcPooneO8b/Ois76IP5qr2V0N+pftktfru7hy/+IqaQOH36SIFBcq
+         /FRBqwVcmGy9mAcp9yxq7Ve6tILFgFEnoMG/qDpjlZQJdeWabDW0jW3/h9pEcmTDW2jL
+         acb2LtP0RZ3yYT/1ffiu303p+l6MfYtjpPipJZtHUnD92sqRPRNk/+PgCCGZks1GSViE
+         +EDZL2eXeNGtixTYeG4JJMGCEV82Qg6I7IdXFQPjCQWeHZ/HhmCKC9hX8cUwoVWnIrmM
+         XE0nC1nN1lbBqaYkRhfA4IgoN/SHLxMuYqT6LfZe/AuFpscEc77j3V3fNncVauzd5Ass
+         zapw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692376905; x=1692981705;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=79qiflmIcqsS7DT/xXbMIdUQb1Omg1LDyvKgyYWC4Wg=;
-        b=Ahmy+tdfpJR8BLHW899O0XBGdaF+RBrZGlXAS20K2GdrT9tERHnUoM/fknKfAVQYSv
-         +fKuuYCXI+aFq4QQJ2yqylRny0+AwXwJFXdaEPFLoNJcoZTDisgxgIRm+qvS591rVX2P
-         6vklf8i4v+hNjPzuUZicaaqurpY4d/Xo1fc0hURK46Pa5nWa5n4+gmpSvFDTVApVXlAg
-         3VQGkA3x2IoB15U9+muXTC+FvIPFxImS7hp9lgdXgCpGtznB7J4AOkPGtF+hfQ8aNZ5S
-         6CwVMY+fzX7ab01A2Go0gYw72etrf6/8n8cr/uZCYUqNLxSEyaJlrf5Rxku6uPt+BB3h
-         nNyw==
-X-Gm-Message-State: AOJu0YzBxh0GKsvQ6LeQvLfCf5cYeGyhjbWLJOe7+6IOhJ0G01O462dL
-        suFBPMrj4OjzsPK65XZRm7FcUwjCOre9gkhpyQI=
-X-Google-Smtp-Source: AGHT+IGq0ClH5XmhZ/aBsrau9IjCmR3xeCyFXHcIlTxxN8ouMy4KkGLcQ9AFr5SPbdrOhdMhQpOEL3Y4Jv7zn6gdt1E=
-X-Received: by 2002:a05:6820:44a:b0:563:3b56:5dc1 with SMTP id
- p10-20020a056820044a00b005633b565dc1mr3290968oou.0.1692376904867; Fri, 18 Aug
- 2023 09:41:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692376992; x=1692981792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oYtXL0NSPo2Sx9mZURNXbPMFWhwK0lv2QJZL2BTRUR4=;
+        b=GHrm9+e7cb0Ogwp9xkTD1PRdzdyCxCA7iNkoPRsB7+DDq8IkGKRffAngNb1lIXMDgo
+         EgVFnMhOnNQWGDWp5479Hiv8gtbxzFyB/ovy+DtOMW/N64GQ1kS0qf5VB9DgT/kNPpcY
+         j1tCYD+CbuLPmjEiPxu8V4H98lXhh/aLiOovibFyLFRhjPqYUVUzytbu5/qPLJ5vjH1L
+         o2UTafk2ixRwb9uIZcBwyVRnpS98Ei+jjgZqCWhm8qFAVz9IeL3f/iS/Attsl9a9S60M
+         h+ldbifMQCXXXt9f38L9eQN23rEI4qtUIpORMuz7iKP/61EsxOJwhSrGTMLbQYFRghSI
+         TXow==
+X-Gm-Message-State: AOJu0YyLeY8DnL82xU2FLQV//VSPYIIOlFxEZ0iI0N7Ng96R8VWlLD9H
+        9WF+HEzINqkEo1Yv9FwLTIc=
+X-Google-Smtp-Source: AGHT+IGAin2MuYLMw4/ElZJGC5Y7V0/Bh6UYFLMRHQ0asjIQ5A5+tP96g/fElaSRBVDsPKv9acRDMQ==
+X-Received: by 2002:a05:6512:2391:b0:4fb:9168:1fce with SMTP id c17-20020a056512239100b004fb91681fcemr2747631lfv.59.1692376992068;
+        Fri, 18 Aug 2023 09:43:12 -0700 (PDT)
+Received: from mobilestation ([93.157.254.210])
+        by smtp.gmail.com with ESMTPSA id w14-20020a19c50e000000b004fbb610c354sm414084lfe.0.2023.08.18.09.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 09:43:11 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 19:43:09 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v5 4/9] net: stmmac: reflect multi irqs for
+ tx/rx channels and mac and safety
+Message-ID: <qowgzrratv3xpjavyjlht4fhz3kviifzcznmnftenzactvldcp@l4nzozjltmty>
+References: <20230817165749.672-1-jszhang@kernel.org>
+ <20230817165749.672-5-jszhang@kernel.org>
 MIME-Version: 1.0
-References: <20230818032619.3341234-1-evan.quan@amd.com> <20230818032619.3341234-2-evan.quan@amd.com>
-In-Reply-To: <20230818032619.3341234-2-evan.quan@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 18 Aug 2023 18:41:33 +0200
-Message-ID: <CAJZ5v0hEBpHfYnQ4aKRE4viTt4CCH=XeY=uFJFwzMGq6k4Kvgg@mail.gmail.com>
-Subject: Re: [V9 1/9] drivers core: Add support for Wifi band RF mitigations
-To:     Evan Quan <evan.quan@amd.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, lenb@kernel.org,
-        johannes@sipsolutions.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        alexander.deucher@amd.com, andrew@lunn.ch, rdunlap@infradead.org,
-        quic_jjohnson@quicinc.com, horms@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Mario Limonciello <mario.limonciello@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817165749.672-5-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 5:27 AM Evan Quan <evan.quan@amd.com> wrote:
->
-> Due to electrical and mechanical constraints in certain platform designs
-> there may be likely interference of relatively high-powered harmonics of
-> the (G-)DDR memory clocks with local radio module frequency bands used
-> by Wifi 6/6e/7.
->
-> To mitigate this, AMD has introduced a mechanism that devices can use to
-> notify active use of particular frequencies so that other devices can make
-> relative internal adjustments as necessary to avoid this resonance.
->
-> In order for a device to support this, the expected flow for device
-> driver or subsystems:
->
-> Drivers/subsystems contributing frequencies:
->
-> 1) During probe, check `wbrf_supported_producer` to see if WBRF supported
->    for the device.
-> 2) If adding frequencies, then call `wbrf_add_exclusion` with the
->    start and end ranges of the frequencies.
-> 3) If removing frequencies, then call `wbrf_remove_exclusion` with
->    start and end ranges of the frequencies.
->
-> Drivers/subsystems responding to frequencies:
->
-> 1) During probe, check `wbrf_supported_consumer` to see if WBRF is supported
->    for the device.
-> 2) Call the `wbrf_register_notifier` to register for notifications of
->    frequency changes from other devices.
-> 3) Call the `wbrf_retrieve_exclusions` to retrieve the current exclusions
->    range on receiving a notification and response correspondingly.
->
-> Meanwhile a kernel parameter `wbrf` with default setting as "auto" is
-> introduced to specify what the policy is.
->   - With `wbrf=on`, the WBRF features will be enabled forcely.
->   - With `wbrf=off`, the WBRF features will be disabled forcely.
->   - With `wbrf=auto`, it will be up to the system to do proper checks
->     to determine the WBRF features should be enabled or not.
->
-> Co-developed-by: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> Co-developed-by: Evan Quan <evan.quan@amd.com>
-> Signed-off-by: Evan Quan <evan.quan@amd.com>
-
-In the first place, this requires quite a bit of driver API
-documentation that is missing.
-
-To a minimum, it should explain what the interface is for and how it
-is supposed to be used by drivers (both "producers" and "consumers").
-
-And how to determine whether or not a given device is a "producer" or
-"consumer" from the WBRF perspective.
-
-> --
-> v4->v5:
->   - promote this to be a more generic solution with input argument taking
->     `struct device` and provide better scalability to support non-ACPI
->     scenarios(Andrew)
->   - update the APIs naming and some other minor fixes(Rafael)
-> v6->v7:
->   - revised the `struct wbrf_ranges_out` to be naturally aligned(Andrew)
->   - revised some code comments(Andrew)
-> v8->v9:
->   - update the document to be more readable(Randy)
+On Fri, Aug 18, 2023 at 12:57:44AM +0800, Jisheng Zhang wrote:
+> The IP supports per channel interrupt, when intel adds the per channel
+> interrupt support, the per channel irq is from MSI vector, but this
+> feature can also be supported on non-MSI platforms. Do some necessary
+> renaming to reflects this fact.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
->  .../admin-guide/kernel-parameters.txt         |   8 +
->  drivers/base/Makefile                         |   1 +
->  drivers/base/wbrf.c                           | 280 ++++++++++++++++++
->  include/linux/wbrf.h                          |  47 +++
->  4 files changed, 336 insertions(+)
->  create mode 100644 drivers/base/wbrf.c
->  create mode 100644 include/linux/wbrf.h
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a1457995fd41..5566fefeffdf 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -7152,3 +7152,11 @@
->                                 xmon commands.
->                         off     xmon is disabled.
->
-> +       wbrf=           [KNL]
-> +                       Format: { on | auto (default) | off }
-> +                       Controls if WBRF features should be forced on or off.
-> +                       on      Force enable the WBRF features.
-> +                       auto    Up to the system to do proper checks to
-> +                               determine the WBRF features should be enabled
-> +                               or not.
-> +                       off     Force disable the WBRF features.
+>  .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +-
+>  .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
+>  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 48 +++++++++----------
+>  include/linux/stmmac.h                        |  4 +-
+>  4 files changed, 29 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> index 979c755964b1..9050de31ed76 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> @@ -952,7 +952,7 @@ static int stmmac_config_single_msi(struct pci_dev *pdev,
+>  
+>  	res->irq = pci_irq_vector(pdev, 0);
+>  	res->wol_irq = res->irq;
+> -	plat->flags &= ~STMMAC_FLAG_MULTI_MSI_EN;
+> +	plat->flags &= ~STMMAC_FLAG_PERCH_IRQ_EN;
+>  	dev_info(&pdev->dev, "%s: Single IRQ enablement successful\n",
+>  		 __func__);
+>  
+> @@ -1004,7 +1004,7 @@ static int stmmac_config_multi_msi(struct pci_dev *pdev,
+>  	if (plat->msi_sfty_ue_vec < STMMAC_MSI_VEC_MAX)
+>  		res->sfty_ue_irq = pci_irq_vector(pdev, plat->msi_sfty_ue_vec);
+>  
+> -	plat->flags |= STMMAC_FLAG_MULTI_MSI_EN;
+> +	plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
+>  	dev_info(&pdev->dev, "%s: multi MSI enablement successful\n", __func__);
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> index 84d3a8551b03..9bf8adf466a2 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
+> @@ -175,7 +175,7 @@ static void dwmac4_dma_init(void __iomem *ioaddr,
+>  
+>  	value = readl(ioaddr + DMA_BUS_MODE);
+>  
+> -	if (dma_cfg->multi_msi_en) {
+> +	if (dma_cfg->perch_irq_en) {
+>  		value &= ~DMA_BUS_MODE_INTM_MASK;
+>  		value |= (DMA_BUS_MODE_INTM_MODE1 << DMA_BUS_MODE_INTM_SHIFT);
+>  	}
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> index 3d90ca983389..64c55024d69d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> @@ -126,11 +126,11 @@ module_param(chain_mode, int, 0444);
+>  MODULE_PARM_DESC(chain_mode, "To use chain instead of ring mode");
+>  
+>  static irqreturn_t stmmac_interrupt(int irq, void *dev_id);
+> -/* For MSI interrupts handling */
+> +/* For multi channel interrupts handling */
+>  static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id);
+>  static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id);
 
-Well, how's a casual reader of this file supposed to find out what
-WBRF is and whether or not they should care?
+> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data);
+> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data);
 
-> diff --git a/drivers/base/Makefile b/drivers/base/Makefile
-> index 3079bfe53d04..7b3cef898c19 100644
-> --- a/drivers/base/Makefile
-> +++ b/drivers/base/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_GENERIC_MSI_IRQ) += platform-msi.o
->  obj-$(CONFIG_GENERIC_ARCH_TOPOLOGY) += arch_topology.o
->  obj-$(CONFIG_GENERIC_ARCH_NUMA) += arch_numa.o
->  obj-$(CONFIG_ACPI) += physical_location.o
-> +obj-y                  += wbrf.o
->
->  obj-y                  += test/
->
-> diff --git a/drivers/base/wbrf.c b/drivers/base/wbrf.c
-> new file mode 100644
-> index 000000000000..678f245c12c6
-> --- /dev/null
-> +++ b/drivers/base/wbrf.c
-> @@ -0,0 +1,280 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Wifi Band Exclusion Interface
-> + * Copyright (C) 2023 Advanced Micro Devices
-> + *
+What about
 
-I would expect some explanation of the interface design and purpose here.
++static irqreturn_t stmmac_tx_queue_interrupt(int irq, void *data);
++static irqreturn_t stmmac_rx_queue_interrupt(int irq, void *data);
 
-So I don't have to wonder what WBRF_POLICY_MODE is or what the
-"exclusion ranges" are below.
+to have the names similar to stmmac_mac_interrupt() and
+stmmac_safety_interrupt().
 
-> + */
-> +
-> +#include <linux/wbrf.h>
-> +
-> +static BLOCKING_NOTIFIER_HEAD(wbrf_chain_head);
-> +static DEFINE_MUTEX(wbrf_mutex);
-> +static enum WBRF_POLICY_MODE {
-> +       WBRF_POLICY_FORCE_DISABLE,
-> +       WBRF_POLICY_AUTO,
-> +       WBRF_POLICY_FORCE_ENABLE,
-> +} wbrf_policy = WBRF_POLICY_AUTO;
-> +
-> +static int __init parse_wbrf_policy_mode(char *p)
-> +{
-> +       if (!strncmp(p, "auto", 4))
-> +               wbrf_policy = WBRF_POLICY_AUTO;
-> +       else if (!strncmp(p, "on", 2))
-> +               wbrf_policy = WBRF_POLICY_FORCE_ENABLE;
-> +       else if (!strncmp(p, "off", 3))
-> +               wbrf_policy = WBRF_POLICY_FORCE_DISABLE;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("wbrf", parse_wbrf_policy_mode);
-> +
-> +static struct exclusion_range_pool {
-> +       struct exclusion_range  band_list[MAX_NUM_OF_WBRF_RANGES];
-> +       u64                     ref_counter[MAX_NUM_OF_WBRF_RANGES];
-> +} wbrf_pool;
-> +
-> +static int _wbrf_add_exclusion_ranges(struct wbrf_ranges_in *in)
-> +{
-> +       int i, j;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(in->band_list); i++) {
-> +               if (!in->band_list[i].start &&
-> +                   !in->band_list[i].end)
-> +                       continue;
-> +
-> +               for (j = 0; j < ARRAY_SIZE(wbrf_pool.band_list); j++) {
-> +                       if (wbrf_pool.band_list[j].start == in->band_list[i].start &&
-> +                           wbrf_pool.band_list[j].end == in->band_list[i].end) {
-> +                               wbrf_pool.ref_counter[j]++;
-> +                               break;
-> +                       }
-> +               }
-> +               if (j < ARRAY_SIZE(wbrf_pool.band_list))
-> +                       continue;
-> +
-> +               for (j = 0; j < ARRAY_SIZE(wbrf_pool.band_list); j++) {
-> +                       if (!wbrf_pool.band_list[j].start &&
-> +                           !wbrf_pool.band_list[j].end) {
-> +                               wbrf_pool.band_list[j].start = in->band_list[i].start;
-> +                               wbrf_pool.band_list[j].end = in->band_list[i].end;
-> +                               wbrf_pool.ref_counter[j] = 1;
-> +                               break;
-> +                       }
-> +               }
-> +               if (j >= ARRAY_SIZE(wbrf_pool.band_list))
-> +                       return -ENOSPC;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int _wbrf_remove_exclusion_ranges(struct wbrf_ranges_in *in)
-> +{
-> +       int i, j;
-> +
-> +       for (i = 0; i < ARRAY_SIZE(in->band_list); i++) {
-> +               if (!in->band_list[i].start &&
-> +                   !in->band_list[i].end)
-> +                       continue;
-> +
-> +               for (j = 0; j < ARRAY_SIZE(wbrf_pool.band_list); j++) {
-> +                       if (wbrf_pool.band_list[j].start == in->band_list[i].start &&
-> +                           wbrf_pool.band_list[j].end == in->band_list[i].end) {
-> +                               wbrf_pool.ref_counter[j]--;
-> +                               if (!wbrf_pool.ref_counter[j]) {
-> +                                       wbrf_pool.band_list[j].start = 0;
-> +                                       wbrf_pool.band_list[j].end = 0;
-> +                               }
-> +                               break;
-> +                       }
-> +               }
-> +       }
-> +
-> +       return 0;
+BTW are you aware that the IRQs in subject are actually
+per-DMA-channel interrupts, not per-MTL-queue interrupts?
 
-It never returns anything else.  Should it be void?
+>  static void stmmac_reset_rx_queue(struct stmmac_priv *priv, u32 queue);
+>  static void stmmac_reset_tx_queue(struct stmmac_priv *priv, u32 queue);
+>  static void stmmac_reset_queues_param(struct stmmac_priv *priv);
+> @@ -3520,7 +3520,7 @@ static void stmmac_free_irq(struct net_device *dev,
+>  	}
+>  }
+>  
 
-> +}
-> +
-> +static int _wbrf_retrieve_exclusion_ranges(struct wbrf_ranges_out *out)
-> +{
-> +       int out_idx = 0;
-> +       int i;
-> +
-> +       memset(out, 0, sizeof(*out));
-> +
-> +       for (i = 0; i < ARRAY_SIZE(wbrf_pool.band_list); i++) {
-> +               if (!wbrf_pool.band_list[i].start &&
-> +                   !wbrf_pool.band_list[i].end)
-> +                       continue;
-> +
-> +               out->band_list[out_idx].start = wbrf_pool.band_list[i].start;
-> +               out->band_list[out_idx++].end = wbrf_pool.band_list[i].end;
-> +       }
-> +
-> +       out->num_of_ranges = out_idx;
-> +
-> +       return 0;
+> -static int stmmac_request_irq_multi_msi(struct net_device *dev)
+> +static int stmmac_request_irq_multi_channel(struct net_device *dev)
 
-Same here.
+What about stmmac_request_irq_perch() to shorten out the name and have
+a unified "perch" suffix like in the flag STMMAC_FLAG_PERCH_IRQ_EN?
 
-> +}
-> +
-> +/**
-> + * wbrf_supported_system - Determine if the system supports WBRF features
-> + *
-> + * WBRF is used to mitigate devices that cause harmonic interference.
-> + * This function will determine if the platform is able to support the
-> + * WBRF features.
+-Serge(y)
 
-The code doesn't quite match the description above.  I guess the code
-is temporary?
-
-> + */
-> +static bool wbrf_supported_system(void)
-> +{
-> +       switch (wbrf_policy) {
-> +       case WBRF_POLICY_FORCE_ENABLE:
-> +               return true;
-> +       case WBRF_POLICY_FORCE_DISABLE:
-> +               return false;
-> +       case WBRF_POLICY_AUTO:
-> +               return false;
-> +       }
-> +
-> +       return false;
-> +}
-> +
-> +/**
-> + * wbrf_supported_producer - Determine if the device should report frequencies
-> + *
-> + * @dev: device pointer
-> + *
-> + * WBRF is used to mitigate devices that cause harmonic interference.
-> + * This function will determine if this device should report such frequencies.
-
-It is not clear how "harmonic interference" is related to "such
-frequencies" from the above.
-
-> + */
-> +bool wbrf_supported_producer(struct device *dev)
-> +{
-> +       if (!wbrf_supported_system())
-> +               return false;
-> +
-> +       return true;
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_supported_producer);
-> +
-> +/**
-> + * wbrf_add_exclusion - Add frequency ranges to the exclusion list
-> + *
-> + * @dev: device pointer
-> + * @in: input structure containing the frequency ranges to be added
-> + *
-> + * Add frequencies into the exclusion list for supported consumers
-> + * to react to.
-
-Well, the above isn't particularly helpful IMV.
-
-What's "the exclusion list"?  What are "supported consumers" and how
-are they going to "react" and to what exactly (the exclusion list or
-the frequencies)?
-
-Why is the notifier chain not mentioned in the kerneldoc description
-of the function?
-
-> + */
-> +int wbrf_add_exclusion(struct device *dev,
-> +                      struct wbrf_ranges_in *in)
-> +{
-> +       int r;
-> +
-> +       mutex_lock(&wbrf_mutex);
-> +
-> +       r = _wbrf_add_exclusion_ranges(in);
-> +
-> +       mutex_unlock(&wbrf_mutex);
-> +       if (r)
-> +               return r;
-> +
-> +       blocking_notifier_call_chain(&wbrf_chain_head, WBRF_CHANGED, NULL);
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_add_exclusion);
-> +
-> +/**
-> + * wbrf_remove_exclusion - Remove frequency ranges from the exclusion list
-> + *
-> + * @dev: device pointer
-> + * @in: input structure containing the frequency ranges to be removed
-> + *
-> + * Remove frequencies from the exclusion list for supported consumers
-> + * to react to.
-
-This has the same problems as the above.
-
-> + */
-> +int wbrf_remove_exclusion(struct device *dev,
-> +                         struct wbrf_ranges_in *in)
-> +{
-> +       int r;
-> +
-> +       mutex_lock(&wbrf_mutex);
-> +
-> +       r = _wbrf_remove_exclusion_ranges(in);
-> +
-> +       mutex_unlock(&wbrf_mutex);
-> +       if (r)
-> +               return r;
-> +
-> +       blocking_notifier_call_chain(&wbrf_chain_head, WBRF_CHANGED, NULL);
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_remove_exclusion);
-> +
-> +/**
-> + * wbrf_supported_consumer - Determine if the device should react to frequencies
-> + *
-> + * @dev: device pointer
-> + *
-> + * WBRF is used to mitigate devices that cause harmonic interference.
-
-What does this mean?  How can a device be "mitigated" and what
-"harmonic interference" is this about?
-
-> + * This function will determine if this device should react to reports from
-> + * other devices for such frequencies.
-
-What are "such frequencies"?
-
-> + */
-> +bool wbrf_supported_consumer(struct device *dev)
-> +{
-> +       if (!wbrf_supported_system())
-> +               return false;
-> +
-> +       return true;
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_supported_consumer);
-> +
-> +/**
-> + * wbrf_register_notifier - Register for notifications of frequency changes
-> + *
-> + * @nb: driver notifier block
-> + *
-> + * WBRF is used to mitigate devices that cause harmonic interference.
-> + * This function will allow consumers to register for frequency notifications.
-
-What's a "frequency notification"?
-
-> + */
-> +int wbrf_register_notifier(struct notifier_block *nb)
-> +{
-> +       return blocking_notifier_chain_register(&wbrf_chain_head, nb);
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_register_notifier);
-> +
-> +/**
-> + * wbrf_unregister_notifier - Unregister for notifications of frequency changes
-> + *
-> + * @nb: driver notifier block
-> + *
-> + * WBRF is used to mitigate devices that cause harmonic interference.
-> + * This function will allow consumers to unregister for frequency notifications.
-> + */
-> +int wbrf_unregister_notifier(struct notifier_block *nb)
-> +{
-> +       return blocking_notifier_chain_unregister(&wbrf_chain_head, nb);
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_unregister_notifier);
-> +
-> +/**
-> + * wbrf_retrieve_exclusions - Retrieve the exclusion list
-> + *
-> + * @dev: device pointer
-> + * @out: output structure containing the frequency ranges to be excluded
-
-Excluded from what?
-
-> + *
-> + * Retrieve the current exclusion list
-
-What's "the current exclusion list"?
-
-> + */
-> +int wbrf_retrieve_exclusions(struct device *dev,
-> +                            struct wbrf_ranges_out *out)
-> +{
-> +       int r;
-> +
-> +       mutex_lock(&wbrf_mutex);
-> +
-> +       r = _wbrf_retrieve_exclusion_ranges(out);
-> +
-> +       mutex_unlock(&wbrf_mutex);
-> +
-> +       return r;
-> +}
-> +EXPORT_SYMBOL_GPL(wbrf_retrieve_exclusions);
-> diff --git a/include/linux/wbrf.h b/include/linux/wbrf.h
-> new file mode 100644
-> index 000000000000..476a28fec27a
-> --- /dev/null
-> +++ b/include/linux/wbrf.h
-> @@ -0,0 +1,47 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Wifi Band Exclusion Interface
-> + * Copyright (C) 2023 Advanced Micro Devices
-> + */
-> +
-> +#ifndef _LINUX_WBRF_H
-> +#define _LINUX_WBRF_H
-> +
-> +#include <linux/device.h>
-> +
-> +/* Maximum number of wbrf ranges */
-> +#define MAX_NUM_OF_WBRF_RANGES         11
-> +
-> +struct exclusion_range {
-> +       /* start and end point of the frequency range in Hz */
-
-I would put the comment above the whole struct definition and use the
-kerneldoc format for it.
-
-> +       u64             start;
-> +       u64             end;
-> +};
-> +
-> +struct wbrf_ranges_in {
-> +       /* valid entry: `start` and `end` filled with non-zero values */
-
-Same here.
-
-> +       struct exclusion_range  band_list[MAX_NUM_OF_WBRF_RANGES];
-> +};
-> +
-> +struct wbrf_ranges_out {
-> +       u64                     num_of_ranges;
-> +       struct exclusion_range  band_list[MAX_NUM_OF_WBRF_RANGES];
-> +};
-> +
-> +enum wbrf_notifier_actions {
-> +       WBRF_CHANGED,
-> +};
-
-No description.
-
-> +
-> +bool wbrf_supported_producer(struct device *dev);
-> +int wbrf_add_exclusion(struct device *adev,
-> +                      struct wbrf_ranges_in *in);
-> +int wbrf_remove_exclusion(struct device *dev,
-> +                         struct wbrf_ranges_in *in);
-> +int wbrf_retrieve_exclusions(struct device *dev,
-> +                            struct wbrf_ranges_out *out);
-> +bool wbrf_supported_consumer(struct device *dev);
-> +
-> +int wbrf_register_notifier(struct notifier_block *nb);
-> +int wbrf_unregister_notifier(struct notifier_block *nb);
-> +
-> +#endif /* _LINUX_WBRF_H */
-> --
-
-Overall, readers should be able to understand stuff they read.  The
-above doesn't follow this rule IMO.
+>  {
+>  	struct stmmac_priv *priv = netdev_priv(dev);
+>  	enum request_irq_err irq_err;
+> @@ -3537,7 +3537,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  			  0, int_name, dev);
+>  	if (unlikely(ret < 0)) {
+>  		netdev_err(priv->dev,
+> -			   "%s: alloc mac MSI %d (error: %d)\n",
+> +			   "%s: alloc mac irq %d (error: %d)\n",
+>  			   __func__, dev->irq, ret);
+>  		irq_err = REQ_IRQ_ERR_MAC;
+>  		goto irq_error;
+> @@ -3554,7 +3554,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  				  0, int_name, dev);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc wol MSI %d (error: %d)\n",
+> +				   "%s: alloc wol irq %d (error: %d)\n",
+>  				   __func__, priv->wol_irq, ret);
+>  			irq_err = REQ_IRQ_ERR_WOL;
+>  			goto irq_error;
+> @@ -3572,7 +3572,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  				  0, int_name, dev);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc lpi MSI %d (error: %d)\n",
+> +				   "%s: alloc lpi irq %d (error: %d)\n",
+>  				   __func__, priv->lpi_irq, ret);
+>  			irq_err = REQ_IRQ_ERR_LPI;
+>  			goto irq_error;
+> @@ -3590,7 +3590,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  				  0, int_name, dev);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc sfty ce MSI %d (error: %d)\n",
+> +				   "%s: alloc sfty ce irq %d (error: %d)\n",
+>  				   __func__, priv->sfty_ce_irq, ret);
+>  			irq_err = REQ_IRQ_ERR_SFTY_CE;
+>  			goto irq_error;
+> @@ -3608,14 +3608,14 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  				  0, int_name, dev);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc sfty ue MSI %d (error: %d)\n",
+> +				   "%s: alloc sfty ue irq %d (error: %d)\n",
+>  				   __func__, priv->sfty_ue_irq, ret);
+>  			irq_err = REQ_IRQ_ERR_SFTY_UE;
+>  			goto irq_error;
+>  		}
+>  	}
+>  
+> -	/* Request Rx MSI irq */
+> +	/* Request Rx queue irq */
+>  	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
+>  		if (i >= MTL_MAX_RX_QUEUES)
+>  			break;
+> @@ -3625,11 +3625,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  		int_name = priv->int_name_rx_irq[i];
+>  		sprintf(int_name, "%s:%s-%d", dev->name, "rx", i);
+>  		ret = request_irq(priv->rx_irq[i],
+> -				  stmmac_msi_intr_rx,
+> +				  stmmac_queue_intr_rx,
+>  				  0, int_name, &priv->dma_conf.rx_queue[i]);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc rx-%d  MSI %d (error: %d)\n",
+> +				   "%s: alloc rx-%d irq %d (error: %d)\n",
+>  				   __func__, i, priv->rx_irq[i], ret);
+>  			irq_err = REQ_IRQ_ERR_RX;
+>  			irq_idx = i;
+> @@ -3640,7 +3640,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  		irq_set_affinity_hint(priv->rx_irq[i], &cpu_mask);
+>  	}
+>  
+> -	/* Request Tx MSI irq */
+> +	/* Request Tx queue irq */
+>  	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
+>  		if (i >= MTL_MAX_TX_QUEUES)
+>  			break;
+> @@ -3650,11 +3650,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
+>  		int_name = priv->int_name_tx_irq[i];
+>  		sprintf(int_name, "%s:%s-%d", dev->name, "tx", i);
+>  		ret = request_irq(priv->tx_irq[i],
+> -				  stmmac_msi_intr_tx,
+> +				  stmmac_queue_intr_tx,
+>  				  0, int_name, &priv->dma_conf.tx_queue[i]);
+>  		if (unlikely(ret < 0)) {
+>  			netdev_err(priv->dev,
+> -				   "%s: alloc tx-%d  MSI %d (error: %d)\n",
+> +				   "%s: alloc tx-%d irq %d (error: %d)\n",
+>  				   __func__, i, priv->tx_irq[i], ret);
+>  			irq_err = REQ_IRQ_ERR_TX;
+>  			irq_idx = i;
+> @@ -3729,8 +3729,8 @@ static int stmmac_request_irq(struct net_device *dev)
+>  	int ret;
+>  
+>  	/* Request the IRQ lines */
+> -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN)
+> -		ret = stmmac_request_irq_multi_msi(dev);
+> +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN)
+> +		ret = stmmac_request_irq_multi_channel(dev);
+>  	else
+>  		ret = stmmac_request_irq_single(dev);
+>  
+> @@ -5945,7 +5945,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
+> +static irqreturn_t stmmac_queue_intr_tx(int irq, void *data)
+>  {
+>  	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
+>  	struct stmmac_dma_conf *dma_conf;
+> @@ -5977,7 +5977,7 @@ static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data)
+> +static irqreturn_t stmmac_queue_intr_rx(int irq, void *data)
+>  {
+>  	struct stmmac_rx_queue *rx_q = (struct stmmac_rx_queue *)data;
+>  	struct stmmac_dma_conf *dma_conf;
+> @@ -6014,12 +6014,12 @@ static void stmmac_poll_controller(struct net_device *dev)
+>  	if (test_bit(STMMAC_DOWN, &priv->state))
+>  		return;
+>  
+> -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN) {
+> +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN) {
+>  		for (i = 0; i < priv->plat->rx_queues_to_use; i++)
+> -			stmmac_msi_intr_rx(0, &priv->dma_conf.rx_queue[i]);
+> +			stmmac_queue_intr_rx(0, &priv->dma_conf.rx_queue[i]);
+>  
+>  		for (i = 0; i < priv->plat->tx_queues_to_use; i++)
+> -			stmmac_msi_intr_tx(0, &priv->dma_conf.tx_queue[i]);
+> +			stmmac_queue_intr_tx(0, &priv->dma_conf.tx_queue[i]);
+>  	} else {
+>  		disable_irq(dev->irq);
+>  		stmmac_interrupt(dev->irq, dev);
+> @@ -7300,8 +7300,8 @@ int stmmac_dvr_probe(struct device *device,
+>  	priv->plat = plat_dat;
+>  	priv->ioaddr = res->addr;
+>  	priv->dev->base_addr = (unsigned long)res->addr;
+> -	priv->plat->dma_cfg->multi_msi_en =
+> -		(priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN);
+> +	priv->plat->dma_cfg->perch_irq_en =
+> +		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
+>  
+>  	priv->dev->irq = res->irq;
+>  	priv->wol_irq = res->wol_irq;
+> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+> index 9c90e2e295d4..c052c222fa3e 100644
+> --- a/include/linux/stmmac.h
+> +++ b/include/linux/stmmac.h
+> @@ -98,7 +98,7 @@ struct stmmac_dma_cfg {
+>  	int mixed_burst;
+>  	bool aal;
+>  	bool eame;
+> -	bool multi_msi_en;
+> +	bool perch_irq_en;
+>  	bool dche;
+>  };
+>  
+> @@ -213,7 +213,7 @@ struct dwmac4_addrs {
+>  #define STMMAC_FLAG_TSO_EN			BIT(4)
+>  #define STMMAC_FLAG_SERDES_UP_AFTER_PHY_LINKUP	BIT(5)
+>  #define STMMAC_FLAG_VLAN_FAIL_Q_EN		BIT(6)
+> -#define STMMAC_FLAG_MULTI_MSI_EN		BIT(7)
+> +#define STMMAC_FLAG_PERCH_IRQ_EN		BIT(7)
+>  #define STMMAC_FLAG_EXT_SNAPSHOT_EN		BIT(8)
+>  #define STMMAC_FLAG_INT_SNAPSHOT_EN		BIT(9)
+>  #define STMMAC_FLAG_RX_CLK_RUNS_IN_LPI		BIT(10)
+> -- 
+> 2.40.1
+> 
+> 
