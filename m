@@ -2,95 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21500780C54
+	by mail.lfdr.de (Postfix) with ESMTP id B493C780C56
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377041AbjHRNLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
+        id S1377053AbjHRNLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377083AbjHRNKd (ORCPT
+        with ESMTP id S1377057AbjHRNKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:10:33 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98E53AB2;
-        Fri, 18 Aug 2023 06:10:25 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58c92a2c52dso9116407b3.2;
-        Fri, 18 Aug 2023 06:10:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692364225; x=1692969025;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mpt86wIrKIVZouUkUmVRRXcSHu/03uN8N9LZwnmAsYw=;
-        b=myBM98EdvIUGWdHu8rCU6jCTB1NaSdI7OZ9pu7odvzuJe90XnT57u1q4/PtoBvxNYg
-         3MaSuPu7gULfcCeeUhDxbgV7c7xJD2gVopXaO2Ga5hJBg1kG1i4EDQ7zqc4pstquey7S
-         tMPnKBwe2QabvVybuaHT9Il2JSj7m2EzK+mBGDGVqhWMUK17t+2rMTrJblMrszcrSq4F
-         F5XjBdM0iqqKAnIgZzOzxJq/m7S8+fJu7dZ1dk+CRy9eAuShfTDWA08xIBBGIGPLoEpW
-         Cfw9SKODfyy04qV4tCgnqbZNS7TFXBfB5IfYBQG5AAw4AG3Qf6G820wxqDO36IKWrw1W
-         NFeA==
+        Fri, 18 Aug 2023 09:10:47 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE113C25
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:10:42 -0700 (PDT)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bbd260ca2dso13543435ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:10:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692364225; x=1692969025;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mpt86wIrKIVZouUkUmVRRXcSHu/03uN8N9LZwnmAsYw=;
-        b=ab/3zLWm+lI8K+75mWPPuyXRA8Ayn//DdqMLEGwkkh9wys8sYAcg4dfEU/mpFTzqpN
-         hFp7BUdF0pf+3knE3XoWv5tSJxsN/kVivl8FzgqNZyTNZIOgM//Gwd947JdfX26XIwQG
-         BJclFb9wGa9sc94+L485WyKfj5Ej6vWE/+GebPbPXhWDvx2AMEXURdiTvqPoV/SoeYlS
-         lSCJQ73XyB0eoo1uscKZfdJC6r/GEcHf2gjesjuhs+bQE2eaond5afyvIKHW+bhFgeZj
-         aRPcvWmuSM5bf7NlKPUjieGI0/WDhWucFrWBWYzOjpEUOKXR63IdGxduLDqpByK5eTmc
-         MNsg==
-X-Gm-Message-State: AOJu0YwjIGLJf3cv+FgZBdN3u8OA1rLXLQkHUtJ/fmxfm1hligMkX4si
-        kkQCyEqL1Ys2tNbfut55v+N23yIxl/kkhn8ayV9p/LkNmQs=
-X-Google-Smtp-Source: AGHT+IGzHOIifCA7g9t9UCl6aDDSlE6/kZkTlVzqd+VY78USQvsZN7frITrnrGo+iyi3Jjk3/phCUdQqj10rTFLH+Rk=
-X-Received: by 2002:a25:4191:0:b0:d3b:3f67:960d with SMTP id
- o139-20020a254191000000b00d3b3f67960dmr2566384yba.41.1692364224754; Fri, 18
- Aug 2023 06:10:24 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692364241; x=1692969041;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sIkwbNN9kL4K3EmOVENi42yRk0RdTpQaFB+jp7VFpcY=;
+        b=dnFIlWoM4avBk9a8R3V0RKFuDTZxxfZwYopsiCfzxQQi79wbQ1jZtgn0p87NUX7RhW
+         w6xiYK5pfd/yYPHA6RDk8Vp8TtADlFdEJ/04zeFbHaK8mzLNSoRjgroE9msXEe4hZyVh
+         BwP23PfR/fxN3dWrJ/rV/6QQRTdUXaZxjcITj6ax2fnYTqa8ryFQnNbvnp+C0PGkf7oV
+         n5b6QsIBllOweICYVWAVq7wBPE+TYjXIC9qE1jjVcrVdOmbmAwasWjh9DU/Fpzam53ga
+         W4z47wa4i2mqHg3MfJyFPvOfgBxQx5CRIFN41mau7SzC3hgoLRdrLKKf4VkE8l+cVLFQ
+         68ow==
+X-Gm-Message-State: AOJu0YwLyamqQVRGdWrhsQ8i9Wb896T6zsMMMyVvp9rq3RTuBL1JKTIs
+        LKJS0p2xoHUSwVNkSS0vOdeDu1nfMRVivhzf+4BfODGsnO8H
+X-Google-Smtp-Source: AGHT+IGpCXUIc9w+uvEXJYohpoa0yAG32ipeDyRzs6JO1gwVuVP5xEoJNHaWqGpnCqxtXCNeBWPfHWCROLgsoQItBYkHZ3P2CVI9
 MIME-Version: 1.0
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Fri, 18 Aug 2023 18:40:14 +0530
-Message-ID: <CAHhAz+jdBS3KPCDL2WZ8UBFRhu0hZyHqs0HAdnhamswswF6iug@mail.gmail.com>
-Subject: Seeking Guidance for New SPI Driver in Mainline Linux Kernel
-To:     linux-spi@vger.kernel.org,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a17:902:f353:b0:1b5:147f:d8d1 with SMTP id
+ q19-20020a170902f35300b001b5147fd8d1mr746652ple.3.1692364241770; Fri, 18 Aug
+ 2023 06:10:41 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 06:10:41 -0700
+In-Reply-To: <000000000000f59fa505fe48748f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000761f5f0603324129@google.com>
+Subject: Re: [syzbot] [ext4?] INFO: task hung in __writeback_inodes_sb_nr (6)
+From:   syzbot <syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linkinjeon@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
+        rafael.j.wysocki@intel.com, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+        wendy.wang@intel.com, yu.c.chen@intel.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Linux Kernel Community,
+syzbot has bisected this issue to:
 
-I hope this email finds you well.
-I am writing to seek your guidance and assistance regarding the
-development of a new SPI device driver for our hardware system.
-Our hardware, implemented on an FPGA, features an SPI interface that
-acts as a Master, offering two distinct modes for data transmission
-and reception.
-This hardware is connected to the Linux system via the PCIe bus.
-This hardware offers two modes for communication: using registers for
-debugging purposes and utilizing DMA channels for high-bandwidth
-applications. Both modes leverage the PCIe interface for data
-exchange.
-The hardware boasts several noteworthy features, including support for
-multiple speed settings, SPI port switching, configurable sample edge
-programming, and adjustable SPI transfer sizes.
+commit 5904de0d735bbb3b4afe9375c5b4f9748f882945
+Author: Chen Yu <yu.c.chen@intel.com>
+Date:   Fri Apr 14 12:10:42 2023 +0000
 
-As we embark on the task of developing a device driver for this SPI
-interface, we intend to follow best practices and leverage existing
-resources within the Mainline Linux kernel tree. To achieve this, we
-plan to refer to and adapt existing SPI drivers.
-We kindly request your recommendations on which existing SPI driver
-within the Mainline Linux kernel tree would serve as the most suitable
-reference for our endeavor. Your invaluable expertise would greatly
-aid us in ensuring the success of this driver development process.
-Thank you for your time and consideration. We eagerly anticipate your
-guidance and insights.
+    PM: hibernate: Do not get block device exclusively in test_resume mode
 
-Warm regards,
-Sekhar
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1275be4ba80000
+start commit:   4853c74bd7ab Merge tag 'parisc-for-6.5-rc7' of git://git.k..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1175be4ba80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1675be4ba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+dashboard link: https://syzkaller.appspot.com/bug?extid=38d04642cea49f3a3d2e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=171242cfa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17934703a80000
+
+Reported-by: syzbot+38d04642cea49f3a3d2e@syzkaller.appspotmail.com
+Fixes: 5904de0d735b ("PM: hibernate: Do not get block device exclusively in test_resume mode")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
