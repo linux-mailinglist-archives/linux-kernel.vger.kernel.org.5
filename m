@@ -2,146 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FD47806CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B339B7806D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358415AbjHRH7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58660 "EHLO
+        id S1358423AbjHRICR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358418AbjHRH6w (ORCPT
+        with ESMTP id S1358426AbjHRIB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:58:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86F43A84
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692345529; x=1723881529;
-  h=from:to:cc:subject:sender:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=UnK0YL4eshwYSyCjK3HJ0gIbD0Qcbn8v9Fva0/0hvWs=;
-  b=aZ/nDISR5/kbM/weaKj323XloSWg/MNaZ3IUiAM+wMIdB3YIWRwHyQYl
-   FMwNRX6MEFnCmHrZK/jlPCCnpoelGrriIYsutd+vPgpNH5TCiJ08At0AH
-   PJrHRcjNjf4Te6qcQ0vVxfS0H51Eu/YlZZ5ImWzQIkR56YUiANouE2awC
-   vutMTenm0c4PM5xzFTPYDqXaqcff/IJSMbKZmyOZL6N+P2uPIYOEouP2v
-   yKtJ3lzAcyj0niUOI8X0PvJVSHuWv/vZCKc+85SkeJUdkPLBC+hZ1L2Xs
-   rnIn3QE6HHGT7pSRa9QOr2R1cpLPt2Tr5TMdth6ohf4JwepIzMV3q05G4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="376801397"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="376801397"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 00:58:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="684793544"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="684793544"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga003.jf.intel.com with ESMTP; 18 Aug 2023 00:58:49 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 18 Aug 2023 00:58:49 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 18 Aug 2023 00:58:49 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 18 Aug 2023 00:58:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flQ2KZ+3gYM9+Oaw8LuEtPz6CBPanh5umQzC+4G99mHXawZNR9ZbOKAssVQJ79kDd6Cjj8h1MM24zO+/rSYxBO9NuhckEEoKZ9gkx21a+NxPH9EI/vteM4IvyKZ8YUERXvez1/lZOOe+JMJ2H6/JQjPgPFWVGsJ3Je00ql5r5a/kwGRWH0BL4mYz+GcB96zjzTLFyonKDNf2gb2J0Tv+hkrrdOuFmwqjogmJFqlhmcSy+6UgOvW7W2Hy2ZCJV2gtex2kaxks/+P/nt34CuvakSQHwI+tqKKJFTREJrVKlo55otimMD9Xi5nKfZAvtWsAjEeSfbcGHMZol2dEEc1t9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UnK0YL4eshwYSyCjK3HJ0gIbD0Qcbn8v9Fva0/0hvWs=;
- b=iSgXuo7QiElOAvwNwVdIXqjnsNi1eaY6A9ax7cxC1N+GvDrGRbL0mouuph6MVEVHNDfXPEIBwtglUkWfbFPy8diirUpcVFh+KxUb1dd4tU9jwF9ZCYB+vjmc0BG019StV/Nsuy8fi6J/rKslYKf0KvYt950uka5wnS5Yeg4GH2ZHGnLV/iBimG3jCwElFoyfXOa7WcFCqEeoovc4d+fCk9pF+5iinVcrx0+mWI8lz6wkvhWze65j/entynRniH9AT6iaMGgQtzrkHG2QglIkmc6YKWGyGQuHOWR5XSkrd3tQOZ31OV4LOnFl+nCVEzZkry3HGfnEDq+cJ+Nbm3Ae0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6792.namprd11.prod.outlook.com (2603:10b6:a03:485::22)
- by SN7PR11MB7539.namprd11.prod.outlook.com (2603:10b6:806:343::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.26; Fri, 18 Aug
- 2023 07:58:47 +0000
-Received: from SJ0PR11MB6792.namprd11.prod.outlook.com
- ([fe80::55ae:a9d8:12e6:d0c7]) by SJ0PR11MB6792.namprd11.prod.outlook.com
- ([fe80::55ae:a9d8:12e6:d0c7%7]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
- 07:58:47 +0000
-From:   lkp <lkp@intel.com>
-To:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>
-CC:     LKML <linux-kernel@vger.kernel.org>
-Subject: [0-Day CI notification] the service will be paused from Friday Aug
- 18, 5 PM CST to Monday Aug 21, 3 PM CST (GMT+8)
-Thread-Topic: [0-Day CI notification] the service will be paused from Friday
- Aug 18, 5 PM CST to Monday Aug 21, 3 PM CST (GMT+8)
-Thread-Index: AdnRqceHdEhLnziXSEy2TuQjp1jT/g==
-Sender: "Sang, Oliver" <oliver.sang@intel.com>
-Date:   Fri, 18 Aug 2023 07:58:47 +0000
-Message-ID: <SJ0PR11MB6792576A4E0EA2D3A61F26CBF11BA@SJ0PR11MB6792.namprd11.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-exchange-messagesentrepresentingtype: 2
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6792:EE_|SN7PR11MB7539:EE_
-x-ms-office365-filtering-correlation-id: ae352a9d-188d-4426-dc83-08db9fc0f3be
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hWd5PDZTuydXvQy0LjsFme/ErrAcazlr89wX7I35fRK/SSWJnLaSzfFzpKewGkzSPrjFBW+Kv3LZuZ4eV6qiORlgrNaF57ewv7D5AQjjFk5H5tQ6M1DAYgCuwbc7cpL4dTsrRp5OXef3iQ4j2bh9a7Ns/SWajCLHOlMao4WY2wcD14ykFq3SdEtymtbFn/tsqC5XvtToEHLo9PaWaCmbYA6RFvvZvKg0TbZ54g4rlsq9nUDwqJVxXb9ryIFomOLyMdIYf+0IMiVaN/80/ZYQ3blNkDnQpXWCIHOh5MxTiA9yEV7fqi9LzHKZtsykMhze2Z362151O/WmL1Npg/gjDc3NtkiORijaMYUZHOOykCKJLvNjAJ9oJs4XKJvV/lGoV16m4rxsQn3j8UwUStPGLMvZFAyWRvmCVQM0BEgbHcM3IvMKS1o9ORC30J/A95+kJrE39Fm9GLUmVI34NqdHRs5Qty1NPM7TtsdTeHY3H8p7ciO65hsRkYCpiMqCgcgnV/ciChBrX7+fshPBGUUGveVhVyjCitQTfIpEY8Q4i9dHnaJynF0EQwsR9CpXu5QRoqVMMcE9hWlxrxU0cw0+Zd8ejpRLVsHfFO0jWeHwLmFnnIHjMQMOve9pnlc3LIzE
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6792.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(4744005)(83380400001)(26005)(478600001)(6506007)(7696005)(7846003)(71200400001)(33656002)(9686003)(55016003)(5660300002)(52536014)(41300700001)(66446008)(122000001)(66476007)(64756008)(76116006)(66946007)(66556008)(316002)(110136005)(4326008)(8936002)(8676002)(82960400001)(38070700005)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?nXXzEFFXEan3UwEaCWqmljy2t+OLr+GBKIr2e9uHuJGDcbefIIZp+m0+akzV?=
- =?us-ascii?Q?kVe6FLgJYt0RhRlivTTANDCE8Bm/8RTQJBIUQyd/A77UlY26xpBGAwxMCxfN?=
- =?us-ascii?Q?1jRGEXqB5HQz+55CGlCSjOO5cVtuVh4sPWivKKtp/DpOOnnuLYa0aWGfsoP9?=
- =?us-ascii?Q?8VMGPztF50M6Aufz9FjGuyYINh5ObtpvyyYiaO8/1FkjvRD4KSV+jqjIZCK0?=
- =?us-ascii?Q?t8ky//fNrH2j5cJiDinIKrGu/bMJQFAZgWd+hwyIVwl7osh3JUURlsAKmcX4?=
- =?us-ascii?Q?oKVIRHed75lRqr9vsr705GOJrh0K909BCAC98tsLJuOtMt6D/IFliZS+BKU1?=
- =?us-ascii?Q?KkDi+OSafphgdIQ4DrYieKZynYpGVPeA7EoK10oTRx8ovWXWGls37cUkx6AI?=
- =?us-ascii?Q?bwnOhQv+Mn4sHycN6vYLSRdqq/algx/Sz3Gh39/m3FQpZ36/28zyP36PtSZj?=
- =?us-ascii?Q?AQdj9hzFxdxN+XFTgRWoVt6VZJuGGyFmaA1tteuNCXxug+u6cuBFj4lJ5gnQ?=
- =?us-ascii?Q?pFAwEo6jWRBe/cOocCIdRJtjHc1ZviVrjlkUn7vtsctZBPTW2lPEhb+V2fC+?=
- =?us-ascii?Q?1dVwv1niAr3dUjL23+FoTpz+t92hTzSIR2WzNL1MRj7ZsxVbol4ky48e+GP8?=
- =?us-ascii?Q?TBt2ashg+aXtQr45lYxtv2qigY6vd7UOAUj4/qPqNauy0mv/kufrSSwXeGbY?=
- =?us-ascii?Q?M2M8Qb6vuqA16jso7XWU8c0+pZKXIwKNOTkA7b5B11Z2gUitV465QMsem32Z?=
- =?us-ascii?Q?vEdmVgLcYTkpKUexBB0EYzUn1Gv3hYN+RuZuTL7Kn6VDveH1gVrdKXh76DiW?=
- =?us-ascii?Q?79clvZpdf+VxUtduVqA++Og3wZIooqQtG4gf/beRk0K8pOIuw3f7vUPLT2PW?=
- =?us-ascii?Q?QEpbP8koM/EDTVC3IW3Q/mWopsiPpEHNtyssrMXzru2829zTL/oK4z1g15Hs?=
- =?us-ascii?Q?J6Y1nyDDgs4OnvXZXZ+He+7/Ud76CDnqCOoptB885uGTM6G9eE89jWYpDhHK?=
- =?us-ascii?Q?V+HpX04+u/BzSrMc8JF93yg9V6UwMbm2Y6K5HdKg9LrFC13HU7/WzsiDMgCw?=
- =?us-ascii?Q?Z4Hf9nxfrKDsGWdZbPQK3NMClBA2d7JPUfrP8J4YOLvZlLGUzSwx49eIB21M?=
- =?us-ascii?Q?7803RvwR6QkLGu1F14+SN8AvfZIzqO3emn0QNqojq+8eSSWH/ieqLAkVob2e?=
- =?us-ascii?Q?kU2TMmDyyNSgIJniL5aa6EK2F23xB0VSIr+HVfB+tvMrv++DC4tpIgbME/By?=
- =?us-ascii?Q?T3KhOD3bXDvkLMvl9FoN/LdIrwozGM6wGYQzZIX3I1Vugs7GRMB4uPykUrt1?=
- =?us-ascii?Q?nfWNbJojQAER8mpJ5nYN5W80lyPx433GlP93gQnMh+CnhELYbKESvYq3BG5S?=
- =?us-ascii?Q?8drI7RpgAuecse4HFTjp9nj59TjHmBRnFvGVWuOgtjv1+/y354hpso6d7ZjS?=
- =?us-ascii?Q?3NJMqeTGuG7EviDxb1LNsoN+d3hMr83aEYMR7q/y6yuKzKalJ3oR7daNtsya?=
- =?us-ascii?Q?PdY5F05CXWdbSREKxh5JlcbAt7dBLVQEI3++xiNFz8Ghiurn0BQelTHT0Vex?=
- =?us-ascii?Q?t0paiXdxvaX+p6TWF9YR9l/JcZYB1ILdcZTMFIuS?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 18 Aug 2023 04:01:59 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FAC3A88;
+        Fri, 18 Aug 2023 01:01:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 367D960174;
+        Fri, 18 Aug 2023 10:01:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692345714; bh=DWq7plNSMacckvuYD0EBljYEhY22+nbVDzFU4EVun7s=;
+        h=Date:Cc:From:To:Subject:From;
+        b=wdTh7dwi4lDeRAbtT33oQfk6XRfo7AOV0XmvkUQfQedOd+NujNL4fq0dJfSA8TDWw
+         /CfXzeqTZy8XB9HRk+WROh6KnaWf5GGCLdkB6/Tx2broeYEUXmC6LK4MJ2HWUYmrbK
+         Vgw6f8pGGQPHo5uMKJyNqWUe1Zb//EJoElPc7WmQ1nNIuEhbWz5wklx5E5+AfSenMa
+         GhVT3v+u4LP+TDWAOoGJo11Ww5guXuQB9oW+ohyAwYkA3vnr8Lr5SVpXmo21MBhnbl
+         qCjmU52/3yV297+/aZkV5h+nDxDhqz6La7SXyD9P1BHT9m9ia5YvckbCth31i3l5Gp
+         J47PBQyJ6yLOA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wlmvasoMhgJm; Fri, 18 Aug 2023 10:01:50 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 8D4146015E;
+        Fri, 18 Aug 2023 10:01:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692345710; bh=DWq7plNSMacckvuYD0EBljYEhY22+nbVDzFU4EVun7s=;
+        h=Date:Cc:From:To:Subject:From;
+        b=u6wmw2rBUyxwKVF6DNSG70LeBO1ws16S8+xnrn2oDuQBa2HBkb5a5gB7N730Hs3mK
+         vpp1Yq/F888GS96AuvLptYMT8H8ZXIBe++HaYROky3s0wAy9GyOf38H1zhBbMV/Xax
+         qpv33E8j6B/FDs1+EB2HigKdsMNpA7PQTpPLOiPaAjpyelkfwZ5uCCZJtbEQzNm9ty
+         E7dzOrhUi2p9xmf1eyBgQVEIZPaDKJRf65wCKj8sJIb/zym/1FJ797gwk21d67nth0
+         N3EvwaMf0HxXsGs1rcglIahdOFD8eZXHqjvoTnXRNnn+K4J+Iya00nhYYThdKKlEIb
+         pfU+DiAC1l2Dw==
+Message-ID: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
+Date:   Fri, 18 Aug 2023 10:01:32 +0200
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6792.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae352a9d-188d-4426-dc83-08db9fc0f3be
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 07:58:47.4792
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CeNXFRguBpHFX74S+P1DNP5qeTXOWsZr7gVb4hJT29PkR/OgLBn2gfKy+7XocD5ljMrM2RrPhov5L7l06t7b5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7539
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     linux-kernel@vger.kernel.org
+Subject: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -149,14 +68,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi,
 
-this is Kernel Test Robot from the 0-Day CI test service. Thanks for
-anyone who subscribes to the service. We will have a lab power shutdown
-this weekend, thus need to pause the service for about 3 days, from
-Friday Aug 18, 5 PM CST to Monday Aug 21, 3 PM CST (GMT+8).
+This is your friendly bug reporter.
 
-Sorry for any inconvenience caused by this, we will recover the
-service to be online as early as possible.
+I have found this KCSAN reported bug on a torvalds tree kernel 6.5-rc6, on an Ubuntu 22.04 LTS system and
+a Ryzen 9 7950X assembled box.
 
-Thanks
+So, the kernel is reported to be tainted, but I reckon it the taint comes from a previous KCSAN detection,
+not from a loaded proprietary module.
+
+Excert from dmesg log:
+
+[  206.510010] ==================================================================
+[  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+
+[  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+[  206.510081]  xas_clear_mark+0xd5/0x180
+[  206.510097]  __xa_clear_mark+0xd1/0x100
+[  206.510114]  __folio_end_writeback+0x293/0x5a0
+[  206.510128]  folio_end_writeback+0x60/0x170
+[  206.510143]  end_page_writeback+0x2a/0xb0
+[  206.510155]  btrfs_page_clear_writeback+0xbe/0xe0 [btrfs]
+[  206.510994]  end_bio_extent_writepage+0x103/0x310 [btrfs]
+[  206.511817]  __btrfs_bio_end_io+0x9b/0xc0 [btrfs]
+[  206.512640]  btrfs_orig_bbio_end_io+0x70/0x170 [btrfs]
+[  206.513497]  btrfs_simple_end_io+0x122/0x170 [btrfs]
+[  206.514350]  bio_endio+0x2c4/0x2f0
+[  206.514362]  blk_mq_end_request_batch+0x238/0x9b0
+[  206.514377]  nvme_pci_complete_batch+0x38/0x1a0 [nvme]
+[  206.514437]  nvme_irq+0xa0/0xb0 [nvme]
+[  206.514500]  __handle_irq_event_percpu+0x7c/0x290
+[  206.514517]  handle_irq_event+0x7c/0x100
+[  206.514533]  handle_edge_irq+0x13d/0x450
+[  206.514549]  __common_interrupt+0x4f/0x110
+[  206.514563]  common_interrupt+0x9f/0xb0
+[  206.514583]  asm_common_interrupt+0x27/0x40
+[  206.514599]  kcsan_setup_watchpoint+0x274/0x3f0
+[  206.514612]  __tsan_read8+0x11c/0x180
+[  206.514626]  steal_from_bitmap.part.0+0x29f/0x410 [btrfs]
+[  206.515491]  __btrfs_add_free_space+0x1b4/0x850 [btrfs]
+[  206.516361]  btrfs_add_free_space_async_trimmed+0x62/0xa0 [btrfs]
+[  206.517231]  add_new_free_space+0x127/0x160 [btrfs]
+[  206.518095]  load_free_space_tree+0x552/0x680 [btrfs]
+[  206.518953]  caching_thread+0x923/0xba0 [btrfs]
+[  206.519800]  btrfs_work_helper+0xfa/0x620 [btrfs]
+[  206.520643]  process_one_work+0x525/0x930
+[  206.520658]  worker_thread+0x311/0x7e0
+[  206.520672]  kthread+0x18b/0x1d0
+[  206.520684]  ret_from_fork+0x43/0x70
+[  206.520701]  ret_from_fork_asm+0x1b/0x30
+
+[  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+[  206.520735]  xas_find_marked+0xe5/0x600
+[  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
+[  206.520763]  __filemap_fdatawait_range+0xa1/0x180
+[  206.520777]  filemap_fdatawait_range+0x13/0x30
+[  206.520790]  btrfs_wait_ordered_range+0x86/0x180 [btrfs]
+[  206.521641]  btrfs_sync_file+0x36e/0xa80 [btrfs]
+[  206.522495]  vfs_fsync_range+0x70/0x120
+[  206.522509]  __x64_sys_fsync+0x44/0x80
+[  206.522522]  do_syscall_64+0x58/0x90
+[  206.522535]  entry_SYSCALL_64_after_hwframe+0x73/0xdd
+
+[  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
+
+[  206.522574] Reported by Kernel Concurrency Sanitizer on:
+[  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
+[  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[  206.522608] ==================================================================
+
+Unwound:
+
+[  206.510010] ==================================================================
+[  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
+
+[  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+[  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
+[  206.510097] __xa_clear_mark (lib/xarray.c:1923)
+[  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
+[  206.510128] folio_end_writeback (mm/filemap.c:1616)
+[  206.510143] end_page_writeback (mm/folio-compat.c:28)
+[  206.510155] btrfs_page_clear_writeback (fs/btrfs/subpage.c:646) btrfs
+[  206.510994] end_bio_extent_writepage (./include/linux/bio.h:84 fs/btrfs/extent_io.c:542) btrfs
+[  206.511817] __btrfs_bio_end_io (fs/btrfs/bio.c:117 fs/btrfs/bio.c:112) btrfs
+[  206.512640] btrfs_orig_bbio_end_io (fs/btrfs/bio.c:164) btrfs
+[  206.513497] btrfs_simple_end_io (fs/btrfs/bio.c:380) btrfs
+[  206.514350] bio_endio (block/bio.c:1617)
+[  206.514362] blk_mq_end_request_batch (block/blk-mq.c:837 block/blk-mq.c:1073)
+[  206.514377] nvme_pci_complete_batch (drivers/nvme/host/pci.c:986) nvme
+[  206.514437] nvme_irq (drivers/nvme/host/pci.c:1086) nvme
+[  206.514500] __handle_irq_event_percpu (kernel/irq/handle.c:158)
+[  206.514517] handle_irq_event (kernel/irq/handle.c:195 kernel/irq/handle.c:210)
+[  206.514533] handle_edge_irq (kernel/irq/chip.c:836)
+[  206.514549] __common_interrupt (./include/linux/irqdesc.h:161 arch/x86/kernel/irq.c:238 arch/x86/kernel/irq.c:257)
+[  206.514563] common_interrupt (arch/x86/kernel/irq.c:247 (discriminator 14))
+[  206.514583] asm_common_interrupt (./arch/x86/include/asm/idtentry.h:636)
+[  206.514599] kcsan_setup_watchpoint (kernel/kcsan/core.c:705 (discriminator 1))
+[  206.514612] __tsan_read8 (kernel/kcsan/core.c:1025)
+[  206.514626] steal_from_bitmap.part.0 (./include/linux/find.h:186 fs/btrfs/free-space-cache.c:2557 fs/btrfs/free-space-cache.c:2613) btrfs
+[  206.515491] __btrfs_add_free_space (fs/btrfs/free-space-cache.c:2689 fs/btrfs/free-space-cache.c:2667) btrfs
+[  206.516361] btrfs_add_free_space_async_trimmed (fs/btrfs/free-space-cache.c:2798) btrfs
+[  206.517231] add_new_free_space (fs/btrfs/block-group.c:550) btrfs
+[  206.518095] load_free_space_tree (fs/btrfs/free-space-tree.c:1595 fs/btrfs/free-space-tree.c:1658) btrfs
+[  206.518953] caching_thread (fs/btrfs/block-group.c:873) btrfs
+[  206.519800] btrfs_work_helper (fs/btrfs/async-thread.c:314) btrfs
+[  206.520643] process_one_work (kernel/workqueue.c:2600)
+[  206.520658] worker_thread (./include/linux/list.h:292 kernel/workqueue.c:2752)
+[  206.520672] kthread (kernel/kthread.c:389)
+[  206.520684] ret_from_fork (arch/x86/kernel/process.c:145)
+[  206.520701] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+
+[  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+[  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
+[  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
+[  206.520763] __filemap_fdatawait_range (mm/filemap.c:519)
+[  206.520777] filemap_fdatawait_range (mm/filemap.c:556)
+[  206.520790] btrfs_wait_ordered_range (fs/btrfs/ordered-data.c:839) btrfs
+[  206.521641] btrfs_sync_file (fs/btrfs/file.c:1859) btrfs
+[  206.522495] vfs_fsync_range (fs/sync.c:188)
+[  206.522509] __x64_sys_fsync (./include/linux/file.h:45 fs/sync.c:213 fs/sync.c:220 fs/sync.c:218 fs/sync.c:218)
+[  206.522522] do_syscall_64 (arch/x86/entry/common.c:50 arch/x86/entry/common.c:80)
+[  206.522535] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:120)
+
+[  206.522557] value changed: 0xfffffffffff80000 -> 0xfffffffffff00000
+
+[  206.522574] Reported by Kernel Concurrency Sanitizer on:
+[  206.522585] CPU: 6 PID: 2793 Comm: tracker-extract Tainted: G             L     6.5.0-rc6+ #44
+[  206.522600] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[  206.522608] ==================================================================
+
+Best regards,
+Mirsad Todorovac
