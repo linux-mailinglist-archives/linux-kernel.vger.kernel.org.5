@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAADD780FB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C682780FBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378378AbjHRQAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        id S1378390AbjHRQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355209AbjHRQA0 (ORCPT
+        with ESMTP id S1378380AbjHRQAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:00:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14E13AB9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:00:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 76FC1635AC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68301C433C7;
-        Fri, 18 Aug 2023 16:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692374423;
-        bh=iP/51u+uQFWCLdwtYcMg4R1ihG1dtKyEgVl061uxXSQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mJBtD6CKFoX0BrH8Ad3opJi+b9L2DlGvibsEXsIdJTZzrk389LSv6twt1jofziuNN
-         DfdWCMQMUucaG4I4phvDTtRCAH2doFcPDLPJTq9BRGoVv0E8GUVCJBJnw8nY5bW25p
-         U/RQQz+W8zP4oimcao2JY5Aj10qeRRYQZDNvcO6M8hN26Zj/pb/zcmjyhLDYxOSVPa
-         2x2ror6HBAGtee5T8184hXFP6rK906QzYUsxANZfMS65aznToJ/DuCmUcXdylCJg6C
-         G1yA89sAAB6YYhHOuSVD5ZWB4jcGtfcQBQN6G7moieEoDgpU12H78grZg8nmRqiMg+
-         /kCwdyCHVHUQw==
-Date:   Fri, 18 Aug 2023 09:00:22 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Suman Ghosh <sumang@marvell.com>
-Cc:     Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linu Cherian <lcherian@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>
-Subject: Re: [EXT] Re: [net PATCH V2 1/4] octeontx2-pf: Update PFC
- configuration
-Message-ID: <20230818090022.50e1c46a@kernel.org>
-In-Reply-To: <SJ0PR18MB5216486E191AD5D8B6B12F3CDB1BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
-References: <20230809070532.3252464-1-sumang@marvell.com>
-        <20230809070532.3252464-2-sumang@marvell.com>
-        <20230809160517.7ff84c3b@kernel.org>
-        <SJ0PR18MB5216486E191AD5D8B6B12F3CDB1BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+        Fri, 18 Aug 2023 12:00:55 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EFB3AB4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:00:54 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IG0cj2027529
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 12:00:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692374440; bh=erXmcdQ1KNay9clvH0vrxMVcc8mv/hyvtygv6MA0HQQ=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=MX0VX5azL5th5g1QwH3Uz+cp0CDRzBNoSr3kQb/SkOuAjIMyixOl1Q3kRUhZslotV
+         GGatnZWiFcQkL/Kfk/R6pNe71I0zbhomfXi3OOBx/V0UmOMTm+rZK2lgYathaZ9u0E
+         4eYzP/TmTBzgVR+UjrjkXsQO6t/wGS6k6mPN7U1gIv/wrcNDz/YbDe/ANf9zzq1yM+
+         SaVmEZCDW0RWVpBbpYfeQ4RGg9BFzyjI+hC+lM6WDRa8BgluJPfiFxL2QTYX87HiTC
+         NQIs2NoLpZEJge8XuktV+uPJSWr2urCPR7GsEkIlDFlo+uZYr0qONCfvgovtKidiKG
+         3ax7jvjhz0y8w==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 7BCCF15C0501; Fri, 18 Aug 2023 12:00:38 -0400 (EDT)
+Date:   Fri, 18 Aug 2023 12:00:38 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
+ multiple update_backups in ext4_flex_group_add
+Message-ID: <20230818160038.GA3515079@mit.edu>
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230816034730.GT2247938@mit.edu>
+ <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
+ <20230817141112.GZ2247938@mit.edu>
+ <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
+ <20230818050036.GG3464136@mit.edu>
+ <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for replying a week late, always a good use of maintainers time
-to swap back all the context from random conversations!
+On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
+> > s_group_desc[] is initialized in ext4_group_desc_init() in
+> > fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
+> > is defined in fs/ext4.h.  
+> I plan to add comment in fs/ext4.h as following:
+> struct ext4_sb_info {
+> 	...
+> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
+> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
+> keep the buffer_heads for the block group descriptor blocks in memory
+> and it contains primary gdb block is a coincidence that we only modify
+> primary block in kernel.
 
-On Fri, 18 Aug 2023 06:54:52 +0000 Suman Ghosh wrote:
-> >If there is any error in open() this will silently take the interface
-> >down. Can't you force a NAPI poll or some such, if the concern is a
-> >missed IRQ?  
-> [Suman] I can check the return type of open() and report in case of
-> error. But even if we force NAPI poll we might not be able to control
-> the watchdog reset. If we have a running traffic and interface is up,
-> when we force NAPI poll, then the new packets will have updated
-> scheduler queue and we will still loose the completion interrupts of
-> the previous packets.
+In general, the terminology that ext4 developers have used is "block
+group descriptors" and "backup block group descriptors".  The kernel
+never *uses* the backup block group users; and with the sparse_super2
+feature, the "backup superblocks" and "backup block group descriptors"
+are optional.
 
-Why does it matter that you lost an interrupt if the poll has happened.
-Can you describe the problem in more detail?
+They are used by e2fsck if we need to recover a trashed superblock and
+block group descriptors, which is why code that is resizing the file
+system, or updating the label or the UUID need to update the backup
+superblocks and/or backup block group descriptors so that we can
+better recover disaster.
 
-> Do you see any issue if I handle the error situation during open() call?
+So I'd just suggest changing the comment above to "array of bh's for
+the block group descriptors".
 
-No, for years we have been rejecting code which does this.
-If the machine is under memory pressure allocating all the buffers 
-for rings can easily fail and make the machine drop off the network.
-You either have to refuse to change this setting at runtime or
-implement prepare/commit reconfiguration model like other modern
-drivers, where allocations are done before the stop().
+Cheers,
+
+							- Ted
+
+> Besides, I plan to go through the resize code again in fulture and
+> add some comments to make it easy for anyone starting read this
+> or make it easy to maintain. Please let me if you disklike it.
+
+P.S.
+
+BTW, a useful test program to add is one that checks to make sure that
+the "static" parts of the superblock and block group descriptors
+(i.e., the parts that don't get changed under normal operation while
+the file system is mounted when the kernel *isn't* trying to do a
+resize or change the label, UUID, or in the future, the new ioctl's to
+update the parts of the superblock that can get modified by tune2fs),
+and to make sure that all of the backup superblock and block group
+descriptors have gotten updated.
+
+Some of the bugs that you found may have resulted in some of the
+backup bg descriptors not getting updataed, which we wouldn't
+necessarily notice unless we had a test program that explicitly
+checked for them.
+
+And truth to tell, the only backup superblock and block group
+descriptor that actually gets used to recover the file system is the
+first one, since that's the one e2fsck will fall back to
+automatically.  An expert might try to use one of the other backup
+block groups as a desperate measure, and there might be some automated
+programs that might be smart enough to use the backup block groups
+when trying to recover the location of the partition table when the
+file system and partition table is very badly damaged --- so that's
+one of the reasons why with sparse_super2, the number of backup block
+group descriptors can be limited to (for example) one located in the
+first block group, and one located in the very last block group.
+
