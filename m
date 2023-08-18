@@ -2,93 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DDFF78088D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC11B78088B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354938AbjHRJdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        id S1359226AbjHRJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359249AbjHRJca (ORCPT
+        with ESMTP id S1359253AbjHRJbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:32:30 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A3BB3C24;
-        Fri, 18 Aug 2023 02:31:59 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8BxIvCOOt9k89QZAA--.52310S3;
-        Fri, 18 Aug 2023 17:31:58 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax98x3Ot9kTIJdAA--.12208S3;
-        Fri, 18 Aug 2023 17:31:55 +0800 (CST)
-Message-ID: <8ffb3525-487e-20b3-4024-66470f1407f1@loongson.cn>
-Date:   Fri, 18 Aug 2023 17:31:34 +0800
+        Fri, 18 Aug 2023 05:31:53 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAFA3C1F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:31:39 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so85347166b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692351097; x=1692955897;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pL7L3WqTivmRh2NkcdS+o8QoBLa4Dg7vH4Pm6EApcf8=;
+        b=vCjDYRIlAAp5DeEkp/TeWIxPOdQQKKZMZR76F/a9136wSifkRBIsipwCC9T5xagszg
+         lRU47G6naZfec/ZXJdbIQ4ttG+jUBZadVCNFFGZ5YbA8x7Q0cpOJ8UM1avgwnVqzhvMS
+         nvTUbidt9XAzZv/j6YHEyCidXw0bynRO7FEYVwcoCd0Af7es0s+9HHbtRknjWwMo0To8
+         c87g8Ygxerd9FfHi6pp/Wmy0CtPceg62o/Rf1NrvgDN3ZFS+VdSCgp4VESjLvLrZc2g4
+         +M6rxEFJOahVODgK23bqQHi7v+WN8ddVF3YwWTM6J5nfHV/3YWM409dTcFkxOaWvl6ul
+         D4sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692351097; x=1692955897;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pL7L3WqTivmRh2NkcdS+o8QoBLa4Dg7vH4Pm6EApcf8=;
+        b=FjYTQgo3seELiLLOIeVySXrI9u+SEVJl83NkK8M3dwYOHoQp0W7NReLstEe4APCe4K
+         iak3HtapoKEWrzW+zV6wAwMqTi7E3gwWNUvO9agnbHOHDXsN+TteWzWjy4wJL9JFlsEV
+         i1e6li+lHG00ZMR4TpY0uUqZj2qxMErADGZ/TPe9o7ZjFE8ktyk+brLDwt8HWgXhlhda
+         ZZ9oObEwrYn+/XhwEVBoWHro8qYS5JqVefkw5KUgYkBa98h6S/3QatMxYM6lwprK8Wbm
+         E5dDRZwJiWduXDTCvF5YaaDvUIuu50kf2IdfvaCgeko5D2o6N3W+7shWdvqF9myobPHM
+         +MuQ==
+X-Gm-Message-State: AOJu0Yzf9TFQ+weIXI/Er8rl+BLzZr5ERq7+ZKoF1paIrWLsRJ078VXp
+        5RJwJ9Jgy1LT2Pr87vjCm8iacA==
+X-Google-Smtp-Source: AGHT+IFEfIKo8zmvgiACt6EAKWKYfHjNWnIq6cJKnY6qX//b9iaqG1p449CeXVv+Rj+D+S5crLWdPg==
+X-Received: by 2002:a17:906:23f2:b0:99c:7915:b844 with SMTP id j18-20020a17090623f200b0099c7915b844mr1388984ejg.57.1692351097620;
+        Fri, 18 Aug 2023 02:31:37 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id h17-20020a17090634d100b00993cc1242d4sm948376ejb.151.2023.08.18.02.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 02:31:37 -0700 (PDT)
+Message-ID: <eba26f0e-40dd-3661-b089-bc34c9426000@linaro.org>
+Date:   Fri, 18 Aug 2023 11:31:35 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4] PCI/VGA: Make the vga_is_firmware_default() less
- arch-dependent
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230817220853.GA328159@bhelgaas>
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] dt-bindings: usb: Add binding for ti,tps25750
 Content-Language: en-US
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230817220853.GA328159@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax98x3Ot9kTIJdAA--.12208S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7JryDGFy5WrWDXrWfZw17XFc_yoWDWrX_CF
-        W3GFW5C3y8CFsYqa1rGFsxCFn0k39xZF1rZF10qrnFva4rG3Z8Xa92g3s2vr1rJFWFkrnF
-        9Fy7Grn5X342gosvyTuYvTs0mTUanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbS8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-        JVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-        vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IY
-        x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAF
-        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFE__UUUUU=
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Abdel Alkuor <alkuor@gmail.com>, devicetree@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abdel Alkuor <abdelalkuor@geotab.com>
+References: <20230817235212.441254-1-alkuor@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230817235212.441254-1-alkuor@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 18/08/2023 01:52, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> TPS25750 provides power negotiation and capabilities management
+> for USB Type-C applications.
+> 
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+
+Where is any user of it? DTS, driver or 3rd party upstream open-source
+project?
 
 
-On 2023/8/18 06:08, Bjorn Helgaas wrote:
->> This patch makes the vga_is_firmware_default() function works on whatever
->> arch that has UEFI GOP support. But we make it available only on platforms
->> where PCI resource relocation happens. if the provided method proves to be
->> effective and reliable, it can be expanded to other arch easily.
->>
->> v2:
->> 	* Fix test robot warnnings and fix typos
->>
->> v3:
->> 	* Fix linkage problems if the global screen_info is not exported
->>
->> v4:
->> 	* Handle linkage problems by hiding behind of CONFIG_SYSFB,
->> 	* Drop side-effects and simplify.
-> The v2, v3, v4 changelog is nice, but we don't need it in the commit
-> log itself, where it will become part of the git history.  It should
-> go in a cover letter or after the "---" marker:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v6.0#n678
+A nit, subject: drop second/last, redundant "binding for". The
+"dt-bindings" prefix is already stating that these are bindings.
 
-Thanks for point it out, now I know. Will be fixed at the next version.
+> ---
+>  .../devicetree/bindings/usb/ti,tps25750.yaml  | 84 +++++++++++++++++++
+>  1 file changed, 84 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/ti,tps25750.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ti,tps25750.yaml b/Documentation/devicetree/bindings/usb/ti,tps25750.yaml
+> new file mode 100644
+> index 000000000000..326c9c2f766b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/ti,tps25750.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/ti,tps25750.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments 25750 Type-C Port Switch and Power Delivery controller
+> +
+> +maintainers:
+> +  - Abdel Alkuor <abdelalkuor@geotab.com>
+> +
+> +description: |
+> +  Texas Instruments 25750 Type-C Port Switch and Power Delivery controller
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,tps25750
+
+Blank line
+
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+
+Drop description
+
+> +    maxItems: 1
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: irq
+
+Drop interrupt-names, it is useless in this form.
+
+> +
+> +  firmware-name:
+> +    description: |
+> +      Should contain the name of the default patch binary
+> +      file located on the firmware search path which is
+> +      used to switch the controller into APP mode
+
+maxItems: 1
+
+> +
+> +  connector:
+> +    type: object
+> +    $ref: ../connector/usb-connector.yaml#
+> +    description:
+> +      Properties for usb c connector.
+> +    required:
+> +      - data-role
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - connector
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        tps25750: tps25750@21 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+> +            compatible = "ti,tps25750";
+> +            reg = <0x21>;
+> +
+
+
+Best regards,
+Krzysztof
 
