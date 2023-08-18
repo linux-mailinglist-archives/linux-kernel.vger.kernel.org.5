@@ -2,126 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBFB780CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE9A780CAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377211AbjHRNkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:40:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S1377222AbjHRNli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377212AbjHRNkP (ORCPT
+        with ESMTP id S1377239AbjHRNlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:40:15 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2A230F5;
-        Fri, 18 Aug 2023 06:40:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 24EED6607D;
-        Fri, 18 Aug 2023 13:40:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB60AC433C7;
-        Fri, 18 Aug 2023 13:40:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692366012;
-        bh=Jknt7yoyXj/GKmML3txJuQ91AeMyNNJJSxj3O7zVlfo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uoCK37CZGANYJvk89oM0I6FX/XHktq9nBLsAXihU3DzSpQmVVCM8KfVjuVLsLpgug
-         E8uZIvIFpFcYvdNLTv2rJCsDtraGvBNN9bAyXm9+Pc6yIi4KfOjCmSZ3qVRpF8YBD5
-         Zg8Q/xam3sZugPtID75cbWQ5Om0unl5RKzI5eIy98HICIq90LcLVDaWuL7rHuDOsMI
-         Uvxzoa8KcmGA+9+ZhcBd2wEm5lVYAR1Ju39jHdHuBAHDYJjGOEbzAjdVMTnVD4jVxo
-         4uY5mhD9kWObBeEUW8ZzyiGHFNzK/wOCYBw6RfRNitzpJsUO+3bsDPc9Ym4Ud2C8cW
-         tka2j3+ZmH5HQ==
-Date:   Fri, 18 Aug 2023 22:40:06 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 0/8] bpf: fprobe: rethook: Use ftrace_regs instead of
- pt_regs
-Message-Id: <20230818224006.a611cd1a73e00ca1a48478bc@kernel.org>
-In-Reply-To: <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
-References: <169181859570.505132.10136520092011157898.stgit@devnote2>
-        <CABRcYmJLbb0_fs2beiNA2QE468JkxB9nHnmQcQW4dt63pPBoFA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Fri, 18 Aug 2023 09:41:14 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B249E3C27;
+        Fri, 18 Aug 2023 06:41:11 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37IDeqWW040473;
+        Fri, 18 Aug 2023 08:40:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692366052;
+        bh=yVtiPTv6CeRPJ4Jb/cDPAV523O0JTgtbNjA9sWskqC4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Y+13QdZM5mp9tY8rZ+zB9vaH7Wa02punkkkrjk+kxhMQ7LrkfoFOzTWEGwVsAsL5O
+         aNs75QN2oWa6auHlQ5NbCtCND3pCcW4YhehUcojpTFEmQc9ilFqIDT5UuFPIisF42G
+         XSmqDTt9udHZ+RBZCWPH8w4Wo6eQZWwhF4tHEkhg=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37IDeq16023260
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Aug 2023 08:40:52 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 18
+ Aug 2023 08:40:51 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 18 Aug 2023 08:40:51 -0500
+Received: from [172.24.227.132] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37IDekNs026605;
+        Fri, 18 Aug 2023 08:40:47 -0500
+Message-ID: <5def6ace-ea11-8837-ca40-81ee789e9583@ti.com>
+Date:   Fri, 18 Aug 2023 19:10:46 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 2/2] drivers/tidss: Add support for AM62A7 DSS
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     DRI Development List <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Jai Luthra <j-luthra@ti.com>
+References: <20230818131750.4779-1-a-bhatia1@ti.com>
+ <20230818131750.4779-3-a-bhatia1@ti.com>
+Content-Language: en-US
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+In-Reply-To: <20230818131750.4779-3-a-bhatia1@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 10:57:13 +0200
-Florent Revest <revest@chromium.org> wrote:
 
-> On Sat, Aug 12, 2023 at 7:36 AM Masami Hiramatsu (Google)
-> <mhiramat@kernel.org> wrote:
-> >
-> > Hi,
-> >
-> > Here is the 3rd version of RFC series to use ftrace_regs instead of pt_regs.
-> > The previous version is here;
-> >
-> > https://lore.kernel.org/all/169139090386.324433.6412259486776991296.stgit@devnote2/
-> >
-> > This also includes the generic part and minimum modifications of arch
-> > dependent code. (e.g. not including rethook for arm64.)
+
+On 18-Aug-23 18:47, Aradhya Bhatia wrote:
+> Add support for the DSS controller on TI's AM62A7 SoC in the tidss
+> driver.
 > 
-> I think that one aspect that's missing from the discussion (and maybe
-> the series) so far is plans to actually save partial registers in the
-> existing rethook trampolines.
+> This contrller has 2 video pipelines that can render 2 video planes on
+> over a screen, using the overlay managers. The output of the DSS comes
+> from video port 2 (VP2) in the form of RGB88 DPI signals, while the VP1
+> is tied off inside the SoC.
+> 
+> Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+> ---
+>  drivers/gpu/drm/tidss/tidss_dispc.c | 53 +++++++++++++++++++++++++++++
+>  drivers/gpu/drm/tidss/tidss_dispc.h |  2 ++
+>  drivers/gpu/drm/tidss/tidss_drv.c   |  1 +
+>  3 files changed, 56 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
+> index 9d9dee7abaef..0e2d55d9a0d7 100644
+> --- a/drivers/gpu/drm/tidss/tidss_dispc.c
+> +++ b/drivers/gpu/drm/tidss/tidss_dispc.c
+> @@ -322,6 +322,54 @@ const struct dispc_features dispc_am625_feats = {
+>  	.vid_order = { 1, 0 },
+>  };
+>  
+> +const struct dispc_features dispc_am62a7_feats = {
+> +	.max_pclk_khz = {
+> +		[DISPC_VP_DPI] = 165000,
+> +	},
+> +
+> +	.scaling = {
+> +		.in_width_max_5tap_rgb = 1280,
+> +		.in_width_max_3tap_rgb = 2560,
+> +		.in_width_max_5tap_yuv = 2560,
+> +		.in_width_max_3tap_yuv = 4096,
+> +		.upscale_limit = 16,
+> +		.downscale_limit_5tap = 4,
+> +		.downscale_limit_3tap = 2,
+> +		/*
+> +		 * The max supported pixel inc value is 255. The value
+> +		 * of pixel inc is calculated like this: 1+(xinc-1)*bpp.
+> +		 * The maximum bpp of all formats supported by the HW
+> +		 * is 8. So the maximum supported xinc value is 32,
+> +		 * because 1+(32-1)*8 < 255 < 1+(33-1)*4.
+> +		 */
+> +		.xinc_max = 32,
+> +	},
+> +
+> +	.subrev = DISPC_AM62A7,
+> +
+> +	.common = "common",
+> +	.common_regs = tidss_am65x_common_regs,
+> +
+> +	.num_vps = 2,
+> +	.vp_name = { "vp1", "vp2" },
+> +	.ovr_name = { "ovr1", "ovr2" },
+> +	.vpclk_name =  { "vp1", "vp2" },
+> +	.vp_bus_type = { DISPC_VP_INTERNAL, DISPC_VP_DPI },
+> +
+> +	.vp_feat = { .color = {
+> +			.has_ctm = true,
+> +			.gamma_size = 256,
+> +			.gamma_type = TIDSS_GAMMA_8BIT,
+> +		},
+> +	},
+> +
+> +	.num_planes = 2,
+> +	/* note: vid is plane_id 0 and vidl1 is plane_id 1 */
+> +	.vid_name = { "vid", "vidl1" },
+> +	.vid_lite = { false, true, },
+> +	.vid_order = { 1, 0 },
+> +};
+> +
+>  static const u16 *dispc_common_regmap;
+>  
+>  struct dss_vp_data {
+> @@ -823,6 +871,7 @@ dispc_irq_t dispc_read_and_clear_irqstatus(struct dispc_device *dispc)
+>  	switch (dispc->feat->subrev) {
+>  	case DISPC_K2G:
+>  		return dispc_k2g_read_and_clear_irqstatus(dispc);
+> +	case DISPC_AM62A7:
+>  	case DISPC_AM625:
+>  	case DISPC_AM65X:
+>  	case DISPC_J721E:
+> @@ -839,6 +888,7 @@ void dispc_set_irqenable(struct dispc_device *dispc, dispc_irq_t mask)
+>  	case DISPC_K2G:
+>  		dispc_k2g_set_irqenable(dispc, mask);
+>  		break;
+> +	case DISPC_AM62A7:
+>  	case DISPC_AM625:
+>  	case DISPC_AM65X:
+>  	case DISPC_J721E:
+> @@ -1330,6 +1380,7 @@ void dispc_ovr_set_plane(struct dispc_device *dispc, u32 hw_plane,
+>  		dispc_k2g_ovr_set_plane(dispc, hw_plane, hw_videoport,
+>  					x, y, layer);
+>  		break;
+> +	case DISPC_AM62A7:
+>  	case DISPC_AM625:
+>  	case DISPC_AM65X:
+>  		dispc_am65x_ovr_set_plane(dispc, hw_plane, hw_videoport,
+> @@ -2249,6 +2300,7 @@ static void dispc_plane_init(struct dispc_device *dispc)
+>  	case DISPC_K2G:
+>  		dispc_k2g_plane_init(dispc);
+>  		break;
+> +	case DISPC_AM62A7:
+>  	case DISPC_AM625:
+>  	case DISPC_AM65X:
+>  	case DISPC_J721E:
+> @@ -2356,6 +2408,7 @@ static void dispc_vp_write_gamma_table(struct dispc_device *dispc,
+>  	case DISPC_K2G:
+>  		dispc_k2g_vp_write_gamma_table(dispc, hw_videoport);
+>  		break;
+> +	case DISPC_AM62A7:
+>  	case DISPC_AM625:
+>  	case DISPC_AM65X:
+>  		dispc_am65x_vp_write_gamma_table(dispc, hw_videoport);
+> diff --git a/drivers/gpu/drm/tidss/tidss_dispc.h b/drivers/gpu/drm/tidss/tidss_dispc.h
+> index 33ac5ad7a423..2aa1c814ea2a 100644
+> --- a/drivers/gpu/drm/tidss/tidss_dispc.h
+> +++ b/drivers/gpu/drm/tidss/tidss_dispc.h
+> @@ -59,6 +59,7 @@ enum dispc_vp_bus_type {
+>  
+>  enum dispc_dss_subrevision {
+>  	DISPC_K2G,
+> +	DISPC_AM62A7,
+>  	DISPC_AM625,
+>  	DISPC_AM65X,
+>  	DISPC_J721E,
+> @@ -88,6 +89,7 @@ struct dispc_features {
 
-Yes, it is arch-dependent part. We have to recheck what registers are
-required for the rethook, and that is saved correctly on partial pt_regs
-on each architecture.
+Made an oopsie and missed sorting 'DISPC_AM62A7' in above instances. It
+should be under DISPC_AM625. Please ignore this patch / series. Will
+send a v2. Apologies for the noise.
 
-> For now the series makes everything called by the rethook trampolines
-> handle the possibility of having a sparse ftrace_regs but the rethook
-> trampolines still save full ftrace_regs. I think that to rip the full
-> benefits of this series, we should have the rethook trampolines save
-> the equivalent ftrace_regs as the light "args" version of the ftrace
-> trampoline.
+Regards
+Aradhya
 
-I think this part depends on the architecture implementation, but yes.
-Arm64 can *add* the rethook implementation but not enable KRETPROBE_ON_RETHOOK.
-(do not remove kretprobe trampoline)
-For this perpose, we need HAVE_RETHOOK_WITH_REGS;
+>  
+>  extern const struct dispc_features dispc_k2g_feats;
+>  extern const struct dispc_features dispc_am625_feats;
+> +extern const struct dispc_features dispc_am62a7_feats;
+>  extern const struct dispc_features dispc_am65x_feats;
+>  extern const struct dispc_features dispc_j721e_feats;
+>  
+> diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
+> index 4d063eb9cd0b..edf69d020544 100644
+> --- a/drivers/gpu/drm/tidss/tidss_drv.c
+> +++ b/drivers/gpu/drm/tidss/tidss_drv.c
+> @@ -231,6 +231,7 @@ static void tidss_shutdown(struct platform_device *pdev)
+>  static const struct of_device_id tidss_of_table[] = {
+>  	{ .compatible = "ti,k2g-dss", .data = &dispc_k2g_feats, },
+>  	{ .compatible = "ti,am625-dss", .data = &dispc_am625_feats, },
+> +	{ .compatible = "ti,am62a7-dss", .data = &dispc_am62a7_feats, },
+>  	{ .compatible = "ti,am65x-dss", .data = &dispc_am65x_feats, },
+>  	{ .compatible = "ti,j721e-dss", .data = &dispc_j721e_feats, },
+>  	{ }
 
- config KRETPROBE_ON_RETHOOK
-         def_bool y
--        depends on HAVE_RETHOOK
-+        depends on HAVE_RETHOOK_WITH_REGS
-         depends on KRETPROBES
-         select RETHOOK
-
-So there will be pt_regs rethook and ftrace_regs (partial regs) rethook.
-
-I would like to replace rethook's pt_regs with ftrace_regs too. However the
-most problematic part is kretprobe. If CONFIG_KRETPROBE_ON_RETHOOK=y, the 
-rethook must use pt_regs instead of ftrace_regs for API compatibility.
-But it makes hard to integrate the rethook and function-graph trace return
-hook. (I will discuss this in LPC)
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
