@@ -2,181 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFDAF7809B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BA07809EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349612AbjHRKIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 06:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37936 "EHLO
+        id S1358673AbjHRKXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 06:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376327AbjHRKHw (ORCPT
+        with ESMTP id S1358783AbjHRKWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 06:07:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1893A4200;
-        Fri, 18 Aug 2023 03:07:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 18 Aug 2023 06:22:34 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3152A359D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:22:30 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CDEA467A7A;
-        Fri, 18 Aug 2023 10:06:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 343CDC433C7;
-        Fri, 18 Aug 2023 10:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692353165;
-        bh=Sk8448M+cFRW8iS+/8IE71HSsgEjv+78Z0JrCd8+1l4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=puZK4MXbVoBW0rP82R5fWoGDIsQ67wY5+gVIuWiVRRHQpl5IhhRbX6bntVWUxxUEs
-         sZObfeFpA4GG84pIyjZMYb6zi5wUvSjX+stNXScet+xO54WRKneAvLhqdDGJx9QImH
-         A9qVAbY6Rn0dR/jCYW3b9GvRhFY/ECnfqYVP4cij5KWuH6xJ4wl6FjmZOjUaxqdM4F
-         HnLXGkl0lCnfSksKVuWa19m+/0QT0QJMx0JhvH8NCA9MS4T1NNTOTJpASDGHEWaOA+
-         yQUpL++fJSGcht+sDz3Ax0aFvfIZ+XPMwrwyi/17xnKB80f22hvh9R5bQz8B5Xhl0o
-         u1DpwGDxjJ+/Q==
-Message-ID: <44a63cb2-1ae5-f52b-19d2-fe03d48fd44d@kernel.org>
-Date:   Fri, 18 Aug 2023 13:05:57 +0300
-MIME-Version: 1.0
-Subject: Re: [PATCH v3 1/3] debugfs: Add write support to debugfs_create_str()
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Mike Tipton <quic_mdtipton@quicinc.com>
-Cc:     rafael@kernel.org, corbet@lwn.net, linux-pm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, quic_okukatla@quicinc.com,
-        quic_viveka@quicinc.com, peterz@infradead.org,
-        quic_pkondeti@quicinc.com
-References: <20230807142914.12480-1-quic_mdtipton@quicinc.com>
- <20230807142914.12480-2-quic_mdtipton@quicinc.com>
- <2023081203-happier-mutable-e4f0@gregkh>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <2023081203-happier-mutable-e4f0@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4897C21874;
+        Fri, 18 Aug 2023 10:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692353196; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=h2Ck0CyVPuePn2EOqzxYLv/WBAWaHIwzTpPwd7X+9BY=;
+        b=SjoRcvYAXfjFLsDTCrmMscF0pXYLwihB4w/gu1StHyaWoGhsQNHKhnprMPGJrstb8pwE3W
+        T7UurQht5ThLavTof2D2SsyNotfjRbavuxO2n1FxvZO3LOwmPGt/ZyrPIhHL+zTXrUUZmA
+        Qq/BTQbNQPTf0uytrdJKUKjZPH963d4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692353196;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=h2Ck0CyVPuePn2EOqzxYLv/WBAWaHIwzTpPwd7X+9BY=;
+        b=eAjzIYTeKwJJvKB6bpgJxc92TD39R02xOo6yCmVctahsGzQR3eFEQpVDs77xvOzYOW+9sz
+        jiL4c0OWt98hI3BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 29E31138F0;
+        Fri, 18 Aug 2023 10:06:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id OghICaxC32T/OgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 10:06:36 +0000
+Date:   Fri, 18 Aug 2023 12:06:35 +0200
+Message-ID: <87sf8gk6l0.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.5-rc7
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Linus,
 
-On 12.08.23 13:40, Greg KH wrote:
-> On Mon, Aug 07, 2023 at 07:29:12AM -0700, Mike Tipton wrote:
->> Currently, debugfs_create_str() only supports reading strings from
->> debugfs. Add support for writing them as well.
->>
->> Based on original implementation by Peter Zijlstra [0]. Write support
->> was present in the initial patch version, but dropped in v2 due to lack
->> of users. We have a user now, so reintroduce it.
->>
->> [0] https://lore.kernel.org/all/YF3Hv5zXb%2F6lauzs@hirez.programming.kicks-ass.net/
->>
->> Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
->> ---
->>   fs/debugfs/file.c | 48 +++++++++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 46 insertions(+), 2 deletions(-)
->>
->> diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
->> index b7711888dd17..87b3753aa4b1 100644
->> --- a/fs/debugfs/file.c
->> +++ b/fs/debugfs/file.c
->> @@ -904,8 +904,52 @@ EXPORT_SYMBOL_GPL(debugfs_create_str);
->>   static ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
->>   				      size_t count, loff_t *ppos)
->>   {
->> -	/* This is really only for read-only strings */
->> -	return -EINVAL;
->> +	struct dentry *dentry = F_DENTRY(file);
->> +	char *old, *new = NULL;
->> +	int pos = *ppos;
->> +	int r;
->> +
->> +	r = debugfs_file_get(dentry);
->> +	if (unlikely(r))
->> +		return r;
->> +
->> +	old = *(char **)file->private_data;
->> +
->> +	/* only allow strict concatenation */
->> +	r = -EINVAL;
->> +	if (pos && pos != strlen(old))
->> +		goto error;
->> +
->> +	r = -E2BIG;
->> +	if (pos + count + 1 > PAGE_SIZE)
->> +		goto error;
->> +
->> +	r = -ENOMEM;
->> +	new = kmalloc(pos + count + 1, GFP_KERNEL);
->> +	if (!new)
->> +		goto error;
->> +
->> +	if (pos)
->> +		memcpy(new, old, pos);
->> +
->> +	r = -EFAULT;
->> +	if (copy_from_user(new + pos, user_buf, count))
->> +		goto error;
->> +
->> +	new[pos + count] = '\0';
->> +	strim(new);
->> +
->> +	rcu_assign_pointer(*(char **)file->private_data, new);
->> +	synchronize_rcu();
->> +	kfree(old);
->> +
->> +	debugfs_file_put(dentry);
->> +	return count;
->> +
->> +error:
->> +	kfree(new);
->> +	debugfs_file_put(dentry);
->> +	return r;
->>   }
-> 
-> So you just added write support for ALL debugfs files that use the
-> string interface, what did you just allow to break?
+please pull sound fixes for v6.5-rc7 from:
 
-Not true. Write support is added only for debugfs string files that are
-created with +w permissions. All existing files are created as read-only
-and use the fops_str_ro ops.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-6.5-rc7
 
-> I recommend just using your own debugfs file function instead, as this
-> could cause bad problems, right?  Are you sure that all string calls can
-> handle the variable be freed underneath it like this call will allow to
-> happen?
-> 
-> So I wouldn't recommend doing this, sorry.
-> 
+The topmost commit is 46cdff2369cbdf8d78081a22526e77bd1323f563
 
-Maybe you missed the fact that the different file ops are already there
-and are selected based on permissions:
+----------------------------------------------------------------
 
-> static const struct file_operations fops_str = {
->         .read =         debugfs_read_file_str,
->         .write =        debugfs_write_file_str,
->         .open =         simple_open,
->         .llseek =       default_llseek,
-> };
-> 
-> static const struct file_operations fops_str_ro = {
->         .read =         debugfs_read_file_str,
->         .open =         simple_open,
->         .llseek =       default_llseek,
-> };
-> 
-> static const struct file_operations fops_str_wo = {
->         .write =        debugfs_write_file_str,
->         .open =         simple_open,
->         .llseek =       default_llseek,
-> };
+sound fixes for 6.5-rc7
 
-...so this patch is doing exactly what you suggested? If you agree,
-could you ack it again please?
+Slightly bigger than I wished, but here we go, a collection of fixes
+for 6.5.  The only change in the core side is the ease for repeated
+ASoC error messages, and the rest are all pretty device-specific small
+fixes (including regression fixes) for ASoC Intel and HD-audio /
+USB-audio quirks.
 
-Thanks,
-Georgi
+----------------------------------------------------------------
+
+Bard Liao (1):
+      ASoC: max98363: don't return on success reading revision ID
+
+Daniel Baluta (1):
+      ASoC: fsl: micfil: Use dual license micfil code
+
+Hans de Goede (1):
+      ASoC: lower "no backend DAIs enabled for ... Port" log severity
+
+Jerome Brunet (1):
+      ASoC: meson: axg-tdm-formatter: fix channel slot allocation
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Remodified 3k pull low procedure
+
+Peter Ujfalusi (1):
+      ASoC: SOF: ipc4-topology: Update the basecfg for copier earlier
+
+Pierre-Louis Bossart (1):
+      ASoC: Intel: sof-sdw: update jack detection quirk for LunarLake RVP
+
+Ranjani Sridharan (1):
+      ASoC: SOF: intel: hda: Clean up link DMA for IPC3 during stop
+
+Shuming Fan (1):
+      ASoC: rt1308-sdw: fix random louder sound
+
+Stefan Binding (3):
+      ALSA: hda/realtek: Add quirks for HP G11 Laptops
+      ALSA: hda/realtek: Switch Dell Oasis models to use SPI
+      ALSA: hda/cs8409: Support new Dell Dolphin Variants
+
+Xia Fukun (1):
+      ASoC: SOF: Fix incorrect use of sizeof in sof_ipc3_do_rx_work()
+
+Zhang Shurong (1):
+      ASoC: rt5665: add missed regulator_bulk_disable
+
+dengxiang (1):
+      ALSA: usb-audio: Add support for Mythware XA001AU capture and playback interfaces.
+
+jairaj-arava (1):
+      ASoC: Intel: sof-sdw-cs42142: fix for codec button mapping
+
+---
+ sound/pci/hda/patch_cs8409-tables.c      |  4 +++
+ sound/pci/hda/patch_realtek.c            | 24 ++++++++++++------
+ sound/soc/codecs/max98363.c              |  9 ++++---
+ sound/soc/codecs/rt1308-sdw.c            | 13 +++++++++-
+ sound/soc/codecs/rt5665.c                |  2 ++
+ sound/soc/fsl/fsl_micfil.c               |  4 +--
+ sound/soc/fsl/fsl_micfil.h               |  2 +-
+ sound/soc/intel/boards/sof_sdw.c         |  2 +-
+ sound/soc/intel/boards/sof_sdw_cs42l42.c |  6 ++---
+ sound/soc/meson/axg-tdm-formatter.c      | 42 ++++++++++++++++++++------------
+ sound/soc/soc-pcm.c                      |  8 ++++--
+ sound/soc/sof/intel/hda-dai-ops.c        | 11 ++++++++-
+ sound/soc/sof/intel/hda-dai.c            |  5 ++--
+ sound/soc/sof/intel/hda.h                |  2 ++
+ sound/soc/sof/ipc3.c                     |  2 +-
+ sound/soc/sof/ipc4-topology.c            |  6 ++---
+ sound/usb/quirks-table.h                 | 29 ++++++++++++++++++++++
+ 17 files changed, 125 insertions(+), 46 deletions(-)
+
