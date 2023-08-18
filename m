@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7EE7815B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551987815B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242219AbjHRXQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 19:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46696 "EHLO
+        id S242242AbjHRXQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 19:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241858AbjHRXPi (ORCPT
+        with ESMTP id S242204AbjHRXQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 19:15:38 -0400
+        Fri, 18 Aug 2023 19:16:07 -0400
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1AA30C2;
-        Fri, 18 Aug 2023 16:15:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8B830D8;
+        Fri, 18 Aug 2023 16:16:05 -0700 (PDT)
 Received: from local
         by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
          (Exim 4.96)
         (envelope-from <daniel@makrotopia.org>)
-        id 1qX8gg-00015Y-16;
-        Fri, 18 Aug 2023 23:15:27 +0000
-Date:   Sat, 19 Aug 2023 00:15:11 +0100
+        id 1qX8hA-00016J-0P;
+        Fri, 18 Aug 2023 23:15:56 +0000
+Date:   Sat, 19 Aug 2023 00:15:41 +0100
 From:   Daniel Golle <daniel@makrotopia.org>
 To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
         Sean Wang <sean.wang@mediatek.com>,
@@ -37,9 +37,9 @@ To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
         Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next 1/4] net: ethernet: mtk_eth_soc: fix register
- definitions for MT7988
-Message-ID: <6cebfcdf699a55d01cd736e380b63b3f22e1cff9.1692400170.git.daniel@makrotopia.org>
+Subject: [PATCH net-next 2/4] net: ethernet: mtk_eth_soc: add reset bits for
+ MT7988
+Message-ID: <aea506982c737e0e06025ee1071f80d9d2d75759.1692400170.git.daniel@makrotopia.org>
 References: <cover.1692400170.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,42 +54,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-More register macros need to be adjusted for the 3rd GMAC on MT7988.
-Account for added bit in SYSCFG0_SGMII_MASK.
+Add bits needed to reset the frame engine on MT7988.
 
 Fixes: 445eb6448ed3 ("net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC")
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 76 +++++++++++++++------
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h | 16 +++--
+ 2 files changed, 68 insertions(+), 24 deletions(-)
 
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index fe05c90202699..2482f47313085 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -3613,19 +3613,34 @@ static void mtk_hw_reset(struct mtk_eth *eth)
+ {
+ 	u32 val;
+ 
+-	if (mtk_is_netsys_v2_or_greater(eth)) {
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
++
++	if (mtk_is_netsys_v3_or_greater(eth)) {
++		val = RSTCTRL_PPE0_V3;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= RSTCTRL_PPE1_V3;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val |= RSTCTRL_PPE2;
++
++		val |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
++	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		val = RSTCTRL_PPE0_V2;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= RSTCTRL_PPE1;
+ 	} else {
+ 		val = RSTCTRL_PPE0;
+ 	}
+ 
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val |= RSTCTRL_PPE1;
+-
+ 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
+ 
+-	if (mtk_is_netsys_v2_or_greater(eth))
++	if (mtk_is_netsys_v3_or_greater(eth))
++		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
++			     0x6f8ff);
++	else if (mtk_is_netsys_v2_or_greater(eth))
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
+ 			     0x3ffffff);
+ }
+@@ -3651,13 +3666,21 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
+ 		return;
+ 	}
+ 
+-	if (mtk_is_netsys_v2_or_greater(eth))
++	if (mtk_is_netsys_v3_or_greater(eth)) {
++		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V3;
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			rst_mask |= RSTCTRL_PPE1_V3;
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			rst_mask |= RSTCTRL_PPE2;
++
++		rst_mask |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
++	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
+-	else
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			rst_mask |= RSTCTRL_PPE1;
++	} else {
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
+-
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		rst_mask |= RSTCTRL_PPE1;
++	}
+ 
+ 	regmap_update_bits(eth->ethsys, ETHSYS_RSTCTRL, rst_mask, rst_mask);
+ 
+@@ -4009,11 +4032,17 @@ static void mtk_prepare_for_reset(struct mtk_eth *eth)
+ 	u32 val;
+ 	int i;
+ 
+-	/* disabe FE P3 and P4 */
+-	val = mtk_r32(eth, MTK_FE_GLO_CFG) | MTK_FE_LINK_DOWN_P3;
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val |= MTK_FE_LINK_DOWN_P4;
+-	mtk_w32(eth, val, MTK_FE_GLO_CFG);
++	/* set FE PPE ports link down */
++	for (i = MTK_GMAC1_ID;
++	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
++	     i += 2) {
++		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) | MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val |= MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
++		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
++	}
+ 
+ 	/* adjust PPE configurations to prepare for reset */
+ 	for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
+@@ -4074,11 +4103,18 @@ static void mtk_pending_work(struct work_struct *work)
+ 		}
+ 	}
+ 
+-	/* enabe FE P3 and P4 */
+-	val = mtk_r32(eth, MTK_FE_GLO_CFG) & ~MTK_FE_LINK_DOWN_P3;
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val &= ~MTK_FE_LINK_DOWN_P4;
+-	mtk_w32(eth, val, MTK_FE_GLO_CFG);
++	/* set FE PPE ports link up */
++	for (i = MTK_GMAC1_ID;
++	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
++	     i += 2) {
++		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) & ~MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
++
++		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
++	}
+ 
+ 	clear_bit(MTK_RESETTING, &eth->state);
+ 
 diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 4a2470fbad2cf..8d2d35b322351 100644
+index 8d2d35b322351..cf9381a3d68b7 100644
 --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
 +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -133,10 +133,12 @@
- #define MTK_GDMA_XGDM_SEL	BIT(31)
+@@ -76,9 +76,8 @@
+ #define	MTK_HW_LRO_SDL_REMAIN_ROOM	1522
  
- /* Unicast Filter MAC Address Register - Low */
--#define MTK_GDMA_MAC_ADRL(x)	(0x508 + (x * 0x1000))
-+#define MTK_GDMA_MAC_ADRL(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x548 : 0x508 + (_x * 0x1000); })
+ /* Frame Engine Global Configuration */
+-#define MTK_FE_GLO_CFG		0x00
+-#define MTK_FE_LINK_DOWN_P3	BIT(11)
+-#define MTK_FE_LINK_DOWN_P4	BIT(12)
++#define MTK_FE_GLO_CFG(x)	(((x) == MTK_GMAC3_ID) ? 0x24 : 0x00)
++#define MTK_FE_LINK_DOWN_P(x)	BIT(((x) + 8) % 16)
  
- /* Unicast Filter MAC Address Register - High */
--#define MTK_GDMA_MAC_ADRH(x)	(0x50C + (x * 0x1000))
-+#define MTK_GDMA_MAC_ADRH(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
-+				   0x54C : 0x50C + (_x * 0x1000); })
+ /* Frame Engine Global Reset Register */
+ #define MTK_RST_GL		0x04
+@@ -522,9 +521,15 @@
+ /* ethernet reset control register */
+ #define ETHSYS_RSTCTRL			0x34
+ #define RSTCTRL_FE			BIT(6)
++#define RSTCTRL_WDMA0			BIT(24)
++#define RSTCTRL_WDMA1			BIT(25)
++#define RSTCTRL_WDMA2			BIT(26)
+ #define RSTCTRL_PPE0			BIT(31)
+ #define RSTCTRL_PPE0_V2			BIT(30)
+ #define RSTCTRL_PPE1			BIT(31)
++#define RSTCTRL_PPE0_V3			BIT(29)
++#define RSTCTRL_PPE1_V3			BIT(30)
++#define RSTCTRL_PPE2			BIT(31)
+ #define RSTCTRL_ETH			BIT(23)
  
- /* FE global misc reg*/
- #define MTK_FE_GLO_MISC         0x124
-@@ -503,7 +505,7 @@
- #define ETHSYS_SYSCFG0		0x14
- #define SYSCFG0_GE_MASK		0x3
- #define SYSCFG0_GE_MODE(x, y)	(x << (12 + (y * 2)))
--#define SYSCFG0_SGMII_MASK     GENMASK(9, 8)
-+#define SYSCFG0_SGMII_MASK     GENMASK(9, 7)
- #define SYSCFG0_SGMII_GMAC1    ((2 << 8) & SYSCFG0_SGMII_MASK)
- #define SYSCFG0_SGMII_GMAC2    ((3 << 8) & SYSCFG0_SGMII_MASK)
- #define SYSCFG0_SGMII_GMAC1_V2 BIT(9)
+ /* ethernet reset check idle register */
+@@ -931,6 +936,7 @@ enum mkt_eth_capabilities {
+ 	MTK_QDMA_BIT,
+ 	MTK_SOC_MT7628_BIT,
+ 	MTK_RSTCTRL_PPE1_BIT,
++	MTK_RSTCTRL_PPE2_BIT,
+ 	MTK_U3_COPHY_V2_BIT,
+ 
+ 	/* MUX BITS*/
+@@ -965,6 +971,7 @@ enum mkt_eth_capabilities {
+ #define MTK_QDMA		BIT_ULL(MTK_QDMA_BIT)
+ #define MTK_SOC_MT7628		BIT_ULL(MTK_SOC_MT7628_BIT)
+ #define MTK_RSTCTRL_PPE1	BIT_ULL(MTK_RSTCTRL_PPE1_BIT)
++#define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
+ #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
+ 
+ #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
+@@ -1047,7 +1054,8 @@ enum mkt_eth_capabilities {
+ 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+ 		      MTK_RSTCTRL_PPE1)
+ 
+-#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1)
++#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
++		      MTK_RSTCTRL_PPE2)
+ 
+ struct mtk_tx_dma_desc_info {
+ 	dma_addr_t	addr;
 -- 
 2.41.0
