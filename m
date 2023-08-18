@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5F6780C1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045E9780C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376953AbjHRMrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
+        id S1376899AbjHRMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377050AbjHRMrC (ORCPT
+        with ESMTP id S1351167AbjHRMql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:47:02 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D305423B;
-        Fri, 18 Aug 2023 05:46:42 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37ICdLxv013227;
-        Fri, 18 Aug 2023 12:46:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=XRwtB3eOF7H/ZVixiy/pWVAo66LCiR44s1VydLXQPvc=;
- b=UZVodGMJ2yXs9eRpXjvbXDtTlPYAWWCh/1yf8wgTwyzAfZV+xjiNv2kCvI5BskSXi9nS
- QhpB02JlpU86i4eLWC9GaHPNlrfUMDR1YYoVU7Vp+BrmUeigq9gRJOV5OkHGhOwW5FHa
- mya1LNP89eWDl2c2eioA3AVKq7o2YiscqfryTTAYuPNpv/WzFLWO/b0qVNz85mWEKjku
- Ads4iUtTovIZ61qUu3Em1JD/x0Hs0X5HMpHp121zIcf3xMeW0pPhOWocF39ablEoub2p
- t2QRDkhtXAs99GdKcMPxeNPnorfpJ+dOj0zNYGY8MMIYGt6bGS398ZcjM4ud4MzujIcH Wg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj8m4ra7k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 12:46:14 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37ICdRMC014130;
-        Fri, 18 Aug 2023 12:46:14 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj8m4ra79-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 12:46:13 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37ICFxOO013413;
-        Fri, 18 Aug 2023 12:46:12 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sepmkej57-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 12:46:12 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37ICkBf528902136
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Aug 2023 12:46:12 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB2A45805A;
-        Fri, 18 Aug 2023 12:46:11 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1A63D5805E;
-        Fri, 18 Aug 2023 12:46:11 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.81.121])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Aug 2023 12:46:10 +0000 (GMT)
-Message-ID: <56197f75291ae44fabd1a692f01f09863fbff7e3.camel@linux.ibm.com>
-Subject: Re: [PATCH] integrity: Annotate struct ima_rule_opt_list with
- __counted_by
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Date:   Fri, 18 Aug 2023 08:46:10 -0400
-In-Reply-To: <20230817210327.never.598-kees@kernel.org>
-References: <20230817210327.never.598-kees@kernel.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NAmYlWVzRQ0YohiSinTeU8-Dr5Z-mXL6
-X-Proofpoint-GUID: Hc3SwzQ8TQeVTaLkoy2HdKp6dCaMk4S4
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-18_15,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- spamscore=0 lowpriorityscore=0 suspectscore=0 impostorscore=0
- mlxlogscore=999 malwarescore=0 priorityscore=1501 mlxscore=0 adultscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308180115
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 08:46:41 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F294681
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:46:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 502901F893;
+        Fri, 18 Aug 2023 12:46:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692362787; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vXKnC7PgS3pfYLWoJGbz5hBnBfPUvu8CHeHNfOXqw3Y=;
+        b=pwvQSO4C6xwxU5+rC5dhJcW/OCJ4CopXPvGsv32TGpUYnMGUlts/FP6vwpjpyB1ZoLk5W9
+        BABfNv16Pu3XmCKzOGqoDRxxl7Y4NzGjoaZkE13rgQmdXqYfgpJgZl24vuC8o+enr3E4kg
+        cUsRw/BnW2UtUslrA/JJnVxvnRAnuCQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692362787;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vXKnC7PgS3pfYLWoJGbz5hBnBfPUvu8CHeHNfOXqw3Y=;
+        b=oCr7vIJfm+tGq0QCcZ2n8+dsbMWt8kyt5P9Wxr814tuTecdVUS3S2u7jWR+1PCJCpto8BA
+        UtZduY73TpLXrnCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id EE49C138F0;
+        Fri, 18 Aug 2023 12:46:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id sLUEOSJo32RkDgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 12:46:26 +0000
+Date:   Fri, 18 Aug 2023 14:46:26 +0200
+Message-ID: <87350gjz6l.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Maarten Lankhorst <dev@lankhorst.se>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Alsa-devel <alsa-devel@alsa-project.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v3 8/9] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
+In-Reply-To: <alpine.DEB.2.22.394.2308181522050.3532114@eliteleevi.tm.intel.com>
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+        <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
+        <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
+        <87a5uwr7ya.wl-tiwai@suse.de>
+        <e88d139f-e62b-1654-0d35-a46c698298c6@lankhorst.se>
+        <87il9ck52l.wl-tiwai@suse.de>
+        <alpine.DEB.2.22.394.2308181522050.3532114@eliteleevi.tm.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-08-17 at 14:03 -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Fri, 18 Aug 2023 14:24:14 +0200,
+Kai Vehmanen wrote:
 > 
-> As found with Coccinelle[1], add __counted_by for struct ima_rule_opt_list.
-> Additionally, since the element count member must be set before accessing
-> the annotated flexible array member, move its initialization earlier.
+> Hi,
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> On Fri, 18 Aug 2023, Takashi Iwai wrote:
 > 
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: linux-integrity@vger.kernel.org
-> Cc: linux-security-module@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> > On Mon, 14 Aug 2023 16:26:01 +0200,
+> > Maarten Lankhorst wrote:
+> > > 
+> > > Ping on this?
+> > 
+> > Pierre?  Does one of your recent patch sets achieves the suggested
+> > thing?  Or do we need another rewrite/respin of this series?
+> > Currently it's blocking the merge for 6.6.
+> 
+> this is likely to require another spin. Pierre did a draft of
+> the new ops at https://github.com/thesofproject/linux/pull/4527
+> and Maarten is looking to adapt the series to this.
 
-Acked-by: Mimi Zohar <zohar@linux.ibm.com>
+OK, then it can be too late for 6.6, unfortunately.
 
--- 
-thanks,
 
-Mimi
-
+Takashi
