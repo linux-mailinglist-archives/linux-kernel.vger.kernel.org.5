@@ -2,149 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E50780AF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C82C780B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376585AbjHRLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S1376614AbjHRLV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376622AbjHRLTm (ORCPT
+        with ESMTP id S1376627AbjHRLVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:19:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213F83AB4;
-        Fri, 18 Aug 2023 04:19:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692357581; x=1723893581;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ECNjpOhCkzTU1qIG9kKqGxSVPEjrxK8n8FSK7eqFXF4=;
-  b=NYhBbPtor904mKB+Oftr/U24DQjS8Bmu0sDqymyK+Sh8/98qfeIwUbVq
-   qGhqAqpSruS9oup2+0InZ1ipc4AZ2r62/zKRaR8E7u7vgFiHN4OQzA0by
-   m3tMwqaz3CpvmRc5UyKCxz2ucNrd861F/spkIG2BkV6LJb0TCGuHUfyei
-   lIwU1N3mr1SpExmyoFlr9vzoQOQH7W0KEW+u0whHX7WO7OqNJUjcDA6x7
-   yR471ujNXanhpJQdQ2+bueRnsawXlKOvorokc8x+T2y4ocyURJB9QK/6L
-   yow6ssyL0nNXG2FP5+hdWoQKgHsjmD8d0EilmT9m75kKFgLniypUfBe1A
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="404061545"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="404061545"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 04:19:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="684871290"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="684871290"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga003.jf.intel.com with ESMTP; 18 Aug 2023 04:19:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWxVx-005S6T-18;
-        Fri, 18 Aug 2023 14:19:37 +0300
-Date:   Fri, 18 Aug 2023 14:19:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 1/2] iio: pressure: bmp280: Allow multiple chips id per
- family of devices
-Message-ID: <ZN9TyGjr/pqLQUpT@smile.fi.intel.com>
-References: <cover.1692305434.git.ang.iglesiasg@gmail.com>
- <8856287079b5dc1099f5b98a0168f008fbb8debd.1692305434.git.ang.iglesiasg@gmail.com>
+        Fri, 18 Aug 2023 07:21:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0D123ABC;
+        Fri, 18 Aug 2023 04:21:04 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CBACD75;
+        Fri, 18 Aug 2023 04:21:45 -0700 (PDT)
+Received: from a077893.arm.com (unknown [10.163.55.189])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D39C43F762;
+        Fri, 18 Aug 2023 04:20:59 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4 0/3] coresight: etm: Make cycle count threshold user configurable
+Date:   Fri, 18 Aug 2023 16:50:48 +0530
+Message-Id: <20230818112051.594986-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8856287079b5dc1099f5b98a0168f008fbb8debd.1692305434.git.ang.iglesiasg@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:05:21PM +0200, Angel Iglesias wrote:
-> Improve device detection in certain chip families known to have various
-> chip ids.
+This series makes ETM TRCCCCTRL based 'cc_threshold' user configurable via
+the perf event attribute. But first, this implements an errata work around
+affecting ETM TRCIDR3.CCITMIN value on certain cpus, overriding the field.
 
-...
+This series applies on v6.5-rc6.
 
-> +	ret = -EINVAL;
+Cc: Catalin Marinas <catalin.marinas@arm.com> 
+Cc: Will Deacon <will@kernel.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com> 
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-Why do you need this...
+Changes in V4:
 
-> +	for (i = 0; i < data->chip_info->num_chip_id; i++) {
-> +		if (chip_id == data->chip_info->chip_id[i]) {
+- Fixed a typo s/rangess/ranges,
+- Renamed etm4_work_around_wrong_ccitmin() as etm4_core_reads_wrong_ccitmin()
+- Moved drvdata->ccitmin value check for 256 inside etm4_core_reads_wrong_ccitmin()
+- Moved the comment inside etm4_core_reads_wrong_ccitmin()
 
-> +			ret = 0;
+Changes in V3:
 
-..and this...
+https://lore.kernel.org/all/20230811034600.944386-1-anshuman.khandual@arm.com/
 
-> +			break;
-> +		}
-> +	}
+- Added errata work around affecting TRCIDR3.CCITMIN
+- Split the document update into a separate patch
 
-> +	if (ret) {
+Changes in V2:
 
-...and this?
+https://lore.kernel.org/all/20230808074533.380537-1-anshuman.khandual@arm.com/
 
-You can simply do
+- s/treshhold/threshold
 
-	for (i = 0; i < data->chip_info->num_chip_id; i++) {
-		if (chip_id == data->chip_info->chip_id[i])
-			break;
-	}
-	if (i < data->chip_info->num_chip_id) {
+Changes in V1:
 
-...
+https://lore.kernel.org/all/20230804044720.1478900-1-anshuman.khandual@arm.com/
 
-> +		// 0x<id>, so four chars per number plus one space + ENDL
-> +		size_t nbuf = 5*data->chip_info->num_chip_id*sizeof(char);
 
-Besides lack of spaces...
+Anshuman Khandual (3):
+  coresight: etm: Override TRCIDR3.CCITMIN on errata affected cpus
+  coresight: etm: Make cycle count threshold user configurable
+  Documentation: coresight: Add cc_threshold tunable
 
-> +		char *buf = kmalloc(nbuf, GFP_KERNEL);
-
-...this at least should be kmalloc_array() and on top maybe something from
-overflow.h will be needed.
-
-> +		if (!buf)
-> +			return ret;
-> +
-> +		for (i = 0; i < data->chip_info->num_chip_id; i++)
-> +			snprintf(&buf[i*5], nbuf, "0x%x ", data->chip_info->chip_id[i]);
-> +		buf[nbuf-1] = '\0';
-> +
-> +		dev_err(dev, "bad chip id: expected [ %s ] got 0x%x\n", buf, chip_id);
-> +		kfree(buf);
-> +		return ret;
->  	}
-
-...
-
-> -	const unsigned int chip_id;
-
-Yeah, this const makes a little sense...
-
-> +	const unsigned int *chip_id;
-
-...but not this :-)
-
-What I'm wondering is why it's int and not u8 / u16
-(as it seems only a byte value there).
-
-> +	int num_chip_id;
-
-unsigned.
+ Documentation/arch/arm64/silicon-errata.rst   | 10 ++++
+ Documentation/trace/coresight/coresight.rst   |  4 ++
+ .../hwtracing/coresight/coresight-etm-perf.c  |  2 +
+ .../coresight/coresight-etm4x-core.c          | 48 ++++++++++++++++++-
+ 4 files changed, 62 insertions(+), 2 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
