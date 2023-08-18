@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4647802A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6627802AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356709AbjHRARQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S1356718AbjHRARs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:17:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356750AbjHRARB (ORCPT
+        with ESMTP id S1356740AbjHRARr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:17:01 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CEDA8;
-        Thu, 17 Aug 2023 17:16:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bdf98a6086so3297005ad.0;
-        Thu, 17 Aug 2023 17:16:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692317819; x=1692922619;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5onGe27PYWXY5feppiX4Og6jliCYrlu5W1AmgdqqR3Y=;
-        b=GFPSBJbLg90nHHqIId3Z18W1uROTvrvhOHQ419XIG+kTMz2rEfkp5RS0a19lfH4kge
-         w9pUYvMxRyWtuc/ZQ5gIfxDIFhHBX5npNnH4O1q/CwPIH0pnwLfL3qK5SFsRcznRErJG
-         7DJHapf6SRwZMyNtK5O2tFTj4U0SU5rxTfFPrNhZ7M8YYOc7N1zShmneiztmGi4JgGt3
-         6CnTyO1L4A0swIrDRx6958GQAsWIhhVurFgKyWFrtNqPmYACibv8pJ+2PSHbwtP+XaSD
-         tjgLjJzhWfvQKUPWHPB5pgkMfpZ+NOwR3XOgVzXWduYhhGAtb0jOwS8SDV+bgrw+XSI0
-         EBqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317819; x=1692922619;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5onGe27PYWXY5feppiX4Og6jliCYrlu5W1AmgdqqR3Y=;
-        b=Ni4y5Zu1bz6KQwC8SCbqkc8PCAvKqLY4+bFIN3oueZdVLsb1Z3rF4Jypj3uGR0Bazl
-         Ko4UhmRfLzCGpHs3JeOQiDXvzu32DXR5d9E2ajJ755k7oh0hm4ZhJrRMqomgKtc0sh/r
-         1rSAt0Q0kaWSA4oQe47C/RYbGyEeN7X8ohqQrzsA+1pv67KCDamjvjNnLztSKd9qL9fu
-         UNhqbY1oX5or4Xwf3M1aCqcuvDliDzM0xToC6H+stL4nctOjkayuwZHVZVgOnhzEcd3E
-         ZQA/MasURJRraz1nsKnEsd9Y0hNZzcdHvtqZqe3GXzgBXJh8EfobFKDnAC/Rn2GudBA1
-         GNuw==
-X-Gm-Message-State: AOJu0Yw4N8qU502jja1xP38EKT2jawYE2ZfWXfP2MoIKGdh/GbJ+4+X4
-        7CUtdhKeZk0F0O9nT7s+thk/cp91P+4=
-X-Google-Smtp-Source: AGHT+IHwlqZvwQsAcMSZDc1ZWl4BMT6yk0u8koWEIxhKqVkD6/vj9zdqSJpcMKswFKKzRhcxmsRUVQ==
-X-Received: by 2002:a17:902:ee4d:b0:1b5:64a4:be8b with SMTP id 13-20020a170902ee4d00b001b564a4be8bmr998634plo.35.1692317819256;
-        Thu, 17 Aug 2023 17:16:59 -0700 (PDT)
-Received: from sol ([220.235.36.234])
-        by smtp.gmail.com with ESMTPSA id j21-20020a170902c3d500b001bde12178b4sm359188plj.33.2023.08.17.17.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 17:16:58 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 08:16:53 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 0/6] gpio: cdev: bail out of poll() if the device goes
- down
-Message-ID: <ZN64daYL7xVgo5wS@sol>
-References: <20230817184958.25349-1-brgl@bgdev.pl>
+        Thu, 17 Aug 2023 20:17:47 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CB0CA8;
+        Thu, 17 Aug 2023 17:17:46 -0700 (PDT)
+Received: from [10.16.85.5] (unknown [131.107.8.5])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1FA82211F7C3;
+        Thu, 17 Aug 2023 17:17:45 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1FA82211F7C3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692317865;
+        bh=csV7ZACSrVEacKGzoMpSrcR2rZW6i0vHTyutS2HuYhQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GMcz4iOZDKGKi5T6TPN8LXOuLnZwfuhRF6slYzWNZ3CNDZt35mPHqto+WCDesTJOH
+         j3p+vlN0u5aHCvPgin5TWoVd7YDSDiEAc+lOgBQTOkxJBbT+MPqKunE0/nWs5+29Ba
+         7k6p4KRxwnb/O0P6f9w8vq3C5w6ln9q5ppo+HAf8=
+Message-ID: <8161aa90-5535-4ef9-ad30-1655746a1053@linux.microsoft.com>
+Date:   Thu, 17 Aug 2023 17:17:44 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817184958.25349-1-brgl@bgdev.pl>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/15] mshyperv: Introduce
+ numa_node_to_proximity_domain_info
+Content-Language: en-US
+To:     Dave Hansen <dave.hansen@intel.com>, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org
+Cc:     patches@lists.linux.dev, mikelley@microsoft.com, kys@microsoft.com,
+        wei.liu@kernel.org, haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-4-git-send-email-nunodasneves@linux.microsoft.com>
+ <3b1ca61c-fa3f-a802-6705-a8c1f37ad58f@intel.com>
+From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
+In-Reply-To: <3b1ca61c-fa3f-a802-6705-a8c1f37ad58f@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 08:49:52PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 8/17/2023 4:22 PM, Dave Hansen wrote:
+> On 8/17/23 15:01, Nuno Das Neves wrote:
+>> +static inline union hv_proximity_domain_info
+>> +numa_node_to_proximity_domain_info(int node)
+>> +{
+>> +	union hv_proximity_domain_info proximity_domain_info;
+>> +
+>> +	if (node != NUMA_NO_NODE) {
+>> +		proximity_domain_info.domain_id = node_to_pxm(node);
+>> +		proximity_domain_info.flags.reserved = 0;
+>> +		proximity_domain_info.flags.proximity_info_valid = 1;
+>> +		proximity_domain_info.flags.proximity_preferred = 1;
+>> +	} else {
+>> +		proximity_domain_info.as_uint64 = 0;
+>> +	}
+>> +
+>> +	return proximity_domain_info;
+>> +}
 > 
-> Wake up all three wake queues (the one associated with the character
-> device file, the one for V1 line events and the V2 line request one)
-> when the underlying GPIO device is unregistered. This way we won't get
-> stuck in poll() after the chip is gone as user-space will be forced to
-> go back into a new system call and will see that gdev->chip is NULL.
+> Pop quiz: What are the rules for the 30 bits of uninitialized data of
+> proximity_domain_info.flags in the (node != NUMA_NO_NODE) case?
 > 
-> v1 -> v2:
-> - not much is left from v1, this time we don't repurpose the existing
->   gpio_device notifier but add a new one so that cdev structures don't
->   get unwanted events
-> 
-> Bartosz Golaszewski (6):
->   gpiolib: rename the gpio_device notifier
->   gpio: cdev: open-code to_gpio_chardev_data()
->   gpiolib: add a second blocking notifier to struct gpio_device
->   gpio: cdev: wake up chardev poll() on device unbind
->   gpio: cdev: wake up linereq poll() on device unbind
->   gpio: cdev: wake up lineevent poll() on device unbind
-> 
->  drivers/gpio/gpiolib-cdev.c | 101 ++++++++++++++++++++++++++++++------
->  drivers/gpio/gpiolib.c      |   7 +--
->  drivers/gpio/gpiolib.h      |   9 ++--
->  3 files changed, 94 insertions(+), 23 deletions(-)
-> 
+> I actually don't know off the top of my head.  I generally avoid
+> bitfields, but if they were normal stack-allocated variable space,
+> they'd be garbage.
 
-I'm happier with this version.
+I'm not sure what you are getting at here - all the fields are
+initialized.
 
-Reviewed-by: Kent Gibson <warthog618@gmail.com>
+> 
+> I'd also *much* rather see the "as_uint64 = 0" coded up as a memset() or
+> even explicitly zeroing all the same variables as the other half of the
+> if().  As it stands, it's not 100% obvious that proximity_domain_info is
+> 64 bits and that .as_uint64=0 zeroes the whole thing.  It *WOULD* be
+> totally obvious if it were a memset().
 
-Cheers,
-Kent.
+I agree that it could be made clearer with memset().
+Now that I'm thinking about it, hv_proximity_domain_info should really
+just be a struct...then zeroing it is just:
+
+	struct hv_proximity_domain_info proximity_domain_info = {};
+
+and I can remove the else branch and zeroing the reserved bits.
