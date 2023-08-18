@@ -2,196 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1FB780C93
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B98780C95
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377173AbjHRNfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S1377178AbjHRNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377164AbjHRNeb (ORCPT
+        with ESMTP id S1377198AbjHRNfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:34:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFE9358D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692365624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qQNTfs2Jffit8DhxI9Sae6fRQlQxO579aHpEAqyIh68=;
-        b=WH5+w3h22vlIbPJ3DociSeGbAiRsHnP7/0oI+eqxm/0rb/xsaibpR/8SqU/wJ9Hta/OUuG
-        YAZ8wr+V2lTG6wh55bv+l/XirB/FuChsc6BSMXh8MAewLqA6UYX/DaSQjqHRylnrDoz6Z6
-        lLApIVLOsCuE/iCkQOgvdMspLRXVQuA=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-352-EJIL4rjEN7KeEtSE3pLJJQ-1; Fri, 18 Aug 2023 09:33:39 -0400
-X-MC-Unique: EJIL4rjEN7KeEtSE3pLJJQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 37D5B29AA38A;
-        Fri, 18 Aug 2023 13:33:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A45E1121314;
-        Fri, 18 Aug 2023 13:33:36 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
-References: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com> <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <665724.1692218114@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+        Fri, 18 Aug 2023 09:35:47 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B33C1F;
+        Fri, 18 Aug 2023 06:35:42 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37IDZPKa009356;
+        Fri, 18 Aug 2023 13:35:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=4v2TWfa6oBkILRs3ARO+kKbi1OBX9uk4r23vOBdt0sQ=;
+ b=N5EfXrFf0lfl/FChvrCSDatm+69jbUI0jt71yPIZ54Wzn4gCSrJwvRDOOfRPbru0KSoA
+ n1q4Mohy68e+J/JY6+vB5RnlBAIkmtsaFtixNhlmspUaRh0NU/u7Al+tGg/mHVuKReRd
+ 9Ex8qqT5Ujze4ncXlqnH4/7Z4cmKpOJP8p/KhRIRnf0LeLN8cyN3Ab2D9HT4VWD/ds//
+ KQ8ubm88mGOAsYdLptYSUPv2tW1hvCb9qu4n1EwtTskpSkRb50YkZIs+5filgSeygO21
+ vOr9et1WAl6lSB7dffxsCisbJWCmvrROl5LI4zTA2Dh6WQ3l0+D7krNAW2nt05CoZraq fQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj9e38f0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 13:35:39 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37IDMIOu026809;
+        Fri, 18 Aug 2023 13:35:39 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj9e38f0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 13:35:38 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37IBMs0Z007836;
+        Fri, 18 Aug 2023 13:35:38 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3senwky64e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 13:35:38 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37IDZZWF16712286
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Aug 2023 13:35:35 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 164CD20040;
+        Fri, 18 Aug 2023 13:35:35 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B16D20043;
+        Fri, 18 Aug 2023 13:35:34 +0000 (GMT)
+Received: from osiris (unknown [9.171.32.106])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Fri, 18 Aug 2023 13:35:34 +0000 (GMT)
+Date:   Fri, 18 Aug 2023 15:35:32 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Janosch Frank <frankja@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        pasic@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Subject: Re: [PATCH 00/12] s390/vfio_ap: crypto pass-through for SE guests
+Message-ID: <20230818133532.16552-A-hca@linux.ibm.com>
+References: <20230815184333.6554-1-akrowiak@linux.ibm.com>
+ <b083c649-0032-4501-54eb-1d86af5fd4c8@linux.ibm.com>
+ <b841f8b4-b065-db5c-9339-f199301b2f12@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b841f8b4-b065-db5c-9339-f199301b2f12@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: g7c8ntFPGg80CcNCOdJrpkQh_iPJFbQx
+X-Proofpoint-ORIG-GUID: 3dFBHvpA6l8_w2pbU4sdLdFP0Do3W786
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1936663.1692365615.1@warthog.procyon.org.uk>
-Date:   Fri, 18 Aug 2023 14:33:35 +0100
-Message-ID: <1936666.1692365615@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-18_16,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 impostorscore=0 mlxlogscore=916
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308180120
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Wed, Aug 16, 2023 at 02:12:50PM +0200, Janosch Frank wrote:
+> On 8/16/23 13:39, Janosch Frank wrote:
+> > On 8/15/23 20:43, Tony Krowiak wrote:
+> > > This patch series is for the changes required in the vfio_ap device
+> > > driver to facilitate pass-through of crypto devices to a secure
+> > > execution guest. In particular, it is critical that no data from the
+> > > queues passed through to the SE guest is leaked when the guest is
+> > > destroyed. There are also some new response codes returned from the
+> > > PQAP(ZAPQ) and PQAP(TAPQ) commands that have been added to the
+> > > architecture in support of pass-through of crypto devices to SE guests;
+> > > these need to be accounted for when handling the reset of queues.
+> > > 
+> > 
+> > @Heiko: Once this has soaked a day or two, could you please apply this
+> > and create a feature branch that I can pull from?
+> 
+> Sorry for the noise, for some reason I still had Heiko's old address in the
+> address book. I'll delete it in a second.
+> 
+> Here we go again.
 
-> This patch only does that for the 'user_backed' thing, which was a similar
-> case.
+Series is now available via the vfio-ap branch, based on rc2 like your
+your branches within the kvms390 tree.
 
-It makes some things a bit bigger, makes some a bit smaller:
-
-__iov_iter_get_pages_alloc               dcr 0x331 -> 0x32a -0x7
-_copy_from_iter                          dcr 0x36e -> 0x36a -0x4
-_copy_from_iter_flushcache               inc 0x359 -> 0x36b +0x12
-_copy_mc_to_iter                         dcr 0x3a7 -> 0x39b -0xc
-_copy_to_iter                            inc 0x358 -> 0x359 +0x1
-copy_page_to_iter_nofault.part.0         dcr 0x3f1 -> 0x3ef -0x2
-csum_and_copy_from_iter                  dcr 0x3e8 -> 0x3e4 -0x4
-csum_and_copy_to_iter                    inc 0x46a -> 0x46d +0x3
-dup_iter                                 inc 0x34 -> 0x39 +0x5
-fault_in_iov_iter_readable               inc 0x9b -> 0xa0 +0x5
-fault_in_iov_iter_writeable              inc 0x9b -> 0xa0 +0x5
-first_iovec_segment                      inc 0x4a -> 0x51 +0x7
-import_single_range                      dcr 0x62 -> 0x40 -0x22
-import_ubuf                              dcr 0x65 -> 0x43 -0x22
-iov_iter_advance                         inc 0xd7 -> 0x103 +0x2c
-iov_iter_alignment                       inc 0xe0 -> 0xe2 +0x2
-iov_iter_extract_pages                   dcr 0x418 -> 0x416 -0x2
-iov_iter_init                            dcr 0x31 -> 0x27 -0xa
-iov_iter_is_aligned                      inc 0xf3 -> 0x108 +0x15
-iov_iter_npages                          inc 0x119 -> 0x11a +0x1
-iov_iter_revert                          inc 0x88 -> 0x99 +0x11
-iov_iter_single_seg_count                inc 0x38 -> 0x3e +0x6
-iov_iter_ubuf                            new 0x39
-iov_iter_zero                            inc 0x34f -> 0x353 +0x4
-iter_iov                                 new 0x17
-
-Adding an extra patch to get rid of the bitfields and using a u8 for the type
-and bools for the flags makes very little difference on top of the above:
-
-__iov_iter_get_pages_alloc               inc 0x32a -> 0x32f +0x5
-_copy_from_iter                          inc 0x36a -> 0x36d +0x3
-copy_page_from_iter_atomic.part.0        inc 0x3cf -> 0x3d2 +0x3
-csum_and_copy_to_iter                    dcr 0x46d -> 0x46a -0x3
-iov_iter_advance                         dcr 0x103 -> 0xfd -0x6
-iov_iter_extract_pages                   inc 0x416 -> 0x417 +0x1
-iov_iter_init                            inc 0x27 -> 0x2d +0x6
-iov_iter_revert                          dcr 0x99 -> 0x95 -0x4
-
-For reference, I generated the stats with:
-
-	nm build3/lib/iov_iter.o  | sort >a
-	... change...
-	nm build3/lib/iov_iter.o  | sort >b
-	perl analyse.pl a b
-
-where analyse.pl is attached.
-
-David
----
-#!/usr/bin/perl -w
-use strict;
-
-die "$0 <file_a> <file_b>" if ($#ARGV != 1);
-my ($file_a, $file_b) = @ARGV;
-die "$file_a: File not found\n" unless -r $file_a;
-die "$file_b: File not found\n" unless -r $file_b;
-
-my %a = ();
-my %b = ();
-my %c = ();
-
-sub read_one($$$)
-{
-    my ($file, $list, $all) = @_;
-    my $last = undef;
-
-    open FD, "<$file" || die $file;
-    while (<FD>) {
-	if (/([0-9a-f][0-9a-f]+) [Tt] ([_a-zA-Z0-9.]*)/) {
-	    my $addr = hex $1;
-	    my $sym = $2;
-	    #print $addr, " ", $sym, "\n";
-
-	    my %obj = (
-		sym	=> $sym,
-		addr	=> $addr,
-		size	=> 0
-		);
-
-	    $list->{$sym} = \%obj;
-	    $all->{$sym} = 1;
-
-	    if ($last) {
-		$last->{size} = $addr - $last->{addr};
-	    }
-
-	    $last = \%obj;
-	}
-    }
-    close(FD);
-}
-
-read_one($file_a, \%a, \%c);
-read_one($file_b, \%b, \%c);
-
-foreach my $sym (sort keys %c) {
-    my $as = -1;
-    my $bs = -1;
-
-    $as = $a{$sym}->{size} if (exists($a{$sym}));
-    $bs = $b{$sym}->{size} if (exists($b{$sym}));
-
-    next if ($as == $bs);
-    #next if ($sym =~ /__UNIQUE_ID/);
-
-    if ($as == -1) {
-	printf "%-40s new 0x%x\n", $sym, $bs;
-    } elsif ($bs == -1) {
-	printf "%-40s del 0x%x\n", $sym, $as;
-    } elsif ($bs > $as) {
-	printf "%-40s inc 0x%x -> 0x%x +0x%x\n", $sym, $as, $bs, $bs - $as;
-    } else {
-	printf "%-40s dcr 0x%x -> 0x%x -0x%x\n", $sym, $as, $bs, $as - $bs;
-    }
-}
-
+https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git vfio-ap
