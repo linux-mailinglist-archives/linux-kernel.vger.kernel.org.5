@@ -2,208 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C83780EE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:15:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63ED780EF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378084AbjHRPPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34356 "EHLO
+        id S1377925AbjHRPTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378146AbjHRPPH (ORCPT
+        with ESMTP id S1378116AbjHRPSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:15:07 -0400
-Received: from mail.hallyn.com (mail.hallyn.com [178.63.66.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C654490;
-        Fri, 18 Aug 2023 08:14:38 -0700 (PDT)
-Received: from jerom (unknown [128.107.241.169])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: serge)
-        by mail.hallyn.com (Postfix) with ESMTPSA id 7061E746;
-        Fri, 18 Aug 2023 10:14:15 -0500 (CDT)
-Date:   Fri, 18 Aug 2023 10:14:12 -0500
-From:   Serge Hallyn <serge@hallyn.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
-        jmorris@namei.org, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Subject: Re: [PATCH v13 08/11] Smack: implement setselfattr and getselfattr
- hooks
-Message-ID: <ZN+KxAMILtSvlKdK@jerom>
-References: <20230802174435.11928-1-casey@schaufler-ca.com>
- <20230802174435.11928-9-casey@schaufler-ca.com>
+        Fri, 18 Aug 2023 11:18:50 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C726A3C1F;
+        Fri, 18 Aug 2023 08:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=Yi7tE55S8lvTzPNErtn97ZNAyJLBYyaB731OWaTvH5A=; b=bx/pnPPqUct68o2lLc0sIngH+z
+        EvWdMRdqbVhCHouofWuSwMI2PerQoauwZgRVn2/tN78LV9uAue1hbD37m0byjuN3q/YBuObK4fumg
+        f5SujJ4qbfWfvkSvR38NW3wZNJltnDCNb43SYcLEtehgEZ/kXv97TZI+TJ82cHrkDh7brKCZXFzpB
+        dxOrlRjq8n6JZQsbiVracOvPCMrmdtktJSBQ85C88xnsWDxdZSV//4/pkV7WJeZSTR2oFI0j7Q6Qq
+        T5utzeH0KcXGdXtYLUaVeUwB2PDmMeH2MMziJph5ieRZ7YQExzqbXKmjC0dnPQU1LaMuM0bCELuqO
+        INdVafCg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qX1FP-000Jda-LG; Fri, 18 Aug 2023 17:18:47 +0200
+Received: from [85.1.206.226] (helo=pc-102.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qX1FP-000Dr5-0P; Fri, 18 Aug 2023 17:18:47 +0200
+Subject: Re: [PATCH] bpf/tests: Enhance output on error and fix typos
+To:     Helge Deller <deller@gmx.de>, bpf@vger.kernel.org
+Cc:     linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZN6ZAAVoWZpsD1Jf@p100>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a0fe9ee2-1c16-98a9-6038-249fc5d1c55b@iogearbox.net>
+Date:   Fri, 18 Aug 2023 17:18:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802174435.11928-9-casey@schaufler-ca.com>
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <ZN6ZAAVoWZpsD1Jf@p100>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27004/Fri Aug 18 09:41:49 2023)
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 10:44:31AM -0700, Casey Schaufler wrote:
-> Implement Smack support for security_[gs]etselfattr.
-> Refactor the setprocattr hook to avoid code duplication.
+On 8/18/23 12:02 AM, Helge Deller wrote:
+> If a testcase returns a wrong (unexpected) value, print the expected and
+> returned value in hex notation in addition to the decimal notation. This is
+> very useful in tests which bit-shift hex values left or right and helped me
+> a lot while developing the JIT compiler for the hppa architecture.
 > 
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> Additionally fix two typos: dowrd -> dword, tall calls -> tail calls.
+> 
+> Signed-off-by: Helge Deller <deller@gmx.de>
+> 
 > ---
->  security/smack/smack_lsm.c | 94 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 89 insertions(+), 5 deletions(-)
 > 
-> diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> index f3e4b26c8a87..71c773fff971 100644
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@ -3565,6 +3565,45 @@ static void smack_d_instantiate(struct dentry *opt_dentry, struct inode *inode)
->  	return;
->  }
->  
-> +/**
-> + * smack_getselfattr - Smack current process attribute
-> + * @attr: which attribute to fetch
-> + * @ctx: buffer to receive the result
-> + * @size: available size in, actual size out
-> + * @flags: unused
-> + *
-> + * Fill the passed user space @ctx with the details of the requested
-> + * attribute.
-> + *
-> + * Returns 1, the number of attributes, on success, an error code otherwise.
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index fa0833410ac1..2c01932524b3 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -596,8 +596,8 @@ static int __bpf_fill_alu_shift(struct bpf_test *self, u8 op,
+>   {
+>   	static const s64 regs[] = {
+>   		0x0123456789abcdefLL, /* dword > 0, word < 0 */
+> -		0xfedcba9876543210LL, /* dowrd < 0, word > 0 */
+> -		0xfedcba0198765432LL, /* dowrd < 0, word < 0 */
+> +		0xfedcba9876543210LL, /* dword < 0, word > 0 */
+> +		0xfedcba0198765432LL, /* dword < 0, word < 0 */
+>   		0x0123458967abcdefLL, /* dword > 0, word > 0 */
+>   	};
+>   	int bits = alu32 ? 32 : 64;
+> @@ -14577,8 +14577,9 @@ static int run_one(const struct bpf_prog *fp, struct bpf_test *test)
+>   		if (ret == test->test[i].result) {
+>   			pr_cont("%lld ", duration);
+>   		} else {
+> -			pr_cont("ret %d != %d ", ret,
+> -				test->test[i].result);
+> +			s32 res = test->test[i].result;
 
-This comment is confusing.  is it saying that 1 is always the number
-of attributes?  Because the "if (rc >= 0) return 1;" ensure that
-it only ever returns 1 or < 0.
+Added a newline in here while applying to bpf-next, thanks for the patch!
 
-> + */
-> +static int smack_getselfattr(unsigned int attr, struct lsm_ctx __user *ctx,
-> +			     size_t *size, u32 flags)
-> +{
-> +	struct smack_known *skp = smk_of_current();
-> +	int total;
-> +	int slen;
-> +	int rc;
-> +
-> +	if (attr != LSM_ATTR_CURRENT)
-> +		return -EOPNOTSUPP;
-> +
-> +	slen = strlen(skp->smk_known) + 1;
-> +	total = ALIGN(slen + sizeof(*ctx), 8);
-> +	if (total > *size)
-> +		rc = -E2BIG;
-> +	else if (ctx)
-> +		rc = lsm_fill_user_ctx(ctx, skp->smk_known, slen, LSM_ID_SMACK,
-> +				       0);
-> +	else
-> +		rc = 1;
-> +
-> +	*size = total;
-> +	if (rc >= 0)
-> +		return 1;
-> +	return rc;
-> +}
-> +
->  /**
->   * smack_getprocattr - Smack process attribute access
->   * @p: the object task
-> @@ -3594,8 +3633,8 @@ static int smack_getprocattr(struct task_struct *p, const char *name, char **val
->  }
->  
->  /**
-> - * smack_setprocattr - Smack process attribute setting
-> - * @name: the name of the attribute in /proc/.../attr
-> + * do_setattr - Smack process attribute setting
-> + * @attr: the ID of the attribute
->   * @value: the value to set
->   * @size: the size of the value
->   *
-> @@ -3604,7 +3643,7 @@ static int smack_getprocattr(struct task_struct *p, const char *name, char **val
->   *
->   * Returns the length of the smack label or an error code
->   */
-> -static int smack_setprocattr(const char *name, void *value, size_t size)
-> +static int do_setattr(u64 attr, void *value, size_t size)
->  {
->  	struct task_smack *tsp = smack_cred(current_cred());
->  	struct cred *new;
-> @@ -3618,8 +3657,8 @@ static int smack_setprocattr(const char *name, void *value, size_t size)
->  	if (value == NULL || size == 0 || size >= SMK_LONGLABEL)
->  		return -EINVAL;
->  
-> -	if (strcmp(name, "current") != 0)
-> -		return -EINVAL;
-> +	if (attr != LSM_ATTR_CURRENT)
-> +		return -EOPNOTSUPP;
->  
->  	skp = smk_import_entry(value, size);
->  	if (IS_ERR(skp))
-> @@ -3658,6 +3697,49 @@ static int smack_setprocattr(const char *name, void *value, size_t size)
->  	return size;
->  }
->  
-> +/**
-> + * smack_setselfattr - Set a Smack process attribute
-> + * @attr: which attribute to set
-> + * @ctx: buffer containing the data
-> + * @size: size of @ctx
-> + * @flags: unused
-> + *
-> + * Fill the passed user space @ctx with the details of the requested
-> + * attribute.
-> + *
-> + * Returns 0 on success, an error code otherwise.
-> + */
-> +static int smack_setselfattr(unsigned int attr, struct lsm_ctx *ctx,
-> +			     size_t size, u32 flags)
-> +{
-> +	int rc;
-> +
-> +	rc = do_setattr(attr, ctx->ctx, ctx->ctx_len);
-> +	if (rc > 0)
-> +		return 0;
-> +	return rc;
-> +}
-> +
-> +/**
-> + * smack_setprocattr - Smack process attribute setting
-> + * @name: the name of the attribute in /proc/.../attr
-> + * @value: the value to set
-> + * @size: the size of the value
-> + *
-> + * Sets the Smack value of the task. Only setting self
-> + * is permitted and only with privilege
-> + *
-> + * Returns the length of the smack label or an error code
-> + */
-> +static int smack_setprocattr(const char *name, void *value, size_t size)
-> +{
-> +	int attr = lsm_name_to_attr(name);
-> +
-> +	if (attr != LSM_ATTR_UNDEF)
-> +		return do_setattr(attr, value, size);
-> +	return -EINVAL;
-> +}
-> +
->  /**
->   * smack_unix_stream_connect - Smack access on UDS
->   * @sock: one sock
-> @@ -4970,6 +5052,8 @@ static struct security_hook_list smack_hooks[] __ro_after_init = {
->  
->  	LSM_HOOK_INIT(d_instantiate, smack_d_instantiate),
->  
-> +	LSM_HOOK_INIT(getselfattr, smack_getselfattr),
-> +	LSM_HOOK_INIT(setselfattr, smack_setselfattr),
->  	LSM_HOOK_INIT(getprocattr, smack_getprocattr),
->  	LSM_HOOK_INIT(setprocattr, smack_setprocattr),
->  
-> -- 
-> 2.41.0
+> +			pr_cont("ret %d != %d (%#x != %#x)",
+> +				ret, res, ret, res);
+>   			err_cnt++;
+>   		}
+>   	}
+> @@ -15055,7 +15056,7 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
+>   	struct bpf_array *progs;
+>   	int which, err;
+>   
+> -	/* Allocate the table of programs to be used for tall calls */
+> +	/* Allocate the table of programs to be used for tail calls */
+>   	progs = kzalloc(struct_size(progs, ptrs, ntests + 1), GFP_KERNEL);
+>   	if (!progs)
+>   		goto out_nomem;
 > 
-> 
+
