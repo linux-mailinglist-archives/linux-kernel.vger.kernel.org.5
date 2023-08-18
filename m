@@ -2,119 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6506C780E0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362F0780E15
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377704AbjHROdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57832 "EHLO
+        id S1377761AbjHROfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377796AbjHROc5 (ORCPT
+        with ESMTP id S1377794AbjHROfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:32:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F27F53C3D;
-        Fri, 18 Aug 2023 07:32:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8828165E3D;
-        Fri, 18 Aug 2023 14:32:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3534C433C9;
-        Fri, 18 Aug 2023 14:32:46 +0000 (UTC)
-Message-ID: <1c00196c-e64e-119a-fd30-5e8f797c22ec@xs4all.nl>
-Date:   Fri, 18 Aug 2023 16:32:44 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH] [media] mxl111sf: Check return value in
- mxl111sf_config_mpeg_in
-To:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Michael Ira Krufky <mkrufky@linuxtv.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, lvc-project@linuxtesting.org
-References: <20221222214607.39737-1-artem.chernyshev@red-soft.ru>
- <CAOcJUby8i=vRu5-cSe6iBKrnLG8ucmatpiPT=VaMS9etwHH_uw@mail.gmail.com>
- <Y6XXF6gffL9aHTuw@localhost.localdomain>
-Content-Language: en-US, nl
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <Y6XXF6gffL9aHTuw@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 10:35:15 -0400
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF8A2D4A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:35:11 -0700 (PDT)
+Received: from submission (posteo.de [185.67.36.169]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id 852A324002B
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:35:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1692369304; bh=CeAJsCi5TQpaqRWbANCcaVHCuN4QX/EmDaFtsa8EaoE=;
+        h=Content-Transfer-Encoding:Mime-Version:Subject:From:Cc:Date:
+         Message-Id:To:From;
+        b=ZPKoQcLxiwbOsEvxjVeNLSHnrdfCK1KGm5r+6JE1cnjFUPL2/2m+MKINMCexRCiPD
+         lpigAMJuw5+sD3ZuQ5utnsvO2tt7rDDFRy6+r9p/+HB7+ogG/7Hvs8e+GE7Eym9RFt
+         k6n0hJESw1uIj5ZTa7b33NTpQ4oQynqORRpQyHHpHPuPc13x1Tsjfb0dm27JSvtPbS
+         vZv9wiyJ+6UDKwqxKKDT6eZE9/zFJjM0yyjqO8WY/xByF1KDW40iHtwd20E5deREo3
+         A38bNZyBYBfUpgvQKJv6HrateDONEzDUP4e9Pp7bqte67e9p8K7atnDEQkpdhjKzVw
+         jNiHhLZmRiy8Q==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4RS4CT3zyHz6tvt;
+        Fri, 18 Aug 2023 16:35:01 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH 15/17] x86/boot: Split off PE/COFF .data section
+From:   =?utf-8?Q?Marvin_H=C3=A4user?= <mhaeuser@posteo.de>
+In-Reply-To: <20230818134422.380032-16-ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Date:   Fri, 18 Aug 2023 14:35:01 +0000
+Message-Id: <98D635CA-43D4-4A0B-8791-2FDC1DC695B3@posteo.de>
+References: <20230818134422.380032-16-ardb@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/12/2022 17:28, Artem Chernyshev wrote:
-> Hi,
-> On Fri, Dec 23, 2022 at 07:28:47AM -0500, Michael Ira Krufky wrote:
->> On Thu, Dec 22, 2022, 4:46 PM Artem Chernyshev <artem.chernyshev@red-soft.ru>
->> wrote:
->>
->>> Error check after mxl111sf_read_reg
->>>
->>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>>
->>> Fixes: 4c66c9205c07 ("[media] dvb-usb: add ATSC support for the Hauppauge
->>> WinTV-Aero-M")
->>> Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
->>> ---
->>>  drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c
->>> b/drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c
->>> index 40b26712ba4c..ad1888514bd0 100644
->>> --- a/drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c
->>> +++ b/drivers/media/usb/dvb-usb-v2/mxl111sf-phy.c
->>> @@ -121,7 +121,8 @@ int mxl111sf_config_mpeg_in(struct mxl111sf_state
->>> *state,
->>>         mxl_fail(ret);
->>>
->>>         /* Configure MPEG Clock phase */
->>> -       mxl111sf_read_reg(state, V6_MPEG_IN_CLK_INV_REG, &mode);
->>> +       ret = mxl111sf_read_reg(state, V6_MPEG_IN_CLK_INV_REG, &mode);
->>> +       mxl_fail(ret);
->>>
->>>         if (clock_phase == TSIF_NORMAL)
->>>                 mode &= ~V6_INVERTED_CLK_PHASE;
->>> --
->>> 2.30.3
->>>
->>
->> Artem,
->>
->> Thank you for this.  If I recall correctly, the read from that particular
->> register often returns a failure despite the correct value being read into
->> memory. This needs to be tested before being merged, and if my memory is
->> correct about this we should add a comment about it. Unfortunately, I'm out
->> of town at the moment, I won't be able to test this for some time. Can we
->> hold off on this one for a bit? If you don't hear from me after a few
->> weeks, please feel free to ping me again. Thanks.
->>
->> Best,
->> Michael Krufky
->>
->>>
-> 
-> Thanks for reply. I'll be waiting for your decision
+Hi Ard,
 
-I'll drop this patch, I never saw a follow-up on this.
+Thanks for your effort! Not sure what the documentation policies are, but mi=
+ght it be worth mentioning that we cannot have .rdata at this time, because c=
+urrent-gen EFI will map it as RW?
 
-If this is really needed, then just resend.
+Best regards,
+Marvin
 
-Regards,
-
-	Hans
-
-> 
-> Best regards,
-> Artem
+> On Aug 18, 2023, at 15:45, Ard Biesheuvel <ardb@kernel.org> wrote:
+> =EF=BB=BFDescribe the code and data of the decompressor binary using separ=
+ate
+> .text and .data PE/COFF sections, so that we will be able to map them
+> using restricted permissions once we increase the section and file
+> alignment sufficiently. This avoids the need for memory mappings that
+> are writable and executable at the same time, which is something that
+> is best avoided for security reasons.
+>=20
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+> arch/x86/boot/Makefile |  2 +-
+> arch/x86/boot/header.S | 19 +++++++++++++++----
+> 2 files changed, 16 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
+> index b26e30a2d865f72d..50c50fce646e2417 100644
+> --- a/arch/x86/boot/Makefile
+> +++ b/arch/x86/boot/Makefile
+> @@ -90,7 +90,7 @@ $(obj)/vmlinux.bin: $(obj)/compressed/vmlinux FORCE
+>=20
+> SETUP_OBJS =3D $(addprefix $(obj)/,$(setup-y))
+>=20
+> -sed-zoffset :=3D -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._stu=
+b_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\=
+|_edata\|z_.*\)$$/\#define ZO_\2 0x\1/p'
+> +sed-zoffset :=3D -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|efi.._stu=
+b_entry\|efi\(32\)\?_pe_entry\|input_data\|kernel_info\|_end\|_ehead\|_text\=
+|_e\?data\|z_.*\)$$/\#define ZO_\2 0x\1/p'
+>=20
+> quiet_cmd_zoffset =3D ZOFFSET $@
+>       cmd_zoffset =3D $(NM) $< | sed -n $(sed-zoffset) > $@
+> diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
+> index ccfb7a7d8c29275e..25dda40dacb52292 100644
+> --- a/arch/x86/boot/header.S
+> +++ b/arch/x86/boot/header.S
+> @@ -79,9 +79,9 @@ optional_header:
+>    .byte    0x02                # MajorLinkerVersion
+>    .byte    0x14                # MinorLinkerVersion
+>=20
+> -    .long    setup_size + ZO__end - 0x200    # SizeOfCode
+> +    .long    ZO__data            # SizeOfCode
+>=20
+> -    .long    0                # SizeOfInitializedData
+> +    .long    ZO__end - ZO__data        # SizeOfInitializedData
+>    .long    0                # SizeOfUninitializedData
+>=20
+>    .long    setup_size + ZO_efi_pe_entry    # AddressOfEntryPoint
+> @@ -182,9 +182,9 @@ section_table:
+>    .byte    0
+>    .byte    0
+>    .byte    0
+> -    .long    ZO__end
+> +    .long    ZO__data
+>    .long    setup_size
+> -    .long    ZO__edata            # Size of initialized data
+> +    .long    ZO__data            # Size of initialized data
+>                        # on disk
+>    .long    setup_size
+>    .long    0                # PointerToRelocations
+> @@ -195,6 +195,17 @@ section_table:
+>        IMAGE_SCN_MEM_READ        | \
+>        IMAGE_SCN_MEM_EXECUTE        # Characteristics
+>=20
+> +    .ascii    ".data\0\0\0"
+> +    .long    ZO__end - ZO__data        # VirtualSize
+> +    .long    setup_size + ZO__data        # VirtualAddress
+> +    .long    ZO__edata - ZO__data        # SizeOfRawData
+> +    .long    setup_size + ZO__data        # PointerToRawData
+> +
+> +    .long    0, 0, 0
+> +    .long    IMAGE_SCN_CNT_INITIALIZED_DATA    | \
+> +        IMAGE_SCN_MEM_READ        | \
+> +        IMAGE_SCN_MEM_WRITE        # Characteristics
+> +
+>    .set    section_count, (. - section_table) / 40
+> #endif /* CONFIG_EFI_STUB */
+>=20
+> --=20
+> 2.39.2
 
