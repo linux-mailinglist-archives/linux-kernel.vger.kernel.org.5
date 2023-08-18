@@ -2,249 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEBD780B72
+	by mail.lfdr.de (Postfix) with ESMTP id AB230780B74
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376739AbjHRLyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
+        id S1376752AbjHRLzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376731AbjHRLyY (ORCPT
+        with ESMTP id S1376806AbjHRLzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:54:24 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B7C2723
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26d0d376ec7so607704a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692359638; x=1692964438;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fWUAu55Okzaxxflb8/jmAhx5gyfvmuNdSd8uGCqH/Zw=;
-        b=eq248EH06v7v4m/+8bSuN+oJAZuyVZ5P3IhvOfLa0gH7Ftb4Z9KOJPje0UAQJX5er3
-         OhtWSQ0AU0VFJKU4fmVprsd/oJUo2QPwIqoQioP3mBhb4FfKfQ01RO5dO9nKWy2SI/MP
-         uTVk259CT4/3xUyvWB4kB2IWgaSxWKXb9L+hjscXInyvbpHmDBPmpl9M7xDVwBcTenEw
-         Ld10dgJhTAcBMt8SxxJddrMcsX7zxwXVGO8YCYY4siCBLxOEN7kItKjMnnr1ePIcPKvP
-         DAa5MKiQQhtw09iC3rbTHJK2e7KNkDZEtI44JZndbkamNp61O7+cGrXXASEv5pxu3x33
-         qjOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692359638; x=1692964438;
-        h=content-transfer-encoding:in-reply-to:from:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fWUAu55Okzaxxflb8/jmAhx5gyfvmuNdSd8uGCqH/Zw=;
-        b=A9JEEMvlHvNIZY8aYybXbj72egpzq29t7ESl9cMrtc0KwriVmXmp7a0q6+bUYJwZIL
-         FmXfVIXqV2vLbhW/QYt2geFG6oI4rMb1ekdGhyUgNi8b0aKe1Co9tKr3Tl2kHuNS/cVs
-         e3FLkPBsqOtK+Pi0TPg/fQiwzL1H7vzMkW/4+NVfxZNLa4ArgnO+GrY7HbqISpLTgfO5
-         MCTTOWjZKmGG2tQrDK2IQkfOVr2EgoeP8DpSWrh0iAyLJ3wF0pnS6ZL9qxKAEPhaIVXH
-         /mdhBkuqFUH4kRhm4PCnSg00BwMLMy7b9C4OfkMYvQu/Lijw66qQqj4kjII85V8loJ+/
-         INow==
-X-Gm-Message-State: AOJu0Yx9gphBGo2Dv2eKrJoVbwt+I38ZCUJck9NEJ/qifgLB4XaRYwBu
-        F64wkdC5nCQq8jzOyoFJdFf/uQ==
-X-Google-Smtp-Source: AGHT+IEoDhL7JPYYvqyUCrTfrN7Sp8X7zYiAiDB+7WTz2PRk2dwjF8tQdyEs8B7UpMHhLGp3Zs9ccw==
-X-Received: by 2002:a17:90b:3003:b0:269:33cb:e061 with SMTP id hg3-20020a17090b300300b0026933cbe061mr2118476pjb.24.1692359638052;
-        Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
-Received: from [10.254.252.111] ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id l11-20020a17090a598b00b00267b38f5e13sm1336696pji.2.2023.08.18.04.53.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 04:53:57 -0700 (PDT)
-Message-ID: <6b6d7ef1-75e4-68a3-1662-82ee19334567@bytedance.com>
-Date:   Fri, 18 Aug 2023 19:53:46 +0800
+        Fri, 18 Aug 2023 07:55:35 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E43263C0F;
+        Fri, 18 Aug 2023 04:55:31 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37IBsnt57022913, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37IBsnt57022913
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Aug 2023 19:54:49 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Fri, 18 Aug 2023 19:55:09 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Fri, 18 Aug
+ 2023 19:55:08 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: [PATCH net-next v5 0/2] Add Realtek automotive PCIe driver
+Date:   Fri, 18 Aug 2023 19:54:59 +0800
+Message-ID: <20230818115501.209945-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 04/11] maple_tree: Introduce interfaces __mt_dup() and
- mt_dup()
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, willy@infradead.org,
-        michael.christie@oracle.com, surenb@google.com, npiggin@gmail.com,
-        corbet@lwn.net, mathieu.desnoyers@efficios.com, avagin@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, brauner@kernel.org, peterz@infradead.org
-References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
- <20230726080916.17454-5-zhangpeng.00@bytedance.com>
- <20230726160354.konsgq6hidj7gr5u@revolver>
- <beaab8b4-180c-017d-bd8d-8766196f302a@bytedance.com>
- <20230731162714.4x3lzymuyvu2mter@revolver>
- <3f4e73cc-1a98-95a8-9ab2-47797d236585@bytedance.com>
- <20230816183029.5rpkbgp2umebrjh5@revolver>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <20230816183029.5rpkbgp2umebrjh5@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.210.160]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series includes adding realtek automotive ethernet driver and adding rtase ethernet driver entry in MAINTAINERS file.
 
+This ethernet device driver for the PCIe interface of Realtek Automotive Ethernet Switch,
+applicable to RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-在 2023/8/17 02:30, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230816 09:42]:
->>
->>
-> ...
-> 
->>>>>> +/**
->>>>>> + * __mt_dup(): Duplicate a maple tree
->>>>>> + * @mt: The source maple tree
->>>>>> + * @new: The new maple tree
->>>>>> + * @gfp: The GFP_FLAGS to use for allocations
->>>>>> + *
->>>>>> + * This function duplicates a maple tree using a faster method than traversing
->>>>>> + * the source tree and inserting entries into the new tree one by one. The user
->>>>>> + * needs to lock the source tree manually. Before calling this function, @new
->>>>>> + * must be an empty tree or an uninitialized tree. If @mt uses an external lock,
->>>>>> + * we may also need to manually set @new's external lock using
->>>>>> + * mt_set_external_lock().
->>>>>> + *
->>>>>> + * Return: 0 on success, -ENOMEM if memory could not be allocated.
->>>>>> + */
->>>>>> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
->>>>>
->>>>> We use mas_ for things that won't handle the locking and pass in a maple
->>>>> state.  Considering the leaves need to be altered once this is returned,
->>>>> I would expect passing in a maple state should be feasible?
->>>> But we don't really need mas here. What do you think the state of mas
->>>> should be when this function returns? Make it point to the first entry,
->>>> or the last entry?
->>>
->>> I would write it to point to the first element so that the call to
->>> replace the first element can just do that without an extra walk and
->>> document the maple state end point.
->> Unfortunately, this does not seem to be convenient. Users usually use
->> mas_for_each() to replace elements. If we set mas to the first element,
->> the first call to mas_find() in mas_for_each() will get the next
->> element.
-> 
-> This sounds like the need for another iterator specifically for
-> duplicating.
-> 
->>
->> There may also be other scenarios where the user does not necessarily
->> have to replace every element.
-> 
-> Do you mean a limit or elements that need to be skipped?  We could have
-> a limit on the iteration.
-> 
->>
->> Finally, getting the first element in __mt_dup() requires an additional
->> check to check whether the first element has already been recorded. Such
->> a check will be performed at each leaf node, which is unnecessary
->> overhead.
->>
->> Of course, the first reason is the main reason, which prevents us from
->> using mas_for_each(). So I don't want to record the first element.
-> 
-> 
-> I don't like the interface because it can easily be misunderstood and
-> used incorrectly.  I don't know how to make a cleaner interface, but
-> I've gone through a few thoughts:
-> 
-> The first was hide _all of it_ in a new iterator:
-> mas_dup_each(old, new, old_entry) {
-> 	if (don't_dup(old_entry)) {
-> 		mas_erase(new);
-> 		continue;
-> 	}
-> 
-> 	mas_dup_insert(new, new_entry);
-> }
-> 
-> This iterator would check if mas_is_start(old) and dup the tree in that
-> event.  Leave the both new trees pointing to the first element and set
-> old_entry.  I don't know how to handle the failure in duplicating the
-> tree in this case - I guess we could return old_entry = NULL and check
-> if mas_is_err(old) after the loop.  Do you see a problem with this?
-This interface looks OK. But handling the failure case is tricky.
-> 
-> 
-> The second idea was an init of the old tree.  This is closest to what you
-> have:
-> 
-> if (mas_dup_init(old, new))
-> 	goto -ENOMEM;
-> 
-> mas_dup_each(old, new) {
-> 	if (don't_dup(old_entry)) {
-> 		mas_erase(new);
-> 		continue;
-> 	}
-> 
-> 	mas_dup_insert(new, new_entry);
-> }
-I think this interface could be better.
-> 
-> This would duplicate the tree at the start and leave both pointing at
-> the first element so that mas_dup_each() could start on that element.
-> Each subsequent call would go to the next element in both maple states.
-Every element of the new tree is the same as the old tree, and we don't
-need to maintain the mas of the old tree. It is enough to maintain the
-mas of the new tree when traversing.
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
 
-> It sounds like you don't want this for performance reasons?  Although
-I mean I don't want to record the first element during duplicating. But
-we can get the first element after the duplicate completes. This can
-also still be within the implementation of the interface.
+Justin Lai (2):
+  net/ethernet/realtek: Add Realtek automotive PCIe driver code
+  MAINTAINERS: Add the rtase ethernet driver entry
 
-> looking at mas_find() today, I think this could still work since we are
-> checking the maple state for a lot.
-Yes, mas_find() does a whole bunch of checks.
-> 
-> Both ideas could be even faster than what you have if we handle the
-> special cases of mas_is_none()/mas_is_ptr() in a smarter way because we
-> don't need to be as worried about the entry point of the maple state as
-> much as we do with mas_find()/mas_for_each().  I mean, is it possible to
-> get to a mas_is_none() or mas_is_ptr() on duplicating a tree?  How do we
-> handle these users?
-The check for mas_is_none() or mas_is_ptr() in mas_find() is really not
-worth it if we hold the lock. There doesn't seem to be a good way around
-mas_is_ptr() since it needs to enter the loop once. mas_is_none() can be
-solved because it does not enter the loop, we can use it as a condition
-to enter the loop.
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  391 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2484 +++++++++++++++++
+ 6 files changed, 2910 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
 
-Without using mas_find() to avoid the check inside, I have to figure out
-how I can handle mas_is_ptr() properly.
-> 
-> Both ideas still suffer from someone saying "Gee, that {insert function
-> name here} is used in the forking code, so I can totally use that in my
-> code because that's how it work!"  and find out it works for the limited
-> testing they do.  Then it fails later and the emails start flying.
-> 
-> 
-> I almost think we should do something like this on insert:
-> 
-> void mas_dup_insert(old, new, new_entry) {
-> 	WARN_ON_ONCE(old == new);
-> 	WARN_ON_ONCE(old->index != new->index);
-> 	WARN_ON_ONCE(old->last != new->last);
-> 	...
-> }
-Maintaining old mas doesn't feel worth it. If this we have to traverse
-the old tree one more time.
-> 
-> This would at least _require_ someone to have two maple states and
-> hopefully think twice on using it where it should not be used.
-> 
-> The bottom line is that this code is close to what we need to make
-> forking better, but I fear the misuse of the interface.
-> 
-> Something else to think about:
-> In the work items for the Maple Tree, there is a plan to have an enum to
-> specify the type of write that is going to happen.  The idea was for
-> mas_preallocate() to set this type of write so we can just go right to
-> the correct function.  We could use that here and set the maple state
-> write type to a direct replacement.
-This can be the next step. We can do without it for now.
-> 
-> Thanks,
-> Liam
-> 
+-- 
+2.34.1
+
