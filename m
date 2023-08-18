@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D12378075F
+	by mail.lfdr.de (Postfix) with ESMTP id 8697E780760
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358690AbjHRIoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
+        id S1358700AbjHRIoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358697AbjHRIni (ORCPT
+        with ESMTP id S1358696AbjHRIni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Aug 2023 04:43:38 -0400
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729593AAE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:34 -0700 (PDT)
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [5.144.164.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A1A3AAF;
+        Fri, 18 Aug 2023 01:43:34 -0700 (PDT)
 Received: from v0.lan (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B0A2C3F434;
-        Fri, 18 Aug 2023 10:43:30 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 734C33F479;
+        Fri, 18 Aug 2023 10:43:31 +0200 (CEST)
 From:   Martin Botka <martin.botka@somainline.org>
-Subject: [PATCH 0/3] Add support for H616 Thermal system
-Date:   Fri, 18 Aug 2023 10:43:15 +0200
-Message-Id: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
+Date:   Fri, 18 Aug 2023 10:43:16 +0200
+Subject: [PATCH 1/3] dt-bindings: thermal: sun8i: Add binding for H616 THS
+ controller
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIACMv32QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDC0NT3ZKMYt0MM0MzXXPzJKOUJFMzUyMTSyWg8oKi1LTMCrBR0bG1tQD
- 4NbNwWgAAAA==
+Message-Id: <20230818-ths-h616-v1-1-0e1e058b9c7a@somainline.org>
+References: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
+In-Reply-To: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
 To:     Vasily Khoruzhick <anarsoul@gmail.com>,
         Yangtao Li <tiny.windzz@gmail.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -56,11 +56,11 @@ Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         Martin Botka <martin@biqu3d.com>,
         Martin Botka <martin.botka@somainline.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692348210; l=1200;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692348210; l=1243;
  i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=oPf+y+X9G61ZiyJ0sWXCSR3pYFSNT3sI7CxnPTuVGUk=;
- b=CiPh4dzgiTuqa3g7g56zD4Z7eL8tPj0JiSuc5fl5HtJB6DB+t5+GrUBrD2B22CSKZoTyMO9H/
- nVu3pUsBIwgCNGIBjwFE6qv+d56vJ7GTum4m0uTkjeC3Cd/9FC4OWXy
+ bh=C1VnYrsNtvLd+W49es4FKH+AHUilEeLhFJeqosJtqBY=;
+ b=eZPyJW3Mn7LAPH1PEGpozxXO4WnCp7T7Byq9SCQ//a2uEHwUg36SWqPVkM2GaMFPEWGqXz+r1
+ oPbRItHGzhVAJuajg5ZzDL6qBBAuGprKPTj9NfpBkjDu5s9r5FZKhCS
 X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
  pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -72,46 +72,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-This patch series adds support to thermal system
-found in H616 SoC.
-
-There are 4 thermal sensors in this SoC.
-One for GPU, CPU, DRAM and VE.
-
-Trips while unused for now until cpufreq is implemented
-(WIP) are required by dt-bindings and thus included here.
-
-Cheers,
-Martin
-
----------------
-
-Hello,
-Im very much not sure if the trips should be included or not.
-Since they are not optional part I decided to add them but
-please let me know.
-
-Cheers,
-Martin
+Add binding for H616 THS controller.
 
 Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
-Martin Botka (3):
-      dt-bindings: thermal: sun8i: Add binding for H616 THS controller
-      thermal: sun8i: Add support for H616 THS controller
-      arm64: dts: allwinner: h616: Add thermal sensor and thermal zones
+ .../devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml          | 3 +++
+ 1 file changed, 3 insertions(+)
 
- .../bindings/thermal/allwinner,sun8i-a83t-ths.yaml |   3 +
- arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi     |  87 ++++++++++++++++
- drivers/thermal/sun8i_thermal.c                    | 115 +++++++++++++++++++++
- 3 files changed, 205 insertions(+)
----
-base-commit: a25793039a9cd5ac67d38a86dd2eb414abb93aa6
-change-id: 20230815-ths-h616-77b2db565249
+diff --git a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
+index fbd4212285e2..79692f8360f5 100644
+--- a/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
++++ b/Documentation/devicetree/bindings/thermal/allwinner,sun8i-a83t-ths.yaml
+@@ -20,6 +20,7 @@ properties:
+       - allwinner,sun50i-a100-ths
+       - allwinner,sun50i-h5-ths
+       - allwinner,sun50i-h6-ths
++      - allwinner,sun50i-h616-ths
+ 
+   clocks:
+     minItems: 1
+@@ -63,6 +64,7 @@ allOf:
+             enum:
+               - allwinner,sun50i-a100-ths
+               - allwinner,sun50i-h6-ths
++              - allwinner,sun50i-h616-ths
+ 
+     then:
+       properties:
+@@ -107,6 +109,7 @@ allOf:
+               - allwinner,sun50i-a100-ths
+               - allwinner,sun50i-h5-ths
+               - allwinner,sun50i-h6-ths
++              - allwinner,sun50i-h616-ths
+ 
+     then:
+       required:
 
-Best regards,
 -- 
-Martin Botka <martin.botka@somainline.org>
+2.41.0
 
