@@ -2,305 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9409D7803CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F48D7803CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357231AbjHRC0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
+        id S1357238AbjHRC1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346965AbjHRC0W (ORCPT
+        with ESMTP id S1357234AbjHRC1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:26:22 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D6A73A80;
-        Thu, 17 Aug 2023 19:26:21 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37I1lomQ028864;
-        Fri, 18 Aug 2023 02:26:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4ZqXEQDnvAq9SQAzKPTdMAUaCsha47dI0KW5KaYMHdU=;
- b=eBt4ULRSbX/QWiBSLly+iLSqD/qeXsw+YrtslAD/ZHkgmp8456tKKisHfrKAe4IXmGRi
- 6zg1uuHKgmv8LIp+hlH2kLzx1/i7zkUhwVBC12WYpClVApdxT9EvbP1YAX40PD97aw3v
- 7f/jERfGRnFq9fK4pu0w3vfhJ92yHl/Oqktqd/a21Sv/GtALdJyCmaH9JsU0PsXgZhK1
- V9EL4PTBlV6PJtHCWNHbF5RjlCft1iqoS8BiF+PQj+QEmSozCB9D5ZchQSGmvyZWR9t3
- A57VHryX66jyxQ5eYor/LF/iEEgrMbhXtpbj/brPa1GbPaN14T4vfmxdZ9LbVb9Y5274 Cw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sh0upc12s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 02:26:14 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37I2QDe5021727
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 02:26:13 GMT
-Received: from [10.216.9.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 17 Aug
- 2023 19:26:06 -0700
-Message-ID: <8adb4b91-7def-ecf9-63b5-6f57dc92f390@quicinc.com>
-Date:   Fri, 18 Aug 2023 07:56:02 +0530
+        Thu, 17 Aug 2023 22:27:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6342235BF;
+        Thu, 17 Aug 2023 19:27:10 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRm165RFtzVkLc;
+        Fri, 18 Aug 2023 10:24:58 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 18 Aug 2023 10:27:06 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <zhengyejian1@huawei.com>
+CC:     <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <mhiramat@kernel.org>,
+        <rostedt@goodmis.org>
+Subject: [PATCH v2] tracing: Introduce pipe_cpumask to avoid race on trace_pipes
+Date:   Fri, 18 Aug 2023 10:26:45 +0800
+Message-ID: <20230818022645.1948314-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230817115057.1637676-1-zhengyejian1@huawei.com>
+References: <20230817115057.1637676-1-zhengyejian1@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
- dynamically
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <manivannan.sadhasivam@linaro.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_parass@quicinc.com>, <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-References: <20230817172032.GA321136@bhelgaas>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20230817172032.GA321136@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 1mArVLB1zTadQS6zgvp2wxkKyW9KXBMt
-X-Proofpoint-GUID: 1mArVLB1zTadQS6zgvp2wxkKyW9KXBMt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-18_02,2023-08-17_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 clxscore=1015 lowpriorityscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308180022
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is race issue when concurrently splice_read main trace_pipe and
+per_cpu trace_pipes which will result in data read out being different
+from what actually writen.
 
-On 8/17/2023 10:50 PM, Bjorn Helgaas wrote:
-> On Thu, Aug 17, 2023 at 08:04:43AM +0530, Krishna chaitanya chundru wrote:
->> PCIe can operate on lower GEN speed if client decided based upon
->> the bandwidth & latency requirements. To support dynamic GEN speed
->> switch adding this sysfs support.
-> Who does "client" refer to?  I assume it's the system administrator,
-> but of course the endpoint is involved in the hardware speed
-> negotiation, so one could think of the endpoint as a "client" with its
-> own speed capabilities and requirements.
+As suggested by Steven:
+  > I believe we should add a ref count to trace_pipe and the per_cpu
+  > trace_pipes, where if they are opened, nothing else can read it.
+  >
+  > Opening trace_pipe locks all per_cpu ref counts, if any of them are
+  > open, then the trace_pipe open will fail (and releases any ref counts
+  > it had taken).
+  >
+  > Opening a per_cpu trace_pipe will up the ref count for just that
+  > CPU buffer. This will allow multiple tasks to read different per_cpu
+  > trace_pipe files, but will prevent the main trace_pipe file from
+  > being opened.
 
-The client here refers to either system administrator or endpoint both 
-can decide to go
+But because we only need to know whether per_cpu trace_pipe is open or
+not, using a cpumask instead of using ref count may be easier.
 
-to lower gen speed for reducing power consumption.
+After this patch, users will find that:
+ - Main trace_pipe can be opened by only one user, and if it is
+   opened, all per_cpu trace_pipes cannot be opened;
+ - Per_cpu trace_pipes can be opened by multiple users, but each per_cpu
+   trace_pipe can only be opened by one user. And if one of them is
+   opened, main trace_pipe cannot be opened.
 
->> To change the GEN speed the link should be in L0, so first disable
->> L0s & L1.
->>
->> L0s needs to be disabled at both RC & EP because L0s entry is
->> independent. For enabling L0s both ends of the link needs to support
->> it, so first check if L0s is supported on both ends and then enable
->> L0s.
-> Is there a place to document this sysfs knob?  Why should it be
-> qcom-specific?  This sounds like generic PCIe functionality.
->
-> The ASPM stuff looks like it should be done by aspm.c, not done behind
-> its back.
->
-> Everything here looks generic (not qcom-specific) except the
-> qcom_pcie_icc_update() and qcom_pcie_opp_update().  Maybe we need some
-> core infrastructure around this.
+Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
 
-I will try to move the logic to the pci generic and add infrastructure 
-to call controller specific calls.
+v2:
+  - In open_pipe_on_cpu(), clean format of if statements.
+  - In tracing_open_pipe(), call tracing_get_cpu() after
+    tracing_check_open_get_tr() and within trace_types_lock,
+    also keep "int ret;" as the last declaration.
+    Link: https://lore.kernel.org/all/20230817101331.21ab6b33@gandalf.local.home/
 
-- KC
+v1:
+  - Link: https://lore.kernel.org/all/20230817115057.1637676-1-zhengyejian1@huawei.com/
 
->
->> This patch is dependent on "PCI: qcom: Add support for OPP"
->> https://lore.kernel.org/linux-arm-msm/1692192264-18515-1-git-send-email-quic_krichai@quicinc.com/T/#t
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-qcom.c | 141 +++++++++++++++++++++++++++++++++
->>   1 file changed, 141 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 831d158..ad67d17 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -241,10 +241,150 @@ struct qcom_pcie {
->>   	const struct qcom_pcie_cfg *cfg;
->>   	struct dentry *debugfs;
->>   	bool suspended;
->> +	bool l0s_supported;
->>   };
->>   
->>   #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
->>   
->> +static void qcom_pcie_icc_update(struct qcom_pcie *pcie);
->> +static void qcom_pcie_opp_update(struct qcom_pcie *pcie);
->> +
->> +static int qcom_pcie_disable_l0s(struct pci_dev *pdev, void *userdata)
->> +{
->> +	int lnkctl;
->> +
->> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
->> +	lnkctl &= ~(PCI_EXP_LNKCTL_ASPM_L0S);
->> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
->> +
->> +	return 0;
->> +}
->> +
->> +static int qcom_pcie_check_l0s_support(struct pci_dev *pdev, void *userdata)
->> +{
->> +	struct pci_dev *parent = pdev->bus->self;
->> +	struct qcom_pcie *pcie = userdata;
->> +	struct dw_pcie *pci = pcie->pci;
->> +	int lnkcap;
->> +
->> +	 /* check parent supports L0s */
->> +	if (parent) {
->> +		dev_err(pci->dev, "parent\n");
->> +		pci_read_config_dword(parent, pci_pcie_cap(parent) + PCI_EXP_LNKCAP,
->> +				  &lnkcap);
->> +		if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
->> +			dev_info(pci->dev, "Parent does not support L0s\n");
->> +			pcie->l0s_supported = false;
->> +			return 0;
->> +		}
->> +	}
->> +
->> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCAP,
->> +			  &lnkcap);
->> +	dev_err(pci->dev, "child %x\n", lnkcap);
->> +	if (!(lnkcap & PCI_EXP_LNKCAP_ASPM_L0S)) {
->> +		dev_info(pci->dev, "Device does not support L0s\n");
->> +		pcie->l0s_supported = false;
->> +		return 0;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int qcom_pcie_enable_l0s(struct pci_dev *pdev, void *userdata)
->> +{
->> +	int lnkctl;
->> +
->> +	pci_read_config_dword(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, &lnkctl);
->> +	lnkctl |= (PCI_EXP_LNKCTL_ASPM_L0S);
->> +	pci_write_config_word(pdev, pci_pcie_cap(pdev) + PCI_EXP_LNKCTL, lnkctl);
->> +
->> +	return 0;
->> +}
->> +
->> +static ssize_t qcom_pcie_speed_change_store(struct device *dev,
->> +			       struct device_attribute *attr,
->> +			       const char *buf,
->> +			       size_t count)
->> +{
->> +	unsigned int current_speed, target_speed, max_speed;
->> +	struct qcom_pcie *pcie = dev_get_drvdata(dev);
->> +	struct pci_bus *child, *root_bus = NULL;
->> +	struct dw_pcie_rp *pp = &pcie->pci->pp;
->> +	struct dw_pcie *pci = pcie->pci;
->> +	struct pci_dev *pdev;
->> +	u16 offset;
->> +	u32 val;
->> +	int ret;
->> +
->> +	list_for_each_entry(child, &pp->bridge->bus->children, node) {
->> +		if (child->parent == pp->bridge->bus) {
->> +			root_bus = child;
->> +			break;
->> +		}
->> +	}
->> +
->> +	pdev = root_bus->self;
->> +
->> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->> +
->> +	val = readl(pci->dbi_base + offset + PCI_EXP_LNKCAP);
->> +	max_speed = FIELD_GET(PCI_EXP_LNKCAP_SLS, val);
->> +
->> +	val = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
->> +	current_speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, val);
->> +
->> +	ret = kstrtouint(buf, 10, &target_speed);
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (target_speed > max_speed)
->> +		return -EINVAL;
->> +
->> +	if (current_speed == target_speed)
->> +		return count;
->> +
->> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_disable_l0s, pcie);
->> +
->> +	/* Disable L1 */
->> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
->> +	val &= ~(PCI_EXP_LNKCTL_ASPM_L1);
->> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
->> +
->> +	/* Set target GEN speed */
->> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL2);
->> +	val &= ~PCI_EXP_LNKCTL2_TLS;
->> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL2, val | target_speed);
->> +
->> +	ret = pcie_retrain_link(pdev, true);
->> +	if (ret)
->> +		dev_err(dev, "Link retrain failed %d\n", ret);
->> +
->> +	/* Enable L1 */
->> +	val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
->> +	val |= (PCI_EXP_LNKCTL_ASPM_L1);
->> +	dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
->> +
->> +	pcie->l0s_supported = true;
->> +	pci_walk_bus(pp->bridge->bus, qcom_pcie_check_l0s_support, pcie);
->> +
->> +	if (pcie->l0s_supported)
->> +		pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_l0s, pcie);
->> +
->> +	qcom_pcie_icc_update(pcie);
->> +
->> +	qcom_pcie_opp_update(pcie);
->> +
->> +	return count;
->> +}
->> +static DEVICE_ATTR_WO(qcom_pcie_speed_change);
->> +
->> +static struct attribute *qcom_pcie_attrs[] = {
->> +	&dev_attr_qcom_pcie_speed_change.attr,
->> +	NULL,
->> +};
->> +ATTRIBUTE_GROUPS(qcom_pcie);
->> +
->>   static void qcom_ep_reset_assert(struct qcom_pcie *pcie)
->>   {
->>   	gpiod_set_value_cansleep(pcie->reset, 1);
->> @@ -1716,6 +1856,7 @@ static struct platform_driver qcom_pcie_driver = {
->>   		.of_match_table = qcom_pcie_match,
->>   		.pm = &qcom_pcie_pm_ops,
->>   		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
->> +		.dev_groups = qcom_pcie_groups,
->>   	},
->>   };
->>   builtin_platform_driver(qcom_pcie_driver);
->> -- 
->> 2.7.4
->>
+ kernel/trace/trace.c | 55 ++++++++++++++++++++++++++++++++++++++------
+ kernel/trace/trace.h |  2 ++
+ 2 files changed, 50 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index b8870078ef58..c888a0a2c0e2 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -6705,10 +6705,36 @@ tracing_max_lat_write(struct file *filp, const char __user *ubuf,
+ 
+ #endif
+ 
++static int open_pipe_on_cpu(struct trace_array *tr, int cpu)
++{
++	if (cpu == RING_BUFFER_ALL_CPUS) {
++		if (cpumask_empty(tr->pipe_cpumask)) {
++			cpumask_setall(tr->pipe_cpumask);
++			return 0;
++		}
++	} else if (!cpumask_test_cpu(cpu, tr->pipe_cpumask)) {
++		cpumask_set_cpu(cpu, tr->pipe_cpumask);
++		return 0;
++	}
++	return -EBUSY;
++}
++
++static void close_pipe_on_cpu(struct trace_array *tr, int cpu)
++{
++	if (cpu == RING_BUFFER_ALL_CPUS) {
++		WARN_ON(!cpumask_full(tr->pipe_cpumask));
++		cpumask_clear(tr->pipe_cpumask);
++	} else {
++		WARN_ON(!cpumask_test_cpu(cpu, tr->pipe_cpumask));
++		cpumask_clear_cpu(cpu, tr->pipe_cpumask);
++	}
++}
++
+ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ {
+ 	struct trace_array *tr = inode->i_private;
+ 	struct trace_iterator *iter;
++	int cpu;
+ 	int ret;
+ 
+ 	ret = tracing_check_open_get_tr(tr);
+@@ -6716,13 +6742,16 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 		return ret;
+ 
+ 	mutex_lock(&trace_types_lock);
++	cpu = tracing_get_cpu(inode);
++	ret = open_pipe_on_cpu(tr, cpu);
++	if (ret)
++		goto fail_pipe_on_cpu;
+ 
+ 	/* create a buffer to store the information to pass to userspace */
+ 	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
+ 	if (!iter) {
+ 		ret = -ENOMEM;
+-		__trace_array_put(tr);
+-		goto out;
++		goto fail_alloc_iter;
+ 	}
+ 
+ 	trace_seq_init(&iter->seq);
+@@ -6745,7 +6774,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 
+ 	iter->tr = tr;
+ 	iter->array_buffer = &tr->array_buffer;
+-	iter->cpu_file = tracing_get_cpu(inode);
++	iter->cpu_file = cpu;
+ 	mutex_init(&iter->mutex);
+ 	filp->private_data = iter;
+ 
+@@ -6755,12 +6784,15 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
+ 	nonseekable_open(inode, filp);
+ 
+ 	tr->trace_ref++;
+-out:
++
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+ 
+ fail:
+ 	kfree(iter);
++fail_alloc_iter:
++	close_pipe_on_cpu(tr, cpu);
++fail_pipe_on_cpu:
+ 	__trace_array_put(tr);
+ 	mutex_unlock(&trace_types_lock);
+ 	return ret;
+@@ -6777,7 +6809,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
+ 
+ 	if (iter->trace->pipe_close)
+ 		iter->trace->pipe_close(iter);
+-
++	close_pipe_on_cpu(tr, iter->cpu_file);
+ 	mutex_unlock(&trace_types_lock);
+ 
+ 	free_cpumask_var(iter->started);
+@@ -9441,6 +9473,9 @@ static struct trace_array *trace_array_create(const char *name)
+ 	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
+ 		goto out_free_tr;
+ 
++	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
++		goto out_free_tr;
++
+ 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
+ 
+ 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
+@@ -9482,6 +9517,7 @@ static struct trace_array *trace_array_create(const char *name)
+  out_free_tr:
+ 	ftrace_free_ftrace_ops(tr);
+ 	free_trace_buffers(tr);
++	free_cpumask_var(tr->pipe_cpumask);
+ 	free_cpumask_var(tr->tracing_cpumask);
+ 	kfree(tr->name);
+ 	kfree(tr);
+@@ -9584,6 +9620,7 @@ static int __remove_instance(struct trace_array *tr)
+ 	}
+ 	kfree(tr->topts);
+ 
++	free_cpumask_var(tr->pipe_cpumask);
+ 	free_cpumask_var(tr->tracing_cpumask);
+ 	kfree(tr->name);
+ 	kfree(tr);
+@@ -10381,12 +10418,14 @@ __init static int tracer_alloc_buffers(void)
+ 	if (trace_create_savedcmd() < 0)
+ 		goto out_free_temp_buffer;
+ 
++	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
++		goto out_free_savedcmd;
++
+ 	/* TODO: make the number of buffers hot pluggable with CPUS */
+ 	if (allocate_trace_buffers(&global_trace, ring_buf_size) < 0) {
+ 		MEM_FAIL(1, "tracer: failed to allocate ring buffer!\n");
+-		goto out_free_savedcmd;
++		goto out_free_pipe_cpumask;
+ 	}
+-
+ 	if (global_trace.buffer_disabled)
+ 		tracing_off();
+ 
+@@ -10439,6 +10478,8 @@ __init static int tracer_alloc_buffers(void)
+ 
+ 	return 0;
+ 
++out_free_pipe_cpumask:
++	free_cpumask_var(global_trace.pipe_cpumask);
+ out_free_savedcmd:
+ 	free_saved_cmdlines_buffer(savedcmd);
+ out_free_temp_buffer:
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index e1edc2197fc8..53ac0f7780c2 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -377,6 +377,8 @@ struct trace_array {
+ 	struct list_head	events;
+ 	struct trace_event_file *trace_marker_file;
+ 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
++	/* one per_cpu trace_pipe can be opened by only one user */
++	cpumask_var_t		pipe_cpumask;
+ 	int			ref;
+ 	int			trace_ref;
+ #ifdef CONFIG_FUNCTION_TRACER
+-- 
+2.25.1
+
