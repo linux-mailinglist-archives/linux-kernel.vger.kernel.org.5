@@ -2,115 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717E2781114
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C559781117
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378848AbjHRQ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        id S1378859AbjHRQ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378841AbjHRQ5O (ORCPT
+        with ESMTP id S1378891AbjHRQ6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:57:14 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C79A3A8B
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:57:12 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5254f9eda36so1447741a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:57:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692377831; x=1692982631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BsyKfMya3T2IG5CsphBG2f1KZVRfw1A44jYZYuUf32w=;
-        b=OSdk3FCzOMhI/OH7Tx/fJFVN5dScVuA5+lhY8Dc6KTAzM4L5hXxr6R/t/iwM+s+RFY
-         maDf4UXSEsRxmrgqNcb81xU3eXxOknhsm05Gle6GtYgOVq4kW22Ca9olD1KVqEQEGjBU
-         SmVjGgqXpugx1FudR52ylhevyrJnGveMBDoVg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692377831; x=1692982631;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BsyKfMya3T2IG5CsphBG2f1KZVRfw1A44jYZYuUf32w=;
-        b=c2zFfyGFtRiNOmVEzbSDxPZ8nsNLnyZYwnK7Nna/ZjUxU9kQgwsLas41pJiPUq32dQ
-         8osvAKHI4VcTCfa4YfZCzfPZRS6Sb0+edqij8sY12auXWJD5UndJUf//n47h1onIKlMu
-         Mp1bPGb6nuM8+mrkyQvsZGPcv+9YwxWHrVKuSwcj0euh3FHbGIt6FV3GKMB88bpWMBld
-         Lx6d+Ka/p8G43al6Qd07j4SHEgfd9vYXU7zlrZHqIVcZjh2HMUPsaY1HQIzVq4wWeU4t
-         bR1Xc/XEYP/3s4br+pxM2oJa+Wm/pDN2zUtI8tlKNybjV3r+u+Yjyr9tExpVMZHuUg7f
-         oVVQ==
-X-Gm-Message-State: AOJu0Yx8FIl2SOWL+a/WCADqzqHbXthO+SHtpT9euOhH62t035MLmpxn
-        yc1+xT53IO4QYC3AxLK+6tUILYYBRoXwp31DjjT2vg==
-X-Google-Smtp-Source: AGHT+IHuOU5N11Lk5NSSYlDBPWcuphNEBeKr4AafLZ//Dqr/oS4Z1OLTqRF+Ba0oQRXzsmr48VWP6veE7DkGlw9yygo=
-X-Received: by 2002:aa7:c58c:0:b0:522:2a0c:d254 with SMTP id
- g12-20020aa7c58c000000b005222a0cd254mr2605082edq.33.1692377830908; Fri, 18
- Aug 2023 09:57:10 -0700 (PDT)
+        Fri, 18 Aug 2023 12:58:02 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B6C3C3F;
+        Fri, 18 Aug 2023 09:57:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1692377877; x=1723913877;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tYP9zSg0rueRu76BbY3YrCv6Yjv7OvHqs7Z8XMR1gAU=;
+  b=f/BIbdwOTk+bogM+M6vaCnTyjpiing8iyJ376Dm2tuhM/oihiEETsWGI
+   n9y4+PTwtMGVS1S/86C3FrJyqo1gkaNus1kzsxw20GU9GKP3RaOYpuBLW
+   eJ9yqCbcL3kvZWVgbABqN009As/AggwVMo+kLPj4BDE1hOqIaljxgeHtr
+   eQYJqZ7m+USSV403Ynp30VKNHHPJ0bZ/wI8yYMqk4W+9NcLctdOFFEMof
+   oleQkfm4AjH1IYrr93bFCn0koXO+cTAnFK2aBEhzTzk09BpDcpli3gDk7
+   uxxH4FGxk7p0hw7lCNHApjKjGZsW3lDJvSltKQXFC2LZJ/BeTzI3Vb8XQ
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="230584349"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Aug 2023 09:57:56 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Fri, 18 Aug 2023 09:57:56 -0700
+Received: from marius-VM.mshome.net (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.21 via Frontend Transport; Fri, 18 Aug 2023 09:57:54 -0700
+From:   <marius.cristea@microchip.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <robh+dt@kernel.org>
+CC:     <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marius.cristea@microchip.com>
+Subject: [PATCH v4 0/2] Adding support for Microchip MCP3564 ADC family
+Date:   Fri, 18 Aug 2023 19:57:48 +0300
+Message-ID: <20230818165750.55406-1-marius.cristea@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814112421.5a2fa4f6@kernel.org> <20230817131612.M_wwTr7m@linutronix.de>
- <CAO3-Pbo7q6Y-xzP=3f58Y3MyWT2Vruy6UhKiam2=mAKArxgMag@mail.gmail.com> <20230818145734.OgLYhPh1@linutronix.de>
-In-Reply-To: <20230818145734.OgLYhPh1@linutronix.de>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Fri, 18 Aug 2023 11:56:59 -0500
-Message-ID: <CAO3-Pbr4u8+UsmmN+kHF4Yv+-THAnUxSgROLyK3Tvjb9W5gHZQ@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 9:57=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> On 2023-08-18 09:43:08 [-0500], Yan Zhai wrote:
-> > > Looking at the cloudflare ppl here in the thread, I doubt they use
-> > > backlog but have proper NAPI so they might not need this.
-> > >
-> > Cloudflare does have backlog usage. On some veths we have to turn GRO
->
-> Oh. Okay.
->
-> > off to cope with multi-layer encapsulation, and there is also no XDP
-> > attached on these interfaces, thus the backlog is used. There are also
-> > other usage of backlog, tuntap, loopback and bpf-redirect ingress.
-> > Frankly speaking, making a NAPI instance "threaded" itself is not a
-> > concern. We have threaded NAPI running on some veth for quite a while,
-> > and it performs pretty well. The concern, if any, would be the
-> > maturity of new code. I am happy to help derisk with some lab tests
-> > and dogfooding if generic agreement is reached to proceed with this
-> > idea.
->
-> If you have threaded NAPI for veth then you wouldn't be affected by this
-> code. However, if you _are_ affected by this and you use veth it would
-> be helpful to figure out if you have problems as of net-next and if this
-> helps or makes it worse.
->
-yes we are still impacted on non-NAPI veths and other scenarios. But
-net-next sounds good, still plenty of time to evaluate if it has any
-negative impact.
+From: Marius Cristea <marius.cristea@microchip.com>
 
-Yan
+Adding support for Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
+Delta-Sigma ADCs with an SPI interface. This driver covers the following part
+numbers:
+ - MCP3561, MCP3562, MCP3564, MCP3561R, MCP3562R, MCP3564R,
+ - MCP3461, MCP3462, MCP3464, MCP3461R, MCP3462R and MCP3464R.
 
-> As of now Jakub isn't eager to have it and my testing/ convincing is
-> quite limited. If nobody else yells that something like that would be
-> helpful I would simply go and convince PeterZ/tglx to apply 2/2 of this
-> series.
->
-> > Yan
->
-> Sebastian
+Differences related to previous patch:
+v3:
+- fix review comments from v3:
+  - adding label names for channels into the example from the
+    "microchip,mcp3564.yaml" file  
+  - update defines names (with _REG and _MASK)
+  - code clean-up
+  - flip logic to cut down on indent in some cases
+  - use "spi_get_device_match_data" instead of "device_get_match_data"
+  - remove some unnecessary _SET functions
+- change "boost_current" attribute to "boost_current_gain". The
+  attribute is a gain not an absolute value.
+- change "boost_current_available" attribute to
+  "boost_current_gain_available"
+- update comment from v3 (to better describe the change) "fallback compatible
+  in device tree to deal with some newer part number" to "stop failing to
+  probe when the chip id is not recognized. In this case a fallback
+  compatible has been used to support a new part number"
+
+v3:
+- fix review comments:
+  - fix and update the device tree bindings
+  - enable "auto_zeroing_ref_enable" attribute only
+    when internal reference is used
+  - remove unused headers
+  - fix comments (kernel-docs)
+  - remove scan_type
+  - replace "extend_name" with read_label
+  - print label for each channel (label could be added into the dt)
+  - add comment to explain the maximum channels numbers
+  - add protection around critical region
+  - stop failing to probe when the chip id is not recognized. In this
+    case a fallback compatible has been used to support a new part number
+
+
+- Open questions:
+  - whether or not to add a spi-mux type of thing to deal with the part number
+    address in case there are multiple devices connected to the same chip
+    select.
+  - discussion related to the "custom property". Last time around a consensus
+    wasn't reached.
+
+v2:
+- fix review comments:
+  - change the device tree bindings
+  - change the ADC channel creation (starting from DT)
+  - use defines, masks and FIELD_PREP() instead of hardcoded values
+  - mode the PGA from Hardware Gain to scale
+  - add a current output channel from burnout current
+  - fix coding style issues
+  - use self-explanatory naming to drop the comment
+- renumbered the versioning (start with v1 instead of v0)
+
+v1:
+- first version committed to review
+
+Marius Cristea (2):
+  dt-bindings: iio: adc: adding MCP3564 ADC
+  iio: adc: adding support for MCP3564 ADC
+
+ .../ABI/testing/sysfs-bus-iio-adc-mcp3564     |   53 +
+ .../bindings/iio/adc/microchip,mcp3564.yaml   |  205 +++
+ MAINTAINERS                                   |    7 +
+ drivers/iio/adc/Kconfig                       |   13 +
+ drivers/iio/adc/Makefile                      |    1 +
+ drivers/iio/adc/mcp3564.c                     | 1527 +++++++++++++++++
+ 6 files changed, 1806 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mcp3564
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip,mcp3564.yaml
+ create mode 100644 drivers/iio/adc/mcp3564.c
+
+
+base-commit: 9e66fb52449538406cea43e9f3889c391350e76e
+-- 
+2.34.1
+
