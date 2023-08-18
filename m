@@ -2,164 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B652781014
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D47781017
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378533AbjHRQPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S1378542AbjHRQQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:16:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378595AbjHRQPI (ORCPT
+        with ESMTP id S1378583AbjHRQQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:15:08 -0400
-Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FEA4213
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:15:04 -0700 (PDT)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1bdb3878322so15249045ad.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:15:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375304; x=1692980104;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zZXTzYhH/QokR/Ca1TtaJrXoB6xfiXR3zkEVWXsprDg=;
-        b=WVWD0O7ZMO3Cf0DcuI7OcbUtDJBJlfkcll6yzqu7LpbJPiM3tWj+blrjgMouMQk3+0
-         LBl/gbukx1xO+VY86+lqOCvpaj8Cuu+2O32eICYIGHoiR/ajSWvnNi0kcFyDkvut2SDY
-         sLrY6/aiZvIE7R7IwYvat13DwfFYD1h95Rmj85fREDz+ayzKGWHeLYmklCQ07BWbDCCu
-         JCfsFWqSGxGuZ9UjxU5+xyWM41h9xT0rf3V+EZSqIyXK4l5RtfxuXhdI3aH8p38EkYxC
-         z+jvI2fL6vq4N4yp8L6GryZFhAj3m6hIXZ+Lc3QNXqvqxULG3guT6ksxgdK31gCEiYKq
-         NHvA==
-X-Gm-Message-State: AOJu0Yx4miC7X97Ryn+ANdlFvkQySjcf9CEqYMtkkeUZlgSo2Si/xOwM
-        7SYw9aIS5Ij6AC7xcN61Py3D2qNdg/oqqeQ6GtMQxUYbcyH8
-X-Google-Smtp-Source: AGHT+IHd/1ELFzzKWV7wTV5GChQtToCpSe/lkmsPL1ggv8ZD/3vYEBUhgXRBq0mGnHSUZXago2yTT1i+R+jJf96f+IfPhUxSCgzg
+        Fri, 18 Aug 2023 12:16:00 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2092.outbound.protection.outlook.com [40.107.96.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED293C04
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:15:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N0kA5oTx96O9hQ7opsQ10o3mFnhVOlhjbtaAI+b9v7k3rbgzeXvmbzCowp+zek+VLHTzg/oBNs076L0F8Z2pq6hWssHR6KpouxWnY/SKMbtHcUgR4uPeIkV3I/3LxfFPlTMhlWKEPV0j1w2aD0fCG/4MiNusKenaVawjNJ4uRhPOsYKTyKn2uBl+vChXBYBwnsLk1mrCbQpbvCh9APn9kOOYyyV4X1PNR6DPZDPRMqcPLmsEUsXPCGbpx7h9R+9fcR1uVTCV/CeVrAqnaUVv/i6HoC2xhfWDT3KH5h6y6aEVD/GaNxQgS+irmfKArxS5tTjIGLnYPV+7NVAtjm+Beg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gfpeB5e370EHjRPrN6oc39mk34uTPRd7rKSZijB2buM=;
+ b=L0BjzzZ9gehg1RXB45yWrNYlahtG/fl2Wy6S/L2LsU2UfgrG/qpnwYzFseEQkX1UKKLdLinj36PJXcD/aHnjFin3qqQIP2KTS78VcDsuzxvvXF7LIe0NNAxeusnq/S+UBzSRjuEe2L1RPAe1yeWSeOdgIHMO3piQEQSywwIgyl9kjCOFUHe6kv+K+7uFUyitQhZjeNXHRymwFuLgPtyMgljviRhx098YA3W21dZR9Icy4xlirJN7FW/eW7GZ+wAtYci3KhfoVNXbjB9dComlZr1TCoGmOgdDIBDZ56WuppAMe7HzKl1CgKhKPNC3DKNs5jmX3a3zgj3IZfdSxFqBDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gfpeB5e370EHjRPrN6oc39mk34uTPRd7rKSZijB2buM=;
+ b=coOK5dAowOzaeH7PvftPNOtyhVVMYqhO+s2IhtO5RMpW/xMr27zxYZuZSyKMUpD+b4QY5sYGWN3y6/OPRd/fjO8iXELWxqJafU8gyAKF3bZPkpAWESUpDk0tIJYXEOJwsyFhYe4sohlq7aYp4P3hlhn/aE1EQo+eVovY3GGC1+o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM6PR01MB4780.prod.exchangelabs.com (2603:10b6:5:6b::16) by
+ CO1PR01MB6774.prod.exchangelabs.com (2603:10b6:303:fb::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.20; Fri, 18 Aug 2023 16:15:53 +0000
+Received: from DM6PR01MB4780.prod.exchangelabs.com
+ ([fe80::1f9:1d97:19f9:40b7]) by DM6PR01MB4780.prod.exchangelabs.com
+ ([fe80::1f9:1d97:19f9:40b7%3]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
+ 16:15:52 +0000
+From:   Carl Worth <carl@os.amperecomputing.com>
+To:     James Morse <james.morse@arm.com>, linux-kernel@vger.kernel.org
+Cc:     "D. Scott Phillips" <scott@os.amperecomputing.com>,
+        Darren Hart <darren@os.amperecomputing.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>,
+        Akanksha Jain <Akanksha.Jain2@arm.com>
+Subject: Re: Initial testing of MPAM patches
+In-Reply-To: <86bced4f-06c1-73de-9aa5-bb23998479fc@arm.com>
+References: <87lee8l9pb.fsf@rasp.mail-host-address-is-not-set>
+ <86bced4f-06c1-73de-9aa5-bb23998479fc@arm.com>
+Date:   Fri, 18 Aug 2023 09:15:48 -0700
+Message-ID: <87o7j4ba2z.fsf@rasp.mail-host-address-is-not-set>
+Content-Type: text/plain
+X-ClientProxiedBy: CH0PR08CA0005.namprd08.prod.outlook.com
+ (2603:10b6:610:33::10) To DM6PR01MB4780.prod.exchangelabs.com
+ (2603:10b6:5:6b::16)
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e842:b0:1bc:1b01:894e with SMTP id
- t2-20020a170902e84200b001bc1b01894emr1011219plg.10.1692375303711; Fri, 18 Aug
- 2023 09:15:03 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 09:15:03 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cdf3e7060334d4a8@google.com>
-Subject: [syzbot] [block?] WARNING in user_reset_fdc
-From:   syzbot <syzbot+233dd451466273c18ef0@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, efremov@linux.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR01MB4780:EE_|CO1PR01MB6774:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9b70b17c-2334-4cc7-d2dc-08dba006645d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P+YBSJNkDKDh+8x+I36dqaY6ew57Q8kyVRldcYJ5S3R2wRZDXFjOY6bfjXJOefX9h+gNvJs8mPARWXNx1Z3acF93atlLNHlec5DLStC9QX5OiVXOvz493Vs7ZnUDFy42ZQDnK2i/7l3tUZ6IAq5mVtGxkCTVF+9K75h7T8hBHHSHxPJcWga8lHmPF4GsRVpbiyFlub0Si2VyJdQyNLP/RTwTZRcf8PJsfoTma9FNPTTyRVyohBkd/tbEWz6GW57ahOx7XNJ+5IwMixRQ1mMCgVK/64kfQNLP/hjj68hbd+Y/Y9OVlieWVGJUWE0h0qR2whyah5ecDgR5VE/ERWYTj1E4rjyRNeZ6BzAlvQo6U0ZUH69K8ZgdKjqn5D0WB/gJbgdccpkR7lIJUUsgWMt12AeSU5L0/aVNOG6s9iYWtP6Md808onDN48P/5Hyg9UvCOZAh/pVNeLS4Q3da+Jp4IuIwL1ZFtLwBmA12iHRexXbxuA4KWnq+PhwUc+yBrGtdT8lfgBhOIhBzurRSOL30dX2y9qwzMjSqsfj6N4PnFKzl595HN0jURtCh7e2STNZ9p+a/vzc/wyQTHVbM0ibS2jUR0ht6AYomyqwxdDEai9dJr6LXBY3ZLh3U+R+YT97F
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB4780.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(346002)(39850400004)(376002)(186009)(1800799009)(451199024)(86362001)(66946007)(54906003)(66476007)(316002)(66556008)(478600001)(41300700001)(38100700002)(38350700002)(6486002)(6512007)(26005)(6666004)(6506007)(9686003)(53546011)(52116002)(4326008)(8676002)(5660300002)(8936002)(2906002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FccUyN0FGI5rQvx/3ac8iIswZ2LJUc+KEYGk+evcsMcINGmb3x1QEkupYq5K?=
+ =?us-ascii?Q?fiIGdTNKpROrFyBSnEXo3frzUbJvnraUEdxv2q9WS536sUbo+WcUjlsW/kC0?=
+ =?us-ascii?Q?k6bfjftZt8+L9Ict258wQEMxqSsRI70UzqfyGDo3GD/AWrnvogDxbtVv1Nt+?=
+ =?us-ascii?Q?fUFht19lBZ2YTyz9Q1yFy6EYXvT6zPgY5lGnm22U60L48CxgLTDcUO8i6NIh?=
+ =?us-ascii?Q?NFl73GPwV2HP9bKkeKUm6VOvnr2WQ7zvRPIYOI26TPZuPKYDix7+ZCsO3+R2?=
+ =?us-ascii?Q?ckzmopqF2//BEd9oyq6Z6vksNmUwaNAQ47uv/ZWfuSpglawL4PCU4/shDhn/?=
+ =?us-ascii?Q?oj1sHphxQaqDdV9GkZnDwIR4Qb9mSyrPBL7gNimA+qPVG4v7FlFIUmUPCh3+?=
+ =?us-ascii?Q?xbJpsUlhxpGGVAPWpP7ABCbcD+8WKK42sQI6BzcwDzMfyFgfU4dub8eTqbR0?=
+ =?us-ascii?Q?Za773m6KutH2oHg6rKH75ehpo7VVpP//5HkmFw5qgIxwF6KRuK6wrGIy6kYh?=
+ =?us-ascii?Q?JSAEEZg8/zej9R71R/0jeurmTLWl17XSVO9UXEmQm2QnWC8tAVbSEuB+rgmH?=
+ =?us-ascii?Q?u47uZvJx1PocwIIkmjnTa2cBg76TYVc3+jTyf1QZ+OmyGDK34SIdLXRKhVzB?=
+ =?us-ascii?Q?4xLqzn+cj+N0aMeL/iHnVpE3D1qc1T99k3Mj97dJX4ZxXdpgxgwm6yz6N3wG?=
+ =?us-ascii?Q?QDrx4eXpsA5S+lNEMTWvjQq26WWWspx47Jf15fYsrSjGKe4LqvQgme3pJQd5?=
+ =?us-ascii?Q?38F8fHqTUHXJQv0HWj2YKJ3s/hY4FvS+11YqCKVsE3KdDT0cKzdWFs8CXjUH?=
+ =?us-ascii?Q?2FPPBHX3ZVZ/BUhZzfX9ExmjopLtHqJUErue2xjgHPtznlfRplYk5tsJLKa+?=
+ =?us-ascii?Q?YDi4hRaHyZQywTcumiZbCBoVTqejfGC28BcvOqkFR6Bvw7b9J1giRAm6eu8/?=
+ =?us-ascii?Q?acTRBYYN2S0x5k8RzS7IIEp6fD6TA5tWjioToBJoG7Jc74+N4sdrPLda2qDt?=
+ =?us-ascii?Q?XUexG5SAn10kHya4bBoOOaQykLPzHq6Esj9mWsdbXpGEM4Z+JHxAbUIkEA/Q?=
+ =?us-ascii?Q?E/75D2++HLNvfbefTGMOi2wfTf+motCm2BuqTPMcZi4GlkvwVg08S0J3/tXe?=
+ =?us-ascii?Q?0+RnK9bGM86n20T+KO0RwS5ZyeooQJpL3He/juOb3EeF3YQXTb23RQ/8U2Vn?=
+ =?us-ascii?Q?KD8KzCtc8EB8LnCnD1n+kNnHr63e4IMAbA9mjRJckroAM80LLCbtHnrvPKc9?=
+ =?us-ascii?Q?rbFkpYbLdMG0+X5s0xffL5I76sX5UrbPo3umK7utUbbGlVo2YOQ39WK19qTb?=
+ =?us-ascii?Q?TapaxEJRXmj+OR1staMwWxuF85m1ZEbFrUN94brgfu/iIad8BFiVWLuhEUGd?=
+ =?us-ascii?Q?Hp7uNjBo72K5rzfTQcrZWlR5jqvKMZYttQGiqGXQWInWzm+mcbsC/c1MWoy2?=
+ =?us-ascii?Q?8OW7swV3i/8ZEmEiwwXIzLwv0qdRWYfFbWW1hQom8J9Ye36nJYY04uVUdwZL?=
+ =?us-ascii?Q?fkzWO7qg1xjJw3UJ3UJcnK6pmVDwT2Jprx4ku5gmrKvihESBXeXQuBWkXa9h?=
+ =?us-ascii?Q?Sh+e+fNBCU8oCIrTCvBMXn4AWVoC9U6gRjtpMuGDL/qJAEOD1hOHXXK+mFUo?=
+ =?us-ascii?Q?fB9NqCpcGrPE/aIBc/qAH0k=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b70b17c-2334-4cc7-d2dc-08dba006645d
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB4780.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 16:15:52.5724
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hgs+EYm+chLE71TBFcjc9EbYSH2/iXHjG0m00Da6EaNbiPujhwge6TlYYXQivpGOO74u2wym7RMKm8rNO4SNaTETJmPUPRlJaIGtrB6y7hU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6774
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+James Morse <james.morse@arm.com> writes:
+> On 18/08/2023 15:13, Carl Worth wrote:
+>
+>> 1. Is there a way to query the MPAM PARTID for a particular resctrl group?
+>
+> Deliberately: no.
 
-syzbot found the following issue on:
+No problem at all. Thanks for the explanation.
 
-HEAD commit:    16931859a650 Merge tag 'nfsd-6.5-4' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f58a4ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=233dd451466273c18ef0
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+> The general theme here is I don't trust user-space not to depend on
+> any value exposed.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Fair point. I appreciate it.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-16931859.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bdf15da7f883/vmlinux-16931859.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3793fa211ca9/bzImage-16931859.xz
+>>    I don't know how much an end user will care about PARTID values,
+>>    (so it's nice that the driver manages these implicitly), but for
+>>    me, while debugging this stuff, it would be nice to be able to
+>>    query them.
+>
+> This would only matter if you could somehow inspect the hardware - which you probably can.
+> - but users of deployed systems can't.
+>
+> Sorry if this isn't the answer you want, but I'm trying to only publish patches to
+> kernel.org that I intend to upstream in some form.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+233dd451466273c18ef0@syzkaller.appspotmail.com
+No, that's fine. Like you said, with me doing bringup, I'm in a special
+case, and also like you said, I can hack things to give me what I need
+in the meantime.
 
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 schedule_bh drivers/block/floppy.c:999 [inline]
-WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 process_fd_request drivers/block/floppy.c:2847 [inline]
-WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 user_reset_fdc+0x1a1/0x1e0 drivers/block/floppy.c:2945
-Modules linked in:
-CPU: 2 PID: 26006 Comm: syz-executor.3 Not tainted 6.5.0-rc6-syzkaller-00038-g16931859a650 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:schedule_bh drivers/block/floppy.c:999 [inline]
-RIP: 0010:process_fd_request drivers/block/floppy.c:2847 [inline]
-RIP: 0010:user_reset_fdc+0x1a1/0x1e0 drivers/block/floppy.c:2945
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 02 7e 27 48 8d 04 9b 80 0c c5 38 37 42 92 04 e9 b4 fe ff ff e8 bf e8 4f fc <0f> 0b e9 3d ff ff ff e8 93 f5 a3 fc e9 d8 fe ff ff e8 29 f6 a3 fc
-RSP: 0018:ffffc900283af978 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88801ccec800 RSI: ffffffff85361fe1 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000002
-R13: 0000000000000001 R14: 0000000000000012 R15: 0000000000000012
-FS:  0000000000000000(0000) GS:ffff88802c800000(0063) knlGS:00000000f7fb4b40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 00000000f731c268 CR3: 0000000069b30000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- fd_locked_ioctl+0xa78/0x1a10 drivers/block/floppy.c:3542
- fd_ioctl drivers/block/floppy.c:3576 [inline]
- fd_compat_ioctl+0x90b/0x1d00 drivers/block/floppy.c:3890
- compat_blkdev_ioctl+0x2fe/0x7c0 block/ioctl.c:677
- __do_compat_sys_ioctl+0x2bf/0x330 fs/ioctl.c:968
- do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
- __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
- do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
- entry_SYSENTER_compat_after_hwframe+0x70/0x82
-RIP: 0023:0xf7fb9579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f7fb45ac EFLAGS: 00000292 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000254
-RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	10 06                	adc    %al,(%rsi)
-   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
-   6:	10 07                	adc    %al,(%rdi)
-   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
-   c:	10 08                	adc    %cl,(%rax)
-   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
-  1e:	00 51 52             	add    %dl,0x52(%rcx)
-  21:	55                   	push   %rbp
-  22:	89 e5                	mov    %esp,%ebp
-  24:	0f 34                	sysenter
-  26:	cd 80                	int    $0x80
-* 28:	5d                   	pop    %rbp <-- trapping instruction
-  29:	5a                   	pop    %rdx
-  2a:	59                   	pop    %rcx
-  2b:	c3                   	ret
-  2c:	90                   	nop
-  2d:	90                   	nop
-  2e:	90                   	nop
-  2f:	90                   	nop
-  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
-  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+>>    I know that PARTID 0 is treated as reserved by the code, but is cpu
+>>    0 given any special treatment?
+>
+> No - can you reproduce this on the latest branch?
 
+I will check.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>> 4. The current schemata allows for cache portion, but not cache capacity
+>
+> See KNOWN_ISSUES:
+> | Only features that match what resctrl already supports are supported.
+> | This is very deliberate.
+...
+>>    Is this due to a limitation in mapping MPAM to the current resctrl
+>>    interface?
+>
+> It is. Getting feature parity with x86 is the critical path to getting this upstream.
+> Supporting other bits of MPAM can come next - we'd need a discussion with Intel about how
+> any changes should be done, so that they can support them too if they ever have similar
+> features.
+>
+> This conversation can't happen until we have some support upstream.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Got it. This approach makes sense to me, and it's good for me to
+understand what limitations exist in the current implementation and why.
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+>> 5. Linked-list corruption with missing cache entries in PPTT
+>>
+>>    At one point, I tried booting with the MPAM ACPI table populated
+>>    for my L3 cache, but without the necessary entries in the PPTT ACPI
+>>    table. The driver fell over with linked-list corruption, halting
+>>    Linux boot. I'll follow up this report with more details.
+>
+> This kind of thing won't have seen much testing. Any details you can
+> share would help!
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Yeah, I figured as much. Since I can replicate this I don't think it
+should be too hard for me to give in and root-cause this bug.
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+Thanks again for the quick response. I'll do my next testing against
+more recent code, and I should be able to follow-up against some
+specific patches for the couple of bugs I identified above and that I'll
+look closer into.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Beyond that, I hope to be able to provide some Reviewed-by and Tested-by
+soon.
+
+I see that you've been going several rounds on the earlier portions of
+this patch set, (the parts that refactor resctrl to prepare for
+things). I trust that you've got that part of the process in hand?
+Otherwise, let me know if there's anything I can do to help with there.
+
+Again, I haven't been looking into details of those patches yet, just
+testing to ensure they work, (and so far, the generic parts of resctrl
+seem to be working just fine for me).
+
+-Carl
+
