@@ -2,81 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8E578078F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C917178079B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358802AbjHRI5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        id S1358818AbjHRI7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:59:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358824AbjHRI4m (ORCPT
+        with ESMTP id S1358813AbjHRI6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:56:42 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA59630E6;
-        Fri, 18 Aug 2023 01:56:40 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRwhz6Fb5z4f3l1M;
-        Fri, 18 Aug 2023 16:56:35 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgCXdKdDMt9klgj6Aw--.15677S2;
-        Fri, 18 Aug 2023 16:56:36 +0800 (CST)
-Subject: Re: [PATCH v5 8/8] ext4: add first unit test for
- ext4_mb_new_blocks_simple in mballoc
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Ritesh Harjani <ritesh.list@gmail.com>, adilger.kernel@dilger.ca,
-        ojaswin@linux.ibm.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <87jzucw5l7.fsf@doe.com>
- <fa68f2a4-e8f1-8856-0a99-736b70de0c52@huaweicloud.com>
- <20230818050733.GH3464136@mit.edu>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <5c8f71e1-2512-5121-606a-8b9458e37ea6@huaweicloud.com>
-Date:   Fri, 18 Aug 2023 16:56:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Fri, 18 Aug 2023 04:58:54 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E70830E9;
+        Fri, 18 Aug 2023 01:58:51 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qWvJR-005Ewm-GG; Fri, 18 Aug 2023 16:58:34 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Aug 2023 16:58:34 +0800
+Date:   Fri, 18 Aug 2023 16:58:34 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Tom Zanussi <tom.zanussi@linux.intel.com>
+Cc:     davem@davemloft.net, fenghua.yu@intel.com, vkoul@kernel.org,
+        dave.jiang@intel.com, tony.luck@intel.com,
+        wajdi.k.feghali@intel.com, james.guilford@intel.com,
+        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
+        giovanni.cabiddu@intel.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH v9 00/14] crypto: Add Intel Analytics Accelerator (IAA)
+ crypto compression driver
+Message-ID: <ZN8yujTWN42vd2cF@gondor.apana.org.au>
+References: <20230807203726.1682123-1-tom.zanussi@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20230818050733.GH3464136@mit.edu>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgCXdKdDMt9klgj6Aw--.15677S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVWUJVW8JwAF
-        c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-        0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-        wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-        x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vI
-        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1wL05
-        UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230807203726.1682123-1-tom.zanussi@linux.intel.com>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-on 8/18/2023 1:07 PM, Theodore Ts'o wrote:
-> Hi, it sounds like you are planning on a few additional changes to
-> this patch series, right?  When might you be planning on pushing out
-> the next version?
+On Mon, Aug 07, 2023 at 03:37:12PM -0500, Tom Zanussi wrote:
+> Hi, this is v9 of the IAA crypto driver, incorporating feedback from
+> v8.
 > 
-> Thanks,
-Yes, Ritesh kindly offered advises and I'm going to finish this by end
-of next week. Otherwise if anything comes up, I'll  target at the week
-after.
+> v9 changes:
 > 
-> 					- Ted
+>   - Renamed drv_enable/disable_wq() to idxd_drv_enable/disable_wq()
+>     and exported it, changing all existing callers as well as the
+>     iaa_crypto driver.
 > 
+>   - While testing, ran into a use-after-free bug in the irq support
+>     flagged by KASAN so fixed that up in iaa_compress() (added missing
+>     disable_async check).
+> 
+>   - Also, while fixing the use-after-free bug, rearranged the out:
+>     part of iaa_desc_complete() to make it cleaner.
+> 
+>   - Also for the verify cases, reversed the dma mapping by adding and
+>     calling a new iaa_remap_for_verify() function, since verify
+>     basically does a decompress after reversing the src and dst
+>     buffers.
+> 
+>   - Added new Acked-by and Reviewed-by tags.
 
+This adds a bunch of warnings for me:
+
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:2090:5: warning: no previous prototype for ‘wq_stats_show’ [-Wmissing-prototypes]
+ 2090 | int wq_stats_show(struct seq_file *m, void *v)
+      |     ^~~~~~~~~~~~~
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:2106:5: warning: no previous prototype for ‘iaa_crypto_stats_reset’ [-Wmissing-prototypes]
+ 2106 | int iaa_crypto_stats_reset(void *data, u64 value)
+      |     ^~~~~~~~~~~~~~~~~~~~~~
+
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38: warning: incorrect type in argument 1 (different base types)
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38:    expected unsigned long [usertype] size
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38:    got restricted gfp_t
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58: warning: incorrect type in argument 2 (different base types)
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58:    expected restricted gfp_t [usertype] flags
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58:    got unsigned long
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:2090:5: warning: symbol 'wq_stats_show' was not declared. Should it be static?
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:2106:5: warning: symbol 'iaa_crypto_stats_reset' was not declared. Should it be static?
+../drivers/crypto/intel/iaa/iaa_crypto_main.c:2028:13: warning: context imbalance in 'iaa_crypto_remove' - different lock contexts for basic block
+
+../drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c:10:11: warning: symbol 'fixed_ll_sym' was not declared. Should it be static?
+../drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c:49:11: warning: symbol 'fixed_d_sym' was not declared. Should it be static?
+
+Please fix before resubmitting.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
