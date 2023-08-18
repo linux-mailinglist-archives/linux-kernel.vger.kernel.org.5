@@ -2,172 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A644A7803F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2970E7803F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357317AbjHRCwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
+        id S1357329AbjHRCxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241065AbjHRCvv (ORCPT
+        with ESMTP id S1357320AbjHRCw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:51:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B9A71706;
-        Thu, 17 Aug 2023 19:51:50 -0700 (PDT)
+        Thu, 17 Aug 2023 22:52:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D731706;
+        Thu, 17 Aug 2023 19:52:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9DCD7633A4;
-        Fri, 18 Aug 2023 02:51:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07365C433C7;
-        Fri, 18 Aug 2023 02:51:47 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 28F9D60C09;
+        Fri, 18 Aug 2023 02:52:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C6C5C433C7;
+        Fri, 18 Aug 2023 02:52:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692327109;
-        bh=UR+lY8xC12md9n4dIqbiWSk5fT24wBQROEj2tL/rHwg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uaovqjC95i/W8Y5I5lfK/hAJ6uPby6+aeWC+52XJIxi3ZcmMFS3Bag0oxvttVAJcz
-         9syXSyE171bgvjbzM0UPIWk0Nwn83RZDUZjbJgP3YSjEYrQebu4zSBvywaYoX1Uvjt
-         mNKCXQGCgnYFQ7nlKiPnO5teihGVIS4GxJlSP27p+R7QmMLBm3SXOBqlYGFtSlsRIa
-         CzUClolLkt36fQcffV/D7aDgUj3fiA3CaT8Zl6p9qsVMFL356j45icQJASKq2UtC5r
-         dLyio0h/SvCTrqk9xPIL2rbOFzlfwHzWo5LDmcaLwNAVXG1nep/1lfVm8OlU2+hqLa
-         61fUb80bcm0hQ==
-Message-ID: <a6ce7776-68c7-3fd2-32ed-3981da4bf33b@kernel.org>
-Date:   Fri, 18 Aug 2023 11:51:46 +0900
+        s=k20201202; t=1692327177;
+        bh=oKWvl5cR+aN7W6Ji9c7Edvn9oPXPfUDSKX2O+ONXOxs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CQFHjEJKGV9Tqr52SOusQnN7Yl56ANN1btFHVmJ29VdDF7Jt+W3fouYvza9+lB1TB
+         YuIfYN2v1y3NrQzAYsBQv5YCW5hiP0VLibIt/EHCm54jKOS8WAJ/8DOhcpcaRG9xPQ
+         t4WGve5L4FRAaul9rMadQrwLTTKyADodVV1MlIsnqztyVFyds43yEMrbTXqDLWpEJ0
+         pz6Qu0/PiAVtEhwuUIKgjw3vQ24809RvxWeO9gfp1Fy1LQxsAM9GNII6raJ5FLy0Im
+         JPGfkhaZcNdEzZhM2kwjH+yIU0RyERYj4/+gt+0qWBdT6JrIN68XyDuI/DD83JiqYv
+         ZDvHCVRXNgoeg==
+Date:   Thu, 17 Aug 2023 19:52:55 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     sandeen@redhat.com,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230818025255.GA2175@sol.localdomain>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+ <20230817161118.GC2247938@mit.edu>
+ <20230817164739.GC1483@sol.localdomain>
+ <20230818021038.GC3464136@mit.edu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH] PCI: endpoint: Return error code when callback is not
- implemented
-Content-Language: en-US
-To:     Rick Wertenbroek <rick.wertenbroek@gmail.com>,
-        rick.wertenbroek@heig-vd.ch
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230817133341.212747-1-rick.wertenbroek@gmail.com>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230817133341.212747-1-rick.wertenbroek@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818021038.GC3464136@mit.edu>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/08/17 22:33, Rick Wertenbroek wrote:
-> Return an error code when the callback for an endpoint controller
-> function is not implemented (is null). Among all the functions, only
-> map_msi_irq() had an error returned if the callback was null. Extend
-> this error handling to other functions as well.
+On Thu, Aug 17, 2023 at 10:10:38PM -0400, Theodore Ts'o wrote:
+> On Thu, Aug 17, 2023 at 09:47:39AM -0700, Eric Biggers wrote:
+> > 
+> > Eric S. is correct that for a filesystem image to enable panic on error, support
+> > for panic on error should have to be properly consented to by the kernel
+> > configuration, for example through an fs.allow_panic_on_error sysctl.
 > 
-> Signed-off-by: Rick Wertenbroek <rick.wertenbroek@gmail.com>
-
-We should check for the mandatory ops definition in pci_epf_register_driver()
-for function drivers and in __pci_epc_create() for controller drivers.
-
-> ---
->  drivers/pci/endpoint/pci-epc-core.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> I disagree.  It's up to the system administrator, not the kernel ---
+> and the system adminsitrator is perfectly free to run e2fsck on a
+> random file system, or to use tune2fs to adjust the panic on error
+> setting on the file system, befure using their root powers to mount
+> the file system.
 > 
-> diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
-> index 5a4a8b0be626..14f4256b9410 100644
-> --- a/drivers/pci/endpoint/pci-epc-core.c
-> +++ b/drivers/pci/endpoint/pci-epc-core.c
-> @@ -196,7 +196,7 @@ int pci_epc_start(struct pci_epc *epc)
->  		return -EINVAL;
->  
->  	if (!epc->ops->start)
-> -		return 0;
-> +		return -EINVAL;
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->start(epc);
-> @@ -228,7 +228,7 @@ int pci_epc_raise_irq(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  		return -EINVAL;
->  
->  	if (!epc->ops->raise_irq)
-> -		return 0;
-> +		return -EINVAL;
+> Root can do many things that cause the system to reboot.  For example,
+> the system adminsirtator could run /sbin/reboot.  Should the kernel
+> "consent" by setting fs.allow_reboot_system_call_to_work before the
+> root user can run the /sbin/reboot binary?  Hopefully it's obvious why
+> this makes absolutely no sense.
+> 
+> > It can be argued that this not important, or not worth implementing when the
+> > default will need to remain 1 for backwards compatibility.  Or even that
+> > syzkaller should work around it in the mean time.  But it is incorrect to write
+> > "This is fundamentally a syzbot bug."
+> 
+> Well, the current behaviour is Working as Intended.  And if syzbot is
+> going about whining about things that are Working as Intended, it's
+> not fit for the upostream developers' purpose.
+> 
+> As another example, root can set a real-time priority of a process to
+> be at a level where it will prempt all other processes, including
+> kernel threads.  Do enough of these, and you *will* lock up the
+> kernel.  Again, should there be a sysctl that allows real-time
+> priorities to work?  Or do we teach syzbot that doing things that are
+> documented to cause the kernel to lock up are not something that's
+> worthy of a report.  In the past, syzbot issued a *huge* amount of
+> noise caused by precisely to this.  Upstream developers complained
+> that it was a false positive, and syzbot was adjusted to Stop Doing
+> That.
 
-ENOTSUPP ?
+Obviously it's up to the system administrator; that should have been clear since
+I suggested a sysctl.  Sorry if I wasn't clear.  The point is that there are
+certain conventions for what is allowed to break the safety guarantees that the
+kernel provides to userspace, which includes causing a kernel panic.  Panics on
+various problems are configured by /proc/sys/kernel/panic_*.  So having to
+opt-in to panic-on-error, or at least being able to opt-out, by setting a sysctl
+seems natural.  Whereas having mount() being able to automatically panic the
+kernel with no way to opt-out seems like a violation of broader kernel
+conventions, even if it happens to be "working as intended" in the ext4 context.
 
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->raise_irq(epc, func_no, vfunc_no, type, interrupt_num);
-> @@ -340,7 +340,7 @@ int pci_epc_set_msi(struct pci_epc *epc, u8 func_no, u8 vfunc_no, u8 interrupts)
->  		return -EINVAL;
->  
->  	if (!epc->ops->set_msi)
-> -		return 0;
-> +		return -EINVAL;
+Anyway, I'm not actually saying this issue is important.  I just get frustrated
+by the total denial that it could even possibly be considered something that
+could be improved in the kernel...
 
-ENOTSUPP ?
-
->  
->  	encode_int = order_base_2(interrupts);
->  
-> @@ -408,7 +408,7 @@ int pci_epc_set_msix(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  		return -EINVAL;
->  
->  	if (!epc->ops->set_msix)
-> -		return 0;
-> +		return -EINVAL;
-
-ENOTSUPP ?
-
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->set_msix(epc, func_no, vfunc_no, interrupts - 1, bir,
-> @@ -469,7 +469,7 @@ int pci_epc_map_addr(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  		return -EINVAL;
->  
->  	if (!epc->ops->map_addr)
-> -		return 0;
-> +		return -EINVAL;
-
-This one is definitely mandatory and should always be defined. So check in
-__pci_epc_create() ?
-
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->map_addr(epc, func_no, vfunc_no, phys_addr, pci_addr,
-> @@ -537,7 +537,7 @@ int pci_epc_set_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  		return -EINVAL;
->  
->  	if (!epc->ops->set_bar)
-> -		return 0;
-> +		return -EINVAL;
-
-Same.
-
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->set_bar(epc, func_no, vfunc_no, epf_bar);
-> @@ -575,7 +575,7 @@ int pci_epc_write_header(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
->  		return -EINVAL;
->  
->  	if (!epc->ops->write_header)
-> -		return 0;
-> +		return -EINVAL;
-
-Same.
-
->  
->  	mutex_lock(&epc->lock);
->  	ret = epc->ops->write_header(epc, func_no, vfunc_no, header);
-
--- 
-Damien Le Moal
-Western Digital Research
-
+- Eric
