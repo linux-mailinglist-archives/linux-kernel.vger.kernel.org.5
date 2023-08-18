@@ -2,225 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5F27806FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697A2780700
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358522AbjHRIRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:17:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S1358531AbjHRIS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358582AbjHRIRr (ORCPT
+        with ESMTP id S1358529AbjHRIS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:17:47 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 552943C27
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:17:33 -0700 (PDT)
-Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRvnQ1vHGzVjkQ;
-        Fri, 18 Aug 2023 16:15:22 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 18 Aug 2023 16:17:29 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Tong Tiangen <tongtiangen@huawei.com>,
-        <wangkefeng.wang@huawei.com>, Guohanjun <guohanjun@huawei.com>
-Subject: [RFC PATCH v2-next] mm: memory-failure: use rcu lock instead of tasklist_lock when collect_procs()
-Date:   Fri, 18 Aug 2023 16:17:27 +0800
-Message-ID: <20230818081727.4181963-1-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 18 Aug 2023 04:18:29 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34EF92684
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:18:27 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-649edb3a3d6so3087576d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:18:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692346707; x=1692951507;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vbd50sC6d9YNA2CFlSsL+HcGC3OFpjFlTXRkR7YTq+Q=;
+        b=HBt53BKee1fcXtwmATkcRv7McKm4Ni8clLiCcPDJQefkvWhLtPHLMbbltqfpvJ2r+y
+         NFYGtGj7FFbs5VgAHapSZSKGMdl597Es5kRjwxjfe3xp9GGmkZu/orp30xbhw+3g51SX
+         i3rn8Rh9TS7keukqs6nQIjun4jOjhewzpE7UY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692346707; x=1692951507;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vbd50sC6d9YNA2CFlSsL+HcGC3OFpjFlTXRkR7YTq+Q=;
+        b=d6gJZ44CK834/SEAWrikahCrwtRpaneCNAI2fOO394wIDzOaP4Vbbxj2muBMoBKZNA
+         zRxz39VoCXjnGNnPVCEoYyAC58nwXpqbrpDqMAGJdjox4Bk8jy8VUda/4qBe6XBiXatZ
+         sfdH0oPtAYkUyraK/WQ8n/xWaL2+0MhSspsKdjl/LOAMxOmmNeh0WuCHUHgwfxOgEQJy
+         1Pg/Tw+2LxFzBVVXdUU4HlqxdTGXhsJyr0Sv/DnXLPEFG/gWjehtOY7g3g06/Ki5wF0K
+         rE9tsLxa6AFe/SiZ6oavm3UAcUGKtQsdM66ACa4ghw+422fnOSukLCVp/2YEJa2h/C8Z
+         tY5A==
+X-Gm-Message-State: AOJu0YySB4yeAWeKNH8YYYs+pCdP+TtEAO6rvtgtUVdx8vyms+iqURyE
+        5XvJDp/aHMUavx0ylixSfvtuu2aQyytf5BRpwTw=
+X-Google-Smtp-Source: AGHT+IHycpMP/hOYHiZgLCaXTyoDbrDuazSzFQakc3z5cTnSnjI3hVLpY0pdCGlcEC9MqNgivkWejA==
+X-Received: by 2002:a05:6214:20a2:b0:63c:7b04:6dfd with SMTP id 2-20020a05621420a200b0063c7b046dfdmr4872997qvd.30.1692346707035;
+        Fri, 18 Aug 2023 01:18:27 -0700 (PDT)
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com. [209.85.219.45])
+        by smtp.gmail.com with ESMTPSA id a19-20020a0cb353000000b0064aa51f9978sm517175qvf.115.2023.08.18.01.18.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 01:18:26 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-649edb3a3d6so3087536d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:18:26 -0700 (PDT)
+X-Received: by 2002:a0c:c981:0:b0:647:2b24:9708 with SMTP id
+ b1-20020a0cc981000000b006472b249708mr2765883qvk.3.1692346706111; Fri, 18 Aug
+ 2023 01:18:26 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230817-chicony-v1-1-76bde4d6ff6b@chromium.org> <20230818081546.GA26285@pendragon.ideasonboard.com>
+In-Reply-To: <20230818081546.GA26285@pendragon.ideasonboard.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Fri, 18 Aug 2023 10:18:13 +0200
+X-Gmail-Original-Message-ID: <CANiDSCtEU2cq5AphSCEsCkkZy8FWSrtZSC_ooaj_vSgarWe0FQ@mail.gmail.com>
+Message-ID: <CANiDSCtEU2cq5AphSCEsCkkZy8FWSrtZSC_ooaj_vSgarWe0FQ@mail.gmail.com>
+Subject: Re: [PATCH] media: uvcvideo: Fix power line control for a Chicony camera
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found a softlock issue in our test, analyzed the logs, and found that
-the relevant CPU call trace as follows:
+Hi Laurent
 
-CPU0:
-  _do_fork
-    -> copy_process()
-      -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
-      					 //tasklist_lock
+On Fri, 18 Aug 2023 at 10:15, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Ricardo,
+>
+> Thank you for the patch.
+>
+> On Thu, Aug 17, 2023 at 12:38:04PM +0000, Ricardo Ribalda wrote:
+> > The device does not implement the control properly.
+> >
+> > Fixes vl2-compliance error:
+> >
+> > info: checking control 'Power Line Frequency' (0x00980918)
+> > fail: v4l2-test-controls.cpp(552): could not set valid menu item 3
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> > This camera, like other Chicony devices, do not implement properly the
+> > Power Line Frequency control.
+> >
+> > This time, I do not have direct access to the device, just to the
+> > report, but since other devices from the same family are showing the
+> > same error, it is safe to assume that the same fix will work here.
+>
+> Why, =C3=B4 why does UVC not provide a way to query this dynamically ? :-=
+( Of
+> course, even if it did, I'm sure vendors would get it wrong... It sounds
+> like the Windows UVC compliance test suite must be a joke.
+>
+> > ---
+> >  drivers/media/usb/uvc/uvc_driver.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc=
+/uvc_driver.c
+> > index 08fcd2ffa727..db2556e95b72 100644
+> > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > @@ -2592,6 +2592,15 @@ static const struct usb_device_id uvc_ids[] =3D =
+{
+> >         .bInterfaceSubClass   =3D 1,
+> >         .bInterfaceProtocol   =3D 0,
+> >         .driver_info          =3D (kernel_ulong_t)&uvc_ctrl_power_line_=
+limited },
+> > +     /* Chicony Electronics Co., Ltd */
+>
+> I'll write
+>
+>         /* Chicony Electronics Co., Ltd Integrated Camera */
+>
+> as that's what the descriptors expose. Is this integrated in a
+> chromebook by any chance ? If so, could you share which model the camera
+> is found in, and can I add that to the comment ?
 
-CPU1:
-  wp_page_copy()
-    ->pte_offset_map_lock()
-      -> spin_lock(&page->ptl);        //Hold page->ptl
-    -> ptep_clear_flush()
-      -> flush_tlb_others() ...
-        -> smp_call_function_many()
-          -> arch_send_call_function_ipi_mask()
-            -> csd_lock_wait()         //Waiting for other CPUs respond
-	                               //IPI
+It is a non-chromebook running ChromeOS Flex.
+https://chromeenterprise.google/os/chromeosflex/
 
-CPU2:
-  collect_procs_anon()
-    -> read_lock(&tasklist_lock)       //Hold tasklist_lock
-      ->for_each_process(tsk)
-        -> page_mapped_in_vma()
-          -> page_vma_mapped_walk()
-	    -> map_pte()
-              ->spin_lock(&page->ptl)  //Waiting for page->ptl
+I believe it is a thinkpad, but I am not sure the exact model.
 
-We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
-unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
-softlockup is triggered.
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> > +     { .match_flags          =3D USB_DEVICE_ID_MATCH_DEVICE
+> > +                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > +       .idVendor             =3D 0x04f2,
+> > +       .idProduct            =3D 0xb67c,
+> > +       .bInterfaceClass      =3D USB_CLASS_VIDEO,
+> > +       .bInterfaceSubClass   =3D 1,
+> > +       .bInterfaceProtocol   =3D 0,
+> > +       .driver_info          =3D (kernel_ulong_t)&uvc_ctrl_power_line_=
+limited },
+> >       /* Chicony EasyCamera */
+> >       { .match_flags          =3D USB_DEVICE_ID_MATCH_DEVICE
+> >                               | USB_DEVICE_ID_MATCH_INT_INFO,
+> >
+> > ---
+> > base-commit: 4853c74bd7ab7fdb83f319bd9ace8a08c031e9b6
+> > change-id: 20230817-chicony-9c35f2046c6f
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
 
-For collect_procs_anon(), we will not modify the tasklist, but only perform
-read traversal. Therefore, we can use rcu lock instead of spin lock
-tasklist_lock, from this, we can break the softlock chain above.
 
-The same logic can also be applied to:
- - collect_procs_file()
- - collect_procs_fsdax()
- - collect_procs_ksm()
- - find_early_kill_thread()
 
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
----
-v2:
- - 1. Modify the title description.
- - 2. Optimize the implementation of find_early_kill_thread() without
-      functional changes.
----
- mm/ksm.c            |  4 ++--
- mm/memory-failure.c | 33 +++++++++++++++++++--------------
- 2 files changed, 21 insertions(+), 16 deletions(-)
-
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 6b7b8928fb96..dcbc0c7f68e7 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -2919,7 +2919,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
- 		struct anon_vma *av = rmap_item->anon_vma;
- 
- 		anon_vma_lock_read(av);
--		read_lock(&tasklist_lock);
-+		rcu_read_lock();
- 		for_each_process(tsk) {
- 			struct anon_vma_chain *vmac;
- 			unsigned long addr;
-@@ -2938,7 +2938,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
- 				}
- 			}
- 		}
--		read_unlock(&tasklist_lock);
-+		rcu_read_unlock();
- 		anon_vma_unlock_read(av);
- 	}
- }
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 7b01fffe7a79..4f3081f47798 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -546,24 +546,29 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
-  * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
-  * on behalf of the thread group. Return task_struct of the (first found)
-  * dedicated thread if found, and return NULL otherwise.
-- *
-- * We already hold read_lock(&tasklist_lock) in the caller, so we don't
-- * have to call rcu_read_lock/unlock() in this function.
-  */
- static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
- {
- 	struct task_struct *t;
-+	bool found = false;
- 
-+	rcu_read_lock();
- 	for_each_thread(tsk, t) {
- 		if (t->flags & PF_MCE_PROCESS) {
--			if (t->flags & PF_MCE_EARLY)
--				return t;
-+			if (t->flags & PF_MCE_EARLY) {
-+				found = true;
-+				break;
-+			}
- 		} else {
--			if (sysctl_memory_failure_early_kill)
--				return t;
-+			if (sysctl_memory_failure_early_kill) {
-+				found = true;
-+				break;
-+			}
- 		}
- 	}
--	return NULL;
-+	rcu_read_unlock();
-+
-+	return found ? t : NULL;
- }
- 
- /*
-@@ -609,7 +614,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
- 		return;
- 
- 	pgoff = page_to_pgoff(page);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	for_each_process(tsk) {
- 		struct anon_vma_chain *vmac;
- 		struct task_struct *t = task_early_kill(tsk, force_early);
-@@ -626,7 +631,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
- 			add_to_kill_anon_file(t, page, vma, to_kill);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	anon_vma_unlock_read(av);
- }
- 
-@@ -642,7 +647,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
- 	pgoff_t pgoff;
- 
- 	i_mmap_lock_read(mapping);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	pgoff = page_to_pgoff(page);
- 	for_each_process(tsk) {
- 		struct task_struct *t = task_early_kill(tsk, force_early);
-@@ -662,7 +667,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
- 				add_to_kill_anon_file(t, page, vma, to_kill);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- 
-@@ -685,7 +690,7 @@ static void collect_procs_fsdax(struct page *page,
- 	struct task_struct *tsk;
- 
- 	i_mmap_lock_read(mapping);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	for_each_process(tsk) {
- 		struct task_struct *t = task_early_kill(tsk, true);
- 
-@@ -696,7 +701,7 @@ static void collect_procs_fsdax(struct page *page,
- 				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- #endif /* CONFIG_FS_DAX */
--- 
-2.25.1
-
+--=20
+Ricardo Ribalda
