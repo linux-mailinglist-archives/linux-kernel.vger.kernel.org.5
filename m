@@ -2,232 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1DA7807CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC767807E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358913AbjHRJC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37916 "EHLO
+        id S1358570AbjHRJD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358927AbjHRJCB (ORCPT
+        with ESMTP id S1358976AbjHRJDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:02:01 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1664482
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:01:38 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRwkb6B7FzNmkj;
-        Fri, 18 Aug 2023 16:57:59 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 18 Aug 2023 17:01:31 +0800
-Message-ID: <3e7b0fa9-ec9d-4f5f-bb1e-e8cf79058e1a@huawei.com>
-Date:   Fri, 18 Aug 2023 17:01:31 +0800
+        Fri, 18 Aug 2023 05:03:47 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485830E9;
+        Fri, 18 Aug 2023 02:03:18 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 11:03:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692349397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQkP0pemHtODz4ZTwfs9hNzhoQAZlrY+GIvOT5+K/D4=;
+        b=KCAYm42tCBcBewe/qz9VwI0+j8bTKggVcI7qA1kaPqkzZG1KxydgLobI6P/Tx1ppSVIfc4
+        LDsXSTyv66abg4fTjBK8NpNix0STW3DBgQm+84uHoRYQwKJj9W1Cu/N6qvF0LmfWe0vXpP
+        IduLGOLq70Jyxio+0HaqpXd/WAzUjwjVak98g5hQATYXTlHcS+z3vaR5Am3CPUX9uyXAdA
+        b6ATUpBU9SSpR2Lk3ksj/b1gDAQPkkDjiZENanUmcptjjLoPwK+j5sI79B79S8hocyLFak
+        F1CncGvfUNNGXfb0IPs++YkYjJcv3AI6uSukeGJnqbh/8YZhN13pbKEqqN8CHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692349397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wQkP0pemHtODz4ZTwfs9hNzhoQAZlrY+GIvOT5+K/D4=;
+        b=m5tDM4DS+C9nPRCnWFyYbh2PblvK7fEaQGpLNC3yiJIzY87YPXXw7INeCkFG6JgKG56AD1
+        kpDhCFP/+PCkw5DA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Yan Zhai <yan@cloudflare.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
+Message-ID: <20230818090316.jxj-rd8f@linutronix.de>
+References: <20230814093528.117342-1-bigeasy@linutronix.de>
+ <20230814112421.5a2fa4f6@kernel.org>
+ <20230817131612.M_wwTr7m@linutronix.de>
+ <20230817083025.2e8047fa@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2-next] mm: memory-failure: use rcu lock instead of
- tasklist_lock when collect_procs()
-Content-Language: en-US
-To:     Tong Tiangen <tongtiangen@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Guohanjun <guohanjun@huawei.com>
-References: <20230818081727.4181963-1-tongtiangen@huawei.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <20230818081727.4181963-1-tongtiangen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20230817083025.2e8047fa@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-08-17 08:30:25 [-0700], Jakub Kicinski wrote:
+> On Thu, 17 Aug 2023 15:16:12 +0200 Sebastian Andrzej Siewior wrote:
+> > I've been looking at veth. In the xdp case it has its own NAPI instance.
+> > In the non-xdp it uses backlog. This should be called from
+> > ndo_start_xmit and user's write() so BH is off and interrupts are
+> > enabled at this point and it should be kind of rate-limited. Couldn't we
+> > bypass backlog in this case and deliver the packet directly to the
+> > stack?
+>=20
+> The backlog in veth eats measurable percentage points of RPS of real
+> workloads, and I think number of people looked at getting rid of it.
+> So worthy goal for sure, but may not be a trivial fix.
 
+We could separate RPS from backlog but then we still process RPS after
+backlog so not sure if this gains anything. Letting veth always use its
+NAPI in this case would probably do that. Not sure if it helps=E2=80=A6
 
-On 2023/8/18 16:17, Tong Tiangen wrote:
-> We found a softlock issue in our test, analyzed the logs, and found that
-> the relevant CPU call trace as follows:
-> 
-> CPU0:
->    _do_fork
->      -> copy_process()
->        -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
->        					 //tasklist_lock
-> 
-> CPU1:
->    wp_page_copy()
->      ->pte_offset_map_lock()
->        -> spin_lock(&page->ptl);        //Hold page->ptl
->      -> ptep_clear_flush()
->        -> flush_tlb_others() ...
->          -> smp_call_function_many()
->            -> arch_send_call_function_ipi_mask()
->              -> csd_lock_wait()         //Waiting for other CPUs respond
-> 	                               //IPI
-> 
-> CPU2:
->    collect_procs_anon()
->      -> read_lock(&tasklist_lock)       //Hold tasklist_lock
->        ->for_each_process(tsk)
->          -> page_mapped_in_vma()
->            -> page_vma_mapped_walk()
-> 	    -> map_pte()
->                ->spin_lock(&page->ptl)  //Waiting for page->ptl
-> 
-> We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
-> unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
-> softlockup is triggered.
-> 
-> For collect_procs_anon(), we will not modify the tasklist, but only perform
-> read traversal. Therefore, we can use rcu lock instead of spin lock
-> tasklist_lock, from this, we can break the softlock chain above.
-> 
-> The same logic can also be applied to:
->   - collect_procs_file()
->   - collect_procs_fsdax()
->   - collect_procs_ksm()
->   - find_early_kill_thread()
-> 
-> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
-> ---
-> v2:
->   - 1. Modify the title description.
->   - 2. Optimize the implementation of find_early_kill_thread() without
->        functional changes.
-> ---
+> To my knowledge the two main problems are:
+>  - we don't want to charge the sending application the processing for
+>    both "sides" of the connection and all the switching costs.
 
-Those changes are fine to me， please fix the comment mentioned by  Noaoya.
+The packet is injected by the user and softirq is served once BH gets
+back to 0. So it is served within the task's context and might be
+accounted on softirq/ system (might as I think it needs to be observed
+by the timer interrupt for the accounting).
 
->   mm/ksm.c            |  4 ++--
->   mm/memory-failure.c | 33 +++++++++++++++++++--------------
->   2 files changed, 21 insertions(+), 16 deletions(-)
-> 
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index 6b7b8928fb96..dcbc0c7f68e7 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -2919,7 +2919,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
->   		struct anon_vma *av = rmap_item->anon_vma;
->   
->   		anon_vma_lock_read(av);
-> -		read_lock(&tasklist_lock);
-> +		rcu_read_lock();
->   		for_each_process(tsk) {
->   			struct anon_vma_chain *vmac;
->   			unsigned long addr;
-> @@ -2938,7 +2938,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
->   				}
->   			}
->   		}
-> -		read_unlock(&tasklist_lock);
-> +		rcu_read_unlock();
->   		anon_vma_unlock_read(av);
->   	}
->   }
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 7b01fffe7a79..4f3081f47798 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -546,24 +546,29 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
->    * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
->    * on behalf of the thread group. Return task_struct of the (first found)
->    * dedicated thread if found, and return NULL otherwise.
-> - *
-> - * We already hold read_lock(&tasklist_lock) in the caller, so we don't
-> - * have to call rcu_read_lock/unlock() in this function.
->    */
->   static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
->   {
->   	struct task_struct *t;
-> +	bool found = false;
->   
-> +	rcu_read_lock();
->   	for_each_thread(tsk, t) {
->   		if (t->flags & PF_MCE_PROCESS) {
-> -			if (t->flags & PF_MCE_EARLY)
-> -				return t;
-> +			if (t->flags & PF_MCE_EARLY) {
-> +				found = true;
-> +				break;
-> +			}
->   		} else {
-> -			if (sysctl_memory_failure_early_kill)
-> -				return t;
-> +			if (sysctl_memory_failure_early_kill) {
-> +				found = true;
-> +				break;
-> +			}
->   		}
->   	}
-> -	return NULL;
-> +	rcu_read_unlock();
-> +
-> +	return found ? t : NULL;
->   }
->   
->   /*
-> @@ -609,7 +614,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->   		return;
->   
->   	pgoff = page_to_pgoff(page);
-> -	read_lock(&tasklist_lock);
-> +	rcu_read_lock();
->   	for_each_process(tsk) {
->   		struct anon_vma_chain *vmac;
->   		struct task_struct *t = task_early_kill(tsk, force_early);
-> @@ -626,7 +631,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->   			add_to_kill_anon_file(t, page, vma, to_kill);
->   		}
->   	}
-> -	read_unlock(&tasklist_lock);
-> +	rcu_read_unlock();
->   	anon_vma_unlock_read(av);
->   }
->   
-> @@ -642,7 +647,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->   	pgoff_t pgoff;
->   
->   	i_mmap_lock_read(mapping);
-> -	read_lock(&tasklist_lock);
-> +	rcu_read_lock();
->   	pgoff = page_to_pgoff(page);
->   	for_each_process(tsk) {
->   		struct task_struct *t = task_early_kill(tsk, force_early);
-> @@ -662,7 +667,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->   				add_to_kill_anon_file(t, page, vma, to_kill);
->   		}
->   	}
-> -	read_unlock(&tasklist_lock);
-> +	rcu_read_unlock();
->   	i_mmap_unlock_read(mapping);
->   }
->   
-> @@ -685,7 +690,7 @@ static void collect_procs_fsdax(struct page *page,
->   	struct task_struct *tsk;
->   
->   	i_mmap_lock_read(mapping);
-> -	read_lock(&tasklist_lock);
-> +	rcu_read_lock();
->   	for_each_process(tsk) {
->   		struct task_struct *t = task_early_kill(tsk, true);
->   
-> @@ -696,7 +701,7 @@ static void collect_procs_fsdax(struct page *page,
->   				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
->   		}
->   	}
-> -	read_unlock(&tasklist_lock);
-> +	rcu_read_unlock();
->   	i_mmap_unlock_read(mapping);
->   }
->   #endif /* CONFIG_FS_DAX */
+>  - we may get an AA deadlock if the packet ends up looping in any way.
+
+Right, forgot about that one.
+
+> Or at least that's what I remember the problem being at 8am in the
+> morning :) Adding Daniel and Martin to CC, Paolo would also know this
+> better than me but I think he's AFK for the rest of the week.
+
+Sebastian
