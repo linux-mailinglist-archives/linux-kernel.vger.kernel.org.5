@@ -2,226 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FD6780C6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB5F780C69
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377096AbjHRNSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:18:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
+        id S1377063AbjHRNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377072AbjHRNSV (ORCPT
+        with ESMTP id S1377048AbjHRNSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:18:21 -0400
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D443273C;
-        Fri, 18 Aug 2023 06:18:19 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37IDHsM4109099;
-        Fri, 18 Aug 2023 08:17:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692364674;
-        bh=y6Wcn+Ep7psdW2qFD1MlnMaWhzI088g5k1UW//q3SPo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=hzgObYZnqeJxJXc3e/p6JWB5wJOOzegsSVAtL0PPag8eadatrbTP0wCO7eXFbQM7Z
-         KEAS9lNtxs1YRVAy5k5CtIltCV6rUKWIqaUf0tX+ebFY1x0nv9x5hkw0Cme8mnUGcb
-         t0JPzYu32sBa6eh06JYmBksmHjY9W883HmUJV2/c=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37IDHsNw126019
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Aug 2023 08:17:54 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 18
- Aug 2023 08:17:54 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 18 Aug 2023 08:17:54 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37IDHrop009286;
-        Fri, 18 Aug 2023 08:17:54 -0500
-From:   Aradhya Bhatia <a-bhatia1@ti.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     DRI Development List <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Jai Luthra <j-luthra@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
-Subject: [PATCH 2/2] drivers/tidss: Add support for AM62A7 DSS
-Date:   Fri, 18 Aug 2023 18:47:50 +0530
-Message-ID: <20230818131750.4779-3-a-bhatia1@ti.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230818131750.4779-1-a-bhatia1@ti.com>
-References: <20230818131750.4779-1-a-bhatia1@ti.com>
+        Fri, 18 Aug 2023 09:18:11 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323EA26A5;
+        Fri, 18 Aug 2023 06:18:10 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68874269df4so742728b3a.2;
+        Fri, 18 Aug 2023 06:18:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692364689; x=1692969489;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qzzMWGzNSLRyaBcN3mZ9k3m0heMsfpzA3+qcnBXsGqU=;
+        b=YLoH3BK/waIQP1nP5jtKqbnW1GxErxLDqGmPHjYocbmIOBV1zJfjAqelJbf9jJ35Jd
+         WAHDyUocGplRyyIBxvo2OS8n27JbdFXfCE6TwcMw32KXBQwKoa3uo2YFbYQdlJhNNUy3
+         Gmv9S58jhba2U5QInoHSVIytkHKDfkiR/DNFqHZE4ZdQPDMxT6B6YDOAmGQrsTVUq7Ti
+         XC+JfkXBMOMTm6HdQFB0FjnmK+ofs2Pe6eFLM7IlJCAPcTLEXGSZPrjsC6y4fw0skPA/
+         +Mdf/PhNcuar6Kf3y/j5OjjYFNE1iHBVIEqB+8EIJFMc9LFAVIIrjSs9hoCny5Ojxmo9
+         RZVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692364689; x=1692969489;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qzzMWGzNSLRyaBcN3mZ9k3m0heMsfpzA3+qcnBXsGqU=;
+        b=aIA9K1mVYeDJfSvwjn7YG6g5U7gmHwzQzmuZkJGtU3ml7GwEfUbmJHNCm2sxilxGNa
+         AJsIBlbrapxoCwKOOcGPDEWxj//7whDR96KxNlUKYrZdl3hYpZknvm/6+6VKTulD2JHp
+         Xulgz/0bnQ/3Y/2r1JjHQXSQ4NnboKYvyzg1zTSgKDKmKunf0/hm6LDh101dGp5S08AV
+         9Q+XAQ5xMLNVSnu51cGUG7wFWIi+l3egqGBFpEAouFzKG/pqyQu3viWh8rGFVYH6t7Rj
+         ZkgIQKyHujiqGykHZoRrII7Jhzqrbq79rqRIrfmhtpP4XQW6IvHvxqqVNgeUTRyoK3bZ
+         n8fA==
+X-Gm-Message-State: AOJu0Yz1/VDw5zXd9jPBgmowtr4tTr383wI8RqKk4DPO2G47SbGxD3D2
+        dvJDRZTrQe/IFrnFU2C9e7ONR0mJTJo=
+X-Google-Smtp-Source: AGHT+IEV0w3BbGspE0QedPMefSDcnjuA+y9d7ljuNWKsjoi6J63c/V3Lcgm0CppbN/WpCKfmlvfv9A==
+X-Received: by 2002:a05:6a00:99e:b0:687:20d6:fae5 with SMTP id u30-20020a056a00099e00b0068720d6fae5mr2871180pfg.24.1692364689524;
+        Fri, 18 Aug 2023 06:18:09 -0700 (PDT)
+Received: from carrot.. (i118-20-76-4.s41.a014.ap.plala.or.jp. [118.20.76.4])
+        by smtp.gmail.com with ESMTPSA id x9-20020aa793a9000000b0068895adfdffsm1572063pff.143.2023.08.18.06.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 06:18:08 -0700 (PDT)
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs@vger.kernel.org,
+        syzbot <syzbot+cdfcae656bac88ba0e2d@syzkaller.appspotmail.com>,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH] nilfs2: fix WARNING in mark_buffer_dirty due to discarded buffer reuse
+Date:   Fri, 18 Aug 2023 22:18:04 +0900
+Message-Id: <20230818131804.7758-1-konishi.ryusuke@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000003da75f05fdeffd12@google.com>
+References: <0000000000003da75f05fdeffd12@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the DSS controller on TI's AM62A7 SoC in the tidss
-driver.
+A syzbot stress test using a corrupted disk image reported that
+mark_buffer_dirty() called from __nilfs_mark_inode_dirty() or
+nilfs_palloc_commit_alloc_entry() may output a kernel warning, and can
+panic if the kernel is booted with panic_on_warn.
 
-This contrller has 2 video pipelines that can render 2 video planes on
-over a screen, using the overlay managers. The output of the DSS comes
-from video port 2 (VP2) in the form of RGB88 DPI signals, while the VP1
-is tied off inside the SoC.
+This is because nilfs2 keeps buffer pointers in local structures for some
+metadata and reuses them, but such buffers may be forcibly discarded by
+nilfs_clear_dirty_page() in some critical situations.
 
-Signed-off-by: Aradhya Bhatia <a-bhatia1@ti.com>
+This issue is reported to appear after commit 28a65b49eb53 ("nilfs2: do
+not write dirty data after degenerating to read-only"), but the issue has
+potentially existed before.
+
+Fix this issue by checking the uptodate flag when attempting to reuse
+an internally held buffer, and reloading the metadata instead of reusing
+the buffer if the flag was lost.
+
+Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Reported-by: syzbot+cdfcae656bac88ba0e2d@syzkaller.appspotmail.com
+Closes: https://lkml.kernel.org/r/0000000000003da75f05fdeffd12@google.com
+Fixes: 8c26c4e2694a ("nilfs2: fix issue with flush kernel thread after remount in RO mode because of driver's internal error or metadata corruption")
+Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc: <stable@vger.kernel.org> # 3.10+
 ---
- drivers/gpu/drm/tidss/tidss_dispc.c | 53 +++++++++++++++++++++++++++++
- drivers/gpu/drm/tidss/tidss_dispc.h |  2 ++
- drivers/gpu/drm/tidss/tidss_drv.c   |  1 +
- 3 files changed, 56 insertions(+)
+ fs/nilfs2/alloc.c | 3 ++-
+ fs/nilfs2/inode.c | 7 +++++--
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/tidss/tidss_dispc.c b/drivers/gpu/drm/tidss/tidss_dispc.c
-index 9d9dee7abaef..0e2d55d9a0d7 100644
---- a/drivers/gpu/drm/tidss/tidss_dispc.c
-+++ b/drivers/gpu/drm/tidss/tidss_dispc.c
-@@ -322,6 +322,54 @@ const struct dispc_features dispc_am625_feats = {
- 	.vid_order = { 1, 0 },
- };
+diff --git a/fs/nilfs2/alloc.c b/fs/nilfs2/alloc.c
+index 6ce8617b562d..7342de296ec3 100644
+--- a/fs/nilfs2/alloc.c
++++ b/fs/nilfs2/alloc.c
+@@ -205,7 +205,8 @@ static int nilfs_palloc_get_block(struct inode *inode, unsigned long blkoff,
+ 	int ret;
  
-+const struct dispc_features dispc_am62a7_feats = {
-+	.max_pclk_khz = {
-+		[DISPC_VP_DPI] = 165000,
-+	},
-+
-+	.scaling = {
-+		.in_width_max_5tap_rgb = 1280,
-+		.in_width_max_3tap_rgb = 2560,
-+		.in_width_max_5tap_yuv = 2560,
-+		.in_width_max_3tap_yuv = 4096,
-+		.upscale_limit = 16,
-+		.downscale_limit_5tap = 4,
-+		.downscale_limit_3tap = 2,
-+		/*
-+		 * The max supported pixel inc value is 255. The value
-+		 * of pixel inc is calculated like this: 1+(xinc-1)*bpp.
-+		 * The maximum bpp of all formats supported by the HW
-+		 * is 8. So the maximum supported xinc value is 32,
-+		 * because 1+(32-1)*8 < 255 < 1+(33-1)*4.
-+		 */
-+		.xinc_max = 32,
-+	},
-+
-+	.subrev = DISPC_AM62A7,
-+
-+	.common = "common",
-+	.common_regs = tidss_am65x_common_regs,
-+
-+	.num_vps = 2,
-+	.vp_name = { "vp1", "vp2" },
-+	.ovr_name = { "ovr1", "ovr2" },
-+	.vpclk_name =  { "vp1", "vp2" },
-+	.vp_bus_type = { DISPC_VP_INTERNAL, DISPC_VP_DPI },
-+
-+	.vp_feat = { .color = {
-+			.has_ctm = true,
-+			.gamma_size = 256,
-+			.gamma_type = TIDSS_GAMMA_8BIT,
-+		},
-+	},
-+
-+	.num_planes = 2,
-+	/* note: vid is plane_id 0 and vidl1 is plane_id 1 */
-+	.vid_name = { "vid", "vidl1" },
-+	.vid_lite = { false, true, },
-+	.vid_order = { 1, 0 },
-+};
-+
- static const u16 *dispc_common_regmap;
+ 	spin_lock(lock);
+-	if (prev->bh && blkoff == prev->blkoff) {
++	if (prev->bh && blkoff == prev->blkoff &&
++	    likely(buffer_uptodate(prev->bh))) {
+ 		get_bh(prev->bh);
+ 		*bhp = prev->bh;
+ 		spin_unlock(lock);
+diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+index 35bc79305318..acf7a266f72f 100644
+--- a/fs/nilfs2/inode.c
++++ b/fs/nilfs2/inode.c
+@@ -1025,7 +1025,7 @@ int nilfs_load_inode_block(struct inode *inode, struct buffer_head **pbh)
+ 	int err;
  
- struct dss_vp_data {
-@@ -823,6 +871,7 @@ dispc_irq_t dispc_read_and_clear_irqstatus(struct dispc_device *dispc)
- 	switch (dispc->feat->subrev) {
- 	case DISPC_K2G:
- 		return dispc_k2g_read_and_clear_irqstatus(dispc);
-+	case DISPC_AM62A7:
- 	case DISPC_AM625:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
-@@ -839,6 +888,7 @@ void dispc_set_irqenable(struct dispc_device *dispc, dispc_irq_t mask)
- 	case DISPC_K2G:
- 		dispc_k2g_set_irqenable(dispc, mask);
- 		break;
-+	case DISPC_AM62A7:
- 	case DISPC_AM625:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
-@@ -1330,6 +1380,7 @@ void dispc_ovr_set_plane(struct dispc_device *dispc, u32 hw_plane,
- 		dispc_k2g_ovr_set_plane(dispc, hw_plane, hw_videoport,
- 					x, y, layer);
- 		break;
-+	case DISPC_AM62A7:
- 	case DISPC_AM625:
- 	case DISPC_AM65X:
- 		dispc_am65x_ovr_set_plane(dispc, hw_plane, hw_videoport,
-@@ -2249,6 +2300,7 @@ static void dispc_plane_init(struct dispc_device *dispc)
- 	case DISPC_K2G:
- 		dispc_k2g_plane_init(dispc);
- 		break;
-+	case DISPC_AM62A7:
- 	case DISPC_AM625:
- 	case DISPC_AM65X:
- 	case DISPC_J721E:
-@@ -2356,6 +2408,7 @@ static void dispc_vp_write_gamma_table(struct dispc_device *dispc,
- 	case DISPC_K2G:
- 		dispc_k2g_vp_write_gamma_table(dispc, hw_videoport);
- 		break;
-+	case DISPC_AM62A7:
- 	case DISPC_AM625:
- 	case DISPC_AM65X:
- 		dispc_am65x_vp_write_gamma_table(dispc, hw_videoport);
-diff --git a/drivers/gpu/drm/tidss/tidss_dispc.h b/drivers/gpu/drm/tidss/tidss_dispc.h
-index 33ac5ad7a423..2aa1c814ea2a 100644
---- a/drivers/gpu/drm/tidss/tidss_dispc.h
-+++ b/drivers/gpu/drm/tidss/tidss_dispc.h
-@@ -59,6 +59,7 @@ enum dispc_vp_bus_type {
- 
- enum dispc_dss_subrevision {
- 	DISPC_K2G,
-+	DISPC_AM62A7,
- 	DISPC_AM625,
- 	DISPC_AM65X,
- 	DISPC_J721E,
-@@ -88,6 +89,7 @@ struct dispc_features {
- 
- extern const struct dispc_features dispc_k2g_feats;
- extern const struct dispc_features dispc_am625_feats;
-+extern const struct dispc_features dispc_am62a7_feats;
- extern const struct dispc_features dispc_am65x_feats;
- extern const struct dispc_features dispc_j721e_feats;
- 
-diff --git a/drivers/gpu/drm/tidss/tidss_drv.c b/drivers/gpu/drm/tidss/tidss_drv.c
-index 4d063eb9cd0b..edf69d020544 100644
---- a/drivers/gpu/drm/tidss/tidss_drv.c
-+++ b/drivers/gpu/drm/tidss/tidss_drv.c
-@@ -231,6 +231,7 @@ static void tidss_shutdown(struct platform_device *pdev)
- static const struct of_device_id tidss_of_table[] = {
- 	{ .compatible = "ti,k2g-dss", .data = &dispc_k2g_feats, },
- 	{ .compatible = "ti,am625-dss", .data = &dispc_am625_feats, },
-+	{ .compatible = "ti,am62a7-dss", .data = &dispc_am62a7_feats, },
- 	{ .compatible = "ti,am65x-dss", .data = &dispc_am65x_feats, },
- 	{ .compatible = "ti,j721e-dss", .data = &dispc_j721e_feats, },
- 	{ }
+ 	spin_lock(&nilfs->ns_inode_lock);
+-	if (ii->i_bh == NULL) {
++	if (ii->i_bh == NULL || unlikely(!buffer_uptodate(ii->i_bh))) {
+ 		spin_unlock(&nilfs->ns_inode_lock);
+ 		err = nilfs_ifile_get_inode_block(ii->i_root->ifile,
+ 						  inode->i_ino, pbh);
+@@ -1034,7 +1034,10 @@ int nilfs_load_inode_block(struct inode *inode, struct buffer_head **pbh)
+ 		spin_lock(&nilfs->ns_inode_lock);
+ 		if (ii->i_bh == NULL)
+ 			ii->i_bh = *pbh;
+-		else {
++		else if (unlikely(!buffer_uptodate(ii->i_bh))) {
++			__brelse(ii->i_bh);
++			ii->i_bh = *pbh;
++		} else {
+ 			brelse(*pbh);
+ 			*pbh = ii->i_bh;
+ 		}
 -- 
-2.40.1
+2.34.1
 
