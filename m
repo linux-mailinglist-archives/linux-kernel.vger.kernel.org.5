@@ -2,182 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0923778143D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14548781441
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379957AbjHRURE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 16:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
+        id S1379962AbjHRUUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 16:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1380019AbjHRUQ7 (ORCPT
+        with ESMTP id S1379938AbjHRUU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 16:16:59 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F552D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:16:57 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bda9207132so10928245ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:16:57 -0700 (PDT)
+        Fri, 18 Aug 2023 16:20:26 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E40359D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:20:23 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso18231cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:20:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692389817; x=1692994617;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=B+0NDXVHi3NlSMpHGIebBNg86FuRtmvH4hOGN+BnELk=;
-        b=DEtglTYYGcSHksSA2FN1gDlsR56zI+g/nYhimB696kBmZPBAzlOy75JkBBhM78FxWD
-         oSNsu7vBKQxacSZZS6GIB1wbIFqgWxN1ttYlgzN3NSr44W9CiSm+fZ35PaWWCYGvnm8+
-         6YrmffZmW7gRRwpACCuvTbm29E1nDgHWb/p/8=
+        d=google.com; s=20221208; t=1692390023; x=1692994823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hJivKRUQVufG/gPmQeTicJgOw5YOtNiOedA2X8vU9zE=;
+        b=G3VGxR5zQ/wn8bs1jFo/t0VmyFqMoOtDmLslbRIHJk21UrHdZY8HT8PexNES69U8cc
+         COydRhoSc2QngvCduPSEVYlodpuas9ObmPtUWW122HK8lZTSSCvjoy30H7lDXADy4EXV
+         5C1siSFS37lpkbu/yoolDQK8T/bXCB7/7pnZ0E7eraoK1ikRGty5FCbdgH7oR8AYFbS+
+         zO7O/LqS2xLH9BzUgKyBFydjigHDw9QQKSK25RA/gnWIpbLhEJlj3WcgLwP+XBVe17Mq
+         cO5v1MaDpawx4RoM46uQ94x3vozEKXF6MjTydtMTTAlt+XTyWdZlDPZbjfwvbnNnRpqG
+         qmPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692389817; x=1692994617;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B+0NDXVHi3NlSMpHGIebBNg86FuRtmvH4hOGN+BnELk=;
-        b=SYVn1yII72yf8p6Q1z4qhe7Q4CBZslbFxbfhPGmxlvC5ih2oJl1K8QdV5ah7kDBL7E
-         y4gkdyG7jGkFT5M9EMZOwap9EhmIlNF70vLAZ/iIuwWrQet9X/dJEls7zghhHydJ3zcd
-         5hWPo8aL3CltQfF7381lBUQMOez2PaFERDXKEcQaPIFzZFdKOEOvKHZa6DsI/v+4sPJQ
-         /FwVhxIaFtg40xUg+8mqILXmMYggFGlK5IjvrwDPUNymO8q1Tes6zfU3t2D9L2icQCxp
-         GpNGk/AEpDd9zA4yNDR91t/i0V1nbm1KNWdreSGhRAuhjqOoqNRbGE4iKEIdmA6dc3qp
-         TuTQ==
-X-Gm-Message-State: AOJu0YwHQoqwoM0JJR7YNSz/yGqm8wHIWp5DgG+jVf36lk/1SmY7a476
-        NTOxJEIBWW/FYUBoyLngU85Yyw==
-X-Google-Smtp-Source: AGHT+IHZo6wrfhDwquWf5UNY2LXx3igOOehSqRlr11vbqJ0GFmbmxugVK09ccVdL+k2/cm6nXXXjeQ==
-X-Received: by 2002:a17:903:41c4:b0:1b8:6a09:9cf9 with SMTP id u4-20020a17090341c400b001b86a099cf9mr310762ple.26.1692389817079;
-        Fri, 18 Aug 2023 13:16:57 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id bi9-20020a170902bf0900b001bd99fd1114sm2140559plb.288.2023.08.18.13.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 13:16:56 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 13:16:55 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jann Horn <jannh@google.com>, linux-hardening@vger.kernel.org,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] creds: Convert cred.usage to refcount_t
-Message-ID: <202308181252.C7FF8B65BC@keescook>
-References: <20230818041740.gonna.513-kees@kernel.org>
- <20230818105542.a6b7c41c47d4c6b9ff2e8839@linux-foundation.org>
- <CAG48ez3mNk8yryV3XHdWZBHC_4vFswJPx1yww+uDi68J=Lepdg@mail.gmail.com>
- <202308181146.465B4F85@keescook>
- <20230818123148.801b446cfdbd932787d47612@linux-foundation.org>
+        d=1e100.net; s=20221208; t=1692390023; x=1692994823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hJivKRUQVufG/gPmQeTicJgOw5YOtNiOedA2X8vU9zE=;
+        b=XKiV6ULdEhxzFpHnUms/hLabcm8ffGh09UV2m/ZH0X7K+XkkMFgLl1KEU1ulyr2//d
+         yt6y3BVI3LOIJIPE2muwrU7vw9Dk3SuZdSuQhyCgYqA2tTuL67+u9Trj6jM4+3lfM5n2
+         Zc0VDPt96f75Lh9RpBxmRLRY+v15lSoZF0avAHjSRsphURG96J9/FiYRSCGHj3oBi9Cj
+         z1MtAgBg2C7I5J+tkgWLoyBZy1ZsgoW04zDUXBR4u3K1n4qxVYMfP9N41EaN8Eakrh2d
+         qN8qfCvboGVwG+mgOOaO/cLueS9cyT98Cib2+VQgCYfhdxkKveDfA1zpUa75ER8B76+8
+         AA/Q==
+X-Gm-Message-State: AOJu0YwdquqOwdbafyORHrGS9BLdJ/nax/ynFwRkBFo+P0TwvV9UN8QC
+        g8uN8qhjPGkPsSFP+mCzD+zaC7qXIlS2k07tK2oVRg==
+X-Google-Smtp-Source: AGHT+IEhwnsWoqhjrCcucUjO6z8QLTGzlIDf8prugA9O2RpP4srmVZqsJbmCcbZ5tZ9oWV31HG4wWi04/nNC4NUYdz4=
+X-Received: by 2002:ac8:5782:0:b0:40f:d1f4:aa58 with SMTP id
+ v2-20020ac85782000000b0040fd1f4aa58mr288786qta.8.1692390022713; Fri, 18 Aug
+ 2023 13:20:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230818123148.801b446cfdbd932787d47612@linux-foundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220613094924.913340374@linuxfoundation.org> <20220613094928.793712131@linuxfoundation.org>
+ <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com> <2023081619-slapping-congrats-8e85@gregkh>
+ <471bf84d-9d58-befc-8224-359a62e29786@collabora.com> <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
+ <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
+In-Reply-To: <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 18 Aug 2023 13:19:46 -0700
+Message-ID: <CAGETcx-DUm417mM-Nmyqj-e_rKUw69m=rTe5R6_Vxd_rsKMmGg@mail.gmail.com>
+Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
+ deferred_probe_timeout interaction
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, John Stultz <jstultz@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo_Navarro?= 
+        <ricardo.canuelo@collabora.com>,
+        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
+        usama.anjum@collabora.com, kernelci@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 12:31:48PM -0700, Andrew Morton wrote:
-> On Fri, 18 Aug 2023 11:48:16 -0700 Kees Cook <keescook@chromium.org> wrote:
-> 
-> > On Fri, Aug 18, 2023 at 08:17:55PM +0200, Jann Horn wrote:
-> > > On Fri, Aug 18, 2023 at 7:56 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > On Thu, 17 Aug 2023 21:17:41 -0700 Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > > From: Elena Reshetova <elena.reshetova@intel.com>
-> > > > >
-> > > > > atomic_t variables are currently used to implement reference counters
-> > > > > with the following properties:
-> > > > >  - counter is initialized to 1 using atomic_set()
-> > > > >  - a resource is freed upon counter reaching zero
-> > > > >  - once counter reaches zero, its further
-> > > > >    increments aren't allowed
-> > > > >  - counter schema uses basic atomic operations
-> > > > >    (set, inc, inc_not_zero, dec_and_test, etc.)
-> > > > >
-> > > > > Such atomic variables should be converted to a newly provided
-> > > > > refcount_t type and API that prevents accidental counter overflows and
-> > > > > underflows. This is important since overflows and underflows can lead
-> > > > > to use-after-free situation and be exploitable.
-> > > >
-> > > > ie, if we have bugs which we have no reason to believe presently exist,
-> > > > let's bloat and slow down the kernel just in case we add some in the
-> > > > future?
-> > > 
-> > > Yeah. Or in case we currently have some that we missed.
-> > 
-> > Right, or to protect us against the _introduction_ of flaws.
-> 
-> We could cheerfully add vast amounts of code to the kernel to check for
-> the future addition of bugs.  But we don't do that, because it would be
-> insane.
+On Thu, Aug 17, 2023 at 4:13=E2=80=AFPM Shreeya Patel
+<shreeya.patel@collabora.com> wrote:
+>
+> Hi Geert, Saravana,
+>
+> On 18/08/23 00:03, Saravana Kannan wrote:
+> > On Thu, Aug 17, 2023 at 4:37=E2=80=AFAM Shreeya Patel
+> > <shreeya.patel@collabora.com> wrote:
+> >> Hi Greg,
+> >>
+> >> On 16/08/23 20:33, Greg Kroah-Hartman wrote:
+> >>> On Wed, Aug 16, 2023 at 03:09:27PM +0530, Shreeya Patel wrote:
+> >>>> On 13/06/22 15:40, Greg Kroah-Hartman wrote:
+> >>>>> From: Saravana Kannan<saravanak@google.com>
+> >>>>>
+> >>>>> [ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
+> >>>>>
+> >>>>> Mounting NFS rootfs was timing out when deferred_probe_timeout was
+> >>>>> non-zero [1].  This was because ip_auto_config() initcall times out
+> >>>>> waiting for the network interfaces to show up when
+> >>>>> deferred_probe_timeout was non-zero. While ip_auto_config() calls
+> >>>>> wait_for_device_probe() to make sure any currently running deferred
+> >>>>> probe work or asynchronous probe finishes, that wasn't sufficient t=
+o
+> >>>>> account for devices being deferred until deferred_probe_timeout.
+> >>>>>
+> >>>>> Commit 35a672363ab3 ("driver core: Ensure wait_for_device_probe() w=
+aits
+> >>>>> until the deferred_probe_timeout fires") tried to fix that by makin=
+g
+> >>>>> sure wait_for_device_probe() waits for deferred_probe_timeout to ex=
+pire
+> >>>>> before returning.
+> >>>>>
+> >>>>> However, if wait_for_device_probe() is called from the kernel_init(=
+)
+> >>>>> context:
+> >>>>>
+> >>>>> - Before deferred_probe_initcall() [2], it causes the boot process =
+to
+> >>>>>      hang due to a deadlock.
+> >>>>>
+> >>>>> - After deferred_probe_initcall() [3], it blocks kernel_init() from
+> >>>>>      continuing till deferred_probe_timeout expires and beats the p=
+oint of
+> >>>>>      deferred_probe_timeout that's trying to wait for userspace to =
+load
+> >>>>>      modules.
+> >>>>>
+> >>>>> Neither of this is good. So revert the changes to
+> >>>>> wait_for_device_probe().
+> >>>>>
+> >>>>> [1] -https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41F=
+D8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
+> >>>>> [2] -https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-=
+3990X/
+> >>>>> [3] -https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
+> >>>> Hi Saravana, Greg,
+> >>>>
+> >>>>
+> >>>> KernelCI found this patch causes the baseline.bootrr.deferred-probe-=
+empty test to fail on r8a77960-ulcb,
+> >>>> see the following details for more information.
+> >>>>
+> >>>> KernelCI dashboard link:
+> >>>> https://linux.kernelci.org/test/plan/id/64d2a6be8c1a8435e535b264/
+> >>>>
+> >>>> Error messages from the logs :-
+> >>>>
+> >>>> + UUID=3D11236495_1.5.2.4.5
+> >>>> + set +x
+> >>>> + export 'PATH=3D/opt/bootrr/libexec/bootrr/helpers:/lava-11236495/1=
+/../bin:/sbin:/usr/sbin:/bin:/usr/bin'
+> >>>> + cd /opt/bootrr/libexec/bootrr
+> >>>> + sh helpers/bootrr-auto
+> >>>> e6800000.ethernet
+> >>>> e6700000.dma-controller
+> >>>> e7300000.dma-controller
+> >>>> e7310000.dma-controller
+> >>>> ec700000.dma-controller
+> >>>> ec720000.dma-controller
+> >>>> fea20000.vsp
+> >>>> feb00000.display
+> >>>> fea28000.vsp
+> >>>> fea30000.vsp
+> >>>> fe9a0000.vsp
+> >>>> fe9af000.fcp
+> >>>> fea27000.fcp
+> >>>> fea2f000.fcp
+> >>>> fea37000.fcp
+> >>>> sound
+> >>>> ee100000.mmc
+> >>>> ee140000.mmc
+> >>>> ec500000.sound
+> >>>> /lava-11236495/1/../bin/lava-test-case
+> >>>> <8>[   17.476741] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=3Ddeferred-prob=
+e-empty RESULT=3Dfail>
+> >>>>
+> >>>> Test case failing :-
+> >>>> Baseline Bootrr deferred-probe-empty test -https://github.com/kernel=
+ci/bootrr/blob/main/helpers/bootrr-generic-tests
+> >>>>
+> >>>> Regression Reproduced :-
+> >>>>
+> >>>> Lava job after reverting the commit 5ee76c256e92
+> >>>> https://lava.collabora.dev/scheduler/job/11292890
+> >>>>
+> >>>>
+> >>>> Bisection report from KernelCI can be found at the bottom of the ema=
+il.
+> >>>>
+> >>>> Thanks,
+> >>>> Shreeya Patel
+> >>>>
+> >>>> #regzbot introduced: 5ee76c256e92
+> >>>> #regzbot title: KernelCI: Multiple devices deferring on r8a77960-ulc=
+b
+> >>>>
+> >>>> --------------------------------------------------------------------=
+---------------------------------------------------------------------------=
+----
+> >>>>
+> >>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
+> >>>> * If you do send a fix, please include this trailer: *
+> >>>> * Reported-by: "kernelci.org bot" <bot@...> *
+> >>>> * *
+> >>>> * Hope this helps! *
+> >>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+> >>>>
+> >>>> stable-rc/linux-5.10.y bisection: baseline.bootrr.deferred-probe-emp=
+ty on
+> >>>> r8a77960-ulcb
+> >>> You are testing 5.10.y, yet the subject says 5.17?
+> >>>
+> >>> Which is it here?
+> >> Sorry, I accidentally used the lore link for 5.17 while reporting this
+> >> issue,
+> >> but this test does fail on all the stable releases from 5.10 onwards.
+> >>
+> >> stable 5.15 :-
+> >> https://linux.kernelci.org/test/case/id/64dd156a5ac58d0cf335b1ea/
+> >> mainline :-
+> >> https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
+> >>
+> > Shreeya, can you try the patch Geert suggested and let us know if it
+> > helps? If not, then I can try to take a closer look.
+>
+> I tried to test the kernel with 9be4cbd09da8 but it didn't change the
+> result.
+> https://lava.collabora.dev/scheduler/job/11311615
+>
+> Also, I am not sure if this can change things but just FYI, KernelCI
+> adds some kernel parameters when running these tests and one of the
+> parameter is deferred_probe_timeout=3D60.
 
-This is a slippery-slope fallacy and doesn't apply. Yes, we don't add vast
-amounts of code for that and that isn't the case here. This is fixing a
-known weakness of using atomic reference counts, with a long history of
-exploitation, on a struct used for enforcing security boundaries, solved
-with the kernel's standard reference counting type. As I mentioned in
-the other arm[1] of this thread, I think the question is better "Why is
-this NOT refcount_t? What is the benefit, and why does that make struct
-cred special?"
+Ah this is good to know.
 
-> > > Though really we don't *just* need refcount_t to catch bugs; on a
-> > > system with enough RAM you can also overflow many 32-bit refcounts by
-> > > simply creating 2^32 actual references to an object. Depending on the
-> > > structure of objects that hold such refcounts, that can start
-> > > happening at around 2^32 * 8 bytes = 32 GiB memory usage, and it
-> > > becomes increasingly practical to do this with more objects if you
-> > > have significantly more RAM. I suppose you could avoid such issues by
-> > > putting a hard limit of 32 GiB on the amount of slab memory and
-> > > requiring that kernel object references are stored as pointers in slab
-> > > memory, or by making all the refcounts 64-bit.
-> > 
-> > These problems are a different issue, and yes, the path out of it would
-> > be to crank the size of refcount_t, etc.
-> 
-> Is it possible for such overflows to occur in the cred code?  If so,
-> that's a bug.  Can we fix that cred bug without all this overhead? 
-> With a cc:stable backport.  If not then, again, what is the non
-> handwavy, non cargoculty justification for adding this overhead to
-> the kernel?
+> You can check this in the definition details given in the Lava job. I
+> also tried to remove this parameter and rerun the test but again I got
+> the same result.
 
-The only overhead is on slow-path for the error conditions. There is no
-_known_ bug in the cred code today, but there might be unknown flaws,
-or new flaws or unexpected reachability may be introduced in the future.
-That's the whole point of making kernel code defensive. I've talked about
-this (with lots of data to support it) at length before[2], mainly around
-the lifetime of exploitable flaws: average lifetime is more than 5 years
-and we keep introducing them in code that uses fragile types or ambiguous
-language features. But I _haven't_ had to talk much about reference
-counting since 2016 when we grew a proper type for it. :)
+How long does the test wait after boot before checking for the
+deferred devices list?
 
-Let's get the stragglers fixed.
+> I will try to add 9be4cbd09da8 to mainline kernel and see what results I
+> get.
 
--Kees
+Now I'm confused. What do you mean by mainline? Are you saying the tip
+of tree of Linus's tree is also hitting this issue?
 
-[1] https://lore.kernel.org/lkml/202308181131.045F806@keescook/
-[2] https://outflux.net/slides/2021/lss/kspp.pdf (see slides 4, 5, 6)
-    https://outflux.net/slides/2019/lss/kspp.pdf (see slides 4, 5, 6)
-    https://outflux.net/slides/2018/lss/kspp.pdf (see slides 3, 4)
-    https://outflux.net/slides/2017/lss/kspp.pdf (see slides 5, 6, 13)
-    https://outflux.net/slides/2017/ks/kspp.pdf (see slides 3, 4, 12)
-    https://outflux.net/slides/2016/lss/kspp.pdf (see slides 5, 6, 12, 20)
-    https://outflux.net/slides/2016/ks/kspp.pdf (see slides 17, 21)
-    https://outflux.net/slides/2015/ks/security.pdf (see slides 4, 13)
-
--- 
-Kees Cook
+-Saravana
