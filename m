@@ -2,165 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2777804B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D029F7804BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357688AbjHRDck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
+        id S1357699AbjHRDdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357745AbjHRDch (ORCPT
+        with ESMTP id S1357793AbjHRDdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:32:37 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31BC3C29
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:31:35 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6887ccba675so400592b3a.3
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:31:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692329447; x=1692934247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SGmVVVsqzwRWxRE6503FAnRSrIWd/bwYCLw204IJRkI=;
-        b=d3KZf/LTftZ96BtzQJ7G5aMZvlBFyFZufZy8+97TTPZ51ULQXtMq7+opwQWnmmFtOB
-         CkBqM+KhcVBVcBiB23aUe4zidvc6AD/hvufabpiZdT90ibSHL60mQsIRImfqeQKvOjsR
-         492Q4crEEjhHyZpoSVCZFAsWNfMs8L21n1LMdPl4RV6WaextVP29f3SlrKVyXULJaUCm
-         aZ9p+6uoLkT8RCnNw5EKP+DA4R9o4wgPEuEvqGSKJIJyDBWW7jXsSwOV28s8tqeDpjMb
-         vhNEJpoRCceWDokCh+/7SllUK+aHLUZ5SsaJob7b5o1EkKjz6XGeDFuz1OsI9vEHOEUQ
-         IJEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692329447; x=1692934247;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SGmVVVsqzwRWxRE6503FAnRSrIWd/bwYCLw204IJRkI=;
-        b=DNGytlqMjYWSOJ0B9vUQduMn/AbV2t86rAg30+qNkuEqA7ZFuv73YaXZN7ZAHFFn9B
-         5TGZ4Ur9nphDyMT/4yNpsPTLCxRAoYUUiZF2BBLl9VfZqcGzyuTQF1ApyVAL96uAIvpN
-         YBqdXyHaRUnEu5+tRqlMAGwReR7a18h8j6Zc1icOf7SAHjhal59xca6iXZjeASFaS3Qh
-         5GPLJejNVL3QaIaMuZ0ZqqcpAAHtBf/yiCTt9SkEIpDjJXHSb8SUwR/P15HkAJi1P6by
-         UohKn6QeVzKaJJ1cYk1NnNwH8a/t0yKPJScunqjs0qRbla/wp8CuHQVJzJPNaBcJZ9yO
-         IihQ==
-X-Gm-Message-State: AOJu0YwDSI+sK4OkCuSIS5e5nHeRjhhkRMwcBv7e3cpbF2cZzcnHqZ8M
-        hRenRKg6VvS+Dsop2nsWE+SkFg==
-X-Google-Smtp-Source: AGHT+IFjvYdd1gHzy3Dm/9XxgsdE9J5GYxTWj/2+yaApFf7YiPL2XuxffQUZO/c7Y93aoEgllYbq4A==
-X-Received: by 2002:a05:6a00:812:b0:687:5415:7282 with SMTP id m18-20020a056a00081200b0068754157282mr1520138pfk.23.1692329447618;
-        Thu, 17 Aug 2023 20:30:47 -0700 (PDT)
-Received: from [10.255.89.48] ([139.177.225.233])
-        by smtp.gmail.com with ESMTPSA id a21-20020aa780d5000000b00689f10adef9sm495696pfn.67.2023.08.17.20.30.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Aug 2023 20:30:47 -0700 (PDT)
-Message-ID: <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
-Date:   Fri, 18 Aug 2023 11:30:39 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v2 1/5] mm, oom: Introduce bpf_oom_evaluate_task
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, wuyun.abel@bytedance.com,
-        robin.lu@bytedance.com, Michal Hocko <mhocko@suse.com>
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-2-zhouchuyi@bytedance.com>
- <CAADnVQK=7NWbRtJyRJAqy5JwZHRB7s7hCNeGqixjLa4vB609XQ@mail.gmail.com>
- <93627e45-dc67-fd31-ef43-a93f580b0d6e@bytedance.com>
- <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
-From:   Chuyi Zhou <zhouchuyi@bytedance.com>
-In-Reply-To: <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
+        Thu, 17 Aug 2023 23:33:09 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2078.outbound.protection.outlook.com [40.107.102.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F833A95;
+        Thu, 17 Aug 2023 20:32:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nqi3w4vJQcNp+ZZK3FLH1230a9o0Cb+N8NVFv9pibvaRoRc0jHPcZ5Rsle7FcT/0Y5SoXXp+AyYTOGfvqm9U/mRL1yNvxLKMcabY4g0sTn+XkeSPiCUxcxU8odXTqySMu0tG864d+ZxFeuQWyX8Mw0DRaBVFgvbioS9x6ADbG2HetIJaXtArWFZtjHu6F087loSXsSZlxENmGpFCXT2Tbxr4SvPo2+2OJI4OjbZ3eEo0BN3Vs+HwXnunf38bYtfc19/3XYZrH+40fxZLCVkgyDmCkFxhfo/BO88fmlrH8QhohJdSBDUsji1mOMscdfKeDcoYHYU1cUX/hyKB0qxLSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=a683Xk3OuK2flx+oavRh0wRK4GbvEUgvUROgPI4ZCRY=;
+ b=EGcSqSpPBlBtO0E8XDLMw7Le2IlxI1KPmqjZSp1L5JVeDO8/ypJ+mYxjJSfj/yGQqLEm83D+zPgwkx5tIqWSeLFNVnWLlMFhttTLzFmuZ635+mOY/47lV+HHfWjNVWmRKv/TfG6UD+/GhHYh4QCBpM8ypnHuH8Yzu0ekJND7GyUdAau31i31iT9BNOTBdpuRaoGmyS6gZ9YnO5WgYAZ7SscsrzssHduIiuK8ujQDKJZTSfF4lnA2rnzJoNocLAZhIr78s/ErnzIcW4kCF+BrzLCqRN1OtfXUG0ggnaBfkH9HH+7bdlq4XjBFHc+uthLVlT14Daw0HnFhiwid/pKBAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a683Xk3OuK2flx+oavRh0wRK4GbvEUgvUROgPI4ZCRY=;
+ b=5m0iWDiHq1JQPZqvPHGXJEivsfCTGEUTNjL97ckgYB+tmt1+JLqxmme2y4M/77t7gU+CP6gn7I7QL2rByGx9yUmt65bRfBKZNpuzhKTwJFj6Z5aQfrNV1zPQ427cCaBWhZAXlyuhtATOAcQ/U/N4Bde2lSSyPSyw+D5k7+YMxIA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB7016.namprd12.prod.outlook.com (2603:10b6:303:218::14)
+ by IA1PR12MB6019.namprd12.prod.outlook.com (2603:10b6:208:3d5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
+ 2023 03:32:02 +0000
+Received: from MW4PR12MB7016.namprd12.prod.outlook.com
+ ([fe80::f26a:5d9c:cace:19aa]) by MW4PR12MB7016.namprd12.prod.outlook.com
+ ([fe80::f26a:5d9c:cace:19aa%7]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
+ 03:32:02 +0000
+Message-ID: <0aa6cb16-27af-345d-7e6c-cf985290d1b4@amd.com>
+Date:   Fri, 18 Aug 2023 09:01:50 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
+ the daisy chain
+Content-Language: en-US
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
+        Sanjay R Mehta <sanju.mehta@amd.com>
+References: <20230816051923.2287912-1-Sanath.S@amd.com>
+ <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com>
+ <20230817102430.GD3465@black.fi.intel.com>
+From:   Sanath S <sanaths2@amd.com>
+In-Reply-To: <20230817102430.GD3465@black.fi.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MA1PR01CA0180.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a01:d::18) To MW4PR12MB7016.namprd12.prod.outlook.com
+ (2603:10b6:303:218::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB7016:EE_|IA1PR12MB6019:EE_
+X-MS-Office365-Filtering-Correlation-Id: fba88045-25d2-4fa7-b0cb-08db9f9bafa3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TyQO1YU/ppmDbMv0IfyqC+TSOsXbM8dUGaK9khbzEvM0GfhNg70P46YPms1XUGr5NIs6qooFq9w1jmvO3H42aSqVKKaDYU/RBHT2z2OQsJx5dqP1/HLS4GoPG+VAHHQFncG5ic1DINbPCH0ohqjgE9a0kCQ+0C9WLV52TSMW1YqXoWhyNRfQEWPFGo/SxS6fvZ/1XVpCxoUmPLTpG2F7SPh6imwmbp5v4totUvU3gv9/4Eo6xYDJHr6lgloxXm/p1+iIE+aOE0r0dXuyGtgKSTpPdETH8j9msHbrEm3mDR7mdTrjnogDQ0a1S/e0YHeqNnFsXeqmGVptKEhiNVbIhkZoKeBrBxSjlkSIjtYfUHLMgkmGAlB6CCF1TR5CcOkx7xWJ7oFZNVDR/TTI4e2gtl39yXSVKD4AX9Q//OMvaEoGLouKNEugK9oud0I7E1KFd5AGnQae2VWa2FUXGJzt+aO1PLaHxWpOwP2xo+Q26mUNpQ+PWrQrd3e8BXATJMpDYAQlWId/SN0XySre8tj39sUAw8oRFQDHMFiFVcFbupA6pEA/zqv0+T27Xm7GCXJGCwqkwGwAOsZjFxPSkvw3Ic1rFMqSmLyHl15AfHvHhBLT9Z/09oUisMA9hbdC3NgAIh0146Pz3byWZq8/HqT9MAMfW21vGpz9qPb01bfxR6M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7016.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(39860400002)(396003)(451199024)(186009)(1800799009)(31686004)(31696002)(36756003)(38100700002)(478600001)(5660300002)(2616005)(6486002)(6506007)(6916009)(66476007)(66556008)(66946007)(966005)(6666004)(26005)(316002)(53546011)(4326008)(6512007)(8676002)(8936002)(41300700001)(2906002)(83380400001)(131093003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dDVyeFJDVnRVM3ErbExyZ29aYS8vQks1enhtV3Z0SE53RncxS0dOMmR6ZkZj?=
+ =?utf-8?B?c29UMHdONVNCREorSnJ1dzd5c2RKZXZSS3lTMVIydStYOVcvdUI2N3dSZjh3?=
+ =?utf-8?B?TkJYb3dWanZUYU5VTjQ5dk8rUGpzT0hwRlRxU3l3UW14UHhWYXV6UDVaRDBX?=
+ =?utf-8?B?eWtqNVlUYnNVQmRDZGFvMUFBeU52YXd1eUhFMmIvRkVZSStGNHM5d2xhRFk1?=
+ =?utf-8?B?d0x2T2tsVXlJaDBOeW03ckp4SS80V0xHeEgxdGFxdENnMmlXOVY4OGR2SVpZ?=
+ =?utf-8?B?eGZjRlMzT2swUnVuTndwSlBZWTlYcGR2cWJyNEh3Zncybkg4eXFqRGh2Nmtj?=
+ =?utf-8?B?WTMvdy9CRmZoSkVwNHdTWkxzSnozTzBiSFh3UytrczRrRnVJa1FINnVORUQy?=
+ =?utf-8?B?V3NSYUpKd3RZUjYzNUVRTFRoSi9EMWhtZWtOQnFxM0xNRUJTek5iaHdBS1l2?=
+ =?utf-8?B?czQrcmw4ejh5VDFRcFpQVmc5YnpHQnlnTVB5cUd5ZnFqNmFvallydE9nUU40?=
+ =?utf-8?B?Yi9NL0VFNERkY2RnNTdsNUtoU3ZCT0xGRGlQM1ROT0ZzUnFoN0E4MVlidUE3?=
+ =?utf-8?B?MWJhUXJqNWg0Zlp2d2ovTHlYZlFXbmNhNjJhOTFQdFlJc2gyK3UzWEFyMnQx?=
+ =?utf-8?B?MDFEVE5hNGN3MHJJcUZHQmQzT1FwbS9hRmsxSXltRURjV3NqT1JVYmhxVjIx?=
+ =?utf-8?B?VTEyMnpPU2hOOHpsYnFlYXoyT2JkYVMyUVJZQ3ljRStjS1ZjRjFEOTJBNUlH?=
+ =?utf-8?B?bmhFbHlTbDBYRW5EV0YxcjJFcnlqaHBpb29UYm1QZE1jM2QzQTVUa25BZVBN?=
+ =?utf-8?B?bHBiU1g2VTEyS2xBZWFycDV3VmloVThNSmRwcS8vbFAram1SdHlLRjlhM3JE?=
+ =?utf-8?B?YlB2dGtGN09adU9tYk9aa2VwejQwdzVISE1YaWk4azNSWXBiOE1DeUJRc0h5?=
+ =?utf-8?B?dTFnTko5eFpWN05OL0xEQW1WVkxEM1VDKy9nbTFvRmJMU2svMU9TMkJBTWtZ?=
+ =?utf-8?B?QkFQdTRrWElFcjI5M1ZhZC9TRXJ1aktpYi9PWWV2aTJxNElPc1FnUHh4cWll?=
+ =?utf-8?B?NWo3dmhJVUFnYzRiZUI4V2pEOXBtWUt6SmYrMTFWMEVpdEJ5dTRRTzdsQkdu?=
+ =?utf-8?B?K2JOdWZ6c1R1b1hja2JxdmFEVXIxSVJuWVhmR25tMEFXMHlFRm9od1ROdy9u?=
+ =?utf-8?B?dFBlNDA0QUlyZGdoZXN4K2pqVHdQM1A0bzN4K2VYWmJvRnp2Tzh3VjRWelNF?=
+ =?utf-8?B?M2syc3p1UEJZRjVSeFhNRWYvTWtqVkxtcEt2TkpSUm5ydmIyNVZ4VWJ3NHJj?=
+ =?utf-8?B?OWczSGFKRnJjcVk3WlRJNHFXVnEvWmtwNG4wTFY2dkt3eDkxK0tHRmdOUXU5?=
+ =?utf-8?B?Y1FUcGR0RUNnNlNvNG5Jbm1HdWVGSUttL3RhRDRmSGFSVnpkc09xL1M2cEQr?=
+ =?utf-8?B?R2NCeFdiRnRGL2pjMFBERlZWenRjTjQ5UmpaUmNucXVtNTZNQ3dMUkpvblh0?=
+ =?utf-8?B?aEFxOTJUb1VxYWh4NXErNnI3L0REeHZzUDdJRGx0OFFUQ2JMUk0wMXRJMTdE?=
+ =?utf-8?B?alNLTHIrTjdzcE1WbHhMcnpVT0N1WXNjODhWUVZCTkdRMEFBemtmclNScXRt?=
+ =?utf-8?B?YTRacVY2bGhXTWw2Z2NvSk1VT3NOUEdUaDFtVnFjRGNxUlRIdDRLU3JSUDdR?=
+ =?utf-8?B?c2RNcStvdXk3bEVra2lIdWRuVmhIaEsxNFhxS0toeGVDb3A1bm9ZVGZQNVU3?=
+ =?utf-8?B?RzBmbDl5czlia2FNRjBpVzBacnVxMVJTdEQxWnA1bElPRGpxeDUrRlRzeVYw?=
+ =?utf-8?B?dUlpN2NDZWJDR2hQYU44QU9kUDRzQktuZGVHSlhKd1NKNnowanVDR1RDNVVC?=
+ =?utf-8?B?TkZkOUtxMmdaVnFJTWJlK0hUNFNMeFNvRGpsVzJJaVNsT1NoS0IzOWZ2MXFw?=
+ =?utf-8?B?Y1BZbG1GMTJQT044Z2swWFRzK1U0cHExd2RZSkdzdTcrVWdPc0cyUGxIdFVL?=
+ =?utf-8?B?UjVENHR1Sm1ETXlOTUQyRGgxZUVTbUJMMVZiUXVDM3RQdGkxRnpFZVdtRkRz?=
+ =?utf-8?B?c2xJUUl1SDV6NXhwL1ZWOVppUnFzdFJmMytXRnVMTURFVGZoYzBpT2RvR25W?=
+ =?utf-8?Q?Rm5qYPU5Vi+IleJsmkF40SAtT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fba88045-25d2-4fa7-b0cb-08db9f9bafa3
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7016.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 03:32:02.1753
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: M/gHtR5whDwAeEOdsrac3VCKTjGO9NZbpogXfpsCyoEppeXwytHMqfjBL9YJppCJ47VwHu4+Mjlq/PIzRd9CeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6019
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-在 2023/8/17 11:22, Alexei Starovoitov 写道:
-> On Wed, Aug 16, 2023 at 7:51 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>
->> Hello,
->>
->> 在 2023/8/17 10:07, Alexei Starovoitov 写道:
->>> On Thu, Aug 10, 2023 at 1:13 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
->>>>    static int oom_evaluate_task(struct task_struct *task, void *arg)
->>>>    {
->>>>           struct oom_control *oc = arg;
->>>> @@ -317,6 +339,26 @@ static int oom_evaluate_task(struct task_struct *task, void *arg)
->>>>           if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
->>>>                   goto next;
->>>>
->>>> +       /*
->>>> +        * If task is allocating a lot of memory and has been marked to be
->>>> +        * killed first if it triggers an oom, then select it.
->>>> +        */
->>>> +       if (oom_task_origin(task)) {
->>>> +               points = LONG_MAX;
->>>> +               goto select;
->>>> +       }
->>>> +
->>>> +       switch (bpf_oom_evaluate_task(task, oc)) {
->>>> +       case BPF_EVAL_ABORT:
->>>> +               goto abort; /* abort search process */
->>>> +       case BPF_EVAL_NEXT:
->>>> +               goto next; /* ignore the task */
->>>> +       case BPF_EVAL_SELECT:
->>>> +               goto select; /* select the task */
->>>> +       default:
->>>> +               break; /* No BPF policy */
->>>> +       }
->>>> +
+
+On 8/17/2023 3:54 PM, Mika Westerberg wrote:
+> On Wed, Aug 16, 2023 at 06:48:35PM +0530, Sanath S wrote:
+>> Adding Mika.
+> Thanks!
+>
+>> On 8/16/2023 10:49 AM, Sanath S wrote:
+>>> In the case of Thunderbolt, it contains a PCIe switch and one or
+>>> more hotplug-capable PCIe downstream ports where the daisy chain
+>>> can be extended.
 >>>
->>> I think forcing bpf prog to look at every task is going to be limiting
->>> long term.
->>> It's more flexible to invoke bpf prog from out_of_memory()
->>> and if it doesn't choose a task then fallback to select_bad_process().
->>> I believe that's what Roman was proposing.
->>> bpf can choose to iterate memcg or it might have some side knowledge
->>> that there are processes that can be set as oc->chosen right away,
->>> so it can skip the iteration.
->>
->> IIUC, We may need some new bpf features if we want to iterating
->> tasks/memcg in BPF, sush as:
->> bpf_for_each_task
->> bpf_for_each_memcg
->> bpf_for_each_task_in_memcg
->> ...
->>
->> It seems we have some work to do first in the BPF side.
->> Will these iterating features be useful in other BPF scenario except OOM
->> Policy?
-> 
-> Yes.
-> Use open coded iterators though.
-> Like example in
-> https://lore.kernel.org/all/20230810183513.684836-4-davemarchevsky@fb.com/
-> 
-> bpf_for_each(task_vma, vma, task, 0) { ... }
-> will safely iterate vma-s of the task.
-> Similarly struct css_task_iter can be hidden inside bpf open coded iterator.
-OK. I think the following APIs whould be useful and I am willing to 
-start with these in another bpf-next RFC patchset:
-
-1. bpf_for_each(task). Just like for_each_process(p) in kernel to 
-itearing all tasks in the system with rcu_read_lock().
-
-2. bpf_for_each(css_task, task, css). It works like 
-css_task_iter_{start, next, end} and would be used to iterating 
-tasks/threads under a css.
-
-3. bpf_for_each(descendant_css, css, root_css, {PRE, POST}). It works 
-like css_next_descendant_{pre, post} to iterating all descendant.
-
-If you have better ideas or any advice, please let me know.
-Thanks.
+>>> Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
+>>> System BIOS allocates a very minimal number of buses for bridges and
+>>> hot-plug capable PCIe downstream ports to enumerate the dock during
+>>> boot. Because of this, we run out of bus space pretty quickly when
+>>> more PCIe devices are attached to hotplug downstream ports in order
+>>> to extend the chain.
+>>>
+>>> Before:
+>>>              +-04.0
+>>>              +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
+>>>              |                               +-01.0-[66]--
+>>>              |                               +-02.0-[67]--
+>>>              |                               +-03.0-[68]--
+>>>              |                               \-04.0-[69]--
+>>>              +-08.0
+> This is something the BIOS should be doing but for some reason it is
+> not on that particular system.
+Yes, BIOS should be doing it. Idea here is if BIOS has not distributed 
+it correctly, OS
+can reallocate and distribute it correctly.
+>>> In case of a thunderbolt capable bridge, reconfigure the buses allocated
+> Thunderbolt
+Will correct it.
+>
+>>> by BIOS to the maximum available buses. So that the hot-plug bridges gets
+>>> maximum buses and chain can be extended to accommodate more PCIe devices.
+>>> This fix is necessary for all the PCIe downstream ports where the daisy
+>>> chain can be extended.
+> This is necessary only when there is no proper BIOS allocation for the
+> resources.
+Yes, will send out a v2 with updated commit message.
+>
+>>> After:
+>>>              +-04.0
+>>>              +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
+>>>              |                               +-01.0-[66-84]--
+>>>              |                               +-02.0-[85-a3]--
+>>>              |                               +-03.0-[a4-c0]--
+>>>              |                               \-04.0-[c1]--
+>>>              +-08.0
+>>>
+>>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
+> Did you get confirmation that this actually solves the issue?
+I've tested this on my setup, it is resolving the issue.
+>
+>>> Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
+>>> Signed-off-by: Sanath S <Sanath.S@amd.com>
+>>> ---
+>>>    drivers/pci/probe.c | 9 +++++++++
+>>>    1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+>>> index 8bac3ce02609..ab7e90ef2382 100644
+>>> --- a/drivers/pci/probe.c
+>>> +++ b/drivers/pci/probe.c
+>>> @@ -1263,6 +1263,8 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+>>>    	bool fixed_buses;
+>>>    	u8 fixed_sec, fixed_sub;
+>>>    	int next_busnr;
+>>> +	int start = bus->busn_res.start;
+>>> +	int end = bus->busn_res.end;
+>>>    	/*
+>>>    	 * Make sure the bridge is powered on to be able to access config
+>>> @@ -1292,6 +1294,13 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
+>>>    		broken = 1;
+>>>    	}
+>>> +	/* Reconfigure, If maximum buses are not allocated */
+>>> +	if (!pass && start != 0 && end != 0xff && subordinate != end) {
+>>> +		pci_info(dev, "Bridge has subordinate 0x%x but max busn 0x%x, reconfiguring\n",
+>>> +			 subordinate, end);
+>>> +		broken = 1;
+>>> +	}
+>>> +
+>>>    	/*
+>>>    	 * Disable Master-Abort Mode during probing to avoid reporting of
+>>>    	 * bus errors in some architectures.
