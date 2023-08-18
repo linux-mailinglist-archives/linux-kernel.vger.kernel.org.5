@@ -2,78 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DCE780C4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA65780C55
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377028AbjHRNKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S1377048AbjHRNLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:11:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377047AbjHRNJn (ORCPT
+        with ESMTP id S1377035AbjHRNKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:09:43 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154B82710
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:09:41 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4ff9b389677so1302445e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:09:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692364179; x=1692968979;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GOVhLvGrhBNvKfFd2PSFClkLUOZNx9FiwdY0FkF4RfI=;
-        b=oDhBMnE2PzZYabJXt252jAHUFgMpIxiuZgvUH60KF7xRpHIUwtQJUllI8szngsGduQ
-         mJ74hTAOFBLDHffHZOJS14l2bMswJ0L2+2flHD6xy2e9goWthd3se2wiZPiNJoVeTdYC
-         GaY37OYPXmP3kVqNazDAIx1PbjkJOB2NJxb/ghCwgPqs0h9vLgfUEsgNM5KD+pCWIddI
-         Eyx+V8GqN3UW0vbMzNlqQkbieQS9ugAGpN6UBaWKxLfXBi+vIWj2MB20iJO1zPH2rNPu
-         QxTn0HSfNvyQvXTwiVWy7+D8drrr2c3R7SPDdRGx6lnI3lOG2FCED+LVRaH2QSz7At9r
-         iVIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692364179; x=1692968979;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GOVhLvGrhBNvKfFd2PSFClkLUOZNx9FiwdY0FkF4RfI=;
-        b=Kgt/cWBR7qD7aomKmR4JI3k2njUTCF8exGXnvL6pBTJPhs66X3yK9690mXNrfQEoN7
-         mTbKRg3rqIH/afl8sec+Iot8TNdv7NrVE9IBOwEhzDn4Wv42OQSFWXei29hUoR58f1W9
-         zLmrGylwormaB9y3S+AAWxw2Hgn5JTZ86jAwRm9Fk0eKBcF9pH0RGo1Qr/TjW2D/zSf2
-         VPY3H68ChvNeBVwC+87rsNB46T7YsNMhU/4BevklA2V3wrsatgg88uAOzHfMvHPe1Vbp
-         s5/Rf1X5Hrt8K4aFSMgozyjEFhx3Orcrvegdau0Va2IZBXg5aD3BqBpv0lNB7MWf3lgf
-         TYGg==
-X-Gm-Message-State: AOJu0YwceD8SS4e2TBOApQYvQGvgr6wMwxDyhyxGPEbKAik//zeoPOWf
-        SCZ27F2GEbtrjXQcA6NosUEBhG2HvhqDcourYfg=
-X-Google-Smtp-Source: AGHT+IFHRB06OcJ5yOH57GQUlpgwT5Pga7gy8htvIBRiV9wXb8Pt8G/K/qyoPu8VZFK/F1q91ibotA==
-X-Received: by 2002:ac2:43ce:0:b0:4ff:9eed:b68d with SMTP id u14-20020ac243ce000000b004ff9eedb68dmr1559661lfl.58.1692364179141;
-        Fri, 18 Aug 2023 06:09:39 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id f3-20020a19ae03000000b004fe13318aeesm334400lfc.166.2023.08.18.06.09.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 06:09:38 -0700 (PDT)
-Message-ID: <08019512-ef6b-43c2-badf-a848fc738463@linaro.org>
-Date:   Fri, 18 Aug 2023 16:09:37 +0300
+        Fri, 18 Aug 2023 09:10:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D41273C;
+        Fri, 18 Aug 2023 06:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692364230; x=1723900230;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=FzKsjU9Wng96DmybAh4t765fpbm8Z4eZK88TPaIO2sE=;
+  b=cfkvDyr/CK25oxR2GQ7Ilk8uo+SYr8uzGlZtpsW7LWBqTfPZl6uFcOB3
+   pYKU7XRKgA/tkrYprLon1VDqGdLE2B5U2qtaqQBaAA4nUTbDt8CJBuz2u
+   leMmR0k26rry8I9STJBHdmHm4uUV3O9M7us7v8pqTBg6SoEDF+LOs7cD2
+   5AjAwCgX9PcEXywEuYs7qU2DMDooRxyeE5X94DGMzOSWUYlBKGZMbEOaB
+   wuxzvdMdBlD74M/o8PKXvU8KRFZVEjP/dmuwgsLkuytbJ6FhnIvlj3SMZ
+   qN/lFJij2sRHnJXSJTuJ3qJP+7ct2nMGo1WRH9VGWIf+EzIhEjQwMgVFq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="363254916"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="363254916"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 06:10:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="764563739"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="764563739"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga008.jf.intel.com with ESMTP; 18 Aug 2023 06:10:09 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 18 Aug 2023 06:10:09 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 18 Aug 2023 06:10:09 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 18 Aug 2023 06:10:09 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 18 Aug 2023 06:10:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IyXfpoILrAw8SuKRcpZCP0Uvg/g05IxFZNZ/kDx2K/b3b8FHFJsz6nCQXqslchuSyBTNCypeAUWYnFz7R2YE+AGEF7maOzhNYQR3S+cmS3yEw7yRbSRy7g2FtL9GjTBWZ348XnH41g4zY8hsB7A701eE734JRZJcGmvb3niW1CCMvqzSF6bYkoAvoK/NL+tE1vG6gjvDLNL5KCBV2xFmjuOjHAVdc+5KfKrWaYO6VYzK5A3IhvR5HuBB+82KPEd8x79QDUkgreDA9z5Fs0kRfBW5SoNA59DHQcW5dsERQkwhYUfFoo/m+Rq8EqHExlnxTDbQVrT6zppqfMh4NSVlXg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FzKsjU9Wng96DmybAh4t765fpbm8Z4eZK88TPaIO2sE=;
+ b=BX2QLMZpOF3J/xtrN+PKmbZNZC6u+KUuPT0c14TgLFcGBPZYv1piS9Obci/Od2MlqVoiOMxakn8cw7l9eUbu4L6rhttjQYTRXqokU2Mg8lQADZ3En5Y9Uk7rLLtQ+yeujaEiXE2unXqVZxsi7AxUK/Ah0zngTDsj+FcA+HHjsCa3n8IPzTNXee9pQ2nlzM3QOgpeW9A0IAiYiF30SwG9j+1la9NJv/SpVZmkI7xpc3ySknphnMZochUD8ogrBVJ+XEmq0AA5TSUApdcBkPpnd2P4FtmrE8H2IwdYcSA0X2sJZDAvHPZYrReC5CVMvuZ+VbyBgOXjb4yQGbL+LhpoGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by DM6PR11MB4532.namprd11.prod.outlook.com (2603:10b6:5:2aa::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 13:10:06 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 13:10:06 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Van Bulck, Jo" <jo.vanbulck@cs.kuleuven.be>
+CC:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH 6/8] selftests/sgx: Ensure expected enclave data buffer
+ size and placement
+Thread-Topic: [PATCH 6/8] selftests/sgx: Ensure expected enclave data buffer
+ size and placement
+Thread-Index: AQHZyi8cLf4tLyn+l0SnSKbuHr/oXa/wFjuA
+Date:   Fri, 18 Aug 2023 13:10:05 +0000
+Message-ID: <0885be8149082c17fc56261231c5210d693789af.camel@intel.com>
+References: <20230808193145.8860-1-jo.vanbulck@cs.kuleuven.be>
+         <20230808193145.8860-7-jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <20230808193145.8860-7-jo.vanbulck@cs.kuleuven.be>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|DM6PR11MB4532:EE_
+x-ms-office365-filtering-correlation-id: 6e57127b-009f-4de3-4ac0-08db9fec7109
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qrzJVbKdbRg6cgh4MyI7LXgbbn6SqbbSYj46CNJ5mkhZFqhI5yMmo3TV2G0OcjcC9IyZVoEkBJZQ4WQLn4nb5SjWG9+MrH7qev8qYNiXOn8FPVgdfnhaJoGyI8DkpGT3sbkGR7OnzKeNgQV7Xdekvi7A7relNx6xTTSKQ0FC/KULe6yNjMhi7i5qZknK55lvmdRMok29PCnMKc47tARWJ8lsfNZlxQQOlKi1uB0gzaz8AkVG/net2RK/wm5X7+fsMJodf8aM3/J/oZegs9iqPyK3uTzSz8wD37OpZz+jTPSNkT2Q7wTDbpa2V41rIxgpQG1yzwq9hXh0JRjljIVAaFo8+ZKeLs1bdh1C3SE8+6I5rnnaoyTG1fhcVDLipyf0gheR2K4GYTtoKtdHeZLHFIEbXVzPUlBh85kD9nM7VuF7R4T3iBRdsq7Fv6FYSU/T6Pv3w4l2k9erDgDYIikayHOWY1umhLm1dPyJG8YF+8Eic+lkS9ETK3omSGaeE0wy+hcfeVpzumSJVNhUGLLYUBYFgqEWZLNm1ZHd9GqXDVt3FQIfva8zHVO4XRmQptDbi9rRkBagIoh/QfY/QnLTN8FOet1IMwxuJjJLFJ842y8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(396003)(39860400002)(451199024)(186009)(1800799009)(2616005)(26005)(71200400001)(6486002)(6512007)(6506007)(83380400001)(5660300002)(8936002)(8676002)(4326008)(2906002)(478600001)(966005)(41300700001)(76116006)(110136005)(66946007)(64756008)(66446008)(66476007)(66556008)(316002)(91956017)(38100700002)(38070700005)(122000001)(82960400001)(86362001)(36756003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L01oajdwQmxNMnlHaDdHRFU5QTVpMHJjNVRnM0plS0NXczJGL3lDd1NPSExO?=
+ =?utf-8?B?ZVBzVnhMRjU1WHhVL3lxTElDS1cwRkxUSmNXTGRQMGs1b1RuTllSdGhNWkJQ?=
+ =?utf-8?B?SlZXV2gxSm56c1l3MGhOTkVEZFRSbWg4NTdJL0t2blJuV3pTNXVkbm55cFRz?=
+ =?utf-8?B?T0R5Tzh5UHA4cUJlQVRPRkFiR2JkM1Vla29vU0h0VkpDbzVxcUtXK0xnV05a?=
+ =?utf-8?B?NlFuTjNycGdyVnl3OWdzSDhUczJER2ZIdFZzbHZPTXNpeXIwZ2hnRjd4U2Y0?=
+ =?utf-8?B?WGQrQnNWWHRqK3JGSEJ1ZGVLM01zL0toSXlXR2IwTzJlOXhBL0ZVc2k2b3ph?=
+ =?utf-8?B?VWxUQzduY2hKYVd2V1loNWJlbmNITmhTaHRLTDBVU1RxZ1JGaElIblpnUUoy?=
+ =?utf-8?B?UllBZDB4MFk5VXFNU3kxV0JPaFE4OHEyQS9qY29xWkJYVlhITFlzODdqcnU3?=
+ =?utf-8?B?RjgxVm9vOGZmS3JsVGdlWnArNmRSSUozcWZWVUtIOFAwZVdUSUNpRXRzZ2ll?=
+ =?utf-8?B?Q0ZoZnpISXZsQzNTUitTQ2JJOHVFN0tUWHNOZHU3Y0EwcC8vbElPVTRVNWdL?=
+ =?utf-8?B?YUhnUEpNRmcrWHNhUEpiUVdpK1dNU2E4dG1jY1RVc1Raa3U1dy82RnF1Z285?=
+ =?utf-8?B?bXdHWTNGMUFIRlRkcERqQjFadGZnYTYxclU0SFBHc2ZZYnFQTTN5Q3QrSHo3?=
+ =?utf-8?B?akJ2cFVieG1VY0hLUC9NVTNMSk9qcGZ3ZXlJK2JrWk1FNmNXMXBDSU15dWZa?=
+ =?utf-8?B?Vm1vMTFCc2xMSjlOcVJGLzJYbVRORWdtNzhzcERqZGhkRnRnTldQZ0N0NE9R?=
+ =?utf-8?B?V2RGV0h3SHg0UHd2eHo4djZETnp5MzkxWUJuRWZwUXBFOXpYSHV2L0UvVS9x?=
+ =?utf-8?B?alZ1alVWUVZ2c05hSERWWHVJSVJpYUVnM3lNckVtNzhLbklTSmM1R1RIK3lu?=
+ =?utf-8?B?YmQ3cWg1R0NIcXB3U011Sm9jUUxCcDVWeFIzaFdnME56RFQzOHhtUEpnMzY5?=
+ =?utf-8?B?cWovTEZxbXZNV3RwQmhWOVgyemNLZTd1Ti8wakdISE1rWTl2WTVydm5yU1BT?=
+ =?utf-8?B?L1FXT1pUQVkweGw2UXVseGdSNVBOUFRncTVxYjY4eGl0d0FFZ0JuT2pOTW9a?=
+ =?utf-8?B?cU1jYTVqcjJvWFNZN1VzMHU3WG00cjBjRUZscmVrenc1RkM3NG12VDJwOVc0?=
+ =?utf-8?B?L0ttRkovUk5BSmh0VDNXSk5wYUlucXFUSEYyYzg2S1p0WVA2WmtWQ2Frbjhx?=
+ =?utf-8?B?eFNnQm5xYUp6WUE1N1RPY2ZwMnN3UldHTEY3M3RHenk2VTlTRlg2b3IwdWJF?=
+ =?utf-8?B?bStjVDUyeFFIaWN2SEltVHB2bU1YYjErM0ZyZVZGd1ZPQlZpaGNwa0t4N1ZH?=
+ =?utf-8?B?ZkFkYUhLdHFxS0RmTkhoWnFHNHZHMnk3SjJUc0RPcXFicERNQWFhYTRnK2Ro?=
+ =?utf-8?B?Y2p0VTJmUXdlM09LTmFzY0lCUjNDL1lWaGRadFJoa21ReS9zRjlXaThZQ3Zq?=
+ =?utf-8?B?a0I0K0NVQXhXT3lNek1qd3AzU3BVSGRIMVNoY0lmU2NYbWFmSVFlUDQwdXFa?=
+ =?utf-8?B?bTIvZnJWUjErZDRtL3JCK2xqbjdvUEhDLzFkMlJMM1EyMzcvSkkweG5BdUpn?=
+ =?utf-8?B?cW1IeXUyOGh1MmNDWHBTTlRyL1ZhMHZhdVJnMU1hL0YrdzhJUWRTMUpkVUs0?=
+ =?utf-8?B?MDd3Vi9MSkZ3bDhpbFFZblo4Y0l4cmdXcExtblhjWkFUZVdLRmxBZUxTTkdr?=
+ =?utf-8?B?WnAwTXNPTkVyQmVwdUsxS2dwUEVka0NIYURYODJiWS9iMTJNckdvWk9RaTRo?=
+ =?utf-8?B?T3puaUU0VjZ4T3hUR01HSDlWTyszelNwR1pzYWQ1eVpOR3JPRkdzQVM5VzFs?=
+ =?utf-8?B?QTdXL2wwVFIzNU1iQkp2cGprNmNQaW1RQ29HTlR4QVlTQ3BLK3hHdFNMREdK?=
+ =?utf-8?B?MzZKUlVGY0hZVGRCYWNvTEtBWS93d0VvbHpaRjkxd3AyZHlGTmJicS92OWJy?=
+ =?utf-8?B?elFYbzN5YXAra3lZNmtZMXUxQ1pkM2FmRUdGRCt1UU9Ncmk4ZjNSY0tIWXE0?=
+ =?utf-8?B?Z2hQenVaQUJXZ3BKOTI3c1U5QnVGUFBWbGsrMmR6NkhTbEpoZkJEMzZxVXNM?=
+ =?utf-8?Q?2coRVeQNY4NpTBnxvgGgV8zQw?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <DF3EDC4D7FF2044E821CC2672AEA36D3@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] drm/sysfs: Link DRM connectors to corresponding Type-C
- connectors
-Content-Language: en-GB
-To:     Won Chung <wonchung@google.com>, bleung@google.com,
-        pmalani@chromium.org, heikki.krogerus@linux.intel.com,
-        imre.deak@intel.com, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, tzimmermann@suse.de, airlied@gmail.com,
-        jani.nikula@linux.intel.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20221108185004.2263578-1-wonchung@google.com>
- <Y2uU9YUZYqbL4uB7@phenom.ffwll.local>
- <CAOvb9yh9e0ue+=gtsy1tq306vdyRfKwmmXQ9WGRjeMDnM2XjQw@mail.gmail.com>
- <Y24bcYJKGy/gd5fV@phenom.ffwll.local>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <Y24bcYJKGy/gd5fV@phenom.ffwll.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e57127b-009f-4de3-4ac0-08db9fec7109
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 13:10:06.0343
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cBPx/UeVSDLqI7ABkVCUqoT2CUCQ0BwX/uZ9G/fI58iWtG5USi5dD1U1q15Efj1Fz1F62npdFLS0q8/+m3ReMQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4532
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,278 +170,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/11/2022 11:52, Daniel Vetter wrote:
-> On Thu, Nov 10, 2022 at 11:33:11AM -0800, Won Chung wrote:
->> Hi Daniel,
->>
->> Thank you very much for a review.
->>
->> On Wed, Nov 9, 2022 at 3:54 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->>>
->>> On Tue, Nov 08, 2022 at 06:50:04PM +0000, Won Chung wrote:
->>>> Create a symlink pointing to USB Type-C connector for DRM connectors
->>>> when they are created. The link will be created only if the firmware is
->>>> able to describe the connection beween the two connectors.
-
-Generic question for this patch:
-
-There can be several typec connectors and several DP connectors. Will 
-this patch handle this correctly?
-
-Moreover, if everything is bound through the fwnodes, it might be easier 
-to set connector's device fwnode pointer to point to the corresponding 
-connector's node. Then one can easily enumerate them without adding new 
-uABI.
-
-
->>>>
->>>> Currently, even if a display uses a USB Type-C port, there is no way for
->>>> the userspace to find which port is used for which display. With the
->>>> symlink, display information would be accessible from Type-C connectors
->>>> and port information would be accessible from DRM connectors.
->>>> Associating the two subsystems, userspace would have potential to expose
->>>> and utilize more complex information, such as bandwidth used for a
->>>> specific USB Type-C port.
->>>>
->>>> Signed-off-by: Won Chung <wonchung@google.com>
->>>> Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->>>> ---
->>>> Changes from v3:
->>>> - Append to the commit message on why this patch is needed
->>>>
->>>> Changes from v2:
->>>> - Resend the patch to dri-devel list
->>>>
->>>> Changes from v1:
->>>> - Fix multiple lines to single line
->>>
->>> We seem to be spinning wheels a bit here (or at least I'm missing a lot of
->>> important information from this series alone) with already at v4 but the
->>> fundamentals not answered:
->>>
->>> - where's the usb side of this, and anything we need to do in drivers?
->>>    This should all be one series, or if that's too big, then a link in the
->>>    cover letter for where to find all the other pieces
->>
->> We already have a framework in typec port-mapper.c where it goes
->> through component devices and runs the bind functions for those with
->> matching _PLD (physical location of device).
->> https://elixir.bootlin.com/linux/v5.18.1/source/drivers/usb/typec/port-mapper.c
->>
->> Currently, USB ports and USB4 ports are added as components to create
->> a symlink with Type C connector.
->> USB: https://lore.kernel.org/all/20211223082349.45616-1-heikki.krogerus@linux.intel.com/
->> USB4: https://lore.kernel.org/all/20220418175932.1809770-3-wonchung@google.com/
->>
->> Since these are already submitted, do you think it would be a good
->> idea to add the links in the commit message?
-> 
-> Hm yeah explaining this in the commit message with links should be good
-> enough.
-> 
-> Another thing, will this hit the component nesting problem? With this
-> change we'll have drm drivers which are both aggregates and components at
-> the same time, and last time someone tried this it all deadlocked in
-> component.c.
-
-drm/msm uses components already. It wouldn't be nice to break it in this 
-way. Not to mention that it doesn't use ACPI and so port-mapper.c is not 
-used on this platform.
-
-> 
->>> - since I'm guessing this is for cros, will this also work on standard
->>>    acpi x86 that are built for windows? arm with dt? Might be answered with
->>>    the full picture
->>
->> Yes this is for cros, but it should work on any ACPI x86 as long as
->> _PLD field for Type C connectors and DRM connectors are correctly
->> added to the firmware.
->>
->> Since _PLD is ACPI specific, we do not have ARM with DT supported at the moment.
->> In the future, if we find something similar to _PLD in DT, I think we
->> can also use that in typec port-mapper for component matching.
->>
->> Heikki@ Can you correct me if I am incorrect or missing something?
-> 
-> Ok sounds good, would be good to include this in the commit message, too.
->>
->>
->>>
->>> - you say this helps userspace, but how? Best way here is to just point at
->>>    the userspace change set that makes use of this link, code explains
->>>    concepts much more precisely than lots of words, and it's also easier to
->>>    review for corner cases that might be missed. That link also needs to be
->>>    in the commit message/cover letter somewhere, so people can find it.
->>
->> I do not have working code in the userspace yet since there is no
->> symlink created between Type C connector and DRM connector at the
->> moment.
->> If this patch is to go through, ChromeOS will parse the symlink in DRM
->> to find which Type C port got displays connected.
-> 
-> This isn't how new uapi works, we need to have the userspace together with
-> the kernel changes. Otherwise ... how can you test that things actually
-> work before we commit to the kernel change? Freezing down uapi on the
-> promise that userspace will show up and that we're crossing fingers that
-> it'll all work is not how we roll in drm.
-> 
->> First use case is metrics collection.
->> We would like to know which port at which location is most preferred
->> to be used for displays.
->> We also want to see how many users charge the system on the same Type
->> C port as displays.
->> To answer these types of questions, we need to know which specific
->> display uses which specific Type C connector.
->>
->> Second use case is to get a better idea on USB-C pin assignments.
->> When a Type C port is in DP alt mode, there are some options on pin
->> assignments, whether to prioritize DP bandwidth vs USB Superspeed.
->> If we can find whether a display is actually being used by a Type C
->> port, we can check the cases where the port prioritizes DP bandwidth
->> over USB Superspeed while there is no display actually connected.
->>
->> This symlink can also be useful in the future with USB4 that makes use
->> of DP tunnelling.
->>
->> Benson@ Can you add on to the use cases above if something is missing?
-> 
-> Above should probably all be included somewhere in the commit message too.
-> 
->> I can try to create mock patches in ChromeOS to give an idea how
->> userspace can utilize this symlink.
->> Would this also work?
-> 
-> drm expects fully reviewed&ready for merge patches, not just mock tests.
-> Also ideally some igt uapi tests, but for a symlink I honestly don't know
-> what that should be so I guess we can skip that :-)
-
-We have had a discussion on IRC with Simon Ser and Pekka Paalanen. It 
-seems that the better way to provide this information would be through 
-the 'PATH' property. We are going to work on kernel and user-space parts 
-in the next several days.
-
-> 
-> For details see our docs:
-> 
-> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#open-source-userspace-requirements
-> 
-> https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#testing-and-validation
-> 
->> If it sounds okay, I can work on the userspace mock patches and resend
->> v5 with the links added to the commit message.
-> 
-> Sounds good!
-> 
-> Cheers, Daniel
-> 
->>
->>
->>>
->>> In principle nothing against the idea, seems reasonable (but I'm also not
->>> sure what exact problem it's solving) - but all the detail work to make
->>> this work than an RFP to kick of some discussion is missing. And I think
->>> it's not even enough to really kick off a discussion as-is since there's
->>> really no user of this at all (in-kernel or userspace) linked.
->>>
->>> Cheers, Daniel
->>>
->>>>
->>>>
->>>>   drivers/gpu/drm/drm_sysfs.c | 40 +++++++++++++++++++++++++++++++++++++
->>>>   1 file changed, 40 insertions(+)
->>>>
->>>> diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
->>>> index 430e00b16eec..6a9904fa9186 100644
->>>> --- a/drivers/gpu/drm/drm_sysfs.c
->>>> +++ b/drivers/gpu/drm/drm_sysfs.c
->>>> @@ -11,12 +11,14 @@
->>>>    */
->>>>
->>>>   #include <linux/acpi.h>
->>>> +#include <linux/component.h>
->>>>   #include <linux/device.h>
->>>>   #include <linux/err.h>
->>>>   #include <linux/export.h>
->>>>   #include <linux/gfp.h>
->>>>   #include <linux/i2c.h>
->>>>   #include <linux/kdev_t.h>
->>>> +#include <linux/property.h>
->>>>   #include <linux/slab.h>
->>>>
->>>>   #include <drm/drm_connector.h>
->>>> @@ -95,6 +97,34 @@ static char *drm_devnode(struct device *dev, umode_t *mode)
->>>>        return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
->>>>   }
->>>>
->>>> +static int typec_connector_bind(struct device *dev,
->>>> +     struct device *typec_connector, void *data)
->>>> +{
->>>> +     int ret;
->>>> +
->>>> +     ret = sysfs_create_link(&dev->kobj, &typec_connector->kobj, "typec_connector");
->>>> +     if (ret)
->>>> +             return ret;
->>>> +
->>>> +     ret = sysfs_create_link(&typec_connector->kobj, &dev->kobj, "drm_connector");
->>>> +     if (ret)
->>>> +             sysfs_remove_link(&dev->kobj, "typec_connector");
->>>> +
->>>> +     return ret;
->>>> +}
->>>> +
->>>> +static void typec_connector_unbind(struct device *dev,
->>>> +     struct device *typec_connector, void *data)
->>>> +{
->>>> +     sysfs_remove_link(&typec_connector->kobj, "drm_connector");
->>>> +     sysfs_remove_link(&dev->kobj, "typec_connector");
->>>> +}
->>>> +
->>>> +static const struct component_ops typec_connector_ops = {
->>>> +     .bind = typec_connector_bind,
->>>> +     .unbind = typec_connector_unbind,
->>>> +};
->>>> +
->>>>   static CLASS_ATTR_STRING(version, S_IRUGO, "drm 1.1.0 20060810");
->>>>
->>>>   /**
->>>> @@ -355,6 +385,13 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
->>>>        if (connector->ddc)
->>>>                return sysfs_create_link(&connector->kdev->kobj,
->>>>                                 &connector->ddc->dev.kobj, "ddc");
->>>> +
->>>> +     if (dev_fwnode(kdev)) {
->>>> +             r = component_add(kdev, &typec_connector_ops);
->>>> +             if (r)
->>>> +                     drm_err(dev, "failed to add component\n");
->>>> +     }
->>>> +
->>>>        return 0;
->>>>
->>>>   err_free:
->>>> @@ -367,6 +404,9 @@ void drm_sysfs_connector_remove(struct drm_connector *connector)
->>>>        if (!connector->kdev)
->>>>                return;
->>>>
->>>> +     if (dev_fwnode(connector->kdev))
->>>> +             component_del(connector->kdev, &typec_connector_ops);
->>>> +
->>>>        if (connector->ddc)
->>>>                sysfs_remove_link(&connector->kdev->kobj, "ddc");
->>>>
->>>> --
->>>> 2.37.3.998.g577e59143f-goog
->>>>
->>>
->>> --
->>> Daniel Vetter
->>> Software Engineer, Intel Corporation
->>> http://blog.ffwll.ch
->>
->> Thank you,
->> Won
-> 
-
--- 
-With best wishes
-Dmitry
-
+T24gVHVlLCAyMDIzLTA4LTA4IGF0IDEyOjMxIC0wNzAwLCBKbyBWYW4gQnVsY2sgd3JvdGU6DQo+
+IEVuc3VyZSB0aGUgY29tcGlsZXIgcmVzcGVjdHMgdGhlIHNpemUgYW5kIHBsYWNlbWVudCBvZiBl
+bmNsX2J1ZmZlciBhcw0KPiBleHBlY3RlZCBieSB0aGUgZXh0ZXJuYWwgdGVzdHMgbWFuaXB1bGF0
+aW5nIHBhZ2UgcGVybWlzc2lvbnM6DQo+IA0KPiAxLiBEZWNsYXJlIGVuY2xfYnVmZmVyIGFzIGds
+b2JhbCwgaW4gb3JkZXIgdG8gZW5zdXJlIHRoYXQgaXQgaXMgbm90DQo+ICAgIG9wdGltaXplZCBh
+d2F5IGJ5IHRoZSBjb21waWxlciwgZXZlbiB3aGVuIG5vdCB1c2VkIGVudGlyZWx5IGJ5IHRoZSB0
+ZXN0DQo+ICAgIGVuY2xhdmUgY29kZS4NCj4gDQo+IDIuIFBsYWNlIGVuY2xfYnVmZmVyIGluIGEg
+c2VwYXJhdGUgc2VjdGlvbiB0aGF0IGlzIGV4cGxpY2l0bHkgcGxhY2VkDQo+ICAgIGF0IHRoZSBz
+dGFydCBvZiB0aGUgLmRhdGEgc2VnbWVudCBpbiB0aGUgbGlua2VyIHNjcmlwdCB0byBhdm9pZCB0
+aGUNCj4gICAgY29tcGlsZXIgcGxhY2luZyBpdCBzb21ld2hlcmUgZWxzZSBpbiAuZGF0YS4NCg0K
+Rmlyc3RseSwgdGhlc2UgdHdvIHByb2JsZW1zIGFyZSBpbmRlcGVuZGVudC4gQ291bGQgeW91IHNw
+bGl0IHRoaXMgaW50byB0d28NCnBhdGNoZXM/ICBPbmUgdG8gcHJlc2VydmUgdGhlIGVudGlyZSBi
+dWZmZXIsIHRoZSBvdGhlciB0byBhbHdheXMgcGxhY2UgdGhlDQpidWZmZXIgYXQgdGhlIGJlZ2lu
+bmluZy4NCg0KU2Vjb25kbHksIGFzIHJlcGxpZWQgdG8gdjEsIEkgdGhpbmsgd2UgY2FuIHVzZSAi
+dXNlZCIgZ2NjIGF0dHJpYnV0ZSB0byBhbHdheXMNCnByZXNlcnZlIHRoZSBidWZmZXI/DQoNCj4g
+DQo+IExpbms6IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC9hMjczMjkzOC1mM2RiLWEwYWYt
+M2Q2OC1hMTgwNjBmNjZlNzlAY3Mua3VsZXV2ZW4uYmUvDQo+IFNpZ25lZC1vZmYtYnk6IEpvIFZh
+biBCdWxjayA8am8udmFuYnVsY2tAY3Mua3VsZXV2ZW4uYmU+DQo+IC0tLQ0KPiAgdG9vbHMvdGVz
+dGluZy9zZWxmdGVzdHMvc2d4L3Rlc3RfZW5jbC5jICAgfCA5ICsrKysrLS0tLQ0KPiAgdG9vbHMv
+dGVzdGluZy9zZWxmdGVzdHMvc2d4L3Rlc3RfZW5jbC5sZHMgfCAxICsNCj4gIDIgZmlsZXMgY2hh
+bmdlZCwgNiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBh
+L3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3NneC90ZXN0X2VuY2wuYyBiL3Rvb2xzL3Rlc3Rpbmcv
+c2VsZnRlc3RzL3NneC90ZXN0X2VuY2wuYw0KPiBpbmRleCA1Yjc1OGVhZjgwOGMuLjAyYTllOGM1
+NWU4MiAxMDA2NDQNCj4gLS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvc2d4L3Rlc3RfZW5j
+bC5jDQo+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3NneC90ZXN0X2VuY2wuYw0KPiBA
+QCAtNSwxMSArNSwxMiBAQA0KPiAgI2luY2x1ZGUgImRlZmluZXMuaCINCj4gIA0KPiAgLyoNCj4g
+LSAqIERhdGEgYnVmZmVyIHNwYW5uaW5nIHR3byBwYWdlcyB0aGF0IHdpbGwgYmUgcGxhY2VkIGZp
+cnN0IGluIC5kYXRhDQo+IC0gKiBzZWdtZW50LiBFdmVuIGlmIG5vdCB1c2VkIGludGVybmFsbHkg
+dGhlIHNlY29uZCBwYWdlIGlzIG5lZWRlZCBieQ0KPiAtICogZXh0ZXJuYWwgdGVzdCBtYW5pcHVs
+YXRpbmcgcGFnZSBwZXJtaXNzaW9ucy4NCj4gKyAqIERhdGEgYnVmZmVyIHNwYW5uaW5nIHR3byBw
+YWdlcyB0aGF0IHdpbGwgYmUgcGxhY2VkIGZpcnN0IGluIHRoZSAuZGF0YQ0KPiArICogc2VnbWVu
+dCB2aWEgdGhlIGxpbmtlciBzY3JpcHQuIEV2ZW4gaWYgbm90IHVzZWQgaW50ZXJuYWxseSB0aGUg
+c2Vjb25kIHBhZ2UNCj4gKyAqIGlzIG5lZWRlZCBieSBleHRlcm5hbCB0ZXN0IG1hbmlwdWxhdGlu
+ZyBwYWdlIHBlcm1pc3Npb25zLCBzbyBkbyBub3QgZGVjbGFyZQ0KPiArICogZW5jbF9idWZmZXIg
+YXMgc3RhdGljIHRvIG1ha2Ugc3VyZSBpdCBpcyBlbnRpcmVseSBwcmVzZXJ2ZWQgYnkgdGhlIGNv
+bXBpbGVyLg0KPiAgICovDQo+IC1zdGF0aWMgdWludDhfdCBlbmNsX2J1ZmZlcls4MTkyXSA9IHsg
+MSB9Ow0KPiArdWludDhfdCBfX2F0dHJpYnV0ZV9fKChzZWN0aW9uKCIuZGF0YS5lbmNsX2J1ZmZl
+ciIpKSkgZW5jbF9idWZmZXJbODE5Ml07DQo+ICANCj4gIGVudW0gc2d4X2VuY2x1X2Z1bmN0aW9u
+IHsNCj4gIAlFQUNDRVBUID0gMHg1LA0KPiBkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxm
+dGVzdHMvc2d4L3Rlc3RfZW5jbC5sZHMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9zZ3gvdGVz
+dF9lbmNsLmxkcw0KPiBpbmRleCAyN2MyNTI3ZWNiYzQuLjJlYzI5MzQwYmE5NCAxMDA2NDQNCj4g
+LS0tIGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvc2d4L3Rlc3RfZW5jbC5sZHMNCj4gKysrIGIv
+dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvc2d4L3Rlc3RfZW5jbC5sZHMNCj4gQEAgLTI0LDYgKzI0
+LDcgQEAgU0VDVElPTlMNCj4gIAl9IDogdGV4dA0KPiAgDQo+ICAJLmRhdGEgOiB7DQo+ICsJCSoo
+LmRhdGEuZW5jbF9idWZmZXIpDQo+ICAJCSooLmRhdGEqKQ0KPiAgCX0gOiBkYXRhDQo+ICANCg0K
