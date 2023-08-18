@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 736A1780504
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591B8780507
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357815AbjHREId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 00:08:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59818 "EHLO
+        id S1357819AbjHREKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357808AbjHREIG (ORCPT
+        with ESMTP id S1357865AbjHREJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 00:08:06 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2EC82698
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:08:05 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I47pWN003600
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 00:07:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692331674; bh=AiNT7QOGDY9+Zpz8OEhMFokxY4nSOC+WNx+itR1GTXg=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=lZE6EuTKaAHS3iqoDeL8+J/sX7vYv2C6HNbU//T9Id/Cn49Kq/8f6jFCoM8JrOcL4
-         9q7p/9ZwxdGkd4ayPZbaw5hsdLVh+LmX2H6LjVrSpeQgkhRbDVtb/NOPeb5xrkYm9W
-         ngRS5r2relFGi9dEl475j9lLPnfz/1JF8AiDY1yVmioM++EF0vSgMhF20H1gvhG8eA
-         deWmadsMs62a7sqPnSNjF7UqFNRqYQ1XoFPl9v1gNQt/YkcekxobLKwm+0DQ61/BA+
-         VCRcGRY4Cu/2VN+MUpGAwvo5vPZ06o+8S3A/oO2fS+KtysrXSaZIiYsBGE8Jaalunq
-         w9WrKdx/le3CQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7232E15C0501; Fri, 18 Aug 2023 00:07:51 -0400 (EDT)
-Date:   Fri, 18 Aug 2023 00:07:51 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/13] ext4: correct gdblock calculation in
- add_new_gdb_meta_bg to support non first group
-Message-ID: <20230818040751.GF3464136@mit.edu>
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-12-shikemeng@huaweicloud.com>
- <20230816034543.GS2247938@mit.edu>
- <29c9e94f-63b3-e757-9d6d-c9beaa0e0c19@huaweicloud.com>
- <20230817140328.GY2247938@mit.edu>
- <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
+        Fri, 18 Aug 2023 00:09:36 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D987D3A80;
+        Thu, 17 Aug 2023 21:09:33 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxbOr77t5kqscZAA--.25644S3;
+        Fri, 18 Aug 2023 12:09:31 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxPCP67t5kQlxdAA--.13538S3;
+        Fri, 18 Aug 2023 12:09:30 +0800 (CST)
+Message-ID: <31ceb1b8-52e8-f57b-0e76-ea768242e26e@loongson.cn>
+Date:   Fri, 18 Aug 2023 12:09:29 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9215048-8a10-bb3e-93f7-0bf840997027@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] PCI/VGA: Make the vga_is_firmware_default() less
+ arch-dependent
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>
+References: <20230817220853.GA328159@bhelgaas>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230817220853.GA328159@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8DxPCP67t5kQlxdAA--.13538S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxuF1UKr1xGr18Aw4DuF4rJFc_yoW5AFyUp3
+        yrCF1FkF4kArnakrnrGw4kXF1rAws7Xa4FkFn0y34DA343Zrn2qrySkrWqgFyUZrs7X3W2
+        vF40gwn5GayqvagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFApnUUU
+        UU=
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:29:52AM +0800, Kemeng Shi wrote:
-> Actually, there seems a functional change to add_new_gdb_meta_bg.
-> Assume 'group' is the new added group, 'first_group' is the first group
-> of meta_bg which contains 'group',
-> Original way to calculate gdbblock:
-> gdbblock = group_first_block('first_group') + bg_has_super(*'group'*)
-> New ay to calculate gdbblock
-> gdbblock = group_first_block('first_group') + bg_has_super(*'first_group'*)
-> If new added group is not the first group of meta_bg, add_new_gdb_meta_bg
-> get a wrong gdbblock.
+Hi,
 
-If you look at the ext4_add_new_descs() function,
-add_new_gdb_meta_bg() is only called when the group is a multiple of
-EXT4_DESC_PER_BLOCK --- that is, when group % EXT4_DESC_PER_BLOCK == 0.
 
-As such, it is only called when with group is the first group in the
-meta_bg.  So there is no bug here.  The code is bit confusing, I agree
---- I myself got confused because it's been years since I last looked
-at the code, and it's not particularly commented well, which is my fault.
+On 2023/8/18 06:08, Bjorn Helgaas wrote:
+> On Wed, Aug 16, 2023 at 06:05:27AM +0800, Sui Jingfeng wrote:
+>> Currently, the vga_is_firmware_default() function only works on x86 and
+>> ia64, it is a no-op on ARM, ARM64, PPC, RISC-V, etc. This patch completes
+>> the implementation for the rest of the architectures. The added code tries
+>> to identify the PCI(e) VGA device that owns the firmware framebuffer
+>> before PCI resource reallocation happens.
+> As far as I can tell, this is basically identical to the existing
+> vga_is_firmware_default(), except that this patch funs that code as a
+> header fixup, so it happens before any PCI BAR reallocations happen.
 
-This also makes the commit description "... to support non-first
-group" incorrect, since it never gets called as with a "non-first
-group".
 
-The patch makes things a little simpler, but the commit description
-would confuse anyone who looked at it while doing code archeology.
-The change is fine, although at this point, given how we both
-misunderstood how the code worked without doing some deep mind-melds
-with the C code in question, it's clear that we need some better
-comments in the code.
+Yes, what you said is right in overall.
+But I think I should mention a few tiny points that make a difference.
 
-For example, the comment "add_new_gdb_meta_bg is the sister of
-add_new_gdb" is clearly insufficient.
+1) My version is *less arch-dependent*
 
-						- Ted
+
+Again, since the global screen_info is arch-dependent.
+The vga_is_firmware_default() mess up the arch-dependent part and arch-independent part.
+It's a mess and it's a bit harder to make the cleanup on the top of it.
+
+While my version is my version split the arch-dependent part and arch-independent part clearly.
+Since we decide to make it less arch-dependent, we have to bear the pain.
+Despite all other arches should always export the screen_info like the X86 and IA64 arch does,
+or at least a arch should give a Kconfig token (for example, CONFIG_ARCH_HAS_SCREEN_INFO) to
+demonstrate that an arch has the support for it.
+While currently, the fact is that the dependence just populated to everywhere.
+I think this is the hard part, you have to investigate how various arches defines and set up
+the screen_info. And then process dependency and the linkage problem across arch properly.
+
+
+2) My version focus on the address in ranges, weaken the size parameter.
+
+Which make the code easy to read and follow the canonical convention to
+express the address range. while the vga_is_firmware_default() is not.
+
+
+3) A tiny change make a big difference.
+
+
+The original vga_is_firmware_default() only works with the assumption
+that the PCI resource reallocation won't happens. While I see no clue
+that why this is true even on X86 and IA64. The original patch[1] not
+mention this assumption explicitly.
+  
+[1] 86fd887b7fe3 ('vgaarb: Don't default exclusively to first video device with mem+io')
+
+
+> That sounds like a good idea, because this is all based on the
+> framebuffer in screen_info, and screen_info was initialized before PCI
+> enumeration, and it certainly doesn't account for any BAR changes done
+> by the PCI core.
+
+
+Yes.
+
+
+> So why would we keep vga_is_firmware_default() at all?  If the header
+> fixup has already identified the firmware framebuffer, it seems
+> pointless to look again later.
+>
+
+It need another patch to do the cleanup work, while my patch just add code to solve the real problem.
+It focus on provide a solution for the architectures which have a decent way set up the screen_info.
+Other things except that is secondary.
+
