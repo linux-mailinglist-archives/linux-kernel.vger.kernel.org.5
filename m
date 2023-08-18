@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFD578039C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA792780413
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357161AbjHRCDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42310 "EHLO
+        id S1357383AbjHRC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352400AbjHRCC4 (ORCPT
+        with ESMTP id S1357374AbjHRC7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:02:56 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD961FE;
-        Thu, 17 Aug 2023 19:02:54 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Vq0RZwk_1692324171;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vq0RZwk_1692324171)
-          by smtp.aliyun-inc.com;
-          Fri, 18 Aug 2023 10:02:52 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     djwong@kernel.org
-Cc:     jefflexu@linux.alibaba.com, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH next] xfs: fix inconsistent indenting of xlog_verify_tail_lsn()
-Date:   Fri, 18 Aug 2023 10:02:50 +0800
-Message-Id: <20230818020250.35427-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Thu, 17 Aug 2023 22:59:03 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2AA2D56;
+        Thu, 17 Aug 2023 19:59:02 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bf0b24d925so3505925ad.3;
+        Thu, 17 Aug 2023 19:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692327542; x=1692932342;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OGM0P4QSsObJ2FynAssn0+Ri7H0h34gHse+URz3YiUs=;
+        b=o9g/AkmUWqAmmvMO3YKtieHGnlnsJmw4U1DEX613KjcVYapP6WvqcTAZe36ws1SdRy
+         vMWizAzVoTEajveP9yZStra8fzPYwaDcpJxBejxmQIvRf6XetnmyU0KIx7Md+9Fldtmm
+         j7Cbt0wmCsYXp9P/6ovRU5UPihQgGVGUiO24qkQcc21egDX5EsOqzGd6OlLC1PMj+D6a
+         nNhSHPoqp8RJGJYM+pQivU5WDy2A2oXB/y82V9j2k3xHHjSvqkgEajsnPCg3rWmSA4He
+         lfCdlFbs4iLRORFmRE5I2VQdlMNWSPbyyW/qLVdyYeGRHuqfTbMlOFgc/9skffNUdP/h
+         kgHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692327542; x=1692932342;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OGM0P4QSsObJ2FynAssn0+Ri7H0h34gHse+URz3YiUs=;
+        b=cJGGcrfEt9I6Yol1V7wa84QDQgVQte47kbs3cTCS8DdoeFZzzXJD9rFR4TaEo1memU
+         LmMHraBjJoEQx343sV5lWd4dAL1pGVrm8WE0WbW8sVFuf9fXQqqUv/KXQtnKSlXxct2l
+         Isv8HawpmEiaojsS5O2Qkv1yFNSB9rHop4jS5+z6ErOMm82boJqgdmunDQYgyr8p3nyt
+         rXAdUHc3ZcxE6pAIP8b0Hc/IzufxBliGmh2t5LV0KDQw9YHig4zpsACisdSX8tR3tDrj
+         MYdfsEwsfrY4rboNMUOZ7tJaPUUaSzw3z7BoOYNXL0aqRyIaSOnS/N95nWYh6p54pHQZ
+         tzEQ==
+X-Gm-Message-State: AOJu0YxdDHd/vjiGy3JgHQBJo6lqYXtfelw+SRq6+ppG+5wqLOa9gwyR
+        Pa3rm4V7F4Fljs7Gv6mcp6A=
+X-Google-Smtp-Source: AGHT+IHxcnHf0GAe4XzEIZYdVkvMtF4MGhdv2wHY/5C242bmWDcf3qotQDs1jibApYYFaXMJvmemFA==
+X-Received: by 2002:a17:903:18b:b0:1b6:9551:e297 with SMTP id z11-20020a170903018b00b001b69551e297mr1342825plg.44.1692327541998;
+        Thu, 17 Aug 2023 19:59:01 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id ix21-20020a170902f81500b001b9fef7f454sm500306plb.73.2023.08.17.19.59.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 19:59:01 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 428A682136C7; Fri, 18 Aug 2023 07:10:48 +0700 (WIB)
+Date:   Fri, 18 Aug 2023 07:10:48 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Todd Brandt <todd.e.brandt@linux.intel.com>,
+        mario.limonciello@amd.com, linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, len.brown@intel.com,
+        charles.d.prestopine@intel.com, rafael.j.wysocki@intel.com,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: REGRESSION WITH BISECT: v6.5-rc6 TPM patch breaks S3 on some
+ Intel systems
+Message-ID: <ZN63CG6d3d7ifq7U@debian.me>
+References: <485e8740385239b56753ce01d8995f01f84a68e5.camel@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="P/mFKmnbvRv9okYG"
+Content-Disposition: inline
+In-Reply-To: <485e8740385239b56753ce01d8995f01f84a68e5.camel@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warning:
 
-fs/xfs/xfs_log.c:3598 xlog_verify_tail_lsn() warn: inconsistent indenting
+--P/mFKmnbvRv9okYG
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also fix several style violations mentioned in [1].
+On Thu, Aug 17, 2023 at 02:09:00PM -0700, Todd Brandt wrote:
+> While testing S3 on 6.5.0-rc6 we've found that 5 systems are seeing a
+> crash and reboot situation when S3 suspend is initiated. To reproduce
+> it, this call is all that's required "sudo sleepgraph -m mem -rtcwake
+> 15".
+>=20
+> I=C2=92ve created a Bugzilla to track this issue here:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D217804
+>=20
+> I've bisected the issue to this patch:
+>=20
+> commit 554b841d470338a3b1d6335b14ee1cd0c8f5d754
+> Author: Mario Limonciello <mario.limonciello@amd.com>
+> Date:   Wed Aug 2 07:25:33 2023 -0500
+>=20
+>     tpm: Disable RNG for all AMD fTPMs
+>    =20
 
-[1] https://lore.kernel.org/linux-xfs/20210902233137.GB1826899@dread.disaster.area/
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/xfs/xfs_log.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+Thanks for the regression report. I'm adding it to regzbot:
 
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index 79004d193e54..d197534cd3b3 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -3593,23 +3593,23 @@ xlog_verify_tail_lsn(
- 	struct xlog_in_core	*iclog)
- {
- 	xfs_lsn_t	tail_lsn = be64_to_cpu(iclog->ic_header.h_tail_lsn);
--	int		blocks;
-+	int		blocks, ic_blocks;
- 
--    if (CYCLE_LSN(tail_lsn) == log->l_prev_cycle) {
--	blocks =
--	    log->l_logBBsize - (log->l_prev_block - BLOCK_LSN(tail_lsn));
--	if (blocks < BTOBB(iclog->ic_offset)+BTOBB(log->l_iclog_hsize))
--		xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
--    } else {
--	ASSERT(CYCLE_LSN(tail_lsn)+1 == log->l_prev_cycle);
-+	if (CYCLE_LSN(tail_lsn) == log->l_prev_cycle) {
-+		blocks = log->l_logBBsize -
-+			(log->l_prev_block - BLOCK_LSN(tail_lsn));
-+		ic_blocks = BTOBB(iclog->ic_offset) + BTOBB(log->l_iclog_hsize);
-+	} else {
-+		ASSERT(CYCLE_LSN(tail_lsn) + 1 == log->l_prev_cycle);
- 
--	if (BLOCK_LSN(tail_lsn) == log->l_prev_block)
--		xfs_emerg(log->l_mp, "%s: tail wrapped", __func__);
-+		if (BLOCK_LSN(tail_lsn) == log->l_prev_block)
-+			xfs_emerg(log->l_mp, "%s: tail wrapped", __func__);
- 
--	blocks = BLOCK_LSN(tail_lsn) - log->l_prev_block;
--	if (blocks < BTOBB(iclog->ic_offset) + 1)
-+		blocks = BLOCK_LSN(tail_lsn) - log->l_prev_block;
-+		ic_blocks = BTOBB(iclog->ic_offset) + 1;
-+	}
-+	if (blocks < ic_blocks)
- 		xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
--    }
- }
- 
- /*
--- 
-2.20.1.7.g153144c
+#regzbot ^introduced: 554b841d470338
+#regzbot title: Disabling RNG for AMD fTPMs breaks S3 on some Intel systems
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--P/mFKmnbvRv9okYG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZN63AwAKCRD2uYlJVVFO
+oxQkAP9UZxGZwQebUQ50E2Da9vqTal1MwQJ6QUxsAGEvvsKoFQD9H+tIT8Cus+og
+u3lzHFUjRPPr8ytkpB6Y66h6cQo8DQQ=
+=4tyF
+-----END PGP SIGNATURE-----
+
+--P/mFKmnbvRv9okYG--
