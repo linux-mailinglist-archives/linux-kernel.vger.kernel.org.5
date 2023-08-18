@@ -2,180 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C40780E1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:39:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDEE780E1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377770AbjHROjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40414 "EHLO
+        id S1377775AbjHROjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237261AbjHROie (ORCPT
+        with ESMTP id S1353226AbjHROit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:38:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3C83AAC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:37:45 -0700 (PDT)
+        Fri, 18 Aug 2023 10:38:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061F513D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692369465;
+        s=mimecast20190719; t=1692369490;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=O95LdJHJ87WJ7K5Vbs6EOa6gUPNw8q7E/DioZ5WNXJA=;
-        b=Cl0Xf95IDJSTqRkht6fBMadt4Cfb+hDH7ISQ6XGbVU+yvlVEwLxmmv9HIWYweVHcsF1qtZ
-        JqFhXX6OxRLVzaONbv5zWXa2lWlDyUFg4u9PPuv/J+wYhSSjRPp1IO51NhJMk/h3e+WI1f
-        xlhBP5TS5drQTrkIGbMv2TJIWHb/7ZY=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=6AO8bLQMMqRA/kR1FMLwLK33QBpyyFpkWuDBu3UgDsQ=;
+        b=FzqveNu0Js06AxHs6Qz3O7+LlBRJUlk2Co9vj38PL4ZkfHUSoUl/lY9+WYazLoK/DvCiU5
+        a7ccuj2LiGJTdXRgPZCLYTPyaWDcwFxV6uSF9XKMV2HYWuAYbdQs8sVg17mxV8RQjbwNdo
+        UPasZrFi4+56VsqOiG2HnMY7KR63UvI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-626-aPzTfq-9OSGCvTvkdOwhVw-1; Fri, 18 Aug 2023 10:37:43 -0400
-X-MC-Unique: aPzTfq-9OSGCvTvkdOwhVw-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3a1ec37ccbbso1192563b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:37:43 -0700 (PDT)
+ us-mta-91-05jCnKXvOkq7z5qGjd7DcA-1; Fri, 18 Aug 2023 10:38:08 -0400
+X-MC-Unique: 05jCnKXvOkq7z5qGjd7DcA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fe603e8054so7069215e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:38:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692369462; x=1692974262;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O95LdJHJ87WJ7K5Vbs6EOa6gUPNw8q7E/DioZ5WNXJA=;
-        b=a21Qt0ri0PWt6/KM8hlOHMOdqgCpn9tYkpPmkNJ20adPkBkqMOmvioNd93nkOnsha+
-         1vRQL8pMRvL5amDsErd+k9Rqwf7rruEKojw9P6d3KvLWWIT/8s0eJqYqWZWRf6cFPoa5
-         9fxldpkpNL01cvpwuL6w3cG3U+BoAPjYpWXGf7P/8nlGlJUmHUQvGdbGLr3icgWlWLgd
-         DtMm7YPgkv6mCI4dO0kFt9rmA28bsE+T3I4GlCB2YxMstJxB8HEiP1fyAIqIRQwLhaHD
-         20e+pfodfxoXBp1km+aIdSDJq1X9B/y4dclHVz1VBXxgn2YieYls8BEURXXzo+fA4N6E
-         V2Hw==
-X-Gm-Message-State: AOJu0YxfgZ/iktv3Fwh1tb5AIcH+fWXGHHbI8fo3fxCkRRyalVkuWlGZ
-        ELr7l79aZq+BDXRlXv1aVY/TuBv464jb5I1FINb9QUGciBtGYFuLm0D7YY9t7FeNfyr2Vw+BBqV
-        69SoHsuI2Z+khyO6yNZIoUKI1a7eWzLvx
-X-Received: by 2002:a05:6808:1929:b0:3a7:4876:6044 with SMTP id bf41-20020a056808192900b003a748766044mr4087304oib.52.1692369462522;
-        Fri, 18 Aug 2023 07:37:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/ZT4ZHrYj3m2eSOV5o0nJlNNBtmNfH9d7us98k42bEdH4nVPb3mno1iv+hHUcObHh1+uROg==
-X-Received: by 2002:a05:6808:1929:b0:3a7:4876:6044 with SMTP id bf41-20020a056808192900b003a748766044mr4087182oib.52.1692369460795;
-        Fri, 18 Aug 2023 07:37:40 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id u8-20020a056808150800b003a05ba0ccb2sm899842oiw.39.2023.08.18.07.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 07:37:40 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 08:37:37 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     "Gupta, Nipun" <nipun.gupta@amd.com>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        git@amd.com, pieter.jansen-van-vuuren@amd.com,
-        nikhil.agarwal@amd.com, michal.simek@amd.com,
-        abhijit.gangurde@amd.com, Shubham Rohila <shubham.rohila@amd.com>
-Subject: Re: [PATCH v6 3/3] vfio-cdx: add bus mastering device feature
- support
-Message-ID: <20230818083737.7ad97c2a.alex.williamson@redhat.com>
-In-Reply-To: <2d94cffa-7ebf-a8ab-4f43-fc9ab1be41bb@amd.com>
-References: <20230810084409.4922-1-nipun.gupta@amd.com>
-        <20230810084409.4922-3-nipun.gupta@amd.com>
-        <20230816114610.79c9eccc.alex.williamson@redhat.com>
-        <2d94cffa-7ebf-a8ab-4f43-fc9ab1be41bb@amd.com>
-Organization: Red Hat
+        d=1e100.net; s=20221208; t=1692369487; x=1692974287;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6AO8bLQMMqRA/kR1FMLwLK33QBpyyFpkWuDBu3UgDsQ=;
+        b=Vm1GJxaXIzaVdnizp3ez2D9qjyZIoPEjWBCrmLB6fKbpP+9fN0/Otg4jB1yFkAdeze
+         NkrkM4oBEH+Kv64rkmqRP8kFafxbep6j+sy8H18IhBdJ/L/NS/iOum0DwC78shJOvW1v
+         CDEWh3XFrnW22+wdZdZk//MarBjvhGjv1b/VO4SRXgTlZ1hx5BGQQ5qcRiqre3g/NJ9f
+         PB9hgy6MD5W4mYuTl6BrBQq7vE6Um6Ino4t4bM6NgUwMwPXJfGnr+8w7wSa8bAJF0EIh
+         D6YgDLJjdZTtAuGZ7y+xtJ2MaZywdQXbwYXeMc0nxeQsaqwir41GN7IpG6M7Zzy3WH94
+         McGQ==
+X-Gm-Message-State: AOJu0YzxB8jMRrQb4zgXLpnJGAWMLJf1qMrkmx0nojGrKFdQDK/18wx6
+        FZW9BllhRdmNha/G7XGToPvo1gIqLOERInwg1BSzda2VZbakh7skNSew0STXon2IJzR0qZjv7g6
+        ASgAI23UDZJ8GPCCzkiEL86+QaS+uIzG3
+X-Received: by 2002:a1c:ed1a:0:b0:3fa:96ad:5d2e with SMTP id l26-20020a1ced1a000000b003fa96ad5d2emr2353262wmh.19.1692369487538;
+        Fri, 18 Aug 2023 07:38:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHTQmCt8Bmk74oFkZxUBhky826R2XGHuTRXwL4/0sN/eFqiJynhHbdlec1cDmlmtyABhmh5Mw==
+X-Received: by 2002:a1c:ed1a:0:b0:3fa:96ad:5d2e with SMTP id l26-20020a1ced1a000000b003fa96ad5d2emr2353237wmh.19.1692369487088;
+        Fri, 18 Aug 2023 07:38:07 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c726:ff00:a22a:6d42:439d:de2? (p200300cbc726ff00a22a6d42439d0de2.dip0.t-ipconnect.de. [2003:cb:c726:ff00:a22a:6d42:439d:de2])
+        by smtp.gmail.com with ESMTPSA id eo4-20020a05600c82c400b003fe1a092925sm3036929wmb.19.2023.08.18.07.38.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 07:38:06 -0700 (PDT)
+Message-ID: <6259fc1c-62e4-5ac0-33cb-0cd9a985c5f4@redhat.com>
+Date:   Fri, 18 Aug 2023 16:38:05 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v3] mm: Proper document tail pages fields for folio
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>
+References: <20230815212547.431693-1-peterx@redhat.com>
+ <b887e764-ffa3-55ee-3c44-69cb15f8a115@redhat.com>
+ <ZN0YSOQmSR/voPVO@casper.infradead.org>
+ <ae8ea59e-3081-072b-faa0-b67a5d5af047@redhat.com>
+ <ZN1IH/8JxkkOU5Ec@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZN1IH/8JxkkOU5Ec@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 14:02:32 +0530
-"Gupta, Nipun" <nipun.gupta@amd.com> wrote:
-
-> On 8/16/2023 11:16 PM, Alex Williamson wrote:
-> > On Thu, 10 Aug 2023 14:14:09 +0530
-> > Nipun Gupta <nipun.gupta@amd.com> wrote:
-> >   
-> >> Support Bus master enable and disable on VFIO-CDX devices using
-> >> VFIO_DEVICE_FEATURE_BUS_MASTER flag over VFIO_DEVICE_FEATURE IOCTL.
-> >>
-> >> Co-developed-by: Shubham Rohila <shubham.rohila@amd.com>
-> >> Signed-off-by: Shubham Rohila <shubham.rohila@amd.com>
-> >> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
-> >> ---
-> >>
-> >> Changes v5->v6:
-> >> - Called CDX device reset at cdx_open_device()
-> >>
-> >> Changes v4->v5:
-> >> - Use device feature IOCTL instead of adding a new VFIO IOCTL
-> >>    for bus master feature.
-> >>
-> >> Changes in v4:
-> >> - This patch is newly added which uses cdx_set_master() and
-> >>    cdx_clear_master() APIs.
-> >>
-> >>   drivers/vfio/cdx/main.c | 46 +++++++++++++++++++++++++++++++++++++++--
-> >>   1 file changed, 44 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/vfio/cdx/main.c b/drivers/vfio/cdx/main.c
-> >> index c376a69d2db2..bf0e1f56e0f9 100644
-> >> --- a/drivers/vfio/cdx/main.c
-> >> +++ b/drivers/vfio/cdx/main.c
-> >> @@ -14,7 +14,7 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
-> >>   		container_of(core_vdev, struct vfio_cdx_device, vdev);
-> >>   	struct cdx_device *cdx_dev = to_cdx_device(core_vdev->dev);
-> >>   	int count = cdx_dev->res_count;
-> >> -	int i;
-> >> +	int i, ret;
-> >>   
-> >>   	vdev->regions = kcalloc(count, sizeof(struct vfio_cdx_region),
-> >>   				GFP_KERNEL_ACCOUNT);
-> >> @@ -39,8 +39,11 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
-> >>   		if (!(cdx_dev->res[i].flags & IORESOURCE_READONLY))
-> >>   			vdev->regions[i].flags |= VFIO_REGION_INFO_FLAG_WRITE;
-> >>   	}
-> >> +	ret = cdx_dev_reset(core_vdev->dev);
-> >> +	if (ret)
-> >> +		kfree(vdev->regions);  
-> > 
-> > AIUI, this reset clears bus master, but per the first patch in the
-> > series the ability to set or clear bus master depends on whether the
-> > underlying cdx_ops supports dev_configure.  Apparently all currently
-> > do, but will that always be true?
-> > 
-> > It seems like this could make a gratuitous call to cdx_clear_master()
-> > to validate the return value and only conditionally support this device
-> > feature based on that result (or fail the device open if it's meant to
-> > be required).  
+On 17.08.23 00:05, Matthew Wilcox wrote:
+> On Wed, Aug 16, 2023 at 08:51:49PM +0200, David Hildenbrand wrote:
+>> On 16.08.23 20:41, Matthew Wilcox wrote:
+>>> On Wed, Aug 16, 2023 at 03:33:30PM +0200, David Hildenbrand wrote:
+>>>> My simple tests passed so far. If there isn't something obvious missing,
+>>>> I can do more testing and send this as an official patch.
+>>>
+>>> I think you missed one:
+>>>
+>>> +++ b/mm/swapfile.c
+>>> @@ -1490,7 +1490,7 @@ int swp_swapcount(swp_entry_t entry)
+>>>
+>>>           page = vmalloc_to_page(p->swap_map + offset);
+>>>           offset &= ~PAGE_MASK;
+>>> -       VM_BUG_ON(page_private(page) != SWP_CONTINUED);
+>>> +       VM_BUG_ON(page_swap_entry(page).val != SWP_CONTINUED);
+>>
+>> That falls under the "weird handling of SWP_CONTINUED using vmalloced
+>> pages". So different user of page_private().
+>>
+>> Note that we don't even store swap entries in there but extended swap
+>> counts.
 > 
-> CDX bus driver does not explicitly call cdx_clear_master during reset. 
-> It is triggered by device implicitly and hence device_reset would never
-> fail due to lack of bus mastering capability.
+> Ah, right.  I see now.
 > 
-> Do you mean if cdx_dev_reset() fails we should not set the 
-> VFIO_DEVICE_FLAGS_RESET in vfio_device_info? something like:
 > 
-> 	ret = cdx_dev_reset(core_vdev->dev);
-> 	if (ret == -EOPNOTSUPP)
->   		/* make sure VFIO_DEVICE_FLAGS_RESET is not returned in
-> 		 * flags for device get info */
-> 	else if (ret)
-> 		kfree(vdev->regions);
+> Not necessarily as part of this patch, but it got me wondering ...
+> should we do this?  And then maybe we could remove folio_swap_entry()
+> and folio_set_swap_entry() and just use folio->swap directly.
 > 
->  From new device feature added for BUS mastering if cdx_clear_master() 
-> fails due to no support, the bus driver will return -EOPNOTSUPP, so same 
-> would be communicated to the user-space, so it seems fine from this end.
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 3880b3f2e321..e23d1356e504 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -266,6 +266,14 @@ static inline struct page *encoded_page_ptr(struct encoded_page *page)
+>   	return (struct page *)(~ENCODE_PAGE_BITS & (unsigned long)page);
+>   }
+>   
+> +/*
+> + * A swap entry has to fit into a "unsigned long", as the entry is hidden
+> + * in the "index" field of the swapper address space.
+> + */
+> +typedef struct {
+> +	unsigned long val;
+> +} swp_entry_t;
+> +
+>   /**
+>    * struct folio - Represents a contiguous set of bytes.
+>    * @flags: Identical to the page flags.
+> @@ -276,7 +284,7 @@ static inline struct page *encoded_page_ptr(struct encoded_page *page)
+>    * @index: Offset within the file, in units of pages.  For anonymous memory,
+>    *    this is the index from the beginning of the mmap.
+>    * @private: Filesystem per-folio data (see folio_attach_private()).
+> - *    Used for swp_entry_t if folio_test_swapcache().
+> + * @swap: Used for swp_entry_t if folio_test_swapcache().
+>    * @_mapcount: Do not access this member directly.  Use folio_mapcount() to
+>    *    find out how many times this folio is mapped by userspace.
+>    * @_refcount: Do not access this member directly.  Use folio_ref_count()
+> @@ -319,7 +327,10 @@ struct folio {
+>   			};
+>   			struct address_space *mapping;
+>   			pgoff_t index;
+> -			void *private;
+> +			union {
+> +				void *private;
+> +				swp_entry_t swap;
 
-It's inconsistent to the user to allow the bus master device feature
-probe to indicate the feature is available if it's going to fail on
-every call.  My suggestion was specifically relative to that, a
-gratuitous call to clear bus master, determine if the call works, then
-the feature probe could succeed or fail based on that result.
+Probably with "/* for anon and shm pages only */
 
-However, now that I look at cdx_dev_reset() I notice the inconsistency
-with dev_configure.  The reset path unconditionally calls
-dev_configure, but the bus master paths tests dev_configure.  Is
-dev_configure a required op or not?  Are reset and bus master control
-required features of CDX?  If the core CDX code requires these then the
-vfio support gets easier, we don't need to make all these conditional.
-Thanks,
+> +			};
+>   			atomic_t _mapcount;
+>   			atomic_t _refcount;
+>   #ifdef CONFIG_MEMCG
+> @@ -1158,14 +1169,6 @@ enum tlb_flush_reason {
+>   	NR_TLB_FLUSH_REASONS,
+>   };
+>   
+> - /*
+> -  * A swap entry has to fit into a "unsigned long", as the entry is hidden
+> -  * in the "index" field of the swapper address space.
+> -  */
+> -typedef struct {
+> -	unsigned long val;
+> -} swp_entry_t;
+> -
+>   /**
+>    * enum fault_flag - Fault flag definitions.
+>    * @FAULT_FLAG_WRITE: Fault was a write fault.
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index bb5adc604144..59b0f37eae5b 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -335,13 +335,12 @@ struct swap_info_struct {
+>   
+>   static inline swp_entry_t folio_swap_entry(struct folio *folio)
+>   {
+> -	swp_entry_t entry = { .val = page_private(&folio->page) };
+> -	return entry;
+> +	return folio->swap;
+>   }
+>   
+>   static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t entry)
+>   {
+> -	folio->private = (void *)entry.val;
+> +	folio->swap = entry;
+>   }
+>   
+>   /* linux/mm/workingset.c */
+> 
 
-Alex
+Sound reasonable, but maybe we should even get rid of the getter/setter 
+completely then?
+
+-- 
+Cheers,
+
+David / dhildenb
 
