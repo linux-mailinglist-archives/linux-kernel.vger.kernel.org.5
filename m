@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 705E9780433
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC027780438
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357436AbjHRDJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+        id S1357445AbjHRDKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357461AbjHRDI4 (ORCPT
+        with ESMTP id S1357520AbjHRDKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:08:56 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 267AB3A96
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:08:54 -0700 (PDT)
-Received: (qmail 17988 invoked by uid 1000); 17 Aug 2023 23:08:53 -0400
-Date:   Thu, 17 Aug 2023 23:08:53 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     mathias.nyman@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xhci: Disable connect, disconnect and over-current
- wakeup on system suspend
-Message-ID: <b08553d7-017e-477c-b18e-8564fe88646b@rowland.harvard.edu>
-References: <20230817093305.212821-1-kai.heng.feng@canonical.com>
- <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
- <59898e32-f2ea-4df7-947b-3d74835ff9b7@rowland.harvard.edu>
- <CAAd53p5pxGfS0y260NsMF+m_Ota+d1ZKbtdq4dfM5s+T1z14bw@mail.gmail.com>
+        Thu, 17 Aug 2023 23:10:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526CC3A8B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:10:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D7C2062FC5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:10:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 33D18C433C7;
+        Fri, 18 Aug 2023 03:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692328222;
+        bh=y9P/3/WGyEw+CQqUCiUgiFpqMBL0DcUQoe8g58/Afs8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TdlFlxaGNnjEfkiv09QR0t1UyigA/lOjQGICLQESx/jXozINFKPufb3Y+LE+CL0WQ
+         ihdW7FWGXOoWwrYDhwz7SrTRXhcIB3N5DexWMqvqeVfMo91H3dw/vk7frXk6HqIYVS
+         fsnxFTitJmXR/UwmsAR5IsyIW/HWvNN9oRfaMCkIyRfgqnSkY3Q85JT0s/s649Vejf
+         rgoYNt7Rs2A3fqilQyEW7WCUnPMtqm+CPzFJ6uZIpTV2fNpj/d2GpeybVXr1T6f72y
+         SOa1utSyGSIWviOUrYLv2C7ugLiHp7AUQjCOCk/fDFcI1YtfRu0EpCAP40+BA+cDEE
+         KoEeKnQc86DVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1616BC395C5;
+        Fri, 18 Aug 2023 03:10:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p5pxGfS0y260NsMF+m_Ota+d1ZKbtdq4dfM5s+T1z14bw@mail.gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] net: mdio: fix -Wvoid-pointer-to-enum-cast warning
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169232822208.13423.9185597276539868139.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Aug 2023 03:10:22 +0000
+References: <20230815-void-drivers-net-mdio-mdio-xgene-v1-1-5304342e0659@google.com>
+In-Reply-To: <20230815-void-drivers-net-mdio-mdio-xgene-v1-1-5304342e0659@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     iyappan@os.amperecomputing.com, keyur@os.amperecomputing.com,
+        quan@os.amperecomputing.com, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 08:01:54AM +0800, Kai-Heng Feng wrote:
-> On Thu, Aug 17, 2023 at 10:22 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 10:07:37AM -0400, Alan Stern wrote:
-> > > On Thu, Aug 17, 2023 at 05:33:05PM +0800, Kai-Heng Feng wrote:
-> > > > HP ProOne 440 G10 AIO sometimes cannot suspend as xHCI wakes up the
-> > > > system:
-> > > > [  445.814574] hub 2-0:1.0: hub_suspend
-> > > > [  445.814652] usb usb2: bus suspend, wakeup 0
-> > > > [  445.824629] xhci_hcd 0000:00:14.0: Port change event, 1-11, id 11, portsc: 0x202a0
-> > >
-> > > What is the meaning of the 0x202a0 bits?  What caused this wakeup?
-> >
-> > And more to the point, given that the previous line says "wakeup 0", why
-> > should any port change event cause a wakeup?
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 15 Aug 2023 20:35:59 +0000 you wrote:
+> When building with clang 18 I see the following warning:
+> |       drivers/net/mdio/mdio-xgene.c:338:13: warning: cast to smaller integer
+> |               type 'enum xgene_mdio_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
+> |         338 |                 mdio_id = (enum xgene_mdio_id)of_id->data;
 > 
-> I think the controller and roothub have to deal with the interrupt
-> about disconnecting regardless of the remote wakeup setting.
-
-This seems to contradict what you wrote in an earlier email:
-
-> > If remote wakeup isn't enabled then the do_wakeup variable will be 0,
-> > so your patch wouldn't make any difference.  The question is what
-> > happens when remote wakeup _is_ enabled.
+> This is due to the fact that `of_id->data` is a void* while `enum
+> xgene_mdio_id` has the size of an int. This leads to truncation and
+> possible data loss.
 > 
-> Nothing happens either per my testing.
-> 
-> For USB keyboard, the remote wakeup is enabled, unplugging it when
-> suspend is suspended doesn't wake the system up, despite of PORT_WKDISC_E being set.
-> Plugging it back doesn't wake the system up either, despite of PORT_WKCONN_E.
+> [...]
 
-You appear to be saying that when wakeup is disabled, unplugging a 
-device will wake up the system -- but when wakeup is enabled, unplugging 
-a device will not wake up the system!
+Here is the summary with links:
+  - net: mdio: fix -Wvoid-pointer-to-enum-cast warning
+    https://git.kernel.org/netdev/net-next/c/f3add6dec36d
 
-Is that really what you meant?  It doesn't make sense.  Probably means 
-there's a bug in the HCD.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The point I'm trying to get at is that if wakeups are disabled for both 
-the host controller and the root hub then _nothing_ should generate an 
-interrupt or wakeup request.  Not pressing a key, not unplugging a 
-device... nothing.  But if wakeup _is_ enabled for both the controller 
-and the root hub, then any of those actions should generate an interrupt 
-and wake up the system.
 
-If wakeup is enabled for the host controller but not for the root hub, 
-then unplugging a device from the root hub should not generate a wakeup 
-request or an interrupt.  But things like pressing a key on a 
-wakeup-enabled keyboard should.  (In other words, the root hub shouldn't 
-generate any wakeup requests on its own but it should relay wakeup 
-requests that it receives from downstream devices.)  However, it's 
-understandable if the system doesn't behave properly in this case since 
-it's kind of an odd situation.
-
-Alan Stern
