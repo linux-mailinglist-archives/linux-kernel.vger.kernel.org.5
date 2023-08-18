@@ -2,146 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAE5780A76
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E84E5780A7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376434AbjHRKsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 06:48:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
+        id S1376432AbjHRKtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 06:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376432AbjHRKsF (ORCPT
+        with ESMTP id S1376455AbjHRKtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 06:48:05 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2065.outbound.protection.outlook.com [40.107.104.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8111273C;
-        Fri, 18 Aug 2023 03:48:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i4w1EqHjSZ9g+yh0c7o0ufgIp3tgfCjAe5JcQI+sa6BhXA8SZWRdiLLUQKkmBdaMZKYYH2/ZUVYHfY5nYSZQ8y5wNhbndJKZUOZtA2p6Z6D99TeM/DgA0rB/q180I0wTUkiN5xWY6HX9lQtMfLLG46Vo9kaYveTg/GV0ypgqkNflLDvGuJydCED3EdmixKtGWAY/bcwfKA1SB+0zLT3u5VG/BHjf/330HWxQh2L+VdaGk8Tu4395GLw5zwU+CTemC5xguWgg4w6S4iSSC/4tX1ebRoHjo1t30BdV5fgrFJpOJg3G1B3lJQZ4JuloPyx1W+p+L5ijh+PHNPvt5+Ex7w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M0oAo3kdZXUHF9aQTHUM2fgmHoogJ+qmk++YrwKeFuE=;
- b=e5L21oyvIQA423CRGRQufRA7v9NQXLzdt++UmTFDfxJTR/2CNbNiVPddB8q0+yq6kkcA3qcOBSQv3UF23S0qbM7o1VTsvtdYFgebY+U0ZyCDRJsNz6NfbQbzInmLoc2GzOZa7DE7XakHD+35+fb0bmSPng1KY17yIEls8Z/1ONl7PW1EyUNnLNzj0SpFfbYtMxVwVXwAUSOy0HhS7eOHJC4LRp4PTjsZld3ivuNovwr88dOP9HU2UMJwxFxog0BfEjPTKLjO3kto4O8DFtkkDHXzcIsLTYi75vbZ0jflg2WOI7tWSjDUh0Lz4oY8fjdDuvL6uv9RPkop+8Zrliz1Mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=solid-run.com; dmarc=pass action=none
- header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M0oAo3kdZXUHF9aQTHUM2fgmHoogJ+qmk++YrwKeFuE=;
- b=JxC2+I4HOwEdGdYqNeekIRsQZ45gOOJIDna2Jn7j2KSGrcyapXXZBrYiz6Q6MRav6Evj8+WNn0Iv8NkYa1disVG9cGfgD2aFaC51v9vzbbNFn0TrjHQFw6n7LZ3Cph6bJD/7j/0TWMdwXJGrZJu0uBxUHhviQ4VnbWalbXUxsNo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=solid-run.com;
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com (2603:10a6:20b:42e::18)
- by AS8PR04MB7814.eurprd04.prod.outlook.com (2603:10a6:20b:2a1::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
- 2023 10:48:02 +0000
-Received: from AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::c19e:3b5a:c081:ce3b]) by AS8PR04MB8963.eurprd04.prod.outlook.com
- ([fe80::c19e:3b5a:c081:ce3b%4]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
- 10:48:01 +0000
-Message-ID: <6daa226c-4dc8-4c40-8e98-196695839b50@solid-run.com>
-Date:   Fri, 18 Aug 2023 12:47:50 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] net: sfp: handle 100G/25G active optical cables in
- sfp_parse_support
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-References: <20230814141739.25552-1-josua@solid-run.com>
- <20230817093047.28a2b11d@kernel.org>
-Content-Language: en-US
-From:   Josua Mayer <josua@solid-run.com>
-In-Reply-To: <20230817093047.28a2b11d@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DO0P289CA0008.QATP289.PROD.OUTLOOK.COM
- (2603:1096:790:20::14) To AS8PR04MB8963.eurprd04.prod.outlook.com
- (2603:10a6:20b:42e::18)
+        Fri, 18 Aug 2023 06:49:15 -0400
+Received: from mail.gnu-linux.rocks (unknown [82.165.184.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825A630D8;
+        Fri, 18 Aug 2023 03:49:06 -0700 (PDT)
+Received: from localhost.localdomain (ip5f5be8c4.dynamic.kabel-deutschland.de [95.91.232.196])
+        by mail.gnu-linux.rocks (Postfix) with ESMTPSA id A9BB63FF70;
+        Fri, 18 Aug 2023 10:49:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnu-linux.rocks;
+        s=mail; t=1692355744;
+        bh=l0b9nHiN2mfnjnJdkCw+7C5BCrCgRaEilT3fxMRgcnM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b7UZZ9vIQvRJQDDDkhK6sCVmwg0YI7jrDKfymArv1a6VclU0aXSDRxxqzroa4P4+q
+         owABPe8noHtYRlM5NFfN0Ctrb8wRGi3wkNV8Dnp0v7bi6mIQUrKieMrpKIh0QS7uln
+         P65lqI7oOefyYprfY7ayhDxV1/Chez78GdhcgV8IUGm4ae5nJ1QZEC1Nfk+Rrsm6hz
+         eMvQqEKYxe7oJ1schA47izUYc+2DsnB9r19QdSetB7bjNX2lHUpiCWEwoyxAlMYCYK
+         wDW1OsOFRcAl7F63GAinA+upPoHx+uJGXEYEAGAm26ZF4JA8/vB+8a8a7JadpLmSlM
+         a5II4LCu20epg==
+From:   johannes@gnu-linux.rocks
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, andi.shyti@kernel.org,
+        christophe.jaillet@wanadoo.fr, rdunlap@infradead.org,
+        ak@it-klinger.de, Johannes Roith <johannes@gnu-linux.rocks>
+Subject: [PATCH v5] hid-mcp2200: added driver for GPIOs of MCP2200
+Date:   Fri, 18 Aug 2023 12:48:52 +0200
+Message-ID: <20230818104852.64923-1-johannes@gnu-linux.rocks>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8963:EE_|AS8PR04MB7814:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a699615-bc98-4cb7-5f49-08db9fd897fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: exHpH5cDux2iWtMYmZJh30BnYLhNBTg4AKc/Z4S3zkwt5Kf9eJU72id6Asm9+G5+C25/8TRCqypuXtuYayBTCzOr178gn8nugYtyI3NCn9Zf+1CakiULTARBrhLnu5SSferJewN08VJxxaWZn8bARCP2lM2d2dKep7oxVkrxs1fUEcfZwh6QDmNyk+hixBp2al2CBFqSzTs0SNtV78toEvABuJCLTO4xFxsw1JDmQUlI1Tqr/FFPuDhlKWkLcnytE8Dq1aaDAJLcLF8FBlmJUWNKm2YhvEEqHQVpb1KwsehMzAudKOOg+wFLr1DeBr1wyGhBpLdKtGaK7B3vCBGZOAUwmDQqFAwOR1vFAUntYKgcexstyYe42wK4KNBnMCpbmPVDs0dlrYIeML56H1eontPtMMJIWlfRhQomwu/Z4GlW9KEdCLMl6Mcy/V3IZVI7xuZvZpLyOrpawjUA5YkZJsGa5jwNQ4bFyJCgkYEcQhB4a/J44rlKvt8c3ty3QKsA8Ze5jvkq4lOg0v/WdZ2lSa8sLyEzpCjxgcirCJdcl3QTvDGUPY8cI/T0cOq86hvde0sBJSegYOrureOyMUK3q7BkWeigy1HoIXUV3dkvfwB6s4AsNhOSWv2PqdExREtM0MeC73lqssKofCy4onR20A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8963.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(346002)(366004)(39840400004)(136003)(1800799009)(186009)(451199024)(6666004)(6506007)(6486002)(6512007)(83380400001)(38100700002)(31696002)(86362001)(36756003)(2906002)(6916009)(316002)(41300700001)(4744005)(66946007)(54906003)(66476007)(66556008)(5660300002)(2616005)(8936002)(4326008)(8676002)(31686004)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wmg4ZUhhaXpLRXFmZElFRFlOYWtuQ0FJSkJ6V2E5OUV1NTd0SjRvdVg1V1RG?=
- =?utf-8?B?emtockpCZEFLTHhNODJPR0l1RXBBNFd2VTRDMFVEU0J1aWJDZ1dyNmduQ3NQ?=
- =?utf-8?B?c1VtdVRXS0E0QU1NNkd2ejVlWmtXY0V5TUEzUjd2YSttNXVJN1RaR1JONXBn?=
- =?utf-8?B?RmF0VVVpN2xxMXlHWmNuU2t5QzNDNGppYTJRM3FVYzJQckwyYWlZYjhsZUlE?=
- =?utf-8?B?dTk5NHFKQzVNbzlsKzlYV2U0RWx6ZGN5L09mNzB4ekREMjlkblVDQmJkZnI3?=
- =?utf-8?B?a3pXL1N0K1NITkJMTVE0bWI2c2RsVFNlemVBaVRyWGhwOXpZaGJUTExtZEFU?=
- =?utf-8?B?REd3K1h2WDkvUE5XZ1YrRXBXYUt6U3ZFbUdZNk9jMzlxVU40Y2pzaGJ2SGN0?=
- =?utf-8?B?ZWRsbXFSYkJGcVBjSTZUSWJjcHhjQVRPWk93Q1NOVlVGTm1xeCtyV3ZuVkRt?=
- =?utf-8?B?ZkptU1hrbU9Xc1AzWVQ3OFhqT0dSQkdEWUo3UmJpUTMwRDVqZXM1U1F6S1hG?=
- =?utf-8?B?S1RXcDdRWmkyVjFucm1rY3FGdS9aU0k0N3FjbHVoQlRrSGVEUkhzWXh0d3hB?=
- =?utf-8?B?amU2cWhpRnVTWExSREROQXFyT3RKYVBFaVhLWDhUR3ZBVUkyemxxSU1jWG9O?=
- =?utf-8?B?UE9QcnJtaUNBdzBJb3VIbEtOUkV0ZmJDdmVwUXJUdE5URVRwWkZqQkM5RCtw?=
- =?utf-8?B?L1dtcWFtemYzS2VZVFREekdxK3NwdVlxdDhYM21tMTBsQUhwZ0MydzFzTDJG?=
- =?utf-8?B?QUVxVWxjeVdtWUhaR2JidmV1STUrZ0ZOalQvdjV4L09rWjluTEQ3QVRuL2dU?=
- =?utf-8?B?K08ybHZwcWx4QWxqZkhHT0x5MXpBQUd0bXNma1JOUzc0OFZqSVFiRVE3aFNa?=
- =?utf-8?B?UnBFTHBMNUc3d0hEb1lxZTYveGZqU0NaVnBNc0EyMnIwVFNLTW1zTTdxWE5t?=
- =?utf-8?B?SWdaUkZkWS9HL3ZYdng1OG5uOGhoM1dvYk1kSWg2MEpLNGIwczlVcDBWYm5v?=
- =?utf-8?B?YXhjTS9JMlFNLzlrRVQ3aUF2OWs5WC80eEJSWEM3VGNnYTlGcTJuNTcyblda?=
- =?utf-8?B?aW9pSkhMUmVXTUFhaUo2RFBsMmZzc0pZOFk0NDV0ZGwzNm1Ca0RScktxMTdk?=
- =?utf-8?B?eHlUOENHK1NkTFA2ODNKL2hmUXlTSWpReEh4Q2xxM3JUOHYwZFcyMWlmZ2JT?=
- =?utf-8?B?eVBVdFpuTnF1eUhEVnV0YjFRSmJCV1JLWTVQaWF2K3YrbkVZdm5DRytxcFRB?=
- =?utf-8?B?NW1Za2xBVUdTMU1jL3loaUhXODg1cGdrSURMNXhEMmsvT29oTTUvOU1aUlUx?=
- =?utf-8?B?VG1xeUYrTnZ3NGRteTVyTGxYUDhRa2VkcjBNUkVKYkJ4YXFiQnV5NHp3N1VK?=
- =?utf-8?B?UUdObWNNank3RnBWTmFxVkZEbm14TU5rQ1dvTDBza3l4bFpqblJtRnJtSjYz?=
- =?utf-8?B?UFZBMjVaVS83YmF2TXJSY01KN0JscmpDSDNZTE1FL29SR1lLb1YremJBOTM2?=
- =?utf-8?B?RDVsbnJnTCtiRUVuSEJlUlA1amswZitVcVVwWU5md2ovZlBIUlMvaWFrUXRp?=
- =?utf-8?B?bTJZQThXVFlzSmJxTndpUTlDSnB3djVPa3FYTk5sTnNwMVhXd3lVeGRmR3hl?=
- =?utf-8?B?SWI2RzZlL0tZOWthNmhYdkhLL08zeVRmekw2bXZUUUJHay9CNzdHUEFnVW5F?=
- =?utf-8?B?Tkc5ZFRHVmJWTzRLbnZ6bUUyMWpNUElINHRSWkJHZDZDejJ3Ui8yc3BVYVo4?=
- =?utf-8?B?RnIvOENjSlBTZ3FjZjFHZjF0bU1lV2gxRm9rQnlhTEkzZ3VZLzZRMEtzbjJ0?=
- =?utf-8?B?NERPL0hsT25JRkR6Z2xaQVp3MXlHWnJiZmI1cXYvTnRvNHBJM1dpRmNKclJI?=
- =?utf-8?B?bXk2SUhVRjVTenczeCtUYTVPK2c1MGtaclc5NitBTXgyekhVQjJTcXBON0NH?=
- =?utf-8?B?bzU5UHFJVGtvTWZUdG84K0NiYnRQZlFlZkhTMzR1S3FPemxManRsZkF2NEtW?=
- =?utf-8?B?NEQ2ZGFTWE92a1hlS1FpZnJUQnQ5Z3oxRVIyelhEV0U0bzMwTktsaHEyWWxq?=
- =?utf-8?B?WGlpbnh0UUpWbFM2c09ZREFvUG9lSmlHMHRWSkUxbXJhV2xsZ3lESksxd283?=
- =?utf-8?B?TjhiUll2RkdiL2ZVeU1wRXM1UWxud3F4K0RKTXc1SmtiSEplNkJsS3NueTRX?=
- =?utf-8?Q?DUyVhgL0SKPUD19sA/pCZmA=3D?=
-X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a699615-bc98-4cb7-5f49-08db9fd897fe
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8963.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 10:48:01.8370
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 96D/A8Q8s6qOSiSkGrlouzDH164GX/L0pTiry9CmtfTikR6Lum4Eempk6FLUjSOIXppMg/avm+3so6VOFEDVxg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7814
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+From: Johannes Roith <johannes@gnu-linux.rocks>
 
-Am 17.08.23 um 18:30 schrieb Jakub Kicinski:
-> On Mon, 14 Aug 2023 16:17:39 +0200 Josua Mayer wrote:
->> Handle extended compliance code 0x1 (SFF8024_ECC_100G_25GAUI_C2M_AOC)
->> for active optical cables supporting 25G and 100G speeds.
->>
->> Since the specification makes no statement about transmitter range, and
->> as the specific sfp module that had been tested features only 2m fiber -
->> short-range (SR) modes are selected.
-> FWIW this got marked as "changes requested" in patchwork by DaveM.
-> Since we didn't get an Ack from Russell, would you mind fixing
-> the comment style and reposting?
-I will post a v3 soon!
+Added a gpiochip compatible driver to control the 8 GPIOs of
+the MCP2200 by using the HID interface.
+
+Using GPIOs with alternative functions (GP0<->SSPND, GP1<->USBCFG,
+GP6<->RXLED, GP7<->TXLED) will reset the functions, if set (unset by
+default).
+
+The driver was tested while also using the UART of the chip. Setting
+and reading the GPIOs has no effect on the UART communication. However,
+a reset is triggered after the CONFIGURE command. If the GPIO Direction
+is constantly changed, this will affect the communication at low baud
+rates. This is a hardware problem of the MCP2200 and is not caused by
+the driver.
+
+Feedback from reviewers Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+and Andi Shyti <andi.shyti@kernel.org> was added.
+
+Changelog:
+
+- v1: added driver
+- v2: added ProductID in hid-ids.h
+- v3: added feedback from review and make patch compilable
+- v4: added more feedback from second review, tested as module and
+  builtin on x86 and arm64
+- v5: adopted Kconfig to style guidelines, fixed mcp_set_direction
+
+Signed-off-by: Johannes Roith <johannes@gnu-linux.rocks>
+---
+ drivers/hid/Kconfig       |  10 +
+ drivers/hid/Makefile      |   1 +
+ drivers/hid/hid-ids.h     |   1 +
+ drivers/hid/hid-mcp2200.c | 419 ++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 431 insertions(+)
+ create mode 100644 drivers/hid/hid-mcp2200.c
+
+diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+index e11c1c803676..efe01b473cc2 100644
+--- a/drivers/hid/Kconfig
++++ b/drivers/hid/Kconfig
+@@ -1301,6 +1301,16 @@ config HID_MCP2221
+ 	To compile this driver as a module, choose M here: the module
+ 	will be called hid-mcp2221.ko.
+ 
++config HID_MCP2200
++	tristate "Microchip MCP2200 HID USB-to-GPIO bridge"
++	depends on USB_HID
++	imply GPIOLIB
++	help
++	  Provides GPIO functionality over USB-HID through MCP2200 device.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called hid-mcp2200.ko.
++
+ config HID_KUNIT_TEST
+ 	tristate "KUnit tests for HID" if !KUNIT_ALL_TESTS
+ 	depends on KUNIT
+diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+index 7a9e160158f7..050f740304c4 100644
+--- a/drivers/hid/Makefile
++++ b/drivers/hid/Makefile
+@@ -79,6 +79,7 @@ obj-$(CONFIG_HID_MACALLY)	+= hid-macally.o
+ obj-$(CONFIG_HID_MAGICMOUSE)	+= hid-magicmouse.o
+ obj-$(CONFIG_HID_MALTRON)	+= hid-maltron.o
+ obj-$(CONFIG_HID_MCP2221)	+= hid-mcp2221.o
++obj-$(CONFIG_HID_MCP2200)	+= hid-mcp2200.o
+ obj-$(CONFIG_HID_MAYFLASH)	+= hid-mf.o
+ obj-$(CONFIG_HID_MEGAWORLD_FF)	+= hid-megaworld.o
+ obj-$(CONFIG_HID_MICROSOFT)	+= hid-microsoft.o
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 8a310f8ff20f..4926ca41225b 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -914,6 +914,7 @@
+ #define USB_DEVICE_ID_PICK16F1454_V2	0xf2f7
+ #define USB_DEVICE_ID_LUXAFOR		0xf372
+ #define USB_DEVICE_ID_MCP2221		0x00dd
++#define USB_DEVICE_ID_MCP2200		0x00df
+ 
+ #define USB_VENDOR_ID_MICROSOFT		0x045e
+ #define USB_DEVICE_ID_SIDEWINDER_GV	0x003b
+diff --git a/drivers/hid/hid-mcp2200.c b/drivers/hid/hid-mcp2200.c
+new file mode 100644
+index 000000000000..ed4483fa5bdf
+--- /dev/null
++++ b/drivers/hid/hid-mcp2200.c
+@@ -0,0 +1,419 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * MCP2200 - Microchip USB to GPIO bridge
++ *
++ * Copyright (c) 2023, Johannes Roith <johannes@gnu-linux.rocks>
++ *
++ * Datasheet: https://ww1.microchip.com/downloads/en/DeviceDoc/22228A.pdf
++ * App Note for HID: https://ww1.microchip.com/downloads/en/DeviceDoc/93066A.pdf
++ */
++#include <linux/completion.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio/driver.h>
++#include <linux/hid.h>
++#include <linux/hidraw.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include "hid-ids.h"
++
++/* Commands codes in a raw output report */
++#define SET_CLEAR_OUTPUTS	0x08
++#define CONFIGURE		0x10
++#define READ_EE			0x20
++#define WRITE_EE		0x40
++#define READ_ALL		0x80
++
++/* MCP GPIO direction encoding */
++enum MCP_IO_DIR {
++	MCP2200_DIR_OUT = 0x00,
++	MCP2200_DIR_IN  = 0x01,
++};
++
++/* Altternative pin assignments */
++#define TXLED		2
++#define RXLED		3
++#define USBCFG		6
++#define SSPND		7
++#define MCP_NGPIO	8
++
++/* CMD to set or clear a GPIO output */
++struct mcp_set_clear_outputs {
++	u8 cmd;
++	u8 dummys1[10];
++	u8 set_bmap;
++	u8 clear_bmap;
++	u8 dummys2[3];
++} __packed;
++
++/* CMD to configure the IOs */
++struct mcp_configure {
++	u8 cmd;
++	u8 dummys1[3];
++	u8 io_bmap;
++	u8 config_alt_pins;
++	u8 io_default_val_bmap;
++	u8 config_alt_options;
++	u8 baud_h;
++	u8 baud_l;
++	u8 dummys2[6];
++} __packed;
++
++/* CMD to read all parameters */
++struct mcp_read_all {
++	u8 cmd;
++	u8 dummys[15];
++} __packed;
++
++/* Response to the read all cmd */
++struct mcp_read_all_resp {
++	u8 cmd;
++	u8 eep_addr;
++	u8 dummy;
++	u8 eep_val;
++	u8 io_bmap;
++	u8 config_alt_pins;
++	u8 io_default_val_bmap;
++	u8 config_alt_options;
++	u8 baud_h;
++	u8 baud_l;
++	u8 io_port_val_bmap;
++	u8 dummys[5];
++} __packed;
++
++struct mcp2200 {
++	struct hid_device *hdev;
++	struct mutex lock;
++	struct completion wait_in_report;
++	u8 gpio_dir;
++	u8 gpio_val;
++	u8 gpio_inval;
++	u8 baud_h;
++	u8 baud_l;
++	u8 config_alt_pins;
++	u8 gpio_reset_val;
++	u8 config_alt_options;
++	int status;
++	struct gpio_chip gc;
++};
++
++/* this executes the READ_ALL cmd */
++static int mcp_cmd_read_all(struct mcp2200 *mcp)
++{
++	struct mcp_read_all *read_all;
++	int len, t;
++
++	reinit_completion(&mcp->wait_in_report);
++	read_all = kzalloc(sizeof(struct mcp_read_all), GFP_KERNEL);
++	if (!read_all)
++		return -ENOMEM;
++
++	read_all->cmd = READ_ALL;
++
++	mutex_lock(&mcp->lock);
++	len = hid_hw_output_report(mcp->hdev, (u8 *) read_all,
++				   sizeof(struct mcp_read_all));
++
++	mutex_unlock(&mcp->lock);
++	kfree(read_all);
++
++	if (len != sizeof(struct mcp_read_all))
++		return -EINVAL;
++
++	t = wait_for_completion_timeout(&mcp->wait_in_report,
++					msecs_to_jiffies(4000));
++	if (!t)
++		return -ETIMEDOUT;
++
++	/* return status, negative value if wrong response was received */
++	return mcp->status;
++}
++
++static void mcp_set_multiple(struct gpio_chip *gc, unsigned long *mask,
++			     unsigned long *bits)
++{
++	struct mcp2200 *mcp = gpiochip_get_data(gc);
++	u8 value;
++	int status;
++	struct mcp_set_clear_outputs *cmd;
++
++	cmd = kzalloc(sizeof(struct mcp_set_clear_outputs), GFP_KERNEL);
++	if (!cmd)
++		return;
++
++	mutex_lock(&mcp->lock);
++
++	value = mcp->gpio_val & ~*mask;
++	value |= (*mask & *bits);
++
++	cmd->cmd = SET_CLEAR_OUTPUTS;
++	cmd->set_bmap = value;
++	cmd->clear_bmap = ~(value);
++
++	status = hid_hw_output_report(mcp->hdev, (u8 *) cmd,
++		       sizeof(struct mcp_set_clear_outputs));
++
++	if (status == sizeof(struct mcp_set_clear_outputs))
++		mcp->gpio_val = value;
++
++	mutex_unlock(&mcp->lock);
++	kfree(cmd);
++}
++
++static void mcp_set(struct gpio_chip *gc, unsigned int gpio_nr, int value)
++{
++	unsigned long mask = 1 << gpio_nr;
++	unsigned long bmap_value = value << gpio_nr;
++
++	mcp_set_multiple(gc, &mask, &bmap_value);
++}
++
++static int mcp_get_multiple(struct gpio_chip *gc, unsigned long *mask,
++		unsigned long *bits)
++{
++	u32 val;
++	struct mcp2200 *mcp = gpiochip_get_data(gc);
++	int status;
++
++	status = mcp_cmd_read_all(mcp);
++	if (status != 0)
++		return status;
++
++	val = mcp->gpio_inval;
++	*bits = (val & *mask);
++	return 0;
++}
++
++static int mcp_get(struct gpio_chip *gc, unsigned int gpio_nr)
++{
++	unsigned long mask = 0, bits = 0;
++
++	mask = (1 << gpio_nr);
++	mcp_get_multiple(gc, &mask, &bits);
++	return bits > 0;
++}
++
++static int mcp_get_direction(struct gpio_chip *gc, unsigned int gpio_nr)
++{
++	struct mcp2200 *mcp = gpiochip_get_data(gc);
++
++	return (mcp->gpio_dir & (MCP2200_DIR_IN << gpio_nr))
++		? GPIO_LINE_DIRECTION_IN : GPIO_LINE_DIRECTION_OUT;
++}
++
++static int mcp_set_direction(struct gpio_chip *gc, unsigned int gpio_nr,
++			     enum MCP_IO_DIR io_direction)
++{
++	struct mcp2200 *mcp = gpiochip_get_data(gc);
++	struct mcp_configure *conf;
++	int status;
++	/* after the configure cmd we will need to set the outputs again */
++	unsigned long mask = ~(mcp->gpio_dir); /* only set outputs */
++	unsigned long bits = mcp->gpio_val;
++	/* Offsets of alternative pins in config_alt_pins, 0 is not used */
++	u8 alt_pin_conf[8] = {SSPND, USBCFG, 0, 0, 0, 0, RXLED, TXLED};
++	u8 config_alt_pins = mcp->config_alt_pins;
++
++	/* Read in the reset baudrate first, we need it later */
++	status = mcp_cmd_read_all(mcp);
++	if (status != 0)
++		return status;
++
++	conf = kzalloc(sizeof(struct mcp_configure), GFP_KERNEL);
++	if (!conf)
++		return -ENOMEM;
++
++	mutex_lock(&mcp->lock);
++
++	/* configure will reset the chip! */
++	conf->cmd = CONFIGURE;
++	conf->io_bmap = (mcp->gpio_dir & ~(1 << gpio_nr))
++		| (io_direction << gpio_nr);
++	/* Don't overwrite the reset parameters */
++	conf->baud_h = mcp->baud_h;
++	conf->baud_l = mcp->baud_l;
++	conf->config_alt_options = mcp->config_alt_options;
++	conf->io_default_val_bmap = mcp->gpio_reset_val;
++	/* Adjust alt. func if necessary */
++	if (alt_pin_conf[gpio_nr])
++		config_alt_pins &= ~(1 << alt_pin_conf[gpio_nr]);
++	conf->config_alt_pins = config_alt_pins;
++
++	status = hid_hw_output_report(mcp->hdev, (u8 *) conf,
++				      sizeof(struct mcp_set_clear_outputs));
++
++	if (status == sizeof(struct mcp_set_clear_outputs)) {
++		mcp->gpio_dir = conf->io_bmap;
++		mcp->config_alt_pins = config_alt_pins;
++	} else {
++		mutex_unlock(&mcp->lock);
++		kfree(conf);
++		return -EIO;
++	}
++
++	mutex_unlock(&mcp->lock);
++	kfree(conf);
++
++	/* Configure CMD will clear all IOs -> rewrite them */
++	mcp_set_multiple(gc, &mask, &bits);
++	return 0;
++}
++
++static int mcp_direction_input(struct gpio_chip *gc, unsigned int gpio_nr)
++{
++	return mcp_set_direction(gc, gpio_nr, MCP2200_DIR_IN);
++}
++
++static int mcp_direction_output(struct gpio_chip *gc, unsigned int gpio_nr,
++				int value)
++{
++	int ret;
++	unsigned long mask, bmap_value;
++
++	mask = 1 << gpio_nr;
++	bmap_value = value << gpio_nr;
++
++	ret = mcp_set_direction(gc, gpio_nr, MCP2200_DIR_OUT);
++	if (ret == 0)
++		mcp_set_multiple(gc, &mask, &bmap_value);
++	return ret;
++}
++
++static const struct gpio_chip template_chip = {
++	.label			= "mcp2200",
++	.owner			= THIS_MODULE,
++	.get_direction		= mcp_get_direction,
++	.direction_input	= mcp_direction_input,
++	.direction_output	= mcp_direction_output,
++	.set			= mcp_set,
++	.set_multiple		= mcp_set_multiple,
++	.get			= mcp_get,
++	.get_multiple		= mcp_get_multiple,
++	.base			= -1,
++	.ngpio			= MCP_NGPIO,
++	.can_sleep		= true,
++};
++
++/*
++ * MCP2200 uses interrupt endpoint for input reports. This function
++ * is called by HID layer when it receives i/p report from mcp2200,
++ * which is actually a response to the previously sent command.
++ */
++static int mcp2200_raw_event(struct hid_device *hdev, struct hid_report *report,
++		u8 *data, int size)
++{
++	struct mcp2200 *mcp = hid_get_drvdata(hdev);
++	struct mcp_read_all_resp *all_resp;
++
++	switch (data[0]) {
++	case READ_ALL:
++		all_resp = (struct mcp_read_all_resp *) data;
++		mcp->status = 0;
++		mcp->gpio_inval = all_resp->io_port_val_bmap;
++		mcp->baud_h = all_resp->baud_h;
++		mcp->baud_l = all_resp->baud_l;
++		mcp->gpio_reset_val = all_resp->io_default_val_bmap;
++		mcp->config_alt_pins = all_resp->config_alt_pins;
++		mcp->config_alt_options = all_resp->config_alt_options;
++		break;
++	default:
++		mcp->status = -EIO;
++		break;
++	}
++
++	complete(&mcp->wait_in_report);
++	return 1;
++}
++
++static void mcp2200_hid_unregister(void *ptr)
++{
++	struct hid_device *hdev = ptr;
++
++	hid_hw_close(hdev);
++	hid_hw_stop(hdev);
++}
++
++static int mcp2200_probe(struct hid_device *hdev, const struct hid_device_id *id)
++{
++	int ret;
++	struct mcp2200 *mcp;
++
++	mcp = devm_kzalloc(&hdev->dev, sizeof(*mcp), GFP_KERNEL);
++	if (!mcp)
++		return -ENOMEM;
++
++	ret = hid_parse(hdev);
++	if (ret) {
++		hid_err(hdev, "can't parse reports\n");
++		return ret;
++	}
++
++	/*
++	 * This driver uses the .raw_event callback and therefore does not need any
++	 * HID_CONNECT_xxx flags.
++	 */
++	ret = hid_hw_start(hdev, 0);
++	if (ret) {
++		hid_err(hdev, "can't start hardware\n");
++		return ret;
++	}
++
++	hid_info(hdev, "USB HID v%x.%02x Device [%s] on %s\n", hdev->version >> 8,
++			hdev->version & 0xff, hdev->name, hdev->phys);
++
++	ret = hid_hw_open(hdev);
++	if (ret) {
++		hid_err(hdev, "can't open device\n");
++		return ret;
++	}
++
++	mutex_init(&mcp->lock);
++	init_completion(&mcp->wait_in_report);
++	hid_set_drvdata(hdev, mcp);
++	mcp->hdev = hdev;
++
++	ret = devm_add_action_or_reset(&hdev->dev, mcp2200_hid_unregister, hdev);
++	if (ret)
++		return ret;
++
++	mcp->gc = template_chip;
++	mcp->gc.parent = &hdev->dev;
++
++	ret = devm_gpiochip_add_data(&hdev->dev, &mcp->gc, mcp);
++	if (ret < 0) {
++		hid_err(hdev, "Unable to register gpiochip\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static void mcp2200_remove(struct hid_device *hdev)
++{
++	(void) hdev;
++	/*
++	 * With no remove function you sometimes get a segmentation fault when
++	 * unloading the module or disconnecting the USB device
++	 */
++}
++
++static const struct hid_device_id mcp2200_devices[] = {
++	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROCHIP, USB_DEVICE_ID_MCP2200) },
++	{ }
++};
++MODULE_DEVICE_TABLE(hid, mcp2200_devices);
++
++static struct hid_driver mcp2200_driver = {
++	.name		= "mcp2200",
++	.id_table	= mcp2200_devices,
++	.probe		= mcp2200_probe,
++	.remove		= mcp2200_remove,
++	.raw_event	= mcp2200_raw_event,
++};
++
++/* Register with HID core */
++module_hid_driver(mcp2200_driver);
++
++MODULE_AUTHOR("Johannes Roith <johannes@gnu-linux.rocks>");
++MODULE_DESCRIPTION("MCP2200 Microchip HID USB to GPIO bridge");
++MODULE_LICENSE("GPL");
+-- 
+2.41.0
+
