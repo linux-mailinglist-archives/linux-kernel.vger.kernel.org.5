@@ -2,91 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8B2780FFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855B2780FFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378487AbjHRQLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
+        id S1378498AbjHRQMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378542AbjHRQL1 (ORCPT
+        with ESMTP id S1378605AbjHRQMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:11:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C273AB5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:11:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0E5D615D9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:11:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 759E9C433C7;
-        Fri, 18 Aug 2023 16:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692375084;
-        bh=+gzO0gKiOTRvCJKQsYSXROLf2cSwuATfh8XfDlyDbx4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ePlCY5fFLfTm9fu9uOgrC8vID6pmWPF3IhzlNcRfiyIwCNyPfW1OJtn9UtAY6XmmJ
-         30VZEPFtEWomODVYC7C/7CylpIyZ0S6HMK31+bppdDlimHRcQbIEz1OB77jqDgXFKw
-         fJY+Tlos4YGqlH21Q3LXS39C+f5dOdk1a2DubODM697WU3Kc/k+lbJWhB1o5nvpgNN
-         rqsmt5NKhF3ZuiqmM+KCiokVMpqn50n5JURg2VTNZuwk1gb51khD19irICWbaogpGN
-         9Px3+jtCisHbYjCA4zDLGoMIAxwYsdu6kyf7l1N5r2z3DZ0fgFImHKoW3IuEDgTO6O
-         pUCuDTKgC3yDw==
-Date:   Fri, 18 Aug 2023 17:11:19 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     robin.murphy@arm.com, jgg@nvidia.com, joro@8bytes.org,
-        jean-philippe@linaro.org, apopple@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux.dev
-Subject: Re: [PATCH v2] iommu/arm-smmu-v3: Add a user-configurable
- tlb_invalidate_threshold
-Message-ID: <20230818161119.GA16216@willie-the-truck>
-References: <20230816204350.29150-1-nicolinc@nvidia.com>
- <ZN5oojF6vKOKB/eI@Asurada-Nvidia>
+        Fri, 18 Aug 2023 12:12:02 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71344215
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7748ca56133so14103139f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692375116; x=1692979916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HgOUhrzygLSqZdauIc0uVm9MlbbDR2SIBt1AEcio6xE=;
+        b=RjgLNxjyYy4EB/PEs0GWly50tA3Mc6O+p3KRLXDartocn3ajnzKW+O6Wj9lWK/ukUX
+         5GgloCF5lD65JykgEYfBnpT4e/M3xTcBuRqwCiC89AViJVElf7Y8bfEI7Ja5E+a+3N7q
+         L1GYNCv7JeBeBQ2SUBaLgtEQ1MOcZLNfGocLA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692375116; x=1692979916;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HgOUhrzygLSqZdauIc0uVm9MlbbDR2SIBt1AEcio6xE=;
+        b=f1YWT6WzaWxHXcEHs/zVZJhiCbIidNnu9sLahy/wM8+TFiLyCP2vzXw3lscAUm70zB
+         sthYlB9CGcsH/BjLyJt9PW/tldaUUlyj5rqh9ZoToQ0VLfM+OKa17ERpfEoAhZTzBg3s
+         ebun4WY0hOUH1T/zJdsGAj1/YBGRbLELM7G77gMDlp/pEVF6u0eZi52Tlnn/j1ksN+b8
+         hwq0Hyv2/eLYcDp2BiFRil4XyXvBIDVK/6zWvCjgaH9VCzXA5bH5F+uRSL7BQa8cpXNX
+         VEY/zGtfBfB88vE1hnWj6TsNp9RKt4BFoNSUOs8Z6zj+J8grY8AL0ga5grPgrI43Z0XG
+         Q25A==
+X-Gm-Message-State: AOJu0Yx5fa+Nk64EhJUQjq8g69exZu87lPKEsev8OdfERQQYPTec6l8t
+        rusvBJcljFCnEbD/Ysf1qfJexw==
+X-Google-Smtp-Source: AGHT+IEcNw1RSnNlbNsCdDxT7TVaSrBRorddbxy54Y3BOOfQrA79h8aB0G9+LlR9q9CnCMMbIYPWMQ==
+X-Received: by 2002:a5d:9d8b:0:b0:791:ad39:660b with SMTP id ay11-20020a5d9d8b000000b00791ad39660bmr4992529iob.0.1692375116181;
+        Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id v19-20020a02cbb3000000b0042b265bf3besm603455jap.115.2023.08.18.09.11.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 09:11:55 -0700 (PDT)
+Message-ID: <54fe5a4b-e0eb-b2e2-e39a-fc840acac70e@linuxfoundation.org>
+Date:   Fri, 18 Aug 2023 10:11:55 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZN5oojF6vKOKB/eI@Asurada-Nvidia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 3/3] kselftest: Add new test for detecting unprobed
+ Devicetree devices
+Content-Language: en-US
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>, Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
+        Guenter Roeck <groeck@chromium.org>, kernel@collabora.com,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230817233635.2306377-1-nfraprado@collabora.com>
+ <20230817233635.2306377-4-nfraprado@collabora.com>
+ <69848238-17d8-4b87-8bc1-474cae127410@sirena.org.uk>
+ <bdd6da06-d790-42c1-a5ea-372d38bf0ea7@notapiano>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <bdd6da06-d790-42c1-a5ea-372d38bf0ea7@notapiano>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:36:18AM -0700, Nicolin Chen wrote:
-> On Wed, Aug 16, 2023 at 01:43:50PM -0700, Nicolin Chen wrote:
->  
-> > When receiving an __arm_smmu_tlb_inv_range() call with a large size, there
-> > could be a long latency at this function call: one part is coming from a
-> > large software overhead in the routine of building commands, and the other
-> > part is coming from CMDQ hardware consuming the large number of commands.
-> > This latency could be significantly large on an SMMU that does not support
-> > range invalidation commands, i.e. no ARM_SMMU_FEAT_RANGE_INV.
-> > 
-> > One way to optimize this is to replace a large number of VA invalidation
-> > commands with one single per-asid invalidation command, when the requested
-> > size reaches a threshold. This threshold can be configurable depending on
-> > the SMMU implementaion.
+On 8/18/23 09:08, Nícolas F. R. A. Prado wrote:
+> On Fri, Aug 18, 2023 at 01:54:21PM +0100, Mark Brown wrote:
+>> On Thu, Aug 17, 2023 at 07:35:27PM -0400, Nícolas F. R. A. Prado wrote:
+>>
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/dt/ktap_helpers.sh
+>>> @@ -0,0 +1,57 @@
+>>> +# SPDX-License-Identifier: GPL-2.0
+>>> +#
+>>> +# Copyright (c) 2023 Collabora Ltd
+>>> +#
+>>> +# Helpers for outputting in KTAP format
+>>> +#
+>>
+>> These look generic so could be at the top level kselftest directory in
+>> case any other tests want to use them?
 > 
-> I'm rethinking about this size-based threshold, since what really
-> affects the latency is the number of the invalidation commands in
-> the request. So having an npages-based threshold might be optimal,
-> though the idea and implementation would be similar.
+> Yes, they're generic. And sure, we can move it up. The tests using it will need
+> to source it at run-time, so we can either update the kselftest Makefile to
+> always copy this helper when installing, or each test's Makefile can
+> make its own copy during build.
+> 
 
-On the CPU side, we just have:
+Moving this up would require the above changes. I prefer
+making these later after this test goes in to avoid conflicts
+with linux-kselftest next and Rob's dt as this one depends
+on  patches 1&2 which aren't in my Inbox.
 
-#define MAX_TLBI_OPS    PTRS_PER_PTE
+I would like also  to see a common solution that works for C
+and shell tests. Sourcing works just for shell tests.
 
-in asm/tlbflush.h
+>>
+>> The test itself looks good in so far as I can read shell.
+> 
+> Thanks for the feedback!
+>
+Rob, Are you planning to take this through your tree. If you
+do, here is my Reviewed-by
 
-Can we start off with something similar for the SMMU? I'm not massively
-keen on exposing this as a knob to userspace, because I don't think most
-people will have a clue about how to tune it.
+Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Will
+thanks,
+-- Shuah
+
