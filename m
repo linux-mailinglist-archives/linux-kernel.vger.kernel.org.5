@@ -2,159 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 230FC780765
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11133780757
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358723AbjHRIoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S1358685AbjHRIm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358743AbjHRInv (ORCPT
+        with ESMTP id S1357775AbjHRImk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:43:51 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A713A94
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:48 -0700 (PDT)
-Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RRwNb25k4z1GF5y;
-        Fri, 18 Aug 2023 16:42:23 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 18 Aug 2023 16:43:45 +0800
-From:   Junhao He <hejunhao3@huawei.com>
-To:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
-        <anshuman.khandual@arm.com>, <james.clark@arm.com>
-CC:     <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
-        <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>
-Subject: [PATCH V3] coresight: trbe: Fix TRBE potential sleep in atomic context
-Date:   Fri, 18 Aug 2023 16:40:52 +0800
-Message-ID: <20230818084052.10116-1-hejunhao3@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 18 Aug 2023 04:42:40 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B963A94;
+        Fri, 18 Aug 2023 01:42:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RRwNm6f16z4f41Vb;
+        Fri, 18 Aug 2023 16:42:32 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP2 (Coremail) with SMTP id Syh0CgAHK2_4Lt9kJOHxAw--.47387S2;
+        Fri, 18 Aug 2023 16:42:33 +0800 (CST)
+Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
+ multiple update_backups in ext4_flex_group_add
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
+ <20230629120044.1261968-13-shikemeng@huaweicloud.com>
+ <20230816034730.GT2247938@mit.edu>
+ <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
+ <20230817141112.GZ2247938@mit.edu>
+ <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
+ <20230818050036.GG3464136@mit.edu>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+Date:   Fri, 18 Aug 2023 16:42:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500002.china.huawei.com (7.185.36.158)
+In-Reply-To: <20230818050036.GG3464136@mit.edu>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: Syh0CgAHK2_4Lt9kJOHxAw--.47387S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr4fZrykur18Cw45AF15twb_yoW7Xw1Upa
+        1qka1DArn8GrZrZF1xJw10qFy0ka1xJF45Ary7uw1UuF9IqFn2qrn2yF1YyFyUXFZ29w1Y
+        qr15A3srCr4vyaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smp_call_function_single() will allocate an IPI interrupt vector to
-the target processor and send a function call request to the interrupt
-vector. After the target processor receives the IPI interrupt, it will
-execute arm_trbe_remove_coresight_cpu() call request in the interrupt
-handler.
 
-According to the device_unregister() stack information, if other process
-is useing the device, the down_write() may sleep, and trigger deadlocks
-or unexpected errors.
 
-  arm_trbe_remove_coresight_cpu
-    coresight_unregister
-      device_unregister
-        device_del
-          kobject_del
-            __kobject_del
-              sysfs_remove_dir
-                kernfs_remove
-                  down_write ---------> it may sleep
+on 8/18/2023 1:00 PM, Theodore Ts'o wrote:
+> On Fri, Aug 18, 2023 at 11:16:35AM +0800, Kemeng Shi wrote:
+>> Ah, I guess here is the thing I missed that make this confusing:
+>> sbi->s_group_desc contains only primary block of each group. i.e.
+>> sbi->s_group_desc['i'] is the primary gdb block of group 'i'.
+> 
+> Correct.  In fact, when we need to modify a block group descriptor for
+> a group, we call ext4_get_group_desc(), and it references
+> sbi->s_group_desc to find the appropriate buffer_head for the bg
+> descriptor that we want to modify.
+> 
+> I'm not sure "only" is the right adjective to use here, since the
+> whole *point* of s_group_desc[] is to keep the buffer_heads for the
+> block group descriptor blocks in memory, so we can modify them when we
+> allocate or free blocks, inodes, etc.  And we only modify the primary
+> block group descriptors.
+> 
+> The secondary, or backup block group descriptors are only by used
+> e2fsck when the primary block group descriptor has been overwritten,
+> so we can find the inode table, allocation bitmaps, and so on.  So we
+> do *not* modify them in the course of normal operations, and that's by
+> design.  The only time the kernel will update those block group
+> descriptors is when we are doing an online resize, and we need make
+> sure the backup descriptors are updated, so that if the primary
+> descriptors get completely smashed, we can still get critical
+> information such as the location of that block group's inode table.
+> >> From add_new_gdb and add_new_gdb_meta_bg, we can find that we always
+>> add primary gdb block of new group to s_group_desc. To be more specific:
+>> add_new_gdb
+>> 	gdblock = EXT4_SB(sb)->s_sbh->b_blocknr + 1 + gdb_num;
+>> 	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
+>> 	n_group_desc[gdb_num] = gdb_bh;
+>>
+>> add_new_gdb_meta_bg
+>> 	gdblock = ext4_meta_bg_first_block_no(sb, group) +
+>> 		  ext4_bg_has_super(sb, group);
+>> 	gdb_bh = ext4_sb_bread(sb, gdblock, 0);
+>> 	n_group_desc[gdb_num] = gdb_bh;
+> 
+> Put another way, there are EXT4_DESC_PER_BLOCK(sb) bg descriptors in a
+> block.  For a file system with the 64-bit feature enabled, the size of
+> the block group descriptor is 128.  If the block size is 4096, then we
+> can fit 32 block group descriptors in a block.
+> 
+> When we add a new block group such that its block group descriptor
+> will spill into a new block, then we need to expand s_group_desc[]
+> array, and initialize the new block group descriptor block.  And
+> that's the job of add_new_gdb() and add_new_gdb_meta_bg().
+> 
+Hi Ted, thanks for the explain. Here are more updates from what I found:
+I find that descriptor_loc show layout of gdb blocks in s_group_desc[]
+which is: block of s_group_desc[i] will be superblock + i + 1 for
+non-meta_bg and 'first block of meta_bg' + has_super for meta_bg.
+Although descriptor_loc is called to initialize s_group_desc[], the
+expanded gdb block to s_group_desc from add_new_gdb obeys the same
+layout.
+Back to the original purpose of this patch which is to remove
+unnecessary of equality check of s_group_desc[gdb_num - 1].b_blocknr and
+s_group_desc[gdb_num].b_blocknr, we can see each s_group_desc has it's
+own block from layout above and the check should be unnecessary.
+But no insistant on this if you still have concern about it.
+>>> More generally, this whole patch series is making it clear that the
+>>> online resize code is hard to understand, because it's super
+>>> complicated, leading to potential bugs, and very clearly code which is
+>>> very hard to maintain.  So this may mean we need better comments to
+>>> make it clear *when* the backup block groups are going to be
+>>> accomplished, given the various different cases (e.g., no flex_bg or
+>>> meta_bg, with flex_bg, or with meat_bg).
+>>>
+>> Yes, I agree with this. I wonder if a series to add comments of some
+>> common rules is good to you. Like the information mentioned above
+>> that s_group_desc contains primary gdb block of each group.
+> 
+> Well, the meaning of s_group_desc[] was obvious to me, but that's why
+> it's useful to have somone with "new eyes" take a look at code, since
+> what may be obvious to old hands might not be obvious to someone
+> looking at the code for the first time --- and so yes, it's probably
+Yes. this is just for anyone starting to read this code.
+> worth documenting.  The question is where is the best place to put it,
+> since the primary place where s_group_desc[] is *not* online resize.
+> 
+> s_group_desc[] is initialized in ext4_group_desc_init() in
+> fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
+> is defined in fs/ext4.h.  
+I plan to add comment in fs/ext4.h as following:
+struct ext4_sb_info {
+	...
+	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
+But I'm not sure it's proper now as you menthioned s_group_desc[] is to
+keep the buffer_heads for the block group descriptor blocks in memory
+and it contains primary gdb block is a coincidence that we only modify
+primary block in kernel.
 
-Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and reset
-per TRBE.
-Simply call arm_trbe_remove_coresight_cpu() directly without useing the
-smp_call_function_single(), which is the same as registering the TRBE
-coresight device.
-
-Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
-Signed-off-by: Junhao He <hejunhao3@huawei.com>
-Link: https://lore.kernel.org/r/20230814093813.19152-2-hejunhao3@huawei.com
-[ Remove duplicate cpumask checks during removal ]
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-[ v3 - Remove the operation of assigning NULL to cpudata->drvdata ]
----
- drivers/hwtracing/coresight/coresight-trbe.c | 32 +++++++++++---------
- 1 file changed, 17 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 8e4eb37e66e8..e20c1c6acc73 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -1225,6 +1225,16 @@ static void arm_trbe_enable_cpu(void *info)
- 	enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
- }
- 
-+static void arm_trbe_disable_cpu(void *info)
-+{
-+	struct trbe_drvdata *drvdata = info;
-+	struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
-+
-+	disable_percpu_irq(drvdata->irq);
-+	trbe_reset_local(cpudata);
-+}
-+
-+
- static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
- {
- 	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
-@@ -1329,18 +1339,12 @@ static void arm_trbe_probe_cpu(void *info)
- 	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
- }
- 
--static void arm_trbe_remove_coresight_cpu(void *info)
-+static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
- {
--	int cpu = smp_processor_id();
--	struct trbe_drvdata *drvdata = info;
--	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
- 	struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
- 
--	disable_percpu_irq(drvdata->irq);
--	trbe_reset_local(cpudata);
- 	if (trbe_csdev) {
- 		coresight_unregister(trbe_csdev);
--		cpudata->drvdata = NULL;
- 		coresight_set_percpu_sink(cpu, NULL);
- 	}
- }
-@@ -1369,8 +1373,10 @@ static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
- {
- 	int cpu;
- 
--	for_each_cpu(cpu, &drvdata->supported_cpus)
--		smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, drvdata, 1);
-+	for_each_cpu(cpu, &drvdata->supported_cpus) {
-+		smp_call_function_single(cpu, arm_trbe_disable_cpu, drvdata, 1);
-+		arm_trbe_remove_coresight_cpu(drvdata, cpu);
-+	}
- 	free_percpu(drvdata->cpudata);
- 	return 0;
- }
-@@ -1409,12 +1415,8 @@ static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
- {
- 	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
- 
--	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
--		struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
--
--		disable_percpu_irq(drvdata->irq);
--		trbe_reset_local(cpudata);
--	}
-+	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
-+		arm_trbe_disable_cpu(drvdata);
- 	return 0;
- }
- 
--- 
-2.33.0
+Besides, I plan to go through the resize code again in fulture and
+add some comments to make it easy for anyone starting read this
+or make it easy to maintain. Please let me if you disklike it.
+> 
+> 						- Ted
+> 
 
