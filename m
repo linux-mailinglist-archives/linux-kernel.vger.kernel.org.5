@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2608A780ECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D92B780ED0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378053AbjHRPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:13:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S1378075AbjHRPNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:13:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378087AbjHRPMr (ORCPT
+        with ESMTP id S1378095AbjHRPMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:12:47 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37794684;
-        Fri, 18 Aug 2023 08:12:32 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52557cc5e7bso1290023a12.0;
-        Fri, 18 Aug 2023 08:12:32 -0700 (PDT)
+        Fri, 18 Aug 2023 11:12:48 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D1AB4689;
+        Fri, 18 Aug 2023 08:12:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99bdcade7fbso126168766b.1;
+        Fri, 18 Aug 2023 08:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20221208; t=1692371551; x=1692976351;
+        d=googlemail.com; s=20221208; t=1692371553; x=1692976353;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G1jVeMiv4f74U6MfEWdlEgNquQEP8X/dgMx+4n42j1I=;
-        b=HTT6/COwSLC02B0rT+envRitn3bOH6mq3vpB6sl/GELyCq5Gh3Z45L7+3Qj3fAUGY7
-         CyFUJFP4LGfMsxEtQYiQIsbr40G2Ow7wOR/Uu5tyvVkLrT8WP1UT0Bouz14zC+htz/tj
-         z9Wv39YPmeDTLTfTkK09IbPYbZJczy7H2POPGT18iIvzz3Ch64d5v+fYCTyg3tippHtP
-         xx9vbGk14NeUZiPkZZ6wICoR7n1eOgsZu8XRfn3HkICUg+esfQdgx2mTy2nDSQ8OmIpR
-         0Q85V6xRvARZzJAo7/0YwOnqCF1fpGVpDG7rnyzayT/8dnzZDvwIoO3go4gYCo1Gve4U
-         k6+A==
+        bh=zJbw1GCaNkp1mvMvks0R4KmZq/5vNngaaWzPgKdzcBI=;
+        b=ksW2sAFDtA29aAzJUwQOx9s35kbGa38cSw6gn/6bghi/w/hDCnNOR6d/pJJgxsFJQV
+         nvIYkxT8bY//ugPLl/NoVCre/uRgA5eCdjhQoQSHiu12/NDkdjwBfpUKHGoIFPOXJuLR
+         0ioWDR+toiAoESkX9Oxv0bYbzeomZBKccuBMZqudKFJkPfRWr/IwxWr59i4SFHDVVisn
+         hN6cazsNtrLYTA4f8kBto5U5JkH2dLdj8AjdPLzGCpIQU7TDV1Ud0ATqRZ8JJ5tiTMXT
+         FoCevzYhG8NajA9g0nsdkLA0nne+OINEbkYvZtv2XR6/HMvS7Ld24hF9GEWJVxuskGDv
+         kSCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692371551; x=1692976351;
+        d=1e100.net; s=20221208; t=1692371553; x=1692976353;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G1jVeMiv4f74U6MfEWdlEgNquQEP8X/dgMx+4n42j1I=;
-        b=J2GAEFuwGhbkFRijX5jeGdefVGOcSnr/ZqW7nZKnNUpgRClzZ2G32V5CYkwmR+3Wul
-         9HW7+kT97c4UOj0V7UUmdjo/W7M3mQVySrqD3itICFtcKTgRJk/27YQfthJvwj7uWIWk
-         gsAXc1jeqnmCYhiiB2Tw6QE+7xwq7mOs1nKkb0KyquTdwxyDUrdBXx2CL+mgjx65cX57
-         kd7VVTqZGIuxqSljqhscqbfHyATq0YN0MNTKbKLyTfyEXNF1oEjwy/ZbbWwSUzfV3SHL
-         PzzCAhuxLfRjnPizUATG9qvPBmwIgcWzYDRImKGNAUVVKtSNS1YgLebU/M923KQLecar
-         3nhA==
-X-Gm-Message-State: AOJu0YzWZNaqkouJFjucZU0aZ5947hBvpTmo+gmR5tlyZJHFgL9w2SOv
-        0HmzS2wl/jI+nrINcg7FycI7Pmgccckcaw==
-X-Google-Smtp-Source: AGHT+IGOgqKFUZ8bOuSHphStUiU1cg9eo/KR2DD/wMgeT/uF+UPvWhaQ/dR3qqBzYA31rQ0gOjtvqg==
-X-Received: by 2002:a17:906:5392:b0:992:42d4:a7dc with SMTP id g18-20020a170906539200b0099242d4a7dcmr2388918ejo.21.1692371551279;
-        Fri, 18 Aug 2023 08:12:31 -0700 (PDT)
+        bh=zJbw1GCaNkp1mvMvks0R4KmZq/5vNngaaWzPgKdzcBI=;
+        b=C1pGWcmtnXFwdObk/YYv0h9Ld6MjrHehMZSzVNmVbMkrQChhVNNWY6Gx/qivTm5x9W
+         1EolcPP4utl7VyuMwLS7xYBfgjZVspo1/ig8MBhY+LEbgocAA/2d8wuQNWk1WoTRmFHx
+         RsB3GmWasUx9ykvDMMY4aClxTvTTeehzp2TQA7zFnmniv18Jr3dTMltU7m6p/glrRMYr
+         qcFGP1XiSEz5kGmJCVwZKKlBfMqYZSF7KaYtvrWLoC64a8kEJ8yQn8z/YZCkPa+ApyYm
+         LjawS6BQJznR+hT2aRxA3Pn98WfWO+vUgRqZOO+jEJylIbvlqKT2h/nygnxhjxIVMwx2
+         pjGQ==
+X-Gm-Message-State: AOJu0YwidPqswAb6xVfDPLIihPch0joL7cbu1gpbb+D9y5iOFvg1MLZT
+        QczQeO4dcfpX7dmTtbw9SdkAY30uih0g4w==
+X-Google-Smtp-Source: AGHT+IEA+txfXn8wU5i+Z9VkmOutImS3pUopFpT0HIgeXmvf7AQabi5uU9iMJS44FIOXvLcfFkKsHw==
+X-Received: by 2002:a17:907:762a:b0:988:9ec1:a8c5 with SMTP id jy10-20020a170907762a00b009889ec1a8c5mr1931135ejc.55.1692371553557;
+        Fri, 18 Aug 2023 08:12:33 -0700 (PDT)
 Received: from debian_development.DebianHome (dynamic-095-116-071-217.95.116.pool.telefonica.de. [95.116.71.217])
-        by smtp.gmail.com with ESMTPSA id sa19-20020a170906edb300b0099ca4f61a8bsm1285913ejb.92.2023.08.18.08.12.30
+        by smtp.gmail.com with ESMTPSA id sa19-20020a170906edb300b0099ca4f61a8bsm1285913ejb.92.2023.08.18.08.12.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 08:12:31 -0700 (PDT)
+        Fri, 18 Aug 2023 08:12:33 -0700 (PDT)
 From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
 To:     selinux@vger.kernel.org
 Cc:     Paul Moore <paul@paul-moore.com>,
@@ -57,9 +57,9 @@ Cc:     Paul Moore <paul@paul-moore.com>,
         Eric Paris <eparis@parisplace.org>,
         Ondrej Mosnacek <omosnace@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 5/6] selinux: improve role transition hashing
-Date:   Fri, 18 Aug 2023 17:12:16 +0200
-Message-Id: <20230818151220.166215-4-cgzones@googlemail.com>
+Subject: [PATCH 6/6] selinux: improve symtab string hashing
+Date:   Fri, 18 Aug 2023 17:12:17 +0200
+Message-Id: <20230818151220.166215-5-cgzones@googlemail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230818151220.166215-1-cgzones@googlemail.com>
 References: <20230818151220.166215-1-cgzones@googlemail.com>
@@ -78,36 +78,66 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The number of buckets is calculated by performing a binary AND against
 the mask of the hash table, which is one less than its size (which is a
-power of two).  This leads to all top bits being discarded, e.g. with
-the Reference Policy on Debian there exists 376 entries, leading to a
-size of 512, discarding the top 23 bits.
+power of two).  This leads to all top bits being discarded, requiring
+for short or similar inputs a hash function with a good avalanche
+effect.
 
-Use jhash to improve the hash table utilization:
+Use djb2a:
 
     # current
-    roletr:  376 entries and 124/512 buckets used, longest chain length 8, sum of chain length^2 1496
+    common prefixes:  7 entries and 5/8 buckets used, longest chain length 2, sum of chain length^2 11
+    classes:  134 entries and 100/256 buckets used, longest chain length 5, sum of chain length^2 234
+    roles:  15 entries and 6/16 buckets used, longest chain length 5, sum of chain length^2 57
+    types:  4448 entries and 3016/8192 buckets used, longest chain length 41, sum of chain length^2 14922
+    users:  7 entries and 3/8 buckets used, longest chain length 3, sum of chain length^2 17
+    bools:  306 entries and 221/512 buckets used, longest chain length 4, sum of chain length^2 524
+    levels:  1 entries and 1/1 buckets used, longest chain length 1, sum of chain length^2 1
+    categories:  1024 entries and 400/1024 buckets used, longest chain length 4, sum of chain length^2 2740
 
     # patch
-    roletr:  376 entries and 266/512 buckets used, longest chain length 4, sum of chain length^2 646
+    common prefixes:  7 entries and 5/8 buckets used, longest chain length 2, sum of chain length^2 11
+    classes:  134 entries and 101/256 buckets used, longest chain length 3, sum of chain length^2 210
+    roles:  15 entries and 9/16 buckets used, longest chain length 3, sum of chain length^2 31
+    types:  4448 entries and 3459/8192 buckets used, longest chain length 5, sum of chain length^2 6778
+    users:  7 entries and 5/8 buckets used, longest chain length 3, sum of chain length^2 13
+    bools:  306 entries and 236/512 buckets used, longest chain length 5, sum of chain length^2 470
+    levels:  1 entries and 1/1 buckets used, longest chain length 1, sum of chain length^2 1
+    categories:  1024 entries and 518/1024 buckets used, longest chain length 7, sum of chain length^2 2992
 
 Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
 ---
- security/selinux/ss/policydb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ security/selinux/ss/symtab.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
-index 932e383bcad6..dd4a9eff61be 100644
---- a/security/selinux/ss/policydb.c
-+++ b/security/selinux/ss/policydb.c
-@@ -491,7 +491,7 @@ static u32 role_trans_hash(const void *k)
- {
- 	const struct role_trans_key *key = k;
+diff --git a/security/selinux/ss/symtab.c b/security/selinux/ss/symtab.c
+index 43d7f0319ccd..b6761b96eee4 100644
+--- a/security/selinux/ss/symtab.c
++++ b/security/selinux/ss/symtab.c
+@@ -11,16 +11,14 @@
  
--	return key->role + (key->type << 3) + (key->tclass << 5);
-+	return jhash_3words(key->role, key->type, (u32)key->tclass << 16 | key->tclass, 0);
+ static unsigned int symhash(const void *key)
+ {
+-	const char *p, *keyp;
+-	unsigned int size;
+-	unsigned int val;
+-
+-	val = 0;
+-	keyp = key;
+-	size = strlen(keyp);
+-	for (p = keyp; (p - keyp) < size; p++)
+-		val = (val << 4 | (val >> (8*sizeof(unsigned int)-4))) ^ (*p);
+-	return val;
++	/* djb2a */
++	unsigned int hash = 5381;
++	unsigned char c;
++
++	while ((c = *(const unsigned char *)key++))
++		hash = ((hash << 5) + hash) ^ c;
++
++	return hash;
  }
  
- static int role_trans_cmp(const void *k1, const void *k2)
+ static int symcmp(const void *key1, const void *key2)
 -- 
 2.40.1
 
