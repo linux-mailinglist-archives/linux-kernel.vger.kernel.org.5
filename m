@@ -2,769 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82ADB780FDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B62780FD5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378472AbjHRQG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53370 "EHLO
+        id S1378414AbjHRQGr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Aug 2023 12:06:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378397AbjHRQGg (ORCPT
+        with ESMTP id S1378236AbjHRQGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:06:36 -0400
-Received: from forward101c.mail.yandex.net (forward101c.mail.yandex.net [178.154.239.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4694E42;
-        Fri, 18 Aug 2023 09:06:33 -0700 (PDT)
-Received: from mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:150a:0:640:1aa5:0])
-        by forward101c.mail.yandex.net (Yandex) with ESMTP id 197E660055;
-        Fri, 18 Aug 2023 19:06:32 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id A6lUUeCWp4Y0-uTWNfsHR;
-        Fri, 18 Aug 2023 19:06:30 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail; t=1692374791;
-        bh=Ftwzf5qFNvW2/+Amxgbq4E4TA6BxE0HtcptUWp4V73Q=;
-        h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-        b=pSTogzgcHURxa/mZNXH7FTqW24KYfSHyclWcTIzbmf7jIda8Zd2WD2T1ZNY1AgZMo
-         oweLGHrW3fPbh4HaDPMJ+DH7TgUWQzivzhri4d2I2j5lBoQgYBYst+uRmxpMCOeR6C
-         ac8JGAuE8kFsj6UzzJY3PPmOYK0WH20+LeoKEVds=
-Authentication-Results: mail-nwsmtp-smtp-production-main-60.sas.yp-c.yandex.net; dkim=pass header.i=@6tel.net
-From:   Muhammed Efe Cetin <efectn@6tel.net>
-To:     linux-rockchip@lists.infradead.org
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        heiko@sntech.de, sebastian.reichel@collabora.com, jonas@kwiboo.se,
-        megi@xff.cz, Muhammed Efe Cetin <efectn@6tel.net>
-Subject: [PATCH v2 3/3] arm64: dts: rockchip: Add Orange Pi 5
-Date:   Fri, 18 Aug 2023 19:05:51 +0300
-Message-ID: <201e8df24c3a2f25c13d3f1d129f8be4fe2eb97a.1692372351.git.efectn@6tel.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1692372351.git.efectn@6tel.net>
-References: <cover.1692372351.git.efectn@6tel.net>
+        Fri, 18 Aug 2023 12:06:18 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8EF8E42;
+        Fri, 18 Aug 2023 09:06:16 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-56cae50792fso153303eaf.1;
+        Fri, 18 Aug 2023 09:06:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692374776; x=1692979576;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9Jt2ZhPuIxHkcFze1mQsYQAQR93Iny64sokh0i49zSw=;
+        b=GkOOkexJLwc1yjFptML9gv7xZJjFvMPIh715VhrdIw35xQJOOZ3MXkhiCdqh8k+ihB
+         v9pH/YlCmR4WLE84be5UaE51qdH/mxinISN0OXA896XW6TdxEsio27qjg8SXqPe72mLO
+         0/bTzJUIdmJrKjm2dC28FVL029TEtq7a23pEbxti97ZxY752mrKZP2MlMbcSrmXGjMN2
+         6hQXYz14alaSBKDi8HP2+Oulnc0dnooPEsXcq+t77LkX4Ru7Mhl7VdJIcs0H73k3MsXM
+         RzG6tjhTIN0bZRxEHyUWTEZkXUIYORjdlFbFH6sntFQIVs9rnEuh49d5xkgfkQcXFi7U
+         xT5w==
+X-Gm-Message-State: AOJu0YwP5RJ2rcO4Br6NkHZbVReqgS9eBatTSvm3AJIpTBJmwZ2at9z0
+        L9wTc60Q5ydd3bJUIo/hL9TUndi9dJZBRGKcbYo=
+X-Google-Smtp-Source: AGHT+IGRXVkOfek40tkKpLfQWtAuSOTCYBMIYxziW7ig/9HfgrRzUDflKxESlYdN8kZ/2fVBZy3h+cpQFh/uSNyEDX8=
+X-Received: by 2002:a05:6820:3d1:b0:56e:94ed:c098 with SMTP id
+ s17-20020a05682003d100b0056e94edc098mr1792962ooj.0.1692374775591; Fri, 18 Aug
+ 2023 09:06:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SPF_PERMERROR,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818051319.551-1-mario.limonciello@amd.com> <20230818051319.551-12-mario.limonciello@amd.com>
+In-Reply-To: <20230818051319.551-12-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 18 Aug 2023 18:06:04 +0200
+Message-ID: <CAJZ5v0iowLso0Wvg7gnQfXikvn_TJcpPMAW_WPNmSW6zxHUVpQ@mail.gmail.com>
+Subject: Re: [PATCH v13 11/12] PCI: ACPI: Use device constraints to opt
+ devices into D3 support
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for OPi5 that includes support for USB2, PCIe2, Sata,
-Sdmmc, SPI Flash, PMIC.
+On Fri, Aug 18, 2023 at 7:15 AM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> In Windows, systems that support Modern Standby specify hardware
+> pre-conditions for the SoC to be able to achieve the lowest power state
+> by using 'device constraints' in a SOC specific "Power Engine
+> Plugin" (PEP) [1] [2].
 
-Signed-off-by: Muhammed Efe Cetin <efectn@6tel.net>
----
- arch/arm64/boot/dts/rockchip/Makefile         |   1 +
- .../boot/dts/rockchip/rk3588s-orangepi-5.dts  | 687 ++++++++++++++++++
- 2 files changed, 688 insertions(+)
- create mode 100644 arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
+The connection between the device power states and the "PEP
+constraints" is still rather unclear after reading the above.  I would
+add something like
 
-diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index e7728007fd1b..c29386106b7a 100644
---- a/arch/arm64/boot/dts/rockchip/Makefile
-+++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -105,3 +105,4 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-rock-5b.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-indiedroid-nova.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-khadas-edge2.dtb
- dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-rock-5a.dtb
-+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588s-orangepi-5.dtb
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
-new file mode 100644
-index 000000000000..f396b1285d73
---- /dev/null
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s-orangepi-5.dts
-@@ -0,0 +1,687 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/pinctrl/rockchip.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include "rk3588s.dtsi"
-+
-+/ {
-+	model = "Xunlong Orange Pi 5";
-+	compatible = "xunlong,orangepi-5", "rockchip,rk3588s";
-+
-+	aliases {
-+		mmc0 = &sdmmc;
-+		serial2 = &uart2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial2:1500000n8";
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 =<&leds_gpio>;
-+
-+		led-1 {
-+			label = "status_led";
-+			gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	adc-keys {
-+		compatible = "adc-keys";
-+		io-channels = <&saradc 1>;
-+		io-channel-names = "buttons";
-+		keyup-threshold-microvolt = <1800000>;
-+		poll-interval = <100>;
-+
-+		button-recovery {
-+			label = "Recovery";
-+			linux,code = <KEY_VENDOR>;
-+			press-threshold-microvolt = <1000>;
-+		};
-+	};
-+
-+	vcc5v0_sys: vcc5v0-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+	};
-+
-+	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_1v1_nldo_s3";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <1100000>;
-+		regulator-max-microvolt = <1100000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+
-+	vcc_3v3_sd_s0: vcc-3v3-sd-s0-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_3v3_sd_s0";
-+		enable-active-low;
-+		regulator-boot-on;
-+		gpios = <&gpio4 RK_PB5 GPIO_ACTIVE_LOW>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_3v3_s3>;
-+	};
-+
-+	vbus_typec: vbus_typec-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vbus_typec";
-+		enable-active-high;
-+		gpio = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&typec5v_pwren>;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+
-+	vcc3v3_pcie20: vcc3v3-pcie20-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc3v3_pcie20";
-+		enable-active-high;
-+		regulator-boot-on;
-+		startup-delay-us = <50000>;
-+		gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vcc5v0_sys>;
-+	};
-+};
-+
-+&combphy0_ps {
-+	status = "okay";
-+};
-+
-+&combphy2_psu {
-+	status = "okay";
-+};
-+
-+&cpu_b0 {
-+	cpu-supply = <&vdd_cpu_big0_s0>;
-+	mem-supply = <&vdd_cpu_big0_mem_s0>;
-+};
-+
-+&cpu_b1 {
-+	cpu-supply = <&vdd_cpu_big0_s0>;
-+	mem-supply = <&vdd_cpu_big0_mem_s0>;
-+};
-+
-+&cpu_b2 {
-+	cpu-supply = <&vdd_cpu_big1_s0>;
-+	mem-supply = <&vdd_cpu_big1_mem_s0>;
-+};
-+
-+&cpu_b3 {
-+	cpu-supply = <&vdd_cpu_big1_s0>;
-+	mem-supply = <&vdd_cpu_big1_mem_s0>;
-+};
-+
-+&cpu_l0 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+	mem-supply = <&vdd_cpu_lit_mem_s0>;
-+};
-+
-+&cpu_l1 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+	mem-supply = <&vdd_cpu_lit_mem_s0>;
-+};
-+
-+&cpu_l2 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+	mem-supply = <&vdd_cpu_lit_mem_s0>;
-+};
-+
-+&cpu_l3 {
-+	cpu-supply = <&vdd_cpu_lit_s0>;
-+	mem-supply = <&vdd_cpu_lit_mem_s0>;
-+};
-+
-+&gmac1 {
-+	clock_in_out = "output";
-+	phy-handle = <&rgmii_phy1>;
-+	phy-mode = "rgmii-rxid";
-+	pinctrl-0 = <&gmac1_miim
-+		     &gmac1_tx_bus2
-+		     &gmac1_rx_bus2
-+		     &gmac1_rgmii_clk
-+		     &gmac1_rgmii_bus>;
-+	pinctrl-names = "default";
-+	snps,reset-gpio = <&gpio3 RK_PB2 GPIO_ACTIVE_LOW>;
-+	snps,reset-active-low;
-+	snps,reset-delays-us = <0 20000 100000>;
-+	tx_delay = <0x42>;
-+	status = "okay";
-+};
-+
-+&i2c0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c0m2_xfer>;
-+	status = "okay";
-+
-+	vdd_cpu_big0_s0: vdd_cpu_big0_mem_s0: regulator@42 {
-+		compatible = "rockchip,rk8602";
-+		reg = <0x42>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu_big0_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <1050000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc5v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+
-+	vdd_cpu_big1_s0: vdd_cpu_big1_mem_s0: regulator@43 {
-+		compatible = "rockchip,rk8603", "rockchip,rk8602";
-+		reg = <0x43>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_cpu_big1_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <1050000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc5v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+
-+	vdd_npu_s0: vdd_npu_mem_s0: regulator@42 {
-+		compatible = "rockchip,rk8602";
-+		reg = <0x42>;
-+		fcs,suspend-voltage-selector = <1>;
-+		regulator-name = "vdd_npu_s0";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <550000>;
-+		regulator-max-microvolt = <950000>;
-+		regulator-ramp-delay = <2300>;
-+		vin-supply = <&vcc5v0_sys>;
-+
-+		regulator-state-mem {
-+			regulator-off-in-suspend;
-+		};
-+	};
-+};
-+
-+&i2c6 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2c6m3_xfer>;
-+	status = "okay";
-+
-+	hym8563: rtc@51 {
-+		compatible = "haoyu,hym8563";
-+		reg = <0x51>;
-+		#clock-cells = <0>;
-+		clock-output-names = "hym8563";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hym8563_int>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <RK_PB0 IRQ_TYPE_LEVEL_LOW>;
-+		wakeup-source;
-+	};
-+};
-+
-+&mdio1 {
-+	rgmii_phy1: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0x1>;
-+	};
-+};
-+
-+&pcie2x1l2 {
-+	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-+	vpcie3v3-supply = <&vcc3v3_pcie20>;
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	gpio-func {
-+		leds_gpio: leds-gpio {
-+			rockchip,pins = <0 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	hym8563 {
-+		hym8563_int: hym8563-int {
-+			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
-+	usb-typec {
-+		usbc0_int: usbc0-int {
-+			rockchip,pins = <0 RK_PD3 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+
-+		typec5v_pwren: typec5v-pwren {
-+			rockchip,pins = <3 RK_PC0 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+};
-+
-+&saradc {
-+	vref-supply = <&avcc_1v8_s0>;
-+	status = "okay";
-+};
-+
-+&sdmmc {
-+	max-frequency = <150000000>;
-+	no-sdio;
-+	no-mmc;
-+	bus-width = <4>;
-+	cap-mmc-highspeed;
-+	cap-sd-highspeed;
-+	disable-wp;
-+	sd-uhs-sdr104;
-+	vmmc-supply = <&vcc_3v3_sd_s0>;
-+	vqmmc-supply = <&vccio_sd_s0>;
-+	status = "okay";
-+};
-+
-+&sfc {
-+	pinctrl-0 = <&fspim0_pins>;
-+	pinctrl-names = "default";
-+	max-freq = <100000000>;
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-max-frequency = <100000000>;
-+		spi-tx-bus-width = <1>;
-+		spi-rx-bus-width = <4>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+	};
-+};
-+
-+&spi2 {
-+	status = "okay";
-+	assigned-clocks = <&cru CLK_SPI2>;
-+	assigned-clock-rates = <200000000>;
-+	num-cs = <1>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
-+
-+	pmic@0 {
-+		compatible = "rockchip,rk806";
-+		reg = <0x0>;
-+		interrupt-parent = <&gpio0>;
-+		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
-+				<&rk806_dvs2_null>, <&rk806_dvs3_null>;
-+		spi-max-frequency = <1000000>;
-+
-+		vcc1-supply = <&vcc5v0_sys>;
-+		vcc2-supply = <&vcc5v0_sys>;
-+		vcc3-supply = <&vcc5v0_sys>;
-+		vcc4-supply = <&vcc5v0_sys>;
-+		vcc5-supply = <&vcc5v0_sys>;
-+		vcc6-supply = <&vcc5v0_sys>;
-+		vcc7-supply = <&vcc5v0_sys>;
-+		vcc8-supply = <&vcc5v0_sys>;
-+		vcc9-supply = <&vcc5v0_sys>;
-+		vcc10-supply = <&vcc5v0_sys>;
-+		vcc11-supply = <&vcc_2v0_pldo_s3>;
-+		vcc12-supply = <&vcc5v0_sys>;
-+		vcc13-supply = <&vcc_1v1_nldo_s3>;
-+		vcc14-supply = <&vcc_1v1_nldo_s3>;
-+		vcca-supply = <&vcc5v0_sys>;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		rk806_dvs1_null: dvs1-null-pins {
-+			pins = "gpio_pwrctrl2";
-+			function = "pin_fun0";
-+		};
-+
-+		rk806_dvs2_null: dvs2-null-pins {
-+			pins = "gpio_pwrctrl2";
-+			function = "pin_fun0";
-+		};
-+
-+		rk806_dvs3_null: dvs3-null-pins {
-+			pins = "gpio_pwrctrl3";
-+			function = "pin_fun0";
-+		};
-+
-+		regulators {
-+			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
-+				regulator-name = "vdd_gpu_s0";
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-ramp-delay = <12500>;
-+				regulator-enable-ramp-delay = <400>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
-+				regulator-name = "vdd_cpu_lit_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_log_s0: dcdc-reg3 {
-+				regulator-name = "vdd_log_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <675000>;
-+				regulator-max-microvolt = <750000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <750000>;
-+				};
-+			};
-+
-+			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
-+				regulator-name = "vdd_vdenc_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <550000>;
-+				regulator-max-microvolt = <950000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_ddr_s0: dcdc-reg5 {
-+				regulator-name = "vdd_ddr_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <675000>;
-+				regulator-max-microvolt = <900000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <850000>;
-+				};
-+			};
-+
-+			vdd2_ddr_s3: dcdc-reg6 {
-+				regulator-name = "vdd2_ddr_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+				};
-+			};
-+
-+			vcc_2v0_pldo_s3: dcdc-reg7 {
-+				regulator-name = "vdd_2v0_pldo_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <2000000>;
-+				regulator-max-microvolt = <2000000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <2000000>;
-+				};
-+			};
-+
-+			vcc_3v3_s3: dcdc-reg8 {
-+				regulator-name = "vcc_3v3_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <3300000>;
-+				};
-+			};
-+
-+			vddq_ddr_s0: dcdc-reg9 {
-+				regulator-name = "vddq_ddr_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_1v8_s3: dcdc-reg10 {
-+				regulator-name = "vcc_1v8_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			avcc_1v8_s0: pldo-reg1 {
-+				regulator-name = "avcc_1v8_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_1v8_s0: pldo-reg2 {
-+				regulator-name = "vcc_1v8_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			avdd_1v2_s0: pldo-reg3 {
-+				regulator-name = "avdd_1v2_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1200000>;
-+				regulator-max-microvolt = <1200000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vcc_3v3_s0: pldo-reg4 {
-+				regulator-name = "vcc_3v3_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vccio_sd_s0: pldo-reg5 {
-+				regulator-name = "vccio_sd_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-ramp-delay = <12500>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			pldo6_s3: pldo-reg6 {
-+				regulator-name = "pldo6_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <1800000>;
-+				};
-+			};
-+
-+			vdd_0v75_s3: nldo-reg1 {
-+				regulator-name = "vdd_0v75_s3";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+
-+				regulator-state-mem {
-+					regulator-on-in-suspend;
-+					regulator-suspend-microvolt = <750000>;
-+				};
-+			};
-+
-+			vdd_ddr_pll_s0: nldo-reg2 {
-+				regulator-name = "vdd_ddr_pll_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+					regulator-suspend-microvolt = <850000>;
-+				};
-+			};
-+
-+			avdd_0v75_s0: nldo-reg3 {
-+				regulator-name = "avdd_0v75_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_0v85_s0: nldo-reg4 {
-+				regulator-name = "vdd_0v85_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <850000>;
-+				regulator-max-microvolt = <850000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+
-+			vdd_0v75_s0: nldo-reg5 {
-+				regulator-name = "vdd_0v75_s0";
-+				regulator-always-on;
-+				regulator-boot-on;
-+				regulator-min-microvolt = <750000>;
-+				regulator-max-microvolt = <750000>;
-+
-+				regulator-state-mem {
-+					regulator-off-in-suspend;
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&tsadc {
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-0 = <&uart2m0_xfer>;
-+	status = "okay";
-+};
-+
-+&u2phy2 {
-+	status = "okay";
-+};
-+
-+&u2phy2_host {
-+	status = "okay";
-+};
-+
-+&u2phy3 {
-+	status = "okay";
-+};
-+
-+&u2phy3_host {
-+	status = "okay";
-+};
-+
-+&usb_host0_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host0_ohci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ohci {
-+	status = "okay";
-+};
-+
-+&wdt {
-+	status = "okay";
-+};
--- 
-2.41.0
+"For each device, the constraint is the minimum (shallowest) power
+state in which the device can be for the platform to be still able to
+achieve significant energy conservation in a system-wide low-power
+idle configuration."
 
+> Device constraints are specified in the return value for a _DSM of
+> a PNP0D80 device, and Linux enumerates the constraints during probing.
+>
+> In cases that the existing logic for pci_bridge_d3_possible() may not
+> enable D3 support query for any constraints specified by the device.
+> If the constraints specify D3 support, then use D3 for the PCI device.
+
+The above paragraph is not particularly clear IMO.  I would say
+something like this instead:
+
+"For PCI bridges (including PCIe ports), the constraints may be
+regarded as an additional source of information regarding the power
+state to put the device into when it is suspended.  In particular, if
+the constraint for a given PCI bridge is D3hot, the platform regards
+D3hot as a valid power state for the bridge and it is reasonable to
+expect that there won't be any side effects caused by putting the
+bridge into that power state.
+
+Accordingly, take the low-power S0 idle (LPS0) constraints into
+account when deciding whether or not to allow a given PCI bridge to be
+put into D3."
+
+> Link: https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/platform-design-for-modern-standby#low-power-core-silicon-cpu-soc-dram [1]
+> Link: https://uefi.org/sites/default/files/resources/Intel_ACPI_Low_Power_S0_Idle.pdf [2]
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v12->v13:
+>  * Move back to PCI code
+>  * Trim commit message
+> v11->v12:
+>  * Adjust for dropped patch 8/9 from v11.
+>  * Update comment
+> v10->v11:
+>  * Fix kernel kernel build robot errors and various sparse warnings
+>    related to new handling of pci_power_t.
+>  * Use the new helpers introduced in previous patches
+> ---
+>  drivers/pci/pci-acpi.c | 14 ++++++++++++++
+>  drivers/pci/pci.c      | 12 ++++++++++++
+>  drivers/pci/pci.h      |  5 +++++
+>  3 files changed, 31 insertions(+)
+>
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index b5b65cdfa3b8b..bcc76e9d399c5 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -1081,6 +1081,20 @@ bool acpi_pci_bridge_d3(struct pci_dev *dev)
+>         return false;
+>  }
+>
+> +/**
+> + * acpi_pci_check_d3_constraint - Check if device specifies a D3 platform constraint
+> + * @dev: PCI device to check
+> + *
+> + * This function checks if the platform specifies that a given PCI device should
+> + * be put into D3 to satisfy a low power platform constraint
+> + *
+> + * Returns: TRUE if constraint for D3hot or deeper, FALSE otherwise.
+> + */
+> +bool acpi_pci_check_d3_constraint(struct pci_dev *dev)
+> +{
+> +       return acpi_get_lps0_constraint(&dev->dev) >= ACPI_STATE_D3_HOT;
+> +}
+> +
+>  static void acpi_pci_config_space_access(struct pci_dev *dev, bool enable)
+>  {
+>         int val = enable ? ACPI_REG_CONNECT : ACPI_REG_DISCONNECT;
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 051e88ee64c63..0fc8d35154f97 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1082,6 +1082,14 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+>         return acpi_pci_bridge_d3(dev);
+>  }
+>
+> +static inline bool platform_check_d3_constraint(struct pci_dev *dev)
+> +{
+> +       if (pci_use_mid_pm())
+> +               return false;
+> +
+> +       return acpi_pci_check_d3_constraint(dev);
+> +}
+
+As I said elsewhere, the above looks redundant to me.  I would rather
+make acpi_pci_bridge_d3() use the PEP constraints as an additional
+source of information.
+
+> +
+>  /**
+>   * pci_update_current_state - Read power state of given device and cache it
+>   * @dev: PCI device to handle.
+> @@ -3036,6 +3044,10 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
+>                 if (dmi_check_system(bridge_d3_blacklist))
+>                         return false;
+>
+> +               /* the platform specifies in LPS0 constraints to use D3 */
+> +               if (platform_check_d3_constraint(bridge))
+> +                       return true;
+> +
+>                 /*
+>                  * It is safe to put Intel PCIe ports from 2015 or newer
+>                  * to D3.
