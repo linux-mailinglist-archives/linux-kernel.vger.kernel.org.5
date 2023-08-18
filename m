@@ -2,64 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56E47803C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8401F7803C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357221AbjHRCTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57076 "EHLO
+        id S1357227AbjHRCZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357217AbjHRCT1 (ORCPT
+        with ESMTP id S1357217AbjHRCZL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:19:27 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBFB2135;
-        Thu, 17 Aug 2023 19:19:25 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe11652b64so559587e87.0;
-        Thu, 17 Aug 2023 19:19:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1692325163; x=1692929963;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HjNzq7FJ4TMSXlaO3D7wGBsSbWo2DWrfMQ7q17pgNfg=;
-        b=SWKJAFXg8ols3ygcSe0e2xRhjgl7FXD4OE3gUVDQwpqYLsQWP3qyoMGrwIkY4sm+fj
-         CTNKdel3oY5/k3EuRt/druAbqy1W52qIldtFhf/CdEadJPvutIqlGBTPdKix/1gLBezz
-         G2L8u8h1RYtT/ZZcHsiMcuX/KmgWA/68wZJkk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692325163; x=1692929963;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HjNzq7FJ4TMSXlaO3D7wGBsSbWo2DWrfMQ7q17pgNfg=;
-        b=BJfu6J9Li9bAZ+q6aDn/P1W8SyNbpWbPdtlI4MQwYL78r8tOtVN4qCbS0dzGOVuIVI
-         Nd+F8h//BZKXy3RZ9t5CgUfevRY/9DsmhjrNJT0UVyMtyFs1ILDNiKrYzhEwGJNfKcLU
-         RhlDIirQYmkzKomAfV0mXOyoJR6ghIWPMeNjkJeSfzB3nRZBp86WGkpUJc+wuBTp601+
-         quXM3FQpTM07fvHAe+BpdLefq3IqWQRbOD+XFDZGT0hPvpZMoUWtWytQ5l4sStC5cr8/
-         J/6mpA/Py5x7/pTd6xpf0NSm6WiDjIzrbCF9yFzH4iMPbAQHsmGT9EDnS+XQk1Gff/RY
-         dQ3g==
-X-Gm-Message-State: AOJu0Ywf/PfzcoRmDrJQnU89flC2MzhumbChXbFamofG9sVdfwdfBg78
-        oHxs5KLaLJ+N1xV6/hn/YDgqFOuLMZolMJ5/Eko9192g
-X-Google-Smtp-Source: AGHT+IFq05kCkY6jAXXIga2YcS9lOlnZa+kbK7MlzDGyJE0XXj5B3+LAJIYKkrF+0PYKHCdlXOW0LpVabsvXb214Thg=
-X-Received: by 2002:a05:6512:32b3:b0:4fb:8c52:611 with SMTP id
- q19-20020a05651232b300b004fb8c520611mr577592lfe.38.1692325163408; Thu, 17 Aug
- 2023 19:19:23 -0700 (PDT)
+        Thu, 17 Aug 2023 22:25:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC8635BD
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692325510; x=1723861510;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QN52vqdWy+67Db96mJmygJPjiM7xcFWPIYI8W1GEhao=;
+  b=Hyd8RWAFr5Toy85kB1wxTz4gxE0YdKzMOuBgq94teXDOwhypb+n8SeBI
+   504DvEWV5dgFr+JvF25DJVztjfO9e+AF1PFp5Ecp20olrYa+k7Pzv3nJU
+   OxNMvhM4aYaHVvlj6JRK04s5t3uFz8TU3i+xHd+AkTntlZ3n+zME/iMlF
+   pnxG5cbe55gHoQKJiUggl+GBKe5eIxM35BNvKQR9o4QLB1pHqVQqjE8gV
+   hbC3K5LXuxlLwUi0vVLwiMihM9OgJeSbvIOGZ530VLC+7+VEEKAioHZY3
+   92SbhaQDVOcybYptnDefpVhSl5o4pWmsLCXOXC1fRIyrMyOcfBJgzi12G
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="459346194"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="459346194"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 19:25:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="804959209"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="804959209"
+Received: from unknown (HELO localhost.localdomain) ([10.226.216.117])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Aug 2023 19:25:06 -0700
+From:   kah.jing.lee@intel.com
+To:     dinguyen@kernel.org
+Cc:     linux-kernel@vger.kernel.org, tien.sung.ang@intel.com,
+        Kah Jing Lee <kah.jing.lee@intel.com>
+Subject: [PATCH v2] drivers: firmware: stratix10-rsu: Fix max_retry counter value
+Date:   Fri, 18 Aug 2023 10:22:06 +0800
+Message-Id: <2e377a400eb0b6395b1a5ff58651add94972745f.1692325277.git.kah.jing.lee@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230815114143.23e4b2ff@canb.auug.org.au>
-In-Reply-To: <20230815114143.23e4b2ff@canb.auug.org.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 18 Aug 2023 02:19:11 +0000
-Message-ID: <CACPK8Xez-xQDEAG_JuN5VqMVBreLWO_Qhu+3Vq3EA1PiebR5hw@mail.gmail.com>
-Subject: Re: linux-next: duplicate patches in the aspeed tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED,URIBL_CSS autolearn=no autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,27 +59,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 at 01:41, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> The following commits are also in the arm-soc-fixes tree as different
-> commits (but the same patches):
->
->   0955e3867b54 ("soc: aspeed: socinfo: Add kfree for kstrdup")
->   c5835b6e7aff ("soc: aspeed: uart-routing: Use __sysfs_match_string")
->
-> These are commits
->
->   6e6d847a8ce1 ("soc: aspeed: socinfo: Add kfree for kstrdup")
->   e4ad279ae345 ("soc: aspeed: uart-routing: Use __sysfs_match_string")
->
-> in the arm-soc-fixes tree.
+From: Kah Jing Lee <kah.jing.lee@intel.com>
 
-This is expected as I sent the changes as patches for Arnd to merge
-via the soc tree.
+Fix the max_retry value because the value is truncated at scnprintf format
+specifier, with added hex symbol and newline.
+Update scnprintf and sprintf with sysfs_emit to ensure no overflow.
 
-What would you like to see when this happens? Should I rebase them out
-of the aspeed tree?
+Signed-off-by: Kah Jing Lee <kah.jing.lee@intel.com>
+---
+v2:
+- Update scnprintf and sprintf with sysfs_emit to ensure no overflow.
+---
+ drivers/firmware/stratix10-rsu.c | 33 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 
-Cheers,
+diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
+index e51c95f8d445..c3e3d6b092a2 100644
+--- a/drivers/firmware/stratix10-rsu.c
++++ b/drivers/firmware/stratix10-rsu.c
+@@ -328,7 +328,7 @@ static ssize_t current_image_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08lx\n", priv->status.current_image);
++	return sysfs_emit(buf, "0x%08lx\n", priv->status.current_image);
+ }
+ 
+ static ssize_t fail_image_show(struct device *dev,
+@@ -339,7 +339,7 @@ static ssize_t fail_image_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08lx\n", priv->status.fail_image);
++	return sysfs_emit(buf, "0x%08lx\n", priv->status.fail_image);
+ }
+ 
+ static ssize_t version_show(struct device *dev, struct device_attribute *attr,
+@@ -350,7 +350,7 @@ static ssize_t version_show(struct device *dev, struct device_attribute *attr,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->status.version);
++	return sysfs_emit(buf, "0x%08x\n", priv->status.version);
+ }
+ 
+ static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+@@ -361,7 +361,7 @@ static ssize_t state_show(struct device *dev, struct device_attribute *attr,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->status.state);
++	return sysfs_emit(buf, "0x%08x\n", priv->status.state);
+ }
+ 
+ static ssize_t error_location_show(struct device *dev,
+@@ -372,7 +372,7 @@ static ssize_t error_location_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->status.error_location);
++	return sysfs_emit(buf, "0x%08x\n", priv->status.error_location);
+ }
+ 
+ static ssize_t error_details_show(struct device *dev,
+@@ -383,7 +383,7 @@ static ssize_t error_details_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->status.error_details);
++	return sysfs_emit(buf, "0x%08x\n", priv->status.error_details);
+ }
+ 
+ static ssize_t retry_counter_show(struct device *dev,
+@@ -394,7 +394,7 @@ static ssize_t retry_counter_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->retry_counter);
++	return sysfs_emit(buf, "0x%08x\n", priv->retry_counter);
+ }
+ 
+ static ssize_t max_retry_show(struct device *dev,
+@@ -405,8 +405,7 @@ static ssize_t max_retry_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return scnprintf(buf, sizeof(priv->max_retry),
+-			 "0x%08x\n", priv->max_retry);
++	return sysfs_emit(buf, PAGE_SIZE, "0x%08x\n", priv->max_retry);
+ }
+ 
+ static ssize_t dcmf0_show(struct device *dev,
+@@ -417,7 +416,7 @@ static ssize_t dcmf0_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_version.dcmf0);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_version.dcmf0);
+ }
+ 
+ static ssize_t dcmf1_show(struct device *dev,
+@@ -428,7 +427,7 @@ static ssize_t dcmf1_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_version.dcmf1);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_version.dcmf1);
+ }
+ 
+ static ssize_t dcmf2_show(struct device *dev,
+@@ -439,7 +438,7 @@ static ssize_t dcmf2_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_version.dcmf2);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_version.dcmf2);
+ }
+ 
+ static ssize_t dcmf3_show(struct device *dev,
+@@ -450,7 +449,7 @@ static ssize_t dcmf3_show(struct device *dev,
+ 	if (!priv)
+ 		return -ENODEV;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_version.dcmf3);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_version.dcmf3);
+ }
+ 
+ static ssize_t dcmf0_status_show(struct device *dev,
+@@ -464,7 +463,7 @@ static ssize_t dcmf0_status_show(struct device *dev,
+ 	if (priv->dcmf_status.dcmf0 == INVALID_DCMF_STATUS)
+ 		return -EIO;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_status.dcmf0);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_status.dcmf0);
+ }
+ 
+ static ssize_t dcmf1_status_show(struct device *dev,
+@@ -478,7 +477,7 @@ static ssize_t dcmf1_status_show(struct device *dev,
+ 	if (priv->dcmf_status.dcmf1 == INVALID_DCMF_STATUS)
+ 		return -EIO;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_status.dcmf1);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_status.dcmf1);
+ }
+ 
+ static ssize_t dcmf2_status_show(struct device *dev,
+@@ -492,7 +491,7 @@ static ssize_t dcmf2_status_show(struct device *dev,
+ 	if (priv->dcmf_status.dcmf2 == INVALID_DCMF_STATUS)
+ 		return -EIO;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_status.dcmf2);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_status.dcmf2);
+ }
+ 
+ static ssize_t dcmf3_status_show(struct device *dev,
+@@ -506,7 +505,7 @@ static ssize_t dcmf3_status_show(struct device *dev,
+ 	if (priv->dcmf_status.dcmf3 == INVALID_DCMF_STATUS)
+ 		return -EIO;
+ 
+-	return sprintf(buf, "0x%08x\n", priv->dcmf_status.dcmf3);
++	return sysfs_emit(buf, "0x%08x\n", priv->dcmf_status.dcmf3);
+ }
+ static ssize_t reboot_image_store(struct device *dev,
+ 				  struct device_attribute *attr,
 
-Joel
+base-commit: c1a515d3c0270628df8ae5f5118ba859b85464a2
+-- 
+2.25.1
+
