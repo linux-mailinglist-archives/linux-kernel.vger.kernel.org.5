@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4027F780756
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230FC780765
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358673AbjHRIlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:41:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
+        id S1358723AbjHRIoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357775AbjHRIku (ORCPT
+        with ESMTP id S1358743AbjHRInv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:40:50 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FF63A94
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:40:49 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe9c20f449so6356825e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692348048; x=1692952848;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1ms0sp3NA7xots6oKziMgk6P6/BMAfGtB9VS6N0YEU=;
-        b=EWUFFIyUDQ29kempWRuVEt8PLTZaglKUoVnum2NRKndacFITxISkYmQgI5etdtDMN5
-         CT7eyCTNm3+koNBEkeZcQKYpMH/XkvGp6I3mTFCneDa4+4sYZVZHJI2nMBnue6OCjtF1
-         7ko7fLJdRMNLRXrEnGJDmchMSUE1rKHW2X1jRSr14IGWdKloVjUB4zNfe9mSgcfg70he
-         +m6ySNmJqovpai7wfVhYseZ6cpUcli0ANcSEn7q6N9nzDsZbzGu8aP6ErgYr1jPKw2sN
-         AhsrObdk5NFwEe0bM11+187jjF1mfC2e1JRuY4DWDP+AXSD98K/qkDEueyzZPgekPWOi
-         Beeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692348048; x=1692952848;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y1ms0sp3NA7xots6oKziMgk6P6/BMAfGtB9VS6N0YEU=;
-        b=JMhBMa5rdUo/1c+o6aLJyW0eN/HptRlmJOXs8N+qvbj5hlGuOAAArWfuYm5bGtP3j9
-         h/4HHnBX3ZIaMPXQBW/dNxLAxc+U3BPbVX4MHWh7XyosX2uJmJl8S6KyEgRRDQS69MmD
-         9yLSgP7e5qt6gH4QiU0oPEdBfSvyleI4N1p0MnXFq9hXd1wvLr4ormG78a47Kq4i28RJ
-         AugF5R9CPStkQRwX3qTShK4JWEZdhI2BiQGdE2YT73lEkdHF2Lai53rzC6HK9USR8A9M
-         BdroFQ3eNvqVBmRV8NAfl3GTQQ5zL8+7eJsxXqzNHex3r+OTXpteYnYZGfHQTiR2ucUJ
-         0W3g==
-X-Gm-Message-State: AOJu0YxNIp42rUmE48+ier5DRfP+UlPwZI9GaUO9zCrCCkL0UAvd6HNW
-        +A/fPdbjPOlOaSr+AYb55qyBrp78x9HL0okVmLy/EA==
-X-Google-Smtp-Source: AGHT+IGXBWQhpbxUAariamk2uLHaGEhe45Sqg63PPejAXPvCgWNBNSw4+HezjbkcG3Cy12Vtk7X9Hw==
-X-Received: by 2002:a05:600c:b4f:b0:3fe:d71a:d84e with SMTP id k15-20020a05600c0b4f00b003fed71ad84emr180660wmr.1.1692348047998;
-        Fri, 18 Aug 2023 01:40:47 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id b14-20020a05600c11ce00b003fe577eb8cbsm5497622wmi.44.2023.08.18.01.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 01:40:47 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Frieder Schrempf <frieder@fris.de>
-Cc:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Marek Vasut <marex@denx.de>
-In-Reply-To: <20230724151640.555490-1-frieder@fris.de>
-References: <20230724151640.555490-1-frieder@fris.de>
-Subject: Re: [PATCH v2] drm: bridge: samsung-dsim: Fix init during host
- transfer
-Message-Id: <169234804670.3642120.1486717692776482497.b4-ty@linaro.org>
-Date:   Fri, 18 Aug 2023 10:40:46 +0200
+        Fri, 18 Aug 2023 04:43:51 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A713A94
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:48 -0700 (PDT)
+Received: from dggpeml500002.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RRwNb25k4z1GF5y;
+        Fri, 18 Aug 2023 16:42:23 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 18 Aug 2023 16:43:45 +0800
+From:   Junhao He <hejunhao3@huawei.com>
+To:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
+        <anshuman.khandual@arm.com>, <james.clark@arm.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <jonathan.cameron@huawei.com>, <yangyicong@huawei.com>,
+        <prime.zeng@hisilicon.com>, <hejunhao3@huawei.com>
+Subject: [PATCH V3] coresight: trbe: Fix TRBE potential sleep in atomic context
+Date:   Fri, 18 Aug 2023 16:40:52 +0800
+Message-ID: <20230818084052.10116-1-hejunhao3@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500002.china.huawei.com (7.185.36.158)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+smp_call_function_single() will allocate an IPI interrupt vector to
+the target processor and send a function call request to the interrupt
+vector. After the target processor receives the IPI interrupt, it will
+execute arm_trbe_remove_coresight_cpu() call request in the interrupt
+handler.
 
-On Mon, 24 Jul 2023 17:16:32 +0200, Frieder Schrempf wrote:
-> In case the downstream bridge or panel uses DSI transfers before the
-> DSI host was actually initialized through samsung_dsim_atomic_enable()
-> which clears the stop state (LP11) mode, all transfers will fail.
-> 
-> This happens with downstream bridges that are controlled by DSI
-> commands such as the tc358762.
-> 
-> [...]
+According to the device_unregister() stack information, if other process
+is useing the device, the down_write() may sleep, and trigger deadlocks
+or unexpected errors.
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
+  arm_trbe_remove_coresight_cpu
+    coresight_unregister
+      device_unregister
+        device_del
+          kobject_del
+            __kobject_del
+              sysfs_remove_dir
+                kernfs_remove
+                  down_write ---------> it may sleep
 
-[1/1] drm: bridge: samsung-dsim: Fix init during host transfer
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=20c827683de05a6c7e7ae7fae586899690693251
+Add a helper arm_trbe_disable_cpu() to disable TRBE precpu irq and reset
+per TRBE.
+Simply call arm_trbe_remove_coresight_cpu() directly without useing the
+smp_call_function_single(), which is the same as registering the TRBE
+coresight device.
 
+Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+Signed-off-by: Junhao He <hejunhao3@huawei.com>
+Link: https://lore.kernel.org/r/20230814093813.19152-2-hejunhao3@huawei.com
+[ Remove duplicate cpumask checks during removal ]
+Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+[ v3 - Remove the operation of assigning NULL to cpudata->drvdata ]
+---
+ drivers/hwtracing/coresight/coresight-trbe.c | 32 +++++++++++---------
+ 1 file changed, 17 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+index 8e4eb37e66e8..e20c1c6acc73 100644
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -1225,6 +1225,16 @@ static void arm_trbe_enable_cpu(void *info)
+ 	enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
+ }
+ 
++static void arm_trbe_disable_cpu(void *info)
++{
++	struct trbe_drvdata *drvdata = info;
++	struct trbe_cpudata *cpudata = this_cpu_ptr(drvdata->cpudata);
++
++	disable_percpu_irq(drvdata->irq);
++	trbe_reset_local(cpudata);
++}
++
++
+ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+ {
+ 	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+@@ -1329,18 +1339,12 @@ static void arm_trbe_probe_cpu(void *info)
+ 	cpumask_clear_cpu(cpu, &drvdata->supported_cpus);
+ }
+ 
+-static void arm_trbe_remove_coresight_cpu(void *info)
++static void arm_trbe_remove_coresight_cpu(struct trbe_drvdata *drvdata, int cpu)
+ {
+-	int cpu = smp_processor_id();
+-	struct trbe_drvdata *drvdata = info;
+-	struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+ 	struct coresight_device *trbe_csdev = coresight_get_percpu_sink(cpu);
+ 
+-	disable_percpu_irq(drvdata->irq);
+-	trbe_reset_local(cpudata);
+ 	if (trbe_csdev) {
+ 		coresight_unregister(trbe_csdev);
+-		cpudata->drvdata = NULL;
+ 		coresight_set_percpu_sink(cpu, NULL);
+ 	}
+ }
+@@ -1369,8 +1373,10 @@ static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
+ {
+ 	int cpu;
+ 
+-	for_each_cpu(cpu, &drvdata->supported_cpus)
+-		smp_call_function_single(cpu, arm_trbe_remove_coresight_cpu, drvdata, 1);
++	for_each_cpu(cpu, &drvdata->supported_cpus) {
++		smp_call_function_single(cpu, arm_trbe_disable_cpu, drvdata, 1);
++		arm_trbe_remove_coresight_cpu(drvdata, cpu);
++	}
+ 	free_percpu(drvdata->cpudata);
+ 	return 0;
+ }
+@@ -1409,12 +1415,8 @@ static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
+ {
+ 	struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
+ 
+-	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
+-		struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
+-
+-		disable_percpu_irq(drvdata->irq);
+-		trbe_reset_local(cpudata);
+-	}
++	if (cpumask_test_cpu(cpu, &drvdata->supported_cpus))
++		arm_trbe_disable_cpu(drvdata);
+ 	return 0;
+ }
+ 
 -- 
-Neil
+2.33.0
 
