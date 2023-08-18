@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D68780B54
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6F0780B50
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376572AbjHRLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S1376513AbjHRLnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376540AbjHRLn1 (ORCPT
+        with ESMTP id S1376462AbjHRLmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:43:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EB12723
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692358960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nIJDtceJEvPvpHYLAnup+4KqtuQicSCLwPh42Fs8LnI=;
-        b=Y4/YpHmh4Z6fXKQIIAHhqFYvlnYm6FRniCDw4Ry+fpyGWr1HU6bWI41hZXbmZoxlhgA43u
-        t8iZ4ZLAavC7mkYE055E0FKF43Oc6uUCY+ZQW/BpSaU+nWxJ9UPHI8hoJGS8DSGpWtKpx7
-        mBYoAmg102hz6TuRiyYY3auH8C8GkYE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-595-Js43KPOeMVmCnPjUHe8Lfw-1; Fri, 18 Aug 2023 07:42:36 -0400
-X-MC-Unique: Js43KPOeMVmCnPjUHe8Lfw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 691DE1C0755C;
-        Fri, 18 Aug 2023 11:42:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DA67C1121314;
-        Fri, 18 Aug 2023 11:42:32 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
-References: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com> <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <665724.1692218114@warthog.procyon.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+        Fri, 18 Aug 2023 07:42:46 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6DB10DF;
+        Fri, 18 Aug 2023 04:42:45 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4103393a459so5651711cf.0;
+        Fri, 18 Aug 2023 04:42:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692358964; x=1692963764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/gUGa5pjlqkk1OcHTAGK9JwqvaQXnW1KsBKKB1vNUc4=;
+        b=OQzyOVtPUuIHuLUWDWM//tAq2FIK5olQBgFlN3vLo5agf7nKCCnwEP6/rHlulXYCHO
+         VxarFLi3dmi9woN8jgdpqomjEh9GOq4BYfTMhcI958/BTzsDLTSgg1klbSNPEx3VlLto
+         0biOSMV8TNbVxLfdPFy/oqWC4rjfqzNAdgrhKXfur/M11PjbOY+23TVhUwUeCXr1mng1
+         1pK88JsOz/eTSJVnJKkzE4HEslf2fa5HVmlq2RbfOZEs9i+CVpyWG+AUf5Nn4hyEd4ad
+         ByS5aKuJuFSNX0y3iAoVTYWjkPsq7PdkPxBbLt6PvRcwg+9LhRxfkEAbkYd6ByD65MWi
+         LZxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692358964; x=1692963764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/gUGa5pjlqkk1OcHTAGK9JwqvaQXnW1KsBKKB1vNUc4=;
+        b=P8kvYb0d7ASKXELO9CVypsPcgLMKeXRbvsxYUC2nXn/PgcNKPHLhLxJJxAPS37mJmI
+         1mkTyYvL0Tfx45vTp2TcjWBH6/pheI185AL9C6OpsBPQeRxID+VnSNr9VZjsdCPJ1+B2
+         +4p3QP7JDszrM9IndvKpE7FX7u6LJA7CyKy03Ulp4iOWOXb8hUMt1piiyaNr3BeGcrdr
+         Q0jMfhDku0/QQ02BKCpXeXlo8hgmZfsF5pAo1sUyFceP0PC5q4cBulpFEMgWT7xdWfeg
+         wkikzqeGbUqZrcwxl4PZRiTPSd+wI3AVKsSwvlOuwo1wuriG+mqpL8RpI5UQQTF6666/
+         9ehg==
+X-Gm-Message-State: AOJu0YzlJfNC/kKoJx8vhYe0rNY3qcl6BYjwzUxX894gHCS5k7h/sOD9
+        qN7Oc2LAS1ZuE6TZdwv7t7AHow7US8outdXRIV22MtKv
+X-Google-Smtp-Source: AGHT+IFvg/PyS67P4uuGHe1pT8wHZnx17qw5h8CUsLymGEzFOoemE3zX716JAiDAc8Ql1jjXCY1HMVY1B239nY2mroM=
+X-Received: by 2002:a05:622a:341:b0:40f:d27a:4367 with SMTP id
+ r1-20020a05622a034100b0040fd27a4367mr2813003qtw.58.1692358964398; Fri, 18 Aug
+ 2023 04:42:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1748359.1692358952.1@warthog.procyon.org.uk>
-Date:   Fri, 18 Aug 2023 12:42:32 +0100
-Message-ID: <1748360.1692358952@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230811081239.246365-1-nashuiliang@gmail.com>
+ <20230811154523.61e67cc3@gandalf.local.home> <20230812142019.06cb38b56287b0f068e8164f@kernel.org>
+ <20230816160850.48fa95b6@gandalf.local.home> <20230818200258.7f318bab352508c54ed53e83@kernel.org>
+In-Reply-To: <20230818200258.7f318bab352508c54ed53e83@kernel.org>
+From:   chuang <nashuiliang@gmail.com>
+Date:   Fri, 18 Aug 2023 19:42:33 +0800
+Message-ID: <CACueBy7U9+b46YJ6Lbd-c=Nm9KhQyMoXbVOMT4esLYqq7nMt5Q@mail.gmail.com>
+Subject: Re: [PATCH v2] tracing/eprobe: Iterate trace_eprobe directly
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+OK, I will submit a new patch using "for_each_trace_eprobe_tp".
 
-> Well, that part is trivially fixable, and we should do that anyway for
-> other reasons.
-> ..
->  enum iter_type {
->  	/* iter types */
-> -	ITER_IOVEC,
-> -	ITER_KVEC,
-> -	ITER_BVEC,
-> -	ITER_XARRAY,
-> -	ITER_DISCARD,
-> -	ITER_UBUF,
-> +	ITER_IOVEC = 1,
-> +	ITER_UBUF = 2,
-> +	ITER_KVEC = 4,
-> +	ITER_BVEC = 8,
-> +	ITER_XARRAY = 16,
-> +	ITER_DISCARD = 32,
->  };
-
-It used to be this way, but Al switched it:
-
-	8cd54c1c848031a87820e58d772166ffdf8c08c0
-	iov_iter: separate direction from flavour
-
-David
-
+On Fri, Aug 18, 2023 at 7:03=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Wed, 16 Aug 2023 16:08:50 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> > On Sat, 12 Aug 2023 14:20:19 +0900
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> >
+> > > > At a minimum, let's call it:
+> > > >
+> > > >   for_each_trace_point_eprobe()
+> > >
+> > > OK, what about "for_each_trace_eprobe_on()"? I would like to clarify
+> > >
+> > > - what type is returned
+> > > - not all trace_eprobes, but only on the trace_probe.
+> > >
+> > > Thank you,
+> >
+> >  for_each_trace_eprobe_tp() or for_each_trace_tp_eprobe() ?
+>
+> for_each_trace_eprobe_tp() is OK for me.
+>
+> Thanks!
+>
+> >
+> > As it only works for a trace_probe.
+> >
+> > -- Steve
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
