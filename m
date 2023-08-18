@@ -2,149 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F71B78126F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85219781273
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379209AbjHRR5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        id S1379241AbjHRR5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379263AbjHRR4r (ORCPT
+        with ESMTP id S1379372AbjHRR5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:56:47 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B323A422B
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:56:45 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf078d5f33so9685985ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:56:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692381405; x=1692986205;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NnfOvircwmzonwWqUmHydK9lcy2/QxRfXy/Xv+icsas=;
-        b=DgCN3Jd/PxcsNcRlYxx4BzLrSBJrYtbbHYGvLalhOU8EtwK50AtTN3Aofh7pD8iLSi
-         HcHpnOuaBYQATuaOtl4xiJe9P5KGJhumh2RYH45lnMGkkZDSuAqo8c7BUFBcgtrq+p2X
-         l+QYCE4swvI2Jf2sgq6MqMup5zRm6AFkVusjA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692381405; x=1692986205;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NnfOvircwmzonwWqUmHydK9lcy2/QxRfXy/Xv+icsas=;
-        b=lz34the1fc2XjFT2mQfGXytKs6DpmBWYWyB8ZL4KvpMI2TGutDp8sHa9ghCzJxNGBo
-         cZ9sswyzo0k6Aaw/hVPwlErzdH/e/wLS6iIDVovfBeemXYBDOIUguJDKQAPUkQj+juo6
-         lLYJ7OIyyBj8cd5eYUkWhbBRt6Aw83/OEH8HYsjAWMUk5K2edXXbH+5l5+V2Il0H6Xm8
-         Ebks4IqYHpa1z2IuTDQD1z24vppxArMmgnjLY+XtXnOPh0ws/t4L669+zOTJ5RmqCQ1Z
-         2W9nY4c8HZIgvwr545M3vCXu7w8nPJ98HST2LD90NlppJ583DJXFhXqBsQfgtjFuxpb9
-         nJaQ==
-X-Gm-Message-State: AOJu0Yzoeyz8hzNyobQoKOY4LyIn+IzpeIZt0iVJPkkmVyj9vREV3jwU
-        ySsAjJSLfOlBcdxtTodEwqcB0A==
-X-Google-Smtp-Source: AGHT+IGg4gZs48PTflMiuJSOSkNRPIt40O7HOlI6qEPHZkp6HPo5TXRZIf4MGveF+BSpktQ3KpawCQ==
-X-Received: by 2002:a17:902:d4d1:b0:1b8:b285:ec96 with SMTP id o17-20020a170902d4d100b001b8b285ec96mr3835658plg.23.1692381405137;
-        Fri, 18 Aug 2023 10:56:45 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170902c14a00b001b8953365aesm2049883plj.22.2023.08.18.10.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 10:56:44 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 10:56:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>,
-        anton@tuxera.com, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
-Message-ID: <202308181056.381D7C347@keescook>
-References: <000000000000c74d44060334d476@google.com>
- <87o7j471v8.fsf@email.froward.int.ebiederm.org>
- <202308181030.0DA3FD14@keescook>
- <ZN+tr1uluHSZqcIg@casper.infradead.org>
+        Fri, 18 Aug 2023 13:57:09 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2058.outbound.protection.outlook.com [40.107.92.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F91271B;
+        Fri, 18 Aug 2023 10:57:07 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kCygJMUNBluVlLtvfhGV78o/RqsAcUtOE/C1Q20SiBVXJssNCq+YH2V3ae3OUJuYwvvl6WWIscToAVg6QCoh9J5vhoAFlNpTM6h0KY9WYudSeVxxwRSdinKYwtoPtnLG6ZfMQjvb9K02UTfEHl9ctteL5VgkH6BWDv0DmZwoeO5FYV6X+GaTYsaUoBQno4/KtHZSfe4bMERBw9fAutPMBL/UOIqce+3bOIELZdLwn0uCN9jF82QhTctJrpqteC8krqujCOk2IDgFIXq4estdF/zA8Q4luvxnkpdoe70BMUecq0L6BRzbApw1RJPFw0APLs0oGC2GU8solekMGtBeJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/K/c8Erp/IMlMSdc/V2CbjzOmFyMBlggSOYhu6tscRw=;
+ b=d7ACt4eM4QXhX2MCCmvLX6OykkwrYapKkVpRkgvnt+blCYnQi9AoEhF3aTwT/Tbn60pE/gouEApFJibhoEOKIFcQM7iB53CYuf8NKfuMeBuHq2CKV2TUjyDG45n2/Il/92kjavfPLfn9yfVq8RnEBDcbKZ9f0E+ndIkBgsPdJr1Q8P/0bJKAzBNuLZ2EAI7z0lqia7eyQLIQFBC3uD6knWZY68UUkb/il3PPs3gwZoNxbxFJm0O6QTN3swCRl9EsBPFXi+ZoCm18IB0H3SB4Q1EZMCqrAvZEALKbKNiU5ROUoQkHBS0JSdyvh7kLiDoxEjoA4GGF4/t3aJS8JwLbcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/K/c8Erp/IMlMSdc/V2CbjzOmFyMBlggSOYhu6tscRw=;
+ b=tW+sJ03/L2zFLXl5h+hNc57iaJmmur4k2W8YB6nNN3QG5107wVnvpGOH3WBIJZLTKX3BBwx0cxTdICVKMbBVCzvEZ8T+Rz88BvjJPwYj8BfpbXyJdjxXQiYXHnkjsCrG9dfdSAVHgnf2XZGXo67QqenBS1hW0IF91jKFDFoam1wU/wMXZhrlvkKWaAAp7bMs4NrYOEO8rlAartyty+Wjb7KaUHs11dU6yj7F7P2uJAm12GOxjS/6DRo3hmMcv+gF0RbQSXiX5OsUHOwpgVlOTMhsQRzztMim0lpMSxjyW/Auof4+Sovl/djnjHeWYPvB1scQRVGiolSKK6DAjm9kyw==
+Received: from MW4PR03CA0135.namprd03.prod.outlook.com (2603:10b6:303:8c::20)
+ by SJ2PR12MB9163.namprd12.prod.outlook.com (2603:10b6:a03:559::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 17:57:05 +0000
+Received: from MWH0EPF000989EA.namprd02.prod.outlook.com
+ (2603:10b6:303:8c:cafe::6f) by MW4PR03CA0135.outlook.office365.com
+ (2603:10b6:303:8c::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
+ Transport; Fri, 18 Aug 2023 17:57:05 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000989EA.mail.protection.outlook.com (10.167.241.137) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Fri, 18 Aug 2023 17:57:04 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 18 Aug 2023
+ 10:56:48 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 18 Aug
+ 2023 10:56:48 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Fri, 18 Aug 2023 10:56:47 -0700
+Date:   Fri, 18 Aug 2023 10:56:45 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v4 09/12] iommu/vt-d: Add iotlb flush for nested domain
+Message-ID: <ZN+w3fahQpM2W9Yx@Asurada-Nvidia>
+References: <ZNP0UKGU6id5wfc6@Asurada-Nvidia>
+ <BN9PR11MB527683351B687B97AB84B51B8C13A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNUI0D7ZMvLWlBNx@nvidia.com>
+ <ZNUa/VmeiIo0YA0v@Asurada-Nvidia>
+ <ZNU6BnTgNEWlwNYQ@nvidia.com>
+ <ZNVQcmYp27ap7h30@Asurada-Nvidia>
+ <BN9PR11MB5276D0B3E0106C73C498B8018C10A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZNZlnh+/Q5Vk5Kul@Asurada-Nvidia>
+ <ZNsYxta9Pi7USDoR@Asurada-Nvidia>
+ <ZN+i1pEoN/NsWPKS@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZN+tr1uluHSZqcIg@casper.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZN+i1pEoN/NsWPKS@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000989EA:EE_|SJ2PR12MB9163:EE_
+X-MS-Office365-Filtering-Correlation-Id: 06f330e1-22f8-4b0a-97fd-08dba0148867
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wQ6TUWS4HL0pdHQ0EmlZMc9K7nA5FOd87A1Dd2ndKxLBvO5gu6rJR7o0Nzce1C+NQ0XGLtxQ/SJqyRUK4126Ns+vt1kpIBwFiSS+fzgcMc20c2JnoGi5V8LMk0cO7WkWxlNKodtPGqoroV//rUMGIld+N888SWuk+6wuIa4XB7bSc+3ptbOhsTvN9DRwk2c+oXs40DpkUwT6d/pfChK7yycYCtrRIn4aRlBpsgKvaz2Mz/j6COg6Axxcs4jUdwH/pYkFxoZ8bZ4WC+kY+vF+jjVHiNWIwBvcuarVrvd/r/1Poy3nFNQmw+p59D6gE8+TZbz5k315VGowV5L82mJP/g72mOrgNz4e2CaZ6boDotT9cYudgJOd56xUyyjX3V4D6wWWnjuLAokFhAz+5y8mpGhJqlYeF3rmdXbThSsUEfC+RwOaU1qPmV8eBRXQWWB2nzakHik02n0sVJdCzpEI/jC+9hPfCmjDwhnSMe+0AeYe9T+pQuEwGRMnW+Y9tTBSJCBRhshqmzYu9AMdlFpW0GpTaaVUb1DWxPL/3u0qUqloQp6zFVgqQEnrAfOptPqM26BdO9IKe+0CzMBNJwCQ4r5XbYEy7nHO2k4scFUROSDmEyIheRDhhvIl7R+BxLo4IR+y2qtJtxr25tigfZ4pWji+ABGTa9baAgE0d16OswnJfYd4OqEcTY104WWtnumy7kpVX52HSU/3FgCnH/HZe9eZAeG6rOlZNFobHBXFbEdsKiChFHQGM0SBCWo/Lch8QTrq5HBEjN4hVl/Wx+oFHP+ZgdblyGLcV9vhN9jgwCO7WLJeQPQVGT0anBEpG1+/
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(396003)(39860400002)(186009)(1800799009)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(9686003)(40460700003)(36860700001)(426003)(336012)(55016003)(26005)(40480700001)(83380400001)(47076005)(33716001)(7636003)(82740400003)(356005)(86362001)(2906002)(54906003)(316002)(6636002)(41300700001)(70206006)(70586007)(5660300002)(7416002)(8676002)(6862004)(4326008)(8936002)(478600001)(67856001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 17:57:04.9775
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06f330e1-22f8-4b0a-97fd-08dba0148867
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989EA.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9163
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 06:43:11PM +0100, Matthew Wilcox wrote:
-> On Fri, Aug 18, 2023 at 10:33:26AM -0700, Kees Cook wrote:
-> > On Fri, Aug 18, 2023 at 11:26:51AM -0500, Eric W. Biederman wrote:
-> > > syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com> writes:
-> > > 
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > 
-> > > Not an issue.
-> > > Nothing to do with ntfs.
-> > > 
-> > > The code is working as designed and intended.
-> > > 
-> > > syzbot generated a malformed exec and the kernel made it
-> > > well formed and warned about it.
-> > > 
-> > > Human beings who run syzbot please mark this as not an issue in your
-> > > system.  The directions don't have a way to say that the code is working
-> > > as expected and designed.
+On Fri, Aug 18, 2023 at 01:56:54PM -0300, Jason Gunthorpe wrote:
+> On Mon, Aug 14, 2023 at 11:18:46PM -0700, Nicolin Chen wrote:
+> > On Fri, Aug 11, 2023 at 09:45:21AM -0700, Nicolin Chen wrote:
 > > 
-> > WARN and BUG should not be reachable from userspace, so if this can be
-> > tripped we should take a closer look and likely fix it...
+> > > > But if stepping back a bit supporting an array-based non-native format
+> > > > could simplify the uAPI design and allows code sharing for array among
+> > > > vendor drivers. You can still keep the entry as native format then the
+> > > > only difference with future in-kernel fast path is just on walking an array
+> > > > vs. walking a ring. And VMM doesn't need to expose non-invalidate
+> > > > cmds to the kernel and then be skipped.
+> > > 
+> > > Ah, so we might still design the uAPI to be ring based at this
+> > > moment, yet don't support a case CONS > 0 to leave that to an
+> > > upgrade in the future.
+> > > 
+> > > I will try estimating a bit how complicated to implement the
+> > > ring, to see if we could just start with that. Otherwise, will
+> > > just start with an array.
 > > 
-> > > > HEAD commit:    16931859a650 Merge tag 'nfsd-6.5-4' of git://git.kernel.or..
-> > > > git tree:       upstream
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e2673da80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=6ec38f7a8db3b3fb1002
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cdbc65a80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1262d8cfa80000
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/eecc010800b4/disk-16931859.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/f45ae06377a7/vmlinux-16931859.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/68891896edba/bzImage-16931859.xz
-> > > > mounted in repro: https://storage.googleapis.com/syzbot-assets/4b6ab78b223a/mount_0.gz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com
-> > > >
-> > > > ntfs: volume version 3.1.
-> > > > process 'syz-executor300' launched './file1' with NULL argv: empty string added
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 0 PID: 5020 at fs/exec.c:933 do_open_execat+0x18f/0x3f0 fs/exec.c:933
-> > 
-> > This is a double-check I left in place, since it shouldn't have been reachable:
-> > 
-> >         /*
-> >          * may_open() has already checked for this, so it should be
-> >          * impossible to trip now. But we need to be extra cautious
-> >          * and check again at the very end too.
-> >          */
-> >         err = -EACCES;
-> >         if (WARN_ON_ONCE(!S_ISREG(file_inode(file)->i_mode) ||
-> >                          path_noexec(&file->f_path)))
-> >                 goto exit;
-> > 
-> > So yes, let's figure this out...
+> > I drafted a uAPI structure for a ring-based SW queue. While I am
+> > trying an implementation, I'd like to collect some comments at the
+> > structure, to see if it overall makes sense.
 > 
-> When trying to figure it out, remember that ntfs corrupts random memory,
+> I don't think a ring makes alot of sense at this point. The only thing
+> it optimizes is a system call if the kernel needs to wrap around the
+> tail of the ring. It would possibly be better to have a small gather
+> list than try to describe the ring logic..
+> 
+> Further, the VMM already has to process it, so the vmm already knows
+> what ops are going to kernel are not. The VMM can just organize them
+> in a linear list in one way or another. We need to copy and read this
+> stuff in the VMM anyhow to protect against a hostile VM.
 
-!! Oh. Well, then yeah, that's not great. :(
+OK. Then an linear array it is.
 
--Kees
+> > One thing that I couldn't add to this common structure for SMMU
+> > is the hardware error code, which should be encoded in the higher
+> > bits of the consumer index register, following the SMMU spec:
+> >     ERR, bits [30:24] Error reason code.
+> >     - When a command execution error is detected, ERR is set to a
+> >       reason code and then the SMMU_GERROR.CMDQ_ERR global error
+> >       becomes active.
+> >     - The value in this field is UNKNOWN when the CMDQ_ERR global
+> >       error is not active. This field resets to an UNKNOWN value.
+> 
+> The invalidate ioctl should fail in some deterministic way and report
+> back the error code and the highest array index that maybe could have
+> triggered it.
 
-> so all reports from syzbot that have "ntfs" in them should be discarded.
-> I tried to tell them that all this work they're doing testing ntfs3 is
-> pointless, but they won't listen.
+Yea. Having an error code in the highest bits of array_index,
+"array_index != array_max" could be the deterministic way to
+indicate a failure. And a kernel errno could be returned also
+to the invalidate ioctl.
 
--- 
-Kees Cook
+> The highest array index sounds generic, the error code maybe is too
+
+We could do in its and report the error code in its raw form:
+	__u32 out_array_index;
+	/* number of bits used to report error code in the returned array_index */
+	__u32 out_array_index_error_code_bits;
+Or just:
+	__u32 out_array_index;
+	__u32 out_error_code;
+
+Do we have to define a list of generic error code?
+
+Thanks!
+Nic
