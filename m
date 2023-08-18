@@ -2,80 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACAD7808F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879697808FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359367AbjHRJwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S1359387AbjHRJwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357543AbjHRJvw (ORCPT
+        with ESMTP id S1359381AbjHRJwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:51:52 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60F92684;
-        Fri, 18 Aug 2023 02:51:50 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRxtB4JmpzVk4Y;
-        Fri, 18 Aug 2023 17:49:38 +0800 (CST)
-Received: from huawei.com (10.67.174.28) by kwepemi500012.china.huawei.com
- (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 17:51:46 +0800
-From:   Liao Chang <liaochang1@huawei.com>
-To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpufreq: stats: Improve the performance of cpufreq_stats_create_table()
-Date:   Fri, 18 Aug 2023 09:50:00 +0000
-Message-ID: <20230818095000.937633-1-liaochang1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 18 Aug 2023 05:52:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98CD42684;
+        Fri, 18 Aug 2023 02:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692352355; x=1723888355;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=89r1Tcgm0dVg+buxrEGiUacFVVNLeDXV6VH8l4oH+Mc=;
+  b=MM/t912p4CNSLh9BBa8iO2Utws44aPMyFNthUjDemgu8XLEnygxLtfg9
+   yeDA8D5LYW3MRdGUKO0ztFjgalwMYTiqS9UewQ5HfeRprejfsI4kgg7s7
+   1MsFCRUncvBG7vELsbn+RZC2ZqfOikK1ZceQTTHK+Dsq3Hq5t9PskScf+
+   /SMMf3wMQpXudBNEZ2HS8VBgZVzSOQtnjxG5zUD3f2J9CV6WO22mElwTc
+   OBugtHs9QTa0RkvEwoc9F8DDG8KbqGDQbtgdh0ctII9wsYhWgBvkCgz0E
+   aEjNFlJ3I40jxNGY2LPH3ju06XCZdY5EEvbQxQkNihmz06Z4Sh9uCy27Y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="375840941"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="375840941"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 02:52:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="825063046"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="825063046"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 02:52:32 -0700
+Received: from punajuuri.localdomain (punajuuri.localdomain [192.168.240.130])
+        by kekkonen.fi.intel.com (Postfix) with ESMTP id A7B4812035D;
+        Fri, 18 Aug 2023 12:52:29 +0300 (EEST)
+Received: from sailus by punajuuri.localdomain with local (Exim 4.96)
+        (envelope-from <sakari.ailus@linux.intel.com>)
+        id 1qWw99-00GD1F-1N;
+        Fri, 18 Aug 2023 12:51:59 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     linux-media@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Cc:     hverkuil@xs4all.nl, Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>,
+        Zhifeng Wang <zhifeng.wang@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: [PATCH v2 1/1] media: v4l: usb: Use correct dependency for camera sensor drivers
+Date:   Fri, 18 Aug 2023 12:51:49 +0300
+Message-Id: <20230818095149.3863285-1-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.28]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the worst case, the freq_table of policy data is not sorted and
-contains duplicate frequencies, this means that it needs to iterate
-through the entire freq_table of policy to ensure each frequency is
-unique in the freq_table of stats data, this has a time complexity of
-O(N^2), where N is the number of frequencies in the freq_table of
-policy.
+The Kconfig option that enables compiling camera sensor drivers is
+VIDEO_CAMERA_SENSOR rather than MEDIA_CAMERA_SUPPORT as it was previously.
+Fix this.
 
-However, if the policy.freq_table is already sorted and contains no
-duplicate frequencices, it can reduce the time complexity of creating
-stats.freq_table to O(N), the 'freq_table_sorted' field of policy data
-can be used to indicate whether the policy.freq_table is sorted.
-
-Signed-off-by: Liao Chang <liaochang1@huawei.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 7d3c7d2a2914 ("media: i2c: Add a camera sensor top level menu")
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
- drivers/cpufreq/cpufreq_stats.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+since v1:
 
-diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-index 55c7ffd37d1c..fcb74050711a 100644
---- a/drivers/cpufreq/cpufreq_stats.c
-+++ b/drivers/cpufreq/cpufreq_stats.c
-@@ -243,7 +243,8 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
+- Also include MMP camera Kconfig fix.
+
+ drivers/media/platform/marvell/Kconfig | 4 ++--
+ drivers/media/usb/em28xx/Kconfig       | 4 ++--
+ drivers/media/usb/go7007/Kconfig       | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/platform/marvell/Kconfig b/drivers/media/platform/marvell/Kconfig
+index ec1a16734a28..d6499ffe30e8 100644
+--- a/drivers/media/platform/marvell/Kconfig
++++ b/drivers/media/platform/marvell/Kconfig
+@@ -7,7 +7,7 @@ config VIDEO_CAFE_CCIC
+ 	depends on V4L_PLATFORM_DRIVERS
+ 	depends on PCI && I2C && VIDEO_DEV
+ 	depends on COMMON_CLK
+-	select VIDEO_OV7670
++	select VIDEO_OV7670 if MEDIA_SUBDRV_AUTOSELECT && VIDEO_CAMERA_SENSOR
+ 	select VIDEOBUF2_VMALLOC
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select VIDEOBUF2_DMA_SG
+@@ -22,7 +22,7 @@ config VIDEO_MMP_CAMERA
+ 	depends on I2C && VIDEO_DEV
+ 	depends on ARCH_MMP || COMPILE_TEST
+ 	depends on COMMON_CLK
+-	select VIDEO_OV7670
++	select VIDEO_OV7670 if MEDIA_SUBDRV_AUTOSELECT && VIDEO_CAMERA_SENSOR
+ 	select I2C_GPIO
+ 	select VIDEOBUF2_VMALLOC
+ 	select VIDEOBUF2_DMA_CONTIG
+diff --git a/drivers/media/usb/em28xx/Kconfig b/drivers/media/usb/em28xx/Kconfig
+index b3c472b8c5a9..cb61fd6cc6c6 100644
+--- a/drivers/media/usb/em28xx/Kconfig
++++ b/drivers/media/usb/em28xx/Kconfig
+@@ -12,8 +12,8 @@ config VIDEO_EM28XX_V4L2
+ 	select VIDEO_SAA711X if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_TVP5150 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_MSP3400 if MEDIA_SUBDRV_AUTOSELECT
+-	select VIDEO_MT9V011 if MEDIA_SUBDRV_AUTOSELECT && MEDIA_CAMERA_SUPPORT
+-	select VIDEO_OV2640 if MEDIA_SUBDRV_AUTOSELECT && MEDIA_CAMERA_SUPPORT
++	select VIDEO_MT9V011 if MEDIA_SUBDRV_AUTOSELECT && VIDEO_CAMERA_SENSOR
++	select VIDEO_OV2640 if MEDIA_SUBDRV_AUTOSELECT && VIDEO_CAMERA_SENSOR
+ 	help
+ 	  This is a video4linux driver for Empia 28xx based TV cards.
  
- 	/* Find valid-unique entries */
- 	cpufreq_for_each_valid_entry(pos, policy->freq_table)
--		if (freq_table_get_index(stats, pos->frequency) == -1)
-+		if ((policy->freq_table_sorted != CPUFREQ_TABLE_UNSORTED) ||
-+		    (freq_table_get_index(stats, pos->frequency) == -1))
- 			stats->freq_table[i++] = pos->frequency;
- 
- 	stats->state_num = i;
+diff --git a/drivers/media/usb/go7007/Kconfig b/drivers/media/usb/go7007/Kconfig
+index 4ff79940ad8d..b2a15d9fb1f3 100644
+--- a/drivers/media/usb/go7007/Kconfig
++++ b/drivers/media/usb/go7007/Kconfig
+@@ -12,8 +12,8 @@ config VIDEO_GO7007
+ 	select VIDEO_TW2804 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_TW9903 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_TW9906 if MEDIA_SUBDRV_AUTOSELECT
+-	select VIDEO_OV7640 if MEDIA_SUBDRV_AUTOSELECT && MEDIA_CAMERA_SUPPORT
+ 	select VIDEO_UDA1342 if MEDIA_SUBDRV_AUTOSELECT
++	select VIDEO_OV7640 if MEDIA_SUBDRV_AUTOSELECT && VIDEO_CAMERA_SENSOR
+ 	help
+ 	  This is a video4linux driver for the WIS GO7007 MPEG
+ 	  encoder chip.
 -- 
-2.34.1
+2.39.2
 
