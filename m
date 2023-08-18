@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8188F7805A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 07:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2767805AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 07:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357204AbjHRF2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 01:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S1355695AbjHRFa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 01:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357144AbjHRF1n (ORCPT
+        with ESMTP id S1357651AbjHRF3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 01:27:43 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC9A10E
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:27:42 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68891000f34so471166b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:27:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692336462; x=1692941262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HU5RTBEwbDAykOIX7ilNn8IFEodPR9FSTcqGXKFW6xA=;
-        b=kI7/9v41wk6+l3PeHPG73dQNP7pL/7JGVtK0+HWlj+5FFKj4vuSLj5YWmYmlsTZzsc
-         cWZogyWlpiHrskHQBT+2ebjqXs+rDefOIcuBrdqNFrrVBQUFtD62s1UfdHIym1+ygvQZ
-         rxI7JPRIb/mwCAU+7Cf1dI/yVydlM0ITWdF0wGhClFJJqUWsq167stnU2JcEsRsrJN4i
-         TFldG3qAup4/LZMB5+V455v0FgMxCp9TVY+3sOYB4/O8oXE8EEizKDZW/qJIIxsRx1Ay
-         p5rtQnt1BEuklbpPl/tMhS15t19vYBtOT4SuCoruajwzViWprtF5OGF5kSPkbsNdxR7y
-         QOmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692336462; x=1692941262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HU5RTBEwbDAykOIX7ilNn8IFEodPR9FSTcqGXKFW6xA=;
-        b=F6Ht9y0WviAT+kChXy6m3nrRiHhq6uosenJn722wJSkr/bBYoEmqpYfwpWaa37rDVs
-         E9guq7Vy4GvhQgHomXph2lr2cBVcpqS4C0Cb5Jj3GgwC8wXi4lxSCshmxNZVpoc1vJj3
-         pnJpfApnZikEfDv1qh0oTddBecc+UY8i1J8BL0Xm9g96+AuaUXqRUQj8J3CvpOSYYFnL
-         nbz/BEEeCXa42FdhEe2LOskf/dsD+YKIYoxOumMo/ZTYLIDIDbEwzbZfn914qYeE3UEW
-         LfDf9qGisPEuZjwTEfyhQ/uPcDxhzqh3zpqNOfEh5e6FavnDKChLUMGPbS1lEHijRoat
-         wRDw==
-X-Gm-Message-State: AOJu0YzA3FSFUfyc+witHrsgqJXNV1iCFsp4vcZCIjC/pHQNR2aStgDW
-        OxW9wLadIDZXxktQ4187pqURJA==
-X-Google-Smtp-Source: AGHT+IGdceAFfzkeXASXtoi9F+09M7iSr9jZEZyAjFpb7p5vcHPA2aRwThZNz09QG1DSLwecPrpPNg==
-X-Received: by 2002:a05:6a20:656:b0:13e:b58a:e3e8 with SMTP id 22-20020a056a20065600b0013eb58ae3e8mr1572913pzm.50.1692336461933;
-        Thu, 17 Aug 2023 22:27:41 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id v2-20020aa78502000000b00686bef8e55csm671681pfn.39.2023.08.17.22.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 22:27:41 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] OPP: Fix argument name in doc comment
-Date:   Fri, 18 Aug 2023 10:57:33 +0530
-Message-Id: <a5a297918abba9e35b4b1683b14542d6b7f31ade.1692336440.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+        Fri, 18 Aug 2023 01:29:23 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732143C34;
+        Thu, 17 Aug 2023 22:28:49 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qWs2L-005BmE-J9; Fri, 18 Aug 2023 13:28:42 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Aug 2023 13:28:42 +0800
+Date:   Fri, 18 Aug 2023 13:28:42 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, andriy.shevchenko@intel.com,
+        alx.manpages@gmail.com,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 4/4] crypto: qat - add pm_status debugfs file
+Message-ID: <ZN8BipaGe6DOwiVS@gondor.apana.org.au>
+References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
+ <20230817143352.132583-5-lucas.segarra.fernandez@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817143352.132583-5-lucas.segarra.fernandez@intel.com>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name of the argument is "opp_table" and not "table", fix the
-comment.
+On Thu, Aug 17, 2023 at 04:33:17PM +0200, Lucas Segarra Fernandez wrote:
+>
+> +static struct pm_status_row pm_event_rows[] = {
+> +	PM_INFO_REGSET_ENTRY32(event_log[0], EVENT0),
+> +	PM_INFO_REGSET_ENTRY32(event_log[1], EVENT1),
+> +	PM_INFO_REGSET_ENTRY32(event_log[2], EVENT2),
+> +	PM_INFO_REGSET_ENTRY32(event_log[3], EVENT3),
+> +	PM_INFO_REGSET_ENTRY32(event_log[4], EVENT4),
+> +	PM_INFO_REGSET_ENTRY32(event_log[5], EVENT5),
+> +	PM_INFO_REGSET_ENTRY32(event_log[6], EVENT6),
+> +	PM_INFO_REGSET_ENTRY32(event_log[7], EVENT7),
+> +};
+> +
+> +static_assert(ARRAY_SIZE_OF_FIELD(struct icp_qat_fw_init_admin_pm_info, event_log) ==
+> +	      ARRAY_SIZE(pm_event_rows));
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308172310.FzcidE4c-lkp@intel.com/
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/cpu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Was all of that churn just for this one line?
 
-diff --git a/drivers/opp/cpu.c b/drivers/opp/cpu.c
-index 3c3506021501..12c429b407ca 100644
---- a/drivers/opp/cpu.c
-+++ b/drivers/opp/cpu.c
-@@ -24,7 +24,7 @@
- /**
-  * dev_pm_opp_init_cpufreq_table() - create a cpufreq table for a device
-  * @dev:	device for which we do this operation
-- * @table:	Cpufreq table returned back to caller
-+ * @opp_table:	Cpufreq table returned back to caller
-  *
-  * Generate a cpufreq table for a provided device- this assumes that the
-  * opp table is already initialized and ready for usage.
-@@ -89,7 +89,7 @@ EXPORT_SYMBOL_GPL(dev_pm_opp_init_cpufreq_table);
- /**
-  * dev_pm_opp_free_cpufreq_table() - free the cpufreq table
-  * @dev:	device for which we do this operation
-- * @table:	table to free
-+ * @opp_table:	table to free
-  *
-  * Free up the table allocated by dev_pm_opp_init_cpufreq_table
-  */
+How about simply declaring a macro
+
+	#define QAT_NUMBER_OF_PM_EVENTS 8
+
+and then use it for the two arrays:
+
+	static struct pm_status_row pm_event_rows[QAT_NUMBER_OF_PM_EVENTS] = {
+
+	__u32 event_log[QAT_NUMBER_OF_PM_EVENTS];
+
+What am I missing?
+
+Cheers,
 -- 
-2.31.1.272.g89b43f80a514
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
