@@ -2,107 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1274C780C8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1FB780C93
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:35:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377161AbjHRNdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39732 "EHLO
+        id S1377173AbjHRNfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377156AbjHRNdV (ORCPT
+        with ESMTP id S1377164AbjHRNeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:33:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83F32D50
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:33:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 18 Aug 2023 09:34:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFE9358D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692365624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qQNTfs2Jffit8DhxI9Sae6fRQlQxO579aHpEAqyIh68=;
+        b=WH5+w3h22vlIbPJ3DociSeGbAiRsHnP7/0oI+eqxm/0rb/xsaibpR/8SqU/wJ9Hta/OUuG
+        YAZ8wr+V2lTG6wh55bv+l/XirB/FuChsc6BSMXh8MAewLqA6UYX/DaSQjqHRylnrDoz6Z6
+        lLApIVLOsCuE/iCkQOgvdMspLRXVQuA=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-352-EJIL4rjEN7KeEtSE3pLJJQ-1; Fri, 18 Aug 2023 09:33:39 -0400
+X-MC-Unique: EJIL4rjEN7KeEtSE3pLJJQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 757D7630BE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:33:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6155DC433C7;
-        Fri, 18 Aug 2023 13:33:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692365583;
-        bh=nQkSvjw/b52/PsLHpuHKay9SWoBTTMGR4P0aQ3yKgKg=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=r+Uw3TaYEO8U6g7zP7fe1guf5B0kFPn65KoDCs+KY7uqsyZiQW75+lcWJffWHI1sc
-         E91kdgDxcCMebfX4jRAaQXOmd40NMtNw0ArIcuF+yNcUj0tZEdwMIPcqvGaovI582/
-         OQkYIsCOb78TaU1yZ0aFAqcBCxE7nIi9nbLadPBUoQ0S6JSJ8Jbxb0nwO8ewg715V2
-         jDBmzkcNZrA3WEZoOh+BmEVoy8kwicDbd8WjLm57SFk5VOHzVtfJjU8QN94Grr+vOw
-         2pi2lQ4hQtbh4+E6i9APbK1MhUDYi1Aygn0hbv1xFjaoYgLa64/q1ici8YS1+7UDv2
-         Qrk+RWWJy/GzA==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Yunhui Cui <cuiyunhui@bytedance.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, guoren@kernel.org,
-        bjorn@rivosinc.com, conor.dooley@microchip.com, jszhang@kernel.org,
-        andy.chiu@sifive.com, cuiyunhui@bytedance.com,
-        dave.hansen@linux.intel.com, elver@google.com, glider@google.com,
-        cyphar@cyphar.com, kirill.shutemov@linux.intel.com,
-        keescook@chromium.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] riscv: add userland instruction dump to RISC-V splats
-In-Reply-To: <20230818121504.60492-1-cuiyunhui@bytedance.com>
-References: <20230818121504.60492-1-cuiyunhui@bytedance.com>
-Date:   Fri, 18 Aug 2023 15:33:01 +0200
-Message-ID: <878ra8o4qa.fsf@all.your.base.are.belong.to.us>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 37D5B29AA38A;
+        Fri, 18 Aug 2023 13:33:38 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8A45E1121314;
+        Fri, 18 Aug 2023 13:33:36 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
+References: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com> <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <665724.1692218114@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1936663.1692365615.1@warthog.procyon.org.uk>
+Date:   Fri, 18 Aug 2023 14:33:35 +0100
+Message-ID: <1936666.1692365615@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yunhui Cui <cuiyunhui@bytedance.com> writes:
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> Add userland instruction dump and rename dump_kernel_instr()
-> to dump_instr().
->
-> An example:
-> [    0.822439] Freeing unused kernel image (initmem) memory: 6916K
-> [    0.823817] Run /init as init process
-> [    0.839411] init[1]: unhandled signal 4 code 0x1 at 0x000000000005be18=
- in bb[10000+5fb000]
-> [    0.840751] CPU: 0 PID: 1 Comm: init Not tainted 5.14.0-rc4-00049-gbd6=
-44290aa72-dirty #187
-> [    0.841373] Hardware name:  , BIOS
-> [    0.841743] epc : 000000000005be18 ra : 0000000000079e74 sp : 0000003f=
-ffcafda0
-> [    0.842271]  gp : ffffffff816e9dc8 tp : 0000000000000000 t0 : 00000000=
-00000000
-> [    0.842947]  t1 : 0000003fffc9fdf0 t2 : 0000000000000000 s0 : 00000000=
-00000000
-> [    0.843434]  s1 : 0000000000000000 a0 : 0000003fffca0190 a1 : 0000003f=
-ffcafe18
-> [    0.843891]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 00000000=
-00000000
-> [    0.844357]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 00000000=
-00000000
-> [    0.844803]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 00000000=
-00000000
-> [    0.845253]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 00000000=
-00000000
-> [    0.845722]  s8 : 0000000000000000 s9 : 0000000000000000 s10: 00000000=
-00000000
-> [    0.846180]  s11: 0000000000d144e0 t3 : 0000000000000000 t4 : 00000000=
-00000000
-> [    0.846616]  t5 : 0000000000000000 t6 : 0000000000000000
-> [    0.847204] status: 0000000200000020 badaddr: 00000000f0028053 cause: =
-0000000000000002
-> [    0.848219] Code: f06f ff5f 3823 fa11 0113 fb01 2e23 0201 0293 0000 (8=
-053) f002
-> [    0.851016] Kernel panic - not syncing: Attempted to kill init! exitco=
-de=3D0x00000004
->
-> Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+> This patch only does that for the 'user_backed' thing, which was a similar
+> case.
 
-Nice!
+It makes some things a bit bigger, makes some a bit smaller:
 
-Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+__iov_iter_get_pages_alloc               dcr 0x331 -> 0x32a -0x7
+_copy_from_iter                          dcr 0x36e -> 0x36a -0x4
+_copy_from_iter_flushcache               inc 0x359 -> 0x36b +0x12
+_copy_mc_to_iter                         dcr 0x3a7 -> 0x39b -0xc
+_copy_to_iter                            inc 0x358 -> 0x359 +0x1
+copy_page_to_iter_nofault.part.0         dcr 0x3f1 -> 0x3ef -0x2
+csum_and_copy_from_iter                  dcr 0x3e8 -> 0x3e4 -0x4
+csum_and_copy_to_iter                    inc 0x46a -> 0x46d +0x3
+dup_iter                                 inc 0x34 -> 0x39 +0x5
+fault_in_iov_iter_readable               inc 0x9b -> 0xa0 +0x5
+fault_in_iov_iter_writeable              inc 0x9b -> 0xa0 +0x5
+first_iovec_segment                      inc 0x4a -> 0x51 +0x7
+import_single_range                      dcr 0x62 -> 0x40 -0x22
+import_ubuf                              dcr 0x65 -> 0x43 -0x22
+iov_iter_advance                         inc 0xd7 -> 0x103 +0x2c
+iov_iter_alignment                       inc 0xe0 -> 0xe2 +0x2
+iov_iter_extract_pages                   dcr 0x418 -> 0x416 -0x2
+iov_iter_init                            dcr 0x31 -> 0x27 -0xa
+iov_iter_is_aligned                      inc 0xf3 -> 0x108 +0x15
+iov_iter_npages                          inc 0x119 -> 0x11a +0x1
+iov_iter_revert                          inc 0x88 -> 0x99 +0x11
+iov_iter_single_seg_count                inc 0x38 -> 0x3e +0x6
+iov_iter_ubuf                            new 0x39
+iov_iter_zero                            inc 0x34f -> 0x353 +0x4
+iter_iov                                 new 0x17
+
+Adding an extra patch to get rid of the bitfields and using a u8 for the type
+and bools for the flags makes very little difference on top of the above:
+
+__iov_iter_get_pages_alloc               inc 0x32a -> 0x32f +0x5
+_copy_from_iter                          inc 0x36a -> 0x36d +0x3
+copy_page_from_iter_atomic.part.0        inc 0x3cf -> 0x3d2 +0x3
+csum_and_copy_to_iter                    dcr 0x46d -> 0x46a -0x3
+iov_iter_advance                         dcr 0x103 -> 0xfd -0x6
+iov_iter_extract_pages                   inc 0x416 -> 0x417 +0x1
+iov_iter_init                            inc 0x27 -> 0x2d +0x6
+iov_iter_revert                          dcr 0x99 -> 0x95 -0x4
+
+For reference, I generated the stats with:
+
+	nm build3/lib/iov_iter.o  | sort >a
+	... change...
+	nm build3/lib/iov_iter.o  | sort >b
+	perl analyse.pl a b
+
+where analyse.pl is attached.
+
+David
+---
+#!/usr/bin/perl -w
+use strict;
+
+die "$0 <file_a> <file_b>" if ($#ARGV != 1);
+my ($file_a, $file_b) = @ARGV;
+die "$file_a: File not found\n" unless -r $file_a;
+die "$file_b: File not found\n" unless -r $file_b;
+
+my %a = ();
+my %b = ();
+my %c = ();
+
+sub read_one($$$)
+{
+    my ($file, $list, $all) = @_;
+    my $last = undef;
+
+    open FD, "<$file" || die $file;
+    while (<FD>) {
+	if (/([0-9a-f][0-9a-f]+) [Tt] ([_a-zA-Z0-9.]*)/) {
+	    my $addr = hex $1;
+	    my $sym = $2;
+	    #print $addr, " ", $sym, "\n";
+
+	    my %obj = (
+		sym	=> $sym,
+		addr	=> $addr,
+		size	=> 0
+		);
+
+	    $list->{$sym} = \%obj;
+	    $all->{$sym} = 1;
+
+	    if ($last) {
+		$last->{size} = $addr - $last->{addr};
+	    }
+
+	    $last = \%obj;
+	}
+    }
+    close(FD);
+}
+
+read_one($file_a, \%a, \%c);
+read_one($file_b, \%b, \%c);
+
+foreach my $sym (sort keys %c) {
+    my $as = -1;
+    my $bs = -1;
+
+    $as = $a{$sym}->{size} if (exists($a{$sym}));
+    $bs = $b{$sym}->{size} if (exists($b{$sym}));
+
+    next if ($as == $bs);
+    #next if ($sym =~ /__UNIQUE_ID/);
+
+    if ($as == -1) {
+	printf "%-40s new 0x%x\n", $sym, $bs;
+    } elsif ($bs == -1) {
+	printf "%-40s del 0x%x\n", $sym, $as;
+    } elsif ($bs > $as) {
+	printf "%-40s inc 0x%x -> 0x%x +0x%x\n", $sym, $as, $bs, $bs - $as;
+    } else {
+	printf "%-40s dcr 0x%x -> 0x%x -0x%x\n", $sym, $as, $bs, $as - $bs;
+    }
+}
+
