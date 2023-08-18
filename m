@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9147E781402
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDEE781409
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379862AbjHRT7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
+        id S1379869AbjHRUDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 16:03:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379865AbjHRT7i (ORCPT
+        with ESMTP id S1379850AbjHRUCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:59:38 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0BF1706;
-        Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso20178621fa.1;
-        Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692388775; x=1692993575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
-        b=niC/NhGgJdLzQDWhJ35lBiET52DjSLPJEHDaV8oJKza+nvvCv0soQR4Au1Eh+snuz4
-         H7OJ4oUMO83aS4/U38gA8ZSdKe66xDnyJticxRTZzXvDJ3fEWB6tUNmJjCE040S8m33K
-         uAvRRes5EjWuooXZwmzV/12pm3BfRSc2HdrZ3ESOd8klSSPuaS6zxufdlRq2bciM1K2Q
-         SFbZenKSnjpT+bqp+n92OX7mXjDWoWsXI0G8xt0/CwmdQi3NCIXtNz/EcdWy26UMmLjS
-         xAOF5Ca2Wouf+rce5ghWNZpCgGUGqJc1HAM0PcZjBQhfofUciDanhqh1phmBImQgs0Kv
-         7aZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692388775; x=1692993575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
-        b=AlpbSGsw6rcddBgpsNb4EgqXtq+BrC2LA492SGARF3/uTiwLKx1pb0sz4jYgCZQwIw
-         Hivnow52eY0aC1vVSr9b512+5AVX4lwgXonlTPj8fbAmFjEMaqc3edo4ZnG/y+1IyThT
-         haA8TdYX42zFuKD+AviXkAaOASvPrqUKD/VglpDhetj9W5lj1TSjARhew8gRPMy2weeI
-         ZTJ/eXht1CujY6VyU0Cb8JQI79Iomb806Rv652mARgW7tjvuaEzzbS/jkJn1x38EX7Cr
-         YrkGk96i8Zlru1QjnJLKoXqE3BDszHp6UKm9OPgxp7e3dt3zfz750AoRnCFEd4XEdo+L
-         xPMA==
-X-Gm-Message-State: AOJu0YxKhMfFxtJ3jRB2zh5CTGTnMoY9wHgmkU00YPPJkWioT4nHaKKJ
-        9dnZ3NxxckKEmOqD/3EB9pQH8+VHire+k5P6LoVdiXEK
-X-Google-Smtp-Source: AGHT+IHRz6m/oi/P/iekiR7QjNjXfP8gYDO4z7yafhS2Tyrt9xR/S/WYMg/RvhUJls4YXcHCJe7016jERHdPLHqvb0Y=
-X-Received: by 2002:a2e:3505:0:b0:2a7:adf7:1781 with SMTP id
- z5-20020a2e3505000000b002a7adf71781mr175907ljz.2.1692388775263; Fri, 18 Aug
- 2023 12:59:35 -0700 (PDT)
+        Fri, 18 Aug 2023 16:02:38 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51BA1706;
+        Fri, 18 Aug 2023 13:02:36 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 279FE1BF204;
+        Fri, 18 Aug 2023 20:02:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692388955;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iBuafLkRO12L2VXNLAEirbbppACezhDPBaIxB+yiYEU=;
+        b=Iz4YoMrKD4JwW+Zqar+V3hnOvC02vxCUQjGjrLCiHD/2Jw+HZZE2Bu9Th+sZ/TuAX5LtdS
+        irBAAiXipFLFPwREVmTvdVaEGCQZe6FO4ikDYw7Llz69hJI/1n01XTzpvasgGAnhknfF12
+        ex38pT+uelRgNSdG+MmN9wkDTmW9rLN7zKeptMTtGkZvstFml7SNx6fNC1p0GeR4ShA33K
+        2WCd+Cm2DULg/vpP8zNa+HojEdZYUZrEjx4OCLVUZifrkPyHMTNdaQiG1R8TkzgZqvZckC
+        S26JTJmXEMn3lm2qxJsrgfSjP5SRBSqqQCrPSiryllQ2b7t/0jZEXdfd8QV9sA==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Md Sadre Alam <quic_mdalam@quicinc.com>, mani@kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_srichara@quicinc.com
+Subject: Re: [PATCH 3/3] mtd: rawnand: qcom: Add read/read_start ops in exec_op path
+Date:   Fri, 18 Aug 2023 22:02:32 +0200
+Message-Id: <20230818200232.149295-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230818145101.23825-4-quic_mdalam@quicinc.com>
+References: 
 MIME-Version: 1.0
-References: <20230814134147.70289-1-hffilwlqm@gmail.com> <20230814134147.70289-2-hffilwlqm@gmail.com>
- <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com> <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
-In-Reply-To: <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 18 Aug 2023 12:59:24 -0700
-Message-ID: <CAADnVQKVKPpbMNV9XNc+yJCuaWRupsB5EBjghv++jGqYTnv6QQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
-To:     Leon Hwang <hffilwlqm@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'5a7688a3e2e6293b6b405322b8fbdbb2a0508511'
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 7:10=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
-ote:
->
->
->
-> On 18/8/23 06:31, Alexei Starovoitov wrote:
-> > On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
-> >> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
-> >>      struct module *tgt_mod;
-> >>      const char *tgt_name;
-> >>      const struct btf_type *tgt_type;
-> >> +    bool tail_call_ctx;
-> >
-> > Instead of extra flag here can you check tgt_prog->aux->tail_call_reach=
-able in check_attach_btf_id()
-> > and set tr->flags there?
->
-> Should we check tgt_prog->aux->func[subprog]->is_func? Or, tgt_prog->aux-=
->tail_call_reachable
-> is enough?
+On Fri, 2023-08-18 at 14:51:01 UTC, Md Sadre Alam wrote:
+> From: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> 
+> READ/READ_START opcodes are not set in exec_op path.
+> Fixing that here.
+> 
+> While there, Steps to program the controller is common for
+> erase/reset/read/program page. So use a common pattern and
+> pull them under one function.
+> 
+> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
 
-Please let the thread continue to a logical conclusion before resending
-new version. Will reply there.
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+
+Miquel
