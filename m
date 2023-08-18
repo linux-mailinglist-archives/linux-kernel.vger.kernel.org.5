@@ -2,184 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A6978064C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3470278064F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358164AbjHRHZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
+        id S1358170AbjHRH0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 03:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358181AbjHRHZo (ORCPT
+        with ESMTP id S1358171AbjHRH0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:25:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B696930DF;
-        Fri, 18 Aug 2023 00:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692343542; x=1723879542;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=iNg4a9mqt5LGbkucNgoalthA+YcKMoAQ1V5fU1A3TEs=;
-  b=OVON43epXBrU9TBxI1cnFxMI0YkOX2UxeCXQuA1ADYT+iGLLOsb5Ekke
-   Cv3XxOGAm4W3bRAKrWxj7571vzRFrO7YBcFMs3NZid3bAq18+IedUGwvK
-   YA9WNYabOoEDbHzQSEz08D7v/FoPIRt3FlDIdwZLZya9GKuUPnfmuX3ie
-   6Ebc/VQ7W9NyBcDC7efAfhdOMKioUiFWO77r8cYLy4x1j8+/wyjLrkKvr
-   KGbk7UPO7+kVfwzOyME6sFBfVwXUV7kK4s61dCyjB7rAnhDAIiAs0Vt0S
-   +arYuqON48s8j83kAQhyPpJEIBh8lrbKvBz8GFt3aZu+3ZZgh78FMe6jl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="352624510"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="352624510"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 00:25:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="908757353"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="908757353"
-Received: from sidorovd-mobl2.ger.corp.intel.com ([10.252.53.164])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 00:25:39 -0700
-Date:   Fri, 18 Aug 2023 10:25:37 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: Re: [PATCH 5/7] selftests/resctrl: Use pointers to build benchmark
- cmd and make it const
-In-Reply-To: <0587c078-306d-e3b4-ce5d-bcdfdeb66d27@intel.com>
-Message-ID: <c572a759-fbca-ca5b-3065-274757b1683@linux.intel.com>
-References: <20230808091625.12760-1-ilpo.jarvinen@linux.intel.com> <20230808091625.12760-6-ilpo.jarvinen@linux.intel.com> <f300a52c-d65f-fd74-18ce-7d37e76d144f@intel.com> <dd83f672-b9fc-cd79-10ff-70651d4822af@linux.intel.com> <87183b24-f343-2420-9bda-f1012e7195a1@intel.com>
- <f22efaf4-d87f-d3c4-b986-7d326c912a18@linux.intel.com> <bacc2e6f-f747-ec65-b23b-4275d1cac018@intel.com> <c8b7118c-5830-98a0-5ae-66072e384b3@linux.intel.com> <0587c078-306d-e3b4-ce5d-bcdfdeb66d27@intel.com>
+        Fri, 18 Aug 2023 03:26:22 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C9030E6;
+        Fri, 18 Aug 2023 00:26:20 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37I7Pgwj016351;
+        Fri, 18 Aug 2023 02:25:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692343542;
+        bh=bm4x7kxqWvWv3qzJzqySj6fmSFubOtRfgMiZakk91HU=;
+        h=From:To:CC:Subject:In-Reply-To:References:Date;
+        b=QrdPfjdTnJ3toEmR05ynqxTJNyXv2WwWNY9iqNKI5ZFikSVIzBqXWCiawp34x8gv+
+         q9ZOlSy14oa7NSbs74lPmlzUEun8L6d9cg+dyi4woQpGHnYbIIQ8v4jjz/wS/h0Sew
+         1Goe9HX9BfhtVSaISpEEynKj6eLUjPqbAUTFqAyI=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37I7PgPS006923
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Aug 2023 02:25:42 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 18
+ Aug 2023 02:25:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 18 Aug 2023 02:25:42 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37I7Pf40110519;
+        Fri, 18 Aug 2023 02:25:41 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v2 2/6] crypto: crc64 - add crc64-iso
+ framework
+In-Reply-To: <20230812025520.GE971@sol.localdomain>
+References: <20230719-mcrc-upstream-v2-0-4152b987e4c2@ti.com>
+ <20230719-mcrc-upstream-v2-2-4152b987e4c2@ti.com>
+ <20230812025520.GE971@sol.localdomain>
+Date:   Fri, 18 Aug 2023 12:55:40 +0530
+Message-ID: <87jztserrf.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1508127004-1692343541=:1737"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Eric Biggers <ebiggers@kernel.org> writes:
 
---8323329-1508127004-1692343541=:1737
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+> On Fri, Aug 11, 2023 at 12:58:49AM +0530, Kamlesh Gurudasani wrote:
+>> diff --git a/include/linux/crc64.h b/include/linux/crc64.h
+>> index 70202da51c2c..10b792080374 100644
+>> --- a/include/linux/crc64.h
+>> +++ b/include/linux/crc64.h
+>> @@ -8,11 +8,15 @@
+>>  #include <linux/types.h>
+>>  
+>>  #define CRC64_ROCKSOFT_STRING "crc64-rocksoft"
+>> +#define CRC64_ISO_STRING "crc64-iso"
+>>  
+>>  u64 __pure crc64_be(u64 crc, const void *p, size_t len);
+>>  u64 __pure crc64_iso_generic(u64 crc, const void *p, size_t len);
+>>  u64 __pure crc64_rocksoft_generic(u64 crc, const void *p, size_t len);
+>>  
+>> +u64 crc64_iso(const unsigned char *buffer, size_t len);
+>> +u64 crc64_iso_update(u64 crc, const unsigned char *buffer, size_t len);
+>> +
+>>  u64 crc64_rocksoft(const unsigned char *buffer, size_t len);
+>>  u64 crc64_rocksoft_update(u64 crc, const unsigned char *buffer, size_t len);
+>
+> Is "crc64-iso" clear enough, or should it be "crc64-iso3309"?  There are
+> thousands of ISO standards.  Different CRC variants are specified by different
+> ISO standards.  Is this particular variant indeed commonly referred to as simply
+> the "ISO" CRC-64?  Even if it's currently the case that all other CRCs in ISO
+> standards are different widths than 64 bits (which may be unlikely?), I'm not
+> sure we should count on no CRC-64 variant ever being standardized by ISO.
+>
+> - Eric
+https://en.wikipedia.org/wiki/Cyclic_redundancy_check
 
-On Thu, 17 Aug 2023, Reinette Chatre wrote:
-> On 8/17/2023 1:32 AM, Ilpo Järvinen wrote:
-> > On Wed, 16 Aug 2023, Reinette Chatre wrote:
-> >> On 8/16/2023 12:13 AM, Ilpo Järvinen wrote:
-> >>> On Tue, 15 Aug 2023, Reinette Chatre wrote:
-> >>>> On 8/15/2023 2:42 AM, Ilpo Järvinen wrote:
-> >>>>> On Mon, 14 Aug 2023, Reinette Chatre wrote:
-> >>>>>> On 8/8/2023 2:16 AM, Ilpo Järvinen wrote:
-> >>>>>>> diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-> >>>>>>> index bcd0d2060f81..ddb1e83a3a64 100644
-> >>>>>>> --- a/tools/testing/selftests/resctrl/resctrl.h
-> >>>>>>> +++ b/tools/testing/selftests/resctrl/resctrl.h
-> >>>>>>> @@ -6,6 +6,7 @@
-> >>>>>>>  #include <math.h>
-> >>>>>>>  #include <errno.h>
-> >>>>>>>  #include <sched.h>
-> >>>>>>> +#include <stdint.h>
-> >>>>>>>  #include <stdlib.h>
-> >>>>>>>  #include <unistd.h>
-> >>>>>>>  #include <string.h>
-> >>>>>>> @@ -38,7 +39,14 @@
-> >>>>>>>  
-> >>>>>>>  #define END_OF_TESTS	1
-> >>>>>>>  
-> >>>>>>> +#define BENCHMARK_ARGS		64
-> >>>>>>> +
-> >>>>>>> +/* Approximate %zu max length */
-> >>>>>>> +#define SIZE_MAX_DECIMAL_SIZE	(sizeof(SIZE_MAX) * 8 / 3 + 2)
-> >>>>>>> +
-> >>>>>>> +/* Define default span both as integer and string, these should match */
-> >>>>>>>  #define DEFAULT_SPAN		(250 * MB)
-> >>>>>>> +#define DEFAULT_SPAN_STR	"262144000"
-> >>>>>>
-> >>>>>> I think above hardcoding can be eliminated by using asprintf()? This
-> >>>>>> does allocate memory though so I would like to understand why one
-> >>>>>> goal is to not dynamically allocate memory.
-> >>>>>
-> >>>>> Because it's simpler on the _free() side_. If there's no allocation, no 
-> >>>>> free() is needed.
-> >>>>>
-> >>>>> Only challenge that remains is the int -> string conversion for the 
-> >>>>> default span which can be either done like in the patch or using some 
-> >>>>> preprocessor trickery to convert the number to string. If you prefer the 
-> >>>>> latter, I can change to that so it's not hardcoded both as int and string.
-> >>>>>
-> >>>>
-> >>>> This manual int->string sounds like the trickery to me and can be avoided
-> >>>> by just using asprintf(). I understand that no free() is needed when no
-> >>>> memory is allocated but it looks to me as though these allocations can
-> >>>> be symmetrical - allocate the memory before the tests are run and free it
-> >>>> after?
-> >>>
-> >>> It could be symmetrical but that means I'll be doing unnecessary alloc if 
-> >>> -b is provided which I assume you're against given your comment on always 
-> >>> creating copy of cmd in CMT test's case.
-> >>
-> >> I seemed to have lost track here ... could you please elaborate where the
-> >> unnecessary alloc will be?
-> > 
-> > If there's what you call "symmetry", it implies the code always does 
-> > alloc. However, the logic in main() is such that when -b is provided, no 
-> 
-> No. Symmetry does not mean "always alloc"
+Last entry CRC-64-ISO in the table.
+It is mentioned as crc64-iso and that's the
+only 64-bit CRC standardized by ISO. But I do agree that crc64-iso3309 would
+be more specific, will change it to crc64-iso3309 in next
+revision. Thanks.
 
-Oh, so it simply meant code without memory leaks :-).
-
-> - what I attempted to covey was
-> that tracking allocations become easier if the memory is freed in code
-> that is symmetrical to where the memory is allocated.
-
-That's, unfortunately, what I needed to do even if it resulted in less 
-clean code when I, in a later patch that is not part of this series, 
-added a function the setup the default parameters into user parameters 
-struct. main() will now pass that span_str for it to do "symmetrical" 
-free inside main().
-
-> For example, if memory
-> is allocated at the beginning of main(), then it is freed on exit of main(),
-
-you make it sound easier than the reality is. There's no singular point 
-that is "exit of main()". It has way too many exit paths because of how 
-selftests framework works. It doesn't give you back control when you ask 
-it to exit the tests.
-
-You'll see how complicated this gets once we get to the user parameters 
-structure patch but I'll use asprintf()+free() for now ;-). We can revisit 
-this discussion if you feel like it when we get to that patch.
-
-...And to think this all is because C cannot easily make known constant 
-int -> string conversion w/o some runtime code.
-
-> or if there is a "test_resources_alloc()" that is called before a test is
-> run then there could be a "test_resources_free()" that is called
-> after a test is run.
-> 
-> > default benchmark command needs to be assigned, so no alloc for span is 
-> > necessary. Thus, there either is unnecessary alloc with -b or _no 
-> > symmetry_.
-> > 
-> > But I've already converted to asprintf() so no need to continue this 
-> > discussion.
-> 
-> Please note that asprintf() allocates memory that needs to be freed.
-
-Of course.
-
--- 
- i.
-
---8323329-1508127004-1692343541=:1737--
+Regards,
+Kamlesh
