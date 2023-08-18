@@ -2,40 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3119780C20
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BA7780C27
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376959AbjHRMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:49:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
+        id S1376982AbjHRMwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:52:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376990AbjHRMtA (ORCPT
+        with ESMTP id S1376979AbjHRMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:49:00 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AFC1988
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:48:59 -0700 (PDT)
-Received: from canpemm500007.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RS1qV39wGz1GDV1;
-        Fri, 18 Aug 2023 20:47:34 +0800 (CST)
-Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
- (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 20:48:57 +0800
-From:   Yue Haibing <yuehaibing@huawei.com>
-To:     <perex@perex.cz>, <tiwai@suse.com>, <yuehaibing@huawei.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] ALSA: asihpi: Remove unused declarations
-Date:   Fri, 18 Aug 2023 20:48:52 +0800
-Message-ID: <20230818124852.51468-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Fri, 18 Aug 2023 08:52:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC2C1988
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:52:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1C8263315
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:52:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E8CCC433C8;
+        Fri, 18 Aug 2023 12:52:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692363155;
+        bh=7YqFcWNg2Fv2nlDyEHSlWqWCIq2Qdgqd6/JGbDJA9Vw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MXMcnrYzP2vHwKmZfTTGN057SXLQsJMx7wODXLJ0rveDFZN/vQFOL8N27p16BjzIe
+         NDQyO/MiZ043Umd71q3NTHS5Iy/p1xvel5R/+zRToohjhPE6mplNSw4zICCCzRO5Tx
+         eymUvIzwDz1/U7r/qXUXTq7ywNhfABmzUPQMjTC+JBBTzpefC34wrLoYeSSWzQYPKE
+         OHv/b7R/M2xaj5MgqFZcW/T44aOHUjNKDoYV/AvyoUIbJ3FQq8ZuJA+HL2KgJjA0wH
+         45m7g9rsYyUHYRB6NziZga9ENrghnZdMnBuNarTrElxxcvLtDFLRNrmD3j96OlIykP
+         er7I8XeJaAPpw==
+Date:   Fri, 18 Aug 2023 13:52:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Marian Postevca <posteuca@mutex.one>
+Cc:     =?utf-8?B?5rKI5LiA6LaF?= <zhuning0077@gmail.com>,
+        yangxiaohua <yangxiaohua@everest-semi.com>,
+        Zhu Ning <zhuning@everest-semi.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables
+ sound for systems with a ES8336 codec
+Message-ID: <8cddbe1c-20d7-4b8f-ba02-f86bbb5a54c5@sirena.org.uk>
+References: <141a3320-ff65-459f-9d00-c8bed691dcfc@sirena.org.uk>
+ <87lejpwxzf.fsf@mutex.one>
+ <ZBr9rJn50ovG1w9W@sirena.org.uk>
+ <87ttycjyw3.fsf@mutex.one>
+ <ZBty1CdPaWm0IcRi@sirena.org.uk>
+ <87r0t9uc08.fsf@mutex.one>
+ <ZCRCqJ7oG6oefo9g@sirena.org.uk>
+ <87zg2pxtog.fsf@mutex.one>
+ <d2be9183-87fd-4cc4-a239-9401b5b88364@sirena.org.uk>
+ <87o7j5b9bd.fsf@mutex.one>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500007.china.huawei.com (7.192.104.62)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Z+806srFnaL0BPyl"
+Content-Disposition: inline
+In-Reply-To: <87o7j5b9bd.fsf@mutex.one>
+X-Cookie: Your aim is high and to the right.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -44,70 +72,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are not implemented, so can remove them.
 
-Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
----
- sound/pci/asihpi/hpi.h          | 16 ----------------
- sound/pci/asihpi/hpi_internal.h |  5 -----
- 2 files changed, 21 deletions(-)
+--Z+806srFnaL0BPyl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/pci/asihpi/hpi.h b/sound/pci/asihpi/hpi.h
-index 3aebec763fb8..04a5cf6572cd 100644
---- a/sound/pci/asihpi/hpi.h
-+++ b/sound/pci/asihpi/hpi.h
-@@ -1191,19 +1191,6 @@ u16 hpi_adapter_set_mode_ex(u16 adapter_index, u32 adapter_mode,
- 
- u16 hpi_adapter_get_mode(u16 adapter_index, u32 *padapter_mode);
- 
--u16 hpi_adapter_get_assert2(u16 adapter_index, u16 *p_assert_count,
--	char *psz_assert, u32 *p_param1, u32 *p_param2,
--	u32 *p_dsp_string_addr, u16 *p_processor_id);
--
--u16 hpi_adapter_test_assert(u16 adapter_index, u16 assert_id);
--
--u16 hpi_adapter_enable_capability(u16 adapter_index, u16 capability, u32 key);
--
--u16 hpi_adapter_self_test(u16 adapter_index);
--
--u16 hpi_adapter_debug_read(u16 adapter_index, u32 dsp_address, char *p_bytes,
--	int *count_bytes);
--
- u16 hpi_adapter_set_property(u16 adapter_index, u16 property, u16 paramter1,
- 	u16 paramter2);
- 
-@@ -1488,9 +1475,6 @@ u16 hpi_pad_get_program_type(u32 h_control, u32 *ppTY);
- 
- u16 hpi_pad_get_rdsPI(u32 h_control, u32 *ppI);
- 
--u16 hpi_pad_get_program_type_string(u32 h_control, const u32 data_type,
--	const u32 pTY, char *psz_string, const u32 string_length);
--
- /****************************/
- /* AES/EBU Receiver control */
- /****************************/
-diff --git a/sound/pci/asihpi/hpi_internal.h b/sound/pci/asihpi/hpi_internal.h
-index 6859d51389f5..e569e3b33b8e 100644
---- a/sound/pci/asihpi/hpi_internal.h
-+++ b/sound/pci/asihpi/hpi_internal.h
-@@ -1394,17 +1394,12 @@ u32 hpi_indexes_to_handle(const char c_object, const u16 adapter_index,
- void hpi_send_recv(struct hpi_message *phm, struct hpi_response *phr);
- 
- /* used in PnP OS/driver */
--u16 hpi_subsys_create_adapter(const struct hpi_resource *p_resource,
--	u16 *pw_adapter_index);
--
- u16 hpi_outstream_host_buffer_get_info(u32 h_outstream, u8 **pp_buffer,
- 	struct hpi_hostbuffer_status **pp_status);
- 
- u16 hpi_instream_host_buffer_get_info(u32 h_instream, u8 **pp_buffer,
- 	struct hpi_hostbuffer_status **pp_status);
- 
--u16 hpi_adapter_restart(u16 adapter_index);
--
- /*
- The following 3 functions were last declared in header files for
- driver 3.10. HPI_ControlQuery() used to be the recommended way
--- 
-2.34.1
+On Fri, Aug 18, 2023 at 01:20:06AM +0300, Marian Postevca wrote:
+> Mark Brown <broonie@kernel.org> writes:
 
+> > This is saying that the machine driver should disable jack detection
+> > over suspend and restart it during resume.  The machine driver should
+> > suspend before the rest of the card which should mean that the CODEC
+> > gets powered off then.  The core can't tell if jack detection is
+> > supposed to work over suspend, it is a standard wake event on systems
+> > like phones, but it sounds like on this system the power gets removed
+> > from the device so that can't work.
+
+> Sorry, I don't understand what you are trying to say here. My intention
+> is to find a way to have sound working when suspending/resuming
+> with jack inserted by not fudging the jack in the machine driver but
+> fixing it in the CODEC.
+
+You'd need to pull the relevant supplies out of DAPM and handle them in
+the CODEC suspend/resume callback.
+
+> > I don't understand why that would be expected to help?  The main effect
+> > of keeping the bias on all the time would be to consume more power.
+
+> I don't fully understand the whole bias thing (I did try hard to
+> understand it from the code), but in this specific instance it helps for
+> suspending the CODEC. If idle_bias_on is true then idle_bias_off will be
+
+Very old devices required keeping a reference voltage maintained at half
+the analog supply voltage, this supply is called the bias.  It couldn't
+be powered on/off quickly so needed to be kept on all the time.  I can't
+tell which driver you're using here so I can't tell if it's maintaining
+any system level power like that.
+
+--Z+806srFnaL0BPyl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTfaYwACgkQJNaLcl1U
+h9B/DQf/WTaBHBmfKP02yjMkT4VeN9hLq+f9r25ur3Z5EvIKGj0IYpOL5QASU6pw
+tmCkN81RBknpWyYWUyDe3TGcKitz5hREeGdfu/NrNwDwS7Z++zCpGZko6De+t49S
+sEqvf51OT2Uh8sU0lp/MPkF1cQFnNY9gF1ofRwKRlqXlBih+kmCRZl6rOxXFQ6FK
+nwal2kpnkyoX9uoyMF7LqwJZVNXf6DH1fZZBkTHBbYPcbqRUqtjf2tKjlF56wybU
+/LmzqyKobRoQ/c6xL3E0iEh98FPnXKsmbxQ8IKOzsvgsq0kGm3GIFQchCMwUEErl
++Q3r8dVJ1KIQkvl1dQbeo62LbcwRbw==
+=atF3
+-----END PGP SIGNATURE-----
+
+--Z+806srFnaL0BPyl--
