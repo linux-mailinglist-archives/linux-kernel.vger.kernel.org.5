@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FD57806B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8617806D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:04:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358364AbjHRHxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S1358267AbjHRIDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358378AbjHRHwf (ORCPT
+        with ESMTP id S1353142AbjHRIDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:52:35 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0023A3A82
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:52:33 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bf3a2f44ffso2692835ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:52:33 -0700 (PDT)
+        Fri, 18 Aug 2023 04:03:37 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABB512C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:03:35 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31783d02093so608453f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:03:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692345153; x=1692949953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V8duZBb7/Vz58MaN/PoDCFguJ69017evWqg3k7byHQ8=;
-        b=WHE5axGTJJDn72IbHvrVDFL9Shc7pKsphrM41sfga6yldUjEDjTrCFcJpIdEQ6X/d/
-         ZedG5dJD3PhFdQ9nGeuXOgLXGHq3fAciJO7f6RaEugjCwKsFCvQrd/SyJTHEyGjHNqnt
-         kdvi50NXP2xMIZV7BXu8Nv1k2M6gCW43BKxesg3PUBILx4YdjsnWvo96DTvW7e+OX7qA
-         xac2cntYz9c1WDQd8W4Pf2Rtot8p+5L/6ySeBHINEuKOeVBD5HMKCDHJ4HFrdOMcHaMj
-         kx8+6O2T2aH/YZH95d64zof7KJn1cgA1wdTs6MEWpNMgHketAxKgi+9HnCHMp2HafGTR
-         J+vA==
+        d=gmail.com; s=20221208; t=1692345814; x=1692950614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ljUrJOGWvJJ47ZnRynlGMHaMFmNr5devWAZSgVCf8s=;
+        b=SYAhfCcoyf1K9x5xDb9gaRPgD5GA7yZZkLfKP3zaG9JEyVGkpF9k9RiMH7PlgoX18S
+         9i018DV1R2mfKwH5+tU5tLfByj2PXZohwCnw11/UiDegAK2y0aPF7v/Zzl5NiT7u75lA
+         tZl6UfmvkcikyI3uy0AW+zMImN7gjv+SKC0Cwh60R7fOfIrWUugUWnJqVCH+oBTBqeYb
+         IqdR0wyMwFFdEBb8mtXDihLZA3HXnFUxYoFIchhI/gDSGSNKFVZBktGN4gqLn2FAXK3i
+         y//Snclsch9CYvs6Dr00g43pTDzF48ZrpfBNud7aK2NUVgLu22IAxvJwXSd3VXmXNgEe
+         eT2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692345153; x=1692949953;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V8duZBb7/Vz58MaN/PoDCFguJ69017evWqg3k7byHQ8=;
-        b=E5BDHbqeVdSqkpwsxyBPWxYBM1ojIXfNPg3Mhw1vn+GOOdQouuuAHcOE4fAgYMVh1C
-         s8cBiw31f6tINPW3JBPo6qdNe6g8vpi+7dVyFkdm90fdd3diFHpVFaqYDwDj/ACwGOjO
-         9ZNApD6xs/iEewp2MtxOpOSgZsy1i/5hrdCV7e02XyAQKmag8YYhTEVfpZ8MYQj6Medk
-         6EQCos4c9iKLHrtLxEQfadO/lb0RXcqfB/3VKpFx91HR59y3nmYNFPwETg6S4aQT1R3O
-         /cwExgzm4bqRobxcG7Ca5AW69iXmgsEn+Lv5t9LjO7Ose5gXXl25EpESFppnJn86Wunw
-         YCwA==
-X-Gm-Message-State: AOJu0YwoK4nJ9nNFuFEadKgTkAncAKNe/ZIEq2nIHEuOEMcj4fQY+f98
-        zMoUyeIqPbfR+bL/uNcQ+nmxKpYk/EI=
-X-Google-Smtp-Source: AGHT+IFVeicJUnhXS4O2X3WbCbT5hTFJs9hWM5MC641m0k5xentlHDNDAabEJjdJmUnrggei0ff3jQ==
-X-Received: by 2002:a17:902:c94d:b0:1b8:88c5:2d2f with SMTP id i13-20020a170902c94d00b001b888c52d2fmr2095248pla.64.1692345153286;
-        Fri, 18 Aug 2023 00:52:33 -0700 (PDT)
-Received: from localhost ([156.236.96.163])
-        by smtp.gmail.com with ESMTPSA id e9-20020a170902b78900b001b5656b0bf9sm1038102pls.286.2023.08.18.00.52.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 18 Aug 2023 00:52:33 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 16:02:16 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        huyue2@coolpad.com
-Subject: Re: [PATCH 6/8] erofs: get rid of fe->backmost for cache
- decompression
-Message-ID: <20230818160216.00002bfd.zbestahu@gmail.com>
-In-Reply-To: <671a514f-8597-7693-1323-929e39c56dda@linux.alibaba.com>
-References: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
-        <20230817082813.81180-6-hsiangkao@linux.alibaba.com>
-        <20230818135156.00005a05.zbestahu@gmail.com>
-        <671a514f-8597-7693-1323-929e39c56dda@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        d=1e100.net; s=20221208; t=1692345814; x=1692950614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2ljUrJOGWvJJ47ZnRynlGMHaMFmNr5devWAZSgVCf8s=;
+        b=XPjbR8Ds4G3HtvOCYVvFusPSe/0I6QT/1QEBtzqordUln2opVsZbhA4DQngCNa4FmO
+         iUzx46NfnFyu/Rf+16xBcQCKuaEEfZxakcxYw/0eREc3s2H2JlfCg4duyd59oT+0Fd9W
+         l0zfJ7v9W6SJb5XoCopnw8+P+NpQkUVey0FmT4gfbumW9pmPOcgWvStgjNV52SLZTd1+
+         cCzJzSX0I6tH+9+ddjaoqZ723k55Bc8I+1ogbqApZwDed44EZx2WNd6ZwsWl0IvXvTTZ
+         tctsXhgaqee25rrDjUZWL+LbsPL694QQ5UbUEcAurkiFdj3woFYBkVKNvyifbbWJlt94
+         Q/oQ==
+X-Gm-Message-State: AOJu0Yxd04KO9x4fdQsPhnoJ9QFKJBCSllOEBci7BL49gs3LzAMuCEBr
+        EQd68lCVRBSgZGFOk45YVnCU8W8o/as=
+X-Google-Smtp-Source: AGHT+IGLtuhVCBCMn0yo2qCzHpQYzOhIhgZSuJG9XrayQmWsOQSZOYFF/HkR2OX8dyJPJx1S1hNmUg==
+X-Received: by 2002:a5d:6a44:0:b0:317:5351:e428 with SMTP id t4-20020a5d6a44000000b003175351e428mr1275341wrw.4.1692345813113;
+        Fri, 18 Aug 2023 01:03:33 -0700 (PDT)
+Received: from ALPER-PC.. ([178.233.24.1])
+        by smtp.gmail.com with ESMTPSA id f13-20020a5d664d000000b00314172ba213sm1871213wrw.108.2023.08.18.01.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 01:03:32 -0700 (PDT)
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+To:     alsa-devel@alsa-project.org
+Cc:     linux-kernel@vger.kernel.org,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH] ASoC: amd: acp: Add kcontrols and widgets per-codec in common code
+Date:   Fri, 18 Aug 2023 11:03:14 +0300
+Message-Id: <20230818080314.32991-1-alpernebiyasak@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,61 +75,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 15:48:08 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+Commit 7ac3404c2e21 ("ASoC: amd: acp: Map missing jack kcontrols") adds
+card kcontrols and DAPM widgets corresponding to jacks for Headphone and
+Headset Mic. But these were already being added in acp-legacy-mach.c and
+acp-sof-mach.c, so this causes a probe error:
 
-> On 2023/8/18 13:51, Yue Hu wrote:
-> > On Thu, 17 Aug 2023 16:28:11 +0800
-> > Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
-> >   
-> >> EROFS_MAP_FULL_MAPPED is more accurate to decide if caching the last
-> >> incomplete pcluster for later read or not.
-> >>
-> >> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> >> ---
-> >>   fs/erofs/zdata.c | 7 ++-----
-> >>   1 file changed, 2 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-> >> index 4009283944ca..c28945532a02 100644
-> >> --- a/fs/erofs/zdata.c
-> >> +++ b/fs/erofs/zdata.c
-> >> @@ -528,8 +528,6 @@ struct z_erofs_decompress_frontend {
-> >>   	z_erofs_next_pcluster_t owned_head;
-> >>   	enum z_erofs_pclustermode mode;
-> >>   
-> >> -	/* used for applying cache strategy on the fly */
-> >> -	bool backmost;
-> >>   	erofs_off_t headoffset;
-> >>   
-> >>   	/* a pointer used to pick up inplace I/O pages */
-> >> @@ -538,7 +536,7 @@ struct z_erofs_decompress_frontend {
-> >>   
-> >>   #define DECOMPRESS_FRONTEND_INIT(__i) { \
-> >>   	.inode = __i, .owned_head = Z_EROFS_PCLUSTER_TAIL, \
-> >> -	.mode = Z_EROFS_PCLUSTER_FOLLOWED, .backmost = true }
-> >> +	.mode = Z_EROFS_PCLUSTER_FOLLOWED }
-> >>   
-> >>   static bool z_erofs_should_alloc_cache(struct z_erofs_decompress_frontend *fe)
-> >>   {
-> >> @@ -547,7 +545,7 @@ static bool z_erofs_should_alloc_cache(struct z_erofs_decompress_frontend *fe)
-> >>   	if (cachestrategy <= EROFS_ZIP_CACHE_DISABLED)
-> >>   		return false;
-> >>   
-> >> -	if (fe->backmost)
-> >> +	if (!(fe->map.m_flags & EROFS_MAP_FULL_MAPPED))  
-> > 
-> > So, i understand (map.m_flags & EROFS_MAP_FULL_MAPPED) should be false if allocate cache is needed
-> > (fe->backmost is true)?  
-> 
-> fe->backmost is inaccurate compared with !EROFS_MAP_FULL_MAPPED,
-> if !EROFS_MAP_FULL_MAPPED, it should be cached instead.
+  sof_mach rt5682s-hs-rt1019: control 2:0:0:Headphone Jack Switch:0 is already present
+  sof_mach rt5682s-hs-rt1019: ASoC: Failed to add Headphone Jack Switch: -16
+  sof_mach rt5682s-hs-rt1019: devm_snd_soc_register_card(sof-rt5682s-hs-rt1019) failed: -16
+  sof_mach: probe of rt5682s-hs-rt1019 failed with error -16
 
-Okay.
+Removing the new duplicates from the common code might be enough to fix
+the issue. But some of the codecs use different kcontrols and widgets.
+NAU8821 alone has an "Int Mic". MAX98360A has a single "Spk", while
+RT1019 has "Left Spk" and "Right Spk" (and two codec instances with name
+prefixes).
 
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
+Since there are per-codec differences, add the kcontrols and widgets
+in the common code as each dai-link is being initialized, instead of in
+the two machine drivers' probe().
 
-> 
-> Thanks,
-> Gao Xiang
+Also, MAX98388 has Left and Right instances, but uses a single "SPK"
+widget. That seems weird, so normalize it to use two widgets (one per
+each instance like RT1019) while we're adding controls.
+
+Fixes: 7ac3404c2e21 ("ASoC: amd: acp: Map missing jack kcontrols")
+Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+---
+Applies onto linux-next.
+
+ sound/soc/amd/acp/acp-legacy-mach.c | 22 +---------
+ sound/soc/amd/acp/acp-mach-common.c | 68 +++++++++++++++++++++++++++--
+ sound/soc/amd/acp/acp-sof-mach.c    | 21 +--------
+ 3 files changed, 67 insertions(+), 44 deletions(-)
+
+diff --git a/sound/soc/amd/acp/acp-legacy-mach.c b/sound/soc/amd/acp/acp-legacy-mach.c
+index 676ad50638d0..6d57d17ddfd7 100644
+--- a/sound/soc/amd/acp/acp-legacy-mach.c
++++ b/sound/soc/amd/acp/acp-legacy-mach.c
+@@ -75,23 +75,6 @@ static struct acp_card_drvdata rt5682s_rt1019_rmb_data = {
+ 	.tdm_mode = false,
+ };
+ 
+-static const struct snd_kcontrol_new acp_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+-	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Spk"),
+-	SOC_DAPM_PIN_SWITCH("Left Spk"),
+-	SOC_DAPM_PIN_SWITCH("Right Spk"),
+-
+-};
+-
+-static const struct snd_soc_dapm_widget acp_widgets[] = {
+-	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+-	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_SPK("Spk", NULL),
+-	SND_SOC_DAPM_SPK("Left Spk", NULL),
+-	SND_SOC_DAPM_SPK("Right Spk", NULL),
+-};
+-
+ static int acp_asoc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = NULL;
+@@ -110,11 +93,8 @@ static int acp_asoc_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	card->owner = THIS_MODULE;
+ 	card->name = pdev->id_entry->name;
+-	card->dapm_widgets = acp_widgets;
+-	card->num_dapm_widgets = ARRAY_SIZE(acp_widgets);
+-	card->controls = acp_controls;
+-	card->num_controls = ARRAY_SIZE(acp_controls);
+ 	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
++	/* Widgets and controls added per-codec in acp-mach-common.c */
+ 
+ 	acp_card_drvdata = card->drvdata;
+ 	dmi_id = dmi_first_match(acp_quirk_table);
+diff --git a/sound/soc/amd/acp/acp-mach-common.c b/sound/soc/amd/acp/acp-mach-common.c
+index f3abaa182fbb..a06af82b8056 100644
+--- a/sound/soc/amd/acp/acp-mach-common.c
++++ b/sound/soc/amd/acp/acp-mach-common.c
+@@ -513,6 +513,16 @@ SND_SOC_DAILINK_DEF(rt1019,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC1019:00", "rt1019-aif"),
+ 			  COMP_CODEC("i2c-10EC1019:01", "rt1019-aif")));
+ 
++static const struct snd_kcontrol_new rt1019_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Left Spk"),
++	SOC_DAPM_PIN_SWITCH("Right Spk"),
++};
++
++static const struct snd_soc_dapm_widget rt1019_widgets[] = {
++	SND_SOC_DAPM_SPK("Left Spk", NULL),
++	SND_SOC_DAPM_SPK("Right Spk", NULL),
++};
++
+ static const struct snd_soc_dapm_route rt1019_map_lr[] = {
+ 	{ "Left Spk", NULL, "Left SPO" },
+ 	{ "Right Spk", NULL, "Right SPO" },
+@@ -533,10 +543,25 @@ static int acp_card_rt1019_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_card_drvdata *drvdata = card->drvdata;
++	int ret;
+ 
+ 	if (drvdata->amp_codec_id != RT1019)
+ 		return -EINVAL;
+ 
++	ret = snd_soc_dapm_new_controls(&card->dapm, rt1019_widgets,
++					ARRAY_SIZE(rt1019_widgets));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add widget dapm controls, ret %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_add_card_controls(card, rt1019_controls,
++					ARRAY_SIZE(rt1019_controls));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
++		return ret;
++	}
++
+ 	return snd_soc_dapm_add_routes(&rtd->card->dapm, rt1019_map_lr,
+ 				       ARRAY_SIZE(rt1019_map_lr));
+ }
+@@ -667,6 +692,14 @@ static const struct snd_soc_ops acp_card_rt1019_ops = {
+ SND_SOC_DAILINK_DEF(max98360a,
+ 	DAILINK_COMP_ARRAY(COMP_CODEC("MX98360A:00", "HiFi")));
+ 
++static const struct snd_kcontrol_new max98360a_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Spk"),
++};
++
++static const struct snd_soc_dapm_widget max98360a_widgets[] = {
++	SND_SOC_DAPM_SPK("Spk", NULL),
++};
++
+ static const struct snd_soc_dapm_route max98360a_map[] = {
+ 	{"Spk", NULL, "Speaker"},
+ };
+@@ -675,10 +708,25 @@ static int acp_card_maxim_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_card *card = rtd->card;
+ 	struct acp_card_drvdata *drvdata = card->drvdata;
++	int ret;
+ 
+ 	if (drvdata->amp_codec_id != MAX98360A)
+ 		return -EINVAL;
+ 
++	ret = snd_soc_dapm_new_controls(&card->dapm, max98360a_widgets,
++					ARRAY_SIZE(max98360a_widgets));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add widget dapm controls, ret %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_add_card_controls(card, max98360a_controls,
++					ARRAY_SIZE(max98360a_controls));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
++		return ret;
++	}
++
+ 	return snd_soc_dapm_add_routes(&rtd->card->dapm, max98360a_map,
+ 				       ARRAY_SIZE(max98360a_map));
+ }
+@@ -744,13 +792,19 @@ SND_SOC_DAILINK_DEF(max98388,
+ 		    DAILINK_COMP_ARRAY(COMP_CODEC("i2c-ADS8388:00", "max98388-aif1"),
+ 				       COMP_CODEC("i2c-ADS8388:01", "max98388-aif1")));
+ 
++static const struct snd_kcontrol_new max98388_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Left Spk"),
++	SOC_DAPM_PIN_SWITCH("Right Spk"),
++};
++
+ static const struct snd_soc_dapm_widget max98388_widgets[] = {
+-	SND_SOC_DAPM_SPK("SPK", NULL),
++	SND_SOC_DAPM_SPK("Left Spk", NULL),
++	SND_SOC_DAPM_SPK("Right Spk", NULL),
+ };
+ 
+ static const struct snd_soc_dapm_route max98388_map[] = {
+-	{ "SPK", NULL, "Left BE_OUT" },
+-	{ "SPK", NULL, "Right BE_OUT" },
++	{ "Left Spk", NULL, "Left BE_OUT" },
++	{ "Right Spk", NULL, "Right BE_OUT" },
+ };
+ 
+ static struct snd_soc_codec_conf max98388_conf[] = {
+@@ -803,6 +857,14 @@ static int acp_card_max98388_init(struct snd_soc_pcm_runtime *rtd)
+ 		/* Don't need to add routes if widget addition failed */
+ 		return ret;
+ 	}
++
++	ret = snd_soc_add_card_controls(card, max98388_controls,
++					ARRAY_SIZE(max98388_controls));
++	if (ret) {
++		dev_err(rtd->dev, "unable to add card controls, ret %d\n", ret);
++		return ret;
++	}
++
+ 	return snd_soc_dapm_add_routes(&rtd->card->dapm, max98388_map,
+ 				       ARRAY_SIZE(max98388_map));
+ }
+diff --git a/sound/soc/amd/acp/acp-sof-mach.c b/sound/soc/amd/acp/acp-sof-mach.c
+index a1c893f33f74..5223033a122f 100644
+--- a/sound/soc/amd/acp/acp-sof-mach.c
++++ b/sound/soc/amd/acp/acp-sof-mach.c
+@@ -94,22 +94,6 @@ static struct acp_card_drvdata sof_nau8821_max98388_data = {
+ 	.tdm_mode = false,
+ };
+ 
+-static const struct snd_kcontrol_new acp_controls[] = {
+-	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+-	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+-	SOC_DAPM_PIN_SWITCH("Spk"),
+-	SOC_DAPM_PIN_SWITCH("Left Spk"),
+-	SOC_DAPM_PIN_SWITCH("Right Spk"),
+-};
+-
+-static const struct snd_soc_dapm_widget acp_widgets[] = {
+-	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+-	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+-	SND_SOC_DAPM_SPK("Spk", NULL),
+-	SND_SOC_DAPM_SPK("Left Spk", NULL),
+-	SND_SOC_DAPM_SPK("Right Spk", NULL),
+-};
+-
+ static int acp_sof_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = NULL;
+@@ -128,11 +112,8 @@ static int acp_sof_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	card->owner = THIS_MODULE;
+ 	card->name = pdev->id_entry->name;
+-	card->dapm_widgets = acp_widgets;
+-	card->num_dapm_widgets = ARRAY_SIZE(acp_widgets);
+-	card->controls = acp_controls;
+-	card->num_controls = ARRAY_SIZE(acp_controls);
+ 	card->drvdata = (struct acp_card_drvdata *)pdev->id_entry->driver_data;
++	/* Widgets and controls added per-codec in acp-mach-common.c */
+ 
+ 	acp_card_drvdata = card->drvdata;
+ 	dmi_id = dmi_first_match(acp_quirk_table);
+
+base-commit: 47762f08697484cf0c2f2904b8c52375ed26c8cb
+-- 
+2.40.1
 
