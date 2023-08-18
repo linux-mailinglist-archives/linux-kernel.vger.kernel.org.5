@@ -2,81 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8AC78104E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF95781051
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378620AbjHRQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
+        id S1378623AbjHRQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378704AbjHRQZa (ORCPT
+        with ESMTP id S1378675AbjHRQ0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:25:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEC1422A;
-        Fri, 18 Aug 2023 09:25:23 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so1644072e87.1;
-        Fri, 18 Aug 2023 09:25:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692375922; x=1692980722;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G8pEiMFERjLgVh4C9AUlgVVF/u9ST2sS9FY068sp55M=;
-        b=FprSxqxmAgSGctTLQ28PwyU5HnddBxkUcfvSL95K4ZhhU1gqy2dwN+G6F/1E3tV5/d
-         spD0XxDeF6i75U5RD/9vNC2bpwikfuivVB0ej4qHJaCrsmKcmGmL1vREhUEExLZLBp20
-         CYJoZ6hfW5cihsut2AYrThepT8/JJ1MI6ij4NeXFP2J1RKqTRjiR97UWj9rXOaq4FeFU
-         mzcW1F5w7dLB3D2L0DWFT26Vz6UVm0r/gH3gUWXGrRUJ8QtPTk3vv2jRhZ1Bvh+816iz
-         IYyMvy7eQHlLTA7KLinypQwOv1J+aTczBxfI4KaxTHUE4wP+0I3ujUurxoIZfvhJV4z8
-         7jXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375922; x=1692980722;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G8pEiMFERjLgVh4C9AUlgVVF/u9ST2sS9FY068sp55M=;
-        b=CcO850ymmteobB7qO2COaA9cU4ljpz8+zRVTehpNzXRdMEYzG0uz1hotImFuMbBIo2
-         0J+m+dCzY/hd4AY1KAY8s6mu6FPlvBNw/qiPqciI4NYYoJjAAHJLjtZMykDyX/a2P1KU
-         PZa6tjLE20BUj8V5Az+vikUgxqDzG1h3XiiThum13X+3S5CSN0cGiG4hgyM0dTSwyiI3
-         goOxCm9MY4RwXU9nS98YSyATI/ajMXeiHj/WotXB5yik/HTko7qtroemZVmtHfDpoPuS
-         12637gTHT/m1U1gxHeyWmLThc7HIJMRCZw4uQH1t0sIlGKf4x11tU6RR2UhjfXktiHih
-         61LA==
-X-Gm-Message-State: AOJu0YxazF9OeGCRMbPfwfU94KKHG0NeW+/CnIfE9IAdYFTamhLmTvOX
-        8EUpjbBdAYrEJhy6ciNmwdk=
-X-Google-Smtp-Source: AGHT+IHHD2GbCfI74fDNGo4DfOBaJf7xvPPj6QcGsKYq2G/vvkEdZSQJ6smybkTbm7yqRPhd6BjRvw==
-X-Received: by 2002:a05:6512:2822:b0:4f6:2317:f387 with SMTP id cf34-20020a056512282200b004f62317f387mr2462526lfb.35.1692375921947;
-        Fri, 18 Aug 2023 09:25:21 -0700 (PDT)
-Received: from mobilestation ([93.157.254.210])
-        by smtp.gmail.com with ESMTPSA id eq19-20020a056512489300b004fe1bc7e4acsm395877lfb.131.2023.08.18.09.25.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 09:25:21 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 19:25:19 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v5 2/9] net: stmmac: xgmac: add more feature
- parsing from hw cap
-Message-ID: <ytrtxlidqp4blp5gfrgnnirtosjes7mcjkbdvcm7lmvnpkm7ut@e5tuy3bx2cd5>
-References: <20230817165749.672-1-jszhang@kernel.org>
- <20230817165749.672-3-jszhang@kernel.org>
+        Fri, 18 Aug 2023 12:26:11 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A96034224;
+        Fri, 18 Aug 2023 09:25:52 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED98ED75;
+        Fri, 18 Aug 2023 09:26:32 -0700 (PDT)
+Received: from [10.57.3.66] (unknown [10.57.3.66])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC5893F762;
+        Fri, 18 Aug 2023 09:25:49 -0700 (PDT)
+Message-ID: <33939efa-c84f-e50d-3fe8-ae5b015ecc14@arm.com>
+Date:   Fri, 18 Aug 2023 17:25:48 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817165749.672-3-jszhang@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v7 13/13] coresight-tpdm: Add nodes for dsb msr support
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
+ <1690269353-10829-14-git-send-email-quic_taozha@quicinc.com>
+ <b36940af-648d-2620-3086-81b30de6e401@arm.com>
+ <29a2cbfa-200d-3092-e827-b590a1ca1a30@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <29a2cbfa-200d-3092-e827-b590a1ca1a30@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,34 +61,341 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 12:57:42AM +0800, Jisheng Zhang wrote:
-> The XGMAC_HWFEAT_GMIISEL bit also indicates whether support 10/100Mbps
-> or not.
+On 18/08/2023 16:44, Tao Zhang wrote:
 > 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> Acked-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+> On 8/7/2023 7:35 PM, Suzuki K Poulose wrote:
+>> On 25/07/2023 08:15, Tao Zhang wrote:
+>>> Add the nodes for DSB subunit MSR(mux select register) support.
+>>> The TPDM MSR (mux select register) interface is an optional
+>>> interface and associated bank of registers per TPDM subunit.
+>>> The intent of mux select registers is to control muxing structures
+>>> driving the TPDM’s’ various subunit interfaces.
+>>>
+>>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
+>>> ---
+>>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 19 ++++-
+>>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 98 
+>>> ++++++++++++++++++++++
+>>>   drivers/hwtracing/coresight/coresight-tpdm.h       |  7 ++
+>>>   3 files changed, 123 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git 
+>>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
+>>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> index 74a0126..ee41a14 100644
+>>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+>>> @@ -185,4 +185,21 @@ Description:
+>>>             Accepts only one of the 2 values -  0 or 1.
+>>>           0 : Set the DSB pattern type to value.
+>>> -        1 : Set the DSB pattern type to toggle.
+>>> \ No newline at end of file
+>>> +        1 : Set the DSB pattern type to toggle.
+>>> +
+>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_msr_idx
+>>> +Date:        March 2023
+>>> +KernelVersion    6.5
+>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
+>>> (QUIC) <quic_taozha@quicinc.com>
+>>> +Description:
+>>> +        Read/Write the index number of MSR(mux select register) on DSB
+>>> +        TPDM. This index number should not be greater than the number
+>>> +        of MSR supported by this DSB TPDM.
+>>
+>> How does a user find it ? Why don't we expose it ? Scratch all of 
+>> that, you could create a register file per exising msr.
+>>
+>>     dsb_msrs/msr0 ... msrN
+>>
+>> You may :
+>>
+>> 1. either dynamically add files as you find the number
+>>
+>> OR
+>>
+>> 2. If there is a hard limit, create that many files and control 
+>> visibility based on the dynamic number.
+>>
+> Hi Suzuki,
+> 
+> 
+> With regards to your suggestions, would you mind if you provide some 
+> sample code for my reference?
+> 
+> 1. How to dynamically add files to the sysfs as I find the number?
+> 
+> 2. The hard limit of MSR should be 32. How can I control visibility 
+> based on the dynamic number?
 
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+You could add attributes via dev_ext_attribute, storing the "idx" as
+the data field for 0-31. And use the is_visible() hook for  the
+attribute_group, just like you do for DSB related checks.
 
--Serge(y)
 
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c | 1 +
->  1 file changed, 1 insertion(+)
+Some skeleton code, untested :
+
+static ssize_t dsb_msr_read(struct device *dev,
+			    struct device_attribute *attr, char *buf)
+{
+	struct dev_ext_attribute *eattr = container_of(attr,
+				struct  dev_ext_attribute, attr);
+	int idx = (int)(unsigned long)eattr->var;
+
+	/* Read the MSR at IDX */
+}
+
+/* Similarly for dsb_msr_write() */
+
+#define DSB_MSR_ATTR(idx)				\
+	&((struct dev_ext_attribute[]) {		\
+          {						\	
+		 __ATTR("msr"#idx, <RW>, dsb_msr_read, dsb_msr_write), \
+		 (void *)idx }        \
+         })[0].attr.attr
+
+#define DSB_MSR_ATTRS			\
+	DSB_MSR_ATTR(0),			\
+	DSB_MSR_ATTR(1),			\
+	...
+	DSB_MSR_ATTR(31)
+
+static struct attribute * dsb_msr_attrs[] = {
+	DSB_MSR_ATTRS,
+	NULL,
+};
+
+static umode_t
+dsb_msr_is_visible(struct kobject *kobj,
+		   struct attribute *attr, int unuse)
+{
+	struct device *dev = kobject_to_dev(kobj);
+	/* From dev, get drvdata */
+	/* Then decide if it should be made visible, if yes R/W permissions */
+}
+
+static const struct attribute_group dsb_msr_group = {
+         .is_visible = dsb_msr_is_visible,
+         .attrs = dsb_msr_attrs,
+         .name = "dsb_msr",
+};
+
+See : drivers/.../coresight-etm4x-sysfs.c:
+
+coresight_etmv4_mgmt_attrs & coresight_etmv4_mgmt_group
+for an example.
+
+Suzuki
+
+
+
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> index 3aacf791efeb..1ef8fc132c2d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
-> @@ -410,6 +410,7 @@ static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
->  	dma_cap->vlhash = (hw_cap & XGMAC_HWFEAT_VLHASH) >> 4;
->  	dma_cap->half_duplex = (hw_cap & XGMAC_HWFEAT_HDSEL) >> 3;
->  	dma_cap->mbps_1000 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
-> +	dma_cap->mbps_10_100 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
->  
->  	/* MAC HW feature 1 */
->  	hw_cap = readl(ioaddr + XGMAC_HW_FEATURE1);
-> -- 
-> 2.40.1
+
+
+
+
+>>
+>>
+>>> +
+>>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_msr
+>>> +Date:        March 2023
+>>> +KernelVersion    6.5
+>>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
+>>> (QUIC) <quic_taozha@quicinc.com>
+>>> +Description:
+>>> +        (Write) Set the MSR(mux select register) of DSB tpdm. Read
+>>> +        the MSR(mux select register) of DSB tpdm.
+>>
+>> (RW)
+> Sure, I will update this in the next patch series.
+>>
+>>> \ No newline at end of file
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
+>>> b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> index f9e5a1d..be7776b 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+>>> @@ -90,6 +90,18 @@ static void set_dsb_tier(struct tpdm_drvdata 
+>>> *drvdata, u32 *val)
+>>>     }
+>>>   +static void set_dsb_msr(struct tpdm_drvdata *drvdata)
+>>> +{
+>>> +    int i;
+>>> +
+>>
+>>
+>>> +    if (drvdata->dsb->msr_num == 0)
+>>> +        return;
+>>> +
+>>> +    for (i = 0; i < drvdata->dsb->msr_num; i++)
+>>> +        writel_relaxed(drvdata->dsb->msr[i],
+>>> +               drvdata->base + TPDM_DSB_MSR(i));
+>>> +}
+>>> +
+>>>   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>>>   {
+>>>       u32 val, i;
+>>> @@ -116,6 +128,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata 
+>>> *drvdata)
+>>>       set_dsb_tier(drvdata, &val);
+>>>       writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
+>>>   +    set_dsb_msr(drvdata);
+>>> +
+>>>       val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+>>>       /* Set the test accurate mode */
+>>>       set_dsb_test_mode(drvdata, &val);
+>>> @@ -234,6 +248,14 @@ static int tpdm_datasets_setup(struct 
+>>> tpdm_drvdata *drvdata)
+>>>               if (!drvdata->dsb)
+>>>                   return -ENOMEM;
+>>>           }
+>>> +        if (!of_property_read_u32(drvdata->dev->of_node,
+>>> +               "qcom,dsb_msr_num", &drvdata->dsb->msr_num)) {
+>>> +            drvdata->dsb->msr = devm_kzalloc(drvdata->dev, > + 
+>>> (drvdata->dsb->msr_num * sizeof(*drvdata->dsb->msr)),
+>>
+>>             devm_kcalloc() ?
+> Sure, I will update this in the next patch series.
+>>
+>>> +                   GFP_KERNEL);
+>>> +            if (!drvdata->dsb->msr)
+>>> +                return -ENOMEM;
+>>> +        }
+>>>       }
+>>>         return 0;
+>>> @@ -830,6 +852,80 @@ static ssize_t dsb_trig_ts_store(struct device 
+>>> *dev,
+>>>   }
+>>>   static DEVICE_ATTR_RW(dsb_trig_ts);
+>>>   +static ssize_t dsb_msr_idx_show(struct device *dev,
+>>> +                 struct device_attribute *attr,
+>>> +                 char *buf)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +
+>>> +    return sysfs_emit(buf, "%u\n",
+>>> +            (unsigned int)drvdata->dsb->msr_idx);
+>>> +
+>>> +}
+>>> +
+>>> +static ssize_t dsb_msr_idx_store(struct device *dev,
+>>> +                  struct device_attribute *attr,
+>>> +                  const char *buf,
+>>> +                  size_t size)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +    unsigned long index;
+>>> +
+>>> +    if (kstrtoul(buf, 0, &index))
+>>> +        return -EINVAL;
+>>> +    if (index >= drvdata->dsb->msr_num)
+>>> +        return -EPERM;
+>>> +
+>>> +    spin_lock(&drvdata->spinlock);
+>>> +    drvdata->dsb->msr_idx = index;
+>>> +    spin_unlock(&drvdata->spinlock);
+>>> +    return size;
+>>> +}
+>>> +static DEVICE_ATTR_RW(dsb_msr_idx);
+>>> +
+>>> +static ssize_t dsb_msr_show(struct device *dev,
+>>> +                 struct device_attribute *attr,
+>>> +                 char *buf)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +    unsigned int i;
+>>> +    unsigned long bytes;
+>>> +    ssize_t size = 0;
+>>> +
+>>> +    if (drvdata->dsb->msr_num == 0)
+>>> +        return -EINVAL;
+>>> +
+>>> +    spin_lock(&drvdata->spinlock);
+>>> +    for (i = 0; i < drvdata->dsb->msr_num; i++) {
+>>> +        bytes = sysfs_emit_at(buf, size,
+>>> +                  "0x%x\n", drvdata->dsb->msr[i]);
+>>
+>> Single value per single file.
+> 
+> Sure, I will update this in the next patch series.
 > 
 > 
+> Best,
+> 
+> Tao
+> 
+>>
+>> Suzuki
+>>
+>>
+>>> +        if (bytes <= 0)
+>>> +            break;
+>>> +        size += bytes;
+>>> +    }
+>>> +    spin_unlock(&drvdata->spinlock);
+>>> +
+>>> +    return size;
+>>> +}
+>>> +
+>>> +static ssize_t dsb_msr_store(struct device *dev,
+>>> +                  struct device_attribute *attr,
+>>> +                  const char *buf,
+>>> +                  size_t size)
+>>> +{
+>>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+>>> +    unsigned long val;
+>>> +
+>>> +    if (kstrtoul(buf, 0, &val))
+>>> +        return -EINVAL;
+>>> +
+>>> +    spin_lock(&drvdata->spinlock);
+>>> +    drvdata->dsb->msr[drvdata->dsb->msr_idx] = val;
+>>> +    spin_unlock(&drvdata->spinlock);
+>>> +    return size;
+>>> +}
+>>> +static DEVICE_ATTR_RW(dsb_msr);
+>>> +
+>>>   static struct attribute *tpdm_dsb_attrs[] = {
+>>>       &dev_attr_dsb_mode.attr,
+>>>       &dev_attr_dsb_edge_ctrl_idx.attr,
+>>> @@ -845,6 +941,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
+>>>       &dev_attr_dsb_trig_patt_mask.attr,
+>>>       &dev_attr_dsb_trig_ts.attr,
+>>>       &dev_attr_dsb_trig_type.attr,
+>>> +    &dev_attr_dsb_msr_idx.attr,
+>>> +    &dev_attr_dsb_msr.attr,
+>>>       NULL,
+>>>   };
+>>>   diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
+>>> b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> index 7c52cf4..7b70db3 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+>>> @@ -18,6 +18,7 @@
+>>>   #define TPDM_DSB_XPMR(n)    (0x7E8 + (n * 4))
+>>>   #define TPDM_DSB_EDCR(n)    (0x808 + (n * 4))
+>>>   #define TPDM_DSB_EDCMR(n)    (0x848 + (n * 4))
+>>> +#define TPDM_DSB_MSR(n)        (0x980 + (n * 4))
+>>>     /* Enable bit for DSB subunit */
+>>>   #define TPDM_DSB_CR_ENA        BIT(0)
+>>> @@ -100,6 +101,9 @@
+>>>    * @patt_mask:          Save value for pattern mask
+>>>    * @trig_patt:          Save value for trigger pattern
+>>>    * @trig_patt_mask:     Save value for trigger pattern mask
+>>> + * @msr_num             Number of MSR supported by DSB TPDM
+>>> + * @msr_idx             Index number of the MSR
+>>> + * @msr                 Save value for MSR
+>>>    * @patt_ts:            Enable/Disable pattern timestamp
+>>>    * @patt_type:          Set pattern type
+>>>    * @trig_ts:            Enable/Disable trigger timestamp.
+>>> @@ -116,6 +120,9 @@ struct dsb_dataset {
+>>>       u32                patt_mask[TPDM_DSB_MAX_PATT];
+>>>       u32                trig_patt[TPDM_DSB_MAX_PATT];
+>>>       u32                trig_patt_mask[TPDM_DSB_MAX_PATT];
+>>> +    u32                msr_num;
+>>> +    u32                msr_idx;
+>>> +    u32                *msr;
+>>>       bool            patt_ts;
+>>>       bool            patt_type;
+>>>       bool            trig_ts;
+>>
+
