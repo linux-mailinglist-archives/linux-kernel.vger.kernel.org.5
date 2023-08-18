@@ -2,110 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1FC780FF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC39780FF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378449AbjHRQKb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Aug 2023 12:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
+        id S1378474AbjHRQLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378416AbjHRQKC (ORCPT
+        with ESMTP id S1378477AbjHRQKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:10:02 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D8223ABB;
-        Fri, 18 Aug 2023 09:10:01 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-56d26137095so185676eaf.1;
-        Fri, 18 Aug 2023 09:10:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375000; x=1692979800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QiQQj5CYx+kSDZsPEEViaZQITU/buPkOLZzOGA2nSKk=;
-        b=DTUTpw0JC9WpqnSpjHOOR07ZAHZHipEP2Yk5mJj1amqTVQfu1ZxN+iY/9lsFI71rxF
-         CA2tamdIGhbbKX5pO+q6NH8IgpUMG6TTzOlOK7Qtpxpboh6w70qILtly9DcOK4vhTqIc
-         a7iI9xLtIRk0L5vwANTGOfqKT6o8FBbbeK5qv7/ZW5vkM23r7mBBjgvt8My+ko1dubZ6
-         LCtNki2KLsyBh2c43dvwv3Q62fNEVkrZ99r4wu7kiSb4YsoJVekM9y76l6I4u1swJ9Fk
-         +EhUSYtLxGlLAjhWMuMtHiN9RqnfysC46T/XDL5Btup3J+e0X8q/yoeukIGrgglknMmQ
-         kfvg==
-X-Gm-Message-State: AOJu0YxGOEbkwLHlbp1PBMeXZmKty0aEcm1PGJeuRW3G5b5wkFqnp8lx
-        IDDZnhE4DKZywr4Ko5wAdksWPe7cwuWSkUxJNICMeOjySW4=
-X-Google-Smtp-Source: AGHT+IFpRdIKAAG0EKgHSMI7feuutbtE2eJBbVs0sOmccS8A/nUsOfp0HLu2AqdcxcB0QFYqWgumrRqcJju5la6udiY=
-X-Received: by 2002:a4a:d581:0:b0:56e:487f:8caa with SMTP id
- z1-20020a4ad581000000b0056e487f8caamr3299193oos.1.1692375000294; Fri, 18 Aug
- 2023 09:10:00 -0700 (PDT)
+        Fri, 18 Aug 2023 12:10:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4C030F3;
+        Fri, 18 Aug 2023 09:10:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D4A76611F4;
+        Fri, 18 Aug 2023 16:10:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65662C433C8;
+        Fri, 18 Aug 2023 16:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692375044;
+        bh=92lIiukMG0yN5rbB/xvTrlXq9iNH0UDN9N143jJIljE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MM/dOXny8x+CcyEOHoaUyqAWJHhSHPgVPNcBHV0Sa1UKC5pu56hQIhFFaKcV+Vnry
+         JaF6edNIABJnMqgXamZus4htecG7AquOcHbsJv4n5Pb+ZCedVtNLjLCpJpCMPK/cl8
+         ZozLtH6AjgCwi5O8drHX/gEyTB0YlezmY4jOM9w3V63hSIkJcNXag2Yy6jmWPHcPLL
+         IwydNDNG79mcxxgtfefHrz/Ie3X3zWH5SeTqZP5s+gDhlH1izhuptFFF8pV/4hqvK0
+         fW4KPzaR86cAdAdFb+OkXyyeT96yqlPShaafpY/uRp85K5BwSiNfCKOM5/87vKvbuo
+         4wCpVipsFTKow==
+Date:   Fri, 18 Aug 2023 17:10:38 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Benjamin Bara <bbara93@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        peng.fan@oss.nxp.com, rafael.j.wysocki@intel.com,
+        Jerome Neanne <jneanne@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>
+Subject: Re: [PATCH v2 4/6] mfd: tps65219: Specify restart mode
+Message-ID: <20230818161038.GB986605@google.com>
+References: <20230809-pca9450-reboot-v2-0-b98b4f8139d5@skidata.com>
+ <20230809-pca9450-reboot-v2-4-b98b4f8139d5@skidata.com>
 MIME-Version: 1.0
-References: <20230818051319.551-1-mario.limonciello@amd.com> <20230818051319.551-13-mario.limonciello@amd.com>
-In-Reply-To: <20230818051319.551-13-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 18 Aug 2023 18:09:49 +0200
-Message-ID: <CAJZ5v0h+uJtr-98SMXH4P2K2yzXw6g8bpndyJHLHvYRLg9ciEw@mail.gmail.com>
-Subject: Re: [PATCH v13 12/12] PCI: ACPI: Limit the Intel specific opt-in to
- D3 to 2024
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230809-pca9450-reboot-v2-4-b98b4f8139d5@skidata.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 7:15 AM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> Intel systems that need to have PCIe ports in D3 for low power idle
-> specify this by constraints on the ACPI PNP0D80 device. As this information
-> is queried, limit the DMI BIOS year check to stop at 2024. This will
-> allow future systems to rely on the constraints check to set up policy
-> like non-Intel systems do.
->
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+On Wed, 09 Aug 2023, Benjamin Bara wrote:
+
+> From: Benjamin Bara <benjamin.bara@skidata.com>
+> 
+> The current restart handler registration does not specify whether the
+> restart is a cold or a warm one. Instead, cold ones are typically
+> registered with a HIGH prio. Now, as do_kernel_restart() knows about the
+> type, the priorization is implicitly done (cold restarts are executed
+> first) and the reboot_mode kernel parameter (which is currently mostly
+> ignored) can be respected.
+> 
+> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
 > ---
-> v12->v13:
->  * New patch
+> v2:
+> - improve commit message
 > ---
->  drivers/pci/pci.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 0fc8d35154f97..5b9e11e254f34 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3049,10 +3049,11 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
->                         return true;
->
->                 /*
-> -                * It is safe to put Intel PCIe ports from 2015 or newer
-> +                * It is safe to put Intel PCIe ports from 2015 to 2024
->                  * to D3.
->                  */
->                 if (bridge->vendor == PCI_VENDOR_ID_INTEL &&
-> +                   dmi_get_bios_year() <= 2024 &&
->                     dmi_get_bios_year() >= 2015)
+>  drivers/mfd/tps65219.c | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mfd/tps65219.c b/drivers/mfd/tps65219.c
+> index 0e0c42e4fdfc..85752b93256e 100644
+> --- a/drivers/mfd/tps65219.c
+> +++ b/drivers/mfd/tps65219.c
+> @@ -278,12 +278,21 @@ static int tps65219_probe(struct i2c_client *client)
+>  		}
+>  	}
+>  
+> -	ret = devm_register_restart_handler(tps->dev,
+> -					    tps65219_restart_handler,
+> -					    tps);
+> +	ret = devm_register_cold_restart_handler(tps->dev,
+> +						 tps65219_restart_handler,
+> +						 tps);
+>  
+>  	if (ret) {
+> -		dev_err(tps->dev, "cannot register restart handler, %d\n", ret);
+> +		dev_err(tps->dev, "cannot register cold restart handler, %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_register_warm_restart_handler(tps->dev,
+> +						 tps65219_restart_handler,
+> +						 tps);
+> +
 
-A minor nit: The above would be somewhat easier to follow if it is
-written in a reverse order, that is
+Sorry, why do we have to now register 2 restart handlers?
 
-dmi_get_bios_year() >= 2015 && dmi_get_bios_year() <= 2024
+Seems like a regression?
 
-and maybe call dmi_get_bios_year() once to avoid the redundant string parsing?
+> +	if (ret) {
+> +		dev_err(tps->dev, "cannot register warm restart handler, %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> 
+> -- 
+> 2.34.1
+> 
 
->                         return true;
->                 break;
-> --
+-- 
+Lee Jones [李琼斯]
