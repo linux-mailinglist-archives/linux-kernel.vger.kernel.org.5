@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CE0780E02
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D368780E03
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377722AbjHRO1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1377513AbjHRO1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Aug 2023 10:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377753AbjHRO1T (ORCPT
+        with ESMTP id S1377773AbjHRO12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:27:19 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB3E3AA7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:27:17 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-44ac5e32ed5so283992137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:27:17 -0700 (PDT)
+        Fri, 18 Aug 2023 10:27:28 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334743AA4;
+        Fri, 18 Aug 2023 07:27:27 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2ba0f27a4c2so14398021fa.2;
+        Fri, 18 Aug 2023 07:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692368836; x=1692973636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Ly4Wcs7osrmjCxBZpEjsQxdsgjdMwTTrdPeaYghpLw=;
-        b=Fpi4DxZtc2PCBYrSLD8oyb1gc5Em9lCcnQ8MbWydVfncTn9FXxvoNfcUkaPPGGPujw
-         7MjoLjdQq5myq103RbEAiteglSDxhLuOauPrUq71s8XsPUC5cOEHdsSzOYPbRkFymJvc
-         Kjk7w8zRALuEdqvZZkPhODstVMJEN+Q4oMaFQGRrUkROtvVfte64f3nZXr/NY/MJW4kz
-         kN1subMQsjcPVZPdyodRn8ICaMLACYwgoSqVzxGHAXD9PybmI1D/C/MV1TtnoppUO6vy
-         AH/f01HHnFb10zK4zOr+v0WxS2WHQLzhpuBd61AnYsg+ScmAOVd4MFR4MB7hHpIftfr9
-         bT6w==
+        d=gmail.com; s=20221208; t=1692368845; x=1692973645;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nICDKRwKMQkqe3HwAbJtM6Bw2V+q3zLOKjsFDW01ra4=;
+        b=AU47LW5+I/EbL8MV01rBcH3Ob7wkYjXFsx/cRI9MJQxbuDOxjgSr/c0XTuVeglogzU
+         JvPZS94xQNLsLcUf1a1VOJ96d7064ckBmJxicT1/wgcIi7RHBS8byjqD18s6HTHOKR8O
+         0BbJ2zOYojrvqizOvhFns4fBJVRdpF5rJvhsSJC3VUhFrHooLmjiJTzAS7ycoHiFVHVk
+         OSMbeZCNaJIDKj1L4CRLDKuE9/sOd8ATROWpNpN+LTc/giS525+5tHGQiNkdxJfkBJ47
+         2VLr8SX4rackx22R7DYZrt5UoE5O5UPAHir1GRDfQ6Gw6W043YuZTuP0nqDBgxzEcq6p
+         lPpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692368836; x=1692973636;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Ly4Wcs7osrmjCxBZpEjsQxdsgjdMwTTrdPeaYghpLw=;
-        b=fhDCV/R340D7tf0/dJcjODA+QwC6sw/RP8kOpviFhw90j/Yrw0aU1PVuAQV0wlc2S/
-         Ko24MSpzS+aNBjVvJvmACy/SQepgpxH0OusRhiz9bk92KOXJcDvfPuyjSEtqSieboRpE
-         Irnl272HMI9JGL6tnaQYclGRKqstqos9qULb8uYkpMqZTDffp/7oMADh6aT5baPLtyNH
-         JufKo21RiAbp3KIzAyfNgrNvipXnSv2na76A4OzTFBwYhbnUGcAUSa21Q0R10ZONCzd/
-         UAV1UHQshXIeqm94z3tOSRnTnnx6qy/2HVJ35WernrerluuBhgv0iH9/dvp+/5XSUgP4
-         ZIsA==
-X-Gm-Message-State: AOJu0YzdIsa1wlgfJIz1Gxw66CzwWn69C3MVrt775A6ez/VwRkRWjWGa
-        N+03qzOljV3IozlnMSc6TDqISPBOqsDbEZG06hGgPg==
-X-Google-Smtp-Source: AGHT+IEp3TNPcqcN7SktOZkajFToVLj0HKTk+05IOyulMheJ+t+wwA9+ZQpLEHtHOwzyqR/3bFsosyJyvqp5TTEHfX8=
-X-Received: by 2002:a67:bb14:0:b0:443:7ab8:b5d7 with SMTP id
- m20-20020a67bb14000000b004437ab8b5d7mr3009998vsn.14.1692368836506; Fri, 18
- Aug 2023 07:27:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692368845; x=1692973645;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nICDKRwKMQkqe3HwAbJtM6Bw2V+q3zLOKjsFDW01ra4=;
+        b=Lr6zOifY5O0ER5zyLCDzrK0xeg561MS/xp5LJcnwhyJfsgX+vEbFHLgEVU5TkC1Gjj
+         p9Mroe+Bqk0PvYtCfGt8RvpdXGFuJpMbtZFN3SHUB55No7QEsvsbMuzzdMA8kU95t4rD
+         pWzFSY0r+mlpBj12bd1Px1J1JsryMilESlTaIF/R7LVVAhOYUmel2bUYEQN+sAEHMPhV
+         DSkfwKAX7vH5TlVXM65ZnGByKo8//zGoA0UmZqp55UCSug7RvEBu0nlVAXF3ZG62ALqO
+         314lSe5L4392v5OcZdS8uEU8amIgm9ldNjguoUdE6pbJ0wi35gdmoajGxaKhJsE8tytF
+         vixg==
+X-Gm-Message-State: AOJu0YzRH9vUEO9QiBBUW9E41j47tcuAUYGE4itZV8lTq9HbxJP9Jltc
+        Qkzeug0TR9cJUf6Sfwos7w4=
+X-Google-Smtp-Source: AGHT+IE1rMg1r5m+sggiJZoK18DpySxLsUpndg9+6FcuR87MfeypkypRS62hRUnz7MG1A1vtPWuK6w==
+X-Received: by 2002:a2e:3304:0:b0:2b9:e40a:30bc with SMTP id d4-20020a2e3304000000b002b9e40a30bcmr1959890ljc.19.1692368845278;
+        Fri, 18 Aug 2023 07:27:25 -0700 (PDT)
+Received: from mobilestation ([93.157.254.210])
+        by smtp.gmail.com with ESMTPSA id n13-20020a2e720d000000b002b9e0aeff68sm453953ljc.95.2023.08.18.07.27.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 07:27:24 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 17:27:22 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: phy: Fix deadlocking in phy_error() invocation
+Message-ID: <mk5yter5d6pvdyahfhfruszwp54immvfb3bb7a7chofyhauksb@7vkgyxevt2yv>
+References: <20230818125449.32061-1-fancer.lancer@gmail.com>
+ <6e52f88e-73ad-4e2a-90ca-ada471f30b9d@lunn.ch>
 MIME-Version: 1.0
-References: <20230818135538.47481-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230818135538.47481-1-krzysztof.kozlowski@linaro.org>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 18 Aug 2023 16:27:05 +0200
-Message-ID: <CAMRc=McJtC9WcCGkrQ5QiDRcAJngp95q2rrq9kzySftJ31W-4A@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sa8775p: correct PMIC GPIO label in gpio-ranges
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Brian Masney <bmasney@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e52f88e-73ad-4e2a-90ca-ada471f30b9d@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,43 +78,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 3:56=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> There are several PMICs with GPIO nodes and one of the nodes referenced
-> other's in gpio-ranges which could result in deferred-probes like:
->
->   qcom-spmi-gpio c440000.spmi:pmic@2:gpio@8800: can't add gpio chip
->
-> Reported-by: Brian Masney <bmasney@redhat.com>
-> Closes: https://lore.kernel.org/all/ZN5KIlI+RDu92jsi@brian-x1/
-> Fixes: e5a893a7cec5 ("arm64: dts: qcom: sa8775p: add PMIC GPIO controller=
- nodes")
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Fri, Aug 18, 2023 at 03:07:49PM +0200, Andrew Lunn wrote:
+> On Fri, Aug 18, 2023 at 03:54:45PM +0300, Serge Semin wrote:
+> >  static void phy_process_error(struct phy_device *phydev)
+> >  {
+> > -	mutex_lock(&phydev->lock);
+> > +	/* phydev->lock must be held for the state change to be safe */
+> > +	if (!mutex_is_locked(&phydev->lock))
+> > +		phydev_err(phydev, "PHY-device data unsafe context\n");
+> > +
+> >  	phydev->state = PHY_ERROR;
+> > -	mutex_unlock(&phydev->lock);
+> >  
+> >  	phy_trigger_machine(phydev);
+> >  }
+> 
+> Thanks for the patch Serge. It looks like a good implementation of
+> what i suggested. But thinking about it further, if the error ever
+> appears in somebodies kernel log, there is probably not enough
+> information to actually fix it. There is no call path. So i think it
+> should actually use WARN_ON_ONCE() so we get a stack trace.
+
+A trace is already printed by means of WARN()/WARN_ON()
+in the phy_process_error() method callers:
+phy_error_precise()
+and
+phy_error()
+Wouldn't it be too much to print it twice in a row?
+
+We can redefine phy_error_precise() and phy_process_error() functions
+to something like this:
+
+static void phy_process_error(struct phy_device *phydev,
+			      const void *func, int err)
+{
+	if (__ONCE_LITE_IF(!mutex_is_locked(&phydev->lock)))
+		WARN(1, "PHY-device data unsafe context\n");
+	else if (func)
+		WARN(1, "%pS: returned: %d\n", func, err);
+	else
+		WARN_ON(1);
+
+	phydev->state = PHY_ERROR;
+
+	phy_trigger_machine(phydev);
+}
+
+static void phy_error_precise(struct phy_device *phydev,
+			      const void *func, int err)
+{
+        mutex_lock(&phydev->lock);
+        phy_process_error(phydev, func, err);
+        mutex_unlock(&phydev->lock);
+}
+
+void phy_error(struct phy_device *phydev)
+{
+	phy_process_error(phydev, NULL, 0);
+}
+EXPORT_SYMBOL(phy_error);
+
+Though in such implementation phy_error_precise() looks redundant. We
+can freely move its body to the single user - phy_state_machine()
+function.
+
+Note a positive side effect of this implementation is that potentially
+phy_error() can be converted to accepting a function pointer caused
+the error (phy_read(), phy_write(), etc). Alternatively if the
+conversion would look too bulky, phy_error_preciseI() could be just
+EXPORT_SYMBOL()-ed with the PHY-device mutex locking being moved to
+phy_state_machine().
+
+> 
+> Sorry for changing my mind.
+
+No worries.
+
+-Serge(y)
+
+> 
+>     Andrew
+> 
 > ---
->  arch/arm64/boot/dts/qcom/sa8775p-pmics.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sa8775p-pmics.dtsi b/arch/arm64/boo=
-t/dts/qcom/sa8775p-pmics.dtsi
-> index 3c3b6287cd27..eaa43f022a65 100644
-> --- a/arch/arm64/boot/dts/qcom/sa8775p-pmics.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sa8775p-pmics.dtsi
-> @@ -173,7 +173,7 @@ pmm8654au_1_gpios: gpio@8800 {
->                         compatible =3D "qcom,pmm8654au-gpio", "qcom,spmi-=
-gpio";
->                         reg =3D <0x8800>;
->                         gpio-controller;
-> -                       gpio-ranges =3D <&pmm8654au_2_gpios 0 0 12>;
-> +                       gpio-ranges =3D <&pmm8654au_1_gpios 0 0 12>;
->                         #gpio-cells =3D <2>;
->                         interrupt-controller;
->                         #interrupt-cells =3D <2>;
-> --
-> 2.34.1
->
-
-My bad, must have been a bad copy-and-paste.
-
-Reviewed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Tested-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> pw-bot: cr
