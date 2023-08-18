@@ -2,277 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D791F780B48
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119E5780B51
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376365AbjHRLk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34518 "EHLO
+        id S1376480AbjHRLnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376761AbjHRLkX (ORCPT
+        with ESMTP id S1376446AbjHRLmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:40:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1DB2112
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692358780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i3mAd5RT0ADcqFGH0+/dpnTAdMm0BF37Gb+TptEBEak=;
-        b=Z9DY/8/SXZwGV4bwP/4dhIolpJu1rrw0dxemm1pB18WlTcaClTMcS9YKqr0KbCiE98Fjzr
-        50iHk68cD7t28b4lCuqwCzplX+sU8y1yi/7DlHJF+gcQUyztwClS6fd8WSbzLQYg4Mmzfu
-        3irdapcYhHXE6fqvXA7gfhqytiIvtNI=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-683-J945iaf8NySVe-PFItRz9Q-1; Fri, 18 Aug 2023 07:39:36 -0400
-X-MC-Unique: J945iaf8NySVe-PFItRz9Q-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7F40C29A9CB3;
-        Fri, 18 Aug 2023 11:39:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 54FA2492C13;
-        Fri, 18 Aug 2023 11:39:33 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
-References: <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
+        Fri, 18 Aug 2023 07:42:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C71F42112
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:42:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08DA1D75;
+        Fri, 18 Aug 2023 04:43:11 -0700 (PDT)
+Received: from [10.57.4.78] (unknown [10.57.4.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BFEE3F762;
+        Fri, 18 Aug 2023 04:42:29 -0700 (PDT)
+Message-ID: <ca37adae-5e06-3003-c5b5-3146001d7d37@arm.com>
+Date:   Fri, 18 Aug 2023 12:42:27 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1748218.1692358772.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 18 Aug 2023 12:39:32 +0100
-Message-ID: <1748219.1692358772@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] coresight: Fix memory leak in acpi_buffer->pointer
+To:     James Clark <james.clark@arm.com>,
+        Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
+        leo.yan@linaro.org
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        jonathan.cameron@huawei.com, yangyicong@huawei.com,
+        prime.zeng@hisilicon.com
+References: <20230817085937.55590-1-hejunhao3@huawei.com>
+ <20230817085937.55590-2-hejunhao3@huawei.com>
+ <1d38e877-35ed-5f70-e51f-ea875deab903@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1d38e877-35ed-5f70-e51f-ea875deab903@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Would it make sense to always check for MCE in _copy_from_iter() and alway=
-s
-return a short transfer if we encounter one?  It looks pretty cheap in ter=
-ms
-of code size as the exception table stuff handles it, so we don't need to =
-do
-anything in the normal path.
+On 17/08/2023 15:03, James Clark wrote:
+> 
+> 
+> On 17/08/2023 09:59, Junhao He wrote:
+>> There are memory leaks reported by kmemleak:
+>> ...
+>> unreferenced object 0xffff00213c141000 (size 1024):
+>>    comm "systemd-udevd", pid 2123, jiffies 4294909467 (age 6062.160s)
+>>    hex dump (first 32 bytes):
+>>      04 00 00 00 02 00 00 00 18 10 14 3c 21 00 ff ff  ...........<!...
+>>      00 00 00 00 00 00 00 00 03 00 00 00 10 00 00 00  ................
+>>    backtrace:
+>>      [<000000004b7c9001>] __kmem_cache_alloc_node+0x2f8/0x348
+>>      [<00000000b0fc7ceb>] __kmalloc+0x58/0x108
+>>      [<0000000064ff4695>] acpi_os_allocate+0x2c/0x68
+>>      [<000000007d57d116>] acpi_ut_initialize_buffer+0x54/0xe0
+>>      [<0000000024583908>] acpi_evaluate_object+0x388/0x438
+>>      [<0000000017b2e72b>] acpi_evaluate_object_typed+0xe8/0x240
+>>      [<000000005df0eac2>] coresight_get_platform_data+0x1b4/0x988 [coresight]
+>> ...
+>>
+>> The ACPI buffer memory (buf.pointer) should be freed. But the buffer
+>> is also used after returning from acpi_get_dsd_graph().
+>> Move the temporary variables buf to acpi_coresight_parse_graph(),
+>> and free it before the function return to prevent memory leak.
+>>
+>> Fixes: 76ffa5ab5b79 ("coresight: Support for ACPI bindings")
+>> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+> 
+> I confirmed that the error gone. Thanks for the fix.
+> 
+> Reviewed-by: James Clark <james.clark@arm.com>
 
-I guess this would change the handling of memory errors and DAX errors.
+Queued:
 
-David
----
-iov_iter: Always handle MCE in _copy_to_iter()
+https://git.kernel.org/coresight/c/1a9e02673e25
 
-(incomplete)
+Thanks!
 
----
- arch/x86/include/asm/mce.h |   22 ++++++++++++++++++++++
- fs/coredump.c              |    1 -
- include/linux/uio.h        |   16 ----------------
- lib/iov_iter.c             |   17 +++++------------
- 4 files changed, 27 insertions(+), 29 deletions(-)
-
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 180b1cbfcc4e..ee3ff090360d 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -353,4 +353,26 @@ static inline void mce_hygon_feature_init(struct cpui=
-nfo_x86 *c)	{ return mce_am
- =
-
- unsigned long copy_mc_fragile_handle_tail(char *to, char *from, unsigned =
-len);
- =
-
-+static __always_inline __must_check
-+unsigned long memcpy_mc(void *to, const void *from, unsigned long len)
-+{
-+#ifdef CONFIG_ARCH_HAS_COPY_MC
-+	/*
-+	 * If CPU has FSRM feature, use 'rep movs'.
-+	 * Otherwise, use rep_movs_alternative.
-+	 */
-+	asm volatile(
-+		"1:\n\t"
-+		ALTERNATIVE("rep movsb",
-+			    "call rep_movs_alternative", ALT_NOT(X86_FEATURE_FSRM))
-+		"2:\n"
-+		_ASM_EXTABLE_TYPE(1b, 2b, EX_TYPE_DEFAULT_MCE_SAFE)
-+		:"+c" (len), "+D" (to), "+S" (from), ASM_CALL_CONSTRAINT
-+		: : "memory", "rax", "r8", "r9", "r10", "r11");
-+#else
-+	return memcpy(to, from, len);
-+#endif
-+	return len;
-+}
-+
- #endif /* _ASM_X86_MCE_H */
-diff --git a/fs/coredump.c b/fs/coredump.c
-index 9d235fa14ab9..ad54102a5e14 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -884,7 +884,6 @@ static int dump_emit_page(struct coredump_params *cprm=
-, struct page *page)
- 	pos =3D file->f_pos;
- 	bvec_set_page(&bvec, page, PAGE_SIZE, 0);
- 	iov_iter_bvec(&iter, ITER_SOURCE, &bvec, 1, PAGE_SIZE);
--	iov_iter_set_copy_mc(&iter);
- 	n =3D __kernel_write_iter(cprm->file, &iter, &pos);
- 	if (n !=3D PAGE_SIZE)
- 		return 0;
-diff --git a/include/linux/uio.h b/include/linux/uio.h
-index 42bce38a8e87..73078ba297b7 100644
---- a/include/linux/uio.h
-+++ b/include/linux/uio.h
-@@ -40,7 +40,6 @@ struct iov_iter_state {
- =
-
- struct iov_iter {
- 	u8 iter_type;
--	bool copy_mc;
- 	bool nofault;
- 	bool data_source;
- 	bool user_backed;
-@@ -252,22 +251,8 @@ size_t _copy_from_iter_flushcache(void *addr, size_t =
-bytes, struct iov_iter *i);
- =
-
- #ifdef CONFIG_ARCH_HAS_COPY_MC
- size_t _copy_mc_to_iter(const void *addr, size_t bytes, struct iov_iter *=
-i);
--static inline void iov_iter_set_copy_mc(struct iov_iter *i)
--{
--	i->copy_mc =3D true;
--}
--
--static inline bool iov_iter_is_copy_mc(const struct iov_iter *i)
--{
--	return i->copy_mc;
--}
- #else
- #define _copy_mc_to_iter _copy_to_iter
--static inline void iov_iter_set_copy_mc(struct iov_iter *i) { }
--static inline bool iov_iter_is_copy_mc(const struct iov_iter *i)
--{
--	return false;
--}
- #endif
- =
-
- size_t iov_iter_zero(size_t bytes, struct iov_iter *);
-@@ -382,7 +367,6 @@ static inline void iov_iter_ubuf(struct iov_iter *i, u=
-nsigned int direction,
- 	WARN_ON(direction & ~(READ | WRITE));
- 	*i =3D (struct iov_iter) {
- 		.iter_type =3D ITER_UBUF,
--		.copy_mc =3D false,
- 		.user_backed =3D true,
- 		.data_source =3D direction,
- 		.ubuf =3D buf,
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index d282fd4d348f..887d9cb9be4e 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -14,6 +14,7 @@
- #include <linux/scatterlist.h>
- #include <linux/instrumented.h>
- #include <linux/iov_iter.h>
-+#include <asm/mce.h>
- =
-
- static __always_inline
- size_t copy_to_user_iter(void __user *iter_to, size_t progress,
-@@ -168,7 +169,6 @@ void iov_iter_init(struct iov_iter *i, unsigned int di=
-rection,
- 	WARN_ON(direction & ~(READ | WRITE));
- 	*i =3D (struct iov_iter) {
- 		.iter_type =3D ITER_IOVEC,
--		.copy_mc =3D false,
- 		.nofault =3D false,
- 		.user_backed =3D true,
- 		.data_source =3D direction,
-@@ -254,14 +254,11 @@ size_t _copy_mc_to_iter(const void *addr, size_t byt=
-es, struct iov_iter *i)
- EXPORT_SYMBOL_GPL(_copy_mc_to_iter);
- #endif /* CONFIG_ARCH_HAS_COPY_MC */
- =
-
--static size_t memcpy_from_iter_mc(void *iter_from, size_t progress,
--				  size_t len, void *to, void *priv2)
-+static __always_inline
-+size_t memcpy_from_iter_mc(void *iter_from, size_t progress,
-+			   size_t len, void *to, void *priv2)
- {
--	struct iov_iter *iter =3D priv2;
--
--	if (iov_iter_is_copy_mc(iter))
--		return copy_mc_to_kernel(to + progress, iter_from, len);
--	return memcpy_from_iter(iter_from, progress, len, to, priv2);
-+	return memcpy_mc(to + progress, iter_from, len);
- }
- =
-
- size_t _copy_from_iter(void *addr, size_t bytes, struct iov_iter *i)
-@@ -632,7 +629,6 @@ void iov_iter_kvec(struct iov_iter *i, unsigned int di=
-rection,
- 	WARN_ON(direction & ~(READ | WRITE));
- 	*i =3D (struct iov_iter){
- 		.iter_type =3D ITER_KVEC,
--		.copy_mc =3D false,
- 		.data_source =3D direction,
- 		.kvec =3D kvec,
- 		.nr_segs =3D nr_segs,
-@@ -649,7 +645,6 @@ void iov_iter_bvec(struct iov_iter *i, unsigned int di=
-rection,
- 	WARN_ON(direction & ~(READ | WRITE));
- 	*i =3D (struct iov_iter){
- 		.iter_type =3D ITER_BVEC,
--		.copy_mc =3D false,
- 		.data_source =3D direction,
- 		.bvec =3D bvec,
- 		.nr_segs =3D nr_segs,
-@@ -678,7 +673,6 @@ void iov_iter_xarray(struct iov_iter *i, unsigned int =
-direction,
- 	BUG_ON(direction & ~1);
- 	*i =3D (struct iov_iter) {
- 		.iter_type =3D ITER_XARRAY,
--		.copy_mc =3D false,
- 		.data_source =3D direction,
- 		.xarray =3D xarray,
- 		.xarray_start =3D start,
-@@ -702,7 +696,6 @@ void iov_iter_discard(struct iov_iter *i, unsigned int=
- direction, size_t count)
- 	BUG_ON(direction !=3D READ);
- 	*i =3D (struct iov_iter){
- 		.iter_type =3D ITER_DISCARD,
--		.copy_mc =3D false,
- 		.data_source =3D false,
- 		.count =3D count,
- 		.iov_offset =3D 0
+Suzuki
 
