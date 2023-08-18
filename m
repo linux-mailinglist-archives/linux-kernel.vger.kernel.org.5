@@ -2,101 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB66780C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406A2780C6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377055AbjHRNSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:18:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52224 "EHLO
+        id S1377084AbjHRNSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377048AbjHRNSH (ORCPT
+        with ESMTP id S1377061AbjHRNSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:18:07 -0400
-Received: from out-56.mta0.migadu.com (out-56.mta0.migadu.com [IPv6:2001:41d0:1004:224b::38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 639D926A5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:18:05 -0700 (PDT)
-Message-ID: <0e29059a-7f1c-523d-c3ec-e17bbc094af9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692364680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ufH4xMINH3kgJO/umN8yv91M824TLqg7bgQ+FUca9Fo=;
-        b=sJ7r9dDI4XYaWbJOKsWltKC+taKM1qt22d01Fly83JDy2qGD7a8zkE398nBXSpSis2p8rn
-        O1VLhesD19iOZEpEHqi+qkcm/0JomvjWLZ4jTYRnL9eYDVABhkfFdEB45wNWTwinwyH/pX
-        kCY/6LIO089ld7l/uMrXurDbdqsQHq0=
-Date:   Fri, 18 Aug 2023 21:17:32 +0800
+        Fri, 18 Aug 2023 09:18:16 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2045.outbound.protection.outlook.com [40.107.237.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9932B2D4F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:18:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KG6WrxiL1qsfpZk3pDgxqs9p6E9uI4Eq9q5yfviR5HkhuCSHSQtcRl8AXdHWa/oN2X5voT+bb5hUqQCyE//x7GwvLmyO9bnoZ0QNGcemHKZ/O+RuPUAt137YDky0V5xDYEmlIZeLBCTggTYwEmncEQ8lWb9hPPywL1X/EUwoJSOd/ZYTXYC0+Y1bjrVKMkXbi8+4p5lSzU+yzJCKqr+rWhpclV8h7yEp7UYEmeMGhjom5odmo3sUE8lY7vHvb2kyRTQhtDE82OgLcLk2FQY5tfCzzXCelRkfuehsLJQwsQf2/ZNNtY5S9kB/jMelpO689CG4qumBywrx3p6cNk+0Dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7XOGnyRXNa8Q8NJPt5UFR0D+rnOMmTdetyoG36AI6zU=;
+ b=oXlbjDX2fOUnKS8zfkk6zfU3VyHOZ49DkDWqIksIDdcGTpT8Y3J/JQH10SHFnFPmgpUYIzKt8T+WCgDaEfC021BlQmloQL1WSNnzDMgzUsUqIdEyppD086KVUefem9rPtUcTVpoquuIX4iByxI84Q0gHn7eKzqHr2KzPbbeCyE09rv2/qFmeSRfN97fViNhGznJzyace3OJ7ZSuMKXotnl1wR15WShZNUR78QiLiradM5YWvEll0+45Vcgk+sPvRbOZTaGgNImZHRM+eeQ2F1mDuOkuabkGdYJXi8Mgf6j0knf6ESmEpDJi3go0BO6tm7xRfv4WaLrgYZNEDpMlVuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7XOGnyRXNa8Q8NJPt5UFR0D+rnOMmTdetyoG36AI6zU=;
+ b=gEuRPPXMsScatUiZora2QzWKuJdsauJaP6iJ/5s9iEGLqny1uHI2b9F2O9Qub1JWddTERMehnxG8p59j8nY+ZoC5MUFRfJJeyjC2ltN7FE7FFfPYEdUqUY6OTEY5IRF0bApE8jAdhtjfqkVcdkRYAR5nfhdz4X7rM0/LvVnkaUA=
+Received: from BYAPR06CA0004.namprd06.prod.outlook.com (2603:10b6:a03:d4::17)
+ by DM4PR12MB5230.namprd12.prod.outlook.com (2603:10b6:5:399::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
+ 2023 13:18:10 +0000
+Received: from CO1PEPF000042A9.namprd03.prod.outlook.com
+ (2603:10b6:a03:d4:cafe::a1) by BYAPR06CA0004.outlook.office365.com
+ (2603:10b6:a03:d4::17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.17 via Frontend
+ Transport; Fri, 18 Aug 2023 13:18:10 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000042A9.mail.protection.outlook.com (10.167.243.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6699.14 via Frontend Transport; Fri, 18 Aug 2023 13:18:09 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 18 Aug
+ 2023 08:18:07 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        "Alex Deucher" <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        "Hersen Wu" <hersenxs.wu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>, Alan Liu <haoping.liu@amd.com>,
+        Joshua Ashton <joshua@froggi.es>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/amd/display: fix mode scaling (RMX_.*)
+Date:   Fri, 18 Aug 2023 09:17:39 -0400
+Message-ID: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Subject: Re: [PATCH] sched/fair: Fix cfs_rq_is_decayed() on !SMP
-Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, ycliang@andestech.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com,
-        zhouchengming@bytedance.com, linux-kernel@vger.kernel.org
-References: <ZN87UsqkWcFLDxea@swlinux02>
- <20230818113537.2231129-1-chengming.zhou@linux.dev>
- <CAKfTPtAX4_yspgx3Fm88+2OVFobutJqxJKBARo3o9cRdVU1XYw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <CAKfTPtAX4_yspgx3Fm88+2OVFobutJqxJKBARo3o9cRdVU1XYw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A9:EE_|DM4PR12MB5230:EE_
+X-MS-Office365-Filtering-Correlation-Id: 82efc2c8-b647-49cf-b8c1-08db9fed9163
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sSUgEpkrPvhwGszI2xlC0xX2+4+J2xGoLV2FtyHzRk5SpdY/mzK1RKgeZQh6OI58BLcomd+oqXWVPZuDttMelC01bwlPdN2bitS/qvBVsmrGRIi9BJR2DgZxo9rJgmbFBOLJi+CXjTT+f3UjtDawFVaUTldcgXKdZWtHcJiObgawxRra+317xOgjWtZrXpQzfdzFwraTr0oYBdA8L/Jov4WjuZpF73i7UpgKbrnsnZrL27Y014MtjsqTvLKxIGIborjuJo8Uu0uD84TZMZYO0et1pDercq/OXrP9FBUz5tTvQV4yslYP1jeUaRuD/0Wg1y1r/TA83ib2yy+GrF9F5dhlyBChF+NO14zww33PA2cLb6HS2+20yr8CuOYkY30FhQCrT/69kzay8+9uB3CQWkRV63xCNnWku6q2SSWXI/M62TuzEGVeletHs59byR4UekoC0qXScONL965o+/1lcAQaVCQH6WFZyKOSy631jnKDcqGLPGdlDpn3qm75hTI8ltddlGj256UW2uVLj1TcTsijA+JMX3ZX/dDosJ5Fp6KBb6PZVx4lvpycslzPLJXMtMVEsP5vtuB83EIaxTK5I7Mk2EVGjnYi/pOI63z+4rnHfPq9IzNSFQOig1uQCLJ68+ZxAM8CMFlpY27YhLJKLjGjAfvD//3atJ3F04kS2NsINIRNfcfvsnGPMuaN+EE4Co5gAxsQuDU5dOQ7J00fg23CPWReYPxo8oJk3PGy5sLKA0pijw9NBUf5FSprdMvdm81p90Hy6wHlIYUqBHyZEhLaz75UsPl27M60g97OLImX4vwkmb1fKLIUuo1OvU9A
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(39860400002)(396003)(451199024)(186009)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(86362001)(36756003)(82740400003)(356005)(81166007)(40480700001)(478600001)(5660300002)(2616005)(16526019)(44832011)(70206006)(70586007)(6916009)(6666004)(26005)(54906003)(316002)(1076003)(4326008)(8676002)(8936002)(41300700001)(40460700003)(47076005)(336012)(36860700001)(2906002)(426003)(83380400001)(36900700001)(16060500005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 13:18:09.6948
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82efc2c8-b647-49cf-b8c1-08db9fed9163
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5230
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/18 20:25, Vincent Guittot wrote:
-> On Fri, 18 Aug 2023 at 13:37, <chengming.zhou@linux.dev> wrote:
->>
->> From: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> We don't need to maintain per-queue leaf_cfs_rq_list on !SMP, since
->> it's used for cfs_rq load tracking & balance on SMP.
->>
->> But sched debug interface use it to print per-cfs_rq stats, which
->> maybe better to change to use walk_tg_tree_from() instead.
->>
->> This patch just fix the !SMP version cfs_rq_is_decayed(), so the
->> per-queue leaf_cfs_rq_list is also maintained correctly on !SMP,
->> to fix the warning in assert_list_leaf_cfs_rq().
->>
->> Fixes: 0a00a354644e ("sched/fair: Delete useless condition in tg_unthrottle_up()")
->> Reported-by: Leo Liang <ycliang@andestech.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  kernel/sched/fair.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index a80a73909dc2..00ef7e86a95b 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -4654,6 +4654,8 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
->>
->>  static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->>  {
->> +       if (cfs_rq->load.weight)
->> +               return false;
->>         return true;
-> 
-> Why not :
-> 
-> return !(cfs_rq->nr_running);
-> 
-> The above seems easier to understand although I agree that both do the
-> same thing at the end
-> 
+As made mention of in commit 4a2df0d1f28e ("drm/amd/display: Fixed
+non-native modes not lighting up"), we shouldn't call
+drm_mode_set_crtcinfo() once the crtc timings have been decided. Since,
+it can cause settings to be unintentionally overwritten. So, since
+dm_state is never NULL now, we can use old_stream to determine if we
+should call drm_mode_set_crtcinfo() because we only need to set the crtc
+timing parameters for entirely new streams.
 
-Yes, this is better.
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+Fixes: 712237a4a1b4 ("drm/amd/display: Always set crtcinfo from create_stream_for_sink")
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 3b27b7742854..e9aff5014e39 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -6035,7 +6035,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+ 
+ 	if (recalculate_timing)
+ 		drm_mode_set_crtcinfo(&saved_mode, 0);
+-	else
++	else if (!old_stream)
+ 		drm_mode_set_crtcinfo(&mode, 0);
+ 
+ 	/*
+-- 
+2.41.0
+
