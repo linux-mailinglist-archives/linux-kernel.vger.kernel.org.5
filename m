@@ -2,149 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3927805D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C327805D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357999AbjHRGGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 02:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
+        id S1358024AbjHRGIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 02:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358009AbjHRGGM (ORCPT
+        with ESMTP id S1358020AbjHRGIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 02:06:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC3D3A9C
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:06:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 18 Aug 2023 02:08:42 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFC1359D;
+        Thu, 17 Aug 2023 23:08:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692338919;
+        bh=zJG6tKi7yDS9WwHdliEZHk4zx0+GKEMFv2GaIVp8pV4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QllZGQMpKEpdxbFALLO2lUjCoNY5V5BiQ0wSctt42qu7pwTH1XPTn5+lIjZKUxOAj
+         eWy+g8kHm5z9eSGpO0bgdh+Fi91Sy4w1j1dRqUtpXm8ooLome8BNdF4/J5XtDj1Q6M
+         ISCUInGpkWfGguMJ46MjuZGQzA1htb1NZtA5HbYXMP6K+Vi3AH4lD+FwI0vCafZWCx
+         oD8Z+ozNQdd2yTyrF9PmFK4o1lrw91hiLA16i53I8u6hYjNsOnaGZHWPBrZ2IxaPHR
+         HFQutJcKzhsbtASn703EhOoUALmmK5vW+WH1GmJncBUrXpZvlkTeAm87m2YN9X4RlZ
+         hRAzrxyms0UqQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4326463E81
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:06:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6090DC433CC;
-        Fri, 18 Aug 2023 06:05:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692338759;
-        bh=PTFvK66aSpc/wWYXL1tG3ENdFiVUZlkQu/DReJnqKDo=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=bbOTWJ6hSKJFcss5lL+TZpqq6+IGVcsiAeVbsSyFwYW+JEYg7RhWRlkI7cxWfBWZf
-         76/MXNfx+Co4g9cC8KsCqjeTj1uY1hjSffEqPmKzAaZ5HYLN7P8dYTYPk96SyMaT6p
-         3mDVpiYFix5Vwe3HjrP2w6PxKfW7tCrrw2a9HZalQ8399I/IMvWZ5vndleGZb8Lu4w
-         jVMnbDZaGygfjf7W++mxpohOYkARhyjCsOUIcfwXM2rRQcTouyZUrWIt0dJNFHh0Md
-         Nx8cfMGpk0/gIXyEjho2O2qu9ljHiGQWxobEmRC40zT6fPvPn6x4Jcq25ZwqVdmr2r
-         x9InBHdTcsCKA==
-From:   Chris Li <chrisl@kernel.org>
-Date:   Thu, 17 Aug 2023 23:05:24 -0700
-Subject: [PATCH RFC 2/2] mm/page_alloc: free_pcppages_bulk clean up
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRrz96wnyz4wxm;
+        Fri, 18 Aug 2023 16:08:37 +1000 (AEST)
+Date:   Fri, 18 Aug 2023 16:08:37 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: linux-next: manual merge of the pinctrl-renesas tree with the
+ pinctrl tree
+Message-ID: <20230818160837.147b1e2e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230817-free_pcppages_bulk-v1-2-c14574a9f80c@kernel.org>
-References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
-In-Reply-To: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, Michal Hocko <mhocko@suse.com>,
-        david@redhat.com, willy@infradead.org, linux-mm@kvack.org,
-        Namhyung Kim <namhyung@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        Chris Li <chrisl@kernel.org>
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/vM.PpzNqUdSKHc6IynA9DXD";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch does not have functional change. Just pure clean up.
+--Sig_/vM.PpzNqUdSKHc6IynA9DXD
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It removes the pindex_max and pindex_min and replaces it with a simpler
-loop.
+Hi all,
 
-It uses for_each_entry_safe_reverse() to replace the loop over
-list_last_entry(). It produces slightly better machine code.
+Today's linux-next merge of the pinctrl-renesas tree got conflicts in:
 
-Signed-off-by: Chris Li <chrisl@kernel.org>
----
- mm/page_alloc.c | 38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
+  drivers/pinctrl/renesas/pinctrl-rza2.c
+  drivers/pinctrl/renesas/pinctrl-rzg2l.c
+  drivers/pinctrl/renesas/pinctrl-rzv2m.c
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 347cb93081a02..d64d0f5ec70b4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1209,11 +1209,9 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 					int pindex)
- {
- 	unsigned long flags;
--	int min_pindex = 0;
--	int max_pindex = NR_PCP_LISTS - 1;
- 	unsigned int order;
- 	bool isolated_pageblocks;
--	struct page *page;
-+	int i;
- 
- 	/* Ensure requested pindex is drained first. */
- 	pindex = pindex - 1;
-@@ -1221,31 +1219,18 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 	spin_lock_irqsave(&zone->lock, flags);
- 	isolated_pageblocks = has_isolate_pageblock(zone);
- 
--	while (count > 0) {
-+	for (i = 0; i < NR_PCP_LISTS; i++, pindex++) {
- 		struct list_head *list;
- 		int nr_pages;
-+		struct page *page, *next;
- 
--		/* Remove pages from lists in a round-robin fashion. */
--		do {
--			if (++pindex > max_pindex)
--				pindex = min_pindex;
--			list = &pcp->lists[pindex];
--			if (!list_empty(list))
--				break;
--
--			if (pindex == max_pindex)
--				max_pindex--;
--			if (pindex == min_pindex)
--				min_pindex++;
--		} while (1);
--
-+		if (pindex == NR_PCP_LISTS)
-+			pindex = 0;
-+		list = pcp->lists + pindex;
- 		order = pindex_to_order(pindex);
- 		nr_pages = 1 << order;
--		do {
--			int mt;
--
--			page = list_last_entry(list, struct page, pcp_list);
--			mt = get_pcppage_migratetype(page);
-+		list_for_each_entry_safe_reverse(page, next, list, lru) {
-+			int mt = get_pcppage_migratetype(page);
- 
- 			/* must delete to avoid corrupting pcp list */
- 			list_del(&page->pcp_list);
-@@ -1260,9 +1245,12 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 
- 			__free_one_page(page, page_to_pfn(page), zone, order, mt, FPI_NONE);
- 			trace_mm_page_pcpu_drain(page, order, mt);
--		} while (count > 0 && pcp->count > 0 && !list_empty(list));
--	}
- 
-+			if (count <= 0 || pcp->count <= 0)
-+				goto out;
-+		}
-+	}
-+out:
- 	spin_unlock_irqrestore(&zone->lock, flags);
- }
- 
+between commit:
 
--- 
-2.42.0.rc1.204.g551eb34607-goog
+  060f03e95454 ("pinctrl: Explicitly include correct DT includes")
 
+from the pinctrl tree and commits:
+
+  848f700dabda ("pinctrl: renesas: rzg2l: Fix NULL pointer dereference in r=
+zg2l_dt_subnode_to_map()")
+  ca63f2ef6a16 ("pinctrl: renesas: rzv2m: Fix NULL pointer dereference in r=
+zv2m_dt_subnode_to_map()")
+  1eb1e00e5d99 ("pinctrl: renesas: rza2: Add lock around pinctrl_generic{{a=
+dd,remove}_group,{add,remove}_function}")
+
+from the pinctrl-renesas tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/pinctrl/renesas/pinctrl-rza2.c
+index 0b454a31c4bd,5591ddf16fdf..000000000000
+--- a/drivers/pinctrl/renesas/pinctrl-rza2.c
++++ b/drivers/pinctrl/renesas/pinctrl-rza2.c
+@@@ -14,9 -14,9 +14,10 @@@
+  #include <linux/gpio/driver.h>
+  #include <linux/io.h>
+  #include <linux/module.h>
++ #include <linux/mutex.h>
+ -#include <linux/of_device.h>
+ +#include <linux/of.h>
+  #include <linux/pinctrl/pinmux.h>
+ +#include <linux/platform_device.h>
+ =20
+  #include "../core.h"
+  #include "../pinmux.h"
+diff --cc drivers/pinctrl/renesas/pinctrl-rzg2l.c
+index 4f34f8f24bde,cdf183250c1e..000000000000
+--- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+@@@ -11,9 -11,9 +11,10 @@@
+  #include <linux/interrupt.h>
+  #include <linux/io.h>
+  #include <linux/module.h>
++ #include <linux/mutex.h>
+ -#include <linux/of_device.h>
+ +#include <linux/of.h>
+  #include <linux/of_irq.h>
+ +#include <linux/platform_device.h>
+  #include <linux/seq_file.h>
+  #include <linux/spinlock.h>
+ =20
+diff --cc drivers/pinctrl/renesas/pinctrl-rzv2m.c
+index c73784b8b4ba,aa9dbbddff21..000000000000
+--- a/drivers/pinctrl/renesas/pinctrl-rzv2m.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzv2m.c
+@@@ -14,8 -14,8 +14,9 @@@
+  #include <linux/gpio/driver.h>
+  #include <linux/io.h>
+  #include <linux/module.h>
++ #include <linux/mutex.h>
+ -#include <linux/of_device.h>
+ +#include <linux/of.h>
+ +#include <linux/platform_device.h>
+  #include <linux/spinlock.h>
+ =20
+  #include <linux/pinctrl/consumer.h>
+
+--Sig_/vM.PpzNqUdSKHc6IynA9DXD
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTfCuUACgkQAVBC80lX
+0GxdiAgAjuCwcYWx5oEZSD1DED1nN3FIZD5k4nrQv4pnFjA7+RWrbrB96/V1dI7K
+WPeyQEW97aeJitLhofijnbXcGaQEwbEwV3ieoTwh+qzAcEuKdL3yGpkEruAiCNuk
+CIvnK18a4kf3X64U7k3YA64FhZ9ERmndka+6bcczBx/sDyZf6ENyBI2bZmFawadh
+WQ7cFYaqL9g+l2QhaW6HnBj3PCbM/QaKVSeo1tLqHb0WJllfhjCj6j93GIlSyx3j
+yhKgvb5pyIvXVlPWjVQEPL/qOK4982FqM2TaAMsTdkxxUqmbJ1vvfwduNXxcaB1R
+XUYJ/aLxPq/fJES+l1UlrqfTEO2d2A==
+=JGek
+-----END PGP SIGNATURE-----
+
+--Sig_/vM.PpzNqUdSKHc6IynA9DXD--
