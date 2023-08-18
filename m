@@ -2,222 +2,375 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF21478074B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D079278074E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358648AbjHRIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
+        id S1358662AbjHRIjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358642AbjHRIha (ORCPT
+        with ESMTP id S1358707AbjHRIi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:37:30 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8743A99
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:37:28 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fed6c2a5cfso919065e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:37:28 -0700 (PDT)
+        Fri, 18 Aug 2023 04:38:58 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA813A94
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:38:56 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so862956e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:38:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692347847; x=1692952647;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EkTtM2TNIG+ZMhNGtHnzw5WU517N75Vg3ipWDLnXuCM=;
-        b=sgKbfSvobO2Acg3w5MD88ZS03UFr/0gL31LuucE2J7G/Bc8lSvXc/CJl0XDC+HOFjX
-         GG3XX+AkZp5BqqhRD0TwYrFTtT643LOMpZVtfSFhdY8te4yicAjUa9fTOBpv1LRaVbah
-         UYmPFN7ckAGACx/qhNaBUJlWZUN6SLeUrAPpOwjw7Vs8xe84XA7dbyonyadqjfGHd5Bu
-         w8jKsYKpBzSLdaYQiNX9wklM7LGdTm5Ut5dDARhfO5Dy0ciNdzAuf8F8ZQKlAdXBdOV7
-         K+oj1t6frvexDk7aOQ/vX7gfjtvyRKYBRlwO+wAen2ITbp0WugPg8wAvA3iMihh+VHhd
-         yoZw==
+        d=gmail.com; s=20221208; t=1692347934; x=1692952734;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SakvWqPGx9fobEht8A7pj++O7Q0VjRY2AuuunBqxg3s=;
+        b=Qjiu4+A9e8mfkqmlUr0mLXdwn9TmseGacRGI2rvvCm+EaeYWKASObQKHmi4xPkMFGo
+         odkvJ6gmIByU+byCPx/YF2r0vcdRgIUmuBgWu3QzMIHzJIPi+t/Xf/q/DXfI9YaAUHAr
+         bwNfdZrD8p9WCJ0C7hddvvYYq3okHW2yScTpqlty0FI3G0p7H0wL5umY0fxVINWBfvnP
+         hjhwmGST/COg9+NvEx+WY6wRoR9b+7Z5idaIOYLTR3riRlEqGgAe0hbclhxswHmL//kl
+         JMWUoRsAd1y4boDka6GD/eXhTtONCW0w6hupdKlEeLgfTxJ2LcksJZL2yd5mar1tyGY2
+         ETEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692347847; x=1692952647;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=EkTtM2TNIG+ZMhNGtHnzw5WU517N75Vg3ipWDLnXuCM=;
-        b=DczzTwQAHHQe34B1m8LuJC0TRXEfMSC4udL0NR0Q6K413TZ2DJmGv/tByLD51QafUB
-         qyMChSNbCE3pUfVkG8KMnCyuL9X6i0+CJJxTMI+mpA/6JsHRbqE3BayqcIsklPwER1if
-         33UsyAwd//6G5gxXqmBKERHlU5AXpE5mPbymkZhksSlTUXUF7tE9Z/xe6KsJhqeqLysZ
-         r2Yig6DQ6J3uoZQ9hEqDZe6b3s/Cgb1stKZ5PN9u80yFtM5DzFZx5LnyUyShCciODmvy
-         91GOkmJByn7j1RvYWMFaDbb+D1izMx9f5teZSjyynXBrPi4bqvR2l6ugORLaBOVmk+Fq
-         mKIg==
-X-Gm-Message-State: AOJu0YxKaSGUj7mrpESnf77a/ZAEXFtqd6CT6EeHrPTgmUiwlxbsBPLP
-        3T9icjpLIUWTiXQzLzqjm6HSbA==
-X-Google-Smtp-Source: AGHT+IGWWG9k0zKOaYDfIhvTQO1DGhLcAwN0pgCFVuWFkZ2CUZO+vJbuLqXUQrI2YzypkbM5uSU32A==
-X-Received: by 2002:a5d:49cf:0:b0:314:327:2edb with SMTP id t15-20020a5d49cf000000b0031403272edbmr1362430wrs.0.1692347847387;
-        Fri, 18 Aug 2023 01:37:27 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:b9f6:39b9:fff4:e741? ([2a01:e0a:982:cbb0:b9f6:39b9:fff4:e741])
-        by smtp.gmail.com with ESMTPSA id x8-20020a5d4448000000b0031432f1528csm2033008wrr.45.2023.08.18.01.37.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 01:37:26 -0700 (PDT)
-Message-ID: <0f81553d-1d68-43e5-aa49-4801ba7c7d51@linaro.org>
+        d=1e100.net; s=20221208; t=1692347934; x=1692952734;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SakvWqPGx9fobEht8A7pj++O7Q0VjRY2AuuunBqxg3s=;
+        b=XPqCT/J6YL5Abk4RtTovnGcMymILC0ocpYWopxEJqsYf/GstJ3RJrduomJT4amKgy8
+         W3vONSxFilo/VKSIpQnO4syJRXlbTDtQmz5P0TqUgOQt+RDDqeg3sHdlCrIaDQk2XiWD
+         B7idsHpXddO/R73uCPcpt9+nw5MJVF8ZJp3GWnXgXneBEJMspVbKbfdHbbhngEZ2RxyO
+         0nFB93gwZkzYp8shT0O5nOqeXa6sCV34G0RmMl1Oq9wX3a0OtDSFh6fcYJWSsM2wK09L
+         xQbxYl4E3GduWpJpt842Ki6aA2IMHpWHQkkkNajtVtSe1yC9jnaLc/XXVsCsBswNjgYU
+         HT5g==
+X-Gm-Message-State: AOJu0YzD3DZ25jAvZU/H5Hgd5RrV9GpCQ6PMSAYt8rJuC+8X+DvqmRk2
+        eoIO81R53esGONfnil3xIB5n4LfXsTw=
+X-Google-Smtp-Source: AGHT+IEVHKoXghcbuU89DtbEBGBq6fjiYmsLX2PD9SibDTv1njBudG4/YMoTPQ5X9hFKEwC19cM7pw==
+X-Received: by 2002:a05:6512:3f0f:b0:4ff:7e04:7575 with SMTP id y15-20020a0565123f0f00b004ff7e047575mr1495842lfa.14.1692347934262;
+        Fri, 18 Aug 2023 01:38:54 -0700 (PDT)
+Received: from ws-565760.systec.local ([212.185.67.148])
+        by smtp.gmail.com with ESMTPSA id 5-20020a05600c020500b003fbb5506e54sm2046748wmi.29.2023.08.18.01.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 01:38:54 -0700 (PDT)
+From:   werneazc@gmail.com
+X-Google-Original-From: andre.werner@systec-electronic.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, lee@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Andre Werner <andre.werner@systec-electronic.com>
+Subject: [PATCH v2 2/2] regulator: (tps65086): Select dedicated regulator config for chip variant
 Date:   Fri, 18 Aug 2023 10:37:24 +0200
+Message-ID: <20230818083721.29790-5-andre.werner@systec-electronic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230818083721.29790-2-andre.werner@systec-electronic.com>
+References: <20230818083721.29790-2-andre.werner@systec-electronic.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2] drm: bridge: samsung-dsim: Fix init during host
- transfer
-Content-Language: en-US, fr
-To:     Frieder Schrempf <frieder@fris.de>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        linux-kernel@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robert Foss <rfoss@kernel.org>
-Cc:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Marek Vasut <marex@denx.de>
-References: <20230724151640.555490-1-frieder@fris.de>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230724151640.555490-1-frieder@fris.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/07/2023 17:16, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> In case the downstream bridge or panel uses DSI transfers before the
-> DSI host was actually initialized through samsung_dsim_atomic_enable()
-> which clears the stop state (LP11) mode, all transfers will fail.
-> 
-> This happens with downstream bridges that are controlled by DSI
-> commands such as the tc358762.
-> 
-> As documented in [1] DSI hosts are expected to allow transfers
-> outside the normal bridge enable/disable flow.
-> 
-> To fix this make sure that stop state is cleared in
-> samsung_dsim_host_transfer() which restores the previous
-> behavior.
-> 
-> We also factor out the common code to enable/disable stop state
-> to samsung_dsim_set_stop_state().
-> 
-> [1] https://docs.kernel.org/gpu/drm-kms-helpers.html#mipi-dsi-bridge-operation
-> 
-> Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec")
-> Reported-by: Tim Harvey <tharvey@gateworks.com>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
-> Changes for v2:
->    * Fix reversed stop state enable/disable in samsung_dsim_set_stop_state()
-> 
-> Hi Tim, could you please give this patch a try and report back if
-> it fixes your problem? Thanks!
-> ---
->   drivers/gpu/drm/bridge/samsung-dsim.c | 27 +++++++++++++++++----------
->   1 file changed, 17 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-> index 043b8109e64a..73ec60757dbc 100644
-> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> @@ -1386,6 +1386,18 @@ static void samsung_dsim_disable_irq(struct samsung_dsim *dsi)
->   	disable_irq(dsi->irq);
->   }
->   
-> +static void samsung_dsim_set_stop_state(struct samsung_dsim *dsi, bool enable)
-> +{
-> +	u32 reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
-> +
-> +	if (enable)
-> +		reg |= DSIM_FORCE_STOP_STATE;
-> +	else
-> +		reg &= ~DSIM_FORCE_STOP_STATE;
-> +
-> +	samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-> +}
-> +
->   static int samsung_dsim_init(struct samsung_dsim *dsi)
->   {
->   	const struct samsung_dsim_driver_data *driver_data = dsi->driver_data;
-> @@ -1445,15 +1457,12 @@ static void samsung_dsim_atomic_enable(struct drm_bridge *bridge,
->   				       struct drm_bridge_state *old_bridge_state)
->   {
->   	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
-> -	u32 reg;
->   
->   	if (samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
->   		samsung_dsim_set_display_mode(dsi);
->   		samsung_dsim_set_display_enable(dsi, true);
->   	} else {
-> -		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
-> -		reg &= ~DSIM_FORCE_STOP_STATE;
-> -		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-> +		samsung_dsim_set_stop_state(dsi, false);
->   	}
->   
->   	dsi->state |= DSIM_STATE_VIDOUT_AVAILABLE;
-> @@ -1463,16 +1472,12 @@ static void samsung_dsim_atomic_disable(struct drm_bridge *bridge,
->   					struct drm_bridge_state *old_bridge_state)
->   {
->   	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
-> -	u32 reg;
->   
->   	if (!(dsi->state & DSIM_STATE_ENABLED))
->   		return;
->   
-> -	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
-> -		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
-> -		reg |= DSIM_FORCE_STOP_STATE;
-> -		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-> -	}
-> +	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-> +		samsung_dsim_set_stop_state(dsi, true);
->   
->   	dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
->   }
-> @@ -1775,6 +1780,8 @@ static ssize_t samsung_dsim_host_transfer(struct mipi_dsi_host *host,
->   	if (ret)
->   		return ret;
->   
-> +	samsung_dsim_set_stop_state(dsi, false);
-> +
->   	ret = mipi_dsi_create_packet(&xfer.packet, msg);
->   	if (ret < 0)
->   		return ret;
+From: Andre Werner <andre.werner@systec-electronic.com>
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Some configurations differ between chip variants, e,g. the register
+to control the on of state of LDOA1 and SWB2. Thus, it is necessary
+to choose the correct configuration for a dedicated device.
+If the wrong configuration was used, the LDOA1 output that was
+disabled by the bootloader was enabled in  Kernel again.
+
+Each chip variant gets its dedicated configuration selected by
+the chip ID previously collected from MFD probe function.
+The VTT enum value (tps65086_regulators) is shifted because not all
+chip variants have a separate SWB2 switch. Sometimes they are merged.
+So the configuration possibilities differ, thus the regulator
+configuration arrays have a different length.
+
+Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
+---
+v2: Move interpretation from MFD probe to regulator probe to select the right regulator
+configuration.
+---
+ drivers/regulator/tps65086-regulator.c | 188 +++++++++++++++++++++++--
+ include/linux/mfd/tps65086.h           |   3 +
+ 2 files changed, 183 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/regulator/tps65086-regulator.c b/drivers/regulator/tps65086-regulator.c
+index 663789198ba5..2d284c64eeb7 100644
+--- a/drivers/regulator/tps65086-regulator.c
++++ b/drivers/regulator/tps65086-regulator.c
+@@ -15,7 +15,15 @@
+ #include <linux/mfd/tps65086.h>
+ 
+ enum tps65086_regulators { BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6, LDOA1,
+-	LDOA2, LDOA3, SWA1, SWB1, SWB2, VTT };
++	LDOA2, LDOA3, VTT, SWA1, SWB1, SWB2 };
++
++/* Selector for regulator configuration regarding PMIC chip ID. */
++enum tps65086_ids {
++	TPS6508640 = 0,
++	TPS65086401,
++	TPS6508641,
++	TPS65086470,
++};
+ 
+ #define TPS65086_REGULATOR(_name, _of, _id, _nv, _vr, _vm, _er, _em, _lr, _dr, _dm)	\
+ 	[_id] = {							\
+@@ -57,12 +65,24 @@ enum tps65086_regulators { BUCK1, BUCK2, BUCK3, BUCK4, BUCK5, BUCK6, LDOA1,
+ 		},							\
+ 	}
+ 
++
++#define TPS65086_REGULATOR_CONFIG(_chip_id, _config)			\
++	[_chip_id] = {							\
++		.config = _config,					\
++		.num_elems = ARRAY_SIZE(_config),			\
++	}
++
+ struct tps65086_regulator {
+ 	struct regulator_desc desc;
+ 	unsigned int decay_reg;
+ 	unsigned int decay_mask;
+ };
+ 
++struct tps65086_regulator_config {
++	struct tps65086_regulator * const config;
++	const unsigned int num_elems;
++};
++
+ static const struct linear_range tps65086_10mv_ranges[] = {
+ 	REGULATOR_LINEAR_RANGE(0, 0x0, 0x0, 0),
+ 	REGULATOR_LINEAR_RANGE(410000, 0x1, 0x7F, 10000),
+@@ -114,7 +134,125 @@ static int tps65086_of_parse_cb(struct device_node *dev,
+ 				const struct regulator_desc *desc,
+ 				struct regulator_config *config);
+ 
+-static struct tps65086_regulator regulators[] = {
++static struct tps65086_regulator tps6508640_regulator_config[] = {
++	TPS65086_REGULATOR("BUCK1", "buck1", BUCK1, 0x80, TPS65086_BUCK1CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK1CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK2", "buck2", BUCK2, 0x80, TPS65086_BUCK2CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(1),
++			   tps65086_10mv_ranges, TPS65086_BUCK2CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK3", "buck3", BUCK3, 0x80, TPS65086_BUCK3VID,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(2),
++			   tps65086_10mv_ranges, TPS65086_BUCK3DECAY,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK4", "buck4", BUCK4, 0x80, TPS65086_BUCK4VID,
++			   BUCK_VID_MASK, TPS65086_BUCK4CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK4VID,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK5", "buck5", BUCK5, 0x80, TPS65086_BUCK5VID,
++			   BUCK_VID_MASK, TPS65086_BUCK5CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK5CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK6", "buck6", BUCK6, 0x80, TPS65086_BUCK6VID,
++			   BUCK_VID_MASK, TPS65086_BUCK6CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK6CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("LDOA1", "ldoa1", LDOA1, 0xF, TPS65086_LDOA1CTRL,
++			   VDOA1_VID_MASK, TPS65086_SWVTT_EN, BIT(7),
++			   tps65086_ldoa1_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA2", "ldoa2", LDOA2, 0x10, TPS65086_LDOA2VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA2CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA3", "ldoa3", LDOA3, 0x10, TPS65086_LDOA3VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA3CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_SWITCH("VTT", "vtt", VTT, TPS65086_SWVTT_EN, BIT(4)),
++	TPS65086_SWITCH("SWA1", "swa1", SWA1, TPS65086_SWVTT_EN, BIT(5)),
++	TPS65086_SWITCH("SWB1", "swb1", SWB1, TPS65086_SWVTT_EN, BIT(6)),
++	TPS65086_SWITCH("SWB2", "swb2", SWB2, TPS65086_LDOA1CTRL, BIT(0)),
++};
++
++static struct tps65086_regulator tps65086401_regulator_config[] = {
++	TPS65086_REGULATOR("BUCK1", "buck1", BUCK1, 0x80, TPS65086_BUCK1CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK1CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK2", "buck2", BUCK2, 0x80, TPS65086_BUCK2CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(1),
++			   tps65086_10mv_ranges, TPS65086_BUCK2CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK3", "buck3", BUCK3, 0x80, TPS65086_BUCK3VID,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(2),
++			   tps65086_10mv_ranges, TPS65086_BUCK3DECAY,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK4", "buck4", BUCK4, 0x80, TPS65086_BUCK4VID,
++			   BUCK_VID_MASK, TPS65086_BUCK4CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK4VID,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK5", "buck5", BUCK5, 0x80, TPS65086_BUCK5VID,
++			   BUCK_VID_MASK, TPS65086_BUCK5CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK5CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK6", "buck6", BUCK6, 0x80, TPS65086_BUCK6VID,
++			   BUCK_VID_MASK, TPS65086_BUCK6CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK6CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("LDOA1", "ldoa1", LDOA1, 0xF, TPS65086_LDOA1CTRL,
++			   VDOA1_VID_MASK, TPS65086_SWVTT_EN, BIT(7),
++			   tps65086_ldoa1_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA2", "ldoa2", LDOA2, 0x10, TPS65086_LDOA2VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA2CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA3", "ldoa3", LDOA3, 0x10, TPS65086_LDOA3VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA3CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_SWITCH("VTT", "vtt", VTT, TPS65086_SWVTT_EN, BIT(4)),
++	TPS65086_SWITCH("SWA1", "swa1", SWA1, TPS65086_SWVTT_EN, BIT(5)),
++	TPS65086_SWITCH("SWB1", "swb1", SWB1, TPS65086_SWVTT_EN, BIT(6)),
++};
++
++static struct tps65086_regulator tps6508641_regulator_config[] = {
++	TPS65086_REGULATOR("BUCK1", "buck1", BUCK1, 0x80, TPS65086_BUCK1CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK1CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK2", "buck2", BUCK2, 0x80, TPS65086_BUCK2CTRL,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(1),
++			   tps65086_10mv_ranges, TPS65086_BUCK2CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK3", "buck3", BUCK3, 0x80, TPS65086_BUCK3VID,
++			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(2),
++			   tps65086_10mv_ranges, TPS65086_BUCK3DECAY,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK4", "buck4", BUCK4, 0x80, TPS65086_BUCK4VID,
++			   BUCK_VID_MASK, TPS65086_BUCK4CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK4VID,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK5", "buck5", BUCK5, 0x80, TPS65086_BUCK5VID,
++			   BUCK_VID_MASK, TPS65086_BUCK5CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK5CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("BUCK6", "buck6", BUCK6, 0x80, TPS65086_BUCK6VID,
++			   BUCK_VID_MASK, TPS65086_BUCK6CTRL, BIT(0),
++			   tps65086_10mv_ranges, TPS65086_BUCK6CTRL,
++			   BIT(0)),
++	TPS65086_REGULATOR("LDOA1", "ldoa1", LDOA1, 0xF, TPS65086_LDOA1CTRL,
++			   VDOA1_VID_MASK, TPS65086_SWVTT_EN, BIT(7),
++			   tps65086_ldoa1_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA2", "ldoa2", LDOA2, 0x10, TPS65086_LDOA2VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA2CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_REGULATOR("LDOA3", "ldoa3", LDOA3, 0x10, TPS65086_LDOA3VID,
++			   VDOA23_VID_MASK, TPS65086_LDOA3CTRL, BIT(0),
++			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_SWITCH("VTT", "vtt", VTT, TPS65086_SWVTT_EN, BIT(4)),
++	TPS65086_SWITCH("SWA1", "swa1", SWA1, TPS65086_SWVTT_EN, BIT(5)),
++	TPS65086_SWITCH("SWB1", "swb1", SWB1, TPS65086_SWVTT_EN, BIT(6)),
++};
++
++static struct tps65086_regulator tps65086470_regulator_config[] = {
+ 	TPS65086_REGULATOR("BUCK1", "buck1", BUCK1, 0x80, TPS65086_BUCK1CTRL,
+ 			   BUCK_VID_MASK, TPS65086_BUCK123CTRL, BIT(0),
+ 			   tps65086_10mv_ranges, TPS65086_BUCK1CTRL,
+@@ -148,16 +286,25 @@ static struct tps65086_regulator regulators[] = {
+ 	TPS65086_REGULATOR("LDOA3", "ldoa3", LDOA3, 0x10, TPS65086_LDOA3VID,
+ 			   VDOA23_VID_MASK, TPS65086_LDOA3CTRL, BIT(0),
+ 			   tps65086_ldoa23_ranges, 0, 0),
++	TPS65086_SWITCH("VTT", "vtt", VTT, TPS65086_SWVTT_EN, BIT(4)),
+ 	TPS65086_SWITCH("SWA1", "swa1", SWA1, TPS65086_SWVTT_EN, BIT(5)),
+ 	TPS65086_SWITCH("SWB1", "swb1", SWB1, TPS65086_SWVTT_EN, BIT(6)),
+ 	TPS65086_SWITCH("SWB2", "swb2", SWB2, TPS65086_SWVTT_EN, BIT(7)),
+-	TPS65086_SWITCH("VTT", "vtt", VTT, TPS65086_SWVTT_EN, BIT(4)),
++};
++
++static const struct tps65086_regulator_config regulator_configs[] = {
++	TPS65086_REGULATOR_CONFIG(TPS6508640, tps6508640_regulator_config),
++	TPS65086_REGULATOR_CONFIG(TPS65086401, tps65086401_regulator_config),
++	TPS65086_REGULATOR_CONFIG(TPS6508641, tps6508641_regulator_config),
++	TPS65086_REGULATOR_CONFIG(TPS65086470, tps65086470_regulator_config)
+ };
+ 
+ static int tps65086_of_parse_cb(struct device_node *node,
+ 				const struct regulator_desc *desc,
+ 				struct regulator_config *config)
+ {
++	struct tps65086 * const tps = dev_get_drvdata(config->dev);
++	struct tps65086_regulator *regulators = tps->reg_config->config;
+ 	int ret;
+ 
+ 	/* Check for 25mV step mode */
+@@ -203,9 +350,30 @@ static int tps65086_regulator_probe(struct platform_device *pdev)
+ {
+ 	struct tps65086 *tps = dev_get_drvdata(pdev->dev.parent);
+ 	struct regulator_config config = { };
++	unsigned int selector_reg_config;
+ 	struct regulator_dev *rdev;
+ 	int i;
+ 
++	/* Select regulator configuration for used PMIC device */
++	switch (tps->chip_id) {
++	case TPS6508640_ID:
++		selector_reg_config = TPS6508640;
++		break;
++	case TPS65086401_ID:
++		selector_reg_config = TPS65086401;
++		break;
++	case TPS6508641_ID:
++		selector_reg_config = TPS6508641;
++		break;
++	case TPS65086470_ID:
++		selector_reg_config = TPS65086470;
++		break;
++	default:
++		dev_err(tps->dev, "Unknown device ID. Cannot determine regulator config.\n");
++		return -ENODEV;
++	}
++	tps->reg_config = &regulator_configs[selector_reg_config];
++
+ 	platform_set_drvdata(pdev, tps);
+ 
+ 	config.dev = &pdev->dev;
+@@ -213,12 +381,16 @@ static int tps65086_regulator_probe(struct platform_device *pdev)
+ 	config.driver_data = tps;
+ 	config.regmap = tps->regmap;
+ 
+-	for (i = 0; i < ARRAY_SIZE(regulators); i++) {
+-		rdev = devm_regulator_register(&pdev->dev, &regulators[i].desc,
+-					       &config);
++	for (i = 0; i < tps->reg_config->num_elems; ++i) {
++		struct regulator_desc * const desc_ptr = &tps->reg_config->config[i].desc;
++
++		dev_dbg(tps->dev, "Index: %u; Regulator name: \"%s\"; Regulator ID: %d\n",
++			i, desc_ptr->name, desc_ptr->id);
++
++		rdev = devm_regulator_register(&pdev->dev, desc_ptr, &config);
+ 		if (IS_ERR(rdev)) {
+-			dev_err(tps->dev, "failed to register %s regulator\n",
+-				pdev->name);
++			dev_err(tps->dev, "failed to register %d \"%s\" regulator\n",
++				i, desc_ptr->name);
+ 			return PTR_ERR(rdev);
+ 		}
+ 	}
+diff --git a/include/linux/mfd/tps65086.h b/include/linux/mfd/tps65086.h
+index 87e590de6ca5..9185b5cd8371 100644
+--- a/include/linux/mfd/tps65086.h
++++ b/include/linux/mfd/tps65086.h
+@@ -99,6 +99,8 @@ enum tps65086_irqs {
+ 	TPS65086_IRQ_FAULT,
+ };
+ 
++struct tps65086_regulator_config;
++
+ /**
+  * struct tps65086 - state holder for the tps65086 driver
+  *
+@@ -108,6 +110,7 @@ struct tps65086 {
+ 	struct device *dev;
+ 	struct regmap *regmap;
+ 	unsigned int chip_id;
++	const struct tps65086_regulator_config *reg_config;
+ 
+ 	/* IRQ Data */
+ 	int irq;
+-- 
+2.41.0
+
