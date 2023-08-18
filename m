@@ -2,62 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0D47802FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E09780307
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356853AbjHRBUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 21:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S1356928AbjHRBUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 21:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356857AbjHRBTx (ORCPT
+        with ESMTP id S1356889AbjHRBUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 21:19:53 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722BC3AA2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:19:51 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I1JbFP031025
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 17 Aug 2023 21:19:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692321579; bh=N9xq8ez1R4EYiLuS925H02h8PtkhiCpRuEH5JezPpjU=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Vy6XAfC2pLW4p2NCVrbi/0ffp54RIr9cx+fikDdMnSuYQvNZeBRUc2Qd8LyaauyW9
-         4RCk8nv1E5bvO2fdPmkcBo+y9CdTN9o8R0S1s7wz9rSYIF/JhuysZfY2w4LEAtrDpW
-         NvBG73U+BclKH3L4jzKhits/7loHmPpuviMemy0T98LSHj7saR1gp1yc0yFMJJUn9O
-         62A9i8Cnzqo6VS3opXexP4s5MzdepxuwPjZv9Iob8uNk0Pao7zqcw826jawT9RZpcf
-         9oamIZefUq10n9TzAO/HXoI6RYr99Uh6HAjzrCetyVRwuMF8D2YgYF8BNT1S8+qbCU
-         q9KPIhO17yg7A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 22C4515C0501; Thu, 17 Aug 2023 21:19:37 -0400 (EDT)
-Date:   Thu, 17 Aug 2023 21:19:37 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Bhatnagar, Rishabh" <risbhat@amazon.com>
-Cc:     Jan Kara <jack@suse.cz>, jack@suse.com, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Park, SeongJae" <sjpark@amazon.com>
-Subject: Re: Tasks stuck jbd2 for a long time
-Message-ID: <20230818011937.GA3464136@mit.edu>
-References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
- <20230816022851.GH2247938@mit.edu>
- <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
- <20230816145310.giogco2nbzedgak2@quack3>
- <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
- <20230816215227.jlvmqasfbc73asi4@quack3>
- <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
- <20230817104917.bs46doo6duo7utlm@quack3>
- <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+        Thu, 17 Aug 2023 21:20:34 -0400
+Received: from repost01.tmes.trendmicro.eu (repost01.tmes.trendmicro.eu [18.185.115.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5403A99
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:20:31 -0700 (PDT)
+Received: from 104.47.11.172_.trendmicro.com (unknown [172.21.183.240])
+        by repost01.tmes.trendmicro.eu (Postfix) with SMTP id B864C100004D9;
+        Fri, 18 Aug 2023 01:20:30 +0000 (UTC)
+X-TM-MAIL-RECEIVED-TIME: 1692321626.022000
+X-TM-MAIL-UUID: c84f0596-dfda-482b-b277-84bd576188aa
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (unknown [104.47.11.172])
+        by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 0597610000405;
+        Fri, 18 Aug 2023 01:20:25 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bKiS8AJ1HVF03EgkntvIaqgecwvt5+Nt6s7rTyTKjD0DOGRTSyZ5svBbcQmUiYyZKYyclbouQU7hgsoAxyTbeBiVVBOkyNP/G8BtC4/nCKQPw23ZdUINPFLnD4Ryjtjcb2z4JhU+GNRUKi4YD+fsGa+TlPGbZOwwI6ZROQCsfDs/kilLf6UCD6YahbG0smfHKtVnAm3W96ccs7fusntTVS2ChNX1cGG0ZQHFdATuwYSA6DzAs2PJE/0k7zppQSSrmKqjUXVZNbe4Xi2D3I6t0jjADZdt2TjK2+fDSS2/8SOvDwErPWlcB9+DjXUfAjH6wuKAyj4s2k01+g6THWrHRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gKdGMR5s37Lk9N+Fl0koeY9QuXg+9X7xm0/FoLblK7A=;
+ b=eL8v1u3oVzKOJEWEF4UMmoeL9M47r/MX0r1Vb6VB02uP8ECKsYm40YGQj1r+BvMsefRiiWUtdGsFZjQEbev4x39GCZNS82g4T+nWyHTQnZmN7jsYYoMnee/D4mzQhpDKOW5A8eFlvPowBAzE1IwQpdITTd9Z4YDxWZSVs7Eo8QhHKlS/9mTk7Jhht5VUNPAECFAJFgnRVY5v6bNOF1V1p2Ez4C1vS3/NAGOmvj+NMH71QXilUjrP76YyCXbqg/PereamlAsqXpj5G+BQVqqiVs//R+z15kEBXAEHaTgAH282tNk+NU9Ssd3EnpNJ9Xn0PM1eF6KTzZYtWkL6yUqN5w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 217.66.60.4) smtp.rcpttodomain=arm.com smtp.mailfrom=opensynergy.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=opensynergy.com; dkim=none (message not signed); arc=none
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 217.66.60.4)
+ smtp.mailfrom=opensynergy.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=opensynergy.com;
+Received-SPF: Pass (protection.outlook.com: domain of opensynergy.com
+ designates 217.66.60.4 as permitted sender) receiver=protection.outlook.com;
+ client-ip=217.66.60.4; helo=SR-MAIL-03.open-synergy.com; pr=C
+From:   Peter Hilber <peter.hilber@opensynergy.com>
+To:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        virtio-dev@lists.oasis-open.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Peter Hilber <peter.hilber@opensynergy.com>,
+        "Christopher S. Hall" <christopher.s.hall@intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        John Stultz <jstultz@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Richard Cochran <richardcochran@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [RFC PATCH v2 0/6] Add virtio_rtc module and related changes
+Date:   Fri, 18 Aug 2023 03:20:06 +0200
+Message-Id: <20230818012014.212155-1-peter.hilber@opensynergy.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8EUR05FT014:EE_|BEZP281MB3222:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 5c5e362c-4eb8-4ac1-3c63-08db9f894c3d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BRkfQMWDOKMhZd04PCp+0TIOMJzVlKrQNiN9/44P2gZ2XXDM18uKwXsyHXzQfm59cQ1+yPGOsAylLxWpUl4ZGASkknegD05F+8Bndfa3F9aonOZaBE2UVEyE9JK9ckq1//ebxImFMeOqH3B6QAIX3wULkbuQqM0VxbY9ws2qFjJ0Q43dcFot1NgbSWmyf5bWVrw3yoFDoRXT0VNUTzLC8dDrV66bPUgqNwapAsPlNwe6q9QwbnfdQAfyDOD3PLyObwppmA/xQk7NfoGXbhurYP5LC1K9Qjnjf6DulZXxS+TzrNwOKLCBxCTB/nZelT3HOVa+ip31rMAi7rPYjQs1hOKNFCA3dSMAF1VZGQh5JYp1kYE+Z/GoKOnQd91klUcpy16u/pqszuVdnZ20GQjzrRVrHgSKLWuCfme3kZpHbTeEJ7vR81hqO+f4eTgsk+Kd3+KDt367vr5EPp1kpgPVuChBRVV+eWjRkeB4jVyhrhD5wuWfGLPCF+Y4wgQcNZQyxAb+Z3fi3I0NVzpv2sYjSVmv9E+W4XXv1PTfFKj5FszD8zUa9UmF0e3EalZbkVpfDJtj7t6wB83ptpjvg+5LeWuJPziC7bICiVCLup+wbqa6Kt7u4YWoZj+VApropQzzV+icqTgBHRuVuC+prQCAc2eMAym1MhR0ikosPA0etXBswRgjERTZf6GXYDcA7AW+5paN2xSbvkvV4zc4Y4ZS/bcW3ZIw4qD7gzas6rCV8e7OLg+WBGayvyDdGTn50efyPh+KG6u6W/BMaqH7Qwlo1nf/MDT6UcUXjYcPplVPSehCqONFldZsnoQ7u4FJgYNqkKW+hsCDKwvQ3wlCebhiyA==
+X-Forefront-Antispam-Report: CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39840400004)(186009)(82310400011)(1800799009)(451199024)(36840700001)(46966006)(40480700001)(8676002)(8936002)(4326008)(478600001)(12101799020)(54906003)(42186006)(316002)(966005)(70206006)(70586007)(41300700001)(47076005)(81166007)(36860700001)(336012)(26005)(7416002)(36756003)(44832011)(2616005)(5660300002)(1076003)(2906002)(86362001)(83380400001)(36900700001);DIR:OUT;SFP:1102;
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 01:20:24.0380
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c5e362c-4eb8-4ac1-3c63-08db9f894c3d
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
+X-MS-Exchange-CrossTenant-AuthSource: DB8EUR05FT014.eop-eur05.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB3222
+X-TM-AS-ERS: 104.47.11.172-0.0.0.0
+X-TMASE-Version: StarCloud-1.3-9.1.1011-27820.003
+X-TMASE-Result: 10--23.573800-4.000000
+X-TMASE-MatchedRID: sHskM9Mmy801ES5mXStnyvHn6ZcQIyrXoJ9fUBwJTsxthzrTp6Bm2Zmg
+        kd7c0mklPam+4FXhyE84al3F5wm3Brb67tz1B0bv98pvHsX7ODiMVe9CAxGt5W9P1W94aaoPVVX
+        wwYW5AKJytGZv03ETXMPGx059yEffk/dA6P3T5Fs70BtMXRaQwn6u8VnsVatcBVFM4/LXBZvOja
+        g0/IdOhG0x9eFyDN2tlANjrImr1cqp8JFEZ3/P50sfZgIcSmI9hp8n5idm/1+MhNlgOObH7jAY/
+        ryBUXH8n/2b/J8leHkcr+6JWSm8AJYu9uIRhW9UBA/ZR5qnp8MSRRLwSueD2pq9yKH2z9zof7gV
+        kqVnVBRw+j79Dup6Yc6Esjl50ngWYYYYNt9yJXntybwgd4MHW2txVUHuXeM7N4/zKvbrQA3s8oa
+        cIeSp9UGkmEQzE3e6yW6VnkgftEY+xnE+4zwEsogBJ2REjJVpIyQ2IZ1g8yYC28FWVjkhF3LF2V
+        aOJmfSW/Rdcb8TrA2zS0Lflen+5stQtgO74Vvs5PkCeM7tNe2bxe+IeXw0e+/Q+cyzRSxRDMKi7
+        N8lhnbfXDU2ciEUMsKjGRQnQ81hzxPIJ+YGuapbyCHfDNuoE9umu0ICVejLoli4ZoiOHT8g4pZY
+        xslhbQ40qJRZ9yNbA/3R8k/14e0=
+X-TMASE-XGENCLOUD: 20c37737-387b-45f5-bf68-d2cc8a099a7c-0-0-200-0
+X-TM-Deliver-Signature: 89371F398640FAE8DCA40378026D5088
+X-TM-Addin-Auth: nr3lMOf7cvoizeN6HW9g/kPvJ2duDMiCroQ3j91XOa4E5TFSgr10lUn7iL9
+        QAjLqkMDklAdA50P8cZI5taZc3avOq6CIxvwhA6yDTHfDUlP/b6OtLOdT42nwOl/k8PmBoNbLeJ
+        u9Z+6hcUnXhGEHivmsqRYZTQ4fj9aUz19i2EM111D82VEYtfVArnxrPW3a9ITENdX8WPU6U36Ct
+        AVuRHSwfcsWU09c02PA/j62uzHc4CCJIY/P2wHbKTNARuvE6q0sckS7vYslQt3yslSY4w5uFTvk
+        nUt4d+axRbdEO6E=.KJ9BsykSNLddJ2S2g+JWpOM7g8yfZdQdxcv9xbTPgoUBaXXZX84WR9KGKp
+        qoiYaWP88E532o+oX8n8gS6uWTiNqiPSC+RjcUNVhO829MlxrLVi9y3LQI2p1ab2MI+Zge5HQtG
+        7EYJ8rcQb1VWFyn4VR1W5fpnz01yJDKynZ+GgRMxUJ7gJeGlf+9HBEM7zRxZDZvYxGj4w3DNkJJ
+        do0Ylg0jpjlQnQ9gwngTcLLCAsAq6iMzORVB394L56Zyge9O+tW9K82bNgYdy0+nZ7FJbTrQ4L9
+        xwqBeGxCErQrveF0/50wR1FnsCWC6/dbo7vWJrtvMhFXSfjVBdj1Gm7p97g==
+X-TM-Addin-ProductCode: EMS
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
+        s=TM-DKIM-20210503141657; t=1692321630;
+        bh=hNXiEJgUahR5qr3avbK/sTRL263lfMdKT6x222P0YBw=; l=8810;
+        h=From:To:Date;
+        b=TILvzsakpGnv9VT+qT1LGnmBEA7s0CPp1WyYiXCmJfsoZmMT+yZGBpzgQmkCtUe9E
+         Y6a1guaRu+ieYUzE5zX8zFDAyZGa8vItpVZlJq9PCnNiZsGk9onpPQrhdrXyICxdTL
+         3r93bR3Ly98WZapxC2pYDtDgqe/L8D9XkU2YdA1hINza6DLNUm28V3u0bnpb1CbJuj
+         +DhdmIAVvMJORDPDcOqvffPVY5a/lJZ5j510l57QfGdUHGZ+A8ZmqS7446FRWGY1Ke
+         +52Quyg1hHDVHFzkmnI9OF7PSTQn96gbPNytIrkeCA8t7h+ArVDfK7kyF73QIm7egu
+         ID4GPqbeF6cpw==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,123 +128,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:59:03AM -0700, Bhatnagar, Rishabh wrote:
-> 
-> I think I found the thread that is holding the transaction handle. It seems
-> to be in runnable state though.
+v2 brings changes mostly to the preparatory patches. Notably, the changes
+to arm_arch_timer are dropped in favor of a prerequisite series [5]
+which changes the get_device_system_crosststamp() interface.
 
-This looks like it's case of livelock...
+At the moment, the proposed Virtio specification for virtio_rtc is being
+discussed [3], and this will result in some renaming and maybe more
+changes.
 
-> It has the journal_info set to the journal handle that has the matching
-> transaction as the journal's running transaction.
-> Here is the associated stack trace. It is converting unwritten extents to
-> extents.
-> 
-> PID: 287    TASK: ffff976801890000  CPU: 20  COMMAND: "kworker/u96:35"
->  #0 [ffffbd6c40b3f498] __schedule+617 at ffffffffbb912df9
->  #1 [ffffbd6c40b3f530] _cond_resched+38 at ffffffffbb9133e6
->  #2 [ffffbd6c40b3f538] shrink_lruvec+670 at ffffffffbb244d1e
->  #3 [ffffbd6c40b3f640] _cond_resched+21 at ffffffffbb9133d5
->  #4 [ffffbd6c40b3f648] shrink_node+552 at ffffffffbb2452a8
->  #5 [ffffbd6c40b3f6c8] do_try_to_free_pages+201 at ffffffffbb245829
->  #6 [ffffbd6c40b3f718] try_to_free_pages+239 at ffffffffbb246c0f
->  #7 [ffffbd6c40b3f7b0] __alloc_pages_slowpath.constprop.114+913 at
-> ffffffffbb28d741
->  #8 [ffffbd6c40b3f890] __alloc_pages_nodemask+679 at ffffffffbb28e2e7
->  #9 [ffffbd6c40b3f900] allocate_slab+726 at ffffffffbb2b0886
-> #10 [ffffbd6c40b3f958] ___slab_alloc+1173 at ffffffffbb2b3ff5
-> #11 [ffffbd6c40b3f988] insert_revoke_hash+37 at ffffffffc016f435 [jbd2] 
-> (/home/ec2-user/linux/fs/jbd2/revoke.c:146)
+This patch series depends on the patch series "treewide: Use clocksource id
+for get_device_system_crosststamp()" [5]. Pull [4] to get the combined
+series on top of mainline.
 
-insert_revoke_hash is trying to do a memory allocation of a 48 byte
-structure using kmem_cache_alloc() with the __GFP_NOFAIL bit set.  (We
-use GFP_NOFAIL because if the memory allocation fails, the only
-recourse we can have is to shut down the journal and force the file
-system to be read-only --- or crash the system, of course.)
+This patch series adds the virtio_rtc module, and related bugfixes and
+small interface extensions. The virtio_rtc module implements a driver
+compatible with the proposed Virtio RTC device specification [1]. The
+Virtio RTC (Real Time Clock) device provides information about current
+time. The device can provide different clocks, e.g. for the UTC or TAI time
+standards, or for physical time elapsed since some past epoch. The driver
+can read the clocks with simple or more accurate methods.
 
-Since we have set __GFP_NOFAIL, the memory allocator is apparently not
-able to find even a single free page for the slab allocator, and so
-it's apparently trying and trying to free memory --- and failing
-miserably.
+The series first fixes some bugs in the get_device_system_crosststamp()
+interpolation code, which is required for reliable virtio_rtc operation.
+Then, add the virtio_rtc implementation.
 
-Hmm... something that might be worth trying is to see if running the
-job in a memcg, since how the kernel handles OOM, and how it will
-handle OOM kills will differ depending whether is getting constrained
-by container memory or by completely running out of memory.
+For the Virtio RTC device, there is currently a proprietary implementation,
+which has been used for provisional testing.
 
-I wonder why this version of the 5.10 kernel isn't solving the problem
-performing an OOM kill to free memory.  We're running a 5.10 based
-kernel in our data centers at $WORK, and normally the OOM killer is
-quite free to make memory available by killing as necessasry deal with
-these situations.  (As Spock once said, "The needs of the many
-outweighs the needs of the few --- or the one."  And sometimes the
-best way to keep the system running is to sacrifice one of the
-userspace processes.)  Do you by any chance have all or most of the
-user processes exempted from the OOM killer?
+virtio_rtc exposes clocks as PTP clocks to userspace, similar to ptp_kvm.
+If both the Virtio RTC device and this driver have special support for the
+current clocksource, time synchronization programs can use
+cross-timestamping using ioctl PTP_SYS_OFFSET_PRECISE2 aka
+PTP_SYS_OFFSET_PRECISE. Similar to ptp_kvm, system time synchronization
+with single-digit ns precision is possible with a quiescent reference clock
+(from the Virtio RTC device). This works even when the Virtio device
+response is slow compared to ptp_kvm hypercalls.
 
-> #16 [ffffbd6c40b3faa0] __ext4_forget+338 at ffffffffc02efb32 [ext4] 
-> (/home/ec2-user/linux/fs/ext4/ext4_jbd2.c:298)
-> #17 [ffffbd6c40b3fae0] ext4_free_blocks+2437 at ffffffffc031fd55 [ext4]
-> (/home/ec2-user/linux/fs/ext4/mballoc.c:5709 (discriminator 2))
-> #18 [ffffbd6c40b3fbb0] ext4_ext_handle_unwritten_extents+596 at
-> ffffffffc02f56a4 [ext4] ((inlined by) ext4_ext_handle_unwritten_extents at
-> /home/ec2-user/linux/fs/ext4/extents.c:3892)
+The following illustrates a test using PTP_SYS_OFFSET_PRECISE, with
+interspersed strace log and chrony [2] refclocks log, on arm64. In the
+example, chrony tracks a virtio_rtc PTP clock ("PHCV", /dev/ptp0). The raw
+offset between the virtio_rtc clock and CLOCK_REALTIME is 0 to 1 ns. At the
+device side, the Virtio RTC device artificially delays both the clock read
+request, and the response, by 50 ms. Cross-timestamp interpolation still
+works with this delay. chrony also monitors a ptp_kvm clock ("PHCK",
+/dev/ptp3) for comparison, which yields a similar offset.
 
-This part of the stack trace is weird.  I don't see what callees of
-ext4_ext_handle_unwritten_extents() would result in ext4_free_blocks()
-getting called.  Unfortunately, the code is very heavily inlined, and
-we only see the first level of inlining.  My best guess is that it was
-in some error handling code, such as this:
+	ioctl(5</dev/ptp3>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.000329>
+	===============================================================================
+	   Date (UTC) Time         Refid  DP L P  Raw offset   Cooked offset      Disp.
+	===============================================================================
+	2023-06-29 18:49:55.595742 PHCK    0 N 0  1.000000e-09  8.717931e-10  5.500e-08
+	2023-06-29 18:49:55.595742 PHCK    - N -       -        8.717931e-10  5.500e-08
+	ioctl(6</dev/ptp0>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.101545>
+	2023-06-29 18:49:56.147766 PHCV    0 N 0  1.000000e-09  8.801870e-10  5.500e-08
+	2023-06-29 18:49:56.147766 PHCV    - N -       -        8.801870e-10  5.500e-08
+	ioctl(5</dev/ptp3>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.000195>
+	2023-06-29 18:49:56.202446 PHCK    0 N 0  1.000000e-09  7.364180e-10  5.500e-08
+	2023-06-29 18:49:56.202446 PHCK    - N -       -        7.364180e-10  5.500e-08
+	ioctl(6</dev/ptp0>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.101484>
+	2023-06-29 18:49:56.754641 PHCV    0 N 0  0.000000e+00 -2.617368e-10  5.500e-08
+	2023-06-29 18:49:56.754641 PHCV    - N -       -       -2.617368e-10  5.500e-08
+	ioctl(5</dev/ptp3>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.000270>
+	2023-06-29 18:49:56.809282 PHCK    0 N 0  1.000000e-09  7.779321e-10  5.500e-08
+	2023-06-29 18:49:56.809282 PHCK    - N -       -        7.779321e-10  5.500e-08
+	ioctl(6</dev/ptp0>, PTP_SYS_OFFSET_PRECISE, 0xffffe86691c8) = 0 <0.101510>
+	2023-06-29 18:49:57.361376 PHCV    0 N 0  0.000000e+00 -2.198794e-10  5.500e-08
+	2023-06-29 18:49:57.361376 PHCV    - N -       -       -2.198794e-10  5.500e-08
 
-	if (err) {
-		/* free all allocated blocks in error case */
-		for (i = 0; i < depth; i++) {
-			if (!ablocks[i])
-				continue;
-			ext4_free_blocks(handle, inode, NULL, ablocks[i], 1,
-					 EXT4_FREE_BLOCKS_METADATA);
-		}
-	}
+This patch series only adds special support for the Arm Generic Timer
+clocksource. At the driver side, it should be easy to support more
+clocksources.
 
-... and this call to ext4_free_blocks() resulted in the call to
-__ext4_forget, which in turn tried to create a journal revoke record.
+Without special support for the current clocksource, time synchronization
+programs can still use ioctl PTP_SYS_OFFSET_EXTENDED2 aka
+PTP_SYS_OFFSET_EXTENDED. In this case, precision will generally be worse
+and will depend on the Virtio device response characteristics.
 
-And the cause of the error may very well have been caused by some
-other memory allocation, if the system was so desperately low on
-memory.
+The following illustrates a test using PTP_SYS_OFFSET_EXTENDED, with
+interspersed strace log and chrony refclocks log, on x86-64 (with `ts'
+values omitted):
+
+	ioctl(5, PTP_SYS_OFFSET_EXTENDED, {n_samples=10, ts=OMITTED}) = 0
+	===============================================================================
+	   Date (UTC) Time         Refid  DP L P  Raw offset   Cooked offset      Disp.
+	===============================================================================
+	2023-06-28 14:11:26.697782 PHCV    0 N 0  3.318200e-05  3.450891e-05  4.611e-06
+	2023-06-28 14:11:26.697782 PHCV    - N -       -        3.450891e-05  4.611e-06
+	ioctl(5, PTP_SYS_OFFSET_EXTENDED, {n_samples=10, ts=OMITTED}) = 0
+	2023-06-28 14:11:27.208763 PHCV    0 N 0 -3.792800e-05 -4.023965e-05  4.611e-06
+	2023-06-28 14:11:27.208763 PHCV    - N -       -       -4.023965e-05  4.611e-06
+	ioctl(5, PTP_SYS_OFFSET_EXTENDED, {n_samples=10, ts=OMITTED}) = 0
+	2023-06-28 14:11:27.722818 PHCV    0 N 0 -3.328600e-05 -3.134404e-05  4.611e-06
+	2023-06-28 14:11:27.722818 PHCV    - N -       -       -3.134404e-05  4.611e-06
+	ioctl(5, PTP_SYS_OFFSET_EXTENDED, {n_samples=10, ts=OMITTED}) = 0
+	2023-06-28 14:11:28.233572 PHCV    0 N 0 -4.966900e-05 -4.584331e-05  4.611e-06
+	2023-06-28 14:11:28.233572 PHCV    - N -       -       -4.584331e-05  4.611e-06
+	ioctl(5, PTP_SYS_OFFSET_EXTENDED, {n_samples=10, ts=OMITTED}) = 0
+	2023-06-28 14:11:28.742737 PHCV    0 N 0  4.902700e-05  5.361388e-05  4.611e-06
+	2023-06-28 14:11:28.742737 PHCV    - N -       -        5.361388e-05  4.611e-06
+
+The following udev rule can be used to get a symlink /dev/ptp_virtio to the
+UTC clock:
+
+	SUBSYSTEM=="ptp", ATTR{clock_name}=="Virtio PTP UTC", SYMLINK += "ptp_virtio"
+
+The following chrony configuration directive can then be added in
+/etc/chrony/chrony.conf to synchronize to the Virtio UTC clock:
+
+	refclock PHC /dev/ptp_virtio refid PHCV poll -1 dpoll -1
+
+This patch series adds virtio_rtc not in drivers/ptp, but as a generic
+Virtio driver. In the near future, virtio_rtc should be extended with an
+RTC Class driver, along with extensions to the Virtio RTC device draft spec
+to support RTC alarms.
+
+Feedback is greatly appreciated.
+
+[1] https://lists.oasis-open.org/archives/virtio-comment/202306/msg00592.html
+[2] https://chrony.tuxfamily.org/
+[3] https://lore.kernel.org/virtio-comment/20230630092959.392381-1-peter.hilber@opensynergy.com/
+[4] https://github.com/OpenSynergy/linux.git virtio-rtc-v2-on-master
+[5] https://lore.kernel.org/lkml/20230818011256.211078-1-peter.hilber@opensynergy.com/T/#t
+
+v2:
+
+- Depend on patch series "treewide: Use clocksource id for
+  get_device_system_crosststamp()" to avoid requiring a clocksource pointer
+  with get_device_system_crosststamp().
+
+- Assume Arm Generic Timer will use CP15 virtual counter. Drop
+  arm_arch_timer helper functions (Marc Zyngier).
+
+- Improve cross-timestamp fixes problem description and implementation
+  (John Stultz).
 
 
-Anyway, the big question is why the system allowed the system to get
-so low in memory in the first place.  In addition to OOM killing
-processes, one of the things that Linux is supposed to do is "write
-throttling", where if a process is dirtying too many pages, to put the
-guilty processes to sleep so that page cleaning can have a chance to
-catch up.
+Peter Hilber (6):
+  timekeeping: Fix cross-timestamp interpolation on counter wrap
+  timekeeping: Fix cross-timestamp interpolation corner case decision
+  timekeeping: Fix cross-timestamp interpolation for non-x86
+  virtio_rtc: Add module and driver core
+  virtio_rtc: Add PTP clocks
+  virtio_rtc: Add Arm Generic Timer cross-timestamping
 
-Quoting from section 14.1.5 (Writeback) from [1]:
+ MAINTAINERS                          |   7 +
+ drivers/virtio/Kconfig               |  43 ++
+ drivers/virtio/Makefile              |   4 +
+ drivers/virtio/virtio_rtc_arm.c      |  22 +
+ drivers/virtio/virtio_rtc_driver.c   | 841 +++++++++++++++++++++++++++
+ drivers/virtio/virtio_rtc_internal.h |  71 +++
+ drivers/virtio/virtio_rtc_ptp.c      | 347 +++++++++++
+ include/uapi/linux/virtio_rtc.h      | 159 +++++
+ kernel/time/timekeeping.c            |  11 +-
+ 9 files changed, 1499 insertions(+), 6 deletions(-)
+ create mode 100644 drivers/virtio/virtio_rtc_arm.c
+ create mode 100644 drivers/virtio/virtio_rtc_driver.c
+ create mode 100644 drivers/virtio/virtio_rtc_internal.h
+ create mode 100644 drivers/virtio/virtio_rtc_ptp.c
+ create mode 100644 include/uapi/linux/virtio_rtc.h
 
-    As applications write to files, the pagecache becomes dirty and
-    the buffercache may become dirty. When the amount of dirty memory
-    reaches a specified number of pages in bytes
-    (vm.dirty_background_bytes), or when the amount of dirty memory
-    reaches a specific ratio to total memory
-    (vm.dirty_background_ratio), or when the pages have been dirty for
-    longer than a specified amount of time
-    (vm.dirty_expire_centisecs), the kernel begins writeback of pages
-    starting with files that had the pages dirtied first. The
-    background bytes and ratios are mutually exclusive and setting one
-    will overwrite the other. Flusher threads perform writeback in the
-    background and allow applications to continue running. If the I/O
-    cannot keep up with applications dirtying pagecache, and dirty
-    data reaches a critical setting (vm.dirty_bytes or
-    vm.dirty_ratio), then applications begin to be throttled to
-    prevent dirty data exceeding this threshold.
 
-[1] https://documentation.suse.com/sles/15-SP3/html/SLES-all/cha-tuning-memory.html
+base-commit: 2c41bbf973b0c1190e4579bfe86405273c14d822
+-- 
+2.39.2
 
-So it might be worth looking at if your system has non-default values
-for /proc/sys/vm/{dirty_bytes,dirty_ratio,dirty_background_bytes,etc.}.
-
-Cheers,
-
-					- Ted
