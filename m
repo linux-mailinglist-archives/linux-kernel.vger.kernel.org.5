@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D4D780E30
+	by mail.lfdr.de (Postfix) with ESMTP id E516A780E31
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377867AbjHROmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        id S1377877AbjHROmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377805AbjHROlp (ORCPT
+        with ESMTP id S1377806AbjHROls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:41:45 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B864313D;
-        Fri, 18 Aug 2023 07:41:43 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9EAEB20004;
-        Fri, 18 Aug 2023 14:41:40 +0000 (UTC)
+        Fri, 18 Aug 2023 10:41:48 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F083A13D;
+        Fri, 18 Aug 2023 07:41:46 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0342E1BF20B;
+        Fri, 18 Aug 2023 14:41:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692369702;
+        t=1692369705;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Lyznu4cPe0CCri4js4T7LBA0b1sDnyzuZNSR3Uosod4=;
-        b=SheUuMlVRP3GeXpJVSZeRYPvFM1QyDmwi5gETIHeIRRfoQD7uaYPNIJa6fwVgSX5iIfW2V
-        NUngfJe7foSHkUQH+bTdY4yceFHS6i6B6vFih/ppK5pE7VdwVVUV6Wig7YlsNsTEKjvdKL
-        OoXpiZTYqUQ/f0jPHRRQ9XV3JX7hV+tGCFONTtnr6jq9LYbkPZ6woLCWdfSLHZA90uDgIX
-        qSxWe+jxFQwYMVAelt9s/cz4OOLG5YZJQ+HK5UasHCJizbCL3q2wFX4rp275IWG9sZYwif
-        xJ19sEoQFi1hWXjKtoTpqklLdRDlBs+OVQrPKjcCs/h9xhV387lLGfq+NIloQA==
+        bh=9QTvLZbMsGHxuwSW5o3DQhI+aymS0RLjYYjz49XEkms=;
+        b=e6EHFd5NenKZLOm/7CrIZR6/ZleVoHK3Y1o8UKl4KrGBli3EXikGzukq/ZBY1j5/VOKvIr
+        YGsxj3pLD5Ci/cDgwnr8l9fvF7OgYoOzL5bUlDizwMi/gHHV9WLQhWf246b0VS8K4eelt6
+        YSG2luMkLxwqZn0115l3f9cuskKUHpEGBEI6OAfZBBjgYypVqC8v1+/BAau0k+w9+IRUVg
+        8Q22PDO6Ge8rDaInLvbGDX2HO44Zxtx+j85AgpCbRw5BWZCKK+CiOiwhfkmP8k5vyEVvyL
+        wWokiWnfZk28jNxXmHa3ex/EerdlEywFhegKWxiwf/DglevoUGjaX+CT83M/Rw==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         miquel.raynal@bootlin.com, vigneshr@ti.com
@@ -36,20 +36,20 @@ Cc:     richard@nod.at, linux-mtd@lists.infradead.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         quic_mdalam@quicinc.com, quic_srichara@quicinc.com,
         dan.carpenter@linaro.org
-Subject: Re: [PATCH 02/10] mtd: rawnand: qcom: Rename variables in qcom_op_cmd_mapping()
-Date:   Fri, 18 Aug 2023 16:41:40 +0200
-Message-Id: <20230818144140.146111-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 01/10] mtd: rawnand: qcom: Remove superfluous initialization of "ret"
+Date:   Fri, 18 Aug 2023 16:41:44 +0200
+Message-Id: <20230818144144.146143-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230805174146.57006-3-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <20230805174146.57006-2-manivannan.sadhasivam@linaro.org>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'd68b7e5f49b81944656eeb70fae1b733f5ac26d8'
+X-linux-mtd-patch-commit: b'847178fe4ccdf7f70beddd91eb15481afee0a224'
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,13 +57,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-08-05 at 17:41:38 UTC, Manivannan Sadhasivam wrote:
-> qcom_op_cmd_mapping() function accepts opcode and returns the corresponding
-> command register. So let's rename the local variables and parameters to
-> reflect the same.
+On Sat, 2023-08-05 at 17:41:37 UTC, Manivannan Sadhasivam wrote:
+> In all the cases, "ret" variable is assigned a value before returning it.
+> So there is no need to explicitly initialize it with 0.
 > 
-> Reported-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Closes: https://lore.kernel.org/all/20230804190750.3367a044@xps-13/
 > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
