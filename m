@@ -2,112 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50F3D780C71
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87169780C74
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377094AbjHRNTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S1377092AbjHRNW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377079AbjHRNSt (ORCPT
+        with ESMTP id S1377079AbjHRNWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:18:49 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D3A35AC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:18:47 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6886d6895a9so774469b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1692364727; x=1692969527;
-        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SbD3qI39lbOw6xxkLO7d3cqNPb86CrbmsEERY0HKJBM=;
-        b=fb98EVQU18p4I1zlKBc/bdGKgp6zXHP8aOT1xj+RIHckZkwZhtwQ0g2/UptKUkV/BM
-         84shHFq389pWSy83J6AH7o6PS5DPiUVHOT+LcYpE70NSVy1uvH02yFLBWvnLZPeC1Rg8
-         INVFem78FhCaT+GD25Z099lk6txBxEjBkkqygscAc6kfqxxw4Wn1NURAx7CqdYkMxyUJ
-         DDpe0wzYiioaVQ3IghdGWo53XT6ooIMQuThImYo73w6Jf1Nl6/lJQr9tq30OWOcyl8aB
-         m1qXu0glAm+K9vQ3NjgNxRJzVTOEtamjefQsmcfun/HZeVNKi3sv/BqFaudEpwmCYIkR
-         hDHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692364727; x=1692969527;
-        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SbD3qI39lbOw6xxkLO7d3cqNPb86CrbmsEERY0HKJBM=;
-        b=cP3hdi4sc9L1azp4Yb0ph2WcukUZ75Ouv0qZCm/R9cum5GSHshHFjuqpnTiLlMNPQa
-         Vj5iEvS8gvXiR522alciBJ5L7zJirk/JaH4FrqPaS5yGpb7uKFUVwyhdIjqxJJp7jZT5
-         I29s9+jre1EowqsLwOW75El+DYSgfs1fFyQVMNSBndFr4L9O0OgQat7ULPmr2E0KELIq
-         RDch9AAw882bLlV0k4iFMB1+z/UzC/8rdBgVMopv/uh1ve2Drg4gu7OyG3Gx2hJ2nTaj
-         pMPqD4K6r4uXdOgULJmjD5zpA19Keg9f7MKRMb6w6CkW33dp4NqRR4IhLqlwqzsYb1Ru
-         9vhQ==
-X-Gm-Message-State: AOJu0YwOUHXVMisYlWC4aMVRUGr0iTZYadiV7qipSg/saC8hEwc37zbl
-        FEFlFwJLOZrO6lCOtOKvzMiDoA==
-X-Google-Smtp-Source: AGHT+IHoek2C14Iem4bCSW/tHEuu0KJ8jn0qnpFQM0qfV3FuQg0/LTwBzSAHXhsxBTjnvo06e+MqrQ==
-X-Received: by 2002:a05:6a00:c89:b0:687:9a0b:9265 with SMTP id a9-20020a056a000c8900b006879a0b9265mr2861600pfv.29.1692364727053;
-        Fri, 18 Aug 2023 06:18:47 -0700 (PDT)
-Received: from localhost ([135.180.227.0])
-        by smtp.gmail.com with ESMTPSA id v24-20020aa78098000000b006888029fd63sm1527580pff.9.2023.08.18.06.18.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 06:18:46 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 06:18:46 -0700 (PDT)
-X-Google-Original-Date: Fri, 18 Aug 2023 06:18:39 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 6.5-rc7
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@rivosinc.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-e50f03c7-2a36-48e9-bda4-8f04ff461826@palmer-ri-x1c9>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 09:22:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1754218
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:21:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692364867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=na/HqEvBUIWFrt2ZYVArJGd9pgLGqwvBv1dWk5WmYf8=;
+        b=gDlYD0bHjX/2JQrphyS9XPHfhXG+t36PNokBWWeGjYHl3ddmH8S6aJJ60wO9lwLw8vABWz
+        IztpYrXWcXAK9N34x+JXK2orZGhcKAYDZRW9Tr+qAZLKB6zVtFXHCIUhSzeY1QXHwhs4hH
+        07QylnRE8m10pfVAdN6ks0u+UgiMpIs=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-631-8pUc8EUINfeKrkURKuuygg-1; Fri, 18 Aug 2023 09:21:04 -0400
+X-MC-Unique: 8pUc8EUINfeKrkURKuuygg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 98BB11C07562;
+        Fri, 18 Aug 2023 13:21:02 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EEE2C15BAD;
+        Fri, 18 Aug 2023 13:21:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20230814180341.8621-1-paskripkin@gmail.com>
+References: <20230814180341.8621-1-paskripkin@gmail.com> <20230813122344.14142-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     dhowells@redhat.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, pabeni@redhat.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+cba21d50095623218389@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2] crypto: fix uninit-value in af_alg_free_resources
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1890298.1692364860.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 18 Aug 2023 14:21:01 +0100
+Message-ID: <1890301.1692364861@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 7e3811521dc3934e2ecae8458676fc4a1f62bf9f:
+Pavel Skripkin <paskripkin@gmail.com> wrote:
 
-  riscv: Implement flush_cache_vmap() (2023-08-10 08:54:29 -0700)
+> Syzbot was able to trigger use of uninitialized memory in
+> af_alg_free_resources.
+> =
 
-are available in the Git repository at:
+> Bug is caused by missing initialization of rsgl->sgl.need_unpin before
+> adding to rsgl_list. Then in case of extract_iter_to_sg() failure, rsgl
+> is left with uninitialized need_unpin which is read during clean up
+> =
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.5-rc7
+> BUG: KMSAN: uninit-value in af_alg_free_sg crypto/af_alg.c:545 [inline]
+> BUG: KMSAN: uninit-value in af_alg_free_areq_sgls crypto/af_alg.c:778 [i=
+nline]
+> BUG: KMSAN: uninit-value in af_alg_free_resources+0x3d1/0xf60 crypto/af_=
+alg.c:1117
+>  af_alg_free_sg crypto/af_alg.c:545 [inline]
+>  af_alg_free_areq_sgls crypto/af_alg.c:778 [inline]
+>  af_alg_free_resources+0x3d1/0xf60 crypto/af_alg.c:1117
+>  _skcipher_recvmsg crypto/algif_skcipher.c:144 [inline]
+> ...
+> =
 
-for you to fetch changes up to ca09f772cccaeec4cd05a21528c37a260aa2dd2c:
+> Uninit was created at:
+>  slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+>  slab_alloc_node mm/slub.c:3470 [inline]
+>  __kmem_cache_alloc_node+0x536/0x8d0 mm/slub.c:3509
+>  __do_kmalloc_node mm/slab_common.c:984 [inline]
+>  __kmalloc+0x121/0x3c0 mm/slab_common.c:998
+>  kmalloc include/linux/slab.h:586 [inline]
+>  sock_kmalloc+0x128/0x1c0 net/core/sock.c:2683
+>  af_alg_alloc_areq+0x41/0x2a0 crypto/af_alg.c:1188
+>  _skcipher_recvmsg crypto/algif_skcipher.c:71 [inline]
+> =
 
-  riscv: Handle zicsr/zifencei issue between gcc and binutils (2023-08-16 07:39:38 -0700)
+> Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create=
+ scatterlists")
+> Reported-and-tested-by: syzbot+cba21d50095623218389@syzkaller.appspotmai=
+l.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3Dcba21d50095623218389
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
-----------------------------------------------------------------
-RISC-V Fixes for 6.5-rc7
+Reviewed-by: David Howells <dhowells@redhat.com>
 
-* A fix to avoid excessive rejections from seccomp RET_ERRNO rules.
-* A fix for compressed jal/jalr decoding.
-* A pair of fixes for independent irq/softirq stacks on kernels built
-  with CONFIG_FRAME_POINTER=n.
-* A fix to avoid a hang handling uaccess fixups.
-* Another build fix for toolchain ISA strings, this time for Zicsr and
-  Zifenci on old GNU toolchains.
-
-----------------------------------------------------------------
-Alexandre Ghiti (1):
-      riscv: uaccess: Return the number of bytes effectively not copied
-
-Celeste Liu (1):
-      riscv: entry: set a0 = -ENOSYS only when syscall != -1
-
-Guo Ren (2):
-      riscv: stack: Fixup independent irq stack for CONFIG_FRAME_POINTER=n
-      riscv: stack: Fixup independent softirq stack for CONFIG_FRAME_POINTER=n
-
-Mingzheng Xing (1):
-      riscv: Handle zicsr/zifencei issue between gcc and binutils
-
-Nam Cao (1):
-      riscv: correct riscv_insn_is_c_jr() and riscv_insn_is_c_jalr()
-
- arch/riscv/Kconfig                     | 32 +++++++++++++++++++-------------
- arch/riscv/include/asm/insn.h          | 15 +++++++++++++--
- arch/riscv/kernel/compat_vdso/Makefile |  8 +++++++-
- arch/riscv/kernel/irq.c                |  3 +++
- arch/riscv/kernel/traps.c              |  9 ++++++---
- arch/riscv/lib/uaccess.S               | 11 +++++++----
- 6 files changed, 55 insertions(+), 23 deletions(-)
