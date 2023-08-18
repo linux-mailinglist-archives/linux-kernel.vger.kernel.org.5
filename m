@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08373780406
+	by mail.lfdr.de (Postfix) with ESMTP id 9C77D780408
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:59:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357358AbjHRC63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:58:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
+        id S1357362AbjHRC6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357342AbjHRC6P (ORCPT
+        with ESMTP id S1357345AbjHRC6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:58:15 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35D01BB
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:58:14 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40ff796e8ddso3446021cf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:58:14 -0700 (PDT)
+        Thu, 17 Aug 2023 22:58:18 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8B1210D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:58:16 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-64189860374so2415126d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:58:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692327494; x=1692932294;
+        d=cloudflare.com; s=google; t=1692327496; x=1692932296;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=B//PxqTOcLRZSFYVWOXGViYC9OULMJhe+RhXHERECls=;
-        b=tmv/IW4eAJDthaFDwjvi9IaSF4Rcud5RPAMq/Cw6bY18saA/WzMcE2wsVXdr2M9HuI
-         ELfdKCcPerKH0tBnpuC8ZnlQx1DdOGyQU12dGiagEAyQZXRak7SX8KpqDsdc4b4Igmcw
-         3dfj9Vwi3iaCkZkmtpe6IaOU7anpUGK0uLf/0=
+        bh=t1rveI8qZCR4C4wEbefcxj73KFhEoSnYcRQTDwgiQK4=;
+        b=WQimjvM94ux9B2GBJcDjxNN5CkfPSEt71Ija0YYQ3vdFMYAD9FTBOwEw7+LGPn2WXw
+         /jP2CNqXbUtqXqJ6bDq/sqomHkPUSAde1yqm7ATlWBGqpYwyKtBBhUy0dbwBVKp6erAL
+         Jzn59/doHMy+T6peWT9DJZLX+CC4ogZgBYM9A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692327494; x=1692932294;
+        d=1e100.net; s=20221208; t=1692327496; x=1692932296;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B//PxqTOcLRZSFYVWOXGViYC9OULMJhe+RhXHERECls=;
-        b=Wb6WTD25VIlnRn6ooSPYD3frKqrSai9Si4EcyEUdN/iRHaN+0SyQL+5JWVvsJzAK0v
-         ubxK+Bn4n8pVhRMoFInt+zouR1LVf3Nww2DzwHeCo9Z3rCJj2yDETlRam/LOhYZ7jbQ5
-         TfaQx6uMFbC+YpzZaY1PVqtR6uG01UkuB893T3XPqIm96gDERTn1Eo2niJe4gs2rKiw4
-         ECY7MB2pZZwgxCOHwmfGjOstxPT6bIm9XnifqyRwGAv7D1QOX8+vRWUZMQf61nZ97WS4
-         nuUJg52bBThgQAHQiNxhxVdG/IvLTvJddH7+RulBk85tYUusWwfXYlGg35+EEWqBdtfL
-         KBug==
-X-Gm-Message-State: AOJu0YwUgP9NNJmfeKFDyj0dckeGT7P4YoXX5qc0hUFtcgR4vZC1dfOg
-        NgPmY02MdcLfRPrYIDL/d5PI9A==
-X-Google-Smtp-Source: AGHT+IH7rjUWj757WVMp0Qqu31Vckq9gjzUG4qfABg1kPLHXqiniH9ZGEnmCzeHgJSsJdQ3Rc6uMDA==
-X-Received: by 2002:ac8:5742:0:b0:408:2e66:3a1b with SMTP id 2-20020ac85742000000b004082e663a1bmr2008883qtx.3.1692327493979;
-        Thu, 17 Aug 2023 19:58:13 -0700 (PDT)
+        bh=t1rveI8qZCR4C4wEbefcxj73KFhEoSnYcRQTDwgiQK4=;
+        b=OxmKfWOHkrZlzYmMYHmRL8pG3k2SfceBi+EQCdVWq3oNalbxbUlMiapHo2snLetKU7
+         dkVlLd83vjC6g+c1SJPlq6XA6DQapLFmFX0x+zub2nsUPaXMQ4unaQozO3ecj9xCLKXl
+         d2Z8lcI1HwyujWi1kf7lXNStok5Nja4jL3wkYj5L82xHVnCmnnS+oIIPpqf36R61Nz00
+         UQQM96c42ntojTJnDhQ5049VLduhvO4rFTQa6sIbYMh3/ZtedOr8IeXc5s1VYnsSrsUk
+         noUoD/HJ8CmpC/78va7q8oFJcAcjB6BVb3ZYMNiamdEQcFnVK+vIXfjlAoce9/S4Ysww
+         +8Fg==
+X-Gm-Message-State: AOJu0Yx2sBUBnbX/8wVAIzWZ1bebN8ZF5W+QEfpfpRLXfQ4cyfutS7YB
+        SjM2Hj7ZGrubvRbXQvjGlqumwQ==
+X-Google-Smtp-Source: AGHT+IE/X2UwchhA+IgpKCTMnMGUnKCh5ViUxP8U7VUsaqTciMUXsTSkymEdxNhNHL25ffS47NYOiA==
+X-Received: by 2002:ad4:4ba4:0:b0:64a:bff7:90e6 with SMTP id i4-20020ad44ba4000000b0064abff790e6mr1258205qvw.65.1692327496080;
+        Thu, 17 Aug 2023 19:58:16 -0700 (PDT)
 Received: from debian.debian ([140.141.197.139])
-        by smtp.gmail.com with ESMTPSA id m17-20020a0cdb91000000b0063d3744c5c5sm350536qvk.5.2023.08.17.19.58.12
+        by smtp.gmail.com with ESMTPSA id w14-20020a0ce10e000000b006427145590csm347998qvk.48.2023.08.17.19.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 19:58:13 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 19:58:11 -0700
+        Thu, 17 Aug 2023 19:58:15 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 19:58:14 -0700
 From:   Yan Zhai <yan@cloudflare.com>
 To:     bpf@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -69,8 +69,8 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Dan Carpenter <dan.carpenter@linaro.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-kselftest@vger.kernel.org
-Subject: [PATCH v6 bpf 1/4] lwt: fix return values of BPF xmit ops
-Message-ID: <0d2b878186cfe215fec6b45769c1cd0591d3628d.1692326837.git.yan@cloudflare.com>
+Subject: [PATCH v6 bpf 2/4] lwt: check LWTUNNEL_XMIT_CONTINUE strictly
+Message-ID: <96b939b85eda00e8df4f7c080f770970a4c5f698.1692326837.git.yan@cloudflare.com>
 References: <cover.1692326837.git.yan@cloudflare.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -79,67 +79,76 @@ In-Reply-To: <cover.1692326837.git.yan@cloudflare.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BPF encap ops can return different types of positive values, such like
-NET_RX_DROP, NET_XMIT_CN, NETDEV_TX_BUSY, and so on, from function
-skb_do_redirect and bpf_lwt_xmit_reroute. At the xmit hook, such return
-values would be treated implicitly as LWTUNNEL_XMIT_CONTINUE in
-ip(6)_finish_output2. When this happens, skbs that have been freed would
-continue to the neighbor subsystem, causing use-after-free bug and
-kernel crashes.
+LWTUNNEL_XMIT_CONTINUE is implicitly assumed in ip(6)_finish_output2,
+such that any positive return value from a xmit hook could cause
+unexpected continue behavior, despite that related skb may have been
+freed. This could be error-prone for future xmit hook ops. One of the
+possible errors is to return statuses of dst_output directly.
 
-To fix the incorrect behavior, skb_do_redirect return values can be
-simply discarded, the same as tc-egress behavior. On the other hand,
-bpf_lwt_xmit_reroute returns useful errors to local senders, e.g. PMTU
-information. Thus convert its return values to avoid the conflict with
-LWTUNNEL_XMIT_CONTINUE.
+To make the code safer, redefine LWTUNNEL_XMIT_CONTINUE value to
+distinguish from dst_output statuses and check the continue
+condition explicitly.
 
 Fixes: 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure")
-Suggested-by: Martin KaFai Lau <martin.lau@linux.dev>
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Reported-by: Jordan Griege <jgriege@cloudflare.com>
+Suggested-by: Dan Carpenter <dan.carpenter@linaro.org>
 Signed-off-by: Yan Zhai <yan@cloudflare.com>
 ---
-* v5: discards skb_do_redirect return instead; convert
-      bpf_lwt_xmit_reroute return;
-* v4: minor commit message changes
-* v3: converts skb_do_redirect statuses from both ingress and egress
-* v2: code style amend
----
- net/core/lwt_bpf.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ include/net/lwtunnel.h | 5 ++++-
+ net/ipv4/ip_output.c   | 2 +-
+ net/ipv6/ip6_output.c  | 2 +-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
-index 8b6b5e72b217..4a0797f0a154 100644
---- a/net/core/lwt_bpf.c
-+++ b/net/core/lwt_bpf.c
-@@ -60,9 +60,8 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
- 			ret = BPF_OK;
- 		} else {
- 			skb_reset_mac_header(skb);
--			ret = skb_do_redirect(skb);
--			if (ret == 0)
--				ret = BPF_REDIRECT;
-+			skb_do_redirect(skb);
-+			ret = BPF_REDIRECT;
- 		}
- 		break;
+diff --git a/include/net/lwtunnel.h b/include/net/lwtunnel.h
+index 6f15e6fa154e..53bd2d02a4f0 100644
+--- a/include/net/lwtunnel.h
++++ b/include/net/lwtunnel.h
+@@ -16,9 +16,12 @@
+ #define LWTUNNEL_STATE_INPUT_REDIRECT	BIT(1)
+ #define LWTUNNEL_STATE_XMIT_REDIRECT	BIT(2)
  
-@@ -255,7 +254,7 @@ static int bpf_lwt_xmit_reroute(struct sk_buff *skb)
++/* LWTUNNEL_XMIT_CONTINUE should be distinguishable from dst_output return
++ * values (NET_XMIT_xxx and NETDEV_TX_xxx in linux/netdevice.h) for safety.
++ */
+ enum {
+ 	LWTUNNEL_XMIT_DONE,
+-	LWTUNNEL_XMIT_CONTINUE,
++	LWTUNNEL_XMIT_CONTINUE = 0x100,
+ };
  
- 	err = dst_output(dev_net(skb_dst(skb)->dev), skb->sk, skb);
- 	if (unlikely(err))
--		return err;
-+		return net_xmit_errno(err);
  
- 	/* ip[6]_finish_output2 understand LWTUNNEL_XMIT_DONE */
- 	return LWTUNNEL_XMIT_DONE;
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 6ba1a0fafbaa..a6e4c82615d7 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -216,7 +216,7 @@ static int ip_finish_output2(struct net *net, struct sock *sk, struct sk_buff *s
+ 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+ 		int res = lwtunnel_xmit(skb);
+ 
+-		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
++		if (res != LWTUNNEL_XMIT_CONTINUE)
+ 			return res;
+ 	}
+ 
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 1e8c90e97608..016b0a513259 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -113,7 +113,7 @@ static int ip6_finish_output2(struct net *net, struct sock *sk, struct sk_buff *
+ 	if (lwtunnel_xmit_redirect(dst->lwtstate)) {
+ 		int res = lwtunnel_xmit(skb);
+ 
+-		if (res < 0 || res == LWTUNNEL_XMIT_DONE)
++		if (res != LWTUNNEL_XMIT_CONTINUE)
+ 			return res;
+ 	}
+ 
 -- 
 2.30.2
 
