@@ -2,89 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBEB780445
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B16F78043F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357478AbjHRDPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S1357465AbjHRDMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354995AbjHRDOt (ORCPT
+        with ESMTP id S1357518AbjHRDL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:14:49 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4232D56
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:14:48 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40a47e8e38dso104921cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692328487; x=1692933287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JtKRWgsVYEk0AE4kXRg/bBTMvFeVJKaONok/07eRRfk=;
-        b=e/ppolFHXl/w4/fZqOofZftT1+guGIUrHqLDGQvNmOH84d1gVNbvskv7YSNzONyR5K
-         IHEBAWxt4LUNiq9xpHQyZxH7k70dRPsruyTkBvebx69lHDVB9N2kjcOZq2ewsHFiponN
-         avEYBSjXHk3wHMdAdEb6fRc+kK4D3Cc1Y/TM+EcC5HBBroe0yR0eXvJVIXC/f+h35RBE
-         GfkJFH6sYe+otEwwyumQwFNMrl2D/fCTPpDIrFnD3sq31A28XrwHTdQ8XYSu388ELOlD
-         FYr2W23FCrQYBv2OJtB074n4TXwkrdcxJAXtrrVGvSguOdU+22gCyO68EvaRV9fbT+ap
-         HxQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692328487; x=1692933287;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JtKRWgsVYEk0AE4kXRg/bBTMvFeVJKaONok/07eRRfk=;
-        b=Y0rlopZG+EE3uwYtva4yy01kE0gi15HgN4yLd4mnFSQIg/7lkPbotG2NDTHtrWcQjU
-         UEwzeZ5qCCGOSd3uTFlcIU3BPc0RMUTjUwaJL3RgMOSDB/kBOX08VKQ9xrWpIxxfMqcE
-         f+BqiZwYP6F1oiXHkFq9pyapeDGZk6jMgR38dmZkTEbIafJpMhraWOrH9Evgkxl6vocw
-         JZfMXTt23w0Jq9MtITxy3xaI4guuAejU36VGr+Ap1kWr2wxWcuvxEDbahhyEm6XUwYpK
-         MkWH+6nYP6TvJglJFMIqzXTWRyO+mWzYWMxoTeaG0BbrbiDHb2szCQGU2+bh2JdnAOYl
-         aoEQ==
-X-Gm-Message-State: AOJu0YzUPj1f4feWr8Rw4kLTc82LABL6tD5LyocyMxVwWvmjx9t5Aeqv
-        uhxGtjZKSPsWkhUelofnSWW+z1v5ASLsghHg4Q7ziA==
-X-Google-Smtp-Source: AGHT+IEdemrJerkEcXSt7+cE13JSwoldzgu3SXHNXtW9xol//Bv/TIibebBEZGjN41Gg8Ave2V7feet9RAbbEAKB5WE=
-X-Received: by 2002:ac8:5914:0:b0:410:8114:1077 with SMTP id
- 20-20020ac85914000000b0041081141077mr14560qty.4.1692328487455; Thu, 17 Aug
- 2023 20:14:47 -0700 (PDT)
+        Thu, 17 Aug 2023 23:11:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C01030C4;
+        Thu, 17 Aug 2023 20:11:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D5D562DFD;
+        Fri, 18 Aug 2023 03:11:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3CC4C433C8;
+        Fri, 18 Aug 2023 03:11:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692328315;
+        bh=P4Cosx7+7ALtZ7wTAuQVVxQlhIJKI8HxF6c2gX8nBE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PVVBJnqtGih+C8vOcMa5nwnrOS+L+pjpanoFXhx8SH3k2vLnD/TvTvFtzRVjG2WO1
+         qMiGWuJbMjJHE8HlhkyQ0nIlcYa5QpGOREYJzlOzsc9sH5W/wA8KW5MFmFZlE/VQwR
+         ua2U/PSgjwrTX+ElR5Uws2Kk0kocuzeLWOHY9W7X5PTtKFhgxnJeWTZIadert3MdQT
+         k9gN/qO9qlw5hFDA8nIQXNNLVUvcvJXBhhCfUteIZEdIU1QTGvb8GhDRPBeSVDpznS
+         14nRAUv5equ8ut5gRIgYaM6g6bItRSnzBfgo0Mm/Y3Q0Jjw9fYBDuZke9O0lX6A1E3
+         z1vxD97SIXNEQ==
+Date:   Thu, 17 Aug 2023 20:14:35 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Luo Jie <quic_luoj@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        catalin.marinas@arm.com, will@kernel.org, p.zabel@pengutronix.de,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+Subject: Re: [PATCH v4 3/4] clk: qcom: common: add _qcom_cc_really_probe
+Message-ID: <2dcu7jjwd2bhjbzxrxbfif566nupznb5n4oadnqha4h45w2n2g@4uy2pxkj5bvj>
+References: <20230815085205.9868-1-quic_luoj@quicinc.com>
+ <20230815085205.9868-4-quic_luoj@quicinc.com>
 MIME-Version: 1.0
-References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.4.I100c49a1e2ce915982965a065f95a494c2e9ad28@changeid>
- <3fc6ba4b-1e40-b835-06b9-b6d40f916d75@arm.com>
-In-Reply-To: <3fc6ba4b-1e40-b835-06b9-b6d40f916d75@arm.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Fri, 18 Aug 2023 11:14:11 +0800
-Message-ID: <CAKHBV27xxvzK55C7nT8HgcF2G6SpF7ssxYK7D0+t_dS6PODE5A@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 4/8] iommu/arm-smmu-v3: check smmu compatibility on attach
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, jgg@nvidia.com,
-        nicolinc@nvidia.com, tina.zhang@intel.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815085205.9868-4-quic_luoj@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 3:17=E2=80=AFAM Robin Murphy <robin.murphy@arm.com>=
- wrote:
->
-> On 2023-08-17 19:16, Michael Shavit wrote:
-> > Record the domain's pgtbl_cfg when it's being prepared so that it can
-> > later be compared to the features an smmu supports.
->
-> What's wrong with retrieving the existing config from the
-> io_pgtable_ops, same as all the other io-pgtable code does?
->
+On Tue, Aug 15, 2023 at 04:52:04PM +0800, Luo Jie wrote:
+> Add the common function _qcom_cc_really_probe, which takes
+> struct device as parameter.
 
-I didn't think accessing the io_pgtable struct outside of io-pgtable
-code would be ok, but now that you mention it I do see usages of
-io_pgtable_ops_to_pgtable in iommu drivers.
+This commit message completely fails to describe the problem/issue the
+change is solving. So when we look back in the git history, there will
+be no indication of why things looks like they do.
 
-Will change.
+> 
+> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+> ---
+>  drivers/clk/qcom/common.c | 10 ++++++++--
+>  drivers/clk/qcom/common.h |  2 ++
+>  2 files changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> index 75f09e6e057e..4cbdbfb65606 100644
+> --- a/drivers/clk/qcom/common.c
+> +++ b/drivers/clk/qcom/common.c
+> @@ -234,11 +234,10 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct of_phandle_args *clkspec,
+>  	return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+>  }
+>  
+> -int qcom_cc_really_probe(struct platform_device *pdev,
+> +int _qcom_cc_really_probe(struct device *dev,
+>  			 const struct qcom_cc_desc *desc, struct regmap *regmap)
+>  {
+>  	int i, ret;
+> -	struct device *dev = &pdev->dev;
+>  	struct qcom_reset_controller *reset;
+>  	struct qcom_cc *cc;
+>  	struct gdsc_desc *scd;
+> @@ -305,6 +304,13 @@ int qcom_cc_really_probe(struct platform_device *pdev,
+>  
+>  	return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(_qcom_cc_really_probe);
+> +
+> +int qcom_cc_really_probe(struct platform_device *pdev,
+> +			 const struct qcom_cc_desc *desc, struct regmap *regmap)
+
+Why do we want to keep this wrapper around?
+
+
+PS. Please give some time before posting v5, I would like to understand
+the MDIO regmap operations in patch 4 better before commenting on it.
+
+Regards,
+Bjorn
+
+> +{
+> +	return _qcom_cc_really_probe(&pdev->dev, desc, regmap);
+> +}
+>  EXPORT_SYMBOL_GPL(qcom_cc_really_probe);
+>  
+>  int qcom_cc_probe(struct platform_device *pdev, const struct qcom_cc_desc *desc)
+> diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+> index 9c8f7b798d9f..9710ade9bf15 100644
+> --- a/drivers/clk/qcom/common.h
+> +++ b/drivers/clk/qcom/common.h
+> @@ -58,6 +58,8 @@ extern int qcom_cc_register_sleep_clk(struct device *dev);
+>  
+>  extern struct regmap *qcom_cc_map(struct platform_device *pdev,
+>  				  const struct qcom_cc_desc *desc);
+> +extern int _qcom_cc_really_probe(struct device *dev,
+> +			 const struct qcom_cc_desc *desc, struct regmap *regmap);
+>  extern int qcom_cc_really_probe(struct platform_device *pdev,
+>  				const struct qcom_cc_desc *desc,
+>  				struct regmap *regmap);
+> -- 
+> 2.17.1
+> 
