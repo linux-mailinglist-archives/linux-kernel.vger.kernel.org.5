@@ -2,122 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F2D78154C
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF4E78154D
 	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 00:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241409AbjHRWPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 18:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
+        id S241375AbjHRWPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 18:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241225AbjHRWOm (ORCPT
+        with ESMTP id S241101AbjHRWOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 18:14:42 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4AA3ABC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:14:41 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so402a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:14:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692396880; x=1693001680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=15MJ5r20Bc4OUa0urOYZvVtRB9hu6WE3eNsvEWDgJeE=;
-        b=5MUOAio1GCuin9twjXzSt3qHZogjdPaIs9sL7dopMb0fkuVWC0I1ywYPczk/X/Kh6R
-         Yu8KeX9gGhlSVhhyffLnKfNhLMxFjMqZVCzMRNggP8Dr+Ggms3IpFwGVya6qPSpwUGMS
-         qv1zJG24TacICwYclybBDvvbSnYZoUAUmG1xLslxkqU1CLH6daJGpWQhG0DuYde3MxYc
-         MgpoRnvPriDnEOfgYXorhnJXu/zWze4H8VkHZQMZC/Vz679EBsJNbOPDRjBoomTyUoq3
-         eX3DMXi9DDI88trw4xTncXTHnGMJx9pKEd2V9kLvzs9gMnOn9+qol75n9JJSLg+nJNPD
-         5JZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692396880; x=1693001680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=15MJ5r20Bc4OUa0urOYZvVtRB9hu6WE3eNsvEWDgJeE=;
-        b=J6WHPzWN1mRGc1LYWCK3n8jhGgJF1S4/VTDjNCrMNOMatXjNJ1nEB/BWyjotJl6YVY
-         5KDa4wsnv2vXxmVMHBmiBG5AFNIL2ub9dLrX6NQ81KEtpRVWKdKblvOq2nVa7XaFUYZx
-         2u5Bv+VTljVllcTBh6Ls1Gg85id3C6A+XSWed0FBidwTKYpUK+7lbSP0wqWC4z6KAyZq
-         Ape6M04rX+Jwg+a2agpdNsSqhN1NYQweH48ofvSQMEQjZVIio0GcDT/W0aGTAwRmK/Gp
-         w2yBJTtkbyB8snIjDc7+B+AB1ebxHOXHm6zkcXdj3/2cs8NCNiZP432Ivd5km/MXX229
-         TX2g==
-X-Gm-Message-State: AOJu0YxUxJ29ESJKFftmfBW2C9QnO8a4hyh+s5kr2POgtT/buamw3dEZ
-        IhD349Oh+Lly2HV0L6NzA1x10pk4KiyKsxAaMBkkweVc/FD3gcd4ArY=
-X-Google-Smtp-Source: AGHT+IFl+/v9+ILj228ARnLnSiE3V94KsI4Cb5UlE6k9q8RncZUCKRO3FWE8WYSip2TE1gy/wCoqCgSF6PEYMY8P+/E=
-X-Received: by 2002:a50:d5c2:0:b0:522:4741:d992 with SMTP id
- g2-20020a50d5c2000000b005224741d992mr140781edj.4.1692396879764; Fri, 18 Aug
- 2023 15:14:39 -0700 (PDT)
+        Fri, 18 Aug 2023 18:14:37 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22A83ABC
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:14:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eX2vIZMS8ssxhxsbyPHJWvxPLuQicV1dHreCWKMt4ZI=; b=i6f1Z6aiar+OqEKAayGlXBUrnh
+        fnEntktUEZejD9Od5jliQpopPz5QiYvfVW9GZh93w/mIV9z1rc3gAaA8EsxSa+tyhlLsRoarxgn0B
+        5GCnGnEDKhGLPf4acfZ0gWiQSA4SsP6dowdY7KW7G7GBUjHcQYsOEyI+x5U6fAytoo6WmnluEEzgu
+        KZRQiFTV/lvGGCjecgZIGh1iOxqQr9H2ldlTpNbUEuB8QCD1MD/eEb7OOTxcCjSEha8W4U8FGWPK+
+        ILD9s1yaNXTZDtpyUlqN9evkNXSVDtsmlmfwl6DEAbBnQdwZ6vqWLjGzLH4E7HOA5WAeKtMbtY/UV
+        TyyaLQ5g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qX7jg-00ByNs-Pr; Fri, 18 Aug 2023 22:14:28 +0000
+Date:   Fri, 18 Aug 2023 23:14:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yang Shi <shy828301@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm: Wire up tail page poisoning over ->mappings
+Message-ID: <ZN/tRLy0e+Iod9z3@casper.infradead.org>
+References: <20230815210659.430010-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20230818211533.2523697-1-zokeefe@google.com> <20230818211533.2523697-2-zokeefe@google.com>
-In-Reply-To: <20230818211533.2523697-2-zokeefe@google.com>
-From:   "Zach O'Keefe" <zokeefe@google.com>
-Date:   Fri, 18 Aug 2023 15:14:02 -0700
-Message-ID: <CAAa6QmSN+7zWTMhYY9rEBf8U5xZ3kwfZXUuvT=ZGmEXLpNm0Kg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] smaps: set THPeligible if file mapping supports
- large folios
-To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230815210659.430010-1-peterx@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry -- noticed only too late that there are still many
-false-negatives for THPeligible, since by this point in the function
-we've already applied sysfs and prctl restrictions, which file-fault
-ignores. VM_HUGEPAGE also needs to be checked for the file-fault case.
+On Tue, Aug 15, 2023 at 05:06:59PM -0400, Peter Xu wrote:
+> I split this out from another rfc series.  Removed RFC tag because it
+> wasn't for this patch but for the documentation updates.  I'll post the rfc
+> part alone.  Comments welcomed, thanks.
 
-On Fri, Aug 18, 2023 at 2:15=E2=80=AFPM Zach O'Keefe <zokeefe@google.com> w=
-rote:
->
-> File-backed memory can be backed by THPs either through collapse, when
-> CONFIG_READ_ONLY_THP_FOR_FS is enabled, or through fault, when the
-> filesystem supports large folio mappings.
->
-> Currently, smaps only knows about the former, so teach it about the
-> latter.
->
-> Signed-off-by: Zach O'Keefe <zokeefe@google.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> ---
->  mm/huge_memory.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index cd379b2c077b..d8d6e83820f3 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -136,7 +136,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma, =
-unsigned long vm_flags,
->                          */
->                         !!vma->vm_ops->huge_fault :
->                         /* Only regular file is valid in collapse path */
-> -                       file_thp_enabled(vma);
-> +                       file_thp_enabled(vma) ||
-> +                        /*
-> +                         * THPeligible bit of smaps should surface the
-> +                         * possibility of THP through fault if the files=
-ystem
-> +                         * supports it.  We don't check this in fault pa=
-th,
-> +                         * because we want to fallback to the actual ->f=
-ault()
-> +                         * handler to make the decision.
-> +                         */
-> +                        (smaps && vma->vm_file &&
-> +                        mapping_large_folio_support(vma->vm_file->f_mapp=
-ing));
->
->         if (vma_is_temporary_stack(vma))
->                 return false;
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
+I still hate it, as I explained here:
+
+https://lore.kernel.org/linux-mm/ZNp7yUgUrIpILnXu@casper.infradead.org/
+
+> > + * When the tail page's mapping field reused, it'll be exempted from
+> > + * ->mapping poisoning and checks.  Also see the macro TAIL_MAPPING.
+> > + */
+> > +#define  TAIL_MAPPING_REUSED_MAX  (2)
+> 
+> More importantly, I think this is over-parametrisation.  If you start to
+> use extra fields in struct folio, just change the code in page_alloc.c
+> directly.
+
