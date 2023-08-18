@@ -2,204 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE10780E4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7773780E55
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377856AbjHROuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        id S1377895AbjHROwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:52:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377867AbjHROuF (ORCPT
+        with ESMTP id S233473AbjHROvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:50:05 -0400
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E9413D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:50:02 -0700 (PDT)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230818144959euoutp014fb4080c55931923d5e87220e7b35404~8gbrYsYW-3134831348euoutp01R
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 14:49:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230818144959euoutp014fb4080c55931923d5e87220e7b35404~8gbrYsYW-3134831348euoutp01R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1692370199;
-        bh=CjU/qhQTydOUlHI0j/2uUeyBVLOWcIBmKDq9tXn1+xs=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=M1DdXyTzLV7Dvnbn7KJJqNLYszhqL7blODuiYDt8VZBGLBLst5mIMCfcT83/rscac
-         1mrZd7VgXPQZD0PSmKPcpCZjRZR4vm4wIDkgxrmMF9BIJwupk3QnCF+0sCjjfSPmyx
-         9zllGf5fdWlhGFinVpkf1zQVqTY6tyk0qrDoDhYQ=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20230818144959eucas1p24aa8654603e8c7b03864c2ef8aece9a8~8gbrPMgiJ2361823618eucas1p2L;
-        Fri, 18 Aug 2023 14:49:59 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id DA.24.37758.7158FD46; Fri, 18
-        Aug 2023 15:49:59 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20230818144959eucas1p1c654a17ef88c942ee94a84b610254395~8gbq-JB572094420944eucas1p1E;
-        Fri, 18 Aug 2023 14:49:59 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20230818144959eusmtrp14472e0e118ffe2ae9811e9f04578693e~8gbq_ce0I2952629526eusmtrp1d;
-        Fri, 18 Aug 2023 14:49:59 +0000 (GMT)
-X-AuditID: cbfec7f5-7ffff7000002937e-d3-64df8517f8ec
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 96.F1.14344.6158FD46; Fri, 18
-        Aug 2023 15:49:58 +0100 (BST)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230818144958eusmtip1da1902e3a7075681c754041b10735a9c~8gbq0hB540871208712eusmtip1q;
-        Fri, 18 Aug 2023 14:49:58 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
-        Server (TLS) id 15.0.1497.2; Fri, 18 Aug 2023 15:49:58 +0100
-Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
-        ([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Fri, 18 Aug
-        2023 15:49:58 +0100
-From:   Daniel Gomez <da.gomez@samsung.com>
-To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        Pankaj Raghav <p.raghav@samsung.com>,
-        "Kuan-Ying.Lee@mediatek.com" <Kuan-Ying.Lee@mediatek.com>
-Subject: Re: [PATCH] scripts/gdb: fix usage of MOD_TEXT not defined when
- CONFIG_MODULES=n
-Thread-Topic: [PATCH] scripts/gdb: fix usage of MOD_TEXT not defined when
-        CONFIG_MODULES=n
-Thread-Index: AQHZ0eNBX9rllwM+iECjsV0fQmcfpg==
-Date:   Fri, 18 Aug 2023 14:49:57 +0000
-Message-ID: <ea2xhwnafvuozg2nolqipz66g7eoin4xji5ns3fx5lmlmp64qg@qsbdi2bodulc>
-In-Reply-To: <20230801125715.139721-1-cleger@rivosinc.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [106.110.32.67]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <11391DDD29CED24E9F10A87334243533@scsc.local>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrOKsWRmVeSWpSXmKPExsWy7djP87rirfdTDDZOELBYeDLZ4t7Nm8wW
-        p7o3M1k83tvHbnF51xw2ixsTnjI6sHlsWtXJ5tFycj+Lx41ZER7bT05i8vi8SS6ANYrLJiU1
-        J7MstUjfLoEr4+PaPWwFkwUrZrx8x9rAuIKvi5GTQ0LARKLnzmP2LkYuDiGBFYwSU3c2M0M4
-        Xxgl9jX3Q2U+M0p0rNzFCtOyad9fRojEckaJvt+LWOCqlmy4zQThnGGU6FmzgwmkRUhgJaPE
-        5HfZIDabgKbEvpObwOaKCNxikpjW0McOkhAWiJY49XYbC4gtIhAjcfDdIyYIW09i+aKjYDaL
-        gKrEuXnPGEFsXgFfiYn/G8Bu4hSwkrh1bS+YzSggK/Fo5S+wmcwC4hK3nsxngrhbUGLR7D3M
-        ELaYxL9dD9kgbB2Js9efMELYBhJbl+5jgbAVJTqO3WSDmKMncWPqFCjbUuLY1i/MELa2xLKF
-        r5kh7hGUODnzCTgoJAT2c0pMfPsL6CAOIMdFYv6mZIiZwhKvjm9hh7BlJE5P7mGZwKg9C8mp
-        s5Csm4Vk3Swk62YhWbeAkXUVo3hqaXFuemqxcV5quV5xYm5xaV66XnJ+7iZGYFo6/e/41x2M
-        K1591DvEyMTBeIhRgoNZSYTXguleihBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFebduTyUIC6Ykl
-        qdmpqQWpRTBZJg5OqQYmxWcbe6bvvtlRzN8/Za7Mby+zH50TXfdvDbge+3n7Ey87gWOBLQuV
-        lbjiL2h+6m+Yd5n99+a+3fmPTySxlgiwPPb9XfXhaacMg07yBm/pLa/nGy0zuO63mTGlIeeN
-        tbmmY8l79R3t7YUXRdZrOh964ycz/0751+6FBt43/y9frLrp+reFARf2uIvoT02onGG2W1Mx
-        9Fl+7szm7/fvZl/p8q2qur1Q9Nasa5FrLLN4Ei3cV312+e77deOb5fwHTX+3X76dKLDjWqWk
-        4ELeRrG2c0drHmelndwml+hnKJifOPPOzqe/rqfZ3FiZ4PB6zvPtZQFrnCdO+vagoNnc3sz6
-        9SyXlRqnH/Tt2vi7cfbPECWW4oxEQy3mouJEAHnQX866AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsVy+t/xu7pirfdTDOb/t7ZYeDLZ4t7Nm8wW
-        p7o3M1k83tvHbnF51xw2ixsTnjI6sHlsWtXJ5tFycj+Lx41ZER7bT05i8vi8SS6ANUrPpii/
-        tCRVISO/uMRWKdrQwkjP0NJCz8jEUs/Q2DzWyshUSd/OJiU1J7MstUjfLkEv4+PaPWwFkwUr
-        Zrx8x9rAuIKvi5GTQ0LARGLTvr+MXYxcHEICSxkl/l27ygSRkJHY+OUqK4QtLPHnWhcbRNFH
-        RomdT14zQzhnGCWu905kh3BWMkocvjQJrIVNQFNi38lNYAkRgVtMEtMa+thBEsIC0RKn3m5j
-        AbFFBGIklkw4DGXrSSxfdBRsN4uAqsS5ec8YQWxeAV+Jif8bwIYKCVhKzJ47EayeU8BK4ta1
-        vWBxRgFZiUcrf4HNZxYQl7j1ZD7UDwISS/acZ4awRSVePv4H9Y+OxNnrTxghbAOJrUv3sUDY
-        ihIdx26yQczRk7gxdQqUbSlxbOsXZghbW2LZwtfMELcJSpyc+YRlAqP0LCSrZyFpn4WkfRaS
-        9llI2hcwsq5iFEktLc5Nzy020itOzC0uzUvXS87P3cQITC7bjv3csoNx5auPeocYmTgYDzFK
-        cDArifBaMN1LEeJNSaysSi3Kjy8qzUktPsRoCgy7icxSosn5wPSWVxJvaGZgamhiZmlgamlm
-        rCTO61nQkSgkkJ5YkpqdmlqQWgTTx8TBKdXAZP12haD4J6OQKR+qZizi3Llr6cTTL/i2zEuy
-        kZp93kbx8tsE1Q7TWTzW+j/XpZRN9VquWPTe75zCmmfKk2e+3uW2o/hZgW66cUSw+dtTLrqb
-        Xrz1ba7ft+WsgeDGHR4vxeRMJLonXVO6H5LUfEHrDY+D5DPPT6771i1gfBKwx+w1c/WLt7vZ
-        Hlk7/f+m4sV06+y2z7ySqTMnvzz6fsGdqcHnmB8ouB/6f3H5Qsc6+ckhuhP6HUI3GTjMFzh8
-        KWGpq7SiwHqTV/4+BedCGhdbzzzmYeNx4b/RWUHjKY//1e06/fzTasECHdV25TB21bKK1k+3
-        FwTW/919ZFmS0ctO44SiDRN/tF3iO2rXGCz4X0iJpTgj0VCLuag4EQDrbK16twMAAA==
-X-CMS-MailID: 20230818144959eucas1p1c654a17ef88c942ee94a84b610254395
-X-Msg-Generator: CA
-X-RootMTR: 20230818144959eucas1p1c654a17ef88c942ee94a84b610254395
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20230818144959eucas1p1c654a17ef88c942ee94a84b610254395
-References: <20230801125715.139721-1-cleger@rivosinc.com>
-        <CGME20230818144959eucas1p1c654a17ef88c942ee94a84b610254395@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 18 Aug 2023 10:51:25 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B0213D;
+        Fri, 18 Aug 2023 07:51:24 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37IDRFrh021959;
+        Fri, 18 Aug 2023 14:51:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=mW9F2IuP1OKTCHFXPAqTq/Htp2mnM59CS/9+/TV+MIs=;
+ b=WpSN0OSW6nv4a8bzvKN535ElcuHHEtBA32aw/Q/20lyXQ0Kw5wt2aHOKjw66l7SK10xb
+ i/kPqpYZyBM/z8nJ4p9OBWPf5eeK9wQF3vxvQZLA081RbZwDrHdzC/WSftZ/TlR5+3aW
+ 1JvsJ6aTOYnoYU6HjmJgT2NM0QPUU7bELrsxgeXdIAIs5H7EvA59+AxxSOmahkTm59wC
+ aA+dC/1INU45uIVTvLon7k9WYHQ6DpR9jy5CV6K/iez0Lg9coqJXTyyil9KwIQpH63qZ
+ 6Rm6WQd43EhW9L6NkQcETbA8Heczs1LGXm5n43KW3vtEQNL/C3fc6Hiumqphdq5qPos+ DA== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sj6320j2x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 14:51:06 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37IEp3TV032741;
+        Fri, 18 Aug 2023 14:51:03 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3se35mqdxg-1;
+        Fri, 18 Aug 2023 14:51:03 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37IEp3xK032735;
+        Fri, 18 Aug 2023 14:51:03 GMT
+Received: from mdalam-linux.qualcomm.com (mdalam-linux.qualcomm.com [10.201.2.71])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37IEp3EQ032734;
+        Fri, 18 Aug 2023 14:51:03 +0000
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id 705471200077; Fri, 18 Aug 2023 20:21:02 +0530 (IST)
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+To:     mani@kernel.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     quic_mdalam@quicinc.com, quic_srichara@quicinc.com
+Subject: [PATCH 0/3]mtd: rawnand: qcom: Fixes for exec_op
+Date:   Fri, 18 Aug 2023 20:20:58 +0530
+Message-Id: <20230818145101.23825-1-quic_mdalam@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: UT0IIMWnJj61I9dgTJfSmFdNwBDflp64
+X-Proofpoint-ORIG-GUID: UT0IIMWnJj61I9dgTJfSmFdNwBDflp64
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-18_18,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 clxscore=1011 mlxscore=0 priorityscore=1501
+ mlxlogscore=604 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308180135
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Tue, Aug 01, 2023 at 02:57:15PM +0200, Cl=E9ment L=E9ger wrote:
-> MOD_TEXT is only defined if CONFIG_MODULES=3Dy which lead to loading fail=
-ure
-> of the gdb scripts when kernel is built without CONFIG_MODULES=3Dy:
->
-> Reading symbols from vmlinux...
-> Traceback (most recent call last):
->   File "/foo/vmlinux-gdb.py", line 25, in <module>
->     import linux.constants
->   File "/foo/scripts/gdb/linux/constants.py", line 14, in <module>
->     LX_MOD_TEXT =3D gdb.parse_and_eval("MOD_TEXT")
->                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> gdb.error: No symbol "MOD_TEXT" in current context.
->
-> Add a conditional check on CONFIG_MODULES to fix this error.
->
-> Fixes: b4aff7513df3 ("scripts/gdb: use mem instead of core_layout to get =
-the module address")
-> Signed-off-by: Cl=E9ment L=E9ger <cleger@rivosinc.com>
+This series fixes the following.
 
-I've hit the same issue. After rebasing onto next-20230818 we'd need:
+1. fixes parameter page read len for 4K nand
+   in exec_op.
 
-diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constant=
-s.py.in
-index e3517d4ab8ec..04c87b570aab 100644
---- a/scripts/gdb/linux/constants.py.in
-+++ b/scripts/gdb/linux/constants.py.in
-@@ -66,10 +66,11 @@ LX_GDBPARSED(IRQD_LEVEL)
- LX_GDBPARSED(IRQ_HIDDEN)
+2. fixes raw_nand_read issue.
 
- /* linux/module.h */
--LX_GDBPARSED(MOD_TEXT)
--LX_GDBPARSED(MOD_DATA)
--LX_GDBPARSED(MOD_RODATA)
--LX_GDBPARSED(MOD_RO_AFTER_INIT)
-+if IS_BUILTIN(CONFIG_MODULES):
-+    LX_GDBPARSED(MOD_TEXT)
-+    LX_GDBPARSED(MOD_DATA)
-+    LX_GDBPARSED(MOD_RODATA)
-+    LX_GDBPARSED(MOD_RO_AFTER_INIT)
+3. fixes READ path issue in exec_op.
 
- /* linux/mount.h */
- LX_VALUE(MNT_NOSUID)
+Applied on top of [1]
 
-Tested-by: Daniel Gomez <da.gomez@samsung.com>
+This series tested on IPQ8074 2K and 4K nand with
+mtd_test*.ko (mtd_nandbiterrs.ko, mtd_pagetest.ko, mtd_readtest.ko
+mtd_subpagetest.ko, mtd_torturetest.ko, mtd_stresstest.ko). 
 
-> ---
->  scripts/gdb/linux/constants.py.in | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/consta=
-nts.py.in
-> index 50a92c4e9984..866015547b38 100644
-> --- a/scripts/gdb/linux/constants.py.in
-> +++ b/scripts/gdb/linux/constants.py.in
-> @@ -63,7 +63,8 @@ LX_GDBPARSED(IRQD_LEVEL)
->  LX_GDBPARSED(IRQ_HIDDEN)
->
->  /* linux/module.h */
-> -LX_GDBPARSED(MOD_TEXT)
-> +if IS_BUILTIN(CONFIG_MODULES):
-> +    LX_GDBPARSED(MOD_TEXT)
->
->  /* linux/mount.h */
->  LX_VALUE(MNT_NOSUID)
-> --
-> 2.40.1
->
->=
+[1] https://lore.kernel.org/lkml/20230805174146.57006-1-manivannan.sadhasivam@linaro.org/
+
+Md Sadre Alam (2):
+  mtd: rawnand: qcom: Update read_loc size to 512
+  mtd: rawnand: qcom: Clear buf_count and buf_start in raw read
+
+Sricharan Ramabadhran (1):
+  mtd: rawnand: qcom: Add read/read_start ops in exec_op path
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 99 +++++++++++++------------------
+ 1 file changed, 41 insertions(+), 58 deletions(-)
+
+-- 
+2.17.1
+
