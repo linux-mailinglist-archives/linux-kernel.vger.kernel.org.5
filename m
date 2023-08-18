@@ -2,216 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D029F7804BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BBC7804BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357699AbjHRDdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        id S1357706AbjHRDet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357793AbjHRDdJ (ORCPT
+        with ESMTP id S1357801AbjHRDep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:33:09 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2078.outbound.protection.outlook.com [40.107.102.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F833A95;
-        Thu, 17 Aug 2023 20:32:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nqi3w4vJQcNp+ZZK3FLH1230a9o0Cb+N8NVFv9pibvaRoRc0jHPcZ5Rsle7FcT/0Y5SoXXp+AyYTOGfvqm9U/mRL1yNvxLKMcabY4g0sTn+XkeSPiCUxcxU8odXTqySMu0tG864d+ZxFeuQWyX8Mw0DRaBVFgvbioS9x6ADbG2HetIJaXtArWFZtjHu6F087loSXsSZlxENmGpFCXT2Tbxr4SvPo2+2OJI4OjbZ3eEo0BN3Vs+HwXnunf38bYtfc19/3XYZrH+40fxZLCVkgyDmCkFxhfo/BO88fmlrH8QhohJdSBDUsji1mOMscdfKeDcoYHYU1cUX/hyKB0qxLSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a683Xk3OuK2flx+oavRh0wRK4GbvEUgvUROgPI4ZCRY=;
- b=EGcSqSpPBlBtO0E8XDLMw7Le2IlxI1KPmqjZSp1L5JVeDO8/ypJ+mYxjJSfj/yGQqLEm83D+zPgwkx5tIqWSeLFNVnWLlMFhttTLzFmuZ635+mOY/47lV+HHfWjNVWmRKv/TfG6UD+/GhHYh4QCBpM8ypnHuH8Yzu0ekJND7GyUdAau31i31iT9BNOTBdpuRaoGmyS6gZ9YnO5WgYAZ7SscsrzssHduIiuK8ujQDKJZTSfF4lnA2rnzJoNocLAZhIr78s/ErnzIcW4kCF+BrzLCqRN1OtfXUG0ggnaBfkH9HH+7bdlq4XjBFHc+uthLVlT14Daw0HnFhiwid/pKBAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a683Xk3OuK2flx+oavRh0wRK4GbvEUgvUROgPI4ZCRY=;
- b=5m0iWDiHq1JQPZqvPHGXJEivsfCTGEUTNjL97ckgYB+tmt1+JLqxmme2y4M/77t7gU+CP6gn7I7QL2rByGx9yUmt65bRfBKZNpuzhKTwJFj6Z5aQfrNV1zPQ427cCaBWhZAXlyuhtATOAcQ/U/N4Bde2lSSyPSyw+D5k7+YMxIA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW4PR12MB7016.namprd12.prod.outlook.com (2603:10b6:303:218::14)
- by IA1PR12MB6019.namprd12.prod.outlook.com (2603:10b6:208:3d5::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
- 2023 03:32:02 +0000
-Received: from MW4PR12MB7016.namprd12.prod.outlook.com
- ([fe80::f26a:5d9c:cace:19aa]) by MW4PR12MB7016.namprd12.prod.outlook.com
- ([fe80::f26a:5d9c:cace:19aa%7]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
- 03:32:02 +0000
-Message-ID: <0aa6cb16-27af-345d-7e6c-cf985290d1b4@amd.com>
-Date:   Fri, 18 Aug 2023 09:01:50 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
- the daisy chain
-Content-Language: en-US
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-References: <20230816051923.2287912-1-Sanath.S@amd.com>
- <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com>
- <20230817102430.GD3465@black.fi.intel.com>
-From:   Sanath S <sanaths2@amd.com>
-In-Reply-To: <20230817102430.GD3465@black.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MA1PR01CA0180.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:d::18) To MW4PR12MB7016.namprd12.prod.outlook.com
- (2603:10b6:303:218::14)
+        Thu, 17 Aug 2023 23:34:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9377935BE
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:34:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 19EB8678DE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:34:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A696C433C8;
+        Fri, 18 Aug 2023 03:34:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692329671;
+        bh=hszO76u7ymnFk74WD3fD4ht2jCm1PhGpobUWDspTmoY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=RKKZHe5w7p7QgHMfUCN6Bq/sDDaHxFgnip677wqIcsCI8OSqoe6e2JTBWAvg7hd4r
+         MNAdf6VWpXOuzQbFWc3KBlF5MOc4QKErZ0pobZUW70WbCVqEsuivgXEbJRIskDrCsv
+         9EomIF95FMlFMjWigYMaDrts8MF0u5cqoyLtLDb+HKrYNUgXstUtSVZZNYOjoGZ5s4
+         HyX+4dATM1LeIDVWHleEc3dSZAeTuL/wkntjkWS/XftNeILaQSXz5030JB6Z16GGNi
+         Q+WJhqqG+xfkZKv6QfcaMa+R/tPN/7WgtktjMk8yc8lAaCBcm2SIeuoDpDL6Nm8vS1
+         44mDb1v5G8vGg==
+From:   Vineet Gupta <vgupta@kernel.org>
+To:     linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Pavel.Kozlov@synopsys.com, Vineet Gupta <vgupta@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2 05/20] ARC: boot log: eliminate struct cpuinfo_arc #1: mm
+Date:   Thu, 17 Aug 2023 20:34:28 -0700
+Message-Id: <20230818033428.647811-1-vgupta@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <202308151213.qKZPMiyz-lkp@intel.com>
+References: <202308151213.qKZPMiyz-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB7016:EE_|IA1PR12MB6019:EE_
-X-MS-Office365-Filtering-Correlation-Id: fba88045-25d2-4fa7-b0cb-08db9f9bafa3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TyQO1YU/ppmDbMv0IfyqC+TSOsXbM8dUGaK9khbzEvM0GfhNg70P46YPms1XUGr5NIs6qooFq9w1jmvO3H42aSqVKKaDYU/RBHT2z2OQsJx5dqP1/HLS4GoPG+VAHHQFncG5ic1DINbPCH0ohqjgE9a0kCQ+0C9WLV52TSMW1YqXoWhyNRfQEWPFGo/SxS6fvZ/1XVpCxoUmPLTpG2F7SPh6imwmbp5v4totUvU3gv9/4Eo6xYDJHr6lgloxXm/p1+iIE+aOE0r0dXuyGtgKSTpPdETH8j9msHbrEm3mDR7mdTrjnogDQ0a1S/e0YHeqNnFsXeqmGVptKEhiNVbIhkZoKeBrBxSjlkSIjtYfUHLMgkmGAlB6CCF1TR5CcOkx7xWJ7oFZNVDR/TTI4e2gtl39yXSVKD4AX9Q//OMvaEoGLouKNEugK9oud0I7E1KFd5AGnQae2VWa2FUXGJzt+aO1PLaHxWpOwP2xo+Q26mUNpQ+PWrQrd3e8BXATJMpDYAQlWId/SN0XySre8tj39sUAw8oRFQDHMFiFVcFbupA6pEA/zqv0+T27Xm7GCXJGCwqkwGwAOsZjFxPSkvw3Ic1rFMqSmLyHl15AfHvHhBLT9Z/09oUisMA9hbdC3NgAIh0146Pz3byWZq8/HqT9MAMfW21vGpz9qPb01bfxR6M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7016.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(376002)(39860400002)(396003)(451199024)(186009)(1800799009)(31686004)(31696002)(36756003)(38100700002)(478600001)(5660300002)(2616005)(6486002)(6506007)(6916009)(66476007)(66556008)(66946007)(966005)(6666004)(26005)(316002)(53546011)(4326008)(6512007)(8676002)(8936002)(41300700001)(2906002)(83380400001)(131093003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dDVyeFJDVnRVM3ErbExyZ29aYS8vQks1enhtV3Z0SE53RncxS0dOMmR6ZkZj?=
- =?utf-8?B?c29UMHdONVNCREorSnJ1dzd5c2RKZXZSS3lTMVIydStYOVcvdUI2N3dSZjh3?=
- =?utf-8?B?TkJYb3dWanZUYU5VTjQ5dk8rUGpzT0hwRlRxU3l3UW14UHhWYXV6UDVaRDBX?=
- =?utf-8?B?eWtqNVlUYnNVQmRDZGFvMUFBeU52YXd1eUhFMmIvRkVZSStGNHM5d2xhRFk1?=
- =?utf-8?B?d0x2T2tsVXlJaDBOeW03ckp4SS80V0xHeEgxdGFxdENnMmlXOVY4OGR2SVpZ?=
- =?utf-8?B?eGZjRlMzT2swUnVuTndwSlBZWTlYcGR2cWJyNEh3Zncybkg4eXFqRGh2Nmtj?=
- =?utf-8?B?WTMvdy9CRmZoSkVwNHdTWkxzSnozTzBiSFh3UytrczRrRnVJa1FINnVORUQy?=
- =?utf-8?B?V3NSYUpKd3RZUjYzNUVRTFRoSi9EMWhtZWtOQnFxM0xNRUJTek5iaHdBS1l2?=
- =?utf-8?B?czQrcmw4ejh5VDFRcFpQVmc5YnpHQnlnTVB5cUd5ZnFqNmFvallydE9nUU40?=
- =?utf-8?B?Yi9NL0VFNERkY2RnNTdsNUtoU3ZCT0xGRGlQM1ROT0ZzUnFoN0E4MVlidUE3?=
- =?utf-8?B?MWJhUXJqNWg0Zlp2d2ovTHlYZlFXbmNhNjJhOTFQdFlJc2gyK3UzWEFyMnQx?=
- =?utf-8?B?MDFEVE5hNGN3MHJJcUZHQmQzT1FwbS9hRmsxSXltRURjV3NqT1JVYmhxVjIx?=
- =?utf-8?B?VTEyMnpPU2hOOHpsYnFlYXoyT2JkYVMyUVJZQ3ljRStjS1ZjRjFEOTJBNUlH?=
- =?utf-8?B?bmhFbHlTbDBYRW5EV0YxcjJFcnlqaHBpb29UYm1QZE1jM2QzQTVUa25BZVBN?=
- =?utf-8?B?bHBiU1g2VTEyS2xBZWFycDV3VmloVThNSmRwcS8vbFAram1SdHlLRjlhM3JE?=
- =?utf-8?B?YlB2dGtGN09adU9tYk9aa2VwejQwdzVISE1YaWk4azNSWXBiOE1DeUJRc0h5?=
- =?utf-8?B?dTFnTko5eFpWN05OL0xEQW1WVkxEM1VDKy9nbTFvRmJMU2svMU9TMkJBTWtZ?=
- =?utf-8?B?QkFQdTRrWElFcjI5M1ZhZC9TRXJ1aktpYi9PWWV2aTJxNElPc1FnUHh4cWll?=
- =?utf-8?B?NWo3dmhJVUFnYzRiZUI4V2pEOXBtWUt6SmYrMTFWMEVpdEJ5dTRRTzdsQkdu?=
- =?utf-8?B?K2JOdWZ6c1R1b1hja2JxdmFEVXIxSVJuWVhmR25tMEFXMHlFRm9od1ROdy9u?=
- =?utf-8?B?dFBlNDA0QUlyZGdoZXN4K2pqVHdQM1A0bzN4K2VYWmJvRnp2Tzh3VjRWelNF?=
- =?utf-8?B?M2syc3p1UEJZRjVSeFhNRWYvTWtqVkxtcEt2TkpSUm5ydmIyNVZ4VWJ3NHJj?=
- =?utf-8?B?OWczSGFKRnJjcVk3WlRJNHFXVnEvWmtwNG4wTFY2dkt3eDkxK0tHRmdOUXU5?=
- =?utf-8?B?Y1FUcGR0RUNnNlNvNG5Jbm1HdWVGSUttL3RhRDRmSGFSVnpkc09xL1M2cEQr?=
- =?utf-8?B?R2NCeFdiRnRGL2pjMFBERlZWenRjTjQ5UmpaUmNucXVtNTZNQ3dMUkpvblh0?=
- =?utf-8?B?aEFxOTJUb1VxYWh4NXErNnI3L0REeHZzUDdJRGx0OFFUQ2JMUk0wMXRJMTdE?=
- =?utf-8?B?alNLTHIrTjdzcE1WbHhMcnpVT0N1WXNjODhWUVZCTkdRMEFBemtmclNScXRt?=
- =?utf-8?B?YTRacVY2bGhXTWw2Z2NvSk1VT3NOUEdUaDFtVnFjRGNxUlRIdDRLU3JSUDdR?=
- =?utf-8?B?c2RNcStvdXk3bEVra2lIdWRuVmhIaEsxNFhxS0toeGVDb3A1bm9ZVGZQNVU3?=
- =?utf-8?B?RzBmbDl5czlia2FNRjBpVzBacnVxMVJTdEQxWnA1bElPRGpxeDUrRlRzeVYw?=
- =?utf-8?B?dUlpN2NDZWJDR2hQYU44QU9kUDRzQktuZGVHSlhKd1NKNnowanVDR1RDNVVC?=
- =?utf-8?B?TkZkOUtxMmdaVnFJTWJlK0hUNFNMeFNvRGpsVzJJaVNsT1NoS0IzOWZ2MXFw?=
- =?utf-8?B?Y1BZbG1GMTJQT044Z2swWFRzK1U0cHExd2RZSkdzdTcrVWdPc0cyUGxIdFVL?=
- =?utf-8?B?UjVENHR1Sm1ETXlOTUQyRGgxZUVTbUJMMVZiUXVDM3RQdGkxRnpFZVdtRkRz?=
- =?utf-8?B?c2xJUUl1SDV6NXhwL1ZWOVppUnFzdFJmMytXRnVMTURFVGZoYzBpT2RvR25W?=
- =?utf-8?Q?Rm5qYPU5Vi+IleJsmkF40SAtT?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fba88045-25d2-4fa7-b0cb-08db9f9bafa3
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7016.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 03:32:02.1753
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M/gHtR5whDwAeEOdsrac3VCKTjGO9NZbpogXfpsCyoEppeXwytHMqfjBL9YJppCJ47VwHu4+Mjlq/PIzRd9CeA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6019
-X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is first step in eliminating struct cpuinfo_arc[NR_CPUS]
 
-On 8/17/2023 3:54 PM, Mika Westerberg wrote:
-> On Wed, Aug 16, 2023 at 06:48:35PM +0530, Sanath S wrote:
->> Adding Mika.
-> Thanks!
->
->> On 8/16/2023 10:49 AM, Sanath S wrote:
->>> In the case of Thunderbolt, it contains a PCIe switch and one or
->>> more hotplug-capable PCIe downstream ports where the daisy chain
->>> can be extended.
->>>
->>> Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
->>> System BIOS allocates a very minimal number of buses for bridges and
->>> hot-plug capable PCIe downstream ports to enumerate the dock during
->>> boot. Because of this, we run out of bus space pretty quickly when
->>> more PCIe devices are attached to hotplug downstream ports in order
->>> to extend the chain.
->>>
->>> Before:
->>>              +-04.0
->>>              +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
->>>              |                               +-01.0-[66]--
->>>              |                               +-02.0-[67]--
->>>              |                               +-03.0-[68]--
->>>              |                               \-04.0-[69]--
->>>              +-08.0
-> This is something the BIOS should be doing but for some reason it is
-> not on that particular system.
-Yes, BIOS should be doing it. Idea here is if BIOS has not distributed 
-it correctly, OS
-can reallocate and distribute it correctly.
->>> In case of a thunderbolt capable bridge, reconfigure the buses allocated
-> Thunderbolt
-Will correct it.
->
->>> by BIOS to the maximum available buses. So that the hot-plug bridges gets
->>> maximum buses and chain can be extended to accommodate more PCIe devices.
->>> This fix is necessary for all the PCIe downstream ports where the daisy
->>> chain can be extended.
-> This is necessary only when there is no proper BIOS allocation for the
-> resources.
-Yes, will send out a v2 with updated commit message.
->
->>> After:
->>>              +-04.0
->>>              +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
->>>              |                               +-01.0-[66-84]--
->>>              |                               +-02.0-[85-a3]--
->>>              |                               +-03.0-[a4-c0]--
->>>              |                               \-04.0-[c1]--
->>>              +-08.0
->>>
->>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
-> Did you get confirmation that this actually solves the issue?
-I've tested this on my setup, it is resolving the issue.
->
->>> Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
->>> Signed-off-by: Sanath S <Sanath.S@amd.com>
->>> ---
->>>    drivers/pci/probe.c | 9 +++++++++
->>>    1 file changed, 9 insertions(+)
->>>
->>> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
->>> index 8bac3ce02609..ab7e90ef2382 100644
->>> --- a/drivers/pci/probe.c
->>> +++ b/drivers/pci/probe.c
->>> @@ -1263,6 +1263,8 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
->>>    	bool fixed_buses;
->>>    	u8 fixed_sec, fixed_sub;
->>>    	int next_busnr;
->>> +	int start = bus->busn_res.start;
->>> +	int end = bus->busn_res.end;
->>>    	/*
->>>    	 * Make sure the bridge is powered on to be able to access config
->>> @@ -1292,6 +1294,13 @@ static int pci_scan_bridge_extend(struct pci_bus *bus, struct pci_dev *dev,
->>>    		broken = 1;
->>>    	}
->>> +	/* Reconfigure, If maximum buses are not allocated */
->>> +	if (!pass && start != 0 && end != 0xff && subordinate != end) {
->>> +		pci_info(dev, "Bridge has subordinate 0x%x but max busn 0x%x, reconfiguring\n",
->>> +			 subordinate, end);
->>> +		broken = 1;
->>> +	}
->>> +
->>>    	/*
->>>    	 * Disable Master-Abort Mode during probing to avoid reporting of
->>>    	 * bus errors in some architectures.
+Back when we had just ARCompact ISA, the idea was to read/bit-fiddle
+the BCRs once and and cache decoded information in a global struct ready
+to use.
+
+With ARCv2 it was modified to contained abstract / ISA agnostic
+information.
+
+However with ARCv3 there 's too much disparity to abstract in common
+structures. So drop the entire decode once and store paradigm. Afterall
+there's only 2 users of this machinery anyways:  boot printing and
+cat /proc/cpuinfo. None is performance critical to warrant locking away
+resident memory per cpu.
+
+This patch is first step in that direction
+ - decouples struct cpuinfo_arc_mmu from global struct cpuinfo_arc
+ - mmu code still has a trimmed down static version of
+   struct cpuinfo_arc_mmu to cache information needed in performance
+   critical code such as tlb flush routines
+ - folds read_decode_mmu_bcr() into arc_mmu_mumbojumbo()
+ - setup_processor() directly calls arc_mmu_init() and not via
+   arc_cpu_init()
+
+Tested-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308151213.qKZPMiyz-lkp@intel.com/
+Signed-off-by: Vineet Gupta <vgupta@kernel.org>
+---
+ arch/arc/include/asm/arcregs.h | 27 +++++++---
+ arch/arc/include/asm/setup.h   |  1 -
+ arch/arc/kernel/setup.c        |  4 +-
+ arch/arc/mm/tlb.c              | 93 +++++++++++++---------------------
+ 4 files changed, 58 insertions(+), 67 deletions(-)
+
+diff --git a/arch/arc/include/asm/arcregs.h b/arch/arc/include/asm/arcregs.h
+index 2162023195c5..af00cbe9b850 100644
+--- a/arch/arc/include/asm/arcregs.h
++++ b/arch/arc/include/asm/arcregs.h
+@@ -185,6 +185,27 @@ struct bcr_uarch_build_arcv2 {
+ #endif
+ };
+ 
++struct bcr_mmu_3 {
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	unsigned int ver:8, ways:4, sets:4, res:3, sasid:1, pg_sz:4,
++		     u_itlb:4, u_dtlb:4;
++#else
++	unsigned int u_dtlb:4, u_itlb:4, pg_sz:4, sasid:1, res:3, sets:4,
++		     ways:4, ver:8;
++#endif
++};
++
++struct bcr_mmu_4 {
++#ifdef CONFIG_CPU_BIG_ENDIAN
++	unsigned int ver:8, sasid:1, sz1:4, sz0:4, res:2, pae:1,
++		     n_ways:2, n_entry:2, n_super:2, u_itlb:3, u_dtlb:3;
++#else
++	/*           DTLB      ITLB      JES        JE         JA      */
++	unsigned int u_dtlb:3, u_itlb:3, n_super:2, n_entry:2, n_ways:2,
++		     pae:1, res:2, sz0:4, sz1:4, sasid:1, ver:8;
++#endif
++};
++
+ struct bcr_mpy {
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+ 	unsigned int pad:8, x1616:8, dsp:4, cycles:2, type:2, ver:8;
+@@ -307,11 +328,6 @@ struct bcr_generic {
+  * Generic structures to hold build configuration used at runtime
+  */
+ 
+-struct cpuinfo_arc_mmu {
+-	unsigned int ver:4, pg_sz_k:8, s_pg_sz_m:8, pad:10, sasid:1, pae:1;
+-	unsigned int sets:12, ways:4, u_dtlb:8, u_itlb:8;
+-};
+-
+ struct cpuinfo_arc_cache {
+ 	unsigned int sz_k:14, line_len:8, assoc:4, alias:1, vipt:1, pad:4;
+ };
+@@ -326,7 +342,6 @@ struct cpuinfo_arc_ccm {
+ 
+ struct cpuinfo_arc {
+ 	struct cpuinfo_arc_cache icache, dcache, slc;
+-	struct cpuinfo_arc_mmu mmu;
+ 	struct cpuinfo_arc_bpu bpu;
+ 	struct bcr_identity core;
+ 	struct bcr_isa_arcv2 isa;
+diff --git a/arch/arc/include/asm/setup.h b/arch/arc/include/asm/setup.h
+index 374138832c5a..76443f198778 100644
+--- a/arch/arc/include/asm/setup.h
++++ b/arch/arc/include/asm/setup.h
+@@ -36,7 +36,6 @@ long __init arc_get_mem_sz(void);
+ 
+ extern void arc_mmu_init(void);
+ extern char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len);
+-extern void read_decode_mmu_bcr(void);
+ 
+ extern void arc_cache_init(void);
+ extern char *arc_cache_mumbojumbo(int cpu_id, char *buf, int len);
+diff --git a/arch/arc/kernel/setup.c b/arch/arc/kernel/setup.c
+index 41f07b3e594e..094461540f8a 100644
+--- a/arch/arc/kernel/setup.c
++++ b/arch/arc/kernel/setup.c
+@@ -186,7 +186,6 @@ static void read_arc_build_cfg_regs(void)
+ 	/* Read CCM BCRs for boot reporting even if not enabled in Kconfig */
+ 	read_decode_ccm_bcr(cpu);
+ 
+-	read_decode_mmu_bcr();
+ 	read_decode_cache_bcr();
+ 
+ 	if (is_isa_arcompact()) {
+@@ -256,7 +255,7 @@ static void read_arc_build_cfg_regs(void)
+ 		cpu->isa.be = IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+ 
+ 		 /* there's no direct way to distinguish 750 vs. 770 */
+-		if (unlikely(cpu->core.family < 0x34 || cpu->mmu.ver < 3))
++		if (unlikely(cpu->core.family < 0x34))
+ 			cpu->name = "ARC750";
+ 	} else {
+ 		cpu->isa = isa;
+@@ -463,6 +462,7 @@ void setup_processor(void)
+ 	arc_init_IRQ();
+ 
+ 	pr_info("%s", arc_cpu_mumbojumbo(cpu_id, str, sizeof(str)));
++	pr_info("%s", arc_mmu_mumbojumbo(cpu_id, str, sizeof(str)));
+ 
+ 	arc_mmu_init();
+ 	arc_cache_init();
+diff --git a/arch/arc/mm/tlb.c b/arch/arc/mm/tlb.c
+index 2a3105a682c3..861cabe81e87 100644
+--- a/arch/arc/mm/tlb.c
++++ b/arch/arc/mm/tlb.c
+@@ -18,7 +18,9 @@
+ /* A copy of the ASID from the PID reg is kept in asid_cache */
+ DEFINE_PER_CPU(unsigned int, asid_cache) = MM_CTXT_FIRST_CYCLE;
+ 
+-static int __read_mostly pae_exists;
++static struct cpuinfo_arc_mmu {
++	unsigned int ver, pg_sz_k, s_pg_sz_m, pae, sets, ways;
++} mmuinfo;
+ 
+ /*
+  * Utility Routine to erase a J-TLB entry
+@@ -131,7 +133,7 @@ static void tlb_entry_insert(unsigned int pd0, phys_addr_t pd1)
+ 
+ noinline void local_flush_tlb_all(void)
+ {
+-	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
++	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
+ 	unsigned long flags;
+ 	unsigned int entry;
+ 	int num_tlb = mmu->sets * mmu->ways;
+@@ -560,89 +562,64 @@ void local_flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
+  * the cpuinfo structure for later use.
+  * No Validation is done here, simply read/convert the BCRs
+  */
+-void read_decode_mmu_bcr(void)
++char *arc_mmu_mumbojumbo(int c, char *buf, int len)
+ {
+-	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
+-	unsigned int tmp;
+-	struct bcr_mmu_3 {
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-	unsigned int ver:8, ways:4, sets:4, res:3, sasid:1, pg_sz:4,
+-		     u_itlb:4, u_dtlb:4;
+-#else
+-	unsigned int u_dtlb:4, u_itlb:4, pg_sz:4, sasid:1, res:3, sets:4,
+-		     ways:4, ver:8;
+-#endif
+-	} *mmu3;
+-
+-	struct bcr_mmu_4 {
+-#ifdef CONFIG_CPU_BIG_ENDIAN
+-	unsigned int ver:8, sasid:1, sz1:4, sz0:4, res:2, pae:1,
+-		     n_ways:2, n_entry:2, n_super:2, u_itlb:3, u_dtlb:3;
+-#else
+-	/*           DTLB      ITLB      JES        JE         JA      */
+-	unsigned int u_dtlb:3, u_itlb:3, n_super:2, n_entry:2, n_ways:2,
+-		     pae:1, res:2, sz0:4, sz1:4, sasid:1, ver:8;
+-#endif
+-	} *mmu4;
++	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
++	unsigned int bcr, u_dtlb, u_itlb, sasid;
++	struct bcr_mmu_3 *mmu3;
++	struct bcr_mmu_4 *mmu4;
++	char super_pg[64] = "";
++	int n = 0;
+ 
+-	tmp = read_aux_reg(ARC_REG_MMU_BCR);
+-	mmu->ver = (tmp >> 24);
++	bcr = read_aux_reg(ARC_REG_MMU_BCR);
++	mmu->ver = (bcr >> 24);
+ 
+ 	if (is_isa_arcompact() && mmu->ver == 3) {
+-		mmu3 = (struct bcr_mmu_3 *)&tmp;
++		mmu3 = (struct bcr_mmu_3 *)&bcr;
+ 		mmu->pg_sz_k = 1 << (mmu3->pg_sz - 1);
+ 		mmu->sets = 1 << mmu3->sets;
+ 		mmu->ways = 1 << mmu3->ways;
+-		mmu->u_dtlb = mmu3->u_dtlb;
+-		mmu->u_itlb = mmu3->u_itlb;
+-		mmu->sasid = mmu3->sasid;
++		u_dtlb = mmu3->u_dtlb;
++		u_itlb = mmu3->u_itlb;
++		sasid = mmu3->sasid;
+ 	} else {
+-		mmu4 = (struct bcr_mmu_4 *)&tmp;
++		mmu4 = (struct bcr_mmu_4 *)&bcr;
+ 		mmu->pg_sz_k = 1 << (mmu4->sz0 - 1);
+ 		mmu->s_pg_sz_m = 1 << (mmu4->sz1 - 11);
+ 		mmu->sets = 64 << mmu4->n_entry;
+ 		mmu->ways = mmu4->n_ways * 2;
+-		mmu->u_dtlb = mmu4->u_dtlb * 4;
+-		mmu->u_itlb = mmu4->u_itlb * 4;
+-		mmu->sasid = mmu4->sasid;
+-		pae_exists = mmu->pae = mmu4->pae;
++		u_dtlb = mmu4->u_dtlb * 4;
++		u_itlb = mmu4->u_itlb * 4;
++		sasid = mmu4->sasid;
++		mmu->pae = mmu4->pae;
+ 	}
+-}
+ 
+-char *arc_mmu_mumbojumbo(int cpu_id, char *buf, int len)
+-{
+-	int n = 0;
+-	struct cpuinfo_arc_mmu *p_mmu = &cpuinfo_arc700[cpu_id].mmu;
+-	char super_pg[64] = "";
+-
+-	if (p_mmu->s_pg_sz_m)
+-		scnprintf(super_pg, 64, "%dM Super Page %s",
+-			  p_mmu->s_pg_sz_m,
+-			  IS_USED_CFG(CONFIG_TRANSPARENT_HUGEPAGE));
++	if (mmu->s_pg_sz_m)
++		scnprintf(super_pg, 64, "/%dM%s",
++			  mmu->s_pg_sz_m,
++			  IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) ? " (THP enabled)":"");
+ 
+ 	n += scnprintf(buf + n, len - n,
+-		      "MMU [v%x]\t: %dk PAGE, %s, swalk %d lvl, JTLB %d (%dx%d), uDTLB %d, uITLB %d%s%s\n",
+-		       p_mmu->ver, p_mmu->pg_sz_k, super_pg,  CONFIG_PGTABLE_LEVELS,
+-		       p_mmu->sets * p_mmu->ways, p_mmu->sets, p_mmu->ways,
+-		       p_mmu->u_dtlb, p_mmu->u_itlb,
+-		       IS_AVAIL2(p_mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
++		      "MMU [v%x]\t: %dk%s, swalk %d lvl, JTLB %dx%d, uDTLB %d, uITLB %d%s%s%s\n",
++		       mmu->ver, mmu->pg_sz_k, super_pg, CONFIG_PGTABLE_LEVELS,
++		       mmu->sets, mmu->ways,
++		       u_dtlb, u_itlb,
++		       IS_AVAIL1(sasid, ", SASID"),
++		       IS_AVAIL2(mmu->pae, ", PAE40 ", CONFIG_ARC_HAS_PAE40));
+ 
+ 	return buf;
+ }
+ 
+ int pae40_exist_but_not_enab(void)
+ {
+-	return pae_exists && !is_pae40_enabled();
++	return mmuinfo.pae && !is_pae40_enabled();
+ }
+ 
+ void arc_mmu_init(void)
+ {
+-	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
+-	char str[256];
++	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
+ 	int compat = 0;
+ 
+-	pr_info("%s", arc_mmu_mumbojumbo(0, str, sizeof(str)));
+-
+ 	/*
+ 	 * Can't be done in processor.h due to header include dependencies
+ 	 */
+@@ -719,7 +696,7 @@ volatile int dup_pd_silent; /* Be silent abt it or complain (default) */
+ void do_tlb_overlap_fault(unsigned long cause, unsigned long address,
+ 			  struct pt_regs *regs)
+ {
+-	struct cpuinfo_arc_mmu *mmu = &cpuinfo_arc700[smp_processor_id()].mmu;
++	struct cpuinfo_arc_mmu *mmu = &mmuinfo;
+ 	unsigned long flags;
+ 	int set, n_ways = mmu->ways;
+ 
+-- 
+2.34.1
+
