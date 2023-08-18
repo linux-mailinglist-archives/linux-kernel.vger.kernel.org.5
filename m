@@ -2,108 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 365DE7811FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44808781202
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377612AbjHRRaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
+        id S1379074AbjHRRdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379072AbjHRRaD (ORCPT
+        with ESMTP id S1347922AbjHRRcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:30:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FB03C23;
-        Fri, 18 Aug 2023 10:30:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 18 Aug 2023 13:32:47 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D9135BB
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:32:45 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF566656E6;
-        Fri, 18 Aug 2023 17:30:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61717C433C7;
-        Fri, 18 Aug 2023 17:29:56 +0000 (UTC)
-Date:   Fri, 18 Aug 2023 18:29:54 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <ZN+qki9EaZ6f9XNi@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
- <ZNOhjrYleGBR6Pbs@arm.com>
- <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 750962188D;
+        Fri, 18 Aug 2023 17:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692379964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=298+RGsHxVRuLELFU08aTI9N02wy5sfYR26qB9BOyks=;
+        b=G/3ZhP+arvMQsKd6ghvlGcilBwdreiEDIGDBnwj1c7lJM2Q22UU2euubdptFpJFFpxZZK5
+        M+cD8lRpDrbVXg7hRjXydkLrN0A/w5g0vPQ89VHV98uPHUoljxu1KY2MN5yEtR/x5p+Bt0
+        y25yYwKKD95FbLp7pd3JnOdCFOTbCuY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692379964;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=298+RGsHxVRuLELFU08aTI9N02wy5sfYR26qB9BOyks=;
+        b=4wVSFv6Rz3b4Vc0GGzdSX6xUA97zexzMXWRZp5GZ7mbcFOGnXcpS7TV0VtyfL6MFiW1pRm
+        0gmr+lSFcvOmUQAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16853138F0;
+        Fri, 18 Aug 2023 17:32:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +199BDyr32Q9GQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 17:32:44 +0000
+Date:   Fri, 18 Aug 2023 19:32:43 +0200
+Message-ID: <87r0o0gssk.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
+        13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v4 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <72960354-3f69-e2fa-e7b0-dc8b61ca4940@linux.intel.com>
+References: <20230818085836.1442-1-shenghao-ding@ti.com>
+        <87pm3kk63a.wl-tiwai@suse.de>
+        <72960354-3f69-e2fa-e7b0-dc8b61ca4940@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 04:34:38PM +0100, Mark Brown wrote:
-> On Wed, Aug 09, 2023 at 03:24:14PM +0100, Catalin Marinas wrote:
-> > On Mon, Aug 07, 2023 at 11:00:08PM +0100, Mark Brown wrote:
-> > > +* When set PR_SHADOW_STACK_ENABLE flag allocates a Guarded Control Stack for
+On Fri, 18 Aug 2023 18:36:16 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> 
+> On 8/18/23 05:17, Takashi Iwai wrote:
+> > On Fri, 18 Aug 2023 10:58:35 +0200,
+> > Shenghao Ding wrote:
+> >>
+> >> Integrate tas2781 configs for Lenovo Laptops. All of the tas2781s in the
+> >> laptop will be aggregated as one audio device. The code support realtek
+> >> as the primary codec. Rename "struct cs35l41_dev_name" to
+> >> "struct scodec_dev_name" for all other side codecs instead of the certain
+> >> one.
+> >>
+> >> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 > > 
-> > The 'for' at the end of the line above is not needed.
+> > Now I applied both patches to for-next branch.
 > > 
-> > > +  and enables GCS for the thread, enabling the functionality controlled by
+> > The patch 2 needed some minor adjustment in Kconfig to be applied to
+> > the latest branch, but I resolved it locally.
 > 
-> I find it a little clearer that it's a per thread stack here but sure.
+> There are a number of issues I just reported, I guess they will have to
+> be handled with a follow-up patch now?
 
-If it reads better for you, feel free to keep it as is.
+Yes, let's fix incrementally on the top.
 
-> > > +3.  Allocation of Guarded Control Stacks
-> > > +----------------------------------------
-> 
-> > > +* When GCS is enabled for a thread a new Guarded Control Stack will be
-> > > +  allocated for it of size RLIMIT_STACK / 2 or 2 gigabytes, whichever is
-> > > +  smaller.
-> 
-> > Is this number based on the fact that a function call would only push
-> > the LR to GCS while standard function prologue pushes at least two
-> > registers?
-> 
-> It's actually based on bitrot that I'd initially chosen a smaller value
-> since it's likely that functions will push at least something as you
-> suggest, the patches now just use RLIMIT_STACK.  I'll fix.
 
-A related question - it may have been discussed intensively on the x86
-thread (I may read it sometime) - why not have the libc map the shadow
-stack and pass the pointer/size to clone3()? It saves us from having to
-guess what the right size we'd need. struct clone_args is extensible.
-
-(I plan to get back next week to this series, I'll need to read a bit
-more on the spec)
-
--- 
-Catalin
+Takashi
