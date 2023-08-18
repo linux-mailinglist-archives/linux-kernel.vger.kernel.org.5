@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C65978128E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B8C781291
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379349AbjHRSEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45078 "EHLO
+        id S1378995AbjHRSH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379371AbjHRSEX (ORCPT
+        with ESMTP id S1379340AbjHRSHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:04:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 765E82D70
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:04:22 -0700 (PDT)
+        Fri, 18 Aug 2023 14:07:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722F02D70;
+        Fri, 18 Aug 2023 11:07:12 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04DF567EFC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 18:04:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85097C433CC;
-        Fri, 18 Aug 2023 18:04:19 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ECD65616B0;
+        Fri, 18 Aug 2023 18:07:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EDE2C433C8;
+        Fri, 18 Aug 2023 18:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692381861;
-        bh=P15k+ZGTnh3saf8KGpHE9eVH30ID/HlxHmNdojIcpx0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vOJfCUsFtYqGREnA5GesxwE4BTL2LNH71u1NZ4aF2VXFru1FyM15kV4Tu9R7V2OA7
-         +/5uGTenGy+RpjW1x8bWlf3xyAPg1E0cIk9u2f17rDT8/lI3+ph3i/BZdVdjruhbz9
-         T7Vo2qKyfrTsdMeK0ed/TTP0h7pXr0m3/tOSTFDv7SvbZwilAs99mg0RcCeAT/VHp9
-         dCbi4phDlRELTY/WZe6fIj+iPlaW/2lY+6UZ/+OsmO95bJadtTyrGUBO3JRklSqm+s
-         x9lCIb8BtSKASOt5HJqIVyw33vkF8OiHWvIYic/8z8Uw1Vr+8QSak6hf6gg8FzhqHk
-         bZCzQuOgJAcDQ==
-From:   Will Deacon <will@kernel.org>
-To:     Tomislav Novak <tnovak@meta.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Samuel Gosselin <sgosselin@google.com>
-Subject: Re: [PATCH v2] hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-Date:   Fri, 18 Aug 2023 19:04:10 +0100
-Message-Id: <169237465034.1400900.4830514571452045431.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20230605191923.1219974-1-tnovak@meta.com>
-References: <ZH40hgYbWc0x+1c3@tnovak-mbp.dhcp.thefacebook.com> <20230605191923.1219974-1-tnovak@meta.com>
+        s=k20201202; t=1692382031;
+        bh=8bazFKC2EtD5qKvG3tFrbUBhe0yoc4Mir5hc0laHKwc=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=sifg1jVnl3dmDGkgBrKYqRHMkKVTqGylITP0QwHlWSXw2wzlRGVWigvfG7Cx12xrH
+         vDleChZKhI+RG2hyqI/buzSPwfEFrUR9w+G3T10bLq1nvQWJylweqd17AAeDXcyXBX
+         tD3QJ7rfGljQvO4C6Vz0YB0EMp9qlQK+xk6ra4Q5f2nCxUs2MFtdEdkhYTmPEkvuX1
+         USYMKew1I2DQ9hbTj+n/ikHQqvJc8GDsqhuLkMz4ubKUmkk0GE2PJQw4yDLEJtuAMs
+         NMmmeDTqimRkbLYxrltx3Cw4vn7aXAJnk9wcD6oEhAg87KHmhz3+g/sP+9GXgXZWpO
+         HG1R6V2oug6yw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CB9ABCE039C; Fri, 18 Aug 2023 11:07:10 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 11:07:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
+Cc:     sfr@canb.auug.org.au, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com
+Subject: [BUG next-20230818] error: 'prepare_elf_headers' defined but not used
+Message-ID: <08fc20ef-854d-404a-b2f2-75941eeeccf8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 5 Jun 2023 12:19:23 -0700, Tomislav Novak wrote:
-> Arm platforms use is_default_overflow_handler() to determine if the
-> hw_breakpoint code should single-step over the breakpoint trigger or
-> let the custom handler deal with it.
-> 
-> Since bpf_overflow_handler() currently isn't recognized as a default
-> handler, attaching a BPF program to a PERF_TYPE_BREAKPOINT event causes
-> it to keep firing (the instruction triggering the data abort exception
-> is never skipped). For example:
-> 
-> [...]
+Hello!
 
-Applied to will (for-next/perf), thanks!
+This morning's rcutorture testing on next-20230818 complained about
+prepare_elf_headers() being defined but unused on several rcutorture
+scenarios.  The patch below makes rcutorture happy, but might or might
+not be a proper fix.
 
-[1/1] hw_breakpoint: fix single-stepping when using bpf_overflow_handler
-      https://git.kernel.org/will/c/d11a69873d9a
+Thoughts?
 
-Cheers,
--- 
-Will
+							Thanx, Paul
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+------------------------------------------------------------------------
+
+diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
+index 1d0f824559fce..926c39e22387b 100644
+--- a/arch/x86/kernel/crash.c
++++ b/arch/x86/kernel/crash.c
+@@ -127,7 +127,8 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
+ 	crash_save_cpu(regs, safe_smp_processor_id());
+ }
+ 
+-#if defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)
++#if (defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)) && defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
++
+ static int get_nr_ram_ranges_callback(struct resource *res, void *arg)
+ {
+ 	unsigned int *nr_ranges = arg;
