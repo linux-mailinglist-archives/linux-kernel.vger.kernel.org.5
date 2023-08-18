@@ -2,127 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15941780E69
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0E3780E6A
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377882AbjHRO57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
+        id S1377918AbjHRO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377827AbjHRO5j (ORCPT
+        with ESMTP id S1377832AbjHRO5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:57:39 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918DA30F3;
-        Fri, 18 Aug 2023 07:57:38 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-583d702129cso9607427b3.3;
-        Fri, 18 Aug 2023 07:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692370658; x=1692975458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3YL1cTS042mke7QX2gTenX5Fxm6ube31C+a3rIf0p8=;
-        b=gr3cKPnyBvC6suRBhrybQKWDaFjvkdC80lgXVYk5CrW+lP57VuSucWxFsjgLZNhqjr
-         6I6vYOw9kcBU5v7L7SJPMHTBwnO6jhSJq+QcqmcJ95/hPSmdFKVWJ0YElZTlwgF3WGDP
-         vHDpBtL934WdgIy8dgOqua+bVSXbuC24CgEIfu6DZdz1S8OzdoUZJ1JrWnQdvnZXHwW0
-         sQURlJSjHUndXS7djGA4gHceGODZRjdOsQt/Q5gie4bF896hmi23u+cZzqeTX4QpJGib
-         sEBMjz9/YZWjEp73Wr3FTZ2YWDNkxXJ0A0jd5cYzXst2shg1iGqATk7Jdqv2KptdF/Jn
-         2ckA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692370658; x=1692975458;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a3YL1cTS042mke7QX2gTenX5Fxm6ube31C+a3rIf0p8=;
-        b=YExJU4ZScE68qR1fQ/ho6YejgxoUefGGkPecFGJhxCTk7JWc+GDPpUcZvINRgN3/cp
-         xhqD3YG2/hUtEGHNS0qQxZLd7ce79RKMW7Ef1iKtSLsnwS6MkGa3XriQaOzMlSh9s9Jw
-         XH0UJbNoNAlp78vKU5PWBrFsBbxiUROPznPl1OSHd8LV0cHlMPTP813TAjgcZMM51Hh3
-         9EVsbWrgyE9D79673beZIO83m5kPqWLBDyUNOhF+zDmolPoCClYJrv+JxgldticLwJk5
-         ulzfpTNA+C3TMAaRWDSD+De5fkZNR+MRTvtTQWwCToBgRDw2WQTskYUhMWLGhjT2Zlhu
-         bhGA==
-X-Gm-Message-State: AOJu0YwBGmMTWJ6TkCQf9fIu/8L7fLmTi+3/HYrrufojgWyB5l7Auyd9
-        RikX4CPuEX8ZhYtD3lorgwvxoSn5QOsCtEuSspvnnrHsAQk=
-X-Google-Smtp-Source: AGHT+IEVyOBTNDONrRYORdqyoqvB3RfI5AjMLCBcAe9FeymzuePHuGJelhqWDGW+wuXL90AsPWrv3F78f4TGPkwXNI0=
-X-Received: by 2002:a81:8341:0:b0:56d:3b91:7e76 with SMTP id
- t62-20020a818341000000b0056d3b917e76mr2819352ywf.12.1692370657737; Fri, 18
- Aug 2023 07:57:37 -0700 (PDT)
+        Fri, 18 Aug 2023 10:57:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72B63C20;
+        Fri, 18 Aug 2023 07:57:39 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 16:57:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692370658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mOwQQ0BPTC+PDHYiDUDtHcpcTB1NW9+8Ld9PAqkgYDE=;
+        b=FNe5wH1BmMCD+MYpBezKbUNnxSJQwz+0juzDFjP1Ux27ZYt3zA95YnugM11pxLOdPuoL3p
+        TReycNr5gM+zkPFkMeaRGaRGFDl/FoahCWrdnnFXjubbCSH/4QLxHZTuCCRKifFtPa3FjU
+        YAvLbBjrFecDiL0ycfnLfBFQSXJ2onXzj6sq15KP6MmTNaIFQOKiZLY6eKMxyzh6QyoGMY
+        fRRCFWIaHgibY0cBjHYHEEzT44P1wGzxk5izX0mm5SOWd081WZfbMZUKpzqYeAXSaP2bPg
+        3k2Fk6KGq7Rr9cznBC8b5Eduma5I40oy7vHi1tvq8mk6tyHBPAs11c4mHJKTDg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692370658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mOwQQ0BPTC+PDHYiDUDtHcpcTB1NW9+8Ld9PAqkgYDE=;
+        b=mlEiYqnAcq5FNW/cwFF73Qm56hxG4sEB5LfPKCvQS+VRaTzA9gk6QYzn8XkGWvISOlhFK8
+        Fv4WpZNat8DP0TBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wander Lairson Costa <wander@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
+Message-ID: <20230818145734.OgLYhPh1@linutronix.de>
+References: <20230814093528.117342-1-bigeasy@linutronix.de>
+ <20230814112421.5a2fa4f6@kernel.org>
+ <20230817131612.M_wwTr7m@linutronix.de>
+ <CAO3-Pbo7q6Y-xzP=3f58Y3MyWT2Vruy6UhKiam2=mAKArxgMag@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAHhAz+jdBS3KPCDL2WZ8UBFRhu0hZyHqs0HAdnhamswswF6iug@mail.gmail.com>
- <CAEwN+MB6O03aaFo67CdDJoMCYQuexF0LCY5J1T47Bs4o_gcKrw@mail.gmail.com>
-In-Reply-To: <CAEwN+MB6O03aaFo67CdDJoMCYQuexF0LCY5J1T47Bs4o_gcKrw@mail.gmail.com>
-From:   Muni Sekhar <munisekharrms@gmail.com>
-Date:   Fri, 18 Aug 2023 20:27:26 +0530
-Message-ID: <CAHhAz+hTFdBNh=S1XfWA_pAUnPUO2czHPXgqvA4SiJBacxZo5A@mail.gmail.com>
-Subject: Re: Seeking Guidance for New SPI Driver in Mainline Linux Kernel
-To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-spi@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAO3-Pbo7q6Y-xzP=3f58Y3MyWT2Vruy6UhKiam2=mAKArxgMag@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the previous email, I mentioned that the FPGA hardware(SPI block)
-was connected to the Linux system using the PCIe interface. Here, when
-I refer to the Linux system, I mean an x86-based Linux system, not an
-ARM-based embedded system.
+On 2023-08-18 09:43:08 [-0500], Yan Zhai wrote:
+> > Looking at the cloudflare ppl here in the thread, I doubt they use
+> > backlog but have proper NAPI so they might not need this.
+> >
+> Cloudflare does have backlog usage. On some veths we have to turn GRO
 
-On Fri, Aug 18, 2023 at 7:28=E2=80=AFPM Raul Piper <raulpblooper@gmail.com>=
- wrote:
->
-> Have you gone through the bindings documentation for spi driver?
-> What are the pin configuration for your hardware sli?
-> Br
->
-> On Fri, 18 Aug 2023 at 6:40 PM, Muni Sekhar <munisekharrms@gmail.com> wro=
-te:
->>
->> Dear Linux Kernel Community,
->>
->> I hope this email finds you well.
->> I am writing to seek your guidance and assistance regarding the
->> development of a new SPI device driver for our hardware system.
->> Our hardware, implemented on an FPGA, features an SPI interface that
->> acts as a Master, offering two distinct modes for data transmission
->> and reception.
->> This hardware is connected to the Linux system via the PCIe bus.
->> This hardware offers two modes for communication: using registers for
->> debugging purposes and utilizing DMA channels for high-bandwidth
->> applications. Both modes leverage the PCIe interface for data
->> exchange.
->> The hardware boasts several noteworthy features, including support for
->> multiple speed settings, SPI port switching, configurable sample edge
->> programming, and adjustable SPI transfer sizes.
->>
->> As we embark on the task of developing a device driver for this SPI
->> interface, we intend to follow best practices and leverage existing
->> resources within the Mainline Linux kernel tree. To achieve this, we
->> plan to refer to and adapt existing SPI drivers.
->> We kindly request your recommendations on which existing SPI driver
->> within the Mainline Linux kernel tree would serve as the most suitable
->> reference for our endeavor. Your invaluable expertise would greatly
->> aid us in ensuring the success of this driver development process.
->> Thank you for your time and consideration. We eagerly anticipate your
->> guidance and insights.
->>
->> Warm regards,
->> Sekhar
->>
->> _______________________________________________
->> Kernelnewbies mailing list
->> Kernelnewbies@kernelnewbies.org
->> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
+Oh. Okay.
 
+> off to cope with multi-layer encapsulation, and there is also no XDP
+> attached on these interfaces, thus the backlog is used. There are also
+> other usage of backlog, tuntap, loopback and bpf-redirect ingress.
+> Frankly speaking, making a NAPI instance "threaded" itself is not a
+> concern. We have threaded NAPI running on some veth for quite a while,
+> and it performs pretty well. The concern, if any, would be the
+> maturity of new code. I am happy to help derisk with some lab tests
+> and dogfooding if generic agreement is reached to proceed with this
+> idea.
 
+If you have threaded NAPI for veth then you wouldn't be affected by this
+code. However, if you _are_ affected by this and you use veth it would
+be helpful to figure out if you have problems as of net-next and if this
+helps or makes it worse.
 
---=20
-Thanks,
-Sekhar
+As of now Jakub isn't eager to have it and my testing/ convincing is
+quite limited. If nobody else yells that something like that would be
+helpful I would simply go and convince PeterZ/tglx to apply 2/2 of this
+series.
+
+> Yan
+
+Sebastian
