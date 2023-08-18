@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B98780C95
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77EA780C9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377178AbjHRNgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        id S1377192AbjHRNhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377198AbjHRNfr (ORCPT
+        with ESMTP id S1377245AbjHRNg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:35:47 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B33C1F;
-        Fri, 18 Aug 2023 06:35:42 -0700 (PDT)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37IDZPKa009356;
-        Fri, 18 Aug 2023 13:35:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=4v2TWfa6oBkILRs3ARO+kKbi1OBX9uk4r23vOBdt0sQ=;
- b=N5EfXrFf0lfl/FChvrCSDatm+69jbUI0jt71yPIZ54Wzn4gCSrJwvRDOOfRPbru0KSoA
- n1q4Mohy68e+J/JY6+vB5RnlBAIkmtsaFtixNhlmspUaRh0NU/u7Al+tGg/mHVuKReRd
- 9Ex8qqT5Ujze4ncXlqnH4/7Z4cmKpOJP8p/KhRIRnf0LeLN8cyN3Ab2D9HT4VWD/ds//
- KQ8ubm88mGOAsYdLptYSUPv2tW1hvCb9qu4n1EwtTskpSkRb50YkZIs+5filgSeygO21
- vOr9et1WAl6lSB7dffxsCisbJWCmvrROl5LI4zTA2Dh6WQ3l0+D7krNAW2nt05CoZraq fQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj9e38f0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 13:35:39 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37IDMIOu026809;
-        Fri, 18 Aug 2023 13:35:39 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sj9e38f0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 13:35:38 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37IBMs0Z007836;
-        Fri, 18 Aug 2023 13:35:38 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3senwky64e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 13:35:38 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37IDZZWF16712286
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Aug 2023 13:35:35 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 164CD20040;
-        Fri, 18 Aug 2023 13:35:35 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2B16D20043;
-        Fri, 18 Aug 2023 13:35:34 +0000 (GMT)
-Received: from osiris (unknown [9.171.32.106])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 18 Aug 2023 13:35:34 +0000 (GMT)
-Date:   Fri, 18 Aug 2023 15:35:32 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Janosch Frank <frankja@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jjherne@linux.ibm.com, freude@linux.ibm.com,
-        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
-        pasic@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>
-Subject: Re: [PATCH 00/12] s390/vfio_ap: crypto pass-through for SE guests
-Message-ID: <20230818133532.16552-A-hca@linux.ibm.com>
-References: <20230815184333.6554-1-akrowiak@linux.ibm.com>
- <b083c649-0032-4501-54eb-1d86af5fd4c8@linux.ibm.com>
- <b841f8b4-b065-db5c-9339-f199301b2f12@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b841f8b4-b065-db5c-9339-f199301b2f12@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: g7c8ntFPGg80CcNCOdJrpkQh_iPJFbQx
-X-Proofpoint-ORIG-GUID: 3dFBHvpA6l8_w2pbU4sdLdFP0Do3W786
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 18 Aug 2023 09:36:59 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BE93ABA
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:36:56 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-447d394d1ebso1267699137.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:36:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692365815; x=1692970615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tsIumgRdmbXKKYutVbfz6n61nD3x8NOvvC4wDvxP2gk=;
+        b=sbrcxzr75o4G0iGqXKHkOONZixAw9f8EmtDCp8021zK2/IdPDeFXGqYWQXyiVNF2zZ
+         NsfF/0HolBSlJcr1cw98eQ2NRw/t2slOCXLvbz+KDhlLxlFS+p+NdPwekmm2dc7dpRIU
+         poM58PKuoWSuiDP+vHYADTQXryKG9SinLcoI3uGLqOtuZWbfzLvHkIUlvkFaiQFbHYew
+         tcl6UquTenA9i6lM26k6ekCxb+yHwvbaaWfGpwTUCb80bZQI1+Y3mfI/csRoocP+wfHt
+         01AUcWwONsOWPZ0Qbei9a3JKLUiMeKT2ihilxi2G1Ja7BmfsWV5bJEl+xMFJ4UDjrMyP
+         yMbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692365815; x=1692970615;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tsIumgRdmbXKKYutVbfz6n61nD3x8NOvvC4wDvxP2gk=;
+        b=D5yogJu2BJWcCPKCt8J0mQapl3cr87sedOQDlFfTW3XIW92TyWdFiUFdQNPmCMRudt
+         ioYT64Z0q8pvOSc2GbAdnS6JIsCuoNr8wKezj55VLjqCx1T22qnwG7hQ3yB4fUblQQ8J
+         oiKwc062ATo5Po8LFJvh7jpyS2XMfAr4S4xGE6PVoCzvWpIFmWlQXy4OIXJXZW22zFUo
+         YHhdcpXSmb48wfXFZbaEe3L6RtRryxFfM9huVnAZuSV6c4eyTXiocmrn6CcxsJwpTtIR
+         lBz2QVFkaXfGA9Fqh/0n9avV7nVkbPiC/6Vbtq7W0NuJI0LPw6ZwJpmY754Bj2XKaR+a
+         CBCQ==
+X-Gm-Message-State: AOJu0Yx4+Vo5AdoEikn6zsQ/KhUCKnTHPOS3cxyl+hsmnUD9Z+eHyrBX
+        TdnO5TZj/2hqTop2q6T8WkYeZP0dGQRIGU5KMZYNeA==
+X-Google-Smtp-Source: AGHT+IH40OZbT/t7F3DFRbLyk8HlJv878bO7NIIMY/PzuMHb78kJ3oPz0yuq6grwoWoboGjCQVbVd/YESqxy/iKdGiQ=
+X-Received: by 2002:a05:6102:11ea:b0:445:944:b6dc with SMTP id
+ e10-20020a05610211ea00b004450944b6dcmr2634570vsg.7.1692365814977; Fri, 18 Aug
+ 2023 06:36:54 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-18_16,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 spamscore=0 impostorscore=0 mlxlogscore=916
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308180120
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817184958.25349-1-brgl@bgdev.pl> <ZN9JID53QpSz4epI@smile.fi.intel.com>
+ <CAMRc=MfZ=GgcqKkDXkUgWC-bdCJECs0HfjRe9Ffy-Metwz6fFQ@mail.gmail.com> <ZN9ySmxxdoLODcc9@smile.fi.intel.com>
+In-Reply-To: <ZN9ySmxxdoLODcc9@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 18 Aug 2023 15:36:44 +0200
+Message-ID: <CAMRc=McZM=OZzpwKL2x4PjYY4BtJBOVjvKOshcD5Zk8ECnJsng@mail.gmail.com>
+Subject: Re: [PATCH v2 0/6] gpio: cdev: bail out of poll() if the device goes down
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 02:12:50PM +0200, Janosch Frank wrote:
-> On 8/16/23 13:39, Janosch Frank wrote:
-> > On 8/15/23 20:43, Tony Krowiak wrote:
-> > > This patch series is for the changes required in the vfio_ap device
-> > > driver to facilitate pass-through of crypto devices to a secure
-> > > execution guest. In particular, it is critical that no data from the
-> > > queues passed through to the SE guest is leaked when the guest is
-> > > destroyed. There are also some new response codes returned from the
-> > > PQAP(ZAPQ) and PQAP(TAPQ) commands that have been added to the
-> > > architecture in support of pass-through of crypto devices to SE guests;
-> > > these need to be accounted for when handling the reset of queues.
-> > > 
-> > 
-> > @Heiko: Once this has soaked a day or two, could you please apply this
-> > and create a feature branch that I can pull from?
-> 
-> Sorry for the noise, for some reason I still had Heiko's old address in the
-> address book. I'll delete it in a second.
-> 
-> Here we go again.
+On Fri, Aug 18, 2023 at 3:29=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Aug 18, 2023 at 02:06:21PM +0200, Bartosz Golaszewski wrote:
+> > On Fri, Aug 18, 2023 at 12:34=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > On Thu, Aug 17, 2023 at 08:49:52PM +0200, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > > >
+> > > > Wake up all three wake queues (the one associated with the characte=
+r
+> > > > device file, the one for V1 line events and the V2 line request one=
+)
+> > > > when the underlying GPIO device is unregistered. This way we won't =
+get
+> > > > stuck in poll() after the chip is gone as user-space will be forced=
+ to
+> > > > go back into a new system call and will see that gdev->chip is NULL=
+.
+> > >
+> > > Why can't you use the global device unbind notifications and filter o=
+ut
+> > > what you are interested in?
+> >
+> > There's no truly global device unbind notification - only per-bus.
+> > GPIO devices can reside on any bus, there are no limitations and so
+> > we'd have to subscribe to all of them.
+>
+> We have, but it requires a bit of code patching.
+> Look at device_platform_notify()/device_platform_notify_remove().
+>
+> I noticed, btw, that platform_notify() and Co is a dead code :-)
+> Maybe it can be converted to a list and a manager of that list,
+> so specific cases can utilize it.
+>
 
-Series is now available via the vfio-ap branch, based on rc2 like your
-your branches within the kvms390 tree.
+That's not going to happen anytime soon and I doubt Greg would like
+the idea without more users interested in receiving these events. :(
 
-https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git vfio-ap
+This GPIO notifier is an implementation detail - once we do have
+global notifiers, we can switch to using them instead.
+
+Bart
