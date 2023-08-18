@@ -2,61 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD1B780C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78D8780C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376959AbjHRMyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
+        id S1376985AbjHRMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348924AbjHRMy3 (ORCPT
+        with ESMTP id S1376966AbjHRMy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:54:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF1230F6;
-        Fri, 18 Aug 2023 05:54:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 82A83633DB;
-        Fri, 18 Aug 2023 12:54:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB92AC433C8;
-        Fri, 18 Aug 2023 12:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692363266;
-        bh=orKiM/AYBzvSh3wzYTayQ45OuPrlWY7ULQPgi6qbpLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JmlJJOM06l+xQoLCh+CVGObMiAfkKrRTsYKUxly0YIRPRvx5EnMz5m5o4FMqSWkvO
-         EPEDRQYiixgn52l1vHxxJDtFJsp7jzmzq8TkZ0iTElk1IZpQmsDvNJljwkaEpab21S
-         ZNoDJHWPA6T1C8GBJiPv3PdrRwW3CcrVQmtLLWXNlRwKfn7JeT+PIk04i/4a4mJMwV
-         9OGcQQ0CpcQbjqM2jy7Bnd2e39Xf7/tPOBmxbKPX2rvoUSTk6ucX2IBxJKBS4NHP4D
-         eA1MsCS8aH8oERuWf5yVzBBdGlFy9oJxlL4763wxqECHmRfiypGtBh5HrxBmpcbgy+
-         HeEp2vN3T1KmA==
-Date:   Fri, 18 Aug 2023 13:54:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
-        Guenter Roeck <groeck@chromium.org>, kernel@collabora.com,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] kselftest: Add new test for detecting unprobed
- Devicetree devices
-Message-ID: <69848238-17d8-4b87-8bc1-474cae127410@sirena.org.uk>
-References: <20230817233635.2306377-1-nfraprado@collabora.com>
- <20230817233635.2306377-4-nfraprado@collabora.com>
+        Fri, 18 Aug 2023 08:54:59 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E67F30F6;
+        Fri, 18 Aug 2023 05:54:56 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe8c3b5ca0so1295310e87.1;
+        Fri, 18 Aug 2023 05:54:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692363295; x=1692968095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=67vQ/7mBcvvdfmCbFxtyg3zPIiXbP/aBRSw9NykcPYQ=;
+        b=de+OCZbgrWDgijwJTI1s/t4gopxklWXkSAc0gJKXlzmGlbpjvfu2wVMnKQ33d7u2cq
+         0/x0ma2djv9bzNli+YCbqQmNqprxfqztchy2ttMahuIt9Aliorq0DWCrmqeR70kHA5S3
+         frq3o1zloYTV4t2uxOIcHkkFFJ4KwfTsf0IpZW1shMzrGa7XJKNUOregmuBCg5RpxprS
+         6NXyBG3N8pRy5w2sJ6or7ZZUqrpSQMpA3P0GPmoqMVleAHBUTLWtmZaZ57evbXob9mQ/
+         m5PjRgH1OKDjW07ezkpbPbG+Ht5Mu1waTJygKnkQ1Zdgfmd1QOjVl1Wf5mEmQbBS4F/M
+         8cHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692363295; x=1692968095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=67vQ/7mBcvvdfmCbFxtyg3zPIiXbP/aBRSw9NykcPYQ=;
+        b=C4/BR35F1VwITWjpJn8tTjwI61xUYTMDBxotzxcXvoLBFT4pt2knlJYDHaJQDwbaIu
+         knVg0UFpD2JdN2j10KjHSnihK4WTFeHeE8yxzj6pUA/SUChzqoYcTMIE8f6qnTSdlLz2
+         xt78MM4EF3IkyRy8blqf9ZYgu6J9dUQwNPEhgNH2hyhtwodbnhuifhoO5jrNYIGlcPLR
+         lWN4KTOn/x99d+97rckxM+gPg67GC0aQkgKTDWJkfRnJdLz9aYZdMpU5H5cJXO/jf+Iu
+         1V6epAnPSireFMlgji/e3sFtuD5Lg5sOBOIcMdvrMX9XrwrzQwbblTWZpV4JqT2rIgZf
+         Hh3w==
+X-Gm-Message-State: AOJu0YxqH8IsJx11Ekz39fHN+17enuyrqgASsKHsRjal74Zgjre4kWBC
+        /h5amogHd8B624pxSNLnpWU=
+X-Google-Smtp-Source: AGHT+IGoP8nkkUCENgMRwAGy7olq9sqV8gE/z7Ae8FR7k0BWN0v0FtuWlYbDu/1ipG0ZzJpvhVWs5g==
+X-Received: by 2002:a05:6512:3f03:b0:4fe:19ef:8794 with SMTP id y3-20020a0565123f0300b004fe19ef8794mr2028379lfa.28.1692363294572;
+        Fri, 18 Aug 2023 05:54:54 -0700 (PDT)
+Received: from localhost ([93.157.254.210])
+        by smtp.gmail.com with ESMTPSA id b25-20020ac247f9000000b004fe509970dasm328154lfp.250.2023.08.18.05.54.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 05:54:54 -0700 (PDT)
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: phy: Fix deadlocking in phy_error() invocation
+Date:   Fri, 18 Aug 2023 15:54:45 +0300
+Message-ID: <20230818125449.32061-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S4sLu4sSqqlfNLG9"
-Content-Disposition: inline
-In-Reply-To: <20230817233635.2306377-4-nfraprado@collabora.com>
-X-Cookie: Your aim is high and to the right.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,42 +76,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since commit 91a7cda1f4b8 ("net: phy: Fix race condition on link status
+change") all the phy_error() method invocations have been causing the
+nested-mutex-lock deadlock because it's normally done in the PHY-driver
+threaded IRQ handlers which since that change have been called with the
+phydev->lock mutex held. Here is the calls thread:
 
---S4sLu4sSqqlfNLG9
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+IRQ: phy_interrupt()
+     +-> mutex_lock(&phydev->lock); <--------------------+
+         drv->handle_interrupt()                         | Deadlock due
+         +-> ERROR: phy_error()                          + to the nested
+                    +-> phy_process_error()              | mutex lock
+                        +-> mutex_lock(&phydev->lock); <-+
+                            phydev->state = PHY_ERROR;
+                            mutex_unlock(&phydev->lock);
+         mutex_unlock(&phydev->lock);
 
-On Thu, Aug 17, 2023 at 07:35:27PM -0400, N=EDcolas F. R. A. Prado wrote:
+The problem can be easily reproduced just by calling phy_error() from any
+PHY-device threaded interrupt handler. Fix it by dropping the phydev->lock
+mutex lock from the phy_process_error() method and printing a nasty error
+message to the system log if the mutex isn't held in the caller execution
+context.
 
-> --- /dev/null
-> +++ b/tools/testing/selftests/dt/ktap_helpers.sh
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Copyright (c) 2023 Collabora Ltd
-> +#
-> +# Helpers for outputting in KTAP format
-> +#
+Note for the fix to work correctly in the PHY-subsystem itself the
+phydev->lock mutex locking must be added to the phy_error_precise()
+function.
 
-These look generic so could be at the top level kselftest directory in
-case any other tests want to use them?
+Link: https://lore.kernel.org/netdev/20230816180944.19262-1-fancer.lancer@gmail.com
+Fixes: 91a7cda1f4b8 ("net: phy: Fix race condition on link status change")
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+---
+ drivers/net/phy/phy.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-The test itself looks good in so far as I can read shell.
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index bdf00b2b2c1d..a9ecfdd19624 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -1184,9 +1184,11 @@ void phy_stop_machine(struct phy_device *phydev)
+ 
+ static void phy_process_error(struct phy_device *phydev)
+ {
+-	mutex_lock(&phydev->lock);
++	/* phydev->lock must be held for the state change to be safe */
++	if (!mutex_is_locked(&phydev->lock))
++		phydev_err(phydev, "PHY-device data unsafe context\n");
++
+ 	phydev->state = PHY_ERROR;
+-	mutex_unlock(&phydev->lock);
+ 
+ 	phy_trigger_machine(phydev);
+ }
+@@ -1195,7 +1197,9 @@ static void phy_error_precise(struct phy_device *phydev,
+ 			      const void *func, int err)
+ {
+ 	WARN(1, "%pS: returned: %d\n", func, err);
++	mutex_lock(&phydev->lock);
+ 	phy_process_error(phydev);
++	mutex_unlock(&phydev->lock);
+ }
+ 
+ /**
+@@ -1204,8 +1208,7 @@ static void phy_error_precise(struct phy_device *phydev,
+  *
+  * Moves the PHY to the ERROR state in response to a read
+  * or write error, and tells the controller the link is down.
+- * Must not be called from interrupt context, or while the
+- * phydev->lock is held.
++ * Must be called with phydev->lock held.
+  */
+ void phy_error(struct phy_device *phydev)
+ {
+-- 
+2.41.0
 
---S4sLu4sSqqlfNLG9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTfafwACgkQJNaLcl1U
-h9D54wf5AdYx/ucoN/omjRE/OASexlSt6X45/Ke1OOogDr+mlhkQBJP3zbGFj697
-EGbmQxxAk9J1A4wAWul2+r39m5ccV3AXmdL9EWkGLhX7BB9mFTctb+57vNlvjY7Y
-NttfaUuzOj7MR2d7KhrVHhAv9bDEhdaA8d+kMk09qUv/IfbMeIaFqkAiT5wk8UCL
-pZYWuzX6ZYRpkqPaCGc8XpOKcbOCPi46M+oKir75Cpz6UkSTCOnsTJaoLNanLoDw
-MXlgFfMYT8/wd5BaYn6yD8fYQh8cjs2Er4ORC/YngdVAva31UK0cBG3EuwSrnEZp
-VaB9uLK3zqNtlbJg6zHCXocxBUhR1w==
-=n0TR
------END PGP SIGNATURE-----
-
---S4sLu4sSqqlfNLG9--
