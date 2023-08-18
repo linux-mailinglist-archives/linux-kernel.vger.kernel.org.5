@@ -2,118 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6883B7815AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D50C7815B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241927AbjHRXOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 19:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
+        id S242292AbjHRXPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 19:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241858AbjHRXOg (ORCPT
+        with ESMTP id S241858AbjHRXPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 19:14:36 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46E030C2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:14:34 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-563ab574cb5so1798863a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692400474; x=1693005274;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5DZepNUwrlYIieQTJr9Dh/3tOxOseVHo5Xld8dMNuNg=;
-        b=lsQ+HVzfe/LvJcjpi5EkUeNksPQ4SKFkDuitTo8QZ8/V1sWcr6kxph8TKOQUDPuQY6
-         3R+Pf/jmvF5hwJvwA/qd5EZ3umv7mDUrFv27YvRHTc8kZljL+me7hAdDiSfTlWvFfEj/
-         coNhxIPQ3jfxMfHlGddYmQDEEwSQ+Y5RTQnvOpYtmp6kPuX7mXVgS6zWmHmU+sPbmIdm
-         3HwG+UlgYVsM7jRmT+4vVPawxf3yitDSjepBo5MpteRZM1D0Vdl8EmV210P/oEzmRyXa
-         r4YJEufogWKx1B2Git+TQpUucYnwL9g/7hgB267fQrq1A8h/ysQfdzEjFcPJQrGcpD54
-         aN0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692400474; x=1693005274;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5DZepNUwrlYIieQTJr9Dh/3tOxOseVHo5Xld8dMNuNg=;
-        b=jqHz5S8a7mavwMxs/cjgtnwVea8gQf0hW7tndlUKaDB5eMknGIeptIDOfa/ESwLf/b
-         Ok9g1V2ac0Yb18dmmLlQJ8pOKPn4K4gk7ELtsRcUw3rNIAN0IOkROiDFBclJkrIqlQkt
-         XA2iXZq/PqyUljBkTbgF+/iK0T5B3Og3eVaH++UK0822I+utu2bf4kHgUdWcTBt7YzDl
-         4ulkzS80wmz8A4wCPCUCKWz3UFjqH9h5jelaVIOssqTRipwSTUi+svDxZIdQ8R5TiCb7
-         z8JJHJ8PV9b94SOtWI5g5Ms4kh7B7e9ec85ZO5HLHW3q8oo6V1yuec6CVaQzNB3Kx7mY
-         DrsA==
-X-Gm-Message-State: AOJu0YxyiAy+ws5GY+FnUpzY1IC5W/8aiO+xalmQVztvAfIDM917OTLK
-        E2q+b1emhbrNFczY3bDP7oM/IQHzGug=
-X-Google-Smtp-Source: AGHT+IF9HyPZ8NYi1dOCnWJqmB9Xg8StOO2+i4hjQBZ6kPAEn5MgrO+XU77nUxSPGBzB9RxPZ8c5rXOzSME=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3ecd:0:b0:565:56be:4dee with SMTP id
- l196-20020a633ecd000000b0056556be4deemr124213pga.8.1692400474224; Fri, 18 Aug
- 2023 16:14:34 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 16:14:18 -0700
-In-Reply-To: <cover.1692119201.git.isaku.yamahata@intel.com>
-Mime-Version: 1.0
-References: <cover.1692119201.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <169239820500.1761806.6161030396328593760.b4-ty@google.com>
-Subject: Re: [PATCH 0/8] KVM: gmem: Adding hooks for SEV and TDX
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@intel.com
-Cc:     isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 19:15:08 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FF30C2;
+        Fri, 18 Aug 2023 16:15:05 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qX8g4-000153-2C;
+        Fri, 18 Aug 2023 23:14:49 +0000
+Date:   Sat, 19 Aug 2023 00:14:26 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next 0/4] net: ethernet: mtk_eth_soc: improve support for
+ MT7988
+Message-ID: <cover.1692400170.git.daniel@makrotopia.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 10:18:47 -0700, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> This patch series for KVM guest memfd is to have common code base for SEV and
-> TDX.  Several minor fixes.  Based on this patch series, TDX KVM can defer page
-> clearing without mmu lock.
-> 
-> Isaku Yamahata (6):
->   KVM: gmem: Make kvm_gmem_bind return EBADF on wrong fd
->   KVM: gmem: removed duplicated kvm_gmem_init()
->   KVM: gmem: Fix kvm_gmem_issue_arch_invalidate()
->   KVM: gmem: protect kvm_mmu_invalidate_end()
->   KVM: gmem: Avoid race with kvm_gmem_release and mmu notifier
->   RFC: KVM: gmem: Guarantee the order of destruction
-> 
-> [...]
+This series fixes and completes commit 445eb6448ed3b ("net: ethernet:
+mtk_eth_soc: add basic support for MT7988 SoC") and also adds support
+for using the in-SoC SRAM to previous MT7986 and MT7981 SoCs.
 
-Applied patches 1 and 2 to kvm-x86 guest_memfd.  I'll post the alternative
-approach for fixing the unlocking bug next week (need to test, and I'm out of
-time this week).
+Daniel Golle (4):
+  net: ethernet: mtk_eth_soc: fix register definitions for MT7988
+  net: ethernet: mtk_eth_soc: add reset bits for MT7988
+  net: ethernet: mtk_eth_soc: add support for in-SoC SRAM
+  net: ethernet: mtk_eth_soc: support 36-bit DMA addressing on MT7988
 
-Regarding the initialize/invalidate hooks, I resurrected the discussion from
-the previous version[*], I'd like to bottom out on a solution in that thread
-before applying anything.
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 190 +++++++++++++++-----
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h |  42 ++++-
+ 2 files changed, 182 insertions(+), 50 deletions(-)
 
-[*] https://lore.kernel.org/all/ZN%2FwY53TF2aOZtLu@google.com
 
-[1/8] KVM: gmem: Make kvm_gmem_bind return EBADF on wrong fd
-      https://github.com/kvm-x86/linux/commit/07ac04fbefce
-[2/8] KVM: gmem: removed duplicated kvm_gmem_init()
-      https://github.com/kvm-x86/linux/commit/9ab46d91d5ea
-
---
-https://github.com/kvm-x86/linux/tree/next
-https://github.com/kvm-x86/linux/tree/fixes
+base-commit: c2e5f4fd1148727801a63d938cec210f16b48864
+-- 
+2.41.0
