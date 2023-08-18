@@ -2,142 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591B8780507
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6595E78050C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357819AbjHREKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 00:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
+        id S1357830AbjHREN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357865AbjHREJg (ORCPT
+        with ESMTP id S1357827AbjHRENl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 00:09:36 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D987D3A80;
-        Thu, 17 Aug 2023 21:09:33 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8BxbOr77t5kqscZAA--.25644S3;
-        Fri, 18 Aug 2023 12:09:31 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxPCP67t5kQlxdAA--.13538S3;
-        Fri, 18 Aug 2023 12:09:30 +0800 (CST)
-Message-ID: <31ceb1b8-52e8-f57b-0e76-ea768242e26e@loongson.cn>
-Date:   Fri, 18 Aug 2023 12:09:29 +0800
+        Fri, 18 Aug 2023 00:13:41 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45213A88
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:13:39 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bdf98a6086so4305405ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692332019; x=1692936819;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+tB1YHaTy1So/cjzg3UiXKIfWPl/PBY+zwZUNHuqRe4=;
+        b=JYdaqPMi1eUdBHQt9bwCG0AIKktXNS14f7D/+r1U7CuS7VLwR9a3hSqy6/veq/1V4a
+         vXp/C9HuwUJ3oluxsYQQ84B1ASGjP4xOAJitOHH3KcK3crfPB0Vx2plrgmHY0RDlTGeM
+         Bd2rj3xCobLtEn+zoTAYOmwds75cSKsSYcQpc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692332019; x=1692936819;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+tB1YHaTy1So/cjzg3UiXKIfWPl/PBY+zwZUNHuqRe4=;
+        b=ALczBPdmCqFHcexk3N9A/putjI/gIs/1XcSacQtkxvoGRk0u0NCGCRGOS4Mc9l9dT9
+         KJuTBoCeweQUPkMAyl0YA73/Ti23MDhETFv/hMazFc35kFK2f7IcKKJfPzDdkVLUyGUd
+         RH1xa4hCsVDXZt/ipfzxJZkMbBS9tlo9auc+73+S+PKtB4Hw3O1SkxabHMbz/UKqcAoY
+         Rbr8YBFVvJrxuo/4lbkLH+0cOSq+0Q1ArUEqii2D5Dn1X3xbl+eVakI5Cvyw/qni7NC8
+         oc/HH0LW2tUgqrEUSMqeAQKVzvhJywmHr1mOl1p7O4/V7AC9P4dIkLHsg1CYHMcXps4k
+         h8CA==
+X-Gm-Message-State: AOJu0YyKh9PkcdWe/auaj1ETSOtIB84U7XUZG//CInC9DXrptL51Rxko
+        ltS3VqJE6pkhzRdFp3AtLIKVCw==
+X-Google-Smtp-Source: AGHT+IFxH82CkFvT+1hXgK+2cf7RYUKvmPhKaqZWM6WLpgmTG+eMeF3gjj96O+pbWBk0AvbGHhw9Vg==
+X-Received: by 2002:a17:902:d507:b0:1bf:1367:b7fb with SMTP id b7-20020a170902d50700b001bf1367b7fbmr1675438plg.46.1692332018907;
+        Thu, 17 Aug 2023 21:13:38 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u10-20020a17090341ca00b001bb28b9a40dsm590278ple.11.2023.08.17.21.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Aug 2023 21:13:38 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Hui Su <sh_def@163.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] nsproxy: Convert nsproxy.count to refcount_t
+Date:   Thu, 17 Aug 2023 21:13:32 -0700
+Message-Id: <20230818041327.gonna.210-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4] PCI/VGA: Make the vga_is_firmware_default() less
- arch-dependent
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Limonciello, Mario" <Mario.Limonciello@amd.com>
-References: <20230817220853.GA328159@bhelgaas>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230817220853.GA328159@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8DxPCP67t5kQlxdAA--.13538S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxuF1UKr1xGr18Aw4DuF4rJFc_yoW5AFyUp3
-        yrCF1FkF4kArnakrnrGw4kXF1rAws7Xa4FkFn0y34DA343Zrn2qrySkrWqgFyUZrs7X3W2
-        vF40gwn5GayqvagCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-        6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-        1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-        rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
-        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFApnUUU
-        UU=
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3476; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=f0QChk47Rtin8gsMQWXf4qSTKj6ORa8mH58ivbPyA30=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk3u/rEmylTRGXRkcsk/K/1slbIwmO+nifJji8H
+ AvFA2khNDuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZN7v6wAKCRCJcvTf3G3A
+ JoIjD/0XYS/u3kjCYvfQFCGBi/vT/ynh7VhzZHnTK+hbjib7+FnO5ZB0fstlaX2YftwE5sZToX+
+ J2fzuZt6zx4N0sZduBUlz0O5hVUI7x3Kx+gnn1uucHsYIl4DNN0xSKUj4GsBtG7f0ZAerE+usCi
+ RG1BiNDGhk8InAefL7zdREdja/uucI5zs3o9DMYwLBniDUqpsIumePyCDARtJ0xNZ053dbCe/i5
+ 7mapm1TPsbJjyZlld88TaRld68f1M1KFqAyQ9zdk6iznMNohSvIxlemxZSrOPW2PUKKKFumo+bA
+ LXSNRL8fkw4pBgFRb8x81WE7XOYUsOn8FzMlqZD+UP+3fl41doZL/TROLWbSeaxPke7Bi6mB9WZ
+ K+JFvByeUMrQID/FlqtS0PXAxtvwIdKfm4NaTaxrNXh1Cedk4Wa54d9u5I8hcVUSszESAvG9kWA
+ XsDQUsEp6kIKNxMcYi/WvJ2AKtwRNrQhSpRg7OebhYxDbeltdCG5hgpG2FQMgXFnfrQzrBCxbQN
+ ey7IfVr2d1jGKe4cDBwhmsV6hjF3yc10mBC9l91VKeWOsTpqR8NZl6fVylneeNERHo1G8GxrTZW
+ J2UwgKOgmQPZ76sIrxvIg9ZKYjGH/CK8Qw0LAHwXdvFEw0KyKNf+CFusU5NFHgy+V50lH3cmgF3
+ Hw3sGVC evuO2h6g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Elena Reshetova <elena.reshetova@intel.com>
 
+atomic_t variables are currently used to implement reference counters
+with the following properties:
+ - counter is initialized to 1 using atomic_set()
+ - a resource is freed upon counter reaching zero
+ - once counter reaches zero, its further
+   increments aren't allowed
+ - counter schema uses basic atomic operations
+   (set, inc, inc_not_zero, dec_and_test, etc.)
 
-On 2023/8/18 06:08, Bjorn Helgaas wrote:
-> On Wed, Aug 16, 2023 at 06:05:27AM +0800, Sui Jingfeng wrote:
->> Currently, the vga_is_firmware_default() function only works on x86 and
->> ia64, it is a no-op on ARM, ARM64, PPC, RISC-V, etc. This patch completes
->> the implementation for the rest of the architectures. The added code tries
->> to identify the PCI(e) VGA device that owns the firmware framebuffer
->> before PCI resource reallocation happens.
-> As far as I can tell, this is basically identical to the existing
-> vga_is_firmware_default(), except that this patch funs that code as a
-> header fixup, so it happens before any PCI BAR reallocations happen.
+Such atomic variables should be converted to a newly provided
+refcount_t type and API that prevents accidental counter overflows and
+underflows. This is important since overflows and underflows can lead
+to use-after-free situation and be exploitable.
 
+The variable nsproxy.count is used as pure reference counter. Convert it
+to refcount_t and fix up the operations.
 
-Yes, what you said is right in overall.
-But I think I should mention a few tiny points that make a difference.
+**Important note for maintainers:
 
-1) My version is *less arch-dependent*
+Some functions from refcount_t API defined in refcount.h have different
+memory ordering guarantees than their atomic counterparts. Please check
+Documentation/core-api/refcount-vs-atomic.rst for more information.
 
+Normally the differences should not matter since refcount_t provides
+enough guarantees to satisfy the refcounting use cases, but in some
+rare cases it might matter. Please double check that you don't have
+some undocumented memory guarantees for this variable usage.
 
-Again, since the global screen_info is arch-dependent.
-The vga_is_firmware_default() mess up the arch-dependent part and arch-independent part.
-It's a mess and it's a bit harder to make the cleanup on the top of it.
+For the nsproxy.count it might make a difference in following places:
+ - put_nsproxy() and switch_task_namespaces(): decrement in
+   refcount_dec_and_test() only provides RELEASE ordering and ACQUIRE
+   ordering on success vs. fully ordered atomic counterpart
 
-While my version is my version split the arch-dependent part and arch-independent part clearly.
-Since we decide to make it less arch-dependent, we have to bear the pain.
-Despite all other arches should always export the screen_info like the X86 and IA64 arch does,
-or at least a arch should give a Kconfig token (for example, CONFIG_ARCH_HAS_SCREEN_INFO) to
-demonstrate that an arch has the support for it.
-While currently, the fact is that the dependence just populated to everywhere.
-I think this is the hard part, you have to investigate how various arches defines and set up
-the screen_info. And then process dependency and the linkage problem across arch properly.
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Elena Reshetova <elena.reshetova@intel.com>
+Reviewed-by: David Windsor <dwindsor@gmail.com>
+Reviewed-by: Hans Liljestrand <ishkamiel@gmail.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v2: rebase
+v1: https://lore.kernel.org/lkml/20200612183450.4189588-2-keescook@chromium.org/
+---
+ include/linux/nsproxy.h | 7 +++----
+ kernel/nsproxy.c        | 4 ++--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-
-2) My version focus on the address in ranges, weaken the size parameter.
-
-Which make the code easy to read and follow the canonical convention to
-express the address range. while the vga_is_firmware_default() is not.
-
-
-3) A tiny change make a big difference.
-
-
-The original vga_is_firmware_default() only works with the assumption
-that the PCI resource reallocation won't happens. While I see no clue
-that why this is true even on X86 and IA64. The original patch[1] not
-mention this assumption explicitly.
-  
-[1] 86fd887b7fe3 ('vgaarb: Don't default exclusively to first video device with mem+io')
-
-
-> That sounds like a good idea, because this is all based on the
-> framebuffer in screen_info, and screen_info was initialized before PCI
-> enumeration, and it certainly doesn't account for any BAR changes done
-> by the PCI core.
-
-
-Yes.
-
-
-> So why would we keep vga_is_firmware_default() at all?  If the header
-> fixup has already identified the firmware framebuffer, it seems
-> pointless to look again later.
->
-
-It need another patch to do the cleanup work, while my patch just add code to solve the real problem.
-It focus on provide a solution for the architectures which have a decent way set up the screen_info.
-Other things except that is secondary.
+diff --git a/include/linux/nsproxy.h b/include/linux/nsproxy.h
+index fee881cded01..771cb0285872 100644
+--- a/include/linux/nsproxy.h
++++ b/include/linux/nsproxy.h
+@@ -29,7 +29,7 @@ struct fs_struct;
+  * nsproxy is copied.
+  */
+ struct nsproxy {
+-	atomic_t count;
++	refcount_t count;
+ 	struct uts_namespace *uts_ns;
+ 	struct ipc_namespace *ipc_ns;
+ 	struct mnt_namespace *mnt_ns;
+@@ -102,14 +102,13 @@ int __init nsproxy_cache_init(void);
+ 
+ static inline void put_nsproxy(struct nsproxy *ns)
+ {
+-	if (atomic_dec_and_test(&ns->count)) {
++	if (refcount_dec_and_test(&ns->count))
+ 		free_nsproxy(ns);
+-	}
+ }
+ 
+ static inline void get_nsproxy(struct nsproxy *ns)
+ {
+-	atomic_inc(&ns->count);
++	refcount_inc(&ns->count);
+ }
+ 
+ #endif
+diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+index 80d9c6d77a45..15781acaac1c 100644
+--- a/kernel/nsproxy.c
++++ b/kernel/nsproxy.c
+@@ -30,7 +30,7 @@
+ static struct kmem_cache *nsproxy_cachep;
+ 
+ struct nsproxy init_nsproxy = {
+-	.count			= ATOMIC_INIT(1),
++	.count			= REFCOUNT_INIT(1),
+ 	.uts_ns			= &init_uts_ns,
+ #if defined(CONFIG_POSIX_MQUEUE) || defined(CONFIG_SYSVIPC)
+ 	.ipc_ns			= &init_ipc_ns,
+@@ -55,7 +55,7 @@ static inline struct nsproxy *create_nsproxy(void)
+ 
+ 	nsproxy = kmem_cache_alloc(nsproxy_cachep, GFP_KERNEL);
+ 	if (nsproxy)
+-		atomic_set(&nsproxy->count, 1);
++		refcount_set(&nsproxy->count, 1);
+ 	return nsproxy;
+ }
+ 
+-- 
+2.34.1
 
