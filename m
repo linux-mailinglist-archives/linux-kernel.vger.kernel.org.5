@@ -2,174 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A097178051F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B17780522
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357861AbjHREfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 00:35:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        id S1357869AbjHREkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357845AbjHREes (ORCPT
+        with ESMTP id S1357863AbjHREjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 00:34:48 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE5930F3;
-        Thu, 17 Aug 2023 21:34:46 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so7109911fa.1;
-        Thu, 17 Aug 2023 21:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692333285; x=1692938085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5z5Rvs4S3mkFHAgJim+KMXVdycv/Q7lggQvlYexbi0w=;
-        b=L8wArv91zGw4G5kuSF84/L1VmS0cHLQuCBEsFDRej93w1REiEFTolJMJffGQ67obov
-         aXDnVRSn8BQ0+xnZO+7bLtqVWrK7VbDJ3sf79elZXAytTBIRV4xjHiAkCknbdj/mvtId
-         zj6seOOv22dAjHUvCZYHSGZv3BbcOfIDiChK6BVWBnkkvhX0InZtq9hyZ3/5guzXnkHJ
-         2p0sGuNr990k1xu/SnryM7tEF/TAbc2EE7Lb1P2VzRlPpT2hee0t++YBKa042o1O59wX
-         vNN3NZuWQHHtNGU9sixjUkSLHnSBVSF+Asa4ZZQK6jz42xIDYQrHiiOmG3qBPeZcuySV
-         G/iw==
+        Fri, 18 Aug 2023 00:39:37 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2863AA7
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:39:36 -0700 (PDT)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bbb97d27d6so7181495ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:39:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692333285; x=1692938085;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5z5Rvs4S3mkFHAgJim+KMXVdycv/Q7lggQvlYexbi0w=;
-        b=SpRatUPBwOdTsXuXXlAvZR6Oyw1jYXrJwEHqkDqkoufkTrrEoQwHf/REuFgQHyLI82
-         ZjQxHCsTuHpqpwWoKyCG7n08FDdpH4h4FaSM8L0+ZiuuuSIgJd3ickCuqnFjcZVYEVYi
-         OnwxrZr3vGollNk2u2O2PgDWXFv09TswrPSFNek8wOoGmmEabUgXCVtFEWKYaeZ/G8qK
-         phwYXz6SRrB/ySPKPwBhU5lCAdGsPjLv9AiXO65AuOiwRNbAY9zAkPBIVEfqps6Vo166
-         QsRv+kyMU+qLEXM58/1PrESyZHRb6ELSb3trAfS8mlER0FLORM5o6bMcmoWiqnB1wQ/Z
-         Q+yA==
-X-Gm-Message-State: AOJu0Yzy8wS/mxANDR2pLbw1ScJI8H11CaxjwTtf+LEdj5nWsj4CjFkW
-        S/l/aOhUQPnQN4THJQYzlGHROH1e2GXoPG6IMUU=
-X-Google-Smtp-Source: AGHT+IGBJ/ClrasU4Y9FmOc75yCtUr+JftemvoKrDGa/zxjVs6kSfpechQInE5cMJu99Y9Zda8HMK/zWynByCjwkTQI=
-X-Received: by 2002:a05:651c:14d:b0:2b6:ecdd:16cf with SMTP id
- c13-20020a05651c014d00b002b6ecdd16cfmr774844ljd.40.1692333284930; Thu, 17 Aug
- 2023 21:34:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692333576; x=1692938376;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dvFwXjLMYeqdlXwre0HE3uWwxv+R86ki6i68P3Vs0+0=;
+        b=G/5ggaXiG3ltYlp1OVhcwdJSPTT0+4qpshwkjeoMVsCAWYKtdzhi6+mQAl9QCfNQ8k
+         JS0wBsmacq9Gu76neS2Pnna3NuX0o1QTaXSDIGYtx/y3HJsGr7630/lkG29r4h7HlGI7
+         5Ms4KufvIjUFECLSKAOnnV5QQLYiTxVKXYFKlYB5s1MCU+fJKwYRb357yyPlzOfVsUlW
+         HIfIUMvtV0QYLnM9VZxiM0231c5uKVe/xxDGbCm8RY9noHcGePXJRc45eFu2gpoERbBf
+         hSUPeNSCovcttOWR8AeY6ruS8dAy04NMKLOKUdVV+oh43ygbzkTvicSIfvXXC7hTqFV6
+         cz5w==
+X-Gm-Message-State: AOJu0YwLNynzUSvuREbZPQ20vYRmiI1gbJ2O19mfYgHaigwJHXcUSTc9
+        OskDNiBfZMhR5BmuyRYtS3ITV4JPpns2V2oPl57e0V2d48wo
+X-Google-Smtp-Source: AGHT+IEOWZ9TR7uxnnrr5o2vN1zMwhChrSWkI3uvdoJ384ju6Mbmly2riQQtj6/6k2K4DgTVbAMNubudY8qv1xdOJsYBGe16jePd
 MIME-Version: 1.0
-References: <20230810081319.65668-1-zhouchuyi@bytedance.com>
- <20230810081319.65668-2-zhouchuyi@bytedance.com> <CAADnVQK=7NWbRtJyRJAqy5JwZHRB7s7hCNeGqixjLa4vB609XQ@mail.gmail.com>
- <93627e45-dc67-fd31-ef43-a93f580b0d6e@bytedance.com> <CAADnVQKThM=vL7qpR05Ky6ReDrtuUxz_0SEZ+Bsc+E4=_A_u+g@mail.gmail.com>
- <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
-In-Reply-To: <a24fc514-38dd-c4bb-322f-08a6f46767f4@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 17 Aug 2023 21:34:33 -0700
-Message-ID: <CAADnVQKHvR1LUD+ZDX545ZVFea3fuHyuPWQERcsNtY7HNHUFtg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/5] mm, oom: Introduce bpf_oom_evaluate_task
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, wuyun.abel@bytedance.com,
-        robin.lu@bytedance.com, Michal Hocko <mhocko@suse.com>
+X-Received: by 2002:a17:902:da92:b0:1b9:e8e5:b0a4 with SMTP id
+ j18-20020a170902da9200b001b9e8e5b0a4mr573998plx.8.1692333576338; Thu, 17 Aug
+ 2023 21:39:36 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 21:39:36 -0700
+In-Reply-To: <00000000000013b93805fbbadc50@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8c57a06032b1dd2@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_chan_del
+From:   syzbot <syzbot+cf54c1da6574b6c1b049@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lrh2000@pku.edu.cn,
+        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
+        marcel@holtmann.org, netdev@vger.kernel.org, pabeni@redhat.com,
+        pav@iki.fi, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 8:30=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
-> Hello,
-> =E5=9C=A8 2023/8/17 11:22, Alexei Starovoitov =E5=86=99=E9=81=93:
-> > On Wed, Aug 16, 2023 at 7:51=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance=
-.com> wrote:
-> >>
-> >> Hello,
-> >>
-> >> =E5=9C=A8 2023/8/17 10:07, Alexei Starovoitov =E5=86=99=E9=81=93:
-> >>> On Thu, Aug 10, 2023 at 1:13=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedan=
-ce.com> wrote:
-> >>>>    static int oom_evaluate_task(struct task_struct *task, void *arg)
-> >>>>    {
-> >>>>           struct oom_control *oc =3D arg;
-> >>>> @@ -317,6 +339,26 @@ static int oom_evaluate_task(struct task_struct=
- *task, void *arg)
-> >>>>           if (!is_memcg_oom(oc) && !oom_cpuset_eligible(task, oc))
-> >>>>                   goto next;
-> >>>>
-> >>>> +       /*
-> >>>> +        * If task is allocating a lot of memory and has been marked=
- to be
-> >>>> +        * killed first if it triggers an oom, then select it.
-> >>>> +        */
-> >>>> +       if (oom_task_origin(task)) {
-> >>>> +               points =3D LONG_MAX;
-> >>>> +               goto select;
-> >>>> +       }
-> >>>> +
-> >>>> +       switch (bpf_oom_evaluate_task(task, oc)) {
-> >>>> +       case BPF_EVAL_ABORT:
-> >>>> +               goto abort; /* abort search process */
-> >>>> +       case BPF_EVAL_NEXT:
-> >>>> +               goto next; /* ignore the task */
-> >>>> +       case BPF_EVAL_SELECT:
-> >>>> +               goto select; /* select the task */
-> >>>> +       default:
-> >>>> +               break; /* No BPF policy */
-> >>>> +       }
-> >>>> +
-> >>>
-> >>> I think forcing bpf prog to look at every task is going to be limitin=
-g
-> >>> long term.
-> >>> It's more flexible to invoke bpf prog from out_of_memory()
-> >>> and if it doesn't choose a task then fallback to select_bad_process()=
-.
-> >>> I believe that's what Roman was proposing.
-> >>> bpf can choose to iterate memcg or it might have some side knowledge
-> >>> that there are processes that can be set as oc->chosen right away,
-> >>> so it can skip the iteration.
-> >>
-> >> IIUC, We may need some new bpf features if we want to iterating
-> >> tasks/memcg in BPF, sush as:
-> >> bpf_for_each_task
-> >> bpf_for_each_memcg
-> >> bpf_for_each_task_in_memcg
-> >> ...
-> >>
-> >> It seems we have some work to do first in the BPF side.
-> >> Will these iterating features be useful in other BPF scenario except O=
-OM
-> >> Policy?
-> >
-> > Yes.
-> > Use open coded iterators though.
-> > Like example in
-> > https://lore.kernel.org/all/20230810183513.684836-4-davemarchevsky@fb.c=
-om/
-> >
-> > bpf_for_each(task_vma, vma, task, 0) { ... }
-> > will safely iterate vma-s of the task.
-> > Similarly struct css_task_iter can be hidden inside bpf open coded iter=
-ator.
-> OK. I think the following APIs whould be useful and I am willing to
-> start with these in another bpf-next RFC patchset:
->
-> 1. bpf_for_each(task). Just like for_each_process(p) in kernel to
-> itearing all tasks in the system with rcu_read_lock().
->
-> 2. bpf_for_each(css_task, task, css). It works like
-> css_task_iter_{start, next, end} and would be used to iterating
-> tasks/threads under a css.
->
-> 3. bpf_for_each(descendant_css, css, root_css, {PRE, POST}). It works
-> like css_next_descendant_{pre, post} to iterating all descendant.
->
-> If you have better ideas or any advice, please let me know.
+syzbot has bisected this issue to:
 
-Sounds great. Such 3 new iterators are unrelated to oom discussion and
-can be developed/landed in parallel.
-They will be useful in other bpf programs.
+commit 45c37c4e9c9aab5bb1cf5778d8e5ebd9f9ad820a
+Author: Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Date:   Wed Aug 9 23:49:33 2023 +0000
+
+    Bluetooth: hci_sync: Fix UAF in hci_disconnect_all_sync
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1331e265a80000
+start commit:   47762f086974 Add linux-next specific files for 20230817
+git tree:       linux-next
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10b1e265a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1731e265a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed03cf326b3ef94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf54c1da6574b6c1b049
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1125bc65a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ce8f03a80000
+
+Reported-by: syzbot+cf54c1da6574b6c1b049@syzkaller.appspotmail.com
+Fixes: 45c37c4e9c9a ("Bluetooth: hci_sync: Fix UAF in hci_disconnect_all_sync")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
