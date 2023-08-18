@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C38EF7806AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA127806AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358312AbjHRHwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40342 "EHLO
+        id S1358320AbjHRHwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 03:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358351AbjHRHvY (ORCPT
+        with ESMTP id S1358303AbjHRHvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:51:24 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C424206
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:51:08 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48ae4823077so183027e0c.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692345067; x=1692949867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x9DA4IDcpAmXOv7d2oJD3d3UaFajAPi9XbDwAsxLsm4=;
-        b=H/If5wZ5hyuUbDm3DCwvLp4uS1ViBbkr6yYyQD0+EBvELt+ZAAwzlpjmPVtXmxEd6B
-         b4BBan/5ld6yIVhgIOIAUfE5Yl4Lzjk/cL+UvBYmzCyTry6IiF5pzugOTEPS25yBf3jY
-         zLC7XzfdYrM0KmXNG9mG6pOi8dRTIqk8c+W9GECXd25JOzn4VAUbuyjC86nYrigq2qdU
-         F/3kMdJ2JtKi597QwzCI1RGEIz6lDsQ5w1k7G7L/X16cYNuRmJgrIPjwOYJJYpDtzAio
-         icPfT8tVk2bi2cgl6+KtyC6X8fDI/E0B3rfCKA2GrOzBc7qvNpqcRcpBe0yTQVsYuU7X
-         qB/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692345067; x=1692949867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x9DA4IDcpAmXOv7d2oJD3d3UaFajAPi9XbDwAsxLsm4=;
-        b=B77vOH9DA4u7Dj4gRWP9Ze8QwLzIiLYrFLWEj9wa19QbhyWveHPH8kiYjZWQnuuCYa
-         ds7lYzzUJi/NyCDF9Me65W/9vHCSJPAC6JuNFJeNHVRFV0tgFnpJ1S6WotMnNdxQXVzL
-         cPPTQv37Iix+vqor6sS/XW+ZN8TPxMIX47VsO0KJxQq0FZtlpXnIdAUPtijWmsyJTSXj
-         iQKok0IKBNC/8oa1BVVZ2jtFpBl/I0PWwvadKCpj+SICMdDz6IqkFCx9mUrJRSdpQFWG
-         HY21AtEybLd+kXcBS4TjQbMWLPhvwA7DlGGbDp7Y8ZDI5zrifyHdjJUrQhmEk/nWsHqQ
-         C5hg==
-X-Gm-Message-State: AOJu0Yy1waAJcALuhnLUMkpLQ541Cz9Yf295esJzVX+u7nMmHfcssf8I
-        Lv9SPheK0Bt7YedAv4ctq1KUThOodpoFzl/bQhaXmA==
-X-Google-Smtp-Source: AGHT+IFdpboaxI+SV82u7O4mzVAkPe1ey6AP6pmPdhnAvT1jjSLLINrEjIFAIeiqJzJFdhi1y7bc2mHcxN6SJePxphY=
-X-Received: by 2002:a1f:bfc6:0:b0:481:36b0:aa01 with SMTP id
- p189-20020a1fbfc6000000b0048136b0aa01mr1869663vkf.6.1692345067644; Fri, 18
- Aug 2023 00:51:07 -0700 (PDT)
+        Fri, 18 Aug 2023 03:51:32 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F901420F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:51:17 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qWuGD-0000pV-Hf; Fri, 18 Aug 2023 09:51:09 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qWuGB-001SCD-Uz; Fri, 18 Aug 2023 09:51:07 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qWuGB-00BpUT-1J;
+        Fri, 18 Aug 2023 09:51:07 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?UTF-8?q?S=C3=B8ren=20Andersen?= <san@skov.dk>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH v1 1/2] dt-bindings: arm: Add compatible for SKOV i.MX8MP RevA board
+Date:   Fri, 18 Aug 2023 09:51:05 +0200
+Message-Id: <20230818075106.2819520-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <20230812183635.5478-1-brgl@bgdev.pl>
-In-Reply-To: <20230812183635.5478-1-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 18 Aug 2023 09:50:56 +0200
-Message-ID: <CAMRc=Me=WPRGRhGcNVpVUnYvU8T=-C82QYVHhTffLcJaFq7rnw@mail.gmail.com>
-Subject: Re: [PATCH v3] gpio: sim: simplify code with cleanup helpers
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,17 +59,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 12, 2023 at 8:36=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Use macros defined in linux/cleanup.h to automate resource lifetime
-> control in gpio-sim.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
+Add DT compatible string for a SKOV i.MX8MP RevA climate controller board.
 
-I queued v3.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Bart
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 2510eaa8906dd..ee022e55c4cdd 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1035,6 +1035,7 @@ properties:
+               - gateworks,imx8mp-gw7905-2x # i.MX8MP Gateworks Board
+               - polyhex,imx8mp-debix      # Polyhex Debix boards
+               - polyhex,imx8mp-debix-model-a # Polyhex Debix Model A Board
++              - skov,imx8mp-skov-reva-mi1010ait-1cp1 # SKOV i.MX8MP climate control
+               - toradex,verdin-imx8mp     # Verdin iMX8M Plus Modules
+               - toradex,verdin-imx8mp-nonwifi  # Verdin iMX8M Plus Modules without Wi-Fi / BT
+               - toradex,verdin-imx8mp-wifi  # Verdin iMX8M Plus Wi-Fi / BT Modules
+-- 
+2.39.2
+
