@@ -2,352 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287E57810B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA647810C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378687AbjHRQoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58810 "EHLO
+        id S1378784AbjHRQon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378830AbjHRQnv (ORCPT
+        with ESMTP id S1378771AbjHRQoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:43:51 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B753C2D;
-        Fri, 18 Aug 2023 09:43:27 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4ff8f2630e3so1748128e87.1;
-        Fri, 18 Aug 2023 09:43:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692376992; x=1692981792;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oYtXL0NSPo2Sx9mZURNXbPMFWhwK0lv2QJZL2BTRUR4=;
-        b=qSJtTnZdvdHBXYcPooneO8b/Ois76IP5qr2V0N+pftktfru7hy/+IqaQOH36SIFBcq
-         /FRBqwVcmGy9mAcp9yxq7Ve6tILFgFEnoMG/qDpjlZQJdeWabDW0jW3/h9pEcmTDW2jL
-         acb2LtP0RZ3yYT/1ffiu303p+l6MfYtjpPipJZtHUnD92sqRPRNk/+PgCCGZks1GSViE
-         +EDZL2eXeNGtixTYeG4JJMGCEV82Qg6I7IdXFQPjCQWeHZ/HhmCKC9hX8cUwoVWnIrmM
-         XE0nC1nN1lbBqaYkRhfA4IgoN/SHLxMuYqT6LfZe/AuFpscEc77j3V3fNncVauzd5Ass
-         zapw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692376992; x=1692981792;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oYtXL0NSPo2Sx9mZURNXbPMFWhwK0lv2QJZL2BTRUR4=;
-        b=GHrm9+e7cb0Ogwp9xkTD1PRdzdyCxCA7iNkoPRsB7+DDq8IkGKRffAngNb1lIXMDgo
-         EgVFnMhOnNQWGDWp5479Hiv8gtbxzFyB/ovy+DtOMW/N64GQ1kS0qf5VB9DgT/kNPpcY
-         j1tCYD+CbuLPmjEiPxu8V4H98lXhh/aLiOovibFyLFRhjPqYUVUzytbu5/qPLJ5vjH1L
-         o2UTafk2ixRwb9uIZcBwyVRnpS98Ei+jjgZqCWhm8qFAVz9IeL3f/iS/Attsl9a9S60M
-         h+ldbifMQCXXXt9f38L9eQN23rEI4qtUIpORMuz7iKP/61EsxOJwhSrGTMLbQYFRghSI
-         TXow==
-X-Gm-Message-State: AOJu0YyLeY8DnL82xU2FLQV//VSPYIIOlFxEZ0iI0N7Ng96R8VWlLD9H
-        9WF+HEzINqkEo1Yv9FwLTIc=
-X-Google-Smtp-Source: AGHT+IGAin2MuYLMw4/ElZJGC5Y7V0/Bh6UYFLMRHQ0asjIQ5A5+tP96g/fElaSRBVDsPKv9acRDMQ==
-X-Received: by 2002:a05:6512:2391:b0:4fb:9168:1fce with SMTP id c17-20020a056512239100b004fb91681fcemr2747631lfv.59.1692376992068;
-        Fri, 18 Aug 2023 09:43:12 -0700 (PDT)
-Received: from mobilestation ([93.157.254.210])
-        by smtp.gmail.com with ESMTPSA id w14-20020a19c50e000000b004fbb610c354sm414084lfe.0.2023.08.18.09.43.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 09:43:11 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 19:43:09 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH net-next v5 4/9] net: stmmac: reflect multi irqs for
- tx/rx channels and mac and safety
-Message-ID: <qowgzrratv3xpjavyjlht4fhz3kviifzcznmnftenzactvldcp@l4nzozjltmty>
-References: <20230817165749.672-1-jszhang@kernel.org>
- <20230817165749.672-5-jszhang@kernel.org>
+        Fri, 18 Aug 2023 12:44:21 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2063.outbound.protection.outlook.com [40.107.94.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F784231;
+        Fri, 18 Aug 2023 09:43:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xhbi3c8Gca0V1SevU+OLoRIVYka2/2mZAEazcEkrR4acoz1c4UI39BE7/3WvkBi4kHPOehkLX2MGH/tZSKAI+NyAIo1Sr6wPzNDjcsDBMbrgFyL+Q+S9Av890MHyH2VGoGvMhv0qEvTGryHVoEs08+OagGhWaAL5rudRgIC6TBSZ/aIvEpH7RfRgD8kRxsS/ag4YmESol1R3qNx4HMfhZemku/c7gt9FarTfUvz1ahjNdYI6J+L2KwJwKNtEiLPfU0vD+qqG//7BgPw8/QfyHgcyuE4cbAfqqAC+WbJwNFev50tj5CnOoHXOljbPQBnf+IMIgRLtLJ2GRBDBYVNh1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=krxY6QhpVllUulAtkPTsOp7RmFWVc6T9u8OKw5J4FX4=;
+ b=hf+8AzeR554NthI5KoarFWErH57RUKmmqmpFZ6fxzECqF65kgwOA90Bx0p0ABa0YWGZcEPBR8cSCrBI6znGxjnskX4Oow9Tj88Y2NIw5pBTfBdSE7MCI+sz9BPrhunpC8BgaEKrnvhlGCfyBxuZYrUemxVC6hF0oLCb88Ju7AdxZ0Q1RmkhnOmvtUBbLSy116LnYBhggI4WGLi0As4Gabs2I1zqGKgJjjM556WUitw8Lyuhzk6EiKL8jDwGq8EbsfJoiHKO9NrcUDjS61q+H4eLBF3HFtAV6oBye1taRcRHCvy1ppgdZyGjO91xwMamBo7f5D5k9QX4wtjqD8ItJdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=krxY6QhpVllUulAtkPTsOp7RmFWVc6T9u8OKw5J4FX4=;
+ b=Dd/F4HBWfJgmqcMw66vbjHk4LQNRFZ5LuhQQ4bw37TOMSfWRYoyf2xGZGLP/5aEtlTtzi83A1qMicrx4gtJ/I80I/65S4v/I8Iiyv+/X11U9d+ywPjf2zIs5tPWC/cEZwmC1lff1gfKuZpeBt9tqDQNXXCnYjZVw+lluU3u8uMWjBVo2+GLNHsRK7dSdiCTi5jCFRs22us7fkmX582dXPTr26ZeK7JdIgbPTqHudSkbixD1FgULLLNjOVLBUooT1N+OFmp0ccxEhNIHoRaW362fTufxQ9nLhnWj/7VT6Q3mgnoPPThkbaOFD1NCXjpOb4R74DEVwt3QZRPoz94aAqQ==
+Received: from CY5PR04CA0026.namprd04.prod.outlook.com (2603:10b6:930:1e::21)
+ by DS0PR12MB8071.namprd12.prod.outlook.com (2603:10b6:8:df::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.20; Fri, 18 Aug 2023 16:43:27 +0000
+Received: from CY4PEPF0000E9D1.namprd03.prod.outlook.com
+ (2603:10b6:930:1e:cafe::e0) by CY5PR04CA0026.outlook.office365.com
+ (2603:10b6:930:1e::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
+ Transport; Fri, 18 Aug 2023 16:43:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ CY4PEPF0000E9D1.mail.protection.outlook.com (10.167.241.144) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Fri, 18 Aug 2023 16:43:27 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 18 Aug 2023
+ 09:43:17 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Fri, 18 Aug 2023 09:43:17 -0700
+Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Fri, 18 Aug 2023 09:43:16 -0700
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     <andy.shevchenko@gmail.com>, <linux-gpio@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <brgl@bgdev.pl>, <linux-kernel@vger.kernel.org>
+CC:     Asmaa Mnebhi <asmaa@nvidia.com>
+Subject: [PATCH v5 0/2] Fix Nvidia BlueField-3 GPIO access
+Date:   Fri, 18 Aug 2023 12:43:12 -0400
+Message-ID: <20230818164314.8505-1-asmaa@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817165749.672-5-jszhang@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D1:EE_|DS0PR12MB8071:EE_
+X-MS-Office365-Filtering-Correlation-Id: f00eec9b-07e0-4ce1-6402-08dba00a3f45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rZAanHLSdAGxrGnPfKrVH7XaYj8Wrpq5A7YFR8FIOcjehZi7TkncCRz6+PXGJoJfXiDqcDhUI61HodsP/sucXHkEIqvK10ioRF+vdJZtB3vzXpdyM2xgvIUqGZncJISDEXf9S1J9kwmyzy/6cGSl/dWxmdsGw1s5EY7GCMPvMjifRRnuyqg8Gjas+fw6ySIfdMwS2yVwJNMhCQgOlxB2GgvPepA7o7HSnBS+TEZV3YdK1r8pVwf6BfzcpeG2cYEqxM2GUhbD91A1O1VdGvmNIlLN3tEDyL6mkvAX802zP7G8jajIjTs9PWf9DogN4Hv6mA6RaTowbd2/4F/KaUBzG6IzpaxgFhmoZBER7t98kjzxMo+iV8JejEdKRgsGO2nV5ZgfBl5wV2DJT1XAARE3KbZ5ZRWcq63RdMlQogsxu1bd/u2Kucefh72MUScRFC+a5f0b9EFdWbnf8lNjEtpaMUEWXY9bt1fnhMLwPp8grltQ9ClAvmu+LZPN6tJ5mqSBIzWYKonVJQ/ruU7RW2SsKyy+Aaxj5mK77IlhcAOFKSVhNI0MoJ3FdVtOXBf6jTldqauCU5VXZPUr1a1vq7YQBW7+/5H+UtmBvChQVWjFfqlP2GWO1+UmX4+tPOCyZDjrEDjJ1IJhcKihkZOfK6zt4JrnvHlyH7H3DlADtn9DaQ1u72O9mbSf2p3ng4gh+odvF3+YJkkxGt6lMQsRFlzXE1Q2gphqnx7MWGycRzd02J/RUhc0wu0kTySCwJUvQEfg7PaLECMRJZKhahBSiCof5Q==
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(396003)(39860400002)(186009)(1800799009)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(6666004)(7696005)(40460700003)(86362001)(426003)(336012)(107886003)(26005)(40480700001)(1076003)(83380400001)(36860700001)(47076005)(36756003)(7636003)(82740400003)(356005)(2616005)(2906002)(316002)(41300700001)(70206006)(70586007)(110136005)(5660300002)(8676002)(4326008)(8936002)(478600001)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 16:43:27.3748
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f00eec9b-07e0-4ce1-6402-08dba00a3f45
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D1.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8071
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 12:57:44AM +0800, Jisheng Zhang wrote:
-> The IP supports per channel interrupt, when intel adds the per channel
-> interrupt support, the per channel irq is from MSI vector, but this
-> feature can also be supported on non-MSI platforms. Do some necessary
-> renaming to reflects this fact.
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac-intel.c |  4 +-
->  .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |  2 +-
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c | 48 +++++++++----------
->  include/linux/stmmac.h                        |  4 +-
->  4 files changed, 29 insertions(+), 29 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> index 979c755964b1..9050de31ed76 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-> @@ -952,7 +952,7 @@ static int stmmac_config_single_msi(struct pci_dev *pdev,
->  
->  	res->irq = pci_irq_vector(pdev, 0);
->  	res->wol_irq = res->irq;
-> -	plat->flags &= ~STMMAC_FLAG_MULTI_MSI_EN;
-> +	plat->flags &= ~STMMAC_FLAG_PERCH_IRQ_EN;
->  	dev_info(&pdev->dev, "%s: Single IRQ enablement successful\n",
->  		 __func__);
->  
-> @@ -1004,7 +1004,7 @@ static int stmmac_config_multi_msi(struct pci_dev *pdev,
->  	if (plat->msi_sfty_ue_vec < STMMAC_MSI_VEC_MAX)
->  		res->sfty_ue_irq = pci_irq_vector(pdev, plat->msi_sfty_ue_vec);
->  
-> -	plat->flags |= STMMAC_FLAG_MULTI_MSI_EN;
-> +	plat->flags |= STMMAC_FLAG_PERCH_IRQ_EN;
->  	dev_info(&pdev->dev, "%s: multi MSI enablement successful\n", __func__);
->  
->  	return 0;
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> index 84d3a8551b03..9bf8adf466a2 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c
-> @@ -175,7 +175,7 @@ static void dwmac4_dma_init(void __iomem *ioaddr,
->  
->  	value = readl(ioaddr + DMA_BUS_MODE);
->  
-> -	if (dma_cfg->multi_msi_en) {
-> +	if (dma_cfg->perch_irq_en) {
->  		value &= ~DMA_BUS_MODE_INTM_MASK;
->  		value |= (DMA_BUS_MODE_INTM_MODE1 << DMA_BUS_MODE_INTM_SHIFT);
->  	}
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 3d90ca983389..64c55024d69d 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -126,11 +126,11 @@ module_param(chain_mode, int, 0444);
->  MODULE_PARM_DESC(chain_mode, "To use chain instead of ring mode");
->  
->  static irqreturn_t stmmac_interrupt(int irq, void *dev_id);
-> -/* For MSI interrupts handling */
-> +/* For multi channel interrupts handling */
->  static irqreturn_t stmmac_mac_interrupt(int irq, void *dev_id);
->  static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id);
+Fix Nvidia BlueField-3 GPIO access via libgpiod gpioset tool.
+gpioset tool fails to modify the GPIO value due to the following:
+1) the pinctrl-mlxbf3 driver defines mlxbf3_gpio_request_enable()
+   to enable software to take control over a gpio. Only then can
+   the gpio-mlxbf3 driver modify the direction and value of the
+   gpio. mlxbf3_gpio_disable_free() gives control back to hardware
+   and is called when the "gpioset" command is invoked.
+   This cancels out the effort to change the GPIO value and
+   direction. So mlxbf3_gpio_disable_free() needs to be removed.
+2) the gpio-mlxbf3 driver calls gpiochip_generic_request() which
+   calls mlxbf3_gpio_request_enable(). "pin_ranges" needs not to be
+   empty for mlxbf3_gpio_request_enable() to be invoked. So
+   gpio-mlxbf3 needs to populate "pin_ranges".
 
-> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data);
-> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data);
 
-What about
+Asmaa Mnebhi (2):
+  pinctrl: mlxbf3: Remove gpio_disable_free()
+  gpio: mlxbf3: Support add_pin_ranges()
 
-+static irqreturn_t stmmac_tx_queue_interrupt(int irq, void *data);
-+static irqreturn_t stmmac_rx_queue_interrupt(int irq, void *data);
+ drivers/gpio/gpio-mlxbf3.c       | 24 ++++++++++++++++++++++++
+ drivers/pinctrl/pinctrl-mlxbf3.c | 14 --------------
+ 2 files changed, 24 insertions(+), 14 deletions(-)
 
-to have the names similar to stmmac_mac_interrupt() and
-stmmac_safety_interrupt().
+-- 
+2.30.1
 
-BTW are you aware that the IRQs in subject are actually
-per-DMA-channel interrupts, not per-MTL-queue interrupts?
-
->  static void stmmac_reset_rx_queue(struct stmmac_priv *priv, u32 queue);
->  static void stmmac_reset_tx_queue(struct stmmac_priv *priv, u32 queue);
->  static void stmmac_reset_queues_param(struct stmmac_priv *priv);
-> @@ -3520,7 +3520,7 @@ static void stmmac_free_irq(struct net_device *dev,
->  	}
->  }
->  
-
-> -static int stmmac_request_irq_multi_msi(struct net_device *dev)
-> +static int stmmac_request_irq_multi_channel(struct net_device *dev)
-
-What about stmmac_request_irq_perch() to shorten out the name and have
-a unified "perch" suffix like in the flag STMMAC_FLAG_PERCH_IRQ_EN?
-
--Serge(y)
-
->  {
->  	struct stmmac_priv *priv = netdev_priv(dev);
->  	enum request_irq_err irq_err;
-> @@ -3537,7 +3537,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  			  0, int_name, dev);
->  	if (unlikely(ret < 0)) {
->  		netdev_err(priv->dev,
-> -			   "%s: alloc mac MSI %d (error: %d)\n",
-> +			   "%s: alloc mac irq %d (error: %d)\n",
->  			   __func__, dev->irq, ret);
->  		irq_err = REQ_IRQ_ERR_MAC;
->  		goto irq_error;
-> @@ -3554,7 +3554,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  				  0, int_name, dev);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc wol MSI %d (error: %d)\n",
-> +				   "%s: alloc wol irq %d (error: %d)\n",
->  				   __func__, priv->wol_irq, ret);
->  			irq_err = REQ_IRQ_ERR_WOL;
->  			goto irq_error;
-> @@ -3572,7 +3572,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  				  0, int_name, dev);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc lpi MSI %d (error: %d)\n",
-> +				   "%s: alloc lpi irq %d (error: %d)\n",
->  				   __func__, priv->lpi_irq, ret);
->  			irq_err = REQ_IRQ_ERR_LPI;
->  			goto irq_error;
-> @@ -3590,7 +3590,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  				  0, int_name, dev);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc sfty ce MSI %d (error: %d)\n",
-> +				   "%s: alloc sfty ce irq %d (error: %d)\n",
->  				   __func__, priv->sfty_ce_irq, ret);
->  			irq_err = REQ_IRQ_ERR_SFTY_CE;
->  			goto irq_error;
-> @@ -3608,14 +3608,14 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  				  0, int_name, dev);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc sfty ue MSI %d (error: %d)\n",
-> +				   "%s: alloc sfty ue irq %d (error: %d)\n",
->  				   __func__, priv->sfty_ue_irq, ret);
->  			irq_err = REQ_IRQ_ERR_SFTY_UE;
->  			goto irq_error;
->  		}
->  	}
->  
-> -	/* Request Rx MSI irq */
-> +	/* Request Rx queue irq */
->  	for (i = 0; i < priv->plat->rx_queues_to_use; i++) {
->  		if (i >= MTL_MAX_RX_QUEUES)
->  			break;
-> @@ -3625,11 +3625,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  		int_name = priv->int_name_rx_irq[i];
->  		sprintf(int_name, "%s:%s-%d", dev->name, "rx", i);
->  		ret = request_irq(priv->rx_irq[i],
-> -				  stmmac_msi_intr_rx,
-> +				  stmmac_queue_intr_rx,
->  				  0, int_name, &priv->dma_conf.rx_queue[i]);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc rx-%d  MSI %d (error: %d)\n",
-> +				   "%s: alloc rx-%d irq %d (error: %d)\n",
->  				   __func__, i, priv->rx_irq[i], ret);
->  			irq_err = REQ_IRQ_ERR_RX;
->  			irq_idx = i;
-> @@ -3640,7 +3640,7 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  		irq_set_affinity_hint(priv->rx_irq[i], &cpu_mask);
->  	}
->  
-> -	/* Request Tx MSI irq */
-> +	/* Request Tx queue irq */
->  	for (i = 0; i < priv->plat->tx_queues_to_use; i++) {
->  		if (i >= MTL_MAX_TX_QUEUES)
->  			break;
-> @@ -3650,11 +3650,11 @@ static int stmmac_request_irq_multi_msi(struct net_device *dev)
->  		int_name = priv->int_name_tx_irq[i];
->  		sprintf(int_name, "%s:%s-%d", dev->name, "tx", i);
->  		ret = request_irq(priv->tx_irq[i],
-> -				  stmmac_msi_intr_tx,
-> +				  stmmac_queue_intr_tx,
->  				  0, int_name, &priv->dma_conf.tx_queue[i]);
->  		if (unlikely(ret < 0)) {
->  			netdev_err(priv->dev,
-> -				   "%s: alloc tx-%d  MSI %d (error: %d)\n",
-> +				   "%s: alloc tx-%d irq %d (error: %d)\n",
->  				   __func__, i, priv->tx_irq[i], ret);
->  			irq_err = REQ_IRQ_ERR_TX;
->  			irq_idx = i;
-> @@ -3729,8 +3729,8 @@ static int stmmac_request_irq(struct net_device *dev)
->  	int ret;
->  
->  	/* Request the IRQ lines */
-> -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN)
-> -		ret = stmmac_request_irq_multi_msi(dev);
-> +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN)
-> +		ret = stmmac_request_irq_multi_channel(dev);
->  	else
->  		ret = stmmac_request_irq_single(dev);
->  
-> @@ -5945,7 +5945,7 @@ static irqreturn_t stmmac_safety_interrupt(int irq, void *dev_id)
->  	return IRQ_HANDLED;
->  }
->  
-> -static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
-> +static irqreturn_t stmmac_queue_intr_tx(int irq, void *data)
->  {
->  	struct stmmac_tx_queue *tx_q = (struct stmmac_tx_queue *)data;
->  	struct stmmac_dma_conf *dma_conf;
-> @@ -5977,7 +5977,7 @@ static irqreturn_t stmmac_msi_intr_tx(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> -static irqreturn_t stmmac_msi_intr_rx(int irq, void *data)
-> +static irqreturn_t stmmac_queue_intr_rx(int irq, void *data)
->  {
->  	struct stmmac_rx_queue *rx_q = (struct stmmac_rx_queue *)data;
->  	struct stmmac_dma_conf *dma_conf;
-> @@ -6014,12 +6014,12 @@ static void stmmac_poll_controller(struct net_device *dev)
->  	if (test_bit(STMMAC_DOWN, &priv->state))
->  		return;
->  
-> -	if (priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN) {
-> +	if (priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN) {
->  		for (i = 0; i < priv->plat->rx_queues_to_use; i++)
-> -			stmmac_msi_intr_rx(0, &priv->dma_conf.rx_queue[i]);
-> +			stmmac_queue_intr_rx(0, &priv->dma_conf.rx_queue[i]);
->  
->  		for (i = 0; i < priv->plat->tx_queues_to_use; i++)
-> -			stmmac_msi_intr_tx(0, &priv->dma_conf.tx_queue[i]);
-> +			stmmac_queue_intr_tx(0, &priv->dma_conf.tx_queue[i]);
->  	} else {
->  		disable_irq(dev->irq);
->  		stmmac_interrupt(dev->irq, dev);
-> @@ -7300,8 +7300,8 @@ int stmmac_dvr_probe(struct device *device,
->  	priv->plat = plat_dat;
->  	priv->ioaddr = res->addr;
->  	priv->dev->base_addr = (unsigned long)res->addr;
-> -	priv->plat->dma_cfg->multi_msi_en =
-> -		(priv->plat->flags & STMMAC_FLAG_MULTI_MSI_EN);
-> +	priv->plat->dma_cfg->perch_irq_en =
-> +		(priv->plat->flags & STMMAC_FLAG_PERCH_IRQ_EN);
->  
->  	priv->dev->irq = res->irq;
->  	priv->wol_irq = res->wol_irq;
-> diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-> index 9c90e2e295d4..c052c222fa3e 100644
-> --- a/include/linux/stmmac.h
-> +++ b/include/linux/stmmac.h
-> @@ -98,7 +98,7 @@ struct stmmac_dma_cfg {
->  	int mixed_burst;
->  	bool aal;
->  	bool eame;
-> -	bool multi_msi_en;
-> +	bool perch_irq_en;
->  	bool dche;
->  };
->  
-> @@ -213,7 +213,7 @@ struct dwmac4_addrs {
->  #define STMMAC_FLAG_TSO_EN			BIT(4)
->  #define STMMAC_FLAG_SERDES_UP_AFTER_PHY_LINKUP	BIT(5)
->  #define STMMAC_FLAG_VLAN_FAIL_Q_EN		BIT(6)
-> -#define STMMAC_FLAG_MULTI_MSI_EN		BIT(7)
-> +#define STMMAC_FLAG_PERCH_IRQ_EN		BIT(7)
->  #define STMMAC_FLAG_EXT_SNAPSHOT_EN		BIT(8)
->  #define STMMAC_FLAG_INT_SNAPSHOT_EN		BIT(9)
->  #define STMMAC_FLAG_RX_CLK_RUNS_IN_LPI		BIT(10)
-> -- 
-> 2.40.1
-> 
-> 
