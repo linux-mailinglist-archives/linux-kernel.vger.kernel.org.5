@@ -2,184 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843DE780D1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F179780D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377473AbjHRNzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:55:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
+        id S1377481AbjHRNzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377490AbjHRNyg (ORCPT
+        with ESMTP id S1377543AbjHRNzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:54:36 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2085.outbound.protection.outlook.com [40.107.94.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE19D3C35;
-        Fri, 18 Aug 2023 06:54:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=izx88yioYio4WyNN3bDeb8e3Dy+27MMN4ZPM8lwkgnZ8y+8KTDlWmN4c+3IegdQ3ZuOm8jbMNKzEPmT5IQcMt0ykKP1O5DSKGJPpJCE/imo5W2di18XI57yCs+8x8pdGm8IDYjwZoPWhomwQKKeDGoVTxHYklVxly9I4OG0Mosoi28j5RfBTXh9wVnpUNNhZvK/fWcCUnMl+A5Bi/zH2AZpMYIw00ph506vJXBK6H8x7jGaJDXBZOfynIYG05LjNgDHYcQ+omFJ9hdYebl0Co0Qn7A5sclVPeAHuyTrV32Mwk9hRJtxPlVKVzWqJ4/F+yGgFnu8LLIn8XUN/maIpnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=97vIEc5goRdDvtSi5EFMvr552bGqvHDTutcxsW58sb8=;
- b=Zs3Y0wKoyWcKCZ/qoeZxdACsQ3RikgAwinRMYtSIbkoYqtvw4Gs8Bbfs8ekFOjROGQuJzEcqYDIs2CH3PIXVjKrZ0BJjTg6tfru9EqXeFkmM/qoetCF5dNhWl2mCzwDmNOwf+da2udg3CAMhyo2MuFLTVs+Og0JowvK6cBxY0ZR0uSKCOFi4FqJz6tWNnmj3d2o0yPgml4Xu03vqreqRwS5wCOW4aDH1uHQMy3mRMg0kjOFsiPUgwS7hQ7RDgU3HMIZ8SIM/tuvATVg4n5QuXHgBBqEgUV9RhrHE8WU3/EO4gTdjPiiO32aafmFs8bgm7z7vEJR3ptq8sSoZvVkGow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=97vIEc5goRdDvtSi5EFMvr552bGqvHDTutcxsW58sb8=;
- b=hc3Rt2DRtH0tA0i7zajU2cg8InXuIoF/UWjsV+fAV2cKawKcYa3tLBsNa0LFTb+Al2ZsoKfuypQ6o9TtlkMpU/TpX92gtdx1XMFBu+2EvLl7mSutje/qqCyDDnXo+zZPZgiUf4NK/2DUNMaaMg3wTwXp90i/Nu4bO+QOqOC+esE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com (2603:10b6:8:9c::19) by
- PH7PR12MB7820.namprd12.prod.outlook.com (2603:10b6:510:268::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.20; Fri, 18 Aug 2023 13:54:30 +0000
-Received: from DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae]) by DS7PR12MB6095.namprd12.prod.outlook.com
- ([fe80::44a:f414:7a0f:9dae%7]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
- 13:54:29 +0000
-Message-ID: <647e85d0-3790-4a21-b56d-1bd9123a294a@amd.com>
-Date:   Fri, 18 Aug 2023 08:54:28 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 01/12] PCI: Only put Intel PCIe ports >= 2015 into D3
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20230818051319.551-1-mario.limonciello@amd.com>
- <20230818051319.551-2-mario.limonciello@amd.com>
- <CAJZ5v0iHvbbNBnwb-RKvcBaFR8VMGyGt--b6RmbUmwuzcBZKnQ@mail.gmail.com>
- <106803fab8da4648a6881991c7f37214@AcuMS.aculab.com>
- <CAJZ5v0h1tCBOcnU2mCGbgE53_=ZM3kHHXzpCtqv=d9LOadaycQ@mail.gmail.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <CAJZ5v0h1tCBOcnU2mCGbgE53_=ZM3kHHXzpCtqv=d9LOadaycQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN6PR2101CA0005.namprd21.prod.outlook.com
- (2603:10b6:805:106::15) To DS7PR12MB6095.namprd12.prod.outlook.com
- (2603:10b6:8:9c::19)
+        Fri, 18 Aug 2023 09:55:17 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906534211;
+        Fri, 18 Aug 2023 06:55:04 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4ff9b389677so1376858e87.3;
+        Fri, 18 Aug 2023 06:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692366903; x=1692971703;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rqOZRpA/sOgX9s7qNLK01/u1l1ZaHRKeAVuzjchXvhA=;
+        b=QHuoY3NIpW/k876nQ+vV7jF/2k4zSbkiduPJJF1C1hrmKXu4x7e5pb9x7ImSdHL7If
+         iJyLT/ekMP5/oVudColuOE5yJk8xJt/KMAodY4UmiENl5o8QLPFcaaAFC4EJJvrIwRJc
+         cfDo5bx7xVdM9Xbi+QTbYZ7OlOFecz0ONEuLRPJm3sS2Iy2jdiLn8p4thpsqNvU8h0Oo
+         BKxA8oznKkyeLF04VnePuSLMfDrKIaplfoQw322yUvU5E/VIKaBA1A1IaRQCume9nNQm
+         vhrAnPkMtcWsSTkMqw3Vc0snwVF0TRl5hNlYk/E9WI4rSPQu09+zAt5ePepicQDE+Muj
+         8GLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692366903; x=1692971703;
+        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rqOZRpA/sOgX9s7qNLK01/u1l1ZaHRKeAVuzjchXvhA=;
+        b=TqK+evR8ClkJQGLwG+13cmLZlaZ/xgIJdGejtEuhq92NTbboCdfppZ6XHwjQm36QGX
+         qQRmAVHSTOY9XqOcrjMEkjB9NnigplycTTezPTf+E4q1ZISNFHe0rZS95lOfATtidZSO
+         JjYvOd/P3qhV+Z2JiG/VuJTBCUAkA4W1ow/r8DRyRsMYO/OuqUS8rNSuWeKnF9JI1UXj
+         O2BdBaaDclZOdAeqZj6RM2UwlETxZbS3k+KYc6EFJtiJdsiwWACINKEQXmJZFVetRJEi
+         ka97T36anRayJoIA5lNJC6KMl86cnB1SgyQz6OJOnIrtoF3+vNqC0qEldvMG4kzN3imS
+         610w==
+X-Gm-Message-State: AOJu0Yyg1cwtq1chMB1Dp256rGb8fxGMt4cOYgfj07URT4+r/qVZNyjg
+        cUKhNupkdgA4AWY+0gl1cn8=
+X-Google-Smtp-Source: AGHT+IFBCMJIe6tXw9Hr2Trz4Gu0e9s26ICPKqd6btUGeso2ERHa6UCAX8DfyJ042bGbqMxnVkKIDg==
+X-Received: by 2002:a05:6512:b19:b0:4fd:ddbc:1577 with SMTP id w25-20020a0565120b1900b004fdddbc1577mr2161268lfu.2.1692366902532;
+        Fri, 18 Aug 2023 06:55:02 -0700 (PDT)
+Received: from eldfell ([194.136.85.206])
+        by smtp.gmail.com with ESMTPSA id f16-20020ac251b0000000b004fdc7ec5cbesm351776lfk.300.2023.08.18.06.55.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 06:55:02 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 16:55:00 +0300
+From:   Pekka Paalanen <ppaalanen@gmail.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Sebastian Wick <sebastian.wick@redhat.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        quic_abhinavk@quicinc.com, contact@emersion.fr,
+        laurent.pinchart@ideasonboard.com, ville.syrjala@linux.intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC v5 02/10] drm: Introduce solid fill DRM plane
+ property
+Message-ID: <20230818165500.50360195@eldfell>
+In-Reply-To: <c4b7e9eb-fb5d-4b2f-8358-f41598d7d983@linaro.org>
+References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
+        <20230728-solid-fill-v5-2-053dbefa909c@quicinc.com>
+        <CAA8EJpq=pbDoYc9wqKKrX+RahXp8zWTPFqVqA=S-0TkWXXJUjQ@mail.gmail.com>
+        <CA+hFU4y38MTTUsbri1jy=n4Vyp7xx2CosD9Nmk97z_au6NHCdQ@mail.gmail.com>
+        <CAA8EJpoFpUcQL_7pb0toDoLFsK=9GdBLQH+h_MMffrp9k7eCyw@mail.gmail.com>
+        <20230818135133.3fdeddba@eldfell>
+        <c4b7e9eb-fb5d-4b2f-8358-f41598d7d983@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB6095:EE_|PH7PR12MB7820:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02c91445-f1f6-45e4-b383-08db9ff2a445
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gPWxb5eSNmrVddHhesNrS1nw8LA/gGlIkItJcMb7/jtLIeg1S5p6ae47BHCgzgJb8EcMZKNnme/vAOyhd4WHb3lKAgrLXuRCa5A+znDgox8LXTT3+ll0hJ9Q31Yxf7HJ+ZijzPwdWC55CuDM6x2rHkNqQUhtsD+07ilrXxo9hNKh1WFOS9ljuZk0cEi9l3o6f0km4uT7e9zWmNb3q1tUfSjOp0sTfYyOqDdck8J3opiHdIw2DQZerdEmwyqjBZtZtkVCC3bczX93PXSHPIV6TSbr90GRrksrxFy3RUq56d+kWi8rQ7U+3CnINdn+pVDNJdUJdHUWkzURnJ2bYXeL26G+XxqfSHYnMMkx3pp5FivaerocHlsCWrIhz4jbYMjFqlITo1pygivQNPPS3hue/pJZJ1W2oUuNOlq/AutJ7AHDMG8b6OLcUKU71RQZJviOiSP0OgqMlzaDwwXmOyXlsW1GvcB0Wnq5D8sz0EczKxT9svDfFmO9aM/daeWFARa0j9sXsRSJAYNDybJuiuoGvM8aLcdmd+V2HnkCVRSny6NFQW1VJwkt9jD2MxR8gg+L3SdkJYoXjORpPEyNSR/Pa0v9v5RnjPuhL9gYKYeTQMFydTr2p9xqV1qUFPN2C2lhZ52VbBCzKq0fA/hPeU4JpQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6095.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(366004)(376002)(396003)(186009)(1800799009)(451199024)(6486002)(6506007)(38100700002)(6512007)(53546011)(86362001)(31696002)(26005)(83380400001)(36756003)(2616005)(2906002)(54906003)(66946007)(66476007)(66556008)(316002)(41300700001)(110136005)(44832011)(5660300002)(7416002)(31686004)(8676002)(4326008)(8936002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UnVPMU9WTWNYOTIxbXB6OW8vTi9TS2FPWHpnV3V0K1NBaWV3WFo0UXg0WDVu?=
- =?utf-8?B?MFVieTNkSGZLRmNYYUlwVW5uUTA5elZFaGdDRTY0S0wxVHlwSitKUXpVckVq?=
- =?utf-8?B?MURTYkNvUjNYRVpjRFk2RGlZaGpqK0NVTnJHVitraXl1OVllZkR2K2R5THpp?=
- =?utf-8?B?Q1JBZHBNWHFKTE1POHBHbjN5YUs1WGZMOS94bHhQb2lmS1k2b05LeGxrZ2l0?=
- =?utf-8?B?S284YW5sUWRWWnBYd0RQQXBvUEg0NWQvWUprcmpHQVRaUzUySW5FWXFueFdZ?=
- =?utf-8?B?K1UyZmVTeG0vOWU3SCtiTkJOdjk1VEY2L25SSm5xVjhKRS8zSjhwcUJMNFRo?=
- =?utf-8?B?SzVVbThyOEpLU1Rxb3EzL3AralBsRFRsNktPNXVWL2Q4UFV6QThjYVNINFZt?=
- =?utf-8?B?REtKa3NDM1VjaVNNUkdBQXRDM21wK0JMZlVGK3I1V1poRS96cHFrbzI4RjZH?=
- =?utf-8?B?Yzh5NCtQZEdKeTBHM0VBd0lUbEFHeHpnRXdHekVTS3h2azhlRXZkUWdlUkxZ?=
- =?utf-8?B?UGFFRmR3Rm50Q1NRSFdHcHVVMnd4SXk5MWxrcFhzZElhbXIxeHNRUjVIVm1m?=
- =?utf-8?B?cFlmVXBQWWQzNW1Nc3FRWDhMYkZ4c2xFZUkvQ0VDd3ErUDRPanRSakJnQ0Vl?=
- =?utf-8?B?TUU3d1A2VzhWSlJNeHF5MXJYMENZMEE3RVc0djE1KzdCS2docUgzQzBSajR1?=
- =?utf-8?B?OVFRRVBudmpyR0Q3SDFPWTlKVHNnZytiTmJETlhUWm9zSnJqVWZPTisvdTFw?=
- =?utf-8?B?d0FVMFdJUnVWZ1FVL21uRVZwTVY3RE5rVm1MWGpIRG90ZmpnTjFhR2hlZEth?=
- =?utf-8?B?T1g0cDFQTE9EdERZNHNHSjAxbHh5UGgvUC9vWDE1SkE1Y1BON0FVNHdBYWlv?=
- =?utf-8?B?Y0VWYlBYcTAxU1JCTmIxZklZcnd1MDFuSnhKR2J3czRwTndKVjNFT1MyUXU3?=
- =?utf-8?B?NjhCaUxqY0dMOGJENE9Femd2MDhtSVQ2R3J4UnJNdFRkbFpWeVplc2w5YVZ4?=
- =?utf-8?B?MUFFdWdKNUUzYVdPd0NRM1VMd2hKTStsRE5Pa3g1QnJobGlKMUJvU21tOFJQ?=
- =?utf-8?B?ejdLZ2twUzFzZzhFSmdONDFVdHhMbWdIOTNSWTFtMTM0SjMyc281czZLTkVX?=
- =?utf-8?B?VDVvL1U5ZlVLZHhiYkFKRWhUOWVjc3pqN0RoQ29UbDRYcllyaWg1SjlUdE1B?=
- =?utf-8?B?SDNMeUhxQy9pd2plUlhLQnBON3loTUFPOXFtRlFrZ2NXakVHT3lrOFFtek9q?=
- =?utf-8?B?TUFTcW5GelU1c0RmSGRqVEVFWVMwTklMakhzNWRBZXlycnowa29pcmIraUJ2?=
- =?utf-8?B?ZHZTekpFZkhrVE43ZDRrVFlUUUhwWXpvckgrKzRmSXM5ODZXL2k5dWFlT2xK?=
- =?utf-8?B?TFRJdXJpZzhXS3BGclhEcFdJd2lBa3ZDaDR3dXR6Y2x0am5mTWtpbzVOSnhD?=
- =?utf-8?B?dzB4VlBqMkZzUUltakI3azFuYVRyL1Nrb3IrWERmQWNRZXhQcmVVOWJMM3NV?=
- =?utf-8?B?VnFsVnNOVlJVVGp1T0xKWmNHTXpDNVNES0xGbERRMGc2WGRHZjRvK1p6VUxQ?=
- =?utf-8?B?akpKdXQ3MmltSUlUeERrcTdwcHRieG9XdWFETGxUZmdnYVlXQzZ4Z3FlTCtZ?=
- =?utf-8?B?YUY5MW1OYmtORzJNNkJVT2RoSTlNMXBuTUljdWxQNDhmTFpEdDlBZkFkbDVh?=
- =?utf-8?B?MGdPd0xiRStXOTRFT0xnNzRzS0ZVaGgvRXJEaithY2xDck1hWFNtb2ova3o0?=
- =?utf-8?B?d0JwR2FFQUVaOTRLMzhrbjNBMDI4RUNVQ0l1MEljSmVueXd4SEhDa1FZMDI2?=
- =?utf-8?B?OGlteUV1M0hiYjZTTm5rUHNuQ2NuWE9OcDF3c0V3Y0k0VGdqYUFDNHhaTm82?=
- =?utf-8?B?MWZ6ZUNpNmZONUJTRk5sNGw0Q2pZVE1aLzBxZXREMEliTGJYNGRRbGNScXNx?=
- =?utf-8?B?OVZRdWFrY2R3TXZSNXVxT2ZUc3c1b2NyTmVYcGZ3TmFhcC9rUzFqMHRHWWpa?=
- =?utf-8?B?SlV0MzVrcEJodmxiNDNoaUUwclliVTZrN1psYnE5TzYzZHJ5WHM5VnhIRHhO?=
- =?utf-8?B?cEp6MksweDd0d2lISkJRL2x4dThtcWE3ZTUwdzdZQVdlV1gxVkxTQVJGaVpY?=
- =?utf-8?Q?4q1qi7NhwpN2g4pAygHea4FK2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02c91445-f1f6-45e4-b383-08db9ff2a445
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6095.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 13:54:29.3931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KDo7oHkXeAR0bPvRGZ0AutdwGqy2qynIxtVvB0TqP7VlrlWF8ckrWK22VHVZ056ArwkJekAZFeju4NzDAmauSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7820
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/U=vUEXpdxtWCvJFEbe144qV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/2023 04:19, Rafael J. Wysocki wrote:
-> On Fri, Aug 18, 2023 at 10:21 AM David Laight <David.Laight@aculab.com> wrote:
->>
->> From: Rafael J. Wysocki
->>> Sent: Friday, August 18, 2023 9:12 AM
->>>
->>> On Fri, Aug 18, 2023 at 7:14 AM Mario Limonciello
->>> <mario.limonciello@amd.com> wrote:
->>>>
->>>> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
->>>> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
->>>> from modern machines (>=2015) are allowed to be put into D3.
->>>>
->>>> Iain reports that USB devices can't be used to wake a Lenovo Z13
->>>> from suspend. This is because the PCIe root port has been put
->>>> into D3 and AMD's platform can't handle USB devices waking in this
->>>> case.
->>>>
->> ...
->>>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
->>>> index 60230da957e0c..051e88ee64c63 100644
->>>> --- a/drivers/pci/pci.c
->>>> +++ b/drivers/pci/pci.c
->>>> @@ -3037,10 +3037,11 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
->>>>                          return false;
->>>>
->>>>                  /*
->>>> -                * It should be safe to put PCIe ports from 2015 or newer
->>>> +                * It is safe to put Intel PCIe ports from 2015 or newer
->>>>                   * to D3.
->>>>                   */
->>>
->>> I would say "Allow Intel PCIe ports from 2015 onward to go into D3 to
->>> achieve additional energy conservation on some platforms" without the
->>> "It is safe" part that is kind of obvious (it wouldn't be done if it
->>> were unsafe).
->>
->> Just say why...
->>
->> "Don't put root ports into D3 on non-Intel systems to avoid issues
->> with USB devices being unable to wake up some AMD based laptops."
-> 
-> Well, both pieces of information are actually useful: Why it is done
-> on Intel systems in the first place and why it cannot be done on AMD
-> systems.
+--Sig_/U=vUEXpdxtWCvJFEbe144qV
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks guys, I'll add both in next version.
+On Fri, 18 Aug 2023 14:03:14 +0300
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+
+> On 18/08/2023 13:51, Pekka Paalanen wrote:
+> > On Fri, 4 Aug 2023 16:59:00 +0300
+> > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> >  =20
+> >> On Fri, 4 Aug 2023 at 16:44, Sebastian Wick <sebastian.wick@redhat.com=
+> wrote: =20
+> >>>
+> >>> On Fri, Aug 4, 2023 at 3:27=E2=80=AFPM Dmitry Baryshkov
+> >>> <dmitry.baryshkov@linaro.org> wrote: =20
+> >>>>
+> >>>> On Fri, 28 Jul 2023 at 20:03, Jessica Zhang <quic_jesszhan@quicinc.c=
+om> wrote: =20
+> >>>>>
+> >>>>> Document and add support for solid_fill property to drm_plane. In
+> >>>>> addition, add support for setting and getting the values for solid_=
+fill.
+> >>>>>
+> >>>>> To enable solid fill planes, userspace must assign a property blob =
+to
+> >>>>> the "solid_fill" plane property containing the following informatio=
+n:
+> >>>>>
+> >>>>> struct drm_mode_solid_fill {
+> >>>>>          u32 version;
+> >>>>>          u32 r, g, b;
+> >>>>> };
+> >>>>>
+> >>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> >>>>> ---
+> >>>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  9 +++++
+> >>>>>   drivers/gpu/drm/drm_atomic_uapi.c         | 55 ++++++++++++++++++=
++++++++++++++
+> >>>>>   drivers/gpu/drm/drm_blend.c               | 30 +++++++++++++++++
+> >>>>>   include/drm/drm_blend.h                   |  1 +
+> >>>>>   include/drm/drm_plane.h                   | 35 ++++++++++++++++++=
+++
+> >>>>>   include/uapi/drm/drm_mode.h               | 24 ++++++++++++++
+> >>>>>   6 files changed, 154 insertions(+)
+> >>>>>    =20
+> >>>>
+> >>>> [skipped most of the patch]
+
+...
+
+> >>> Maybe another COLOR_FILL enum value
+> >>> with alpha might be better? Maybe just doing the alpha via the alpha
+> >>> property is good enough. =20
+> >>
+> >> One of our customers has a use case for setting the opaque solid fill,
+> >> while keeping the plane's alpha intact. =20
+> >=20
+> > Could you explain more about why they must keep plane alpha intact
+> > instead of reprogramming everything with atomic? Is there some
+> > combination that just cannot reach the same end result via userspace
+> > manipulation of the solid fill values with plane alpha?
+> >=20
+> > Or is it a matter of userspace architecture where you have independent
+> > components responsible for different KMS property values? =20
+
+> The latter one. The goal is to be able to switch between pixel sources=20
+> without touching any additional properties (including plane's alpha value=
+).
+
+Sorry, but that does not seem like a good justification for KMS UAPI
+design.
+
+It is even in conflict with how atomic KMS UAPI was designed to work:
+collect all your changes into a single commit, and push it at once.
+Here we are talking about separate components changing the different
+properties of the same KMS plane even. If you want to change both plane
+opacity and contents, does it mean you need two refresh cycles, one at
+a time? Could the two components be even racing with each other,
+stalling each other randomly?
+
+
+Thanks,
+pq
+
+--Sig_/U=vUEXpdxtWCvJFEbe144qV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTfeDQACgkQI1/ltBGq
+qqctxg/9FrNHfSu24l0Eay/mQWxFRFTxi4VcYtO0f3lBxbhFeA3cb8q/w4TYtgDb
+rkAWpN6SyDBIK4uvXxXP6soVQg7eRmRp7flQO7xO/SKouylbN+4HGA0FImfrN05p
+SVWa5Kn7SMesPQamPiLD/CJj972to2csMOxYPkJ3CTB1i8eD7JWwVzR0hKW5x3qP
+uxLdSJZFL4p4Qf9jqRLQC6aRl3OR1fckFpurTM7n9buZBPLSW6aWWka3GLw2+mpx
+RCN//J5J4kVNOP0m9EAT51dI6O1X9CPxa7EPO/GJmUQszihFfA0pDd9yXE47LDrR
+fJ5nB0rSCozHIZNYmtU++slYD1WrCFLod7L/fkP2Mf+ID+PUMcFJyih0PRuW4IbL
+ILNmZRUgdH+ECVse9mEyubO2CnKAbg+2uXv222kyvLIQZfeoe8ts7kWKP9mDsI7A
+WxFHEOmzR2IkXX3td2Ij6AjoMqnMKL5Y4qDlz/SPyKUUwolPL4/lp8xfjtaWLl6y
+d0zOBLPuuObUNxA8KaRysDSyNfudF5vKUCrbt4lPCouDGxovcXmoyl/CdHkyQmzA
+3mccDmUyx0bufemnoncWfq6PmVsT8GyI4ueaof5V7Al2V3pX0rFWC4CSej/AMZz4
+XZyunx0mmvwAVfpU2rzjBQ2QBkT29X3IODJFkstM8rCTZpprYw8=
+=xGHs
+-----END PGP SIGNATURE-----
+
+--Sig_/U=vUEXpdxtWCvJFEbe144qV--
