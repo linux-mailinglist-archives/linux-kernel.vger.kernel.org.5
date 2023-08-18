@@ -2,148 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E747D780847
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53F0D780866
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359094AbjHRJaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:30:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S1359148AbjHRJbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:31:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359082AbjHRJ3c (ORCPT
+        with ESMTP id S1359221AbjHRJa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:29:32 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3446359D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:30 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5257e2b5d12so819155a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692350969; x=1692955769;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jTPWfjzgiS6MREC/CQy9YZ7a0Ba4pXdxJTPBP//ZxkQ=;
-        b=ChP1wEg29yXYxpK7J9uqfILfPe/L9xBS0HNQPXH54y1zGDEvcdwljY5HVw15zrjTzx
-         VpGb3h1ffXsIXv8NTndpsLQEcYlTmf6GA/8cPAvQ5OUfezNHFsG8dA4nQbmzYXZ+EEL/
-         +E2hg2SAdUHITLhvITSusy2v1ZLvoO2kw3JiBht3/qHk2OjQyiKqn5GvDCtklD/qqqOS
-         WHA7JqYdvqZ/Rjg0POkhOL40Q+5AYUtbCVBLV0PI/oamzCz/eMWcPzEw4/GQHHTTUYwt
-         OWzP/mRyk+KkHBFUux84C272URdVjJQPiQUdj9yjv5T/igPb7VaLMxL8ciSwoEZ9ARB8
-         hxvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692350969; x=1692955769;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jTPWfjzgiS6MREC/CQy9YZ7a0Ba4pXdxJTPBP//ZxkQ=;
-        b=YM9sqqFfD68ojcTAOdK8Z1xqFkqu+7DSKSCIlTE8KhRZa3PGMZrozeqm+hv6/u/1LW
-         6ifxeINTxgmBP8lus5pelAWpNiQ1OA6osCRjo3n0xGLowsh8VmZXll+qSJ40M64O2zWW
-         Wufy9E9ZxmxAC3YkaRxZNgaAlzj24apjwHIwlrfVcuo+GOesujzLomexc7a+y7/j+Mlu
-         mHSMXQDv1VWVglS0eEdYySkiy93WDLyIzdsAbygF9VLouFw9sr3Yyo6KXVeB5wQ4KNsu
-         PodP0UB/qw76xF4ETZsVbraIH/lqI4kiCCxmqYXoEmm7q8C2OZCSHD3rPnTfM5lECPCL
-         KgLA==
-X-Gm-Message-State: AOJu0YyaIhlW+Y+1a8a1jAt1yHtlnyYj7AAYnHmYF1igMGvUET9ONa0G
-        OX6wZ9PdkBiaJMWwiKRDlmrpFA==
-X-Google-Smtp-Source: AGHT+IHd1/56PSeqitQJGalEGxXcH26drQEeAdG2dzNVUp/FxWHNv/06+iWRebGIeZUvbnvpxSWWDA==
-X-Received: by 2002:a05:6402:5154:b0:525:466c:5fda with SMTP id n20-20020a056402515400b00525466c5fdamr1836205edd.28.1692350969335;
-        Fri, 18 Aug 2023 02:29:29 -0700 (PDT)
-Received: from [192.168.0.107] ([79.115.63.195])
-        by smtp.gmail.com with ESMTPSA id e26-20020a056402149a00b005233deb30aesm857895edv.10.2023.08.18.02.29.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 02:29:28 -0700 (PDT)
-Message-ID: <d1c285ff-5eef-4dae-dde0-8946162f19ac@linaro.org>
-Date:   Fri, 18 Aug 2023 10:29:24 +0100
+        Fri, 18 Aug 2023 05:30:59 -0400
+Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EEE3AA6;
+        Fri, 18 Aug 2023 02:30:49 -0700 (PDT)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1qWvnO-005FRU-15; Fri, 18 Aug 2023 17:29:31 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 18 Aug 2023 17:29:30 +0800
+Date:   Fri, 18 Aug 2023 17:29:30 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Gaurav Jain <gaurav.jain@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+        Victoria Milhoan <vicki.milhoan@freescale.com>,
+        Franck LENORMAND <franck.lenormand@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Vipul Kumar <vipul_kumar@mentor.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dan Douglass <dan.douglass@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: caam: fix PM operations definition
+Message-ID: <ZN85+i518CGE6WgH@gondor.apana.org.au>
+References: <20230807111653.1794160-1-arnd@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 02/21] dmaengine: at_hdmac: Annotate struct at_desc with
- __counted_by
-To:     Kees Cook <keescook@chromium.org>, Vinod Koul <vkoul@kernel.org>
-Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Green Wan <green.wan@sifive.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Yu Kuai <yukuai3@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jordy Zomer <jordy@pwning.systems>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-References: <20230817235428.never.111-kees@kernel.org>
- <20230817235859.49846-2-keescook@chromium.org>
-Content-Language: en-US
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20230817235859.49846-2-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230807111653.1794160-1-arnd@kernel.org>
+X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
+        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,TVD_RCVD_IP,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/18/23 00:58, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Mon, Aug 07, 2023 at 01:16:43PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> As found with Coccinelle[1], add __counted_by for struct at_desc.
+> The newly added PM operations use the deprecated SIMPLE_DEV_PM_OPS() macro,
+> causing a warning in some configurations:
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> drivers/crypto/caam/ctrl.c:828:12: error: 'caam_ctrl_resume' defined but not used [-Werror=unused-function]
+>   828 | static int caam_ctrl_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~
+> drivers/crypto/caam/ctrl.c:818:12: error: 'caam_ctrl_suspend' defined but not used [-Werror=unused-function]
+>   818 | static int caam_ctrl_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~~~
+> drivers/crypto/caam/jr.c:732:12: error: 'caam_jr_resume' defined but not used [-Werror=unused-function]
+>   732 | static int caam_jr_resume(struct device *dev)
+>       |            ^~~~~~~~~~~~~~
+> drivers/crypto/caam/jr.c:687:12: error: 'caam_jr_suspend' defined but not used [-Werror=unused-function]
+>   687 | static int caam_jr_suspend(struct device *dev)
+>       |            ^~~~~~~~~~~~~~~
 > 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-> Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: dmaengine@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Use the normal DEFINE_SIMPLE_DEV_PM_OPS() variant now, and use pm_ptr() to
+> completely eliminate the structure in configs without CONFIG_PM.
+> 
+> Fixes: 322d74752c28a ("crypto: caam - add power management support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/dma/at_hdmac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-> index b2876f67471f..b66c7f416881 100644
-> --- a/drivers/dma/at_hdmac.c
-> +++ b/drivers/dma/at_hdmac.c
-> @@ -239,7 +239,7 @@ struct at_desc {
->  	bool				memset_buffer;
->  	dma_addr_t			memset_paddr;
->  	int				*memset_vaddr;
-> -	struct atdma_sg			sg[];
-> +	struct atdma_sg			sg[] __counted_by(sglen);
->  };
->  
->  /*--  Channels  --------------------------------------------------------*/
+>  drivers/crypto/caam/ctrl.c | 4 ++--
+>  drivers/crypto/caam/jr.c   | 4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
