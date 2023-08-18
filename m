@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3DA7807A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 956A77807AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358846AbjHRI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37170 "EHLO
+        id S1358879AbjHRJAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358835AbjHRI7U (ORCPT
+        with ESMTP id S1358873AbjHRJAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:59:20 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42337358D;
-        Fri, 18 Aug 2023 01:59:18 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRwjZ6NptzVkVR;
-        Fri, 18 Aug 2023 16:57:06 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 16:59:15 +0800
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
- <20230816100113.41034-2-linyunsheng@huawei.com>
- <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
- <20230817091554.31bb3600@kernel.org>
- <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
- <20230817165744.73d61fb6@kernel.org>
- <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <f71d9448-70c8-8793-dc9a-0eb48a570300@huawei.com>
-Date:   Fri, 18 Aug 2023 16:59:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 18 Aug 2023 05:00:37 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08C73C16;
+        Fri, 18 Aug 2023 02:00:20 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bcade59b24so619842a34.0;
+        Fri, 18 Aug 2023 02:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692349220; x=1692954020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Y5Zjf4Br8l/yI83N5VEcoQEhKvn7JUFC0W/m6x6V5Y=;
+        b=Y0uxcIRoCGwlTtD/IvhVUbI2rSWmFAWE92NgHSeLQaFHlW1EcyZ7gCXvLo4IV/jF4t
+         ZKS3dP5xIlr8YE/KCy396GjUzMFf/A9ohfDvTPqR2Y4xRyHE8WTmIKzcsZFPAJ5t3L9K
+         D+AC4w405D+8GDalmiKlfSXXv/WDN7H2lQJG7UHT/N8GeJgq93MWZPPKw9GsiTUivQD6
+         bXXNfoF9aJezIoFEdiw/0bCpHDZgfZwzYzVRpDi1p0A2CQA188kEC7VtjmpmxE9kGv3c
+         mlGrlb2umy8UT+U0VZQEOSokmOpfCqSi84f+yFQuOsDEffCTOPS8uE8scJw8t5TkdwPU
+         GIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692349220; x=1692954020;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9Y5Zjf4Br8l/yI83N5VEcoQEhKvn7JUFC0W/m6x6V5Y=;
+        b=D4lT/0EpIX6OP2Mcm/sY7c9fM9lPn01QUHF9lSyX7XogF48ALBu4iy+acL7ksTLhhD
+         JqOQOCw+/yJH13X5XhAhnmgBkneKYGaz2NjNSSjlseoganc7M7G/lfwryOrJYI6L+2dC
+         Faz8eT85t/uk7lBuO+EbruOFhI4mh3FqJgXl59uFSf7rTjp8iBWVwbej4ZZ5GS/ROkiJ
+         tPJMvBMa16wwedknC9XLiPZtS1wy4QFlDimbaV3gWBdEe91nOOntpqHtD/jYQLkF4mbp
+         9tq+L4paV9IaSUoztjDCd5GHgMmx1ir9v5Lf8BPKmW1Z1HZjrD3gxTnGsz3T+meX142H
+         2mZA==
+X-Gm-Message-State: AOJu0YyaUlQNNf51YpDouGy6vZbiqA4crDHJ4yHxzc68X/JIGwGwrPe8
+        9RzyoIovwa/ENaa7MGfTaBAQPFUvdLytkqK9JiM=
+X-Google-Smtp-Source: AGHT+IHO5of0Xf3dIaJovpBYbVdfni5HT9nb9RZ2UCgHSkLXgxgPEOIp3svCEVUC0/IIfTwto6gnlz1FTvAMpmt8tHs=
+X-Received: by 2002:a05:6870:15d5:b0:1c0:1424:5e79 with SMTP id
+ k21-20020a05687015d500b001c014245e79mr1885968oad.42.1692349219840; Fri, 18
+ Aug 2023 02:00:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818012111.22947-1-asmaa@nvidia.com> <20230818012111.22947-3-asmaa@nvidia.com>
+In-Reply-To: <20230818012111.22947-3-asmaa@nvidia.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 18 Aug 2023 11:59:43 +0300
+Message-ID: <CAHp75VehagLZLTb4hC5J+w8JVUu-zYBDb+npeS8ZgadfF9MheA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] gpio: mlxbf3: Support add_pin_ranges()
+To:     Asmaa Mnebhi <asmaa@nvidia.com>
+Cc:     linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, brgl@bgdev.pl,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/18 14:12, Ilias Apalodimas wrote:
-> On Fri, 18 Aug 2023 at 02:57, Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Thu, 17 Aug 2023 19:59:37 +0300 Ilias Apalodimas wrote:
->>>> Can we assume the DMA mapping of page pool is page aligned? We should
->>>> be, right?
->>>
->>> Yes
->>>
->>>> That means we're storing 12 bits of 0 at the lower end.
->>>> So even with 32b of space we can easily store addresses for 32b+12b =>
->>>> 16TB of memory. "Ought to be enough" to paraphrase Bill G, and the
->>>> problem is only in our heads?
->>>
->>> Do you mean moving the pp_frag_count there?
->>
->> Right, IIUC we don't have enough space to fit dma_addr_t and the
->> refcount, but if we store the dma addr on a shifted u32 instead
->> of using dma_addr_t explicitly - the refcount should fit?
-> 
-> struct page looks like this:
-> 
-> unsigned long dma_addr;
-> union {
->       unsigned long dma_addr_upper;
->       atomic_long_t pp_frag_count;
-> };
-> 
-> So, on 32bit platforms with 64bit dma we can't support a frag count at all.
-> We could either use the lower 12 bits (and have support for 4096 frags
-> 'only') or do what you suggest.
+On Fri, Aug 18, 2023 at 4:21=E2=80=AFAM Asmaa Mnebhi <asmaa@nvidia.com> wro=
+te:
+>
+> Support add_pin_ranges() so that pinctrl_gpio_request() can be called.
+> The GPIO value is not modified when the user runs the "gpioset" tool.
+> This is because when gpiochip_generic_request is invoked by the gpio-mlxb=
+f3
+> driver, "pin_ranges" is empty so it skips "pinctrl_gpio_request()".
+> pinctrl_gpio_request() is essential in the code flow because it changes t=
+he
+> mux value so that software has control over modifying the GPIO value.
+> Adding add_pin_ranges() creates a dependency on the pinctrl-mlxbf3.c driv=
+er.
 
-Maybe we can rethink about defining a new memdesc for page used by
-the network stack. As I took a glance at the Device Memory TCP v2
-patchset from Mina, we may use the new memdesc to support more new
-memory types, to decupple page_pool from the spcae limitation of
-'stuct page', and to support frag page for 32bit platforms with
-64bit dma too.
+Better now,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> TBH I don't love any of these and since those platforms are rare (or
-> at least that's what I think), I prefer not supporting them at all.
-> 
->>
->>> I was questioning the need to have PP_FLAG_PAGE_SPLIT_IN_DRIVER
->>> overall.  With Yunshengs patches such a platform would allocate a
->>> page, so why should we prevent it from splitting it internally?
->>
->> Splitting it is fine, the problem is that the refcount AKA
->> page->pp_frag_count** counts outstanding PP-aware references
->> and page->refcount counts PP-unaware references.
->>
->> If we want to use page->refcount directly we'd need to unmap
->> the page whenever drivers calls page_pool_defrag_page().
->> But the driver may assume the page is still mapped afterwards.
-> 
-> What I am suggesting here is to not add the new
-> PP_FLAG_PAGE_SPLIT_IN_DRIVER flag.  If a driver wants to split pages
-> internally it should create a pool without
-> PP_FLAG_DMA_SYNC_DEV to begin with.  The only responsibility the
+...
 
-I am not sure why using PP_FLAG_DMA_SYNC_DEV is conflicted with page
-split if the frag page is freed with dma_sync_size being -1 and the
-pool->p.max_len is setup correctly.
+>  #define MLXBF3_GPIO_MAX_PINS_PER_BLOCK 32
+> +#define MLXBF3_GPIO_MAX_PINS_BLOCK0    MLXBF3_GPIO_MAX_PINS_PER_BLOCK
+> +#define MLXBF3_GPIO_MAX_PINS_BLOCK1    24
 
-I was thinking about defining page_pool_put_frag() which corresponds
-to page_pool_dev_alloc_frag() and page_pool_free() which corresponds
-to page_pool_dev_alloc(), so that driver author does not misuse the
-dma_sync_size parameter for page_pool_put_page() related API.
+Since it's a fix for backporting, I'm not insisting to amend it now,
+but can we actually drop the common define and use
 
-And PP_FLAG_PAGE_SPLIT_IN_DRIVER is used to fail the page_pool creation
-when driver is using page->pp_frag_count to split page itself in 32-bit
-arch with 64-bit DMA.
+#define MLXBF3_GPIO_MAX_PINS_BLOCK0    32
+#define MLXBF3_GPIO_MAX_PINS_BLOCK1    24
 
-> driver would have is to elevate the page refcnt so page pool would not
-> try to free/recycle it.  Since it won't be able to allocate fragments
-> we don't have to worry about the rest.
-> 
->> We can change the API to make this behavior explicit. Although
->> IMHO that's putting the burden of rare platforms on non-rare
->> platforms which we should avoid.
-> 
-> Yep, agree here.
-> 
->>
->> ** I said it before and I will keep saying this until someone gets
->>    angry at me - I really think we should rename this field because
->>    the association with frags is a coincidence.
+and modify code accordingly, please?
 
-As my understanding, currently the naming is fine as it is because
-page->pp_frag_count is used to indicate the number of frags a page
-is split, there is only one user holding onto one frag for now.
-
-But if there are more than one user holding onto one frag, then we
-should probably rename it to something like page->pp_ref_count as
-Jakub suggested before, for example below patch may enable more than
-one user holding onto one frag.
-
-https://patchwork.kernel.org/project/netdevbpf/patch/20230628121150.47778-1-liangchen.linux@gmail.com/
+--=20
+With Best Regards,
+Andy Shevchenko
