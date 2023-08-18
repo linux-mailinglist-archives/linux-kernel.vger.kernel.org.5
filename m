@@ -2,319 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC189780429
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220F5780430
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357420AbjHRDF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
+        id S1357385AbjHRDIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357431AbjHRDFO (ORCPT
+        with ESMTP id S1343839AbjHRDIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:05:14 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F4B2D56
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:05:12 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so18463501fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692327910; x=1692932710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2BNQt+YD+Y45FYKlJApL0MsqiubCukdG1dIxjjjo6tw=;
-        b=KD1K5GGJR9vOIzCw9izceLdDViRS+iGiUcPlvOVLAjnzIY3mem04ORLc9cO6Cj+Ylx
-         Tks37HwmIoHDAV/g2PO2mH7JlqrdYLVM1x+0tLaJJj/r7dzbLQKYCFXKIll6b/SrYsdf
-         ngDH/NaC8SrE9d0LvMWt+9hdiscHtWdxivO1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692327910; x=1692932710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2BNQt+YD+Y45FYKlJApL0MsqiubCukdG1dIxjjjo6tw=;
-        b=bCOTHdDb4QcFodVs7i2Uo5I7k6KvnQ9UMLi+GLZNL3j6s3LXhG1sZWPhD/aTL78VJC
-         1waIJELYbWrv/OfARdWyKqr3x/3Lqz3H/x2eRYKrd7MuFq0NtMMrYmQCGADei/eKe+Wr
-         nSZ8pHiB1heKDybT5F/Q/+lUQgxiM5gvlH31qYosnq6I8qjeLXy70dY5eO/0OZ6GbU4C
-         uy+1iyvNkbVa7tsqhXeqAIivsXDX+3mdDYhMscsADiHi7MvHzyo3nM6BTnPshWI9Vn9c
-         xX+rIzJ3ES7/ZLGk9CNMs9zBsXofgnBrSEpu5DSH0kCudM0Zx5prRN+P7MHDBi1N5yBl
-         kCzQ==
-X-Gm-Message-State: AOJu0YziELMSBEaN7h3AWNc2WjH+UWZRZ2L5a9kMmCG64ACwbtrvjzM9
-        lAzM44sYn16pMgYO9Mwuc96Q4Drk9cj/mxz2BjpTPOW+3sgghOr9h64=
-X-Google-Smtp-Source: AGHT+IGaHDw2YrdtR/IGAEXb0cUlGy6fYaqcFEtGzxcApehP34iySaM1LThZjkYZhhk5dnv+IK8eGr1K8D/467mcCFM=
-X-Received: by 2002:a2e:9d94:0:b0:2b6:f85a:20af with SMTP id
- c20-20020a2e9d94000000b002b6f85a20afmr420763ljj.4.1692327910388; Thu, 17 Aug
- 2023 20:05:10 -0700 (PDT)
+        Thu, 17 Aug 2023 23:08:06 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DE2100;
+        Thu, 17 Aug 2023 20:08:05 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qWpq5-00056L-0G;
+        Fri, 18 Aug 2023 03:07:53 +0000
+Date:   Fri, 18 Aug 2023 04:07:46 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Alexander Couzens <lynxis@fe80.eu>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next] net: pcs: lynxi: implement pcs_disable op
+Message-ID: <f23d1a60d2c9d2fb72e32dcb0eaa5f7e867a3d68.1692327891.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-References: <20230817081345.1423-1-chenhuacai@loongson.cn> <CAEXW_YTM5sa15euDeQhEq0CQ=vqLis=pY-5PF00aKTk5y3J6jw@mail.gmail.com>
- <CAAhV-H71iVtpW8NN-v8WnbgUte4vp7D+82O8gdNvdkupcOauig@mail.gmail.com>
-In-Reply-To: <CAAhV-H71iVtpW8NN-v8WnbgUte4vp7D+82O8gdNvdkupcOauig@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Thu, 17 Aug 2023 23:04:59 -0400
-Message-ID: <CAEXW_YTQucT9VkMwaLtyv2Ja7b1OG+UJX3w3GA3=ZbHeDq16tw@mail.gmail.com>
-Subject: Re: [PATCH] rcu: Update jiffies locally in rcu_cpu_stall_reset()
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 10:36=E2=80=AFPM Huacai Chen <chenhuacai@kernel.org=
-> wrote:
->
-> Hi, Joel,
->
-> On Fri, Aug 18, 2023 at 1:54=E2=80=AFAM Joel Fernandes <joel@joelfernande=
-s.org> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 4:14=E2=80=AFAM Huacai Chen <chenhuacai@loongso=
-n.cn> wrote:
-> > >
-> > > The KGDB initial breakpoint gets an rcu stall warning after commit
-> > > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
-> > > rcu_cpu_stall_reset()").
-> > >
-> > > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
-> > > [   53.487950] rcu:     3-...0: (1 ticks this GP) idle=3D0e2c/1/0x400=
-0000000000000 softirq=3D375/375 fqs=3D8
-> > > [   53.528243] rcu:     (t=3D12297 jiffies g=3D-995 q=3D1 ncpus=3D4)
-> > > [   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #=
-4848
-> > > [   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V=
-0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.0=
-5099-beta8 08
-> > > [   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000=
-a0000 sp 90000001000a3710
-> > > [   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 00000000000=
-00001 a3 0000000000000000
-> > > [   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 00000000000=
-0002c a7 0000000000000000
-> > > [   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 90000000013=
-1c9c0 t3 fffffffffffffffa
-> > > [   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 00000000000=
-00004 t7 9000000001912d58
-> > > [   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 00000000000=
-00028 s0 9000000001d512f0
-> > > [   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019=
-fc410 s4 9000000001d4b488
-> > > [   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 00000000000=
-00078 s8 9000000001d4b450
-> > > [   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
-> > > [   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
-> > > [   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=3DCC =
--WE)
-> > > [   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
-> > > [   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-> > > [   54.207838]  ECFG: 00071c1c (LIE=3D2-4,10-12 VS=3D7)
-> > > [   54.242503] ESTAT: 00000800 [INT] (IS=3D11 ECode=3D0 EsubCode=3D0)
-> > > [   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
-> > > [   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #=
-4848
-> > > [   54.430170] Stack : 0072617764726148 0000000000000000 900000000022=
-3504 90000001000a0000
-> > > [   54.472308]         9000000100073a90 9000000100073a98 000000000000=
-0000 9000000100073bd8
-> > > [   54.514413]         9000000100073bd0 9000000100073bd0 900000010007=
-3a00 0000000000000001
-> > > [   54.556018]         0000000000000001 9000000100073a98 99828271f24e=
-961a 90000001002810c0
-> > > [   54.596924]         0000000000000001 0000000000010003 000000000000=
-0000 0000000000000001
-> > > [   54.637115]         ffff8000337cdb80 0000000000000001 000000000636=
-0000 900000000131c9c0
-> > > [   54.677049]         0000000000000000 0000000000000000 90000000017b=
-4c98 9000000001912000
-> > > [   54.716394]         9000000001912f68 9000000001913000 900000000191=
-2f70 00000000000002b0
-> > > [   54.754880]         90000000014a8840 0000000000000000 900000000022=
-351c 0000000000000000
-> > > [   54.792372]         00000000000002b0 000000000000000c 000000000000=
-0000 0000000000071c1c
-> > > [   54.829302]         ...
-> > > [   54.859163] Call Trace:
-> > > [   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
-> > > [   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
-> > > [   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
-> > > [   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
-> > > [   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
-> > > [   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
-> > > [   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
-> > > [   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
-> > > [   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x6=
-0
-> > > [   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x=
-160
-> > > [   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
-> > > [   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
-> > > [   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x=
-40
-> > > [   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
-> > > [   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
-> > > [   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
-> > > [   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
-> > > [   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
-> > > [   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
-> > > [   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
-> > > [   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
-> > > [   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
-> > > [   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1=
-c0
-> > > [   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
-> > > [   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
-> > > [   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
-> > > [   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
-> > > [   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
-> > > [   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
-> > > [   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
-> > > [   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
-> > > [   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
-> > > [   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
-> > > [   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
-> > > [   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
-> > > [   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
-> > > [   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
-> > > [   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
-> > > [   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
-> > >
-> > > Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one ch=
-eck
-> > > period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiff=
-ies
-> > > is only updated in the timer interrupt, so when kgdb_cpu_enter() begi=
-ns
-> > > to run there may already be nearly one rcu check period after jiffies=
-.
-> > > Since all interrupts are disabled during kgdb_cpu_enter(), jiffies wi=
-ll
-> > > not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stal=
-l
-> > > maybe already gets timeout.
-> > >
-> > > We can set rcu_state.jiffies_stall to two rcu check periods later, e.=
-g.
-> > > jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset=
-()
-> > > to avoid this problem. But this isn't a complete solution because kgd=
-b
-> > > may take a very long time in irq disabled context.
-> > >
-> > > Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
-> > > solve all kinds of problems [1]. But this causes a new problem becaus=
-e
-> > > updating jiffies is not NMI safe while rcu_cpu_stall_reset() may be u=
-sed
-> > > in NMI context.
-> > >
-> > > So we don't update the global jiffies, but only add the time 'delta' =
-to
-> > > jiffies locally at the beginning of rcu_cpu_stall_reset() which has t=
-he
-> > > same effect.
-> > >
-> > > [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loo=
-ngson.cn/T/#t
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detect=
-ion in rcu_cpu_stall_reset()")
-> > > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > > ---
-> > >  kernel/rcu/tree_stall.h | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > index b10b8349bb2a..1bf1306cae23 100644
-> > > --- a/kernel/rcu/tree_stall.h
-> > > +++ b/kernel/rcu/tree_stall.h
-> > > @@ -153,8 +153,12 @@ static void panic_on_rcu_stall(void)
-> > >   */
-> > >  void rcu_cpu_stall_reset(void)
-> > >  {
-> > > +       unsigned long delta;
-> > > +
-> > > +       delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_=
-ns());
-> > > +
-> > >         WRITE_ONCE(rcu_state.jiffies_stall,
-> > > -                  jiffies + rcu_jiffies_till_stall_check());
-> > > +                  jiffies + delta + rcu_jiffies_till_stall_check());
-> >
-> > This is certainly better than magic numbers, but I was still wondering
-> > how the delta really works. What are typical values of delta, and why
-> > is that equivalent to updating jiffies?
-> >
-> > Can you provide more technical details about why it turns out to be
-> > effectively the number of jiffies that the jiffies are off by?
-> >
-> > Also, how often do you see that an NMI is required to prevent a KGDB
-> > stall? If not, just do:
-> >
-> > void rcu_cpu_stall_reset(void) {
-> > [...]
-> >     if (!in_nmi) {
-> >       do_jiffies_update();
-> >    }
-> >    WRITE_ONCE(rcu_state.jiffies_stall, ..);
-> > [...]
-> > }
-> >
-> > ?
-> >
-> > But if your solution provides accurate results, that's fine with me. I
-> > just don't understand coarse ktime that much and how it differs from
-> > regular ktime, so I appreciate the education ;-)
-> ktime_get() get the accurate current time from clocksource,
-> ktime_get_coarse() get the coarse current time from jiffies. Below is
-> from Documentation/core-api/timekeeping.rst:
->
->         "The time returned here corresponds to the last timer tick, which
->         may be as much as 10ms in the past (for CONFIG_HZ=3D100), same as
->         reading the 'jiffies' variable.  These are only useful when calle=
-d
->         in a fast path and one still expects better than second accuracy,
->         but can't easily use 'jiffies', e.g. for inode timestamps."
->
-> So, the delta between ktime_get() and ktime_get_coarse() is accurately
-> the delta when we update jiffies.
->
+When switching from 10GBase-R/5GBase-R/USXGMII to one of the interface
+modes provided by mtk-pcs-lynxi we need to make sure to always perform
+a full configuration of the PHYA.
 
-That sounds good to me then! I see you added Thomas so let us see if
-he yells back.
+Implement pcs_disable op which resets the stored interface mode to
+PHY_INTERFACE_MODE_NA to trigger a full reconfiguration once the LynxI
+PCS driver had previously been deselected in favor of another PCS
+driver such as the to-be-added driver for the USXGMII PCS found in
+MT7988.
 
-But in the meanwhile, maybe you could also do some testing (if you
-want to) something like:
-=3D=3D=3D=3D=3D
-old_jiffies =3D jiffies;
-delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/net/pcs/pcs-mtk-lynxi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-/* do the jiffies update here */
-
-WARN_ON_ONCE(jiffies - old_jiffies !=3D delta);
-=3D=3D=3D=3D=3D
-
-But what you said sounds quite reasonable to me now... I can add your
-patch to my test fleet and see if anything falls out. Will reply with
-Tested-by... thanks,
-
-- Joel
+diff --git a/drivers/net/pcs/pcs-mtk-lynxi.c b/drivers/net/pcs/pcs-mtk-lynxi.c
+index b0f3ede945d96..8501dd365279b 100644
+--- a/drivers/net/pcs/pcs-mtk-lynxi.c
++++ b/drivers/net/pcs/pcs-mtk-lynxi.c
+@@ -233,11 +233,19 @@ static void mtk_pcs_lynxi_link_up(struct phylink_pcs *pcs,
+ 	}
+ }
+ 
++static void mtk_pcs_lynxi_disable(struct phylink_pcs *pcs)
++{
++	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
++
++	mpcs->interface = PHY_INTERFACE_MODE_NA;
++}
++
+ static const struct phylink_pcs_ops mtk_pcs_lynxi_ops = {
+ 	.pcs_get_state = mtk_pcs_lynxi_get_state,
+ 	.pcs_config = mtk_pcs_lynxi_config,
+ 	.pcs_an_restart = mtk_pcs_lynxi_restart_an,
+ 	.pcs_link_up = mtk_pcs_lynxi_link_up,
++	.pcs_disable = mtk_pcs_lynxi_disable,
+ };
+ 
+ struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
+-- 
+2.41.0
