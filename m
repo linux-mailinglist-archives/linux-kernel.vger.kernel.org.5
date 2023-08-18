@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB95C78076D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 608B4780772
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358738AbjHRIqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        id S1358745AbjHRIrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358777AbjHRIqV (ORCPT
+        with ESMTP id S1358814AbjHRIrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:46:21 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36323AAC;
-        Fri, 18 Aug 2023 01:46:06 -0700 (PDT)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRwNb0KLbztSBV;
-        Fri, 18 Aug 2023 16:42:23 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 18 Aug
- 2023 16:46:01 +0800
-Subject: Re: [PATCH net-next v6 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        <linux-rdma@vger.kernel.org>
-References: <20230814125643.59334-1-linyunsheng@huawei.com>
- <20230814125643.59334-2-linyunsheng@huawei.com>
- <CAC_iWjKMLoUu4bctrWtK46mpyhQ7LoKe4Nm2t8jZVMM0L9O2xA@mail.gmail.com>
- <06e89203-9eaf-99eb-99de-e5209819b8b3@huawei.com>
- <CAC_iWjJ4Pi7Pj9Rm13y4aXBB3RsP9pTsfRf_A-OraXKwaO_xGA@mail.gmail.com>
- <b71d5f5f-0ea1-3a35-8c90-53ef4ae27e79@huawei.com>
- <CAC_iWjJbrwSTT9OT3VjzXkCTdcwShWWaaPJUVC0aG2hR5sbkWg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <b8efc2ce-8856-2c9b-2a8c-edf2a819ebe5@huawei.com>
-Date:   Fri, 18 Aug 2023 16:46:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Fri, 18 Aug 2023 04:47:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6B93AA1;
+        Fri, 18 Aug 2023 01:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692348419; x=1723884419;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KktEApQVMKss72JNTNsuvANlVsqDOTFxayB0RNLemnA=;
+  b=kddoKnrT/Snx+BgbGzdemqYtTWudqaWMKnlIfkZKyyCicgNBkHg8RCWO
+   V+aWv+583yqQIWHtL8ZR9dIp7HmMCP+h8CBRTF7QzR7kBZfswu9QoxOt6
+   awPAJLZn2NVsMohPp71Pvj3PHhoyGASc2T5oupD7dUD93eQRhebO8Titd
+   175ATEoiSJcUHUFVQ8xWI8wWz5FzBRjlPCjIiC9rFK1cBz6pcgjmCacZG
+   msLyeCLl9FyXVBGqfMl6t7KfzFolDDCe/vBtKFjcchYseHiMzAfFImgMF
+   jhXHQwuVOh0I2dIakmjN9NPjvH7khwrLHcKuY7tVBw+40J5lBgZaZ6jpg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="436962793"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="436962793"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 01:46:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="1065661523"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="1065661523"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP; 18 Aug 2023 01:46:57 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1qWv8B-000E2U-2t;
+        Fri, 18 Aug 2023 11:46:55 +0300
+Date:   Fri, 18 Aug 2023 11:46:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        qat-linux@intel.com, alx.manpages@gmail.com,
+        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Subject: Re: [PATCH 4/4] crypto: qat - add pm_status debugfs file
+Message-ID: <ZN8v/2McQboR3dIu@smile.fi.intel.com>
+References: <20230817143352.132583-1-lucas.segarra.fernandez@intel.com>
+ <20230817143352.132583-5-lucas.segarra.fernandez@intel.com>
+ <ZN8BipaGe6DOwiVS@gondor.apana.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAC_iWjJbrwSTT9OT3VjzXkCTdcwShWWaaPJUVC0aG2hR5sbkWg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZN8BipaGe6DOwiVS@gondor.apana.org.au>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/17 19:43, Ilias Apalodimas wrote:
->>>>>>
->>>>>> In order to simplify the driver's work when using frag API
->>>>>> this patch allows page_pool_alloc_frag() to call
->>>>>> page_pool_alloc_pages() to return pages for those arches.
->>>>>
->>>>> Do we have any use cases of people needing this?  Those architectures
->>>>> should be long dead and although we have to support them in the
->>>>> kernel,  I don't personally see the advantage of adjusting the API to
->>>>> do that.  Right now we have a very clear separation between allocating
->>>>> pages or fragments.   Why should we hide a page allocation under a
->>>>> frag allocation?  A driver writer can simply allocate pages for those
->>>>> boards.  Am I the only one not seeing a clean win here?
->>>>
->>>> It is also a part of removing the per page_pool PP_FLAG_PAGE_FRAG flag
->>>> in this patchset.
->>>
->>> Yes, that happens *because* of this patchset.  I am not against the
->>> change.  In fact, I'll have a closer look tomorrow.  I am just trying
->>> to figure out if we really need it.  When the recycling patches were
->>> introduced into page pool we had a very specific reason.  Due to the
->>> XDP verifier we *had* to allocate a packet per page.  That was
->>
->> Did you mean a xdp frame containing a frag page can not be passed to the
->> xdp core?
->> What is exact reason why the XDP verifier need a packet per page?
->> Is there a code block that you can point me to?
+On Fri, Aug 18, 2023 at 01:28:42PM +0800, Herbert Xu wrote:
+> On Thu, Aug 17, 2023 at 04:33:17PM +0200, Lucas Segarra Fernandez wrote:
+> >
+> > +static struct pm_status_row pm_event_rows[] = {
+> > +	PM_INFO_REGSET_ENTRY32(event_log[0], EVENT0),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[1], EVENT1),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[2], EVENT2),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[3], EVENT3),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[4], EVENT4),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[5], EVENT5),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[6], EVENT6),
+> > +	PM_INFO_REGSET_ENTRY32(event_log[7], EVENT7),
+> > +};
+> > +
+> > +static_assert(ARRAY_SIZE_OF_FIELD(struct icp_qat_fw_init_admin_pm_info, event_log) ==
+> > +	      ARRAY_SIZE(pm_event_rows));
 > 
-> It's been a while since I looked at this, but doesn't __xdp_return()
-> still sync the entire page if the mem type comes from page_pool?
+> Was all of that churn just for this one line?
+> 
+> How about simply declaring a macro
+> 
+> 	#define QAT_NUMBER_OF_PM_EVENTS 8
+> 
+> and then use it for the two arrays:
+> 
+> 	static struct pm_status_row pm_event_rows[QAT_NUMBER_OF_PM_EVENTS] = {
+> 
+> 	__u32 event_log[QAT_NUMBER_OF_PM_EVENTS];
+> 
+> What am I missing?
 
-Yes, I checked that too.
-It is supposed to sync the entire page if the mem type comes from page_pool,
-as it depend on the last freed frag to do the sync_for_device operation.
+Splitting ARRAY_SIZE() is very beneficial on its own.
+The static assert is slightly more robust for the big code then defining
+something that at some point can be missed or miscalculated. Yet we can
+survive with a macro if you thinks it's better.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
