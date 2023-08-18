@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4DA078121A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3894D781222
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379133AbjHRRhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
+        id S1379139AbjHRRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379185AbjHRRhc (ORCPT
+        with ESMTP id S1379132AbjHRRhk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:37:32 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882433C2F;
-        Fri, 18 Aug 2023 10:37:31 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B9D7A6607258;
-        Fri, 18 Aug 2023 18:37:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692380250;
-        bh=zn9oR99CAXJJI6TttM03GCqH+pqWZJKU1SVZwemu3yc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lwwBy4A/RdqwsiL/aVstRnbEbJG0J67iiUd3ZtOE+2bOQYU34iOrIhQnyHN+OGlWt
-         XzdfIpGz4sw8GZxB8rwck6kkz+xgevU3z8xXzAw3gM/LLXxwqypjVAP/eKGOq1gW0f
-         j0LSyLoK+3kAdVCBTLUV0te4mgYJLWyeIl4+W7iYQNdxfn2bXAgOHkd+mIXY4pE2Jn
-         OQUosFAUW1yXiD8D47aufHGNfdnYb9Ew8tXZTC1i+4nf4BSLizdY0tcFkNopmjHcca
-         qLlUJEBRQWJXFPiIb2Ilk2GlaxdFWDR82d0yPsTdz2+PqMQL/GDOoZdxO9EUaHQls9
-         e1qg99odBunPA==
-Date:   Fri, 18 Aug 2023 13:37:24 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>, kernel@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3] arm64: dts: mediatek: cherry: Configure eDP and
- internal display
-Message-ID: <8e7ce141-9c7b-4bf8-8929-deeebdbb9ac8@notapiano>
-References: <20230816190427.2137768-1-nfraprado@collabora.com>
- <CAGXv+5EnbovYSfw=_wSKyKTSbDQYu6UW8u8L5bm9PKjN1dVGyQ@mail.gmail.com>
+        Fri, 18 Aug 2023 13:37:40 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2DFF3C23
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:37:38 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-564b8e60ce9so896430a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:37:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692380258; x=1692985058;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3LKfiXOUv4Y78GYwccbn9eLRl2BI7RjZ4/fZETpGexM=;
+        b=AwtNaCfH+hxlFLkfnuSI87gwp+VrGSgjnV1+zyCVrSwmJJC4EGOeaIRRhY9RTx6MYP
+         FgApMLQbcYGXFIUxmq7WRH1DlieMuCOArB0NAHYwn8eFVczWDLMlggXkB/l7FmumT4gH
+         p8dBl4LTXYAJn2srL2qSVGJh9kAj2+MdjgNnQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692380258; x=1692985058;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3LKfiXOUv4Y78GYwccbn9eLRl2BI7RjZ4/fZETpGexM=;
+        b=AUh3hmAwO3mZVo3bcBQ/FfJy94CdKtdgFs4qdD53IIEqLnOTlRMQRU64mkLImBpMoN
+         IpwqYZz6PY9hFB5dan71mcD/OsxI9tp310kYMhHI4eAn3jOnBP+Dw4DNDZkoamNDs+GN
+         P3L5saaG/qEaq/YdyrriOZHbIx13msWKa64O9bZ+Gb6OlGdP9MEntMIqY8kg0G58UlvD
+         v4nJFyza9NQcraxYiOEvF+u8AELGPPhwG6OLefBbwjcJRu6jMrmOSc6paqbzxk6l5qOl
+         LeHC88XNvL7O0/U0l5k5UoBAST3O/wIkuORyNvl4d45C2taQihfNCce2ljm6Du5ac+LE
+         GDRg==
+X-Gm-Message-State: AOJu0YxTiwGyDeUOXygEOWWURZgtsfDH92CQrDve1nFfBjl4yPDC1a6J
+        1RFMYQ4eAzNGYcJFlwHh1UZpRw==
+X-Google-Smtp-Source: AGHT+IGJ++HaMEe6fHz/+u8LhwdAhyc4KdGymaYjDc60SFpqfaa9p36TY5f9p3+CAiEcdKVw+eWCoA==
+X-Received: by 2002:a17:90b:438d:b0:26d:4346:6eb2 with SMTP id in13-20020a17090b438d00b0026d43466eb2mr2675522pjb.46.1692380258263;
+        Fri, 18 Aug 2023 10:37:38 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ci13-20020a17090afc8d00b002684b837d88sm1828910pjb.14.2023.08.18.10.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 10:37:37 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 10:37:36 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Fiona Ebner <f.ebner@proxmox.com>, linux-kernel@vger.kernel.org,
+        siva.kallam@broadcom.com, prashant@broadcom.com,
+        mchan@broadcom.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
+        jdelvare@suse.com, Guenter Roeck <linux@roeck-us.net>,
+        netdev@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: "Use slab_build_skb() instead" deprecation warning triggered by
+ tg3
+Message-ID: <202308181036.8F79E77@keescook>
+References: <1bd4cb9c-4eb8-3bdb-3e05-8689817242d1@proxmox.com>
+ <ZN9SId_KNgI3dfVI@debian.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGXv+5EnbovYSfw=_wSKyKTSbDQYu6UW8u8L5bm9PKjN1dVGyQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZN9SId_KNgI3dfVI@debian.me>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 05:19:22PM +0800, Chen-Yu Tsai wrote:
-> On Thu, Aug 17, 2023 at 3:04 AM Nícolas F. R. A. Prado
-> <nfraprado@collabora.com> wrote:
-> >
-> > From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> >
-> > Add the required nodes to enable the DisplayPort interface, connected
-> > to the Embedded DisplayPort port, where we have an internal display.
-> >
-> > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> > [nfraprado: removed always-on, added vin-supply and enable delay]
-> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+On Fri, Aug 18, 2023 at 06:12:33PM +0700, Bagas Sanjaya wrote:
+> On Fri, Aug 18, 2023 at 10:05:11AM +0200, Fiona Ebner wrote:
+> > Hi,
+> > we've got a user report about the WARN_ONCE introduced by ce098da1497c
+> > ("skbuff: Introduce slab_build_skb()") [0]. The stack trace indicates
+> > that the call comes from the tg3 module. While this is still kernel 6.2
+> > and I can't verify that the issue is still there with newer kernels, I
+> > don't see related changes in drivers/net/ethernet/broadcom/tg3.* after
+> > ce098da1497c, so I thought I should let you know.
+> > 
 > 
-> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
-> Tested-by: Chen-Yu Tsai <wenst@chromium.org>
+> Thanks for the regression report. I'm adding it to regzbot:
 > 
-> > ---
-> > The MediaTek DRM changes needed for MT8195 have already been queued for
-> > v6.6 [1], so this DT patch is the last missing piece needed to get
-> > a working display on MT8195 Tomato.
-> >
-> > [1] https://lore.kernel.org/all/20230813152726.14802-1-chunkuang.hu@kernel.org/
-> >
-> > Changes in v3:
-> > - Split from "MT8195 Acer Tomato - devicetrees Part 3" series
+> #regzbot ^introduced: ce098da1497c6d
+> #regzbot link: https://forum.proxmox.com/threads/132338/
 > 
-> The platform thermal patch from that series hasn't been merged either?
+> PS: The proxmox forum link (except full dmesg log pasted there) is in
+> German, so someone fluent in the language can be helpful here.
 
-Yes, indeed. But given that the DRM series was just merged and this became the
-last missing piece to make MT8195-Tomato an actually usable chromebook upstream,
-I thought it made sense to split this patch so it can be prioritized for the
-v6.6 merge window.
+Since this doesn't cause a behavioral regression, should it be tracked
+by regzbot? The WARN is serving as a reminder to the maintainer to
+adjust the allocation method.
 
-But I'll also send a new version for the thermal patch.
-
-Thanks,
-Nícolas
+-- 
+Kees Cook
