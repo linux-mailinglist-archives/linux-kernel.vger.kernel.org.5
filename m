@@ -2,198 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B3A7804FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21348780502
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357803AbjHRD4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
+        id S1357801AbjHREGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357824AbjHRD4S (ORCPT
+        with ESMTP id S1357808AbjHREGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:56:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725D43A80;
-        Thu, 17 Aug 2023 20:56:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692330976; x=1723866976;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=XzzTJiYRT1PDHtctpm2bpL3Ld3b91mmv0eFdiext6lA=;
-  b=CH5Y63obGrJ01NN6Tb3IKczZKkiNjZ9RPHA64BTJucPlHP8Vs0FZocAN
-   Ha+K6uRKiJyCbjCT+5thWwPi9u/FXgBI6wE3XBfXJZ3N+j7LgrWQxYYb0
-   iegnW1GCeJ9o/Tveljfr9w2eJWRy6p72J8Nqg0iEudlhQbFCQfL64iKrb
-   iNPqqNT5ViLpmzBe5wmGjk6hLocXCYknfEXEDdR48IZbRMO2ywCTSaCgP
-   Z7oebWKoD/kQ+Pql6+cdH9Ehcj9a32LIixUKbh40WVC7wY5fUjmAZTzGj
-   JWFGcsoD7ziCfXzCV63u30IHWz6l4l0B36D0luCAJlcQEuaQn4BeCa3wd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403982943"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="403982943"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 20:56:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="858521915"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="858521915"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga004.jf.intel.com with ESMTP; 17 Aug 2023 20:56:15 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 17 Aug 2023 20:56:15 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 17 Aug 2023 20:56:15 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 17 Aug 2023 20:56:14 -0700
+        Fri, 18 Aug 2023 00:06:13 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 848DE35BF
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:06:11 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZDTn/w55HPFSayxVZjhTdbFvDRtF0bClecdbo3dCO4483cIIZ4P5T973Bv2/GD6m2dPWHijKZumgU89l1/RfFLq1QTOlf+3JNO6pGDASGNTTgHBrYg88WvVDBBDTIRJgKzDw4hekjGENhuu4HMY55Uzv+KPoJJQJSAIECQ7t5nnR7jZEpaWbNel047oEhhaUspw4rvC3OkYOfvxdUI7aKolsIHhnnVQ0A2sl680XaqQHaHyavObyxckSOxmWi4sa2xMnxg+MO6xOE4cxi6YE2QD45fAR+pVQTsgzJWBklytRLjxx/xMSfVVKjrqCxK0srxSDy95LQqY1rmOt12blbw==
+ b=H1c4Ws4H3uSrzxn9QajBg3Bzv/na+oF8C6MFyBjfEE7sEdxdG2OZm4d8gLOg9QQczq82gnCrrEAx6OOnYO0OiIkWjwTj2YziwHAM0kRkz9V8D1XYMHYqaTcxl7SBpG9JQNp9BEh98NjtmbGPgV95ThRxcmX19/xDSMP+Ajq7eMneR+bD5OtUGVE+FvQbVPaasZf7VRWFP2qAlZsNSR+tp2U+qcS75Fr1gLsBRjibw7gDBUB7vj/r+AAA5L0RvTzEPOWEjfqU6I0mpX0GuNoOQqhBvIK637h2AMmGDaNNT8GtJUPo7LlVMpijI8zNIgirgQQ3kKAYwbKTwsyc3MH+sA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6QF/pJa/JklrS2oVphYVsGGwULv5BhlW4GP/So9HD20=;
- b=UNiN2dxGqZxMpSqBdqkWJqW+Mh47v1qauwchSzK3BzYtnOn672V64NYcBSzNIfJ/u/vB0XSoYI0tqeA0dOARepD8EUJoFTD/w1qhmW0QRVJP9/gtJojtheMjkRr9tBgLs1NGOuWGQ7KpB5m8kENt9sXqTYMn/JsT4rxRmLpr+mCWw09RHKo7darVuDZYwDd8g8kIKC1a+aHjA3N8+G94+GBEWil3bQBuJCU//43Pn/Mf/bWQBw18Rs1+2uM6o8YMn3/85eNDjAdrzkw1rvHKpnbTqDYMWIUr5t8jGqA7LEY6UtZWqTZdppgWCs55MTX/KAXJi5RZGb/ESlj7WyX1Kg==
+ bh=EystElpwwkPBhtxQE5mDtr7vgp8jqY4reUgc7xj4+r0=;
+ b=aj/mNfk5wOjNpR1ZHvnDq4VTlONH91WMzTq1+gRsk46EYx7qRlUIkU0ro3NCVTw0KC+Qky4SdZruU9SyNt4obRDx7rYpUzK0bcMDN8ge22NzUi2QzzTyqsSDPGXdQRiKXOP0ibk8bovm1XlSyU+1+eXHDrA3UkcLYYwVLC6JPWp6k3SXCXa36v2m95XEH94imFR6lZ7q3zFTHga02v/x+P9kP3jowkG6GJ68KmVqYINvcH0eVrIyCKYkE8P74bE3Z9jO6Z4wVK9JD21oQun8Nwrkfm5TJeyR8MAoIDErURQEvl6i5cPMfXfbdM5cvWoqS4GRA+cg29gASVrw1RbXQg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SJ2PR11MB7713.namprd11.prod.outlook.com (2603:10b6:a03:4f6::8) with
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EystElpwwkPBhtxQE5mDtr7vgp8jqY4reUgc7xj4+r0=;
+ b=bksSa5c4LNa+/QX+DnPwvRl1siA2fwRnbrrxxF+IHPSzBvoU5xgpFwi9Lj2OPlVhffSVLebcW+140rNOuQpVTldolzS/cLcgWqqEtHF2utIo6noCQ6fJ3Zl8YTBXEuHyE+EcYLP3ksvgd5zt8ncxOYodMJ+hogilJujJ0RZRsNg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by BL1PR12MB5046.namprd12.prod.outlook.com (2603:10b6:208:313::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Fri, 18 Aug
- 2023 03:56:12 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
- 03:56:12 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/3] iommu: Make single-device group for PASID explicit
-Thread-Topic: [PATCH v2 1/3] iommu: Make single-device group for PASID
- explicit
-Thread-Index: AQHZzk2NHVN7+Xla/Uen90/PQyM06K/vcbqg
-Date:   Fri, 18 Aug 2023 03:56:12 +0000
-Message-ID: <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20230814011759.102089-1-baolu.lu@linux.intel.com>
- <20230814011759.102089-2-baolu.lu@linux.intel.com>
-In-Reply-To: <20230814011759.102089-2-baolu.lu@linux.intel.com>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 04:06:07 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::319e:591f:38a0:6bbb]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::319e:591f:38a0:6bbb%6]) with mapi id 15.20.6678.022; Fri, 18 Aug 2023
+ 04:06:07 +0000
+Message-ID: <bf4407c1-890b-6a77-1e2a-d3d988f660ed@amd.com>
+Date:   Fri, 18 Aug 2023 09:35:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCHSET v1 wq/for-6.5] workqueue: Improve unbound workqueue
+ execution locality
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ2PR11MB7713:EE_
-x-ms-office365-filtering-correlation-id: c8e72413-5b09-4694-1600-08db9f9f1046
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: E1SUm+0DgVcnd2tppP5VvAvEwZSVYa8H+yQc81GhcHyfeaSAMN9HDAmUvHQw4Xo/QIgU3ghCF/3KVZzOZqs1oZ317M57vCtIIHRdVzaC/WBitq5vKVTEwtJzoDsm15JXzq9UV1S7sNewS8ekp7QRxk/f3pVw8NJiHc85B9itRrRBWk9FU2T90fGk7MQ12X+Inzsyw4pdJetBdNHQ/bdcr4My2oTUUzTO5hwtvD2G2cJwYZgYlZhkbnrvj55/sUblX0svQ70A1e5D19bsRpu3obyGbp9vkfpHMY02ooDYu6yMsskny/ySMIRwKEqp08ya8QKhzlknb483/88oHU4o7nK1ckI3o0I+lIPWJy+HDZjklRvo5tyDb3jS0Mt53sUGWsILdgsI0DPkx35EuOGLBsaoQP+FZs6BQKx7GFljIrmdPFQRL9zjarX1Ui8uH2IGykMcIaPDv0ITe/A8zDspfKCKkq1CBzatUxIp8APSNjTqh22MeCLOGzyriG+ylj5bwRwAid4jtLgc1Ia52yKqABVqap8ckmsCYeCb+skxpaMaEZ2+UI45mqg2Sc7a5nUivPQKVIqH2fOq5Ly4HKWBkYS6IkpvI/Qd5UcomLZBInr6VFmyeTGzZ6jtm/uHRgOc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(346002)(39860400002)(396003)(186009)(451199024)(1800799009)(2906002)(83380400001)(26005)(86362001)(7416002)(478600001)(6506007)(7696005)(71200400001)(33656002)(9686003)(55016003)(5660300002)(52536014)(41300700001)(66446008)(122000001)(54906003)(66476007)(64756008)(76116006)(66946007)(66556008)(316002)(110136005)(4326008)(8936002)(8676002)(82960400001)(38070700005)(38100700002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?v7eJP9mA3U4TD8+bdzXTGVNhwyWFsJaTvTDf6WJUzPbcQmm3zgerC9P7MoKK?=
- =?us-ascii?Q?UQdt3GdD3Tnpe64TBj+ygydXVkP+ISbM+F6bnK9blMhIBlF92ox27sM1mvV/?=
- =?us-ascii?Q?Qd8B4NYtDioSSPvEclJePbZ82UqDw7j8kz2jDlUfCF11dx5a25vU9EWX2ESo?=
- =?us-ascii?Q?Dv3bOAl6S3HikJ036JVt5Ub7cPQzUpHXsgzYEnxAWqrGj5oJ0xRGyCHTkI1D?=
- =?us-ascii?Q?BJ3bNhM6F1/DyzjGcsmoFch3MnjAVvh0QgciXrAeYfwVm6Orth1jtUJrAdrh?=
- =?us-ascii?Q?3Da1JVzLZG1qmzLkA9B2QndSvzGp7v0HOUjiDaA1r9FP9eLwta6YLBCpEoKs?=
- =?us-ascii?Q?p4d6ArHknOa02w8RbDdDp8P5Fr9Tk/IAiEFiJJgmZgK7Zw+mYttJKqfgozgt?=
- =?us-ascii?Q?sdNprqe7jDa6W1TtUsthyCipefEfTmTGnu78kYFWRAKCr2Jk1dkwc0NULKIz?=
- =?us-ascii?Q?j2pmoXAfg6WtC7myYG+bgf3h7tdL7jGrBhGPzmcfKcPEjtiPw0K09I86wzL/?=
- =?us-ascii?Q?0KbaORbDNONrC6iBwM0zb6u59SW/+p11GFuB6b9eZpv4XexqTH5320tgEeAq?=
- =?us-ascii?Q?4xHMm7OV/tX4+p52kWW2Q1h+stkIvzg9HkoHNvj9yQ2XEPY1hTd+UFVjk2lq?=
- =?us-ascii?Q?bzxqwif0z/mHRSs9G7D+K+jvQiyJELgBAj7U2TlVQcT0iY1GJYcNPbAhagxZ?=
- =?us-ascii?Q?Xrecd+3mrDLPCu1DIjquvBuCKENM8J5yMTIjVqkr02EEKLdi9UENzrXsRh91?=
- =?us-ascii?Q?mpgH7sBlN5ZeYuC1BNCZIOZQJTPW/IFF85ybr6/OSurd6AwsIqSaONXiUQu3?=
- =?us-ascii?Q?WBpVNm6kKqXLjSA6fWSdkuF3PL9D6W8Deyaq7/wB+sWnzWkFmDGchsuXjDpg?=
- =?us-ascii?Q?CWDvcaZ+/Fxuq7deT3Bf2bFiapvMU9jcUZnXwmIq94PsqLmLm7+Af1uQClg2?=
- =?us-ascii?Q?pEwEU4S0W3XP4f2/b6V00C15pZkLofubwGlSXrk3pXMpi5N/l1X6ZEj5225F?=
- =?us-ascii?Q?qILjHYvKdIrGRA4+9ZIbQVMqRIsgq/fWx6y2bZ/KU/brlcD1V55Q84zUY+DU?=
- =?us-ascii?Q?NFSM16NESsm3EKFFlBqnGVWOXgrnLwAjqotsYiZp8JZiqqGqkXtH8UHncQyZ?=
- =?us-ascii?Q?rDcPdlaIQLKoHpLra8ojZqsD8ukNLXlraj7OFoU6inmk2EIU2y5PZzvWuK6w?=
- =?us-ascii?Q?x9vihYFhOeGKeI3dSEnsTYLtNcfP5koCGv8cuhNftUrPV2StV6+7ge20DDlR?=
- =?us-ascii?Q?SW3yWj2xSKMC1VEZku3EBATPkckH8aLH4KRYwE9pMCs/XcrJNZFcI5xTQUj1?=
- =?us-ascii?Q?3mQcMIkAcdnmNxbUN0mFgrKh0+28F0sLkeNesZQop9ocFsebGUpritFMFrvS?=
- =?us-ascii?Q?+RmxdlX0GodwS53TsXeHpc7jvZMM8w08BlRg/wWcaFSPggUAAE4yvkLoD4xu?=
- =?us-ascii?Q?n36N9YW/0qRrMOmNRPXN9uy3SorOrn4E7jXgEF1z2rpHEPNdIl2Ctg6ayr2W?=
- =?us-ascii?Q?Yc5ZcrjeyL/irHKl+rI20J+yI3X027hFMLYLUTir1wI/T+9seIM46X4EPFId?=
- =?us-ascii?Q?yySIZcJ0RDmWyTCs8zs+cFKdQN8FnCXzjrw2W32N?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From:   K Prateek Nayak <kprateek.nayak@amd.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     torvalds@linux-foundation.org, jiangshanlai@gmail.com,
+        peterz@infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@meta.com, joshdon@google.com, brho@google.com,
+        briannorris@chromium.org, nhuck@google.com, agk@redhat.com,
+        snitzer@kernel.org, void@manifault.com
+References: <20230519001709.2563-1-tj@kernel.org>
+ <ZNGYxBCtaMclAl8x@slm.duckdns.org>
+ <94da0dc0-a30d-33d5-b3d5-784bbd59c549@amd.com>
+In-Reply-To: <94da0dc0-a30d-33d5-b3d5-784bbd59c549@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0089.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:9a::7) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|BL1PR12MB5046:EE_
+X-MS-Office365-Filtering-Correlation-Id: ca71b0af-e337-49ab-fc60-08db9fa072a4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ryHNLm4YKqdAqe1RkFTGdZx9gw2Eh+IDr3Akl2ignNwUBI4Fn3p939uyqULbGgX4bXrq6FAvzTJcgJxv4FpDUMhbg7IMJgtSzLMtzKlFG/nPhmcgzeaTJqThc/thhOLZpHotC10LKyFoXiD/E1CjvBXteUqlK8sabIJfO9Jxniy136HA9bXiRbVFuG+jl/m/zWVYrOmbE7WhNdodIPKHEWYTL5/VNLitN86z4HnNVFFg6j8OdLzLSJoWs+K92Sy4nnMHPcliiIbwrqN/cO4ehZjj+B+qyTQIKSCTUqXxMWZbZTm3FQK0MLze9PSPzT2HFUR0cr6eIXdSZwgPUFXxa+YUgYh9YWx2RmUPi2Logn97tBh2QYj4j2w3Mx4u/IFi6MaaTvIcVqWPUHjiUCiECFpVn1N6ioHQnm+9bFbaeJ4jZB7hHgTrXul8GySpl5APh2nXe7puDhbvqB4STHErG2YkyeySBedmJgQVsg3yV3eqD1D+fEB1mWe2haNn8iGmgH+1d1HBBqdrOAP0cz5IBrcFgT5hkt+RfCiTOv5vqeLrTEswYtqUElrw/CmoG/tmClJAli/gexLpx5IIQZvJT+a+GCgWoXrBXyT11VghtNzjnrSmNLpLj6z6qn/a01cfULu6l/iIQBv6S2nRkS3dOA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(376002)(366004)(186009)(1800799009)(451199024)(36756003)(86362001)(31696002)(31686004)(6916009)(316002)(66476007)(66556008)(66946007)(478600001)(41300700001)(38100700002)(6486002)(6666004)(6512007)(6506007)(53546011)(26005)(2616005)(8676002)(4326008)(8936002)(5660300002)(7416002)(2906002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MW53cDNUY1ZKTjhjRllFRjFGaDFhQVFTc0Nhd3FJQnYvZVpmQS9rV3ZhVkR1?=
+ =?utf-8?B?NmFpT0prYkw3a0t0TjBsY05DdWY5ZnJmTFlhRzJreldTaXBYUlpYS2NJcklP?=
+ =?utf-8?B?ekJCZ1ZSUFRUbTJVbU5pYWNrUUE4MWFubFpGR3p4NUFLRExST0JPbVRTTWhK?=
+ =?utf-8?B?L1Ftc3lla2QxWGJqd1oxcWp1Q2E4bW9nb1NJNnhRNGU5OWc3Q1VvYkRDL0w5?=
+ =?utf-8?B?MGQ0TXE1Uk9kZzRRMkp3eGorZG9YYzdPMEVZMUs0WFZnb2Rmb1UwQjhZSmtt?=
+ =?utf-8?B?TUhKSUQwNVFBdlpWdWNwNHdEcGFOUDhEeFlSNmVKMUJSNGNuQmlSRW9oVmN1?=
+ =?utf-8?B?T0Z3S21LVTF0clA4dUpmWUlWYS8wOEx4UGdPSFZwZEZwT1BibkI0SzREa3F2?=
+ =?utf-8?B?RkZtdGQ1QjhhOXYySSs5VUNDcldDVXQrT1dRNUw1OUZSSldVNlAxc2M4VDQz?=
+ =?utf-8?B?TG1QbWluTTQyczBpUzNJNHVCbDN1eTdwb2pUWnVWcUpnMVVuNXY0QWV1bWVT?=
+ =?utf-8?B?aHBnRE1ORXVRbjNnalNnUVRodVY2M256Q20wcXlyS2s3aW8xV2RVRDlCWmk2?=
+ =?utf-8?B?Tkdtam96dmdUOFpjRXU1RkNVanlMYzIvT0NGZVJTc2NBOWRTMElSVEJhR25t?=
+ =?utf-8?B?Y0lBSU92eTlqTngyQ3BmdldNK3ZYSVRBQWNLbG8wcE9tSGZtL0ZLOGRZV1VH?=
+ =?utf-8?B?dEdhU2taZjhBZ3RxeFBFbjFGYWpaZ0pYOTZpMk04STN5VXh6dTE0QWpTcSs0?=
+ =?utf-8?B?bCs4eHJ2ajhCQnZ0YWV4RnhMVnVZSnloSDNhaHFxT0tlTFduRm5JQjJMWDQy?=
+ =?utf-8?B?bXJCSFdPTFNmYkJuT0ZFRFpZaEtxL0M3eGd2S2drZmhjVGdtOStrTHdWMFZz?=
+ =?utf-8?B?K3lUdndYR0tHeE1ieTMxN3paT0xQUVNBUDZ2akU1UmlVSTJxRUFNSTVVOWNO?=
+ =?utf-8?B?U0Fqd2svN2hNcnRNSFNpMm1Ld0FyWjBUdkdqVG0xZW85QzRrdlU5aWp3ZU0w?=
+ =?utf-8?B?bHd5enNXSno4T3Rac3RNM1BXZVZmRHZsQkFxMnVIY0lDZ2VYak1mUm9LZXc3?=
+ =?utf-8?B?ak9TeGdLWGhOM2RxSmc3RUxleTVnZFF1Lzc2cko0MUVtcDRvUUNmNGtUaGVH?=
+ =?utf-8?B?aVpPQ0h2a3FmeEpBUDN1Y0pCb3BqUlY4UGFiNkZFTlZvc1RvNFBmc0hvYnRF?=
+ =?utf-8?B?SStFYXdjNjZXODlYUVV2bE41MGM4eVBpY2d6ajI3Ykdtb0FZU2JteXVVTTha?=
+ =?utf-8?B?NTFrMHpWcWYyTm5CbEtUenN5eEV4UHdDblN5SmxtWXhQWWNEVzlvVnlZR0ZC?=
+ =?utf-8?B?MjRXOVdXeFRHWkFLMExpZzA1aW5PSjM0SkVYemdJeW5RY0VHTzZ3SkF3OENn?=
+ =?utf-8?B?N0s4SFRXNjQvYzNIaGxyR3JYSVNJU2hlTFlLVTZyZjA2SGhrYTBHUlA0TGVm?=
+ =?utf-8?B?YUdlS2MrWCtYMTAwYmF3ajBpVTU5WHFBRlA2MEllbGRYZFZYdG04RGZVcHJj?=
+ =?utf-8?B?c3NkVmJNUlhrck8zMWZIVlpBemJ1WUZRL2RQN1hPNWlRYlNBZzltZ2FYamli?=
+ =?utf-8?B?M3lSQVoreUtUK1NZbzBMQlBiQ09jMk81ZDM2VjZnVEpnYkpDUHliV1NuQmdY?=
+ =?utf-8?B?aS9RazRoTGtOY0lIU09wazJYZU9zSUJ6QXg2aHhQc25QTGhOZUQzOTRXUzha?=
+ =?utf-8?B?dkhPQ3pyMkVMTUlseUUyVC93SUh2TGpvbnZKdHR6L2xoR2xMUlYyYnZVUThS?=
+ =?utf-8?B?REtmYWtIWld6OC9VT0JpbzY1OStsYzdoczhFYzh2TlpSdnVqbkpXcFNRTTBi?=
+ =?utf-8?B?VWVqN3lqSFdFRkRDdjVZQjl1ekZJSUEyTjNCQ1o5WWZXVVZta3Zvb2YvSzk2?=
+ =?utf-8?B?ZVVXWENPWGdBZEw5TFJVdmZEV1ZKOU0reklmVnU5TkJXRHRpUytJdDY3U0Fr?=
+ =?utf-8?B?elM4ckJLbTBiSlF4Z3IxMW1ZNFA4dGhrdW1UV2Zsd3JEMnVMTnhPK1NyMTMy?=
+ =?utf-8?B?b3RpZHdKNk1WUkFZdnB0eTVrQXhsQXJjMWNJQW11N0RGODNuaDl2MkJkQUg5?=
+ =?utf-8?B?bnhSTDhWaDI3RWhBQmZsYnN0OUxZRmFYODJQU3RsYlRjSnc3MTl0bEovc0tQ?=
+ =?utf-8?Q?RWwapyZ0yLwFBto1XQEl6oc3+?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ca71b0af-e337-49ab-fc60-08db9fa072a4
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8e72413-5b09-4694-1600-08db9f9f1046
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 03:56:12.4386
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 04:06:07.3902
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H94hAur8a+jzjEaoojRWalMLE//CbZWMjJEFs9eGmGWs1hreLtKeg4Oh5AN9LOCbyYVEz9GVuQJVB0KrrxoJ1w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7713
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sb1dGHME0pzolwGOHrVIe1oMn05BL+LnlleNjaQHkndmgJZ2hTBuuhsfHQeYR1mztJsJrswX1+nZw0OrjyI4rg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5046
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Monday, August 14, 2023 9:18 AM
->=20
-> The PASID interfaces have always supported only single-device groups.
-> This was first introduced in commit 26b25a2b98e45 ("iommu: Bind process
-> address spaces to devices"), and has been kept consistent in subsequent
-> commits.
->=20
-> However, the core code doesn't explicitly check for this requirement
-> after commit 201007ef707a8 ("PCI: Enable PASID only when ACS RR & UF
-> enabled on upstream path"), which made this requirement implicit.
->=20
-> Restore the check to make it explicit that the PASID interfaces only
-> support devices belonging to single-device groups.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommu.c | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 71b9c41f2a9e..f1eba60e573f 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -3408,6 +3408,11 @@ int iommu_attach_device_pasid(struct
-> iommu_domain *domain,
->  		return -ENODEV;
->=20
->  	mutex_lock(&group->mutex);
-> +	if (list_count_nodes(&group->devices) !=3D 1) {
-> +		ret =3D -EINVAL;
-> +		goto out_unlock;
-> +	}
-> +
+Hello Tejun,
 
-I wonder whether we should also block adding new device to this
-group once the single-device has pasid enabled. Otherwise the
-check alone at attach time doesn't mean this group won't be
-expanded to have multiple devices later.=20
+On 8/8/2023 8:28 AM, K Prateek Nayak wrote:
+> Hello Tejun,
+> 
+> On 8/8/2023 6:52 AM, Tejun Heo wrote:
+>> Hello,
+>>
+>> On Thu, May 18, 2023 at 02:16:45PM -1000, Tejun Heo wrote:
+>>> Unbound workqueues used to spray work items inside each NUMA node, which
+>>> isn't great on CPUs w/ multiple L3 caches. This patchset implements
+>>> mechanisms to improve and configure execution locality.
+>>
+>> The patchset shows minor perf improvements for some but more importantly
+>> gives users more control over worker placement which helps working around
+>> some of the recently reported performance regressions. Prateek reported
+>> concerning regressions with tbench but I couldn't reproduce it and can't see
+>> how tbench would be affected at all given the benchmark doesn't involve
+>> workqueue operations in any noticeable way.
+>>
+>> Assuming that the tbench difference was a testing artifact, I'm applying the
+>> patchset to wq/for-6.6 so that it can receive wider testing. Prateek, I'd
+>> really appreciate if you could repeat the test and see whether the
+>> difference persists.
+> 
+> Sure. I'll retest with for-6.6 branch. Will post the results here once the
+> tests are done. I'll repeat the same - test with the defaults and the ones
+> that show any difference in results, I'll rerun them with various affinity
+> scopes.
+
+Sorry I'm lagging on the test queue but following are the results of the
+standard benchmarks running on a dual socket 3rd Generation EPYC system
+(2 x 64C/128T)
+
+tl;dr
+
+- No noticeable difference in performance.
+- The netperf and tbench regression are gone now and the base numbers too
+  are much higher than before (sorry for the false alarm!)
+
+Following are the results:
+
+base:	affinity-scopes-v2 branch at commit 18c8ae813156 ("workqueue:
+	Disable per-cpu CPU hog detection when wq_cpu_intensive_thresh_us
+	is 0")
+
+affinity-scope:	affinity-scopes-v2 branch at commit a4da9f618d3e
+	("workqueue: Add "Affinity Scopes and Performance" section to]
+	documentation")
+
+==================================================================
+Test          : hackbench
+Units         : Normalized time in seconds
+Interpretation: Lower is better
+Statistic     : AMean
+==================================================================
+Case:          base[pct imp](CV)    affinity-scope[pct imp](CV)
+ 1-groups     1.00 [ -0.00]( 1.76)     0.99 [  0.56]( 3.02)
+ 2-groups     1.00 [ -0.00]( 1.52)     1.01 [ -0.94]( 2.36)
+ 4-groups     1.00 [ -0.00]( 1.49)     1.02 [ -2.20]( 1.91)
+ 8-groups     1.00 [ -0.00]( 1.12)     1.00 [ -0.00]( 0.93)
+16-groups     1.00 [ -0.00]( 3.64)     1.01 [ -0.87]( 2.66)
+
+
+==================================================================
+Test          : tbench
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:  base[pct imp](CV)    affinity-scope[pct imp](CV)
+    1     1.00 [  0.00]( 0.47)     1.00 [ -0.21]( 1.03)
+    2     1.00 [  0.00]( 0.10)     1.00 [  0.00]( 0.45)
+    4     1.00 [  0.00]( 1.60)     1.00 [ -0.18]( 0.83)
+    8     1.00 [  0.00]( 0.13)     1.00 [ -0.26]( 0.59)
+   16     1.00 [  0.00]( 1.69)     1.02 [  2.05]( 1.08)
+   32     1.00 [  0.00]( 0.35)     1.00 [ -0.36]( 2.47)
+   64     1.00 [  0.00]( 0.43)     1.00 [  0.45]( 2.54)
+  128     1.00 [  0.00]( 0.31)     0.99 [ -0.82]( 0.58)
+  256     1.00 [  0.00]( 1.81)     0.98 [ -1.84]( 1.80)
+  512     1.00 [  0.00]( 0.54)     1.00 [  0.04]( 0.06)
+ 1024     1.00 [  0.00]( 0.13)     1.01 [  1.01]( 0.42)
+
+
+==================================================================
+Test          : stream-10
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:     base[pct imp](CV)    affinity-scope[pct imp](CV)
+ Copy     1.00 [  0.00]( 6.45)     1.03 [  2.50]( 5.75)
+Scale     1.00 [  0.00]( 6.21)     1.03 [  3.36]( 0.75)
+  Add     1.00 [  0.00]( 6.10)     1.04 [  4.23]( 1.81)
+Triad     1.00 [  0.00]( 7.24)     1.03 [  3.49]( 3.41)
+
+
+==================================================================
+Test          : stream-100
+Units         : Normalized Bandwidth, MB/s
+Interpretation: Higher is better
+Statistic     : HMean
+==================================================================
+Test:     base[pct imp](CV)    affinity-scope[pct imp](CV)
+ Copy     1.00 [  0.00]( 1.98)     1.00 [  0.40]( 2.57)
+Scale     1.00 [  0.00]( 4.88)     1.00 [ -0.07]( 5.11)
+  Add     1.00 [  0.00]( 4.60)     1.00 [  0.23]( 5.21)
+Triad     1.00 [  0.00]( 6.21)     1.03 [  2.85]( 2.55)
+
+
+==================================================================
+Test          : netperf
+Units         : Normalized Througput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:       base[pct imp](CV)    affinity-scope[pct imp](CV)
+ 1-clients     1.00 [  0.00]( 1.84)     1.01 [  0.99]( 0.72)
+ 2-clients     1.00 [  0.00]( 0.64)     1.01 [  0.53]( 0.77)
+ 4-clients     1.00 [  0.00]( 0.75)     1.01 [  0.54]( 0.96)
+ 8-clients     1.00 [  0.00]( 0.83)     1.00 [ -0.21]( 1.03)
+16-clients     1.00 [  0.00]( 0.75)     1.00 [  0.31]( 0.81)
+32-clients     1.00 [  0.00]( 0.82)     1.00 [  0.12]( 1.57)
+64-clients     1.00 [  0.00]( 2.30)     1.00 [ -0.28]( 2.39)
+128-clients     1.00 [  0.00]( 2.54)     0.99 [ -1.01]( 2.61)
+256-clients     1.00 [  0.00]( 4.37)     1.01 [  1.23]( 2.69)
+512-clients     1.00 [  0.00](48.73)     1.01 [  0.99](46.07)
+
+
+==================================================================
+Test          : schbench
+Units         : Normalized 99th percentile latency in us
+Interpretation: Lower is better
+Statistic     : Median
+==================================================================
+#workers: base[pct imp](CV)    affinity-scope[pct imp](CV)
+  1     1.00 [ -0.00]( 2.28)     1.00 [ -0.00]( 2.28)
+  2     1.00 [ -0.00]( 8.55)     0.96 [  4.00]( 4.17)
+  4     1.00 [ -0.00]( 3.81)     0.94 [  6.45]( 8.78)
+  8     1.00 [ -0.00]( 2.78)     0.97 [  2.78]( 4.81)
+ 16     1.00 [ -0.00]( 1.22)     0.96 [  4.26]( 1.27)
+ 32     1.00 [ -0.00]( 2.02)     0.97 [  2.63]( 3.99)
+ 64     1.00 [ -0.00]( 5.65)     0.99 [  0.62]( 1.65)
+128     1.00 [ -0.00]( 5.17)     0.98 [  1.91]( 8.12)
+256     1.00 [ -0.00](10.79)     1.07 [ -6.82]( 7.18)
+512     1.00 [ -0.00]( 1.24)     0.99 [  0.54]( 1.37)
+
+
+
+==================================================================
+Test          : Unixbench
+Units         : Various, Througput
+Interpretation: Higher is better
+Statistic     : AMean, Hmean (Specified)
+==================================================================
+               	 			base                affinity-scope
+Hmean     unixbench-dhry2reg-1      40947261.77 (   0.00%)    41078213.81 (   0.32%)
+Hmean     unixbench-dhry2reg-512  6243140251.68 (   0.00%)  6240938691.75 (  -0.04%)
+Amean     unixbench-syscall-1        2932806.37 (   0.00%)     2871035.50 *   2.11%*
+Amean     unixbench-syscall-512      7689448.00 (   0.00%)     8406697.27 *   9.33%*
+Hmean     unixbench-pipe-1    	     2577667.42 (   0.00%)     2497979.59 *  -3.09%*
+Hmean     unixbench-pipe-512	   363366036.45 (   0.00%)   356991588.20 *  -1.75%*
+Hmean     unixbench-spawn-1             4446.97 (   0.00%)        4760.91 *   7.06%*
+Hmean     unixbench-spawn-512          68983.49 (   0.00%)       68464.78 *  -0.75%*
+Hmean     unixbench-execl-1             3894.20 (   0.00%)        3857.78 (  -0.94%)
+Hmean     unixbench-execl-512          12716.76 (   0.00%)       13067.63 (   2.76%)
+
+
+==================================================================
+Test          : tbench (Various Affinity Scopes)
+Units         : Normalized throughput
+Interpretation: Higher is better
+Statistic     : AMean
+==================================================================
+Clients:   base[pct imp](CV)         cpu[pct imp](CV)         smt[pct imp](CV)       cache[pct imp](CV)        numa[pct imp](CV)      system[pct imp](CV)
+    1     1.00 [  0.00]( 0.47)     1.00 [  0.11]( 0.95)     1.00 [  0.23]( 1.97)     1.01 [  1.01]( 0.29)     1.00 [  0.07]( 0.57)     1.01 [  1.36]( 0.36)
+    2     1.00 [  0.00]( 0.10)     1.01 [  1.14]( 0.27)     0.99 [ -0.84]( 0.51)     1.01 [  1.05]( 0.50)     1.00 [  0.24]( 0.75)     1.00 [ -0.29]( 1.22)
+    4     1.00 [  0.00]( 1.60)     1.02 [  2.07]( 1.42)     1.02 [  1.65]( 0.46)     1.02 [  2.45]( 0.83)     1.00 [  0.36]( 1.33)     1.02 [  2.37]( 0.57)
+    8     1.00 [  0.00]( 0.13)     1.00 [ -0.02]( 0.61)     1.00 [  0.14]( 0.57)     1.01 [  0.88]( 0.33)     1.00 [ -0.26]( 0.30)     1.01 [  0.90]( 1.48)
+   16     1.00 [  0.00]( 1.69)     1.03 [  3.10]( 0.69)     1.04 [  3.66]( 1.36)     1.02 [  2.36]( 0.62)     1.02 [  1.61]( 1.63)     1.04 [  3.77]( 1.00)
+   32     1.00 [  0.00]( 0.35)     0.97 [ -3.49]( 0.62)     0.97 [ -3.21]( 0.77)     1.00 [ -0.24]( 3.77)     0.96 [ -4.08]( 4.43)     0.97 [ -2.81]( 3.50)
+   64     1.00 [  0.00]( 0.43)     1.00 [  0.20]( 1.66)     0.99 [ -0.61]( 0.81)     1.03 [  2.87]( 0.55)     1.02 [  2.16]( 2.31)     0.98 [ -2.32]( 3.63)
+  128     1.00 [  0.00]( 0.31)     1.01 [  1.44]( 1.33)     1.01 [  0.72]( 0.46)     1.01 [  1.33]( 0.67)     1.00 [  0.38]( 0.58)     1.01 [  1.44]( 1.35)
+  256     1.00 [  0.00]( 1.81)     0.98 [ -2.10]( 1.05)     0.97 [ -2.50]( 0.42)     0.97 [ -3.46]( 0.91)     0.99 [ -0.79]( 0.85)     0.96 [ -3.83]( 0.29)
+  512     1.00 [  0.00]( 0.54)     1.00 [  0.37]( 1.12)     0.99 [ -1.33]( 0.44)     1.00 [ -0.19]( 0.94)     1.01 [  0.87]( 1.05)     0.99 [ -1.08]( 0.12)
+ 1024     1.00 [  0.00]( 0.13)     1.01 [  1.10]( 0.49)     1.00 [  0.47]( 0.28)     1.00 [  0.33]( 0.73)     1.00 [  0.48]( 0.69)     1.00 [  0.01]( 0.47)
+
+==================================================================
+
+ycsb-mongodb and DeathStarBench do not see any difference in
+performance. I'll go and test more NPS modes / more machines.
+Meanwhile, please feel free to add:
+
+Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+
+--
+Thanks and Regards,
+Prateek
