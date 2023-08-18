@@ -2,123 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA6AE780841
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E747D780847
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359078AbjHRJ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        id S1359094AbjHRJaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:30:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359087AbjHRJ3V (ORCPT
+        with ESMTP id S1359082AbjHRJ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:29:21 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C752E30C5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:19 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so10857461fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:19 -0700 (PDT)
+        Fri, 18 Aug 2023 05:29:32 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3446359D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:30 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-5257e2b5d12so819155a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:29:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692350958; x=1692955758;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pe6dUrFf2OfRIze9u6TiWKYUZqpOSPeSgcea4E9pAH8=;
-        b=HcV4CGUqJf+tkyUDdlqSRPJ//Tt6+qta265+7O+KsSD4apqVlf/G3swEE3+9K/5lpa
-         q33ilqddz9zpfy/7CJyHqPx1xAWaxYoigj+hqynMgLzzb3XW9dP6FFct1EFIOMdjjZgO
-         EsP+gUkvbQ5Fs2lDBw7dg8C/dRmatpSs4zf9xBWxHWBZevhgUf4JH7cFX9sfISpYRJao
-         NbVTdttNyLfqAWRJzSW7eD1KLGku4f5eM6FtO9mftV7NlsyXuJa23i1jqixOzEI3eHE8
-         4f0aPm92MvmZaWZj+FvrQh4g+Aa8KzHYDxHDLeatnDeZSiZjU30ZUuvwp0OmnoEq5C+C
-         vorQ==
+        d=linaro.org; s=google; t=1692350969; x=1692955769;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jTPWfjzgiS6MREC/CQy9YZ7a0Ba4pXdxJTPBP//ZxkQ=;
+        b=ChP1wEg29yXYxpK7J9uqfILfPe/L9xBS0HNQPXH54y1zGDEvcdwljY5HVw15zrjTzx
+         VpGb3h1ffXsIXv8NTndpsLQEcYlTmf6GA/8cPAvQ5OUfezNHFsG8dA4nQbmzYXZ+EEL/
+         +E2hg2SAdUHITLhvITSusy2v1ZLvoO2kw3JiBht3/qHk2OjQyiKqn5GvDCtklD/qqqOS
+         WHA7JqYdvqZ/Rjg0POkhOL40Q+5AYUtbCVBLV0PI/oamzCz/eMWcPzEw4/GQHHTTUYwt
+         OWzP/mRyk+KkHBFUux84C272URdVjJQPiQUdj9yjv5T/igPb7VaLMxL8ciSwoEZ9ARB8
+         hxvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692350958; x=1692955758;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pe6dUrFf2OfRIze9u6TiWKYUZqpOSPeSgcea4E9pAH8=;
-        b=B1x3EgCyfyfCLo+ThIFCrEOQNbUyHhQeTtaA+Z8+P0BiEGzfE2pY6AL4wb2FOR2lHW
-         eiItI+HVVyUKKgg9tY9uzrEbW96AgHurdVZJ9Bp2z11TiTcn6rNdUjzCU9i5nxHPe3NZ
-         Oh7re3ic9fYqY8QkMbGGP03yuMQhMCyj6ZAovjKn5JXMaJuK8NAZuAknRNSY3t/1Gnei
-         CBHgorkBC1g8nan8j+JrRCTEsLYQDpEkWIb4Un784P0DNWnGvkeNVKNjg5Tg/zAQLowu
-         pDmIHcsNZ2/bGarHU/ATOW71WbntrPqflYrG3kn3b9GUuW6LRIeGzObryjwLnve5gzNr
-         8XIA==
-X-Gm-Message-State: AOJu0Yx7T0WiJNH98H1ZZs6QYaKwH7+8lxfF6dgQRTK/in5rp7M8TPOt
-        rooSwvyg3wMfHQrtLKCjcJ1oKg==
-X-Google-Smtp-Source: AGHT+IGovJeuyXXZM0SAAt+XnpR6ZkzwKHmLu3sqae8E8VhNrzYrIWkUAVTMWyFKYbISCtCzDHpAHA==
-X-Received: by 2002:a2e:9d55:0:b0:2b6:e96c:5414 with SMTP id y21-20020a2e9d55000000b002b6e96c5414mr1215354ljj.52.1692350958052;
-        Fri, 18 Aug 2023 02:29:18 -0700 (PDT)
-Received: from uffe-tuxpro14.. (h-94-254-63-18.NA.cust.bahnhof.se. [94.254.63.18])
-        by smtp.gmail.com with ESMTPSA id p17-20020a2e9ad1000000b002bbacc6c523sm333546ljj.49.2023.08.18.02.29.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 02:29:17 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v6.5-rc7
-Date:   Fri, 18 Aug 2023 11:29:16 +0200
-Message-Id: <20230818092916.38330-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1692350969; x=1692955769;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jTPWfjzgiS6MREC/CQy9YZ7a0Ba4pXdxJTPBP//ZxkQ=;
+        b=YM9sqqFfD68ojcTAOdK8Z1xqFkqu+7DSKSCIlTE8KhRZa3PGMZrozeqm+hv6/u/1LW
+         6ifxeINTxgmBP8lus5pelAWpNiQ1OA6osCRjo3n0xGLowsh8VmZXll+qSJ40M64O2zWW
+         Wufy9E9ZxmxAC3YkaRxZNgaAlzj24apjwHIwlrfVcuo+GOesujzLomexc7a+y7/j+Mlu
+         mHSMXQDv1VWVglS0eEdYySkiy93WDLyIzdsAbygF9VLouFw9sr3Yyo6KXVeB5wQ4KNsu
+         PodP0UB/qw76xF4ETZsVbraIH/lqI4kiCCxmqYXoEmm7q8C2OZCSHD3rPnTfM5lECPCL
+         KgLA==
+X-Gm-Message-State: AOJu0YyaIhlW+Y+1a8a1jAt1yHtlnyYj7AAYnHmYF1igMGvUET9ONa0G
+        OX6wZ9PdkBiaJMWwiKRDlmrpFA==
+X-Google-Smtp-Source: AGHT+IHd1/56PSeqitQJGalEGxXcH26drQEeAdG2dzNVUp/FxWHNv/06+iWRebGIeZUvbnvpxSWWDA==
+X-Received: by 2002:a05:6402:5154:b0:525:466c:5fda with SMTP id n20-20020a056402515400b00525466c5fdamr1836205edd.28.1692350969335;
+        Fri, 18 Aug 2023 02:29:29 -0700 (PDT)
+Received: from [192.168.0.107] ([79.115.63.195])
+        by smtp.gmail.com with ESMTPSA id e26-20020a056402149a00b005233deb30aesm857895edv.10.2023.08.18.02.29.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 02:29:28 -0700 (PDT)
+Message-ID: <d1c285ff-5eef-4dae-dde0-8946162f19ac@linaro.org>
+Date:   Fri, 18 Aug 2023 10:29:24 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH 02/21] dmaengine: at_hdmac: Annotate struct at_desc with
+ __counted_by
+To:     Kees Cook <keescook@chromium.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Green Wan <green.wan@sifive.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230817235428.never.111-kees@kernel.org>
+ <20230817235859.49846-2-keescook@chromium.org>
+Content-Language: en-US
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20230817235859.49846-2-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Here's a PR with a couple of MMC fixes intended for v6.5-rc7. Details about the
-highlights are as usual found in the signed tag.
-
-Please pull this in!
-
-Kind regards
-Ulf Hansson
 
 
-The following changes since commit 5def5c1c15bf22934ee227af85c1716762f3829f:
+On 8/18/23 00:58, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct at_desc.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
+> Cc: Tudor Ambarus <tudor.ambarus@linaro.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: dmaengine@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-  mmc: sdhci-f-sdh30: Replace with sdhci_pltfm (2023-07-14 11:28:55 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v6.5-rc1-2
-
-for you to fetch changes up to 58abdd80b93b09023ca03007b608685c41e3a289:
-
-  mmc: f-sdh30: fix order of function calls in sdhci_f_sdh30_remove (2023-08-15 13:24:29 +0200)
-
-----------------------------------------------------------------
-MMC core:
- - Fix in_flight[issue_type] value error to properly manage requests
-
-MMC host:
- - wbsd: Fix double free in the probe error path
- - sunplus: Fix error path in probe
- - sdhci_f_sdh30: Fix order of function calls in sdhci_f_sdh30_remove
-
-----------------------------------------------------------------
-Harshit Mogalapalli (1):
-      mmc: sunplus: Fix error handling in spmmc_drv_probe()
-
-Wei Chen (1):
-      mmc: sunplus: fix return value check of mmc_add_host()
-
-Yang Yingliang (1):
-      mmc: wbsd: fix double mmc_free_host() in wbsd_init()
-
-Yangtao Li (1):
-      mmc: f-sdh30: fix order of function calls in sdhci_f_sdh30_remove
-
-Yibin Ding (1):
-      mmc: block: Fix in_flight[issue_type] value error
-
- drivers/mmc/core/block.c         |  7 ++++---
- drivers/mmc/host/sdhci_f_sdh30.c | 11 +++++++----
- drivers/mmc/host/sunplus-mmc.c   | 26 +++++++++++++-------------
- drivers/mmc/host/wbsd.c          |  2 --
- 4 files changed, 24 insertions(+), 22 deletions(-)
+Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> ---
+>  drivers/dma/at_hdmac.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
+> index b2876f67471f..b66c7f416881 100644
+> --- a/drivers/dma/at_hdmac.c
+> +++ b/drivers/dma/at_hdmac.c
+> @@ -239,7 +239,7 @@ struct at_desc {
+>  	bool				memset_buffer;
+>  	dma_addr_t			memset_paddr;
+>  	int				*memset_vaddr;
+> -	struct atdma_sg			sg[];
+> +	struct atdma_sg			sg[] __counted_by(sglen);
+>  };
+>  
+>  /*--  Channels  --------------------------------------------------------*/
