@@ -2,322 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F94578132E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59EA781330
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379525AbjHRTAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:00:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S1379533AbjHRTBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379523AbjHRS7g (ORCPT
+        with ESMTP id S1379563AbjHRTBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:59:36 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A6462D7D;
-        Fri, 18 Aug 2023 11:59:34 -0700 (PDT)
-Received: from [192.168.0.5] (71-212-112-68.tukw.qwest.net [71.212.112.68])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 953D6211F7DD;
-        Fri, 18 Aug 2023 11:59:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 953D6211F7DD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1692385174;
-        bh=d135KGrz2cWsfEoV6BOJWYUpTSu6tAXXjBPCbPKLBJA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=aZLRFk89WqilThXbog1OAMH5ppE8UiJskTwacYRU+T5fSznZv25tozwgXb54wsvZX
-         qH5kzl227zdj2JAvPND2lFizLRXc3+pQ/scXbhSpfkFmxhuTmqoTeTQ5DktR3jCsG7
-         X9HoHytr/hCasHZrRVC0Z5zwsGS3UX1tA5UX6IPs=
-Message-ID: <664aec4c-7ea9-447f-afab-9e31e9e106c1@linux.microsoft.com>
-Date:   Fri, 18 Aug 2023 11:59:34 -0700
+        Fri, 18 Aug 2023 15:01:14 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC72D7D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:01:12 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe12baec61so11933225e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692385271; x=1692990071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ExYK1kYhxn5KPsD+IcjfzF6s7qsUsIZxW0+eQjzIynM=;
+        b=FTEil+JpDeyExcASvR2TIxlpfeKIoy0xpo21NSCYx/4FUoPC5mX8UJAHxtxqXlq3ID
+         N7Bm9VN0uQ+rpny0W+DyGiko5yHILVMwMMgHEuPTqVgPukDt34x3WqnIv6KZ7u7R4vI0
+         ksfFNi6ifY9ZK05Qswx5BODywkJEotyHAMxkqBNlbNVaFxftzbLBX27hiAfLfIsBpDew
+         Rzf/YVc7+VnDnDppB918hDB39IGKQG385+TLUzsVMgapnX0bSjzto1M32dGvLuzqO3Kc
+         bJ61yCKKKF0VwX02vmksOe3uGk5y+vCLnadEDga6AzeFfDc5ZcsU/yrMaqAr04Snmssq
+         DAvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692385271; x=1692990071;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ExYK1kYhxn5KPsD+IcjfzF6s7qsUsIZxW0+eQjzIynM=;
+        b=L56qlySL+yQrb+lnz/KDP4vrh9WADWrgBb2XtUGzbL6AJcYnUBcNAKFyn0Bd0YJaRZ
+         Vi6Sdm39DolF+mQlDCV1VmRf+hRbcWO2Nc3teUIRNO2DFmJA9E5VzM8d47V0/EMQHuzE
+         fn9Tsnly6tKnLG3dA1X4VGOoaRILfgQHIAtEpiLAWjjzwld6VM3INEkGHwtgZ83T8LS1
+         OcP5PSCWSvej/GfwXLkQhbYP1uBO0xad/HMQjyrOhs+skMqpqZcpnS1lXG6czmOfgQe7
+         19EZDBdA6xO6ga8rpuoEU/SV0PfqIhWjVWECGT9AxVyM3RnECszEeuU8vjGSJy6O9RUu
+         Gxng==
+X-Gm-Message-State: AOJu0Yz5Mx2eOm6yjz+VM1cvyAfBABHPAGtSYuBKoIYwtjCbf2bewSOO
+        6F3Aoi7nOknI/ymKXIf3UhFMUQ==
+X-Google-Smtp-Source: AGHT+IGafrw+J+nMKxJ+bVCGdx71rij2ppv9FFCnJtp3E7rVKZ2+RqLKN/e/1fyQTUoTkyEYBRrh7A==
+X-Received: by 2002:a1c:ed04:0:b0:3fa:9823:407 with SMTP id l4-20020a1ced04000000b003fa98230407mr72249wmh.18.1692385271099;
+        Fri, 18 Aug 2023 12:01:11 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d1c5:9f1f:6f05:38a3])
+        by smtp.gmail.com with ESMTPSA id 10-20020a05600c228a00b003fe4ca8decdsm7263541wmf.31.2023.08.18.12.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 12:01:10 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpiolib: tie module references to GPIO devices, not requested descs
+Date:   Fri, 18 Aug 2023 21:01:08 +0200
+Message-Id: <20230818190108.22031-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Content-Language: en-US
-To:     Saurabh Singh Sengar <ssengar@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-Cc:     "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "apais@linux.microsoft.com" <apais@linux.microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        MUKESH RATHOR <mukeshrathor@microsoft.com>,
-        "stanislav.kinsburskiy@gmail.com" <stanislav.kinsburskiy@gmail.com>,
-        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
-        vkuznets <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
- <PUZP153MB063545036E6B547C009F6AECBE1BA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-From:   Nuno Das Neves <nunodasneves@linux.microsoft.com>
-In-Reply-To: <PUZP153MB063545036E6B547C009F6AECBE1BA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/2023 6:08 AM, Saurabh Singh Sengar wrote:
->> +
->> +config MSHV_VTL
->> +	tristate "Microsoft Hyper-V VTL driver"
->> +	depends on MSHV
->> +	select HYPERV_VTL_MODE
->> +	select TRANSPARENT_HUGEPAGE
-> 
-> TRANSPARENT_HUGEPAGE can be avoided for now.
-> 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-I will remove it in the next version. Thanks.
->> +
->> +#define HV_GET_REGISTER_BATCH_SIZE	\
->> +	(HV_HYP_PAGE_SIZE / sizeof(union hv_register_value))
->> +#define HV_SET_REGISTER_BATCH_SIZE	\
->> +	((HV_HYP_PAGE_SIZE - sizeof(struct hv_input_set_vp_registers)) \
->> +		/ sizeof(struct hv_register_assoc))
->> +
->> +int hv_call_get_vp_registers(
->> +		u32 vp_index,
->> +		u64 partition_id,
->> +		u16 count,
->> +		union hv_input_vtl input_vtl,
->> +		struct hv_register_assoc *registers)
->> +{
->> +	struct hv_input_get_vp_registers *input_page;
->> +	union hv_register_value *output_page;
->> +	u16 completed = 0;
->> +	unsigned long remaining = count;
->> +	int rep_count, i;
->> +	u64 status;
->> +	unsigned long flags;
->> +
->> +	local_irq_save(flags);
->> +
->> +	input_page = *this_cpu_ptr(hyperv_pcpu_input_arg);
->> +	output_page = *this_cpu_ptr(hyperv_pcpu_output_arg);
->> +
->> +	input_page->partition_id = partition_id;
->> +	input_page->vp_index = vp_index;
->> +	input_page->input_vtl.as_uint8 = input_vtl.as_uint8;
->> +	input_page->rsvd_z8 = 0;
->> +	input_page->rsvd_z16 = 0;
->> +
->> +	while (remaining) {
->> +		rep_count = min(remaining, HV_GET_REGISTER_BATCH_SIZE);
->> +		for (i = 0; i < rep_count; ++i)
->> +			input_page->names[i] = registers[i].name;
->> +
->> +		status = hv_do_rep_hypercall(HVCALL_GET_VP_REGISTERS,
->> rep_count,
->> +					     0, input_page, output_page);
-> 
-> Is there any possibility that count value is passed 0 by mistake ? In that case
-> status will remain uninitialized. 
-> 
+After a deeper look at commit 3386fb86ecde ("gpiolib: fix reference
+leaks when removing GPIO chips still in use") I'm now convinced that
+gpiolib gets module reference counting wrong.
 
-These lines ensure rep_count is never 0 here:
+As we only take the reference to the owner module when a descriptor is
+requested and put it when it's freed, we can easily trigger a crash by
+removing a module which registered a driver bound to a GPIO chip which
+is unused as nothing prevents us from doing so.
 
-	while (remaining) {
-		rep_count = min(remaining, HV_GET_REGISTER_BATCH_SIZE);
+For correct behavior, we should take the reference to the module when
+we're creating a GPIO device and only put it when that device is
+released as it's at this point that we can safely remove the module's
+code from memory.
 
-Remaining can't be 0 or the loop would exit, and HV_GET_REGISTER_BATCH_SIZE
-is not 0, or we would never get any registers.
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpiolib.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
->> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
->> index 13f972e72375..ccd76f30a638 100644
->> --- a/drivers/hv/hv_common.c
->> +++ b/drivers/hv/hv_common.c
->> @@ -62,7 +62,11 @@ EXPORT_SYMBOL_GPL(hyperv_pcpu_output_arg);
->>   */
->>  static inline bool hv_output_arg_exists(void)
->>  {
->> +#ifdef CONFIG_MSHV_VTL
-> 
-> Although today both the option works together. But thinking
-> which is more accurate CONFIG_HYPERV_VTL_MODE or
-> CONFIG_MSHV_VTL here for scalability of VTL modules.
-> 
-
-Good point. Though I'm not sure it matters too much right now,
-since as you mention they will always be enabled together.
-
-Does CONFIG_HYPERV_VTL_MODE use the output arg?
-
->> diff --git a/drivers/hv/mshv.h b/drivers/hv/mshv.h
->> new file mode 100644
->> index 000000000000..166480a73f3f
->> --- /dev/null
->> +++ b/drivers/hv/mshv.h
->> @@ -0,0 +1,156 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023, Microsoft Corporation.
->> + */
->> +
->> +#ifndef _MSHV_H_
->> +#define _MSHV_H_
->> +
->> +#include <linux/spinlock.h>
->> +#include <linux/mutex.h>
->> +#include <linux/semaphore.h>
->> +#include <linux/sched.h>
->> +#include <linux/srcu.h>
->> +#include <linux/wait.h>
->> +#include <uapi/linux/mshv.h>
->> +
->> +/*
->> + * Hyper-V hypercalls
->> + */
->> +
->> +int hv_call_withdraw_memory(u64 count, int node, u64 partition_id);
->> +int hv_call_create_partition(
->> +		u64 flags,
->> +		struct hv_partition_creation_properties creation_properties,
->> +		union hv_partition_isolation_properties isolation_properties,
->> +		u64 *partition_id);
->> +int hv_call_initialize_partition(u64 partition_id);
->> +int hv_call_finalize_partition(u64 partition_id);
->> +int hv_call_delete_partition(u64 partition_id);
->> +int hv_call_map_gpa_pages(
->> +		u64 partition_id,
->> +		u64 gpa_target,
->> +		u64 page_count, u32 flags,
->> +		struct page **pages);
->> +int hv_call_unmap_gpa_pages(
->> +		u64 partition_id,
->> +		u64 gpa_target,
->> +		u64 page_count, u32 flags);
->> +int hv_call_get_vp_registers(
->> +		u32 vp_index,
->> +		u64 partition_id,
->> +		u16 count,
->> +		union hv_input_vtl input_vtl,
->> +		struct hv_register_assoc *registers);
->> +int hv_call_get_gpa_access_states(
->> +		u64 partition_id,
->> +		u32 count,
->> +		u64 gpa_base_pfn,
->> +		u64 state_flags,
->> +		int *written_total,
->> +		union hv_gpa_page_access_state *states);
->> +
->> +int hv_call_set_vp_registers(
->> +		u32 vp_index,
->> +		u64 partition_id,
->> +		u16 count,
->> +		union hv_input_vtl input_vtl,
->> +		struct hv_register_assoc *registers);
-> 
-> Nit: Opportunity to fix many of the checkpatch.pl related to line break here
-> and many other places.
-> 
-
-checkpatch.pl doesn't complain about anything in this file.
-
->> +static int
->> +mshv_assign_ioeventfd(struct mshv_partition *partition,
->> +		      struct mshv_ioeventfd *args)
->> +	__must_hold(&partition->mutex)
->> +{
->> +	struct kernel_mshv_ioeventfd *p;
->> +	struct eventfd_ctx *eventfd;
->> +	u64 doorbell_flags = 0;
->> +	int ret;
->> +
->> +	/* This mutex is currently protecting ioeventfd.items list */
->> +	WARN_ON_ONCE(!mutex_is_locked(&partition->mutex));
->> +
->> +	if (args->flags & MSHV_IOEVENTFD_FLAG_PIO)
->> +		return -EOPNOTSUPP;
->> +
->> +	/* must be natural-word sized */
->> +	switch (args->len) {
->> +	case 0:
->> +		doorbell_flags = HV_DOORBELL_FLAG_TRIGGER_SIZE_ANY;
->> +		break;
->> +	case 1:
->> +		doorbell_flags = HV_DOORBELL_FLAG_TRIGGER_SIZE_BYTE;
->> +		break;
->> +	case 2:
->> +		doorbell_flags = HV_DOORBELL_FLAG_TRIGGER_SIZE_WORD;
->> +		break;
->> +	case 4:
->> +		doorbell_flags =
->> HV_DOORBELL_FLAG_TRIGGER_SIZE_DWORD;
->> +		break;
->> +	case 8:
->> +		doorbell_flags =
->> HV_DOORBELL_FLAG_TRIGGER_SIZE_QWORD;
->> +		break;
->> +	default:
->> +		pr_warn("ioeventfd: invalid length specified\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	/* check for range overflow */
->> +	if (args->addr + args->len < args->addr)
->> +		return -EINVAL;
->> +
->> +	/* check for extra flags that we don't understand */
->> +	if (args->flags & ~MSHV_IOEVENTFD_VALID_FLAG_MASK)
->> +		return -EINVAL;
->> +
->> +	eventfd = eventfd_ctx_fdget(args->fd);
->> +	if (IS_ERR(eventfd))
->> +		return PTR_ERR(eventfd);
->> +
->> +	p = kzalloc(sizeof(*p), GFP_KERNEL);
->> +	if (!p) {
->> +		ret = -ENOMEM;
->> +		goto fail;
->> +	}
->> +
->> +	p->addr    = args->addr;
->> +	p->length  = args->len;
->> +	p->eventfd = eventfd;
->> +
->> +	/* The datamatch feature is optional, otherwise this is a wildcard */
->> +	if (args->flags & MSHV_IOEVENTFD_FLAG_DATAMATCH)
->> +		p->datamatch = args->datamatch;
->> +	else {
->> +		p->wildcard = true;
->> +		doorbell_flags |=
->> HV_DOORBELL_FLAG_TRIGGER_ANY_VALUE;
->> +	}
->> +
->> +	if (ioeventfd_check_collision(partition, p)) {
->> +		ret = -EEXIST;
->> +		goto unlock_fail;
->> +	}
->> +
->> +	ret = mshv_register_doorbell(partition->id, ioeventfd_mmio_write,
->> +				     (void *)partition, p->addr,
->> +				     p->datamatch, doorbell_flags);
->> +	if (ret < 0) {
->> +		pr_err("Failed to register ioeventfd doorbell!\n");
-> 
-> Nit: Do we like to print function name at the start of pr_err. 
-> 
-
-Yes, we should. I will fix it. Thanks!
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 76e0c38026c3..cb0072d2d137 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -583,6 +583,7 @@ static void gpiodev_release(struct device *dev)
+ 	list_del(&gdev->list);
+ 	spin_unlock_irqrestore(&gpio_lock, flags);
+ 
++	module_put(gdev->owner);
+ 	ida_free(&gpio_ida, gdev->id);
+ 	kfree_const(gdev->label);
+ 	kfree(gdev->descs);
+@@ -753,6 +754,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	else
+ 		gdev->owner = THIS_MODULE;
+ 
++	ret = try_module_get(gdev->owner);
++	if (!ret)
++		goto err_free_dev_name;
++
+ 	/*
+ 	 * Try the device properties if the driver didn't supply the number
+ 	 * of GPIO lines.
+@@ -769,7 +774,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 			 */
+ 			ngpios = 0;
+ 		else if (ret)
+-			goto err_free_dev_name;
++			goto err_put_module;
+ 
+ 		gc->ngpio = ngpios;
+ 	}
+@@ -777,7 +782,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	if (gc->ngpio == 0) {
+ 		chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
+ 		ret = -EINVAL;
+-		goto err_free_dev_name;
++		goto err_put_module;
+ 	}
+ 
+ 	if (gc->ngpio > FASTPATH_NGPIO)
+@@ -787,7 +792,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	gdev->descs = kcalloc(gc->ngpio, sizeof(*gdev->descs), GFP_KERNEL);
+ 	if (!gdev->descs) {
+ 		ret = -ENOMEM;
+-		goto err_free_dev_name;
++		goto err_put_module;
+ 	}
+ 
+ 	gdev->label = kstrdup_const(gc->label ?: "unknown", GFP_KERNEL);
+@@ -937,6 +942,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
+ 	kfree_const(gdev->label);
+ err_free_descs:
+ 	kfree(gdev->descs);
++err_put_module:
++	module_put(gdev->owner);
+ err_free_dev_name:
+ 	kfree(dev_name(&gdev->dev));
+ err_free_ida:
+@@ -2101,20 +2108,16 @@ static int validate_desc(const struct gpio_desc *desc, const char *func)
+ 
+ int gpiod_request(struct gpio_desc *desc, const char *label)
+ {
+-	int ret = -EPROBE_DEFER;
++	int ret;
+ 
+ 	VALIDATE_DESC(desc);
+ 
+-	if (try_module_get(desc->gdev->owner)) {
+-		ret = gpiod_request_commit(desc, label);
+-		if (ret)
+-			module_put(desc->gdev->owner);
+-		else
+-			gpio_device_get(desc->gdev);
+-	}
+-
++	ret = gpiod_request_commit(desc, label);
+ 	if (ret)
+-		gpiod_dbg(desc, "%s: status %d\n", __func__, ret);
++		return ret;
++
++	gpio_device_get(desc->gdev);
++	gpiod_dbg(desc, "%s: status %d\n", __func__, ret);
+ 
+ 	return ret;
+ }
+@@ -2177,7 +2180,6 @@ void gpiod_free(struct gpio_desc *desc)
+ 	if (!gpiod_free_commit(desc))
+ 		WARN_ON(extra_checks);
+ 
+-	module_put(desc->gdev->owner);
+ 	gpio_device_put(desc->gdev);
+ }
+ 
+-- 
+2.39.2
 
