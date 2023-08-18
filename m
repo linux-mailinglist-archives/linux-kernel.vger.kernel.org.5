@@ -2,115 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FE0780824
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 691CD78082A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359014AbjHRJTo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Aug 2023 05:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58280 "EHLO
+        id S1359030AbjHRJUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:20:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359013AbjHRJT0 (ORCPT
+        with ESMTP id S1359070AbjHRJUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:19:26 -0400
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EE0358D;
-        Fri, 18 Aug 2023 02:19:24 -0700 (PDT)
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-56d67c5e87cso125679eaf.0;
-        Fri, 18 Aug 2023 02:19:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692350364; x=1692955164;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hT0hnCuLjpo8MFwXMV532U+BBHGpwy7DBDu59dcH3a8=;
-        b=Rh1e0spHRF5ojF4u2rLxbotI42Svlsy2gMktcl+2k3gm2y9KAHIYHUrmE3TJD61TI7
-         QAGTbH6hI5aJoKllfmtvQffhrm3Cdyf7EsK3jZ5SNgUpK8zlvx21xaBoeLrVLRYyrjWs
-         shOcorGVT7e9rhr6A5N9CQwSR3xcQDZ5h4WnbRkb9LFr6xtrk36A4C1WKzzklowhB81J
-         unC8mWx/+Ba7Bzoexam8hp+on4c8ihUYMQjCLxc8FbkhbfETDodRzdF5uyN0gGF+OWnG
-         O426KYbAFrSNGWZQd/xHiM7NKT1DBRfRwJDYrDUmxIjmSlLbilAEnjRxWAc+j/tKhmDc
-         8nUA==
-X-Gm-Message-State: AOJu0YzmDW2IiWfudHcypM4UHB3M6jT4wcRUlVZ428HI9reA2yjmVAk5
-        1Eg0SAblZynebDapE0OxdWJjHa1Kvc8DNpprjT9bXoNa
-X-Google-Smtp-Source: AGHT+IEOmvo2+2r17iZjbNPDIoVJ4vvqT1956pbectWeT3dwXSoWsdixXdJsjL9FBnjXcxF3h/0ndQn4dawelRTwueo=
-X-Received: by 2002:a05:6820:44a:b0:563:3b56:5dc1 with SMTP id
- p10-20020a056820044a00b005633b565dc1mr2125628oou.0.1692350364066; Fri, 18 Aug
- 2023 02:19:24 -0700 (PDT)
+        Fri, 18 Aug 2023 05:20:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93B1A30E6;
+        Fri, 18 Aug 2023 02:20:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B231BD75;
+        Fri, 18 Aug 2023 02:20:48 -0700 (PDT)
+Received: from bogus (unknown [10.57.34.159])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D5FA3F762;
+        Fri, 18 Aug 2023 02:20:05 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 10:19:31 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Oza Pawandeep <quic_poza@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, rafael@kernel.org,
+        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        jiles@qti.qualcomm.com
+Subject: Re: [PATCH v2] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230818091931.iqh6bxiifk4wyc32@bogus>
+References: <20230807154834.888328-1-quic_poza@quicinc.com>
 MIME-Version: 1.0
-References: <20230818051319.551-1-mario.limonciello@amd.com>
- <20230818051319.551-2-mario.limonciello@amd.com> <CAJZ5v0iHvbbNBnwb-RKvcBaFR8VMGyGt--b6RmbUmwuzcBZKnQ@mail.gmail.com>
- <106803fab8da4648a6881991c7f37214@AcuMS.aculab.com>
-In-Reply-To: <106803fab8da4648a6881991c7f37214@AcuMS.aculab.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 18 Aug 2023 11:19:12 +0200
-Message-ID: <CAJZ5v0h1tCBOcnU2mCGbgE53_=ZM3kHHXzpCtqv=d9LOadaycQ@mail.gmail.com>
-Subject: Re: [PATCH v13 01/12] PCI: Only put Intel PCIe ports >= 2015 into D3
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230807154834.888328-1-quic_poza@quicinc.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:21â€¯AM David Laight <David.Laight@aculab.com> wrote:
->
-> From: Rafael J. Wysocki
-> > Sent: Friday, August 18, 2023 9:12 AM
-> >
-> > On Fri, Aug 18, 2023 at 7:14â€¯AM Mario Limonciello
-> > <mario.limonciello@amd.com> wrote:
-> > >
-> > > commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-> > > changed pci_bridge_d3_possible() so that any vendor's PCIe ports
-> > > from modern machines (>=2015) are allowed to be put into D3.
-> > >
-> > > Iain reports that USB devices can't be used to wake a Lenovo Z13
-> > > from suspend. This is because the PCIe root port has been put
-> > > into D3 and AMD's platform can't handle USB devices waking in this
-> > > case.
-> > >
-> ...
-> > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > > index 60230da957e0c..051e88ee64c63 100644
-> > > --- a/drivers/pci/pci.c
-> > > +++ b/drivers/pci/pci.c
-> > > @@ -3037,10 +3037,11 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
-> > >                         return false;
-> > >
-> > >                 /*
-> > > -                * It should be safe to put PCIe ports from 2015 or newer
-> > > +                * It is safe to put Intel PCIe ports from 2015 or newer
-> > >                  * to D3.
-> > >                  */
-> >
-> > I would say "Allow Intel PCIe ports from 2015 onward to go into D3 to
-> > achieve additional energy conservation on some platforms" without the
-> > "It is safe" part that is kind of obvious (it wouldn't be done if it
-> > were unsafe).
->
-> Just say why...
->
-> "Don't put root ports into D3 on non-Intel systems to avoid issues
-> with USB devices being unable to wake up some AMD based laptops."
+On Mon, Aug 07, 2023 at 08:48:34AM -0700, Oza Pawandeep wrote:
+> Arm® Functional Fixed Hardware Specification defines LPI states, which provide
+> an architectural context loss flags field that can be used to describe the
+> context that might be lost when an LPI state is entered.
+> 
+> - Core context Lost
+>         - General purpose registers.
+>         - Floating point and SIMD registers.
+>         - System registers, include the System register based
+>         - generic timer for the core.
+>         - Debug register in the core power domain.
+>         - PMU registers in the core power domain.
+>         - Trace register in the core power domain.
+> - Trace context loss
+> - GICR
+> - GICD
+> 
+> Qualcomm's custom CPUs preserves the architectural state,
+> including keeping the power domain for local timers active.
+> when core is power gated, the local timers are sufficient to
+> wake the core up without needing broadcast timer.
+> 
+> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> broadcast timer if core context lost is defined in ACPI LPI.
+> 
+> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+> 
+> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> index bd68e1b7f29f..5493b044864f 100644
+> --- a/arch/arm64/include/asm/acpi.h
+> +++ b/arch/arm64/include/asm/acpi.h
+> @@ -9,6 +9,7 @@
+>  #ifndef _ASM_ACPI_H
+>  #define _ASM_ACPI_H
+>  
+> +#include <linux/cpuidle.h>
+>  #include <linux/efi.h>
+>  #include <linux/memblock.h>
+>  #include <linux/psci.h>
+> @@ -42,6 +43,27 @@
+>  #define ACPI_MADT_GICC_SPE  (offsetof(struct acpi_madt_generic_interrupt, \
+>  	spe_interrupt) + sizeof(u16))
+>  
+> +/*
+> + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> + * Table 2: Arm Architecture context loss flags
+> + */
+> +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
+> +
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
+> +							unsigned int *sflags)
+> +{
+> +  if (arch_flags & CPUIDLE_CORE_CTXT) {
+> +	*sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> +  }
 
-Well, both pieces of information are actually useful: Why it is done
-on Intel systems in the first place and why it cannot be done on AMD
-systems.
+I think there are whitespaces issue here for sure. Also you don't need
+braces for single statement under if condition.
+
+> +}
+> +#define arch_update_idle_state_flags arch_update_idle_state_flags
+
+I prefer to rename the function prepending underscore or something to
+distinguish the macro name and function.
+
+> +#endif
+> +
+> +#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
+> +#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
+> +#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+> +
+>  /* Basic configuration for ACPI */
+>  #ifdef	CONFIG_ACPI
+>  pgprot_t __acpi_get_mem_attribute(phys_addr_t addr);
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index 9718d07cc2a2..420baec3465c 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1221,8 +1221,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+>  		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+>  		state->exit_latency = lpi->wake_latency;
+>  		state->target_residency = lpi->min_residency;
+> -		if (lpi->arch_flags)
+> -			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
+> +		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
+>  		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+>  			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+>  		state->enter = acpi_idle_lpi_enter;
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index d584f94409e1..60f17c99465b 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -1471,6 +1471,15 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  }
+>  #endif
+>  
+> +#ifndef arch_update_idle_state_flags
+> +static __always_inline void arch_update_idle_state_flags(u32 arch_flags,
+> +							unsigned int *sflags)
+> +{
+> +
+> +}
+> +#define arch_update_idle_state_flags arch_update_idle_state_flags
+
+Can this be simply
+#define arch_update_idle_state_flags(..)	do {} while(0)
+
+I don't see the need for both empty function and a macro.
+
+With those fixed, you can add
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+
+-- 
+Regards,
+Sudeep
