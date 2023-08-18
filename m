@@ -2,135 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D704D7812B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76B97812B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379229AbjHRSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
+        id S1379329AbjHRSQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379258AbjHRSPk (ORCPT
+        with ESMTP id S1379272AbjHRSQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:15:40 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2066.outbound.protection.outlook.com [40.107.92.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040412D70;
-        Fri, 18 Aug 2023 11:15:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kD7ZKsk+OdvqD2knYkkt7iWfUl0m4b3QuKE96Tb0yiXSAp/w3XAMR2d9J6UcaxozeY4RFYohnnGC/dAxQ+rbMlY4mpidWnJlwwVxWgOr90ZoB05ENBxE6XAlF+3l495g6TVTkocE5esTrn78BwlwFa7+i09sYf7qC8YJlrxJmqNkFw5wu3Unk3cr0eXl+Mb8lxaatWNyDQqVz/VWCJESzsGQbvsfPsJNODSazWxEUFfVnPpXASnX0JcatLFMM3HgitZxMUclwOruStIHUCBDvFRxtXu2a/ChJ4RJcZjzmxDIB/1+ERksVmo1gZ5YWdxaXdgRhQ0QwE6TdpYG7yxlBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w+7nM7XsdgnsxsSnJH/2QBAjzB74eXD8P7vIXcRa+G0=;
- b=KlJGDxugOjA5NC7DR/ddIhmOe1e5Ari+hNk25GZ46v0O0M+n+dovaaIp0LXK1rqZbaHNV/8bt94VO9nouHYlnixV803uV49yvV7ezdCgvtF2OE5i39VhrXaBm8Kq7q6FxZUAV3BrnL6xFeHWaOh0b3pAnb9EIxsvJFM80JZj/JhgkG98Y5WnIuP7zOUqeuuijXLHamwLrUjhkOA8UslEVBuAGiGBNyD8FO6HhNoKC+ftO4tr7k0oo99qh82bcRDukwsV8MmRSgZYtHOimSjHFOPfsVUGXTI5ei3KnvzXRTYNbWF04eiGOA4rHs0BEMe+WjjU3p5dZ/aHesdeQXFPFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w+7nM7XsdgnsxsSnJH/2QBAjzB74eXD8P7vIXcRa+G0=;
- b=PmHyffkIVEIW4O4AV34mEbnw+2WXDJniweaFJTHPcLsmzTLRwxjwzJO4BQBBCwyB7+V4XiO4Df4wzXmnTBZzQQsjPwukGYqXCzwC3kF4klBG5Si6IkZx7HkZmdcWOjHUb8vKvT/CH06W26KlKQLp4U/tRXqHQjwJJ9/6IYnmLdk=
-Received: from PH0PR07CA0091.namprd07.prod.outlook.com (2603:10b6:510:4::6) by
- SA1PR12MB7125.namprd12.prod.outlook.com (2603:10b6:806:29f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
- 2023 18:15:36 +0000
-Received: from SN1PEPF0002529E.namprd05.prod.outlook.com
- (2603:10b6:510:4:cafe::f0) by PH0PR07CA0091.outlook.office365.com
- (2603:10b6:510:4::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.17 via Frontend
- Transport; Fri, 18 Aug 2023 18:15:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002529E.mail.protection.outlook.com (10.167.242.5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Fri, 18 Aug 2023 18:15:36 +0000
-Received: from AUS-LX-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 18 Aug
- 2023 13:15:35 -0500
-From:   Mario Limonciello <mario.limonciello@amd.com>
-To:     <jarkko@kernel.org>
-CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        <charles.d.prestopine@intel.com>, <rafael.j.wysocki@intel.com>,
-        <len.brown@intel.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        <stable@vger.kernel.org>, Todd Brandt <todd.e.brandt@intel.com>
-Subject: [PATCH] tpm: Don't make vendor check required for probe
-Date:   Fri, 18 Aug 2023 13:15:16 -0500
-Message-ID: <20230818181516.19167-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 18 Aug 2023 14:16:12 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976B91BE7;
+        Fri, 18 Aug 2023 11:16:09 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qX40d-00007g-2n;
+        Fri, 18 Aug 2023 18:15:44 +0000
+Date:   Fri, 18 Aug 2023 19:15:24 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net] net: ethernet: mtk_eth_soc: add reset bits for MT7988
+Message-ID: <b983a3adf5184a30e4ce620fbbf028c9c76648ae.1692382239.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002529E:EE_|SA1PR12MB7125:EE_
-X-MS-Office365-Filtering-Correlation-Id: da5779bc-eddc-4884-4193-08dba0171edf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OaGjO42SKQdf/3TxbDU2y7YdXt4TBVprsCAFfJLX7RMo6rfNu/2JVUeFBUFrOWxH861IbBtt20WZsttw6mWURYW6uCVTaXuQ4w+/wpWRH720CSt2l9fZghqlLWwJMNmhv48OUXus+Pj3Ao3Wh45aw7WeY3/APDEvBm11wQoyORZKV7kzTI9OxZyXyeW0vTlfzkQPWdqnhYO6piRLcnbxgJuIR7MmBzd+W7TIDMT+j+4F4qzk8v19t4LDParUJYiIWDuGgh/d2TUsewG72xvWWY+1iDOlhXFjn4JdwQBlxZ6RKyu98XXk7TjoXzG5gLzlgKwruEfrafRAaNJ5ZeBrSTn9GEQfHvz0x/ZJ1ksyvKgOapADnoG1xVSYZFKqxIDYubxYRLLizw41CeEJlVUjJYAElb0m6sXzUGbE53CwQd7w8bOxjnGlyOROcoc4k9JVsSI+dhvWk62sHyVYLrAXtI3RfQoHOfdSbhngTNTr/YvNyHvHr+VQFNm32SANQCyXKmdny+B/MdeYyc5hak/P71FF7yNO52tVF6ROeA61w6qscfqeDnDXl0t4faC4UqYAHgkowAfGdXJGU/nmWCKn6dLtVdTJTGqBRzpB/HM888HhR2zuyD55iGbulMk6htzudQ0NBGPdsroX3ce68NxvLGIiEzoRbJvo0ejoOf7e/w5ZOmj1EmOXZtOC32UF6XgMcfed3fokTwZD6+Ti0vcotqroTSxzCleafdzPvTwgQx5sdT/jLFtQLlSWC2rBjdC1
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(346002)(39860400002)(376002)(451199024)(1800799009)(82310400011)(186009)(46966006)(40470700004)(36840700001)(86362001)(36756003)(82740400003)(356005)(81166007)(40480700001)(966005)(44832011)(16526019)(5660300002)(2616005)(7696005)(70586007)(54906003)(70206006)(478600001)(6666004)(316002)(6916009)(26005)(1076003)(4326008)(8936002)(8676002)(41300700001)(40460700003)(47076005)(336012)(36860700001)(83380400001)(426003)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 18:15:36.5071
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: da5779bc-eddc-4884-4193-08dba0171edf
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002529E.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7125
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
-all AMD fTPMs") doesn't work properly on Intel fTPM.  The TPM doesn't reply
-at bootup and returns back the command code.
+Add bits needed to reset the frame engine on MT7988.
 
-As this isn't crucial for anything but AMD fTPM and AMD fTPM works, throw
-away the error code to let Intel fTPM continue to work.
-
-Cc: stable@vger.kernel.org
-Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
-Reported-by: Todd Brandt <todd.e.brandt@intel.com>
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+Fixes: 445eb6448ed3 ("net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC")
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/char/tpm/tpm_crb.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 76 +++++++++++++++------
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h | 11 ++-
+ 2 files changed, 64 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
-index 9eb1a18590123..b0e9931fe436c 100644
---- a/drivers/char/tpm/tpm_crb.c
-+++ b/drivers/char/tpm/tpm_crb.c
-@@ -472,8 +472,7 @@ static int crb_check_flags(struct tpm_chip *chip)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index fe05c90202699..2482f47313085 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -3613,19 +3613,34 @@ static void mtk_hw_reset(struct mtk_eth *eth)
+ {
+ 	u32 val;
  
--	ret = tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL);
--	if (ret)
-+	if (tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL))
- 		goto release;
+-	if (mtk_is_netsys_v2_or_greater(eth)) {
++	if (mtk_is_netsys_v2_or_greater(eth))
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
++
++	if (mtk_is_netsys_v3_or_greater(eth)) {
++		val = RSTCTRL_PPE0_V3;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= RSTCTRL_PPE1_V3;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val |= RSTCTRL_PPE2;
++
++		val |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
++	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		val = RSTCTRL_PPE0_V2;
++
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= RSTCTRL_PPE1;
+ 	} else {
+ 		val = RSTCTRL_PPE0;
+ 	}
  
- 	if (val == 0x414D4400U /* AMD */)
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val |= RSTCTRL_PPE1;
+-
+ 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
+ 
+-	if (mtk_is_netsys_v2_or_greater(eth))
++	if (mtk_is_netsys_v3_or_greater(eth))
++		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
++			     0x6f8ff);
++	else if (mtk_is_netsys_v2_or_greater(eth))
+ 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
+ 			     0x3ffffff);
+ }
+@@ -3651,13 +3666,21 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
+ 		return;
+ 	}
+ 
+-	if (mtk_is_netsys_v2_or_greater(eth))
++	if (mtk_is_netsys_v3_or_greater(eth)) {
++		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V3;
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			rst_mask |= RSTCTRL_PPE1_V3;
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			rst_mask |= RSTCTRL_PPE2;
++
++		rst_mask |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
++	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
+-	else
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			rst_mask |= RSTCTRL_PPE1;
++	} else {
+ 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
+-
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		rst_mask |= RSTCTRL_PPE1;
++	}
+ 
+ 	regmap_update_bits(eth->ethsys, ETHSYS_RSTCTRL, rst_mask, rst_mask);
+ 
+@@ -4009,11 +4032,17 @@ static void mtk_prepare_for_reset(struct mtk_eth *eth)
+ 	u32 val;
+ 	int i;
+ 
+-	/* disabe FE P3 and P4 */
+-	val = mtk_r32(eth, MTK_FE_GLO_CFG) | MTK_FE_LINK_DOWN_P3;
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val |= MTK_FE_LINK_DOWN_P4;
+-	mtk_w32(eth, val, MTK_FE_GLO_CFG);
++	/* set FE PPE ports link down */
++	for (i = MTK_GMAC1_ID;
++	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
++	     i += 2) {
++		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) | MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val |= MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val |= MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
++		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
++	}
+ 
+ 	/* adjust PPE configurations to prepare for reset */
+ 	for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
+@@ -4074,11 +4103,18 @@ static void mtk_pending_work(struct work_struct *work)
+ 		}
+ 	}
+ 
+-	/* enabe FE P3 and P4 */
+-	val = mtk_r32(eth, MTK_FE_GLO_CFG) & ~MTK_FE_LINK_DOWN_P3;
+-	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+-		val &= ~MTK_FE_LINK_DOWN_P4;
+-	mtk_w32(eth, val, MTK_FE_GLO_CFG);
++	/* set FE PPE ports link up */
++	for (i = MTK_GMAC1_ID;
++	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
++	     i += 2) {
++		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) & ~MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
++			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
++			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
++
++		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
++	}
+ 
+ 	clear_bit(MTK_RESETTING, &eth->state);
+ 
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index 8d2d35b322351..bb4313c92fae0 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -76,9 +76,8 @@
+ #define	MTK_HW_LRO_SDL_REMAIN_ROOM	1522
+ 
+ /* Frame Engine Global Configuration */
+-#define MTK_FE_GLO_CFG		0x00
+-#define MTK_FE_LINK_DOWN_P3	BIT(11)
+-#define MTK_FE_LINK_DOWN_P4	BIT(12)
++#define MTK_FE_GLO_CFG(x)	(((x) == MTK_GMAC3_ID) ? 0x24 : 0x00)
++#define MTK_FE_LINK_DOWN_P(x)	BIT(((x) + 8) % 16)
+ 
+ /* Frame Engine Global Reset Register */
+ #define MTK_RST_GL		0x04
+@@ -522,9 +521,15 @@
+ /* ethernet reset control register */
+ #define ETHSYS_RSTCTRL			0x34
+ #define RSTCTRL_FE			BIT(6)
++#define RSTCTRL_WDMA0			BIT(24)
++#define RSTCTRL_WDMA1			BIT(25)
++#define RSTCTRL_WDMA2			BIT(26)
+ #define RSTCTRL_PPE0			BIT(31)
+ #define RSTCTRL_PPE0_V2			BIT(30)
+ #define RSTCTRL_PPE1			BIT(31)
++#define RSTCTRL_PPE0_V3			BIT(29)
++#define RSTCTRL_PPE1_V3			BIT(30)
++#define RSTCTRL_PPE2			BIT(31)
+ #define RSTCTRL_ETH			BIT(23)
+ 
+ /* ethernet reset check idle register */
 -- 
-2.34.1
-
+2.41.0
