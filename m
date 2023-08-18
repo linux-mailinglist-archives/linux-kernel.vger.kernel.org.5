@@ -2,207 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCF1780762
+	by mail.lfdr.de (Postfix) with ESMTP id CD909780764
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358708AbjHRIoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
+        id S1358718AbjHRIoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358705AbjHRIni (ORCPT
+        with ESMTP id S1358710AbjHRInk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:43:38 -0400
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8535D3AB5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:35 -0700 (PDT)
-Received: from v0.lan (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E6F873F48D;
-        Fri, 18 Aug 2023 10:43:32 +0200 (CEST)
-From:   Martin Botka <martin.botka@somainline.org>
-Date:   Fri, 18 Aug 2023 10:43:18 +0200
-Subject: [PATCH 3/3] arm64: dts: allwinner: h616: Add thermal sensor and
- thermal zones
+        Fri, 18 Aug 2023 04:43:40 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E833ABA
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:36 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe1489ced6so978916e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692348214; x=1692953014;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pZRVjP108x+rTr243Ys5IG0z60fpovntpqPusD6Tea0=;
+        b=f9gpAHr79wue2A4A8FhUN39Eld/pbkXaaRmdUOUc58dSFwm0nMrkzkD9iHka0adjkx
+         q2X0aJj9Gj/V8jATscJRSCj+kZKzdoo7udXW82xn+DpzCCnocR9KmRXl2T1g1ZmxSA1B
+         Ix7Dd3I48Jk9BYyqo6FmUM0whM7AaQCvb28MRn74OdzNkOFKRnPrXtoZHPZ1T5egPtkl
+         jReyFGRcobmfK7JzGyqs3q1t24asVXM0KPtHTv4m9V9TjcegWoJFF34syO3oIiwhFxm6
+         CY+xtuzltxJCvRatj6KOyqXq0+NgWsRvpHaQucgj8FvcHEQlA1jTkWzk0QJBMeOmcE2K
+         d46A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692348214; x=1692953014;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZRVjP108x+rTr243Ys5IG0z60fpovntpqPusD6Tea0=;
+        b=cuCDVYfDRSioMUQd1HggHNT1r6cSAPOj/GfqwCyXjATv3oUNoPs0eF50JGf/0HZNu+
+         1NUC07jKXD/KHlJcTyUC9OZ5jn7ICLs+qLtQrW/SHMzD+Y3qEXbzs2CthBxENhp8Qik3
+         c0qQwVTgkcI/MNIBWBqtA/OQBsetYX07p88C+VRRUTbhHba99pYdp6cCNKvMf62/QmA3
+         gS+Y+NksP3ZbDzx4HPBkbL5S1a5eMDhjqWB4IwgpXSvs6xqBNK6gDUrOYmfJNNfKcIpN
+         mhwEjNPyi0aOkrIACGrwq3GlvKgwFFHm02LMzMKyxpK5xL2GtmIBln3C9f0D6NxSF00A
+         2BTQ==
+X-Gm-Message-State: AOJu0YzwfMo7WXFJx8jHPFxkk4yfYCAK6O5Z724EwCyQST3xQYTuAwvj
+        KnV25faxf7J+4jnphZ/liGNB4w==
+X-Google-Smtp-Source: AGHT+IF6ntKUJ2GHg1KNpDfnUqxnYmyCYICvCAZzypBZYOp69VCs6hqmt5KRSPpLD/BKeoB3vX8w8w==
+X-Received: by 2002:a05:6512:31c6:b0:4fb:9105:58b0 with SMTP id j6-20020a05651231c600b004fb910558b0mr1480301lfe.20.1692348214162;
+        Fri, 18 Aug 2023 01:43:34 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id g25-20020aa7d1d9000000b0052996528b81sm104966edp.45.2023.08.18.01.43.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 01:43:33 -0700 (PDT)
+Message-ID: <6fb1176f-90f1-7a65-3ab5-f6447418c51e@linaro.org>
+Date:   Fri, 18 Aug 2023 10:43:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
+To:     Guru Das Srinagesh <quic_gurus@quicinc.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Kees Cook <keescook@chromium.org>,
+        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        quic_pkondeti@quicinc.com, u.kleine-koenig@pengutronix.de,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+References: <cover.1691049436.git.quic_gurus@quicinc.com>
+ <20230810185526.GC31860@quicinc.com>
+ <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
+ <20230816171538.GB26279@quicinc.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230816171538.GB26279@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230818-ths-h616-v1-3-0e1e058b9c7a@somainline.org>
-References: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
-In-Reply-To: <20230818-ths-h616-v1-0-0e1e058b9c7a@somainline.org>
-To:     Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Alan Ma <tech@biqu3d.com>,
-        Luke Harrison <bttuniversity@biqu3d.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin@biqu3d.com>,
-        Martin Botka <martin.botka@somainline.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692348210; l=3135;
- i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=Y5wSSzIWuOFKSGGZMNJjnzIykv3kiku+VUt8NVG55u0=;
- b=ZBj2B90TGub9dkcGVPwHS8atUkCY5zocGk72YKQqCY0wv2P3VsP7A/dCK8pQN74tOcBu4gJiO
- 0S1fnyvB57dBiSijGDFjzbvZKbaIIzFS7rAGE4m0VgMRWD7yR2d8RY3
-X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
- pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are 4 thermal sensors:
-- CPU
-- GPU
-- VE
-- DRAM
+On 16/08/2023 19:15, Guru Das Srinagesh wrote:
+> Thanks for the comments, Krzysztof.
+> 
+> On Aug 15 2023 23:06, Krzysztof Kozlowski wrote:
+>> On 10/08/2023 20:55, Guru Das Srinagesh wrote:
+>>> On Aug 03 2023 01:23, Guru Das Srinagesh wrote:
+>>>> When pushing patches to upstream, the `get_maintainer.pl` script is used to
+>>>> determine whom to send the patches to. Instead of having to manually process
+>>>> the output of the script, add a wrapper script to do that for you.
+>>>>
+>>>> The add-maintainer.py script adds maintainers (and mailing lists) to a patch,
+>>>> editing it in-place.
+>>>
+>>> Could I request reviews from the other maintainers as well, please? Just to see
+>>> if I should continue working on this script or if the `b4` tool obviates the
+>>> need for such a script.
+>>
+>> I send a bit of patches but I use very simple workflow. It is really
+>> simple, so simple, that I was always surprised how people can make their
+>> life difficult with some complicated process to send patches... and then
+>> obviously skip some maintainers, because of that process.
+> 
+> Exactly - this script aims to solve precisely that problem. It fills the gap
+> between running `get_maintainers.pl` and having to manually edit its output to
+> add "To: " and "Cc: " and somehow incorporate it in the body of the patch(es).
 
-Add the thermal sensor configuration and thermal zones
+Why would anyone need to manually update it? Just some simple bash
+function or git send-email identity.
 
-Signed-off-by: Martin Botka <martin.botka@somainline.org>
----
- arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi | 87 ++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
+> 
+> With this script, the workflow would be as simple as:
+> 
+>   1. Generate patches using `git format-patch`
+>   2. Run `add-maintainer.py` on the above patches
+>   3. `git send-email` the patches.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-index d549d277d972..063db9634e5f 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
-@@ -9,6 +9,7 @@
- #include <dt-bindings/clock/sun6i-rtc.h>
- #include <dt-bindings/reset/sun50i-h616-ccu.h>
- #include <dt-bindings/reset/sun50i-h6-r-ccu.h>
-+#include <dt-bindings/thermal/thermal.h>
- 
- / {
- 	interrupt-parent = <&gic>;
-@@ -138,6 +139,10 @@ sid: efuse@3006000 {
- 			reg = <0x03006000 0x1000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
-+
-+			ths_calibration: thermal-sensor-calibration@14 {
-+				reg = <0x14 0x8>;
-+			};
- 		};
- 
- 		watchdog: watchdog@30090a0 {
-@@ -511,6 +516,18 @@ mdio0: mdio {
- 			};
- 		};
- 
-+		ths: thermal-sensor@5070400 {
-+			compatible = "allwinner,sun50i-h616-ths";
-+			reg = <0x05070400 0x400>;
-+			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_THS>;
-+			clock-names = "bus";
-+			resets = <&ccu RST_BUS_THS>;
-+			nvmem-cells = <&ths_calibration>;
-+			nvmem-cell-names = "calibration";
-+			#thermal-sensor-cells = <1>;
-+		};
-+
- 		usbotg: usb@5100000 {
- 			compatible = "allwinner,sun50i-h616-musb",
- 				     "allwinner,sun8i-h3-musb";
-@@ -755,4 +772,74 @@ r_rsb: rsb@7083000 {
- 			#size-cells = <0>;
- 		};
- 	};
-+
-+	thermal-zones {
-+		cpu-thermal {
-+			polling-delay-passive = <500>;
-+			polling-delay = <1000>;
-+			thermal-sensors = <&ths 2>;
-+			sustainable-power = <1000>;
-+
-+			trips {
-+				cpu_threshold: cpu-trip-0 {
-+					temperature = <60000>;
-+					type = "passive";
-+					hysteresis = <0>;
-+				};
-+				cpu_target: cpu-trip-1 {
-+					temperature = <70000>;
-+					type = "passive";
-+					hysteresis = <0>;
-+				};
-+				cpu_critical: cpu-trip-2 {
-+					temperature = <110000>;
-+					type = "critical";
-+					hysteresis = <0>;
-+				};
-+			};
-+		};
-+
-+		gpu-thermal {
-+			polling-delay-passive = <500>;
-+			polling-delay = <1000>;
-+			thermal-sensors = <&ths 0>;
-+			sustainable-power = <1100>;
-+
-+			trips {
-+				gpu_temp_critical: gpu-trip-0 {
-+					temperature = <110000>;
-+					type = "critical";
-+					hysteresis = <0>;
-+				};
-+			};
-+		};
-+
-+		ve-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&ths 1>;
-+
-+			trips {
-+				ve_temp_critical: ve-trip-0 {
-+					temperature = <110000>;
-+					type = "critical";
-+					hysteresis = <0>;
-+				};
-+			};
-+		};
-+
-+		ddr-thermal {
-+			polling-delay-passive = <0>;
-+			polling-delay = <0>;
-+			thermal-sensors = <&ths 3>;
-+
-+			trips {
-+				ddr_temp_critical: ddr-trip-0 {
-+					temperature = <110000>;
-+					type = "critical";
-+					hysteresis = <0>;
-+				};
-+			};
-+		};
-+	};
- };
+So one more unnecessary step (2). I don't think it is easier than my
+workflow.
 
--- 
-2.41.0
+I just do only 1 and 3 and that's it. The simplest way ever.
+
+> 
+> That's it - no need to manually work with email addresses.
+
+No one suggested it...
+
+>   
+>> I almost always feed git send-email with addresses from
+>> scripts/get_maintainers.pl. This tool would not bring any benefits to my
+>> simple workflow.
+> 
+> In the light of the 3-step workflow I've envisioned above, could you please
+> elaborate why not? If anything, it will only save a developer's time.
+
+Because of unnecessary step 2? One more tool to remember to run?
+
+> 
+>> For newcomers, OTOH, I would either recommend simple workflow or just
+>> use b4. Why? Because if you cannot use git-send-email, then it means
+>> your email setup will make your life difficult and adding maintainers to
+>> existing patch won't help you.
+> 
+> You've mentioned a "simple workflow" many times - could you please share more
+> details on the steps you follow in your workflow for sending patches?
+
+I shared it on LKML few times already (and Rob's git send-email identity
+is also on LKML), so one more time:
+
+https://github.com/krzk/tools/blob/master/linux/.bash_aliases_linux#L91
+
+
+> 
+>> This tool depends on the command line and shell interface of
+>> scripts/get_maintainers.pl which is another reason why it might not be a
+>> good idea.
+> 
+> Could you please elaborate on why depending on the output of
+> `get_maintainer.pl` is a bad idea? It's what everyone uses, no?
+
+No, because if interface changes you need to update two tools.
+
+Best regards,
+Krzysztof
 
