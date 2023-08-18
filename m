@@ -2,150 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF024780601
+	by mail.lfdr.de (Postfix) with ESMTP id 11EFE7805FF
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:55:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358078AbjHRGwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 02:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50248 "EHLO
+        id S1358082AbjHRGx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 02:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234983AbjHRGwO (ORCPT
+        with ESMTP id S1358108AbjHRGxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 02:52:14 -0400
-Received: from pegase1.c-s.fr (unknown [90.115.179.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0DFE6B
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:52:08 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RRsxL46p5z9wtt;
-        Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id LiPPU3P2aRpV; Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRsxL3V5Fz9wtQ;
-        Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 742028B76C;
-        Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1P4BEjFwJOeQ; Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (PO17626.IDSI0.si.c-s.fr [172.19.54.29])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2CEB18B763;
-        Fri, 18 Aug 2023 08:52:06 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37I6q2Em021734
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 08:52:02 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37I6ptDc021716;
-        Fri, 18 Aug 2023 08:51:55 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2] powerpc/512x: Make mpc512x_select_reset_compat() static
-Date:   Fri, 18 Aug 2023 08:51:48 +0200
-Message-ID: <36a19e13025dbf17e92e832dd24150642b0e9bad.1692341499.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Fri, 18 Aug 2023 02:53:43 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F384C273C
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:53:41 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so21599a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 23:53:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google; t=1692341620; x=1692946420;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XCDawg9XpU55ewyHKwVLA/Xkln6SC57eMlqWx9DLiEo=;
+        b=T9yCbIc7LfPUTkoO8VIvyyAql3VtqdbkZ5ZaXDPGrkECIIk8uWr9Bk90c2L6yxLWhA
+         ZMEJoxHdzpODc7YuJ7nVEvxxFIzy9X2EUpxPbQYsJsCiD5Hy50uNEBx85g3oUYB9I3+z
+         54oxFjYnz615ROWpsQvpWCgliOk7B6Llps1jk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692341620; x=1692946420;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XCDawg9XpU55ewyHKwVLA/Xkln6SC57eMlqWx9DLiEo=;
+        b=Aj+9ai/wS+wXt+W73+UQykwdSZfvS2ThHVFYUtAnx33VC3v9TiY9Uc1FDsSc+qLEID
+         zkZMhB2zilfBTaWx+ReHiEaVneMaot5M/qvMv8o1NOUEATco/XK7bNl5w6l1bO9gQ56m
+         l20M0VsNc5ZWGsUwt3AK9juKH3atKI9p2Gfjfmtg4EpdsluAe+pXpRmMmDWScNLZ5E0p
+         bB2jxMbN6YArCPHVgCGwqEUDE96IzsUfgXVuKLiqqX+KYUNUtYrjmfeFnjAJqC56gLRB
+         sAqp/IQ03sZ0iFC9c5H2WzlUiZy8YRwIbTU+o/qKM+mE4uKvX6kq7rVRG5V+WnNdkJ4N
+         icWQ==
+X-Gm-Message-State: AOJu0Yzv02ljKYVI8jxoVGz4vKLvLmM2EObNj2VokHvw6XXm/RMFWhPh
+        RC4juLAJA62OHkxu/pM+vp//8wFLer6SX1dWAF159g==
+X-Google-Smtp-Source: AGHT+IF6LS3DQ1jhWajlCgKZKxhAQc1GaQN3VyutqVz3uuH/zwutZNcndawwmJjuJX8c31EW2DJB5A==
+X-Received: by 2002:aa7:c414:0:b0:521:d2ab:e4df with SMTP id j20-20020aa7c414000000b00521d2abe4dfmr1524947edq.19.1692341620319;
+        Thu, 17 Aug 2023 23:53:40 -0700 (PDT)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id r20-20020a056402019400b005259dd903e5sm720024edv.67.2023.08.17.23.53.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 23:53:39 -0700 (PDT)
+Message-ID: <e66919a4-afdc-efdb-f6ae-07cfc5bde105@rasmusvillemoes.dk>
+Date:   Fri, 18 Aug 2023 08:53:38 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692341507; l=2561; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=69gjT6dGiiA87yrcdfW2QUGSmZ7Vx8PquMwccpsJf3w=; b=3OxJFkXpXWamil9nkMCXX3NaGZf7chUYKaCAsC8/6F7LhH/3CP5+7yQ30QX7TQ+M5TN22V76m 1T/2n44SmIwCe4quiTcnmbJ70AT6qci89CzQQyx2C9N+Kmnh9Bn+Ukt
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,SPF_FAIL,
-        T_SPF_HELO_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 2/2] bitmap: Optimize memset() calls
+Content-Language: en-US, da
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+References: <20230817165453.713353-1-andriy.shevchenko@linux.intel.com>
+ <20230817165453.713353-3-andriy.shevchenko@linux.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <20230817165453.713353-3-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mpc512x_select_reset_compat() is only used in the file it
-is defined.
+On 17/08/2023 18.54, Andy Shevchenko wrote:
+> Intead of byte memset() calls use 32- or 64-bit version depending
+> on the compile-time BITS_PER_LONG value.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/bitmap.h | 16 ++++++++++++----
+>  lib/bitmap.c           |  4 ++--
+>  2 files changed, 14 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 2d5042d1b501..6eec4d4fd623 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -234,22 +234,30 @@ extern int bitmap_print_list_to_buf(char *buf, const unsigned long *maskp,
+>  
+>  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
+>  {
+> -	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+> +	unsigned int len = BITS_TO_LONGS(nbits);
+>  
+>  	if (small_const_nbits(nbits))
+>  		*dst = 0;
+>  	else
+> -		memset(dst, 0, len);
+> +#if BITS_PER_LONG == 64
+> +		memset64((uint64_t *)dst, 0, len);
+> +#else
+> +		memset32((uint32_t *)dst, 0, len);
+> +#endif
+>  }
+>  
 
-Make it static.
+So _if_ this is worth it at all, all those new '#if BITS_PER_LONG == 64'
+suggests that we should instead have a new helper memset_long(), no?
 
-Move mpc512x_restart_init() after mpc512x_select_reset_compat().
+In fact, string.h already has that:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2: Move mpc512x_restart_init() after mpc512x_select_reset_compat().
----
- arch/powerpc/platforms/512x/mpc512x.h        |  1 -
- arch/powerpc/platforms/512x/mpc512x_shared.c | 30 ++++++++++----------
- 2 files changed, 15 insertions(+), 16 deletions(-)
+static inline void *memset_l(unsigned long *p, unsigned long v,
+                __kernel_size_t n)
 
-diff --git a/arch/powerpc/platforms/512x/mpc512x.h b/arch/powerpc/platforms/512x/mpc512x.h
-index 2f3c60e373e1..d2cb06e3a436 100644
---- a/arch/powerpc/platforms/512x/mpc512x.h
-+++ b/arch/powerpc/platforms/512x/mpc512x.h
-@@ -13,7 +13,6 @@ extern void __init mpc512x_init(void);
- extern void __init mpc512x_setup_arch(void);
- extern int __init mpc5121_clk_init(void);
- const char *__init mpc512x_select_psc_compat(void);
--const char *__init mpc512x_select_reset_compat(void);
- extern void __noreturn mpc512x_restart(char *cmd);
- 
- #endif				/* __MPC512X_H__ */
-diff --git a/arch/powerpc/platforms/512x/mpc512x_shared.c b/arch/powerpc/platforms/512x/mpc512x_shared.c
-index 5ac0ead2540f..8f75e9574c27 100644
---- a/arch/powerpc/platforms/512x/mpc512x_shared.c
-+++ b/arch/powerpc/platforms/512x/mpc512x_shared.c
-@@ -29,20 +29,6 @@
- 
- static struct mpc512x_reset_module __iomem *reset_module_base;
- 
--static void __init mpc512x_restart_init(void)
--{
--	struct device_node *np;
--	const char *reset_compat;
--
--	reset_compat = mpc512x_select_reset_compat();
--	np = of_find_compatible_node(NULL, NULL, reset_compat);
--	if (!np)
--		return;
--
--	reset_module_base = of_iomap(np, 0);
--	of_node_put(np);
--}
--
- void __noreturn mpc512x_restart(char *cmd)
- {
- 	if (reset_module_base) {
-@@ -363,7 +349,7 @@ const char *__init mpc512x_select_psc_compat(void)
- 	return NULL;
- }
- 
--const char *__init mpc512x_select_reset_compat(void)
-+static const char *__init mpc512x_select_reset_compat(void)
- {
- 	if (of_machine_is_compatible("fsl,mpc5121"))
- 		return "fsl,mpc5121-reset";
-@@ -455,6 +441,20 @@ static void __init mpc512x_psc_fifo_init(void)
- 	}
- }
- 
-+static void __init mpc512x_restart_init(void)
-+{
-+	struct device_node *np;
-+	const char *reset_compat;
-+
-+	reset_compat = mpc512x_select_reset_compat();
-+	np = of_find_compatible_node(NULL, NULL, reset_compat);
-+	if (!np)
-+		return;
-+
-+	reset_module_base = of_iomap(np, 0);
-+	of_node_put(np);
-+}
-+
- void __init mpc512x_init_early(void)
- {
- 	mpc512x_restart_init();
--- 
-2.41.0
+
+>  static inline void bitmap_fill(unsigned long *dst, unsigned int nbits)
+>  {
+> -	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+> +	unsigned int len = BITS_TO_LONGS(nbits);
+>  
+>  	if (small_const_nbits(nbits))
+>  		*dst = ~0UL;
+>  	else
+> -		memset(dst, 0xff, len);
+> +#if BITS_PER_LONG == 64
+> +		memset64((uint64_t *)dst, GENMASK(63, 0), len);
+> +#else
+> +		memset32((uint32_t *)dst, GENMASK(31, 0), len);
+> +#endif>  }
+>
+
+Please just spell an all-ones long "~0UL", that also matches the
+small_const case.
+
+
+>  static inline void bitmap_copy(unsigned long *dst, const unsigned long *src,
+> diff --git a/lib/bitmap.c b/lib/bitmap.c
+> index 935e0f96e785..df0fb37a5732 100644
+> --- a/lib/bitmap.c
+> +++ b/lib/bitmap.c
+> @@ -128,7 +128,7 @@ void __bitmap_shift_right(unsigned long *dst, const unsigned long *src,
+>  		dst[k] = lower | upper;
+>  	}
+>  	if (off)
+> -		memset(&dst[lim - off], 0, off*sizeof(unsigned long));
+> +		bitmap_zero(&dst[lim - off], off);
+
+This... can't be right. bitmap_zero() still takes an argument which is
+the size in bits, while off is the whole number of words to shift. So if
+called with say shift=128, we'd have off==2, and that bitmap_zero()
+would, because bitmap_zero() rounds up to a whole number of words, end
+up clearing just one word.
+
+Perhaps a chance to add some more test cases? Maybe we're not exercising
+any of the "shift more than BITS_PER_LONG" logic.
+
+But rather than using bitmap_zero() here, forcing you to convert off to
+a number of bits and then bitmap_zero to divide again, if you do this at
+all, just change that memset() to memset_l().
+
+>  }
+>  EXPORT_SYMBOL(__bitmap_shift_right);
+>  
+> @@ -166,7 +166,7 @@ void __bitmap_shift_left(unsigned long *dst, const unsigned long *src,
+>  		dst[k + off] = lower | upper;
+>  	}
+>  	if (off)
+> -		memset(dst, 0, off*sizeof(unsigned long));
+> +		bitmap_zero(dst, off);
+>  }
+
+Same here. Cannot possibly be correct, but will work by chance for off
+<= 1, i.e. shift <= BITS_PER_LONG.
+
+Rasmus
 
