@@ -2,86 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB3C781343
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C937781345
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379577AbjHRTK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:10:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
+        id S1379585AbjHRTNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:13:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379586AbjHRTK3 (ORCPT
+        with ESMTP id S1379584AbjHRTMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:10:29 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C70C0421B;
-        Fri, 18 Aug 2023 12:10:27 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0405DD75;
-        Fri, 18 Aug 2023 12:11:08 -0700 (PDT)
-Received: from [10.57.91.158] (unknown [10.57.91.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFD243F762;
-        Fri, 18 Aug 2023 12:10:19 -0700 (PDT)
-Message-ID: <ba1e0b29-52e0-2fc0-2eb9-475735febacf@arm.com>
-Date:   Fri, 18 Aug 2023 20:10:15 +0100
+        Fri, 18 Aug 2023 15:12:46 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C993A9A;
+        Fri, 18 Aug 2023 12:12:44 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-986d8332f50so166112766b.0;
+        Fri, 18 Aug 2023 12:12:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692385963; x=1692990763;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OWrcVU87yoUh0RKV9M2yRE0DuKukk4JlACojS9ceHP8=;
+        b=CD7X8wuOyJh3hjNA0vDliciCLObjw+2g/jB/UiL7vFv0dfTNz2zqt9ka7OzQXx6Etm
+         GHd44gN+gUK3TGJiqA3Wpn4DaepVFxry/D4k/xOp44QZ3ZhXB+tcMiPxfijyMfy67UBe
+         o4hlF2QkFz2DsrQL4A5TuxOVEMCzWZYauEekvdU4PLW1f6sZcM5U304gjCxBKYMtpZFW
+         Rw17oZ4+4QtZKKBfVA+uK2PgXRtmYK+U22F1Hus5H3v2Hst5uqCaCj2sS4TghdcTYHaR
+         7Y0AiZVHzv2FDxC+d2sGCOIIF1WQGRybadHOCU7RiIKaO8dOf+8p4qWkx7dAlhWnrk20
+         +CBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692385963; x=1692990763;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OWrcVU87yoUh0RKV9M2yRE0DuKukk4JlACojS9ceHP8=;
+        b=I6SwD6OCeahagTs0NeD74SFl/eBjunT3VJZjFfM+DEbTafuc2F5+oBobWniYxCOBTe
+         FgxqBJCJWfkUajDWj4o42dzNJQ/VYxpzBZ7OYVj9Ejf7WfSL7kG/NR7o/aRLKvHDCl4L
+         32h62x2pxWrb/W2rDMaHVMxgvQG8KABEly1nm6S3VUVh0CTv9PTmH+27J3LxUUmyzwxU
+         xtQFHqxtzF///aInh889RlJDgFBGDSBS2dhTR5vHkY+xMWFvfZkChG8CbBmA7dNH1uqC
+         wjbSEYHMX8zT1CLC7103P979EDUq6Zv1gE4JI6jecPMD1z8gHSij1Ot8C4tBYcTQbxPF
+         kWEg==
+X-Gm-Message-State: AOJu0YzzX0K8gY9LCt0N3l8hiFtu8ez/Fu8giCMhF5wF+J0fQNwfrslp
+        bef2cpGOqGXDrB+ceKRdvNf0/K3cdGtOtQ==
+X-Google-Smtp-Source: AGHT+IGRHJbhjyMMDvx8RCIHGJ0hyAwfSTlKV+tEW0CLm2KLBsokdoIDwiEAp/HKoE8xlljK4Xul1w==
+X-Received: by 2002:a17:906:cd2:b0:99c:22e0:ae84 with SMTP id l18-20020a1709060cd200b0099c22e0ae84mr77324ejh.28.1692385962652;
+        Fri, 18 Aug 2023 12:12:42 -0700 (PDT)
+Received: from f (cst-prg-27-89.cust.vodafone.cz. [46.135.27.89])
+        by smtp.gmail.com with ESMTPSA id y17-20020a170906525100b00992c92af6f4sm1536006ejm.144.2023.08.18.12.12.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 12:12:42 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 21:12:39 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>,
+        anton@tuxera.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
+Message-ID: <20230818191239.3cprv2wncyyy5yxj@f>
+References: <000000000000c74d44060334d476@google.com>
+ <87o7j471v8.fsf@email.froward.int.ebiederm.org>
+ <202308181030.0DA3FD14@keescook>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v11 4/6] iommu/s390: Force ISM devices to use
- IOMMU_DOMAIN_DMA
-Content-Language: en-GB
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
- <20230717-dma_iommu-v11-4-a7a0b83c355c@linux.ibm.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230717-dma_iommu-v11-4-a7a0b83c355c@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <202308181030.0DA3FD14@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,65 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-17 12:00, Niklas Schnelle wrote:
-> ISM devices are virtual PCI devices used for cross-LPAR communication.
-> Unlike real PCI devices ISM devices do not use the hardware IOMMU but
-> inspects IOMMU translation tables directly on IOTLB flush (s390 RPCIT
-> instruction).
+On Fri, Aug 18, 2023 at 10:33:26AM -0700, Kees Cook wrote:
+> This is a double-check I left in place, since it shouldn't have been reachable:
 > 
-> While ISM devices keep their DMA allocations static and only very rarely
-> DMA unmap at all, For each IOTLB flush that occurs after unmap the ISM
-> devices will inspect the area of the IOVA space indicated by the flush.
-> This means that for the global IOTLB flushes used by the flush queue
-> mechanism the entire IOVA space would be inspected. In principle this
-> would be fine, albeit potentially unnecessarily slow, it turns out
-> however that ISM devices are sensitive to seeing IOVA addresses that are
-> currently in use in the IOVA range being flushed. Seeing such in-use
-> IOVA addresses will cause the ISM device to enter an error state and
-> become unusable.
+>         /*
+>          * may_open() has already checked for this, so it should be
+>          * impossible to trip now. But we need to be extra cautious
+>          * and check again at the very end too.
+>          */
+>         err = -EACCES;
+>         if (WARN_ON_ONCE(!S_ISREG(file_inode(file)->i_mode) ||
+>                          path_noexec(&file->f_path)))
+>                 goto exit;
 > 
-> Fix this by forcing IOMMU_DOMAIN_DMA to be used for ISM devices. This
-> makes sure IOTLB flushes only cover IOVAs that have been unmapped and
-> also restricts the range of the IOTLB flush potentially reducing latency
-> spikes.
 
-Would it not be simpler to return false for IOMMU_CAP_DEFERRED_FLUSH for 
-these devices?
+As I mentioned in my other e-mail, the check is racy -- an unlucky
+enough remounting with noexec should trip over it, and probably a chmod
+too.
 
-Cheers,
-Robin.
+However, that's not what triggers the warn in this case.
 
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
->   drivers/iommu/s390-iommu.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/iommu/s390-iommu.c b/drivers/iommu/s390-iommu.c
-> index f6d6c60e5634..020cc538e4c4 100644
-> --- a/drivers/iommu/s390-iommu.c
-> +++ b/drivers/iommu/s390-iommu.c
-> @@ -710,6 +710,15 @@ struct zpci_iommu_ctrs *zpci_get_iommu_ctrs(struct zpci_dev *zdev)
->   	return &zdev->s390_domain->ctrs;
->   }
->   
-> +static int s390_iommu_def_domain_type(struct device *dev)
-> +{
-> +	struct zpci_dev *zdev = to_zpci_dev(dev);
-> +
-> +	if (zdev->pft == PCI_FUNC_TYPE_ISM)
-> +		return IOMMU_DOMAIN_DMA;
-> +	return 0;
-> +}
-> +
->   int zpci_init_iommu(struct zpci_dev *zdev)
->   {
->   	u64 aperture_size;
-> @@ -789,6 +798,7 @@ static const struct iommu_ops s390_iommu_ops = {
->   	.probe_device = s390_iommu_probe_device,
->   	.probe_finalize = s390_iommu_probe_finalize,
->   	.release_device = s390_iommu_release_device,
-> +	.def_domain_type = s390_iommu_def_domain_type,
->   	.device_group = generic_device_group,
->   	.pgsize_bitmap = SZ_4K,
->   	.get_resv_regions = s390_iommu_get_resv_regions,
-> 
+The ntfs image used here is intentionally corrupted and the inode at
+hand has a mode of 777 (as in type not specified).
+
+Then the type check in may_open():
+        switch (inode->i_mode & S_IFMT) {
+
+fails to match anything.
+
+This debug printk:
+diff --git a/fs/namei.c b/fs/namei.c
+index e56ff39a79bc..05652e8a1069 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -3259,6 +3259,10 @@ static int may_open(struct mnt_idmap *idmap, const struct path *path,
+                if ((acc_mode & MAY_EXEC) && path_noexec(path))
+                        return -EACCES;
+                break;
++       default:
++               /* bogus mode! */
++               printk(KERN_EMERG "got bogus mode inode!\n");
++               return -EACCES;
+        }
+
+        error = inode_permission(idmap, inode, MAY_OPEN | acc_mode);
+
+catches it.
+
+All that said, I think adding a WARN_ONCE here is prudent, but I
+don't know if denying literally all opts is the way to go.
+
+Do other filesystems have provisions to prevent inodes like this from
+getting here?
