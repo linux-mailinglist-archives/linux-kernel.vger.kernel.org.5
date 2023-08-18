@@ -2,74 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2BC780D54
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BF74780D5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377586AbjHROA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42608 "EHLO
+        id S1377592AbjHROEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377633AbjHROAn (ORCPT
+        with ESMTP id S1377684AbjHRODY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:00:43 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B07C4481
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:00:06 -0700 (PDT)
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bdba3f0e73so11952225ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:00:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692367175; x=1692971975;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=puOR3Md3+bJFpGkHRLOph4XPxHMWnWSLQNus15kLbnM=;
-        b=bD2UmegQPcoQyIoWVIG3PU3mdM885PRWBTVMr+XMsa+Mkz87SjY4yMfSjw+2s75EUK
-         /0H6AFzfXaiKSJNZRX2kTmOZVsl4u2V0w6z1w3oI4cEyNJkyM+94XjuKjaOEmdqDfjxT
-         +1H7kZ1nC7cgYy9qdECoV6LodeMjVHn9VWuxUMMgTjstFVcwUxhQVSjM5Cy/yd9m4NaQ
-         OJC5+27A+XaXXT0/0QigrPgTuLn/60UtzkPu7XpO6Q7UOWQtvNaytqagwGx7zylrKNcK
-         YTDhD2Up9qJZa8/lWihOxXknEeVtbt0xTKEZmxblImtaDD27/p04mu+NbYQJWGpB8Ue3
-         +weQ==
-X-Gm-Message-State: AOJu0Yysjq8bDFToaT2zxIUsNYngA1EKwMMkMVVCGslmv6Yen8k2rDWm
-        5cYinVgjei9OYdd4e0kjTENTKv4N2eG9qqUQ6IM7/uI/GWIm
-X-Google-Smtp-Source: AGHT+IHrM6kkL3CMMAeBCByHgpLlH40+lnOSXumfx5zhDpkB8EhWocTIpnDIp44RdSe8nQg5HijjPUxvMq1BwtqLsaEb5iyodPZ9
+        Fri, 18 Aug 2023 10:03:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E7C422B
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692367317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Km5bEjvHFKHGKfuEsrUW3JzJAnKEezHhvxomlDHV3DU=;
+        b=c3aWLpN/uon7e6QUB9ZGMUoa7ZI7Eu2VH99M2yyBADld6b5T36iIa6rGT8rMFxwK/v/enR
+        bQLK7gp8bDYACdByhacsVbpyt8a9Ub/3DZIMeX/AewzSKD6pqO68stt8LTKO7z4vJwvqU1
+        DbGhN0wTBzHnjLw5v2gwt2eqiFJy678=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-610-gY35I9gfO6u6S84jANp4JA-1; Fri, 18 Aug 2023 10:01:51 -0400
+X-MC-Unique: gY35I9gfO6u6S84jANp4JA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0621A85CBE2;
+        Fri, 18 Aug 2023 14:01:51 +0000 (UTC)
+Received: from localhost (unknown [10.72.120.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C787E140E96E;
+        Fri, 18 Aug 2023 14:01:49 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
+        Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Guangwu Zhang <guazhang@redhat.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: [PATCH V3] lib/group_cpus.c: avoid to acquire cpu hotplug lock in group_cpus_evenly
+Date:   Fri, 18 Aug 2023 22:01:45 +0800
+Message-Id: <20230818140145.1229805-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:dac2:b0:1b8:a92f:2618 with SMTP id
- q2-20020a170902dac200b001b8a92f2618mr854208plx.10.1692367175195; Fri, 18 Aug
- 2023 06:59:35 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 06:59:35 -0700
-In-Reply-To: <20230818112605.2075-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004ea5da060332f0fc@google.com>
-Subject: Re: [syzbot] [wireguard?] INFO: rcu detected stall in
- wg_ratelimiter_gc_entries (2)
-From:   syzbot <syzbot+c1cc0083f159b67cb192@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+group_cpus_evenly() could be part of storage driver's error handler,
+such as nvme driver, when may happen during CPU hotplug, in which
+storage queue has to drain its pending IOs because all CPUs associated
+with the queue are offline and the queue is becoming inactive. And
+handling IO needs error handler to provide forward progress.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Then dead lock is caused:
 
-Reported-and-tested-by: syzbot+c1cc0083f159b67cb192@syzkaller.appspotmail.com
+1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
+handler is waiting for inflight IO
 
-Tested on:
+2) error handler is waiting for CPU hotplug lock
 
-commit:         ace0ab3a Revert "vlan: Fix VLAN 0 memory leak"
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1742e46ba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e670757e16affb
-dashboard link: https://syzkaller.appspot.com/bug?extid=c1cc0083f159b67cb192
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=113c5e6ba80000
+3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
+error handling can't provide forward progress.
 
-Note: testing is done by a robot and is best-effort only.
+Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
+in which two stage spreads are taken: 1) the 1st stage is over all present
+CPUs; 2) the end stage is over all other CPUs.
+
+Turns out the two stage spread just needs consistent 'cpu_present_mask', and
+remove the CPU hotplug lock by storing it into one local cache. This way
+doesn't change correctness, because all CPUs are still covered.
+
+Cc: Keith Busch <kbusch@kernel.org>
+Cc: linux-nvme@lists.infradead.org
+Cc: linux-block@vger.kernel.org
+Reported-by: Yi Zhang <yi.zhang@redhat.com>
+Reported-by: Guangwu Zhang <guazhang@redhat.com>
+Tested-by: Guangwu Zhang <guazhang@redhat.com>
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+---
+V3:
+	- reuse `npresmsk`, and avoid to allocate new variable, suggested by
+	Chengming Zhou
+
+V2:
+	- fix "Cc: block list"
+	- add tested-by tag
+
+ lib/group_cpus.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+index aa3f6815bb12..fffe8a893597 100644
+--- a/lib/group_cpus.c
++++ b/lib/group_cpus.c
+@@ -366,13 +366,18 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 	if (!masks)
+ 		goto fail_node_to_cpumask;
+ 
+-	/* Stabilize the cpumasks */
+-	cpus_read_lock();
+ 	build_node_to_cpumask(node_to_cpumask);
+ 
++	/*
++	 * Make a local cache of 'cpu_present_mask', so the two stages
++	 * spread can observe consistent 'cpu_present_mask' without holding
++	 * cpu hotplug lock.
++	 */
++	cpumask_copy(npresmsk, cpu_present_mask);
++
+ 	/* grouping present CPUs first */
+ 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+-				  cpu_present_mask, nmsk, masks);
++				  npresmsk, nmsk, masks);
+ 	if (ret < 0)
+ 		goto fail_build_affinity;
+ 	nr_present = ret;
+@@ -387,15 +392,13 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+ 		curgrp = 0;
+ 	else
+ 		curgrp = nr_present;
+-	cpumask_andnot(npresmsk, cpu_possible_mask, cpu_present_mask);
++	cpumask_andnot(npresmsk, cpu_possible_mask, npresmsk);
+ 	ret = __group_cpus_evenly(curgrp, numgrps, node_to_cpumask,
+ 				  npresmsk, nmsk, masks);
+ 	if (ret >= 0)
+ 		nr_others = ret;
+ 
+  fail_build_affinity:
+-	cpus_read_unlock();
+-
+ 	if (ret >= 0)
+ 		WARN_ON(nr_present + nr_others < numgrps);
+ 
+-- 
+2.40.1
+
