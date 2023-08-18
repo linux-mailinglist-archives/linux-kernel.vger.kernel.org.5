@@ -2,186 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BCD78156A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 00:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA6478156F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 00:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241581AbjHRW2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 18:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
+        id S241690AbjHRWaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 18:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241721AbjHRW1y (ORCPT
+        with ESMTP id S241621AbjHRW3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 18:27:54 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D015B4212
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:27:49 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26d269dc983so1651048a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:27:49 -0700 (PDT)
+        Fri, 18 Aug 2023 18:29:43 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147104212
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:29:41 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-64aaf3c16c2so7870246d6.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:29:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692397669; x=1693002469;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bymdpw5BwAgBe6vd/lRyy3tT469gRmx/9eNAhu/kn78=;
-        b=T2ItJNvJQWWT5xJXrDTXrCdEsTphGTaYuAoQ1UY1UGSRZlnkMaMq1dg2eF1+vY+Rqu
-         6nodf5UEVz2FU9HBYlECc5RdQxWEE4PtNluS8WFpD13cYiayNGG7gNS/U0zLwWIyMXQP
-         R0svUCCcNmUNBMdQUc96cViluqmDvzjcQRKVHmFm2BHG0cAYpkikOwVBHrnBTif/QkNd
-         W4JxrBhb3jpyEpV9iiXiQJBZCx5hADxOkoLAvANpjqqFtCoIImvTm8f0Ky/rt+jh9Gr2
-         0DUyiRkYIm/u/xW0FxA0MqyvpuRBXsqcrCOYNKYlvlURQcUwMO2qwSdt0I6/M+pNo6fs
-         sFgw==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1692397780; x=1693002580;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pipybyI4Zl/qm+a0HT858CPv8BhOzDnsExnqkOzO/gk=;
+        b=YgxOJn4tDaIe+ZIwJmNbfCjJP5TjGukdN9kULy8C6IcFAsM9jMYXZGhBmc1dxEzIq8
+         +FwDPvEMP4UHiXXjz0ghsz9AS+XMYT5ygAIkg7Qi7vS3WTUm1csMYEdh278hbAU5ogRd
+         V3tKWIhZgoE5acXLGrSOsuIKkXX6n6q+r8uro/hfndX7Z7yoGVSeO+hQCfWOILpqwTOk
+         gwuEAll4j3kqw3ai55IxnrBRWew4NM2+4aasrQexekIkklpYVb3C7fS6Jjuo3RfNheW+
+         QWMFOLap7/Ltnd/lL0V5s/tG4ue96cdce4bQuWLZKPq4mfAfHC/DTi2TdlvEGNQC5y0B
+         fhXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692397669; x=1693002469;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bymdpw5BwAgBe6vd/lRyy3tT469gRmx/9eNAhu/kn78=;
-        b=eoH7BrwzrSxNyXegIukl1V2H6FW8r6+IfrJK8/Mpl9qr0ioWNgiB1P4YiFBMaVD+9Y
-         HXKBa8GjnXPGDrObITlmNyFA8XuGNlGJUJVUSfe90vZ5pq99V+1ivMSztq6AL2qaOk4b
-         5DaTbpfXY1Nvo8NVLkaOy1W68nItCaaauN3SnRT0MuJqZYfo5r9rU6TEYBge7++8x2bW
-         w2WNvP9Ww++QhcliE9jha9gPddRh4/q4OhwDo9MIizDxe+gjZfUr39naQHFsaC3VGc5Q
-         6nmzWvvIhsZ0Y3mcz9mWObGtBN7/gzQ2cngTRnq+0kGx+Zb2qc2OSRgZs9jG/1jeLiJ8
-         9Gwg==
-X-Gm-Message-State: AOJu0Yz8boQ8Ul9uEuAODjj8KTOTis5f74NSARdLuwvn+16KGVOQgNRp
-        OmQ0XNXP6pYnhC7R0n+q4G7/eoNb0Wk=
-X-Google-Smtp-Source: AGHT+IGul9UJGtwGNYasqwR9RLSmn/8F8fFlVfq6NR5Y30gteta3UsK1r5i+/DmPlumhaWwSsITeoo50fV8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:1082:b0:26d:fab:bcce with SMTP id
- gj2-20020a17090b108200b0026d0fabbccemr130337pjb.4.1692397669211; Fri, 18 Aug
- 2023 15:27:49 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 15:27:47 -0700
-In-Reply-To: <20230722003449.664x3xcu6ydi2vrz@amd.com>
-Mime-Version: 1.0
-References: <cover.1689893403.git.isaku.yamahata@intel.com>
- <21e488b6ced77c08d9e6718fcf57e100af409c64.1689893403.git.isaku.yamahata@intel.com>
- <ZLqVdvsF11Ddo7Dq@google.com> <20230722003449.664x3xcu6ydi2vrz@amd.com>
-Message-ID: <ZN/wY53TF2aOZtLu@google.com>
-Subject: Re: [RFC PATCH v4 07/10] KVM: x86: Add gmem hook for initializing
- private memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692397780; x=1693002580;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pipybyI4Zl/qm+a0HT858CPv8BhOzDnsExnqkOzO/gk=;
+        b=b2ElJfJFsnGasvd47J/FyNZ25v2Q1ogInWAH4Mg/Pub7+SJ0wkuZ5vB436S5LUynL1
+         d1McZCFMiPgm2Xo/v/IpiH8+tSgtmHi/5BHcV7mKMWFG+A+oYyDdDNcJ6B10wqMmrS53
+         lkOu5/Hh04r2jX6FIFa3oboGnZ9jculxa0Xp9zy/6FTaySL5z4nLuU+KN6hvin9DBE3v
+         dkXofDJoCuvBByFWqqfN/GEhWOFEf98v4UDpN2KrTs4CFToH8yOIp8r/EQvuuXGQ6eMe
+         IQGngw2N8D3stber1pvD2vfJCGbeWjOZcaEeJf+lzCvLs3HZU9aHjMrhTeESb8ShZxzG
+         rAwg==
+X-Gm-Message-State: AOJu0YyRzrBiUVH7whY7YEAFN6mtCQEueG0Q6rbwuuZ0XGs0QlTAiKkR
+        0+3vT0D3PlF+n9fTHXX3u5deRQ==
+X-Google-Smtp-Source: AGHT+IGEoPlFBG46/AHW+D4TFUfO/XXeH18yydYqG3xx9oQZQ0v2qm4+SfT0BiR6232XwUKvBa9w0Q==
+X-Received: by 2002:a0c:c991:0:b0:63d:70f6:8f6f with SMTP id b17-20020a0cc991000000b0063d70f68f6fmr631138qvk.43.1692397780218;
+        Fri, 18 Aug 2023 15:29:40 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:75e0])
+        by smtp.gmail.com with ESMTPSA id e16-20020a05620a12d000b00767ceac979asm821111qkl.42.2023.08.18.15.29.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 15:29:39 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 18:29:39 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>, Yu Zhao <yuzhao@google.com>,
+        Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
+Message-ID: <20230818222939.GB144640@cmpxchg.org>
+References: <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
+ <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
+ <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
+ <20230818134906.GA138967@cmpxchg.org>
+ <CAJD7tkZY3kQPO2dn2NX0WODwwRifhH4R=pSZnFZYxh23Eszb-g@mail.gmail.com>
+ <20230818173544.GA142196@cmpxchg.org>
+ <CAJD7tkZ3i-NoqSi+BkCY7nR-2z==243F1FKrh42toQwsgv5eKQ@mail.gmail.com>
+ <20230818183538.GA142974@cmpxchg.org>
+ <CAJD7tkYjyqhjv7q-VCSPViFGqdYWGpsyftR6L=D_M8QuMsQQ5Q@mail.gmail.com>
+ <20230818213502.nsur4qbs7t7nxg54@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230818213502.nsur4qbs7t7nxg54@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for responding so late, lost track of this and only found it against when
-reviewing the next version :-/
-
-On Fri, Jul 21, 2023, Michael Roth wrote:
-> On Fri, Jul 21, 2023 at 07:25:58AM -0700, Sean Christopherson wrote:
-> > Practically speaking, hooking the fault path will result in undesirable behavior.
-> > Just because KVM *maps* at 4KiB granularity doesn't mean the RMP must be assigned
-> > at 4KiB granularity, e.g. if userspace chooses to *not* PUNCH_HOLE when the guest
-> > shares a single 4KiB page in a 2MiB chunk.   Dirty logging is another case where
-> > the RMP can stay at 2MiB.  Or as a very silly example, imagine userspace pulls a
-> > stupid and covers a single 2MiB chunk of gmem with 512 memslots.
-> 
-> Unfortunately I don't think things aren't quite that flexible with SNP. If
-> RMP entry is 2MB, and you map a sub-page as 4K in the NPT, you'll immediately
-> get a PFERR_GUEST_SIZEM on the first access (presumably when the guest tries
-> to PVALIDATE it before use). The RMP fault handler will then subsequently
-> need to PSMASH the 2MB entry into 4K before that guest can access it. So you
-> get an extra page fault for every 2MB page that's mapped this way.
-> (APM Volume 2, Section 15.36.10).
-
-Well that's just bloody stupid.  Why is that a restriction?  Obviously creating
-an NPT mapping that's larger would be annoying to handle, e.g. would require
-locking multiple entries or something, so I can understand why that's disallowed.
-But why can't software map at a finer granularity?
-
-Note, I'm expecting a spec change, just expressing a bit of disbelief.
-
-Anyways, IMO, we should eat the extra #NPF in that scenario and optimize for much,
-much more likely scenario of the RMP and NPT both being able to use 2MiB pages.
-And that means not inserting into the RMP when handling #NPFs, e.g. so that userspace
-can do fallocate() to prep the memory before mapping, and so that if the SPTEs
-get zapped for whatever reason, faulting them back in doesn't trigger useless
-RMP updates.
-
-I guess the other way to optimze things would be for userspace to use the ioctl()
-to map memory into the guest[*].  But even then, initializing when allocating
-seems cleaner, especially for TDX.
-
-[*] https://lore.kernel.org/all/ZMFYhkSPE6Zbp8Ea@google.com
-
-> That might not be a big deal for guests that are at least somewhat optimized
-> to make use of 2MB pages, but another situation is:
-> 
->   - gmem allocates 2MB page
->   - guest issues PVALIDATE on 2MB page
->   - guest later converts a subpage to shared but doesn't holepunch
->   - SNP host code issues PSMASH to split 2MB RMP mapping to 4K
->   - KVM MMU splits NPT mapping to 4K
->   - guest converts that shared page back to private
-> 
-> At this point there are no mixed attributes, and KVM would normally
-> allow for 2MB NPT mappings again, but this is actually not allowed
-> because the RMP table mappings are validated/4K and cannot be promoted on
-> the hypervisor, so the NPT mappings must still be limited to 4K to
-> match this, otherwise we hit the reverse of the PFERR_GUEST_SIZEM
-> scenario above, where the NPT mapping level is *larger* than the RMP
-> entry level. Unfortunately that does not result in a PFERR_GUEST_SIZEM
-> where we can fix things up in response, but instead it's a general
-> RMP fault that would be tricky to distinguish from an RMP fault
-> resulting from an implicit page conversion or some other guest weirdness
-> without doing RMP table checks every time we get a general RMP fault.
-
-This seems like a bug in the SNP code.  (a) why would KVM/SNP PSMASH in that
-scenario and (b) why can't it zap/split the NPT before PSMASH?
-
-> So for all intents and purposes it does sort of end up being the case
-> that the mapping size and RMP entry size are sort of intertwined and
-> can't totally be decoupled, and if you don't take that into account
-> when updating the RMP entry, you'll have to do some extra PSMASH's
-> in response to PFERR_GUEST_SIZEM RMP faults later.
-> 
+On Fri, Aug 18, 2023 at 09:35:02PM +0000, Shakeel Butt wrote:
+> On Fri, Aug 18, 2023 at 11:44:45AM -0700, Yosry Ahmed wrote:
+> > On Fri, Aug 18, 2023 at 11:35 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > On Fri, Aug 18, 2023 at 10:45:56AM -0700, Yosry Ahmed wrote:
+> > > > On Fri, Aug 18, 2023 at 10:35 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > > > On Fri, Aug 18, 2023 at 07:56:37AM -0700, Yosry Ahmed wrote:
+> > > > > > If this happens it seems possible for this to happen:
+> > > > > >
+> > > > > > cpu #1                                  cpu#2
+> > > > > >                                              css_put()
+> > > > > >                                              /* css_free_rwork_fn is queued */
+> > > > > > rcu_read_lock()
+> > > > > > mem_cgroup_from_id()
+> > > > > >                                              mem_cgroup_id_remove()
+> > > > > > /* access memcg */
+> > > > >
+> > > > > I don't quite see how that'd possible. IDR uses rcu_assign_pointer()
+> > > > > during deletion, which inserts the necessary barriering. My
+> > > > > understanding is that this should always be safe:
+> > > > >
+> > > > >   rcu_read_lock()                 (writer serialization, in this case ref count == 0)
+> > > > >   foo = idr_find(x)               idr_remove(x)
+> > > > >   if (foo)                        kfree_rcu(foo)
+> > > > >     LOAD(foo->bar)
+> > > > >   rcu_read_unlock()
+> > > >
+> > > > How does a barrier inside IDR removal protect against the memcg being
+> > > > freed here though?
+> > > >
+> > > > If css_put() is executed out-of-order before mem_cgroup_id_remove(),
+> > > > the memcg can be freed even before mem_cgroup_id_remove() is called,
+> > > > right?
+> > >
+> > > css_put() can start earlier, but it's not allowed to reorder the rcu
+> > > callback that frees past the rcu_assign_pointer() in idr_remove().
+> > >
+> > > This is what RCU and its access primitives guarantees. It ensures that
+> > > after "unpublishing" the pointer, all concurrent RCU-protected
+> > > accesses to the object have finished, and the memory can be freed.
 > > 
-> > That likely means KVM will need an additional hook to clamp the max_level at the
-> > RMP, but that shouldn't be a big deal, e.g. if we convert on allocation, then KVM
-> > should be able to blindly do the conversion because it would be a kernel bug if
-> > the page is already assigned to an ASID in the RMP, i.e. the additional hook
-> > shouldn't incur an extra RMP lookup.
+> > I am not sure I understand, this is the scenario I mean:
+> > 
+> > cpu#1                      cpu#2                             cpu#3
+> > css_put()
+> > /* schedule free */
+> >                                 rcu_read_lock()
+> > idr_remove()
+> >                                mem_cgroup_from_id()
+> > 
+> > /* free memcg */
+> >                                /* use memcg */
+> > 
+> > If I understand correctly you are saying that the scheduled free
+> > callback cannot run before idr_remove() due to the barrier in there,
+> > but it can run after the rcu_read_lock() in cpu #2 because it was
+> > scheduled before that RCU critical section started, right?
 > 
-> Yah we'd still need a hook in roughly this same place for clamping
-> max_level. Previous versions of SNP hypervisor patches all had a separate
-> hook for handling these cases, but since the work of updating the RMP table
-> prior to mapping isn't too dissimilar from the work of determining max
-> mapping size, I combined both of them into the kvm_x86_gmem_prepare()
-> hook/implementation.
-> 
-> But I don't see any major issue with moving RMPUPDATE handling to an
-> allocation-time hook. As mentioned above we'd get additional
-> PFERR_GUEST_SIZEM faults by not taking MMU mapping level into account, but
-> I previously had it implemented similarly via a hook in kvm_gmem_get_pfn()
-> (because we need the GPA) and didn't notice anything major. But I'm not
-> sure exactly where you're suggesting we do it now, so could use some
-> clarify on that if kvm_gmem_get_pfn() isn't what you had in mind.
+> Isn't there a simpler explanation. The memcg whose id is stored in the
+> shadow entry has been freed and there is an ongoing new memcg allocation
+> which by chance has acquired the same id and has not yet initialized
+> completely. More specifically the new memcg creation is between
+> css_alloc() and init_and_link_css() and there is a refault for the
+> shadow entry holding that id.
 
-I was thinking kvm_gmem_get_folio().  If userspace doesn't preallocate, then
-kvm_gmem_get_pfn() will still east the cost of the conversion, but it at least
-gives userspace the option and handles the zap case.  Tracking which folios have
-been assigned (HKID or RMP) should be pretty straightforward.
+Good catch.
 
-I'm not totally opposed to doing more work at map time, e.g. to avoid faults or
-to play nice with PSMASH, but I would rather that not bleed into gmem.   And I
-think/hope if we hook kvm_gmem_get_folio(), then TDX and SNP can use that as a
-common base, i.e. whatever extra shenanigans are needed for SNP can be carried
-in the SNP series.  For me, having such "quirks" in the vendor specific series
-would be quite helpful as I'm having a hell of a time keeping track of all the
-wrinkles of TDX and SNP.
+It's late on a Friday, but I'm thinking we can just move that
+idr_replace() from css_alloc to first thing in css_online(). Make sure
+the css is fully initialized before it's published.
