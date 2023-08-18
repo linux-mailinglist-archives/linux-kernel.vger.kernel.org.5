@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2228D781206
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8DA781208
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 19:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379078AbjHRRd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
+        id S1379094AbjHRRea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379079AbjHRRd3 (ORCPT
+        with ESMTP id S1379100AbjHRRd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:33:29 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B38735BB
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:33:28 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf3a2f44ffso7146435ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:33:28 -0700 (PDT)
+        Fri, 18 Aug 2023 13:33:59 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D59C3C38
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:33:58 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-688779ffcfdso1007203b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692380008; x=1692984808;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9LqROe/xq3VxxB2qIfe85nYrLgNe52o6xYWxNbvcSzw=;
-        b=SmQZg12z/hBsunEu7RHOuUKrqiDUOk0W+yPuT9G37hg+RkAfxXMwjDRJq8KSr6aXtL
-         uBJQbBcikFT6uhkVNj6XWwIgHdkJ7/wUe8TxcW57HsezTr67A9qMyrnPSQbBr9Y1L3jo
-         eMCa6nZ5xloAE7/UdJ/VVe9hwgROpMLKku6/A=
+        d=chromium.org; s=google; t=1692380038; x=1692984838;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=z8VxOYqY0vk5zLSdtNkelkzBoODifEK09GEUE59Uh/E=;
+        b=kMub35CoX+FGqGlEXa/v7SPizCC+sQH0jMFem1D1JeANqS37tH6/y0XZCXnC/aH+U5
+         kJBVdMWwYkMTpF1pLdKjiX4dO1zZg9PmnllgKhcQ8/j6A+6lsAOGm7snFIH2dL+oBYJF
+         zdkydtJWoioVltE5GW9w6lD0ChboN8PRmcDbA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692380008; x=1692984808;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9LqROe/xq3VxxB2qIfe85nYrLgNe52o6xYWxNbvcSzw=;
-        b=fexSn00sa1BnodTVfKeFs5HW7yYUwVwkgJ6V3Yhb+MRY3xmpLV7F6qQAS8Se446t2s
-         rNqGDrBAA76lRyvhds2I0qfPuTifX6xzkSqH8p3TBCbk8qqxiCrBGemTr9sR86SUFQ2n
-         7nUwrIHSn71OxeBXs6X5drSygFSOzcrZlVAYwNu5hwekz0b5zfoNfAdU2sqVnwBYlYcj
-         cyTGWYAYke8x+eg0DZ5ZknhFeBfFuegOtCSjJ1uIUVxqWJUQ/HxS8oai8598mbBXFy6e
-         FDBTwZd8o9Z88MFTcCuI/EcmWvztzBeibBXr5ws9Sm0hCj411uN1Pp+r0McfhXRMI6Nq
-         2HwA==
-X-Gm-Message-State: AOJu0YwXAY+ZTWqP5iKG/hdOAclDXGXLW/N7eIzxaEzufIHlPLFEktf2
-        nb5NZdvbWFxGotn13s/yi3UOgg==
-X-Google-Smtp-Source: AGHT+IG7+VZxTbILfrSZv34tOHbnZPnsXjg6L4Mnlt+0JSwNWtlbPKrNujxb5jWd0t+KLFeCAP/iQw==
-X-Received: by 2002:a17:902:b198:b0:1bc:48dc:d881 with SMTP id s24-20020a170902b19800b001bc48dcd881mr3193969plr.8.1692380007700;
-        Fri, 18 Aug 2023 10:33:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692380038; x=1692984838;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z8VxOYqY0vk5zLSdtNkelkzBoODifEK09GEUE59Uh/E=;
+        b=dtPBp9OV5O7KcQJcXkmCmJPGUj3sJyE27+pggiLVtLT9t1wIJOghC3DMYiDjotn5PA
+         g9A2iL089cxKsrrfH4IKX1ZHch3RWkKKEyD/OPGV0nenfIGpnXHyTsjflK6D3wfe2FC0
+         1kCcpj2DZK6/bHAOnREytYGS8hE1inTjLfWbq2WxB2kuOVpY4fUCfnEXRiREleZh2/HQ
+         hAhCSsyEeY+lPHgjc1I+vc/Rf/rk8y4Kgl6sm4jc5LZC6riUIwbiyCr01gqt2H27w12Y
+         EGELWXLzBkFmbR6MqQUIfekt6uexcqpnd/rRXMjFhLnH0JMJgBTrQmMWfo2Ho1AMMdQA
+         DIqw==
+X-Gm-Message-State: AOJu0YyahKUTZJTD0RjNKX13ayVpmvin1FHvlYA8lyMqbSEf55jZXjfa
+        /dC2EgzxcYK3HChFkjPA6HFFIQ==
+X-Google-Smtp-Source: AGHT+IEIW5Yl9r6Sj3v9imMpgLBJxv4XcEqIkrMkv167YzQxcg7Et1cOrpJxjwCXnMm+AR6HQRKkrA==
+X-Received: by 2002:a05:6a00:1249:b0:689:f693:917f with SMTP id u9-20020a056a00124900b00689f693917fmr3136404pfi.28.1692380037809;
+        Fri, 18 Aug 2023 10:33:57 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 10-20020a170902c14a00b001b8953365aesm2029761plj.22.2023.08.18.10.33.27
+        by smtp.gmail.com with ESMTPSA id ff18-20020a056a002f5200b0068703879d3esm1794159pfb.113.2023.08.18.10.33.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 10:33:27 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 10:33:26 -0700
+        Fri, 18 Aug 2023 10:33:57 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 10:33:56 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>,
-        anton@tuxera.com, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
-Message-ID: <202308181030.0DA3FD14@keescook>
-References: <000000000000c74d44060334d476@google.com>
- <87o7j471v8.fsf@email.froward.int.ebiederm.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        "GONG, Ruiqi" <gongruiqi1@huawei.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] selinux: Annotate struct sidtab_str_cache with
+ __counted_by
+Message-ID: <202308181033.03592D6E2D@keescook>
+References: <20230817202210.never.014-kees@kernel.org>
+ <CAHC9VhR-vxsaR7deTQ+zzVP9W2uSupz4ucf8p+tt0e730qbZ1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87o7j471v8.fsf@email.froward.int.ebiederm.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhR-vxsaR7deTQ+zzVP9W2uSupz4ucf8p+tt0e730qbZ1g@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 11:26:51AM -0500, Eric W. Biederman wrote:
-> syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com> writes:
-> 
-> > Hello,
+On Fri, Aug 18, 2023 at 12:25:12PM -0400, Paul Moore wrote:
+> On Thu, Aug 17, 2023 at 4:22 PM Kees Cook <keescook@chromium.org> wrote:
 > >
-> > syzbot found the following issue on:
-> 
-> Not an issue.
-> Nothing to do with ntfs.
-> 
-> The code is working as designed and intended.
-> 
-> syzbot generated a malformed exec and the kernel made it
-> well formed and warned about it.
-> 
-> Human beings who run syzbot please mark this as not an issue in your
-> system.  The directions don't have a way to say that the code is working
-> as expected and designed.
-
-WARN and BUG should not be reachable from userspace, so if this can be
-tripped we should take a closer look and likely fix it...
-
-> > HEAD commit:    16931859a650 Merge tag 'nfsd-6.5-4' of git://git.kernel.or..
-> > git tree:       upstream
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e2673da80000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=6ec38f7a8db3b3fb1002
-> > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cdbc65a80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1262d8cfa80000
+> > Prepare for the coming implementation by GCC and Clang of the __counted_by
+> > attribute. Flexible array members annotated with __counted_by can have
+> > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> > functions).
 > >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/eecc010800b4/disk-16931859.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/f45ae06377a7/vmlinux-16931859.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/68891896edba/bzImage-16931859.xz
-> > mounted in repro: https://storage.googleapis.com/syzbot-assets/4b6ab78b223a/mount_0.gz
+> > As found with Coccinelle[1], add __counted_by for struct sidtab_str_cache.
 > >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com
+> > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > >
-> > ntfs: volume version 3.1.
-> > process 'syz-executor300' launched './file1' with NULL argv: empty string added
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 5020 at fs/exec.c:933 do_open_execat+0x18f/0x3f0 fs/exec.c:933
+> > Cc: Paul Moore <paul@paul-moore.com>
+> > Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > Cc: Eric Paris <eparis@parisplace.org>
+> > Cc: Ondrej Mosnacek <omosnace@redhat.com>
+> > Cc: selinux@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  security/selinux/ss/sidtab.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> This also looks good to me, but similarly to the audit patch, since we
+> are at -rc6 I'm going to wait to merge this until after the merge
+> window.  I'll send a follow up email once it's merged.
 
-This is a double-check I left in place, since it shouldn't have been reachable:
-
-        /*
-         * may_open() has already checked for this, so it should be
-         * impossible to trip now. But we need to be extra cautious
-         * and check again at the very end too.
-         */
-        err = -EACCES;
-        if (WARN_ON_ONCE(!S_ISREG(file_inode(file)->i_mode) ||
-                         path_noexec(&file->f_path)))
-                goto exit;
-
-So yes, let's figure this out...
+Thanks! Yeah, there's no rush. :)
 
 -- 
 Kees Cook
