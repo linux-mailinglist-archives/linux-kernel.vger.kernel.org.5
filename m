@@ -2,117 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9A6780F81
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:46:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83B0780F8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378296AbjHRPqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S1378302AbjHRPro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378292AbjHRPpr (ORCPT
+        with ESMTP id S239682AbjHRPrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:45:47 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD7CBF;
-        Fri, 18 Aug 2023 08:45:46 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-48be61950aeso374159e0c.1;
-        Fri, 18 Aug 2023 08:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692373545; x=1692978345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ls3ALkFSoDTpx8/mKPc9zSMNgW/T408i4zWcAjGPcxI=;
-        b=bYEC44XZGPKIlC2sahzxuEV7OW5jukbNbgWx+9uKGKJTg695W2EB17Yl9/a7bNIBNB
-         SKrTi8magbWMOJjor4n+WEuvx/1dS6o/Zxd50OsZw0Dojjtp5N3CUR5G6l9W5Qu4rMtG
-         +S+GZ8LOBJW9lvQYlfQIOEuFgQO6mnjyeQyoHRRoweRYIGRoLsqBU1V3fywp4ia4xiMs
-         OlnYFEwEJV6Evd7ssYXQk2M2FYV3A5j9MIfywCc8qoOAXioSBAvdwxfE0KqfWXFA95kZ
-         naAml3ihdI5Y6o6pv4lGQt1g9iuTxgu5WvAXCantNLYheyuGawTIJMPy+ey4+QxYHUuj
-         YyMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692373545; x=1692978345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ls3ALkFSoDTpx8/mKPc9zSMNgW/T408i4zWcAjGPcxI=;
-        b=B3FALLXHTwITRff/OyN2hNuVsTVa3q6jIFGxhRIP2ZbknaH2hb6jQDdOeen/ngMUQU
-         orWNJBOLlS12R/GnbIUZCMG4YdsGyscVAyl9dU8oRFLszbf+KXVj/spE9rLLgw51Rb3W
-         iq18C8Gf0Q3u1Lhb6Q8T+8/NE/ouhciVmkuVBXsQGIOOWjAP7Of58ubAbv/PBaI6GZi9
-         VsYhDEkUWJ9ioCO0wQwYL2DU5in3Vd1e0WxR+DhXPNrxV5dBKkNfiowb6vKJc0ob6HPs
-         iRmX/2AIYC7G5NGJkYEIugqQYrfOd89ScGYnwUkYI5t8l7NC+g9YttLrqh5jejQYDY/4
-         ewuQ==
-X-Gm-Message-State: AOJu0YwjlGk7a7Bnw5JfZGYQNJ6iOxOjtrPmrsag5owb2927uOocTEB9
-        OoLcQBBSowDnsGa59lJ709MhiMvxtcD4sd25UeM1l6a8gr0=
-X-Google-Smtp-Source: AGHT+IEgMr/Tt1FyAdgsdbISXPKZ7gGaYDHy4Huv/zaHy39yqdNDrnkZBwCK+WMWnL9ibolC4XSCXsFAikTz0iI8O0k=
-X-Received: by 2002:a05:6102:7da:b0:447:46e7:1348 with SMTP id
- y26-20020a05610207da00b0044746e71348mr4010409vsg.5.1692373545463; Fri, 18 Aug
- 2023 08:45:45 -0700 (PDT)
+        Fri, 18 Aug 2023 11:47:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4C9D1;
+        Fri, 18 Aug 2023 08:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692373637; x=1723909637;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=dsp15DJuvg/19dkcRHjDlD9vhqjZOtetuQSlHcRi4Xw=;
+  b=N4o969dAsJn1lrRNostyXygx9G7LvxmcAroIh57MgXRSQgk3+zavAO2/
+   /RBZG2W+TwYDZ+EMWcCd2BbOUyQWF87RfYHI8DYfQgxisAa0p9LE6x51z
+   2tzZg64fm1REgZ42PTHc+PGAozD4XViWjoMh6YRqx4WcW3/d7Jq7OfYg3
+   6akuiOJg0DZzrDhEJ0ld5iKXvwjU1P62IPdMbgb2erlIzMlTJ8YnCZZmd
+   8FYIdBTz/jCkWg8F19Sgf2kUddLXpiLD0yPRlI6KFe9TcWbq1mYoO1aPy
+   kqLoDSUisUR/gYYSm9gkPZEQlxQmKS3YNn9rYUjHdcujSYe0v4SPjNk6n
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="372031498"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="372031498"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 08:47:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="805211180"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="805211180"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 18 Aug 2023 08:47:14 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qX1gt-00EVC0-2I;
+        Fri, 18 Aug 2023 18:47:11 +0300
+Date:   Fri, 18 Aug 2023 18:47:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>
+Subject: Re: [PATCH v13 09/12] ACPI: x86: s2idle: Add a function to get
+ constraints for a device
+Message-ID: <ZN+Sfx8uTWuM+CHp@smile.fi.intel.com>
+References: <20230818051319.551-1-mario.limonciello@amd.com>
+ <20230818051319.551-10-mario.limonciello@amd.com>
+ <CAJZ5v0heB1yGcEzJCA88tyEhFi_LDWcHAF6xsrEFgH4j-DmT7Q@mail.gmail.com>
+ <ZN9MQMjcNZK+Ul9z@smile.fi.intel.com>
+ <0ed1f73e-3931-4e22-ac7a-22ce57094d67@amd.com>
+ <CAJZ5v0jdqHeEFNbxTvVPHnC6uUVYmXKNVGZNMnSDVQDCyhCvNg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230818092022.111054-1-mengferry@linux.alibaba.com>
-In-Reply-To: <20230818092022.111054-1-mengferry@linux.alibaba.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Sat, 19 Aug 2023 00:45:29 +0900
-Message-ID: <CAKFNMom=ZM+YBCr-5UcjxGZY9O75RpNM4O4UqDecZPOgMqtctg@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: fix dereferencing freed memory
-To:     Ferry Meng <mengferry@linux.alibaba.com>
-Cc:     linux-nilfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0jdqHeEFNbxTvVPHnC6uUVYmXKNVGZNMnSDVQDCyhCvNg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 6:20=E2=80=AFPM Ferry Meng wrote:
->
-> Fix smatch warning:
->
-> fs/nilfs2/gcinode.c:103 nilfs_gccache_submit_read_data() error:
-> dereferencing freed memory 'bh'
->
-> Signed-off-by: Ferry Meng <mengferry@linux.alibaba.com>
->
-> diff --git a/fs/nilfs2/gcinode.c b/fs/nilfs2/gcinode.c
-> index 48fe71d309cb..6319e825f317 100644
-> --- a/fs/nilfs2/gcinode.c
-> +++ b/fs/nilfs2/gcinode.c
-> @@ -73,10 +73,8 @@ int nilfs_gccache_submit_read_data(struct inode *inode=
-, sector_t blkoff,
->                 struct the_nilfs *nilfs =3D inode->i_sb->s_fs_info;
->
->                 err =3D nilfs_dat_translate(nilfs->ns_dat, vbn, &pbn);
-> -               if (unlikely(err)) { /* -EIO, -ENOMEM, -ENOENT */
-> -                       brelse(bh);
-> +               if (unlikely(err)) /* -EIO, -ENOMEM, -ENOENT */
->                         goto failed;
-> -               }
->         }
->
->         lock_buffer(bh);
-> @@ -102,6 +100,8 @@ int nilfs_gccache_submit_read_data(struct inode *inod=
-e, sector_t blkoff,
->   failed:
->         unlock_page(bh->b_page);
->         put_page(bh->b_page);
-> +       if (err)
-> +               brelse(bh);
->         return err;
->  }
->
-> --
-> 2.19.1.6.gb485710b
->
+On Fri, Aug 18, 2023 at 05:38:15PM +0200, Rafael J. Wysocki wrote:
+> On Fri, Aug 18, 2023 at 4:04 PM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+> > On 8/18/2023 05:47, Andy Shevchenko wrote:
+> > > On Fri, Aug 18, 2023 at 10:31:03AM +0200, Rafael J. Wysocki wrote:
+> > >> On Fri, Aug 18, 2023 at 7:15 AM Mario Limonciello
+> > >> <mario.limonciello@amd.com> wrote:
 
-Ah, this is almost identical to the patch Pan Bian sent me earlier.
-After a closer look, I'll pick up his patch instead with a
-"Reported-by" tag of your name on it.
+...
 
-Anyway, thanks for your feedback.
+> > >> I think that some overhead would be reduced below if this were taking
+> > >> a struct acpi_device pointer as the argument.
+> > >
+> > > Hmm... Either you need a pointer to handle, which involves pointer arithmetics
+> > > or something else. I would believe if you tell that ACPI handle should be passed,
+> > > but current suggestion is not obvious to me how it may help.
+> >
+> > To Rafael's point about overhead there are potentially "less" calls into
+> > acpi_get_lps0_constraint if it's a 'struct acpi_device' pointer because
+> > it won't be called by caller for any devices that don't have an ACPI
+> > companion.
+> >
+> > >>> +       struct lpi_constraints *entry;
+> > >>> +
+> > >>> +       for_each_lpi_constraint(entry) {
+> > >>> +               if (!device_match_acpi_handle(dev, entry->handle))
+> > >
+> > > Here we retrieve handle...
+> 
+> Which uses ACPI_HANDLE() to retrieve the companion ACPI handle for
+> dev. This checks dev against NULL and then passes it to
+> ACPI_COMPANION() which resolves to to_acpi_device_node() on the dev's
+> fwnode field and that involves an is_acpi_device_node() check and some
+> pointer arithmetic via container_of().  Of course, this needs to be
+> done in every iteration of the loop until a matching handle is found
+> (or not), and because dev is always the same, the result of this will
+> be the same every time. If this is not pointless overhead then I'm not
+> quite sure how to call it.
+> 
+> Now, if struct acpi_device *adev is passed as the argument, the check
+> above reduces to (adev->handle == entry->handle) which is much more
+> straightforward IMV.
 
-Regards,
-Ryusuke Konishi
+Yes, this is fine, and if we move out dev_dbg() call, the suggestion makes
+even more sense. I agree with your arguments.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
