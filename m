@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C80780BAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8E3780BB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376816AbjHRMVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:21:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
+        id S1376837AbjHRMVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376830AbjHRMUf (ORCPT
+        with ESMTP id S1376823AbjHRMVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:20:35 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB3EE7C;
-        Fri, 18 Aug 2023 05:20:34 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so13735051fa.2;
-        Fri, 18 Aug 2023 05:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692361232; x=1692966032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ub/I7oAE9mdMgYXjiwcngorSvPiNnL2dbcUUsmv0BaM=;
-        b=VE39zB3hz+/hpT86z6kZOUoTGs5MqqSARYdAdgBz5CZh5WSlVQoy6wSdR5gKsBFN7a
-         9g8hqj7CIhDUaYhsmdlpZ7qQ4QcbbZPoO/3+zewtJCDoxkrMjoa3JA/yA8sIaZKfhrHI
-         0MnERjdQ3t9JzbeuRgB+KJqisopkWELf4ai1gRv/xshPNvoS6sFdF8tIxqDYzRPiEUxn
-         2qbyQ7Ah+6Sm6RK2VoBEDcaJlMOyGgYd2/Q6ni7W9XyFLTR+ck7pbu/GMbm5vwXSLb0u
-         JwLzvjvHABjeb/l4+lyuUdHW2hXqPXMNiTxU2pmASETn8NLVTar6DBcAcvnBEJM7sDoY
-         ms7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692361232; x=1692966032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ub/I7oAE9mdMgYXjiwcngorSvPiNnL2dbcUUsmv0BaM=;
-        b=bUuw1sqDu1rVxHHI3DqzDXAlhKcZLEBoJka8tmEHcNtimWbvM5d+fZLRRanXzhioT+
-         qWx/2jvonzp3CRWF3xdqyTjr7IRN3gl0c21lB02yFbKKHPVMvGLURIR/KMMoOgrPgM2S
-         YdlX3SYJgNeG/ZZU+TPCGD5mZl84qhiD2UzwmACq5QuHZnbQpZY97mi0brdl/1FTC8oL
-         8s8OeanqK9nwCXLB3+jCNh2MTQntpCP5D29T1Z+sKIx1i6nxtMfxjobiGXh2SxMuo2b5
-         TLH1JQ8PKuBHkSv2pZ+vcQP1NJA5NkZ3t8JZR5Ua0/lp0z7VHSFp1EU+ztLE8ueYp8S5
-         3wjg==
-X-Gm-Message-State: AOJu0YxwCKB4seCUWXakzWoiW3d0tl2ab8Q8RljcInFCT/sBdO+eSbJr
-        H36uM/BRbgYWOUK4YP5KrPF3i154K8s=
-X-Google-Smtp-Source: AGHT+IHV52geStyhoBCayJBaDaML4sW80xlSCoF/9FKRxiUPiGgYa512JUA3YuFsbgb7NjJkzRhyKg==
-X-Received: by 2002:a05:651c:216:b0:2b9:412a:111d with SMTP id y22-20020a05651c021600b002b9412a111dmr1720287ljn.42.1692361232222;
-        Fri, 18 Aug 2023 05:20:32 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id d11-20020a17090694cb00b009934b1eb577sm1120514ejy.77.2023.08.18.05.20.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 05:20:31 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Fri, 18 Aug 2023 14:20:29 +0200
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     olsajiri@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        martin.lau@linux.dev, mykolal@fb.com, rongtao@cestc.cn,
-        sdf@google.com, shuah@kernel.org, song@kernel.org,
-        yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-Message-ID: <ZN9iDSj3/vdk5pRX@krava>
-References: <ZN3YeyMkgEg1IoKP@krava>
- <tencent_03EBFD524265EA7560341E91C5E04F083405@qq.com>
+        Fri, 18 Aug 2023 08:21:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D14F30E6;
+        Fri, 18 Aug 2023 05:21:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0oDwOIByjOVDOfLy6f21qg8nkzlLOXNjWABFE+sxO4M=; b=wL97AF5hG0hd7cgO4tOtTA/aUM
+        UkSguRmrpSl/BpltRzs1pu1psVpf2BFoeOvfy//3P+7xmjcYlDKxZ4FAPqcHzrfAv+OH7VwseKE6U
+        rMXPjbNvhCEQ53yjmXKwwE0sW17V3qVpX4bR4l56PJWgUxIjtb6lp/IbHlF/ncpKl/YPV3Nob0rqt
+        ksrOC3A6w4+1cv0iAzY66KD8BnWPVB8SaGEvMg7Bbxh7FmVrbcxosBYffj83kS8JARN/qg7Sc+Ukr
+        dXwMnR9JhXrqWBaxuEdDDRcZj82f/DcwDzKrFG2/oG5ZJPK6RbudSU7Jn/nq8K5y+Iq48rIxP2d95
+        e8Mgxa3w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qWyTd-009N6I-UG; Fri, 18 Aug 2023 12:21:17 +0000
+Date:   Fri, 18 Aug 2023 13:21:17 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [BUG] KCSAN: data-race in xas_clear_mark / xas_find_marked
+Message-ID: <ZN9iPYTmV5nSK2jo@casper.infradead.org>
+References: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <tencent_03EBFD524265EA7560341E91C5E04F083405@qq.com>
+In-Reply-To: <06645d2b-a964-1c4c-15cf-42ccc6c6e19b@alu.unizg.hr>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 09:39:32AM +0800, Rong Tao wrote:
-> Hi, Jiri. Thanks for your reply.
+On Fri, Aug 18, 2023 at 10:01:32AM +0200, Mirsad Todorovac wrote:
+> [  206.510010] ==================================================================
+> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
 > 
-> libbpf_ensure_mem() is in libbpf_internal.h, samples/bpf/ can't see it, do we
-> reposition the function declaration?
+> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+> [  206.510081]  xas_clear_mark+0xd5/0x180
+> [  206.510097]  __xa_clear_mark+0xd1/0x100
+> [  206.510114]  __folio_end_writeback+0x293/0x5a0
+> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+> [  206.520735]  xas_find_marked+0xe5/0x600
+> [  206.520750]  filemap_get_folios_tag+0xf9/0x3d0
+Also, before submitting this kind of report, you should run the
+trace through scripts/decode_stacktrace.sh to give us line numbers
+instead of hex offsets, which are useless to anyone who doesn't have
+your exact kernel build.
 
-I see, I had no idea trace_helpers.[ch] is included in samples/bpf
-
-but it seems to have libbpf linked statically.. so you could just
-include libbpf_internal.h and it should work, right? like we do
-in selftests
-
-jirka
-
+> [  206.510010] ==================================================================
+> [  206.510035] BUG: KCSAN: data-race in xas_clear_mark / xas_find_marked
 > 
-> Good Day
-> Rong Tao
-> 
+> [  206.510067] write to 0xffff963df6a90fe0 of 8 bytes by interrupt on cpu 22:
+> [  206.510081] xas_clear_mark (./arch/x86/include/asm/bitops.h:178 ./include/asm-generic/bitops/instrumented-non-atomic.h:115 lib/xarray.c:102 lib/xarray.c:914)
+> [  206.510097] __xa_clear_mark (lib/xarray.c:1923)
+> [  206.510114] __folio_end_writeback (mm/page-writeback.c:2981)
+
+This path is properly using xa_lock_irqsave() before calling
+__xa_clear_mark().
+
+> [  206.520722] read to 0xffff963df6a90fe0 of 8 bytes by task 2793 on cpu 6:
+> [  206.520735] xas_find_marked (./include/linux/xarray.h:1706 lib/xarray.c:1354)
+> [  206.520750] filemap_get_folios_tag (mm/filemap.c:1975 mm/filemap.c:2273)
+
+This takes the RCU read lock before calling xas_find_marked() as it's
+supposed to.
+
+What garbage do I have to write to tell KCSAN it's wrong?  The line
+that's probably triggering it is currently:
+
+                        unsigned long data = *addr & (~0UL << offset);
+
