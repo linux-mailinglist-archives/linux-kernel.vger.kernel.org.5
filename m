@@ -2,298 +2,429 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DC0780F95
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C775B780F99
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378328AbjHRPty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34970 "EHLO
+        id S1378236AbjHRPvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378319AbjHRPto (ORCPT
+        with ESMTP id S1378375AbjHRPvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:49:44 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CAC2708
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 08:49:41 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4ff9bbc83a5so1524733e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 08:49:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1692373779; x=1692978579;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=znny6fIRfvTqHyHWz1UgoG6TuClSy2elyfBuTD5U/50=;
-        b=IY/SQJI1XcgdcOxllWZmm4qePwALmm0StMaaCJBx3bV4djEnsZk/dXjp3PWlGHKior
-         AO6qjRVvCp8f0HXwbqLBoScaooofxq4WQXw54otCvPfytSvZ9L5ae6elZ6r+zx/SZ6rh
-         rh1u7TByxCNYyxWkKw7K5eIsY+a0Oj2FHSt6Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692373779; x=1692978579;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=znny6fIRfvTqHyHWz1UgoG6TuClSy2elyfBuTD5U/50=;
-        b=ctZ3fwNpPakLorG1SZyuJR99Ecwik1+kBpjL5mS0WlPwWnx+f4BdIceiCyEDdvA9P1
-         mMId9jCs5871BAUFfgJVF4GETLg0/x82L9E/z8l4CuEmT/fLIuQFhkbsEYmUb96y7FKu
-         FJxcQD5fOpNE/LdzjNz7qTBFH8NdtvTtZWW+iifFM8UJCjwHuMyuzII4cVDmm0nKO4ea
-         yLpuuwrNc6G9UOHfQvMaiDV3F1KJQrrRZhqeZk19i6R2OLHE3nrJ6DlIQF55QlPEEbgo
-         lY9Fh/qjmrLpiA2UUzrx2yeoTqcCWluQ/W6FK9TgsYe6D96paPJkbDHmKXZbQU2Rl1tQ
-         pngQ==
-X-Gm-Message-State: AOJu0YxdiyaMQrSULSTVnB4OIHEDh5lFa1aEG0by7WLAcfYEMIfnhOUC
-        tb54ufrhxHROWG9PQ423p8EdnwV9svPSy86guHYiiw==
-X-Google-Smtp-Source: AGHT+IFfruc+ZBLYo5S2tWVLhjbh4871yMa/mqJPqMPpLehAhjUyL+mbOL5nCua/l+8s/OFD11umZ+9v9aExokeyx6o=
-X-Received: by 2002:a05:6512:3c96:b0:4fd:fecf:5d57 with SMTP id
- h22-20020a0565123c9600b004fdfecf5d57mr2778788lfv.39.1692373779255; Fri, 18
- Aug 2023 08:49:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814093528.117342-3-bigeasy@linutronix.de> <25de7655-6084-e6b9-1af6-c47b3d3b7dc1@kernel.org>
- <d1b510a0-139a-285d-1a80-2592ea98b0d6@kernel.org> <CAO3-PbpbrK6FAACw5TQyBxJ6jgO7_bhLFuPVAziUE+40_o_GnA@mail.gmail.com>
- <22d992aa-2b65-0de3-b88c-fd216ae0218e@redhat.com>
-In-Reply-To: <22d992aa-2b65-0de3-b88c-fd216ae0218e@redhat.com>
-From:   Yan Zhai <yan@cloudflare.com>
-Date:   Fri, 18 Aug 2023 10:49:28 -0500
-Message-ID: <CAO3-Pbp13sG7fZJj1DbwEAfKmFt46uSZb6NF-NB0SsBds-kd0g@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] softirq: Drop the warning from do_softirq_post_smp_call_flush().
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>, brouer@redhat.com,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 18 Aug 2023 11:51:17 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2073.outbound.protection.outlook.com [40.107.7.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE01E48
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 08:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xbwReY/QpcdfSZVnOG5P/k58a0uirq0z8jYNjolnvR0=;
+ b=PpYstI5kGsDRBOYympxo0tmUgov7qOVgOFFoMVMpGAUm226uYiT1FTniRhocybrrwVGfB15oqC2pXQ3Cvwfxo7LVoL5yl31tS+ZPKngvt+AjKSfsH8EGdDpohxyPapPZEPdwV/KZqGwHFn0X1j1AH1PIqqBjJ1NKSATXdoAdHbw=
+Received: from AS8P189CA0045.EURP189.PROD.OUTLOOK.COM (2603:10a6:20b:458::14)
+ by AS8PR08MB9314.eurprd08.prod.outlook.com (2603:10a6:20b:5a5::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.30; Fri, 18 Aug
+ 2023 15:51:08 +0000
+Received: from AM7EUR03FT036.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:20b:458:cafe::c3) by AS8P189CA0045.outlook.office365.com
+ (2603:10a6:20b:458::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.15 via Frontend
+ Transport; Fri, 18 Aug 2023 15:51:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ AM7EUR03FT036.mail.protection.outlook.com (100.127.140.93) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6723.11 via Frontend Transport; Fri, 18 Aug 2023 15:51:08 +0000
+Received: ("Tessian outbound c99fbc01d472:v175"); Fri, 18 Aug 2023 15:51:08 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 96885b0133f4c401
+X-CR-MTA-TID: 64aa7808
+Received: from 1f33c8f6b5fb.1
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 33777299-26D6-4836-B937-E4BAC3E3767D.1;
+        Fri, 18 Aug 2023 15:51:01 +0000
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 1f33c8f6b5fb.1
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Fri, 18 Aug 2023 15:51:01 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kVUiYTITEqXkPsTd7jBqUKBLwUEqenn21UQnHjsrE5jjTrl9QtQ9L4eZveF7akIJeEP1KElbzXDwVK7KMy5yZZ1HRHCaAinPqBP11D432C/+BvhU2mzkpYvU5Gi+MEmkBMAhyM9fxRinCRrqDw1or6uliiBi3PZacczikxIxbKO09UhtLzb1Un0qXePjFvoTsBbq3e41iTAT8cc3tW8h5ifM6q0KCjxgVfQnmB7Kgnitk6JIZAEyCET4iO9lsJhnLP7LQ3mCCtoOl14pSYSWcb/N+TWpHI+XkOYfqn0PZixuKpWFD6VsRFg2HGQoN/MJR7oqFqBFt9L5wiLLF45nJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xbwReY/QpcdfSZVnOG5P/k58a0uirq0z8jYNjolnvR0=;
+ b=UH03c28112B7LuipNudQRjCv2bmtzQy7cH4veeeHDSkZHZGikJBxcubagAWHXTQ2d/fEmj41DRxKe4lWQgS+MR68wr6sEq/pdwPFAIiihb6+l37wQ9dXppUGS8KFmoH5ggTmFcVFauN0UjEc5lbbukegVHcEUq3qMuvPRBd4fi3n2RJP6P8mwYKVqGTbb7P9g4zGtOdV7NMzWUA/tsZv/xupFc6JCfiW6UIaX2m/KvE2GS358JdCJGAUR5kxfcDRpcmyR1hTxiuX2Ukehr79qxMrLUSi81zVE+VdEN7xYfxHNFncKLsbpEjcTYv7fALyJ8BGf7hKy5cxhLPlWWjs9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xbwReY/QpcdfSZVnOG5P/k58a0uirq0z8jYNjolnvR0=;
+ b=PpYstI5kGsDRBOYympxo0tmUgov7qOVgOFFoMVMpGAUm226uYiT1FTniRhocybrrwVGfB15oqC2pXQ3Cvwfxo7LVoL5yl31tS+ZPKngvt+AjKSfsH8EGdDpohxyPapPZEPdwV/KZqGwHFn0X1j1AH1PIqqBjJ1NKSATXdoAdHbw=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from AS2PR08MB10055.eurprd08.prod.outlook.com
+ (2603:10a6:20b:645::18) by DU0PR08MB9904.eurprd08.prod.outlook.com
+ (2603:10a6:10:474::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
+ 2023 15:50:59 +0000
+Received: from AS2PR08MB10055.eurprd08.prod.outlook.com
+ ([fe80::a206:ca48:ede0:ebb4]) by AS2PR08MB10055.eurprd08.prod.outlook.com
+ ([fe80::a206:ca48:ede0:ebb4%5]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
+ 15:50:59 +0000
+Message-ID: <86bced4f-06c1-73de-9aa5-bb23998479fc@arm.com>
+Date:   Fri, 18 Aug 2023 16:50:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: Initial testing of MPAM patches
+Content-Language: en-GB
+To:     Carl Worth <carl@os.amperecomputing.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "D. Scott Phillips" <scott@os.amperecomputing.com>,
+        Darren Hart <darren@os.amperecomputing.com>,
+        Amit Singh Tomar <amitsinght@marvell.com>,
+        Akanksha Jain <Akanksha.Jain2@arm.com>
+References: <87lee8l9pb.fsf@rasp.mail-host-address-is-not-set>
+From:   James Morse <james.morse@arm.com>
+In-Reply-To: <87lee8l9pb.fsf@rasp.mail-host-address-is-not-set>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-ClientProxiedBy: LO2P265CA0438.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:e::18) To AS2PR08MB10055.eurprd08.prod.outlook.com
+ (2603:10a6:20b:645::18)
+MIME-Version: 1.0
+X-MS-TrafficTypeDiagnostic: AS2PR08MB10055:EE_|DU0PR08MB9904:EE_|AM7EUR03FT036:EE_|AS8PR08MB9314:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5d32e47e-0925-4c1b-035c-08dba002f036
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: DVgtoK1hDS5g3sM/lyl+ww9uASdnM8hSa5C0AI12Ai2gkwdwXi8r+i4dv4UPlECUMr9YquQv/luUvqC0jG2hh1+X8IcinHa5cSfl7jpvzkgQICzaHZ9DaJtbd7j5N78ZG9YFYQWuAeGMqYpgh8whUKVCjeBmyEZQMwY8W3X0W0r4+zVjbIuFUqfbc1ouzyMSnHO2HrRbd9nB2EM2OubxmGKlKUj9txBqzgbng0wrFKm1/kfgWlXzUEpxRYeidaEvmaResxSRdL47sBmQblHrb2gzzjy4uDAwy+cyr5+9ksjZZ6GifwKt3cJX17hb6kbMUX/fQSkETfOGfX0GoaAqaFChf5H/c1LivjR4Pijgggoz6ZsySGnbyJRAXyaG4/V29KNrbT+2u+3E1ibHKjE/sVhaLuCWDMiobd34mmFEYHogrb6TFNwSWtMvm9aXLRwCxyfiHrlplawkSSjXR0aoZe1npB6GUSXYdHd6pC3L4FCDrUJmNzcRC3WNMZgCcJ6dPOBq9h9qMN0HWGyEPSE/j4dQxHaJmPGrLnNAaz68DipQX7IuzIx3UPbxtilJ0B6cwcGkpnQmjVDtA9W+vG7H4hbOYKb5NZNotTZk6B8E4GI9uelfw29mhcVxTNAJ9DDaJrUGlg76G26BuPEX18iqjw==
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS2PR08MB10055.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(366004)(396003)(39860400002)(451199024)(1800799009)(186009)(31686004)(86362001)(31696002)(36756003)(38100700002)(2616005)(5660300002)(44832011)(66556008)(478600001)(6506007)(66946007)(66476007)(53546011)(6666004)(6486002)(54906003)(316002)(26005)(6512007)(4326008)(8676002)(8936002)(41300700001)(83380400001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR08MB9904
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: AM7EUR03FT036.eop-EUR03.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs: e125908b-23d0-40ec-a08c-08dba002ea38
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e0RPveibFXVas87YT2Ro3/Js1hVtF+qMGNuVS74mhFP1MV99b5KpanAcQtz1dvdsBJ3+7o0H69UsujWSGAec75asSz9xOygWb4JoPdqw2mxi126fSc0xwFMUdVv65+24PFZFbWaK/4VcSqZCTir/92PEi+t2oWSZYgxmwkJQGDk+zOzI8yuXWSa5F/YGNr6SI7TLbuL/4KDo6LiIZz0pNQrmXdMSpQb/KrQxiICuIizQOTs+/qqG8IQf/NXu32cokNz3d7feDEcamPMgthP2Oa3Tgz1Qc9zXlP/SVwjgZk3oQ2Cx0zJWfW2e8Cy/DdybmFWsOldFB6e7Fn5j1jYlwPpeH/vbDFPOkHpE0MZ2hS5QFsRyO0oZb/6Dg3WugFQ/QsqQG7m9/hDcHbPop2gVRigEL5OtBstsX8gNXU0MW2rfVDvk1kTdDJYxuIZmScbgzlaH0UN/6lIP95jAyN9/XmLXC3K1litVETrKe5mEzj8M49CUShOrke0KF4cJT1yUeEboyls6CIHjRv5CoaCVSjTk6JvZ1geFHsQuMkzaPl8H5aFOMmr82+gfEo1o6EVBv1HuNyCfCf0Zr4fCDn/Tw6Ft501SiG8m0mtw6GOVDokokWG5KeM8Rg7rRBNUjeUA62RbSzlTNdruYt8tQ9KS87ZZeK9hCLut24drJrFQYvremhM0hH1d5sG6dMp42hvtOQ1jHd33WYzQPZHhhyXjeztp1MJszfdTP34zAqCy4Mmnlf7mHeAocuA1acpQxA/ZSyuljwKf0GTA1a8TrlNN4w==
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(376002)(39850400004)(346002)(1800799009)(82310400011)(186009)(451199024)(46966006)(36840700001)(40470700004)(8936002)(8676002)(4326008)(86362001)(31696002)(44832011)(5660300002)(40460700003)(36756003)(2906002)(40480700001)(26005)(2616005)(81166007)(83380400001)(336012)(6666004)(6486002)(6506007)(478600001)(356005)(36860700001)(53546011)(82740400003)(316002)(70586007)(54906003)(70206006)(47076005)(41300700001)(31686004)(6512007)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 15:51:08.2726
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d32e47e-0925-4c1b-035c-08dba002f036
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: AM7EUR03FT036.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB9314
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 4:02=E2=80=AFPM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
->
->
->
-> On 16/08/2023 17.15, Yan Zhai wrote:
-> > On Wed, Aug 16, 2023 at 9:49=E2=80=AFAM Jesper Dangaard Brouer <hawk@ke=
-rnel.org> wrote:
-> >>
-> >> On 15/08/2023 14.08, Jesper Dangaard Brouer wrote:
-> >>>
-> >>>
-> >>> On 14/08/2023 11.35, Sebastian Andrzej Siewior wrote:
-> >>>> This is an undesired situation and it has been attempted to avoid th=
-e
-> >>>> situation in which ksoftirqd becomes scheduled. This changed since
-> >>>> commit d15121be74856 ("Revert "softirq: Let ksoftirqd do its job"")
-> >>>> and now a threaded interrupt handler will handle soft interrupts at =
-its
-> >>>> end even if ksoftirqd is pending. That means that they will be proce=
-ssed
-> >>>> in the context in which they were raised.
-> >>>
-> >>> $ git describe --contains d15121be74856
-> >>> v6.5-rc1~232^2~4
-> >>>
-> >>> That revert basically removes the "overload" protection that was adde=
-d
-> >>> to cope with DDoS situations in Aug 2016 (Cc. Cloudflare).  As descri=
-bed
-> >>> in https://git.kernel.org/torvalds/c/4cd13c21b207 ("softirq: Let
-> >>> ksoftirqd do its job") in UDP overload situations when UDP socket
-> >>> receiver runs on same CPU as ksoftirqd it "falls-off-an-edge" and alm=
-ost
-> >>> doesn't process packets (because softirq steals CPU/sched time from U=
-DP
-> >>> pid).  Warning Cloudflare (Cc) as this might affect their production
-> >>> use-cases, and I recommend getting involved to evaluate the effect of
-> >>> these changes.
-> >>>
-> >>
-> >> I did some testing on net-next (with commit d15121be74856 ("Revert
-> >> "softirq: Let ksoftirqd do its job"") using UDP pktgen + udp_sink.
-> >>
-> >> And I observe the old overload issue occur again, where userspace
-> >> process (udp_sink) process very few packets when running on *same* CPU
-> >> as the NAPI-RX/IRQ processing.  The perf report "comm" clearly shows
-> >> that NAPI runs in the context of the "udp_sink" process, stealing its
-> >> sched time. (Same CPU around 3Kpps and diff CPU 1722Kpps, see details
-> >> below).
-> >> What happens are that NAPI takes 64 packets and queue them to the
-> >> udp_sink process *socket*, the udp_sink process *wakeup* process 1
-> >> packet from socket queue and on exit (__local_bh_enable_ip) runs softi=
-rq
-> >> that starts NAPI (to again process 64 packets... repeat).
-> >>
-> > I think there are two scenarios to consider:
->  >
-> > 1. Actual DoS scenario. In this case, we would drop DoS packets
-> > through XDP, which might actually relieve the stress. According to
-> > Marek's blog XDP can indeed drop 10M pps [1] so it might not steal too
-> > much time. This is also something I would like to validate again since
->
-> Yes, using XDP to drop packet will/should relieve the stress, as it
-> basically can discard some of the 64 packets processed by NAPI vs the 1
-> packet received by userspace (that re-trigger NAPI), giving a better
-> balance.
->
-> > I cannot tell if those tests were performed before or after the
-> > reverted commit.
->
-> Marek's tests will likely contain the patch 4cd13c21b207 ("softirq: Let
-> ksoftirqd do its job") as blog is from 2018 and patch from 2016, but
-> shouldn't matter much.
->
->
-> > 2. Legit elephant flows (so it should not be just dropped). This one
-> > is closer to what you tested above, and it is a much harder issue
-> > since packets are legit and should not be dropped early at XDP. Let
-> > the scheduler move affected processes away seems to be the non-optimal
-> > but straight answer for now. However, I suspect this would impose an
-> > overload issue for those programmed with RFS or ARFS, since flows
-> > would "follow" the processes. They probably have to force threaded
-> > NAPI for tuning.
-> >
->
-> True, this is the case I don't know how to solve.
->
-> For UDP packets it is NOT optimal to let the process "follow"/run on the
-> NAPI-RX CPU. For TCP traffic it is faster to run on same CPU, which
-> could be related to GRO effect, or simply that tcp_recvmsg gets a stream
-> of data (before it invokes __local_bh_enable_ip causing do_softirq).
->
-To maximize single flow throughput, it is not optimal to run RX on the
-same CPU with the receiver, regardless of TCP or UDP. The difference
-is that TCP does not have tput issue until 10+ Gbps thanks to GRO. In
-some internal benchmarking effort, I found that pinning iperf server
-on the same RX would yield ~13-14 Gbps TCP while running on different
-cores would have 25G NIC saturated (for both same or different NUMA
-case). Despite single flow throughput upper bound getting hit when
-running on the same core, CPU cycles to process each packet is
-actually reduced. So it is likely more friendly to the production
-environment we are dealing with where there are a lot more smaller
-flows. It is something I planned to test more (in the past we had
-major services pinned on dedicated cores, but recently we start to
-unpin to improve tail latency of other services). But with the
-protection gone, it adds quite some uncertainty to the picture.
+Hi Carl,
 
-> I have also tested with netperf UDP packets[2] in a scenario that
-> doesn't cause "overload" and CPU have idle cycles.  When UDP-netserver
-> is running on same CPU as NAPI then I see approx 38% (82020/216362)
-> UdpRcvbufErrors [3] (and separate CPUs 2.8%).  Sure, I could increase
-> buffer size, but the point is NAPI can enqueue 64 packet and UDP
-> receiver dequeue 1 packet.
->
-> This reminded me that kernel have a recvmmsg (extra "m") syscall for
-> multiple packets.  I tested this (as udop_sink have support), but no
-> luck. This is because internally in the kernel (do_recvmmsg) is just a
-> loop over ___sys_recvmsg/__skb_recv_udp, which have a BH-spinlock per
-> packet that invokes __local_bh_enable_ip/do_softirq.  I guess, we/netdev
-> could fix recvmmsg() to bulk-dequeue from socket queue (BH-socket unlock
-> is triggering __local_bh_enable_ip/do_softirq) and then have a solution
-> for UDP(?).
->
-recvmmsg does help getting more packets in a batch, but it has an
-issue of buffer allocation upfront: when there are millions of
-connections, preallocate too many buffers can mount up memory pressure
-a lot.
-On an alternative view, enable UDP GRO seems a direct help in this
-context, to bring UDP on par with TCP, and reduce the RX overhead. We
-already have quite some UDP GRO/GSO use cases for virtual machines and
-QUIC handling, time to persuade engineers to add more maybe.
+(CC: +Akanksha)
 
-Yan
-
+On 18/08/2023 15:13, Carl Worth wrote:
+> I'm just getting the chance to start testing your MPAM patches on an
+> Ampere implementation. Specifically, I was working with your
+> mpam/snapshot/v6.3 branch [1], an earlier version of which you posted to
+> the list [2].
 >
-> [2] netperf -H 198.18.1.1 -D1 -l 1200 -t UDP_STREAM -T 0,0 -- -m 1472 -N =
--n
->
-> [3]
-> $ nstat -n && sleep 1 && nstat
-> #kernel
-> IpInReceives                    216362             0.0
-> IpInDelivers                    216354             0.0
-> UdpInDatagrams                  134356             0.0
-> UdpInErrors                     82020              0.0
-> UdpRcvbufErrors                 82020              0.0
-> IpExtInOctets                   324600000          0.0
-> IpExtInNoECTPkts                216400             0.0
->
->
-> > [1] https://blog.cloudflare.com/how-to-drop-10-million-packets/
-> >
-> >>
-> >>> I do realize/acknowledge that the reverted patch caused other latency
-> >>> issues, given it was a "big-hammer" approach affecting other softirq
-> >>> processing (as can be seen by e.g. the watchdog fixes patches).
-> >>> Thus, the revert makes sense, but how to regain the "overload"
-> >>> protection such that RX networking cannot starve processes reading fr=
-om
-> >>> the socket? (is this what Sebastian's patchset does?)
-> >>>
-> >>
-> >> I'm no expert in sched / softirq area of the kernel, but I'm willing t=
-o
-> >> help out testing different solution that can regain the "overload"
-> >> protection e.g. avoid packet processing "falls-of-an-edge" (and thus
-> >> opens the kernel to be DDoS'ed easily).
-> >> Is this what Sebastian's patchset does?
-> >>
-> >>
-> >>>
-> >>> Thread link for people Cc'ed:
-> >>> https://lore.kernel.org/all/20230814093528.117342-1-bigeasy@linutroni=
-x.de/#r
-> >>
-> >> --Jesper
-> >> (some testlab results below)
-> >>
-> >> [udp_sink]
-> >> https://github.com/netoptimizer/network-testing/blob/master/src/udp_si=
-nk.c
-> >>
-> >>
-> >> When udp_sink runs on same CPU and NAPI/softirq
-> >>    - UdpInDatagrams: 2,948 packets/sec
-> >>
-> >> $ nstat -n && sleep 1 && nstat
-> >> #kernel
-> >> IpInReceives                    2831056            0.0
-> >> IpInDelivers                    2831053            0.0
-> >> UdpInDatagrams                  2948               0.0
-> >> UdpInErrors                     2828118            0.0
-> >> UdpRcvbufErrors                 2828118            0.0
-> >> IpExtInOctets                   130206496          0.0
-> >> IpExtInNoECTPkts                2830576            0.0
-> >>
-> >> When udp_sink runs on another CPU than NAPI-RX.
-> >>    - UdpInDatagrams: 1,722,307 pps
-> >>
-> >> $ nstat -n && sleep 1 && nstat
-> >> #kernel
-> >> IpInReceives                    2318560            0.0
-> >> IpInDelivers                    2318562            0.0
-> >> UdpInDatagrams                  1722307            0.0
-> >> UdpInErrors                     596280             0.0
-> >> UdpRcvbufErrors                 596280             0.0
-> >> IpExtInOctets                   106634256          0.0
-> >> IpExtInNoECTPkts                2318136            0.0
-> >>
-> >>
-> >
-> >
->
+> I have a few initial comments/questions. These are mostly from a
+> black-box point of view, (without yet having looked at the code
+> much). Later on, when I do dig into the code, I can follow up on some
+> of these issues within the context of the relevant patches.
 
 
---=20
+> 1. Is there a way to query the MPAM PARTID for a particular resctrl group=
+?
 
-Yan
+Deliberately: no.
+
+This is private to the kernel, the way these get allocated may change in th=
+e future, so
+user-space must not depend on it.
+
+AMD want to add debug hooks for this - in a way that can't work properly on=
+ MPAM as there
+is no value that directly corresponds with RMID.
+
+
+>    I see a file named "id" in the directory for each resource group,
+>    but I get "Operation not supported" if I try to cat it.
+
+Try mounting with '-o this_is_not_abi".
+That file is for passing an identifier from resctrl to resctrl_pmu so that =
+the kernel can
+query the control-group properties internally.
+
+
+>    Meanwhile,
+>    in the code it looks like PARTIDs are being XORed with some random
+>    number. Is there a deliberate attempt to obscure the PARTID?
+
+It is. Otherwise some joker will hard-code their user-space script, instead=
+ of reading the
+id from resctrl - and scream regression if any of the kernel internals that=
+ allocate a
+partid change.
+
+If you 'know' the default control group has all zeros for its 'id', you can=
+ use that to
+xor out the set - but you are on your own!
+
+
+The general theme here is I don't trust user-space not to depend on any val=
+ue exposed.
+
+
+>    I don't know how much an end user will care about PARTID values,
+>    (so it's nice that the driver manages these implicitly), but for
+>    me, while debugging this stuff, it would be nice to be able to
+>    query them.
+
+This would only matter if you could somehow inspect the hardware - which yo=
+u probably can.
+- but users of deployed systems can't.
+
+Sorry if this isn't the answer you want, but I'm trying to only publish pat=
+ches to
+kernel.org that I intend to upstream in some form.
+There are a few one-offs if some debug needs something complicated, but I d=
+on't carry them
+around as the tree is big enough as it is. Rebasing feedback for the series=
+ on the list is
+painful enough already!
+
+You can probably just hack out the safety-nets around the 'id' file and use=
+ that for your
+platform bringup.
+
+
+> 2. Top-level resctrl resource group is not being made to take effect
+>
+>    When I poke at the schemata of the top-level resource group, I can
+>    see that it is associated with PARTID 1.
+
+That was a transient attempt to allow interrupts to switch to a reserved PA=
+RTIDs to avoid
+inheritance. The folk who wanted that behaviour said it doesn't solve their=
+ problem, so
+I've dropped it in later versions.
+
+
+>   That is, if I do something like:
+>
+>       echo L3:1=3Dface > /sys/fs/resctrl/schemata
+>
+>    I can see the value 0xface showing up in the cache portion bitmap
+>    registers associated with PARTID 1. So far, so good.
+>
+>    But meanwhile, I am not seeing the MPAM0_EL1 system register being
+>    modified to associate the various cores in this resource group with
+>    PARTID 1.
+
+This should have already been done by the call to mpam_resctrl_move_all_use=
+rs_tasks().
+
+
+>    In contrast, for any lower-level resource group I create, I do see
+>    MPAM0_EL1 being set with PARTID values for the cores that I put
+>    into the 'cpus' node.
+>
+>    So it appears that PARTID 1 and its top-level resource group will
+>    have no effect currently. Am I seeing that correctly?
+
+This sounds like a bug in the patches that shift the 'default' resctrl grou=
+p. They only
+appeared in one version of the tree, its probably best to just rebase, or r=
+evert them.
+
+That code may come back if the behaviour of hardware the mpam driver doesn'=
+t know how to
+program is severely affected by resctrl messing with the configuration of P=
+ARTID-0. The
+scary case is slow delivery of LPIs because the GIC ITS is being throttled.
+
+My current view is that platforms are likely to be short of PARTID as some =
+folk are also
+using them for monitorring, so reserving a PARTID
+
+
+> 3. Is there special treatment of cpu 0?
+>
+>    When I put cpu 0 into a resource group I see both MPAM2_EL2 as well
+>    as MPAM0_EL1 for cpu 0 being set to the group's corresponding
+>    PARTID. But when I set any cpu other than 0, only MPAM0_EL1 is
+>    being set for that cpu. Is this the desired behavior?
+
+That sounds strange.
+
+The versions of mpam_thread_switch() you have always touches MPAM1_EL1 and =
+MPAM0_EL1,
+always together.
+
+How are you identifying its MPAM2_EL2 that is touched? The switch_to() code=
+ only uses
+MPAM1_EL1, these have different encodings but access the same register if H=
+CR_EL2.E2H is
+set. If it really is the MPAM2_EL2 encoding, that suggests the KVM code is =
+being run.
+
+>    I know that PARTID 0 is treated as reserved by the code, but is cpu
+>    0 given any special treatment?
+
+No - can you reproduce this on the latest branch?
+
+
+> 4. The current schemata allows for cache portion, but not cache capacity
+
+See KNOWN_ISSUES:
+| Only features that match what resctrl already supports are supported.
+| This is very deliberate.
+
+
+>    The schemata file allows me to specify a bitmask to control
+>    cache-portion partitioning. But I don't see any mechanism (nor
+>    backing code) to control cache capacity partitioning.
+>
+>    Is this due to a limitation in mapping MPAM to the current resctrl
+>    interface?
+
+It is. Getting feature parity with x86 is the critical path to getting this=
+ upstream.
+Supporting other bits of MPAM can come next - we'd need a discussion with I=
+ntel about how
+any changes should be done, so that they can support them too if they ever =
+have similar
+features.
+
+This conversation can't happen until we have some support upstream.
+
+
+>    Or would it be easy to extend the schemata to include a
+>    cache capacity field as well?
+
+Probably - it just needs doing in a way that stands a chance of being porta=
+ble to other
+architectures.
+
+
+>    I see that Amit has proposed patches recentl for extending the
+>    schemata to add priority partitioning control. So I'd like to do
+>    something similar for capacity partitioning control as well.
+
+Beware this may be premature, as you can't assume mainline will merge the s=
+ame
+user-visible interface. Having out of tree users won't be a compelling argu=
+ment.
+
+To quote KNOWN_ISSUES:
+| Until this code is merged by mainline, we should rigidly stick to the use=
+r-space
+| interface as it is supported by Intel RDT. This is the only way to ensure
+| user-space code remains portable.
+|
+| Once the code is merged, adding support for the missing pieces, and how
+| this impacts user-space can be discussed.
+
+
+I haven't got to Amit's patches yet, but I plan to pick things like this in=
+to the tree on
+kernel.org so its all in one place.
+
+
+Different ways of configuring an existing resource should be low risk, as w=
+here the
+domain-id's come from should be the same as the existing schema.
+
+
+> 5. Linked-list corruption with missing cache entries in PPTT
+>
+>    At one point, I tried booting with the MPAM ACPI table populated
+>    for my L3 cache, but without the necessary entries in the PPTT ACPI
+>    table. The driver fell over with linked-list corruption, halting
+>    Linux boot. I'll follow up this report with more details.
+
+This kind of thing won't have seen much testing. Any details you can share =
+would help!
+
+
+> 6. No support for memory-side caches
+>
+>    MPAM allows for controlling memory-side caches, and the ACPI
+>    specification allows them to be described. But the current code
+>    appears to ignore any such caches, and won't expose them via
+>    resctrl. I'm very interested to know what work would need to be
+>    done to allow a memory-side cache to be supported.
+
+This is another case of waiting for the code to be upstream so we can have =
+a discussion
+about new schema with other architectures.
+
+I'd argue these should use some identifier that is visible elsewhere in sys=
+fs as the
+domain-id. This needs discussing with Intel/AMD as the way they would build=
+ a similar
+feature may have a bearing on the user-space interface.
+
+
+> 7. Cache portion configuration for incorrect PARTID is applied
+>
+>    I've seen a case where, when trying to use a PARTID other than 1,
+>    (that is, a resource group other than the top-level), the
+>    configuration I've set in that resource group does not take
+>    effect. Instead, the configuration for PARTID 1 takes effect.
+>
+>    Querying the controlling MPAM registers does not obviously explain
+>    the buggy behavior. Things look correct. I'll be examining this
+>    case more closely to see what's happening.
+
+I'd be curious what the monitors report when the control group with PARTID =
+1 is empty -
+that should give you a hint if they are seeing traffic with the wrong label=
+, or something
+else is going awry.
+
+There are some one-off cranky debug patches on my latest tree that may help=
+ debug this. If
+you end up using them I can share the log of what I get as the expected beh=
+aviour on the
+FVP/FPGA.
+
+
+> So, that's what I've encountered on an initial look. I didn't call out
+> all the things that are obviously working well, but there's a lot
+> there. So that hasn't gone unnoticed.
+>
+> Thanks again for this series, and I'm looking forward to engaging on
+> it more going forward.
+
+
+
+Thanks,
+
+James
+IMPORTANT NOTICE: The contents of this email and any attachments are confid=
+ential and may also be privileged. If you are not the intended recipient, p=
+lease notify the sender immediately and do not disclose the contents to any=
+ other person, use it for any purpose, or store or copy the information in =
+any medium. Thank you.
