@@ -2,561 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3E4781066
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D14F78106B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378647AbjHRQbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54722 "EHLO
+        id S1378673AbjHRQbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378665AbjHRQar (ORCPT
+        with ESMTP id S1378751AbjHRQbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:30:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37323AAE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692376245; x=1723912245;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=uI4dyA7C7/lXsadRB/ksiSuy+Lsb2LY07mjFSl/VibQ=;
-  b=VX7+UaomKR4mfRDa0+qdKxA+UxO+D14RLMWQkhn9puGmWVWFMYLxvLJ4
-   ElnISpJwgt4kD/UYrxsfwgQA7VngU+VHcOksYnvJU7KChHtjQSipU5O7X
-   4FE2b39l5pQDINhSYKAYEjCNv3fhqA8EEwQFKw6umtTWSdvuiRczfGrJo
-   PNAdx9U9TOeO+pQ4FJs2mnlpslbBntnEPl2+gDwJxPgrB2xctr5bpBQNv
-   wkEi0S0VhfqVLLkvhFxMCzKEl5Tw4OK2Ddm1LL6chnQFF2y78Moq8qBbr
-   uljMwsBxLvR/XWEXHxEoLaInTF7zVo4l33B82qt2n07aE3LU0mlrYlks9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="370597984"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="370597984"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 09:30:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="728648155"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="728648155"
-Received: from enewberr-mobl.amr.corp.intel.com (HELO [10.212.37.100]) ([10.212.37.100])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 09:30:43 -0700
-Message-ID: <9f910785-e856-1539-e3e4-c9817af5fe67@linux.intel.com>
-Date:   Fri, 18 Aug 2023 11:30:42 -0500
+        Fri, 18 Aug 2023 12:31:40 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C753C0A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:31:32 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9a2033978so17159921fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692376291; x=1692981091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=omwCkxQq24y4kCjZrsXGSpWYzcZ37a/RmYIdVkufMPM=;
+        b=w4vShAk0VUI1abFeD1fX1VPiSh4XzYi+WdCDr5hs8oMBy7+MeUNO78yhT+yoJyrZL1
+         8JmKaO+2+1w0rmlRWBZByONrC7BytZ0dbTr5ZwBYDiZG7nWnOC9n0ZkWGTtkmjGM0y20
+         LVo/J5UUG13Ifw1IbzdJsvtJzhyG15nI2Ujf+6eP+n6iLBZ3KZFBudSRJJrZ2JYAU83j
+         3QM+HnpkSdzKpXyCz8EwvyGgaYcg3BATFdIUUjG8Ylc8+IXBeFLERvMGXZml5YO7UMLz
+         C4lfiCiEy6YaSdavKm6PiVKqy+Njuoq4TRqRDszocxE+K5gEXb6VNcTMKQUA/o3Ynojq
+         T+tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692376291; x=1692981091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=omwCkxQq24y4kCjZrsXGSpWYzcZ37a/RmYIdVkufMPM=;
+        b=S30925KUVoDUflJG30fWtFLTP5ko9pKq4W3/7audcK+oyAG0+cUR2791Jxwst6ceXb
+         kf4+QfmGSpCZWawBtjbNxoFkKG8ku1dqZgQtI1PDDYttdMhSBy+Qm7ENrdJUYRXd+Til
+         9cqVNKlIgekA02c1KM2YwlZAaPsQ479Z3fwnkDA/xEp9Ln7yym05FK6jyVb0HOcgkxK1
+         8T/aUwEYEYwOI5T97kzn59h2/4Z1iXSPNtV0vAoemzp1OPZ6nj4biPYBkZdx/L4lVhHc
+         HkJp5eA+D8Q/AJN2fSNssrAdBLvvesyf4XZXGf6Sbn/rBz3AVETTc0rC9v2LhdPETneN
+         TRlg==
+X-Gm-Message-State: AOJu0YyApfBNPvnBj6fiDvek3lZNakPqKr6RoSsCvOR/LQGNZfrJ3yGs
+        zeSS+3aUD3yn1Z4lGOOan7vuABqH8NCwFZPjMkZtmg==
+X-Google-Smtp-Source: AGHT+IEEzKyQ4HUkS/Hfg8swi6QPlQwfuANsLtgK5T56zFkDQvvL04j0oiOs5Q2Z0Sbb24oShFiVkTVcYgT55DL6K/4=
+X-Received: by 2002:a05:6512:3da9:b0:4fe:ca9:d9bd with SMTP id
+ k41-20020a0565123da900b004fe0ca9d9bdmr2647218lfv.56.1692376290593; Fri, 18
+ Aug 2023 09:31:30 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
-Content-Language: en-US
-To:     Shenghao Ding <shenghao-ding@ti.com>, tiwai@suse.de
-Cc:     robh+dt@kernel.org, lgirdwood@gmail.com, perex@perex.cz,
-        kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-        mengdong.lin@intel.com, baojun.xu@ti.com,
-        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
-        broonie@kernel.org, gentuser@gmail.com
-References: <20230818085558.1431-1-shenghao-ding@ti.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20230818085558.1431-1-shenghao-ding@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230817164733.2475092-1-nphamcs@gmail.com> <20230817190126.3155299-1-nphamcs@gmail.com>
+ <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com>
+ <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
+ <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
+ <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
+ <20230818134906.GA138967@cmpxchg.org> <CAJD7tkZY3kQPO2dn2NX0WODwwRifhH4R=pSZnFZYxh23Eszb-g@mail.gmail.com>
+ <CAKEwX=O4XOxZ6Mnz__dYgyTMKKa=OCKxAE47wszQb3JCk6ob-A@mail.gmail.com>
+In-Reply-To: <CAKEwX=O4XOxZ6Mnz__dYgyTMKKa=OCKxAE47wszQb3JCk6ob-A@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 18 Aug 2023 09:30:54 -0700
+Message-ID: <CAJD7tkagH9cXE_2zLS1fxzV4RYUdFCHrndgRycmsPsReyb4BVw@mail.gmail.com>
+Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Yu Zhao <yuzhao@google.com>,
+        akpm@linux-foundation.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The code doesn't look too bad but needs a bit more work. There are quite
-a few error handling issues, pm_runtime needs to be revisited and
-ACPI/EFI as well.
+On Fri, Aug 18, 2023 at 9:24=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Fri, Aug 18, 2023 at 7:57 AM Yosry Ahmed <yosryahmed@google.com> wrote=
+:
+> >
+> > On Fri, Aug 18, 2023 at 6:49=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > >
+> > > On Thu, Aug 17, 2023 at 05:12:17PM -0600, Yu Zhao wrote:
+> > > > On Thu, Aug 17, 2023 at 4:50=E2=80=AFPM Yosry Ahmed <yosryahmed@goo=
+gle.com> wrote:
+> > > > >
+> > > > > On Thu, Aug 17, 2023 at 3:43=E2=80=AFPM Nhat Pham <nphamcs@gmail.=
+com> wrote:
+> > > > > >
+> > > > > > On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Aug 17, 2023 at 12:01=E2=80=AFPM Nhat Pham <nphamcs@g=
+mail.com> wrote:
+> > > > > > > >
+> > > > > > > > In eviction recency check, we are currently not holding a l=
+ocal
+> > > > > > > > reference to the memcg that the refaulted folio belonged to=
+ when it was
+> > > > > > > > evicted. This could cause serious memcg lifetime issues, fo=
+r e.g in the
+> > > > > > > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pa=
+ges(). This
+> > > > > > > > has occurred in production:
+> > > > > > > >
+> > > > > > > > [ 155757.793456] BUG: kernel NULL pointer dereference, addr=
+ess: 00000000000000c0
+> > > > > > > > [ 155757.807568] #PF: supervisor read access in kernel mode
+> > > > > > > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
+> > > > > > > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 =
+PMD 0
+> > > > > > > > [ 155757.839985] Oops: 0000 [#1] SMP
+> > > > > > > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- =
+Kdump: loaded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67=
+ba #1
+> > > > > > > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin L=
+akes Passive MP, BIOS YMM16 05/24/2021
+> > > > > > > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3=
+d/0xb0
+> > > > > > > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 =
+c0 00 00 00 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 =
+48 39 d1 74 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 0=
+0 00 48
+> > > > > > > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 0001028=
+6
+> > > > > > > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007fffffffff=
+f RCX: ffff888280183000
+> > > > > > > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007fffffffffff=
+f RDI: ffff888bbc2d1000
+> > > > > > > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000=
+b R09: ffff888ad9cedba0
+> > > > > > > > [ 155757.991094] R10: ffffea0039c07900 R11: 000000000000001=
+0 R12: ffff888b23a7b000
+> > > > > > > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d100=
+0 R15: 000007ffffc71354
+> > > > > > > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9=
+c0000(0000) knlGS:0000000000000000
+> > > > > > > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 000000008=
+0050033
+> > > > > > > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb800=
+4 CR4: 00000000007706e0
+> > > > > > > > [ 155758.062473] DR0: 0000000000000000 DR1: 000000000000000=
+0 DR2: 0000000000000000
+> > > > > > > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff=
+0 DR7: 0000000000000400
+> > > > > > > > [ 155758.091376] PKRU: 55555554
+> > > > > > > > [ 155758.096957] Call Trace:
+> > > > > > > > [ 155758.102016]  <TASK>
+> > > > > > > > [ 155758.106502]  ? __die+0x78/0xc0
+> > > > > > > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
+> > > > > > > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
+> > > > > > > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
+> > > > > > > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
+> > > > > > > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
+> > > > > > > > [ 155758.157133]  workingset_refault+0xca/0x1e0
+> > > > > > > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
+> > > > > > > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
+> > > > > > > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
+> > > > > > > > [ 155758.191738]  filemap_read+0x68d/0xdf0
+> > > > > > > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
+> > > > > > > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
+> > > > > > > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
+> > > > > > > > [ 155758.224601]  do_syscall_64+0x3d/0x80
+> > > > > > > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
+> > > > > > > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
+> > > > > > > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 =
+e8 b4 e6 f7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 =
+00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 f=
+f 48 8b
+> > > > > > > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 0000029=
+3 ORIG_RAX: 0000000000000011
+> > > > > > > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c=
+0 RCX: 00007f62c29153b5
+> > > > > > > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d298600=
+0 RDI: 0000000000000076
+> > > > > > > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 000000000000000=
+0 R09: 0000000064d5230c
+> > > > > > > > [ 155758.347452] R10: 000000000027d450 R11: 000000000000029=
+3 R12: 000000000003c041
+> > > > > > > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b06=
+0 R15: 000000000027d450
+> > > > > > > > [ 155758.376661]  </TASK>
+> > > > > > > >
+> > > > > > > > This patch fixes the issue by getting a local reference ins=
+ide
+> > > > > > > > unpack_shadow().
+> > > > > > > >
+> > > > > > > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around evic=
+tion vs refault container")
+> > > > > > >
+> > > > > > > Beyond mem_cgroup_get_nr_swap_pages(), we still use the evict=
+ion_memcg
+> > > > > > > without grabbing a ref to it first in workingset_test_recent(=
+) (and in
+> > > > > > > workingset_refault() before that) as well as lru_gen_test_rec=
+ent().
+> > > > > > >
+> > > > > > > Wouldn't the fix go back even further? or am I misinterpretin=
+g the problem?
+> > > > > > Hmm I don't see eviction_memcg being used outside of *_test_rec=
+ent
+> > > > > > (the rest just uses memcg =3D folio_memcg(folio), which if I'm =
+not mistaken is
+> > > > > > the memcg that is refaulting the folio into memory).
+> > > > > >
+> > > > > > Inside workingset_test_recent(), the only other place where evi=
+ction_memcg
+> > > > > > is used is for mem_cgroup_lruvec. This function call won't cras=
+h whether
+> > > > > > eviction_memcg is valid or not.
+> > > > >
+> > > > > If eviction_memcg is invalid because the memory was already freed=
+, we
+> > > > > are basically dereferencing garbage in mem_cgroup_lruvec() aren't=
+ we?
+> > > > >
+> > > > > > The crash only happens during
+> > > > > > mem_cgroup_get_nr_swap_pages, which has an upward traversal fro=
+m
+> > > > > > eviction_memcg to root.
+> > > > > >
+> > > > > > Let me know if this does not make sense and/or is insufficient =
+to ensure
+> > > > > > safe upward traversal from eviction_memcg to root!
+> > > > > > >
+> > > > > > >
+> > > > > > >
+> > > > > > > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> > > > > > > > Cc: stable@vger.kernel.org
+> > > > > > > > ---
+> > > > > > > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++-----=
+------------
+> > > > > > > >  1 file changed, 43 insertions(+), 22 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/mm/workingset.c b/mm/workingset.c
+> > > > > > > > index da58a26d0d4d..03cadad4e484 100644
+> > > > > > > > --- a/mm/workingset.c
+> > > > > > > > +++ b/mm/workingset.c
+> > > > > > > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid,=
+ pg_data_t *pgdat, unsigned long eviction,
+> > > > > > > >         return xa_mk_value(eviction);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_=
+data_t **pgdat,
+> > > > > > > > -                         unsigned long *evictionp, bool *w=
+orkingsetp)
+> > > > > > > > +/*
+> > > > > > > > + * Unpacks the stored fields of a shadow entry into the gi=
+ven pointers.
+> > > > > > > > + *
+> > > > > > > > + * The memcg pointer is only populated if the memcg record=
+ed in the shadow
+> > > > > > > > + * entry is valid. In this case, a reference to the memcg =
+will be acquired,
+> > > > > > > > + * and a corresponding mem_cgroup_put() will be needed whe=
+n we no longer
+> > > > > > > > + * need the memcg.
+> > > > > > > > + */
+> > > > > > > > +static void unpack_shadow(void *shadow, struct mem_cgroup =
+**memcgp,
+> > > > > > > > +                       pg_data_t **pgdat, unsigned long *e=
+victionp, bool *workingsetp)
+> > > > > > > >  {
+> > > > > > > >         unsigned long entry =3D xa_to_value(shadow);
+> > > > > > > > +       struct mem_cgroup *memcg;
+> > > > > > > >         int memcgid, nid;
+> > > > > > > >         bool workingset;
+> > > > > > > >
+> > > > > > > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow=
+, int *memcgidp, pg_data_t **pgdat,
+> > > > > > > >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) -=
+ 1);
+> > > > > > > >         entry >>=3D MEM_CGROUP_ID_SHIFT;
+> > > > > > > >
+> > > > > > > > -       *memcgidp =3D memcgid;
+> > > > > > > > +       /*
+> > > > > > > > +        * Look up the memcg associated with the stored ID.=
+ It might
+> > > > > > > > +        * have been deleted since the folio's eviction.
+> > > > > > > > +        *
+> > > > > > > > +        * Note that in rare events the ID could have been =
+recycled
+> > > > > > > > +        * for a new cgroup that refaults a shared folio. T=
+his is
+> > > > > > > > +        * impossible to tell from the available data. Howe=
+ver, this
+> > > > > > > > +        * should be a rare and limited disturbance, and ac=
+tivations
+> > > > > > > > +        * are always speculative anyway. Ultimately, it's =
+the aging
+> > > > > > > > +        * algorithm's job to shake out the minimum access =
+frequency
+> > > > > > > > +        * for the active cache.
+> > > > > > > > +        */
+> > > > > > > > +       memcg =3D mem_cgroup_from_id(memcgid);
+> > > > > > > > +       if (memcg && css_tryget(&memcg->css))
+> > > > > > > > +               *memcgp =3D memcg;
+> > > > > > > > +       else
+> > > > > > > > +               *memcgp =3D NULL;
+> > > > > > > > +
+> > > > > > > >         *pgdat =3D NODE_DATA(nid);
+> > > > > > > >         *evictionp =3D entry;
+> > > > > > > >         *workingsetp =3D workingset;
+> > > > > > > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct =
+folio *folio)
+> > > > > > > >  static bool lru_gen_test_recent(void *shadow, bool file, s=
+truct lruvec **lruvec,
+> > > > > > > >                                 unsigned long *token, bool =
+*workingset)
+> > > > > > > >  {
+> > > > > > > > -       int memcg_id;
+> > > > > > > >         unsigned long min_seq;
+> > > > > > > >         struct mem_cgroup *memcg;
+> > > > > > > >         struct pglist_data *pgdat;
+> > > > > > > >
+> > > > > > > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, wor=
+kingset);
+> > > > > > > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workin=
+gset);
+> > > > > > > > +       if (!mem_cgroup_disabled() && !memcg)
+> > > > > > > > +               return false;
+> > > > > > >
+> > > > > > > +Yu Zhao
+> > > > > > >
+> > > > > > > There is a change of behavior here, right?
+> > > > > > >
+> > > > > > > The existing code will continue if !mem_cgroup_disabled() && =
+!memcg is
+> > > > > > > true, and mem_cgroup_lruvec() will return the lruvec of the r=
+oot
+> > > > > > > memcg. Now we are just returning false.
+> > > > > > >
+> > > > > > > Is this intentional?
+> > > > > > Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
+> > > > > > get_maintainers.pl isn't always sufficient I guess :)
+> > > > > >
+> > > > > > But yeah, this behavioral change is intentional.
+> > > > > >
+> > > > > > Correct me if I'm wrong of course, but it seems like MGLRU shou=
+ld
+> > > > > > follow the same pattern here. That is, once we return from unpa=
+ck_shadow,
+> > > > > > the possible scenarios are the same as prescribed in workingset=
+_test_recent:
+> > > > > >
+> > > > > > 1. If mem_cgroup is disabled, we can ignore this check.
+> > > > > > 2. If mem_cgroup is enabled, then the only reason why we get NU=
+LL
+> > > > > > memcg from unpack_shadow is if the eviction_memcg is no longer
+> > > > > > valid.  We should not try to get its lruvec, or substitute it w=
+ith the
+> > > > > > root memcg, but return false right away (i.e not recent).
+> > > > > > >
+> > > > >
+> > > > > I will leave this for Yu :)
+> > > >
+> > > > Thanks, Yosry.
+> > > >
+> > > > Hi Nhat, it seems unnecessary to me to introduce a get/put into
+> > > > lru_gen_test_recent() because it doesn't suffer from the bug this
+> > > > patch tries to fix. In theory, the extra get/put can impact
+> > > > performance, though admittedly the impact is unlikely to be
+> > > > measurable. Regardless, the general practice is to fix the bug
+> > > > locally, i.e., when the mem_cgroup_get_nr_swap_pages() path is take=
+n,
+> > > > rather than change the unrelated path. Thank you.
+> > >
+> > > Hey guys,
+> > >
+> > > I had suggested to have it in unpack_shadow() to keep things simple,
+> > > and not further complicate the lifetime rules in this code. The
+> > > tryget() is against a per-cpu counter, so it's not expensive.
+> > >
+> > > The NULL deref is evidence that while *some* cgroup members are still
+> > > accessible once it's dead, not all of it is. There is no explicit
+> > > guarantee from the cgroup code that anything BUT the tryget() is stil=
+l
+> > > valid against group that is under rcu freeing.
+> > >
+> > > Since it isn't expensive, let's keep it simple and robust, and preven=
+t
+> > > future bugs of the same class, by always ensuring the cgroup is alive
+> > > before accessing random members. Especially in non-cgroup code.
+> >
+> > I looked at this again today with fresh eyes, and I want to go back to
+> > what I initially said. Isn't RCU protection in this case enough to
+> > keep the memcg "valid" (i.e accessible, not garbage)? The tryget is
+> > not a lot of complexity or performance tax, but I want to really
+> > understand what's happening here.
+> >
+> > Looking at the code again, this seems to be the sequence of events on
+> > the cgroup side:
+> > - css_put() puts the last reference invoking a call to css_release()
+> > - css_release() queues css_release_work_fn()
+> > - css_release() does some bookkeeping, makes some callbacks, and
+> > queues css_free_rwork_fn() to run *after* an RCU grace period.
+> > - css_free_rwork_fn() makes callbacks to free the memory, ultimately
+> > freeing the memcg.
+> >
+> > On the memcg idr side, the removal sequence of events seem to be:
+> > - mem_cgroup_id_put() will decrement the id ref and check if falls to 0
+> > - If the id ref falls to 0, we call mem_cgroup_id_remove() *then* css_p=
+ut()
+> >
+> > On the workingset_refault() side, the sequence of events seems to be:
+> > - rcu_read_lock()
+> > - memcg =3D mem_cgroup_from_id()
+> > - ... // use memcg
+> > - rcu_read_unlock()
+> >
+> > So technically, after holding the rcu read lock, if we find the memcg
+> > in the idr, it must be valid, and it must not be freed until after the
+> > rcu read section is completed. It's not just the cgroup internal
+> > implementation, it's the contract between cgroup core and controllers
+> > such as memcg.
+> >
+> > The memory controller expects a sequence of callbacks during freeing:
+> > css_offline() -> css_released() -> css_free(). So memcg code is within
+> > its right to access any fields of struct mem_cgroup that are not freed
+> > by the css_offline() or css_released() until css_free() is called,
+> > right?
+>
+>
+> >
+> >
+> > Here is a guess / question, because I am not really familiar with
+> > memory barriers and such, but is it at all possible that the actual
+> > problem is reordering of instructions in mem_cgroup_id_put_many(),
+> > such that we actually execute css_put() *before*
+> > mem_cgroup_id_remove()?
+> >
+> > If this happens it seems possible for this to happen:
+> >
+> > cpu #1                                  cpu#2
+> >                                              css_put()
+> >                                              /* css_free_rwork_fn is qu=
+eued */
+> > rcu_read_lock()
+> > mem_cgroup_from_id()
+> >                                              mem_cgroup_id_remove()
+> > /* access memcg */
+> >
+> > If I understand correctly, if css_free_rwork_fn() is queued before the
+> > rcu_read_lock in workingset_refault() begins, then it can be executed
+> > during the rcu read section, and the memcg can be freed at any point
+> > from under us. Perhaps what we need is memory barriers to ensure
+> > correct ordering in mem_cgroup_id_put_many()? I am not sure if
+> > rcu_read_lock() implies a barrier on the other side.
+> >
+> > Sorry if this is all off, I am just trying to understand what's going o=
+n.
+> Ah that is wild. That does sound plausible.
+> In this case, maybe something like this?
+>
+> mem_cgroup_id_remove(memcg);
+> /*
+> * Preventing css_put from happening before id removal due to
+> * instruction reordering.
+> *
 
-> +enum calib_data {
+This is redefining what smp_mb() is, probably unnecessary.
 
-tas2781_calib_data?
+> * This guarantees that if a non-null memcg is acquired from ID within
+> * an RCU read section, its css won't be freed for the
+> * duration of this section.
+> */
+> smp_mb();
+> /* Memcg ID pins CSS */
+> css_put(&memcg->css);
 
-> +	R0_VAL = 0,
-> +	INV_R0,
-> +	R0LOW,
-> +	POWER,
-> +	TLIM,
-> +	CALIB_MAX
-> +};
-> +
-> +static int tas2781_get_i2c_res(struct acpi_resource *ares, void *data)
-> +{
-> +	struct tasdevice_priv *tas_priv = data;
-> +	struct acpi_resource_i2c_serialbus *sb;
-> +
-> +	if (i2c_acpi_get_i2c_resource(ares, &sb)) {
-> +		if (tas_priv->ndev < TASDEVICE_MAX_CHANNELS &&
-> +			sb->slave_address != TAS2781_GLOBAL_ADDR) {
-> +			tas_priv->tasdevice[tas_priv->ndev].dev_addr =
-> +				(unsigned int)sb->slave_address;
-> +			tas_priv->ndev++;
-> +		}
-> +	}
-> +	return 1;
-> +}
-> +
-> +static int tas2781_read_acpi(struct tasdevice_priv *p, const char *hid)
-> +{
-> +	struct acpi_device *adev;
-> +	struct device *physdev;
-> +	LIST_HEAD(resources);
-> +	const char *sub;
-> +	int ret;
-> +
-> +	adev = acpi_dev_get_first_match_dev(hid, NULL, -1);
-> +	if (!adev) {
-> +		dev_err(p->dev,
-> +			"Failed to find an ACPI device for %s\n", hid);
-> +		return -ENODEV;
-> +	}
-
-[1] need to take care of a resource leak here
-
-> +	ret = acpi_dev_get_resources(adev, &resources, tas2781_get_i2c_res, p);
-> +	if (ret < 0)
-> +		goto err;
-
-you return without doing acpi_dev_put(adev), and you are also doing a
-put_device(physdev) which is not initialized yet.
-
-NAK, this needs to be reworked since a simple...
-
-
-> +
-> +	acpi_dev_free_resource_list(&resources);
-> +	strscpy(p->dev_name, hid, sizeof(p->dev_name));
-> +	physdev = get_device(acpi_get_first_physical_node(adev));
-> +	acpi_dev_put(adev);
-
-... move ong those last two lines to [1]
-
-> +
-> +	/* No side-effect to the playback even if subsystem_id is NULL*/
-> +	sub = acpi_get_subsystem_id(ACPI_HANDLE(physdev));
-> +	if (IS_ERR(sub))
-> +		sub = NULL;
-> +
-> +	p->acpi_subsystem_id = sub;
-> +
-> +	put_device(physdev);
-> +
-> +	return 0;
-> +
-> +err:
-> +	dev_err(p->dev, "read acpi error, ret: %d\n", ret);
-> +	put_device(physdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void tas2781_hda_playback_hook(struct device *dev, int action)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +
-> +	dev_dbg(tas_priv->dev, "%s: action = %d\n", __func__, action);
-> +	switch (action) {
-> +	case HDA_GEN_PCM_ACT_OPEN:
-> +		pm_runtime_get_sync(dev);
-
-test if this actually works?
-
-> +		mutex_lock(&tas_priv->codec_lock);
-> +		tasdevice_tuning_switch(tas_priv, 0);
-> +		mutex_unlock(&tas_priv->codec_lock);
-> +		break;
-> +	case HDA_GEN_PCM_ACT_CLOSE:
-> +		mutex_lock(&tas_priv->codec_lock);
-> +		tasdevice_tuning_switch(tas_priv, 1);
-> +		mutex_unlock(&tas_priv->codec_lock);
-
-how useful is this codec_lock, is the 'action' not protected at a higher
-level?
-
-> +
-> +		pm_runtime_mark_last_busy(dev);
-> +		pm_runtime_put_autosuspend(dev);
-> +		break;
-> +	default:
-> +		dev_dbg(tas_priv->dev, "Playback action not supported: %d\n",
-> +			action);
-> +		break;
-> +	}
-> +}
-
-> +static int tasdevice_hda_clamp(int val, int max)
-> +{
-> +	if (val > max)
-> +		val = max;
-> +
-> +	if (val < 0)
-> +		val = 0;
-> +	return val;
-> +}
-
-I've seen that macro in the TAS2783 code as well, that sounds like a
-good helper function to share?
-
-> +
-> +static int tasdevice_set_profile_id(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct tasdevice_priv *tas_priv = snd_kcontrol_chip(kcontrol);
-> +	int nr_profile = ucontrol->value.integer.value[0];
-> +	int max = tas_priv->rcabin.ncfgs - 1;
-> +	int val, ret = 0;
-> +
-> +	val = tasdevice_hda_clamp(nr_profile, max);
-> +
-> +	if (tas_priv->rcabin.profile_cfg_id != nr_profile) {
-> +		tas_priv->rcabin.profile_cfg_id = nr_profile;
-> +		ret = 1;
-
-return 1;
-> +	}
-> +
-> +	return ret;
-
-return 0;
-
-you don't really need a variable here. same comment for other usages.
-
-
-> +static void tas2781_apply_calib(struct tasdevice_priv *tas_priv)
-> +{
-> +	static const unsigned char page_array[CALIB_MAX] = {
-> +		0x17, 0x18, 0x18, 0x0d, 0x18
-> +	};
-> +	static const unsigned char rgno_array[CALIB_MAX] = {
-> +		0x74, 0x0c, 0x14, 0x3c, 0x7c
-> +	};
-> +	unsigned char *data;
-> +	int i, j, rc;
-> +
-> +	for (i = 0; i < tas_priv->ndev; i++) {
-> +		data = tas_priv->cali_data.data +
-> +			i * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
-> +		for (j = 0; j < CALIB_MAX; j++) {
-> +			rc = tasdevice_dev_bulk_write(tas_priv, i,
-> +				TASDEVICE_REG(0, page_array[j], rgno_array[j]),
-> +				&(data[4 * j]), 4);
-> +			if (rc < 0)
-> +				dev_err(tas_priv->dev,
-> +					"chn %d calib %d bulk_wr err = %d\n",
-> +					i, j, rc);
-
-do you want to keep going or just stop on the first error?
-
-> +		}
-> +	}
-> +}
-> +
-> +/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
-> + * Calibrate data is done by manufacturer in the factory. These data are used
-> + * by Algo for calucating the speaker temperature, speaker membrance excursion
-
-typos, use a spell checker.
-
-calculation
-membrane
-
-> + * and f0 in real time during playback.
-> + */
-> +static int tas2781_save_calibration(struct tasdevice_priv *tas_priv)
-> +{
-> +	efi_guid_t efi_guid = EFI_GUID(0x02f9af02, 0x7734, 0x4233, 0xb4, 0x3d,
-> +		0x93, 0xfe, 0x5a, 0xa3, 0x5d, 0xb3);
-
-I've seen an EFI use for SoundWire TAS2783, is this the same thing?
-It looks very very similar except that this one checks the BUFFER_TOO_SMALL.
-
-If yes, can this be a helper function? If this is the same sort of
-calibration we should not have duplicated code really, it's easier to
-maintain if there's one set of helpers shared between TI drivers.
-
-> +	static efi_char16_t efi_name[] = L"CALI_DATA";
-> +	struct tm *tm = &tas_priv->tm;
-> +	unsigned int attr, crc;
-> +	unsigned int *tmp_val;
-> +	efi_status_t status;
-> +
-> +	/* Lenovo devices */
-> +	if (tas_priv->catlog_id == LENOVO)
-> +		efi_guid = EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc, 0x09,
-> +			0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
-> +
-> +	tas_priv->cali_data.total_sz = 0;
-> +	/* Get real size of UEFI variable */
-> +	status = efi.get_variable(efi_name, &efi_guid, &attr,
-> +		&tas_priv->cali_data.total_sz, tas_priv->cali_data.data);
-> +	if (status == EFI_BUFFER_TOO_SMALL) {
-> +		/* Allocate data buffer of data_size bytes */
-> +		tas_priv->cali_data.data = devm_kzalloc(tas_priv->dev,
-> +			tas_priv->cali_data.total_sz, GFP_KERNEL);
-> +		if (!tas_priv->cali_data.data)
-> +			return -ENOMEM;
-> +		/* Get variable contents into buffer */
-> +		status = efi.get_variable(efi_name, &efi_guid, &attr,
-> +			&tas_priv->cali_data.total_sz,
-> +			tas_priv->cali_data.data);
-> +		if (status != EFI_SUCCESS)
-> +			return -EINVAL;
-> +	}
-> +
-> +	tmp_val = (unsigned int *)tas_priv->cali_data.data;
-> +
-> +	crc = crc32(~0, tas_priv->cali_data.data, 84) ^ ~0;
-> +	dev_dbg(tas_priv->dev, "cali crc 0x%08x PK tmp_val 0x%08x\n",
-> +		crc, tmp_val[21]);
-> +
-> +	if (crc == tmp_val[21]) {
-> +		time64_to_tm(tmp_val[20], 0, tm);
-> +		dev_dbg(tas_priv->dev, "%4ld-%2d-%2d, %2d:%2d:%2d\n",
-> +			tm->tm_year, tm->tm_mon, tm->tm_mday,
-> +			tm->tm_hour, tm->tm_min, tm->tm_sec);
-> +		tas2781_apply_calib(tas_priv);
-> +	} else
-> +		tas_priv->cali_data.total_sz = 0;
-> +
-> +	return 0;
-> +}
-> +
-> +static void tasdev_fw_ready(const struct firmware *fmw, void *context)
-> +{
-> +	struct tasdevice_priv *tas_priv = context;
-> +	struct hda_codec *codec = tas_priv->codec;
-> +	int i, ret;
-> +
-> +	pm_runtime_get_sync(tas_priv->dev);
-
-test that it worked?
-
-> +	mutex_lock(&tas_priv->codec_lock);
-
-...
-
-> +static int tas2781_hda_bind(struct device *dev, struct device *master,
-> +	void *master_data)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +	struct hda_component *comps = master_data;
-> +	struct hda_codec *codec;
-> +	unsigned int subid;
-> +	int ret;
-> +
-> +	if (!comps || tas_priv->index < 0 ||
-> +		tas_priv->index >= HDA_MAX_COMPONENTS)
-> +		return -EINVAL;
-> +
-> +	comps = &comps[tas_priv->index];
-> +	if (comps->dev)
-> +		return -EBUSY;
-> +
-> +	codec = comps->codec;
-> +	subid = codec->core.subsystem_id >> 16;
-> +
-> +	switch (subid) {
-> +	case 0x17aa:
-
-magic number should be a define somewhere...
-
-> +		tas_priv->catlog_id = LENOVO;
-> +		break;
-> +	default:
-> +		tas_priv->catlog_id = OTHERS;
-> +		break;
-> +	}
-> +
-> +	pm_runtime_get_sync(dev);
-
-test that it worked?
-
-> +
-> +	comps->dev = dev;
-> +
-> +	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
-> +
-> +	ret = tascodec_init(tas_priv, codec, tasdev_fw_ready);
-> +	if (ret)
-> +		return ret;
-
-need to do a put_autosuspend below, this is leaking a refcount.
-
-> +
-> +	comps->playback_hook = tas2781_hda_playback_hook;
-> +
-> +	pm_runtime_mark_last_busy(dev);
-> +	pm_runtime_put_autosuspend(dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static void tas2781_hda_unbind(struct device *dev,
-> +	struct device *master, void *master_data)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +	struct hda_component *comps = master_data;
-> +
-> +	if (comps[tas_priv->index].dev == dev)
-> +		memset(&comps[tas_priv->index], 0, sizeof(*comps));
-> +
-> +	tasdevice_config_info_remove(tas_priv);
-> +	tasdevice_dsp_remove(tas_priv);
-> +
-> +	tas_priv->fw_state = TASDEVICE_DSP_FW_PENDING;
-> +}
-> +
-> +static const struct component_ops tas2781_hda_comp_ops = {
-> +	.bind = tas2781_hda_bind,
-> +	.unbind = tas2781_hda_unbind,
-> +};
-> +
-> +static void tas2781_hda_remove(struct device *dev)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +
-> +	pm_runtime_get_sync(tas_priv->dev);
-> +	pm_runtime_disable(tas_priv->dev);
-
-I don't think this sequence makes any sense.
-
-> +	component_del(tas_priv->dev, &tas2781_hda_comp_ops);
-> +
-> +	pm_runtime_put_noidle(tas_priv->dev);
-> +
-> +	tasdevice_remove(tas_priv);
-> +}
-> +
-> +static int tas2781_hda_i2c_probe(struct i2c_client *clt)
-> +{
-> +	struct tasdevice_priv *tas_priv;
-> +	const char *device_name;
-> +	int ret;
-> +
-> +	if (strstr(dev_name(&clt->dev), "TIAS2781"))
-> +		device_name = "TIAS2781";
-> +	else
-> +		return -ENODEV;
-> +
-> +	tas_priv = tasdevice_kzalloc(clt);
-> +	if (!tas_priv)
-> +		return -ENOMEM;
-> +
-> +	tas_priv->irq_info.irq = clt->irq;
-> +	ret = tas2781_read_acpi(tas_priv, device_name);
-> +	if (ret)
-> +		return dev_err_probe(tas_priv->dev, ret,
-> +			"Platform not supported\n");
-> +
-> +	ret = tasdevice_init(tas_priv);
-> +	if (ret)
-> +		goto err;
-> +
-> +	pm_runtime_set_autosuspend_delay(tas_priv->dev, 3000);
-> +	pm_runtime_use_autosuspend(tas_priv->dev);
-> +	pm_runtime_mark_last_busy(tas_priv->dev);
-> +	pm_runtime_set_active(tas_priv->dev);
-> +	pm_runtime_get_noresume(tas_priv->dev);
-
-this ..
-
-> +	pm_runtime_enable(tas_priv->dev);
-> +
-> +	pm_runtime_put_autosuspend(tas_priv->dev);
-
-and this should be removed IMHO. it makes no sense to me.
-
-> +
-> +	ret = component_add(tas_priv->dev, &tas2781_hda_comp_ops);
-> +	if (ret) {
-> +		dev_err(tas_priv->dev, "Register component failed: %d\n", ret);
-> +		pm_runtime_disable(tas_priv->dev);
-> +		goto err;
-> +	}
-> +
-> +	tas2781_reset(tas_priv);
-> +err:
-> +	if (ret)
-> +		tas2781_hda_remove(&clt->dev);
-> +	return ret;
-> +}
-> +
-> +static void tas2781_hda_i2c_remove(struct i2c_client *clt)
-> +{
-> +	tas2781_hda_remove(&clt->dev);
-
-so for symmetry that's where pm_runtime needs to be disabled.
-
-
-> +static int tas2781_system_suspend(struct device *dev)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	dev_dbg(tas_priv->dev, "System Suspend\n");
-> +
-> +	ret = pm_runtime_force_suspend(dev);
-> +	if (ret)
-> +		return ret;
-
-that's usually the other way around, for system suspend you either want
-the device to be pm_runtime active, or if it's already suspended do nothing.
-
-This is very odd to me.
-
-> +
-> +	/* Shutdown chip before system suspend */
-> +	regcache_cache_only(tas_priv->regmap, false);
-> +	tasdevice_tuning_switch(tas_priv, 1);
-> +	regcache_cache_only(tas_priv->regmap, true);
-> +	regcache_mark_dirty(tas_priv->regmap);
-> +
-> +	/*
-> +	 * Reset GPIO may be shared, so cannot reset here.
-> +	 * However beyond this point, amps may be powered down.
-> +	 */
-> +	return 0;
-> +}
-> +
-> +static int tas2781_system_resume(struct device *dev)
-> +{
-> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
-> +	unsigned long calib_data_sz =
-> +		tas_priv->ndev * TASDEVICE_SPEAKER_CALIBRATION_SIZE;
-> +	int i, ret;
-> +
-> +	dev_dbg(tas_priv->dev, "System Resume\n");
-> +
-> +	ret = pm_runtime_force_resume(dev);
-> +	if (ret)
-> +		return ret;
-
-that's also not quite right IMHO, this doesn't follow the recommended
-sequences for power management.
-
-> +
-> +	mutex_lock(&tas_priv->codec_lock);
-> +
-> +	for (i = 0; i < tas_priv->ndev; i++) {
-> +		tas_priv->tasdevice[i].cur_book = -1;
-> +		tas_priv->tasdevice[i].cur_prog = -1;
-> +		tas_priv->tasdevice[i].cur_conf = -1;
-> +	}
-> +	tas2781_reset(tas_priv);
-> +	tasdevice_prmg_load(tas_priv, tas_priv->cur_prog);
-> +
-> +	/* If calibrated data occurs error, dsp will still work with default
-> +	 * calibrated data inside algo.
-> +	 */
-> +	if (tas_priv->cali_data.total_sz > calib_data_sz)
-> +		tas2781_apply_calib(tas_priv);
-> +	mutex_unlock(&tas_priv->codec_lock);
-> +
-> +	return 0;
-> +}
-
-> +MODULE_IMPORT_NS(SND_SOC_TAS2781_FMWLIB);
+I am not the best person to answer this question, ideally someone with
+more understanding of memory barriers should chime in here to:
+- Confirm my theory is correct.
+- Confirm smp_mb() is the correct primitive to use. I am guessing
+smp_wmb() is enough here.
+- Confirm that we don't need an additional read barrier on the read
+side, ideally rcu_read_lock() is enough, but I am not sure.
