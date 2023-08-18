@@ -2,195 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C73781311
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2683E781312
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379500AbjHRSsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        id S1379507AbjHRSse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379489AbjHRSsM (ORCPT
+        with ESMTP id S1379509AbjHRSsW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:48:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55633A98
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:47:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692384448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Kof001mFn/ifBDFR+GMgOzOUbn9QJlpGG3ggxMuSCvk=;
-        b=STSsh1IYi2/+RBK0eyLzviklmxQ5N0QeM4JmTIHHQjlzSqah8asyOxLCUthR+cknYDN9cX
-        vNv3xwXQA67lNVeKz4EiO7HCfTkWmpfY9zn8KS7Ze4KRz5RYSF1M4lPhwZTkjHZCZ2G1fw
-        t38gEuvpSVenvV3NaqLUID9gyJ4Fwi4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-562-Ta9-U0flNFiRtKdVF9gORw-1; Fri, 18 Aug 2023 14:47:22 -0400
-X-MC-Unique: Ta9-U0flNFiRtKdVF9gORw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 410D58DC670;
-        Fri, 18 Aug 2023 18:47:22 +0000 (UTC)
-Received: from [10.22.32.157] (unknown [10.22.32.157])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F8822166B2D;
-        Fri, 18 Aug 2023 18:47:21 +0000 (UTC)
-Message-ID: <fe1702b4-1b22-6293-11a2-2de82ff729a6@redhat.com>
-Date:   Fri, 18 Aug 2023 14:47:21 -0400
+        Fri, 18 Aug 2023 14:48:22 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC94204
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:48:18 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686be3cbea0so1658683b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692384498; x=1692989298;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=GP1DcfQVRyZ/pIKJy2r3P+ha5kBKzRQgOLNbP0+yBQs=;
+        b=ePIhLMmxprOtmHRcgmlOpi4JqeUCi+e4RdG8FfoL1iL+oNcVBkj0XqtQJnTQxIBI4k
+         N240Kufklz5cX2Cv3kEJRxkj6dAYrBnfvoOljZRepjUqNAMdn2IvVDKUNd3y9Lk1Zsx/
+         1ujg1FJNf2ZXsaWwM9P4BvfmM5oo41BjtKtEA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692384498; x=1692989298;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GP1DcfQVRyZ/pIKJy2r3P+ha5kBKzRQgOLNbP0+yBQs=;
+        b=Jvvsl3w1gFdwq5mTXK9ywJ+H9aQpWKYoFoX+1sCQ2TTJrPMUgei9Uj0SDkdwpnEpwX
+         lbE+DxyHQWQSFOL2Rkz8EV/EkrFlwkYFKMmQ+1V0dHu2r6x0XnTu//G5h6/ZddpYlsOU
+         EiUfgk81vSpgMJm0GuAqy2UCP1HdhwIpSamvgLeXCNq+BEvewi29Y3UHLh6NDPQpMp7A
+         xGEYfpynS6z8FkJdha5IQqBiAlGhwDM5YS99PfimZqaUvzhEkoY2NFUffKQwwT4+HTY0
+         niKA3msIre8e7jZXz5DTHBtZPGCvpu5dG24hQjW/Bmar85DPJqVzCFFDt37fAzzd5Gir
+         tudQ==
+X-Gm-Message-State: AOJu0Yxxd+1EvYxNABeGqq4ZEvwIq0FJsjLGeH3qmZjhELWeXdXVQ74X
+        pvVK6gEKwfY4W9LDnUkcw+bSsw==
+X-Google-Smtp-Source: AGHT+IGq/UUkwq5B2XE8Euk/g23oQaEh8/MVfrEjyY6KOesc26jzK9pN4ZLSFXkSGrYh9NRVjUtvLA==
+X-Received: by 2002:a05:6a00:9a3:b0:688:2256:f767 with SMTP id u35-20020a056a0009a300b006882256f767mr70601pfg.5.1692384497561;
+        Fri, 18 Aug 2023 11:48:17 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a9-20020a62bd09000000b0068844ee18dfsm1841699pff.83.2023.08.18.11.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 11:48:16 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 11:48:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-hardening@vger.kernel.org,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] creds: Convert cred.usage to refcount_t
+Message-ID: <202308181146.465B4F85@keescook>
+References: <20230818041740.gonna.513-kees@kernel.org>
+ <20230818105542.a6b7c41c47d4c6b9ff2e8839@linux-foundation.org>
+ <CAG48ez3mNk8yryV3XHdWZBHC_4vFswJPx1yww+uDi68J=Lepdg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v3] sched/core: Use empty mask to reset cpumasks in
- sched_setaffinity()
-Content-Language: en-US
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>
-References: <20230804023218.75544-1-longman@redhat.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230804023218.75544-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez3mNk8yryV3XHdWZBHC_4vFswJPx1yww+uDi68J=Lepdg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/3/23 22:32, Waiman Long wrote:
-> Since commit 8f9ea86fdf99 ("sched: Always preserve the user requested
-> cpumask"), user provided CPU affinity via sched_setaffinity(2) is
-> perserved even if the task is being moved to a different cpuset. However,
-> that affinity is also being inherited by any subsequently created child
-> processes which may not want or be aware of that affinity.
->
-> One way to solve this problem is to provide a way to back off from
-> that user provided CPU affinity.  This patch implements such a scheme
-> by using an empty cpumask to signal a reset of the cpumasks to the
-> default as allowed by the current cpuset.
->
-> Before this patch, passing in an empty cpumask to sched_setaffinity(2)
-> will always return an -EINVAL error. With this patch, an alternative
-> error of -ENODEV will be returned returned if sched_setaffinity(2)
-> has been called before to set up user_cpus_ptr. In this case, the
-> user_cpus_ptr that stores the user provided affinity will be cleared and
-> the task's CPU affinity will be reset to that of the current cpuset. This
-> alternative error code of -ENODEV signals that the no CPU is specified
-> and, at the same time, a side effect of resetting cpu affinity to the
-> cpuset default.
->
-> If sched_setaffinity(2) has not been called previously, an EINVAL error
-> will be returned with an empty cpumask just like before.  Tests or
-> tools that rely on the behavior that an empty cpumask will return an
-> error code will not be affected.
->
-> We will have to update the sched_setaffinity(2) manpage to document
-> this possible side effect of passing in an empty cpumask.
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On Fri, Aug 18, 2023 at 08:17:55PM +0200, Jann Horn wrote:
+> On Fri, Aug 18, 2023 at 7:56 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > On Thu, 17 Aug 2023 21:17:41 -0700 Kees Cook <keescook@chromium.org> wrote:
+> >
+> > > From: Elena Reshetova <elena.reshetova@intel.com>
+> > >
+> > > atomic_t variables are currently used to implement reference counters
+> > > with the following properties:
+> > >  - counter is initialized to 1 using atomic_set()
+> > >  - a resource is freed upon counter reaching zero
+> > >  - once counter reaches zero, its further
+> > >    increments aren't allowed
+> > >  - counter schema uses basic atomic operations
+> > >    (set, inc, inc_not_zero, dec_and_test, etc.)
+> > >
+> > > Such atomic variables should be converted to a newly provided
+> > > refcount_t type and API that prevents accidental counter overflows and
+> > > underflows. This is important since overflows and underflows can lead
+> > > to use-after-free situation and be exploitable.
+> >
+> > ie, if we have bugs which we have no reason to believe presently exist,
+> > let's bloat and slow down the kernel just in case we add some in the
+> > future?
+> 
+> Yeah. Or in case we currently have some that we missed.
 
-Ping.
+Right, or to protect us against the _introduction_ of flaws.
 
-Are there other concerns about this patch? I haven't seen any error 
-report from kernel test robot so far.
+> Though really we don't *just* need refcount_t to catch bugs; on a
+> system with enough RAM you can also overflow many 32-bit refcounts by
+> simply creating 2^32 actual references to an object. Depending on the
+> structure of objects that hold such refcounts, that can start
+> happening at around 2^32 * 8 bytes = 32 GiB memory usage, and it
+> becomes increasingly practical to do this with more objects if you
+> have significantly more RAM. I suppose you could avoid such issues by
+> putting a hard limit of 32 GiB on the amount of slab memory and
+> requiring that kernel object references are stored as pointers in slab
+> memory, or by making all the refcounts 64-bit.
 
-Cheers,
-Longman
+These problems are a different issue, and yes, the path out of it would
+be to crank the size of refcount_t, etc.
 
-> ---
->   kernel/sched/core.c | 42 +++++++++++++++++++++++++++++++++---------
->   1 file changed, 33 insertions(+), 9 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index c52c2eba7c73..3ef7397f2a61 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -8317,7 +8317,12 @@ __sched_setaffinity(struct task_struct *p, struct affinity_context *ctx)
->   	}
->   
->   	cpuset_cpus_allowed(p, cpus_allowed);
-> -	cpumask_and(new_mask, ctx->new_mask, cpus_allowed);
-> +
-> +	/* Default to cpus_allowed with NULL new_mask */
-> +	if (ctx->new_mask)
-> +		cpumask_and(new_mask, ctx->new_mask, cpus_allowed);
-> +	else
-> +		cpumask_copy(new_mask, cpus_allowed);
->   
->   	ctx->new_mask = new_mask;
->   	ctx->flags |= SCA_CHECK;
-> @@ -8366,6 +8371,7 @@ __sched_setaffinity(struct task_struct *p, struct affinity_context *ctx)
->   
->   long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
->   {
-> +	bool reset_cpumasks = cpumask_empty(in_mask);
->   	struct affinity_context ac;
->   	struct cpumask *user_mask;
->   	struct task_struct *p;
-> @@ -8403,15 +8409,26 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
->   		goto out_put_task;
->   
->   	/*
-> -	 * With non-SMP configs, user_cpus_ptr/user_mask isn't used and
-> -	 * alloc_user_cpus_ptr() returns NULL.
-> +	 * If an empty cpumask is passed in and user_cpus_ptr is set,
-> +	 * clear user_cpus_ptr and reset the current cpu affinity to the
-> +	 * default for the current cpuset. If user_cpus_ptr isn't set,
-> +	 * -EINVAL will be returned as before.
->   	 */
-> -	user_mask = alloc_user_cpus_ptr(NUMA_NO_NODE);
-> -	if (user_mask) {
-> -		cpumask_copy(user_mask, in_mask);
-> -	} else if (IS_ENABLED(CONFIG_SMP)) {
-> -		retval = -ENOMEM;
-> -		goto out_put_task;
-> +	if (reset_cpumasks && p->user_cpus_ptr) {
-> +		in_mask = NULL;	/* To be updated in __sched_setaffinity */
-> +		user_mask = NULL;
-> +	} else {
-> +		/*
-> +		 * With non-SMP configs, user_cpus_ptr/user_mask isn't used
-> +		 * and alloc_user_cpus_ptr() returns NULL.
-> +		 */
-> +		user_mask = alloc_user_cpus_ptr(NUMA_NO_NODE);
-> +		if (user_mask) {
-> +			cpumask_copy(user_mask, in_mask);
-> +		} else if (IS_ENABLED(CONFIG_SMP)) {
-> +			retval = -ENOMEM;
-> +			goto out_put_task;
-> +		}
->   	}
->   
->   	ac = (struct affinity_context){
-> @@ -8423,6 +8440,13 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
->   	retval = __sched_setaffinity(p, &ac);
->   	kfree(ac.user_mask);
->   
-> +	/*
-> +	 * Force an error return (-ENODEV), if no error yet, for the empty
-> +	 * cpumask case to avoid breaking existing tests.
-> +	 */
-> +	if (reset_cpumasks && !retval)
-> +		retval = -ENODEV;
-> +
->   out_put_task:
->   	put_task_struct(p);
->   	return retval;
-
+-- 
+Kees Cook
