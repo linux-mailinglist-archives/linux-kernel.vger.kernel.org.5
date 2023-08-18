@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 961DE78104D
+	by mail.lfdr.de (Postfix) with ESMTP id DF8AC78104E
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378605AbjHRQZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:25:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S1378620AbjHRQZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378707AbjHRQZa (ORCPT
+        with ESMTP id S1378704AbjHRQZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Aug 2023 12:25:30 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922634480
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:25:24 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-58df8cab1f2so10831277b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:25:24 -0700 (PDT)
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEC1422A;
+        Fri, 18 Aug 2023 09:25:23 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so1644072e87.1;
+        Fri, 18 Aug 2023 09:25:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1692375924; x=1692980724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ucUz8MLzQcOIBd0t0XomfDYuKop1ElGaSovik3pwpoQ=;
-        b=ahNIeC5eO83tE7Mkt9NbXxeJBGAO+XWYjqJDEtrfQQbPCmx8AUSEAFnurG699BN40Z
-         TmciiODTWlI9qkyzdtkEpUYVeE+rzscA6taQe3QG6KKcvziEAWUmRNy+U/T5kWB9Yt4d
-         bT3odde1G8BCNQANIwQ+syDE9IQ1nRJqAND7XlRNd8V+KaZ3ebkOLV6WKJS4T2eki7Dx
-         w4Kyc0sFmYkdbimeVr6b/Dt3c0SSb++Hcu37HH1ZOFhGjWVOWDIpwRZBEdVDYx3sKztH
-         b3s0zFlGMEXK3fD6g0eFkk1hqQnIRHVXtwUfHVYA9+GR6kFWW8ASeOn6+kQZkF81tCW9
-         hTmw==
+        d=gmail.com; s=20221208; t=1692375922; x=1692980722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G8pEiMFERjLgVh4C9AUlgVVF/u9ST2sS9FY068sp55M=;
+        b=FprSxqxmAgSGctTLQ28PwyU5HnddBxkUcfvSL95K4ZhhU1gqy2dwN+G6F/1E3tV5/d
+         spD0XxDeF6i75U5RD/9vNC2bpwikfuivVB0ej4qHJaCrsmKcmGmL1vREhUEExLZLBp20
+         CYJoZ6hfW5cihsut2AYrThepT8/JJ1MI6ij4NeXFP2J1RKqTRjiR97UWj9rXOaq4FeFU
+         mzcW1F5w7dLB3D2L0DWFT26Vz6UVm0r/gH3gUWXGrRUJ8QtPTk3vv2jRhZ1Bvh+816iz
+         IYyMvy7eQHlLTA7KLinypQwOv1J+aTczBxfI4KaxTHUE4wP+0I3ujUurxoIZfvhJV4z8
+         7jXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375924; x=1692980724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ucUz8MLzQcOIBd0t0XomfDYuKop1ElGaSovik3pwpoQ=;
-        b=AUM8IX219Fc/V32FbvymaTqyMzY0dbwm5lnENK61w49CGgkccbKbrtk0ZQz2H5akur
-         ikqoNK8pgZ1cqoWaRF/Q3OA6jzD1mKfFfUsbJzvSyQWR2vt20POguBMZ2MWoxYMdJ3z1
-         6eQzGaRsFPdDs5h64PBwgd578BHuuWAM++v5OPBa3BpBcpOEqUawK1cEnXB17qD+eW8S
-         PKyyR2DrmwTY7bi3MRa9JLHqMODtKClinutrVgxE5aRScaVhdPgnD2qaWBwXTuXXL1kA
-         kM7hbK89QtSFepU3/J6twlPz0EkFevRYBGwMVsSlNnGFXdeqX8hmm2QIjcpX+HOPP7XB
-         Nbxw==
-X-Gm-Message-State: AOJu0YyQooAhTrRsOGDK5d/zHmQTJRvgiMFEdUkg3J6EnIBEHakB2pfC
-        aR5GHZK2T6HMbdKFLedBNVinmu+pr+qx58JKWbTV
-X-Google-Smtp-Source: AGHT+IGGZmIBmOhrdBZxCN6SiC6TfpQQSM5iqw9/0scHGRqppWqbVIg9L05WNia94iikezIgrRH2Nmc2C5JdLAKlSQk=
-X-Received: by 2002:a81:9e4d:0:b0:589:d617:e7c4 with SMTP id
- n13-20020a819e4d000000b00589d617e7c4mr1442370ywj.16.1692375923646; Fri, 18
- Aug 2023 09:25:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692375922; x=1692980722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G8pEiMFERjLgVh4C9AUlgVVF/u9ST2sS9FY068sp55M=;
+        b=CcO850ymmteobB7qO2COaA9cU4ljpz8+zRVTehpNzXRdMEYzG0uz1hotImFuMbBIo2
+         0J+m+dCzY/hd4AY1KAY8s6mu6FPlvBNw/qiPqciI4NYYoJjAAHJLjtZMykDyX/a2P1KU
+         PZa6tjLE20BUj8V5Az+vikUgxqDzG1h3XiiThum13X+3S5CSN0cGiG4hgyM0dTSwyiI3
+         goOxCm9MY4RwXU9nS98YSyATI/ajMXeiHj/WotXB5yik/HTko7qtroemZVmtHfDpoPuS
+         12637gTHT/m1U1gxHeyWmLThc7HIJMRCZw4uQH1t0sIlGKf4x11tU6RR2UhjfXktiHih
+         61LA==
+X-Gm-Message-State: AOJu0YxazF9OeGCRMbPfwfU94KKHG0NeW+/CnIfE9IAdYFTamhLmTvOX
+        8EUpjbBdAYrEJhy6ciNmwdk=
+X-Google-Smtp-Source: AGHT+IHHD2GbCfI74fDNGo4DfOBaJf7xvPPj6QcGsKYq2G/vvkEdZSQJ6smybkTbm7yqRPhd6BjRvw==
+X-Received: by 2002:a05:6512:2822:b0:4f6:2317:f387 with SMTP id cf34-20020a056512282200b004f62317f387mr2462526lfb.35.1692375921947;
+        Fri, 18 Aug 2023 09:25:21 -0700 (PDT)
+Received: from mobilestation ([93.157.254.210])
+        by smtp.gmail.com with ESMTPSA id eq19-20020a056512489300b004fe1bc7e4acsm395877lfb.131.2023.08.18.09.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 09:25:21 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 19:25:19 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH net-next v5 2/9] net: stmmac: xgmac: add more feature
+ parsing from hw cap
+Message-ID: <ytrtxlidqp4blp5gfrgnnirtosjes7mcjkbdvcm7lmvnpkm7ut@e5tuy3bx2cd5>
+References: <20230817165749.672-1-jszhang@kernel.org>
+ <20230817165749.672-3-jszhang@kernel.org>
 MIME-Version: 1.0
-References: <20230817202210.never.014-kees@kernel.org>
-In-Reply-To: <20230817202210.never.014-kees@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 18 Aug 2023 12:25:12 -0400
-Message-ID: <CAHC9VhR-vxsaR7deTQ+zzVP9W2uSupz4ucf8p+tt0e730qbZ1g@mail.gmail.com>
-Subject: Re: [PATCH] selinux: Annotate struct sidtab_str_cache with __counted_by
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>, selinux@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        "GONG, Ruiqi" <gongruiqi1@huawei.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817165749.672-3-jszhang@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 4:22=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> Prepare for the coming implementation by GCC and Clang of the __counted_b=
-y
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
-S
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
->
-> As found with Coccinelle[1], add __counted_by for struct sidtab_str_cache=
-.
->
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
-ounted_by.cocci
->
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
-> Cc: Eric Paris <eparis@parisplace.org>
-> Cc: Ondrej Mosnacek <omosnace@redhat.com>
-> Cc: selinux@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Fri, Aug 18, 2023 at 12:57:42AM +0800, Jisheng Zhang wrote:
+> The XGMAC_HWFEAT_GMIISEL bit also indicates whether support 10/100Mbps
+> or not.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Acked-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Serge(y)
+
 > ---
->  security/selinux/ss/sidtab.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-This also looks good to me, but similarly to the audit patch, since we
-are at -rc6 I'm going to wait to merge this until after the merge
-window.  I'll send a follow up email once it's merged.
-
-Thanks.
-
-> diff --git a/security/selinux/ss/sidtab.c b/security/selinux/ss/sidtab.c
-> index d8ead463b8df..732fd8e22a12 100644
-> --- a/security/selinux/ss/sidtab.c
-> +++ b/security/selinux/ss/sidtab.c
-> @@ -25,7 +25,7 @@ struct sidtab_str_cache {
->         struct list_head lru_member;
->         struct sidtab_entry *parent;
->         u32 len;
-> -       char str[];
-> +       char str[] __counted_by(len);
->  };
->
->  #define index_to_sid(index) ((index) + SECINITSID_NUM + 1)
-> --
-> 2.34.1
-
---=20
-paul-moore.com
+>  drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+> index 3aacf791efeb..1ef8fc132c2d 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c
+> @@ -410,6 +410,7 @@ static int dwxgmac2_get_hw_feature(void __iomem *ioaddr,
+>  	dma_cap->vlhash = (hw_cap & XGMAC_HWFEAT_VLHASH) >> 4;
+>  	dma_cap->half_duplex = (hw_cap & XGMAC_HWFEAT_HDSEL) >> 3;
+>  	dma_cap->mbps_1000 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
+> +	dma_cap->mbps_10_100 = (hw_cap & XGMAC_HWFEAT_GMIISEL) >> 1;
+>  
+>  	/* MAC HW feature 1 */
+>  	hw_cap = readl(ioaddr + XGMAC_HW_FEATURE1);
+> -- 
+> 2.40.1
+> 
+> 
