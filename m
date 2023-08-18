@@ -2,130 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8F2781046
+	by mail.lfdr.de (Postfix) with ESMTP id 1716B781045
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378611AbjHRQYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
+        id S1378602AbjHRQYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378605AbjHRQYi (ORCPT
+        with ESMTP id S1378604AbjHRQYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:24:38 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E07730F1;
-        Fri, 18 Aug 2023 09:24:37 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-56cc3453e31so772231eaf.1;
-        Fri, 18 Aug 2023 09:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692375876; x=1692980676;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UuxLysHfHgXmaDjRCG7hoacYwkksDqmzeaddr2U9INA=;
-        b=lrePtNV7NLyPrHBpD4fWVttiNKAIATqGaL5X/CGR7SFpUwHQhUrfKzbaLq6KRKTUbb
-         4bEAEF1WcNyrbZBRMEa8xDRi7H7L/bsqQ6sEvWSBaTlRdOkmF20JReRym7Izg8qCZrr8
-         n2rwOeVrZ1tZJkJJtoHn2gpvgm4VyMLt/Tfztygr46aBBE1DeKdKkmLoXiGj3uxzyzR0
-         XAi5M3QIZzmDMbIdZi5hiSZFXqLxGlORRu23u2U3sbp78Cw9jNBLoXYtLGN+06bbm26g
-         nDL2Dq/CDmDaYV7gcejPrrjbX4KPHyMBY5b/bTIluD/x0CinBqCPQZy2Gw6jcdcl4TF9
-         NtMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375876; x=1692980676;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UuxLysHfHgXmaDjRCG7hoacYwkksDqmzeaddr2U9INA=;
-        b=D6r2IHnXJlADJ/BCNV/rfpTtmLLHs8Zh9ZDBLslZYy2i0ZcyxNVLocq3i7jlzvukWZ
-         0HunKhSYTVByus+oH814HTVxAotuPAlH5DGrpCFuynKwgJKGEhyG2pUp+dZ4mWxwKOtm
-         1Tp8rxWYVbrHaW+P/UVf3A354X+mQXn41Y3+3NDasuMJNhZOpEY4ewCDL09VMyneVEOx
-         fjifzRP3l/cWJNE13bOmQEinGbtDK8hX+LZ0hOMt3ApLlkbK4fsQW6T44tuK3ngVM84F
-         844FqYS1HNCYcCQVLh3i0eNRnsS0zleUyK1mGL+dSO8gTaFh7XDH8Hgavj4ESUz7u2re
-         IJXQ==
-X-Gm-Message-State: AOJu0YwczuxHtSz/Jt7VmugMcknPJyebjFACWMWQyz5/CAW0airosh7G
-        gelk3aVuyMhlx6zzNbrES7HeBuN4yk7Y7JxdRLg=
-X-Google-Smtp-Source: AGHT+IGU3ZMCRKh3cD8gBFcZeVD7oHu4Bo5GVPRQfX1ji83LYaRHXjfxTp3CmR2dfr+bkxt0kySQ7Q1jLe7MhrvlYFg=
-X-Received: by 2002:a05:6870:e88d:b0:1c4:d735:38e9 with SMTP id
- q13-20020a056870e88d00b001c4d73538e9mr2868146oan.57.1692375876474; Fri, 18
- Aug 2023 09:24:36 -0700 (PDT)
+        Fri, 18 Aug 2023 12:24:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FB9930F1;
+        Fri, 18 Aug 2023 09:24:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CE4161BAF;
+        Fri, 18 Aug 2023 16:24:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03A0C433C7;
+        Fri, 18 Aug 2023 16:24:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692375874;
+        bh=c8zN6/cDpi2/K8Iq9Z859/6w6tjD9P5FH9hjNWMoWuU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ckKvDLY1C9MAW25eizZ0moFB8jVKbU7eqKX9vU0zvdZ9FleHGYv7dxEplLjyDq24y
+         VE0nqgjVDtwsxoW911otfHi4x/bZSEYYCFU/ziFiMpnhOLOgX+oDigDjrPNeEwQhoZ
+         zlCu7bznHzzgkk5qY6IuiCIKbhXXxmmHrTRRlrzBtjGsrXqxpCpVVMrt0e9djz7MgR
+         nYxQnZo2Km1s8SZXdgRqIhN7tQjdYPBuhfFmMeCHbGqtV69Dyju8duPb5zGSbhMXbK
+         tC4qc8TxB8lJ1scKC7cmzoKUDJDbIoCn9lB8kFW5LManMH/8o0SdLGbrbXI+tcrrnP
+         pSqtMUA4bR9ow==
+Received: (nullmailer pid 119460 invoked by uid 1000);
+        Fri, 18 Aug 2023 16:24:32 -0000
+Date:   Fri, 18 Aug 2023 11:24:32 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     giometti@enneenne.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>
+Subject: Re: [PATCH] dt-bindings: pps: pps-gpio: Convert to yaml
+Message-ID: <20230818162432.GA118441-robh@kernel.org>
+References: <20230809110812.2058428-1-festevam@gmail.com>
 MIME-Version: 1.0
-References: <20230817060644.74477-1-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <20230817060644.74477-1-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 18 Aug 2023 12:24:25 -0400
-Message-ID: <CADnq5_OOHM4CcWUps4gput7Jh4m1r=8Z+VK79PG2vF6a3Vgkdg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/pm: Fix unsigned expression compared with zero
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     alexander.deucher@amd.com, linux-hwmon@vger.kernel.org,
-        jdelvare@suse.com, Xinhui.Pan@amd.com,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        linux@roeck-us.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230809110812.2058428-1-festevam@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 2:07=E2=80=AFAM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> The val is defined as unsigned int type, if(val<0) is invalid, modify
-> to int type.
->
-> drivers/gpu/drm/amd/amdgpu/../pm/amdgpu_pm.c:2813 amdgpu_hwmon_show_power=
-_input() warn: unsigned 'val' is never less than zero.
-> drivers/gpu/drm/amd/amdgpu/../pm/amdgpu_pm.c:2800 amdgpu_hwmon_show_power=
-_avg() warn: unsigned 'val' is never less than zero.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=3D6181
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-
-Thanks.  The function signatures for amdgpu_hwmon_get_power() and
-amdgpu_hwmon_get_sensor_generic() should be fixed up as well.  I'll
-send out a fix.
-
-Alex
-
+On Wed, Aug 09, 2023 at 08:08:12AM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <festevam@denx.de>
+> 
+> Convert from pps-gpio.txt to pps-gpio.yaml to allow schema validation.
+> 
+> Signed-off-by: Fabio Estevam <festevam@denx.de>
 > ---
->  drivers/gpu/drm/amd/pm/amdgpu_pm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/amdgpu_pm.c b/drivers/gpu/drm/amd/pm/=
-amdgpu_pm.c
-> index 5b1d73b00ef7..fe490e5860d2 100644
-> --- a/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> +++ b/drivers/gpu/drm/amd/pm/amdgpu_pm.c
-> @@ -2794,7 +2794,7 @@ static ssize_t amdgpu_hwmon_show_power_avg(struct d=
-evice *dev,
->                                            struct device_attribute *attr,
->                                            char *buf)
->  {
-> -       unsigned int val;
-> +       int val;
->
->         val =3D amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_AVG_POWE=
-R);
->         if (val < 0)
-> @@ -2807,7 +2807,7 @@ static ssize_t amdgpu_hwmon_show_power_input(struct=
- device *dev,
->                                              struct device_attribute *att=
-r,
->                                              char *buf)
->  {
-> -       unsigned int val;
-> +       int val;
->
->         val =3D amdgpu_hwmon_get_power(dev, AMDGPU_PP_SENSOR_GPU_INPUT_PO=
-WER);
->         if (val < 0)
-> --
-> 2.20.1.7.g153144c
->
+>  .../devicetree/bindings/pps/pps-gpio.txt      | 30 ------------
+>  .../devicetree/bindings/pps/pps-gpio.yaml     | 46 +++++++++++++++++++
+>  2 files changed, 46 insertions(+), 30 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pps/pps-gpio.txt
+>  create mode 100644 Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pps/pps-gpio.txt b/Documentation/devicetree/bindings/pps/pps-gpio.txt
+> deleted file mode 100644
+> index 9012a2a02e14..000000000000
+> --- a/Documentation/devicetree/bindings/pps/pps-gpio.txt
+> +++ /dev/null
+> @@ -1,30 +0,0 @@
+> -Device-Tree Bindings for a PPS Signal on GPIO
+> -
+> -These properties describe a PPS (pulse-per-second) signal connected to
+> -a GPIO pin.
+> -
+> -Required properties:
+> -- compatible: should be "pps-gpio"
+> -- gpios: one PPS GPIO in the format described by ../gpio/gpio.txt
+> -
+> -Additional required properties for the PPS ECHO functionality:
+> -- echo-gpios: one PPS ECHO GPIO in the format described by ../gpio/gpio.txt
+> -- echo-active-ms: duration in ms of the active portion of the echo pulse
+> -
+> -Optional properties:
+> -- assert-falling-edge: when present, assert is indicated by a falling edge
+> -                       (instead of by a rising edge)
+> -
+> -Example:
+> -	pps {
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&pinctrl_pps>;
+> -
+> -		gpios = <&gpio1 26 GPIO_ACTIVE_HIGH>;
+> -		assert-falling-edge;
+> -
+> -		echo-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+> -		echo-active-ms = <100>;
+> -
+> -		compatible = "pps-gpio";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/pps/pps-gpio.yaml b/Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> new file mode 100644
+> index 000000000000..801fd2720080
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pps/pps-gpio.yaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pps/pps-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PPS Signal via GPIO
+> +
+> +maintainers:
+> +  - Fabio Estevam <festevam@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: pps-gpio
+> +
+> +  gpios:
+> +    description: The GPIO that provides the PPS signal.
+
+maxItems: 1
+
+> +
+> +  echo-gpios:
+> +    description: The GPIO that provides the PPS ECHO signal.
+
+maxItems: 1
+
+> +
+> +  echo-active-ms:
+> +    description: Duration in ms of the active portion of the echo pulse.
+> +
+> +  assert-falling-edge:
+> +    description: Indicates a falling edge assert, when present. Rising edge if absent.
+
+type: boolean
+
+> +
+> +required:
+> +  - compatible
+> +  - gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +      #include <dt-bindings/gpio/gpio.h>
+> +
+> +      pps {
+> +          compatible = "pps-gpio";
+> +          pinctrl-names = "default";
+> +          pinctrl-0 = <&pinctrl_pps>;
+> +          gpios = <&gpio1 26 GPIO_ACTIVE_HIGH>;
+> +          assert-falling-edge;
+> +          echo-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+> +          echo-active-ms = <100>;
+> +      };
+> -- 
+> 2.34.1
+> 
