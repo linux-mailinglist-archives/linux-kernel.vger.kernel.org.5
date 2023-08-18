@@ -2,72 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7441F7804EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9827804E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357761AbjHRDrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:47:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        id S1357749AbjHRDmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236242AbjHRDqf (ORCPT
+        with ESMTP id S1357750AbjHRDmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:46:35 -0400
-X-Greylist: delayed 504 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 17 Aug 2023 20:46:33 PDT
-Received: from out-59.mta0.migadu.com (out-59.mta0.migadu.com [91.218.175.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0830C3592
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:46:32 -0700 (PDT)
-Message-ID: <2f77080c-6ac2-69cc-fd38-5d71a6cdc8df@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692329884;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FjJKtE8F8ZIEABqxYxO8DTnV0r5bB4/9fLe/dED26Rw=;
-        b=Ww/U1WPJeiE6zjV2BKmgx/AQsBJ8ggHs/e9Wwm91qrUIiFMUUicq3RNaMqTXLyAu4QbP1L
-        eBY1JbsiUYnC/MFyCSveDrGt73DsnFX2KDl5/4DnkQpJ0tnYmHtppp2nd9IKlMETbbqBC2
-        54DrECSMdgA7J57VH+iP4f4tp7/l0gg=
-Date:   Thu, 17 Aug 2023 20:37:59 -0700
+        Thu, 17 Aug 2023 23:42:10 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id B4BB4358D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:42:06 -0700 (PDT)
+Received: (qmail 18664 invoked by uid 1000); 17 Aug 2023 23:42:05 -0400
+Date:   Thu, 17 Aug 2023 23:42:05 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
+Message-ID: <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
+References: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
+ <20230818010815.4kcue67idma5yguf@synopsys.com>
+ <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
+ <20230818031045.wovf5tj2un7nwf72@synopsys.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 20/20] ARC: pt_regs: create seperate type for ecr
-Content-Language: en-US
-To:     Pavel.Kozlov@synopsys.com, Vineet Gupta <vgupta@kernel.org>,
-        linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-References: <20230815004813.555115-21-vgupta@kernel.org>
- <20230817120935.59181-1-kozlov@synopsys.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Vineet Gupta <vineet.gupta@linux.dev>
-In-Reply-To: <20230817120935.59181-1-kozlov@synopsys.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818031045.wovf5tj2un7nwf72@synopsys.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 18, 2023 at 03:10:48AM +0000, Thinh Nguyen wrote:
+> On Thu, Aug 17, 2023, Alan Stern wrote:
+> > On Fri, Aug 18, 2023 at 01:08:19AM +0000, Thinh Nguyen wrote:
+> > > Hi,
+> > > 
+> > > On Fri, Aug 18, 2023, Andrey Konovalov wrote:
+> > > > Hi Alan and Thinh,
+> > > > 
+> > > > I have been testing Raw Gadget with the dwc3 UDC driver and stumbled
+> > > > upon an issue related to how dwc3 handles setup requests with wLength
+> > > > == 0.
+> > > > 
+> > > > When running a simple Raw Gadget-based keyboard emulator [1],
+> > > > everything works as expected until the point when the host sends a
+> > > > SET_CONFIGURATION request, which has wLength == 0.
+> > > > 
+> > > > For setup requests with wLength != 0, just like the other UDC drivers
+> > > > I tested, dwc3 calls the gadget driver's ->setup() callback and then
+> > > > waits until the gadget driver queues an URB to EP0 as a response.
+> > > 
+> > > For the lack of better term, can we use "request" or "usb_request"
+> > > instead of URB for gadget side, I get confused with the host side
+> > > whenever we mention URB.
+> > > 
+> > > > 
+> > > > However, for a setup request with wLength == 0, dwc3 does not wait
+> > > > until the gadget driver queues an URB to ack the transfer. It appears
+> > > > that dwc3 just acks the request internally and then proceeds with
+> > > > calling the ->setup() callback for the next request received from the
+> > > 
+> > > It depends on the bRequest. It should not proceed to ->setup() unless
+> > > the gadget driver already setups the request for it.
+> > 
+> > Let's see if I understand what you're saying.  Some control transfers 
+> > are handled directly by the UDC driver (things like SET_ADDRESS or 
+> > CLEAR_HALT).  For these transfers, the ->setup() callback is not invoked 
+> > and the gadget driver is completely unaware of them.  But for all other 
+> > control transfers, the ->setup() callback _is_ invoked.
+> > 
+> > Is that what you meant?
+> 
+> That's not what I meant.
+> 
+> I was referring to the next request. It should not be processed until
+> the first request is completed. Depending on the type of request, if
+> there's a delayed_status, the dwc3 driver will not prepare for the
+> Status stage and Setup stage (after status completion) to proceed to the
+> _next_ ->setup callback.
+> 
+> My understanding from the described problem is that somehow dwc3
+> processes the next request immediately without waiting for the raw
+> gadget preparing the data stage.
 
-On 8/17/23 05:09, Pavel.Kozlov@synopsys.com wrote:
-> Hi Vineet,
->
-> I'm testing your updates and ran into the same build issue reported by the build
-> robot.
-> http://lists.infradead.org/pipermail/linux-snps-arc/2023-August/007522.html
->
->> #define MAX_REG_OFFSET offsetof(struct pt_regs, event)
-> This change causes a build issue for ARC700, as the event field has been
-> removed and the MAX_REG_OFFSET macro hasn't been updated.
+Um.  This is one of the design flaws I mentioned: a new SETUP packet 
+arriving before the old control transfer is finished.  The USB spec 
+requires devices to accept the new SETUP packet and abort the old 
+transfer.  So in this case, processing the next request immediately is 
+the right thing to do.
 
-I've posted v2 for 3 patches. Please reapply/retest the whole series.
+One question is why Andrey is observing a new ->setup() callback 
+happening so soon?  The host is supposed to allow a fairly long time for 
+standard control requests to complete.  If the userspace component of 
+the Raw Gadget takes too long to act, the transfer could time out and be 
+cancelled on the host.  But "too long" means several seconds -- is that 
+really what's going on here?
 
-Thx,
--Vineet
+> I was talking in context of 0-length transfer (albeit I forgot about the
+> special case of control OUT doesn't have 3-stage).
+> 
+> If it's a vendor request 0-length transfer, without responding with
+> USB_GADGET_DELAYED_STATUS, the dwc3 will proceed with preparing the
+> status stage.
 
+This may be a holdover from the early days of the Gadget subsystem.  My 
+memory from back then isn't very good; I vaguely recall that the first 
+UDC drivers would queue their automatic Status-stage requests if wLength 
+was 0 and ->setup() returned 0 (which would explain why 
+USB_GADGET_DELAYED_STATUS had to be invented).  Unless I'm completely 
+confused, that's not how UDC drivers are supposed to act now.
+
+> > (IMO that automatic action is a design flaw; the UDC driver should wait 
+> > for the gadget driver to explictly queue a 0-length request or a STALL 
+> > instead of doing it automatically.)
+> 
+> Would every UDC has this capability? I recalled some aren't capable of
+> delayed_status.
+
+In those cases the UDC driver would just have to do the best it can.  
+Very few modern USB device controllers should have this limitation.
+
+> > (Another design flaw is that this design doesn't specify what should 
+> > happen if the UDC receives another SETUP packet from the host before the 
+> > Status stage completes.  By sending another SETUP packet, the host is 
+> > indicating that the earlier control transfer has been aborted.  
+> > Presumably the UDC driver will complete all the outstanding requests 
+> > with an error status, but there's a potential race in the gadget driver 
+> > between queuing a request for the first transfer and executing the 
+> > ->setup() callback for the second transfer.)
+> 
+> If there's another SETUP packet coming while there's a pending control
+> transfer, for dwc3 UDC, the pending control TRB should be completed with
+> a Setup_pending status indicating aborted control transfer for dwc3
+> driver to handle that.
+
+Right.  The difficulty doesn't involve the communication between the HCD 
+and the UDC hardware; it involves the communication between the UDC 
+driver and the gadget driver.  Somehow they need to synchronize so that 
+when the gadget driver queues a usb_request, the UDC driver can tell 
+whether the request was meant for the earlier aborted control transfer 
+or the new active one.  This can matter if the gadget driver has a 
+separate control thread (a work routine or a kthread, for example) that 
+could be queuing requests while the ->setup() callback is running.
+
+Alan Stern
