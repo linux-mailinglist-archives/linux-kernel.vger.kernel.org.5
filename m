@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AD37802E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5AD7802E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356809AbjHRBNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 21:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S1356826AbjHRBNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 21:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356794AbjHRBNU (ORCPT
+        with ESMTP id S1356800AbjHRBNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 21:13:20 -0400
-Received: from repost01.tmes.trendmicro.eu (repost01.tmes.trendmicro.eu [18.185.115.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A323A89
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:13:15 -0700 (PDT)
-Received: from 104.47.7.175_.trendmicro.com (unknown [172.21.184.89])
-        by repost01.tmes.trendmicro.eu (Postfix) with SMTP id C8B1A100004F7;
-        Fri, 18 Aug 2023 01:13:13 +0000 (UTC)
-X-TM-MAIL-RECEIVED-TIME: 1692321193.271000
-X-TM-MAIL-UUID: 7932edf5-ed4e-4436-afe1-22fed13238e8
-Received: from DEU01-BE0-obe.outbound.protection.outlook.com (unknown [104.47.7.175])
-        by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 425C910004D9B;
-        Fri, 18 Aug 2023 01:13:13 +0000 (UTC)
+        Thu, 17 Aug 2023 21:13:25 -0400
+Received: from repost01.tmes.trendmicro.eu (repost01.tmes.trendmicro.eu [18.185.115.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0113A8D
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:13:16 -0700 (PDT)
+Received: from 104.47.7.169_.trendmicro.com (unknown [172.21.196.113])
+        by repost01.tmes.trendmicro.eu (Postfix) with SMTP id E64EE1000045E;
+        Fri, 18 Aug 2023 01:13:14 +0000 (UTC)
+X-TM-MAIL-RECEIVED-TIME: 1692321194.277000
+X-TM-MAIL-UUID: ca907b62-712e-42fa-9c69-cc7472ed3884
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (unknown [104.47.7.169])
+        by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 43BC310004D9B;
+        Fri, 18 Aug 2023 01:13:14 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f+Rb347wLXzpwcd+lhaX08/wUWgvMqMZy4oU045dOTWkGuH/ss7d386h2bznsdcqtKcTIFGJJcQfs5/N5k2EYnFqv/ozX0v6pAjzvcP2wCfeO1edZfbJMiMuDFP8rr+lTQufTSsNTHfpomMbDDR0/dzS7T2pPoHrF4ASIJxslPrlZYxetiveqmX2XMawQT9y7VvX5njlRT3YP+k5J6z36c5h1ohY1NRZ0T3kZ/21nWuX/H3guzUC4hJaCQbD0uBntAqvkYEmOHB04nXLcPWyuXfqoZ9VpWy1aPMEIQ8ZnZu1v8ObVs7JSnQUMRsIb3MH0l+YeifYNxI718RQEKSdAQ==
+ b=k6gt32ezZm7ksxTeXELRUWWBedcDcYdd+RuRv3VxDbSW4xl5NyjgLIka+FRr59ScP/BOoPgzVa9KQQDb7vsK+WS9m+MqwiW9xCdToOAyf5ui09ttDcu+zWekhU2q7hSfy09cp+AXti2R2w8Yp7OziiEhmGLaqTKvb5059R2fG9EiA2dspefiG5pbCoBJg4JqDIWN0cxXph/r1y5ZIkW80GbX3Hu8c3TUhoXpt7yt7VKvFhJIWecAFm8VmBIDwXadmoAsaXhsr4h0/fPLr3MMKSYI+b4+l94b7ek2SeDR0wM3cdZJJcTx0i760HRe5PA89m8bNHHsPNlXxcD7ZfAzOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3CPN/nPYjocmwvcfXZTjN/a02SqjoXA2xPnUaZmdPE0=;
- b=CZbOOYmg1SlSZQ/gHGAdK4c+Bbi7Kl0tqfNWJeU0eUyhcD9B5Vc2eWH/pg6G+HJ4du4xb7gDpFj9DuvlCW4E7yEcoQSMUxYGH8SoQiTR2Tu+vMynfeUjGvmnDdK61k5/CWK7CFD3MPBZHBQ9w7lzLZXszZeqR1f1m0qbs/Nh8xYPqM8CFjYVFYpSQdsTcKsANPvP9NLVC2/kfySsvwbfsrKST1yZbLWno0vvCzHX/AcamRT8iAgOZqvYUFiKYaisKg6Cv34OJ/nBn3s82b1CxqeMXfHJ7W/B+zL5j8eMerTX7XT++L517nHIwK2dtSmR+s1oiVyrMRo3Hs5+TcFmAw==
+ bh=+nuYTvW/XUgqVExRqpD9gMez2RPol1h+jOniVlfAKtI=;
+ b=Zm8/Ear3YUImGx2GyOk3Wkjbr0iuzcKtYrNXaeikNHO3rcSEWRx5kJzL3dUeOeARxbuf5Gmm7H/XnyTPjlSMAg0GlUmQ/41WRbebxAJ6YtgMgdwB6lX0fwAit5A6uCwbgByTREuyLNaYC8yfNDPwClxEfGEHInmdXitom3pm6efLp+1ogc93sOdI3iDs0I1AlIHah3DnfS0ikBilC+DdcZv8JUkqpLULolJzxPTdli6DeYz46iZFPgCG/powJT/gwUct4b92nV6n1Riai8U1Wm1cGx58QojGjE9ETHooS+RWATj1rgF6Te+IHTxHNrlCGud4QC3jHUQqCI0cvtGrrw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  217.66.60.4) smtp.rcpttodomain=alien8.de smtp.mailfrom=opensynergy.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
@@ -41,15 +41,26 @@ Received-SPF: Pass (protection.outlook.com: domain of opensynergy.com
  designates 217.66.60.4 as permitted sender) receiver=protection.outlook.com;
  client-ip=217.66.60.4; helo=SR-MAIL-03.open-synergy.com; pr=C
 From:   Peter Hilber <peter.hilber@opensynergy.com>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev
 Cc:     Peter Hilber <peter.hilber@opensynergy.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>
-Subject: [RFC PATCH 3/4] x86/tsc: Use bool, not pointer, for ART availability
-Date:   Fri, 18 Aug 2023 03:12:54 +0200
-Message-Id: <20230818011256.211078-4-peter.hilber@opensynergy.com>
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>, netdev@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: [RFC PATCH 4/4] treewide: Use clocksource id for struct system_counterval_t
+Date:   Fri, 18 Aug 2023 03:12:55 +0200
+Message-Id: <20230818011256.211078-5-peter.hilber@opensynergy.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230818011256.211078-1-peter.hilber@opensynergy.com>
 References: <20230818011256.211078-1-peter.hilber@opensynergy.com>
@@ -57,54 +68,55 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6EUR05FT041:EE_|FR3P281MB2252:EE_
+X-MS-TrafficTypeDiagnostic: AM6EUR05FT003:EE_|FR3P281MB1999:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 52ef0dc1-d67c-4f02-2810-08db9f884abc
+X-MS-Office365-Filtering-Correlation-Id: b0bdfd0e-4685-487d-114b-08db9f884b64
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dScNROYO8b5V3jDBCEbGjXjky6MqJgKYLHPiqO2UGon/iBzJDCSliiYRqnhEpU/4WuZJv0ThtCNJJra5Sfq5lETyP1q8+qx/6luKCxDH7wS0oCvP60qT69+wY6iT0jZn6aL96xkHnawSIloyBH6Yl2orpeCj7PY4fYmLXPg4sYGdQfhhPd6tfut5vHEBRvOxiISteswJbvQuKOprxWj6RObW6GPcBv77jPNkP6mkLmnfAUOErp710eXR9zdrtYPxPL0FhYeSzzY9eT+XNavGVlbO/qTLq/CXPfY0N+Q7yUP+8+Rv1xI3cPB9YQK4ALXz57EbiQRQz6TvE+2BVmUmLoQuF4nOFtE0E8HNdQQJun1Fn4tjA9/xVqFjm5gZQyEr2eCQe4pDlWiwfJju6iAFwdE4PsDN/rZsKNzNNP5Hn1jTqo0EdHQVGelMEIt1bZwU1bWCUofWRK3yPaAJNbojMMutvIIPXB/dTe0Pz7qEt6xzgI260iG1MuYjotjTsmzHZQVLGEGIi3ju+IQZT56HP8H61SiVuaKeihGrVoaBdCmpWEvna9Na4vDyUDANbFKJbAT3w7MINZ/pkStgOw4WgAsqpQQkd60m3+KEqB/lFlVwqN0PWc3Keu+t1eag/NJ8a6buLykgWp/rWQWglmZ4fkqo59KNuNKygPEVRmUx3c54pBZEcrlNkEgANpFvmRIGQoHFc6649nIA+kQNLykslz25tvK2Ha/FrfHEyLMUwJ6boo8mZ6P5uhNemnNXYEGJRdEVx0pvoB/ZJigJoe/dXEbZsuiUzouJApJYpFFbQXLhscvCHIk+V6XGqcJ1wq8R
-X-Forefront-Antispam-Report: CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39840400004)(451199024)(186009)(82310400011)(1800799009)(36840700001)(46966006)(8676002)(8936002)(4326008)(70206006)(70586007)(6916009)(42186006)(54906003)(41300700001)(2616005)(40480700001)(26005)(12101799020)(44832011)(316002)(2906002)(5660300002)(478600001)(36756003)(36860700001)(47076005)(1076003)(83380400001)(81166007)(86362001)(336012)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: xpsBIsWe07RpaqKEQtn/mRa3Ad6Z6INZTCCTFcDbRoM1FjMRh/F8a5aLlIE/h6HrNSblnozf4/96qmeHoK/b6R6GG3OqgwMYXRpdgxa6fQa+9FIZbpT88rddU60N2nbe+LXvS8xWwy1skmYvNWEpoqLdx23nms8DkFOqVDeRmkgCt+bkv4XK6QcjrBvBM+c/iwYtpUI9Z8wFD1JeZiWbqOwxqGQKzq28w7DsFOaolzvLGrS1W7sw+qd8qmP0QyRYGTkvtl5RO5DduZS7I3daeeWc43oFH61D/eD6/EdO3XrgEA7k8cxcY7goqHn1Lbwv5323rKSKki7RPrNWli5hfe/gkb6r5To75eTD/kIMkhJ6fF2DAQtymkfddCp9qDn2V3qhORqvWNQ3L9ERjWEoXy0cCJsNrWN02q1ohec+Gjcy2CMR6kLWP1ZPuQ+eBhPcuDnEFn3fpGrZOi4Qd/hTvFNI1Ly86rrT2Kbln3X10Ga9fBZuIqoJpb2idI1AUbe9rGIRB0Pkce1ILTdQ94nRgXJ4XV6KWP+7H+nS7WSGhOk6Dm0L48b228525pUccBsCWu5vnl8sIdZH+Qer/2hdlXIBXvtobw6S/HXI03LbU8bCJGU5arBbh+0sxM+wSx2PcTOsPPFNIjaOjvVnUkXuRy4e1deTOj1aaW6vWbvL/0ukkSimqGjp9f2MnK7tM/7R5IvyFTbDVDw90cfR7FIasz7CQS41Uu4xMdYLchE4ctzxknoOEdMY2rvx2ZK1NiV8akqNigZ2AIvVA+JIum+XuOWeVsum7vef5qx8xlXCPV7LYYKkNh135cNzXkON1+bF
+X-Forefront-Antispam-Report: CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(396003)(136003)(39840400004)(376002)(346002)(186009)(451199024)(82310400011)(1800799009)(36840700001)(46966006)(36756003)(86362001)(12101799020)(83380400001)(40480700001)(8676002)(4326008)(8936002)(5660300002)(44832011)(2906002)(41300700001)(1076003)(26005)(2616005)(336012)(36860700001)(47076005)(478600001)(7416002)(81166007)(54906003)(316002)(42186006)(70206006)(70586007)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 01:13:12.0333
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 01:13:13.1493
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52ef0dc1-d67c-4f02-2810-08db9f884abc
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0bdfd0e-4685-487d-114b-08db9f884b64
 X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
-X-MS-Exchange-CrossTenant-AuthSource: AM6EUR05FT041.eop-eur05.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: AM6EUR05FT003.eop-eur05.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR3P281MB2252
-X-TM-AS-ERS: 104.47.7.175-0.0.0.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR3P281MB1999
+X-TM-AS-ERS: 104.47.7.169-0.0.0.0
 X-TMASE-Version: StarCloud-1.3-9.1.1011-27820.003
-X-TMASE-Result: 10--8.703000-4.000000
-X-TMASE-MatchedRID: DtXN+5zl0bBOcYuxoPS7YSE8raaf46xMzs/gmkWwxXBTcuWQxWoJHcOZ
-        2ctl/jceysiQ9faGrCSIru8EW9Y4u63XYtsOH2/QRYNhzuZZjRDXT+yjPvIHsRyuwUNBDCDWn1Y
-        nLTDBk0buim4ICo56cvwfPGKbM6oOJQ2Ybiz75wx5ax/05CgrEXJ8bM38R9gpJsfJJdVp3fqvng
-        kjHjojpH2fbnp7T2HmiXG+DOC9634tUBe4IrvOVzsAVzN+Ov/sghvJFPvykvx0cGh8vag1uknyU
-        4kYGziwlrodeCxdI8PhaKb9u2RPZQ==
-X-TMASE-XGENCLOUD: 3b45fb95-b744-43ba-9d66-4708894280de-0-0-200-0
-X-TM-Deliver-Signature: F5CBF04202AC237E3BCCD3E2029B7634
-X-TM-Addin-Auth: jo3AhD/Ip/L6NItNuZ6DqBIu2+0/sNnegYq1Nvek2CUXT59q9Py7Q6xhJ1t
-        i1xYYwcoHSkSkOAqOEw3nHEdW7jcTpPXfg/hf4a9+kS4tRdzgZRDomktHvLyxnPSLPytcrpxV+j
-        HbzVnhdhjDxqxJwLxjqlJylMFMcnYpKSUmldwzXgyM7KoRyJzmwBVvcnZnDs6SUKZosUIjSAAWS
-        GOLTULg/hMxbYfmIx4ZsXzMzNgQN3/U7r8QzzbIrLbALv3TkSRi7bI78JJ1ztatB3VcWZSZLIri
-        JlhlVpaWrIeuosA=.y29peK82uInHMbnR19ZOpVglonoNTYXX7xuAoIg4thaYI+23x5YPgoX+T/
-        Pq27DkVQeJYLCw+qWA3UqrQWObBsJpZOBBawYkEdXR1JbPAjirKFkHCrf4sHG3E7tkATUpFYRTi
-        DL75IQpXxTWfh+hA7nGIlZn67BCPf3tvPJvqrB6+iWhLAwyp82Rv4UBMCdFsIw3WZ7+wTKxOP3q
-        RvoCLir09jIS8bNC18iLD3luptAtYuqSUB/FqUKyCm3LAqzrVrrG3xI/grVgfOh7+MtlDiVAsv7
-        F+761MXukEQo9vUH53WfKTpxpoLGPC0RbjBPy6raxAImRass30kvqodkkhA==
+X-TMASE-Result: 10--10.549300-4.000000
+X-TMASE-MatchedRID: /ZPxQQwIKahn1p91e59ja75qo7cbei2zxgiPAz8l1fsopiVY+XbpKyi3
+        ojDl4/MdYIIkUAi74WXQrFpqAqhSQJem/4ajnoSsx38MG44f3TdEu4hdWK+90/c8c/vfJy26maC
+        R3tzSaSW7XX8F0k6vEcZ1ZNHqLwMNTnGLsaD0u2GGLYLt2U0pahJFEvBK54PaxoZncY54rxY0Ri
+        Z6Ct8rIg5sFbr8OqgM5RN50ieMXjOJHPiCScEioHQK0rQOCABewRidCPjiF8OZBQ8i9msMNzt5y
+        G5DhcrC26qGmmu04W7+T/V+MonHrcddJPEKsqAMES46qCSbf/WHvP6CYoqPSgN/ojyMXH62DEom
+        GUxecKpxg7svMtapLh8kPiYhnCdMIj70CBf1okqTDJFFF4l8OLki3lzD1Nth7RpsEjdIn0c=
+X-TMASE-XGENCLOUD: 8f1e8718-55b7-4968-8dc9-32a5e71c1900-0-0-200-0
+X-TM-Deliver-Signature: 0FE74A8842DA82A1C35644C7F2C7D3EA
+X-TM-Addin-Auth: 4IzaOOBrJ1+F86JpdLgH350CNsnOndP3x1CuVYEEcIJbuj2tiZvoS/UauXW
+        gf6EX2PTDq7GJxcoBm/pbAQF4lJk+PIw2cKRzUWiOXgqxSdUxrISm6B1LXDuTPVqW+wu+CvuYLQ
+        PMKpjffFlIQcamTUuctiGvN+hz0tqxHn+3Wx+ttduf2NUZWlx9LoDb3TzuwhDMn5QzJ5G+8YuwL
+        IEHz2HQSoQvElyXArAhyGd1K20QU9FWmR2mTUUDTJcuoxQd18nEB1NNXK19RjR6eqPzT/CPoY9g
+        aW2QvK0iLWPtPcs=.k8SahcA1loNwanXQcRQhYF7KEoybcTKHDPP/glFpkk2M7E6jXWtMNsBXTf
+        lxPfQtafVI6NMx3vi2GzucOe+Yu/4KNKSDK+RuogVA8c/lbZEw5rMevkEE+PZXFIYLJFtcAJ+Oa
+        h3T7pSx4imTn5X4U67YzjtnJrl+JimfcE9l6Z52WOYYZmYs0CcRAdDbqw2LzMbqj7m+rxyHNut4
+        G+jpWDEmUunW60c9h6GpTes3DPo7exij9tAaOLh6RS/pENEy6FYd2ww5PfzQD+Wl/t91H5ukp/2
+        3tYfFVctuiX6FcAZ7fGZnRP5UNtp1MftHl0ugJVXy8xV7LXmSkyZX3Ux95g==
 X-TM-Addin-ProductCode: EMS
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
-        s=TM-DKIM-20210503141657; t=1692321193;
-        bh=7mA8mEPtfxtSWGgmair+oao5pUoxYjqaGMV/lJxntYc=; l=2532;
+        s=TM-DKIM-20210503141657; t=1692321194;
+        bh=5FpIlNayVCceR8LAT06Pzr1NN/V+2GS4+e2hsooOi3U=; l=4788;
         h=From:To:Date;
-        b=esSjttWA4alzrwxIrgHl8Vfcm4ehAhrHaiy8r7E07DqjJVCD3Los0dMSBz5qE0owj
-         +u/CeLR7g4eTTVyb/ygdApA8/uX+OQAvYbRkeHgafAJ8PvoJAKCSpTmvKVKtUjgiNZ
-         esbtqQ9R6r+JS7F+IvibnKviDLHXTNy9hObOVtj0ETKzcvqyE0/5AsdNIyLfZXxRzD
-         cbx8Q4T2jrj/gBy7DYt48L7zXj2lcaSxsuqaVRBnYMUcUY816EiKllU3Vl+sO9qIpI
-         1pWFVkN80fRbW7V1zU2WtTO9WWH4nN0MrbGDHP8aUZ1aCOf7LkXxEQChSsw2C1Tre0
-         mgrvpxL+p8xCA==
+        b=g07xnghOW9Ag6/BtpFSOzZ4h4Y4Ja2RIGGB6yw2REtwGq9U6vIkDdUq1vuNhNajgH
+         ugvABk15wDGdUy2Ai4jtBig1qKSlx3HnE0YUFTBwuIfHt8y70mR61jbden+B4yJtM/
+         /XkL/XEexc279FH412kbD9sNApCWDKFf1pCMFxAri5MPEFFHIx6VGzaC8Q3jGnc3op
+         K4t9LOMZWJtzujRjHBMAKZQIJsbHWTc8A6Q72Fs8jPWoHQ7oAWKwx9h1NBfJL33zjh
+         iUjmfIKUn4YaQVRrjx8Rx6zE9+vAQ350BAFEDpifAp4T9tHgxm/kg8cqGq8TJGmVnE
+         pLZptUTryRmzA==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
         RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,T_SPF_TEMPERROR,URIBL_BLOCKED
@@ -115,77 +127,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far, ART availability has been implicitly encoded in
-art_related_clocksource, which is NULL if ART is not available.
+Use enum clocksource_ids, rather than struct clocksource *, in struct
+system_counterval_t. This allows drivers to use
+get_device_system_crosststamp() without referring to clocksource structs,
+which are clocksource driver implementation details.
 
-Replace art_related_clocksource by bool have_art to explicitly indicate
-ART availability.
+As a "treewide" change, this modifies code in timekeeping, ptp/kvm, and
+x86/tsc.
 
-This should reduce the changes during a tree-wide switch of struct
-system_counterval_t.cs to enum clocksource_ids (when the clocksource
-pointer will not be needed any more).
+So far, get_device_system_crosststamp() requires the caller to provide a
+clocksource * as part of the cross-timestamp (through the
+system_counterval_t * parameter in the get_time_fn() callback). But
+clocksource * are not easily accessible to most code. As a workaround,
+custom functions returning the clocksource * may be put into the
+clocksource driver code (cf. kvm_arch_ptp_get_crosststamp() in
+arm_arch_timer.c).
+
+To avoid more interference with clocksource driver implementation details
+from future code, change system_counterval_t to use enum clocksource_ids,
+which serves as a unique identifier for relevant clocksources.
+
+This change will allow the virtio_rtc driver, available as an RFC patch
+series, to work without modifying the arm_arch_timer implementation.
+
+This change should not alter any behavior. For the x86 ART related code,
+.cs == NULL corresponds to system_counterval_t.cs_id == CSID_GENERIC (0).
+
+The one drawback of this change is that clocksources now need a custom id
+to work with get_device_system_crosststamp(), since they cannot be
+distinguished otherwise.
 
 Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
 ---
- arch/x86/kernel/tsc.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ arch/x86/kernel/tsc.c        | 6 +++---
+ drivers/ptp/ptp_kvm_common.c | 3 ++-
+ include/linux/timekeeping.h  | 4 ++--
+ kernel/time/timekeeping.c    | 3 ++-
+ 4 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 132045be76d0..e56cc4e97d0d 100644
+index e56cc4e97d0d..eadfb819a0b5 100644
 --- a/arch/x86/kernel/tsc.c
 +++ b/arch/x86/kernel/tsc.c
-@@ -54,7 +54,7 @@ static int __read_mostly tsc_force_recalibrate;
- static u32 art_to_tsc_numerator;
- static u32 art_to_tsc_denominator;
- static u64 art_to_tsc_offset;
--static struct clocksource *art_related_clocksource;
-+static bool have_art;
- 
- struct cyc2ns {
- 	struct cyc2ns_data data[2];	/*  0 + 2*16 = 32 */
-@@ -1312,8 +1312,10 @@ struct system_counterval_t convert_art_to_tsc(u64 art)
- 	do_div(tmp, art_to_tsc_denominator);
+@@ -1313,7 +1313,7 @@ struct system_counterval_t convert_art_to_tsc(u64 art)
  	res += tmp + art_to_tsc_offset;
  
--	return (struct system_counterval_t) {.cs = art_related_clocksource,
--			.cycles = res};
-+	return (struct system_counterval_t) {
-+		.cs = have_art ? &clocksource_tsc : NULL,
-+		.cycles = res
-+	};
+ 	return (struct system_counterval_t) {
+-		.cs = have_art ? &clocksource_tsc : NULL,
++		.cs_id = have_art ? CSID_TSC : CSID_GENERIC,
+ 		.cycles = res
+ 	};
  }
- EXPORT_SYMBOL(convert_art_to_tsc);
- 
-@@ -1350,8 +1352,10 @@ struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
- 	do_div(tmp, USEC_PER_SEC);
+@@ -1335,7 +1335,7 @@ EXPORT_SYMBOL(convert_art_to_tsc);
+  * struct system_counterval_t - system counter value with the pointer to the
+  *	corresponding clocksource
+  *	@cycles:	System counter value
+- *	@cs:		Clocksource corresponding to system counter value. Used
++ *	@cs_id:		Clocksource corresponding to system counter value. Used
+  *			by timekeeping code to verify comparability of two cycle
+  *			values.
+  */
+@@ -1353,7 +1353,7 @@ struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
  	res += tmp;
  
--	return (struct system_counterval_t) { .cs = art_related_clocksource,
--					      .cycles = res};
-+	return (struct system_counterval_t) {
-+		.cs = have_art ? &clocksource_tsc : NULL,
-+		.cycles = res
-+	};
+ 	return (struct system_counterval_t) {
+-		.cs = have_art ? &clocksource_tsc : NULL,
++		.cs_id = have_art ? CSID_TSC : CSID_GENERIC,
+ 		.cycles = res
+ 	};
  }
- EXPORT_SYMBOL(convert_art_ns_to_tsc);
+diff --git a/drivers/ptp/ptp_kvm_common.c b/drivers/ptp/ptp_kvm_common.c
+index 2418977989be..d72e6ed71b7a 100644
+--- a/drivers/ptp/ptp_kvm_common.c
++++ b/drivers/ptp/ptp_kvm_common.c
+@@ -4,6 +4,7 @@
+  *
+  * Copyright (C) 2017 Red Hat Inc.
+  */
++#include <linux/clocksource.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+ #include <linux/init.h>
+@@ -46,7 +47,7 @@ static int ptp_kvm_get_time_fn(ktime_t *device_time,
+ 	preempt_enable_notrace();
  
-@@ -1458,7 +1462,7 @@ static void tsc_refine_calibration_work(struct work_struct *work)
- 		goto unreg;
+ 	system_counter->cycles = cycle;
+-	system_counter->cs = cs;
++	system_counter->cs_id = cs->id;
  
- 	if (boot_cpu_has(X86_FEATURE_ART))
--		art_related_clocksource = &clocksource_tsc;
-+		have_art = true;
- 	clocksource_register_khz(&clocksource_tsc, tsc_khz);
- unreg:
- 	clocksource_unregister(&clocksource_tsc_early);
-@@ -1484,7 +1488,7 @@ static int __init init_tsc_clocksource(void)
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_TSC_KNOWN_FREQ)) {
- 		if (boot_cpu_has(X86_FEATURE_ART))
--			art_related_clocksource = &clocksource_tsc;
-+			have_art = true;
- 		clocksource_register_khz(&clocksource_tsc, tsc_khz);
- 		clocksource_unregister(&clocksource_tsc_early);
+ 	*device_time = timespec64_to_ktime(tspec);
+ 
+diff --git a/include/linux/timekeeping.h b/include/linux/timekeeping.h
+index fe1e467ba046..2e7ae0f7f19e 100644
+--- a/include/linux/timekeeping.h
++++ b/include/linux/timekeeping.h
+@@ -270,12 +270,12 @@ struct system_device_crosststamp {
+  * struct system_counterval_t - system counter value with the pointer to the
+  *				corresponding clocksource
+  * @cycles:	System counter value
+- * @cs:		Clocksource corresponding to system counter value. Used by
++ * @cs_id:	Clocksource corresponding to system counter value. Used by
+  *		timekeeping code to verify comparibility of two cycle values
+  */
+ struct system_counterval_t {
+ 	u64			cycles;
+-	struct clocksource	*cs;
++	enum clocksource_ids	cs_id;
+ };
+ 
+ /*
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index 266d02809dbb..56428eadf4c1 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -1236,7 +1236,8 @@ int get_device_system_crosststamp(int (*get_time_fn)
+ 		 * system counter value is the same as the currently installed
+ 		 * timekeeper clocksource
+ 		 */
+-		if (tk->tkr_mono.clock != system_counterval.cs)
++		if (system_counterval.cs_id == CSID_GENERIC ||
++		    tk->tkr_mono.clock->id != system_counterval.cs_id)
+ 			return -ENODEV;
+ 		cycles = system_counterval.cycles;
  
 -- 
 2.39.2
