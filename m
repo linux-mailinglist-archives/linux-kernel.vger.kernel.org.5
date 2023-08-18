@@ -2,194 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2457807BB
+	by mail.lfdr.de (Postfix) with ESMTP id 38A577807BA
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358896AbjHRJBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S1358883AbjHRJBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:01:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358914AbjHRJBi (ORCPT
+        with ESMTP id S1358937AbjHRJBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:01:38 -0400
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94274207
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:01:09 -0700 (PDT)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-58dfe2d5b9aso9694497b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692349269; x=1692954069;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RIMtbwO8KD2IoehzK5xo4XD4MDFkwlTkyaP30vazrWk=;
-        b=NDfj2KfLreW7RME+Ag6gxRjuiq9PNGwZfPQPeviCqL2NUfJkae/2HCgd3m/jtS0apu
-         leZvRg9JZkjD9Mw9U7OSxzUe2P5M7ffzeFKuw8SG2p1bCOti8I71pn04HrOAD4fEn/97
-         +WmSaIskdk9+zBYWNy5bTAZ9/4hOe9v1YHHVSrTQ2J4j2rxudlGWszAs4SR5VVNVEEn5
-         s012F44gHb1tDv/6FXRo19cZhIa2AUbkeG+b3L+ZrVi7bOKTUyVpT+KYmEpdSanJAPT3
-         COGQTXzvMHlGBYGKkVunlc0XCyo6xgwNU/4KOukvANvoXSMxKaT+etjXoPRaCSsQVqhN
-         NxrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692349269; x=1692954069;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RIMtbwO8KD2IoehzK5xo4XD4MDFkwlTkyaP30vazrWk=;
-        b=FX91TwAy7GhVtgmZ7KU8OuV/wcaV+3Xfew/gNWnRhu+DPvqyaPWneAm5wnTS3iDoNt
-         cpz+HNWVNQjw7iUDWAGLmfYTw5i7aPjU61mQ9/Hf7zO8b/70zmWhl7k1koXoyDGMXN0y
-         AOdb2R073BAeK7SHeBVz9v0n9CSYIAGXLH2B8onqE1zUFYdjCeOtK250woysirUVmkdc
-         oNCb/79mIG3vg+IP09JH86jWSnvNniKvU44ayCYHP0EfNvLZB1Yod9OTlPfyES8CuSHI
-         l1ClXeefqZCTP6T+m7+fiFMWLms4iJ223/PwnR8nOuDhyHOivQac868DLaU4J2E9w73d
-         Px9A==
-X-Gm-Message-State: AOJu0YzZ6iBYdLDRNaH+B7gM4zl6Ovh7PqNxocTXhB7VI0yAb9dYVDLC
-        zSsPJBj2RYtqZOWYAvdD0QYzHpn49RAL1W6XOA7bng==
-X-Google-Smtp-Source: AGHT+IEWzDCK5yYkY70jff+msXhncrz8POQ3xpL2mas+Bp/FNL0VSiTT9JywxXmqjpwqUVsHlBPOJ1oXEhXsuZnoE8Q=
-X-Received: by 2002:a0d:eb0e:0:b0:58c:adf9:eb03 with SMTP id
- u14-20020a0deb0e000000b0058cadf9eb03mr2530783ywe.6.1692349268872; Fri, 18 Aug
- 2023 02:01:08 -0700 (PDT)
+        Fri, 18 Aug 2023 05:01:41 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F13C4216;
+        Fri, 18 Aug 2023 02:01:23 -0700 (PDT)
+Received: from pwmachine.localnet (85-170-34-233.rev.numericable.fr [85.170.34.233])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A871C211F7CD;
+        Fri, 18 Aug 2023 02:01:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A871C211F7CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1692349282;
+        bh=j4cvRkD6pbPZwfZqBlOWlJWUpvusQxy2wWaKUpGqnmg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pMsqSFq2iFNzcIysA8uMgUW0kwwAywjuDll59W0p15LRa72KhmdV5tMaSVSgdPXHf
+         jWIBDsH0yPGTvZMTuaEuXj3txWWBR5aDXpXbx9KKiBYDmvAZRN3u/3br5jGFBAiAXA
+         Gh5PDTr3KUYfPB2QE7Xgshc0eGq07570hDfSqQOk=
+From:   Francis Laniel <flaniel@linux.microsoft.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for 'perf_kprobe' PMU
+Date:   Fri, 18 Aug 2023 11:01:19 +0200
+Message-ID: <5702105.DvuYhMxLoT@pwmachine>
+In-Reply-To: <20230817111303.47b50197@gandalf.local.home>
+References: <20230816163517.112518-1-flaniel@linux.microsoft.com> <4852847.31r3eYUQgx@pwmachine> <20230817111303.47b50197@gandalf.local.home>
 MIME-Version: 1.0
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230817162159.242087-1-limings@nvidia.com>
-In-Reply-To: <20230817162159.242087-1-limings@nvidia.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 18 Aug 2023 11:00:32 +0200
-Message-ID: <CAPDyKFpezrjPk6Y+TS1A1E2tK4WbjdpTjPwPxLaAUD9fcaQonQ@mail.gmail.com>
-Subject: Re: [PATCH v9] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-To:     Liming Sun <limings@nvidia.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 at 18:22, Liming Sun <limings@nvidia.com> wrote:
->
-> This commit implements the runtime PM operations to disable eMMC
-> card clock when idle.
->
-> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> Signed-off-by: Liming Sun <limings@nvidia.com>
-> ---
-> v8->v9:
->     - Address Adrian's comment to do the pm_runtime_put() in
->       dwcmshc_resume() instead; Error path changes not included yet.
-> v7->v8:
->     - Address Ulf's comment (option-1);
->     - Updates for Adrian's comment to remove the force_suspend/resume
->       in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
->       dwcmshc_resume()/dwcmshc_suspend();
-> v6->v7:
->     - Address Ulf's comment;
-> v5->v6:
->     - Address Adrian's more comments and add coordination between
->       runtime PM and system PM;
-> v4->v5:
->     - Address Adrian's comment to move the pm_enable to the end to
->       avoid race;
-> v3->v4:
->     - Fix compiling reported by 'kernel test robot';
-> v2->v3:
->     - Revise the commit message;
-> v1->v2:
->     Updates for comments from Ulf:
->     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
-> v1: Initial version.
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 76 +++++++++++++++++++++++++++--
->  1 file changed, 72 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index e68cd87998c8..3b40f55ce2a4 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -15,6 +15,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/reset.h>
->  #include <linux/sizes.h>
->
-> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
->
->         host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
->
-> +       pm_runtime_get_noresume(dev);
-> +       pm_runtime_set_active(dev);
-> +       pm_runtime_enable(dev);
-> +
->         err = sdhci_setup_host(host);
->         if (err)
-> -               goto err_clk;
-> +               goto err_rpm;
->
->         if (rk_priv)
->                 dwcmshc_rk35xx_postinit(host, priv);
-> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
->         if (err)
->                 goto err_setup_host;
->
-> +       pm_runtime_put(dev);
-> +
->         return 0;
->
->  err_setup_host:
->         sdhci_cleanup_host(host);
-> +err_rpm:
-> +       pm_runtime_disable(dev);
-> +       pm_runtime_put_noidle(dev);
->  err_clk:
->         clk_disable_unprepare(pltfm_host->clk);
->         clk_disable_unprepare(priv->bus_clk);
-> @@ -602,9 +612,13 @@ static int dwcmshc_suspend(struct device *dev)
->         struct rk35xx_priv *rk_priv = priv->priv;
->         int ret;
->
-> +       pm_runtime_get_sync(dev);
-> +
->         ret = sdhci_suspend_host(host);
-> -       if (ret)
-> +       if (ret) {
-> +               pm_runtime_put(dev);
->                 return ret;
-> +       }
->
->         clk_disable_unprepare(pltfm_host->clk);
->         if (!IS_ERR(priv->bus_clk))
-> @@ -642,11 +656,65 @@ static int dwcmshc_resume(struct device *dev)
->                         return ret;
->         }
->
-> -       return sdhci_resume_host(host);
-> +       ret = sdhci_resume_host(host);
-> +       if (ret)
-> +               return ret;
-> +
-> +       pm_runtime_put(dev);
+Hi.
 
-To simplify the error path, I would suggest that you move the call to
-pm_runtime_put() to dwcmshc_suspend(). In fact what you need is just a
-call to pm_runtime_put_noidle(), somewhere after the call to
-pm_runtime_get_sync().
+Le jeudi 17 ao=FBt 2023, 17:13:03 CEST Steven Rostedt a =E9crit :
+> On Thu, 17 Aug 2023 12:59:30 +0200
+>=20
+> Francis Laniel <flaniel@linux.microsoft.com> wrote:
+> > > Why can't you just pass in the address like sysfs does?
+> >=20
+> > To get the addresses from /proc/kallsyms, you need to either have
+> > CAP_SYSLOG or even CAP_SYS_ADMIN.
+> > But to call perf_event_open(), you only need CAP_PERFMON.
+> > This way, by giving only the name you can trace function with less
+> > privileges (i.e. without CAP_SYS_ADMIN).
+> > Please correct me if I am wrong as I am not an expert in knowing the
+> > minimal set of capabilities you need to trace.
+>=20
+> I wonder if we should add an option to put in the non-relocated address?
+> One that can be acquired by debuginfo in the vmlinux. I'm assuming that t=
+he
+> kernel has access to the added offset (I haven't looked). If it does, then
+> we could allow users to just add something like "+@0xffffffffdeadbeef" and
+> add the relocation offset to get to the mapped address of the function.
+>=20
+> This would allow those without kallsym privileges to pass in kernel addre=
+ss
+> for tracing.
 
-This is because runtime suspend is prevented by the PM core as it
-bumps the usage count with a pm_runtime_get_noresume() in the
-device_prepare() phase.
+This seems interesting but I am wondering about this when using KASLR.
+Would it be possible to compute the final address as:
+final_address =3D debuginfo_address + relocation_offset + kaslr_offset?
+I will check regarding both the relocation offset and how KASLR works (I on=
+ly=20
+know what it does, not how it does it).
 
-> +
-> +       return 0;
->  }
->  #endif
+Moreover, regarding accessing vmlinux, I can only think to access it throug=
+h=20
+vmlinuz which is in /boot.
+Sadly, you cannot read /boot/vmlinuz without being root on a several=20
+distributions.
+Note that, the same occurs for /boot/System.map*.
 
-[...]
+> -- Steve
 
-Kind regards
-Uffe
+Best regards.
+
+
