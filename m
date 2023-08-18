@@ -2,87 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2683E781312
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0871F781315
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379507AbjHRSse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
+        id S1379517AbjHRStp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379509AbjHRSsW (ORCPT
+        with ESMTP id S1379555AbjHRSt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:48:22 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAC94204
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:48:18 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686be3cbea0so1658683b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:48:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692384498; x=1692989298;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GP1DcfQVRyZ/pIKJy2r3P+ha5kBKzRQgOLNbP0+yBQs=;
-        b=ePIhLMmxprOtmHRcgmlOpi4JqeUCi+e4RdG8FfoL1iL+oNcVBkj0XqtQJnTQxIBI4k
-         N240Kufklz5cX2Cv3kEJRxkj6dAYrBnfvoOljZRepjUqNAMdn2IvVDKUNd3y9Lk1Zsx/
-         1ujg1FJNf2ZXsaWwM9P4BvfmM5oo41BjtKtEA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692384498; x=1692989298;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GP1DcfQVRyZ/pIKJy2r3P+ha5kBKzRQgOLNbP0+yBQs=;
-        b=Jvvsl3w1gFdwq5mTXK9ywJ+H9aQpWKYoFoX+1sCQ2TTJrPMUgei9Uj0SDkdwpnEpwX
-         lbE+DxyHQWQSFOL2Rkz8EV/EkrFlwkYFKMmQ+1V0dHu2r6x0XnTu//G5h6/ZddpYlsOU
-         EiUfgk81vSpgMJm0GuAqy2UCP1HdhwIpSamvgLeXCNq+BEvewi29Y3UHLh6NDPQpMp7A
-         xGEYfpynS6z8FkJdha5IQqBiAlGhwDM5YS99PfimZqaUvzhEkoY2NFUffKQwwT4+HTY0
-         niKA3msIre8e7jZXz5DTHBtZPGCvpu5dG24hQjW/Bmar85DPJqVzCFFDt37fAzzd5Gir
-         tudQ==
-X-Gm-Message-State: AOJu0Yxxd+1EvYxNABeGqq4ZEvwIq0FJsjLGeH3qmZjhELWeXdXVQ74X
-        pvVK6gEKwfY4W9LDnUkcw+bSsw==
-X-Google-Smtp-Source: AGHT+IGq/UUkwq5B2XE8Euk/g23oQaEh8/MVfrEjyY6KOesc26jzK9pN4ZLSFXkSGrYh9NRVjUtvLA==
-X-Received: by 2002:a05:6a00:9a3:b0:688:2256:f767 with SMTP id u35-20020a056a0009a300b006882256f767mr70601pfg.5.1692384497561;
-        Fri, 18 Aug 2023 11:48:17 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a9-20020a62bd09000000b0068844ee18dfsm1841699pff.83.2023.08.18.11.48.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 11:48:16 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 11:48:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-hardening@vger.kernel.org,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        David Windsor <dwindsor@gmail.com>,
-        Hans Liljestrand <ishkamiel@gmail.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Alexey Gladkov <legion@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Yu Zhao <yuzhao@google.com>, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v2] creds: Convert cred.usage to refcount_t
-Message-ID: <202308181146.465B4F85@keescook>
-References: <20230818041740.gonna.513-kees@kernel.org>
- <20230818105542.a6b7c41c47d4c6b9ff2e8839@linux-foundation.org>
- <CAG48ez3mNk8yryV3XHdWZBHC_4vFswJPx1yww+uDi68J=Lepdg@mail.gmail.com>
+        Fri, 18 Aug 2023 14:49:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9DA422B
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:49:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 176A8662E5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 18:49:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 534A2C433C7;
+        Fri, 18 Aug 2023 18:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692384560;
+        bh=+mR7R0ZzaKnsUsiawM87wkOBcnR1vZCEr7AESk3cGvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rk2gwfZ6E+ElhnGgDPCiBtS7W75P9LjF8LisSNLxZJfVha98kiwa7sou8Hsi5p5Bm
+         NQ+lFAiDDLqeFwrXgt72m5CfrlBuJKJtPGztySVVkmuMqZZSvidpOwdnF+jJcpqRqH
+         vsS/bFBFg/VkZyTD0ftJWO792HBCDMPz0S2y8CvDMEdnGtk7SV0Csy93Vb9TIVJhId
+         tEybJBjKkBI9W01pz8oAmxabHFqSmDgpJYt1byhvREm3ingPyiYWLmwbXARShCEptA
+         RuWqTQGLs6HKEgOeceyJHDJsoegkkFuedp3ViQn3MHODhD6y+AOh5DDhsrujtrVo20
+         9Jx90Nudgjnow==
+Date:   Fri, 18 Aug 2023 21:49:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Sai Krishna <saikrishnag@marvell.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sgoutham@marvell.com,
+        gakula@marvell.com, sbhatta@marvell.com, hkelam@marvell.com,
+        richardcochran@gmail.com, kalesh-anakkur.purayil@broadcom.com,
+        Naveen Mamindlapalli <naveenm@marvell.com>
+Subject: Re: [net-next PATCH v3] octeontx2-pf: Use PTP HW timestamp counter
+ atomic update feature
+Message-ID: <20230818184901.GC22185@unreal>
+References: <20230817174351.3480292-1-saikrishnag@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez3mNk8yryV3XHdWZBHC_4vFswJPx1yww+uDi68J=Lepdg@mail.gmail.com>
+In-Reply-To: <20230817174351.3480292-1-saikrishnag@marvell.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,47 +60,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 08:17:55PM +0200, Jann Horn wrote:
-> On Fri, Aug 18, 2023 at 7:56 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Thu, 17 Aug 2023 21:17:41 -0700 Kees Cook <keescook@chromium.org> wrote:
-> >
-> > > From: Elena Reshetova <elena.reshetova@intel.com>
-> > >
-> > > atomic_t variables are currently used to implement reference counters
-> > > with the following properties:
-> > >  - counter is initialized to 1 using atomic_set()
-> > >  - a resource is freed upon counter reaching zero
-> > >  - once counter reaches zero, its further
-> > >    increments aren't allowed
-> > >  - counter schema uses basic atomic operations
-> > >    (set, inc, inc_not_zero, dec_and_test, etc.)
-> > >
-> > > Such atomic variables should be converted to a newly provided
-> > > refcount_t type and API that prevents accidental counter overflows and
-> > > underflows. This is important since overflows and underflows can lead
-> > > to use-after-free situation and be exploitable.
-> >
-> > ie, if we have bugs which we have no reason to believe presently exist,
-> > let's bloat and slow down the kernel just in case we add some in the
-> > future?
+On Thu, Aug 17, 2023 at 11:13:51PM +0530, Sai Krishna wrote:
+> Some of the newer silicon versions in CN10K series supports a feature
+> where in the current PTP timestamp in HW can be updated atomically
+> without losing any cpu cycles unlike read/modify/write register.
+> This patch uses this feature so that PTP accuracy can be improved
+> while adjusting the master offset in HW. There is no need for SW
+> timecounter when using this feature. So removed references to SW
+> timecounter wherever appropriate.
 > 
-> Yeah. Or in case we currently have some that we missed.
+> Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
+> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+> Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
+> Reviewed-by: Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+> ---
+> v3:
+>     - Addressed review comments given by Jakub Kicinski
+>         1. Fixed re-ordering of headers in alphabetical order
+>         2. Refactored SoC revision identification logic
+>         3. CN10K errata revisions can be different from atomic update
+>            supported revision devices.
+>         4. Removed ptp device check.
+> v2:
+>     - Addressed review comments given by Simon Horman, Kalesh Anakkur Purayil
+> 	1. Removed inline keyword for function in .c file
+>         2. Modified/optimized conditions related boolean
+> 
+>  .../net/ethernet/marvell/octeontx2/af/mbox.h  |  12 ++
+>  .../net/ethernet/marvell/octeontx2/af/ptp.c   | 155 ++++++++++++++--
+>  .../net/ethernet/marvell/octeontx2/af/ptp.h   |   3 +-
+>  .../net/ethernet/marvell/octeontx2/af/rvu.c   |   2 +-
+>  .../net/ethernet/marvell/octeontx2/af/rvu.h   |  12 ++
+>  .../marvell/octeontx2/nic/otx2_common.h       |   1 +
+>  .../ethernet/marvell/octeontx2/nic/otx2_ptp.c | 174 ++++++++++++++----
+>  7 files changed, 304 insertions(+), 55 deletions(-)
 
-Right, or to protect us against the _introduction_ of flaws.
+<...>
 
-> Though really we don't *just* need refcount_t to catch bugs; on a
-> system with enough RAM you can also overflow many 32-bit refcounts by
-> simply creating 2^32 actual references to an object. Depending on the
-> structure of objects that hold such refcounts, that can start
-> happening at around 2^32 * 8 bytes = 32 GiB memory usage, and it
-> becomes increasingly practical to do this with more objects if you
-> have significantly more RAM. I suppose you could avoid such issues by
-> putting a hard limit of 32 GiB on the amount of slab memory and
-> requiring that kernel object references are stored as pointers in slab
-> memory, or by making all the refcounts 64-bit.
+> +static bool is_tstmp_atomic_update_supported(struct otx2_ptp *ptp)
+> +{
+> +	struct ptp_get_cap_rsp *rsp;
+> +	struct msg_req *req;
+> +	int err;
+> +
+> +	if (!ptp->nic)
+> +		return false;
+> +
+> +	mutex_lock(&ptp->nic->mbox.lock);
+> +	req = otx2_mbox_alloc_msg_ptp_get_cap(&ptp->nic->mbox);
+> +	if (!req)
+> +		return false;
+> +
+> +	err = otx2_sync_mbox_msg(&ptp->nic->mbox);
+> +	if (err)
+> +		return false;
 
-These problems are a different issue, and yes, the path out of it would
-be to crank the size of refcount_t, etc.
+Shouldn't you call to mutex_unlock() in two returns above?
 
--- 
-Kees Cook
+Thanks
+
+> +
+> +	rsp = (struct ptp_get_cap_rsp *)otx2_mbox_get_rsp(&ptp->nic->mbox.mbox, 0,
+> +							  &req->hdr);
+> +	mutex_unlock(&ptp->nic->mbox.lock);
+> +
+> +	if (IS_ERR(rsp))
+> +		return false;
+> +
+> +	if (rsp->cap & PTP_CAP_HW_ATOMIC_UPDATE)
+> +		return true;
+> +
+> +	return false;
+> +}
