@@ -2,90 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C931780C6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9E9780C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377117AbjHRNSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:18:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S1377036AbjHRNRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377094AbjHRNSa (ORCPT
+        with ESMTP id S1346972AbjHRNR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:18:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E13D2723;
-        Fri, 18 Aug 2023 06:18:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 124026419A;
-        Fri, 18 Aug 2023 13:18:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBD58C433C8;
-        Fri, 18 Aug 2023 13:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692364706;
-        bh=IKd1RReQYPqG4VwaJKrR1V+GcZ7FENZQ32BY/mi7Tm4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldvO5xlU53sBjF0dHgumsaQwepXbBcOl8j72QxCUrXI/BiEaBY5nPmSGvq8cPCQIt
-         UR4oljnyBo36YaByjA8hcZbkzBzkCp2z+yhx2O+2kGeNeJrbPUdkL0IZ6InD1JQUQM
-         q/SfhARlrW+FreCxnXUVHL9UfRE8Kccw4aqft02+vfH+C60uVjuS/JE0qz/4M7wF1g
-         G06+T0mmh16B6DsIgS+KDSSHpc7nMpcBO2xyVDODe8JJMdFpGaIDwXOU8PI3hyKK7U
-         7yp5q9/1HISXENCXq+fdwTokunyKpSUzY/Z8dH5BLq3u948j9+rvCl+xupPbh4Vxme
-         pSB3Ax81NIB3A==
-Date:   Fri, 18 Aug 2023 15:18:16 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>, ecryptfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Subject: Re: [PATCH v2 0/3] fs/ecryptfs: Replace kmap{,_atomic}() with
- kmap_local_page()
-Message-ID: <20230818-merklich-lagebericht-003a3e9c0357@brauner>
-References: <20230426172223.8896-1-fmdefrancesco@gmail.com>
- <20230630-umfang-pumpt-a0cd2d6cdd91@brauner>
- <4506725.LvFx2qVVIh@suse>
+        Fri, 18 Aug 2023 09:17:28 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478502723;
+        Fri, 18 Aug 2023 06:17:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692364637; x=1723900637;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=01GUnJdnsfSW3V/fRhcTMyz0P3VHw8bOSYw42JoVXSc=;
+  b=AV7R5v4Iei65yjZNchiu0dTLIsT5igNHbQ44EnCkSaSJ6GU98+rRfU6L
+   5aAjYnchzPUbQYd23PU9vPa/HD5p5LYMuBQ8PUqSiyeCK4SZFPdqG4cRp
+   uepPxxDSN482ftjfkd1zcVsq9q+T8OA2ouKjbPtwcu8jfY/j6wCDsi60N
+   Hex3I9gLRKDbH8e2M5Phm1nnafrR9kP+5zZyyUI5OtPJFimVuQf8xm8Zs
+   jt7AzR5SlC3AVXsdxs8KaaBE01Z93IxpUEDMcmuf+N5q12GMVn8aBLMtJ
+   vhn4Op2+urZhCo8hfT4mApRCPSkXIad13fjMfwmnswsZbUuRuYRAO0Fpn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="373081511"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="373081511"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 06:17:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="878686416"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 18 Aug 2023 06:17:18 -0700
+Message-ID: <2c029018-a926-6fda-ed71-937ac74d00b0@linux.intel.com>
+Date:   Fri, 18 Aug 2023 16:18:30 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4506725.LvFx2qVVIh@suse>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To:     Hardik Gajjar <hgajjar@de.adit-jv.com>, gregkh@linuxfoundation.org,
+        mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        yangyingliang@huawei.com
+Cc:     jinpu.wang@ionos.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, erosca@de.adit-jv.com
+References: <20230818092353.124658-1-hgajjar@de.adit-jv.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] usb: hcd: xhci: Add set command timer delay API
+In-Reply-To: <20230818092353.124658-1-hgajjar@de.adit-jv.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 07:13:56PM +0200, Fabio M. De Francesco wrote:
-> On venerdì 30 giugno 2023 10:45:17 CEST Christian Brauner wrote:
-> > On Wed, 26 Apr 2023 19:22:20 +0200, Fabio M. De Francesco wrote:
-> > > kmap() and kmap_atomic() have been deprecated in favor of
-> > > kmap_local_page().
-> > > 
-> > > Therefore, replace kmap() and kmap_atomic() with kmap_local_page().
-> > > 
-> > > Tested in a QEMU/KVM x86_32 VM, 6GB RAM, booting a kernel with
-> > > HIGHMEM64GB enabled.
-> > > 
-> > > [...]
-> > 
-> > Picking this up. Please tell me if this should be routed somewhere else.
-> > vfs.misc will be rebased once v6.5-rc1 is released.
+On 18.8.2023 12.23, Hardik Gajjar wrote:
+> xHCI driver starts the response timer after sending each
+> command to the device. The default value of this timer is
+> 5 seconds (XHCI_CMD_DEFAULT_TIMEOUT = HZ*5). This seems
+> too high in time crtical use case.
 > 
-> Christian,
+> This patch provides an API to change the default value of
+> the timer from the vendor USB driver.
 > 
-> v6.5-rc1 has been released since a while, but I can't yet see this series. Are 
-> there problems with these patches that stop their merge?
+> The default value will be XHCI_CMD_DEFAULT_TIMEOUT (5 sec)
+> 
+> Use case:
+> According to the Smartphone integration certification
+> requirement in the automotive, the phone connected via USB
+> should complete enumeration and user space handshake
+> within 3 sec.
 
-Nothing stops them. I just planned to send all of this for v6.6. as I
-didn't see a need to sent it earlier.
+The above incorrectly makes it sound as if the command timeout
+timer causes the delay.
 
-This message made neomutt crash like crazy btw. So I had to get create
-to be able to reply to so hopefully that message gets through...
+> 
+> Reducing the response waiting time by setting the smaller
+> command timer delay helps to speed up overall re-enumeration
+> process of the USB device in case of device is not responding
+> properly in first enumeration iteration.
+
+So is this a case where addressing a usb device behind xHC always
+fail on the first attempt, i.e. address device command in xhci
+never completes. Solution proposed here is to fail faster and
+retry?
+
+Is the rootcause known why first enumeration fails?
+
+Does setting old_scheme_first module parameter help?
+
+> 
+> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> ---
+>   drivers/usb/core/hcd.c       | 23 +++++++++++++++++++++++
+>   drivers/usb/host/xhci-ring.c | 10 +++++-----
+>   drivers/usb/host/xhci.c      | 15 +++++++++++++++
+>   drivers/usb/host/xhci.h      |  1 +
+>   include/linux/usb/hcd.h      |  2 ++
+>   5 files changed, 46 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+> index 8300baedafd2..e392e90e918c 100644
+> --- a/drivers/usb/core/hcd.c
+> +++ b/drivers/usb/core/hcd.c
+> @@ -3157,6 +3157,29 @@ int usb_hcd_setup_local_mem(struct usb_hcd *hcd, phys_addr_t phys_addr,
+>   }
+>   EXPORT_SYMBOL_GPL(usb_hcd_setup_local_mem);
+>   
+> +/**
+> + * usb_hcd_set_cmd_timer_delay Set the delay of the command timer.
+> + * @hcd - pointer to the HCD representing the controller
+> + * @delay - Delay value to be used in command timer.
+> + *
+> + * wrapper function to call the set_cmd_timer_delay API of the host
+> + * diver.
+> + *
+> + * return 0 on success; otherwise -ENODEV means the feature not
+> + * supported by host driver.
+> + */
+> +
+> +int usb_hcd_set_cmd_timer_delay(struct usb_hcd *hcd, int delay)
+> +{
+> +	int ret = -ENODEV;
+> +
+> +	if (hcd->driver->set_cmd_timer_delay)
+> +		ret = hcd->driver->set_cmd_timer_delay(hcd, delay);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(usb_hcd_set_cmd_timer_delay);
+> +
+
+The xhci command timeout is more of a xhci internal thing, not sure it's a good
+idea to add this to hcd.
+
+Would it make sense to add a timeout parameter to hcd->driver->address_device(hcd, udev)
+instead?
+
+First priority should of course be finding out why the first enumeration fails,
+and solve that.
+
+Thanks
+Mathias
