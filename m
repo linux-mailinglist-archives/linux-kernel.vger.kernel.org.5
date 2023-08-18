@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6F0780B50
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E08A8780B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376513AbjHRLnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        id S1376624AbjHRLoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376462AbjHRLmq (ORCPT
+        with ESMTP id S1376787AbjHRLoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:42:46 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6DB10DF;
-        Fri, 18 Aug 2023 04:42:45 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-4103393a459so5651711cf.0;
-        Fri, 18 Aug 2023 04:42:45 -0700 (PDT)
+        Fri, 18 Aug 2023 07:44:08 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9735D4222
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:44:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so58665e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:44:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692358964; x=1692963764;
+        d=google.com; s=20221208; t=1692359039; x=1692963839;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/gUGa5pjlqkk1OcHTAGK9JwqvaQXnW1KsBKKB1vNUc4=;
-        b=OQzyOVtPUuIHuLUWDWM//tAq2FIK5olQBgFlN3vLo5agf7nKCCnwEP6/rHlulXYCHO
-         VxarFLi3dmi9woN8jgdpqomjEh9GOq4BYfTMhcI958/BTzsDLTSgg1klbSNPEx3VlLto
-         0biOSMV8TNbVxLfdPFy/oqWC4rjfqzNAdgrhKXfur/M11PjbOY+23TVhUwUeCXr1mng1
-         1pK88JsOz/eTSJVnJKkzE4HEslf2fa5HVmlq2RbfOZEs9i+CVpyWG+AUf5Nn4hyEd4ad
-         ByS5aKuJuFSNX0y3iAoVTYWjkPsq7PdkPxBbLt6PvRcwg+9LhRxfkEAbkYd6ByD65MWi
-         LZxA==
+        bh=DIXjbiz6TK1LqDn6EHee8zioCV1ywwUJqzx0qrSWlC4=;
+        b=iAgEvAVFBHQmlvfmKejtJd+tUsRv5Q9HsK1z1MMUT8NTKv+Xizhh2LRqQKLgcS6CvP
+         q9n4l3qH+G3TBjQOyWSlbL2WqhenVfqETZVvzYzlL13E4O6ell/BiLzm3EOI8GxeO9st
+         GIcpSvzBKsbnIVQytGOawEW0dmtHcqFqSuaNsa0HMVnp0lDpXkrUy+NVZlSnQ5UR4JrH
+         j3CxKUeH/3ofKgSNls3PkLkvz7tSMFSVhQaXONFdEcLtycUAlp2uVlZMaTDbOE4vd3GZ
+         ZQVGT81i1x4w/vaLKZ00Lyj94a8s1zJN2Kr4zA10d1iLrZNWKpj0mqpTJL1+Bzn9A7qJ
+         /p8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692358964; x=1692963764;
+        d=1e100.net; s=20221208; t=1692359039; x=1692963839;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/gUGa5pjlqkk1OcHTAGK9JwqvaQXnW1KsBKKB1vNUc4=;
-        b=P8kvYb0d7ASKXELO9CVypsPcgLMKeXRbvsxYUC2nXn/PgcNKPHLhLxJJxAPS37mJmI
-         1mkTyYvL0Tfx45vTp2TcjWBH6/pheI185AL9C6OpsBPQeRxID+VnSNr9VZjsdCPJ1+B2
-         +4p3QP7JDszrM9IndvKpE7FX7u6LJA7CyKy03Ulp4iOWOXb8hUMt1piiyaNr3BeGcrdr
-         Q0jMfhDku0/QQ02BKCpXeXlo8hgmZfsF5pAo1sUyFceP0PC5q4cBulpFEMgWT7xdWfeg
-         wkikzqeGbUqZrcwxl4PZRiTPSd+wI3AVKsSwvlOuwo1wuriG+mqpL8RpI5UQQTF6666/
-         9ehg==
-X-Gm-Message-State: AOJu0YzlJfNC/kKoJx8vhYe0rNY3qcl6BYjwzUxX894gHCS5k7h/sOD9
-        qN7Oc2LAS1ZuE6TZdwv7t7AHow7US8outdXRIV22MtKv
-X-Google-Smtp-Source: AGHT+IFvg/PyS67P4uuGHe1pT8wHZnx17qw5h8CUsLymGEzFOoemE3zX716JAiDAc8Ql1jjXCY1HMVY1B239nY2mroM=
-X-Received: by 2002:a05:622a:341:b0:40f:d27a:4367 with SMTP id
- r1-20020a05622a034100b0040fd27a4367mr2813003qtw.58.1692358964398; Fri, 18 Aug
- 2023 04:42:44 -0700 (PDT)
+        bh=DIXjbiz6TK1LqDn6EHee8zioCV1ywwUJqzx0qrSWlC4=;
+        b=VoBERWwrqr1feiyxOhTR5ri5eJar/Q0t1JHEJ2FhMdF05v3cMR13ftQnXn+Y57AG0Z
+         Z/WQxX4VAl1ui3Zuy4wdlGUevhhDBlkPbE4cWWJUVMeq6ZimYwcwI9PP46oTAu/f9qX3
+         7C95pOK4+HI//b9CkUV7W5+kGHQ7Vdzh9iMceO8xZOzNMHclkJeycATYWE9KAjkE07Oj
+         3VD9AXD6wvLfmuuxUge+na7NvbmQ2/sOEQnA3e2PEjJ55AF4sZfSwkwkggzo68zNni7y
+         W8J43UENv2kmK5pv/VYt20VihQP+HBClnSMyhS3zttRkfd9lYrRTYlE5e2+WA8mDKUqW
+         tjaQ==
+X-Gm-Message-State: AOJu0YxyVNSwZziJPXY1Lt+f4UqkoLqgERqk4/gKlRdjaxDlov/ph22Y
+        eziQrnvIsLpDMhMHsLT2KJJdBag+QZTRMTRU+0tHGg==
+X-Google-Smtp-Source: AGHT+IGvpCUj333BWxhvbZecJ7Q1XwDtFX6G7nOkCGTQf/F8EMz3zoGP8dovzTUAoHcPtkSAUWXb/iozmJw80waQMYM=
+X-Received: by 2002:a05:600c:3b0c:b0:3fd:e47:39c7 with SMTP id
+ m12-20020a05600c3b0c00b003fd0e4739c7mr89946wms.4.1692359038988; Fri, 18 Aug
+ 2023 04:43:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230811081239.246365-1-nashuiliang@gmail.com>
- <20230811154523.61e67cc3@gandalf.local.home> <20230812142019.06cb38b56287b0f068e8164f@kernel.org>
- <20230816160850.48fa95b6@gandalf.local.home> <20230818200258.7f318bab352508c54ed53e83@kernel.org>
-In-Reply-To: <20230818200258.7f318bab352508c54ed53e83@kernel.org>
-From:   chuang <nashuiliang@gmail.com>
-Date:   Fri, 18 Aug 2023 19:42:33 +0800
-Message-ID: <CACueBy7U9+b46YJ6Lbd-c=Nm9KhQyMoXbVOMT4esLYqq7nMt5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] tracing/eprobe: Iterate trace_eprobe directly
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
+References: <000000000000530e0d060312199e@google.com> <20230817142103.GA2247938@mit.edu>
+ <CANp29Y7jbcOw_rS5vbfWNo7Y+ySYhYS-AWC356QN=JRVOm9B8w@mail.gmail.com> <20230817144505.GB2247938@mit.edu>
+In-Reply-To: <20230817144505.GB2247938@mit.edu>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 18 Aug 2023 13:43:45 +0200
+Message-ID: <CANp29Y4HGnp6LJ7jw2hrXNFd7S4+MKfjdpjOGZALUuGK1L3wPA@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,39 +75,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK, I will submit a new patch using "for_each_trace_eprobe_tp".
+I've taken a closer look at the issue.
 
-On Fri, Aug 18, 2023 at 7:03=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+Documentation/filesystems/ext4.txt says that the "errors=3D" mount
+parameter "override the errors behavior specified in the superblock".
+So syzbot can prevent it by passing "errors=3Dcontinue" as a mount
+argument and there's no need to filter out such reports.
+
+Syzkaller actually already does that in the C reproducer. It just
+seems that this time the tool has mutated the mount options so much
+that the simple patching no longer worked (most likely because of \0
+characters in between). I'll update the syz_mount_image() code.
+
+
+On Thu, Aug 17, 2023 at 4:45=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
+:
 >
-> On Wed, 16 Aug 2023 16:08:50 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > On Sat, 12 Aug 2023 14:20:19 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> On Thu, Aug 17, 2023 at 04:28:33PM +0200, Aleksandr Nogikh wrote:
+> > The console log has the following line:
 > >
-> > > > At a minimum, let's call it:
-> > > >
-> > > >   for_each_trace_point_eprobe()
-> > >
-> > > OK, what about "for_each_trace_eprobe_on()"? I would like to clarify
-> > >
-> > > - what type is returned
-> > > - not all trace_eprobes, but only on the trace_probe.
-> > >
-> > > Thank you,
+> > [   60.708717][ T5061] Kernel panic - not syncing: EXT4-fs (device
+> > loop0): panic forced after error
 > >
-> >  for_each_trace_eprobe_tp() or for_each_trace_tp_eprobe() ?
+> > Can we consider a "panic forced after error" line to be a reliable
+> > indicator that syzbot must ignore the report?
 >
-> for_each_trace_eprobe_tp() is OK for me.
+> Yes.  And the file system image that generated this bug should be
+> discarded, because otherwise successive mutations will generate a
+> large number of crashes that syzbot will then need to ignore, thus
+> consuming syzbot resources.
 >
-> Thanks!
+> Alternatively, you can do the moral equivalent of "tune2fs -e continue
+> foo.img" on any mutated file system seed, which will clear the "panic
+> on error".
 >
-> >
-> > As it only works for a trace_probe.
-> >
-> > -- Steve
+> (The other alternative is "tune2fs -e remount-ro", but given syzbot's
+> desire to find kernel crashes, "tune2fs -e continue" is more likely
+> find ways in which the kernel will find itself into trouble.  Some
+> sysadmins will want to chose "remount-ro", however, since that is more
+> likely to limit file system damage once the file system is discovered
+> to be corrupted.)
 >
+>                                         - Ted
 >
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
