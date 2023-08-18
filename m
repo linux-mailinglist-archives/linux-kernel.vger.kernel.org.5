@@ -2,133 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF09780352
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F039780342
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 03:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357067AbjHRB1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 21:27:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S1357031AbjHRBZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 21:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357080AbjHRB0n (ORCPT
+        with ESMTP id S1357029AbjHRBYl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 21:26:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05C63AB4;
-        Thu, 17 Aug 2023 18:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692321968; x=1723857968;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+8E+SlOMdmHXrq7jkOnhzVbu0oqWUbim62T8xG6hOzs=;
-  b=m41MUfqPcCGh3F53iMvR4za4oyuP8QqvADwOQYfAy/Hbq0hh/ONRv8sE
-   wyRwlOU5GIbBOU/W70Et1ulm/lHHXVa7N1sh2M70p5aEgyjC3m7hXR1NB
-   iI1t05kk4rf/dz31YfMmM+OjqYUAc5WgMrwbHqCoLaaHU1PI9Y0fcBjkT
-   DFebo0dqKpz8jmEATGCn+IsgwT9hyC2BhGyHi75TUy+tZ7yH+Fm1YCz4k
-   c7sG+T5RrJpYXJPPkzMnqB7rUh+d3EThNh/Tvxf/wC1Cy8l5I4c1RQ3oK
-   Y5bWHmeysHguY1kZArGWcW494Il+j7XYKWJ9G5KW5cBLJGdS/+9lWyq0a
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="459337068"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="459337068"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 18:25:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="769918940"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="769918940"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 17 Aug 2023 18:25:03 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWoEY-0001ah-0S;
-        Fri, 18 Aug 2023 01:25:02 +0000
-Date:   Fri, 18 Aug 2023 09:24:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>, jdelvare@suse.com,
-        linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        corbet@lwn.net, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
-        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH v7 2/2] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED
- g6 PWM/Fan tach
-Message-ID: <202308180900.0ecFnDBI-lkp@intel.com>
-References: <20230817120029.221484-3-billy_tsai@aspeedtech.com>
+        Thu, 17 Aug 2023 21:24:41 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18CAD3C26
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 18:24:17 -0700 (PDT)
+Received: from eig-obgw-6008a.ext.cloudfilter.net ([10.0.30.227])
+        by cmsmtp with ESMTP
+        id WmuKqfi4XEoVsWoD3qGQ39; Fri, 18 Aug 2023 01:23:29 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id WoD3qrnLON1yQWoD3qns22; Fri, 18 Aug 2023 01:23:29 +0000
+X-Authority-Analysis: v=2.4 cv=fpHP2X0f c=1 sm=1 tr=0 ts=64dec811
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=VwQbUJbxAAAA:8 a=cm27Pg_UAAAA:8 a=qjWHau5h7Oqj65Zv8QkA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4O/pnsMN2mbUZXxNy5kzNXFmPO21hV2JJ/xiQe1qSMo=; b=KMrBMGMXN+OPsPe1WYDiAsg4Xz
+        fV0vGm09SDOP8V0o8AD/WiWjeZ/ttYw5oZvtIfro0fjdAoYqSt106U1OpqEYNdrMLk5HVpBqQnGj2
+        cjH8H8ft36qOdQ7+UmgvX+ENKt3RKIioeb//n15aDS3YsiAJz8uapZk1MHSacBm1fjkp8vJsqvpq3
+        kvKmjG6ryksjNTn6SCDesKpS2dj7hqYPy9VzkMdfDINL0Ky+8d1Xm4treWBRAMr8Ybv7MtUQb1mrr
+        CjmD0WecnaY6N0lIo6CRY/NzYGIy9ulPKd3uMI9wOQ5kf6r45IrtuIMz+6dtnhBIUXiHeMrb6y/EC
+        q5SlftHg==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:48268 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qWoCx-000VYw-1s;
+        Thu, 17 Aug 2023 20:23:23 -0500
+Message-ID: <cb31dd54-89fc-9eaa-4dc5-3ba51f92842c@embeddedor.com>
+Date:   Thu, 17 Aug 2023 19:24:22 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817120029.221484-3-billy_tsai@aspeedtech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 08/21] dmaengine: sa11x0: Annotate struct sa11x0_dma_desc
+ with __counted_by
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     dmaengine@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Green Wan <green.wan@sifive.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230817235428.never.111-kees@kernel.org>
+ <20230817235859.49846-8-keescook@chromium.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230817235859.49846-8-keescook@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qWoCx-000VYw-1s
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:48268
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 218
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLl+KscUDOHUF8lHURt2JixzHWZK4xaqWe8efm5PCJVP2UqmNwz6IXf5CJMmV3HnCwuaJmabaKFwX5K8klYfUX41dQZ6Oo7i95MYJ4JjZ2BnFRLEWylR
+ hxrU6iNacV5yfJ2zzyfeWeNwIf3ZM6DQ/DZyWzr/I7OvpNGUflhYjSYN+pskPpDyK6mirzLeWUbLqyEgmrIHLNnaBgOQ/TpXKD1VOVVaLTIqYgtzMU8E+0Do
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Billy,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on groeck-staging/hwmon-next]
-[also build test WARNING on linus/master v6.5-rc6 next-20230817]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Billy-Tsai/dt-bindings-hwmon-Support-Aspeed-g6-PWM-TACH-Control/20230817-200427
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20230817120029.221484-3-billy_tsai%40aspeedtech.com
-patch subject: [PATCH v7 2/2] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED g6 PWM/Fan tach
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308180900.0ecFnDBI-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180900.0ecFnDBI-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180900.0ecFnDBI-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/hwmon/aspeed-g6-pwm-tach.c: In function 'aspeed_tach_create_fan':
->> drivers/hwmon/aspeed-g6-pwm-tach.c:431:13: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
-     431 |         int ret, count;
-         |             ^~~
 
 
-vim +/ret +431 drivers/hwmon/aspeed-g6-pwm-tach.c
+On 8/17/23 17:58, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct sa11x0_dma_desc.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> 
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: dmaengine@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-   426	
-   427	static int aspeed_tach_create_fan(struct device *dev,
-   428					  struct aspeed_pwm_tach_data *priv)
-   429	{
-   430		u8 *tach_ch;
- > 431		int ret, count;
-   432	
-   433		count = of_property_count_u8_elems(dev->of_node, "aspeed,fan-tach-ch");
-   434		if (count < 1)
-   435			return -EINVAL;
-   436		tach_ch = devm_kcalloc(dev, count, sizeof(*tach_ch), GFP_KERNEL);
-   437		if (!tach_ch)
-   438			return -ENOMEM;
-   439		ret = of_property_read_u8_array(dev->of_node, "aspeed,fan-tach-ch",
-   440						tach_ch, count);
-   441	
-   442		aspeed_present_fan_tach(priv, tach_ch, count);
-   443	
-   444		return 0;
-   445	}
-   446	
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks
+--
+Gustavo
+
+> ---
+>   drivers/dma/sa11x0-dma.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/dma/sa11x0-dma.c b/drivers/dma/sa11x0-dma.c
+> index a29c13cae716..e5849622f198 100644
+> --- a/drivers/dma/sa11x0-dma.c
+> +++ b/drivers/dma/sa11x0-dma.c
+> @@ -78,7 +78,7 @@ struct sa11x0_dma_desc {
+>   	bool			cyclic;
+>   
+>   	unsigned		sglen;
+> -	struct sa11x0_dma_sg	sg[];
+> +	struct sa11x0_dma_sg	sg[] __counted_by(sglen);
+>   };
+>   
+>   struct sa11x0_dma_phy;
+> @@ -558,6 +558,7 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
+>   		dev_dbg(chan->device->dev, "vchan %p: kzalloc failed\n", &c->vc);
+>   		return NULL;
+>   	}
+> +	txd->sglen = j;
+>   
+>   	j = 0;
+>   	for_each_sg(sg, sgent, sglen, i) {
+> @@ -593,7 +594,6 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_slave_sg(
+>   
+>   	txd->ddar = c->ddar;
+>   	txd->size = size;
+> -	txd->sglen = j;
+>   
+>   	dev_dbg(chan->device->dev, "vchan %p: txd %p: size %zu nr %u\n",
+>   		&c->vc, &txd->vd, txd->size, txd->sglen);
+> @@ -628,6 +628,7 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_dma_cyclic(
+>   		dev_dbg(chan->device->dev, "vchan %p: kzalloc failed\n", &c->vc);
+>   		return NULL;
+>   	}
+> +	txd->sglen = sglen;
+>   
+>   	for (i = k = 0; i < size / period; i++) {
+>   		size_t tlen, len = period;
+> @@ -653,7 +654,6 @@ static struct dma_async_tx_descriptor *sa11x0_dma_prep_dma_cyclic(
+>   
+>   	txd->ddar = c->ddar;
+>   	txd->size = size;
+> -	txd->sglen = sglen;
+>   	txd->cyclic = 1;
+>   	txd->period = sgperiod;
+>   
