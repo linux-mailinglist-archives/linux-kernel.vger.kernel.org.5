@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E651780293
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5D0780297
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356622AbjHRALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:11:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
+        id S1356633AbjHRAM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356773AbjHRALT (ORCPT
+        with ESMTP id S1356707AbjHRAMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:11:19 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C2E3A87
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:56 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589b0bbc290so4487687b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:10:56 -0700 (PDT)
+        Thu, 17 Aug 2023 20:12:45 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DB53C20
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:12 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-565aee6e925so549334a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692317447; x=1692922247;
+        d=google.com; s=20221208; t=1692317513; x=1692922313;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oyapjbDI9Y2xcGuEE3bsShb0ut9gM8qaZ4OyzlK0nfQ=;
-        b=pm57qfR503UwOTOW86AsUmhpMR0vUk/Az1lcs8zsVy8J7AbcVyl51tv8B1lnsWvHy2
-         8BZ7EMkmyazfgC4oPSMhtyl5wghvAOJz60qF8SOWgm++2JZzwTq0zrLx0uvhpQsFax3B
-         vGIKn+sKZec0XOddIuiSzHe1R9IkQMXXGICAlBultYxZMk72x0ftjfoQFv4w+m6f7/kM
-         FLCP2Zy14hBQ2QLzjq34/magRoBdV7haHWZuJigJxhoxSacSO5LrxPo4ghHw1V+VXlq5
-         UiHxc0VnPbDpDcqSn7Fp51XQTEcdiO5N3nZPXxKIkY42txYNhg97eUnE+EbS72cZFwVA
-         xj2A==
+        bh=XPl4LNQHUuYPBKoWp14fjFNSu32aPPLiDSlmcfPKJ8A=;
+        b=JznTqMtEzmQUpvzxAeOJ+URNBx980kBQ4vc0LdnKrjEc19VWnJiCU38eui4i6TArjS
+         7ZhgZVYQjvIo52Mz7VK6tOFo5eqohOkOnmGFLoCz750X0rviRMFw3NzdLqGW8e2XYT+9
+         pxoMk7qxmoPHcu9LHZC+7h2nB3BKFGwRcH1NmPLy9NTLqrD8Lw3sGMzP6JCXZrgKC47o
+         wyNPfyls2X3+R2pu7QtVAP4eacvazkrk86BCCA9yzNgx7sA8Yapqf2gcn96vNbyNJYdh
+         BEL3EbSmJfgchwlGeEUasfi7a9N3OhgtCZrfH0vS7cO8d0FrOK9jRFG07KWdbB3m062A
+         2JZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317447; x=1692922247;
+        d=1e100.net; s=20221208; t=1692317513; x=1692922313;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oyapjbDI9Y2xcGuEE3bsShb0ut9gM8qaZ4OyzlK0nfQ=;
-        b=acFo7DPWO8VxR487rXLui6Z28vw6HeDkcWBVb7WXKLiUMeHcpn8bJe7LIuGckHL2HA
-         FGU/uHewtNvJrkqFH3nAp2hrTCj0+5kn61hUpBhMMaURtnL/6VePd7SOLNPK4QP7wB1t
-         HYGcx3706dofYt5DXwaBFFmDNNd3W1oP5rMSlIwxQkfi7cPV9lncR5vZpV7qa9h+mNei
-         GWZk4ka7vsawdd0aJIUNWcFK8bhRzx60MLx9rU5psOyxUPdRpZODnj2gohUvmXQIJ1oU
-         2rxwDb7fDDJfLi/aQKBsifKfOV5MyLyo1pzlBR7yzUyalb4LER+7B/sHCv7lxD94h1hC
-         SsjA==
-X-Gm-Message-State: AOJu0YzGKW2R+Rq9VQSm/ebvFzzBHSCE7qrANao7KsWJfZf72OM2sKwM
-        qpr6KKPL5gRbAIqxS1VLpeAbU2bKCWo=
-X-Google-Smtp-Source: AGHT+IF2K0HByTDqyxoAtNi3GKaEK1a+torqvRYfb2RcCLxRqUDddKGNT4/z5MKmnYArvwNj1pqm0rfzxwo=
+        bh=XPl4LNQHUuYPBKoWp14fjFNSu32aPPLiDSlmcfPKJ8A=;
+        b=MQvFkLhWURIp1FvOTjeutL8zR3jgLaqQjBdrJNdkISnuBejSWfLynN2RSqj7BW1LEs
+         B4JFXqGLzxGHOgXeSWVEOau0Vzm2R6Du8JzF5TWMvvTDnCEH+To2gbHYJlKI2jWtlwB/
+         n94x4z8ugs1qYLThziF45KSM0e0QzLZ3W7kLWoFhckhkBo40GQFMRDCiprKVZq+9tlyo
+         NRUzUybUr3HfOoxFIhqY4/7oj9ZwGGe9DrpOrzM4NTROe3AsPxn9+pEWjDaPMIFXv4FA
+         uC+joo/Cf4FxaqVoYkoRDhc3adUpJ6MOGfkPqxvYRrFT9KNrMErsyvK5QFcqvo7Q213M
+         hAbw==
+X-Gm-Message-State: AOJu0YxQK/QdWKEaxcmx8AUzB7MOgQvhZQhvB36SPVlKYoayHcoe0AOo
+        opAJGJMk/zC6sVBrrJzZ23eB94DBemQ=
+X-Google-Smtp-Source: AGHT+IEUbEaPpMUd9ploMFkNUzOB2RfG+JVpgWbB4ru411GZmnjNq0FGbZ+un+mRaarwm34FYjVP3o8fKJ4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:168a:b0:c4e:1c21:e642 with SMTP id
- bx10-20020a056902168a00b00c4e1c21e642mr17453ybb.3.1692317447814; Thu, 17 Aug
- 2023 17:10:47 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:09:24 -0700
-In-Reply-To: <20230815203653.519297-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a63:340d:0:b0:564:aeb6:c383 with SMTP id
+ b13-20020a63340d000000b00564aeb6c383mr149033pga.1.1692317513383; Thu, 17 Aug
+ 2023 17:11:53 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 17:09:27 -0700
+In-Reply-To: <20230817002631.2885-1-zeming@nfschina.com>
 Mime-Version: 1.0
-References: <20230815203653.519297-1-seanjc@google.com>
+References: <20230817002631.2885-1-zeming@nfschina.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <169229954681.1259376.195379194594068800.b4-ty@google.com>
-Subject: Re: [PATCH v3 00/15] KVM: x86: Add "governed" X86_FEATURE framework
+Message-ID: <169229733356.1239924.3834338159427286812.b4-ty@google.com>
+Subject: Re: [PATCH] x86: kvm: x86: Remove unnecessary initial values of variables
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zeng Guang <guang.zeng@intel.com>,
-        Yuan Yao <yuan.yao@intel.com>
+To:     Sean Christopherson <seanjc@google.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, Li zeming <zeming@nfschina.com>
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -71,50 +69,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 13:36:38 -0700, Sean Christopherson wrote:
-> Third and hopefully final version of the framework to manage and cache
-> KVM-governed features, i.e. CPUID based features that require explicit
-> KVM enabling and/or need to be queried semi-frequently by KVM.
+On Thu, 17 Aug 2023 08:26:31 +0800, Li zeming wrote:
+> bitmap and khz is assigned first, so it does not need to initialize the
+> assignment.
 > 
-> This version is just the governed features patches, as I kept the TSC
-> scaling patches in kvm-x86/misc but blasted away the goverend features
-> with a forced push.
 > 
-> [...]
 
-Applied to kvm-x86 misc, with a blurb added to the nVMX changelog to explain
-how "nested" is factored in.
+Applied to kvm-x86 misc, thanks!
 
-[01/15] KVM: x86: Add a framework for enabling KVM-governed x86 features
-        https://github.com/kvm-x86/linux/commit/42764413d195
-[02/15] KVM: x86/mmu: Use KVM-governed feature framework to track "GBPAGES enabled"
-        https://github.com/kvm-x86/linux/commit/ccf31d6e6cc5
-[03/15] KVM: VMX: Recompute "XSAVES enabled" only after CPUID update
-        https://github.com/kvm-x86/linux/commit/1143c0b85c07
-[04/15] KVM: VMX: Check KVM CPU caps, not just VMX MSR support, for XSAVE enabling
-        https://github.com/kvm-x86/linux/commit/0497d2ac9b26
-[05/15] KVM: VMX: Rename XSAVES control to follow KVM's preferred "ENABLE_XYZ"
-        https://github.com/kvm-x86/linux/commit/662f6815786e
-[06/15] KVM: x86: Use KVM-governed feature framework to track "XSAVES enabled"
-        https://github.com/kvm-x86/linux/commit/fe60e8f65f79
-[07/15] KVM: nVMX: Use KVM-governed feature framework to track "nested VMX enabled"
-        https://github.com/kvm-x86/linux/commit/1c18efdaa314
-[08/15] KVM: nSVM: Use KVM-governed feature framework to track "NRIPS enabled"
-        https://github.com/kvm-x86/linux/commit/7a6a6a3bf5d8
-[09/15] KVM: nSVM: Use KVM-governed feature framework to track "TSC scaling enabled"
-        https://github.com/kvm-x86/linux/commit/4365a45571c7
-[10/15] KVM: nSVM: Use KVM-governed feature framework to track "vVM{SAVE,LOAD} enabled"
-        https://github.com/kvm-x86/linux/commit/4d2a1560ffc2
-[11/15] KVM: nSVM: Use KVM-governed feature framework to track "LBRv enabled"
-        https://github.com/kvm-x86/linux/commit/e183d17ac362
-[12/15] KVM: nSVM: Use KVM-governed feature framework to track "Pause Filter enabled"
-        https://github.com/kvm-x86/linux/commit/59d67fc1f0db
-[13/15] KVM: nSVM: Use KVM-governed feature framework to track "vGIF enabled"
-        https://github.com/kvm-x86/linux/commit/b89456aee78d
-[14/15] KVM: nSVM: Use KVM-governed feature framework to track "vNMI enabled"
-        https://github.com/kvm-x86/linux/commit/ee785c870d6f
-[15/15] KVM: x86: Disallow guest CPUID lookups when IRQs are disabled
-        https://github.com/kvm-x86/linux/commit/9717efbe5ba3
+[1/1] x86: kvm: x86: Remove unnecessary initial values of variables
+      https://github.com/kvm-x86/linux/commit/392a53246257
 
 --
 https://github.com/kvm-x86/linux/tree/next
