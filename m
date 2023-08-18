@@ -2,297 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E32780CF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD128780CF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377384AbjHRNto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
+        id S1348722AbjHRNuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377478AbjHRNtY (ORCPT
+        with ESMTP id S1377465AbjHRNuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:49:24 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB124682
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:49:08 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-643909db8f4so9623496d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:49:08 -0700 (PDT)
+        Fri, 18 Aug 2023 09:50:00 -0400
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C76114
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:49:58 -0700 (PDT)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37ICSgKI032498;
+        Fri, 18 Aug 2023 14:49:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-id:content-transfer-encoding:mime-version;
+         s=dk201812; bh=r7TCyw6T5Jq5GdyIvBgfi9/CTlndh1dO17UljCK/EOA=; b=
+        mcK9yCEW6Ghh2hIB7fS82l74a+N2+ZE6qgpb4HD/bBuMdgHxTvrpSgxLqzK9lLDm
+        By+gYfXPY33oUUBGi4Aqy6pCcxumrijAVbZqyLYih1IOusVPpJPgo89tCMHxIUeW
+        HJlB4pLA1d65O+mtOiGE5KnVLpYKmmVFrhIpYj+GPZyfYjqYrrvINkdgaqrsNrud
+        t+FR9ySpFd4OoF1ekzzAgn/xD0N3SFJarIq7LzlUcJKcevreA2vRu/OyA0c2Tkn0
+        VdaKYnL3wthGHIwgN1wvsEgJXZOv8cw8i+O4cFeYRnokoVIoNU2onRPgjiJ+ql3g
+        Kg5pWi77kWKx5OrbTCZxKA==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3se0brcpvy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 18 Aug 2023 14:49:30 +0100 (BST)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 18 Aug 2023 14:49:30 +0100
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (104.47.21.53) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27 via Frontend
+ Transport; Fri, 18 Aug 2023 14:49:30 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gnchx2GLg9bFNJM9wHbfqZyzx9/mRZMiV52tncuGKmx3REvg3/hf1GhcUrXQQ0iLiMWOsa1oVI+CUM9reKrxDBNRDR4OSoLe5Q/Awjxu/VAtK5/PABVnIkeOIJzPBKRvmXcNpk1t3JnnmM/TJKApGMjlPcOJuqhett3H9E21S62qcdSHUqUEU1rYbAo8H4xGOaxiSTRKs7meGZbk1a/IgzIjDel9d3L5tpEhlqY4pBFZiCwY5Aj/aErUYnoqEOR7ZhoUGaFq60x2coOI/QBWHkeah7YPXxds0/VfcG2Z10lGSDkbSu5t/planirjAFilxljuHm43Bn5OxBqPMi6Jrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r7TCyw6T5Jq5GdyIvBgfi9/CTlndh1dO17UljCK/EOA=;
+ b=IgXsz5a67PyPo3zAxmt8Lfw4MrIjpygCH5i2tJ/464sZufDqxh0VW/3tC78FB02y/KE30GXzQrGabJVQjVsEVXMjCI52TIhWTfp9rpyuLA9AtVpqq08KibFLbZsmCzHBLYYjk7TN2SVr0y9UeYTIvXrDYBabFJZ1NCnnUNsypqqrurcMfpB7XZ202k7kKZZ+Ajg2TBTRhmP6Um2iKzLDoNV3FRGhT0O1Z6O6hdZmMWw128jyLlSbjTgMjKW4FYhZMLJSdMyjQ2wcQ5fRMM0MCZQ0uuV8e8JEuiwj5OTFSGeVj/uZ6W0ZNy/EHLyN5pKuwdUbQooBfUrHKY0U1GndzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1692366547; x=1692971347;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=SknGd1OGAImO0gpD7vAgIL5kV6VxTVw1G0lBI9eZFTI=;
-        b=rGCgpiLWWyHLpNU/f74FjInWfpLrfIOmGhhKPhf/ECN6iOuuc9UmP7vZHpSc9U7l0O
-         HcTwar9abmVF268ZgWvh36PGzr8b1v/YYLek7Bu3pKfVTENUUgR+BvMvPcMwWXnNf2yC
-         U339aTZ4MYbvbLH6KMSHI/QMpBzdJVT9w9fD2hvWlsFWFHnUIdnLNVAHWwN2hwKZsrRY
-         cecpac6jkGwP4jmeDV7OaQsB18Xa3C7vuNoe4nVJ7QlS2upjiOSVI7ucPWdXMgrEFxcE
-         4i957D3Cm9FFCwcL/sS7wO81OlEN01gco1e1a2MSzWFjZWWFS58dIA8Q4Dz2PeTStyO5
-         KgTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692366547; x=1692971347;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SknGd1OGAImO0gpD7vAgIL5kV6VxTVw1G0lBI9eZFTI=;
-        b=U8AlkctZayn/7GbRYTlhMoAbWMR4K9uaQewBu2pP+e/3dNzIaOW+Xa9KGvmYmdmx5/
-         AQs5RqIUyCjr2bFY9W/EH2uOmnaWTymYjTjOQBGmK8uy7RntqNVGPVdxSaaCjDnykk0e
-         p46oxOFjVhtB4QY5sv2jvO9o4cbAsqgroji8IMsmDyfRTj4jIFRyf3jJhKxGbpp5T2Cm
-         z41AfFkQzZJje4Oihb8i7bcmrjmt9Xq6PcciPmj6dE+36LebpfDTOrFpqm6PGKEOrP83
-         KH/T4A1ANYIdqlz+wodoXsAgxEpjjerdeIKkNn05NXXvk8P7D4HZt9OKRZbq2hhf+e4b
-         /KYg==
-X-Gm-Message-State: AOJu0YwY9t18Gmh30Jgo+bQLK7It9fuDohITTJG8LNgsF1l/gADEHlaS
-        I5q5HJilvzb2Fu8DgVuDt9w1Aw==
-X-Google-Smtp-Source: AGHT+IHqZZNdqmvvDJfUJAxKuFM7NyEFK3DwfOKGEkVIur/tVoF8cGu1PkjeI8ml0OTvhHLWs883Pg==
-X-Received: by 2002:ad4:5dc7:0:b0:63c:f325:bb03 with SMTP id m7-20020ad45dc7000000b0063cf325bb03mr6752636qvh.8.1692366547079;
-        Fri, 18 Aug 2023 06:49:07 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:75e0])
-        by smtp.gmail.com with ESMTPSA id i8-20020a0cf388000000b0063d5d173a51sm697181qvk.50.2023.08.18.06.49.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 06:49:06 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 09:49:06 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
-Message-ID: <20230818134906.GA138967@cmpxchg.org>
-References: <20230817164733.2475092-1-nphamcs@gmail.com>
- <20230817190126.3155299-1-nphamcs@gmail.com>
- <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com>
- <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
- <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
- <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r7TCyw6T5Jq5GdyIvBgfi9/CTlndh1dO17UljCK/EOA=;
+ b=lKr2bLbT6aICD29UwB1mQ5DXQVCzK/HY68jZF+8DDEkotfYc3YUlN/ygL7oEGQm03lmowtG7YIOog05Fa6eeKv6cExb6Ou2oRHdP+DO5/29MBnManC63Mnz9zwoeoLTPYeBVMDfMBIadn4wEeNGQFlaiwBFjQp88cdXlAdAa6pk=
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:170::9)
+ by CWLP265MB7129.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:201::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 13:49:28 +0000
+Received: from CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::ee4f:2d71:fe8a:ffdf]) by CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::ee4f:2d71:fe8a:ffdf%7]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 13:49:28 +0000
+From:   Sarah Walker <Sarah.Walker@imgtec.com>
+To:     "faith@gfxstrand.net" <faith@gfxstrand.net>
+CC:     "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "afd@ti.com" <afd@ti.com>, Matt Coster <Matt.Coster@imgtec.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "matthew.brost@intel.com" <matthew.brost@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luben.tuikov@amd.com" <luben.tuikov@amd.com>,
+        "boris.brezillon@collabora.com" <boris.brezillon@collabora.com>,
+        "faith.ekstrand@collabora.com" <faith.ekstrand@collabora.com>,
+        "dakr@redhat.com" <dakr@redhat.com>,
+        "mripard@kernel.org" <mripard@kernel.org>,
+        Donald Robson <Donald.Robson@imgtec.com>,
+        "hns@goldelico.com" <hns@goldelico.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>
+Subject: Re: [EXTERNAL] Re: [PATCH v5 03/17] drm/imagination/uapi: Add PowerVR
+ driver UAPI
+Thread-Topic: [EXTERNAL] Re: [PATCH v5 03/17] drm/imagination/uapi: Add
+ PowerVR driver UAPI
+Thread-Index: AQHZ0BtUOqWSV6MQe0yyvSFcG2kz2a/vOdWAgADbkQA=
+Date:   Fri, 18 Aug 2023 13:49:28 +0000
+Message-ID: <eef53f6b6ac4405cf26320390eef6c62aadacdda.camel@imgtec.com>
+References: <20230816082531.164695-1-sarah.walker@imgtec.com>
+         <20230816082531.164695-4-sarah.walker@imgtec.com>
+         <CAOFGe94OtnfKY+ZWzWOGz8kjKQhihzSOrLKrB_M=JE-i4cEMVg@mail.gmail.com>
+In-Reply-To: <CAOFGe94OtnfKY+ZWzWOGz8kjKQhihzSOrLKrB_M=JE-i4cEMVg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CWLP265MB4817:EE_|CWLP265MB7129:EE_
+x-ms-office365-filtering-correlation-id: 1c517722-c6ed-45af-07e9-08db9ff1f147
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qvO6yprV3jCqVWSpOrbdzG0brVDwdnEUX7J2g1sfE8FYwigiVTKvvGClLOOhjCUfp99xr+Vpm9FzMGCiHTn2RWI/n3S9FNe0jzfRg93JaOZfXWKE6SxMR2xceN5YKPipGRyLNZj9mVg/Q/DLn2+KICFeTIy8FnPkKgConFaU7D5uvad/W9LcX5TA49A0V5x7W3JELgSJEUMQs+CNnQJfn3z746kJoKKIQmxkkj1bYmr4Q3EabJnDODPCcyTXZlJlU7wAzxpGN18FyqRh2GTKQNoWwSX6yvpflMgF6Vm0zZowN/OBTwrc1IKruCj+9xxuRxpMSg1mnLKFoDrIsM5NoW2MvZWob+dIMpNREm+zVeu75H3ntRudtFk1daTAUDIDcGcoOMRitUx5mOVUkgrwbbsvzEJO9uxCwwAd6VHcRSV1xbl76kEyYOQXwK+Pk3wlEOoRlAY5j9OPEkrrFiz/QINOsESANyV9IW/LBHlsp2Cd/94CctefdCpk5oOJIbXDegn5YcKo4HPco4lEeK0ovQmeMm3R5Der0i/7ZPC404p+7ubrMue6WdBILJb/Nv1Kf4C5JN5vBdXnxGgjekytuwSdViJ56QToaFJ9NMy7N/zl6mt5/OcrKAtiAl1qn8GV
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(39850400004)(396003)(136003)(451199024)(1800799009)(186009)(316002)(2616005)(71200400001)(26005)(6486002)(6506007)(53546011)(6512007)(83380400001)(4326008)(5660300002)(8936002)(8676002)(2906002)(7416002)(478600001)(41300700001)(76116006)(6916009)(54906003)(64756008)(66446008)(91956017)(66476007)(66556008)(66946007)(38100700002)(38070700005)(122000001)(36756003)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OVNaVy9RNHFJOUsvZE1zT1VJMFczYUZrdlVFR0xvZFpjak5zdHFXcHRQZG0x?=
+ =?utf-8?B?cEVjMjh3RHF2dzFGUUJhUXVkRGZ1dDcwUk90QmhXaERoL1RIR3IreUt2cFJY?=
+ =?utf-8?B?VXFrSWxpVGV1Y3FZaVVqQUZOSU9oNERTVVUzWWNPekZaU3dBdUpIRWwzKzVQ?=
+ =?utf-8?B?d2w3V1FOZ09OWHRtdFF1SzVOdGl4OWE5RjZicUtac0ZLSFM3RVlqQThxbjRG?=
+ =?utf-8?B?Sk54cHE0WFJNYWM2Y08wa0tPbHloLzNjcWFkR0R4akxCZysvSDNtQ2N6SVM3?=
+ =?utf-8?B?dXBIbWNYWWxkZXphUjd1V3M4bHpEVzVPSzZjbTZsemtMSklOUnY5bkpxSEZJ?=
+ =?utf-8?B?c3RNRzhsajc1RE1KTlArWTE0SkM1SUZPU293d3hCeUE2WWZGU3RNb09peDgx?=
+ =?utf-8?B?VG9wZkExZFdtT3BWRnJHRWJrZEh4N0I1QW1UR1ptRUgwNjVsS3NORzFjWHph?=
+ =?utf-8?B?emc0MS9EZXBYODZFc3k4RDd2dU1MMS9SbGljZTRZRklUVFczVFB5L01hVUxo?=
+ =?utf-8?B?c3M3SWRaL1VmQnJRbVBSZzR4MS93RDZxdXZkdExxTFBPa2k5K0g4d3BUT2xM?=
+ =?utf-8?B?a1VVSWtuREpVV2tYVkhEdlZMb2xVaUhzblFoY0UvZzJuVWplRENDbW85bzV1?=
+ =?utf-8?B?djJVaDkzaVZOL0hiQlBrSitSMWlFeUVKRmtld1l5V1h6T0VyZlp1clFmdk83?=
+ =?utf-8?B?TExST0tGckpWV1Z6NS8xd3dHcWNpRWNTbk5LWUNFOE9lTW5Bd1JiWHA3VGk2?=
+ =?utf-8?B?LzlwQ01LdUVoT1cvcHdCMVZIeTVKendSTVVROXFUK2JXSzhYZmtrRE5NWEt0?=
+ =?utf-8?B?M0Fpd3ZCSGRVSitRYnhYWmZmNTJ6Y1BXQXFZd2dBdWc1ZzQyT1lTanc1K0Fi?=
+ =?utf-8?B?Y0FjY3cvSEhpeGdtZzZ5R0NacnNNTERtU2Z2K0JzejNGREdxTStLc2ZUYUpL?=
+ =?utf-8?B?L2I1WkxVTEJyOFNWWXZNSS9TU25rbHhQeVR4QTd1bWdSWGdPK3FQdk52ZDNW?=
+ =?utf-8?B?MElxMmdZSWluVWRLVitTck9jdUZ3dDFVZW81cndwU0xEaG9LcitGRkdzM0V4?=
+ =?utf-8?B?YXpBZmZxdTdQS1FwcjFqQzduTTVBVzBjbU4xdjkrK2tacGRQbXo2Uzl1UnRm?=
+ =?utf-8?B?Vit1Zy9TOE1zRU9TZHBSbEhPa21qOThURDVtaXlUVk9WQ2VCWUk2dStpZDFz?=
+ =?utf-8?B?VGRCU3VQQ3M0UFlhS0N2bkF0TzlpQm9oRjVMdkp5YmVJTjdlNmVpNFR0YTlB?=
+ =?utf-8?B?ZEtQTzZqVVpsZ1I5NlR6K2NWdWZLUmNFQ3ZyWTEvT0k5L0ZHZjgzaldaQUd5?=
+ =?utf-8?B?S2ZhM2lmL0ZUUXRwVUZuZjlmQXUyN3VsMkEzYm5nUzloTG5MSHBGN01jYU9F?=
+ =?utf-8?B?aktjcUc3RmNnRGlpMHgwRXpXaDMwL3BxL0VLREZVbFdjdE1Ud3gwR1NiY08r?=
+ =?utf-8?B?RlVaZm1BKzJoTVR2YTRpSVZ6VTJJY01NYXVZWlZ0VndzUC9iTTA0dW5nMWgz?=
+ =?utf-8?B?OG9FNnFZY2xmYlB6bDI2anZ5Mmd5ZlYwQVNEVGRmRk5aaDV2a0ZweWZMa2NJ?=
+ =?utf-8?B?REdFM3RxRGo5VEpod1hoSW5rYmU4cUkxdTQzTGRDenhIdXdncjAwQm5vbEFG?=
+ =?utf-8?B?SUxvdlB4QVlDZ3ZRcHhOZElZYkttYzdXZ1RyMEsvT2RTR3g1Mm04UGVqRldz?=
+ =?utf-8?B?dDN5TWJTRXlsLzAxckYvQmlVdEJLeHI2ME11aUZyZjltUDBvWDJKZVF0WnVh?=
+ =?utf-8?B?VWRCaEZlZ2hvbWp2dm1RZzlHZ05sR2NuSDdhcnpiTGJ2Y0JIb2FxQkNvOXFk?=
+ =?utf-8?B?N3M0OHhLNUVneDA2RXJ4RjdtcjIwWS81T1lOZkNLeGxQc3pEYXc2SXJFbmEz?=
+ =?utf-8?B?dDY2bjNZd29HSHNyVG5EWk9GQjJWck5wQnhRYXJIQWVFQWNua016WlJGMEx5?=
+ =?utf-8?B?TU0vSjBZNjFzZGZSN3RvRFZ6MWx2bXIySUdPMW84QmlpZUdTNm1FaWJzNEJT?=
+ =?utf-8?B?NWhSUFdmY0tKcWNWVU9EcXdUOFBkWnhOQnZFQ1hTaE80S2U0MlFuYVNNR3NO?=
+ =?utf-8?B?VVRwOXVPcHlMUkdtVFNIOCtESk90UHltZUdHeFdlZGVJUjRsUS8xNlEvQTVV?=
+ =?utf-8?B?bjNIdi9GazFmaXJLVW4xNEYxMlcwendwUmg2NSs5OUt0NHFNU2REeVZqMUlx?=
+ =?utf-8?B?SVE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <23A2D8228E0D064DA7DF31C0F1DEFF82@GBRP265.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB4817.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c517722-c6ed-45af-07e9-08db9ff1f147
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 13:49:28.6685
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NK5N91iasEWEooG6J4F1T8dOVDEEzLakoDAmsiQ2wPNmmO/VcGMmpT+QYa+pPb7MNt+JSXkmcVT1LrP4kppYsQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB7129
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: cTWIMwV-Q1Zob-i_pdtTSp5OYlT3spiI
+X-Proofpoint-GUID: cTWIMwV-Q1Zob-i_pdtTSp5OYlT3spiI
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 05:12:17PM -0600, Yu Zhao wrote:
-> On Thu, Aug 17, 2023 at 4:50 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 3:43 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> > >
-> > > On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> > > >
-> > > > On Thu, Aug 17, 2023 at 12:01 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> > > > >
-> > > > > In eviction recency check, we are currently not holding a local
-> > > > > reference to the memcg that the refaulted folio belonged to when it was
-> > > > > evicted. This could cause serious memcg lifetime issues, for e.g in the
-> > > > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(). This
-> > > > > has occurred in production:
-> > > > >
-> > > > > [ 155757.793456] BUG: kernel NULL pointer dereference, address: 00000000000000c0
-> > > > > [ 155757.807568] #PF: supervisor read access in kernel mode
-> > > > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
-> > > > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD 0
-> > > > > [ 155757.839985] Oops: 0000 [#1] SMP
-> > > > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdump: loaded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #1
-> > > > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes Passive MP, BIOS YMM16 05/24/2021
-> > > > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 00 00 00 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 39 d1 74 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00 48
-> > > > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
-> > > > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RCX: ffff888280183000
-> > > > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RDI: ffff888bbc2d1000
-> > > > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R09: ffff888ad9cedba0
-> > > > > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R12: ffff888b23a7b000
-> > > > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R15: 000007ffffc71354
-> > > > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c0000(0000) knlGS:0000000000000000
-> > > > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR4: 00000000007706e0
-> > > > > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > > [ 155758.091376] PKRU: 55555554
-> > > > > [ 155758.096957] Call Trace:
-> > > > > [ 155758.102016]  <TASK>
-> > > > > [ 155758.106502]  ? __die+0x78/0xc0
-> > > > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
-> > > > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
-> > > > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
-> > > > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
-> > > > > [ 155758.157133]  workingset_refault+0xca/0x1e0
-> > > > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
-> > > > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
-> > > > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
-> > > > > [ 155758.191738]  filemap_read+0x68d/0xdf0
-> > > > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
-> > > > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
-> > > > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
-> > > > > [ 155758.224601]  do_syscall_64+0x3d/0x80
-> > > > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > > > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
-> > > > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b4 e6 f7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48 8b
-> > > > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 ORIG_RAX: 0000000000000011
-> > > > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RCX: 00007f62c29153b5
-> > > > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RDI: 0000000000000076
-> > > > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R09: 0000000064d5230c
-> > > > > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R12: 000000000003c041
-> > > > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R15: 000000000027d450
-> > > > > [ 155758.376661]  </TASK>
-> > > > >
-> > > > > This patch fixes the issue by getting a local reference inside
-> > > > > unpack_shadow().
-> > > > >
-> > > > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction vs refault container")
-> > > >
-> > > > Beyond mem_cgroup_get_nr_swap_pages(), we still use the eviction_memcg
-> > > > without grabbing a ref to it first in workingset_test_recent() (and in
-> > > > workingset_refault() before that) as well as lru_gen_test_recent().
-> > > >
-> > > > Wouldn't the fix go back even further? or am I misinterpreting the problem?
-> > > Hmm I don't see eviction_memcg being used outside of *_test_recent
-> > > (the rest just uses memcg = folio_memcg(folio), which if I'm not mistaken is
-> > > the memcg that is refaulting the folio into memory).
-> > >
-> > > Inside workingset_test_recent(), the only other place where eviction_memcg
-> > > is used is for mem_cgroup_lruvec. This function call won't crash whether
-> > > eviction_memcg is valid or not.
-> >
-> > If eviction_memcg is invalid because the memory was already freed, we
-> > are basically dereferencing garbage in mem_cgroup_lruvec() aren't we?
-> >
-> > > The crash only happens during
-> > > mem_cgroup_get_nr_swap_pages, which has an upward traversal from
-> > > eviction_memcg to root.
-> > >
-> > > Let me know if this does not make sense and/or is insufficient to ensure
-> > > safe upward traversal from eviction_memcg to root!
-> > > >
-> > > >
-> > > >
-> > > > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > > > > Cc: stable@vger.kernel.org
-> > > > > ---
-> > > > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++-----------------
-> > > > >  1 file changed, 43 insertions(+), 22 deletions(-)
-> > > > >
-> > > > > diff --git a/mm/workingset.c b/mm/workingset.c
-> > > > > index da58a26d0d4d..03cadad4e484 100644
-> > > > > --- a/mm/workingset.c
-> > > > > +++ b/mm/workingset.c
-> > > > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid, pg_data_t *pgdat, unsigned long eviction,
-> > > > >         return xa_mk_value(eviction);
-> > > > >  }
-> > > > >
-> > > > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
-> > > > > -                         unsigned long *evictionp, bool *workingsetp)
-> > > > > +/*
-> > > > > + * Unpacks the stored fields of a shadow entry into the given pointers.
-> > > > > + *
-> > > > > + * The memcg pointer is only populated if the memcg recorded in the shadow
-> > > > > + * entry is valid. In this case, a reference to the memcg will be acquired,
-> > > > > + * and a corresponding mem_cgroup_put() will be needed when we no longer
-> > > > > + * need the memcg.
-> > > > > + */
-> > > > > +static void unpack_shadow(void *shadow, struct mem_cgroup **memcgp,
-> > > > > +                       pg_data_t **pgdat, unsigned long *evictionp, bool *workingsetp)
-> > > > >  {
-> > > > >         unsigned long entry = xa_to_value(shadow);
-> > > > > +       struct mem_cgroup *memcg;
-> > > > >         int memcgid, nid;
-> > > > >         bool workingset;
-> > > > >
-> > > > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
-> > > > >         memcgid = entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
-> > > > >         entry >>= MEM_CGROUP_ID_SHIFT;
-> > > > >
-> > > > > -       *memcgidp = memcgid;
-> > > > > +       /*
-> > > > > +        * Look up the memcg associated with the stored ID. It might
-> > > > > +        * have been deleted since the folio's eviction.
-> > > > > +        *
-> > > > > +        * Note that in rare events the ID could have been recycled
-> > > > > +        * for a new cgroup that refaults a shared folio. This is
-> > > > > +        * impossible to tell from the available data. However, this
-> > > > > +        * should be a rare and limited disturbance, and activations
-> > > > > +        * are always speculative anyway. Ultimately, it's the aging
-> > > > > +        * algorithm's job to shake out the minimum access frequency
-> > > > > +        * for the active cache.
-> > > > > +        */
-> > > > > +       memcg = mem_cgroup_from_id(memcgid);
-> > > > > +       if (memcg && css_tryget(&memcg->css))
-> > > > > +               *memcgp = memcg;
-> > > > > +       else
-> > > > > +               *memcgp = NULL;
-> > > > > +
-> > > > >         *pgdat = NODE_DATA(nid);
-> > > > >         *evictionp = entry;
-> > > > >         *workingsetp = workingset;
-> > > > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct folio *folio)
-> > > > >  static bool lru_gen_test_recent(void *shadow, bool file, struct lruvec **lruvec,
-> > > > >                                 unsigned long *token, bool *workingset)
-> > > > >  {
-> > > > > -       int memcg_id;
-> > > > >         unsigned long min_seq;
-> > > > >         struct mem_cgroup *memcg;
-> > > > >         struct pglist_data *pgdat;
-> > > > >
-> > > > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
-> > > > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset);
-> > > > > +       if (!mem_cgroup_disabled() && !memcg)
-> > > > > +               return false;
-> > > >
-> > > > +Yu Zhao
-> > > >
-> > > > There is a change of behavior here, right?
-> > > >
-> > > > The existing code will continue if !mem_cgroup_disabled() && !memcg is
-> > > > true, and mem_cgroup_lruvec() will return the lruvec of the root
-> > > > memcg. Now we are just returning false.
-> > > >
-> > > > Is this intentional?
-> > > Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
-> > > get_maintainers.pl isn't always sufficient I guess :)
-> > >
-> > > But yeah, this behavioral change is intentional.
-> > >
-> > > Correct me if I'm wrong of course, but it seems like MGLRU should
-> > > follow the same pattern here. That is, once we return from unpack_shadow,
-> > > the possible scenarios are the same as prescribed in workingset_test_recent:
-> > >
-> > > 1. If mem_cgroup is disabled, we can ignore this check.
-> > > 2. If mem_cgroup is enabled, then the only reason why we get NULL
-> > > memcg from unpack_shadow is if the eviction_memcg is no longer
-> > > valid.  We should not try to get its lruvec, or substitute it with the
-> > > root memcg, but return false right away (i.e not recent).
-> > > >
-> >
-> > I will leave this for Yu :)
-> 
-> Thanks, Yosry.
-> 
-> Hi Nhat, it seems unnecessary to me to introduce a get/put into
-> lru_gen_test_recent() because it doesn't suffer from the bug this
-> patch tries to fix. In theory, the extra get/put can impact
-> performance, though admittedly the impact is unlikely to be
-> measurable. Regardless, the general practice is to fix the bug
-> locally, i.e., when the mem_cgroup_get_nr_swap_pages() path is taken,
-> rather than change the unrelated path. Thank you.
-
-Hey guys,
-
-I had suggested to have it in unpack_shadow() to keep things simple,
-and not further complicate the lifetime rules in this code. The
-tryget() is against a per-cpu counter, so it's not expensive.
-
-The NULL deref is evidence that while *some* cgroup members are still
-accessible once it's dead, not all of it is. There is no explicit
-guarantee from the cgroup code that anything BUT the tryget() is still
-valid against group that is under rcu freeing.
-
-Since it isn't expensive, let's keep it simple and robust, and prevent
-future bugs of the same class, by always ensuring the cgroup is alive
-before accessing random members. Especially in non-cgroup code.
+T24gVGh1LCAyMDIzLTA4LTE3IGF0IDE5OjQzIC0wNTAwLCBGYWl0aCBFa3N0cmFuZCB3cm90ZToN
+Cj4gT24gV2VkLCBBdWcgMTYsIDIwMjMgYXQgMzoyNuKAr0FNIFNhcmFoIFdhbGtlciA8c2FyYWgu
+d2Fsa2VyQGltZ3RlYy5jb20+IHdyb3RlOg0KPiA+IA0KPiA+ICsvKioNCj4gPiArICogc3RydWN0
+IGRybV9wdnJfZGV2X3F1ZXJ5X3J1bnRpbWVfaW5mbyAtIENvbnRhaW5lciB1c2VkIHRvIGZldGNo
+IGluZm9ybWF0aW9uDQo+ID4gKyAqIGFib3V0IHRoZSBncmFwaGljcyBydW50aW1lLg0KPiA+ICsg
+Kg0KPiA+ICsgKiBXaGVuIGZldGNoaW5nIHRoaXMgdHlwZSAmc3RydWN0IGRybV9wdnJfaW9jdGxf
+ZGV2X3F1ZXJ5X2FyZ3MudHlwZSBtdXN0IGJlIHNldA0KPiA+ICsgKiB0byAlRFJNX1BWUl9ERVZf
+UVVFUllfUlVOVElNRV9JTkZPX0dFVC4NCj4gPiArICovDQo+ID4gK3N0cnVjdCBkcm1fcHZyX2Rl
+dl9xdWVyeV9ydW50aW1lX2luZm8gew0KPiA+ICsgICAgICAgLyoqDQo+ID4gKyAgICAgICAgKiBA
+ZnJlZV9saXN0X21pbl9wYWdlczogTWluaW11bSBhbGxvd2VkIGZyZWUgbGlzdCBzaXplLA0KPiA+
+ICsgICAgICAgICogaW4gUE0gcGh5c2ljYWwgcGFnZXMuDQo+ID4gKyAgICAgICAgKi8NCj4gPiAr
+ICAgICAgIF9fdTY0IGZyZWVfbGlzdF9taW5fcGFnZXM7DQo+ID4gKw0KPiA+ICsgICAgICAgLyoq
+DQo+ID4gKyAgICAgICAgKiBAZnJlZV9saXN0X21heF9wYWdlczogTWF4aW11bSBhbGxvd2VkIGZy
+ZWUgbGlzdCBzaXplLA0KPiA+ICsgICAgICAgICogaW4gUE0gcGh5c2ljYWwgcGFnZXMuDQo+ID4g
+KyAgICAgICAgKi8NCj4gPiArICAgICAgIF9fdTY0IGZyZWVfbGlzdF9tYXhfcGFnZXM7DQo+ID4g
+Kw0KPiA+ICsgICAgICAgLyoqDQo+ID4gKyAgICAgICAgKiBAY29tbW9uX3N0b3JlX2FsbG9jX3Jl
+Z2lvbl9zaXplOiBTaXplIG9mIHRoZSBBbGxvY2F0aW9uDQo+ID4gKyAgICAgICAgKiBSZWdpb24g
+d2l0aGluIHRoZSBDb21tb24gU3RvcmUgdXNlZCBmb3IgY29lZmZpY2llbnQgYW5kIHNoYXJlZA0K
+PiA+ICsgICAgICAgICogcmVnaXN0ZXJzLCBpbiBkd29yZHMuDQo+ID4gKyAgICAgICAgKi8NCj4g
+PiArICAgICAgIF9fdTMyIGNvbW1vbl9zdG9yZV9hbGxvY19yZWdpb25fc2l6ZTsNCj4gDQo+IEFu
+eSByZWFzb24gd2h5IHRoaXMgaXMgaW4gZHdvcmRzPyAgSXQncyBub3QgcmVhbGx5IG15IHBsYWNl
+IHRvIGhhdmUgYW4gb3BpbmlvbiBidXQgdGhhdCBzZWVtcyBsaWtlIGtpbmQtb2YgYSBmdW5ueSB1
+bml0IGZvciB0aGUgc2l6ZSBvZiBhbiBhbGxvY2F0aW9uIHJlZ2lvbi4gV2h5IG5vdCBqdXN0IGJ5
+dGVzPw0KDQpUaGlzIGlzIGEgaG9sZG92ZXIgZnJvbSB0aGUgY2xvc2VkIHNvdXJjZSBkcml2ZXIu
+IEl0IGNhbiBiZSBjaGFuZ2VkIHRvIGJ5dGVzIGlmDQp0aGF0IGlzIHBhcnRpY3VsYXJseSBkZXNp
+cmVkPw0KDQo+ICsvKioNCj4gPiArICogc3RydWN0IGRybV9wdnJfZGV2X3F1ZXJ5X3F1aXJrcyAt
+IENvbnRhaW5lciB1c2VkIHRvIGZldGNoIGluZm9ybWF0aW9uIGFib3V0DQo+ID4gKyAqIGhhcmR3
+YXJlIGZpeGVzIGZvciB3aGljaCB0aGUgZGV2aWNlIG1heSByZXF1aXJlIHN1cHBvcnQgaW4gdGhl
+IHVzZXIgbW9kZQ0KPiA+ICsgKiBkcml2ZXIuDQo+ID4gKyAqDQo+ID4gKyAqIFdoZW4gZmV0Y2hp
+bmcgdGhpcyB0eXBlICZzdHJ1Y3QgZHJtX3B2cl9pb2N0bF9kZXZfcXVlcnlfYXJncy50eXBlIG11
+c3QgYmUgc2V0DQo+ID4gKyAqIHRvICVEUk1fUFZSX0RFVl9RVUVSWV9RVUlSS1NfR0VULg0KPiA+
+ICsgKi8NCj4gPiArc3RydWN0IGRybV9wdnJfZGV2X3F1ZXJ5X3F1aXJrcyB7DQo+ID4gKyAgICAg
+ICAvKioNCj4gPiArICAgICAgICAqIEBxdWlya3M6IEEgdXNlcnNwYWNlIGFkZHJlc3MgZm9yIHRo
+ZSBoYXJkd2FyZSBxdWlya3MgX191MzIgYXJyYXkuDQo+ID4gKyAgICAgICAgKg0KPiA+ICsgICAg
+ICAgICogVGhlIGZpcnN0IEBtdXN0aGF2ZV9jb3VudCBpdGVtcyBpbiB0aGUgbGlzdCBhcmUgcXVp
+cmtzIHRoYXQgdGhlDQo+ID4gKyAgICAgICAgKiBjbGllbnQgbXVzdCBzdXBwb3J0IGZvciB0aGlz
+IGRldmljZS4gSWYgdXNlcnNwYWNlIGRvZXMgbm90IHN1cHBvcnQNCj4gPiArICAgICAgICAqIGFs
+bCB0aGVzZSBxdWlya3MgdGhlbiBmdW5jdGlvbmFsaXR5IGlzIG5vdCBndWFyYW50ZWVkIGFuZCBj
+bGllbnQNCj4gPiArICAgICAgICAqIGluaXRpYWxpc2F0aW9uIG11c3QgZmFpbC4NCj4gPiArICAg
+ICAgICAqIFRoZSByZW1haW5pbmcgcXVpcmtzIGluIHRoZSBsaXN0IGFmZmVjdCB1c2Vyc3BhY2Ug
+YW5kIHRoZSBrZXJuZWwgb3INCj4gPiArICAgICAgICAqIGZpcm13YXJlLiBUaGV5IGFyZSBkaXNh
+YmxlZCBieSBkZWZhdWx0IGFuZCByZXF1aXJlIHVzZXJzcGFjZSB0bw0KPiA+ICsgICAgICAgICog
+b3B0LWluLiBUaGUgb3B0LWluIG1lY2hhbmlzbSBkZXBlbmRzIG9uIHRoZSBxdWlyay4NCj4gPiAr
+ICAgICAgICAqLw0KPiA+ICsgICAgICAgX191NjQgcXVpcmtzOw0KPiANCj4gV2hlcmUgYXJlIHRo
+ZXNlIHF1aXJrIElEcyBkZWZpbmVkIGFuZCB3aGVyZSBkbyB0aGV5IGNvbWUgZnJvbT8gSWYgdGhl
+eSdyZSBlZmZlY3RpdmVseSBjb21pbmcgZnJvbSBoYXJkd2FyZSwgcG9zc2libHkgdmlhIGZpcm13
+YXJlLCB0aGF0J3MgcHJvYmFibHkgb2theS4gIFRoZSBpbXBvcnRhbnQgdGhpbmcgaXMgdGhhdCBx
+dWlya3Mgc2hvdWxkIG9ubHkgZXZlciBnZXQgcmVtb3ZlZCBmb3IgYW55IGdpdmVuIHBpZWNlIG9m
+IGhhcmR3YXJlIG90aGVyd2lzZSB5b3UgcmlzayBicmVha2luZyB1c2Vyc3BhY2UuDQoNClF1aXJr
+cyBhcmUgZGVmaW5lZCBpbiB0aGUgZmlybXdhcmUgaGVhZGVyLiBUaGUgYWN0dWFsIElEcyBhcmUg
+ZnJvbSBvdXIgaXNzdWUNCnRyYWNraW5nIHN5c3RlbTsgdGhleSdyZSBzaGFyZWQgd2l0aCB0aGUg
+Y2xvc2VkIHNvdXJjZSBkcml2ZXIuIFdlIGFyZSBhd2FyZSBvZg0KdGhlIG5lZWQgdG8gbm90IHJl
+bW92ZSBxdWlya3MgZm9yIGEgZ2l2ZW4gR1BVLg0KDQo+ID4gKy8qKg0KPiA+ICsgKiBzdHJ1Y3Qg
+ZHJtX3B2cl9kZXZfcXVlcnlfZW5oYW5jZW1lbnRzIC0gQ29udGFpbmVyIHVzZWQgdG8gZmV0Y2gg
+aW5mb3JtYXRpb24NCj4gPiArICogYWJvdXQgb3B0aW9uYWwgZW5oYW5jZW1lbnRzIHN1cHBvcnRl
+ZCBieSB0aGUgZGV2aWNlIHRoYXQgcmVxdWlyZSBzdXBwb3J0IGluDQo+ID4gKyAqIHRoZSB1c2Vy
+IG1vZGUgZHJpdmVyLg0KPiA+ICsgKg0KPiA+ICsgKiBXaGVuIGZldGNoaW5nIHRoaXMgdHlwZSAm
+c3RydWN0IGRybV9wdnJfaW9jdGxfZGV2X3F1ZXJ5X2FyZ3MudHlwZSBtdXN0IGJlIHNldA0KPiA+
+ICsgKiB0byAlRFJNX1BWUl9ERVZfRU5IQU5DRU1FTlRTX0dFVC4NCj4gPiArICovDQo+ID4gK3N0
+cnVjdCBkcm1fcHZyX2Rldl9xdWVyeV9lbmhhbmNlbWVudHMgew0KPiA+ICsgICAgICAgLyoqDQo+
+ID4gKyAgICAgICAgKiBAZW5oYW5jZW1lbnRzOiBBIHVzZXJzcGFjZSBhZGRyZXNzIGZvciB0aGUg
+aGFyZHdhcmUgZW5oYW5jZW1lbnRzDQo+ID4gKyAgICAgICAgKiBfX3UzMiBhcnJheS4NCj4gPiAr
+ICAgICAgICAqDQo+ID4gKyAgICAgICAgKiBUaGVzZSBlbmhhbmNlbWVudHMgYWZmZWN0IHVzZXJz
+cGFjZSBhbmQgdGhlIGtlcm5lbCBvciBmaXJtd2FyZS4gVGhleQ0KPiA+ICsgICAgICAgICogYXJl
+IGRpc2FibGVkIGJ5IGRlZmF1bHQgYW5kIHJlcXVpcmUgdXNlcnNwYWNlIHRvIG9wdC1pbi4gVGhl
+IG9wdC1pbg0KPiA+ICsgICAgICAgICogbWVjaGFuaXNtIGRlcGVuZHMgb24gdGhlIHF1aXJrLg0K
+PiA+ICsgICAgICAgICovDQo+ID4gKyAgICAgICBfX3U2NCBlbmhhbmNlbWVudHM7DQo+IA0KPiBD
+YW4geW91IHByb3ZpZGUgc29tZSBleGFtcGxlcyBvZiAiZW5oYW5jZW1lbnRzIj8gTm90IHRoYXQg
+eW91IG5lZWQgdG8gcHV0IGl0IGluIHRoZSBkb2NzLiBJJ20ganVzdCB0cnlpbmcgdG8gdW5kZXJz
+dGFuZCB3aGF0IHRoaXMgQVBJIGlzIGRvaW5nIHNvIEkgY2FuIGJldHRlciByZXZpZXcuIEFnYWlu
+LCB3aGVyZSBkbyB0aGVzZSBjb21lIGZyb20/IEFsc28sIGhvdyBpcyBhbiBlbmhhbmNlbWVudCBk
+aWZmZXJlbnQgZnJvbSBhIHF1aXJrPw0KDQpFbmhhbmNlbWVudHMgYXJlIGNvbXBhcmF0aXZlbHkg
+bWlub3IgaW1wcm92ZW1lbnRzIGluIEdQVSBzdWJyZXZpc2lvbnMgdGhhdCBkb24ndA0KcXVhbGlm
+eSBhcyBhIGZ1bGwgInByb2R1Y3QgZmVhdHVyZSIuIEEgY291cGxlIG9mIGV4YW1wbGVzIHdvdWxk
+IGJlIDM1NDIxLCB3aGljaA0KaW1wcm92ZXMgY29tcHV0ZSB0aHJlYWQgYmFycmllciBzdXBwb3J0
+LCBhbmQgNDIwNjQsIHdoaWNoIGFkZHMgbWFzayBzdXBwb3J0IGZvcg0KdGhlIHBpeGVsIGJhY2tl
+bmQuIEFzIHdpdGggcXVpcmtzLCBlbmhhbmNlbWVudHMgYXJlIGRlZmluZWQgaW4gdGhlIGZpcm13
+YXJlDQpoZWFkZXIsIHdpdGggdGhlIElEcyBjb21pbmcgZnJvbSBvdXIgaXNzdWUgdHJhY2tlci4N
+Cg0KVGhhbmtzLA0KU2FyYWgNCg0K
