@@ -2,67 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59EA781330
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD281781339
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379533AbjHRTBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59410 "EHLO
+        id S1379564AbjHRTHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:07:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379563AbjHRTBO (ORCPT
+        with ESMTP id S1379563AbjHRTHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:01:14 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BC72D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:01:12 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe12baec61so11933225e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692385271; x=1692990071;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ExYK1kYhxn5KPsD+IcjfzF6s7qsUsIZxW0+eQjzIynM=;
-        b=FTEil+JpDeyExcASvR2TIxlpfeKIoy0xpo21NSCYx/4FUoPC5mX8UJAHxtxqXlq3ID
-         N7Bm9VN0uQ+rpny0W+DyGiko5yHILVMwMMgHEuPTqVgPukDt34x3WqnIv6KZ7u7R4vI0
-         ksfFNi6ifY9ZK05Qswx5BODywkJEotyHAMxkqBNlbNVaFxftzbLBX27hiAfLfIsBpDew
-         Rzf/YVc7+VnDnDppB918hDB39IGKQG385+TLUzsVMgapnX0bSjzto1M32dGvLuzqO3Kc
-         bJ61yCKKKF0VwX02vmksOe3uGk5y+vCLnadEDga6AzeFfDc5ZcsU/yrMaqAr04Snmssq
-         DAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692385271; x=1692990071;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ExYK1kYhxn5KPsD+IcjfzF6s7qsUsIZxW0+eQjzIynM=;
-        b=L56qlySL+yQrb+lnz/KDP4vrh9WADWrgBb2XtUGzbL6AJcYnUBcNAKFyn0Bd0YJaRZ
-         Vi6Sdm39DolF+mQlDCV1VmRf+hRbcWO2Nc3teUIRNO2DFmJA9E5VzM8d47V0/EMQHuzE
-         fn9Tsnly6tKnLG3dA1X4VGOoaRILfgQHIAtEpiLAWjjzwld6VM3INEkGHwtgZ83T8LS1
-         OcP5PSCWSvej/GfwXLkQhbYP1uBO0xad/HMQjyrOhs+skMqpqZcpnS1lXG6czmOfgQe7
-         19EZDBdA6xO6ga8rpuoEU/SV0PfqIhWjVWECGT9AxVyM3RnECszEeuU8vjGSJy6O9RUu
-         Gxng==
-X-Gm-Message-State: AOJu0Yz5Mx2eOm6yjz+VM1cvyAfBABHPAGtSYuBKoIYwtjCbf2bewSOO
-        6F3Aoi7nOknI/ymKXIf3UhFMUQ==
-X-Google-Smtp-Source: AGHT+IGafrw+J+nMKxJ+bVCGdx71rij2ppv9FFCnJtp3E7rVKZ2+RqLKN/e/1fyQTUoTkyEYBRrh7A==
-X-Received: by 2002:a1c:ed04:0:b0:3fa:9823:407 with SMTP id l4-20020a1ced04000000b003fa98230407mr72249wmh.18.1692385271099;
-        Fri, 18 Aug 2023 12:01:11 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:d1c5:9f1f:6f05:38a3])
-        by smtp.gmail.com with ESMTPSA id 10-20020a05600c228a00b003fe4ca8decdsm7263541wmf.31.2023.08.18.12.01.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 12:01:10 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpiolib: tie module references to GPIO devices, not requested descs
-Date:   Fri, 18 Aug 2023 21:01:08 +0200
-Message-Id: <20230818190108.22031-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Fri, 18 Aug 2023 15:07:00 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1426130FE;
+        Fri, 18 Aug 2023 12:06:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CC70D75;
+        Fri, 18 Aug 2023 12:07:38 -0700 (PDT)
+Received: from [10.57.91.158] (unknown [10.57.91.158])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 14C993F762;
+        Fri, 18 Aug 2023 12:06:49 -0700 (PDT)
+Message-ID: <7b01f4ae-05d9-e7b8-7a44-31c9d8adae80@arm.com>
+Date:   Fri, 18 Aug 2023 20:06:46 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v11 6/6] iommu/dma: Use a large flush queue and timeout
+ for shadow_on_flush
+Content-Language: en-GB
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+References: <20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com>
+ <20230717-dma_iommu-v11-6-a7a0b83c355c@linux.ibm.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230717-dma_iommu-v11-6-a7a0b83c355c@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,121 +89,202 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 2023-07-17 12:00, Niklas Schnelle wrote:
+> Flush queues currently use a fixed compile time size of 256 entries.
+> This being a power of 2 allows the compiler to use shift and mask
+> instead of more expensive modulo operations. With per-CPU flush queues
+> larger queue sizes would hit per-CPU allocation limits, with a single
+> flush queue these limits do not apply however. Also with single queues
+> being particularly suitable for virtualized environments with expensive
+> IOTLB flushes these benefit especially from larger queues and thus fewer
+> flushes.
+> 
+> To this end re-order struct iova_fq so we can use a dynamic array and
+> introduce the flush queue size and timeouts as new options in the
+> dma_iommu_options struct. So as not to lose the shift and mask
+> optimization, use a power of 2 for the length and use explicit shift and
+> mask instead of letting the compiler optimize this.
+> 
+> A large queue size and 1 second timeout is then set for the shadow on
+> flush case set by s390 paged memory guests. This then brings performance
+> on par with the previous s390 specific DMA API implementation.
+> 
+> Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com> #s390
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+>   drivers/iommu/dma-iommu.c | 50 +++++++++++++++++++++++++++++++----------------
+>   1 file changed, 33 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 4ada8b9749c9..bebc0804ff53 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -46,7 +46,9 @@ enum iommu_dma_cookie_type {
+>   struct dma_iommu_options {
+>   #define IOMMU_DMA_OPTS_PER_CPU_QUEUE	0L
+>   #define IOMMU_DMA_OPTS_SINGLE_QUEUE	BIT(0)
+> -	u64	flags;
+> +	u64		flags;
+> +	size_t		fq_size;
+> +	unsigned int	fq_timeout;
+>   };
+>   
+>   struct iommu_dma_cookie {
+> @@ -95,10 +97,12 @@ static int __init iommu_dma_forcedac_setup(char *str)
+>   early_param("iommu.forcedac", iommu_dma_forcedac_setup);
+>   
+>   /* Number of entries per flush queue */
+> -#define IOVA_FQ_SIZE	256
+> +#define IOVA_DEFAULT_FQ_SIZE	256
+> +#define IOVA_SINGLE_FQ_SIZE	32768
+>   
+>   /* Timeout (in ms) after which entries are flushed from the queue */
+> -#define IOVA_FQ_TIMEOUT	10
+> +#define IOVA_DEFAULT_FQ_TIMEOUT	10
+> +#define IOVA_SINGLE_FQ_TIMEOUT	1000
+>   
+>   /* Flush queue entry for deferred flushing */
+>   struct iova_fq_entry {
+> @@ -110,18 +114,19 @@ struct iova_fq_entry {
+>   
+>   /* Per-CPU flush queue structure */
+>   struct iova_fq {
+> -	struct iova_fq_entry entries[IOVA_FQ_SIZE];
+> -	unsigned int head, tail;
+>   	spinlock_t lock;
+> +	unsigned int head, tail;
+> +	unsigned int mod_mask;
+> +	struct iova_fq_entry entries[];
+>   };
+>   
+>   #define fq_ring_for_each(i, fq) \
+> -	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) % IOVA_FQ_SIZE)
+> +	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) & (fq)->mod_mask)
+>   
+>   static inline bool fq_full(struct iova_fq *fq)
+>   {
+>   	assert_spin_locked(&fq->lock);
+> -	return (((fq->tail + 1) % IOVA_FQ_SIZE) == fq->head);
+> +	return (((fq->tail + 1) & fq->mod_mask) == fq->head);
+>   }
+>   
+>   static inline unsigned int fq_ring_add(struct iova_fq *fq)
+> @@ -130,7 +135,7 @@ static inline unsigned int fq_ring_add(struct iova_fq *fq)
+>   
+>   	assert_spin_locked(&fq->lock);
+>   
+> -	fq->tail = (idx + 1) % IOVA_FQ_SIZE;
+> +	fq->tail = (idx + 1) & fq->mod_mask;
+>   
+>   	return idx;
+>   }
+> @@ -152,7 +157,7 @@ static void fq_ring_free_locked(struct iommu_dma_cookie *cookie, struct iova_fq
+>   			       fq->entries[idx].iova_pfn,
+>   			       fq->entries[idx].pages);
+>   
+> -		fq->head = (fq->head + 1) % IOVA_FQ_SIZE;
+> +		fq->head = (fq->head + 1) & fq->mod_mask;
+>   	}
+>   }
+>   
+> @@ -246,7 +251,7 @@ static void queue_iova(struct iommu_dma_cookie *cookie,
+>   	if (!atomic_read(&cookie->fq_timer_on) &&
+>   	    !atomic_xchg(&cookie->fq_timer_on, 1))
+>   		mod_timer(&cookie->fq_timer,
+> -			  jiffies + msecs_to_jiffies(IOVA_FQ_TIMEOUT));
+> +			  jiffies + msecs_to_jiffies(cookie->options.fq_timeout));
+>   }
+>   
+>   static void iommu_dma_free_fq_single(struct iova_fq *fq)
+> @@ -287,27 +292,29 @@ static void iommu_dma_free_fq(struct iommu_dma_cookie *cookie)
+>   		iommu_dma_free_fq_percpu(cookie->percpu_fq);
+>   }
+>   
+> -static void iommu_dma_init_one_fq(struct iova_fq *fq)
+> +static void iommu_dma_init_one_fq(struct iova_fq *fq, size_t fq_size)
+>   {
+>   	int i;
+>   
+>   	fq->head = 0;
+>   	fq->tail = 0;
+> +	fq->mod_mask = fq_size - 1;
+>   
+>   	spin_lock_init(&fq->lock);
+>   
+> -	for (i = 0; i < IOVA_FQ_SIZE; i++)
+> +	for (i = 0; i < fq_size; i++)
+>   		INIT_LIST_HEAD(&fq->entries[i].freelist);
+>   }
+>   
+>   static int iommu_dma_init_fq_single(struct iommu_dma_cookie *cookie)
+>   {
+> +	size_t fq_size = cookie->options.fq_size;
+>   	struct iova_fq *queue;
+>   
+> -	queue = vzalloc(sizeof(*queue));
+> +	queue = vzalloc(struct_size(queue, entries, fq_size));
+>   	if (!queue)
+>   		return -ENOMEM;
+> -	iommu_dma_init_one_fq(queue);
+> +	iommu_dma_init_one_fq(queue, fq_size);
+>   	cookie->single_fq = queue;
+>   
+>   	return 0;
+> @@ -315,15 +322,17 @@ static int iommu_dma_init_fq_single(struct iommu_dma_cookie *cookie)
+>   
+>   static int iommu_dma_init_fq_percpu(struct iommu_dma_cookie *cookie)
+>   {
+> +	size_t fq_size = cookie->options.fq_size;
+>   	struct iova_fq __percpu *queue;
+>   	int cpu;
+>   
+> -	queue = alloc_percpu(struct iova_fq);
+> +	queue = __alloc_percpu(struct_size(queue, entries, fq_size),
+> +			       __alignof__(*queue));
+>   	if (!queue)
+>   		return -ENOMEM;
+>   
+>   	for_each_possible_cpu(cpu)
+> -		iommu_dma_init_one_fq(per_cpu_ptr(queue, cpu));
+> +		iommu_dma_init_one_fq(per_cpu_ptr(queue, cpu), fq_size);
+>   	cookie->percpu_fq = queue;
+>   	return 0;
+>   }
+> @@ -377,6 +386,8 @@ static struct iommu_dma_cookie *cookie_alloc(enum iommu_dma_cookie_type type)
+>   		INIT_LIST_HEAD(&cookie->msi_page_list);
+>   		cookie->type = type;
+>   		cookie->options.flags = IOMMU_DMA_OPTS_PER_CPU_QUEUE;
+> +		cookie->options.fq_size = IOVA_DEFAULT_FQ_SIZE;
+> +		cookie->options.fq_timeout = IOVA_DEFAULT_FQ_TIMEOUT;
 
-After a deeper look at commit 3386fb86ecde ("gpiolib: fix reference
-leaks when removing GPIO chips still in use") I'm now convinced that
-gpiolib gets module reference counting wrong.
+Similar comment as on the previous patch - it would be clearer and more 
+robust to set fq_size and fq_timeout all in one place in the main path 
+of iommu_dma_init_domain(). Otherwise,
 
-As we only take the reference to the owner module when a descriptor is
-requested and put it when it's freed, we can easily trigger a crash by
-removing a module which registered a driver bound to a GPIO chip which
-is unused as nothing prevents us from doing so.
+Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-For correct behavior, we should take the reference to the module when
-we're creating a GPIO device and only put it when that device is
-released as it's at this point that we can safely remove the module's
-code from memory.
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 76e0c38026c3..cb0072d2d137 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -583,6 +583,7 @@ static void gpiodev_release(struct device *dev)
- 	list_del(&gdev->list);
- 	spin_unlock_irqrestore(&gpio_lock, flags);
- 
-+	module_put(gdev->owner);
- 	ida_free(&gpio_ida, gdev->id);
- 	kfree_const(gdev->label);
- 	kfree(gdev->descs);
-@@ -753,6 +754,10 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	else
- 		gdev->owner = THIS_MODULE;
- 
-+	ret = try_module_get(gdev->owner);
-+	if (!ret)
-+		goto err_free_dev_name;
-+
- 	/*
- 	 * Try the device properties if the driver didn't supply the number
- 	 * of GPIO lines.
-@@ -769,7 +774,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 			 */
- 			ngpios = 0;
- 		else if (ret)
--			goto err_free_dev_name;
-+			goto err_put_module;
- 
- 		gc->ngpio = ngpios;
- 	}
-@@ -777,7 +782,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	if (gc->ngpio == 0) {
- 		chip_err(gc, "tried to insert a GPIO chip with zero lines\n");
- 		ret = -EINVAL;
--		goto err_free_dev_name;
-+		goto err_put_module;
- 	}
- 
- 	if (gc->ngpio > FASTPATH_NGPIO)
-@@ -787,7 +792,7 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	gdev->descs = kcalloc(gc->ngpio, sizeof(*gdev->descs), GFP_KERNEL);
- 	if (!gdev->descs) {
- 		ret = -ENOMEM;
--		goto err_free_dev_name;
-+		goto err_put_module;
- 	}
- 
- 	gdev->label = kstrdup_const(gc->label ?: "unknown", GFP_KERNEL);
-@@ -937,6 +942,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 	kfree_const(gdev->label);
- err_free_descs:
- 	kfree(gdev->descs);
-+err_put_module:
-+	module_put(gdev->owner);
- err_free_dev_name:
- 	kfree(dev_name(&gdev->dev));
- err_free_ida:
-@@ -2101,20 +2108,16 @@ static int validate_desc(const struct gpio_desc *desc, const char *func)
- 
- int gpiod_request(struct gpio_desc *desc, const char *label)
- {
--	int ret = -EPROBE_DEFER;
-+	int ret;
- 
- 	VALIDATE_DESC(desc);
- 
--	if (try_module_get(desc->gdev->owner)) {
--		ret = gpiod_request_commit(desc, label);
--		if (ret)
--			module_put(desc->gdev->owner);
--		else
--			gpio_device_get(desc->gdev);
--	}
--
-+	ret = gpiod_request_commit(desc, label);
- 	if (ret)
--		gpiod_dbg(desc, "%s: status %d\n", __func__, ret);
-+		return ret;
-+
-+	gpio_device_get(desc->gdev);
-+	gpiod_dbg(desc, "%s: status %d\n", __func__, ret);
- 
- 	return ret;
- }
-@@ -2177,7 +2180,6 @@ void gpiod_free(struct gpio_desc *desc)
- 	if (!gpiod_free_commit(desc))
- 		WARN_ON(extra_checks);
- 
--	module_put(desc->gdev->owner);
- 	gpio_device_put(desc->gdev);
- }
- 
--- 
-2.39.2
-
+>   	}
+>   	return cookie;
+>   }
+> @@ -696,14 +707,19 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+>   
+>   	if (domain->type == IOMMU_DOMAIN_DMA_FQ) {
+>   		/* Expensive shadowing IOTLB flushes require some tuning */
+> -		if (dev->iommu->shadow_on_flush)
+> +		if (dev->iommu->shadow_on_flush) {
+>   			cookie->options.flags |= IOMMU_DMA_OPTS_SINGLE_QUEUE;
+> +			cookie->options.fq_timeout = IOVA_SINGLE_FQ_TIMEOUT;
+> +			cookie->options.fq_size = IOVA_SINGLE_FQ_SIZE;
+> +		}
+>   
+>   		/* If the FQ fails we can simply fall back to strict mode */
+>   		if (!device_iommu_capable(dev, IOMMU_CAP_DEFERRED_FLUSH) ||
+>   		    iommu_dma_init_fq(domain)) {
+>   			domain->type = IOMMU_DOMAIN_DMA;
+>   			cookie->options.flags &= ~IOMMU_DMA_OPTS_SINGLE_QUEUE;
+> +			cookie->options.fq_timeout = IOVA_DEFAULT_FQ_TIMEOUT;
+> +			cookie->options.fq_size = IOVA_DEFAULT_FQ_SIZE;
+>   		}
+>   	}
+>   
+> 
