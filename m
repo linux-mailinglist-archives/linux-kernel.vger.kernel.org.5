@@ -2,85 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117D87815D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A21F7815D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242686AbjHRXbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 19:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S241952AbjHRXfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 19:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242456AbjHRXbL (ORCPT
+        with ESMTP id S242236AbjHRXfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 19:31:11 -0400
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4E6E4C;
-        Fri, 18 Aug 2023 16:31:10 -0700 (PDT)
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1bc0d39b52cso11320905ad.2;
-        Fri, 18 Aug 2023 16:31:10 -0700 (PDT)
+        Fri, 18 Aug 2023 19:35:18 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5981F30DF
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:35:17 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26d269dc983so1694680a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:35:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692401717; x=1693006517;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ym9SwmeM0EPR5aYHYUdgC/P1fnr32QdCKm3f+6XcXjc=;
+        b=Fv0Xz376xgfbogeLVo/xFfuLTRzprBEz5ZaGPXB4Ur1hfEMZIxb1yuw4VUcU7eJc94
+         dzehw7VYLMIm9IkWTD0asKDJDmvBiYp9oXxAVB4B1JfWh+ywV6o31j0Yd4wLak36umaa
+         +d5AyiEIcenOU5yVmxpLlgY3QPvYZhkM9rATPtRN7O/jU9tj86CrtrjrKkQgbpOm8Pj4
+         3k5MJqvXJcSFnt7TwMa0k2dLebjdKSkm0guwxab6EkC6UjLSDYSWvGiSn/L8wt/QGYLA
+         OA3VZB01v5tyvYxhBndx1DKpDsujYyisDDzwyXS/3OiuppqSUoaXISYPLIw5WNs485lU
+         ROAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692401470; x=1693006270;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X0VrumJjXJtBH0MCiqRAB25wxy5fETy8C315CEQSkOI=;
-        b=O1uk9GNOIpHfJ4FywIHwXawtEMTIhGkv66O2F+O19NiDM8Ai9qq/Iy/wvlKpLNSX6e
-         WAt0yvNTDngqfvQkUf8M+HZjWCdvXLEZsN5IonLj1LYkoxwi1knEcHSvHAbRkVpemGCx
-         MWG5CZpJFsHLa6vQW4bd0h4RZnC9QH73CbZ3Le4cQ8rR6AQ0v7crc5CDTlqO5cfZGqQk
-         Fw/cnEj4XDmm7K3zS59vZE6z39Hph/lA8YLsYF5SvJ+DZ5S+jODkaZQhbsOvJkgQ+Kei
-         xheLgXVOcBu8mxhGVxsSn1Piuw/S5TKycSb7c9am/Oa85P5JPWyofRbnN44wzr1I3BqX
-         b1Ww==
-X-Gm-Message-State: AOJu0YxyideC79Hx/LAFGz9N3rT3zLfJvOr0V0+PKqo9SI5YHtA+dPju
-        I2lmHHwCLxvjHPEVtbWVScA=
-X-Google-Smtp-Source: AGHT+IHTQ4leX3gaB2UBapnVqB5I/AgZBLaIfW34OqI1+sD+yGPUlnFWei0O+z0QrwTB+gAkYxdWRw==
-X-Received: by 2002:a17:903:11c6:b0:1bb:98a0:b78a with SMTP id q6-20020a17090311c600b001bb98a0b78amr830369plh.18.1692401470267;
-        Fri, 18 Aug 2023 16:31:10 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id c11-20020a170902724b00b001bb515e6b39sm2273755pll.306.2023.08.18.16.31.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 16:31:09 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 23:30:52 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v2 14/15] asm-generic: hyperv: Use mshv headers
- conditionally. Add asm-generic/hyperv-defs.h
-Message-ID: <ZN//LCO3mVzC4gv9@liuwe-devbox-debian-v2>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-15-git-send-email-nunodasneves@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692309711-5573-15-git-send-email-nunodasneves@linux.microsoft.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692401717; x=1693006517;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ym9SwmeM0EPR5aYHYUdgC/P1fnr32QdCKm3f+6XcXjc=;
+        b=D7YqMK+NMOsr4VzmdOL2feA7xJjZYE7YoWY/nVPLAKetTeRNcqMb8AdnSrNE24Wvbi
+         8T71uKzgFe6eLpcqO/TIk2w+9DxSAEPCtZ7QAVENC/+LVtOdPD11qMWQEwbEQF6W8mIq
+         rBN09Wijdwd9pw7nIcWgqBa5x3U3ZSOKnW07Z1Oqh/5CRiYyvvtRLb4EViFU1Rw+yFOP
+         R4fmejT8SlQxGmUv1HsyndDDpur94UsDm38rXZ3qM8X5n02+Tcn7nqLZeQFkuRWZuAbT
+         7i5r9fh/XMu91941NatWkcg4yAlGiC72dBoSU9WM3eOAinRgzqaLs1n+iBTF5g/1Fclp
+         huXg==
+X-Gm-Message-State: AOJu0Yx2L78wRNKimlO3Abbj4JaWBUv8WlgF/geO0RtaXhcAs7/L1Yqb
+        bpGNEfflHLT3qm9QIXo01mIHBaUErd/m2Ifa4w==
+X-Google-Smtp-Source: AGHT+IGPoBEVZBfu7UdhnVUWQ69Uoqx9M/TxjOmX9oQgTBDD0sje061EEqzwCebhqYC+9MOR0gBKrC6ClC3SPuJMvg==
+X-Received: from riemann.sea.corp.google.com ([2620:15c:100:201:63a2:7ca2:9ea:acb8])
+ (user=srutherford job=sendgmr) by 2002:a17:90b:e8b:b0:26d:a6b:9a47 with SMTP
+ id fv11-20020a17090b0e8b00b0026d0a6b9a47mr168989pjb.2.1692401716766; Fri, 18
+ Aug 2023 16:35:16 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 16:34:51 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230818233451.3615464-1-srutherford@google.com>
+Subject: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page aligned
+From:   Steve Rutherford <srutherford@google.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com,
+        Steve Rutherford <srutherford@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:01:50PM -0700, Nuno Das Neves wrote:
-> Add hyperv-defs.h to replace some inclusions of hyperv-tlfs.h.
-> 
-> It includes hyperv-tlfs.h or hvhdk.h depending on a compile-time constant
-> HV_HYPERV_DEFS which will be defined in the mshv driver.
-> 
-> This is needed to keep unstable Hyper-V interfaces independent of
-> hyperv-tlfs.h. This ensures hvhdk.h replaces hyperv-tlfs.h in the mshv driver,
-> even via indirect includes.
-> 
-> Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+early_set_memory_decrypted() assumes its parameters are page aligned.
+Non-page aligned calls result in additional pages being marked as
+decrypted via the encryption status hypercall, which results in
+consistent corruption of pages during live migration. Live
+migration requires accurate encryption status information to avoid
+migrating pages from the wrong perspective.
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when SEV is active")
+Signed-off-by: Steve Rutherford <srutherford@google.com>
+---
+ arch/x86/kernel/kvm.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 6a36db4f79fd..a0c072d3103c 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -419,7 +419,14 @@ static u64 kvm_steal_clock(int cpu)
+ 
+ static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
+ {
+-	early_set_memory_decrypted((unsigned long) ptr, size);
++	/*
++	 * early_set_memory_decrypted() requires page aligned parameters, but
++	 * this function needs to handle ptrs offset into a page.
++	 */
++	unsigned long start = PAGE_ALIGN_DOWN((unsigned long) ptr);
++	unsigned long end = (unsigned long) ptr + size;
++
++	early_set_memory_decrypted(start, end - start);
+ }
+ 
+ /*
+@@ -438,6 +445,11 @@ static void __init sev_map_percpu_data(void)
+ 		return;
+ 
+ 	for_each_possible_cpu(cpu) {
++		/*
++		 * Calling __set_percpu_decrypted() for each per-cpu variable is
++		 * inefficent, since it may decrypt the same page multiple times.
++		 * That said, it avoids the need for more complicated logic.
++		 */
+ 		__set_percpu_decrypted(&per_cpu(apf_reason, cpu), sizeof(apf_reason));
+ 		__set_percpu_decrypted(&per_cpu(steal_time, cpu), sizeof(steal_time));
+ 		__set_percpu_decrypted(&per_cpu(kvm_apic_eoi, cpu), sizeof(kvm_apic_eoi));
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
