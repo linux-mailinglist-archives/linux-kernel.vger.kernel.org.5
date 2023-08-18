@@ -2,82 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B32780CE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FD8780CF5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239055AbjHRNsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S1377407AbjHRNtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377369AbjHRNri (ORCPT
+        with ESMTP id S1377424AbjHRNtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:47:38 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6194218
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:46:55 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-55c7d9edd16so1237858a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692366389; x=1692971189;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNlR4KxrzE72vpNuTyvfyVvbrBWXFgdYpu7h9tDZYwU=;
-        b=vtgMMSNPRqRJdWk7DyvvesFPY2OKKk3Wr7T5UwkfgFFO5g1QQJFjlFXnDFSHqiiEhe
-         lD1aF4LgRzwD94FWX/Pz6c0u5HK7icnntQ1CaUHS9vHM9IfBLQRx/IMRnqrJ2XvhouId
-         0Moq9CjzTasCUtU+i24RHqrDECGkg8c4HxeYW+3hVVSOqSMUWJWhjsUvHOJDfm1QKkX6
-         RjHcybduEWy7snz7CQD66T2zmTu38UEDu/nBqhGMu91SIcVhwqvGGoeO5Bpr4NZT3IDo
-         iT5uJvB/M1Eiu/YSbP5jaRC7KPWjfci5ugAcpMnSVIZdcBjjnH/rWontMjdvVjfSl3nK
-         j/Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692366389; x=1692971189;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNlR4KxrzE72vpNuTyvfyVvbrBWXFgdYpu7h9tDZYwU=;
-        b=WMefzqfxzR2A6pZ8P6yizcTKjfy1Np/urwK+HIon9877rpudHf1UXGMWQbNS8HTDqg
-         JBs1QOFP0ea63AtVZ3pYKDDH6KdgNJk0NZHKQunx+jDxXGxMGQUu09sNeX4gPTIKIHKA
-         IJph5jrO/3R1mMRJ0deBaXLZKDf+XhqBuqEb84jTT3P/xWDFcVL68HZD7qbXAztEY67k
-         K149U72Y67So4mqgI9aAWlz/pwf0QnBkdMP6Wplytm4nQtyXUtgy0wWeUX2/kK8sA01K
-         8UviDLnqjPKi1esE3gKoKcdMX1gcMxdLbLcBCGTy9h29rKbyu1P713/og+qU7IJGoSPs
-         +RqQ==
-X-Gm-Message-State: AOJu0YzEvCQXFny8tKF2aWO9vBSTZBpf2UtqImk0qF8ZDjqT8XMLTMLk
-        YK3x8Efse08S69E7DbN5eHddnIvE0HU=
-X-Google-Smtp-Source: AGHT+IFmESdYKpgGUbBQHEYsCSENkDJqn8Y0SDC8FdMY70toMQGagfsR2ZiXJMY8GWX5/b2Nj3MnFnTrH+0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:7b10:0:b0:565:eb0b:6daf with SMTP id
- w16-20020a637b10000000b00565eb0b6dafmr443690pgc.7.1692366388693; Fri, 18 Aug
- 2023 06:46:28 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 06:46:26 -0700
-In-Reply-To: <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
- <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com> <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com>
-Message-ID: <ZN92MtFkIF3E79/u@google.com>
-Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 09:49:17 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2045.outbound.protection.outlook.com [40.107.243.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0DD4226
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:48:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FUK3ScCOeHhG8MobQTqNCPW1mhXeV4lf8WMdWv7QoCwm323RDMk56NRJM35ehH412sV5T8EVGLt12aPxY/c4mEWE/rcGf6H4ON3yReEXPbz+NgVdWoPyqPpF6LZ7BrA6L1ht/zNWFx4z23oCypOnSz/evcLJcnP0hM0n8GL4lr0jhWUQU/0BGB63Py7YVE6sP3vInpJVtZVN3fEKgTAa8Qa2YCWRH5hP5yb8TC7A8DiZMViyvkwwKPSAwDPLJiz0wlxZKC4tEePJpFqPWu8+IYDGGz8snL2fP+Vm9YmXp3GfgXfrfRqw4v6ofYwtW+04Bk3ihDtwY77qfHlaCNzUlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6NAmk9jgo9breKYwJ1rtQtHGL2wRe7EuxEpTIKlN+zk=;
+ b=IFX6hoXfbE94Bz2bDPdbbPyeayGfW3LjEzgJ+SfxiHpTysJGps2dx66/09RPrkyMXLNgbJxFu+PTNnidNXXwcq51qzRoR0D94kIifI5dLwmO3FN26MReqeuSDMYt2E/7e8WKcc+qePio31bkCiJYdQ9NMEZ+/XXKP2omX3gMP/9A3yZIJZBxhqUBkTc23hLHnTQsw6+xjGT257bI3bf1RynDA+CIaoepy7PFGRyrxw8K220OCWQpiZzgiSLViNvNNOu9VZccOR9bpm4g1MAlUGvxAY0iGB9IWF+6y5PpXCNn3nC15pLIVPgAtrh4YgYG6LFQn8P+g14QXLeY3QDgYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6NAmk9jgo9breKYwJ1rtQtHGL2wRe7EuxEpTIKlN+zk=;
+ b=aNvXeLLf/Z3QmLtB1P++ydzlo0eUE5DK2+MOYzsCrG+VKGTch35inMHJaA34DySlHVBnq0mz+uwuEp1KsO04MLs8eIuq7uM6OpnFCOzcCQ5EMieAwjJ2Bnc9dYnb98BFpxPyb1fVZHyMWDrugj2pXtWtVAayv/CnlaldpHH+JZQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ SN7PR12MB7835.namprd12.prod.outlook.com (2603:10b6:806:328::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Fri, 18 Aug
+ 2023 13:48:01 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::4196:c9c9:dfe9:8079]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::4196:c9c9:dfe9:8079%3]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 13:48:01 +0000
+Message-ID: <e4bfdda1-5f40-483d-820f-4ac4574fbb90@amd.com>
+Date:   Fri, 18 Aug 2023 09:47:47 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: fix mode scaling (RMX_.*)
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     amd-gfx@lists.freedesktop.org, Stylon Wang <stylon.wang@amd.com>,
+        Alan Liu <haoping.liu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>, Wayne Lin <wayne.lin@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Joshua Ashton <joshua@froggi.es>
+References: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+ <CADnq5_PjGmULp42JLcOZy1r-_S0t+FTz5H1MTz55GFcDgJQobA@mail.gmail.com>
+Content-Language: en-US
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <CADnq5_PjGmULp42JLcOZy1r-_S0t+FTz5H1MTz55GFcDgJQobA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: YQBPR0101CA0284.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:6d::23) To DM4PR12MB6280.namprd12.prod.outlook.com
+ (2603:10b6:8:a2::11)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SN7PR12MB7835:EE_
+X-MS-Office365-Filtering-Correlation-Id: ff0463ab-57d0-4cbe-85bb-08db9ff1bce7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vc/pevD9g85pkwLryBVlAdU9UJ74GJlRB6n1GlRSW8Z3wpSNTD2I2q+B0V1kW01HKaqP+ABqd2vNepb1xn2kNEJ7KmhsZybp4WXG42+IfV+wPBw7Mq/8AduQZZNG4aseUGOZN1C2yWC7Ww/XkzuWf0sb7uGBzht5mKsCdl4sX5uIg503hTIM1uj5Q5sfdy8otGHIb5lT7ioMncSaQ8iXaWALXAM8xyu3WoEp9gPeXXM4sX+7zrSLkYRrEphpjUcq6yH9mO2tpiEqnGy1dRm1Y5Ya3Hkj3pjiZaCm9mW2W4xMU3xTyE+/RcsONM1n4f9Bfl/VOw3I+yNgts230rFB0NKPT17I/PWh+Jgrw1uJDalFGH86ViaKtmvBgkl6GtkGqUJ5s90IsLhY6AI4GE7qOy7awhP5AYdBC9RjOcdml74TWt1q0595Sxt+R2s0k9m8PH+qXHHFFH9cN3ZY6LdDU/MeCtuhLTQNjOVnlZPOvjqzhlQTE8LF01PFxZW1BW3dzymlb68/l31BD124HUBhARvWjeQ8i6yzclNTJZtuiqrjIIMAwHn68bWQeU6BhUersVDlfz2iUh2KjSAd00QIbHwhGV3WNZVZ4J/+YVqMMwOLaJqzBz3CcLu0FBpn4u1Gzd9r3PQznfENTVZOw+6d+Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(346002)(366004)(376002)(451199024)(1800799009)(186009)(83380400001)(966005)(66556008)(6916009)(66946007)(38100700002)(316002)(54906003)(66476007)(478600001)(44832011)(2906002)(41300700001)(8676002)(4326008)(5660300002)(8936002)(53546011)(2616005)(6512007)(6666004)(6506007)(6486002)(26005)(31696002)(86362001)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Yk0zR0RJQVJBQnlKcHBLa0ZHYm9KVzV1bXczaHhlVVBQUEVBKzlsOGI0eTBp?=
+ =?utf-8?B?aERTWmg1TEJMNnR0cmh3bEtheU9zY1ltNTBPRHg5M3FlaCtHM2VvYzhIbjFj?=
+ =?utf-8?B?V0RicVF0aDRHUkwwUWVqMUhDNGU0eFlyeUFMbFI0WmpURHZhT285dUZQRFV6?=
+ =?utf-8?B?cTdmWmkxeSs3MHBpeGxGV3EvaVJ2aXBLV1dhUkl6NnU2KzhxT201ZC91Q3Bk?=
+ =?utf-8?B?Z3hYT0xnUkYvMXBvV2dmQU1mZldmUG4wYTVHMHNQbjh1QXJzR3IxV1g5TXlv?=
+ =?utf-8?B?U2NLdkUwdGlnUWl2NmlyaWJLYmtSdXJySHhkTzZWYmJDRmE2WHhPY01TVUo0?=
+ =?utf-8?B?MERTajIrVXVYdGovQVlaV2N4U1lMY3lCRStPUlpMb3NWUEFkT1J0U29qdWFo?=
+ =?utf-8?B?d2RMK3VWSldjb2lmcWV3dTgweVJuNm9GM2orYXBzalR3bkN6Uzc4MWJEVDA2?=
+ =?utf-8?B?dzJtNWtzekUvUnBWSzZPL3h0bHlobkpjOUEzVi8rNGtJb213TEtVdjFSTlBO?=
+ =?utf-8?B?RElhSDBnOTNJZ3hGZXBwc3BMeTF0NXV2anhnanQrdEFqU1NJL1FrSVhUczlH?=
+ =?utf-8?B?cFFiZWpHOEpTTGFFT3p0T2doMW1QeXJod3lXL1hxOTdOSHpJTi9hL3FXVXpV?=
+ =?utf-8?B?YWVSQlJyaXFxZFFRejhWZitFdlFQRjVFQlBUdnJLYndTZlZaSHpQazFjQmla?=
+ =?utf-8?B?Y1F2TFdQMjFyc1pqM01hTS83ZUc3UlExK1lGakZMYVdwVlVvNnVZQjdJQzVB?=
+ =?utf-8?B?d2NmaTZIbUlVRFpJdmlDY09wRlBqUGE2VGtCTm15cXRVRVdjVHNkNFIzZ3hl?=
+ =?utf-8?B?S0JUOW5DaGRobHk2ZDZXdjh1aU5Nd251dlpXenNJSE5hYjNqcXNnS1o4MHpO?=
+ =?utf-8?B?UlZibHR3RHlEdGVzY0RFamx1aENjc1diQlFFQmM1YnV6OHhzZDFreE5NZHR4?=
+ =?utf-8?B?N1JRQkFWcjBWcFljdUdrWitxVURsMXM2bUdsYXhWcnlFVEoxSWdGdjFwR3Nk?=
+ =?utf-8?B?OStFbFAzQU95TThRejVNTDZUTDBTanVUbnFJWDJnVzJvcTA4Q3lkZ1VTVURi?=
+ =?utf-8?B?NWJXTC9hSU92Y2JubGlCb2NoT3JwRUxZQ2xIVzFaTndzcTlLcUxLR3Z5MHVL?=
+ =?utf-8?B?b3BNRkFWWFFqV0dzMnRULzk1elNKSVpWV0c0aEVsUjBCWUQza09YUVVubXZX?=
+ =?utf-8?B?TUpOREZoUHRzQlJCM1o3bm5CbGNhdWFFWE52dEt2OEcrczNxQ0JTeTcwMHFB?=
+ =?utf-8?B?Z2xaeTJkMi9uQmVXSXkzRkxhSXJlNm92L0MvRnVYcmY1WnMwdW15NjM2UkhN?=
+ =?utf-8?B?Sk9pY2E4MjlpaW1yWnVCSGZTM1ppVTBVemhjbTA3TSs2S3RTNjNFN3FzRXhi?=
+ =?utf-8?B?Y2VzaUxvcTRLNDJKMnRhb016dXpjbVZEeDBIOFFLQlJCV3I0UWtadGt0UkFj?=
+ =?utf-8?B?WXdhTzllSTNSSzRHZkVUSWNNZDVOa2dzMmtNN2x2RFY4enJrRDA4aXgyeG55?=
+ =?utf-8?B?VER3L2RFay82dGs3Z3d6NTdoZVFaQjFWRnN5NTRKd0ZZTCtsVGxuMk41MTVz?=
+ =?utf-8?B?WDNkK0w0MmVkNHZ1VjREVXRvWDkvczFMcHZSTGtzUkZ6RkVtQVdIMzVHbHhR?=
+ =?utf-8?B?M0tWODhWeWtybytPbnovamVDaG9BKzZ6NFFXemRFc0QwZVdOWDdyVkZGVU9q?=
+ =?utf-8?B?Tkd4VDBSbmlZSWxabWNaaWFYNFBwNndDcDZZZkFDQlBqdDk2bE5sTnhMOVdF?=
+ =?utf-8?B?ckNMNHB2T1IwaFpkVUdDUkRNU2xjN2h3YUhtclhwT1BjVW1COGNXU3NEWWJs?=
+ =?utf-8?B?eUJGY0hrc1BmN3dIMENoSmxWeEJSYVAycXlEbkVEdUJwSGxPcmdnV1dmSkRy?=
+ =?utf-8?B?RjM1eWNRYWZKaEtiNHVYdzZGUVhvY2ptV1lmb21OWm1va3NuY1UvQ3FMZGw0?=
+ =?utf-8?B?Q0lMV1N1UndLUENrbS93d2NmdGFoWnhjMWVHYkgrZFh3NEd6bVNtdFdmK3NI?=
+ =?utf-8?B?Nk1oV2ZDYnR0NVpLR3c4bThqNEsyQVgwNWlJZlpib3dtdTN2d1pLUDFRcEsx?=
+ =?utf-8?B?eDQzdjVJcDhtVkpwb2V2MjJnenEwZzZuVFFkajhHOHBjeVNGU042Q3BtVDR2?=
+ =?utf-8?Q?gFzUsNTcwJV371zQHxqCSbWjt?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff0463ab-57d0-4cbe-85bb-08db9ff1bce7
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 13:48:00.9807
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wm5NIDqh3UjpcAMymn+VhCmpcyeCuq04sx7BviUP+fu+MK5sEr2bwcmY8iF3mbEGjxnvX0SKGS3xWfVY7O8D+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7835
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023, Yan Zhao wrote:
-> On Thu, Aug 17, 2023 at 10:53:25AM -0700, Sean Christopherson wrote:
-> > And FWIW, removing .change_pte() entirely, even without any other optimizations,
-> > will also benefit those guests, as it will remove a source of mmu_lock contention
-> > along with all of the overhead of invoking callbacks, walking memslots, etc.  And
-> > removing .change_pte() will benefit *all* guests by eliminating unrelated callbacks,
-> > i.e. callbacks when memory for the VMM takes a CoW fault.
-> >
-> If with above "always write_fault = true" solution, I think it's better.
 
-Another option would be to allow a per-mm override of use_zero_page, but I think
-I like the KVM memslot route more as it provides better granularity, doesn't
-prevent CoW for VMM memory, and works even if THP isn't being used.
+On 8/18/23 09:28, Alex Deucher wrote:
+> On Fri, Aug 18, 2023 at 9:25 AM Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
+>>
+>> As made mention of in commit 4a2df0d1f28e ("drm/amd/display: Fixed
+>> non-native modes not lighting up"), we shouldn't call
+>> drm_mode_set_crtcinfo() once the crtc timings have been decided. Since,
+>> it can cause settings to be unintentionally overwritten. So, since
+>> dm_state is never NULL now, we can use old_stream to determine if we
+>> should call drm_mode_set_crtcinfo() because we only need to set the crtc
+>> timing parameters for entirely new streams.
+>>
+>> Cc: Harry Wentland <harry.wentland@amd.com>
+>> Cc: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+>> Fixes: 712237a4a1b4 ("drm/amd/display: Always set crtcinfo from create_stream_for_sink")
+>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+> 
+> Does this fix:
+> https://gitlab.freedesktop.org/drm/amd/-/issues/2783
+> If so, add a link tag for that.
+
+The issue I'm addressing is specific to the colorspace patches (which
+weren't ported to 6.4.y to my knowledge). So, that's probably unrelated.
+
+> 
+> Alex
+> 
+>> ---
+>>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> index 3b27b7742854..e9aff5014e39 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> @@ -6035,7 +6035,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+>>
+>>          if (recalculate_timing)
+>>                  drm_mode_set_crtcinfo(&saved_mode, 0);
+>> -       else
+>> +       else if (!old_stream)
+>>                  drm_mode_set_crtcinfo(&mode, 0);
+>>
+>>          /*
+>> --
+>> 2.41.0
+>>
+-- 
+Hamza
+
