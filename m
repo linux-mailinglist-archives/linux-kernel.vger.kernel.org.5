@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8BB78053F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3B7780541
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357910AbjHRE6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 00:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
+        id S1357915AbjHRE7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348886AbjHRE6f (ORCPT
+        with ESMTP id S1357918AbjHRE7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 00:58:35 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7304358E;
-        Thu, 17 Aug 2023 21:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692334708;
-        bh=HiJA9PezM1HtffiYrXrdhi5mfPzK5Gu36qoqj3y34UQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=eCgz1PPdyt2Jld3CjkYn0XI0yuKWjdUTWTc2gTsfTgd6Os16DtPz/B/yBtHfmTLqE
-         kBJ4yRxp+hYQ4qPLyLPfHOZmeg2IAw8w3WKgd1B36jEj91ogENlyG391wwkxtbT56V
-         YCOSSZjJlEY6y/zbcB48azJrZwC/O6Ob/C3PQluLRzngn/h3pm1tmtXjvWFq8VYKT8
-         F32fYiU1OZHdaTL9yZaNEKFq59AhL8IhvaiHb/i9brBbMFLVaQTWaHWckVp9arYHEq
-         3GT5MaRtMfvD11WFvci6FDP5WKVMMpaAqlvuHvI774qZxPyyKGx3EjNVpyWIu94QBm
-         rCGG3EaDSpVvg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRqQC6MLvz4wxm;
-        Fri, 18 Aug 2023 14:58:27 +1000 (AEST)
-Date:   Fri, 18 Aug 2023 14:58:26 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Michael Ellerman <mpe@ellerman.id.au>
-Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the tty tree with the powerpc tree
-Message-ID: <20230818145826.00c7ead1@canb.auug.org.au>
+        Fri, 18 Aug 2023 00:59:12 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DAE3A8B
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:59:10 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so1111631a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1692334749; x=1692939549;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IbnlWB7AtC2a2bEKPJCs9bv9rfX3lG0Fd+mTh2luRKU=;
+        b=d+3dqYCxWr+0knBcL1d5s6SCPHGNeDKB9ymKzXCHL3nRDWE3bsrY8wESK0+F9h9ew/
+         LkWRvKryPHBr2rrujDKib19+V3NRaIsJHnmbkr2V3khgSB6UZGWSpflaKmYK2gz8Xy3D
+         HHl4ufAoXJWVTXncFUkRkgip8cW5sjKANlda4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692334749; x=1692939549;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IbnlWB7AtC2a2bEKPJCs9bv9rfX3lG0Fd+mTh2luRKU=;
+        b=NR77tyJv/Qy3U6FavtX6meP+qfsveTZLY7cHe+2ustWG3qYtDQMHjZXy2t7HKyFQSk
+         odx1X096RA4+Uy1wRByUlQ8XqLXpNjdUxCotwnRVC82she0BW5O+ftcrrTaJXkuI14zZ
+         cKnCTpbVfA4zY3OG42cni9rbGnaWG0N8BGAYHSr9cGnOqRP500VQpLAqRu1G7kzlOlye
+         Pm+PPXpyv5jIsRGgA/7EyywTW05y/vRksMBn0fTOKyG65sHZKA9XG6y4xHxVCm/sgzQY
+         kaEnEyAoGasKwms6qmwG5qsmvOQqlQnV9sdKyGCTGSRLSCsqTTM9C8ztxUEW3eCfDxz5
+         ZNEg==
+X-Gm-Message-State: AOJu0YzUuqmijZEqJZbOGbrtSVK3ifqresQCk0bnAnkmQe+JRPPXSTAI
+        6pR6Ac005dakqw0ClItgaK678eRL/etmsDZAxg8U2bVv
+X-Google-Smtp-Source: AGHT+IGPh+txaWavGgubgVIwSMGoJtSS9V4+YYjo5ilF6taYMubKCLU1vDaOV3R0qXIz2z2zNgnN/w==
+X-Received: by 2002:a05:6402:26d4:b0:522:ab20:368a with SMTP id x20-20020a05640226d400b00522ab20368amr5658996edd.13.1692334749435;
+        Thu, 17 Aug 2023 21:59:09 -0700 (PDT)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id t26-20020aa7d4da000000b005233609e39dsm618738edr.30.2023.08.17.21.59.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 21:59:07 -0700 (PDT)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so3398735a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 21:59:06 -0700 (PDT)
+X-Received: by 2002:a17:907:7851:b0:993:d632:2c3 with SMTP id
+ lb17-20020a170907785100b00993d63202c3mr1499942ejc.21.1692334746234; Thu, 17
+ Aug 2023 21:59:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+BM+ZDeXTi+uS+L9NKgFyXK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817221129.1014945-1-kuba@kernel.org>
+In-Reply-To: <20230817221129.1014945-1-kuba@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 18 Aug 2023 06:58:49 +0200
+X-Gmail-Original-Message-ID: <CAHk-=wi-DdiZu-zMfE3X5nx4i5farupHmJawz-My_Z2nk9Qkow@mail.gmail.com>
+Message-ID: <CAHk-=wi-DdiZu-zMfE3X5nx4i5farupHmJawz-My_Z2nk9Qkow@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v6.5-rc7
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pabeni@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+BM+ZDeXTi+uS+L9NKgFyXK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, 18 Aug 2023 at 00:11, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> The diffstat is a little massaged here, it's generated from the merge
+> of x86/bugs, I merged x86/bugs on top of our previous merge point, and
+> you already have those, so I _think_ this is exactly the diffstat
+> you'll see when pulling..
 
-Hi all,
+Indeed.  Thanks.
 
-Today's linux-next merge of the tty tree got a conflict in:
+> Fixes to fixes:
 
-  arch/powerpc/include/asm/fs_pd.h
+Heh. New header for an old problem ...
 
-between commits:
-
-  e6e077cb2aa4 ("powerpc/include: Declare mpc8xx_immr in 8xx_immap.h")
-  fecc436a97af ("powerpc/include: Remove mpc8260.h and m82xx_pci.h")
-  fbbf4280dae4 ("powerpc/8xx: Remove immr_map() and immr_unmap()")
-  7768716d2f19 ("powerpc/cpm2: Remove cpm2_map() and cpm2_unmap()")
-
-from the powerpc tree and commit:
-
-  c2d6c1b4f034 ("serial: cpm_uart: Use get_baudrate() instead of uart_baudr=
-ate()")
-
-from the tty tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
-Note that after all the above are applied, it looks like this file can
-be removed completely as nothing in the tree includes it any more.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/include/asm/fs_pd.h
-index d530f68b4eef,7b61b80f212d..000000000000
---- a/arch/powerpc/include/asm/fs_pd.h
-+++ b/arch/powerpc/include/asm/fs_pd.h
-@@@ -14,14 -14,26 +14,4 @@@
-  #include <sysdev/fsl_soc.h>
-  #include <asm/time.h>
- =20
-- static inline int uart_baudrate(void)
-- {
--         return get_baudrate();
-- }
- -#ifdef CONFIG_CPM2
- -#include <asm/cpm2.h>
---
-- static inline int uart_clock(void)
-- {
--         return ppc_proc_freq;
-- }
- -#if defined(CONFIG_8260)
- -#include <asm/mpc8260.h>
- -#endif
- -
- -#define cpm2_map(member) (&cpm2_immr->member)
- -#define cpm2_map_size(member, size) (&cpm2_immr->member)
- -#define cpm2_unmap(addr) do {} while(0)
- -#endif
- -
- -#ifdef CONFIG_PPC_8xx
- -#include <asm/8xx_immap.h>
- -
- -extern immap_t __iomem *mpc8xx_immr;
- -
- -#define immr_map(member) (&mpc8xx_immr->member)
- -#define immr_map_size(member, size) (&mpc8xx_immr->member)
- -#define immr_unmap(addr) do {} while (0)
- -#endif
---
-  #endif
-
---Sig_/+BM+ZDeXTi+uS+L9NKgFyXK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTe+nIACgkQAVBC80lX
-0GzCmQgAmP3nmQ0ZuhAn8IAop29hDMJ9UIpuvTIwLrXrmFIXo7tWOGa116pQxFkl
-0+kFmuWcpAjEzbupP8Xu5c5EqY6mVifAySJuqQqievs0dFnEG5lVTgYLNjwGuOKP
-/2dhd9+mJDRJkTWe0i5soJwntBy/gFIsjB2/0Ce1y9SA+qf4RZAWHUOfA4CiB4Ym
-W1XErJP6WQyd75iLxojA3T+XYMGZv/I5OMrR2/o2i+i36zfphHpZiU/mZ930gtPy
-jHq5X2H59AzBgpt5AXyLxCt2uXoqrXaBqoNg+huyOMeZEVipRcXJwI3Pb1G3AiEr
-w6HanKvuBhq802YphvwzmSGclzDHSw==
-=Y4Re
------END PGP SIGNATURE-----
-
---Sig_/+BM+ZDeXTi+uS+L9NKgFyXK--
+                Linus
