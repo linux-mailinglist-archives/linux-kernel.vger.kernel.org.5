@@ -2,168 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3629E7802A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CFC7802A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353052AbjHRAPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52462 "EHLO
+        id S1356702AbjHRAQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356717AbjHRAPH (ORCPT
+        with ESMTP id S1356786AbjHRAQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:15:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AD32723
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:14:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D4B5B62DE6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:14:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 370FBC433C8;
-        Fri, 18 Aug 2023 00:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692317683;
-        bh=xQZeNLubnblVJt+8p5dRVcAKIMGTMir+chTN0oqb6Bg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=FBHWVlBRIWnj2iPVIIW2BKUiFSupKC6OnL4qqNKlTop6vU41IeoLO6LuN/YVy1xud
-         UQdayxu6IaxqO1WLJ/tg8UVF0O/xsK/eQGDEiyAlJnjeh/MNmEhWLdPRlqxaev9tXg
-         b27i1/7japIztAkcGpiDherpbIFUW1oJ/2gASe5dMVduYDadKdFXoLmwSofwCDEqkn
-         I+uw2V3FcpCNETCMRV8yssbJFy7oNa9tAcUeZ/MT/5CdhxO23GTrBBsJgSmsqY+adW
-         ujoGNxSyFRcHYhdVaBAuRL+YFfX9/anPl/vW12RTYWbzCYfR9kFs5SDp/zIzjRqQmo
-         19EKRRx/BroAQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id B7264CE0EFD; Thu, 17 Aug 2023 17:14:42 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:14:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Liu, Yujie" <yujie.liu@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        lkp <lkp@intel.com>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>
-Subject: Re: [paulmck-rcu:dev.2023.08.14a 49/51]
- kernel/rcu/rcutorture.c:24:10: fatal error: linux/rcu_notifier.h: No such
- file or directory
-Message-ID: <2b23fc83-339a-44f6-850d-f90436beb92c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202308160930.YEekR3Wf-lkp@intel.com>
- <a5fa35dc-6244-41ef-9f5b-08aa497d9a74@paulmck-laptop>
- <63593d36f4bfb665fb7e62733114d2c5e3d3f873.camel@intel.com>
+        Thu, 17 Aug 2023 20:16:05 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D033FE;
+        Thu, 17 Aug 2023 17:16:03 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso316946a12.1;
+        Thu, 17 Aug 2023 17:16:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692317763; x=1692922563;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2dZC6I9263vVrfc1sUtjjkPmfW6/RSeek9PprIZRkEM=;
+        b=lKELf2czkVnZlHfQA9i7vJNnNd5DC6dKqaKgqW+COsja4jbtVzN6FZICcKsO/YbIx+
+         qJ2TZvjXUjdEUFTtpnEC2AlUCmyUEm527LdRXAY3IYSkmhmpl3E5XpajIvZ5+124JzOR
+         q9TTd79Bg4vQhDiU+CVBvceMBQp5AtBYPk8Y7MOPVV/16HvU46hiYPSksEQ2v0UccD+/
+         +Zi8+MZLIyb838yZ0fJWUBKe7lfiAV5PSZDVQX8PzbCJxDcHfrliaX9I9d9W4QvXwQUY
+         sHdNuKOtGP6pX6Gl8fjSHqJHYSV+vlvGsKX1C6tvRsL3sVhQeS49OVc4CVV0BAdcP4eV
+         Xdxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692317763; x=1692922563;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2dZC6I9263vVrfc1sUtjjkPmfW6/RSeek9PprIZRkEM=;
+        b=UJme/ldLq1xVwX5GPpM/DEur6vrJNy4LaFMiqCmsuLVAYfUVzOmN4OUbPUQsEn0uIE
+         4gibQER7HvMFP7CkKvGmaokac0b1Gpw0kD5UHVRyAoeq+H2dOk6i3mKwNk1vJyKvnzRg
+         N87QiTPFFqV1WCwCcUHWfz/Do/VmLWxrawuvKM6V88FhbxayxY7bcrcDOtgiIqkteOCj
+         7gzgSmKGlWZZ7BaNYzRpchD3e1CFR2+nqYH57V/DYf42yTXMZqEQ9BUTWlNEAk66D8FH
+         FIgvqSwzyEO+VS3+QXCpOejEt3q2m8PqvkeRN84CX5k78X6GlLtzpUsL4cIuW9/1ijFM
+         Z2NQ==
+X-Gm-Message-State: AOJu0Yxyg7d9osQ+znhXUV5QlOS+u9XCpEumXjxQAv2TtitL/I59jofh
+        tKKWw/OHyo85KZXDhFnnBMvWPMwe15nluRnnWu0=
+X-Google-Smtp-Source: AGHT+IGlFGWDpYqKetUPlFM7ih87U7uJrfuNsmPwe6MMJ3aFK5QnSp6xSXMhlZfeGV6t6Axn+3XYIy2J3cqAYS+M8hE=
+X-Received: by 2002:a17:90a:bf02:b0:267:f1d0:ca70 with SMTP id
+ c2-20020a17090abf0200b00267f1d0ca70mr992707pjs.47.1692317762928; Thu, 17 Aug
+ 2023 17:16:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <63593d36f4bfb665fb7e62733114d2c5e3d3f873.camel@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Fri, 18 Aug 2023 02:15:52 +0200
+Message-ID: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
+Subject: dwc3: unusual handling of setup requests with wLength == 0
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 08:05:10AM +0000, Liu, Yujie wrote:
-> On Tue, 2023-08-15 at 19:19 -0700, Paul E. McKenney wrote:
-> > On Wed, Aug 16, 2023 at 09:55:30AM +0800, kernel test robot wrote:
-> > > tree:  
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
-> > >  dev.2023.08.14a
-> > > head:   a90c4cbc91475bd5df35f712a954972fbfff40a1
-> > > commit: 37730a9ba11627b63d8108dd8b3061ea2ee04df9 [49/51]
-> > > rcutorture: Add test of RCU CPU stall notifiers
-> > > config: sh-allmodconfig
-> > > (https://download.01.org/0day-ci/archive/20230816/202308160930.YEek
-> > > R3Wf-lkp@intel.com/config)
-> > > compiler: sh4-linux-gcc (GCC) 12.3.0
-> > > reproduce:
-> > > (https://download.01.org/0day-ci/archive/20230816/202308160930.YEek
-> > > R3Wf-lkp@intel.com/reproduce)
-> > > 
-> > > If you fix the issue in a separate patch/commit (i.e. not just a
-> > > new version of
-> > > the same patch/commit), kindly add following tags
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Closes:
-> > > > https://lore.kernel.org/oe-kbuild-all/202308160930.YEekR3Wf-lkp@intel.com/
-> > > 
-> > > All errors (new ones prefixed by >>):
-> > > 
-> > > > > kernel/rcu/rcutorture.c:24:10: fatal error:
-> > > > > linux/rcu_notifier.h: No such file or directory
-> > >       24 | #include <linux/rcu_notifier.h>
-> > >          |          ^~~~~~~~~~~~~~~~~~~~~~
-> > >    compilation terminated.
-> > 
-> > You would think that I would remember "git add".  ;-)
-> > 
-> > Does the patch below fix things up?
-> 
-> Yes, the build error is gone after adding the new header file. Seems
-> this fixup patch is already included in dev.2023.08.15a branch :)
+Hi Alan and Thinh,
 
-Something about my having hit it when pulling the commits onto the
-test systems.  ;-)
+I have been testing Raw Gadget with the dwc3 UDC driver and stumbled
+upon an issue related to how dwc3 handles setup requests with wLength
+== 0.
 
-							Thanx, Paul
+When running a simple Raw Gadget-based keyboard emulator [1],
+everything works as expected until the point when the host sends a
+SET_CONFIGURATION request, which has wLength == 0.
 
-> Thanks,
-> Yujie
-> 
-> >                                                         Thanx, Paul
-> > 
-> > ---------------------------------------------------------------------
-> > ---
-> > 
-> > commit 2b7e462695eee212f81f7000af4f4af2523ece35
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Tue Aug 15 19:17:50 2023 -0700
-> > 
-> >     fixup! rcu: Add RCU CPU stall notifier
-> >     
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > 
-> > diff --git a/include/linux/rcu_notifier.h
-> > b/include/linux/rcu_notifier.h
-> > new file mode 100644
-> > index 000000000000..ebf371364581
-> > --- /dev/null
-> > +++ b/include/linux/rcu_notifier.h
-> > @@ -0,0 +1,32 @@
-> > +/* SPDX-License-Identifier: GPL-2.0+ */
-> > +/*
-> > + * Read-Copy Update notifiers, initially RCU CPU stall notifier.
-> > + * Separate from rcupdate.h to avoid #include loops.
-> > + *
-> > + * Copyright (C) 2023 Paul E. McKenney.
-> > + */
-> > +
-> > +#ifndef __LINUX_RCU_NOTIFIER_H
-> > +#define __LINUX_RCU_NOTIFIER_H
-> > +
-> > +// Actions for RCU CPU stall notifier calls.
-> > +#define RCU_STALL_NOTIFY_NORM  1
-> > +#define RCU_STALL_NOTIFY_EXP   2
-> > +
-> > +#ifdef CONFIG_RCU_STALL_COMMON
-> > +
-> > +#include <linux/notifier.h>
-> > +#include <linux/types.h>
-> > +
-> > +int rcu_stall_chain_notifier_register(struct notifier_block *n);
-> > +int rcu_stall_chain_notifier_unregister(struct notifier_block *n);
-> > +
-> > +#else // #ifdef CONFIG_RCU_STALL_COMMON
-> > +
-> > +// No RCU CPU stall warnings in Tiny RCU.
-> > +static inline int rcu_stall_chain_notifier_register(struct
-> > notifier_block *n) { return -EEXIST; }
-> > +static inline int rcu_stall_chain_notifier_unregister(struct
-> > notifier_block *n) { return -ENOENT; }
-> > +
-> > +#endif // #else // #ifdef CONFIG_RCU_STALL_COMMON
-> > +
-> > +#endif /* __LINUX_RCU_NOTIFIER_H */
-> > 
-> 
+For setup requests with wLength != 0, just like the other UDC drivers
+I tested, dwc3 calls the gadget driver's ->setup() callback and then
+waits until the gadget driver queues an URB to EP0 as a response.
+
+However, for a setup request with wLength == 0, dwc3 does not wait
+until the gadget driver queues an URB to ack the transfer. It appears
+that dwc3 just acks the request internally and then proceeds with
+calling the ->setup() callback for the next request received from the
+host. This confuses Raw Gadget, as it does not expect to get a new
+->setup() call before it explicitly acks the previous one by queuing
+an URB. As a result, the emulation fails.
+
+I suspect this issue has not been observed with other gadget drivers,
+as they queue an URB immediately after receiving a ->setup() call:
+dwc3 appears to somehow correctly handle this internally even though
+it acks the transfer by itself. But the timings with Raw Gadget are
+different, as it requires userspace to ack the transfer. Sometimes
+though, the Raw Gadget-based emulator also manages to queue an URB
+before the next request is received from the host and the enumeration
+continues properly (until the next request with wLength == 0).
+
+What do you think would be the best approach to deal with this?
+
+Can this be considered a bug in dwc3 that should be fixed? There's a
+seemingly related comment in dwc3 code [2], but I'm not familiar
+enough with its internals to understand whether this is what leads to
+the issue I'm seeing.
+
+Or should I adapt Raw Gadget to handle this unusual dwc3 behavior?
+This might be tricky to do, as I cannot change the existing userspace
+API.
+
+On a side note, as an experiment, I tried returning
+USB_GADGET_DELAYED_STATUS from the Raw Gadget's ->setup() callback if
+the UDC driver calls it too early: some UDC drivers, including dwc3,
+appear to contain a special handling for this return value. However,
+that didn't work out. Perhaps, I misunderstand the meaning of this
+value.
+
+Thank you!
+
+[1] https://github.com/xairy/raw-gadget/blob/master/examples/keyboard.c
+[2] https://elixir.bootlin.com/linux/v6.5-rc6/source/drivers/usb/dwc3/ep0.c#L145
