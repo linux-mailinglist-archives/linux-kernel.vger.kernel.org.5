@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F22781400
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9147E781402
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 22:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379848AbjHRT7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33092 "EHLO
+        id S1379862AbjHRT7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379856AbjHRT7Q (ORCPT
+        with ESMTP id S1379865AbjHRT7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:59:16 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C7C35AD;
-        Fri, 18 Aug 2023 12:59:13 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7C8FD60002;
-        Fri, 18 Aug 2023 19:59:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692388752;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q9WQ4s+hROk+ahs4ROvh5ESGeMbt5mmR8H5xOLugL5s=;
-        b=ZiAXgzeTTaj5OwCo1sItpPbJtBXQctG9Gstnj8B/OYpBy8tcmSbPkitg18sxNxqPcR3CDX
-        GaGh0SUiVO1ccAEwAtBgUcjoXfyOj40NAntN7HJV+PWGNB0Ce8kSBLFBtt3GyR6slsYMqI
-        oajWAa6r8Sk4837o5n3pZy1aBp62ALz2ourz89jL7J6Gqzo15SRc/G0Q0XcH/IZG8Uq76V
-        dzpgJxtVpWWCWoSr1OAR7yg0zEyOc8xSH/qFOzh1vHijQJMLHOziJJYPXDqFlqDDhQ/QMI
-        QuyOT4WIEw5m97H10IBSZ6HqxegL2sC4sUF7J9dVmFW7B9dGVCy0HaSp1pmGmg==
-Date:   Fri, 18 Aug 2023 21:59:08 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Md Sadre Alam <quic_mdalam@quicinc.com>
-Cc:     mani@kernel.org, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH 1/3] mtd: rawnand: qcom: Update read_loc size to 512
-Message-ID: <20230818215908.0e60b00b@xps-13>
-In-Reply-To: <20230818145101.23825-2-quic_mdalam@quicinc.com>
-References: <20230818145101.23825-1-quic_mdalam@quicinc.com>
-        <20230818145101.23825-2-quic_mdalam@quicinc.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 18 Aug 2023 15:59:38 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F0BF1706;
+        Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso20178621fa.1;
+        Fri, 18 Aug 2023 12:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692388775; x=1692993575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
+        b=niC/NhGgJdLzQDWhJ35lBiET52DjSLPJEHDaV8oJKza+nvvCv0soQR4Au1Eh+snuz4
+         H7OJ4oUMO83aS4/U38gA8ZSdKe66xDnyJticxRTZzXvDJ3fEWB6tUNmJjCE040S8m33K
+         uAvRRes5EjWuooXZwmzV/12pm3BfRSc2HdrZ3ESOd8klSSPuaS6zxufdlRq2bciM1K2Q
+         SFbZenKSnjpT+bqp+n92OX7mXjDWoWsXI0G8xt0/CwmdQi3NCIXtNz/EcdWy26UMmLjS
+         xAOF5Ca2Wouf+rce5ghWNZpCgGUGqJc1HAM0PcZjBQhfofUciDanhqh1phmBImQgs0Kv
+         7aZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692388775; x=1692993575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qZnDLKTm+Vz68wW+NpBJGQv7K7EuvgOHLUSeyXNlCjo=;
+        b=AlpbSGsw6rcddBgpsNb4EgqXtq+BrC2LA492SGARF3/uTiwLKx1pb0sz4jYgCZQwIw
+         Hivnow52eY0aC1vVSr9b512+5AVX4lwgXonlTPj8fbAmFjEMaqc3edo4ZnG/y+1IyThT
+         haA8TdYX42zFuKD+AviXkAaOASvPrqUKD/VglpDhetj9W5lj1TSjARhew8gRPMy2weeI
+         ZTJ/eXht1CujY6VyU0Cb8JQI79Iomb806Rv652mARgW7tjvuaEzzbS/jkJn1x38EX7Cr
+         YrkGk96i8Zlru1QjnJLKoXqE3BDszHp6UKm9OPgxp7e3dt3zfz750AoRnCFEd4XEdo+L
+         xPMA==
+X-Gm-Message-State: AOJu0YxKhMfFxtJ3jRB2zh5CTGTnMoY9wHgmkU00YPPJkWioT4nHaKKJ
+        9dnZ3NxxckKEmOqD/3EB9pQH8+VHire+k5P6LoVdiXEK
+X-Google-Smtp-Source: AGHT+IHRz6m/oi/P/iekiR7QjNjXfP8gYDO4z7yafhS2Tyrt9xR/S/WYMg/RvhUJls4YXcHCJe7016jERHdPLHqvb0Y=
+X-Received: by 2002:a2e:3505:0:b0:2a7:adf7:1781 with SMTP id
+ z5-20020a2e3505000000b002a7adf71781mr175907ljz.2.1692388775263; Fri, 18 Aug
+ 2023 12:59:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230814134147.70289-1-hffilwlqm@gmail.com> <20230814134147.70289-2-hffilwlqm@gmail.com>
+ <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com> <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
+In-Reply-To: <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 18 Aug 2023 12:59:24 -0700
+Message-ID: <CAADnVQKVKPpbMNV9XNc+yJCuaWRupsB5EBjghv++jGqYTnv6QQ@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
+To:     Leon Hwang <hffilwlqm@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Md,
+On Thu, Aug 17, 2023 at 7:10=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
+>
+>
+>
+> On 18/8/23 06:31, Alexei Starovoitov wrote:
+> > On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
+> >> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+> >>      struct module *tgt_mod;
+> >>      const char *tgt_name;
+> >>      const struct btf_type *tgt_type;
+> >> +    bool tail_call_ctx;
+> >
+> > Instead of extra flag here can you check tgt_prog->aux->tail_call_reach=
+able in check_attach_btf_id()
+> > and set tr->flags there?
+>
+> Should we check tgt_prog->aux->func[subprog]->is_func? Or, tgt_prog->aux-=
+>tail_call_reachable
+> is enough?
 
-quic_mdalam@quicinc.com wrote on Fri, 18 Aug 2023 20:20:59 +0530:
-
-> For parameter page read upper layer is passing len
-> as 256 bytes and if we try to configure 256 bytes
-> size in read loaction register then subsequent bam
-> transaction is getting timed out for 4K nand devices.
-> So update this length as one step size if its
-> less than NANDC_STEP_SIZE.
->=20
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
-> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
-
-I'm fine with patches 2 and 3 and will take them. But this one does not
-seem legitimate. I don't like it. Are you sure the ECC engine was not
-enabled when it timed out? Default should be having the ECC disabled
-and it should just get enabled when you need it. There is no reason
-why, specifically on NAND devices, it would not be possible to read 256
-bytes.
-
-> ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
-m_nandc.c
-> index d4ba0d04c970..413e214c8e87 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -2885,6 +2885,9 @@ static int qcom_param_page_type_exec(struct nand_ch=
-ip *chip,  const struct nand_
->  	op_id =3D q_op.data_instr_idx;
->  	len =3D nand_subop_get_data_len(subop, op_id);
-> =20
-> +	if (len < NANDC_STEP_SIZE)
-> +		len =3D NANDC_STEP_SIZE;
-> +
->  	nandc_set_read_loc(chip, 0, 0, 0, len, 1);
-> =20
->  	if (!nandc->props->qpic_v2) {
-
-
-Thanks,
-Miqu=C3=A8l
+Please let the thread continue to a logical conclusion before resending
+new version. Will reply there.
