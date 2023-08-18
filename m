@@ -2,290 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACD0780C3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E7C780C45
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377003AbjHRNGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        id S1377020AbjHRNI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376991AbjHRNFo (ORCPT
+        with ESMTP id S1377011AbjHRNIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:05:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B44B3A9A;
-        Fri, 18 Aug 2023 06:05:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 224FC626C4;
-        Fri, 18 Aug 2023 13:05:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55320C433C8;
-        Fri, 18 Aug 2023 13:05:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692363941;
-        bh=ST8aoYDt4cxO6YEU5/qRzZ0HaZMR0ytBs56r1s7+yh8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gV4/yET9sR/jTp3PcUeivMmVkMqlnAjDBosXqT+51t4DVqYFogfIDynb60uf+P6yG
-         /M+YvcpO0OFaVO5y9egdDuvQcP2nV7HUk2MnY6dZz6Tusgf0Z3A8Vq9zARcYkyCMnr
-         BjJOJNR/QyYVIBlJkyMOKoc2wtKaSICFc9b4Ws6q2wCo9sZ+TL7saZ9ocEllnZgh9B
-         /r64/SVV2U23jmlnG4kjMSa2ZazXnVgkyIz/AkTlJv2bRQ/ua6kVPDdvhQi9UZ1+kk
-         BeSrNJdZfpGQ3QGgs1avRlGBi1O3KJEVHQ34eCFqyKq1MzuBDAcqeSXEqmB77QJtBr
-         B25bO2vOieWXA==
-Date:   Fri, 18 Aug 2023 22:05:37 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-Message-Id: <20230818220537.75ce8210c6a4c80a5a8d16f8@kernel.org>
-In-Reply-To: <2154216.irdbgypaU6@pwmachine>
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
-        <20230816163517.112518-2-flaniel@linux.microsoft.com>
-        <20230817165057.bd073da472851462e30ef145@kernel.org>
-        <2154216.irdbgypaU6@pwmachine>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 09:08:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C4F82710;
+        Fri, 18 Aug 2023 06:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692364096; x=1723900096;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=cCTQAVHcYqMI1mo6vHQN1+igemZZbdQbCvlMZ/ueeEQ=;
+  b=KNpyqpjzrYGI0VzHQa/T2oRHvnKIpd+vosys8Ikj/alnOy1C09h7XVrb
+   e9Esziael0ePJye4xSt69qGTGCCmPrNdbtLjO8DSsXpbKcmhtlwdM52J2
+   bDSzjysGBQRUKZAsKSndExaoy08teiUlbs3egzgyRJfp7zawpoNN5c01u
+   ugk6RnC9eRTmwVdlbScPQNlYBPULU1Ydwucb4ajdm5Xi+Vk4aV2s6k0AE
+   5DHFf21jMZr025JMIpgC3EpElLDXx1J5czQ2fZlJoIbjchVua0aYgNipu
+   086Ioh2nQ2WN1IV3FlxNeO6ldhADamDMb7I9VBx09ApsNJf9uor4X9+rF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="373078903"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="373078903"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 06:07:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="728601035"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="728601035"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP; 18 Aug 2023 06:07:19 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 18 Aug 2023 06:07:19 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 18 Aug 2023 06:07:19 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 18 Aug 2023 06:07:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q/GglYvx0p+3CAG3zRDq4SKWOJAFesJFzVIFDc7a0PmQtXMXBTnGVVi1bY6/M3pPlLRClhmU80cz5xYyr8u+MbhI8y8F6BJ+tNI6YPIK5KoTKT6Hw6resjPElVLGsl/bFvGgEN/mMJMXCHy9qC5ScMjmiAwgCRwQfFVy8DuUCSR9NeTQohSlFk2bM6599YIbarWC6s53dTGBPCYfy19EIm0Nz8fu6CsSEWd3Qg2di8gb7CDYRNpYOduqLovZ7KI4LNd8HrzhiRpMtlVHX5T+Jl5mEVi7EZmnb7Rg8ERsvPTyKPzxvag1WAIE3/DSB+jRLQZdk2R3BKPArr2ULPMBXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cCTQAVHcYqMI1mo6vHQN1+igemZZbdQbCvlMZ/ueeEQ=;
+ b=mqdBgBZ/D84RTzjdGvJ+0wRn4WOTnUc6j+uh4750v1D+G8GOwVmnLioac3v2L1sszyIAnrv+URxv2PynZLs71nVCbuj7UNmAnodFLMjrWBm0JWFh4KFTuP54C/khTGZYsbOirXIwV3cv1A3A4exnfSVir/+djah+6zOsRTP1T3E4WNSfEizXQg4HWSh/5anomrbDePOiOVK+xsFw5aqaUmS9uDgZWuKqMCxOYrK4Mda0RzfUHKPY7o3DvvN0ctR0KLdf369bdsglVyYdJFXLmkZ9QTCGKvk3ZO+9Ol/Fb0I/nkrJeHwu2DiHkPvj3JgTKMTZhSfgG00UGMqs4tIcUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by MN2PR11MB4758.namprd11.prod.outlook.com (2603:10b6:208:260::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 13:07:15 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::980d:80cc:c006:e739%4]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 13:07:14 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Van Bulck, Jo" <jo.vanbulck@cs.kuleuven.be>
+CC:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH 4/5] selftests/sgx: Ensure expected enclave data buffer
+ size and placement.
+Thread-Topic: [PATCH 4/5] selftests/sgx: Ensure expected enclave data buffer
+ size and placement.
+Thread-Index: AQHZvlArjuImLhHIgU6DlMvo5rqhNK/PlE6AgA8VxgCAEYMYgA==
+Date:   Fri, 18 Aug 2023 13:07:14 +0000
+Message-ID: <4022cb20af2759d0e71f72a1b4161b3e43181bca.camel@intel.com>
+References: <20230724165832.15797-1-jo.vanbulck@cs.kuleuven.be>
+         <20230724165832.15797-5-jo.vanbulck@cs.kuleuven.be>
+         <CUE1R4HRQ599.1BX4CEIPSDWRW@seitikki>
+         <a2732938-f3db-a0af-3d68-a18060f66e79@cs.kuleuven.be>
+In-Reply-To: <a2732938-f3db-a0af-3d68-a18060f66e79@cs.kuleuven.be>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|MN2PR11MB4758:EE_
+x-ms-office365-filtering-correlation-id: 9ca10951-6781-4a48-bacc-08db9fec0ae3
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xgmKhHsqkdVIREyGrVxt6v7TmgaUiEHW1xfqepM2BlMZBNxnRjTwMoqpl0AzoG2KT6KZ0tJYVJSKLGFhP9TwxHi38YrdtdycV8Wi/9MoeG2I9ESepC2EF41EkGrjQoS8RYBT/L0KgcGliYYoYUNEXaIPF5adWHFZuA5oQ0JnM74pDAsu3yHfJQDcmFXum/sCmICo2fO9sUZNMgibbbJKz4UOnmEmy3fh/JV9JFPtuAzhl7SFKBCCeXWj8/aRVL8nL2TtmhEwSpdxkMf5XjIsTHjd27pFXRiMHL2TmKiL6FrTVd2ztRW3yitLHGQqBQneaPXbmbBo5UQ3w89jQmKMyiA2WtqB13G80uvCUaIocT34VvtNqolIbfa018oq3UcBHr5QZHmkm4ToDDWS6RefJ2fJl/5pKSZ4MaDVYebrmS0jXNQ9yi6HluwCuoIzv8iKNEs54gAWkfP6LY1u1yHo3KF98+3CsyW5Rf9QNQrnDB2HxySUO9jw8+HBap2Cs18dbbVPrMfI+HraDHsQq1i1GCtcdCGHGm3SsThRYcmG8zLj3LIhZDLhJS3yVW/uLM9rQLU9UuxvRLg+TRVPNnvKTFlMQblIDsFsS/ezD66M81A=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(366004)(376002)(396003)(186009)(1800799009)(451199024)(6486002)(71200400001)(6506007)(38070700005)(38100700002)(6512007)(122000001)(53546011)(82960400001)(86362001)(26005)(83380400001)(36756003)(2616005)(2906002)(64756008)(66946007)(66476007)(66446008)(66556008)(316002)(41300700001)(110136005)(91956017)(76116006)(5660300002)(8676002)(4326008)(8936002)(478600001)(966005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dFc2WEIvUzEyRGo3K2FURHV1MUJhenRpZjJtK2hHYzJpK2llYXNFYXdnRDND?=
+ =?utf-8?B?WnlRQUFOTUJVQ04wb3l3dXFSaE1iMGVHdGNEbHRJQzFCbzRPbnR0ZCtqQUdO?=
+ =?utf-8?B?YTZFbmZaZHQvRU82YWVXZUFVa1lUeVp5WmVWOUZtOGlxaG5XQ1pxVXFUdDVB?=
+ =?utf-8?B?WEFZMmN3U3ROTC8vT3MxaXh0UkxGWlh0cW9aNS9vK0h6THpYUW9CTEQ1cXJH?=
+ =?utf-8?B?cG9PSUJMcHVWeXZ1aVVvN25OMnNWM1JaamxReXY5N0UydlBUNnR1eVZRVG5u?=
+ =?utf-8?B?U0tBU0toK1pwVG1nWlZUM296SlR3bVpoeUxaUTd0VEljRWpEa1RQMG9ENkZp?=
+ =?utf-8?B?aGVSUkR4NVpvZWMxSHVWd3lnUDFGVUVZWW5yMFM3TWpvL2RiZEtZdStWVVVJ?=
+ =?utf-8?B?SzFrSzhYNzdHZUJlQldsRzN5YXl5ZGc0SndKT2crbVdiWkxiMkFnQ3lZdklE?=
+ =?utf-8?B?VEdlTGwxcVFXNExHb2p6K2RJMHFjQTBEY3A5SUhtUWxIL2Z3NkRPdE5MWWR1?=
+ =?utf-8?B?MWZEWkpZSkcrU1NmVzE4OHJ4MjEwWEI4SWY1aG9ic2UyQXpxUzMvMkxpK1JF?=
+ =?utf-8?B?SGhSZ2NJcCtKRkQ1ZVdQRXI4eXExeG1oSTdUWFBnRmxmMmdBZnB4WkNGT1VP?=
+ =?utf-8?B?R3I3L2txelplVzNyRjBsRTNEM3ErR01IVDU0dU5qMkFzVndCY0p0MUVjd0RJ?=
+ =?utf-8?B?NEpmL3BEekxYOUdZNXZYZE9wV3RCQjRUb0pjZCtUWU5IRFVDdGRCaEg3MnE2?=
+ =?utf-8?B?L0tDYkFIVnVHSExWVzZWa3FSQUdpcE1ySHc0dXFCaEVuY3BEUDg2NUQ4ZGR5?=
+ =?utf-8?B?T29wdFNEaFJSa1FHYUF1N3NROXJXbWRqcEh6alBLcGpLM1BmNExxdUwvNUFt?=
+ =?utf-8?B?R2E1MFdMYzhJZjVlNW5tSGY4Z2hvMFMzRUVZbXJ6b3RaL0VWOVFqWjVQWkRy?=
+ =?utf-8?B?cHBNWkJzN1lFckhyR3l3QVZGNmhGQWxwcllxcVFZaSt5MjUxQVFEdThveENh?=
+ =?utf-8?B?TjVYVWEwRGZSbktGRkZLbWs4N3RsSDVVRDhkdzdkblYvOXZ4NVhFbyt5QUhr?=
+ =?utf-8?B?N0VMUnh5TU9oSUJXOE00RTFDME5HWGxVYWVUTVBiaEdIekFueVdOeXNDalVG?=
+ =?utf-8?B?MjByQ3BuVGM3ZkV4U0F3N3NVaUZYekN1NWpKUzBRb3ZUWUhma1JBdE9POXdO?=
+ =?utf-8?B?cXJaTzZ4U2RoMU9FL1QyVjlYamgzZGlhbER2R0lmVmtiYlpiT0ZvQklmZURW?=
+ =?utf-8?B?UEdqQncxNHhiMGlnS01pVGhqa25xa2YvbUU5c3MrR0ozc3FpR2NlZVM2QnNH?=
+ =?utf-8?B?ak5KdSs4WDBaTzRKSjJnZlV2M2x6QkRwbUQvWDJQMDIzUVNPUVVPMm9XRitW?=
+ =?utf-8?B?dEN0N0hLSER1UVo5eG04QmNFRVgxWjlpVVBxNWZqZmJsK3Q5d0EyY1hHM2dp?=
+ =?utf-8?B?SEo3bE1BYmxwZW1vVXEzRVFMZ1RLZmJ2Q0dIanNoV0c5VjhWbEJuNlFTZC80?=
+ =?utf-8?B?UXM5WFJEZGdocFBiTzQyait0dTVwM2RnU05VeHhZZFE0NVE0NTdxTVU2dW90?=
+ =?utf-8?B?ZktlZXp1czhqYnZTMFRYdmMvY2hGbHI2V09YY2liVE1UMDJGUmZnSWVkcUtY?=
+ =?utf-8?B?SlF4WlBVYzNwK1BoTzdDR0xDalFwZDVLeFppRStJdnVzZmdNOWRhZVRNYmlj?=
+ =?utf-8?B?UnY4cThzanZ0bnhsNE5BNlhsWkNVK2h2SXg2bDlEUHU0SmNja2U4NjljZ3Fx?=
+ =?utf-8?B?MTcxVCtaSVN4QTdTT0hrcmJIdWhFWTRaNXBqL3NtenVLM1Njc3BWOVFGdzRC?=
+ =?utf-8?B?U1lPVk5MdEFMR2xLRXA4aXJpWGxld3VudHJHTDE1WkpEWGFsTnREYmFSY29n?=
+ =?utf-8?B?VzY4RkIzWFArOEF1V3Y0T3d6WVRJTGtMTG91M0FleUxTZFFGeE44NitmdTBU?=
+ =?utf-8?B?K09qd0JRcXdaMjhsZlR0eGRPeHZIeEZQRk5PWkZ0ZmYrMG16QnVrU1FvUC84?=
+ =?utf-8?B?Qk5DVjkxZzlqVVhudUpITklxMkN6ZndnaGV5NkJSYjlaZTBPY05XdDdmcTBK?=
+ =?utf-8?B?RnFTOHNOd2NnekFvRmtPT1VZQi83N2hscnIyU0ZsbG5sUHRyc1B2Zk0vQ2d2?=
+ =?utf-8?Q?NgABtnNwV6OQcyWDQhsANYWyI?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D349049A0796AE49A9C1453E1E2CB781@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ca10951-6781-4a48-bacc-08db9fec0ae3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 13:07:14.6368
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0CZ2/0GHxFWD/cb/QlcYHRFBJwYdubqMVTQh1M18gItuhPzJfCOoWFdAbz8im7OfN5U2uItZAdoVr+G0Ja0R+w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4758
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 13:06:20 +0200
-Francis Laniel <flaniel@linux.microsoft.com> wrote:
-
-> Hi.
-> 
-> Le jeudi 17 août 2023, 09:50:57 CEST Masami Hiramatsu a écrit :
-> > Hi,
-> > 
-> > On Wed, 16 Aug 2023 18:35:17 +0200
-> > 
-> > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > When using sysfs, it is possible to create kprobe for several kernel
-> > > functions sharing the same name, but of course with different addresses,
-> > > by writing their addresses in kprobe_events file.
-> > > 
-> > > When using PMU, if only the symbol name is given, the event will be
-> > > created for the first address which matches the symbol, as returned by
-> > > kallsyms_lookup_name().
-> > 
-> > Do you mean probing the same name symbols? Yes, it is intended behavior,
-> > since it is not always true that the same name function has the same
-> > prototype (it is mostly true but is not ensured), it is better to leave
-> > user to decide which one is what you want to probe.
-> 
-> This is what I meant.
-> I also share your mind regarding leaving the users deciding which one they 
-> want to probe but in my case (which I agree is a bit a corner one) it leaded 
-> me to misunderstanding as the PMU kprobe was only added to the first 
-> ntfs_file_write_iter() which is not the one for ntfs3.
-
-Hmm, OK. I think in that case (multiple same-name symbols exist) the default
-behavior is rejecting with error message. And optionally, it will probe all
-or them like your patch.
-
-> 
-> > Have you used 'perf probe' tool? It tries to find the appropriate function
-> > by line number and creates the probe by 'text+OFFSET' style, not by symbol.
-> > I think this is the correct way to do that, because user will not know
-> > which 'address' of the symbol is what the user want.
-> 
-> 'perf probe' perfectly does the trick, as it would find all the kernel 
-> addresses which correspond to the symbol name and create as many probes as 
-> corresponding symbols [1]:
-> root@vm-amd64:~# perf probe --add ntfs_file_write_iter
-
-If you can specify the (last part of) file path as below,
-
-perf probe --add ntfs_file_write_iter@ntfs3/file.c
-
-Then it will choose correct one. :)
-
-> 
-> Added new events:
->   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
->   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
-> 
-> You can now use it in all perf tools, such as:
-> 
->         perf record -e probe:ntfs_file_write_iter -aR sleep 1
-> root@vm-amd64:~# cat /sys/kernel/tracing/kprobe_events
-> p:probe/ntfs_file_write_iter _text+5088544
-> p:probe/ntfs_file_write_iter _text+5278560
-> 
-> > Thought?
-> 
-> This contribution is basically here to sort of mimic what perf does but with 
-> PMU kprobes, as this is not possible to write in a sysfs file with this type of 
-> probe.
-
-OK, I see it is for BPF only. Maybe BPF program can filter correct one
-to access the argument etc. 
-
-Thank you,
-
-> 
-> > 
-> > Thank you,
-> > 
-> > > The idea here is to search all kernel functions which match this symbol
-> > > and
-> > > create a trace_kprobe for each of them.
-> > > All these trace_kprobes are linked together by sharing the same
-> > > trace_probe.
-> > > 
-> > > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> > > ---
-> > > 
-> > >  kernel/trace/trace_kprobe.c | 86 +++++++++++++++++++++++++++++++++++++
-> > >  1 file changed, 86 insertions(+)
-> > > 
-> > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > > index 1b3fa7b854aa..08580f1466c7 100644
-> > > --- a/kernel/trace/trace_kprobe.c
-> > > +++ b/kernel/trace/trace_kprobe.c
-> > > @@ -1682,13 +1682,42 @@ static int unregister_kprobe_event(struct
-> > > trace_kprobe *tk)> 
-> > >  }
-> > >  
-> > >  #ifdef CONFIG_PERF_EVENTS
-> > > 
-> > > +
-> > > +struct address_array {
-> > > +	unsigned long *addrs;
-> > > +	size_t size;
-> > > +};
-> > > +
-> > > +static int add_addr(void *data, unsigned long addr)
-> > > +{
-> > > +	struct address_array *array = data;
-> > > +	unsigned long *p;
-> > > +
-> > > +	array->size++;
-> > > +	p = krealloc(array->addrs,
-> > > +				sizeof(*array->addrs) * array->size,
-> > > +				GFP_KERNEL);
-> > > +	if (!p) {
-> > > +		kfree(array->addrs);
-> > > +		return -ENOMEM;
-> > > +	}
-> > > +
-> > > +	array->addrs = p;
-> > > +	array->addrs[array->size - 1] = addr;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > 
-> > >  /* create a trace_kprobe, but don't add it to global lists */
-> > >  struct trace_event_call *
-> > >  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> > >  
-> > >  			  bool is_return)
-> > >  
-> > >  {
-> > >  
-> > >  	enum probe_print_type ptype;
-> > > 
-> > > +	struct address_array array;
-> > > 
-> > >  	struct trace_kprobe *tk;
-> > > 
-> > > +	unsigned long func_addr;
-> > > +	unsigned int i;
-> > > 
-> > >  	int ret;
-> > >  	char *event;
-> > > 
-> > > @@ -1722,7 +1751,64 @@ create_local_trace_kprobe(char *func, void *addr,
-> > > unsigned long offs,> 
-> > >  	if (ret < 0)
-> > >  	
-> > >  		goto error;
-> > > 
-> > > +	array.addrs = NULL;
-> > > +	array.size = 0;
-> > > +	ret = kallsyms_on_each_match_symbol(add_addr, func, &array);
-> > > +	if (ret)
-> > > +		goto error_free;
-> > > +
-> > > +	if (array.size == 1)
-> > > +		goto end;
-> > > +
-> > > +	/*
-> > > +	 * Below loop allocates a trace_kprobe for each function with the same
-> > > +	 * name in kernel source code.
-> > > +	 * All this differente trace_kprobes will be linked together through
-> > > +	 * append_trace_kprobe().
-> > > +	 * NOTE append_trace_kprobe() is called in register_trace_kprobe() 
-> which
-> > > +	 * is called when a kprobe is added through sysfs.
-> > > +	 */
-> > > +	func_addr = kallsyms_lookup_name(func);
-> > > +	for (i = 0; i < array.size; i++) {
-> > > +		struct trace_kprobe *tk_same_name;
-> > > +		unsigned long address;
-> > > +
-> > > +		address = array.addrs[i];
-> > > +		/* Skip the function address as we already registered it. */
-> > > +		if (address == func_addr)
-> > > +			continue;
-> > > +
-> > > +		/*
-> > > +		 * alloc_trace_kprobe() first considers symbol name, so we set
-> > > +		 * this to NULL to allocate this kprobe on the given address.
-> > > +		 */
-> > > +		tk_same_name = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event,
-> > > +						  (void *)address, NULL, offs,
-> > > +						  0 /* maxactive */,
-> > > +						  0 /* nargs */, is_return);
-> > > +
-> > > +		if (IS_ERR(tk_same_name)) {
-> > > +			ret = -ENOMEM;
-> > > +			goto error_free;
-> > > +		}
-> > > +
-> > > +		init_trace_event_call(tk_same_name);
-> > > +
-> > > +		if (traceprobe_set_print_fmt(&tk_same_name->tp, ptype) < 0) {
-> > > +			ret = -ENOMEM;
-> > > +			goto error_free;
-> > > +		}
-> > > +
-> > > +		ret = append_trace_kprobe(tk_same_name, tk);
-> > > +		if (ret)
-> > > +			goto error_free;
-> > > +	}
-> > > +
-> > > +end:
-> > > +	kfree(array.addrs);
-> > > 
-> > >  	return trace_probe_event_call(&tk->tp);
-> > > 
-> > > +error_free:
-> > > +	kfree(array.addrs);
-> > > 
-> > >  error:
-> > >  	free_trace_kprobe(tk);
-> > >  	return ERR_PTR(ret);
-> 
-> ---
-> [1]: https://github.com/torvalds/linux/blob/
-> 57012c57536f8814dec92e74197ee96c3498d24e/tools/perf/util/probe-event.c#L2989-
-> L2993
-> 
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+T24gTW9uLCAyMDIzLTA4LTA3IGF0IDExOjQxICswMjAwLCBKbyBWYW4gQnVsY2sgd3JvdGU6DQo+
+IE9uIDI4LjA3LjIzIDIxOjE5LCBKYXJra28gU2Fra2luZW4gd3JvdGU6DQo+ID4gU28sIHdoZW4g
+ZXhhY3RseSBpcyBpdCBvcHRpbWl6ZWQgYXdheSBieSB0aGUgY29tcGlsZXI/IFRoaXMgaXMgbWlz
+c2luZy4NCj4gDQo+IFRoZSBwcm9ibGVtIGlzIHRoYXQgZGVjbGFyaW5nIGVuY2xfYnVmIGFzIHN0
+YXRpYywgaW1wbGllcyB0aGF0IGl0IHdpbGwgDQo+IG9ubHkgYmUgdXNlZCBpbiB0aGlzIGZpbGUg
+YW5kIHRoZSBjb21waWxlciBpcyBhbGxvd2VkIHRvIG9wdGltaXplIGF3YXkgDQo+IGFueSBlbnRy
+aWVzIHRoYXQgYXJlIG5ldmVyIHVzZWQgd2l0aGluIHRoaXMgY29tcGlsYXRpb24gdW5pdCAoZS5n
+Liwgd2hlbiANCj4gb3B0aW1pemluZyBvdXQgdGhlIG1lbWNweSBjYWxscykuDQo+IA0KPiBJbiBy
+ZWFsaXR5LCB0aGUgdGVzdHMgb3V0c2lkZSB0ZXN0X2VuY2wuZWxmIHJlbHkgb24gYm90aCB0aGUg
+c2l6ZSBhbmQgDQo+IGV4YWN0IHBsYWNlbWVudCBvZiBlbmNsX2J1ZiBhdCB0aGUgc3RhcnQgb2Yg
+LmRhdGEuDQo+IA0KPiBGb3IgZXhhbXBsZSwgY2xhbmcgLU9zIGdlbmVyYXRlcyB0aGUgZm9sbG93
+aW5nIChsZWdhbCkgY29kZSB3aGVuIA0KPiBlbmNsX2J1ZyBpcyBkZWNsYXJlZCBhcyBzdGF0aWM6
+DQo+IA0KPiAwMDAwMDAwMDAwMDAxMDIwIDxkb19lbmNsX29wX3B1dF90b19idWY+Og0KPiAgICAg
+IG1vdiAgICAweDgoJXJkaSksJWFsDQo+ICAgICAgbW92ICAgICVhbCwweDFmZDcoJXJpcCkgICAj
+IDMwMDAgPGVuY2xfYnVmZmVyLjA+DQo+ICAgICAgbW92ICAgIDB4OSglcmRpKSwlYWwNCj4gICAg
+ICBtb3YgICAgJWFsLDB4OGZjZSglcmlwKSAgICMgYTAwMCA8ZW5jbF9idWZmZXIuMS4wPg0KPiAg
+ICAgIG1vdiAgICAweGEoJXJkaSksJWFsDQo+ICAgICAgbW92ICAgICVhbCwweDhmZDUoJXJpcCkg
+ICAjIGEwMTAgPGVuY2xfYnVmZmVyLjEuMT4NCj4gICAgICBtb3YgICAgMHhiKCVyZGkpLCVhbA0K
+PiAgICAgIG1vdiAgICAlYWwsMHg4ZmNlKCVyaXApICAgIyBhMDEyIDxlbmNsX2J1ZmZlci4xLjI+
+DQo+ICAgICAgbW92ICAgIDB4YyglcmRpKSwlYWwNCj4gICAgICBtb3YgICAgJWFsLDB4OGZkMygl
+cmlwKSAgICMgYTAyMCA8ZW5jbF9idWZmZXIuMS4zPg0KPiAgICAgIG1vdiAgICAweGQoJXJkaSks
+JWFsDQo+ICAgICAgbW92ICAgICVhbCwweDhmY2UoJXJpcCkgICAjIGEwMjQgPGVuY2xfYnVmZmVy
+LjEuND4NCj4gICAgICBtb3YgICAgMHhlKCVyZGkpLCVhbA0KPiAgICAgIG1vdiAgICAlYWwsMHg4
+ZmQxKCVyaXApICAgIyBhMDMwIDxlbmNsX2J1ZmZlci4xLjU+DQo+ICAgICAgbW92ICAgIDB4Zigl
+cmRpKSwlYWwNCj4gICAgICBtb3YgICAgJWFsLDB4OGZjYSglcmlwKSAgICMgYTAzMiA8ZW5jbF9i
+dWZmZXIuMS42Pg0KPiAgICAgIHJldA0KPiANCj4gRGlzYXNzZW1ibHkgb2Ygc2VjdGlvbiAuZGF0
+YToNCj4gDQo+IDAwMDAwMDAwMDAwMDMwMDAgPGVuY2xfYnVmZmVyLjA+Og0KPiAgICAgIDMwMDA6
+ICAgICAgIDAxIDAwDQo+ICAgICAgICAgIC4uLg0KPiAwMDAwMDAwMDAwMDA0MDAwIDxlbmNsX3Nz
+YV90Y3MxPjoNCj4gDQo+IFRodXMsIHRoaXMgcHJvcG9zZWQgcGF0Y2ggZml4ZXMgYm90aCB0aGUg
+c2l6ZSBhbmQgbG9jYXRpb246DQo+IA0KPiAxLiByZW1vdmluZyB0aGUgc3RhdGljIGtleXdvcmQg
+ZnJvbSB0aGUgZW5jbF9idWcgZGVjbGFyYXRpb24gZW5zdXJlcyANCj4gdGhhdCB0aGUgX2VudGly
+ZV8gYnVmZmVyIGlzIHByZXNlcnZlZCB3aXRoIGV4cGVjdGVkIHNpemUsIGFzIHRoZSANCj4gY29t
+cGlsZXIgY2Fubm90IGFueW1vcmUgYXNzdW1lIGVuY2xfYnVmIGlzIG9ubHkgdXNlZCBpbiB0aGlz
+IGZpbGUuDQoNCkNvdWxkIHdlIHVzZSAidXNlZCIgYXR0cmlidXRlPw0KDQpodHRwczovL2djYy5n
+bnUub3JnL29ubGluZWRvY3MvZ2NjL0NvbW1vbi1WYXJpYWJsZS1BdHRyaWJ1dGVzLmh0bWwNCg0K
+dXNlZCANCg0KCVRoaXMgYXR0cmlidXRlLCBhdHRhY2hlZCB0byBhIHZhcmlhYmxlIHdpdGggc3Rh
+dGljIHN0b3JhZ2UsIG1lYW5zIHRoYXTCoA0KCXRoZSB2YXJpYWJsZSBtdXN0IGJlIGVtaXR0ZWQg
+ZXZlbiBpZiBpdCBhcHBlYXJzIHRoYXQgdGhlIHZhcmlhYmxlIGlzwqANCglub3TCoHJlZmVyZW5j
+ZWQuDQoNCglXaGVuIGFwcGxpZWQgdG8gYSBzdGF0aWMgZGF0YSBtZW1iZXIgb2YgYSBDKysgY2xh
+c3MgdGVtcGxhdGUsIHRoZcKgDQoJYXR0cmlidXRlIGFsc28gbWVhbnMgdGhhdCB0aGUgbWVtYmVy
+IGlzIGluc3RhbnRpYXRlZCBpZiB0aGUgY2xhc3PCoA0KCWl0c2VsZiBpcyBpbnN0YW50aWF0ZWQu
+DQo+IA0KPiAyLiBhZGRpbmcgX2F0dHJpYnV0ZV9fKChzZWN0aW9uKCIuZGF0YS5lbmNsX2J1ZmZl
+ciIpKSkgZW5zdXJlcyB0aGF0IHdlIA0KPiBjYW4gY29udHJvbCB0aGUgZXhwZWN0ZWQgbG9jYXRp
+b24gYXQgdGhlIHN0YXJ0IG9mIHRoZSAuZGF0YSBzZWN0aW9uLiBJIA0KPiB0aGluayB0aGlzIGlz
+IG9wdGlvbmFsLCBhcyBlbmNsX2J1ZiBhbHdheXMgc2VlbXMgdG8gYmUgcGxhY2VkIGF0IHRoZSAN
+Cj4gc3RhcnQgb2YgLmRhdGEgaW4gYWxsIG15IHRlc3RzLiBCdXQgYWZhaWsgdGhpcyBpcyBub3Qg
+Z3VhcmFudGVlZCBhcyBwZXIgDQo+IHRoZSBDIHN0YW5kYXJkIGFuZCBzdWNoIGNvbnN0cmFpbnRz
+IG9uIGV4YWN0IHBsYWNlbWVudCBzaG91bGQgYmV0dGVyIGJlIA0KPiBleHBsaWNpdGx5IGNvbnRy
+b2xsZWQgaW4gdGhlIGxpbmtlciBzY3JpcHQoPykNCg0KVGhpcyBsb29rcyBzYW5lLg0K
