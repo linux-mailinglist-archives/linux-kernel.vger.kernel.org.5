@@ -2,158 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9827804E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441DD7804E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357749AbjHRDmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:42:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S1357744AbjHRDlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357750AbjHRDmK (ORCPT
+        with ESMTP id S1353510AbjHRDlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:42:10 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id B4BB4358D
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:42:06 -0700 (PDT)
-Received: (qmail 18664 invoked by uid 1000); 17 Aug 2023 23:42:05 -0400
-Date:   Thu, 17 Aug 2023 23:42:05 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
-Message-ID: <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
-References: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
- <20230818010815.4kcue67idma5yguf@synopsys.com>
- <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
- <20230818031045.wovf5tj2un7nwf72@synopsys.com>
+        Thu, 17 Aug 2023 23:41:20 -0400
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648DC2708
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:41:18 -0700 (PDT)
+Received: from eig-obgw-5009a.ext.cloudfilter.net ([10.0.29.176])
+        by cmsmtp with ESMTP
+        id WmuKqb7qVWU1cWqMPqV2CB; Fri, 18 Aug 2023 03:41:17 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id WqMOqNupi0LVOWqMPqrBIw; Fri, 18 Aug 2023 03:41:17 +0000
+X-Authority-Analysis: v=2.4 cv=BvCOfKb5 c=1 sm=1 tr=0 ts=64dee85d
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=1XWaLZrsAAAA:8 a=cm27Pg_UAAAA:8 a=mDV3o1hIAAAA:8 a=Twlkf-z8AAAA:8
+ a=hEGvEmT7ark0PdWysM4A:9 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
+ a=xmb-EsYY8bH0VWELuYED:22 a=_FVE-zBwftR9WsbkzFJk:22 a=-74SuR6ZdpOK_LpdRCUo:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=XS6ddzMrecuPuYAqVJpaZu6ilnoyG2mS0jCrgvsgBTQ=; b=SrRkOhaP3QKiVP6PPRxlkhwJsc
+        cZTdPs+iOlfJ9w8SKFgQ7nl5pPbKFCAVgNMj0bvhrVFtrgbcA+mhjkRZ6VsFs4Ifh/PS++eMgVkY1
+        70Ci9WmNxrMRFgcecjYFQNRapbVf34l3Qr6uJucThJY4do+LdjxdcPB16dXUXfOsI12jGqT09wRqi
+        4vMMkZ8MtBkM4GWS5j9/8dhgLcIXoLKt+aBEha+MkL7w+tkxPRg2whqC5STS9gCw1ZefbVXbbCmaN
+        Iuy9VjIQTedCmcJ5dKWCVb+oFxsf1Ua1k2ei7wCZFHuqwLmEsxJ6SNQNZWz0wfwj1p3aWk3mhyZ5z
+        Wa7hSFTA==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:56796 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qWqMN-002Jn6-1p;
+        Thu, 17 Aug 2023 22:41:16 -0500
+Message-ID: <338a56b6-1e07-4089-d762-25440c0f9d81@embeddedor.com>
+Date:   Thu, 17 Aug 2023 21:42:05 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818031045.wovf5tj2un7nwf72@synopsys.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Compiler Attributes: counted_by: Adjust name and
+ identifier expansion
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>, Miguel Ojeda <ojeda@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+References: <20230817200558.never.077-kees@kernel.org>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20230817200558.never.077-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qWqMN-002Jn6-1p
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:56796
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfEZI0CzgjMiJVWHEDOB/5OQ1H/dInl5HeltxXE/vM8HeuyHCe5zlMO3msvXubVjVmoHAYZDlnPWzg5+z4jPJ/0aXtKXaPvi9Y3ja4f/0AFf8ezfWb2Z5
+ QrI8lVin3xH5pOoDC7d/mId98cGDvLtdJQz/1Fl/YYSavyMp/ZY45Uzf9Q6d3hLTsq19Bz36SkSmdb4Wid44tT+ATBYqZHQjbhoObncLMJmbYr7210bfp8HH
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 03:10:48AM +0000, Thinh Nguyen wrote:
-> On Thu, Aug 17, 2023, Alan Stern wrote:
-> > On Fri, Aug 18, 2023 at 01:08:19AM +0000, Thinh Nguyen wrote:
-> > > Hi,
-> > > 
-> > > On Fri, Aug 18, 2023, Andrey Konovalov wrote:
-> > > > Hi Alan and Thinh,
-> > > > 
-> > > > I have been testing Raw Gadget with the dwc3 UDC driver and stumbled
-> > > > upon an issue related to how dwc3 handles setup requests with wLength
-> > > > == 0.
-> > > > 
-> > > > When running a simple Raw Gadget-based keyboard emulator [1],
-> > > > everything works as expected until the point when the host sends a
-> > > > SET_CONFIGURATION request, which has wLength == 0.
-> > > > 
-> > > > For setup requests with wLength != 0, just like the other UDC drivers
-> > > > I tested, dwc3 calls the gadget driver's ->setup() callback and then
-> > > > waits until the gadget driver queues an URB to EP0 as a response.
-> > > 
-> > > For the lack of better term, can we use "request" or "usb_request"
-> > > instead of URB for gadget side, I get confused with the host side
-> > > whenever we mention URB.
-> > > 
-> > > > 
-> > > > However, for a setup request with wLength == 0, dwc3 does not wait
-> > > > until the gadget driver queues an URB to ack the transfer. It appears
-> > > > that dwc3 just acks the request internally and then proceeds with
-> > > > calling the ->setup() callback for the next request received from the
-> > > 
-> > > It depends on the bRequest. It should not proceed to ->setup() unless
-> > > the gadget driver already setups the request for it.
-> > 
-> > Let's see if I understand what you're saying.  Some control transfers 
-> > are handled directly by the UDC driver (things like SET_ADDRESS or 
-> > CLEAR_HALT).  For these transfers, the ->setup() callback is not invoked 
-> > and the gadget driver is completely unaware of them.  But for all other 
-> > control transfers, the ->setup() callback _is_ invoked.
-> > 
-> > Is that what you meant?
+
+
+On 8/17/23 14:06, Kees Cook wrote:
+> GCC and Clang's current RFCs name this attribute "counted_by", and have
+> moved away from using a string for the member name. Update the kernel's
+> macros to match. Additionally provide a UAPI no-op macro for UAPI structs
+> that will gain annotations.
 > 
-> That's not what I meant.
+> Cc: Miguel Ojeda <ojeda@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Fixes: dd06e72e68bc ("Compiler Attributes: Add __counted_by macro")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks
+-- 
+Gustavo
+
+> ---
+>   include/linux/compiler_attributes.h | 26 +++++++++++++-------------
+>   include/uapi/linux/stddef.h         |  4 ++++
+>   2 files changed, 17 insertions(+), 13 deletions(-)
 > 
-> I was referring to the next request. It should not be processed until
-> the first request is completed. Depending on the type of request, if
-> there's a delayed_status, the dwc3 driver will not prepare for the
-> Status stage and Setup stage (after status completion) to proceed to the
-> _next_ ->setup callback.
-> 
-> My understanding from the described problem is that somehow dwc3
-> processes the next request immediately without waiting for the raw
-> gadget preparing the data stage.
-
-Um.  This is one of the design flaws I mentioned: a new SETUP packet 
-arriving before the old control transfer is finished.  The USB spec 
-requires devices to accept the new SETUP packet and abort the old 
-transfer.  So in this case, processing the next request immediately is 
-the right thing to do.
-
-One question is why Andrey is observing a new ->setup() callback 
-happening so soon?  The host is supposed to allow a fairly long time for 
-standard control requests to complete.  If the userspace component of 
-the Raw Gadget takes too long to act, the transfer could time out and be 
-cancelled on the host.  But "too long" means several seconds -- is that 
-really what's going on here?
-
-> I was talking in context of 0-length transfer (albeit I forgot about the
-> special case of control OUT doesn't have 3-stage).
-> 
-> If it's a vendor request 0-length transfer, without responding with
-> USB_GADGET_DELAYED_STATUS, the dwc3 will proceed with preparing the
-> status stage.
-
-This may be a holdover from the early days of the Gadget subsystem.  My 
-memory from back then isn't very good; I vaguely recall that the first 
-UDC drivers would queue their automatic Status-stage requests if wLength 
-was 0 and ->setup() returned 0 (which would explain why 
-USB_GADGET_DELAYED_STATUS had to be invented).  Unless I'm completely 
-confused, that's not how UDC drivers are supposed to act now.
-
-> > (IMO that automatic action is a design flaw; the UDC driver should wait 
-> > for the gadget driver to explictly queue a 0-length request or a STALL 
-> > instead of doing it automatically.)
-> 
-> Would every UDC has this capability? I recalled some aren't capable of
-> delayed_status.
-
-In those cases the UDC driver would just have to do the best it can.  
-Very few modern USB device controllers should have this limitation.
-
-> > (Another design flaw is that this design doesn't specify what should 
-> > happen if the UDC receives another SETUP packet from the host before the 
-> > Status stage completes.  By sending another SETUP packet, the host is 
-> > indicating that the earlier control transfer has been aborted.  
-> > Presumably the UDC driver will complete all the outstanding requests 
-> > with an error status, but there's a potential race in the gadget driver 
-> > between queuing a request for the first transfer and executing the 
-> > ->setup() callback for the second transfer.)
-> 
-> If there's another SETUP packet coming while there's a pending control
-> transfer, for dwc3 UDC, the pending control TRB should be completed with
-> a Setup_pending status indicating aborted control transfer for dwc3
-> driver to handle that.
-
-Right.  The difficulty doesn't involve the communication between the HCD 
-and the UDC hardware; it involves the communication between the UDC 
-driver and the gadget driver.  Somehow they need to synchronize so that 
-when the gadget driver queues a usb_request, the UDC driver can tell 
-whether the request was meant for the earlier aborted control transfer 
-or the new active one.  This can matter if the gadget driver has a 
-separate control thread (a work routine or a kthread, for example) that 
-could be queuing requests while the ->setup() callback is running.
-
-Alan Stern
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index 00efa35c350f..74716a407aac 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -94,6 +94,19 @@
+>   # define __copy(symbol)
+>   #endif
+>   
+> +/*
+> + * Optional: only supported since gcc >= 14
+> + * Optional: only supported since clang >= 17
+> + *
+> + *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> + * clang: https://reviews.llvm.org/D148381
+> + */
+> +#if __has_attribute(__counted_by__)
+> +# define __counted_by(member)		__attribute__((__counted_by__(member)))
+> +#else
+> +# define __counted_by(member)
+> +#endif
+> +
+>   /*
+>    * Optional: not supported by gcc
+>    * Optional: only supported since clang >= 14.0
+> @@ -129,19 +142,6 @@
+>   # define __designated_init
+>   #endif
+>   
+> -/*
+> - * Optional: only supported since gcc >= 14
+> - * Optional: only supported since clang >= 17
+> - *
+> - *   gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=108896
+> - * clang: https://reviews.llvm.org/D148381
+> - */
+> -#if __has_attribute(__element_count__)
+> -# define __counted_by(member)		__attribute__((__element_count__(#member)))
+> -#else
+> -# define __counted_by(member)
+> -#endif
+> -
+>   /*
+>    * Optional: only supported since clang >= 14.0
+>    *
+> diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
+> index 7837ba4fe728..7c3fc3980881 100644
+> --- a/include/uapi/linux/stddef.h
+> +++ b/include/uapi/linux/stddef.h
+> @@ -45,3 +45,7 @@
+>   		TYPE NAME[]; \
+>   	}
+>   #endif
+> +
+> +#ifndef __counted_by
+> +#define __counted_by(m)
+> +#endif
