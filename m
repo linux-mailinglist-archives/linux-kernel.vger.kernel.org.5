@@ -2,233 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6788781499
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 23:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE8378149E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 23:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240380AbjHRVPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 17:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36404 "EHLO
+        id S240392AbjHRVPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 17:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240327AbjHRVPG (ORCPT
+        with ESMTP id S240768AbjHRVPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 17:15:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62884214;
-        Fri, 18 Aug 2023 14:15:03 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C38865439;
-        Fri, 18 Aug 2023 21:15:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42BCEC433C8;
-        Fri, 18 Aug 2023 21:15:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692393302;
-        bh=j+lAEJjDI2/rB/RsQG4nRInH5Lj8Rgk5bfuhJLz+TOg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k6mSV1mw0cWpSuBJrHNjLy4PxD+yKMEaeVe4euLDeQkJ0GxB0+JD2UCntA4TyLIqu
-         Jt6pr+vTXoRRRbmfhb+/ouMESgm93hcJSePXHh3AuiGsKqzgiL/cyg5sZf3TCMSf/I
-         Pr4VVu8YT4UujgxyNrOj0txteFqXLkzyZNlTXS1hp499kfomwJHEwekOCSlk/XEqHC
-         vwb8ArGBKtFmGRnJIS1lcRsfRmF/qW2aGx5Wzlb5+A33n1jrKbtrVGTC3/1ychiafB
-         /9jshCgt2s5OMJe3ei6FhoR1Zo0MMmS9XkQuMvvTDH0QDsMqPUtPWWJd7dfMu0hWTG
-         zteRCrmR8KVIQ==
-Date:   Fri, 18 Aug 2023 14:15:00 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     syzbot <syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com>
-Cc:     chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [f2fs?] possible deadlock in f2fs_getxattr
-Message-ID: <ZN/fVHbQA81Zk0Db@google.com>
-References: <0000000000005921ef05ffddc3b7@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000005921ef05ffddc3b7@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Fri, 18 Aug 2023 17:15:39 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491D24216
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 14:15:38 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583c49018c6so18294697b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 14:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692393337; x=1692998137;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sGETMcHxX4ObOscRub16vn6iyArRP5Rx2JOMy3tD22A=;
+        b=vSbdup0x7pGjyjrNke14G4in3KiGeWdp4C7AlnPlh/Lg7LYay3noXqdk/7Gcojvnt2
+         L0vkg2689+eOisj9cKCuTIq+KWznoxDM5VVTukZmH0UMuIlHVqVaQqlzZm3qqllE5YDp
+         35IB3uNTL0gtKhwkbXm5z91LkXftDfMleqWBl0LNlWUXbWMFBdk2wyBRu6NL28gssioI
+         HR292kurg9MD0vMGhusRI0jKaChKQiWBvE2lJSPVk8qSc9woxhc1j+AawmuwX4RjDtyi
+         0qY4PSqSJhHL+JqSpyoIRqVNMtHahxAiI4GvGa3cODRQkVSocnC+0/CDUaNTF6+W1Fv/
+         OXUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692393337; x=1692998137;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sGETMcHxX4ObOscRub16vn6iyArRP5Rx2JOMy3tD22A=;
+        b=GZ+f8DjiZMZUmsFolSfW/xHTkHW6dxxjjiBM58/dQ7aNbis930ObvQIuGKzSXcNZpP
+         pgQJ+oByeADAzah7jvYiKnjCg/ojQn4d/Ko9ZC2UpvRG4Zlta88cTX0zXJnK0xWXJcG7
+         5BVjL/sHXkPhPUrwMtUF42stIHDGthYvRLsYkTXgJMqj3ke+xHVlcn5TFnCnmV03WrDL
+         BhctfRA8f+bLznPCRN0p8vOEGEi5/5UoZSAXB/M2ADu4lfX0O9zFnR5QDbDG3DXqol0J
+         doxd1cJ+4UJxSL4zrPWJ1bqIoD1bOjOqcl6jcBOloNB4SdjA69mdUJztHneCQPPm/ZcY
+         sItQ==
+X-Gm-Message-State: AOJu0YwKmmmf8BYRor54QI0491/1mPUsgD2O1B3JiVuarjAGcTQdYSPK
+        52da77YE8E2Zzg4f3N9W4gD/tABlzu0u
+X-Google-Smtp-Source: AGHT+IGHFmw+z6ECEaVn7NDn8YhvRcI3CTcWzU7lbkAR2EO4ibelUVluW979zggJYCVEk4uuoqNHxpwkE5el
+X-Received: from zokeefe3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1b6])
+ (user=zokeefe job=sendgmr) by 2002:a81:ad0f:0:b0:58c:8c9f:c05a with SMTP id
+ l15-20020a81ad0f000000b0058c8c9fc05amr3143ywh.9.1692393337591; Fri, 18 Aug
+ 2023 14:15:37 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 14:15:32 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230818211533.2523697-1-zokeefe@google.com>
+Subject: [PATCH v2 1/2] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+From:   "Zach O'Keefe" <zokeefe@google.com>
+To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, "Zach O'Keefe" <zokeefe@google.com>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: https://github.com/jaegeuk/f2fs.git g-dev-test
+The 6.0 commits:
 
-On 07/06, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    a452483508d7 Merge tag 's390-6.5-2' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=161917a0a80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=15873d91ff37a949
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e5600587fa9cbf8e3826
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/5a4997524374/disk-a4524835.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a0d32791e67c/vmlinux-a4524835.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/ff545ba23349/bzImage-a4524835.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com
-> 
-> F2FS-fs (loop0): Can't find valid F2FS filesystem in 1th superblock
-> F2FS-fs (loop0): Found nat_bits in checkpoint
-> F2FS-fs (loop0): Try to recover 1th superblock, ret: 0
-> F2FS-fs (loop0): Mounted with checkpoint version = 48b305e5
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 6.4.0-syzkaller-12155-ga452483508d7 #0 Not tainted
-> ------------------------------------------------------
-> syz-executor.0/5180 is trying to acquire lock:
-> ffff88803c1b90a0 (&fi->i_xattr_sem){.+.+}-{3:3}, at: f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
-> ffff88803c1b90a0 (&fi->i_xattr_sem){.+.+}-{3:3}, at: f2fs_getxattr+0xb8/0x1460 fs/f2fs/xattr.c:532
-> 
-> but task is already holding lock:
-> ffff88803c0196d8 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
-> ffff88803c0196d8 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_do_tmpfile+0x25/0x170 fs/f2fs/dir.c:838
-> 
-> which lock already depends on the new lock.
-> 
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (&fi->i_sem){+.+.}-{3:3}:
->        down_write+0x3a/0x50 kernel/locking/rwsem.c:1573
->        f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
->        f2fs_add_inline_entry+0x3a8/0x760 fs/f2fs/inline.c:644
->        f2fs_add_dentry+0xba/0x1e0 fs/f2fs/dir.c:784
->        f2fs_do_add_link+0x21e/0x340 fs/f2fs/dir.c:827
->        f2fs_add_link fs/f2fs/f2fs.h:3554 [inline]
->        f2fs_create+0x32c/0x530 fs/f2fs/namei.c:377
->        lookup_open fs/namei.c:3492 [inline]
->        open_last_lookups fs/namei.c:3560 [inline]
->        path_openat+0x13e7/0x3180 fs/namei.c:3790
->        do_filp_open+0x234/0x490 fs/namei.c:3820
->        do_sys_openat2+0x13e/0x1d0 fs/open.c:1407
->        do_sys_open fs/open.c:1422 [inline]
->        __do_sys_open fs/open.c:1430 [inline]
->        __se_sys_open fs/open.c:1426 [inline]
->        __x64_sys_open+0x225/0x270 fs/open.c:1426
->        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->        do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->        entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> -> #0 (&fi->i_xattr_sem){.+.+}-{3:3}:
->        check_prev_add kernel/locking/lockdep.c:3142 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3261 [inline]
->        validate_chain kernel/locking/lockdep.c:3876 [inline]
->        __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
->        lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
->        down_read+0x47/0x2f0 kernel/locking/rwsem.c:1520
->        f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
->        f2fs_getxattr+0xb8/0x1460 fs/f2fs/xattr.c:532
->        __f2fs_get_acl+0x52/0x8e0 fs/f2fs/acl.c:179
->        f2fs_acl_create fs/f2fs/acl.c:377 [inline]
->        f2fs_init_acl+0xd7/0x9a0 fs/f2fs/acl.c:420
->        f2fs_init_inode_metadata+0x824/0x1190 fs/f2fs/dir.c:558
->        f2fs_do_tmpfile+0x34/0x170 fs/f2fs/dir.c:839
->        __f2fs_tmpfile+0x1f9/0x380 fs/f2fs/namei.c:884
->        f2fs_ioc_start_atomic_write+0x4a3/0x9e0 fs/f2fs/file.c:2099
->        __f2fs_ioctl+0x1b5c/0xb770
->        vfs_ioctl fs/ioctl.c:51 [inline]
->        __do_sys_ioctl fs/ioctl.c:870 [inline]
->        __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
->        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->        do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->        entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> 
-> other info that might help us debug this:
-> 
->  Possible unsafe locking scenario:
-> 
->        CPU0                    CPU1
->        ----                    ----
->   lock(&fi->i_sem);
->                                lock(&fi->i_xattr_sem);
->                                lock(&fi->i_sem);
->   rlock(&fi->i_xattr_sem);
-> 
->  *** DEADLOCK ***
-> 
-> 5 locks held by syz-executor.0/5180:
->  #0: ffff888078fb2410 (sb_writers#16){.+.+}-{0:0}, at: mnt_want_write_file+0x61/0x200 fs/namespace.c:447
->  #1: ffff88803c018a28 (&sb->s_type->i_mutex_key#23){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:771 [inline]
->  #1: ffff88803c018a28 (&sb->s_type->i_mutex_key#23){+.+.}-{3:3}, at: f2fs_ioc_start_atomic_write+0x1b2/0x9e0 fs/f2fs/file.c:2060
->  #2: ffff88803c019008 (&fi->i_gc_rwsem[WRITE]){+.+.}-{3:3}, at: f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
->  #2: ffff88803c019008 (&fi->i_gc_rwsem[WRITE]){+.+.}-{3:3}, at: f2fs_ioc_start_atomic_write+0x276/0x9e0 fs/f2fs/file.c:2074
->  #3: ffff88802b7e03b0 (&sbi->cp_rwsem){.+.+}-{3:3}, at: f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
->  #3: ffff88802b7e03b0 (&sbi->cp_rwsem){.+.+}-{3:3}, at: f2fs_lock_op fs/f2fs/f2fs.h:2151 [inline]
->  #3: ffff88802b7e03b0 (&sbi->cp_rwsem){.+.+}-{3:3}, at: __f2fs_tmpfile+0x1ce/0x380 fs/f2fs/namei.c:879
->  #4: ffff88803c0196d8 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
->  #4: ffff88803c0196d8 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_do_tmpfile+0x25/0x170 fs/f2fs/dir.c:838
-> 
-> stack backtrace:
-> CPU: 1 PID: 5180 Comm: syz-executor.0 Not tainted 6.4.0-syzkaller-12155-ga452483508d7 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/27/2023
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->  check_noncircular+0x375/0x4a0 kernel/locking/lockdep.c:2195
->  check_prev_add kernel/locking/lockdep.c:3142 [inline]
->  check_prevs_add kernel/locking/lockdep.c:3261 [inline]
->  validate_chain kernel/locking/lockdep.c:3876 [inline]
->  __lock_acquire+0x39ff/0x7f70 kernel/locking/lockdep.c:5144
->  lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5761
->  down_read+0x47/0x2f0 kernel/locking/rwsem.c:1520
->  f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
->  f2fs_getxattr+0xb8/0x1460 fs/f2fs/xattr.c:532
->  __f2fs_get_acl+0x52/0x8e0 fs/f2fs/acl.c:179
->  f2fs_acl_create fs/f2fs/acl.c:377 [inline]
->  f2fs_init_acl+0xd7/0x9a0 fs/f2fs/acl.c:420
->  f2fs_init_inode_metadata+0x824/0x1190 fs/f2fs/dir.c:558
->  f2fs_do_tmpfile+0x34/0x170 fs/f2fs/dir.c:839
->  __f2fs_tmpfile+0x1f9/0x380 fs/f2fs/namei.c:884
->  f2fs_ioc_start_atomic_write+0x4a3/0x9e0 fs/f2fs/file.c:2099
->  __f2fs_ioctl+0x1b5c/0xb770
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:870 [inline]
->  __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7fc9e168c389
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fc9e2476168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007fc9e17abf80 RCX: 00007fc9e168c389
-> RDX: 0000000000000000 RSI: 000000000000f501 RDI: 0000000000000005
-> RBP: 00007fc9e16d7493 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007fffcc104f8f R14: 00007fc9e2476300 R15: 0000000000022000
->  </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+
+merged "can we have THPs in this VMA?" logic that was previously done
+separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+
+During the process, the semantics of the fault path check changed in two
+ways:
+
+1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
+   handler that could satisfy the fault.  Previously, this check had been
+   done in create_huge_pud() and create_huge_pmd() routines, but after
+   the changes, we never reach those routines.
+
+During the review of the above commits, it was determined that in-tree
+users weren't affected by the change; most notably, since the only relevant
+user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+explicitly approved early in approval logic.  However, there is at least
+one occurrence where an out-of-tree driver that used
+VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
+
+Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+any ->huge_fault handler a chance to handle the fault.  Note that we
+don't validate the file mode or mapping alignment, which is consistent
+with the behavior before the aforementioned commits.
+
+Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
+Signed-off-by: Zach O'Keefe <zokeefe@google.com>
+Cc: Yang Shi <shy828301@gmail.com>
+---
+Changed from v1[1]:
+	- [Saurabhi] Allow ->huge_fault handler to handle fault, if it exists
+
+[1] https://lore.kernel.org/linux-mm/CAAa6QmQw+F=o6htOn=6ADD6mwvMO=Ow_67f3ifBv3GpXx9Xg_g@mail.gmail.com/
+
+---
+ mm/huge_memory.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index eb3678360b97..cd379b2c077b 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -96,11 +96,11 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+ 		return in_pf;
+ 
+ 	/*
+-	 * Special VMA and hugetlb VMA.
++	 * khugepaged special VMA and hugetlb VMA.
+ 	 * Must be checked after dax since some dax mappings may have
+ 	 * VM_MIXEDMAP set.
+ 	 */
+-	if (vm_flags & VM_NO_KHUGEPAGED)
++	if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
+ 		return false;
+ 
+ 	/*
+@@ -128,12 +128,15 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+ 					   !hugepage_flags_always())))
+ 		return false;
+ 
+-	/* Only regular file is valid */
+-	if (!in_pf && file_thp_enabled(vma))
+-		return true;
+-
+ 	if (!vma_is_anonymous(vma))
+-		return false;
++		return in_pf ?
++			/*
++			 * Trust that ->huge_fault() handlers know
++			 * what they are doing in fault path.
++			 */
++			!!vma->vm_ops->huge_fault :
++			/* Only regular file is valid in collapse path */
++			file_thp_enabled(vma);
+ 
+ 	if (vma_is_temporary_stack(vma))
+ 		return false;
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
