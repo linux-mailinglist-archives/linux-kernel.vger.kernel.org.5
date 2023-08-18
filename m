@@ -2,83 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66CF8780B05
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E810B780B08
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376608AbjHRLV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:21:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57078 "EHLO
+        id S1376619AbjHRLWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376640AbjHRLVV (ORCPT
+        with ESMTP id S1376621AbjHRLVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:21:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24F383AB2;
-        Fri, 18 Aug 2023 04:21:20 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CBC3D75;
-        Fri, 18 Aug 2023 04:22:00 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.55.189])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8A7B13F762;
-        Fri, 18 Aug 2023 04:21:15 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/3] Documentation: coresight: Add cc_threshold tunable
-Date:   Fri, 18 Aug 2023 16:50:51 +0530
-Message-Id: <20230818112051.594986-4-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230818112051.594986-1-anshuman.khandual@arm.com>
-References: <20230818112051.594986-1-anshuman.khandual@arm.com>
+        Fri, 18 Aug 2023 07:21:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5896A3AB2;
+        Fri, 18 Aug 2023 04:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692357700; x=1723893700;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CKRSS1iusdv1+5oh3j8yKQXBHN0I1ieRa1yex02/XD8=;
+  b=Qo3UWgb/EViDQ2UH4qA2I9NmULITXiti1v8KOp/7RUY6Px7PbSLOryt3
+   MT2xVWtIDpO2EyOsDioJv4j+UsA3k8VBy9Tmu7THr1EYof8AGs6LEDyRU
+   5a6uU6EiCav85kG/KmNFk1cOtbqJ8XhdQgeXhd34kJulN0mlOdRkyGb2F
+   QfAnVJBW6bRz4l5ixx1IqRGiHmzEi6FzDds60qIRPlBVdwsHhDDxVsm3e
+   sv8Uq4U1nIXRv0mbdYSQbppNChpj5zlvu1/oVXCgEQtPGWfSTLbM8hMsQ
+   8g1HCTmx/eFNEyoAGrIfsVeFhIGD3UKpUCvEt6sH4hfP3FjbdHRuNwJXS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370538362"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="370538362"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 04:21:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="728579674"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="728579674"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP; 18 Aug 2023 04:21:38 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qWxXs-005WEC-1U;
+        Fri, 18 Aug 2023 14:21:36 +0300
+Date:   Fri, 18 Aug 2023 14:21:36 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Angel Iglesias <ang.iglesiasg@gmail.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/2] iio: pressure: bmp280: Add support for BMP390
+Message-ID: <ZN9UQMR8X4/vMV1Z@smile.fi.intel.com>
+References: <cover.1692305434.git.ang.iglesiasg@gmail.com>
+ <a34c72a2027c4b98bd815e8cf01f56d69c5d1386.1692305434.git.ang.iglesiasg@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a34c72a2027c4b98bd815e8cf01f56d69c5d1386.1692305434.git.ang.iglesiasg@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This updates config option to include 'cc_threshold' tunable value.
+On Thu, Aug 17, 2023 at 11:05:22PM +0200, Angel Iglesias wrote:
+> Adds BMP390 device id to the supported ids on bmp380 sensor family
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Reviewed by: Mike Leach <mike.leach@linaro.org>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- Documentation/trace/coresight/coresight.rst | 4 ++++
- 1 file changed, 4 insertions(+)
+...
 
-diff --git a/Documentation/trace/coresight/coresight.rst b/Documentation/trace/coresight/coresight.rst
-index 4a71ea6cb390..ce55adb80b82 100644
---- a/Documentation/trace/coresight/coresight.rst
-+++ b/Documentation/trace/coresight/coresight.rst
-@@ -624,6 +624,10 @@ They are also listed in the folder /sys/bus/event_source/devices/cs_etm/format/
-    * - timestamp
-      - Session local version of the system wide setting: :ref:`ETMv4_MODE_TIMESTAMP
-        <coresight-timestamp>`
-+   * - cc_threshold
-+     - Cycle count threshold value. If nothing is provided here or the provided value is 0, then the
-+       default value i.e 0x100 will be used. If provided value is less than minimum cycles threshold
-+       value, as indicated via TRCIDR3.CCITMIN, then the minimum value will be used instead.
- 
- How to use the STM module
- -------------------------
+>  #define BMP180_CHIP_ID			0x55
+>  #define BMP280_CHIP_ID			0x58
+>  #define BME280_CHIP_ID			0x60
+> +#define BMP390_CHIP_ID			0x60
+
+Keep it a bit better ordered. At the first glance, move
+before BME.
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
