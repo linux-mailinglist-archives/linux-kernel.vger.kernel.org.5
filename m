@@ -2,195 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A51C78039E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10AC7803A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357170AbjHRCDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59534 "EHLO
+        id S1357178AbjHRCHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357164AbjHRCD1 (ORCPT
+        with ESMTP id S1357164AbjHRCGg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:03:27 -0400
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2096.outbound.protection.outlook.com [40.107.117.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7BF30DF
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:03:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jysoNCFAomVDpJZDAOH0jzYjlVYJfS5grmSSG8OHwhrd9TG3w9UTO81d6ATsEbwOaXvXzAZBzqyqK+Zu/u0WoPE33yzAyv/fNBoEd+db5eq0Hu0kfidtc6BmTNejUG0/PwQvTouZi1QJkO+93lCFznwNWEGEgcyL9Hx8b0Nnfun+Cg2H0hOvNNqTi4P+P6a/PYLuQ0AysuPkjzR2+bCndfjH5mPP9lSIJimcTV471FY4Z4huMKyPUpLpj+c5BAhuP834f2NEGDMSDn71D07E5PxCkWRBMCr9FUQMi6lJIbTs7ofhcEbwWl5LbCoFXzo6v7AdlGW9XgrQU5kQWpRKTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=rNpnzVwjjyxtELgMuRBAyCA9ttxX+fXKC4GcTcSLrXI=;
- b=BYkARK883QFcM0Uuci3iO7R1PI6qxuJu0Bq2HJpjwCnL65z3K2ajWdACebc6yHyzCYQAgiGtZjlblirYipkix91hC9a2AlBVXe3rwkqcf05YXRzMAe/y1hnhUzcMOddGIJJDv3mSBZctBg8iQ7HFAKjqC5pKglpmKuVb//Tog3i8TzMHsLIueWAnLKZi6yhAw4CiVG4D7lbktNAasuOEQGk6T5IWsYXyvJESQBSgN/LZ7GOznY1DlLKnNZwDglaWHWgf9cVz7ux522wQQkb2MI56qEuiGqDQnOy1bcNVzaj42Wq3aSTdJ7Sn4jgrRUi8xIGxuOxqi4bI5lICBTUWew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rNpnzVwjjyxtELgMuRBAyCA9ttxX+fXKC4GcTcSLrXI=;
- b=L4pLT2q1j6GzLJY4lbXtrUNWOqCEYjEKeQoWRTHIGBDE3PRu3tRyQcyAIXCXkas/ffEkfBZk3dJ4TwfJGCH0iofjKx9riZYaM1OSvS8pd7oPV4MHrcVAhwByOnteqO3I4ZaxX+WTfuMhYT350Ad4XUMbkjeYEyNOSpyyIO7yTL60UjhhTgA3FtOvK5RA3WiiyyY0dPjsGa89cMHAuppgI0yDwXFy8v+v2TJ29mjf7NG3UiPRw0Obyz6OKAM7C8sWzGM/a+CEcNG6j3irsjWbRvil0Lbe16+DRa+aA3HsTvNroKh0OJfBs3AY7Wrejsb6c6yoUsD0k4omT7CkOKKArA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from SL2PR06MB3227.apcprd06.prod.outlook.com (2603:1096:100:3f::10)
- by PUZPR06MB5817.apcprd06.prod.outlook.com (2603:1096:301:f2::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.30; Fri, 18 Aug
- 2023 02:03:19 +0000
-Received: from SL2PR06MB3227.apcprd06.prod.outlook.com
- ([fe80::820:ac7e:8524:1bb6]) by SL2PR06MB3227.apcprd06.prod.outlook.com
- ([fe80::820:ac7e:8524:1bb6%4]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
- 02:03:19 +0000
-From:   Qi Han <hanqi@vivo.com>
-To:     jaegeuk@kernel.org, chao@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Qi Han <hanqi@vivo.com>
-Subject: [PATCH] f2fs_io: add do_clearflags to clear nocompress/compress flag
-Date:   Fri, 18 Aug 2023 10:03:03 +0800
-Message-Id: <20230818020303.20337-1-hanqi@vivo.com>
-X-Mailer: git-send-email 2.39.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SI1PR02CA0021.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::14) To SL2PR06MB3227.apcprd06.prod.outlook.com
- (2603:1096:100:3f::10)
+        Thu, 17 Aug 2023 22:06:36 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA9130E9;
+        Thu, 17 Aug 2023 19:06:28 -0700 (PDT)
+X-UUID: d240c3cc3d6b11ee9cb5633481061a41-20230818
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=y9wESq3yLX5gwIyFrtLmnOhsV7s06v0xZ8e8yqmasio=;
+        b=k/TeQ7U4fWg0Nb/079F/2v9r8CZNSvkKqvvG5LJwzY9036+E4dUMLaRrHwbEO7y4veztTWW/ksfs5jsZth762hErcIPn0+D0XX15y3TOoAVEZ7ciQ6JVqsJM+MKdsun044ThqxYK256XNi3QoW1lmtHKnuGGnd92JCBTsBZj/Y0=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:fe7f9e6b-35e5-4dbb-bd2c-551fdd9076bc,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:100
+X-CID-INFO: VERSION:1.1.31,REQID:fe7f9e6b-35e5-4dbb-bd2c-551fdd9076bc,IP:0,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:100,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
+        N:quarantine,TS:100
+X-CID-META: VersionHash:0ad78a4,CLOUDID:ce8be612-4929-4845-9571-38c601e9c3c9,B
+        ulkID:23081810062252NX6IJA,BulkQuantity:1,Recheck:0,SF:38|29|28|17|19|48,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,
+        OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,
+        TF_CID_SPAM_FAS
+X-UUID: d240c3cc3d6b11ee9cb5633481061a41-20230818
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+        (envelope-from <chun-jen.tseng@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 731415993; Fri, 18 Aug 2023 10:06:19 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 18 Aug 2023 10:06:18 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 18 Aug 2023 10:06:18 +0800
+From:   Mark Tseng <chun-jen.tseng@mediatek.com>
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <matthias.bgg@gmail.com>,
+        <angelogioacchino.delregno@collabora.com>, <sumitg@nvidia.com>,
+        <sanjayc@nvidia.com>
+CC:     <rafael.j.wysocki@intel.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        <chun-jen.tseng@mediatek.com>
+Subject: [PATCH] cpufreq: mediatek: change transition delay for MT8186
+Date:   Fri, 18 Aug 2023 10:06:16 +0800
+Message-ID: <20230818020616.4748-1-chun-jen.tseng@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SL2PR06MB3227:EE_|PUZPR06MB5817:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34e6641e-eefb-4595-0485-08db9f8f4a69
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BIfa4aBwILtZr8T4mDAcI90YDK0FLvzoF0QDkHD5Zccni6mUNWwCXD8MeEsqnkM/ODwOAv04Spu6FjmKSTFigr5RPFWj4HfYYDxTAqISh7kvqG2GuXQ7Yw1eqgsfrxFgAg8ZP+El2dJhEqOTCx51c9uEReAUuwwq8cIvFzqbHEKANFZL8aO9rbtkzVLCgdS44eryiCfOhM83dwL8HryfTtoQ/vscfZwwVtcdt9jX713rco/npl6erfRcg2Hove9mewwx2G+gKzO1xFs7DWTx4PTkZljJ7VNNHcfD9mi4EagLAwEirGuilblfB/OViCGNm5SS9QE2KVVpduH9QwUzCz+nrk+hVapVMnpXPYS8sUeLMxBY1XUreTVfW2oaoEn/QsM+ORtJwYbG+pF+/IJ7hLAJtKjGvRPdQafn2Q7VXhid5ce4WKcDBX+C7Xoztl2Au0PEf6ORBP6p/fcnrAKwh3BjKpa3Btgt4YZZz0IUq8HbnV/M+DYKklfK4iDlTMt4KxtcEUlZydnR/x08BPJh7+a54zr+12Dlfj4DUchCPgM0VaJDNyTDWhNXs0f7s4YTFEPqnQbvDNvW7Cv1dDBcVJ6QytDBICB2Z/ZZAd2a7ASiPUrEzOjgHamN+inIp/uY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3227.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(346002)(39860400002)(186009)(451199024)(1800799009)(36756003)(86362001)(4326008)(5660300002)(8936002)(8676002)(2906002)(41300700001)(1076003)(6666004)(6506007)(107886003)(6486002)(26005)(2616005)(6512007)(52116002)(66946007)(478600001)(316002)(38350700002)(38100700002)(66556008)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pqkeMrdOgskInzfQm8CGGEQfIljodHw15QE9Nouqa1e6bTOGFBgO0Wz8al0u?=
- =?us-ascii?Q?2EwJDUPVmzL0eaI2QTCapBrYPmvaszk9OHe9wRpN6RfEHN6unet9A18NnbxA?=
- =?us-ascii?Q?4izLtosCOTLAOzGHK6VNPZ2FDOXOEUeF4wxVDdyVuPXKOwABTraTqLG8oU8u?=
- =?us-ascii?Q?QUpDQg/T4fOMNRe8ZdVmeHWsSv/jSlwEz4cFTJPjWolLkAViBXCfyTU7jZpa?=
- =?us-ascii?Q?HRlc8/ezmY9COwS+msxjpvX5nUGige1Ezz0COPAqhZamY41m2uUfBYFhezgi?=
- =?us-ascii?Q?we6JyYjN9ZeS0KsWNMCDaBcgqPhm0Vl1GQoHaJTtDoufVd8s3WYAd8E1wc3w?=
- =?us-ascii?Q?ulURQDGQk5QrcQvRw0sdMslzwfipZAzZNcZpolTi7kbPmiUXtFZ1zKNS9JAs?=
- =?us-ascii?Q?zPW4ESlYrE3JEXdo9DCn972+a4s4q/H/uoEHV9SIwg1+fjJl0kwNs866jkRE?=
- =?us-ascii?Q?f7S3vL5Psws+2LpZveibWiIfzdO6iINKFSiPNe6Y6DRR8pgF3DkkCviE7I95?=
- =?us-ascii?Q?c649720skvkwOMDWWsV9/SuUz1WeKznMm5lVRgBwRl935SjJhubnwlEl1Co5?=
- =?us-ascii?Q?ABqQhzD9wOZMiOfvmeM8UHb9Qhh26JRgJJ9tyzS5FiOxkC6SdWssTDePCx7t?=
- =?us-ascii?Q?HnCrHDgsFX8oHM/4oBhRe3HHB/h3cHz52PPvKT8o9b7+iLBSeRyHokwDLAYy?=
- =?us-ascii?Q?6R/8PvDKAoSyLwcc2fZo8oXn5If9jFczXyqhHIvbYe0iyX8Bxi0o3IUS7jr2?=
- =?us-ascii?Q?K5b1aqoopkiqFqxpptgfEX1RhOrq0DKNzXeS0CfA+talxuXATdHicamWQB2k?=
- =?us-ascii?Q?JC+Isbn/HVMGIuTPK8WEbWLvlDnfxCn4MhACIyRTn4ex02XtxqNyInijx6Tv?=
- =?us-ascii?Q?P3A74XE43K8Igh0ieTelzQUxrpjlfeG77WEhF1Fa4FgjY1VmaXPh4f8d1SmP?=
- =?us-ascii?Q?aw/9zSQuEiHNRLalptYDmbiXJSZvDUBkyIuxi/yeELo105IZ4fV9H6aWs4+O?=
- =?us-ascii?Q?LQ7dDyGP5t4FEvvhpn4H1ql4qHFxYMkLIMun4UmaP97HUzZPJCO/BERfVEI4?=
- =?us-ascii?Q?zuNU+WO+oDiMICSwCvs7z1AHaf1BbFONCaoJGtiIBIiaK5H475VcUSGVLBwW?=
- =?us-ascii?Q?e2e+QF6OYtQA9hjPUrQr2Y3VHSlOqFhCP/iAa2J6w+2EWDMtUU6nlik795jV?=
- =?us-ascii?Q?l0DFqDEomfP7Z51EWPc7QEjNfHPcZmBAe7qu1AkAwnn2tyaWiOiR/vNo/Xhz?=
- =?us-ascii?Q?tc64AEHJucWuQo/zKNc38eyiOyeUjRwGBIBBpWwjYPbbQRIgxqAypbRXwP0v?=
- =?us-ascii?Q?IoHxr40WCrfkHEGCzcnDnkLLQBDM64LCtu49c4jLcZWHBOQZitcwDUjBWIhc?=
- =?us-ascii?Q?qrL6u/XtbA40Oy+mbWSlgOBplF8jWJMX2znbjQveIt/XSYHi2EAGlYilfbPr?=
- =?us-ascii?Q?CinfW20XCd/ZHXDWXtphvs9qXTSxOg6mX0hHj9KxdocqrSkZH7hX3SIOCVJc?=
- =?us-ascii?Q?OIMyzw2Qasp2hfcIu7j3FodxHc0TIOkRa6UxE6QMchYWCek7LUFk2x5G5t3q?=
- =?us-ascii?Q?Pa/mzICkh/tkpNYJR4nlXLZpXvMLDkJWYnJLS2pZ?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34e6641e-eefb-4595-0485-08db9f8f4a69
-X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3227.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 02:03:18.3754
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y57jwPVHfgz2mb1q+o/57CDFHHd7XzeTBXjqFwQ08iyuRQQuUn3fm2JRLdehd+arEoKD5ZaML9xhBokn2UFsAw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR06MB5817
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To align f2fs_io functionality with chattr +/-c and +/-m, the
-do_clearflags function has been added to clear the FS_COMPR_FL and
-FS_NOCOMP_FL flags.
+For MT8186, it has policy0 and policy6 by different governor thread,so
+it may be call cpufreq->set_target_index() by different core. In general
+case, it must check BCPU, LCPU and CCI together then take about 10ms.
 
-Signed-off-by: Qi Han <hanqi@vivo.com>
+Atfer 44295af5019f this patch, it may call cpufreq_out_of_sync() by
+cpufreq_verify_current_freq() because current frequency is bigger
+than clk_get_rate() ouver 1Mh. By the same time, it may call
+cpufreq->set_target_index() again. So, the CCI freq may be too lower for
+BCPU cause BCPU kernel panic.
+
+So, it should change the default transition delay 1ms to 10ms. It can
+promise the next freq setting then governor trigger new freq change.
+
+Fixes: 44295af5019f ("cpufreq: use correct unit when verify cur freq")
+Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
 ---
- man/f2fs_io.8           |  4 ++++
- tools/f2fs_io/f2fs_io.c | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 41 insertions(+)
+ drivers/cpufreq/mediatek-cpufreq.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/man/f2fs_io.8 b/man/f2fs_io.8
-index 450f1b7..4ffb28d 100644
---- a/man/f2fs_io.8
-+++ b/man/f2fs_io.8
-@@ -18,6 +18,10 @@ Get the flags associated with the specified file.
- Set an f2fs file on specified file.  The flag can be casefold,
- compression, and nocompression.
- .TP
-+\fBclearflags\fR \fI[flag] [file]\fR
-+Clear the specified flag on the target file, which can be compression
-+and nocompression.
-+.TP
- \fBshutdown\fR \fIshutdown filesystem\fR
- Freeze and stop all IOs for the file system mounted on
- .IR dir.
-diff --git a/tools/f2fs_io/f2fs_io.c b/tools/f2fs_io/f2fs_io.c
-index 73ac700..a450bf1 100644
---- a/tools/f2fs_io/f2fs_io.c
-+++ b/tools/f2fs_io/f2fs_io.c
-@@ -330,6 +330,42 @@ static void do_setflags(int argc, char **argv, const struct cmd_desc *cmd)
- 	exit(0);
- }
+diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
+index a0a61919bc4c..5633a5357e8f 100644
+--- a/drivers/cpufreq/mediatek-cpufreq.c
++++ b/drivers/cpufreq/mediatek-cpufreq.c
+@@ -23,6 +23,7 @@ struct mtk_cpufreq_platform_data {
+ 	int sram_min_volt;
+ 	int sram_max_volt;
+ 	bool ccifreq_supported;
++	unsigned int transition_delay_us;
+ };
  
-+#define clearflags_desc "clearflags ioctl"
-+#define clearflags_help						\
-+"f2fs_io clearflags [flag] [file]\n\n"				\
-+"clear a flag given the file\n"					\
-+"flag can be\n"							\
-+"  compression\n"						\
-+"  nocompression\n"						\
-+
-+static void do_clearflags(int argc, char **argv, const struct cmd_desc *cmd)
-+{
-+	long flag = 0;
-+	int ret, fd;
-+
-+	if (argc != 3) {
-+		fputs("Excess arguments\n\n", stderr);
-+		fputs(cmd->cmd_help, stderr);
-+		exit(1);
-+	}
-+
-+	fd = xopen(argv[2], O_RDONLY, 0);
-+
-+	ret = ioctl(fd, F2FS_IOC_GETFLAGS, &flag);
-+	printf("get a flag on %s ret=%d, flags=%lx\n", argv[1], ret, flag);
-+	if (ret)
-+		die_errno("F2FS_IOC_GETFLAGS failed");
-+
-+	if (!strcmp(argv[1], "compression"))
-+		flag &= ~FS_COMPR_FL;
-+	else if (!strcmp(argv[1], "nocompression"))
-+		flag &= ~FS_NOCOMP_FL;
-+
-+	ret = ioctl(fd, F2FS_IOC_SETFLAGS, &flag);
-+	printf("clear a flag on %s ret=%d, flags=%s\n", argv[2], ret, argv[1]);
-+	exit(0);
-+}
-+
- #define shutdown_desc "shutdown filesystem"
- #define shutdown_help					\
- "f2fs_io shutdown [level] [dir]\n\n"			\
-@@ -1464,6 +1500,7 @@ const struct cmd_desc cmd_list[] = {
- 	CMD(set_verity),
- 	CMD(getflags),
- 	CMD(setflags),
-+	CMD(clearflags),
- 	CMD(shutdown),
- 	CMD(pinfile),
- 	CMD(fallocate),
+ /*
+@@ -595,6 +596,7 @@ static int mtk_cpufreq_init(struct cpufreq_policy *policy)
+ 	policy->freq_table = freq_table;
+ 	policy->driver_data = info;
+ 	policy->clk = info->cpu_clk;
++	policy->transition_delay_us = info->soc_data->transition_delay_us;
+ 
+ 	return 0;
+ }
+@@ -689,6 +691,7 @@ static const struct mtk_cpufreq_platform_data mt2701_platform_data = {
+ 	.sram_min_volt = 0,
+ 	.sram_max_volt = 1150000,
+ 	.ccifreq_supported = false,
++	.transition_delay_us = 1000,
+ };
+ 
+ static const struct mtk_cpufreq_platform_data mt7622_platform_data = {
+@@ -698,6 +701,7 @@ static const struct mtk_cpufreq_platform_data mt7622_platform_data = {
+ 	.sram_min_volt = 0,
+ 	.sram_max_volt = 1350000,
+ 	.ccifreq_supported = false,
++	.transition_delay_us = 1000,
+ };
+ 
+ static const struct mtk_cpufreq_platform_data mt7623_platform_data = {
+@@ -705,6 +709,7 @@ static const struct mtk_cpufreq_platform_data mt7623_platform_data = {
+ 	.max_volt_shift = 200000,
+ 	.proc_max_volt = 1300000,
+ 	.ccifreq_supported = false,
++	.transition_delay_us = 1000,
+ };
+ 
+ static const struct mtk_cpufreq_platform_data mt8183_platform_data = {
+@@ -714,6 +719,7 @@ static const struct mtk_cpufreq_platform_data mt8183_platform_data = {
+ 	.sram_min_volt = 0,
+ 	.sram_max_volt = 1150000,
+ 	.ccifreq_supported = true,
++	.transition_delay_us = 1000,
+ };
+ 
+ static const struct mtk_cpufreq_platform_data mt8186_platform_data = {
+@@ -723,6 +729,7 @@ static const struct mtk_cpufreq_platform_data mt8186_platform_data = {
+ 	.sram_min_volt = 850000,
+ 	.sram_max_volt = 1118750,
+ 	.ccifreq_supported = true,
++	.transition_delay_us = 10000,
+ };
+ 
+ static const struct mtk_cpufreq_platform_data mt8516_platform_data = {
+@@ -732,6 +739,7 @@ static const struct mtk_cpufreq_platform_data mt8516_platform_data = {
+ 	.sram_min_volt = 0,
+ 	.sram_max_volt = 1310000,
+ 	.ccifreq_supported = false,
++	.transition_delay_us = 1000,
+ };
+ 
+ /* List of machines supported by this driver */
 -- 
-2.39.0
+2.18.0
 
