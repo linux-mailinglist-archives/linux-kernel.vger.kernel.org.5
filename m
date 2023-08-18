@@ -2,201 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD38F780B6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEBD780B72
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376724AbjHRLyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
+        id S1376739AbjHRLyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244435AbjHRLxe (ORCPT
+        with ESMTP id S1376731AbjHRLyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:53:34 -0400
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752322723
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:53:32 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 27515240104
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 13:53:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1692359611; bh=RoVh3kHjkJY+PsLLiHtarjKPMYGAAL9Nl3/5okbLVQU=;
-        h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:
-         Content-Transfer-Encoding:From;
-        b=WxOBavEFhtEvQY+MM4vG7RFj5IcfacosTZzelVsO3brPw2he4RQqvWgCgcyoqddq1
-         yrjdiklf5KOzHkTuPCiqQzZk0TPNdmc0ZzbPGh7GmM8KPcG0rXwvQGLMLW1gKxpn3S
-         5DJwaz8aUcvNSwYdre3pm1WnszIRxhvlrexzeh3Z7J0l/QEmFw/wiNFFKLOOJ0mzKJ
-         W+Zw9AlyG/OKucVwYRwHxzwSGkaCpmBew2K5mmp92A1QmTBx5x4/DriQPx+VCmm/yR
-         9Zw4e9Vyg3IUwqpPKYlEjuzPaLMWJ2JbEePaCyrySi4jH7WECga1yE+yYgwR00GUuR
-         Cn1PihTM70jmg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4RS0d53Rgnz6tww;
-        Fri, 18 Aug 2023 13:53:29 +0200 (CEST)
-Message-ID: <577b6372-47b0-4009-b83c-706f9bc7abe7@posteo.net>
-Date:   Fri, 18 Aug 2023 11:53:29 +0000
+        Fri, 18 Aug 2023 07:54:24 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B7C2723
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26d0d376ec7so607704a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1692359638; x=1692964438;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fWUAu55Okzaxxflb8/jmAhx5gyfvmuNdSd8uGCqH/Zw=;
+        b=eq248EH06v7v4m/+8bSuN+oJAZuyVZ5P3IhvOfLa0gH7Ftb4Z9KOJPje0UAQJX5er3
+         OhtWSQ0AU0VFJKU4fmVprsd/oJUo2QPwIqoQioP3mBhb4FfKfQ01RO5dO9nKWy2SI/MP
+         uTVk259CT4/3xUyvWB4kB2IWgaSxWKXb9L+hjscXInyvbpHmDBPmpl9M7xDVwBcTenEw
+         Ld10dgJhTAcBMt8SxxJddrMcsX7zxwXVGO8YCYY4siCBLxOEN7kItKjMnnr1ePIcPKvP
+         DAa5MKiQQhtw09iC3rbTHJK2e7KNkDZEtI44JZndbkamNp61O7+cGrXXASEv5pxu3x33
+         qjOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692359638; x=1692964438;
+        h=content-transfer-encoding:in-reply-to:from:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fWUAu55Okzaxxflb8/jmAhx5gyfvmuNdSd8uGCqH/Zw=;
+        b=A9JEEMvlHvNIZY8aYybXbj72egpzq29t7ESl9cMrtc0KwriVmXmp7a0q6+bUYJwZIL
+         FmXfVIXqV2vLbhW/QYt2geFG6oI4rMb1ekdGhyUgNi8b0aKe1Co9tKr3Tl2kHuNS/cVs
+         e3FLkPBsqOtK+Pi0TPg/fQiwzL1H7vzMkW/4+NVfxZNLa4ArgnO+GrY7HbqISpLTgfO5
+         MCTTOWjZKmGG2tQrDK2IQkfOVr2EgoeP8DpSWrh0iAyLJ3wF0pnS6ZL9qxKAEPhaIVXH
+         /mdhBkuqFUH4kRhm4PCnSg00BwMLMy7b9C4OfkMYvQu/Lijw66qQqj4kjII85V8loJ+/
+         INow==
+X-Gm-Message-State: AOJu0Yx9gphBGo2Dv2eKrJoVbwt+I38ZCUJck9NEJ/qifgLB4XaRYwBu
+        F64wkdC5nCQq8jzOyoFJdFf/uQ==
+X-Google-Smtp-Source: AGHT+IEoDhL7JPYYvqyUCrTfrN7Sp8X7zYiAiDB+7WTz2PRk2dwjF8tQdyEs8B7UpMHhLGp3Zs9ccw==
+X-Received: by 2002:a17:90b:3003:b0:269:33cb:e061 with SMTP id hg3-20020a17090b300300b0026933cbe061mr2118476pjb.24.1692359638052;
+        Fri, 18 Aug 2023 04:53:58 -0700 (PDT)
+Received: from [10.254.252.111] ([139.177.225.249])
+        by smtp.gmail.com with ESMTPSA id l11-20020a17090a598b00b00267b38f5e13sm1336696pji.2.2023.08.18.04.53.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 04:53:57 -0700 (PDT)
+Message-ID: <6b6d7ef1-75e4-68a3-1662-82ee19334567@bytedance.com>
+Date:   Fri, 18 Aug 2023 19:53:46 +0800
 MIME-Version: 1.0
-Subject: Re: can: isotp: epoll breaks isotp_sendmsg
-Content-Language: en-US
-From:   Lukas Magel <lukas.magel@posteo.net>
-To:     Michal Sojka <michal.sojka@cvut.cz>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Dae R. Jeong" <threeearcat@gmail.com>,
-        Hillf Danton <hdanton@sina.com>
-References: <11328958-453f-447f-9af8-3b5824dfb041@munic.io>
- <87cz1czihl.fsf@steelpick.2x.cz>
- <2d8a4d46-f1e4-4e2a-819d-6c28ad37273f@posteo.net>
-In-Reply-To: <2d8a4d46-f1e4-4e2a-819d-6c28ad37273f@posteo.net>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH 04/11] maple_tree: Introduce interfaces __mt_dup() and
+ mt_dup()
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        Peng Zhang <zhangpeng.00@bytedance.com>, willy@infradead.org,
+        michael.christie@oracle.com, surenb@google.com, npiggin@gmail.com,
+        corbet@lwn.net, mathieu.desnoyers@efficios.com, avagin@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        akpm@linux-foundation.org, brauner@kernel.org, peterz@infradead.org
+References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+ <20230726080916.17454-5-zhangpeng.00@bytedance.com>
+ <20230726160354.konsgq6hidj7gr5u@revolver>
+ <beaab8b4-180c-017d-bd8d-8766196f302a@bytedance.com>
+ <20230731162714.4x3lzymuyvu2mter@revolver>
+ <3f4e73cc-1a98-95a8-9ab2-47797d236585@bytedance.com>
+ <20230816183029.5rpkbgp2umebrjh5@revolver>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <20230816183029.5rpkbgp2umebrjh5@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.08.23 13:23, Lukas Magel wrote:
-> Hi Maxime, hi Michal,
->
-> On 01.07.23 00:35, Michal Sojka wrote:
->> Hi Maxime,
+
+
+在 2023/8/17 02:30, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230816 09:42]:
 >>
->> On Fri, Jun 30 2023, Maxime Jayat wrote:
->>> Hi,
+>>
+> ...
+> 
+>>>>>> +/**
+>>>>>> + * __mt_dup(): Duplicate a maple tree
+>>>>>> + * @mt: The source maple tree
+>>>>>> + * @new: The new maple tree
+>>>>>> + * @gfp: The GFP_FLAGS to use for allocations
+>>>>>> + *
+>>>>>> + * This function duplicates a maple tree using a faster method than traversing
+>>>>>> + * the source tree and inserting entries into the new tree one by one. The user
+>>>>>> + * needs to lock the source tree manually. Before calling this function, @new
+>>>>>> + * must be an empty tree or an uninitialized tree. If @mt uses an external lock,
+>>>>>> + * we may also need to manually set @new's external lock using
+>>>>>> + * mt_set_external_lock().
+>>>>>> + *
+>>>>>> + * Return: 0 on success, -ENOMEM if memory could not be allocated.
+>>>>>> + */
+>>>>>> +int __mt_dup(struct maple_tree *mt, struct maple_tree *new, gfp_t gfp)
+>>>>>
+>>>>> We use mas_ for things that won't handle the locking and pass in a maple
+>>>>> state.  Considering the leaves need to be altered once this is returned,
+>>>>> I would expect passing in a maple state should be feasible?
+>>>> But we don't really need mas here. What do you think the state of mas
+>>>> should be when this function returns? Make it point to the first entry,
+>>>> or the last entry?
 >>>
->>> There is something not clear happening with the non-blocking behavior
->>> of ISO-TP sockets in the TX path, but more importantly, using epoll now
->>> completely breaks isotp_sendmsg.
->>> I believe it is related to
->>> 79e19fa79c ("can: isotp: isotp_ops: fix poll() to not report false 
->>> EPOLLOUT events"),
->>> but actually is probably deeper than that.
->>>
->>> I don't completely understand what is exactly going on, so I am sharing
->>> the problem I face:
->>>
->>> With an ISO-TP socket in non-blocking mode, using epoll seems to make
->>> isotp_sendmsg always return -EAGAIN.
->> That's definitely not expected behavior. I tested the patch only with
->> poll, hoping that epoll would behave the same.
+>>> I would write it to point to the first element so that the call to
+>>> replace the first element can just do that without an extra walk and
+>>> document the maple state end point.
+>> Unfortunately, this does not seem to be convenient. Users usually use
+>> mas_for_each() to replace elements. If we set mas to the first element,
+>> the first call to mas_find() in mas_for_each() will get the next
+>> element.
+> 
+> This sounds like the need for another iterator specifically for
+> duplicating.
+> 
 >>
->> [...]
->
-> I am writing to report that we have been witnessing a behavior very similar
-> to what you describe. ISO-TP send breaks with EAGAIN if a poll (for a read)
-> occurs at the same time.
->
-> Our Python stack uses two threads to do concurrent, blocking reads & writes
-> from and to the ISO-TP socket. The socket has a timeout of 0.1s to facilitate
-> shutdown when requested by the application. Notably, the blocking semantics
-> are handled by CPython, i.e. the underlying kernel socket is non-blocking.
-> CPython polls until the requested operation (read or write) can be executed
-> or the timeout occurs.
->
-> What happens during execution is that the socket is continuously being
-> polled by the read thread, i.e. so->wait is always filled with one task.
-> This process repeats until the socket receives a frame from the bus and the
-> poll returns successsfully. The app reads the data from the socket and
-> sends a response. Since the send occurs in a different thread, the reader
-> thread will have already returned to its poll loop and to populating
-> so->wait. When the send occurs, isotp_sendmsg checks so->wait for sleepers
-> and returns EAGAIN because the socket is non-blocking although there is no
-> concurrent send operation. This dance continues until the timeout occurs for
-> either the read or the write operation. If the write times out first, a
-> timeout error causes the Python app to break. If the read times out first,
-> there is a race that the write goes through or the reader puts in
-> another poll.
->
-> This behavior can be seen rather nicely in strace:
-> 110580 poll([{fd=5, events=POLLIN}], 1, 100) = 0 (Timeout)
-> 110580 poll([{fd=5, events=POLLIN}], 1, 100) = 0 (Timeout)
-> 110580 poll([{fd=5, events=POLLIN}], 1, 100) = 1 ([{fd=5, revents=POLLIN}])
-> 110580 recvfrom(5, ">\0", 4095, 0, NULL, NULL) = 2
-> 110580 poll([{fd=5, events=POLLIN}], 1, 100 <unfinished ...>
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 100) = 1 ([{fd=5, revents=POLLOUT}])
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 100) = 1 ([{fd=5, revents=POLLOUT}])
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 100) = 1 ([{fd=5, revents=POLLOUT}])
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
-> [....]
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 6) = 1 ([{fd=5, revents=POLLOUT}])
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 6 <unfinished ...>
-> 110580 <... poll resumed>)              = 0 (Timeout)
-> 110569 <... poll resumed>)              = 1 ([{fd=5, revents=POLLOUT}])
-> 110580 poll([{fd=5, events=POLLIN}], 1, 100 <unfinished ...>
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
-> 110569 poll([{fd=5, events=POLLOUT}], 1, 5) = 1 ([{fd=5, revents=POLLOUT}])
-> 110569 sendto(5, "~\0", 2, 0, NULL, 0)  = -1 EAGAIN (Resource temporarily unavailable)
->
-> I believe this is consistent to the behavior you're witnessing with epoll
-> because epoll also places a sleeper in so->wait that is left in the queue
-> until the epoll descriptor is closed.
->
->
->>> By reverting 79e19fa79c, I get better results but still incorrect:
->> [...]
+>> There may also be other scenarios where the user does not necessarily
+>> have to replace every element.
+> 
+> Do you mean a limit or elements that need to be skipped?  We could have
+> a limit on the iteration.
+> 
 >>
->>> It is then possible to write on the socket but the write is blocking,
->>> which is not the expected behavior for a non-blocking socket.
->> Yes, incorrect behavior was why we made the commit in question, however
->> we saw write() returning -EAGAIN when it shouldn't.
+>> Finally, getting the first element in __mt_dup() requires an additional
+>> check to check whether the first element has already been recorded. Such
+>> a check will be performed at each leaf node, which is unnecessary
+>> overhead.
 >>
->>> I don't know how to solve the problem. To me, using wq_has_sleeper seems 
->>> weird.
->> Agreed. I've never tried to understand how synchronization works here.
->> Hopefully, Oliver knows more.
->>
->>> The implementation of isotp_poll feels weird too (calling both 
->>> datagram_poll and
->>> poll_wait?). But I am not sure what would be the correct
->>> implementation.
->> I understand it as follows (which might be wrong - someone, please
->> correct me), isotp_poll() should register the file with all waitqueues
->> it can wait on. so->wait is one and sock->sq.wait (used by
->> datagram_poll) is another. The former is definitely used for TX, the
->> latter is probably used because skb_recv_datagram() is called for RX.
->> But so->wait is also used for RX and there might proabbly be be some
->> inconsistency between those.
->
-> AFAIK, it is correct behavior for isotp_poll to register all wait queues
-> with the poller.
->
-> Before 79e19fa79c, I assume datagram_poll always returned
-> EPOLLOUT because its corresponding send buffer is unused and empty. This
-> return value can be incorrect if so->tx.state is not IDLE and a send would
-> block. With the patch, this behavior is now suppressed. I believe that
-> the inconsistency could have rather been introduced with:
-> can: isotp: fix race between isotp_sendsmg() and isotp_release() 0517374
->
-> With this patch, the behavior of isotp_sendmsg was changed to only check
-> so->wait for sleepers instead of consulting so->tx.state to see if the
-> socket is busy. Since the wait queue can also have sleepers only interested
-> in read operations, I believe the return value is not a valid indicator
-> of send readiness. Additionally, in this state, the behavior in isotp_sendmsg
-> is inconsistent with isotp_poll. I will try to test next week if reverting this
-> part of the patch could fix the race condition.
->
+>> Of course, the first reason is the main reason, which prevents us from
+>> using mas_for_each(). So I don't want to record the first element.
+> 
+> 
+> I don't like the interface because it can easily be misunderstood and
+> used incorrectly.  I don't know how to make a cleaner interface, but
+> I've gone through a few thoughts:
+> 
+> The first was hide _all of it_ in a new iterator:
+> mas_dup_each(old, new, old_entry) {
+> 	if (don't_dup(old_entry)) {
+> 		mas_erase(new);
+> 		continue;
+> 	}
+> 
+> 	mas_dup_insert(new, new_entry);
+> }
+> 
+> This iterator would check if mas_is_start(old) and dup the tree in that
+> event.  Leave the both new trees pointing to the first element and set
+> old_entry.  I don't know how to handle the failure in duplicating the
+> tree in this case - I guess we could return old_entry = NULL and check
+> if mas_is_err(old) after the loop.  Do you see a problem with this?
+This interface looks OK. But handling the failure case is tricky.
+> 
+> 
+> The second idea was an init of the old tree.  This is closest to what you
+> have:
+> 
+> if (mas_dup_init(old, new))
+> 	goto -ENOMEM;
+> 
+> mas_dup_each(old, new) {
+> 	if (don't_dup(old_entry)) {
+> 		mas_erase(new);
+> 		continue;
+> 	}
+> 
+> 	mas_dup_insert(new, new_entry);
+> }
+I think this interface could be better.
+> 
+> This would duplicate the tree at the start and leave both pointing at
+> the first element so that mas_dup_each() could start on that element.
+> Each subsequent call would go to the next element in both maple states.
+Every element of the new tree is the same as the old tree, and we don't
+need to maintain the mas of the old tree. It is enough to maintain the
+mas of the new tree when traversing.
 
-I submitted a patch to the mailing list and would very much
-appreciate your feedback:
-https://lore.kernel.org/linux-can/20230818114345.142983-1-lukas.magel@posteo.net/
+> It sounds like you don't want this for performance reasons?  Although
+I mean I don't want to record the first element during duplicating. But
+we can get the first element after the duplicate completes. This can
+also still be within the implementation of the interface.
 
-@Maxime, I tried your isotprecv / isotpsend snippet and the issue did
-not occur with the supplied patch. The send operation went through right
-away.
+> looking at mas_find() today, I think this could still work since we are
+> checking the maple state for a lot.
+Yes, mas_find() does a whole bunch of checks.
+> 
+> Both ideas could be even faster than what you have if we handle the
+> special cases of mas_is_none()/mas_is_ptr() in a smarter way because we
+> don't need to be as worried about the entry point of the maple state as
+> much as we do with mas_find()/mas_for_each().  I mean, is it possible to
+> get to a mas_is_none() or mas_is_ptr() on duplicating a tree?  How do we
+> handle these users?
+The check for mas_is_none() or mas_is_ptr() in mas_find() is really not
+worth it if we hold the lock. There doesn't seem to be a good way around
+mas_is_ptr() since it needs to enter the loop once. mas_is_none() can be
+solved because it does not enter the loop, we can use it as a condition
+to enter the loop.
 
-@Oliver I adjusted the exit path for the case where the initial wait is
-interrupted to return immediately instead of jumping to err_event_drop.
-Could you please check if you would agree with this change?
-
-Regards,
-Lukas
-
+Without using mas_find() to avoid the check inside, I have to figure out
+how I can handle mas_is_ptr() properly.
+> 
+> Both ideas still suffer from someone saying "Gee, that {insert function
+> name here} is used in the forking code, so I can totally use that in my
+> code because that's how it work!"  and find out it works for the limited
+> testing they do.  Then it fails later and the emails start flying.
+> 
+> 
+> I almost think we should do something like this on insert:
+> 
+> void mas_dup_insert(old, new, new_entry) {
+> 	WARN_ON_ONCE(old == new);
+> 	WARN_ON_ONCE(old->index != new->index);
+> 	WARN_ON_ONCE(old->last != new->last);
+> 	...
+> }
+Maintaining old mas doesn't feel worth it. If this we have to traverse
+the old tree one more time.
+> 
+> This would at least _require_ someone to have two maple states and
+> hopefully think twice on using it where it should not be used.
+> 
+> The bottom line is that this code is close to what we need to make
+> forking better, but I fear the misuse of the interface.
+> 
+> Something else to think about:
+> In the work items for the Maple Tree, there is a plan to have an enum to
+> specify the type of write that is going to happen.  The idea was for
+> mas_preallocate() to set this type of write so we can just go right to
+> the correct function.  We could use that here and set the maple state
+> write type to a direct replacement.
+This can be the next step. We can do without it for now.
+> 
+> Thanks,
+> Liam
+> 
