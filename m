@@ -2,73 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1DE780E66
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15941780E69
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377789AbjHRO51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S1377882AbjHRO57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:57:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243135AbjHRO5S (ORCPT
+        with ESMTP id S1377827AbjHRO5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:57:18 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BF3C30F3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:57:16 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c1f6f3884so128388166b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:57:15 -0700 (PDT)
+        Fri, 18 Aug 2023 10:57:39 -0400
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918DA30F3;
+        Fri, 18 Aug 2023 07:57:38 -0700 (PDT)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-583d702129cso9607427b3.3;
+        Fri, 18 Aug 2023 07:57:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692370634; x=1692975434;
+        d=gmail.com; s=20221208; t=1692370658; x=1692975458;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1hIaw7v+qFnCecVSN9ksqIlSLleZjVGkf9dkFvjHvMI=;
-        b=uEwqgDBxVrpuSVPK0vIySBvl8ycyqBeC9nei0Ym4lTWnwCcVBUML1H9jep5TOl8Ayl
-         9oKA3Ej4XJ0aBHsU04PfZUyix/a+gLud1UMRDSWA2zto2RssIKqlXHhErV2dTpN+FjGn
-         p4n3fCR7GZKx0yh7lh0rcQSNRBZNOaLeI1k0Py4Lxj2EMTdH5up6VQnGIysSfYTF7u24
-         /xSyIcv62Nd6Shv1n20/rTsOqhBU/plVXDb3FuGuaPjKvWzKqSXskDnht99QCC3mBpv9
-         VqyejiCiHhU9Ls8wMcDMo6yNO2Dbm9B4/8KUC+1b55qDLAVdAmdhwAj8FUs3fNf2JVsq
-         bn3A==
+        bh=a3YL1cTS042mke7QX2gTenX5Fxm6ube31C+a3rIf0p8=;
+        b=gr3cKPnyBvC6suRBhrybQKWDaFjvkdC80lgXVYk5CrW+lP57VuSucWxFsjgLZNhqjr
+         6I6vYOw9kcBU5v7L7SJPMHTBwnO6jhSJq+QcqmcJ95/hPSmdFKVWJ0YElZTlwgF3WGDP
+         vHDpBtL934WdgIy8dgOqua+bVSXbuC24CgEIfu6DZdz1S8OzdoUZJ1JrWnQdvnZXHwW0
+         sQURlJSjHUndXS7djGA4gHceGODZRjdOsQt/Q5gie4bF896hmi23u+cZzqeTX4QpJGib
+         sEBMjz9/YZWjEp73Wr3FTZ2YWDNkxXJ0A0jd5cYzXst2shg1iGqATk7Jdqv2KptdF/Jn
+         2ckA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692370634; x=1692975434;
+        d=1e100.net; s=20221208; t=1692370658; x=1692975458;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1hIaw7v+qFnCecVSN9ksqIlSLleZjVGkf9dkFvjHvMI=;
-        b=RqvTbRYQRTF8IgEYTw2NygLdfhdMsAnSsmN+aNLNiN0cdng90dWFd0WbXD6PUB9/LS
-         6oLcM85PLC4IpO7JH1+GbQWfUdQN6TSJcJMEjNXr0saSj7ySHG3mFeOlyBJcjxUR66jG
-         s7GKrNQqxrp3pQdpSQhmBRgr828DmmXgQvm7dy966zWpIP2ExgxrxDhxOqlESeocpt2l
-         EgWG+Unl+UKRIN6jEr2619L5zOmkm/501/ZY9A7ogCbX7EkEaQQf1klxgTAGlzJ/S8zk
-         27vkcUHlP68OgpcBqhgor3gUCIVQIMf4uUTczc2mSNm4TQARgImHqKEJ+uQmhIDe3Dy/
-         yaPw==
-X-Gm-Message-State: AOJu0Yyq0spe+LEH40kiuqLixKPf6PDliqg8av3RPB5ATxRhP2/OwR27
-        SgwhWUECcYnxk9XmP8vOFA2V68WIzfi8bSj3uMJ6Xg==
-X-Google-Smtp-Source: AGHT+IFEDbNG3bhSioghc3EtIdvvCBkNR1/FmkkoWe1jJY21nWwJt8Le1O6PsMenzp75eoy3O+om+SYQoFtb7vUNUJM=
-X-Received: by 2002:a17:906:5dd8:b0:99b:dd1d:bc58 with SMTP id
- p24-20020a1709065dd800b0099bdd1dbc58mr2209933ejv.41.1692370634183; Fri, 18
- Aug 2023 07:57:14 -0700 (PDT)
+        bh=a3YL1cTS042mke7QX2gTenX5Fxm6ube31C+a3rIf0p8=;
+        b=YExJU4ZScE68qR1fQ/ho6YejgxoUefGGkPecFGJhxCTk7JWc+GDPpUcZvINRgN3/cp
+         xhqD3YG2/hUtEGHNS0qQxZLd7ce79RKMW7Ef1iKtSLsnwS6MkGa3XriQaOzMlSh9s9Jw
+         XH0UJbNoNAlp78vKU5PWBrFsBbxiUROPznPl1OSHd8LV0cHlMPTP813TAjgcZMM51Hh3
+         9EVsbWrgyE9D79673beZIO83m5kPqWLBDyUNOhF+zDmolPoCClYJrv+JxgldticLwJk5
+         ulzfpTNA+C3TMAaRWDSD+De5fkZNR+MRTvtTQWwCToBgRDw2WQTskYUhMWLGhjT2Zlhu
+         bhGA==
+X-Gm-Message-State: AOJu0YwBGmMTWJ6TkCQf9fIu/8L7fLmTi+3/HYrrufojgWyB5l7Auyd9
+        RikX4CPuEX8ZhYtD3lorgwvxoSn5QOsCtEuSspvnnrHsAQk=
+X-Google-Smtp-Source: AGHT+IEVyOBTNDONrRYORdqyoqvB3RfI5AjMLCBcAe9FeymzuePHuGJelhqWDGW+wuXL90AsPWrv3F78f4TGPkwXNI0=
+X-Received: by 2002:a81:8341:0:b0:56d:3b91:7e76 with SMTP id
+ t62-20020a818341000000b0056d3b917e76mr2819352ywf.12.1692370657737; Fri, 18
+ Aug 2023 07:57:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230817164733.2475092-1-nphamcs@gmail.com> <20230817190126.3155299-1-nphamcs@gmail.com>
- <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com>
- <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
- <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
- <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com> <20230818134906.GA138967@cmpxchg.org>
-In-Reply-To: <20230818134906.GA138967@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 18 Aug 2023 07:56:37 -0700
-Message-ID: <CAJD7tkZY3kQPO2dn2NX0WODwwRifhH4R=pSZnFZYxh23Eszb-g@mail.gmail.com>
-Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Yu Zhao <yuzhao@google.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
+References: <CAHhAz+jdBS3KPCDL2WZ8UBFRhu0hZyHqs0HAdnhamswswF6iug@mail.gmail.com>
+ <CAEwN+MB6O03aaFo67CdDJoMCYQuexF0LCY5J1T47Bs4o_gcKrw@mail.gmail.com>
+In-Reply-To: <CAEwN+MB6O03aaFo67CdDJoMCYQuexF0LCY5J1T47Bs4o_gcKrw@mail.gmail.com>
+From:   Muni Sekhar <munisekharrms@gmail.com>
+Date:   Fri, 18 Aug 2023 20:27:26 +0530
+Message-ID: <CAHhAz+hTFdBNh=S1XfWA_pAUnPUO2czHPXgqvA4SiJBacxZo5A@mail.gmail.com>
+Subject: Re: Seeking Guidance for New SPI Driver in Mainline Linux Kernel
+To:     kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-spi@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,357 +70,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 6:49=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Thu, Aug 17, 2023 at 05:12:17PM -0600, Yu Zhao wrote:
-> > On Thu, Aug 17, 2023 at 4:50=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > > On Thu, Aug 17, 2023 at 3:43=E2=80=AFPM Nhat Pham <nphamcs@gmail.com>=
+In the previous email, I mentioned that the FPGA hardware(SPI block)
+was connected to the Linux system using the PCIe interface. Here, when
+I refer to the Linux system, I mean an x86-based Linux system, not an
+ARM-based embedded system.
+
+On Fri, Aug 18, 2023 at 7:28=E2=80=AFPM Raul Piper <raulpblooper@gmail.com>=
  wrote:
-> > > >
-> > > > On Thu, Aug 17, 2023 at 1:50 PM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
-> > > > >
-> > > > > On Thu, Aug 17, 2023 at 12:01=E2=80=AFPM Nhat Pham <nphamcs@gmail=
-.com> wrote:
-> > > > > >
-> > > > > > In eviction recency check, we are currently not holding a local
-> > > > > > reference to the memcg that the refaulted folio belonged to whe=
-n it was
-> > > > > > evicted. This could cause serious memcg lifetime issues, for e.=
-g in the
-> > > > > > memcg hierarchy traversal done in mem_cgroup_get_nr_swap_pages(=
-). This
-> > > > > > has occurred in production:
-> > > > > >
-> > > > > > [ 155757.793456] BUG: kernel NULL pointer dereference, address:=
- 00000000000000c0
-> > > > > > [ 155757.807568] #PF: supervisor read access in kernel mode
-> > > > > > [ 155757.818024] #PF: error_code(0x0000) - not-present page
-> > > > > > [ 155757.828482] PGD 401f77067 P4D 401f77067 PUD 401f76067 PMD =
-0
-> > > > > > [ 155757.839985] Oops: 0000 [#1] SMP
-> > > > > > [ 155757.846444] CPU: 7 PID: 1380944 Comm: ThriftSrv-pri3- Kdum=
-p: loaded Tainted: G S                 6.4.3-0_fbk1_rc0_594_g8d0cbcaa67ba #=
-1
-> > > > > > [ 155757.870808] Hardware name: Wiwynn Twin Lakes MP/Twin Lakes=
- Passive MP, BIOS YMM16 05/24/2021
-> > > > > > [ 155757.887870] RIP: 0010:mem_cgroup_get_nr_swap_pages+0x3d/0x=
-b0
-> > > > > > [ 155757.899377] Code: 29 19 4a 02 48 39 f9 74 63 48 8b 97 c0 0=
-0 00 00 48 8b b7 58 02 00 00 48 2b b7 c0 01 00 00 48 39 f0 48 0f 4d c6 48 3=
-9 d1 74 42 <48> 8b b2 c0 00 00 00 48 8b ba 58 02 00 00 48 2b ba c0 01 00 00=
- 48
-> > > > > > [ 155757.937125] RSP: 0018:ffffc9002ecdfbc8 EFLAGS: 00010286
-> > > > > > [ 155757.947755] RAX: 00000000003a3b1c RBX: 000007ffffffffff RC=
-X: ffff888280183000
-> > > > > > [ 155757.962202] RDX: 0000000000000000 RSI: 0007ffffffffffff RD=
-I: ffff888bbc2d1000
-> > > > > > [ 155757.976648] RBP: 0000000000000001 R08: 000000000000000b R0=
-9: ffff888ad9cedba0
-> > > > > > [ 155757.991094] R10: ffffea0039c07900 R11: 0000000000000010 R1=
-2: ffff888b23a7b000
-> > > > > > [ 155758.005540] R13: 0000000000000000 R14: ffff888bbc2d1000 R1=
-5: 000007ffffc71354
-> > > > > > [ 155758.019991] FS:  00007f6234c68640(0000) GS:ffff88903f9c000=
-0(0000) knlGS:0000000000000000
-> > > > > > [ 155758.036356] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050=
-033
-> > > > > > [ 155758.048023] CR2: 00000000000000c0 CR3: 0000000a83eb8004 CR=
-4: 00000000007706e0
-> > > > > > [ 155758.062473] DR0: 0000000000000000 DR1: 0000000000000000 DR=
-2: 0000000000000000
-> > > > > > [ 155758.076924] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR=
-7: 0000000000000400
-> > > > > > [ 155758.091376] PKRU: 55555554
-> > > > > > [ 155758.096957] Call Trace:
-> > > > > > [ 155758.102016]  <TASK>
-> > > > > > [ 155758.106502]  ? __die+0x78/0xc0
-> > > > > > [ 155758.112793]  ? page_fault_oops+0x286/0x380
-> > > > > > [ 155758.121175]  ? exc_page_fault+0x5d/0x110
-> > > > > > [ 155758.129209]  ? asm_exc_page_fault+0x22/0x30
-> > > > > > [ 155758.137763]  ? mem_cgroup_get_nr_swap_pages+0x3d/0xb0
-> > > > > > [ 155758.148060]  workingset_test_recent+0xda/0x1b0
-> > > > > > [ 155758.157133]  workingset_refault+0xca/0x1e0
-> > > > > > [ 155758.165508]  filemap_add_folio+0x4d/0x70
-> > > > > > [ 155758.173538]  page_cache_ra_unbounded+0xed/0x190
-> > > > > > [ 155758.182919]  page_cache_sync_ra+0xd6/0x1e0
-> > > > > > [ 155758.191738]  filemap_read+0x68d/0xdf0
-> > > > > > [ 155758.199495]  ? mlx5e_napi_poll+0x123/0x940
-> > > > > > [ 155758.207981]  ? __napi_schedule+0x55/0x90
-> > > > > > [ 155758.216095]  __x64_sys_pread64+0x1d6/0x2c0
-> > > > > > [ 155758.224601]  do_syscall_64+0x3d/0x80
-> > > > > > [ 155758.232058]  entry_SYSCALL_64_after_hwframe+0x46/0xb0
-> > > > > > [ 155758.242473] RIP: 0033:0x7f62c29153b5
-> > > > > > [ 155758.249938] Code: e8 48 89 75 f0 89 7d f8 48 89 4d e0 e8 b=
-4 e6 f7 ff 41 89 c0 4c 8b 55 e0 48 8b 55 e8 48 8b 75 f0 8b 7d f8 b8 11 00 0=
-0 00 0f 05 <48> 3d 00 f0 ff ff 77 33 44 89 c7 48 89 45 f8 e8 e7 e6 f7 ff 48=
- 8b
-> > > > > > [ 155758.288005] RSP: 002b:00007f6234c5ffd0 EFLAGS: 00000293 OR=
-IG_RAX: 0000000000000011
-> > > > > > [ 155758.303474] RAX: ffffffffffffffda RBX: 00007f628c4e70c0 RC=
-X: 00007f62c29153b5
-> > > > > > [ 155758.318075] RDX: 000000000003c041 RSI: 00007f61d2986000 RD=
-I: 0000000000000076
-> > > > > > [ 155758.332678] RBP: 00007f6234c5fff0 R08: 0000000000000000 R0=
-9: 0000000064d5230c
-> > > > > > [ 155758.347452] R10: 000000000027d450 R11: 0000000000000293 R1=
-2: 000000000003c041
-> > > > > > [ 155758.362044] R13: 00007f61d2986000 R14: 00007f629e11b060 R1=
-5: 000000000027d450
-> > > > > > [ 155758.376661]  </TASK>
-> > > > > >
-> > > > > > This patch fixes the issue by getting a local reference inside
-> > > > > > unpack_shadow().
-> > > > > >
-> > > > > > Fixes: f78dfc7b77d5 ("workingset: fix confusion around eviction=
- vs refault container")
-> > > > >
-> > > > > Beyond mem_cgroup_get_nr_swap_pages(), we still use the eviction_=
-memcg
-> > > > > without grabbing a ref to it first in workingset_test_recent() (a=
-nd in
-> > > > > workingset_refault() before that) as well as lru_gen_test_recent(=
-).
-> > > > >
-> > > > > Wouldn't the fix go back even further? or am I misinterpreting th=
-e problem?
-> > > > Hmm I don't see eviction_memcg being used outside of *_test_recent
-> > > > (the rest just uses memcg =3D folio_memcg(folio), which if I'm not =
-mistaken is
-> > > > the memcg that is refaulting the folio into memory).
-> > > >
-> > > > Inside workingset_test_recent(), the only other place where evictio=
-n_memcg
-> > > > is used is for mem_cgroup_lruvec. This function call won't crash wh=
-ether
-> > > > eviction_memcg is valid or not.
-> > >
-> > > If eviction_memcg is invalid because the memory was already freed, we
-> > > are basically dereferencing garbage in mem_cgroup_lruvec() aren't we?
-> > >
-> > > > The crash only happens during
-> > > > mem_cgroup_get_nr_swap_pages, which has an upward traversal from
-> > > > eviction_memcg to root.
-> > > >
-> > > > Let me know if this does not make sense and/or is insufficient to e=
-nsure
-> > > > safe upward traversal from eviction_memcg to root!
-> > > > >
-> > > > >
-> > > > >
-> > > > > > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> > > > > > Cc: stable@vger.kernel.org
-> > > > > > ---
-> > > > > >  mm/workingset.c | 65 ++++++++++++++++++++++++++++++++---------=
---------
-> > > > > >  1 file changed, 43 insertions(+), 22 deletions(-)
-> > > > > >
-> > > > > > diff --git a/mm/workingset.c b/mm/workingset.c
-> > > > > > index da58a26d0d4d..03cadad4e484 100644
-> > > > > > --- a/mm/workingset.c
-> > > > > > +++ b/mm/workingset.c
-> > > > > > @@ -206,10 +206,19 @@ static void *pack_shadow(int memcgid, pg_=
-data_t *pgdat, unsigned long eviction,
-> > > > > >         return xa_mk_value(eviction);
-> > > > > >  }
-> > > > > >
-> > > > > > -static void unpack_shadow(void *shadow, int *memcgidp, pg_data=
-_t **pgdat,
-> > > > > > -                         unsigned long *evictionp, bool *worki=
-ngsetp)
-> > > > > > +/*
-> > > > > > + * Unpacks the stored fields of a shadow entry into the given =
-pointers.
-> > > > > > + *
-> > > > > > + * The memcg pointer is only populated if the memcg recorded i=
-n the shadow
-> > > > > > + * entry is valid. In this case, a reference to the memcg will=
- be acquired,
-> > > > > > + * and a corresponding mem_cgroup_put() will be needed when we=
- no longer
-> > > > > > + * need the memcg.
-> > > > > > + */
-> > > > > > +static void unpack_shadow(void *shadow, struct mem_cgroup **me=
-mcgp,
-> > > > > > +                       pg_data_t **pgdat, unsigned long *evict=
-ionp, bool *workingsetp)
-> > > > > >  {
-> > > > > >         unsigned long entry =3D xa_to_value(shadow);
-> > > > > > +       struct mem_cgroup *memcg;
-> > > > > >         int memcgid, nid;
-> > > > > >         bool workingset;
-> > > > > >
-> > > > > > @@ -220,7 +229,24 @@ static void unpack_shadow(void *shadow, in=
-t *memcgidp, pg_data_t **pgdat,
-> > > > > >         memcgid =3D entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
-> > > > > >         entry >>=3D MEM_CGROUP_ID_SHIFT;
-> > > > > >
-> > > > > > -       *memcgidp =3D memcgid;
-> > > > > > +       /*
-> > > > > > +        * Look up the memcg associated with the stored ID. It =
-might
-> > > > > > +        * have been deleted since the folio's eviction.
-> > > > > > +        *
-> > > > > > +        * Note that in rare events the ID could have been recy=
-cled
-> > > > > > +        * for a new cgroup that refaults a shared folio. This =
-is
-> > > > > > +        * impossible to tell from the available data. However,=
- this
-> > > > > > +        * should be a rare and limited disturbance, and activa=
-tions
-> > > > > > +        * are always speculative anyway. Ultimately, it's the =
-aging
-> > > > > > +        * algorithm's job to shake out the minimum access freq=
-uency
-> > > > > > +        * for the active cache.
-> > > > > > +        */
-> > > > > > +       memcg =3D mem_cgroup_from_id(memcgid);
-> > > > > > +       if (memcg && css_tryget(&memcg->css))
-> > > > > > +               *memcgp =3D memcg;
-> > > > > > +       else
-> > > > > > +               *memcgp =3D NULL;
-> > > > > > +
-> > > > > >         *pgdat =3D NODE_DATA(nid);
-> > > > > >         *evictionp =3D entry;
-> > > > > >         *workingsetp =3D workingset;
-> > > > > > @@ -262,15 +288,16 @@ static void *lru_gen_eviction(struct foli=
-o *folio)
-> > > > > >  static bool lru_gen_test_recent(void *shadow, bool file, struc=
-t lruvec **lruvec,
-> > > > > >                                 unsigned long *token, bool *wor=
-kingset)
-> > > > > >  {
-> > > > > > -       int memcg_id;
-> > > > > >         unsigned long min_seq;
-> > > > > >         struct mem_cgroup *memcg;
-> > > > > >         struct pglist_data *pgdat;
-> > > > > >
-> > > > > > -       unpack_shadow(shadow, &memcg_id, &pgdat, token, working=
-set);
-> > > > > > +       unpack_shadow(shadow, &memcg, &pgdat, token, workingset=
-);
-> > > > > > +       if (!mem_cgroup_disabled() && !memcg)
-> > > > > > +               return false;
-> > > > >
-> > > > > +Yu Zhao
-> > > > >
-> > > > > There is a change of behavior here, right?
-> > > > >
-> > > > > The existing code will continue if !mem_cgroup_disabled() && !mem=
-cg is
-> > > > > true, and mem_cgroup_lruvec() will return the lruvec of the root
-> > > > > memcg. Now we are just returning false.
-> > > > >
-> > > > > Is this intentional?
-> > > > Oh right, there is. Should have cc-ed Yu Zhao as well, my bad.
-> > > > get_maintainers.pl isn't always sufficient I guess :)
-> > > >
-> > > > But yeah, this behavioral change is intentional.
-> > > >
-> > > > Correct me if I'm wrong of course, but it seems like MGLRU should
-> > > > follow the same pattern here. That is, once we return from unpack_s=
-hadow,
-> > > > the possible scenarios are the same as prescribed in workingset_tes=
-t_recent:
-> > > >
-> > > > 1. If mem_cgroup is disabled, we can ignore this check.
-> > > > 2. If mem_cgroup is enabled, then the only reason why we get NULL
-> > > > memcg from unpack_shadow is if the eviction_memcg is no longer
-> > > > valid.  We should not try to get its lruvec, or substitute it with =
-the
-> > > > root memcg, but return false right away (i.e not recent).
-> > > > >
-> > >
-> > > I will leave this for Yu :)
-> >
-> > Thanks, Yosry.
-> >
-> > Hi Nhat, it seems unnecessary to me to introduce a get/put into
-> > lru_gen_test_recent() because it doesn't suffer from the bug this
-> > patch tries to fix. In theory, the extra get/put can impact
-> > performance, though admittedly the impact is unlikely to be
-> > measurable. Regardless, the general practice is to fix the bug
-> > locally, i.e., when the mem_cgroup_get_nr_swap_pages() path is taken,
-> > rather than change the unrelated path. Thank you.
 >
-> Hey guys,
+> Have you gone through the bindings documentation for spi driver?
+> What are the pin configuration for your hardware sli?
+> Br
 >
-> I had suggested to have it in unpack_shadow() to keep things simple,
-> and not further complicate the lifetime rules in this code. The
-> tryget() is against a per-cpu counter, so it's not expensive.
->
-> The NULL deref is evidence that while *some* cgroup members are still
-> accessible once it's dead, not all of it is. There is no explicit
-> guarantee from the cgroup code that anything BUT the tryget() is still
-> valid against group that is under rcu freeing.
->
-> Since it isn't expensive, let's keep it simple and robust, and prevent
-> future bugs of the same class, by always ensuring the cgroup is alive
-> before accessing random members. Especially in non-cgroup code.
+> On Fri, 18 Aug 2023 at 6:40 PM, Muni Sekhar <munisekharrms@gmail.com> wro=
+te:
+>>
+>> Dear Linux Kernel Community,
+>>
+>> I hope this email finds you well.
+>> I am writing to seek your guidance and assistance regarding the
+>> development of a new SPI device driver for our hardware system.
+>> Our hardware, implemented on an FPGA, features an SPI interface that
+>> acts as a Master, offering two distinct modes for data transmission
+>> and reception.
+>> This hardware is connected to the Linux system via the PCIe bus.
+>> This hardware offers two modes for communication: using registers for
+>> debugging purposes and utilizing DMA channels for high-bandwidth
+>> applications. Both modes leverage the PCIe interface for data
+>> exchange.
+>> The hardware boasts several noteworthy features, including support for
+>> multiple speed settings, SPI port switching, configurable sample edge
+>> programming, and adjustable SPI transfer sizes.
+>>
+>> As we embark on the task of developing a device driver for this SPI
+>> interface, we intend to follow best practices and leverage existing
+>> resources within the Mainline Linux kernel tree. To achieve this, we
+>> plan to refer to and adapt existing SPI drivers.
+>> We kindly request your recommendations on which existing SPI driver
+>> within the Mainline Linux kernel tree would serve as the most suitable
+>> reference for our endeavor. Your invaluable expertise would greatly
+>> aid us in ensuring the success of this driver development process.
+>> Thank you for your time and consideration. We eagerly anticipate your
+>> guidance and insights.
+>>
+>> Warm regards,
+>> Sekhar
+>>
+>> _______________________________________________
+>> Kernelnewbies mailing list
+>> Kernelnewbies@kernelnewbies.org
+>> https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies
 
-I looked at this again today with fresh eyes, and I want to go back to
-what I initially said. Isn't RCU protection in this case enough to
-keep the memcg "valid" (i.e accessible, not garbage)? The tryget is
-not a lot of complexity or performance tax, but I want to really
-understand what's happening here.
 
-Looking at the code again, this seems to be the sequence of events on
-the cgroup side:
-- css_put() puts the last reference invoking a call to css_release()
-- css_release() queues css_release_work_fn()
-- css_release() does some bookkeeping, makes some callbacks, and
-queues css_free_rwork_fn() to run *after* an RCU grace period.
-- css_free_rwork_fn() makes callbacks to free the memory, ultimately
-freeing the memcg.
 
-On the memcg idr side, the removal sequence of events seem to be:
-- mem_cgroup_id_put() will decrement the id ref and check if falls to 0
-- If the id ref falls to 0, we call mem_cgroup_id_remove() *then* css_put()
-
-On the workingset_refault() side, the sequence of events seems to be:
-- rcu_read_lock()
-- memcg =3D mem_cgroup_from_id()
-- ... // use memcg
-- rcu_read_unlock()
-
-So technically, after holding the rcu read lock, if we find the memcg
-in the idr, it must be valid, and it must not be freed until after the
-rcu read section is completed. It's not just the cgroup internal
-implementation, it's the contract between cgroup core and controllers
-such as memcg.
-
-The memory controller expects a sequence of callbacks during freeing:
-css_offline() -> css_released() -> css_free(). So memcg code is within
-its right to access any fields of struct mem_cgroup that are not freed
-by the css_offline() or css_released() until css_free() is called,
-right?
-
-Here is a guess / question, because I am not really familiar with
-memory barriers and such, but is it at all possible that the actual
-problem is reordering of instructions in mem_cgroup_id_put_many(),
-such that we actually execute css_put() *before*
-mem_cgroup_id_remove()?
-
-If this happens it seems possible for this to happen:
-
-cpu #1                                  cpu#2
-                                             css_put()
-                                             /* css_free_rwork_fn is queued=
- */
-rcu_read_lock()
-mem_cgroup_from_id()
-                                             mem_cgroup_id_remove()
-/* access memcg */
-
-If I understand correctly, if css_free_rwork_fn() is queued before the
-rcu_read_lock in workingset_refault() begins, then it can be executed
-during the rcu read section, and the memcg can be freed at any point
-from under us. Perhaps what we need is memory barriers to ensure
-correct ordering in mem_cgroup_id_put_many()? I am not sure if
-rcu_read_lock() implies a barrier on the other side.
-
-Sorry if this is all off, I am just trying to understand what's going on.
+--=20
+Thanks,
+Sekhar
