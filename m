@@ -2,133 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 152F97805C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 07:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AF97805C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 07:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357861AbjHRFv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 01:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
+        id S1357637AbjHRFme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 01:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357744AbjHRFvW (ORCPT
+        with ESMTP id S1357608AbjHRFmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 01:51:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056032D7F;
-        Thu, 17 Aug 2023 22:51:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692337881; x=1723873881;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UEcu83cy8Od5Jkea6QF5T9Zq+9si5UHFbRMs9/J/T5U=;
-  b=PR42pRNSABMv9ftiYuCnc9CUcYytvcUBhLp9K2ZIC2UznoKGzemdsyGs
-   vTwgwL5hMCtJ8tHrn0VEn+nbuLTfrg5zsln2w7UV8aepLDgFlMBzAplhX
-   XMg224W1tVkKYCt2J+jxYysMkl4GsHvVf4EzBK3nfDGFoLOgiYFyFEmGr
-   vftj8LqSveZGXLRYem7dPtx/kKNlz7pxS3+waF03N70+W3SYBYxfgbAaP
-   Ry+8+gZQW6OcIFl7U7Thvsq0D4NNOfSWprl2lgeRscPpI6aK18VipMp/m
-   L5fb6+MZci5kiB8hB8o4PEa1BxXXUgdduDSF9tUuPVJeS4WHVbLn4CIqq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="436935373"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="436935373"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 22:51:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="1065613717"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="1065613717"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 17 Aug 2023 22:51:16 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWsNs-00029M-0q;
-        Fri, 18 Aug 2023 05:51:01 +0000
-Date:   Fri, 18 Aug 2023 13:48:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alistair Francis <alistair23@gmail.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, Jonathan.Cameron@huawei.com,
-        lukas@wunner.de
-Cc:     oe-kbuild-all@lists.linux.dev, alex.williamson@redhat.com,
-        christian.koenig@amd.com, kch@nvidia.com,
-        gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, alistair23@gmail.com,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v6 1/3] PCI/DOE: Expose the DOE features via sysfs
-Message-ID: <202308181341.DWHmL2Au-lkp@intel.com>
-References: <20230817235810.596458-1-alistair.francis@wdc.com>
+        Fri, 18 Aug 2023 01:42:15 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C4526AD
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:42:13 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6889350bc2bso536802b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 22:42:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692337333; x=1692942133;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4vbsontTSe91e+7xkegR3LXuXKl/OSAKaLmQPXVzW/Y=;
+        b=EEYomjMCvwvK4W68km7HvqhGMG7uMp9aMRL2By/T6Vmw0UpPDXVzkeESzUEcJZhrnz
+         ZcC5PQ68aPsSce1fvL4aGR/YzMCki7QL/c6pTftL5rdDyi2Q4OLzuPHU4kdmIu2sqgmw
+         d94SiL8OeBV8zTIr0smNhUpFK0xR8IsOu2+3ZV0mwjV+sf6weeWOj7Xgpdnb3tm8+ys3
+         PtsUu+d0oQFovM2yIENNP8YDhZFd3vrX0oto9HYIXV+//093St1mYGxwMBYnbTVXqLvr
+         lMg+gREVHMrKI2onsYHXK4aKr9V2OufZsYl7xgnpVL4Kox/1+2MmPYj6tzUb1O04bVTk
+         hRrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692337333; x=1692942133;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4vbsontTSe91e+7xkegR3LXuXKl/OSAKaLmQPXVzW/Y=;
+        b=DSHwRYBUp8fPkHAI0vVLypgrXjSEQFSSyFg61ybP1MxBoSvKZc1FDGt8uiJ6IEkhYL
+         RXBg9j3ES2w3qxSMjOrvhPL6CHeKsYiTS5W9xZkJeXJSuotQ7A1mpQiAts4BvAFcb63E
+         21C29yjUn1rtQei6rdO8UVIGO9Yt2cRHXy8ebuhuwE5r6fWLT4o4egMv5WufIYfgzonE
+         CwMziV8Wx08VV58xp1f9JoVo73DLi7plgNtNXwyBkzyiK/BFhczmTeYyBZ1/c5Z9O6mj
+         VrabYjx6+ReYzBEy0fFUuPy9VLCneZJD2RGN1rhPQpMv+0roWb2M6/papuWV7PVR/vdJ
+         P61w==
+X-Gm-Message-State: AOJu0YyYLbpwkhmbmH1kOa2WCE+LfB+m+7MzV1E1SQBrBmUert562+BX
+        Bq6u4beIpbFjeLr0OQRp4eT1NgFs4w0=
+X-Google-Smtp-Source: AGHT+IGUtWffSgvMQmRtj5Av3UCmUmKImM8BO8FzcM/titcddiHq1b7c9c+/A/73gLWrjU0DljOJlA==
+X-Received: by 2002:a05:6a00:22c4:b0:687:596e:fa6a with SMTP id f4-20020a056a0022c400b00687596efa6amr2069845pfj.16.1692337333341;
+        Thu, 17 Aug 2023 22:42:13 -0700 (PDT)
+Received: from localhost ([156.236.96.163])
+        by smtp.gmail.com with ESMTPSA id r13-20020a62e40d000000b00686f0133b49sm694048pfh.63.2023.08.17.22.42.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 17 Aug 2023 22:42:13 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 13:51:56 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@coolpad.com
+Subject: Re: [PATCH 6/8] erofs: get rid of fe->backmost for cache
+ decompression
+Message-ID: <20230818135156.00005a05.zbestahu@gmail.com>
+In-Reply-To: <20230817082813.81180-6-hsiangkao@linux.alibaba.com>
+References: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
+        <20230817082813.81180-6-hsiangkao@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817235810.596458-1-alistair.francis@wdc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
+On Thu, 17 Aug 2023 16:28:11 +0800
+Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
 
-kernel test robot noticed the following build warnings:
+> EROFS_MAP_FULL_MAPPED is more accurate to decide if caching the last
+> incomplete pcluster for later read or not.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+>  fs/erofs/zdata.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 4009283944ca..c28945532a02 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -528,8 +528,6 @@ struct z_erofs_decompress_frontend {
+>  	z_erofs_next_pcluster_t owned_head;
+>  	enum z_erofs_pclustermode mode;
+>  
+> -	/* used for applying cache strategy on the fly */
+> -	bool backmost;
+>  	erofs_off_t headoffset;
+>  
+>  	/* a pointer used to pick up inplace I/O pages */
+> @@ -538,7 +536,7 @@ struct z_erofs_decompress_frontend {
+>  
+>  #define DECOMPRESS_FRONTEND_INIT(__i) { \
+>  	.inode = __i, .owned_head = Z_EROFS_PCLUSTER_TAIL, \
+> -	.mode = Z_EROFS_PCLUSTER_FOLLOWED, .backmost = true }
+> +	.mode = Z_EROFS_PCLUSTER_FOLLOWED }
+>  
+>  static bool z_erofs_should_alloc_cache(struct z_erofs_decompress_frontend *fe)
+>  {
+> @@ -547,7 +545,7 @@ static bool z_erofs_should_alloc_cache(struct z_erofs_decompress_frontend *fe)
+>  	if (cachestrategy <= EROFS_ZIP_CACHE_DISABLED)
+>  		return false;
+>  
+> -	if (fe->backmost)
+> +	if (!(fe->map.m_flags & EROFS_MAP_FULL_MAPPED))
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus linus/master v6.5-rc6 next-20230817]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+So, i understand (map.m_flags & EROFS_MAP_FULL_MAPPED) should be false if allocate cache is needed
+(fe->backmost is true)?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alistair-Francis/sysfs-Add-a-attr_is_visible-function-to-attribute_group/20230818-080110
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20230817235810.596458-1-alistair.francis%40wdc.com
-patch subject: [PATCH v6 1/3] PCI/DOE: Expose the DOE features via sysfs
-config: loongarch-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308181341.DWHmL2Au-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308181341.DWHmL2Au-lkp@intel.com/reproduce)
+>  		return true;
+>  
+>  	if (cachestrategy >= EROFS_ZIP_CACHE_READAROUND &&
+> @@ -939,7 +937,6 @@ static void z_erofs_pcluster_end(struct z_erofs_decompress_frontend *fe)
+>  		erofs_workgroup_put(&pcl->obj);
+>  
+>  	fe->pcl = NULL;
+> -	fe->backmost = false;
+>  }
+>  
+>  static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308181341.DWHmL2Au-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pci/doe.c:61: warning: Function parameter or member 'sysfs_attrs' not described in 'pci_doe_mb'
-
-
-vim +61 drivers/pci/doe.c
-
-a4ff8e7a716013 Li Ming          2022-11-16  36  
-9d24322e887b6a Jonathan Cameron 2022-07-19  37  /**
-9d24322e887b6a Jonathan Cameron 2022-07-19  38   * struct pci_doe_mb - State for a single DOE mailbox
-9d24322e887b6a Jonathan Cameron 2022-07-19  39   *
-9d24322e887b6a Jonathan Cameron 2022-07-19  40   * This state is used to manage a single DOE mailbox capability.  All fields
-9d24322e887b6a Jonathan Cameron 2022-07-19  41   * should be considered opaque to the consumers and the structure passed into
-022b66f38195f6 Lukas Wunner     2023-03-11  42   * the helpers below after being created by pci_doe_create_mb().
-9d24322e887b6a Jonathan Cameron 2022-07-19  43   *
-9d24322e887b6a Jonathan Cameron 2022-07-19  44   * @pdev: PCI device this mailbox belongs to
-9d24322e887b6a Jonathan Cameron 2022-07-19  45   * @cap_offset: Capability offset
-9d24322e887b6a Jonathan Cameron 2022-07-19  46   * @prots: Array of protocols supported (encoded as long values)
-9d24322e887b6a Jonathan Cameron 2022-07-19  47   * @wq: Wait queue for work item
-9d24322e887b6a Jonathan Cameron 2022-07-19  48   * @work_queue: Queue of pci_doe_work items
-9d24322e887b6a Jonathan Cameron 2022-07-19  49   * @flags: Bit array of PCI_DOE_FLAG_* flags
-9d24322e887b6a Jonathan Cameron 2022-07-19  50   */
-9d24322e887b6a Jonathan Cameron 2022-07-19  51  struct pci_doe_mb {
-9d24322e887b6a Jonathan Cameron 2022-07-19  52  	struct pci_dev *pdev;
-9d24322e887b6a Jonathan Cameron 2022-07-19  53  	u16 cap_offset;
-9d24322e887b6a Jonathan Cameron 2022-07-19  54  	struct xarray prots;
-9d24322e887b6a Jonathan Cameron 2022-07-19  55  
-9d24322e887b6a Jonathan Cameron 2022-07-19  56  	wait_queue_head_t wq;
-9d24322e887b6a Jonathan Cameron 2022-07-19  57  	struct workqueue_struct *work_queue;
-9d24322e887b6a Jonathan Cameron 2022-07-19  58  	unsigned long flags;
-2a8556606e90c6 Alistair Francis 2023-08-17  59  
-2a8556606e90c6 Alistair Francis 2023-08-17  60  	struct device_attribute *sysfs_attrs;
-9d24322e887b6a Jonathan Cameron 2022-07-19 @61  };
-9d24322e887b6a Jonathan Cameron 2022-07-19  62  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
