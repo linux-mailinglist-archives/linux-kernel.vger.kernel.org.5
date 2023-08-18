@@ -2,128 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C47780DE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 644D3780DF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377712AbjHROUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S1377534AbjHROWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377481AbjHROT4 (ORCPT
+        with ESMTP id S1358472AbjHROV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:19:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4AA3AAC;
-        Fri, 18 Aug 2023 07:19:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692368394; x=1723904394;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6t+2wqAcIleaGbYchZEYFST4Lvi86RbDwXOifd8hTFU=;
-  b=CgYnSPMbMfVIb6P1sH0Y4f3sHl+saJLfOmGxHnqKKGhQrqN0IMFhzOkm
-   1oWCMrnPUl15sk3MeVYH66D890gcbueM+Lxfvv5EMO24YzcXNMG6zJrC7
-   lCNmBB2MRDbpsPlYIedlL2BRxnxj6TY6DQsbOVCrIjwMl2IGWuhbZTppD
-   sjdN8fQMRSIL2bbbP+UGVG4J90IJEhBl/wd9IkSPii1CHmC2QR6u4trlN
-   drPipUofmzHvSXoqB6gq6PYs+X/BnF9gBwC4smr1ZuVK/Qjta0syeSG16
-   Q3ImUA+YpWcYLNmNKh1hkPtWycofVPh/fOby0D1fI6ATe/0d+xumbonTa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="372011627"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="372011627"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 07:19:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="684903682"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="684903682"
-Received: from bcottam-mobl1.amr.corp.intel.com (HELO [10.252.133.219]) ([10.252.133.219])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 07:19:53 -0700
-Message-ID: <c752ce85-13e2-44d3-8729-4ce296572069@linux.intel.com>
-Date:   Fri, 18 Aug 2023 07:19:53 -0700
+        Fri, 18 Aug 2023 10:21:56 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35064205;
+        Fri, 18 Aug 2023 07:21:37 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37IELQPf051319;
+        Fri, 18 Aug 2023 09:21:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692368486;
+        bh=oMNxSRj5uqphmrFCYO6QY2YaCMxHE+iCM6ib96SFL58=;
+        h=From:To:CC:Subject:Date;
+        b=d3CI4h0E6/c+WQS2CRMUchAx3hfNlSMO9+CDHoPoZwspbp369bKyC8rCKh79y6QDQ
+         KXEXXLwmbHmegmkoYajoXvZGUaHTaDJ8KslEZI6zqUPZbzp4O/tA4cKCbk0xaKxGlK
+         dVfB7mp9G4weNf0/ohwRJkxx/7nGdogL7NzrRVi8=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37IELQMW020425
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Aug 2023 09:21:26 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 18
+ Aug 2023 09:21:25 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 18 Aug 2023 09:21:25 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37IELPSX005275;
+        Fri, 18 Aug 2023 09:21:25 -0500
+From:   Aradhya Bhatia <a-bhatia1@ti.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     DRI Development List <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>,
+        Jai Luthra <j-luthra@ti.com>, Aradhya Bhatia <a-bhatia1@ti.com>
+Subject: [PATCH v2 0/2] Add DSS support for TI AM62A7 SoC
+Date:   Fri, 18 Aug 2023 19:51:22 +0530
+Message-ID: <20230818142124.8561-1-a-bhatia1@ti.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 01/12] PCI: Only put Intel PCIe ports >= 2015 into D3
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        stable@vger.kernel.org
-References: <20230818051319.551-1-mario.limonciello@amd.com>
- <20230818051319.551-2-mario.limonciello@amd.com>
-Content-Language: en-US
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20230818051319.551-2-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patch series adds a new compatible for the Display SubSystem (DSS)
+controller on TI's AM62A7 SoC. It further adds the required support, for
+the same, in the tidss driver.
 
-On 8/17/2023 10:13 PM, Mario Limonciello wrote:
-> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
-> from modern machines (>=2015) are allowed to be put into D3.
-> 
-> Iain reports that USB devices can't be used to wake a Lenovo Z13
-> from suspend. This is because the PCIe root port has been put
-> into D3 and AMD's platform can't handle USB devices waking in this
-> case.
-> 
-> This behavior is only reported on Linux. Comparing the behavior
-> on Windows and Linux, Windows doesn't put the root ports into D3.
-> 
-> To fix the issue without regressing existing Intel systems,
-> limit the >=2015 check to only apply to Intel PCIe ports.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
-> Reported-by: Iain Lane <iain@orangesquash.org.uk>
-> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
+The DSS controller is similar to the recently added AM625 DSS, with the
+key difference being the absence of VP1 output on the SoC. The VP1 in
+AM62A7 DSS is tied off and cannot be used, unlike in AM625, where the
+VP1 was connected to 2 OLDI TXes. The video pipeline that corresponds to
+VP1 still exists and can be used to overlay planes on the VP2's primary
+plane. This can be done using the overlay managers inside the SoC.
+Moreover, DSS VP2 can output Full-HD RGB888 DPI video signals.
 
-Looks good to me.
+I have tested these patches on AM62A7 SK-EVM, which converts DPI signals
+to HDMI on the platform using the Sil9022A HDMI transmitter. All the
+patches, required to enable display on AM62A7-SK, can be found on my
+github fork[0] in the branch "next_am62a-v2".
 
-Reviewed-by:Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Regards
+Aradhya
 
-> v12->v13:
->  * New patch
-> ---
->  drivers/pci/pci.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index 60230da957e0c..051e88ee64c63 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3037,10 +3037,11 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
->  			return false;
->  
->  		/*
-> -		 * It should be safe to put PCIe ports from 2015 or newer
-> +		 * It is safe to put Intel PCIe ports from 2015 or newer
->  		 * to D3.
->  		 */
-> -		if (dmi_get_bios_year() >= 2015)
-> +		if (bridge->vendor == PCI_VENDOR_ID_INTEL &&
-> +		    dmi_get_bios_year() >= 2015)
->  			return true;
->  		break;
->  	}
+[0]: https://github.com/aradhya07/linux-ab/tree/next_am62a-v2
 
+Change Log:
+V1 -> V2:
+  - Correctly sort DISPC_AM62A7 macro after DISPC_AM625 in patch 2/2.
+
+Previous Versions:
+V1: https://lore.kernel.org/all/20230818131750.4779-1-a-bhatia1@ti.com/
+
+Aradhya Bhatia (2):
+  dt-bindings: display: ti: Add support for am62a7 dss
+  drivers/tidss: Add support for AM62A7 DSS
+
+ .../bindings/display/ti/ti,am65x-dss.yaml     | 14 +++++
+ drivers/gpu/drm/tidss/tidss_dispc.c           | 53 +++++++++++++++++++
+ drivers/gpu/drm/tidss/tidss_dispc.h           |  2 +
+ drivers/gpu/drm/tidss/tidss_drv.c             |  1 +
+ 4 files changed, 70 insertions(+)
+
+
+base-commit: 47762f08697484cf0c2f2904b8c52375ed26c8cb
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.40.1
+
