@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75AE780298
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:13:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D55C78029B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356651AbjHRAM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46504 "EHLO
+        id S1356664AbjHRAN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356750AbjHRAMy (ORCPT
+        with ESMTP id S1356679AbjHRANC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:12:54 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E864208
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:26 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5659b9ae3ebso553564a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:26 -0700 (PDT)
+        Thu, 17 Aug 2023 20:13:02 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A213ABA
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:39 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cf4cb742715so422547276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692317536; x=1692922336;
+        d=google.com; s=20221208; t=1692317558; x=1692922358;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YI+px4fWIrcz8CUG0KC1uIUK7AnSC5+MoX0wNUm9NKo=;
-        b=XbxmTmy27uaIcJDYAR3lyOLlKyz2Mi17sg+aHfzQxaHEyrIvAlS9ybcj/4aIqpFJ6k
-         tgE7YK/rC7xG9sXGhv+Ucxhyo2GGmBpvMK7ywcryOfZsD+L0fcwLfG9YjyiUfKySVmvt
-         Nd4sd7FfiDcupRvBJX5TdrOfv6RzGMq6pYVOnPQcwp0/29u3yiTDAhMrRCkPi0RnmglR
-         Yazr99JDIDLw9s1jcxUyoHdLwBYWoMUWiM6qNq199HcaNtCWPHCtgRL743IG0aZRr/ZV
-         uioCSY0ryR0N/I5YthRqMN+MerCJ+JEGn++LMGymE5C9fkEaszwtk8C/fnjKGdocRJSe
-         tuxg==
+        bh=MyFiJQqm3tBP8SIgjl0Qxy1dqHuO5l6iiXEk26fSOc4=;
+        b=yBibd7R2dj4+RzsCFfqr0OqrSTg7Rr9auo+WBM9mSRbr0xYuF2xKVvtg288gsZzSb+
+         NrlatEmCvD3807EP08ZNMuXwSgXieiY7tQJvi+oOFcQxb6jdh9GtrHQF7wKrtGem9aTE
+         1DR8ZdCB7omtmyoP7rLihcEeeozK8685rTkf2ziquxG7ef3oHigiacx7tWUc+7J9udJn
+         b0S1XHADk4bVd96DYYQNuAPYzJs5ZI8xkd3ie0sLoiRyOCR0DGJoJaYL5aPn6/CmMu9u
+         rbY/ZS7GQ+LTU/wZIuV6ASFXFAzePBmUirZ3YV10HzcmVjlm7/2nin5u+b1LSdF0o87F
+         gh6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317536; x=1692922336;
+        d=1e100.net; s=20221208; t=1692317558; x=1692922358;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YI+px4fWIrcz8CUG0KC1uIUK7AnSC5+MoX0wNUm9NKo=;
-        b=aVWC0B/osbraQu0YY7LZiadmPEbQ7BjFy1uzVks1PQTz0arn+OoqCUrtlbs/4usv7o
-         BLYyyqupLEUOdMDvMGM3m5IUL3Lvm76IN/x1EUCgqKDKMKGhMlmWkOhkyhfsG0dTgWPq
-         vtmB4ChUcEV+G9W5igkHqBDeUNsHl59iPpEaPDOAbMVPF660p6WZJDj7mAu8nA7jm05U
-         akuDryi37QPz1sdoWKojgXrOEyd6G/r9cyzMKAMvm8vbmNLNy58vB+DzSW+aZxd/tw7P
-         qCKaUEiHCsCqoFNyWekxsp9jHoq0byGJ5Ql/QovoUQQfisN+8Mdnl8Y/W229sba6v76D
-         vEGA==
-X-Gm-Message-State: AOJu0YyXgHsbPLT+3I3z+6dIrhAqf9qPJlskVfNEoUPyCaLlHEeaDqfl
-        JGyvCLjE0IoHYO7H4t6bMIpJxdvn1fg=
-X-Google-Smtp-Source: AGHT+IG1p3dJVwfEGQ1dfJ2h8Y7P+0UyR58+z6UiYediut5nwHBboD9dWVhenb9Uo4cyOTTO2wrkY66kguQ=
+        bh=MyFiJQqm3tBP8SIgjl0Qxy1dqHuO5l6iiXEk26fSOc4=;
+        b=J5MPF6CwdJGJ1fKZRpIp3pMiUfD1AMK/zDbkVxCGkixZTYzQRflZb2G3/NU5ZmgEAB
+         7vimTN2511LMik+hnW5CJxGH5OC7Fr5Q2ClVB87FqvR1R54ugf5qnUEnenu11NzVNrHz
+         AmfdROJcjgoD02RMKroDAx10Rt8qERrl1FvOSw+buuC4zJmn3GKk97JMeYpH65o/ePIK
+         cil6ZbOnEHFmNe/XJ4eRFvLU5qcTPRAF3YX5F+D7MWISzbI7s3ZgZwvKoy6H5swPTUEo
+         o2VC8w5hQiZGs3+YAxud1coC1DZkAx7+WcQSoe9r/JHkXHeDx6qwRyNVAvp/T36PIpmD
+         IytA==
+X-Gm-Message-State: AOJu0YzE/c8iB3FLaa2ZobetH75dUkGqpd7QPA71Cc/gF/rSccZ2sGUs
+        k6cfe3BCX7nzou7euzUyu551E08yrmc=
+X-Google-Smtp-Source: AGHT+IFhqT2eJ7lYeTsux9ANxyC3ZxYvL9QjB0dejnaAc0hXC7o0cJkL7/6251VeIJd1wBspfMiqFfCHAC8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:108d:b0:263:317f:7ca4 with SMTP id
- gj13-20020a17090b108d00b00263317f7ca4mr256618pjb.9.1692317536334; Thu, 17 Aug
- 2023 17:12:16 -0700 (PDT)
-Date:   Thu, 17 Aug 2023 17:12:00 -0700
-In-Reply-To: <20230729005200.1057358-1-seanjc@google.com>
+ (user=seanjc job=sendgmr) by 2002:a25:ae9d:0:b0:d47:f09c:cc8e with SMTP id
+ b29-20020a25ae9d000000b00d47f09ccc8emr13349ybj.10.1692317558148; Thu, 17 Aug
+ 2023 17:12:38 -0700 (PDT)
+Date:   Thu, 17 Aug 2023 17:12:25 -0700
+In-Reply-To: <20230810090945.16053-1-cloudliang@tencent.com>
 Mime-Version: 1.0
-References: <20230729005200.1057358-1-seanjc@google.com>
+References: <20230810090945.16053-1-cloudliang@tencent.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <169230015618.1264622.714933097966873011.b4-ty@google.com>
-Subject: Re: [PATCH v2 0/5] KVM: x86/mmu: Don't synthesize triple fault on bad root
+Message-ID: <169230522030.1327124.6232234563848769453.b4-ty@google.com>
+Subject: Re: [PATCH v6 0/6] KVM: selftests: Improve PMU event filter settings
+ and add test cases
 From:   Sean Christopherson <seanjc@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Reima Ishii <ishiir@g.ecc.u-tokyo.ac.jp>
+        Jinrong Liang <ljr.kernel@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Jinrong Liang <cloudliang@tencent.com>,
+        linux-kselftest@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 17:51:55 -0700, Sean Christopherson wrote:
-> Rework the handling of !visible guest root gfns to wait until the guest
-> actually tries to access memory before synthesizing a fault.  KVM currently
-> just immediately synthesizes triple fault, which causes problems for nVMX
-> and nSVM as immediately injecting a fault causes KVM to try and forward the
-> fault to L1 (as a VM-Exit) before completing nested VM-Enter, e.g. if L1
-> runs L2 with a "bad" nested TDP root.
+On Thu, 10 Aug 2023 17:09:39 +0800, Jinrong Liang wrote:
+> This patch series aims to improve the PMU event filter settings with a cleaner
+> and more organized structure and adds several test cases related to PMU event
+> filters.
+> 
+> These changes help to ensure that KVM's PMU event filter functions as expected
+> in all supported use cases.
 > 
 > [...]
 
-With some trepidation that I'm overlooking something, applied to kvm-x86 mmu.
-Patches 1-4 are worthwhile on their own, so even if the actual fix is wildly
-broken somehow and needs to be reverted, it'll just be that one commit that
-gets nuked.
+Applied to kvm-x86 selftests, thanks!
 
-[1/5] KVM: x86/mmu: Add helper to convert root hpa to shadow page
-      https://github.com/kvm-x86/linux/commit/732f57612d5c
-[2/5] KVM: x86/mmu: Harden new PGD against roots without shadow pages
-      https://github.com/kvm-x86/linux/commit/9e3f832edfca
-[3/5] KVM: x86/mmu: Harden TDP MMU iteration against root w/o shadow page
-      https://github.com/kvm-x86/linux/commit/004c297c327f
-[4/5] KVM: x86/mmu: Disallow guest from using !visible slots for page tables
-      https://github.com/kvm-x86/linux/commit/81d4621b7d9f
-[5/5] KVM: x86/mmu: Use dummy root, backed by zero page, for !visible guest roots
-      https://github.com/kvm-x86/linux/commit/a328a359d99b
+[1/6] KVM: selftests: Add x86 properties for Intel PMU in processor.h
+      https://github.com/kvm-x86/linux/commit/cf6d80c0eb95
+[2/6] KVM: selftests: Drop the return of remove_event()
+      https://github.com/kvm-x86/linux/commit/c853be2265cc
+[3/6] KVM: selftests: Introduce __kvm_pmu_event_filter to improved event filter settings
+      https://github.com/kvm-x86/linux/commit/de527b1daf69
+[4/6] KVM: selftests: Add test cases for unsupported PMU event filter input values
+      https://github.com/kvm-x86/linux/commit/86ab6af8b96a
+[5/6] KVM: selftests: Test if event filter meets expectations on fixed counters
+      https://github.com/kvm-x86/linux/commit/d4e36166820a
+[6/6] KVM: selftests: Test gp event filters don't affect fixed event filters
+      https://github.com/kvm-x86/linux/commit/740d087e7fff
 
 --
 https://github.com/kvm-x86/linux/tree/next
