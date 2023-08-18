@@ -2,400 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF95781051
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00B6781055
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378623AbjHRQ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
+        id S1378629AbjHRQ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378675AbjHRQ0L (ORCPT
+        with ESMTP id S237214AbjHRQ1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:26:11 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A96034224;
-        Fri, 18 Aug 2023 09:25:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED98ED75;
-        Fri, 18 Aug 2023 09:26:32 -0700 (PDT)
-Received: from [10.57.3.66] (unknown [10.57.3.66])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC5893F762;
-        Fri, 18 Aug 2023 09:25:49 -0700 (PDT)
-Message-ID: <33939efa-c84f-e50d-3fe8-ae5b015ecc14@arm.com>
-Date:   Fri, 18 Aug 2023 17:25:48 +0100
+        Fri, 18 Aug 2023 12:27:32 -0400
+Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2879D30F1;
+        Fri, 18 Aug 2023 09:27:30 -0700 (PDT)
+Received: from in02.mta.xmission.com ([166.70.13.52]:60576)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qX2Js-004b4d-8V; Fri, 18 Aug 2023 10:27:28 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:33758 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qX2Jp-00FQCU-OB; Fri, 18 Aug 2023 10:27:27 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>
+Cc:     anton@tuxera.com, brauner@kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <000000000000c74d44060334d476@google.com>
+Date:   Fri, 18 Aug 2023 11:26:51 -0500
+In-Reply-To: <000000000000c74d44060334d476@google.com> (syzbot's message of
+        "Fri, 18 Aug 2023 09:15:03 -0700")
+Message-ID: <87o7j471v8.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v7 13/13] coresight-tpdm: Add nodes for dsb msr support
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1690269353-10829-1-git-send-email-quic_taozha@quicinc.com>
- <1690269353-10829-14-git-send-email-quic_taozha@quicinc.com>
- <b36940af-648d-2620-3086-81b30de6e401@arm.com>
- <29a2cbfa-200d-3092-e827-b590a1ca1a30@quicinc.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <29a2cbfa-200d-3092-e827-b590a1ca1a30@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-XM-SPF: eid=1qX2Jp-00FQCU-OB;;;mid=<87o7j471v8.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1/GWsABlNppAGMi8sMFC638Yyr5Wthjk7Q=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: **
+X-Spam-Status: No, score=2.6 required=5.0 tests=BAYES_00,GB_FAKE_RF_SHORT,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *******;syzbot
+        <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1923 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 11 (0.6%), b_tie_ro: 10 (0.5%), parse: 0.95
+        (0.0%), extract_message_metadata: 29 (1.5%), get_uri_detail_list: 4.7
+        (0.2%), tests_pri_-2000: 26 (1.4%), tests_pri_-1000: 2.4 (0.1%),
+        tests_pri_-950: 1.26 (0.1%), tests_pri_-900: 1.06 (0.1%),
+        tests_pri_-200: 0.88 (0.0%), tests_pri_-100: 21 (1.1%), tests_pri_-90:
+        174 (9.0%), check_bayes: 166 (8.6%), b_tokenize: 13 (0.7%),
+        b_tok_get_all: 77 (4.0%), b_comp_prob: 3.6 (0.2%), b_tok_touch_all: 68
+        (3.6%), b_finish: 0.86 (0.0%), tests_pri_0: 387 (20.1%),
+        check_dkim_signature: 0.59 (0.0%), check_dkim_adsp: 2.9 (0.1%),
+        poll_dns_idle: 1246 (64.8%), tests_pri_10: 2.1 (0.1%), tests_pri_500:
+        1262 (65.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 16:44, Tao Zhang wrote:
-> 
-> On 8/7/2023 7:35 PM, Suzuki K Poulose wrote:
->> On 25/07/2023 08:15, Tao Zhang wrote:
->>> Add the nodes for DSB subunit MSR(mux select register) support.
->>> The TPDM MSR (mux select register) interface is an optional
->>> interface and associated bank of registers per TPDM subunit.
->>> The intent of mux select registers is to control muxing structures
->>> driving the TPDM’s’ various subunit interfaces.
->>>
->>> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
->>> ---
->>>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 19 ++++-
->>>   drivers/hwtracing/coresight/coresight-tpdm.c       | 98 
->>> ++++++++++++++++++++++
->>>   drivers/hwtracing/coresight/coresight-tpdm.h       |  7 ++
->>>   3 files changed, 123 insertions(+), 1 deletion(-)
->>>
->>> diff --git 
->>> a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm 
->>> b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>> index 74a0126..ee41a14 100644
->>> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
->>> @@ -185,4 +185,21 @@ Description:
->>>             Accepts only one of the 2 values -  0 or 1.
->>>           0 : Set the DSB pattern type to value.
->>> -        1 : Set the DSB pattern type to toggle.
->>> \ No newline at end of file
->>> +        1 : Set the DSB pattern type to toggle.
->>> +
->>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_msr_idx
->>> +Date:        March 2023
->>> +KernelVersion    6.5
->>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
->>> (QUIC) <quic_taozha@quicinc.com>
->>> +Description:
->>> +        Read/Write the index number of MSR(mux select register) on DSB
->>> +        TPDM. This index number should not be greater than the number
->>> +        of MSR supported by this DSB TPDM.
->>
->> How does a user find it ? Why don't we expose it ? Scratch all of 
->> that, you could create a register file per exising msr.
->>
->>     dsb_msrs/msr0 ... msrN
->>
->> You may :
->>
->> 1. either dynamically add files as you find the number
->>
->> OR
->>
->> 2. If there is a hard limit, create that many files and control 
->> visibility based on the dynamic number.
->>
-> Hi Suzuki,
-> 
-> 
-> With regards to your suggestions, would you mind if you provide some 
-> sample code for my reference?
-> 
-> 1. How to dynamically add files to the sysfs as I find the number?
-> 
-> 2. The hard limit of MSR should be 32. How can I control visibility 
-> based on the dynamic number?
+syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com> writes:
 
-You could add attributes via dev_ext_attribute, storing the "idx" as
-the data field for 0-31. And use the is_visible() hook for  the
-attribute_group, just like you do for DSB related checks.
+> Hello,
+>
+> syzbot found the following issue on:
 
+Not an issue.
+Nothing to do with ntfs.
 
-Some skeleton code, untested :
+The code is working as designed and intended.
 
-static ssize_t dsb_msr_read(struct device *dev,
-			    struct device_attribute *attr, char *buf)
-{
-	struct dev_ext_attribute *eattr = container_of(attr,
-				struct  dev_ext_attribute, attr);
-	int idx = (int)(unsigned long)eattr->var;
+syzbot generated a malformed exec and the kernel made it
+well formed and warned about it.
 
-	/* Read the MSR at IDX */
-}
+Human beings who run syzbot please mark this as not an issue in your
+system.  The directions don't have a way to say that the code is working
+as expected and designed.
 
-/* Similarly for dsb_msr_write() */
+Eric
 
-#define DSB_MSR_ATTR(idx)				\
-	&((struct dev_ext_attribute[]) {		\
-          {						\	
-		 __ATTR("msr"#idx, <RW>, dsb_msr_read, dsb_msr_write), \
-		 (void *)idx }        \
-         })[0].attr.attr
-
-#define DSB_MSR_ATTRS			\
-	DSB_MSR_ATTR(0),			\
-	DSB_MSR_ATTR(1),			\
-	...
-	DSB_MSR_ATTR(31)
-
-static struct attribute * dsb_msr_attrs[] = {
-	DSB_MSR_ATTRS,
-	NULL,
-};
-
-static umode_t
-dsb_msr_is_visible(struct kobject *kobj,
-		   struct attribute *attr, int unuse)
-{
-	struct device *dev = kobject_to_dev(kobj);
-	/* From dev, get drvdata */
-	/* Then decide if it should be made visible, if yes R/W permissions */
-}
-
-static const struct attribute_group dsb_msr_group = {
-         .is_visible = dsb_msr_is_visible,
-         .attrs = dsb_msr_attrs,
-         .name = "dsb_msr",
-};
-
-See : drivers/.../coresight-etm4x-sysfs.c:
-
-coresight_etmv4_mgmt_attrs & coresight_etmv4_mgmt_group
-for an example.
-
-Suzuki
-
-
-
-> 
-
-
-
-
->>
->>
->>> +
->>> +What: /sys/bus/coresight/devices/<tpdm-name>/dsb_msr
->>> +Date:        March 2023
->>> +KernelVersion    6.5
->>> +Contact:    Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang 
->>> (QUIC) <quic_taozha@quicinc.com>
->>> +Description:
->>> +        (Write) Set the MSR(mux select register) of DSB tpdm. Read
->>> +        the MSR(mux select register) of DSB tpdm.
->>
->> (RW)
-> Sure, I will update this in the next patch series.
->>
->>> \ No newline at end of file
->>> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c 
->>> b/drivers/hwtracing/coresight/coresight-tpdm.c
->>> index f9e5a1d..be7776b 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
->>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
->>> @@ -90,6 +90,18 @@ static void set_dsb_tier(struct tpdm_drvdata 
->>> *drvdata, u32 *val)
->>>     }
->>>   +static void set_dsb_msr(struct tpdm_drvdata *drvdata)
->>> +{
->>> +    int i;
->>> +
->>
->>
->>> +    if (drvdata->dsb->msr_num == 0)
->>> +        return;
->>> +
->>> +    for (i = 0; i < drvdata->dsb->msr_num; i++)
->>> +        writel_relaxed(drvdata->dsb->msr[i],
->>> +               drvdata->base + TPDM_DSB_MSR(i));
->>> +}
->>> +
->>>   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
->>>   {
->>>       u32 val, i;
->>> @@ -116,6 +128,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata 
->>> *drvdata)
->>>       set_dsb_tier(drvdata, &val);
->>>       writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
->>>   +    set_dsb_msr(drvdata);
->>> +
->>>       val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
->>>       /* Set the test accurate mode */
->>>       set_dsb_test_mode(drvdata, &val);
->>> @@ -234,6 +248,14 @@ static int tpdm_datasets_setup(struct 
->>> tpdm_drvdata *drvdata)
->>>               if (!drvdata->dsb)
->>>                   return -ENOMEM;
->>>           }
->>> +        if (!of_property_read_u32(drvdata->dev->of_node,
->>> +               "qcom,dsb_msr_num", &drvdata->dsb->msr_num)) {
->>> +            drvdata->dsb->msr = devm_kzalloc(drvdata->dev, > + 
->>> (drvdata->dsb->msr_num * sizeof(*drvdata->dsb->msr)),
->>
->>             devm_kcalloc() ?
-> Sure, I will update this in the next patch series.
->>
->>> +                   GFP_KERNEL);
->>> +            if (!drvdata->dsb->msr)
->>> +                return -ENOMEM;
->>> +        }
->>>       }
->>>         return 0;
->>> @@ -830,6 +852,80 @@ static ssize_t dsb_trig_ts_store(struct device 
->>> *dev,
->>>   }
->>>   static DEVICE_ATTR_RW(dsb_trig_ts);
->>>   +static ssize_t dsb_msr_idx_show(struct device *dev,
->>> +                 struct device_attribute *attr,
->>> +                 char *buf)
->>> +{
->>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>> +
->>> +    return sysfs_emit(buf, "%u\n",
->>> +            (unsigned int)drvdata->dsb->msr_idx);
->>> +
->>> +}
->>> +
->>> +static ssize_t dsb_msr_idx_store(struct device *dev,
->>> +                  struct device_attribute *attr,
->>> +                  const char *buf,
->>> +                  size_t size)
->>> +{
->>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>> +    unsigned long index;
->>> +
->>> +    if (kstrtoul(buf, 0, &index))
->>> +        return -EINVAL;
->>> +    if (index >= drvdata->dsb->msr_num)
->>> +        return -EPERM;
->>> +
->>> +    spin_lock(&drvdata->spinlock);
->>> +    drvdata->dsb->msr_idx = index;
->>> +    spin_unlock(&drvdata->spinlock);
->>> +    return size;
->>> +}
->>> +static DEVICE_ATTR_RW(dsb_msr_idx);
->>> +
->>> +static ssize_t dsb_msr_show(struct device *dev,
->>> +                 struct device_attribute *attr,
->>> +                 char *buf)
->>> +{
->>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>> +    unsigned int i;
->>> +    unsigned long bytes;
->>> +    ssize_t size = 0;
->>> +
->>> +    if (drvdata->dsb->msr_num == 0)
->>> +        return -EINVAL;
->>> +
->>> +    spin_lock(&drvdata->spinlock);
->>> +    for (i = 0; i < drvdata->dsb->msr_num; i++) {
->>> +        bytes = sysfs_emit_at(buf, size,
->>> +                  "0x%x\n", drvdata->dsb->msr[i]);
->>
->> Single value per single file.
-> 
-> Sure, I will update this in the next patch series.
-> 
-> 
-> Best,
-> 
-> Tao
-> 
->>
->> Suzuki
->>
->>
->>> +        if (bytes <= 0)
->>> +            break;
->>> +        size += bytes;
->>> +    }
->>> +    spin_unlock(&drvdata->spinlock);
->>> +
->>> +    return size;
->>> +}
->>> +
->>> +static ssize_t dsb_msr_store(struct device *dev,
->>> +                  struct device_attribute *attr,
->>> +                  const char *buf,
->>> +                  size_t size)
->>> +{
->>> +    struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
->>> +    unsigned long val;
->>> +
->>> +    if (kstrtoul(buf, 0, &val))
->>> +        return -EINVAL;
->>> +
->>> +    spin_lock(&drvdata->spinlock);
->>> +    drvdata->dsb->msr[drvdata->dsb->msr_idx] = val;
->>> +    spin_unlock(&drvdata->spinlock);
->>> +    return size;
->>> +}
->>> +static DEVICE_ATTR_RW(dsb_msr);
->>> +
->>>   static struct attribute *tpdm_dsb_attrs[] = {
->>>       &dev_attr_dsb_mode.attr,
->>>       &dev_attr_dsb_edge_ctrl_idx.attr,
->>> @@ -845,6 +941,8 @@ static struct attribute *tpdm_dsb_attrs[] = {
->>>       &dev_attr_dsb_trig_patt_mask.attr,
->>>       &dev_attr_dsb_trig_ts.attr,
->>>       &dev_attr_dsb_trig_type.attr,
->>> +    &dev_attr_dsb_msr_idx.attr,
->>> +    &dev_attr_dsb_msr.attr,
->>>       NULL,
->>>   };
->>>   diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h 
->>> b/drivers/hwtracing/coresight/coresight-tpdm.h
->>> index 7c52cf4..7b70db3 100644
->>> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
->>> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
->>> @@ -18,6 +18,7 @@
->>>   #define TPDM_DSB_XPMR(n)    (0x7E8 + (n * 4))
->>>   #define TPDM_DSB_EDCR(n)    (0x808 + (n * 4))
->>>   #define TPDM_DSB_EDCMR(n)    (0x848 + (n * 4))
->>> +#define TPDM_DSB_MSR(n)        (0x980 + (n * 4))
->>>     /* Enable bit for DSB subunit */
->>>   #define TPDM_DSB_CR_ENA        BIT(0)
->>> @@ -100,6 +101,9 @@
->>>    * @patt_mask:          Save value for pattern mask
->>>    * @trig_patt:          Save value for trigger pattern
->>>    * @trig_patt_mask:     Save value for trigger pattern mask
->>> + * @msr_num             Number of MSR supported by DSB TPDM
->>> + * @msr_idx             Index number of the MSR
->>> + * @msr                 Save value for MSR
->>>    * @patt_ts:            Enable/Disable pattern timestamp
->>>    * @patt_type:          Set pattern type
->>>    * @trig_ts:            Enable/Disable trigger timestamp.
->>> @@ -116,6 +120,9 @@ struct dsb_dataset {
->>>       u32                patt_mask[TPDM_DSB_MAX_PATT];
->>>       u32                trig_patt[TPDM_DSB_MAX_PATT];
->>>       u32                trig_patt_mask[TPDM_DSB_MAX_PATT];
->>> +    u32                msr_num;
->>> +    u32                msr_idx;
->>> +    u32                *msr;
->>>       bool            patt_ts;
->>>       bool            patt_type;
->>>       bool            trig_ts;
->>
-
+> HEAD commit:    16931859a650 Merge tag 'nfsd-6.5-4' of git://git.kernel.or..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e2673da80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+> dashboard link: https://syzkaller.appspot.com/bug?extid=6ec38f7a8db3b3fb1002
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cdbc65a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1262d8cfa80000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/eecc010800b4/disk-16931859.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/f45ae06377a7/vmlinux-16931859.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/68891896edba/bzImage-16931859.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/4b6ab78b223a/mount_0.gz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com
+>
+> ntfs: volume version 3.1.
+> process 'syz-executor300' launched './file1' with NULL argv: empty string added
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 5020 at fs/exec.c:933 do_open_execat+0x18f/0x3f0 fs/exec.c:933
+> Modules linked in:
+> CPU: 0 PID: 5020 Comm: syz-executor300 Not tainted 6.5.0-rc6-syzkaller-00038-g16931859a650 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:do_open_execat+0x18f/0x3f0 fs/exec.c:933
+> Code: 8e 46 02 00 00 41 0f b7 1e bf 00 80 ff ff 66 81 e3 00 f0 89 de e8 b1 67 9b ff 66 81 fb 00 80 0f 84 8b 00 00 00 e8 51 6c 9b ff <0f> 0b 48 c7 c3 f3 ff ff ff e8 43 6c 9b ff 4c 89 e7 e8 4b c9 fe ff
+> RSP: 0018:ffffc90003b0fd10 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff888028401dc0 RSI: ffffffff81ea9c4f RDI: 0000000000000003
+> RBP: 1ffff92000761fa2 R08: 0000000000000003 R09: 0000000000008000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802bf18780
+> R13: ffff888075d70000 R14: ffff8880742776a0 R15: 0000000000000001
+> FS:  000055555706b380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffe0f1d3ff8 CR3: 0000000015f97000 CR4: 0000000000350ef0
+> Call Trace:
+>  <TASK>
+>  bprm_execve fs/exec.c:1830 [inline]
+>  bprm_execve+0x49d/0x1a50 fs/exec.c:1811
+>  do_execveat_common.isra.0+0x5d3/0x740 fs/exec.c:1963
+>  do_execve fs/exec.c:2037 [inline]
+>  __do_sys_execve fs/exec.c:2113 [inline]
+>  __se_sys_execve fs/exec.c:2108 [inline]
+>  __x64_sys_execve+0x8c/0xb0 fs/exec.c:2108
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> RIP: 0033:0x7fee7ec27b39
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe6c369d28 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
+> RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fee7ec27b39
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000480
+> RBP: 00007fee7ec7004b R08: 000000000001ee3b R09: 0000000000000000
+> R10: 00007ffe6c369bf0 R11: 0000000000000246 R12: 00007fee7ec70055
+> R13: 00007ffe6c369f08 R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
