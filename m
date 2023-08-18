@@ -2,59 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F471780660
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FC378067C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358197AbjHRHcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45116 "EHLO
+        id S1358274AbjHRHkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 03:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358196AbjHRHcd (ORCPT
+        with ESMTP id S1358311AbjHRHj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:32:33 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA7330DF;
-        Fri, 18 Aug 2023 00:32:31 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E7E1AFF803;
-        Fri, 18 Aug 2023 07:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1692343948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A6HvyMolA7JCHIViBlfczdYR2onctndQrc03iXd++Jo=;
-        b=dV557G9orv+v+ecXHJWguTMc7FgPMBbybtyO/Y9iaDVbfBABJ1wM7ny9AtuT49UUp1Raab
-        qXyriJwpPMdP8kFjpczDr0l6QrWoJRCtX3LOOVgRLajTwup+Ok/VwRH/jyqYIMajVU5UmX
-        aDRNhjO/UFQ3fNiVFatFBxhnkPHXZmDCgN4xcSDvQ+bcACJjuvTRyEkTtEpblQJG+XTdUi
-        Gux5n5p0LuNK5ajwrN03/xOGNLXquiQae07WZrVmMnOwGO43S1+r79v0GKA80I2f8bhcc9
-        X1x4ADk072HEhNkBjkzfLJo4+ux4HQD0IZoOjr5ys82lTBrIfsgWUy8tJ3O0AA==
-Date:   Fri, 18 Aug 2023 09:32:27 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH v2 7/7] rtc: rzn1: Report maximum alarm limit to rtc
- core
-Message-ID: <20230818093227.7d984302@xps-13>
-In-Reply-To: <20230817225537.4053865-8-linux@roeck-us.net>
-References: <20230817225537.4053865-1-linux@roeck-us.net>
-        <20230817225537.4053865-8-linux@roeck-us.net>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Fri, 18 Aug 2023 03:39:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E18149EA;
+        Fri, 18 Aug 2023 00:37:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 76FC06477E;
+        Fri, 18 Aug 2023 07:37:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B897CC433C7;
+        Fri, 18 Aug 2023 07:37:04 +0000 (UTC)
+Message-ID: <ba42791b-54d1-7e85-c12c-88332754c10d@xs4all.nl>
+Date:   Fri, 18 Aug 2023 09:37:02 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH]upi:media: Added rest of the Generic Error Codes to the
+ existing list
+Content-Language: en-US, nl
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, randy.dunlap@oracle.com,
+        paulmck@kernel.org, markus.heiser@darmarIT.de
+References: <20230807045212.32489-2-unixbhaskar@gmail.com>
+ <875y5q67tb.fsf@meer.lwn.net>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <875y5q67tb.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,18 +52,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter,
+On 07/08/2023 20:12, Jonathan Corbet wrote:
+> Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
+> 
+>> Added rest of the Generic Error Codes to the existing list of codes.
+>>
+>> cc: torvalds@linux-foundation.org
+>> cc: randy.dunlap@oracle.com
+>> cc: paulmck@kernel.org
+>> cc: corbet@lwn.net
+>> cc: markus.heiser@darmarIT.de
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  There is a "moreutils" package across the Linux distribution, if you
+>>  installed it and that package has a binary name "errno",if you run it with
+>>  "-l" or "--list" option, it will show all the error codes.In my system, while
+>>  running it shows me precisely, 134 of such codes.YMMV
+>>
+>>  .../userspace-api/media/gen-errors.rst        | 479 ++++++++++++++++++
+>>  1 file changed, 479 insertions(+)
+> 
+> This document is a list of errors that can be returned by media drivers,
+> with a focus on what those errors mean in the media context.  What is
+> the point of stuffing it full of error numbers that media drivers will
+> never return, along with generic, one-line descriptions?  I'll defer to
+> the media folks on this, but I don't think this helps their users.
 
-linux@roeck-us.net wrote on Thu, 17 Aug 2023 15:55:37 -0700:
+Indeed, this documents just the media-specific errors, there is no point
+in listing all errors here.
 
-> RZN1 only supports alarms up to one week in the future.
-> Report the limit to the RTC core and use the reported limit
-> to validate the requested alarm time when setting it.
->=20
-> Cc: Brian Norris <briannorris@chromium.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Regards,
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks,
-Miqu=C3=A8l
+	Hans
