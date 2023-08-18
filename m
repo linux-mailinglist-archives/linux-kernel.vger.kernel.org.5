@@ -2,213 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76B97812B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8921C7812A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379329AbjHRSQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:16:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60000 "EHLO
+        id S1379257AbjHRSPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379272AbjHRSQM (ORCPT
+        with ESMTP id S1379480AbjHRSPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:16:12 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976B91BE7;
-        Fri, 18 Aug 2023 11:16:09 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qX40d-00007g-2n;
-        Fri, 18 Aug 2023 18:15:44 +0000
-Date:   Fri, 18 Aug 2023 19:15:24 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net] net: ethernet: mtk_eth_soc: add reset bits for MT7988
-Message-ID: <b983a3adf5184a30e4ce620fbbf028c9c76648ae.1692382239.git.daniel@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 14:15:32 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD9D1982
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:15:30 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bdb3878322so16945925ad.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:15:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692382530; x=1692987330;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UpHtort9A6GjNTa35crOHhwpakPEKD1yUlcxtVr0FM=;
+        b=Wf3bir3HeQk+WypI1ZAPThcOJ8gBnSqr+4uMmAGs5XkTifA1Jk+MIDWHiHZRdNk0+C
+         M5661hEphU/S9CH1QehwULjXmETLlJNjdYP7x4EH3ZdU2MpvGa5UN9y+2vDZICrkZDzZ
+         9a649TKMt+pSSYcAeMrscys6un16n6z/fPt7iyYlqM4sbvaWGeLiX+6zLD4vT13u8GdA
+         3bdku6+tGWd8ndlrBLcc0mCDTPvthWqpoilu/rEO+XcSveGnU4nmPXc5G48yPu6t9WW9
+         xAesWTGzznMOvZ3+KVJhuC/+J7hHFF43hvk0Pb9RuSXACDXlbQZZQTwmjhwqyIP7otfl
+         IU8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692382530; x=1692987330;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UpHtort9A6GjNTa35crOHhwpakPEKD1yUlcxtVr0FM=;
+        b=HD/y9s7fJOjb3t//uKEE7ukgi+ZFYI5YyaIPhGT2+6zOYnFwXLMBL/4B4BVOdjulDk
+         kGxefXzjlhxWLyTCBWK2SefK64MUPcd1Q49M2bbFJ1dVvijiUfbKETuTBG16q6+9Hf2c
+         MJ7fhXbgfHTRXgIUypJwR+6xPR09cX9UxfUEUXalkixpj4HQ2kCCm5/JbkujLtWpCHBa
+         kLXjfc5VaSeaSBCcgExvbkAp0OSrDViVUOF6RMdk5K70ht2c5ZCevcPcEn6eb4Ao3IJj
+         v9UeTBq1deCNE6ceXMJvLPKWRmVcKb1qc+1n4CWzbaHs51x7AigKV1M7TByZ6GGS7aMo
+         wxrw==
+X-Gm-Message-State: AOJu0YyvnN7NK7RusoX80syakcunk5ehDeq3/u5JenT5BhreeIIl+yHs
+        krmEWc1bF9JKSApuORfCmEd76WOHqSk=
+X-Google-Smtp-Source: AGHT+IFIP6KRkFSo7uDQ6UxRK3c68Ehxfv1w9ffi6BGnhY+oGbePYtHkVZUTFVjvumMFptQ/4PuZ+lXpYqw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:f547:b0:1b8:8fe2:6627 with SMTP id
+ h7-20020a170902f54700b001b88fe26627mr1183892plf.8.1692382529796; Fri, 18 Aug
+ 2023 11:15:29 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 11:15:28 -0700
+In-Reply-To: <c3128665745b58500f71f46db6969d02cabcc8db.1692119201.git.isaku.yamahata@intel.com>
+Mime-Version: 1.0
+References: <cover.1692119201.git.isaku.yamahata@intel.com> <c3128665745b58500f71f46db6969d02cabcc8db.1692119201.git.isaku.yamahata@intel.com>
+Message-ID: <ZN+1QHGa6ltpQxZn@google.com>
+Subject: Re: [PATCH 7/8] KVM: gmem: Avoid race with kvm_gmem_release and mmu notifier
+From:   Sean Christopherson <seanjc@google.com>
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bits needed to reset the frame engine on MT7988.
+On Tue, Aug 15, 2023, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Add slots_lock around kvm_flush_shadow_all().  kvm_gmem_release() via
+> fput() and kvm_mmu_notifier_release() via mmput() can be called
+> simultaneously on process exit because vhost, /dev/vhost_{net, vsock}, can
+> delay the call to release mmu_notifier, kvm_mmu_notifier_release() by its
+> kernel thread.  Vhost uses get_task_mm() and mmput() for the kernel thread
+> to access process memory.  mmput() can defer after closing the file.
+> 
+> kvm_flush_shadow_all() and kvm_gmem_release() can be called simultaneously.
 
-Fixes: 445eb6448ed3 ("net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 76 +++++++++++++++------
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 11 ++-
- 2 files changed, 64 insertions(+), 23 deletions(-)
+KVM shouldn't reclaim memory on file release, it should instead do that on the
+inode being "evicted": https://lore.kernel.org/all/ZLGiEfJZTyl7M8mS@google.com
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index fe05c90202699..2482f47313085 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -3613,19 +3613,34 @@ static void mtk_hw_reset(struct mtk_eth *eth)
- {
- 	u32 val;
- 
--	if (mtk_is_netsys_v2_or_greater(eth)) {
-+	if (mtk_is_netsys_v2_or_greater(eth))
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
-+
-+	if (mtk_is_netsys_v3_or_greater(eth)) {
-+		val = RSTCTRL_PPE0_V3;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= RSTCTRL_PPE1_V3;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val |= RSTCTRL_PPE2;
-+
-+		val |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
-+	} else if (mtk_is_netsys_v2_or_greater(eth)) {
- 		val = RSTCTRL_PPE0_V2;
-+
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= RSTCTRL_PPE1;
- 	} else {
- 		val = RSTCTRL_PPE0;
- 	}
- 
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val |= RSTCTRL_PPE1;
--
- 	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
- 
--	if (mtk_is_netsys_v2_or_greater(eth))
-+	if (mtk_is_netsys_v3_or_greater(eth))
-+		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
-+			     0x6f8ff);
-+	else if (mtk_is_netsys_v2_or_greater(eth))
- 		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
- 			     0x3ffffff);
- }
-@@ -3651,13 +3666,21 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
- 		return;
- 	}
- 
--	if (mtk_is_netsys_v2_or_greater(eth))
-+	if (mtk_is_netsys_v3_or_greater(eth)) {
-+		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V3;
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			rst_mask |= RSTCTRL_PPE1_V3;
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			rst_mask |= RSTCTRL_PPE2;
-+
-+		rst_mask |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
-+	} else if (mtk_is_netsys_v2_or_greater(eth)) {
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
--	else
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			rst_mask |= RSTCTRL_PPE1;
-+	} else {
- 		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
--
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		rst_mask |= RSTCTRL_PPE1;
-+	}
- 
- 	regmap_update_bits(eth->ethsys, ETHSYS_RSTCTRL, rst_mask, rst_mask);
- 
-@@ -4009,11 +4032,17 @@ static void mtk_prepare_for_reset(struct mtk_eth *eth)
- 	u32 val;
- 	int i;
- 
--	/* disabe FE P3 and P4 */
--	val = mtk_r32(eth, MTK_FE_GLO_CFG) | MTK_FE_LINK_DOWN_P3;
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val |= MTK_FE_LINK_DOWN_P4;
--	mtk_w32(eth, val, MTK_FE_GLO_CFG);
-+	/* set FE PPE ports link down */
-+	for (i = MTK_GMAC1_ID;
-+	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
-+	     i += 2) {
-+		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) | MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val |= MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val |= MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
-+		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
-+	}
- 
- 	/* adjust PPE configurations to prepare for reset */
- 	for (i = 0; i < ARRAY_SIZE(eth->ppe); i++)
-@@ -4074,11 +4103,18 @@ static void mtk_pending_work(struct work_struct *work)
- 		}
- 	}
- 
--	/* enabe FE P3 and P4 */
--	val = mtk_r32(eth, MTK_FE_GLO_CFG) & ~MTK_FE_LINK_DOWN_P3;
--	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
--		val &= ~MTK_FE_LINK_DOWN_P4;
--	mtk_w32(eth, val, MTK_FE_GLO_CFG);
-+	/* set FE PPE ports link up */
-+	for (i = MTK_GMAC1_ID;
-+	     i <= (mtk_is_netsys_v3_or_greater(eth) ? MTK_GMAC3_ID : MTK_GMAC2_ID);
-+	     i += 2) {
-+		val = mtk_r32(eth, MTK_FE_GLO_CFG(i)) & ~MTK_FE_LINK_DOWN_P(PSE_PPE0_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
-+			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE1_PORT);
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
-+			val &= ~MTK_FE_LINK_DOWN_P(PSE_PPE2_PORT);
-+
-+		mtk_w32(eth, val, MTK_FE_GLO_CFG(i));
-+	}
- 
- 	clear_bit(MTK_RESETTING, &eth->state);
- 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 8d2d35b322351..bb4313c92fae0 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -76,9 +76,8 @@
- #define	MTK_HW_LRO_SDL_REMAIN_ROOM	1522
- 
- /* Frame Engine Global Configuration */
--#define MTK_FE_GLO_CFG		0x00
--#define MTK_FE_LINK_DOWN_P3	BIT(11)
--#define MTK_FE_LINK_DOWN_P4	BIT(12)
-+#define MTK_FE_GLO_CFG(x)	(((x) == MTK_GMAC3_ID) ? 0x24 : 0x00)
-+#define MTK_FE_LINK_DOWN_P(x)	BIT(((x) + 8) % 16)
- 
- /* Frame Engine Global Reset Register */
- #define MTK_RST_GL		0x04
-@@ -522,9 +521,15 @@
- /* ethernet reset control register */
- #define ETHSYS_RSTCTRL			0x34
- #define RSTCTRL_FE			BIT(6)
-+#define RSTCTRL_WDMA0			BIT(24)
-+#define RSTCTRL_WDMA1			BIT(25)
-+#define RSTCTRL_WDMA2			BIT(26)
- #define RSTCTRL_PPE0			BIT(31)
- #define RSTCTRL_PPE0_V2			BIT(30)
- #define RSTCTRL_PPE1			BIT(31)
-+#define RSTCTRL_PPE0_V3			BIT(29)
-+#define RSTCTRL_PPE1_V3			BIT(30)
-+#define RSTCTRL_PPE2			BIT(31)
- #define RSTCTRL_ETH			BIT(23)
- 
- /* ethernet reset check idle register */
--- 
-2.41.0
+> With TDX KVM, HKID releasing by kvm_flush_shadow_all() and private memory
+> releasing by kvm_gmem_release() can race.  Add slots_lock to
+> kvm_mmu_notifier_release().
+
+No, the right answer is to not release the HKID until the VM is destroyed.  gmem
+has a reference to its associated kvm instance, and so that will naturally ensure
+memory all memory encrypted with the HKID is freed before the HKID is released.
+kvm_flush_shadow_all() should only tear down page tables, it shouldn't be freeing
+guest_memfd memory.
+
+Then patches 6-8 go away.
