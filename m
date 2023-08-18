@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99187812EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A53781303
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379458AbjHRSgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 14:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
+        id S1379472AbjHRSmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 14:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359123AbjHRSfm (ORCPT
+        with ESMTP id S1379523AbjHRSmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 14:35:42 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E7B3C3F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:35:41 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-6424c61c80eso5784606d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 11:35:41 -0700 (PDT)
+        Fri, 18 Aug 2023 14:42:36 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C021335A5;
+        Fri, 18 Aug 2023 11:42:35 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26814e27a9eso841072a91.0;
+        Fri, 18 Aug 2023 11:42:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1692383740; x=1692988540;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Oz06k/Wemi6J/ldyB6c9tZm1247DSyEcuvZiFNgbP/o=;
-        b=DtsMQQNk4Bw3nnmKshQ+7c4Rh2kpkW0GfXbaMoNvPPCBSotCAKqyKPqUpE7cnqxQDg
-         3NVgdQWv50gPB+xZd95+0eKBdY/vozuftwC8s7uE4FW8nb5nIjP2X9OQ749EhQ4ZI9FN
-         NIJnAzSOhJDd5OAuAAu6GF85ydfquuGL4aReaWtesi88GnMSRQxlDOBlhfSCpVTL3/jl
-         xsMqtR+H10NCVwftvFu8Xtm0Rd/Y7TOZ9ozwxiiqbPuqEKx4TcTwjwQFDmpTbykwjI+8
-         H7qYx8Rob30SfV3A+Xm4ONoW3BneudCzjgkK9VYwDGry+J30qPVuPQ/bNAmmAGSswHLE
-         rUMw==
+        d=gmail.com; s=20221208; t=1692384155; x=1692988955;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tC87ytfbpYDqxm55kNo/dnnHD896FFpzuLkzfJ0vw34=;
+        b=HHHeW0kMnjD2rzZTTJouYt54sd4ScQ5bQ3ZReaKfwC9Nqqpjvo9vuNoKMdhRslVIfK
+         eapb93kt5LRZzlpT552Wbt5w2FfYcPSxvrMeNGzMB3swYPkOq54Wp02AcoPDC8cQfimH
+         fstd9Yh/Qpo9y8FF24cP90fAy3/tdrQEkTsRmcJmR3zQDio4CZQVoSQ7NeHkzLneZygU
+         Ogez300R3FCO3/5I8vm9iL9EPzQk0VUaW+SHBahA65WasB2SPowHq3MgbYgWm4/PRcJr
+         ZoKe1NJAfmy6yqpwZ3idH7FHG98mDVzAYkxvB7aXbWhxqGQh1dFg6E2jUGFL+9KIHhTD
+         /qzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692383740; x=1692988540;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oz06k/Wemi6J/ldyB6c9tZm1247DSyEcuvZiFNgbP/o=;
-        b=AxIZcQNzhR265mLkIv5jfu8zpgsYJLYcHOI8nvh1ZKLrG1pTUawoESO6yojcLq9+CU
-         8zfXMs1+MEZp8cEtd8STv8//IhFFfa4BupUA/hFLFRL3bdrfvT2ZThv7FUGveb04de9J
-         EXKXXUqmpKIn0uKG6Q9gWFGfhZW/zQeEs4NPqKJeEU3eFN4JIVAda3gEGwCKIGs6AjL3
-         IQBzuElHLkmHIgmgt5IaO6u/3BVsImVZFAKb3sIb2p0DAaKOeB+/jIjQY/umiVTZMZEq
-         ubZD9mW73PO4WVVzIT/5FfxxArsumj12Y25V07fgIjfNxS56/iXfEN8cSbVVHOWcBv7H
-         IEnA==
-X-Gm-Message-State: AOJu0YwMHEZSMuLTawAEh3cuqax444QSrLzNNNmVZR3wMi+hcOR1l1Vq
-        cmlYS2bNnaeq6pAX0TFzEg407g==
-X-Google-Smtp-Source: AGHT+IF7YzSibPnzgxPoJYofHLjKfxo+upoXyv0TzXTpF3VWJPmLvlah9US/Du/r9oTY1p/0jpOSwQ==
-X-Received: by 2002:a0c:cb0b:0:b0:64b:51d4:6696 with SMTP id o11-20020a0ccb0b000000b0064b51d46696mr28432qvk.5.1692383740251;
-        Fri, 18 Aug 2023 11:35:40 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:75e0])
-        by smtp.gmail.com with ESMTPSA id o6-20020a0ccb06000000b0063d252a141dsm853148qvk.116.2023.08.18.11.35.39
+        d=1e100.net; s=20221208; t=1692384155; x=1692988955;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tC87ytfbpYDqxm55kNo/dnnHD896FFpzuLkzfJ0vw34=;
+        b=jRVM0w2lwDIAmvZKt6hp6PTIjUmpvNmCOFDu8RZa7Zsi/cUnpalAvCUpKsdsK/tZKD
+         OTEBL/3FdB2hpeSjJLX5HbnQsMugdbydSK/bww6fuOdFtCsgzSuQ8XpXHBTvHQdRTaR5
+         7FmGHY1Kyumi8DM+h8rebM4+4CFs8n4rn4i2oXwCvyyxklOrufao8qBGDnx/oT2txfIP
+         y3t8mHqC0W7YLLAX/Xxm1M8i/hZcjGKtY7LRUuMmeLQ1q/wTNceC2nwAtqzZR3mxKO6c
+         19ZWKyqJqU5brpS5ZCQSQeC26oaPcGguxkPQhY27doHOYx+Vo8fC2PMOgnLU/gJL/2aj
+         Vawg==
+X-Gm-Message-State: AOJu0YxcKCtvIZMD2CpdY8seZzJjIyPCrnw11ohkXXO6SMfATBf1WMcu
+        6RHGMpC/G2Xxmul/draY0gqExf4cxOzStQ==
+X-Google-Smtp-Source: AGHT+IEqoWGs4DFszNmL/EEjujikAHCo4BP0FuNfQx6BUjSeFkvIEu1uDom2G7LkB+iEZRGhfdCM5A==
+X-Received: by 2002:a17:90a:8681:b0:267:fba3:ed96 with SMTP id p1-20020a17090a868100b00267fba3ed96mr52088pjn.3.1692384155093;
+        Fri, 18 Aug 2023 11:42:35 -0700 (PDT)
+Received: from VAN-928222-PC0.fortinet-us.com ([173.214.130.2])
+        by smtp.gmail.com with ESMTPSA id o4-20020a17090a5b0400b00263b4b1255esm3546721pji.51.2023.08.18.11.42.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 11:35:39 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 14:35:38 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Yu Zhao <yuzhao@google.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] workingset: ensure memcg is valid for recency check
-Message-ID: <20230818183538.GA142974@cmpxchg.org>
-References: <20230817164733.2475092-1-nphamcs@gmail.com>
- <20230817190126.3155299-1-nphamcs@gmail.com>
- <CAJD7tkaNo=0mkYKxrTwGNaJ33G1z7cYdWhNQNF3tQp_MKCh-uA@mail.gmail.com>
- <CAKEwX=Pt3ir0jpn+eRjzH=K49b0Y0_N1NnieLm0a0VwV1aCKKQ@mail.gmail.com>
- <CAJD7tkb1jMuCouyL8OX0434HK0Wx=Hyf9UnGVOH8fP7NxA8+Pw@mail.gmail.com>
- <CAOUHufbDhqSgSYZwkEo1aF1iFqGge_8jY3dt3OfPwXU0s07KOA@mail.gmail.com>
- <20230818134906.GA138967@cmpxchg.org>
- <CAJD7tkZY3kQPO2dn2NX0WODwwRifhH4R=pSZnFZYxh23Eszb-g@mail.gmail.com>
- <20230818173544.GA142196@cmpxchg.org>
- <CAJD7tkZ3i-NoqSi+BkCY7nR-2z==243F1FKrh42toQwsgv5eKQ@mail.gmail.com>
+        Fri, 18 Aug 2023 11:42:34 -0700 (PDT)
+From:   Qingjie Xing <xqjcool@gmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, keescook@chromium.org,
+        johannes@sipsolutions.net, pctammela@mojatatu.com,
+        dhowells@redhat.com, fw@strlen.de, kuniyu@amazon.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xqjcool@gmail.com
+Subject: [PATCH] netlink: Fix the netlink socket malfunction due to concurrency
+Date:   Fri, 18 Aug 2023 11:37:11 -0700
+Message-ID: <20230818183712.123455-1-xqjcool@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZ3i-NoqSi+BkCY7nR-2z==243F1FKrh42toQwsgv5eKQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,39 +72,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:45:56AM -0700, Yosry Ahmed wrote:
-> On Fri, Aug 18, 2023 at 10:35 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > On Fri, Aug 18, 2023 at 07:56:37AM -0700, Yosry Ahmed wrote:
-> > > If this happens it seems possible for this to happen:
-> > >
-> > > cpu #1                                  cpu#2
-> > >                                              css_put()
-> > >                                              /* css_free_rwork_fn is queued */
-> > > rcu_read_lock()
-> > > mem_cgroup_from_id()
-> > >                                              mem_cgroup_id_remove()
-> > > /* access memcg */
-> >
-> > I don't quite see how that'd possible. IDR uses rcu_assign_pointer()
-> > during deletion, which inserts the necessary barriering. My
-> > understanding is that this should always be safe:
-> >
-> >   rcu_read_lock()                 (writer serialization, in this case ref count == 0)
-> >   foo = idr_find(x)               idr_remove(x)
-> >   if (foo)                        kfree_rcu(foo)
-> >     LOAD(foo->bar)
-> >   rcu_read_unlock()
-> 
-> How does a barrier inside IDR removal protect against the memcg being
-> freed here though?
-> 
-> If css_put() is executed out-of-order before mem_cgroup_id_remove(),
-> the memcg can be freed even before mem_cgroup_id_remove() is called,
-> right?
+The concurrent Invocation of netlink_attachskb() and netlink_recvmsg()
+on different CPUs causes malfunction of netlink socket.
 
-css_put() can start earlier, but it's not allowed to reorder the rcu
-callback that frees past the rcu_assign_pointer() in idr_remove().
+The concurrent scenario of netlink_recvmsg() and netlink_attachskb()
+as following:
 
-This is what RCU and its access primitives guarantees. It ensures that
-after "unpublishing" the pointer, all concurrent RCU-protected
-accesses to the object have finished, and the memory can be freed.
+CPU A                           CPU B
+========                        ========
+netlink_recvmsg()               netlink_attachskb()
+                                [1]bit NETLINK_S_CONGESTED is set
+                                netlink_overrun()
+netlink_rcv_wake()
+[2]sk_receive_queue is empty
+clear bit NETLINK_S_CONGESTED
+                                [3]NETLINK_F_RECV_NO_ENOBUFS not set
+                                set bit NETLINK_S_CONGESTED
+
+In this scenario, the socket's receive queue is empty. Additionally,
+due to the NETLINK_S_CONGESTED flag being set, all packets sent to
+this socket are discarded.
+
+To prevent this situation, we need to introduce a check for whether
+the socket receive buffer is full before setting the NETLINK_S_CONGESTED
+flag.
+
+Signed-off-by: Qingjie Xing <xqjcool@gmail.com>
+---
+ net/netlink/af_netlink.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index 383631873748..80bcce9acbfc 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -352,7 +352,8 @@ static void netlink_overrun(struct sock *sk)
+ 	struct netlink_sock *nlk = nlk_sk(sk);
+ 
+ 	if (!(nlk->flags & NETLINK_F_RECV_NO_ENOBUFS)) {
+-		if (!test_and_set_bit(NETLINK_S_CONGESTED,
++		if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf
++			&& !test_and_set_bit(NETLINK_S_CONGESTED,
+ 				      &nlk_sk(sk)->state)) {
+ 			sk->sk_err = ENOBUFS;
+ 			sk_error_report(sk);
+-- 
+2.41.0
+
