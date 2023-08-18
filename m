@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 119E5780B51
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D68780B54
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376480AbjHRLnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        id S1376572AbjHRLnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376446AbjHRLmc (ORCPT
+        with ESMTP id S1376540AbjHRLn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:42:32 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C71F42112
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:42:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 08DA1D75;
-        Fri, 18 Aug 2023 04:43:11 -0700 (PDT)
-Received: from [10.57.4.78] (unknown [10.57.4.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BFEE3F762;
-        Fri, 18 Aug 2023 04:42:29 -0700 (PDT)
-Message-ID: <ca37adae-5e06-3003-c5b5-3146001d7d37@arm.com>
-Date:   Fri, 18 Aug 2023 12:42:27 +0100
+        Fri, 18 Aug 2023 07:43:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EB12723
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 04:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692358960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nIJDtceJEvPvpHYLAnup+4KqtuQicSCLwPh42Fs8LnI=;
+        b=Y4/YpHmh4Z6fXKQIIAHhqFYvlnYm6FRniCDw4Ry+fpyGWr1HU6bWI41hZXbmZoxlhgA43u
+        t8iZ4ZLAavC7mkYE055E0FKF43Oc6uUCY+ZQW/BpSaU+nWxJ9UPHI8hoJGS8DSGpWtKpx7
+        mBYoAmg102hz6TuRiyYY3auH8C8GkYE=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-595-Js43KPOeMVmCnPjUHe8Lfw-1; Fri, 18 Aug 2023 07:42:36 -0400
+X-MC-Unique: Js43KPOeMVmCnPjUHe8Lfw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 691DE1C0755C;
+        Fri, 18 Aug 2023 11:42:34 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA67C1121314;
+        Fri, 18 Aug 2023 11:42:32 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
+References: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com> <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com> <20230816120741.534415-1-dhowells@redhat.com> <20230816120741.534415-3-dhowells@redhat.com> <608853.1692190847@warthog.procyon.org.uk> <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com> <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com> <665724.1692218114@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] coresight: Fix memory leak in acpi_buffer->pointer
-To:     James Clark <james.clark@arm.com>,
-        Junhao He <hejunhao3@huawei.com>, mike.leach@linaro.org,
-        leo.yan@linaro.org
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com
-References: <20230817085937.55590-1-hejunhao3@huawei.com>
- <20230817085937.55590-2-hejunhao3@huawei.com>
- <1d38e877-35ed-5f70-e51f-ea875deab903@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1d38e877-35ed-5f70-e51f-ea875deab903@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1748359.1692358952.1@warthog.procyon.org.uk>
+Date:   Fri, 18 Aug 2023 12:42:32 +0100
+Message-ID: <1748360.1692358952@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2023 15:03, James Clark wrote:
-> 
-> 
-> On 17/08/2023 09:59, Junhao He wrote:
->> There are memory leaks reported by kmemleak:
->> ...
->> unreferenced object 0xffff00213c141000 (size 1024):
->>    comm "systemd-udevd", pid 2123, jiffies 4294909467 (age 6062.160s)
->>    hex dump (first 32 bytes):
->>      04 00 00 00 02 00 00 00 18 10 14 3c 21 00 ff ff  ...........<!...
->>      00 00 00 00 00 00 00 00 03 00 00 00 10 00 00 00  ................
->>    backtrace:
->>      [<000000004b7c9001>] __kmem_cache_alloc_node+0x2f8/0x348
->>      [<00000000b0fc7ceb>] __kmalloc+0x58/0x108
->>      [<0000000064ff4695>] acpi_os_allocate+0x2c/0x68
->>      [<000000007d57d116>] acpi_ut_initialize_buffer+0x54/0xe0
->>      [<0000000024583908>] acpi_evaluate_object+0x388/0x438
->>      [<0000000017b2e72b>] acpi_evaluate_object_typed+0xe8/0x240
->>      [<000000005df0eac2>] coresight_get_platform_data+0x1b4/0x988 [coresight]
->> ...
->>
->> The ACPI buffer memory (buf.pointer) should be freed. But the buffer
->> is also used after returning from acpi_get_dsd_graph().
->> Move the temporary variables buf to acpi_coresight_parse_graph(),
->> and free it before the function return to prevent memory leak.
->>
->> Fixes: 76ffa5ab5b79 ("coresight: Support for ACPI bindings")
->> Signed-off-by: Junhao He <hejunhao3@huawei.com>
-> 
-> I confirmed that the error gone. Thanks for the fix.
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Queued:
+> Well, that part is trivially fixable, and we should do that anyway for
+> other reasons.
+> ..
+>  enum iter_type {
+>  	/* iter types */
+> -	ITER_IOVEC,
+> -	ITER_KVEC,
+> -	ITER_BVEC,
+> -	ITER_XARRAY,
+> -	ITER_DISCARD,
+> -	ITER_UBUF,
+> +	ITER_IOVEC = 1,
+> +	ITER_UBUF = 2,
+> +	ITER_KVEC = 4,
+> +	ITER_BVEC = 8,
+> +	ITER_XARRAY = 16,
+> +	ITER_DISCARD = 32,
+>  };
 
-https://git.kernel.org/coresight/c/1a9e02673e25
+It used to be this way, but Al switched it:
 
-Thanks!
+	8cd54c1c848031a87820e58d772166ffdf8c08c0
+	iov_iter: separate direction from flavour
 
-Suzuki
+David
 
