@@ -2,105 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956A77807AD
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4137807AC
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358879AbjHRJAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38484 "EHLO
+        id S1358856AbjHRJAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358873AbjHRJAh (ORCPT
+        with ESMTP id S1352432AbjHRJAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:00:37 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08C73C16;
-        Fri, 18 Aug 2023 02:00:20 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6bcade59b24so619842a34.0;
-        Fri, 18 Aug 2023 02:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692349220; x=1692954020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Y5Zjf4Br8l/yI83N5VEcoQEhKvn7JUFC0W/m6x6V5Y=;
-        b=Y0uxcIRoCGwlTtD/IvhVUbI2rSWmFAWE92NgHSeLQaFHlW1EcyZ7gCXvLo4IV/jF4t
-         ZKS3dP5xIlr8YE/KCy396GjUzMFf/A9ohfDvTPqR2Y4xRyHE8WTmIKzcsZFPAJ5t3L9K
-         D+AC4w405D+8GDalmiKlfSXXv/WDN7H2lQJG7UHT/N8GeJgq93MWZPPKw9GsiTUivQD6
-         bXXNfoF9aJezIoFEdiw/0bCpHDZgfZwzYzVRpDi1p0A2CQA188kEC7VtjmpmxE9kGv3c
-         mlGrlb2umy8UT+U0VZQEOSokmOpfCqSi84f+yFQuOsDEffCTOPS8uE8scJw8t5TkdwPU
-         GIgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692349220; x=1692954020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Y5Zjf4Br8l/yI83N5VEcoQEhKvn7JUFC0W/m6x6V5Y=;
-        b=D4lT/0EpIX6OP2Mcm/sY7c9fM9lPn01QUHF9lSyX7XogF48ALBu4iy+acL7ksTLhhD
-         JqOQOCw+/yJH13X5XhAhnmgBkneKYGaz2NjNSSjlseoganc7M7G/lfwryOrJYI6L+2dC
-         Faz8eT85t/uk7lBuO+EbruOFhI4mh3FqJgXl59uFSf7rTjp8iBWVwbej4ZZ5GS/ROkiJ
-         tPJMvBMa16wwedknC9XLiPZtS1wy4QFlDimbaV3gWBdEe91nOOntpqHtD/jYQLkF4mbp
-         9tq+L4paV9IaSUoztjDCd5GHgMmx1ir9v5Lf8BPKmW1Z1HZjrD3gxTnGsz3T+meX142H
-         2mZA==
-X-Gm-Message-State: AOJu0YyaUlQNNf51YpDouGy6vZbiqA4crDHJ4yHxzc68X/JIGwGwrPe8
-        9RzyoIovwa/ENaa7MGfTaBAQPFUvdLytkqK9JiM=
-X-Google-Smtp-Source: AGHT+IHO5of0Xf3dIaJovpBYbVdfni5HT9nb9RZ2UCgHSkLXgxgPEOIp3svCEVUC0/IIfTwto6gnlz1FTvAMpmt8tHs=
-X-Received: by 2002:a05:6870:15d5:b0:1c0:1424:5e79 with SMTP id
- k21-20020a05687015d500b001c014245e79mr1885968oad.42.1692349219840; Fri, 18
- Aug 2023 02:00:19 -0700 (PDT)
+        Fri, 18 Aug 2023 05:00:15 -0400
+Received: from pegase1.c-s.fr (unknown [90.115.179.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B3530E6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:00:12 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RRwn71zqjz9vpd;
+        Fri, 18 Aug 2023 11:00:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 1RWAnjpEpnmc; Fri, 18 Aug 2023 11:00:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RRwn71C7Zz9vnt;
+        Fri, 18 Aug 2023 11:00:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 254248B76C;
+        Fri, 18 Aug 2023 11:00:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id u5rOJDBPTeM5; Fri, 18 Aug 2023 11:00:11 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (PO17626.IDSI0.si.c-s.fr [172.19.54.29])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CE4108B763;
+        Fri, 18 Aug 2023 11:00:10 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37I8xx7X067897
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 10:59:59 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37I8xsTm067893;
+        Fri, 18 Aug 2023 10:59:54 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] powerpc/perf: Convert fsl_emb notifier to state machine callbacks
+Date:   Fri, 18 Aug 2023 10:59:44 +0200
+Message-ID: <603e1facb32608f88f40b7d7b9094adc50e7b2dc.1692349125.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230818012111.22947-1-asmaa@nvidia.com> <20230818012111.22947-3-asmaa@nvidia.com>
-In-Reply-To: <20230818012111.22947-3-asmaa@nvidia.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 18 Aug 2023 11:59:43 +0300
-Message-ID: <CAHp75VehagLZLTb4hC5J+w8JVUu-zYBDb+npeS8ZgadfF9MheA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] gpio: mlxbf3: Support add_pin_ranges()
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, brgl@bgdev.pl,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692349183; l=2591; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=BDSzI3AZen6DGCYZz2OVeRyuTDOVTDC7impz5sm4Gkk=; b=46vx5Tsjz2fuaf6Y3hFNHg/B1XpD02F7n1Y/UyjSGVGBW0x2bhp+sfaCkkj6ImTJASzFQm+lb JzOcm3U1nVOBuaL/4wwZjf5da5wuKftDWQj8OhLRJk1v2wnOiGsj6Uv
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,SPF_FAIL,
+        SPF_HELO_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 4:21=E2=80=AFAM Asmaa Mnebhi <asmaa@nvidia.com> wro=
-te:
->
-> Support add_pin_ranges() so that pinctrl_gpio_request() can be called.
-> The GPIO value is not modified when the user runs the "gpioset" tool.
-> This is because when gpiochip_generic_request is invoked by the gpio-mlxb=
-f3
-> driver, "pin_ranges" is empty so it skips "pinctrl_gpio_request()".
-> pinctrl_gpio_request() is essential in the code flow because it changes t=
-he
-> mux value so that software has control over modifying the GPIO value.
-> Adding add_pin_ranges() creates a dependency on the pinctrl-mlxbf3.c driv=
-er.
+  CC      arch/powerpc/perf/core-fsl-emb.o
+arch/powerpc/perf/core-fsl-emb.c:675:6: error: no previous prototype for 'hw_perf_event_setup' [-Werror=missing-prototypes]
+  675 | void hw_perf_event_setup(int cpu)
+      |      ^~~~~~~~~~~~~~~~~~~
 
-Better now,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Looks like fsl_emb was completely missed by commit 3f6da3905398 ("perf:
+Rework and fix the arch CPU-hotplug hooks")
 
-...
+So, apply same changes as commit 3f6da3905398 ("perf: Rework and fix
+the arch CPU-hotplug hooks") then commit 57ecde42cc74 ("powerpc/perf:
+Convert book3s notifier to state machine callbacks")
 
->  #define MLXBF3_GPIO_MAX_PINS_PER_BLOCK 32
-> +#define MLXBF3_GPIO_MAX_PINS_BLOCK0    MLXBF3_GPIO_MAX_PINS_PER_BLOCK
-> +#define MLXBF3_GPIO_MAX_PINS_BLOCK1    24
+While at it, also fix following error:
 
-Since it's a fix for backporting, I'm not insisting to amend it now,
-but can we actually drop the common define and use
+arch/powerpc/perf/core-fsl-emb.c: In function 'perf_event_interrupt':
+arch/powerpc/perf/core-fsl-emb.c:648:13: error: variable 'found' set but not used [-Werror=unused-but-set-variable]
+  648 |         int found = 0;
+      |             ^~~~~
 
-#define MLXBF3_GPIO_MAX_PINS_BLOCK0    32
-#define MLXBF3_GPIO_MAX_PINS_BLOCK1    24
+Fixes: 3f6da3905398 ("perf: Rework and fix the arch CPU-hotplug hooks")
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/perf/core-fsl-emb.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-and modify code accordingly, please?
+diff --git a/arch/powerpc/perf/core-fsl-emb.c b/arch/powerpc/perf/core-fsl-emb.c
+index ee721f420a7b..1a53ab08447c 100644
+--- a/arch/powerpc/perf/core-fsl-emb.c
++++ b/arch/powerpc/perf/core-fsl-emb.c
+@@ -645,7 +645,6 @@ static void perf_event_interrupt(struct pt_regs *regs)
+ 	struct cpu_hw_events *cpuhw = this_cpu_ptr(&cpu_hw_events);
+ 	struct perf_event *event;
+ 	unsigned long val;
+-	int found = 0;
+ 
+ 	for (i = 0; i < ppmu->n_counter; ++i) {
+ 		event = cpuhw->event[i];
+@@ -654,7 +653,6 @@ static void perf_event_interrupt(struct pt_regs *regs)
+ 		if ((int)val < 0) {
+ 			if (event) {
+ 				/* event has overflowed */
+-				found = 1;
+ 				record_and_restart(event, val, regs);
+ 			} else {
+ 				/*
+@@ -672,11 +670,13 @@ static void perf_event_interrupt(struct pt_regs *regs)
+ 	isync();
+ }
+ 
+-void hw_perf_event_setup(int cpu)
++static int fsl_emb_pmu_prepare_cpu(unsigned int cpu)
+ {
+ 	struct cpu_hw_events *cpuhw = &per_cpu(cpu_hw_events, cpu);
+ 
+ 	memset(cpuhw, 0, sizeof(*cpuhw));
++
++	return 0;
+ }
+ 
+ int register_fsl_emb_pmu(struct fsl_emb_pmu *pmu)
+@@ -689,6 +689,8 @@ int register_fsl_emb_pmu(struct fsl_emb_pmu *pmu)
+ 		pmu->name);
+ 
+ 	perf_pmu_register(&fsl_emb_pmu, "cpu", PERF_TYPE_RAW);
++	cpuhp_setup_state(CPUHP_PERF_POWER, "perf/powerpc:prepare",
++			  fsl_emb_pmu_prepare_cpu, NULL);
+ 
+ 	return 0;
+ }
+-- 
+2.41.0
 
---=20
-With Best Regards,
-Andy Shevchenko
