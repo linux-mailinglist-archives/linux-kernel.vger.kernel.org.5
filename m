@@ -2,258 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F48D7803CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782497803F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357238AbjHRC1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
+        id S1357311AbjHRCqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357234AbjHRC1M (ORCPT
+        with ESMTP id S1357288AbjHRCp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:27:12 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6342235BF;
-        Thu, 17 Aug 2023 19:27:10 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RRm165RFtzVkLc;
-        Fri, 18 Aug 2023 10:24:58 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 18 Aug 2023 10:27:06 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <zhengyejian1@huawei.com>
-CC:     <laijs@cn.fujitsu.com>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <mhiramat@kernel.org>,
-        <rostedt@goodmis.org>
-Subject: [PATCH v2] tracing: Introduce pipe_cpumask to avoid race on trace_pipes
-Date:   Fri, 18 Aug 2023 10:26:45 +0800
-Message-ID: <20230818022645.1948314-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230817115057.1637676-1-zhengyejian1@huawei.com>
-References: <20230817115057.1637676-1-zhengyejian1@huawei.com>
+        Thu, 17 Aug 2023 22:45:59 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDC63A91;
+        Thu, 17 Aug 2023 19:45:53 -0700 (PDT)
+X-UUID: 56f1cfee3d7111ee9cb5633481061a41-20230818
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=YuRpMYUsTz6Ix5NA6ot3RfU99bP5fMTtwrOEIpm5/iw=;
+        b=Q+KkmEJplkWQ3wvg8gJqN75bq8PaDmxieM2XfBdPmENuBLPx73yGOBBhmyUHn+8bTCUH5ocsjjwuV8o0zKE3KMuoJL+YhNYcxnIT9QWMI+3y2j+MKUFPaNoz3W3I9sQZ9xcRdLep8fs1qFBsgrAwcn0ixx/tsGFP2fPb7+CW0TY=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:9f084b76-bdc2-4d3c-9b22-826d6f28bca4,IP:0,U
+        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:90
+X-CID-INFO: VERSION:1.1.31,REQID:9f084b76-bdc2-4d3c-9b22-826d6f28bca4,IP:0,URL
+        :0,TC:0,Content:-5,EDM:0,RT:0,SF:95,FILE:0,BULK:0,RULE:Spam_GS981B3D,ACTIO
+        N:quarantine,TS:90
+X-CID-META: VersionHash:0ad78a4,CLOUDID:c248fdc1-1e57-4345-9d31-31ad9818b39f,B
+        ulkID:230818104550QUCSL7YS,BulkQuantity:0,Recheck:0,SF:17|19|48|38|29|28,T
+        C:nil,Content:0,EDM:-3,IP:nil,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0
+        ,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_ASC,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: 56f1cfee3d7111ee9cb5633481061a41-20230818
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <sharp.xia@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 984509178; Fri, 18 Aug 2023 10:45:49 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 18 Aug 2023 10:45:48 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 18 Aug 2023 10:45:47 +0800
+From:   <Sharp.Xia@mediatek.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     <wsd_upstream@medaitek.com>, Sharp Xia <Sharp.Xia@mediatek.com>,
+        <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH 1/1] mmc: Set optimal I/O size when mmc_setip_queue
+Date:   Fri, 18 Aug 2023 10:28:15 +0800
+Message-ID: <20230818022817.3341-1-Sharp.Xia@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is race issue when concurrently splice_read main trace_pipe and
-per_cpu trace_pipes which will result in data read out being different
-from what actually writen.
+From: Sharp Xia <Sharp.Xia@mediatek.com>
 
-As suggested by Steven:
-  > I believe we should add a ref count to trace_pipe and the per_cpu
-  > trace_pipes, where if they are opened, nothing else can read it.
-  >
-  > Opening trace_pipe locks all per_cpu ref counts, if any of them are
-  > open, then the trace_pipe open will fail (and releases any ref counts
-  > it had taken).
-  >
-  > Opening a per_cpu trace_pipe will up the ref count for just that
-  > CPU buffer. This will allow multiple tasks to read different per_cpu
-  > trace_pipe files, but will prevent the main trace_pipe file from
-  > being opened.
+MMC does not set readahead and uses the default VM_READAHEAD_PAGES
+resulting in slower reading speed.
+Use the max_req_size reported by host driver to set the optimal
+I/O size to improve performance.
 
-But because we only need to know whether per_cpu trace_pipe is open or
-not, using a cpumask instead of using ref count may be easier.
-
-After this patch, users will find that:
- - Main trace_pipe can be opened by only one user, and if it is
-   opened, all per_cpu trace_pipes cannot be opened;
- - Per_cpu trace_pipes can be opened by multiple users, but each per_cpu
-   trace_pipe can only be opened by one user. And if one of them is
-   opened, main trace_pipe cannot be opened.
-
-Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+Signed-off-by: Sharp Xia <Sharp.Xia@mediatek.com>
 ---
+ drivers/mmc/core/queue.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-v2:
-  - In open_pipe_on_cpu(), clean format of if statements.
-  - In tracing_open_pipe(), call tracing_get_cpu() after
-    tracing_check_open_get_tr() and within trace_types_lock,
-    also keep "int ret;" as the last declaration.
-    Link: https://lore.kernel.org/all/20230817101331.21ab6b33@gandalf.local.home/
-
-v1:
-  - Link: https://lore.kernel.org/all/20230817115057.1637676-1-zhengyejian1@huawei.com/
-
- kernel/trace/trace.c | 55 ++++++++++++++++++++++++++++++++++++++------
- kernel/trace/trace.h |  2 ++
- 2 files changed, 50 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index b8870078ef58..c888a0a2c0e2 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -6705,10 +6705,36 @@ tracing_max_lat_write(struct file *filp, const char __user *ubuf,
- 
- #endif
- 
-+static int open_pipe_on_cpu(struct trace_array *tr, int cpu)
-+{
-+	if (cpu == RING_BUFFER_ALL_CPUS) {
-+		if (cpumask_empty(tr->pipe_cpumask)) {
-+			cpumask_setall(tr->pipe_cpumask);
-+			return 0;
-+		}
-+	} else if (!cpumask_test_cpu(cpu, tr->pipe_cpumask)) {
-+		cpumask_set_cpu(cpu, tr->pipe_cpumask);
-+		return 0;
-+	}
-+	return -EBUSY;
-+}
-+
-+static void close_pipe_on_cpu(struct trace_array *tr, int cpu)
-+{
-+	if (cpu == RING_BUFFER_ALL_CPUS) {
-+		WARN_ON(!cpumask_full(tr->pipe_cpumask));
-+		cpumask_clear(tr->pipe_cpumask);
-+	} else {
-+		WARN_ON(!cpumask_test_cpu(cpu, tr->pipe_cpumask));
-+		cpumask_clear_cpu(cpu, tr->pipe_cpumask);
-+	}
-+}
-+
- static int tracing_open_pipe(struct inode *inode, struct file *filp)
- {
- 	struct trace_array *tr = inode->i_private;
- 	struct trace_iterator *iter;
-+	int cpu;
- 	int ret;
- 
- 	ret = tracing_check_open_get_tr(tr);
-@@ -6716,13 +6742,16 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
- 		return ret;
- 
- 	mutex_lock(&trace_types_lock);
-+	cpu = tracing_get_cpu(inode);
-+	ret = open_pipe_on_cpu(tr, cpu);
-+	if (ret)
-+		goto fail_pipe_on_cpu;
- 
- 	/* create a buffer to store the information to pass to userspace */
- 	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
- 	if (!iter) {
- 		ret = -ENOMEM;
--		__trace_array_put(tr);
--		goto out;
-+		goto fail_alloc_iter;
- 	}
- 
- 	trace_seq_init(&iter->seq);
-@@ -6745,7 +6774,7 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
- 
- 	iter->tr = tr;
- 	iter->array_buffer = &tr->array_buffer;
--	iter->cpu_file = tracing_get_cpu(inode);
-+	iter->cpu_file = cpu;
- 	mutex_init(&iter->mutex);
- 	filp->private_data = iter;
- 
-@@ -6755,12 +6784,15 @@ static int tracing_open_pipe(struct inode *inode, struct file *filp)
- 	nonseekable_open(inode, filp);
- 
- 	tr->trace_ref++;
--out:
-+
- 	mutex_unlock(&trace_types_lock);
- 	return ret;
- 
- fail:
- 	kfree(iter);
-+fail_alloc_iter:
-+	close_pipe_on_cpu(tr, cpu);
-+fail_pipe_on_cpu:
- 	__trace_array_put(tr);
- 	mutex_unlock(&trace_types_lock);
- 	return ret;
-@@ -6777,7 +6809,7 @@ static int tracing_release_pipe(struct inode *inode, struct file *file)
- 
- 	if (iter->trace->pipe_close)
- 		iter->trace->pipe_close(iter);
--
-+	close_pipe_on_cpu(tr, iter->cpu_file);
- 	mutex_unlock(&trace_types_lock);
- 
- 	free_cpumask_var(iter->started);
-@@ -9441,6 +9473,9 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
-+	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
-+		goto out_free_tr;
-+
- 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
- 
- 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
-@@ -9482,6 +9517,7 @@ static struct trace_array *trace_array_create(const char *name)
-  out_free_tr:
- 	ftrace_free_ftrace_ops(tr);
- 	free_trace_buffers(tr);
-+	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
- 	kfree(tr->name);
- 	kfree(tr);
-@@ -9584,6 +9620,7 @@ static int __remove_instance(struct trace_array *tr)
- 	}
- 	kfree(tr->topts);
- 
-+	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
- 	kfree(tr->name);
- 	kfree(tr);
-@@ -10381,12 +10418,14 @@ __init static int tracer_alloc_buffers(void)
- 	if (trace_create_savedcmd() < 0)
- 		goto out_free_temp_buffer;
- 
-+	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
-+		goto out_free_savedcmd;
-+
- 	/* TODO: make the number of buffers hot pluggable with CPUS */
- 	if (allocate_trace_buffers(&global_trace, ring_buf_size) < 0) {
- 		MEM_FAIL(1, "tracer: failed to allocate ring buffer!\n");
--		goto out_free_savedcmd;
-+		goto out_free_pipe_cpumask;
- 	}
--
- 	if (global_trace.buffer_disabled)
- 		tracing_off();
- 
-@@ -10439,6 +10478,8 @@ __init static int tracer_alloc_buffers(void)
- 
- 	return 0;
- 
-+out_free_pipe_cpumask:
-+	free_cpumask_var(global_trace.pipe_cpumask);
- out_free_savedcmd:
- 	free_saved_cmdlines_buffer(savedcmd);
- out_free_temp_buffer:
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index e1edc2197fc8..53ac0f7780c2 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -377,6 +377,8 @@ struct trace_array {
- 	struct list_head	events;
- 	struct trace_event_file *trace_marker_file;
- 	cpumask_var_t		tracing_cpumask; /* only trace on set CPUs */
-+	/* one per_cpu trace_pipe can be opened by only one user */
-+	cpumask_var_t		pipe_cpumask;
- 	int			ref;
- 	int			trace_ref;
- #ifdef CONFIG_FUNCTION_TRACER
+diff --git a/drivers/mmc/core/queue.c b/drivers/mmc/core/queue.c
+index b396e3900717..fc83c4917360 100644
+--- a/drivers/mmc/core/queue.c
++++ b/drivers/mmc/core/queue.c
+@@ -359,6 +359,7 @@ static void mmc_setup_queue(struct mmc_queue *mq, struct mmc_card *card)
+ 		blk_queue_bounce_limit(mq->queue, BLK_BOUNCE_HIGH);
+ 	blk_queue_max_hw_sectors(mq->queue,
+ 		min(host->max_blk_count, host->max_req_size / 512));
++	blk_queue_io_opt(mq->queue, host->max_req_size);
+ 	if (host->can_dma_map_merge)
+ 		WARN(!blk_queue_can_use_dma_map_merging(mq->queue,
+ 							mmc_dev(host)),
 -- 
-2.25.1
+2.18.0
 
