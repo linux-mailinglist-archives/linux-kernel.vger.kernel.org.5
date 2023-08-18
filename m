@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF15780A94
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2373E780A95
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376480AbjHRK5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 06:57:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
+        id S1376485AbjHRK5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 06:57:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376477AbjHRK4o (ORCPT
+        with ESMTP id S1376511AbjHRK4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 06:56:44 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AE430C5;
-        Fri, 18 Aug 2023 03:56:41 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Fri, 18 Aug 2023 06:56:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673B830C2;
+        Fri, 18 Aug 2023 03:56:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 65E4C1F74B;
-        Fri, 18 Aug 2023 10:56:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1692356200; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IexQAHHwPg7BS8BG5o/PF8w5W2wWtYxUcyhYNR9qRWA=;
-        b=FEbMqAMzLGnkIIUsdHPSUpcc+D0sOVCaAT+2/jqiN+m1UbpWRmKkMO8Xh0C/v07PiqAqsF
-        ZR2IBRC+d2GA/HmvKa99NuRQEtdqZuZ8Oq1slCUnLfS2MHs9OsccLd3UdCDN+tI/OsXAGS
-        H6dmYf4nL7edlt86LDXPkozS+GvsVfY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1692356200;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IexQAHHwPg7BS8BG5o/PF8w5W2wWtYxUcyhYNR9qRWA=;
-        b=NBYiqKIqFP43bbK6+WA7OnSJd1X3B4Vm6hBXZlLY/7e4ms8egVInCibTIMmA+v9Rk21jT1
-        iPicyc8IpBRS2AAQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 57CD3138F0;
-        Fri, 18 Aug 2023 10:56:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id wS1sFWhO32QGVQAAMHmgww
-        (envelope-from <jack@suse.cz>); Fri, 18 Aug 2023 10:56:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E3251A076B; Fri, 18 Aug 2023 12:56:39 +0200 (CEST)
-Date:   Fri, 18 Aug 2023 12:56:39 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Georg Ottinger <g.ottinger@gmx.at>
-Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] ext2: improve consistency of ext2_fsblk_t datatype
- usage
-Message-ID: <20230818105639.fdq4v3ukgvy7coxc@quack3>
-References: <20230817195925.10268-1-g.ottinger@gmx.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817195925.10268-1-g.ottinger@gmx.at>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,URIBL_BLOCKED autolearn=no
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0504860FE6;
+        Fri, 18 Aug 2023 10:56:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CBC1C433C8;
+        Fri, 18 Aug 2023 10:56:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692356212;
+        bh=9oY74fYSA4+vLUvp/0gaPD0ITuj0lxnMOmvhMy0eQTQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Pq1x3SchFdbhb6fHMNxkIPyR/qmmjI6fy/vPCEtLdNWFF6y9nWXDfGk8CU5qr8IHt
+         1xjuYuop2pci3ZzZvr3EjHBEr4iMpJTnkdx0mehDqJgjViacLDv8/6oYuQA7WseGsJ
+         ezjRTDFhNFOvv4JMqTnUMmzuCUFQxJw5XngQ5OZMwXaMFlgIbWE0zm6oUuxbUQzmSx
+         wyW19yIoibgZT2jMCuNYkLLfA8zOKNfXHV8wsdovf8UBwZMgmsPf+7jH/XN11XHHBs
+         N0TqxUbafMBonQtt/VYxh/ut0OQj7iQYFY3TD0maCw1QZ2DyFulN8gqvmNCg9gnWZY
+         CyIAjYMgsTdCA==
+Date:   Fri, 18 Aug 2023 19:56:45 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v3 2/8] fprobe: Use fprobe_regs in fprobe entry handler
+Message-Id: <20230818195645.6d5b71f339b71c4f217c9a8c@kernel.org>
+In-Reply-To: <CABRcYmLhVxRwMYWjTE855WMg5fV+O1tLz8HJmy_6G6LK5ZEtVA@mail.gmail.com>
+References: <169181859570.505132.10136520092011157898.stgit@devnote2>
+        <169181861911.505132.8322840504168319403.stgit@devnote2>
+        <CABRcYmLhVxRwMYWjTE855WMg5fV+O1tLz8HJmy_6G6LK5ZEtVA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,97 +70,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17-08-23 21:59:25, Georg Ottinger wrote:
-> The ext2 block allocation/deallocation functions and their respective
-> calls use a mixture of unsigned long and ext2_fsblk_t datatypes to
-> index the desired ext2 block. This commit replaces occurrences of
-> unsigned long with ext2_fsblk_t, covering the functions
-> ext2_new_block(), ext2_new_blocks(), ext2_free_blocks(),
-> ext2_free_data() and ext2_free_branches(). This commit is rather
-> conservative, and only replaces unsigned long with ext2_fsblk_t if
-> the variable is used to index a specific ext2 block.
-> 
-> Signed-off-by: Georg Ottinger <g.ottinger@gmx.at>
+On Thu, 17 Aug 2023 10:57:26 +0200
+Florent Revest <revest@chromium.org> wrote:
 
-Thanks! I've added the patch to my tree.
+> On Sat, Aug 12, 2023 at 7:37 AM Masami Hiramatsu (Google)
+> <mhiramat@kernel.org> wrote:
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2467,7 +2467,7 @@ static int __init bpf_event_init(void)
+> >  fs_initcall(bpf_event_init);
+> >  #endif /* CONFIG_MODULES */
+> >
+> > -#ifdef CONFIG_FPROBE
+> > +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> 
+> Shouldn't this be #if defined(CONFIG_FPROBE) &&
+> defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS) ?
 
-								Honza
+Oops, that's right!
 
-> ---
->  fs/ext2/balloc.c | 4 ++--
->  fs/ext2/ext2.h   | 6 +++---
->  fs/ext2/inode.c  | 6 +++---
->  3 files changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index eca60b747..9db13852c 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -474,7 +474,7 @@ void ext2_discard_reservation(struct inode *inode)
->   * @block:		start physical block to free
->   * @count:		number of blocks to free
->   */
-> -void ext2_free_blocks (struct inode * inode, unsigned long block,
-> +void ext2_free_blocks (struct inode * inode, ext2_fsblk_t block,
->  		       unsigned long count)
->  {
->  	struct buffer_head *bitmap_bh = NULL;
-> @@ -1431,7 +1431,7 @@ ext2_fsblk_t ext2_new_blocks(struct inode *inode, ext2_fsblk_t goal,
->  	return 0;
->  }
+> I believe one could build a kernel with FTRACE_WITH_REGS and without
+> FPROBE and then this code would have undefined references to fprobe
+> functions, wouldn't it ?
+
+Yeah, ftrace with regs doesn't mean fprobe is enabled.
+
 > 
-> -ext2_fsblk_t ext2_new_block(struct inode *inode, unsigned long goal, int *errp)
-> +ext2_fsblk_t ext2_new_block(struct inode *inode, ext2_fsblk_t goal, int *errp)
->  {
->  	unsigned long count = 1;
-> 
-> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-> index 35a041c47..83fd85bb1 100644
-> --- a/fs/ext2/ext2.h
-> +++ b/fs/ext2/ext2.h
-> @@ -695,12 +695,12 @@ static inline struct ext2_inode_info *EXT2_I(struct inode *inode)
->  /* balloc.c */
->  extern int ext2_bg_has_super(struct super_block *sb, int group);
->  extern unsigned long ext2_bg_num_gdb(struct super_block *sb, int group);
-> -extern ext2_fsblk_t ext2_new_block(struct inode *, unsigned long, int *);
-> -extern ext2_fsblk_t ext2_new_blocks(struct inode *, unsigned long,
-> +extern ext2_fsblk_t ext2_new_block(struct inode *, ext2_fsblk_t, int *);
-> +extern ext2_fsblk_t ext2_new_blocks(struct inode *, ext2_fsblk_t,
->  				unsigned long *, int *);
->  extern int ext2_data_block_valid(struct ext2_sb_info *sbi, ext2_fsblk_t start_blk,
->  				 unsigned int count);
-> -extern void ext2_free_blocks (struct inode *, unsigned long,
-> +extern void ext2_free_blocks (struct inode *, ext2_fsblk_t,
->  			      unsigned long);
->  extern unsigned long ext2_count_free_blocks (struct super_block *);
->  extern unsigned long ext2_count_dirs (struct super_block *);
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index 75983215c..72916c929 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -1082,8 +1082,8 @@ static Indirect *ext2_find_shared(struct inode *inode,
->   */
->  static inline void ext2_free_data(struct inode *inode, __le32 *p, __le32 *q)
->  {
-> -	unsigned long block_to_free = 0, count = 0;
-> -	unsigned long nr;
-> +	ext2_fsblk_t block_to_free = 0, count = 0;
-> +	ext2_fsblk_t nr;
-> 
->  	for ( ; p < q ; p++) {
->  		nr = le32_to_cpu(*p);
-> @@ -1123,7 +1123,7 @@ static inline void ext2_free_data(struct inode *inode, __le32 *p, __le32 *q)
->  static void ext2_free_branches(struct inode *inode, __le32 *p, __le32 *q, int depth)
->  {
->  	struct buffer_head * bh;
-> -	unsigned long nr;
-> +	ext2_fsblk_t nr;
-> 
->  	if (depth--) {
->  		int addr_per_block = EXT2_ADDR_PER_BLOCK(inode->i_sb);
-> --
-> 2.17.1
-> 
+> And then patch 7 should be "Enable kprobe_multi feature even if
+> FTRACE_WITH_REGS is disabled"
+
+OK.
+
+Thank you!
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
