@@ -2,170 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8482578074C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF21478074B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 10:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358654AbjHRIig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 04:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S1358648AbjHRIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 04:38:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358651AbjHRIiO (ORCPT
+        with ESMTP id S1358642AbjHRIha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 04:38:14 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B611730F3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:38:12 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 5b1f17b1804b1-3fe4ad22e36so6452965e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:38:12 -0700 (PDT)
+        Fri, 18 Aug 2023 04:37:30 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8743A99
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:37:28 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fed6c2a5cfso919065e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 01:37:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692347891; x=1692952691;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8v8yPa3137/niC26eiAKunSGrUVi6KH36COCn9q7Zlo=;
-        b=e89hl2B+CkgrFStNqGY9X2vXTXCbtTxFrwnnX2+e0I2eaGb4Jeyhpz5y1yW1KlItJO
-         oHFu/CR/L2ytSJF6+T3jS0MSKcEbDehb1PYSYpFODZS9xVHVmexTN0yJYp7uf5A7BhUO
-         cGo34z4sWVL/lZTnhq9ofRcrKPP5bvmB/dy59FfDsQQ0Bod90EVMzSvJQTEQke/7U993
-         vSN8j72oZ8k1L8ebVmyDwGsO2+aGac24/LHUNsDX3hwseO+7UPjL118MPwYXXP/CsGb0
-         0wcWdAJ87VuxVlIxUcLd5oION4J+VH203Wzos+YR2bZo+OG2kREWaAER7aZMs2YJmetb
-         98/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692347891; x=1692952691;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1692347847; x=1692952647;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8v8yPa3137/niC26eiAKunSGrUVi6KH36COCn9q7Zlo=;
-        b=FL5nLN9QMRFE3YEIT4MVfJ5MC5lQKA7JPzk2v5Et8Mo4xg7mHNcnQEgIg5epXE3nEc
-         IaQy2pvXill52D3/hbP3dmZXMYF7sX3S8OvnrFOOSYS6AOLy5mJ7+p0ZoW5fHInO61rd
-         idx+gJOuEY6A8tNbIfhbc5gTPxTMD9TOqbuwd9kjg1ML9bTScClkwB7aU+JQo7plmz/c
-         QVrAspYhkpPl2El/DVFwLFcLTKk2ApPhuYnO0lJa8sWyGkeXFQF7IIA7g/rQLzHoqWRA
-         rUw8h1XnbzbUWiydmRwjsyZpsNWIgwwi5QBjdCe/uKIUYVTa+JEUnXdHZr0AjLVhhJTn
-         SCUA==
-X-Gm-Message-State: AOJu0YznRir+odWcLdpU+e+0mIMSNV1sec34fwmBTgB2tHShHbTluT1s
-        +1Q04yDsdpq4FE5O+6z9BU0=
-X-Google-Smtp-Source: AGHT+IHpRsGh1lSlWaJDDzqyLYI7tB6h0+4jfdv93A6Ne2NveBB35YDiyQXtVHHV+dlt85UUaK++Cg==
-X-Received: by 2002:a7b:cc13:0:b0:3fb:ef86:e2e with SMTP id f19-20020a7bcc13000000b003fbef860e2emr1593585wmh.19.1692347891049;
-        Fri, 18 Aug 2023 01:38:11 -0700 (PDT)
-Received: from ws-565760.systec.local ([212.185.67.148])
-        by smtp.gmail.com with ESMTPSA id 5-20020a05600c020500b003fbb5506e54sm2046748wmi.29.2023.08.18.01.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 01:38:10 -0700 (PDT)
-From:   werneazc@gmail.com
-X-Google-Original-From: andre.werner@systec-electronic.com
-To:     lgirdwood@gmail.com, broonie@kernel.org, lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andre Werner <andre.werner@systec-electronic.com>
-Subject: [PATCH v2 1/2] mfd: (tps65086): Read DEVICE ID register 1 from device
-Date:   Fri, 18 Aug 2023 10:37:21 +0200
-Message-ID: <20230818083721.29790-2-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.41.0
+        bh=EkTtM2TNIG+ZMhNGtHnzw5WU517N75Vg3ipWDLnXuCM=;
+        b=sgKbfSvobO2Acg3w5MD88ZS03UFr/0gL31LuucE2J7G/Bc8lSvXc/CJl0XDC+HOFjX
+         GG3XX+AkZp5BqqhRD0TwYrFTtT643LOMpZVtfSFhdY8te4yicAjUa9fTOBpv1LRaVbah
+         UYmPFN7ckAGACx/qhNaBUJlWZUN6SLeUrAPpOwjw7Vs8xe84XA7dbyonyadqjfGHd5Bu
+         w8jKsYKpBzSLdaYQiNX9wklM7LGdTm5Ut5dDARhfO5Dy0ciNdzAuf8F8ZQKlAdXBdOV7
+         K+oj1t6frvexDk7aOQ/vX7gfjtvyRKYBRlwO+wAen2ITbp0WugPg8wAvA3iMihh+VHhd
+         yoZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692347847; x=1692952647;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=EkTtM2TNIG+ZMhNGtHnzw5WU517N75Vg3ipWDLnXuCM=;
+        b=DczzTwQAHHQe34B1m8LuJC0TRXEfMSC4udL0NR0Q6K413TZ2DJmGv/tByLD51QafUB
+         qyMChSNbCE3pUfVkG8KMnCyuL9X6i0+CJJxTMI+mpA/6JsHRbqE3BayqcIsklPwER1if
+         33UsyAwd//6G5gxXqmBKERHlU5AXpE5mPbymkZhksSlTUXUF7tE9Z/xe6KsJhqeqLysZ
+         r2Yig6DQ6J3uoZQ9hEqDZe6b3s/Cgb1stKZ5PN9u80yFtM5DzFZx5LnyUyShCciODmvy
+         91GOkmJByn7j1RvYWMFaDbb+D1izMx9f5teZSjyynXBrPi4bqvR2l6ugORLaBOVmk+Fq
+         mKIg==
+X-Gm-Message-State: AOJu0YxKaSGUj7mrpESnf77a/ZAEXFtqd6CT6EeHrPTgmUiwlxbsBPLP
+        3T9icjpLIUWTiXQzLzqjm6HSbA==
+X-Google-Smtp-Source: AGHT+IGWWG9k0zKOaYDfIhvTQO1DGhLcAwN0pgCFVuWFkZ2CUZO+vJbuLqXUQrI2YzypkbM5uSU32A==
+X-Received: by 2002:a5d:49cf:0:b0:314:327:2edb with SMTP id t15-20020a5d49cf000000b0031403272edbmr1362430wrs.0.1692347847387;
+        Fri, 18 Aug 2023 01:37:27 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b9f6:39b9:fff4:e741? ([2a01:e0a:982:cbb0:b9f6:39b9:fff4:e741])
+        by smtp.gmail.com with ESMTPSA id x8-20020a5d4448000000b0031432f1528csm2033008wrr.45.2023.08.18.01.37.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 01:37:26 -0700 (PDT)
+Message-ID: <0f81553d-1d68-43e5-aa49-4801ba7c7d51@linaro.org>
+Date:   Fri, 18 Aug 2023 10:37:24 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2] drm: bridge: samsung-dsim: Fix init during host
+ transfer
+Content-Language: en-US, fr
+To:     Frieder Schrempf <frieder@fris.de>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robert Foss <rfoss@kernel.org>
+Cc:     Tim Harvey <tharvey@gateworks.com>, Adam Ford <aford173@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Marek Vasut <marex@denx.de>
+References: <20230724151640.555490-1-frieder@fris.de>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20230724151640.555490-1-frieder@fris.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Werner <andre.werner@systec-electronic.com>
+On 24/07/2023 17:16, Frieder Schrempf wrote:
+> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+> 
+> In case the downstream bridge or panel uses DSI transfers before the
+> DSI host was actually initialized through samsung_dsim_atomic_enable()
+> which clears the stop state (LP11) mode, all transfers will fail.
+> 
+> This happens with downstream bridges that are controlled by DSI
+> commands such as the tc358762.
+> 
+> As documented in [1] DSI hosts are expected to allow transfers
+> outside the normal bridge enable/disable flow.
+> 
+> To fix this make sure that stop state is cleared in
+> samsung_dsim_host_transfer() which restores the previous
+> behavior.
+> 
+> We also factor out the common code to enable/disable stop state
+> to samsung_dsim_set_stop_state().
+> 
+> [1] https://docs.kernel.org/gpu/drm-kms-helpers.html#mipi-dsi-bridge-operation
+> 
+> Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec")
+> Reported-by: Tim Harvey <tharvey@gateworks.com>
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> ---
+> Changes for v2:
+>    * Fix reversed stop state enable/disable in samsung_dsim_set_stop_state()
+> 
+> Hi Tim, could you please give this patch a try and report back if
+> it fixes your problem? Thanks!
+> ---
+>   drivers/gpu/drm/bridge/samsung-dsim.c | 27 +++++++++++++++++----------
+>   1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> index 043b8109e64a..73ec60757dbc 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -1386,6 +1386,18 @@ static void samsung_dsim_disable_irq(struct samsung_dsim *dsi)
+>   	disable_irq(dsi->irq);
+>   }
+>   
+> +static void samsung_dsim_set_stop_state(struct samsung_dsim *dsi, bool enable)
+> +{
+> +	u32 reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> +
+> +	if (enable)
+> +		reg |= DSIM_FORCE_STOP_STATE;
+> +	else
+> +		reg &= ~DSIM_FORCE_STOP_STATE;
+> +
+> +	samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> +}
+> +
+>   static int samsung_dsim_init(struct samsung_dsim *dsi)
+>   {
+>   	const struct samsung_dsim_driver_data *driver_data = dsi->driver_data;
+> @@ -1445,15 +1457,12 @@ static void samsung_dsim_atomic_enable(struct drm_bridge *bridge,
+>   				       struct drm_bridge_state *old_bridge_state)
+>   {
+>   	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+> -	u32 reg;
+>   
+>   	if (samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
+>   		samsung_dsim_set_display_mode(dsi);
+>   		samsung_dsim_set_display_enable(dsi, true);
+>   	} else {
+> -		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> -		reg &= ~DSIM_FORCE_STOP_STATE;
+> -		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> +		samsung_dsim_set_stop_state(dsi, false);
+>   	}
+>   
+>   	dsi->state |= DSIM_STATE_VIDOUT_AVAILABLE;
+> @@ -1463,16 +1472,12 @@ static void samsung_dsim_atomic_disable(struct drm_bridge *bridge,
+>   					struct drm_bridge_state *old_bridge_state)
+>   {
+>   	struct samsung_dsim *dsi = bridge_to_dsi(bridge);
+> -	u32 reg;
+>   
+>   	if (!(dsi->state & DSIM_STATE_ENABLED))
+>   		return;
+>   
+> -	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
+> -		reg = samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
+> -		reg |= DSIM_FORCE_STOP_STATE;
+> -		samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
+> -	}
+> +	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
+> +		samsung_dsim_set_stop_state(dsi, true);
+>   
+>   	dsi->state &= ~DSIM_STATE_VIDOUT_AVAILABLE;
+>   }
+> @@ -1775,6 +1780,8 @@ static ssize_t samsung_dsim_host_transfer(struct mipi_dsi_host *host,
+>   	if (ret)
+>   		return ret;
+>   
+> +	samsung_dsim_set_stop_state(dsi, false);
+> +
+>   	ret = mipi_dsi_create_packet(&xfer.packet, msg);
+>   	if (ret < 0)
+>   		return ret;
 
-This commit prepares a following commit for the regulator part of the MFD.
-The driver should support different device chips that differ in their
-register definitions, for instance to control LDOA1 and SWB2.
-So it is necessary to use a dedicated regulator description for a
-specific device variant. Thus, the content from DEVICEID Register 1 is
-used to choose a dedicated configuration between the different device
-variants.
-
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
-v2: Store chip ID read from PMIC in chip_id device data instead of enum.
----
- drivers/mfd/tps65086.c       | 17 ++++++++++++-----
- include/linux/mfd/tps65086.h | 20 ++++++++++++++------
- 2 files changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mfd/tps65086.c b/drivers/mfd/tps65086.c
-index 6a21000aad4a..9bb7d7d8dcfc 100644
---- a/drivers/mfd/tps65086.c
-+++ b/drivers/mfd/tps65086.c
-@@ -81,16 +81,23 @@ static int tps65086_probe(struct i2c_client *client)
- 		return PTR_ERR(tps->regmap);
- 	}
- 
--	ret = regmap_read(tps->regmap, TPS65086_DEVICEID, &version);
-+	/* Store device ID to load regulator configuration that fit to IC variant */
-+	ret = regmap_read(tps->regmap, TPS65086_DEVICEID1, &tps->chip_id);
- 	if (ret) {
--		dev_err(tps->dev, "Failed to read revision register\n");
-+		dev_err(tps->dev, "Failed to read revision register 1\n");
-+		return ret;
-+	}
-+
-+	ret = regmap_read(tps->regmap, TPS65086_DEVICEID2, &version);
-+	if (ret) {
-+		dev_err(tps->dev, "Failed to read revision register 2\n");
- 		return ret;
- 	}
- 
- 	dev_info(tps->dev, "Device: TPS65086%01lX, OTP: %c, Rev: %ld\n",
--		 (version & TPS65086_DEVICEID_PART_MASK),
--		 (char)((version & TPS65086_DEVICEID_OTP_MASK) >> 4) + 'A',
--		 (version & TPS65086_DEVICEID_REV_MASK) >> 6);
-+		 (version & TPS65086_DEVICEID2_PART_MASK),
-+		 (char)((version & TPS65086_DEVICEID2_OTP_MASK) >> 4) + 'A',
-+		 (version & TPS65086_DEVICEID2_REV_MASK) >> 6);
- 
- 	if (tps->irq > 0) {
- 		ret = regmap_add_irq_chip(tps->regmap, tps->irq, IRQF_ONESHOT, 0,
-diff --git a/include/linux/mfd/tps65086.h b/include/linux/mfd/tps65086.h
-index 16f87cccc003..87e590de6ca5 100644
---- a/include/linux/mfd/tps65086.h
-+++ b/include/linux/mfd/tps65086.h
-@@ -13,8 +13,9 @@
- #include <linux/regmap.h>
- 
- /* List of registers for TPS65086 */
--#define TPS65086_DEVICEID		0x01
--#define TPS65086_IRQ			0x02
-+#define TPS65086_DEVICEID1		0x00
-+#define TPS65086_DEVICEID2		0x01
-+#define TPS65086_IRQ		0x02
- #define TPS65086_IRQ_MASK		0x03
- #define TPS65086_PMICSTAT		0x04
- #define TPS65086_SHUTDNSRC		0x05
-@@ -75,10 +76,16 @@
- #define TPS65086_IRQ_SHUTDN_MASK	BIT(3)
- #define TPS65086_IRQ_FAULT_MASK		BIT(7)
- 
--/* DEVICEID Register field definitions */
--#define TPS65086_DEVICEID_PART_MASK	GENMASK(3, 0)
--#define TPS65086_DEVICEID_OTP_MASK	GENMASK(5, 4)
--#define TPS65086_DEVICEID_REV_MASK	GENMASK(7, 6)
-+/* DEVICEID1 Register field definitions */
-+#define TPS6508640_ID			0x00
-+#define TPS65086401_ID			0x01
-+#define TPS6508641_ID			0x10
-+#define TPS65086470_ID			0x70
-+
-+/* DEVICEID2 Register field definitions */
-+#define TPS65086_DEVICEID2_PART_MASK	GENMASK(3, 0)
-+#define TPS65086_DEVICEID2_OTP_MASK	GENMASK(5, 4)
-+#define TPS65086_DEVICEID2_REV_MASK	GENMASK(7, 6)
- 
- /* VID Masks */
- #define BUCK_VID_MASK			GENMASK(7, 1)
-@@ -100,6 +107,7 @@ enum tps65086_irqs {
- struct tps65086 {
- 	struct device *dev;
- 	struct regmap *regmap;
-+	unsigned int chip_id;
- 
- 	/* IRQ Data */
- 	int irq;
--- 
-2.41.0
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
