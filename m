@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EEB780439
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A0A780455
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357449AbjHRDLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
+        id S1354040AbjHRDVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357452AbjHRDKz (ORCPT
+        with ESMTP id S1357514AbjHRDVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:10:55 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6EE2D56
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:10:54 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bdf4752c3cso3547295ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:10:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692328254; x=1692933054;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yKpW3uMzKHMipz/jB1RiSd8Olvi+QB8PMIbMqnSLDAU=;
-        b=jkSdfrawUtRZR63RxuLHuqppHYvkby9RDNZGLiEhnY4whd8qEb14oCt8G2bOBZcpB9
-         VXTtxz1ifxs4zmBpNS/xSBbcywmCT/h0ZUUMjujMhfW0BjNC/umz8Cf0yn6tNarqO4li
-         kJhGHNE92fqZNR9wTzfss5O55RHtA8UfxCte1NH3kVn358XA1gAjnEg2QxwSIhZ5sKQz
-         wYIQSrqNaiPCLB4/zTpYFFIQKynWDgm2VOdt5i/VXWkHfJTTEOTQ88EwVpuxj4p/+fBt
-         sZfdpIAMxdOvJXD1lmlDz1gO1CdFG9Z59gG0cBvZFdOpWDj0uCOxHTlibaz5WP7H4UyH
-         6G+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692328254; x=1692933054;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yKpW3uMzKHMipz/jB1RiSd8Olvi+QB8PMIbMqnSLDAU=;
-        b=g6IZHt8f/U8lcjc0NbgyGFEyObMbpP6M8zWOpeckHat8WSWj2+V5wwZ0ug/ncVI+0N
-         DtC+AU8WlqmDsLOixlnUAvgFR4TDvGeK2QPZbvJDlsbtLOvAKo0Ci8fz2JUsbUNXiahu
-         kAicpKOo7k5ccsfryYpdPOTE6bUF/PDBLg35AzZXToQwbyVOxaBvAS0Pv9eKyiz+LrdF
-         iT1EtOM5gGX/6GFTGPZZAJdQ+8Zqp+oPIwC6sHFjAVhIah6WtieGIQ+GwlCkAbNBQ/0d
-         Jf5lpuQCU9lwiXuhkKUEl6FZVqeNIptlUZtyJr7KsjjfHyLSTR/fcu4+mf/1QMUVbkuT
-         hgtg==
-X-Gm-Message-State: AOJu0YxE0GpgvxcrcYn22qWYZBfgb4E22tn5c5bYjvVWhSOhmtUvMKnT
-        rYpT7cD1EdOEDpyYuRffeAVj1fVWkrg=
-X-Google-Smtp-Source: AGHT+IGP1tCxPpyohn4+Hz+ynW1rLOTgpbqwPkZ/faeicKOrsuG0G3XHZ8eITEAPFUmxJyKR/R/FhA==
-X-Received: by 2002:a17:903:11d0:b0:1b8:8b72:fa28 with SMTP id q16-20020a17090311d000b001b88b72fa28mr1494023plh.58.1692328253792;
-        Thu, 17 Aug 2023 20:10:53 -0700 (PDT)
-Received: from localhost ([156.236.96.163])
-        by smtp.gmail.com with ESMTPSA id u1-20020a170902e80100b001b51b3e84cesm494367plg.166.2023.08.17.20.10.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Aug 2023 20:10:53 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 11:20:37 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Gao Xiang <hsiangkao@linux.alibaba.com>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/8] erofs: drop z_erofs_page_mark_eio()
-Message-ID: <20230818112037.000027ef.zbestahu@gmail.com>
-In-Reply-To: <20230817082813.81180-5-hsiangkao@linux.alibaba.com>
-References: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
-        <20230817082813.81180-5-hsiangkao@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        Thu, 17 Aug 2023 23:21:07 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53C730F5;
+        Thu, 17 Aug 2023 20:21:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692328864;
+        bh=Tpyx1B445b6D45UQRfR4DprDQ8S8METPX2CP3UsjIVo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oczjNicFv859VV/m5CIKwT2XPeut792oqAVV3FZmUbvNIl3gbZDAtQF031rqsF9dR
+         8/NEfGd+qepahMnlYV6B2/FSVcfJBvrmRV3pbuHsRUMLSIJqaMHSyMovvCw0kFyzkQ
+         WP8qBjHmRHDzve67ZGrOP4/uxodn1MLlmpEgvV9mSHfe9qoG6/MHc3NoHeW3avqSh9
+         564oiowj4rqbZcmT8lWokXD8jJOm7nLT+xABwO77vXaRsLNPEPfidm9wGNDS+PLXYo
+         SkxKTMVeE4yXuYKFvBe1nHqrBmOMjXHPGpUGezZpJx0PTJrjBWQrgSpqhQVV9zDYu/
+         gRBtKUs6ZToGA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRnFq20GCz4wxy;
+        Fri, 18 Aug 2023 13:21:03 +1000 (AEST)
+Date:   Fri, 18 Aug 2023 13:21:02 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the aspeed tree
+Message-ID: <20230818132102.11ef3fea@canb.auug.org.au>
+In-Reply-To: <CACPK8Xez-xQDEAG_JuN5VqMVBreLWO_Qhu+3Vq3EA1PiebR5hw@mail.gmail.com>
+References: <20230815114143.23e4b2ff@canb.auug.org.au>
+        <CACPK8Xez-xQDEAG_JuN5VqMVBreLWO_Qhu+3Vq3EA1PiebR5hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/oGPZtMIRHW_+kWMk5wf8kUc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 16:28:10 +0800
-Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+--Sig_/oGPZtMIRHW_+kWMk5wf8kUc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> It can be folded into z_erofs_onlinepage_endio() to simplify the code.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+Hi Joel,
 
-Reviewed-by: Yue Hu <huyue2@coolpad.com>
+On Fri, 18 Aug 2023 02:19:11 +0000 Joel Stanley <joel@jms.id.au> wrote:
+>
+> On Tue, 15 Aug 2023 at 01:41, Stephen Rothwell <sfr@canb.auug.org.au> wro=
+te:
+> >
+> > The following commits are also in the arm-soc-fixes tree as different
+> > commits (but the same patches):
+> >
+> >   0955e3867b54 ("soc: aspeed: socinfo: Add kfree for kstrdup")
+> >   c5835b6e7aff ("soc: aspeed: uart-routing: Use __sysfs_match_string")
+> >
+> > These are commits
+> >
+> >   6e6d847a8ce1 ("soc: aspeed: socinfo: Add kfree for kstrdup")
+> >   e4ad279ae345 ("soc: aspeed: uart-routing: Use __sysfs_match_string")
+> >
+> > in the arm-soc-fixes tree. =20
+>=20
+> This is expected as I sent the changes as patches for Arnd to merge
+> via the soc tree.
+>=20
+> What would you like to see when this happens? Should I rebase them out
+> of the aspeed tree?
+
+They are currently not causing any conflicts (that I would need to
+manually fix up), so you can just leave them it you like.
+
+More generally, they could have gone into a separate branch that you
+merge and you ask Arnd to merge so that we only have one copy.  In
+particular, quite a few people have a separate "-fixes" branch for
+current release bug fixes.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/oGPZtMIRHW_+kWMk5wf8kUc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTe454ACgkQAVBC80lX
+0Gw8fgf/Un4qrcGHgCaXVQKeaGqEkg5Kr4W/CoecLVGqNAEJVcx9AsiBO66oF1Oc
+44qiL0NbuS1nd9RflqhocLKYyQwmaorcN7LhlHd77BCKlJ51I4js2b+UNmOagb4f
+B36swddNvNpRvrset+9phyoWGKfwBPXeBG9E9VwMBr1SZjFATwsh0gzeW7NUrO6x
+tlfi0K9JohIeOQRrO0ChcPNJ2okg+dPLhX3mCaIOHcJ6KdbUQ70Ygf8RUWCr7qyr
+paYhCJElOKQPzCdbqbQSA1fcxCumtN30WP7zwHQ8aFzkG7jDOfGpA/O5kVCBTH/o
+tPGAbujBBb3cuYAx/s815Z+rHXxfdw==
+=JDa1
+-----END PGP SIGNATURE-----
+
+--Sig_/oGPZtMIRHW_+kWMk5wf8kUc--
