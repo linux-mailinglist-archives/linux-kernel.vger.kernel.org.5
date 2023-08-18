@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FAE780266
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CA0780268
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356508AbjHRAGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
+        id S1356493AbjHRAHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356621AbjHRAGZ (ORCPT
+        with ESMTP id S1356504AbjHRAHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:06:25 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B3E3C03;
-        Thu, 17 Aug 2023 17:05:59 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id ca18e2360f4ac-77acb04309dso12134039f.2;
-        Thu, 17 Aug 2023 17:05:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692317158; x=1692921958;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RwIzvkMVcbe5KhN4zVEidAVbcmW0cSGczFrySv1jt9Y=;
-        b=XFOqiwvfsHigbIpnmkkVyyimhSErU+38ZS55U/vBGL669h9pSr9dbMbJ81jdXF0x4b
-         hNAWDr39jKDY/1YQS0KZ3zSolIbsADg3kwU/q69wpFloooI7I5sAy+XVRYKGmpftkb1P
-         YP3/hdmUgKckskoTuxer1ZnDUkfAfKzPy1jy0MG2ihJUU9ZSKi7rTpys32PIOib2AWIo
-         dwUDJPCwy9KmxofVrYQ2kD0aWwgyLOHsLCfoQ0I9Qw1PMgbtE4xUHJWQhl52Jzg5mNuf
-         guyVZLMHcbdVmAICTVpQcBsxatovBsGSJktycjX+Sr1TpSuJH1VurpGnImYVcE4H6gmZ
-         W7XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692317158; x=1692921958;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RwIzvkMVcbe5KhN4zVEidAVbcmW0cSGczFrySv1jt9Y=;
-        b=VSDj55FXxG4jiNPwxKzZAma1kqgvTXl5sQSAWYd+pcj1W5OChFJsupg1HRQstBlykM
-         MGa/2Z516wT3wBTpXv6SzDDmsnmuDI/AKKctJ9siinfZ4wDQu2mKAApskqxAnuMtSJ5a
-         tVzR0KmdJkiQHDatsKKTXro8pYvTM5bhW85WYQz5Wh0BFVcs4zC5qQdc2JKgdqxQW2Ul
-         A/sUuSHLdD+UVcgUjM5y++mH7Wzrk3B9vsKuQ4X7hBJIKxg2N9JY0We043Jn7OfEJYC9
-         Xj/KIU3g9kkoRoZL7mqbimOvo7j1+qOhwAOPyW/ROx8aLbSRzdf4LQ1gBuxwHj7oFpcD
-         vY4g==
-X-Gm-Message-State: AOJu0YzCA8bXGF7fVKC0bHfXMjh3l/2IpE1Kspu6/+GnaUlp7DwyR7r9
-        ofGw8Tpvc5GfWxcR4ylDvlhGYWWx2thMOw==
-X-Google-Smtp-Source: AGHT+IHStbq3NzN6dQNQrKWqG9jcfAu3ohPaix1q5u++4r9w9pldwgzS8TcP7SxxfZu2vO8zK8EkFg==
-X-Received: by 2002:a5e:c60c:0:b0:786:f352:e3d4 with SMTP id f12-20020a5ec60c000000b00786f352e3d4mr1393419iok.7.1692317158484;
-        Thu, 17 Aug 2023 17:05:58 -0700 (PDT)
-Received: from smtpclient.apple ([195.252.220.161])
-        by smtp.gmail.com with ESMTPSA id fn11-20020a056638640b00b0042b482a8763sm167066jab.70.2023.08.17.17.05.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Aug 2023 17:05:58 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH] tracefs: avoid setting i_mode to a temp value
-From:   Sishuai Gong <sishuai.system@gmail.com>
-In-Reply-To: <20230817200044.373f9655@gandalf.local.home>
-Date:   Thu, 17 Aug 2023 20:05:47 -0400
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2E3B862D-9B74-44FF-B4F9-C0D7D0030EB9@gmail.com>
-References: <10CFECF7-B9FC-4562-A445-4811F4C27655@gmail.com>
- <20230816155245.6ead4384@gandalf.local.home>
- <A9B746AC-DF36-4ED3-BBA3-2EEC1BA166C8@gmail.com>
- <20230817200044.373f9655@gandalf.local.home>
-To:     Steven Rostedt <rostedt@goodmis.org>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 17 Aug 2023 20:07:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D693A91
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692317202; x=1723853202;
+  h=date:from:to:cc:subject:message-id;
+  bh=YqFoW2FZp+M/yeHhdsO9LRO4aAH7i/t1UuscFT5dNI4=;
+  b=lwU4lGhAhOGBWiSn4UXar+uqkg2Cl9tm9+HNnayGUBwIZ1rfoLGjf+KF
+   8K6TyuVgKa1AXKWXWmO41aKIh2X6J8YvWFS9Ch42M5eJQ8588ZP6DuRh8
+   D6JV8MucJABds4vqblGtbzZTojOmdjmGQpmhG/d/7eiVasaJvcbuV3erj
+   2iMB5WsIW5Frp+Dsk3DjW2eCgI5LgiKu+tDECjNRAAOQoknGdLef1enj1
+   jzhbh/4F4mVSP40UygWdzJoCfNgdJQm0/1SzGBqY1/uNrskRKFmPq9Q09
+   epmDfxBoMYvo2OwNX7LYc2gb+CRuFWV/7oJJAvQyVax09/7uHMt4KkpON
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="403948371"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="403948371"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 17:06:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="737911246"
+X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
+   d="scan'208";a="737911246"
+Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 17 Aug 2023 17:06:40 -0700
+Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qWn0i-0001YR-0O;
+        Fri, 18 Aug 2023 00:06:40 +0000
+Date:   Fri, 18 Aug 2023 08:06:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 54097309620ef0dc2d7083783dc521c6a5fef957
+Message-ID: <202308180823.iyH88APT-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 54097309620ef0dc2d7083783dc521c6a5fef957  x86/static_call: Fix __static_call_fixup()
 
+elapsed time: 722m
 
-> On Aug 17, 2023, at 8:00 PM, Steven Rostedt <rostedt@goodmis.org> =
-wrote:
->=20
-> On Thu, 17 Aug 2023 19:47:34 -0400
-> Sishuai Gong <sishuai.system@gmail.com> wrote:
->=20
->>> Can you produce this race? =20
->> This data race was detected when I was testing the kernel (e.g., =
-fuzzing)
->> but I did not make the attempt to reproduce it.
->=20
-> Now, I'm curious to what exactly is this fixing? The intermediate =
-value is
-> the S_IALLUGO bits cleared. Doesn't that mean that nothing has =
-permission?
->=20
-> It's not a big deal if that's the case, as it just means things are =
-locked
-> down a bit more than normal.
-You are right. Even if the intermediate value is read, it is unlikely to =
-cause anything
-serious. The reader I observed is acl_permission_check(), which will not =
-be affected
-by the race.
+configs tested: 41
+configs skipped: 97
 
->=20
-> My question is, do we really care, and why should we?
-This shouldn=E2=80=99t be a serious problem. Maybe we could consider =
-this patch as an
-annotation to the race.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->=20
-> -- Steve
->=20
+tested configs:
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230817   clang
+i386         buildonly-randconfig-r005-20230817   clang
+i386         buildonly-randconfig-r006-20230817   clang
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230817   clang
+i386                 randconfig-i002-20230817   clang
+i386                 randconfig-i003-20230817   clang
+i386                 randconfig-i004-20230817   clang
+i386                 randconfig-i005-20230817   clang
+i386                 randconfig-i006-20230817   clang
+i386                 randconfig-i011-20230817   gcc  
+i386                 randconfig-i012-20230817   gcc  
+i386                 randconfig-i013-20230817   gcc  
+i386                 randconfig-i014-20230817   gcc  
+i386                 randconfig-i015-20230817   gcc  
+i386                 randconfig-i016-20230817   gcc  
+i386                 randconfig-r002-20230817   clang
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230817   clang
+x86_64       buildonly-randconfig-r002-20230817   clang
+x86_64       buildonly-randconfig-r003-20230817   clang
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r003-20230817   clang
+x86_64               randconfig-r023-20230817   gcc  
+x86_64               randconfig-x001-20230817   gcc  
+x86_64               randconfig-x002-20230817   gcc  
+x86_64               randconfig-x003-20230817   gcc  
+x86_64               randconfig-x004-20230817   gcc  
+x86_64               randconfig-x005-20230817   gcc  
+x86_64               randconfig-x006-20230817   gcc  
+x86_64               randconfig-x011-20230817   clang
+x86_64               randconfig-x012-20230817   clang
+x86_64               randconfig-x013-20230817   clang
+x86_64               randconfig-x014-20230817   clang
+x86_64               randconfig-x015-20230817   clang
+x86_64               randconfig-x016-20230817   clang
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
