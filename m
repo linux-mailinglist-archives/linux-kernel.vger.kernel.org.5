@@ -2,528 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E9F780602
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0A5780606
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358091AbjHRGy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 02:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S1358101AbjHRGzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 02:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358086AbjHRGyJ (ORCPT
+        with ESMTP id S1358125AbjHRGzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 02:54:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168D926BB;
-        Thu, 17 Aug 2023 23:54:06 -0700 (PDT)
-Received: from [IPV6:2a02:2f08:e800:b00:5212:24d1:45f7:b78e] (unknown [IPv6:2a02:2f08:e800:b00:5212:24d1:45f7:b78e])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: mvlad)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 02E8A6607185;
-        Fri, 18 Aug 2023 07:54:03 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692341645;
-        bh=y1W6g43THvHRr3OobY4s/mDdYVcj5y1uV3cxkV23ggg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=VwkvQuPf1l9TrVCoxW2y9zK+nwIWpuKlOiNw76TzwevVwdcMa0cXbac4QSoCdc828
-         MnFvXkgi8uQ/Ai7S1JN5QfuE3CzmeHer5aC0kclWTV+xnM5UsewLGlJisK6K/tn+rg
-         Z0qPiPiRlIMOTC4VHYzNjujvsOZVF3rNaa0CQy8DiAKOziX3ELSwFT86rOZyCcfr+i
-         4bReFGohIWvMAAQBGyjlA1nTJZJKLZqKVZocgURq0lSRsvIAmer45irdsacwUzMUxg
-         +uAqA2lKI7RgY8JyVr7NFJ8B2b8Xp9LPFuBa/yC+ubph0YcbGayUbbLE4lND2KHvZu
-         AzYm6/HOV5Irw==
-Message-ID: <664583b8-96c1-cc1f-9747-863b4e46682c@collabora.com>
-Date:   Fri, 18 Aug 2023 09:54:00 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v2 5/6] drm/vkms: Support enabling ConfigFS devices
-To:     Brandon Ross Pollack <brpol@chromium.org>,
-        Jim Shargo <jshargo@chromium.org>
-Cc:     Haneen Mohammed <hamohammed.sa@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Melissa Wen <melissa.srw@gmail.com>, mairacanal@riseup.net,
-        dri-devel@lists.freedesktop.org
-References: <20230623222353.97283-1-jshargo@chromium.org>
- <20230623222353.97283-6-jshargo@chromium.org> <ZNuFU3VbiKhZTIWk@xpredator>
- <0dadd751-1546-170f-3693-7087ba6ab262@chromium.org>
+        Fri, 18 Aug 2023 02:55:12 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3825B3C16;
+        Thu, 17 Aug 2023 23:55:10 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37I6nIwT030504;
+        Thu, 17 Aug 2023 23:54:58 -0700
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3shy4d0qgd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 23:54:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CC6hMBA6NPn5BmEuyQ+oSl6b7d9YU4PJ5rLsmkawVU+w6YttrA/1xNtv7xFBtRZzDMLIBCJ2p0iguUEJN2gq6kWYsurFAnNrOPhGInQeid2o5H370NT/+9s9gVeZ3Tbsf7rfjQnMS39ZbCOzBRMx2EpaWmIqWym2YXZzAZOh1zRM0539nS6BQW4ScNgYRvKyWwGUzkBYkW1+tJSkOWPvHRXwgPBujgycKrdrcqW+OQTtiAtVJC7GGHMNEG1OwW/mDctQb8IOXEpZStLDRUYe2fkci+MDOdK97zenNCg+Twlhw4saImDh7QCzJPLcsKQha8tGTLna0I+rdwfdnXlCxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cQkLSzmcazbEXRIp6Khu3gbT3hiJqMyTY4MFJC2NcL8=;
+ b=LU3nPXEAgiBLrFS8i6Mpw23HKsD/C8KynGxzTJy8wJDQgSyb3aLKZhB1QPrpgNlFPmDmIuxgB3bbCP46gksMFfJASqvTGBqcOKhSm0oVVg7apwpsWJLKWCGlcP3fwEou20iNgxv5/5CIWebq1cWI9HJznTeNY7/6lGuLVsrb4hCweq1ANUdzMxTuEZK71hL235k0NijxI5rMRFQ/BUVWG8bYd3BAkGQs3CgD4aDl7osCgSmv01piJL25piCM8H+c21NHEs+24LfXuP1Qb/aTJTPziPB+vLB4JhduTjNpfjMqn4seiY7xG1ZW6vkmGAJNc3s0p0Ab84O/sneMnBR/bg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cQkLSzmcazbEXRIp6Khu3gbT3hiJqMyTY4MFJC2NcL8=;
+ b=tv+KOtp634xnnMx/IJfGMU7MU+4G4BvK8jA3P3bNi9gxWgsk0N+knzJolUEWwiTjqz43JT8HQZ9EWtwtzA9mgNzarK0jQbJ8Q+I7fS4J6URf9ofbsbkQaPe9rT+WLHD4T0En184Jto57JRH93zlNsPlFJ9q1wBVpfngjWP3RIFg=
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
+ by LV8PR18MB5584.namprd18.prod.outlook.com (2603:10b6:408:18e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 06:54:54 +0000
+Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::8d00:13b4:289:daff]) by SJ0PR18MB5216.namprd18.prod.outlook.com
+ ([fe80::8d00:13b4:289:daff%5]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 06:54:53 +0000
+From:   Suman Ghosh <sumang@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linu Cherian <lcherian@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>
+Subject: RE: [EXT] Re: [net PATCH V2 1/4] octeontx2-pf: Update PFC
+ configuration
+Thread-Topic: [EXT] Re: [net PATCH V2 1/4] octeontx2-pf: Update PFC
+ configuration
+Thread-Index: AQHZyo/3NE7iY9C6GUGnM2/TbmTYJa/ilsyAgA0RXnA=
+Date:   Fri, 18 Aug 2023 06:54:52 +0000
+Message-ID: <SJ0PR18MB5216486E191AD5D8B6B12F3CDB1BA@SJ0PR18MB5216.namprd18.prod.outlook.com>
+References: <20230809070532.3252464-1-sumang@marvell.com>
+        <20230809070532.3252464-2-sumang@marvell.com>
+ <20230809160517.7ff84c3b@kernel.org>
+In-Reply-To: <20230809160517.7ff84c3b@kernel.org>
+Accept-Language: en-IN, en-US
 Content-Language: en-US
-From:   Marius Vlad <marius.vlad@collabora.com>
-In-Reply-To: <0dadd751-1546-170f-3693-7087ba6ab262@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcc3VtYW5nXGFw?=
+ =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
+ =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctMWViNjA5YzYtM2Q5NC0xMWVlLWI2ZTktODQxNDRk?=
+ =?us-ascii?Q?ZWVhNTRjXGFtZS10ZXN0XDFlYjYwOWM3LTNkOTQtMTFlZS1iNmU5LTg0MTQ0?=
+ =?us-ascii?Q?ZGVlYTU0Y2JvZHkudHh0IiBzej0iODg5IiB0PSIxMzMzNjgxNTI4ODc0MDYw?=
+ =?us-ascii?Q?NjgiIGg9ImZseTloUmtxbS9qSkFldUQva0pDRUp0d3ljTT0iIGlkPSIiIGJs?=
+ =?us-ascii?Q?PSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk5DZ1VBQU40UEFBRDBM?=
+ =?us-ascii?Q?VFRob05IWkFmcnJZaVhVVkphZCt1dGlKZFJVbHAwWkFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFIQUFBQUJ1RHdBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFF?=
+ =?us-ascii?Q?QUFRRUJBQUFBOVJlbkx3Q0FBUUFBQUFBQUFBQUFBSjRBQUFCaEFHUUFaQUJ5?=
+ =?us-ascii?Q?QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVB?=
+ =?us-ascii?Q?QUFBQUFBQUFBZ0FBQUFBQW5nQUFBR01BZFFCekFIUUFid0J0QUY4QWNBQmxB?=
+ =?us-ascii?Q?SElBY3dCdkFHNEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFB?=
+ =?us-ascii?Q?QUNlQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdCMUFH?=
+ =?us-ascii?Q?MEFZZ0JsQUhJQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhVQWN3?=
+ =?us-ascii?Q?QjBBRzhBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5QUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-refone: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHTUFk?=
+ =?us-ascii?Q?UUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNBRzhBY2dCa0FI?=
+ =?us-ascii?Q?TUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdCMUFITUFkQUJ2QUcwQVh3?=
+ =?us-ascii?Q?QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRzBBYVFCMEFHVUFjZ0JmQUhZ?=
+ =?us-ascii?Q?QU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFB?=
+ =?us-ascii?Q?SUFBQUFBQUo0QUFBQmpBSFVBY3dCMEFHOEFiUUJmQUhNQWN3QnVBRjhBY3dC?=
+ =?us-ascii?Q?d0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdR?=
+ =?us-ascii?Q?QWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFaUUJ6?=
+ =?us-ascii?Q?QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpBR3dB?=
+ =?us-ascii?Q?WVFCakFHc0FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpRQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reftwo: =?us-ascii?Q?QUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQUJmQUhR?=
+ =?us-ascii?Q?QVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFHWUFhUUJz?=
+ =?us-ascii?Q?QUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFB?=
+ =?us-ascii?Q?QUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJmQUdFQVpBQmtBSElB?=
+ =?us-ascii?Q?WlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNl?=
+ =?us-ascii?Q?QUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFi?=
+ =?us-ascii?Q?Z0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFaZ0JwQUdRQVpRQnVBSFFBYVFCaEFH?=
+ =?us-ascii?Q?d0FYd0JoQUd3QWJ3QnVBR1VBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJB?=
+ =?us-ascii?Q?R1VBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3?=
+ =?us-ascii?Q?QnlBR1VBY3dCMEFISUFhUUJqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0JsQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FCeUFH?=
+ =?us-ascii?Q?OEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFBY2dC?=
+ =?us-ascii?Q?cEFHTUFkQUJsQUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFB?=
+ =?us-ascii?Q?Q2VBQUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-rorf: true
+x-dg-refthree: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFB?=
+ =?us-ascii?Q?QUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZBRzhBWndCc0FH?=
+ =?us-ascii?Q?VUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUcwQVlR?=
+ =?us-ascii?Q?QnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFZd0J2QUdR?=
+ =?us-ascii?Q?QVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBUUFBQUFBQUFBQUNBQUFBQUFDZUFBQUFiUUJoQUhJQWRnQmxBR3dBYkFC?=
+ =?us-ascii?Q?ZkFIQUFjZ0J2QUdvQVpRQmpBSFFBWHdCakFHOEFaQUJsQUhNQVh3QmtBR2tB?=
+ =?us-ascii?Q?WXdCMEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJ?=
+ =?us-ascii?Q?QUFBQUFBSjRBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0Js?=
+ =?us-ascii?Q?QUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FHVUFi?=
+ =?us-ascii?Q?Z0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBB?=
+ =?us-ascii?Q?WVFCeUFIWUFaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhB?=
+ =?us-ascii?Q?RzBBWlFCekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3?=
+ =?us-ascii?Q?QnRBR0VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+x-dg-reffour: =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFB?=
+ =?us-ascii?Q?QWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFIUUFYd0J1?=
+ =?us-ascii?Q?QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZEFCcEFHRUFi?=
+ =?us-ascii?Q?QUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5BRzhBYndCbkFH?=
+ =?us-ascii?Q?d0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VB?=
+ =?us-ascii?Q?YkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZB?=
+ =?us-ascii?Q?SElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdVQWJB?=
+ =?us-ascii?Q?QnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCd0FISUFi?=
+ =?us-ascii?Q?d0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFaUUJ6QUY4QWNnQmxBSE1BZEFCeUFH?=
+ =?us-ascii?Q?a0FZd0IwQUdVQVpBQmZBRzBBWVFCeUFIWUFaUUJzQUd3QVh3QnZBSElBWHdC?=
+ =?us-ascii?Q?aEFISUFiUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VB?=
+ =?us-ascii?Q?QUFBYlFCaEFISUFkZ0JsQUd3QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhVQWN3?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFH?=
+ =?us-ascii?Q?VUFiQUJzQUY4QWR3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
+ =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFB?=
+ =?us-ascii?Q?QUFBQUFBQWdBQUFBQUEiLz48L21ldGE+?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|LV8PR18MB5584:EE_
+x-ms-office365-filtering-correlation-id: ceec5e6d-6083-4cf2-419f-08db9fb80629
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dsgvE8EQU9cGJ+ZgKiBEP25+9sbKC04n9JTie9QINP0vygxQRIlLo8/y73kTMbfQQQZtG72nC0t7kjZOTCJnHNVraGuS3rXuJz3zeL/bYmx7Rvf79urpbu5KgAadly+1diuaMN9+ct9HC5SCU32YT/b5xey0dQiIyOjWrviAWrutEDRapd7gq8fXL4h4ZzYGg1ebpoPwbnE9js3U4mFEztKp7SM20FHIz0vCgFprjimDL1jfl/oQrU2e6FtN0B2uKUcQNc+3L/GMGDK7ymGDs57Pq6R/e2lvTyCJPoSJiGfSy9Dh/WiiiRUCCJhBurgXd5bE0eNf+COMYH4nRAN522YJl/Bsj1Hu/2GRW+rNaDKz6MeawTzswbQ1tLJe41OAmSwKkMfJvGxz/jx9W6RAQSrT1su/URd5BlaxAstkluN7HjgMxCmqRoFghC1bKWU/ofERf7wEpr5eau8yEbIqCpOZi8sr+jOMr/p+urUqQOwmxNzA0zmyV/drCQlF5tbNqMOcu6pFvoCXZ+q9M5ZMYYQMMzPATX8scL/Wn2XN/7wEIGXwsPdVsxvVLGipRd0YGfLlbbfw/tjb0t2agKfLLrmDtOGDOJ//af5xPhB64M+Tcb/8AT+HQsf6aG+FIblK
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(366004)(376002)(396003)(186009)(1800799009)(451199024)(71200400001)(6506007)(7696005)(38070700005)(38100700002)(9686003)(122000001)(86362001)(107886003)(55016003)(26005)(83380400001)(33656002)(2906002)(54906003)(64756008)(66946007)(66476007)(66446008)(66556008)(316002)(6916009)(15650500001)(4744005)(41300700001)(76116006)(5660300002)(52536014)(8676002)(4326008)(8936002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QEVzCPK92RgX+TtwJrQvfsW0CqMfoxkVzIkoJLHlCyAo/vEslWQTeTA9AzdH?=
+ =?us-ascii?Q?4LZMOFCiK5LmiZQj/9nvvf+O1uV2vybjk/RH7VfPOSg5GMxTq6mnquW0dBC2?=
+ =?us-ascii?Q?EpQw3nrum8si5YLEtlKx/iamsP4A7051qrmCVSYApLTUsOi+aNABbyv4AW9s?=
+ =?us-ascii?Q?Gd7CxQXKOtiiriV5/DqZMyvtCXrZyexJrNeSzvu/4W625WnirKpQLhsSM8BL?=
+ =?us-ascii?Q?1WyZ/6EQdOI+OVdlMI8OpSYkF5Fqej38rRqCbEk2dE6qjGJGF+08KZmpkWBY?=
+ =?us-ascii?Q?VWX+tWPfkay6qVlwT7zaQEo+zUk95gj1J0AJHi530zarNORV8Q7x3V+AXNG0?=
+ =?us-ascii?Q?irZ1pd9xzMJPMEoA5fXZGfzFkSNPMW/SWYtsoTFNK+NnKixYK3yoO5BemfbR?=
+ =?us-ascii?Q?Q073DLZJ/gjEuuG15KQmR3JkBiJBkYfy7kewMGLQ5s4dV31J+jg0NPd13a9W?=
+ =?us-ascii?Q?qr6SMnkvS4tFVe6+xwrpORjWotfKR7lqnC2S2Sgs3gV4x0uLKK3LqeweBGfY?=
+ =?us-ascii?Q?Rc6a5oiswEywPuiSNm3P/OfVDpaGOKscg8lGwrQu+Xvt9NULtMoubulrWrum?=
+ =?us-ascii?Q?2zZIivHuNQ1JPQoF1Wj71sQTeI28aQpQ3ecKaYO/gHZN6PeN63kj7lWCyg99?=
+ =?us-ascii?Q?iaKzjdlbKezwiu85t3RyM5HSpFzQT6HGWrLx67dAa8ZJxJ7RQ1PClt0WhR/b?=
+ =?us-ascii?Q?7mCYyyuV0oDDDumZINYHYwWJJY0cO7WQROSJnXGiMmcvAJ/I67Cp86j0UxXt?=
+ =?us-ascii?Q?SfVpr1mwxDTAiajGr2IupcRTGr8r++s2F1xvB5pc5GRLtFXRaPN/E5qxUN7p?=
+ =?us-ascii?Q?8eRN2I7UnIgtCP9TBYBmUACwWz3lH03m+6mLU9BN/SZwVt+CSEXsQTwx9lVI?=
+ =?us-ascii?Q?umXGDIVFGX3b3NcZbkaqerV28DOMQxpBdS9WVsIfNPD7Kq6kiTJgFOPdCMDw?=
+ =?us-ascii?Q?uGhV887jqUP15skw/JJ3IMEc9Jm/7t9AoBBQpeYegoeuCm5dHkgs04Rl4vj+?=
+ =?us-ascii?Q?6OZZ4sJDG04gcEn8hFdLFNDjq7vCH/RqL94ZaeLiq8jG2kI9D05hFDDwegMH?=
+ =?us-ascii?Q?LlDwaH2kaPBAG6VWT4uMXSBRhQ3uP+VQ/fvv0uBioNlo1PC3PycHvBFHiNzm?=
+ =?us-ascii?Q?aaH1Lhc5SdNpkI7uzDk81fqXoDn3XVDD8RpUZY/fReVSYORwHreNpPfgquQa?=
+ =?us-ascii?Q?uFJI6SgHpD/EWxGAU19XVT8rAgUaQHj3EPN14WW3TywJ5K8mw0GLeAIPR8cl?=
+ =?us-ascii?Q?//ulNXrByDV5d8oGl2GMochBMSbmBKTt8hqfoRbSwXd8JBcdScHA2ZRGDN65?=
+ =?us-ascii?Q?LnxDs1A8ZwFjhbZYRHniKAlc31036bLdx0oNtsIuyrP8Ihci/mmiTbAQDX3u?=
+ =?us-ascii?Q?hWgL43R/pFKGpBXbewYQz3onyf9IBfnyuR8fs/2WOTm7Rih4HzefjCqJKCvQ?=
+ =?us-ascii?Q?Sw+pLbwaRRaNGDQQ3r7sIBIoh7YBnCW1cgrO2wPa8j2OgB1N/LjPiAR4Vwij?=
+ =?us-ascii?Q?lkFHhw89wighpxg58mTV9zIruA/xXAabZB/P0EJAB/UbwfLj82qWxnIbGogx?=
+ =?us-ascii?Q?jsevzrx099HHfHDbTek=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ceec5e6d-6083-4cf2-419f-08db9fb80629
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Aug 2023 06:54:52.9158
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HE33k5lp8nHxxEdc87oVYUBJhNvKNd4PzuLqNq9yZ6SxChQr0uGZr7iIJ0IxZMsoCkdbJlFZmCZRACs1+J1TaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR18MB5584
+X-Proofpoint-ORIG-GUID: oDy1DvI2XZRTftx_fOJ77QgGZWdfr2UA
+X-Proofpoint-GUID: oDy1DvI2XZRTftx_fOJ77QgGZWdfr2UA
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-18_07,2023-08-17_02,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-Seem my comments below.
-
-On 8/18/23 08:24, Brandon Ross Pollack wrote:
-> 
-> On 8/15/23 23:01, Marius Vlad wrote:
->> Hi,
->>
->> See below some minor comments:
->>
->> On Fri, Jun 23, 2023 at 06:23:47PM -0400, Jim Shargo wrote:
->>> VKMS now supports creating and using virtual devices!
->>>
->>> In addition to the enabling logic, this commit also prevents users from
->>> adding new objects once a card is registered.
->>>
->>> Signed-off-by: Jim Shargo <jshargo@chromium.org>
->>> ---
->>>   drivers/gpu/drm/vkms/vkms_configfs.c |  37 +++--
->>>   drivers/gpu/drm/vkms/vkms_crtc.c     |   4 +-
->>>   drivers/gpu/drm/vkms/vkms_drv.c      |   3 +-
->>>   drivers/gpu/drm/vkms/vkms_drv.h      |   2 +-
->>>   drivers/gpu/drm/vkms/vkms_output.c   | 201 +++++++++++++++++++++++----
->>>   5 files changed, 202 insertions(+), 45 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/vkms/vkms_configfs.c 
->>> b/drivers/gpu/drm/vkms/vkms_configfs.c
->>> index 544024735d19..f5eed6d23dcd 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_configfs.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_configfs.c
->>> @@ -504,29 +504,40 @@ static ssize_t device_enabled_store(struct 
->>> config_item *item, const char *buf,
->>>   {
->>>       struct vkms_configfs *configfs = item_to_configfs(item);
->>>       struct vkms_device *device;
->>> -    int value, ret;
->>> +    int enabled, ret;
->>> -    ret = kstrtoint(buf, 0, &value);
->>> +    ret = kstrtoint(buf, 0, &enabled);
->>>       if (ret)
->>>           return ret;
->>> -    if (value != 1)
->>> -        return -EINVAL;
->>> -
->>> -    mutex_lock(&configfs->lock);
->>> -
->>> -    if (configfs->vkms_device) {
->>> +    if (enabled == 0) {
->>> +        mutex_lock(&configfs->lock);
->>> +        if (configfs->vkms_device) {
->>> +            vkms_remove_device(configfs->vkms_device);
->>> +            configfs->vkms_device = NULL;
->>> +        }
->>>           mutex_unlock(&configfs->lock);
->>> +
->>>           return len;
->>>       }
->>> -    device = vkms_add_device(configfs);
->>> -    mutex_unlock(&configfs->lock);
->>> +    if (enabled == 1) {
->>> +        mutex_lock(&configfs->lock);
->>> +        if (!configfs->vkms_device) {
->>> +            device = vkms_add_device(configfs);
->>> +            if (IS_ERR(device)) {
->>> +                mutex_unlock(&configfs->lock);
->>> +                return -PTR_ERR(device);
->>> +            }
->>> +
->>> +            configfs->vkms_device = device;
->>> +        }
->>> +        mutex_unlock(&configfs->lock);
->>> -    if (IS_ERR(device))
->>> -        return -PTR_ERR(device);
->>> +        return len;
->>> +    }
->>> -    return len;
->>> +    return -EINVAL;
->>>   }
->>>   CONFIGFS_ATTR(device_, enabled);
->>> diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c 
->>> b/drivers/gpu/drm/vkms/vkms_crtc.c
->>> index d91e49c53adc..5ebb5264f6ef 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_crtc.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
->>> @@ -278,7 +278,7 @@ static const struct drm_crtc_helper_funcs 
->>> vkms_crtc_helper_funcs = {
->>>   struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
->>>                    struct drm_plane *primary,
->>> -                 struct drm_plane *cursor)
->>> +                 struct drm_plane *cursor, const char *name)
->>>   {
->>>       struct drm_device *dev = &vkmsdev->drm;
->>>       struct vkms_crtc *vkms_crtc;
->>> @@ -290,7 +290,7 @@ struct vkms_crtc *vkms_crtc_init(struct 
->>> vkms_device *vkmsdev,
->>>       vkms_crtc = &vkmsdev->output.crtcs[vkmsdev->output.num_crtcs++];
->>>       ret = drmm_crtc_init_with_planes(dev, &vkms_crtc->base, 
->>> primary, cursor,
->>> -                     &vkms_crtc_funcs, NULL);
->>> +                     &vkms_crtc_funcs, name);
->>>       if (ret) {
->>>           DRM_ERROR("Failed to init CRTC\n");
->>>           goto out_error;
->>> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c 
->>> b/drivers/gpu/drm/vkms/vkms_drv.c
->>> index 1b5b7143792f..314a04659c5f 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_drv.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
->>> @@ -210,7 +210,7 @@ static int vkms_platform_probe(struct 
->>> platform_device *pdev)
->>>       ret = drm_dev_register(&vkms_device->drm, 0);
->>>       if (ret) {
->>>           DRM_ERROR("Unable to register device with id %d\n", pdev->id);
->>> -        return ret;
->>> +        goto out_release_group;
->>>       }
->>>       drm_fbdev_generic_setup(&vkms_device->drm, 0);
->>> @@ -256,6 +256,7 @@ struct vkms_device *vkms_add_device(struct 
->>> vkms_configfs *configfs)
->>>               dev, &vkms_platform_driver.driver))) {
->>>           pdev = to_platform_device(dev);
->>>           max_id = max(max_id, pdev->id);
->>> +        put_device(dev);
->>>       }
->>>       pdev = platform_device_register_data(NULL, DRIVER_NAME, max_id 
->>> + 1,
->>> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h 
->>> b/drivers/gpu/drm/vkms/vkms_drv.h
->>> index 3634eeeb4548..3d592d085f49 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_drv.h
->>> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
->>> @@ -239,7 +239,7 @@ void vkms_remove_device(struct vkms_device 
->>> *vkms_device);
->>>   /* CRTC */
->>>   struct vkms_crtc *vkms_crtc_init(struct vkms_device *vkmsdev,
->>>                    struct drm_plane *primary,
->>> -                 struct drm_plane *cursor);
->>> +                 struct drm_plane *cursor, const char *name);
->>>   int vkms_output_init(struct vkms_device *vkmsdev);
->>>   int vkms_output_init_default(struct vkms_device *vkmsdev);
->>> diff --git a/drivers/gpu/drm/vkms/vkms_output.c 
->>> b/drivers/gpu/drm/vkms/vkms_output.c
->>> index c9e6c653de19..806ff01954ad 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_output.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_output.c
->>> @@ -2,8 +2,10 @@
->>>   #include <drm/drm_atomic_helper.h>
->>>   #include <drm/drm_connector.h>
->>> +#include <drm/drm_crtc.h>
->>>   #include <drm/drm_edid.h>
->>>   #include <drm/drm_encoder.h>
->>> +#include <drm/drm_plane.h>
->>>   #include <drm/drm_probe_helper.h>
->>>   #include <drm/drm_simple_kms_helper.h>
->>> @@ -82,7 +84,6 @@ static struct drm_encoder *vkms_encoder_init(struct 
->>> vkms_device *vkms_device)
->>>   int vkms_output_init_default(struct vkms_device *vkmsdev)
->>>   {
->>> -    struct vkms_output *output = &vkmsdev->output;
->>>       struct drm_device *dev = &vkmsdev->drm;
->>>       struct drm_connector *connector;
->>>       struct drm_encoder *encoder;
->>> @@ -101,8 +102,7 @@ int vkms_output_init_default(struct vkms_device 
->>> *vkmsdev)
->>>               struct vkms_plane *overlay = vkms_plane_init(
->>>                   vkmsdev, DRM_PLANE_TYPE_OVERLAY);
->>>               if (IS_ERR(overlay)) {
->>> -                ret = PTR_ERR(overlay);
->>> -                goto err_planes;
->>> +                return PTR_ERR(overlay);
->>>               }
->>>           }
->>>       }
->>> @@ -110,17 +110,16 @@ int vkms_output_init_default(struct vkms_device 
->>> *vkmsdev)
->>>       if (vkmsdev->config.cursor) {
->>>           cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR);
->>>           if (IS_ERR(cursor)) {
->>> -            ret = PTR_ERR(cursor);
->>> -            goto err_planes;
->>> +            return PTR_ERR(cursor);
->>>           }
->>>       }
->>>       vkms_crtc = vkms_crtc_init(vkmsdev, &primary->base,
->>> -                   cursor ? &cursor->base : NULL);
->>> +                   cursor ? &cursor->base : NULL,
->>> +                   "crtc-default");
->>>       if (IS_ERR(vkms_crtc)) {
->>>           DRM_ERROR("Failed to init crtc\n");
->>> -        ret = PTR_ERR(vkms_crtc);
->>> -        goto err_planes;
->>> +        return PTR_ERR(vkms_crtc);
->>>       }
->>>       for (int i = 0; i < vkmsdev->output.num_planes; i++) {
->>> @@ -131,22 +130,20 @@ int vkms_output_init_default(struct vkms_device 
->>> *vkmsdev)
->>>       connector = vkms_connector_init(vkmsdev);
->>>       if (IS_ERR(connector)) {
->>>           DRM_ERROR("Failed to init connector\n");
->>> -        ret = PTR_ERR(connector);
->>> -        goto err_connector;
->>> +        return PTR_ERR(connector);
->>>       }
->>>       encoder = vkms_encoder_init(vkmsdev);
->>>       if (IS_ERR(encoder)) {
->>>           DRM_ERROR("Failed to init encoder\n");
->>> -        ret = PTR_ERR(encoder);
->>> -        goto err_encoder;
->>> +        return PTR_ERR(encoder);
->>>       }
->>>       encoder->possible_crtcs |= drm_crtc_mask(&vkms_crtc->base);
->>>       ret = drm_connector_attach_encoder(connector, encoder);
->>>       if (ret) {
->>>           DRM_ERROR("Failed to attach connector to encoder\n");
->>> -        goto err_attach;
->>> +        return ret;
->>>       }
->>>       if (vkmsdev->config.writeback) {
->>> @@ -158,27 +155,175 @@ int vkms_output_init_default(struct 
->>> vkms_device *vkmsdev)
->>>       drm_mode_config_reset(dev);
->>>       return 0;
->>> +}
->>> -err_attach:
->>> -    drm_encoder_cleanup(encoder);
->>> +static bool is_object_linked(struct vkms_config_links *links, 
->>> unsigned long idx)
->>> +{
->>> +    return links->linked_object_bitmap & (1 << idx);
->>> +}
->>> -err_encoder:
->>> -    drm_connector_cleanup(connector);
->>> +int vkms_output_init(struct vkms_device *vkmsdev)
->>> +{
->>> +    struct drm_device *dev = &vkmsdev->drm;
->>> +    struct vkms_configfs *configfs = vkmsdev->configfs;
->>> +    struct vkms_output *output = &vkmsdev->output;
->>> +    struct plane_map {
->>> +        struct vkms_config_plane *config_plane;
->>> +        struct vkms_plane *plane;
->>> +    } plane_map[VKMS_MAX_PLANES] = { 0 };
->>> +    struct encoder_map {
->>> +        struct vkms_config_encoder *config_encoder;
->>> +        struct drm_encoder *encoder;
->>> +    } encoder_map[VKMS_MAX_OUTPUT_OBJECTS] = { 0 };
->>> +    struct config_item *item;
->>> +    int map_idx = 0;
->>> +
->>> +    list_for_each_entry(item, &configfs->planes_group.cg_children,
->>> +                ci_entry) {
->>> +        struct vkms_config_plane *config_plane =
->>> +            item_to_config_plane(item);
->>> +        struct vkms_plane *plane =
->>> +            vkms_plane_init(vkmsdev, config_plane->type);
->>> +
->>> +        if (IS_ERR(plane)) {
->>> +            DRM_ERROR("Unable to init plane from config: %s",
->>> +                  item->ci_name);
->>> +            return PTR_ERR(plane);
->>> +        }
->>> -err_connector:
->>> -    drm_crtc_cleanup(&vkms_crtc->base);
->>> +        plane_map[map_idx].config_plane = config_plane;
->>> +        plane_map[map_idx].plane = plane;
->>> +        map_idx += 1;
->>> +    }
->>> -err_planes:
->>> -    for (int i = 0; i < output->num_planes; i++) {
->>> -        drm_plane_cleanup(&output->planes[i].base);
->>> +    map_idx = 0;
->>> +    list_for_each_entry(item, &configfs->encoders_group.cg_children,
->>> +                ci_entry) {
->>> +        struct vkms_config_encoder *config_encoder =
->>> +            item_to_config_encoder(item);
->>> +        struct drm_encoder *encoder = vkms_encoder_init(vkmsdev);
->>> +
->>> +        if (IS_ERR(encoder)) {
->>> +            DRM_ERROR("Failed to init config encoder: %s",
->>> +                  item->ci_name);
->>> +            return PTR_ERR(encoder);
->>> +        }
->>> +        encoder_map[map_idx].config_encoder = config_encoder;
->> A two connector configuration without an encoder would have the
->> potential of blowing up if we don't create a second_encoder.
-> 
-> What a catch!!! I tested this and sure enough BOOM!
-> 
-> Switched to limiting based on output->num_encoders as it should be.
-> 
->>> +        encoder_map[map_idx].encoder = encoder;
->>> +        map_idx += 1;
->>>       }
->>> -    memset(output, 0, sizeof(*output));
->>> +    list_for_each_entry(item, &configfs->connectors_group.cg_children,
->>> +                ci_entry) {
->>> +        struct vkms_config_connector *config_connector =
->>> +            item_to_config_connector(item);
->>> +        struct drm_connector *connector = vkms_connector_init(vkmsdev);
->>> -    return ret;
->>> -}
->>> +        if (IS_ERR(connector)) {
->>> +            DRM_ERROR("Failed to init connector from config: %s",
->>> +                  item->ci_name);
->>> +            return PTR_ERR(connector);
->>> +        }
->>> -int vkms_output_init(struct vkms_device *vkmsdev)
->>> -{
->>> -    return -ENOTSUPP;
->>> +        for (int j = 0; j < output->num_connectors; j++) {
->>> +            struct encoder_map *encoder = &encoder_map[j];
->>> +
->>> +            if (is_object_linked(
->>> +                    &config_connector->possible_encoders,
->>> +                    encoder->config_encoder
->>> +                        ->encoder_config_idx)) {
->> Here encoder->config_encoder for two connectors but a single encoder
->> will give back a empty encoder.
->>> +                drm_connector_attach_encoder(connector,
->>> +                                 encoder->encoder);
->>> +            }
->>> +        }
->>> +    }
->>> +
->>> +    list_for_each_entry(item, &configfs->crtcs_group.cg_children,
->>> +                ci_entry) {
->>> +        struct vkms_config_crtc *config_crtc =
->>> +            item_to_config_crtc(item);
->>> +        struct vkms_crtc *vkms_crtc;
->>> +        struct drm_plane *primary = NULL, *cursor = NULL;
->>> +
->>> +        for (int j = 0; j < output->num_planes; j++) {
->>> +            struct plane_map *plane_entry = &plane_map[j];
->>> +            struct drm_plane *plane = &plane_entry->plane->base;
->>> +
->>> +            if (!is_object_linked(
->>> +                    &plane_entry->config_plane->possible_crtcs,
->>> +                    config_crtc->crtc_config_idx)) {
->>> +                continue;
->>> +            }
->>> +
->>> +            if (plane->type == DRM_PLANE_TYPE_PRIMARY) {
->>> +                if (primary) {
->>> +                    DRM_WARN(
->>> +                        "Too many primary planes found for crtc %s.",
->>> +                        item->ci_name);
->>> +                    return EINVAL;
->>> +                }
->>> +                primary = plane;
->>> +            } else if (plane->type == DRM_PLANE_TYPE_CURSOR) {
->>> +                if (cursor) {
->>> +                    DRM_WARN(
->>> +                        "Too many cursor planes found for crtc %s.",
->>> +                        item->ci_name);
->>> +                    return EINVAL;
->>> +                }
->>> +                cursor = plane;
->>> +            }
->>> +        }
->>> +
->>> +        if (!primary) {
->>> +            DRM_WARN("No primary plane configured for crtc %s",
->>> +                 item->ci_name);
->>> +            return EINVAL;
->>> +        }
->>> +
->>> +        vkms_crtc =
->>> +            vkms_crtc_init(vkmsdev, primary, cursor, item->ci_name);
->>> +        if (IS_ERR(vkms_crtc)) {
->>> +            DRM_WARN("Unable to init crtc from config: %s",
->>> +                 item->ci_name);
->>> +            return PTR_ERR(vkms_crtc);
->>> +        }
->>> +
->>> +        for (int j = 0; j < output->num_planes; j++) {
->>> +            struct plane_map *plane_entry = &plane_map[j];
->>> +
->>> +            if (!plane_entry->plane)
->>> +                break;
->>> +
->>> +            if (is_object_linked(
->>> +                    &plane_entry->config_plane->possible_crtcs,
->>> +                    config_crtc->crtc_config_idx)) {
->>> +                plane_entry->plane->base.possible_crtcs |=
->>> +                    drm_crtc_mask(&vkms_crtc->base);
->>> +            }
->>> +        }
->>> +
->>> +        for (int j = 0; j < output->num_encoders; j++) {
->>> +            struct encoder_map *encoder_entry = &encoder_map[j];
->>> +
->>> +            if (is_object_linked(&encoder_entry->config_encoder
->>> +                              ->possible_crtcs,
->>> +                         config_crtc->crtc_config_idx)) {
->>> +                encoder_entry->encoder->possible_crtcs |=
->>> +                    drm_crtc_mask(&vkms_crtc->base);
->>> +            }
->>> +        }
->>> +
->>> +        if (vkmsdev->config.writeback) {
->>> +            int ret = vkms_enable_writeback_connector(vkmsdev,
->>> +                                  vkms_crtc);
->>> +            if (ret)
->>> +                DRM_WARN(
->>> +                    "Failed to init writeback connector for config 
->>> crtc: %s. Error code %d",
->>> +                    item->ci_name, ret);
->>> +        }
->>> +    }
->> I think we might be needing here a test for missing symlinks - invalid
->> configurations, like unused crtcs, encoders, connectors. I
->> suppose anything that's not matched with is_object_linked(),
->> such we avoid invalid configuration found by drm_mode_config_validate()
->> and inform users about missing them.
->>
->> An example here would be to create a second encoder, connector, crtc and
->> not symlink them to their possible_encoders,possible_crtcs mask. An
->> i-g-t test for this very thing would be needed to stress different kind
->> of combinations.
-> 
-> I wonder about this.  Shouldn't a user be free to create dangling files 
-> to simulate some scenario?
-
-Problem is we end up with invalid pipelines which would be invalided by 
-`drm_mode_config_validate()`, further more leading to kernel 
-warns/errors. That seems to be case now. If the system is still usable 
---  while still having these missing bits, and possibly inform the user 
-about an invalid pipeline would be ideal.
-
-> 
-> I could see a further development to publish a warning in the log, but 
-> disallowing it seems overly restrictive.
-
-Sure, I think ideally this should be the case, if we can do that in the 
-first place, given that we operate on a transaction model, only when 
-enable it we go over all items that were created/added by the user. 
-Dangling or not, my impression is that these invalid bits need to be 
-dropped entirely when submitted back to the DRM helpers.
-
-If the user configures 3 pipelines, two correctly, and one not,  still 
-allow those two pipelines to work and inform that it might have an 
-invalid one, rather than invalidating the entire config, I think that's 
-the point.
-> 
-> Either way we could accomplish this pretty easily by adding a flag to 
-> each vkms object in the form of `bool is_linked` and set it when we 
-> detect it's linked.  Then at the end iterate through all planes, 
-> encoders, connectors, crtcs that can be linked and if they are not just 
-> publish a warning saying
-> 
-> kwarn: "crtc/plane/encoder $NAME is created but unlinked"
-Yeah, that would be really good.
-> 
-> IGT tests to test that that was done make sense to me.
-> 
->>> +
->>> +    drm_mode_config_reset(dev);
->>> +
->>> +    return 0;
->>>   }
->>> -- 
->>> 2.41.0.162.gfafddb0af9-goog
->>>
+>----------------------------------------------------------------------
+>On Wed, 9 Aug 2023 12:35:29 +0530 Suman Ghosh wrote:
+>> +		otx2_stop(dev);
+>> +		otx2_open(dev);
+>
+>If there is any error in open() this will silently take the interface
+>down. Can't you force a NAPI poll or some such, if the concern is a
+>missed IRQ?
+[Suman] I can check the return type of open() and report in case of error. =
+But even if we force NAPI poll we might not be able to control the watchdog=
+ reset. If we have a running traffic and interface is up, when we force NAP=
+I poll, then the new packets will have updated scheduler queue and we will =
+still loose the completion interrupts of the previous packets. Do you see a=
+ny issue if I handle the error situation during open() call?
+>--
+>pw-bot: cr
