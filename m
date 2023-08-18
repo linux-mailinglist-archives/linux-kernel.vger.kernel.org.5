@@ -2,122 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0DF78025C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 492BC78025F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356447AbjHRABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S1356433AbjHRACr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356496AbjHRABN (ORCPT
+        with ESMTP id S1356454AbjHRACU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:01:13 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FC13C2F;
-        Thu, 17 Aug 2023 17:01:00 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34bae82b2ffso1301285ab.1;
-        Thu, 17 Aug 2023 17:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692316842; x=1692921642;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ob2V2ZAUPHW3e5EnDvRG4L5HNwkLuIUU++tOEmo/pnY=;
-        b=qfNLK2cORHJbGfKhKLYJvJ5BuBMEKl0rtq1sM9J7FUn3jbZIscnpbKCuPJnR6FCK8N
-         4dhJfD+ZbIrYveMFrLmf+/RFGRa08H9ahn2O8TIz6Qdi0CaoBJVZp+BCsuEruuQMu0xw
-         QmGsTSTGAXcPkv8PpnfUAkLzmHEThovxWaXr5wA/Xm4XcNcwp6XhHT4VOfZOu9Qvx1ZX
-         tkc/FsyYMqsuhCACSFZW9gIjKmjdDS7C6nMYABZUA+wbxrqMMUDeEWZGgT2e6grOnwOB
-         /dlw2qELd1oP8J8tqroJRfSYrAau9qUjcIi6CJs5cdfMOXJWk2JM7Rx6sQzBHbMScDM1
-         XpHQ==
+        Thu, 17 Aug 2023 20:02:20 -0400
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B223C04
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:01:50 -0700 (PDT)
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D909D3F0E1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 00:00:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1692316855;
+        bh=MgI2PRVnPPIqpyWV48eHEkuJncT3yXRY6vb0xWqE9Dk=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=O+b80rv2KdriSj8g2jSfh7N8cIuT/2190TYrIQ75eKG9Y9PJcLvB9MTyimz3hWdVw
+         04zmmD4cmSz3xOed4MgfZp7yneUmBQ/P5QzOuBzoAv2dqDVocn4THsyph1l/EzoIq6
+         r+jv7lDT6dDaWo34RZX+EAkA0Rm6yEVLcxtMBMcWgZKOjcAsiW7q+0zV57IfbYpGcr
+         SH0+OruAm9CQoXKe6yoNyBxDVq+3XltapZuUy2o4nyodFNTzMDk/ATrynVEoPQK1hw
+         M6gOE80VJRgo9deq3nSMb2hHhBdfG4ufSXOnUpUnSAvK0eT2vXIUUMDge61g9M13pI
+         nBk7hAFQ9Qy7Q==
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26b1371594dso441093a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:00:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692316842; x=1692921642;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1692316854; x=1692921654;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ob2V2ZAUPHW3e5EnDvRG4L5HNwkLuIUU++tOEmo/pnY=;
-        b=GrAA8pvTsBP84LQ3nPfdE7eX/9nUBzM19s4eLtUaF32TGbBwwWJtMfzBHaiau7hqjf
-         RS95CQ7V8R4UG9XrP75AHPtOxBu5+IdV3Wk7FvuZCVPS7xT580YVfCgCCuVBAEA//T8T
-         8j9OXsjo8bk8Q4DaykqMiIW7YYvJkuKhB8WwObkz/dVBSo9rvkS5flReaUJt+FRNXdcU
-         WKSdVKuNV3See9m9UU6EfNCYErRaLOWAMx8dnJdcyWSxIL3M3zT/phzQZy+lVzSUzJcO
-         woxdvtB+fPS6cwvFZ+Lv8gaGKlSsyNSNGpXCXVTN8kvlhxtjYx6L8i4QJxIOZxGghtYH
-         Uc9g==
-X-Gm-Message-State: AOJu0YyQGHuIFy2ccorsNWueged7VJ4XL6VyNynOb+jR3wIPOjVWunwC
-        l7nvFR/BMtdDUNh33ek2IPTGl/bpW4Xi6g==
-X-Google-Smtp-Source: AGHT+IH1vCQkmqUZlt3Ig/EPWUsNrxZqGcu80BHC0b+Ab/TOyBl/Mxi4L7sKzKqks2Z4xpX18PJ0wg==
-X-Received: by 2002:a92:da04:0:b0:345:bfc7:d527 with SMTP id z4-20020a92da04000000b00345bfc7d527mr1156798ilm.7.1692316841815;
-        Thu, 17 Aug 2023 17:00:41 -0700 (PDT)
-Received: from smtpclient.apple ([195.252.220.161])
-        by smtp.gmail.com with ESMTPSA id h6-20020a02cd26000000b0042af069eeefsm164232jaq.50.2023.08.17.17.00.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 17 Aug 2023 17:00:41 -0700 (PDT)
-From:   Sishuai Gong <sishuai.system@gmail.com>
-Content-Type: text/plain;
-        charset=us-ascii
+        bh=MgI2PRVnPPIqpyWV48eHEkuJncT3yXRY6vb0xWqE9Dk=;
+        b=iOOc29VVjQ2OSpRt/ayI7kmM39+vbFwRLg3Ti0Js8iprmInbNjR2yoTPl66vB8KG8B
+         AiYQXgQJ6UePtafIBqKMga+IcYyzMA/+oJshHAc5jnMcJ2sQkdccMKuLMoK/4i3wWYVz
+         Qju3E9yNpNNRUZtDvBmWf5D2hZw3ffxfh/fV8RCP63yCse7NgFyG13O/e4wKRDbCRrMk
+         B7/jqn04ewuO6Lov+r8gxidycSMUj8ZmhF/AQ8WSOx3GtebFnLRxl50GzfTspT90D5bq
+         AHmHFDN6ABMr5eMMDe+t/APRF+nkG6iW6vmkZ3s3/+ViUmv1eJZSAe9Hd0Heh2L0ILjU
+         rXGQ==
+X-Gm-Message-State: AOJu0YyiMIwMywpjWPLhhrjFowiUGZeTKLuOBye4asKjF+lTWeEUVf50
+        CEPXcH3bTC8hIoxPAjpQnQ/Xj89gR438FhCaNrgom6u22StHE8XGcbEEc9iN5LF9ges9zbX/wwd
+        SvvnqHX7jZUab9AX68+QEUHnkZHBRwd2GbmUc7yRwoHUXr6Wnc3PLeLH7Og==
+X-Received: by 2002:a17:90b:4ac5:b0:26d:355a:47e3 with SMTP id mh5-20020a17090b4ac500b0026d355a47e3mr962802pjb.38.1692316852436;
+        Thu, 17 Aug 2023 17:00:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHT61noyF8VX+CBukJ+VPqfLrzxYVc2aGtZTNJpUW0OSKe2zr9MkdvE1/spDh/dbnvIQbRhhtopupghu+xLLN0=
+X-Received: by 2002:a17:90b:4ac5:b0:26d:355a:47e3 with SMTP id
+ mh5-20020a17090b4ac500b0026d355a47e3mr962783pjb.38.1692316852122; Thu, 17 Aug
+ 2023 17:00:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230817093305.212821-1-kai.heng.feng@canonical.com> <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
+In-Reply-To: <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 18 Aug 2023 08:00:39 +0800
+Message-ID: <CAAd53p7HZk5tTvT=dhSk01KSW4W3vCi+hY8aFYRoFzxs8YiiYA@mail.gmail.com>
+Subject: Re: [PATCH] xhci: Disable connect, disconnect and over-current wakeup
+ on system suspend
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     mathias.nyman@intel.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: [PATCH v2] tracefs: avoid changing i_mode to a temp value
-Message-Id: <AB5B0A1C-75D9-4E82-A7F0-CF7D0715587B@gmail.com>
-Date:   Thu, 17 Aug 2023 20:00:31 -0400
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-To:     rostedt@goodmis.org, mhiramat@kernel.org
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now inode->i_mode is updated twice to reach the desired value
-in tracefs_apply_options(). Because there is no lock protecting the two
-writes, other threads might read the intermediate value of =
-inode->i_mode.
+On Thu, Aug 17, 2023 at 10:07=E2=80=AFPM Alan Stern <stern@rowland.harvard.=
+edu> wrote:
+>
+> On Thu, Aug 17, 2023 at 05:33:05PM +0800, Kai-Heng Feng wrote:
+> > HP ProOne 440 G10 AIO sometimes cannot suspend as xHCI wakes up the
+> > system:
+> > [  445.814574] hub 2-0:1.0: hub_suspend
+> > [  445.814652] usb usb2: bus suspend, wakeup 0
+> > [  445.824629] xhci_hcd 0000:00:14.0: Port change event, 1-11, id 11, p=
+ortsc: 0x202a0
+>
+> What is the meaning of the 0x202a0 bits?  What caused this wakeup?
 
-Thread-1			Thread-2
-// tracefs_apply_options()	//e.g., acl_permission_check
-inode->i_mode &=3D ~S_IALLUGO;
-				unsigned int mode =3D inode->i_mode;
-inode->i_mode |=3D opts->mode;
+The USB touchpanel is disconnecting from the USB bus. CCS is 0.
 
-I think there is no need to introduce a lock but it is better to
-only update inode->i_mode ONCE, so the readers will either see the old
-or latest value, rather than an intermediate/temporary value.
+>
+> > [  445.824639] xhci_hcd 0000:00:14.0: resume root hub
+> > [  445.824651] xhci_hcd 0000:00:14.0: handle_port_status: starting usb1=
+ port polling.
+> > [  445.844039] xhci_hcd 0000:00:14.0: PM: pci_pm_suspend(): hcd_pci_sus=
+pend+0x0/0x20 returns -16
+> > [  445.844058] xhci_hcd 0000:00:14.0: PM: dpm_run_callback(): pci_pm_su=
+spend+0x0/0x1c0 returns -16
+> > [  445.844072] xhci_hcd 0000:00:14.0: PM: failed to suspend async: erro=
+r -16
+> > [  446.276101] PM: Some devices failed to suspend, or early wake event =
+detected
+> >
+> > The system is designed to let display and touchpanel share the same
+> > power source, so when the display becomes off, the USB touchpanel also
+> > lost its power and disconnect itself from USB bus. That doesn't play
+> > well when most Desktop Environment lock and turnoff the display right
+> > before entering system suspend.
+>
+> I don't see why that should cause any trouble.  The display gets locked
+> and turned off, the touchpanel disconnects from the USB bus, and then
+> the system goes into suspend.  Why would there be a wakeup signal at
+> this point?
 
-Signed-off-by: Sishuai Gong <sishuai.system@gmail.com>
----
- fs/tracefs/inode.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+The disconnecting can happens during the system suspend process, so
+the suspend process is aborted.
 
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 57ac8aa4a724..0d49922f1127 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -290,6 +290,7 @@ static int tracefs_apply_options(struct super_block =
-*sb, bool remount)
- 	struct tracefs_fs_info *fsi =3D sb->s_fs_info;
- 	struct inode *inode =3D d_inode(sb->s_root);
- 	struct tracefs_mount_opts *opts =3D &fsi->mount_opts;
-+	umode_t tmp_mode;
-=20
- 	/*
- 	 * On remount, only reset mode/uid/gid if they were provided as =
-mount
-@@ -297,8 +298,9 @@ static int tracefs_apply_options(struct super_block =
-*sb, bool remount)
- 	 */
-=20
- 	if (!remount || opts->opts & BIT(Opt_mode)) {
--		inode->i_mode &=3D ~S_IALLUGO;
--		inode->i_mode |=3D opts->mode;
-+		tmp_mode =3D READ_ONCE(inode->i_mode) & ~S_IALLUGO;
-+		tmp_mode |=3D opts->mode;
-+		WRITE_ONCE(inode->i_mode, tmp_mode);
- 	}
-=20
- 	if (!remount || opts->opts & BIT(Opt_uid))
---=20
-2.39.2 (Apple Git-143)
 
+>
+> > So for system-wide suspend, also disable connect, disconnect and
+> > over-current wakeup to prevent spurious wakeup.
+>
+> Whether to disable these things is part of the userspace policy.  The
+> kernel should not make the decision; the user does by enabling or
+> disabling wakeups.
+
+The power/wakeup is already disabled.
+
+The disconnecting event is from roothub and if roothub wakeup is
+disabled, other USB devices lose the ability to wake the system up
+from system suspend.
+
+Kai-Heng
+
+>
+> Alan Stern
+>
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> >  drivers/usb/host/xhci.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> > index fae994f679d4..dc499100efa6 100644
+> > --- a/drivers/usb/host/xhci.c
+> > +++ b/drivers/usb/host/xhci.c
+> > @@ -16,6 +16,7 @@
+> >  #include <linux/module.h>
+> >  #include <linux/moduleparam.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/suspend.h>
+> >  #include <linux/dmi.h>
+> >  #include <linux/dma-mapping.h>
+> >
+> > @@ -789,7 +790,7 @@ static void xhci_disable_hub_port_wake(struct xhci_=
+hcd *xhci,
+> >               t2 =3D t1;
+> >
+> >               /* clear wake bits if do_wake is not set */
+> > -             if (!do_wakeup)
+> > +             if (!do_wakeup || pm_suspend_target_state !=3D PM_SUSPEND=
+_ON)
+> >                       t2 &=3D ~PORT_WAKE_BITS;
+> >
+> >               /* Don't touch csc bit if connected or connect change is =
+set */
+> > --
+> > 2.34.1
+> >
