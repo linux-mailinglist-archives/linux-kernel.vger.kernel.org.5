@@ -2,184 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E90678063A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EAE780642
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 09:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358145AbjHRHRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 03:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S1358155AbjHRHTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 03:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358168AbjHRHRK (ORCPT
+        with ESMTP id S244013AbjHRHTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 03:17:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D9030E6;
-        Fri, 18 Aug 2023 00:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692343026; x=1723879026;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hy9L/G7orcg7EKsXBpzuKk+u1iVyRUCiRiiWR/KGdJc=;
-  b=ad4gmbNApLfKRjeaWiqnmvu0rQeYRN1LQtOiWrN1KujaJjI7LZBSaMXn
-   fmo/Zq9JAJJsClh64urJGpkOa46H0iVVpAACIak+XLTBmyz1kYQ8lrkrU
-   AwZCJ4RBroqoOFLp2Yytkpt5xkDGhPdZlFB7kkhgiFBGiIskYEfwWRf6a
-   uaHGzB42ykNx74LXke3NNyJzoDP+zj6+JpuN+XsnOQJ4e8qo1PMDvjMKk
-   0WEG6SkwhO1/5mgNurAlJ5jzMELAv9XVXXatAFfq2C/rqnnrz+FJIJdtW
-   /HtlnpkboLRT0lE1Ll3uS4dPHjGssGFDI2suETLJ7TCkOgHiT5PFOImry
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="404017518"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="404017518"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 00:16:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="800379640"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="800379640"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2023 00:16:42 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWtir-0002D4-2R;
-        Fri, 18 Aug 2023 07:16:41 +0000
-Date:   Fri, 18 Aug 2023 15:16:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <emmir@google.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Danylo Mocherniuk <mdanylo@google.com>,
-        Paul Gofman <pgofman@codeweavers.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Yun Zhou <yun.zhou@windriver.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alex Sierra <alex.sierra@amd.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Greg KH <greg@kroah.com>,
-        kernel@collabora.com, Cyrill Gorcunov <gorcunov@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>
-Subject: Re: [PATCH v32 2/6] fs/proc/task_mmu: Implement IOCTL to get and
- optionally clear info about PTEs
-Message-ID: <202308181520.yCq9Z26w-lkp@intel.com>
-References: <20230816113049.1697849-3-usama.anjum@collabora.com>
+        Fri, 18 Aug 2023 03:19:37 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 426621BF9;
+        Fri, 18 Aug 2023 00:19:36 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4ff9121fd29so818675e87.3;
+        Fri, 18 Aug 2023 00:19:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692343174; x=1692947974;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3WLOotOOz6Whg1Mj8YD4tZ6eErSJfZzqhK5ewDoU7mk=;
+        b=IajLjVccbpcsXfF6OU5/ko/nIqNPbKcFd6e2aT5W9pBlW3XQUm0m8EFelVlZe6qRYL
+         hWfKGC6zkHirHD0Vk6UA4I7/2OUev/lpIE9w4wAGxOAcRDp9fy8tvwY3PaRb713hq5Gl
+         Ys5PXLIU5EDvX9oI3MBIkzEaQc7cILrdOSuLwl1tEdn8tlxG3g2fibsJ/q6uhZAu2ku7
+         aE18AjUnFuVL9CSUtFtOHehtPsngPwBUaJYyEiaOqsSEZyqN18nC2K89Z4vNHRSAU4rp
+         RAR3IFqyKlGJRvP7D4qX+wkF2V7I7PY6OmNwO+F3SO9HC6Tuim6u5wHSzb3xNeRTA52I
+         RWEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692343174; x=1692947974;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3WLOotOOz6Whg1Mj8YD4tZ6eErSJfZzqhK5ewDoU7mk=;
+        b=atEptMD3iwNBsrwlSX/EiG38Bz+/iVDYjlCylTkOoeM3OQxgn1tSHsJ/HStdU2gatp
+         7GTyOSpNe7NhiaumNgc29HJ2/6lQmtepNH8O9dzdK2eVZeEwlj0Y/LQqemnpq6gng32t
+         QqOtFjlXSN50qi2HbIJ6gYOUkGSxDfVU+71PrnN211RpGr6KVLH9h+RAICOEtm8gLA9d
+         oaN85U5YFHwjLZkC9XiTIRzzb5y4y7GS6IsAX0KnSeGc3aC+F/WplqbjzFGAKbHH8W29
+         7sH8Ln5GuNcbI9Utm0piWuR2FU81JHKiP5xSAopCeRD/HgRtLPx/bTR/A+3FEApcr1BU
+         R9gA==
+X-Gm-Message-State: AOJu0YxV6lWjoEMFJKKWneMlZmXIloqao0TR3DmzioNYKcDKRNo4z9YH
+        PqClBnowwzdOJsjD4Ys5E04JLokt56a/OgV6Jic=
+X-Google-Smtp-Source: AGHT+IEH6Jq48dkRZ4ezmCDNiEhdIsVUoXZNVTgzFF8vUlSHsXfot+cfT4CogWsvKA/tHn7Z/98bxJ7Qo34oYIi4M4s=
+X-Received: by 2002:a05:6512:2202:b0:4fe:ef9:c8d0 with SMTP id
+ h2-20020a056512220200b004fe0ef9c8d0mr1268562lfu.35.1692343174179; Fri, 18 Aug
+ 2023 00:19:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816113049.1697849-3-usama.anjum@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230817235428.never.111-kees@kernel.org> <20230817235859.49846-10-keescook@chromium.org>
+In-Reply-To: <20230817235859.49846-10-keescook@chromium.org>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Fri, 18 Aug 2023 15:18:57 +0800
+Message-ID: <CAAfSe-s_XMzqMLsGpvZoeDBm8+ugJwTYoCDC7g0Yx4dJgsJ6wA@mail.gmail.com>
+Subject: Re: [PATCH 10/21] dmaengine: sprd: Annotate struct sprd_dma_dev with __counted_by
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Vinod Koul <vkoul@kernel.org>, Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        dmaengine@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Jie Hai <haijie1@huawei.com>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Green Wan <green.wan@sifive.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Yu Kuai <yukuai3@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jordy Zomer <jordy@pwning.systems>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Muhammad,
+On Fri, 18 Aug 2023 at 07:59, Kees Cook <keescook@chromium.org> wrote:
+>
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+>
+> As found with Coccinelle[1], add __counted_by for struct sprd_dma_dev.
+>
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Orson Zhai <orsonzhai@gmail.com>
+> Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> Cc: dmaengine@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-kernel test robot noticed the following build errors:
+Acked-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on next-20230817]
-[cannot apply to linus/master v6.5-rc6]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
+Chunyan
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Muhammad-Usama-Anjum/userfaultfd-UFFD_FEATURE_WP_ASYNC/20230816-193454
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230816113049.1697849-3-usama.anjum%40collabora.com
-patch subject: [PATCH v32 2/6] fs/proc/task_mmu: Implement IOCTL to get and optionally clear info about PTEs
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20230818/202308181520.yCq9Z26w-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308181520.yCq9Z26w-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308181520.yCq9Z26w-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   fs/proc/task_mmu.c: In function 'pagemap_scan_thp_entry':
->> fs/proc/task_mmu.c:2077:28: error: 'HPAGE_SIZE' undeclared (first use in this function); did you mean 'PAGE_SIZE'?
-    2077 |         if (end != start + HPAGE_SIZE) {
-         |                            ^~~~~~~~~~
-         |                            PAGE_SIZE
-   fs/proc/task_mmu.c:2077:28: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +2077 fs/proc/task_mmu.c
-
-  2044	
-  2045	static int pagemap_scan_thp_entry(pmd_t *pmd, unsigned long start,
-  2046					  unsigned long end, struct mm_walk *walk)
-  2047	{
-  2048	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-  2049		struct pagemap_scan_private *p = walk->private;
-  2050		struct vm_area_struct *vma = walk->vma;
-  2051		unsigned long categories;
-  2052		spinlock_t *ptl;
-  2053		int ret = 0;
-  2054	
-  2055		ptl = pmd_trans_huge_lock(pmd, vma);
-  2056		if (!ptl)
-  2057			return -ENOENT;
-  2058	
-  2059		categories = p->cur_vma_category | pagemap_thp_category(*pmd);
-  2060	
-  2061		if (!pagemap_scan_is_interesting_page(categories, p))
-  2062			goto out_unlock;
-  2063	
-  2064		ret = pagemap_scan_output(categories, p, start, &end);
-  2065		if (start == end)
-  2066			goto out_unlock;
-  2067	
-  2068		if (~p->arg.flags & PM_SCAN_WP_MATCHING)
-  2069			goto out_unlock;
-  2070		if (~categories & PAGE_IS_WRITTEN)
-  2071			goto out_unlock;
-  2072	
-  2073		/*
-  2074		 * Break huge page into small pages if the WP operation
-  2075		 * needs to be performed on a portion of the huge page.
-  2076		 */
-> 2077		if (end != start + HPAGE_SIZE) {
-  2078			spin_unlock(ptl);
-  2079			split_huge_pmd(vma, pmd, start);
-  2080			pagemap_scan_backout_range(p, start, end);
-  2081			/* Report as if there was no THP */
-  2082			return -ENOENT;
-  2083		}
-  2084	
-  2085		make_uffd_wp_pmd(vma, start, pmd);
-  2086		flush_tlb_range(vma, start, end);
-  2087	out_unlock:
-  2088		spin_unlock(ptl);
-  2089		return ret;
-  2090	#else /* !CONFIG_TRANSPARENT_HUGEPAGE */
-  2091		return -ENOENT;
-  2092	#endif
-  2093	}
-  2094	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  drivers/dma/sprd-dma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+> index 168aa0bd73a0..07871dcc4593 100644
+> --- a/drivers/dma/sprd-dma.c
+> +++ b/drivers/dma/sprd-dma.c
+> @@ -212,7 +212,7 @@ struct sprd_dma_dev {
+>         struct clk              *ashb_clk;
+>         int                     irq;
+>         u32                     total_chns;
+> -       struct sprd_dma_chn     channels[];
+> +       struct sprd_dma_chn     channels[] __counted_by(total_chns);
+>  };
+>
+>  static void sprd_dma_free_desc(struct virt_dma_desc *vd);
+> --
+> 2.34.1
+>
