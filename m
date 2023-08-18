@@ -2,158 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D2C780831
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3240780834
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359039AbjHRJVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:21:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
+        id S1359041AbjHRJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359067AbjHRJV3 (ORCPT
+        with ESMTP id S238613AbjHRJXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:21:29 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AF43C25;
-        Fri, 18 Aug 2023 02:21:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A3A0621884;
-        Fri, 18 Aug 2023 09:21:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692350486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmLxSY+YWIyBjqJPJ6QEFdRadSrzKGUHrz3qvFcr4F4=;
-        b=uulEYH5HLtomuCi2zoy9XTs3I/7mEQzLrAZE7pP6ul2zOQKJ7/d0L50BsYgJ1ptPdcgQ1m
-        cbMa4e155AQIyYUsySFvtmI0J5ZfJiyfesKaQSg1KECRxnLeqTcbGJuZ3wVM09jfCyCvGi
-        twdSNOkIM3tYKaJODmDZ9Fbq3DF2yBo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692350486;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VmLxSY+YWIyBjqJPJ6QEFdRadSrzKGUHrz3qvFcr4F4=;
-        b=gORR+RoS1h7nZoOs/J7X0vNnvZvsdrpxJv8miKoqqRWC4LQogDZqKBSozC0nZQcSAdEESF
-        NR2O825FE1BfeuCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 850EA13441;
-        Fri, 18 Aug 2023 09:21:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZTqjHRY432SCJQAAMHmgww
-        (envelope-from <hare@suse.de>); Fri, 18 Aug 2023 09:21:26 +0000
-Message-ID: <1b2166ab-e788-475e-a8e2-a6cef26f2524@suse.de>
-Date:   Fri, 18 Aug 2023 11:21:25 +0200
+        Fri, 18 Aug 2023 05:23:02 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB7430E6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:23:01 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c353a395cso84428766b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692350579; x=1692955379;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pO/NLfSXQCGnKg4+bEM0fLqxGi3J0/6qioKdfhMjmdo=;
+        b=nOTMo+/1Nw73rHt39/57JPvg8AsFjBbuGVIRDhbSLc9e9KEsQhYu2qCHwlHXrm7kUn
+         QwdXc0JDCMyvRljUROn2cOHO03isnm6xLcG0vz8OhYXxtGH6KjtC8zF+/2Ltar+s0PZm
+         vkPw8nJwF5xBeSvs84CB/vJ5uCmbdqyVdvpWWA39YIQ7tDWd5ObhOT1TPoJctvyixJWd
+         antEv6SML394RmMhEtniBfsR6ierMCyMRaZ9L9ZK+qIaoY+WvhxvlezxAeitjZfzE+GY
+         fAzGGf0gUR3Rbblxj7emd0z/pIpTZb5x58pRdZ2O7Ik46Ya7OQmsuN3tVeenahjDAXA5
+         4sFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692350579; x=1692955379;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pO/NLfSXQCGnKg4+bEM0fLqxGi3J0/6qioKdfhMjmdo=;
+        b=CKPSFksAhZuLr0t1OX5mHuaRWoUp71K9ws0/OdrIiial4Nbnz9STxYvo4SvWxMlrh0
+         gGlZtRMuONLVzEXAfsVw6/xV7J5oRJ0RWgXf+cw+lJ0Ux8hck2fc+Y3o5KGZO7chh3h9
+         d1pmQHwHXUfNKpa3ckc9Ggg+MGWXykecz4eEvrth/Hz05q9oBZ0h812Noqdibm3UDGjG
+         dbICeauijBunejaGG9aaa+/B/4N3qDbisxmx+So+kvPC1TvWVNGe9zaMZRyt2pYyzB5o
+         2mp8NQHgluh0eCaR0vfXMKspxZBr/fMDplJggV6AIx8q8MphSf4Ma5H9h3ewt/o8Jw60
+         0vCw==
+X-Gm-Message-State: AOJu0Ywjz3yqM4CiDQ21T1nC+nTLVQA6M0NwKg85K/1cCU4LIdZd1OSN
+        3EjnCEUdL7IwzzbU7KK21EiukA==
+X-Google-Smtp-Source: AGHT+IFw9N3TQC1B1E4pRPOoPEQa1tQS+7EU7C2gCPA40q+AD0dhQe3+j9nAbySNev9yshEM1YHHWg==
+X-Received: by 2002:a17:906:311b:b0:99d:e417:d6f6 with SMTP id 27-20020a170906311b00b0099de417d6f6mr1477184ejx.32.1692350579419;
+        Fri, 18 Aug 2023 02:22:59 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id k21-20020a1709063fd500b0099bcf1c07c6sm956182ejj.138.2023.08.18.02.22.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 02:22:58 -0700 (PDT)
+Message-ID: <5cde8986-1b12-a85e-b2fe-e1aa1087b429@linaro.org>
+Date:   Fri, 18 Aug 2023 11:22:57 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/3] dt-bindings: hwmon: Add Infineon TDA38640
 Content-Language: en-US
-To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>,
-        AceLan Kao <acelan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
- <20230818101630.000027f4@linux.intel.com>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <20230818101630.000027f4@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230802193155.2170935-1-Naresh.Solanki@9elements.com>
+ <20230808-stand-cheddar-b76b0b7509a0@spud>
+ <eced746a-1181-bd8f-6828-4a4eeb79727c@roeck-us.net>
+ <20230808-esquire-epidemic-f9bd74ffde25@spud>
+ <CABqG17jm938MaEeqS03WeryVWSRBS7Bqq2Vwq9SL4QOGqXU43A@mail.gmail.com>
+ <b3eebd2b-c73b-fdc7-2b2b-07e97db26d92@linaro.org>
+ <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CABqG17hgU44H9KbALy_336Sb+YOiEOzbnAihiox1OEuVnNiayQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/23 10:16, Mariusz Tkaczyk wrote:
-> On Wed, 16 Aug 2023 16:37:26 +0700
-> Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+On 16/08/2023 10:51, Naresh Solanki wrote:
+> Hi Krzysztof,
 > 
->> Hi,
+> On Tue, 15 Aug 2023 at 01:02, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
 >>
->> I notice a regression report on Bugzilla [1]. Quoting from it:
->>
->>> It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10, RAID5
->>> and RAID10) and then you will see below error repeatly(need to use serial
->>> console to see it)
+>> On 11/08/2023 18:00, Naresh Solanki wrote:
+>>> Hi,
 >>>
->>> [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
->>> [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all dirs
->>> [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/bus
->>> [ 205.380427] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/class
->>> [ 205.388257] systemd-shutdown[1]: Stopping MD /dev/md127 (9:127).
->>> [ 205.394880] systemd-shutdown[1]: Failed to sync MD block device
->>> /dev/md127, ignoring: Input/output error [ 205.404975] md: md127 stopped.
->>> [ 205.470491] systemd-shutdown[1]: Stopping MD /dev/md126 (9:126).
->>> [ 205.770179] md: md126: resync interrupted.
->>> [ 205.776258] md126: detected capacity change from 1900396544 to 0
->>> [ 205.783349] md: md126 stopped.
->>> [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125).
->>> [ 205.862435] md: md126 stopped.
->>> [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device
->>> /dev/md125, ignoring: Input/output error [ 205.872845] block device
->>> autoloading is deprecated and will be removed. [ 205.880955] md: md125
->>> stopped. [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md124p2
->>> (259:7). [ 205.947707] systemd-shutdown[1]: Could not stop MD /dev/md124p2:
->>> Device or resource busy [ 205.957004] systemd-shutdown[1]: Stopping MD
->>> /dev/md124p1 (259:6). [ 205.964177] systemd-shutdown[1]: Could not stop MD
->>> /dev/md124p1: Device or resource busy [ 205.973155] systemd-shutdown[1]:
->>> Stopping MD /dev/md124 (9:124). [ 205.979789] systemd-shutdown[1]: Could
->>> not stop MD /dev/md124: Device or resource busy [ 205.988475]
->>> systemd-shutdown[1]: Not all MD devices stopped, 4 left.
+>>> On Tue, 8 Aug 2023 at 19:58, Conor Dooley <conor@kernel.org> wrote:
+>>>>
+>>>> On Tue, Aug 08, 2023 at 07:10:08AM -0700, Guenter Roeck wrote:
+>>>>> On 8/8/23 04:46, Conor Dooley wrote:
+>>>>>> On Wed, Aug 02, 2023 at 09:31:51PM +0200, Naresh Solanki wrote:
+>>>>>>> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+>>>>>>>
+>>>>>>> The TDA38640 chip has different output control mechanisms depending on
+>>>>>>> its mode of operation. When the chip is in SVID mode, only
+>>>>>>> hardware-based output control is supported via ENABLE pin. However, when
+>>>>>>> it operates in PMBus mode, software control works perfectly.
+>>>>>>>
+>>>>>>> To enable software control as a workaround in SVID mode, add the DT
+>>>>>>> property 'infineon,en-svid-control'. This property will enable the
+>>>>>>> workaround, which utilizes ENABLE pin polarity flipping for output when
+>>>>>>> the chip is in SVID mode.
+>>>>>>
+>>>>>> Why do you need a custom property for this? How come it is not possible
+>>>>>> to determine what bus you are on?
+>>>>>>
+>>>>>
+>>>>> That is not the point. Yes, it can be detected if the control method is
+>>>>> PMBus or SVID. However, in SVID mode, SVID is supposed to control the
+>>>>> output, not PMBUs. This is bypassed by controlling the polarity of the
+>>>>> (physical) output enable signal. We do _not_ want this enabled automatically
+>>>>> in SVID mode. Its side effects on random boards using this chip are unknown.
+>>>>> Thus, this needs a property which specifically enables this functionality
+>>>>> for users who _really_ need to use it and (hopefully) know what they are
+>>>>> doing.
+>>>>
+>>>> Hmm, reading this it makes a lot more sense why this is a property - I
+>>>> guess I just struggled to understand the commit message here,
+>>>> particularly what the benefit of using the workaround is. I'm still
+>>>> having difficulty parsing the commit & property text though - its
+>>>> unclear to me when you would need to use it - so I will stay out
+>>>> of the way & let Rob or Krzysztof handle things.
+>>>
+>>> To provide context, my system employs a unique power sequence
+>>> strategy utilizing a BMC (Baseboard Management Controller),
+>>> rendering the reliance on the ENABLE pin unnecessary.
+>>> In this configuration, the ENABLE pin is grounded in the hardware.
+>>> While most regulators facilitate PMBus Operation for output control,
+>>> the TDA38640 chip, when in SVID mode, is constrained by the
+>>> ENABLE pin to align with Intel specifications.
+>>> My communication with Infineon confirmed that the recommended
+>>> approach is to invert the Enable Pin for my use case.
+>>>
+>>> Since this is not typically the use case for most setup & hence DT property
+>>> is must for enabling the special case.
+>>>
+>>> For further insight into my setup's power sequence strategy, you can
+>>> refer to the following link: https://github.com/9elements/pwrseqd
+>>>
 >>
->> See Bugzilla for the full thread and attached full journalctl log.
->>
->> Anyway, I'm adding this regression to be tracked by regzbot:
->>
->> #regzbot introduced: 12a6caf273240a
->> https://bugzilla.kernel.org/show_bug.cgi?id=217798 #regzbot title: systemd
->> shutdown hang on machine with different RAID levels
->>
->> Thanks.
->>
->> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217798
->>
-> 
-> Hello,
-> The issue is reproducible with IMSM metadata too, around 20% of reboot hangs. I
-> will try to raise the priority in the bug because it is valid high- the
-> base functionality of the system is affected.
-> 
-> Christoph, could you take a look in short term?
-> 
-Does this help?
+>> This justifies to me the property, but still you described desired
+>> driver behavior, not the hardware characteristic. Don't describe what
+>> you want to control, but describe the entire system.
+> I guess by entire system you mean how the regulators(including
+> TDA38640) connected & operated in our setup ?
+
+I mean, property name and description should say what is the
+characteristic of the hardware/firmware/entire system.
 
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 78be7811a89f..b3661c8def8c 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -9575,6 +9575,7 @@ static int md_notify_reboot(struct notifier_block 
-*this,
-         struct mddev *mddev, *n;
-         int need_delay = 0;
-
-+       flush_workqueue(md_misc_wq);
-         spin_lock(&all_mddevs_lock);
-         list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) {
-                 if (!mddev_get(mddev))
-
-Cheers,
-
-Hannes
+Best regards,
+Krzysztof
 
