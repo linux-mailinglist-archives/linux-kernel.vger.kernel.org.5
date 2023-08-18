@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C682780FBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF74A780FBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378390AbjHRQBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60752 "EHLO
+        id S1378398AbjHRQB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378380AbjHRQAz (ORCPT
+        with ESMTP id S1378387AbjHRQBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:00:55 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EFB3AB4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:00:54 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IG0cj2027529
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Aug 2023 12:00:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692374440; bh=erXmcdQ1KNay9clvH0vrxMVcc8mv/hyvtygv6MA0HQQ=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=MX0VX5azL5th5g1QwH3Uz+cp0CDRzBNoSr3kQb/SkOuAjIMyixOl1Q3kRUhZslotV
-         GGatnZWiFcQkL/Kfk/R6pNe71I0zbhomfXi3OOBx/V0UmOMTm+rZK2lgYathaZ9u0E
-         4eYzP/TmTBzgVR+UjrjkXsQO6t/wGS6k6mPN7U1gIv/wrcNDz/YbDe/ANf9zzq1yM+
-         SaVmEZCDW0RWVpBbpYfeQ4RGg9BFzyjI+hC+lM6WDRa8BgluJPfiFxL2QTYX87HiTC
-         NQIs2NoLpZEJge8XuktV+uPJSWr2urCPR7GsEkIlDFlo+uZYr0qONCfvgovtKidiKG
-         3ax7jvjhz0y8w==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 7BCCF15C0501; Fri, 18 Aug 2023 12:00:38 -0400 (EDT)
-Date:   Fri, 18 Aug 2023 12:00:38 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/13] ext4: remove unnecessary check for avoiding
- multiple update_backups in ext4_flex_group_add
-Message-ID: <20230818160038.GA3515079@mit.edu>
-References: <20230629120044.1261968-1-shikemeng@huaweicloud.com>
- <20230629120044.1261968-13-shikemeng@huaweicloud.com>
- <20230816034730.GT2247938@mit.edu>
- <2a0c45d9-29f0-10a3-fc40-d48e101c8d91@huaweicloud.com>
- <20230817141112.GZ2247938@mit.edu>
- <cfad4b27-3174-1124-1516-a2ddb3843639@huaweicloud.com>
- <20230818050036.GG3464136@mit.edu>
- <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
+        Fri, 18 Aug 2023 12:01:23 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE6F3AB6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:01:21 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52256241c50so1361993a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1692374480; x=1692979280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UPSQswlPfK/vg9tOIqV/BRlfCJnThjbbuWXP5dIGjVI=;
+        b=eOS2hRxp7rH6eN6beKT9AhAtjWCJ5/IIE38A9lAemUFzSEY32ryQpxC0ZiY3D0m02E
+         PPS/OljShi5fMfsQx+jB4P7wJ7+vIirfIJ9Ur8GkSfA3V4seJkEwxcZCb09xFsoKsUpA
+         k9uSRlnUVjxiRqD9XaByBe/my5BTdzDGSUdko=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692374480; x=1692979280;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UPSQswlPfK/vg9tOIqV/BRlfCJnThjbbuWXP5dIGjVI=;
+        b=DDUzz/kYRa/+6jhphGFix6YLZTMZ4G3y40rcTHXTEeo3vZ5M04mDlTb6+pbiTtSIC3
+         gUCjRh673/tMk+sjL/8A1UuPch/lXUkhM+iH32jNntZ3sJ/ZY+vViUgcXdMsnIZGxdnz
+         zyQPQ4m+0gAGIuAtFuK8iImqNTH9rFKrRcQkWWpf3hjMWUBkwMqzWBfCs19V6T9NBphd
+         phL+kQo8U2zQkP39+SO/KeWd3zsP9lJLSMVslLFnKyNkPVqc4LVAUZxdBVXwbH2h21XO
+         23AhowcRu3rNS+Vov+ehhIMmURfkr9gd03qEDR15E13P2IKBGNeUsfZ35d/gfWflDstm
+         HoDQ==
+X-Gm-Message-State: AOJu0Yzaepmar+8CzlyE1GAYu7vEGo6ThSz2Rjk8JpVcbZIJr19qFPMA
+        0fJP4xPEz4WMa2vEfOag01jwaexdZoreLGXamJDUKg==
+X-Google-Smtp-Source: AGHT+IETP5rhdlK0N8SmshAKeFLK5w4xJiVCwhN2jNxLEpXbo/8uRFpY1Jr3KAeX1Do2SnfodkpwHGfpUEuEI5hzDks=
+X-Received: by 2002:a05:6402:10c5:b0:523:4996:a4f9 with SMTP id
+ p5-20020a05640210c500b005234996a4f9mr2776349edu.34.1692374479880; Fri, 18 Aug
+ 2023 09:01:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f8dc5cf-cfd9-eb90-9f09-ee2dc89de537@huaweicloud.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+References: <cover.1692326837.git.yan@cloudflare.com> <10b3dff2-7be4-ab98-e4a5-968ebb93c25f@iogearbox.net>
+In-Reply-To: <10b3dff2-7be4-ab98-e4a5-968ebb93c25f@iogearbox.net>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Fri, 18 Aug 2023 11:01:09 -0500
+Message-ID: <CAO3-PbqUczUxg42ECStsZnAybYKBY-hJePN=V-JbPvq-BS4cGA@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf 0/4] lwt: fix return values of BPF ops
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Thomas Graf <tgraf@suug.ch>,
+        Jordan Griege <jgriege@cloudflare.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 04:42:31PM +0800, Kemeng Shi wrote:
-> > s_group_desc[] is initialized in ext4_group_desc_init() in
-> > fs/ext4/super.c, and it is used in fs/ext4/balloc.c, and of course, it
-> > is defined in fs/ext4.h.  
-> I plan to add comment in fs/ext4.h as following:
-> struct ext4_sb_info {
-> 	...
-> 	struct buffer_head * __rcu *s_group_desc; /* Primary gdb blocks of online groups */
-> But I'm not sure it's proper now as you menthioned s_group_desc[] is to
-> keep the buffer_heads for the block group descriptor blocks in memory
-> and it contains primary gdb block is a coincidence that we only modify
-> primary block in kernel.
+On Fri, Aug 18, 2023 at 9:55=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> On 8/18/23 4:58 AM, Yan Zhai wrote:
+> > lwt xmit hook does not expect positive return values in function
+> > ip_finish_output2 and ip6_finish_output. However, BPF programs can
+> > directly return positive statuses such like NET_XMIT_DROP, NET_RX_DROP,
+> > and etc to the caller. Such return values would make the kernel continu=
+e
+> > processing already freed skbs and eventually panic.
+> >
+> > This set fixes the return values from BPF ops to unexpected continue
+> > processing, checks strictly on the correct continue condition for
+> > future proof. In addition, add missing selftests for BPF redirect
+> > and reroute cases for BPF-CI.
+> >
+> > v5: https://lore.kernel.org/bpf/cover.1692153515.git.yan@cloudflare.com=
+/
+> > v4: https://lore.kernel.org/bpf/ZMD1sFTW8SFiex+x@debian.debian/T/
+> > v3: https://lore.kernel.org/bpf/cover.1690255889.git.yan@cloudflare.com=
+/
+> > v2: https://lore.kernel.org/netdev/ZLdY6JkWRccunvu0@debian.debian/
+> > v1: https://lore.kernel.org/bpf/ZLbYdpWC8zt9EJtq@debian.debian/
+> >
+> > changes since v5:
+> >   * fix BPF-CI failures due to missing config and busybox ping issue
+>
+> Series looks good, thanks! Given we're fairly close to merge window and
+> this has been broken for quite some time, I took this into bpf-next.
+>
+Thanks Daniel! Can you also queue this up for stable (or guide how I can do=
+ it)?
 
-In general, the terminology that ext4 developers have used is "block
-group descriptors" and "backup block group descriptors".  The kernel
-never *uses* the backup block group users; and with the sparse_super2
-feature, the "backup superblocks" and "backup block group descriptors"
-are optional.
+Yan
 
-They are used by e2fsck if we need to recover a trashed superblock and
-block group descriptors, which is why code that is resizing the file
-system, or updating the label or the UUID need to update the backup
-superblocks and/or backup block group descriptors so that we can
-better recover disaster.
 
-So I'd just suggest changing the comment above to "array of bh's for
-the block group descriptors".
-
-Cheers,
-
-							- Ted
-
-> Besides, I plan to go through the resize code again in fulture and
-> add some comments to make it easy for anyone starting read this
-> or make it easy to maintain. Please let me if you disklike it.
-
-P.S.
-
-BTW, a useful test program to add is one that checks to make sure that
-the "static" parts of the superblock and block group descriptors
-(i.e., the parts that don't get changed under normal operation while
-the file system is mounted when the kernel *isn't* trying to do a
-resize or change the label, UUID, or in the future, the new ioctl's to
-update the parts of the superblock that can get modified by tune2fs),
-and to make sure that all of the backup superblock and block group
-descriptors have gotten updated.
-
-Some of the bugs that you found may have resulted in some of the
-backup bg descriptors not getting updataed, which we wouldn't
-necessarily notice unless we had a test program that explicitly
-checked for them.
-
-And truth to tell, the only backup superblock and block group
-descriptor that actually gets used to recover the file system is the
-first one, since that's the one e2fsck will fall back to
-automatically.  An expert might try to use one of the other backup
-block groups as a desperate measure, and there might be some automated
-programs that might be smart enough to use the backup block groups
-when trying to recover the location of the partition table when the
-file system and partition table is very badly damaged --- so that's
-one of the reasons why with sparse_super2, the number of backup block
-group descriptors can be limited to (for example) one located in the
-first block group, and one located in the very last block group.
-
+> Thanks,
+> Daniel
