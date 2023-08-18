@@ -2,56 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB3278153C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 00:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F2D78154C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 00:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241344AbjHRWHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 18:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
+        id S241409AbjHRWPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 18:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241428AbjHRWHe (ORCPT
+        with ESMTP id S241225AbjHRWOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 18:07:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1CF3AB5;
-        Fri, 18 Aug 2023 15:07:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36C8A612F3;
-        Fri, 18 Aug 2023 22:07:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D58E0C433C7;
-        Fri, 18 Aug 2023 22:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692396452;
-        bh=Jn/enJycIQczuSxJepo7xuHciUhfnR+IXdjyxJATpBw=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=sboiAs42p0nxUU6YVZeaqeZWnMkR4RQn8KbBYgqXxe6XMaHAUOYGXEkvpZzOGeunA
-         yHrOhX1rGFBLtSY1TRT6pGMR5OU9Bm/d851gpvngx8oF1qbdusPfbrFUIA8wQ410wx
-         98y/tamI1qPCtvyIC+UGjks3t4CnsMSdji3+3o2LF4HLlZrZ9mHXHVRUgLvTuaQO2R
-         LJMIzRRz5SbkxK1XGIxDzFixdczv8fGD5G2B53jLSWEqiCQfCoxXJlb6ZUoqSXhJqw
-         Xjt8DgoMUnR+ZN6KsdACLLcEHFAjws4aO8XpzMMJK6HeHIySMw9Z1Sbh4NHYsHlHCY
-         RNSYYxJ/U7EdA==
-Mime-Version: 1.0
+        Fri, 18 Aug 2023 18:14:42 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4AA3ABC
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:14:41 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so402a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 15:14:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692396880; x=1693001680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=15MJ5r20Bc4OUa0urOYZvVtRB9hu6WE3eNsvEWDgJeE=;
+        b=5MUOAio1GCuin9twjXzSt3qHZogjdPaIs9sL7dopMb0fkuVWC0I1ywYPczk/X/Kh6R
+         Yu8KeX9gGhlSVhhyffLnKfNhLMxFjMqZVCzMRNggP8Dr+Ggms3IpFwGVya6qPSpwUGMS
+         qv1zJG24TacICwYclybBDvvbSnYZoUAUmG1xLslxkqU1CLH6daJGpWQhG0DuYde3MxYc
+         MgpoRnvPriDnEOfgYXorhnJXu/zWze4H8VkHZQMZC/Vz679EBsJNbOPDRjBoomTyUoq3
+         eX3DMXi9DDI88trw4xTncXTHnGMJx9pKEd2V9kLvzs9gMnOn9+qol75n9JJSLg+nJNPD
+         5JZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692396880; x=1693001680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=15MJ5r20Bc4OUa0urOYZvVtRB9hu6WE3eNsvEWDgJeE=;
+        b=J6WHPzWN1mRGc1LYWCK3n8jhGgJF1S4/VTDjNCrMNOMatXjNJ1nEB/BWyjotJl6YVY
+         5KDa4wsnv2vXxmVMHBmiBG5AFNIL2ub9dLrX6NQ81KEtpRVWKdKblvOq2nVa7XaFUYZx
+         2u5Bv+VTljVllcTBh6Ls1Gg85id3C6A+XSWed0FBidwTKYpUK+7lbSP0wqWC4z6KAyZq
+         Ape6M04rX+Jwg+a2agpdNsSqhN1NYQweH48ofvSQMEQjZVIio0GcDT/W0aGTAwRmK/Gp
+         w2yBJTtkbyB8snIjDc7+B+AB1ebxHOXHm6zkcXdj3/2cs8NCNiZP432Ivd5km/MXX229
+         TX2g==
+X-Gm-Message-State: AOJu0YxUxJ29ESJKFftmfBW2C9QnO8a4hyh+s5kr2POgtT/buamw3dEZ
+        IhD349Oh+Lly2HV0L6NzA1x10pk4KiyKsxAaMBkkweVc/FD3gcd4ArY=
+X-Google-Smtp-Source: AGHT+IFl+/v9+ILj228ARnLnSiE3V94KsI4Cb5UlE6k9q8RncZUCKRO3FWE8WYSip2TE1gy/wCoqCgSF6PEYMY8P+/E=
+X-Received: by 2002:a50:d5c2:0:b0:522:4741:d992 with SMTP id
+ g2-20020a50d5c2000000b005224741d992mr140781edj.4.1692396879764; Fri, 18 Aug
+ 2023 15:14:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230818211533.2523697-1-zokeefe@google.com> <20230818211533.2523697-2-zokeefe@google.com>
+In-Reply-To: <20230818211533.2523697-2-zokeefe@google.com>
+From:   "Zach O'Keefe" <zokeefe@google.com>
+Date:   Fri, 18 Aug 2023 15:14:02 -0700
+Message-ID: <CAAa6QmSN+7zWTMhYY9rEBf8U5xZ3kwfZXUuvT=ZGmEXLpNm0Kg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] smaps: set THPeligible if file mapping supports
+ large folios
+To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 18 Aug 2023 22:07:28 +0000
-Message-Id: <CUW0GZCVHKPB.1W7ESSPE7INHQ@seitikki>
-Cc:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Thorsten Leemhuis" <regressions@leemhuis.info>,
-        <charles.d.prestopine@intel.com>, <rafael.j.wysocki@intel.com>,
-        <len.brown@intel.com>, <stable@vger.kernel.org>,
-        "Todd Brandt" <todd.e.brandt@intel.com>
-Subject: Re: [PATCH] tpm: Don't make vendor check required for probe
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Mario Limonciello" <mario.limonciello@amd.com>
-X-Mailer: aerc 0.14.0
-References: <20230818181516.19167-1-mario.limonciello@amd.com>
-In-Reply-To: <20230818181516.19167-1-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,51 +70,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Aug 18, 2023 at 6:15 PM UTC, Mario Limonciello wrote:
-> The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
-> all AMD fTPMs") doesn't work properly on Intel fTPM.  The TPM doesn't rep=
-ly
-> at bootup and returns back the command code.
+Sorry -- noticed only too late that there are still many
+false-negatives for THPeligible, since by this point in the function
+we've already applied sysfs and prctl restrictions, which file-fault
+ignores. VM_HUGEPAGE also needs to be checked for the file-fault case.
 
-Is this reproducible with any production hardware? You are stating it
-as it was reproducible categorically with any Intel fTPM.
-
-> As this isn't crucial for anything but AMD fTPM and AMD fTPM works, throw
-> away the error code to let Intel fTPM continue to work.
+On Fri, Aug 18, 2023 at 2:15=E2=80=AFPM Zach O'Keefe <zokeefe@google.com> w=
+rote:
 >
-> Cc: stable@vger.kernel.org
-> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
-
-It does make sense not to exercise this outside of AMD CPus but since
-there is no production hardware failing, it cannot be categorized as a
-bug fix.
-
-> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217804
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> File-backed memory can be backed by THPs either through collapse, when
+> CONFIG_READ_ONLY_THP_FOR_FS is enabled, or through fault, when the
+> filesystem supports large folio mappings.
+>
+> Currently, smaps only knows about the former, so teach it about the
+> latter.
+>
+> Signed-off-by: Zach O'Keefe <zokeefe@google.com>
+> Cc: Matthew Wilcox <willy@infradead.org>
 > ---
->  drivers/char/tpm/tpm_crb.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  mm/huge_memory.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
-> index 9eb1a18590123..b0e9931fe436c 100644
-> --- a/drivers/char/tpm/tpm_crb.c
-> +++ b/drivers/char/tpm/tpm_crb.c
-> @@ -472,8 +472,7 @@ static int crb_check_flags(struct tpm_chip *chip)
->  	if (ret)
->  		return ret;
-> =20
-> -	ret =3D tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL);
-> -	if (ret)
-> +	if (tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL))
->  		goto release;
-
-It would be better not to exercise a potentially failing code path at
-all. This initiates full transaction with the TPM.
-
-> =20
->  	if (val =3D=3D 0x414D4400U /* AMD */)
-> --=20
-> 2.34.1
-
-BR, Jarkko
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index cd379b2c077b..d8d6e83820f3 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -136,7 +136,16 @@ bool hugepage_vma_check(struct vm_area_struct *vma, =
+unsigned long vm_flags,
+>                          */
+>                         !!vma->vm_ops->huge_fault :
+>                         /* Only regular file is valid in collapse path */
+> -                       file_thp_enabled(vma);
+> +                       file_thp_enabled(vma) ||
+> +                        /*
+> +                         * THPeligible bit of smaps should surface the
+> +                         * possibility of THP through fault if the files=
+ystem
+> +                         * supports it.  We don't check this in fault pa=
+th,
+> +                         * because we want to fallback to the actual ->f=
+ault()
+> +                         * handler to make the decision.
+> +                         */
+> +                        (smaps && vma->vm_file &&
+> +                        mapping_large_folio_support(vma->vm_file->f_mapp=
+ing));
+>
+>         if (vma_is_temporary_stack(vma))
+>                 return false;
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
