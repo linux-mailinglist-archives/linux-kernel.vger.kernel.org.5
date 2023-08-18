@@ -2,65 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E810B780B08
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:22:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CD5780B0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 13:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376619AbjHRLWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 07:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        id S1376624AbjHRLXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 07:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376621AbjHRLVl (ORCPT
+        with ESMTP id S1376641AbjHRLWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 07:21:41 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5896A3AB2;
-        Fri, 18 Aug 2023 04:21:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692357700; x=1723893700;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CKRSS1iusdv1+5oh3j8yKQXBHN0I1ieRa1yex02/XD8=;
-  b=Qo3UWgb/EViDQ2UH4qA2I9NmULITXiti1v8KOp/7RUY6Px7PbSLOryt3
-   MT2xVWtIDpO2EyOsDioJv4j+UsA3k8VBy9Tmu7THr1EYof8AGs6LEDyRU
-   5a6uU6EiCav85kG/KmNFk1cOtbqJ8XhdQgeXhd34kJulN0mlOdRkyGb2F
-   QfAnVJBW6bRz4l5ixx1IqRGiHmzEi6FzDds60qIRPlBVdwsHhDDxVsm3e
-   sv8Uq4U1nIXRv0mbdYSQbppNChpj5zlvu1/oVXCgEQtPGWfSTLbM8hMsQ
-   8g1HCTmx/eFNEyoAGrIfsVeFhIGD3UKpUCvEt6sH4hfP3FjbdHRuNwJXS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="370538362"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="370538362"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 04:21:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="728579674"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="728579674"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 18 Aug 2023 04:21:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWxXs-005WEC-1U;
-        Fri, 18 Aug 2023 14:21:36 +0300
-Date:   Fri, 18 Aug 2023 14:21:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH 2/2] iio: pressure: bmp280: Add support for BMP390
-Message-ID: <ZN9UQMR8X4/vMV1Z@smile.fi.intel.com>
-References: <cover.1692305434.git.ang.iglesiasg@gmail.com>
- <a34c72a2027c4b98bd815e8cf01f56d69c5d1386.1692305434.git.ang.iglesiasg@gmail.com>
+        Fri, 18 Aug 2023 07:22:35 -0400
+Received: from proxmox-new.maurer-it.com (proxmox-new.maurer-it.com [94.136.29.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBC4449F;
+        Fri, 18 Aug 2023 04:22:13 -0700 (PDT)
+Received: from proxmox-new.maurer-it.com (localhost.localdomain [127.0.0.1])
+        by proxmox-new.maurer-it.com (Proxmox) with ESMTP id 90689427C1;
+        Fri, 18 Aug 2023 13:22:11 +0200 (CEST)
+Message-ID: <49c2e556-fd75-751e-3b0c-c51c3245f94c@proxmox.com>
+Date:   Fri, 18 Aug 2023 13:22:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a34c72a2027c4b98bd815e8cf01f56d69c5d1386.1692305434.git.ang.iglesiasg@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: "Use slab_build_skb() instead" deprecation warning triggered by
+ tg3
+Content-Language: en-US
+To:     Bagas Sanjaya <bagasdotme@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     siva.kallam@broadcom.com, prashant@broadcom.com,
+        mchan@broadcom.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
+        jdelvare@suse.com, Guenter Roeck <linux@roeck-us.net>,
+        netdev@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        keescook@chromium.org,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <1bd4cb9c-4eb8-3bdb-3e05-8689817242d1@proxmox.com>
+ <ZN9SId_KNgI3dfVI@debian.me>
+From:   Fiona Ebner <f.ebner@proxmox.com>
+In-Reply-To: <ZN9SId_KNgI3dfVI@debian.me>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,21 +49,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 11:05:22PM +0200, Angel Iglesias wrote:
-> Adds BMP390 device id to the supported ids on bmp380 sensor family
+Am 18.08.23 um 13:12 schrieb Bagas Sanjaya:
+> On Fri, Aug 18, 2023 at 10:05:11AM +0200, Fiona Ebner wrote:
+>> Hi,
+>> we've got a user report about the WARN_ONCE introduced by ce098da1497c
+>> ("skbuff: Introduce slab_build_skb()") [0]. The stack trace indicates
+>> that the call comes from the tg3 module. While this is still kernel 6.2
+>> and I can't verify that the issue is still there with newer kernels, I
+>> don't see related changes in drivers/net/ethernet/broadcom/tg3.* after
+>> ce098da1497c, so I thought I should let you know.
+>>
+> 
+> Thanks for the regression report. I'm adding it to regzbot:
+> 
+> #regzbot ^introduced: ce098da1497c6d
+> #regzbot link: https://forum.proxmox.com/threads/132338/
+> 
+> PS: The proxmox forum link (except full dmesg log pasted there) is in
+> German, so someone fluent in the language can be helpful here.
+> 
 
-...
+At the moment, there is not much other text: The user says that they got
+the trace after a recent upgrade, but cannot notice any real problems
+and I'm telling them that it's a deprecation warning and that I reported
+it upstream. If I should ask for some specific information, please let
+me know :) But not sure if more information from the user is even
+required here or if the fix will just be similar to the one in
+8c495270845d ("bnx2x: use the right build_skb() helper").
 
->  #define BMP180_CHIP_ID			0x55
->  #define BMP280_CHIP_ID			0x58
->  #define BME280_CHIP_ID			0x60
-> +#define BMP390_CHIP_ID			0x60
-
-Keep it a bit better ordered. At the first glance, move
-before BME.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Best Regards,
+Fiona
 
