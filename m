@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D17780BF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:41:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F64780BFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376936AbjHRMlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:41:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41304 "EHLO
+        id S1376946AbjHRMly convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Aug 2023 08:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376913AbjHRMkt (ORCPT
+        with ESMTP id S1376955AbjHRMl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:40:49 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D4E3A8D;
-        Fri, 18 Aug 2023 05:40:47 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 459737FD3;
-        Fri, 18 Aug 2023 20:40:44 +0800 (CST)
-Received: from EXMBX072.cuchost.com (172.16.6.82) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 18 Aug
- 2023 20:40:44 +0800
-Received: from [192.168.125.62] (183.27.97.249) by EXMBX072.cuchost.com
- (172.16.6.82) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Fri, 18 Aug
- 2023 20:40:43 +0800
-Message-ID: <e47c92c9-c57b-83b1-c444-0fce41164fe1@starfivetech.com>
-Date:   Fri, 18 Aug 2023 20:40:42 +0800
+        Fri, 18 Aug 2023 08:41:29 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC5BD3AA3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:41:27 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-160-BBNzSMdkOEuOZg1_C6R6rg-1; Fri, 18 Aug 2023 13:41:25 +0100
+X-MC-Unique: BBNzSMdkOEuOZg1_C6R6rg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 18 Aug
+ 2023 13:41:21 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 18 Aug 2023 13:41:21 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Matthew Wilcox' <willy@infradead.org>
+CC:     'David Howells' <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "Jens Axboe" <axboe@kernel.dk>, Christoph Hellwig <hch@list.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jeff Layton <jlayton@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
+ memcpy_from_iter_mc()
+Thread-Topic: [PATCH v3 2/2] iov_iter: Don't deal with iter->copy_mc in
+ memcpy_from_iter_mc()
+Thread-Index: AQHZ0DpP/l59sWTPXU+UuQ9VGbJikq/s16Kg///6foCAACRpIIAC+zJggAAE0WD///bMgIAAEYXg
+Date:   Fri, 18 Aug 2023 12:41:21 +0000
+Message-ID: <a357144524ec4cdfa6c991a473daffdf@AcuMS.aculab.com>
+References: <CAHk-=wg8G7teERgR7ExNUjHj0yx3dNRopjefnN3zOWWvYADXCw@mail.gmail.com>
+ <03730b50cebb4a349ad8667373bb8127@AcuMS.aculab.com>
+ <20230816120741.534415-1-dhowells@redhat.com>
+ <20230816120741.534415-3-dhowells@redhat.com>
+ <608853.1692190847@warthog.procyon.org.uk>
+ <3dabec5643b24534a1c1c51894798047@AcuMS.aculab.com>
+ <CAHk-=wjFrVp6srTBsMKV8LBjCEO0bRDYXm-KYrq7oRk0TGr6HA@mail.gmail.com>
+ <665724.1692218114@warthog.procyon.org.uk>
+ <1748360.1692358952@warthog.procyon.org.uk>
+ <b9c32d9669174dbbbb8e944146814a98@AcuMS.aculab.com>
+ <ZN9jkweGABK5LSNU@casper.infradead.org>
+In-Reply-To: <ZN9jkweGABK5LSNU@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v1 0/2] Add dma and tdm nodes for StarFive JH7110 SOC
-To:     Conor Dooley <conor@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Emil Renner Berthing" <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Walker Chen <walker.chen@starfivetech.com>
-CC:     Conor Dooley <conor.dooley@microchip.com>,
-        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-References: <20230724065158.925-1-walker.chen@starfivetech.com>
- <20230726-upriver-net-8490aa69df8a@spud>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-From:   Hal Feng <hal.feng@starfivetech.com>
-In-Reply-To: <20230726-upriver-net-8490aa69df8a@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.249]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX072.cuchost.com
- (172.16.6.82)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 17:21:39 +0100, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
+From: Matthew Wilcox
+> Sent: Friday, August 18, 2023 1:27 PM
 > 
-> On Mon, 24 Jul 2023 14:51:56 +0800, Walker Chen wrote:
->> These patches add dma and tdm nodes for the StarFive JH7110 SoC, they
->> are based on linux-next. I have tested them on the VisionFive2 board.
->> Thanks.
->> 
->> Best regards,
->> Walker
->> 
->> [...]
+> On Fri, Aug 18, 2023 at 12:16:23PM +0000, David Laight wrote:
+> > > > +	ITER_IOVEC = 1,
+> > > > +	ITER_UBUF = 2,
+> > > > +	ITER_KVEC = 4,
+> > > > +	ITER_BVEC = 8,
+> > > > +	ITER_XARRAY = 16,
+> > > > +	ITER_DISCARD = 32,
+> >
+> > IIRC Linus had type:6 - that doesn't leave any headroom
+> > for additional types (even though they shouldn't proliferate).
 > 
-> Applied to riscv-dt-for-next, thanks!
-> 
-> [1/2] riscv: dts: starfive: jh7110: add dma controller node
->       https://git.kernel.org/conor/c/ac73c09716c3
-> [2/2] riscv: dts: starfive: jh7110: add the node and pins configuration for tdm
->       https://git.kernel.org/conor/c/e7c304c0346d
+> I have proposed an ITER_KBUF in the past (it is to KVEC as UBUF is
+> to IOVEC).  I didn't care enough to keep pushing it, but it's clearly
+> a common idiom.
 
-Hi, Conor,
+Indeed, I didn't spot UBUF going in - I spot a lot of stuff.
 
-You had deleted the `status = "okay";` of usb0 by mistake in this commit.
+I did wonder if you could optimise for a vector length of 1
+(inside the KVEC conditional).
+That would also pick up the cases where there only happens
+to be a single buffer.
 
- &usb0 {
- 	dr_mode = "peripheral";
--	status = "okay";
- };
+I also remember writing a patch that simplified import_iovec()
+by combining the iov_iter with a struct iovec iovec[UIO_FASTIOV].
+All got bogged down in io_uring which would need changing first.
 
-Could you please help fix it?
+	David
 
-Best regards,
-Hal
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
