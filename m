@@ -2,55 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C9E781013
+	by mail.lfdr.de (Postfix) with ESMTP id 7B652781014
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378527AbjHRQPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S1378533AbjHRQPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378588AbjHRQPH (ORCPT
+        with ESMTP id S1378595AbjHRQPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:15:07 -0400
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0923C421A
+        Fri, 18 Aug 2023 12:15:08 -0400
+Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FEA4213
         for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:15:04 -0700 (PDT)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1bb8caf7312so14016005ad.0
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1bdb3878322so15249045ad.2
         for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:15:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375303; x=1692980103;
+        d=1e100.net; s=20221208; t=1692375304; x=1692980104;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VuwzUPjXt7TmzywKLvQ4lTRd5/cHVY/sj2+vqmzpVSI=;
-        b=Zi0GtyC84YB+AKzg9cO9DUGSI1XmJoi/qsb8O/pCz+qPQJcTtzaVIjR3DwxcZdqtLm
-         +EAdrb443cW3dAPU5l7u9Ihf2Z6Owz9PLIFGh5D2T9gqXKEJ+m+4/iitqRcGieHFg7/U
-         DO6hddmaA7q6+jWiGf0MCAk1QqYk9y015XtHtMgwUYxYaK8HLrQIeZnY6u1KNjK6AZZh
-         O14OGoIvWvGJOfWsWPIj8zyExlBVvDTU10BT79hA9iiWU/Or3AfZcXNbGslkUu9Tt+wT
-         fdqG+WXvQGdiKaWE59DIy52tYZcryDF+gQjWcQpJkvpkMJUcJzyJTed4UxFXAcaYpITL
-         mn5g==
-X-Gm-Message-State: AOJu0Yzqdj2/ErZX8twF1eTKBdMHs6SizwbP0HaoOdkpV4mYg/lIXl5x
-        9ezkQuTuIxU7ZCbF5aumf7pwDtNTqoHv4+OwznO8NaAOx+ER
-X-Google-Smtp-Source: AGHT+IEuu4pT1WDkm/7ME68GqceyeL/1NscIPD4/uelyyIBtEeUb4JPArXxOFMUuyXTpbq3JLRe8WZb0TpXdCHDcdwfrrSeERsUt
+        bh=zZXTzYhH/QokR/Ca1TtaJrXoB6xfiXR3zkEVWXsprDg=;
+        b=WVWD0O7ZMO3Cf0DcuI7OcbUtDJBJlfkcll6yzqu7LpbJPiM3tWj+blrjgMouMQk3+0
+         LBl/gbukx1xO+VY86+lqOCvpaj8Cuu+2O32eICYIGHoiR/ajSWvnNi0kcFyDkvut2SDY
+         sLrY6/aiZvIE7R7IwYvat13DwfFYD1h95Rmj85fREDz+ayzKGWHeLYmklCQ07BWbDCCu
+         JCfsFWqSGxGuZ9UjxU5+xyWM41h9xT0rf3V+EZSqIyXK4l5RtfxuXhdI3aH8p38EkYxC
+         z+jvI2fL6vq4N4yp8L6GryZFhAj3m6hIXZ+Lc3QNXqvqxULG3guT6ksxgdK31gCEiYKq
+         NHvA==
+X-Gm-Message-State: AOJu0Yx4miC7X97Ryn+ANdlFvkQySjcf9CEqYMtkkeUZlgSo2Si/xOwM
+        7SYw9aIS5Ij6AC7xcN61Py3D2qNdg/oqqeQ6GtMQxUYbcyH8
+X-Google-Smtp-Source: AGHT+IHd/1ELFzzKWV7wTV5GChQtToCpSe/lkmsPL1ggv8ZD/3vYEBUhgXRBq0mGnHSUZXago2yTT1i+R+jJf96f+IfPhUxSCgzg
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f685:b0:1bc:e37:aa5c with SMTP id
- l5-20020a170902f68500b001bc0e37aa5cmr1102919plg.1.1692375303276; Fri, 18 Aug
+X-Received: by 2002:a17:902:e842:b0:1bc:1b01:894e with SMTP id
+ t2-20020a170902e84200b001bc1b01894emr1011219plg.10.1692375303711; Fri, 18 Aug
  2023 09:15:03 -0700 (PDT)
 Date:   Fri, 18 Aug 2023 09:15:03 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c74d44060334d476@google.com>
-Subject: [syzbot] [ntfs?] WARNING in do_open_execat
-From:   syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>
-To:     anton@tuxera.com, brauner@kernel.org, ebiederm@xmission.com,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <000000000000cdf3e7060334d4a8@google.com>
+Subject: [syzbot] [block?] WARNING in user_reset_fdc
+From:   syzbot <syzbot+233dd451466273c18ef0@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, efremov@linux.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,61 +60,87 @@ syzbot found the following issue on:
 
 HEAD commit:    16931859a650 Merge tag 'nfsd-6.5-4' of git://git.kernel.or..
 git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13e2673da80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f58a4ba80000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=6ec38f7a8db3b3fb1002
+dashboard link: https://syzkaller.appspot.com/bug?extid=233dd451466273c18ef0
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17cdbc65a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1262d8cfa80000
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/eecc010800b4/disk-16931859.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f45ae06377a7/vmlinux-16931859.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/68891896edba/bzImage-16931859.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/4b6ab78b223a/mount_0.gz
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-16931859.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bdf15da7f883/vmlinux-16931859.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3793fa211ca9/bzImage-16931859.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com
+Reported-by: syzbot+233dd451466273c18ef0@syzkaller.appspotmail.com
 
-ntfs: volume version 3.1.
-process 'syz-executor300' launched './file1' with NULL argv: empty string added
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5020 at fs/exec.c:933 do_open_execat+0x18f/0x3f0 fs/exec.c:933
+WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 schedule_bh drivers/block/floppy.c:999 [inline]
+WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 process_fd_request drivers/block/floppy.c:2847 [inline]
+WARNING: CPU: 2 PID: 26006 at drivers/block/floppy.c:999 user_reset_fdc+0x1a1/0x1e0 drivers/block/floppy.c:2945
 Modules linked in:
-CPU: 0 PID: 5020 Comm: syz-executor300 Not tainted 6.5.0-rc6-syzkaller-00038-g16931859a650 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:do_open_execat+0x18f/0x3f0 fs/exec.c:933
-Code: 8e 46 02 00 00 41 0f b7 1e bf 00 80 ff ff 66 81 e3 00 f0 89 de e8 b1 67 9b ff 66 81 fb 00 80 0f 84 8b 00 00 00 e8 51 6c 9b ff <0f> 0b 48 c7 c3 f3 ff ff ff e8 43 6c 9b ff 4c 89 e7 e8 4b c9 fe ff
-RSP: 0018:ffffc90003b0fd10 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888028401dc0 RSI: ffffffff81ea9c4f RDI: 0000000000000003
-RBP: 1ffff92000761fa2 R08: 0000000000000003 R09: 0000000000008000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff88802bf18780
-R13: ffff888075d70000 R14: ffff8880742776a0 R15: 0000000000000001
-FS:  000055555706b380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe0f1d3ff8 CR3: 0000000015f97000 CR4: 0000000000350ef0
+CPU: 2 PID: 26006 Comm: syz-executor.3 Not tainted 6.5.0-rc6-syzkaller-00038-g16931859a650 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:schedule_bh drivers/block/floppy.c:999 [inline]
+RIP: 0010:process_fd_request drivers/block/floppy.c:2847 [inline]
+RIP: 0010:user_reset_fdc+0x1a1/0x1e0 drivers/block/floppy.c:2945
+Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 02 7e 27 48 8d 04 9b 80 0c c5 38 37 42 92 04 e9 b4 fe ff ff e8 bf e8 4f fc <0f> 0b e9 3d ff ff ff e8 93 f5 a3 fc e9 d8 fe ff ff e8 29 f6 a3 fc
+RSP: 0018:ffffc900283af978 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88801ccec800 RSI: ffffffff85361fe1 RDI: 0000000000000001
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000002
+R13: 0000000000000001 R14: 0000000000000012 R15: 0000000000000012
+FS:  0000000000000000(0000) GS:ffff88802c800000(0063) knlGS:00000000f7fb4b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 00000000f731c268 CR3: 0000000069b30000 CR4: 0000000000350ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- bprm_execve fs/exec.c:1830 [inline]
- bprm_execve+0x49d/0x1a50 fs/exec.c:1811
- do_execveat_common.isra.0+0x5d3/0x740 fs/exec.c:1963
- do_execve fs/exec.c:2037 [inline]
- __do_sys_execve fs/exec.c:2113 [inline]
- __se_sys_execve fs/exec.c:2108 [inline]
- __x64_sys_execve+0x8c/0xb0 fs/exec.c:2108
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fee7ec27b39
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe6c369d28 EFLAGS: 00000246 ORIG_RAX: 000000000000003b
-RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fee7ec27b39
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000480
-RBP: 00007fee7ec7004b R08: 000000000001ee3b R09: 0000000000000000
-R10: 00007ffe6c369bf0 R11: 0000000000000246 R12: 00007fee7ec70055
-R13: 00007ffe6c369f08 R14: 0000000000000001 R15: 0000000000000001
+ fd_locked_ioctl+0xa78/0x1a10 drivers/block/floppy.c:3542
+ fd_ioctl drivers/block/floppy.c:3576 [inline]
+ fd_compat_ioctl+0x90b/0x1d00 drivers/block/floppy.c:3890
+ compat_blkdev_ioctl+0x2fe/0x7c0 block/ioctl.c:677
+ __do_compat_sys_ioctl+0x2bf/0x330 fs/ioctl.c:968
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x61/0xe0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x33/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x70/0x82
+RIP: 0023:0xf7fb9579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f7fb45ac EFLAGS: 00000292 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000000254
+RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
  </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
 
 
 ---
@@ -130,10 +153,6 @@ https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
 If you want to overwrite bug's subsystems, reply with:
 #syz set subsystems: new-subsystem
