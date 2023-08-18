@@ -2,209 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327287815B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CE47815BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242350AbjHRXRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 19:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        id S242408AbjHRXSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 19:18:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242574AbjHRXQ4 (ORCPT
+        with ESMTP id S242393AbjHRXSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 19:16:56 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD524227;
-        Fri, 18 Aug 2023 16:16:52 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qX8hu-00017o-1r;
-        Fri, 18 Aug 2023 23:16:43 +0000
-Date:   Sat, 19 Aug 2023 00:16:28 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Fri, 18 Aug 2023 19:18:35 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E117B4205;
+        Fri, 18 Aug 2023 16:18:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=LRQRZPdrv4QI8bQQoUTKBOoMNyJa1LbrbkfjcCc8uZw=; b=vkl51uAgZ2coNgQgP/P4b8/ozl
+        CFZbSnec4ohA+rkE1H92ceFU7AiniNCuavWVyoH+RyBPtjuVUujA6tVAn0aKhzlJk5cRfdds56VFv
+        yyMQXQO0bhc7s3zU31cE4b8FwZSyl2wQSdKL0PeJhOs/X4xKGhiQcWiWslcEMhB89CeaPQ0bF6qIx
+        NOpTOoT34ekpDhGPB/jkuU5NCH9HH0vAdwT13mclegA8ucop3r+npiuv4n5YQ7mb53OC6ld6DFrZ0
+        a0d8CX0NKx6XMbylqHUv7n+TK5Df613wD3hawMRTVHw7ALG868QMRyGCCLxRXRAtPH8xLhJ2pZUBC
+        ef7BHUKA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qX8jS-00A9bg-1P;
+        Fri, 18 Aug 2023 23:18:18 +0000
+Message-ID: <e1ca6c2f-92e4-6dad-79ec-71cf66e9a385@infradead.org>
+Date:   Fri, 18 Aug 2023 16:18:15 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v4 27/28] ASoC: codecs: Add support for the framer codec
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Herve Codina <herve.codina@bootlin.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next 4/4] net: ethernet: mtk_eth_soc: support 36-bit DMA
- addressing on MT7988
-Message-ID: <1a0d162f3dc1d37f23c01354f693d219c354c4d6.1692400170.git.daniel@makrotopia.org>
-References: <cover.1692400170.git.daniel@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692400170.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
+ <cb734efe2eeb89cb1afbf01d3625181537e2850f.1692376361.git.christophe.leroy@csgroup.eu>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <cb734efe2eeb89cb1afbf01d3625181537e2850f.1692376361.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Systems having 4 GiB of RAM and more require DMA addressing beyond the
-current 32-bit limit. Starting from MT7988 the hardware now supports
-36-bit DMA addressing, let's use that new capability in the driver to
-avoid running into swiotlb on systems with 4 GiB of RAM or more.
+Hi,
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 30 +++++++++++++++++++--
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 12 +++++++--
- 2 files changed, 38 insertions(+), 4 deletions(-)
+On 8/18/23 09:39, Christophe Leroy wrote:
+> +config SND_SOC_FRAMER
+> +	tristate "Framer codec"
+> +	depends on GENERIC_FRAMER
+> +	help
+> +	  Enable support for the framer codec.
+> +	  The framer codec uses the generic framer infrastructure to transport
+> +	  some audio data over an analog E1/T1/J1 line.
+> +	  This codec allows to use some of the time slots available on the TDM
+> +	  bus on which the framer is connected to transport the audio data.
+> +
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index eea3a7e578831..7562da7efd06a 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1328,6 +1328,10 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
- 	data = TX_DMA_PLEN0(info->size);
- 	if (info->last)
- 		data |= TX_DMA_LS0;
-+
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+		data |= TX_DMA_PREP_ADDR64(info->addr);
-+
- 	WRITE_ONCE(desc->txd3, data);
- 
- 	 /* set forward port */
-@@ -1997,6 +2001,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 	bool xdp_flush = false;
- 	int idx;
- 	struct sk_buff *skb;
-+	u64 addr64 = 0;
- 	u8 *data, *new_data;
- 	struct mtk_rx_dma_v2 *rxd, trxd;
- 	int done = 0, bytes = 0;
-@@ -2112,7 +2117,10 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 				goto release_desc;
- 			}
- 
--			dma_unmap_single(eth->dma_dev, trxd.rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(trxd.rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)trxd.rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 
- 			skb = build_skb(data, ring->frag_size);
-@@ -2178,6 +2186,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		ring->calc_idx = idx;
- 		done++;
- 	}
-@@ -2670,6 +2681,9 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		rxd->rxd3 = 0;
- 		rxd->rxd4 = 0;
- 		if (mtk_is_netsys_v2_or_greater(eth)) {
-@@ -2716,6 +2730,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 
- static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
- {
-+	u64 addr64 = 0;
- 	int i;
- 
- 	if (ring->data && ring->dma) {
-@@ -2729,7 +2744,10 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_
- 			if (!rxd->rxd1)
- 				continue;
- 
--			dma_unmap_single(eth->dma_dev, rxd->rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(rxd->rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)rxd->rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 			mtk_rx_put_buff(ring, ring->data[i], false);
- 		}
-@@ -4730,6 +4748,14 @@ static int mtk_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA)) {
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
-+		if (err) {
-+			dev_err(&pdev->dev, "Wrong DMA config\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	spin_lock_init(&eth->page_lock);
- 	spin_lock_init(&eth->tx_irq_lock);
- 	spin_lock_init(&eth->rx_irq_lock);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 0e513f41ad477..8d69865032adb 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -331,6 +331,9 @@
- #define TX_DMA_PLEN1(x)		((x) & eth->soc->txrx.dma_max_len)
- #define TX_DMA_SWC		BIT(14)
- #define TX_DMA_PQID		GENMASK(3, 0)
-+#define TX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#define TX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(TX_DMA_ADDR64_MASK, (x))) << 32)
-+#define TX_DMA_PREP_ADDR64(x)	FIELD_PREP(TX_DMA_ADDR64_MASK, ((x) >> 32))
- 
- /* PDMA on MT7628 */
- #define TX_DMA_DONE		BIT(31)
-@@ -343,6 +346,9 @@
- #define RX_DMA_PREP_PLEN0(x)	(((x) & eth->soc->txrx.dma_max_len) << eth->soc->txrx.dma_len_offset)
- #define RX_DMA_GET_PLEN0(x)	(((x) >> eth->soc->txrx.dma_len_offset) & eth->soc->txrx.dma_max_len)
- #define RX_DMA_VTAG		BIT(15)
-+#define RX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#define RX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(RX_DMA_ADDR64_MASK, (x))) << 32)
-+#define RX_DMA_PREP_ADDR64(x)	FIELD_PREP(RX_DMA_ADDR64_MASK, ((x) >> 32))
- 
- /* QDMA descriptor rxd3 */
- #define RX_DMA_VID(x)		((x) & VLAN_VID_MASK)
-@@ -942,6 +948,7 @@ enum mkt_eth_capabilities {
- 	MTK_RSTCTRL_PPE2_BIT,
- 	MTK_U3_COPHY_V2_BIT,
- 	MTK_SRAM_BIT,
-+	MTK_36BIT_DMA_BIT,
- 
- 	/* MUX BITS*/
- 	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
-@@ -978,6 +985,7 @@ enum mkt_eth_capabilities {
- #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
- #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
- #define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
-+#define MTK_36BIT_DMA	BIT_ULL(MTK_36BIT_DMA_BIT)
- 
- #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
- 	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
-@@ -1059,8 +1067,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
- 
--#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
--		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
-+#define MT7988_CAPS  (MTK_36BIT_DMA | MTK_GDM1_ESW | MTK_QDMA | \
-+		      MTK_RSTCTRL_PPE1 | MTK_RSTCTRL_PPE2 | MTK_SRAM)
- 
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
+Just curious: what controls the slot allocations/usages?
+Is that done in userspace?
+
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called snd-soc-framer.
+
+thanks.
 -- 
-2.41.0
+~Randy
