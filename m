@@ -2,39 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CB578044F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:20:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EEB780439
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 05:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357508AbjHRDTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 23:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38198 "EHLO
+        id S1357449AbjHRDLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 23:11:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352726AbjHRDTL (ORCPT
+        with ESMTP id S1357452AbjHRDKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 23:19:11 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 69C2630F6
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:19:09 -0700 (PDT)
-Received: (qmail 18388 invoked by uid 1000); 17 Aug 2023 23:19:08 -0400
-Date:   Thu, 17 Aug 2023 23:19:08 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     mathias.nyman@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] xhci: Disable connect, disconnect and over-current
- wakeup on system suspend
-Message-ID: <dc4f5de7-43f1-4dc2-9a2f-39846b4b7cc3@rowland.harvard.edu>
-References: <20230817093305.212821-1-kai.heng.feng@canonical.com>
- <cab8a29b-816c-41c7-8d2a-418f787e406e@rowland.harvard.edu>
- <CAAd53p7HZk5tTvT=dhSk01KSW4W3vCi+hY8aFYRoFzxs8YiiYA@mail.gmail.com>
+        Thu, 17 Aug 2023 23:10:55 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6EE2D56
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:10:54 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bdf4752c3cso3547295ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 20:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692328254; x=1692933054;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yKpW3uMzKHMipz/jB1RiSd8Olvi+QB8PMIbMqnSLDAU=;
+        b=jkSdfrawUtRZR63RxuLHuqppHYvkby9RDNZGLiEhnY4whd8qEb14oCt8G2bOBZcpB9
+         VXTtxz1ifxs4zmBpNS/xSBbcywmCT/h0ZUUMjujMhfW0BjNC/umz8Cf0yn6tNarqO4li
+         kJhGHNE92fqZNR9wTzfss5O55RHtA8UfxCte1NH3kVn358XA1gAjnEg2QxwSIhZ5sKQz
+         wYIQSrqNaiPCLB4/zTpYFFIQKynWDgm2VOdt5i/VXWkHfJTTEOTQ88EwVpuxj4p/+fBt
+         sZfdpIAMxdOvJXD1lmlDz1gO1CdFG9Z59gG0cBvZFdOpWDj0uCOxHTlibaz5WP7H4UyH
+         6G+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692328254; x=1692933054;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yKpW3uMzKHMipz/jB1RiSd8Olvi+QB8PMIbMqnSLDAU=;
+        b=g6IZHt8f/U8lcjc0NbgyGFEyObMbpP6M8zWOpeckHat8WSWj2+V5wwZ0ug/ncVI+0N
+         DtC+AU8WlqmDsLOixlnUAvgFR4TDvGeK2QPZbvJDlsbtLOvAKo0Ci8fz2JUsbUNXiahu
+         kAicpKOo7k5ccsfryYpdPOTE6bUF/PDBLg35AzZXToQwbyVOxaBvAS0Pv9eKyiz+LrdF
+         iT1EtOM5gGX/6GFTGPZZAJdQ+8Zqp+oPIwC6sHFjAVhIah6WtieGIQ+GwlCkAbNBQ/0d
+         Jf5lpuQCU9lwiXuhkKUEl6FZVqeNIptlUZtyJr7KsjjfHyLSTR/fcu4+mf/1QMUVbkuT
+         hgtg==
+X-Gm-Message-State: AOJu0YxE0GpgvxcrcYn22qWYZBfgb4E22tn5c5bYjvVWhSOhmtUvMKnT
+        rYpT7cD1EdOEDpyYuRffeAVj1fVWkrg=
+X-Google-Smtp-Source: AGHT+IGP1tCxPpyohn4+Hz+ynW1rLOTgpbqwPkZ/faeicKOrsuG0G3XHZ8eITEAPFUmxJyKR/R/FhA==
+X-Received: by 2002:a17:903:11d0:b0:1b8:8b72:fa28 with SMTP id q16-20020a17090311d000b001b88b72fa28mr1494023plh.58.1692328253792;
+        Thu, 17 Aug 2023 20:10:53 -0700 (PDT)
+Received: from localhost ([156.236.96.163])
+        by smtp.gmail.com with ESMTPSA id u1-20020a170902e80100b001b51b3e84cesm494367plg.166.2023.08.17.20.10.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 17 Aug 2023 20:10:53 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 11:20:37 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 5/8] erofs: drop z_erofs_page_mark_eio()
+Message-ID: <20230818112037.000027ef.zbestahu@gmail.com>
+In-Reply-To: <20230817082813.81180-5-hsiangkao@linux.alibaba.com>
+References: <20230817082813.81180-1-hsiangkao@linux.alibaba.com>
+        <20230817082813.81180-5-hsiangkao@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAd53p7HZk5tTvT=dhSk01KSW4W3vCi+hY8aFYRoFzxs8YiiYA@mail.gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,51 +73,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 08:00:39AM +0800, Kai-Heng Feng wrote:
-> On Thu, Aug 17, 2023 at 10:07 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 05:33:05PM +0800, Kai-Heng Feng wrote:
-> > > The system is designed to let display and touchpanel share the same
-> > > power source, so when the display becomes off, the USB touchpanel also
-> > > lost its power and disconnect itself from USB bus. That doesn't play
-> > > well when most Desktop Environment lock and turnoff the display right
-> > > before entering system suspend.
-> >
-> > I don't see why that should cause any trouble.  The display gets locked
-> > and turned off, the touchpanel disconnects from the USB bus, and then
-> > the system goes into suspend.  Why would there be a wakeup signal at
-> > this point?
+On Thu, 17 Aug 2023 16:28:10 +0800
+Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
+
+> It can be folded into z_erofs_onlinepage_endio() to simplify the code.
 > 
-> The disconnecting can happens during the system suspend process, so
-> the suspend process is aborted.
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-Maybe these systems need to add a little delay when the display is 
-turned off, in order to give the touchpanel time to disconnect before 
-the system suspend begins.
-
-> > > So for system-wide suspend, also disable connect, disconnect and
-> > > over-current wakeup to prevent spurious wakeup.
-> >
-> > Whether to disable these things is part of the userspace policy.  The
-> > kernel should not make the decision; the user does by enabling or
-> > disabling wakeups.
-> 
-> The power/wakeup is already disabled.
-
-In that case the root hub should not generate a wakeup request in 
-response to the touchpanel disconnecting.
-
-> The disconnecting event is from roothub and if roothub wakeup is
-> disabled, other USB devices lose the ability to wake the system up
-> from system suspend.
-
-That shouldn't happen either.  Disabling wakeup on the root hub should 
-not prevent the root hub from relaying wakeup requests it receives from 
-downstream devices.  It should merely prevent the root hub from 
-generating its own wakeup requests for connects, disconnects, and 
-over-current events.
-
-It sounds like the xhci root-hub code isn't doing the right thing, at 
-least, not on your systems.
-
-Alan Stern
+Reviewed-by: Yue Hu <huyue2@coolpad.com>
