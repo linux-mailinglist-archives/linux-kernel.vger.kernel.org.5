@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F28A978182D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884F078182F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344456AbjHSICK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S1344652AbjHSICs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232635AbjHSIB5 (ORCPT
+        with ESMTP id S232635AbjHSICM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:01:57 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C68F3C35
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:01:55 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso25912591fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692432113; x=1693036913;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=w3tAtsLI5s7m9t2MiJZTTVjgQTSIULjZIhCpwhV7cIA=;
-        b=XNHfAfYmCzvVRA8YoZrkhI7yXULzKeAGwu3fpaguHZWgbvPjej1avmavJvxX0Q5wOM
-         gE+sZbSIHp4L9fgUdsSHLOeQoIYvzZXQv6CNczaRF+VYcv6UG/NrZ7zu0dgrHyTW02Qi
-         TYCglKP6b8xz8lwC3KE8NB1mi7/QGHdbthwZYKE37w6Hsz/qFdlLSEsWa8W0Vs01L/LA
-         rP9GCp+p1xOy2l+6wSUoMoYbCIZl0BJngpdDatoXtZSByobg0TDM05l8z61vt1B/I2aC
-         bVTwKGZ8a3c1i6nMJo2m73jwc8JBlcqNaXYrblneTuTIf+lEfg2XGNDAOyzSx+s76Lu5
-         IQxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692432113; x=1693036913;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w3tAtsLI5s7m9t2MiJZTTVjgQTSIULjZIhCpwhV7cIA=;
-        b=fV1ex/mbt0IpT2uVPJRbTZK2HroMvHddN86OZDFcf5D1+K94S8WyxGVg1oHKibYR3M
-         /vAo4AWazg5mOR9SWIpbchAr5/ZdgdsGmGRIOL7fmW8U7bPieXuTN48EWEzSez6BcmJc
-         Q4orQe9tsHEUnP39UsXZk+jDXVm3r7ffuxCyPnas9tWVbQeRrvHJQhHHQqeCr68TwZAX
-         kbtFjfrAxw1RBL23fsWpNWyWzDAMBVk43GD42hScgJwgmm27OzSBgsFZekIwbbWrIV/x
-         5g1Q26rbz5c0chuBtWo23pkpEukGe0L/HvQzJMgpNpiTU0qoOGx6U5RCh0y81lpQnCw+
-         eJxw==
-X-Gm-Message-State: AOJu0YwhJpm+plDI0Ba7TN/0F+n8Nv8WQy5pq3XtqhjClTnb8xdqgPZi
-        lOfdmC484VnbGIcWH1MKXe6ObQ==
-X-Google-Smtp-Source: AGHT+IEsr2eSWNVpGQ7n93iLTcHZOT5L/UgXbAMJ9cTee7SCL/mCY004HJsoEq4z92AdNcbqyPGMyw==
-X-Received: by 2002:a05:6512:128c:b0:4ff:9aaa:6e3e with SMTP id u12-20020a056512128c00b004ff9aaa6e3emr1260440lfs.41.1692432113351;
-        Sat, 19 Aug 2023 01:01:53 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id s11-20020a056402164b00b00528922bb53bsm1654511edx.76.2023.08.19.01.01.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 01:01:52 -0700 (PDT)
-Message-ID: <952dd160-b913-1484-c682-b5ad0f1a3743@linaro.org>
-Date:   Sat, 19 Aug 2023 10:01:51 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: pinctrl: Drop 'phandle' properties
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230819010946.916772-1-robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230819010946.916772-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Sat, 19 Aug 2023 04:02:12 -0400
+Received: from icts-p-cavuit-3.kulnet.kuleuven.be (icts-p-cavuit-3.kulnet.kuleuven.be [IPv6:2a02:2c40:0:c0::25:133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB673C35
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:02:07 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DATE_IN_PAST_06_12,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 3C75D2017B.A853B
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-0.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:144:242:ac11:2f])
+        by icts-p-cavuit-3.kulnet.kuleuven.be (Postfix) with ESMTP id 3C75D2017B;
+        Sat, 19 Aug 2023 10:02:04 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1692432124;
+        bh=iPHEGUtZhzhEMVVK9XDgSi7+6mF3itLhrrfps3wMzQg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=LXDrH31RF/N4H2cWclsOgqtUbjGZ6Lopq9TS0Dv2v1rjM2GpuvSfSpn1sOs0IUvcl
+         GRZFttESY6v8sXDz3Ao7gnTPcnUtPL9KXZmiiaeh3smo+FjY0FY4lWjtlDNx+6IXSz
+         xU0VZzdyr0EIv2lrnKBbVEhfDTjftWzEiRgyA5fo=
+Received: from [10.41.63.38] (unknown [77.241.232.4])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-0.kuleuven.be (Postfix) with ESMTPSA id BEC7AD4E6A738;
+        Sat, 19 Aug 2023 10:02:03 +0200 (CEST)
+Message-ID: <71214e64-0546-0767-3543-963329dab9a3@cs.kuleuven.be>
+Date:   Fri, 18 Aug 2023 15:33:04 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/1] x86/pti: Fix kernel warnings for pti= and nopti
+ cmdline options.
+Content-Language: en-US
+To:     Sohil Mehta <sohil.mehta@intel.com>, linux-kernel@vger.kernel.org,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        mingo@redhat.com
+Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com
+References: <20230812155448.8865-1-jo.vanbulck@cs.kuleuven.be>
+ <20230812155448.8865-2-jo.vanbulck@cs.kuleuven.be>
+ <841e08d9-ce97-e57a-3fc4-0fb87322903a@intel.com>
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+In-Reply-To: <841e08d9-ce97-e57a-3fc4-0fb87322903a@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2023 03:09, Rob Herring wrote:
-> 'phandle' properties are implicitly supported on all nodes, so it
-> shouldn't be listed in schemas.
+On 14.08.23 14:12, Sohil Mehta wrote:
+> On 8/12/2023 8:54 AM, Jo Van Bulck wrote:
+>>   arch/x86/mm/pti.c | 55 ++++++++++++++++++++++++-----------------------
+>>   1 file changed, 28 insertions(+), 27 deletions(-)
+>>
 > 
-> dtschema had a bug where 'phandle' and other implicit properties weren't
-> being added under 'additionalProperties' schemas. That was fixed in
-> v2023.07 release.
+> This version is very similar to the original patch and much simpler.
+> Sorry about the unnecessary churn.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
+> Apart from the minor nits below,
+> Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+No problem, thanks for the help!
 
-Best regards,
-Krzysztof
+> 
+>> +	if (cpu_mitigations_off())
+>>   		pti_mode = PTI_FORCE_OFF;
+>> +	if (pti_mode == PTI_FORCE_OFF) {
+>>   		pti_print_if_insecure("disabled on command line.");
+>>   		return;
+>>   	}
+> 
+> A new line here would be useful.
 
+Added in next revision.
+
+> Was there an issue with the flow you had in the original patch? It was
+> avoiding the goto label and flow was a bit more linear.
+
+No, the original flow also works and I agree that an explicit PTI_AUTO 
+check may indeed be preferable. Reverting this in the next patch iteration.
+
+Best,
+Jo
