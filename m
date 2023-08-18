@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA715780C89
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ECB780C8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377141AbjHRNaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S1377153AbjHRNaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377173AbjHRN3w (ORCPT
+        with ESMTP id S1377183AbjHRNaB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:29:52 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7256FE74;
-        Fri, 18 Aug 2023 06:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692365391; x=1723901391;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=LwcdNDrZAXt7Dh6y7ICk95eGvcN8eDNINGcjD84ZHxs=;
-  b=QG3gy5/QPkcYw4GxnvbaF/zH7Uq8/x3fZCuk4nDvyDRtHvRC0HuC5rTV
-   pRcjU/2XL5pDWqJz25Y3m7Xn9P6noiwawIXy0YNGkqJvNyfVacbi6vnD2
-   VYfCfLIULggjFD9aJX+o2sqPtZMqncqp2hFJymOW1cE38/ch80YphvZiR
-   /StQ+DdW8/139Fybzq7loMI20if43b/zUmGvlZXFVPZw7fFjM7Xf3Wp3t
-   lvIoE2e5+gbE9dlqA+TvSItdq8KaoKLpfiiQCzf/HTysDmD5n5flhHHhW
-   /taEYf0WTl17jjlvTl/z8z8uIa7DdIQZXokEm8g2vGqVlfklEiz/BROhh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="375880679"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="375880679"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 06:29:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="981657929"
-X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
-   d="scan'208";a="981657929"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Aug 2023 06:29:48 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWzXv-009qyX-0r;
-        Fri, 18 Aug 2023 16:29:47 +0300
-Date:   Fri, 18 Aug 2023 16:29:46 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 0/6] gpio: cdev: bail out of poll() if the device goes
- down
-Message-ID: <ZN9ySmxxdoLODcc9@smile.fi.intel.com>
-References: <20230817184958.25349-1-brgl@bgdev.pl>
- <ZN9JID53QpSz4epI@smile.fi.intel.com>
- <CAMRc=MfZ=GgcqKkDXkUgWC-bdCJECs0HfjRe9Ffy-Metwz6fFQ@mail.gmail.com>
+        Fri, 18 Aug 2023 09:30:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B231E4F;
+        Fri, 18 Aug 2023 06:30:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 103466419A;
+        Fri, 18 Aug 2023 13:30:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39F7BC433C8;
+        Fri, 18 Aug 2023 13:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692365399;
+        bh=cFHYWvuH2yiNK08rOdgi29Mx3L982UHINNVuXMMZlro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P1ZQARbLlMB3eHw13XHg0a83dM8ZZPx1pSHSSsXE/N+75aVIQCGSdLdxD3A7G+pEH
+         sFrFAcpiKImUJTkPdcibaE2ISnqDIzcuMO6WDGLA5pixEsvmRhURS60LWbNpV0jvlz
+         /1zN2khkm60TrCZkMDWkpvUGL0gDV6jkcXg0UchkAYzuRGi/pBjVWq4jaYrIFzGKDm
+         o/JmhREOOlkhgsyaE2NS+k+SfAJd8DbgCRSSn/2+AF8+7gUdi4Pt/A30j6BY9sbPBp
+         8o02JLDXvV2NVHCBnMM/4vJXc9wLYTLP139QY6qD9/0O6hBSeGdloq3/SOLHuVyY14
+         CTWUTSCLau5+w==
+Date:   Fri, 18 Aug 2023 15:29:54 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        David Windsor <dwindsor@gmail.com>,
+        Hans Liljestrand <ishkamiel@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Hui Su <sh_def@163.com>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] nsproxy: Convert nsproxy.count to refcount_t
+Message-ID: <20230818-parkplatz-wahrzeichen-bff62b8dc55e@brauner>
+References: <20230818041327.gonna.210-kees@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfZ=GgcqKkDXkUgWC-bdCJECs0HfjRe9Ffy-Metwz6fFQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230818041327.gonna.210-kees@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 02:06:21PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Aug 18, 2023 at 12:34 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Thu, Aug 17, 2023 at 08:49:52PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Wake up all three wake queues (the one associated with the character
-> > > device file, the one for V1 line events and the V2 line request one)
-> > > when the underlying GPIO device is unregistered. This way we won't get
-> > > stuck in poll() after the chip is gone as user-space will be forced to
-> > > go back into a new system call and will see that gdev->chip is NULL.
-> >
-> > Why can't you use the global device unbind notifications and filter out
-> > what you are interested in?
+On Thu, Aug 17, 2023 at 09:13:32PM -0700, Kees Cook wrote:
+> From: Elena Reshetova <elena.reshetova@intel.com>
 > 
-> There's no truly global device unbind notification - only per-bus.
-> GPIO devices can reside on any bus, there are no limitations and so
-> we'd have to subscribe to all of them.
+> atomic_t variables are currently used to implement reference counters
+> with the following properties:
+>  - counter is initialized to 1 using atomic_set()
+>  - a resource is freed upon counter reaching zero
+>  - once counter reaches zero, its further
+>    increments aren't allowed
+>  - counter schema uses basic atomic operations
+>    (set, inc, inc_not_zero, dec_and_test, etc.)
+> 
+> Such atomic variables should be converted to a newly provided
+> refcount_t type and API that prevents accidental counter overflows and
+> underflows. This is important since overflows and underflows can lead
+> to use-after-free situation and be exploitable.
+> 
+> The variable nsproxy.count is used as pure reference counter. Convert it
+> to refcount_t and fix up the operations.
+> 
+> **Important note for maintainers:
+> 
+> Some functions from refcount_t API defined in refcount.h have different
+> memory ordering guarantees than their atomic counterparts. Please check
+> Documentation/core-api/refcount-vs-atomic.rst for more information.
+> 
+> Normally the differences should not matter since refcount_t provides
+> enough guarantees to satisfy the refcounting use cases, but in some
+> rare cases it might matter. Please double check that you don't have
+> some undocumented memory guarantees for this variable usage.
+> 
+> For the nsproxy.count it might make a difference in following places:
+>  - put_nsproxy() and switch_task_namespaces(): decrement in
+>    refcount_dec_and_test() only provides RELEASE ordering and ACQUIRE
+>    ordering on success vs. fully ordered atomic counterpart
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Elena Reshetova <elena.reshetova@intel.com>
+> Reviewed-by: David Windsor <dwindsor@gmail.com>
+> Reviewed-by: Hans Liljestrand <ishkamiel@gmail.com>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-We have, but it requires a bit of code patching.
-Look at device_platform_notify()/device_platform_notify_remove().
-
-I noticed, btw, that platform_notify() and Co is a dead code :-)
-Maybe it can be converted to a list and a manager of that list,
-so specific cases can utilize it.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Christian Brauner <brauner@kernel.org>
