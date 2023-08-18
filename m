@@ -2,100 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2092780E7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A4B780E83
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377889AbjHRPBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
+        id S1377938AbjHRPBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377994AbjHRPBJ (ORCPT
+        with ESMTP id S1377942AbjHRPBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:01:09 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73074CD;
-        Fri, 18 Aug 2023 08:01:04 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31977ace1c8so914122f8f.1;
-        Fri, 18 Aug 2023 08:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692370863; x=1692975663;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=oUObAblvfLP9rsjJtUMFKffZ4hlMmB39YapsTL/V6WI=;
-        b=nZXdFutToZq80kEOn11H6ZYPz8AR+EzTzNEfIhgp7it6KkiyIV0Kw6gMS3xug+HfIT
-         w1DvhAxv9Pgr8UzTD3fr/zI1d+6E9ANqoF02bfvrWmnx6gN29uUNe1A6JYXwc5virlzD
-         ixFt/loVmT9NHMkvV6ejgBo9HHl8I1Eq8hyIdR3c826NdYDISQjCkiC97YtgqKUtGe5I
-         Q7ZWVBQne2gGTiFOpZbNCs20ZF8I7U3GKMOobtFZE2DFzIufVvUJoe5PW5XAl//7HxbS
-         QDwjgl7jA1a+OgR8c4qlHX5vSvakt1I2zw9Z3XO6tRBqmuX0BCQq9loI5dMr8xRQFmGc
-         F/zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692370863; x=1692975663;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oUObAblvfLP9rsjJtUMFKffZ4hlMmB39YapsTL/V6WI=;
-        b=jcMoO6uXWcc6m/r1aRTJxq2nC2AicataxVCY99BlWaOgyVBJtcsxRcNUURBagGMWxb
-         fo1w4fRtBxo+Ta6PvZS4iw6gDVBcs4MEscJ5NtxRkKNEgB/Bw+uslpC5AAWkBJa3ryPu
-         yzUe50Cq5wiT46uwyLQspkM9YbfbWtVF9YwUyjQZr1X6PEQqOZsO1P3l5miN1JuA92kH
-         YOz529eKrcnwbIlto1BbTGhIZCjk7SC9PC2CZ8n06DygTxX5nNlSZK3z71KeFQiRF4sX
-         PSnK++JFy0pGaK6DdfXc5jKUe6PTck6k/n43xoKvmLdgaZg02a39YDm41ieryaIs+6vj
-         4SRQ==
-X-Gm-Message-State: AOJu0YyYoLkOpPq7u4xa4noYBFVLjaus9MN84v2B0mJtn0vo4EOq97Cx
-        O2mw7k7sSDdGP/J5HlCf9Kkjt/B3v4o=
-X-Google-Smtp-Source: AGHT+IGyxcmhl/x938ugMTqpE1VDJ2270Rjbn4jaudhCg6XnlS+PAwhNXyHUs8VD7ParQwRdv1W9Dg==
-X-Received: by 2002:adf:e985:0:b0:313:ecd3:7167 with SMTP id h5-20020adfe985000000b00313ecd37167mr2145149wrm.42.1692370862804;
-        Fri, 18 Aug 2023 08:01:02 -0700 (PDT)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id z7-20020a5d4d07000000b00317afc7949csm3070116wrt.50.2023.08.18.08.01.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 08:01:01 -0700 (PDT)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Christian Brauner <brauner@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        jfs-discussion@lists.sourceforge.net
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] jfs: remove redundant initialization to pointer ip
-Date:   Fri, 18 Aug 2023 16:01:00 +0100
-Message-Id: <20230818150100.1208648-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 18 Aug 2023 11:01:45 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2079.outbound.protection.outlook.com [40.107.96.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5A6CD
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 08:01:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SAaegEkUFcNbVk0YCXjVt0KwggP+mtxDkC0TEl6s1Lns3qwedTngplC556xfkVU2uiTDBsMWXER/OMCIYU7tH/MTRa+Uz3711noGe7yit3XzV6EiE3GKOeqXkaCVmgpxPD1pauao0jDgxBquN9+TiqdTG/0U2TKRQiPw6L4N2MO7yhXjcCGUGahKeeiJkZvFYTUbsZdaEyU3AoS3llnTFCFko99ouJWdeJ4fX8VtNY1oFx3vmT2YJG31dlLqhtfpgmreBzHh92VGm3mLy6VicClry8hDJ49odBa/ADaBn5WOwsuKDF7fnXnB8Wtgb0ZpV+i802DJhLyFlxCe+2quRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sIVpXkPP5juLdE1DOwLhNteRDhZeNTmAm0lHTDjHg6o=;
+ b=DoIy5wVkdT2OI2C2n2ADrQWDUmBCsqFzbwSWlxDF+epGnrAxXWPzHwc2UeeN6R79y+ke72/x5qUGGfGbVeYJ4gJ7vn/7XmSWkGknr7/62cKIwXwsCTB+V4I0YEl8n9SfHOCIY6oP+WlocabrKhoUOAWlt0C7Yr+E0oB5m0RS9ROk+YVpj7+N2qjkx1ei5ani+DGRGVxJHLj4NbU8fpr1PRT4HXn6wKHRQXqGStzwlYexJ4NZqro1PzmDFIRc5Z9G2NAt9lCNLx/cRFBwr7ecAmjshTMUqyIYqSamozN/qLnMhzICdvQfUfVYjSH1PdSdNX8zgQ71eNAX+wmRV+NvjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sIVpXkPP5juLdE1DOwLhNteRDhZeNTmAm0lHTDjHg6o=;
+ b=N955xuH9cINp241nZBQq9p1hmT5VFqSuNzASoWTVXsFZ/PoN9E2Q3lwd6e41YGDu+mzOMqK7rDuCihAf7aI01fCfx/iyGSmtalqCtKjZt3lGDdpqAHxKAkkdR9jvGFcmx2ri+eyFBUTDwnX6OFJAdh3DA3tokKpX0DE+2D84c+o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by CY5PR12MB6035.namprd12.prod.outlook.com (2603:10b6:930:2d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Fri, 18 Aug
+ 2023 15:01:41 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b%5]) with mapi id 15.20.6699.020; Fri, 18 Aug 2023
+ 15:01:41 +0000
+Message-ID: <486d8b13-0230-46c9-951b-4739357b2b8c@amd.com>
+Date:   Fri, 18 Aug 2023 11:01:36 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: fix mode scaling (RMX_.*)
+Content-Language: en-US
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     Rodrigo Siqueira <rodrigo.siqueira@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>, Alan Liu <haoping.liu@amd.com>,
+        Joshua Ashton <joshua@froggi.es>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YT4PR01CA0089.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:ff::14) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|CY5PR12MB6035:EE_
+X-MS-Office365-Filtering-Correlation-Id: e1c67248-66ab-4e7d-cc65-08db9ffc07a3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d9UiRoqoYakxP9sGx2tA/equpjWDgxjprcH8GeCrpyDYmcIvcxa1aDHEqonuHv95lt/gjmXPpxPYxV8nuMWgKOkMDDqrwXkD3dpgQ6Fg1Bbxidp/T/Xa44AtWvkrAj3RQfx0yIRhQyo/8v5qD1EDXIKCgREo0pDBZJcbUr74oY9JWNSdYvQ10XzpRuVXT39vxhjil7DNZeAcI4WR4O8qLu63WzuoQ5QcqtYj6qkFm9PoiWYvf9+acJWZtgTTjEsMn/TwtQ6hx99wtb7ECTTO/CizyzOHV8HmanVxPrT443e16u8GxJsGTXgR7DkUvZkw+uGiRWt60l35AUHIxwbvYyBO0KhuM7gYfvbdfS/kYHs6zeh636ZOtRGcOLI3z9fHiFjYi7a59MmlBuzjlbIXDmnw5bzxQJUalOIpyWILPYjBUgErY8WeoHDzagvQcmE/WO1aUYccwCK30Yln53097Q4fh3PWdI/Rtr4jHpA0hwSydhQYUo9KIP1z7kMJRDUV1wHQA4SPtC8GmxoLIMQthDNuNnNnC3gwbBfoYhWiiqoeWBYGVzhLPTckpQhnf8mmUWRivmbabJi19t1pawnZvCLJF9CuP/ITuOK2CvjdibgsPG9NyqA1Ngyigz8urwxCs3LGmuVg3+Bxb8q+y9fUbg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(366004)(376002)(396003)(186009)(1800799009)(451199024)(6666004)(6486002)(6506007)(38100700002)(6512007)(53546011)(86362001)(31696002)(26005)(83380400001)(36756003)(2616005)(2906002)(54906003)(66946007)(66476007)(66556008)(316002)(41300700001)(44832011)(5660300002)(31686004)(8676002)(4326008)(8936002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a2dSbmJ6bnQzSDZZVW01czJ3MjFNc2ZTZmpiMTVQdytranpncnpvVUlvOXd0?=
+ =?utf-8?B?Q1N0eVdub0VFMVV3aG0xN25EaVJWMmZpTWxLS05BL1Y0Q0dYUjFRQzRyTG04?=
+ =?utf-8?B?WWhSMnovVE5KbzdOV2lYTUVhcUlsYnRURytXeW1VTHVMTWlYdHUwM3BKczQz?=
+ =?utf-8?B?aWNuMTB1Ly9XcU5QcFpycmZOZlQvRkczczBYYjZTb3ZLQ2ZoRUF3bThNalY0?=
+ =?utf-8?B?YmNDZzJUcm5YLzlQOE5lMTA0Q1hQWkR3SE9zSE85UUJKOTlZZU5UcVdKd0w3?=
+ =?utf-8?B?L1NnVXNjcXpTZFl3YXpRSWdzQ3VpSGo3L3NHWndXQWNzdHNueFRCVHcxRGJR?=
+ =?utf-8?B?YTNhandTTFd3cG85K1g0eUpWS0xpMG9EYWFWd3pNakRJMHM1a2dQRWU3VnNS?=
+ =?utf-8?B?cFlYUlBwNTNScmJBSzhCbk5OeW1RVmN6ajQ5YUduNTlBOVpBQWxWQzljekRY?=
+ =?utf-8?B?U2ZYZXd6WnBnMjNBYW5maCtJSGsxdk5oWWRsQUt6S1Iya1YzdnkyenZJYjJl?=
+ =?utf-8?B?N2tTcE1wemxveUtVU3Z6cTIybStLR2FLTCtaRzNFWTQrdmJIR2QrZGVkZGFj?=
+ =?utf-8?B?OXRveTRaTVp0ZGZZOWVLNUxEbU10MHlwakpkSUJGeTlnb3BiVkRkbHE3MUU4?=
+ =?utf-8?B?d2FlbDROWTV5b1RPMGFmZmVXTFhTNVk4YzZ1TVdqMG9hczQrWGsvaUR1bGlp?=
+ =?utf-8?B?ZU15bGhhc1dUSTZERURxV1hlbURPRExqV21aZ2hkYlB4S0dHdEd2N1QxTlpa?=
+ =?utf-8?B?M0IxVVkybFdLR0xwN2VpeStkejlVUzk4Nk42THRWbFdITms0SnBHRXZqM3c4?=
+ =?utf-8?B?K3VkVHlBbmRxcVZlRDRkNGI2VE9GMlU2cytGYjZoZWQzOEMvTmZCOGRyRGR6?=
+ =?utf-8?B?Q3F0ZG93S1pPeVdtc0pDUTJHdjl6aytrRGkvajhhSm95VW9lc05ZV1QydG1x?=
+ =?utf-8?B?MTVNaVpRczRtYU9jWmN1NjlueDRFVlEyRXJ5RlRSaXp0MHpJWCtRWk1lZy9C?=
+ =?utf-8?B?d1NVbUk5RGhPcjZOa09ybm91aHlNaW92WVJCbWZ3dVVIQzFuZVBLTFl5QWo0?=
+ =?utf-8?B?R3dYNEg4a1lldjNFTGNVeXVua3ZIVVNQYzFBWGpDRTdzRUtOcFpPRlRNb3lz?=
+ =?utf-8?B?ZWJQcEtlaC9PZTFySWROQ2NaNXRuMy9uOG5jTlNYUFVkZndoVjNGdjRBTE9x?=
+ =?utf-8?B?b2dJcjF2cVpTT3B4MUh4QzZrbm1nbVlyZjlzR3RGL1BrS1BERXpCVnN1N040?=
+ =?utf-8?B?WENKWnRQZnNWRU5ISnV5NGErNHhDZVdMWm5yQmJITzlwcDE0OXdOMGRJTzFK?=
+ =?utf-8?B?WHh4aWx2R1lBVG8yL1RzWHpJRXVOYWw2dXhCSHBSV3p3dEpJNGcyaUJ0Z0JZ?=
+ =?utf-8?B?OS9PZnZuVDFwaERvQ055U0hsbkRTYVIxb2pFMVNvWGNSUGxXTm9ONXVESzVz?=
+ =?utf-8?B?Y29LU3Yzc3duVjdwN2JwaEtrV2h6N1BWdlI5TE1sZ3FzWWw4RWVUZTIzMzZN?=
+ =?utf-8?B?U1R1dGQvZzNPQWNMRnRGeDJDYjFrb0JOZ3EvTDNyOTQ3Y3ZYSGhhVmtlMkRK?=
+ =?utf-8?B?dHdLSE1GWEJhSEhwUERhSTFXRGw0N1hiUHNFYmVZaFNaUTZWUnR4cHJQVTRW?=
+ =?utf-8?B?ZnhLdnQ2LytyMDk2MFpoM0NKa1BVeGVOTGZUbGp5Yy95YjdLYm1BaERMbFds?=
+ =?utf-8?B?SjU1djlBZVpaZW9DZmkwZ0xkNU5PVjBLbHRBSWRMdU5raHhXaFRoQStueGRZ?=
+ =?utf-8?B?VFFjMmI0dnlud3JHOEpEd1orOGdjdFhwVHU4UzJVbzloVDJub1RBYlhIU2Zm?=
+ =?utf-8?B?ZEZLRllmUGNrZGZUOGVZWHRGeXJZUG41c1B6cGsydG5TUUFpWHdTK0d6WVVQ?=
+ =?utf-8?B?KzZLQmVxYjVpMjNrWEgxQUkwQ0dFdU9YNWVYUVF0bWxkRmUwNENFYklNRlQv?=
+ =?utf-8?B?QjlGQVRUU2RIZlBpZzAzdi9yVTBncXljTXZSR3JjWUM1bVRRVHhoMEtLTTVt?=
+ =?utf-8?B?dURQMkdLNWpocHBzQUNjK3Jjb0cwc3c2SnFteFBuSnI0UHJsMERTcXUvRE52?=
+ =?utf-8?B?eExKUThHVDNuZ1BHQjZlcGNnTUJTN09HbitTSlJLWmhELy9samx0K0hNTmpW?=
+ =?utf-8?Q?4V61f+TWGBBp5zcc/kKHXUCRq?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1c67248-66ab-4e7d-cc65-08db9ffc07a3
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 15:01:41.4158
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HvtPL7yDqCoH9P/5+CDRowWkY3yNeUipvwLOVRPuUfSNvtWDDzd+8AYlSfUZe7Vz9Ukjlx1hXqQEjRuEugG5sw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6035
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointer ip is being uninitialized with a value that is never read, it
-is being re-assigned later on. The assignment is redundant and can be
-removed.  Cleans up clang scan warning:
 
-fs/jfs/namei.c:886:16: warning: Value stored to 'ip' during its
-initialization is never read [deadcode.DeadStores]
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/jfs/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2023-08-18 09:17, Hamza Mahfooz wrote:
+> As made mention of in commit 4a2df0d1f28e ("drm/amd/display: Fixed
+> non-native modes not lighting up"), we shouldn't call
+> drm_mode_set_crtcinfo() once the crtc timings have been decided. Since,
+> it can cause settings to be unintentionally overwritten. So, since
+> dm_state is never NULL now, we can use old_stream to determine if we
+> should call drm_mode_set_crtcinfo() because we only need to set the crtc
+> timing parameters for entirely new streams.
+> 
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+> Fixes: 712237a4a1b4 ("drm/amd/display: Always set crtcinfo from create_stream_for_sink")
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 
-diff --git a/fs/jfs/namei.c b/fs/jfs/namei.c
-index 029d47065600..57d7a4300210 100644
---- a/fs/jfs/namei.c
-+++ b/fs/jfs/namei.c
-@@ -883,7 +883,7 @@ static int jfs_symlink(struct mnt_idmap *idmap, struct inode *dip,
- 	struct component_name dname;
- 	u32 ssize;		/* source pathname size */
- 	struct btstack btstack;
--	struct inode *ip = d_inode(dentry);
-+	struct inode *ip;
- 	s64 xlen = 0;
- 	int bmask = 0, xsize;
- 	s64 xaddr;
--- 
-2.39.2
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+
+Harry
+
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 3b27b7742854..e9aff5014e39 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6035,7 +6035,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *aconnector,
+>  
+>  	if (recalculate_timing)
+>  		drm_mode_set_crtcinfo(&saved_mode, 0);
+> -	else
+> +	else if (!old_stream)
+>  		drm_mode_set_crtcinfo(&mode, 0);
+>  
+>  	/*
 
