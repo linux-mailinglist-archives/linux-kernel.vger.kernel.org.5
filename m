@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 778A6780C82
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3506780C85
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377129AbjHRN16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
+        id S1377134AbjHRN3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377123AbjHRN1g (ORCPT
+        with ESMTP id S1377161AbjHRN2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:27:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C8112B;
-        Fri, 18 Aug 2023 06:27:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D1D94633BE;
-        Fri, 18 Aug 2023 13:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 924F9C433C8;
-        Fri, 18 Aug 2023 13:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692365254;
-        bh=ET6HsxO3daiV+0zm3C5V9Hg0Uwymi2lWnO5pCeymBA0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uU1Fk3M9kH1rms2fxq6lkcHbhLpf3dVEa/QWyoK5E0og6teBUn1S9NeNOuEjGR/2T
-         xTzvLl493A6wWqHwMcCQhOiFAavbd0jOeflZT2/eGP10QAgp+Dnz5bBy6O0F0vJZht
-         7bryB1BIL3J9cIGbEWv24jcQG73qtKzARU6f4BKK9EqJrJvDQmM+7MRbeHOcBAsKyN
-         58auMjidM04Mz4RagtMwe0mA8ZYuRi1WXM83Ai+5w+X0SopT2dkbQ/ovurNG/xCb6A
-         Ch0FRdJB9I9R6qq9rY9kvKODpZ3m70RfsI7Y76dkgCF8kkDOW/tDtMlK5LrmjN41Gn
-         rUTsg6rIN7nzg==
-Date:   Fri, 18 Aug 2023 15:27:29 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Willy Tarreau <w@1wt.eu>, Shuah Khan <skhan@linuxfoundation.org>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patch in the nolibc tree
-Message-ID: <20230818-anblicken-mitinhaber-11cd07cce0a1@brauner>
-References: <20230817133811.0a73c624@canb.auug.org.au>
- <e0af8d82-e099-49fa-9fbd-6f6bb63b7706@t-8ch.de>
- <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
- <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
- <20230817193909.GA30505@1wt.eu>
- <01d517c4-d91b-4426-b7f2-2b1277f21d8c@paulmck-laptop>
+        Fri, 18 Aug 2023 09:28:44 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC0835AC
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:28:42 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1c4f4d67f5bso471695fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692365322; x=1692970122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3niGq6H8AJo9IW4o/nVMSYi4n92JBNuP1VAfWV0dVo4=;
+        b=aRJ0hy1TD9BipgvTZaaiUwLrhPaftOcQPG27JbjAMIJhhyyTajRK8VXdb6/D4saWyh
+         ynTiZ9tlGUOmsn2tQW7IL5wgWKM8EvKpWyP3Bb7Dun5pWrd/6yJxr5mv44JhiMTQEns3
+         qHFQciWQsKwObJLbvSnk6W2VJqGP2Tld3XJWUURE/rMsm+hYufLBNerwFeyJW6yFYbaM
+         5mzP1XKpIoFVgybsfhV1G3dv9pnL1q/VpA/3nu9Ddic6+VlyoRBu8k3mtp3iilYQ30Zm
+         O8KDYE/xFtlFYjYA+6hN630KXW8pFzUUetgq4I1e3L1Xi9lJJU9rnc226aLafpQB5PXc
+         gDBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692365322; x=1692970122;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3niGq6H8AJo9IW4o/nVMSYi4n92JBNuP1VAfWV0dVo4=;
+        b=Y18rDdYxbYWlBKSB7zv4hmsBzmT5EnDyWTzD2OVqcuzKvKd08RpL2nHiIiDPutppIB
+         dIATjqkvnKeSRdMahp/u9nuaAVrLGFfBtelfWjrBP2/SSF7nGw11a8853UYPj0SLkvSf
+         2fJ35W8PuyXoYfM3ncvJh+Y1/wISa++uys/pS6vhN+/YDDKaZ4kI1gkDqaj0WyDwRZF8
+         trurd5FbKNHC5ZSAgAX19x8LK9b+5EWVjzsncxLtTGjmPU6bl8PC1ct0yqTTkzXLt8II
+         3o6/iOLNim0M/gaHGxy4+/nibw2udsSLI+XLP+6ZRxeE8cgik9bOubhjGzsBewpWiSmh
+         NtOA==
+X-Gm-Message-State: AOJu0YxFnJKydPrrw+sXXW2ajj320iUDlDM/T077xo9wSQQb8gSHx2Po
+        B0BOxG5z0vuHaKat/qB7sO9E85+fO7vXSVtsLa5WuSWt3So=
+X-Google-Smtp-Source: AGHT+IEVr16uL1Sq3eXXDiiAbsZ27vFlyigu9Sb+vdMlCXTrDuEZmhwcgVsPOM21VzqeflmkN5s0gW4p3iJezTaRtxE=
+X-Received: by 2002:a05:6870:e314:b0:1ba:3a7f:50eb with SMTP id
+ z20-20020a056870e31400b001ba3a7f50ebmr2818671oad.22.1692365321864; Fri, 18
+ Aug 2023 06:28:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <01d517c4-d91b-4426-b7f2-2b1277f21d8c@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+In-Reply-To: <20230818131742.88763-1-hamza.mahfooz@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 18 Aug 2023 09:28:30 -0400
+Message-ID: <CADnq5_PjGmULp42JLcOZy1r-_S0t+FTz5H1MTz55GFcDgJQobA@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: fix mode scaling (RMX_.*)
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc:     amd-gfx@lists.freedesktop.org, Stylon Wang <stylon.wang@amd.com>,
+        Alan Liu <haoping.liu@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Qingqing Zhuo <qingqing.zhuo@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>, Wayne Lin <wayne.lin@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Joshua Ashton <joshua@froggi.es>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,72 +80,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 01:41:45PM -0700, Paul E. McKenney wrote:
-> On Thu, Aug 17, 2023 at 09:39:09PM +0200, Willy Tarreau wrote:
-> > On Thu, Aug 17, 2023 at 11:46:57AM -0700, Paul E. McKenney wrote:
-> > > On Thu, Aug 17, 2023 at 12:27:46PM -0600, Shuah Khan wrote:
-> > > > On 8/17/23 10:30, Thomas Weißschuh wrote:
-> > > > > On 2023-08-17 13:38:11+1000, Stephen Rothwell wrote:
-> > > > > > The following commit is also in the vfs-brauner tree as a different commit
-> > > > > > (but the same patch):
-> > > > > > 
-> > > > > >    ba859b2e419c ("selftests/nolibc: drop test chmod_net")
-> > > > > > 
-> > > > > > This is commit
-> > > > > > 
-> > > > > >    49319832de90 ("selftests/nolibc: drop test chmod_net")
-> > > > > > 
-> > > > > > in the vfs-brauner tree.
-> > > > > 
-> > > > > I think we can drop the patch from the nolibc tree.
-> > > > > The patch is only really necessary in combination with
-> > > > > commit 18e66ae67673 ("proc: use generic setattr() for /proc/$PID/net")
-> > > > > which already is and should stay in the vfs tree.
-> > > > 
-> > > > Thomas,
-> > > > 
-> > > > Do the rest of the nolibc patches build without this if we were
-> > > > to drop this patch? Dorpping requires rebase and please see below.
-> > > > 
-> > > > Willy, Paul,
-> > > > 
-> > > > How do we want to handle this so we can avoid rebasing to keep
-> > > > the Commit IDs the same as one ones in Willy's nolibc branch?
-> > > 
-> > > The usual way would be for Willy to drop the patch, rebase, and republish
-> > > his branch.  You would then discard the current branch and pull the
-> > > new one.
-> > > 
-> > > > I would recommend dropping this commit from vfs-brauner if it
-> > > > doesn't cause problems.
-> > > 
-> > > It might be good for nolibc patches to be going through Willy's tree.
-> > 
-> > It would indeed be more logical as a general rule. However, here I don't
-> > care as I don't see any issue caused by dropping it, I can adapt to what
-> > is most convenient for most of us.
-> > 
-> > Let's maybe just wait a little bit for Christian to suggest what he
-> > prefers then we can adapt.
-> > 
-> > > Or does Christian have some situation where it is necessary to make
-> > > a coordinated vfs/nolibc change?
-> > 
-> > I don't think there's any need for coordination on this one.
-> 
-> It is always good when either option can be make to work.  ;-)
+On Fri, Aug 18, 2023 at 9:25=E2=80=AFAM Hamza Mahfooz <hamza.mahfooz@amd.co=
+m> wrote:
+>
+> As made mention of in commit 4a2df0d1f28e ("drm/amd/display: Fixed
+> non-native modes not lighting up"), we shouldn't call
+> drm_mode_set_crtcinfo() once the crtc timings have been decided. Since,
+> it can cause settings to be unintentionally overwritten. So, since
+> dm_state is never NULL now, we can use old_stream to determine if we
+> should call drm_mode_set_crtcinfo() because we only need to set the crtc
+> timing parameters for entirely new streams.
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Rodrigo Siqueira <rodrigo.siqueira@amd.com>
+> Fixes: 712237a4a1b4 ("drm/amd/display: Always set crtcinfo from create_st=
+ream_for_sink")
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 
-The patch in the vfs tree will make the test fail so it makes sense to
-have both go in together. I would normally be happy to drop it but I'm
-rather unenthusiastic in this particular case because I replied to this
-almost 5 weeks ago on Thursday, July 13 and since then this has been in
--next.
+Does this fix:
+https://gitlab.freedesktop.org/drm/amd/-/issues/2783
+If so, add a link tag for that.
 
-commit 49319832de90f1943264e5c573b072947af6ae26
-Author:     Thomas Weißschuh <linux@weissschuh.net>
-AuthorDate: Sat Jun 24 12:30:46 2023 +0200
-Commit:     Christian Brauner <brauner@kernel.org>
-CommitDate: Thu Jul 13 13:55:14 2023 +0200
+Alex
 
-    selftests/nolibc: drop test chmod_net
-
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
+gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 3b27b7742854..e9aff5014e39 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6035,7 +6035,7 @@ create_stream_for_sink(struct amdgpu_dm_connector *=
+aconnector,
+>
+>         if (recalculate_timing)
+>                 drm_mode_set_crtcinfo(&saved_mode, 0);
+> -       else
+> +       else if (!old_stream)
+>                 drm_mode_set_crtcinfo(&mode, 0);
+>
+>         /*
+> --
+> 2.41.0
+>
