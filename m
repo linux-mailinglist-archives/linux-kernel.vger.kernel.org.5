@@ -2,98 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AA97808E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67A27808E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:48:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359336AbjHRJqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
+        id S1359345AbjHRJro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359372AbjHRJqW (ORCPT
+        with ESMTP id S1359363AbjHRJrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:46:22 -0400
-X-Greylist: delayed 58841 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Aug 2023 02:46:21 PDT
-Received: from smtp-8faf.mail.infomaniak.ch (smtp-8faf.mail.infomaniak.ch [83.166.143.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8DC2D7D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 02:46:21 -0700 (PDT)
-Received: from smtp-2-0000.mail.infomaniak.ch (unknown [10.5.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RRxpJ6GBQzMq6Lp;
-        Fri, 18 Aug 2023 09:46:16 +0000 (UTC)
-Received: from unknown by smtp-2-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RRxpH1Xz5zMpnPk;
-        Fri, 18 Aug 2023 11:46:15 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1692351976;
-        bh=VX0u3iEdidR+CiLRoGDyOiMFbwAq0F/xGLYbnfjrIes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OLQpvPkA9tTwXJWH9zWADo/gTYLHQ6/Cb1aCxfxYLw7I+U9flEtIBz2pxwsfSj28C
-         QtIflE5IN6exXf4PE86EaQs8vjD7O6g2T1/Hpl7g/3lZrUGVXOvM6mnput/hedK7O4
-         KmQArjOVk4dr66kc5ucqj+cmTrqFsa1th2Yxsaec=
-Date:   Fri, 18 Aug 2023 11:46:10 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] landlock: Annotate struct landlock_rule with __counted_by
-Message-ID: <20230818.Iuwi4Okaey0A@digikod.net>
-References: <20230817210257.never.920-kees@kernel.org>
+        Fri, 18 Aug 2023 05:47:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924692D73;
+        Fri, 18 Aug 2023 02:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692352039; x=1723888039;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1sGQdov9Rubt3LSKswOeSvLzIi1+88fPMKlhLghEJAM=;
+  b=TEPGFRA18BHwUMCVTKze3d3ccllk4f+w9PVyGgPeSgHiXfaq2hnV2lFH
+   SoP26rD7jIMegf5vsllxe+SBWFd0WHoi6P4Pwqzi7hLnGx+to5fwI7LaR
+   hAvFA174+26C9nFalAOcB7TaDrIIygyTCdl9EFeiBCeZz66G1sEOpIYh+
+   7RRR01BY422iNz00ZiA8cDIKPlnRbs7cIiH+xXix/ZKSiQqb4QKuJtDSH
+   yiKVYy2xu79ZZVkiOz6gZKz7DIOlRr4AGCW3OnuIncqjpET9iqkXEqcIs
+   Pp/Tj7cHdV5lhbsjohH45mpE7dem+n92rFVM5TvlqXZN6bcUSzCibbuww
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="439443012"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="439443012"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 02:47:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="800419534"
+X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
+   d="scan'208";a="800419534"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 02:47:16 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id DF87E12035D;
+        Fri, 18 Aug 2023 12:47:13 +0300 (EEST)
+Date:   Fri, 18 Aug 2023 09:47:13 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-media@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-next@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>,
+        Zhifeng Wang <zhifeng.wang@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 1/2] media: v4l: usb: Use correct dependency for camera
+ sensor drivers
+Message-ID: <ZN8+IQheaChc3Ks+@kekkonen.localdomain>
+References: <20230816133526.3859456-1-sakari.ailus@linux.intel.com>
+ <20230816133526.3859456-2-sakari.ailus@linux.intel.com>
+ <363d77a7-ee1a-f4c4-941a-7737568a8042@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230817210257.never.920-kees@kernel.org>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <363d77a7-ee1a-f4c4-941a-7737568a8042@infradead.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks! Applied to my next tree. Feel free to carry it yourself if you
-prefer.
+Hi Randy,
 
-On Thu, Aug 17, 2023 at 02:03:01PM -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
+On Wed, Aug 16, 2023 at 12:21:31PM -0700, Randy Dunlap wrote:
+> Hi Sakari,
 > 
-> As found with Coccinelle[1], add __counted_by for struct landlock_rule.
+> On 8/16/23 06:35, Sakari Ailus wrote:
+> > The Kconfig option that enables compiling camera sensor drivers is
+> > VIDEO_CAMERA_SENSOR rather than MEDIA_CAMERA_SUPPORT as it was previously.
+> > Fix this.
+> > 
+> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> > Fixes: 7d3c7d2a2914 ("media: i2c: Add a camera sensor top level menu")
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/media/usb/em28xx/Kconfig | 4 ++--
+> >  drivers/media/usb/go7007/Kconfig | 2 +-
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > 
 > 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> This patch reduces the number of kconfig warnings from 4 to 2. I still see these
+> (and these appear to be duplicates, so only one):
 > 
-> Cc: "Mickaël Salaün" <mic@digikod.net>
-> Cc: Paul Moore <paul@paul-moore.com>
-> Cc: James Morris <jmorris@namei.org>
-> Cc: "Serge E. Hallyn" <serge@hallyn.com>
-> Cc: linux-security-module@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  security/landlock/ruleset.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> WARNING: unmet direct dependencies detected for VIDEO_OV7670
+>   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+>   Selected by [y]:
+>   - VIDEO_MMP_CAMERA [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && MEDIA_PLATFORM_DRIVERS [=y] && V4L_PLATFORM_DRIVERS [=y] && I2C [=y] && VIDEO_DEV [=y] && (ARCH_MMP || COMPILE_TEST [=y]) && COMMON_CLK [=y]
 > 
-> diff --git a/security/landlock/ruleset.h b/security/landlock/ruleset.h
-> index d43231b783e4..55b1df8f66a8 100644
-> --- a/security/landlock/ruleset.h
-> +++ b/security/landlock/ruleset.h
-> @@ -67,7 +67,7 @@ struct landlock_rule {
->  	 * @layers: Stack of layers, from the latest to the newest, implemented
->  	 * as a flexible array member (FAM).
->  	 */
-> -	struct landlock_layer layers[];
-> +	struct landlock_layer layers[] __counted_by(num_layers);
->  };
->  
->  /**
-> -- 
-> 2.34.1
-> 
+> WARNING: unmet direct dependencies detected for VIDEO_OV7670
+>   Depends on [n]: MEDIA_SUPPORT [=y] && VIDEO_DEV [=y] && VIDEO_CAMERA_SENSOR [=n]
+>   Selected by [y]:
+>   - VIDEO_MMP_CAMERA [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && MEDIA_PLATFORM_DRIVERS [=y] && V4L_PLATFORM_DRIVERS [=y] && I2C [=y] && VIDEO_DEV [=y] && (ARCH_MMP || COMPILE_TEST [=y]) && COMMON_CLK [=y]
+
+Oops. I missed this bit.
+
+Hans has taken the ivsc Kconfig patch already so I'll send v2 for this one
+only.
+
+-- 
+Regards,
+
+Sakari Ailus
