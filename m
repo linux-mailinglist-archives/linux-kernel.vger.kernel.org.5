@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C23F780EA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8FC780EA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378028AbjHRPLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36310 "EHLO
+        id S1377994AbjHRPK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:10:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378003AbjHRPKs (ORCPT
+        with ESMTP id S1378004AbjHRPKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:10:48 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD13E5F;
-        Fri, 18 Aug 2023 08:10:47 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-64bd231c95cso3109046d6.1;
-        Fri, 18 Aug 2023 08:10:47 -0700 (PDT)
+        Fri, 18 Aug 2023 11:10:50 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95F8EE5F;
+        Fri, 18 Aug 2023 08:10:49 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-76d86b5e37aso64554985a.0;
+        Fri, 18 Aug 2023 08:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692371446; x=1692976246;
+        d=gmail.com; s=20221208; t=1692371448; x=1692976248;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SmdkJVdFz/V7Zt8mJfhJXtTYea+Vk2ji53hyZ/nqh5o=;
-        b=hALjcEibEzL67Tcf52GlQv2Hq/WsZmtG4agXpQye2HtAU32pd9aTvA5EIUsVG1u0RI
-         08BtLAvkIpssONbFQywm7DFW0nSKZ/S9sMWBAhi4HgpO38It2r9vDKPdy0lDAD2SVIY8
-         1pYPOPvrxG8x3aJT+WWXPBrW7KM2xn3JuWJNapLgF8sD8o5roYSKokrojJ4qbNARn6UM
-         aFofgcHGNFPVUAV1rMZJVNwyuxrOweqgpyi3fZ9fRtoOb7JH1tX2n3/WfGILToV7owyP
-         gxS7o/Ky4WUzeiMjPy+voNxUIhRekrfRy5pyeEQwC7bfsKWEYFg56VHNtUS6QsBRBMmS
-         wv2w==
+        bh=jM3ddTmL3QgnOlaA1OLoKs8b5V811de6dCp7PcXvnc4=;
+        b=Kf8VuA48yqIHJmmslvDJIZAzYPfqbSC0peyADZaBnH0G23UkWW2TL80/MCJevIk/71
+         ZMz0pkD2/paSkGGyeSLJapnmfNT3MWEeRU0MPFRwc71+OXtxGi4Bnl1kLv+p0co0lCPJ
+         /e94WyN7MfCDM6VmUft81FHsA9OTt3FLfDpbO0WC9jCSVZOvxn73Ume5TuYxU9Qn+oRg
+         T8snk4KPQ2QUBoxwUtZMPM5LJBbDvM8YeVc+nklnrNMlndJX4+5l5W3ReimP1PCFqOqN
+         inTbpFUaIVfV8/2NIEme+73eEEZG760e+0yWczU8ot0VJ87Ln14CAR/wgwhWL4+H8r2K
+         Gq1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692371446; x=1692976246;
+        d=1e100.net; s=20221208; t=1692371448; x=1692976248;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SmdkJVdFz/V7Zt8mJfhJXtTYea+Vk2ji53hyZ/nqh5o=;
-        b=eY/vMnaK8nR5UFCXctboPxM5rXjJ98jLLiTAeX6QBpnIKdUTZZOzU7mFKYFqEnHLeB
-         GAF2F3dG+GEvLSLbvCBa7j5ZPu7Guu+SXZ3H8uljLz0knkqorPGu1d8ONvarlnl67iEl
-         cylgVvuv/c7d/Evlhnv1zlV8Na45m0rLkpKo7zlbdVZM7ybwlNUwwej13bFVuz9vrTrN
-         vwPaA0qbJPU6ykCENyKQ+tttcgip+o2mKAjYR28J8aT7KihdQMoOYK5W/CkKMQe4FwYG
-         +BXirICNgZMarpOI5zKrWefU1h6PHUCDOTsKbD2E1QrXa6wz4J1kI4QycVTvHg4zvb8V
-         u2Cw==
-X-Gm-Message-State: AOJu0YycbykVEmQPVLGBE1xskUezNe1ZtnFn6Bw+E8SXxZzUUSSqCd15
-        rTHWkYTwKD3AShOzXkDh8qumOAam6QI=
-X-Google-Smtp-Source: AGHT+IE4yMrt5Kl+NhaD3Iv4mwd47UAYLucL8KO15YQx3vciuRoQnbAbUzfpuYPhpHOEcTyQb4c5sg==
-X-Received: by 2002:a05:6214:2d0f:b0:649:914:6495 with SMTP id mz15-20020a0562142d0f00b0064909146495mr2914231qvb.62.1692371446581;
-        Fri, 18 Aug 2023 08:10:46 -0700 (PDT)
+        bh=jM3ddTmL3QgnOlaA1OLoKs8b5V811de6dCp7PcXvnc4=;
+        b=He6jPRLcfbSLhpPClBOV2AgiIBoRz1y4DLpNxa8x0m+oefjp4SZWcTS9GsAZQ1+K+s
+         cyeB5AKBo9FWyKxWfRmcKEE+j6x2fa62vF6ISwpjEUTLNbwz2u/PrPdPiyaCDuSI+etS
+         UuoF+KpcQAArGGAb/y6dvV4kszBIhYJC3RLKEWAXMuRbCz9WfKIunycNCQnkPui4gJba
+         FU5BB/rxvjveHjQ2cxeei4MIstogNlkxagVGzu6bhtlwPw29pHAAqVa180Z+iWpgrvAc
+         R6RMnFOqexe5BdvSgn+FFCRqphOaBsMCD84oZoxWFE36anmXjqW+V267e8pPrWCHR2mI
+         a8Tg==
+X-Gm-Message-State: AOJu0YyIjOnCIkfJJcgnIy6zZLt0g0/4gf+jMPQchgPcvAHeFqfaKbQM
+        vWTo2SkBraNAikrQpIn0alk=
+X-Google-Smtp-Source: AGHT+IEAPvRPfBm9icxZc+Ae6KxUSi+FYvDxMnFNr13qGWvRXxIDaFxMmFK2YsBVoDokUOAZ5wLVjA==
+X-Received: by 2002:a05:620a:2444:b0:767:2919:f38f with SMTP id h4-20020a05620a244400b007672919f38fmr3765198qkn.10.1692371448716;
+        Fri, 18 Aug 2023 08:10:48 -0700 (PDT)
 Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id w3-20020a05620a148300b0076cbcf8ad3bsm576239qkj.55.2023.08.18.08.10.44
+        by smtp.gmail.com with ESMTPSA id w3-20020a05620a148300b0076cbcf8ad3bsm576239qkj.55.2023.08.18.08.10.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 08:10:45 -0700 (PDT)
+        Fri, 18 Aug 2023 08:10:47 -0700 (PDT)
 From:   Trevor Woerner <twoerner@gmail.com>
 To:     drew@beagleboard.org,
         =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
@@ -59,9 +59,9 @@ To:     drew@beagleboard.org,
         Conor Dooley <conor+dt@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: [PATCH v2 1/4] ARM: dts: am335x-pocketbeagle: update LED information
-Date:   Fri, 18 Aug 2023 11:10:34 -0400
-Message-ID: <20230818151039.40566-2-twoerner@gmail.com>
+Subject: [PATCH v2 2/4] ARM: dts: am335x-pocketbeagle: remove dependency cycle
+Date:   Fri, 18 Aug 2023 11:10:35 -0400
+Message-ID: <20230818151039.40566-3-twoerner@gmail.com>
 X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
 In-Reply-To: <20230818151039.40566-1-twoerner@gmail.com>
 References: <20230818151039.40566-1-twoerner@gmail.com>
@@ -77,63 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "label" property is deprecated. Replace the "label" property with
-"color" and "description" properties.
+Remove the self-referenceing "pinctrl-0" entry inside the pinmux clause.
+This eliminates the set of boot messages (one for each referenced pin)
+similar to the following:
+
+        platform 44e10800.pinmux: Fixed dependency cycle(s) with /ocp/interconnect@44c00000/segment@200000/target-module@10000/scm@0/pinmux@800/pinmux_P2_17_gpio
 
 Signed-off-by: Trevor Woerner <twoerner@gmail.com>
 ---
- arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts b/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts
-index 5dfe4d4bab93..1c11245f6864 100644
+index 1c11245f6864..1e72b8382597 100644
 --- a/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts
 +++ b/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts
-@@ -8,6 +8,7 @@
+@@ -213,11 +213,6 @@ &am33xx_pinmux {
+ 	compatible = "pinconf-single";
+ 	pinctrl-names = "default";
  
- #include "am33xx.dtsi"
- #include "am335x-osd335x-common.dtsi"
-+#include <dt-bindings/leds/common.h>
- 
- / {
- 	model = "TI AM335x PocketBeagle";
-@@ -24,28 +25,32 @@ leds {
- 		compatible = "gpio-leds";
- 
- 		led-usr0 {
--			label = "beaglebone:green:usr0";
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_HEARTBEAT;
- 			gpios = <&gpio1 21 GPIO_ACTIVE_HIGH>;
- 			linux,default-trigger = "heartbeat";
- 			default-state = "off";
- 		};
- 
- 		led-usr1 {
--			label = "beaglebone:green:usr1";
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_DISK_ACTIVITY;
- 			gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
- 			linux,default-trigger = "mmc0";
- 			default-state = "off";
- 		};
- 
- 		led-usr2 {
--			label = "beaglebone:green:usr2";
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_CPU;
- 			gpios = <&gpio1 23 GPIO_ACTIVE_HIGH>;
- 			linux,default-trigger = "cpu0";
- 			default-state = "off";
- 		};
- 
- 		led-usr3 {
--			label = "beaglebone:green:usr3";
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_INDICATOR;
- 			gpios = <&gpio1 24 GPIO_ACTIVE_HIGH>;
- 			default-state = "off";
- 		};
+-	pinctrl-0 =   < &P2_03_gpio &P1_34_gpio &P2_19_gpio &P2_24_gpio
+-			&P2_33_gpio &P2_22_gpio &P2_18_gpio &P2_10_gpio
+-			&P2_06_gpio &P2_04_gpio &P2_02_gpio &P2_08_gpio
+-			&P2_17_gpio >;
+-
+ 	/* P2_03 (ZCZ ball T10) gpio0_23 0x824 PIN 9 */
+ 	P2_03_gpio: P2-03-gpio-pins {
+ 		pinctrl-single,pins = <
 -- 
 2.41.0.327.gaa9166bcc0ba
 
