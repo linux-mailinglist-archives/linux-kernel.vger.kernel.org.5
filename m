@@ -2,128 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBAB7802C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D34E7802D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 02:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356752AbjHRAmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 20:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S1356762AbjHRAym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 20:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356755AbjHRAmF (ORCPT
+        with ESMTP id S237092AbjHRAyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 20:42:05 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDA42D67
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 17:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692319324; x=1723855324;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=b00AF8wncw5hmRSIEfWdL9qxZxQfAxmAv+k1mhiZAzM=;
-  b=E6D9EcxwMFK4EsQKvGPDEQwZelNHH0E1jrbeDh9E7WVmPBJQDj5NChcQ
-   7uYJV6JcLwbVxc3Jj7Ug2PYWfiZC6bHeh9ZyetD+4BgH96b6IqHL0iI5c
-   Hu3IKx8IK+3lYPrRvo9jNsWfX4IYIoEhyaloS7MD2nRPQXvp6b4vOrF29
-   OHPExqUSodj+B2xZNjjvScN/+rnsKHaoJgQeC79WlYPASG+mp7pSmvqXg
-   bRldixADTHy7qM8dZhyHpreqnmaAnl7wteUWl5EughzuWlWlF31/9OwcK
-   kr+psBTpGNZiDRzFGa+ZdU5sOb5yZQHIFJbtXQzN4AmaciHo+6xFyQbK4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="375754301"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="375754301"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 17:42:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="684658458"
-X-IronPort-AV: E=Sophos;i="6.01,181,1684825200"; 
-   d="scan'208";a="684658458"
-Received: from lkp-server02.sh.intel.com (HELO a9caf1a0cf30) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 17 Aug 2023 17:42:02 -0700
-Received: from kbuild by a9caf1a0cf30 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qWnYv-0001ZT-0y;
-        Fri, 18 Aug 2023 00:42:01 +0000
-Date:   Fri, 18 Aug 2023 08:41:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Melissa Wen <mwen@igalia.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Tales Aparecida <tales.aparecida@gmail.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Subject: htmldocs: ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109:
- warning: Function parameter or member 'overlap_only' not described in
- 'mpcc_blnd_cfg'
-Message-ID: <202308180803.QE0R3OlP-lkp@intel.com>
-MIME-Version: 1.0
+        Thu, 17 Aug 2023 20:54:25 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2047.outbound.protection.outlook.com [40.107.237.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070E73583;
+        Thu, 17 Aug 2023 17:54:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aSUJPQK2Lfata11kvQIoimWF3yedDJDJfudBmlCAsHY7MWKpr6IzzWxid27g5xF9iIUDpUikzQeD5dXuDJcVkV39ZTcwzowmNEAw8UTuj1GDp/i8QhQiOxa0KBk6SISAz8VkGT9pyFtKgBxpOEmlGgBk1VnDKm9n2/j0pFOL8Od0E29wzys318OXTiI3F/47mM6+4WSQHGmf4h3zPRmzHa9K5ai0drDf7tV7aauwvyWWDnX3mQpVkcMRIMXHD5BXMNhIx4qjfmWR8BHh7BrzhiXTpVFLzVZeaKApAk+a52soW3FEwa9HnkADT2B/Ol7SnzLBnWzxshTMVlHQu9/Vhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yHzsmlTsAVpzhs1ImNeAGuzxhkYruxKkkD2ZMlSblc4=;
+ b=AtJJWtzjFvjm7kJK43MesS8NfotKQ2zQ8P/NBkNi8mJoFOJy1VUNbacbsfAty4VXxVoSjkJS8se+tGGEG3W3kmEXbXIiRPIQprh7JRyFrXCxKi9Qr3QsKvVYYFITKma1+rGuQVmsbpHpSfZarz/1wQoQdIFmRRGCWbvFqHhnszXVIyEySkYeS4LrFpTIznWvpgVALL6gtMgmcrLBvAX6yG39MgtTBUxJmgEI/mDhL/Umku+r5yOUjVfTiy4E5+2a4aDZnmgc1OWEytGwkNyG3PFgCidAkyLX6HxJ1iwYnBISkWm5somztLB/ZZR1xK5WKxbKBoSl0rwQ5beKymA4WA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yHzsmlTsAVpzhs1ImNeAGuzxhkYruxKkkD2ZMlSblc4=;
+ b=OJbytGOQV34LJ2BzaqZr7oR6ZsZ343xSEqJ6FGWFMTrZK0lC0qHjDutfCsTt/rHsYkm2QCzNsg1uPU8cnk4YnOxZEOGf7tIZO70bb9w2Ts3FKeGv3S3riLoEmtrihmMCEerTeeQC1Wcja3DjFdLB2DvOJH/X+6qnlGOfapkSL1mRjPw+IYvrR0H4xtUKzeTXOQK19ZzhfWduiVZxE0zS/7Dfud3rh5+Av6dmnRzanT+zZgdGkAUW4Q0g1nha7XOVDLUtI3YM/X/xt/mI8wTYSs9MxrLPqqxc0dprMmB73A7CV1nlC4Fs85rbj4qtRVNi8BxA1uWtW00ZHC8DZV46Rg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB8910.namprd12.prod.outlook.com (2603:10b6:610:179::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.29; Fri, 18 Aug
+ 2023 00:54:21 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6678.031; Fri, 18 Aug 2023
+ 00:54:21 +0000
+Date:   Thu, 17 Aug 2023 21:54:20 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>
+Cc:     Nicolin Chen <nicolinc@nvidia.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: Re: [PATCH v8 3/5] iommufd: Add IOMMU_GET_HW_INFO
+Message-ID: <ZN7BPMra5fC7YBcs@nvidia.com>
+References: <20230816121349.104436-1-yi.l.liu@intel.com>
+ <20230816121349.104436-4-yi.l.liu@intel.com>
+ <BN9PR11MB527620AAA752DEFEECF260918C1AA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZN6MKnCOk7ufYnV8@Asurada-Nvidia>
+ <DS0PR11MB7529F6CA52479527F7B87B00C31BA@DS0PR11MB7529.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <DS0PR11MB7529F6CA52479527F7B87B00C31BA@DS0PR11MB7529.namprd11.prod.outlook.com>
+X-ClientProxiedBy: BL1PR13CA0240.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::35) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB8910:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1cf69673-2c40-43e1-7d61-08db9f85a8cd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7+64Pgcc7/4Ja/Yvdx//85oGVkIG8P+O2DhEpffNpuSNi15iHamPPA/4TcSZKel8OxeS+aEoSUtwBSYXKY7+23YIlgjVf14tMy5oI/l3FE6Auh3ktZqWI6Xzs2+JH+96P3JNmCMrVGDAx+qZXPK/MtK7EVGvXQn6Ytz/qwuMyeUUdgF/xb2/cUdhYV6A2AdIn+M3cjpAMbOWgL/gW7dOFQZkKtagkR1skrEYA/jrZdChEEapiBhy/lYSl0iEyjxYBAZX1Zxkk4WxmXKQbLxU99SQes4LsIJCZ7/rut7q2jXqIAyyz3BUVLvMM29Os+QLLD7KPQni/cc1sDLlqlWCoBC909TfpVJKWgmLdkxdXwu+8OzrAne5cK0v+CbFCGlpTW9nyKmA8TNTSMZLP8IazoEjq/dwtP8pQZifaGY74N1KrMbkpzP4PEEJMaV7fMVb5cgT5znYCaSdNeUTpQAuwAwDp/a7O5MVDd1eP38mOoi7WVj86dypoiB9MmjUy3WDvSDPMHM3OfUxqOnsEPqOCxe39CQLpqME4fbf39WrbRt/jVUq87f8liNwvkYrWDae
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(396003)(346002)(376002)(451199024)(186009)(1800799009)(54906003)(316002)(66946007)(66556008)(66476007)(6916009)(5660300002)(41300700001)(38100700002)(8936002)(8676002)(4326008)(26005)(2906002)(4744005)(478600001)(86362001)(7416002)(6512007)(36756003)(6506007)(6486002)(2616005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vsRjHuZIHYOGdNvpC80GZMPKt5s4JMwDUAqEzyjVgeMRhWqp89WZAml2v6SI?=
+ =?us-ascii?Q?EDFAKvcsz2Sf0AE+QmBL/CdvURInFiq62d6LRuRZ2uXkazSQ5KC9xRcE0dA3?=
+ =?us-ascii?Q?nbRWhla+t9DDqzvjPQQKzg6dfM7mtNm35SmNa/hxje0527L9l2RMpBHx5+WC?=
+ =?us-ascii?Q?NTEQd7BsxGul9zluEzXLmTbt6tYJ0SgoupGyuCjsWYNhEDwZTJzZZmVLpuVZ?=
+ =?us-ascii?Q?33+jX68UJmMouHC2PLmBytuKgTnjFWm86SzX0AJHJwzzHJsJtkOiyynvdoSa?=
+ =?us-ascii?Q?0BdODUypFZ0iCXxd5b7rbXfuB7BBj/v7YLyfgtQaOe5Z3bKt2Fh/68bgRe9N?=
+ =?us-ascii?Q?f0rsdf9yNlMBV3hAQFKg7wLbuLRDzx68z4O0FUeXU0VVPgPmJtMo9dtwaICI?=
+ =?us-ascii?Q?fhUBmibAUWkgKk/Q7Oht3JenyDOtlybSnfTOkdtyGzDOV7cAcsyntiqNIjxj?=
+ =?us-ascii?Q?xdU5ipADO6pPCDAeHBhqxplXlgUhWbnWYJUSryMPOUdJ2Xm2QK8bN9wLs4rY?=
+ =?us-ascii?Q?kfPTNwf2aGTmzYqrAiv5Xt37fwNe5DGvPqDyMbGxUjfK55kQEogfWkuYrewf?=
+ =?us-ascii?Q?qj85jMqIDvcHXxsTA7Tj3ghIJrTj63CsITBYaePyRXhSoTl5u8AQsM7cKk1H?=
+ =?us-ascii?Q?Gleaf0pafmL5/pZ8TXgFYK8WbyJ5K4tKk+hWbxoXftIgNllKcpDSUynALF4G?=
+ =?us-ascii?Q?hjeS/nHGa7POdq0ePS8qC2znUUCgYVKaJm2RDKrDuICwHQbSmJ6wUXijSkTt?=
+ =?us-ascii?Q?bG4ELVYo9SUn6+kZkbkA4uWcP8wxAkYmlcBVmEVyfcVrNBlMhvuC70tX4aK4?=
+ =?us-ascii?Q?HRY1kFrVUqnH9ykP9cgzV3Dv6MUOSMP/lXgGsk0Qv2Qrv6HNX2YibGYusl5C?=
+ =?us-ascii?Q?EJOoMyv2v2NwVtV/mKJayCW2nP3SCxS5zLt7vk5e+oJCnmxQFtphl/BlPAbh?=
+ =?us-ascii?Q?kakY/ZSauh77B+QlM2mvfTyBvoHmDpl7C4R/Pp4s6X4OveO/EshYllftK25V?=
+ =?us-ascii?Q?e9JVPGHmTTqPwqx3amrLpngHJdNWcQwkYyCIjha+LcrG1olYYweD+/pcM2EX?=
+ =?us-ascii?Q?EKJcyF/fOaq0tRlvnSR4YKkNbxMUXm7lb6jl5dmyOJnqU7itmttNdfVMayD+?=
+ =?us-ascii?Q?J4wPXSy3ezF1NAkyL7rqliZuoJtWcc962LbBD6IRQ+eMXcUQ4OA7We6MIpPN?=
+ =?us-ascii?Q?Xq9KwkRdRXRB4qe7w5036EvTsmzo4Lt+GSlWS/EeqcvyPvgGufEt5GuAJgDi?=
+ =?us-ascii?Q?l4njSIcVp1KTy4y8Rzk8yD7CFo3EQG1LY0f7mY6rLUnxYMR9LYy/eW84x7/1?=
+ =?us-ascii?Q?Mx2iPTA1/CZbwhd9JsBPDyny5Owml5rS3LDzoJoBwxLViOFJTGJ3cfkLfs/S?=
+ =?us-ascii?Q?MJH8ZDoZ7qrOEyCk0AYEI4XT3+VucGIcZZQ0ZlPwWibU8VVZARjPyl3TX3HI?=
+ =?us-ascii?Q?ggzvPqwbE5iqpfaqnvIZUuZqsVXX1p5DnuQBkfhx2d8yPMgYC02qek+GaYem?=
+ =?us-ascii?Q?MjmqN6yBQPhvKLWzK4XvadvxSmOPv6PAK3Ap747SFP4g90/ssuLPNHFybJH2?=
+ =?us-ascii?Q?OI3hOrGheDM7ty2dHFxEjRr16AX9mq/88x07oYTa?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cf69673-2c40-43e1-7d61-08db9f85a8cd
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2023 00:54:21.5915
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Sha9wAPlBVr0CAJv9SsX1sEhCPzmeQu6tEeooYCXa2G28P/YffH4p260E/OYubf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8910
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   16931859a6500d360b90aeacab3b505a3560a3ed
-commit: 33fa4f1df53076d0078be091d5a88d457de54936 Documentation/gpu/amdgpu/amdgpu_dm: add DM docs for pixel blend mode
-date:   1 year ago
-reproduce: (https://download.01.org/0day-ci/archive/20230818/202308180803.QE0R3OlP-lkp@intel.com/reproduce)
+On Fri, Aug 18, 2023 at 12:04:29AM +0000, Liu, Yi L wrote:
+> > > > +int iommufd_get_hw_info(struct iommufd_ucmd *ucmd)
+> > > > +{
+> > > > +     struct iommu_hw_info *cmd = ucmd->cmd;
+> > > > +     void __user *user_ptr = u64_to_user_ptr(cmd->data_uptr);
+> > > > +     const struct iommu_ops *ops;
+> > > > +     struct iommufd_device *idev;
+> > > > +     unsigned int data_len;
+> > > > +     unsigned int copy_len;
+> > > > +     void *data = NULL;
+> > [..]
+> > > > +     } else {
+> > > > +             cmd->out_data_type = IOMMU_HW_INFO_TYPE_NONE;
+> > > > +             data_len = 0;
+> > > > +             data = NULL;
+> > >
+> > > data is already initialized as NULL.
+> 
+> Probably we can set data_len = 0 and the out_data_type to _NONE is
+> the top as well. Any preference?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308180803.QE0R3OlP-lkp@intel.com/
+I think it is clear to remove the variable initialization so this
+branch is more explicit
 
-All warnings (new ones prefixed by >>):
-
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'overlap_only' not described in 'mpcc_blnd_cfg'
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'bottom_gain_mode' not described in 'mpcc_blnd_cfg'
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'background_color_bpc' not described in 'mpcc_blnd_cfg'
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'top_gain' not described in 'mpcc_blnd_cfg'
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'bottom_inside_gain' not described in 'mpcc_blnd_cfg'
->> ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h:109: warning: Function parameter or member 'bottom_outside_gain' not described in 'mpcc_blnd_cfg'
-
-vim +109 ./drivers/gpu/drm/amd/display/dc/inc/hw/mpc.h
-
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   83  
-43d61f6d8f4d2da Melissa Wen    2022-08-04   84  /**
-43d61f6d8f4d2da Melissa Wen    2022-08-04   85   * struct mpcc_blnd_cfg - MPCC blending configuration
-43d61f6d8f4d2da Melissa Wen    2022-08-04   86   *
-43d61f6d8f4d2da Melissa Wen    2022-08-04   87   * @black_color: background color
-43d61f6d8f4d2da Melissa Wen    2022-08-04   88   * @alpha_mode: alpha blend mode (MPCC_ALPHA_BLND_MODE)
-43d61f6d8f4d2da Melissa Wen    2022-08-04   89   * @pre_multiplied_alpha: whether pixel color values were pre-multiplied by the
-43d61f6d8f4d2da Melissa Wen    2022-08-04   90   * alpha channel (MPCC_ALPHA_MULTIPLIED_MODE)
-43d61f6d8f4d2da Melissa Wen    2022-08-04   91   * @global_gain: used when blend mode considers both pixel alpha and plane
-43d61f6d8f4d2da Melissa Wen    2022-08-04   92   * alpha value and assumes the global alpha value.
-43d61f6d8f4d2da Melissa Wen    2022-08-04   93   * @global_alpha: plane alpha value
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   94   */
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   95  struct mpcc_blnd_cfg {
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   96  	struct tg_color black_color;	/* background color */
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   97  	enum mpcc_alpha_blend_mode alpha_mode;	/* alpha blend mode */
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   98  	bool pre_multiplied_alpha;	/* alpha pre-multiplied mode flag */
-feb4a3cd8eb007f Eric Bernstein 2017-11-06   99  	int global_gain;
-feb4a3cd8eb007f Eric Bernstein 2017-11-06  100  	int global_alpha;
-feb4a3cd8eb007f Eric Bernstein 2017-11-06  101  	bool overlap_only;
-feb4a3cd8eb007f Eric Bernstein 2017-11-06  102  
-f789b0b82bf0aee Harry Wentland 2019-02-22  103  	/* MPCC top/bottom gain settings */
-f789b0b82bf0aee Harry Wentland 2019-02-22  104  	int bottom_gain_mode;
-f789b0b82bf0aee Harry Wentland 2019-02-22  105  	int background_color_bpc;
-f789b0b82bf0aee Harry Wentland 2019-02-22  106  	int top_gain;
-f789b0b82bf0aee Harry Wentland 2019-02-22  107  	int bottom_inside_gain;
-f789b0b82bf0aee Harry Wentland 2019-02-22  108  	int bottom_outside_gain;
-feb4a3cd8eb007f Eric Bernstein 2017-11-06 @109  };
-feb4a3cd8eb007f Eric Bernstein 2017-11-06  110  
-
-:::::: The code at line 109 was first introduced by commit
-:::::: feb4a3cd8eb007f4749dc8323110f42fb4682ae0 drm/amd/display: Integrating MPC pseudocode
-
-:::::: TO: Eric Bernstein <eric.bernstein@amd.com>
-:::::: CC: Alex Deucher <alexander.deucher@amd.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jason
