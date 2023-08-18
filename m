@@ -2,71 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C406A7803E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:40:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 243CF7803E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 04:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357285AbjHRCkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Aug 2023 22:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55846 "EHLO
+        id S230015AbjHRCmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Aug 2023 22:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357290AbjHRCj6 (ORCPT
+        with ESMTP id S1357289AbjHRCl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Aug 2023 22:39:58 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8349F273C;
-        Thu, 17 Aug 2023 19:39:56 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 6B4D192009C; Fri, 18 Aug 2023 04:39:55 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 63E9392009B;
-        Fri, 18 Aug 2023 03:39:55 +0100 (BST)
-Date:   Fri, 18 Aug 2023 03:39:55 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH v3 1/3] MIPS: Remove noreturn attribute for
- nmi_exception_handler()
-In-Reply-To: <1692005246-18399-2-git-send-email-yangtiezhu@loongson.cn>
-Message-ID: <alpine.DEB.2.21.2308180227580.8596@angie.orcam.me.uk>
-References: <1692005246-18399-1-git-send-email-yangtiezhu@loongson.cn> <1692005246-18399-2-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Thu, 17 Aug 2023 22:41:59 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB923A91
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Aug 2023 19:41:58 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-102-95.bstnma.fios.verizon.net [173.48.102.95])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37I2fi98000358
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Aug 2023 22:41:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692326507; bh=wcvFnkK5aWq3B2Q+mIk8ZNcuAvZ+L3tBbVrbY4B6Tmw=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=BC0kQHJMA40g1Ic4Q2RzplEU26dnJtUVYFGVjz0wZyyLeukzFpXYhCx6m6I3CHUb5
+         G4PjIACs6WCU76dNUwJ+qyWzopjmp+C5lRZNfUb97nd1WHQf/MQ4f+oQXx6XYRjV4X
+         UbvvGl/a012qPYtDL5mQiNS8LqJl0iWNXBys5TTTnZsplkfU16Lf7+wcjfPIeTTTrP
+         e1xzJhcd6Sam2kvbqFFTLOwEAFtp2ymei00U4aNsiDzYRKgB8VDQYMa5gvqKava7qx
+         n8d5jXIV20aFHDI9+G590bRJqFehXxj3sJjxe3jCZ00yvhUgAfQ61NmPBfohtpyNkZ
+         ZBHokxjjE5D8g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A9AE715C0501; Thu, 17 Aug 2023 22:41:44 -0400 (EDT)
+Date:   Thu, 17 Aug 2023 22:41:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Lu, Davina" <davinalu@amazon.com>
+Cc:     "Bhatnagar, Rishabh" <risbhat@amazon.com>, Jan Kara <jack@suse.cz>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Subject: Re: Tasks stuck jbd2 for a long time
+Message-ID: <20230818024144.GD3464136@mit.edu>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+ <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+ <d82df68eb8514951a7f7acc923132796@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d82df68eb8514951a7f7acc923132796@amazon.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Aug 2023, Tiezhu Yang wrote:
+On Fri, Aug 18, 2023 at 01:31:35AM +0000, Lu, Davina wrote:
+> 
+> Looks like this is a similar issue I saw before with fio test (buffered IO with 100 threads), it is also shows "ext4-rsv-conversion" work queue takes lots CPU and make journal update every stuck.
 
-> In the later patch, we will remove noreturn attribute for die(), in order
-> to make each patch can be built without errors and warnings, just remove
-> noreturn attribute for nmi_exception_handler() earlier because it calls
-> die(), otherwise there exists the following build error after the later
-> patch:
+Given the stack traces, it is very much a different problem.
 
- I find the wording a bit odd here, but you'll have to rewrite the change 
-description for the update requested below, so let's defer any style fixes 
-to v4.
+> There is a patch and see if this is the same issue? this is not the
+> finial patch since there may have some issue from Ted. I will
+> forward that email to you in a different loop. I didn't continue on
+> this patch that time since we thought is might not be the real case
+> in RDS.
 
->   arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
+The patch which you've included is dangerous and can cause file system
+corruption.  See my reply at [1], and your corrected patch which
+addressed my concern at [2].  If folks want to try a patch, please use
+the one at [2], and not the one you quoted in this thread, since it's
+missing critically needed locking.
 
- Now that I've looked into it in detail, this change is incomplete and 
-will make the kernel go astray if `nmi_exception_handler' actually ever 
-does return.  See code in arch/mips/kernel/genex.S, which calls this 
-function and doesn't expect it to return.  It has to be fixed before 2/3 
-can be considered.  I wonder how you didn't catch it: you did check how 
-this code is used, didn't you?
+[1] https://lore.kernel.org/r/YzTMZ26AfioIbl27@mit.edu
+[2] https://lore.kernel.org/r/53153bdf0cce4675b09bc2ee6483409f@amazon.com
 
- Before submitting an updated version can you actually arrange for the 
-NOTIFY_STOP condition to happen in your lab and verify it is handled as 
-expected?  And what was the motivation for this code update, just a 
-hypothetical scenario?
+The reason why we never pursued it is because (a) at one of our weekly
+ext4 video chats, I was informed by Oleg Kiselev that the performance
+issue was addressed in a different way, and (b) I'd want to reproduce
+the issue on a machine under my control so I could understand what was
+was going on and so we could examine the dynamics of what was
+happening with and without the patch.  So I'd would have needed to
+know how many CPU's what kind of storage device (HDD?, SSD?  md-raid?
+etc.) was in use, in addition to the fio recipe.
 
-  Maciej
+Finally, I'm a bit nervous about setting the internal __WQ_ORDERED
+flag with max_active > 1.  What was that all about, anyway?
+
+     	  	       	   	    - Ted
