@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC767807E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 217877807EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 11:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358570AbjHRJD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 05:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        id S1352740AbjHRJFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 05:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358976AbjHRJDr (ORCPT
+        with ESMTP id S1359037AbjHRJEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 05:03:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D485830E9;
-        Fri, 18 Aug 2023 02:03:18 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 11:03:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692349397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQkP0pemHtODz4ZTwfs9hNzhoQAZlrY+GIvOT5+K/D4=;
-        b=KCAYm42tCBcBewe/qz9VwI0+j8bTKggVcI7qA1kaPqkzZG1KxydgLobI6P/Tx1ppSVIfc4
-        LDsXSTyv66abg4fTjBK8NpNix0STW3DBgQm+84uHoRYQwKJj9W1Cu/N6qvF0LmfWe0vXpP
-        IduLGOLq70Jyxio+0HaqpXd/WAzUjwjVak98g5hQATYXTlHcS+z3vaR5Am3CPUX9uyXAdA
-        b6ATUpBU9SSpR2Lk3ksj/b1gDAQPkkDjiZENanUmcptjjLoPwK+j5sI79B79S8hocyLFak
-        F1CncGvfUNNGXfb0IPs++YkYjJcv3AI6uSukeGJnqbh/8YZhN13pbKEqqN8CHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692349397;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wQkP0pemHtODz4ZTwfs9hNzhoQAZlrY+GIvOT5+K/D4=;
-        b=m5tDM4DS+C9nPRCnWFyYbh2PblvK7fEaQGpLNC3yiJIzY87YPXXw7INeCkFG6JgKG56AD1
-        kpDhCFP/+PCkw5DA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <wander@redhat.com>,
-        Yan Zhai <yan@cloudflare.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Subject: Re: [RFC PATCH net-next 0/2] net: Use SMP threads for backlog NAPI.
-Message-ID: <20230818090316.jxj-rd8f@linutronix.de>
-References: <20230814093528.117342-1-bigeasy@linutronix.de>
- <20230814112421.5a2fa4f6@kernel.org>
- <20230817131612.M_wwTr7m@linutronix.de>
- <20230817083025.2e8047fa@kernel.org>
+        Fri, 18 Aug 2023 05:04:30 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C3C3C17;
+        Fri, 18 Aug 2023 02:04:26 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RRwnm4fXdztSD2;
+        Fri, 18 Aug 2023 17:00:44 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Fri, 18 Aug 2023 17:04:22 +0800
+Message-ID: <71b9f3c2-0228-b52d-3f6e-25b8b21df5a7@huawei.com>
+Date:   Fri, 18 Aug 2023 17:04:22 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230817083025.2e8047fa@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v4 0/9] scsi:scsi_debug: Add error injection for single
+ device
+Content-Language: en-US
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <louhongxiang@huawei.com>
+References: <20230815122316.4129333-1-haowenchao2@huawei.com>
+From:   "haowenchao (C)" <haowenchao2@huawei.com>
+In-Reply-To: <20230815122316.4129333-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-17 08:30:25 [-0700], Jakub Kicinski wrote:
-> On Thu, 17 Aug 2023 15:16:12 +0200 Sebastian Andrzej Siewior wrote:
-> > I've been looking at veth. In the xdp case it has its own NAPI instance.
-> > In the non-xdp it uses backlog. This should be called from
-> > ndo_start_xmit and user's write() so BH is off and interrupts are
-> > enabled at this point and it should be kind of rate-limited. Couldn't we
-> > bypass backlog in this case and deliver the packet directly to the
-> > stack?
->=20
-> The backlog in veth eats measurable percentage points of RPS of real
-> workloads, and I think number of people looked at getting rid of it.
-> So worthy goal for sure, but may not be a trivial fix.
+On 2023/8/15 20:23, Wenchao Hao wrote:
+> The original error injection mechanism was based on scsi_host which
+> could not inject fault for a single SCSI device.
+> 
+> This patchset provides the ability to inject errors for a single
+> SCSI device. Now we supports inject timeout errors, queuecommand
+> errors, and hostbyte, driverbyte, statusbyte, and sense data for
+> specific SCSI Command. Two new error injection is defined to make
+> abort command or reset LUN failed.
+> 
+> Besides error injection for single device, this patchset add a
+> new interface to make reset target failed for each scsi_target.
+> 
+> The first two patch add an debugfs interface to add and inquiry single
+> device's error injection info; the third patch defined how to remove
+> an injection which has been added. The following 5 patches use the
+> injection info and generate the related error type. The last one just
+> Add a new interface to make reset target failed.
+> 
 
-We could separate RPS from backlog but then we still process RPS after
-backlog so not sure if this gains anything. Letting veth always use its
-NAPI in this case would probably do that. Not sure if it helps=E2=80=A6
+Friendly ping...
 
-> To my knowledge the two main problems are:
->  - we don't want to charge the sending application the processing for
->    both "sides" of the connection and all the switching costs.
+> V4:
+>    - Fix BUG_ON triggered by schedule in atomic context when rmmod scsi_debug
+>      Closes: https://lore.kernel.org/oe-lkp/202308031027.5941ce5f-oliver.sang@intel.com
+> 
+> V3:
+>    - Add two more error types to fail abort command and lun reset
+>    - Fix memleak when rmmod scsi_debug without clearing errors injected
+>    - Fix memkeak because did not implement release in sdebug_error_fops
+>    - Fix possible NULL point access in scsi_debug_slave_destroy
+>    - Move specific error type's description to each single patch which
+>      implement this error type
+>    - Add interface to make target reset fail
+> 
+> V2:
+>    - Using debugfs rather than sysfs attribute interface to manage error
+> 
+> Wenchao Hao (9):
+>    scsi:scsi_debug: create scsi_debug directory in the debugfs filesystem
+>    scsi:scsi_debug: Add interface to manage single device's error inject
+>    scsi:scsi_debug: Define grammar to remove added error injection
+>    scsi:scsi_debug: timeout command if the error is injected
+>    scsi:scsi_debug: Return failed value if the error is injected
+>    scsi:scsi_debug: set command's result and sense data if the error is injected
+>    scsi:scsi_debug: Add new error injection abort failed
+>    scsi:scsi_debug: Add new error injection reset lun failed
+>    scsi:scsi_debug: Add debugfs interface to fail target reset
+> 
+>   drivers/scsi/scsi_debug.c | 512 +++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 507 insertions(+), 5 deletions(-)
+> 
 
-The packet is injected by the user and softirq is served once BH gets
-back to 0. So it is served within the task's context and might be
-accounted on softirq/ system (might as I think it needs to be observed
-by the timer interrupt for the accounting).
-
->  - we may get an AA deadlock if the packet ends up looping in any way.
-
-Right, forgot about that one.
-
-> Or at least that's what I remember the problem being at 8am in the
-> morning :) Adding Daniel and Martin to CC, Paolo would also know this
-> better than me but I think he's AFK for the rest of the week.
-
-Sebastian
