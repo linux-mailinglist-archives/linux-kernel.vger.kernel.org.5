@@ -2,157 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D129E78127F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26527781280
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 20:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355814AbjHRR7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 13:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S1379284AbjHRR74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 13:59:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379395AbjHRR7T (ORCPT
+        with ESMTP id S1379318AbjHRR7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 13:59:19 -0400
-Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fa8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BD22D65
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:58:46 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RS8kX3TByzMpnY1;
-        Fri, 18 Aug 2023 17:58:44 +0000 (UTC)
-Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4RS8kW0C1pzMpnPs;
-        Fri, 18 Aug 2023 19:58:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1692381524;
-        bh=QiaCKflMxQyv8whe2QmamXjPycBAXSujEpnJnRYX2wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yOBi0jhS9hTT8eTtR0tYmCvX5yveEN7k+qg/X8gzh3dMDWl2ycgka3WW2kHBr7H27
-         k0WWNUkWjyQww9mhun3BIjRPw+ymcxqc+nZ37mGPdKMhJny4vKof3KoqK6yFnbu+Dp
-         YpiX8IUZg7LpI2sgvTvqc806MFhvz7hrUBJcgjWo=
-Date:   Fri, 18 Aug 2023 19:58:37 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     paul@paul-moore.com, linux-security-module@vger.kernel.org,
-        jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH v13 02/11] LSM: Maintain a table of LSM attribute data
-Message-ID: <20230818.aejeiFoop5Ie@digikod.net>
-References: <20230802174435.11928-1-casey@schaufler-ca.com>
- <20230802174435.11928-3-casey@schaufler-ca.com>
+        Fri, 18 Aug 2023 13:59:24 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DF44486
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:58:56 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso917782a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 10:58:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692381535; x=1692986335;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BXWn1H6PaMCP3yeQaXdUby2KRE3fNHvqcyLkYIyGiaw=;
+        b=VOhEHDw6QsEW+1ZsUQGRv4DVy8ZGywkEJnmW+FmHNmUOmTi67RY6yU8Z0Vl+8HhQr7
+         2+JhLYBREnkB743S/lCi3ST+HvJa62ONXc0rDCgaFSidIjQ/J0mopW5eRaBa6wHk4wB6
+         fOsfLymp+wlBamHiNkg+XO+Wt7AwE/NilcLxo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692381535; x=1692986335;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BXWn1H6PaMCP3yeQaXdUby2KRE3fNHvqcyLkYIyGiaw=;
+        b=JjamEdh39pIDPTth0DSBPg8Fk3QcX+EoLgCtALTEJpCuSiOWPMPBREBn2Rr+f2FaVq
+         ipJk54adFMg+t6iHk1eJ+SZLFmc12FSJ8afkcpk+SSKb89Ht7gfDKEXTvOCeyTtepW2L
+         I/KPO8hgb70XZ0QcuDnovXD1ouDKpqXqnxpMrDghWzPCZv+LbgytBfJq0aKVa8VMD0cC
+         HUOf3Bkzq7eCS4pi8qjpWasG05KUcgBnsJNxc3XV4DhmfFrUSM9+TVQhnSh4LLXErPbT
+         XSNxzHc9dwpNeBQ1zmoz/eNTm1yRKEb78zMMgqD9BX9T8Xki2QqBWSRle5kILNbT+Ya7
+         QTIg==
+X-Gm-Message-State: AOJu0Yxz9tqRw2dELMM7XlvLFEDbbGnAn7h51YdmsTXEVnR9OjW46sfR
+        6WXYIKaIbp/i+/b5YPhYUY7MxA==
+X-Google-Smtp-Source: AGHT+IEfibPi7yaGFSOCm8RGtUYUSuEPp7lZFgkZrkN4e6SwvT5vmrzO8rZthv/Hx28otk3QObEbbw==
+X-Received: by 2002:a17:902:c086:b0:1be:e7ba:3a97 with SMTP id j6-20020a170902c08600b001bee7ba3a97mr3173197pld.15.1692381535438;
+        Fri, 18 Aug 2023 10:58:55 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q18-20020a170902dad200b001b892aac5c9sm2023752plx.298.2023.08.18.10.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 10:58:55 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Miguel Ojeda <ojeda@kernel.org>, Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] Compiler Attributes: counted_by: Adjust name and identifier expansion
+Date:   Fri, 18 Aug 2023 10:58:49 -0700
+Message-Id: <169238152725.1457791.7913447764812747495.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817200558.never.077-kees@kernel.org>
+References: <20230817200558.never.077-kees@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230802174435.11928-3-casey@schaufler-ca.com>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 10:44:25AM -0700, Casey Schaufler wrote:
-> As LSMs are registered add their lsm_id pointers to a table.
-> This will be used later for attribute reporting.
-> 
-> Determine the number of possible security modules based on
-> their respective CONFIG options. This allows the number to be
-> known at build time. This allows data structures and tables
-> to use the constant.
-> 
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Serge Hallyn <serge@hallyn.com>
-> ---
->  include/linux/security.h |  2 ++
->  security/security.c      | 37 +++++++++++++++++++++++++++++++++++++
->  2 files changed, 39 insertions(+)
-> 
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 32828502f09e..a20a4ceda6d9 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -138,6 +138,8 @@ enum lockdown_reason {
->  };
->  
->  extern const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
-> +extern u32 lsm_active_cnt;
-> +extern const struct lsm_id *lsm_idlist[];
->  
->  /* These functions are in security/commoncap.c */
->  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
-> diff --git a/security/security.c b/security/security.c
-> index feaae09581dc..87b70a55a028 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -36,6 +36,25 @@
->  /* How many LSMs were built into the kernel? */
->  #define LSM_COUNT (__end_lsm_info - __start_lsm_info)
->  
-> +/*
-> + * How many LSMs are built into the kernel as determined at
-> + * build time. Used to determine fixed array sizes.
-> + * The capability module is accounted for by CONFIG_SECURITY
-> + */
-> +#define LSM_CONFIG_COUNT ( \
-> +	(IS_ENABLED(CONFIG_SECURITY) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_TOMOYO) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_IMA) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_YAMA) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_LOADPIN) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_SAFESETID) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0) + \
-> +	(IS_ENABLED(CONFIG_SECURITY_LANDLOCK) ? 1 : 0))
-> +
->  /*
->   * These are descriptions of the reasons that can be passed to the
->   * security_locked_down() LSM hook. Placing this array here allows
-> @@ -245,6 +264,12 @@ static void __init initialize_lsm(struct lsm_info *lsm)
->  	}
->  }
->  
-> +/*
-> + * Current index to use while initializing the lsm id list.
-> + */
-> +u32 lsm_active_cnt __ro_after_init;
-> +const struct lsm_id *lsm_idlist[LSM_CONFIG_COUNT] __ro_after_init;
+On Thu, 17 Aug 2023 13:06:03 -0700, Kees Cook wrote:
+> GCC and Clang's current RFCs name this attribute "counted_by", and have
+> moved away from using a string for the member name. Update the kernel's
+> macros to match. Additionally provide a UAPI no-op macro for UAPI structs
+> that will gain annotations.
 
-I guess __ro_after_init is superfluous here.
+Applied to for-next/hardening, thanks!
 
-Reviewed-by: Mickaël Salaün <mic@digikod.net>
+[1/1] Compiler Attributes: counted_by: Adjust name and identifier expansion
+      https://git.kernel.org/kees/c/c8248faf3ca2
 
+Take care,
 
-> +
->  /* Populate ordered LSMs list from comma-separated LSM name list. */
->  static void __init ordered_lsm_parse(const char *order, const char *origin)
->  {
-> @@ -521,6 +546,18 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
->  {
->  	int i;
->  
-> +	/*
-> +	 * A security module may call security_add_hooks() more
-> +	 * than once during initialization, and LSM initialization
-> +	 * is serialized. Landlock is one such case.
-> +	 * Look at the previous entry, if there is one, for duplication.
-> +	 */
-> +	if (lsm_active_cnt == 0 || lsm_idlist[lsm_active_cnt - 1] != lsmid) {
-> +		if (lsm_active_cnt >= LSM_CONFIG_COUNT)
-> +			panic("%s Too many LSMs registered.\n", __func__);
-> +		lsm_idlist[lsm_active_cnt++] = lsmid;
-> +	}
-> +
->  	for (i = 0; i < count; i++) {
->  		hooks[i].lsmid = lsmid;
->  		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
-> -- 
-> 2.41.0
-> 
+-- 
+Kees Cook
+
