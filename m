@@ -2,150 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DC37813F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BAFF7813F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379850AbjHRT6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59186 "EHLO
+        id S1379680AbjHRT5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377351AbjHRT5g (ORCPT
+        with ESMTP id S1377351AbjHRT5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:57:36 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E891706;
-        Fri, 18 Aug 2023 12:57:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692388655; x=1723924655;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=V4WpW+rF1CDAGv0xoSmYLLBjIk4md8XlrKmIlkSmnMA=;
-  b=eGNXFKWSQHjVQV3IFjctfDLlSXXiELSR9HWz/LYQXAdhmkdNmXFGXZsj
-   k5PMYFsz1yLGVdiAqiAScENeqOLJ81WU86b4mAfXGUwWoNLwlHqD8TINy
-   LtwhdeZUGpJIpZ0RGNLHaVWP2XXJQRDKmX1yCXzqH26OvuzrCrbml69hN
-   CkIjTnPVHz4ZsGliC4KuzK1V7dHsQQCcZTIu7ghY2faT4/mVz9fOhv8dx
-   gCm9RHbcD+l11NQaiH4zj2PEBEkw6g0YvVLD8u7+perknNFfjfQdwjjTc
-   YC1K4wH8YCH1oqhysV0y2r5Kr4TpBq/cPzp28PEkoyB5MVbkIP3u86HVC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="358161871"
-X-IronPort-AV: E=Sophos;i="6.01,184,1684825200"; 
-   d="scan'208";a="358161871"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 12:57:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="825260926"
-X-IronPort-AV: E=Sophos;i="6.01,184,1684825200"; 
-   d="scan'208";a="825260926"
-Received: from ttkhuong-mobl5.amr.corp.intel.com ([10.212.75.44])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 12:56:53 -0700
-Message-ID: <cbdaea86776bae824f34e3f81193a3e0a4d84270.camel@linux.intel.com>
-Subject: Re: [PATCH v9 00/14] crypto: Add Intel Analytics Accelerator (IAA)
- crypto compression driver
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     davem@davemloft.net, fenghua.yu@intel.com, vkoul@kernel.org,
-        dave.jiang@intel.com, tony.luck@intel.com,
-        wajdi.k.feghali@intel.com, james.guilford@intel.com,
-        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
-        giovanni.cabiddu@intel.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org
-Date:   Fri, 18 Aug 2023 14:56:43 -0500
-In-Reply-To: <ZN8yujTWN42vd2cF@gondor.apana.org.au>
-References: <20230807203726.1682123-1-tom.zanussi@linux.intel.com>
-         <ZN8yujTWN42vd2cF@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Fri, 18 Aug 2023 15:57:06 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5861426A4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:57:04 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26b44247123so954062a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:57:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692388624; x=1692993424;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FVy8/I6+hZEhbfOu9dBJY0K2hcEvw4odHhWMeKKSlSQ=;
+        b=Wa22YcrQ8hR7kutK9Cs/OH6zIDYKtTp61fXYhWf3xpUE1rqFQJonTLOePXKjLIqpSz
+         j2x/7uPJk/GM8YxKmVNls9MGZGNQD3t9xkZRItjXW4vSRODwNYKArVV9kowRbFjUBD3T
+         EeMVyocQhxPysCYBODX9xNHP15zKYz0J16vHc6N9tOd7MCRM+TTLKIFA9POjzFm4YkMa
+         /rE9XxV5ER/TpdwhtCrq1BtafPFYepIcJeD6IXS/QzlufzIZ8EARXG8GoHoB6ufUV4My
+         HRiHGcHReaBnQIPYT4DEZvQmHXqtFEJfXslFzNPFxplwDUsYVVIW/XW4jEDLtBuYeFjw
+         8WMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692388624; x=1692993424;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FVy8/I6+hZEhbfOu9dBJY0K2hcEvw4odHhWMeKKSlSQ=;
+        b=Iz6tURnSySg8KJGjxz5soA+ySHnH8rqq9d73VargnJ809PQI4hjOFHaWFxGilSq1ue
+         QojnAC+N59irf3EVVlcqSkMYBXvSLvHBZfODFUHNN0buU/gwsmJwy8G5xNb/q7hJjDze
+         nEJrzIrOqoin7OcwrStX+zSP5woyrK9zbppv7+HpVzs9c3fF03AFSKJXz2aQevxfTLzQ
+         6/L3ZLunl5aPbuUcnr+G2IumYW53M2FjiiBpzE8kl80H2Ck1pT+uC8a5a93+6U1aKhcK
+         OmTFFJXtbVt0cEC1SCsbxttfvWIcQMmVmpNYSJqS8Qrt75m0DP11v+rsyM18blRct2w1
+         io5w==
+X-Gm-Message-State: AOJu0YxmzgFZGqfUKVFS0V+HICyhrqNHPzzYzo/zg+nWexXR5wsEHYHi
+        sroxyP6Z07pDcXGpl046NvJVdr1IWWpBfK6nJ78qhA==
+X-Google-Smtp-Source: AGHT+IG1AUyT+kHxOcDxv2bvger1UKXAP+l8gqMIhxZAF556A4JVr7/WDWdrcG8dpTGWzJ7hKbnfj/3TE43gBySo1CQ=
+X-Received: by 2002:a17:90b:4f4a:b0:268:300b:ee82 with SMTP id
+ pj10-20020a17090b4f4a00b00268300bee82mr190016pjb.19.1692388623694; Fri, 18
+ Aug 2023 12:57:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818102911.18388-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230818102911.18388-1-krzysztof.kozlowski@linaro.org>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Fri, 18 Aug 2023 14:56:52 -0500
+Message-ID: <CAPLW+4kiGoHvOjKxCNxb3adL+i1V2FMbun8Cq3bw0M1aeYfjAQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: usb: samsung,exynos-dwc3: fix order of
+ clocks on Exynos5433
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On Fri, 18 Aug 2023 at 05:29, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> The Exynos5433 DTSI had always different order of DWC USB3 controller
+> clocks than the binding.  The order in the binding was introduced in the
+> commit 949ea75b7ba4 ("dt-bindings: usb: samsung,exynos-dwc3: convert to
+> dtschema") converting to DT schema.  The Linux driver does not care
+> about order and was always getting clocks by name.  Therefore assume the
+> DTS is the preferred order and correct the binding.
+>
+> Fixes: 949ea75b7ba4 ("dt-bindings: usb: samsung,exynos-dwc3: convert to dtschema")
+> Cc: Sam Protsenko <semen.protsenko@linaro.org>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-On Fri, 2023-08-18 at 16:58 +0800, Herbert Xu wrote:
-> On Mon, Aug 07, 2023 at 03:37:12PM -0500, Tom Zanussi wrote:
-> > Hi, this is v9 of the IAA crypto driver, incorporating feedback from
-> > v8.
-> >=20
-> > v9 changes:
-> >=20
-> > =C2=A0 - Renamed drv_enable/disable_wq() to idxd_drv_enable/disable_wq(=
-)
-> > =C2=A0=C2=A0=C2=A0 and exported it, changing all existing callers as we=
-ll as the
-> > =C2=A0=C2=A0=C2=A0 iaa_crypto driver.
-> >=20
-> > =C2=A0 - While testing, ran into a use-after-free bug in the irq suppor=
-t
-> > =C2=A0=C2=A0=C2=A0 flagged by KASAN so fixed that up in iaa_compress() =
-(added missing
-> > =C2=A0=C2=A0=C2=A0 disable_async check).
-> >=20
-> > =C2=A0 - Also, while fixing the use-after-free bug, rearranged the out:
-> > =C2=A0=C2=A0=C2=A0 part of iaa_desc_complete() to make it cleaner.
-> >=20
-> > =C2=A0 - Also for the verify cases, reversed the dma mapping by adding =
-and
-> > =C2=A0=C2=A0=C2=A0 calling a new iaa_remap_for_verify() function, since=
- verify
-> > =C2=A0=C2=A0=C2=A0 basically does a decompress after reversing the src =
-and dst
-> > =C2=A0=C2=A0=C2=A0 buffers.
-> >=20
-> > =C2=A0 - Added new Acked-by and Reviewed-by tags.
->=20
-> This adds a bunch of warnings for me:
->=20
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:2090:5: warning: no previou=
-s prototype for =E2=80=98wq_stats_show=E2=80=99 [-Wmissing-prototypes]
-> =C2=A02090 | int wq_stats_show(struct seq_file *m, void *v)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:2106:5: warning: no previou=
-s prototype for =E2=80=98iaa_crypto_stats_reset=E2=80=99 [-Wmissing-prototy=
-pes]
-> =C2=A02106 | int iaa_crypto_stats_reset(void *data, u64 value)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0 ^~~~~~~~~~~~~~~~=
-~~~~~~
->=20
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38: warning: incorrect =
-type in argument 1 (different base types)
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38:=C2=A0=C2=A0=C2=A0 e=
-xpected unsigned long [usertype] size
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:38:=C2=A0=C2=A0=C2=A0 g=
-ot restricted gfp_t
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58: warning: incorrect =
-type in argument 2 (different base types)
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58:=C2=A0=C2=A0=C2=A0 e=
-xpected restricted gfp_t [usertype] flags
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:827:58:=C2=A0=C2=A0=C2=A0 g=
-ot unsigned long
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:2090:5: warning: symbol 'wq=
-_stats_show' was not declared. Should it be static?
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:2106:5: warning: symbol 'ia=
-a_crypto_stats_reset' was not declared. Should it be static?
-> ../drivers/crypto/intel/iaa/iaa_crypto_main.c:2028:13: warning: context i=
-mbalance in 'iaa_crypto_remove' - different lock contexts for basic block
->=20
-> ../drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c:10:11: warning: symbo=
-l 'fixed_ll_sym' was not declared. Should it be static?
-> ../drivers/crypto/intel/iaa/iaa_crypto_comp_fixed.c:49:11: warning: symbo=
-l 'fixed_d_sym' was not declared. Should it be static?
->=20
-> Please fix before resubmitting.
->=20
-> Thanks,
+Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
 
-OK, yeah, looks like I needed to do a make W=3D1 C=3D1 at least to catch th=
-ese.
-Will resubmit after doing that...
-
-Thanks,
-
-Tom=20
+>  Documentation/devicetree/bindings/usb/samsung,exynos-dwc3.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/usb/samsung,exynos-dwc3.yaml b/Documentation/devicetree/bindings/usb/samsung,exynos-dwc3.yaml
+> index 240f41b7133a..deeed2bca2cd 100644
+> --- a/Documentation/devicetree/bindings/usb/samsung,exynos-dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/samsung,exynos-dwc3.yaml
+> @@ -82,8 +82,8 @@ allOf:
+>            items:
+>              - const: aclk
+>              - const: susp_clk
+> -            - const: pipe_pclk
+>              - const: phyclk
+> +            - const: pipe_pclk
+>
+>    - if:
+>        properties:
+> --
+> 2.34.1
+>
