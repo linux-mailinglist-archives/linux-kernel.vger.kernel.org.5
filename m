@@ -2,127 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 855B2780FFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87672781001
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 18:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378498AbjHRQMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 12:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43922 "EHLO
+        id S1378501AbjHRQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 12:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378605AbjHRQMC (ORCPT
+        with ESMTP id S1378517AbjHRQMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 12:12:02 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C71344215
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7748ca56133so14103139f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692375116; x=1692979916;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HgOUhrzygLSqZdauIc0uVm9MlbbDR2SIBt1AEcio6xE=;
-        b=RjgLNxjyYy4EB/PEs0GWly50tA3Mc6O+p3KRLXDartocn3ajnzKW+O6Wj9lWK/ukUX
-         5GgloCF5lD65JykgEYfBnpT4e/M3xTcBuRqwCiC89AViJVElf7Y8bfEI7Ja5E+a+3N7q
-         L1GYNCv7JeBeBQ2SUBaLgtEQ1MOcZLNfGocLA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692375116; x=1692979916;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HgOUhrzygLSqZdauIc0uVm9MlbbDR2SIBt1AEcio6xE=;
-        b=f1YWT6WzaWxHXcEHs/zVZJhiCbIidNnu9sLahy/wM8+TFiLyCP2vzXw3lscAUm70zB
-         sthYlB9CGcsH/BjLyJt9PW/tldaUUlyj5rqh9ZoToQ0VLfM+OKa17ERpfEoAhZTzBg3s
-         ebun4WY0hOUH1T/zJdsGAj1/YBGRbLELM7G77gMDlp/pEVF6u0eZi52Tlnn/j1ksN+b8
-         hwq0Hyv2/eLYcDp2BiFRil4XyXvBIDVK/6zWvCjgaH9VCzXA5bH5F+uRSL7BQa8cpXNX
-         VEY/zGtfBfB88vE1hnWj6TsNp9RKt4BFoNSUOs8Z6zj+J8grY8AL0ga5grPgrI43Z0XG
-         Q25A==
-X-Gm-Message-State: AOJu0Yx5fa+Nk64EhJUQjq8g69exZu87lPKEsev8OdfERQQYPTec6l8t
-        rusvBJcljFCnEbD/Ysf1qfJexw==
-X-Google-Smtp-Source: AGHT+IEcNw1RSnNlbNsCdDxT7TVaSrBRorddbxy54Y3BOOfQrA79h8aB0G9+LlR9q9CnCMMbIYPWMQ==
-X-Received: by 2002:a5d:9d8b:0:b0:791:ad39:660b with SMTP id ay11-20020a5d9d8b000000b00791ad39660bmr4992529iob.0.1692375116181;
-        Fri, 18 Aug 2023 09:11:56 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id v19-20020a02cbb3000000b0042b265bf3besm603455jap.115.2023.08.18.09.11.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Aug 2023 09:11:55 -0700 (PDT)
-Message-ID: <54fe5a4b-e0eb-b2e2-e39a-fc840acac70e@linuxfoundation.org>
-Date:   Fri, 18 Aug 2023 10:11:55 -0600
+        Fri, 18 Aug 2023 12:12:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D03C4213;
+        Fri, 18 Aug 2023 09:12:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DF2DA63283;
+        Fri, 18 Aug 2023 16:12:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45906C433C8;
+        Fri, 18 Aug 2023 16:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692375127;
+        bh=nhXaS1ILNMTtOOyTp0Qc/n36yZYia81Kcw5EtjMJ4PU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vRZSc8c0N5HHbodOqhOc1b10LJdMdUMqCK1yb4IEPu4RES6OMr5KZOu1uxQoucf7/
+         E8A4q9BpYY7kEIHJydRvQPP7EMx++kV1yq0GX/cfyS/uSD5rykdCTSrHpE27HxSL9d
+         58ZjD0VQoWiYSI29GfdA6lnY+TBe7zsXldvtnQUrSIjO3KNmKfQd1R/n4W93cVbKjR
+         Sw56cgOlmGgy2HRO1/JQMh7QCMxQX0pTXzoerlj4kqlxXIt3lfE3s944XoTd0EcaMs
+         fRWCBcm0Z4fY3AuaUIrENcHm7p69w24p4OlOhhDmU4717EAuvuT1oSq15WUEy4LjTT
+         YsyyyUeTQRrOA==
+Date:   Fri, 18 Aug 2023 17:12:01 +0100
+From:   Lee Jones <lee@kernel.org>
+To:     Benjamin Bara <bbara93@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        peng.fan@oss.nxp.com, rafael.j.wysocki@intel.com,
+        Jerome Neanne <jneanne@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Thierry Reding <treding@nvidia.com>
+Subject: Re: [PATCH v2 0/6] regulator: pca9450: register restart handlers
+Message-ID: <20230818161201.GC986605@google.com>
+References: <20230809-pca9450-reboot-v2-0-b98b4f8139d5@skidata.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 3/3] kselftest: Add new test for detecting unprobed
- Devicetree devices
-Content-Language: en-US
-To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
-        Guenter Roeck <groeck@chromium.org>, kernel@collabora.com,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230817233635.2306377-1-nfraprado@collabora.com>
- <20230817233635.2306377-4-nfraprado@collabora.com>
- <69848238-17d8-4b87-8bc1-474cae127410@sirena.org.uk>
- <bdd6da06-d790-42c1-a5ea-372d38bf0ea7@notapiano>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <bdd6da06-d790-42c1-a5ea-372d38bf0ea7@notapiano>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230809-pca9450-reboot-v2-0-b98b4f8139d5@skidata.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/23 09:08, Nícolas F. R. A. Prado wrote:
-> On Fri, Aug 18, 2023 at 01:54:21PM +0100, Mark Brown wrote:
->> On Thu, Aug 17, 2023 at 07:35:27PM -0400, Nícolas F. R. A. Prado wrote:
->>
->>> --- /dev/null
->>> +++ b/tools/testing/selftests/dt/ktap_helpers.sh
->>> @@ -0,0 +1,57 @@
->>> +# SPDX-License-Identifier: GPL-2.0
->>> +#
->>> +# Copyright (c) 2023 Collabora Ltd
->>> +#
->>> +# Helpers for outputting in KTAP format
->>> +#
->>
->> These look generic so could be at the top level kselftest directory in
->> case any other tests want to use them?
+On Wed, 09 Aug 2023, Benjamin Bara wrote:
+
+> Hi!
 > 
-> Yes, they're generic. And sure, we can move it up. The tests using it will need
-> to source it at run-time, so we can either update the kselftest Makefile to
-> always copy this helper when installing, or each test's Makefile can
-> make its own copy during build.
+> This series implements two restart handler registrations for the pca9450
+> (6/6). As the pca9450 supports both, cold and warm resets, and there
+> exist at least one other PMIC implementation which also implements a
+> warm and a cold reset (tps65219), 1-5/6 should simplify/clarify the
+> distinction process between warm/soft and cold/hard resets/restarts.
+> Instead of deciding in the handler, this should be done during
+> registration. The series is a follow-up to Dmitry's feedback, regarding
+> checking the reboot_mode in the handler [1].
+> 
+> As the cold handler queue is executed before the warm handler queue
+> (when the reboot_mode is not changed/specified), cold handlers are
+> implicitly executed with a higher prio and therefore the default
+> registration can be used.
+> 
+> This series is based on linux-next and 6/6 depends on [2].
+> 
+> Thanks & best regards,
+> Benjamin
+> 
+> [1] https://lore.kernel.org/all/7eddaf8c-ab04-7670-fc45-15f0fce5eff2@collabora.com/
+> [2] https://lore.kernel.org/all/20230327-tegra-pmic-reboot-v7-3-18699d5dcd76@skidata.com/
+> 
+> ---
+> Changes in v2:
+> - rebase to next-20230809
+> - improve commit messages
+> - use helper (with implicit priority) instead of explicit priority
+> - fallback to warm handler if hard/cold requested but failed
+> - Link to v1: https://lore.kernel.org/r/20230727-pca9450-reboot-v1-0-c8edb27bf404@skidata.com
+> 
+> ---
+> Benjamin Bara (6):
+>       kernel/reboot: distinguish between cold and warm
+>       mfd: rk8xx: Specify restart mode
+>       soc/tegra: pmc: Specify restart mode
+>       mfd: tps65219: Specify restart mode
+>       kernel/reboot: remove generic restart mode
+>       regulator: pca9450: register restart handlers
+
+What are they interdependencies between them all?
+
+Should they all be applied at once?
+
+>  drivers/mfd/rk8xx-core.c              |  6 +--
+>  drivers/mfd/tps65219.c                | 17 +++++--
+>  drivers/regulator/pca9450-regulator.c | 59 ++++++++++++++++++++++++
+>  drivers/soc/tegra/pmc.c               |  2 +-
+>  include/linux/reboot.h                | 23 +++++++---
+>  include/linux/regulator/pca9450.h     |  7 +++
+>  kernel/reboot.c                       | 84 +++++++++++++++++++++++++++++------
+>  7 files changed, 170 insertions(+), 28 deletions(-)
+> ---
+> base-commit: 21ef7b1e17d039053edaeaf41142423810572741
+> change-id: 20230724-pca9450-reboot-0b32218fc7a2
+> 
+> Best regards,
+> -- 
+> Benjamin Bara <benjamin.bara@skidata.com>
 > 
 
-Moving this up would require the above changes. I prefer
-making these later after this test goes in to avoid conflicts
-with linux-kselftest next and Rob's dt as this one depends
-on  patches 1&2 which aren't in my Inbox.
-
-I would like also  to see a common solution that works for C
-and shell tests. Sourcing works just for shell tests.
-
->>
->> The test itself looks good in so far as I can read shell.
-> 
-> Thanks for the feedback!
->
-Rob, Are you planning to take this through your tree. If you
-do, here is my Reviewed-by
-
-Reviewed-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
-
+-- 
+Lee Jones [李琼斯]
