@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C6B7805CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BC77805D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 08:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357982AbjHRGFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 02:05:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        id S1357958AbjHRGFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 02:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358036AbjHRGEx (ORCPT
+        with ESMTP id S1357717AbjHRGEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 02:04:53 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4C43589;
-        Thu, 17 Aug 2023 23:04:50 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 4A88560174;
-        Fri, 18 Aug 2023 08:04:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692338688; bh=6RfGVnCZ81mI1IH4EbO9lFplxAUZ3z7hLl2fyDw6MzQ=;
-        h=Date:To:Cc:From:Subject:From;
-        b=peX6+amz7KiW2eGnVBAEE75g3YRJu0KTDMU+vRDotfgMf8nap+GtPD2aAIW40Mgr7
-         8/6kEM1vwfk8IVzVZrfcXxBJ5lRanPr/6vas/Ohoy12cG+ZRoF2/mKWFXExkF9d0xV
-         OG5vCZmSWOydrgYdRajf0LvjGQw5lN81n+8PrUxz48ukVh4k5Brp0RH2dAIgfoFyKK
-         Xn5ezQ6i7O2tJsp4bGmEH1F5GvgYEFj9TSX/n10jhCROnOU0/DDPGBdvFVMD5/3GDQ
-         uBvAN+H0WRLLts9WFBisw5b75cTNeP4GEy4Jd+XTA5bNSMkNOtEeMEfrVj0jFWZ/Eb
-         2j4DPS0vffaTQ==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id SVJ8fHRFfbRF; Fri, 18 Aug 2023 08:04:45 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 46BB16015E;
-        Fri, 18 Aug 2023 08:04:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1692338685; bh=6RfGVnCZ81mI1IH4EbO9lFplxAUZ3z7hLl2fyDw6MzQ=;
-        h=Date:To:Cc:From:Subject:From;
-        b=jSvJ43joU0nSL6unNiH6tRBH5yd7ILmmVnmh8d7+M/Un2f25/CDCvDtWCGilrTEIL
-         aAQ6uJOm+AscjJIRyLYs+R9R7S6saFk8gyodNEpjbEZtk1Fvi7IVBBBrjSkvMpYjFy
-         SHaj6acL0tHSp0GA1ddH/ccitkBoZ5wL7EPtNnSRVDoNPmwzBsOSK1bBLdQYBakW1I
-         iCGFieAHafODZ8vx1BeHcstYCrVb9Bevo/nBCZvUMCCiyr8qhdeg9eF0KcjqNxnwyZ
-         wUFQACkrNYkLW4iIM54hOh535gmzERSXtGqyMdeKwq1flG3KkeAxyu1N8PLk/HA9jK
-         MsLE6ZkZpWpiw==
-Message-ID: <3bc6a541-dd00-61b3-b8f7-d35d09965654@alu.unizg.hr>
-Date:   Fri, 18 Aug 2023 08:04:13 +0200
+        Fri, 18 Aug 2023 02:04:36 -0400
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11BE30E9;
+        Thu, 17 Aug 2023 23:04:34 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso64910666b.1;
+        Thu, 17 Aug 2023 23:04:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692338673; x=1692943473;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c2pHGRjubj9loM4rlnSBB8B0NBJEkF4e8IGQOJotz1E=;
+        b=E49aNMoyhSGprnWWvLncKuA3lsjC0FoDWBxAVtUWUWIhHKFV1hjHqKPmr46nkZu5lx
+         LUM6BfK3xUhdeUygbQK13fJSx8VcntzzfyCykwsCcG4JPS6nvy+zIZaEgCsbgIfop4zy
+         TB0PbkvqUS9iY1ATZVmHAe7uSR49mWmKG7j+jfTAjewVH6L6UU2miHg1stnqPA9oAv0J
+         mdzlCSmA4XTRK12kc6WSgYnETiNHftFEMetgcal9FHYa0eBo159wzr5kZqKdbZuPdvIu
+         ptNvfEc78NDhZuBhi450X2XhDyl/pxW9Kriy3ZWlO+VzxGCWYj94lj7kkQaciJbh/2Tl
+         WGGw==
+X-Gm-Message-State: AOJu0Ywo73eFHXI8fMjiPBbje8a6EhcVR9gDJCPFDDfV15US9muJ3AIM
+        zeQqQy/eNdzDs85GJy9Y3gs=
+X-Google-Smtp-Source: AGHT+IFyDqYKYpdUEqIE4zH8QDMlDuxP5lTa6oRNWYNxSC75jtLr7Y/tZRARUOxviPWlVJLzTV7YIQ==
+X-Received: by 2002:a17:906:3d32:b0:99e:f3b:2f7d with SMTP id l18-20020a1709063d3200b0099e0f3b2f7dmr1033218ejf.74.1692338672907;
+        Thu, 17 Aug 2023 23:04:32 -0700 (PDT)
+Received: from [192.168.1.58] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id l3-20020a1709061c4300b009882e53a42csm754990ejg.81.2023.08.17.23.04.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Aug 2023 23:04:32 -0700 (PDT)
+Message-ID: <d92e7938-49e0-3b4c-89ab-77dcd15b8676@kernel.org>
+Date:   Fri, 18 Aug 2023 08:04:31 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
 Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kernel Build System <linux-kbuild@vger.kernel.org>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Subject: [POSSIBLE BUG] SSL error:FFFFFFFF80000002:system library::No such
- file or directory
+To:     Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Kees Cook <keescook@chromium.org>, linux-ia64@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230817163708.GA8248@redhat.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] kill do_each_thread()
+In-Reply-To: <20230817163708.GA8248@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 17. 08. 23, 18:37, Oleg Nesterov wrote:
+> Eric has pointed out that we still have 3 users of do_each_thread().
+> Change them to use for_each_process_thread() and kill this helper.
 
-On Ubuntu 22.04 LTS, vanilla torvalds kernel, stock config-6.5.0-060500-rc5 + tools/../selftests/net/config,
-debug info on.
+Is there any change in behavior? Why is for_each_process_thread() better 
+than do_each_thread()?
 
-There seems to be a build error I haven't seen before:
+thanks,
+-- 
+js
+suse labs
 
-At main.c:298:
-- SSL error:FFFFFFFF80000002:system library::No such file or directory: ../crypto/bio/bss_file.c:67
-- SSL error:10000080:BIO routines::no such file: ../crypto/bio/bss_file.c:75
-sign-file: debian/linux-image/lib/modules/6.5.0-rc6+/kernel/arch/x86/events/amd/amd-uncore.ko
-
-So, I understood there is no amd/amd-uncore.ko, but there is a compressed instance in the same directory:
-
-marvin@defiant:~/linux/kernel/linux_torvalds$ ls debian/linux-image/lib/modules/6.5.0-rc6+/kernel/arch/x86/events/amd
-amd-uncore.ko.zst
-marvin@defiant:~/linux/kernel/linux_torvalds$
-
-Did I do something very stupid?
-
-I think it is almost a default build. I tried my local openssl 3.1.0 and the Ubuntu's 3.1.2 openssl.
-
-NOTE: Disabling the ZSTD module compression and setting it to None solved the problem and the build was
-successful.
-
-Many thanks.
-
-Best regards,
-Mirsad Todorovac
