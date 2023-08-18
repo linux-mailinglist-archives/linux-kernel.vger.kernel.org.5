@@ -2,260 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB0D780E12
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4722780E17
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377753AbjHROep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
+        id S1377767AbjHROg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:36:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377759AbjHROeW (ORCPT
+        with ESMTP id S1377684AbjHROgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:34:22 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 770453AAC
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1692369257;
-        bh=DRkdbAleRrQPog1gpTWFm1kGFkNEcMuLH+Qt6QzMTbQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SMIwK4tK828RzVUIel/FKF8jh8xa6F+U6XXdxWSIxO6kBt60mDvguNivt6nOtEr/h
-         tvIzWHVC2+WsXiRedfS4TYBCPkvAovEnWqnXFu81jzx9kCZnzfb2Hyav8alYbTzYWc
-         TKSn2Kao34sygCUIkdi8beWs+LqZpuo8/msMZ1h8gEG36tcIpCB1s4O0Fvrqxgqywk
-         QCTBH0dNwknETvXHgHkXGgp63O7+ybxQdi+6tSM7KpqsCkJAseby2ozanpOxrsC3EU
-         p79E4WySNk/PBDI0Q7yqELYwizuGlsZSWOdzLHs08eVVZfDMNLlqgYpEeFB+EhxD+H
-         RhuPzM0TE2JPg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RS4Bd0Qkxz1LW5;
-        Fri, 18 Aug 2023 10:34:17 -0400 (EDT)
-Message-ID: <eadede2d-227b-cf99-cf92-4781d73d1352@efficios.com>
-Date:   Fri, 18 Aug 2023 10:35:21 -0400
+        Fri, 18 Aug 2023 10:36:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A436713D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692369350;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U8Xyd7C4haXDCFCCJ82ZpXcIirbDRYbvnPlINe/0qeA=;
+        b=JfJQ4DvJDMiboy5AQyBmQSFucRd8TGp1rD2fQWI55SNOjJMRUY/uvuQiE7oKa9i1Jg+0VQ
+        Q3z/sNE38tlAkcu5yOyo/yUUmFP+e2DuZga0p8CDW2b5XK5RJdb6Vipse2yTwJhLVlzQiM
+        WI4wp8HGjjG6+aAFUfuVLzEaajFBF+A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-102-6wOjqgETP2mtTH5zla9CLg-1; Fri, 18 Aug 2023 10:35:49 -0400
+X-MC-Unique: 6wOjqgETP2mtTH5zla9CLg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe57d0e11eso7133965e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:35:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692369348; x=1692974148;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8Xyd7C4haXDCFCCJ82ZpXcIirbDRYbvnPlINe/0qeA=;
+        b=a4jT7Ov/iBRIsUEmSkzY2Spza9i0zrMeEVo4F3TocUOFGqeSwRIDKLLE5tZeiZamh7
+         nMCFNr+HrKrX0cz3XqQJXBKU2zCXwfj5GcgPCVMizscQKWn8863VZuj0b/y8l3nH4O33
+         hCeJgBADdu76uD0HV41HNSt6PjyUrqTqECK8BtS5hbX7VtmQ93rNm5s0iG6vNbBIc7+B
+         oINF4gtR513ktiUBKSFsVBqy3Wq+nxD7M3hyTIIf/LxBXgaFuvQ5AAovUub0RvPMyQn6
+         GqtrJao9kiNaDo4AfO1Kz2AKXs2yOSBy1ieRvWeS9AOxVOWSte55NUzgz2vqAtsnnAc0
+         7yXw==
+X-Gm-Message-State: AOJu0YzPKiXFhDrvuEFdZa1gDbzuowPQW+lKf4aFwzCNRbVcByaq1me+
+        e38N5y1vqLKNQHVBX/pdQA78fyIyYWpwDFkhFDDXDZ6nYEephmVTsOPa/KRncMi/uKtbTY20dKH
+        +Cvy1yMNw6B9V8GFL4GOrxptU
+X-Received: by 2002:a7b:cc13:0:b0:3fb:abd0:2b52 with SMTP id f19-20020a7bcc13000000b003fbabd02b52mr2322488wmh.13.1692369348130;
+        Fri, 18 Aug 2023 07:35:48 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEIHiBR/gYcfdq3hvKsYvo9XCnq0GuAu/JJnk9XxpFltL1dwHdEKx3/QYqZY/ZPy8Ry94efDA==
+X-Received: by 2002:a7b:cc13:0:b0:3fb:abd0:2b52 with SMTP id f19-20020a7bcc13000000b003fbabd02b52mr2322464wmh.13.1692369347635;
+        Fri, 18 Aug 2023 07:35:47 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c726:ff00:a22a:6d42:439d:de2? (p200300cbc726ff00a22a6d42439d0de2.dip0.t-ipconnect.de. [2003:cb:c726:ff00:a22a:6d42:439d:de2])
+        by smtp.gmail.com with ESMTPSA id o17-20020a05600c379100b003fe26244858sm1493187wmr.46.2023.08.18.07.35.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 07:35:47 -0700 (PDT)
+Message-ID: <886b6a56-8acb-e975-b5f3-d8098a2285ab@redhat.com>
+Date:   Fri, 18 Aug 2023 16:35:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH 1/1] sched: ttwu_queue_cond: perform queued wakeups
- across different L2 caches
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3] proc/ksm: add ksm stats to /proc/pid/smaps
+To:     Stefan Roesch <shr@devkernel.io>, kernel-team@fb.com
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        hannes@cmpxchg.org, riel@surriel.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20230817162301.3472457-1-shr@devkernel.io>
 Content-Language: en-US
-To:     K Prateek Nayak <kprateek.nayak@amd.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, x86@kernel.org
-References: <20230817153515.143932-1-mathieu.desnoyers@efficios.com>
- <CAKfTPtCavFCk+1cJe2=zFa7WfiX4XGMdc5AsA_2r4xqsk+4v7Q@mail.gmail.com>
- <2f9aaf2b-165d-8a98-98af-a3a0ee4c4b2e@amd.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <2f9aaf2b-165d-8a98-98af-a3a0ee4c4b2e@amd.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230817162301.3472457-1-shr@devkernel.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/23 02:39, K Prateek Nayak wrote:
-> Hello Vincent, Mathieu,
+On 17.08.23 18:23, Stefan Roesch wrote:
+> With madvise and prctl KSM can be enabled for different VMA's. Once it
+> is enabled we can query how effective KSM is overall. However we cannot
+> easily query if an individual VMA benefits from KSM.
 > 
-> On 8/17/2023 9:31 PM, Vincent Guittot wrote:
->> On Thu, 17 Aug 2023 at 17:34, Mathieu Desnoyers
->> <mathieu.desnoyers@efficios.com> wrote:
->>>
->>> Skipping queued wakeups for all logical CPUs sharing an LLC means that
->>> on a 192 cores AMD EPYC 9654 96-Core Processor (over 2 sockets), groups
->>> of 8 cores (16 hardware threads) end up grabbing runqueue locks of other
->>> runqueues within the same group for each wakeup, causing contention on
->>> the runqueue locks.
->>>
->>> Improve this by only considering hardware threads sharing an L2 cache as
->>> candidates for skipping use of the queued wakeups.
->>>
->>> This results in the following benchmark improvements:
->>>
->>>      hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
->>>
->>> from 49s to 34s. (30% speedup)
->>>
->>> And similarly with perf bench:
->>>
->>>      perf bench sched messaging -g 32 -p -t -l 100000
->>>
->>> from 10.9s to 7.4s (32% speedup)
->>>
->>> This was developed as part of the investigation into a weird regression
->>> reported by AMD where adding a raw spinlock in the scheduler context
->>> switch accelerated hackbench. It turned out that changing this raw
->>> spinlock for a loop of 10000x cpu_relax within do_idle() had similar
->>> benefits.
->>>
->>> This patch achieves a similar effect without busy waiting nor changing
->>> anything about runqueue selection on wakeup. It considers that only
->>> hardware threads sharing an L2 cache should skip the queued
->>> try-to-wakeup and directly grab the target runqueue lock, rather than
->>> allowing all hardware threads sharing an LLC to do so.
->>>
->>> I would be interested to hear feedback about performance impact of this
->>> patch (improvement or regression) on other workloads and hardware,
->>> especially for Intel CPUs. One thing that we might want to empirically
->>> figure out from the topology is whether there is a maximum number of
->>> hardware threads within an LLC below which it would make sense to use
->>> the LLC rather than L2 as group within which queued wakeups can be
->>> skipped.
->>>
->>> [ Only tested on AMD CPUs so far. ]
->>>
->>> Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
->>> Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
->>> Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
->>> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: Peter Zijlstra <peterz@infradead.org>
->>> Cc: Valentin Schneider <vschneid@redhat.com>
->>> Cc: Steven Rostedt <rostedt@goodmis.org>
->>> Cc: Ben Segall <bsegall@google.com>
->>> Cc: Mel Gorman <mgorman@suse.de>
->>> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
->>> Cc: Vincent Guittot <vincent.guittot@linaro.org>
->>> Cc: Juri Lelli <juri.lelli@redhat.com>
->>> Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
->>> Cc: Aaron Lu <aaron.lu@intel.com>
->>> Cc: x86@kernel.org
->>> ---
->>>   arch/Kconfig                   |  6 ++++++
->>>   arch/x86/Kconfig               |  1 +
->>>   drivers/base/Kconfig           |  1 +
->>>   include/linux/sched/topology.h |  3 ++-
->>>   kernel/sched/core.c            | 26 +++++++++++++++++++++++---
->>>   5 files changed, 33 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/arch/Kconfig b/arch/Kconfig
->>> index 205fd23e0cad..e5aac1741712 100644
->>> --- a/arch/Kconfig
->>> +++ b/arch/Kconfig
->>> @@ -340,6 +340,12 @@ config HAVE_ASM_MODVERSIONS
->>>            <asm/asm-prototypes.h> to support the module versioning for symbols
->>>            exported from assembly code.
->>>
->>> +config HAVE_CLUSTERGROUP
->>> +       bool
->>> +       help
->>> +         This symbol should be selected by an architecture if it
->>> +         implements CPU clustergroup.
->>> +
->>>   config HAVE_REGS_AND_STACK_ACCESS_API
->>>          bool
->>>          help
->>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->>> index cb1031018afa..07813a1a9a58 100644
->>> --- a/arch/x86/Kconfig
->>> +++ b/arch/x86/Kconfig
->>> @@ -299,6 +299,7 @@ config X86
->>>          select FUNCTION_ALIGNMENT_4B
->>>          imply IMA_SECURE_AND_OR_TRUSTED_BOOT    if EFI
->>>          select HAVE_DYNAMIC_FTRACE_NO_PATCHABLE
->>> +       select HAVE_CLUSTERGROUP
->>>
->>>   config INSTRUCTION_DECODER
->>>          def_bool y
->>> diff --git a/drivers/base/Kconfig b/drivers/base/Kconfig
->>> index 2b8fd6bb7da0..408aaf7a4bd1 100644
->>> --- a/drivers/base/Kconfig
->>> +++ b/drivers/base/Kconfig
->>> @@ -218,6 +218,7 @@ config DMA_FENCE_TRACE
->>>
->>>   config GENERIC_ARCH_TOPOLOGY
->>>          bool
->>> +       select HAVE_CLUSTERGROUP
->>>          help
->>>            Enable support for architectures common topology code: e.g., parsing
->>>            CPU capacity information from DT, usage of such information for
->>> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
->>> index 816df6cc444e..714386070463 100644
->>> --- a/include/linux/sched/topology.h
->>> +++ b/include/linux/sched/topology.h
->>> @@ -178,7 +178,8 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
->>>   cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
->>>   void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
->>>
->>> -bool cpus_share_cache(int this_cpu, int that_cpu);
->>> +bool cpus_share_cluster(int this_cpu, int that_cpu);   /* Share L2. */
->>> +bool cpus_share_cache(int this_cpu, int that_cpu);     /* Share LLC. */
->>
->> I think that Yicong is doing what you want with
->> cpus_share_lowest_cache() which points to cluster when available or
->> LLC otherwise
->> https://lore.kernel.org/lkml/20220720081150.22167-1-yangyicong@hisilicon.com/t/#m0ab9fa0fe0c3779b9bbadcfbc1b643dce7cb7618
-> Please correct me if I'm wrong, but with Yicong's latest version
-> (https://lore.kernel.org/lkml/20230719092838.2302-2-yangyicong@huawei.com/)
-> "sd_share_id" will follow "sd_llc_id" if the SD_CLUSTER domain is
-> degenerated, which is the case with any system where CLUSTER domain is
-> same as SMT domain.
+> This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
+> how many of the pages are KSM pages. The returned value for KSM is
+> independent of the use of the shared zeropage.
 > 
-> On logging the cpu and sd_share_id on my 3rd Gen EPYC system I see,
+> Here is a typical output:
 > 
->      CPU(0) sd_share_id(0)
->      CPU(1) sd_share_id(0)
->      CPU(2) sd_share_id(0)
->      CPU(3) sd_share_id(0)
->      CPU(4) sd_share_id(0)
->      CPU(5) sd_share_id(0)
->      CPU(6) sd_share_id(0)
->      CPU(7) sd_share_id(0)
->      CPU(8) sd_share_id(8)
->      CPU(9) sd_share_id(8)
->      ...
->      CPU(127) sd_share_id(120)
->      CPU(128) sd_share_id(0)
->      CPU(129) sd_share_id(0)
->      CPU(130) sd_share_id(0)
->      CPU(131) sd_share_id(0)
->      CPU(132) sd_share_id(0)
->      CPU(133) sd_share_id(0)
->      CPU(134) sd_share_id(0)
->      CPU(135) sd_share_id(0)
->      CPU(136) sd_share_id(8)
->      ...
+> 7f420a000000-7f421a000000 rw-p 00000000 00:00 0
+> Size:             262144 kB
+> KernelPageSize:        4 kB
+> MMUPageSize:           4 kB
+> Rss:               51212 kB
+> Pss:                8276 kB
+> Shared_Clean:        172 kB
+> Shared_Dirty:      42996 kB
+> Private_Clean:       196 kB
+> Private_Dirty:      7848 kB
+> Referenced:        15388 kB
+> Anonymous:         51212 kB
+> KSM:               41376 kB
+> LazyFree:              0 kB
+> AnonHugePages:         0 kB
+> ShmemPmdMapped:        0 kB
+> FilePmdMapped:         0 kB
+> Shared_Hugetlb:        0 kB
+> Private_Hugetlb:       0 kB
+> Swap:             202016 kB
+> SwapPss:            3882 kB
+> Locked:                0 kB
+> THPeligible:    0
+> ProtectionKey:         0
+> ksm_state:          0
+> ksm_skip_base:      0
+> ksm_skip_count:     0
+> VmFlags: rd wr mr mw me nr mg anon
 > 
-> "sd_share_id" follows the "sd_llc_id" since CLUSTER domain is
-> degenerated.
+> This information also helps with the following workflow:
+> - First enable KSM for all the VMA's of a process with prctl.
+> - Then analyze with the above smaps report which VMA's benefit the most
+> - Change the application (if possible) to add the corresponding madvise
+> calls for the VMA's that benefit the most
 > 
->      # echo Y > /sys/kernel/debug/sched/verbose
->      # cat /sys/kernel/debug/sched/domains/cpu0/domain*/flags
->      SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_CPUCAPACITY SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING # SMT Domain
->      SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_PKG_RESOURCES SD_PREFER_SIBLING # MC Domain
->      SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_PREFER_SIBLING # DIE Domain
->      SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA # NUMA Domain
+> Signed-off-by: Stefan Roesch <shr@devkernel.io>
+> ---
+>   Documentation/filesystems/proc.rst | 4 ++++
+>   fs/proc/task_mmu.c                 | 5 +++++
+>   2 files changed, 9 insertions(+)
 > 
-> But I believe Mathieu's case would require falling back to "core_id" if
-> the cluster domain has degenerated.
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 7897a7dafcbc..d5bdfd59f5b0 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such as the following::
+>       Private_Dirty:         0 kB
+>       Referenced:          892 kB
+>       Anonymous:             0 kB
+> +    KSM:                   0 kB
+>       LazyFree:              0 kB
+>       AnonHugePages:         0 kB
+>       ShmemPmdMapped:        0 kB
+> @@ -501,6 +502,9 @@ accessed.
+>   a mapping associated with a file may contain anonymous pages: when MAP_PRIVATE
+>   and a page is modified, the file page is replaced by a private anonymous copy.
+>   
+> +"KSM" shows the amount of anonymous memory that has been de-duplicated. The
+> +value is independent of the use of shared zeropage.
+> +
+>   "LazyFree" shows the amount of memory which is marked by madvise(MADV_FREE).
+>   The memory isn't freed immediately with madvise(). It's freed in memory
+>   pressure if the memory is clean. Please note that the printed value might
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 51315133cdc2..f591c750ffda 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -396,6 +396,7 @@ struct mem_size_stats {
+>   	unsigned long swap;
+>   	unsigned long shared_hugetlb;
+>   	unsigned long private_hugetlb;
+> +	unsigned long ksm;
+>   	u64 pss;
+>   	u64 pss_anon;
+>   	u64 pss_file;
+> @@ -452,6 +453,9 @@ static void smaps_account(struct mem_size_stats *mss, struct page *page,
+>   			mss->lazyfree += size;
+>   	}
+>   
+> +	if (PageKsm(page))
+> +		mss->ksm += size;
+> +
 
-Yes, I've noticed the same thing on my system. I'm preparing an updated 
-patchset which renames cpus_share_cache() to cpus_share_llc(), and 
-introduces a new cpus_share_l2c() based on a new sd_l2c_id per-cpu 
-variable derived from topology_cluster_cpumask(). It seems to work fine 
-so far.
+Did you accidentally not include handling of the KSM-shared zeropage?
 
-Thanks,
-
-Mathieu
-
-> 
-> --
-> Thanks and Regards,
-> Prateek
+Or did I misinterpret "independent of the use of the shared zeropage."
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Cheers,
+
+David / dhildenb
 
