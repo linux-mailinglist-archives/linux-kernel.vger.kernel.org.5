@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 662B978053C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8BB78053F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 06:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357903AbjHRE4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 00:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
+        id S1357910AbjHRE6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 00:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348886AbjHRE4P (ORCPT
+        with ESMTP id S1348886AbjHRE6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 00:56:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4603358E;
-        Thu, 17 Aug 2023 21:56:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692334574; x=1723870574;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mR493IMW5AWgA/NvnIZTYMmSMVCq/yaFQLRH0a+q9WA=;
-  b=jVzJCLSDclqs52Rn3JRk3NvbN2SPWd4QYB4wlvMGFlhDwzI9CZj4SmFM
-   Sg7Sn2vlNq4euJQve7ajysDkWZPxDhzoHnlunjZor/T8Buw0j3x+W7Z2I
-   XfquotQX2hGY5IQWfDxeiUecQCSICfuwHFHuqRowmjK8NNAPIMDOjR2cf
-   a15tvyRRKMdHc3vECRPf+vfv9T5isGE6uhT/5dM4H81u+a+szfUxOyY/L
-   TjjltM5L3TTAol2dievZ3KW02V91o2oaXCGlilQmwsz4rdTUH878ySXsB
-   sbJ7sYPFZ1rRLJ8mUeBf04DwHdArmQZ3tSFN9vBBeroMEBFKI+SuJ4DvI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="459367007"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="459367007"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Aug 2023 21:56:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="800329455"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="800329455"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Aug 2023 21:56:12 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 43E3BDAB; Fri, 18 Aug 2023 07:56:11 +0300 (EEST)
-Date:   Fri, 18 Aug 2023 07:56:11 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Sanath S <sanaths2@amd.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
-        Sanjay R Mehta <sanju.mehta@amd.com>
-Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
- the daisy chain
-Message-ID: <20230818045611.GE3465@black.fi.intel.com>
-References: <20230816051923.2287912-1-Sanath.S@amd.com>
- <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com>
- <20230817102430.GD3465@black.fi.intel.com>
- <0aa6cb16-27af-345d-7e6c-cf985290d1b4@amd.com>
+        Fri, 18 Aug 2023 00:58:35 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7304358E;
+        Thu, 17 Aug 2023 21:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692334708;
+        bh=HiJA9PezM1HtffiYrXrdhi5mfPzK5Gu36qoqj3y34UQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eCgz1PPdyt2Jld3CjkYn0XI0yuKWjdUTWTc2gTsfTgd6Os16DtPz/B/yBtHfmTLqE
+         kBJ4yRxp+hYQ4qPLyLPfHOZmeg2IAw8w3WKgd1B36jEj91ogENlyG391wwkxtbT56V
+         YCOSSZjJlEY6y/zbcB48azJrZwC/O6Ob/C3PQluLRzngn/h3pm1tmtXjvWFq8VYKT8
+         F32fYiU1OZHdaTL9yZaNEKFq59AhL8IhvaiHb/i9brBbMFLVaQTWaHWckVp9arYHEq
+         3GT5MaRtMfvD11WFvci6FDP5WKVMMpaAqlvuHvI774qZxPyyKGx3EjNVpyWIu94QBm
+         rCGG3EaDSpVvg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RRqQC6MLvz4wxm;
+        Fri, 18 Aug 2023 14:58:27 +1000 (AEST)
+Date:   Fri, 18 Aug 2023 14:58:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Michael Ellerman <mpe@ellerman.id.au>
+Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tty tree with the powerpc tree
+Message-ID: <20230818145826.00c7ead1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <0aa6cb16-27af-345d-7e6c-cf985290d1b4@amd.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/+BM+ZDeXTi+uS+L9NKgFyXK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 09:01:50AM +0530, Sanath S wrote:
-> 
-> On 8/17/2023 3:54 PM, Mika Westerberg wrote:
-> > On Wed, Aug 16, 2023 at 06:48:35PM +0530, Sanath S wrote:
-> > > Adding Mika.
-> > Thanks!
-> > 
-> > > On 8/16/2023 10:49 AM, Sanath S wrote:
-> > > > In the case of Thunderbolt, it contains a PCIe switch and one or
-> > > > more hotplug-capable PCIe downstream ports where the daisy chain
-> > > > can be extended.
-> > > > 
-> > > > Currently when a Thunderbolt Dock is plugged in during S5/Reboot,
-> > > > System BIOS allocates a very minimal number of buses for bridges and
-> > > > hot-plug capable PCIe downstream ports to enumerate the dock during
-> > > > boot. Because of this, we run out of bus space pretty quickly when
-> > > > more PCIe devices are attached to hotplug downstream ports in order
-> > > > to extend the chain.
-> > > > 
-> > > > Before:
-> > > >              +-04.0
-> > > >              +-04.1-[63-c1]----00.0-[64-69]--+-00.0-[65]--
-> > > >              |                               +-01.0-[66]--
-> > > >              |                               +-02.0-[67]--
-> > > >              |                               +-03.0-[68]--
-> > > >              |                               \-04.0-[69]--
-> > > >              +-08.0
-> > This is something the BIOS should be doing but for some reason it is
-> > not on that particular system.
-> Yes, BIOS should be doing it. Idea here is if BIOS has not distributed it
-> correctly, OS
-> can reallocate and distribute it correctly.
-> > > > In case of a thunderbolt capable bridge, reconfigure the buses allocated
-> > Thunderbolt
-> Will correct it.
-> > 
-> > > > by BIOS to the maximum available buses. So that the hot-plug bridges gets
-> > > > maximum buses and chain can be extended to accommodate more PCIe devices.
-> > > > This fix is necessary for all the PCIe downstream ports where the daisy
-> > > > chain can be extended.
-> > This is necessary only when there is no proper BIOS allocation for the
-> > resources.
-> Yes, will send out a v2 with updated commit message.
-> > 
-> > > > After:
-> > > >              +-04.0
-> > > >              +-04.1-[63-c1]----00.0-[64-c1]--+-00.0-[65]--
-> > > >              |                               +-01.0-[66-84]--
-> > > >              |                               +-02.0-[85-a3]--
-> > > >              |                               +-03.0-[a4-c0]--
-> > > >              |                               \-04.0-[c1]--
-> > > >              +-08.0
-> > > > 
-> > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
-> > Did you get confirmation that this actually solves the issue?
-> I've tested this on my setup, it is resolving the issue.
+--Sig_/+BM+ZDeXTi+uS+L9NKgFyXK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Right, but it would be good to get confirmation from the person who
-reported the issue that this actually helps. There is nothing in the
-bugzilla whether the patch worked or not.
+Hi all,
+
+Today's linux-next merge of the tty tree got a conflict in:
+
+  arch/powerpc/include/asm/fs_pd.h
+
+between commits:
+
+  e6e077cb2aa4 ("powerpc/include: Declare mpc8xx_immr in 8xx_immap.h")
+  fecc436a97af ("powerpc/include: Remove mpc8260.h and m82xx_pci.h")
+  fbbf4280dae4 ("powerpc/8xx: Remove immr_map() and immr_unmap()")
+  7768716d2f19 ("powerpc/cpm2: Remove cpm2_map() and cpm2_unmap()")
+
+from the powerpc tree and commit:
+
+  c2d6c1b4f034 ("serial: cpm_uart: Use get_baudrate() instead of uart_baudr=
+ate()")
+
+from the tty tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+Note that after all the above are applied, it looks like this file can
+be removed completely as nothing in the tree includes it any more.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/powerpc/include/asm/fs_pd.h
+index d530f68b4eef,7b61b80f212d..000000000000
+--- a/arch/powerpc/include/asm/fs_pd.h
++++ b/arch/powerpc/include/asm/fs_pd.h
+@@@ -14,14 -14,26 +14,4 @@@
+  #include <sysdev/fsl_soc.h>
+  #include <asm/time.h>
+ =20
+- static inline int uart_baudrate(void)
+- {
+-         return get_baudrate();
+- }
+ -#ifdef CONFIG_CPM2
+ -#include <asm/cpm2.h>
+--
+- static inline int uart_clock(void)
+- {
+-         return ppc_proc_freq;
+- }
+ -#if defined(CONFIG_8260)
+ -#include <asm/mpc8260.h>
+ -#endif
+ -
+ -#define cpm2_map(member) (&cpm2_immr->member)
+ -#define cpm2_map_size(member, size) (&cpm2_immr->member)
+ -#define cpm2_unmap(addr) do {} while(0)
+ -#endif
+ -
+ -#ifdef CONFIG_PPC_8xx
+ -#include <asm/8xx_immap.h>
+ -
+ -extern immap_t __iomem *mpc8xx_immr;
+ -
+ -#define immr_map(member) (&mpc8xx_immr->member)
+ -#define immr_map_size(member, size) (&mpc8xx_immr->member)
+ -#define immr_unmap(addr) do {} while (0)
+ -#endif
+--
+  #endif
+
+--Sig_/+BM+ZDeXTi+uS+L9NKgFyXK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTe+nIACgkQAVBC80lX
+0GzCmQgAmP3nmQ0ZuhAn8IAop29hDMJ9UIpuvTIwLrXrmFIXo7tWOGa116pQxFkl
+0+kFmuWcpAjEzbupP8Xu5c5EqY6mVifAySJuqQqievs0dFnEG5lVTgYLNjwGuOKP
+/2dhd9+mJDRJkTWe0i5soJwntBy/gFIsjB2/0Ce1y9SA+qf4RZAWHUOfA4CiB4Ym
+W1XErJP6WQyd75iLxojA3T+XYMGZv/I5OMrR2/o2i+i36zfphHpZiU/mZ930gtPy
+jHq5X2H59AzBgpt5AXyLxCt2uXoqrXaBqoNg+huyOMeZEVipRcXJwI3Pb1G3AiEr
+w6HanKvuBhq802YphvwzmSGclzDHSw==
+=Y4Re
+-----END PGP SIGNATURE-----
+
+--Sig_/+BM+ZDeXTi+uS+L9NKgFyXK--
