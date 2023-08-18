@@ -2,143 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 788AE780D47
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065FA780D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377563AbjHRN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35628 "EHLO
+        id S1377571AbjHROA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377477AbjHRN5r (ORCPT
+        with ESMTP id S1377578AbjHROAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:57:47 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999553C2D;
-        Fri, 18 Aug 2023 06:57:46 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bb99fbaebdso14998611fa.0;
-        Fri, 18 Aug 2023 06:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692367065; x=1692971865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3YWWR1nS6vb2OHIsahOY5Qls7LOXPtQs7I7ZgEhlX1g=;
-        b=CznlxsSftDnKiCJU+W3lkFf52eMZ8aYWBA7JchxklP0oWEoWuXsXvGudx/m3EEZLGk
-         nwMfAcTuCIzwToovGL/7/e56dXAWUAM8J/VQSj8Z3HBUV7jEdinC6dKtnb1VV37mQXz2
-         p1L3DMxMaZWW89n+FPGnoxO8zVLcp3Ahfbj86N6csa9fTKTLHmpjRe+4Rd3U/9mGI/8v
-         NfwgEAinGkj8VwLKwCBxUi/ZKOmgmxsX0w2oprTTlaTF3j5ucg9UOZ1lMxb0J1/wv5N0
-         GG8mNaFl3th7bfYonMlx6KBB8PpamaO8XEnn3mcOggTjEX7CBVRrb14E+iVck261f1BD
-         cvZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692367065; x=1692971865;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3YWWR1nS6vb2OHIsahOY5Qls7LOXPtQs7I7ZgEhlX1g=;
-        b=cp4dn7J2tveNB+eyARZZI8Mn6p1TVuHudsZNPNruIZHESDaXb0c1dsb562BE07ETk5
-         XLpoIPPmOu4U2jucGZULjU3ZvcgaNNPm4gSlSERchtgOqjKfSNrqCQVGnGVyBvrLBQXY
-         sMmyvDjTbyNFHJKrO5dHkBNwpxaPeoNEWzYCSt/qO42aSAae2Lpmp5NVhxbq9g0LDyII
-         r+0J9HfwLUN/NWbGxgZSnciB621wifc0yk3qQnqGVOaO+MT+lgrsKZDiswZM9a2hpyYd
-         ZLl4fz/tQOoQCjU35ue8/px38YC1eUIZgxkfOY51cOcv+/n4Zef95eair58CNBL1Z55N
-         kYvg==
-X-Gm-Message-State: AOJu0YwvGl1+pliGORVF6msQF5P0ZGX5G5hYNWeJEyqiQmpBFGxSkfpV
-        ro79OXLGWpMrN8dBdztxcDo=
-X-Google-Smtp-Source: AGHT+IEL69oFLf3nqw2LLZ/AVS7OWP11M44RmEWTICV+XBU/q9SReVOt6vvBx/Ezdw0LpLTugUP3pA==
-X-Received: by 2002:a05:651c:145:b0:2bb:94e4:490 with SMTP id c5-20020a05651c014500b002bb94e40490mr1867517ljd.23.1692367064754;
-        Fri, 18 Aug 2023 06:57:44 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2501:c701:4b30:13e8:1d57:42fb])
-        by smtp.gmail.com with ESMTPSA id s14-20020a05600c044e00b003fa96fe2bd9sm6444055wmb.22.2023.08.18.06.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 06:57:44 -0700 (PDT)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Guo Ren <guoren@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-riscv@lists.infradead.org,
-        Christoph Hellwig <hch@infradead.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v12 6/6] soc: renesas: Kconfig: Select the required configs for RZ/Five SoC
-Date:   Fri, 18 Aug 2023 14:57:23 +0100
-Message-Id: <20230818135723.80612-7-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230818135723.80612-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20230818135723.80612-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Fri, 18 Aug 2023 10:00:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5979F421D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 06:58:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692367133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pOUfdHMnG05j5uCs4vC0Zp9XVakVRZi3j6poFeSIlGQ=;
+        b=bdduu4N6OxAcVt7Mp3mEW0avIoWc6L80tq9kWZw50/Y8RkK83OoY575X+KiazLrbU4Nf1Q
+        ae2ddoGevk/yXSAlhMThWurCnmZZGncZJUZBNlMxHMtra2e04YOcsG1IPp8YOSxfyGN1t0
+        595wLYG7ZA3kwJMozxPLFN/4ZxNZnkg=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-519-sMLec9EYM6SvPNB4yFmYgg-1; Fri, 18 Aug 2023 09:58:48 -0400
+X-MC-Unique: sMLec9EYM6SvPNB4yFmYgg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 784173811F4E;
+        Fri, 18 Aug 2023 13:58:47 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C93482026D68;
+        Fri, 18 Aug 2023 13:58:41 +0000 (UTC)
+Date:   Fri, 18 Aug 2023 21:58:36 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Chengming Zhou <chengming.zhou@linux.dev>
+Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Guangwu Zhang <guazhang@redhat.com>
+Subject: Re: [PATCH V2] lib/group_cpus.c: avoid to acquire cpu hotplug lock
+ in group_cpus_evenly
+Message-ID: <ZN95DCe2Ipt2FW75@fedora>
+References: <20230818015244.1176929-1-ming.lei@redhat.com>
+ <a60de9ff-6dad-f243-6bd0-56810ef57c85@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a60de9ff-6dad-f243-6bd0-56810ef57c85@linux.dev>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Fri, Aug 18, 2023 at 02:59:13PM +0800, Chengming Zhou wrote:
+> Hi,
+> 
+> On 2023/8/18 09:52, Ming Lei wrote:
+> > group_cpus_evenly() could be part of storage driver's error handler,
+> > such as nvme driver, when may happen during CPU hotplug, in which
+> > storage queue has to drain its pending IOs because all CPUs associated
+> > with the queue are offline and the queue is becoming inactive. And
+> > handling IO needs error handler to provide forward progress.
+> > 
+> > Then dead lock is caused:
+> > 
+> > 1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
+> > handler is waiting for inflight IO
+> > 
+> > 2) error handler is waiting for CPU hotplug lock
+> > 
+> > 3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
+> > error handling can't provide forward progress.
+> > 
+> > Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
+> > in which two stage spreads are taken: 1) the 1st stage is over all present
+> > CPUs; 2) the end stage is over all other CPUs.
+> > 
+> > Turns out the two stage spread just needs consistent 'cpu_present_mask', and
+> > remove the CPU hotplug lock by storing it into one local cache. This way
+> > doesn't change correctness, because all CPUs are still covered.
+> > 
+> > Cc: Keith Busch <kbusch@kernel.org>
+> > Cc: linux-nvme@lists.infradead.org
+> > Cc: linux-block@vger.kernel.org
+> > Reported-by: Yi Zhang <yi.zhang@redhat.com>
+> > Reported-by: Guangwu Zhang <guazhang@redhat.com>
+> > Tested-by: Guangwu Zhang <guazhang@redhat.com>
+> > Signed-off-by: Ming Lei <ming.lei@redhat.com>
+> > ---
+> > V2:
+> > 	- fix "Cc: block list"
+> > 	- add tested-by tag
+> > 
+> >  lib/group_cpus.c | 22 ++++++++++++++++------
+> >  1 file changed, 16 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/lib/group_cpus.c b/lib/group_cpus.c
+> > index aa3f6815bb12..15006e79196f 100644
+> > --- a/lib/group_cpus.c
+> > +++ b/lib/group_cpus.c
+> > @@ -348,6 +348,7 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+> >  {
+> >  	unsigned int curgrp = 0, nr_present = 0, nr_others = 0;
+> >  	cpumask_var_t *node_to_cpumask;
+> > +	cpumask_var_t local_cpu_present_mask;
+> >  	cpumask_var_t nmsk, npresmsk;
+> >  	int ret = -ENOMEM;
+> >  	struct cpumask *masks = NULL;
+> > @@ -355,6 +356,16 @@ struct cpumask *group_cpus_evenly(unsigned int numgrps)
+> >  	if (!zalloc_cpumask_var(&nmsk, GFP_KERNEL))
+> >  		return NULL;
+> >  
+> > +	if (!zalloc_cpumask_var(&local_cpu_present_mask, GFP_KERNEL))
+> > +		goto fail_local_pres_mask;
+> > +
+> > +	/*
+> > +	 * Make a local cache of 'cpu_present_mask', so the two stages
+> > +	 * spread can observe consistent 'cpu_present_mask' without holding
+> > +	 * cpu hotplug lock.
+> > +	 */
+> > +	cpumask_copy(local_cpu_present_mask, cpu_present_mask);
+> > +
+> 
+> Maybe we can reuse npresmsk instead of allocating another cpumask?
+> In the first stage: npresmsk = cpu_present_mask
+> In the second stage: npresmsk = cpu_possible_mask & ~npresmsk
 
-Explicitly select the required Cache management and Errata configs
-required for the RZ/Five SoC.
+Good idea!
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Conor Dooley <conor.dooley@microchip.com> # tyre-kicking on a d1
----
-v11 -> v12
-* No change
 
-v10 -> v11
-* No change
-
-v9 -> v10
-* No change
-
-v8 -> v9
-* No change
-
-v7 -> v8
-* Included RB tag from Geert
-
-v6 -> v7
-* Included RB tag from Conor
-
-v5 -> v6
-* New patch
----
- drivers/soc/renesas/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/soc/renesas/Kconfig b/drivers/soc/renesas/Kconfig
-index de31589ed054..67604f24973e 100644
---- a/drivers/soc/renesas/Kconfig
-+++ b/drivers/soc/renesas/Kconfig
-@@ -334,6 +334,10 @@ if RISCV
- config ARCH_R9A07G043
- 	bool "RISC-V Platform support for RZ/Five"
- 	select ARCH_RZG2L
-+	select AX45MP_L2_CACHE
-+	select DMA_GLOBAL_POOL
-+	select ERRATA_ANDES
-+	select ERRATA_ANDES_CMO
- 	help
- 	  This enables support for the Renesas RZ/Five SoC.
- 
--- 
-2.34.1
+Thanks, 
+Ming
 
