@@ -2,111 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32394780D8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D842780D75
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377626AbjHROGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
+        id S1377615AbjHROGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377618AbjHROGG (ORCPT
+        with ESMTP id S1377425AbjHROF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:06:06 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E92453C31;
-        Fri, 18 Aug 2023 07:05:58 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxDOvAet9kieIZAA--.47825S3;
-        Fri, 18 Aug 2023 22:05:52 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxjiN2et9ky6ddAA--.58163S3;
-        Fri, 18 Aug 2023 22:04:48 +0800 (CST)
-Message-ID: <924934b8-d2ca-c1ea-b357-202c2f995adc@loongson.cn>
-Date:   Fri, 18 Aug 2023 22:04:38 +0800
+        Fri, 18 Aug 2023 10:05:29 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9382102
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:05:27 -0700 (PDT)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bdcb3fc6a4so12207885ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:05:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692367527; x=1692972327;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CUxPHRRzKkcGc+k/DgK8rcJwh+9UWChvFSb9jdsnqaM=;
+        b=ao+OAYXnBjIHd39oo2jODP8mU0T84d66o7WH2rKoMVdMiH8yXDqq4pU5EkDw92TFAz
+         F4ebLMGgoWvOTzG5aGNwEATUAcxUUUzKmUDZpvfEWOuTny+tQtZLwgmQ1r8ND4SIphmG
+         Qq5au0lLgHYLPA5S5t0tjmqG4wzy8tSSTSSwgDFIeUh5hZfjellxA0iRQ74T6EAYSc3l
+         +z7BbjX28M5zf1YYzV7Wfogy+WiOv9uWc+bwaJYy42uI4Pq+zmScoyKKWFGJJ+64bRwF
+         SM7tdDcwvu8ETnsxEk6TSnr2ZnG+mEO5E93eznxEMgSU/BoRGHCxbGs8WJc1wGn868Xf
+         yrpg==
+X-Gm-Message-State: AOJu0YwWqPwhAAbs/LG0Jbn842huxLjj31fhJYTWHRgSWq9F8jfdjCAw
+        Oo2YUtmMMbfu253wMxPxdTFoOyX/jEy+te+5KppfyrW87Mt1
+X-Google-Smtp-Source: AGHT+IHG1Vh46nHG5zvvRdVYd8kJZnKYXCDq+3rG6jpftSuXHUlNkimRjbG8AMwMqRSEH0NxlsouGluCGtF3/vKqQQx59KBjWZRz
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [06/12] arch: Declare screen_info in <asm/screen_info.h>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
-        deller@gmx.de, daniel@ffwll.ch, airlied@gmail.com
-Cc:     linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-ia64@vger.kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-sh@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mips@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Rich Felker <dalias@libc.org>, Guo Ren <guoren@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "H. Peter Anvin" <hpa@zytor.com>, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Will Deacon <will@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, linux-arch@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        linux-hexagon@vger.kernel.org, linux-staging@lists.linux.dev,
-        Russell King <linux@armlinux.org.uk>,
-        linux-csky@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Matt Turner <mattst88@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        loongarch@lists.linux.dev,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>, Zi Yan <ziy@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Brian Cain <bcain@quicinc.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        linux-alpha@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>, x86@kernel.org
-References: <20230629121952.10559-7-tzimmermann@suse.de>
-Content-Language: en-US
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <20230629121952.10559-7-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8AxjiN2et9ky6ddAA--.58163S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj9fXoWfJr4UJFyruFW8Zr13CFyfAFc_yoW8GryUCo
-        WUK3Wj9w48ArWIqr4fGws5CFW5Jryqkr4rZF4xKwsrXF1avF45tFW5Ka42y3yayry8Krn8
-        CFWa9FZxJw48Grn3l-sFpf9Il3svdjkaLaAFLSUrUUUUvb8apTn2vfkv8UJUUUU8wcxFpf
-        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-        UjIYCTnIWjp_UUUOh7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI
-        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-        Y2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-        v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26r4UJVWxJr1ln4kS14v26rWY6Fy7M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6x
-        kI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-        6rWY6Fy7McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcV
-        AKI48JM4IIrI8v6xkF7I0E4cxCY480cwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS
-        14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I
-        0E14v26rWY6Fy7MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
-        x4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JV
-        W7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-        JVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
-        UvcSsGvfC2KfnxnUUI43ZEXa7IU5jjg7UUUUU==
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:902:f551:b0:1bb:c9e3:6d59 with SMTP id
+ h17-20020a170902f55100b001bbc9e36d59mr1001161plf.13.1692367527471; Fri, 18
+ Aug 2023 07:05:27 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 07:05:27 -0700
+In-Reply-To: <20230818114835.2133-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004df2ae0603330593@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_chan_del
+From:   syzbot <syzbot+cf54c1da6574b6c1b049@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,357 +55,217 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
+
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Write in sco_chan_del
+
+==================================================================
+BUG: KASAN: slab-use-after-free in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+BUG: KASAN: slab-use-after-free in atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
+BUG: KASAN: slab-use-after-free in hci_conn_drop include/net/bluetooth/hci_core.h:1497 [inline]
+BUG: KASAN: slab-use-after-free in sco_chan_del+0x10a/0x500 net/bluetooth/sco.c:174
+Write of size 4 at addr ffff88806abb0010 by task syz-executor.4/9743
+
+CPU: 0 PID: 9743 Comm: syz-executor.4 Not tainted 6.5.0-rc6-next-20230817-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_dec_and_test include/linux/atomic/atomic-instrumented.h:1375 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1497 [inline]
+ sco_chan_del+0x10a/0x500 net/bluetooth/sco.c:174
+ __sco_sock_close+0xf2/0x690 net/bluetooth/sco.c:457
+ sco_sock_close net/bluetooth/sco.c:472 [inline]
+ sco_sock_release+0x6f/0x2c0 net/bluetooth/sco.c:1249
+ __sock_release+0xae/0x260 net/socket.c:659
+ sock_close+0x1c/0x20 net/socket.c:1401
+ __fput+0x3f7/0xac0 fs/file_table.c:384
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ get_signal+0x106f/0x27b0 kernel/signal.c:2668
+ arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:297
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f851807cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8518e2d0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: fffffffffffffffc RBX: 00007f851819bf80 RCX: 00007f851807cae9
+RDX: 0000000000000008 RSI: 0000000020000040 RDI: 0000000000000004
+RBP: 00007f85180c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f851819bf80 R15: 00007fff1d126688
+ </TASK>
+
+Allocated by task 9661:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ hci_conn_add+0xc2/0x1770 net/bluetooth/hci_conn.c:952
+ hci_connect_sco+0x3ac/0xf80 net/bluetooth/hci_conn.c:1671
+ sco_connect net/bluetooth/sco.c:269 [inline]
+ sco_sock_connect+0x2c7/0xa50 net/bluetooth/sco.c:594
+ __sys_connect_file+0x15b/0x1a0 net/socket.c:2032
+ __sys_connect+0x145/0x170 net/socket.c:2049
+ __do_sys_connect net/socket.c:2059 [inline]
+ __se_sys_connect net/socket.c:2056 [inline]
+ __x64_sys_connect+0x72/0xb0 net/socket.c:2056
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5407:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ device_release+0xa1/0x240 drivers/base/core.c:2484
+ kobject_cleanup lib/kobject.c:689 [inline]
+ kobject_release lib/kobject.c:720 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1f7/0x5b0 lib/kobject.c:737
+ put_device+0x1f/0x30 drivers/base/core.c:3731
+ hci_conn_unlink+0x60a/0x840 net/bluetooth/hci_conn.c:1071
+ hci_conn_del+0x59/0xd10 net/bluetooth/hci_conn.c:1097
+ hci_abort_conn_sync+0x7fc/0xb70 net/bluetooth/hci_sync.c:5417
+ abort_conn_sync+0x18e/0x3a0 net/bluetooth/hci_conn.c:2869
+ hci_cmd_sync_work+0x1a4/0x3c0 net/bluetooth/hci_sync.c:306
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0xbc/0xd0 mm/kasan/generic.c:492
+ insert_work+0x38/0x230 kernel/workqueue.c:1647
+ __queue_work+0x5d2/0x1060 kernel/workqueue.c:1799
+ __queue_delayed_work+0x1bf/0x260 kernel/workqueue.c:1950
+ queue_delayed_work_on+0x106/0x130 kernel/workqueue.c:1986
+ queue_delayed_work include/linux/workqueue.h:569 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1523 [inline]
+ hci_conn_drop include/net/bluetooth/hci_core.h:1493 [inline]
+ sco_chan_del+0x1ff/0x500 net/bluetooth/sco.c:174
+ __sco_sock_close+0xf2/0x690 net/bluetooth/sco.c:457
+ sco_sock_close net/bluetooth/sco.c:472 [inline]
+ sco_sock_release+0x6f/0x2c0 net/bluetooth/sco.c:1249
+ __sock_release+0xae/0x260 net/socket.c:659
+ sock_close+0x1c/0x20 net/socket.c:1401
+ __fput+0x3f7/0xac0 fs/file_table.c:384
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ get_signal+0x106f/0x27b0 kernel/signal.c:2668
+ arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:286 [inline]
+ syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:297
+ do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff88806abb0000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 16 bytes inside of
+ freed 4096-byte region [ffff88806abb0000, ffff88806abb1000)
+
+The buggy address belongs to the physical page:
+page:ffffea0001aaec00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x6abb0
+head:ffffea0001aaec00 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+anon flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000010200 ffff888012c42140 0000000000000000 dead000000000001
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 5425, tgid 5425 (udevd), ts 183359251571, free_ts 183195743543
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1550
+ prep_new_page mm/page_alloc.c:1557 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3233
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4489
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
+ alloc_slab_page mm/slub.c:1870 [inline]
+ allocate_slab+0x24e/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8bc/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1003 [inline]
+ __kmalloc+0x4f/0x100 mm/slab_common.c:1017
+ kmalloc include/linux/slab.h:604 [inline]
+ tomoyo_realpath_from_path+0xb9/0x710 security/tomoyo/realpath.c:251
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_path_perm+0x271/0x450 security/tomoyo/file.c:822
+ security_inode_getattr+0xf1/0x150 security/security.c:2153
+ vfs_getattr fs/stat.c:206 [inline]
+ vfs_statx+0x180/0x430 fs/stat.c:281
+ vfs_fstatat+0x90/0xb0 fs/stat.c:315
+ __do_sys_newfstatat+0x98/0x110 fs/stat.c:485
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1150 [inline]
+ free_unref_page_prepare+0x479/0xa50 mm/page_alloc.c:2362
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2455
+ __unfreeze_partials+0x21d/0x240 mm/slub.c:2655
+ qlink_free mm/kasan/quarantine.c:166 [inline]
+ qlist_free_all+0x6a/0x170 mm/kasan/quarantine.c:185
+ kasan_quarantine_reduce+0x18b/0x1d0 mm/kasan/quarantine.c:292
+ __kasan_slab_alloc+0x65/0x90 mm/kasan/common.c:305
+ kasan_slab_alloc include/linux/kasan.h:188 [inline]
+ slab_post_alloc_hook mm/slab.h:762 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x172/0x3b0 mm/slub.c:3502
+ getname_flags.part.0+0x50/0x4d0 fs/namei.c:140
+ getname_flags+0x9c/0xf0 include/linux/audit.h:319
+ vfs_fstatat+0x77/0xb0 fs/stat.c:314
+ __do_sys_newfstatat+0x98/0x110 fs/stat.c:485
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff88806abaff00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88806abaff80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88806abb0000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                         ^
+ ffff88806abb0080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88806abb0100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
-Why this patch get dropped in the end?
+Tested on:
 
-Since the global screen_info is an arch-specific thing,
-Whenever an arch-neutral module or subsystem references the global screen_info,
-There are some complaints from either compile testing robot.
-Well, a programmer may handle it by using the CONFIG_SYSFB guard,
-but it is not as precise as what this patch provided.
-
-Personally, I think this patch is still valuable.
-I suggest either forcing all other architectures to export screen_info,
-like the X86 and IA64 arch does, after all the screen_info is a good thing.
-or provide the fine-control version like this patch does.
-
-
-On 2023/6/29 19:45, Thomas Zimmermann wrote:
-> The variable screen_info does not exist on all architectures. Declare
-> it in <asm-generic/screen_info.h>. All architectures that do declare it
-> will provide it via <asm/screen_info.h>.
->
-> Add the Kconfig token ARCH_HAS_SCREEN_INFO to guard against access on
-> architectures that don't provide screen_info.
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Richard Henderson <richard.henderson@linaro.org>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Brian Cain <bcain@quicinc.com>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
-> Cc: WANG Xuerui <kernel@xen0n.name>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Nicholas Piggin <npiggin@gmail.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: x86@kernel.org
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: "Paul E. McKenney" <paulmck@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Sami Tolvanen <samitolvanen@google.com>
-> Cc: Juerg Haefliger <juerg.haefliger@canonical.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
-> Cc: "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Cc: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> Cc: Zi Yan <ziy@nvidia.com>
-> Acked-by: WANG Xuerui <git@xen0n.name> # loongarch
-> ---
->   arch/Kconfig                      |  6 ++++++
->   arch/alpha/Kconfig                |  1 +
->   arch/arm/Kconfig                  |  1 +
->   arch/arm64/Kconfig                |  1 +
->   arch/csky/Kconfig                 |  1 +
->   arch/hexagon/Kconfig              |  1 +
->   arch/ia64/Kconfig                 |  1 +
->   arch/loongarch/Kconfig            |  1 +
->   arch/mips/Kconfig                 |  1 +
->   arch/nios2/Kconfig                |  1 +
->   arch/powerpc/Kconfig              |  1 +
->   arch/riscv/Kconfig                |  1 +
->   arch/sh/Kconfig                   |  1 +
->   arch/sparc/Kconfig                |  1 +
->   arch/x86/Kconfig                  |  1 +
->   arch/xtensa/Kconfig               |  1 +
->   drivers/video/Kconfig             |  3 +++
->   include/asm-generic/Kbuild        |  1 +
->   include/asm-generic/screen_info.h | 12 ++++++++++++
->   include/linux/screen_info.h       |  2 +-
->   20 files changed, 38 insertions(+), 1 deletion(-)
->   create mode 100644 include/asm-generic/screen_info.h
->
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index 205fd23e0cada..2f58293fd7bcb 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1466,6 +1466,12 @@ config ARCH_HAS_NONLEAF_PMD_YOUNG
->   	  address translations. Page table walkers that clear the accessed bit
->   	  may use this capability to reduce their search space.
->   
-> +config ARCH_HAS_SCREEN_INFO
-> +	bool
-> +	help
-> +	  Selected by architectures that provide a global instance of
-> +	  screen_info.
-> +
->   source "kernel/gcov/Kconfig"
->   
->   source "scripts/gcc-plugins/Kconfig"
-> diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-> index a5c2b1aa46b02..d749011d88b14 100644
-> --- a/arch/alpha/Kconfig
-> +++ b/arch/alpha/Kconfig
-> @@ -4,6 +4,7 @@ config ALPHA
->   	default y
->   	select ARCH_32BIT_USTAT_F_TINODE
->   	select ARCH_HAS_CURRENT_STACK_POINTER
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_MIGHT_HAVE_PC_PARPORT
->   	select ARCH_MIGHT_HAVE_PC_SERIO
->   	select ARCH_NO_PREEMPT
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 0fb4b218f6658..a9d01ee67a90e 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -15,6 +15,7 @@ config ARM
->   	select ARCH_HAS_MEMBARRIER_SYNC_CORE
->   	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->   	select ARCH_HAS_PTE_SPECIAL if ARM_LPAE
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SETUP_DMA_OPS
->   	select ARCH_HAS_SET_MEMORY
->   	select ARCH_STACKWALK
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 343e1e1cae10a..21addc4715bb3 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -36,6 +36,7 @@ config ARM64
->   	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->   	select ARCH_HAS_PTE_DEVMAP
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SETUP_DMA_OPS
->   	select ARCH_HAS_SET_DIRECT_MAP
->   	select ARCH_HAS_SET_MEMORY
-> diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> index 4df1f8c9d170b..28444e581fc1f 100644
-> --- a/arch/csky/Kconfig
-> +++ b/arch/csky/Kconfig
-> @@ -10,6 +10,7 @@ config CSKY
->   	select ARCH_USE_QUEUED_RWLOCKS
->   	select ARCH_USE_QUEUED_SPINLOCKS
->   	select ARCH_HAS_CURRENT_STACK_POINTER
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_INLINE_READ_LOCK if !PREEMPTION
->   	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
->   	select ARCH_INLINE_READ_LOCK_IRQ if !PREEMPTION
-> diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
-> index 54eadf2651786..cc683c0a43d34 100644
-> --- a/arch/hexagon/Kconfig
-> +++ b/arch/hexagon/Kconfig
-> @@ -5,6 +5,7 @@ comment "Linux Kernel Configuration for Hexagon"
->   config HEXAGON
->   	def_bool y
->   	select ARCH_32BIT_OFF_T
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->   	select ARCH_NO_PREEMPT
->   	select DMA_GLOBAL_POOL
-> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-> index e79f15e32a451..8b1e785e6d53d 100644
-> --- a/arch/ia64/Kconfig
-> +++ b/arch/ia64/Kconfig
-> @@ -10,6 +10,7 @@ config IA64
->   	bool
->   	select ARCH_BINFMT_ELF_EXTRA_PHDRS
->   	select ARCH_HAS_DMA_MARK_CLEAN
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_STRNCPY_FROM_USER
->   	select ARCH_HAS_STRNLEN_USER
->   	select ARCH_MIGHT_HAVE_PC_PARPORT
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index d38b066fc931b..6aab2fb7753da 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -13,6 +13,7 @@ config LOONGARCH
->   	select ARCH_HAS_FORTIFY_SOURCE
->   	select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->   	select ARCH_INLINE_READ_LOCK if !PREEMPTION
->   	select ARCH_INLINE_READ_LOCK_BH if !PREEMPTION
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 675a8660cb85a..c0ae09789cb6d 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -10,6 +10,7 @@ config MIPS
->   	select ARCH_HAS_KCOV
->   	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
->   	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_STRNCPY_FROM_USER
->   	select ARCH_HAS_STRNLEN_USER
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-> diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-> index e5936417d3cd3..7183eea282212 100644
-> --- a/arch/nios2/Kconfig
-> +++ b/arch/nios2/Kconfig
-> @@ -3,6 +3,7 @@ config NIOS2
->   	def_bool y
->   	select ARCH_32BIT_OFF_T
->   	select ARCH_HAS_DMA_PREP_COHERENT
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SYNC_DMA_FOR_CPU
->   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
->   	select ARCH_HAS_DMA_SET_UNCACHED
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index bff5820b7cda1..b1acad3076180 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -148,6 +148,7 @@ config PPC
->   	select ARCH_HAS_PTE_DEVMAP		if PPC_BOOK3S_64
->   	select ARCH_HAS_PTE_SPECIAL
->   	select ARCH_HAS_SCALED_CPUTIME		if VIRT_CPU_ACCOUNTING_NATIVE && PPC_BOOK3S_64
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SET_MEMORY
->   	select ARCH_HAS_STRICT_KERNEL_RWX	if (PPC_BOOK3S || PPC_8xx || 40x) && !HIBERNATION
->   	select ARCH_HAS_STRICT_KERNEL_RWX	if PPC_85xx && !HIBERNATION && !RANDOMIZE_BASE
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 5966ad97c30c3..b5a48f8424af9 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -29,6 +29,7 @@ config RISCV
->   	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->   	select ARCH_HAS_PMEM_API
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SET_DIRECT_MAP if MMU
->   	select ARCH_HAS_SET_MEMORY if MMU
->   	select ARCH_HAS_STRICT_KERNEL_RWX if MMU && !XIP_KERNEL
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index 04b9550cf0070..001f5149952b4 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -10,6 +10,7 @@ config SUPERH
->   	select ARCH_HAS_GIGANTIC_PAGE
->   	select ARCH_HAS_GCOV_PROFILE_ALL
->   	select ARCH_HAS_PTE_SPECIAL
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
->   	select ARCH_HIBERNATION_POSSIBLE if MMU
->   	select ARCH_MIGHT_HAVE_PC_PARPORT
-> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-> index 8535e19062f65..e4bfb80b48cfe 100644
-> --- a/arch/sparc/Kconfig
-> +++ b/arch/sparc/Kconfig
-> @@ -13,6 +13,7 @@ config 64BIT
->   config SPARC
->   	bool
->   	default y
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_MIGHT_HAVE_PC_PARPORT if SPARC64 && PCI
->   	select ARCH_MIGHT_HAVE_PC_SERIO
->   	select DMA_OPS
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 53bab123a8ee4..d7c2bf4ee403d 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -91,6 +91,7 @@ config X86
->   	select ARCH_HAS_NONLEAF_PMD_YOUNG	if PGTABLE_LEVELS > 2
->   	select ARCH_HAS_UACCESS_FLUSHCACHE	if X86_64
->   	select ARCH_HAS_COPY_MC			if X86_64
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SET_MEMORY
->   	select ARCH_HAS_SET_DIRECT_MAP
->   	select ARCH_HAS_STRICT_KERNEL_RWX
-> diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-> index 3c6e5471f025b..c6cbd7459939c 100644
-> --- a/arch/xtensa/Kconfig
-> +++ b/arch/xtensa/Kconfig
-> @@ -8,6 +8,7 @@ config XTENSA
->   	select ARCH_HAS_DMA_PREP_COHERENT if MMU
->   	select ARCH_HAS_GCOV_PROFILE_ALL
->   	select ARCH_HAS_KCOV
-> +	select ARCH_HAS_SCREEN_INFO
->   	select ARCH_HAS_SYNC_DMA_FOR_CPU if MMU
->   	select ARCH_HAS_SYNC_DMA_FOR_DEVICE if MMU
->   	select ARCH_HAS_DMA_SET_UNCACHED if MMU
-> diff --git a/drivers/video/Kconfig b/drivers/video/Kconfig
-> index 8b2b9ac37c3df..d4a72bea56be0 100644
-> --- a/drivers/video/Kconfig
-> +++ b/drivers/video/Kconfig
-> @@ -21,6 +21,9 @@ config STI_CORE
->   config VIDEO_CMDLINE
->   	bool
->   
-> +config ARCH_HAS_SCREEN_INFO
-> +	bool
-> +
->   config VIDEO_NOMODESET
->   	bool
->   	default n
-> diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
-> index 941be574bbe00..5e5d4158a4b4b 100644
-> --- a/include/asm-generic/Kbuild
-> +++ b/include/asm-generic/Kbuild
-> @@ -47,6 +47,7 @@ mandatory-y += percpu.h
->   mandatory-y += pgalloc.h
->   mandatory-y += preempt.h
->   mandatory-y += rwonce.h
-> +mandatory-y += screen_info.h
->   mandatory-y += sections.h
->   mandatory-y += serial.h
->   mandatory-y += shmparam.h
-> diff --git a/include/asm-generic/screen_info.h b/include/asm-generic/screen_info.h
-> new file mode 100644
-> index 0000000000000..6fd0e50fabfcd
-> --- /dev/null
-> +++ b/include/asm-generic/screen_info.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef _ASM_GENERIC_SCREEN_INFO_H
-> +#define _ASM_GENERIC_SCREEN_INFO_H
-> +
-> +#include <uapi/linux/screen_info.h>
-> +
-> +#if defined(CONFIG_ARCH_HAS_SCREEN_INFO)
-> +extern struct screen_info screen_info;
-> +#endif
-> +
-> +#endif /* _ASM_GENERIC_SCREEN_INFO_H */
-> diff --git a/include/linux/screen_info.h b/include/linux/screen_info.h
-> index eab7081392d50..c764b9a51c24b 100644
-> --- a/include/linux/screen_info.h
-> +++ b/include/linux/screen_info.h
-> @@ -4,6 +4,6 @@
->   
->   #include <uapi/linux/screen_info.h>
->   
-> -extern struct screen_info screen_info;
-> +#include <asm/screen_info.h>
->   
->   #endif /* _SCREEN_INFO_H */
+commit:         47762f08 Add linux-next specific files for 20230817
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a0da65a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed03cf326b3ef94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf54c1da6574b6c1b049
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1730dba0680000
 
