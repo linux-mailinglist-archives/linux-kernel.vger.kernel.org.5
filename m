@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75651780B94
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9766B780B98
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 14:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376804AbjHRMNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 08:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
+        id S1376807AbjHRMPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 08:15:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376785AbjHRMMh (ORCPT
+        with ESMTP id S1376785AbjHRMO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 08:12:37 -0400
+        Fri, 18 Aug 2023 08:14:59 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D641435AD
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:12:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89151E7C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 05:14:58 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6480862E8E
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:12:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E724C433C7;
-        Fri, 18 Aug 2023 12:12:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1DD1064BD5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 12:14:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4960C433C8;
+        Fri, 18 Aug 2023 12:14:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692360754;
-        bh=NBGFt5eEWfHJ21aKAdl7v+uvCkOurbbahAK/Or24JXM=;
+        s=k20201202; t=1692360897;
+        bh=w6FNTVBuQt9tbVAVP1ItJQdCLgQiAdvFQrWq6PaI3kU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=edr1+ub/Irb20ndnP3vetXj19FArIYcRWluZgt20aX5H/TdrS4m8JMj8n5T5PDSqB
-         RAZhBhVLBT25GJE6C4vDq0Ml45ScJsjlm2wCmU4mcXw8SsYp0GJZqAyXouZ8vCU4iy
-         YPGfCQC0ENVp4QsOrsUQ2ZjDhLRWF0L9CLxQ7HeMXewKAVJwRMTh7qZ5dfoJ9Niaok
-         nETvJMSeJbiiVEy8l+J7Y1LEjme12lkHKVf7PBe5F6j9ltgA+46T7wRcPvaqqaXEvm
-         AtM1UznmoYACuEE56uQMpmAlG+fsW7NzKO2NLo+9Je2f2cnnGnpRSeqhwiZTC96t0u
-         uGIjLfYdh754g==
-Date:   Fri, 18 Aug 2023 14:12:29 +0200
+        b=gcJ3C3ny9mIZx0FXxtuJwFKaw8F61tdSt/SjB6QmDoWk6rDxJFsHMR1oUl/8KL/hg
+         rZLPVvMa1oKLNtV6LTr6h2GOupMcxQD4CQYtIaBngSFgUn18CIsfuJyf1xLa6aqu5+
+         25SWoITQRwIe1IlDTrIeII1zdclqhbptChES3erfaisJjIXBhvsj2/rvPQQbDj6pLz
+         SLVSkCRW5SQA6ndKG5pkK8kOpALN1wleFWWlTMuwc3izyKwVfujrkqGuINwvsCiJaP
+         J4d5erWPIc5q0mbY29LXC1U2AkhddHu2lcJenzpir6o90afDwNV8xdFfzxAPfW73Nm
+         vrmBtMkotoYpw==
+Date:   Fri, 18 Aug 2023 14:14:52 +0200
 From:   Simon Horman <horms@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sujuan Chen <sujuan.chen@mediatek.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net] net: ethernet: mtk_eth_soc: fix NULL pointer on hw
- reset
-Message-ID: <ZN9gLcMOsB220R5F@vergenet.net>
-References: <6863f378a2a077701c60cea6ae654212e919d624.1692273610.git.daniel@makrotopia.org>
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Richie Pearn <richard.pearn@nxp.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: felix: fix oversize frame dropping for
+ always closed tc-taprio gates
+Message-ID: <ZN9gvGTV4qXnFs3c@vergenet.net>
+References: <20230817120111.3522827-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6863f378a2a077701c60cea6ae654212e919d624.1692273610.git.daniel@makrotopia.org>
+In-Reply-To: <20230817120111.3522827-1-vladimir.oltean@nxp.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,15 +66,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 01:01:11PM +0100, Daniel Golle wrote:
-> When a hardware reset is triggered on devices not initializing WED the
-> calls to mtk_wed_fe_reset and mtk_wed_fe_reset_complete dereference a
-> pointer on uninitialized stack memory.
-> Initialize the hw_list will 0s and break out of both functions in case
-> a hw_list entry is 0.
+On Thu, Aug 17, 2023 at 03:01:11PM +0300, Vladimir Oltean wrote:
+> The blamed commit resolved a bug where frames would still get stuck at
+> egress, even though they're smaller than the maxSDU[tc], because the
+> driver did not take into account the extra 33 ns that the queue system
+> needs for scheduling the frame.
 > 
-> Fixes: 08a764a7c51b ("net: ethernet: mtk_wed: add reset/reset_complete callbacks")
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> It now takes that into account, but the arithmetic that we perform in
+> vsc9959_tas_remaining_gate_len_ps() is buggy, because we operate on
+> 64-bit unsigned integers, so gate_len_ns - VSC9959_TAS_MIN_GATE_LEN_NS
+> may become a very large integer if gate_len_ns < 33 ns.
+> 
+> In practice, this means that we've introduced a regression where all
+> traffic class gates which are permanently closed will not get detected
+> by the driver, and we won't enable oversize frame dropping for them.
+> 
+> Before:
+> mscc_felix 0000:00:00.5: port 0: max frame size 1526 needs 12400000 ps, 1152000 ps for mPackets at speed 1000
+> mscc_felix 0000:00:00.5: port 0 tc 0 min gate len 1000000, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 1 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 2 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 3 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 4 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 5 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 6 min gate len 0, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 7 min gate length 5120 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 615 octets including FCS
+> 
+> After:
+> mscc_felix 0000:00:00.5: port 0: max frame size 1526 needs 12400000 ps, 1152000 ps for mPackets at speed 1000
+> mscc_felix 0000:00:00.5: port 0 tc 0 min gate len 1000000, sending all frames
+> mscc_felix 0000:00:00.5: port 0 tc 1 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 2 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 3 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 4 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 5 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 6 min gate length 0 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 1 octets including FCS
+> mscc_felix 0000:00:00.5: port 0 tc 7 min gate length 5120 ns not enough for max frame size 1526 at 1000 Mbps, dropping frames over 615 octets including FCS
+> 
+> Fixes: 11afdc6526de ("net: dsa: felix: tc-taprio intervals smaller than MTU should send at least one packet")
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
 Reviewed-by: Simon Horman <horms@kernel.org>
 
