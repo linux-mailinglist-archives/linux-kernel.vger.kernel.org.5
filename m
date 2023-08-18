@@ -2,93 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070FE78159F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06437815A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 01:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241919AbjHRXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 19:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S241990AbjHRXFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 19:05:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241936AbjHRXDp (ORCPT
+        with ESMTP id S242003AbjHRXEj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 19:03:45 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E987421D
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:03:43 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-589c6dc8670so18944597b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 16:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692399822; x=1693004622;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=28NglzIO6cp/vzLfU4W3yc26zb3SzMF2NIoeJVJxjcQ=;
-        b=EVGfgwe5loZZR0WMUgpJEOZteslGNWIqlIRhDe/gbts+F4/yw7LopoWIr9pAXN/gct
-         vmDVXSSz1qYQsgmOG56EVjufIZ8uHJIc0K2fjYh54YGOjsi7Y2c13ZQR7k+mneDCdJ6K
-         fzW5DxeEtavJtj3e3uV6c2SWgwD/YmEbj2Rv9dwQ6wRuQzmdnahyzKBwtcnM92PUpCV2
-         6SViYhyQd8PzIgA5SnclKlRnW0JgjAUS06yCK7QyV0vkFW6Zt0VuYiJbLr9XMzWwR30M
-         Wq85gyIx9s0/FGvGJHcq/Jks4zP9GUvni76QMTBxGvpnvPGwvzqq5FqhBNo14dUbWrMQ
-         g0nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692399822; x=1693004622;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=28NglzIO6cp/vzLfU4W3yc26zb3SzMF2NIoeJVJxjcQ=;
-        b=TaXkKWYA5hdXTVkAJke4TGcjXgTApnVp8XLzDFtHa4CEl1kSFxgI6/kwUQN3OovV+f
-         /S7E2XFaX4mfI/k4xqV/Zq52ABiq8rTLHrkyiJQvVgGtidS7Vt5gYPL5BpfWphoT3NJc
-         clKILvqoIxMbo2uqpgHseKBIP+5y1SPsDRPxAyJOo4C48ta9ihMXpbkh6wBpPhGHdtRA
-         sHp9m3EmeElF5u08t3Cw5dx1fEQDKcTCD+rSGGA6zCONrFbSGE5miJABfTlCla2q1ZZN
-         OfyDH4Xsjg5w5B7Iiro0DnC31XfTqyEncmtFJiumG9r/h+D0e0rQY2p61Ov5i+J4OWWZ
-         Fefw==
-X-Gm-Message-State: AOJu0Ywx9y1ei40KOqLR71XX8ZBAdk5P9QuyWkSnAHIgffsVCF212LyS
-        +OFMJs0mQgXtrP/BkxDq20ShBphBBQs=
-X-Google-Smtp-Source: AGHT+IEiW/RghuqZOFRro09VfZa9EIt3/32aXeBy5eI/raBp2zbRsudvcD77PZeJQ//x65k1pSmrq3qMqqs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d149:0:b0:d4c:2a34:aeab with SMTP id
- i70-20020a25d149000000b00d4c2a34aeabmr6800ybg.11.1692399822583; Fri, 18 Aug
- 2023 16:03:42 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 16:03:41 -0700
-In-Reply-To: <diqzo7ji30eo.fsf@ackerleytng-ctop.c.googlers.com>
-Mime-Version: 1.0
-References: <20230718234512.1690985-29-seanjc@google.com> <diqzo7ji30eo.fsf@ackerleytng-ctop.c.googlers.com>
-Message-ID: <ZN/4zZFrsPdh/mLo@google.com>
-Subject: Re: [RFC PATCH v11 28/29] KVM: selftests: Add basic selftest for guest_memfd()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ackerley Tng <ackerleytng@google.com>
-Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
-        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, willy@infradead.org,
-        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
-        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
-        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
-        david@redhat.com, qperret@google.com, michael.roth@amd.com,
-        wei.w.wang@intel.com, liam.merwick@oracle.com,
-        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 19:04:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C40A421D;
+        Fri, 18 Aug 2023 16:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=h1dj7muo6Cwmu5VpEvvhJpcCn482g7tBlmUX/NE7OgQ=; b=i+6f4EArC5B20yZ3hyYeuJNPq0
+        8NYptfTpzFw5BxIg7NEqCL2NyD5cr14coxWBGifaReiUpU1kmdDdxJh9zrDy5KfksAQasbnfryhDF
+        hFHeAfUnG+KzcIWz/pdYvyi1W4GfhyDXxocAkag2AcTlra+c/WO7m/myEJTUsv/ekRu3F6nDh+4Sj
+        tb4NugbjVv0jWPE7Aq9q2c/JmIG+zNxn3dE12JOoEdP525l56EVsSoN5dg4r5WM79Ur+mLf0rzDvs
+        F5VfG26hWeprJwdbrJcoeMxaj1Twwz9FWUVeTIsoEavnSvcoArRot0dEY7OIKSDOvSDH3RISscYkk
+        xqPzxjfw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qX8Vn-00A8bq-33;
+        Fri, 18 Aug 2023 23:04:12 +0000
+Message-ID: <0f16dd5a-bce7-0e36-3827-f713e90fb843@infradead.org>
+Date:   Fri, 18 Aug 2023 16:04:08 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] tee: amdtee: add support for use of cma region
+Content-Language: en-US
+To:     Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Rijo Thomas <Rijo-john.Thomas@amd.com>,
+        SivaSangeetha SK <SivaSangeetha.SK@amd.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>,
+        Yuntao Wang <ytcoode@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org
+Cc:     Mythri PK <Mythri.Pandeshwarakrishna@amd.com>,
+        Nimesh Easow <Nimesh.Easow@amd.com>
+References: <7531423fcb3b18ff78737ae5eabc84b0e3cb2909.1692369704.git.Devaraj.Rangasamy@amd.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <7531423fcb3b18ff78737ae5eabc84b0e3cb2909.1692369704.git.Devaraj.Rangasamy@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023, Ackerley Tng wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> > +	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size, page_size);
-> > +	TEST_ASSERT(ret, "fallocate beginning at total_size should fail");
-> 
-> This should be
-> 
-> TEST_ASSERT(ret, "fallocate beginning after total_size should fail");
+Hi--
 
-Roger that, I'll push a fixup commit directly to kvm-x86/guest_memfd.  Thanks!
+On 8/18/23 07:42, Devaraj Rangasamy wrote:
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 722b6eca2e93..5e38423f3d53 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -363,6 +363,13 @@
+>  			  selects a performance level in this range and appropriate
+>  			  to the current workload.
+>  
+> +	amdtee_cma=nn	[HW,TEE]
+> +			Sets the memory size reserved for contiguous memory
+> +			allocations, to be used by amdtee device driver.
+> +			Value is in MB and can range from 4 to 128 (MBs)
+
+			                                       128 (MBs).
+
+> +			CMA will be active only when CMA is enabled, and amdtee is
+
+	That could use some improvement. How about:
+
+			AMD-TEE CMA will be active only when CONFIG_CMA is enabled,
+			and amdtee is
+
+> +			built as inbuilt driver, and not loaded as module.
+> +
+>  	amijoy.map=	[HW,JOY] Amiga joystick support
+>  			Map of devices attached to JOY0DAT and JOY1DAT
+>  			Format: <a>,<b>
+
+> diff --git a/drivers/tee/amdtee/Kconfig b/drivers/tee/amdtee/Kconfig
+> index 191f9715fa9a..5843c739a7b8 100644
+> --- a/drivers/tee/amdtee/Kconfig
+> +++ b/drivers/tee/amdtee/Kconfig
+> @@ -6,3 +6,12 @@ config AMDTEE
+>  	depends on CRYPTO_DEV_SP_PSP && CRYPTO_DEV_CCP_DD
+>  	help
+>  	  This implements AMD's Trusted Execution Environment (TEE) driver.
+> +
+> +config AMDTEE_CMA_SIZE
+> +	int "Size of Memory in MiB reserved in CMA for AMD-TEE"
+> +	default "0"
+
+Why won't this default value cause an allocation error message?
+Maybe I'm just not following the call paths correctly.
+
+It looks to me like this causes a call to
+cma_declare_contiguous_nid() with @size = 0, and that function says:
+
+	if (!size)
+		return -EINVAL;
+
+> +	depends on CMA && (AMDTEE=y)
+> +	help
+> +	  Specify the default amount of memory in MiB reserved in CMA for AMD-TEE driver
+
+	                                                                          driver.
+
+> +	  Any amdtee shm buffer allocation larger than 64k will allocate memory from the CMA
+
+	                                                                                 CMA.
+
+> +	  The default can be overridden with the kernel commandline parameter "amdtee_cma".
+> \ No newline at end of file
+
+Please fix that ^^^ warning.
+
+Thanks.
+-- 
+~Randy
