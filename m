@@ -2,201 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2F97809E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B647809E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354938AbjHRKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 06:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59426 "EHLO
+        id S1358597AbjHRKUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 06:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351695AbjHRKT4 (ORCPT
+        with ESMTP id S1358987AbjHRKUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 06:19:56 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4329B3592
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-58cd9d9dbf5so10776347b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:19:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692353994; x=1692958794;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=A263qDAilO21yTbqLbTuQ/l8iRap3GaNXl1w5/CO22A=;
-        b=OLM7IjB52+ggwSa/UVwfVqgAXdKVZPGcQSx45gvD0BV/elA1Qs2OvMQb0UhtPifhe9
-         eXikzUETDpiI8Et6h7VJ5FZj3CfxXiTkb8nGTIRHcLzTnjLyCy+QpALE6HSzrkjhV/Nk
-         Q4o0/3Gx39y59epsYbJl5rJVHX+0uE3AcTiMsMyDv06POqJqtaoPZFSIwr6TkzD/i2bs
-         vnM3GHgX9iPI9FiGNO6+bI18MLl+YZ5dBNMVR+r4/ZPUOwWmlNT1e7jkSu4BEd4M8c7e
-         uA7WBkuKu39BdaG7xuvUaaUSA01FVOCseXpWijXc8FsUmZx0Fey7Y9SOpTLpXA+BYkvs
-         R31A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692353994; x=1692958794;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A263qDAilO21yTbqLbTuQ/l8iRap3GaNXl1w5/CO22A=;
-        b=FAXu+7WquWC5zZzlDvbsiuu/w9YTFdx3wGsP2E3hOsdCPjUiIpHUoGRP+gJN3UbjpC
-         uL1uWHvC4G3umYTWlJlB0k7XbbM2VUyPT/gjWlYE8SnnuNLC/hFAIezJk+pEJRTrL37N
-         Y7wB3CBobbKWuREBpfV7Z5gwCzf2SBDVwK0OTypeprtdxojhi0DzhoimFhE1D7bbTjcS
-         qO6itK5RML6FLWVIaIotccU/uLUMaKUgjUgHCmIy7t/2DxYFZKCfxCLMP86o3Q3969OY
-         SzvpAv8Yyc9+GF22QpRCBnOTc5PFPvUuKir8xRpGb35H0BuP/jSV5UHZuPC6zWdpuugG
-         J8IQ==
-X-Gm-Message-State: AOJu0Yx3ZIqkSwIyRBLagJ+zM6MLbanGcLB3f3wNPcXtwN/sHBMvvmIy
-        u+4BdviNbJJGQZn+AvQPJkmsYRwzpKS28rz3PDE5eQ==
-X-Google-Smtp-Source: AGHT+IG8+ezNT84A04MwfR3HtsuZskPbVm+ReMxWxrudL/7l5+KeDeVVwyLGJDdzIVkFgRRy+6Av/aDKQMtOFFlcRp4=
-X-Received: by 2002:a81:49c5:0:b0:583:9935:b8ba with SMTP id
- w188-20020a8149c5000000b005839935b8bamr6977405ywa.6.1692353994471; Fri, 18
- Aug 2023 03:19:54 -0700 (PDT)
+        Fri, 18 Aug 2023 06:20:50 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B9741706;
+        Fri, 18 Aug 2023 03:20:46 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxbOr9Rd9kL9gZAA--.25769S3;
+        Fri, 18 Aug 2023 18:20:45 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCP8Rd9kYIpdAA--.13478S3;
+        Fri, 18 Aug 2023 18:20:44 +0800 (CST)
+Message-ID: <fb242a7e-b1ee-7be0-cbc4-be710e246279@loongson.cn>
+Date:   Fri, 18 Aug 2023 18:20:44 +0800
 MIME-Version: 1.0
-References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
- <20230817162159.242087-1-limings@nvidia.com> <CAPDyKFpezrjPk6Y+TS1A1E2tK4WbjdpTjPwPxLaAUD9fcaQonQ@mail.gmail.com>
- <c5f59dfd-a0dd-3b77-55fb-1087cbbbef25@intel.com>
-In-Reply-To: <c5f59dfd-a0dd-3b77-55fb-1087cbbbef25@intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 18 Aug 2023 12:19:18 +0200
-Message-ID: <CAPDyKFpEfc7EjpKDczwk9XDySug+uJ064FbrxsD6A0CY9ccOaw@mail.gmail.com>
-Subject: Re: [PATCH v9] mmc: sdhci-of-dwcmshc: Add runtime PM operations
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Liming Sun <limings@nvidia.com>,
-        David Thompson <davthompson@nvidia.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] PCI/VGA: Make the vga_is_firmware_default() less
+ arch-dependent
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230817220853.GA328159@bhelgaas>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <20230817220853.GA328159@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxHCP8Rd9kYIpdAA--.13478S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWrWrGr4fCF15Jr4DCF1xZwc_yoW5XryfpF
+        yfua93tF4kWrs8KanFvw18WF47urZ7Aa9xArnxJry0kr43W34FgrZIkr4Yya47JFsaqFyS
+        va9Fq348t3WDAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU466zUUUUU
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 at 11:36, Adrian Hunter <adrian.hunter@intel.com> wrote:
+Hi,
+
+
+On 2023/8/18 06:08, Bjorn Helgaas wrote:
+>> Please note that before apply this patch, vgaarb can not select the
+>> right boot vga due to weird logic introduced with the commit
+>> 57fc7323a8e7c ("LoongArch: Add PCI controller support")
+> If we need this reference to 57fc7323a8e7c, we need more specifics
+> about what the "weird logic" is.  pci_fixup_vgadev() is the only
+> obvious VGA connection, so I suppose it's related to that.
 >
-> On 18/08/23 12:00, Ulf Hansson wrote:
-> > On Thu, 17 Aug 2023 at 18:22, Liming Sun <limings@nvidia.com> wrote:
-> >>
-> >> This commit implements the runtime PM operations to disable eMMC
-> >> card clock when idle.
-> >>
-> >> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> >> Signed-off-by: Liming Sun <limings@nvidia.com>
-> >> ---
-> >> v8->v9:
-> >>     - Address Adrian's comment to do the pm_runtime_put() in
-> >>       dwcmshc_resume() instead; Error path changes not included yet.
-> >> v7->v8:
-> >>     - Address Ulf's comment (option-1);
-> >>     - Updates for Adrian's comment to remove the force_suspend/resume
-> >>       in dwcmshc_resume()/dwcmshc_suspend(); Add comments for
-> >>       dwcmshc_resume()/dwcmshc_suspend();
-> >> v6->v7:
-> >>     - Address Ulf's comment;
-> >> v5->v6:
-> >>     - Address Adrian's more comments and add coordination between
-> >>       runtime PM and system PM;
-> >> v4->v5:
-> >>     - Address Adrian's comment to move the pm_enable to the end to
-> >>       avoid race;
-> >> v3->v4:
-> >>     - Fix compiling reported by 'kernel test robot';
-> >> v2->v3:
-> >>     - Revise the commit message;
-> >> v1->v2:
-> >>     Updates for comments from Ulf:
-> >>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
-> >> v1: Initial version.
-> >> ---
-> >>  drivers/mmc/host/sdhci-of-dwcmshc.c | 76 +++++++++++++++++++++++++++--
-> >>  1 file changed, 72 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> >> index e68cd87998c8..3b40f55ce2a4 100644
-> >> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> >> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> >> @@ -15,6 +15,7 @@
-> >>  #include <linux/module.h>
-> >>  #include <linux/of.h>
-> >>  #include <linux/of_device.h>
-> >> +#include <linux/pm_runtime.h>
-> >>  #include <linux/reset.h>
-> >>  #include <linux/sizes.h>
-> >>
-> >> @@ -548,9 +549,13 @@ static int dwcmshc_probe(struct platform_device *pdev)
-> >>
-> >>         host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
-> >>
-> >> +       pm_runtime_get_noresume(dev);
-> >> +       pm_runtime_set_active(dev);
-> >> +       pm_runtime_enable(dev);
-> >> +
-> >>         err = sdhci_setup_host(host);
-> >>         if (err)
-> >> -               goto err_clk;
-> >> +               goto err_rpm;
-> >>
-> >>         if (rk_priv)
-> >>                 dwcmshc_rk35xx_postinit(host, priv);
-> >> @@ -559,10 +564,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
-> >>         if (err)
-> >>                 goto err_setup_host;
-> >>
-> >> +       pm_runtime_put(dev);
-> >> +
-> >>         return 0;
-> >>
-> >>  err_setup_host:
-> >>         sdhci_cleanup_host(host);
-> >> +err_rpm:
-> >> +       pm_runtime_disable(dev);
-> >> +       pm_runtime_put_noidle(dev);
-> >>  err_clk:
-> >>         clk_disable_unprepare(pltfm_host->clk);
-> >>         clk_disable_unprepare(priv->bus_clk);
-> >> @@ -602,9 +612,13 @@ static int dwcmshc_suspend(struct device *dev)
-> >>         struct rk35xx_priv *rk_priv = priv->priv;
-> >>         int ret;
-> >>
-> >> +       pm_runtime_get_sync(dev);
-> >> +
-> >>         ret = sdhci_suspend_host(host);
-> >> -       if (ret)
-> >> +       if (ret) {
-> >> +               pm_runtime_put(dev);
-> >>                 return ret;
-> >> +       }
-> >>
-> >>         clk_disable_unprepare(pltfm_host->clk);
-> >>         if (!IS_ERR(priv->bus_clk))
-> >> @@ -642,11 +656,65 @@ static int dwcmshc_resume(struct device *dev)
-> >>                         return ret;
-> >>         }
-> >>
-> >> -       return sdhci_resume_host(host);
-> >> +       ret = sdhci_resume_host(host);
-> >> +       if (ret)
-> >> +               return ret;
-> >> +
-> >> +       pm_runtime_put(dev);
-> >
-> > To simplify the error path, I would suggest that you move the call to
-> > pm_runtime_put() to dwcmshc_suspend(). In fact what you need is just a
-> > call to pm_runtime_put_noidle(), somewhere after the call to
-> > pm_runtime_get_sync().
-> >
-> > This is because runtime suspend is prevented by the PM core as it
-> > bumps the usage count with a pm_runtime_get_noresume() in the
-> > device_prepare() phase.
->
-> I thought you didn't want to assume that, because in that case
-> it can just be pm_runtime_resume() instead of pm_runtime_get_sync(),
-> and then no 'put' is needed at all.
+Yes, you are right.
 
-I don't really care, but just wanted to keep it as simple as possible.
+The pci_fixup_vgadev() function will set the last VGA device enumerated as the default boot device.
+By "the last" VGA device, I mean that this device has the largest PCI bus, domain, and function triple.
+Thus, it is added to vgaarb in the end of all VGA device.
+So that logic expresses that the last one added will be the default.
+This probably is not what we want.
 
-So yes, I am fine with a pm_runtime_resume() too. Maybe even simpler
-in this case, as we are not using pm_runtime_force_suspend|resume()
-anymore.
 
-Kind regards
-Uffe
+On the LS3A5000+LS7A1000 platform, the last VGA device is a S3 graphics 
+(08:00.0). This GPU has two cores. Say the log below:
+
+
+$ lspci | grep VGA
+
+  00:06.1 VGA compatible controller: Loongson Technology LLC DC (Display Controller) (rev 01)
+  03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Caicos XT [Radeon HD 7470/8470 / R5 235/310 OEM]
+  07:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 (rev 01)
+  08:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 (rev 01)
+
+[    0.361781] vgaarb: loaded
+[    0.367838] pci 0000:00:06.1: Overriding boot device as 1002:6778
+[    0.367841] pci 0000:00:06.1: Overriding boot device as 5333:9070
+[    0.367843] pci 0000:00:06.1: Overriding boot device as 5333:9070
+
+1) The "weird" logic completely overrides whatever decision VGAARB ever made.
+
+It seems to say that the decision ever made by VGAARB is useless.
+Well, I think VGAARB shouldn't endure this; VGAARB has to be small.
+
+  
+
+2) The results it gives are not correct either.
+
+In the first testing example in my commit message,
+it overrides the S3 graphics as the default boot VGA instead of the AMD/ATI GPU.
+Actually, the firmware chooses the AMD/ATI GPU as the "frimware default".
+
+  
+
+3) It tries to make the decision for the end user instead of the firmware.
+
+Therefore, that function is always wrong. Again, it's a policy, not a mechanism.
+
+
+Since that already have been merge, I'm fine.
+Maybe Huacai is busy, he might don't has the time to carry on a deep thinking.
+But I think we should correct the mistake ever made,
+let's merge this patch to make vgaarb great again ?
+
+
+Well, that commit is not a dependency, I don't mind delete the referencing
+to that commit. After all, I think my patch will be effective on other architectures.
+Is additional testing on ARM64 and X86 is needed, if so I have to find the machine to
+carry on the testing.
+
