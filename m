@@ -2,60 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D900F780E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F879780EA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 17:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377972AbjHRPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 11:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45920 "EHLO
+        id S1377984AbjHRPKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 11:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377971AbjHRPJE (ORCPT
+        with ESMTP id S1378016AbjHRPKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 11:09:04 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09D0EE5F;
-        Fri, 18 Aug 2023 08:09:02 -0700 (PDT)
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3F84A660724E;
-        Fri, 18 Aug 2023 16:08:59 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692371341;
-        bh=mhdojlCbmeEU7uCj6+adG3ogY7i8gXwpuCCoPvyHEk8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BF+ggUAG96t74cPQvxQ7IRVH+/ZTDlYjKL9esEnrKF/6O3C6IWWX2L2fmKOqVwA+h
-         xO0b8m3PjTKxo8ySeW19TSs3ZBbQh94oSLZ6gMZV5TeYG/ga+n1DzX4wAGFV34O05D
-         MeQeLppnmA4INaiRKUpKWR+HGetn7IgOYwxPCak5fHhMYVoKAz7VR68lRmHPUUowhV
-         oCpdXt1gS5RctrtksIuLTNor45m8oScdWRPvG2AR0CbanCY+pp1URzJrNMOagULp4R
-         9w2wn6fqn+r4OY1FPxq+T9KIHw+HjYaZYutjAKOJedFqowPNdWiy0QrPQdvoi/XNYL
-         Q9XxJ5k/rjmBQ==
-Date:   Fri, 18 Aug 2023 11:08:55 -0400
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, kernelci@lists.linux.dev,
-        Guenter Roeck <groeck@chromium.org>, kernel@collabora.com,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] kselftest: Add new test for detecting unprobed
- Devicetree devices
-Message-ID: <bdd6da06-d790-42c1-a5ea-372d38bf0ea7@notapiano>
-References: <20230817233635.2306377-1-nfraprado@collabora.com>
- <20230817233635.2306377-4-nfraprado@collabora.com>
- <69848238-17d8-4b87-8bc1-474cae127410@sirena.org.uk>
+        Fri, 18 Aug 2023 11:10:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E683A99;
+        Fri, 18 Aug 2023 08:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692371413; x=1723907413;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q/jZ37qbijWW62BdQY9/xP7Bfe8jDPnF+3L2ur66xwc=;
+  b=Q0kW1HpydSnEV7HMXHa/HQB+X8tvDiP6ys5SvZ8XFU3q99d94fI77agl
+   P8P0rMaOZ5ebSRYA7K3z0TTrgu7r8usIHeOH+ZwlBsqmOdZqexE6/qO3C
+   0DwYtyxLraH/RgRaaHzTXuVBT91ORHOdyaFGyeGSDaAySaIX0ylvN7Ab4
+   pR3Sip1gfXddwD6tGsJWQ4FMU+UPM10G7U/QrDT1JMuUVhLbnVWCRmlVU
+   mjppLIF6/2QTlP5J95eX9p7lZSobdKPUE/4p6r+k4Kr1iRspc94t91XV/
+   YlF4jpoaqTuqhcuRABROaYPK4wNadtzC3LjFqqovx+2Sg/te0gptObuaD
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="437030699"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="437030699"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 08:10:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="908913322"
+X-IronPort-AV: E=Sophos;i="6.01,183,1684825200"; 
+   d="scan'208";a="908913322"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 18 Aug 2023 08:10:07 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qX16z-00DFbG-28;
+        Fri, 18 Aug 2023 18:10:05 +0300
+Date:   Fri, 18 Aug 2023 18:10:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kartik <kkartik@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com, sumitg@nvidia.com,
+        arnd@arndb.de, pshete@nvidia.co, digetx@gmail.com,
+        petlozup@nvidia.com, windhl@126.com, frank.li@vivo.com,
+        robh@kernel.org, stefank@nvidia.com, pdeschrijver@nvidia.com,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] soc/tegra: fuse: Add support for Tegra241
+Message-ID: <ZN+Jzbsci3RLtEnW@smile.fi.intel.com>
+References: <20230818093028.7807-1-kkartik@nvidia.com>
+ <20230818093028.7807-7-kkartik@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <69848238-17d8-4b87-8bc1-474cae127410@sirena.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <20230818093028.7807-7-kkartik@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,31 +70,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 01:54:21PM +0100, Mark Brown wrote:
-> On Thu, Aug 17, 2023 at 07:35:27PM -0400, Nícolas F. R. A. Prado wrote:
-> 
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/dt/ktap_helpers.sh
-> > @@ -0,0 +1,57 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +#
-> > +# Copyright (c) 2023 Collabora Ltd
-> > +#
-> > +# Helpers for outputting in KTAP format
-> > +#
-> 
-> These look generic so could be at the top level kselftest directory in
-> case any other tests want to use them?
+On Fri, Aug 18, 2023 at 03:00:28PM +0530, Kartik wrote:
+> Add support for Tegra241 which use ACPI boot.
 
-Yes, they're generic. And sure, we can move it up. The tests using it will need
-to source it at run-time, so we can either update the kselftest Makefile to
-always copy this helper when installing, or each test's Makefile can
-make its own copy during build.
+...
 
-> 
-> The test itself looks good in so far as I can read shell.
+>  	case TEGRA234:
+>  		fuse->soc = &tegra234_fuse_soc;
+>  		break;
+> +#endif
+> +#if defined(CONFIG_ARCH_TEGRA_241_SOC)
+> +	case TEGRA241:
+> +		fuse->soc = &tegra241_fuse_soc;
+> +		break;
+>  #endif
 
-Thanks for the feedback!
+Have you tried --patience when formatting patches?
+Does it help them to look better?
 
-Thanks,
-Nícolas
+...
+
+> +const struct tegra_fuse_soc tegra241_fuse_soc = {
+> +	.init = tegra30_fuse_init,
+> +	.info = &tegra241_fuse_info,
+
+> +	.lookups = NULL,
+> +	.num_lookups = 0,
+> +	.cells = NULL,
+> +	.num_cells = 0,
+
+Isn't it the default?
+
+> +	.keepouts = tegra241_fuse_keepouts,
+> +	.num_keepouts = ARRAY_SIZE(tegra241_fuse_keepouts),
+> +	.soc_attr_group = &tegra194_soc_attr_group,
+
+> +	.clk_suspend_on = false,
+
+Ditto.
+
+> +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
