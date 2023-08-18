@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE5E780DFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316D6780E00
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 16:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377239AbjHROZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 10:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38516 "EHLO
+        id S1377547AbjHRO0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 10:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348084AbjHROZ1 (ORCPT
+        with ESMTP id S1377591AbjHRO0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 10:25:27 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93572D4A;
-        Fri, 18 Aug 2023 07:25:25 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1c4c6717e61so589320fac.1;
-        Fri, 18 Aug 2023 07:25:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692368725; x=1692973525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RBL4ltIIW/RZGmyXJIvtwShlgX2Xe5UDc+ZZ5Bj8UuI=;
-        b=QFYyftYhW6RzPbFzvHifdi4haxOlWdZ43SsDaXDUVejV2cVQ/jT1V431izBW5gGkcZ
-         3bmEHOq6kjn2D+QwKGRT2cu/QqiCHl6EUUFZ2JLiOfVw1PNpWs0EoOTz/o4ZEIwZ234P
-         U3h0Kv8FjXoJ4ndQngCbx5pIXXmZKym131uSnyEeGPs62qXAEi51dNcRxBx6ryTXx5NC
-         HP63Vbulahdj1CpfrCbGhB1uW+ADEbxuwMo9PRAySM914DUWczoZZoQ5i08ACNitJGkS
-         /IY1Z1bTL91OIRMSWT4LUS0kFKbeLtIbQ1zdf1hffdokE/123LPKmNZvUEdgakQgtxmj
-         6BGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692368725; x=1692973525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RBL4ltIIW/RZGmyXJIvtwShlgX2Xe5UDc+ZZ5Bj8UuI=;
-        b=Gme1qSnlHE5zG+8wKMR+BbSdObURdbe4q1qRfzc1nWIMBwMMd/ud7Mja8BT5il49NV
-         i9ICvTU2vcBDh2fv4rigP6w5HYkodiKKCuwLo9tbSY+uwwgFz/1AxC+aRrG4K6sVv3Ms
-         KNOsyRC7MZFJcyk3n4q0WOFvas0zqQwo39KG4T2z0Pnb/fG7qRy/T99yxXKcTLpmLa74
-         YZ/q/gY8jmd1EhTfm5GINGrLuuRzAsDk/Ka+UWQ6uYrCSkfa7KdP3ypiercfN/38E2rS
-         d5RCzIUDHN1/zI7XRjdKvmikFSGvSf0YB4hzyUvM2yTJ/cUUxmLwD2o/YkPNG7Ijw2FY
-         igNw==
-X-Gm-Message-State: AOJu0YzTVCrNUlM1y9nRvJ9Mx05wxvgL1KaaZSsU94RrxqjrcIP8xFCu
-        MCvEpscTUI7AVYkI4IUEbun6pjN9/nCTjyX8Cbg=
-X-Google-Smtp-Source: AGHT+IGHL7antrqn5wCJT+a1t2ARJz0cXc1jnpzrhBtNj2GWzju8VdOjYaJzVi1IS1mPpkfNjH17m8B7gCKkqsQBaQE=
-X-Received: by 2002:a05:6870:ac24:b0:1c8:c27f:7dbb with SMTP id
- kw36-20020a056870ac2400b001c8c27f7dbbmr3314161oab.41.1692368725262; Fri, 18
- Aug 2023 07:25:25 -0700 (PDT)
+        Fri, 18 Aug 2023 10:26:21 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956012D4A
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 07:26:20 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37IEPi9R008983
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Aug 2023 10:25:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692368747; bh=mr78n3qsUgsgPJgzwDA3ALe/I5P61WM2l6xoqGgEaxk=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=ifckXAgyqVrtSRdqKrD9L/Sz32XDzO9iBLPsAWc3woHvB45OxXeNyyurXmSdK/1Ou
+         5KrKw2StHw3SqGZ9hQfuuurrTylF99RTMEjbg1BoPT0Wgv2fQdlcpQwJPLQHAARscK
+         dpbRs8QuHAdrRIDP/w0gqOHY3q7kB4cfmLxmNrjWviMT3OOkR24h+TOwGfPw/URuEJ
+         Hf4euGVDyeGXRWC1h/VHzvTy5ZgsYKrGn4Te+QHg/AKHU7FRBCvFvRFra0eHXBYB8t
+         C0Uz4b6+d0cbMlUOfF8/Bwj06gL80gl/kq1u4vuQdEQuoezh5ZBjhLWmnS2Y/9s/cE
+         AcNNVB0ajSlFw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A684315C0501; Fri, 18 Aug 2023 10:25:44 -0400 (EDT)
+Date:   Fri, 18 Aug 2023 10:25:44 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     sandeen@redhat.com,
+        syzbot <syzbot+27eece6916b914a49ce7@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Subject: Re: [syzbot] [ext4?] kernel panic: EXT4-fs (device loop0): panic
+ forced after error (3)
+Message-ID: <20230818142544.GA3513305@mit.edu>
+References: <000000000000530e0d060312199e@google.com>
+ <20230817142103.GA2247938@mit.edu>
+ <81f96763-51fe-8ea1-bf81-cd67deed9087@redhat.com>
+ <20230817161118.GC2247938@mit.edu>
+ <20230817164739.GC1483@sol.localdomain>
+ <20230818021038.GC3464136@mit.edu>
+ <20230818025255.GA2175@sol.localdomain>
 MIME-Version: 1.0
-References: <20230818122909.7122-1-asmaa@nvidia.com> <20230818122909.7122-3-asmaa@nvidia.com>
-In-Reply-To: <20230818122909.7122-3-asmaa@nvidia.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 18 Aug 2023 17:24:49 +0300
-Message-ID: <CAHp75VcZ43Zf4co=cVAPNUqHrhJ_zm=Gg7L=v1DYGxntr+Lkfw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] gpio: mlxbf3: Support add_pin_ranges()
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, brgl@bgdev.pl,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230818025255.GA2175@sol.localdomain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 3:29=E2=80=AFPM Asmaa Mnebhi <asmaa@nvidia.com> wro=
-te:
->
-> Support add_pin_ranges() so that pinctrl_gpio_request() can be called.
-> The GPIO value is not modified when the user runs the "gpioset" tool.
-> This is because when gpiochip_generic_request is invoked by the gpio-mlxb=
-f3
-> driver, "pin_ranges" is empty so it skips "pinctrl_gpio_request()".
-> pinctrl_gpio_request() is essential in the code flow because it changes t=
-he
-> mux value so that software has control over modifying the GPIO value.
-> Adding add_pin_ranges() creates a dependency on the pinctrl-mlxbf3.c driv=
-er.
->
-> Fixes: cd33f216d24 ("gpio: mlxbf3: Add gpio driver support")
-> Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
+On Thu, Aug 17, 2023 at 07:52:55PM -0700, Eric Biggers wrote:
+> Obviously it's up to the system administrator; that should have been clear since
+> I suggested a sysctl.  Sorry if I wasn't clear.  The point is that there are
+> certain conventions for what is allowed to break the safety guarantees that the
+> kernel provides to userspace, which includes causing a kernel panic.  Panics on
+> various problems are configured by /proc/sys/kernel/panic_*.  So having to
+> opt-in to panic-on-error, or at least being able to opt-out, by setting a sysctl
+> seems natural.  Whereas having mount() being able to automatically panic the
+> kernel with no way to opt-out seems like a violation of broader kernel
+> conventions, even if it happens to be "working as intended" in the ext4 context.
 
-You ignored my tag, why?
+The reason why a sysctl isn't really great is because the system
+administrator might want to configure the behavior on a per-file
+system basis.  And you *can* configure it as a mount option, via
+"mount -o errors=continue" or "mount -o "errors=panic".  The
+superblock setting is just the default if something isn't explicitly
+specified as a mount option (either on the command line or in
+/etc/fstab).
 
---=20
-With Best Regards,
-Andy Shevchenko
+So mount does not "automatically" panic the kernel, and there are
+*plenty* of ways to opt-out.  You can use the mount option; you can
+run "tune2fs -e continue"; you can just !@#!?! run fsck.ext4 before
+mounting the file system.  There are all ways of "opting out."  Some
+of them, such as the last, is even considered best practice --- just
+as picking up a USB stick, or worse, a firewire drive, in a parking
+lot, and *not* plugging it into your laptop is considered best practice.
+
+	     	  	    	      	       - Ted
