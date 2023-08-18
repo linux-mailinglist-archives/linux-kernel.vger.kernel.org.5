@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52792780D3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2588E780D46
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 15:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377521AbjHRN6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 09:58:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47882 "EHLO
+        id S1377557AbjHRN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 09:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359271AbjHRN5m (ORCPT
+        with ESMTP id S1345189AbjHRN5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 09:57:42 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9275535BD;
-        Fri, 18 Aug 2023 06:57:40 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fecfa50ccfso4158745e9.0;
-        Fri, 18 Aug 2023 06:57:40 -0700 (PDT)
+        Fri, 18 Aug 2023 09:57:43 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37C964204;
+        Fri, 18 Aug 2023 06:57:42 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so9067495e9.3;
+        Fri, 18 Aug 2023 06:57:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692367059; x=1692971859;
+        d=gmail.com; s=20221208; t=1692367061; x=1692971861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2b0kqkDrwaPCXINUMiauDuJAfSDnr50qeCdVwlvV2f4=;
-        b=Z0CDszL5Ccni5UOeFOFRP9Fl0LiivQOZaXYf77oLVLFR4OOM/XZ6Tx49FXcQD5zSIP
-         fsSzeFsJXxT3gk1qq4JYiwt4tMfUhl2W9eYPxc0dYVqA9XZ9gXKSdVqNtMLUA9rHzq0D
-         HQmIhNTyHa8FuIH7eOiUQp8q57Uuker1Swmv9cbGXBLmKqRKUUXhSN6Q2QgKc4wmOxkA
-         Dxy2G0YDTekCCJly+3nHm0yP05JFQZAqdlp5zzkUii/32A8ieUoxSQapUdoF19Vx/mEU
-         ZbfvQXAJ9lYa8LtfZXgqV9eHZ/kZl2jdc/ITcw4lDSFVCV58+v67S3zMtrOknBylUzY3
-         ysog==
+        bh=Px92ERlElc4wesNBWinjmIr2HCi2x9DQzB2ZaP/fD6k=;
+        b=fb8BqnyvjYGtA3NTQlNXnTM1J9GEa987M4uuKcyZ8LfmzHOEhBqGBxfTfi8pX1Pmo3
+         NVxLNX07rxCDH/E6cJIeODtsSSPisX3NbX3ha/s1qA657Bn4LVsxlq65TMfsXjLaxX7Q
+         gBe9w4whRXlAwBU/dr9Msx1CnVXSe5sAFPUhiEIUN684vQtRTCR5Q+K/TWPeadInV4eY
+         IIpj58A0woHXiXHIynwHIBUafMnpCSbrKF+8tx3XOIYR4HPplM8qwEJ3VTkMdSFIje5y
+         fuMcl6mlik4BaGNOz2mZYI1j/sRhqiodZ7vFBB+LMjEFs81/Rk6WSPpzhEjV/ycN1DQs
+         NKkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692367059; x=1692971859;
+        d=1e100.net; s=20221208; t=1692367061; x=1692971861;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2b0kqkDrwaPCXINUMiauDuJAfSDnr50qeCdVwlvV2f4=;
-        b=AgRjk8+XybEX1PAeBj0v1Zj0iag5vhP9s++NuBuaah3179K0PqoheAXkr+FOEUBYHU
-         g/VC02syWuEDr9qeBQYz5pCOICT+x7nPMBvwhLhpBEGk2ZmQvBzczryEEsix8UTOddI1
-         HZnMoqAV421Ow8oJOfuXrQ3uaVpEwpp2NSkBYVFRdLOCUi6HYnZCzvP5q3jlS/flzQTF
-         8SU/UKZ9pz5IEJsfy6mb8QIuG60IUlJA22nedZRRGTHS7+/3wlBlM8hUXgKkFqDGvAGQ
-         MH5XnJjdUF8JuIss3nbs1OOmzhQQeAZCQACTToXMYhGBJqcH8YnOzsqsFYpBlHJAjLrK
-         cH8Q==
-X-Gm-Message-State: AOJu0YyFRVGuZyqS07SFvAMOmfji/PtVLTrm9ygkihdQ1CFCAhmrA5yH
-        X23VO4qTSJI1oriJPvoaNC4=
-X-Google-Smtp-Source: AGHT+IF8lypTT8ZONVeF3yoQrAI5VkHzJ38TsTL8iLmRkbpuY8WuLlnlUk9Vuxeh8tYF4Zjlj8krSw==
-X-Received: by 2002:a05:600c:601b:b0:3fe:b7e4:276a with SMTP id az27-20020a05600c601b00b003feb7e4276amr5162881wmb.15.1692367058918;
-        Fri, 18 Aug 2023 06:57:38 -0700 (PDT)
+        bh=Px92ERlElc4wesNBWinjmIr2HCi2x9DQzB2ZaP/fD6k=;
+        b=Rg7TwqMvCyrqlxYt5MgS26WNJGIZCA16S6u5IZeJLkhx8SrzxcXixiJcZ+eM5zTzbI
+         Dhajyw3VA9FJeZS8IDk3dG8DKyvCNrbdgl2KslTQnA78xcmXMQCcT2KIyaqf2JaOzZ4q
+         OfInjcMndWg2Xmpx3kYpmTV21fNLp06mBlj+fG72p/n9zyCwMi8Dpwh5V6+C+RwQ+neK
+         pQ3AjDlX7NZwwIVTQd7XzdRNJGsUidtsAGwAK3QJaFni/hDzarTydIb5MC190PpDT6MS
+         qji+trIDiUV5oBKJb8ivYUPsRsd+GjYoxyzUkzNvIKJAHFPx1bMGNVvhAzR/1q95sBQw
+         +fCQ==
+X-Gm-Message-State: AOJu0YzZ3/VTyZo0SaaFFn2Vj4Rfey8JPXA1FY1TgsKLlTdl1kTGnQ4a
+        hI2/SdC0vEQ4N6pN3uRJ0jM=
+X-Google-Smtp-Source: AGHT+IHxobRI9e/jvEGblmCFX7B1XfOEPH2YhJ8+NawIAgryjWzb0wx6Adb++1SYwZFIml/u0vl+bg==
+X-Received: by 2002:a1c:f701:0:b0:3fe:18d8:a61b with SMTP id v1-20020a1cf701000000b003fe18d8a61bmr2309081wmh.29.1692367060277;
+        Fri, 18 Aug 2023 06:57:40 -0700 (PDT)
 Received: from prasmi.home ([2a00:23c8:2501:c701:4b30:13e8:1d57:42fb])
-        by smtp.gmail.com with ESMTPSA id s14-20020a05600c044e00b003fa96fe2bd9sm6444055wmb.22.2023.08.18.06.57.37
+        by smtp.gmail.com with ESMTPSA id s14-20020a05600c044e00b003fa96fe2bd9sm6444055wmb.22.2023.08.18.06.57.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 06:57:38 -0700 (PDT)
+        Fri, 18 Aug 2023 06:57:39 -0700 (PDT)
 From:   Prabhakar <prabhakar.csengg@gmail.com>
 X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
@@ -71,9 +71,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Prabhakar <prabhakar.csengg@gmail.com>,
         Biju Das <biju.das.jz@bp.renesas.com>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v12 2/6] riscv: errata: Add Andes alternative ports
-Date:   Fri, 18 Aug 2023 14:57:19 +0100
-Message-Id: <20230818135723.80612-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v12 3/6] riscv: mm: dma-noncoherent: nonstandard cache operations support
+Date:   Fri, 18 Aug 2023 14:57:20 +0100
+Message-Id: <20230818135723.80612-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230818135723.80612-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20230818135723.80612-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -91,229 +91,213 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Add required ports of the Alternative scheme for Andes CPU cores.
+Introduce support for nonstandard noncoherent systems in the RISC-V
+architecture. It enables function pointer support to handle cache
+management in such systems.
 
-I/O Coherence Port (IOCP) provides an AXI interface for connecting external
-non-caching masters, such as DMA controllers. IOCP is a specification
-option and is disabled on the Renesas RZ/Five SoC due to this reason cache
-management needs a software workaround.
+This patch adds a new configuration option called
+"RISCV_NONSTANDARD_CACHE_OPS." This option is a boolean flag that
+depends on "RISCV_DMA_NONCOHERENT" and enables the function pointer
+support for cache management in nonstandard noncoherent systems.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Tested-by: Conor Dooley <conor.dooley@microchip.com> # tyre-kicking on a d1
 ---
 v11 -> v12
-* No change
+* Renamed struct riscv_cache_ops -> struct riscv_nonstd_cache_ops
 
 v10 -> v11
-* No change
+* Changed data type of size from unsigned long to size_t
+* Reworded doc for struct riscv_cache_ops
 
 v9 -> v10
-* Included TB tag from Conor
+* Added __ro_after_init compiler attribute for noncoherent_cache_ops
+* Renamed clean -> wback
+* Renamed inval -> inv
+* Renamed flush -> wback_inv
 
 v8 -> v9
-* Rebased to code on Palmer's for/next
-* Dropped calling patch_text_nosync() as dont use
-  patch_text_nosync() call
-
-v7 -> v8
-* Now patching the code using patch_text_nosync() and riscv_alternative_fix_offsets()
-
-v6 -> v7
-* Renamed RZFIVE_SBI_EXT_IOCP_SW_WORKAROUND -> ANDES_SBI_EXT_IOCP_SW_WORKAROUND
-* Dropped "depends on !XIP_KERNEL" for ERRATA_ANDES config
-
-v5 -> v6
-* Dropped patching alternative and now just probing IOCP
-
-v4 -> v5
-* Sorted the Kconfig/Makefile/Switch based on Core name
-* Added a comments
-* Introduced RZFIVE_SBI_EXT_IOCP_SW_WORKAROUND SBI EXT ID to check if
-  CMO needs to be applied. Is there a way we can access the DTB while patching
-  as we can drop this SBI EXT ID and add a DT property instead for cmo?
-
-RFC v3 -> v4
 * New patch
 ---
- arch/riscv/Kconfig.errata            | 21 +++++++++
- arch/riscv/errata/Makefile           |  1 +
- arch/riscv/errata/andes/Makefile     |  1 +
- arch/riscv/errata/andes/errata.c     | 66 ++++++++++++++++++++++++++++
- arch/riscv/include/asm/alternative.h |  3 ++
- arch/riscv/include/asm/errata_list.h |  5 +++
- arch/riscv/kernel/alternative.c      |  5 +++
- 7 files changed, 102 insertions(+)
- create mode 100644 arch/riscv/errata/andes/Makefile
- create mode 100644 arch/riscv/errata/andes/errata.c
+ arch/riscv/Kconfig                       |  7 ++++
+ arch/riscv/include/asm/dma-noncoherent.h | 28 +++++++++++++++
+ arch/riscv/mm/dma-noncoherent.c          | 43 ++++++++++++++++++++++++
+ arch/riscv/mm/pmem.c                     | 13 +++++++
+ 4 files changed, 91 insertions(+)
+ create mode 100644 arch/riscv/include/asm/dma-noncoherent.h
 
-diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-index 0c8f4652cd82..92c779764b27 100644
---- a/arch/riscv/Kconfig.errata
-+++ b/arch/riscv/Kconfig.errata
-@@ -1,5 +1,26 @@
- menu "CPU errata selection"
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index f52dd125ac5e..a629d383affb 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -269,6 +269,13 @@ config RISCV_DMA_NONCOHERENT
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select DMA_DIRECT_REMAP
  
-+config ERRATA_ANDES
-+	bool "Andes AX45MP errata"
-+	depends on RISCV_ALTERNATIVE
++config RISCV_NONSTANDARD_CACHE_OPS
++	bool
++	depends on RISCV_DMA_NONCOHERENT
 +	help
-+	  All Andes errata Kconfig depend on this Kconfig. Disabling
-+	  this Kconfig will disable all Andes errata. Please say "Y"
-+	  here if your platform uses Andes CPU cores.
++	  This enables function pointer support for non-standard noncoherent
++	  systems to handle cache management.
 +
-+	  Otherwise, please say "N" here to avoid unnecessary overhead.
-+
-+config ERRATA_ANDES_CMO
-+	bool "Apply Andes cache management errata"
-+	depends on ERRATA_ANDES && MMU && ARCH_R9A07G043
-+	select RISCV_DMA_NONCOHERENT
-+	default y
-+	help
-+	  This will apply the cache management errata to handle the
-+	  non-standard handling on non-coherent operations on Andes cores.
-+
-+	  If you don't know what to do here, say "Y".
-+
- config ERRATA_SIFIVE
- 	bool "SiFive errata"
- 	depends on RISCV_ALTERNATIVE
-diff --git a/arch/riscv/errata/Makefile b/arch/riscv/errata/Makefile
-index 7b2637c8c332..8a2739485123 100644
---- a/arch/riscv/errata/Makefile
-+++ b/arch/riscv/errata/Makefile
-@@ -2,5 +2,6 @@ ifdef CONFIG_RELOCATABLE
- KBUILD_CFLAGS += -fno-pie
- endif
+ config AS_HAS_INSN
+ 	def_bool $(as-instr,.insn r 51$(comma) 0$(comma) 0$(comma) t0$(comma) t0$(comma) zero)
  
-+obj-$(CONFIG_ERRATA_ANDES) += andes/
- obj-$(CONFIG_ERRATA_SIFIVE) += sifive/
- obj-$(CONFIG_ERRATA_THEAD) += thead/
-diff --git a/arch/riscv/errata/andes/Makefile b/arch/riscv/errata/andes/Makefile
+diff --git a/arch/riscv/include/asm/dma-noncoherent.h b/arch/riscv/include/asm/dma-noncoherent.h
 new file mode 100644
-index 000000000000..2d644e19caef
+index 000000000000..312cfa0858fb
 --- /dev/null
-+++ b/arch/riscv/errata/andes/Makefile
-@@ -0,0 +1 @@
-+obj-y += errata.o
-diff --git a/arch/riscv/errata/andes/errata.c b/arch/riscv/errata/andes/errata.c
-new file mode 100644
-index 000000000000..197db68cc8da
---- /dev/null
-+++ b/arch/riscv/errata/andes/errata.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/arch/riscv/include/asm/dma-noncoherent.h
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Erratas to be applied for Andes CPU cores
-+ *
-+ *  Copyright (C) 2023 Renesas Electronics Corporation.
-+ *
-+ * Author: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
++ * Copyright (C) 2023 Renesas Electronics Corp.
 + */
 +
-+#include <linux/memory.h>
-+#include <linux/module.h>
++#ifndef __ASM_DMA_NONCOHERENT_H
++#define __ASM_DMA_NONCOHERENT_H
 +
-+#include <asm/alternative.h>
-+#include <asm/cacheflush.h>
-+#include <asm/errata_list.h>
-+#include <asm/patch.h>
-+#include <asm/processor.h>
-+#include <asm/sbi.h>
-+#include <asm/vendorid_list.h>
++#include <linux/dma-direct.h>
 +
-+#define ANDESTECH_AX45MP_MARCHID	0x8000000000008a45UL
-+#define ANDESTECH_AX45MP_MIMPID		0x500UL
-+#define ANDESTECH_SBI_EXT_ANDES		0x0900031E
++/*
++ * struct riscv_nonstd_cache_ops - Structure for non-standard CMO function pointers
++ *
++ * @wback: Function pointer for cache writeback
++ * @inv: Function pointer for invalidating cache
++ * @wback_inv: Function pointer for flushing the cache (writeback + invalidating)
++ */
++struct riscv_nonstd_cache_ops {
++	void (*wback)(phys_addr_t paddr, size_t size);
++	void (*inv)(phys_addr_t paddr, size_t size);
++	void (*wback_inv)(phys_addr_t paddr, size_t size);
++};
 +
-+#define ANDES_SBI_EXT_IOCP_SW_WORKAROUND	1
++extern struct riscv_nonstd_cache_ops noncoherent_cache_ops;
 +
-+static long ax45mp_iocp_sw_workaround(void)
-+{
-+	struct sbiret ret;
++void riscv_noncoherent_register_cache_ops(const struct riscv_nonstd_cache_ops *ops);
 +
-+	/*
-+	 * ANDES_SBI_EXT_IOCP_SW_WORKAROUND SBI EXT checks if the IOCP is missing and
-+	 * cache is controllable only then CMO will be applied to the platform.
-+	 */
-+	ret = sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
-+			0, 0, 0, 0, 0, 0);
-+
-+	return ret.error ? 0 : ret.value;
-+}
-+
-+static bool errata_probe_iocp(unsigned int stage, unsigned long arch_id, unsigned long impid)
-+{
-+	if (!IS_ENABLED(CONFIG_ERRATA_ANDES_CMO))
-+		return false;
-+
-+	if (arch_id != ANDESTECH_AX45MP_MARCHID || impid != ANDESTECH_AX45MP_MIMPID)
-+		return false;
-+
-+	if (!ax45mp_iocp_sw_workaround())
-+		return false;
-+
-+	/* Set this just to make core cbo code happy */
-+	riscv_cbom_block_size = 1;
-+	riscv_noncoherent_supported();
-+
-+	return true;
-+}
-+
-+void __init_or_module andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
-+					      unsigned long archid, unsigned long impid,
-+					      unsigned int stage)
-+{
-+	errata_probe_iocp(stage, archid, impid);
-+
-+	/* we have nothing to patch here ATM so just return back */
-+}
-diff --git a/arch/riscv/include/asm/alternative.h b/arch/riscv/include/asm/alternative.h
-index 6a41537826a7..f6cfca939c92 100644
---- a/arch/riscv/include/asm/alternative.h
-+++ b/arch/riscv/include/asm/alternative.h
-@@ -46,6 +46,9 @@ struct alt_entry {
- 	u32 patch_id;		/* The patch ID (erratum ID or cpufeature ID) */
- };
++#endif	/* __ASM_DMA_NONCOHERENT_H */
+diff --git a/arch/riscv/mm/dma-noncoherent.c b/arch/riscv/mm/dma-noncoherent.c
+index 06b8fea58e20..a4f3f37859ae 100644
+--- a/arch/riscv/mm/dma-noncoherent.c
++++ b/arch/riscv/mm/dma-noncoherent.c
+@@ -9,13 +9,26 @@
+ #include <linux/dma-map-ops.h>
+ #include <linux/mm.h>
+ #include <asm/cacheflush.h>
++#include <asm/dma-noncoherent.h>
  
-+void andes_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
-+			     unsigned long archid, unsigned long impid,
-+			     unsigned int stage);
- void sifive_errata_patch_func(struct alt_entry *begin, struct alt_entry *end,
- 			      unsigned long archid, unsigned long impid,
- 			      unsigned int stage);
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index fb1a810f3d8c..e2ecd01bfac7 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -11,6 +11,11 @@
- #include <asm/hwcap.h>
- #include <asm/vendorid_list.h>
+ static bool noncoherent_supported __ro_after_init;
  
-+#ifdef CONFIG_ERRATA_ANDES
-+#define ERRATA_ANDESTECH_NO_IOCP	0
-+#define ERRATA_ANDESTECH_NUMBER		1
++struct riscv_nonstd_cache_ops noncoherent_cache_ops __ro_after_init = {
++	.wback = NULL,
++	.inv = NULL,
++	.wback_inv = NULL,
++};
++
+ static inline void arch_dma_cache_wback(phys_addr_t paddr, size_t size)
+ {
+ 	void *vaddr = phys_to_virt(paddr);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.wback)) {
++		noncoherent_cache_ops.wback(paddr, size);
++		return;
++	}
++#endif
+ 	ALT_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
+ }
+ 
+@@ -23,6 +36,13 @@ static inline void arch_dma_cache_inv(phys_addr_t paddr, size_t size)
+ {
+ 	void *vaddr = phys_to_virt(paddr);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.inv)) {
++		noncoherent_cache_ops.inv(paddr, size);
++		return;
++	}
 +#endif
 +
- #ifdef CONFIG_ERRATA_SIFIVE
- #define	ERRATA_SIFIVE_CIP_453 0
- #define	ERRATA_SIFIVE_CIP_1200 1
-diff --git a/arch/riscv/kernel/alternative.c b/arch/riscv/kernel/alternative.c
-index 6b75788c18e6..b0345992a35e 100644
---- a/arch/riscv/kernel/alternative.c
-+++ b/arch/riscv/kernel/alternative.c
-@@ -45,6 +45,11 @@ static void riscv_fill_cpu_mfr_info(struct cpu_manufacturer_info_t *cpu_mfr_info
+ 	ALT_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
+ }
  
- 	cpu_mfr_info->feature_probe_func = NULL;
- 	switch (cpu_mfr_info->vendor_id) {
-+#ifdef CONFIG_ERRATA_ANDES
-+	case ANDESTECH_VENDOR_ID:
-+		cpu_mfr_info->patch_func = andes_errata_patch_func;
-+		break;
+@@ -30,6 +50,13 @@ static inline void arch_dma_cache_wback_inv(phys_addr_t paddr, size_t size)
+ {
+ 	void *vaddr = phys_to_virt(paddr);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.wback_inv)) {
++		noncoherent_cache_ops.wback_inv(paddr, size);
++		return;
++	}
 +#endif
- #ifdef CONFIG_ERRATA_SIFIVE
- 	case SIFIVE_VENDOR_ID:
- 		cpu_mfr_info->patch_func = sifive_errata_patch_func;
++
+ 	ALT_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
+ }
+ 
+@@ -95,6 +122,13 @@ void arch_dma_prep_coherent(struct page *page, size_t size)
+ {
+ 	void *flush_addr = page_address(page);
+ 
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.wback_inv)) {
++		noncoherent_cache_ops.wback_inv(page_to_phys(page), size);
++		return;
++	}
++#endif
++
+ 	ALT_CMO_OP(flush, flush_addr, size, riscv_cbom_block_size);
+ }
+ 
+@@ -120,3 +154,12 @@ void riscv_noncoherent_supported(void)
+ 	     "Non-coherent DMA support enabled without a block size\n");
+ 	noncoherent_supported = true;
+ }
++
++void riscv_noncoherent_register_cache_ops(const struct riscv_nonstd_cache_ops *ops)
++{
++	if (!ops)
++		return;
++
++	noncoherent_cache_ops = *ops;
++}
++EXPORT_SYMBOL_GPL(riscv_noncoherent_register_cache_ops);
+diff --git a/arch/riscv/mm/pmem.c b/arch/riscv/mm/pmem.c
+index 089df92ae876..c5fc5ec96f6d 100644
+--- a/arch/riscv/mm/pmem.c
++++ b/arch/riscv/mm/pmem.c
+@@ -7,15 +7,28 @@
+ #include <linux/libnvdimm.h>
+ 
+ #include <asm/cacheflush.h>
++#include <asm/dma-noncoherent.h>
+ 
+ void arch_wb_cache_pmem(void *addr, size_t size)
+ {
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.wback)) {
++		noncoherent_cache_ops.wback(virt_to_phys(addr), size);
++		return;
++	}
++#endif
+ 	ALT_CMO_OP(clean, addr, size, riscv_cbom_block_size);
+ }
+ EXPORT_SYMBOL_GPL(arch_wb_cache_pmem);
+ 
+ void arch_invalidate_pmem(void *addr, size_t size)
+ {
++#ifdef CONFIG_RISCV_NONSTANDARD_CACHE_OPS
++	if (unlikely(noncoherent_cache_ops.inv)) {
++		noncoherent_cache_ops.inv(virt_to_phys(addr), size);
++		return;
++	}
++#endif
+ 	ALT_CMO_OP(inval, addr, size, riscv_cbom_block_size);
+ }
+ EXPORT_SYMBOL_GPL(arch_invalidate_pmem);
 -- 
 2.34.1
 
