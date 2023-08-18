@@ -2,82 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E247780A59
+	by mail.lfdr.de (Postfix) with ESMTP id 78FA9780A5A
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 12:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376359AbjHRKjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 06:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
+        id S1376390AbjHRKjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 06:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358714AbjHRKjM (ORCPT
+        with ESMTP id S1376377AbjHRKjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 06:39:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F13F13E;
-        Fri, 18 Aug 2023 03:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692355151; x=1723891151;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=CQ4f/Wck856yNOrBmWfQjkyduFmCXCVkvM22jy0bkrM=;
-  b=cc/ZVNYO9UQ4+Sh8dBuuD6qpE89Gn/QFpWJ3pZOP1iWYAYdrmMbZQAHq
-   L9FPacD2G5NdskyMRwhyVtQzd1oKLFJiv7ToplC9pdJzCWnlqc42z8PBi
-   rWNkI3m40cuQDxaFW1EzU9BeRoTx6al/WuK/3g2MPAefrkfknVLTJG9Yp
-   vrkSKDot1bbc0p0sWMggINJURNqfHkprb0Mj45G128oyfpU8ShiWPsZXm
-   CqAqU+qD/tRoFY7V5Zsxe8LynqWudrz9szLFqqwohmjuPvdTvhYVCppAi
-   gXvSUiwqKul5cyQUZj0HRq/F4JOmYKiJ6ypQW6ffNG/gHjgQH6xjB+qJB
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="375851637"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="375851637"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 03:39:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10805"; a="770094859"
-X-IronPort-AV: E=Sophos;i="6.01,182,1684825200"; 
-   d="scan'208";a="770094859"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP; 18 Aug 2023 03:39:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qWwsl-0043T5-2q;
-        Fri, 18 Aug 2023 13:39:07 +0300
-Date:   Fri, 18 Aug 2023 13:39:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] gpio: pca9570: fix kerneldoc
-Message-ID: <ZN9KS66ZsHrCWM1a@smile.fi.intel.com>
-References: <20230817194449.26447-1-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817194449.26447-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 18 Aug 2023 06:39:23 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE2B1AE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 03:39:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B9F581F893;
+        Fri, 18 Aug 2023 10:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692355155; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ZxOFOqZ8j/xd34qYyUl+ijDWWP7dMV+5Bn8jWfWbs8=;
+        b=i6i2iYH0Ic7tq0OvRkJIjIoOALPVmAymozb0qpuVj49S+eNN0OfnqiVv8z7YBsnOpU8Rw6
+        vn2uJY5pWo5K5FMzRzhLs/vKIVdGCzvr78RG9y46HdVgiukWklthL0AKkXMr2hBgtj5hui
+        m7ZdAkblq3QASiErqA+RFNIvq6DdBJI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692355155;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ZxOFOqZ8j/xd34qYyUl+ijDWWP7dMV+5Bn8jWfWbs8=;
+        b=xg17N/4nYs6XoaGiXbnZah+OgVQ0JPsvLycTIjQTGmpBHmMk5HMsdh06CwoPIY7SfoB9i+
+        q+fSGvz8bc2me7BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6DEE7138F0;
+        Fri, 18 Aug 2023 10:39:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IckcGlNK32SuSwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Fri, 18 Aug 2023 10:39:15 +0000
+Date:   Fri, 18 Aug 2023 12:39:14 +0200
+Message-ID: <87il9ck52l.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Maarten Lankhorst <dev@lankhorst.se>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: Re: [PATCH v3 8/9] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
+In-Reply-To: <e88d139f-e62b-1654-0d35-a46c698298c6@lankhorst.se>
+References: <20230807090045.198993-1-maarten.lankhorst@linux.intel.com>
+        <20230807090045.198993-9-maarten.lankhorst@linux.intel.com>
+        <4acc7318-69b3-3eb5-1fe8-f7deea8adfad@linux.intel.com>
+        <87a5uwr7ya.wl-tiwai@suse.de>
+        <e88d139f-e62b-1654-0d35-a46c698298c6@lankhorst.se>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 09:44:49PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Mon, 14 Aug 2023 16:26:01 +0200,
+Maarten Lankhorst wrote:
 > 
-> While renaming one of the fields in the driver data struct, the kerneldoc
-> was not updated which apparently angers the test robot now.
+> Ping on this?
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
+Pierre?  Does one of your recent patch sets achieves the suggested
+thing?  Or do we need another rewrite/respin of this series?
+Currently it's blocking the merge for 6.6.
 
 
+Takashi
+
+> On 2023-08-12 10:17, Takashi Iwai wrote:
+> > On Mon, 07 Aug 2023 16:26:53 +0200,
+> > Pierre-Louis Bossart wrote:
+> >> 
+> >> 
+> >> 
+> >> On 8/7/23 04:00, Maarten Lankhorst wrote:
+> >>> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+> >>> the snd_hdac_i915_init into a workqueue.
+> >>> 
+> >>> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
+> >>> probe function.
+> >> 
+> >> I don't think this patch is aligned with the previous discussions. What
+> >> we agreed on is that snd_hdac_i915_init() would be called from and not
+> >> from the workqueue.
+> >> 
+> >> But this patch also moves all codec initialization out of the workqueue.
+> >> 
+> >> I think we need two callbacks for device-specific initilization, one
+> >> that is called from the probe function and one from the workqueue,
+> >> otherwise we'll have a structure that differs from the snd-hda-intel -
+> >> which would be rather silly in terms of support/debug.
+> >> 
+> >> I realize there's quite a bit of surgery involved, and most likely the
+> >> SOF folks should provide this patch for you to build on.
+> > 
+> > So this patch looks like the only significant concern in the whole
+> > patch set.  Can we reach to some agreement for merging to 6.6 in time?
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> 
