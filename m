@@ -2,167 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B633E781365
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B68378136C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Aug 2023 21:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379640AbjHRThc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 15:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S1379648AbjHRTil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 15:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379677AbjHRThW (ORCPT
+        with ESMTP id S1379660AbjHRTiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 15:37:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D2A1FCE;
-        Fri, 18 Aug 2023 12:37:15 -0700 (PDT)
+        Fri, 18 Aug 2023 15:38:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D191FCE;
+        Fri, 18 Aug 2023 12:38:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9499061D1F;
-        Fri, 18 Aug 2023 19:37:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C11FC433C7;
-        Fri, 18 Aug 2023 19:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692387434;
-        bh=GRnDsiZDIrTxnnQBnvKXLxV8C2MgIDJvy4PYddFPUSA=;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 88B7662D18;
+        Fri, 18 Aug 2023 19:38:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDBE7C433C8;
+        Fri, 18 Aug 2023 19:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692387492;
+        bh=01Q2xEmAO2pVJWHzK9M3MZQdGCIPPOuErEoePLDfq+0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mGGbcRJSIx6/jRcrk9SaDr0pI/QnX+WxRGAC/HKLcBpehlCrfFXYp/j3FbdDolDRc
-         vqAsUouGZnk5+W9NvAz5H+7RTAfTG8hQYIOjcN37laQlTKnzwtdY0RwH1lHiiKDsdT
-         DWOTwOq2Obr5Fk1RE12ASbeKk3IkcDrmCsVAXUVE=
-Date:   Fri, 18 Aug 2023 21:37:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Justin Chen <justin.chen@broadcom.com>
-Cc:     linux-serial@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        "open list:TTY LAYER" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] serial: 8250_bcm7271: improve bcm7271 8250 port
-Message-ID: <2023081859-contact-commuting-5d70@gregkh>
-References: <1692306801-13191-1-git-send-email-justin.chen@broadcom.com>
+        b=ZvLDUejgDxFNb6IhI4Y0qdql5M25cqQLtbiufVm4Gb1iXmTmAB0Vv7ahIz5a06KAb
+         PUVYYrLHaNR/SZqrZU0yrVK5FDSBVeGGfofO9+Df7X5NWY2X9XcazAltA6H9EsHtv+
+         fc4AWwR9CKunnY9EpyNqH+5BjOB9QdtB0QMaWXxuq/yd9mPtqlVE1q+rF9jr+uSXsI
+         f1NsCWGQH8w59yUVRi8q2TubicSUqChyEh/LQmmTFJ4Z4wetsknCZ6enP2KXAnB49z
+         oUn0kP6MHyAsmo5BdzSFWx5eauk1ZDTV4IrU/9IN+nMSi55OIHvkUfyBmizMa3JLC6
+         ole8zbgLwOsiA==
+Date:   Fri, 18 Aug 2023 20:38:02 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-3-68cfa37f9069@kernel.org>
+ <ZNOhjrYleGBR6Pbs@arm.com>
+ <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
+ <ZN+qki9EaZ6f9XNi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LNILMu582aOVL6hM"
 Content-Disposition: inline
-In-Reply-To: <1692306801-13191-1-git-send-email-justin.chen@broadcom.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZN+qki9EaZ6f9XNi@arm.com>
+X-Cookie: Your aim is high and to the right.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 02:13:18PM -0700, Justin Chen wrote:
-> The 8250 BCM7271 UART is not a direct match to PORT_16550A and other
-> generic ports do not match its hardware capabilities. PORT_ALTR matches
-> the rx trigger levels, but its vendor configurations are not compatible.
-> Unfortunately this means we need to create another port to fully capture
-> the hardware capabilities of the BCM7271 UART.
-> 
-> To alleviate some latency pressures, we default the rx trigger level to 8.
-> 
-> Signed-off-by: Justin Chen <justin.chen@broadcom.com>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Acked-by: Doug Berger <opendmb@gmail.com>
-> ---
->  drivers/tty/serial/8250/8250_bcm7271.c | 4 +---
->  drivers/tty/serial/8250/8250_port.c    | 8 ++++++++
->  include/uapi/linux/serial_core.h       | 3 +++
->  3 files changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-> index d4b05d7ad9e8..aa5aff046756 100644
-> --- a/drivers/tty/serial/8250/8250_bcm7271.c
-> +++ b/drivers/tty/serial/8250/8250_bcm7271.c
-> @@ -1042,7 +1042,7 @@ static int brcmuart_probe(struct platform_device *pdev)
->  	dev_dbg(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
->  
->  	memset(&up, 0, sizeof(up));
-> -	up.port.type = PORT_16550A;
-> +	up.port.type = PORT_BCM7271;
->  	up.port.uartclk = clk_rate;
->  	up.port.dev = dev;
->  	up.port.mapbase = mapbase;
-> @@ -1056,8 +1056,6 @@ static int brcmuart_probe(struct platform_device *pdev)
->  		| UPF_FIXED_PORT | UPF_FIXED_TYPE;
->  	up.port.dev = dev;
->  	up.port.private_data = priv;
-> -	up.capabilities = UART_CAP_FIFO | UART_CAP_AFE;
-> -	up.port.fifosize = 32;
->  
->  	/* Check for a fixed line number */
->  	ret = of_alias_get_id(np, "serial");
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index 16aeb1420137..9f05745e221b 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -322,6 +322,14 @@ static const struct serial8250_config uart_config[] = {
->  		.rxtrig_bytes   = {2, 66, 130, 194},
->  		.flags          = UART_CAP_FIFO,
->  	},
-> +	[PORT_BCM7271] = {
-> +		.name		= "Broadcom BCM7271 UART",
-> +		.fifo_size	= 32,
-> +		.tx_loadsz	= 32,
-> +		.fcr		= UART_FCR_ENABLE_FIFO | UART_FCR_R_TRIG_01,
-> +		.rxtrig_bytes	= {1, 8, 16, 30},
-> +		.flags		= UART_CAP_FIFO | UART_CAP_AFE
-> +	},
->  };
->  
->  /* Uart divisor latch read */
-> diff --git a/include/uapi/linux/serial_core.h b/include/uapi/linux/serial_core.h
-> index 281fa286555c..9646629496ab 100644
-> --- a/include/uapi/linux/serial_core.h
-> +++ b/include/uapi/linux/serial_core.h
-> @@ -144,6 +144,9 @@
->  /* Blackfin bf5xx */
->  #define PORT_BFIN	75
->  
-> +/* Broadcom BCM7271 UART */
-> +#define PORT_BCM7271    76
-> +
->  /* Broadcom SB1250, etc. SOC */
->  #define PORT_SB1250_DUART	77
->  
-> -- 
-> 2.7.4
-> 
 
+--LNILMu582aOVL6hM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Fri, Aug 18, 2023 at 06:29:54PM +0100, Catalin Marinas wrote:
 
-Hi,
+> A related question - it may have been discussed intensively on the x86
+> thread (I may read it sometime) - why not have the libc map the shadow
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Your assumption that this is a single thread feels optimistic there.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+> stack and pass the pointer/size to clone3()? It saves us from having to
+> guess what the right size we'd need. struct clone_args is extensible.
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
+I can't recall or locate the specific reasoning there right now, perhaps
+Rick or someone else can?  I'd guess there would be compat concerns for
+things that don't go via libc which would complicate the story with
+identifying and marking things as GCS/SS safe, it's going to be more
+robust to just supply a GCS if the process is using it.  That said
+having a default doesn't preclude us using the extensibility to allow
+userspace directly to control the GCS size, I would certainly be in
+favour of adding support for that.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+> (I plan to get back next week to this series, I'll need to read a bit
+> more on the spec)
 
-thanks,
+I've been making changes, mostly in response to your feedback, so there
+should be a new version on Monday even if not everything is addressed
+yet.
 
-greg k-h's patch email bot
+--LNILMu582aOVL6hM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTfyJkACgkQJNaLcl1U
+h9Cw3Af8Cnyy0Sa1PU1lq3c1HV/d6eNcVzOoN4kECuID3B/GKxWng90W0Z7wR75z
+Wl9H0WZxlDkqd/voFGHAJTEtlcEZMg6xNByq8Rhq2jw6R2EX3O8P6+Uqumjb3UQ8
+wb+PJyloj3BhXcQPiMH8vFHAs6b81DyPYo9NtaCLsYbtZv4MwGjgJKRrAl8+O2ct
+n/1P1Hpp/XUeTZUZvyWxrBdDUD7nLq9mQe2/+h6NxTtchrNTb98Kvgk7JrRefjrB
+7kehDj9XiBJt5vVkoSO+e5aVln7wgwWor3KsjviaeNzyXglWrx+VBIc8OT6FMiJw
+VIA6Wrc8ikvi1fZ/oooK9TnU+p5chw==
+=RgY5
+-----END PGP SIGNATURE-----
+
+--LNILMu582aOVL6hM--
