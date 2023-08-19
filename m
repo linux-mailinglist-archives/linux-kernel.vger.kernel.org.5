@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2CC78171F
+	by mail.lfdr.de (Postfix) with ESMTP id 58BD378171E
 	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245090AbjHSDSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 23:18:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S245055AbjHSDSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 23:18:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244794AbjHSDRk (ORCPT
+        with ESMTP id S244797AbjHSDRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Aug 2023 23:17:40 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB3EE4228
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:37 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-56dfe5ce871so991874eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:37 -0700 (PDT)
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84CB422C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:38 -0700 (PDT)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1c4d8eaa8ebso980072fac.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692415057; x=1693019857;
+        d=linaro.org; s=google; t=1692415058; x=1693019858;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wz7l2Nt7KOsakojMIBUT2YVYRMmwVU4JH/swQRaBmqA=;
-        b=mYshb+Rn/3oQMH2VIbVz1A52sXeo6UhZTI9Ci68KggWZXvpTtBDlTcTm0Zb9Rdi61i
-         sypgYsqCKqH901t+31x5FGrwLfNby8AhYS9U98qv78Dan/4Px+cVwfmWj1wl0rVRaKsY
-         B83noMDKu+V2FpxP4eAcvyy3CkP/cExFyRgtoMjIgPFXEsNS6pNgVITs942I980UNXU3
-         v/cX9Fiwp1lRO6TmBHY4HVGMDf5j2a34VRDIZwOZXiGGdqrhxgs57zJTwaBdVotwJTAp
-         WA53bknQp1yVohelRcUMrcmAE9Ys5San+fs+rdiVmiR8XQHuUzBpY6yBZr1CtwjSYNN2
-         HWow==
+        bh=+DQwNNrrtVCT1lLuabGTe5r6Le72ZgleU8XG8wqlJaU=;
+        b=KZnsI2frS8f19EqyRQwavdJnykidAx+LH2FzPONwEGalZsPbjh8DDMo6++Bw8p/kWb
+         JFunValfCFYRcWIsU4vandkZU7eWr0blqGFSQR8kJJi7LTusS8JkQQH8/N/MGy8P3FDC
+         1se/QTLNn7fXOEsrIQc6St1a92WXH54mgQnjTzjzwBmFXD5USVK6ghGkDUhod6hiCnK3
+         u++iM22rFYepHpqUMgSx44AevgdbcrhG7gxsyZErip+/NeNCbgCCvLokMOtCOGoRquy8
+         E3iixOKDXW4y1S/IEk7hI3a7LYelHPozIIGne2EU0nQJVQXGpXmEf3bhMubPVLm6r62I
+         gbDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692415057; x=1693019857;
+        d=1e100.net; s=20221208; t=1692415058; x=1693019858;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wz7l2Nt7KOsakojMIBUT2YVYRMmwVU4JH/swQRaBmqA=;
-        b=IqfjcBhOPMi079X8sguN/NKs/hdf12MAccVFVN2gb9f+rtwilPAa5qC8qIXth16Ltq
-         4v52EhZ0vRIZRl837RZxgCO2yz+DsuagzBnsQykXB3cjyhhNBZ7bQVXLsQaCh2XkdFs1
-         5FH8dTCyrUtCxrhR1dw3YdwzGkKqbnaHAEBNgHJlZEV7KQvhZUBGW3a82qLdzG7QFgWI
-         GkqoofIdAZD7ZX+fXS/PZfeu0UpS5tMjLkON2C47nXv2jxRIkNybif+Swd3cAWc8I2yO
-         ESEVWW+XWGFJT01gHvvYeFcuAFOIiH3Eb/riUK6Piy0ZWPAV0A+Uixu6D2cBh0FSINLq
-         q7Vg==
-X-Gm-Message-State: AOJu0YxFB2qA3kS25TRZrbbisKSfzNlTlEaZhdmuQoCxwuj9i0Xxw/5/
-        VJ3PlHYhAJ44REOwyQK8y8KleQ==
-X-Google-Smtp-Source: AGHT+IEHWIhbOpE4bIXnVimEwmLiWUBgqMQ3a5vV0u2jZL1ABZYcOvaZH4EGTDEVIcZmmf2p8BUZqw==
-X-Received: by 2002:a4a:9c5a:0:b0:566:f763:8fb7 with SMTP id c26-20020a4a9c5a000000b00566f7638fb7mr1434181ook.2.1692415057099;
-        Fri, 18 Aug 2023 20:17:37 -0700 (PDT)
+        bh=+DQwNNrrtVCT1lLuabGTe5r6Le72ZgleU8XG8wqlJaU=;
+        b=TZgY8Dszuzz/c9ghDkYVXT6kwLivtrN5eMQlR2ggffyE8gK4ms7C7fx3Aq9M/H/4bl
+         8BpoykXSCDbfiVirqE6lODpo+/BnW0s3sd0qt4DtLwi0u2R0HXLFmia/RgZK9IfeXACu
+         lY8yLl5fpClaQPKXBzX4FmpMBw0hHb8HKYCU+K1Os8EEie2hMxcEHiJ37ovSXPKn4pmF
+         c05nVA0sBEnVm2coidTawvPBOkZetpDACx1Gz0xb4Jj1Au/XXHHzn3ricZc2kTAa9QX0
+         T0zYS1do3Bhex8g0m9dTunBZWBX8hOIeB8cpZrygaYV4zxH2ERlF4Zha5nZ34IKFSErg
+         cx8Q==
+X-Gm-Message-State: AOJu0YzUF5LaT0t7Nq70hdu9ijKPIbvxi8YqG0cgwi7JTehRaZR5RRtP
+        3ovlAx7cv7Sh//2VRb5qskQMZg==
+X-Google-Smtp-Source: AGHT+IG9+tvpUlnk8cAJd8EALh9FR9Ev77lqz1NyZ7whINiZTja6Zelg0JAusKenuNC7JUynVd3GDQ==
+X-Received: by 2002:a05:6870:2188:b0:19f:6711:8e0a with SMTP id l8-20020a056870218800b0019f67118e0amr1165180oae.32.1692415058070;
+        Fri, 18 Aug 2023 20:17:38 -0700 (PDT)
 Received: from localhost ([136.49.140.41])
-        by smtp.gmail.com with ESMTPSA id p127-20020a4a4885000000b00569c5eadf15sm1505569ooa.26.2023.08.18.20.17.36
+        by smtp.gmail.com with ESMTPSA id r2-20020a056870878200b001c4b473581fsm1725223oam.12.2023.08.18.20.17.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 20:17:36 -0700 (PDT)
+        Fri, 18 Aug 2023 20:17:37 -0700 (PDT)
 From:   Sam Protsenko <semen.protsenko@linaro.org>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,62 +68,250 @@ Cc:     JaeHun Jung <jh0801.jung@samsung.com>,
         linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org
-Subject: [PATCH 5/8] phy: exynos5-usbdrd: Add 26MHz ref clk support
-Date:   Fri, 18 Aug 2023 22:17:28 -0500
-Message-Id: <20230819031731.22618-6-semen.protsenko@linaro.org>
+Subject: [PATCH 6/8] phy: exynos5-usbdrd: Add Exynos850 support
+Date:   Fri, 18 Aug 2023 22:17:29 -0500
+Message-Id: <20230819031731.22618-7-semen.protsenko@linaro.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230819031731.22618-1-semen.protsenko@linaro.org>
 References: <20230819031731.22618-1-semen.protsenko@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modern Exynos chips (like Exynos850) might have 26 MHz OSCCLK external
-clock, which is also used as a PHY reference clock. For some USB PHY
-controllers (e.g USB DRD PHY block on Exynos850) there is no need to set
-the refclk frequency at all (and corresponding bits in CLKRSTCTRL[7:5]
-are marked RESERVED), so that value won't be set in the driver. But
-even in that case, 26 MHz support still has to be added, otherwise
-exynos5_rate_to_clk() fails, which leads in turn to probe error.
+Implement Exynos850 USB 2.0 DRD PHY controller support. Exynos850 has
+quite a different PHY controller than Exynos5 compatible controllers,
+but it's still possible to implement it on top of existing
+exynos5-usbdrd driver infrastructure.
 
-Add the correct value for 26MHz refclk to make it possible to add
-support for new Exynos USB DRD PHY controllers.
+Only UTMI+ (USB 2.0) PHY interface is implemented, as Exynos850 doesn't
+support USB 3.0.
+
+Only two clocks are used for this controller:
+  - phy: bus clock, used for PHY registers access
+  - ref: PHY reference clock (OSCCLK)
 
 Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
 ---
- drivers/phy/samsung/phy-exynos5-usbdrd.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/phy/samsung/phy-exynos5-usbdrd.c | 169 +++++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
 
 diff --git a/drivers/phy/samsung/phy-exynos5-usbdrd.c b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-index 1ece4a1a1a6e..41508db87b9b 100644
+index 41508db87b9b..3f310b28bfff 100644
 --- a/drivers/phy/samsung/phy-exynos5-usbdrd.c
 +++ b/drivers/phy/samsung/phy-exynos5-usbdrd.c
-@@ -30,6 +30,7 @@
- #define EXYNOS5_FSEL_19MHZ2		0x3
- #define EXYNOS5_FSEL_20MHZ		0x4
- #define EXYNOS5_FSEL_24MHZ		0x5
-+#define EXYNOS5_FSEL_26MHZ		0x82
- #define EXYNOS5_FSEL_50MHZ		0x7
+@@ -145,6 +145,34 @@
+ #define LANE0_TX_DEBUG_RXDET_MEAS_TIME_62M5		(0x20 << 4)
+ #define LANE0_TX_DEBUG_RXDET_MEAS_TIME_96M_100M		(0x40 << 4)
  
- /* Exynos5: USB 3.0 DRD PHY registers */
-@@ -244,6 +245,9 @@ static unsigned int exynos5_rate_to_clk(unsigned long rate, u32 *reg)
- 	case 24 * MHZ:
- 		*reg = EXYNOS5_FSEL_24MHZ;
- 		break;
-+	case 26 * MHZ:
-+		*reg = EXYNOS5_FSEL_26MHZ;
-+		break;
- 	case 50 * MHZ:
- 		*reg = EXYNOS5_FSEL_50MHZ;
- 		break;
++/* Exynos850: USB DRD PHY registers */
++#define EXYNOS850_DRD_LINKCTRL			0x04
++#define LINKCTRL_BUS_FILTER_BYPASS(_x)		((_x) << 4)
++#define LINKCTRL_FORCE_QACT			BIT(8)
++
++#define EXYNOS850_DRD_CLKRST			0x20
++#define CLKRST_LINK_SW_RST			BIT(0)
++#define CLKRST_PORT_RST				BIT(1)
++#define CLKRST_PHY_SW_RST			BIT(3)
++
++#define EXYNOS850_DRD_UTMI			0x50
++#define UTMI_FORCE_SLEEP			BIT(0)
++#define UTMI_FORCE_SUSPEND			BIT(1)
++#define UTMI_DM_PULLDOWN			BIT(2)
++#define UTMI_DP_PULLDOWN			BIT(3)
++#define UTMI_FORCE_BVALID			BIT(4)
++#define UTMI_FORCE_VBUSVALID			BIT(5)
++
++#define EXYNOS850_DRD_HSP			0x54
++#define HSP_COMMONONN				BIT(8)
++#define HSP_EN_UTMISUSPEND			BIT(9)
++#define HSP_VBUSVLDEXT				BIT(12)
++#define HSP_VBUSVLDEXTSEL			BIT(13)
++#define HSP_FSV_OUT_EN				BIT(24)
++
++#define EXYNOS850_DRD_HSP_TEST			0x5c
++#define HSP_TEST_SIDDQ				BIT(24)
++
+ #define KHZ	1000
+ #define MHZ	(KHZ * KHZ)
+ 
+@@ -716,6 +744,129 @@ static const struct phy_ops exynos5_usbdrd_phy_ops = {
+ 	.owner		= THIS_MODULE,
+ };
+ 
++static void exynos850_usbdrd_utmi_init(struct exynos5_usbdrd_phy *phy_drd)
++{
++	void __iomem *regs_base = phy_drd->reg_phy;
++	u32 reg;
++
++	/*
++	 * Disable HWACG (hardware auto clock gating control). This will force
++	 * QACTIVE signal in Q-Channel interface to HIGH level, to make sure
++	 * the PHY clock is not gated by the hardware.
++	 */
++	reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
++	reg |= LINKCTRL_FORCE_QACT;
++	writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
++
++	/* Start PHY Reset (POR=high) */
++	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	reg |= CLKRST_PHY_SW_RST;
++	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
++
++	/* Enable UTMI+ */
++	reg = readl(regs_base + EXYNOS850_DRD_UTMI);
++	reg &= ~(UTMI_FORCE_SUSPEND | UTMI_FORCE_SLEEP | UTMI_DP_PULLDOWN |
++		 UTMI_DM_PULLDOWN);
++	writel(reg, regs_base + EXYNOS850_DRD_UTMI);
++
++	/* Set PHY clock and control HS PHY */
++	reg = readl(regs_base + EXYNOS850_DRD_HSP);
++	reg |= HSP_EN_UTMISUSPEND | HSP_COMMONONN;
++	writel(reg, regs_base + EXYNOS850_DRD_HSP);
++
++	/* Set VBUS Valid and D+ pull-up control by VBUS pad usage */
++	reg = readl(regs_base + EXYNOS850_DRD_LINKCTRL);
++	reg |= LINKCTRL_BUS_FILTER_BYPASS(0xf);
++	writel(reg, regs_base + EXYNOS850_DRD_LINKCTRL);
++
++	reg = readl(regs_base + EXYNOS850_DRD_UTMI);
++	reg |= UTMI_FORCE_BVALID | UTMI_FORCE_VBUSVALID;
++	writel(reg, regs_base + EXYNOS850_DRD_UTMI);
++
++	reg = readl(regs_base + EXYNOS850_DRD_HSP);
++	reg |= HSP_VBUSVLDEXT | HSP_VBUSVLDEXTSEL;
++	writel(reg, regs_base + EXYNOS850_DRD_HSP);
++
++	/* Power up PHY analog blocks */
++	reg = readl(regs_base + EXYNOS850_DRD_HSP_TEST);
++	reg &= ~HSP_TEST_SIDDQ;
++	writel(reg, regs_base + EXYNOS850_DRD_HSP_TEST);
++
++	/* Finish PHY reset (POR=low) */
++	udelay(10); /* required before doing POR=low */
++	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	reg &= ~(CLKRST_PHY_SW_RST | CLKRST_PORT_RST);
++	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
++	udelay(75); /* required after POR=low for guaranteed PHY clock */
++
++	/* Disable single ended signal out */
++	reg = readl(regs_base + EXYNOS850_DRD_HSP);
++	reg &= ~HSP_FSV_OUT_EN;
++	writel(reg, regs_base + EXYNOS850_DRD_HSP);
++}
++
++static int exynos850_usbdrd_phy_init(struct phy *phy)
++{
++	struct phy_usb_instance *inst = phy_get_drvdata(phy);
++	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
++	int ret;
++
++	ret = clk_prepare_enable(phy_drd->clk);
++	if (ret)
++		return ret;
++
++	/* UTMI or PIPE3 specific init */
++	inst->phy_cfg->phy_init(phy_drd);
++
++	clk_disable_unprepare(phy_drd->clk);
++
++	return 0;
++}
++
++static int exynos850_usbdrd_phy_exit(struct phy *phy)
++{
++	struct phy_usb_instance *inst = phy_get_drvdata(phy);
++	struct exynos5_usbdrd_phy *phy_drd = to_usbdrd_phy(inst);
++	void __iomem *regs_base = phy_drd->reg_phy;
++	u32 reg;
++	int ret;
++
++	ret = clk_prepare_enable(phy_drd->clk);
++	if (ret)
++		return ret;
++
++	/* Set PHY clock and control HS PHY */
++	reg = readl(regs_base + EXYNOS850_DRD_UTMI);
++	reg &= ~(UTMI_DP_PULLDOWN | UTMI_DM_PULLDOWN);
++	reg |= UTMI_FORCE_SUSPEND | UTMI_FORCE_SLEEP;
++	writel(reg, regs_base + EXYNOS850_DRD_UTMI);
++
++	/* Power down PHY analog blocks */
++	reg = readl(regs_base + EXYNOS850_DRD_HSP_TEST);
++	reg |= HSP_TEST_SIDDQ;
++	writel(reg, regs_base + EXYNOS850_DRD_HSP_TEST);
++
++	/* Link reset */
++	reg = readl(regs_base + EXYNOS850_DRD_CLKRST);
++	reg |= CLKRST_LINK_SW_RST;
++	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
++	udelay(10); /* required before doing POR=low */
++	reg &= ~CLKRST_LINK_SW_RST;
++	writel(reg, regs_base + EXYNOS850_DRD_CLKRST);
++
++	clk_disable_unprepare(phy_drd->clk);
++
++	return 0;
++}
++
++static const struct phy_ops exynos850_usbdrd_phy_ops = {
++	.init		= exynos850_usbdrd_phy_init,
++	.exit		= exynos850_usbdrd_phy_exit,
++	.power_on	= exynos5_usbdrd_phy_power_on,
++	.power_off	= exynos5_usbdrd_phy_power_off,
++	.owner		= THIS_MODULE,
++};
++
+ static int exynos5_usbdrd_phy_clk_handle(struct exynos5_usbdrd_phy *phy_drd)
+ {
+ 	unsigned long ref_rate;
+@@ -782,6 +933,14 @@ static const struct exynos5_usbdrd_phy_config phy_cfg_exynos5[] = {
+ 	},
+ };
+ 
++static const struct exynos5_usbdrd_phy_config phy_cfg_exynos850[] = {
++	{
++		.id		= EXYNOS5_DRDPHY_UTMI,
++		.phy_isol	= exynos5_usbdrd_phy_isol,
++		.phy_init	= exynos850_usbdrd_utmi_init,
++	},
++};
++
+ static const struct exynos5_usbdrd_phy_drvdata exynos5420_usbdrd_phy = {
+ 	.phy_cfg		= phy_cfg_exynos5,
+ 	.phy_ops		= &exynos5_usbdrd_phy_ops,
+@@ -812,6 +971,13 @@ static const struct exynos5_usbdrd_phy_drvdata exynos7_usbdrd_phy = {
+ 	.has_common_clk_gate	= false,
+ };
+ 
++static const struct exynos5_usbdrd_phy_drvdata exynos850_usbdrd_phy = {
++	.phy_cfg		= phy_cfg_exynos850,
++	.phy_ops		= &exynos850_usbdrd_phy_ops,
++	.pmu_offset_usbdrd0_phy	= EXYNOS5_USBDRD_PHY_CONTROL,
++	.has_common_clk_gate	= true,
++};
++
+ static const struct of_device_id exynos5_usbdrd_phy_of_match[] = {
+ 	{
+ 		.compatible = "samsung,exynos5250-usbdrd-phy",
+@@ -825,6 +991,9 @@ static const struct of_device_id exynos5_usbdrd_phy_of_match[] = {
+ 	}, {
+ 		.compatible = "samsung,exynos7-usbdrd-phy",
+ 		.data = &exynos7_usbdrd_phy
++	}, {
++		.compatible = "samsung,exynos850-usbdrd-phy",
++		.data = &exynos850_usbdrd_phy
+ 	},
+ 	{ },
+ };
 -- 
 2.39.2
 
