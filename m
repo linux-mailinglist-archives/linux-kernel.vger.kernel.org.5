@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C0D7816BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFCE7816BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243869AbjHSCi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 22:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
+        id S244154AbjHSCjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 22:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235510AbjHSCiG (ORCPT
+        with ESMTP id S244117AbjHSCik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 22:38:06 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 829DB1BB;
-        Fri, 18 Aug 2023 19:38:03 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Cxh+gJK+BkYQ0aAA--.17781S3;
-        Sat, 19 Aug 2023 10:38:01 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM4IK+BkTRReAA--.33690S3;
-        Sat, 19 Aug 2023 10:38:00 +0800 (CST)
-Subject: Re: [PATCH v3 1/3] MIPS: Remove noreturn attribute for
- nmi_exception_handler()
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-References: <1692005246-18399-1-git-send-email-yangtiezhu@loongson.cn>
- <1692005246-18399-2-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2308180227580.8596@angie.orcam.me.uk>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <d2a56d80-d71c-30e5-c001-13aa503398f3@loongson.cn>
-Date:   Sat, 19 Aug 2023 10:38:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        Fri, 18 Aug 2023 22:38:40 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E143AAF;
+        Fri, 18 Aug 2023 19:38:39 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4106eb44e64so7405691cf.0;
+        Fri, 18 Aug 2023 19:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692412718; x=1693017518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JZwhCwjDtTWBjVB0IrnL1Vfvj4aOSGOZqsrM0tJ8VXU=;
+        b=nzmSWNYhIZKGfoBBbZn6xNLlQzWETNY8VMRRjojHTh4tqElvCO+mDkL4DgsLylrxRW
+         /KX3jVWQGAvKHpcfBgvYtJRnXTRVkIC0kC/v+EElN1ILwv4SIryRgRV/whqlpDdbvU4c
+         +PRRbRTMLImlBDAUJLCWUCLoZw0ftT/FL67Hu46ZHCRWkRGSckzRPsSngqfHSsP4GAu4
+         /DZhIi9mBFgSAKC50C/NzGEgw9t0BojdYZFhjqB1eT/7qugsMgY6z1039AryfLOOX06p
+         x4JLbieD+CJ82f9/4Dd/B3IM7/DoAXFYyPnPQ4iUa7FQfEQdmhiZd7j9ji+7CDD6h7HP
+         GbRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692412718; x=1693017518;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JZwhCwjDtTWBjVB0IrnL1Vfvj4aOSGOZqsrM0tJ8VXU=;
+        b=jnOY8g0VdnK1z2TP/UaXacRWPlybiX/SdP1kCEwoCYTSKo38LBD17PD+xEWHLCjGyk
+         +wsaH+pCnb7mnQxrUgQF6DdDs1Q6Z6OWVmsncbcDW6NwxuNwmos9ya1od3hGjPFKSRsK
+         l3tuQ6RGS/taGGloMyCRccW9tWRR0+XycJkXHFicKUuVeIG5nVQgpxgrnh28nj31mYlN
+         1zBaCTyLLW3s9GxHouiqP9zu6ExsquTEULxcGC1yTsN9rulFCgwdYnPwy/kAMjUofTx+
+         lYQ9jkv5mPOW4JAM7k3QmyIYOFtUpT/sU2mY2RZJXaAf2NhLTXU3+C+09KeuCtnpej/P
+         yWRw==
+X-Gm-Message-State: AOJu0YwjSfVBKOHNFKv8O7EgAEH/MahXF1bSA6RUcXZgGipJP7shkA4U
+        F5oi5coDbSmodw5lfiWInXkG6pQpEykolY33ycP53Puz6h2qa1m+
+X-Google-Smtp-Source: AGHT+IGj2Ut6HctwWBmQ1s5YsHe0+JQy/zocuAMLVSkSl2DcUmnSDdj0eL5V1fDaNl6oPJKSEbs/T3UHZfnACiN+KqU=
+X-Received: by 2002:a05:622a:309:b0:407:c2e2:2a06 with SMTP id
+ q9-20020a05622a030900b00407c2e22a06mr1421607qtw.8.1692412718074; Fri, 18 Aug
+ 2023 19:38:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2308180227580.8596@angie.orcam.me.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8CxvM4IK+BkTRReAA--.33690S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7ur1fZw1Duw1xGFWkWr1rAFc_yoW8Xw18pF
-        yFkFyDCr1qy3WF9an7Jrnag343Zrs7Ar4UtF1vqr90y3yjqwsakF4rKa40gF90gw1fK3Wj
-        qF48XwsIyryqyFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
-        AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
-        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
-        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUU
-        UUU==
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230807012654.55951-1-zhangshida@kylinos.cn> <20230817173123.GD2247938@mit.edu>
+In-Reply-To: <20230817173123.GD2247938@mit.edu>
+From:   Stephen Zhang <starzhangzsd@gmail.com>
+Date:   Sat, 19 Aug 2023 10:38:02 +0800
+Message-ID: <CANubcdW1z4QqDsHuuTqGxa_P40uG2s6LRk=pCkk_zL0TmJULrg@mail.gmail.com>
+Subject: Re: [PATCH] ext4: Modify the rec_len helpers to accommodate future cases
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhangshida@kylinos.cn,
+        Andreas Dilger <adilger@dilger.ca>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/18/2023 10:39 AM, Maciej W. Rozycki wrote:
-> On Mon, 14 Aug 2023, Tiezhu Yang wrote:
+Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2023=E5=B9=B48=E6=9C=8818=E6=97=A5=
+=E5=91=A8=E4=BA=94 01:31=E5=86=99=E9=81=93=EF=BC=9A
 >
->> In the later patch, we will remove noreturn attribute for die(), in order
->> to make each patch can be built without errors and warnings, just remove
->> noreturn attribute for nmi_exception_handler() earlier because it calls
->> die(), otherwise there exists the following build error after the later
->> patch:
+> On Mon, Aug 07, 2023 at 09:26:54AM +0800, zhangshida wrote:
+> > From: Shida Zhang <zhangshida@kylinos.cn>
+> >
+> > Following Andreas' suggestion, it is time to adapt these helpers
+> > to handle larger records during runtime, especially in preparation
+> > for the eventual support of ext4 with a block size greater than
+> > PAGE_SIZE.
 >
->  I find the wording a bit odd here, but you'll have to rewrite the change
-> description for the update requested below, so let's defer any style fixes
-> to v4.
+> Is there a reason for landing this now?  We don't have support for
+> block_size > PAGE_SIZE yet, and this patch doesn't come for free, at
+> least not systems with page_size < 64k.  These inline functions are
+> *very* hot and get used in a large number of places.  Have you looked
+> to see what it might do to text size of the ext4 code?  And whether
+> the expansion to the icache might actually impact performance on CPU
+> bound workloads with very large directories?
 >
->>   arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
+> I will note that there are some opportunities to optimize how often we
+> use ext4_rec_len_from_disk.  For example, it gets called from
+> ext4_check_dir_entry(), and often the callers of that function will
+> need the directory record length.  So having ext4_check_dir_entry()
+> optionally fill in the rec_len via a passed-in pointer might be
+> worthwhile.
+
+Yep, the best way to do it is to leave it unmerged until it is necessary.
+At the same time, I will try to eliminate these regression concerns based
+on these suggestions.
+
+Cheers,
+Shida
+
 >
->  Now that I've looked into it in detail, this change is incomplete and
-> will make the kernel go astray if `nmi_exception_handler' actually ever
-> does return.  See code in arch/mips/kernel/genex.S, which calls this
-> function and doesn't expect it to return.  It has to be fixed before 2/3
-> can be considered.  I wonder how you didn't catch it: you did check how
-> this code is used, didn't you?
+> Cheers,
 >
-
-I think the proper way is to keep the noreturn attribute for
-nmi_exception_handler(), and add a noreturn function BUG() at
-the end of nmi_exception_handler() to make sure it does not
-return.
-
->  Before submitting an updated version can you actually arrange for the
-> NOTIFY_STOP condition to happen in your lab and verify it is handled as
-> expected?  And what was the motivation for this code update, just a
-> hypothetical scenario?
-
-Yes, just a hypothetical scenario.
-
-Thanks,
-Tiezhu
-
+>                                                 - Ted
