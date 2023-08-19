@@ -2,147 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B019781820
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 09:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E12781827
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 09:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344456AbjHSHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 03:51:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47006 "EHLO
+        id S1344445AbjHSHyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 03:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344387AbjHSHvB (ORCPT
+        with ESMTP id S1344539AbjHSHyC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 03:51:01 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CE33C0A
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 00:50:59 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5257e2b5d12so1973692a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 00:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692431458; x=1693036258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c2oYh3TTzNeTuUfhfe9bLaXyjjwVpe2Z5um2bA3QDLw=;
-        b=Ch/ZUaVNG8SyNggdPRWr6YWdqOGZg9KmQXV1MOwzgEX3peRKUvPm3qzctqZUm9a0aI
-         kRC+/gGhtCI7g8sjK+u5t5Zk0SUw58alahFB0Vh9L0BkVu51DJXGCi208IAjV7KH8I6H
-         wcfu5b6Eoiv5q9qMtSJ58Ki4JqKywBtcrDcg9/aIZi2EV6bIO09rOVUEUw1yHvX4ckJ1
-         KQ1+WilUo9q+JN1bUn6h3xCKTIpamsMgNaeAZsem+BQjBXRQKXsThG6eYb0SDRwaH71v
-         6w0wHUTJoU31hTog5O+hcTHB73XgPmQW2CuEiparQvtfcMVERR/yEht/HeyGyyC1KU0W
-         2yAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692431458; x=1693036258;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c2oYh3TTzNeTuUfhfe9bLaXyjjwVpe2Z5um2bA3QDLw=;
-        b=Ob2me4nx5Mmbu8sbBrcjB9I1G1W00MwOXxoY306NtVPUU2lG129cRJpuIHi6UyGS9o
-         mzdM0gHzODXL5fSPDxXwwPqB221evNnd9XzZPNoDfJGRaTp96mpCIKewro2zW9L+7SeH
-         se6zAjTbwdf20Qx6q4QymbQve8u+O08yEu1BrPn6jQ62gln3/LYVvZKHaligHGFaPy91
-         P2KtsE+r2djA6/6m+QdVkGWuZFfV7KsuPUwlQdySqjLiFDX8HIz4ybSZfWDllKwZE0T8
-         aYRJp9ui379AehRqOzVDIQGkNnOq2Jx+knF/J8LxOR+QcVI1/OWh9NYcMa/Mus10dfXC
-         9u5g==
-X-Gm-Message-State: AOJu0YxhaVoi0OlSYFbDhCcLPBg07eOantMJYBmRfo8PRAHECJSgHe/S
-        EiN2UGcaMCpnj5EDXX/4umZS4g==
-X-Google-Smtp-Source: AGHT+IH5bBzz6oXjRhDT4zgMtjhALSUwRs/3e/TBQjpuXStR7NkNyoV3p/BdDFW1VR4ywleUSwPN7g==
-X-Received: by 2002:aa7:d6cc:0:b0:525:69c8:6f4f with SMTP id x12-20020aa7d6cc000000b0052569c86f4fmr1081908edr.23.1692431458128;
-        Sat, 19 Aug 2023 00:50:58 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id c22-20020aa7c756000000b00522572f323dsm2052775eds.16.2023.08.19.00.50.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 00:50:57 -0700 (PDT)
-Message-ID: <6f475c9b-dc0e-078e-9aa2-d876a1e02467@linaro.org>
-Date:   Sat, 19 Aug 2023 09:50:56 +0200
+        Sat, 19 Aug 2023 03:54:02 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F418A3C06;
+        Sat, 19 Aug 2023 00:54:00 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37J39Dw2032654;
+        Sat, 19 Aug 2023 07:53:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-03-30; bh=nTI8vH3S3FyfDJPkWLfcUdyZ5ckJ1JuWlZCVWTgr0c8=;
+ b=yNT1/V5kRDtgJTPv/xIpC5if6lEUUMxNKfPMEeGTDhH+if5646Y3LNKI+USP9HA4H6V6
+ uaFi6XymTc5y5o4eehPtMw4w1O5o7Pa/Qc9irqmCRu4l4BOEKoMCwGOTO01O2vtJb1u8
+ kT5vJoZCeyqe7YFr8O6dyMB7LeGlWCja6EzKFZZq/fFvYTIVzhNAirLFuAqutxXMXAdr
+ f/3wNUNEINNobQ6u4pUsi9Lca4NaReGwBR+Yx/3UZ5jG/mb8jRXsw08TXNiidS6pwqBr
+ MGpoMCxTdIFWNP7GSABxb4XoJ5rq/5jkTbbLhOwy+Jr3NRLwUM8GaXiOscJg11zDy5B5 gw== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3sjmnc0905-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Aug 2023 07:53:47 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 37J7Al7i029822;
+        Sat, 19 Aug 2023 07:53:46 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3sjm686xyh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Aug 2023 07:53:46 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37J7rj5r001073;
+        Sat, 19 Aug 2023 07:53:45 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3sjm686xyc-1;
+        Sat, 19 Aug 2023 07:53:45 +0000
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To:     stable@vger.kernel.org
+Cc:     vegard.nossum@oracle.com, Namjae Jeon <linkinjeon@kernel.org>,
+        Yuezhang Mo <Yuezhang.Mo@sony.com>,
+        Maxim Suhanov <dfirblog@gmail.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5.15.y] exfat: check if filename entries exceeds max filename length
+Date:   Sat, 19 Aug 2023 00:53:37 -0700
+Message-ID: <20230819075337.3270182-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1691049436.git.quic_gurus@quicinc.com>
- <20230810185526.GC31860@quicinc.com>
- <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
- <20230816171538.GB26279@quicinc.com>
- <6fb1176f-90f1-7a65-3ab5-f6447418c51e@linaro.org>
- <20230818194609.GA1428172@hu-bjorande-lv.qualcomm.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230818194609.GA1428172@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-19_06,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
+ bulkscore=0 malwarescore=0 mlxscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308190073
+X-Proofpoint-GUID: soWY6qcE-5vd3d2QtAZKDXD8gjoZaaV3
+X-Proofpoint-ORIG-GUID: soWY6qcE-5vd3d2QtAZKDXD8gjoZaaV3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 21:46, Bjorn Andersson wrote:
->>>
->>> With this script, the workflow would be as simple as:
->>>
->>>   1. Generate patches using `git format-patch`
->>>   2. Run `add-maintainer.py` on the above patches
->>>   3. `git send-email` the patches.
->>
->> So one more unnecessary step (2). I don't think it is easier than my
->> workflow.
->>
->> I just do only 1 and 3 and that's it. The simplest way ever.
->>
-> 
-> There's no get_maintainer.pl in either 1, or 3, so obviously this isn't
-> the only thing you do.
-> 
-> Thanks for the link to your alias below, it's now clear that you don't
-> need an extra step in the procedure, if you only have your extra wrapper
-> around step 3.
-> 
-> 
-> I now also understand why you never ever have a cover-letter, something
-> Guru's proposed flow handles quite nicely.
+From: Namjae Jeon <linkinjeon@kernel.org>
 
-It's not related. I usually don't create cover letter from laziness, but
-pretty often I create them as well and my script/alias works there
-perfectly. Cover letter is just one more step:
-1. git branch --edit-description
-2. git format-patch --cover-letter (with format.coverFromDescription =
-subject in gitconfig)
-3. git_send_email 0*
+[ Upstream commit d42334578eba1390859012ebb91e1e556d51db49 ]
 
-No need to run any other tool, no need to add any maintainer entries
-(unless touching defconfig and specific soc@ stuff, but this is always
-the case regardless of tools).
+exfat_extract_uni_name copies characters from a given file name entry into
+the 'uniname' variable. This variable is actually defined on the stack of
+the exfat_readdir() function. According to the definition of
+the 'exfat_uni_name' type, the file name should be limited 255 characters
+(+ null teminator space), but the exfat_get_uniname_from_ext_entry()
+function can write more characters because there is no check if filename
+entries exceeds max filename length. This patch add the check not to copy
+filename characters when exceeding max filename length.
 
-Really, that script proposed here is the unnecessary step.
+Cc: stable@vger.kernel.org
+Cc: Yuezhang Mo <Yuezhang.Mo@sony.com>
+Reported-by: Maxim Suhanov <dfirblog@gmail.com>
+Reviewed-by: Sungjong Seo <sj1557.seo@samsung.com>
+Signed-off-by: Namjae Jeon <linkinjeon@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[Harshit: backport to 5.15.y]
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+The conflict resolved patch for 6.1.y applies cleanly to 5.15.y as
+well.
+Note: This fix is already present in 5.10.y but missing in 5.15.y
+---
+ fs/exfat/dir.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Rob's approach with git send-email identity required some work for
-cover-letter, but it was also running get_maintainer.pl per each patch,
-so recipients did not receive everything. Unless patchset is big, I
-prefer to send everything to everyone.
-
-> 
-> 
-> That said, b4 prep and b4 send seems like a better suggestion to those
-> who doesn't already have a workflow in place.
-
-Yes.
-
-
-Best regards,
-Krzysztof
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index 8475a8653c3a..f6dd4fc8eaf4 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -34,6 +34,7 @@ static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
+ {
+ 	int i;
+ 	struct exfat_entry_set_cache *es;
++	unsigned int uni_len = 0, len;
+ 
+ 	es = exfat_get_dentry_set(sb, p_dir, entry, ES_ALL_ENTRIES);
+ 	if (!es)
+@@ -52,7 +53,10 @@ static void exfat_get_uniname_from_ext_entry(struct super_block *sb,
+ 		if (exfat_get_entry_type(ep) != TYPE_EXTEND)
+ 			break;
+ 
+-		exfat_extract_uni_name(ep, uniname);
++		len = exfat_extract_uni_name(ep, uniname);
++		uni_len += len;
++		if (len != EXFAT_FILE_NAME_LEN || uni_len >= MAX_NAME_LENGTH)
++			break;
+ 		uniname += EXFAT_FILE_NAME_LEN;
+ 	}
+ 
+@@ -1032,7 +1036,8 @@ int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
+ 			if (entry_type == TYPE_EXTEND) {
+ 				unsigned short entry_uniname[16], unichar;
+ 
+-				if (step != DIRENT_STEP_NAME) {
++				if (step != DIRENT_STEP_NAME ||
++				    name_len >= MAX_NAME_LENGTH) {
+ 					step = DIRENT_STEP_FILE;
+ 					continue;
+ 				}
+-- 
+2.34.1
 
