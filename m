@@ -2,102 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7228E7819A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7070F7819A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232679AbjHSNH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 09:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
+        id S232603AbjHSNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 09:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232488AbjHSNH0 (ORCPT
+        with ESMTP id S232438AbjHSNHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 09:07:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E123B1B33A
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692450284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=44t+slypeaFqQqg1YfQ+1N3czVzY0JoGqBhiZJtua2M=;
-        b=Gvv0k3hR6e7A9OKO9Y/G3apd4uax4ucU311Zj7MHInsWqwYwoXcmXX68igKcwAsHMWbfoi
-        ZmmQUSqZmBmxSXc5zwdVf6aR1chOvphgMxjwy1ybENZ3HETaoBn1tmoloqh1jwVqr1spSF
-        C/4UPNEmkz6jqlxYjnlOuBX2VPObjDg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-141-jSEZ7sAUNXaqrfFwWEhtYw-1; Sat, 19 Aug 2023 09:04:39 -0400
-X-MC-Unique: jSEZ7sAUNXaqrfFwWEhtYw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B8A7C185A78F;
-        Sat, 19 Aug 2023 13:04:38 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A102D5CBFF;
-        Sat, 19 Aug 2023 13:04:36 +0000 (UTC)
-Date:   Sat, 19 Aug 2023 21:04:33 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>, eric.devolder@oracle.com
-Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, sourabhjain@linux.ibm.com, hbathini@linux.ibm.com
-Subject: Re: [BUG resend next-20230818] error: 'prepare_elf_headers' defined
- but not used
-Message-ID: <ZOC94WelqfS0vsFK@MiWiFi-R3L-srv>
-References: <08fc20ef-854d-404a-b2f2-75941eeeccf8@paulmck-laptop>
- <4a991983-da2e-4fcd-965c-5b65de6700da@paulmck-laptop>
+        Sat, 19 Aug 2023 09:07:38 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760961E2F0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:06:41 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99cdb0fd093so240424666b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692450400; x=1693055200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rHDDd/fo4FzFy4JxsCF4FnZo7ypY9WWX/ip25zUd2DE=;
+        b=TS2k2khJrVzHYVVoqjpw36ahhdErsQv8ZsZr3TdH8KKu1CLB4CsNyMSgpy737ci+Sv
+         q+KrpKd/uCNWMwakXLpOz67RuTA1AKVl4DzaHdPEP756WrixnLBydXfaC5MykNz5vBeO
+         w32gFm4WPSTn/15QpKpq3iWb65M1BoOm7UWfMxV3PpySJyUewKJ61BcgnMMS35zg+XLb
+         mb48D/R7GRYFegb750WN+He+C6cn/FBMw2G6IxsMzI8v6OgyEbdMwo7SHbj+7furDB9m
+         Cs64hn14OGl40GqMUgThUp40Qq8We4GFPiZP4g36vLwcwruU0Pq5M7tveBET+yLmZyRC
+         Pyew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692450400; x=1693055200;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rHDDd/fo4FzFy4JxsCF4FnZo7ypY9WWX/ip25zUd2DE=;
+        b=fzHwHag1HZPxIzx0labu/rUQWoxR9xHgGmcrtynedwmV3oAeANkBaEvg0DBJOZdD8L
+         4jrjpKIQDl9hcalROrz8G/6rY6XYqKCQtCOJriGldxdB1VLdvUcG7kMmKZCA8vsu5ZR4
+         4egzJhyiJWzSbpl22DeHG4vw9EicZG2LiR0LzwU+uqsLaud1Ko7F8j831ADVz3cx7lct
+         vJyAAlQKDQLzMqpl09h/LYFpxGB4LuSW8EORRWR/GjQCPSYUwfPocKYCqjecyjAON1Ra
+         dNKXgZCrMPvna5dY8rNBcN91IWXo70pHi60BDmGLxxmL+lhNOJnop8Hl2lrLoKiLDNP8
+         coQQ==
+X-Gm-Message-State: AOJu0YwZmM7dXpLyFTDU73DwAugs9q0LIBmfn/lphSaV7EEdaRkzjRj+
+        nSyXuR8f31VWslhWOCc02NE2CQ==
+X-Google-Smtp-Source: AGHT+IFmIuGKAoOzk4W6WrGdbIVA9nfaf1Vt+Us6IpXHHQEoV0jgC2iViYKTYGpTLxfiNXcnvSBOHQ==
+X-Received: by 2002:a17:906:76d8:b0:982:c8d0:683f with SMTP id q24-20020a17090676d800b00982c8d0683fmr1528256ejn.18.1692450400016;
+        Sat, 19 Aug 2023 06:06:40 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id v8-20020a17090606c800b0099d959f9536sm2747401ejb.12.2023.08.19.06.06.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Aug 2023 06:06:39 -0700 (PDT)
+Message-ID: <2de9f105-c785-4933-4a0f-c8bc73c63b87@linaro.org>
+Date:   Sat, 19 Aug 2023 15:06:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a991983-da2e-4fcd-965c-5b65de6700da@paulmck-laptop>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH RFC v2 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
+ TH1520 support
+Content-Language: en-US
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>
+References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
+ <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
+ <ca0b9a19-d7d7-80e5-f47e-f74615cdac86@linaro.org> <ZN1NBE2+HHfatQ/T@x1>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <ZN1NBE2+HHfatQ/T@x1>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/18/23 at 07:28pm, Paul E. McKenney wrote:
-> Hello!
+On 17/08/2023 00:26, Drew Fustini wrote:
+> On Mon, Aug 07, 2023 at 08:29:21AM +0200, Krzysztof Kozlowski wrote:
+>> On 05/08/2023 05:14, Drew Fustini wrote:
+>>> Add compatible value for the T-Head TH1520 dwcmshc controller and
+>>> thead,io-fixed-1v8 and thead,pull-up properties.
+>>>
+>>> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 9 +++++++++
+>>>  1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>>> index a43eb837f8da..57602c345cab 100644
+>>> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>>> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>>> @@ -19,6 +19,7 @@ properties:
+>>>        - rockchip,rk3568-dwcmshc
+>>>        - rockchip,rk3588-dwcmshc
+>>>        - snps,dwcmshc-sdhci
+>>> +      - thead,th1520-dwcmshc
+>>>  
+>>>    reg:
+>>>      maxItems: 1
+>>> @@ -60,6 +61,14 @@ properties:
+>>>      description: Specify the number of delay for tx sampling.
+>>>      $ref: /schemas/types.yaml#/definitions/uint8
+>>>  
+>>> +  thead,io-fixed-1v8:
+>>> +    description: SoC PHY pad is fixed 1.8V
+>>> +    type: boolean
+>>
+>> Isn't this duplicating existing properties for MMC modes with 1.8 V?
 > 
-> This morning's rcutorture testing on next-20230818 complained about
-> prepare_elf_headers() being defined but unused on several rcutorture
-> scenarios.  The patch below makes rcutorture happy, but might or might
-> not be a proper fix.
+> Thank you for reviewing. Yes, now that you mention it, I do see those
+> properties now in mmc-controller.yaml. It seems like the existing
+> mmc-ddr-1_8v property would be appropriate.
 > 
-> This is a resend adding a few more people on CC, given a possible
-> relationship to 9f1f399ca999 ("x86/crash: add x86 crash hotplug support").
+>>
+>>> +
+>>> +  thead,pull-up:
+>>> +    description: True if pull-up, false if pull-down
+>>
+>> This explains me nothing. No clue what you are pulling and why do you
+>> need it. Pin pulls should be done via pin controller, not MMC.
 > 
-> Thoughts?
+> Good point that my description is not helpful. The pull-up property
+> determines whether certain phy registers are written to. I need to try
+> to can get documentation on the phy so that I can better understand the
+> details of the pull-up configuration in the phy registers.
 > 
+>>
+>> Anyway you should have here allOf:if:then (move the allOf: from top to
+>> behind "required:") which will disallow these properties for other variants.
+> 
+> I noticed that nvidia,tegra20-sdhci.yaml has several lines related to
+> pull-up/down configuration:
+> 
+> 218   - if:
+> 219       properties:
+> 220         compatible:
+> 221           contains:
+> 222             const: nvidia,tegra210-sdhci
+> 223     then:
+> 224       properties:
+> 225         pinctrl-names:
+> 226           oneOf:
+> 227             - items:
+> 228                 - const: sdmmc-3v3
+> 229                   description: pad configuration for 3.3 V
+> 230                 - const: sdmmc-1v8
+> 231                   description: pad configuration for 1.8 V
+> 232                 - const: sdmmc-3v3-drv
+> 233                   description: pull-up/down configuration for 3.3 V
+> 234                 - const: sdmmc-1v8-drv
+> 235                   description: pull-up/down configuration for 1.8 V
+> 236             - items:
+> 237                 - const: sdmmc-3v3-drv
+> 238                   description: pull-up/down configuration for 3.3 V
+> 239                 - const: sdmmc-1v8-drv
+> 240                   description: pull-up/down configuration for 1.8 V
+> 241             - items:
+> 242                 - const: sdmmc-1v8-drv
+> 243                   description: pull-up/down configuration for 1.8 V
+> 
+> Do you think creating something like that would be a good approach?
 
-Thanks for reporting this, Paul.
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-> index 1d0f824559fce..926c39e22387b 100644
-> --- a/arch/x86/kernel/crash.c
-> +++ b/arch/x86/kernel/crash.c
-> @@ -127,7 +127,8 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
->  	crash_save_cpu(regs, safe_smp_processor_id());
->  }
->  
-> -#if defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)
-> +#if (defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)) && defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
+This depends. Does your driver implementation will make use of it? If
+yes, then it makes sense.
 
-Hi Eric,
-
-Now prepare_elf_headers() is needed for kexec_file_load and crash
-hotplug support of kexec_load, change it like this?
-
-#if defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_HOTPLUG)
+Best regards,
+Krzysztof
 
