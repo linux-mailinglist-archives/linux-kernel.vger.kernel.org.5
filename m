@@ -2,40 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129F8781903
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD73781909
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjHSKnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        id S230289AbjHSKnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjHSKmo (ORCPT
+        with ESMTP id S231665AbjHSKnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:42:44 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F7246734;
-        Sat, 19 Aug 2023 03:22:25 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vq53wpY_1692440537;
-Received: from localhost.localdomain(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vq53wpY_1692440537)
-          by smtp.aliyun-inc.com;
-          Sat, 19 Aug 2023 18:22:19 +0800
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-To:     catalin.marinas@arm.com, will@kernel.org,
-        James.Bottomley@HansenPartnership.com, deller@gmx.de,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Subject: [PATCH] HWPOISON: add a pr_err message when forcibly send a sigbus
-Date:   Sat, 19 Aug 2023 18:22:12 +0800
-Message-Id: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 19 Aug 2023 06:43:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD8649303;
+        Sat, 19 Aug 2023 03:26:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A56FA602E2;
+        Sat, 19 Aug 2023 10:26:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92CE6C433C7;
+        Sat, 19 Aug 2023 10:26:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692440776;
+        bh=Kriub9SChhgOzXQ4vf2OlbcqHqfEVe40noLKWwwtcBA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LEmSj0343j7QKyGwCVSxsldxuh+LkW/wbX2vCSO5fekicWYIMzSHo1yCEbCq0aA7b
+         kVW/a8H2jF7iu13U2gjKm4PcObyEcTjO5+WDRwXI2nHmKjgBnslKQibFDFCo3nN+q6
+         5oQCaXeEseuYfR/IbmwnlWeRzNiKRYV/SEZ3+uiY=
+Date:   Sat, 19 Aug 2023 12:26:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Wei Liu <wei.liu@kernel.org>
+Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v2 13/15] uapi: hyperv: Add mshv driver headers hvhdk.h,
+ hvhdk_mini.h, hvgdk.h, hvgdk_mini.h
+Message-ID: <2023081923-crown-cake-79f7@gregkh>
+References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1692309711-5573-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZN6m2gVmtVStuEfA@liuwe-devbox-debian-v2>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,66 +65,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a process tries to access a page that is already offline, the
-kernel will send a sigbus signal with the BUS_MCEERR_AR code. This
-signal is typically handled by a registered sigbus handler in the
-process. However, if the process does not have a registered sigbus
-handler, it is important for end users to be informed about what
-happened.
+On Thu, Aug 17, 2023 at 11:01:46PM +0000, Wei Liu wrote:
+> On Thu, Aug 17, 2023 at 03:01:49PM -0700, Nuno Das Neves wrote:
+> > Containing hypervisor ABI definitions to use in mshv driver.
+> > 
+> > Version numbers for each file:
+> > hvhdk.h		25212
+> > hvhdk_mini.h	25294
+> > hvgdk.h		25125
+> > hvgdk_mini.h	25294
+> > 
+> > These are unstable interfaces and as such must be compiled independently
+> > from published interfaces found in hyperv-tlfs.h.
+> > 
+> > These are in uapi because they will be used in the mshv ioctl API.
+> > 
+> > Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+> > Acked-by: Wei Liu <wei.liu@kernel.org>
+> 
+> There were some concerns raised internally about the stability of the
+> APIs when they are put into UAPI.
+> 
+> I think this is still okay, for a few reasons:
+> 
+>   1. When KVM was first introduced into the kernel tree, it was
+>      experimental. It was only made stable after some time.
+>   2. There are other experimental or unstable APIs in UAPI. They
+>      are clearly marked so.
+>   3. The coda file system, which has been in tree since 2008, has a
+>      header file in UAPI which clearly marks as experimental.
+> 
+> All in all introducing a set of unstable / experimental APIs under UAPI
+> is not unheard of. Rules could've changed now, but I don't find any
+> document under Documentation/.
+> 
+> I think it will be valuable to have this driver in tree sooner rather
+> than later, so that it can evolve with Linux kernel, and we can in turn
+> go back to the hypervisor side to gradually stabilize the APIs.
+> 
+> Greg, I'm told that you may have a strong opinion in this area. Please
+> let me know what you think about this.
 
-To address this, add an error message similar to those implemented on
-the x86, powerpc, and parisc platforms.
+My "strong" opinion is the one kernel development rule that we have,
+"you can not break userspace".  So, if you change these
+values/structures/whatever in the future, and userspace tools break,
+that's not ok and the changes have to be reverted.
 
-Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
----
- arch/arm64/mm/fault.c  | 2 ++
- arch/parisc/mm/fault.c | 5 ++---
- arch/x86/mm/fault.c    | 3 +--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+If you can control both sides of the API here (with open tools that you
+can guarantee everyone will always update to), then yes, you can change
+the api in the future.
 
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 3fe516b32577..38e2186882bd 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -679,6 +679,8 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
- 	} else if (fault & (VM_FAULT_HWPOISON_LARGE | VM_FAULT_HWPOISON)) {
- 		unsigned int lsb;
- 
-+		pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
-+		       current->comm, current->pid, far);
- 		lsb = PAGE_SHIFT;
- 		if (fault & VM_FAULT_HWPOISON_LARGE)
- 			lsb = hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
-diff --git a/arch/parisc/mm/fault.c b/arch/parisc/mm/fault.c
-index a4c7c7630f48..6b096b47e149 100644
---- a/arch/parisc/mm/fault.c
-+++ b/arch/parisc/mm/fault.c
-@@ -395,9 +395,8 @@ void do_page_fault(struct pt_regs *regs, unsigned long code,
- #ifdef CONFIG_MEMORY_FAILURE
- 		if (fault & (VM_FAULT_HWPOISON|VM_FAULT_HWPOISON_LARGE)) {
- 			unsigned int lsb = 0;
--			printk(KERN_ERR
--	"MCE: Killing %s:%d due to hardware memory corruption fault at %08lx\n",
--			tsk->comm, tsk->pid, address);
-+			pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %08lx\n",
-+				tsk->comm, tsk->pid, address);
- 			/*
- 			 * Either small page or large page may be poisoned.
- 			 * In other words, VM_FAULT_HWPOISON_LARGE and
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index e8711b2cafaf..7266509cca54 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -962,8 +962,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- 		struct task_struct *tsk = current;
- 		unsigned lsb = 0;
- 
--		pr_err(
--	"MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
-+		pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
- 			tsk->comm, tsk->pid, address);
- 		if (fault & VM_FAULT_HWPOISON_LARGE)
- 			lsb = hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
--- 
-2.39.3
+It's really really hard to make a stable api the first time around, but
+we have "tricks" for how to do it well, and ensure that you can slowly
+change it over time (proper use of flags and zero-checked padding), but
+almost always the simplest way is to just add new apis and keep
+supporting the old ones by internally calling the new functions instead.
 
+So, what do you think will change here in the future and why can't you
+say "this is stable" now?  You have working userspace code for this api,
+right?  What is left to be developed for it?
+
+thanks,
+
+greg k-h
