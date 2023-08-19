@@ -2,191 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D558781690
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B4B78168F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbjHSCEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 22:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
+        id S243647AbjHSCFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 22:05:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243614AbjHSCDs (ORCPT
+        with ESMTP id S243661AbjHSCFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 22:03:48 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFE4421E
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:03:46 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40fe9c38800so9902621cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:03:46 -0700 (PDT)
+        Fri, 18 Aug 2023 22:05:24 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58B54220
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:05:22 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bf3a2f44ffso10154205ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:05:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692410626; x=1693015426;
+        d=gmail.com; s=20221208; t=1692410722; x=1693015522;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ge4vs6S3mMj3DmqkDgD4zHVDF/KT+E9LoxSZv9SIUzY=;
-        b=VARY436CEZaIAAVHBo8vHhRNc1uI8FcKFzexcLbi/VLWfucOUnkPI0RoEatixybcD6
-         h8NcJKHfYInwzQ3z+LQg4Ku8ZQ9ouOOH13XedzxzuOG85CFsvy3OVDlwNss9BX6JP0LX
-         obPmD6I7SzQGLSjLj7nxOE2PgQG1Syo7SBvAL0Kxfnjtz0YxeBWngXWq6fs9Eux0S8+d
-         J35VO6thB3cU22Awb77df1dKOTsXriB9dxa1mcKXHYHxw84cwYZYn1koTkSy165dwIWx
-         GilVekWZrDzDMHw5RaviBQMxErwMkSJxug531iMAaPdSoFFiO6YuWppxRelWyhs8g/tp
-         zj/w==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7lIiAENxS7E0msBmGFoE0fFcvtkMqskWyHDf4YDvmuw=;
+        b=fQTSHUqQI6PdDl3+8y24gdPneRWdTcnZqiuv+WnZNS4hbR1lo7HcMpqnfjpbL3x01q
+         Ban3d/Rv7kFXB9nn91nLU93rkOr+IXuAnrFdodI4sY/IDAJhDOoGxwm3f8jD6+o6xsmF
+         7bcp4IidoBo3/AjhUHfZA4TVinIkNBR9dCv6sZCIFfwj0wSdtIhuSrEAKiXUWI7EJS2O
+         BJVvAwwz2ZzdjL+rMCS2ohu2U6mE+86oIv7MdkMlMU9pw6/NoJ+gUYfmtKj9B3Djv9xu
+         5XTJoOV842ubB/wsN2du4EiP/W/w8sPsuqShFG6C+MFkgEMTEl2twyIaaxCHTPAA/e0e
+         lT6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692410626; x=1693015426;
+        d=1e100.net; s=20221208; t=1692410722; x=1693015522;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ge4vs6S3mMj3DmqkDgD4zHVDF/KT+E9LoxSZv9SIUzY=;
-        b=J3ZsonEvTdnygLwuPHsE4uoiqAYi5N2bTti3XgTKXveIDeOO/9UbpJh/g8DOknV+9j
-         Mgy0gXSUDgdogaRAhm/5cHAUPCCv4wFXwyfQePhvyhGJ48eb0QDu7JaxnF+mQi8MQAT+
-         cHpylKAI3YAJEfW+r2AMDZ7WlRPZaMHJ6UVbZJi29BIFBKyv9fCghsSiHIvH5pLzyfmh
-         1jVSYHPBooeunU3zhPgEBVKQM8tgsFm21D0xKexFhi7M3+HQehGrHe0J+8yZZfTp7ot5
-         xb8YWT+AvmojKYwSQDSIfWyDk53ubaIlCjMKMQmvCEVEf1C45YRD8TxVoOvQHhOlFk7k
-         LZ+g==
-X-Gm-Message-State: AOJu0Yx/g1kremGsJO1a2xjzl9od/uGg2114Br8L1jZirOIrTcioe3WC
-        RUP3iiWDtpk1I3t/NvvTiJ1zQzoTCrw=
-X-Google-Smtp-Source: AGHT+IEGSNi02gFwnTGk1CMF4vINpSx68mSixnPS6/cWgtuMDDtLTS/Geq09Cz/GsZflrUAtxrGMZQ==
-X-Received: by 2002:ac8:5f85:0:b0:401:e1e7:a291 with SMTP id j5-20020ac85f85000000b00401e1e7a291mr1274223qta.22.1692410625807;
-        Fri, 18 Aug 2023 19:03:45 -0700 (PDT)
-Received: from localhost ([32.218.242.113])
-        by smtp.gmail.com with ESMTPSA id g8-20020ac87748000000b0040324785e4csm883422qtu.13.2023.08.18.19.03.45
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7lIiAENxS7E0msBmGFoE0fFcvtkMqskWyHDf4YDvmuw=;
+        b=NEBUSsgvrISlopqWwLhUxtHRKIH01PgfamRMvoD9h9fO0Rwf1uUzclHrvL2+ZcvS2P
+         9dy43aPaeeyNaDYHzDrXwDnqytflsOUZVAyGXelYmhP3cFJR873UcgUlEMdY8FAb9a24
+         Jd2Lb/5tmzrdLFjRaWxfAQfOaD0s5yfqMdgktR/VEOeKCdFtjAa7WkwT8J5qs7nBiCA5
+         jlPk6QYS062SAsjbvipkAwxS+2jggTbSQ/0V0zFADN1EM93mtyiPOpJc1pfWuURFkaWg
+         7XFh1iFVlqvKi/9StpF5qldCl8LU8Lm1plfWHjcHe8soK4zWy0dz+qeSMd0AoVnAfhb1
+         9Org==
+X-Gm-Message-State: AOJu0Yzs/csb8hKJW41BNcW4KRkElWfNnSorbxxDiNTLN5QTfcgMonnQ
+        HpanbUqVnyOzkeGbGqack5k=
+X-Google-Smtp-Source: AGHT+IEJqWchVD/KNu4Dr1UcBUu/uzoDromwRCHg6bLo6OALxgJKwLIxyXSM3GimtBfPASD3L6uzQA==
+X-Received: by 2002:a17:903:234e:b0:1bd:aeb3:9504 with SMTP id c14-20020a170903234e00b001bdaeb39504mr971938plh.15.1692410722167;
+        Fri, 18 Aug 2023 19:05:22 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c11500b001bc930d4517sm2436747pli.42.2023.08.18.19.05.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Aug 2023 19:03:45 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 19:03:44 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+        Fri, 18 Aug 2023 19:05:21 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 18 Aug 2023 19:05:20 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
-Message-ID: <ZOAi9PB6+/p4orRN@yury-ThinkPad>
-References: <20230815235934.47782-1-yury.norov@gmail.com>
- <ZN3qQPeFtdZQrLE4@smile.fi.intel.com>
- <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
- <ZN4tB7jkQrX/TKnh@yury-ThinkPad>
- <ZN4+nZwBu317dVjz@smile.fi.intel.com>
+        linux-f2fs-devel@lists.sourceforge.net,
+        syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com
+Subject: Re: [f2fs-dev] [PATCH] f2fs: avoid false alarm of circular locking
+Message-ID: <30da1d43-d15d-4f8e-a36f-73428328d91c@roeck-us.net>
+References: <20230819003012.3473675-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZN4+nZwBu317dVjz@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230819003012.3473675-1-jaegeuk@kernel.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 06:37:01PM +0300, Andy Shevchenko wrote:
-> On Thu, Aug 17, 2023 at 07:21:59AM -0700, Yury Norov wrote:
-> > On Thu, Aug 17, 2023 at 12:38:28PM +0300, Andy Shevchenko wrote:
-> > > On Thu, Aug 17, 2023 at 12:37:05PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, Aug 15, 2023 at 04:59:34PM -0700, Yury Norov wrote:
+On Fri, Aug 18, 2023 at 05:30:12PM -0700, Jaegeuk Kim wrote:
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 6.5.0-rc5-syzkaller-00353-gae545c3283dc #0 Not tainted
+> ------------------------------------------------------
+> syz-executor273/5027 is trying to acquire lock:
+> ffff888077fe1fb0 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
+> ffff888077fe1fb0 (&fi->i_sem){+.+.}-{3:3}, at: f2fs_add_inline_entry+0x300/0x6f0 fs/f2fs/inline.c:644
 > 
-> ...
+> but task is already holding lock:
+> ffff888077fe07c8 (&fi->i_xattr_sem){.+.+}-{3:3}, at: f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
+> ffff888077fe07c8 (&fi->i_xattr_sem){.+.+}-{3:3}, at: f2fs_add_dentry+0x92/0x230 fs/f2fs/dir.c:783
 > 
-> > > > >  		int n = bitmap_pos_to_ord(old, oldbit, nbits);
-> > > > >  
-> > > > > +		bit = (n < 0) ? oldbit :	/* identity map */
-> > > > 
-> > > > Can't you also optimize this case?
-> > > > 
-> > > > Something like
-> > > > 
-> > > >   bitmap_xor(tmp, old, new) // maybe even better approach, dunno
-> > > 
-> > > >   bitmap_empty(tmp) // can be replaced by find first bit
-> > > 
-> > > Or reuse bitmap_weight()...
-> > 
-> > That way it wouldn't work,
+> which lock already depends on the new lock.
 > 
-> Why not? AFAIU there are two cases when we may copy:
-> 1) the new mapping is empty;
-> 2) the old == new.
+> the existing dependency chain (in reverse order) is:
 > 
-> The other cases we need to remap.
+> -> #1 (&fi->i_xattr_sem){.+.+}-{3:3}:
+>        down_read+0x9c/0x470 kernel/locking/rwsem.c:1520
+>        f2fs_down_read fs/f2fs/f2fs.h:2108 [inline]
+>        f2fs_getxattr+0xb1e/0x12c0 fs/f2fs/xattr.c:532
+>        __f2fs_get_acl+0x5a/0x900 fs/f2fs/acl.c:179
+>        f2fs_acl_create fs/f2fs/acl.c:377 [inline]
+>        f2fs_init_acl+0x15c/0xb30 fs/f2fs/acl.c:420
+>        f2fs_init_inode_metadata+0x159/0x1290 fs/f2fs/dir.c:558
+>        f2fs_add_regular_entry+0x79e/0xb90 fs/f2fs/dir.c:740
+>        f2fs_add_dentry+0x1de/0x230 fs/f2fs/dir.c:788
+>        f2fs_do_add_link+0x190/0x280 fs/f2fs/dir.c:827
+>        f2fs_add_link fs/f2fs/f2fs.h:3554 [inline]
+>        f2fs_mkdir+0x377/0x620 fs/f2fs/namei.c:781
+>        vfs_mkdir+0x532/0x7e0 fs/namei.c:4117
+>        do_mkdirat+0x2a9/0x330 fs/namei.c:4140
+>        __do_sys_mkdir fs/namei.c:4160 [inline]
+>        __se_sys_mkdir fs/namei.c:4158 [inline]
+>        __x64_sys_mkdir+0xf2/0x140 fs/namei.c:4158
+>        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>        entry_SYSCALL_64_after_hwframe+0x63/0xcd
 > 
-> The case 2) is easy with xor and weight.
+> -> #0 (&fi->i_sem){+.+.}-{3:3}:
+>        check_prev_add kernel/locking/lockdep.c:3142 [inline]
+>        check_prevs_add kernel/locking/lockdep.c:3261 [inline]
+>        validate_chain kernel/locking/lockdep.c:3876 [inline]
+>        __lock_acquire+0x2e3d/0x5de0 kernel/locking/lockdep.c:5144
+>        lock_acquire kernel/locking/lockdep.c:5761 [inline]
+>        lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+>        down_write+0x93/0x200 kernel/locking/rwsem.c:1573
+>        f2fs_down_write fs/f2fs/f2fs.h:2133 [inline]
+>        f2fs_add_inline_entry+0x300/0x6f0 fs/f2fs/inline.c:644
+>        f2fs_add_dentry+0xa6/0x230 fs/f2fs/dir.c:784
+>        f2fs_do_add_link+0x190/0x280 fs/f2fs/dir.c:827
+>        f2fs_add_link fs/f2fs/f2fs.h:3554 [inline]
+>        f2fs_mkdir+0x377/0x620 fs/f2fs/namei.c:781
+>        vfs_mkdir+0x532/0x7e0 fs/namei.c:4117
+>        ovl_do_mkdir fs/overlayfs/overlayfs.h:196 [inline]
+>        ovl_mkdir_real+0xb5/0x370 fs/overlayfs/dir.c:146
+>        ovl_workdir_create+0x3de/0x820 fs/overlayfs/super.c:309
+>        ovl_make_workdir fs/overlayfs/super.c:711 [inline]
+>        ovl_get_workdir fs/overlayfs/super.c:864 [inline]
+>        ovl_fill_super+0xdab/0x6180 fs/overlayfs/super.c:1400
+>        vfs_get_super+0xf9/0x290 fs/super.c:1152
+>        vfs_get_tree+0x88/0x350 fs/super.c:1519
+>        do_new_mount fs/namespace.c:3335 [inline]
+>        path_mount+0x1492/0x1ed0 fs/namespace.c:3662
+>        do_mount fs/namespace.c:3675 [inline]
+>        __do_sys_mount fs/namespace.c:3884 [inline]
+>        __se_sys_mount fs/namespace.c:3861 [inline]
+>        __x64_sys_mount+0x293/0x310 fs/namespace.c:3861
+>        do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>        do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>        entry_SYSCALL_64_after_hwframe+0x63/0xcd
 > 
-> diff --git a/lib/bitmap.c b/lib/bitmap.c
-> index 24284caadbcc..917eea5219ac 100644
-> --- a/lib/bitmap.c
-> +++ b/lib/bitmap.c
-> @@ -958,7 +958,7 @@ EXPORT_SYMBOL(bitmap_parse);
->   * gets mapped to (returns) @ord value 3 in this example, that means
->   * that bit 7 is the 3rd (starting with 0th) set bit in @buf.
->   *
-> - * The bit positions 0 through @bits are valid positions in @buf.
-> + * The bit positions 0 through @nbits are valid positions in @buf.
->   */
->  static int bitmap_pos_to_ord(const unsigned long *buf, unsigned int pos, unsigned int nbits)
->  {
-> @@ -1008,17 +1008,30 @@ void bitmap_remap(unsigned long *dst, const unsigned long *src,
->  
->  	if (dst == src)		/* following doesn't handle inplace remaps */
->  		return;
-> -	bitmap_zero(dst, nbits);
-> +
-> +	bitmap_xor(dst, old, new, nbits);
-> +	if (bitmap_empty(dst, nbits))
-> +		goto identity_map;
+> other info that might help us debug this:
+> 
+>  Possible unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   rlock(&fi->i_xattr_sem);
+>                                lock(&fi->i_sem);
+>                                lock(&fi->i_xattr_sem);
+>   lock(&fi->i_sem);
+> 
+> Reported-and-tested-by: syzbot+e5600587fa9cbf8e3826@syzkaller.appspotmail.com
+> Fixes: 5eda1ad1aaff "f2fs: fix deadlock in i_xattr_sem and inode page lock"
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-Now you see? The complexity of this test is 2*O(N). Assuming that people
-know better than us when they can optimize their trivial cases with just
-copying, this will slow those conscientious users because for them, of
-course, old == new is highly unlikely.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Of course, we can do 'if (bitmap_equal(old, new, nbits))', but it's
-still O(N), and the above is applicable just as well.
-  
->  	w = bitmap_weight(new, nbits);
-> +	if (w == 0)
-> +		goto identity_map;
-
-In contrast, this test is O(1), because we need the weight of new
-bitmap anyways.
-
-> +
-> +	bitmap_zero(dst, nbits);
-> +
->  	for_each_set_bit(oldbit, src, nbits) {
->  		int n = bitmap_pos_to_ord(old, oldbit, nbits);
->  
-> -		if (n < 0 || w == 0)
-> +		if (n < 0)
->  			set_bit(oldbit, dst);	/* identity map */
->  		else
->  			set_bit(find_nth_bit(new, nbits, n % w), dst);
->  	}
-> +
-> +	return;
-> +
-> +identity_map:
-> +	bitmap_copy(dst, src, nbits);
+> ---
+>  fs/f2fs/f2fs.h   | 24 +++++++++++++++---------
+>  fs/f2fs/inline.c |  3 ++-
+>  2 files changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index c602ff2403b6..c0b7417f1d87 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -2122,15 +2122,6 @@ static inline int f2fs_down_read_trylock(struct f2fs_rwsem *sem)
+>  	return down_read_trylock(&sem->internal_rwsem);
 >  }
->  EXPORT_SYMBOL(bitmap_remap);
+>  
+> -#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> -static inline void f2fs_down_read_nested(struct f2fs_rwsem *sem, int subclass)
+> -{
+> -	down_read_nested(&sem->internal_rwsem, subclass);
+> -}
+> -#else
+> -#define f2fs_down_read_nested(sem, subclass) f2fs_down_read(sem)
+> -#endif
+> -
+>  static inline void f2fs_up_read(struct f2fs_rwsem *sem)
+>  {
+>  	up_read(&sem->internal_rwsem);
+> @@ -2141,6 +2132,21 @@ static inline void f2fs_down_write(struct f2fs_rwsem *sem)
+>  	down_write(&sem->internal_rwsem);
+>  }
+>  
+> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+> +static inline void f2fs_down_read_nested(struct f2fs_rwsem *sem, int subclass)
+> +{
+> +	down_read_nested(&sem->internal_rwsem, subclass);
+> +}
+> +
+> +static inline void f2fs_down_write_nested(struct f2fs_rwsem *sem, int subclass)
+> +{
+> +	down_write_nested(&sem->internal_rwsem, subclass);
+> +}
+> +#else
+> +#define f2fs_down_read_nested(sem, subclass) f2fs_down_read(sem)
+> +#define f2fs_down_write_nested(sem, subclass) f2fs_down_write(sem)
+> +#endif
+> +
+>  static inline int f2fs_down_write_trylock(struct f2fs_rwsem *sem)
+>  {
+>  	return down_write_trylock(&sem->internal_rwsem);
+> diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+> index 4638fee16a91..0d185ad5e469 100644
+> --- a/fs/f2fs/inline.c
+> +++ b/fs/f2fs/inline.c
+> @@ -641,7 +641,8 @@ int f2fs_add_inline_entry(struct inode *dir, const struct f2fs_filename *fname,
+>  	}
+>  
+>  	if (inode) {
+> -		f2fs_down_write(&F2FS_I(inode)->i_sem);
+> +		f2fs_down_write_nested(&F2FS_I(inode)->i_sem,
+> +						SINGLE_DEPTH_NESTING);
+>  		page = f2fs_init_inode_metadata(inode, dir, fname, ipage);
+>  		if (IS_ERR(page)) {
+>  			err = PTR_ERR(page);
+> -- 
+> 2.42.0.rc1.204.g551eb34607-goog
 > 
-> But this gives +89 bytes on x86_64... :-(
-
-Who cares if it gives a boost of performance for regular users?
-
-> Inside the loop we can also break when n gets equal to w, but it seems
-> a special case (we don't need bitmap_weight_from() for that, do we?).
-
-No, we can't. Instead, we should wrap around 0, exactly what the existing
-code does. See the comment:
-
-  * Let @old and @new define a mapping of bit positions, such that
-  * whatever position is held by the n-th set bit in @old is mapped
-  * to the n-th set bit in @new.  In the more general case, allowing
-  * for the possibility that the weight 'w' of @new is less than the
-  * weight of @old, map the position of the n-th set bit in @old to
-  * the position of the m-th set bit in @new, where m == n % w.
-
-This is written 18 years ago, and it seems it needs to get illustrated.
-I didn't find anything else describing bitmap_remap() for more except
-my own comment in a random discussion more than a year ago:
-
-https://lkml.org/lkml/2022/6/13/3126
-
-Thanks,
-Yury
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
