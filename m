@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E1B7818DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AFC7818DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbjHSKkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S230345AbjHSKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:40:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjHSKkN (ORCPT
+        with ESMTP id S230238AbjHSKkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:40:13 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9732A108E2B
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 02:36:08 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c1f6f3884so216371166b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 02:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692437767; x=1693042567;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sXmf1PXc0L6m77MAsNB9+ZnrIQ5rFUeoN1zBa9T+k+s=;
-        b=g6GSe3KRMg8aav5Zk4Awrlx453K6p9FvyV+iQj7OOS/hg4iEkUsHzgYcbMBRyEB3zK
-         9bNlfV3z1yDmfmZ8X6jTiWet/yWsO2C8wMREFgCERMb6loF7v013mfPSgjsNbn37Qy4P
-         eBQlktyuZPDwOcDxoaiIdxNKxoG+ZBlOIjrSAd+MfHJ3zlVesmXCC738wwJWJgcG4jR7
-         gK3kNDQ9SXK2WSaiJ7LWkCgV/2QRXwN1MK1olqqBGzO+mLK6sNendkx20Lf4+ZBjMArr
-         ffjcoeuIQEgC7Gz+C7JOu5oyGzqYsdF9a3iKEFomdy6nfm4MIyF5jOeicDZtEKI/WgXG
-         lBIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692437767; x=1693042567;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sXmf1PXc0L6m77MAsNB9+ZnrIQ5rFUeoN1zBa9T+k+s=;
-        b=PrH6+UTGvjtId5AvlNOwGj/RYXBtGrciO9zVhB9RDrG8VENJ9aK8xV9MPjnDo7ai2F
-         3lwD1Y05BW1WtyVk3WdIlry8BY7QEDrVIrRxx1SXJgSQNPCH+Naa8XOiFz5ggBf+bgxH
-         kUe8d/AWkoiZjo/7fCTvBFUhwp2V4G+fXPohQXP2jyRAeX8yD+K4y7vtvknVMpcOBzAv
-         BzCY22EZc95StkR6A10MazDJ1AVf62D/XxOmtc4VzDpQutr+by3ImtKwywdyXw/rc4V2
-         v9PabzYKgR6HiIAZwpEXuJaTHU0hahKYoaUlLYTMg+9qa1DW1Clp6ayg5dCPOc0l0nNI
-         oyQw==
-X-Gm-Message-State: AOJu0Ywk7P3j7hs2+Rz6sLVmMNpAxTPWGa/JsbzWdFrDqTxitAuIVZ3L
-        owgvyixTBC1BOS+IJZZ1yYC2Bw==
-X-Google-Smtp-Source: AGHT+IElIpQnP+n8uhTNiR6fC6b/X0C/ILO12LXuQRZE36J5I7WcRp68x93U9aJxY7JKru8QXXCG/A==
-X-Received: by 2002:a17:906:3199:b0:993:6845:89d6 with SMTP id 25-20020a170906319900b00993684589d6mr1122648ejy.47.1692437767240;
-        Sat, 19 Aug 2023 02:36:07 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id e4-20020a170906c00400b00992e94bcfabsm2390761ejz.167.2023.08.19.02.36.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 02:36:06 -0700 (PDT)
-Message-ID: <13c6fd25-37c3-e2ac-3cf8-183aa1eb52d8@linaro.org>
-Date:   Sat, 19 Aug 2023 11:36:05 +0200
+        Sat, 19 Aug 2023 06:40:22 -0400
+Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA742EC94;
+        Sat, 19 Aug 2023 02:44:00 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: 83D5DC3.A99C1
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
+        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 83D5DC3;
+        Sat, 19 Aug 2023 11:43:58 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1692438238;
+        bh=9ixEDsItJ7s2bpi2Asbkroe2pqJ9+juR7RRMjomgz2Y=;
+        h=From:To:Cc:Subject:Date;
+        b=g+nNpdcCac0Jg9f0lxI89UlIUwY3PbHD065OGA8a5LvkFs3Qgv+tKQzTppQrCgUMf
+         kunZ/6lH4yZVhxTuyTfFPOO+aypVWlBTvVErxJcYTcJiHPAvA0o+vETksrxjn2KNby
+         Ye//VEVcJI5Js6+SbPioMAGsodC9RqAsRgpoQghI=
+Received: from localhost.localdomain (ip-185-104-137-32.ptr.icomera.net [185.104.137.32])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id A501CD4EB61BA;
+        Sat, 19 Aug 2023 11:43:56 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     jarkko@kernel.org, kai.huang@intel.com, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     dave.hansen@linux.intel.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v3 0/9] selftests/sgx: Fix compilation errors
+Date:   Sat, 19 Aug 2023 11:43:23 +0200
+Message-Id: <20230819094332.8535-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/5] dt-bindings: qcom: Add Sony Xperia 10 V
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20230818-topic-10v-v1-0-dbb6464223c6@linaro.org>
- <20230818-topic-10v-v1-1-dbb6464223c6@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230818-topic-10v-v1-1-dbb6464223c6@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 17:23, Konrad Dybcio wrote:
-> The SM6375-based Xperia 10 V is veeery similar to the previous year 10 IV,
-> sharing a common base motherboard design.
-> 
-> The software configuration however is somewhat different, which requires
-> us to allow using qcom,msm/board-id on sm6375. Sad.
-> 
-> Document the device.
+Hi,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This is the third iteration of a patch series to ensure that all SGX selftests
+succeed when compiling with optimizations (as tested with -O{0,1,2,3,s} for
+both gcc 11.3.0 and clang 14.0.0). The aim of the patches is to avoid reliance
+on undefined, compiler-specific behavior that can make the test results
+fragile.
 
-Best regards,
-Krzysztof
+If useful, I can also include an elementary wrapper shell script to compile and
+run the tests for different compilers (gcc/clang) and optimization levels.
+Reference output below:
+
+.. Testing gcc   -O0    [OK]
+.. Testing gcc   -O1    [OK]
+.. Testing gcc   -O2    [OK]
+.. Testing gcc   -O3    [OK]
+.. Testing gcc   -Os    [OK]
+.. Testing gcc   -Ofast [OK]
+.. Testing gcc   -Og    [OK]
+.. Testing clang -O0    [OK]
+.. Testing clang -O1    [OK]
+.. Testing clang -O2    [OK]
+.. Testing clang -O3    [OK]
+.. Testing clang -Os    [OK]
+.. Testing clang -Ofast [OK]
+.. Testing clang -Og    [OK]
+
+Changelog
+---------
+
+v3
+  - Refactor encl_op_array declaration and indexing (Jarkko)
+  - Annotate encl_buffer with "used" attribute (Kai)
+  - Split encl_buffer size and placement commits (Kai)
+
+v2
+  - Add additional check for NULL pointer (Kai)
+  - Refine to produce proper static-pie executable
+  - Fix linker script assertions
+  - Specify memory clobber for inline asm instead of volatile (Kai)
+  - Clarify why encl_buffer non-static (Jarkko, Kai)
+  - Clarify -ffreestanding (Jarkko)
+
+Best,
+Jo
+
+Jo Van Bulck (9):
+  selftests/sgx: Fix uninitialized pointer dereference in error path
+  selftests/sgx: Produce static-pie executable for test enclave
+  selftests/sgx: Handle relocations in test enclave
+  selftests/sgx: Fix linker script asserts
+  selftests/sgx: Include memory clobber for inline asm in test enclave
+  selftests/sgx: Ensure test enclave buffer is entirely preserved
+  selftests/sgx: Ensure expected location of test enclave buffer
+  selftests/sgx: Separate linker options
+  selftests/sgx: Specify freestanding environment for enclave
+    compilation
+
+ tools/testing/selftests/sgx/Makefile          | 14 ++--
+ tools/testing/selftests/sgx/defines.h         |  2 +
+ tools/testing/selftests/sgx/sigstruct.c       |  5 +-
+ tools/testing/selftests/sgx/test_encl.c       | 66 ++++++++++++-------
+ tools/testing/selftests/sgx/test_encl.lds     | 10 +--
+ .../selftests/sgx/test_encl_bootstrap.S       | 12 ++--
+ 6 files changed, 68 insertions(+), 41 deletions(-)
+
+-- 
+2.25.1
 
