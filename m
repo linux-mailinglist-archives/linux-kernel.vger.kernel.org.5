@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0307819FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361FF7819FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjHSOWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42154 "EHLO
+        id S233416AbjHSOXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:23:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbjHSOWL (ORCPT
+        with ESMTP id S233408AbjHSOXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:22:11 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AEC61B7
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:22:00 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe32016bc8so17209985e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:22:00 -0700 (PDT)
+        Sat, 19 Aug 2023 10:23:45 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C23B277
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:23:43 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-529fb04a234so460729a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:23:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692454919; x=1693059719;
+        d=linaro.org; s=google; t=1692455021; x=1693059821;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=UAc6qOkjy0rFtaDwsZVWmbF6XPQ2JnI6jdGxzBgS0C0=;
-        b=Pl1a4O5dMHVgND2Zxh/FLx+LzcCFwOkjSVL0gC45HVqncybh72Ji6ywdb7C7sSywxh
-         tvoq1FKiznHOM29kb6D0YBvIq9MG3JmUapYuP3Ve1JQDHgjc1dgGjFfYVCNztuvZfoED
-         lZhtXthP/XKP2uNgi4ziRz5MaR35+xwjwmK2fQ0JA8rRW+wK8pMH7UC2Aaw2FhK50E4G
-         5ktm5Xn55gk+++lzeg28gkj0YFP/UfUf6/c/ODb0gQQzTqlsjYgetgJa5zfeZryCjEGs
-         EDYH6Yof3rb9XhkTKFHWdVUERY/d1q4mNCPhwoPopaOa7HA9KjqajCKmK2AvFrDFP9eb
-         /Y7Q==
+        bh=L+H6LiI1fuzN7XDYYZHmb/bhyxb5oDWpcZV5MPYgeNM=;
+        b=cdwgqQ2/540qB6iDOetvo5+7VCwQmYK4ucktUn2S6tKhleFEfC1EpTZ4JYACvovMTs
+         q80w44G8zoYpOEESt9mribtnkSPAHijp742ibvWl8G2spBUc7A2iyJpbe/+hSxq1JiLX
+         VvttIM0PsbTvRlYBAFBKAbcmgwA9etZvKcfnollWct4wPA0vhah6KZEW2ZD6QuU7zPN2
+         NWFsh418VeYs6g5dM9/AzGVVFrneFiV7dBvS2oVMsPO3IkEoH9oLi6HM9FA+Fl6QJLwC
+         XmB91+4b+nQ3SNqUIn062zB3z3DnD8GY7VgF1SO/tA9mYy1gS8dq8ebRWlR97rZ67gAC
+         tDIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692454919; x=1693059719;
+        d=1e100.net; s=20221208; t=1692455021; x=1693059821;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UAc6qOkjy0rFtaDwsZVWmbF6XPQ2JnI6jdGxzBgS0C0=;
-        b=AghkfUqobZs0GG3NLCX/Pcyo+MPjq1+simD+lb56dy9n4RguAneK2QdegcWjGWEuT9
-         qklJ47L2Y0weCbNDbXPmJM2zWIlXC0wdHMlLQT3zXfSBkuESh83xf4DKr6YnTqtjkhvJ
-         krizsnI4I6rdChvZphA4OM9VP7MaqiFXIwfgp86+WDbBuK4lPAELomTRhJr+lt3Q+/wK
-         E1Bzo1ejlLMiCYWCLdIdtW0oZpfx4EMSrgbLfcaZfV/CTAFNEO6oTZtNTuAcWOUYGJkd
-         XtZryg1GSToM37wwbz49K5G58Wl6IclSLdXwUfA7eVGA8geTCB0Ns1BnJKIY1eAcajxi
-         pjIA==
-X-Gm-Message-State: AOJu0Yx3tyfHoOuMlIoJGVxslQ5If/jHVr2Ie2O1HZgducQuWHKUBa8K
-        tF9W8ervgfyQVlQAfpuZTdm8lw==
-X-Google-Smtp-Source: AGHT+IHh30rvDXYKhYF93M7r7DS9miQDSTeGLQ293BUQP20NDDVnbhx3Nu3zvHyBroD9wVkQX+U4/g==
-X-Received: by 2002:a05:600c:c5:b0:3fe:dcd0:2e32 with SMTP id u5-20020a05600c00c500b003fedcd02e32mr1463788wmm.19.1692454918857;
-        Sat, 19 Aug 2023 07:21:58 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id 16-20020a05600c231000b003fc00212c1esm6308313wmo.28.2023.08.19.07.21.57
+        bh=L+H6LiI1fuzN7XDYYZHmb/bhyxb5oDWpcZV5MPYgeNM=;
+        b=eB90E45g1948B7HUSYWX2wbNlHTWVACBDad2+iCM9Dh7gyUyhGvweY6iu6lvqYKwFX
+         6L9QBbwT7HBzpzhCIl6062/fOsqmRuitkgXORWyOV3519RF+eNTyzoQEdtEtVahl5cKz
+         bd92BxAGHin9/EcDcbxlWI3Ogzi6UGKSamIGXOdA4aMvmPx9sfcQn+GlrC91Ltwtyg3y
+         5hYFx9Vzf6vXmGD/U6bQlyfiw7J7oYD5L+kWU/xUbXl4th3Fp9YtxuH1baVm1ROfCkZo
+         h3onx9wR47uB52udnyJqUN0+nxt/DKepS4bvlFHS41UPXdwHtrfEqmXIZT1J9Ex89e7F
+         8UIA==
+X-Gm-Message-State: AOJu0Yydip/6kE/Uuzer6y1kELo7prNO37Lh9TejH625mNaiL/ZnTyeu
+        naUWIm8dpMOGcIKOp4/PLByxw9jwOEmdBP1/35g=
+X-Google-Smtp-Source: AGHT+IHfb3IPptZFQYePiW40IL2RA9ejCLE2dfITH1lklobH/LC3t12t/Nl9vvFFC1Zf4mKowMUWvA==
+X-Received: by 2002:a05:6402:1610:b0:525:70b3:72c2 with SMTP id f16-20020a056402161000b0052570b372c2mr1608371edv.14.1692455021626;
+        Sat, 19 Aug 2023 07:23:41 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id m10-20020aa7c2ca000000b005257580f5ddsm2606079edp.71.2023.08.19.07.23.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 07:21:58 -0700 (PDT)
-Message-ID: <179d22c0-c20f-7190-0dce-f439669dc232@linaro.org>
-Date:   Sat, 19 Aug 2023 15:21:57 +0100
+        Sat, 19 Aug 2023 07:23:40 -0700 (PDT)
+Message-ID: <a9a7b65c-ef0b-9f66-b197-548733728d44@linaro.org>
+Date:   Sat, 19 Aug 2023 16:23:39 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v2 12/13] media: qcom: camss: Add support for setting
- CSIPHY clock name csiphyX
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/4] dt-bindings: mfd: syscon: Add compatibles for
+ Loongson-1 syscon
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20230817143812.677554-1-bryan.odonoghue@linaro.org>
- <20230817143812.677554-13-bryan.odonoghue@linaro.org>
- <5ad949d3-1776-4345-9fdc-99b3dba10bd7@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <5ad949d3-1776-4345-9fdc-99b3dba10bd7@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-2-keguang.zhang@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230816111310.1656224-2-keguang.zhang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -82,42 +89,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 13:32, Konrad Dybcio wrote:
-> On 17.08.2023 16:38, Bryan O'Donoghue wrote:
->> Several of our upstream and soon-to-be upstream SoC CAMSS dtsi declare
->> csiphyX as opposed to the older clock name csiX_phy.
->>
->> For newer SoCs csiphyX turns out to be a clock you really need to set.
->>
->> On sc8280xp for example we will encounter difficult to track down and
->> root-cause RX CRC errors without setting the csiX_phy clock. On sdm845 and
->> sm8250 we declare the csiXphy clock but seem to get away with not setting
->> it.
->>
->> The right approach here is to set the clock when it is declared. If a SoC
->> doesn't require or a SoC driver implementer doesn't think we need, then the
->> clock ought to simply be omitted from the clock list.
->>
->> Include csiphyX in the set of permissible strings which will subsequently
->> lead to the csiphyX clock being set during csiphy_set_clock_rates() phase.
->>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
-> So.. is this just a namechange? Is it really necessary?
+On 16/08/2023 13:13, Keguang Zhang wrote:
+> Add Loongson LS1B and LS1C compatibles for system controller.
+
+I asked not to use the same compatible for different blocks. Compatible
+is dwmac, but are you still going to use for other blocks? Please write
+proper description of the hardware.
+
 > 
-> Konrad
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> ---
+> V1 -> V2: Make the syscon compatibles more specific
+> 
+>  Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> index 8103154bbb52..d701fff02abe 100644
+> --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> @@ -49,6 +49,8 @@ properties:
+>                - hisilicon,peri-subctrl
+>                - hpe,gxp-sysreg
+>                - intel,lgm-syscon
+> +              - loongson,ls1b-dwmac-syscon
+> +              - loongson,ls1c-dwmac-syscon
 
-Not at all no.
 
-We currently don't set csiphyX clocks. That's "not a problem" on sdm845 
-and sm8250 "because" but on sc8280xp if you don't set that clock you'll 
-get all sorts of RX CRC errors.
+Best regards,
+Krzysztof
 
-Obvs my extensive and detailed commit log transmits exactly no detail.
-
-Let me fix that in the next version.
-
-;)
-
----
-bod
