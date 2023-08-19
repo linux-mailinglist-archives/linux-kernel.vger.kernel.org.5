@@ -2,180 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F70478184F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65532781867
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbjHSI1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S229674AbjHSIcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:32:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjHSI1e (ORCPT
+        with ESMTP id S229520AbjHSIcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:27:34 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE9D24C36
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:27:29 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7F19740E0197;
-        Sat, 19 Aug 2023 08:27:21 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gkGQFD5Y9VgE; Sat, 19 Aug 2023 08:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1692433639; bh=4k/ZNYlzEXdkVQ2opaKpqy+SWyz2cq4kOA1hqN1AJtM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hLzfAuux+jRUDnIR7hLJpWic489cfQgytVIXpu/D2QfphyfO4ho7JrYNHzuh8ATVK
-         GJIyUfZGT2pyT/8JRZlnsQ0V9UbatN7MpDfID4vZtQsI9BMJfIlv8mgXJx3i+34B0e
-         SPLEZkUi4Ax7PZ0lkPfaGcSiX8i/1QAXxfnI8kNmi3KFQgWkwz8sb6wQXiUTMqkzZs
-         TjUl32B7aNguQrlM8M3QgKgQTLbRFgLVR+SmaI+Sibx/jOZHUpKR/PlMeK1kWyLLNX
-         mSU9xHfP8OwQnL2iCqTKOPH+jB25kskcwgFYHqkYanUqnHe2p5CS6yQLFzYbso+9n3
-         5Tm6GkHh3kqorqbEcAz/98GTitMFO19TUfcOma/2WETcB3CHD7Z8Fd02xjfk+vonn1
-         f4upH7XP6Y2f8Ljr+YccrIUubUFaqvBq+99h9ZepP6dblZRLtrFlVtSIxq7w9BluUn
-         TXOXKG1IndSw8HrPGHENkO0vwqqK0wGPuoCLciKHs71QBMTKgg02+HE8fqBYQ9w/bk
-         WTjVI9XDArjeXm4ioEFjcvZsoh/9Wdp1uB2luHIb3uGCBOH6HaB839RgPfz5a71KTs
-         cowO5X9QktRbnOaXiPjUNDVHFaXZ7LuNhR9stEL1Eh16g4X5MPqFCKXDLMJmRsPyjm
-         ywhIkL1tjijhmu2RzhyjyEG4=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0576940E0194;
-        Sat, 19 Aug 2023 08:27:15 +0000 (UTC)
-Date:   Sat, 19 Aug 2023 10:27:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.5-rc7
-Message-ID: <20230819082709.GAZOB83cQ687HkbMgt@fat_crate.local>
+        Sat, 19 Aug 2023 04:32:35 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4684457080
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:32:33 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so2137446a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692433952; x=1693038752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ix8YOkiCA8Yfy3DAKq6Gdfu5OcCLN5ahy1LqBBsn4wE=;
+        b=YaQB7apPrUzQw+O6eG/Yk0FmvmuOjm7Ay1BxfYb5mlEJy6nUwAz8okLIdE8baxHqYF
+         xadgxYMSpy89etPzpg2vVMG6UNS7d2ghuYqlGihe1Ow+Vjzu6yQlYo8iAFko8VtNGxSN
+         KKbXXUTPtYdWT62ojSawsImuUjSlmsjjaW/NejUDiaUCur28P74X/LNchQH+8FGVft1z
+         AbPttNejtTIbwXVSc+DU1xsR9qsJdXGhhwmS0qHoOPZkHBUytYA27JwWWMxdJ4wJHift
+         jbmtHvTV/hYtqm87krKtKxz1M2w47gdLFrOSR5wFKXEyJx21qjI7TjD5GeSgffSVSwea
+         hjLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692433952; x=1693038752;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ix8YOkiCA8Yfy3DAKq6Gdfu5OcCLN5ahy1LqBBsn4wE=;
+        b=Xy+Si0w70SB2MIDlIKYJAQN09xlMhawwqj5rMaCWUWVNKyTSW8TpZUyxlY4e5xCnoE
+         rDngPV1MgH35CzkzrHlx0oQlMjHD/5HGNV96xMppbp05o36r9KRvfsxj+q0fgbP4CQ1t
+         CEZ4Ye3OP8Rw73ZXaJQ3hp77sEHuMHacX6FfJsr+FXRlIzukz7q2RXzgbhLstD0gGyLN
+         0qp0GSor0ytI+He3qnozQo3V85oBUddkTp42kz02wNFKVyn36a6szW5gNjnUvWE2Lj+1
+         70PMAZ+CIF+TZuiPsLlUT0sDeVTEzsQlYRhkV4NIk060ynmV50OAYPsjWE8IsouQUUj1
+         KJTQ==
+X-Gm-Message-State: AOJu0YzYOXEJB8foqV9oJl0z3/w+fkvodYAOa46NK8dUxcQU9flPkrpf
+        peB06YGQ8dsTcjQw5xYPG0vIog==
+X-Google-Smtp-Source: AGHT+IHuS5W+rAGYbQvkT8qr8muLdssch24hUmSNaCYTDbifpEloZHjDQHkxPYQT+aZgwP4zN57W1A==
+X-Received: by 2002:aa7:d952:0:b0:525:63f9:a268 with SMTP id l18-20020aa7d952000000b0052563f9a268mr996159eds.42.1692433951262;
+        Sat, 19 Aug 2023 01:32:31 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id p6-20020aa7d306000000b0052574ef0da1sm2122455edq.28.2023.08.19.01.32.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Aug 2023 01:32:30 -0700 (PDT)
+Message-ID: <0f7babfd-de60-326b-37b3-32fe48927815@linaro.org>
+Date:   Sat, 19 Aug 2023 10:32:29 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 6/8] phy: exynos5-usbdrd: Add Exynos850 support
+Content-Language: en-US
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     JaeHun Jung <jh0801.jung@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20230819031731.22618-1-semen.protsenko@linaro.org>
+ <20230819031731.22618-7-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230819031731.22618-7-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 19/08/2023 05:17, Sam Protsenko wrote:
+> Implement Exynos850 USB 2.0 DRD PHY controller support. Exynos850 has
+> quite a different PHY controller than Exynos5 compatible controllers,
+> but it's still possible to implement it on top of existing
+> exynos5-usbdrd driver infrastructure.
+> 
+> Only UTMI+ (USB 2.0) PHY interface is implemented, as Exynos850 doesn't
+> support USB 3.0.
+> 
+> Only two clocks are used for this controller:
+>   - phy: bus clock, used for PHY registers access
+>   - ref: PHY reference clock (OSCCLK)
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> ---
 
-extraordinary embargoed times call for extraordinary measures. That's
-why this week's x86/urgent branch is larger than usual, containing all
-the known fallout fixes after the SRSO mitigation got merged.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I know, it is a bit late in the game but everyone who has reported a bug
-stemming from the SRSO pile, has tested that branch and has confirmed
-that it fixes their bug.
+Best regards,
+Krzysztof
 
-Also, I've run it on every possible hardware I have and it is looking
-good. It is running on this very machine while I'm typing, for 2 days
-now without an issue. Famous last words...
-
-So please pull,
-thx!
-
----
-
-The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
-
-  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.5_rc7
-
-for you to fetch changes up to 6405b72e8d17bd1875a56ae52d23ec3cd51b9d66:
-
-  x86/srso: Correct the mitigation status when SMT is disabled (2023-08-18 12:43:10 +0200)
-
-----------------------------------------------------------------
-- Use LEA ...%rsp instead of ADD %rsp in the Zen1/2 SRSO return sequence
-  as latter clobbers flags which interferes with fastop emulation in
-  KVM, leading to guests freezing during boot
-
-- A fix for the DIV(0) quotient data leak on Zen1 to clear the divider
-  buffers at the right time
-
-- Disable the SRSO mitigation on unaffected configurations as it got
-  enabled there unnecessarily
-
-- Change .text section name to fix CONFIG_LTO_CLANG builds
-
-- Improve the optprobe indirect jmp check so that certain configurations
-  can still be able to use optprobes at all
-
-- A serious and good scrubbing of the untraining routines by PeterZ:
- - Add proper speculation stopping traps so that objtool is happy
- - Adjust objtool to handle the new thunks
- - Make the thunk pointer assignable to the different untraining
-   sequences at runtime, thus avoiding the alternative at the return
-   thunk. It simplifies the code a bit too.
- - Add a entry_untrain_ret() main entry point which selects the
-   respective untraining sequence
- - Rename things so that they're more clear
- - Fix stack validation with FRAME_POINTER=y builds
-
-- Fix static call patching to handle when a JMP to the return thunk is
-  the last insn on the very last module memory page
-
-- Add more documentation about what each untraining routine does and
-  why
-
-----------------------------------------------------------------
-Borislav Petkov (AMD) (4):
-      x86/CPU/AMD: Fix the DIV(0) initial fix attempt
-      x86/srso: Disable the mitigation on unaffected configurations
-      x86/srso: Explain the untraining sequences a bit more
-      x86/srso: Correct the mitigation status when SMT is disabled
-
-Peter Zijlstra (11):
-      x86/cpu: Fix __x86_return_thunk symbol type
-      x86/cpu: Fix up srso_safe_ret() and __x86_return_thunk()
-      objtool/x86: Fix SRSO mess
-      x86/alternative: Make custom return thunk unconditional
-      x86/cpu: Clean up SRSO return thunk mess
-      x86/cpu: Rename original retbleed methods
-      x86/cpu: Rename srso_(.*)_alias to srso_alias_\1
-      x86/cpu: Cleanup the untrain mess
-      x86/cpu/kvm: Provide UNTRAIN_RET_VM
-      objtool/x86: Fixup frame-pointer vs rethunk
-      x86/static_call: Fix __static_call_fixup()
-
-Petr Pavlu (2):
-      x86/retpoline,kprobes: Fix position of thunk sections with CONFIG_LTO_CLANG
-      x86/retpoline,kprobes: Skip optprobe check for indirect jumps with retpolines and IBT
-
-Sean Christopherson (1):
-      x86/retpoline: Don't clobber RFLAGS during srso_safe_ret()
-
- Documentation/admin-guide/hw-vuln/srso.rst |   4 +-
- arch/x86/include/asm/entry-common.h        |   1 +
- arch/x86/include/asm/nospec-branch.h       |  49 ++++++-----
- arch/x86/kernel/alternative.c              |   4 -
- arch/x86/kernel/cpu/amd.c                  |   1 +
- arch/x86/kernel/cpu/bugs.c                 |  27 +++++-
- arch/x86/kernel/kprobes/opt.c              |  40 ++++-----
- arch/x86/kernel/static_call.c              |  13 +++
- arch/x86/kernel/traps.c                    |   2 -
- arch/x86/kernel/vmlinux.lds.S              |  20 ++---
- arch/x86/kvm/svm/svm.c                     |   2 +
- arch/x86/kvm/svm/vmenter.S                 |   7 +-
- arch/x86/lib/retpoline.S                   | 137 ++++++++++++++++++++---------
- tools/objtool/arch/x86/decode.c            |  11 ++-
- tools/objtool/check.c                      |  45 +++++++---
- tools/objtool/include/objtool/arch.h       |   1 +
- tools/objtool/include/objtool/elf.h        |   1 +
- tools/perf/util/thread-stack.c             |   4 +-
- 18 files changed, 236 insertions(+), 133 deletions(-)
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
