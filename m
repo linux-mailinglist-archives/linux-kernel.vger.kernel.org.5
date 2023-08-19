@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FFD7819BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D817819BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbjHSNd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 09:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S232881AbjHSNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 09:36:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjHSNdz (ORCPT
+        with ESMTP id S229436AbjHSNgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 09:33:55 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B980260BE;
-        Sat, 19 Aug 2023 06:31:46 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf48546ccfso7660445ad.2;
-        Sat, 19 Aug 2023 06:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692451905; x=1693056705;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=354r1E8RomJOmLTWCsnFrWN7S2WMC4vNevjDGwZilNU=;
-        b=FKItqNn7h6xWPDCRRcOmc9Ez68Wlegq31PhjXmfE4aBe1zGReLec7/vKM3nJtqV/T5
-         829EDrd2xlqVK8Tw3nM20/B3p1DNQLLEbNdF91Eyz/WH1w7UEqNan0Kq8R9XQ6jNDjHh
-         RnLEZz0S9PdfnsU0izgs40JpcIGM7pXpTx4/qpx7ZGxtvZ2pLUmJKfekLl6V0yP2eIvJ
-         18Y+YmpU+4IzBF38SRWHzI92pOS1O4AsZVnlGVYM6pvSfBMpm1CgfcfQ6KhVFoIB3K8e
-         9IU5Tbb/hqFzwnMVt2fTO6FmDEfllVLKcVVj5I0wT9n6zZs6WBZWm9uC7jFGB/UabfYG
-         KVtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692451905; x=1693056705;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=354r1E8RomJOmLTWCsnFrWN7S2WMC4vNevjDGwZilNU=;
-        b=hu+rNb+ftIkHEIKNw8drECwwleM2elv3bZjdRkl0pshNT3E9K7FpD2aXflfvMk+5ay
-         wLsX3f0r0cLkiFjkRpMZAyCrP5bR22ukOCjlVr5ezf8wuuyaGcUWNTUr5pwRNQxw+wxp
-         jcmPg51NniHEsDIKUS94e6rE2LE7Qf5tZDo7AdtXACmOFJUqJ8JNfpqW48BZOMl5WJnE
-         bmnjggYpOhrDH7Gvm28mCyPPOrW5uthtG9Ca6wI8TtQYGcZ5o61T/H55goUk9zil1RtL
-         7ieag+uCAORCCsRNpDFdYL3FIV1OhCPT59DTjBieezteWwVw/9d0XpA5XJZYZ7L5zXlZ
-         b8ag==
-X-Gm-Message-State: AOJu0YxfLF+ugyDK+JWh3i1zH9yVJjwP/54R+Joe2P05RZa1mfC9pNeB
-        4ACg3Rzot5Q64d7oUOSdve4=
-X-Google-Smtp-Source: AGHT+IEA9QHCXPRr5498UeC9TcMCKSHe0MOr/n/QkY6SbexlkQEyoRyTDDVMGC1CFHCymOKfzzgTLA==
-X-Received: by 2002:a17:902:b709:b0:1bd:a0cd:1860 with SMTP id d9-20020a170902b70900b001bda0cd1860mr1207022pls.64.1692451905279;
-        Sat, 19 Aug 2023 06:31:45 -0700 (PDT)
-Received: from archlinux.srmu.edu.in ([59.152.80.69])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001b8b26fa6c1sm3663786plk.115.2023.08.19.06.31.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 06:31:44 -0700 (PDT)
-From:   Anshul <anshulusr@gmail.com>
-To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
-Cc:     Anshul <anshulusr@gmail.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, anshulusr2@gmail.com
-Subject: [PATCH] fixing ERROR: Macros with compex values must be enclosed within parentheses
-Date:   Sat, 19 Aug 2023 19:01:13 +0530
-Message-ID: <20230819133115.23048-1-anshulusr@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 19 Aug 2023 09:36:48 -0400
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA74170A
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:35:47 -0700 (PDT)
+X-QQ-mid: bizesmtp85t1692452053tcp1i7aj
+Received: from ubuntu.localdomain ( [58.251.166.13])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 19 Aug 2023 21:34:04 +0800 (CST)
+X-QQ-SSF: 01400000000000106000000A0000000
+X-QQ-FEAT: 2cOz1NCvlGOiGwoh0vNvreWhIxjT+LXdU+Tpljw+/B+vZQiHTx0NER5oG3359
+        8AkIeJoy26siDTa2/1JwLQebgIpmxsFD02O8NSW+h4ghsDTWln3efwcatzoSIcV4NNM/eA8
+        FmY0tesl56uZRLIIRLAaG1paph1Pci16/mXLMS3kKH7k7v5GLriSkDlClOHB+aW3ZZPXUDZ
+        lqHkn3Y3y21+Gr6Vyjhaw97b1ZW51LQb91Qo7dZu6K3w1SfOGuWTTb+JJNQ/l4Eb01tIBKr
+        dhOHQIk5LtyuKhq+UIUPRg0qrR5rKOHuJABY32d4vRCjszgdsEqRLToOlMmjCUJS1h2qvCT
+        vEDXZ0iyXvghFCRxWRdUyx2a+46hFtZRzigist84+CAR7xKWQvjIcej352lpQ==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 15894462584696602267
+From:   Senhong Liu <liusenhong2022@email.szu.edu.cn>
+To:     oder_chiou@realtek.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Senhong Liu <liusenhong2022@email.szu.edu.cn>
+Subject: [PATCH] sound/soc/codecs/rt5640.c: fix typos
+Date:   Sat, 19 Aug 2023 06:33:45 -0700
+Message-Id: <20230819133345.39961-1-liusenhong2022@email.szu.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:email.szu.edu.cn:qybglogicsvrsz:qybglogicsvrsz3a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Anshul <anshulusr@gmail.com>
----
- drivers/media/usb/uvc/uvc_driver.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+I noticed typos and i fixed them.
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 08fcd2ffa727..8d3bcd18b652 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2417,9 +2417,8 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
- 	.quirks = UVC_QUIRK_FORCE_Y8,
- };
- 
--#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
--#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
--	{.meta_format = m}
-+#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
-+#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) {.meta_format = m})
- 
- /*
-  * The Logitech cameras listed below have their interface class set to
+Signed-off-by: Senhong Liu <liusenhong2022@email.szu.edu.cn>
+---
+ sound/soc/codecs/rt5640.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 8920726c38e8..15e1a62b9e57 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2570,7 +2570,7 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 					IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+ 					"rt5640", rt5640);
+ 	if (ret) {
+-		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
++		dev_warn(component->dev, "Failed to request IRQ %d: %d\n", rt5640->irq, ret);
+ 		rt5640_disable_jack_detect(component);
+ 		return;
+ 	}
+@@ -2625,7 +2625,7 @@ static void rt5640_enable_hda_jack_detect(
+ 					NULL, rt5640_irq, IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+ 					"rt5640", rt5640);
+ 	if (ret) {
+-		dev_warn(component->dev, "Failed to reguest IRQ %d: %d\n", rt5640->irq, ret);
++		dev_warn(component->dev, "Failed to request IRQ %d: %d\n", rt5640->irq, ret);
+ 		rt5640->irq = -ENXIO;
+ 		return;
+ 	}
 -- 
-2.41.0
+2.25.1
 
