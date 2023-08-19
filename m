@@ -2,810 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60191781A0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88317781A16
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233480AbjHSO0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        id S233546AbjHSOa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbjHSO0s (ORCPT
+        with ESMTP id S233494AbjHSOa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:26:48 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39955F5BF;
-        Sat, 19 Aug 2023 07:26:46 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68871bbfe33so1458774b3a.0;
-        Sat, 19 Aug 2023 07:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692455205; x=1693060005;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZkR/mgdJ1VUHRr+NhSICARlKAyuf8VSff5g1yc7JZ8E=;
-        b=KObHjTecG/QjGRS/qNUn36d1d8kWyRDHHf8vavYCrYVDokcINxj1Z0CQZ/VLTZO3Ty
-         2eiLwdH+/XXIXaeH7B7xl6N0YArGwgUc9jXpnINJJx/tzF3Y20gVNhY8RwudcJfpCAWy
-         J3oB9R/PqmwBRNRzGmPC4OVLyWExVGOHLFHD4vCGoq1wdXhqE3otzn9n+IQIxyMwFZVR
-         CUkIIMsyL3AyFUYO9ouY17bJDxXz4rIeii/sA2mzxsyJNL0QPDAC8PAfrF4HbrDL4NvB
-         z3qDMrpYWI2Lj6N5BbURO2nC+jbO0osPwWDeSZgPW3jAi+vVVcpVzTaYGtQM5Pke/kC1
-         jdGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692455205; x=1693060005;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZkR/mgdJ1VUHRr+NhSICARlKAyuf8VSff5g1yc7JZ8E=;
-        b=jGveQeHPQMYaAIPZqJBGvU0Yln7CmH82DjVtKjOzZshmNOh9aJMNfJ7AhE3TtaNyPf
-         hGVAea4N3GxTpwxJxMzNxbQgG+xpptPP+lGQIp6BhaZCWknxxMUVY/wIvFQeLhdIhRa6
-         4qVrWm/m7LTRN3Rgw3tfNDFrrs7+knBmuB53mlsg8lWstTgAazwB2LEJ1ahYYqa8+sDy
-         PTeVCJJXApufPlzsYnDRLz8tik4eWRbLL1MjofKM/HYlGBgC9kQN4l4nxW8DnBjE3WmD
-         1N2pKKP1q0fj+QtwFVZMyPaMpRKJH92n3akVfva88LGk+ex4CcptnAznSrWOrA1s+iOx
-         vn8Q==
-X-Gm-Message-State: AOJu0YwckqQCuHYLhWBk6BqYWEqaaKHwvTbdRoRbBPMKFqdy/yBjFdjj
-        iIy7cGYSYvV7cZbcWhXNONI8DqNvrDQ=
-X-Google-Smtp-Source: AGHT+IHrvKJ9bGqkU7eGx2G0hiQAvlVSc0dMIvAcL6mwAytvylGlbkJuP7/YMpHXY/XY/L9yGoJ8Zg==
-X-Received: by 2002:a05:6a21:47c8:b0:148:9ba1:9f6f with SMTP id as8-20020a056a2147c800b001489ba19f6fmr77090pzc.38.1692455205328;
-        Sat, 19 Aug 2023 07:26:45 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s26-20020aa78d5a000000b00666b012baedsm3233220pfe.158.2023.08.19.07.26.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 07:26:44 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 19 Aug 2023 07:26:43 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Carsten =?iso-8859-1?Q?Spie=DF?= <mail@carsten-spiess.de>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] hwmon: (isl28022) new driver for ISL28022 power
- monitor
-Message-ID: <9f2f502c-dd5c-4b0a-b72f-fba30b1f4f1c@roeck-us.net>
-References: <cover.1692033412.git.mail@carsten-spiess.de>
- <f9cff1af48255fd988a7ead37c93aa32c60f7699.1692033412.git.mail@carsten-spiess.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        Sat, 19 Aug 2023 10:30:26 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2060.outbound.protection.outlook.com [40.107.21.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A691B338;
+        Sat, 19 Aug 2023 07:30:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=agvWq/IEcTDJJfensoCkPFSVgr6vbxpCFkD+wvbwvGcWvxbE7FZ4PEtQYw2+L0U9UAZOxNWtWjzqKKvUPPCogIVmm8+L9elO+RxkKlwWmK73jOR1/SXEKeq9N46jP3smXbt6dBJ57B5snZM3X+g/R6HSdnvuBMWHYXujaMY0k6XsT74adAw+jehaXYBPS1ootCY0OG0o9SF5I/L0xItCAZpHH4lSrVwGpOcW7j1Eu40XKlj9EcDIF0FopqAekKY35My2gbYivZ40KR33K/Qhn+sCmfj++f335lch49hCQieLWPXnffGovHBhSWo9jo7SGQ65WgEgTH5dPZJ4d52dqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FwRsGC0pkh7ZNo5dj32ltMyxAlOZspa65WWYe5x3StM=;
+ b=JeLldyk5aBZbKY+wkZNeYt5l3OAXAgHnYNhUCrI/u1Q4civ+mAkl0B3O1MNUqJBn5t6uiaRV5nRqADfq/58FWRpfMlAmX4r+QY6oQiuTTkC6tieDdyTqPBQA3ALXUXKojslyn63xPYdmBJqGG1RJ8hbIqcyYcnCQgfcZ/UnGgnl9oJM1oacTNBCHHV3NlOORt5D6HCPR7/gUE9Mi3leBOYxpjZfhX9tr4kp7k2PkomrR7Sfzuod0nqmZjSB4/ymbCVBkZeC4tTTI1WcosF6KYJiRl78o7KPi2IzqKUkofb/q9iZLd0TqZBaM4itHmfBHsdxVCNCH+MZbPN2ba4RQHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FwRsGC0pkh7ZNo5dj32ltMyxAlOZspa65WWYe5x3StM=;
+ b=iGoakm2OQJXcdxrH98ih3esm5MRguIVz0ugowtpsQotCEBvI0BIw95fjyKXkwYOyXLEJTy8kseoN8F5/yFJiw7eu9CV98Z6i7f70NWVAJEY9u0elzM+8u8VkoRF6uNWfO6qB3XZeGD8lvyvdPgzbCkK5VRX8I+Wnd3l/bBTn0jM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by AM9PR04MB8745.eurprd04.prod.outlook.com (2603:10a6:20b:43e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Sat, 19 Aug
+ 2023 14:30:20 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::d4ed:20a0:8c0a:d9cf]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::d4ed:20a0:8c0a:d9cf%7]) with mapi id 15.20.6699.020; Sat, 19 Aug 2023
+ 14:30:19 +0000
+Date:   Sat, 19 Aug 2023 17:30:15 +0300
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        pabeni@redhat.com, jiri@resnulli.us, xiyou.wangcong@gmail.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org, shaozhengchao@huawei.com,
+        syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com
+Subject: Re: [PATCH net 1/1] net/sched: fix a qdisc modification with
+ ambigous command request
+Message-ID: <20230819143015.yjegbsu32ddsp3fb@skbuf>
+References: <20230818181432.54283-1-jhs@mojatatu.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f9cff1af48255fd988a7ead37c93aa32c60f7699.1692033412.git.mail@carsten-spiess.de>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230818181432.54283-1-jhs@mojatatu.com>
+X-ClientProxiedBy: FR3P281CA0104.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a1::20) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8745:EE_
+X-MS-Office365-Filtering-Correlation-Id: 411084b8-06e6-4152-4066-08dba0c0d07b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IwXb+Aa5umGKkmtdI3LkClSq1vIzXYfWUkr1UewMefVrqNfHmux1VJtBcQyAakmWJeu6cNYSezJpxVezANUdhNUEgt3t1JMoQpjNH8Vle+Me3VfaP21Amjx9c9EV4iO3f02RfzP3egO9F74/yx5gJPOmB5CXYRRHP0oAZXp6v3IuETY2ON7f7tf0nwXnz7nU8CsV5yJJjYCp09XBuu22N3j8EeMT4Aj2oTkPzqXE9HIv/RiWuZ6Xlu+vb6yTt+BG2XLMIPV0sgqBt8/j999249OIWtV/k5dAfC2/GY/xlpgl7VxX3pzfsFXSQfSjJpVFFEfxSMttkwqy9McPjucy6JsdL2oY44/Ix1LLcM+UzZi/u6pMr0IcFWFZoPiURgKko75iwscYBphcDiDHnn68z66dDmXYqL82/NS0NM53YrX1KobY9eIjraDFUarEu3wV9UQ/sFE7BHn5nDqzCY75JdA1XMDgwU41wtht6whqW8gmpwfmRoF1J9Kd7QSJMMIzbdLgnG/Uf+3shC8tM6JaNm0C0pi9Ii4WgdJwokgEDto=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(136003)(346002)(366004)(39860400002)(186009)(1800799009)(451199024)(7416002)(2906002)(83380400001)(4326008)(6486002)(66556008)(6916009)(66476007)(6666004)(26005)(6506007)(316002)(478600001)(5660300002)(44832011)(41300700001)(8676002)(6512007)(66946007)(9686003)(8936002)(1076003)(86362001)(33716001)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4v4jRiFLpXfsnKFIDGrd/MuJ0w4zc9oopBTJrAoIFdhUY8myXwRfyNb621m4?=
+ =?us-ascii?Q?+xAgBrLDJQ8VDXI+ETV8YQ4FD3FdRV0L1UHg3crxLv3qwqHXDrJxAlzE5wO1?=
+ =?us-ascii?Q?mQhmE9LHBhBGcqmxMgr6AWcGtp213Gqzg3zAQ3K4M6jdQqSwA+QXNyGwH8uc?=
+ =?us-ascii?Q?cBtcuGbLRzKmUJVk5xktZT1BJFgfroW1L3Qrl0zyXtWPHKoOj7MDzkIRQUgx?=
+ =?us-ascii?Q?b7Drtd692NMh6whIRo8U2+MXQB+NpPr2NNwyh9hMIAxUw9swkYEQ8mJ2U7l1?=
+ =?us-ascii?Q?qrZENuPnD07/yRccdZHgOjuksNHUSv6GDudvPG/a4r+OLw7pg7SU7UIkhxgr?=
+ =?us-ascii?Q?6elJeRlAEhDmwbh26mRpJoHqToGNt6IVEY+16XxtF+eqyvlbMkNtvk0bU3Ji?=
+ =?us-ascii?Q?q4e/2zpCiok4EGxueKxWhcHtJrUtiE4HZXpN213kL1UXtw5wfrVOkoPSMFHG?=
+ =?us-ascii?Q?bLSIe5aE5c1EJAGWbuDDAfo9a9Ethj2dEgGSqcHYdIQ47iljBit2swOQHcEi?=
+ =?us-ascii?Q?pzJ4La/K1XquRXKqigueZ2v5gvPkwAim+s6Zamiwg2uA4mMPjdbgGHmlDaMv?=
+ =?us-ascii?Q?hmtQDUuuC+tcPLXUDF8WqKC18SKb/6iR3t48O/+sMkvF/XY3JItCdaXQeRkZ?=
+ =?us-ascii?Q?ROaAeIOAPRl+F+XK1AZA6aEoc/O/6JItNSwHpcnchI4351Ol+OmTT31yjzth?=
+ =?us-ascii?Q?LFZ8vj/arCok8ihz2q3BDL5OBGHFFI8H0VmQnEPHqOMRWqJcL0eQHDqhkvvm?=
+ =?us-ascii?Q?yA2a3W5DKXMubbwC3E+mhq/ZaaDOY0oY6XO/PWvLqAel0qSDdKX/R0Ypuux/?=
+ =?us-ascii?Q?WuoJl2ZT1UFushOObYsu+LShRPnr6PgHJeEWvbAtjnNgmm4oJVZP6jk7u+SE?=
+ =?us-ascii?Q?PQJZmKLnx/4gceUeOVqaREwKr4CLjYxcXK/B+QdYEcdT10PSDQ2bBcxs1Jav?=
+ =?us-ascii?Q?YGLiVI6gyQvED5iukZPNERjjMnaHRFwjeGSR0IhLUm9/i6VfLUYIE8Nvfw02?=
+ =?us-ascii?Q?jc2HJLkARP4t8qD9TYx9xxM2TahsSXYX82QS/Hhw4sl+ZNdj0h+7j+U/SMyU?=
+ =?us-ascii?Q?9uvRTd9SWlcXdR6DXzXbqpZGB7jP/BDtcZAlVpn2/c4UkVyxSax8kLlV2YHV?=
+ =?us-ascii?Q?uYL8uUvnSIF2cIWzETfhsmhXCYEd7Zf/XRKdJyUUGTTaWxnHBb81DEgw/N/5?=
+ =?us-ascii?Q?Y+oM9VIR2ldeHfXuQJBL0JMtXPWm8JH7W4ch33osVeBrX8mY0xKyQt29VVvo?=
+ =?us-ascii?Q?alMzM7s3Gkza/aQLbfhWECOFpBuhlvSIgWZCSEZDgxyn70nMSzFgX+IjCxoL?=
+ =?us-ascii?Q?9lHloQlJ9DSx67MYbGmSfFdzNj7bgcwe/CFWpcb2CLmwFnmLjwcry3TucQ5f?=
+ =?us-ascii?Q?1Wwe2KzowPHo6R4qS5xHQ3iMldvDuZX2CK3MpOuhaeU2Y6tXEuLj4wKQOodi?=
+ =?us-ascii?Q?jPoQAt9nrF/2WYbeKS4LNISZz5EpjQqN1zqC+x2rwscedpH8OmnZgSm2qtyd?=
+ =?us-ascii?Q?XzTJjfCo6T8dQOv/UQL1nd+JF44NFhIKZFe9qqryH3v9YJCg/EZ4TwHfC7Uu?=
+ =?us-ascii?Q?jlG1ZfBjYpAoS2fwgx6cCfcQLt2f25omyxcXfaC2fEOAQQWgOxaoRc2ylto9?=
+ =?us-ascii?Q?Ow=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 411084b8-06e6-4152-4066-08dba0c0d07b
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Aug 2023 14:30:19.8791
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7NtfuwJ/m6MPhjpgUEKEBCkU8HPLLLrP8894v32yUA4Z8PkDjDWBAcUmMkZm09BQZs3zkarQnyasIVYr4R7hFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8745
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 04:29:20PM +0200, Carsten Spieﬂ wrote:
-> Driver for Renesas ISL28022 power monitor with I2C interface.
-> The device monitors voltage, current via shunt resistor
-> and calculated power.
+Hi Jamal,
+
+There's a typo in the title: ambigous -> ambiguous
+
+On Fri, Aug 18, 2023 at 02:14:32PM -0400, Jamal Hadi Salim wrote:
+> When replacing an existing root qdisc, with one that is of the same kind, the
+> request boils down to essentially a paremeterization change  i.e not one that
+> requires allocation and grafting of a new qdisc. syzbot was able to create a
+> scenario which resulted in a taprio qdisc replacing an existing taprio qdisc
+> with a combination of NLM_F_CREATE, NLM_F_REPLACE and NLM_F_EXCL leading to
+> create and graft scenario.
+> The fix ensures that only when the qdisc kinds are different that we should
+> allow a create and graft, otherwise it goes into the "change" codepath.
 > 
-> Signed-off-by: Carsten Spieﬂ <mail@carsten-spiess.de>
-> ---
-> v4:
-> - no changes
-> v3:
-> - changelog added
-> v2/v3:
-> - hwmon input shunt voltage removed
-> - debugfs for shunt voltage read access added
-> - missing error handling added
-> - shunt resistor minimum and default value added
-> - properties reworked
-> - device_property_* instead of_property fixed
-> - possible overflows fixed
-> - MAINTAINERS order fixed
-> - documentation updated
-> ---
->  Documentation/hwmon/index.rst    |   1 +
->  Documentation/hwmon/isl28022.rst |  63 ++++
->  MAINTAINERS                      |   7 +
->  drivers/hwmon/Kconfig            |  11 +
->  drivers/hwmon/Makefile           |   1 +
->  drivers/hwmon/isl28022.c         | 496 +++++++++++++++++++++++++++++++
->  6 files changed, 579 insertions(+)
->  create mode 100644 Documentation/hwmon/isl28022.rst
->  create mode 100644 drivers/hwmon/isl28022.c
+> While at it, fix the code and comments to improve readability.
 > 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index d11924667f76..c9548fc5c40e 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -90,6 +90,7 @@ Hardware Monitoring Kernel Drivers
->     ir35221
->     ir38064
->     ir36021
-> +   isl28022
->     isl68137
->     it87
->     jc42
-> diff --git a/Documentation/hwmon/isl28022.rst b/Documentation/hwmon/isl28022.rst
-> new file mode 100644
-> index 000000000000..8d4422a2dacd
-> --- /dev/null
-> +++ b/Documentation/hwmon/isl28022.rst
-> @@ -0,0 +1,63 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +Kernel driver isl28022
-> +======================
-> +
-> +Supported chips:
-> +
-> +  * Renesas ISL28022
-> +
-> +    Prefix: 'isl28022'
-> +
-> +    Addresses scanned: none
-> +
-> +    Datasheet: Publicly available at the Renesas website
-> +
-> +	       https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
-> +
-> +Author:
-> +    Carsten Spieﬂ <mail@carsten-spiess.de>
-> +
-> +Description
-> +-----------
-> +
-> +The ISL28022 is a power monitor with I2C interface. The device monitors
-> +voltage, current via shunt resistor and calculated power.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +This driver does not auto-detect devices. You will have to instantiate the
-> +device explicitly. Please see Documentation/i2c/instantiating-devices.rst for
-> +details.
-> +
-> +The shunt value in micro-ohms, shunt voltage range and averaging can be set
-> +with device properties.
-> +Please refer to the Documentation/devicetree/bindings/hwmon/isl,isl28022.yaml
-> +for bindings if the device tree is used.
-> +
-> +The driver supports only shunt and bus continuous ADC mode at 15bit resolution.
-> +Averaging can be set from 1 to 128 samples (power of 2) on both channels.
-> +Shunt voltage range of 40, 80, 160 or 320mV is allowed
-> +The bus voltage range is 60V fixed.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +The following attributes are supported. All attributes are read-only.
-> +
-> +======================= =======================================================
-> +in0_input		bus voltage (milli Volt)
-> +
-> +curr1_input		current (milli Ampere)
-> +power1_input		power (micro Watt)
-> +======================= =======================================================
-> +
-> +Debugfs entries
-> +---------------
-> +
-> +The following attributes are supported. All attributes are read-only.
-> +
-> +======================= =======================================================
-> +shunt_voltage		shunt voltage (micro Volt)
-> +======================= =======================================================
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7abb5710e1bb..b02e3b991676 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11065,6 +11065,13 @@ F:	drivers/isdn/Makefile
->  F:	drivers/isdn/hardware/
->  F:	drivers/isdn/mISDN/
+> While syzbot was able to create the issue, it did not zone on the root cause.
+> Analysis from Vladimir Oltean <vladimir.oltean@nxp.com> helped narrow it down.
+> 
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Reported-by: syzbot+a3618a167af2021433cd@syzkaller.appspotmail.com
+> Closes:https://lore.kernel.org/netdev/20230816225759.g25x76kmgzya2gei@skbuf/T/
+
+Space between Closes: tag and link.
+
+> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+> ---
+>  net/sched/sch_api.c | 55 ++++++++++++++++++++++++++++++++++-----------
+>  1 file changed, 42 insertions(+), 13 deletions(-)
+> 
+> diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
+> index aa6b1fe65151..dd3db8608275 100644
+> --- a/net/sched/sch_api.c
+> +++ b/net/sched/sch_api.c
+> @@ -1547,10 +1547,28 @@ static int tc_get_qdisc(struct sk_buff *skb, struct nlmsghdr *n,
+>  	return 0;
+>  }
 >  
-> +ISL28022 HARDWARE MONITORING DRIVER
-> +M:	Carsten Spieﬂ <mail@carsten-spiess.de>
-> +L:	linux-hwmon@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/hwmon/isl28022.rst
-> +F:	drivers/hwmon/isl28022.c
-> +
->  ISOFS FILESYSTEM
->  M:	Jan Kara <jack@suse.cz>
->  L:	linux-fsdevel@vger.kernel.org
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 2913299c2c9e..3049c519e6ac 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -800,6 +800,17 @@ config SENSORS_CORETEMP
->  	  sensor inside your CPU. Most of the family 6 CPUs
->  	  are supported. Check Documentation/hwmon/coretemp.rst for details.
->  
-> +config SENSORS_ISL28022
-> +	tristate "Renesas ISL28022"
-> +	depends on I2C
-> +	select REGMAP_I2C
-> +	help
-> +	  If you say yes here you get support for ISL28022 power monitor.
-> +	  Check Documentation/hwmon/isl28022.rst for details.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called isl28022.
-> +
->  config SENSORS_IT87
->  	tristate "ITE IT87xx and compatibles"
->  	depends on !PPC
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index ff6bfd109c72..4046fed7f48d 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -98,6 +98,7 @@ obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
->  obj-$(CONFIG_SENSORS_INA238)	+= ina238.o
->  obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
->  obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
-> +obj-$(CONFIG_SENSORS_ISL28022)	+= isl28022.o
->  obj-$(CONFIG_SENSORS_IT87)	+= it87.o
->  obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
->  obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
-> diff --git a/drivers/hwmon/isl28022.c b/drivers/hwmon/isl28022.c
-> new file mode 100644
-> index 000000000000..18b4481d5ff6
-> --- /dev/null
-> +++ b/drivers/hwmon/isl28022.c
-> @@ -0,0 +1,496 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * isl28022.c - driver for Renesas ISL28022 power monitor chip monitoring
-> + *
-> + * Copyright (c) 2023 Carsten Spieﬂ <mail@carsten-spiess.de>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/init.h>
-> +#include <linux/slab.h>
-> +#include <linux/i2c.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/hwmon-sysfs.h>
+> +static inline bool cmd_create_or_replace(struct nlmsghdr *n)
 
-Unnecessary include file.
+We tend to use "static inline" functions only when defining them in headers.
+In C files, we drop "inline" and let the compiler decide whether to inline or not.
 
-> +#include <linux/debugfs.h>
-> +#include <linux/err.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/util_macros.h>
-> +#include <linux/regulator/consumer.h>
-
-Aplhabetic include file order, please.
-
-> +
-> +/* ISL28022 registers */
-> +#define ISL28022_REG_CONFIG	0x00
-> +#define ISL28022_REG_SHUNT	0x01
-> +#define ISL28022_REG_BUS	0x02
-> +#define ISL28022_REG_POWER	0x03
-> +#define ISL28022_REG_CURRENT	0x04
-> +#define ISL28022_REG_CALIB	0x05
-> +#define ISL28022_REG_SHUNT_THR	0x06
-> +#define ISL28022_REG_BUS_THR	0x07
-> +#define ISL28022_REG_INT	0x08
-> +#define ISL28022_REG_AUX	0x09
-> +#define ISL28022_REG_MAX	ISL28022_REG_AUX
-> +
-> +/* ISL28022 config flags */
-> +/* mode flags */
-> +#define ISL28022_MODE_SHIFT	0
-> +#define ISL28022_MODE_MASK	0x0007
-> +
-> +#define ISL28022_MODE_PWR_DOWN	0x0
-> +#define ISL28022_MODE_TRG_S	0x1
-> +#define ISL28022_MODE_TRG_B	0x2
-> +#define ISL28022_MODE_TRG_SB	0x3
-> +#define ISL28022_MODE_ADC_OFF	0x4
-> +#define ISL28022_MODE_CONT_S	0x5
-> +#define ISL28022_MODE_CONT_B	0x6
-> +#define ISL28022_MODE_CONT_SB	0x7
-> +
-> +/* shunt ADC settings */
-> +#define ISL28022_SADC_SHIFT	3
-> +#define ISL28022_SADC_MASK	0x0078
-> +
-> +#define ISL28022_BADC_SHIFT	7
-> +#define ISL28022_BADC_MASK	0x0780
-> +
-> +#define ISL28022_ADC_12		0x0	/* 12 bit ADC */
-> +#define ISL28022_ADC_13		0x1	/* 13 bit ADC */
-> +#define ISL28022_ADC_14		0x2	/* 14 bit ADC */
-> +#define ISL28022_ADC_15		0x3	/* 15 bit ADC */
-> +#define ISL28022_ADC_15_1	0x8	/* 15 bit ADC, 1 sample */
-> +#define ISL28022_ADC_15_2	0x9	/* 15 bit ADC, 2 samples */
-> +#define ISL28022_ADC_15_4	0xA	/* 15 bit ADC, 4 samples */
-> +#define ISL28022_ADC_15_8	0xB	/* 15 bit ADC, 8 samples */
-> +#define ISL28022_ADC_15_16	0xC	/* 15 bit ADC, 16 samples */
-> +#define ISL28022_ADC_15_32	0xD	/* 15 bit ADC, 32 samples */
-> +#define ISL28022_ADC_15_64	0xE	/* 15 bit ADC, 64 samples */
-> +#define ISL28022_ADC_15_128	0xF	/* 15 bit ADC, 128 samples */
-> +
-> +/* shunt voltage range */
-> +#define ISL28022_PG_SHIFT	11
-> +#define ISL28022_PG_MASK	0x1800
-> +
-> +#define ISL28022_PG_40		0x0	/* +/-40 mV */
-> +#define ISL28022_PG_80		0x1	/* +/-80 mV */
-> +#define ISL28022_PG_160		0x2	/* +/-160 mV */
-> +#define ISL28022_PG_320		0x3	/* +/-3200 mV */
-> +
-> +/* bus voltage range */
-> +#define ISL28022_BRNG_SHIFT	13
-> +#define ISL28022_BRNG_MASK	0x6000
-> +
-> +#define ISL28022_BRNG_16	0x0	/* 16 V */
-> +#define ISL28022_BRNG_32	0x1	/* 32 V */
-> +#define ISL28022_BRNG_60	0x3	/* 60 V */
-> +
-> +/* reset */
-> +#define ISL28022_RESET		0x8000
-> +
-> +struct isl28022_data {
-> +	struct i2c_client	*client;
-> +	struct regmap		*regmap;
-> +#ifdef CONFIG_DEBUG_FS
-> +	struct dentry		*debugfs;
-> +#endif
-> +	u32			shunt;
-> +	u32			gain;
-> +	u32			average;
-> +	u16			config;
-> +	u16			calib;
-> +};
-> +
-> +static int isl28022_read(struct device *dev, enum hwmon_sensor_types type,
-> +			 u32 attr, int channel, long *val)
 > +{
-> +	struct isl28022_data *data = dev_get_drvdata(dev);
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	switch (type) {
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_BUS, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			/* driver supports only 60V mode (BRNG 11) */
-> +			*val = (long)(((u16)regval) & 0xFFFC);
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_CURRENT, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			*val = ((long)regval * 1250L * (long)data->gain) /
-> +				(long)data->shunt;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +			err = regmap_read(data->regmap,
-> +					  ISL28022_REG_POWER, &regval);
-> +			if (err < 0)
-> +				return err;
-> +			*val = ((51200000L * ((long)data->gain)) /
-> +				(long)data->shunt) * (long)regval;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
+> +	return (n->nlmsg_flags & NLM_F_CREATE &&
+> +		n->nlmsg_flags & NLM_F_REPLACE);
 > +}
 > +
-> +static umode_t isl28022_is_visible(const void *data, enum hwmon_sensor_types type,
-> +				   u32 attr, int channel)
+> +static inline bool cmd_create_exclusive(struct nlmsghdr *n)
 > +{
-> +	switch (type) {
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	case hwmon_curr:
-> +		switch (attr) {
-> +		case hwmon_curr_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	case hwmon_power:
-> +		switch (attr) {
-> +		case hwmon_power_input:
-> +			return 0444;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +	return 0;
-> +}
-
-Various default: missing.
-
-> +
-> +static const struct hwmon_channel_info *isl28022_info[] = {
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT),	/* channel 0: bus voltage (mV) */
-> +	HWMON_CHANNEL_INFO(curr,
-> +			   HWMON_C_INPUT),	/* channel 1: current (mA) */
-> +	HWMON_CHANNEL_INFO(power,
-> +			   HWMON_P_INPUT),	/* channel 1: power (µW) */
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops isl28022_hwmon_ops = {
-> +	.is_visible = isl28022_is_visible,
-> +	.read = isl28022_read,
-> +};
-> +
-> +static const struct hwmon_chip_info isl28022_chip_info = {
-> +	.ops = &isl28022_hwmon_ops,
-> +	.info = isl28022_info,
-> +};
-> +
-> +static bool isl28022_is_writeable_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case ISL28022_REG_CONFIG:
-> +	case ISL28022_REG_CALIB:
-> +	case ISL28022_REG_SHUNT_THR:
-> +	case ISL28022_REG_BUS_THR:
-> +	case ISL28022_REG_INT:
-> +	case ISL28022_REG_AUX:
-> +		return true;
-> +	}
-> +
-> +	return false;
+> +	return (n->nlmsg_flags & NLM_F_CREATE &&
+> +		n->nlmsg_flags & NLM_F_EXCL);
 > +}
 > +
-> +static bool isl28022_is_volatile_reg(struct device *dev, unsigned int reg)
+> +static inline bool cmd_change(struct nlmsghdr *n)
 > +{
-> +	switch (reg) {
-> +	case ISL28022_REG_CONFIG:
-> +	case ISL28022_REG_SHUNT:
-> +	case ISL28022_REG_BUS:
-> +	case ISL28022_REG_POWER:
-> +	case ISL28022_REG_CURRENT:
-> +	case ISL28022_REG_INT:
-> +	case ISL28022_REG_AUX:
-> +		return true;
-> +	}
-> +	return true;
+> +	return (!(n->nlmsg_flags & NLM_F_CREATE) &&
+> +		!(n->nlmsg_flags & NLM_F_REPLACE) &&
+> +		!(n->nlmsg_flags & NLM_F_EXCL));
 > +}
 > +
-> +static const struct regmap_config isl28022_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 16,
-> +	.max_register = ISL28022_REG_MAX,
-> +	.writeable_reg = isl28022_is_writeable_reg,
-> +	.volatile_reg = isl28022_is_volatile_reg,
-> +	.val_format_endian = REGMAP_ENDIAN_BIG,
-> +	.cache_type = REGCACHE_RBTREE,
-> +	.use_single_read = true,
-> +	.use_single_write = true,
-> +};
-> +
-> +static const struct i2c_device_id isl28022_ids[] = {
-> +	{ "isl28022", 0},
-> +	{ /* LIST END */ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, isl28022_ids);
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +static int shunt_voltage_show(struct seq_file *seqf, void *unused)
-> +{
-> +	struct isl28022_data *data = seqf->private;
-> +	unsigned int regval;
-> +	int err;
-> +
-> +	err = regmap_read(data->regmap,
-> +			  ISL28022_REG_SHUNT, &regval);
-> +	if (err)
-> +		return err;
-> +
-> +	/* print shunt voltage in micro volt  */
-> +	seq_printf(seqf, "%d\n", regval * 10);
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(shunt_voltage);
-> +
-> +static struct dentry *isl28022_debugfs_root;
-> +
-> +static void isl28022_debugfs_remove(void *res)
-> +{
-> +	debugfs_remove_recursive(res);
-> +}
-> +
-> +static int isl28022_debugfs_init(struct isl28022_data *data)
-> +{
+>  /*
+>   * Create/change qdisc.
+>   */
+> -
+>  static int tc_modify_qdisc(struct sk_buff *skb, struct nlmsghdr *n,
+>  			   struct netlink_ext_ack *extack)
+>  {
+> @@ -1644,27 +1662,37 @@ static int tc_modify_qdisc(struct sk_buff *skb, struct nlmsghdr *n,
+>  				 *
+>  				 *   We know, that some child q is already
+>  				 *   attached to this parent and have choice:
+> -				 *   either to change it or to create/graft new one.
+> +				 *   1) change it or 2) create/graft new one.
+> +				 *   If the requested qdisc kind is different
+> +				 *   than the existing one, then we choose graft.
+> +				 *   If they are the same then this is "change"
+> +				 *   operation - just let it fallthrough..
+>  				 *
+>  				 *   1. We are allowed to create/graft only
+> -				 *   if CREATE and REPLACE flags are set.
+> +				 *   if the request is explicitly stating
+> +				 *   "please create if it doesn't exist".
+>  				 *
+> -				 *   2. If EXCL is set, requestor wanted to say,
+> -				 *   that qdisc tcm_handle is not expected
+> +				 *   2. If the request is to exclusive create
+> +				 *   then the qdisc tcm_handle is not expected
+>  				 *   to exist, so that we choose create/graft too.
+>  				 *
+>  				 *   3. The last case is when no flags are set.
+> +				 *   This will happen when for example tc
+> +				 *   utility issues a "change" command.
+>  				 *   Alas, it is sort of hole in API, we
+>  				 *   cannot decide what to do unambiguously.
+> -				 *   For now we select create/graft, if
+> -				 *   user gave KIND, which does not match existing.
+> +				 *   For now we select create/graft.
+>  				 */
+> -				if ((n->nlmsg_flags & NLM_F_CREATE) &&
+> -				    (n->nlmsg_flags & NLM_F_REPLACE) &&
+> -				    ((n->nlmsg_flags & NLM_F_EXCL) ||
+> -				     (tca[TCA_KIND] &&
+> -				      nla_strcmp(tca[TCA_KIND], q->ops->id))))
+> -					goto create_n_graft;
+> +				if (tca[TCA_KIND] &&
+> +				    nla_strcmp(tca[TCA_KIND], q->ops->id)) {
+> +					if (cmd_create_or_replace(n) ||
+> +					    cmd_create_exclusive(n)) {
+> +						goto create_n_graft;
+> +					} else {
+> +						if (cmd_change(n))
 
-This function should not return an error (see below).
+else if cmd_change()
 
-> +	char name[16];
-> +	int err;
-> +	struct dentry *entry;
-> +
-> +	scnprintf(name, sizeof(name), "%d-%04hx", data->client->adapter->nr, data->client->addr);
-> +
+thus the code block under the qdisc kind comparison can become:
 
-I am sure I mentioned this before. data->client is only used in this
-function. Pass it as argument instead of storing it in data->client.
+					if (cmd_create_or_replace(n) ||
+					    cmd_create_exclusive(n))
+						goto create_n_graft;
+					else if (cmd_change(n))
+						goto create_n_graft2;
 
-> +	data->debugfs = debugfs_create_dir(name, isl28022_debugfs_root);
+(no extra brackets are needed)
 
-Why store 'debugfs' in data ? It is not used outside this function.
-
-Actually, 'data' is only used to get data->client, and to
-(unnecessarily) store debugfs in it. Just pass 'client',
-add a local 'debugfs' variable instead, and drop both 'client'
-and 'debugfs' from struct isl28022_data.
-
-> +	if (IS_ERR(data->debugfs))
-> +		return PTR_ERR(data->debugfs);
-> +
-> +	err = devm_add_action_or_reset(&data->client->dev, isl28022_debugfs_remove, data->debugfs);
-> +	if (err)
-> +		return err;
-> +
-> +	entry = debugfs_create_file("shunt_voltage", 0444, data->debugfs, data,
-> +			    &shunt_voltage_fops);
-> +	if (IS_ERR(entry))
-> +		return PTR_ERR(entry);
-> +
-
-Error checking / handling of debugfs calls in this function should not
-be necessary. debugfs code handles it transparently.
-
-> +	return 0;
-> +}
-> +#endif /* CONFIG_DEBUG_FS*/
-> +
-> +/*
-> + * read property values and make consistency checks.
-> + *
-> + * following values for shunt range and resistor are allowed:
-> + *   40 mV -> gain 1, shunt min.  800 micro ohms
-> + *   80 mV -> gain 2, shunt min. 1600 micro ohms
-> + *  160 mV -> gain 4, shunt min. 3200 micro ohms
-> + *  320 mV -> gain 8, shunt min. 6400 micro ohms
-> + */
-> +static int isl28022_read_properties(struct device *dev, struct isl28022_data *data)
-> +{
-> +	u32 val;
-> +	int err;
-> +
-> +	err = device_property_read_u32(dev, "shunt-resistor-micro-ohms", &val);
-> +	if (err == -ENODATA)
-> +		val = 10000;
-> +	else if (err < 0)
-> +		return err;
-> +	data->shunt = val;
-> +
-> +	err = device_property_read_u32(dev, "renesas,shunt-range-microvolt", &val);
-> +	if (err == -ENODATA)
-> +		val = 320000;
-> +	else if (err < 0)
-> +		return err;
-> +	switch (val) {
-> +	case 40000:
-> +		data->gain = 1;
-> +		if (data->shunt < 800)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 80000:
-> +		data->gain = 2;
-> +		if (data->shunt < 1600)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 160000:
-> +		data->gain = 4;
-> +		if (data->shunt < 3200)
-> +			goto shunt_invalid;
-> +		break;
-> +	case 320000:
-> +		data->gain = 8;
-> +		if (data->shunt < 6400)
-> +			goto shunt_invalid;
-> +		break;
-> +	default:
-> +		dev_err(dev, "renesas,shunt-range-microvolt invalid value %d\n", val);
-> +		return -EINVAL;
-> +	}
-> +
-> +	err = device_property_read_u32(dev, "renesas,average-samples", &val);
-> +	if (err == -ENODATA)
-> +		val = 1;
-
--ENODATA means the property exists (as boolean) but contains no value.
-Is that really what you want here and above ? It contradicts the devicetree
-documentation which suggests defaults but doesn't say anything about a
-boolean property which should be interpreted as "use default".
-Should this check for -EINVAL instead ?
-
-> +	else if (err < 0)
-> +		return err;
-> +	if ((val > 128) || (BIT(__ffs(val)) != val)) {
-
-Please no unnecessary ( ). Also, the return value of __ffs() is undefined
-if the parameter is 0. While BIT(some random number) is unlikely to be 0,
-it might well be if 'some random number' is >= 32. I don't think
-relying on this is a good idea. I would suggest checking for
-hweight32(val) != 1 instead.
-
-> +		dev_err(dev, "renesas,average-samples invalid value %d\n", val);
-> +		return -EINVAL;
-> +	}
-> +	data->average = val;
-> +
-> +	return 0;
-> +
-> +shunt_invalid:
-> +	dev_err(dev, "renesas,shunt-resistor-microvolt invalid value %d\n", data->shunt);
-> +	return -EINVAL;
-> +}
-> +
-> +/*
-> + * write configuration and calibration registers
-> + *
-> + * The driver supports only shunt and bus continuous ADC mode at 15bit resolution
-> + * with averaging from 1 to 128 samples (pow of 2) on both channels.
-> + * Shunt voltage gain 1,2,4 or 8 is allowed.
-> + * The bus voltage range is 60V fixed.
-> + */
-> +static int isl28022_config(struct isl28022_data *data)
-> +{
-> +	int err;
-> +
-> +	data->config = (ISL28022_MODE_CONT_SB << ISL28022_MODE_SHIFT) |
-> +			(ISL28022_BRNG_60 << ISL28022_BRNG_SHIFT) |
-> +			(__ffs(data->gain) << ISL28022_PG_SHIFT) |
-> +			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_SADC_SHIFT) |
-> +			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_BADC_SHIFT);
-> +
-> +	data->calib = data->shunt ? 0x8000 / data->gain : 0;
-> +
-> +	err = regmap_write(data->regmap, ISL28022_REG_CONFIG, data->config);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	err = regmap_write(data->regmap, ISL28022_REG_CALIB, data->calib);
-> +	if (err < 0)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static int isl28022_probe(struct i2c_client *client)
-> +{
-> +	struct device *dev = &client->dev;
-> +	struct device *hwmon_dev;
-> +	struct isl28022_data *data;
-> +	int err;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_BYTE_DATA |
-> +				     I2C_FUNC_SMBUS_WORD_DATA))
-> +		return -ENODEV;
-> +
-> +	data = devm_kzalloc(dev, sizeof(struct isl28022_data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	data->client = client;
-> +
-> +	err = isl28022_read_properties(dev, data);
-> +	if (err)
-> +		return err;
-> +
-> +	data->regmap = devm_regmap_init_i2c(client, &isl28022_regmap_config);
-> +	if (IS_ERR(data->regmap))
-> +		return PTR_ERR(data->regmap);
-> +
-> +	err = isl28022_config(data);
-> +	if (err)
-> +		return err;
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +	err = isl28022_debugfs_init(data);
-> +	if (err)
-> +		return err;
-
-debugfs errors are not supposed to result in instantiation aborts.
-
-> +#endif
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(dev, "isl28022_hwmon",
-> +							 data, &isl28022_chip_info, NULL);
-> +	if (IS_ERR(hwmon_dev))
-> +		return PTR_ERR(hwmon_dev);
-> +
-> +	dev_info(dev, "%s: sensor '%s'\n", dev_name(hwmon_dev), client->name);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id __maybe_unused isl28022_of_match[] = {
-> +	{ .compatible = "renesas,isl28022"},
-> +	{ /* LIST END */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, isl28022_of_match);
-> +
-> +static struct i2c_driver isl28022_driver = {
-> +	.class		= I2C_CLASS_HWMON,
-> +	.driver = {
-> +		.name	= "isl28022",
-> +	},
-> +	.probe_new	= isl28022_probe,
-> +	.id_table	= isl28022_ids,
-> +};
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +static int __init
-> +isl28022_init(void)
-> +{
-> +	int err;
-> +
-> +	isl28022_debugfs_root = debugfs_create_dir("isl28022", NULL);
-> +	err = i2c_add_driver(&isl28022_driver);
-> +	if (!err)
-> +		return 0;
-> +
-> +	debugfs_remove_recursive(isl28022_debugfs_root);
-> +	return err;
-> +}
-> +
-> +static void __exit
-> +isl28022_exit(void)
-> +{
-> +	i2c_del_driver(&isl28022_driver);
-> +	debugfs_remove_recursive(isl28022_debugfs_root);
-> +}
-> +
-> +module_init(isl28022_init);
-> +module_exit(isl28022_exit);
-> +#else /* CONFIG_DEBUG_FS */
-> +module_i2c_driver(isl28022_driver);
-> +#endif /* CONFIG_DEBUG_FS */
-
-This set of ifdefs is unnecessary. debugfs functions are dummies
-if debugfs is not enabled. The above just makes the code more
-difficult to understand.
-
-In general, it is always better to avoid "#ifdef CONFIG_DEBUG_FS"
-to make sure that the code compiles with and without it.
-Please consider just always keeping that code. The compiler will
-drop most if not all of it if debugfs is not enabled.
-
-> +
-> +MODULE_AUTHOR("Carsten Spieﬂ <mail@carsten-spiess.de>");
-> +MODULE_DESCRIPTION("ISL28022 driver");
-> +MODULE_LICENSE("GPL");
+> +							goto create_n_graft2;
+> +					}
+> +				}
+>  			}
+>  		}
+>  	} else {
+> @@ -1698,6 +1726,7 @@ static int tc_modify_qdisc(struct sk_buff *skb, struct nlmsghdr *n,
+>  		NL_SET_ERR_MSG(extack, "Qdisc not found. To create specify NLM_F_CREATE flag");
+>  		return -ENOENT;
+>  	}
+> +create_n_graft2:
+>  	if (clid == TC_H_INGRESS) {
+>  		if (dev_ingress_queue(dev)) {
+>  			q = qdisc_create(dev, dev_ingress_queue(dev),
 > -- 
 > 2.34.1
-> 
+>
