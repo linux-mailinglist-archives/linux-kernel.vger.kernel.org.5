@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97CED781B8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FCC781B85
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbjHTAKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 20:10:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
+        id S229603AbjHTAKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 20:10:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjHTAKX (ORCPT
+        with ESMTP id S229707AbjHTAKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 20:10:23 -0400
+        Sat, 19 Aug 2023 20:10:22 -0400
 Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD87EA15CA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21EBA2C13
         for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 13:15:44 -0700 (PDT)
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSqk71rppz47;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSqk73tQQzDP;
         Sat, 19 Aug 2023 22:15:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1692476143; bh=cb3x8n2KvdEKrO5gnhlOylDSeakeIsSLrBnHc0wj/Xs=;
-        h=Date:Subject:From:To:Cc:From;
-        b=hwLnw2u8bU2rudNOg8R+HOsSO9Bz+KPpNDlUk8fnCWHdUYTUueksZRousMeblwdkK
-         CYypYq8ll7/CpHikUDohKo6jDy8VUXB+hMb4XltgNmuNDvI1Rg8K6GuJ/v8VUBd+tA
-         rHwTva68Vuc47DEhXfFmVVcsbYZWGeaSBT+2vKwC1VZcvNcwjLR2e3T74OfTrZKvP0
-         VM+ieunOZ+/GJyZ0jz7fKuWg3+nU57VO0c6FGwCecU5pR1Nx8tPk4SfXk4GbMUAC+P
-         z2gxeZ2qZ8NWeMDvV5tCQfCBuIXxY8Jw0JtfwSIndMmdWYgSrtwhmDMyU3vk5QMHVO
-         t81N3kYczbdOA==
+        t=1692476143; bh=YtPxaSJGaYviQtheKr8WW3ztuiAMjl4/E99vF4LFKWg=;
+        h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
+        b=cyBrcl6tONyHMHe4XVqxrsMla0/aQQ7tc1uDzhc8/EPOstcGM0VJaCOvSRnaV1Ktu
+         3TmHfHXP6HFh+p39fbRtP1Baptw/KvHlwujqcYgG2132t494+TCfErLfAPdR9DPaH+
+         2MadHHAFouLtqyJmVg7saOMpmob9IUHKOo/6n1ilNTpN7Ysk3r/2dO7PEeBgq5C7tO
+         dT/0M/4GouIryBXgWhf1OXVwFC0l6tKBZo8JEu4Z6lKAQ+JGg7MeYe1HHx+HAeDU1f
+         aP7+ShOw+iksWiJR4pwHLl2DB69sSxYjifAmaanEukiZkkVdNdP2Rq5uWHaEFccvLg
+         BEskEBNT6m9Ig==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Sat, 19 Aug 2023 22:15:42 +0200
-Message-Id: <0e37d1f09718a6ab9204b367ff528ab02df25ac7.1692475736.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 1/2] regulator: core: simplify regulator_lock_nested()
+Date:   Sat, 19 Aug 2023 22:15:43 +0200
+Message-Id: <89a905854995cf662a122792d8d0c781e39ea7da.1692475736.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <0e37d1f09718a6ab9204b367ff528ab02df25ac7.1692475736.git.mirq-linux@rere.qmqm.pl>
+References: <0e37d1f09718a6ab9204b367ff528ab02df25ac7.1692475736.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 2/2] regulator: core: skip nesting lock for -EDEADLK
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,50 +50,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`lock` is only false when the `rdev` is already locked and the owner is
-`current`. In this case `ret` is always zero. By removing `lock`, we
-thus remove `mutex_owner` write avoidance, but make the code flow more
-understandable.
+When ww_mutex_lock() returns -EDEADLK the nesting mutex-protected
+section becomes a no-op. Return early and avoid the extra lock.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/regulator/core.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ drivers/regulator/core.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index d8e1caaf207e..215b721e5cd4 100644
+index 215b721e5cd4..921c7039baa3 100644
 --- a/drivers/regulator/core.c
 +++ b/drivers/regulator/core.c
-@@ -141,27 +141,19 @@ static bool regulator_ops_is_valid(struct regulator_dev *rdev, int ops)
- static inline int regulator_lock_nested(struct regulator_dev *rdev,
- 					struct ww_acquire_ctx *ww_ctx)
- {
--	bool lock = false;
- 	int ret = 0;
+@@ -145,18 +145,17 @@ static inline int regulator_lock_nested(struct regulator_dev *rdev,
  
  	mutex_lock(&regulator_nesting_mutex);
  
- 	if (!ww_mutex_trylock(&rdev->mutex, ww_ctx)) {
--		if (rdev->mutex_owner == current)
--			rdev->ref_cnt++;
--		else
--			lock = true;
--
--		if (lock) {
-+		if (rdev->mutex_owner != current) {
- 			mutex_unlock(&regulator_nesting_mutex);
- 			ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
- 			mutex_lock(&regulator_nesting_mutex);
- 		}
--	} else {
--		lock = true;
+-	if (!ww_mutex_trylock(&rdev->mutex, ww_ctx)) {
+-		if (rdev->mutex_owner != current) {
+-			mutex_unlock(&regulator_nesting_mutex);
+-			ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
+-			mutex_lock(&regulator_nesting_mutex);
+-		}
++	if (!ww_mutex_trylock(&rdev->mutex, ww_ctx) &&
++	    rdev->mutex_owner != current) {
++		mutex_unlock(&regulator_nesting_mutex);
++		ret = ww_mutex_lock(&rdev->mutex, ww_ctx);
++		if (ret == -EDEADLK)
++			return ret;
++		mutex_lock(&regulator_nesting_mutex);
  	}
  
--	if (lock && ret != -EDEADLK) {
-+	if (ret != -EDEADLK) {
- 		rdev->ref_cnt++;
- 		rdev->mutex_owner = current;
- 	}
+-	if (ret != -EDEADLK) {
+-		rdev->ref_cnt++;
+-		rdev->mutex_owner = current;
+-	}
++	rdev->ref_cnt++;
++	rdev->mutex_owner = current;
+ 
+ 	mutex_unlock(&regulator_nesting_mutex);
+ 
 -- 
 2.39.2
 
