@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB28781787
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 07:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B89F6781786
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 07:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245272AbjHSFw6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Aug 2023 01:52:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
+        id S245301AbjHSFw7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Aug 2023 01:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245055AbjHSFwh (ORCPT
+        with ESMTP id S245090AbjHSFwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 01:52:37 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3094208
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 22:52:35 -0700 (PDT)
+        Sat, 19 Aug 2023 01:52:42 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F594208
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 22:52:41 -0700 (PDT)
 Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 37J5qK65010385;
-        Sat, 19 Aug 2023 13:52:20 +0800 (+08)
+        by SHSQR01.spreadtrum.com with ESMTP id 37J5qMao010390;
+        Sat, 19 Aug 2023 13:52:22 +0800 (+08)
         (envelope-from Yanxin.Huang@unisoc.com)
 Received: from SHDLP.spreadtrum.com (shmbx06.spreadtrum.com [10.0.1.11])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RSSWJ3v3lz2PbwF0;
-        Sat, 19 Aug 2023 13:50:04 +0800 (CST)
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RSSWL5flRz2PbwF0;
+        Sat, 19 Aug 2023 13:50:06 +0800 (CST)
 Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx06.spreadtrum.com
  (10.0.1.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Sat, 19 Aug
- 2023 13:52:18 +0800
+ 2023 13:52:21 +0800
 From:   Yanxin Huang <yanxin.huang@unisoc.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -36,9 +36,9 @@ CC:     Orson Zhai <orsonzhai@gmail.com>,
         <linux-kernel@vger.kernel.org>,
         huang yanxin <yanxin.huang07@gmail.com>,
         Wenming Wu <wenming.wu@unisoc.com>
-Subject: [PATCH 6/7] nvmem: sprd: Modify block_num and block_offset macro
-Date:   Sat, 19 Aug 2023 13:51:40 +0800
-Message-ID: <20230819055141.29455-6-yanxin.huang@unisoc.com>
+Subject: [PATCH 7/7] nvmem: sprd: Add Unisoc Qogirn6lite and UMS512 efuse support
+Date:   Sat, 19 Aug 2023 13:51:41 +0800
+Message-ID: <20230819055141.29455-7-yanxin.huang@unisoc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230819055141.29455-1-yanxin.huang@unisoc.com>
 References: <20230819055141.29455-1-yanxin.huang@unisoc.com>
@@ -48,7 +48,7 @@ X-Originating-IP: [10.13.2.29]
 X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
  shmbx06.spreadtrum.com (10.0.1.11)
 Content-Transfer-Encoding: 8BIT
-X-MAIL: SHSQR01.spreadtrum.com 37J5qK65010385
+X-MAIL: SHSQR01.spreadtrum.com 37J5qMao010390
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
@@ -58,42 +58,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The corresponding efuse block_num and block_offset are different for each
-soc, and different block_num and block_offset macros should be defined
-depending on the soc.
-
-Therefore, SPRD_EFUSE_NORMAL_BLOCK_NUMS and SPRD_EFUSE_NORMAL_BLOCK_OFFSET
-are changed to UMS312_NORMAL_BLOCK_NUMS and UMS312_NORMAL_BLOCK_OFFSET.
+This patch adds support for Unisoc UMS512 and Qogirn6lite platform
+efuse driver.
 
 Signed-off-by: Yanxin Huang <yanxin.huang@unisoc.com>
 ---
- drivers/nvmem/sprd-efuse.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/nvmem/sprd-efuse.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
-index 1f6779d3b218..0dad49935d38 100644
+index 0dad49935d38..065e6d55e832 100644
 --- a/drivers/nvmem/sprd-efuse.c
 +++ b/drivers/nvmem/sprd-efuse.c
-@@ -40,8 +40,8 @@
-  * and we can only access the normal efuse in kernel. So define the normal
-  * block offset index and normal block numbers.
+@@ -42,6 +42,10 @@
   */
--#define SPRD_EFUSE_NORMAL_BLOCK_NUMS   24
--#define SPRD_EFUSE_NORMAL_BLOCK_OFFSET 72
-+#define UMS312_NORMAL_BLOCK_NUMS       24
-+#define UMS312_NORMAL_BLOCK_OFFSET     72
+ #define UMS312_NORMAL_BLOCK_NUMS       24
+ #define UMS312_NORMAL_BLOCK_OFFSET     72
++#define UMS512_NORMAL_BLOCK_NUMS       24
++#define UMS512_NORMAL_BLOCK_OFFSET     72
++#define QogirN6L_NORMAL_BLOCK_NUMS     51
++#define QogirN6L_NORMAL_BLOCK_OFFSET   53
 
  /* Timeout (ms) for the trylock of hardware spinlocks */
  #define SPRD_EFUSE_HWLOCK_TIMEOUT      5000
-@@ -70,8 +70,8 @@ struct sprd_efuse {
+@@ -75,6 +79,18 @@ static const struct sprd_efuse_variant_data ums312_data = {
+        .blk_double = false,
  };
 
- static const struct sprd_efuse_variant_data ums312_data = {
--       .blk_nums = SPRD_EFUSE_NORMAL_BLOCK_NUMS,
--       .blk_offset = SPRD_EFUSE_NORMAL_BLOCK_OFFSET,
-+       .blk_nums = UMS312_NORMAL_BLOCK_NUMS,
-+       .blk_offset = UMS312_NORMAL_BLOCK_OFFSET,
-        .blk_double = false,
++static const struct sprd_efuse_variant_data ums512_data = {
++       .blk_nums = UMS512_NORMAL_BLOCK_NUMS,
++       .blk_offset = UMS512_NORMAL_BLOCK_OFFSET,
++       .blk_double = false,
++};
++
++static const struct sprd_efuse_variant_data qogirn6lite_data = {
++       .blk_nums = QogirN6L_NORMAL_BLOCK_NUMS,
++       .blk_offset = QogirN6L_NORMAL_BLOCK_OFFSET,
++       .blk_double = true,
++};
++
+ /*
+  * On Spreadtrum platform, we have multi-subsystems will access the unique
+  * efuse controller, so we need one hardware spinlock to synchronize between
+@@ -411,6 +427,8 @@ static int sprd_efuse_probe(struct platform_device *pdev)
+
+ static const struct of_device_id sprd_efuse_of_match[] = {
+        { .compatible = "sprd,ums312-efuse", .data = &ums312_data },
++       { .compatible = "sprd,ums512-efuse", .data = &ums512_data },
++       { .compatible = "sprd,qogirn6lite-efuse", .data = &qogirn6lite_data },
+        { }
  };
 
 --
