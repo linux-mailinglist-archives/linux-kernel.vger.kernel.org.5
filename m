@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D4F781795
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 08:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6AE781799
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 08:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245341AbjHSGKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 02:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        id S245364AbjHSGKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 02:10:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244561AbjHSGJb (ORCPT
+        with ESMTP id S245159AbjHSGJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 02:09:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCFB420E
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 23:09:30 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d6861869bcdso2365442276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 23:09:30 -0700 (PDT)
+        Sat, 19 Aug 2023 02:09:33 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7478420E
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 23:09:31 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68a2d0bdeadso38669b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 23:09:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692425369; x=1693030169;
+        d=google.com; s=20221208; t=1692425370; x=1693030170;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwgwmVR486foym+iuxa2d5QRKdNKq0L0vHF/EWahWOc=;
-        b=qHWEGYuUCMXeQ4NBbwwJJq7ltMbIvAO5NhhA8wXeeDFCEKOCB+luEtLhE8LXsyifwY
-         XlOj/gmZL8r2b/kdCZVjktETNGKbivUeod1hXhCfnxh0u2lTmb3n+95+OxryYhZOuwWB
-         DmzaN/UBHwV8SIi/8uK5qk/aeS3aHYcZNp2NKYvCfTBuvghu2CzTFsCnETB5ci4dvSzS
-         3j4ti+QMZPwroyCQbwwWtGHwbk5V92/v2pym2fdt60ILCt/1nI4rQI6bIm+EGN+CtD7X
-         19gC11XVe5q+TR7fd6zdyZI7vp+++uC7ZrkC4DjXNeZ7NnIv7i9H86vWTe10X5b3QHjQ
-         lC+A==
+        bh=gzNXk+Szt0Od1iXFSWZqBn1S4ovrgq3YOxnGzHQYyW8=;
+        b=7la7+ouZpyw26XbvaqSwh7Q8gdEPKQ4neGmxPXM6L7UIzAPqJZBvtNpN9GPEH1ST9Q
+         B+sgBXvSfYqjKUT24WSnOw5n119VHlaCaoEDuS7dOzzORJ6VxVuGtYfVQ155W9jhZ0Eg
+         5T6TiWXdkGmifDEYTgIDioxpcXi6v8nW+iH6eW/HFuQUSmiDhwOZ9UXrCZ3+8Yk8eUxa
+         2Y8mYVTZqE6+uBYBsz+o+pJrKgoFxg0JqGKF7RVq//zNX/SIBgoaqUD9QxqPqFIzk8hP
+         aTF9J3lCG5RVYYvkWabUjUXcgpBmwYWL1+qxWrewUlO0RLYco4oKI6PGIycy2osQFlAT
+         I38g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692425369; x=1693030169;
+        d=1e100.net; s=20221208; t=1692425370; x=1693030170;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VwgwmVR486foym+iuxa2d5QRKdNKq0L0vHF/EWahWOc=;
-        b=A9+NM0qT0JkxCMPRPt3UIIoSyyJu1QVq86QDAYjfJXNyb2jWhJDAlOjKiQKwh6W7ct
-         +FEhGOxVatraC/EAMxneSa9J5dD/Kt3C8wQARXjVIrPuUy3HJ8xQZ6wxPVzA7etIXvXq
-         SkP2q1NA+Bw1i+45ZvlEFeiSbO82otRqsii/RsoFiuYqLKaeIvEaOBcUYd9Ux9TFWoqy
-         iLsww4kS0r5BPi2ReucAaWuVc9bgELQIxBjwTsZRTxfQglE4ye3G1hLoCuHdyWiOCu/8
-         AY527FzniDMMKdC6K0pF+lBrQ3XUNmth42kQK8LbCs2p+MKWd4IvUrruyG9LSujDbswC
-         2YEQ==
-X-Gm-Message-State: AOJu0YzbtreQNye6Ou4lG1SzhDkNdS98lydzWxTonr+YwpjNyx2e7CxU
-        A4ZQJCsag4gBTT2tB4voQipjwFs2ydt3rgRrjechE+Uin4gDoVRWeHdsQv5dSJzCjmHihR/pzKz
-        0gb8uVQqV1zYNI7YpqHj2stlNiXvBm7UdKNmO5NA5Ar+iGRKpW+p8caBsWFadAk6R/2sEtr8=
-X-Google-Smtp-Source: AGHT+IG8EMbClzPosTamJx/wB1hOYiezUQgXOO+kclC7zduuudrhBOUG72qnPXRvMUhGy1B4865DrjdY8K7e
+        bh=gzNXk+Szt0Od1iXFSWZqBn1S4ovrgq3YOxnGzHQYyW8=;
+        b=OiCS1lVKgJjYQgFfWswuak2kCko9LMTeQt4FsVXepygvz8+SzH38Xh1UIU23kHCfWE
+         4CD2hhjoex54mVXnRBmD4eV+LhuOsuqG54X3uxn3CsncpUAd6e/mfihDBcyhf6Ct9qfQ
+         GhC5zGxOYRb8MMuuM6iyz/vVzn9UhnksWkLJq+sFb94l2bldlftBe6A3qpFOWoLJxm07
+         3kppU6iAf4FoNfDhCRHIOcYFz9aW7CY5vj+pmhh6QmhhuPID+/EoBUCUw1nF+zfV9pOS
+         8RiJ0xmEcl0o0cV9EsIAuJrk/4a73qZZjh1hbotN6iZewCtc/vC8HOsp+IBX00wFkyYk
+         2gng==
+X-Gm-Message-State: AOJu0YyjXjI8b8UiDSsnXIza7/c/NprIOhTy0Gsi5bhZ1+aGnLfDtjIN
+        uCvMCsZ8zDMg59KEFflVP97Kxjcy4afNBKkYKZaOWXQVtQIZDwWZ87/paZoA7Gsg/NM2QrMgdIN
+        tesPwBjqv6REUI1hk/IhHxnyZvRzcUpFWj0PPObGPyccjRpzK3ZT/stgdwZQSu9KNVxBJoDE=
+X-Google-Smtp-Source: AGHT+IFi0X5zrs+OXJDWZ74CbQbVmJwaMKwoDSvD2RXz/71QZi7/iSP5NwmjT2jFEKT7opuv+jBui+Ewi1K/
 X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
- (user=jstultz job=sendgmr) by 2002:a25:ce44:0:b0:d72:8661:ee25 with SMTP id
- x65-20020a25ce44000000b00d728661ee25mr10977ybe.2.1692425368271; Fri, 18 Aug
- 2023 23:09:28 -0700 (PDT)
-Date:   Sat, 19 Aug 2023 06:08:35 +0000
+ (user=jstultz job=sendgmr) by 2002:a05:6a00:190e:b0:687:5d7c:82b8 with SMTP
+ id y14-20020a056a00190e00b006875d7c82b8mr862224pfi.2.1692425370387; Fri, 18
+ Aug 2023 23:09:30 -0700 (PDT)
+Date:   Sat, 19 Aug 2023 06:08:36 +0000
 In-Reply-To: <20230819060915.3001568-1-jstultz@google.com>
 Mime-Version: 1.0
 References: <20230819060915.3001568-1-jstultz@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230819060915.3001568-2-jstultz@google.com>
-Subject: [PATCH v5 01/19] sched: Unify runtime accounting across classes
+Message-ID: <20230819060915.3001568-3-jstultz@google.com>
+Subject: [PATCH v5 02/19] locking/mutex: Removes wakeups from under mutex::wait_lock
 From:   John Stultz <jstultz@google.com>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+Cc:     John Stultz <jstultz@google.com>,
         Joel Fernandes <joelaf@google.com>,
         Qais Yousef <qyousef@google.com>,
         Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
@@ -73,9 +74,7 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Will Deacon <will@kernel.org>,
         Waiman Long <longman@redhat.com>,
         Boqun Feng <boqun.feng@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com,
-        "Connor O'Brien" <connoro@google.com>,
-        John Stultz <jstultz@google.com>
+        "Paul E . McKenney" <paulmck@kernel.org>, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
@@ -87,12 +86,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
-
-All classes use sched_entity::exec_start to track runtime and have
-copies of the exact same code around to compute runtime.
-
-Collapse all that.
+In preparation to nest mutex::wait_lock under rq::lock we need to remove
+wakeups from under it.
 
 Cc: Joel Fernandes <joelaf@google.com>
 Cc: Qais Yousef <qyousef@google.com>
@@ -114,241 +109,213 @@ Cc: Boqun Feng <boqun.feng@gmail.com>
 Cc: "Paul E . McKenney" <paulmck@kernel.org>
 Cc: kernel-team@android.com
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-[fix conflicts, fold in update_current_exec_runtime]
-Signed-off-by: Connor O'Brien <connoro@google.com>
-[jstultz: rebased, resovling minor conflicts]
+[Heavily changed after 55f036ca7e74 ("locking: WW mutex cleanup") and
+08295b3b5bee ("locking: Implement an algorithm choice for Wound-Wait
+mutexes")]
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+[jstultz: rebased to mainline, added extra wake_up_q & init
+ to avoid hangs, similar to Connor's rework of this patch]
 Signed-off-by: John Stultz <jstultz@google.com>
 ---
-NOTE: This patch is a general cleanup and if no one objects
-could be merged at this point. If needed, I'll resend separately
-if it isn't picked up on its own.
+v5:
+* Reverted back to an earlier version of this patch to undo
+  the change that kept the wake_q in the ctx structure, as
+  that broke the rule that the wake_q must always be on the
+  stack, as its not safe for concurrency.
 ---
- include/linux/sched.h    |  2 +-
- kernel/sched/deadline.c  | 13 +++-------
- kernel/sched/fair.c      | 56 ++++++++++++++++++++++++++++++----------
- kernel/sched/rt.c        | 13 +++-------
- kernel/sched/sched.h     | 12 ++-------
- kernel/sched/stop_task.c | 13 +---------
- 6 files changed, 52 insertions(+), 57 deletions(-)
+ kernel/locking/mutex.c    | 15 ++++++++++++---
+ kernel/locking/ww_mutex.h | 29 ++++++++++++++++++-----------
+ 2 files changed, 30 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 609bde814cb0..4bc8a4912539 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -520,7 +520,7 @@ struct sched_statistics {
- 	u64				block_max;
- 	s64				sum_block_runtime;
- 
--	u64				exec_max;
-+	s64				exec_max;
- 	u64				slice_max;
- 
- 	u64				nr_migrations_cold;
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 58b542bf2893..9522e6607754 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1299,9 +1299,8 @@ static void update_curr_dl(struct rq *rq)
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index d973fe6041bf..118b6412845c 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -570,6 +570,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		    struct lockdep_map *nest_lock, unsigned long ip,
+ 		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
  {
- 	struct task_struct *curr = rq->curr;
- 	struct sched_dl_entity *dl_se = &curr->dl;
--	u64 delta_exec, scaled_delta_exec;
-+	s64 delta_exec, scaled_delta_exec;
- 	int cpu = cpu_of(rq);
--	u64 now;
- 
- 	if (!dl_task(curr) || !on_dl_rq(dl_se))
- 		return;
-@@ -1314,21 +1313,15 @@ static void update_curr_dl(struct rq *rq)
- 	 * natural solution, but the full ramifications of this
- 	 * approach need further study.
++	DEFINE_WAKE_Q(wake_q);
+ 	struct mutex_waiter waiter;
+ 	struct ww_mutex *ww;
+ 	int ret;
+@@ -620,7 +621,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
  	 */
--	now = rq_clock_task(rq);
--	delta_exec = now - curr->se.exec_start;
--	if (unlikely((s64)delta_exec <= 0)) {
-+	delta_exec = update_curr_common(rq);
-+	if (unlikely(delta_exec <= 0)) {
- 		if (unlikely(dl_se->dl_yielded))
- 			goto throttle;
- 		return;
+ 	if (__mutex_trylock(lock)) {
+ 		if (ww_ctx)
+-			__ww_mutex_check_waiters(lock, ww_ctx);
++			__ww_mutex_check_waiters(lock, ww_ctx, &wake_q);
+ 
+ 		goto skip_wait;
+ 	}
+@@ -640,7 +641,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		 * Add in stamp order, waking up waiters that must kill
+ 		 * themselves.
+ 		 */
+-		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx);
++		ret = __ww_mutex_add_waiter(&waiter, lock, ww_ctx, &wake_q);
+ 		if (ret)
+ 			goto err_early_kill;
+ 	}
+@@ -676,6 +677,10 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		}
+ 
+ 		raw_spin_unlock(&lock->wait_lock);
++		/* Make sure we do wakeups before calling schedule */
++		wake_up_q(&wake_q);
++		wake_q_init(&wake_q);
++
+ 		schedule_preempt_disabled();
+ 
+ 		first = __mutex_waiter_is_first(lock, &waiter);
+@@ -709,7 +714,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		 */
+ 		if (!ww_ctx->is_wait_die &&
+ 		    !__mutex_waiter_is_first(lock, &waiter))
+-			__ww_mutex_check_waiters(lock, ww_ctx);
++			__ww_mutex_check_waiters(lock, ww_ctx, &wake_q);
  	}
  
--	schedstat_set(curr->stats.exec_max,
--		      max(curr->stats.exec_max, delta_exec));
--
- 	trace_sched_stat_runtime(curr, delta_exec, 0);
+ 	__mutex_remove_waiter(lock, &waiter);
+@@ -725,6 +730,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 		ww_mutex_lock_acquired(ww, ww_ctx);
  
--	update_current_exec_runtime(curr, now, delta_exec);
--
- 	if (dl_entity_is_special(dl_se))
- 		return;
+ 	raw_spin_unlock(&lock->wait_lock);
++	wake_up_q(&wake_q);
+ 	preempt_enable();
+ 	return 0;
  
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index b3e25be58e2b..80f74ec20fb8 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -891,23 +891,17 @@ static void update_tg_load_avg(struct cfs_rq *cfs_rq)
+@@ -736,6 +742,7 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 	raw_spin_unlock(&lock->wait_lock);
+ 	debug_mutex_free_waiter(&waiter);
+ 	mutex_release(&lock->dep_map, ip);
++	wake_up_q(&wake_q);
+ 	preempt_enable();
+ 	return ret;
  }
- #endif /* CONFIG_SMP */
+@@ -946,9 +953,11 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
+ 	if (owner & MUTEX_FLAG_HANDOFF)
+ 		__mutex_handoff(lock, next);
  
--/*
-- * Update the current task's runtime statistics.
-- */
--static void update_curr(struct cfs_rq *cfs_rq)
-+static s64 update_curr_se(struct rq *rq, struct sched_entity *curr)
++	preempt_disable();
+ 	raw_spin_unlock(&lock->wait_lock);
+ 
+ 	wake_up_q(&wake_q);
++	preempt_enable();
+ }
+ 
+ #ifndef CONFIG_DEBUG_LOCK_ALLOC
+diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
+index 3ad2cc4823e5..7189c6631d90 100644
+--- a/kernel/locking/ww_mutex.h
++++ b/kernel/locking/ww_mutex.h
+@@ -275,7 +275,7 @@ __ww_ctx_less(struct ww_acquire_ctx *a, struct ww_acquire_ctx *b)
+  */
+ static bool
+ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+-	       struct ww_acquire_ctx *ww_ctx)
++	       struct ww_acquire_ctx *ww_ctx, struct wake_q_head *wake_q)
  {
--	struct sched_entity *curr = cfs_rq->curr;
--	u64 now = rq_clock_task(rq_of(cfs_rq));
--	u64 delta_exec;
--
--	if (unlikely(!curr))
--		return;
-+	u64 now = rq_clock_task(rq);
-+	s64 delta_exec;
- 
- 	delta_exec = now - curr->exec_start;
--	if (unlikely((s64)delta_exec <= 0))
--		return;
-+	if (unlikely(delta_exec <= 0))
-+		return delta_exec;
- 
- 	curr->exec_start = now;
-+	curr->sum_exec_runtime += delta_exec;
- 
- 	if (schedstat_enabled()) {
- 		struct sched_statistics *stats;
-@@ -917,9 +911,43 @@ static void update_curr(struct cfs_rq *cfs_rq)
- 				max(delta_exec, stats->exec_max));
- 	}
- 
--	curr->sum_exec_runtime += delta_exec;
--	schedstat_add(cfs_rq->exec_clock, delta_exec);
-+	return delta_exec;
-+}
-+
-+/*
-+ * Used by other classes to account runtime.
-+ */
-+s64 update_curr_common(struct rq *rq)
-+{
-+	struct task_struct *curr = rq->curr;
-+	s64 delta_exec;
- 
-+	delta_exec = update_curr_se(rq, &curr->se);
-+	if (unlikely(delta_exec <= 0))
-+		return delta_exec;
-+
-+	account_group_exec_runtime(curr, delta_exec);
-+	cgroup_account_cputime(curr, delta_exec);
-+
-+	return delta_exec;
-+}
-+
-+/*
-+ * Update the current task's runtime statistics.
-+ */
-+static void update_curr(struct cfs_rq *cfs_rq)
-+{
-+	struct sched_entity *curr = cfs_rq->curr;
-+	s64 delta_exec;
-+
-+	if (unlikely(!curr))
-+		return;
-+
-+	delta_exec = update_curr_se(rq_of(cfs_rq), curr);
-+	if (unlikely(delta_exec <= 0))
-+		return;
-+
-+	schedstat_add(cfs_rq->exec_clock, delta_exec);
- 	curr->vruntime += calc_delta_fair(delta_exec, curr);
- 	update_min_vruntime(cfs_rq);
- 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 00e0e5074115..0d0b276c447d 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -1046,24 +1046,17 @@ static void update_curr_rt(struct rq *rq)
- {
- 	struct task_struct *curr = rq->curr;
- 	struct sched_rt_entity *rt_se = &curr->rt;
--	u64 delta_exec;
--	u64 now;
-+	s64 delta_exec;
- 
- 	if (curr->sched_class != &rt_sched_class)
- 		return;
- 
--	now = rq_clock_task(rq);
--	delta_exec = now - curr->se.exec_start;
--	if (unlikely((s64)delta_exec <= 0))
-+	delta_exec = update_curr_common(rq);
-+	if (unlikely(delta_exec < 0))
- 		return;
- 
--	schedstat_set(curr->stats.exec_max,
--		      max(curr->stats.exec_max, delta_exec));
--
- 	trace_sched_stat_runtime(curr, delta_exec, 0);
- 
--	update_current_exec_runtime(curr, now, delta_exec);
--
- 	if (!rt_bandwidth_enabled())
- 		return;
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e93e006a942b..33ad47a093ae 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2204,6 +2204,8 @@ struct affinity_context {
- 	unsigned int flags;
- };
- 
-+extern s64 update_curr_common(struct rq *rq);
-+
- struct sched_class {
- 
- #ifdef CONFIG_UCLAMP_TASK
-@@ -3235,16 +3237,6 @@ extern int sched_dynamic_mode(const char *str);
- extern void sched_dynamic_update(int mode);
+ 	if (!ww_ctx->is_wait_die)
+ 		return false;
+@@ -284,7 +284,7 @@ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+ #ifndef WW_RT
+ 		debug_mutex_wake_waiter(lock, waiter);
  #endif
+-		wake_up_process(waiter->task);
++		wake_q_add(wake_q, waiter->task);
+ 	}
  
--static inline void update_current_exec_runtime(struct task_struct *curr,
--						u64 now, u64 delta_exec)
--{
--	curr->se.sum_exec_runtime += delta_exec;
--	account_group_exec_runtime(curr, delta_exec);
--
--	curr->se.exec_start = now;
--	cgroup_account_cputime(curr, delta_exec);
--}
--
- #ifdef CONFIG_SCHED_MM_CID
- 
- #define SCHED_MM_CID_PERIOD_NS	(100ULL * 1000000)	/* 100ms */
-diff --git a/kernel/sched/stop_task.c b/kernel/sched/stop_task.c
-index 85590599b4d6..7595494ceb6d 100644
---- a/kernel/sched/stop_task.c
-+++ b/kernel/sched/stop_task.c
-@@ -70,18 +70,7 @@ static void yield_task_stop(struct rq *rq)
- 
- static void put_prev_task_stop(struct rq *rq, struct task_struct *prev)
+ 	return true;
+@@ -299,7 +299,8 @@ __ww_mutex_die(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+  */
+ static bool __ww_mutex_wound(struct MUTEX *lock,
+ 			     struct ww_acquire_ctx *ww_ctx,
+-			     struct ww_acquire_ctx *hold_ctx)
++			     struct ww_acquire_ctx *hold_ctx,
++			     struct wake_q_head *wake_q)
  {
--	struct task_struct *curr = rq->curr;
--	u64 now, delta_exec;
--
--	now = rq_clock_task(rq);
--	delta_exec = now - curr->se.exec_start;
--	if (unlikely((s64)delta_exec < 0))
--		delta_exec = 0;
--
--	schedstat_set(curr->stats.exec_max,
--		      max(curr->stats.exec_max, delta_exec));
--
--	update_current_exec_runtime(curr, now, delta_exec);
-+	update_curr_common(rq);
+ 	struct task_struct *owner = __ww_mutex_owner(lock);
+ 
+@@ -331,7 +332,7 @@ static bool __ww_mutex_wound(struct MUTEX *lock,
+ 		 * wakeup pending to re-read the wounded state.
+ 		 */
+ 		if (owner != current)
+-			wake_up_process(owner);
++			wake_q_add(wake_q, owner);
+ 
+ 		return true;
+ 	}
+@@ -352,7 +353,8 @@ static bool __ww_mutex_wound(struct MUTEX *lock,
+  * The current task must not be on the wait list.
+  */
+ static void
+-__ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
++__ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx,
++			 struct wake_q_head *wake_q)
+ {
+ 	struct MUTEX_WAITER *cur;
+ 
+@@ -364,8 +366,8 @@ __ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
+ 		if (!cur->ww_ctx)
+ 			continue;
+ 
+-		if (__ww_mutex_die(lock, cur, ww_ctx) ||
+-		    __ww_mutex_wound(lock, cur->ww_ctx, ww_ctx))
++		if (__ww_mutex_die(lock, cur, ww_ctx, wake_q) ||
++		    __ww_mutex_wound(lock, cur->ww_ctx, ww_ctx, wake_q))
+ 			break;
+ 	}
+ }
+@@ -377,6 +379,8 @@ __ww_mutex_check_waiters(struct MUTEX *lock, struct ww_acquire_ctx *ww_ctx)
+ static __always_inline void
+ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+ {
++	DEFINE_WAKE_Q(wake_q);
++
+ 	ww_mutex_lock_acquired(lock, ctx);
+ 
+ 	/*
+@@ -405,8 +409,10 @@ ww_mutex_set_context_fastpath(struct ww_mutex *lock, struct ww_acquire_ctx *ctx)
+ 	 * die or wound us.
+ 	 */
+ 	lock_wait_lock(&lock->base);
+-	__ww_mutex_check_waiters(&lock->base, ctx);
++	__ww_mutex_check_waiters(&lock->base, ctx, &wake_q);
+ 	unlock_wait_lock(&lock->base);
++
++	wake_up_q(&wake_q);
  }
  
- /*
+ static __always_inline int
+@@ -488,7 +494,8 @@ __ww_mutex_check_kill(struct MUTEX *lock, struct MUTEX_WAITER *waiter,
+ static inline int
+ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		      struct MUTEX *lock,
+-		      struct ww_acquire_ctx *ww_ctx)
++		      struct ww_acquire_ctx *ww_ctx,
++		      struct wake_q_head *wake_q)
+ {
+ 	struct MUTEX_WAITER *cur, *pos = NULL;
+ 	bool is_wait_die;
+@@ -532,7 +539,7 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		pos = cur;
+ 
+ 		/* Wait-Die: ensure younger waiters die. */
+-		__ww_mutex_die(lock, cur, ww_ctx);
++		__ww_mutex_die(lock, cur, ww_ctx, wake_q);
+ 	}
+ 
+ 	__ww_waiter_add(lock, waiter, pos);
+@@ -550,7 +557,7 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 		 * such that either we or the fastpath will wound @ww->ctx.
+ 		 */
+ 		smp_mb();
+-		__ww_mutex_wound(lock, ww_ctx, ww->ctx);
++		__ww_mutex_wound(lock, ww_ctx, ww->ctx, wake_q);
+ 	}
+ 
+ 	return 0;
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
