@@ -2,51 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2061781C14
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383C3781C15
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjHTCgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 22:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
+        id S229777AbjHTCgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbjHTCfs (ORCPT
+        with ESMTP id S229869AbjHTCfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 19 Aug 2023 22:35:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB20760F82
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 16:14:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96DC6CB35;
+        Sat, 19 Aug 2023 16:20:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 403EE61248
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:14:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57F30C433C7;
-        Sat, 19 Aug 2023 23:14:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F50761882;
+        Sat, 19 Aug 2023 23:20:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D9B0C433CB;
+        Sat, 19 Aug 2023 23:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692486896;
-        bh=xoj6//WgtuRUNa87T+0xdfrV1t/TqnoJvx9xOiITXH4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+BGzpFcpaGX98iGU0J31/kA59dqS8Ycfy3MXyRd5l32K67APSk9lQ4wLPdsuGdja
-         iFFdi6ZoX+9t71i1tRTaJWlazDvaobhfcMqYHw8MkZRWaXBlSI2/o7eXK8wjv3J43w
-         yWvAwLxaMLvUkJC0nKiXyRh/9q0rAWZ7gy+vm+9GuqyYUJUw445G26SNIqsd9fSwxj
-         IwBcCJgPL6QcEsG+rCF1YA85IBXExdt9QZfdro/r17GM2lg4QK0AuGxrUIo8Cn44rA
-         R9CK+63hTluOjJJv8M8GDuH9TVlKZBrFeYR7HkFI5me+FWSSM7EpAiUB0MT1bpr3aJ
-         G1q8Sq3KHkmOw==
-From:   Vineet Gupta <vgupta@kernel.org>
-To:     linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Pavel.Kozlov@synopsys.com, Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH v2 16/20] ARC: entry: Add more common chores to EXCEPTION_PROLOGUE
-Date:   Sat, 19 Aug 2023 16:14:54 -0700
-Message-Id: <20230819231454.692518-1-vgupta@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230818125652.3981-1-kozlov@synopsys.com>
-References: <20230818125652.3981-1-kozlov@synopsys.com>
+        s=k20201202; t=1692487234;
+        bh=DIVwax5Y3AFVt2W6HkTTPIpqSiJRvcBZtl6jpYXaXlU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LC38TrMnFINW6OjR+twcKA37K3TMDEiEQNxY4Rx5vZCI5YGancu0e5BgkxXcp1l8C
+         Ig4ldcWwp/L9BnkZudSTWB9zSxPTbkOwHpFTZkggOaEfI/Yfj56ca4zSiYZF3vjT5l
+         gg4rYAB7q66vzvixkl4PxoMXoeQA53P8rz8a2mLiEjDCKYOD0Kj3jYkz3cTzlEcAB+
+         iE9ICRmdKJF378HkKrWmOgBWhidea4WToYYu/u8JyudRRVT+/F2trquEh3YkTokZvl
+         FKsrEuCHx2e4No1VCScgpV/WU38zTSL1YywwMO94aIlUA9f4iMibnXXAVQ+NRVPnN/
+         IHx8LK/RErqlg==
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-56e0d6651fbso1714419eaf.1;
+        Sat, 19 Aug 2023 16:20:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz5SD1TivzVbkV0/dqCy/P2BrEgfLxnPlt61baabNa7v75yYI5T
+        4yGDNtlBbbgP3aKcwIonP4LaOc5rTzmr8mfvvDY=
+X-Google-Smtp-Source: AGHT+IFXuIQCKgq40Jh+CUksunkc4g/HDrnQiJZxj1NwMk0N8zIlTUbmfGTPV89p9ZOEo/oIbsfpCG8Z9qm6KBIXmfM=
+X-Received: by 2002:aca:1b08:0:b0:3a4:8ecb:185c with SMTP id
+ b8-20020aca1b08000000b003a48ecb185cmr2035399oib.22.1692487233928; Sat, 19 Aug
+ 2023 16:20:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230817012007.131868-1-senozhatsky@chromium.org>
+In-Reply-To: <20230817012007.131868-1-senozhatsky@chromium.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 20 Aug 2023 08:19:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
+Message-ID: <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,219 +67,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-THe high level structure of most ARC exception handlers is
- 1. save regfile with EXCEPTION_PROLOGUE
- 2. setup r0: EFA (not part of pt_regs)
- 3. setup r1: pointer to pt_regs (SP)
- 4. drop down to pure kernel mode (from exception)
- 5. call the Linux "C" handler
+On Thu, Aug 17, 2023 at 5:30=E2=80=AFPM Sergey Senozhatsky
+<senozhatsky@chromium.org> wrote:
+>
+> Example:
+> Suppose old .config has the following two options which
+> were removed from the recent kernel:
+>
+> $ cat .config
+> CONFIG_DISABLE_BUGS=3Dy
+>
+> Running `make listunknownconfig` produces the following
+> list of unrecognized symbols:
+>
+> .config:6:warning: unknown symbol: DISABLE_BUGS
+> .config:7:warning: unknown unset symbol: ENABLE_WINAPI
+>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Remove the boiler plate code by moving #2, #3, #4 into #1.
 
-The exceptions to most exceptions are syscall Trap and Machine check
-which don't do some of above for various reasons, so call a newly
-introduced variant EXCEPTION_PROLOGUE_KEEP_AE (same as original
-EXCEPTION_PROLOGUE)
+A new target is not what I like to see.
 
-Tested-by: Pavel Kozlov <Pavel.Kozlov@synopsys.com>
-Signed-off-by: Vineet Gupta <vgupta@kernel.org>
----
- arch/arc/include/asm/entry-arcv2.h   | 12 +++++++++++-
- arch/arc/include/asm/entry-compact.h | 12 +++++++++++-
- arch/arc/kernel/entry-arcv2.S        | 15 ---------------
- arch/arc/kernel/entry-compact.S      | 13 -------------
- arch/arc/kernel/entry.S              | 19 ++-----------------
- 5 files changed, 24 insertions(+), 47 deletions(-)
 
-diff --git a/arch/arc/include/asm/entry-arcv2.h b/arch/arc/include/asm/entry-arcv2.h
-index a38ed505b3de..11b48ab39154 100644
---- a/arch/arc/include/asm/entry-arcv2.h
-+++ b/arch/arc/include/asm/entry-arcv2.h
-@@ -75,7 +75,7 @@
- .endm
- 
- /*------------------------------------------------------------------------*/
--.macro EXCEPTION_PROLOGUE
-+.macro EXCEPTION_PROLOGUE_KEEP_AE
- 
- 	; Before jumping to Exception Vector, hardware micro-ops did following:
- 	;   1. SP auto-switched to kernel mode stack
-@@ -104,6 +104,16 @@
- 	; OUTPUT: r10 has ECR expected by EV_Trap
- .endm
- 
-+.macro EXCEPTION_PROLOGUE
-+
-+	EXCEPTION_PROLOGUE_KEEP_AE	; return ECR in r10
-+
-+	lr  r0, [efa]
-+	mov r1, sp
-+
-+	FAKE_RET_FROM_EXCPN		; clobbers r9
-+.endm
-+
- /*------------------------------------------------------------------------
-  * This macro saves the registers manually which would normally be autosaved
-  * by hardware on taken interrupts. It is used by
-diff --git a/arch/arc/include/asm/entry-compact.h b/arch/arc/include/asm/entry-compact.h
-index 4e2ae82779ed..a0e760eb35a8 100644
---- a/arch/arc/include/asm/entry-compact.h
-+++ b/arch/arc/include/asm/entry-compact.h
-@@ -140,7 +140,7 @@
-  *
-  * After this it is safe to call the "C" handlers
-  *-------------------------------------------------------------*/
--.macro EXCEPTION_PROLOGUE
-+.macro EXCEPTION_PROLOGUE_KEEP_AE
- 
- 	/* Need at least 1 reg to code the early exception prologue */
- 	PROLOG_FREEUP_REG r9, @ex_saved_reg1
-@@ -179,6 +179,16 @@
- 	; OUTPUT: r10 has ECR expected by EV_Trap
- .endm
- 
-+.macro EXCEPTION_PROLOGUE
-+
-+	EXCEPTION_PROLOGUE_KEEP_AE	; return ECR in r10
-+
-+	lr  r0, [efa]
-+	mov r1, sp
-+
-+	FAKE_RET_FROM_EXCPN		; clobbers r9
-+.endm
-+
- /*--------------------------------------------------------------
-  * Restore all registers used by system call or Exceptions
-  * SP should always be pointing to the next free stack element
-diff --git a/arch/arc/kernel/entry-arcv2.S b/arch/arc/kernel/entry-arcv2.S
-index a7e6a2174187..2e49c81c8086 100644
---- a/arch/arc/kernel/entry-arcv2.S
-+++ b/arch/arc/kernel/entry-arcv2.S
-@@ -125,11 +125,6 @@ ENTRY(mem_service)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]
--	mov r1, sp
--
--	FAKE_RET_FROM_EXCPN
--
- 	bl  do_memory_error
- 	b   ret_from_exception
- END(mem_service)
-@@ -138,11 +133,6 @@ ENTRY(EV_Misaligned)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]	; Faulting Data address
--	mov r1, sp
--
--	FAKE_RET_FROM_EXCPN
--
- 	SAVE_CALLEE_SAVED_USER
- 	mov r2, sp              ; callee_regs
- 
-@@ -163,11 +153,6 @@ ENTRY(EV_TLBProtV)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]	; Faulting Data address
--	mov r1, sp	; pt_regs
--
--	FAKE_RET_FROM_EXCPN
--
- 	mov blink, ret_from_exception
- 	b   do_page_fault
- 
-diff --git a/arch/arc/kernel/entry-compact.S b/arch/arc/kernel/entry-compact.S
-index 77f0090554c5..774c03cc1d1a 100644
---- a/arch/arc/kernel/entry-compact.S
-+++ b/arch/arc/kernel/entry-compact.S
-@@ -256,16 +256,6 @@ ENTRY(EV_TLBProtV)
- 
- 	EXCEPTION_PROLOGUE	; ECR returned in r10
- 
--	lr  r0, [efa]	; Faulting Data address (not part of pt_regs saved above)
--
--	; Exception auto-disables further Intr/exceptions.
--	; Re-enable them by pretending to return from exception
--	; (so rest of handler executes in pure K mode)
--
--	FAKE_RET_FROM_EXCPN
--
--	mov   r1, sp	; Handle to pt_regs
--
- 	;------ (5) Type of Protection Violation? ----------
- 	;
- 	; ProtV Hardware Exception is triggered for Access Faults of 2 types
-@@ -301,9 +291,6 @@ END(EV_TLBProtV)
- ENTRY(call_do_page_fault)
- 
- 	EXCEPTION_PROLOGUE
--	lr  r0, [efa]	; Faulting Data address
--	mov   r1, sp
--	FAKE_RET_FROM_EXCPN
- 
- 	mov blink, ret_from_exception
- 	b  do_page_fault
-diff --git a/arch/arc/kernel/entry.S b/arch/arc/kernel/entry.S
-index 46582fbebcf2..089f6680518f 100644
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -80,11 +80,6 @@ ENTRY(instr_service)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]
--	mov r1, sp
--
--	FAKE_RET_FROM_EXCPN
--
- 	bl  do_insterror_or_kprobe
- 	b   ret_from_exception
- END(instr_service)
-@@ -95,7 +90,7 @@ END(instr_service)
- 
- ENTRY(EV_MachineCheck)
- 
--	EXCEPTION_PROLOGUE	; ECR returned in r10
-+	EXCEPTION_PROLOGUE_KEEP_AE	; ECR returned in r10
- 
- 	lr  r0, [efa]
- 	mov r1, sp
-@@ -128,11 +123,6 @@ ENTRY(EV_PrivilegeV)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]
--	mov r1, sp
--
--	FAKE_RET_FROM_EXCPN
--
- 	bl  do_privilege_fault
- 	b   ret_from_exception
- END(EV_PrivilegeV)
-@@ -144,11 +134,6 @@ ENTRY(EV_Extension)
- 
- 	EXCEPTION_PROLOGUE
- 
--	lr  r0, [efa]
--	mov r1, sp
--
--	FAKE_RET_FROM_EXCPN
--
- 	bl  do_extension_fault
- 	b   ret_from_exception
- END(EV_Extension)
-@@ -229,7 +214,7 @@ trap_with_param:
- 
- ENTRY(EV_Trap)
- 
--	EXCEPTION_PROLOGUE
-+	EXCEPTION_PROLOGUE_KEEP_AE
- 
- 	lr  r12, [efa]
- 
--- 
-2.34.1
+We decided to add KCONFIG_VERBOSE, which will be used to
+warn options accidentally disabled or downgraded.
 
+https://lore.kernel.org/linux-kbuild/20230809002436.18079-1-sunying@nj.isca=
+s.ac.cn/T/#u
+
+
+--
+Best Regards
+
+Masahiro Yamada
