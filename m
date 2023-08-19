@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F30E67818D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7A67818D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbjHSKkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        id S230045AbjHSKkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbjHSKj6 (ORCPT
+        with ESMTP id S229993AbjHSKkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:39:58 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F59526AC1;
-        Sat, 19 Aug 2023 02:26:19 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe85fd3d27so2681339e87.0;
-        Sat, 19 Aug 2023 02:26:19 -0700 (PDT)
+        Sat, 19 Aug 2023 06:40:08 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D406428377
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 02:33:58 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-cfcebc33d04so1713254276.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 02:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692437177; x=1693041977;
+        d=linaro.org; s=google; t=1692437638; x=1693042438;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bh6dsaKKUVquVJpXCTO55ymTARfAFnjTpQ1R182Ciek=;
-        b=DVW070gsBQVvM/43f3sBXVXb0+mUoFItwxVuR3/kD6CBub7Jg7RPpy+pUH2Y1XIRfl
-         w9mQ/6yLFFcwirMwbyJYw/3rjLg1lQ8P4GVZMiqI1xuMtMkAcMEfBWiwD6RyhpJynln3
-         9oey0zlWF/NzuyiRcVNzdrn586ug4mxE5n4oCSHzSgNiOYefS3kWLopykpBFieuXXeBp
-         l2Ko7hsXGKcW/KXXMXfi655tXhUxNWmx06AV4tvadqOkj2C1gS9gg2Bm32/2xWdR7IpG
-         8clVJZuNHTAFV5/25IldR930YhREfGjYSbC83TtpYrZZnqjqPRhqkqe79E8s4YFXasQf
-         zzhA==
+        bh=hVU2EL76XZBMMyQ9mpmLeflLartVykNFJa1athLefs0=;
+        b=uQEeu5WcW8CdI1yAIfR2RJCsb8KbUYwJ43UdTXH7PovufPgBxDY+ctAKWdsJzyA2nV
+         AYghz45kzDjmz8QmcQklrX+iNg4DXZ2cAPo4GlJ2h5/Y1wErCeW4N/vC2sl9dwlUWcU3
+         6zlRMh7VbTRhLCATnU2KkYqUqRjxqbBX7fiYQJMkE8tjzvXqRk2T6eywrnP2PFSJkOq0
+         h4xo6gLpGHUDVJpGZAfcod3mAIS2KSpW4i6jyLW6s7Es5PCEeBz1nPbLFluZN+f/jf35
+         BD0KBKTcon80ly/q7x01RFcOUJ58luexXMWbJcWoZBR6uNQXWqIRgaNi2GesqRWohHL0
+         OUoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692437177; x=1693041977;
+        d=1e100.net; s=20221208; t=1692437638; x=1693042438;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Bh6dsaKKUVquVJpXCTO55ymTARfAFnjTpQ1R182Ciek=;
-        b=WK3qX9k+wFXTSuBVQM4w1OaudTuR05SfHi5coQLuo+lyiVUuPKtJAUe9FivLHakGXt
-         o4dJLVJMnlBl1bKb6fiISpqmg+txAFsdIL0jj8FYukRoc8Rpgkg7Pgvj5IYd6hl+euxI
-         c5r1RoYuFY2TMruy/KM/iNt9rKgPCI5D6TxNdnrYdgUBQYdWzyQFd7yk/U1ki9I+X7Lu
-         H580DDu1ipHOE6NPRbAcY2JiL2op1/8I2M6zOLFS9u97m3oUGvolNo/ECiTATnTi++nk
-         3H1OiS65RFbRJrCh1G7xOH7xwB8gGo5SBBTcfDBw82GMxCgXRXYgS42aNoS5Wv1CcMBh
-         WILw==
-X-Gm-Message-State: AOJu0Yzf5vGABj3Dft2TEAtS9iKnhjOl9J1xkPowAO3Yc+ljfwuA6a9+
-        HPJT/+EXBHx6mIGGDitnuHk=
-X-Google-Smtp-Source: AGHT+IG5A3rc94WY5hljI+57/ebTM1KRz1yVEyZDePdgiO9REwo+y6kgfmWO2anFVztfE19P9psqJA==
-X-Received: by 2002:ac2:42c6:0:b0:4ff:8fbc:a5dd with SMTP id n6-20020ac242c6000000b004ff8fbca5ddmr945355lfl.41.1692437177142;
-        Sat, 19 Aug 2023 02:26:17 -0700 (PDT)
-Received: from SerialExperiment.lan ([46.251.204.228])
-        by smtp.gmail.com with ESMTPSA id l14-20020ac24a8e000000b004ff8f090057sm732269lfp.59.2023.08.19.02.26.13
+        bh=hVU2EL76XZBMMyQ9mpmLeflLartVykNFJa1athLefs0=;
+        b=SFovr4kMxRCJ8k6psHrilpSmbqqTkdufe3YjJVMtiUmSnUA09HIZ/yQlPhwmpnzXIW
+         5TqK1krUQ+5z+BMjZzzynAItzBng3Y4lQOAmm8cH6kXh2V1pw9NQeAwzy6G9w+8Akt7O
+         Gzf0Im6Dh6ldEWEnB1i2JKEu2zCgxv8hnygzLVjN1bW7xN91QQIiyAQp43/gPHw1DK55
+         w0WROzXj/KLhkrv81T1qijxOBDmPS4E5x1ub0adND8ehpq/cEkYJ+Ggrzd+OvweCTm3Y
+         TCXGCUU092KVaNA7TNaPVUcL1BQj11s8Uq37NI0YhkdN42kXDtMNiSnXZC2VwsyhKkew
+         nxNQ==
+X-Gm-Message-State: AOJu0YxKY5gySR7I3atcEB6o9saAQNmZTdw5KMpUdbku97Mt+Of3ZyxF
+        +49UUjOERBf1UhMRV8NV1kQiSHV+BwhPCZOxhf8G1A==
+X-Google-Smtp-Source: AGHT+IEWd7zJXdmmOzT0o+Z3w0Noox708eTVlKtpfx6ZEFHiQ9J7VyRDNdPmm/svBeLpucPz5C8XEg==
+X-Received: by 2002:a25:938c:0:b0:d62:7dad:8ae1 with SMTP id a12-20020a25938c000000b00d627dad8ae1mr1678535ybm.20.1692437637475;
+        Sat, 19 Aug 2023 02:33:57 -0700 (PDT)
+Received: from leoy-huanghe.lan ([8.45.48.113])
+        by smtp.gmail.com with ESMTPSA id r5-20020a638f45000000b00528db73ed70sm2850603pgn.3.2023.08.19.02.33.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 02:26:16 -0700 (PDT)
-From:   Mikhail Kalashnikov <iuncuim@gmail.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: sunxi: h616: add extra gpio banks
-Date:   Sat, 19 Aug 2023 12:26:09 +0300
-Message-ID: <20230819092609.8136-1-iuncuim@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Sat, 19 Aug 2023 02:33:56 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v6] Documentation: userspace-api: Document perf ring buffer mechanism
+Date:   Sat, 19 Aug 2023 17:33:40 +0800
+Message-Id: <20230819093340.265817-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75 autolearn=no
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,437 +77,931 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: iuncuim <iuncuim@gmail.com>
+In the Linux perf tool, the ring buffer serves not only as a medium for
+transferring PMU event data but also as a vital mechanism for hardware
+tracing using technologies like Intel PT and Arm CoreSight, etc.
 
-Some SoCs from the H616 family (for example, T507) have the same die, but
-more output pins that are used for additional peripherals. The T507 SoC
-don't have a built-in multiphy such as the AC200 or AC300. With the T507
-these pins can be freely used for any other application. So, patch add
-these missing muxes on banks A, C and D.
+Consequently, the ring buffer mechanism plays a crucial role by ensuring
+high throughput for data transfer between the kernel and user space
+while avoiding excessive overhead caused by the ring buffer itself.
 
-Signed-off-by: Mikhail Kalashnikov <iuncuim@gmail.com>
+This commit documents the ring buffer mechanism in detail.  It explains
+the implementation of both the regular ring buffer and the AUX ring
+buffer.  Additionally, it covers how these ring buffers support various
+tracing modes and explains the synchronization with memory barriers.
+
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c | 382 +++++++++++++++++++-
- 1 file changed, 367 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c b/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
-index d6ca720ee..a88fed0aa 100644
---- a/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
-+++ b/drivers/pinctrl/sunxi/pinctrl-sun50i-h616.c
-@@ -16,33 +16,81 @@
- #include "pinctrl-sunxi.h"
+Changes from v5:
+- Fixed 'make htmldocs' warning (kernel test robot);
+- Fixed whitespace errors detected by 'git am'.
+
+Changes from v4:
+- Amended the documentation for the stable interface in the uapi header
+  (Namhyung Kim).
+
+Changes from v3:
+- Converted to RST format and moved from perf folder to the
+  userspace-api folder (Jonathan Corbet).
+
+Changes from v2:
+- Refined doc for Thomas's suggestions (Thomas Richter).
+
+Changes from v1:
+- Addressed Ian's comments and suggestions (Ian Rogers).
+
+
+ Documentation/userspace-api/index.rst         |   1 +
+ .../userspace-api/perf_ring_buffer.rst        | 867 ++++++++++++++++++
+ 2 files changed, 868 insertions(+)
+ create mode 100644 Documentation/userspace-api/perf_ring_buffer.rst
+
+diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-api/index.rst
+index 72a65db0c498..ead958f5505d 100644
+--- a/Documentation/userspace-api/index.rst
++++ b/Documentation/userspace-api/index.rst
+@@ -32,6 +32,7 @@ place where this information is gathered.
+    sysfs-platform_profile
+    vduse
+    futex2
++   perf_ring_buffer
  
- static const struct sunxi_desc_pin h616_pins[] = {
--	/* Internal connection to the AC200 part */
-+	/* Internally connected to the AC200 part in the H616 SoC */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 0),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ERXD1 */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ERXD1 */
-+		  SUNXI_FUNCTION(0x4, "i2c0"),		/* SCK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 0)),	/* PA_EINT0 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 1),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ERXD0 */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ERXD0 */
-+		  SUNXI_FUNCTION(0x4, "i2c0"),		/* SDA */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 1)),	/* PA_EINT1 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 2),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ECRS_DV */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ECRS_DV */
-+		  SUNXI_FUNCTION(0x4, "i2c1"),		/* SCK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 2)),	/* PA_EINT2 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 3),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ERXERR */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ERXERR */
-+		  SUNXI_FUNCTION(0x4, "i2c1"),		/* SDA */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 3)),	/* PA_EINT3 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 4),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ETXD1 */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ETXD1 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 4)),	/* PA_EINT4 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 5),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ETXD0 */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ETXD0 */
-+		  SUNXI_FUNCTION(0x3, "h_i2s0"),	/* DOUT0 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 5)),	/* PA_EINT5 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 6),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ETXCK */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ETXCK */
-+		  SUNXI_FUNCTION(0x3, "h_i2s0"),	/* MCLK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 6)),	/* PA_EINT6 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 7),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* ETXEN */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* ETXEN */
-+		  SUNXI_FUNCTION(0x3, "h_i2s0"),	/* BCLK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 7)),	/* PA_EINT7 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 8),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* EMDC */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* EMDC */
-+		  SUNXI_FUNCTION(0x3, "h_i2s0"),	/* LRCK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 8)),	/* PA_EINT8 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 9),
--		  SUNXI_FUNCTION(0x2, "emac1")),	/* EMDIO */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "emac1"),		/* EMDIO */
-+		  SUNXI_FUNCTION(0x3, "h_i2s0"),	/* DIN0 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 9)),	/* PA_EINT9 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 10),
--		  SUNXI_FUNCTION(0x2, "i2c3")),		/* SCK */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "i2c3"),		/* SCK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 10)),	/* PA_EINT10 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 11),
--		  SUNXI_FUNCTION(0x2, "i2c3")),		/* SDA */
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "i2c3"),		/* SDA */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 11)),	/* PA_EINT11 */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(A, 12),
--		  SUNXI_FUNCTION(0x2, "pwm5")),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "pwm5"),
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 0, 12)),	/* PA_EINT12 */
- 	/* Hole */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(C, 0),
- 		  SUNXI_FUNCTION(0x0, "gpio_in"),
-@@ -149,6 +197,310 @@ static const struct sunxi_desc_pin h616_pins[] = {
- 		  SUNXI_FUNCTION(0x4, "spi0"),		/* HOLD */
- 		  SUNXI_FUNCTION_IRQ_BANK(0x6, 1, 16)),	/* PC_EINT16 */
- 	/* Hole */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 0),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D0 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VP0 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* CLK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 0)),	/* PD_EINT0 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 1),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D1 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VN0 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* ERR */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 1)),	/* PD_EINT1 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 2),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D2 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VP1 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* SYNC */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 2)),	/* PD_EINT2 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 3),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D3 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VN1 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* DVLD */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 3)),	/* PD_EINT3 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 4),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D4 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VP2 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* D0 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 4)),	/* PD_EINT4 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 5),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D5 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VN2 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* D1 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 5)),	/* PD_EINT5 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 6),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D6 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VPC */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* D2 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 6)),	/* PD_EINT6 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 7),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D7 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VNC */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* D3 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 7)),	/* PD_EINT7 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 8),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D8 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VP3 */
-+		  SUNXI_FUNCTION(0x4, "ts0"),		/* D4 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 8)),	/* PD_EINT8 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 9),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D9 */
-+		  SUNXI_FUNCTION(0x3, "lvds0"),		/* VN3 */
-+		  SUNXI_FUNCTION(0x4, "ts0"), 		/* D5 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 9)),	/* PD_EINT9 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 10),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D10 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VP0 */
-+		  SUNXI_FUNCTION(0x4, "ts0"), 		/* D6 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 10)),	/* PD_EINT10 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 11),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D11 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VN0 */
-+		  SUNXI_FUNCTION(0x4, "ts0"), 		/* D7 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 11)),	/* PD_EINT11 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 12),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D12 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VP1 */
-+		  SUNXI_FUNCTION(0x4, "sim"), 		/* VPPEN */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 12)),	/* PD_EINT12 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 13),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D13 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VN1 */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* VPPPP */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 13)),	/* PD_EINT13 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 14),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D14 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VP2 */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* PWREN */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 14)),	/* PD_EINT14 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 15),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D15 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VN2 */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* CLK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 15)),	/* PD_EINT15 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 16),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D16 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VPC */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* DATA */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 16)),	/* PD_EINT16 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 17),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D17 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VNC */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* RST */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 17)),	/* PD_EINT17 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 18),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D18 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VP3 */
-+		  SUNXI_FUNCTION(0x4, "sim"),		/* DET */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 18)),	/* PD_EINT18 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 19),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D19 */
-+		  SUNXI_FUNCTION(0x3, "lvds1"),		/* VN3 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 19)),	/* PD_EINT19 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 20),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D20 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 20)),	/* PD_EINT20 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 21),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D21 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 21)),	/* PD_EINT21 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 22),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D22 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 22)),	/* PD_EINT22 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 23),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* D23 */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 23)),	/* PD_EINT23 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 24),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* CLK */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 24)),	/* PD_EINT24 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 25),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* DE */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 25)),	/* PD_EINT25 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 26),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* HSYNC */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 26)),	/* PD_EINT26 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 27),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "lcd0"),		/* VSYNC */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 27)),	/* PD_EINT27 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(D, 28),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "pwm0"),
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 2, 28)),	/* PD_EINT28 */
-+	/* Hole */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 0),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  PCLK  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 0)),	/* PE_EINT0 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 1),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi_mclk1"),	/*  MCLK  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 1)),	/* PE_EINT1 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 2),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  HSYNC  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 2)),	/* PE_EINT2 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 3),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  VSYNC  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 3)),	/* PE_EINT3 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 4),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D0  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 4)),	/* PE_EINT4 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 5),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D1  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 5)),	/* PE_EINT5 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 6),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D2  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 6)),	/* PE_EINT6 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 7),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D3  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 7)),	/* PE_EINT7 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 8),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D4  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 8)),	/* PE_EINT8 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 9),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D5  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 9)),	/* PE_EINT9 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 10),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D6  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 10)),	/* PE_EINT10 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 11),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D7  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 11)),	/* PE_EINT11 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 12),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D8  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 12)),	/* PE_EINT12 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 13),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D9  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 13)),	/* PE_EINT13 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 14),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D10  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 14)),	/* PE_EINT14 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 15),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D11  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 15)),	/* PE_EINT15 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 16),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D12  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 16)),	/* PE_EINT16 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 17),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D13  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 17)),	/* PE_EINT17 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 18),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D14  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 18)),	/* PE_EINT18 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 19),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  D15  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 19)),	/* PE_EINT19 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 20),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  SCK  */
-+		  SUNXI_FUNCTION(0x5, "i2c2"),		/*  SCK  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 20)),	/* PE_EINT20 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 21),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "csi"),		/*  SDA */
-+		  SUNXI_FUNCTION(0x5, "i2c2"),		/*  SDA  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 21)),	/* PE_EINT21 */
-+	SUNXI_PIN(SUNXI_PINCTRL_PIN(E, 22),
-+		  SUNXI_FUNCTION(0x0, "gpio_in"),
-+		  SUNXI_FUNCTION(0x1, "gpio_out"),
-+		  SUNXI_FUNCTION(0x2, "ncsi_fsin0"),	/*  FSIN0 */
-+		  SUNXI_FUNCTION(0x4, "tcon0"),		/*  TRIG0  */
-+		  SUNXI_FUNCTION_IRQ_BANK(0x6, 3, 22)),	/* PE_EINT22 */
-+	/* Hole */
- 	SUNXI_PIN(SUNXI_PINCTRL_PIN(F, 0),
- 		  SUNXI_FUNCTION(0x0, "gpio_in"),
- 		  SUNXI_FUNCTION(0x1, "gpio_out"),
-@@ -545,4 +897,4 @@ static struct platform_driver h616_pinctrl_driver = {
- 		.of_match_table	= h616_pinctrl_match,
- 	},
- };
--builtin_platform_driver(h616_pinctrl_driver);
-+builtin_platform_driver(h616_pinctrl_driver);
-\ No newline at end of file
+ .. only::  subproject and html
+ 
+diff --git a/Documentation/userspace-api/perf_ring_buffer.rst b/Documentation/userspace-api/perf_ring_buffer.rst
+new file mode 100644
+index 000000000000..a228368ae7db
+--- /dev/null
++++ b/Documentation/userspace-api/perf_ring_buffer.rst
+@@ -0,0 +1,867 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++================
++Perf ring buffer
++================
++
++.. CONTENTS
++
++    1. Introduction
++
++    2. Ring buffer implementation
++    2.1  Basic algorithm
++    2.2  Ring buffer for different tracing modes
++    2.2.1       Default mode
++    2.2.2       Per-thread mode
++    2.2.3       Per-CPU mode
++    2.2.4       System wide mode
++    2.3  Accessing buffer
++    2.3.1       Producer-consumer model
++    2.3.2       Writing samples into buffer
++    2.3.3       Reading samples from buffer
++    2.3.4       Memory synchronization
++
++    3. The mechanism of AUX ring buffer
++    3.1  The relationship between AUX and regular ring buffers
++    3.2  AUX events
++    3.3  Snapshot mode
++
++
++1. Introduction
++===============
++
++The ring buffer is a fundamental mechanism for data transfer.  perf uses
++ring buffers to transfer event data from kernel to user space, another
++kind of ring buffer which is so called auxiliary (AUX) ring buffer also
++plays an important role for hardware tracing with Intel PT, Arm
++CoreSight, etc.
++
++The ring buffer implementation is critical but it's also a very
++challenging work.  On the one hand, the kernel and perf tool in the user
++space use the ring buffer to exchange data and stores data into data
++file, thus the ring buffer needs to transfer data with high throughput;
++on the other hand, the ring buffer management should avoid significant
++overload to distract profiling results.
++
++This documentation dives into the details for perf ring buffer with two
++parts: firstly it explains the perf ring buffer implementation, then the
++second part discusses the AUX ring buffer mechanism.
++
++2. Ring buffer implementation
++=============================
++
++2.1 Basic algorithm
++-------------------
++
++That said, a typical ring buffer is managed by a head pointer and a tail
++pointer; the head pointer is manipulated by a writer and the tail
++pointer is updated by a reader respectively.
++
++::
++
++        +---------------------------+
++        |   |   |***|***|***|   |   |
++        +---------------------------+
++                `-> Tail    `-> Head
++
++        * : the data is filled by the writer.
++
++                Figure 1. Ring buffer
++
++Perf uses the same way to manage its ring buffer.  In the implementation
++there are two key data structures held together in a set of consecutive
++pages, the control structure and then the ring buffer itself.  The page
++with the control structure in is known as the "user page".  Being held
++in continuous virtual addresses simplifies locating the ring buffer
++address, it is in the pages after the page with the user page.
++
++The control structure is named as ``perf_event_mmap_page``, it contains a
++head pointer ``data_head`` and a tail pointer ``data_tail``.  When the
++kernel starts to fill records into the ring buffer, it updates the head
++pointer to reserve the memory so later it can safely store events into
++the buffer.  On the other side, when the user page is a writable mapping,
++the perf tool has the permission to update the tail pointer after consuming
++data from the ring buffer.  Yet another case is for the user page's
++read-only mapping, which is to be addressed in the section
++:ref:`writing_samples_into_buffer`.
++
++::
++
++          user page                          ring buffer
++    +---------+---------+   +---------------------------------------+
++    |data_head|data_tail|...|   |   |***|***|***|***|***|   |   |   |
++    +---------+---------+   +---------------------------------------+
++        `          `----------------^                   ^
++         `----------------------------------------------|
++
++              * : the data is filled by the writer.
++
++                Figure 2. Perf ring buffer
++
++When using the ``perf record`` tool, we can specify the ring buffer size
++with option ``-m`` or ``--mmap-pages=``, the given size will be rounded up
++to a power of two that is a multiple of a page size.  Though the kernel
++allocates at once for all memory pages, it's deferred to map the pages
++to VMA area until the perf tool accesses the buffer from the user space.
++In other words, at the first time accesses the buffer's page from user
++space in the perf tool, a data abort exception for page fault is taken
++and the kernel uses this occasion to map the page into process VMA
++(see ``perf_mmap_fault()``), thus the perf tool can continue to access
++the page after returning from the exception.
++
++2.2 Ring buffer for different tracing modes
++-------------------------------------------
++
++The perf profiles programs with different modes: default mode, per thread
++mode, per cpu mode, and system wide mode.  This section describes these
++modes and how the ring buffer meets requirements for them.  At last we
++will review the race conditions caused by these modes.
++
++2.2.1 Default mode
++^^^^^^^^^^^^^^^^^^
++
++Usually we execute ``perf record`` command followed by a profiling program
++name, like below command::
++
++        perf record test_program
++
++This command doesn't specify any options for CPU and thread modes, the
++perf tool applies the default mode on the perf event.  It maps all the
++CPUs in the system and the profiled program's PID on the perf event, and
++it enables inheritance mode on the event so that child tasks inherits
++the events.  As a result, the perf event is attributed as::
++
++    evsel::cpus::map[]    = { 0 .. _SC_NPROCESSORS_ONLN-1 }
++    evsel::threads::map[] = { pid }
++    evsel::attr::inherit  = 1
++
++These attributions finally will be reflected on the deployment of ring
++buffers.  As shown below, the perf tool allocates individual ring buffer
++for each CPU, but it only enables events for the profiled program rather
++than for all threads in the system.  The *T1* thread represents the
++thread context of the 'test_program', whereas *T2* and *T3* are irrelevant
++threads in the system.   The perf samples are exclusively collected for
++the *T1* thread and stored in the ring buffer associated with the CPU on
++which the *T1* thread is running.
++
++::
++
++              T1                      T2                 T1
++            +----+              +-----------+          +----+
++    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++            +----+--------------+-----------+----------+----+-------->
++              |                                          |
++              v                                          v
++            +-----------------------------------------------------+
++            |                  Ring buffer 0                      |
++            +-----------------------------------------------------+
++
++                   T1
++                 +-----+
++    CPU1         |xxxxx|
++            -----+-----+--------------------------------------------->
++                    |
++                    v
++            +-----------------------------------------------------+
++            |                  Ring buffer 1                      |
++            +-----------------------------------------------------+
++
++                                        T1              T3
++                                      +----+        +-------+
++    CPU2                              |xxxx|        |xxxxxxx|
++            --------------------------+----+--------+-------+-------->
++                                        |
++                                        v
++            +-----------------------------------------------------+
++            |                  Ring buffer 2                      |
++            +-----------------------------------------------------+
++
++                              T1
++                       +--------------+
++    CPU3               |xxxxxxxxxxxxxx|
++            -----------+--------------+------------------------------>
++                              |
++                              v
++            +-----------------------------------------------------+
++            |                  Ring buffer 3                      |
++            +-----------------------------------------------------+
++
++	    T1: Thread 1; T2: Thread 2; T3: Thread 3
++	    x: Thread is in running state
++
++                Figure 3. Ring buffer for default mode
++
++2.2.2 Per-thread mode
++^^^^^^^^^^^^^^^^^^^^^
++
++By specifying option ``--per-thread`` in perf command, e.g.
++
++::
++
++        perf record --per-thread test_program
++
++The perf event doesn't map to any CPUs and is only bound to the
++profiled process, thus, the perf event's attributions are::
++
++    evsel::cpus::map[0]   = { -1 }
++    evsel::threads::map[] = { pid }
++    evsel::attr::inherit  = 0
++
++In this mode, a single ring buffer is allocated for the profiled thread;
++if the thread is scheduled on a CPU, the events on that CPU will be
++enabled; and if the thread is scheduled out from the CPU, the events on
++the CPU will be disabled.  When the thread is migrated from one CPU to
++another, the events are to be disabled on the previous CPU and enabled
++on the next CPU correspondingly.
++
++::
++
++              T1                      T2                 T1
++            +----+              +-----------+          +----+
++    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++            +----+--------------+-----------+----------+----+-------->
++              |                                           |
++              |    T1                                     |
++              |  +-----+                                  |
++    CPU1      |  |xxxxx|                                  |
++            --|--+-----+----------------------------------|---------->
++              |     |                                     |
++              |     |                   T1            T3  |
++              |     |                 +----+        +---+ |
++    CPU2      |     |                 |xxxx|        |xxx| |
++            --|-----|-----------------+----+--------+---+-|---------->
++              |     |                   |                 |
++              |     |         T1        |                 |
++              |     |  +--------------+ |                 |
++    CPU3      |     |  |xxxxxxxxxxxxxx| |                 |
++            --|-----|--+--------------+-|-----------------|---------->
++              |     |         |         |                 |
++              v     v         v         v                 v
++            +-----------------------------------------------------+
++            |                  Ring buffer                        |
++            +-----------------------------------------------------+
++
++            T1: Thread 1
++            x: Thread is in running state
++
++                Figure 4. Ring buffer for per-thread mode
++
++When perf runs in per-thread mode, a ring buffer is allocated for the
++profiled thread *T1*.  The ring buffer is dedicated for thread *T1*, if the
++thread *T1* is running, the perf events will be recorded into the ring
++buffer; when the thread is sleeping, all associated events will be
++disabled, thus no trace data will be recorded into the ring buffer.
++
++2.2.3 Per-CPU mode
++^^^^^^^^^^^^^^^^^^
++
++The option ``-C`` is used to collect samples on the list of CPUs, for
++example the below perf command receives option ``-C 0,2``::
++
++	perf record -C 0,2 test_program
++
++It maps the perf event to CPUs 0 and 2, and the event is not associated to any
++PID.  Thus the perf event attributions are set as::
++
++    evsel::cpus::map[0]   = { 0, 2 }
++    evsel::threads::map[] = { -1 }
++    evsel::attr::inherit  = 0
++
++This results in the session of ``perf record`` will sample all threads on CPU0
++and CPU2, and be terminated until test_program exits.  Even there have tasks
++running on CPU1 and CPU3, since the ring buffer is absent for them, any
++activities on these two CPUs will be ignored.  A usage case is to combine the
++options for per-thread mode and per-CPU mode, e.g. the options ``–C 0,2`` and
++``––per–thread`` are specified together, the samples are recorded only when
++the profiled thread is scheduled on any of the listed CPUs.
++
++::
++
++              T1                      T2                 T1
++            +----+              +-----------+          +----+
++    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++            +----+--------------+-----------+----------+----+-------->
++              |                       |                  |
++              v                       v                  v
++            +-----------------------------------------------------+
++            |                  Ring buffer 0                      |
++            +-----------------------------------------------------+
++
++                   T1
++                 +-----+
++    CPU1         |xxxxx|
++            -----+-----+--------------------------------------------->
++
++                                        T1              T3
++                                      +----+        +-------+
++    CPU2                              |xxxx|        |xxxxxxx|
++            --------------------------+----+--------+-------+-------->
++                                        |               |
++                                        v               v
++            +-----------------------------------------------------+
++            |                  Ring buffer 1                      |
++            +-----------------------------------------------------+
++
++                              T1
++                       +--------------+
++    CPU3               |xxxxxxxxxxxxxx|
++            -----------+--------------+------------------------------>
++
++            T1: Thread 1; T2: Thread 2; T3: Thread 3
++            x: Thread is in running state
++
++                Figure 5. Ring buffer for per-CPU mode
++
++2.2.4 System wide mode
++^^^^^^^^^^^^^^^^^^^^^^
++
++By using option ``–a`` or ``––all–cpus``, perf collects samples on all CPUs
++for all tasks, we call it as the system wide mode, the command is::
++
++        perf record -a test_program
++
++Similar to the per-CPU mode, the perf event doesn't bind to any PID, and
++it maps to all CPUs in the system::
++
++   evsel::cpus::map[]    = { 0 .. _SC_NPROCESSORS_ONLN-1 }
++   evsel::threads::map[] = { -1 }
++   evsel::attr::inherit  = 0
++
++In the system wide mode, every CPU has its own ring buffer, all threads
++are monitored during the running state and the samples are recorded into
++the ring buffer belonging to the CPU which the events occurred on.
++
++::
++
++              T1                      T2                 T1
++            +----+              +-----------+          +----+
++    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++            +----+--------------+-----------+----------+----+-------->
++              |                       |                  |
++              v                       v                  v
++            +-----------------------------------------------------+
++            |                  Ring buffer 0                      |
++            +-----------------------------------------------------+
++
++                   T1
++                 +-----+
++    CPU1         |xxxxx|
++            -----+-----+--------------------------------------------->
++                    |
++                    v
++            +-----------------------------------------------------+
++            |                  Ring buffer 1                      |
++            +-----------------------------------------------------+
++
++                                        T1              T3
++                                      +----+        +-------+
++    CPU2                              |xxxx|        |xxxxxxx|
++            --------------------------+----+--------+-------+-------->
++                                        |               |
++                                        v               v
++            +-----------------------------------------------------+
++            |                  Ring buffer 2                      |
++            +-----------------------------------------------------+
++
++                              T1
++                       +--------------+
++    CPU3               |xxxxxxxxxxxxxx|
++            -----------+--------------+------------------------------>
++                              |
++                              v
++            +-----------------------------------------------------+
++            |                  Ring buffer 3                      |
++            +-----------------------------------------------------+
++
++            T1: Thread 1; T2: Thread 2; T3: Thread 3
++            x: Thread is in running state
++
++                Figure 6. Ring buffer for system wide mode
++
++2.3 Accessing buffer
++--------------------
++
++Based on the understanding of how the ring buffer is allocated in
++various modes, this section explains access the ring buffer.
++
++2.3.1 Producer-consumer model
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++In the Linux kernel, the PMU events can produce samples which are stored
++into the ring buffer; the perf command in user space consumes the
++samples by reading out data from the ring buffer and finally saves the
++data into the file for post analysis.  It’s a typical producer-consumer
++model for using the ring buffer.
++
++The perf process polls on the PMU events and sleeps when no events are
++incoming.  To prevent frequent exchanges between the kernel and user
++space, the kernel event core layer introduces a watermark, which is
++stored in the ``perf_buffer::watermark``.  When a sample is recorded into
++the ring buffer, and if the used buffer exceeds the watermark, the
++kernel wakes up the perf process to read samples from the ring buffer.
++
++::
++
++                       Perf
++                       / | Read samples
++             Polling  /  `--------------|               Ring buffer
++                     v                  v    ;---------------------v
++    +----------------+     +---------+---------+   +-------------------+
++    |Event wait queue|     |data_head|data_tail|   |***|***|   |   |***|
++    +----------------+     +---------+---------+   +-------------------+
++             ^                  ^ `------------------------^
++             | Wake up tasks    | Store samples
++          +-----------------------------+
++          |  Kernel event core layer    |
++          +-----------------------------+
++
++              * : the data is filled by the writer.
++
++                Figure 7. Writing and reading the ring buffer
++
++When the kernel event core layer notifies the user space, because
++multiple events might share the same ring buffer for recording samples,
++the core layer iterates every event associated with the ring buffer and
++wakes up tasks waiting on the event.  This is fulfilled by the kernel
++function ``ring_buffer_wakeup()``.
++
++After the perf process is woken up, it starts to check the ring buffers
++one by one, if it finds any ring buffer containing samples it will read
++out the samples for statistics or saving into the data file.  Given the
++perf process is able to run on any CPU, this leads to the ring buffer
++potentially being accessed from multiple CPUs simultaneously, which
++causes race conditions.  The race condition handling is described in the
++section :ref:`memory_synchronization`.
++
++.. _writing_samples_into_buffer:
++
++2.3.2 Writing samples into buffer
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++Ring buffers are mapped as read-write mode or read-only mode, which is
++used for a normal ring buffer and an overwritable ring buffer
++respectively.
++
++The ring buffer in the read-write mode is mapped with the property
++``PROT_READ | PROT_WRITE``.  With the write permission, the perf tool
++updates the ``data_tail`` to indicate the data start position.  Combining
++with the head pointer ``data_head``, which works as the end position of
++the current data, the perf tool can easily know where read out the data
++from.
++
++Alternatively, in the read-only mode, only the kernel keeps to update
++the ``data_head`` while the user space cannot access the ``data_tail`` due
++to the mapping property ``PROT_READ``.
++
++Why ring buffers are mapped with above two different modes?  Here the
++write direction matters.  The forward writing starts to save data from
++the beginning of the ring buffer and wrap around when overflow, which is
++used with the read-write mode in the normal ring buffer.  When the
++consumer doesn't keep up with the producer, it would lose some data, the
++kernel keeps how many records it lost and generates the
++``PERF_RECORD_LOST`` records in the next time when it finds a space in the
++ring buffer.
++
++On the other hand, the backward writing saves the data from the end of
++the ring buffer and the ``data_head`` keeps the position of current data,
++the perf always knows where it starts to read and until the end of the
++ring buffer, thus it don't need the ``data_tail``.  This is why the perf
++uses the backward writing with the read-only mode for the overwritable
++ring buffer.  In this mode, it will not generate the PERF_RECORD_LOST
++records.
++
++When a sample is taken and saved into the ring buffer, the function
++``__perf_event_output()`` is used to fill samples into the ring buffer -
++which can support both the forward and the backward writing.  It calls
++below sub functions:
++
++- The sub function ``perf_prepare_sample()`` prepares sample fields based on
++  the sample type;
++- ``output_begin()`` is a function pointer, it’s passed dynamically via the
++  argument for different writing directions - it can be
++  ``perf_output_begin_forward()`` or ``perf_output_begin_backward()``.  This
++  step is to prepare the info for writing ring buffer, when it returns back
++  the ring buffer info is stored in structure ``perf_output_handle``;
++- ``perf_output_sample()`` outputs the sample into the ring buffer;
++- ``perf_output_end()`` updates the head pointer for user page so perf tool
++  can see the latest value.
++
++Let's see how the data structures are used to help the recording.
++
++::
++
++      struct perf_output_handle       /---->  struct perf_buffer
++    +---------------------------+     |     +--------------------+
++    |           *rb;            |-----|     |   local_t head;    |
++    +---------------------------+           +--------------------+
++    |        int page;          |           |    *user_page;     |
++    +---------------------------+           +--------------------+
++    |       void *addr;         |                      |
++    +---------------------------+                      v
++    |   unsigned long size;     |         struct perf_event_mmap_page
++    +---------------------------+           +--------------------+
++                                            |   __u64 data_head; |
++                                            +--------------------+
++                                            |   __u64 data_tail; |
++                                            +--------------------+
++
++                Figure 8. Data structures for writing ring buffer
++
++In Linux kernel, the event core layer uses the structure ``perf_buffer`` to
++track the buffer’s latest header, and it keeps the information for
++buffer pages.  The structure ``perf_buffer`` manages ring buffer during its
++life cycle, it is allocated once the ring buffer is created and released
++when the ring buffer is destroyed.
++
++It’s possible for multiple events to write buffer concurrently.  For
++instance, a software event and a hardware PMU event both are enabled for
++profiling, when the software event is in the middle of sampling, the
++hardware event maybe be overflow and its interrupt is triggered in this
++case.  This leads to the race condition for updating ``perf_buffer::head``.
++In ``__perf_output_begin()``, Linux kernel uses compare-and-swap atomicity
++``local_cmpxchg()`` to implement the lockless algorithm for protecting
++``perf_buffer::head``.
++
++The structure ``perf_output_handle`` serves as a temporary context for
++tracking the information related to the buffer.  For instance, the
++``perf_output_handle::rb`` field points to the global ``perf_buffer``
++structure.  Additionally, the ``perf_output_handle::addr`` field, based on the
++lockless algorithm, specifies the destination address where the sample data is
++to be stored.
++
++The advantages of the ``perf_output_handle`` structure is that it enables
++concurrent writing to the buffer by different events.  For the previous
++example, two instances of ``perf_output_handle`` serve as separate contexts
++for software events and hardware events.  This allows each event to
++reserve its own memory space within the ``out_begin()`` function, and
++``perf_output_handle::addr`` is used for populating the specific event.
++
++Once the sample data has been successfully stored in the buffer, the
++header of the ring buffer is synced from ``perf_buffer::head`` to
++``perf_event_mmap_page::data_head``, which is fulfilled in the function
++``perf_output_end()``.  This synchronization indicates to the perf tool that
++it is now safe to read the newly added samples from the user space.
++
++2.3.3 Reading samples from buffer
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++In the user space, the perf tool utilizes the ``perf_event_mmap_page``
++structure to handle the head and tail of the buffer.  It also uses
++``perf_mmap`` structure to keep track of a context for the ring buffer, this
++context includes information about the buffer's starting and ending
++addresses.  Additionally, the mask value can be utilized to compute the
++circular buffer pointer even for an overflow.
++
++Similar to the kernel, the perf tool in the user space first reads out
++the recorded data from the ring buffer, and then updates the buffer's
++tail pointer ``perf_event_mmap_page::data_tail``.
++
++.. _memory_synchronization:
++
++2.3.4 Memory synchronization
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++
++The modern CPUs with relaxed memory model cannot promise the memory
++ordering, this means it’s possible to access the ring buffer and the
++``perf_event_mmap_page`` structure out of order.  To assure the specific
++sequence for memory accessing perf ring buffer, memory barriers are
++used to assure the data dependency.  The rationale for the memory
++synchronization is as below::
++
++  Kernel                          User space
++
++  if (LOAD ->data_tail) {         LOAD ->data_head
++                   (A)            smp_rmb()        (C)
++    STORE $data                   LOAD $data
++    smp_wmb()      (B)            smp_mb()         (D)
++    STORE ->data_head             STORE ->data_tail
++  }
++
++The comments in tools/include/linux/ring_buffer.h gives nice description
++for why and how to use memory barriers, here we will just provide an
++alternative explanation:
++
++(A) is a control dependency so that CPU assures order between checking
++pointer ``perf_event_mmap_page::data_tail`` and filling sample into ring
++buffer;
++
++(D) pairs with (A).  (D) separates the ring buffer data reading from
++writing the pointer ``data_tail``, perf tool first consumes samples and then
++tells the kernel that the data chunk has been released.  Since a reading
++operation is followed by a writing operation, thus (D) is a full memory
++barrier.
++
++(B) is a writing barrier in the middle of two writing operations, which
++makes sure that recording a sample must be prior to updating the head
++pointer.
++
++(C) pairs with (B).  (C) is a read memory barrier to ensure the head
++pointer is fetched before reading samples.
++
++To implement the above algorithm, the ``perf_output_put_handle()`` function
++in the kernel and two helpers ``ring_buffer_read_head()`` and
++``ring_buffer_write_tail()`` in the user space are introduced, they rely
++on memory barriers as described above to ensure the data dependency.
++
++Some architectures support one-way permeable barrier with load-acquire
++and store-release operations, these barriers are more relaxed with less
++performance penalty, so (C) and (D) can be optimized to use barriers
++``smp_load_acquire()`` and ``smp_store_release()`` respectively.
++
++If an architecture doesn’t support load-acquire and store-release in its
++memory model, it will roll back to the old fashion of memory barrier
++operations.  In this case, ``smp_load_acquire()`` encapsulates
++``READ_ONCE()`` + ``smp_mb()``, since ``smp_mb()`` is costly,
++``ring_buffer_read_head()`` doesn't invoke ``smp_load_acquire()`` and it uses
++the barriers ``READ_ONCE()`` + ``smp_rmb()`` instead.
++
++3. The mechanism of AUX ring buffer
++===================================
++
++In this chapter, we will explain the implementation of the AUX ring
++buffer.  In the first part it will discuss the connection between the
++AUX ring buffer and the regular ring buffer, then the second part will
++examine how the AUX ring buffer co-works with the regular ring buffer,
++as well as the additional features introduced by the AUX ring buffer for
++the sampling mechanism.
++
++3.1 The relationship between AUX and regular ring buffers
++---------------------------------------------------------
++
++Generally, the AUX ring buffer is an auxiliary for the regular ring
++buffer.  The regular ring buffer is primarily used to store the event
++samples and every event format complies with the definition in the
++union ``perf_event``; the AUX ring buffer is for recording the hardware
++trace data and the trace data format is hardware IP dependent.
++
++The general use and advantage of the AUX ring buffer is that it is
++written directly by hardware rather than by the kernel.  For example,
++regular profile samples that write to the regular ring buffer cause an
++interrupt.  Tracing execution requires a high number of samples and
++using interrupts would be overwhelming for the regular ring buffer
++mechanism.  Having an AUX buffer allows for a region of memory more
++decoupled from the kernel and written to directly by hardware tracing.
++
++The AUX ring buffer reuses the same algorithm with the regular ring
++buffer for the buffer management.  The control structure
++``perf_event_mmap_page`` extends the new fields ``aux_head`` and ``aux_tail``
++for the head and tail pointers of the AUX ring buffer.
++
++During the initialisation phase, besides the mmap()-ed regular ring
++buffer, the perf tool invokes a second syscall in the
++``auxtrace_mmap__mmap()`` function for the mmap of the AUX buffer;
++``rb_alloc_aux()`` in the kernel allocates pages correspondingly, these
++pages will be deferred to map into VMA when handling the page fault,
++which is the same lazy mechanism with the regular ring buffer.
++
++AUX events and AUX trace data are two different things.  Let's see an
++example::
++
++        perf record -a -e cycles -e cs_etm/@tmc_etr0/ -- sleep 2
++
++The above command enables two events: one is the event *cycles* from PMU
++and another is the AUX event *cs_etm* from Arm CoreSight, both are saved
++into the regular ring buffer while the CoreSight's AUX trace data is
++stored in the AUX ring buffer.
++
++As a result, we can see the regular ring buffer and the AUX ring buffer
++are allocated in pairs.  The perf in default mode allocates the regular
++ring buffer and the AUX ring buffer per CPU-wise, which is the same as
++the system wide mode, however, the default mode records samples only for
++the profiled program, whereas the latter mode profiles for all programs
++in the system.  For per-thread mode, the perf tool allocates only one
++regular ring buffer and one AUX ring buffer for the whole session.  For
++the per-CPU mode, the perf allocates two kinds of ring buffers for CPUs
++specified by the option ``-C``.
++
++The below figure demonstrates the buffers' layout in the system wide
++mode; if there are any activities on one CPU, the AUX event samples and
++the hardware trace data will be recorded into the dedicated buffers for
++the CPU.
++
++::
++
++              T1                      T2                 T1
++            +----+              +-----------+          +----+
++    CPU0    |xxxx|              |xxxxxxxxxxx|          |xxxx|
++            +----+--------------+-----------+----------+----+-------->
++              |                       |                  |
++              v                       v                  v
++            +-----------------------------------------------------+
++            |                  Ring buffer 0                      |
++            +-----------------------------------------------------+
++              |                       |                  |
++              v                       v                  v
++            +-----------------------------------------------------+
++            |               AUX Ring buffer 0                     |
++            +-----------------------------------------------------+
++
++                   T1
++                 +-----+
++    CPU1         |xxxxx|
++            -----+-----+--------------------------------------------->
++                    |
++                    v
++            +-----------------------------------------------------+
++            |                  Ring buffer 1                      |
++            +-----------------------------------------------------+
++                    |
++                    v
++            +-----------------------------------------------------+
++            |               AUX Ring buffer 1                     |
++            +-----------------------------------------------------+
++
++                                        T1              T3
++                                      +----+        +-------+
++    CPU2                              |xxxx|        |xxxxxxx|
++            --------------------------+----+--------+-------+-------->
++                                        |               |
++                                        v               v
++            +-----------------------------------------------------+
++            |                  Ring buffer 2                      |
++            +-----------------------------------------------------+
++                                        |               |
++                                        v               v
++            +-----------------------------------------------------+
++            |               AUX Ring buffer 2                     |
++            +-----------------------------------------------------+
++
++                              T1
++                       +--------------+
++    CPU3               |xxxxxxxxxxxxxx|
++            -----------+--------------+------------------------------>
++                              |
++                              v
++            +-----------------------------------------------------+
++            |                  Ring buffer 3                      |
++            +-----------------------------------------------------+
++                              |
++                              v
++            +-----------------------------------------------------+
++            |               AUX Ring buffer 3                     |
++            +-----------------------------------------------------+
++
++            T1: Thread 1; T2: Thread 2; T3: Thread 3
++            x: Thread is in running state
++
++                Figure 9. AUX ring buffer for system wide mode
++
++3.2 AUX events
++--------------
++
++Similar to ``perf_output_begin()`` and ``perf_output_end()``'s working for the
++regular ring buffer, ``perf_aux_output_begin()`` and ``perf_aux_output_end()``
++serve for the AUX ring buffer for processing the hardware trace data.
++The structure ``perf_output_handle`` is used as a context to track the AUX
++buffer’s info.
++
++``perf_aux_output_begin()`` initializes the structure perf_output_handle.
++It fetches the AUX head pointer and assigns to ``perf_output_handle::head``,
++afterwards, the low level driver uses ``perf_output_handle::head`` as the
++start address for storing hardware trace data.
++
++Once the hardware trace data is stored into the AUX ring buffer, the PMU
++driver will stop hardware tracing by calling the ``pmu::stop()`` callback.
++Similar to the regular ring buffer, the AUX ring buffer needs to apply
++the memory synchronization mechanism as discussed in the section
++:ref:`memory_synchronization`.  Since the AUX ring buffer is managed by the
++PMU driver, the barrier (B), which is a writing barrier to ensure the trace
++data is externally visible prior to updating the head pointer, is asked
++to be implemented in the PMU driver.
++
++Then ``pmu::stop()`` can safely call the ``perf_aux_output_end()`` function to
++finish two things:
++
++- It fills an event ``PERF_RECORD_AUX`` into the regular ring buffer, this
++  event delivers the information of the start address and data size for a
++  chunk of hardware trace data has been stored into the AUX ring buffer;
++
++- Since the hardware trace driver has stored new trace data into the AUX
++  ring buffer, the argument *size* indicates how many bytes have been
++  consumed by the hardware tracing, thus ``perf_aux_output_end()`` updates the
++  header pointer ``perf_buffer::aux_head`` to reflect the latest buffer usage.
++
++At the end, the PMU driver will restart hardware tracing.  During this
++temporary suspending period, it will lose hardware trace data, which
++will introduce a discontinuity during decoding phase.
++
++The event ``PERF_RECORD_AUX`` presents an AUX event which is handled in the
++kernel, but it lacks the information for saving the AUX trace data in
++the perf file.  When the perf tool copies the trace data from AUX ring
++buffer to the perf data file, it synthesizes a ``PERF_RECORD_AUXTRACE``
++event which includes the offest and size of the AUX trace data in the
++perf file.  Afterwards, the perf tool reads out the AUX trace data from
++the perf file based on the ``PERF_RECORD_AUXTRACE`` events, and the
++``PERF_RECORD_AUX`` event is used to decode a chunk of data by correlating
++with time order.
++
++3.3 Snapshot mode
++-----------------
++
++Perf supports snapshot mode for AUX ring buffer, in this mode, users
++only record AUX trace data at a specific time point which users are
++interested in.  E.g. below gives an example of how to take snapshots
++with 1 second interval with Arm CoreSight::
++
++  perf record -e cs_etm/@tmc_etr0/u -S -a program &
++  PERFPID=$!
++  while true; do
++      kill -USR2 $PERFPID
++      sleep 1
++  done
++
++The main flow for snapshot mode is:
++
++- Before a snapshot is taken, the AUX ring buffer acts in free run mode.
++  During free run mode the perf doesn't record any of the AUX events and
++  trace data;
++
++- Once the perf tool receives the *USR2* signal, it triggers the callback
++  function ``auxtrace_record::snapshot_start()`` to deactivate hardware
++  tracing.  The kernel driver then populates the AUX ring buffer with the
++  hardware trace data, and the event ``PERF_RECORD_AUX`` is stored in the
++  regular ring buffer;
++
++- Then perf tool takes a snapshot, ``record__read_auxtrace_snapshot()``
++  reads out the hardware trace data from the AUX ring buffer and saves it
++  into perf data file;
++
++- After the snapshot is finished, ``auxtrace_record::snapshot_finish()``
++  restarts the PMU event for AUX tracing.
++
++The perf only accesses the head pointer ``perf_event_mmap_page::aux_head``
++in snapshot mode and doesn’t touch tail pointer ``aux_tail``, this is
++because the AUX ring buffer can overflow in free run mode, the tail
++pointer is useless in this case.  Alternatively, the callback
++``auxtrace_record::find_snapshot()`` is introduced for making the decision
++of whether the AUX ring buffer has been wrapped around or not, at the
++end it fixes up the AUX buffer's head which are used to calculate the
++trace data size.
++
++As we know, the buffers' deployment can be per-thread mode, per-CPU
++mode, or system wide mode, and the snapshot can be applied to any of
++these modes.  Below is an example of taking snapshot with system wide
++mode.
++
++::
++
++                                         Snapshot is taken
++                                                 |
++                                                 v
++                        +------------------------+
++                        |  AUX Ring buffer 0     | <- aux_head
++                        +------------------------+
++                                                 v
++                +--------------------------------+
++                |          AUX Ring buffer 1     | <- aux_head
++                +--------------------------------+
++                                                 v
++    +--------------------------------------------+
++    |                      AUX Ring buffer 2     | <- aux_head
++    +--------------------------------------------+
++                                                 v
++         +---------------------------------------+
++         |                 AUX Ring buffer 3     | <- aux_head
++         +---------------------------------------+
++
++                Figure 10. Snapshot with system wide mode
 -- 
-2.41.0
+2.34.1
 
