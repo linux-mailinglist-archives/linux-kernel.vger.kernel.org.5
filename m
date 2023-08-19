@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0411C78162C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 02:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0353781646
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 03:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243298AbjHSAyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 20:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        id S243260AbjHSBE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 21:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243325AbjHSAxi (ORCPT
+        with ESMTP id S243181AbjHSBEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 20:53:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8851448D;
-        Fri, 18 Aug 2023 17:53:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692406415; x=1723942415;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TpUo5Edi6QFUhdJVj1ej9UvxlhacliszgVQIhmTKSe0=;
-  b=YRlNur6KXSGvypmwfJ2zXMS6iTLXB1NBHS8LTaohqmxkw44gfp5sUmJ6
-   UKTwNlt+5C2EDUO5DipwpoGgJoEnJ93zVNbf/yxLdUnUmaG3Lajg6e1/J
-   ft2luc0IjjoPz9Lt8MOB9DvQOa1RONLq4X2T0ixpynFjPIeAdAoNGw1pV
-   Ude2AtVzn5c+GQRWWdX0HM6WWOtz832lMO0RV/J8X7vGzyX/rcTEqEA3r
-   EwZ8GHEYNKs8aasMV51GpQQVODBvmjpEKxiiCcshC9mXe8hGDm6V5Vrgv
-   zc7T18Nz9ml6e4X20ik51XxPPv7HcZ/S39fw+2e1sfqGGli9i46m2mWi8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="373209892"
-X-IronPort-AV: E=Sophos;i="6.01,184,1684825200"; 
-   d="scan'208";a="373209892"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 17:53:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="770311176"
-X-IronPort-AV: E=Sophos;i="6.01,184,1684825200"; 
-   d="scan'208";a="770311176"
-Received: from pglc00067.png.intel.com ([10.221.207.87])
-  by orsmga001.jf.intel.com with ESMTP; 18 Aug 2023 17:53:29 -0700
-From:   Rohan G Thomas <rohan.g.thomas@intel.com>
-To:     fancer.lancer@gmail.com
-Cc:     alexandre.torgue@foss.st.com, conor+dt@kernel.org,
-        davem@davemloft.net, devicetree@vger.kernel.org,
-        edumazet@google.com, joabreu@synopsys.com,
-        krzysztof.kozlowski+dt@linaro.org, kuba@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, peppe.cavallaro@st.com, robh+dt@kernel.org,
-        rohan.g.thomas@intel.com
-Subject: [PATCH net-next v4 2/2] net: stmmac: Tx coe sw fallback
-Date:   Sat, 19 Aug 2023 08:53:26 +0800
-Message-Id: <20230819005326.22204-1-rohan.g.thomas@intel.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <trcp4f77dv2e36zpe53s7sjoyevgd5qtpv6m4a75ryalglqnev@trcsnsmvtijy>
-References: <trcp4f77dv2e36zpe53s7sjoyevgd5qtpv6m4a75ryalglqnev@trcsnsmvtijy>
+        Fri, 18 Aug 2023 21:04:23 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA98110F1;
+        Fri, 18 Aug 2023 18:04:21 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSL9Z0rDnz9Y;
+        Sat, 19 Aug 2023 03:04:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1692407060; bh=sFq9Q+VaStp1O+YV7cwSTZ53EOPS3jtEcfot7OFqKYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gz9HN/5ke2KWkSBGXpxjmiGIQ6pVqMNlBIiUp9oEzLyclbNE27pcaLnZmjGt8fyDG
+         yuRmR4LoesM+ikFVO1lthn22e79wgUIVudmi7uvOWixPYQO+hkS+1AG67vfktG8r/E
+         09xvswvHSS03kZpP08hV29fFX8PYJrsMsOCpyaBMEQpDg2TI9qh/kT4JtD8XlSy+ul
+         amQ6PdgWHi2pYEYYEqD8fbAyEwWFqLM2UUGENRBDQkCiZ6rcVJOtQKOqwtrcAi275N
+         YocSGFnW+CJgcpaXU4w0TdjesZQFKuyBPLkcE1GsIm8ZGl9wi8r5TcPShBF2vXeUpr
+         t+8Ght2q9MPlg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sat, 19 Aug 2023 03:04:16 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <emmir@google.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Danylo Mocherniuk <mdanylo@google.com>,
+        Paul Gofman <pgofman@codeweavers.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Yun Zhou <yun.zhou@windriver.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alex Sierra <alex.sierra@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, kernel@collabora.com,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>, Nadav Amit <namit@vmware.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v32 2/6] fs/proc/task_mmu: Implement IOCTL to get and
+ optionally clear info about PTEs
+Message-ID: <ZOAVEFniF/dm+mre@qmqm.qmqm.pl>
+References: <20230816113049.1697849-1-usama.anjum@collabora.com>
+ <20230816113049.1697849-3-usama.anjum@collabora.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230816113049.1697849-3-usama.anjum@collabora.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 09:53:50PM +0800, Rohan G Thomas wrote:
->> +	u32 flags;
->
->This looks redundant. See my last comment.
->
->> +
->
->> +	u32 tx_q_with_coe;
->
->This one too. Can't you just use the
->plat_stmmacenet_data.tx_queues_with_coe field?
->
->> +	if (priv->plat->tx_coe &&
->> +	    priv->plat->tx_queues_with_coe < priv->plat->tx_queues_to_use) {
->> +		priv->flags |= STMMAC_PRIV_FLG_TXQ_COE_LIMIT;
->> +		priv->tx_q_with_coe = priv->plat->tx_queues_with_coe;
->> +		dev_info(priv->device, "TX COE limited to %u tx queues\n",
->> +			 priv->tx_q_with_coe);
->> +	}
->
->What about:
->+	if (priv->plat->tx_coe && !priv->plat->tx_queues_with_coe)
->+		priv->plat->tx_queues_with_coe = priv->plat->tx_queues_to_use;
->+	else if (!priv->plat->tx_coe)
->+		priv->plat->tx_queues_with_coe = 0;
->+	else if (priv->plat->tx_queues_with_coe < priv->plat->tx_queues_to_use)
->+		dev_info(priv->device, "TX COE is available for %u queues\n", priv->plat->tx_queues_with_coe);
->
->?
->
->-Serge(y)
+On Wed, Aug 16, 2023 at 04:30:45PM +0500, Muhammad Usama Anjum wrote:
+> The PAGEMAP_SCAN IOCTL on the pagemap file can be used to get or optionally
+> clear the info about page table entries.
+[...]
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+[...]
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +static unsigned long pagemap_thp_category(pmd_t pmd)
+> +{
+> +	unsigned long categories = PAGE_IS_HUGE;
+> +
+> +	/*
+> +	 * THPs don't support file-backed memory. So PAGE_IS_FILE
+> +	 * is not checked here.
+> +	 */
 
-Hi Serge,
+It seems that we can have THP for files: ref. recent LKML thread [1].
 
-Agreed.
-Thanks for the suggestion. Will rework in next version.
+[1] https://lkml.org/lkml/2023/8/16/1212
 
-BR,
-Rohan
+> +	if (pmd_present(pmd)) {
+> +		categories |= PAGE_IS_PRESENT;
+> +		if (!pmd_uffd_wp(pmd))
+> +			categories |= PAGE_IS_WRITTEN;
+> +		if (is_zero_pfn(pmd_pfn(pmd)))
+> +			categories |= PAGE_IS_PFNZERO;
+> +	} else if (is_swap_pmd(pmd)) {
+> +		categories |= PAGE_IS_SWAPPED;
+> +		if (!pmd_swp_uffd_wp(pmd))
+> +			categories |= PAGE_IS_WRITTEN;
+> +	}
+> +
+> +	return categories;
+> +}
 
->> 
->>
+Best Regards
+Micha³ Miros³aw
