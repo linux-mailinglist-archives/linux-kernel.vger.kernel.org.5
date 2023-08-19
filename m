@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85D7781A28
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA338781A2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbjHSOfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49834 "EHLO
+        id S233606AbjHSOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjHSOfl (ORCPT
+        with ESMTP id S231313AbjHSOgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:35:41 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2461FD39;
-        Sat, 19 Aug 2023 07:35:35 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-76d9a79e2fdso40392885a.1;
-        Sat, 19 Aug 2023 07:35:35 -0700 (PDT)
+        Sat, 19 Aug 2023 10:36:19 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B95721D5A;
+        Sat, 19 Aug 2023 07:36:16 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf0b24d925so12888285ad.3;
+        Sat, 19 Aug 2023 07:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692455734; x=1693060534;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuDrenDtPLv9suOFUYr8VZtzBqfanUGuWEDfBaaD+9s=;
-        b=KorI84h9e6x/55Ewd65XgG4WaBgoBzHkVmxHXKImA14LLKP9VfaBDNG+SDJe4etsB5
-         Ztbz1r4KetxZ8Q4N1J1gYf2gTXXlNVsPLqdG8YywaCrUrQcrtoGIPNcgTN1a7QgKH3Na
-         OIv+kxE3ysav/goa23ceSCnMu1f1725ixXDtsqdw44qGEGnJak/GEEDfeScfQhIOBgOI
-         86ca9Osxo09eCKYI5qqvxYy5y2raDLB9nXO+ZkQzucILF/ba/No2ntzGvyL/a0YJ5N8m
-         4mpDcMdNGh0y9HiOHmKyWxJ/6iBLVaWcGG31+deVga0Y03rDIKFop063O+rr708+J3h5
-         dmJQ==
+        d=gmail.com; s=20221208; t=1692455776; x=1693060576;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i3eyhWYxowBeZ550XCHaK2XJ5PZyECo2MtKsWHHL3rU=;
+        b=obkbU6gs/EuufRL1SbRTlTNpqPglfRTGOLS3bXz79NuI9pVc9Y53+uRMdrWLuvFI3q
+         DGOif0BUmQcuSmCLw2Ea7Rq7fcQXeTGYfivHDhjXUoy1+uKGWGNLuZfepCWPKThNG047
+         OaM3FmHR00KYYvHXCtxkgQbgNTHxaIMQnIwyXphsD2Cr9MFzR4BiDHdeWHtPrkLS/xdi
+         X//r47yv9JWpUZD+bjewWPm1geeN9PlxnJ9S2bG5S0tH7DKCpF5Cbn493aRfg2bIgLzU
+         N9rynyP/aqUv3gEXcp6HgP6TFBxYiiBrhJnbOVurN88dt85QsNTJqf0HVDzSvwzUR5Um
+         TZwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692455734; x=1693060534;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FuDrenDtPLv9suOFUYr8VZtzBqfanUGuWEDfBaaD+9s=;
-        b=I0D9PdSPLlb5ud+gUd3I5POwcq39gD+gpuSkil9EFi8w7o25SQAJ89oXtEerKwSGn1
-         kpEPHVsmq2A9cx4VVyHdiPywdy/ZR+TdhMen8C2s/C4ZDRyNzn/1u1KKw2152TPDPJ4A
-         1knmqvAysLwGYv+AViMI7htpXMUXnTdjeMyQB5TtVSfDzgAmljTdWjjBRvQw9PVQ/WMV
-         MD+mhhS8CY54X28SneWwZwWp+h5cNezbwxRO0Ks4DSWYxg9haWqz6Ym8CPq+QHZ/BYJS
-         IbBl61Si5sR2XmCpSd3HpfTyXSJUhlWAVtZ41CnNk43DeAdO1BCJKhrEWVtpFyhloBYw
-         wn9A==
-X-Gm-Message-State: AOJu0Yz2CkYHIZsC/pwf/C/s9pUcG6l9uRe5JovZ4CSLSFpjX5P75h8M
-        NB7c3IowbzQtcN3Ir+53j44=
-X-Google-Smtp-Source: AGHT+IHUfCRk72PwjeVuBOWBcFXHgymftEe/Hdt5hXm5EXRD1gYwRSCuak1cCc7S+MkscDQB/OWxUg==
-X-Received: by 2002:a05:620a:1999:b0:76d:25b5:6e9b with SMTP id bm25-20020a05620a199900b0076d25b56e9bmr2954283qkb.23.1692455734229;
-        Sat, 19 Aug 2023 07:35:34 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id g16-20020a05620a109000b0076ceb5eb309sm1210424qkk.74.2023.08.19.07.35.33
+        d=1e100.net; s=20221208; t=1692455776; x=1693060576;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i3eyhWYxowBeZ550XCHaK2XJ5PZyECo2MtKsWHHL3rU=;
+        b=alqDSuuFrPyD2nwvpMaEQEgmQmRjcPVUTpSqHZPJqvFrmQaNxrDydxfKg1oF1uetmt
+         CVrkIHRxMVZCdf3AMOhMdqNLreIreFsxLyr7lhlx/Ardr3ci7BIRNXEfIHYUGGB4eCL4
+         QbYGAcYJ0chyjYtimzy8Chac2MlyOZIKKDKYNImC+KiSaRU9rigN2scB0PfxJhV4Keyw
+         jPj8MO36Gcl9ENuFnKa8Ub1E5Ooph+Mm/EEcvG1Ibes4572qLK3mq8h2zwWT91qx3Adk
+         5g48194dZ1Xtoh98K246qM/29PCyHC7Wpq0IOoKP3gohAmbSw80GbnMExCChsMm8Embm
+         vMcQ==
+X-Gm-Message-State: AOJu0Yw5KiRqrP9ljCMUo/yCqmbgLSmf+ir+zC6vs5c/T2Flh+tU4Gvx
+        20b1Qwet7aTv8hRER1wcjAg=
+X-Google-Smtp-Source: AGHT+IFutKzo7Y89mFdefbjAUoyhptfe0oMw9nzC5zNJ9WY11Kj/8GbKdMTFwq6gE96Thh8ITFhEzg==
+X-Received: by 2002:a17:903:1c4:b0:1bf:205f:c02c with SMTP id e4-20020a17090301c400b001bf205fc02cmr1868523plh.58.1692455775657;
+        Sat, 19 Aug 2023 07:36:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001a80ad9c599sm2027378plz.294.2023.08.19.07.36.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 07:35:33 -0700 (PDT)
-Date:   Sat, 19 Aug 2023 10:35:33 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Breno Leitao <leitao@debian.org>, sdf@google.com, axboe@kernel.dk,
-        asml.silence@gmail.com, willemdebruijn.kernel@gmail.com,
-        martin.lau@linux.dev, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, krisman@suse.de
-Message-ID: <64e0d3359f90d_3119e32942c@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230817145554.892543-4-leitao@debian.org>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-4-leitao@debian.org>
-Subject: Re: [PATCH v3 3/9] net/socket: Break down __sys_setsockopt
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sat, 19 Aug 2023 07:36:15 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 19 Aug 2023 07:36:13 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Huibin Shi <henrys@silicom-usa.com>
+Cc:     Henry Shi <henryshi2018@gmail.com>,
+        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
+        Wen Wang <wenw@silicom-usa.com>
+Subject: Re: [PATCH] Add Silicom Platform Driver
+Message-ID: <7f537cef-d5cd-4816-a07b-9df27954ef93@roeck-us.net>
+References: <20230818154341.20553-1-henryshi2018@gmail.com>
+ <8b8b0503-8f8f-4615-97ab-11d2c0e1a960@roeck-us.net>
+ <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,34 +90,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao wrote:
-> Split __sys_setsockopt() into two functions by removing the core
-> logic into a sub-function (do_sock_setsockopt()). This will avoid
-> code duplication when doing the same operation in other callers, for
-> instance.
+On Sat, Aug 19, 2023 at 02:20:32PM +0000, Huibin Shi wrote:
+> Hi Guenter,
 > 
-> do_sock_setsockopt() will be called by io_uring setsockopt() command
-> operation in the following patch.
+> Thanks for your comments. Probably, I should not resubmit patch too rushed. I will add version number to subject and change log in cover letter for next resubmission.
 > 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+> See my comments below. Please let me know whether you accept my explanation.
+> 
+> Henry
+> -----Original Message-----
+[ ... ]
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
-> ---
->  include/net/sock.h |  2 ++
->  net/socket.c       | 39 +++++++++++++++++++++++++--------------
->  2 files changed, 27 insertions(+), 14 deletions(-)
+> > +
+> > +static u32 temp_get(void)
+> > +{
+> > +     u32 reg;
+> > +
+> > +     mutex_lock(&mec_io_mutex);
+> > +     /* Select memory region */
+> > +     outb(IO_REG_BANK, EC_ADDR_MSB);
+> > +     outb(0xc, EC_ADDR_LSB);
+> > +     /* Get current data from the address */
+> > +     reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
+> > +     mutex_unlock(&mec_io_mutex);
+> > +
+> > +     return (reg >> 16) / 10;
 > 
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 2eb916d1ff64..2a0324275347 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1853,6 +1853,8 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
->  		  sockptr_t optval, unsigned int optlen);
->  int sock_setsockopt(struct socket *sock, int level, int op,
->  		    sockptr_t optval, unsigned int optlen);
-> +int do_sock_setsockopt(struct socket *sock, bool compat, int level,
-> +		       int optname, sockptr_t optval, int optlen);
+> The hwmon ABI expects temperatures to be reported in milli-degrees C.
+> The above sets the maximum temperature to 65,535 / 10 = 6,553 milli-degrees or 6.553 degrees C. It is very unlikely that this is correct.
+> 
+> Again, I commented on this before.
+> 
+> Henry: this is due to an internal implementation of MIcor-controller firmware, instead of putting real temperature to the register, it put (real temperature * 10 ) to the register. So, in order to report correct temperature to user space application, the read value is divided by 10, then report to user space. 
+> 
+> Please let me know if you accept this. If not, I can change the code, but let user space application to do adjustment. 
 
-Somewhat surprising that optlen type differs between __sys_setsockopt
-and sock_setsockopt. But agreed that this code should follow
-__sys_setsockopt.
+No, I do not accept this. I do not believe that the maximum temperature
+reported by the microcontroller is 6.553 degrees C. I suspect it reports
+10th of degrees C. In that case, the number reported should be multiplied
+by 100 to make it milli-degrees C as expected by the ABI.
+
+[ ... ]
+
+> > +static int silicom_fan_control_read_labels(struct device *dev, enum hwmon_sensor_types type,
+> > +                                        u32 attr, int channel, const 
+> > +char **str) {
+> > +     switch (type) {
+> > +     case hwmon_fan:
+> > +             *str = "Fan Speed";
+> > +             return 0;
+> > +     case hwmon_temp:
+> > +             *str = "Thermostat Sensor";
+> > +             return 0;
+> 
+> Those labels have no practical value.
+> 
+> Henry: Those labels will be used by user space code to identify Silicom_platform driver. 
+> 
+
+The driver is identified by the driver name, not by the name of
+a temperature sensor or fan speed attribute. Any other driver
+could return "Fan Speed" or "Thermostat Sensor" here. Userspace
+relying on such values to identify the driver are simply broken.
+
+> > +     default:
+> > +             return -EOPNOTSUPP;
+> > +     }
+> > +}
+> > +
+> > +static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
+> > +     .is_visible = silicom_fan_control_is_visible,
+> > +     .read = silicom_fan_control_read,
+> > +     .write = NULL,
+> 
+> Unnecessary.
+> 
+> Henry: OK, will be removed silicom_fan_control_is_visible.
+
+The NULL pointer assignment is unnecessary. I have no idea
+what that has to do with silicom_fan_control_is_visible(),
+or why you would want to remove that function.
+
+Guenter
