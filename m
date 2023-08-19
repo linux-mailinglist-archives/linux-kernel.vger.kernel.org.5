@@ -2,95 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D86781919
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBD5781920
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjHSKwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47204 "EHLO
+        id S230375AbjHSKwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:52:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjHSKwS (ORCPT
+        with ESMTP id S230343AbjHSKwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:52:18 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B89712A3BF
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 03:49:36 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99d90ffed68so597870866b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 03:49:36 -0700 (PDT)
+        Sat, 19 Aug 2023 06:52:24 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974851B316;
+        Sat, 19 Aug 2023 03:50:14 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34bae4fa2a8so6261655ab.0;
+        Sat, 19 Aug 2023 03:50:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692442175; x=1693046975;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=bVWrnLbQ5U+5Jr66RgRooL/nIKRDLYBfzkUePWCJ4D8=;
-        b=XqjiBpFKSFeBeSsIdiXipAqJ7ay2pi8G/6kiii0s0wlZwsN95FlkWibYFe7MRMgfBB
-         FTjqIK6wvpQZIANJr1PlwTJuVSSeFgKIkvxe0RR5VkthMc7fPt1FpBzTQEymUO7XAJzb
-         AaoUz/tkg8rThE/4fq2vIvr5HfwzZGEL97CjZ/ZtENprrKSclnHtOGdounvQcavGXF2D
-         VqFFF8AeQtYr9Z6oEyTaUsPEMe2RxwCFDdnVzOTnsy4pIpTfN3fBZXrjh452ibvP779f
-         6z3ysxpys2fGxNAjsawgJpKc6ZfUl+xV4jU/I9A0UcswiKImEz3JVFHqFHPeaOlVYCiF
-         TNiA==
+        d=gmail.com; s=20221208; t=1692442214; x=1693047014;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sbeZQ2le3QtFAiVegoQee4BG0sxJfK1rPbRwkbBgjUU=;
+        b=EQX1sOvvQGxUahz1mDZkIRZIWFPKspEuIrX2EEYZuowtSFEreEGJak6pyk/Rvj5Q3W
+         Wy1VX4ks7xdlRU08zcIP+JsHSdZO+B6uKv+/VaSJtWIOrkUUz2juJjtYZN3pLX21x7ca
+         x+WUxlj4fccRG7GrJY4ebweGkrV4/gFee0wPMNrhjljlJKt/V3EUPFyFKYnbGTupw87C
+         Ktqw/HVEU1s4P4op4U/sIM2phjfMykyhrNUTAVvcSjaXDpNuEWEqH0ZRuWKslc76w3s+
+         lBb2qm06qUwbF+lgNcUNhlIgxjN4aAYO4gK7Ykmy/f4up2jV8q99CFJL4dRtleg5ozvQ
+         itMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692442175; x=1693046975;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bVWrnLbQ5U+5Jr66RgRooL/nIKRDLYBfzkUePWCJ4D8=;
-        b=Tngd1qAirR9FmviGGCpDzyJrrjSF9gda1p/SylHKlHg9OTBfpV3aWMtZVK4a1h1Wc5
-         E9WL3yZ7nC4IkatoGcy/iesAiw7PlFS/dfobV5KmkL11Petskpi1vFnK02Xv0o5uFIew
-         GuXtIiO/HLbFRicyyftbrVmQ0mmkatxJq6Kiapdy/e4wGOgyFKUVxaMrFLe26AyEz9Zf
-         3tst34TN/87IZq14v/MexXBENZjOE1r26yxFmYtlwshUC8bGQJK4KzIbDpSAmgnWL8/e
-         NPs7qZG0UssLbXOzvcQOHhq14EDtJX3z02VRYmCJJFt9354R3EW1DIHbzyk5n8wQFK3C
-         yhpg==
-X-Gm-Message-State: AOJu0YwIxYnHTEkgsgtYUd2SjeIEZZjJBQBsF8sLLv1UJXfLCg9PZ953
-        GeHwLnQ3rnWJ8qnMK3Qtg7OT+GEB5OHY+d/f+nM=
-X-Google-Smtp-Source: AGHT+IHqGgQDEC5R9e2o/qTHplcGjZOtOPwD0SW/aYr8LgECuFitvGay8uFd9jGjC4GxAUH8Pmqc2g==
-X-Received: by 2002:a17:906:8a73:b0:99d:e417:d6fb with SMTP id hy19-20020a1709068a7300b0099de417d6fbmr1811743ejc.25.1692442175198;
-        Sat, 19 Aug 2023 03:49:35 -0700 (PDT)
-Received: from [192.168.69.115] (cnf78-h01-176-184-27-220.dsl.sta.abo.bbox.fr. [176.184.27.220])
-        by smtp.gmail.com with ESMTPSA id s15-20020a1709062ecf00b0099cd008c1a4sm2513613eji.136.2023.08.19.03.49.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 03:49:34 -0700 (PDT)
-Message-ID: <d138c76c-72d9-f07e-7db0-1e5e939bee9c@linaro.org>
-Date:   Sat, 19 Aug 2023 12:49:33 +0200
+        d=1e100.net; s=20221208; t=1692442214; x=1693047014;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sbeZQ2le3QtFAiVegoQee4BG0sxJfK1rPbRwkbBgjUU=;
+        b=NEXAlFCnk9CxnDKLQ92ZHEtAOqCdgmN8mNX+Gp5dqlvWEzwxdClzzAe9umqpVaNo8U
+         ww9amWmlPshWbZx/8JQFIKLgXe/vc1l+shgGxWPbqk7zqhmsHk+BYp2GKjfyIuf9wd9v
+         yvbdtk3EzxeLO9u2wQEeGNlDGBdTkv/MprvN8MaXj85ZY7qdEvUV+mNqei6J8NMi0+89
+         bKDZ+bQX70B54XISytO5an/RjUa+wGhjl11maFly5YT5MKd6dlKvWwc54kICEaPALdN9
+         a5pebucRiMdmeXIxVDn7FeMXc1CBaelE6d0ZkWA3c1D/y+WQTAxAS9sniRHgmWRNHCeI
+         EVbA==
+X-Gm-Message-State: AOJu0YzCPzUdf/pd+C94ByeunXxZQN6HNrurXr8nulWcindMz+WM0aOY
+        g8j+cqMikZNMslaMl2BSumc=
+X-Google-Smtp-Source: AGHT+IFUw0ajLQarhK4ZPWbmihPnfaEUnAWHuo0k02mh1YcKSE2jirroj7XTRp5Vb64fRDfC+ojpbg==
+X-Received: by 2002:a92:cd09:0:b0:34b:ba9c:78ac with SMTP id z9-20020a92cd09000000b0034bba9c78acmr2319943iln.25.1692442213672;
+        Sat, 19 Aug 2023 03:50:13 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:4a28:99c7:cf07:4f94])
+        by smtp.gmail.com with ESMTPSA id h16-20020a92d090000000b0034ac4ccd097sm1116470ilh.33.2023.08.19.03.50.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Aug 2023 03:50:13 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V3 1/2] arm64: dts: imx8mp: Fix SDMA2/3 clocks
+Date:   Sat, 19 Aug 2023 05:50:01 -0500
+Message-Id: <20230819105002.132750-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v4 4/4] MIPS: Add identifier names to arguments of die()
- declaration
-Content-Language: en-US
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
- <1692434183-2054-5-git-send-email-yangtiezhu@loongson.cn>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <1692434183-2054-5-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/8/23 10:36, Tiezhu Yang wrote:
-> Add identifier names to arguments of die() declaration in ptrace.h
-> to fix the following checkpatch warnings:
-> 
->    WARNING: function definition argument 'const char *' should also have an identifier name
->    WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->   arch/mips/include/asm/ptrace.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+Commit 16c984524862 ("arm64: dts: imx8mp: don't initialize audio clocks
+from CCM node") removed the Audio clocks from the main clock node, because
+the intent is to force people to setup the audio PLL clocks per board
+instead of having a common set of rates, since not all boards may use
+the various audio PLL clocks in the same way.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Unfortunately, with this parenting removed, the SDMA2 and SDMA3
+clocks were slowed to 24MHz because the SDMA2/3 clocks are controlled
+via the audio_blk_ctrl which is clocked from IMX8MP_CLK_AUDIO_ROOT,
+and that clock is enabled by pgc_audio.
 
+Per the TRM, "The SDMA2/3 target frequency is 400MHz IPG and 400MHz
+AHB, always 1:1 mode, to make sure there is enough throughput for all
+the audio use cases."
+
+Instead of cluttering the clock node, place the clock rate and parent
+information into the pgc_audio node.
+
+With the parenting and clock rates restored for  IMX8MP_CLK_AUDIO_AHB,
+and IMX8MP_CLK_AUDIO_AXI_SRC, it appears the SDMA2 and SDMA3 run at
+400MHz again.
+
+Fixes: 16c984524862 ("arm64: dts: imx8mp: don't initialize audio clocks from CCM node")
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+---
+V3:  Update commit message wording.  No functional change
+
+V2:  Slow AUDIO_AXI to 600MHz for nominal drive.  Individual boards can increase
+     this to 800MHz if they have the proper voltage configured.
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 6f2f50e1639c..83d907294fbc 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -790,6 +790,12 @@ pgc_audio: power-domain@5 {
+ 						reg = <IMX8MP_POWER_DOMAIN_AUDIOMIX>;
+ 						clocks = <&clk IMX8MP_CLK_AUDIO_ROOT>,
+ 							 <&clk IMX8MP_CLK_AUDIO_AXI>;
++						assigned-clocks = <&clk IMX8MP_CLK_AUDIO_AHB>,
++								  <&clk IMX8MP_CLK_AUDIO_AXI_SRC>;
++						assigned-clock-parents =  <&clk IMX8MP_SYS_PLL1_800M>,
++									  <&clk IMX8MP_SYS_PLL1_800M>;
++						assigned-clock-rates = <400000000>,
++								       <600000000>;
+ 					};
+ 
+ 					pgc_gpu2d: power-domain@6 {
+-- 
+2.39.2
 
