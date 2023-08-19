@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1A0781971
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7058781975
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 14:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbjHSL7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 07:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        id S232196AbjHSMFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 08:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjHSL7D (ORCPT
+        with ESMTP id S230289AbjHSMFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 07:59:03 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F9E5B8F
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 04:58:55 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vq5HBND_1692446330;
-Received: from 30.97.48.38(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vq5HBND_1692446330)
-          by smtp.aliyun-inc.com;
-          Sat, 19 Aug 2023 19:58:51 +0800
-Message-ID: <d9403099-7fa8-ba34-4260-21da36175432@linux.alibaba.com>
-Date:   Sat, 19 Aug 2023 19:58:50 +0800
+        Sat, 19 Aug 2023 08:05:03 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB945D954;
+        Sat, 19 Aug 2023 05:04:21 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37JC44lr032173;
+        Sat, 19 Aug 2023 12:04:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/uFbC3XuxeiXr2z4Pwbh6x+HCf1Dvw7Bev63Yg2q2Z4=;
+ b=PSnXOLjjw7TlYnRnnWhIzv/aZQm+Hl2KntY5oiavU9p6ZH1upO0VdR4bY5xa28FqVvop
+ qBxoxEL6TsYLBxDyNwdKjfeU06/9P+XiA/KrHkdelbooNphexKCHAH+4SH2mdgEc54AO
+ TXqiekzfkvVjE95NSmQ+IlYDimS94P3nCneujDOMIJfKjf5XIPGYoEYIPP3JzZfzKfY2
+ Ei+cg3RQAK8Rj3cgi5lP5fXXkqeNhtk1D4rGhDLMX8rfoKJ7SrKr0QizOn5V7hUCJ9Ob
+ OZL4kPhyheA1JAn/gGNpkFmuOkdvl5cwjId3p3ODMDSfwpNODZYV7ByXJs2fZ4rLtJJZ iw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjny90k4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Aug 2023 12:04:04 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37JC43MM011961
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Aug 2023 12:04:03 GMT
+Received: from [10.216.10.185] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sat, 19 Aug
+ 2023 05:04:00 -0700
+Message-ID: <bf8f20a7-3bc0-6f0e-c08f-410842000267@quicinc.com>
+Date:   Sat, 19 Aug 2023 17:33:55 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 4/9] mm/compaction: simplify pfn iteration in
- isolate_freepages_range
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-5-shikemeng@huaweicloud.com>
- <ecb315f9-a5cd-4fb3-bae6-eb94a08eccb3@linux.alibaba.com>
- <43b726c1-3ea6-9acc-d4e4-c7deabcf7ecd@huaweicloud.com>
- <3729c50f-6f8e-2548-8932-f39045402299@linux.alibaba.com>
- <3574ed6e-34c8-47a1-8218-9e4cf1327184@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <3574ed6e-34c8-47a1-8218-9e4cf1327184@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.8 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+ Thunderbird/102.3.2
+Subject: Re: [PATCH V1 1/2] dt-bindings: phy: Add QMP UFS PHY comptible for
+ SC7280
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzk@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <agross@kernel.org>, <kishon@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230816154841.2183-1-quic_nitirawa@quicinc.com>
+ <20230816154841.2183-2-quic_nitirawa@quicinc.com>
+ <82252735-f75f-8f09-0088-46f216ff1720@kernel.org>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <82252735-f75f-8f09-0088-46f216ff1720@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: cfafCRD1rt43SsQsaQ8h2uWpv07zr4uI
+X-Proofpoint-GUID: cfafCRD1rt43SsQsaQ8h2uWpv07zr4uI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-19_12,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=619 clxscore=1011 adultscore=0 mlxscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308190115
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
+
+Sorry for the inconvenience . I have addressed other reviewers comments 
+and have resent the latest patchset to all the intended To/Cc entries.
 
 
-On 8/15/2023 6:37 PM, Kemeng Shi wrote:
+Thanks,
+Nitin
+
+
+On 8/18/2023 4:04 PM, Krzysztof Kozlowski wrote:
+> On 16/08/2023 17:48, Nitin Rawat wrote:
+>> Document the QMP UFS PHY compatible for SC7280.
+>>
+>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>> ---
 > 
+> Please use scripts/get_maintainers.pl to get a list of necessary people
+> and lists to CC. It might happen, that command when run on an older
+> kernel, gives you outdated entries. Therefore please be sure you base
+> your patches on recent Linux kernel.
 > 
-> on 8/15/2023 6:07 PM, Baolin Wang wrote:
->>
->>
->> On 8/15/2023 5:32 PM, Kemeng Shi wrote:
->>>
->>>
->>> on 8/15/2023 4:38 PM, Baolin Wang wrote:
->>>>
->>>>
->>>> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
->>>>> We call isolate_freepages_block in strict mode, continuous pages in
->>>>> pageblock will be isolated if isolate_freepages_block successed.
->>>>> Then pfn + isolated will point to start of next pageblock to scan
->>>>> no matter how many pageblocks are isolated in isolate_freepages_block.
->>>>> Use pfn + isolated as start of next pageblock to scan to simplify the
->>>>> iteration.
->>>>
->>>> IIUC, the isolate_freepages_block() can isolate high-order free pages, which means the pfn + isolated can be larger than the block_end_pfn. So in your patch, the 'block_start_pfn' and 'block_end_pfn' can be in different pageblocks, that will break pageblock_pfn_to_page().
->>>>
->>> In for update statement, we always update block_start_pfn to pfn and
->>
->> I mean, you changed to:
->> 1) pfn += isolated;
->> 2) block_start_pfn = pfn;
->> 3) block_end_pfn = pfn + pageblock_nr_pages;
->>
->> But in 1) pfn + isolated can go outside of the currnet pageblock if isolating a high-order page, for example, located in the middle of the next pageblock. So that the block_start_pfn can point to the middle of the next pageblock, not the start position. Meanwhile after 3), the block_end_pfn can point another pageblock. Or I missed something else?
->>
-> Ah, I miss to explain this in changelog.
-> In case we could we have buddy page with order higher than pageblock:
-> 1. page in buddy page is aligned with it's order
-> 2. order of page is higher than pageblock order
-> Then page is aligned with pageblock order. So pfn of page and isolated pages
-> count are both aligned pageblock order. So pfn + isolated is pageblock order
-> aligned.
-
-That's not what I mean. pfn + isolated is not always pageblock-aligned, 
-since the isolate_freepages_block() can isolated high-order free pages 
-(for example: order-1, order-2 ...).
-
-Suppose the pageblock size is 2M, when isolating a pageblock (suppose 
-the pfn range is 0 - 511 to make the arithmetic easy) by 
-isolate_freepages_block(), and suppose pfn 0 to pfn 510 are all order-0 
-page, but pfn 511 is order-1 page, so you will isolate 513 pages from 
-this pageblock, which will make 'pfn + isolated' not pageblock aligned.
-
->>> update block_end_pfn to pfn + pageblock_nr_pages. So they should point
->>> to the same pageblock. I guess you missed the change to update of
->>> block_end_pfn. :)
->>>>>
->>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>>>> ---
->>>>>     mm/compaction.c | 14 ++------------
->>>>>     1 file changed, 2 insertions(+), 12 deletions(-)
->>>>>
->>>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>>> index 684f6e6cd8bc..8d7d38073d30 100644
->>>>> --- a/mm/compaction.c
->>>>> +++ b/mm/compaction.c
->>>>> @@ -733,21 +733,11 @@ isolate_freepages_range(struct compact_control *cc,
->>>>>         block_end_pfn = pageblock_end_pfn(pfn);
->>>>>           for (; pfn < end_pfn; pfn += isolated,
->>>>> -                block_start_pfn = block_end_pfn,
->>>>> -                block_end_pfn += pageblock_nr_pages) {
->>>>> +                block_start_pfn = pfn,
->>>>> +                block_end_pfn = pfn + pageblock_nr_pages) {
->>>>>             /* Protect pfn from changing by isolate_freepages_block */
->>>>>             unsigned long isolate_start_pfn = pfn;
->>>>>     -        /*
->>>>> -         * pfn could pass the block_end_pfn if isolated freepage
->>>>> -         * is more than pageblock order. In this case, we adjust
->>>>> -         * scanning range to right one.
->>>>> -         */
->>>>> -        if (pfn >= block_end_pfn) {
->>>>> -            block_start_pfn = pageblock_start_pfn(pfn);
->>>>> -            block_end_pfn = pageblock_end_pfn(pfn);
->>>>> -        }
->>>>> -
->>>>>             block_end_pfn = min(block_end_pfn, end_pfn);
->>>>>               if (!pageblock_pfn_to_page(block_start_pfn,
->>>>
->>
+> You missed at least DT list (maybe more), so this won't be tested by
+> automated tooling. Performing review on untested code might be a waste
+> of time, thus I will skip this patch entirely till you follow the
+> process allowing the patch to be tested.
+> 
+> Please kindly resend and include all necessary To/Cc entries.
+> 
+> Best regards,
+> Krzysztof
+> 
