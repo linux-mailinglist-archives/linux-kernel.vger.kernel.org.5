@@ -2,121 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D91781A3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527D8781A58
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 17:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbjHSO40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
+        id S233294AbjHSPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 11:23:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233640AbjHSO4Z (ORCPT
+        with ESMTP id S231128AbjHSPXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:56:25 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C3227D12
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:56:23 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31969580797so1661627f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692456982; x=1693061782;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MxRSmeCuLOS6YzS9MfIa//5eeOBZqb48nHjyrxA8WzI=;
-        b=En6nC4fqO+PskFjOAQuLEZB9JXv0/OMn1PDfdnvvOE8BGR65hcqMco+8e5bNKer2Z4
-         l+VQHp612JIYRx44HxZg9UxVP7d+t1xLjkG6sVxwi3C4cr2corh3a7zzGDVLB85MwcvV
-         bYzrOCOSW2ZGgx+E27VM6eEy4tqrO/SSkRvpJmu35+TcME7fZuMyKmmRTVHc7t+VLXNc
-         4HrQK6npihtpaLB7Tgg4G+h+2EP37aAjL8m3Turw0P8Km4FJouX6jopr2kpBYYcYmxA/
-         YyS59fWkV0gP9ZcMfqsqVkRSnEP64r8KF2qsoP8jwbM7ypH5sPVFv6ee5DPWlwohbWoz
-         QdYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692456982; x=1693061782;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MxRSmeCuLOS6YzS9MfIa//5eeOBZqb48nHjyrxA8WzI=;
-        b=jBAwRNXqHkZ5W0MFC0NBJGw/N9xaM6k86YBf6ypwJe+2AGY71j9sVaGL+mdl73pZs6
-         zMDLb33kcuuOT1mqPtr6/6WmnfrEKVvs/SOVRPXWMWb3o6NUTWlOQyFHCh8adIF0YlO7
-         Go7PL+2LRVZPaPMdz8nYQZvDsOcKy5+o8dLFsSUIrbpMIUcSmr1x0U9prooHV2Sp77go
-         TxQmhN8uqrLPgIj/mCvls9TOP2qL3uz8BPiLwhofAYwO2K20k7klqParKg5d4baiB0Ia
-         JyY3s6Wy1kSCOUK+us/wzsF4/Yq+fWEqXgTHQkNgCUtgeQ1C1PlOZrfWS9Uu60s/IDxF
-         3tig==
-X-Gm-Message-State: AOJu0Yx84QN1Ao9vVdSzjCHCclBS2+zccd1UlPXYABlP7ZPnAq+UlrQp
-        l1IE5a34R4X7S4aF7HOXOdtMqA==
-X-Google-Smtp-Source: AGHT+IFgpAq5xIx0P9Bwca/UOggFEiVzYoL5V61sehqVLAzYQiNhsac9R636xuw4V4Uhu/R0GjHoKA==
-X-Received: by 2002:adf:ef91:0:b0:318:f7a:e3c8 with SMTP id d17-20020adfef91000000b003180f7ae3c8mr1551475wro.57.1692456981957;
-        Sat, 19 Aug 2023 07:56:21 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id k12-20020adfe3cc000000b0031ad5470f89sm6485519wrm.18.2023.08.19.07.56.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 07:56:21 -0700 (PDT)
-Message-ID: <d4418b5c-9302-072a-0629-e7161c79fb62@linaro.org>
-Date:   Sat, 19 Aug 2023 15:56:20 +0100
+        Sat, 19 Aug 2023 11:23:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EE6E5F;
+        Sat, 19 Aug 2023 08:23:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 525F661F4C;
+        Sat, 19 Aug 2023 15:23:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55FAC433C8;
+        Sat, 19 Aug 2023 15:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692458584;
+        bh=/e9z6LgegEFmy9SM9L3YdCv7XOOtHVi0ffVZVDcOmks=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hyfcUfDLo8imtVG779gYrwtRbkZLBTPUTOmbu7xT1aAdyuGkbSx7g/43BLyKrNcvC
+         7+xauHDHNl3oQAZES3V3HaR3UdLKrXsoPemSKa9Zlqt0gfEcOPpJUYpmovHvWpK+Q9
+         gwf6Z2FEPKl2+G8KxJ6q7eomRriPsq1ruIZ6AwFyBSlKBs7goy7RKRp62NzvFQCUOK
+         TB+nSB8AYK0qVWN5goHK0virc1HRHMycnodNjzwLWGUbNwj4WaUDUxtJSXtdQ7D93d
+         x4SeAvM4oMiLnrr6GVGjMJOMONiXpLqTs9eiND9aIJ+UJGLZBjdxUHhltpzxNBVOWR
+         RZ8/Gy8ejRmpg==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so2767743e87.3;
+        Sat, 19 Aug 2023 08:23:04 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yybst3IzEGtrWVFtR4dWYN3ShOZX8xjdJHMXEneWAGW+CGvHgO5
+        +8auJLRt8UhFY04kQSfi59j/oB3ZVyqfQ46ybKs=
+X-Google-Smtp-Source: AGHT+IFq/z/fy2n3Dt01DOzcdL/TgWsWOPcrdHYBRTt7RgiPVKxoUsXump95/jKLwhwG6+fgolARZKuOkpOXUtP9hgQ=
+X-Received: by 2002:a05:6512:2110:b0:4f8:6ac4:84 with SMTP id
+ q16-20020a056512211000b004f86ac40084mr1439941lfr.8.1692458582739; Sat, 19 Aug
+ 2023 08:23:02 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v2 07/13] media: qcom: camss: Use >= CAMSS_SDM845 for
- vfe_get/vfe_put
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230817143812.677554-1-bryan.odonoghue@linaro.org>
- <20230817143812.677554-8-bryan.odonoghue@linaro.org>
- <f1a8e7db-ce26-4bdc-beb6-00ae4f0baa78@linaro.org>
- <4d14de78-16a9-4720-9422-b684f261df01@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <4d14de78-16a9-4720-9422-b684f261df01@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
+ <20230818213705.b4f5e18b392c4837068cba6f@kernel.org> <20230818114141.2a3a75ee@gandalf.local.home>
+ <4853240.31r3eYUQgx@pwmachine> <20230818142033.1d7685e9@gandalf.local.home> <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
+In-Reply-To: <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Sat, 19 Aug 2023 08:22:50 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
+Message-ID: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
+ 'perf_kprobe' PMU
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 13:29, Konrad Dybcio wrote:
-> On 18.08.2023 14:28, Konrad Dybcio wrote:
->> On 17.08.2023 16:38, Bryan O'Donoghue wrote:
->>>  From sdm845 onwards we need to ensure the VFE is powered on prior to
->>> switching on the CSID.
->>>
->>> Alternatively we could model up the GDSCs and clocks the CSID needs
->>> without the VFE but, there's a real question of the legitimacy of such a
->>> use-case.
->>>
->>> For now drawing a line at sdm845 and switching on the associated VFEs is
->>> a perfectly valid thing to do.
->>>
->>> Rather than continually extend out this clause for at least two new SoCs
->>> with this same model - making the vfe_get/vfe_put path start to look
->>> like spaghetti we can simply test for >= sdm845 here.
->>>
->>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->>> ---
->> Using >= here is veeery arbitrary and depends on the next person
->> adding a SoC in chronological, or used-tech-chronological order
->> correctly.. Not a fan!
-> 
-> Perhaps some sort of a compatible-bound flag would be better suited
-> 
-> Konrad
+On Fri, Aug 18, 2023 at 6:16=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Fri, 18 Aug 2023 14:20:33 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> > On Fri, 18 Aug 2023 20:13:43 +0200
+> > Francis Laniel <flaniel@linux.microsoft.com> wrote:
+> >
+> > > Hi.
+> > >
+> > > Le vendredi 18 ao=C3=BBt 2023, 17:41:41 CEST Steven Rostedt a =C3=A9c=
+rit :
+> > > > On Fri, 18 Aug 2023 21:37:05 +0900
+> > > >
+> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > > > > That's why perf probe uses the offset from '_text'. Normal KASLR =
+will just
+> > > > > moves all symbols. (Finer one will move all symbols randomely)
+> > > > > This should not need to access /proc/kallsyms but vmlinux or Syst=
+emMap.
+> > > >
+> > > > We could just pass in: "_text+offset" too.
+> > >
+> > > So, the idea would be to change the existing create_local_trace_kprob=
+e() and
+> > > above functions to indicate the user's offset is to be used against _=
+text and
+> > > not address?
+> >
+> > No, not to modify that function, but if you know the offset from _text =
+(via
+> > the vmlinux), you can easily calculate it for that function.
+>
+> Note that the kprobe-event PMU interface itself allows you to specify
+> FUNC+OFFSET style;
+>
+> https://lore.kernel.org/lkml/20171206224518.3598254-5-songliubraving@fb.c=
+om/
+>
+> perf_event_attr::kprobe_func =3D "_text";
+> perf_event_attr::probe_offset =3D OFFSET;
+>
+> Then, it should be able to specify the correct one. Of course you can use
+> other unique symbols around the target symbol.
 
-I take the point.
+Trying to catch up with the thread.
 
-I'll look at a macro or a helper function
+Besides the CAP_* issue, we can do this with
 
-if (csid_within_vfe(version)) {}
+perf_event_attr::kprobe_func =3D NULL;
+perf_event_attr::kprobe_addr =3D address;
 
-That way there's just one source of truth and the chronology is irrelevant.
+Then for the CAP_*, I think we should give CAP_PERFMON access to
+/proc/kallsyms. Would this work?
 
----
-bod
+Thanks,
+Song
