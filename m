@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72355781FF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 22:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99A5781FFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 22:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231775AbjHTUm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 16:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
+        id S231334AbjHTUnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 16:43:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjHTUmx (ORCPT
+        with ESMTP id S230083AbjHTUnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 16:42:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB2D46E170
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 12:36:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 250F960B5B
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 19:36:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2BDCC433C8;
-        Sat, 19 Aug 2023 19:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692473817;
-        bh=5TyeQjTLWSpiPjfMhus5haTkjykIBpujJRFZlCRb9xk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kC4JjgfI7hLYcOsAefmfrYG9ovyd1iuKPjzEEfi+jFdhOYGtUBptjOYx47rAtw+Gi
-         Fi5lPfcaX0e6QJn6em9bM6on09NueyMLrGuoyvE+wHsb72o0gjRQYWUChT7Mwf+0Za
-         FiOs7BpcqU1MiHuPeY93h+Ygyq/mGi8ycCo9bdhC8clPipGLgOvKmMLFNFO4r7NQd4
-         LLpIJ5c/MEOzmg1QoTeZGm2gLif/L8e9oh6SInrR/1x/krrQ63t0fFI/8YbxCXm65z
-         R7Yqua8k0jCshLGdP+JGrh9RQu/hp73AWa/JKI1OdCdnVRWnO5G01msI4i3Ca+EuH0
-         KM3DA+HnWI/ug==
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Rust fixes for 6.5-rc7
-Date:   Sat, 19 Aug 2023 21:35:41 +0200
-Message-ID: <20230819193541.290947-1-ojeda@kernel.org>
+        Sun, 20 Aug 2023 16:43:06 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519DE498658;
+        Sat, 19 Aug 2023 12:41:40 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so18552715e9.2;
+        Sat, 19 Aug 2023 12:41:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692474098; x=1693078898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cxwXDLwCxXc0IZzNcXrKUDIbLtmIiz7rl3av1/ZQkfI=;
+        b=L+7FCmhyjm4vrGBGtPC7uYg2qvmrc3Qra9iNdxwPnjf99G0/38+PX3r/oE2syTX/yU
+         uEWg9pu3cj+NYOyI4nzbf2bK+/AH9Fv+PvIqm5t9hYc6O5h49LOZUfq4xvLJFyg1AN0k
+         KkR1SnY6yGSbdFJTxbkDOu2+eUWmK/BkWiK2Ix65I6d7xSYGK0cX/IRKueeUDTqDu42p
+         anYdtgTPBRbNQuIyCnt8kOcIp+RY7AD3bGPGqeFKJNruMf5QV6ILWa5NAMOkhXjDGpui
+         cV93gtgkznHOfAcRCnm0YvkMvTGLklj4lzL5PaUpJV2bNg1SgHthMMNht+v56bPI3JCH
+         Hg+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692474098; x=1693078898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cxwXDLwCxXc0IZzNcXrKUDIbLtmIiz7rl3av1/ZQkfI=;
+        b=TscHU5wpR8f6nI6Quk+toxJeB7blmXJjwvkN7ibe889GMNrdErtPIJSpj/i1rB+KC3
+         ktneSmOL6D4NHbpSpSzF0+Wy1lDhz6FxrmnoPGsxbOh/uMlJaB6dDgBdDr7/WGxMx8+j
+         Z2u9WCfdRKWwol0cdfefZ22Dq8QKrRTD+6Sy0znDT7ieqLc4DzmoDZuAB8oxonEYpEfA
+         LkPJertbmydGAGqlv+pHo+pmpRCOtH7fbUWqVrFx4i+3hH4hj02iJW2Wwh5724clNvGd
+         HAzPouCSQJr0cElhYicrUz/0cpCaIOvPIaecnTwlskyXEWULAy89QXrfMMPogTg7jYfB
+         N2tA==
+X-Gm-Message-State: AOJu0YwXPxsqPGcA9o0zIYvvgyffSWeygg+AVU9FKQ3Hs3EMAqwboTYd
+        LpWSjW1VFBY+gBcCMftyEUk=
+X-Google-Smtp-Source: AGHT+IFI8HXRbhVf2FXZB3T50ohz6ewZ3PYNQWqGFthESfjR1NXsNeZjeKxg6136eI3tCzGMrjHnaw==
+X-Received: by 2002:a1c:7303:0:b0:3fb:f0ef:4669 with SMTP id d3-20020a1c7303000000b003fbf0ef4669mr1882065wmb.17.1692474098300;
+        Sat, 19 Aug 2023 12:41:38 -0700 (PDT)
+Received: from ?IPV6:2a01:cb15:b7:2500:add8:daa6:d03:e00b? ([2a01:cb15:b7:2500:add8:daa6:d03:e00b])
+        by smtp.gmail.com with ESMTPSA id n24-20020a7bc5d8000000b003fba92fad35sm10489223wmk.26.2023.08.19.12.41.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Aug 2023 12:41:37 -0700 (PDT)
+Message-ID: <c7d1eced-d77b-aca7-1422-6eefaf704f3e@gmail.com>
+Date:   Sat, 19 Aug 2023 21:41:36 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] intel_idle: Add RaptorLake support
+Content-Language: en-US, fr-FR
+To:     "Zhang, Rui" <rui.zhang@intel.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "noltari@gmail.com" <noltari@gmail.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+References: <20230119070205.90047-1-noltari@gmail.com>
+ <c79904e98b86b68c87add286aa1487b3f81712b6.camel@intel.com>
+From:   Guillaume Martres <smarter3@gmail.com>
+In-Reply-To: <c79904e98b86b68c87add286aa1487b3f81712b6.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 1/19/23 17:13, Zhang, Rui wrote:
+> On Thu, 2023-01-19 at 08:02 +0100, Álvaro Fernández Rojas wrote:
+>> This patch adds RaptorLake support to the intel_idle driver.
+>>
+>> Since RaptorLake and AlderLake C-state are characteristics the same,
+>> we use
+>> AlderLake C-states tables for RaptorLake as well.
+> 
+> RPL and ADL have same cstates and use the same mwait hints, but the
+> latency of each c-state are still different on different platforms.
+> So we can not just duplicate the ADL table on RPL.
+> 
+> There is an effort ongoing that measures the latency of each
+> cstate on the RPL platforms. And based on the measurement result, we
+> can decide if a new custom table is needed or we can just copy the
+> previous platform. Hopefully we will have a patch in a couple of weeks.
 
-Please pull this fix for Rust.
+Hi, I just stumbled upon this patch series as I was wondering about the
+lack of support for Raptor Lake in intel_idle. Your last message from
+January mentions a future patch, is it available anywhere or is this
+still future work?
 
-It has been in linux-next for 4 rounds (i.e. since the restart on Tuesday).
-
-No conflicts expected. No changes to the C side.
-
-Cheers,
-Miguel
-
-The following changes since commit 52a93d39b17dc7eb98b6aa3edb93943248e03b2f:
-
-  Linux 6.5-rc5 (2023-08-06 15:07:51 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.5-rc7
-
-for you to fetch changes up to 3fa7187eceee11998f756481e45ce8c4f9d9dc48:
-
-  rust: macros: vtable: fix `HAS_*` redefinition (`gen_const_name`) (2023-08-09 21:15:07 +0200)
-
-----------------------------------------------------------------
-Rust fixes for 6.5-rc7
-
- - Macros: fix 'HAS_*' redefinition by the '#[vtable]' macro
-   under conditional compilation.
-
-----------------------------------------------------------------
-Qingsong Chen (1):
-      rust: macros: vtable: fix `HAS_*` redefinition (`gen_const_name`)
-
- rust/macros/vtable.rs | 1 +
- 1 file changed, 1 insertion(+)
+Thank you,
+Guillaume
