@@ -2,155 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4ADC781E04
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE7E781E54
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbjHTNyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 09:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
+        id S231146AbjHTOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 10:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbjHTNyk (ORCPT
+        with ESMTP id S229779AbjHTOh1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 09:54:40 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A0F4C09
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:52:34 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fee843b44cso7453035e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:52:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692539553; x=1693144353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u7APu8pBAy7TmDzZAeeaJHe8lZS9TnsCJAG5DgLrVZc=;
-        b=GOgBGAhn6DVhQuKsNOtHgmBHrCYe1hGSfKnh5FFv5ZKRfvu7gwiHZYM17CtrFuf+1a
-         7Q2GqZTrQKfRktDZBZhyD703FNhmEWK1HBwIiClDI+B1U+sECXq8qSq6tn5KiPlchjPN
-         pC8MK68/nFvvfeu5z0Gy9XaEmb1K6lFltinQ9qlntLNVY95M8+O04yh/FfRDTzhsqGKA
-         NUxdOCQVy76k6IyHkTe9vvWoqFd/L3zCWftWjoNfmVgZktPe756xrHemUE+JqlqiqTYD
-         R0C3IxpGQumMZQC4mqXSzNmdd6YlN53u0Qbp87qJhTXMDDfH48RqtycG3CpnBye6uf3G
-         5Ziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692539553; x=1693144353;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u7APu8pBAy7TmDzZAeeaJHe8lZS9TnsCJAG5DgLrVZc=;
-        b=UKbWSvBPBx4CEPYOpXoGtGdVbsPRVCE4CugL0jmuKnFY+O53krEurDp6pDtvfgl2U5
-         EBWUh1+FW4tJW1rlTM2iKZrXw6JRJhJGHAvJDdJm01eleXGQxMvC4Y5qFjbqL/wVM1Wo
-         d0KRzu65V9+JImDL833xiRkTSPhw9yA3R34IQR454KlNzXul/eeHC+HZdTA7iWUqbBbS
-         fykWUWl0GGhZNm6pSrFckDeJQ0wJ5r8pRhNvW2f9HZNY54UQccV4wYrpOGML1BOj5iGg
-         YhIJfEvCG63EuHnLmD9TrIqlXz0Sw/X3vjK7opXBfMJBKnUvHduqZlQquOC7qJzEWszX
-         r9Ow==
-X-Gm-Message-State: AOJu0Yww61fqMMFu89hJJS9HmSyCK9E9MoAtxeGbxRlt8q2QkT7AaLcD
-        ZHH4BYbTb+34J19tBQIHWBxF2A==
-X-Google-Smtp-Source: AGHT+IG1KogoVQ2XGFK/3tA5WzgiCvIqdcAb+XXFyOX4Z5AIMUfHjtu/rRnM27svq5syGNjpOCjuIQ==
-X-Received: by 2002:a05:600c:3781:b0:3fb:bc6d:41f1 with SMTP id o1-20020a05600c378100b003fbbc6d41f1mr2977671wmr.17.1692539553035;
-        Sun, 20 Aug 2023 06:52:33 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id k9-20020a05600c0b4900b003fbd9e390e1sm12860713wmr.47.2023.08.20.06.52.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 06:52:32 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 14:52:31 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        Wei Wang <wvw@google.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
-        Hank <han.lin@mediatek.com>,
-        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>
-Subject: Re: [PATCH v3 2/3] sched/uclamp: Ignore (util == 0) optimization in
- feec() when p_util_max = 0
-Message-ID: <20230820135231.qcfphadn2kc4nxpa@airbuntu>
-References: <20230717215717.309174-1-qyousef@layalina.io>
- <20230717215717.309174-3-qyousef@layalina.io>
- <CAKfTPtCAs5_LDkaxVBHW1wHZzpOHvgsL7Tz1PyDDqDHN2UU5Xw@mail.gmail.com>
+        Sun, 20 Aug 2023 10:37:27 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E273B964D
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 12:17:23 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37JJGcCr017522
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Aug 2023 15:16:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1692472605; bh=6N9EMQdf0dg3QG8w35gHzeeRG5O6PiKxY5DKUYynzzw=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=Atxp7UFw7l/+ynDLo45X7aYFou+u6wFBCEsfhVVnm6OKRuP0uyYyQPPRclCZsptk6
+         Uo2Ex0I4P4e85RQ56V6hxZ8xXHNMoQKrzby43drHZHyQED1WxgDAMPaprvKIDFTZxt
+         qtxhJ1TI/0gz3qP655QzThWln9g9002vhBgBmgm9hbeAb5OuLLLMlLls+bR3jmu8xL
+         8vWJziOlUgCrrHnCvwTqyjbFEVue5jbKrge+JN4nv9hekFBIvNRazZeNcHGXkE52QE
+         L2nNHprUAHFeGB8QLrW4c96SnWN8yaAsosZ5KSMPfYQK+5etVT63CHfCajI0c1477I
+         PcC6DSCHnArzA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id BCAAD15C0292; Sat, 19 Aug 2023 15:16:38 -0400 (EDT)
+Date:   Sat, 19 Aug 2023 15:16:38 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>,
+        anton@tuxera.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
+Message-ID: <20230819191638.GJ3464136@mit.edu>
+References: <000000000000c74d44060334d476@google.com>
+ <87o7j471v8.fsf@email.froward.int.ebiederm.org>
+ <202308181030.0DA3FD14@keescook>
+ <20230818191239.3cprv2wncyyy5yxj@f>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtCAs5_LDkaxVBHW1wHZzpOHvgsL7Tz1PyDDqDHN2UU5Xw@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230818191239.3cprv2wncyyy5yxj@f>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/21/23 11:57, Vincent Guittot wrote:
-> On Mon, 17 Jul 2023 at 23:57, Qais Yousef <qyousef@layalina.io> wrote:
-> >
-> > find_energy_efficient_cpu() bails out early if effective util of the
-> > task is 0 as the delta at this point will be zero and there's nothing
-> > for EAS to do. When uclamp is being used, this could lead to wrong
-> > decisions when uclamp_max is set to 0. In this case the task is capped
-> > to performance point 0, but it is actually running and consuming energy
-> > and we can benefit from EAS energy calculations.
-> >
-> > Rework the condition so that it bails out for when util is actually 0 or
-> > uclamp_min is requesting a higher performance point.
-> >
-> > We can do that without needing to use uclamp_task_util(); remove it.
-> >
-> > Fixes: d81304bc6193 ("sched/uclamp: Cater for uclamp in find_energy_efficient_cpu()'s early exit condition")
-> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+On Fri, Aug 18, 2023 at 09:12:39PM +0200, Mateusz Guzik wrote:
 > 
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-
-Thanks Vincent!
-
-Ping in case this has fallen through the cracks. I hope it's good to be picked
-up now.
-
-
-Thanks!
-
---
-Qais Yousef
-
+> The ntfs image used here is intentionally corrupted and the inode at
+> hand has a mode of 777 (as in type not specified).
 > 
-> > ---
-> >  kernel/sched/fair.c | 18 +-----------------
-> >  1 file changed, 1 insertion(+), 17 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index d489eece5a0d..c701f490ca4c 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -4348,22 +4348,6 @@ static inline unsigned long task_util_est(struct task_struct *p)
-> >         return max(task_util(p), _task_util_est(p));
-> >  }
-> >
-> > -#ifdef CONFIG_UCLAMP_TASK
-> > -static inline unsigned long uclamp_task_util(struct task_struct *p,
-> > -                                            unsigned long uclamp_min,
-> > -                                            unsigned long uclamp_max)
-> > -{
-> > -       return clamp(task_util_est(p), uclamp_min, uclamp_max);
-> > -}
-> > -#else
-> > -static inline unsigned long uclamp_task_util(struct task_struct *p,
-> > -                                            unsigned long uclamp_min,
-> > -                                            unsigned long uclamp_max)
-> > -{
-> > -       return task_util_est(p);
-> > -}
-> > -#endif
-> > -
-> >  static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
-> >                                     struct task_struct *p)
-> >  {
-> > @@ -7588,7 +7572,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
-> >         target = prev_cpu;
-> >
-> >         sync_entity_load_avg(&p->se);
-> > -       if (!uclamp_task_util(p, p_util_min, p_util_max))
-> > +       if (!task_util_est(p) && p_util_min == 0)
-> >                 goto unlock;
-> >
-> >         eenv_task_busy_time(&eenv, p, prev_cpu);
-> > --
-> > 2.25.1
-> >
+> Then the type check in may_open():
+>         switch (inode->i_mode & S_IFMT) {
+> 
+> fails to match anything.
+> ...
+> 
+> Do other filesystems have provisions to prevent inodes like this from
+> getting here?
+
+Well, what ext4 does is that we do a bunch of basic validity checks in
+ext4_iget(), and if the inode is bad (for example the type is not
+specified), the following gets executed:
+
+	} else {
+		ret = -EFSCORRUPTED;
+		ext4_error_inode(inode, function, line, 0,
+				 "iget: bogus i_mode (%o)", inode->i_mode);
+		goto bad_inode;
+       ...
+
+bad_inode:
+	brelse(iloc.bh);
+	iget_failed(inode);
+	return ERR_PTR(ret);
+       
+iget_failed() takes the inode under construction (returned by
+iget_locked), and marks it as a bad/"dead" inode.  So subsequent
+attempts to do anything with the inode, including opening it, will
+fail at the VFS level, and you never get to the file system's open
+function.
+
+The ext4_error_inode() function is reponsible for logging the error,
+and if userspace is using fsnotify and are subscribed FS_ERROR,
+notifying user space that the file system is corrupted.  Depending on
+the file system settings, we may also remount the file system
+read-only, or force a panic to reboot the system (so that a failover
+backup server can take over), or just log the message and continuing.
+
+       	      	       	      	      	      - Ted
