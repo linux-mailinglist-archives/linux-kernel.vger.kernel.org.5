@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C73B781822
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 09:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28A978182D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344521AbjHSHxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 03:53:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58028 "EHLO
+        id S1344456AbjHSICK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344494AbjHSHxt (ORCPT
+        with ESMTP id S232635AbjHSIB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 03:53:49 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE613C35
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 00:53:47 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe8c3b5ca0so2435044e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 00:53:47 -0700 (PDT)
+        Sat, 19 Aug 2023 04:01:57 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C68F3C35
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:01:55 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9b5ee9c5aso25912591fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692431626; x=1693036426;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=linaro.org; s=google; t=1692432113; x=1693036913;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4pXGd50QS4NhntuldSaEKZY1dWgEwQEkHWL/LnltV2k=;
-        b=G37Z+JIuW+ZIy6lQ86mLGfC+7dfURD6nBWdGQ7d7dwSNXxLGXFYf9L0q68Hk2tUJVw
-         i5rrlT+xmCMci1EyDCpxkbY4DMGXl7ueagtN3wZ0NiOqDZU6Ra3AGOfPAc/1S4gV+Zls
-         U3wXVgE0BH3imk0WgfvzyJu473aaxnP/yDCq2CQHq2yRVqvgjTw/FPPzAHEz5IUYVEIO
-         VVCZebACKfEgoguZzAIF1ccegEE7W3KAsbRA4CgdfUudMfsP+yH01YJ9rggIs+KNyQcI
-         Wtp/uloNOusvQ+F7W01mDuKENUzDMqw4q8pe/ET9c+tXMnbjPmsfXT45fL342jvxUmH4
-         t1tA==
+        bh=w3tAtsLI5s7m9t2MiJZTTVjgQTSIULjZIhCpwhV7cIA=;
+        b=XNHfAfYmCzvVRA8YoZrkhI7yXULzKeAGwu3fpaguHZWgbvPjej1avmavJvxX0Q5wOM
+         gE+sZbSIHp4L9fgUdsSHLOeQoIYvzZXQv6CNczaRF+VYcv6UG/NrZ7zu0dgrHyTW02Qi
+         TYCglKP6b8xz8lwC3KE8NB1mi7/QGHdbthwZYKE37w6Hsz/qFdlLSEsWa8W0Vs01L/LA
+         rP9GCp+p1xOy2l+6wSUoMoYbCIZl0BJngpdDatoXtZSByobg0TDM05l8z61vt1B/I2aC
+         bVTwKGZ8a3c1i6nMJo2m73jwc8JBlcqNaXYrblneTuTIf+lEfg2XGNDAOyzSx+s76Lu5
+         IQxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692431626; x=1693036426;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20221208; t=1692432113; x=1693036913;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4pXGd50QS4NhntuldSaEKZY1dWgEwQEkHWL/LnltV2k=;
-        b=KRu6L7afyoYvwyQfhqhazqjiCPJ+tY90gBFIGEEBpP/72anWKFku6Y/twZHIcFa+/6
-         sR+iqSnx/NEe6dW577lTfuyoSY5xsKO2eQFmbpPhdmKpVAmjRZdnDeXTuum/jlH0C0Yj
-         XEmZ/ycRfWfwKOFzQiYQV67YCSIIOBndQKSJRiAqQyUazbbRO5efEfvYrCVZQcViRaOj
-         wrDHpeP8TvNGXuZxcsUvYbuYRgn7DpqRc+ACx6AXebKv8gsK0ygbqmYARTZC5vnm/VR1
-         9O4I0MYvQpJK3JJp8g/+ZmXxBgHR75MwlVOblcbbl9IiF4AtN7AA0I0ALnjlBLaCrQp5
-         /Eug==
-X-Gm-Message-State: AOJu0Yydv3eBRKKAzVrX67/TDTyb2BDJRamLtaFoeke35SgzVNfwt6pn
-        HtcvxIyVeP4ospS95c8AHP2J/A==
-X-Google-Smtp-Source: AGHT+IEw8pMqEZB8rNtxqDrqr24o9F2PuqslrZMx0sM0n63duTUAkpDaJX/IL/c0f1kXuTlW5MnyEw==
-X-Received: by 2002:ac2:5bde:0:b0:4fe:63cf:6048 with SMTP id u30-20020ac25bde000000b004fe63cf6048mr745210lfn.43.1692431626061;
-        Sat, 19 Aug 2023 00:53:46 -0700 (PDT)
+        bh=w3tAtsLI5s7m9t2MiJZTTVjgQTSIULjZIhCpwhV7cIA=;
+        b=fV1ex/mbt0IpT2uVPJRbTZK2HroMvHddN86OZDFcf5D1+K94S8WyxGVg1oHKibYR3M
+         /vAo4AWazg5mOR9SWIpbchAr5/ZdgdsGmGRIOL7fmW8U7bPieXuTN48EWEzSez6BcmJc
+         Q4orQe9tsHEUnP39UsXZk+jDXVm3r7ffuxCyPnas9tWVbQeRrvHJQhHHQqeCr68TwZAX
+         kbtFjfrAxw1RBL23fsWpNWyWzDAMBVk43GD42hScgJwgmm27OzSBgsFZekIwbbWrIV/x
+         5g1Q26rbz5c0chuBtWo23pkpEukGe0L/HvQzJMgpNpiTU0qoOGx6U5RCh0y81lpQnCw+
+         eJxw==
+X-Gm-Message-State: AOJu0YwhJpm+plDI0Ba7TN/0F+n8Nv8WQy5pq3XtqhjClTnb8xdqgPZi
+        lOfdmC484VnbGIcWH1MKXe6ObQ==
+X-Google-Smtp-Source: AGHT+IEsr2eSWNVpGQ7n93iLTcHZOT5L/UgXbAMJ9cTee7SCL/mCY004HJsoEq4z92AdNcbqyPGMyw==
+X-Received: by 2002:a05:6512:128c:b0:4ff:9aaa:6e3e with SMTP id u12-20020a056512128c00b004ff9aaa6e3emr1260440lfs.41.1692432113351;
+        Sat, 19 Aug 2023 01:01:53 -0700 (PDT)
 Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id l7-20020a17090615c700b00999bb1e01dfsm2240704ejd.52.2023.08.19.00.53.44
+        by smtp.gmail.com with ESMTPSA id s11-20020a056402164b00b00528922bb53bsm1654511edx.76.2023.08.19.01.01.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 00:53:45 -0700 (PDT)
-Message-ID: <af1eca37-9fd2-1e83-ab27-ebb51480904b@linaro.org>
-Date:   Sat, 19 Aug 2023 09:53:44 +0200
+        Sat, 19 Aug 2023 01:01:52 -0700 (PDT)
+Message-ID: <952dd160-b913-1484-c682-b5ad0f1a3743@linaro.org>
+Date:   Sat, 19 Aug 2023 10:01:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2 0/1] Add add-maintainer.py script
+Subject: Re: [PATCH] dt-bindings: pinctrl: Drop 'phandle' properties
 Content-Language: en-US
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        Bjorn Andersson <andersson@kernel.org>, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        quic_pkondeti@quicinc.com, u.kleine-koenig@pengutronix.de,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-References: <cover.1691049436.git.quic_gurus@quicinc.com>
- <20230810185526.GC31860@quicinc.com>
- <4d94d0fd-72d4-0196-3a30-3e1efb9f5aca@linaro.org>
- <20230816171538.GB26279@quicinc.com>
- <6fb1176f-90f1-7a65-3ab5-f6447418c51e@linaro.org>
- <20230819013303.GA22393@quicinc.com>
+To:     Rob Herring <robh@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230819010946.916772-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230819013303.GA22393@quicinc.com>
+In-Reply-To: <20230819010946.916772-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2023 03:33, Guru Das Srinagesh wrote:
-> On Aug 18 2023 10:43, Krzysztof Kozlowski wrote:
->>>> For newcomers, OTOH, I would either recommend simple workflow or just
->>>> use b4. Why? Because if you cannot use git-send-email, then it means
->>>> your email setup will make your life difficult and adding maintainers to
->>>> existing patch won't help you.
->>>
->>> You've mentioned a "simple workflow" many times - could you please share more
->>> details on the steps you follow in your workflow for sending patches?
->>
->> I shared it on LKML few times already (and Rob's git send-email identity
->> is also on LKML), so one more time:
->>
->> https://github.com/krzk/tools/blob/master/linux/.bash_aliases_linux#L91
+On 19/08/2023 03:09, Rob Herring wrote:
+> 'phandle' properties are implicitly supported on all nodes, so it
+> shouldn't be listed in schemas.
 > 
-> Thank you for sharing this - it is really neat indeed and you certainly don't
-> need a step #2 with this method.
+> dtschema had a bug where 'phandle' and other implicit properties weren't
+> being added under 'additionalProperties' schemas. That was fixed in
+> v2023.07 release.
 > 
-> However, I see areas for improvement in the alias:
-> - Subsystem-specific mailing lists, maintainers, reviewers, and other roles are
->   all marked as "To: " sans distinction via the alias whereas
->   `add-maintainer.py` and `b4` both provide marking of lists as "Cc: " which
->   seems aesthetically and semantically more pleasing.
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-To or Cc does not matter.
-
-> - Only `add-maintainer.py` allows for maintainers to be selectively in "To: "
->   and "Cc: " for patches in a series depending on whether they are the
->   maintainers for that particular patch or not.
-
-It's intentional to CC everyone. If I wanted to Cc/To
-maintainer-per-patch, I would use Rob's send-email identity.
-
-> 
->>>> This tool depends on the command line and shell interface of
->>>> scripts/get_maintainers.pl which is another reason why it might not be a
->>>> good idea.
->>>
->>> Could you please elaborate on why depending on the output of
->>> `get_maintainer.pl` is a bad idea? It's what everyone uses, no?
->>
->> No, because if interface changes you need to update two tools.
-> 
-> But `b4 prep --auto-to-cc` also uses `get_maintainer.pl`!
-
-Yep, and it's Konstantin's headache to keep it updated. :)
-
-> 
-> Also, in your previous email you said to "just use b4", which also depends on
-> the command line and shell interface of `get_maintainers.pl`. Depending on
-> `get_maintainer.pl` is therefore perfectly okay - there is no need to reinvent
-> it or disregard it for whatever reasons.
-
-True, it is okay, but adding more tools to depend on it is more work. b4
-is awesome tool, thus I feel it is justified to depend on that
-interface. I don't see the need for more tools doing exactly the same.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
