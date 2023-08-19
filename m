@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3169D781BA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97805781BB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjHTATg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Aug 2023 20:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        id S229663AbjHTA3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 20:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjHTATQ (ORCPT
+        with ESMTP id S229988AbjHTA2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 20:19:16 -0400
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B343ACFE22;
-        Sat, 19 Aug 2023 14:17:49 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 6015C63DB7E5;
-        Sat, 19 Aug 2023 23:17:48 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4g8WFByNW1hB; Sat, 19 Aug 2023 23:17:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id DB93163DB801;
-        Sat, 19 Aug 2023 23:17:47 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id V-A1eIJKOCYu; Sat, 19 Aug 2023 23:17:47 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id ABF7E63DB7E5;
-        Sat, 19 Aug 2023 23:17:47 +0200 (CEST)
-Date:   Sat, 19 Aug 2023 23:17:47 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     davidgow <davidgow@google.com>
-Cc:     anton ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        tglx <tglx@linutronix.de>, mingo <mingo@redhat.com>,
-        bp <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>,
-        hpa <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        linux-um <linux-um@lists.infradead.org>, x86 <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1999963356.6490608.1692479867613.JavaMail.zimbra@nod.at>
-In-Reply-To: <20230704083022.692368-1-davidgow@google.com>
-References: <20230704083022.692368-1-davidgow@google.com>
-Subject: Re: [PATCH 1/2] asm-generic: current: Don't include thread-info.h
- if building asm
+        Sat, 19 Aug 2023 20:28:36 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C79B2F44F
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 15:46:09 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSv3g75pLz47;
+        Sun, 20 Aug 2023 00:46:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1692485168; bh=7hzp2hc4e/TZs9fzafZjaaeRfA4qwEmZHAuIGv5yMyY=;
+        h=Date:Subject:From:To:Cc:From;
+        b=iDVNlBK+1H9P+oPYM41wjUaWQuF4Rp8MTib+j7YlC9jSpokLtxYtSgCDwbXUc89vT
+         YeJOA2e4IoMeHLGiA/o+uF8Cx6iVOeHlofxmGSKV9v7yVrLtPlq4m8Z7GeFwDtMpZZ
+         FLughktcPYPhQIwGNKZZs2lWLjDrAyQ+ahpN8nCcWegfoVGnqLuY7FfvnSpEoAcyf0
+         cqqas5tO47V8zoCdR43D6qod87ssxmuo53/pXg/KxubctckczSPzxNikMmScfd9CDl
+         0H5DU8Bal+naevTNyNk0wQW2GuK5/EmfzKmGS38jCh9mj9Qr9PSLI99BKGjlFYgpks
+         5axLO9FJwGCgw==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sun, 20 Aug 2023 00:46:07 +0200
+Message-Id: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v2 0/6] regulator: core: locking fixes and cleanups
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: asm-generic: current: Don't include thread-info.h if building asm
-Thread-Index: nVjiU4WyfVH2A7QVxS/nlClMU8OkNw==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> Von: "davidgow" <davidgow@google.com>
-> asm/current.h is included by some assembly files (either directly, or
-> indirectly). This works on some architectures (such as x86), as their
-> implementation of current.h is careful to not include any C, but the
-> asm-generic version includes linux/thread-info.h unconditionally, which
-> leads to errors when either C code or non-asm-compatible preprocessor
-> directives are included.
-> 
-> Just wrap the contents behind an #ifndef __ASSEMBLY__ to avoid any C
-> code making its way in.
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
-> 
-> This is requrired for patch #2 here, as UML uses this asm-generic
-> header, but works with x86 assembly files which are expecting the x86
-> current.h, which is assembly-friendly.
-> 
-> ---
-> include/asm-generic/current.h | 2 ++
-> 1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/asm-generic/current.h b/include/asm-generic/current.h
-> index 3a2e224b9fa0..9c2aeecbd05a 100644
-> --- a/include/asm-generic/current.h
-> +++ b/include/asm-generic/current.h
-> @@ -2,9 +2,11 @@
-> #ifndef __ASM_GENERIC_CURRENT_H
-> #define __ASM_GENERIC_CURRENT_H
-> 
-> +#ifndef __ASSEMBLY__
-> #include <linux/thread_info.h>
-> 
-> #define get_current() (current_thread_info()->task)
-> #define current get_current()
-> +#endif
-> 
-> #endif /* __ASM_GENERIC_CURRENT_H */
+This series reduces regulator locking code complexity. The single fix is
+more a cosmetic one as it applies to unexpected (WARN-generating) error
+paths.
 
-I'm fine with the UML side of this change but the generic part needs Arnd's ACK.
+Michał Mirosław (6):
+  regulator: core: simplify regulator_lock_nested()
+  regulator: core: skip nesting lock for -EDEADLK
+  regulator: core: simplify nested locking
+  regulator: core: remove `goto`s from resolve_supply()
+  regulator: core: propagate error out ouf regulator_lock_two()
+  regulator: core: simplify lock_two()
 
-Thanks,
-//richard
+ drivers/regulator/core.c | 110 +++++++++++++++------------------------
+ 1 file changed, 42 insertions(+), 68 deletions(-)
+
+-- 
+2.39.2
+
