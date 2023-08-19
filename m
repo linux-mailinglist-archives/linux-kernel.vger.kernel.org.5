@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 527D8781A58
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 17:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086DF781A5D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 17:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbjHSPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 11:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44444 "EHLO
+        id S233606AbjHSPfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 11:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231128AbjHSPXG (ORCPT
+        with ESMTP id S231128AbjHSPfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 11:23:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EE6E5F;
-        Sat, 19 Aug 2023 08:23:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 525F661F4C;
-        Sat, 19 Aug 2023 15:23:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55FAC433C8;
-        Sat, 19 Aug 2023 15:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692458584;
-        bh=/e9z6LgegEFmy9SM9L3YdCv7XOOtHVi0ffVZVDcOmks=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hyfcUfDLo8imtVG779gYrwtRbkZLBTPUTOmbu7xT1aAdyuGkbSx7g/43BLyKrNcvC
-         7+xauHDHNl3oQAZES3V3HaR3UdLKrXsoPemSKa9Zlqt0gfEcOPpJUYpmovHvWpK+Q9
-         gwf6Z2FEPKl2+G8KxJ6q7eomRriPsq1ruIZ6AwFyBSlKBs7goy7RKRp62NzvFQCUOK
-         TB+nSB8AYK0qVWN5goHK0virc1HRHMycnodNjzwLWGUbNwj4WaUDUxtJSXtdQ7D93d
-         x4SeAvM4oMiLnrr6GVGjMJOMONiXpLqTs9eiND9aIJ+UJGLZBjdxUHhltpzxNBVOWR
-         RZ8/Gy8ejRmpg==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so2767743e87.3;
-        Sat, 19 Aug 2023 08:23:04 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yybst3IzEGtrWVFtR4dWYN3ShOZX8xjdJHMXEneWAGW+CGvHgO5
-        +8auJLRt8UhFY04kQSfi59j/oB3ZVyqfQ46ybKs=
-X-Google-Smtp-Source: AGHT+IFq/z/fy2n3Dt01DOzcdL/TgWsWOPcrdHYBRTt7RgiPVKxoUsXump95/jKLwhwG6+fgolARZKuOkpOXUtP9hgQ=
-X-Received: by 2002:a05:6512:2110:b0:4f8:6ac4:84 with SMTP id
- q16-20020a056512211000b004f86ac40084mr1439941lfr.8.1692458582739; Sat, 19 Aug
- 2023 08:23:02 -0700 (PDT)
+        Sat, 19 Aug 2023 11:35:33 -0400
+X-Greylist: delayed 447 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 19 Aug 2023 08:35:30 PDT
+Received: from www.linux-watchdog.org (www.linux-watchdog.org [185.87.125.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0C5859F8;
+        Sat, 19 Aug 2023 08:35:30 -0700 (PDT)
+Received: by www.linux-watchdog.org (Postfix, from userid 500)
+        id D4FAB40A03; Sat, 19 Aug 2023 17:25:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org D4FAB40A03
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
+        s=odk20180602; t=1692458733;
+        bh=j/MBHbRcsMX9PPuXauIuuKH6HsPvMiHxskwoP/V5mL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vP28gEdEyroY+t2UH9M8WP97VPa7azhYgguo/Rt0xUJ/B3cjmtF6ApCPOfzN8edhX
+         M/jPTx9xzkPoOX5mKtW4zOU47c79exwzlq1WfUEPVq8DCEY1Q03DPyICXIzGK7tKTx
+         gL49FCCWcWCwgBBL7jQMY/amDaUn9YnSyeie2d+w=
+Date:   Sat, 19 Aug 2023 17:25:33 +0200
+From:   Wim Van Sebroeck <wim@linux-watchdog.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mark Gross <markgross@kernel.org>,
+        Henning Schild <henning.schild@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patch in the drivers-x86 tree
+Message-ID: <20230819152533.GA18546@www.linux-watchdog.org>
+References: <20230815165725.30a01fe9@canb.auug.org.au>
+ <20230815165856.051fb20f@canb.auug.org.au>
+ <2f9489b4-2414-9f03-4f66-9838b8ee6be0@redhat.com>
+ <e4eb2acd-7ed4-43f2-af9d-116cec77fc31@roeck-us.net>
 MIME-Version: 1.0
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
- <20230818213705.b4f5e18b392c4837068cba6f@kernel.org> <20230818114141.2a3a75ee@gandalf.local.home>
- <4853240.31r3eYUQgx@pwmachine> <20230818142033.1d7685e9@gandalf.local.home> <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
-In-Reply-To: <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Sat, 19 Aug 2023 08:22:50 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
-Message-ID: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4eb2acd-7ed4-43f2-af9d-116cec77fc31@roeck-us.net>
+User-Agent: Mutt/1.5.20 (2009-12-10)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 6:16=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> On Fri, 18 Aug 2023 14:20:33 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > On Fri, 18 Aug 2023 20:13:43 +0200
-> > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> >
-> > > Hi.
-> > >
-> > > Le vendredi 18 ao=C3=BBt 2023, 17:41:41 CEST Steven Rostedt a =C3=A9c=
-rit :
-> > > > On Fri, 18 Aug 2023 21:37:05 +0900
-> > > >
-> > > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > > > > That's why perf probe uses the offset from '_text'. Normal KASLR =
-will just
-> > > > > moves all symbols. (Finer one will move all symbols randomely)
-> > > > > This should not need to access /proc/kallsyms but vmlinux or Syst=
-emMap.
-> > > >
-> > > > We could just pass in: "_text+offset" too.
-> > >
-> > > So, the idea would be to change the existing create_local_trace_kprob=
-e() and
-> > > above functions to indicate the user's offset is to be used against _=
-text and
-> > > not address?
-> >
-> > No, not to modify that function, but if you know the offset from _text =
-(via
-> > the vmlinux), you can easily calculate it for that function.
->
-> Note that the kprobe-event PMU interface itself allows you to specify
-> FUNC+OFFSET style;
->
-> https://lore.kernel.org/lkml/20171206224518.3598254-5-songliubraving@fb.c=
-om/
->
-> perf_event_attr::kprobe_func =3D "_text";
-> perf_event_attr::probe_offset =3D OFFSET;
->
-> Then, it should be able to specify the correct one. Of course you can use
-> other unique symbols around the target symbol.
+Hi all,
 
-Trying to catch up with the thread.
+> On Tue, Aug 15, 2023 at 09:59:45AM +0200, Hans de Goede wrote:
+> > Hi,
+> > 
+> > On 8/15/23 08:58, Stephen Rothwell wrote:
+> > > Hi Stephen,
+> > > 
+> > > On Tue, 15 Aug 2023 16:57:25 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >>
+> > >> Hi all,
+> > >>
+> > >> The following commit is also in the watchdog tree as a different commit
+> > >> (but the same patch):
+> > >>
+> > >>   3fce06406c59 ("watchdog: make Siemens Simatic watchdog driver default on platform")
+> > >>
+> > >> This is commit
+> > >>
+> > >>   926df9ae133d ("watchdog: make Siemens Simatic watchdog driver default on platform")
+> > > 
+> > > in the watchdog tree.
+> > 
+> > Guenter, IIRC we agreed that I would merge this one through
+> > the pdx86 tree?
+> > 
+> I thought that applied to the rest of the series. I tagged this patch
+> with Reviewed-by: which generally means for Wim to pick it up. Ultimately
+> I don't really care either way. I'll drop the patch from my tree.
+> Note though that this doesn't mean that Wim will pick up the drop.
 
-Besides the CAP_* issue, we can do this with
+Also dropped in the linux-atchdog-next tree.
 
-perf_event_attr::kprobe_func =3D NULL;
-perf_event_attr::kprobe_addr =3D address;
+Kind regards,
+Wim.
 
-Then for the CAP_*, I think we should give CAP_PERFMON access to
-/proc/kallsyms. Would this work?
-
-Thanks,
-Song
