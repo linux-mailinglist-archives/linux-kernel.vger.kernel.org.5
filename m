@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 154157816FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0787F781702
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244607AbjHSDNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 23:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
+        id S244905AbjHSDR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 23:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244594AbjHSDNF (ORCPT
+        with ESMTP id S244654AbjHSDRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 23:13:05 -0400
-Received: from out-6.mta1.migadu.com (out-6.mta1.migadu.com [IPv6:2001:41d0:203:375::6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2BB4216
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:13:03 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692414781;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Z+fBmSvZuIQpbseYhEh9Xt9nxn/9KuEbFVAwNjKXsAI=;
-        b=u628zJ4cG9HuzAFStSu6alV8eRCbTDKJTXaRYCEFfOPG62wLW5niBBZxoRHXU94DmPv6mR
-        ppXD6VP3kUuDZ/ezCOIhBV4pGUawIqZcDsD2tUv9lZejBDQZ42TuAb2zJ12p4ZB8MDZnk9
-        2XCBNHz8AkHfKTiu3l0UQEilI5lh92E=
-From:   chengming.zhou@linux.dev
-To:     axboe@kernel.dk, hch@lst.de, bvanassche@acm.org,
-        ming.lei@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com, chuck.lever@oracle.com, lkp@intel.com,
-        kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH] blk-mq: fix mismatch between IO scheduler insert and finish
-Date:   Sat, 19 Aug 2023 11:12:06 +0800
-Message-ID: <20230819031206.2744005-1-chengming.zhou@linux.dev>
+        Fri, 18 Aug 2023 23:17:35 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB014218
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:33 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-56d455462c2so1019840eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 20:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692415052; x=1693019852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Q7Mi/sRAGm8lhYDAZVLrk5zgyos5NQEy7qr6AIL6DU=;
+        b=UbhUG+mLPhnobKlykd6gqCDeeDq8gYEW1q5+RAqlhFXRpBNUiy//H6n0gEWJqpVrcH
+         28aRiT4idt5ZYLJBqPU5B2RE2A4MdKUbCIxdO4K/hrpuGv1rzWLUtNJL7dpeflV4nmTN
+         r3ofwS0Wmef5p09OdV++XIPPcuWVLFnxW8LWpQUU8zuQ1+d8SOn43mO9XUJCEw2UtP9L
+         Z1clpoHaYrlluHt6sKzRuUU3MjQymbq7PUdqzd61X0Ps3CYbs4I7YMHgenuCsv6BXnbe
+         YQeYciSH3dB2FnzHwE+5apWRLTKzYLELeJ66GSe1rSbaeQOhKNHA0dkmDWhHgd0XdABW
+         z96g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692415052; x=1693019852;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Q7Mi/sRAGm8lhYDAZVLrk5zgyos5NQEy7qr6AIL6DU=;
+        b=AYnjqFsjL+csluQTZ4Vph7D3ADNjtmQ5bneWbX+Z3IgWjBxOGLteuTXyL/CahuYE6p
+         YZq/uo54Qu1mEniNZxkIQFApzonm4XuS59ewVhMLIJYXKW4CDndqL5AedO8vVltHeLWf
+         BBVvxidtHnkwhaFiFnMyzLRBEs37xBt7UefApotzmxpq6Dv35dv69fZVI38PeRitKOC2
+         UJIPu5p5sLPM28fhQpFbf2bU8/uen7OcVuGpixqvIhiCrGGDY+/9gqyFVorJiKSrn/3G
+         IiMP4fyLik9EgMLo0fP4fGbOoiNztRmlbeOihygIRJOn935EnkS61/cf556wKL04pkDR
+         suoA==
+X-Gm-Message-State: AOJu0YzvMwdLZT7++pGbZUtHKAS4dRu8WfF3ANTlBpERcQ3+eMrLZr9Y
+        ymz/2Mjvy6uLrnOEAOJfYSAoig==
+X-Google-Smtp-Source: AGHT+IFVUmkUoC3QURVVvQmtTQIMGCKsvM2bNgWNvvFiOc8n9HKAZXjCVFIJolRC3nL5ZZHZ4ysstQ==
+X-Received: by 2002:a4a:654e:0:b0:56e:4ee2:9189 with SMTP id z14-20020a4a654e000000b0056e4ee29189mr1647457oog.5.1692415052465;
+        Fri, 18 Aug 2023 20:17:32 -0700 (PDT)
+Received: from localhost ([136.49.140.41])
+        by smtp.gmail.com with ESMTPSA id v7-20020a4a8c47000000b0054fba751207sm1494141ooj.47.2023.08.18.20.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Aug 2023 20:17:31 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     JaeHun Jung <jh0801.jung@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH 0/8] arm64: exynos: Enable USB for E850-96 board
+Date:   Fri, 18 Aug 2023 22:17:23 -0500
+Message-Id: <20230819031731.22618-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengming Zhou <zhouchengming@bytedance.com>
+This patch series enables USB gadget, USB host and Ethernet support for
+E850-96 board. The most major change was done in USB PHY driver, as the
+register layout of PHY block in Exynos850 is very different from
+Exynos5 one.
 
-IO scheduler has requirement that one request which has been inserted
-must call finish_request() only once.
+Sam Protsenko (8):
+  dt-bindings: usb: samsung,exynos-dwc3: Add Exynos850 support
+  dt-bindings: phy: samsung,usb3-drd-phy: Add Exynos850 support
+  usb: dwc3: exynos: Add support for Exynos850 variant
+  phy: exynos5-usbdrd: Make it possible to pass custom phy ops
+  phy: exynos5-usbdrd: Add 26MHz ref clk support
+  phy: exynos5-usbdrd: Add Exynos850 support
+  arm64: dts: exynos: Enable USB in Exynos850
+  arm64: dts: exynos: Enable USB support on E850-96 board
 
-Now we have three special cases to consider:
-1. rq has not insert, has complete: e.g. empty preflush
-2. rq has insert, has not complete: e.g. merged requests will be freed
-3. rq has insert, has twice complete: e.g. postflushes
+ .../bindings/phy/samsung,usb3-drd-phy.yaml    |   1 +
+ .../bindings/usb/samsung,exynos-dwc3.yaml     |  16 ++
+ .../boot/dts/exynos/exynos850-e850-96.dts     |  58 ++++++
+ arch/arm64/boot/dts/exynos/exynos850.dtsi     |  30 +++
+ drivers/phy/samsung/phy-exynos5-usbdrd.c      | 182 +++++++++++++++++-
+ drivers/usb/dwc3/dwc3-exynos.c                |   9 +
+ 6 files changed, 294 insertions(+), 2 deletions(-)
 
-Note case 1 which existed before, has been no problem since all the
-schedulers will check in their finish_request() if the rq has been
-inserted or not, like checking "rq->elv.priv[0]".
-
-Then case 2 and case 3 are the introduced regression, we moved the
-scheduler finish_request() from free phase to complete phase to solve
-a deadlock problem. But it caused no finish_request() for request in
-case 2, and double finish_request() for request in case 3.
-
-So we still need finish_request() in blk_mq_free_request() to cover
-case 2. And clear RQF_USE_SCHED flag to avoid double finish_request().
-It should be fine since we're freeing the request now anyway.
-
-Of course, we can also make all schedulers' finish_request() to clear
-"rq->elv.priv[0]" to avoid double finish. Or clear it in blk-mq, make
-the rq like not inserted as case 1.
-
-FYI it's easy to reproduce warning in mq-deadline using this:
-```
-DEV=sdb
-echo mq-deadline > /sys/block/$DEV/queue/scheduler
-mkfs.ext4 /dev/$DEV
-mount /dev/$DEV /mnt
-cd /mnt
-stress-ng --symlink 4 --timeout 60
-echo none > /sys/block/$DEV/queue/scheduler
-```
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202308172100.8ce4b853-oliver.sang@intel.com
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- block/blk-mq.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index a6d59320e034..953f08354c8c 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -685,8 +685,15 @@ static void blk_mq_finish_request(struct request *rq)
- {
- 	struct request_queue *q = rq->q;
- 
--	if (rq->rq_flags & RQF_USE_SCHED)
-+	if (rq->rq_flags & RQF_USE_SCHED) {
- 		q->elevator->type->ops.finish_request(rq);
-+		/*
-+		 * For postflush request that may need to be
-+		 * completed twice, we should clear this flag
-+		 * to avoid double finish_request() on the rq.
-+		 */
-+		rq->rq_flags &= ~RQF_USE_SCHED;
-+	}
- }
- 
- static void __blk_mq_free_request(struct request *rq)
-@@ -715,6 +722,8 @@ void blk_mq_free_request(struct request *rq)
- {
- 	struct request_queue *q = rq->q;
- 
-+	blk_mq_finish_request(rq);
-+
- 	if (unlikely(laptop_mode && !blk_rq_is_passthrough(rq)))
- 		laptop_io_completion(q->disk->bdi);
- 
 -- 
-2.41.0
+2.39.2
 
