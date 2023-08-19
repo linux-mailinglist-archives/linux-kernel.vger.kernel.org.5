@@ -2,173 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA338781A2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F97781A34
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:41:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbjHSOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        id S233627AbjHSOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231313AbjHSOgT (ORCPT
+        with ESMTP id S231313AbjHSOlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:36:19 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B95721D5A;
-        Sat, 19 Aug 2023 07:36:16 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf0b24d925so12888285ad.3;
-        Sat, 19 Aug 2023 07:36:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692455776; x=1693060576;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=i3eyhWYxowBeZ550XCHaK2XJ5PZyECo2MtKsWHHL3rU=;
-        b=obkbU6gs/EuufRL1SbRTlTNpqPglfRTGOLS3bXz79NuI9pVc9Y53+uRMdrWLuvFI3q
-         DGOif0BUmQcuSmCLw2Ea7Rq7fcQXeTGYfivHDhjXUoy1+uKGWGNLuZfepCWPKThNG047
-         OaM3FmHR00KYYvHXCtxkgQbgNTHxaIMQnIwyXphsD2Cr9MFzR4BiDHdeWHtPrkLS/xdi
-         X//r47yv9JWpUZD+bjewWPm1geeN9PlxnJ9S2bG5S0tH7DKCpF5Cbn493aRfg2bIgLzU
-         N9rynyP/aqUv3gEXcp6HgP6TFBxYiiBrhJnbOVurN88dt85QsNTJqf0HVDzSvwzUR5Um
-         TZwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692455776; x=1693060576;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i3eyhWYxowBeZ550XCHaK2XJ5PZyECo2MtKsWHHL3rU=;
-        b=alqDSuuFrPyD2nwvpMaEQEgmQmRjcPVUTpSqHZPJqvFrmQaNxrDydxfKg1oF1uetmt
-         CVrkIHRxMVZCdf3AMOhMdqNLreIreFsxLyr7lhlx/Ardr3ci7BIRNXEfIHYUGGB4eCL4
-         QbYGAcYJ0chyjYtimzy8Chac2MlyOZIKKDKYNImC+KiSaRU9rigN2scB0PfxJhV4Keyw
-         jPj8MO36Gcl9ENuFnKa8Ub1E5Ooph+Mm/EEcvG1Ibes4572qLK3mq8h2zwWT91qx3Adk
-         5g48194dZ1Xtoh98K246qM/29PCyHC7Wpq0IOoKP3gohAmbSw80GbnMExCChsMm8Embm
-         vMcQ==
-X-Gm-Message-State: AOJu0Yw5KiRqrP9ljCMUo/yCqmbgLSmf+ir+zC6vs5c/T2Flh+tU4Gvx
-        20b1Qwet7aTv8hRER1wcjAg=
-X-Google-Smtp-Source: AGHT+IFutKzo7Y89mFdefbjAUoyhptfe0oMw9nzC5zNJ9WY11Kj/8GbKdMTFwq6gE96Thh8ITFhEzg==
-X-Received: by 2002:a17:903:1c4:b0:1bf:205f:c02c with SMTP id e4-20020a17090301c400b001bf205fc02cmr1868523plh.58.1692455775657;
-        Sat, 19 Aug 2023 07:36:15 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001a80ad9c599sm2027378plz.294.2023.08.19.07.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 07:36:15 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 19 Aug 2023 07:36:13 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Huibin Shi <henrys@silicom-usa.com>
-Cc:     Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-Subject: Re: [PATCH] Add Silicom Platform Driver
-Message-ID: <7f537cef-d5cd-4816-a07b-9df27954ef93@roeck-us.net>
-References: <20230818154341.20553-1-henryshi2018@gmail.com>
- <8b8b0503-8f8f-4615-97ab-11d2c0e1a960@roeck-us.net>
- <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com>
+        Sat, 19 Aug 2023 10:41:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB56AF5B5
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:41:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 438EA62378
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 14:41:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5515C433C9;
+        Sat, 19 Aug 2023 14:41:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692456074;
+        bh=s/6tz1ntVu9WHcizXMkOFm+PqgGopb/sQCUQJgN/UCw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RspyVU2C22Gq4717Y75wZ72mw3oilJhDHzF06iNK7vIzIfhkYMC9p3Dl2ictYYcGa
+         Pj8PGuyGFy+ibtb5heSsWapbk8AbmxSkJ/Fb25XVQm55KTGpkxvLPHyOwNeie2tePw
+         rNelyoxgP6jWnHQTvbhRRuyGSALKNez1mGv3j1bmC6xO0dfxZe3YOmraEBSqzLGaoe
+         UVJga9KYMG5ebcm3/1WhLNmrUBt4GplifCR1HcJrkbK8VnZ84veRbtuyXqi1rESuDx
+         Dxu/jLbp8ezbIPP154mbSd6uPmD60Mnbv9OQeXKGBSL4dQqbN592FuHAdql9b58/9g
+         3FaXaeINNMAsQ==
+Date:   Sat, 19 Aug 2023 16:41:09 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net] net: ethernet: mtk_eth_soc: add reset bits for MT7988
+Message-ID: <ZODUhbw9SDOifv49@vergenet.net>
+References: <b983a3adf5184a30e4ce620fbbf028c9c76648ae.1692382239.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <b983a3adf5184a30e4ce620fbbf028c9c76648ae.1692382239.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 02:20:32PM +0000, Huibin Shi wrote:
-> Hi Guenter,
+On Fri, Aug 18, 2023 at 07:15:24PM +0100, Daniel Golle wrote:
+> Add bits needed to reset the frame engine on MT7988.
 > 
-> Thanks for your comments. Probably, I should not resubmit patch too rushed. I will add version number to subject and change log in cover letter for next resubmission.
+> Fixes: 445eb6448ed3 ("net: ethernet: mtk_eth_soc: add basic support for MT7988 SoC")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 76 +++++++++++++++------
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.h | 11 ++-
+>  2 files changed, 64 insertions(+), 23 deletions(-)
 > 
-> See my comments below. Please let me know whether you accept my explanation.
-> 
-> Henry
-> -----Original Message-----
-[ ... ]
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index fe05c90202699..2482f47313085 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -3613,19 +3613,34 @@ static void mtk_hw_reset(struct mtk_eth *eth)
+>  {
+>  	u32 val;
+>  
+> -	if (mtk_is_netsys_v2_or_greater(eth)) {
+> +	if (mtk_is_netsys_v2_or_greater(eth))
+>  		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN, 0);
+> +
+> +	if (mtk_is_netsys_v3_or_greater(eth)) {
+> +		val = RSTCTRL_PPE0_V3;
+> +
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> +			val |= RSTCTRL_PPE1_V3;
+> +
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
+> +			val |= RSTCTRL_PPE2;
+> +
+> +		val |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
+> +	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+>  		val = RSTCTRL_PPE0_V2;
+> +
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> +			val |= RSTCTRL_PPE1;
+>  	} else {
+>  		val = RSTCTRL_PPE0;
+>  	}
+>  
+> -	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> -		val |= RSTCTRL_PPE1;
+> -
+>  	ethsys_reset(eth, RSTCTRL_ETH | RSTCTRL_FE | val);
+>  
+> -	if (mtk_is_netsys_v2_or_greater(eth))
+> +	if (mtk_is_netsys_v3_or_greater(eth))
+> +		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
+> +			     0x6f8ff);
+> +	else if (mtk_is_netsys_v2_or_greater(eth))
+>  		regmap_write(eth->ethsys, ETHSYS_FE_RST_CHK_IDLE_EN,
+>  			     0x3ffffff);
+>  }
+> @@ -3651,13 +3666,21 @@ static void mtk_hw_warm_reset(struct mtk_eth *eth)
+>  		return;
+>  	}
+>  
+> -	if (mtk_is_netsys_v2_or_greater(eth))
+> +	if (mtk_is_netsys_v3_or_greater(eth)) {
+> +		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V3;
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> +			rst_mask |= RSTCTRL_PPE1_V3;
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE2))
+> +			rst_mask |= RSTCTRL_PPE2;
+> +
+> +		rst_mask |= RSTCTRL_WDMA0 | RSTCTRL_WDMA1 | RSTCTRL_WDMA2;
+> +	} else if (mtk_is_netsys_v2_or_greater(eth)) {
+>  		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0_V2;
+> -	else
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> +			rst_mask |= RSTCTRL_PPE1;
+> +	} else {
+>  		rst_mask = RSTCTRL_ETH | RSTCTRL_PPE0;
+> -
+> -	if (MTK_HAS_CAPS(eth->soc->caps, MTK_RSTCTRL_PPE1))
+> -		rst_mask |= RSTCTRL_PPE1;
+> +	}
+>  
+>  	regmap_update_bits(eth->ethsys, ETHSYS_RSTCTRL, rst_mask, rst_mask);
+>  
 
-> > +
-> > +static u32 temp_get(void)
-> > +{
-> > +     u32 reg;
-> > +
-> > +     mutex_lock(&mec_io_mutex);
-> > +     /* Select memory region */
-> > +     outb(IO_REG_BANK, EC_ADDR_MSB);
-> > +     outb(0xc, EC_ADDR_LSB);
-> > +     /* Get current data from the address */
-> > +     reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
-> > +     mutex_unlock(&mec_io_mutex);
-> > +
-> > +     return (reg >> 16) / 10;
-> 
-> The hwmon ABI expects temperatures to be reported in milli-degrees C.
-> The above sets the maximum temperature to 65,535 / 10 = 6,553 milli-degrees or 6.553 degrees C. It is very unlikely that this is correct.
-> 
-> Again, I commented on this before.
-> 
-> Henry: this is due to an internal implementation of MIcor-controller firmware, instead of putting real temperature to the register, it put (real temperature * 10 ) to the register. So, in order to report correct temperature to user space application, the read value is divided by 10, then report to user space. 
-> 
-> Please let me know if you accept this. If not, I can change the code, but let user space application to do adjustment. 
+Hi Daniel,
 
-No, I do not accept this. I do not believe that the maximum temperature
-reported by the microcontroller is 6.553 degrees C. I suspect it reports
-10th of degrees C. In that case, the number reported should be multiplied
-by 100 to make it milli-degrees C as expected by the ABI.
+The bits set by the code in the above two hunks seem both complex
+and similar. At the risk of suggesting excessive complexity,
+I do wonder if they can be consolidated somehow.
 
-[ ... ]
+Maybe the approach you have taken is best as a fix for net.
+But a follow-up could be considered for net-next.
+Just an idea.
 
-> > +static int silicom_fan_control_read_labels(struct device *dev, enum hwmon_sensor_types type,
-> > +                                        u32 attr, int channel, const 
-> > +char **str) {
-> > +     switch (type) {
-> > +     case hwmon_fan:
-> > +             *str = "Fan Speed";
-> > +             return 0;
-> > +     case hwmon_temp:
-> > +             *str = "Thermostat Sensor";
-> > +             return 0;
-> 
-> Those labels have no practical value.
-> 
-> Henry: Those labels will be used by user space code to identify Silicom_platform driver. 
-> 
+...
 
-The driver is identified by the driver name, not by the name of
-a temperature sensor or fan speed attribute. Any other driver
-could return "Fan Speed" or "Thermostat Sensor" here. Userspace
-relying on such values to identify the driver are simply broken.
-
-> > +     default:
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +}
-> > +
-> > +static const struct hwmon_ops silicom_fan_control_hwmon_ops = {
-> > +     .is_visible = silicom_fan_control_is_visible,
-> > +     .read = silicom_fan_control_read,
-> > +     .write = NULL,
-> 
-> Unnecessary.
-> 
-> Henry: OK, will be removed silicom_fan_control_is_visible.
-
-The NULL pointer assignment is unnecessary. I have no idea
-what that has to do with silicom_fan_control_is_visible(),
-or why you would want to remove that function.
-
-Guenter
