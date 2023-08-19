@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 982CF781962
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B28781965
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjHSLwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 07:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        id S231656AbjHSLxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 07:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbjHSLwo (ORCPT
+        with ESMTP id S231270AbjHSLxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 07:52:44 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1A3260BB;
-        Sat, 19 Aug 2023 04:50:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1692445796; x=1693050596; i=deller@gmx.de;
- bh=EjMxJHShEwrxNGB+OlRmt22+ZwJAHPlR2zFij4iNzW4=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=MtvcLKlfMdJ8A4g1U54MbKpSndQTNEXQIw4Zc/JPXuQ9B3GMTmATO925SIgiX4gX/pnNHam
- Wli1xXdaCoZ2XHWg/QjacgqZMrxDdwHbdGd9P4cBj0xMZsNMZofXYffmgqOSL5H/4tlcbYXup
- mi24j9JwrBMulvD6sNMvndhEW5F3OOrocYqoeYdr+W5ovTzrFcH//etcLOb9NZuebqog3KlA7
- amN2P2XkxUF6xr7XLUejUYOaqjudK8pnufsWFYQGt39qm7ef5JqcO4CezY7gGRqfc6rpPpuFU
- jIsH6ysjKGDvPFBG3WQwiySQlX2UQjpGj+VAR8I91yoEzR2h473g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.154.181]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mo6v3-1pwb4J09hj-00pdAN; Sat, 19
- Aug 2023 13:49:56 +0200
-Message-ID: <ef106f59-f7d6-93bc-6872-d60ded127830@gmx.de>
-Date:   Sat, 19 Aug 2023 13:49:53 +0200
+        Sat, 19 Aug 2023 07:53:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF50CCA79
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 04:51:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5597F623A4
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 11:51:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A9FECC433C9;
+        Sat, 19 Aug 2023 11:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692445899;
+        bh=TEW/UkmWKofUATAX/yySTM8Wa+yZwEIV33TCwdjld18=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Tv1lmSO/TVyV1qk+b05FXg51PegCrsqOnON2yZ4OABvEVrcd47XD9jGPml7ZYtQH8
+         0yT/X7t3q1JCfiju9/mxisNUehHccSarNn79ThJhyy9NS69TgSxuRVUi927bfJGEjT
+         B+MZnHOaBW4YfW2vy9Bx0hsHD3nSFF4RZXF3OWXwJok7345WM1VUYeuOdk1h04YVCG
+         Vm8MSpczgIZK50R32kBZ6s7IqdvPQVAksgSYtwfu0EOVCVCIG2xVV/KXMZRX/+ciab
+         v86bGwmj7T2vI0I7WCKUbl4kQpwK02EYL78CnY9NCJ5Q3LtjaUs9WLauHFoed7+rfm
+         163hjsbsHmDlQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8EC72E1F65A;
+        Sat, 19 Aug 2023 11:51:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
- sigbus
-Content-Language: en-US
-To:     Shuai Xue <xueshuai@linux.alibaba.com>, catalin.marinas@arm.com,
-        will@kernel.org, James.Bottomley@HansenPartnership.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:vEqnuzE2C0GjP6pSbpiblTMY7spBjR06BrHcICxDzhUnGR8UiUw
- 5yKz/z47iRV2N9m3fCxfG9FtVTcj+9GQvGBTQB3g1YqT3ryKg36XK5O8yxvDqt348QY1Mm8
- lAhmdOcVaVEmpySQQPVk3OK55qyBEgtkFIAecXgwggGvzpx6tN1G5jSxljPX8as/HpI3Qeq
- QHvAsPWQKJkR3WE4HS8ug==
-UI-OutboundReport: notjunk:1;M01:P0:ZcoAs9bADe0=;wiVrdSlFiXsPwdrvpvFouPd1gv2
- 0raSLM3zmETBRyStCaPLXvtdkCgkA1aAKzTEOq+BeDFEmSBGl1RMcwjzowMCmpcHFxhC3dbGu
- mj0g0bo/4ord/R29Le1ui5FyCET5W9cE6EHpusffuFMR11WdcS7Mgg+6zft3UijidWYum3YIw
- PQmAZ9FStoYkW94JyCNwtJsUHyv/EOFWimwYaCReHq6qrCmNhOYvJSvsO7cbVeU2wO18ocfR2
- 710aeenm6qQzkHksEuU8+P/cReu8iLbsoDzsaCj7EDb5ySCDTFssdU1Q+bQPBSIWJekMMzfCg
- +6O5IQ481mgpdGgdE9UVffakiCy+N37ZC1lMf74Z6dIl/me/OVZxRaSK25zR/UxKIdhQpfJYx
- flIjHNJX3sXBohs+25drxWpiEzp+cv3GsIuTc6ycyW80dqVofbxXScnaNWVtoillgZjk46xbi
- WuQykauybAJLUehzP9ydJ9Mq08cE/+WQz7eEaYQAv0DgvlgJbKh9BXL/rvsrq5/261ToE1M44
- m75an4Kz6YaMyWuu7SBjnKfixha83bPj5flXpm/6P/AZigwqHWirXbAOhg2XZwTFsiSeTsTxk
- DE+zAVXANypvj+Y6D5FRxJmrM44NJYpjh+iKCUk5Nkpvrjm/Yh6BplcESG9ZmoCUFMW821yvw
- rIxaFcDr+D8mUJQh97fHEWVUkXnAH60j21qrGGRHPyRvdmKXW/cmCAwdYB6cOeBmjzVLhpD9Y
- j4WTCMhv3t7J1nDBpPjlbBYj9kPHPZOmMlRGBu3n/BWt2znvrxcTDiK2ZU5PKAE5adEc2Yk3t
- KwhnMp0D7Ljw5Az2Af+2HC3W8y9wB4PP7axGoXlftbvfqGd/fCe6WkpYBIzL+Gko0WbsDRv1t
- kqLuEhL42bSLfOksN4YgAKwrS7HTsIyk4Ns47jTZcrUzf8KNshRhZwT5ENxAoHpfRcKEpSeZJ
- 3jbjyc+wZINxeykg32F/nHb7eag=
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] net: mdio: mdio-bitbang: Fix C45 read/write protocol
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169244589958.30754.16676422230846280985.git-patchwork-notify@kernel.org>
+Date:   Sat, 19 Aug 2023 11:51:39 +0000
+References: <20230816180656.18780-1-fancer.lancer@gmail.com>
+In-Reply-To: <20230816180656.18780-1-fancer.lancer@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, geert+renesas@glider.be, michael@walle.cc,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/19/23 12:22, Shuai Xue wrote:
-> When a process tries to access a page that is already offline, the
-> kernel will send a sigbus signal with the BUS_MCEERR_AR code. This
-> signal is typically handled by a registered sigbus handler in the
-> process. However, if the process does not have a registered sigbus
-> handler, it is important for end users to be informed about what
-> happened.
->
-> To address this, add an error message similar to those implemented on
-> the x86, powerpc, and parisc platforms.
->
-> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
-> ---
->   arch/arm64/mm/fault.c  | 2 ++
->   arch/parisc/mm/fault.c | 5 ++---
->   arch/x86/mm/fault.c    | 3 +--
->   3 files changed, 5 insertions(+), 5 deletions(-)
+Hello:
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 16 Aug 2023 21:06:52 +0300 you wrote:
+> Based on the original code semantic in case of Clause 45 MDIO, the address
+> command is supposed to be followed by the command sending the MMD address,
+> not the CSR address. The commit 002dd3de097c ("net: mdio: mdio-bitbang:
+> Separate C22 and C45 transactions") has erroneously broken that. So most
+> likely due to an unfortunate variable name it switched the code to sending
+> the CSR address. In our case it caused the protocol malfunction so the
+> read operation always failed with the turnaround bit always been driven to
+> one by PHY instead of zero. Fix that by getting back the correct
+> behaviour: sending MMD address command right after the regular address
+> command.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] net: mdio: mdio-bitbang: Fix C45 read/write protocol
+    https://git.kernel.org/netdev/net/c/2572ce62415c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
