@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCC7781921
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0273178191D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjHSKwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:52:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S230337AbjHSKwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjHSKw1 (ORCPT
+        with ESMTP id S230371AbjHSKwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:52:27 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BDE1B339;
-        Sat, 19 Aug 2023 03:50:15 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-34baeb01942so6188505ab.1;
-        Sat, 19 Aug 2023 03:50:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692442215; x=1693047015;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sOHGrFpVbV94GxW582V7S/Br8+c79FnQLF+z0S/cUIg=;
-        b=YackG/t5OxFEpw9bAOamPufsVnsxP/OwqNEwAPvBqI3Pso/gq7E+VnCHZ1D789B2km
-         U598r70iSEb3fPqVFCG504V1gpJnaiBO8rL3Mbe6pXfXyHGAW0Zrg5v+o/EhQXBFsoPK
-         gywGyTBZBxqZhQE/cDt/bTmt2KVNRpDtavjrLoBSluAJpTkN3yl+YtWps1HWR3mv/N3S
-         YLvPX3h32Rnkw/Nw2jrqS3OVYrUI+fFhuIDzLiFYKQylSJKKTdrNX3HLCyeR/TfBtJdQ
-         LI89t/RAvr22J9QtL32vAmVPZjWS9LwWiT70oqdotqROlr81Q7koS4eoRbcuAtMzT81U
-         9j9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692442215; x=1693047015;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sOHGrFpVbV94GxW582V7S/Br8+c79FnQLF+z0S/cUIg=;
-        b=B8HPLOUYYofmHs9t9zanPQFgmOOzTzxC2GYKIMF/d2ZTUGuh6mmYj9/ewzx7N+AFyZ
-         Sl93cuiuT7a/Bu7zn2L5MgH7oqEIsVFAMV6uRiAJAlWBJ4Pm4Gr27kBDPQeTaeyULY+S
-         MpP+oty4APb0BJs/fg/MKY+UNX/76LmS4oC5lEJ/voDhglSvtHWk2O1bwRAdgH1oyX+s
-         hWASxqtnnHhO9yYSfXCo31qOWcMgb3WRoLe0gqBnECOzrg7BigykSj4ca23DZ+cIYOqo
-         mo+38zEZhkd/v1BjyABlZVV9nN5rJ3cW1Hi+70n9dwqTNLLok5T2HnCZLIaHeG+8/n4G
-         SJSA==
-X-Gm-Message-State: AOJu0Yxfso7zvIf7zA73U/TZsJfmynStobzzQn174pcHvW1WI8g5tUxo
-        Fbt9YetWTtPtfAPl+g2MMhI=
-X-Google-Smtp-Source: AGHT+IGltsqOxipCI150IIex3vtDvzFIfLDHldGuBnX0OVoo2BOEdiVNS0N+e7jqCQFJL5ID4GY4cg==
-X-Received: by 2002:a05:6e02:106f:b0:34b:ad7a:384f with SMTP id q15-20020a056e02106f00b0034bad7a384fmr2155350ilj.20.1692442215113;
-        Sat, 19 Aug 2023 03:50:15 -0700 (PDT)
-Received: from aford-B741.lan ([2601:447:d001:897f:4a28:99c7:cf07:4f94])
-        by smtp.gmail.com with ESMTPSA id h16-20020a92d090000000b0034ac4ccd097sm1116470ilh.33.2023.08.19.03.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 03:50:14 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/2] arm64: dts: imx8mp-beacon-kit: Fix audio_pll2 clock
-Date:   Sat, 19 Aug 2023 05:50:02 -0500
-Message-Id: <20230819105002.132750-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230819105002.132750-1-aford173@gmail.com>
-References: <20230819105002.132750-1-aford173@gmail.com>
+        Sat, 19 Aug 2023 06:52:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C698F5246;
+        Sat, 19 Aug 2023 03:50:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5826E6222E;
+        Sat, 19 Aug 2023 10:50:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39AB7C433C8;
+        Sat, 19 Aug 2023 10:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692442210;
+        bh=UOf0VrNbj7jijgQLUEJOQOBTWQ8bE2tlLoIK1cWZfF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kei/cEnCzd9vylrM81C/pPpoNImWO9ct/BfmNbABJtoIAiUdlMrA6QirCewN8nGsl
+         E+/EyT5QuE5r/CU3d6rHBMKoRtj1M4beqjlpX4igDLY31/WCHuJE9cep162hACy+zA
+         MkHvny2Q8i8kBUce3Avd2yXp9bzBiQ31Ho3RWg+I=
+Date:   Sat, 19 Aug 2023 12:50:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     Evan Quan <evan.quan@amd.com>, Andrew Lunn <andrew@lunn.ch>,
+        rafael@kernel.org, lenb@kernel.org, johannes@sipsolutions.net,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, alexander.deucher@amd.com,
+        rdunlap@infradead.org, quic_jjohnson@quicinc.com, horms@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [V9 1/9] drivers core: Add support for Wifi band RF mitigations
+Message-ID: <2023081919-mockup-bootleg-bdb9@gregkh>
+References: <20230818032619.3341234-1-evan.quan@amd.com>
+ <20230818032619.3341234-2-evan.quan@amd.com>
+ <2023081806-rounding-distract-b695@gregkh>
+ <2328cf53-849d-46a1-87e6-436e3a1f5fd8@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2328cf53-849d-46a1-87e6-436e3a1f5fd8@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 16c984524862 ("arm64: dts: imx8mp: don't initialize audio clocks
-from CCM node") removed the Audio clocks from the main clock node, because
-the intent is to force people to setup the audio PLL clocks per board
-instead of having a common set of rates since not all boards may use
-the various audio PLL clocks for audio devices.
+On Fri, Aug 18, 2023 at 05:49:14PM -0500, Limonciello, Mario wrote:
+> 
+> 
+> On 8/18/2023 4:24 PM, Greg KH wrote:
+> > On Fri, Aug 18, 2023 at 11:26:11AM +0800, Evan Quan wrote:
+> > >   drivers/base/Makefile                         |   1 +
+> > >   drivers/base/wbrf.c                           | 280 ++++++++++++++++++
+> > 
+> > Why is a wifi-specific thing going into drivers/base/?
+> > 
+> > confused,
+> > 
+> > greg k-h
+> 
+> The original problem statement was at a high level 'there can be
+> interference between different devices operating at high frequencies'. The
+> original patches introduced some ACPI library code that enabled a mitigated
+> for this interference between mac80211 devices and amdgpu devices.
+> 
+> Andrew Lunn wanted to see something more generic, so the series has morphed
+> into base code for things to advertise frequencies in use and other things
+> to listen to frequencies in use and react.
+> 
+> The idea is supposed to be that if the platform knows that these mitigations
+> are needed then the producers send the frequencies in use, consumers react
+> to them.  The AMD implementation of getting this info from the platform
+> plugs into the base code (patch 2).
+> 
+> If users don't want this behavior they can turn it off on kernel command
+> line.
+> 
+> If the platform doesn't know mitigations are needed but user wants to turn
+> them on anyway they can turn it on kernel command line.
 
-This resulted in an incorrect clock rate when attempting to playback
-audio, since the AUDIO_PLL2 wasn't set any longer. Fix this by
-setting the AUDIO_PLL2 rate inside the SAI3 node since it's the SAI3
-that needs it.
+That's all fine, I don't object to that at all.  But bus/device-specific
+stuff should NOT be in drivers/base/ if at all possible (yes, we do have
+some exceptions with hypervisor.c and memory and cpu stuff) but for a
+frequency thing like this, why can't it live with the other
+wifi/frequency code in drivers/net/wireless/?
 
-Fixes: 16c984524862 ("arm64: dts: imx8mp: don't initialize audio clocks from CCM node")
-Signed-off-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
----
-V3:  Update commit message wording.  No functional change
+In other words, what's the benefit to having me be the maintainer of
+this, someone who knows nothing about this subsystem, other than you
+passing off that work to me?  :)
 
-V2:  No change
+thanks,
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-index 06e91297fb16..acd265d8b58e 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-@@ -381,9 +381,10 @@ &pcie_phy {
- &sai3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sai3>;
--	assigned-clocks = <&clk IMX8MP_CLK_SAI3>;
-+	assigned-clocks = <&clk IMX8MP_CLK_SAI3>,
-+			  <&clk IMX8MP_AUDIO_PLL2> ;
- 	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL2_OUT>;
--	assigned-clock-rates = <12288000>;
-+	assigned-clock-rates = <12288000>, <361267200>;
- 	fsl,sai-mclk-direction-output;
- 	status = "okay";
- };
--- 
-2.39.2
-
+greg k-h
