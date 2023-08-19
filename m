@@ -2,111 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D538781A86
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 18:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A36781A88
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 18:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbjHSQZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 12:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
+        id S233975AbjHSQ2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 12:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbjHSQZs (ORCPT
+        with ESMTP id S233964AbjHSQ2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 12:25:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEAA12748;
-        Sat, 19 Aug 2023 09:25:45 -0700 (PDT)
+        Sat, 19 Aug 2023 12:28:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A3849F2;
+        Sat, 19 Aug 2023 09:28:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5A4ED61D26;
-        Sat, 19 Aug 2023 16:25:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD61C433C8;
-        Sat, 19 Aug 2023 16:25:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D1ABE60A52;
+        Sat, 19 Aug 2023 16:28:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9BEC433C7;
+        Sat, 19 Aug 2023 16:28:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692462344;
-        bh=Gm54xopY5U1g+dtLdCK5BXvhK5nJLYt1xvvTvw4Ipn0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=T6GsYfmlM2iBvguNjtaNVEn5Yfpe+DOYTsuVXVxaORC11cv1yKBJRbUmjgoFq0hH2
-         IP3h6MQ3AWE0RREdvLTdNk3vIN2xwCjSAW4mFrbB1N913sJoWsMPA8sHMoIivoPgFW
-         N95ys0niXO9pPKSvWzCM1EJ28Yjd4gK6ein72TNAIe0EiIHGlq8ONX/BSZ6JbmBWbc
-         aJW1ZeOJi8nGsrGgAWFUPzum08ulHkNO/X09PvmX5f/I+24m/qx+/SVl3aBdJYQBmZ
-         H6l5XkWy2OPV1ZDByOKieYjp14fehrhWO+NuOGHE2HopHVbeuoNV7nLDDaM4GlvXly
-         erBEyGNLS670Q==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH v2] selftests/tpm2: tpm2-parse-error.py
-Date:   Sat, 19 Aug 2023 16:25:37 +0000
-Message-Id: <20230819162540.5717-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        s=k20201202; t=1692462519;
+        bh=kNsFAGrMZEVhMwKSLZtPv/3+FOkb3JmUkm8Ympki2Tc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uHkmxVhYhVGblLdP3ZKETzRNmMDHPCi0bL+2wih0/dvcqZMZ6VnoNXJbZiuBmSdHw
+         t/fGSfc/5Uh+fe23yj/opV6GL7+HWrNQ9C4xwNRYC3Wj/fqGz3QA957G1smzOkY+Ly
+         rijct7e+QBR1ld6zlB7RajU4n2rVdGZG5K4FPbPZU03AVBa39WRUOVfw0rJ//it9oN
+         hqFrGm1WeK20Q2jS1rwMsfL/h2wtlEyMv02uZZ4F/CXHHZH//DisOUQRuWV3LWFzHI
+         /gr8MpqK5c/6JvufGYIf2xInb7xvjLUQ5VR8wW5eaq6cLuQzJytZ/bYseylIQg4Asw
+         CwrDErwfjSTKA==
+Date:   Sat, 19 Aug 2023 18:28:35 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.5-rc7
+Message-ID: <ZODtsyZ2g1EX8C0X@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="a4zpuF0QjFstCsq9"
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a script to quickly parse any TPM error code. This can be useful, e.g.
-when parsing klog output when TPM fails in an internal kernel operation.
 
-Example transcript:
+--a4zpuF0QjFstCsq9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ python3 tpm2-parse-error.py 0x1C4
-TPM_RC_VALUE: rc=0x000001c4
+The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-v2:
-Makefile: s/tpm2-parse-error/tpm2-parse-error.py/
----
- tools/testing/selftests/tpm2/Makefile           |  2 +-
- .../testing/selftests/tpm2/tpm2-parse-error.py  | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/tpm2/tpm2-parse-error.py
+  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
 
-diff --git a/tools/testing/selftests/tpm2/Makefile b/tools/testing/selftests/tpm2/Makefile
-index a9bf9459fb25..dbff77612785 100644
---- a/tools/testing/selftests/tpm2/Makefile
-+++ b/tools/testing/selftests/tpm2/Makefile
-@@ -2,4 +2,4 @@
- include ../lib.mk
- 
- TEST_PROGS := test_smoke.sh test_space.sh test_async.sh
--TEST_PROGS_EXTENDED := tpm2.py tpm2_tests.py
-+TEST_PROGS_EXTENDED := tpm2.py tpm2_tests.py tpm2-parse-error.py
-diff --git a/tools/testing/selftests/tpm2/tpm2-parse-error.py b/tools/testing/selftests/tpm2/tpm2-parse-error.py
-new file mode 100644
-index 000000000000..8eed72681af1
---- /dev/null
-+++ b/tools/testing/selftests/tpm2/tpm2-parse-error.py
-@@ -0,0 +1,17 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
-+
-+from argparse import ArgumentParser
-+from argparse import FileType
-+import os
-+import sys
-+import tpm2
-+
-+def main():
-+    parser = ArgumentParser(description='Parse a TPM error code')
-+    parser.add_argument('rc', type=(lambda x: int(x, 0)))
-+    args = parser.parse_args()
-+    print(str(tpm2.ProtocolError(None, args.rc)))
-+
-+if __name__ == '__main__':
-+    main()
--- 
-2.39.2
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-=
+6.5-rc7
+
+for you to fetch changes up to 4caf4cb1eaed469742ef719f2cc024b1ec3fa9e6:
+
+  i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue (2023-08-14 18:17:13=
+ +0200)
+
+----------------------------------------------------------------
+Usual set of driver fixes. A bit more than usual because I was
+unavailable for a while.
+
+----------------------------------------------------------------
+Carlos Song (1):
+      i2c: imx-lpi2c: return -EINVAL when i2c peripheral clk doesn't work
+
+Chengfeng Ye (1):
+      i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue
+
+Dan Carpenter (1):
+      i2c: sun6i-p2wi: Fix an error message in probe()
+
+Parker Newman (1):
+      i2c: tegra: Fix i2c-tegra DMA config option processing
+
+Quan Nguyen (1):
+      i2c: designware: Correct length byte validation logic
+
+Tam Nguyen (1):
+      i2c: designware: Handle invalid SMBus block data response length value
+
+Thierry Reding (1):
+      i2c: tegra: Fix failure during probe deferral cleanup
+
+Uwe Kleine-K=C3=B6nig (1):
+      i2c: Update documentation to use .probe() again
+
+Yicong Yang (1):
+      i2c: hisi: Only handle the interrupt of the driver's transfer
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Akhil R (1):
+      (Test) i2c: tegra: Fix failure during probe deferral cleanup
+
+Andi Shyti (8):
+      (Rev.) i2c: bcm-iproc: Fix bcm_iproc_i2c_isr deadlock issue
+      (Rev.) i2c: Update documentation to use .probe() again
+      (Rev.) i2c: sun6i-p2wi: Fix an error message in probe()
+      (Rev.) i2c: hisi: Only handle the interrupt of the driver's transfer
+      (Rev.) i2c: tegra: Fix failure during probe deferral cleanup
+      (Rev.) i2c: designware: Handle invalid SMBus block data response leng=
+th value
+      (Rev.) i2c: designware: Correct length byte validation logic
+      (Rev.) i2c: imx-lpi2c: return -EINVAL when i2c peripheral clk doesn't=
+ work
+
+Javier Martinez Canillas (1):
+      (Rev.) i2c: Update documentation to use .probe() again
+
+Jean Delvare (1):
+      (Rev.) i2c: Update documentation to use .probe() again
+
+ Documentation/i2c/writing-clients.rst      |  2 +-
+ drivers/i2c/busses/i2c-bcm-iproc.c         | 11 +++++++----
+ drivers/i2c/busses/i2c-designware-master.c | 16 ++++++++++++++--
+ drivers/i2c/busses/i2c-hisi.c              |  8 ++++++++
+ drivers/i2c/busses/i2c-imx-lpi2c.c         |  3 +++
+ drivers/i2c/busses/i2c-sun6i-p2wi.c        |  3 ++-
+ drivers/i2c/busses/i2c-tegra.c             |  3 ++-
+ 7 files changed, 37 insertions(+), 9 deletions(-)
+
+--a4zpuF0QjFstCsq9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmTg7bMACgkQFA3kzBSg
+KbaTgA/9HSHLZ9ifxYmz3krFPKWEY/wt00yoyniiHTtcs7D/wZS1ZQmXzzgj4Ag5
+SreHZtdBakgojri05pyWP0hCGRZ6ms0DgMojpoJlcbxqKmYE3E5RUvG5jo42sy3o
+QTQ+qX0cekpDvp3xm1fzx+Zf40YXKuRP14rRHEgdpgvsUS0yEhVxi+DDIe2ZPx2M
+vQHdlvQrf19neHDPkDPWRPOBs95Ehpuv0QpdPih9gK+gOVdUek7QqluWE97zMCL+
+zTWqusPjUyu3vHuD+Kee7YcVO35lQBoRcZE9otEM3EoycKA2wNuM5y604snFwgZE
+SUKIaH8FNx80xyor9wpCiTQnUvtdAZq3K4UN1BYNF/ePpU5OF+H8qA49no3CW12s
+nnyxkqQT+ZZ52+MdXaTCqpLo6+fG1zAx600xDCUAWC2sId05gIuWuygtdgkZ5Czb
+SKRA683RZiEyhU0mdchcqB7FB1DGdPmOG1wfZfLv1ElzsRUYILDGeA0QBC63JV/d
+xCUSE0clPhi4Igg45QSfU+77a4haWTYVX94c8Lkl325d5XcxEYq0MXG02EqjkZrZ
+dDAqeYmwMY3D60XvJaZHOUtvlTRKbTcT5oT0aHV+Nzpq4gYuKptbHGSK9aSZqAem
+HPZ4mDJ0payB9hbdVrX2kvZxP1GdCZDZPLotfJDCWvBNRGrQVcs=
+=BuR2
+-----END PGP SIGNATURE-----
+
+--a4zpuF0QjFstCsq9--
