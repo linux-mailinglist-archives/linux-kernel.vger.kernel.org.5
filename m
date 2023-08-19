@@ -2,195 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 364B87818C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F40BC7818C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 12:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjHSKbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 06:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39930 "EHLO
+        id S229657AbjHSKbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 06:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjHSKbb (ORCPT
+        with ESMTP id S229647AbjHSKbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 06:31:31 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2040.outbound.protection.outlook.com [40.107.12.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4BD12DD24;
-        Sat, 19 Aug 2023 01:54:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PBmENzGTcUVp0G+MH+ocGhK7ySmF2R0a4d1+59DRKz59CZTWRU8vfUMD/rWSPEoFxfCsdgge9mLqiliIzYv8daZ7ZP3MPXMcBKScVxEipwpNJNt49Ga0sj+DGf7cr4ifeK8PZzTktxa1u+InUjNIXC9JqAyQpA2E0xEiNlwpgrDJGO1W6/Xbn7GruL//wNATiXxidwTGntZ+bCfTSHBF9BxrUABnSDTOy3QIOa1rIaW+x6FgJxP7436yqOHzCp+WlBtTFlBf9lHv/4fHrhEd3V69+25pFpLwganQMBiler3jQ2mP3t9K280GVuWKaZsGki8epiAlFVac0dDqp/m0cA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RwUe6Wo8Ua5nVbNH9rxeKLQvUgz0aX/os4ro/0ncXIE=;
- b=hHxjLWd6T8C09KV+4OoEN5TmlAAhfZBqLVpyxPOqGySbUox59llOnOAKyyBQXZJDQYyAjXZKpxJBz7KmySaOTuSEar613AQKaYusx48f+FYMRV5bwT6ZvnBz+tMCJWF9cMT0ysDSQ9bhMBohAafdDcPNodh9i9jeUcXmZzSS7ZcSe+hE4ObGU3268ZhONwixeEw6bHB+Fa5fschlEyGfkqsPyDOhEm7T5UadIdTB8Tz8hgAciBY7d1hdNtP9WOioK5jBs2r4FFb/MZXfHnOXBQGLxXbU2tozUqoamziuc5ZjLXb4ttK9a99+tanrCiRzofln1cgsCMf8FkZqqsXmog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RwUe6Wo8Ua5nVbNH9rxeKLQvUgz0aX/os4ro/0ncXIE=;
- b=KPgo4roDomgrxWdrgqY4K74PmTVx5YtgDWWCZSRtheFFRq2aTg+1AVQDky4C84aD2kwj6j67xx3Uztq5x+wK1AUkG6IRkvhwUBScazc3JGEoxuj+08k9zusEYKnrVskt+M/Ow/M/pkiYSLnT1QdrAplteeh2xZQf573/lDBcjDKEd434FcwygMbR5y/ddPmaHOgraViop1tGLjnv3/PlP8zjZbNdFnf7AvJoPXgjmQvOGYTiM/h5erwjNahEQJzSyx/9JXINCVZCnfAAvW2YhmtnQvg1u2AUgKOqZWReTq6PorN7LY2rlCEBBi/PQ1Cte0oyePVIvSJBamSrnrD6/Q==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PR1P264MB1710.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1b6::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Sat, 19 Aug
- 2023 08:53:25 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6699.020; Sat, 19 Aug 2023
- 08:53:25 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Jesse T <mr.bossman075@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        "wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Brian Cain <bcain@quicinc.com>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] treewide: drop CONFIG_EMBEDDED
-Thread-Topic: [PATCH] treewide: drop CONFIG_EMBEDDED
-Thread-Index: AQHZ0JNUtziEhhHG30OKXvCX3Mslja/t0OeAgALpygCAAEAXgIAAWUmA
-Date:   Sat, 19 Aug 2023 08:53:25 +0000
-Message-ID: <c96756ed-8714-6e67-c6b1-0614f57d41d0@csgroup.eu>
-References: <38e1a01b-1e8b-7c66-bafc-fc5861f08da9@gmail.com>
- <86e329b1-c8d7-47bf-8be8-3326daf74eb5@infradead.org>
- <78a802c5-3f0d-e199-d974-e586c00180eb@infradead.org>
- <CAJFTR8T-Fdu_aKapP+Lb6pLYo_ykXwXw6rFZNGR5=WKU1QwUPQ@mail.gmail.com>
-In-Reply-To: <CAJFTR8T-Fdu_aKapP+Lb6pLYo_ykXwXw6rFZNGR5=WKU1QwUPQ@mail.gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR1P264MB1710:EE_
-x-ms-office365-filtering-correlation-id: 25a0a489-0281-43c0-5f15-08dba091bfbc
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2EcHqq81u8IuWvQFw6rUWkmaUTXy3cVON9a2a66acd2sQPPTlvBKI8BRS1eET+eHTAH4OTUDjB2lZ8pPDrHmCQ0DrqP3nC5msHJI7VQxdtCXX0sepN4o+qBV8hRDfviSdlowA9+eF+7c7sT1CZRt/WRvfuOldfK/rbcbijNdXwEBlDHFwtmapimoMRGbGR+/Dx1a4Gc4KGfXvMZ1MUdV6WxfukeoAhXxc/mwGsy1dg5AQ7keUlWqdLKNNcbFAjK5WVeHzJt+Ccooevx2zdtNlAck0gbU0TuV/Ufy6biTHrtU6bbEg0JLUfGMuy+TqLg3m/NzHkWU+hbkeoiX4uwWB2X6RkmKcswB/M1Kwv6JdEE03fiVuQA64NBWYFx2DEGTaJXD/X9yJxq4z5bBI6LgxphoAct8q95T9jqRWFyh3lOUdYjqwzI4tb9cvmcBsGnQ4w57QeNCMJN1VU1j2VKyATmmTxcVg8pxR12pxajDkASd2b9aS3l+depKB6BgJ7GE04JXWwGKIzAU9N+4WNfKjzdj30EzwDxbYz9I1K4WJEK/+RXzGY1Sg5qpaF/UFohpP6bRukCYhG0L7WHPKLJ74QSL//vwWAUNXbYrtSU6J9X71Jg1e7mtTBonLsPmKENDXXIbNvT6TgnanMesL6MbNYdEQ0qvr6UGxWI2zUcSwBc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39850400004)(366004)(396003)(376002)(186009)(1800799009)(451199024)(6486002)(71200400001)(38070700005)(38100700002)(6506007)(6512007)(122000001)(31696002)(66899024)(83380400001)(26005)(66574015)(86362001)(36756003)(2616005)(66476007)(316002)(2906002)(66556008)(64756008)(54906003)(66446008)(66946007)(41300700001)(91956017)(110136005)(76116006)(44832011)(5660300002)(7406005)(31686004)(8676002)(8936002)(478600001)(4326008)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Nk9rejVKMktGaExuYkQ0VzJDaTBlamFBRmF1VGRCaVQ3KyszbFJON3FaQUxw?=
- =?utf-8?B?dHZoeHJFY1BGT0ZOMTlpcXp4SWdCZGJqM1V0VmhFU2ZQR01QZDFyWWV6WUJ1?=
- =?utf-8?B?RHE3dWpTZzB0WkN5MEtGS3hkSnVxVkdtZkpOdlJYYlo0U3ZLMzFWdW5iSita?=
- =?utf-8?B?bzdyNC9pQ0FTZTNLWWVFUE5tK3VQSWdMY0JNY0N0b3R2TVcxNVFUd1IyTUFH?=
- =?utf-8?B?ZWRsSFJ3M1FoS0EvYmJoTmZnY3NWbTYrZ0dCVXBxOFBGRldQYzRHZ0ZGTHRu?=
- =?utf-8?B?ZVA1T1U3WVVmQzR4YnluZXAzcGdjRzhXY25qY3o4Y1JsdTdxcnJuZk83SGw1?=
- =?utf-8?B?WHVtMnk4TjNsSkZxWlZjeFo5MHNyYm1zcWptWEdKWXlqMjdnZERjenBraENJ?=
- =?utf-8?B?dWhIMjJZU1RmWmFmdGl6eW96QXF0SzJpMHR5SlZPRW1rSHFiSVI5cXlnWktU?=
- =?utf-8?B?bFMyYUpNcGNEd01DZXlVazFkSWpTaUx6azR4WVdUY1lQOHJOSlJvUmhTSFFt?=
- =?utf-8?B?bDhyMXBsOFpQREJnRWgrbXJLU3RzU2xVMTFweUhKTTdDV2NrbzJWSU9iRk5r?=
- =?utf-8?B?T2tYSWZocTRqUHZtV0VkUmdidFBML3FJL2NSdEtXQ1BRRk1SREljUXZ5TC9H?=
- =?utf-8?B?cEJDaVVod1hvb3VvRC96YzJlU0FxRmpTOGwwTzFlSWRxc1piUStKeUlaVjVo?=
- =?utf-8?B?elNEOWNKYkVHNVVYeFhFYUpzZzlwK1cweDlJaXY5SEczODRNSXVFUHNqWlEz?=
- =?utf-8?B?dFBkM0tONmMrdWtwUDFaUjlOSUpjTmVrYjljMy9CcjN2S1ZFMkVHNFhPSGN2?=
- =?utf-8?B?MUdBZGw1bzRpejJnVXlWVGhOdXBXS09sSnlrTGdXaWROVUJnQ3ppa2ZVZ3pn?=
- =?utf-8?B?UlY1RUJXOCt1clpPYjJaam81VGQ1UUNReWRLWTcreE5zNDlRbmxBYzliVTJU?=
- =?utf-8?B?ZStvdEprcUZaWGsrZ1lTVzNXeFc3aDNKcW5veGlOcjdrVFl6SERzQUIwL21y?=
- =?utf-8?B?N1k0WE1tNmY2OFNBMGVaV3Z0TDhzYWxtL2dDWGUrdUZBemFqR29qU1FyYldv?=
- =?utf-8?B?U1JFT2xlbUxlOHdrSktXeitWMTIzNFpGZmpNODNRSElmaXo4cWplN3NIcngy?=
- =?utf-8?B?SWxYaVVCVnJhN3R0Qkh1TjJYMlk0eDlaeXlXRTlQME5IWGlCQ2ZKMTI5dXFq?=
- =?utf-8?B?NW1HT3RDNi9iYnJWb2dYZmNhaWNUYmhDdndxV2MreVhTZ3BYNSs5eHVSV0FG?=
- =?utf-8?B?WVZjSzV0dlJUYW0rM2tiQnV1aGUrOWJFQkpXR2RjRzFpQXdMV1Y1dWhyMVZm?=
- =?utf-8?B?dU90RDlnV1NCc20yd2kvVlh6bTdoQXJEb0FsT1F2U1puNjIxeGpENFZOVjFY?=
- =?utf-8?B?T2dndUg2cE1EYnBUWDNZeEI4R1MxMm5PRVhLZEttUm03R1pPM0tYOThqVWhV?=
- =?utf-8?B?czB3aDZkb2g3MWllRDhacE9mYUZVbk1hZFFhclV1RjRqRkRwQmQ2UnhWNFhB?=
- =?utf-8?B?MkE4d05ScW1SQkFuZ1lvcWtkLzJ1YnlwMDVMQjJYQjRVME9XaFNEUzZUbkFI?=
- =?utf-8?B?bGpyOVNXUFN5TUdJRFRkZ2Q1d0ZqYVRrdlAyUHo1cDFUYUwybzlhN241T1BI?=
- =?utf-8?B?czc5cXNTODgyV3hlMTBlbDB1dHNLdHI2dEJZbGdLc2puVTc1OFJ1T0JOUHQw?=
- =?utf-8?B?OWFsVmlCMW5zbGVaazdMTzRBekw2eWo2K0pCYzJxRWRHUTlLWjNUYVI4UDR5?=
- =?utf-8?B?Z0JDUGI3a1RkOXo4aGVhaFZYQnRqaGJqcTRnKzlwdHF2YmVvVlpROVF2SEht?=
- =?utf-8?B?N1BhWHlOV1VHU2xTUStCNXFBSG1KV2JwQkord3E3ZTU4RktRdGdZZEd2M2N5?=
- =?utf-8?B?YVQ4bDlKZUhlZktHNTNyV3Z6OGlJU3g4M3BKVmdTZmVZZXdtTExsbEU2Smsv?=
- =?utf-8?B?bmU4bXhrZXFVUG5pSTlIZ1plVXM1cWRnR3J6amgrb1hXc0xtMmZYY2NRWHlF?=
- =?utf-8?B?UW55aWo0QzYxUytyZ21MTXVVeXh6S2k0blE4UFozQlF2eDBDOXp1VFI1aG9u?=
- =?utf-8?B?L3VhY0VwQ3lRaUMwL091blNCVzh5UWF5YmJudzhsSWJoY2hHeHJSSDhOZktW?=
- =?utf-8?B?VHhIK3FZVVR0R0NFVklzL3JWbGhsNndiMVduODBTMnNBUmlNdWNrUTV1Rytr?=
- =?utf-8?B?a0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C60E53EA9E3A6E4FA8599A24A5AAC312@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Sat, 19 Aug 2023 06:31:33 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C85E12CF79;
+        Sat, 19 Aug 2023 01:54:46 -0700 (PDT)
+Received: from loongson.cn (unknown [112.20.109.102])
+        by gateway (Coremail) with SMTP id _____8CxyOg0g+BktxsaAA--.17815S3;
+        Sat, 19 Aug 2023 16:54:12 +0800 (CST)
+Received: from [192.168.100.8] (unknown [112.20.109.102])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbSMyg+BkATxeAA--.50688S3;
+        Sat, 19 Aug 2023 16:54:11 +0800 (CST)
+Message-ID: <28d06625-221c-4ceb-ae4b-77994088c184@loongson.cn>
+Date:   Sat, 19 Aug 2023 16:54:10 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 25a0a489-0281-43c0-5f15-08dba091bfbc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2023 08:53:25.0309
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PO4+Et7rgyWy8GmTU+GNthI65EJODyACKs+rqPovKwH1kqenrXAXFKFMoOrvURBrOyOeiLqWOO/OcWCOqgLjqUz/ojwjoUgArp6vl0pm+TI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB1710
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs/mm/zh_CN: a few native ZH revisements
+To:     Liang Li <liliang6@email.cn>, alexs@kernel.org, corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230818093741.359419-1-liliang6@email.cn>
+Content-Language: en-US
+From:   Yanteng Si <siyanteng@loongson.cn>
+In-Reply-To: <20230818093741.359419-1-liliang6@email.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxbSMyg+BkATxeAA--.50688S3
+X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj9fXoW3KFy7XFy8JrWfur45Aw15WrX_yoW8Ww47Zo
+        WfCanxCr4kZr45Wa40qayDJFy7ur4vkFs3CwsrGrnFvr98Xr1rCr4kX347AF1qkr98CFn8
+        KF1xWa1rC3ZFkasxl-sFpf9Il3svdjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8wcxFpf
+        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+        UjIYCTnIWjp_UUU5R7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUGVWUXwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+        Y2AK021l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCkxlIDE5LzA4LzIwMjMgw6AgMDU6MzMsIEplc3NlIFQgYSDDqWNyaXTCoDoNCj4+Pg0K
-Pj4+PiBTaG91bGQgdGhlcmUgYmUgYSB3YXJuaW5nIGhlcmUgdG8gdXBkYXRlIGNoYW5nZSBpdCBp
-bnN0ZWFkIG9mIHJlbW92YWw/DQo+Pj4NCj4+PiBrY29uZmlnIGRvZXNuJ3QgaGF2ZSBhIHdhcm5p
-bmcgbWVjaGFuaXNtIEFGQUlLLg0KPj4+IERvIHlvdSBoYXZlIGFuIGlkZWEgb2YgaG93IHRoaXMg
-d291bGQgd29yaz8NCj4gDQo+IE5vLCB1bmZvcnR1bmF0ZWx5LiBBcyB5b3Ugc2FpZCB3aXRob3V0
-IGEgd2FybmluZyBpdCB3b3VsZCBiZSBvdmVybG9va2VkIHNvDQo+IGEgY2hhbmdlIHdvdWxkIG5v
-dCBiZSBuZWNlc3NhcnkuDQo+IA0KPiBBIHBvc3NpYmxlIHNvbHV0aW9uIGlzIHRvIGNoZWNrIGlu
-IGEgaGVhZGVyIGZpbGUgd2l0aDoNCj4gDQo+ICNpZmRlZiBDT05GSUdfRU1CRURERUQNCj4gI3dh
-cm5pbmcgIkNPTkZJR19FTUJFRERFRCBoYXMgY2hhbmdlZCB0byBDT05GSUdfRVhQRVJUIg0KPiAj
-ZW5kaWYNCj4gDQo+IERvZXMgYW55b25lIGVsc2UgaGF2ZSBhbiBvcGluaW9uIG9uIHRoaXM/DQoN
-Ck15IG9waW5pb24gaXMgdGhhdCBoYXMgaGFwcGVuIHNldmVyYWwgdGltZXMgaW4gdGhlIHBhc3Qg
-YW5kIHdpbGwgaGFwcGVuIA0KYWdhaW4uIEl0IGlzIG5vdCBhIGJpZyBkZWFsLCB3aG9ldmVyIHVw
-ZGF0ZXMgdG8gYSBuZXcga2VybmVsIHdpbGwgbWFrZSBhIA0Kc2F2ZWRlZmNvbmZpZyBhbmQgY29t
-cGFyZSB3aXRoIHByZXZpb3VzIGRlZmNvbmZpZyBhbmQgc2VlIHdoYXQgaGFzIA0KY2hhbmdlZC4g
-T25jZSB5b3Ugc2VlIHRoYXQgQ09ORklHX0VNQkVEREVEIGlzIGRpc2FwcGVhcmluZyB5b3UgbG9v
-ayBhdCANCmtlcm5lbCBoaXN0b3J5IHRvIGZpbmQgb3V0IHdoeSBDT05GSUdfRU1CRURERUQgZGlz
-YXBwZWFycywgYW5kIHlvdSANCnVuZGVyc3RhbmQgZnJvbSB0aGUgY29tbWl0IG1lc3NhZ2UgdGhh
-dCB5b3UgaGF2ZSB0byBzZWxlY3QgQ09ORklHX0VYUEVSVCANCmluc3RlYWQuDQoNCkEgY291cGxl
-IGV4YW1wbGVzIEkgaGF2ZSBpbiBtaW5kIGZyb20gdGhlIHBhc3Q6DQotIENPTkZJR19GT1JDRV9N
-QVhfWk9ORU9SREVSIGJlY2FtZSBDT05GSUdfQVJDSF9GT1JDRV9NQVhfT1JERVINCi0gQ09ORklH
-X01URF9OQU5EIGJlY2FtZSBDT05GSUdfTVREX1JBV19OQU5EDQoNCj4gU2luY2Uga2NvbmZpZyBk
-b2Vzbid0IGhhdmUgYSB3YXJuaW5nIG1lY2hhbmlzbSB0aGUgcGF0Y2ggc2VlbXMgZmluZSBhcyBp
-cy4NCg0KU28geWVzIHRoZSBwYXRjaCBpcyBmaW5lIGFzIGlzIElNSE8uDQoNCkNocmlzdG9waGUN
-Cg==
+
+在 2023/8/18 17:37, Liang Li 写道:
+> Revise some ZH sentences to be more zh-native and try to add blank
+> space between English words and Chinese chars.
+>
+> Signed-off-by: Liang Li <liliang6@email.cn>
+> ---
+>   .../translations/zh_CN/mm/memory-model.rst    | 142 +++++++++---------
+>   1 file changed, 75 insertions(+), 67 deletions(-)
+>
+> diff --git a/Documentation/translations/zh_CN/mm/memory-model.rst b/Documentation/translations/zh_CN/mm/memory-model.rst
+> index 77ec149a970c..a93eaacc286b 100644
+> --- a/Documentation/translations/zh_CN/mm/memory-model.rst
+> +++ b/Documentation/translations/zh_CN/mm/memory-model.rst
+> @@ -13,62 +13,64 @@
+>   物理内存模型
+>   ============
+>   
+> -系统中的物理内存可以用不同的方式进行寻址。最简单的情况是，物理内存从地址0开
+> -始，跨越一个连续的范围，直到最大的地址。然而，这个范围可能包含CPU无法访问的
+> -小孔隙。那么，在完全不同的地址可能有几个连续的范围。而且，别忘了NUMA，即不
+> -同的内存库连接到不同的CPU。
+> +系统中的物理内存可以用不同的方式进行寻址。最简单的情况是，物理内存从地址 0 开
+> +始，跨越一个连续的范围，直到最大的物理内存地址。然而，这个地址范围中可能包含
+> +CPU 无法访问的小孔隙。那么，物理内存的地址范围可能呈现为几个不同的连续地址范
+> +围。而且，还有 NUMA，即不同的内存器件连接到不同的 CPU 这种情况。
+OK.
+>   
+> -Linux使用两种内存模型中的一种对这种多样性进行抽象。FLATMEM和SPARSEM。每
+> -个架构都定义了它所支持的内存模型，默认的内存模型是什么，以及是否有可能手动
+> -覆盖该默认值。
+> +Linux 使用两种内存模型中的一种对这种多样性进行抽象：FLATMEM 和 SPARSEMEM。
+> +每个 Linux 支持的架构都定义了架构所支持的内存模型；默认的内存模型，以及是否
+> +有可能手动覆盖该默认值。
+OK.
+>   
+> -所有的内存模型都使用排列在一个或多个数组中的 `struct page` 来跟踪物理页
+> -帧的状态。
+> +所有的内存模型都使用排列在一个或多个数组中的 `struct page` 来跟踪物理页框的
+
+You need to provide sufficient materials to support your changes.
+
+
+Translated as 页帧 in CSAPP, this is a textbook that many people use. I am 
+not emphasizing
+
+that this translation must be correct, but that the document should be 
+comfortable for most
+
+people to read. :)
+
+> +状态。
+>   
+>   无论选择哪种内存模型，物理页框号（PFN）和相应的 `struct page` 之间都存
+>   在一对一的映射关系。
+>   
+>   每个内存模型都定义了 :c:func:`pfn_to_page` 和 :c:func:`page_to_pfn`
+> -帮助函数，允许从PFN到 `struct page` 的转换，反之亦然。
+> +帮助函数，实现 PFN 和 `struct page` 之间的双向转换。
+OK.
+>   
+>   FLATMEM
+>   =======
+>   
+> -最简单的内存模型是FLATMEM。这个模型适用于非NUMA系统的连续或大部分连续的
+> +最简单的内存模型是 FLATMEM。这个模型适用于非 NUMA 系统的连续或大部分连续的
+>   物理内存。
+>   
+> -在FLATMEM内存模型中，有一个全局的 `mem_map` 数组来映射整个物理内存。对
+> -于大多数架构，孔隙在 `mem_map` 数组中都有条目。与孔洞相对应的 `struct page`
+> -对象从未被完全初始化。
+> +在 FLATMEM 内存模型中，有一个全局的 `mem_map` 数组来映射整个物理内存。对
+> +于大多数架构，如果存在‘内存空洞’，则‘空洞’在 `mem_map` 数组中都有条目。与
+> +空洞相对应的 `struct page` 对象不会被完全初始化。
+Great!
+>   
+> -为了分配 `mem_map` 数组，架构特定的设置代码应该调用free_area_init()函数。
+> -然而，在调用memblock_free_all()函数之前，映射数组是不能使用的，该函数
+> -将所有的内存交给页分配器。
+> +为了分配 `mem_map` 数组，架构特定的初始化代码(mem_init)应该调用
+> +free_area_init() 函数。并且，在 memblock_free_all() 函数被调用之前，mem_map
+> +数组是不能使用的。在 memblock_free_all 函数中，将所有的内存交给伙伴分配器。
+>   
+> -一个架构可能会释放 `mem_map` 数组中不包括实际物理页的部分。在这种情况下，特
+> -定架构的 :c:func:`pfn_valid` 实现应该考虑到 `mem_map` 中的孔隙。
+> +特定架构的实现可能会释放 `mem_map` 数组中不包括实际物理页的部分。此时，架构
+> +特定的 :c:func:`pfn_valid` 实现应该考虑到识别 `mem_map` 中存在的‘空洞’并恰当
+
+在的 ‘空洞’ 并恰
+
+> +的处理之。
+>   
+> -使用FLATMEM，PFN和 `struct page` 之间的转换是直接的。 `PFN - ARCH_PFN_OFFSET`
+> -是 `mem_map` 数组的一个索引。
+> -
+> -`ARCH_PFN_OFFSET` 定义了物理内存起始地址不同于0的系统的第一个页框号。
+> +使用 FLATMEM 模型，PFN 和 `struct page` 之间的转换很简便：
+> +`PFN - ARCH_PFN_OFFSET` 可以直接作为 `mem_map` 数组的索引使用。
+> +架构特定的定义：
+> +`ARCH_PFN_OFFSET` 定义了物理内存起始地址对应的第一个页框号。当然如果物理内存
+> +的起始地址是 0 那么这个宏可能不会定义。
+Content that does not exist in the original document can not be 
+subjectively translated. Either as a comment or modify the English 
+document first.
+>   
+>   SPARSEMEM
+>   =========
+>   
+> -SPARSEMEM是Linux中最通用的内存模型，它是唯一支持若干高级功能的内存模型，
+> -如物理内存的热插拔、非易失性内存设备的替代内存图和较大系统的内存图的延迟
+> -初始化。
+> +SPARSEMEM 是 Linux 内核中最通用的内存模型，若干高级功能如物理内存的热插拔、非
+> +易失性内存设备的替代内存图以及大系统的内存图延迟初始化等都只基于 SPARSEMEM 内
+> +存模型实现。
+OK.
+>   
+> -SPARSEMEM模型将物理内存显示为一个部分的集合。一个区段用mem_section结构
+> +SPARSEMEM 模型将物理内存显式分为内存区段的集合。内存区段用 mem_section 结构
+>   体表示，它包含 `section_mem_map` ，从逻辑上讲，它是一个指向 `struct page`
+> -阵列的指针。然而，它被存储在一些其他的magic中，以帮助分区管理。区段的大小
+> -和最大区段数是使用 `SECTION_SIZE_BITS` 和 `MAX_PHYSMEM_BITS` 常量
+> -来指定的，这两个常量是由每个支持SPARSEMEM的架构定义的。 `MAX_PHYSMEM_BITS`
+> -是一个架构所支持的物理地址的实际宽度，而 `SECTION_SIZE_BITS` 是一个任
+> -意的值。
+> +阵列的指针。然而，在这个 section_mem_map 中还编码了其他用以帮助分区管理的数值。
+> +区段的大小和最大区段数使用 `SECTION_SIZE_BITS` 和 `MAX_PHYSMEM_BITS` 常量
+> +来指定，这两个常量由每个支持 SPARSEMEM 的架构定义。 `MAX_PHYSMEM_BITS`
+> +是特定架构所支持的物理地址的实际宽度，而 `SECTION_SIZE_BITS` 是交由特定架构自由
+> +发挥。
+OK,
+>   
+> -最大的段数表示为 `NR_MEM_SECTIONS` ，定义为
+> +最大的段数表示为 `NR_MEM_SECTIONS` ，定义为:
+Here you need to check the HTML, and if it's good, write a patch and add 
+a colon to the English document as well.
+>   
+>   .. math::
+>   
+> @@ -83,53 +85,59 @@ SPARSEMEM模型将物理内存显示为一个部分的集合。一个区段用me
+>     每一行包含价值 `PAGE_SIZE` 的 `mem_section` 对象，行数的计算是为了适应所有的
+>     内存区。
+>   
+> -架构设置代码应该调用sparse_init()来初始化内存区和内存映射。
+> +架构特定的设置代码需要调用 sparse_init() 来初始化内存区和内存映射。
+OK.
+>   
+> -通过SPARSEMEM，有两种可能的方式将PFN转换为相应的 `struct page` --"classic sparse"和
+> - "sparse vmemmap"。选择是在构建时进行的，它由 `CONFIG_SPARSEMEM_VMEMMAP` 的
+> - 值决定。
+> +基于 SPARSEMEM 模型，有两种可能的方式将 PFN 转换为相应的 `struct page` --
+> +"classic sparse" 和 "sparse vmemmap"。具体选择哪一种由内核配置选项
+> +`CONFIG_SPARSEMEM_VMEMMAP` 的值决定。在内核构建之前需要选择是哪一种。
+
+在内核构建之时需要选择是哪一种
+
+>   
+> -Classic sparse在page->flags中编码了一个页面的段号，并使用PFN的高位来访问映射该页
+> -框的段。在一个区段内，PFN是指向页数组的索引。
+> +Classic sparse 在 page->flags 中编码了一个页面的段号，并使用 PFN 的高位来访问
+> +映射该页框的区段。在一个区段内，PFN 是指向页数组的索引。
+>   
+> -Sparse vmemmapvmemmap使用虚拟映射的内存映射来优化pfn_to_page和page_to_pfn操
+> +Sparse vmemmap 使用虚拟映射的内存映射来优化 pfn_to_page 和 page_to_pfn 操
+>   作。有一个全局的 `struct page *vmemmap` 指针，指向一个虚拟连续的 `struct page`
+> -对象阵列。PFN是该数组的一个索引，`struct page` 从 `vmemmap` 的偏移量是该页的PFN。
+> +数组对象。PFN 是该数组的索引，`struct page` 在 `vmemmap` 中的偏移量就是该页的
+> +PFN。
+>   
+> -为了使用vmemmap，一个架构必须保留一个虚拟地址的范围，以映射包含内存映射的物理页，并
+> -确保 `vmemmap`指向该范围。此外，架构应该实现 :c:func:`vmemmap_populate` 方法，
+> -它将分配物理内存并为虚拟内存映射创建页表。如果一个架构对vmemmap映射没有任何特殊要求，
+> -它可以使用通用内存管理提供的默认 :c:func:`vmemmap_populate_basepages`。
+> +为了使用 vmemmap，特定架构必须保留一段虚拟地址围，以映射包含内存映射图的物理页，
+地址范围
+> +并确保 `vmemmap` 指向该范围。此外，架构特定代码需要实现
+> +:c:func:`vmemmap_populate` 方法，在这个方法中，需要分配物理内存并为虚拟内存映
+> +射图创建页表。如果特定架构对 vmemmap 映射没有任何特殊要求，它可以使用通用内存
+> +管理提供的默认实现 :c:func:`vmemmap_populate_basepages`。
+>   
+> -虚拟映射的内存映射允许将持久性内存设备的 `struct page` 对象存储在这些设备上预先分
+> -配的存储中。这种存储用vmem_altmap结构表示，最终通过一长串的函数调用传递给
+> -vmemmap_populate()。vmemmap_populate()实现可以使用 `vmem_altmap` 和
+> -:c:func:`vmemmap_alloc_block_buf` 助手来分配持久性内存设备上的内存映射。
+> +虚拟映射的内存映射图允许将持久性内存设备的 `struct page` 对象存储在这些设备上
+> +预先分配好的（内存）存储中。这种存储用 vmem_altmap 数据结构表示，最终通过一长
+> +串的函数调用传递给 vmemmap_populate() 函数。vmemmap_populate() 的实现里面可
+> +使用 `vmem_altmap` 和 :c:func:`vmemmap_alloc_block_buf` 助手函数来从持久性内
+> +存设备上为内存映射图分配内存。
+
+OK.
+
+
+>   
+>   ZONE_DEVICE
+>   ===========
+>   `ZONE_DEVICE` 设施建立在 `SPARSEM_VMEMMAP` 之上，为设备驱动识别的物理地址范
+> -围提供 `struct page` `mem_map` 服务。 `ZONE_DEVICE` 的 "设备" 方面与以下
+> -事实有关：这些地址范围的页面对象从未被在线标记过，而且必须对设备进行引用，而不仅仅
+> -是页面，以保持内存被“锁定”以便使用。 `ZONE_DEVICE` ，通过 :c:func:`devm_memremap_pages` ，
+> -为给定的pfns范围执行足够的内存热插拔来开启 :c:func:`pfn_to_page`，
+> -:c:func:`page_to_pfn`, ，和 :c:func:`get_user_pages` 服务。由于页面引
+> -用计数永远不会低于1，所以页面永远不会被追踪为空闲内存，页面的 `struct list_head lru`
+> -空间被重新利用，用于向映射该内存的主机设备/驱动程序进行反向引用。
+> -
+> -虽然 `SPARSEMEM` 将内存作为一个区段的集合，可以选择收集并合成内存块，但
+> -`ZONE_DEVICE` 用户需要更小的颗粒度来填充 `mem_map` 。鉴于 `ZONE_DEVICE`
+> -内存从未被在线标记，因此它的内存范围从未通过sysfs内存热插拔api暴露在内存块边界
+> -上。这个实现依赖于这种缺乏用户接口的约束，允许子段大小的内存范围被指定给
+> -:c:func:`arch_add_memory` ，即内存热插拔的上半部分。子段支持允许2MB作为
+> +围提供 `struct page` 和 `mem_map` 服务。 `ZONE_DEVICE` 的 "设备" 方面与以下
+> +事实有关：这些地址范围的页面对象不会被标记为在线；并且必须增加对设备的引用计
+> +数，而不仅仅是页面的引用计数，以保持相关数据被“锁定”在内存中。
+> +`ZONE_DEVICE` ，通过 :c:func:`devm_memremap_pages` ，为给定 pfns 范围内的内
+> +存提供足够的内存热插拔支持来开启 :c:func:`pfn_to_page`，
+> +:c:func:`page_to_pfn`, 和 :c:func:`get_user_pages` 服务。由于页面引
+> +用计数永远不会低于 1，所以页面永远不会被标记为空闲内存，页面的
+> +`struct list_head lru` 空间被重新利用，用于向映射该内存的主机设备/驱动程序进
+> +行反向引用。
+> +
+> +虽然 `SPARSEMEM` 将全部内存抽象为区段的集合，可以选择收集并合成内存块，但
+> +`ZONE_DEVICE` 用户需要更小的颗粒度来用作 `mem_map` 。鉴于 `ZONE_DEVICE`
+> +内存从未被标记为在线，因此它的内存范围不会通过 sysfs 内存热插拔 api 暴露在
+> +内存块边界上。这个实现依赖于这种缺乏用户接口的约束，允许小于段大小的内存范围被
+> +指定给 :c:func:`arch_add_memory` ，即内存热插拔的上半部分。子段支持 2MB 作为
+>   :c:func:`devm_memremap_pages` 的跨架构通用对齐颗粒度。
+>   
+> -`ZONE_DEVICE` 的用户是:
+> +`ZONE_DEVICE` 的用户有:
+>   
+> -* pmem: 通过DAX映射将平台持久性内存作为直接I/O目标使用。
+> +* pmem: 通过 DAX 映射使用平台持久性内存作为直接 I/O 的目标。
+>   
+>   * hmm: 用 `->page_fault()` 和 `->page_free()` 事件回调扩展 `ZONE_DEVICE` ，
+> -  以允许设备驱动程序协调与设备内存相关的内存管理事件，通常是GPU内存。参见Documentation/mm/hmm.rst。
+> +  以允许设备驱动程序协调与设备内存相关的内存管理事件，典型的设备内存有 GPU 内
+> +  存等。详情可参考 Documentation/mm/hmm.rst。
+>   
+> -* p2pdma: 创建 `struct page` 对象，允许PCI/E拓扑结构中的peer设备协调它们之间的
+> -  直接DMA操作，即绕过主机内存。
+> +* p2pdma: 创建 `struct page` 对象，允许 PCI/-E 设备拓扑结构中的 peer 设备协
+> +  调它们之间的直接 DMA 操作，比如：绕过主机内存在 peer 之间直接 DMA。
+
+OK.
+
+
+BTW.
+
+Do you mind signing at the ":校译:"?
+
+
+Thanks,
+
+Yanteng
+
