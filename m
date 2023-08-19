@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3D1781876
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9281278187B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbjHSIg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        id S230371AbjHSIgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjHSIge (ORCPT
+        with ESMTP id S230087AbjHSIgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:36:34 -0400
+        Sat, 19 Aug 2023 04:36:31 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B5477B395;
-        Sat, 19 Aug 2023 01:36:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72B1E7A8FB;
+        Sat, 19 Aug 2023 01:36:29 -0700 (PDT)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8BxIvALf+BkRRsaAA--.52803S3;
+        by gateway (Coremail) with SMTP id _____8Bxd+gLf+BkRhsaAA--.17570S3;
         Sat, 19 Aug 2023 16:36:27 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c4Hf+BkLDpeAA--.33957S5;
-        Sat, 19 Aug 2023 16:36:26 +0800 (CST)
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c4Hf+BkLDpeAA--.33957S6;
+        Sat, 19 Aug 2023 16:36:27 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v4 3/4] MIPS: Return earlier in die() if notify_die() returns NOTIFY_STOP
-Date:   Sat, 19 Aug 2023 16:36:22 +0800
-Message-Id: <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 4/4] MIPS: Add identifier names to arguments of die() declaration
+Date:   Sat, 19 Aug 2023 16:36:23 +0800
+Message-Id: <1692434183-2054-5-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8Cx_c4Hf+BkLDpeAA--.33957S5
+X-CM-TRANSID: AQAAf8Cx_c4Hf+BkLDpeAA--.33957S6
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrKrWrur1xZF43CryfAF1xCrX_yoWDGFcEk3
-        409w1kury5Cw1Yqr4xCw4rWF90g3yqgF1IkanrKrWqkF9xJrWUAw4rZas0krWkXryvywsx
-        ZrZ8Jw4vkay7WosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Gr13ZryDCr4rXw4DCrW5twc_yoWkGFcEk3
+        W2ya18uw4xGr9ava4rWw4xJFyUG3y8uwsrtr18Ja4kAasavrWUCay8CrnrJrWDuw4qvF15
+        uF9xtryUAFyS9osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
         s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
         cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
         vaj40_Wr0E3s1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
@@ -60,39 +60,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the call to oops_exit(), it should not panic or execute
-the crash kernel if the oops is to be suppressed.
+Add identifier names to arguments of die() declaration in ptrace.h
+to fix the following checkpatch warnings:
 
-Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
+
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/mips/kernel/traps.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/mips/include/asm/ptrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 8e528a8..fd770dc 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -412,6 +412,9 @@ void die(const char *str, struct pt_regs *regs)
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index aee8e0a..d05844e 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
+ extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
+ extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
  
- 	oops_exit();
+-extern void die(const char *, struct pt_regs *);
++extern void die(const char *str, struct pt_regs *regs);
  
-+	if (ret == NOTIFY_STOP)
-+		return;
-+
- 	if (in_interrupt())
- 		panic("Fatal exception in interrupt");
- 
-@@ -421,8 +424,7 @@ void die(const char *str, struct pt_regs *regs)
- 	if (regs && kexec_should_crash(current))
- 		crash_kexec(regs);
- 
--	if (ret != NOTIFY_STOP)
--		make_task_dead(SIGSEGV);
-+	make_task_dead(SIGSEGV);
- }
- 
- extern struct exception_table_entry __start___dbe_table[];
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
+ {
 -- 
 2.1.0
 
