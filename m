@@ -2,183 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7070F7819A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CBB7819A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjHSNHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 09:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42448 "EHLO
+        id S232731AbjHSNLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 09:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbjHSNHi (ORCPT
+        with ESMTP id S232709AbjHSNLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 09:07:38 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760961E2F0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:06:41 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99cdb0fd093so240424666b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 06:06:41 -0700 (PDT)
+        Sat, 19 Aug 2023 09:11:45 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A51CABC;
+        Sat, 19 Aug 2023 06:10:48 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-26b56cc7896so1091538a91.3;
+        Sat, 19 Aug 2023 06:10:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692450400; x=1693055200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rHDDd/fo4FzFy4JxsCF4FnZo7ypY9WWX/ip25zUd2DE=;
-        b=TS2k2khJrVzHYVVoqjpw36ahhdErsQv8ZsZr3TdH8KKu1CLB4CsNyMSgpy737ci+Sv
-         q+KrpKd/uCNWMwakXLpOz67RuTA1AKVl4DzaHdPEP756WrixnLBydXfaC5MykNz5vBeO
-         w32gFm4WPSTn/15QpKpq3iWb65M1BoOm7UWfMxV3PpySJyUewKJ61BcgnMMS35zg+XLb
-         mb48D/R7GRYFegb750WN+He+C6cn/FBMw2G6IxsMzI8v6OgyEbdMwo7SHbj+7furDB9m
-         Cs64hn14OGl40GqMUgThUp40Qq8We4GFPiZP4g36vLwcwruU0Pq5M7tveBET+yLmZyRC
-         Pyew==
+        d=gmail.com; s=20221208; t=1692450648; x=1693055448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1e+/XnsKbjswDuOJErNhCCCCiL5iSSWZ7RF7mQ7/+3w=;
+        b=dwid1HtELpcOUIDba9rowZithC342CaX+0ngTuoCeNcueWxXGFhoWXugu7R4ecOTrC
+         I+wpq1K4TlPwvXLxFp0FL+Jx2nhNrnQEEPH2gRsIlEomRiDDMB9gbyNxudIc+ZRIZkYB
+         Wu9dJW491DFNgAWornGvxBIeDQuarRvCYe96XBUCuxy0q87R4/NGT5cbbgbS1sPCybAW
+         eNpTlNirDvufASE2ol3xIdQfreVVxmzuIAToa1evJG21qld3oNtSbCWRZ/x0XRTU1yG6
+         0VofgmdvBMsdxKjzpRRE2PnbiIiLzWXYbbbmDV64y8ZBXxO7mKYVLTwuBxOaxSqflQQM
+         9QQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692450400; x=1693055200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rHDDd/fo4FzFy4JxsCF4FnZo7ypY9WWX/ip25zUd2DE=;
-        b=fzHwHag1HZPxIzx0labu/rUQWoxR9xHgGmcrtynedwmV3oAeANkBaEvg0DBJOZdD8L
-         4jrjpKIQDl9hcalROrz8G/6rY6XYqKCQtCOJriGldxdB1VLdvUcG7kMmKZCA8vsu5ZR4
-         4egzJhyiJWzSbpl22DeHG4vw9EicZG2LiR0LzwU+uqsLaud1Ko7F8j831ADVz3cx7lct
-         vJyAAlQKDQLzMqpl09h/LYFpxGB4LuSW8EORRWR/GjQCPSYUwfPocKYCqjecyjAON1Ra
-         dNKXgZCrMPvna5dY8rNBcN91IWXo70pHi60BDmGLxxmL+lhNOJnop8Hl2lrLoKiLDNP8
-         coQQ==
-X-Gm-Message-State: AOJu0YwZmM7dXpLyFTDU73DwAugs9q0LIBmfn/lphSaV7EEdaRkzjRj+
-        nSyXuR8f31VWslhWOCc02NE2CQ==
-X-Google-Smtp-Source: AGHT+IFmIuGKAoOzk4W6WrGdbIVA9nfaf1Vt+Us6IpXHHQEoV0jgC2iViYKTYGpTLxfiNXcnvSBOHQ==
-X-Received: by 2002:a17:906:76d8:b0:982:c8d0:683f with SMTP id q24-20020a17090676d800b00982c8d0683fmr1528256ejn.18.1692450400016;
-        Sat, 19 Aug 2023 06:06:40 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id v8-20020a17090606c800b0099d959f9536sm2747401ejb.12.2023.08.19.06.06.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 06:06:39 -0700 (PDT)
-Message-ID: <2de9f105-c785-4933-4a0f-c8bc73c63b87@linaro.org>
-Date:   Sat, 19 Aug 2023 15:06:37 +0200
+        d=1e100.net; s=20221208; t=1692450648; x=1693055448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1e+/XnsKbjswDuOJErNhCCCCiL5iSSWZ7RF7mQ7/+3w=;
+        b=RqcxFsBQDgiKObc75lFu4GAK6+EJ+A4o9x62FDYNmyWht95Au8U8J8m5krTChXDJFr
+         DQ3dQCz+h9aKgqT7kO+Ocuqgbjh/MP6sgnBwGpRfg3anCzJp4GF5BETbh4kbytqrW8IJ
+         otTWDkPYhPFjnGcnH+ci1pQpFQuQm7WfMKkdrJYcm8SySYj3pX4g73o0mo2GES1FP0LJ
+         qItc0F4ip66wxc3TyEmPwL+3HyvH4SWA5ON+wQR0wCxpM5hIwc+lYaVkjKDaao8oiH4A
+         8YCWVxMGKztWvmDsPoSYzLl+SPb6l4diR0rPcYiNeHmb7hj6XjB3AUixOztsAIylLJUG
+         gWzA==
+X-Gm-Message-State: AOJu0Yw48ilyojxvBcO5qKXjCrF5t15fHcSvz9I5mSbF3XGVj9WMEwZB
+        6BQvt6qrsINYZCcEmA9Ykv2JgRoejU39A92/dt8=
+X-Google-Smtp-Source: AGHT+IEi7ryax+7gcMZllWjyl1lEZYP/Sxe6jDorLDrYSUoJSuj5qN0WtumtQ6/fR+4XZPf4+VbMKLip+gBwMC4uYcY=
+X-Received: by 2002:a17:90a:f98a:b0:268:2d92:55d3 with SMTP id
+ cq10-20020a17090af98a00b002682d9255d3mr1120669pjb.39.1692450647831; Sat, 19
+ Aug 2023 06:10:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH RFC v2 1/4] dt-bindings: mmc: sdhci-of-dwcmhsc: Add T-Head
- TH1520 support
-Content-Language: en-US
-To:     Drew Fustini <dfustini@baylibre.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>
-References: <20230724-th1520-emmc-v2-0-132ed2e2171e@baylibre.com>
- <20230724-th1520-emmc-v2-1-132ed2e2171e@baylibre.com>
- <ca0b9a19-d7d7-80e5-f47e-f74615cdac86@linaro.org> <ZN1NBE2+HHfatQ/T@x1>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ZN1NBE2+HHfatQ/T@x1>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817101014.3484715-1-martin@geanix.com> <20230817101014.3484715-2-martin@geanix.com>
+ <20230817094529.68ae1083@kernel.org>
+In-Reply-To: <20230817094529.68ae1083@kernel.org>
+From:   Vincent Mailhol <vincent.mailhol@gmail.com>
+Date:   Sat, 19 Aug 2023 22:10:36 +0900
+Message-ID: <CAMZ6RqLvbp8EStaSRFQUimhUMpn75=3pkQZYspnP1gYRsspv-g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] can: netlink: support setting hardware filters
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     =?UTF-8?Q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/08/2023 00:26, Drew Fustini wrote:
-> On Mon, Aug 07, 2023 at 08:29:21AM +0200, Krzysztof Kozlowski wrote:
->> On 05/08/2023 05:14, Drew Fustini wrote:
->>> Add compatible value for the T-Head TH1520 dwcmshc controller and
->>> thead,io-fixed-1v8 and thead,pull-up properties.
->>>
->>> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
->>> ---
->>>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 9 +++++++++
->>>  1 file changed, 9 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
->>> index a43eb837f8da..57602c345cab 100644
->>> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
->>> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
->>> @@ -19,6 +19,7 @@ properties:
->>>        - rockchip,rk3568-dwcmshc
->>>        - rockchip,rk3588-dwcmshc
->>>        - snps,dwcmshc-sdhci
->>> +      - thead,th1520-dwcmshc
->>>  
->>>    reg:
->>>      maxItems: 1
->>> @@ -60,6 +61,14 @@ properties:
->>>      description: Specify the number of delay for tx sampling.
->>>      $ref: /schemas/types.yaml#/definitions/uint8
->>>  
->>> +  thead,io-fixed-1v8:
->>> +    description: SoC PHY pad is fixed 1.8V
->>> +    type: boolean
->>
->> Isn't this duplicating existing properties for MMC modes with 1.8 V?
-> 
-> Thank you for reviewing. Yes, now that you mention it, I do see those
-> properties now in mmc-controller.yaml. It seems like the existing
-> mmc-ddr-1_8v property would be appropriate.
-> 
->>
->>> +
->>> +  thead,pull-up:
->>> +    description: True if pull-up, false if pull-down
->>
->> This explains me nothing. No clue what you are pulling and why do you
->> need it. Pin pulls should be done via pin controller, not MMC.
-> 
-> Good point that my description is not helpful. The pull-up property
-> determines whether certain phy registers are written to. I need to try
-> to can get documentation on the phy so that I can better understand the
-> details of the pull-up configuration in the phy registers.
-> 
->>
->> Anyway you should have here allOf:if:then (move the allOf: from top to
->> behind "required:") which will disallow these properties for other variants.
-> 
-> I noticed that nvidia,tegra20-sdhci.yaml has several lines related to
-> pull-up/down configuration:
-> 
-> 218   - if:
-> 219       properties:
-> 220         compatible:
-> 221           contains:
-> 222             const: nvidia,tegra210-sdhci
-> 223     then:
-> 224       properties:
-> 225         pinctrl-names:
-> 226           oneOf:
-> 227             - items:
-> 228                 - const: sdmmc-3v3
-> 229                   description: pad configuration for 3.3 V
-> 230                 - const: sdmmc-1v8
-> 231                   description: pad configuration for 1.8 V
-> 232                 - const: sdmmc-3v3-drv
-> 233                   description: pull-up/down configuration for 3.3 V
-> 234                 - const: sdmmc-1v8-drv
-> 235                   description: pull-up/down configuration for 1.8 V
-> 236             - items:
-> 237                 - const: sdmmc-3v3-drv
-> 238                   description: pull-up/down configuration for 3.3 V
-> 239                 - const: sdmmc-1v8-drv
-> 240                   description: pull-up/down configuration for 1.8 V
-> 241             - items:
-> 242                 - const: sdmmc-1v8-drv
-> 243                   description: pull-up/down configuration for 1.8 V
-> 
-> Do you think creating something like that would be a good approach?
+On Sat. 19 Aug. 2023, 01:19, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Thu, 17 Aug 2023 12:10:13 +0200 Martin Hundeb=C3=B8ll wrote:
+> > +             int len =3D nla_len(data[IFLA_CAN_HW_FILTER]);
+> > +             int num_filter =3D len / sizeof(struct can_filter);
+> > +             struct can_filter *filter =3D nla_data(data[IFLA_CAN_HW_F=
+ILTER]);
+>
+> This will prevent you from ever extending struct can_filter in
+> a backward-compatible fashion, right? I obviously know very little
+> about CAN but are you confident a more bespoke API to manipulate
+> filters individually and allow extensibility is not warranted?
 
-This depends. Does your driver implementation will make use of it? If
-yes, then it makes sense.
+I follow Jakub's point of view.
 
-Best regards,
-Krzysztof
+The current struct can_filter is not sound. Some devices such as the
+ES582.1 supports filtering of the CAN frame based on the flags (i.e.
+SFF/EFF, RTR, FDF).
 
+I think that each of the fields of the filter should have its own NLA
+declaration with the whole thing wrapped within a NLA_NESTED_ARRAY.
+
+I also think that there should then be a method to report the precise
+filtering capabilities of the hardware.
+
+
+Yours sincerely,
+Vincent Mailhol
