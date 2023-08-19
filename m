@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4EB781B93
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B219781B86
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbjHTALL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 20:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
+        id S229688AbjHTAKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 20:10:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjHTAK1 (ORCPT
+        with ESMTP id S229747AbjHTAK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 20:10:27 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B6E83181;
-        Sat, 19 Aug 2023 13:20:46 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-565e387000fso1444266a12.2;
-        Sat, 19 Aug 2023 13:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692476445; x=1693081245;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lV81kcD9vzqzEmQhBftWFfOiwm9XqB0HTp7lUGKFHuQ=;
-        b=hZnuQQISbxby46D/lP+4Ei7dHYxRBhQic/eRN5kTkc9V6JZF29YKmpDTdaqO90yJJA
-         EYfSIcO/LOPLEq/LryJpbmRKk1pANHtcF52CDEGEEzTwQ7V1I+1xp/sM81IlwNVFBwVz
-         dafywa9Yd7Sp3koKHAQruHj7YLmXlH6EoyymrHyMCzJi8/kpCGSvjGKSXDI2uuSzKs9n
-         c7/OAxWLuWY7G2UqXpJxyy/13i6rPI8Yfr9kF/rPgMiKr7pgPHC2lnGQaWD4xdPKZR4A
-         ICUXRCijQfOfMnCyH6RFSn18f6fVgwXQoi0ABLTU/y1Oa+8xIxYyjKE1hBHYweAiN/Sa
-         U5aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692476445; x=1693081245;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lV81kcD9vzqzEmQhBftWFfOiwm9XqB0HTp7lUGKFHuQ=;
-        b=dxjWc0Q84yk/9pmLok2fna0f6Sm/S2CJBccZSZKOPN67jr2LP0SGdAJVEYehOzrhq5
-         3PO3PG2vjPZhF2poph1QGtAI0peW0B931f/JkXfhspNQ6D/Vl+PWeyPxuQuF/d29byEl
-         vWqo0wmkd9rCIhZm83W6DPZ6+Ku0ezTLRpLPLV6lh6JIY7Ob7+rQmwOUWjC96IOsxBco
-         8/jG5QXj0xZR1rDmVZ7wlX+GOLxj3Ux0QVAXCLcbYEo+TSIu/uY3/7dz0eF7NCf2uUet
-         /CwkW3M6B9opq6zg6K2cJbm3++w8+0ApFHlmPEvEQW8vATIHeJ//T9IMT5G7VR8GMYN+
-         y+LA==
-X-Gm-Message-State: AOJu0Yz5pqT9mSK2uqXfhZtS0EdqgaR8VTDh27RsgLZrRNoHlfCVKN93
-        T82CskxkeHIhscWIU+Dk7uc=
-X-Google-Smtp-Source: AGHT+IG7kGC5rBg79iPGG+ZJMpC1r0dYR+YIh6HwAHWdpK/oApVWvQK46aSWG7nYxgm3nf66BzKAUA==
-X-Received: by 2002:a17:90a:4dc6:b0:26d:2fe5:ff2a with SMTP id r6-20020a17090a4dc600b0026d2fe5ff2amr2356147pjl.29.1692476445535;
-        Sat, 19 Aug 2023 13:20:45 -0700 (PDT)
-Received: from DESKTOP-7B1REV8.localdomain ([2001:569:5755:c600:f49d:4018:e752:1f22])
-        by smtp.gmail.com with ESMTPSA id 5-20020a17090a018500b0026b26181ac9sm5695245pjc.14.2023.08.19.13.20.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 13:20:44 -0700 (PDT)
-From:   Qingjie Xing <xqjcool@gmail.com>
-To:     edumazet@google.com
-Cc:     davem@davemloft.net, dhowells@redhat.com, fw@strlen.de,
-        johannes@sipsolutions.net, keescook@chromium.org, kuba@kernel.org,
-        kuniyu@amazon.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com, pctammela@mojatatu.com,
-        xqjcool@gmail.com
-Subject: [PATCH] netlink: Fix the netlink socket malfunction due to concurrency
-Date:   Sat, 19 Aug 2023 13:17:16 -0700
-Message-Id: <20230819201716.2430-1-xqjcool@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CANn89iJCDYteM_1SQ-h2=htUAE4FqrBAak0kHt_Z990XYZThzQ@mail.gmail.com>
-References: <CANn89iJCDYteM_1SQ-h2=htUAE4FqrBAak0kHt_Z990XYZThzQ@mail.gmail.com>
+        Sat, 19 Aug 2023 20:10:26 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93BF88325;
+        Sat, 19 Aug 2023 13:19:16 -0700 (PDT)
+Received: from p5dcc3be5.dip0.t-ipconnect.de ([93.204.59.229] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1qXSPZ-002ojp-1j; Sat, 19 Aug 2023 22:19:05 +0200
+Date:   Sat, 19 Aug 2023 22:19:03 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: adc: Add TI TWL603X GPADC
+Message-ID: <20230819221903.726a1c39@aktux>
+In-Reply-To: <426d78d6-9fa6-bfeb-b36a-fba264097a27@linaro.org>
+References: <20230816202614.324457-1-andreas@kemnade.info>
+        <426d78d6-9fa6-bfeb-b36a-fba264097a27@linaro.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This piece of code has been present since the Linux code v2.6.12 was
-incorporated into Git management.
-I believe this modification could potentially address the concurrent issue
-we've been discussing.
-In netlink_rcv_wake(), as described in [2], the socket's receive queue is
-empty, indicated by sk_rmem_alloc being 0. At this point, concurrent
-netlink_attachskb() calls netlink_overrun(). In this critical state, the
-sk_rmem_alloc of the socket will not instantly transition from 0 to a
-value greater than sk_rcvbuf.
+Hi,
+
+On Sat, 19 Aug 2023 20:35:27 +0200
+Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+
+> On 16/08/2023 22:26, Andreas Kemnade wrote:
+> > Document TI TWL603X GPADC devicetree bindings.
+> > A driver is already there, the compatibles are used, but not documented.
+> > Use two separate files to reference only the allowed compatible in
+> > a future YAML version of
+> > Documentation/devicetree/bindings/mfd/twl-family.txt
+> > 
+> > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> > ---  
+> 
+> Thank you for your patch. There is something to discuss/improve.
+> 
+> 
+> >  .../bindings/iio/adc/ti,twl6030-gpadc.yaml    | 42 +++++++++++++++++++
+> >  .../bindings/iio/adc/ti,twl6032-gpadc.yaml    | 42 +++++++++++++++++++
+> >  2 files changed, 84 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,twl6032-gpadc.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml b/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> > new file mode 100644
+> > index 000000000000..08bc0468f616
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/ti,twl6030-gpadc.yaml
+> > @@ -0,0 +1,42 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/adc/ti,twl6030-gpadc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: GPADC subsystem in the TWL6030 power module
+> > +
+> > +maintainers:
+> > +  - Jonathan Cameron <jic23@kernel.org>  
+> 
+> This should be rather someone knowing or having or caring about this
+> particular hardware, not subsystem maintainer.
+> 
+Hmm, I have the twl6032, but not the twl6030. So probably
+Tony (OMAP-Maintainer) or me?
+
+> > +
+> > +description:
+> > +  The GPADC subsystem in the TWL6030 consists of a 10-bit ADC
+> > +  combined with a 15-input analog multiplexer.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: ti,twl6030-gpadc  
+> 
+> Devices look fairly similar. Same properties. Why aren't they in one
+> binding (enum here instead)?
+>
+I hope it can be done. See commit message. Maybe my reasoning is wrong.
+
+So what I am thinking about:
+
+&i2c {
+	twl: pmic@48 {
+		compatible = "ti,twl6032;
+		adc {
+			compatible = "ti,twl6032-gpadc";
+		}
+	}
+}
+
+So the idea was to later enforce that below a "ti,twl6032" no "ti,twl6030-gpadc"
+is allowed in a future yaml version of mfd/twl-family.txt by
+using a if: ... compatible = "twl,6032" .. $ref ti,twl6032-gpadc.yaml
+
+If there are other possibilities or that can be just ignored for now,
+I fully agree to your proposal. 
+
+Regards,
+Andreas
