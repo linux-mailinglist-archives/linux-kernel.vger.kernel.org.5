@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5EF781833
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0778A78183E
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344711AbjHSIEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
+        id S229827AbjHSIJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:09:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344702AbjHSIEK (ORCPT
+        with ESMTP id S229534AbjHSIJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:04:10 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDA4A1BD4
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:04:08 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so342943666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:04:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692432247; x=1693037047;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=deRfy4MmWhNo/qJGo68CHwTkl2+R+5alRlJweBHZEfs=;
-        b=aCgvU0CiVM/aEDBPDLFu+sF3l8qpjC4PkigK2hLvR3K7RKhfJxz3HS/75ABvsvSWoN
-         3rs+wNfGBianQpt1CpPz2wuk0SMhpaO4hNJVHxGUWCddxhtAjqehLYh2eeF6Cd2gfprt
-         u99N5o2xA+OV9mkJEvHL8v9Sml9QxHE5RSYlEoG19qytqLjYIQrrBy0qzFM2unicwyLa
-         mN/wOmmb8gJoRVSAd/vndrNCjmRKhfuPY1Oj6vJIcmhGH8NULGtsPXJiRwsfqQijm+12
-         V21avF6ka3kRNfArK+MavM1X5UQ8aoJ14k4YvOe8lMxAi1ufEq9rfBchTMt6jERjp1tv
-         sIKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692432247; x=1693037047;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=deRfy4MmWhNo/qJGo68CHwTkl2+R+5alRlJweBHZEfs=;
-        b=eeCLEawUWE8JjnwlfoWqLwRay9qHw4GqBG9n4LRc2ZWsDLUGkjFt4AL7ttjgh4lsWP
-         umENavVVWjAZiETEaAZ4oeWaacEn3E0Sd9MeFQSL0bnl9cci6t+oeaJoctmJGHDXBzI/
-         u/t+GjQut7FhmN58dfG3xrDmKbNSf2u4sYQ1eywP91WOdr/Z3vN7ZgiBNsehSQhyXswy
-         B9FWaeKvk5LbXqtIbLoRlHOQeLcRfdHlxvi+I/hSbDL6aE2F/cQMhNk1IZXM25KnSlBn
-         CFearvaY0nLHOxnxm9BPE0g6V7c73OhuULlkXHA4P0ppyyMQ6WO22NQOXgaztYEnuzL6
-         cRKA==
-X-Gm-Message-State: AOJu0Ywq8G0fMYJJRKcWmFcRTepccKsPlGuT5ny8qswgOGu4jIPnZi03
-        tvOloCBwUcx+qp/PpGrELBmvyiiRbGZlSqQGN/Y=
-X-Google-Smtp-Source: AGHT+IHBzvmTwnBZ67sD/6WjMdA5xmu96I7L2+RI5CGp7G/r5zU7hudwu/IAczFJtEBUGVFcm5NiSw==
-X-Received: by 2002:a17:906:8a73:b0:99d:e417:d6fb with SMTP id hy19-20020a1709068a7300b0099de417d6fbmr1522299ejc.25.1692432247428;
-        Sat, 19 Aug 2023 01:04:07 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id u22-20020a170906409600b009929ab17be0sm2265161ejj.162.2023.08.19.01.04.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 01:04:06 -0700 (PDT)
-Message-ID: <9927403d-6dd9-3e5e-8f9d-f38e6640f95f@linaro.org>
-Date:   Sat, 19 Aug 2023 10:04:05 +0200
+        Sat, 19 Aug 2023 04:09:45 -0400
+Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [134.58.240.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D164205
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:09:43 -0700 (PDT)
+X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-KULeuven-Scanned: Found to be clean
+X-KULeuven-ID: D4F192015B.A03C7
+X-KULeuven-Information: Katholieke Universiteit Leuven
+Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
+        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id D4F192015B;
+        Sat, 19 Aug 2023 10:09:40 +0200 (CEST)
+BCmilterd-Mark-Subject: no
+BCmilterd-Errors: 
+BCmilterd-Report: SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00
+X-CAV-Cluster: smtps
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
+        s=cav; t=1692432580;
+        bh=V3leTNuTw836n3/bLimhjXv5C1WXrn4ysLPouSQ4Cpk=;
+        h=From:To:Cc:Subject:Date;
+        b=WLBSWLKC+zpi1qix1HKZJ0oNNi34kxb/5cnNMC6GEns0JbiyOYIdA6xtF6CC+Ir1g
+         YHb36UnWSsAVSEZtWNYtvzg6HTiBNfcT5AATmiWAIsssFcgGzu5LVOWsq76h2wNbXJ
+         q9jaa3YvQS+hj+3qKlyswsYqG5X3mOiwhu7vDO6I=
+Received: from localhost.localdomain (ptr-94-109-233-233.dyn.orange.be [94.109.233.233])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id BFCDBD4EB5306;
+        Sat, 19 Aug 2023 10:09:37 +0200 (CEST)
+X-Kuleuven: This mail passed the K.U.Leuven mailcluster
+From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
+        luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        sohil.mehta@intel.com
+Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com,
+        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
+Subject: [PATCH v4 0/1]  x86/pti: Fix kernel warnings for pti= and nopti cmdline options.
+Date:   Sat, 19 Aug 2023 10:09:20 +0200
+Message-Id: <20230819080921.5324-1-jo.vanbulck@cs.kuleuven.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
-Content-Language: en-US
-To:     Shenwei Wang <shenwei.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
- <CAL_Jsq+XA_P-aRK9_WuGPmJ0_xJgsSr9smZy4BRbKZbmVsMQBQ@mail.gmail.com>
- <PAXPR04MB918539A19B8F817F623BBD1F891BA@PAXPR04MB9185.eurprd04.prod.outlook.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <PAXPR04MB918539A19B8F817F623BBD1F891BA@PAXPR04MB9185.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/08/2023 23:06, Shenwei Wang wrote:
-> 
-> 
->> -----Original Message-----
->> From: Rob Herring <robh+dt@kernel.org>
->> Sent: Friday, August 18, 2023 3:52 PM
->> To: Shenwei Wang <shenwei.wang@nxp.com>
->> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
->> <conor+dt@kernel.org>; Ulf Hansson <ulf.hansson@linaro.org>; Liam Girdwood
->> <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
->> imx@lists.linux.dev; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
->> dl-linux-imx <linux-imx@nxp.com>
->> Subject: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
->>>
->>> Documenting the regulator power domain properties and usage examples.
->>
->> This needs to answer why we need this.
->>
->> It looks like just an abstraction layer to make regulators look like a power
->> domain.
->>
-> 
-> Yes, it is a wrapper that allows using regulators as a power domain. This removes 
-> the need to add regulator operating code in each consumer device driver. As a power 
-> domain, the regulator will be managed automatically by the device driver framework 
-> and PM subsystem.
-> 
-> This is very useful when a device's power is controlled by a GPIO pin, which currently 
-> requires using the fixed-regulator to achieve the same purpose. However, the 
-> fixed-regulator approach may have to add code in the driver in order to use it.
+Hi,
 
-Why do you start discussion from zero ignoring all previous history of
-this patchset?
+This is the fourth iteration of a patch to improve the cmdline option parsing
+for PTI. This reverts largely back to the first iteration and cleans up the
+code to remove any attempts at backwards compatible behavior for clearly
+conflicting options when users erroneously combine pti= nopti and
+mitigations=off as per Dave's suggestions [1].
 
-https://lore.kernel.org/all/20220609150851.23084-1-max.oss.09@gmail.com/
+[1] https://lore.kernel.org/all/b9bbb279-fa8f-0784-900f-114ce186cbb3@intel.com/
 
-Best regards,
-Krzysztof
+Behavior
+--------
+
+For reference, behavior with this patch is now as follows in case of any
+conflicting options.
+
+1. Latest in order of nopti pti= takes priority:
+
+KERNEL_CMDLINE="nopti pti=on"
+[    0.021779] Kernel/User page tables isolation: enabled
+Mitigation: PTI
+
+KERNEL_CMDLINE="pti=on nopti"
+[    0.010289] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
+
+2. Passing mitigations=off will unconditionally disable PTI:
+
+KERNEL_CMDLINE="mitigations=off pti=on"
+[    0.008331] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
+
+KERNEL_CMDLINE="pti=on mitigations=off"
+[    0.008495] Kernel/User page tables isolation: disabled on command line.
+Vulnerable
+
+Changelog
+---------
+
+v4
+  - Add whitespace (Sohil)
+  - Remove goto (Sohil)
+
+v3
+  - Revert backwards compatibility ugliness for conflicting options (Dave)
+
+v2
+  - Split pti=off and mitigations=off checks (Sohil)
+  - Ensure backwards compatibility for conflicting options (Sohil)
+
+Best,
+Jo
+
+Jo Van Bulck (1):
+  x86/pti: Fix kernel warnings for pti= and nopti cmdline options
+
+ arch/x86/mm/pti.c | 58 +++++++++++++++++++++++------------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
+
+-- 
+2.25.1
 
