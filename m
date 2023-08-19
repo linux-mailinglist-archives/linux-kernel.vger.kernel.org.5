@@ -2,72 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 850707819B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FFD7819BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 15:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232793AbjHSN3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 09:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50992 "EHLO
+        id S232850AbjHSNd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 09:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232603AbjHSN3q (ORCPT
+        with ESMTP id S229436AbjHSNdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 09:29:46 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1074212761;
-        Sat, 19 Aug 2023 06:29:31 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-56546b45f30so1429895a12.3;
-        Sat, 19 Aug 2023 06:29:31 -0700 (PDT)
+        Sat, 19 Aug 2023 09:33:55 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B980260BE;
+        Sat, 19 Aug 2023 06:31:46 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1bf48546ccfso7660445ad.2;
+        Sat, 19 Aug 2023 06:31:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692451770; x=1693056570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FBvCJLgdbds9yMG1zJ/sZSFWfzBUh6K/ALsYYt3rpTY=;
-        b=S7Nv72YLp9CPkp/wEe8NG7NKHXcVilBVMZ4dz320VCIx00S8MKYiTkgyxP8rvrJOai
-         uid1Q72FceFzV4cCOHVaLG2Fptdjk19Ggc9uTK3BvEdA4zX9uMbIMr6+5HJKIx0qfzt+
-         Pt0LT4u2RAmk7X3dFdLrepbYdgtOk2WxOfrCHUEh5ByZt+mUSbDdh3G6/d1+njMYmMFo
-         q5qeHq7wdpwzh/3hevJA6Qg5R00+3HYfEprGP2wKOayB40qHh0q4EjdAJ4UGeNajWSwr
-         DA7Et1/HfoHrzXFX9Wz3H134eksl/JzCegrn859sPVmRbrgBWiCmjqpnTa0qzTmIK+6I
-         2LFA==
+        d=gmail.com; s=20221208; t=1692451905; x=1693056705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=354r1E8RomJOmLTWCsnFrWN7S2WMC4vNevjDGwZilNU=;
+        b=FKItqNn7h6xWPDCRRcOmc9Ez68Wlegq31PhjXmfE4aBe1zGReLec7/vKM3nJtqV/T5
+         829EDrd2xlqVK8Tw3nM20/B3p1DNQLLEbNdF91Eyz/WH1w7UEqNan0Kq8R9XQ6jNDjHh
+         RnLEZz0S9PdfnsU0izgs40JpcIGM7pXpTx4/qpx7ZGxtvZ2pLUmJKfekLl6V0yP2eIvJ
+         18Y+YmpU+4IzBF38SRWHzI92pOS1O4AsZVnlGVYM6pvSfBMpm1CgfcfQ6KhVFoIB3K8e
+         9IU5Tbb/hqFzwnMVt2fTO6FmDEfllVLKcVVj5I0wT9n6zZs6WBZWm9uC7jFGB/UabfYG
+         KVtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692451770; x=1693056570;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FBvCJLgdbds9yMG1zJ/sZSFWfzBUh6K/ALsYYt3rpTY=;
-        b=OYkCCCq6IK4zX5zTM+Tvp327h4jm89SL9ltTgr09DKCb+QkVx5I8ADDSxrL1lg/4Yn
-         wHELdnjAQjvq75AJenYD/yTkMKIqtDfB9zQ35IaD3H/0Cm/Zbg5BR6W4v95j5B5HaqT+
-         fmaQOJm30i2XKIxwXop7r8N/+jZ2Rl2zb1L0b/+zHihQnnofSJcMSOJ4MuD8DWyTKMEm
-         n0GpX4gbqveIcsIvNyFETC6m3b8bPm/m6QACEEJ4xzsUq4VG1Jwprir4iTWDR7lkbzk7
-         AgFpYWBcq7xKUrWSxkghkPUg2kwd56keTEQ6b2/QJ/OuJzBYVJkZUr3urB8Y4sYUDwi7
-         AOrQ==
-X-Gm-Message-State: AOJu0YyxDiMj4xGhe5eiu+2F+3t5JqKGG8o7WmQ/SlB3hDLyTw3hyPTa
-        GIQ8YDp2CxjuW6eH6XUfw5+lwzIkUsBy7OKMI1g=
-X-Google-Smtp-Source: AGHT+IGPAyLCY1zvg2b23YnGGAM6I9p5N/1WAnaqwnxts/NroHHI/nabZDMaNf5oWv1Xvg2pPgdB/A0cdEMcDxq5ZXw=
-X-Received: by 2002:a17:90a:9ac:b0:268:60d9:92cc with SMTP id
- 41-20020a17090a09ac00b0026860d992ccmr1708534pjo.43.1692451770416; Sat, 19 Aug
- 2023 06:29:30 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692451905; x=1693056705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=354r1E8RomJOmLTWCsnFrWN7S2WMC4vNevjDGwZilNU=;
+        b=hu+rNb+ftIkHEIKNw8drECwwleM2elv3bZjdRkl0pshNT3E9K7FpD2aXflfvMk+5ay
+         wLsX3f0r0cLkiFjkRpMZAyCrP5bR22ukOCjlVr5ezf8wuuyaGcUWNTUr5pwRNQxw+wxp
+         jcmPg51NniHEsDIKUS94e6rE2LE7Qf5tZDo7AdtXACmOFJUqJ8JNfpqW48BZOMl5WJnE
+         bmnjggYpOhrDH7Gvm28mCyPPOrW5uthtG9Ca6wI8TtQYGcZ5o61T/H55goUk9zil1RtL
+         7ieag+uCAORCCsRNpDFdYL3FIV1OhCPT59DTjBieezteWwVw/9d0XpA5XJZYZ7L5zXlZ
+         b8ag==
+X-Gm-Message-State: AOJu0YxfLF+ugyDK+JWh3i1zH9yVJjwP/54R+Joe2P05RZa1mfC9pNeB
+        4ACg3Rzot5Q64d7oUOSdve4=
+X-Google-Smtp-Source: AGHT+IEA9QHCXPRr5498UeC9TcMCKSHe0MOr/n/QkY6SbexlkQEyoRyTDDVMGC1CFHCymOKfzzgTLA==
+X-Received: by 2002:a17:902:b709:b0:1bd:a0cd:1860 with SMTP id d9-20020a170902b70900b001bda0cd1860mr1207022pls.64.1692451905279;
+        Sat, 19 Aug 2023 06:31:45 -0700 (PDT)
+Received: from archlinux.srmu.edu.in ([59.152.80.69])
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001b8b26fa6c1sm3663786plk.115.2023.08.19.06.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Aug 2023 06:31:44 -0700 (PDT)
+From:   Anshul <anshulusr@gmail.com>
+To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
+Cc:     Anshul <anshulusr@gmail.com>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, anshulusr2@gmail.com
+Subject: [PATCH] fixing ERROR: Macros with compex values must be enclosed within parentheses
+Date:   Sat, 19 Aug 2023 19:01:13 +0530
+Message-ID: <20230819133115.23048-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230817101014.3484715-1-martin@geanix.com> <20230817101014.3484715-2-martin@geanix.com>
- <20230817094529.68ae1083@kernel.org> <CAMZ6RqLvbp8EStaSRFQUimhUMpn75=3pkQZYspnP1gYRsspv-g@mail.gmail.com>
-In-Reply-To: <CAMZ6RqLvbp8EStaSRFQUimhUMpn75=3pkQZYspnP1gYRsspv-g@mail.gmail.com>
-From:   Vincent Mailhol <vincent.mailhol@gmail.com>
-Date:   Sat, 19 Aug 2023 22:29:19 +0900
-Message-ID: <CAMZ6RqLmNJ0zL9XO9zGCu=CbUHgm68M42fwqkSKk-rSAosCWzg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] can: netlink: support setting hardware filters
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?Q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -78,39 +69,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat. 19 Aug. 2023 at 22:10, Vincent Mailhol
-<vincent.mailhol@gmail.com> wrote:
-> On Sat. 19 Aug. 2023, 01:19, Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Thu, 17 Aug 2023 12:10:13 +0200 Martin Hundeb=C3=B8ll wrote:
-> > > +             int len =3D nla_len(data[IFLA_CAN_HW_FILTER]);
-> > > +             int num_filter =3D len / sizeof(struct can_filter);
-> > > +             struct can_filter *filter =3D nla_data(data[IFLA_CAN_HW=
-_FILTER]);
-> >
-> > This will prevent you from ever extending struct can_filter in
-> > a backward-compatible fashion, right? I obviously know very little
-> > about CAN but are you confident a more bespoke API to manipulate
-> > filters individually and allow extensibility is not warranted?
->
-> I follow Jakub's point of view.
->
-> The current struct can_filter is not sound. Some devices such as the
-> ES582.1 supports filtering of the CAN frame based on the flags (i.e.
-> SFF/EFF, RTR, FDF).
+Signed-off-by: Anshul <anshulusr@gmail.com>
+---
+ drivers/media/usb/uvc/uvc_driver.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I wrote too fast. The EFF and RTR flags are contained in the canid_t,
-so the current struct can_filter is able to handle these two flags.
-But it remains true that the CAN-FD flags (FDF and BRS) are currently
-not handled. Not to mention that more flags will come with the
-upcoming CAN XL.
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 08fcd2ffa727..8d3bcd18b652 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2417,9 +2417,8 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
+ 	.quirks = UVC_QUIRK_FORCE_Y8,
+ };
+ 
+-#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
+-#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
+-	{.meta_format = m}
++#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
++#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) {.meta_format = m})
+ 
+ /*
+  * The Logitech cameras listed below have their interface class set to
+-- 
+2.41.0
 
-> I think that each of the fields of the filter should have its own NLA
-> declaration with the whole thing wrapped within a NLA_NESTED_ARRAY.
->
-> I also think that there should then be a method to report the precise
-> filtering capabilities of the hardware.
->
->
-> Yours sincerely,
-> Vincent Mailhol
