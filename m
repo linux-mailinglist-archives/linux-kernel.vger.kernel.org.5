@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFCE7816BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3DD7816BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244154AbjHSCjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 22:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S244101AbjHSCi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 22:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244117AbjHSCik (ORCPT
+        with ESMTP id S243628AbjHSCiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 22:38:40 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E143AAF;
-        Fri, 18 Aug 2023 19:38:39 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4106eb44e64so7405691cf.0;
-        Fri, 18 Aug 2023 19:38:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692412718; x=1693017518;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JZwhCwjDtTWBjVB0IrnL1Vfvj4aOSGOZqsrM0tJ8VXU=;
-        b=nzmSWNYhIZKGfoBBbZn6xNLlQzWETNY8VMRRjojHTh4tqElvCO+mDkL4DgsLylrxRW
-         /KX3jVWQGAvKHpcfBgvYtJRnXTRVkIC0kC/v+EElN1ILwv4SIryRgRV/whqlpDdbvU4c
-         +PRRbRTMLImlBDAUJLCWUCLoZw0ftT/FL67Hu46ZHCRWkRGSckzRPsSngqfHSsP4GAu4
-         /DZhIi9mBFgSAKC50C/NzGEgw9t0BojdYZFhjqB1eT/7qugsMgY6z1039AryfLOOX06p
-         x4JLbieD+CJ82f9/4Dd/B3IM7/DoAXFYyPnPQ4iUa7FQfEQdmhiZd7j9ji+7CDD6h7HP
-         GbRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692412718; x=1693017518;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JZwhCwjDtTWBjVB0IrnL1Vfvj4aOSGOZqsrM0tJ8VXU=;
-        b=jnOY8g0VdnK1z2TP/UaXacRWPlybiX/SdP1kCEwoCYTSKo38LBD17PD+xEWHLCjGyk
-         +wsaH+pCnb7mnQxrUgQF6DdDs1Q6Z6OWVmsncbcDW6NwxuNwmos9ya1od3hGjPFKSRsK
-         l3tuQ6RGS/taGGloMyCRccW9tWRR0+XycJkXHFicKUuVeIG5nVQgpxgrnh28nj31mYlN
-         1zBaCTyLLW3s9GxHouiqP9zu6ExsquTEULxcGC1yTsN9rulFCgwdYnPwy/kAMjUofTx+
-         lYQ9jkv5mPOW4JAM7k3QmyIYOFtUpT/sU2mY2RZJXaAf2NhLTXU3+C+09KeuCtnpej/P
-         yWRw==
-X-Gm-Message-State: AOJu0YwjSfVBKOHNFKv8O7EgAEH/MahXF1bSA6RUcXZgGipJP7shkA4U
-        F5oi5coDbSmodw5lfiWInXkG6pQpEykolY33ycP53Puz6h2qa1m+
-X-Google-Smtp-Source: AGHT+IGj2Ut6HctwWBmQ1s5YsHe0+JQy/zocuAMLVSkSl2DcUmnSDdj0eL5V1fDaNl6oPJKSEbs/T3UHZfnACiN+KqU=
-X-Received: by 2002:a05:622a:309:b0:407:c2e2:2a06 with SMTP id
- q9-20020a05622a030900b00407c2e22a06mr1421607qtw.8.1692412718074; Fri, 18 Aug
- 2023 19:38:38 -0700 (PDT)
+        Fri, 18 Aug 2023 22:38:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40B31BB;
+        Fri, 18 Aug 2023 19:38:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C074622D9;
+        Sat, 19 Aug 2023 02:38:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 180A0C433C8;
+        Sat, 19 Aug 2023 02:38:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692412691;
+        bh=oSkCuPAKXtvGAJIRmzBOrV+jlKSk2VzCCDit/Nm5mbo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kZle1zR3yL3S8NsbcSOizysqQjSY0B1GiZFlJAH8CoXUvTzjgMN+gralGiVI6//cu
+         IdZoYXRMQPG7Dm/PlqQ9AY8W5QEZNXYtYW55WcGFmUdTobLtiXKRbGxR4S0sDQUXPt
+         xuvBvWiKrHN0Z7dl1VJQOOpU2H9pdJ9fZ/rgWU/ONxebV71FTDiA7pPC1uQeV7ZpfO
+         vNA9miObq54SV4zVNbpP958nhJRXykhp7X4vQCe9X2+2Seo3lqzpIYzY3P52r8SWIz
+         8Pb22Ebjpelc7ZUK6q66VjFQP5hcxmhTRmtjhnPcb89e47VKT79kmF+C5TcNGJlscc
+         W60FWbi8W0Y+g==
+Date:   Fri, 18 Aug 2023 19:38:10 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] net: sched: cls_u32: Fix allocation in u32_init()
+Message-ID: <20230818193810.102a2581@kernel.org>
+In-Reply-To: <ZN5DvRyq6JNz20l1@work>
+References: <ZN5DvRyq6JNz20l1@work>
 MIME-Version: 1.0
-References: <20230807012654.55951-1-zhangshida@kylinos.cn> <20230817173123.GD2247938@mit.edu>
-In-Reply-To: <20230817173123.GD2247938@mit.edu>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Sat, 19 Aug 2023 10:38:02 +0800
-Message-ID: <CANubcdW1z4QqDsHuuTqGxa_P40uG2s6LRk=pCkk_zL0TmJULrg@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Modify the rec_len helpers to accommodate future cases
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhangshida@kylinos.cn,
-        Andreas Dilger <adilger@dilger.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theodore Ts'o <tytso@mit.edu> =E4=BA=8E2023=E5=B9=B48=E6=9C=8818=E6=97=A5=
-=E5=91=A8=E4=BA=94 01:31=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Aug 07, 2023 at 09:26:54AM +0800, zhangshida wrote:
-> > From: Shida Zhang <zhangshida@kylinos.cn>
-> >
-> > Following Andreas' suggestion, it is time to adapt these helpers
-> > to handle larger records during runtime, especially in preparation
-> > for the eventual support of ext4 with a block size greater than
-> > PAGE_SIZE.
->
-> Is there a reason for landing this now?  We don't have support for
-> block_size > PAGE_SIZE yet, and this patch doesn't come for free, at
-> least not systems with page_size < 64k.  These inline functions are
-> *very* hot and get used in a large number of places.  Have you looked
-> to see what it might do to text size of the ext4 code?  And whether
-> the expansion to the icache might actually impact performance on CPU
-> bound workloads with very large directories?
->
-> I will note that there are some opportunities to optimize how often we
-> use ext4_rec_len_from_disk.  For example, it gets called from
-> ext4_check_dir_entry(), and often the callers of that function will
-> need the directory record length.  So having ext4_check_dir_entry()
-> optionally fill in the rec_len via a passed-in pointer might be
-> worthwhile.
+On Thu, 17 Aug 2023 09:58:53 -0600 Gustavo A. R. Silva wrote:
+> Subject: [PATCH][next] net: sched: cls_u32: Fix allocation in u32_init()
+> Date: Thu, 17 Aug 2023 09:58:53 -0600
+> 
+> Replace struct_size() with sizeof(), and avoid allocating 8 too many
+> bytes.
 
-Yep, the best way to do it is to leave it unmerged until it is necessary.
-At the same time, I will try to eliminate these regression concerns based
-on these suggestions.
+What are you fixing?
 
-Cheers,
-Shida
+> The following difference in binary output is expected and reflects the
+> desired change:
+> 
+> | net/sched/cls_u32.o
+> | @@ -6148,7 +6148,7 @@
+> | include/linux/slab.h:599
+> |     2cf5:      mov    0x0(%rip),%rdi        # 2cfc <u32_init+0xfc>
+> |                        2cf8: R_X86_64_PC32     kmalloc_caches+0xc
+> |-    2cfc:      mov    $0x98,%edx
+> |+    2cfc:      mov    $0x90,%edx
 
->
-> Cheers,
->
->                                                 - Ted
+Sure, but why are you doing this? And how do you know the change is
+correct?
+
+There are 2 other instances where we allocate 1 entry or +1 entry.
+Are they not all wrong?
+
+Also some walking code seems to walk <= divisor, divisor IIUC being
+the array bound - 1?
+
+Jamal acked so changes are this is right, but I'd really like to
+understand what's going on, and I shouldn't have to ask you all 
+these questions :S
+-- 
+pw-bot: cr
