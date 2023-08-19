@@ -2,172 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72C678183F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C2878184B
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbjHSIKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        id S231791AbjHSIQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:16:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbjHSIKH (ORCPT
+        with ESMTP id S229534AbjHSIPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:10:07 -0400
-Received: from icts-p-cavuit-4.kulnet.kuleuven.be (icts-p-cavuit-4.kulnet.kuleuven.be [134.58.240.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FA51BD4
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:09:53 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 6D942121.AD261
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:145:242:ac11:22])
-        by icts-p-cavuit-4.kulnet.kuleuven.be (Postfix) with ESMTP id 6D942121;
-        Sat, 19 Aug 2023 10:09:50 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1692432590;
-        bh=JllzdJwYt80RHUoWs4XJ7GSSHyLDoibHfdAXtLvTOn8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=HS1pv/ow0+Snh8OQE3Q4nncQ3obo5jZaq/aGmENiK+G78pAr0OgWbPz5XC2Bz6jJG
-         XkUnKDP8epatrfjmFKEpiYvQ0NiNz1G7NsCbDLe4ebyOrlJMdCiGuzjONCxCRWXE34
-         D0/1wimLIHdFK6qWZzIZ3xELkJ9VHE8b2SxoDgdg=
-Received: from localhost.localdomain (ptr-94-109-233-233.dyn.orange.be [94.109.233.233])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id 85229D4EB5306;
-        Sat, 19 Aug 2023 10:09:43 +0200 (CEST)
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-To:     linux-kernel@vger.kernel.org, dave.hansen@linux.intel.com,
-        luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        sohil.mehta@intel.com
-Cc:     x86@kernel.org, bp@alien8.de, tglx@linutronix.de, hpa@zytor.com,
-        Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Subject: [PATCH v4 1/1] x86/pti: Fix kernel warnings for pti= and nopti cmdline options
-Date:   Sat, 19 Aug 2023 10:09:21 +0200
-Message-Id: <20230819080921.5324-2-jo.vanbulck@cs.kuleuven.be>
+        Sat, 19 Aug 2023 04:15:13 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AF62701
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 01:15:04 -0700 (PDT)
+X-UUID: 7bd5c0023e6811eeb20a276fd37b9834-20230819
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Ls0IdxKcV0zs2a86C/WRgplohD3oAveG5LkpKErqf4o=;
+        b=e25wXzzMCPCZMMVxd37r0srcZinKRp3OFHRaHxHKzOz8ExRI3vqn5FLGWRK0Llz4a4t0Geo/BdTFOYxABj2If6aVplRAWUtLEo85GnAgIP5dG677+haYd7Y6wc8mgtzrFwn9tzESq6ntz7IOkJFsYf9WAmaGsaqqKa43OB22dYw=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:fffad3fa-33d9-483c-8b01-7f56a007f487,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:6ff0811f-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 7bd5c0023e6811eeb20a276fd37b9834-20230819
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 815612229; Sat, 19 Aug 2023 16:14:57 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sat, 19 Aug 2023 16:14:55 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sat, 19 Aug 2023 16:14:55 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Yong Wu <yong.wu@mediatek.com>, <iommu@lists.linux.dev>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Laura Nao <laura.nao@collabora.com>
+Subject: [PATCH] iommu/mediatek: Fix share pgtable for iova over 4GB
+Date:   Sat, 19 Aug 2023 16:14:43 +0800
+Message-ID: <20230819081443.8333-1-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230819080921.5324-1-jo.vanbulck@cs.kuleuven.be>
-References: <20230819080921.5324-1-jo.vanbulck@cs.kuleuven.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parse the pti= and nopti cmdline options using early_param to fix 'Unknown
-kernel command line parameters "nopti", will be passed to user space'
-warnings in the kernel log when nopti or pti= are passed to the kernel
-cmdline on x86 platforms. Additionally allow the kernel to warn for
-malformed pti= options.
+In mt8192/mt8186, there is only one MM IOMMU that supports 16GB iova
+space, which is shared by display, vcodec and camera. These two SoC use
+one pgtable and have not the flag SHARE_PGTABLE, we should also keep
+share pgtable for this case.
 
-Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
-Link: https://lore.kernel.org/all/b9bbb279-fa8f-0784-900f-114ce186cbb3@intel.com/
+In mtk_iommu_domain_finalise, MM IOMMU always share pgtable, thus remove
+the flag SHARE_PGTABLE checking. Infra IOMMU always uses independent
+pgtable.
+
+Fixes: cf69ef46dbd9 ("iommu/mediatek: Fix two IOMMU share pagetable issue")
+Reported-by: Laura Nao <laura.nao@collabora.com>
+Closes: https://lore.kernel.org/linux-iommu/20230818154156.314742-1-laura.nao@collabora.com/
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- arch/x86/mm/pti.c | 58 +++++++++++++++++++++++------------------------
- 1 file changed, 29 insertions(+), 29 deletions(-)
+Base on next-20230818.
+---
+ drivers/iommu/mtk_iommu.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/mm/pti.c b/arch/x86/mm/pti.c
-index 78414c6d1..5dd733944 100644
---- a/arch/x86/mm/pti.c
-+++ b/arch/x86/mm/pti.c
-@@ -69,6 +69,7 @@ static void __init pti_print_if_secure(const char *reason)
- 		pr_info("%s\n", reason);
- }
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index b17d3e7288a7..b5fcba305d2a 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -262,7 +262,7 @@ struct mtk_iommu_data {
+ 	struct device			*smicomm_dev;
  
-+/* Assume mode is auto unless overridden via cmdline below. */
- static enum pti_mode {
- 	PTI_AUTO = 0,
- 	PTI_FORCE_OFF,
-@@ -77,50 +78,49 @@ static enum pti_mode {
+ 	struct mtk_iommu_bank_data	*bank;
+-	struct mtk_iommu_domain		*share_dom; /* For 2 HWs share pgtable */
++	struct mtk_iommu_domain		*share_dom;
  
- void __init pti_check_boottime_disable(void)
- {
--	char arg[5];
--	int ret;
--
--	/* Assume mode is auto unless overridden. */
--	pti_mode = PTI_AUTO;
--
- 	if (hypervisor_is_type(X86_HYPER_XEN_PV)) {
- 		pti_mode = PTI_FORCE_OFF;
- 		pti_print_if_insecure("disabled on XEN PV.");
- 		return;
- 	}
+ 	struct regmap			*pericfg;
+ 	struct mutex			mutex; /* Protect m4u_group/m4u_dom above */
+@@ -643,8 +643,8 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
+ 	struct mtk_iommu_domain	*share_dom = data->share_dom;
+ 	const struct mtk_iommu_iova_region *region;
  
--	ret = cmdline_find_option(boot_command_line, "pti", arg, sizeof(arg));
--	if (ret > 0)  {
--		if (ret == 3 && !strncmp(arg, "off", 3)) {
--			pti_mode = PTI_FORCE_OFF;
--			pti_print_if_insecure("disabled on command line.");
--			return;
--		}
--		if (ret == 2 && !strncmp(arg, "on", 2)) {
--			pti_mode = PTI_FORCE_ON;
--			pti_print_if_secure("force enabled on command line.");
--			goto enable;
--		}
--		if (ret == 4 && !strncmp(arg, "auto", 4)) {
--			pti_mode = PTI_AUTO;
--			goto autosel;
--		}
--	}
--
--	if (cmdline_find_option_bool(boot_command_line, "nopti") ||
--	    cpu_mitigations_off()) {
-+	if (cpu_mitigations_off())
- 		pti_mode = PTI_FORCE_OFF;
-+	if (pti_mode == PTI_FORCE_OFF) {
- 		pti_print_if_insecure("disabled on command line.");
- 		return;
- 	}
+-	/* Always use share domain in sharing pgtable case */
+-	if (MTK_IOMMU_HAS_FLAG(data->plat_data, SHARE_PGTABLE) && share_dom) {
++	/* Share pgtable when 2 MM IOMMU share the pgtable or one IOMMU use multiple iova ranges */
++	if (share_dom) {
+ 		dom->iop = share_dom->iop;
+ 		dom->cfg = share_dom->cfg;
+ 		dom->domain.pgsize_bitmap = share_dom->cfg.pgsize_bitmap;
+@@ -677,8 +677,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom,
+ 	/* Update our support page sizes bitmap */
+ 	dom->domain.pgsize_bitmap = dom->cfg.pgsize_bitmap;
  
--autosel:
--	if (!boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
-+	if (pti_mode == PTI_FORCE_ON)
-+		pti_print_if_secure("force enabled on command line.");
-+
-+	if (pti_mode == PTI_AUTO && !boot_cpu_has_bug(X86_BUG_CPU_MELTDOWN))
- 		return;
--enable:
-+
- 	setup_force_cpu_cap(X86_FEATURE_PTI);
- }
+-	if (MTK_IOMMU_HAS_FLAG(data->plat_data, SHARE_PGTABLE))
+-		data->share_dom = dom;
++	data->share_dom = dom;
  
-+static int __init pti_parse_cmdline(char *arg)
-+{
-+	if (!strcmp(arg, "off"))
-+		pti_mode = PTI_FORCE_OFF;
-+	else if (!strcmp(arg, "on"))
-+		pti_mode = PTI_FORCE_ON;
-+	else if (!strcmp(arg, "auto"))
-+		pti_mode = PTI_AUTO;
-+	else
-+		return -EINVAL;
-+	return 0;
-+}
-+early_param("pti", pti_parse_cmdline);
-+
-+static int __init pti_parse_cmdline_nopti(char *arg)
-+{
-+	pti_mode = PTI_FORCE_OFF;
-+	return 0;
-+}
-+early_param("nopti", pti_parse_cmdline_nopti);
-+
- pgd_t __pti_set_user_pgtbl(pgd_t *pgdp, pgd_t pgd)
- {
- 	/*
+ update_iova_region:
+ 	/* Update the iova region for this domain */
 -- 
 2.25.1
 
