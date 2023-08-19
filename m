@@ -2,154 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65B6781C04
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01B8781C2B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbjHTCdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 22:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
+        id S229995AbjHTCpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjHTCdb (ORCPT
+        with ESMTP id S229799AbjHTCpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 22:33:31 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1DCD36ED
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 15:46:12 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSv3k2fFyzK2;
-        Sun, 20 Aug 2023 00:46:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1692485170; bh=DzbAdMU1wYIUdh1RzwXFx3KnrimKqCQ/g0WN0DovXFY=;
-        h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-        b=L9cAYUBDSJfCLdNseZgTZq0aRnoHObflbZSEUyJ762UQQKzOTC3UJbMbL48o89k28
-         tzB4F7YA78Thz/J1pJh0gSYKRx/vhBkoPYRQIEXe/XGeiwhkEBmBXuWsAhbbWy8bUO
-         SrzUDH6kIRM2OeFZmaLTWlvxmMf9/L2i99+J6Ihx5NhPY0e45UcPgWDZtVtZOXJE1m
-         j86Qq1Aonff5cz4CiMkqLpp41dQSzmbIE4uiqjdzFJEL3/kQc1E0uM5BZxjw85evXX
-         EvFSVS2aEYK1y5U7QpwSx/RTiEgnatVloWc2anTewStx5n3liNzmUCiB6mNunxZQJI
-         T6DOfImXjiXmQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Sun, 20 Aug 2023 00:46:10 +0200
-Message-Id: <a50c32692cfecfa0449ef4943388e9ad9bf4615f.1692484240.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 4/6] regulator: core: remove `goto`s from resolve_supply()
+        Sat, 19 Aug 2023 22:45:40 -0400
+X-Greylist: delayed 11787 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 19 Aug 2023 19:09:14 PDT
+Received: from shiva.jussieu.fr (shiva.jussieu.fr [134.157.0.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C4EE7278A
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 19:09:14 -0700 (PDT)
+Received: from mailix1.insp.jussieu.fr (mailix1.insp.jussieu.fr [134.157.37.11])
+          by shiva.jussieu.fr (8.15.2/jtpda-5.4) with ESMTP id 37JMpi8V050489
+          ; Sun, 20 Aug 2023 00:51:44 +0200 (CEST)
+X-Ids:  164
+Received: from hordix.insp.jussieu.fr (hordix.insp.jussieu.fr [134.157.37.9])
+        by mailix1.insp.jussieu.fr (Postfix-INSP-2.10.1) with ESMTPSA id 7370AC01C0B2;
+        Sun, 20 Aug 2023 00:51:38 +0200 (CEST)
+Received: from [105.113.30.117] ([105.113.30.117]) by
+ webmail.insp.jussieu.fr (Horde Framework) with HTTPS; Sat, 19 Aug 2023
+ 22:51:38 +0000
+Date:   Sat, 19 Aug 2023 22:51:38 +0000
+Message-ID: <20230819225138.Horde.fh0Y7eUm-9jJhlf1D0Pym2q@webmail.insp.jussieu.fr>
+From:   Victoria Cleland <Moradmand@insp.jussieu.fr>
+Subject: Hallo
+Reply-to: v.cleland10@aol.com
+User-Agent: Horde Application Framework 5
+Organization: Institut des NanoSciences de Paris
+X-InspUpmcSession: Moradmand
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Miltered: at jchkmail2.reseau.jussieu.fr with ID 64E14780.000 by Joe's j-chkmail (http : // j-chkmail dot ensmp dot fr)!
+X-j-chkmail-Enveloppe: 64E14780.000 from mailix1.insp.jussieu.fr/mailix1.insp.jussieu.fr/134.157.37.11/mailix1.insp.jussieu.fr/<shiva.moradmand@insp.jussieu.fr>
+X-Spam-Status: No, score=4.6 required=5.0 tests=BAYES_80,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,MISSING_HEADERS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        REPLYTO_WITHOUT_TO_CC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 14a71d509ac8 ("Fix lockdep warning resolving supplies") the `out`
-label is just `return ret;`. Inline it for easier reading.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 87e54b776a0f..de434d550937 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -2053,11 +2053,9 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 
- 	r = regulator_dev_lookup(dev, rdev->supply_name);
- 	if (IS_ERR(r)) {
--		ret = PTR_ERR(r);
--
- 		/* Did the lookup explicitly defer for us? */
--		if (ret == -EPROBE_DEFER)
--			goto out;
-+		if (PTR_ERR(r) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
- 
- 		if (have_full_constraints()) {
- 			r = dummy_regulator_rdev;
-@@ -2065,18 +2063,15 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 		} else {
- 			dev_err(dev, "Failed to resolve %s-supply for %s\n",
- 				rdev->supply_name, rdev->desc->name);
--			ret = -EPROBE_DEFER;
--			goto out;
-+			return -EPROBE_DEFER;
- 		}
- 	}
- 
- 	if (r == rdev) {
- 		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
- 			rdev->desc->name, rdev->supply_name);
--		if (!have_full_constraints()) {
--			ret = -EINVAL;
--			goto out;
--		}
-+		if (!have_full_constraints())
-+			return -EINVAL;
- 		r = dummy_regulator_rdev;
- 		get_device(&r->dev);
- 	}
-@@ -2090,8 +2085,7 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	if (r->dev.parent && r->dev.parent != rdev->dev.parent) {
- 		if (!device_is_bound(r->dev.parent)) {
- 			put_device(&r->dev);
--			ret = -EPROBE_DEFER;
--			goto out;
-+			return -EPROBE_DEFER;
- 		}
- 	}
- 
-@@ -2099,7 +2093,7 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	ret = regulator_resolve_supply(r);
- 	if (ret < 0) {
- 		put_device(&r->dev);
--		goto out;
-+		return ret;
- 	}
- 
- 	/*
-@@ -2113,14 +2107,14 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	if (rdev->supply) {
- 		regulator_unlock_two(rdev, r, &ww_ctx);
- 		put_device(&r->dev);
--		goto out;
-+		return 0;
- 	}
- 
- 	ret = set_supply(rdev, r);
- 	if (ret < 0) {
- 		regulator_unlock_two(rdev, r, &ww_ctx);
- 		put_device(&r->dev);
--		goto out;
-+		return ret;
- 	}
- 
- 	regulator_unlock_two(rdev, r, &ww_ctx);
-@@ -2135,12 +2129,11 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 		if (ret < 0) {
- 			_regulator_put(rdev->supply);
- 			rdev->supply = NULL;
--			goto out;
-+			return ret;
- 		}
- 	}
- 
--out:
--	return ret;
-+	return 0;
- }
- 
- /* Internal regulator request function */
--- 
-2.39.2
+19. August 2023.
+
+Hallo,
+
+Ich möchte Ihnen einen Geschäftsvorschlag mitteilen. Für weitere  
+Details antworten Sie auf Englisch.
+
+Grüße
+Frau Victoria Cleland
+____________________
+Sekretärin: Moradmand Celine
 
