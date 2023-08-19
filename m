@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 154987819ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767A37819EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbjHSOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:15:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
+        id S233294AbjHSOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233218AbjHSOO6 (ORCPT
+        with ESMTP id S233224AbjHSOO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 19 Aug 2023 10:14:58 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF19ECB
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:47 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a7d4030621so1171270b6e.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:46 -0700 (PDT)
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5489ED9
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:48 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-64cca551ae2so3733466d6.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692454366; x=1693059166;
+        d=gmail.com; s=20221208; t=1692454367; x=1693059167;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=igV7SREietQ24odTG+SOK9M1ry44nQsh1uk2kgh31uI=;
-        b=YHzUfnhp2ULvFItZJ3o9nXuTnirno2N6SDjG259/ov8RQGn1YKf8iAafsV/TZmzM9G
-         +JnpUr2gmWptKe9x+JSvawiBnbrHhC0ttUD2okQ/G1fkWvTO+q+8WWnRri6umDq+AeyL
-         uI0r086HHFLAzxmjNMoczkq3+6neOsKWrv7/U+R0BktdT2UnHnqO2MbZ02/Sv0a3y64w
-         uVF4L/O5aitTTPQbj/ImVhoNslyY90UeKiLJpC1hbba+hqARYZbe+jJxR1t91g/UGIRk
-         cj0t8on3AEkxlEMjodaPmpu584rPPq3QYwFMKZXzjDyKDOj1sI+dorfQbPfPplhlCTXI
-         V2Hw==
+        bh=SmmjHmVn6ls0sfUQEL2MtTTuL3JIkk0EADWsp1ssJ1I=;
+        b=DG6joiC2Lh32MiV3Hhqxx3JWfQDfDz/+8b0EdnMI1S+h3jh7LlNSk0ZQqNJgRg62Z7
+         3rlaxuUKCDxday8et0CVelK2WFG3zjQNY2LFZOzuTLwxfBhJqvEfVigb/4QPBMbQcxjU
+         qjqzPnj0LYYPPADAvFTkSkVDZfLtCn1hLjx1jfvoUGGiDN9oLQeTTHtTTmJTcCitifem
+         CKA0GfI3ugT45tKAdlgqZEDA18Rftgam1AdPVf8K6HYQufQ6i7Il64g3uPRSBc+0rc0k
+         wfwnK3RBh06a2KwGVvE7GvgcZQYFOyPzUvnjFYV6Kv+K90LdXhq+3wO3Px4qqG69USp8
+         cr3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692454366; x=1693059166;
+        d=1e100.net; s=20221208; t=1692454367; x=1693059167;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=igV7SREietQ24odTG+SOK9M1ry44nQsh1uk2kgh31uI=;
-        b=R3I6FrJoOiR1df06L/eq+2jpjyvA1NOfjqaIh5poa07OXgmZy9MGqTSjlCyCxd1rJ8
-         hp2RgYT7MOJfFxmV5ztutwQ0I8O0MnS6T5YkdIzGT4C56b21BKEz+AF8e0e9bjiba/jr
-         Ks7uRfEodk+1XE1CafpaE11+i8tR8X+S1jkl7dwDY6ZLb8VRyrm7sFZrU/R7U7+E5ses
-         4vbvv5y0J4ghYoGe/BSLN/rlqfhI1D77abKXRdGjqPH7d9n1Xa2ToJ3wbii2Sn0rpnW2
-         TCDtxO14Dj90bkzlQrbKwiJmkX//xdsLE4d4AHN8Bilc+xI5YuWMm6YkMMr8ZF+F2SD0
-         t8mQ==
-X-Gm-Message-State: AOJu0YzMIpNV55dV29m4DHXZMtVJVbnU58W8xGqgRFpXwOdhz8hnsHcC
-        PDjbTfB50fDegVmlBFZdpgEgIuuLH4o=
-X-Google-Smtp-Source: AGHT+IHSqqEDImaL7LnYyBklQgJU18/Wzpv/z+7QriCsXPpQMlpRzLKW65D8myoE3i10msbA9KqjvA==
-X-Received: by 2002:a05:6358:e486:b0:135:499b:a68c with SMTP id by6-20020a056358e48600b00135499ba68cmr488750rwb.8.1692454365835;
-        Sat, 19 Aug 2023 07:12:45 -0700 (PDT)
+        bh=SmmjHmVn6ls0sfUQEL2MtTTuL3JIkk0EADWsp1ssJ1I=;
+        b=l4LyclCCgJkt4inB2ma7FG5D0sIR/tZEqO5L7XmabR4v9JWvNNSmrn2j1cnm7T14ZJ
+         avRLZXxxdp9N2WpTCgQe+Sj23pbCoAWoIPpYNNfRllYHDviu5SJvBdoE/LFGpG3HkaPm
+         WSN8K/U8N1IPphy0rhhsLwSx/+79ShkOP8jHX835iF4I4uw5rly4HrobkQJj4t0GQ/+Q
+         qIKaam4MUBihQP2R28STOukhPd/4FEMPoqlv4KBamPfX4Cyf4xlb1dra5L/Fh7TB4dXf
+         kNUCKoIbec1l2pDbBDdGUiJv0EETlrNZvsiaaT5u6bwijkJHrWIIPXadEHJF3BQnCUWP
+         7LAg==
+X-Gm-Message-State: AOJu0YxEqfPHBePHlEYktLVkGMd9gfzmdvMAL5K98DgXIU1BSdyNVKph
+        j3csWtPAhXUME2JF0zkCU7yrOIaoJa0=
+X-Google-Smtp-Source: AGHT+IEfRsyy5LserSpARnbs4AMrhHIcl356NFzEZZyieATaLVkGrmSM4un/e4KNH9OAVV4li0xoAg==
+X-Received: by 2002:a0c:e413:0:b0:64b:997f:5a7e with SMTP id o19-20020a0ce413000000b0064b997f5a7emr2602799qvl.8.1692454366974;
+        Sat, 19 Aug 2023 07:12:46 -0700 (PDT)
 Received: from localhost ([32.218.242.113])
-        by smtp.gmail.com with ESMTPSA id r11-20020a0ccc0b000000b00631fea4d5bcsm1466439qvk.95.2023.08.19.07.12.45
+        by smtp.gmail.com with ESMTPSA id g22-20020a0caad6000000b006262de12a8csm1464891qvb.65.2023.08.19.07.12.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 07:12:45 -0700 (PDT)
+        Sat, 19 Aug 2023 07:12:46 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Yury Norov <yury.norov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
@@ -70,11 +70,10 @@ Cc:     Yury Norov <yury.norov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
         prime.zeng@huawei.com, linuxarm@huawei.com,
         yangyicong@hisilicon.com,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2 3/6] sched: fix sched_numa_find_nth_cpu() in CPU-less case
-Date:   Sat, 19 Aug 2023 07:12:35 -0700
-Message-Id: <20230819141239.287290-4-yury.norov@gmail.com>
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v2 4/6] sched: fix sched_numa_find_nth_cpu() in non-NUMA case
+Date:   Sat, 19 Aug 2023 07:12:36 -0700
+Message-Id: <20230819141239.287290-5-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230819141239.287290-1-yury.norov@gmail.com>
 References: <20230819141239.287290-1-yury.norov@gmail.com>
@@ -90,45 +89,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the node provided by user is CPU-less, corresponding record in
-sched_domains_numa_masks is not set. Trying to dereference it in the
-following code leads to kernel crash.
+When CONFIG_NUMA is enabled, sched_numa_find_nth_cpu() searches for a
+CPU in sched_domains_numa_masks. The masks includes only online CPUs,
+so effectively offline CPUs are skipped.
 
-To avoid it, start searching from the nearest node with CPUs.
+When CONFIG_NUMA is disabled, the fallback function should be consistent.
 
 Fixes: cd7f55359c90 ("sched: add sched_numa_find_nth_cpu()")
-Reported-by: Yicong Yang <yangyicong@hisilicon.com>
-Closes: https://lore.kernel.org/lkml/CAAH8bW8C5humYnfpW3y5ypwx0E-09A3QxFE1JFzR66v+mO4XfA@mail.gmail.com/T/
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Closes: https://lore.kernel.org/lkml/ZMHSNQfv39HN068m@yury-ThinkPad/T/#mf6431cb0b7f6f05193c41adeee444bc95bf2b1c4
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- kernel/sched/topology.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/topology.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d3a3b2646ec4..c6e89afa0d65 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2113,12 +2113,16 @@ static int hop_cmp(const void *a, const void *b)
-  */
- int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index fea32377f7c7..52f5850730b3 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -251,7 +251,7 @@ extern const struct cpumask *sched_numa_hop_mask(unsigned int node, unsigned int
+ #else
+ static __always_inline int sched_numa_find_nth_cpu(const struct cpumask *cpus, int cpu, int node)
  {
--	struct __cmp_key k = { .cpus = cpus, .node = node, .cpu = cpu };
-+	struct __cmp_key k = { .cpus = cpus, .cpu = cpu };
- 	struct cpumask ***hop_masks;
- 	int hop, ret = nr_cpu_ids;
+-	return cpumask_nth(cpu, cpus);
++	return cpumask_nth_and(cpu, cpus, cpu_online_mask);
+ }
  
- 	rcu_read_lock();
- 
-+	/* CPU-less node entries are uninitialized in sched_domains_numa_masks */
-+	node = numa_nearest_node(node, N_CPU);
-+	k.node = node;
-+
- 	k.masks = rcu_dereference(sched_domains_numa_masks);
- 	if (!k.masks)
- 		goto unlock;
+ static inline const struct cpumask *
 -- 
 2.39.2
 
