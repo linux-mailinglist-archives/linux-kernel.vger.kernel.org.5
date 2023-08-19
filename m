@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED04078194F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3A7781954
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbjHSLoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 07:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
+        id S230289AbjHSLtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 07:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjHSLoy (ORCPT
+        with ESMTP id S229577AbjHSLtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 07:44:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA359EFE;
-        Sat, 19 Aug 2023 04:43:07 -0700 (PDT)
+        Sat, 19 Aug 2023 07:49:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27ECA7;
+        Sat, 19 Aug 2023 04:48:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 73EA261BED;
-        Sat, 19 Aug 2023 11:43:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43FC3C433C7;
-        Sat, 19 Aug 2023 11:43:05 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 41BFE619A5;
+        Sat, 19 Aug 2023 11:48:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 303DBC433C8;
+        Sat, 19 Aug 2023 11:48:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692445386;
-        bh=v4/hJHuxQjUWnPGAM1YGHOt/h9vD2azOqJ+JvQNLGas=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JffwpfJhNF1TRsStEi588+ofvHki0RgSlMjMn4qoZKyWSGSlrvJ7IGwggWhjQwnI7
-         AtjNFai1SS63VJteVCJ5uRxDOtQ4XakDBzt2JhMOnmGkZDxsxoSs0dj2SnsusSLUkX
-         lgL1QqesPzQy1VrR/2+pABDBC7R0NP184il7CkYbAsDBuVDf+amqyLI3x9zm8fcret
-         ieiZTBHnUjzcg8cVpIv+enxJu0Ob0fqlqBSZsGEaUeJHUWUfs0EB9F1nLDdBjUTzNm
-         jwVo0GGI3T/6B9UpRo6+yDIucJYBKfF9aKUqtapuctbPFDjft7Hc6J7PwwV9sr8W2v
-         1+6eHRz4ghSvw==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH] kbuild: remove include/ksym from CLEAN_FILES
-Date:   Sat, 19 Aug 2023 20:43:01 +0900
-Message-Id: <20230819114301.3505878-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        s=k20201202; t=1692445689;
+        bh=A9tgsTdBMhQA/WJpr5nRjwwiNo470PILec1afwIdDoE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=HAQ6LryMFjY2tRHa+R9xdI5OJBUao5XIAiOUYvUYLO2fk98nXL1koc72ROfCLeU21
+         Zbg8xR7k+XFt0EVR0Uppc6WlHERuL6F/l2bLZZDV0i7bVBX+JhivFzypcoUoTMLc1e
+         TvOKj4HKJLQPzAuaZAoVHnpa3cW7q3SaFYZuO2YUReHW0qPA9CGqHC1+Bm5zXlDsGi
+         q8UW2boyVaJ8dBZj/mzYiDf+/fU6p6T4XB4wC0S7Xlt2PJwy+ti7bzc/Y5kYNaMj3k
+         7vjlhV0pwo2p6YymaJVxcSuKVlkBPHbpMQbZaPCfxthmc8Xv3IK76vY/s+klvpjKZx
+         mgrRrT4+AsmYA==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Anh Tuan Phan <tuananhlfc@gmail.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: Re: [PATCH v1] fs/dcache: Replace printk and WARN_ON by WARN
+Date:   Sat, 19 Aug 2023 13:48:03 +0200
+Message-Id: <20230819-flexibel-erzhaltig-a16a0fd46e24@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230817163142.117706-1-tuananhlfc@gmail.com>
+References: <20230817163142.117706-1-tuananhlfc@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=965; i=brauner@kernel.org; h=from:subject:message-id; bh=A9tgsTdBMhQA/WJpr5nRjwwiNo470PILec1afwIdDoE=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQ8WPVk292rTg5nUuY5XLueNLmLs3ShoMR0/feZfxuqny/Q U1/L3VHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjCRWdyMDGtXrEjdK/x4ouvUffrnj1 +WNLt0NX9hZeYhJ8v1x58dic9nZHhlZs70fduP8tNpFusvdbMd16hIb/olHPX86pdY/3XN5owA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a remnant of commit 5e9e95cc9148 ("kbuild: implement
-CONFIG_TRIM_UNUSED_KSYMS without recursion").
+On Thu, 17 Aug 2023 23:31:42 +0700, Anh Tuan Phan wrote:
+> Use WARN instead of printk + WARN_ON as reported from coccinelle:
+> ./fs/dcache.c:1667:1-7: SUGGESTION: printk + WARN_ON can be just WARN
+> 
+> 
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
- Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-diff --git a/Makefile b/Makefile
-index 4425d87dd2fa..f451241d0feb 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1596,7 +1596,7 @@ endif
- # make distclean Remove editor backup files, patch leftover files and the like
- 
- # Directories & files removed with 'make clean'
--CLEAN_FILES += include/ksym vmlinux.symvers modules-only.symvers \
-+CLEAN_FILES += vmlinux.symvers modules-only.symvers \
- 	       modules.builtin modules.builtin.modinfo modules.nsdeps \
- 	       compile_commands.json .thinlto-cache rust/test rust/doc \
- 	       rust-project.json .vmlinux.objs .vmlinux.export.c
--- 
-2.39.2
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] fs/dcache: Replace printk and WARN_ON by WARN
+      https://git.kernel.org/vfs/vfs/c/7fbf9abcc77f
