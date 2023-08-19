@@ -2,85 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE72781693
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46BC781691
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243615AbjHSCJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 22:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
+        id S243711AbjHSCKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 22:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243656AbjHSCJK (ORCPT
+        with ESMTP id S244190AbjHSCKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 22:09:10 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06442421F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:09:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c136ee106so193191766b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692410947; x=1693015747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k267oI+dAzHZnNHVlp3pyDBJcaxDuy7lG9Dkzmn1h54=;
-        b=IbadbjFEIrpByLcq3LOudohJQP2TQWqZ0x1Sw2sI0NDuGFEM6+9ANcua8u4AxFhPF0
-         hK5AnMtjOJdFCJYcwcNlRYoD5C4JBeZgyPOHKHUGZf9X2qe3x3EeCYVMGp4HbEpTAW6h
-         CbW+bZGRLJJBI3bCz8xUBIL6nk7MNujaLsNTrpy9chBrhGx6/PCiH6t4V+d9AwtkvNj7
-         DCjvo099IDXY/BS9HBA8/gkXjsCdPzGlibIBbXWg/VtcdE6MKVov37lKs68CtwxBOk1H
-         KlYsOa7gSDONJS+ku+ZpNecNzgp0OwYRlGXVuALnpVcN2Gq4igK20o3eGAtJn75Y2+Ad
-         Ia4w==
+        Fri, 18 Aug 2023 22:10:36 -0400
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABDB422C
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:10:31 -0700 (PDT)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bf56d92231so3529185ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Aug 2023 19:10:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692410947; x=1693015747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k267oI+dAzHZnNHVlp3pyDBJcaxDuy7lG9Dkzmn1h54=;
-        b=R2Z3KaG1BSLE21KGoXQonyo41ZdzO6RfqVFWrnOUfnk/K+UdpZ5rw74zYGFzL4hLwU
-         +AWsGpo6a0ls9zJh94NM0z9FK+f6ayy8ZLK5rqtR0kOH9fyOPODznaFN3xMwnojJstjC
-         KuhaKksoE1dArD1XEIR0j3oYMd1fjb7YhpysxjXsFbQhaCR0jzu+4gfTz+2QmgI+5fS6
-         O5nTM1koiWIyor2bchBZyvqL6EaFxoARUCCpUmOIidKbA6y9ppj/uPj+3PMYEuv8ezn2
-         8DLHVPn++AUXLQZynfm/63ciT6U/gRSslK7MnbejKHV+LG467GGCWs6cGrGUNJ/bLozx
-         jzSg==
-X-Gm-Message-State: AOJu0YwANIZneI8rIGkRmtIIau9xNWYG3SwrgouwW6pUV2z1BjVp3XAI
-        iCtkc+YBZULQbGbchlRmLKhClz7HOmkLK6mgtUkCbQ==
-X-Google-Smtp-Source: AGHT+IFuMGk+o9gVI4or+3uEppGaYEoS4rzz60lJAU827sHHVMZx4j/Ip1xtz6eMASi3EVSZaRpwSuKFikjlG5+fIQ0=
-X-Received: by 2002:a17:906:1c:b0:99c:bb4d:f596 with SMTP id
- 28-20020a170906001c00b0099cbb4df596mr709096eja.6.1692410947101; Fri, 18 Aug
- 2023 19:09:07 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692411033; x=1693015833;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rj+JQtkIXd53P8Cpr7OphiVyMguO4HSQpjW6cyHuHqA=;
+        b=Qn/KfC8Mv3JElqxnJOi2GitvmfzjXkZyT5CLBQhl7EeuBba2w4HfDc0OsmAXwMsCv0
+         CB00yu/HjVDWWrv/FtDqJlrGREipyzw0VtnYMUY/cXpu0QHq1wvjhTtUmfRIZQqiAWj3
+         rdaPF60jAXanM0kcPcbX2SjoPhS5dyOBlLYlbMANufL4cFkwZZVe6AxhUfEGAEpQcZxB
+         sTomPXIWaaWfccHB9U1TYT6dUFRUOkD3V8PM8vUzvombgg1nhQ7KBf0CsqVmC2u/Phv/
+         iKq422ngpMxPf8HX2LEDjubPiNe+4/THGQo2o7W3CergCKnVMt8ATEGAd3R4Soi7LdvZ
+         itVA==
+X-Gm-Message-State: AOJu0YynARCq1vDVp+KaLZO/aTqaGQ0ldJ3BsrHyEhdtXHF4Lmmi2yFB
+        fYdsbeCCDjlCRJyk0cWqeVbSb0yuAPxuwPSQ5FNVqVMdAw9u
+X-Google-Smtp-Source: AGHT+IGZ3i/+Kx845aejyFMs4ule9aNJpp2FGHzjup0ctNIXwc7957jBsQfG6F0oYTJKXvn483L1PLXno1K9ZVhSukzuXYcIHu5w
 MIME-Version: 1.0
-References: <cover.1692119201.git.isaku.yamahata@intel.com>
- <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
- <ZN+whX3/lSBcZKUj@google.com> <52c6a8a6-3a0a-83ba-173d-0833e16b64fd@amd.com> <ZN/0aefp2gw5wDXk@google.com>
-In-Reply-To: <ZN/0aefp2gw5wDXk@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Fri, 18 Aug 2023 19:08:30 -0700
-Message-ID: <CAL715WL9TJzDxZE8_gfhUQFGtOAydG0kyuSbzkqWTs3pc57j7A@mail.gmail.com>
-Subject: Re: [PATCH 4/8] KVM: gmem: protect kvm_mmu_invalidate_end()
-To:     Sean Christopherson <seanjc@google.com>,
-        Jacky Li <jackyli@google.com>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>, isaku.yamahata@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
+X-Received: by 2002:a17:903:1c4:b0:1bc:7c69:925c with SMTP id
+ e4-20020a17090301c400b001bc7c69925cmr349051plh.10.1692411032876; Fri, 18 Aug
+ 2023 19:10:32 -0700 (PDT)
+Date:   Fri, 18 Aug 2023 19:10:32 -0700
+In-Reply-To: <20230819014631.2196-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006dbd3606033d26fa@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_chan_del
+From:   syzbot <syzbot+cf54c1da6574b6c1b049@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,131 +55,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Jacky Li
+Hello,
 
-On Fri, Aug 18, 2023 at 3:45=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> +Mingwei to correct me if I'm wrong
->
-> On Fri, Aug 18, 2023, Ashish Kalra wrote:
-> >
-> > On 8/18/2023 12:55 PM, Sean Christopherson wrote:
-> > > On Tue, Aug 15, 2023, isaku.yamahata@intel.com wrote:
-> > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > >
-> > > > kvm_mmu_invalidate_end() updates struct kvm::mmu_invalidate_in_prog=
-ress
-> > > > and it's protected by kvm::mmu_lock.  call kvm_mmu_invalidate_end()=
- before
-> > > > unlocking it. Not after the unlock.
-> > > >
-> > > > Fixes: 8e9009ca6d14 ("KVM: Introduce per-page memory attributes")
-> > >
-> > > This fixes is wrong.  It won't matter in the long run, but it makes m=
-y life that
-> > > much harder.
-> > >
-> > > > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > ---
-> > > >   virt/kvm/kvm_main.c | 15 ++++++++++++++-
-> > > >   1 file changed, 14 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > > > index 8bfeb615fc4d..49380cd62367 100644
-> > > > --- a/virt/kvm/kvm_main.c
-> > > > +++ b/virt/kvm/kvm_main.c
-> > > > @@ -535,6 +535,7 @@ struct kvm_mmu_notifier_range {
-> > > >           } arg;
-> > > >           gfn_handler_t handler;
-> > > >           on_lock_fn_t on_lock;
-> > > > + on_unlock_fn_t before_unlock;
-> > > >           on_unlock_fn_t on_unlock;
-> > >
-> > > Ugh, shame on my past me.  Having on_lock and on_unlock be asymmetric=
-al with respect
-> > > to the lock is nasty.
-> > >
-> > > I would much rather we either (a) be explicit, e.g. before_(un)lock a=
-nd after_(un)lock,
-> > > or (b) have just on_(un)lock, make them symetrical, and handle the SE=
-V mess a
-> > > different way.
-> > >
-> > > The SEV hook doesn't actually care about running immediately after un=
-lock, it just
-> > > wants to know if there was an overlapping memslot.  It can run after =
-SRCU is dropped,
-> > > because even if we make the behavior more precise (right now it blast=
-s WBINVD),
-> > > just having a reference to memslots isn't sufficient, the code needs =
-to guarantee
-> > > memslots are *stable*.  And that is already guaranteed by the notifie=
-r code, i.e.
-> > > the SEV code could just reacquire SRCU.
-> >
-> > On a separate note here, the SEV hook blasting WBINVD is still causing
-> > serious performance degradation issues with SNP triggered via
-> > AutoNUMA/numad/KSM, etc. With reference to previous discussions related=
- to
-> > it, we have plans to replace WBINVD with CLFLUSHOPT.
->
-> Isn't the flush unnecessary when freeing shared memory?  My recollection =
-is that
-> the problematic scenario is when encrypted memory is freed back to the ho=
-st,
-> because KVM already flushes when potentially encrypted mapping memory int=
-o the
-> guest.
->
-> With SNP+guest_memfd, private/encrypted memory should be unreachabled via=
- the
-> hva-based mmu_notifiers.  gmem should have full control of the page lifec=
-ycles,
-> i.e. can get the kernel virtual address as appropriated, and so it SNP sh=
-ouldn't
-> need the nuclear option.
->
-> E.g. something like this?
->
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 07756b7348ae..1c6828ae391d 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -2328,7 +2328,7 @@ static void sev_flush_encrypted_page(struct kvm_vcp=
-u *vcpu, void *va)
->
->  void sev_guest_memory_reclaimed(struct kvm *kvm)
->  {
-> -       if (!sev_guest(kvm))
-> +       if (!sev_guest(kvm) || sev_snp_guest(kvm))
->                 return;
->
->         wbinvd_on_all_cpus();
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-I hope this is the final solution :)
+Reported-and-tested-by: syzbot+cf54c1da6574b6c1b049@syzkaller.appspotmail.com
 
-So, short answer: no.
+Tested on:
 
-SNP+guest_memfd prevent untrusted host user space from directly
-modifying the data, this is good enough for CVE-2022-0171, but there
-is no such guarantee that the host kernel in some scenarios could
-access the data and generate dirty caches. In fact, AFAIC, SNP VM does
-not track whether each page is previously shared, isn't it? If a page
-was previously shared and was written by the host kernel or devices
-before it was changed to private. No one tracks it and dirty caches
-are there!
+commit:         47762f08 Add linux-next specific files for 20230817
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1738036fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed03cf326b3ef94c
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf54c1da6574b6c1b049
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1400439ba80000
 
-So, to avoid any corner case situations like the above, it seems
-currently we have to retain the property: flushing the cache when the
-guest memory mapping leaves KVM NPT.
-
-Of course, this is fundamentally because SME_COHERENT only applies to
-CPU cores, but not DMA. If SME_COHERENT is complete, flushing is no
-longer needed. Alternatively, we need extra bookkeeping for KVM to
-know whether each page has dirty cache lines. Another alternative is
-to filter mmu_notifier reasons, which is the part that I am planning
-to take. thoughts?
-
-Thanks.
--Mingwei
+Note: testing is done by a robot and is best-effort only.
