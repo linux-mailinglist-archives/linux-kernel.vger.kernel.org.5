@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26EC1781948
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4176278194C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 13:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbjHSLiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 07:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S232124AbjHSLnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 07:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbjHSLiy (ORCPT
+        with ESMTP id S231946AbjHSLnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 07:38:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F18D2EC97;
-        Sat, 19 Aug 2023 04:38:19 -0700 (PDT)
+        Sat, 19 Aug 2023 07:43:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF36CA7E
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 04:41:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D58460B52;
-        Sat, 19 Aug 2023 11:38:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A760C433C8;
-        Sat, 19 Aug 2023 11:38:16 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 77D9360B09
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 11:41:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CA02BC433C9;
+        Sat, 19 Aug 2023 11:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692445098;
-        bh=8Xb1sXpK5Czzw+xGJmlX3j6jz4r9B4+2GgzRkwc9Qx8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d9imIt/XhSq5NYpp+4zuMr6YIgg2dHGSIFCpFwJJyd2GJTKLypz9X65P9AV1V7dNx
-         N1s11sNw/pwSLkZlPmzw/O5CIj/9cSkN3vK2iMtiqbUaXrRSt7199vYxbNTUt42Fl7
-         kuwSOwFR5mQiQVTQM44BcoE9lsQfGTtVrs4e5ucgUSxkVsPRZ1knEu+CSSMoqsT8EH
-         IxjMtHy4w59/aOd54hT8LKoPmfQwqKD/UxYQc5PBNYPaMoksNO2+fe72EnDZeEbFyj
-         +uZ057iQpDIi1DDpa5VMiBMvOr9hkbrAts38/OymHt2AsSLXdqlbVDZjvn1EbnzokJ
-         EW6bR+eeJVYnw==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH][next] fs/pipe: remove redundant initialization of pointer buf
-Date:   Sat, 19 Aug 2023 13:38:12 +0200
-Message-Id: <20230819-mundschutz-neuanfang-4dc2a6524c56@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230818144556.1208082-1-colin.i.king@gmail.com>
-References: <20230818144556.1208082-1-colin.i.king@gmail.com>
-MIME-Version: 1.0
+        s=k20201202; t=1692445307;
+        bh=LKmKQ0xSbZIzIwfqFbMR61HP7pVuNaLztMJQtV/tx80=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=s5ho89sUA59BNYnbFy+CaxKsuPq+fZY12YuNl9s+og6HoVU6PEIkMUbfXd2yc1L2v
+         Dop3+9w5ELa6Y3pxNuAYQ3r4U3sUmw4fhEg4tH9VKflvpFTDfjMMxb3awOc65PjpTz
+         PdnUgY5h9mHkIqh3/3McptNr5ea2tPv19qUtvo+o5rfrylvF1w0llbu0QVUjTxZep3
+         7FBEqwrfxqtkiX+PpMKX32ss+vI2x26QNTSHu2xV3O/pauFp5p086X+t4yBrr1d3kw
+         B0YfLITqWRRhGBDHsZWYrsIdvm1YfUDJS6L3qUuU9bpllD4rm2OPuLWPC0tot2yzg9
+         54wTk6SHXRQQw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A759FC59A4C;
+        Sat, 19 Aug 2023 11:41:47 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1204; i=brauner@kernel.org; h=from:subject:message-id; bh=8Xb1sXpK5Czzw+xGJmlX3j6jz4r9B4+2GgzRkwc9Qx8=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQ8WDnz83WD4LNmCus8HK68mqqYs/RK79sjdcy39ELmZ3qd WZ29rKOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiP+Yy/FP5cPx+rPCuc9n2kVadT7 7N2L0nXerSQkWfzYoeLEF3fjowMvw6ahvUfPOydPv2JX2JH/4+TbrSkLFA+N3iiNWN7gGMxiwA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Subject: Re: [PATCH net] net: dsa: mt7530: fix handling of 802.1X PAE frames
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169244530768.26291.13426375569408099631.git-patchwork-notify@kernel.org>
+Date:   Sat, 19 Aug 2023 11:41:47 +0000
+References: <20230813105917.32102-1-arinc.unal@arinc9.com>
+In-Reply-To: <20230813105917.32102-1-arinc.unal@arinc9.com>
+To:     =?utf-8?b?QXLEsW7DpyDDnE5BTCA8YXJpbmMudW5hbEBhcmluYzkuY29tPg==?=@ci.codeaurora.org
+Cc:     daniel@makrotopia.org, Landen.Chao@mediatek.com, dqfext@gmail.com,
+        sean.wang@mediatek.com, andrew@lunn.ch, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        bartel.eerdekens@constell8.be, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,31 +64,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 15:45:56 +0100, Colin Ian King wrote:
-> The pointer buf is being initializated with a value that is never read,
-> it is being re-assigned later on at the pointer where it is being used.
-> The initialization is redundant and can be removed. Cleans up clang scan
-> build warning:
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Sun, 13 Aug 2023 13:59:17 +0300 you wrote:
+> 802.1X PAE frames are link-local frames, therefore they must be trapped to
+> the CPU port. Currently, the MT753X switches treat 802.1X PAE frames as
+> regular multicast frames, therefore flooding them to user ports. To fix
+> this, set 802.1X PAE frames to be trapped to the CPU port(s).
 > 
-> fs/pipe.c:492:24: warning: Value stored to 'buf' during its
-> initialization is never read [deadcode.DeadStores]
+> Fixes: b8f126a8d543 ("net-next: dsa: add dsa support for Mediatek MT7530 switch")
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
 > [...]
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+Here is the summary with links:
+  - [net] net: dsa: mt7530: fix handling of 802.1X PAE frames
+    https://git.kernel.org/netdev/net/c/e94b590abfff
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
 
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] fs/pipe: remove redundant initialization of pointer buf
-      https://git.kernel.org/vfs/vfs/c/241a71ef5d91
