@@ -2,150 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3504A7819E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:09:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A247819E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 16:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbjHSOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 10:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
+        id S233188AbjHSONu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 10:13:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjHSOJl (ORCPT
+        with ESMTP id S229923AbjHSONs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 10:09:41 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD749FD
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:08:00 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so3108541fa.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:07:59 -0700 (PDT)
+        Sat, 19 Aug 2023 10:13:48 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834585599
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:43 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76da0ed3b7aso2399585a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 07:12:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692454078; x=1693058878;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rOWWo2LjMhwURY3WvPqWf8b8/SlL/lTQ9/nUQ2JsfPw=;
-        b=e7dfceNuswSHhV2Q+Q8etq2aBEtr3w98FUvAaizPaJTpFDUtoqVa9BCoW1frz6RI8/
-         xWt6BgfLhHzC64ZxzfasewKSEvAfH1q0y0awButVa4UXJJaAXuzNdWcCVodpGARhmMwA
-         N9bxmnfd4g1g5L7M3oJ1KxgQNpMSBZlG1m9ohRhYqLDJiG5WCrfn1Swzw7QbFdKPTJr/
-         lqQd9HJtrviGU4m+8/hck/l8qxawL8sXEw2T62OIHr5YEwZQzhv+wgWIIq/yZYwK84WH
-         CsKAy8xId5oupp/WFjLBSFA11OMJb86IcFn+p46LPZZP0UNu2l+dVG/noZV2K6CbpFSF
-         RfAA==
+        d=gmail.com; s=20221208; t=1692454362; x=1693059162;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mPWQ2vK2kX3O9yTdZhAmhC3dcu3HKICeyyzpQ4tve9E=;
+        b=rGcvNDopABgqPZqzeB5UOOz1sJPaZCNTiHfrhi2hwICq2ybn9eyfwJZ2+e7JV2RniR
+         FaHluQWFGFF+qkWWA/vq5AVV/Z/ccWhz1iADgKBTNVMhMwIHmBXt+jiZ6yuQd8pIpG9I
+         fX94ANcpMt3v3nrffMSEZoxpWhQPEj88vSQNzeygksYnY8OQJOjxTYwMg1H60wRpGwXz
+         1JcpeQKO9EhnMQ7QhUMNyCruX2mwK4oMyCX5WGfS0HTbIsTZhIK0E5Bn83NKyAL39aGr
+         hAbeewy0hnhp2Cslhp7ebtyuiJNC/E364c5IwFfp1uZgZKukCyuralnsj1M/L8OjiNEC
+         z1eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692454078; x=1693058878;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rOWWo2LjMhwURY3WvPqWf8b8/SlL/lTQ9/nUQ2JsfPw=;
-        b=FhXhyhdqlQK66BOzU060fA3FwvjANxmHPngfd4bdLPY8HGRiBlwVzEEFdWREzhT2PP
-         TZ22n/zKwl1cPh3+bWA6B94d95GCDA7NLYUZGXBjLo8FK0TcG3Y66Veng90hgX8JC7fb
-         H1spFHT6QKgnU2skESrLt0UDR6XiQ3GOnliLjrmUXIvmr1IryvpgcX9+YCnETJmy1Zmv
-         4XoYRQZxldfxB7TNa9esl9ivLrDleFfv0Fw8dqapmDpMZ1TOAq6JoTu3tlB/stGc7EIL
-         7bhGbsETDwFUXF+hCd96lGOV0PUdrQCodHXYA61uOp0AK0kpLv0w0n5a2TcUiJJW57Do
-         YJVw==
-X-Gm-Message-State: AOJu0YweQv/5FgFHR4G5hXmEzLgCYYzHkKBuvC2N1wfreMpNBEdx9tO2
-        8MbWqxpRI7DF9xER1yjCLWpZJw==
-X-Google-Smtp-Source: AGHT+IFcVY3kUSEo4uMdTwq4eVoLkaPw9Pk8yz0tAyTzHiev4w1z2+aBXysOe8ooRigg1Fhn8d8yEQ==
-X-Received: by 2002:a2e:9b4e:0:b0:2b9:ecc5:d1de with SMTP id o14-20020a2e9b4e000000b002b9ecc5d1demr1374245ljj.37.1692454078299;
-        Sat, 19 Aug 2023 07:07:58 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id m18-20020a1709061ed200b00988dbbd1f7esm2758273ejj.213.2023.08.19.07.07.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 07:07:57 -0700 (PDT)
-Message-ID: <3c2bfa91-44b3-0b1d-aa41-52f1e46df796@linaro.org>
-Date:   Sat, 19 Aug 2023 16:07:56 +0200
+        d=1e100.net; s=20221208; t=1692454362; x=1693059162;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mPWQ2vK2kX3O9yTdZhAmhC3dcu3HKICeyyzpQ4tve9E=;
+        b=GYgplzIt0zuYGN4WRt3hwN6Lt2PShOfsv12PLEIoZsYZlfzQ2Mruw4tNzL8tbwN+dt
+         AHrFKoHtJ3UJtYpkjiR+nBCmBnKW3+joJcTm09ZbgG6ymMb78Si6ruWWUXy9K6zHC5NF
+         f+HsEnyIMHb82sT02vpYUm8BlTpJsHaFczT/Nj0i3gFYk4Q63CuLGYG012o519ks4Aum
+         g2VqowYPO5Rray5XJwaJM4lgty9hza86F/GR9UkDMZ2GKQ4Lpvo59GTDFUNp262I0wMD
+         K1v0QnfmdqMM0D2XXuRQeCkf+H8LlotYuPhXFrfKJx8c34HtfgsfeAndfcVEIvyfPR30
+         vL1Q==
+X-Gm-Message-State: AOJu0Ywsmh6Po7qFPyqGs8Wp+uxr3NjmVlhLV51mvcxAEH2D9jx+FVmG
+        UZYbvX+rENsobr6dvU/wBDMHu1gbv+s=
+X-Google-Smtp-Source: AGHT+IH2tWAivh4wKIlaP0hQ4fQ+ByGgdqB8HmuIiGxaZp0EvuT2z1rF/Ga9MIo2J+Rpp7cMeYVqWQ==
+X-Received: by 2002:a05:620a:e90:b0:76d:9c84:9ea7 with SMTP id w16-20020a05620a0e9000b0076d9c849ea7mr1247630qkm.22.1692454362173;
+        Sat, 19 Aug 2023 07:12:42 -0700 (PDT)
+Received: from localhost ([32.218.242.113])
+        by smtp.gmail.com with ESMTPSA id oo23-20020a05620a531700b0076c98dad91dsm1201945qkn.120.2023.08.19.07.12.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Aug 2023 07:12:41 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Yury Norov <yury.norov@gmail.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        shiju.jose@huawei.com, jonathan.cameron@huawei.com,
+        prime.zeng@huawei.com, linuxarm@huawei.com,
+        yangyicong@hisilicon.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v2 0/6] sched fixes
+Date:   Sat, 19 Aug 2023 07:12:32 -0700
+Message-Id: <20230819141239.287290-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 2/2] regulator: dt-bindings: Add Awinic AW37503
-Content-Language: en-US
-To:     like@awinic.com, lgirdwood@gmail.com, broonie@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        liweilei@awinic.com, liangdong@awinic.com, wangweidong.a@awinic.com
-References: <20230816081728.2812458-1-like@awinic.com>
- <20230816081728.2812458-3-like@awinic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230816081728.2812458-3-like@awinic.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/08/2023 10:17, like@awinic.com wrote:
-> From: Alec Li <like@awinic.com>
-> 
-> Add aw37503 regulator device-tree binding documentation.
-> 
-> Signed-off-by: Alec Li <like@awinic.com>
-> ---
->  .../bindings/regulator/awinic,aw37503.yaml    | 80 +++++++++++++++++++
->  1 file changed, 80 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
-> new file mode 100644
-> index 000000000000..65a891505808
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/awinic,aw37503.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Awinic AW37503 Voltage Regulator
-> +
-> +maintainers:
-> +  - Alec Li <like@awinic.com>
-> +
-> +description: |
+Fixes for recently introduced sched_numa_find_nth_cpu(), and minor
+improvements in sched/fair.
 
-Do not need '|' unless you need to preserve formatting.
+v1: https://lore.kernel.org/lkml/20230810162442.9863-1-yury.norov@gmail.com/T/
+v2:
+ - fix wording in commit messages;
+ - move nearest node search inside rcu lock section in
+   sched_numa_find_nth_cpu();
+ - move NUMA_NO_NODE handling inside sched_numa_find_nth_cpu();
+ - rewrite comment for sched_numa_find_nth_cpu().
+ - add review tag from Yicong Yang.
 
-> +  The AW37503 are dual voltage regulator, designed to support positive/negative
-> +  supply for driving TFT-LCD panels. It support software-configurable output
-> +  switching and monitoring. The output voltages can be programmed via an I2C
-> +  compatible interface.
-> +
-> +properties:
-> +  compatible:
-> +    const: awinic,aw37503
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +patternProperties:
-> +  "^out[pn]$":
-> +    type: object
-> +    $ref: regulator.yaml#
-> +    unevaluatedProperties: false
-> +    description: |
+Yury Norov (6):
+  numa: generalize numa_map_to_online_node()
+  sched/fair: fix opencoded numa_nearest_node()
+  sched: fix sched_numa_find_nth_cpu() in CPU-less case
+  sched: fix sched_numa_find_nth_cpu() in non-NUMA case
+  sched: handle NUMA_NO_NODE in sched_numa_find_nth_cpu()
+  sched: fix sched_numa_find_nth_cpu() comment
 
-Do not need '|' unless you need to preserve formatting.
+ include/linux/numa.h     |  7 +++++--
+ include/linux/topology.h |  2 +-
+ kernel/sched/fair.c      | 14 +-------------
+ kernel/sched/topology.c  | 25 +++++++++++++++++--------
+ lib/cpumask.c            |  4 +---
+ mm/mempolicy.c           | 18 +++++++++++-------
+ 6 files changed, 36 insertions(+), 34 deletions(-)
 
-> +      Properties for single regulator.
-> +
-> +    properties:
-> +      regulator-name: true
-> +      regulator-always-on: true
-> +      regulator-boot-on: true
-
-Drop all three above. They are not needed, because you use
-unevaluatedProperties:false.
-
-> +      enable-gpio:
-
-I believe the name *everywhere* is enable-gpios.
-
-
-Best regards,
-Krzysztof
+-- 
+2.39.2
 
