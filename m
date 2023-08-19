@@ -2,120 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7F1781BDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 02:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D65B6781C04
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229524AbjHTA56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 20:57:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56000 "EHLO
+        id S229603AbjHTCdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbjHTA5S (ORCPT
+        with ESMTP id S229577AbjHTCdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 20:57:18 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42A87D82B
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 17:45:31 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6b9e478e122so1651402a34.1
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 17:45:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1692492331; x=1693097131;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ysy6KqWBdSIiPtqdG1q8s0EmvM3hksz/JnZTcoVMaYg=;
-        b=SDqR35oC2HkOSMM1WGpi3NWTOWCkl43q3xZ5Gko3Vhvt7aQOmQqc/wnfKjTR0SEDR1
-         DwJM6J82Gp3Wo7SGU4WJkqBeBZqoqdMHOtqNV2vOjppVynr9xA+YGKtOf+rK1pox1GHx
-         3Z886WniKdEsCzRZ9frmXiMx3A+RAh++1Gol0bPsVVmezEMuY4GKtGFb2WcqMknaPcB6
-         b+TZGtN9zYnwRnGFmCXIwoS12nc5faznB46vYMotjommIKvBUgNPOajLHHIHzQBUU7QR
-         TGgJwQkQB8/L2ixvH5SiiqXc6nGwSPtS2iSssPc1CU2sxkARfNfpl8QBc5fQLiwdgsOw
-         YnHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692492331; x=1693097131;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ysy6KqWBdSIiPtqdG1q8s0EmvM3hksz/JnZTcoVMaYg=;
-        b=ffxiDXjb9RShgZGTV5i2tHbxOXjkQ332aODndDpQNlXEH+UmDAHwpbDAOh+vyAmvOg
-         rhWVk0zx9slsNc98+XLVepB/qSzRIx09AhhK4ohIgxErEGDRYY6cjASGXu955HkKFBoo
-         dlVu8T9r+2sFUHK8GtExPwIdlXhOp16WtvpaVyHchtP/91fDj/i2KgOjbh3D0QumxeaV
-         47aavXG8LfC+7At6dPks+tQTkEJl9mH+3teJr4pKOZxiisBbKbYw1IFjfFxEiAJhIfny
-         F+giPm1Sra7RJZ+YBAgv7ZTj3ok06UHqrERUrX7aUkC3Hw4BbNCI+SfSovuBzFSDKhG6
-         8V0g==
-X-Gm-Message-State: AOJu0YxSB67c6fyvauCvwKQXH9CTiQNuMoL0L4+igdOKvqcdWjIoAqn9
-        VLjat5VHptcR5KQnfXFdWZBcEw==
-X-Google-Smtp-Source: AGHT+IHOF0/g/YsZ5K8+gBCvADVjrSIfrL9ZcK0dM/YcukPXFZacvttvxqKEdBr/qhW1XVPQsOb1fw==
-X-Received: by 2002:a05:6870:32ce:b0:1c0:131b:2bb8 with SMTP id r14-20020a05687032ce00b001c0131b2bb8mr4532785oac.58.1692492331213;
-        Sat, 19 Aug 2023 17:45:31 -0700 (PDT)
-Received: from basil.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id 25-20020a17090a1a1900b00268b439a0cbsm4004884pjk.23.2023.08.19.17.45.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Aug 2023 17:45:30 -0700 (PDT)
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 16/16] Staging: rtl8192e: Rename variable pTS in function rtllib_rx_InfraAdhoc()
-Date:   Sat, 19 Aug 2023 17:47:44 -0700
-Message-ID: <20230820004744.278022-17-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230820004744.278022-1-tdavies@darkphysics.net>
-References: <20230820004744.278022-1-tdavies@darkphysics.net>
+        Sat, 19 Aug 2023 22:33:31 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1DCD36ED
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 15:46:12 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RSv3k2fFyzK2;
+        Sun, 20 Aug 2023 00:46:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1692485170; bh=DzbAdMU1wYIUdh1RzwXFx3KnrimKqCQ/g0WN0DovXFY=;
+        h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
+        b=L9cAYUBDSJfCLdNseZgTZq0aRnoHObflbZSEUyJ762UQQKzOTC3UJbMbL48o89k28
+         tzB4F7YA78Thz/J1pJh0gSYKRx/vhBkoPYRQIEXe/XGeiwhkEBmBXuWsAhbbWy8bUO
+         SrzUDH6kIRM2OeFZmaLTWlvxmMf9/L2i99+J6Ihx5NhPY0e45UcPgWDZtVtZOXJE1m
+         j86Qq1Aonff5cz4CiMkqLpp41dQSzmbIE4uiqjdzFJEL3/kQc1E0uM5BZxjw85evXX
+         EvFSVS2aEYK1y5U7QpwSx/RTiEgnatVloWc2anTewStx5n3liNzmUCiB6mNunxZQJI
+         T6DOfImXjiXmQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sun, 20 Aug 2023 00:46:10 +0200
+Message-Id: <a50c32692cfecfa0449ef4943388e9ad9bf4615f.1692484240.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 4/6] regulator: core: remove `goto`s from resolve_supply()
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable pTS in function rtllib_rx_InfraAdhoc() to ts
-to fix checkpatch warning Avoid CamelCase.
+Since 14a71d509ac8 ("Fix lockdep warning resolving supplies") the `out`
+label is just `return ret;`. Inline it for easier reading.
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/staging/rtl8192e/rtllib_rx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/regulator/core.c | 29 +++++++++++------------------
+ 1 file changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 491789ebcc08..53ec4f077bd8 100644
---- a/drivers/staging/rtl8192e/rtllib_rx.c
-+++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -1280,7 +1280,7 @@ static int rtllib_rx_InfraAdhoc(struct rtllib_device *ieee, struct sk_buff *skb,
- 	struct rtllib_hdr_4addr *hdr = (struct rtllib_hdr_4addr *)skb->data;
- 	struct lib80211_crypt_data *crypt = NULL;
- 	struct rtllib_rxb *rxb = NULL;
--	struct rx_ts_record *pTS = NULL;
-+	struct rx_ts_record *ts = NULL;
- 	u16 fc, sc, SeqNum = 0;
- 	u8 type, stype, multicast = 0, unicast = 0, nr_subframes = 0, TID = 0;
- 	u8 dst[ETH_ALEN];
-@@ -1386,7 +1386,7 @@ static int rtllib_rx_InfraAdhoc(struct rtllib_device *ieee, struct sk_buff *skb,
- 		&& (!bToOtherSTA)) {
- 		TID = Frame_QoSTID(skb->data);
- 		SeqNum = WLAN_GET_SEQ_SEQ(sc);
--		GetTs(ieee, (struct ts_common_info **)&pTS, hdr->addr2, TID,
-+		GetTs(ieee, (struct ts_common_info **)&ts, hdr->addr2, TID,
- 		      RX_DIR, true);
- 		if (TID != 0 && TID != 3)
- 			ieee->bis_any_nonbepkts = true;
-@@ -1425,10 +1425,10 @@ static int rtllib_rx_InfraAdhoc(struct rtllib_device *ieee, struct sk_buff *skb,
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 87e54b776a0f..de434d550937 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -2053,11 +2053,9 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 
+ 	r = regulator_dev_lookup(dev, rdev->supply_name);
+ 	if (IS_ERR(r)) {
+-		ret = PTR_ERR(r);
+-
+ 		/* Did the lookup explicitly defer for us? */
+-		if (ret == -EPROBE_DEFER)
+-			goto out;
++		if (PTR_ERR(r) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
+ 
+ 		if (have_full_constraints()) {
+ 			r = dummy_regulator_rdev;
+@@ -2065,18 +2063,15 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 		} else {
+ 			dev_err(dev, "Failed to resolve %s-supply for %s\n",
+ 				rdev->supply_name, rdev->desc->name);
+-			ret = -EPROBE_DEFER;
+-			goto out;
++			return -EPROBE_DEFER;
+ 		}
  	}
  
- 	/* Indicate packets to upper layer or Rx Reorder */
--	if (!ieee->ht_info->cur_rx_reorder_enable || pTS == NULL || bToOtherSTA)
-+	if (!ieee->ht_info->cur_rx_reorder_enable || ts == NULL || bToOtherSTA)
- 		rtllib_rx_indicate_pkt_legacy(ieee, rx_stats, rxb, dst, src);
- 	else
--		RxReorderIndicatePacket(ieee, rxb, pTS, SeqNum);
-+		RxReorderIndicatePacket(ieee, rxb, ts, SeqNum);
+ 	if (r == rdev) {
+ 		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
+ 			rdev->desc->name, rdev->supply_name);
+-		if (!have_full_constraints()) {
+-			ret = -EINVAL;
+-			goto out;
+-		}
++		if (!have_full_constraints())
++			return -EINVAL;
+ 		r = dummy_regulator_rdev;
+ 		get_device(&r->dev);
+ 	}
+@@ -2090,8 +2085,7 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	if (r->dev.parent && r->dev.parent != rdev->dev.parent) {
+ 		if (!device_is_bound(r->dev.parent)) {
+ 			put_device(&r->dev);
+-			ret = -EPROBE_DEFER;
+-			goto out;
++			return -EPROBE_DEFER;
+ 		}
+ 	}
  
- 	dev_kfree_skb(skb);
+@@ -2099,7 +2093,7 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	ret = regulator_resolve_supply(r);
+ 	if (ret < 0) {
+ 		put_device(&r->dev);
+-		goto out;
++		return ret;
+ 	}
  
+ 	/*
+@@ -2113,14 +2107,14 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 	if (rdev->supply) {
+ 		regulator_unlock_two(rdev, r, &ww_ctx);
+ 		put_device(&r->dev);
+-		goto out;
++		return 0;
+ 	}
+ 
+ 	ret = set_supply(rdev, r);
+ 	if (ret < 0) {
+ 		regulator_unlock_two(rdev, r, &ww_ctx);
+ 		put_device(&r->dev);
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	regulator_unlock_two(rdev, r, &ww_ctx);
+@@ -2135,12 +2129,11 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+ 		if (ret < 0) {
+ 			_regulator_put(rdev->supply);
+ 			rdev->supply = NULL;
+-			goto out;
++			return ret;
+ 		}
+ 	}
+ 
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ /* Internal regulator request function */
 -- 
-2.41.0
+2.39.2
 
