@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED64781740
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C4E781747
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbjHSDoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 23:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56810 "EHLO
+        id S233214AbjHSDxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 23:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjHSDnu (ORCPT
+        with ESMTP id S232793AbjHSDx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 23:43:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6A8421B;
-        Fri, 18 Aug 2023 20:43:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F2B263E1B;
-        Sat, 19 Aug 2023 03:43:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB2EC433C8;
-        Sat, 19 Aug 2023 03:43:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692416628;
-        bh=WSE734VY3ZnmlV6G0lUar/9DJf0XC0U6UkYAUOV3ACI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AXTyCP+UWMMgiqgYsTyHl8tUeQmXeaQjmcFQLxx7Ey4xL+FAcoAnPUTAFrn6g8EKT
-         Qwag9GMj5XxSp+0geXKrIlfDioXyBqFmMsssf+0O4kN6bLo3dNKDfAICmMZXf3pQjg
-         W2SfyWDsFJddmk30udPhF82RZcFwMzDpFvKV5rnZe7KXijlPC+H1vHvp7DPYGGWPk2
-         KJOE369/Sg9TAgtyzThKRTK2aqB2eSID3rCSAiFvXHr7jTmRFlGpg5VdftaXLTbegd
-         6KlYAm34hkBaBWkJepnEs4tzDh4Ln4e9QabTqxgVRj5GsHPeW8F8lpMiysnPtHDswc
-         ImJvCNFdKaf7w==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Bryan Donoghue <bryan.odonoghue@linaro.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krishna Manikandan <quic_mkrishn@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dt <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: (subset) [PATCH v6 1/2] dt-bindings: display/msm: mdss-common: add memory-region property
-Date:   Fri, 18 Aug 2023 20:46:27 -0700
-Message-ID: <169241678226.2537898.15004991100741182949.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230726132719.2117369-1-amit.pundir@linaro.org>
-References: <20230726132719.2117369-1-amit.pundir@linaro.org>
+        Fri, 18 Aug 2023 23:53:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A74421B;
+        Fri, 18 Aug 2023 20:53:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=k+uWMHcD/UtEix/sGulCtsST6BuPB2WW6e/wqc+BshQ=; b=igEYJf8E84W5MJE8NgKQFUPp6v
+        nvYWlL+4yQcdlQqWFSZ8+6jxn5lgE3AZl2+aGMAJeyXvDHDM7B3GCLGr0skKFpDyinXxOaIEnqUNO
+        IcBx92z8rfILaHeupgs/Y7pxsEL/EOS5ROXOiAg3pd20ILhc9SLHTqC1V46gmvawPdc/iPd27pU1M
+        1JRLHpegQKbqu+xNCHh+ChVHahQAt6qCmCyecs8cjeRshBfj5zqPBtgiFUWozxHqxP0vENyG3Glc9
+        Lcp//6scRBQenT2XPBr9NDVga81mL8pQSHlOgDKB9y7a/pzjW8te6O0yzemwjQTQjHYFFqGj1CI0m
+        nqg5ERaw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qXD1L-00DQDv-LS; Sat, 19 Aug 2023 03:53:03 +0000
+Date:   Sat, 19 Aug 2023 04:53:03 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hongchen Zhang <zhanghongchen@loongson.cn>
+Cc:     David Howells <dhowells@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Steve French <stfrench@microsoft.com>,
+        Jens Axboe <axboe@kernel.dk>, David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH v5 2/2] pipe: use __pipe_{lock,unlock} instead of spinlock
+Message-ID: <ZOA8n/uPrkAKg86b@casper.infradead.org>
+References: <20230811010309.20196-2-zhanghongchen@loongson.cn>
+ <20230811010309.20196-1-zhanghongchen@loongson.cn>
+ <3955287.1692002820@warthog.procyon.org.uk>
+ <b6f395a6-ca81-f107-0a3f-59e8f8d41f9d@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6f395a6-ca81-f107-0a3f-59e8f8d41f9d@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 26 Jul 2023 18:57:18 +0530, Amit Pundir wrote:
-> Add and document the reserved memory region property in the
-> mdss-common schema.
+On Sat, Aug 19, 2023 at 11:28:58AM +0800, Hongchen Zhang wrote:
+> Hi David,
 > 
-> For now (sdm845-db845c), it points to a framebuffer memory
-> region reserved by the bootloader for splash screen.
-> 
-> 
-> [...]
+> On 2023/8/14 pm 4:47, David Howells wrote:
+> > Hongchen Zhang <zhanghongchen@loongson.cn> wrote:
+> > 
+> > > -	spin_lock_irq(&pipe->rd_wait.lock);
+> > > +	__pipe_lock(pipe);
+> > 
+> I changed the code and the post_one_notification is not called inside spin
+> lock ,please check this patch again.
 
-Applied, thanks!
+In remove_watch_from_object(), you moved post_one_notification() before
+lock_queue(), but it's still called inside a RCU read-side critical
+section, which cannot sleep.
 
-[2/2] arm64: dts: qcom: sdm845-db845c: Mark cont splash memory region as reserved
-      commit: 110e70fccce4f22b53986ae797d665ffb1950aa6
-
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+Please test with CONFIG_DEBUG_ATOMIC_SLEEP before you send a new version.
+You should probably turn on DEBUG_SPINLOCK, LOCKDEP, DEBUG_MUTEXES
+and a few other debug options.
