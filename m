@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC95578184A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB8378184D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbjHSIQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 04:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
+        id S230044AbjHSI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 04:26:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjHSIPY (ORCPT
+        with ESMTP id S229556AbjHSI0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 04:15:24 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97E82710;
-        Sat, 19 Aug 2023 01:15:22 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id DD4BA320010B;
-        Sat, 19 Aug 2023 04:15:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Sat, 19 Aug 2023 04:15:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1692432917; x=1692519317; bh=mVg7+z/59hMefv6EatBj5KT4jPl/Nf37DQy
-        lbZT0lF0=; b=l7+Idw7IXTlvGLWtkX4Yk9YD3/pIkjlXypJGt7S8HC/9liI1Cdj
-        AbiC77K/z0YBVQ/FVPplg+bytdlQ+dCc6NLsE/mqDY3v3d5deNXUK+iCoPqLoR4m
-        7KEnWqflPdY4rVYIZ2nrq0D4B9axmUmMzkaWbpOCHFtDQHYcLbg7HnL9XIIq2f0a
-        mK3zqk15aTNX0cHqWpDSzQHd7FW/4LyCfysFsUH2Dm9exVtC1p5Wo5QNbC+o51R2
-        rJg3xLibAhOvJd9AOLlO0dwSv/nxgjI2n7dRMLqBJ4h5gtIzWF7nWo66Nkl2HcVZ
-        5u2GV2DhRUor71Xr+SsbHXQYqCUb3sNoSfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1692432917; x=1692519317; bh=mVg7+z/59hMefv6EatBj5KT4jPl/Nf37DQy
-        lbZT0lF0=; b=t6N2GC4hYniQXEfaTz2EuUH27T0sH45C1jfxLNXZxFos7HH40gT
-        KBtE6edJ+rySMY3zSRjIO+7Ks3Pdn6URlSpydJymaYRu4IqS7rdz+hTuOSX0GrPa
-        xKP3tHtONDVXgCKm/BZKpEKPFkPZcKDiOk48Ur3IL9ysISycJdFRi1weyZmQwy3h
-        V9P4P56zaIQKJwLkFbLN29w95tx/fWeStGG89LaHLpAMdP3z5TMObUbIHBo5o0RO
-        S5dA4M6DY7W7sInbbXOGEMqSICvCzeQLTOSQs4HdjoJvLGm7r4PlLJNiQkMnpam7
-        ZRRY6EBwhtMkX+9Z6+l1qC2Xusq2Rb7AvdQ==
-X-ME-Sender: <xms:FXrgZPjnB5QfQ4PRwkdTFgVeaN_4v5hYrLgtB-SJsuYC3ocaUzD-3Q>
-    <xme:FXrgZMCwXFK_V-4i3OOVNf8ITegB7tIIpKZs8YUj1S3Fv25-7Non3G_GcgMY_6Hi6
-    7GzKbd4pYIFh-cE32Q>
-X-ME-Received: <xmr:FXrgZPEZpMAo-2JYx9rLLvwfHLhNQpGBXAIgu6gVwQYTx5VBle0A3_1kfvalUHNvSA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudduhedgtddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeforghn
-    jhhushgrkhgruceomhgvsehmrghnjhhushgrkhgrrdhmvgeqnecuggftrfgrthhtvghrnh
-    epudevveejhfejvdegvedvuedtueekleejlefhfedtheekhfefiedvgfdukeeuieelnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrg
-    hnjhhushgrkhgrrdhmvg
-X-ME-Proxy: <xmx:FXrgZMT9PKKTCwesqnzedCRN4dcTB3WJCdpowJ9jyEKcW-jGGDCsnQ>
-    <xmx:FXrgZMzo6QRDBv_SO0sjkjULJLR_oeGvE0uv8NMAs_s9b9nyiD7Y6w>
-    <xmx:FXrgZC4DtkP2j10vgUQw1TzrGZXDMQJlTsCl6A_-0FWiMZqWSUrKPA>
-    <xmx:FXrgZBpGDKAfRw10usHn5sM9lmFylMEI84bEKe7Ptud62Aq7v7D6dQ>
-Feedback-ID: i3ea9498d:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 19 Aug 2023 04:15:13 -0400 (EDT)
-Message-ID: <3b997205-bca6-4dba-94fe-65facb84015e@manjusaka.me>
-Date:   Sat, 19 Aug 2023 16:15:10 +0800
+        Sat, 19 Aug 2023 04:26:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B2BA5D2;
+        Sat, 19 Aug 2023 01:26:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B7B4061632;
+        Sat, 19 Aug 2023 08:26:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368A5C433C8;
+        Sat, 19 Aug 2023 08:26:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692433562;
+        bh=IqklKkPtidqb2CVW+tpMi5aCC8MPd+5t0OXkV7z/4YU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cSxWLhGjlcFR/25K7tpjKDR7n4q64KfhdItaAPLD/hH0XNTfLeTTHHZ/PLMyVOtoU
+         0fhU+gJ8GmTopN4tqd0/Lt3nTeoFOf0xDmMJkwd0aey/vfD8JmY/RB9/0h8YNpko1i
+         jvzqZ7mPmG1YRPV16nTQuL0TvtXcTs7j3yc+1+pBw1pI2lXWiF3LR2dz5BmygQEoo+
+         Q/iMp4RTMM6BE5H0xUcV6nIqD46fjJ0NvcirPAviW5/xx9x/DUu1wj7Or3d3i6LHj5
+         94joCv1NJs7eTfPzU42mHa2MMu6lrq0QD6/intcGi72cKFaq3QHgWAsZ1xsHunIqRw
+         8x52cejPbF8jA==
+Date:   Sat, 19 Aug 2023 09:25:57 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     marius.cristea@microchip.com
+Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: adding MCP3564 ADC
+Message-ID: <20230819-swimsuit-scallion-9e91ec99b92a@spud>
+References: <20230818165750.55406-1-marius.cristea@microchip.com>
+ <20230818165750.55406-2-marius.cristea@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tracepoint: add new `tcp:tcp_ca_event` trace event
-To:     Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        mhiramat@kernel.org, ncardwell@google.com, netdev@vger.kernel.org,
-        pabeni@redhat.com, rostedt@goodmis.org
-References: <CANn89iKQXhqgOTkSchH6Bz-xH--pAoSyEORBtawqBTvgG+dFig@mail.gmail.com>
- <20230812201249.62237-1-me@manjusaka.me> <20230818185156.5bb662db@kernel.org>
- <CANn89iLYsfD0tFryzCn2GbhrX4n+e0CPTXB6Vc=_m=U9Qi_CzA@mail.gmail.com>
-Content-Language: en-US
-From:   Manjusaka <me@manjusaka.me>
-In-Reply-To: <CANn89iLYsfD0tFryzCn2GbhrX4n+e0CPTXB6Vc=_m=U9Qi_CzA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uKFwu7uCDxw/NwPv"
+Content-Disposition: inline
+In-Reply-To: <20230818165750.55406-2-marius.cristea@microchip.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/19 11:10, Eric Dumazet wrote:
-> On Sat, Aug 19, 2023 at 3:52 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Sat, 12 Aug 2023 20:12:50 +0000 Zheao Li wrote:
->>> In normal use case, the tcp_ca_event would be changed in high frequency.
->>>
->>> The developer can monitor the network quality more easier by tracing
->>> TCP stack with this TP event.
->>>
->>> So I propose to add a `tcp:tcp_ca_event` trace event
->>> like `tcp:tcp_cong_state_set` to help the people to
->>> trace the TCP connection status
->>
->> Ah, I completely missed v3 somehow and we got no ack from Eric so maybe
->> he missed it, too. Could you please resend not as part of this thread
->> but as a new thread?
-> 
-> I was waiting for a v4, because Steven asked for additional spaces in the macros
-> for readability ?
 
-I think the additional spaces should not be added in this patch. Because there will
-be two code style in one file.
+--uKFwu7uCDxw/NwPv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think it would be a good idea for another patch to adjust the space in this file
+On Fri, Aug 18, 2023 at 07:57:49PM +0300, marius.cristea@microchip.com wrot=
+e:
+> From: Marius Cristea <marius.cristea@microchip.com>
+>=20
+> This is the device tree schema for iio driver for
+> Microchip family of 153.6 ksps, Low-Noise 16/24-Bit
+> Delta-Sigma ADCs with an SPI interface (Microchip's
+> MCP3461, MCP3462, MCP3464, MCP3461R, MCP3462R,
+> MCP3464R, MCP3561, MCP3562, MCP3564, MCP3561R,
+> MCP3562R and MCP3564R analog to digital converters).
+>=20
+> Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+--uKFwu7uCDxw/NwPv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZOB8lQAKCRB4tDGHoIJi
+0o3TAPwM74R81vKUiQEtMzW1+og9PDflT/siRzcGXep77V1vPwEA+GkxKH0X5QZJ
+tucd4cgqowy/bgIRGcmoE5j14amnlg8=
+=QCcD
+-----END PGP SIGNATURE-----
+
+--uKFwu7uCDxw/NwPv--
