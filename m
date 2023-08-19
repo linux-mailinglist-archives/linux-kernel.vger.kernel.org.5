@@ -2,186 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF9F781735
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C5778173A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 05:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjHSDef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 23:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
+        id S232192AbjHSDi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 23:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjHSDe1 (ORCPT
+        with ESMTP id S230344AbjHSDiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 23:34:27 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBAF2D69;
-        Fri, 18 Aug 2023 20:34:25 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-268bc714ce0so1905692a91.0;
-        Fri, 18 Aug 2023 20:34:25 -0700 (PDT)
+        Fri, 18 Aug 2023 23:38:21 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE859B;
+        Fri, 18 Aug 2023 20:38:19 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bd0a0a675dso1234619a34.2;
+        Fri, 18 Aug 2023 20:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692416065; x=1693020865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vOjVxX/Eg0iGmCqhVv5cIZBql9TtO2CXYAj6O50hbSE=;
-        b=IqtJwsF0pUQX7izyHeTreyTJTJhKy5hiG0L5LG7pklRm5ruz2z314lR30cJBIft8IF
-         lHOgWqUBHxsrHRZ/n+H1wKK9DAmo6l6M6vOqnptgdlcjmAJVnPdA6vRI0gXUbNjLjw2O
-         HaCa2GQWI2H3P/PJF/kO6bmYeR/Nyn9f2ZprmcA/D0k+kc6aE9gt4/58CgSA7F801jjd
-         XX+T7G5Lv1/7anA6wENrFajkkBfdYnNLgzsdEjOaJ3u6npvNqyydM0GqNQ4HtJ58/8Bk
-         W4eV1DvzXq38mo16H9W9Oyvm8s/Iciep4KukBQTEpuiauG6fJdSHO4J2dBeLWJsNSNRu
-         GvHA==
+        d=gmail.com; s=20221208; t=1692416299; x=1693021099;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dmTd9LPLzzWYKe3BqlMTtEt2CsxGySX/14bhS+6KcNo=;
+        b=g/LRQqKy++m0sndFrKKwqZAMccTOZ0/tvSbN1sxEsR29MIRiyXp0YIHl+DaLSJgklD
+         jF5IBX8YLz9/4UUrAGAjTlzoYLSqmW/3AXwn9GekCH4zU0w4yIgBzcV9q8K0cntkSlLm
+         2+KSeAhHcAm50zuaY/FIYh+Jc7GCjloxTka1vX9+eFMKS7l0FBvFqiQ+JB3vu3WUsJoR
+         hBGRJNjNBnFMG8zJbvvIs8DqRnQKr7G2JlYXeaaq6SAiHb+bhtj3gzb8sSc6CvfcOQBn
+         VcDleBIip5m4isw213VzpTshW5/exltZGgpG8mMlO6t+O35WL9nn9jiD8cEcY34ORtkf
+         bqBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692416065; x=1693020865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vOjVxX/Eg0iGmCqhVv5cIZBql9TtO2CXYAj6O50hbSE=;
-        b=g1KtxvE6k2ycR/PXbMvrAE4SsFGN9yqylUPD6nf64K+NRp8T4HYEvaD2twXGbYGj8O
-         BUllvDA3DBVugaxikS+mUlYfnUmo5NtGGtrHqkL5j57c3A39hFDuP/+Am5k5Dco71VRx
-         K6laEUsdpU3LQzdzeVmU3hvTjHyuo58+15y31GjAo2dqddUKEqoN8y1B+wbjStUj6lJ3
-         BAdwTYtspfvAZsn8hbmcL6mnGSBqRyqtK3cTuhVOyP1jTXpPa4X1gylTNZ0qz14SMv4n
-         5d+3tnurMLTa0aPxa7IH7ueXAcIuREscGNe3sdE35deIA3Gv9wRW4dX2P40p9aFZ/atW
-         TL+A==
-X-Gm-Message-State: AOJu0YxclvNdQYlOy2KjW11+TXPsAeiQok/KBoWR8PxoGaIfUvknmWUP
-        k23RYh3dHraJBipmUHAPOc5K1qei/PluQekxJ5M=
-X-Google-Smtp-Source: AGHT+IFpp0VHvCZv9YQH2C6BH14eA1+BcCpaZ1w5QpKfP5/3cQ/4jDAUwPVhdHrKttxLAuvWHcInuMfoJccdrJLxiGs=
-X-Received: by 2002:a17:90a:64ca:b0:25d:d224:9fb9 with SMTP id
- i10-20020a17090a64ca00b0025dd2249fb9mr1389535pjm.24.1692416065235; Fri, 18
- Aug 2023 20:34:25 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692416299; x=1693021099;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dmTd9LPLzzWYKe3BqlMTtEt2CsxGySX/14bhS+6KcNo=;
+        b=eVQ407k4TO4KegclkXaWftxTMwezIRC4mWgX4jEQ/UCmGiBNeOn7CHrk3xiSdaa9uC
+         21259h7XSTl49xJxAOc0ubuVs1qFc6Vba8xzolJ8ydGy9jTLXSNT1JNaxg1eihOroab0
+         kEcB8LP3fxTE2tLFKC2+jhgm8oS98Z1IaQaPNMHGqoRu70NE0emygbF8IqZ8sDEbYBoK
+         1s8bRg9HDi++BTZkh47wLdDwSMlo09DLALp6/rw41eHkwo0Sbz280j48jnftdPHupXXy
+         98Kapu/W1SXlQ7zE7pMFzCxvGUDS5LbtzAzK2nORrcfI8xG9HqVtJgSdj5X6Uo5e8tAV
+         qMvA==
+X-Gm-Message-State: AOJu0Yx8z+5m+sH8AmkxNORyqJZpFD/YTrJW8jTpnhAlRVPYylwyA/pX
+        hlIkQjy+ugP26/RXlRy5NQI=
+X-Google-Smtp-Source: AGHT+IHONxuWE7fXMBMP5Zji20fF4bK2e+h+CQmlY3olaUvkTvy4kiBwPWfbYAjc1gzQv7zmLiQdFA==
+X-Received: by 2002:a05:6870:2051:b0:1c0:219b:17f4 with SMTP id l17-20020a056870205100b001c0219b17f4mr1437619oad.5.1692416299037;
+        Fri, 18 Aug 2023 20:38:19 -0700 (PDT)
+Received: from [192.168.1.12] (bb219-74-209-211.singnet.com.sg. [219.74.209.211])
+        by smtp.gmail.com with ESMTPSA id 20-20020a17090a199400b00262d6ac0140sm2434749pji.9.2023.08.18.20.38.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Aug 2023 20:38:18 -0700 (PDT)
+Message-ID: <fb6ec982-a0b4-2217-fda3-151cc37ad9a4@gmail.com>
+Date:   Sat, 19 Aug 2023 11:38:10 +0800
 MIME-Version: 1.0
-References: <38e1a01b-1e8b-7c66-bafc-fc5861f08da9@gmail.com>
- <86e329b1-c8d7-47bf-8be8-3326daf74eb5@infradead.org> <78a802c5-3f0d-e199-d974-e586c00180eb@infradead.org>
-In-Reply-To: <78a802c5-3f0d-e199-d974-e586c00180eb@infradead.org>
-From:   Jesse T <mr.bossman075@gmail.com>
-Date:   Fri, 18 Aug 2023 23:33:49 -0400
-Message-ID: <CAJFTR8T-Fdu_aKapP+Lb6pLYo_ykXwXw6rFZNGR5=WKU1QwUPQ@mail.gmail.com>
-Subject: Re: [PATCH] treewide: drop CONFIG_EMBEDDED
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>, wireguard@lists.zx2c4.com,
-        linux-arch@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-        Vineet Gupta <vgupta@kernel.org>,
-        Brian Cain <bcain@quicinc.com>, linux-hexagon@vger.kernel.org,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        linux-openrisc@vger.kernel.org, linux-mips@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        linux-sh@vger.kernel.org, Max Filippov <jcmvbkbc@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [RFC PATCH bpf-next 1/2] bpf, x64: Fix tailcall infinite loop bug
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        X86 ML <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Mykola Lysenko <mykolal@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Yizhou Tang <tangyeechou@gmail.com>, kernel-patches-bot@fb.com,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+References: <20230814134147.70289-1-hffilwlqm@gmail.com>
+ <20230814134147.70289-2-hffilwlqm@gmail.com>
+ <20230817223143.jyclrtf3a6kmtgh5@macbook-pro-8.dhcp.thefacebook.com>
+ <fea59b79-3f28-c580-185b-8c64dc21a399@gmail.com>
+ <CAADnVQKVKPpbMNV9XNc+yJCuaWRupsB5EBjghv++jGqYTnv6QQ@mail.gmail.com>
+From:   Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQKVKPpbMNV9XNc+yJCuaWRupsB5EBjghv++jGqYTnv6QQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 7:44=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Hi Jesse,
->
-> I replied to your comment a few days ago, but for some reason
-> your email to me contains:
-> Reply-To: 20230816055010.31534-1-rdunlap@infradead.org
-> so it wasn't sent directly to you.
 
-Sorry about that I messed up the email headers...
->
-> My former reply is below.
->
-> On 8/16/23 20:15, Randy Dunlap wrote:
-> > Hi Jesse,
-> >
-> > On 8/16/23 15:45, Jesse Taube wrote:
-> >> Hi, Randy
-> >>
-> >>> diff -- a/init/Kconfig b/init/Kconfig
-> >>> --- a/init/Kconfig
-> >>> +++ b/init/Kconfig
-> >>> @@ -1790,14 +1790,6 @@ config DEBUG_RSEQ
-> >>>
-> >>>         If unsure, say N.
-> >>>
-> >>> -config EMBEDDED
-> >>> -    bool "Embedded system"
-> >>> -    select EXPERT
-> >>> -    help
-> >>> -      This option should be enabled if compiling the kernel for
-> >>> -      an embedded system so certain expert options are available
-> >>> -      for configuration.
-> >>
-> >> Wouldn't removing this break many out of tree configs?
-> >
-> > I'm not familiar with out-of-tree configs.
-> > Do you have some examples of some that use CONFIG_EMBEDDED?
-> > (not distros)
 
-Buildroot has a few.
-It won't immediately break Buildroot and Yocto as they have a set version,
-but it could be confusing for anyone updating the kernel.
+On 2023/8/19 03:59, Alexei Starovoitov wrote:
+> On Thu, Aug 17, 2023 at 7:10 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>>
+>> On 18/8/23 06:31, Alexei Starovoitov wrote:
+>>> On Mon, Aug 14, 2023 at 09:41:46PM +0800, Leon Hwang wrote:
+>>>> @@ -1147,6 +1152,7 @@ struct bpf_attach_target_info {
+>>>>      struct module *tgt_mod;
+>>>>      const char *tgt_name;
+>>>>      const struct btf_type *tgt_type;
+>>>> +    bool tail_call_ctx;
+>>>
+>>> Instead of extra flag here can you check tgt_prog->aux->tail_call_reachable in check_attach_btf_id()
+>>> and set tr->flags there?
+>>
+>> Should we check tgt_prog->aux->func[subprog]->is_func? Or, tgt_prog->aux->tail_call_reachable
+>> is enough?
+> 
+> Please let the thread continue to a logical conclusion before resending
+> new version. Will reply there.
 
-> >
-> >> Should there be a warning here to update change it instead of removal?
-> >
-> > kconfig doesn't have a warning mechanism AFAIK.
-> > Do you have an idea of how this would work?
+Sorry for the new version without logical conclusion.
 
-No, unfortunately. As you said without a warning it would be overlooked so
-a change would not be necessary.
+I'll do it better in the future.
 
-A possible solution is to check in a header file with:
-
-#ifdef CONFIG_EMBEDDED
-#warning "CONFIG_EMBEDDED has changed to CONFIG_EXPERT"
-#endif
-
-Does anyone else have an opinion on this?
-Since kconfig doesn't have a warning mechanism the patch seems fine as is.
+Additionally, I'm looking forward to fix it, and then planning to add a
+feature to trace tailcalls with trampoline.
 
 Thanks,
-Jesse Taube
-> >
-> > We could make a smaller change to init/Kconfig, like so:
-> >
-> >  config EMBEDDED
-> > -     bool "Embedded system"
-> > +     bool "Embedded system (DEPRECATED)"
-> >       select EXPERT
-> >       help
-> > -       This option should be enabled if compiling the kernel for
-> > -       an embedded system so certain expert options are available
-> > -       for configuration.
-> > +       This option is being removed after Linux 6.6.
-> > +       Use EXPERT instead of EMBEDDED.
-> >
-> > but there is no way to produce a warning message. I.e., even with this
-> > change, the message will probably be overlooked.
-> >
-> > ---
-> > ~Randy
->
-> --
-> ~Randy
+Leon
