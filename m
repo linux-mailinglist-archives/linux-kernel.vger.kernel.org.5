@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0664F7816A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9584F7816B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 04:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbjHSC2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 22:28:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S244016AbjHSCc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 22:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243890AbjHSC2h (ORCPT
+        with ESMTP id S244048AbjHSCcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 22:28:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB91B4220;
-        Fri, 18 Aug 2023 19:28:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6C4C962625;
-        Sat, 19 Aug 2023 02:28:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEA92C433C8;
-        Sat, 19 Aug 2023 02:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692412114;
-        bh=tkZt2GqJGksQZ2JXkMK3YT4deGgiOKhxt303O7V/ft0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=JT6+ssijzlTs9imRh7B8rwrJEXpAcl5U/OYMu60PgbKNxs1A/+9dJsp7RVrrIhubD
-         /gofihc790OaYdYetLol3Ar+iyJhKU07k0chNwPqUROgnENOC2hWi4SIgO2B2DthAt
-         peH2/yJJSudIWgKe9nvB7Qb2xQyWew4v0980B4T5WJWjvHK8gMrlYTbC9j+VtKahfQ
-         w03vI69h/y4eMTDCIPhd1hwbwRvNB/QASq0l7VOaldtbAe6x6630HC3JlWjRJ07ntx
-         SHSKNdGzPZmY8yO2IVSN0Tx+NzivwIA3PHP9SEVDdpaLNnfquFbOkh+skT0MLF2jvJ
-         ezg4LjNTdOu5g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 42A98CE039C; Fri, 18 Aug 2023 19:28:34 -0700 (PDT)
-Date:   Fri, 18 Aug 2023 19:28:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org
-Cc:     sfr@canb.auug.org.au, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, eric.devolder@oracle.com, sourabhjain@linux.ibm.com,
-        hbathini@linux.ibm.com, bhe@redhat.com
-Subject: [BUG resend next-20230818] error: 'prepare_elf_headers' defined but
- not used
-Message-ID: <4a991983-da2e-4fcd-965c-5b65de6700da@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <08fc20ef-854d-404a-b2f2-75941eeeccf8@paulmck-laptop>
+        Fri, 18 Aug 2023 22:32:07 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CC14220;
+        Fri, 18 Aug 2023 19:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692412326; x=1723948326;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=kUZv+nrGlmsYxLObqUMCZH8MhclgX6iZzIWxMKxHHho=;
+  b=GFMTj2FX1QxrGLTnUsXNyf+8xADcQkVnXk82ZDD2xrSCnKhtzEYFdAEl
+   WJzBkMzLna7rIE7+Zq5fFjNVOvFwjSJ78ckWStwXd413yRd4lCXHebIO7
+   BJ8FhArx6yh5c1smO4qRIVdRh2KE+1u8/FymRkUGn/FsTJMGO9hvc97x0
+   9T/0qsUnJhvSeOQz5PJ5bKSGBqXYQQdvyyFx2Jns2D7EJ9kB+/0rLJOoo
+   rWfrJB6F+QufzeWsLRiFeH5nitLHswRwDTmT5jzekIxxxDMPmFy1jfwji
+   CFtYblU/s0lnZMPKIFBW4quwzZvI7JrTlal4mqHBn+pwf7WU1n1cRcf9F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="439629373"
+X-IronPort-AV: E=Sophos;i="6.01,185,1684825200"; 
+   d="scan'208";a="439629373"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Aug 2023 19:31:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10806"; a="800660777"
+X-IronPort-AV: E=Sophos;i="6.01,184,1684825200"; 
+   d="scan'208";a="800660777"
+Received: from pglc00067.png.intel.com ([10.221.207.87])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Aug 2023 19:31:35 -0700
+From:   Rohan G Thomas <rohan.g.thomas@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Serge Semin <fancer.lancer@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rohan G Thomas <rohan.g.thomas@intel.com>
+Subject: [PATCH net-next v5 0/2] net: stmmac: Tx coe sw fallback
+Date:   Sat, 19 Aug 2023 10:31:30 +0800
+Message-Id: <20230819023132.23082-1-rohan.g.thomas@intel.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08fc20ef-854d-404a-b2f2-75941eeeccf8@paulmck-laptop>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi,
+Some DWMAC IPs support tx coe only for a few initial tx queues,
+starting from tx queue 0. This patchset adds support for tx coe sw
+fallback for those queues that don't support tx coe. Also, add binding
+for snps,tx-queues-with-coe property.
 
-This morning's rcutorture testing on next-20230818 complained about
-prepare_elf_headers() being defined but unused on several rcutorture
-scenarios.  The patch below makes rcutorture happy, but might or might
-not be a proper fix.
+changelog v5:
+* As rightly suggested by Serge, reworked redundant code.
 
-This is a resend adding a few more people on CC, given a possible
-relationship to 9f1f399ca999 ("x86/crash: add x86 crash hotplug support").
+changelog v4: 
+* Replaced tx_q_coe_lmt with bit flag.
 
-Thoughts?
+changelog v3: 
+* Resend with complete email list.
 
-							Thanx, Paul
+changelog v2: 
+* Reformed binding description.
+* Minor grammatical corrections in comments and commit messages.
 
-------------------------------------------------------------------------
+Rohan G Thomas (2):
+  dt-bindings: net: snps,dwmac: Tx queues with coe
+  net: stmmac: Tx coe sw fallback
 
-diff --git a/arch/x86/kernel/crash.c b/arch/x86/kernel/crash.c
-index 1d0f824559fce..926c39e22387b 100644
---- a/arch/x86/kernel/crash.c
-+++ b/arch/x86/kernel/crash.c
-@@ -127,7 +127,8 @@ void native_machine_crash_shutdown(struct pt_regs *regs)
- 	crash_save_cpu(regs, safe_smp_processor_id());
- }
- 
--#if defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)
-+#if (defined(CONFIG_KEXEC_FILE) || defined(CONFIG_CRASH_DUMP)) && defined(CONFIG_SMP) && defined(CONFIG_X86_LOCAL_APIC)
-+
- static int get_nr_ram_ranges_callback(struct resource *res, void *arg)
- {
- 	unsigned int *nr_ranges = arg;
+ .../devicetree/bindings/net/snps,dwmac.yaml    |  3 +++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c  | 18 ++++++++++++++++++
+ .../ethernet/stmicro/stmmac/stmmac_platform.c  |  4 ++++
+ include/linux/stmmac.h                         |  1 +
+ 4 files changed, 26 insertions(+)
+
+-- 
+2.19.0
+
