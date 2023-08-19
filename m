@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D37781658
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 03:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8D0781663
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 03:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243451AbjHSBMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Aug 2023 21:12:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33770 "EHLO
+        id S243544AbjHSBPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Aug 2023 21:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243558AbjHSBL3 (ORCPT
+        with ESMTP id S243466AbjHSBPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Aug 2023 21:11:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A2E10F1;
-        Fri, 18 Aug 2023 18:11:10 -0700 (PDT)
+        Fri, 18 Aug 2023 21:15:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1855810F1;
+        Fri, 18 Aug 2023 18:15:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03EC961F27;
-        Sat, 19 Aug 2023 01:11:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2590CC433C7;
-        Sat, 19 Aug 2023 01:11:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9ACD76112C;
+        Sat, 19 Aug 2023 01:15:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA806C433C7;
+        Sat, 19 Aug 2023 01:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692407469;
-        bh=ND/elSFP0LDa9LHfEGoxNyf8ETj0MRNmMw4MPU1D6oQ=;
+        s=k20201202; t=1692407723;
+        bh=823Uug2iH8j2/brkRGqqkN6G52DCGKWo7rJr40XQXZc=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=L224TTMEcJ2opg1gQ/2NGhtwmeq+boKg4CyifrE07fEYBBF8ZV92xoIiJ4zTNRQis
-         OMiowtKJPoBZBPHmb01f9e9Na8JZjpjlTfYb++A6A3hfC8fxnKHXUyjI0NlV72OL3E
-         aMyNXlPcSbwhRHQjAzen8fqcF7kgIAUpxhl3kW40V0WqaKdHrC3s/JGWKj5/qSA4AF
-         Nd+CItxc/mjXfuGrfqbOVeJRA0FTmHLOdYmQPUWn99tWvgs7/I8JcBpAa2jA5Nqcyy
-         xrz/WUUuN9MiI3Ta2eiH7aQroPjHyR2WfC5zmYifh2TAqgQ++UB471FZcuJrsj3WTb
-         qxGWfgoHq5fAg==
-Date:   Sat, 19 Aug 2023 10:11:05 +0900
+        b=a6VlkYLmj1M6ZcIasuHEWA7p0R3nanJU3nmrTaWdx79mOmmkszytRSNLvu7dgf5gB
+         FHvWMv9DMGr4cIBFhhg8zVRCi3jUstPcRwQdDTScGY/iPzN4GmcoJVAoZsW3K0t09p
+         ljy5KEMk0tSoS/cpkBD2Q3TP289Y1ju1WN+P6DUml3Khca9Rimrsy9WEvqnOKOMeYZ
+         x8ghM+N8m6GMPriCtswminNWM/4cNC5/D+hJPK+4WAR/PtAyjmKzmoD7PxhxSIYnTO
+         4P6JA+J21xC2fmgwDRe93EhmDfbRzldgq9/saTEjY6zWvWj6U3oHwqs7A0VOd3BwDW
+         UBfCBRjik9RUw==
+Date:   Sat, 19 Aug 2023 10:15:19 +0900
 From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Francis Laniel <flaniel@linux.microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Francis Laniel <flaniel@linux.microsoft.com>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
  'perf_kprobe' PMU
-Message-Id: <20230819101105.b0c104ae4494a7d1f2eea742@kernel.org>
-In-Reply-To: <5702263.DvuYhMxLoT@pwmachine>
+Message-Id: <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
+In-Reply-To: <20230818142033.1d7685e9@gandalf.local.home>
 References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
-        <2154216.irdbgypaU6@pwmachine>
-        <20230818220537.75ce8210c6a4c80a5a8d16f8@kernel.org>
-        <5702263.DvuYhMxLoT@pwmachine>
+        <20230818213705.b4f5e18b392c4837068cba6f@kernel.org>
+        <20230818114141.2a3a75ee@gandalf.local.home>
+        <4853240.31r3eYUQgx@pwmachine>
+        <20230818142033.1d7685e9@gandalf.local.home>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,302 +62,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francis,
-(Cc: Song Liu and BPF ML)
+On Fri, 18 Aug 2023 14:20:33 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-On Fri, 18 Aug 2023 20:12:11 +0200
-Francis Laniel <flaniel@linux.microsoft.com> wrote:
-
-> Hi.
+> On Fri, 18 Aug 2023 20:13:43 +0200
+> Francis Laniel <flaniel@linux.microsoft.com> wrote:
 > 
-> Le vendredi 18 août 2023, 15:05:37 CEST Masami Hiramatsu a écrit :
-> > On Thu, 17 Aug 2023 13:06:20 +0200
+> > Hi.
 > > 
-> > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > Hi.
+> > Le vendredi 18 août 2023, 17:41:41 CEST Steven Rostedt a écrit :
+> > > On Fri, 18 Aug 2023 21:37:05 +0900
 > > > 
-> > > Le jeudi 17 août 2023, 09:50:57 CEST Masami Hiramatsu a écrit :
-> > > > Hi,
-> > > > 
-> > > > On Wed, 16 Aug 2023 18:35:17 +0200
-> > > > 
-> > > > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > > > When using sysfs, it is possible to create kprobe for several kernel
-> > > > > functions sharing the same name, but of course with different
-> > > > > addresses,
-> > > > > by writing their addresses in kprobe_events file.
-> > > > > 
-> > > > > When using PMU, if only the symbol name is given, the event will be
-> > > > > created for the first address which matches the symbol, as returned by
-> > > > > kallsyms_lookup_name().
-> > > > 
-> > > > Do you mean probing the same name symbols? Yes, it is intended behavior,
-> > > > since it is not always true that the same name function has the same
-> > > > prototype (it is mostly true but is not ensured), it is better to leave
-> > > > user to decide which one is what you want to probe.
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:  
+> > > > That's why perf probe uses the offset from '_text'. Normal KASLR will just
+> > > > moves all symbols. (Finer one will move all symbols randomely)
+> > > > This should not need to access /proc/kallsyms but vmlinux or SystemMap.  
 > > > 
-> > > This is what I meant.
-> > > I also share your mind regarding leaving the users deciding which one they
-> > > want to probe but in my case (which I agree is a bit a corner one) it
-> > > leaded me to misunderstanding as the PMU kprobe was only added to the
-> > > first ntfs_file_write_iter() which is not the one for ntfs3.
+> > > We could just pass in: "_text+offset" too.  
 > > 
-> > Hmm, OK. I think in that case (multiple same-name symbols exist) the default
-> > behavior is rejecting with error message. And optionally, it will probe all
-> > or them like your patch.
+> > So, the idea would be to change the existing create_local_trace_kprobe() and 
+> > above functions to indicate the user's offset is to be used against _text and 
+> > not address?
 > 
-> I am not sure to understand.
-> Can you please precise the default behavior of which software component?
+> No, not to modify that function, but if you know the offset from _text (via
+> the vmlinux), you can easily calculate it for that function.
 
-I meant that the behavior of the kprobe-events via /sys/kernel/tracing.
-But your patch is for the other interface for perf as kprobe-event PMU.
-In that case, I think we should CC to other users like BPF because
-this may change the expected behavior.
+Note that the kprobe-event PMU interface itself allows you to specify
+FUNC+OFFSET style;
 
-> 
-> > > > Have you used 'perf probe' tool? It tries to find the appropriate
-> > > > function
-> > > > by line number and creates the probe by 'text+OFFSET' style, not by
-> > > > symbol.
-> > > > I think this is the correct way to do that, because user will not know
-> > > > which 'address' of the symbol is what the user want.
-> > > 
-> > > 'perf probe' perfectly does the trick, as it would find all the kernel
-> > > addresses which correspond to the symbol name and create as many probes as
-> > > corresponding symbols [1]:
-> > > root@vm-amd64:~# perf probe --add ntfs_file_write_iter
-> > 
-> > If you can specify the (last part of) file path as below,
-> > 
-> > perf probe --add ntfs_file_write_iter@ntfs3/file.c
-> > 
-> > Then it will choose correct one. :)
-> 
-> Nice! TIL thank you! perf is really powerful!
+https://lore.kernel.org/lkml/20171206224518.3598254-5-songliubraving@fb.com/
 
-Yeah, but note that the perf-probe is a tool to setup a 'visible' tracepoint
-event. After making a new tracepoint event, the perf tool can use such
-"[Tracepoint event]" instead of PMU.
+perf_event_attr::kprobe_func = "_text";
+perf_event_attr::probe_offset = OFFSET;
 
-Unfortunately, kprobe-event 'PMU' version doesn't support this
-because it has been introduced for BPF. See the original series;
-
-https://lore.kernel.org/lkml/20171206224518.3598254-1-songliubraving@fb.com/
-
-So, the "local_kprobe_event" is making a kprobe PMU which is a event for
-local session, that is designed for using such event from BPF (if I
-understand correctly). Of course BPF tool can setup its local
-event with a unique symbol + offset (not just a symbol) in a BPF tool with
-perf-probe but it doesn't.
-
-Could you tell me how do you use this feature, for what perpose?
-
-If you just need to trace/profile a specific function which has the same
-name symbols, you might be better to use `perf probe` + `/sys/kernel/tracing`
-or `perf record -e EVENT`.
-
-Or if you need to run it with CAP_PERFMON, without CAP_SYS_ADMIN,
-we need to change a userspace tool to find the correct address and
-pass it to the perf_event_open().
-
-> 
-> > > Added new events:
-> > >   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
-> > >   probe:ntfs_file_write_iter (on ntfs_file_write_iter)
-> > > 
-> > > You can now use it in all perf tools, such as:
-> > >         perf record -e probe:ntfs_file_write_iter -aR sleep 1
-> > > 
-> > > root@vm-amd64:~# cat /sys/kernel/tracing/kprobe_events
-> > > p:probe/ntfs_file_write_iter _text+5088544
-> > > p:probe/ntfs_file_write_iter _text+5278560
-> > > 
-> > > > Thought?
-> > > 
-> > > This contribution is basically here to sort of mimic what perf does but
-> > > with PMU kprobes, as this is not possible to write in a sysfs file with
-> > > this type of probe.
-> > 
-> > OK, I see it is for BPF only. Maybe BPF program can filter correct one
-> > to access the argument etc.
-> 
-> I am not sure I understand, can you please precise?
-> The eBPF program will be run when the kprobe will be triggered, so if the 
-> kprobe is armed for the function (e.g. old ntfs_file_write_iter()), the eBPF 
-> program will never be called.
-
-As I said above, it is userspace BPF loader issue, because it has to specify
-the correct address via unique symbol + offset, instead of attaching all of them.
-I think that will be more side-effects.
-
-But anyway, thanks for pointing this issue. I should fix kprobe event to reject
-the symbols which is not unique. That should be pointed by other unique symbols. 
+Then, it should be able to specify the correct one. Of course you can use
+other unique symbols around the target symbol.
 
 Thank you,
 
 > 
-> > 
-> > Thank you,
-> > 
-> > > > Thank you,
-> > > > 
-> > > > > The idea here is to search all kernel functions which match this
-> > > > > symbol
-> > > > > and
-> > > > > create a trace_kprobe for each of them.
-> > > > > All these trace_kprobes are linked together by sharing the same
-> > > > > trace_probe.
-> > > > > 
-> > > > > Signed-off-by: Francis Laniel <flaniel@linux.microsoft.com>
-> > > > > ---
-> > > > > 
-> > > > >  kernel/trace/trace_kprobe.c | 86
-> > > > >  +++++++++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 86 insertions(+)
-> > > > > 
-> > > > > diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-> > > > > index 1b3fa7b854aa..08580f1466c7 100644
-> > > > > --- a/kernel/trace/trace_kprobe.c
-> > > > > +++ b/kernel/trace/trace_kprobe.c
-> > > > > @@ -1682,13 +1682,42 @@ static int unregister_kprobe_event(struct
-> > > > > trace_kprobe *tk)>
-> > > > > 
-> > > > >  }
-> > > > >  
-> > > > >  #ifdef CONFIG_PERF_EVENTS
-> > > > > 
-> > > > > +
-> > > > > +struct address_array {
-> > > > > +	unsigned long *addrs;
-> > > > > +	size_t size;
-> > > > > +};
-> > > > > +
-> > > > > +static int add_addr(void *data, unsigned long addr)
-> > > > > +{
-> > > > > +	struct address_array *array = data;
-> > > > > +	unsigned long *p;
-> > > > > +
-> > > > > +	array->size++;
-> > > > > +	p = krealloc(array->addrs,
-> > > > > +				sizeof(*array->addrs) * array->size,
-> > > > > +				GFP_KERNEL);
-> > > > > +	if (!p) {
-> > > > > +		kfree(array->addrs);
-> > > > > +		return -ENOMEM;
-> > > > > +	}
-> > > > > +
-> > > > > +	array->addrs = p;
-> > > > > +	array->addrs[array->size - 1] = addr;
-> > > > > +
-> > > > > +	return 0;
-> > > > > +}
-> > > > > +
-> > > > > 
-> > > > >  /* create a trace_kprobe, but don't add it to global lists */
-> > > > >  struct trace_event_call *
-> > > > >  create_local_trace_kprobe(char *func, void *addr, unsigned long offs,
-> > > > >  
-> > > > >  			  bool is_return)
-> > > > >  
-> > > > >  {
-> > > > >  
-> > > > >  	enum probe_print_type ptype;
-> > > > > 
-> > > > > +	struct address_array array;
-> > > > > 
-> > > > >  	struct trace_kprobe *tk;
-> > > > > 
-> > > > > +	unsigned long func_addr;
-> > > > > +	unsigned int i;
-> > > > > 
-> > > > >  	int ret;
-> > > > >  	char *event;
-> > > > > 
-> > > > > @@ -1722,7 +1751,64 @@ create_local_trace_kprobe(char *func, void
-> > > > > *addr,
-> > > > > unsigned long offs,>
-> > > > > 
-> > > > >  	if (ret < 0)
-> > > > >  	
-> > > > >  		goto error;
-> > > > > 
-> > > > > +	array.addrs = NULL;
-> > > > > +	array.size = 0;
-> > > > > +	ret = kallsyms_on_each_match_symbol(add_addr, func, &array);
-> > > > > +	if (ret)
-> > > > > +		goto error_free;
-> > > > > +
-> > > > > +	if (array.size == 1)
-> > > > > +		goto end;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * Below loop allocates a trace_kprobe for each function with the
-> > > > > same
-> > > > > +	 * name in kernel source code.
-> > > > > +	 * All this differente trace_kprobes will be linked together through
-> > > > > +	 * append_trace_kprobe().
-> > > > > +	 * NOTE append_trace_kprobe() is called in register_trace_kprobe()
-> > > 
-> > > which
-> > > 
-> > > > > +	 * is called when a kprobe is added through sysfs.
-> > > > > +	 */
-> > > > > +	func_addr = kallsyms_lookup_name(func);
-> > > > > +	for (i = 0; i < array.size; i++) {
-> > > > > +		struct trace_kprobe *tk_same_name;
-> > > > > +		unsigned long address;
-> > > > > +
-> > > > > +		address = array.addrs[i];
-> > > > > +		/* Skip the function address as we already registered it. */
-> > > > > +		if (address == func_addr)
-> > > > > +			continue;
-> > > > > +
-> > > > > +		/*
-> > > > > +		 * alloc_trace_kprobe() first considers symbol name, so we set
-> > > > > +		 * this to NULL to allocate this kprobe on the given address.
-> > > > > +		 */
-> > > > > +		tk_same_name = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event,
-> > > > > +						  (void *)address, NULL, offs,
-> > > > > +						  0 /* maxactive */,
-> > > > > +						  0 /* nargs */, is_return);
-> > > > > +
-> > > > > +		if (IS_ERR(tk_same_name)) {
-> > > > > +			ret = -ENOMEM;
-> > > > > +			goto error_free;
-> > > > > +		}
-> > > > > +
-> > > > > +		init_trace_event_call(tk_same_name);
-> > > > > +
-> > > > > +		if (traceprobe_set_print_fmt(&tk_same_name->tp, ptype) < 0) {
-> > > > > +			ret = -ENOMEM;
-> > > > > +			goto error_free;
-> > > > > +		}
-> > > > > +
-> > > > > +		ret = append_trace_kprobe(tk_same_name, tk);
-> > > > > +		if (ret)
-> > > > > +			goto error_free;
-> > > > > +	}
-> > > > > +
-> > > > > +end:
-> > > > > +	kfree(array.addrs);
-> > > > > 
-> > > > >  	return trace_probe_event_call(&tk->tp);
-> > > > > 
-> > > > > +error_free:
-> > > > > +	kfree(array.addrs);
-> > > > > 
-> > > > >  error:
-> > > > >  	free_trace_kprobe(tk);
-> > > > >  	return ERR_PTR(ret);
-> > > 
-> > > ---
-> > > [1]: https://github.com/torvalds/linux/blob/
-> > > 57012c57536f8814dec92e74197ee96c3498d24e/tools/perf/util/probe-event.c#L29
-> > > 89- L2993
+> I mentioned having a way to pass in the vmlinux debug info address and
+> subtract the kaslr_offset from it. But that's actually unnecessary. If you
+> have the address of the function you want, and the address of _text, both
+> from the debug info of vmlinux, you can simply pass in "_text+offset", and
+> then use kallsyms to give you _text, and add the offset to give you the
+> address for create_local_trace_kprobe().
 > 
-> 
-> 
-> 
+> -- Steve
 
 
 -- 
