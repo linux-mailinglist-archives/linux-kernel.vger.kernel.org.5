@@ -2,75 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4003E781A69
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 18:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0EC781A7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Aug 2023 18:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233817AbjHSQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 12:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S233872AbjHSQVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 12:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjHSQBu (ORCPT
+        with ESMTP id S233786AbjHSQVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 12:01:50 -0400
+        Sat, 19 Aug 2023 12:21:41 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88AE622A1C;
-        Sat, 19 Aug 2023 09:01:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1D8255FF;
+        Sat, 19 Aug 2023 09:21:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1D7AC61C4A;
-        Sat, 19 Aug 2023 16:01:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AEACC433C7;
-        Sat, 19 Aug 2023 16:01:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A370261AFD;
+        Sat, 19 Aug 2023 16:21:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B18A5C433C8;
+        Sat, 19 Aug 2023 16:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692460908;
-        bh=7n1CC74HKqRSxoIXlvbbxvblK1V2CUJ1qbAXF+3uiu0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=U2FYUJdukI1452thIbV2EQUFdp+3uvjJ2X9rLc3blPCs4DsQcq+eDLhrzD8EOEo+U
-         6sGKUOhGBNFw/WIocMkpOFUblwEyJC3z4ZZLoll6rw0Lx2ic4EvgbTCnW20iZUZaAF
-         rztVAKshRKqB9MORQ6hNOrkBdThPxngb8VjB8S/fKRkz1wcuBvYS5w+gTJp+HbEG8Q
-         MJE3cEXkfP0Xj9+rycSclMr9FzsSiPQ6W3FZPVLTRWzapSCye3RpB6vbzohbLjhpO0
-         AEvLB491oBzBE/YPj7AfWXn3ivjFXEIPPJPXUaK5vCHFM5TrPfWHMXwkesqefzTY/b
-         3vYGXBO+kcgSQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 66F78C395DC;
-        Sat, 19 Aug 2023 16:01:48 +0000 (UTC)
-Subject: Re: [GIT PULL] fbdev fixes and cleanups for v6.5-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZODfqGYs/M1xvIJ8@ls3530>
-References: <ZODfqGYs/M1xvIJ8@ls3530>
-X-PR-Tracked-List-Id: <linux-fbdev.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZODfqGYs/M1xvIJ8@ls3530>
-X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.5-rc7
-X-PR-Tracked-Commit-Id: 0650d5098f8b6b232cd5ea0e15437fc38f7d63ba
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b5cab28be6ccf08237078b675fc1d446679779ba
-Message-Id: <169246090841.15016.6846906717154418207.pr-tracker-bot@kernel.org>
-Date:   Sat, 19 Aug 2023 16:01:48 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        s=k20201202; t=1692462099;
+        bh=76TyJsyA+FuZR/jjpu6GfoRCnAnDtDWFM6vwGAFIwqM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=O79hoXclaFHdIx85hFnPdO2PF2msi8yR2JeIdpisRiTKZ6z3NLuf8ZxIDU7ep7k1k
+         w89ecZsnOQ9uvg3Vm7yl7IkjLWZ4cX8/URZ7biSexaNPpRRe3ILRpxNNYZgU09MT/q
+         6rAU6fWWaI5ugjo4d8M6UF7c6y9SNt7wxK9BjSDfqN31Y1vPJpcCDCrEzRl0kfZBOK
+         2eT2fW4Rnwa2Sx3G2vqiibmD2lxcybDvGIw/NFTyfYd+s4MW55W/WLOjpPCscFQ5eY
+         MKOcDbNIqnBPd94ERcwnEMX1ig2FrbneJDkYF0TukO1vEVAd3JixIN+mcR0p4MaN3n
+         Ak54BZGd0tMeQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
+Subject: [PATCH] selftests/tpm2: tpm2-parse-error.py
+Date:   Sat, 19 Aug 2023 16:21:30 +0000
+Message-Id: <20230819162135.4181-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Aug 2023 17:28:40 +0200:
+Add a script to quickly parse any TPM error code. This can be useful, e.g.
+when parsing klog output when TPM fails in an internal kernel operation.
 
-> http://git.kernel.org/pub/scm/linux/kernel/git/deller/linux-fbdev.git tags/fbdev-for-6.5-rc7
+Example transcript:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b5cab28be6ccf08237078b675fc1d446679779ba
+$ python3 tpm2-parse-error.py 0x1C4
+TPM_RC_VALUE: rc=0x000001c4
 
-Thank you!
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
+ tools/testing/selftests/tpm2/Makefile           |  2 +-
+ .../testing/selftests/tpm2/tpm2-parse-error.py  | 17 +++++++++++++++++
+ 2 files changed, 18 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/tpm2/tpm2-parse-error.py
 
+diff --git a/tools/testing/selftests/tpm2/Makefile b/tools/testing/selftests/tpm2/Makefile
+index a9bf9459fb25..b2c0504bcca6 100644
+--- a/tools/testing/selftests/tpm2/Makefile
++++ b/tools/testing/selftests/tpm2/Makefile
+@@ -2,4 +2,4 @@
+ include ../lib.mk
+ 
+ TEST_PROGS := test_smoke.sh test_space.sh test_async.sh
+-TEST_PROGS_EXTENDED := tpm2.py tpm2_tests.py
++TEST_PROGS_EXTENDED := tpm2.py tpm2_tests.py tpm2-parse-error
+diff --git a/tools/testing/selftests/tpm2/tpm2-parse-error.py b/tools/testing/selftests/tpm2/tpm2-parse-error.py
+new file mode 100644
+index 000000000000..8eed72681af1
+--- /dev/null
++++ b/tools/testing/selftests/tpm2/tpm2-parse-error.py
+@@ -0,0 +1,17 @@
++#!/usr/bin/env python3
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++
++from argparse import ArgumentParser
++from argparse import FileType
++import os
++import sys
++import tpm2
++
++def main():
++    parser = ArgumentParser(description='Parse a TPM error code')
++    parser.add_argument('rc', type=(lambda x: int(x, 0)))
++    args = parser.parse_args()
++    print(str(tpm2.ProtocolError(None, args.rc)))
++
++if __name__ == '__main__':
++    main()
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.39.2
+
