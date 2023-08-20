@@ -2,87 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F997820BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 01:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E294F782095
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 00:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232145AbjHTXkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 19:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        id S230180AbjHTWQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 18:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232140AbjHTXko (ORCPT
+        with ESMTP id S229516AbjHTWQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 19:40:44 -0400
-X-Greylist: delayed 21420 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 20 Aug 2023 16:40:42 PDT
-Received: from smart3-pmg.ufmg.br (smart3-01-pmg.ufmg.br [150.164.64.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65494A4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 16:40:42 -0700 (PDT)
-Received: from smart3-pmg.ufmg.br (localhost.localdomain [127.0.0.1])
-        by smart3-pmg.ufmg.br (Proxmox) with ESMTP id E7CFE5E7633
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:23:54 -0300 (-03)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ufmg.br; h=cc
-        :content-transfer-encoding:content-type:content-type:date:from
-        :from:message-id:mime-version:reply-to:reply-to:subject:subject
-        :to:to; s=mail; bh=aB6phz2CCV0fOdUx+FEpXbqcMS5qcYYIVmsV4Zzs0ug=; b=
-        VpMuWbQhh2cEwOG8laxY3c3nTXa/SaTCz8SkTlDyJeQoKb4w6/F3nC4QI5IIlm9I
-        18be5kvmXiqMPXyv1k5Kw3yEQtxQPxrnfm5IbyypyThFwfUbTiQef+VVze59Im61
-        0TeFQrBx2CSZu3CIc4QFuHgLjp7oWVee/rCIGj8R+ddiheASiYJrtQVfbEYAWpdG
-        LzpDq4C0Z0b5dK+IEA+8GOcVzhUnZVCir3xa2r4tea3uWLf2L+I2aHcbrjErcdXk
-        Kg+7xOGshx2iYIn1U5VrqIY4qJkeihRvWncApuZaq6uEzzpHV2LnSrE8ZPSTBngv
-        J58Shd5NC7KMsdbip46Ffw==
-Received: from bambu.grude.ufmg.br (bambu.grude.ufmg.br [150.164.64.35])
-        by smart3-pmg.ufmg.br (Proxmox) with ESMTP id 472045E296E
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:10:26 -0300 (-03)
-Received: from ufmg.br ([98.159.234.166])
-          by bambu.grude.ufmg.br (IBM Domino Release 10.0.1FP3)
-          with ESMTP id 2023082014020201-1068438 ;
-          Sun, 20 Aug 2023 14:02:02 -0300 
-Reply-To: "Kristine Wellenstein" <inform@calfd.org>
-From:   "Kristine Wellenstein" <luanacsg@ufmg.br>
-To:     linux-kernel@vger.kernel.org
-Subject: [RE]: RE:
-Date:   20 Aug 2023 13:01:58 -0400
-Message-ID: <20230820130158.2860577B6C0AA326@ufmg.br>
+        Sun, 20 Aug 2023 18:16:09 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158349D;
+        Sun, 20 Aug 2023 15:16:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692569761;
+        bh=LkkEidVlE0Trgy6gpaPNS3Ht0hoYcScCdZ2n3IAi8Wk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Z6EE8NmLph9rW+Azx1Iq3uAOZi34vKM/JpE1qzsbaUKHEF6ecYzivZb+OFvremBtT
+         IVBSZLDtYsKgMUEjSw3YHQae1U6m+M0z1Jylutt9JPurJqNN9zh4PwiZ7Qyq8PI2iW
+         v+VkJWPX3cdJ9euTBwux2ZcM2azwkYQ5oN+7qoxQXCBlgBkKZkJSKj662EDNlwI2rB
+         DR0tjjKQ3MoHkcnUqlr6zbKOeaD3Bwx+DRrCxY739dEkvOTpdPLMGiLIhLpA6T7uy7
+         xiLkxZz2JDMvo6FE+bni7jZ8TxwH7DW/Y0itYXsNureb2pK4rGGKDjnvODvb1jRtVb
+         G4ArcPw3nSAsg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTVLS6fPPz4wZJ;
+        Mon, 21 Aug 2023 08:16:00 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 08:15:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the
+ v4l-dvb-next tree
+Message-ID: <20230821081547.2f96b1a5@canb.auug.org.au>
+In-Reply-To: <20230815091157.64424ff1@canb.auug.org.au>
+References: <20230815091157.64424ff1@canb.auug.org.au>
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on bambu/UFMG(Release 10.0.1FP3|August 09, 2019) at
- 20-08-2023 14:02:02,
-        Serialize by Router on bambu/UFMG(Release 10.0.1FP3|August 09, 2019) at 20-08-2023
- 14:10:26,
-        Serialize complete at 20-08-2023 14:10:26
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-        charset="utf-8"
-X-Spam-Status: No, score=4.1 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+Content-Type: multipart/signed; boundary="Sig_/1jXLOgC0UVfObI=a48s9/DZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sehr geehrter Beg=C3=BCnstigter,
+--Sig_/1jXLOgC0UVfObI=a48s9/DZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Die EmilyWells Foundation ermutigt Menschen, sich ehrenamtlich f=C3=BCr soz=
-iale oder wohlt=C3=A4tige Zwecke zu engagieren und den weniger Gl=C3=BCckli=
-chen zu helfen. Lasst uns alle die wichtige Botschaft dieses gro=C3=9Fartig=
-en Tages verbreiten und uns f=C3=BCr das bedanken, was wir haben.
+Hi all,
 
-Ich bin Kristine Wellenstein, die Gewinnerin des Mega Millions-Jackpots in =
-H=C3=B6he von 426 Millionen US-Dollar am 28. Januar. Ich gebe offiziell bek=
-annt, dass Sie als einer von f=C3=BCnf Empf=C3=A4ngern einer Spende in H=C3=
-=B6he von 2.300.000 ausgew=C3=A4hlt wurden. Dollar von der Emily Wells Foun=
-dation.
+On Tue, 15 Aug 2023 09:11:57 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Commits
+>=20
+>   b7ec3212a73a ("media: bttv: convert to vb2")
+>   f5f17f0cb5ab ("media: bttv: use audio defaults for winfast2000")
+>   7df8d5cffa87 ("media: bttv: refactor bttv_set_dma()")
+>   c9c0df318acd ("media: bttv: move vbi_skip/vbi_count out of buffer")
+>   0f5f12e40824 ("media: bttv: remove crop info from bttv_buffer")
+>   87df33be0548 ("media: bttv: remove tvnorm field from bttv_buffer")
+>   9764252d4bdb ("media: bttv: remove format field from bttv_buffer")
+>   04d5356512c6 ("media: bttv: move do_crop flag out of bttv_fh")
+>   faebe84ebc75 ("media: bttv: copy vbi_fmt from bttv_fh")
+>   79bbd3510ddb ("media: bttv: copy vid fmt/width/height from fh")
+>   45b6f5bf1a01 ("media: bttv: radio use v4l2_fh instead of bttv_fh")
+>   615c5450278a ("media: bttv: replace BUG with WARN_ON")
+>   d1846d72587e ("media: bttv: use video_drvdata to get bttv")
+>   33c7ae8f49e3 ("media: i2c: rdacm21: Fix uninitialized value")
+>   7c8192e8b489 ("media: coda: Remove duplicated include")
+>   54921a8f31d8 ("media: vivid: fix the racy dev->radio_tx_rds_owner")
+>=20
+> are missing a Signed-off-by from their committer.
 
-Diese Spende ist im Gedenken an meinen verstorbenen Enkel, der gerade einen=
- Tag gelebt hat.
-F=C3=BCr weitere Informationen antworten Sie bitte auf diese E-Mail.
+These are now in the v4l-dvb tree and still missing their SOBs :-(
 
-Beste gr=C3=BC=C3=9Fe:
+--=20
+Cheers,
+Stephen Rothwell
 
-Kristine Wellenstein
-Gr=C3=BCnderin/Vorsitzende: EmilyWells. Stiftung, Schenkung
+--Sig_/1jXLOgC0UVfObI=a48s9/DZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTikJMACgkQAVBC80lX
+0GxjUAf/T4HjECwybuBVzALmIEZ860WoI8Cz22PewKpIgZfavfRUpgV1OYwvy+mi
+YxR0erFsxbKWMP6sVREQ6Ruk4HP58g7Xbbo/RqwUg8jxcluhuFfCSjPwFqPXzOjm
+D4dtkWofRyVLZCcSBeDcRZ45T8siD2aRYeajkARdhjcRyL0tB7sfDETOVsUeXTL8
+NgpQi4E89Gd2Uh8KLLXhbeUzZV6P7Tv73kewIfUDiNiCTUW0iUbIDeyGLC1/zNk3
+QHYs1JjcYhlFrM8DyHjnrvdSXKCEfJ/uZDpWjPRhGmm+J8edX1dv9NjoGBgMmS72
+iARq2nQoAsV90Xo/QuHVGMuoInhTTw==
+=JUWB
+-----END PGP SIGNATURE-----
+
+--Sig_/1jXLOgC0UVfObI=a48s9/DZ--
