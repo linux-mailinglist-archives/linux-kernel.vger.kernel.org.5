@@ -2,81 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE389781D2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66745781D31
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjHTJgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 05:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
+        id S229633AbjHTJgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 05:36:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbjHTJgn (ORCPT
+        with ESMTP id S230203AbjHTJga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 05:36:43 -0400
-Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23E01AC
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 02:32:58 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.mutex.one (Postfix) with ESMTP id 8074516C004A;
-        Sun, 20 Aug 2023 12:32:56 +0300 (EEST)
-X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
-Received: from mail.mutex.one ([127.0.0.1])
-        by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id zVhDgEjmY7wN; Sun, 20 Aug 2023 12:32:55 +0300 (EEST)
-From:   Marian Postevca <posteuca@mutex.one>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
-        t=1692523975; bh=kDnTcqSTQdlLHPpQOf5RRj+TVFls2LmJQQQrfzPriCk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=fViGGRzXCd7v5DsOstN+pqTrYAkAg0Mae2L6QgAcM8zUeelBB64Kq3LLNCcKY4Wug
-         0J76mfBHwpyBXU44E7hTzxipE58kkhGkXBYd3SrC6pbpx3UQvB2QJ9VjBK9cWkVxAs
-         469J+R8h41J5X1jKqxUaS3ayCd0HVWWhGc3EboUA=
-To:     Mark Brown <broonie@kernel.org>
-Cc:     =?utf-8?B?5rKI5LiA6LaF?= <zhuning0077@gmail.com>,
-        yangxiaohua <yangxiaohua@everest-semi.com>,
-        Zhu Ning <zhuning@everest-semi.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables
- sound for systems with a ES8336 codec
-In-Reply-To: <8cddbe1c-20d7-4b8f-ba02-f86bbb5a54c5@sirena.org.uk>
-References: <141a3320-ff65-459f-9d00-c8bed691dcfc@sirena.org.uk>
- <87lejpwxzf.fsf@mutex.one> <ZBr9rJn50ovG1w9W@sirena.org.uk>
- <87ttycjyw3.fsf@mutex.one> <ZBty1CdPaWm0IcRi@sirena.org.uk>
- <87r0t9uc08.fsf@mutex.one> <ZCRCqJ7oG6oefo9g@sirena.org.uk>
- <87zg2pxtog.fsf@mutex.one>
- <d2be9183-87fd-4cc4-a239-9401b5b88364@sirena.org.uk>
- <87o7j5b9bd.fsf@mutex.one>
- <8cddbe1c-20d7-4b8f-ba02-f86bbb5a54c5@sirena.org.uk>
-Date:   Sun, 20 Aug 2023 12:32:52 +0300
-Message-ID: <878ra683ej.fsf@mutex.one>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 20 Aug 2023 05:36:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278B03A96
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 02:35:51 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 943FE1F37C;
+        Sun, 20 Aug 2023 09:35:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692524150; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R6yWGBd37WpWrpHHgrByZVUhlpxVFH0xlCIOxFKl3NA=;
+        b=MXSrATI8QfEOdse1x6u6OBmkiXYzIujh/VSdv4LuWkO/Q4lIR5VRQauqMl5uDhGlOMS37q
+        a1wiEGECbS8GigvmJFS/lBWR0FRq2FzMfJR5yGgQZvNNvkzTSkk9pDR+1iGGQR6h6VX+4V
+        FpAYVbWM8x04cgDS5WCidGGbnReS+9I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692524150;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=R6yWGBd37WpWrpHHgrByZVUhlpxVFH0xlCIOxFKl3NA=;
+        b=K/S9BfcJCMKJGYn/lMdh+IIW9squta8SFb42OQM4sS6FLy8/ov19BBLEeB8mo8abuzbZ6+
+        yXLo3YHqowdh2hAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3C7D81348E;
+        Sun, 20 Aug 2023 09:35:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id SyrADXbe4WTPOQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 20 Aug 2023 09:35:50 +0000
+Date:   Sun, 20 Aug 2023 11:35:49 +0200
+Message-ID: <87il9a9hu2.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
+        13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v3 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <9f910785-e856-1539-e3e4-c9817af5fe67@linux.intel.com>
+References: <20230818085558.1431-1-shenghao-ding@ti.com>
+        <9f910785-e856-1539-e3e4-c9817af5fe67@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 18 Aug 2023 18:30:42 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> The code doesn't look too bad but needs a bit more work. There are quite
+> a few error handling issues, pm_runtime needs to be revisited and
+> ACPI/EFI as well.
+> 
+> > +enum calib_data {
+> 
+> tas2781_calib_data?
 
-Mark Brown <broonie@kernel.org> writes:
+Well, as long as it's a local stuff, a suffix isn't really needed.
+If it makes thing too confusing, it should be named properly, of
+course, though.
 
-> You'd need to pull the relevant supplies out of DAPM and handle them in
-> the CODEC suspend/resume callback.
+> > +static int tas2781_read_acpi(struct tasdevice_priv *p, const char *hid)
+> > +{
+> > +	struct acpi_device *adev;
+> > +	struct device *physdev;
+> > +	LIST_HEAD(resources);
+> > +	const char *sub;
+> > +	int ret;
+> > +
+> > +	adev = acpi_dev_get_first_match_dev(hid, NULL, -1);
+> > +	if (!adev) {
+> > +		dev_err(p->dev,
+> > +			"Failed to find an ACPI device for %s\n", hid);
+> > +		return -ENODEV;
+> > +	}
+> 
+> [1] need to take care of a resource leak here
 
-Can you please suggest an approach that would be acceptable to you?
-In the original patch series I sent, you didn't agree to the approach
-to disable the jack detection in the machine driver suspend callback
-and re-enable it in the resume callback. You suggested to do it in the
-CODEC suspend/resume callbacks. As I explained previously (and Zhu Ning
-confirmed in his email) this wouldn't work, since as long as the jack
-detection is enabled, the CODEC suspend/resume callbacks do not get
-called.
-The second option (which you also do not seem to agree) is to enable
-idle_bias_on.
+Right, and that's rather a typo at the end of the function...
 
-So I don't know how to continue with this and merge this new machine
-driver.
+> > +err:
+> > +	dev_err(p->dev, "read acpi error, ret: %d\n", ret);
+> > +	put_device(physdev);
+
+... this must be put_device(adev) instead physdev.
+
+> > +static void tas2781_hda_playback_hook(struct device *dev, int action)
+> > +{
+> > +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> > +
+> > +	dev_dbg(tas_priv->dev, "%s: action = %d\n", __func__, action);
+> > +	switch (action) {
+> > +	case HDA_GEN_PCM_ACT_OPEN:
+> > +		pm_runtime_get_sync(dev);
+> 
+> test if this actually works?
+
+To be fair, most of driver codes don't check it, including the
+HD-audio core.  (Actually, over 900 of 1300 calls have no check in the
+whole tree.)
+
+It implies that forcing the check in each place is moot; rather the
+helper needs to be coded not to fail, IMO.
+
+> > +static int tasdevice_hda_clamp(int val, int max)
+> > +{
+> > +	if (val > max)
+> > +		val = max;
+> > +
+> > +	if (val < 0)
+> > +		val = 0;
+> > +	return val;
+> > +}
+> 
+> I've seen that macro in the TAS2783 code as well, that sounds like a
+> good helper function to share?
+
+There is already clamp() macro, and I guess it can be replaced with
+clamp(val, 0, max).
+
+> > +
+> > +	comps->dev = dev;
+> > +
+> > +	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
+> > +
+> > +	ret = tascodec_init(tas_priv, codec, tasdev_fw_ready);
+> > +	if (ret)
+> > +		return ret;
+> 
+> need to do a put_autosuspend below, this is leaking a refcount.
+
+Right, that needs an obvious leak.  Let's fix it.
+
+> > +static int tas2781_system_suspend(struct device *dev)
+> > +{
+> > +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> > +	int ret;
+> > +
+> > +	dev_dbg(tas_priv->dev, "System Suspend\n");
+> > +
+> > +	ret = pm_runtime_force_suspend(dev);
+> > +	if (ret)
+> > +		return ret;
+> 
+> that's usually the other way around, for system suspend you either want
+> the device to be pm_runtime active, or if it's already suspended do nothing.
+> 
+> This is very odd to me.
+
+This is a normal procedure, as stated in pm_runtime_force_suspend()
+definition:
+
+/**
+ * pm_runtime_force_suspend - Force a device into suspend state if needed.
+....
+ * Typically this function may be invoked from a system suspend callback to make
+ * sure the device is put into low power state and it should only be used during
+ * system-wide PM transitions to sleep states.  It assumes that the analogous
+ * pm_runtime_force_resume() will be used to resume the device.
+
+
+thanks,
+
+Takashi
