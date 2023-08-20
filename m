@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6B8781DEB
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 15:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0329781DEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 15:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbjHTNDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 09:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36824 "EHLO
+        id S231186AbjHTND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 09:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbjHTNDp (ORCPT
+        with ESMTP id S231224AbjHTNDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 09:03:45 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2583E67
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 05:59:27 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-523476e868dso3040384a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 05:59:27 -0700 (PDT)
+        Sun, 20 Aug 2023 09:03:51 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D14173E
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:00:11 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9a828c920so39216071fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:00:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692536366; x=1693141166;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=aYCxZwhLKjTbTVXNyU36rn1PDkh3vGRS5ay1eb7B0IQ=;
-        b=GzRzxnrcRHfVeWS900iy3m/imxylcGjCfHzIoVQb2wJr9NkVk0+ArxIa6n6zeOeobo
-         gf9yxo/pOsxpgz7BD/Y44xv1LzspT7PCTwL4VfQP1+SSxjGB7niFF6/abeu4VF801qm/
-         mePCHGzJBzr+re/2aLV6CVQaJZZncY+76J9Vg=
+        d=gmail.com; s=20221208; t=1692536410; x=1693141210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HPSbgyhLc5Q7B4ZbRBJPVcxIZMDQI6ZiPnGnQ/TPqWo=;
+        b=AgciMjmSed47bauV5RemSXWwunpQAzO1Gx+83mn3oWeEd3+tRW89aaGP0dOBOoPG2N
+         UQ1ZWl4JMGYcmhrZoN5VEj41OTx9KOW6uu0nZWW34/2fKMCYdvXa+7Ax8JCEKdEXMU11
+         iWw1QRcAe/HhZ1QCPbE3aFR50V11/R5sDqLfmBHAHxgDIQOL/P91/uyaMBaHqo1RQZGN
+         a76sqjk9zqsUJxydGRcqM7i0/HJnq2AbDdgI/WQ3ATYwIQCIvaN4++cz2yxd93A9m1XV
+         0mkq7GlzBlsBcVSVDQXob8Xtei1vi7nz1SQM+mhmpQG6g6JVs2WH/TcoUAV7PW8pev6f
+         poPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692536366; x=1693141166;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aYCxZwhLKjTbTVXNyU36rn1PDkh3vGRS5ay1eb7B0IQ=;
-        b=eCtXy6wVV+Kf3vpGCSIz+DLa8tjKFuFNAo3fOphpmQk9VawQPsc2YquRhUc2rnasjF
-         Gn4cqF3x4jR8+q2ZzwPNx82PWFd6m0kIugaDcchTK8o3d46PHDT48EWGa9TN6liRMxzj
-         qLyo2VS7Mx1nd0BPpg2bDrP4KlQnuAaXKv7m+KGXvCv98fawAzY0iQrbBsedNhVdmDAL
-         aLh2sRS/4Cd4xunogri1BzdpXSrCeoDHTxKA+9K0RSJSU/Vtf2bHZz+WqUzia+a6Mw9X
-         P2D5h0T7osj7lrcvHQdyOd8XMuTnc7npZP8P5Yk655jvncfhhtKdR3GMrdBUk9qUjCRG
-         xKHg==
-X-Gm-Message-State: AOJu0YzFVJFyqok/l62v9m0jcZLwn2ZOrXMlS1m4SSN5p/zSp7KWQdYW
-        OoFovg5jksg9ujM4picrPYmmyZDXSZiKAEuWiWwcRTfF
-X-Google-Smtp-Source: AGHT+IHhQI9ThgeKUDwXIcAJCit+nTeQu8O8DePhf4T6+K9TGvbAkrztKg6YfvJGbyTZrElmYLMCxw==
-X-Received: by 2002:a17:906:3058:b0:99d:acdb:bad6 with SMTP id d24-20020a170906305800b0099dacdbbad6mr3063315ejd.77.1692536366090;
-        Sun, 20 Aug 2023 05:59:26 -0700 (PDT)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com. [209.85.218.43])
-        by smtp.gmail.com with ESMTPSA id a8-20020a17090640c800b009a0955a7ad0sm4136506ejk.128.2023.08.20.05.59.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Aug 2023 05:59:25 -0700 (PDT)
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9936b3d0286so328533066b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 05:59:24 -0700 (PDT)
-X-Received: by 2002:a17:906:2011:b0:99c:56d1:7c71 with SMTP id
- 17-20020a170906201100b0099c56d17c71mr2982614ejo.26.1692536364343; Sun, 20 Aug
- 2023 05:59:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230820104303.2083444-1-mjguzik@gmail.com> <ZOH62Zi/yao/oC8y@casper.infradead.org>
- <CAGudoHG3OxoYKSwDmJYEDOj6LmDMsQDs3SD5nBdrzA5Vc1_H0A@mail.gmail.com> <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
-In-Reply-To: <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 20 Aug 2023 14:59:07 +0200
-X-Gmail-Original-Message-ID: <CAHk-=wjW7W-eLpxz-Rnztx1J0Ay=kaXNFsPe=MZG9hQBXBPL3Q@mail.gmail.com>
-Message-ID: <CAHk-=wjW7W-eLpxz-Rnztx1J0Ay=kaXNFsPe=MZG9hQBXBPL3Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: remove unintentional voluntary preemption in get_mmap_lock_carefully
-To:     Mateusz Guzik <mjguzik@gmail.com>
+        d=1e100.net; s=20221208; t=1692536410; x=1693141210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HPSbgyhLc5Q7B4ZbRBJPVcxIZMDQI6ZiPnGnQ/TPqWo=;
+        b=MhyXopv5wuh+ktoZSS3LamqNzkpfX2A61ptG5lw/rqXsFzUw6bzXQgu5vHlbszprKd
+         rZ5ydkumtX4K+ab4Fdg1+v0giktXiARCTmhxpnTSHQvB/V3kpHFTT/HT6sDVY6KH0/pW
+         muXTjQFX64YQw0dQopQU3LiWwYyYmvC6ESwCf1jVKKn1nN4MQFfdYIAjzQ54DnOIx+GI
+         h5Iogj1vtRMl2zeyZijiqda1l+1a71Xp1pnPNnxnBEgITCNrm5pBnTm+6nn+FsxjXkUR
+         eC7KZicsXpxSnDfT9W3IrfzzqtvE6aqpwzey4mr+A+y1i+P5FBH4FtzoqznnfNQdsFtW
+         vFcw==
+X-Gm-Message-State: AOJu0YzIfHgBZmp2eVAkKgoOAFEArtRsxSW5vsVg2zYxICoE67I9ahLe
+        rS6+qO9SVCRegmMyRDKXz+U=
+X-Google-Smtp-Source: AGHT+IHAM2G/YTBj7smE4cITzuV1oplz/ydV3jspEPYU8z45TQRqiN4V7vx6ePD2G3WrWv+QMzXh6w==
+X-Received: by 2002:a05:6512:3e19:b0:4f8:7513:8cac with SMTP id i25-20020a0565123e1900b004f875138cacmr3894582lfv.48.1692536409674;
+        Sun, 20 Aug 2023 06:00:09 -0700 (PDT)
+Received: from f (cst-prg-27-89.cust.vodafone.cz. [46.135.27.89])
+        by smtp.gmail.com with ESMTPSA id n17-20020a056402061100b0052338f5b2a4sm4248953edv.86.2023.08.20.06.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 06:00:09 -0700 (PDT)
+Date:   Sun, 20 Aug 2023 15:00:04 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Subject: Re: [PATCH] mm: remove unintentional voluntary preemption in
+ get_mmap_lock_carefully
+Message-ID: <20230820130004.knx42tyeshps4vdg@f>
+References: <20230820104303.2083444-1-mjguzik@gmail.com>
+ <ZOH62Zi/yao/oC8y@casper.infradead.org>
+ <CAGudoHG3OxoYKSwDmJYEDOj6LmDMsQDs3SD5nBdrzA5Vc1_H0A@mail.gmail.com>
+ <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,31 +75,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 20 Aug 2023 at 14:47, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
+On Sun, Aug 20, 2023 at 02:47:41PM +0200, Linus Torvalds wrote:
+> On Sun, 20 Aug 2023 at 14:41, Mateusz Guzik <mjguzik@gmail.com> wrote:
+> > My first patch looked like this:
+> 
+> Well, that's disgusting and strange.
+> 
+> > -               might_sleep();
+> > +#if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
+> > +               __might_sleep(__FILE__, __LINE__);
+> > +#endif
+> 
+> Why would you have that strange #ifdef? __might_sleep() just goes away
+> without that debug option anyway.
+> 
 > But without that odd ifdef, I think it's fine.
+> 
 
-Another option might be to just move the might_sleep() to the top, and
-do it unconditionally. If the trylock fails, the overhead of possibly
-doing a cond_resched() is kind of moot.
+Heh, I wrote the patch last night and I could swear it failed to compile
+without the ifdef.
 
-IOW, the main problem here is not that it causes a scheduling point
-(if the kernel isn't preemptable), it seems to be just that we
-unnecessarily schedule in a place with the mm lock is held, so it
-unnecessarily causes possible lock contention for writers.
+That said I think it looks more than disgusting and I'm happy to confirm
+it does build both ways.
 
-With the per-vma locking catching most cases, does any of this even matter?
+That said:
 
-Mateusz - on that note: I'm wondering what made you see this as a
-problem. The case you quote doesn't actually seem to be threaded, so
-the vm lock contention shouldn't actually matter there.
+mm: remove unintentional voluntary preemption in get_mmap_lock_carefully
 
-Does it schedule away? Sure. But only if "needs_resched" is set, so it
-doesn't seem to be a *bad* thing per se.
+Should the trylock succeed (and thus blocking was avoided), the routine
+wants to ensure blocking was still legal to do. However, might_sleep()
+ends up calling __cond_resched() injecting a voluntary preemption point
+with the freshly acquired lock.
 
-It might just be that this particular scheduling point ends up being a
-common one on that load, and with those kernel config options (ie
-PREEMPT_VOLUNTARY)?
+__might_sleep() instead to only get the asserts.
 
-              Linus
+Found while checking off-CPU time during kernel build (like so:
+"offcputime-bpfcc -Ku"), sample backtrace:
+    finish_task_switch.isra.0
+    __schedule
+    __cond_resched
+    lock_mm_and_find_vma
+    do_user_addr_fault
+    exc_page_fault
+    asm_exc_page_fault
+    -                sh (4502)
+        10
+
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 1ec1ef3418bf..d82316a8a48b 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5259,7 +5259,7 @@ static inline bool get_mmap_lock_carefully(struct mm_struct *mm, struct pt_regs
+ {
+ 	/* Even if this succeeds, make it clear we *might* have slept */
+ 	if (likely(mmap_read_trylock(mm))) {
+-		might_sleep();
++		__might_sleep(__FILE__, __LINE__);
+ 		return true;
+ 	}
+ 
+-- 
+2.39.2
