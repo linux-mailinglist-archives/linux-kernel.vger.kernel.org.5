@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDB27820AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 01:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D97C7820B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 01:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbjHTXDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 19:03:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
+        id S232097AbjHTXHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 19:07:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232087AbjHTXDE (ORCPT
+        with ESMTP id S231931AbjHTXHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 19:03:04 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145E6A6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso27049655e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
+        Sun, 20 Aug 2023 19:07:19 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260CDA3;
+        Sun, 20 Aug 2023 16:07:18 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-d35a9d7a5bdso2728663276.0;
+        Sun, 20 Aug 2023 16:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692572579; x=1693177379;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
-        b=t/M436gLUC3+++Lm6yg65sJ9KSAuXIfPhOB12Lo8i7//DnPoosE1I3P39EuLVL4PNO
-         zRxoSgoVSQgGE3VjMiyyof23ui1TFdgoOKaNFJqRby3F43/I7OR79Cz5BLE5wPYPtI5T
-         VBr3r68voLEMZTuMRzdBo/IZTrf/8IHoS1DY3JjHEIyBznscOY5H2pCCx6BI5FHNijtM
-         PPDqEKa5XS8oOtFuuVIwZel0iFIUHGm+0+a427vbiMxzGMDaz4p0GD7I/pHZfv3K5R9g
-         SxKsr4mnY/efclf92+bb94JKR4Cr2yuLCpMgCL6hEieNYhRuwNR6i4S5WrF4+WvvQekE
-         eH2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692572579; x=1693177379;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692572837; x=1693177637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
-        b=WG890RMyLW5ym3HSr334C2RuknjKiXbPBo1NNAIaaNgOE/fCZhngyeumI1b+vMLFvn
-         ckfNekWobUI73NFdOE0PMoqXKYq87rYRzZuCyjdhHIwBkD2q0KCQkojTY9y12mRqb6Nm
-         EKbYL88IfUh0DzGUeSKQXm1Mvbi6z0I9HpP/DTu7Qktp4zkO+6Wx0J71f9INTn+k10x8
-         G6H1+3ORy6sA9kKj7L8Rnw0VeqY/DFm82xtx6V/mXmCdvHRjggIY4yI3LIHhRUJrBqyb
-         xvVgpX3NCris18mzEIBhDH4DdASOE4Sdtls11xaaoCCyimSmVOE8e58xWeEk9Szl2lRI
-         3BYg==
-X-Gm-Message-State: AOJu0YycJKwxH9+sefL8+XeNYGzJXo7kayZdHsR5FbIkSI4B8tSeBMXK
-        Y5c/eG0B0RALj5Cl785sjjQSHQ==
-X-Google-Smtp-Source: AGHT+IEDDxn1gA7l6hN0vwECDX74/sJ63XoHP2U9mIBarT4gPy/ZBfwz83YYHMQoWg88ioS6EzG+NQ==
-X-Received: by 2002:a7b:c8d8:0:b0:3fe:195c:eca3 with SMTP id f24-20020a7bc8d8000000b003fe195ceca3mr3694180wml.9.1692572579582;
-        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id l22-20020a7bc456000000b003fe1afb99a9sm10596979wmi.11.2023.08.20.16.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 00:02:57 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Waiman Long <longman@redhat.com>
-Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
- for 5.10.y
-Message-ID: <20230820230257.gmcmjuuirzq6xs52@airbuntu>
-References: <20230820152144.517461-1-qyousef@layalina.io>
- <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
+        bh=o73w4w0N/kFb2lwKVkScYV3geo6b4kcMCRo1AY1wg6Y=;
+        b=VHszxDnZWMg0bhLx071iFUt+Uq2aw9eX2kYZou4/oiLZy285EYALY9iArxEwe4IZky
+         0xPS/XxqeLrG8W7L6BKyNMFFRtVJzl22/fOFyTwLNJ9hPGnp7nMbE2UkM6pLpgEN9D6w
+         JkqczHiTjOUIXxOTyvyKT9udJ6f0lKBiY5W6WKiQ6AIuW71nUlGpFD2+fy/5g1I6xwzl
+         5iqx8qXqogGVIwWlqtNscZMwvSaU108P83kZDykBqsu+EOfjNP9zpSUrafHtl450zfqr
+         ZycJGCdUAgRUVnjRfuD0OgfSJHQ1+CN8O3P7PCUP8AZ7YENTmJFGTaFjGnKE0jz2IlfJ
+         eDsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692572837; x=1693177637;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=o73w4w0N/kFb2lwKVkScYV3geo6b4kcMCRo1AY1wg6Y=;
+        b=UQbauacB5ok41klCZ6IRy2ng63ILPeKo2oCQqkCykxZtJQgwmX3WYj7VMl7a+eiDNK
+         TYRQ4tK5d9rOtA3J9iDJjp7iSEjBDbD7d/MMXNvN6TGatYsEA9wGjdvRZNUkRT9zaAyy
+         G4qEmlFxv+Ndh6L6On9+dciybqA/KwWJ13Bvq6uoc3IRhDwhLNS/3JqQxiC6kQaSyUqu
+         fNDWikcm6MM8nvzq1SYHWl1+zA1MefBTn1vXHuEZHGEgtE1yXWA+lJIToWsV+oKOzk2F
+         qin6V70FsAoShixE2uD6Yy1Paz41N6Zq9LNcfbYo2ChIUfGMYhuFHHScLnOFQ/ClusPp
+         SVxQ==
+X-Gm-Message-State: AOJu0YwYZerABqkhlRvikGn/SJApo2jIa8sfwqsJXOA91QsVTfV03ZT0
+        Wg9ExQEYwScUgEigm2oaNkMbLXPqhD+aHMmLCmA=
+X-Google-Smtp-Source: AGHT+IFi9lHMbpMTd7FZZ/bySxVM/B7IE96URR44UPxVilUTv1xESAKFsH7tLD5VDFlmpyEoR3+MvJJvzMb3vYtMDjE=
+X-Received: by 2002:a05:6902:4d2:b0:d63:839:989 with SMTP id
+ v18-20020a05690204d200b00d6308390989mr5499126ybs.0.1692572837352; Sun, 20 Aug
+ 2023 16:07:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230804171448.54976-1-yakoyoku@gmail.com>
+In-Reply-To: <20230804171448.54976-1-yakoyoku@gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 21 Aug 2023 01:07:06 +0200
+Message-ID: <CANiq72=YOtFTUXgpBPAG5vA21hsuL-YpvgavH7kxWt6p=UW1eQ@mail.gmail.com>
+Subject: Re: [PATCH v3] scripts: generate_rust_analyzer: provide `cfg`s for
+ `core` and `alloc`
+To:     Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/20/23 12:24, Waiman Long wrote:
-> 
-> On 8/20/23 11:21, Qais Yousef wrote:
-> > This is a backport of the series that fixes the way deadline bandwidth
-> > restoration is done which is causing noticeable delay on resume path. It also
-> > converts the cpuset lock back into a mutex which some users on Android too.
-> > I lack the details but AFAIU the read/write semaphore was slower on high
-> > contention.
-> 
-> Note that it was a percpu rwsem before this patch series. It was not a
-> regular rwsem. Percpu rwsem isn't designed to handle high write lock
-> contention. A regular rwsem should be similar to mutex in performance when
-> handling high write lock contention.
+On Fri, Aug 4, 2023 at 7:14=E2=80=AFPM Martin Rodriguez Reboredo
+<yakoyoku@gmail.com> wrote:
+>
+> Both `core` and `alloc` have their `cfgs` (such as `no_rc`) missing
+> in `rust-project.json`.
+>
+> To remedy this, pass the flags to `generate_rust_analyzer.py` for
+> them to be added to a dictionary where each key corresponds to
+> a crate and each value to a list of `cfg`s. The dictionary is then
+> used to pass the `cfg`s to each crate in the generated file (for
+> `core` and `alloc` only).
+>
+> Suggested-by: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+> Signed-off-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
 
-Thanks a lot for the clarification Waiman! Much appreciated.
+Applied to `rust-next` -- thanks!
 
+As discussed, I removed the Suggested-by.
 
-Cheers
-
---
-Qais Yousef
+Cheers,
+Miguel
