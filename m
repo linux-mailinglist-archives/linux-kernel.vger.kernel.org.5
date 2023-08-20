@@ -2,59 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0386781CC0
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 09:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F14781CC1
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 09:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjHTHBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 03:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        id S229929AbjHTHBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 03:01:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjHTHAt (ORCPT
+        with ESMTP id S230117AbjHTHAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Aug 2023 03:00:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A1BA279;
-        Sat, 19 Aug 2023 23:36:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C22A27A
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:36:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C4D1D60C6E;
-        Sun, 20 Aug 2023 06:36:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2334AC433C7;
-        Sun, 20 Aug 2023 06:36:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5396A60C6E
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:36:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AA088C433C8;
+        Sun, 20 Aug 2023 06:36:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692513377;
-        bh=qc6iOGY6OR9VqtaPWSNBRnQ4XvYdtQ/ohSNk6q+2Apk=;
+        s=k20201202; t=1692513380;
+        bh=RwzPy9PelORoh8zlAOuicZl7CuiCFR+uvRez5lKFIfU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=khPTGqJxSBeM5/fTXHcvzi7wF8ecRSmKPULH55PqCPWuOAtoqsJ+hXSh9cPKN9bgT
-         uHRGuUS69kIs9qunrvzYbreSmf4xh7wf95utvtaXBt0+fOAGNRaGAnN1UFz5kvAVdF
-         3yzHORf+anYp5ZU5xrOJ5j1mBjb3/Vkn4AQbsU03dm03XsJ15YR4TaGWPnMCQlNzOt
-         CYWeJUVToYd9LQbrCPyLQeCpy6NJuMQXcgdTxseR0PfPGJ6+2qHp2uZ7EqUd2pspMz
-         QN21Uj0wjRMkVKzEw7IPl196QVUVxtr2JooBmqYGI/FYR69vBD+l+Bw1IUM0/8roca
-         RlKMBjIA8QsHg==
+        b=Lktv5vBreqZxF3jsovLmf8AHK0vjJ1JxUQSXtWYfGxhMPokbujpguQLmG1wXGRsxy
+         EaSC6FuuQRVNhUKfK9YpBr7MUXw5K0h+aJ3bMJUsMrmPitfek7EOPnmvFj+IxzeWc1
+         T7jlccBaAtJfjsFCkSA25EGzvyrGWzKyMugfnYLe9uUV7QRv3zEEEVUbTnWMsTMTC/
+         E+aYQn5atxsWP99KgqZcn/sfKGqT/NIBmmtWu1qV56f3Wnk6krNvwGo6ty9xS0LgQZ
+         M9a208yRloCiV1mULOnSECvMASRGubSdWGAcyHActlcr7KabXPvJhwLCiHXl6L6DWP
+         PLsCNWbSPI2xA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 00D20E93B34;
-        Sun, 20 Aug 2023 06:36:16 +0000 (UTC)
-Subject: Re: [GIT PULL] TTY/Serial driver fixes for 6.5-rc7
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 96475C395C5;
+        Sun, 20 Aug 2023 06:36:20 +0000 (UTC)
+Subject: Re: [GIT PULL] Rust fixes for 6.5-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZOEjxOkOhH7LseG9@kroah.com>
-References: <ZOEjxOkOhH7LseG9@kroah.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZOEjxOkOhH7LseG9@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.5-rc7
-X-PR-Tracked-Commit-Id: 04c7f60ca477ffbf7b7910320482335050f0d23a
+In-Reply-To: <20230819193541.290947-1-ojeda@kernel.org>
+References: <20230819193541.290947-1-ojeda@kernel.org>
+X-PR-Tracked-List-Id: <rust-for-linux.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230819193541.290947-1-ojeda@kernel.org>
+X-PR-Tracked-Remote: https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.5-rc7
+X-PR-Tracked-Commit-Id: 3fa7187eceee11998f756481e45ce8c4f9d9dc48
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b320441c04c9bea76cbee1196ae55c20288fd7a6
-Message-Id: <169251337670.7930.9227295201466060364.pr-tracker-bot@kernel.org>
-Date:   Sun, 20 Aug 2023 06:36:16 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
+X-PR-Merge-Commit-Id: ec27a636d7e1aa05e64ef0b1bd848f27f8105a39
+Message-Id: <169251338060.7930.6468675097371336525.pr-tracker-bot@kernel.org>
+Date:   Sun, 20 Aug 2023 06:36:20 +0000
+To:     Miguel Ojeda <ojeda@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -64,12 +69,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Aug 2023 22:19:16 +0200:
+The pull request you sent on Sat, 19 Aug 2023 21:35:41 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tags/tty-6.5-rc7
+> https://github.com/Rust-for-Linux/linux.git tags/rust-fixes-6.5-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b320441c04c9bea76cbee1196ae55c20288fd7a6
+https://git.kernel.org/torvalds/c/ec27a636d7e1aa05e64ef0b1bd848f27f8105a39
 
 Thank you!
 
