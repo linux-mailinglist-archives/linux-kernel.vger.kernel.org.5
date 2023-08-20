@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE96781E1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E32E781E43
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjHTOZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 10:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
+        id S231220AbjHTO3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 10:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjHTOZT (ORCPT
+        with ESMTP id S231232AbjHTO3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 10:25:19 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id C09222723
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 07:20:39 -0700 (PDT)
-Received: (qmail 90313 invoked by uid 1000); 20 Aug 2023 10:20:38 -0400
-Date:   Sun, 20 Aug 2023 10:20:38 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
-Message-ID: <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
-References: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
- <20230818010815.4kcue67idma5yguf@synopsys.com>
- <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
- <20230818031045.wovf5tj2un7nwf72@synopsys.com>
- <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
- <20230818194922.ys26zrqc4pocqq7q@synopsys.com>
- <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
- <20230819000643.7mddkitzr4aqjsms@synopsys.com>
+        Sun, 20 Aug 2023 10:29:48 -0400
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4124230
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 07:25:48 -0700 (PDT)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1bdca574b7fso39015775ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 07:25:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692541548; x=1693146348;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V5isyP5ddHp+TzLlEcMSxkju05RmqZLUsE2FHguLbe4=;
+        b=dgc4JYYTVMCCxhAlXczM6O7IS3xlygtkyUNdDl9DqZaYiD52JM55CGryaER4uUOhoT
+         3JOGYglYPt4qXByrPsGdhMXLj/eoMeFiFqmKqhrNpgkxl2wNGfJULkwNgC5ASPWOQNcE
+         Xa8PA9c8imvAJWnkiDreFY/h/DmPeLAZN2FiO92HZxFswWLqa4y3iQHfWVqG9Ivo35Ft
+         qdB3DnwfC2SH6/YNFiSDSJuKZLhaTaCcc9tbqlrNOqh7X5aLAaPd/zGOhPRBY4I5XftC
+         c33XM2uT0P8/saJkjOwF+CfNRwV6fklkTUbVsR10n8+AvetrPaKialA36H42j5MWcbui
+         eu+g==
+X-Gm-Message-State: AOJu0Yw7OvWXvGNdHJECkAzNpnW1YrJBQe01EtB3sIMttHmY+fqaG03d
+        VIRxIzCck6z+M6eN1D5pvAeRhaSmMAxdTc+Jfsc6/PY85VWd
+X-Google-Smtp-Source: AGHT+IHpal02TOIZIdpNOi+Q7DWRJ2De8uy3r7KEcJz9UE0DkuBk6UrwL7BzT82hs6aXEIno5XXnM9mFm0ZnaqfY0zQI4yJWfwdN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230819000643.7mddkitzr4aqjsms@synopsys.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f688:b0:1b8:c6ba:bf75 with SMTP id
+ l8-20020a170902f68800b001b8c6babf75mr2090071plg.0.1692541547877; Sun, 20 Aug
+ 2023 07:25:47 -0700 (PDT)
+Date:   Sun, 20 Aug 2023 07:25:47 -0700
+In-Reply-To: <0000000000000fdc630601cd9825@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ba9f2406035b8927@google.com>
+Subject: Re: [syzbot] [udf?] UBSAN: array-index-out-of-bounds in udf_process_sequence
+From:   syzbot <syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com>
+To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 12:06:53AM +0000, Thinh Nguyen wrote:
-> On Fri, Aug 18, 2023, Alan Stern wrote:
-> > Actually I agree with you.  When a new SETUP packet arrives before the 
-> > old control transfer has finished, the UDC driver should cancel all 
-> > pending requests and then invoke the ->setup() callback.  (I don't think 
-> > there is a standard error code for the cancelled requests; net2280 seems 
-> > to use -EPROTO whereas dummy-hcd seems to use -EOVERFLOW.)
-> 
-> Those are very odd choice of error codes for cancelled request. Even
-> though the gadget side doesn't have very defined error codes, I try to
-> follow the equivalent doc from the host side
-> (driver-api/usb/error-codes.rst), which is -ECONNRESET.
-> 
-> Whenever I see -EPROTO, I associate that to a specific host error:
-> transaction error. For -EOVERFLOW, I think of babble errors.
+syzbot has found a reproducer for the following issue on:
 
-Do you have a suggestion for an error code that all the UDCs should use 
-in this situation?  -ECONNRESET is currently being used for requests 
-that were cancelled by usb_ep_dequeue().  Would -EREMOTEIO be more 
-suitable for requests attached to an aborted control transfer?
+HEAD commit:    9e6c269de404 Merge tag 'i2c-for-6.5-rc7' of git://git.kern..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=139aa5efa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
+dashboard link: https://syzkaller.appspot.com/bug?extid=abb7222a58e4ebc930ad
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=175ed6bba80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=146c8923a80000
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/1d01305b8482/disk-9e6c269d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d7317878934a/vmlinux-9e6c269d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a7333ff86494/bzImage-9e6c269d.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/2ad8331a86f3/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/049e481cc897/mount_8.gz
 
-> > My impression from his initial email was that something different was 
-> > happening.  It sounded like his ->setup() callback was invoked with 
-> > wLength = 0, but before the Raw Gadget driver was ready to queue a 
-> > response request, the UDC driver sent an automatic status, at which 
-> > point the host sent another SETUP packet.  So the gadget driver got two 
-> > ->setup() callbacks in a row with no chance to do anything in between.
-> 
-> What else should the gadget driver do? There's no data stage for
-> wLength=0.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+abb7222a58e4ebc930ad@syzkaller.appspotmail.com
 
-So when wLength is 0, dwc3 should not automatically handle the Status 
-stage.  It should wait for the gadget driver to submit an explicit 
-Status-stage request.  As far as I know, all the gadget drivers will do 
-this.
-
-> > > > This may be a holdover from the early days of the Gadget subsystem.  My 
-> > > > memory from back then isn't very good; I vaguely recall that the first 
-> > > > UDC drivers would queue their automatic Status-stage requests if wLength 
-> > > > was 0 and ->setup() returned 0 (which would explain why 
-> > > > USB_GADGET_DELAYED_STATUS had to be invented).  Unless I'm completely 
-> > > > confused, that's not how UDC drivers are supposed to act now.
-> > 
-> > I did a little checking.  The USB_GADGET_DELAYED_STATUS mechanism was 
-> > introduced for use by the composite framework -- not in order to make a 
-> > UDC driver work properly.
-> 
-> Hm... perhaps we can update so that it's applicable outside of the
-> composite framework. Currently dwc3 treats it as such, which may not
-> work if the gadget driver does not know about USB_GADGET_DELAYED_STATUS.
-
-I think USB_GADGET_DELAYED_STATUS belongs entirely inside the composite 
-framework and it should not be used by UDC drivers at all.
-
-That return code makes some sense in composite.c, because the composite 
-framework juggles several function drivers in a single gadget.  It has 
-to know when all of them are ready to complete a configuration change; 
-it can't assume each function is ready when the callback returns.
-
-An alternative approach for composite.c would be _always_ to assume that 
-functions aren't ready until they have called 
-usb_composite_setup_continue().  However, doing this would require 
-auditing each function driver.
+UBSAN: array-index-out-of-bounds in fs/udf/super.c:1365:9
+index 4 is out of range for type '__le32[4]' (aka 'unsigned int[4]')
+CPU: 0 PID: 6060 Comm: syz-executor319 Not tainted 6.5.0-rc6-syzkaller-00253-g9e6c269de404 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:217 [inline]
+ __ubsan_handle_out_of_bounds+0x11c/0x150 lib/ubsan.c:348
+ udf_load_sparable_map fs/udf/super.c:1365 [inline]
+ udf_load_logicalvol fs/udf/super.c:1457 [inline]
+ udf_process_sequence+0x300d/0x4e70 fs/udf/super.c:1773
+ udf_load_sequence fs/udf/super.c:1820 [inline]
+ udf_check_anchor_block+0x2a6/0x550 fs/udf/super.c:1855
+ udf_scan_anchors fs/udf/super.c:1888 [inline]
+ udf_load_vrs+0x5ca/0x1100 fs/udf/super.c:1969
+ udf_fill_super+0x95d/0x23a0 fs/udf/super.c:2147
+ mount_bdev+0x276/0x3b0 fs/super.c:1391
+ legacy_get_tree+0xef/0x190 fs/fs_context.c:611
+ vfs_get_tree+0x8c/0x270 fs/super.c:1519
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f363cae1c8a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 3e 07 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe6eac67a8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007f363cae1c8a
+RDX: 0000000020000100 RSI: 0000000020000340 RDI: 00007ffe6eac6800
+RBP: 00007ffe6eac6840 R08: 00007ffe6eac6840 R09: 0000000000000c35
+R10: 0000000000000000 R11: 0000000000000282 R12: 0000000020000340
+R13: 0000000020000100 R14: 0000000000000c3b R15: 0000000020020500
+ </TASK>
+================================================================================
 
 
-> dwc3 parse the SETUP data and determine whether it's a 3-state or
-> 2-stage control transfer. If wLength > 0, then it must be a 3-stage
-> control transfer. The dwc3 driver would not queue the status immediately
-> until the data stage is completed.
-> 
-> To enforce the gadget driver to manually queue the status would take
-> some effort to ensure all the UDC driver comply to it. We would also
-> need to update the composite framework.
-
-The composite framework already does the right thing.  And as Andrey 
-said, most if not all of the other UDC drivers already behave this way.
-
-Alan Stern
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
