@@ -2,104 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4EDD781D2B
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2F9781D30
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjHTJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 05:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
+        id S230230AbjHTJgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 05:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjHTJ02 (ORCPT
+        with ESMTP id S230170AbjHTJgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 05:26:28 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEB24206
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 02:21:43 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bc9e3cbf1so486899566b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 02:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692523302; x=1693128102;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=j9OULWVa+9T7e9o5P1jtC577YEjNpAm+SlBh32Oe6Yg=;
-        b=eDVqdKJpbJD7MuQny9+PhQ5TFBxVSIo3XbudQeaIjzBlui+3e/vbqjkeOpOrn0zhMH
-         6T7c9bZzLd9TkiJN0kUB3yH0OwgAkPkfT66CuwyqMEOXu5s5ej7Onmmi7eSPmIOIljwf
-         clo+s7h4M9mgy18apQBtXpEn34uDj9l8+h7YMwSU6OV0nhcHn+p904R10gWX2RBVEkV2
-         uRk4yGtdwCY6frKfaPAep8zXa5w9BYDveiwec2tqchY3Uzr7C8zuSaYZBLl6C3e3jBMh
-         SUK0Z0XOPhjqX/fmA2QTrlXGC6hqsYkFYod6mBqxsX60y9HWb0rJ9nsd4jjuIU3xraJo
-         Uekg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692523302; x=1693128102;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=j9OULWVa+9T7e9o5P1jtC577YEjNpAm+SlBh32Oe6Yg=;
-        b=PNP6TNz+nAP2Eeq4TnFig9ChrYfWq7M/8c0VjG7Q+ntRLM/9eCC6Q8UYDzhvwLD3QM
-         6WHPAr9yHQCHGYX5u+q7SjIwWl1qLfq44XZl6Ptq99L21i0++nZp/auCS1GEoHOB1mh0
-         ES8be/uvR5Rbv/lCMcsyQckUaQS6M1bvUWd/Xss54yUVEPzEzaq31vyColqdf+qacrvU
-         E0hKyfnbrOowQ12TtnL9AZ/iHTckSHoMsQ4WWDONInjPrdf3Ebd5VJ7Ft6XZC1icwkEC
-         n39DNPMvVBUhbNgNkLGu6phvuMXxUIROvKI+QffN6LU5wV4q0os8qO04cxzUNgki//YI
-         72JA==
-X-Gm-Message-State: AOJu0YwY4TnokKXawHvIiUZAh32vszhXjg8ocOXEfedTdlcilv3VQJ+Q
-        Ivxcs9vVERVHrjPP9NWuhllEig==
-X-Google-Smtp-Source: AGHT+IHkeRUpC5ZDCIVCrdslgCCGuB/IQ0zwX54Vc5/y9+nsHHaU5zB3arEBOBCtnfhpKTUPxcz3Jg==
-X-Received: by 2002:a17:907:6d09:b0:98d:ebb7:a8b0 with SMTP id sa9-20020a1709076d0900b0098debb7a8b0mr4282297ejc.14.1692523301871;
-        Sun, 20 Aug 2023 02:21:41 -0700 (PDT)
-Received: from krzk-bin.. ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id r16-20020a170906705000b0099bd6026f45sm4320132ejj.198.2023.08.20.02.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 02:21:41 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [RESEND PATCH v2] nvme: host: hwmon: constify pointers to hwmon_channel_info
-Date:   Sun, 20 Aug 2023 11:21:39 +0200
-Message-Id: <20230820092139.45029-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+        Sun, 20 Aug 2023 05:36:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C1D12A;
+        Sun, 20 Aug 2023 02:32:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC5CE60EBF;
+        Sun, 20 Aug 2023 09:32:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE5AC433C7;
+        Sun, 20 Aug 2023 09:32:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692523942;
+        bh=Mwxqh7D4alt9PiyEKqBot7zzqgVRjTW256SDQGY9m24=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YH/yGIp8OPCeVT9dHAMrD3r3oD6SzcmhDUYd0+b6iM3Eo8EmzOmUNqMzNnB4qqbz5
+         1QHukdJCXo9mygdlSLTAgvRobJyWdZJZ/HRjazvu/1GEDJf+/RqRWQK4eQBMwxl/Zh
+         tt7FjMdIIuJzCiiEByVs0Hiwml6eSukVltaKjXxsIaXkRKRZhRFv/D74yWZvem5lHd
+         pZAkYM3Qq/Frtw5icpuhW2KOZ39mn19O5CaTDiyCi2ZHzQHodq72LGg+m9DNljrhPd
+         VB8Kxigq/oLK/19OOoYjg4C86JL/xLVzQxQuYPxRZUT6X/6+SwZYsSG+3/sraTSvvy
+         JqjyQf4kSQ09g==
+Date:   Sun, 20 Aug 2023 18:32:18 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Francis Laniel <flaniel@linux.microsoft.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
+ 'perf_kprobe' PMU
+Message-Id: <20230820183218.bf0b04be3c0ccac5e7b2a587@kernel.org>
+In-Reply-To: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
+References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
+        <20230818213705.b4f5e18b392c4837068cba6f@kernel.org>
+        <20230818114141.2a3a75ee@gandalf.local.home>
+        <4853240.31r3eYUQgx@pwmachine>
+        <20230818142033.1d7685e9@gandalf.local.home>
+        <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
+        <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Statically allocated array of pointed to hwmon_channel_info can be made
-const for safety.
+On Sat, 19 Aug 2023 08:22:50 -0700
+Song Liu <song@kernel.org> wrote:
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+> On Fri, Aug 18, 2023 at 6:16 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > On Fri, 18 Aug 2023 14:20:33 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > > On Fri, 18 Aug 2023 20:13:43 +0200
+> > > Francis Laniel <flaniel@linux.microsoft.com> wrote:
+> > >
+> > > > Hi.
+> > > >
+> > > > Le vendredi 18 août 2023, 17:41:41 CEST Steven Rostedt a écrit :
+> > > > > On Fri, 18 Aug 2023 21:37:05 +0900
+> > > > >
+> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > > > > > That's why perf probe uses the offset from '_text'. Normal KASLR will just
+> > > > > > moves all symbols. (Finer one will move all symbols randomely)
+> > > > > > This should not need to access /proc/kallsyms but vmlinux or SystemMap.
+> > > > >
+> > > > > We could just pass in: "_text+offset" too.
+> > > >
+> > > > So, the idea would be to change the existing create_local_trace_kprobe() and
+> > > > above functions to indicate the user's offset is to be used against _text and
+> > > > not address?
+> > >
+> > > No, not to modify that function, but if you know the offset from _text (via
+> > > the vmlinux), you can easily calculate it for that function.
+> >
+> > Note that the kprobe-event PMU interface itself allows you to specify
+> > FUNC+OFFSET style;
+> >
+> > https://lore.kernel.org/lkml/20171206224518.3598254-5-songliubraving@fb.com/
+> >
+> > perf_event_attr::kprobe_func = "_text";
+> > perf_event_attr::probe_offset = OFFSET;
+> >
+> > Then, it should be able to specify the correct one. Of course you can use
+> > other unique symbols around the target symbol.
+> 
+> Trying to catch up with the thread.
 
----
+Thanks for your reply :)
 
-Changes since v1:
-1. Correct whitespace (Christoph)
-2. Add tags
----
- drivers/nvme/host/hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Besides the CAP_* issue, we can do this with
+> 
+> perf_event_attr::kprobe_func = NULL;
+> perf_event_attr::kprobe_addr = address;
 
-diff --git a/drivers/nvme/host/hwmon.c b/drivers/nvme/host/hwmon.c
-index 316f3e4ca7cc..8df73a0b3980 100644
---- a/drivers/nvme/host/hwmon.c
-+++ b/drivers/nvme/host/hwmon.c
-@@ -187,7 +187,7 @@ static umode_t nvme_hwmon_is_visible(const void *_data,
- 	return 0;
- }
- 
--static const struct hwmon_channel_info *nvme_hwmon_info[] = {
-+static const struct hwmon_channel_info *const nvme_hwmon_info[] = {
- 	HWMON_CHANNEL_INFO(chip, HWMON_C_REGISTER_TZ),
- 	HWMON_CHANNEL_INFO(temp,
- 			   HWMON_T_INPUT | HWMON_T_MAX | HWMON_T_MIN |
+As I pointed, you don't need actual address, instead, you can specify the
+probe point via "unique symbol" + offset. 
+
+> 
+> Then for the CAP_*, I think we should give CAP_PERFMON access to
+> /proc/kallsyms. Would this work?
+
+For the "unique symbol" + offset, you don't need the kallsyms, but need to
+access the System.map or vmlinux image. In this case, we don't need to expand
+the CAP_PERFMON capabilities.
+
+Thank you,
+
+> 
+> Thanks,
+> Song
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
