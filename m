@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0F8781CF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 10:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D26781D07
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 10:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbjHTI0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 04:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S229910AbjHTI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjHTI0Q (ORCPT
+        with ESMTP id S229612AbjHTI4Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 04:26:16 -0400
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD5448C
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 01:24:24 -0700 (PDT)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68a4025bb30so187014b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 01:24:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692519863; x=1693124663;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUalpL+5Gi7lf4XJx93fopaSHZM9ZNT+DieLwJD0p4s=;
-        b=dQf88KxeuuxMe6m56OQyDFY0n0xHHrAQvwzy0CHBBwaR+2Rxsmp39XxlRuFNm2UolB
-         v8GuZUkU5tCHDkk9LVUV5rFKOWFfDx7eKJSyrISyAe7m6YM4GVHZlJiAdUwbjzHdAYqh
-         3L6Z8eDy8CPwZbvP5qPwW4PSMh9sAuHdN/9EPoZeEJkAlf083nUtkwb0h2d2VxPrX5ws
-         jqwqi6Nl+bM35U3jNOreWr8qXnXHgN3vSD9h9wpFE3mKmhVtDc7X35p7Qng9p4LLefab
-         yNygTTRTrHUYbG9uruu5gHXuTfqa9MGA2CX1OSKT0fQIC50yMzLhngRvj+7zDtk/PJej
-         /RFg==
-X-Gm-Message-State: AOJu0YzQd+mXDmmWs/bVcHX6zrQoVBxjuuStNm/2FChlBnlWc8bTvr6l
-        jfGRyR2gO4D2vWorrZBfrsMGBYbg5I2XhXWFZulNEAxG/fvg
-X-Google-Smtp-Source: AGHT+IGg1EOuskTWqZbF2bfnbP5Y87prUDdSkdSIu+bVOlVgOtenVJAJW14yVxcre5N5i80uRFvtcB6EvEKB8g1TgK0qiTjnc/X4
+        Sun, 20 Aug 2023 04:56:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B9B3C3D;
+        Sun, 20 Aug 2023 01:53:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 32DD260CF6;
+        Sun, 20 Aug 2023 08:53:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866CDC433C7;
+        Sun, 20 Aug 2023 08:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692521608;
+        bh=2fcnYc+DPi7N078Nrnev0eC6FFyWTStx0R/jAZ0wnGE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OcjtCchmHqaSRlcf6B4nJETr+PPwx8Rk9ORgRVcnjpN8maBSiwPXAk/eAzD1Dw7Wb
+         BWYvEtX2UyU2FsKPkoa4isiQ2aW4ueTOUqfn5Ide6sWbeQK8rVXkWz99yV6uLzGGaN
+         gbRQAtWZSs619aju8H4L/UgXjD5WML2oOkeJYFP+jgBL0AwI1MXGbM2hi9Vv0ySr/n
+         LNXi6KjC1GRjhO69IPJhIYGomAX89Z1oH+QF8s5MTc2vb1O7xdoU5F4mC8ytgemLEn
+         rUHBj5UoPAASPCkAneQ7w1bIIJuLfPuELlXdSemMlD8Ga2VkffW/g50FzIKNYQvC00
+         CIWn8y7R2DZ2Q==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50078eba7afso548117e87.0;
+        Sun, 20 Aug 2023 01:53:28 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzzr/Fyojadlx7/8nxRZ+hWY9uBeOGMqa7ZJv0iaT1PM6fWcH8U
+        PcRGFMAoFyX53Ys7SuVMqORRnuk4g+4bTHDIDp0=
+X-Google-Smtp-Source: AGHT+IHIQBvZk0tggq3wdl/6vX/l1YNnfbVKsIHLJNwauWo0pSb8ZrGkOiVuesxGmXS0o9HbGSQRDvP7mXj/A6PmgaQ=
+X-Received: by 2002:a19:2d54:0:b0:500:2543:eef7 with SMTP id
+ t20-20020a192d54000000b005002543eef7mr1502727lft.25.1692521606526; Sun, 20
+ Aug 2023 01:53:26 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:13a4:b0:687:31c0:782f with SMTP id
- t36-20020a056a0013a400b0068731c0782fmr2368999pfg.6.1692519863718; Sun, 20 Aug
- 2023 01:24:23 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 01:24:23 -0700
-In-Reply-To: <0000000000002d884205ffc75b9a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000040996a0603567d52@google.com>
-Subject: Re: [syzbot] [mm?] KASAN: slab-out-of-bounds Read in mt_validate_nulls
-From:   syzbot <syzbot+609e63261638ff3d5436@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, ghandatmanas@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, syzkaller@googlegroups.com,
-        torvalds@linux-foundation.org
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn> <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Sun, 20 Aug 2023 16:53:14 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+Message-ID: <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] MIPS: Return earlier in die() if notify_die()
+ returns NOTIFY_STOP
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi, Tiezhu,
 
-commit ae80b404198434e49e903dc3b1ba83e2c7bb3ee2
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon Jul 3 17:08:50 2023 +0000
+On Sun, Aug 20, 2023 at 7:21=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.cn=
+> wrote:
+>
+> After the call to oops_exit(), it should not panic or execute
+> the crash kernel if the oops is to be suppressed.
+>
+> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/kernel/traps.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index 8e528a8..fd770dc 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -412,6 +412,9 @@ void die(const char *str, struct pt_regs *regs)
+>
+>         oops_exit();
+>
+> +       if (ret =3D=3D NOTIFY_STOP)
+> +               return;
+> +
+>         if (in_interrupt())
+>                 panic("Fatal exception in interrupt");
+>
+> @@ -421,8 +424,7 @@ void die(const char *str, struct pt_regs *regs)
+>         if (regs && kexec_should_crash(current))
+>                 crash_kexec(regs);
+>
+> -       if (ret !=3D NOTIFY_STOP)
+> -               make_task_dead(SIGSEGV);
+> +       make_task_dead(SIGSEGV);
+Then you call make_task_dead() at the end unconditionally, and die()
+becomes a noreturn function again.
 
-    mm: validate the mm before dropping the mmap lock
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17b0da65a80000
-start commit:   a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git://git.ke..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7406f415f386e786
-dashboard link: https://syzkaller.appspot.com/bug?extid=609e63261638ff3d5436
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10342968a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d4cf70a80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: mm: validate the mm before dropping the mmap lock
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Huacai
+>  }
+>
+>  extern struct exception_table_entry __start___dbe_table[];
+> --
+> 2.1.0
+>
