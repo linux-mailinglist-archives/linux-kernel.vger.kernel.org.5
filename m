@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CF5781C8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 08:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5903E781C86
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 07:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbjHTGAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 02:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S229823AbjHTF5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 01:57:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229966AbjHTGAa (ORCPT
+        with ESMTP id S229695AbjHTF5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 02:00:30 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05FAD952
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 21:45:00 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-26f51613d05so46562a91.2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 21:45:00 -0700 (PDT)
+        Sun, 20 Aug 2023 01:57:15 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B391CABF
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 21:58:37 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4039f7e1d3aso16168851cf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 21:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692506700; x=1693111500;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0FxH3RmVNebbCiuph+Bo6boQ8Nz4tprYlS7+OEsOmqw=;
-        b=5jmbfSXOvAMBjY7XcewJDVevQopgO54KQmbQ2iQKCPwWla6sUAswnrQug61V8hji0P
-         FaRA54BkkIuCNeFsp8E4UIG5T7V4sFSfFeatIfwF6jAXyA9xgu2mNc6TuPy513kAB3Rz
-         RiT7tiN4pfEvGwwI8oiuOlidELgMrLeYxDbWEaI7W5tajNVXMefLkGp05jOY8nS1ru9H
-         /pGsi97IyOxc244X4uetUs36QpUq+1OB6S4HvDZXotaICbhy4suLuW6xt5bXIl6MgD9v
-         DvC03mjIj0uwMuIRzFNUmiBWXBVYTlO6b+XCGLeqq8G0ERC4BwKeoxk3CCel2uiyUEGe
-         wvkg==
+        d=chromium.org; s=google; t=1692507516; x=1693112316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MMDDssiA0TSodWA9QdU8fmSd3+ANZgAOYWrNE4b8lNE=;
+        b=apgmdrDqXI3szfK42Uik9d4EWhVR2DPkLEIIT3ziuEXwWTn8hh2qWXKc+S4sdWeGik
+         KFs8+4yfNF4c9fKPo08nlFxEQI+R91eLtkCz0+5NrfjZF+tJkBoNxWz88Md8U3ZCL/EP
+         DB8O+eFVb72WFOYe+1KjJnCHYyXzdka5s200k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692506700; x=1693111500;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0FxH3RmVNebbCiuph+Bo6boQ8Nz4tprYlS7+OEsOmqw=;
-        b=A1n0aa6jnHd+0m0WZdzo4jJpdAz/jrTUpbEGzWZmDfuPJ9K54Eei5IhZTIkC74GiSF
-         HozR4qXBPdoqlxTZLHhINkmvkzf/swckuhyaHaqqE+sbbGw7DoeMMRFlKxuZOnQ/y07Y
-         N7FjOgbDTMUbC5ls23NKd8MvkmpS5h5lcfIEAypt08rIwZ5C83pAuaTwgGeBdRkRhjaW
-         PyG7meW7ko5jzGkzRW35hNwxIGnhzsLqf5CXbxxo+o6cQZmpc4pitfoTbYaQytDXhbDq
-         4Mbm1sUorhpDsP3TK+FD7Sq0OvpDyzyBcvTp5SP8A3+u7YWImdYyFd3ZOQcjlXtlcmkT
-         gU7Q==
-X-Gm-Message-State: AOJu0Yw7gKwiQLGvrHPM8qJr1WDSp6H3J6JuQeumz6ZWufb+ObYZFb/o
-        voH4Bs7U9OVVr1WBC4peIAvQDrrZpmk=
-X-Google-Smtp-Source: AGHT+IEqOT3wwRMG5WwcbGjs5DHF28XuWoiMfoFuFwXlv5eZTJ+qF6GxclqG4t6qc2t8wDLRKskoRu3kjBA=
-X-Received: from badhri.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:6442])
- (user=badhri job=sendgmr) by 2002:a17:90a:f00b:b0:268:4dee:eba0 with SMTP id
- bt11-20020a17090af00b00b002684deeeba0mr669301pjb.8.1692506699855; Sat, 19 Aug
- 2023 21:44:59 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 04:44:48 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230820044449.1005889-1-badhri@google.com>
-Subject: [PATCH v1] tcpm: Avoid soft reset when partner does not support get_status
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     gregkh@linuxfoundation.org, linux@roeck-us.net,
-        heikki.krogerus@linux.intel.com
-Cc:     kyletso@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1692507516; x=1693112316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MMDDssiA0TSodWA9QdU8fmSd3+ANZgAOYWrNE4b8lNE=;
+        b=Bu2++MlAmC5QPCjhYFjN6V4myoyOPIDLZNVHRxFvFKTSqtZ5d0U+7+YYE9au2gjUgJ
+         r7Ix2n75QXRU1Vv/gwv4DtckKnwMWGc9Cje9jYS8ju5IG70htTLocoy3+s0K/yZiH5b8
+         0NOVQ7/njj9ezAnNy3cvM8+0Nrr1Qrfrn76yqJx+vLbCuHPMqg2JleZ8eqClWzkQkAIL
+         t++gYuvngzjOGmq4A92eN+IAQmlJitJdPWPPmYbsJARxaVtEMxD3RMC48nB5nIVEmr34
+         ceORxWMkfzhNgrHqwh3qEliwY5mZK6pLVnkp/1KnQdVW4K5ZIN9wy1v5wXe7PkvMg0yP
+         rk6w==
+X-Gm-Message-State: AOJu0YwtPcgLzGgu5RSDOHre0BUMDccw6svL4HGtHHormsHXKFMXP83L
+        Io67UCBSD4tnw/cCFTxsWkiliw==
+X-Google-Smtp-Source: AGHT+IGxvt57F5ru4y7eeh1LIBKHFvIjPVvfi4vi3BYWgrBdp2eL5L/w7zsefhNB91isKGAnKskbzg==
+X-Received: by 2002:a05:622a:44:b0:403:a9aa:56d6 with SMTP id y4-20020a05622a004400b00403a9aa56d6mr4726597qtw.58.1692507516534;
+        Sat, 19 Aug 2023 21:58:36 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id gc4-20020a17090b310400b00267fbd521dbsm5715770pjb.5.2023.08.19.21.58.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Aug 2023 21:58:35 -0700 (PDT)
+Date:   Sun, 20 Aug 2023 13:58:29 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
+Message-ID: <20230820045829.GL907732@google.com>
+References: <20230817012007.131868-1-senozhatsky@chromium.org>
+ <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
+ <20230820024519.GK907732@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820024519.GK907732@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When partner does not support get_status message, tcpm right now
-responds with soft reset message. This causes PD renegotiation to
-happen and resets PPS link. Avoid soft resetting the link when
-partner does not support get_status message to mitigate PPS resets.
+On (23/08/20 11:45), Sergey Senozhatsky wrote:
+> > 
+> > A new target is not what I like to see.
+> > 
+> > 
+> > We decided to add KCONFIG_VERBOSE, which will be used to
+> > warn options accidentally disabled or downgraded.
+> 
+> That doesn't seem cover the cases that I'm concerned with. I don't see
+> anything related to "!sym" in the patch.
+> 
+> What will KCONFIG_VERBOSE do if it reads the following config file?
+> 
+> // assuming that both config options were valid and existed in the old
+> // kernel, but were removed/renamed in the new kernel
+> 
+>  $ cat .config
+>  CONFIG_DISABLE_BUGS=y
+>  # CONFIG_ENABLE_WINAPI is not set
+> 
+> 
+> I'd like to see warnings for both lines, even for config that is not
+> set, because it maybe we set by a build script depending on USE flags
+> for instance, so that build target may still refer to non-existent
+> config.
 
-[  208.926752] Setting voltage/current limit 9500 mV 2450 mA
-[  208.930407] set_auto_vbus_discharge_threshold mode:3 pps_active:y vbus:9500 ret:0
-[  208.930418] state change SNK_TRANSITION_SINK -> SNK_READY [rev3 POWER_NEGOTIATION]
-[  208.930455] AMS POWER_NEGOTIATION finished
+It's also important to exit with an error when non-existent config symbols
+are detected. Because that is an error. We are looking at a broken kernel
+from the end user PoV: the kernel will compile, get rolled out and at some
+point you'll start receiving bug reports of non-functioning peripheral
+hardware and whatnot (e.g. some specific USB devices whose config symbol
+has been renamed).
 
-// ALERT message from the Source
-[  213.948442] PD RX, header: 0x19a6 [1]
-[  213.948451] state change SNK_READY -> GET_STATUS_SEND [rev3 GETTING_SOURCE_SINK_STATUS]
-[  213.948457] PD TX, header: 0x492
-[  213.950402] PD TX complete, status: 0
-[  213.950427] pending state change GET_STATUS_SEND -> GET_STATUS_SEND_TIMEOUT @ 60 ms [rev3 GETTING_SOURCE_SINK_STATUS]
+So `make FOO-config` should never succeed if old config contains unrecognized
+symbols, it should never get to the compilation stage.
 
-// NOT_SUPPORTED from the Source
-[  213.959954] PD RX, header: 0xbb0 [1]
-
-// sink sends SOFT_RESET
-[  213.959958] state change GET_STATUS_SEND -> SNK_SOFT_RESET [rev3 GETTING_SOURCE_SINK_STATUS]
-[  213.959962] AMS GETTING_SOURCE_SINK_STATUS finished
-[  213.959964] AMS SOFT_RESET_AMS start
-[  213.959966] state change SNK_SOFT_RESET -> AMS_START [rev3 SOFT_RESET_AMS]
-[  213.959969] state change AMS_START -> SOFT_RESET_SEND [rev3 SOFT_RESET_AMS]
-
-Cc: stable@vger.kernel.org
-Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 5639b9a1e0bf..280ce1bd7b53 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -2753,6 +2753,13 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
- 			port->sink_cap_done = true;
- 			tcpm_set_state(port, ready_state(port), 0);
- 			break;
-+		/*
-+		 * Some port partners do not support GET_STATUS, avoid soft reset the link to
-+		 * prevent redundant power re-negotiation
-+		 */
-+		case GET_STATUS_SEND:
-+			tcpm_set_state(port, ready_state(port), 0);
-+			break;
- 		case SRC_READY:
- 		case SNK_READY:
- 			if (port->vdm_state > VDM_STATE_READY) {
-
-base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
--- 
-2.42.0.rc1.204.g551eb34607-goog
-
+That is not what KCONFIG_VERBOSE does (at least in its current form),
+as far as I can tell.
