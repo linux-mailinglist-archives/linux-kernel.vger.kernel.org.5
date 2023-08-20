@@ -2,173 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16055781FB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 22:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A16781FB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 22:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbjHTU2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 16:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S231840AbjHTU23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 16:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbjHTU2C (ORCPT
+        with ESMTP id S231586AbjHTU21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 16:28:02 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9AE172A;
-        Sun, 20 Aug 2023 13:24:00 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so3243079a12.0;
-        Sun, 20 Aug 2023 13:24:00 -0700 (PDT)
+        Sun, 20 Aug 2023 16:28:27 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC8561FED
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 13:25:41 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99cdb0fd093so361437866b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 13:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692563038; x=1693167838;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=2Xrn81pUm49X9JoaI8Eluw06pxka7n96wDGzMSJxcIQ=;
-        b=AeUWhAIS6biBQQydsLAC3pS9PhO7XBw5dgnIIOn8a8CoAircTM2l1zcFCo4V/jJytl
-         Bm70TjtkRi7KrGEd8t+rZIVUnZViS8Y3h9+URXFe5UBHjHGvLYSXC740ItcopZvA/cH4
-         FdR9tmv9+PE+v7/BzAcJY9QqxbTgGYidoif26bio5HnZ/nLnNQ7KKOBKx7bgYXobZSBY
-         mPH5MchFnzvLKY7wcxGI7rnUFzS3fBKEYFkBeJZqbAhfyVGK/ePrn45fvwq8MLLcwuyP
-         RjiNRDE9xDQtcPFARQDCK1JND3aPdqiqpRmja6qhgv1IfOYARVd2Q+SXgy4rvnUuCsFO
-         63ug==
+        d=linaro.org; s=google; t=1692563140; x=1693167940;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=StjW9zVJDg/it/2Zx4uZor89taRslW2dT/6diASww+4=;
+        b=vci9yDnl+yyQhiHYI3CMfFxQx7T5f94503EtOwkkLJtDvyORUMezQkNjPxBXYG0+c8
+         1tqiwwDupiRkVCzmvK2ATAiqb5p129sMDGXo3OEbhj14bEv6JXvKo7buPP9PHdnbXKVa
+         xHjSlRpiludjqpyp9CpmF+LIKqMrO1XFDmEtQyMQrTxDtVZVorooYOCVOyWpPV1bbMz/
+         THa5ldcxuDMuE3J8E/qVbqKdR2sG+kodhNT4Cc/hfIcFwZhZHRI28t72ieCGLqWkqrko
+         mxkLgshVAhG4kE8ss1j+DQUS0SLDDDRHrrbltYbk6niHWE+lPpqntcTERnZ1QANv0aay
+         mntg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692563038; x=1693167838;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20221208; t=1692563140; x=1693167940;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Xrn81pUm49X9JoaI8Eluw06pxka7n96wDGzMSJxcIQ=;
-        b=RtZsMMBbaco+d+1w27Tk9Gfdm0Ney0Thx39ABt76KSK5YMcTR65w95PZ4WECE8/lZv
-         RqyHRy1+b6rdxdiUZINJ2f0usasvflM8SjBwl3jkmkPuZ3u6JPDDxWlCwjMIruOP6JAq
-         E913ePEzCTEt5hZutM0AnbmCkqDXaNIv0FyjZpj6Hirluu4W2HSd5QhJJe76FYEiVIuI
-         MnGKkySe8nf1dq0LREV9rfn9qYkH4ZurggqTG/o/zMdumU9pz/jGVLCGkI/LlhPFQXtd
-         /dXmgGTan5eVGauegi8jfk6H0X/Rqeyvp1EMURf/FsIrf4QAC5X84/MbdF9JfW/dpQLb
-         oftw==
-X-Gm-Message-State: AOJu0YykTtH6p/DWEh9wzKVzASIj2LnuCqUBE0IpQV2peqBcTI393y3A
-        tRAXtpxFCMscLx+hJLd5+QT0pQLOHz0=
-X-Google-Smtp-Source: AGHT+IFcSwQns/SylrwuDSB1Un4raL0PNYmP4JZf8LfSKdvQm+Z0DDH3TLods4qAQAZnNBxvAcgqHQ==
-X-Received: by 2002:aa7:cd8f:0:b0:523:1053:9b50 with SMTP id x15-20020aa7cd8f000000b0052310539b50mr3864856edv.20.1692563038281;
-        Sun, 20 Aug 2023 13:23:58 -0700 (PDT)
-Received: from krava ([83.240.60.227])
-        by smtp.gmail.com with ESMTPSA id u2-20020a056402110200b005231e3d89efsm4869592edv.31.2023.08.20.13.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 13:23:57 -0700 (PDT)
-From:   Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date:   Sun, 20 Aug 2023 22:23:55 +0200
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Francis Laniel <flaniel@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-Message-ID: <ZOJ2W4O75BYP1uML@krava>
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
- <2154216.irdbgypaU6@pwmachine>
- <20230818220537.75ce8210c6a4c80a5a8d16f8@kernel.org>
- <5702263.DvuYhMxLoT@pwmachine>
- <20230819101105.b0c104ae4494a7d1f2eea742@kernel.org>
+        bh=StjW9zVJDg/it/2Zx4uZor89taRslW2dT/6diASww+4=;
+        b=L/oX7Ho5kiX9s7hTpciAK/4Kg6RkFKf/Z1rCHxYfMXjNVlPfacdRG3/0a/zQbu2gU9
+         x6e8z1AfAPNetoKhiFRQTbSexFGKjflAb60mRYrDzwchHJ+LJbLXLCeV4Q3vjR34vqXR
+         0Fm3w3E4WsztAKyruu48L6+ggwrTuvSMuvm8ESIvjsFUcmyfEFAin8tYZ04RGAS74jNj
+         uTQnkFIiyxs/2KJDVAY9PuCckfceth05yahtNG5MJFHV2grNp46bEEPusFvaLOCk+Cl8
+         xHkmSQYHzLuxJXpZqYl+4Bg7pbK/sL/EivTPXO6haz5bfRhPo1ylvRU0rWt8vf4dYEWB
+         rMnA==
+X-Gm-Message-State: AOJu0YzuJywyMOY9HLS3gFDar8IzrWy8wmTcZodfvmUONAKThxvXZc7h
+        /Z7gZqKMrKS9vBadkwv8YVMdAw==
+X-Google-Smtp-Source: AGHT+IG+6nkBP8ESNEiuPFXeg/GVvn41vSGT+I9KbN6KuNmzanEMYwxjP4S2vVKuDBGNIppz79oNiQ==
+X-Received: by 2002:a17:906:23e9:b0:99b:de31:6666 with SMTP id j9-20020a17090623e900b0099bde316666mr3521212ejg.22.1692563140210;
+        Sun, 20 Aug 2023 13:25:40 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id qh10-20020a170906ecaa00b0099caf5bed64sm5211110ejb.57.2023.08.20.13.25.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Aug 2023 13:25:39 -0700 (PDT)
+Message-ID: <879f8bf7-db08-0add-9bff-a56ae07ffc67@linaro.org>
+Date:   Sun, 20 Aug 2023 22:25:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230819101105.b0c104ae4494a7d1f2eea742@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/4] dt-bindings: media: Add bindings for Imagination
+ E5010 JPEG Encoder driver
+To:     Devarsh Thakkar <devarsht@ti.com>, mchehab@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hverkuil-cisco@xs4all.nl,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     laurent.pinchart@ideasonboard.com, eugen.hristev@collabora.com,
+        ezequiel@vanguardiasur.com.ar, u.kleine-koenig@pengutronix.de,
+        sakari.ailus@linux.intel.com, praneeth@ti.com, nm@ti.com,
+        vigneshr@ti.com, a-bhatia1@ti.com, j-luthra@ti.com,
+        b-brnich@ti.com, detheridge@ti.com, p-mantena@ti.com, vijayp@ti.com
+References: <20230816152210.4080779-1-devarsht@ti.com>
+ <20230816152210.4080779-2-devarsht@ti.com>
+ <7a9bcd78-b544-524c-e944-5fbb0c60e600@linaro.org>
+ <530306bc-174e-c75d-40c5-6fa42d69af31@ti.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <530306bc-174e-c75d-40c5-6fa42d69af31@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 10:11:05AM +0900, Masami Hiramatsu wrote:
-> Hi Francis,
-> (Cc: Song Liu and BPF ML)
+On 20/08/2023 18:46, Devarsh Thakkar wrote:
+>>> +properties:
+>>> +  compatible:
+>>> +    oneOf:
+>>> +      - items:
+>>> +          - const: ti,e5010-jpeg-enc
+>>
+>> TI did not make e5010. Use SoC-based compatible.
+>>
+>>> +          - const: img,e5010-jpeg-enc
+>>> +      - const: img,e5010-jpeg-enc
+>>
+>> img,e5010-jpeg-enc cannot be compatible with img,e5010-jpeg-enc. It does
+>> not make sense. I guess I did not expect you are going to use what you
+>> wrote in v1 directly... I thought it is just about syntax.
+>>
 > 
-> On Fri, 18 Aug 2023 20:12:11 +0200
-> Francis Laniel <flaniel@linux.microsoft.com> wrote:
+> Sorry but I did not understand this fully, the possible compatibles are:
 > 
-> > Hi.
-> > 
-> > Le vendredi 18 août 2023, 15:05:37 CEST Masami Hiramatsu a écrit :
-> > > On Thu, 17 Aug 2023 13:06:20 +0200
-> > > 
-> > > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > > Hi.
-> > > > 
-> > > > Le jeudi 17 août 2023, 09:50:57 CEST Masami Hiramatsu a écrit :
-> > > > > Hi,
-> > > > > 
-> > > > > On Wed, 16 Aug 2023 18:35:17 +0200
-> > > > > 
-> > > > > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > > > > > When using sysfs, it is possible to create kprobe for several kernel
-> > > > > > functions sharing the same name, but of course with different
-> > > > > > addresses,
-> > > > > > by writing their addresses in kprobe_events file.
-> > > > > > 
-> > > > > > When using PMU, if only the symbol name is given, the event will be
-> > > > > > created for the first address which matches the symbol, as returned by
-> > > > > > kallsyms_lookup_name().
-> > > > > 
-> > > > > Do you mean probing the same name symbols? Yes, it is intended behavior,
-> > > > > since it is not always true that the same name function has the same
-> > > > > prototype (it is mostly true but is not ensured), it is better to leave
-> > > > > user to decide which one is what you want to probe.
-> > > > 
-> > > > This is what I meant.
-> > > > I also share your mind regarding leaving the users deciding which one they
-> > > > want to probe but in my case (which I agree is a bit a corner one) it
-> > > > leaded me to misunderstanding as the PMU kprobe was only added to the
-> > > > first ntfs_file_write_iter() which is not the one for ntfs3.
-> > > 
-> > > Hmm, OK. I think in that case (multiple same-name symbols exist) the default
-> > > behavior is rejecting with error message. And optionally, it will probe all
-> > > or them like your patch.
-> > 
-> > I am not sure to understand.
-> > Can you please precise the default behavior of which software component?
+> 1) "ti,am62a-jpeg-enc", "img,e5010-jpeg-enc"
+> or
+> 2)  "img,e5010-jpeg-enc"
 > 
-> I meant that the behavior of the kprobe-events via /sys/kernel/tracing.
-> But your patch is for the other interface for perf as kprobe-event PMU.
-> In that case, I think we should CC to other users like BPF because
-> this may change the expected behavior.
+> anything else will not comply during dtbs_check as shown below :
 
-it does not break bpf tests, but of course we don't have such use case, but I
-think should make this optional not to potentionaly break existing users,
-because you get more probes than you currently ask for
+Ah, you are right, ENOTENOUGHCOFFEE or some other issue on my side.
 
-would be great to have some kind of tests for this as well
+> 
+> For e.g. If I use below compatible :
+> "img,e5010-jpeg-enc", "img,e5010-jpeg-enc"
+> 
+> and run dtbs_check, it throw below error  :
+> 
+> make CHECK_DTBS=y DT_SCHEMA_FILES=media/img,e5010-jpeg-enc.yaml 
+> ti/k3-am62a7-sk.dtb
+>    LINT    Documentation/devicetree/bindings
+>    CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>    SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>    DTC_CHK arch/arm64/boot/dts/ti/k3-am62a7-sk.dtb
+> /home/devarsht/ti/linux-next2/linux-next/arch/arm64/boot/dts/ti/k3-am62a7-sk.dtb: 
+> jpeg-encoder@fd20000: compatible: 'oneOf' conditional failed, one must 
+> be fixed:
+>          ['img,e5010-jpeg-enc', 'img,e5010-jpeg-enc'] is too long
+>          'ti,am62a-jpeg-enc' was expected
+>          From schema: 
+> /home/devarsht/ti/linux-next2/linux-next/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+> 
+> 
+> Similarly, if I use below compatible :
+> 
+> "ti,am62a-jpeg-enc",
+> It throw below error :
+> 
+> make CHECK_DTBS=y DT_SCHEMA_FILES=media/img,e5010-jpeg-enc.yaml 
+> ti/k3-am62a7-sk.dtb
+>    DTC_CHK arch/arm64/boot/dts/ti/k3-am62a7-sk.dtb
+> /home/devarsht/ti/linux-next2/linux-next/arch/arm64/boot/dts/ti/k3-am62a7-sk.dtb: 
+> jpeg-encoder@fd20000: compatible: 'oneOf' conditional failed, one must 
+> be fixed:
+>          ['ti,am62a-jpeg-enc'] is too short
+>          'img,e5010-jpeg-enc' was expected
+>          From schema: 
+> /home/devarsht/ti/linux-next2/linux-next/Documentation/devicetree/bindings/media/img,e5010-jpeg-enc.yaml
+> 
+> 
+> But If I use either 1) or 2) it does not throw any error.
+> Please let me know if I missed to understand your point.
 
-SNIP
+Yes, you are right, sorry for that.
 
-> > > > > > +		/*
-> > > > > > +		 * alloc_trace_kprobe() first considers symbol name, so we set
-> > > > > > +		 * this to NULL to allocate this kprobe on the given address.
-> > > > > > +		 */
-> > > > > > +		tk_same_name = alloc_trace_kprobe(KPROBE_EVENT_SYSTEM, event,
-> > > > > > +						  (void *)address, NULL, offs,
-> > > > > > +						  0 /* maxactive */,
-> > > > > > +						  0 /* nargs */, is_return);
-> > > > > > +
-> > > > > > +		if (IS_ERR(tk_same_name)) {
-> > > > > > +			ret = -ENOMEM;
-> > > > > > +			goto error_free;
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		init_trace_event_call(tk_same_name);
-> > > > > > +
-> > > > > > +		if (traceprobe_set_print_fmt(&tk_same_name->tp, ptype) < 0) {
-> > > > > > +			ret = -ENOMEM;
-> > > > > > +			goto error_free;
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		ret = append_trace_kprobe(tk_same_name, tk);
-> > > > > > +		if (ret)
-> > > > > > +			goto error_free;
+However it still should be "ti,am62a-jpeg-enc", not ti,e5010...
 
-this seems tricky if offs is specified, because IIUC that will most
-likely fail in the __register_trace_kprobe/register_kprobe call inside
-the append_trace_kprobe ... should we allow this just for offs == 0 ?
 
-jirka
+Best regards,
+Krzysztof
+
