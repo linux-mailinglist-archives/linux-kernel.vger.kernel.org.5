@@ -2,185 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DF17782022
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1486C782027
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231921AbjHTVN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 17:13:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42808 "EHLO
+        id S231927AbjHTVSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 17:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230450AbjHTVNZ (ORCPT
+        with ESMTP id S232069AbjHTVSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 17:13:25 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FE6B5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:13:10 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fee769fcc3so10440305e9.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692565989; x=1693170789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l3x4E6fdyGal9eeb7RV36kqljRR1Sd8W3xt608ktoiI=;
-        b=W9ql6TAATM+dc9WFTs0B0+cemNnrSxMakEsaFfu73xbUB9YOGlA8OZydwsa5LGRvA/
-         6z3xkP78Oz1jj4H4eN+g+bog16i4+LllbnCK3NYameUCKHJeAv64ljX56DtecmcAkPEl
-         6IQQJI6aUFPOFt4pxV8oVYeqhdNWqLfnLCSgf/nEwTcxBXkmLuFydH6mrEaXyTlt4q00
-         o51pW6djlBMDYuCODpzxwjGAgg66Vplok7YnFJtQb59T6ZrYEBpQUFpOBeUSVWX/Ke+d
-         JleWW6PJhku3YoqJrc9Z5chHcOihgJKcvGL+CG8sG9Fj9kmKfz1bzLPZCKyFbUtu12YM
-         dhPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692565989; x=1693170789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l3x4E6fdyGal9eeb7RV36kqljRR1Sd8W3xt608ktoiI=;
-        b=A4JJZebgkZfBsU6XdErlxj+XC2LTo0nZHk3zdz+zJtJ7kYSoH4PAoXatYpDBL7Y5Wp
-         ll0xITt6nRa8nDCLqE1F4dh7FRAISHI2hEWXcDFa8p7bXiv4EOnBxyWrx9YZBVoMxCe+
-         gBMqH4YfhbmVaO2804tkoub/1lVC2TwgrxzEeMTBomCXueAU9nSidwCTdw/GIZf8NoP/
-         zrHU5Mgh+G0JCQdNRUAcAaH3kHWJ3rYmEP6PqztzJdEHuYZMptHm9kRGFu96SeS6+lVh
-         fRnQJz9+tSct18NtCU6FF1AURl1+7aFxseqlEmwcUV51NGjTzX86vsfxbNZSK0xy2hBf
-         3aFQ==
-X-Gm-Message-State: AOJu0YwXZvMGSK2+Ilz21p2UpbXWLVpwbUwyrFZuUVTY7PFZ1LuQLl6j
-        IrIa73bIdqwuRWkVgxpO6zQnu6znxIze8XzoajU=
-X-Google-Smtp-Source: AGHT+IGf3jgqsylbtYDIH6+PI2b8qDC2s6TZudUAl1u0dpzBPVE7CJPyRx3QTbOoU21aKzOI9hSAzg==
-X-Received: by 2002:a1c:7c0d:0:b0:3fe:dd94:2af6 with SMTP id x13-20020a1c7c0d000000b003fedd942af6mr3670993wmc.12.1692565989236;
-        Sun, 20 Aug 2023 14:13:09 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id p21-20020a1c7415000000b003feef5b0baesm2450458wmc.26.2023.08.20.14.13.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 14:13:08 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 22:13:07 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH 1/4] sched: cpufreq: Rename map_util_perf to
- apply_dvfs_headroom
-Message-ID: <20230820211307.p6gypri2jztqwf2o@airbuntu>
-References: <20230820210640.585311-1-qyousef@layalina.io>
- <20230820210640.585311-2-qyousef@layalina.io>
+        Sun, 20 Aug 2023 17:18:32 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB69810C4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:14:19 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 309446016E;
+        Sun, 20 Aug 2023 23:14:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692566058; bh=ZD6pknCEJycLGFVPBeuZ+UHvP10inceHxW+/jLvVFAg=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=D9lwvh1icuamutzEPApEhLQ0/DAZtgcvNAl9uu/BeCn5bR0zE+9xA44MPRBzajeTN
+         IKhS887dX4T3xBWf9EGsOTF062QyD/X2GoCJanbOKRbKltr0EiH+K4FkV9lNY09Usm
+         qpCFPpMsWwFMFBlqRw1ESvAr6nwW9ozG5t2spKO6amVcQ87m00oKqcuJx6AKme3jmN
+         6sbvNBqiLh/E+gAwuWLztCNawQDiq1dBDZfRD1ZHcvrO1ckiXFkZvS6G7SD/5ZoU4z
+         7i8W8Fv20thKSa2pLJGrhMq3vJyA4Tx6OiHQwS8Jp5zbN51+BFbIi2kXfYwh5vHOKC
+         mkqgVticgfLBQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id f-khtF3AHs-W; Sun, 20 Aug 2023 23:14:14 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 5D3436015E;
+        Sun, 20 Aug 2023 23:14:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1692566054; bh=ZD6pknCEJycLGFVPBeuZ+UHvP10inceHxW+/jLvVFAg=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=GIG0cH6meJ+gAB2X0vj4kphWbyhZKD1MctUT4p6JsxIubMqGhT+S6LvH2LDWFNQtQ
+         lgo8GpwNfmbKttHWNQKPcgS6qDwHi59/1kLMiPkNEPuLr1fnjNrarOFsXdMDygG+r5
+         odiKgKFE6h+8lfMpZl4PJCN7FDtYVzCTKSTb9N1JRG0/tjVHpQBBFNWhk+2NrTyYXI
+         5zJdihVFaVnbtmHKB7L08nsMLodSkUTSjd+KpTE+CZl159Qo/9OH1Feo0FGit/iuFN
+         9ZIod7bLdBG4nY72Y+NPiBAEl+Ev3GRMoZ2IPK+/WQ61VTeQbFXGq71UjFaTL0aKzV
+         LaFaiOWELqOgg==
+Message-ID: <3a931379-42f3-ec4f-36c1-bd267dd396b1@alu.unizg.hr>
+Date:   Sun, 20 Aug 2023 23:14:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230820210640.585311-2-qyousef@layalina.io>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: [BUG]: amdgpu: soft lockup - CPU#1 stuck for 26s! [systemd-udevd:635]
+Content-Language: en-US
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Lijo Lazar <lijo.lazar@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+References: <b4962d0d-7582-42a1-c8aa-5d31d5e28970@alu.unizg.hr>
+In-Reply-To: <b4962d0d-7582-42a1-c8aa-5d31d5e28970@alu.unizg.hr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/20/23 22:06, Qais Yousef wrote:
-> We are providing headroom for the utilization to grow until the next
-> decision point to pick the next frequency. Give the function a better
-> name and give it some documentation. It is not really mapping anything.
-> 
-> Provide a dummy definition for !CONFIG_CPUFREQ which will be required
-> for later patches.
-> 
-> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> ---
->  include/linux/energy_model.h     |  2 +-
->  include/linux/sched/cpufreq.h    | 27 ++++++++++++++++++++++++++-
->  kernel/sched/cpufreq_schedutil.c |  6 +++---
->  3 files changed, 30 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> index b9caa01dfac4..6ebde4e69e98 100644
-> --- a/include/linux/energy_model.h
-> +++ b/include/linux/energy_model.h
-> @@ -243,7 +243,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
->  	scale_cpu = arch_scale_cpu_capacity(cpu);
->  	ps = &pd->table[pd->nr_perf_states - 1];
->  
-> -	max_util = map_util_perf(max_util);
-> +	max_util = apply_dvfs_headroom(max_util);
->  	max_util = min(max_util, allowed_cpu_cap);
->  	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
->  
-> diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-> index bdd31ab93bc5..f0069b354ac8 100644
-> --- a/include/linux/sched/cpufreq.h
-> +++ b/include/linux/sched/cpufreq.h
-> @@ -29,10 +29,35 @@ static inline unsigned long map_util_freq(unsigned long util,
->  	return freq * util / cap;
->  }
->  
-> -static inline unsigned long map_util_perf(unsigned long util)
-> +/*
-> + * DVFS decision are made at discrete points. If CPU stays busy, the util will
-> + * continue to grow, which means it could need to run at a higher frequency
-> + * before the next decision point was reached. IOW, we can't follow the util as
-> + * it grows immediately, but there's a delay before we issue a request to go to
-> + * higher frequency. The headroom caters for this delay so the system continues
-> + * to run at adequate performance point.
-> + *
-> + * This function provides enough headroom to provide adequate performance
-> + * assuming the CPU continues to be busy.
-> + *
-> + * At the moment it is a constant multiplication with 1.25.
-> + *
-> + * TODO: The headroom should be a function of the delay. 25% is too high
-> + * especially on powerful systems. For example, if the delay is 500us, it makes
-> + * more sense to give a small headroom as the next decision point is not far
-> + * away and will follow the util if it continues to rise. On the other hand if
-> + * the delay is 10ms, then we need a bigger headroom so the CPU won't struggle
-> + * at a lower frequency if it never goes to idle until then.
-> + */
 
-I'm happy to drop this TODO if it is controversial. I already have a series
-that works in that effect that I will hopefully get a chance to post soon
-enough.
+Hi,
 
+This soft lockup occurs on amdgpu vanilla torvalds kernel with KCSAN turned on.
 
-Cheers
+The platform is Ubuntu 22.04 LTS.
 
---
-Qais Yousef
+Please find config and lshw here:
 
-> +static inline unsigned long apply_dvfs_headroom(unsigned long util)
->  {
->  	return util + (util >> 2);
->  }
-> +#else
-> +static inline unsigned long apply_dvfs_headroom(unsigned long util)
-> +{
-> +	return util;
-> +}
->  #endif /* CONFIG_CPU_FREQ */
->  
->  #endif /* _LINUX_SCHED_CPUFREQ_H */
-> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> index 4492608b7d7f..916c4d3d6192 100644
-> --- a/kernel/sched/cpufreq_schedutil.c
-> +++ b/kernel/sched/cpufreq_schedutil.c
-> @@ -143,7 +143,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
->  	unsigned int freq = arch_scale_freq_invariant() ?
->  				policy->cpuinfo.max_freq : policy->cur;
->  
-> -	util = map_util_perf(util);
-> +	util = apply_dvfs_headroom(util);
->  	freq = map_util_freq(util, freq, max);
->  
->  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-> @@ -406,8 +406,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
->  	    sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
->  		sg_cpu->util = prev_util;
->  
-> -	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
-> -				   map_util_perf(sg_cpu->util), max_cap);
-> +	cpufreq_driver_adjust_perf(sg_cpu->cpu, apply_dvfs_headroom(sg_cpu->bw_dl),
-> +				   apply_dvfs_headroom(sg_cpu->util), max_cap);
->  
->  	sg_cpu->sg_policy->last_freq_update_time = time;
->  }
-> -- 
-> 2.34.1
-> 
+https://domac.alu.unizg.hr/~mtodorov/linux/bugreports/amdgpu/6.5-rc7/
+
+Here is the log excerpt:
+
+[   69.050693] ==================================================================
+[   69.198264] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [systemd-udevd:635]
+[   69.198277] Modules linked in: amdgpu(+) snd_hwdep(+) nls_iso8859_1 amdxcp snd_pcm kvm(+) iommu_v2 drm_buddy gpu_sched irqbypass snd_seq_midi crct10dif_pclmul drm_suballoc_helper snd_seq_midi_event polyval_clmulni drm_ttm_helper snd_rawmidi polyval_generic ttm ghash_clmulni_intel sha512_ssse3 drm_display_helper snd_seq aesni_intel cec snd_seq_device snd_timer crypto_simd rc_core cryptd drm_kms_helper joydev input_leds snd rapl ccp wmi_bmof k10temp i2c_algo_bit soundcore sch_fq_codel mac_hid msr parport_pc drm ppdev lp parport ramoops pstore_blk reed_solomon pstore_zone efi_pstore ip_tables x_tables autofs4 btrfs blake2b_generic xor raid6_pq libcrc32c hid_generic usbhid hid nvme nvme_core r8169 ahci xhci_pci video crc32_pclmul libahci i2c_piix4 nvme_common realtek xhci_pci_renesas wmi gpio_amdpt
+[   69.198669] CPU: 1 PID: 635 Comm: systemd-udevd Not tainted 6.5.0-rc7-kcsan-g706a74159504 #3
+[   69.198680] Hardware name: ASRock X670E PG Lightning/X670E PG Lightning, BIOS 1.21 04/26/2023
+[   69.198686] RIP: kcsan_setup_watchpoint+0x274/0x3f0
+[ 69.198697] Code: 00 00 48 8b 45 c8 48 c7 00 00 00 00 00 f0 48 ff 0d c1 50 d5 0c 45 84 d2 75 10 48 f7 45 c0 00 02 00 00 74 06 fb 0f 1f 44 00 00 <83> 6b 04 01 41 57 9d 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d 31
+All code
+========
+    0:    00 00                    add    %al,(%rax)
+    2:    48 8b 45 c8              mov    -0x38(%rbp),%rax
+    6:    48 c7 00 00 00 00 00     movq   $0x0,(%rax)
+    d:    f0 48 ff 0d c1 50 d5     lock decq 0xcd550c1(%rip)        # 0xcd550d6
+   14:    0c
+   15:    45 84 d2                 test   %r10b,%r10b
+   18:    75 10                    jne    0x2a
+   1a:    48 f7 45 c0 00 02 00     testq  $0x200,-0x40(%rbp)
+   21:    00
+   22:    74 06                    je     0x2a
+   24:    fb                       sti
+   25:    0f 1f 44 00 00           nopl   0x0(%rax,%rax,1)
+   2a:*    83 6b 04 01              subl   $0x1,0x4(%rbx)        <-- trapping instruction
+   2e:    41 57                    push   %r15
+   30:    9d                       popf
+   31:    48 8d 65 d8              lea    -0x28(%rbp),%rsp
+   35:    5b                       pop    %rbx
+   36:    41 5c                    pop    %r12
+   38:    41 5d                    pop    %r13
+   3a:    41 5e                    pop    %r14
+   3c:    41 5f                    pop    %r15
+   3e:    5d                       pop    %rbp
+   3f:    31                       .byte 0x31
+
+Code starting with the faulting instruction
+===========================================
+    0:    83 6b 04 01              subl   $0x1,0x4(%rbx)
+    4:    41 57                    push   %r15
+    6:    9d                       popf
+    7:    48 8d 65 d8              lea    -0x28(%rbp),%rsp
+    b:    5b                       pop    %rbx
+    c:    41 5c                    pop    %r12
+    e:    41 5d                    pop    %r13
+   10:    41 5e                    pop    %r14
+   12:    41 5f                    pop    %r15
+   14:    5d                       pop    %rbp
+   15:    31                       .byte 0x31
+[   69.198726] RSP: 0018:ffffb4a0411f7638 EFLAGS: 00000206
+[   69.198743] RAX: ffffffffb699a748 RBX: ffff9829c57833f0 RCX: 0000000000000000
+[   69.198751] RDX: ffffffffc2569f90 RSI: ffffffffc2569f90 RDI: ffffffffb699a748
+[   69.198758] RBP: ffffb4a0411f7698 R08: 0000000000000001 R09: 0000000000000000
+[   69.198765] R10: 0000000000000000 R11: 0011ffffc26082c8 R12: 0000000000000008
+[   69.198783] R13: ffffffffc26082c8 R14: 0000000000000000 R15: 0000000000000292
+[   69.198790] FS:  00007f452d2438c0(0000) GS:ffff9838d8240000(0000) knlGS:0000000000000000
+[   69.198799] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   69.198807] CR2: 00007f452cea127f CR3: 000000012540a000 CR4: 0000000000750ee0
+[   69.198830] PKRU: 55555554
+[   69.198835] Call Trace:
+[   69.198839]  <IRQ>
+[   69.198844] ? show_regs+0x72/0x90
+[   69.198856] ? watchdog_timer_fn+0x292/0x320
+[   69.198900] ? __pfx_watchdog_timer_fn+0x10/0x10
+[   69.198909] ? __hrtimer_run_queues+0x224/0x470
+[   69.198926] ? hrtimer_interrupt+0x1cb/0x3f0
+[   69.198937] ? __do_softirq+0xda/0x330
+[   69.198950] ? __sysvec_apic_timer_interrupt+0x86/0x1e0
+[   69.198980] ? sysvec_apic_timer_interrupt+0x8e/0xa0
+[   69.198990]  </IRQ>
+[   69.198994]  <TASK>
+[   69.199000] ? asm_sysvec_apic_timer_interrupt+0x1b/0x20
+[   69.199032] ? kcsan_setup_watchpoint+0x274/0x3f0
+[   69.199043] ? kcsan_setup_watchpoint+0x1de/0x3f0
+[   69.199055] ? find_kallsyms_symbol+0x139/0x340
+[   69.199068] __tsan_read8+0x11c/0x180
+[   69.199099] find_kallsyms_symbol+0x139/0x340
+[   69.199110] ? vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1647 (discriminator 1)) amdgpu
+[   69.204958] ? __pfx_vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1646) amdgpu
+[   69.210899] ? __pfx_vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1646) amdgpu
+[   69.216910] ? __pfx_vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1646) amdgpu
+[   69.222561] module_address_lookup+0x8c/0xe0
+[   69.222573] ? __pfx_vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1646) amdgpu
+[   69.228237] kallsyms_lookup_buildid+0x107/0x1b0
+[   69.228251] ? __pfx_vcn_v1_0_enc_ring_emit_fence (drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c:1646) amdgpu
+[   69.234368] kallsyms_lookup+0x14/0x30
+[   69.234381] test_for_valid_rec+0x38/0x90
+[   69.234411] ? sched_clock_noinstr+0x9/0x10
+[   69.234448] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234459] ? __mutex_lock_slowpath+0x13/0x20
+[   69.234470] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234481] ? mutex_lock+0xa7/0xb0
+[   69.234492] ftrace_module_enable+0x22e/0x3b0
+[   69.234525] load_module+0x3357/0x3980
+[   69.234533] ? aa_file_perm+0x1fc/0x800
+[   69.234562] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234593] ? security_kernel_post_read_file+0x79/0x90
+[   69.234618] init_module_from_file+0xdf/0x130
+[   69.234642] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234653] ? init_module_from_file+0xdf/0x130
+[   69.234668] idempotent_init_module+0x241/0x360
+[   69.234683] __x64_sys_finit_module+0x8e/0xf0
+[   69.234693] do_syscall_64+0x58/0x90
+[   69.234705] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234716] ? exit_to_user_mode_prepare+0x76/0x230
+[   69.234748] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234758] ? syscall_exit_to_user_mode+0x29/0x40
+[   69.234769] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234780] ? do_syscall_64+0x68/0x90
+[   69.234803] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234830] ? exit_to_user_mode_prepare+0x76/0x230
+[   69.234841] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234852] ? syscall_exit_to_user_mode+0x29/0x40
+[   69.234869] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234888] ? do_syscall_64+0x68/0x90
+[   69.234897] ? srso_alias_return_thunk+0x5/0x7f
+[   69.234922] ? do_syscall_64+0x68/0x90
+[   69.234952] entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+[   69.234978] RIP: 0033:0x7f452d11ea3d
+[ 69.234996] Code: 5b 41 5c c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c3 a3 0f 00 f7 d8 64 89 01 48
+All code
+========
+    0:    5b                       pop    %rbx
+    1:    41 5c                    pop    %r12
+    3:    c3                       ret
+    4:    66 0f 1f 84 00 00 00     nopw   0x0(%rax,%rax,1)
+    b:    00 00
+    d:    f3 0f 1e fa              endbr64
+   11:    48 89 f8                 mov    %rdi,%rax
+   14:    48 89 f7                 mov    %rsi,%rdi
+   17:    48 89 d6                 mov    %rdx,%rsi
+   1a:    48 89 ca                 mov    %rcx,%rdx
+   1d:    4d 89 c2                 mov    %r8,%r10
+   20:    4d 89 c8                 mov    %r9,%r8
+   23:    4c 8b 4c 24 08           mov    0x8(%rsp),%r9
+   28:    0f 05                    syscall
+   2a:*    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax        <-- trapping instruction
+   30:    73 01                    jae    0x33
+   32:    c3                       ret
+   33:    48 8b 0d c3 a3 0f 00     mov    0xfa3c3(%rip),%rcx        # 0xfa3fd
+   3a:    f7 d8                    neg    %eax
+   3c:    64 89 01                 mov    %eax,%fs:(%rcx)
+   3f:    48                       rex.W
+
+Code starting with the faulting instruction
+===========================================
+    0:    48 3d 01 f0 ff ff        cmp    $0xfffffffffffff001,%rax
+    6:    73 01                    jae    0x9
+    8:    c3                       ret
+    9:    48 8b 0d c3 a3 0f 00     mov    0xfa3c3(%rip),%rcx        # 0xfa3d3
+   10:    f7 d8                    neg    %eax
+   12:    64 89 01                 mov    %eax,%fs:(%rcx)
+   15:    48                       rex.W
+[   69.235005] RSP: 002b:00007ffda20bffe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000139
+[   69.235020] RAX: ffffffffffffffda RBX: 00005561184c0f30 RCX: 00007f452d11ea3d
+[   69.235028] RDX: 0000000000000000 RSI: 000055611837ad80 RDI: 000000000000001a
+[   69.235035] RBP: 0000000000020000 R08: 0000000000000000 R09: 0000000000000002
+[   69.235052] R10: 000000000000001a R11: 0000000000000246 R12: 000055611837ad80
+[   69.235059] R13: 000055611836bc10 R14: 0000000000000000 R15: 00005561184ba330
+[   69.235072]  </TASK>
+[   69.462372] ==================================================================
+
+Best regards,
+Mirsad Todorovac
