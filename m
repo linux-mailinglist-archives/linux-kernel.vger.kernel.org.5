@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C231781C9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 08:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D40781CA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 08:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbjHTGDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 02:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S229709AbjHTGbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 02:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjHTGDW (ORCPT
+        with ESMTP id S229958AbjHTGbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 02:03:22 -0400
-Received: from m1344.mail.163.com (m1344.mail.163.com [220.181.13.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 644A224C00;
-        Sat, 19 Aug 2023 22:29:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=fwhEx4wlFm4yYsaFszDjb6NVOhwAc7XdMehCTRFdgKs=; b=D
-        9dsWqmfKr30TXf+utt+3acrTCZ6V1S5vfldeaKnd6oBN/WKgga38og/ylc/+jFM4
-        xs87XGxaoGeP3deunM1zLKtW113FMOEfE15nKXEivU3I1P0ZCvtSgGIOa0NpV7gA
-        HyGcxUpdYW2dfkv77HAsb5vA8Yvk2IiyTcO8HV2kLA=
-Received: from 18500469033$163.com ( [114.250.138.216] ) by
- ajax-webmail-wmsvr44 (Coremail) ; Sun, 20 Aug 2023 13:29:11 +0800 (CST)
-X-Originating-IP: [114.250.138.216]
-Date:   Sun, 20 Aug 2023 13:29:11 +0800 (CST)
-From:   "Dingyan Li" <18500469033@163.com>
-To:     "Alan Stern" <stern@rowland.harvard.edu>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        xiaofanc@gmail.com, oneukum@suse.com, lists.tormod@gmail.com,
-        sebastian.reichel@collabora.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH v2] USB: Support 20Gbps speed for ioctl
- USBDEVFS_GET_SPEED
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <07c821ae-2391-474c-aec9-65f47d3fecf2@rowland.harvard.edu>
-References: <79f3ec25.fa3.18a0c111fa9.Coremail.18500469033@163.com>
- <20230819054655.5495-1-18500469033@163.com>
- <07c821ae-2391-474c-aec9-65f47d3fecf2@rowland.harvard.edu>
-X-NTES-SC: AL_QuySAPmbtksu5ySeY+kXkkYVgew6WsC4vf4k3IReOps0hiny4CAMcER9EX322d2yNSa+iyO5dCBx98JffqdAZa3uZYmMwqyRZHH6BCd1JCpu
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Sun, 20 Aug 2023 02:31:13 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8443A1A2BE
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:17:53 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c0290f0a8so274664066b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692512272; x=1693117072;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZQ1nYRNuKzvXKSJ1ECy3gTgL6Jh2qhzHxGDRD89KDO0=;
+        b=UPnKsyXlucd7fKb/inJXMLnvSgc6dC0QJ4o6Xbk5yFefaG+r77JSWB9Fx7uto38wim
+         gYv5PN6bPkOfichetuCwBApoMwbBsM2gdmSV1oMTPXcmjE9OFmFJ7dxxGAMMdvnYsuDR
+         lsuScZch56UB4jknTSkDn0mnYyNw3hl3Fn7gUPPT57/5Qab8Jpr/7heo2Oa2yGSoOEG5
+         RUNUA7GLqxhCzw6izKqTRudQcjNuqtpLuyK8TKWoQQiatIB6mgSrNv+siDMjd8x+7s/z
+         bH+vPmKEIqqljf7IqHbVcAPSik+ufMM9HxRau4hLO5oXtVCdINhL0DV4dN4rKDiool4T
+         Drow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692512272; x=1693117072;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZQ1nYRNuKzvXKSJ1ECy3gTgL6Jh2qhzHxGDRD89KDO0=;
+        b=gx8GoRWnOl2aSgh0CYkqwjex6B2RYqninM4g8kwgp5Klpe8/SMXSLABEGe2VwTpnZz
+         rurqeE/+gY4XrFWz26FHQZsCRQO1JvOipPw8tydGKp9eHM8ol3JYYqS7JbxcEnP0+5n6
+         oHrGB1dx0wDInkhl2VCGIcB8Az4JoXT9z6yLG+bmgcbKNozgwVMAm7jy3DgiW92bPFIu
+         4WeELwnoCYcSX408KBLgv1w2vUYBOgHc2+yxAPcrgZPdwHF7I5ADxSFlz1sOaF+3SIdN
+         sXknqEq1dS1y/kOwermdiNLjNBApC+WXq6G7eAko45HpWsSBJhCeH983asHzuxju4R5k
+         KZyQ==
+X-Gm-Message-State: AOJu0YxLX4Rw2gK6YMt10weUDCb11gT+c12dpcAHI+DZaj4R9eCTBtzc
+        fg5Lyu9AaFd8k6KoADqYUzqVg6V71oNoTMEeWV4=
+X-Google-Smtp-Source: AGHT+IFjAhY9gZh9XQvcNI+E9OF/IidDB2rKdNsi5zZd1MIQSV1+pS6nhSrNZb9rtyxhjGkkLUVlxg==
+X-Received: by 2002:a17:906:257:b0:993:f349:c98c with SMTP id 23-20020a170906025700b00993f349c98cmr2588851ejl.4.1692512271808;
+        Sat, 19 Aug 2023 23:17:51 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id fy3-20020a170906b7c300b009894b476310sm3958202ejb.163.2023.08.19.23.17.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Aug 2023 23:17:51 -0700 (PDT)
+Message-ID: <6f5fa43b-e9ec-ee7d-867d-c75bb0adfe6a@linaro.org>
+Date:   Sun, 20 Aug 2023 08:17:49 +0200
 MIME-Version: 1.0
-Message-ID: <75cfc7cb.b4c.18a116b2e2e.Coremail.18500469033@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LMGowABHkeinpOFkqVoXAA--.11016W
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbBZwfRy1et-+4uAwAAs8
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] dt-bindings: usb: Add ti,tps25750
+To:     Abdel Alkuor <alkuor@gmail.com>, heikki.krogerus@linux.intel.com,
+        devicetree@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        abdelalkuor@geotab.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1692507038.git.abdelalkuor@geotab.com>
+ <fc8a793aad8a84ee4658e630b7be2b04925a66c5.1692507038.git.abdelalkuor@geotab.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <fc8a793aad8a84ee4658e630b7be2b04925a66c5.1692507038.git.abdelalkuor@geotab.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMDgtMjAgMDM6MDM6MDUsICJBbGFuIFN0ZXJuIiA8c3Rlcm5Acm93bGFuZC5oYXJ2
-YXJkLmVkdT4gd3JvdGU6Cj4KPlRoaXMgd291bGQgbWFrZSBtb3JlIHNlbnNlIGlmIHlvdSBrZXB0
-IHZlcnkgY2xlYXIgdGhlIGRpc3RpbmN0aW9uIAo+YmV0d2VlbiB0aGUgb3ZlcmFsbCBzcGVlZCBh
-bmQgdGhlIHBoeXNpY2FsIGNvbW11bmljYXRpb24gbWVjaGFuaXNtLiAgSW4gCj5vdGhlciB3b3Jk
-cywgMTAwMDAgYnBzIGlzIDEwMDAwIGJwcywgbm8gbWF0dGVyIHdoZXRoZXIgdGhlIHVuZGVybHlp
-bmcgCj50ZWNobm9sb2d5IHVzZXMgb25lIGxhbmUgY2FycnlpbmcgMTAwMDAgYml0cyBwZXIgc2Vj
-b25kIG9yIHR3byBsYW5lcyAKPmVhY2ggY2FycnlpbmcgNTAwMCBiaXRzIHBlciBzZWNvbmQuCj4K
-PkknbSBub3Qgc3VyZSBpZiBhbnl0aGluZyBpbiB0aGUga2VybmVsIG9yIHVzZXJzcGFjZSByZWFs
-bHkgY2FyZXMgYWJvdXQgCj50aGUgbnVtYmVyIG9mIGxhbmVzLCBhcyBvcHBvc2VkIHRvIHRoZSB0
-b3RhbCBzcGVlZC4gIElmIGl0IHR1cm5zIG91dCAKPnRoYXQgbm90aGluZyBkb2VzLCB0aGUgdXNi
-X3NzcF9yYXRlIGVudW1lcmF0aW9uIGNvdWxkIGJlIHJlbW92ZWQuICAKPkJlc2lkZXMsIGl0IHNo
-b3VsZCBuYW1lZCBzb21ldGhpbmcgZWxzZSwgbGlrZSB1c2Jfc3NwX2dlbiBvciAKPnVzYl9zcF9n
-ZW5lcmF0aW9uLCBzaW5jZSBpdCBpc24ndCBqdXN0IGEgcmF0ZSBkZXNpZ25hdGlvbi4gIChXaGVy
-ZWFzIGFzIAo+ZW51bSB1c2JfZGV2aWNlX3NwZWVkIF9pc18ganVzdCBhIHJhdGUgZGVzaWduYXRp
-b24uKQoKSXQgc2VlbXMgdGhhdCBkd2MzIGNvZGUgaGFzIGEgc2xpZ2h0bHkgZGlmZmVyZW50IGJl
-aGF2aW9ycyBiZXR3ZWVuCkdFTl8xeDIgYW5kIEdFTl8yeDEsIHNvIGl0J3MgYmV0dGVyIHRvIGtl
-ZXAgaXQuIEJ1dCBJIGFncmVlIHdpdGggeW91LgpJbiBlbnVtIHVzYl9kZXZpY2Vfc3BlZWQsIHdl
-IG9ubHkgY2FyZSBhYm91dCBvdmVyYWxsIHNwZWVkIGluc3RlYWQgb2YKcGh5c2ljYWwgbGlua3Mu
-IEFuZCB3ZSBjb3VsZCByZW5hbWUgdXNiX3NzcF9yYXRlIHRvIGEgbW9yZSBwcm9wZXIgbmFtZS4K
-Cj5SZWdhcmRsZXNzIG9mIHdoYXQgaGFwcGVucyB0byB1c2Jfc3NwX3JhdGUsIHVzYl9kZXZpY2Vf
-c3BlZWQgc2hvdWxkIGJlIAo+ZW5sYXJnZWQgdG8gZW5jb21wYXNzIGFsbCBwb3NzaWJsZSBleGlz
-dGluZyBzcGVlZHMuICBUaGF0IHdvdWxkIAo+aW1tZWRpYXRlbHkgZml4IHRoZSBpb2N0bCBwcm9i
-bGVtLiAgRG9pbmcgdGhpcyBpbiBhbiB1cHdhcmQtY29tcGF0aWJsZSAKPndheSBtaWdodCBlbmQg
-dXAgYmVpbmcgYSBsaXR0bGUgYXdrd2FyZCBidXQgaXQgb3VnaHQgdG8gYmUgcG9zc2libGUuCgpU
-aGFua3MgZm9yIHRoZSBkZXRhaWxlZCBleHBsYW5hdGlvbiwgd2hpY2ggbWFrZXMgdGhpbmdzIG1v
-cmUgY2xlYXIuCkknbGwgdGFrZSB5b3VyIHN1Z2dlc3Rpb25zIGFuZCB0cnkgYWdhaW4uCgpSZWdh
-cmRzLApEaW5neWFu
+On 20/08/2023 07:23, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> TPS25750 provides power negotiation and capabilities management
+> for USB Type-C applications.
+> 
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> ---
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+Best regards,
+Krzysztof
+
