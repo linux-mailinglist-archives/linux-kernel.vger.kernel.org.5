@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD980781DAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 13:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155FD781DAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 13:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjHTL6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 07:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        id S230505AbjHTL6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 07:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbjHTL55 (ORCPT
+        with ESMTP id S230322AbjHTL55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Aug 2023 07:57:57 -0400
 Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D867DB
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 04:56:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1692531658; cv=none; 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9320FE0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 04:56:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1692531659; cv=none; 
         d=zohomail.in; s=zohoarc; 
-        b=Q4JvUNgBDPIl/inw6uBrU3tIAJamGCgaPUwvRqId1Ny7kwPOCx2Yk87HFI22LOr9Ad6KB+4hci6LAmhNHjoXykM5A35f6lxY3s3E+10qIVPQllmPNH0fQHt12D8HQDr1VqqAiai3NieU5K+mShifeKk9WOJEjTn5/fG+CQekL/c=
+        b=ek3e3y9GOcm5974pXHNyLpAvxQT+705O80UhMMJr9xH92PU2ffAiryJ/bpBwR8XU7fln+sW10PyDjZ+bTOWY/4gJe1XqUSQF8LksBzmlWcOcXxr99PvhCvZ68HBj3GkxXr9qMJtOh4n9R8D+LdpEUlAla9AbxqI8nArjzZdsStk=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1692531658; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=aPBFMGsG0PZ6NpKEdwaKLiBPSTux2mJYgqc9686AUR4=; 
-        b=D9FeX2fwaJREGZnWfBO2YGLgfz8/0BxsPZGbwjiL/fnpVdfCIoqjhBqtcBDpoCHWAU1NV5GzApMntb+mKeNwKby5kGYZ57Ggj5B5F8JJxNbmGUmdqQ2zaH9Ie8XjdnDQKy+mQ1diVmcjWS1fe/Fes029FSQeML/nezE2dA7tPME=
+        t=1692531659; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=Rr2GJyTzOvqC9ojrVWp3/LdZY/8h6WIR2AH1THkN3KY=; 
+        b=IqZOEYcVNml3VzAWYdLmHvWLTBqkE/IYXUM2I7uPLW560kSHNAWwDlgp/9sOTo//pujvOQRntKZNSvvgDVte19G5RXl4/6aFs0H/FbDvqrAsd4LH1NaEcHwdI0JQykzrbW5FzkOQGCDPlMUWRWPeOlk7KZrhUqZL2rMWdu6SSuo=
 ARC-Authentication-Results: i=1; mx.zohomail.in;
         dkim=pass  header.i=siddh.me;
         spf=pass  smtp.mailfrom=code@siddh.me;
         dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1692531658;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1692531659;
         s=zmail; d=siddh.me; i=code@siddh.me;
         h=From:From:To:To:Cc:Cc:Message-ID:Subject:Subject:Date:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type:Message-Id:Reply-To;
-        bh=aPBFMGsG0PZ6NpKEdwaKLiBPSTux2mJYgqc9686AUR4=;
-        b=A4DOtB/fVcL34paRf5rVU8DOzddttHcFcqiwKeZ5Uks9wk6nkaUkXyDwSr61UQPj
-        GL25PvfOVyTin3g/Bca8yD3vPjqQ/5oEBMhr2ZtpkK5CXvVy3R49bccE9FpiaSPAjlP
-        ntxdn6sb+YO7kd4jtkF6MblVavmIhEnm6adIS8JQ=
+        bh=Rr2GJyTzOvqC9ojrVWp3/LdZY/8h6WIR2AH1THkN3KY=;
+        b=agrVD4JWKAq2uIzY50YRGTtlaH+f+o0g3Qp6RAefi4DSCLkmvFTxO+col1dfiUnS
+        W+PmKvyNEOTfF8RkTOu4XzMHehU1IeZNGdS9yvcYoxHJ9tkzDnk+lF6qndO9TaWWT+M
+        S+qrYPDNCsFsHcaQrKNtIYS0wUjJbSCeS+WDDJvI=
 Received: from kampyooter.. (110.226.17.164 [110.226.17.164]) by mx.zoho.in
-        with SMTPS id 1692531656530545.0954471206264; Sun, 20 Aug 2023 17:10:56 +0530 (IST)
+        with SMTPS id 1692531657120238.70066710620415; Sun, 20 Aug 2023 17:10:57 +0530 (IST)
 From:   Siddh Raman Pant <code@siddh.me>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -51,9 +51,9 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Suraj Upadhyay <usuraj35@gmail.com>
-Message-ID: <434cb488766d6c8fb596acc0caea245fc9c115d3.1692531217.git.code@siddh.me>
-Subject: [PATCH v11 3/8] drm: Remove usage of deprecated DRM_INFO in DRM core
-Date:   Sun, 20 Aug 2023 17:10:39 +0530
+Message-ID: <daefbf6504f833cbd28249afc77ef3a07254ed08.1692531217.git.code@siddh.me>
+Subject: [PATCH v11 4/8] drm: Remove usage of deprecated DRM_NOTE in DRM core
+Date:   Sun, 20 Aug 2023 17:10:40 +0530
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <cover.1692531217.git.code@siddh.me>
 References: <cover.1692531217.git.code@siddh.me>
@@ -70,84 +70,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_print.h says DRM_INFO is deprecated in favor of drm_info().
+drm_print.h says DRM_NOTE is deprecated in favor of drm_notice().
 
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Signed-off-by: Siddh Raman Pant <code@siddh.me>
 ---
- drivers/gpu/drm/drm_client_modeset.c | 2 +-
- drivers/gpu/drm/drm_connector.c      | 7 ++++---
- drivers/gpu/drm/drm_drv.c            | 2 +-
- drivers/gpu/drm/drm_pci.c            | 2 +-
- 4 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/drm_displayid.c         | 2 +-
+ drivers/gpu/drm/drm_kms_helper_common.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_client_modeset.c b/drivers/gpu/drm/drm_cli=
-ent_modeset.c
-index 1b12a3c201a3..ae19734974b5 100644
---- a/drivers/gpu/drm/drm_client_modeset.c
-+++ b/drivers/gpu/drm/drm_client_modeset.c
-@@ -331,7 +331,7 @@ static bool drm_client_target_cloned(struct drm_device =
-*dev,
- =09=09DRM_DEBUG_KMS("can clone using 1024x768\n");
- =09=09return true;
+diff --git a/drivers/gpu/drm/drm_displayid.c b/drivers/gpu/drm/drm_displayi=
+d.c
+index 9edc111be7ee..27ffeee09e4f 100644
+--- a/drivers/gpu/drm/drm_displayid.c
++++ b/drivers/gpu/drm/drm_displayid.c
+@@ -42,7 +42,7 @@ validate_displayid(const u8 *displayid, int length, int i=
+dx)
+ =09for (i =3D 0; i < dispid_length; i++)
+ =09=09csum +=3D displayid[idx + i];
+ =09if (csum) {
+-=09=09DRM_NOTE("DisplayID checksum invalid, remainder is %d\n", csum);
++=09=09drm_notice(NULL, "DisplayID checksum invalid, remainder is %d\n", cs=
+um);
+ =09=09return ERR_PTR(-EINVAL);
  =09}
--=09DRM_INFO("kms: can't enable cloning when we probably wanted to.\n");
-+=09drm_info(dev, "kms: can't enable cloning when we probably wanted to.\n"=
-);
- =09return false;
+=20
+diff --git a/drivers/gpu/drm/drm_kms_helper_common.c b/drivers/gpu/drm/drm_=
+kms_helper_common.c
+index 0bf0fc1abf54..7a41373b67dc 100644
+--- a/drivers/gpu/drm/drm_kms_helper_common.c
++++ b/drivers/gpu/drm/drm_kms_helper_common.c
+@@ -41,7 +41,7 @@ MODULE_LICENSE("GPL and additional rights");
+ /* Backward compatibility for drm_kms_helper.edid_firmware */
+ static int edid_firmware_set(const char *val, const struct kernel_param *k=
+p)
+ {
+-=09DRM_NOTE("drm_kms_helper.edid_firmware is deprecated, please use drm.ed=
+id_firmware instead.\n");
++=09drm_notice(NULL, "drm_kms_helper.edid_firmware is deprecated, please us=
+e drm.edid_firmware instead.\n");
+=20
+ =09return __drm_set_edid_firmware_path(val);
  }
-=20
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connecto=
-r.c
-index bf8371dc2a61..1145d9e64c24 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -168,13 +168,14 @@ static void drm_connector_get_cmdline_mode(struct drm=
-_connector *connector)
- =09=09return;
-=20
- =09if (mode->force) {
--=09=09DRM_INFO("forcing %s connector %s\n", connector->name,
--=09=09=09 drm_get_connector_force_name(mode->force));
-+=09=09drm_info(connector->dev, "forcing %s connector %s\n",
-+=09=09=09 connector->name, drm_get_connector_force_name(mode->force));
- =09=09connector->force =3D mode->force;
- =09}
-=20
- =09if (mode->panel_orientation !=3D DRM_MODE_PANEL_ORIENTATION_UNKNOWN) {
--=09=09DRM_INFO("cmdline forces connector %s panel_orientation to %d\n",
-+=09=09drm_info(connector->dev,
-+=09=09=09 "cmdline forces connector %s panel_orientation to %d\n",
- =09=09=09 connector->name, mode->panel_orientation);
- =09=09drm_connector_set_panel_orientation(connector,
- =09=09=09=09=09=09    mode->panel_orientation);
-diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-index 3eda026ffac6..d457f2053c05 100644
---- a/drivers/gpu/drm/drm_drv.c
-+++ b/drivers/gpu/drm/drm_drv.c
-@@ -943,7 +943,7 @@ int drm_dev_register(struct drm_device *dev, unsigned l=
-ong flags)
- =09if (drm_core_check_feature(dev, DRIVER_MODESET))
- =09=09drm_modeset_register_all(dev);
-=20
--=09DRM_INFO("Initialized %s %d.%d.%d %s for %s on minor %d\n",
-+=09drm_info(dev, "Initialized %s %d.%d.%d %s for %s on minor %d\n",
- =09=09 driver->name, driver->major, driver->minor,
- =09=09 driver->patchlevel, driver->date,
- =09=09 dev->dev ? dev_name(dev->dev) : "virtual device",
-diff --git a/drivers/gpu/drm/drm_pci.c b/drivers/gpu/drm/drm_pci.c
-index 39d35fc3a43b..7dfb837d1325 100644
---- a/drivers/gpu/drm/drm_pci.c
-+++ b/drivers/gpu/drm/drm_pci.c
-@@ -262,7 +262,7 @@ void drm_legacy_pci_exit(const struct drm_driver *drive=
-r,
- =09=09}
- =09=09mutex_unlock(&legacy_dev_list_lock);
- =09}
--=09DRM_INFO("Module unloaded\n");
-+=09drm_info(NULL, "Module unloaded\n");
- }
- EXPORT_SYMBOL(drm_legacy_pci_exit);
-=20
 --=20
 2.40.1
 
