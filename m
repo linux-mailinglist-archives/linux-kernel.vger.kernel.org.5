@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE41782029
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED2EE78201E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjHTVT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 17:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S231992AbjHTVIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 17:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbjHTVTY (ORCPT
+        with ESMTP id S231980AbjHTVIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 17:19:24 -0400
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6E64EFC;
-        Sun, 20 Aug 2023 14:05:30 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1c4d1274f33so1743452fac.3;
-        Sun, 20 Aug 2023 14:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692565529; x=1693170329;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SYJNnbU74bFD9hOO6r8SqtnfQbVsJ6JUf4XpbDxQI/4=;
-        b=VYvvXIPfbp6oj7zukU1xIAJ7zQuYMs6qKqGUOOPbCi4y0J82TALRurcVgTPKpIviV/
-         OWIzQNMRLZu/rIXhxBTMX0CNgry3yfCothPmmQWDoos4Qr4+BODcVgGMUu2yEU/xsFu5
-         0sk2U+JSKfdOSatvc6ghKvlH8Wtp+eA8exNfaVAS8jukR1wmXTXkPSPcdLS1IdxRAYMs
-         zGUVmO/YV9IacVC3nffflio6WIQ0jkc7z8xx0tIyjq9wMlNRrqjj+2zyqSKQBDjnYGtB
-         RpIWUaVj8o7yLuxLxbUz8YykQy4jMQGIIpC56VbWQr1FoWE+Nx3vQfvYM5RHV0i0fbHc
-         5MFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692565529; x=1693170329;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SYJNnbU74bFD9hOO6r8SqtnfQbVsJ6JUf4XpbDxQI/4=;
-        b=YFZF47lipsB5Cf/EecOZcfxSxb8kSxvuIVRYH/ohzvAanpQh3SXJ4ZeLZZWHUVW1NL
-         UXba8tLeqMv5/8rDLN/QsKBS7bmjL7s09KhJxRWuZoNfREC73CCLpwRO05dhWn5IqkyH
-         QUA/pIVzDvswcdqPDq0vWbVQNoI+J2WvKuDcpyURf59UhT9qHxkUCQBQx2ej17q5Xkse
-         q0KtBqhtxxpfku5AtwK+6aiLtYSNUHC0VBSU01irnr2JF32hoNdGJP0/iVFV7oNtp/PI
-         HW9G8NbEERCCJhiTbd4DHj9FiG7JC98HIURapAEbpXIgpVGCoDqMxlownVl8oqPuxb3e
-         iOog==
-X-Gm-Message-State: AOJu0YxknQX2w17DBQo/HGbcvKw3nM1HS5qKGVo1t0K3cJJyd0k7HvYG
-        FIViQpiyjaTvKUX1QUUzBM9e03NzuGdcmr/CwMA=
-X-Google-Smtp-Source: AGHT+IH3nthfQp95+TcBsYptvt9ZSdyYti+7boLwXDHruL5qv6FYYQ78Rq3UNQWZjF6a0405lF/0TiepHKxIStoGRoc=
-X-Received: by 2002:a05:6870:f153:b0:1be:f46d:a26c with SMTP id
- l19-20020a056870f15300b001bef46da26cmr7517879oac.27.1692565529140; Sun, 20
- Aug 2023 14:05:29 -0700 (PDT)
+        Sun, 20 Aug 2023 17:08:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39495588;
+        Sun, 20 Aug 2023 14:06:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3912C60F96;
+        Sun, 20 Aug 2023 21:06:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95E3BC433C7;
+        Sun, 20 Aug 2023 21:06:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692565567;
+        bh=PBuqF2N309GDrRdll1czvJXNpOEd5IjVqSK/jMX6XTE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eliHNnPtGTZ2q8ZGydQIsNd5Y72ERl6sgMTZHgEmB3YgllspT5s3eQyYR7mnVVrR4
+         /n1CQB7E8np/9+S3N/M4oHw6u4lho8AcWOxwhSIhQpw1XDQWNe9riCGo6EQIRvIngP
+         rCGHQuhb9Hqbfo0b24HGec2P8RNlEAeFbJD6pBgSjAz1ixHO/nXV1v+g8SDm+JKT87
+         sk9DugfYYvCYXwXPzZ0UHhnzy2VVD9JSfl0PpJ8TnkO2Bb3yzkPqvnZlHOnAjAKYIm
+         HEsK0UDciTV8836ieRi+4Tqmsm3bP33i4/us1xESxUsKacGzhlxTBHk3ENm+D6yckI
+         6lGsXgAjYAC0A==
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1c4f47810c6so1492444fac.0;
+        Sun, 20 Aug 2023 14:06:07 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxsLNgpMdXrc3xIk2c737hwbNnuOWxsnZQBpg3J81iEZrgCvWS7
+        j01sS9hzcfUWtZHxQQ0r+eIOf5ADa8vrtDmk1zA=
+X-Google-Smtp-Source: AGHT+IFk9LRqYvL9Uk7Aw73iv3VPsqJ8P0z5AvSsrfnDvUPwfw911PQrwC4kCjaLsHIqlQZe67oX2y5Hz19KPf6BCos=
+X-Received: by 2002:a05:6870:830e:b0:1b4:7411:5c0c with SMTP id
+ p14-20020a056870830e00b001b474115c0cmr5441250oae.13.1692565566803; Sun, 20
+ Aug 2023 14:06:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230820175655.206723-1-aford173@gmail.com> <f5b16676-04b9-7864-ffa7-1c48f3c2ca9c@linaro.org>
- <6089b46d-a580-af52-0cac-84b46fe11e6c@linaro.org>
-In-Reply-To: <6089b46d-a580-af52-0cac-84b46fe11e6c@linaro.org>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sun, 20 Aug 2023 16:05:16 -0500
-Message-ID: <CAHCN7xJyOjKSXbm17roAJDbk-gDKQHprE9t1d4VH2uYSMZcEDg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: fsl_easrc: Add support for imx8mp-easrc
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230820091505.3812160-1-masahiroy@kernel.org>
+In-Reply-To: <20230820091505.3812160-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 21 Aug 2023 06:05:30 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARk52-MvsPSjgQV3vDXpv2RXpeg0vkzMJAsLR1yQwr7Qw@mail.gmail.com>
+Message-ID: <CAK7LNARk52-MvsPSjgQV3vDXpv2RXpeg0vkzMJAsLR1yQwr7Qw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: deb-pkg: support DEB_BUILD_OPTIONS=parallel=N in debian/rules
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Bastian Germann <bage@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 3:33=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Mon, Aug 21, 2023 at 1:20=E2=80=AFAM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
 >
-> On 20/08/2023 22:32, Krzysztof Kozlowski wrote:
-> > On 20/08/2023 19:56, Adam Ford wrote:
-> >> The i.MX8MP appears to have the same easrc support as the Nano, so
-> >> add imx8mp as an option with a fallback to imx8mn.
-> >>
-> >> Signed-off-by: Adam Ford <aford173@gmail.com>
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml b/=
-Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> >> index bdde68a1059c..2d53b3b10f2c 100644
-> >> --- a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> >> +++ b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> >> @@ -14,7 +14,11 @@ properties:
-> >>      pattern: "^easrc@.*"
-> >>
-> >>    compatible:
-> >> -    const: fsl,imx8mn-easrc
-> >> +    oneOf:
-> >> +      - items:
-> >> +          - enum:
-> >> +              - fsl,imx8mp-easrc
-> >> +          - const: fsl,imx8mn-easrc
-> >
-> > You need here also const for fsl,imx8mn-easrc, otherwise you do not
-> > allow it alone. Test it for fsl,imx8mn-easrc DTS - you will notice warn=
-ings.
+> 'make srcdeb-pkg' generates a source package, which you can build
+> later by using dpkg-buildpackage.
 >
-> Actually, I see now Rob's report... you did not have to test DTS even.
-> It was enough to test your change and this test was missing :(. Please
-> test your changes before sending.
+> In older dpkg versions, 'dpkg-buildpackage -j N' sets not only
+> DEB_BUILD_OPTIONS but also MAKEFLAGS. Hence, passing -j (--jobs)
+> to dpkg-buildpackage was enough to run parallel building.
+>
+> The behavior was changed by commit 1d0ea9b2ba3f ("dpkg-buildpackage:
+> Change -j, --jobs semantics to non-force mode") of dpkg project. [1]
+>
+> Since then, 'dpkg-buildpackage -j N' sets only DEB_BUILD_OPTIONS,
+> which is not parsed by the current debian/rules. You cannot build it
+> in parallel unless you pass --jobs-force instead or set the MAKEFLAGS
+> environment variable.
+>
+> Debian policy [2] suggests the following code snippet for debian/rules.
+>
+>   ifneq (,$(filter parallel=3D%,$(DEB_BUILD_OPTIONS)))
+>       NUMJOBS =3D $(patsubst parallel=3D%,%,$(filter parallel=3D%,$(DEB_B=
+UILD_OPTIONS)))
+>       MAKEFLAGS +=3D -j$(NUMJOBS)
+>   endif
+>
+> I added slightly different code to debian/rules so 'make -j N deb-pkg'
+> works as before. In this case, the '-j N' should not be specified in
+> debian/rules again. 'make deb-pkg' without the -j option must explicitly
+> pass -j1 to dpkb-buildpackage because otherwise DEB_BUILD_OPTIONS
+> contains parallel=3D<nproc> by default.
+>
+> This should work with almost all Make versions Kbuild supports.
+>
+> Only the corner case I found not working is 'make-3.82 -j deb-pkg',
+> which results in single thread building. It is not a big deal because
+> -j without an argument, which does not limit the number of jobs, is
+> rarely used.
+>
+> As far as I tested, the MAKEFLAGS format varies by Make versions.
+>
+>                  command line option         $(MAKEFLAGS) in recipe
+>  Make 3.82            -j                            j
+>                       -j1                         <none>
+>                       -j2                          -j
+>  Make 4.0/4.1         -j                           -j
+>                       -j1                         <none>
+>                       -j2                          -j
+>  Make 4.2+            -j                           -j
+>                       -j1                          -j1
+>                       -j2                          -j2
 
-For what it's worth, I did run 'make dt_binding_check', but I didn't
-run it with the extra flags from Rob's e-mail.  The tool didn't return
-any errors.
 
-adam
 
->
-> Best regards,
-> Krzysztof
->
+On second thought, this is not a good idea.
+
+I will send v2 with a different solution.
+
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
