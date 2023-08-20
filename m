@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D18BA781C1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDA1781C24
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbjHTCmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 22:42:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
+        id S229950AbjHTCn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjHTCmU (ORCPT
+        with ESMTP id S229799AbjHTCnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 22:42:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CFE6F6B6;
-        Sat, 19 Aug 2023 18:27:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 70B12610FB;
-        Sun, 20 Aug 2023 01:27:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0BF9C433C8;
-        Sun, 20 Aug 2023 01:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692494854;
-        bh=rGHXKl7d7hc+MScJBmR93+78PNaEoYTZ7ZZkoFXRR74=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ps0ShGPt5Hb/g/plKJczhVZhCQE6haTIRM4vRSroaIToQcaRuPfnQfxLKxzyjd33t
-         YLaI5HhFcM8UEcRbKL030iBwjD1IqY0BGUeoGRw4g0ZrjahP7wqjpRSOzVBY+B3KlM
-         Bqv90T+4awHAimXSIlTF5Sswu8h5gycwgAPOCTBavdNprmLamTsafvyuGRLrl2u98Z
-         dOwI3PNp9YvCUDa3iNk124h1Vv6BSgHToReCXQezj7bwELY2fg2esoFchz77EYgPTc
-         zOVi1aff2aoZ48MOf7SKAGXCs/tcl0U1qJI5ePnEbNyZpC3YOaHLJALf8//Qg411nL
-         WDrHmPtQqBOcQ==
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1c52dbc300bso1312957fac.2;
-        Sat, 19 Aug 2023 18:27:34 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yz2VPIkszpbjLSh4+HwaU1GPUyb4m60R97eHOkWOTgINF6sy39g
-        7ads49t2D0PzLL1KwQPv88sKHlNMCH05JgYKUSI=
-X-Google-Smtp-Source: AGHT+IHsTFKullMv6NpUecq6ISPm/F8b5FxJ+gAG5fHYEV8j3VuY8VfPsa2Adt/9YY/pJO6tpk47BamZEiVhCA+GzrQ=
-X-Received: by 2002:a05:6870:d250:b0:1bb:753d:e6db with SMTP id
- h16-20020a056870d25000b001bb753de6dbmr4341954oac.3.1692494853990; Sat, 19 Aug
- 2023 18:27:33 -0700 (PDT)
+        Sat, 19 Aug 2023 22:43:46 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA59399D1;
+        Sat, 19 Aug 2023 18:44:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RSz1C1mV5z4f3jZd;
+        Sun, 20 Aug 2023 09:44:15 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qjub+Fka8+BBA--.16221S3;
+        Sun, 20 Aug 2023 09:44:15 +0800 (CST)
+Subject: Re: [PATCH -next v2 2/7] md: factor out a helper to choose sync
+ direction from md_check_recovery()
+To:     Song Liu <song@kernel.org>,
+        Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
+Cc:     Yu Kuai <yukuai1@huaweicloud.com>, xni@redhat.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
+ <20230815030957.509535-3-yukuai1@huaweicloud.com>
+ <20230817095814.00005530@linux.intel.com>
+ <CAPhsuW5Nn4gPv6EKaxHqtJfRFXMLg3bEBTNknLBR3tNuxFyVMQ@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <716511c3-9252-dba6-0902-a8231bf444fa@huaweicloud.com>
+Date:   Sun, 20 Aug 2023 09:44:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20230816062219.1086685-1-nicolas@fjasle.eu>
-In-Reply-To: <20230816062219.1086685-1-nicolas@fjasle.eu>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 20 Aug 2023 10:26:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATa6gf9FP9=Yh9YyBb+5Gf+Y3skLP5+8DXXbDSB-2Khng@mail.gmail.com>
-Message-ID: <CAK7LNATa6gf9FP9=Yh9YyBb+5Gf+Y3skLP5+8DXXbDSB-2Khng@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add usr/ (initramfs generation) to KBUILD
-To:     Nicolas Schier <nicolas@fjasle.eu>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, Nicolas Schier <n.schier@avm.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAPhsuW5Nn4gPv6EKaxHqtJfRFXMLg3bEBTNknLBR3tNuxFyVMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH1qjub+Fka8+BBA--.16221S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFWDCrW5ZFWDKF43WrW7Jwb_yoW8WF1DpF
+        47Ga13Cr4UJ3y7Jw1Sqw1kCa4Fkw4xtrWUtry7J3W8XFn8ZryvgFyfKF4vgr95Cry3Gr15
+        ur4UtFyfCF10yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:40=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
- wrote:
->
-> From: Nicolas Schier <n.schier@avm.de>
->
-> Add scripts for generating initramfs to KBUILD, to prevent idling of
-> patches for usr/.
->
-> Signed-off-by: Nicolas Schier <n.schier@avm.de>
-> ---
->  MAINTAINERS | 1 +
+Hi,
 
+在 2023/08/18 5:49, Song Liu 写道:
+> On Thu, Aug 17, 2023 at 12:58 AM Mariusz Tkaczyk
+> <mariusz.tkaczyk@linux.intel.com> wrote:
+>>
+>> On Tue, 15 Aug 2023 11:09:52 +0800
+>> Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> There are no functional changes, on the one hand make the code cleaner,
+>>> on the other hand prevent following checkpatch error in the next patch to
+>>> delay choosing sync direction to md_start_sync().
+>>>
+>>> ERROR: do not use assignment in if condition
+>>> +       } else if ((spares = remove_and_add_spares(mddev, NULL))) {
+>>>
+>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>>> ---
+>>>   drivers/md/md.c | 68 +++++++++++++++++++++++++++++++------------------
+>>>   1 file changed, 43 insertions(+), 25 deletions(-)
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 90815be1e80f..4846ff6d25b0 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -9246,6 +9246,48 @@ static int remove_and_add_spares(struct mddev *mddev,
+>>>        return spares;
+>>>   }
+>>>
+>>> +static bool md_choose_sync_direction(struct mddev *mddev, int *spares)
+>>
+>> The naming is little confusing because as a direction I would expect forward or
+>> backward - from end to start or or from start to end. In this case you are
+>> determining the type of the background operation needed. Assuming that reshape
+>> is a kind of "sync" operation I would say "md_choose_sync_action".
+> 
+> Yeah, md_choose_sync_direction is indeed confusing.
+> 
 
-Applied to linux-kbuild.
-Thanks.
+Thanks for the suggestion, I'll update this in the new version.
 
+Kuai,
 
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d516295978a4..eff293e8d3bf 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11296,6 +11296,7 @@ F:      scripts/dummy-tools/
->  F:     scripts/mk*
->  F:     scripts/mod/
->  F:     scripts/package/
-> +F:     usr/
->
->  KERNEL HARDENING (not covered by other areas)
->  M:     Kees Cook <keescook@chromium.org>
-> --
-> 2.39.2
->
+> Thanks,
+> Song
+> .
+> 
 
-
---=20
-Best Regards
-Masahiro Yamada
