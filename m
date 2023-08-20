@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4E77820A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 00:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDB27820AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 01:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232069AbjHTWwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 18:52:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S232093AbjHTXDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 19:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbjHTWwW (ORCPT
+        with ESMTP id S232087AbjHTXDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 18:52:22 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43309F
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 15:52:19 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5805FA2;
-        Mon, 21 Aug 2023 00:51:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692571861;
-        bh=a4e8VEKO1ZA5st0zk5K/VQkJiIOaA/nfBXzO6me1iPI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XEosBF2EgHsLU6QSEJT+Wxq/PI+Hq7bGsRI5Yfee2Olbe3ETxK8OCoK91AQcWg3qb
-         38zkUJoGJkBpTde2F3K+VmRQY9wZa7DmbMEpP22fIoP1TuzBkUdULQiCDhuT0oVjnk
-         Sr2Gjj8putVXuQSPSMtWDac1o4ar3Pp7hJgYswqQ=
-Date:   Mon, 21 Aug 2023 01:52:23 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Siddh Raman Pant <code@siddh.me>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Suraj Upadhyay <usuraj35@gmail.com>
-Subject: Re: [PATCH v11 3/8] drm: Remove usage of deprecated DRM_INFO in DRM
- core
-Message-ID: <20230820225223.GA10135@pendragon.ideasonboard.com>
-References: <cover.1692531217.git.code@siddh.me>
- <434cb488766d6c8fb596acc0caea245fc9c115d3.1692531217.git.code@siddh.me>
+        Sun, 20 Aug 2023 19:03:04 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145E6A6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe12820bffso27049655e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 16:03:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692572579; x=1693177379;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
+        b=t/M436gLUC3+++Lm6yg65sJ9KSAuXIfPhOB12Lo8i7//DnPoosE1I3P39EuLVL4PNO
+         zRxoSgoVSQgGE3VjMiyyof23ui1TFdgoOKaNFJqRby3F43/I7OR79Cz5BLE5wPYPtI5T
+         VBr3r68voLEMZTuMRzdBo/IZTrf/8IHoS1DY3JjHEIyBznscOY5H2pCCx6BI5FHNijtM
+         PPDqEKa5XS8oOtFuuVIwZel0iFIUHGm+0+a427vbiMxzGMDaz4p0GD7I/pHZfv3K5R9g
+         SxKsr4mnY/efclf92+bb94JKR4Cr2yuLCpMgCL6hEieNYhRuwNR6i4S5WrF4+WvvQekE
+         eH2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692572579; x=1693177379;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zASfMBgzYAjTR9c8GY5qaV+9MUOdSaUxlBCpiQVP8k0=;
+        b=WG890RMyLW5ym3HSr334C2RuknjKiXbPBo1NNAIaaNgOE/fCZhngyeumI1b+vMLFvn
+         ckfNekWobUI73NFdOE0PMoqXKYq87rYRzZuCyjdhHIwBkD2q0KCQkojTY9y12mRqb6Nm
+         EKbYL88IfUh0DzGUeSKQXm1Mvbi6z0I9HpP/DTu7Qktp4zkO+6Wx0J71f9INTn+k10x8
+         G6H1+3ORy6sA9kKj7L8Rnw0VeqY/DFm82xtx6V/mXmCdvHRjggIY4yI3LIHhRUJrBqyb
+         xvVgpX3NCris18mzEIBhDH4DdASOE4Sdtls11xaaoCCyimSmVOE8e58xWeEk9Szl2lRI
+         3BYg==
+X-Gm-Message-State: AOJu0YycJKwxH9+sefL8+XeNYGzJXo7kayZdHsR5FbIkSI4B8tSeBMXK
+        Y5c/eG0B0RALj5Cl785sjjQSHQ==
+X-Google-Smtp-Source: AGHT+IEDDxn1gA7l6hN0vwECDX74/sJ63XoHP2U9mIBarT4gPy/ZBfwz83YYHMQoWg88ioS6EzG+NQ==
+X-Received: by 2002:a7b:c8d8:0:b0:3fe:195c:eca3 with SMTP id f24-20020a7bc8d8000000b003fe195ceca3mr3694180wml.9.1692572579582;
+        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id l22-20020a7bc456000000b003fe1afb99a9sm10596979wmi.11.2023.08.20.16.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 16:02:59 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 00:02:57 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Waiman Long <longman@redhat.com>
+Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Tejun Heo <tj@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
+        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
+ for 5.10.y
+Message-ID: <20230820230257.gmcmjuuirzq6xs52@airbuntu>
+References: <20230820152144.517461-1-qyousef@layalina.io>
+ <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <434cb488766d6c8fb596acc0caea245fc9c115d3.1692531217.git.code@siddh.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Siddh,
-
-Thank you for the patch.
-
-On Sun, Aug 20, 2023 at 05:10:39PM +0530, Siddh Raman Pant wrote:
-> drm_print.h says DRM_INFO is deprecated in favor of drm_info().
+On 08/20/23 12:24, Waiman Long wrote:
 > 
-> Signed-off-by: Siddh Raman Pant <code@siddh.me>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-
-> ---
->  drivers/gpu/drm/drm_client_modeset.c | 2 +-
->  drivers/gpu/drm/drm_connector.c      | 7 ++++---
->  drivers/gpu/drm/drm_drv.c            | 2 +-
->  drivers/gpu/drm/drm_pci.c            | 2 +-
->  4 files changed, 7 insertions(+), 6 deletions(-)
+> On 8/20/23 11:21, Qais Yousef wrote:
+> > This is a backport of the series that fixes the way deadline bandwidth
+> > restoration is done which is causing noticeable delay on resume path. It also
+> > converts the cpuset lock back into a mutex which some users on Android too.
+> > I lack the details but AFAIU the read/write semaphore was slower on high
+> > contention.
 > 
-> diff --git a/drivers/gpu/drm/drm_client_modeset.c b/drivers/gpu/drm/drm_client_modeset.c
-> index 1b12a3c201a3..ae19734974b5 100644
-> --- a/drivers/gpu/drm/drm_client_modeset.c
-> +++ b/drivers/gpu/drm/drm_client_modeset.c
-> @@ -331,7 +331,7 @@ static bool drm_client_target_cloned(struct drm_device *dev,
->  		DRM_DEBUG_KMS("can clone using 1024x768\n");
->  		return true;
->  	}
-> -	DRM_INFO("kms: can't enable cloning when we probably wanted to.\n");
-> +	drm_info(dev, "kms: can't enable cloning when we probably wanted to.\n");
->  	return false;
->  }
->  
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index bf8371dc2a61..1145d9e64c24 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -168,13 +168,14 @@ static void drm_connector_get_cmdline_mode(struct drm_connector *connector)
->  		return;
->  
->  	if (mode->force) {
-> -		DRM_INFO("forcing %s connector %s\n", connector->name,
-> -			 drm_get_connector_force_name(mode->force));
-> +		drm_info(connector->dev, "forcing %s connector %s\n",
-> +			 connector->name, drm_get_connector_force_name(mode->force));
->  		connector->force = mode->force;
->  	}
->  
->  	if (mode->panel_orientation != DRM_MODE_PANEL_ORIENTATION_UNKNOWN) {
-> -		DRM_INFO("cmdline forces connector %s panel_orientation to %d\n",
-> +		drm_info(connector->dev,
-> +			 "cmdline forces connector %s panel_orientation to %d\n",
->  			 connector->name, mode->panel_orientation);
->  		drm_connector_set_panel_orientation(connector,
->  						    mode->panel_orientation);
-> diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-> index 3eda026ffac6..d457f2053c05 100644
-> --- a/drivers/gpu/drm/drm_drv.c
-> +++ b/drivers/gpu/drm/drm_drv.c
-> @@ -943,7 +943,7 @@ int drm_dev_register(struct drm_device *dev, unsigned long flags)
->  	if (drm_core_check_feature(dev, DRIVER_MODESET))
->  		drm_modeset_register_all(dev);
->  
-> -	DRM_INFO("Initialized %s %d.%d.%d %s for %s on minor %d\n",
-> +	drm_info(dev, "Initialized %s %d.%d.%d %s for %s on minor %d\n",
->  		 driver->name, driver->major, driver->minor,
->  		 driver->patchlevel, driver->date,
->  		 dev->dev ? dev_name(dev->dev) : "virtual device",
-> diff --git a/drivers/gpu/drm/drm_pci.c b/drivers/gpu/drm/drm_pci.c
-> index 39d35fc3a43b..7dfb837d1325 100644
-> --- a/drivers/gpu/drm/drm_pci.c
-> +++ b/drivers/gpu/drm/drm_pci.c
-> @@ -262,7 +262,7 @@ void drm_legacy_pci_exit(const struct drm_driver *driver,
->  		}
->  		mutex_unlock(&legacy_dev_list_lock);
->  	}
-> -	DRM_INFO("Module unloaded\n");
-> +	drm_info(NULL, "Module unloaded\n");
->  }
->  EXPORT_SYMBOL(drm_legacy_pci_exit);
->  
+> Note that it was a percpu rwsem before this patch series. It was not a
+> regular rwsem. Percpu rwsem isn't designed to handle high write lock
+> contention. A regular rwsem should be similar to mutex in performance when
+> handling high write lock contention.
 
--- 
-Regards,
+Thanks a lot for the clarification Waiman! Much appreciated.
 
-Laurent Pinchart
+
+Cheers
+
+--
+Qais Yousef
