@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC39D781EA3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 17:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18051781EA7
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 17:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbjHTPZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 11:25:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S231422AbjHTPZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 11:25:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231177AbjHTPZo (ORCPT
+        with ESMTP id S229804AbjHTPZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Aug 2023 11:25:44 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DECB3A9A
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:51 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fee600dce6so9736105e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:51 -0700 (PDT)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8993AA4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:52 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fee7b7689dso8546365e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692544910; x=1693149710;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t1WFhLLujM0Chr+SFgokCgNMU6zRltqI69DEFgLDAHM=;
-        b=FMj8AIFOKHOUOs579dCdiNT8N9nIRUXe7vWEEWi+4Ym7tht9mCp4KrM4gNByXZBOQS
-         liHslt2h7iNO+t9RjBUVr6zhUuLjZrbr6SlXX69mcq40hax5tGHdWVypHuDiDKxDGa66
-         6KDlvXoSmrIhW8xUf1WNaYiqN0C/LW+Vv10l6/Hf5tIiFYVnWaVUvTnNKieks6eia793
-         JJH67O2xM8d+UKQyFjTUvOvh2eKW9GyZ6OchggLkde6n86jE0iyaPRBzCC0dZlMBLibs
-         orLYy7XlIYntl9+EgUSbotcn9c0JET16VFwoS11Cn59mceRqjM8iLfjqeol16WJmBl0y
-         xVHQ==
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692544911; x=1693149711;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uy6sCJLNuc3jH8uH7wQ4wwiTwUaAG3ufvYgTJlzJMXY=;
+        b=sh6ZPyRqXR9Cgl9kNLAJeZIU3Atyf8mIKlI6KuOiX3LLMMQ9qdM4Ap4W5pl2Q2RFJV
+         szXa6z5c2LLoQgjH38/9lO+GZDR+cQ9Nov4QNzPLwbTDffuhbHKUgSvBLZ76yoxW+Rmd
+         qPISR53JMgl4zka960zCMB4/W4+kyqYB5pCn29x3fHjRhFoxFlkFphs2jyTkTAAOc4bY
+         bhJEdlOTcK1jQoBLkhpQviAbQ4hy5f2dxl5nhIIolIgKrRbFpBBn3vOZUc7fBUccstjI
+         9oNKqMYcCB5UeY4GPE9x18G51QcN7dtNpLmumeFphb5I4pc5u2SJyFCK0v4MeIKbD91S
+         4QWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692544910; x=1693149710;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t1WFhLLujM0Chr+SFgokCgNMU6zRltqI69DEFgLDAHM=;
-        b=HazRa7irqNh5Mp2LHegXxN0fycfyp9Xfa6CtFMOt/WvUYo0OwkJqbJtejEi+VzhlVg
-         tryb+C/WxjDv1YyOUtsXyumQG6mGGu+5Kt40dVnZDpYAdtkyqUUghRRJ8opu7P689u02
-         bvW0e7+QOM8fh+j0Rj9Mx350oNUnV7p1wRlJmlZQMQbEvuvnMvv4F9e4LeWUUtqgVYMR
-         Ft8kJkejz7QMQ2tflkE7bJA3OHtF/rCeLISwf0sW0fuFpzqsaYdzVlCp1gvb/8DauBtq
-         Gy5Hcl7NBNDJjlY78C3vN4NvmddKbLuSLPebE8Ve712eOvyJwWncrquZOwA4ZrMiNDA7
-         IPhg==
-X-Gm-Message-State: AOJu0YypzuSZ/k5/6oZoz/sJcPnLKBYtqVHRUl7jsYuyc8JqcVBbGpYI
-        0a3+OSY+b3KP7vTpqvrfRv8Q/4AcofhK5RWS5k0=
-X-Google-Smtp-Source: AGHT+IEfgSETFCpZ8ZM9J6X/uBMjWpzJMTJX6/BAw7lW2wKlwYwVtHw6y2wx7TO+NakNYRnOgkbhTw==
-X-Received: by 2002:a7b:cbcd:0:b0:3fe:25b3:951d with SMTP id n13-20020a7bcbcd000000b003fe25b3951dmr3262262wmi.5.1692544909882;
-        Sun, 20 Aug 2023 08:21:49 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692544911; x=1693149711;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uy6sCJLNuc3jH8uH7wQ4wwiTwUaAG3ufvYgTJlzJMXY=;
+        b=f0UxFPAnudkX3UnOj80lC/KS2yR/Sb9xpDVpDdku3dl2DWuVfkLHRU4CfDcQ81dpIL
+         F9kYakOf/K140/UkCTCNwtS7BTg0dGMPKKf3rqT5amhVIAC0z5JTarQB3865EiT6xtJl
+         KUcsMvp7G4xRcuS6BlgMqkYIZK51wvxl/8Zjf+FemG9k9xngfEw0fiqCAn7vL7OjczRJ
+         FKp7VXWpLzTDd1jmnjQkQdXOtZudPnUmyPPcWfPQJx1j4gYv1O/sIszJJAZ3dxspnG96
+         Yu6J0erlSyS4IPTGVNfGDdekPheexmjPX23CweDyQYbkv2OKGEYYqyWtoGVcqy0ZPma7
+         XWEQ==
+X-Gm-Message-State: AOJu0Yxq+YERHRoxFzKK86LgC0ONCmzKJa88rz28QPad2smHfopk97OB
+        dtlZLirnZie0My+pGW7smbbZSg==
+X-Google-Smtp-Source: AGHT+IH4OWwf9GHpV+tje8zc0gJyX33F+nflC3SR1eebkrZnarAVHU9PGBW4jIx7t2BNuQPRzmdmLg==
+X-Received: by 2002:a05:600c:210b:b0:3fe:ef5b:bb6 with SMTP id u11-20020a05600c210b00b003feef5b0bb6mr936798wml.35.1692544910831;
+        Sun, 20 Aug 2023 08:21:50 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id o11-20020a05600c510b00b003fe3674bb39sm9762497wms.2.2023.08.20.08.21.48
+        by smtp.gmail.com with ESMTPSA id o11-20020a05600c510b00b003fe3674bb39sm9762497wms.2.2023.08.20.08.21.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 08:21:49 -0700 (PDT)
+        Sun, 20 Aug 2023 08:21:50 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     stable@vger.kernel.org
 Cc:     Juri Lelli <juri.lelli@redhat.com>,
@@ -59,64 +60,84 @@ Cc:     Juri Lelli <juri.lelli@redhat.com>,
         Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
         John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 0/6] Backport rework of deadline bandwidth restoration for 5.10.y
-Date:   Sun, 20 Aug 2023 16:21:38 +0100
-Message-Id: <20230820152144.517461-1-qyousef@layalina.io>
+Subject: [PATCH 1/6] cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+Date:   Sun, 20 Aug 2023 16:21:39 +0100
+Message-Id: <20230820152144.517461-2-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230820152144.517461-1-qyousef@layalina.io>
+References: <20230820152144.517461-1-qyousef@layalina.io>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a backport of the series that fixes the way deadline bandwidth
-restoration is done which is causing noticeable delay on resume path. It also
-converts the cpuset lock back into a mutex which some users on Android too.
-I lack the details but AFAIU the read/write semaphore was slower on high
-contention.
+From: Juri Lelli <juri.lelli@redhat.com>
 
-Compile tested against some randconfig for different archs and tested against
-android13-5.10 GKI kernel.
+commit ad3a557daf6915296a43ef97a3e9c48e076c9dd8 upstream.
 
-My testing is limited to resume path only; and general phone usage to make sure
-nothing falls apart. Would be good to have some deadline specific testing done
-too.
+rebuild_root_domains() and update_tasks_root_domain() have neutral
+names, but actually deal with DEADLINE bandwidth accounting.
 
-Based on v5.10.191
+Rename them to use 'dl_' prefix so that intent is more clear.
 
-Original series:
+No functional change.
 
-	https://lore.kernel.org/lkml/20230508075854.17215-1-juri.lelli@redhat.com/
+Suggested-by: Qais Yousef (Google) <qyousef@layalina.io>
+Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+(cherry picked from commit ad3a557daf6915296a43ef97a3e9c48e076c9dd8)
+Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
+---
+ kernel/cgroup/cpuset.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks!
-
---
-Qais Yousef
-
-Dietmar Eggemann (2):
-  sched/deadline: Create DL BW alloc, free & check overflow interface
-  cgroup/cpuset: Free DL BW in case can_attach() fails
-
-Juri Lelli (4):
-  cgroup/cpuset: Rename functions dealing with DEADLINE accounting
-  sched/cpuset: Bring back cpuset_mutex
-  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
-  cgroup/cpuset: Iterate only if DEADLINE tasks are present
-
- include/linux/cpuset.h  |  12 ++-
- include/linux/sched.h   |   4 +-
- kernel/cgroup/cgroup.c  |   4 +
- kernel/cgroup/cpuset.c  | 161 ++++++++++++++++++++++++++++------------
- kernel/sched/core.c     |  41 +++++-----
- kernel/sched/deadline.c |  66 ++++++++++++----
- kernel/sched/sched.h    |   2 +-
- 7 files changed, 202 insertions(+), 88 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index b476591168dc..96b56226a304 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -912,7 +912,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	return ndoms;
+ }
+ 
+-static void update_tasks_root_domain(struct cpuset *cs)
++static void dl_update_tasks_root_domain(struct cpuset *cs)
+ {
+ 	struct css_task_iter it;
+ 	struct task_struct *task;
+@@ -925,7 +925,7 @@ static void update_tasks_root_domain(struct cpuset *cs)
+ 	css_task_iter_end(&it);
+ }
+ 
+-static void rebuild_root_domains(void)
++static void dl_rebuild_rd_accounting(void)
+ {
+ 	struct cpuset *cs = NULL;
+ 	struct cgroup_subsys_state *pos_css;
+@@ -953,7 +953,7 @@ static void rebuild_root_domains(void)
+ 
+ 		rcu_read_unlock();
+ 
+-		update_tasks_root_domain(cs);
++		dl_update_tasks_root_domain(cs);
+ 
+ 		rcu_read_lock();
+ 		css_put(&cs->css);
+@@ -967,7 +967,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+ {
+ 	mutex_lock(&sched_domains_mutex);
+ 	partition_sched_domains_locked(ndoms_new, doms_new, dattr_new);
+-	rebuild_root_domains();
++	dl_rebuild_rd_accounting();
+ 	mutex_unlock(&sched_domains_mutex);
+ }
+ 
 -- 
 2.34.1
 
