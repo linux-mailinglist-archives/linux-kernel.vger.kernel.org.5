@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 501DC781E7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 17:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC39D781EA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 17:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbjHTPT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 11:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        id S231406AbjHTPZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 11:25:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjHTPTz (ORCPT
+        with ESMTP id S231177AbjHTPZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 11:19:55 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA17E8;
-        Sun, 20 Aug 2023 08:15:02 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3a751d2e6ecso2006793b6e.0;
-        Sun, 20 Aug 2023 08:15:02 -0700 (PDT)
+        Sun, 20 Aug 2023 11:25:44 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DECB3A9A
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:51 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fee600dce6so9736105e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 08:21:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692544502; x=1693149302;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/hSZIhmkHGzjNtkdqhrKis5XPDMMe45VDbgxuLxmNpc=;
-        b=afk2Ucb3vmpuLfYssTTfFt+0EA6p/DPQhSYRmg91/OavyjhqQLYy8dJCwNgvKd02G6
-         NqUhAB/BPDYPlu7A2iIF9Jlw7nbstwks0mJ0wOZtOOcmWwM+MOkgWUQAti3VZ3+TLNyP
-         1todpDNBj42CVsA4XmZg4np6e8nXYKnIAqpSL8hnWotP5betbKeaxajgHd6jy3qLzCgF
-         Ws1RiKIn+OAqjeI5HTz49Frkciwr8UjaLbE3EB6QccxVogvQTeeBGmJVmyscFbNzAQgr
-         +QMIbFOYGaxCEMk0I7EsB2c12qfhFi8rqoShfqo+NHNuqnGhzz1ilynNjRZCVdN64uTd
-         9kNg==
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692544910; x=1693149710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t1WFhLLujM0Chr+SFgokCgNMU6zRltqI69DEFgLDAHM=;
+        b=FMj8AIFOKHOUOs579dCdiNT8N9nIRUXe7vWEEWi+4Ym7tht9mCp4KrM4gNByXZBOQS
+         liHslt2h7iNO+t9RjBUVr6zhUuLjZrbr6SlXX69mcq40hax5tGHdWVypHuDiDKxDGa66
+         6KDlvXoSmrIhW8xUf1WNaYiqN0C/LW+Vv10l6/Hf5tIiFYVnWaVUvTnNKieks6eia793
+         JJH67O2xM8d+UKQyFjTUvOvh2eKW9GyZ6OchggLkde6n86jE0iyaPRBzCC0dZlMBLibs
+         orLYy7XlIYntl9+EgUSbotcn9c0JET16VFwoS11Cn59mceRqjM8iLfjqeol16WJmBl0y
+         xVHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692544502; x=1693149302;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=/hSZIhmkHGzjNtkdqhrKis5XPDMMe45VDbgxuLxmNpc=;
-        b=e/yQ93bwmK/GzJbs1p6SQsN60fTVMKkw1k8c5WT6V3JVYvxZqQ8UIaCgDBdcZmSeWQ
-         uigf46uuteGrXTMRfg1YjhHgd+6ZFsdOlR0aQqDEHSN+n0FG5E0eFGOeRyowfp73cipK
-         L7RhfHL62KS1jPqr7JwBWtn4NYmeieUggLhAIuvwn7BHygAqxsUMlfveQdLEtVKgxx2u
-         GPRvd5cVKtDQt4mTXTrBfmjhR6plexXfTisJP32s09azwbozvU5LuU05pr2SgUbm/Rbb
-         Wfsvr7KVLzIfQIwPzvb9MwBGBXcTUeTh2i8Rf+i8uT0dGU80VTjvrvWRKxURV5lgmHE1
-         susg==
-X-Gm-Message-State: AOJu0YzjRPdulzfRfZ4V0ElkTUkJSRoAT2bVImylUMLkFmLLKs3bDFjj
-        yIG5MOa3Zz+zoPrJJRMPw+E=
-X-Google-Smtp-Source: AGHT+IFeVM78TX6uAGcng2/uDfZQ4CAtx3zUD+6/o8h5qq1zmlLCrnu/Cdu8RbfcHK890LMj+EtFGw==
-X-Received: by 2002:a05:6358:9920:b0:13a:6cb:4d91 with SMTP id w32-20020a056358992000b0013a06cb4d91mr4301834rwa.7.1692544501787;
-        Sun, 20 Aug 2023 08:15:01 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id i3-20020a0cf483000000b00646e0411e8csm2251406qvm.30.2023.08.20.08.15.01
+        d=1e100.net; s=20221208; t=1692544910; x=1693149710;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t1WFhLLujM0Chr+SFgokCgNMU6zRltqI69DEFgLDAHM=;
+        b=HazRa7irqNh5Mp2LHegXxN0fycfyp9Xfa6CtFMOt/WvUYo0OwkJqbJtejEi+VzhlVg
+         tryb+C/WxjDv1YyOUtsXyumQG6mGGu+5Kt40dVnZDpYAdtkyqUUghRRJ8opu7P689u02
+         bvW0e7+QOM8fh+j0Rj9Mx350oNUnV7p1wRlJmlZQMQbEvuvnMvv4F9e4LeWUUtqgVYMR
+         Ft8kJkejz7QMQ2tflkE7bJA3OHtF/rCeLISwf0sW0fuFpzqsaYdzVlCp1gvb/8DauBtq
+         Gy5Hcl7NBNDJjlY78C3vN4NvmddKbLuSLPebE8Ve712eOvyJwWncrquZOwA4ZrMiNDA7
+         IPhg==
+X-Gm-Message-State: AOJu0YypzuSZ/k5/6oZoz/sJcPnLKBYtqVHRUl7jsYuyc8JqcVBbGpYI
+        0a3+OSY+b3KP7vTpqvrfRv8Q/4AcofhK5RWS5k0=
+X-Google-Smtp-Source: AGHT+IEfgSETFCpZ8ZM9J6X/uBMjWpzJMTJX6/BAw7lW2wKlwYwVtHw6y2wx7TO+NakNYRnOgkbhTw==
+X-Received: by 2002:a7b:cbcd:0:b0:3fe:25b3:951d with SMTP id n13-20020a7bcbcd000000b003fe25b3951dmr3262262wmi.5.1692544909882;
+        Sun, 20 Aug 2023 08:21:49 -0700 (PDT)
+Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id o11-20020a05600c510b00b003fe3674bb39sm9762497wms.2.2023.08.20.08.21.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 08:15:01 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 11:15:01 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com, davem@davemloft.net,
-        pabeni@redhat.com, edumazet@google.com, shuah@kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-Message-ID: <64e22df53d1e6_3580162945b@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
-References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
- <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
-Subject: Re: [PATCH 1/2] selftests: Provide local define of min() and max()
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sun, 20 Aug 2023 08:21:49 -0700 (PDT)
+From:   Qais Yousef <qyousef@layalina.io>
+To:     stable@vger.kernel.org
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
+        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH 0/6] Backport rework of deadline bandwidth restoration for 5.10.y
+Date:   Sun, 20 Aug 2023 16:21:38 +0100
+Message-Id: <20230820152144.517461-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,61 +74,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mahmoud Maatuq wrote:
-> to avoid manual calculation of min and max values
-> and fix coccinelle warnings such WARNING opportunity for min()/max()
-> adding one common definition that could be used in multiple files
-> under selftests.
-> there are also some defines for min/max scattered locally inside sources
-> under selftests.
-> this also prepares for cleaning up those redundant defines and include
-> kselftest.h instead.
-> 
-> Signed-off-by: Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>
-> ---
->  tools/testing/selftests/kselftest.h | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
-> index 829be379545a..e8eb7e9afbc6 100644
-> --- a/tools/testing/selftests/kselftest.h
-> +++ b/tools/testing/selftests/kselftest.h
-> @@ -55,6 +55,13 @@
->  #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
->  #endif
->  
-> +#ifndef min
-> +# define min(x, y) ((x) < (y) ? (x) : (y))
-> +#endif
-> +#ifndef max
-> +# define max(x, y) ((x) < (y) ? (y) : (x))
-> +#endif
-> +
+This is a backport of the series that fixes the way deadline bandwidth
+restoration is done which is causing noticeable delay on resume path. It also
+converts the cpuset lock back into a mutex which some users on Android too.
+I lack the details but AFAIU the read/write semaphore was slower on high
+contention.
 
-Should this more closely follow include/linux/minmax.h, which is a lot
-more strict?
+Compile tested against some randconfig for different archs and tested against
+android13-5.10 GKI kernel.
 
-I'm fine with this simpler, more relaxed, version for testing, but
-calling it out for people to speak up.
+My testing is limited to resume path only; and general phone usage to make sure
+nothing falls apart. Would be good to have some deadline specific testing done
+too.
 
-Only the first two of these comments in minmax.h apply to this
-userspace code.
+Based on v5.10.191
 
-/*
- * min()/max()/clamp() macros must accomplish three things:
- *
- * - avoid multiple evaluations of the arguments (so side-effects like
- *   "x++" happen only once) when non-constant.
- * - perform strict type-checking (to generate warnings instead of
- *   nasty runtime surprises). See the "unnecessary" pointer comparison
- *   in __typecheck().
- * - retain result as a constant expressions when called with only
- *   constant expressions (to avoid tripping VLA warnings in stack
- *   allocation usage).
- */
+Original series:
 
-Note that a more strict version that includes __typecheck would
-warn on the type difference between total_len and cfg_mss. Fine
-with changing the type of cfg_mss in the follow-on patch to address
-that.
+	https://lore.kernel.org/lkml/20230508075854.17215-1-juri.lelli@redhat.com/
+
+Thanks!
+
+--
+Qais Yousef
+
+Dietmar Eggemann (2):
+  sched/deadline: Create DL BW alloc, free & check overflow interface
+  cgroup/cpuset: Free DL BW in case can_attach() fails
+
+Juri Lelli (4):
+  cgroup/cpuset: Rename functions dealing with DEADLINE accounting
+  sched/cpuset: Bring back cpuset_mutex
+  sched/cpuset: Keep track of SCHED_DEADLINE task in cpusets
+  cgroup/cpuset: Iterate only if DEADLINE tasks are present
+
+ include/linux/cpuset.h  |  12 ++-
+ include/linux/sched.h   |   4 +-
+ kernel/cgroup/cgroup.c  |   4 +
+ kernel/cgroup/cpuset.c  | 161 ++++++++++++++++++++++++++++------------
+ kernel/sched/core.c     |  41 +++++-----
+ kernel/sched/deadline.c |  66 ++++++++++++----
+ kernel/sched/sched.h    |   2 +-
+ 7 files changed, 202 insertions(+), 88 deletions(-)
+
+-- 
+2.34.1
 
