@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FED3781C1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D18BA781C1F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbjHTCkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 22:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S229772AbjHTCmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:42:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229815AbjHTCj5 (ORCPT
+        with ESMTP id S229823AbjHTCmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 22:39:57 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D44381EB;
-        Sat, 19 Aug 2023 18:04:01 -0700 (PDT)
-Received: from [172.27.2.41] ([73.231.166.163])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 37K13SJJ2218312
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Sat, 19 Aug 2023 18:03:29 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 37K13SJJ2218312
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023081101; t=1692493410;
-        bh=qfXMJSMvd16f6xy9L3N9tjGXeYmkKh8AHAqkwUQ6BYE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=qyfuGRvd9Si3Fv5j+GpJXDkN5ciaFrjw8F5/1rC55743XVDP/CUTOf9XCTTlyN3bK
-         lsPZe+tLinrisrwHOgDax4S1Doy03IUOhu5vgZjF0ydMNUi+ju9RhQ4kjyXca17wA4
-         I1PzvlYGkBnYZLPHneZ2+RuQC8OVSanKcbXXQ19CipRPabQ33DiC8VsKz5Aso6fo4f
-         7MMLqqG43J+Sjd0U3uHOJrLFLHc54wngMjiHe5zhK91HKEcCmVIWJlQEFlPCF6f7Pr
-         dWq+uM6lLzcbTBoTHT0ml3+ZJEj0kzlgr7g+OKi8EefWWayWxvX430u5jh/zw9m6tc
-         SCPhxwUQ7K89Q==
-Message-ID: <46832047-567e-5699-fbec-8c3e991cfe0a@zytor.com>
-Date:   Sat, 19 Aug 2023 18:03:31 -0700
+        Sat, 19 Aug 2023 22:42:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CFE6F6B6;
+        Sat, 19 Aug 2023 18:27:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 70B12610FB;
+        Sun, 20 Aug 2023 01:27:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0BF9C433C8;
+        Sun, 20 Aug 2023 01:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692494854;
+        bh=rGHXKl7d7hc+MScJBmR93+78PNaEoYTZ7ZZkoFXRR74=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ps0ShGPt5Hb/g/plKJczhVZhCQE6haTIRM4vRSroaIToQcaRuPfnQfxLKxzyjd33t
+         YLaI5HhFcM8UEcRbKL030iBwjD1IqY0BGUeoGRw4g0ZrjahP7wqjpRSOzVBY+B3KlM
+         Bqv90T+4awHAimXSIlTF5Sswu8h5gycwgAPOCTBavdNprmLamTsafvyuGRLrl2u98Z
+         dOwI3PNp9YvCUDa3iNk124h1Vv6BSgHToReCXQezj7bwELY2fg2esoFchz77EYgPTc
+         zOVi1aff2aoZ48MOf7SKAGXCs/tcl0U1qJI5ePnEbNyZpC3YOaHLJALf8//Qg411nL
+         WDrHmPtQqBOcQ==
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1c52dbc300bso1312957fac.2;
+        Sat, 19 Aug 2023 18:27:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yz2VPIkszpbjLSh4+HwaU1GPUyb4m60R97eHOkWOTgINF6sy39g
+        7ads49t2D0PzLL1KwQPv88sKHlNMCH05JgYKUSI=
+X-Google-Smtp-Source: AGHT+IHsTFKullMv6NpUecq6ISPm/F8b5FxJ+gAG5fHYEV8j3VuY8VfPsa2Adt/9YY/pJO6tpk47BamZEiVhCA+GzrQ=
+X-Received: by 2002:a05:6870:d250:b0:1bb:753d:e6db with SMTP id
+ h16-20020a056870d25000b001bb753de6dbmr4341954oac.3.1692494853990; Sat, 19 Aug
+ 2023 18:27:33 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 17/17] x86/boot: Drop CRC-32 checksum and the build tool
- that generates it
-Content-Language: en-US
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Evgeniy Baskov <baskov@ispras.ru>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Jones <pjones@redhat.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Marvin_H=c3=a4user?= <mhaeuser@posteo.de>
-References: <20230818134422.380032-1-ardb@kernel.org>
- <20230818134422.380032-18-ardb@kernel.org>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20230818134422.380032-18-ardb@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230816062219.1086685-1-nicolas@fjasle.eu>
+In-Reply-To: <20230816062219.1086685-1-nicolas@fjasle.eu>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 20 Aug 2023 10:26:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATa6gf9FP9=Yh9YyBb+5Gf+Y3skLP5+8DXXbDSB-2Khng@mail.gmail.com>
+Message-ID: <CAK7LNATa6gf9FP9=Yh9YyBb+5Gf+Y3skLP5+8DXXbDSB-2Khng@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add usr/ (initramfs generation) to KBUILD
+To:     Nicolas Schier <nicolas@fjasle.eu>
+Cc:     linux-kbuild@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Nicolas Schier <n.schier@avm.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 18, 2023 at 10:40=E2=80=AFAM Nicolas Schier <nicolas@fjasle.eu>=
+ wrote:
+>
+> From: Nicolas Schier <n.schier@avm.de>
+>
+> Add scripts for generating initramfs to KBUILD, to prevent idling of
+> patches for usr/.
+>
+> Signed-off-by: Nicolas Schier <n.schier@avm.de>
+> ---
+>  MAINTAINERS | 1 +
 
 
-On 8/18/23 06:44, Ard Biesheuvel wrote:
-> The only remaining task carried out by the boot/tools/build.c build tool
-> is generating the CRC-32 checksum of the bzImage. This feature was added
-> in commit
-> 
->    7d6e737c8d2698b6 ("x86: add a crc32 checksum to the kernel image.")
-> 
-> without any motivation (or any commit log text, for that matter). This
-> checksum is not verified by any known bootloader, and given that
-> 
-> a) the checksum of the entire bzImage is reported by most tools (zlib,
->     rhash) as 0xffffffff and not 0x0 as documented,
-> b) the checksum is corrupted when the image is signed for secure boot,
->     which means that no distro ships x86 images with valid CRCs,
-> 
-> it seems quite unlikely that this checksum is being used, so let's just
-> drop it, along with the tool that generates it.
-> 
+Applied to linux-kbuild.
+Thanks.
 
-This one I have concerns with.
 
-	-hpa
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d516295978a4..eff293e8d3bf 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11296,6 +11296,7 @@ F:      scripts/dummy-tools/
+>  F:     scripts/mk*
+>  F:     scripts/mod/
+>  F:     scripts/package/
+> +F:     usr/
+>
+>  KERNEL HARDENING (not covered by other areas)
+>  M:     Kees Cook <keescook@chromium.org>
+> --
+> 2.39.2
+>
 
+
+--=20
+Best Regards
+Masahiro Yamada
