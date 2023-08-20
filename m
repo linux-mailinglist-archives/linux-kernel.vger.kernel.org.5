@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC88C781F4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 20:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB55781F62
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 21:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbjHTSl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 14:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
+        id S231646AbjHTTHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 15:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbjHTSlx (ORCPT
+        with ESMTP id S231611AbjHTTHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 14:41:53 -0400
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440391BC1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 11:41:24 -0700 (PDT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5637a108d02so2754288a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 11:41:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692556884; x=1693161684;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/n5kjMvYzdRUXwH8feZ+4YEm3skk2x5QaWimKw+DCM=;
-        b=CMQVGVKKQRdv6jyxE7TW5LSyDNIjQagknnkgBcpJyjQvWtbGIPD0ORYvGUyNYffUp1
-         DWzpHHfae33Z146Az5TMe1zHo5stKO5yWZK3IA99+txCEhYh/PHVPa1QBwNve4VVTmP3
-         XHuvY+qZquLEyhvHbhdNd+aUAlapQ4JNEn/zVeNUP5tVljZTDgqUIOHpPrCLGvOpw8LG
-         XOc9E3LWpz0aHhDpc7V3m4p/NkTI09pVdfdPaL7gvcGkXC9mEq6lOgOACkrqONjlrnVG
-         LBK9ecIoPOKgvx3QgmjuqcArpsIBUitoBHNQIFVSCJchGX2NCxcztTsIwfd6yz5++n7w
-         sJZQ==
-X-Gm-Message-State: AOJu0YwuCj6mqSLb8KDPk8/hHMjhEI13nC1cGDmQ9T2XcXJSb6vBuwvB
-        yhsx5Y+FXjpThjE6sHxjO2SGWU/aqBElt47o4Hiqgrxu7WZD
-X-Google-Smtp-Source: AGHT+IG3eaeUAH2EW45k/+HZjIXX99Q9piV7GARJu71AM1i236ME0RtbJCZz+N43b2fgb4vOTwTGQxFuzEj7n5oY0lhEjCqFkOik
+        Sun, 20 Aug 2023 15:07:41 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225DE1736;
+        Sun, 20 Aug 2023 12:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=o+VMOj6uZXJS0WosedR2CR7G2cP02oXdnAAnZojmqHo=; b=5G1hU3qb/6qS4l3hI43aHsu8nh
+        WxxlkwmNCFy4oSTO8DtJJyomklVqRzjScPVXBYl/fqb8WG1hlaLiRqMqgnzkPok9yjuyZRsrHPNfh
+        WA4m7BhauYcPmE2AcgYVZf8CnKksMa+maKrVcNgDhjKVtegnBsZZoM4mYplcRJirN650=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qXnjJ-004dQH-MF; Sun, 20 Aug 2023 21:04:53 +0200
+Date:   Sun, 20 Aug 2023 21:04:53 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: Re: [PATCH v2 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
+Message-ID: <c3454ad9-1874-4301-b1b1-4f76886802fb@lunn.ch>
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-4-keguang.zhang@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:c449:b0:1bb:b74c:88fa with SMTP id
- m9-20020a170902c44900b001bbb74c88famr1918271plm.6.1692556883825; Sun, 20 Aug
- 2023 11:41:23 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 11:41:23 -0700
-In-Reply-To: <000000000000dc83d605f0c70a11@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d299b406035f1bbd@google.com>
-Subject: Re: [syzbot] [nilfs?] kernel BUG in folio_end_writeback
-From:   syzbot <syzbot+7e5cf1d80677ec185e63@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, brauner@kernel.org,
-        konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816111310.1656224-4-keguang.zhang@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+> +static int ls1b_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
+> +{
+> +	struct ls1x_dwmac *dwmac = plat->bsp_priv;
+> +	struct regmap_field **regmap_fields = dwmac->regmap_fields;
+> +
+> +	if (plat->bus_id) {
+> +		regmap_field_write(regmap_fields[GMAC1_USE_UART1], 1);
+> +		regmap_field_write(regmap_fields[GMAC1_USE_UART0], 1);
+> +
+> +		switch (plat->phy_interface) {
+> +		case PHY_INTERFACE_MODE_RGMII:
+> +			regmap_field_write(regmap_fields[GMAC1_USE_TXCLK], 0);
+> +			regmap_field_write(regmap_fields[GMAC1_USE_PWM23], 0);
+> +			break;
 
-commit 92c5d1b860e9581d64baca76779576c0ab0d943d
-Author: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri May 26 02:13:32 2023 +0000
+What about the other three RGMII modes? Plain rgmii is pretty unusual,
+rgmii-id is the most used.
 
-    nilfs2: reject devices with insufficient block count
+> +		case PHY_INTERFACE_MODE_MII:
+> +			regmap_field_write(regmap_fields[GMAC1_USE_TXCLK], 1);
+> +			regmap_field_write(regmap_fields[GMAC1_USE_PWM23], 1);
+> +			break;
+> +		default:
+> +			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
+> +				plat->phy_interface);
+> +			return -EOPNOTSUPP;
+> +		}
+> +
+> +		regmap_field_write(regmap_fields[GMAC1_SHUT], 0);
+> +	} else {
+> +		switch (plat->phy_interface) {
+> +		case PHY_INTERFACE_MODE_RGMII:
+> +			regmap_field_write(regmap_fields[GMAC0_USE_TXCLK], 0);
+> +			regmap_field_write(regmap_fields[GMAC0_USE_PWM01], 0);
+> +			break;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170c6337a80000
-start commit:   929ed21dfdb6 Merge tag '6.4-rc4-smb3-client-fixes' of git:..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3da6c5d3e0a6c932
-dashboard link: https://syzkaller.appspot.com/bug?extid=7e5cf1d80677ec185e63
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16cb3b69280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f34201280000
+same here.
 
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: nilfs2: reject devices with insufficient block count
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+     Andrew
