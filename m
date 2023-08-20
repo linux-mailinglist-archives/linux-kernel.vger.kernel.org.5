@@ -2,84 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0B3781F44
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 20:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0CE781F46
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 20:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231589AbjHTSbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 14:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S231433AbjHTScD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 14:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjHTSbt (ORCPT
+        with ESMTP id S231259AbjHTScB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 14:31:49 -0400
-X-Greylist: delayed 454 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 20 Aug 2023 11:27:04 PDT
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 602DDAF;
-        Sun, 20 Aug 2023 11:27:03 -0700 (PDT)
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-        by vmicros1.altlinux.org (Postfix) with ESMTP id EF0FC72C981;
-        Sun, 20 Aug 2023 21:19:27 +0300 (MSK)
-Received: from beacon.altlinux.org (unknown [193.43.10.9])
-        by imap.altlinux.org (Postfix) with ESMTPSA id E459836D0165;
-        Sun, 20 Aug 2023 21:19:27 +0300 (MSK)
-From:   Vitaly Chikunov <vt@altlinux.org>
-To:     Willy Tarreau <w@1wt.eu>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [RFC] tools/nolibc: x86_64: Make it compile with -pie
-Date:   Sun, 20 Aug 2023 21:19:00 +0300
-Message-Id: <20230820181900.3786107-1-vt@altlinux.org>
-X-Mailer: git-send-email 2.33.8
-MIME-Version: 1.0
+        Sun, 20 Aug 2023 14:32:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36981BC8;
+        Sun, 20 Aug 2023 11:28:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B27961A8D;
+        Sun, 20 Aug 2023 18:28:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A811C433C8;
+        Sun, 20 Aug 2023 18:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692556106;
+        bh=GqYN9bHJd1JVgYtzvKeFocBkDRzHfTLEqEawKra5ziE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=KfvLNy6upAHsQAyCXGA+nkttHkHbs3vrZ3ae3Vhve8xE4ZjKpQOLAIEt8W70ZDe/w
+         1X/EayBvDYRuCbP486WSreuXtUZAu6sV+bhBCpaWRhvhKlobuw42+q7+afzye6g+WW
+         lHT3YzL+H91jiiD8olXJDV2JbBeGi3rSr0lccW/mbgKG3n9ngudWkDIdEteqaYIEp0
+         jNL3h6QAdv0l+RAxa7a8kaqfNhPl9f4QM1mUexwsNg46joVBnAO090sGE5YOKrUsyC
+         gch5rctP0xUZY/Wew4BZ9MZXRQrpe+OWlFUe2WgksgM4G2/kI0/oB96DYgPmP8fBaT
+         9P5BC4qRnWFmQ==
+Received: (nullmailer pid 4142974 invoked by uid 1000);
+        Sun, 20 Aug 2023 18:28:24 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     alsa-devel@alsa-project.org, aford@beaconembedded.com,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>
+In-Reply-To: <20230820175655.206723-1-aford173@gmail.com>
+References: <20230820175655.206723-1-aford173@gmail.com>
+Message-Id: <169255610407.4142958.2451683336970751205.robh@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: dt-bindings: fsl_easrc: Add support for
+ imx8mp-easrc
+Date:   Sun, 20 Aug 2023 13:28:24 -0500
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use RIP-relative addressing when setting `environ` and `_auxv` in
-startup code.
 
-Some toolchains have `-pie` enabled by default. On them or when -pie is
-specified manually gcc produces error like this:
+On Sun, 20 Aug 2023 12:56:53 -0500, Adam Ford wrote:
+> The i.MX8MP appears to have the same easrc support as the Nano, so
+> add imx8mp as an option with a fallback to imx8mn.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
 
-  ld: /tmp/cci0uPcR.o: relocation R_X86_64_32S against symbol `environ' can not be used when making a PIE object; recompile with -fPIE
-  ld: failed to set dynamic section sizes: bad value
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-This is because asm() startup code accesses there pointers with absolute
-addressing.
+yamllint warnings/errors:
 
-This may inspire others to fix the problem for other architectures too.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/fsl,easrc.example.dtb: easrc@300c0000: compatible: 'oneOf' conditional failed, one must be fixed:
+	['fsl,imx8mn-easrc'] is too short
+	'fsl,imx8mn-easrc' is not one of ['fsl,imx8mp-easrc']
+	from schema $id: http://devicetree.org/schemas/sound/fsl,easrc.yaml#
 
-Signed-off-by: Vitaly Chikunov <vt@altlinux.org>
----
- tools/include/nolibc/arch-x86_64.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+doc reference errors (make refcheckdocs):
 
-diff --git a/tools/include/nolibc/arch-x86_64.h b/tools/include/nolibc/arch-x86_64.h
-index 6fc4d8392742..a6be44b333ce 100644
---- a/tools/include/nolibc/arch-x86_64.h
-+++ b/tools/include/nolibc/arch-x86_64.h
-@@ -199,14 +199,14 @@ void __attribute__((weak,noreturn,optimize("omit-frame-pointer"))) __no_stack_pr
- 		"pop %rdi\n"                /* argc   (first arg, %rdi)                            */
- 		"mov %rsp, %rsi\n"          /* argv[] (second arg, %rsi)                           */
- 		"lea 8(%rsi,%rdi,8),%rdx\n" /* then a NULL then envp (third arg, %rdx)             */
--		"mov %rdx, environ\n"       /* save environ                                        */
-+		"mov %rdx, environ(%rip)\n" /* save environ                                        */
- 		"xor %ebp, %ebp\n"          /* zero the stack frame                                */
- 		"mov %rdx, %rax\n"          /* search for auxv (follows NULL after last env)       */
- 		"0:\n"
- 		"add $8, %rax\n"            /* search for auxv using rax, it follows the           */
- 		"cmp -8(%rax), %rbp\n"      /* ... NULL after last env (rbp is zero here)          */
- 		"jnz 0b\n"
--		"mov %rax, _auxv\n"         /* save it into _auxv                                  */
-+		"mov %rax, _auxv(%rip)\n"   /* save it into _auxv                                  */
- 		"and $-16, %rsp\n"          /* x86 ABI : esp must be 16-byte aligned before call   */
- 		"call main\n"               /* main() returns the status code, we'll exit with it. */
- 		"mov %eax, %edi\n"          /* retrieve exit code (32 bit)                         */
--- 
-2.33.8
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230820175655.206723-1-aford173@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
