@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B50781DB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 14:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A60C781DC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 14:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbjHTMIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 08:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37902 "EHLO
+        id S230501AbjHTMSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 08:18:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230211AbjHTMIt (ORCPT
+        with ESMTP id S230403AbjHTMSO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 08:08:49 -0400
+        Sun, 20 Aug 2023 08:18:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A34F173E;
-        Sun, 20 Aug 2023 05:05:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D56CA1;
+        Sun, 20 Aug 2023 05:14:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1024260B93;
-        Sun, 20 Aug 2023 12:05:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF683C433C8;
-        Sun, 20 Aug 2023 12:05:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 97B6661337;
+        Sun, 20 Aug 2023 12:14:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7B3C433C7;
+        Sun, 20 Aug 2023 12:13:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692533143;
-        bh=mYM2vfohaXJm9wMSr8t3sP42ybTz9TQCqDlYfD3i/x8=;
+        s=k20201202; t=1692533643;
+        bh=IC8w578EAIZuY+94RdibA09oC+PtDBo0QtdFqUh+Eoc=;
         h=From:To:Cc:Subject:Date:From;
-        b=lBhFelwx0NXe7LAJI7Vn46GBOQtmqGHSWiJ9xvWWj7syXxBBmMS850A3yOhjhd4hW
-         24lA71wAFjQtELNwM9sjlDmBalHCRbXHSMeqi8a28iRF192wrZu4aA/2Ib1KIh8ODC
-         1FcsJI1R+n6BeR5AqBmL68bXv/bLjnzgvJ/j/4G6yhXSgg7T4LCvSLqBRwX9eaSUem
-         2hg/gemykNUTwdDPhAfaWze4Hg2uDidXBm87CYhpUAkAgeprjMu7FB1YJ/Bgacuc/P
-         CHFtOfaz6jfeYNwDYVy9fviPVZPlE+B8GZoFux7vq/fEAJm1cGIrrzP2ekt1zQQ+5f
-         iQp+8lIMBROBQ==
+        b=e9ZZcIuUApBk3/DB9NX5MF3p32ExThYZkvRMnbluFlAdY1aeeaEuz1pLo9GSKmVDh
+         UUqiuVscsmqZqCwmK3KTZ9GEaZJ3/Pz7iepdYs0MoEjyq/ffILkkYcke7fdf2/tMDO
+         FZ/Xfw5h8SOsIoLRXITYJQ1kjR4fwy8GQLT8ce1BfZwuvMOOPG6kjn1T+Scz9gVSPJ
+         xjDzHwGnEqmYnPqAoe8D0O+5g04ZF977wMRCp+zLL7J6hthruWXb1wOlh5AmeeI46D
+         oeaHTaHfYc9qmcMAF8VPkQ16Ahm1qyNNgGvS4KBnIj30ev7qILkdeshYhyOm+TqmqL
+         hbWS/d9APZiyw==
 From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Conor Dooley <conor@kernel.org>,
+To:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     inux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] riscv: dts: thead: set dma-noncoherent to soc bus
-Date:   Sun, 20 Aug 2023 19:53:53 +0800
-Message-Id: <20230820115353.1962-1-jszhang@kernel.org>
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH net-next 0/3] add the dwmac driver for T-HEAD TH1520 SoC
+Date:   Sun, 20 Aug 2023 20:02:10 +0800
+Message-Id: <20230820120213.2054-1-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -58,26 +64,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-riscv select ARCH_DMA_DEFAULT_COHERENT by default, and th1520 isn't
-dma coherent, so set dma-noncoherent to reflect this fact.
+Add the dwmac driver support for T-HEAD TH1520 SoC.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/boot/dts/thead/th1520.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Since the clk part isn't mainlined, so SoC dts(i) changes are not
+included in this series. However, it can be tested by using fixed-clock.
 
-diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-index 56a73134b49e..58108f0eb3fd 100644
---- a/arch/riscv/boot/dts/thead/th1520.dtsi
-+++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-@@ -139,6 +139,7 @@ soc {
- 		interrupt-parent = <&plic>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-+		dma-noncoherent;
- 		ranges;
- 
- 		plic: interrupt-controller@ffd8000000 {
+Jisheng Zhang (3):
+  dt-bindings: net: snps,dwmac: allow dwmac-3.70a to set pbl properties
+  dt-bindings: net: add T-HEAD dwmac support
+  net: stmmac: add glue layer for T-HEAD TH1520 SoC
+
+ .../devicetree/bindings/net/snps,dwmac.yaml   |   2 +
+ .../devicetree/bindings/net/thead,dwmac.yaml  |  87 +++++
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+ .../net/ethernet/stmicro/stmmac/dwmac-thead.c | 304 ++++++++++++++++++
+ 5 files changed, 405 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/thead,dwmac.yaml
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-thead.c
+
 -- 
 2.40.1
 
