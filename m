@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4249778201F
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B271C782014
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232013AbjHTVIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 17:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        id S230015AbjHTVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 17:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjHTVIh (ORCPT
+        with ESMTP id S230083AbjHTVIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 17:08:37 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4D155A7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:06:28 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d63c0a6568fso2827605276.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:06:28 -0700 (PDT)
+        Sun, 20 Aug 2023 17:08:18 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80FC421B
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:04 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31aeef88a55so974574f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692565587; x=1693170387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jD9cyaHgSU7OecxP7U/v+MRhNN5iRGNEtNN5f+NxK3E=;
-        b=EkbIjelbdLkuzIuqi8lN2IaFia7QROWlfjiI7q7zlP6jDAvGYdauZr5rWGeP5TyNj/
-         FTLwzTAVecCKL3BibvaoUCvO+gGncYmRqvynbSCU/H9CSnnaBpgnH1tOwcSw/jhwlTNE
-         yxf9olC181R4u63D7T09ydG+I3s3ZtZ/u2PVgFULhzS48dJpD5wb5F9dF3a9Y+PsFYj+
-         NHgSZ9uwlOzKa4/KiVA0h3lpcev49Jt9Lvu2vbMboOBUQF5Ovmhefg1ifsF1lEHMhDCm
-         MbXMx2vz3Or/EDK9+/FBko1YDMvcoaLkgfWLakufV6DztPp4m3w4Zu6/QJHcRw+4VVzp
-         LubQ==
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692565683; x=1693170483;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mKIfrxoX30OyxGGV0Yso8E9kMyHpJWBVJoFq5vqFQs8=;
+        b=eatVI5m3PpJWv0B8wu5Q1/LKN0tSq2di2XEZw5h56kMRq2tH/GfRFOem3MIIXdzMqX
+         YV3p6UoMvw68WSUOVTjmA3jl/Rgytqt9V9ZAFwLNJb41c2jeQRrSy3qgG/SKLANmfnlM
+         YCAsnIUGmmW24KaldceMXo7cK7Ef3izNr9SMjadDL7r/OZIgQUYG4T/4U2D+P4VJ7AYe
+         9BtYJk8U2ctHJ29v1BWdIufZTLybYOXdMcPJH9jHOWDpNqf15wSjNXxr2bxrRDzc/ufB
+         /QKylHkEDzvM7rXs03ltrUrBD/idaE8lH3GrMmZGr4T61XZWGH30XtMUlu2KEYjbG1y/
+         CraQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692565587; x=1693170387;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jD9cyaHgSU7OecxP7U/v+MRhNN5iRGNEtNN5f+NxK3E=;
-        b=D3RHtulXhy65ciCMc2Zdix6n8Izo/YsuyZlux5ORm/zKPhFbefHztgXE5KIW0KAqNb
-         lq4sHUl6TCXZRgPi7udAF6U5GxT5KI+msxW0aQI3okqnKNRz85l+AUSeQDadTtWVFYsR
-         4QnUV1mFPDy4rgiZSoYhy7SqEngkw9rk1rN21OebpJwEzvizqyM62czWfk3/Pgft4kbM
-         onr5tIswlznSnqIKCnHmCaVCNR671XME0KQ2GgBP5BfTGSRuuGFI9v64/mcXR7BE3wmU
-         8PI+UJnr6iNRc5y/JRTqlwaYAepNTRE3NFn0NRhBYJGj4u9mIU67/0yPh4hI681z6JrW
-         1D1w==
-X-Gm-Message-State: AOJu0Yw6v+ifX2VzDaKffTGNckcZkrbMTvZ4S3ejbzkYmLzFtAnYXNOI
-        Q/V7ock1bB2qsW1+PpV7jMu7uuCn2ZDNuk12dMGARg==
-X-Google-Smtp-Source: AGHT+IFUaS1hymFHjE/AoExPooLhJU9s7gYCM4hD5xHtjEpweKryYFaY4soUhFjoyRUlcRmul8KDvXSLKE35vGSqXJ8=
-X-Received: by 2002:a81:7283:0:b0:589:8b55:f8cf with SMTP id
- n125-20020a817283000000b005898b55f8cfmr4756130ywc.50.1692565587414; Sun, 20
- Aug 2023 14:06:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692565683; x=1693170483;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mKIfrxoX30OyxGGV0Yso8E9kMyHpJWBVJoFq5vqFQs8=;
+        b=AzUg1hD+ybII+PofgKZ6qqIFWw3dk5va0sO/wsz4ZNgEqKjxWg1Z33dX4scoW6r7Ze
+         XTsYH5QH6UeDww9QS3L4HoyUaSdf7W4OSyEB7RZiY50popuBD5Q/AGgdWBp8IB1uxS2+
+         KQm/Q1opr9ebUH7mSs70DB640v9DCpB7pnv3aXPi/pncvEBwR9ItI1ldO2HA4Xci1PCc
+         XgKqYNT6Z2ZrgLs4N00Qi5cOyyvbayOK1K8q/OTbfuxZXQhWA/AQd0Gobi9+VZHQ9AZ2
+         rbbjI4hI7+XGTaR8dRDxZVXH2CN+qjgev6vdBFbDkRb0J4wuuzAExVn4cr63ookEFGyh
+         HGlQ==
+X-Gm-Message-State: AOJu0YybexzGJyguHM8jYkuj6QltdPfA45afFtUiAtZYc+WkXgCB/Q/D
+        WxNyyQN07N3J4XO49e3UG1mK0w==
+X-Google-Smtp-Source: AGHT+IHIpkC6rZSeHtP9enNvDDH6WRYjXxRdIhQ4tHieCUbY8Q7M72ioVNYe7OBGlc5RFQYpOJnqRw==
+X-Received: by 2002:a05:6000:1245:b0:319:8979:8fcc with SMTP id j5-20020a056000124500b0031989798fccmr3499253wrx.70.1692565683139;
+        Sun, 20 Aug 2023 14:08:03 -0700 (PDT)
+Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id j6-20020adfea46000000b003197a4b0f68sm10336800wrn.7.2023.08.20.14.08.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 14:08:02 -0700 (PDT)
+From:   Qais Yousef <qyousef@layalina.io>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Qais Yousef <qyousef@layalina.io>
+Subject: [PATCH 0/4] Fix dvfs_headroom escaping uclamp constraints
+Date:   Sun, 20 Aug 2023 22:06:36 +0100
+Message-Id: <20230820210640.585311-1-qyousef@layalina.io>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <cover.1692376360.git.christophe.leroy@csgroup.eu> <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 20 Aug 2023 23:06:16 +0200
-Message-ID: <CACRpkdamyFvzqrQ1=k04CbfEJn1azOF+yP5Ls2Qa3Ux6WGq7_A@mail.gmail.com>
-Subject: Re: [PATCH v4 21/28] net: wan: Add framer framework support
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 6:41=E2=80=AFPM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+DVFS headroom, or map_util_perf(), is applied after uclamp restrictions are
+applied in effective_cpu_util(). This will lead to two problems for uclamp:
 
-> From: Herve Codina <herve.codina@bootlin.com>
->
-> A framer is a component in charge of an E1/T1 line interface.
-> Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
-> frames. It also provides information related to the E1/T1 line.
->
-> The framer framework provides a set of APIs for the framer drivers
-> (framer provider) to create/destroy a framer and APIs for the framer
-> users (framer consumer) to obtain a reference to the framer, and
-> use the framer.
->
-> This basic implementation provides a framer abstraction for:
->  - power on/off the framer
->  - get the framer status (line state)
->  - be notified on framer status changes
->  - get/set the framer configuration
->
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+	1. If util < uclamp_min, we'll run faster than uclamp_min. For example
+	   util = 50, uclamp_min = 100. map_util_perf() = 125 instead of 100.
 
-I had these review comments, you must have missed them?
-https://lore.kernel.org/netdev/CACRpkdZQ9_f6+9CseV1L_wGphHujFPAYXMjJfjUrzSZ=
-RakOBzg@mail.gmail.com/
+	2. If util > uclamp_max, we'll run faster than uclamp_max. For example
+	   util = 900, uclamp_max = 800, map_util_perf() = 1000.
 
-Yours,
-Linus Walleij
+First patch rename the function to apply_dvfs_headroom() to reflect what it
+really does. It is not really mapping util, but provides some headroom for the
+util to grow. Provide a documentation for the function too.
+
+Second patch is the actual fix.
+
+Third patch moves apply_dvfs_headroom() to sched.h as there are no longer
+users outside the scheduler.
+
+Fourth patch is an RFC to redefine what the headroom means for RT, DL and IRQ
+pressures.
+
+Thanks!
+
+--
+Qais Yousef
+
+Qais Yousef (4):
+  sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
+  sched: cpufreq: Fix apply_dvfs_headroom() escaping uclamp constraints
+  sched: cpufreq: Move apply_dvfs_headroom() to sched.h
+  sched: cpufreq: Apply DVFS headroom to CFS only
+
+ include/linux/energy_model.h     |  1 -
+ include/linux/sched/cpufreq.h    |  5 -----
+ kernel/sched/core.c              |  7 +++++--
+ kernel/sched/cpufreq_schedutil.c |  5 ++---
+ kernel/sched/sched.h             | 24 ++++++++++++++++++++++++
+ 5 files changed, 31 insertions(+), 11 deletions(-)
+
+-- 
+2.34.1
+
