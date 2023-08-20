@@ -2,127 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 129D3781CB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 08:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF24E781CBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 08:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbjHTG4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 02:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S229922AbjHTG5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 02:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjHTG4E (ORCPT
+        with ESMTP id S229661AbjHTG5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 02:56:04 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C0E359D
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:29:12 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50079d148aeso362658e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 23:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692512950; x=1693117750;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uc6r5jrTl5KRxyULV2rwJI3udN950yCQjtWBO1UHlTE=;
-        b=A188BHQPbmwpEsQTM+O3IWYN/sJ+IGMzg0pNy7H09QX3+hs1UJ03dS701+yBeYbWsz
-         vQCr34Ui9zvNsIc+BMqDA5ppu5HVfTaUCNmYJsfkMqxUkFI2CFdRhsFAVNm68Eq4fdew
-         rivzw9rDqunEQt/FH7Lr6TS/mEEbFNpI69sBt4+zqQgcB1IqE5TPVQMbOJ51e5UTDhTV
-         bdNfuylUfspFU6T8I23s9pppWFgfp9Hu8yACDrXA/QJ3xNhTggfM8KdBxavQKf/vaGn2
-         f1AUrpufiIJDoCnG8htpXOwOhjhW5cVqzDZAT5PNN6E7PKtUIai9MK4xtGUzhtfsK3Br
-         STsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692512950; x=1693117750;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uc6r5jrTl5KRxyULV2rwJI3udN950yCQjtWBO1UHlTE=;
-        b=cB9bYt7C9+GH5azFPNNisWHPnVTM7y5OiY75s/mftI4gqPk/tGP6/xyNReAEfeWqmr
-         q+X+0A7rwirxCvqJdtqdXtrFosMvo0DX2SaZDlAucKJCzGtgX4ZIN1HxN5tRme/10qBr
-         riDBI20tOThMYV3uVkxr5aZ7owiUmnqxZBSTi7VBvBpgOoSr7SQgDB+2HAub9rDKNLvu
-         oN3WIc50NnyEkMel6AbcxC6SlEn2tasBKzwdT0G+BjSkko4x2EX2FKyNFZHc94HHP8OI
-         WGu2+QobHER/ljWCko1NF8+XRXRhKvzipTjCDylpDTc4HZb7N4VhZrQn/1iUho6WGZhj
-         /Tgw==
-X-Gm-Message-State: AOJu0YzztGBu5PMEbh2QbYIwjxjPN2GDBOiQw1TcyudbEpNlorOJu08M
-        Xeb31dtONjFYHTCWRwMZ/uaV9A==
-X-Google-Smtp-Source: AGHT+IHGiLfTKXd3POBlHix4H5KyMKF6QEFcujN4xuJyCP7MzrXaQscwFy+zspuseAs8dz2GHwW3BA==
-X-Received: by 2002:a05:6512:39ca:b0:4fe:82a7:814d with SMTP id k10-20020a05651239ca00b004fe82a7814dmr2334975lfu.48.1692512949514;
-        Sat, 19 Aug 2023 23:29:09 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id sb25-20020a170906edd900b0098ec690e6d7sm4029867ejb.73.2023.08.19.23.29.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Aug 2023 23:29:09 -0700 (PDT)
-Message-ID: <a5c01c63-9914-65d6-7b08-090e08d491a0@linaro.org>
-Date:   Sun, 20 Aug 2023 08:29:08 +0200
+        Sun, 20 Aug 2023 02:57:39 -0400
+Received: from m1344.mail.163.com (m1344.mail.163.com [220.181.13.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9BE994C26;
+        Sat, 19 Aug 2023 23:31:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
+        Message-ID; bh=MGMC5FFzeauFcLuqEiBTXCO7Tw+fo101a2jc/J9g6/Q=; b=E
+        MnEn+clWqITMwplcxtsTvSSmSYX3F1plHA4jXZdwIYKBQejUBv7sx/RMzmtG0Tg5
+        syNspZbi3OoX0HwWCcPlgqS8n5Yup1PkL/Zz6E8BqiEfDdMAP1izqNK5nYoPXQP1
+        3jJ9aXgc3nyMCCPaRHFbgXvw+rNJ4ypbqsUq9j1ZTI=
+Received: from 18500469033$163.com ( [114.250.138.216] ) by
+ ajax-webmail-wmsvr44 (Coremail) ; Sun, 20 Aug 2023 14:30:59 +0800 (CST)
+X-Originating-IP: [114.250.138.216]
+Date:   Sun, 20 Aug 2023 14:30:59 +0800 (CST)
+From:   "Dingyan Li" <18500469033@163.com>
+To:     gregkh@linuxfoundation.org, stern@rowland.harvard.edu
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re:[PATCH] USB: add new speed value to USB debugfs
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
+ Copyright (c) 2002-2023 www.mailtech.cn 163com
+In-Reply-To: <20230818153509.38814-1-18500469033@163.com>
+References: <20230818153509.38814-1-18500469033@163.com>
+X-NTES-SC: AL_QuySAPmavEgu7yWebekXkkYVgew6WsC4vf4k3IReOps0hiny4CAMcER9EX322d2yNSa+iyO5dCBx98JffqdAZa2nVxTdQjPRv0PoHNoDPfLp
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=GBK
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] dt-bindings: iio: adc: Add TI TWL603X GPADC
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-References: <20230816202614.324457-1-andreas@kemnade.info>
- <426d78d6-9fa6-bfeb-b36a-fba264097a27@linaro.org>
- <20230819221903.726a1c39@aktux>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230819221903.726a1c39@aktux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Message-ID: <563084ba.e93.18a11a3c2f2.Coremail.18500469033@163.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LMGowAC38ukjs+Fkr14XAA--.41110W
+X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbBZwfRy1et-+4uAwABs9
+X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2023 22:19, Andreas Kemnade wrote:
->>> +---
->>> +$id: http://devicetree.org/schemas/iio/adc/ti,twl6030-gpadc.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: GPADC subsystem in the TWL6030 power module
->>> +
->>> +maintainers:
->>> +  - Jonathan Cameron <jic23@kernel.org>  
->>
->> This should be rather someone knowing or having or caring about this
->> particular hardware, not subsystem maintainer.
->>
-> Hmm, I have the twl6032, but not the twl6030. So probably
-> Tony (OMAP-Maintainer) or me?
-
-Yes. If you have a device, it's even better, but "caring about" or
-having datasheet is enough.
-
-> 
->>> +
->>> +description:
->>> +  The GPADC subsystem in the TWL6030 consists of a 10-bit ADC
->>> +  combined with a 15-input analog multiplexer.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: ti,twl6030-gpadc  
->>
->> Devices look fairly similar. Same properties. Why aren't they in one
->> binding (enum here instead)?
->>
-> I hope it can be done. See commit message. Maybe my reasoning is wrong.
-
-The parent device binding can expect the compatible for the child and it
-will have the same effect in total as $ref to this binding. The only
-difference would be that running dtbs_check on parent binding would not
-spot all the issues in the child node. One need to run dtbs_check with
-both bindings.
-
-For an example:
-Documentation/devicetree/bindings/display/msm/qcom,sm8450-mdss.yaml
-
-
-Best regards,
-Krzysztof
-
+QXQgMjAyMy0wOC0xOCAyMzozNTowOSwgIkRpbmd5YW4gTGkiIDwxODUwMDQ2OTAzM0AxNjMuY29t
+PiB3cm90ZToKPkN1cnJlbnQgbWF4IHNwZWVkIHN1cHBvcnRlZCBpbiBVU0IgZGVidWdmcyBpcyAx
+MDAwMC4KPlNpbmNlIFVTQiAzLjIgR0VOXzJ4MiBoYXMgcmVhY2hlZCAyMDAwMCwgaXQncyBiZXR0
+ZXIKPnRvIGFkZCBpdC4gVGhlIGlkZWEgaXMgYm9ycm93ZWQgZnJvbSBVU0Igc3lzZnMsIHdpdGgK
+PmEgY29tYmluYXRpb24gb2YgVVNCX1NQRUVEX1NVUEVSX1BMVVMgYW5kCj5VU0JfU1NQX0dFTl8y
+eDIsIHRoZSBhY3R1YWwgc3BlZWQgc2hvdWxkIGJlIDIwMDAwLgo+Cj5TaWduZWQtb2ZmLWJ5OiBE
+aW5neWFuIExpIDwxODUwMDQ2OTAzM0AxNjMuY29tPgo+LS0tCj4gZHJpdmVycy91c2IvY29yZS9k
+ZXZpY2VzLmMgfCA2ICsrKysrLQo+IDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb24oLSkKPgo+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2NvcmUvZGV2aWNlcy5jIGIv
+ZHJpdmVycy91c2IvY29yZS9kZXZpY2VzLmMKPmluZGV4IGEyNDdkYTczZjM0ZC4uNzhlYmNiNjU3
+ZGNlIDEwMDY0NAo+LS0tIGEvZHJpdmVycy91c2IvY29yZS9kZXZpY2VzLmMKPisrKyBiL2RyaXZl
+cnMvdXNiL2NvcmUvZGV2aWNlcy5jCj5AQCAtNDI5LDcgKzQyOSwxMSBAQCBzdGF0aWMgc3NpemVf
+dCB1c2JfZGV2aWNlX2R1bXAoY2hhciBfX3VzZXIgKipidWZmZXIsIHNpemVfdCAqbmJ5dGVzLAo+
+IAljYXNlIFVTQl9TUEVFRF9TVVBFUjoKPiAJCXNwZWVkID0gIjUwMDAiOyBicmVhazsKPiAJY2Fz
+ZSBVU0JfU1BFRURfU1VQRVJfUExVUzoKPi0JCXNwZWVkID0gIjEwMDAwIjsgYnJlYWs7Cj4rCQlp
+ZiAodXNiZGV2LT5zc3BfcmF0ZSA9PSBVU0JfU1NQX0dFTl8yeDIpCj4rCQkJc3BlZWQgPSAiMjAw
+MDAiOwo+KwkJZWxzZQo+KwkJCXNwZWVkID0gIjEwMDAwIjsKPisJCWJyZWFrOwo+IAlkZWZhdWx0
+Ogo+IAkJc3BlZWQgPSAiPz8iOwo+IAl9Cj4tLSAKPjIuMjUuMQoKUGxlYXNlIGlnbm9yZSB0aGlz
+IHBhdGNoLCB3aGljaCB3aWxsIGJlIGNvdmVyZWQgaW4gYW5vdGhlciBwYXRjaC4KU29ycnkgZm9y
+IHRoZSBpbmNvbnZlbmllbmNlLgoKUmVnYXJkcywKRGluZ3lhbg==
