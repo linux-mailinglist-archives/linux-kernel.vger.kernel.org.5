@@ -2,168 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D3C781D88
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 13:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF53781D8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 13:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbjHTLNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 07:13:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        id S230429AbjHTLXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 07:23:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbjHTLNF (ORCPT
+        with ESMTP id S230449AbjHTLXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 07:13:05 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B300448A;
-        Sun, 20 Aug 2023 04:10:26 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RTCZM3Nn4z4f3lK0;
-        Sun, 20 Aug 2023 19:10:19 +0800 (CST)
-Received: from ubuntu20.huawei.com (unknown [10.67.174.33])
-        by APP2 (Coremail) with SMTP id Syh0CgA3omaW9OFkMkKZBA--.3932S2;
-        Sun, 20 Aug 2023 19:10:22 +0800 (CST)
-From:   "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        gongruiqi1@huawei.com
-Subject: [PATCH] samples: ftrace: replace bti assembly with hint for older compiler
-Date:   Sun, 20 Aug 2023 19:15:09 +0800
-Message-Id: <20230820111509.1470826-1-gongruiqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 20 Aug 2023 07:23:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6368010EA;
+        Sun, 20 Aug 2023 04:19:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D166360E04;
+        Sun, 20 Aug 2023 11:19:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CB04C433C7;
+        Sun, 20 Aug 2023 11:19:46 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V2] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+Date:   Sun, 20 Aug 2023 19:19:33 +0800
+Message-Id: <20230820111933.3184265-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: Syh0CgA3omaW9OFkMkKZBA--.3932S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw17KF48Gry7Cr47KFy8Krg_yoW5uF4Upa
-        9rC3srWF1rAF4DKas7u3WfAFy7t34UXrWDCan5Z34FqasIkrykWrW7trn7Xw4xJr1fCFWx
-        XF1DAryUtF43ZwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-        z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-        AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-        IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
-        0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
-        vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: pjrqw2pxltxq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,HEXHASH_WORD,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
+The KGDB initial breakpoint gets an rcu stall warning after commit
+a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+rcu_cpu_stall_reset()").
 
-When cross-building the arm64 kernel with allmodconfig using GCC 9.4,
-the following error occurs on multiple files under samples/ftrace/:
+[   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   53.487950] rcu:     3-...0: (1 ticks this GP) idle=0e2c/1/0x4000000000000000 softirq=375/375 fqs=8
+[   53.528243] rcu:     (t=12297 jiffies g=-995 q=1 ncpus=4)
+[   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.05099-beta8 08
+[   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000a0000 sp 90000001000a3710
+[   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 0000000000000001 a3 0000000000000000
+[   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000000000000002c a7 0000000000000000
+[   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900000000131c9c0 t3 fffffffffffffffa
+[   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 0000000000000004 t7 9000000001912d58
+[   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 0000000000000028 s0 9000000001d512f0
+[   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019fc410 s4 9000000001d4b488
+[   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 0000000000000078 s8 9000000001d4b450
+[   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
+[   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
+[   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+[   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
+[   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+[   54.207838]  ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
+[   54.242503] ESTAT: 00000800 [INT] (IS=11 ECode=0 EsubCode=0)
+[   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
+[   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   54.430170] Stack : 0072617764726148 0000000000000000 9000000000223504 90000001000a0000
+[   54.472308]         9000000100073a90 9000000100073a98 0000000000000000 9000000100073bd8
+[   54.514413]         9000000100073bd0 9000000100073bd0 9000000100073a00 0000000000000001
+[   54.556018]         0000000000000001 9000000100073a98 99828271f24e961a 90000001002810c0
+[   54.596924]         0000000000000001 0000000000010003 0000000000000000 0000000000000001
+[   54.637115]         ffff8000337cdb80 0000000000000001 0000000006360000 900000000131c9c0
+[   54.677049]         0000000000000000 0000000000000000 90000000017b4c98 9000000001912000
+[   54.716394]         9000000001912f68 9000000001913000 9000000001912f70 00000000000002b0
+[   54.754880]         90000000014a8840 0000000000000000 900000000022351c 0000000000000000
+[   54.792372]         00000000000002b0 000000000000000c 0000000000000000 0000000000071c1c
+[   54.829302]         ...
+[   54.859163] Call Trace:
+[   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
+[   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
+[   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
+[   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
+[   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
+[   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
+[   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
+[   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
+[   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x60
+[   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x160
+[   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
+[   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
+[   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x40
+[   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
+[   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
+[   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
+[   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
+[   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
+[   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
+[   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
+[   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
+[   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
+[   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1c0
+[   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
+[   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
+[   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
+[   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
+[   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
+[   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
+[   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
+[   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
+[   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
+[   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
+[   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
+[   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
+[   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
+[   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
+[   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
+[   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
 
-/tmp/ccPC1ODs.s: Assembler messages:
-/tmp/ccPC1ODs.s:8: Error: selected processor does not support `bti c'
+Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one check
+period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiffies
+is only updated in the timer interrupt, so when kgdb_cpu_enter() begins
+to run there may already be nearly one rcu check period after jiffies.
+Since all interrupts are disabled during kgdb_cpu_enter(), jiffies will
+not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stall
+maybe already gets timeout.
 
-Fix this issue by replacing `bti c` with `hint 34`, which is compatible
-for the older compiler.
+We can set rcu_state.jiffies_stall to two rcu check periods later, e.g.
+jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset()
+to avoid this problem. But this isn't a complete solution because kgdb
+may take a very long time in irq disabled context.
 
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
+Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
+solve all kinds of problems [1]. But this causes a new problem because
+updating jiffies is not NMI safe while rcu_cpu_stall_reset() may be used
+in NMI context.
+
+So we don't update the global jiffies, but only add the time 'delta' to
+jiffies locally at the beginning of rcu_cpu_stall_reset() which has the
+same effect.
+
+[1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loongson.cn/T/#t
+
+Cc: stable@vger.kernel.org
+Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
- samples/ftrace/ftrace-direct-modify.c       | 4 ++--
- samples/ftrace/ftrace-direct-multi-modify.c | 4 ++--
- samples/ftrace/ftrace-direct-multi.c        | 2 +-
- samples/ftrace/ftrace-direct-too.c          | 2 +-
- samples/ftrace/ftrace-direct.c              | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+V2: Use NMI safe functions.
 
-diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
-index e5ed08098ff3..e2a6a69352df 100644
---- a/samples/ftrace/ftrace-direct-modify.c
-+++ b/samples/ftrace/ftrace-direct-modify.c
-@@ -105,7 +105,7 @@ asm (
- "	.type		my_tramp1, @function\n"
- "	.globl		my_tramp1\n"
- "   my_tramp1:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #16\n"
- "	stp	x9, x30, [sp]\n"
- "	bl	my_direct_func1\n"
-@@ -117,7 +117,7 @@ asm (
- "	.type		my_tramp2, @function\n"
- "	.globl		my_tramp2\n"
- "   my_tramp2:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #16\n"
- "	stp	x9, x30, [sp]\n"
- "	bl	my_direct_func2\n"
-diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
-index 292cff2b3f5d..2e349834d63c 100644
---- a/samples/ftrace/ftrace-direct-multi-modify.c
-+++ b/samples/ftrace/ftrace-direct-multi-modify.c
-@@ -112,7 +112,7 @@ asm (
- "	.type		my_tramp1, @function\n"
- "	.globl		my_tramp1\n"
- "   my_tramp1:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #32\n"
- "	stp	x9, x30, [sp]\n"
- "	str	x0, [sp, #16]\n"
-@@ -127,7 +127,7 @@ asm (
- "	.type		my_tramp2, @function\n"
- "	.globl		my_tramp2\n"
- "   my_tramp2:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #32\n"
- "	stp	x9, x30, [sp]\n"
- "	str	x0, [sp, #16]\n"
-diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
-index b4391e08c913..9243dbfe4d0c 100644
---- a/samples/ftrace/ftrace-direct-multi.c
-+++ b/samples/ftrace/ftrace-direct-multi.c
-@@ -75,7 +75,7 @@ asm (
- "	.type		my_tramp, @function\n"
- "	.globl		my_tramp\n"
- "   my_tramp:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #32\n"
- "	stp	x9, x30, [sp]\n"
- "	str	x0, [sp, #16]\n"
-diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
-index e9804c5307c0..e39c3563ae4e 100644
---- a/samples/ftrace/ftrace-direct-too.c
-+++ b/samples/ftrace/ftrace-direct-too.c
-@@ -81,7 +81,7 @@ asm (
- "	.type		my_tramp, @function\n"
- "	.globl		my_tramp\n"
- "   my_tramp:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #48\n"
- "	stp	x9, x30, [sp]\n"
- "	stp	x0, x1, [sp, #16]\n"
-diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
-index 20f4a7caa810..32c477da1e9a 100644
---- a/samples/ftrace/ftrace-direct.c
-+++ b/samples/ftrace/ftrace-direct.c
-@@ -72,7 +72,7 @@ asm (
- "	.type		my_tramp, @function\n"
- "	.globl		my_tramp\n"
- "   my_tramp:"
--"	bti	c\n"
-+"	hint	34\n" // bti	c
- "	sub	sp, sp, #32\n"
- "	stp	x9, x30, [sp]\n"
- "	str	x0, [sp, #16]\n"
+ kernel/rcu/tree_stall.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..605a774241c8 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -153,8 +153,14 @@ static void panic_on_rcu_stall(void)
+  */
+ void rcu_cpu_stall_reset(void)
+ {
++	u64 curr, last, delta;
++
++	curr = ktime_get_mono_fast_ns();
++	last = ktime_get_seconds() * NSEC_PER_SEC;
++	delta = nsecs_to_jiffies(curr - last);
++
+ 	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + rcu_jiffies_till_stall_check());
++		   jiffies + delta + rcu_jiffies_till_stall_check());
+ }
+ 
+ //////////////////////////////////////////////////////////////////////////////
 -- 
-2.25.1
+2.39.3
 
