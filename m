@@ -2,136 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D2F9781D30
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE389781D2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 11:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjHTJgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 05:36:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S230018AbjHTJgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 05:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbjHTJgv (ORCPT
+        with ESMTP id S229863AbjHTJgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 05:36:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C1D12A;
-        Sun, 20 Aug 2023 02:32:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC5CE60EBF;
-        Sun, 20 Aug 2023 09:32:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCE5AC433C7;
-        Sun, 20 Aug 2023 09:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692523942;
-        bh=Mwxqh7D4alt9PiyEKqBot7zzqgVRjTW256SDQGY9m24=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YH/yGIp8OPCeVT9dHAMrD3r3oD6SzcmhDUYd0+b6iM3Eo8EmzOmUNqMzNnB4qqbz5
-         1QHukdJCXo9mygdlSLTAgvRobJyWdZJZ/HRjazvu/1GEDJf+/RqRWQK4eQBMwxl/Zh
-         tt7FjMdIIuJzCiiEByVs0Hiwml6eSukVltaKjXxsIaXkRKRZhRFv/D74yWZvem5lHd
-         pZAkYM3Qq/Frtw5icpuhW2KOZ39mn19O5CaTDiyCi2ZHzQHodq72LGg+m9DNljrhPd
-         VB8Kxigq/oLK/19OOoYjg4C86JL/xLVzQxQuYPxRZUT6X/6+SwZYsSG+3/sraTSvvy
-         JqjyQf4kSQ09g==
-Date:   Sun, 20 Aug 2023 18:32:18 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-Message-Id: <20230820183218.bf0b04be3c0ccac5e7b2a587@kernel.org>
-In-Reply-To: <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
-        <20230818213705.b4f5e18b392c4837068cba6f@kernel.org>
-        <20230818114141.2a3a75ee@gandalf.local.home>
-        <4853240.31r3eYUQgx@pwmachine>
-        <20230818142033.1d7685e9@gandalf.local.home>
-        <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
-        <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 20 Aug 2023 05:36:43 -0400
+Received: from mail.mutex.one (mail.mutex.one [62.77.152.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A23E01AC
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 02:32:58 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.mutex.one (Postfix) with ESMTP id 8074516C004A;
+        Sun, 20 Aug 2023 12:32:56 +0300 (EEST)
+X-Virus-Scanned: Debian amavisd-new at mail.mutex.one
+Received: from mail.mutex.one ([127.0.0.1])
+        by localhost (mail.mutex.one [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id zVhDgEjmY7wN; Sun, 20 Aug 2023 12:32:55 +0300 (EEST)
+From:   Marian Postevca <posteuca@mutex.one>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mutex.one; s=default;
+        t=1692523975; bh=kDnTcqSTQdlLHPpQOf5RRj+TVFls2LmJQQQrfzPriCk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=fViGGRzXCd7v5DsOstN+pqTrYAkAg0Mae2L6QgAcM8zUeelBB64Kq3LLNCcKY4Wug
+         0J76mfBHwpyBXU44E7hTzxipE58kkhGkXBYd3SrC6pbpx3UQvB2QJ9VjBK9cWkVxAs
+         469J+R8h41J5X1jKqxUaS3ayCd0HVWWhGc3EboUA=
+To:     Mark Brown <broonie@kernel.org>
+Cc:     =?utf-8?B?5rKI5LiA6LaF?= <zhuning0077@gmail.com>,
+        yangxiaohua <yangxiaohua@everest-semi.com>,
+        Zhu Ning <zhuning@everest-semi.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/4] ASoC: amd: acp: Add machine driver that enables
+ sound for systems with a ES8336 codec
+In-Reply-To: <8cddbe1c-20d7-4b8f-ba02-f86bbb5a54c5@sirena.org.uk>
+References: <141a3320-ff65-459f-9d00-c8bed691dcfc@sirena.org.uk>
+ <87lejpwxzf.fsf@mutex.one> <ZBr9rJn50ovG1w9W@sirena.org.uk>
+ <87ttycjyw3.fsf@mutex.one> <ZBty1CdPaWm0IcRi@sirena.org.uk>
+ <87r0t9uc08.fsf@mutex.one> <ZCRCqJ7oG6oefo9g@sirena.org.uk>
+ <87zg2pxtog.fsf@mutex.one>
+ <d2be9183-87fd-4cc4-a239-9401b5b88364@sirena.org.uk>
+ <87o7j5b9bd.fsf@mutex.one>
+ <8cddbe1c-20d7-4b8f-ba02-f86bbb5a54c5@sirena.org.uk>
+Date:   Sun, 20 Aug 2023 12:32:52 +0300
+Message-ID: <878ra683ej.fsf@mutex.one>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Aug 2023 08:22:50 -0700
-Song Liu <song@kernel.org> wrote:
 
-> On Fri, Aug 18, 2023 at 6:16 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Fri, 18 Aug 2023 14:20:33 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > > On Fri, 18 Aug 2023 20:13:43 +0200
-> > > Francis Laniel <flaniel@linux.microsoft.com> wrote:
-> > >
-> > > > Hi.
-> > > >
-> > > > Le vendredi 18 août 2023, 17:41:41 CEST Steven Rostedt a écrit :
-> > > > > On Fri, 18 Aug 2023 21:37:05 +0900
-> > > > >
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > > > > > That's why perf probe uses the offset from '_text'. Normal KASLR will just
-> > > > > > moves all symbols. (Finer one will move all symbols randomely)
-> > > > > > This should not need to access /proc/kallsyms but vmlinux or SystemMap.
-> > > > >
-> > > > > We could just pass in: "_text+offset" too.
-> > > >
-> > > > So, the idea would be to change the existing create_local_trace_kprobe() and
-> > > > above functions to indicate the user's offset is to be used against _text and
-> > > > not address?
-> > >
-> > > No, not to modify that function, but if you know the offset from _text (via
-> > > the vmlinux), you can easily calculate it for that function.
-> >
-> > Note that the kprobe-event PMU interface itself allows you to specify
-> > FUNC+OFFSET style;
-> >
-> > https://lore.kernel.org/lkml/20171206224518.3598254-5-songliubraving@fb.com/
-> >
-> > perf_event_attr::kprobe_func = "_text";
-> > perf_event_attr::probe_offset = OFFSET;
-> >
-> > Then, it should be able to specify the correct one. Of course you can use
-> > other unique symbols around the target symbol.
-> 
-> Trying to catch up with the thread.
+Mark Brown <broonie@kernel.org> writes:
 
-Thanks for your reply :)
+> You'd need to pull the relevant supplies out of DAPM and handle them in
+> the CODEC suspend/resume callback.
 
-> 
-> Besides the CAP_* issue, we can do this with
-> 
-> perf_event_attr::kprobe_func = NULL;
-> perf_event_attr::kprobe_addr = address;
+Can you please suggest an approach that would be acceptable to you?
+In the original patch series I sent, you didn't agree to the approach
+to disable the jack detection in the machine driver suspend callback
+and re-enable it in the resume callback. You suggested to do it in the
+CODEC suspend/resume callbacks. As I explained previously (and Zhu Ning
+confirmed in his email) this wouldn't work, since as long as the jack
+detection is enabled, the CODEC suspend/resume callbacks do not get
+called.
+The second option (which you also do not seem to agree) is to enable
+idle_bias_on.
 
-As I pointed, you don't need actual address, instead, you can specify the
-probe point via "unique symbol" + offset. 
-
-> 
-> Then for the CAP_*, I think we should give CAP_PERFMON access to
-> /proc/kallsyms. Would this work?
-
-For the "unique symbol" + offset, you don't need the kallsyms, but need to
-access the System.map or vmlinux image. In this case, we don't need to expand
-the CAP_PERFMON capabilities.
-
-Thank you,
-
-> 
-> Thanks,
-> Song
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+So I don't know how to continue with this and merge this new machine
+driver.
