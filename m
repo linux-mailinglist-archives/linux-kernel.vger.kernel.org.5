@@ -2,107 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAE7E781E54
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1CB781E15
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 16:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbjHTOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 10:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        id S230449AbjHTOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 10:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbjHTOh1 (ORCPT
+        with ESMTP id S231138AbjHTOTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 10:37:27 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24E273B964D
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 12:17:23 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-121-162.bstnma.fios.verizon.net [173.48.121.162])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 37JJGcCr017522
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Aug 2023 15:16:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1692472605; bh=6N9EMQdf0dg3QG8w35gHzeeRG5O6PiKxY5DKUYynzzw=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=Atxp7UFw7l/+ynDLo45X7aYFou+u6wFBCEsfhVVnm6OKRuP0uyYyQPPRclCZsptk6
-         Uo2Ex0I4P4e85RQ56V6hxZ8xXHNMoQKrzby43drHZHyQED1WxgDAMPaprvKIDFTZxt
-         qtxhJ1TI/0gz3qP655QzThWln9g9002vhBgBmgm9hbeAb5OuLLLMlLls+bR3jmu8xL
-         8vWJziOlUgCrrHnCvwTqyjbFEVue5jbKrge+JN4nv9hekFBIvNRazZeNcHGXkE52QE
-         L2nNHprUAHFeGB8QLrW4c96SnWN8yaAsosZ5KSMPfYQK+5etVT63CHfCajI0c1477I
-         PcC6DSCHnArzA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id BCAAD15C0292; Sat, 19 Aug 2023 15:16:38 -0400 (EDT)
-Date:   Sat, 19 Aug 2023 15:16:38 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        syzbot <syzbot+6ec38f7a8db3b3fb1002@syzkaller.appspotmail.com>,
-        anton@tuxera.com, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-ntfs-dev@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [ntfs?] WARNING in do_open_execat
-Message-ID: <20230819191638.GJ3464136@mit.edu>
-References: <000000000000c74d44060334d476@google.com>
- <87o7j471v8.fsf@email.froward.int.ebiederm.org>
- <202308181030.0DA3FD14@keescook>
- <20230818191239.3cprv2wncyyy5yxj@f>
+        Sun, 20 Aug 2023 10:19:18 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FE7DE;
+        Sun, 20 Aug 2023 07:14:26 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a43cbb432aso1810019b6e.3;
+        Sun, 20 Aug 2023 07:14:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692540866; x=1693145666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UwwTQQ1AlxkkGA94reFOkINLaB8FDvWBNmcU/1DHybQ=;
+        b=nJSc/7pdskLX6pheeigBl0BMJ6/Hi1umU6OcMZhqIKolk2ymBTqZtk7fawnua7fe4j
+         ATRHSuVgdH5wnYol7phln5Dr2ZYpNK7G9XygFqAlvhaX+t91sxyqdfkZ6hoAeXy6gN4j
+         rNxKTja6EveeDQECkUJx6zVaJSiFpwSqn89VD2fWEKFVfQgvZ0jTpXWiCFhR9k2V401k
+         E8dDFFKhBUPSOoXWRC4bULthciYLamrKJIROkhjgolGaNR+DEJSyCqkoaku9afqACw4K
+         59L63VrQpMKExJZpaB4gQrHmC3WgilJEyANqkC6B2Cn/8auG5yQhFXQdwD1dWzqgZJ1D
+         rxBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692540866; x=1693145666;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UwwTQQ1AlxkkGA94reFOkINLaB8FDvWBNmcU/1DHybQ=;
+        b=GqDEq4UstofU85tBXZjH1j5amDO5kJ2ZhYgdf4Bw5lxWmKeEa/I/PFyTJ3r1zvkqCt
+         6N/mk9+pG9ZLhB8jrZw3IoJgsmc1yL/V+gCGL3YBxaQcdR1tkWhIvwCoKOir2ow4GWME
+         zGaMjRdcWsS0QEMESwwiTzfh/nZmx2LTHPJf+IbYQ279H4PDLNd1owPEBQ/WUhO5z1D1
+         3AHnqNv3kJ2CbDiMeWp6qfNR1z05sHksGS7lR/vvdkPr5JaSWVlvx3iDkKAic9CEJUBL
+         mrfEXwuHnM047HHQVZsfINHEuDNnfupRlsrwEW/rwHor4QU1Q/3epHoKyxSCY6lt0kCE
+         8QQw==
+X-Gm-Message-State: AOJu0YxzHhNwl8Viq5qibcmG58ws9zDty6lpnnB/p7/jnM+5v+W/xM9B
+        uvFLNV+YNyGGL3cdlE3q42k=
+X-Google-Smtp-Source: AGHT+IEWD5uUsCdUw3am+cnR1SHD7U395wgIwdpZJnvdZTrxJk/ppoKIRamYAF971alVbaBebj3U4g==
+X-Received: by 2002:a54:4e84:0:b0:3a7:c13:c8d1 with SMTP id c4-20020a544e84000000b003a70c13c8d1mr5398645oiy.17.1692540865573;
+        Sun, 20 Aug 2023 07:14:25 -0700 (PDT)
+Received: from Osmten.. ([103.84.150.75])
+        by smtp.gmail.com with ESMTPSA id n8-20020aa78a48000000b0068859ce216csm4520337pfa.0.2023.08.20.07.14.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 07:14:25 -0700 (PDT)
+From:   Osama Muhammad <osmtendev@gmail.com>
+To:     shuah@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Osama Muhammad <osmtendev@gmail.com>
+Subject: [PATCH v2] selftests: prctl: Add prctl test for PR_GET_NAME
+Date:   Sun, 20 Aug 2023 19:13:54 +0500
+Message-Id: <20230820141354.29687-1-osmtendev@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818191239.3cprv2wncyyy5yxj@f>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 09:12:39PM +0200, Mateusz Guzik wrote:
-> 
-> The ntfs image used here is intentionally corrupted and the inode at
-> hand has a mode of 777 (as in type not specified).
-> 
-> Then the type check in may_open():
->         switch (inode->i_mode & S_IFMT) {
-> 
-> fails to match anything.
-> ...
-> 
-> Do other filesystems have provisions to prevent inodes like this from
-> getting here?
+This patch covers the testing of PR_GET_NAME by
+reading it's value from proc/self/task/pid/comm
+and matching it with the value returned by PR_GET_NAME.
+If the values are matched then it's successful, otherwise
+it fails.
 
-Well, what ext4 does is that we do a bunch of basic validity checks in
-ext4_iget(), and if the inode is bad (for example the type is not
-specified), the following gets executed:
+changes since v1:
+	- Handled fscanf,fopen error checking.
+	- Defined MAX_PATH_LEN.
 
-	} else {
-		ret = -EFSCORRUPTED;
-		ext4_error_inode(inode, function, line, 0,
-				 "iget: bogus i_mode (%o)", inode->i_mode);
-		goto bad_inode;
-       ...
+Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
+---
+ .../selftests/prctl/set-process-name.c        | 32 +++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-bad_inode:
-	brelse(iloc.bh);
-	iget_failed(inode);
-	return ERR_PTR(ret);
-       
-iget_failed() takes the inode under construction (returned by
-iget_locked), and marks it as a bad/"dead" inode.  So subsequent
-attempts to do anything with the inode, including opening it, will
-fail at the VFS level, and you never get to the file system's open
-function.
+diff --git a/tools/testing/selftests/prctl/set-process-name.c b/tools/testing/selftests/prctl/set-process-name.c
+index 3bc5e0e09..562f707ba 100644
+--- a/tools/testing/selftests/prctl/set-process-name.c
++++ b/tools/testing/selftests/prctl/set-process-name.c
+@@ -12,6 +12,7 @@
+ #define CHANGE_NAME "changename"
+ #define EMPTY_NAME ""
+ #define TASK_COMM_LEN 16
++#define MAX_PATH_LEN 50
+ 
+ int set_name(char *name)
+ {
+@@ -47,6 +48,35 @@ int check_null_pointer(char *check_name)
+ 	return res;
+ }
+ 
++int check_name(void)
++{
++
++	int pid;
++
++	pid = getpid();
++	FILE *fptr = NULL;
++	char path[MAX_PATH_LEN] = {};
++	char name[TASK_COMM_LEN] = {};
++	char output[TASK_COMM_LEN] = {};
++	int j;
++
++	j = snprintf(path, MAX_PATH_LEN, "/proc/self/task/%d/comm", pid);
++	fptr = fopen(path, "r");
++	if (!fptr)
++		return -EIO;
++
++	fscanf(fptr, "%s", output);
++	if (ferror(fptr))
++		return -EIO;
++
++	int res = prctl(PR_GET_NAME, name, NULL, NULL, NULL);
++
++	if (res < 0)
++		return -errno;
++
++	return !strcmp(output, name);
++}
++
+ TEST(rename_process) {
+ 
+ 	EXPECT_GE(set_name(CHANGE_NAME), 0);
+@@ -57,6 +87,8 @@ TEST(rename_process) {
+ 
+ 	EXPECT_GE(set_name(CHANGE_NAME), 0);
+ 	EXPECT_LT(check_null_pointer(CHANGE_NAME), 0);
++
++	EXPECT_TRUE(check_name());
+ }
+ 
+ TEST_HARNESS_MAIN
+-- 
+2.34.1
 
-The ext4_error_inode() function is reponsible for logging the error,
-and if userspace is using fsnotify and are subscribed FS_ERROR,
-notifying user space that the file system is corrupted.  Depending on
-the file system settings, we may also remount the file system
-read-only, or force a panic to reboot the system (so that a failover
-backup server can take over), or just log the message and continuing.
-
-       	      	       	      	      	      - Ted
