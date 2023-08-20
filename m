@@ -2,87 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41323781ED3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 18:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D671781ED8
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 18:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230449AbjHTQ0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 12:26:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        id S231429AbjHTQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 12:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjHTQ0W (ORCPT
+        with ESMTP id S230075AbjHTQfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 12:26:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF31211D
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 09:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692548687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTIIx7UvbdXxFhLIfELCeFcfxNRehzpT464zSPyQ1Nc=;
-        b=dsiNBXUBOjKDeCbelycL8TBv7gZX8xSqp57aF+AvTiX3rIQCu6qt5jeBSGTcRGk2wWlmeJ
-        /xBcfo0diUL/pz9CmGBDyPvxRhGdhZDoUBnexdX/CrQZZfWaZ4ieBfk9WInoITTFZ0uvv1
-        FhhX4h6Filr/NMd1du2ojV57NaTU0KA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-569-KieFKDpHPWS2QniEUA84iw-1; Sun, 20 Aug 2023 12:24:41 -0400
-X-MC-Unique: KieFKDpHPWS2QniEUA84iw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A8BFE833948;
-        Sun, 20 Aug 2023 16:24:40 +0000 (UTC)
-Received: from [10.22.16.56] (unknown [10.22.16.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8C7D492C13;
-        Sun, 20 Aug 2023 16:24:33 +0000 (UTC)
-Message-ID: <883a5a4f-b34e-689c-2fbd-7bf03db532eb@redhat.com>
-Date:   Sun, 20 Aug 2023 12:24:33 -0400
+        Sun, 20 Aug 2023 12:35:50 -0400
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E83C1726
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 09:31:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1692549102; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=WoM3hyHgKBqY6c7Xi6XuIfBRYLhXnKHc6krHfYM9/Qo2y5esgyhOhplD3D0t/mE8mUK6882Ydy7KEq+z+1NhLoUEK6HrtGHN72hT62Lpzdk4j6HIz2thLb4sypgyvf2iCuYmSrowQcb9/1KTtDk+j/VXXuNlnK/BKQye3BMDYwE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1692549102; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=wCmvHhpH1QHYtE4e51jTIyGgq3B1rCQqxD6tC3RgGPY=; 
+        b=eHxPx9qL39haNaY15FOS30bIk3+2ynlyc4D2uqyuowzrVvVqFlEeRX60qDTp1qCDP6bJeaswPa2IIJmo+LAk/j2x9oKVMjmXx6zpA6CKMjfIJlwNgkze+zPwXdwB3EZ2QzPoC0+5jIVZrsHCm2b0kCP80XVvPDFkeO34tsCY8NE=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1692549102;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=From:From:To:To:Cc:Cc:Message-ID:Subject:Subject:Date:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type:Message-Id:Reply-To;
+        bh=wCmvHhpH1QHYtE4e51jTIyGgq3B1rCQqxD6tC3RgGPY=;
+        b=WbK7eOXB9lEIgsDRB3qGJoRFIVeOwT36QZeeqo/ulip4HmvIH3O1sVKVcbfkUDsC
+        mlyTfEsXsz9SceTI/wklBwigvZv1zIbkV1YGrXidxhM6noQbQ/XK6YSVQxVi1Obt96v
+        ZqCUIy0IDJaLSecU2H2BuTxYo11xbkcTr9BfpDTY=
+Received: from kampyooter.. (110.226.17.164 [110.226.17.164]) by mx.zoho.in
+        with SMTPS id 1692549100420336.8832797080445; Sun, 20 Aug 2023 22:01:40 +0530 (IST)
+From:   Siddh Raman Pant <code@siddh.me>
+To:     syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
+Message-ID: <20230820163131.205263-1-code@siddh.me>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
+Date:   Sun, 20 Aug 2023 22:01:31 +0530
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <000000000000672c810601db3e84@google.com>
+References: <000000000000672c810601db3e84@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration for
- 5.10.y
-Content-Language: en-US
-To:     Qais Yousef <qyousef@layalina.io>, stable@vger.kernel.org
-Cc:     Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230820152144.517461-1-qyousef@layalina.io>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230820152144.517461-1-qyousef@layalina.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
+Content-Type: text/plain; charset=utf8
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Cannot reproduce with the repro locally, check on upstream again.
 
-On 8/20/23 11:21, Qais Yousef wrote:
-> This is a backport of the series that fixes the way deadline bandwidth
-> restoration is done which is causing noticeable delay on resume path. It also
-> converts the cpuset lock back into a mutex which some users on Android too.
-> I lack the details but AFAIU the read/write semaphore was slower on high
-> contention.
-
-Note that it was a percpu rwsem before this patch series. It was not a 
-regular rwsem. Percpu rwsem isn't designed to handle high write lock 
-contention. A regular rwsem should be similar to mutex in performance 
-when handling high write lock contention.
-
-Cheers,
-Longman
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
 
