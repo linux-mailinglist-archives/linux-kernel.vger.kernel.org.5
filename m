@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC17781C26
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA551781C2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 04:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjHTCoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 22:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
+        id S229732AbjHTCpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 22:45:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjHTCnw (ORCPT
+        with ESMTP id S229781AbjHTCpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 22:43:52 -0400
+        Sat, 19 Aug 2023 22:45:12 -0400
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA5A847E8;
-        Sat, 19 Aug 2023 18:45:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3CB937CA;
+        Sat, 19 Aug 2023 19:04:29 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RSz2y0qfDz4f3mJX;
-        Sun, 20 Aug 2023 09:45:46 +0800 (CST)
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RSzSR0BNfz4f3nwr;
+        Sun, 20 Aug 2023 10:04:23 +0800 (CST)
 Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgDHoqVMcOFkeueBBA--.29859S3;
-        Sun, 20 Aug 2023 09:45:49 +0800 (CST)
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qindOFkTviCBA--.17337S3;
+        Sun, 20 Aug 2023 10:04:24 +0800 (CST)
 Subject: Re: [PATCH -next v2 3/7] md: delay choosing sync direction to
  md_start_sync()
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, linux-raid@vger.kernel.org,
+To:     Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, linux-raid@vger.kernel.org,
         linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
         yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
 References: <20230815030957.509535-1-yukuai1@huaweicloud.com>
  <20230815030957.509535-4-yukuai1@huaweicloud.com>
- <bb11d6ca-978a-8e1d-e721-d9d84c9dc5e3@huaweicloud.com>
- <CAPhsuW65Hxq=+D6M6zV8n+k4FarTHui=pSs2YPNKs9MYBD4MHA@mail.gmail.com>
- <bd0a6f0f-2766-deb9-bbfd-5310d3f18e12@huaweicloud.com>
- <CAPhsuW5a6+x6k3x6jvz7L5oVbHCd-EdmfXc4E4v5i0kCs6WPkw@mail.gmail.com>
+ <CALTww2-LzW76_=vH+TKjZGzChrsz_JJKJxh1-+SCNZ9NHv0N2A@mail.gmail.com>
 From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <0b154fb7-f577-616b-3d39-25c199897e61@huaweicloud.com>
-Date:   Sun, 20 Aug 2023 09:45:48 +0800
+Message-ID: <937878d9-7c43-a3e3-9208-d3ff1bb3df20@huaweicloud.com>
+Date:   Sun, 20 Aug 2023 10:04:23 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW5a6+x6k3x6jvz7L5oVbHCd-EdmfXc4E4v5i0kCs6WPkw@mail.gmail.com>
+In-Reply-To: <CALTww2-LzW76_=vH+TKjZGzChrsz_JJKJxh1-+SCNZ9NHv0N2A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHoqVMcOFkeueBBA--.29859S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrWfJryrurWDWw47AFW5KFg_yoW5CrWrpa
-        yxJFn8JrWDJFy3Ar42q3Z0qFyqgr1jqrWDXF43W34fJrnIvF1fGF1UWr1UGFWkJ3WkCa18
-        Zw48JFZxAry5KFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: gCh0CgBH1qindOFkTviCBA--.17337S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF4fuF4kuryDKw45XF1rXrb_yoW5XF15pa
+        y2qFn8Kw4DGr4xZFZF93Z7Wa48t3yUXF43Jr1fXF98A3s0yFWxuF1xG3yDuFWv9r97W3Wj
+        vFn0gFZxZFy5CaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
         rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
+        r21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
         UUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-CFilter-Loop: Reflected
@@ -72,95 +69,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-在 2023/08/18 5:53, Song Liu 写道:
-> On Tue, Aug 15, 2023 at 6:07 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+在 2023/08/16 14:38, Xiao Ni 写道:
+> On Tue, Aug 15, 2023 at 11:13 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
 >>
->> Hi,
+>> From: Yu Kuai <yukuai3@huawei.com>
 >>
->> 在 2023/08/15 23:54, Song Liu 写道:
->>> On Tue, Aug 15, 2023 at 2:00 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>> [...]
->>>>> +
->>>>> +not_running:
->>>>> +     clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
->>>>> +     clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
->>>>> +     clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
->>>>> +     clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
->>>>> +     clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
->>>>> +     mddev_unlock(mddev);
->>>>> +
->>>>> +     wake_up(&resync_wait);
->>>>> +     if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
->>>>> +         mddev->sysfs_action)
->>>>> +             sysfs_notify_dirent_safe(mddev->sysfs_action);
->>>>>     }
->>>>>
->>>>>     /*
->>>>> @@ -9379,7 +9402,6 @@ void md_check_recovery(struct mddev *mddev)
->>>>>                 return;
->>>>>
->>>>>         if (mddev_trylock(mddev)) {
->>>>> -             int spares = 0;
->>>>>                 bool try_set_sync = mddev->safemode != 0;
->>>>>
->>>>>                 if (!mddev->external && mddev->safemode == 1)
->>>>> @@ -9467,29 +9489,11 @@ void md_check_recovery(struct mddev *mddev)
->>>>>                 clear_bit(MD_RECOVERY_DONE, &mddev->recovery);
->>>>>
->>>>>                 if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
->>>>> -                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
->>>>> -                     goto not_running;
->>>>> -             if (!md_choose_sync_direction(mddev, &spares))
->>>>> -                     goto not_running;
->>>>> -             if (mddev->pers->sync_request) {
->>>>> -                     if (spares) {
->>>>> -                             /* We are adding a device or devices to an array
->>>>> -                              * which has the bitmap stored on all devices.
->>>>> -                              * So make sure all bitmap pages get written
->>>>> -                              */
->>>>> -                             md_bitmap_write_all(mddev->bitmap);
->>>>> -                     }
->>>>> +                 test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->>>>
->>>> Sorry that I made a mistake here while rebasing v2, here should be
->>>>
->>>> !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)
->>>>
->>>> With this fixed, there are no new regression for mdadm tests using loop
->>>> devicein my VM.
->>>
->>>                   if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) ||
->>>                       !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->>>                           queue_work(md_misc_wq, &mddev->sync_work);
->>>                   } else {
->>>
->>> This doesn't look right. Should we do
->>>
->>>                   if (test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recovery) &&
->>>                       !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
->>>                           queue_work(md_misc_wq, &mddev->sync_work);
->>>                   } else {
->>>
->>> instead?
->>>
+>> Before this patch, for read-write array:
 >>
->> Yes you're right, this is exactly what I did in v1, sorry that I keep
->> making mistake while rebasing.
+>> 1) md_check_recover() found that something need to be done, and it'll
+>>     try to grab 'reconfig_mutex'. The case that md_check_recover() need
+>>     to do something:
+>>     - array is not suspend;
+>>     - super_block need to be updated;
+>>     - 'MD_RECOVERY_NEEDED' or ''MD_RECOVERY_DONE' is set;
+>>     - unusual case related to safemode;
+>>
+>> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>>     md_check_recover() will try to choose a sync direction, and then
+>>     queue a work md_start_sync().
+>>
+>> 3) md_start_sync() register sync_thread;
+>>
+>> After this patch,
+>>
+>> 1) is the same;
+>> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>>     queue a work md_start_sync() directly;
+>> 3) md_start_sync() will try to choose a sync direction, and then
+>>     register sync_thread();
+>>
+>> Because 'MD_RECOVERY_RUNNING' is cleared when sync_thread is done, 2)
+>> and 3) is always ran in serial and they can never concurrent, this
+>> change should not introduce any behavior change for now.
+>>
+>> Also fix a problem that md_start_sync() can clear 'MD_RECOVERY_RUNNING'
+>> without protection in error path, which might affect the logical in
+>> md_check_recovery().
+>>
+>> The advantage to change this is that array reconfiguration is
+>> independent from daemon now, and it'll be much easier to synchronize it
+>> with io, consider that io may rely on daemon thread to be done.
 > 
-> Please fix this, address comments from other reviews, and resend the
-> patches. Also, there are some typos in the commit logs, please also fix them.
+> Hi Kuai
 > 
+> What's the meaning of "array reconfiguration" here? "mdadm -f/-r/-a"
+> something like this, right?. Because before and after this patch, only
+> one sync thread can be running, so If we don't do this change, are
+> there bugs or performance problems?
 
-Of course, and sorry for the dealy, I was ill and rested at home for a
-few days.
+As we discussed([1]), and explained in patch 0, the purpose of this
+change is to prepare to synchronize io with array reconfiguration(add
+or remove rdev from array, for example, modify
+conf->mirrors[].rdev/replacement for raid10).
+
+Without this change, normal io can rely on daemon thread, while daemone
+thread can change array configuration. raid1/raid10 record such io as
+'io_queued', and can use freeze_array() to do synchronization in daemon
+thread. However, other personalities have to implement such logical as
+well, and I found it quite complicated, at least for raid456.
+
+[1] 
+https://lore.kernel.org/all/cb390b39-1b1e-04e1-55ad-2ff8afc47e1b@huawei.com/
 
 Thanks,
 Kuai
 
-> Unfortunately, we won't ship this (and the two other big sets) in 6.6.
 > 
-> Thanks,
-> Song
-> .
+> If it's only a patch that wants to make md_check_recovery more clearer
+> and easier, I'm good with this idea too.
 > 
 
