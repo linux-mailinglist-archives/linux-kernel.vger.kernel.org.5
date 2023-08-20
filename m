@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155B3782012
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED9D782013
 	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 23:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231985AbjHTVIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 17:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41464 "EHLO
+        id S231945AbjHTVIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 17:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjHTVIS (ORCPT
+        with ESMTP id S231614AbjHTVIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Aug 2023 17:08:18 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865994230
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:05 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3198d2745feso2389177f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:05 -0700 (PDT)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB32346BF
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:06 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31c3726cc45so614633f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 14:08:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692565684; x=1693170484;
+        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692565685; x=1693170485;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=c6qFJPzVrYvXdJFLmkCCK0atIYbjN/54u4wyc75/JBA=;
-        b=HgG+fO1k7dm+jpnKvEM5X5dUvf//duLry6vdxj39GAjwCvPChkZJ8V6NrPGsycssq6
-         WBi4ahdeVIDEBq2LPdZCZKF8GX++0qJ/OwIiqTxyaKrRo9r4fCKc6TP36YZkImJBVoEJ
-         dJz1P3os9ETaqjObgP/XD7xDMyZrScTkZQVQauNzJ8oDELiqWLY07ADiEQ46vCr1fb87
-         L/vQ0U8ue4POOVJwDdSSXO/LxX5frec8MHiD8zyKEak7BWWiBFy3X+dKxCBAI8TQCiRl
-         DrdistocMSk3YQbjmIpESR5eLSXLmon5CDzSxue3x4M0klKy2wzg+Yp17lhADIZVFX8u
-         X32w==
+        bh=jIPeq0k+JV1/cJi07cu7HqrUCm18GlZjB51v4GbQCSk=;
+        b=oitvAfMTAL2TAzCpYa9n1HXigQmMES6+P4QDHTX71Tt0ktjQnBddDi2qMOk+f7RKtp
+         ftHLz7jUn22Q0Qi2lP5zE50K8EwsYA/iu/rI+MEBXwzkdlDx6+tH47K4jEBzf39iYX0f
+         uUWONXWXUi0RSZox/2hr0t+D2+j8xBXoExHBcQCkApZJ7DVcjD4C27lTe/soYgGB1LpL
+         QPbkvnQ3/RSVFu3HnJUIp42wHIHHoMqV1N3P0s5jixalznezKx2uIJ0MYBwH3NMY3RFi
+         29EJu0ZIg97o+uN1lU0i6EtiayWkizBVlggSfFJDE8MS1Z5NiMD+vEvUYxl0NS4cz9v2
+         Oygg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692565684; x=1693170484;
+        d=1e100.net; s=20221208; t=1692565685; x=1693170485;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c6qFJPzVrYvXdJFLmkCCK0atIYbjN/54u4wyc75/JBA=;
-        b=OpxAA3gt4jk+sevkIGr2OBewaQjRoa1l9745FyoF4iFKukTDZTvc15EK5u+PIbHzy4
-         szCcqy+ElKIW01z3FcrXXn0XXE2tqW5PU+aHc5y2kqzLlkvp+GSYubqjSO7BoNkEWCq+
-         gyA/slnJ8m2n1ozuRwumCEWN1p3Txg699lC5727OnvgqldV38yFh4AbaaPzCQttmY9xi
-         9wMu7PXTmgTwqa7jdybC0fP21YcM6eQdkcxMflcZS33nKYCeuBMiG8GvRvcj1NqKSQx2
-         VDx6E/72gXkTuEDIakrROwE03UcFNqgxjinLcGNi8qR9I0y0hYtdelhxQxGZ09sZDYO9
-         T9Hw==
-X-Gm-Message-State: AOJu0YyN0uvivWO6yBntzxATvSKPsOvgTrbmXN7uI3+pgt0UKSADawqM
-        hExnvS/gDkFwcU6nDcIqDFCbOg==
-X-Google-Smtp-Source: AGHT+IGTizLO4t/BYhWwB0zqwdQLDBDyphgkRD7gCuJ1OhbkmLiRC3MOreod/y3MppTTTWxtqnCK6g==
-X-Received: by 2002:a5d:4fc6:0:b0:319:5e0d:9b0f with SMTP id h6-20020a5d4fc6000000b003195e0d9b0fmr3356883wrw.33.1692565684026;
+        bh=jIPeq0k+JV1/cJi07cu7HqrUCm18GlZjB51v4GbQCSk=;
+        b=A+zGKOA5n6iyvW6PZYFcVrmQxvoKhiC1nhgTBXh/yngUqC9au+4c3qLiF9UFcny+sE
+         2+bL/g9VVNIjO/Wrw0y9lIzOEcE8OC/b5pyK36MUl2GUnt02E91dTQqJL7NDQHnYsw5A
+         XJBUbhVp4UKhMaX5dZBwE4AQEJGNf0Gyzqh7JtpnmxznZA1fhvEnppwE4W79Ykt1VCyx
+         mfF3+Kv6RsK9+GphaoGeXKK5RRGtlV1JY4AyfnIVcX7lOoQE8l9KK2y5m7s5TYnEtoOX
+         4xAYXWx+5lhwUkXRtdHEmmYFCPTYu0PHfJlAdVGjz29XGGk5vrV/e4d65c/bJccfYqi2
+         lSTQ==
+X-Gm-Message-State: AOJu0Yy1y4Udpg5Q6sfrr2Gjo4TOR6yXk41ggNT0VfxfjgmBw0mjqGMa
+        8FeUmptORySGOb10Kb6i0e+/zg==
+X-Google-Smtp-Source: AGHT+IFmFD8f6fkzSvJchuznRWY9tDHKmOC6fE/r10rQ8Sa0lLB9+P3BHUwp0xhJBhBHNvoAvdlxXg==
+X-Received: by 2002:adf:ee41:0:b0:31a:e772:ddf0 with SMTP id w1-20020adfee41000000b0031ae772ddf0mr3826175wro.53.1692565684931;
         Sun, 20 Aug 2023 14:08:04 -0700 (PDT)
 Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id j6-20020adfea46000000b003197a4b0f68sm10336800wrn.7.2023.08.20.14.08.03
+        by smtp.gmail.com with ESMTPSA id j6-20020adfea46000000b003197a4b0f68sm10336800wrn.7.2023.08.20.14.08.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 14:08:03 -0700 (PDT)
+        Sun, 20 Aug 2023 14:08:04 -0700 (PDT)
 From:   Qais Yousef <qyousef@layalina.io>
 To:     "Rafael J. Wysocki" <rafael@kernel.org>,
         Viresh Kumar <viresh.kumar@linaro.org>,
@@ -60,9 +60,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Lukasz Luba <lukasz.luba@arm.com>,
         Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 1/4] sched: cpufreq: Rename map_util_perf to apply_dvfs_headroom
-Date:   Sun, 20 Aug 2023 22:06:37 +0100
-Message-Id: <20230820210640.585311-2-qyousef@layalina.io>
+Subject: [PATCH 2/4] sched: cpufreq: Fix apply_dvfs_headroom() escaping uclamp constraints
+Date:   Sun, 20 Aug 2023 22:06:38 +0100
+Message-Id: <20230820210640.585311-3-qyousef@layalina.io>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230820210640.585311-1-qyousef@layalina.io>
 References: <20230820210640.585311-1-qyousef@layalina.io>
@@ -77,95 +77,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are providing headroom for the utilization to grow until the next
-decision point to pick the next frequency. Give the function a better
-name and give it some documentation. It is not really mapping anything.
+DVFS headroom is applied after we calculate the effective_cpu_util()
+which is where we honour uclamp constraints. It makes more sense to
+apply the headroom there once and let all users naturally get the right
+thing without having to sprinkle the call around in various places.
 
-Provide a dummy definition for !CONFIG_CPUFREQ which will be required
-for later patches.
+Before this fix running
+
+	uclampset -M 800 cat /dev/zero > /dev/null
+
+Will cause the test system to run at max freq of 2.8GHz. After the fix
+it runs at 2.2GHz instead which is the correct value that matches the
+capacity of 800.
+
+Note that similar problem exist for uclamp_min. If util was 50, and
+uclamp_min is 100. Since we apply_dvfs_headroom() after apply uclamp
+constraints, we'll end up with util of 125 instead of 100. IOW, we get
+boosted twice, first time by uclamp_min, and second time by dvfs
+headroom.
 
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 ---
- include/linux/energy_model.h     |  2 +-
- include/linux/sched/cpufreq.h    | 27 ++++++++++++++++++++++++++-
- kernel/sched/cpufreq_schedutil.c |  6 +++---
- 3 files changed, 30 insertions(+), 5 deletions(-)
+ include/linux/energy_model.h     |  1 -
+ kernel/sched/core.c              | 11 ++++++++---
+ kernel/sched/cpufreq_schedutil.c |  5 ++---
+ 3 files changed, 10 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index b9caa01dfac4..6ebde4e69e98 100644
+index 6ebde4e69e98..adec808b371a 100644
 --- a/include/linux/energy_model.h
 +++ b/include/linux/energy_model.h
-@@ -243,7 +243,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+@@ -243,7 +243,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
  	scale_cpu = arch_scale_cpu_capacity(cpu);
  	ps = &pd->table[pd->nr_perf_states - 1];
  
--	max_util = map_util_perf(max_util);
-+	max_util = apply_dvfs_headroom(max_util);
+-	max_util = apply_dvfs_headroom(max_util);
  	max_util = min(max_util, allowed_cpu_cap);
  	freq = map_util_freq(max_util, ps->frequency, scale_cpu);
  
-diff --git a/include/linux/sched/cpufreq.h b/include/linux/sched/cpufreq.h
-index bdd31ab93bc5..f0069b354ac8 100644
---- a/include/linux/sched/cpufreq.h
-+++ b/include/linux/sched/cpufreq.h
-@@ -29,10 +29,35 @@ static inline unsigned long map_util_freq(unsigned long util,
- 	return freq * util / cap;
- }
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index efe3848978a0..441d433c83cd 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7439,8 +7439,10 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 	 * frequency will be gracefully reduced with the utilization decay.
+ 	 */
+ 	util = util_cfs + cpu_util_rt(rq);
+-	if (type == FREQUENCY_UTIL)
++	if (type == FREQUENCY_UTIL) {
++		util = apply_dvfs_headroom(util);
+ 		util = uclamp_rq_util_with(rq, util, p);
++	}
  
--static inline unsigned long map_util_perf(unsigned long util)
-+/*
-+ * DVFS decision are made at discrete points. If CPU stays busy, the util will
-+ * continue to grow, which means it could need to run at a higher frequency
-+ * before the next decision point was reached. IOW, we can't follow the util as
-+ * it grows immediately, but there's a delay before we issue a request to go to
-+ * higher frequency. The headroom caters for this delay so the system continues
-+ * to run at adequate performance point.
-+ *
-+ * This function provides enough headroom to provide adequate performance
-+ * assuming the CPU continues to be busy.
-+ *
-+ * At the moment it is a constant multiplication with 1.25.
-+ *
-+ * TODO: The headroom should be a function of the delay. 25% is too high
-+ * especially on powerful systems. For example, if the delay is 500us, it makes
-+ * more sense to give a small headroom as the next decision point is not far
-+ * away and will follow the util if it continues to rise. On the other hand if
-+ * the delay is 10ms, then we need a bigger headroom so the CPU won't struggle
-+ * at a lower frequency if it never goes to idle until then.
-+ */
-+static inline unsigned long apply_dvfs_headroom(unsigned long util)
- {
- 	return util + (util >> 2);
- }
-+#else
-+static inline unsigned long apply_dvfs_headroom(unsigned long util)
-+{
-+	return util;
-+}
- #endif /* CONFIG_CPU_FREQ */
+ 	dl_util = cpu_util_dl(rq);
  
- #endif /* _LINUX_SCHED_CPUFREQ_H */
+@@ -7471,9 +7473,12 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 	 *              max - irq
+ 	 *   U' = irq + --------- * U
+ 	 *                 max
++	 *
++	 * We only need to apply dvfs headroom to irq part since the util part
++	 * already had it applied.
+ 	 */
+ 	util = scale_irq_capacity(util, irq, max);
+-	util += irq;
++	util += type ==  FREQUENCY_UTIL ? apply_dvfs_headroom(irq) : irq;
+ 
+ 	/*
+ 	 * Bandwidth required by DEADLINE must always be granted while, for
+@@ -7486,7 +7491,7 @@ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 	 * an interface. So, we only do the latter for now.
+ 	 */
+ 	if (type == FREQUENCY_UTIL)
+-		util += cpu_bw_dl(rq);
++		util += apply_dvfs_headroom(cpu_bw_dl(rq));
+ 
+ 	return min(max, util);
+ }
 diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4492608b7d7f..916c4d3d6192 100644
+index 916c4d3d6192..0c7565ac31fb 100644
 --- a/kernel/sched/cpufreq_schedutil.c
 +++ b/kernel/sched/cpufreq_schedutil.c
-@@ -143,7 +143,7 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+@@ -143,7 +143,6 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
  	unsigned int freq = arch_scale_freq_invariant() ?
  				policy->cpuinfo.max_freq : policy->cur;
  
--	util = map_util_perf(util);
-+	util = apply_dvfs_headroom(util);
+-	util = apply_dvfs_headroom(util);
  	freq = map_util_freq(util, freq, max);
  
  	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
-@@ -406,8 +406,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
+@@ -406,8 +405,8 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
  	    sugov_cpu_is_busy(sg_cpu) && sg_cpu->util < prev_util)
  		sg_cpu->util = prev_util;
  
--	cpufreq_driver_adjust_perf(sg_cpu->cpu, map_util_perf(sg_cpu->bw_dl),
--				   map_util_perf(sg_cpu->util), max_cap);
-+	cpufreq_driver_adjust_perf(sg_cpu->cpu, apply_dvfs_headroom(sg_cpu->bw_dl),
-+				   apply_dvfs_headroom(sg_cpu->util), max_cap);
+-	cpufreq_driver_adjust_perf(sg_cpu->cpu, apply_dvfs_headroom(sg_cpu->bw_dl),
+-				   apply_dvfs_headroom(sg_cpu->util), max_cap);
++	cpufreq_driver_adjust_perf(sg_cpu->cpu, sg_cpu->bw_dl,
++				   sg_cpu->util, max_cap);
  
  	sg_cpu->sg_policy->last_freq_update_time = time;
  }
