@@ -2,115 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10483781D54
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 12:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F86781D51
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 12:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbjHTKHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 06:07:07 -0400
+        id S230337AbjHTKG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 06:06:56 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjHTKG5 (ORCPT
+        with ESMTP id S230235AbjHTKGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 06:06:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BB4F0;
-        Sun, 20 Aug 2023 03:02:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B070360DFA;
-        Sun, 20 Aug 2023 10:02:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1510CC433C7;
-        Sun, 20 Aug 2023 10:02:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692525753;
-        bh=whLSHn+VoRRAck8v3j3Zfrs67sqU8jHElhntki+13r4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VRIhCWWvpSMEoZXgTTmPvtJIo6cO0EUTBlWKYb6GvObPfM9+hl1ip3yb0Q71UENXE
-         7eyoasePBio10+sMuPyL1uPofVJPeXBZ0GPirLJcP6q4eLr4aMhMJRlMNqJ712jec8
-         ckVYzHr95ANe5LO18hh6+EEeL6u1zY+zqVIW3OlSYLG71Nr0CalzZgr+8DXaQORvYk
-         jyOAMbZP7iW7d69FsezOL4JsgYEt6SnyrjtJXe/i1Qbx2QcmF+xtkHC8fOB79bWIyW
-         iq2xqrsYrKLiLFVryhFkEAceoB7mNk8nO/bC1TKoBuyR7M0sxxA1hKBHY1dE8zMvzP
-         8kQV6K6vlqFEA==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso3480228e87.1;
-        Sun, 20 Aug 2023 03:02:32 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwD2MxT7XCKTAwgvmY+lvePO1HJa6Q9dlnY/GzV4DcIxtUKF0nf
-        WWBoLbW7vGSC2rZNWtUmxbNpMoK78S5+DMn30Mw=
-X-Google-Smtp-Source: AGHT+IE3Nl6HhQbImCc7HNzmXASVxJI6AlnLeAyTTLfsyTQqm8VdRyDu8xZbz1y0VAAQ8i8FgwAcSqXzr2yBpbv203U=
-X-Received: by 2002:ac2:465b:0:b0:4f6:29cf:c0dd with SMTP id
- s27-20020ac2465b000000b004f629cfc0ddmr2826750lfo.8.1692525751081; Sun, 20 Aug
- 2023 03:02:31 -0700 (PDT)
+        Sun, 20 Aug 2023 06:06:54 -0400
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49118468A
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 03:06:44 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id XfKSq7fa0WghuXfKSq3Tzp; Sun, 20 Aug 2023 12:06:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1692526002;
+        bh=GiOe1P5RZBAu0+IDAU0H1NgB/w3J2a4zROWs+GR1bIs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=dNvhYJTG55qucsGiqkg/mOVpuZxDI+WhER2U/+XjCyirYycq/czq0XRKsGhNgKuPY
+         ZTMJWh9gMQPYYL/RAhrsEl7r9rgamS6GBXBnEqxHqo8VP6SVtLpZU6l8YhHLCQRjf6
+         xV76Ou8igdQowkUo62+u2ldZa7He4jpDZ4GgoC8XQjs4mVR7RaYNYApCo8kfd7Zxr6
+         IRHQjw3zrzEnPRO+7fG5UyKYzRRHIWiHc5QF14aAX2PoC7N1F7bPu5h10SWAEwhfRy
+         psEpA/kUe70Fp/AFglfpbyrUooZDIHtufczVgixBLfyLiE+zecK8T05aODWHfGLn27
+         IgH/A3WaGOafQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 20 Aug 2023 12:06:42 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <2b7cf5af-1d96-8650-ac93-b1243bab5d7a@wanadoo.fr>
+Date:   Sun, 20 Aug 2023 12:06:40 +0200
 MIME-Version: 1.0
-References: <20230816163517.112518-1-flaniel@linux.microsoft.com>
- <20230818213705.b4f5e18b392c4837068cba6f@kernel.org> <20230818114141.2a3a75ee@gandalf.local.home>
- <4853240.31r3eYUQgx@pwmachine> <20230818142033.1d7685e9@gandalf.local.home>
- <20230819101519.568d658fbb6461cc60d348e5@kernel.org> <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
- <20230820183218.bf0b04be3c0ccac5e7b2a587@kernel.org>
-In-Reply-To: <20230820183218.bf0b04be3c0ccac5e7b2a587@kernel.org>
-From:   Song Liu <song@kernel.org>
-Date:   Sun, 20 Aug 2023 03:02:18 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW73yT+D9HhLhi8pafYZsgT=qsqk5foAwGRTvStnWCZwNA@mail.gmail.com>
-Message-ID: <CAPhsuW73yT+D9HhLhi8pafYZsgT=qsqk5foAwGRTvStnWCZwNA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
+ driver
+Content-Language: fr
+To:     Julius Zint <julius@zint.sh>, Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Helge Deller <deller@gmx.de>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-input@vger.kernel.org, linux-fbdev@vger.kernel.org
+References: <20230820094118.20521-1-julius@zint.sh>
+ <20230820094118.20521-2-julius@zint.sh>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230820094118.20521-2-julius@zint.sh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 2:32=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
+Le 20/08/2023 à 11:41, Julius Zint a écrit :
+> The HID spec defines the following Usage IDs (p. 345 ff):
+> 
+> - Monitor Page (0x80) -> Monitor Control (0x01)
+> - VESA Virtual Controls Page (0x82) -> Brightness (0x10)
+> 
+> Apple made use of them in their Apple Studio Display and most likely on
+> other external displays (LG UltraFine 5k, Pro Display XDR).
+> 
+> The driver will work for any HID device with a report, where the
+> application matches the Monitor Control Usage ID and:
+> 
+> 1. An Input field in this report with the Brightness Usage ID (to get
+>     the current brightness)
+> 2. A Feature field in this report with the Brightness Usage ID (to
+>     set the current brightness)
+> 
+> This driver has been developed and tested with the Apple Studio Display.
+> Here is a small excerpt from the decoded HID descriptor showing the
+> feature field for setting the brightness:
+> 
+>    Usage Page (Monitor VESA VCP),  ; Monitor VESA VPC (82h, monitor page)
+>    Usage (10h, Brightness),
+>    Logical Minimum (400),
+>    Logical Maximum (60000),
+>    Unit (Centimeter^-2 * Candela),
+>    Unit Exponent (14),
+>    Report Size (32),
+>    Report Count (1),
+>    Feature (Variable, Null State),
+> 
+> The full HID descriptor dump is available as a comment in the source
+> code.
+> 
+> Signed-off-by: Julius Zint <julius@zint.sh>
+> ---
+
 [...]
-> > >
-> > > perf_event_attr::kprobe_func =3D "_text";
-> > > perf_event_attr::probe_offset =3D OFFSET;
-> > >
-> > > Then, it should be able to specify the correct one. Of course you can=
- use
-> > > other unique symbols around the target symbol.
-> >
-> > Trying to catch up with the thread.
->
-> Thanks for your reply :)
->
-> >
-> > Besides the CAP_* issue, we can do this with
-> >
-> > perf_event_attr::kprobe_func =3D NULL;
-> > perf_event_attr::kprobe_addr =3D address;
->
-> As I pointed, you don't need actual address, instead, you can specify the
-> probe point via "unique symbol" + offset.
 
-Technically, this works. But it is weird to me.
+> +static void hid_bl_remove(struct hid_device *hdev)
+> +{
+> +	struct backlight_device *bl;
+> +	struct hid_bl_data *data;
+> +
+> +	hid_dbg(hdev, "remove\n");
+> +	bl = hid_get_drvdata(hdev);
+> +	data = bl_get_data(bl);
+> +
+> +	devm_backlight_device_unregister(&hdev->dev, bl);
 
-> >
-> > Then for the CAP_*, I think we should give CAP_PERFMON access to
-> > /proc/kallsyms. Would this work?
->
-> For the "unique symbol" + offset, you don't need the kallsyms, but need t=
-o
-> access the System.map or vmlinux image. In this case, we don't need to ex=
-pand
-> the CAP_PERFMON capabilities.
+Hi,
 
-I agree this is not needed in this case. But I wonder whether it makes sens=
-e
-to give CAP_PERFMON access to /proc/kallsyms. Will this change make
-CAP_PERFMON less secure?
+If this need to be called here, before the hid_() calls below, there 
+seems to be no real point in using devm_backlight_device_register() / 
+devm_backlight_device_unregister().
 
-Thanks,
-Song
+The non-devm_ version should be enough.
+
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +	hid_set_drvdata(hdev, NULL);
+> +	devm_kfree(&hdev->dev, data);
+
+'data' is devm_kzalloc()'ed.
+It is likely that this explicit devm_kfree() could be saved. It will be 
+freed by the framework.
+
+> +}
+
+[...]
+
+> +static int hid_bl_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	int ret;
+> +	struct hid_field *input_field;
+> +	struct hid_field *feature_field;
+> +	struct hid_bl_data *data;
+> +	struct backlight_properties props;
+> +	struct backlight_device *bl;
+> +
+> +	hid_dbg(hdev, "probe\n");
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "parse failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = hid_hw_start(hdev, HID_CONNECT_DRIVER);
+> +	if (ret) {
+> +		hid_err(hdev, "hw start failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	input_field = hid_get_usage_field(hdev, HID_INPUT_REPORT,
+> +					  HID_USAGE_MONITOR_CTRL,
+> +					  HID_USAGE_VESA_VCP_BRIGHTNESS);
+> +	if (input_field == NULL) {
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	feature_field = hid_get_usage_field(hdev, HID_FEATURE_REPORT,
+> +					    HID_USAGE_MONITOR_CTRL,
+> +					    HID_USAGE_VESA_VCP_BRIGHTNESS);
+> +	if (feature_field == NULL) {
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	if (input_field->logical_minimum != feature_field->logical_minimum) {
+> +		hid_warn(hdev, "minimums do not match: %d / %d\n",
+> +			 input_field->logical_minimum,
+> +			 feature_field->logical_minimum);
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	if (input_field->logical_maximum != feature_field->logical_maximum) {
+> +		hid_warn(hdev, "maximums do not match: %d / %d\n",
+> +			 input_field->logical_maximum,
+> +			 feature_field->logical_maximum);
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	hid_dbg(hdev, "Monitor VESA VCP with brightness control\n");
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hw open failed: %d\n", ret);
+> +		goto exit_stop;
+> +	}
+> +
+> +	data = devm_kzalloc(&hdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (data == NULL) {
+> +		ret = -ENOMEM;
+> +		goto exit_stop;
+
+exit_free?
+in order to undo the hid_hw_open() just above.
+
+> +	}
+> +	data->hdev = hdev;
+> +	data->min_brightness = input_field->logical_minimum;
+> +	data->max_brightness = input_field->logical_maximum;
+> +	data->input_field = input_field;
+> +	data->feature_field = feature_field;
+> +
+> +	memset(&props, 0, sizeof(props));
+> +	props.type = BACKLIGHT_RAW;
+> +	props.max_brightness = data->max_brightness - data->min_brightness;
+> +
+> +	bl = devm_backlight_device_register(&hdev->dev, "vesa_vcp",
+> +					    &hdev->dev, data,
+> +					    &hid_bl_ops,
+> +					    &props);
+> +	if (IS_ERR(bl)) {
+> +		ret = PTR_ERR(bl);
+> +		hid_err(hdev, "failed to register backlight: %d\n", ret);
+> +		goto exit_free;
+> +	}
+> +
+> +	hid_set_drvdata(hdev, bl);
+> +
+> +	return 0;
+> +
+> +exit_free:
+> +	hid_hw_close(hdev);
+> +	devm_kfree(&hdev->dev, data);
+
+'data' is devm_kzalloc()'ed.
+It is likely that this explicit devm_kfree() could be saved. It will be 
+freed by the framework.
+
+> +
+> +exit_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+
+[...]
+
