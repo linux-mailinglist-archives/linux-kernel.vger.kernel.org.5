@@ -2,354 +2,455 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25DB781C43
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 05:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 511C0781C47
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 05:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbjHTDXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Aug 2023 23:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48456 "EHLO
+        id S229732AbjHTDsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Aug 2023 23:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjHTDXH (ORCPT
+        with ESMTP id S229731AbjHTDsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Aug 2023 23:23:07 -0400
-Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com [209.85.210.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFFC5B9E
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 20:15:37 -0700 (PDT)
-Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-689345528a6so2850747b3a.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 20:15:37 -0700 (PDT)
+        Sat, 19 Aug 2023 23:48:14 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2FE035BC
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 20:24:32 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bbbda48904so16265441fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Aug 2023 20:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692501871; x=1693106671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TQmMhZWmap/YTzFElc74YAgD5HIu61NXcGWCch9T3wI=;
+        b=dFSS2ngm9ZB3DlUdOwCK4yvBIoQD9gNphWgYnv7ZZeNZZqCbi+e4WjKb8VgRkbESex
+         k3eaIo2q90F2vvQkfOmywCVmRpJg9+puy6WB4KQxaz3ntLC6qwwWInayAGjLrQ44Wl3+
+         377oQRkeAOxD9UxbY7GOjJwgtKYOCSIuhOexw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692501337; x=1693106137;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ex98CWvf2qdprPrHIAZu18Lg9IeQtU+ny54LLUgRlqk=;
-        b=EgGtdgzhvnE/KRIYaMUazt4ynArukKgXN1TaX1kbSyZ1L9YeCBYIAwk/4wBB0Hagw6
-         NiyKeeFCwWW1W3SNHlDLpMgizL6YJdEC/iQYdt285pqpVvh06XLW2sGA5s/OReNtrArF
-         7OQgSBqPbTUakzzl2msS587QBQ0zPDOrGvEvJPcuAv7rL3ERnc7HfktsJFSnrbpveqbk
-         KkkyK433CniRc/57owFb1NPTPPA4/L7KJulB/XM9h3VKga3Xenhy6CiYgt4nOgxi/uAs
-         2UKftE8DotKSce+kIf9SvxkdKugHDwYEBolTszbT84QyOU9cgxmBKxrHiogGwOBkAGyK
-         FG/A==
-X-Gm-Message-State: AOJu0Yzs8Cc3DvMTm4AX6/bDmLE0aHFIGIqdUugVevULJC4EI58LGm5d
-        PAIZ01HEYQUqUL9kBjF6zQcvvgU8ZmRZ3oXNGnP/uFbHdvYX
-X-Google-Smtp-Source: AGHT+IFOsPaXHoQMGVbNKFQTZB8xAGcxOO922vr3iaMZ1vpu0YmQu8A5tNlUcDY/egXqvnGI/MigVB36NwlIo/dkJ3/VggAQL021
+        d=1e100.net; s=20221208; t=1692501871; x=1693106671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TQmMhZWmap/YTzFElc74YAgD5HIu61NXcGWCch9T3wI=;
+        b=ECEEBKQssGDGLQCUVDZhtMiM47DtdoGQXy3ra77A1qC4JA2cZbci+bILXfSKq75S6l
+         Efk0fADYIbF2JVmAmmWjDuCx1YPuNJHHpcfIG3vAWi5ttXODcVll//tAG3JBOyaA2v1+
+         9hOvF8oY0Rg6KzMMvvn4QcrjKP4JdOwQfjb9x/AoSWQ3mYrlXdytuLhrXwsq0k+8jyrh
+         HiY3/Nuxj6prgj9Nlo3NVnRQiOQI/A17yMBxxrAy/6kwvCyB/bZNiCRCYn8FqiXYAwVA
+         FSPXI+Os5y4G41h61/hajwIf1D/46/NNSl/0SwtCjiPGlnEMsnfBtWhhc36Ym8hAkLtI
+         0ifw==
+X-Gm-Message-State: AOJu0Yx4DS7R3+OOmproWYPOwpehR4fhtfTOrk71Bk1dbFS/9VyRigAu
+        toYZ+dP/eQQ1Fn3yr21+3oNZaJ2bOq7/VCmEl7kRvw==
+X-Google-Smtp-Source: AGHT+IEdER/izBwvRugiVeukk46NZkROAYj1sY5D/LeQeQ7Rtzmmonx6YoO7yUdJsB69umquL59SgpJRQqvDjMQHHhY=
+X-Received: by 2002:a2e:330f:0:b0:2b8:4079:fd9d with SMTP id
+ d15-20020a2e330f000000b002b84079fd9dmr2290514ljc.29.1692501870905; Sat, 19
+ Aug 2023 20:24:30 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:41d0:b0:1bb:c7c6:3462 with SMTP id
- u16-20020a17090341d000b001bbc7c63462mr1675710ple.8.1692501337246; Sat, 19 Aug
- 2023 20:15:37 -0700 (PDT)
-Date:   Sat, 19 Aug 2023 20:15:37 -0700
-In-Reply-To: <20230820014135.2475-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fd12c10603522cc4@google.com>
-Subject: Re: [syzbot] [jfs?] INFO: task hung in path_mount (2)
-From:   syzbot <syzbot+fb337a5ea8454f5f1e3f@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20230817081345.1423-1-chenhuacai@loongson.cn> <CAEXW_YTM5sa15euDeQhEq0CQ=vqLis=pY-5PF00aKTk5y3J6jw@mail.gmail.com>
+ <CAAhV-H71iVtpW8NN-v8WnbgUte4vp7D+82O8gdNvdkupcOauig@mail.gmail.com>
+ <CAEXW_YTQucT9VkMwaLtyv2Ja7b1OG+UJX3w3GA3=ZbHeDq16tw@mail.gmail.com>
+ <CAAhV-H632rGzu+T-GFjiy41r=QADASB91wuxnHvf-4sn5+psuQ@mail.gmail.com>
+ <CAEXW_YQXMgoBjt_s1Et1Pi_A1oyFAu-hsTFJitamm1USAOGCHw@mail.gmail.com> <CAAhV-H5brH8crw+aF90VhjPrZi86QaGvbnsFtN+J91fATuXmEA@mail.gmail.com>
+In-Reply-To: <CAAhV-H5brH8crw+aF90VhjPrZi86QaGvbnsFtN+J91fATuXmEA@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 19 Aug 2023 23:24:22 -0400
+Message-ID: <CAEXW_YT+uw5JodtrqjY0B2xx0J8ukF=FAB9-p5rxgWobSU2P2A@mail.gmail.com>
+Subject: Re: [PATCH] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 19, 2023 at 1:03=E2=80=AFAM Huacai Chen <chenhuacai@kernel.org>=
+ wrote:
+>
+> Hi, Joel,
+>
+> On Fri, Aug 18, 2023 at 11:32=E2=80=AFPM Joel Fernandes <joel@joelfernand=
+es.org> wrote:
+> >
+> > On Fri, Aug 18, 2023 at 4:31=E2=80=AFAM Huacai Chen <chenhuacai@kernel.=
+org> wrote:
+> > >
+> > > Hi, Joel,
+> > >
+> > > On Fri, Aug 18, 2023 at 11:05=E2=80=AFAM Joel Fernandes <joel@joelfer=
+nandes.org> wrote:
+> > > >
+> > > > On Thu, Aug 17, 2023 at 10:36=E2=80=AFPM Huacai Chen <chenhuacai@ke=
+rnel.org> wrote:
+> > > > >
+> > > > > Hi, Joel,
+> > > > >
+> > > > > On Fri, Aug 18, 2023 at 1:54=E2=80=AFAM Joel Fernandes <joel@joel=
+fernandes.org> wrote:
+> > > > > >
+> > > > > > On Thu, Aug 17, 2023 at 4:14=E2=80=AFAM Huacai Chen <chenhuacai=
+@loongson.cn> wrote:
+> > > > > > >
+> > > > > > > The KGDB initial breakpoint gets an rcu stall warning after c=
+ommit
+> > > > > > > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detec=
+tion in
+> > > > > > > rcu_cpu_stall_reset()").
+> > > > > > >
+> > > > > > > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on =
+CPU
+> > > > > > > [   53.487950] rcu:     3-...0: (1 ticks this GP) idle=3D0e2c=
+/1/0x4000000000000000 softirq=3D375/375 fqs=3D8
+> > > > > > > [   53.528243] rcu:     (t=3D12297 jiffies g=3D-995 q=3D1 ncp=
+us=3D4)
+> > > > > > > [   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.=
+0-rc2+ #4848
+> > > > > > > [   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2=
+000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK201=
+8-V2.0.05099-beta8 08
+> > > > > > > [   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 900=
+00001000a0000 sp 90000001000a3710
+> > > > > > > [   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 000=
+0000000000001 a3 0000000000000000
+> > > > > > > [   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000=
+000000000002c a7 0000000000000000
+> > > > > > > [   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900=
+000000131c9c0 t3 fffffffffffffffa
+> > > > > > > [   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 000=
+0000000000004 t7 9000000001912d58
+> > > > > > > [   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 000=
+0000000000028 s0 9000000001d512f0
+> > > > > > > [   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 900=
+00000019fc410 s4 9000000001d4b488
+> > > > > > > [   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 000=
+0000000000078 s8 9000000001d4b450
+> > > > > > > [   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0=
+x640
+> > > > > > > [   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0=
+x640
+> > > > > > > [   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DA=
+CM=3DCC -WE)
+> > > > > > > [   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
+> > > > > > > [   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+> > > > > > > [   54.207838]  ECFG: 00071c1c (LIE=3D2-4,10-12 VS=3D7)
+> > > > > > > [   54.242503] ESTAT: 00000800 [INT] (IS=3D11 ECode=3D0 EsubC=
+ode=3D0)
+> > > > > > > [   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A50=
+00-HV)
+> > > > > > > [   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.=
+0-rc2+ #4848
+> > > > > > > [   54.430170] Stack : 0072617764726148 0000000000000000 9000=
+000000223504 90000001000a0000
+> > > > > > > [   54.472308]         9000000100073a90 9000000100073a98 0000=
+000000000000 9000000100073bd8
+> > > > > > > [   54.514413]         9000000100073bd0 9000000100073bd0 9000=
+000100073a00 0000000000000001
+> > > > > > > [   54.556018]         0000000000000001 9000000100073a98 9982=
+8271f24e961a 90000001002810c0
+> > > > > > > [   54.596924]         0000000000000001 0000000000010003 0000=
+000000000000 0000000000000001
+> > > > > > > [   54.637115]         ffff8000337cdb80 0000000000000001 0000=
+000006360000 900000000131c9c0
+> > > > > > > [   54.677049]         0000000000000000 0000000000000000 9000=
+0000017b4c98 9000000001912000
+> > > > > > > [   54.716394]         9000000001912f68 9000000001913000 9000=
+000001912f70 00000000000002b0
+> > > > > > > [   54.754880]         90000000014a8840 0000000000000000 9000=
+00000022351c 0000000000000000
+> > > > > > > [   54.792372]         00000000000002b0 000000000000000c 0000=
+000000000000 0000000000071c1c
+> > > > > > > [   54.829302]         ...
+> > > > > > > [   54.859163] Call Trace:
+> > > > > > > [   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
+> > > > > > > [   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
+> > > > > > > [   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/=
+0x148
+> > > > > > > [   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78=
+/0xe60
+> > > > > > > [   55.012744] [<90000000002e47cc>] update_process_times+0x6c=
+/0xc0
+> > > > > > > [   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x1=
+00
+> > > > > > > [   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x15=
+4/0x240
+> > > > > > > [   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0=
+x2a0
+> > > > > > > [   55.139112] [<9000000000226418>] constant_timer_interrupt+=
+0x38/0x60
+> > > > > > > [   55.170749] [<90000000002b3010>] __handle_irq_event_percpu=
++0x50/0x160
+> > > > > > > [   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0=
+x18/0x80
+> > > > > > > [   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0x=
+a0
+> > > > > > > [   55.266241] [<90000000002b2168>] generic_handle_domain_irq=
++0x28/0x40
+> > > > > > > [   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
+> > > > > > > [   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30=
+/0x60
+> > > > > > > [   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
+> > > > > > > [   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x64=
+0
+> > > > > > > [   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x1=
+04/0x180
+> > > > > > > [   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x3=
+8/0xa0
+> > > > > > > [   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
+> > > > > > > [   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
+> > > > > > > [   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0=
+x28
+> > > > > > > [   55.590319] [<9000000000332e80>] kgdb_register_io_module+0=
+x160/0x1c0
+> > > > > > > [   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x=
+1c0
+> > > > > > > [   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
+> > > > > > > [   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
+> > > > > > > [   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
+> > > > > > > [   55.730528] [<9000000000c93be4>] __driver_probe_device+0x8=
+4/0x140
+> > > > > > > [   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/=
+0x120
+> > > > > > > [   55.787990] [<9000000000c93e8c>] __device_attach_driver+0x=
+cc/0x160
+> > > > > > > [   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x1=
+00
+> > > > > > > [   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a=
+0
+> > > > > > > [   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe=
+0
+> > > > > > > [   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
+> > > > > > > [   55.930635] [<9000000000c96704>] platform_device_add+0x124=
+/0x2c0
+> > > > > > > [   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
+> > > > > > > [   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e=
+0
+> > > > > > > [   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22=
+c/0x2a0
+> > > > > > > [   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
+> > > > > > >
+> > > > > > > Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall t=
+o one check
+> > > > > > > period later, i.e. jiffies + rcu_jiffies_till_stall_check(). =
+But jiffies
+> > > > > > > is only updated in the timer interrupt, so when kgdb_cpu_ente=
+r() begins
+> > > > > > > to run there may already be nearly one rcu check period after=
+ jiffies.
+> > > > > > > Since all interrupts are disabled during kgdb_cpu_enter(), ji=
+ffies will
+> > > > > > > not be updated. When kgdb_cpu_enter() returns, rcu_state.jiff=
+ies_stall
+> > > > > > > maybe already gets timeout.
+> > > > > > >
+> > > > > > > We can set rcu_state.jiffies_stall to two rcu check periods l=
+ater, e.g.
+> > > > > > > jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_sta=
+ll_reset()
+> > > > > > > to avoid this problem. But this isn't a complete solution bec=
+ause kgdb
+> > > > > > > may take a very long time in irq disabled context.
+> > > > > > >
+> > > > > > > Instead, update jiffies at the beginning of rcu_cpu_stall_res=
+et() can
+> > > > > > > solve all kinds of problems [1]. But this causes a new proble=
+m because
+> > > > > > > updating jiffies is not NMI safe while rcu_cpu_stall_reset() =
+may be used
+> > > > > > > in NMI context.
+> > > > > > >
+> > > > > > > So we don't update the global jiffies, but only add the time =
+'delta' to
+> > > > > > > jiffies locally at the beginning of rcu_cpu_stall_reset() whi=
+ch has the
+> > > > > > > same effect.
+> > > > > > >
+> > > > > > > [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhu=
+acai@loongson.cn/T/#t
+> > > > > > >
+> > > > > > > Cc: stable@vger.kernel.org
+> > > > > > > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stal=
+l detection in rcu_cpu_stall_reset()")
+> > > > > > > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > > > > > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > > > > > > ---
+> > > > > > >  kernel/rcu/tree_stall.h | 6 +++++-
+> > > > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > > > > >
+> > > > > > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.=
+h
+> > > > > > > index b10b8349bb2a..1bf1306cae23 100644
+> > > > > > > --- a/kernel/rcu/tree_stall.h
+> > > > > > > +++ b/kernel/rcu/tree_stall.h
+> > > > > > > @@ -153,8 +153,12 @@ static void panic_on_rcu_stall(void)
+> > > > > > >   */
+> > > > > > >  void rcu_cpu_stall_reset(void)
+> > > > > > >  {
+> > > > > > > +       unsigned long delta;
+> > > > > > > +
+> > > > > > > +       delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get=
+_coarse_ns());
+> > > > > > > +
+> > > > > > >         WRITE_ONCE(rcu_state.jiffies_stall,
+> > > > > > > -                  jiffies + rcu_jiffies_till_stall_check());
+> > > > > > > +                  jiffies + delta + rcu_jiffies_till_stall_c=
+heck());
+> > > > > >
+> > > > > > This is certainly better than magic numbers, but I was still wo=
+ndering
+> > > > > > how the delta really works. What are typical values of delta, a=
+nd why
+> > > > > > is that equivalent to updating jiffies?
+> > > > > >
+> > > > > > Can you provide more technical details about why it turns out t=
+o be
+> > > > > > effectively the number of jiffies that the jiffies are off by?
+> > > > > >
+> > > > > > Also, how often do you see that an NMI is required to prevent a=
+ KGDB
+> > > > > > stall? If not, just do:
+> > > > > >
+> > > > > > void rcu_cpu_stall_reset(void) {
+> > > > > > [...]
+> > > > > >     if (!in_nmi) {
+> > > > > >       do_jiffies_update();
+> > > > > >    }
+> > > > > >    WRITE_ONCE(rcu_state.jiffies_stall, ..);
+> > > > > > [...]
+> > > > > > }
+> > > > > >
+> > > > > > ?
+> > > > > >
+> > > > > > But if your solution provides accurate results, that's fine wit=
+h me. I
+> > > > > > just don't understand coarse ktime that much and how it differs=
+ from
+> > > > > > regular ktime, so I appreciate the education ;-)
+> > > > > ktime_get() get the accurate current time from clocksource,
+> > > > > ktime_get_coarse() get the coarse current time from jiffies. Belo=
+w is
+> > > > > from Documentation/core-api/timekeeping.rst:
+> > > > >
+> > > > >         "The time returned here corresponds to the last timer tic=
+k, which
+> > > > >         may be as much as 10ms in the past (for CONFIG_HZ=3D100),=
+ same as
+> > > > >         reading the 'jiffies' variable.  These are only useful wh=
+en called
+> > > > >         in a fast path and one still expects better than second a=
+ccuracy,
+> > > > >         but can't easily use 'jiffies', e.g. for inode timestamps=
+."
+> > > > >
+> > > > > So, the delta between ktime_get() and ktime_get_coarse() is accur=
+ately
+> > > > > the delta when we update jiffies.
+> > > > >
+> > > >
+> > > > That sounds good to me then! I see you added Thomas so let us see i=
+f
+> > > > he yells back.
+> > > >
+> > > > But in the meanwhile, maybe you could also do some testing (if you
+> > > > want to) something like:
+> > > > =3D=3D=3D=3D=3D
+> > > > old_jiffies =3D jiffies;
+> > > > delta =3D nsecs_to_jiffies(ktime_get_ns() - ktime_get_coarse_ns());
+> > > >
+> > > > /* do the jiffies update here */
+> > > >
+> > > > WARN_ON_ONCE(jiffies - old_jiffies !=3D delta);
+> > > > =3D=3D=3D=3D=3D
+> > > Thank you for your advice, I do an experiment with the code below:
+> > >
+> > > void rcu_cpu_stall_reset(void)
+> > > {
+> > >         unsigned long delta;
+> > >         u64 old =3D jiffies;
+> > >         u64 now =3D ktime_get_ns();
+> > >
+> > >         delta =3D nsecs_to_jiffies(now - ktime_get_coarse_ns());
+> > >         tick_do_update_jiffies64(now);
+> > >         printk("jiffies - old =3D %lld, delta =3D %ld\n", jiffies - o=
+ld, delta);
+> > >
+> > >         WRITE_ONCE(rcu_state.jiffies_stall,
+> > >                    jiffies + delta + rcu_jiffies_till_stall_check());
+> > > }
+> > >
+> > > My machine has a quad-core cpu. I try 2 times, and I get:
+> > >
+> > > [   56.178011] jiffies - old =3D 13028, delta =3D 13028   #HZ=3D250, =
+~50s
+> > > [   56.178010] jiffies - old =3D 13028, delta =3D 13028
+> > > [   56.178010] jiffies - old =3D 13028, delta =3D 13028
+> > > [   56.178012] jiffies - old =3D 13028, delta =3D 13028
+> > >
+> > > [   84.722304] jiffies - old =3D 6955, delta =3D 6955      #HZ=3D250,=
+ ~27s
+> > > [   84.722304] jiffies - old =3D 6955, delta =3D 6955
+> > > [   84.722304] jiffies - old =3D 6955, delta =3D 6955
+> > > [   84.722306] jiffies - old =3D 6955, delta =3D 6955
+> >
+> > Looks good and my testing went good as well. However, since we were
+> > worried about rcu_cpu_stall_reset() called from the NMI context, isn't
+> > ktime_get_mono_fast_ns() supposed to be the NMI safe version, which
+> > implies the others may not be? I am happy to be corrected on that...
+> > but the last thing we want is rcu_cpu_stall_reset() deadlocking in the
+> > timekeeping seq latch during a timekeeping update.
+> When Z. qiang first talks about the NMI issue, he means the update
+> code will acquire jiffies_lock raw spinlock, which causes deadlock.
+>
+> ktime_get() is another story, when we say it is not NMI safe, we don't
+> mean deadlock because it doesn't acquire spinlock. We just mean that
+> it may get a wrong value because jiffies update is not an atomic
+> operation.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in iterate_supers
+No, it can deadlock in a different way.
 
-INFO: task syz-executor.2:5688 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.2  state:D stack:24584 pid:5688  ppid:5393   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- rwsem_down_read_slowpath+0x5f4/0x950 kernel/locking/rwsem.c:1086
- __down_read_common kernel/locking/rwsem.c:1250 [inline]
- __down_read kernel/locking/rwsem.c:1263 [inline]
- down_read+0x9c/0x2f0 kernel/locking/rwsem.c:1522
- iterate_supers+0xb0/0x1e0 fs/super.c:742
- quota_sync_all fs/quota/quota.c:69 [inline]
- __do_sys_quotactl fs/quota/quota.c:938 [inline]
- __se_sys_quotactl+0x391/0xa30 fs/quota/quota.c:917
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb3b1a7cae9
-RSP: 002b:00007fb3b28b80c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000b3
-RAX: ffffffffffffffda RBX: 00007fb3b1b9bf80 RCX: 00007fb3b1a7cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff80000101
-RBP: 00007fb3b1ac847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fb3b1b9bf80 R15: 00007fff6eac0208
- </TASK>
-INFO: task syz-executor.4:5709 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.4  state:D stack:25840 pid:5709  ppid:5390   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- rwsem_down_write_slowpath+0xedd/0x13a0 kernel/locking/rwsem.c:1178
- __down_write_common+0x1aa/0x200 kernel/locking/rwsem.c:1306
- do_remount fs/namespace.c:2879 [inline]
- path_mount+0xbdd/0xfa0 fs/namespace.c:3654
- do_mount fs/namespace.c:3675 [inline]
- __do_sys_mount fs/namespace.c:3884 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7efee2a7e1ea
-RSP: 002b:00007efee3842ee8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007efee3842f80 RCX: 00007efee2a7e1ea
-RDX: 0000000020000180 RSI: 0000000020000100 RDI: 0000000000000000
-RBP: 0000000020000180 R08: 00007efee3842f80 R09: 0000000001a404ac
-R10: 0000000001a404ac R11: 0000000000000246 R12: 0000000020000100
-R13: 00007efee3842f40 R14: 0000000000000000 R15: 0000000020003600
- </TASK>
-INFO: task syz-executor.0:5687 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.0  state:D stack:24584 pid:5687  ppid:5386   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- jfs_flush_journal+0x733/0xec0 fs/jfs/jfs_logmgr.c:1564
- jfs_sync_fs+0x80/0xa0 fs/jfs/super.c:684
- dquot_quota_sync+0xdb/0x490 fs/quota/dquot.c:704
- iterate_supers+0x12b/0x1e0 fs/super.c:744
- quota_sync_all fs/quota/quota.c:69 [inline]
- __do_sys_quotactl fs/quota/quota.c:938 [inline]
- __se_sys_quotactl+0x391/0xa30 fs/quota/quota.c:917
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd84a27cae9
-RSP: 002b:00007fd84afa50c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000b3
-RAX: ffffffffffffffda RBX: 00007fd84a39bf80 RCX: 00007fd84a27cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff80000101
-RBP: 00007fd84a2c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fd84a39bf80 R15: 00007ffd56f86288
- </TASK>
-INFO: task syz-executor.5:5689 blocked for more than 144 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.5  state:D stack:24584 pid:5689  ppid:5387   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- rwsem_down_read_slowpath+0x5f4/0x950 kernel/locking/rwsem.c:1086
- __down_read_common kernel/locking/rwsem.c:1250 [inline]
- __down_read kernel/locking/rwsem.c:1263 [inline]
- down_read+0x9c/0x2f0 kernel/locking/rwsem.c:1522
- iterate_supers+0xb0/0x1e0 fs/super.c:742
- quota_sync_all fs/quota/quota.c:69 [inline]
- __do_sys_quotactl fs/quota/quota.c:938 [inline]
- __se_sys_quotactl+0x391/0xa30 fs/quota/quota.c:917
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f05ae27cae9
-RSP: 002b:00007f05aef3a0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000b3
-RAX: ffffffffffffffda RBX: 00007f05ae39bf80 RCX: 00007f05ae27cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff80000101
-RBP: 00007f05ae2c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f05ae39bf80 R15: 00007ffed97249c8
- </TASK>
-INFO: task syz-executor.1:5702 blocked for more than 144 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.1  state:D stack:24584 pid:5702  ppid:5378   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- rwsem_down_read_slowpath+0x5f4/0x950 kernel/locking/rwsem.c:1086
- __down_read_common kernel/locking/rwsem.c:1250 [inline]
- __down_read kernel/locking/rwsem.c:1263 [inline]
- down_read+0x9c/0x2f0 kernel/locking/rwsem.c:1522
- iterate_supers+0xb0/0x1e0 fs/super.c:742
- quota_sync_all fs/quota/quota.c:69 [inline]
- __do_sys_quotactl fs/quota/quota.c:938 [inline]
- __se_sys_quotactl+0x391/0xa30 fs/quota/quota.c:917
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f862b87cae9
-RSP: 002b:00007f862c6030c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000b3
-RAX: ffffffffffffffda RBX: 00007f862b99bf80 RCX: 00007f862b87cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff80000101
-RBP: 00007f862b8c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f862b99bf80 R15: 00007ffe1c3a7d68
- </TASK>
-INFO: task syz-executor.3:5710 blocked for more than 144 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor.3  state:D stack:24584 pid:5710  ppid:5382   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1873/0x48f0 kernel/sched/core.c:6710
- schedule+0xc3/0x180 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- rwsem_down_read_slowpath+0x5f4/0x950 kernel/locking/rwsem.c:1086
- __down_read_common kernel/locking/rwsem.c:1250 [inline]
- __down_read kernel/locking/rwsem.c:1263 [inline]
- down_read+0x9c/0x2f0 kernel/locking/rwsem.c:1522
- iterate_supers+0xb0/0x1e0 fs/super.c:742
- quota_sync_all fs/quota/quota.c:69 [inline]
- __do_sys_quotactl fs/quota/quota.c:938 [inline]
- __se_sys_quotactl+0x391/0xa30 fs/quota/quota.c:917
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f626d07cae9
-RSP: 002b:00007f626de8d0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000b3
-RAX: ffffffffffffffda RBX: 00007f626d19bf80 RCX: 00007f626d07cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff80000101
-RBP: 00007f626d0c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f626d19bf80 R15: 00007ffe891110e8
- </TASK>
+ktime_get() calls read_seqcount_begin() which can busy-loop if a
+writer is in progress. You can see this in the code for
+read_seqcount_begin().
 
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8d3295b0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8d329970 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x29/0xd20 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/28:
- #0: ffffffff8d3293e0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x0/0x30
-2 locks held by kworker/u4:2/41:
-2 locks held by getty/4770:
- #0: ffff88814bd10098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015c02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b1/0x1dc0 drivers/tty/n_tty.c:2187
-1 lock held by syz-executor.2/5688:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.4/5709:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: do_remount fs/namespace.c:2879 [inline]
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: path_mount+0xbdd/0xfa0 fs/namespace.c:3654
-1 lock held by syz-executor.0/5687:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.5/5689:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.1/5702:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.3/5710:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.0/5982:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.2/6002:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.5/6005:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.1/6010:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.4/6012:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.3/6014:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.0/6048:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.2/6104:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.5/6108:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.3/6129:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.1/6131:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
-1 lock held by syz-executor.4/6135:
- #0: ffff8880694560e0 (&type->s_umount_key#64){++++}-{3:3}, at: iterate_supers+0xb0/0x1e0 fs/super.c:742
+If you call it from an NMI context, and the NMI context happens to
+interrupt a *timekeeping* update, you can lockup forever.
 
-=============================================
+You cannot safely interrupt the write-side section of a sequence lock
+reader, and that's exactly what you're doing when you call ktime_get()
+in an NMI context.
 
-NMI backtrace for cpu 0
-CPU: 0 PID: 28 Comm: khungtaskd Not tainted 6.5.0-rc6-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x187/0x300 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xec2/0xf00 kernel/hung_task.c:379
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 5445 Comm: kworker/1:5 Not tainted 6.5.0-rc6-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: events nsim_dev_trap_report_work
-RIP: 0010:on_stack arch/x86/include/asm/stacktrace.h:56 [inline]
-RIP: 0010:unwind_next_frame+0x1932/0x2390 arch/x86/kernel/unwind_orc.c:665
-Code: 89 f8 48 c1 e8 03 80 3c 18 00 74 05 e8 17 e6 a7 00 4c 8b 75 08 48 8d 5d 10 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 f0 e5 a7 00 4d 39 fe 0f 87 ba 00 00
-RSP: 0018:ffffc90005ae7610 EFLAGS: 00000a06
-RAX: 1ffff92000b5cede RBX: ffffc90005ae76f0 RCX: dffffc0000000000
-RDX: dffffc0000000000 RSI: ffffc90005ae0000 RDI: ffffc90005ae76e8
-RBP: ffffc90005ae76e0 R08: ffffc90005ae7850 R09: 0000000000000000
-R10: ffffc90005ae7730 R11: fffff52000b5cee8 R12: 1ffffffff1e31b57
-R13: 1ffff92000b5cedd R14: ffffc90005ae0000 R15: ffffc90005ae7860
-FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555d7f21b030 CR3: 000000002c0f7000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- arch_stack_walk+0x111/0x140 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0x117/0x1c0 kernel/stacktrace.c:122
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1792 [inline]
- slab_free_freelist_hook mm/slub.c:1818 [inline]
- slab_free mm/slub.c:3801 [inline]
- kmem_cache_free+0x292/0x500 mm/slub.c:3823
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:821 [inline]
- nsim_dev_trap_report_work+0x761/0xa90 drivers/net/netdevsim/dev.c:850
- process_one_work+0x92c/0x12c0 kernel/workqueue.c:2600
- worker_thread+0xa63/0x1210 kernel/workqueue.c:2751
- kthread+0x2b8/0x350 kernel/kthread.c:389
- ret_from_fork+0x2e/0x60 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+That's what sequence *latch* is for.
 
+See comments about sequence latch where it specifically calls out NMIs:
+ * Latch sequence counters (seqcount_latch_t)
+ *
+ * A sequence counter variant where the counter even/odd value is used to
+ * switch between two copies of protected data. This allows the read path,
+ * typically NMIs, to safely interrupt the write side critical section.
+ *
+ * As the write sections are fully preemptible, no special handling for
+ * PREEMPT_RT is needed.
+ */
 
-Tested on:
+So I just can't see how you can call ktime_get() in an NMI context the
+way you are calling... What am I missing?
 
-commit:         2ccdd1b1 Linux 6.5-rc6
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ba0ebba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c37cc0e4fcc5f8d
-dashboard link: https://syzkaller.appspot.com/bug?extid=fb337a5ea8454f5f1e3f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16856a4ba80000
+Thanks!
 
+ - Joel
