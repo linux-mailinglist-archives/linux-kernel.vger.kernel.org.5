@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0329781DEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 15:03:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D30781DED
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Aug 2023 15:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjHTND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 09:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36476 "EHLO
+        id S229674AbjHTNNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 09:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbjHTNDv (ORCPT
+        with ESMTP id S229775AbjHTNNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 09:03:51 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D14173E
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:00:11 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9a828c920so39216071fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:00:11 -0700 (PDT)
+        Sun, 20 Aug 2023 09:13:38 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFADD1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:09:02 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bbad32bc79so42566241fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 06:09:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692536410; x=1693141210;
+        d=gmail.com; s=20221208; t=1692536940; x=1693141740;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HPSbgyhLc5Q7B4ZbRBJPVcxIZMDQI6ZiPnGnQ/TPqWo=;
-        b=AgciMjmSed47bauV5RemSXWwunpQAzO1Gx+83mn3oWeEd3+tRW89aaGP0dOBOoPG2N
-         UQ1ZWl4JMGYcmhrZoN5VEj41OTx9KOW6uu0nZWW34/2fKMCYdvXa+7Ax8JCEKdEXMU11
-         iWw1QRcAe/HhZ1QCPbE3aFR50V11/R5sDqLfmBHAHxgDIQOL/P91/uyaMBaHqo1RQZGN
-         a76sqjk9zqsUJxydGRcqM7i0/HJnq2AbDdgI/WQ3ATYwIQCIvaN4++cz2yxd93A9m1XV
-         0mkq7GlzBlsBcVSVDQXob8Xtei1vi7nz1SQM+mhmpQG6g6JVs2WH/TcoUAV7PW8pev6f
-         poPw==
+        bh=3LZ+oES1zsfNlKxhCEQJA4MvdY1kIWFy2dYtj4VC1s8=;
+        b=Rpu5V/q5Rj3FAFJgbIFk6XfWl+O4qv73wk/unM9kUZT2aU8w/Uv4eukCWPYM3rl8UP
+         TcgegFpXDpMG09ODb/lJ2z23RT6kLRv14N3yX9OO5GRM4ECOPDEn5uvWmAr5Cu2klai6
+         041vg2eb7N9c3VjvmUWBFyRFpWnmzTBTOjaFjNuYExeD27jqs/bHTQ1P+09tJ2JC8pdD
+         knPEor3GKvn7E8UT59RJV/9ucrEz5VbK9dt1v8OZXmzoTN7fTNNNTG5D7AWEN/89zr5m
+         QEJFDxa96GcDjp8OixEZliiKAdA9vlDjmWXl6TMddYe1uvoVFtVr1lWJmKGVW5cnqyxm
+         l2JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692536410; x=1693141210;
+        d=1e100.net; s=20221208; t=1692536940; x=1693141740;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HPSbgyhLc5Q7B4ZbRBJPVcxIZMDQI6ZiPnGnQ/TPqWo=;
-        b=MhyXopv5wuh+ktoZSS3LamqNzkpfX2A61ptG5lw/rqXsFzUw6bzXQgu5vHlbszprKd
-         rZ5ydkumtX4K+ab4Fdg1+v0giktXiARCTmhxpnTSHQvB/V3kpHFTT/HT6sDVY6KH0/pW
-         muXTjQFX64YQw0dQopQU3LiWwYyYmvC6ESwCf1jVKKn1nN4MQFfdYIAjzQ54DnOIx+GI
-         h5Iogj1vtRMl2zeyZijiqda1l+1a71Xp1pnPNnxnBEgITCNrm5pBnTm+6nn+FsxjXkUR
-         eC7KZicsXpxSnDfT9W3IrfzzqtvE6aqpwzey4mr+A+y1i+P5FBH4FtzoqznnfNQdsFtW
-         vFcw==
-X-Gm-Message-State: AOJu0YzIfHgBZmp2eVAkKgoOAFEArtRsxSW5vsVg2zYxICoE67I9ahLe
-        rS6+qO9SVCRegmMyRDKXz+U=
-X-Google-Smtp-Source: AGHT+IHAM2G/YTBj7smE4cITzuV1oplz/ydV3jspEPYU8z45TQRqiN4V7vx6ePD2G3WrWv+QMzXh6w==
-X-Received: by 2002:a05:6512:3e19:b0:4f8:7513:8cac with SMTP id i25-20020a0565123e1900b004f875138cacmr3894582lfv.48.1692536409674;
-        Sun, 20 Aug 2023 06:00:09 -0700 (PDT)
+        bh=3LZ+oES1zsfNlKxhCEQJA4MvdY1kIWFy2dYtj4VC1s8=;
+        b=VSf6Qd+D++MRO7u85Eh9x+I67VIvAYk3i6e9i/yFVwNLW+prB+0hKbfSPi0DF32qbR
+         28sp/gtLg+In0QI1Ewfqhg+De5+uz3PBFNNSSwUbd9DNuVvj34w1JzVhw73vaD7gqWsM
+         Ijabt/9wV9vA9Rmhgaf5FVPiyXGucsX3UgSTKmVr48ROs54Jxe/8IPB+PhEyJamok+T/
+         FuZk134iubf+wI0Mtw7AuJWaAmtmftq7XzPLaxe+8nU9dqapJheMvIPxp8dWudvcNWpL
+         mI3/dUweTnkkmCl2kugBlCfAjKdqT6hoR6+OzhPDtcjA1lPS5f2Vtt/ssji/gAcgl8sr
+         uBpw==
+X-Gm-Message-State: AOJu0YwXVFjnyg3+YOssInmYs56W9+OPmyUTyBjeVavaeKUngeEGQHZj
+        SvbPUBHYivrR4S1JLG04kRE=
+X-Google-Smtp-Source: AGHT+IFTG+Uf/j3nxx0sFZqGDD5S8oGs3q8smizkUS/mb+as4m/zVf3PT2lLTMD/Y3+NVynnaGlSQw==
+X-Received: by 2002:a19:5e49:0:b0:4fd:c844:6a43 with SMTP id z9-20020a195e49000000b004fdc8446a43mr2037685lfi.43.1692536940067;
+        Sun, 20 Aug 2023 06:09:00 -0700 (PDT)
 Received: from f (cst-prg-27-89.cust.vodafone.cz. [46.135.27.89])
-        by smtp.gmail.com with ESMTPSA id n17-20020a056402061100b0052338f5b2a4sm4248953edv.86.2023.08.20.06.00.07
+        by smtp.gmail.com with ESMTPSA id v5-20020aa7dbc5000000b0052241b8fd0bsm4302636edt.29.2023.08.20.06.08.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 06:00:09 -0700 (PDT)
-Date:   Sun, 20 Aug 2023 15:00:04 +0200
+        Sun, 20 Aug 2023 06:08:59 -0700 (PDT)
+Date:   Sun, 20 Aug 2023 15:08:56 +0200
 From:   Mateusz Guzik <mjguzik@gmail.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Subject: Re: [PATCH] mm: remove unintentional voluntary preemption in
  get_mmap_lock_carefully
-Message-ID: <20230820130004.knx42tyeshps4vdg@f>
+Message-ID: <20230820130856.j2wbfe4z6iem4fis@f>
 References: <20230820104303.2083444-1-mjguzik@gmail.com>
  <ZOH62Zi/yao/oC8y@casper.infradead.org>
  <CAGudoHG3OxoYKSwDmJYEDOj6LmDMsQDs3SD5nBdrzA5Vc1_H0A@mail.gmail.com>
  <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
+ <CAHk-=wjW7W-eLpxz-Rnztx1J0Ay=kaXNFsPe=MZG9hQBXBPL3Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wh=cECn7SLr31VXwtJq-wYnt5+VcERnvAmEVktdEKqR=w@mail.gmail.com>
+In-Reply-To: <CAHk-=wjW7W-eLpxz-Rnztx1J0Ay=kaXNFsPe=MZG9hQBXBPL3Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -75,69 +76,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 02:47:41PM +0200, Linus Torvalds wrote:
-> On Sun, 20 Aug 2023 at 14:41, Mateusz Guzik <mjguzik@gmail.com> wrote:
-> > My first patch looked like this:
+On Sun, Aug 20, 2023 at 02:59:07PM +0200, Linus Torvalds wrote:
+> On Sun, 20 Aug 2023 at 14:47, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > But without that odd ifdef, I think it's fine.
 > 
-> Well, that's disgusting and strange.
-> 
-> > -               might_sleep();
-> > +#if defined(CONFIG_DEBUG_ATOMIC_SLEEP)
-> > +               __might_sleep(__FILE__, __LINE__);
-> > +#endif
-> 
-> Why would you have that strange #ifdef? __might_sleep() just goes away
-> without that debug option anyway.
-> 
-> But without that odd ifdef, I think it's fine.
+> Another option might be to just move the might_sleep() to the top, and
+> do it unconditionally. If the trylock fails, the overhead of possibly
+> doing a cond_resched() is kind of moot.
 > 
 
-Heh, I wrote the patch last night and I could swear it failed to compile
-without the ifdef.
+I wanted to do it, but then I found this comment:
 
-That said I think it looks more than disgusting and I'm happy to confirm
-it does build both ways.
+ * For example, if we have a kernel bug that causes a page
+ * fault, we don't want to just use mmap_read_lock() to get
+ * the mm lock, because that would deadlock if the bug were
+ * to happen while we're holding the mm lock for writing.
 
-That said:
+I figured scheduling away while on the way to OOPS/similar is not the
+best thing to happen.
 
-mm: remove unintentional voluntary preemption in get_mmap_lock_carefully
+> IOW, the main problem here is not that it causes a scheduling point
+> (if the kernel isn't preemptable), it seems to be just that we
+> unnecessarily schedule in a place with the mm lock is held, so it
+> unnecessarily causes possible lock contention for writers.
+> 
+> With the per-vma locking catching most cases, does any of this even matter?
+> 
+> Mateusz - on that note: I'm wondering what made you see this as a
+> problem. The case you quote doesn't actually seem to be threaded, so
+> the vm lock contention shouldn't actually matter there.
+> 
+> Does it schedule away? Sure. But only if "needs_resched" is set, so it
+> doesn't seem to be a *bad* thing per se.
+> 
+> It might just be that this particular scheduling point ends up being a
+> common one on that load, and with those kernel config options (ie
+> PREEMPT_VOLUNTARY)?
+> 
 
-Should the trylock succeed (and thus blocking was avoided), the routine
-wants to ensure blocking was still legal to do. However, might_sleep()
-ends up calling __cond_resched() injecting a voluntary preemption point
-with the freshly acquired lock.
+I did not cause a slowdown for me and I did not say it did.
 
-__might_sleep() instead to only get the asserts.
+I am saying down_read + going off CPU, should it happen in a
+multithreaded program, is going to delay any down_write issued by other
+threads. And that going off CPU here was clearly not intended.
 
-Found while checking off-CPU time during kernel build (like so:
-"offcputime-bpfcc -Ku"), sample backtrace:
-    finish_task_switch.isra.0
-    __schedule
-    __cond_resched
-    lock_mm_and_find_vma
-    do_user_addr_fault
-    exc_page_fault
-    asm_exc_page_fault
-    -                sh (4502)
-        10
+As I noted in another e-mail this is just a side thing I spotted while
+looking at other stuff. I don't find it important enough to discuss it
+any further, so as far as I am concerned you are most welcome to take
+any of the 2 patches, write your own or or leave the code be.
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- mm/memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/memory.c b/mm/memory.c
-index 1ec1ef3418bf..d82316a8a48b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -5259,7 +5259,7 @@ static inline bool get_mmap_lock_carefully(struct mm_struct *mm, struct pt_regs
- {
- 	/* Even if this succeeds, make it clear we *might* have slept */
- 	if (likely(mmap_read_trylock(mm))) {
--		might_sleep();
-+		__might_sleep(__FILE__, __LINE__);
- 		return true;
- 	}
- 
--- 
-2.39.2
+[I am going to post other stuff later which *I am* going to argue to
+push for ;>]
