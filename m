@@ -2,104 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 705E1782353
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A12B9782355
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbjHUFyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 01:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56592 "EHLO
+        id S233255AbjHUF5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 01:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbjHUFyX (ORCPT
+        with ESMTP id S230478AbjHUF5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 01:54:23 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28210A7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:54:22 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bbc87ded50so17103695ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692597261; x=1693202061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f0HwvSY0tuionNGSDaMvFxp1nm004xhxlpxQFd/jOCw=;
-        b=fvsJUmi4jL/0Mm8VNKyfUbwr9vLyVr3iU3ATpsXs4BOtV/XoCP6KFb0B0OS4Aw9LXj
-         /8KB7P58+N0Y/6giyANRmqF5AR8JPvj1a9qKTTb2cuQGEnS+c4y825rdjvbJQ0k17lyh
-         JzJd/jnRw1+miUcYYCBivBMgr8uw5YYHH3pet9bmzcWH8LifqQIvX+PcImaq1g36CnBy
-         8NO6GFQtHJnRaxwrqpHXPn7VC+rASso+7kDQGMgPeFHieGOV4IDNqNbD2qyYQKrJ1VjS
-         8vlFroG1CYGqHGlotwumg/aaPgID5o46x+thueNK0h0EA40B37pb05IeollaFNnchBwK
-         ERGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692597261; x=1693202061;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f0HwvSY0tuionNGSDaMvFxp1nm004xhxlpxQFd/jOCw=;
-        b=fJ+bCMLhCpGBqYjOzUosbN+yGgNBN1ASnEIesK8A9invHVemEAYYEkNez1V9oLB6Gm
-         BTmF3vKEHHfDrEfS7EM5QcTBjCJSp7UzWZmTkQPciBNItMGXy3sf4DK4ppiB/EGd4vns
-         362vd77BS8luDAJ9bbcHSyrxbJg1+vLUeySRZvHpBxLjT17Nx/vf89EkhySAAiPWWshC
-         lxvAflVBpz8XFWpu8QdglLUYTYaZkNF6RfTqSo+FRLlHAFGs4bZ4N2c6MkjEePEQO21/
-         phNEUUD0CVA9u0GhjEWbovQv2w5EWN4zPyGY9WX1E9drg1Y2WX0AQPc6+7UOQI3Rr7sc
-         ZFLg==
-X-Gm-Message-State: AOJu0Yx/8XscKH9d1Mxe/wnRqCJ3KFYoQsTyZyLWhqej/XeFu4R50iAC
-        rUPkAoer6Ljwe2JhHN9Guy1y2A==
-X-Google-Smtp-Source: AGHT+IHVVWc2WZ0qVLuotNRdsW5NXYUef2v8+t2KwEeZet4wSUGCnSuVXV+Dr7+71MiPL/v1dMsDnw==
-X-Received: by 2002:a17:902:bb84:b0:1bb:3979:d467 with SMTP id m4-20020a170902bb8400b001bb3979d467mr3426886pls.63.1692597261530;
-        Sun, 20 Aug 2023 22:54:21 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id z7-20020a170902834700b001b8ad8382a4sm6024089pln.216.2023.08.20.22.54.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 22:54:20 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 11:24:18 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Vibhore Vardhan <vibhore@ti.com>, Dhruva Gole <d-gole@ti.com>
-Subject: Re: [PATCH V5 0/2] dt-bindings: opp/cpufreq: Convert ti-cpufreq to
- json schema
-Message-ID: <20230821055418.6x436wdanb2tnsle@vireshk-i7>
-References: <20230818124504.3718266-1-nm@ti.com>
+        Mon, 21 Aug 2023 01:57:09 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6DCA6;
+        Sun, 20 Aug 2023 22:57:08 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 28E8A22806;
+        Mon, 21 Aug 2023 05:57:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692597427; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVsEL6nmxsm5sImPuZh6istdB2g6qSwClPclyJUG2CE=;
+        b=x9vPvOQFSnEMOFkX/D7staROVPNyqnojEUH3p4rgPpMzhfWnB7MZAEGtPgb3u7YEXjAESA
+        F9niEuxS1KsUBzNBj+Y/J3mFlE1nCuqozw0zEP0e226GulLXLGU7oG4Z8aPbFfZG4ANVDz
+        NmFL38tuWDROC5nSy4N36RiVhTw1i6w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692597427;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BVsEL6nmxsm5sImPuZh6istdB2g6qSwClPclyJUG2CE=;
+        b=cmZ/5/j4KKOkdBSdxlQac4oKT/KvczSUpJZZmi3xRJY8t9Srj0dAsyh5TkaRRoexRis46A
+        aKedYmidDpbyTsBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0F9C813421;
+        Mon, 21 Aug 2023 05:57:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MCDJA7P84mRrdAAAMHmgww
+        (envelope-from <dwagner@suse.de>); Mon, 21 Aug 2023 05:57:07 +0000
+Date:   Mon, 21 Aug 2023 07:57:20 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        Hannes Reinecke <hare@suse.de>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH blktests v2 3/3] nvme: introduce
+ nvmet_target_{setup/cleanup} common code
+Message-ID: <u2esnihohobu5jaxgz3xdfpjfvfrnmkklzajjrckdnr6g3i54b@qofopy4bhhlp>
+References: <20230818141537.22332-1-dwagner@suse.de>
+ <20230818141537.22332-4-dwagner@suse.de>
+ <3713297b-a5fb-b027-c34b-d56526155c4c@grimberg.me>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230818124504.3718266-1-nm@ti.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <3713297b-a5fb-b027-c34b-d56526155c4c@grimberg.me>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-23, 07:45, Nishanth Menon wrote:
-> Hi,
+On Sun, Aug 20, 2023 at 05:58:34PM +0300, Sagi Grimberg wrote:
+> > diff --git a/tests/nvme/003 b/tests/nvme/003
+> > index 71b82ce758a3..eed1f549866a 100755
+> > --- a/tests/nvme/003
+> > +++ b/tests/nvme/003
+> > @@ -22,15 +22,8 @@ test() {
+> >   	_setup_nvmet
+> > -	local loop_dev
+> > -	local port
+> > -	port="$(_create_nvmet_port "${nvme_trtype}")"
+> > -
+> > -	loop_dev="$(losetup -f)"
+> > -
+> > -	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}"
+> > -	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
+> > +	_nvmet_target_setup --blkdev=device
 > 
-> Convert the long pending free-form text bindings of ti-cpufreq and
-> omap5-opp-supply bindings to json-schema.
-> 
-> Changes since V4:
-> * Fix up comments from Krzysztof for patch #1
-> * Picked up Krzysztof reviewed-by for patch #1
-> * Picked up Dhruva's Reviewed-by for patches 1 and 2.
-> 
-> V4: https://lore.kernel.org/all/20230811031458.957624-1-nm@ti.com/
-> V3: https://lore.kernel.org/all/20230809023045.1870410-1-nm@ti.com/
-> V2: https://lore.kernel.org/all/20230801233341.1416552-1-nm@ti.com/
-> V1: https://lore.kernel.org/all/20230724153911.1376830-1-nm@ti.com/
-> 
-> Nishanth Menon (2):
->   dt-bindings: opp: Convert ti-omap5-opp-supply to json schema
->   dt-bindings: cpufreq: Convert ti-cpufreq to json schema
+> --blkdev=device by default no?
 
-Applied. Thanks.
-
--- 
-viresh
+Yes. I thought it is better to be explicit in the tests. I don't mind
+dropping --blkdev=device if you think we should use the defaults.
