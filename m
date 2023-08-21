@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E9B783511
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF16783513
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbjHUV7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S231211AbjHUV7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:59:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjHUV67 (ORCPT
+        with ESMTP id S231130AbjHUV7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:58:59 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CC6132
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:58:56 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fee843b44cso20801665e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:58:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692655135; x=1693259935;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xZx0If7VnJ4j8LySOPTnKHBC3HYJ+LY29Fzf9AdSRdo=;
-        b=wwE+i55gac9vrq6+Vw6RsJhUsFXlx1hfF862zikhtnEQO122lP7ycLTxuaXnV6FdBc
-         6hLlGZ9VL9ImHF1uHd83GrfUrCnfGjaDG1dHm/NepAvZFiJCzRhc3QqWvKzbMvwDm3mJ
-         UxPNbwVVuDzYmMex5oDV8RGD4Cz9iKYvUTr5dC8PT327GIb3uBu43Igh8AHPNf4nyf1D
-         xofx1990g1JHr6+6wzB10SGBnVxfIRsEUslUxt9hDo9UOuyrSKsTVefZVMfM6bpwRd4T
-         uJ6brI4WIcPlE+iv+NFeQlTc/iQ4iPwrW69GMkcVmplNNRz6XWo3maGaKuSSaiAqdl4g
-         KKpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692655135; x=1693259935;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xZx0If7VnJ4j8LySOPTnKHBC3HYJ+LY29Fzf9AdSRdo=;
-        b=R8U9O5FScnDsNQuJ1kTGZToGXKAHspZT+RVWoGNl6ykeChplT3LGnOPxOCSfeDqxgX
-         SggcdMQNvC3UhBQjCBIO0M8Ps+SFo4i2USNaNCaR6KJPZhZWVctbUG6F0XIkmideVLwY
-         voaKwcKGSHxWM3WnAPHIb8ZTTAox3Xjxnh9Qai1higAjkJPTnzKNorFj+7dSmEPR4H7X
-         wnf4horxmKV6/q0gquSwlutKvgskWMAXrlqakPE69ddQ1z0fDoibILxdUf0+cvpXFBLz
-         dcCxPv9lDxF8lnrhDUluz0wpjVcbh28nOcXR7vVxNKSPWDFtxpQaew/XUonjfa/Ysjgf
-         FEJw==
-X-Gm-Message-State: AOJu0YwxlsfZoj5zidtnDGoAuEwDVYFAS2W1hCBj6YHi/UJ69GaHlSmu
-        0eN0KTq+mtkTwFanK557gFUYrQ==
-X-Google-Smtp-Source: AGHT+IGqaJ0z3qsZS7fHqemlFDnbowpWoGIAo1Ej0l0pZFtCvg4vwqJnBNbf6iQM4cfHiGp9kjfspg==
-X-Received: by 2002:a05:600c:3b16:b0:3fe:5802:676a with SMTP id m22-20020a05600c3b1600b003fe5802676amr6048491wms.4.1692655135016;
-        Mon, 21 Aug 2023 14:58:55 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id z9-20020adfe549000000b0031762e89f94sm13694168wrm.117.2023.08.21.14.58.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 14:58:54 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 22:58:52 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
- for 6.1.y
-Message-ID: <20230821215852.qc5e6cqjbkgob6nf@airbuntu>
-References: <20230820152417.518806-1-qyousef@layalina.io>
- <2023082140-dreaded-hemstitch-84b9@gregkh>
+        Mon, 21 Aug 2023 17:59:22 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0AA13D;
+        Mon, 21 Aug 2023 14:59:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692655153;
+        bh=gZ6LBhKsreODtwHlWscg5RW9+vYn4aDYWet+eOpcrcc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=axRLjdS354QunRZHd2/A0OAQUywjMhIUhDY2oXN04IMclqQ94R72l8h30X+f5Xbig
+         7xhYUdFpcRhgDOwyFQNu/QQRQCLNytbUrZvbOhE0nNOs2UkfMxgtHM0NrYSLbwwrwm
+         CPKZBEf2m/AeGITdnMvbYZn0U1vy7ipsExjcVbBdQ/IdKMIBzZvhWMphRr+x3DroB5
+         N62rxVGgvsjl5N4Xvjq9m9mnK5PnXOI3WQBC/ccNK/Kb7jzelNkA4x3OpT/IUtrmNg
+         HEUpqS7Lndiq8ooz1wCLUJs816ZeVhpQoN+HOl1AjoxThbtRv4RSxO4Iq93rs7iI2I
+         80SDoVzNuEpMA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RV5wd4DT5z4wxN;
+        Tue, 22 Aug 2023 07:59:13 +1000 (AEST)
+Date:   Tue, 22 Aug 2023 07:59:00 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Asmaa Mnebhi <asmaa@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the gpio-brgl tree
+Message-ID: <20230822075900.22cafc5f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2023082140-dreaded-hemstitch-84b9@gregkh>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/GNRm6cSuCRSfE8R165ibu8X";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/21/23 15:26, Greg KH wrote:
-> On Sun, Aug 20, 2023 at 04:24:11PM +0100, Qais Yousef wrote:
-> > This is a backport of the series that fixes the way deadline bandwidth
-> > restoration is done which is causing noticeable delay on resume path. It also
-> > converts the cpuset lock back into a mutex which some users on Android too.
-> > I lack the details but AFAIU the read/write semaphore was slower on high
-> > contention.
-> > 
-> > Compile tested against some randconfig for different archs and tested against
-> > android14-6.1 GKI kernel.
-> > 
-> > My testing is limited to resume path only; and general phone usage to make sure
-> > nothing falls apart. Would be good to have some deadline specific testing done
-> > too.
-> > 
-> > Based on v6.1.46
-> 
-> I can't take these for only some branches, as you know.  Any reason why
-> you didn't also do 6.4.y?
+--Sig_/GNRm6cSuCRSfE8R165ibu8X
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Beside being tunneled visioned towards LTS only, nope.
+Hi all,
 
-They apply cleanly on 6.4.y and preparing the patches now. I'm not sure I can
-run any tests on 6.4.y though except maybe boot test on qemu.
+In commit
 
-Waiting for compile tests to finish and will post shortly.
+  38a700efc510 ("gpio: mlxbf3: Support add_pin_ranges()")
 
+Fixes tag
 
-Thanks!
+  Fixes: cd33f216d24 ("gpio: mlxbf3: Add gpio driver support")
 
---
-Qais Yousef
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    This can be fixed for the future by setting core.abbrev to 12 (or
+    more) or (for git v2.11 or later) just making sure it is not set
+    (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GNRm6cSuCRSfE8R165ibu8X
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTj3iUACgkQAVBC80lX
+0GxmUgf8DUsVaGvdGwtSieAOwYNt5KOG6Nv2xJkKXSyFxUGFlzwbb+bDx/neREmY
+r0dD44yXTtzzTKifQ1YW64aYN/2QX8XiZLmsb3u4zG5FmJj1TwkbJlhzo7C7VPDA
+UwZ7OuXLd8LoEI05S6VwfZVu4GymXpJkl4Y1lReloxrWMUZKzGksD3y01q/TChI9
+WGqqugO/rCcnhOM8XCAie50Zn1aNwK00IpFiEnT62cQa/iHVMFEraoP38UzcY2Cu
+YP4xDs6W9ES6wc9a626apmPeHP3wstT7vhMvI8NgjszuILcGwcs7dCHPWjVOkBIR
+4RrGlXVDs6XQksxIlvl+ih5KUkg1zg==
+=PaGK
+-----END PGP SIGNATURE-----
+
+--Sig_/GNRm6cSuCRSfE8R165ibu8X--
