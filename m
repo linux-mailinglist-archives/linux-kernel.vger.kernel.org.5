@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5AF7829A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71D47829AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbjHUM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S235145AbjHUM6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235090AbjHUM5V (ORCPT
+        with ESMTP id S230486AbjHUM6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:57:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B242B1;
-        Mon, 21 Aug 2023 05:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bkpIHgJ72JldiWUel9wVfgGF2ysEoVcz7b0lE+gT6jg=; b=KQ5ekz5vxHnK1vYsygUx286252
-        wC/k81Uz0vXgbfMXfbYd7VEJ+FI/9GEX2VVAdfdEALcbJUc+CBei90d2g5U4kRXMoG5Ob1qkcUWSu
-        R5GkY6BHiP/gBoTaARanxeNcZlIq97x4IW+46JrXCoI242sxhLQKXXoYZt1MJK4hp+g25ZQBsjEuE
-        hVpq2u4TRwZkSxi9Xmf60gv+Kg9LzK8HndFeTog/7l7Rl0wxPi4qVMPK3NOBTo2hTBczoXn8+axfF
-        mPe5a0lCNTzriPNwDFxsknbOIviTDiyLQ931aoKOZk+awBJLPg3a8Kh0pRVYC0W9KcDugFaZLz7eY
-        I5+DtpMA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qY4T2-00AIWb-Jt; Mon, 21 Aug 2023 12:57:12 +0000
-Date:   Mon, 21 Aug 2023 13:57:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
- to give credits to who sponsored the patch
-Message-ID: <ZONfKKwFaDQpuZ9w@casper.infradead.org>
-References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
- <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
- <20230817232348.GC1175@pendragon.ideasonboard.com>
- <ZN65iiRiSLmXz89k@casper.infradead.org>
- <87ttss7q8o.fsf@intel.com>
- <ZONTiijMLWbt6naQ@casper.infradead.org>
- <87o7j07frk.fsf@intel.com>
+        Mon, 21 Aug 2023 08:58:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9DFB1;
+        Mon, 21 Aug 2023 05:58:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CBD76356E;
+        Mon, 21 Aug 2023 12:58:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52CF6C433C8;
+        Mon, 21 Aug 2023 12:58:33 +0000 (UTC)
+Message-ID: <c0c40891-416d-5acd-7a9c-d980c6a24997@xs4all.nl>
+Date:   Mon, 21 Aug 2023 14:58:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o7j07frk.fsf@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v7 0/5] Add Toshiba Visconti Video Input Interface driver
+Content-Language: en-US, nl
+To:     Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230714015059.18775-1-yuji2.ishikawa@toshiba.co.jp>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <20230714015059.18775-1-yuji2.ishikawa@toshiba.co.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 03:15:43PM +0300, Jani Nikula wrote:
-> On Mon, 21 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
-> > On Mon, Aug 21, 2023 at 11:29:27AM +0300, Jani Nikula wrote:
-> >> On Fri, 18 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
-> >> > but you might have (eg)
-> >> >
-> >> > Laurent Pinchard (Coca-Cola) <laurent.pinchart@ideasonboard.com>
-> >> >
-> >> > and then when working for another sponsor:
-> >> >
-> >> > Laurent Pinchard (Ford) <laurent.pinchart@ideasonboard.com>
-> >> 
-> >> Just an observation, git shortlog -s/-se groups/distinguishes,
-> >> respectively, the author and sponsor in Laurent's approach. Not so with
-> >> Matthew's approach.
-> >
-> > Hm?
-> >
-> > $ git shortlog -s next-20230817..
-> >      1  Matthew Wilcox (Novartis)
-> >     25  Matthew Wilcox (Oracle)
-> >
-> > $ git shortlog -se next-20230817..
-> >      1  Matthew Wilcox (Novartis) <willy@infradead.org>
-> >     25  Matthew Wilcox (Oracle) <willy@infradead.org>
+Hi Yuji,
+
+On 14/07/2023 03:50, Yuji Ishikawa wrote:
+> This series is the Video Input Interface driver
+> for Toshiba's ARM SoC, Visconti[0].
+> This provides DT binding documentation,
+> device driver, documentation and MAINTAINER files.
 > 
-> $ git shortlog v6.4.. -s --author="Laurent Pinchart"
->     12  Laurent Pinchart
+> A visconti VIIF driver instance exposes
+> 1 media control device file and 3 video device files
+> for a VIIF hardware.
+> Detailed HW/SW are described in documentation directory.
+> The VIIF hardware has CSI2 receiver,
+> image signal processor and DMAC inside.
+> The subdevice for image signal processor provides
+> vendor specific V4L2 controls.
 > 
-> $ git shortlog v6.4.. -se --author="Laurent Pinchart"
->      2  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
->     10  Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> The device driver depends on two other drivers under development;
+> clock framework driver and IOMMU driver.
+> Corresponding features will be added later.
 
-I must not be understanding your point correctly.
+Trying to compile this series on top of our latest staging tree fails
+due to v4l2-async changes that have been merged. So for v8 please
+rebase to the staging tree.
 
-$ git shortlog v6.4.. -s --author="Matthew Wilcox"
-     7  Matthew Wilcox
-     1  Matthew Wilcox (Novartis)
-   123  Matthew Wilcox (Oracle)
+I also got a few kerneldoc warnings:
 
-That seems to me like it successfully distinguishes my fake commit on
-behalf of Novartis (who I haven't actually worked for since 1997) from
-my real commits on behalf of Oracle.  It also shows a few places where
-my commits weren't attributed to Oracle (I think this happens when I
-send patches using mutt instead of git-send-email)
+drivers/media/platform/toshiba/visconti/viif.h:217: warning: Function parameter or member 'ops_lock' not described in 'isp_subdev'
+drivers/media/platform/toshiba/visconti/viif.h:233: warning: Function parameter or member 'ops_lock' not described in 'csi2rx_subdev'
+drivers/media/platform/toshiba/visconti/viif.h:254: warning: Function parameter or member 'post_enable_flag' not described in 'viif_l2_roi_path_info'
+
+Regards,
+
+	Hans
+
+> 
+> Best regards,
+> Yuji
+> 
+> Changelog v2:
+> - Resend v1 because a patch exceeds size limit.
+> 
+> Changelog v3:
+> - Add documentation to describe SW and HW
+> - Adapted to media control framework
+> - Introduced ISP subdevice, capture device
+> - Remove private IOCTLs and add vendor specific V4L2 controls
+> - Change function name avoiding camelcase and uppercase letters
+> 
+> Changelog v4:
+> - Split patches because a patch exceeds size limit
+> - fix dt-bindings document
+> - stop specifying ID numbers for driver instance explicitly at device tree
+> - use pm_runtime to trigger initialization of HW
+>   along with open/close of device files.
+> - add a entry for a header file at MAINTAINERS file
+> 
+> Changelog v5:
+> - Fix coding style problem in viif.c (patch 2/6)
+> 
+> Changelog v6:
+> - add register definition of BUS-IF and MPU in dt-bindings
+> - add CSI2RX subdevice (separeted from ISP subdevice)
+> - change directory layout (moved to media/platform/toshiba/visconti)
+> - change source file layout (removed hwd_xxxx.c)
+> - pointer to userland memory is removed from uAPI parameters
+> - change register access (from struct style to macro style)
+> - remove unused macros
+> 
+> Changelog v7:
+> - remove redundant "bindings" from header and description text
+> - fix multiline text of "description"
+> - change "compatible" to "visconti5-viif"
+> - explicitly define allowed properties for port::endpoint
+> - remove unused variables
+> - update kerneldoc comments
+> - update references to headers
+> 
+> Yuji Ishikawa (5):
+>   dt-bindings: media: platform: visconti: Add Toshiba Visconti Video
+>     Input Interface
+>   media: platform: visconti: Add Toshiba Visconti Video Input Interface
+>     driver
+>   media: add V4L2 vendor specific control handlers
+>   documentation: media: add documentation for Toshiba Visconti Video
+>     Input Interface driver
+>   MAINTAINERS: Add entries for Toshiba Visconti Video Input Interface
+> 
+>  .../bindings/media/toshiba,visconti-viif.yaml |  108 +
+>  .../driver-api/media/drivers/index.rst        |    1 +
+>  .../media/drivers/visconti-viif.rst           |  462 +++
+>  MAINTAINERS                                   |    4 +
+>  drivers/media/platform/Kconfig                |    1 +
+>  drivers/media/platform/Makefile               |    1 +
+>  drivers/media/platform/toshiba/Kconfig        |    6 +
+>  drivers/media/platform/toshiba/Makefile       |    2 +
+>  .../media/platform/toshiba/visconti/Kconfig   |   18 +
+>  .../media/platform/toshiba/visconti/Makefile  |    8 +
+>  .../media/platform/toshiba/visconti/viif.c    |  681 ++++
+>  .../media/platform/toshiba/visconti/viif.h    |  375 ++
+>  .../platform/toshiba/visconti/viif_capture.c  | 1485 +++++++
+>  .../platform/toshiba/visconti/viif_capture.h  |   22 +
+>  .../platform/toshiba/visconti/viif_common.c   |  199 +
+>  .../platform/toshiba/visconti/viif_common.h   |   38 +
+>  .../platform/toshiba/visconti/viif_controls.c | 3407 +++++++++++++++++
+>  .../platform/toshiba/visconti/viif_controls.h |   18 +
+>  .../platform/toshiba/visconti/viif_csi2rx.c   |  684 ++++
+>  .../platform/toshiba/visconti/viif_csi2rx.h   |   24 +
+>  .../toshiba/visconti/viif_csi2rx_regs.h       |  102 +
+>  .../platform/toshiba/visconti/viif_isp.c      | 1258 ++++++
+>  .../platform/toshiba/visconti/viif_isp.h      |   24 +
+>  .../platform/toshiba/visconti/viif_regs.h     |  716 ++++
+>  include/uapi/linux/v4l2-controls.h            |    6 +
+>  include/uapi/linux/visconti_viif.h            | 1800 +++++++++
+>  26 files changed, 11450 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/toshiba,visconti-viif.yaml
+>  create mode 100644 Documentation/driver-api/media/drivers/visconti-viif.rst
+>  create mode 100644 drivers/media/platform/toshiba/Kconfig
+>  create mode 100644 drivers/media/platform/toshiba/Makefile
+>  create mode 100644 drivers/media/platform/toshiba/visconti/Kconfig
+>  create mode 100644 drivers/media/platform/toshiba/visconti/Makefile
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx_regs.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.h
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_regs.h
+>  create mode 100644 include/uapi/linux/visconti_viif.h
+> 
+
