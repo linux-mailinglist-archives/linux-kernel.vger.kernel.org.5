@@ -2,161 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D1A782ECC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3059782ECA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236796AbjHUQvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
+        id S236789AbjHUQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236795AbjHUQvN (ORCPT
+        with ESMTP id S236774AbjHUQvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:51:13 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CD7184
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:09 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bed101b70so465160766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:09 -0700 (PDT)
+        Mon, 21 Aug 2023 12:51:01 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5093110D
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d6ce0c4489bso4624222276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692636667; x=1693241467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rjzd+fSCL+R20OAcRpQyLo14Qr7E7n5zqxoYWNbyqEM=;
-        b=dOXKRVdF9+P3SNADdlbZshfwcjxQqf7LjXq/PyQBgXwSlee49f7vjB69G56IRk3G22
-         DDfv+HyTBkoABeTDbstgI0UC446OpM/wjUt4wddJfJAB/0q2IxOEm8+Q266es/IeD0n8
-         9CR486L7bXY5K1/wsIj65yj8ugXqpmBAN3XOU=
+        d=google.com; s=20221208; t=1692636657; x=1693241457;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DrXD26cwrSohEjsiyzQGHaMTNTd0Am1wC0c7gF01+5M=;
+        b=kB0qhS6MTVzMjer+btbUGYGmZadhhFxqtAdWeIcW1L9Qs/K5eBHRXTBcwo3IbTFk4l
+         Rbo02uv22lv3sDo4S9R1cq7/kmX/+Rn/4P1f8LPHPpFkk60gfmDU3GHO5vN9KtM159EP
+         mIFPdmbtOBYX5SZaP2wYlsM9N1nPmJshwy/2DS2JnYedr6UqXTQDjYELSUKWY5Q3IlPl
+         XxsmkU/NnNUsvIHz5WU6Y5L55xplKk/eg4lDRQjtJB9RVchJf+hFQrw1GITPA8XLhMXY
+         b7KwH5nUaMIoZ/HPEVE1L+BtRxiSsuvbWCb9GdHT+JEt+jGtU4ArvfKCtH9jfjkGHAhF
+         P7Wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692636667; x=1693241467;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rjzd+fSCL+R20OAcRpQyLo14Qr7E7n5zqxoYWNbyqEM=;
-        b=UWYK4GdOQUvU5a8NA5mOxbTLvPnOzTDFHxDedeU9WXWkMr0L0WkkVgrli2JEHEHUvr
-         16t1205sGkb37grtNCjSLx5Xx1PQxaYo7yrxC3kIiB3B0wQ/+SIKGQAa+7UgHi4oZuUP
-         1TcG6ZDgiQSHgSC/7W2uLyBRxmfuXsrLCb/oYHnLgFmXU+vCt1E0sjlIMNOYJ3bb75gu
-         gI99qBu96VO/znpL9ujR1aLoSoPFNPEuJb1yn2P9bdBjCXpebYjp5RCFnkR2O+6x6MtD
-         G2JDuntj21HRcayNcZRlqPdI6yF1Lnn9Y+XPWtj8aZ/bAnM+VX3klZhvuXpyw8c8AhCs
-         G5Fg==
-X-Gm-Message-State: AOJu0YxR47WK+qwOb/x2nogZZJ9umf0VQChmupV/pv31M7mNpzAPAJBb
-        1ovte5SZvfc8OXWpg+NDQbuQ+NAtxvu9CxSAv9KKd+bs
-X-Google-Smtp-Source: AGHT+IG2nIsEZSlHl7cX5/GeygovY25uQZZ5u/3yFP55bWjAKqnhFuwoK4hjQDw43N2JigfJM2U3/A==
-X-Received: by 2002:a17:906:55cf:b0:99c:8906:4b25 with SMTP id z15-20020a17090655cf00b0099c89064b25mr5586856ejp.74.1692636666948;
-        Mon, 21 Aug 2023 09:51:06 -0700 (PDT)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id r25-20020a170906a21900b00992f309cfe8sm6789774ejy.178.2023.08.21.09.51.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 09:51:06 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so2765e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:05 -0700 (PDT)
-X-Received: by 2002:a05:600c:511d:b0:3f7:e4d8:2569 with SMTP id
- o29-20020a05600c511d00b003f7e4d82569mr366wms.5.1692636665703; Mon, 21 Aug
- 2023 09:51:05 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl> <b6fa0cfae0072c2fbc0591d619f328324bfbe1ad.1692484240.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <b6fa0cfae0072c2fbc0591d619f328324bfbe1ad.1692484240.git.mirq-linux@rere.qmqm.pl>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 21 Aug 2023 09:50:53 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XftP6icTWK-xEPJvBiuXLeCDpy1ORiwedxNtw7z2Rp6w@mail.gmail.com>
-Message-ID: <CAD=FV=XftP6icTWK-xEPJvBiuXLeCDpy1ORiwedxNtw7z2Rp6w@mail.gmail.com>
-Subject: Re: [PATCH 5/6] regulator: core: propagate error out ouf regulator_lock_two()
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20221208; t=1692636657; x=1693241457;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DrXD26cwrSohEjsiyzQGHaMTNTd0Am1wC0c7gF01+5M=;
+        b=ffFAaCudotK94mQEggt/KgnBrywDtP+C6m7M0sAv1rCwYog4GnPu5AW1FtImsU8h7l
+         RCokZjDufshW3lMN/7tukKsE7dGPBkrkGSeLmYBHdqgEF2csKS/QPX7YU/X5K+UGKvTA
+         UJjmS2QRBGaVESe29PIiicfzU907Y4E70NThajTGItEr1cw+7ZAQ41mmHIpPfXTeqPgj
+         FYh57mVUX5IsE7OoTdzmTVGRADgRepxvKiQRmUCxC2x2sm/XpCNCosdmZjNSF6NrW2ud
+         iMm3Bu/4mjuxcxQZ3Jzfi5PAxTlltVoBZOeUXnkM6ye5ZQSJUVlHYNpgPlxep4ywmBDI
+         fqiw==
+X-Gm-Message-State: AOJu0Yz7p/ijRhEBJ14y4NH92RcU0i++gPN387L91UMs56wvuG3lwkPE
+        G4tnJ7WzZLDA3LVurg6jhTnTH0D1L4g=
+X-Google-Smtp-Source: AGHT+IGDcRVJN5xrXnJ++QrK4QSZF2m59xIJaZVD8x78pxgBrcNoXX1F+BvA04cxk6udcTuYjBDMJWYCju8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:2442:0:b0:d11:6816:2d31 with SMTP id
+ k63-20020a252442000000b00d1168162d31mr55337ybk.7.1692636657585; Mon, 21 Aug
+ 2023 09:50:57 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 16:50:56 +0000
+In-Reply-To: <14f97819-11af-5072-d4f2-a7b4f16d734e@suse.com>
+Mime-Version: 1.0
+References: <cover.1692580085.git.jpoimboe@kernel.org> <a4d62162bcb501e50b0bb19b748702aa12260615.1692580085.git.jpoimboe@kernel.org>
+ <45ef7bcc-d52e-3759-403b-e4b5a79a4a4f@citrix.com> <20230821162337.imzjf3golstkrrgd@treble>
+ <ZOOSXc9NE1rMHDZ1@google.com> <14f97819-11af-5072-d4f2-a7b4f16d734e@suse.com>
+Message-ID: <ZOOV8CoKqC/71IUW@google.com>
+Subject: Re: [PATCH 03/22] KVM: x86: Support IBPB_BRTYPE and SBPB
+From:   Sean Christopherson <seanjc@google.com>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, David.Kaplan@amd.com,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Aug 21, 2023, Nikolay Borisov wrote:
+>=20
+> On 21.08.23 =D0=B3. 19:35 =D1=87., Sean Christopherson wrote:
+> > On Mon, Aug 21, 2023, Josh Poimboeuf wrote:
+> > +               if (!boot_cpu_has(X86_FEATURE_IBPB))
+> > +                       reserved_bits |=3D PRED_CMD_IBPB;
+> > +
+> > +               if (!boot_cpu_has(X86_FEATURE_SBPB))
+> > +                       reserved_bits |=3D PRED_CMD_SBPB;
+> > -               if (!boot_cpu_has(X86_FEATURE_IBPB) || (data & ~PRED_CM=
+D_IBPB))
+> > -                       return 1;
+>=20
+> Surely data must be sanitized against reserved_bit before this if is
+> executed?
 
-On Sat, Aug 19, 2023 at 3:46=E2=80=AFPM Micha=C5=82 Miros=C5=82aw <mirq-lin=
-ux@rere.qmqm.pl> wrote:
->
-> Fix up error paths from regulator_lock_two(): although it should not
-> fail, returning with half-locked state after issuing a WARN() asks
-> for even more trouble.
->
-> Fixes: cba6cfdc7c3f ("regulator: core: Avoid lockdep reports when resolvi=
-ng supplies")
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> ---
->  drivers/regulator/core.c | 29 ++++++++++++++++++-----------
->  1 file changed, 18 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index de434d550937..d8c2277cea36 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -197,9 +197,9 @@ static void regulator_unlock(struct regulator_dev *rd=
-ev)
->   *
->   * Locks both rdevs using the regulator_ww_class.
->   */
-> -static void regulator_lock_two(struct regulator_dev *rdev1,
-> -                              struct regulator_dev *rdev2,
-> -                              struct ww_acquire_ctx *ww_ctx)
-> +static int regulator_lock_two(struct regulator_dev *rdev1,
-> +                             struct regulator_dev *rdev2,
-> +                             struct ww_acquire_ctx *ww_ctx)
-
-Please update the kerneldoc to talk about the return value.
-
-
->  {
->         struct regulator_dev *held, *contended;
->         int ret;
-> @@ -208,10 +208,13 @@ static void regulator_lock_two(struct regulator_dev=
- *rdev1,
->
->         /* Try to just grab both of them */
->         ret =3D regulator_lock_nested(rdev1, ww_ctx);
-> -       WARN_ON(ret);
-> +       if (WARN_ON(ret))
-> +               goto exit;
->         ret =3D regulator_lock_nested(rdev2, ww_ctx);
-> -       if (ret !=3D -EDEADLOCK) {
-> -               WARN_ON(ret);
-> +       if (!ret)
-> +               return 0;
-
-Aren't you missing the "ww_acquire_done()" in this case? I know it's
-optional, but nice to call it anyway...
-
-
-> +       if (WARN_ON(ret !=3D -EDEADLOCK)) {
-> +               regulator_unlock(rdev1);
->                 goto exit;
->         }
->
-> @@ -225,15 +228,15 @@ static void regulator_lock_two(struct regulator_dev=
- *rdev1,
->                 contended->mutex_owner =3D current;
->                 swap(held, contended);
->                 ret =3D regulator_lock_nested(contended, ww_ctx);
-> -
-> -               if (ret !=3D -EDEADLOCK) {
-> -                       WARN_ON(ret);
-> +               if (!ret)
-> +                       return 0;
-
-Aren't you missing the "ww_acquire_done()" in this case?
-
-
-Overall, I guess I'm OK with this. I agree that we'd be in pretty bad
-shape if we exited the routine and left one of the mutexes acquired,
-which the old code could have done. However, at the same time these
-error cases really shouldn't happen anyway. In that sense, I guess
-they really should be BUG_ON(), but IIRC that's discouraged. Thus, I
-think your patch is the right direction.
-
-
--Doug
+Heh, yeah, I missed that minor detail in my quick write-up.
