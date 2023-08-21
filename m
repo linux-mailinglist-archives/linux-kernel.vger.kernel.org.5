@@ -2,169 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FA2782645
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B79C78264F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjHUJat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
+        id S234402AbjHUJcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbjHUJar (ORCPT
+        with ESMTP id S234389AbjHUJcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:30:47 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2057.outbound.protection.outlook.com [40.107.220.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56C295;
-        Mon, 21 Aug 2023 02:30:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gvB+zAFV5qSI+fmJGh0T8LJnKiLacL3sh+h2Gernlg7SSwQL5hNRaeMF10+5kFKe7vvEInEq1ud/K0YUU8KC6MSntq64SMpuSUQZXyk3ITVCEOQFii9EB4kWgCQ1/ZbjUG+epxrnQ0t+wuhQrGBBF+eeI6mrqrIPCl6iF4kMtw1ITSziZxFb3asFtdj/rb5QEfyrIdwX/2t7sRPzEuDJE/hwUBRlbadMrJvJPZ9m4eYij8kcjzJlsE5S7T6Bmu9gTmtJEsSH4HtTBv06EFXxwjUAJS9Pg/4qPaQDWa/7iInASgI+DWUxB+aSa7MQGfaWn2YUTf9dU4wRM2WPbS62fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nlhfXcMulsAXXrhdZuMP8PkfM1r3pLDIku5KSg5FPiA=;
- b=IbpmVzcxvDpN1mmAQ5ki/LCciVyEQyNYUv+JszLowKQn9bMdfCmSAC059h4bGVafexFKwAuUXzfnOCxhQ73skaV3A39dVmFObdUfJcCuE71T8LLwZDMUYzpQwfibIjhm2SCpmuPgDfC7pMEVMVCc6pwj2tig0tR3Xles3DG6ukz9S0zhTMtyQyccEDDLgnDQTAtip/dgveVgFPl9YwmOpMCNbK9VmZukh4805QZclso/FiOJVJYa3LEdRlGgjpaMeDDjqV3SxsWskm1g00ViSBPRG7kHdm3mKBv7ezUs377ATlcModlN/9s/LvJy0524VBzKvMEG3v811nbZz7ZLGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nlhfXcMulsAXXrhdZuMP8PkfM1r3pLDIku5KSg5FPiA=;
- b=Gog6o4EpuJGbGrCxZaOp2mPjZexIuOKdgpFvh5KlDIKgRHRQ5ecR/y2lCAKVP/VNGfRCARGRQBpZCTnbGRUJFLf13G3W/VPex2r3s+Y21BFpOJwXEH0oXZX/ytVJx68QgxwmCzOkzduVUBMtcT5zGyWzIhiQigzx5XYdn8bNBqs=
-Received: from SJ0P220CA0025.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:41b::16)
- by DM4PR12MB6136.namprd12.prod.outlook.com (2603:10b6:8:a9::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 09:30:42 +0000
-Received: from MWH0EPF000971E9.namprd02.prod.outlook.com
- (2603:10b6:a03:41b:cafe::5b) by SJ0P220CA0025.outlook.office365.com
- (2603:10b6:a03:41b::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
- Transport; Mon, 21 Aug 2023 09:30:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- MWH0EPF000971E9.mail.protection.outlook.com (10.167.243.71) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Mon, 21 Aug 2023 09:30:42 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 21 Aug
- 2023 04:30:41 -0500
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 21 Aug
- 2023 02:30:40 -0700
-Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
- Transport; Mon, 21 Aug 2023 04:30:39 -0500
-From:   Srinivas Goud <srinivas.goud@amd.com>
-To:     <broonie@kernel.org>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <git@amd.com>, <gcnu.goud@gmail.com>,
-        Srinivas Goud <srinivas.goud@amd.com>
-Subject: [PATCH] spi: spi-cadence: Fix data corruption issues in slave mode
-Date:   Mon, 21 Aug 2023 15:00:16 +0530
-Message-ID: <1692610216-217644-1-git-send-email-srinivas.goud@amd.com>
-X-Mailer: git-send-email 2.1.1
+        Mon, 21 Aug 2023 05:32:12 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA68E4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:32:00 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40c72caec5cso373121cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692610319; x=1693215119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=laAe1Bo4NZ8AdV8W9Bh3WsToh2Bjfo6A1xgGVoYjoyQ=;
+        b=dLa7m7YOFXaI8f3LH4rmihbtsr0xg3WAuCXck0gHdLLzonLi1YVjZzMuNX+7sPul3v
+         gSojDkMsPLSogLdEbUM6mySPFZTo7tXT8cWUxXiHJM18TI0HXs10W24ppFH4eywBoQ0P
+         SjjvA3ak2E/K7OTROdIm789q+Hj60/+PZwxX479WbHalkuq7FfhUWWYDdXDgkqYIa+Cq
+         IGfAuXNtJSpMseZUcI1g7EV9hmyv4X5DqBtA/QdTWMU0Zx/bDqPjei50o3dF87DSfPqB
+         U/vqX4L71zson4Sjp52xAf8fD4z3DJHLzscqUpLgHRTMOQ+8HbJfPyBAOJaxB/n69CM8
+         P/bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692610319; x=1693215119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=laAe1Bo4NZ8AdV8W9Bh3WsToh2Bjfo6A1xgGVoYjoyQ=;
+        b=bPuH8tHPSO1lx9gaSXzvUaRFRL4kZQXWnpYIIXyEC0SquTvUcQizZ2pCSInvjIAwmE
+         1j6h8depKS6OtpScg7Ee/ZHRvmje21c7HEBqtIj1hFugeZr45bELOnecWgxjuXPAc5mt
+         Ma2qXUl8/7dpAyg8ZFQCWvZpU2xncNyo88joREI63sr29fYNIC+dTkIlLQAsNO+NaSAa
+         TnZA21UK0lRlatya/sgcr0ItRqTBfE1k40RFrwz56PcQ4NalZQBfL+idZ0as/9Nq087D
+         Wn1878teIFU6DaKVWJU0l61BdFa2cEq62fl9nI9DuwHrg+qyObiO+FJnABqMjoFFIScw
+         xLfA==
+X-Gm-Message-State: AOJu0YykRXHv7qF3YcSxTAjcSN1LJjzCsH8NW3i6O1QZQBg4zYxAGn+U
+        R/cK33pOxvro+vg1eXXjw5w3R+Tg4at0JfCN73Xu5A==
+X-Google-Smtp-Source: AGHT+IGsyBh91ymEq6DEeNpzIVHw7+WcMyX8lYQffIO3qca7jbZOrPGYPHweVK6U14iNXO73ZrJVgVuQHp3pHi8oVcE=
+X-Received: by 2002:a05:622a:1801:b0:3f0:af20:1a37 with SMTP id
+ t1-20020a05622a180100b003f0af201a37mr510984qtc.15.1692610319419; Mon, 21 Aug
+ 2023 02:31:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E9:EE_|DM4PR12MB6136:EE_
-X-MS-Office365-Filtering-Correlation-Id: e3f883ed-df37-408e-be34-08dba2294a1e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8ftxRYXsq5IgK2qYyBI/AwrG5wyMLHZHCX2hYHfhrUM9AKckpZf+r7XrxiG92rtCBnq2629aAcoU6xXy/1qz6Mh16GO98ckpIrCGWQKnQxqeneaPbIsOxGJQvHVHId8MoSLvgwjqO53NCpu+uIGK28R8Chln0io5E+0cVPHMtKTvDEt4PNvsBLuqHIVWc3jhSAYBv2MXoYbs3VZUE3EaFBWbnAnQ6/QfYVNme5Ulom1ZEmTY1B5bwg+khOYMcf5OeywEEw5sTJVf6CiW27eVNwKyf5x1fOGM4w5lZkYT4kB4Tlr0LbN90yCwERbFmK4G4W4GKpwN7sagdfOQGEVYccHt2i0BZyPfyAlSDy4++MvcLFyi53H2/uLXEs5TbHiREaAlrnjqG6K6a8IdyTFMMnN4dgUqx2eSeI3BDGgbuvk1r6/93IJ2HFv4Cc3U1s5ed+X64D5uy3qCihAmofLQnQ14QyAFOX37/gvzlpeXLKs48m8wj+cak8FJE9VoASC8hRs8Hqn3cNpZfHf02wsqzpVT39y9HaU9eQROut9vFuy4s2SKbxR60TUvag2Fl5/x3KjPUmukufSCSoJybjWAhgYfBvQAOVx0rf5E/JeKVQUHwpD2xJJmXUvkOp0GFIKM4QmexqVOD8YU5xs2YiErT5nrEqUQu9H6jGpn2oZKllJi5j7fE2zlr0T5Gmus1kYyLzRE5iWxaE6Bp20jbLWm2AFx5E17YjgRwDS1h0QRrHcYiG2oOqJAy0KBKEDaNk+pG3PWOXJFD/ERFK3WIejjKw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(136003)(39860400002)(82310400011)(451199024)(186009)(1800799009)(36840700001)(40470700004)(46966006)(2906002)(83380400001)(40480700001)(5660300002)(44832011)(336012)(426003)(26005)(86362001)(36860700001)(47076005)(8676002)(2616005)(8936002)(4326008)(70206006)(316002)(6916009)(54906003)(70586007)(478600001)(82740400003)(356005)(81166007)(6666004)(40460700003)(41300700001)(36756003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 09:30:42.2382
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3f883ed-df37-408e-be34-08dba2294a1e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6136
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.3.I326c62dc062aed8d901d319aa665dbe983c7904c@changeid>
+ <ZN5pK03Drao/egeF@nvidia.com>
+In-Reply-To: <ZN5pK03Drao/egeF@nvidia.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Mon, 21 Aug 2023 17:31:23 +0800
+Message-ID: <CAKHBV27k8F0ZLy=RA=WhjJ7+C9JMHRRnKs=4W4pJMNmxrMEXxw@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 3/8] iommu/arm-smmu-v3-sva: Allocate new ASID from installed_smmus
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, will@kernel.org, nicolinc@nvidia.com,
+        tina.zhang@intel.com, jean-philippe@linaro.org,
+        robin.murphy@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove 10us delay in cdns_spi_process_fifo() (called from cdns_spi_irq())
-to fix data corruption issue on Master side when this driver
-configured in Slave mode, as Slave is failed to prepare the date
-on time due to above delay.
+On Fri, Aug 18, 2023 at 2:38=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
+>
+> On Fri, Aug 18, 2023 at 02:16:25AM +0800, Michael Shavit wrote:
+> > Pick an ASID that is within the supported range of all SMMUs that the
+> > domain is installed to.
+> >
+> > Signed-off-by: Michael Shavit <mshavit@google.com>
+> > ---
+>
+> This seems like a pretty niche scenario, maybe we should just keep a
+> global for the max ASID?
+>
+> Otherwise we need a code to change the ASID, even for non-SVA domains,
+> when the domain is installed in different devices if the current ASID
+> is over the instance max..
 
-Add 10us delay before processing the RX FIFO as TX empty doesn't
-guarantee valid data in RX FIFO.
-
-Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- drivers/spi/spi-cadence.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/spi/spi-cadence.c b/drivers/spi/spi-cadence.c
-index 42f101d..b21d125 100644
---- a/drivers/spi/spi-cadence.c
-+++ b/drivers/spi/spi-cadence.c
-@@ -317,12 +317,6 @@ static void cdns_spi_process_fifo(struct cdns_spi *xspi, int ntx, int nrx)
- 	xspi->rx_bytes -= nrx;
- 
- 	while (ntx || nrx) {
--		/* When xspi in busy condition, bytes may send failed,
--		 * then spi control did't work thoroughly, add one byte delay
--		 */
--		if (cdns_spi_read(xspi, CDNS_SPI_ISR) & CDNS_SPI_IXR_TXFULL)
--			udelay(10);
--
- 		if (ntx) {
- 			if (xspi->txbuf)
- 				cdns_spi_write(xspi, CDNS_SPI_TXD, *xspi->txbuf++);
-@@ -392,6 +386,11 @@ static irqreturn_t cdns_spi_irq(int irq, void *dev_id)
- 		if (xspi->tx_bytes) {
- 			cdns_spi_process_fifo(xspi, trans_cnt, trans_cnt);
- 		} else {
-+			/* Fixed delay due to controller limitation with
-+			 * RX_NEMPTY incorrect status
-+			 * Xilinx AR:65885 contains more details
-+			 */
-+			udelay(10);
- 			cdns_spi_process_fifo(xspi, 0, trans_cnt);
- 			cdns_spi_write(xspi, CDNS_SPI_IDR,
- 				       CDNS_SPI_IXR_DEFAULT);
-@@ -439,12 +438,18 @@ static int cdns_transfer_one(struct spi_controller *ctlr,
- 		cdns_spi_setup_transfer(spi, transfer);
- 	} else {
- 		/* Set TX empty threshold to half of FIFO depth
--		 * only if TX bytes are more than half FIFO depth.
-+		 * only if TX bytes are more than FIFO depth.
- 		 */
- 		if (xspi->tx_bytes > xspi->tx_fifo_depth)
- 			cdns_spi_write(xspi, CDNS_SPI_THLD, xspi->tx_fifo_depth >> 1);
- 	}
- 
-+	/* When xspi in busy condition, bytes may send failed,
-+	 * then spi control didn't work thoroughly, add one byte delay
-+	 */
-+	if (cdns_spi_read(xspi, CDNS_SPI_ISR) & CDNS_SPI_IXR_TXFULL)
-+		udelay(10);
-+
- 	cdns_spi_process_fifo(xspi, xspi->tx_fifo_depth, 0);
- 	spi_transfer_delay_exec(transfer);
- 
--- 
-2.1.1
-
+This RFC took the other easy way out for this problem by rejecting
+attaching a domain if its currently assigned ASID/VMID
+is out of range when attaching to a new SMMU. But I'm not sure
+which of the two options is the right trade-off.
+Especially if we move VMID to a global allocator (which I plan to add
+for v2), setting a global maximum for VMID of 256 sounds small.
