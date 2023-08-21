@@ -2,128 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93282782AFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC70782AF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbjHUNxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
+        id S235600AbjHUNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235216AbjHUNxI (ORCPT
+        with ESMTP id S235603AbjHUNwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:53:08 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A933810E
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:52:52 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MiKz3eZkHEnQddB/9K4XG/cbphtAj8dkYr3m52DtNQtsAFk//zDwspgbRj29WobZLXIKp6YpjavbV+XzDz8MaryK9oV6C+uRIXkFTv+9z70yhf0k9tikJ1uVY2FJyUco/Z7E2SUQFXJTyghIZhLke5LAwTVJPdaKM+Rctr590pb/KVh26qJ/wqref2WeZyNEDdfzF8IOcDLOcxq2vZFmz0krb6TdlIo6CS5r4kBQUMzwnO/Ir733E5E2UTgLraYGgQhRemkG925oOwQ6sAFtWh6eRq4Nh2yERfX+UCjS8LBO5NqjKg9tbdGr7OT/5vrHspqY+mZ5LxgNFH+0vQDc7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R9CTl149D1VOHF1Oojo4EDp05BNsgn22FD0jdLu1LUs=;
- b=jkcFoYhAueeaDG2orzr+qveF+rYOF6UaxDcD6i0ZrPU4xptYLEqw8MDLa/cFaKIVeCeYOoBLf6d+AGzDsFHegwRMhIHbLcfZjouQeaJbMnHbdAm1oL3ZKQKOrqY3xV8oqc+gxf60NnAVsa2OMP+QnmCIE5xh8P6CLjVYSW6tXm3KQbJIQZfCzMUPEq5jCH7vHyu8uArikcJOY2l2KAopBAZa8BkETxVpBNoyDMS1fjHH4R0VxVTDAgJIAQ3Rsf0OsWbj0T7n43Hw8NCSxGvYJ475nkAZNvVsRK0eWwM+aL+Ch5HPLHCwPoURkcQzUOJNaoNoJzTryUFsDqN/Pxhp0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R9CTl149D1VOHF1Oojo4EDp05BNsgn22FD0jdLu1LUs=;
- b=Rty+YU57He0GnIG/V4ImLKT/08/zTo6bY+DEYB090pfdzpHvB403XPsq3WENs02WS5oDJdC31xS6raADMmjSAi6nllrmKJfp7NY1RsHCwMQ6rZdu59HXfuegb67d+pNTJVUc5KYGZznTLa9BfBexElZdJ4BHZJwv9AvxtSoweSk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
- by LV8PR12MB9359.namprd12.prod.outlook.com (2603:10b6:408:1fe::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Mon, 21 Aug
- 2023 13:52:24 +0000
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 13:52:24 +0000
-Message-ID: <6be29845-2f40-f5c0-1a7d-892605ce58df@amd.com>
-Date:   Mon, 21 Aug 2023 19:22:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 4/7] drm/amdgpu: Add suspend function to clear the GPU
- power profile.
-Content-Language: en-US
-To:     Shashank Sharma <shashank.sharma@amd.com>,
-        Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        amd-gfx@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
- <20230821064759.94223-5-Arvind.Yadav@amd.com>
- <b3c5f921-f518-d3e4-29fb-693a549877b8@amd.com>
-From:   "Yadav, Arvind" <arvyadav@amd.com>
-In-Reply-To: <b3c5f921-f518-d3e4-29fb-693a549877b8@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0039.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:98::15) To PH7PR12MB6000.namprd12.prod.outlook.com
- (2603:10b6:510:1dc::15)
+        Mon, 21 Aug 2023 09:52:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA8FFB;
+        Mon, 21 Aug 2023 06:52:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 38F23637DC;
+        Mon, 21 Aug 2023 13:52:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77AA4C433CC;
+        Mon, 21 Aug 2023 13:52:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692625933;
+        bh=cvZKI6CutDqUJMhqEq/JkcDvLQxKRqv6XPP79QB6G0w=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ApNztc2OWU3LwGej6PnbpU79gILicADLqoie1CwkEWOIrnYO2WypP756GjH519lnA
+         1jebdMU7Ixr8HK3VIyhn+s+okVc/SfW9YFfJFTaM7sNAJBUjRiD4hELsOkBdmhUIGJ
+         s/E7U7Et1jlgjY2nXamYcKR/iqZ/oI5DWdbzSn23sWUlHzV4bNVcxZaDBOkkFtp9PK
+         U64oEwaqoN0pxb03tmH+v/7pPTKrQHvXz20Z2VnXtR45loYQ9SNhpcBKe7cDmLqe5m
+         D/5Jdm4RVVRtJczh+SLX2fx11ThfNqNBru0RFhukUdQSPKAmA2JRmdDjJg/IMV3OQq
+         aSRQFVWjfj+ZA==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dave Jiang <dave.jiang@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+Cc:     dmaengine@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <20230811012635.535413-1-fenghua.yu@intel.com>
+References: <20230811012635.535413-1-fenghua.yu@intel.com>
+Subject: Re: [PATCH 1/2] dmaengine: idxd: Allow ATS disable update only for
+ configurable devices
+Message-Id: <169262593212.224153.5681728730609800123.b4-ty@kernel.org>
+Date:   Mon, 21 Aug 2023 19:22:12 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|LV8PR12MB9359:EE_
-X-MS-Office365-Filtering-Correlation-Id: 47b4622d-1281-4745-79ff-08dba24dd91a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qhodX2nU0Lq69SDAY6n033+RWaFZ0Y6htINa9fh+OztBbHFkYje7gOlpeem3IvXOkNRjQifzZDyibpaKSMBNdc8zsLSNva0CI6URNoDlh2b4EER17rnTuUDWOLBfDsG4pSzjJ6Kwjcf5qcbizFWpCxvavsRHRsJ4fdh1nUZZWmdtqa9JOzii4Nbp+2vYgPuZLpzKIY3VDK/0BjIHH08yYiUOQsofS5XuutXp9L8rxVge9XMtJEL5/lnuhAwljzjNIOCAplm1DnZpEXKedAqBgK4GqC5oYOqV4aAk4EC282DLppUTOiint8J5ebhKp5cP5o7DWhUJHcqrqC4e3B/EIjFgUREuyECNT1WE5Qcb6LnCdkK8vnzcueBosvcCra9s6NfUnZqNnovTCSqD4yuzEZSeQHVDEYI3JY8Mrhfsir6n6jEs5NZKlywGNULHdlmyWEP+lsc22/+xIlgM76nnTdSfcZz0S+lkHPT98fC5BZ5DNuz8xOWwJdA6loCHyOG4Cyb8zZ59mVqRfh/w1T9+/j9/nZfoWdPoIukxXeoAlPs4JZusloNJneRngtIxBDzbCA5PovV4vZCYvWHFsOxR/ISg7F0G7HCkk7mjWU2aOnlfkWTWsRxkK0cQzLyzKsoD2yoUXmZry/dhWWqANwC8DA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(346002)(396003)(451199024)(186009)(1800799009)(36756003)(31696002)(31686004)(83380400001)(6486002)(4326008)(5660300002)(2906002)(41300700001)(53546011)(8936002)(26005)(6506007)(2616005)(6666004)(6512007)(8676002)(110136005)(478600001)(316002)(66946007)(38100700002)(66476007)(66556008)(15650500001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3dYTXRUcVBEYndWZWx5TVF4MmJhMHJvaGZyeHdPeG5qUUp0OER0UWw2V2M0?=
- =?utf-8?B?VEFTNm9mMWhkSXFpeWIyUkM5N2FyUjh3RVRoR0ZxaWIvNTAwZ0hiYmRJMmh4?=
- =?utf-8?B?T2xzT2g3UTZXK0tRYnhtVGZqUlhkVnZYNkpna1p2VDNWRTc4OGthUm9GVEVL?=
- =?utf-8?B?eDcyRnlyOHhHdDZLZk04NUNzZThaL2NGSW9RTnZKTTM1R05qb0dESlo0QTk2?=
- =?utf-8?B?Q1VaYm1IWHoxbnFBSmEyOVdZRllXajRnWDFwQjRNZG1QNWdaNFpOSXdaL1JF?=
- =?utf-8?B?QlY4T0NZQVNuL1BsWnYvUHVIRURIeFpFcTVvOUJYbXl4TlBETVBmbmhjQ1JB?=
- =?utf-8?B?MjVPWjRkb1J6amV2U051MFpFRWpndmQ0NWtPSlEwOHJPUHdKSGtCUmxPTjRY?=
- =?utf-8?B?THp3bVdMT0ZOcFh5TEVDMWFLMWhsL3h1N1pvRDJjam91VVAwbml2Z1hxTG9o?=
- =?utf-8?B?RTJGREJ2a2h6aHFrM2RwTWpaalIxejJXOU9PdlRkc2R1V1lHaDB4ZVY1VlFv?=
- =?utf-8?B?UDBCYkVYUS9WOVJrL3QzYnVkelU4alYvMEduL2VaTmJDZGU0elpjWFhobGxR?=
- =?utf-8?B?VFhaNWIxdkFUQllFWW5DTnZqbnlxZFV0WkZYbGJNY1lDckVNNmd6T2czSFdR?=
- =?utf-8?B?eTlYT3VmWGhQOGpmQTZUQVBJSWt1ekYzTUFlYndvdGNZUFkwRFRQVGV0aEE3?=
- =?utf-8?B?R25xYlB2bkVTMjBYUWZLQU9IcVhEek9JRUR3R0s0ckk0cTJ3QXo5a2pEVDFF?=
- =?utf-8?B?bzlUbjZDOStFSWNPMTk3eU9GN0pBWnNhT0d0Q3R1d0pqSHE5VDBLOCtjc1pV?=
- =?utf-8?B?WC9NZUdjZ0VFY3FJZkFCWFhYYVZZUHhHZWNlZlQraTFXWXZFQjJ3anNHbUl6?=
- =?utf-8?B?a3drSjYxeE1UdXU5QTNOY0lGeEFmdkdHNXFGVzFydUp6ZTVhdUpDbDVIT2xQ?=
- =?utf-8?B?V0svTHp3bmdBMjVSMGI2QzV3WEI4WWUwbllkNHBPbW9EQkdtazBLb3BwWXlK?=
- =?utf-8?B?TlRtUkpOQjdXVGliWmVvQVlnUmc3S25abTFJOE9tVkd1K01MTWlGTC9zaDZh?=
- =?utf-8?B?MU9XWCthK21NWCtFcTVaNUpKYk5BaVdrQkxBa2ZOQmorTnZXNW9Tc3NWcXZs?=
- =?utf-8?B?WkxRWVQ4TWVDN2tJbVhNclllS2pTWmdyR2hETzdDSHV3cGRkejJHekg4Q0pt?=
- =?utf-8?B?VkJCdXAyT3gwVEIwZk1EbUJuUlVxcXk3ak8rS2x3YVNXOXVneFZMeE4rMWJw?=
- =?utf-8?B?TUhjck9IQUFUMWFKbkZQMU5mRDN5dG9wWGgzVlVyNGZvMW8yZFVVRUQ5andN?=
- =?utf-8?B?Ty9UM0p1RVZiekRVU2kzV2x3dHFGaTJUM2hzNFIrc2ZTRE9CekhNeVhKVVkx?=
- =?utf-8?B?YlQxSERKcXpVSmx6dFY1bVhQVElZdGZtSnZuaGZjNUh5eS83Y0NLUWtNZTUr?=
- =?utf-8?B?V0wrYk1vQXdvSHArcXZISDlkem11cFpidkpOWS8wbHd2N0FLWlowNlZ2bk05?=
- =?utf-8?B?SEdFVnp4RTA2WE9waGdpY3VyR0d2blZBVlZ5emZONTl5UUlEbXZMTCtYMWp1?=
- =?utf-8?B?T2lQdTNRKzZLVWpocVRoNEc2a2dUTFZUVlF4Y2V2YW8yUHlnUks5K3B0VHJP?=
- =?utf-8?B?MTJCazhrUDROUVhPUTl0Smw1cWlWU3ZrV1FmN2pMV2ozNUpIYXJUaVo5NXV5?=
- =?utf-8?B?bmJnc1cvK0Y3Q0FzeFZ2V0VTNXpuUUp4RVBmWEFaVGxQT0lqQ3JJczRPYlJq?=
- =?utf-8?B?YUhvL3lqeEpkNmNWMGVVVEgzUFRmVjVPOTErazNIc1orOHl2ZnZ1alN6SWZv?=
- =?utf-8?B?a29DL1FETHVqK2ZZeGlaQjZ0cklkS3JtbDdES0Z2c09Cc3Yram0yVWR6OHpx?=
- =?utf-8?B?VTZ1cXgyN3M0WlhRMXA3dXkxcnBqM3J3M0xtWmwrcXY0dmxmdjEzRW1lNjJF?=
- =?utf-8?B?Uy9hcUxaOUpKR3NRMlVSVVpEQkRUVXRoK2xLcmZtaHdVNFBXc1JPL2JXOHpP?=
- =?utf-8?B?L0FYNmlPV3pKekZLMm9Bcjh1M0xXY0JkZ2xKR0JoZGFBU0trV25sVEFoYWFt?=
- =?utf-8?B?V3lXSUx1R3hnNm5pd1hlMnl6R1dmK1dRQTU1M0IwZVY0TVVrem8xSVhNNDV0?=
- =?utf-8?Q?HV5C8qI98PHKqEoV4HhptgrRz?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47b4622d-1281-4745-79ff-08dba24dd91a
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:52:24.5926
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hZqVp8jnlJmROAb2CNgaQFwFKDXJRyq1T+S44nbiDl0FK9DAunz4ngkcakgmUSzd6CsXILfjJbwGMUYmDL2Byw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9359
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -131,99 +58,22 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/21/2023 7:13 PM, Shashank Sharma wrote:
->
-> On 21/08/2023 08:47, Arvind Yadav wrote:
->> This patch adds a suspend function that will clear the GPU
->> power profile before going into suspend state.
->>
->> v2:
->> - Add the new suspend function based on review comment.
->>
->> Cc: Shashank Sharma <shashank.sharma@amd.com>
->> Cc: Christian Koenig <christian.koenig@amd.com>
->> Cc: Alex Deucher <alexander.deucher@amd.com>
->> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |  2 ++
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 23 +++++++++++++++++++
->>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  2 ++
->>   3 files changed, 27 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> index cd3bf641b630..3b70e657b439 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> @@ -4212,6 +4212,8 @@ int amdgpu_device_suspend(struct drm_device 
->> *dev, bool fbcon)
->>         amdgpu_ras_suspend(adev);
->>   +    amdgpu_workload_profile_suspend(adev);
->> +
->>       amdgpu_device_ip_suspend_phase1(adev);
->>         if (!adev->in_s0ix)
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> index 6367eb88a44d..44ca8e986984 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> @@ -174,6 +174,29 @@ void amdgpu_workload_profile_set(struct 
->> amdgpu_device *adev,
->>       mutex_unlock(&workload->workload_lock);
->>   }
->>   +void amdgpu_workload_profile_suspend(struct amdgpu_device *adev)
->> +{
->> +    struct amdgpu_smu_workload *workload = &adev->smu_workload;
->> +    int ret;
->> +
->> +    mutex_lock(&workload->workload_lock);
->> + cancel_delayed_work_sync(&workload->smu_delayed_work);
->> +
->> +    /* Clear all the set GPU power profile*/
->> +    for (int index = fls(workload->submit_workload_status);
->> +         index > 0; index--) {
->> +        if (workload->submit_workload_status & (1 << index)) {
->> + atomic_set(&workload->power_profile_ref[index], 0);
->> +            ret = amdgpu_power_profile_clear(adev, index);
->
-> Why do we need the checks here ? can't we simply set call 
-> power_profile_clear() for all profiles ?
+On Thu, 10 Aug 2023 18:26:34 -0700, Fenghua Yu wrote:
+> ATS disable status in a WQ is read-only if the device is not configurable.
+> This change ensures that the ATS disable attribute can be modified via
+> sysfs only on configurable devices.
+> 
+> 
 
-Hi Shashank,
+Applied, thanks!
 
-  If we use only one profile then why to clear others. But I can remove 
-the check and clear for all the profiles as per your suggestion.
+[1/2] dmaengine: idxd: Allow ATS disable update only for configurable devices
+      commit: 0056a7f07b0a63e6cee815a789eabba6f3a710f0
+[2/2] dmaengine: idxd: Fix issues with PRS disable sysfs knob
+      commit: 8cae66574398326134a41513b419e00ad4e380ca
 
-ThankYou,
-~Arvind
->
-> - Shashank
->
->> +            if (ret)
->> +                DRM_WARN("Failed to clear power profile %s, err = 
->> %d\n",
->> +                     amdgpu_workload_mode_name[index], ret);
->> +        }
->> +    }
->
->
->> +    workload->submit_workload_status = 0;
->> +    mutex_unlock(&workload->workload_lock);
->> +}
->> +
->>   void amdgpu_workload_profile_init(struct amdgpu_device *adev)
->>   {
->>       adev->smu_workload.adev = adev;
->> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h 
->> b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> index ee1f87257f2d..0acd8769ec52 100644
->> --- a/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> @@ -52,6 +52,8 @@ void amdgpu_workload_profile_put(struct 
->> amdgpu_device *adev,
->>   void amdgpu_workload_profile_set(struct amdgpu_device *adev,
->>                    uint32_t ring_type);
->>   +void amdgpu_workload_profile_suspend(struct amdgpu_device *adev);
->> +
->>   void amdgpu_workload_profile_init(struct amdgpu_device *adev);
->>     void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
+Best regards,
+-- 
+~Vinod
+
+
