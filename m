@@ -2,374 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F88F782A2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59864782A2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:13:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235336AbjHUNND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S232614AbjHUNNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:13:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235299AbjHUNM5 (ORCPT
+        with ESMTP id S235279AbjHUNM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Aug 2023 09:12:57 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9BCFF;
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECCEE2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:12:50 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99c1d03e124so419023566b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692623569; x=1693228369;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ph4bj2JE9yzl4L+Z7YlL2YAhIXL0uO8/2XI9ntDToVQ=;
+        b=l3oOXCGGKIiNhVVOlEdUewd/pmvcytIseBPXpgOdpkQcQ8thjGggHgxO6SgeTjYdh/
+         Egbmj8KyYS9b0Ml3zehz/FNy2ccVIBDmidw77jIUO3UxVNLyCFPqkg1TU6AVowYNaxbk
+         7Re97yiggHYJLaVWGJtA/5XtTlOV+hOajq9MIpbJP9ouYdXIp2IB6OxybJSacgq70GLv
+         nWXUXx1Lc4T/JOJAR/BZbsrm3K6ZaiyczBZUZC0r0PolzeSZY2pQiIzPJetJYNzYOsKC
+         z5SZ0/NBdGoTFnqRfdv094jDhnmQvIDkn99/TqEE+MfHXSmpDflPXlDVQsbjvSyDwfoZ
+         Qh3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692623569; x=1693228369;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ph4bj2JE9yzl4L+Z7YlL2YAhIXL0uO8/2XI9ntDToVQ=;
+        b=U+f+Hf+IJ9Q/bWAh8PX+vC4lnZ6Jjn/iufF2v6vp/E+JoxEbzTtDoJ2haIUcR+If9K
+         3/UOMAea73AxHbdQyzsdCbem9YfzN2MiZzGSX5366b85VM0CFOXmW/z1k57SkQzm23IY
+         R2AJOBScVkZRTQUIYlMbJ11vNzfsJRedgO0WB/Hr3kldiuLT/9nty+PiL6X/9zpnZxgu
+         uP4Jhetz0da/Ju+IL1bDyWCml8Getd4P+YSgONSQnu8JehXUVpmjjWlQKAClhiIQtJSV
+         TtN7ENstfX5ZN5v1b9KbPuIk76s3qgtiSjfAaDeX/6MCe21vRD9v2gO3reejWruwjp2V
+         8X6w==
+X-Gm-Message-State: AOJu0Yx6s3TdKtqKKJ8WLxDsYwHz+5GXFcrFKmG9US1lCYbiT6cAR6ID
+        ozdFHyEl9FjbY7uFHAaVsMeB2w==
+X-Google-Smtp-Source: AGHT+IH+3SmODhee1b7JSmRuMG8rb8itCh0JRCEBqsSoEyQCgOdF9obSTVQzCaITVsL+R6gKVO4F1Q==
+X-Received: by 2002:a17:906:21c:b0:99e:13f6:8a5a with SMTP id 28-20020a170906021c00b0099e13f68a5amr4759565ejd.20.1692623569387;
         Mon, 21 Aug 2023 06:12:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 872EC22183;
-        Mon, 21 Aug 2023 13:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692623563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rbz4u7oCmPMNJcykidjw87NvSWL/0d2WcDQJ9atnf6U=;
-        b=MBrQKC7AGsE8Y3bUEPoIL8B6H1Qyl+zDFp8IyKqJaM4FKZ1qmczAscraw/2+6OcMW+MuT3
-        u9+PNVQdGOod2zh+2Y1mGPBLYBAQwMSr/Rz+t592m9yElLhlCt9+dk4G+K5VL2W0kdJoF3
-        sT2oYSca9I+CKeYcUl2sUlC0eqjHl+k=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3FE5D139BC;
-        Mon, 21 Aug 2023 13:12:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 2BGyDsti42QUVgAAMHmgww
-        (envelope-from <petr.pavlu@suse.com>); Mon, 21 Aug 2023 13:12:43 +0000
-From:   Petr Pavlu <petr.pavlu@suse.com>
-To:     tariqt@nvidia.com, yishaih@nvidia.com, leon@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jgg@ziepe.ca, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Pavlu <petr.pavlu@suse.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH net-next v3 11/11] mlx4: Delete custom device management logic
-Date:   Mon, 21 Aug 2023 15:12:25 +0200
-Message-Id: <20230821131225.11290-12-petr.pavlu@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20230821131225.11290-1-petr.pavlu@suse.com>
-References: <20230821131225.11290-1-petr.pavlu@suse.com>
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id lw26-20020a170906bcda00b00993a37aebc5sm6438076ejb.50.2023.08.21.06.12.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 06:12:48 -0700 (PDT)
+Message-ID: <342de8f3-852f-9bfa-39c4-4d820f349305@linaro.org>
+Date:   Mon, 21 Aug 2023 15:12:47 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 11/50] dt-bindings: crypto: add sam9x7 in Atmel TDES
+Content-Language: en-US
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Varshini.Rajendran@microchip.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230728102442.265820-1-varshini.rajendran@microchip.com>
+ <09bd1388-02aa-32c7-319e-d7150a0f3e9c@linaro.org>
+ <1ec901d0-44c2-1d28-5976-d93abfffee67@microchip.com>
+ <37782447-43c7-50f9-b9b4-5fbca94ce8c6@linaro.org>
+ <96033a59-a2ea-c906-a033-84119c5783d7@linaro.org>
+ <adeed0b2-e09b-78cf-ebfd-08d3949ca9ea@microchip.com>
+ <57e9a9ff-26ed-62d1-91f8-cd5596f1c308@linaro.org>
+ <5235260c-8fd6-2b2a-58b9-703191fff526@linaro.org>
+ <697712da-bff9-4621-28ac-9c9f68a76e43@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <697712da-bff9-4621-28ac-9c9f68a76e43@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the conversion to use the auxiliary bus, the custom device
-management is not needed anymore and can be deleted.
+On 21/08/2023 15:00, Tudor Ambarus wrote:
+> 
+> 
+> On 8/21/23 13:10, Krzysztof Kozlowski wrote:
+>> On 21/08/2023 11:54, Tudor Ambarus wrote:
+>>>>>>> I am aware that there is no change in the crypto IP used. This patch is
+>>>>
+>>>> Actually, recent history showed us that it's not only the IP itself but
+>>>> its integration into final product that could have an influence on the
+>>>> behavior.
+>>>>
+>>>>>>> to add a SoC specific compatible as expected by writing-bindings
+>>>>>>> guideline. Maybe a bit more explanation in the commit description might
+>>>>>>> do the trick.
+>>>>>>>
+>>>>>>
+>>>>>> So you add a compatible that will never be used just to comply with
+>>>>>> the writing bindings guideline?
+>>>>>
+>>>>> How do you know that it is never going to be used? The guideline asks
+>>>
+>>> See
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git/tree/drivers/crypto/atmel-tdes.c?h=at91-dt#n1120
+>>
+>> What's there? One compatible? How does it prove that it will not be
+>> used? It only proves that currently it is not used... And anyway this is
+> 
+> Correct, as of now the compatible was not used to determine the hw caps,
+> the capabilities were retrieved by checking at runtime a version
+> register. I'm against adding a compatible that will not be used, in this
+> particular case, defining "microchip,sam9x7-tdes" in the driver but
+> still solely relying on the runtime version register interrogation.
+> Unfortunately the commit message does not reveal any intention and from
+> there these emails changed. Maybe it's just a matter of personal
+> preference, so I'll stop commenting on this.
 
-Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-Tested-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-by: Tariq Toukan <tariqt@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx4/intf.c | 125 ----------------------
- drivers/net/ethernet/mellanox/mlx4/main.c |  28 -----
- drivers/net/ethernet/mellanox/mlx4/mlx4.h |   3 -
- include/linux/mlx4/driver.h               |  10 --
- 4 files changed, 166 deletions(-)
+Hm, thanks for bringing this up, indeed it looks a bit redundant to have
+additional compatible strings if HW can identify itself. In such case,
+pretty often a generic compatible in the driver and DTS could do... but:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/intf.c b/drivers/net/ethernet/mellanox/mlx4/intf.c
-index 7579031786ac..a371b970ac1e 100644
---- a/drivers/net/ethernet/mellanox/mlx4/intf.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/intf.c
-@@ -38,15 +38,6 @@
- 
- #include "mlx4.h"
- 
--struct mlx4_device_context {
--	struct list_head	list;
--	struct list_head	bond_list;
--	struct mlx4_interface  *intf;
--	void		       *context;
--};
--
--static LIST_HEAD(intf_list);
--static LIST_HEAD(dev_list);
- static DEFINE_MUTEX(intf_mutex);
- static DEFINE_IDA(mlx4_adev_ida);
- 
-@@ -156,77 +147,6 @@ static void del_adev(struct auxiliary_device *adev)
- 	auxiliary_device_uninit(adev);
- }
- 
--static void mlx4_add_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	dev_ctx = kmalloc(sizeof(*dev_ctx), GFP_KERNEL);
--	if (!dev_ctx)
--		return;
--
--	dev_ctx->intf    = intf;
--	dev_ctx->context = intf->add(&priv->dev);
--
--	if (dev_ctx->context) {
--		spin_lock_irq(&priv->ctx_lock);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irq(&priv->ctx_lock);
--	} else
--		kfree(dev_ctx);
--
--}
--
--static void mlx4_remove_device(struct mlx4_interface *intf, struct mlx4_priv *priv)
--{
--	struct mlx4_device_context *dev_ctx;
--
--	list_for_each_entry(dev_ctx, &priv->ctx_list, list)
--		if (dev_ctx->intf == intf) {
--			spin_lock_irq(&priv->ctx_lock);
--			list_del(&dev_ctx->list);
--			spin_unlock_irq(&priv->ctx_lock);
--
--			intf->remove(&priv->dev, dev_ctx->context);
--			kfree(dev_ctx);
--			return;
--		}
--}
--
--int mlx4_register_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	if (!intf->add || !intf->remove)
--		return -EINVAL;
--
--	mutex_lock(&intf_mutex);
--
--	list_add_tail(&intf->list, &intf_list);
--	list_for_each_entry(priv, &dev_list, dev_list) {
--		mlx4_add_device(intf, priv);
--	}
--
--	mutex_unlock(&intf_mutex);
--
--	return 0;
--}
--EXPORT_SYMBOL_GPL(mlx4_register_interface);
--
--void mlx4_unregister_interface(struct mlx4_interface *intf)
--{
--	struct mlx4_priv *priv;
--
--	mutex_lock(&intf_mutex);
--
--	list_for_each_entry(priv, &dev_list, dev_list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&intf->list);
--
--	mutex_unlock(&intf_mutex);
--}
--EXPORT_SYMBOL_GPL(mlx4_unregister_interface);
--
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv)
- {
- 	return auxiliary_driver_register(&madrv->adrv);
-@@ -242,10 +162,7 @@ EXPORT_SYMBOL_GPL(mlx4_unregister_auxiliary_driver);
- int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- {
- 	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_device_context *dev_ctx = NULL, *temp_dev_ctx;
--	unsigned long flags;
- 	int i, ret;
--	LIST_HEAD(bond_list);
- 
- 	if (!(dev->caps.flags2 & MLX4_DEV_CAP_FLAG2_PORT_REMAP))
- 		return -EOPNOTSUPP;
-@@ -267,36 +184,6 @@ int mlx4_do_bond(struct mlx4_dev *dev, bool enable)
- 		dev->flags &= ~MLX4_FLAG_BONDED;
- 	}
- 
--	spin_lock_irqsave(&priv->ctx_lock, flags);
--	list_for_each_entry_safe(dev_ctx, temp_dev_ctx, &priv->ctx_list, list) {
--		if (!(dev_ctx->intf->flags & MLX4_INTFF_BONDING))
--			continue;
--
--		if (mlx4_is_mfunc(dev)) {
--			mlx4_dbg(dev,
--				 "SRIOV, disabled HA mode for intf proto %d\n",
--				 dev_ctx->intf->protocol);
--			continue;
--		}
--
--		list_add_tail(&dev_ctx->bond_list, &bond_list);
--		list_del(&dev_ctx->list);
--	}
--	spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--	list_for_each_entry(dev_ctx, &bond_list, bond_list) {
--		dev_ctx->intf->remove(dev, dev_ctx->context);
--		dev_ctx->context =  dev_ctx->intf->add(dev);
--
--		spin_lock_irqsave(&priv->ctx_lock, flags);
--		list_add_tail(&dev_ctx->list, &priv->ctx_list);
--		spin_unlock_irqrestore(&priv->ctx_lock, flags);
--
--		mlx4_dbg(dev, "Interface for protocol %d restarted with bonded mode %s\n",
--			 dev_ctx->intf->protocol, enable ?
--			 "enabled" : "disabled");
--	}
--
- 	mutex_lock(&intf_mutex);
- 
- 	for (i = 0; i < ARRAY_SIZE(mlx4_adev_devices); i++) {
-@@ -447,16 +334,11 @@ static int rescan_drivers_locked(struct mlx4_dev *dev)
- 
- int mlx4_register_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
- 	int ret;
- 
- 	mutex_lock(&intf_mutex);
- 
- 	dev->persist->interface_state |= MLX4_INTERFACE_STATE_UP;
--	list_add_tail(&priv->dev_list, &dev_list);
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_add_device(intf, priv);
- 
- 	ret = rescan_drivers_locked(dev);
- 
-@@ -474,9 +356,6 @@ int mlx4_register_device(struct mlx4_dev *dev)
- 
- void mlx4_unregister_device(struct mlx4_dev *dev)
- {
--	struct mlx4_priv *priv = mlx4_priv(dev);
--	struct mlx4_interface *intf;
--
- 	if (!(dev->persist->interface_state & MLX4_INTERFACE_STATE_UP))
- 		return;
- 
-@@ -495,10 +374,6 @@ void mlx4_unregister_device(struct mlx4_dev *dev)
- 	}
- 	mutex_lock(&intf_mutex);
- 
--	list_for_each_entry(intf, &intf_list, list)
--		mlx4_remove_device(intf, priv);
--
--	list_del(&priv->dev_list);
- 	dev->persist->interface_state &= ~MLX4_INTERFACE_STATE_UP;
- 
- 	rescan_drivers_locked(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index c4ec7377aa71..2581226836b5 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -42,7 +42,6 @@
- #include <linux/slab.h>
- #include <linux/io-mapping.h>
- #include <linux/delay.h>
--#include <linux/kmod.h>
- #include <linux/etherdevice.h>
- #include <net/devlink.h>
- 
-@@ -1091,27 +1090,6 @@ static int mlx4_slave_cap(struct mlx4_dev *dev)
- 	return err;
- }
- 
--static void mlx4_request_modules(struct mlx4_dev *dev)
--{
--	int port;
--	int has_ib_port = false;
--	int has_eth_port = false;
--#define EN_DRV_NAME	"mlx4_en"
--#define IB_DRV_NAME	"mlx4_ib"
--
--	for (port = 1; port <= dev->caps.num_ports; port++) {
--		if (dev->caps.port_type[port] == MLX4_PORT_TYPE_IB)
--			has_ib_port = true;
--		else if (dev->caps.port_type[port] == MLX4_PORT_TYPE_ETH)
--			has_eth_port = true;
--	}
--
--	if (has_eth_port)
--		request_module_nowait(EN_DRV_NAME);
--	if (has_ib_port || (dev->caps.flags & MLX4_DEV_CAP_FLAG_IBOE))
--		request_module_nowait(IB_DRV_NAME);
--}
--
- /*
-  * Change the port configuration of the device.
-  * Every user of this function must hold the port mutex.
-@@ -1147,7 +1125,6 @@ int mlx4_change_port_types(struct mlx4_dev *dev,
- 			mlx4_err(dev, "Failed to register device\n");
- 			goto out;
- 		}
--		mlx4_request_modules(dev);
- 	}
- 
- out:
-@@ -3426,9 +3403,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	devl_assert_locked(devlink);
- 	dev = &priv->dev;
- 
--	INIT_LIST_HEAD(&priv->ctx_list);
--	spin_lock_init(&priv->ctx_lock);
--
- 	err = mlx4_adev_init(dev);
- 	if (err)
- 		return err;
-@@ -3732,8 +3706,6 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
- 	if (err)
- 		goto err_port;
- 
--	mlx4_request_modules(dev);
--
- 	mlx4_sense_init(dev);
- 	mlx4_start_sense(dev);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4.h b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-index 36de79c8d053..d7d856d1758a 100644
---- a/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-+++ b/drivers/net/ethernet/mellanox/mlx4/mlx4.h
-@@ -882,9 +882,6 @@ enum {
- struct mlx4_priv {
- 	struct mlx4_dev		dev;
- 
--	struct list_head	dev_list;
--	struct list_head	ctx_list;
--	spinlock_t		ctx_lock;
- 	struct mlx4_adev	**adev;
- 	int			adev_idx;
- 	struct atomic_notifier_head event_nh;
-diff --git a/include/linux/mlx4/driver.h b/include/linux/mlx4/driver.h
-index 9cf157d381c6..69825223081f 100644
---- a/include/linux/mlx4/driver.h
-+++ b/include/linux/mlx4/driver.h
-@@ -58,22 +58,12 @@ enum {
- 	MLX4_INTFF_BONDING	= 1 << 0
- };
- 
--struct mlx4_interface {
--	void *			(*add)	 (struct mlx4_dev *dev);
--	void			(*remove)(struct mlx4_dev *dev, void *context);
--	struct list_head	list;
--	enum mlx4_protocol	protocol;
--	int			flags;
--};
--
- struct mlx4_adrv {
- 	struct auxiliary_driver	adrv;
- 	enum mlx4_protocol	protocol;
- 	int			flags;
- };
- 
--int mlx4_register_interface(struct mlx4_interface *intf);
--void mlx4_unregister_interface(struct mlx4_interface *intf);
- int mlx4_register_auxiliary_driver(struct mlx4_adrv *madrv);
- void mlx4_unregister_auxiliary_driver(struct mlx4_adrv *madrv);
- 
--- 
-2.35.3
+1. Adding specific compatibles for such case would have sense to be able
+to validate differences between DTS (like clocks, resets and power domains).
+
+2. Reading HW revision might require enabling clocks which might differ
+per variant, thus driver still might need to match according to some
+compatibles. After that matching, driver can get necessary clocks,
+enable them and read the HW version/revision. There is an example for this:
+Documentation/devicetree/bindings/cache/qcom,llcc.yaml
+drivers/soc/qcom/llcc-qcom.c
+We have there version of the block but clocks and register layout
+differ, thus we must have device-specific compatibles.
+
+> 
+>> just one implementation in one system. How can you possibly know all
+>> other possible implementations (other bootloaders/firmwares/systems)?
+>> One cannot. The guideline is there for specific reason.
+>>
+> 
+> I didn't say the guideline is wrong, I just tried to understand how this
+> particular case is handled.
+>>
+
+Best regards,
+Krzysztof
 
