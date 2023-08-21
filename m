@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A144782A64
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFFA782A6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbjHUNW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58986 "EHLO
+        id S235387AbjHUNYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235371AbjHUNWz (ORCPT
+        with ESMTP id S232495AbjHUNYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:22:55 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2043.outbound.protection.outlook.com [40.107.20.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C75CB4;
-        Mon, 21 Aug 2023 06:22:54 -0700 (PDT)
+        Mon, 21 Aug 2023 09:24:32 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2042.outbound.protection.outlook.com [40.107.100.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03A6CE;
+        Mon, 21 Aug 2023 06:24:29 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXQXYBJogHtpKHOiczJVMDdLpVcKGCEpuMtD5FiDj5VlGF1o+AtVQpH/lC0RralN7UcOm8GmFK5wo+ENSumCm08y6JEsaLZHrUuSkdHPpx2dGv+RdhuZWnlKYvhzjTzIfWnwxhp38bFncNpSkeTbOXWfzocgwjEMU1CZOV1BgmjRdpBqpq7TdsDA8ansu3/0hL7wgU1/ABtCHcIN5sQefmhamQUqzy1Q+guzPuvMTRpS1rnvlTIrhiqFSAX/OVyaQse22GSg38GBqzrVPBR90fS/l6ZJLBZOg8SZS16VWQlk3NLkhVahHSL+IxjTSO0fJ1VtxUZXcphmucE7UkvWCw==
+ b=jPVLhif48DWgv066N6bMhUXqn27ryuDlFZASBkE92Yvv9CGvlIRHffQrrC/FHneh5l0FvRwsiUVMD49tUMO7lhdIc62STNjtDQHbSR7PFTc71ECq019fTIr+76vfXXvunBSW/aQeG+rqsR4eZ7mWVsk1uzaOWBI+DOYKEYpBTAxTdZa6BSUCWTnrdDEvZsvkq8sx5JrpaZ+McYZLN0oroZeoEaiACz1wARRvugEwNsPlF5Y8f2qDi3kzX5uWDuKo8DyHt4ov1tgr2OwjCGgy/4awul4vKacAgk/ErGqNnjW0X0SUVnW/cnNULfwPDxGrX68P4t8i72sMEygV5T5Wjw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J7VZmrtIa7quUdwT3nqOGU6/vLzhqylM+o+xejs/fgM=;
- b=VEV0HhBiTLCQrSDj8paQb5Rc/lGYGjc1NoKZl76+41K6OsT6wyB81tCG7uBzMveZNLyfav4656Ync4r3Ryw6YUgnqU2oEoYxZUM1q6zcRzn28TyseP3jVkjq+pthvGSSfaX6aB8mKMBO2tD095t5jraGa209BAalByw9oTVFauuLpz8edoXAo26By35znZBl7Bz92fhrEC9Y+fqIzuzbnYq2jkQaEw5orxRCCDlM4Idfg+QiEByKxVgkEE1FoUaER7iQfHbUatrEDMXS+DO05+D0hhdeHX0lrGeNSvogkqyIOenO4hbb9Pk4F7rvJm/OZUNY0xqJ+2ghDaygP72I4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ bh=RDZpIT3zL3f1kV1OplTws3X1idG7ly59oTANcv+FNDs=;
+ b=MBDhajugmJCwNpimUEtNh5C1uytRtZA3HBlQZNxLPVpKy355WFTC7lZNGVpjjR9xOYxO6J038DpV+lPa1iEk58vvb0K2hsJDdmkZ/PpWgwF7kTpbxaaZZEh4M8WKw2PuCF+8gLhpqJCUaZVR2k6PFAm9AVdTCn6kPnl3g8NvxQVUU5El+GphzcVC3TiEaTMTH+RKaSS5fDRs7h8SfC2Gbp0OP4RfyAH33isSh59VgNZj+927dM4qVMmOf5JhB6W8uv/ezejQM+NOWECnPL51TciBrmTLLMEODqilK3tVbmrT1W36sfZzV2AsU4TB2qSQQbJcA055fEOz9usqfRDZcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J7VZmrtIa7quUdwT3nqOGU6/vLzhqylM+o+xejs/fgM=;
- b=U8UiSqyqDZJ9O+nTxU1df2jHLpXuP8bQnvPdJbrPO+ZXK3QkjE9yf3CTHnOnpnqxJlPgfRQYTt7ol3PWDAxd4jTYeT+eM8Ys7Mwyn8F2684bRbzydbs6eETrdY4cb51HtU1WtcO4H2hPSeedzpXZaQAzCQhNRsWrUPhQRLx1WSo=
-Received: from PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11)
- by DUZPR04MB9824.eurprd04.prod.outlook.com (2603:10a6:10:4dc::9) with
+ bh=RDZpIT3zL3f1kV1OplTws3X1idG7ly59oTANcv+FNDs=;
+ b=brI1hK9p0vbNlefaxFV+qj2BMEBh8Duslg659hmOlcA56B+rLBxeAFEa7zP8+Hbeaa+NTb8pLewvb0K5Hnb/cCg2qi6BNvLYLySpNFs2nZsBME+JEeYtf/QgAHI7IxKK6EkxnI3nx+k3cYc97PR2Ibbw0CGsJBYubkeGkcOudLKg0i3SgnKpLL6HbBQDoOdFnzhwa4XFznIhvZuo9rejQVw/LvTM6oIZLaGDBn2pcxNKjTdVpUXiQeQBznN/x1QK/RUtf0p20vfA7n8faSac+twpAjuyvKFBpomElI02MyDBF0ru1XkYNZe0rDjLfgKIwBtlAQGzGowx51aLxUVa1A==
+Received: from CY5PR15CA0140.namprd15.prod.outlook.com (2603:10b6:930:67::10)
+ by DM6PR12MB4089.namprd12.prod.outlook.com (2603:10b6:5:213::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
- 2023 13:22:50 +0000
-Received: from PAXPR04MB9185.eurprd04.prod.outlook.com
- ([fe80::d4ee:8daa:92f4:9671]) by PAXPR04MB9185.eurprd04.prod.outlook.com
- ([fe80::d4ee:8daa:92f4:9671%3]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 13:22:50 +0000
-From:   Shenwei Wang <shenwei.wang@nxp.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "imx@lists.linux.dev" <imx@lists.linux.dev>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
-Thread-Topic: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
-Thread-Index: AQHZ1DKVlmuct1FdqkW6dkezlQtrJw==
-Date:   Mon, 21 Aug 2023 13:22:50 +0000
-Message-ID: <PAXPR04MB91850D8807CE374BD7C30CC5891EA@PAXPR04MB9185.eurprd04.prod.outlook.com>
-References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
- <CAL_Jsq+XA_P-aRK9_WuGPmJ0_xJgsSr9smZy4BRbKZbmVsMQBQ@mail.gmail.com>
- <PAXPR04MB918539A19B8F817F623BBD1F891BA@PAXPR04MB9185.eurprd04.prod.outlook.com>
- <9927403d-6dd9-3e5e-8f9d-f38e6640f95f@linaro.org>
-In-Reply-To: <9927403d-6dd9-3e5e-8f9d-f38e6640f95f@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR04MB9185:EE_|DUZPR04MB9824:EE_
-x-ms-office365-filtering-correlation-id: f952da94-e547-49ed-c111-08dba249b7ed
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 52vlQqFzyHu312bbADJfVr4z7NRsXKysxqEXNhuiNQ94T0mAdyvjd1KmZsALd+rpS6uR93c+yG8AoUUe3EfJ32APjMy9cuFCWXAndSwIJSEF9i5D+vgzM4O/3kAKuj8UqWgYzt0hTdPOP6McHb1M79HlXioDwxPC+zN4trvVxu/aRUwQDLzDUvVfNmw2tYV1/145B2KSxG/58tGX1bgxcUm6lgq6QJGYQak8AbOa+MxDQa8yQrKlyZ/z+IwIysudcy6+R1cmQ8gODvsHCihxKHY4GLP0bgpp04LLQvT8J6INHEvwyrDYwh3ijdaitmvlT4gwDgiF6qCEJAhoxedVlpP9Gw6uUfL27qxI27ewU04Vjkuc4W8SvzBwlE5Urve5bfdzTSaWnejucHtO3ZdgW92MJnvzdxBJmayC54RKKi0sJxpZbJd8Ud0NmK6sl1AuRAoNAPNorI62X/Yz46yJ2xn/ZovMi0GxiLF3et3MmrusZ26gk3h/GAHoXWKUTovcv7QvXgrA5iCKjX+Br2Xrngd9JDhgnlyZsxGAjVQ/anka5nCOt846u1ud++h9voC8zxPXsUJg6ZPhQW9SaDG/A1c45q3twwF5zw+v9v2rAQA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9185.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(7416002)(45080400002)(53546011)(55236004)(38100700002)(38070700005)(6506007)(83380400001)(5660300002)(44832011)(52536014)(33656002)(26005)(7696005)(86362001)(8676002)(8936002)(4326008)(316002)(9686003)(66946007)(64756008)(54906003)(66446008)(66556008)(76116006)(66476007)(110136005)(966005)(478600001)(122000001)(55016003)(71200400001)(41300700001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sZdJQfJSIuyPj2n2R+qK+WR2wdEJP2RJ2DkpRhi3XSVC1eZgOc4qJJp2fooJ?=
- =?us-ascii?Q?UqAqA3D6QMXcwNlAG72PjYe1AxkdVbLEjmPQyHOPaQtJ9gOSwwo7s4C8vfoq?=
- =?us-ascii?Q?FXV9qRw8qRQwAVNnQzs4ZjGAcM7ntFyChjLZnVU71D9OZJC3IYIZ3XiFdzna?=
- =?us-ascii?Q?bYCUsZ/2xyTwbO9Rt9xoLFCLBzfNmR9UErKklHCQe6CupMqhIWt9ZkXjhtAe?=
- =?us-ascii?Q?EdtdQomdmySEFEKM1ylyWrL1IUIAdvV0H71+DK27urTmT/kfyfQvC7udHTFk?=
- =?us-ascii?Q?e9Z58PT53aOzfh1MnZh6VFb4IDexnfbb5f/fBlRKhoTRvVCemyFhMc1Q1xsn?=
- =?us-ascii?Q?F1Qg+UwHLshysVl8Z2N40xNAvSfpYFjPHj3cegrDMbk5yj5/P7+ItMnrF1ny?=
- =?us-ascii?Q?ybFbsub//afIp23/5k6mkm/jnH+Kpv3ThlwbGBRjtMm8JWDDrT6SDTi5jZw9?=
- =?us-ascii?Q?asr8NSgXV59uxh+llD1difPhM4S4TikvFSVWuH386InsuQh3P85sTlHE2qf6?=
- =?us-ascii?Q?QmnnuBNuhOSpVEuij7KkjP87E/syaEEF0rrs0jG9rC8G+7oISVSGYH8Gi2VY?=
- =?us-ascii?Q?1zV+0J5cLT8JMkI7AdRi6pPB+Sfs6lABzs9IC0PGDbAJVrljvKjKWwWsA3k6?=
- =?us-ascii?Q?BihFzXpvLZoiP5+VpiUHHUDyDh+DeGq4o0hyLbrtSWv50ZMFE/1VL4leWjyq?=
- =?us-ascii?Q?7WxjZbxD93tsyQtr/u5ptI8xyFsMAx0pchvLv5wvRxpEyQJ9rtFoH02hbRaU?=
- =?us-ascii?Q?3yQov2RytAtwzB3LgSTdBa5BaUcby7w+CqL3SoU9H3fgCbVSut912pRLxGcD?=
- =?us-ascii?Q?2zpWA2eoX1nH3VosoIx+HcEoVskJQjtED6jh55ph8Jioe6d7cHrMPHAE5DZ0?=
- =?us-ascii?Q?P9QuVkeyWBCpvw8UNd83Ftvz3YeunBBHwnOAQNZO93rsZwTfCD8Uu+E4QJqC?=
- =?us-ascii?Q?anus2A1aHBWzNv6rPiPOiXgSYFj86XFeE7s4nvB2kPIImCyeVYoe+hp5Rpzu?=
- =?us-ascii?Q?lWYG0Whdgod98esL1h7GzuSzyG/VneYFu77AcqLavpITL7iyopnMCJLX3amC?=
- =?us-ascii?Q?6nzCj28zgQR8QH9xzrO3zvLQEe0eoVKchjcCj2lUz6Z6U7hv18Yb73F3hTki?=
- =?us-ascii?Q?D/V5GU6aI+johTWt1ibQ9LFqEvWJkQ2mqvNhA3cDKJy2cD/DtRjc3T4vdx0l?=
- =?us-ascii?Q?TWlAf6TgIcsSJQQ8VTVK7awyqJx5XlCcpbJJb6nJq7jO73BwuDBwrk6X5Mmc?=
- =?us-ascii?Q?7eQeULddz2JTD3rYj5cjEQSZ/POdqsQIAWu0c3wAMPUaDcc1rzxVIOteUQb3?=
- =?us-ascii?Q?XiYEPYzc5ljhNiJ/xYr/FijCn6AanCzrXEQygBqq3J2zYTtSqWrqdSr427y+?=
- =?us-ascii?Q?aqCw9zHl3vS0PM7JU62QMZkx10NtRGu5gbqoacYRhOEHNe5ygmDH5K9ho3qz?=
- =?us-ascii?Q?Tnm8MFN8tpss9kPJm6iOdRonwPOcNbx8fh6wHHxgN8LtXn2yDV/7w0n4gN/H?=
- =?us-ascii?Q?YqdKBmcDnsncDxBteCDEvjRvKM6+77Ny8Lw/WpLFIs/Fw8PTrvg4UUV2b8wL?=
- =?us-ascii?Q?5bRHhFb2gHxvscIBNH6GD8EhjhMLbf9MlXS5LLWv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 13:24:27 +0000
+Received: from CY4PEPF0000E9D9.namprd05.prod.outlook.com
+ (2603:10b6:930:67:cafe::8c) by CY5PR15CA0140.outlook.office365.com
+ (2603:10b6:930:67::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
+ Transport; Mon, 21 Aug 2023 13:24:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000E9D9.mail.protection.outlook.com (10.167.241.77) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Mon, 21 Aug 2023 13:24:27 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 21 Aug 2023
+ 06:24:15 -0700
+Received: from [10.41.21.79] (10.126.230.37) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 21 Aug
+ 2023 06:24:11 -0700
+Message-ID: <63eea3ac-4714-2c54-c740-84f9f9e7fd64@nvidia.com>
+Date:   Mon, 21 Aug 2023 18:54:08 +0530
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9185.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f952da94-e547-49ed-c111-08dba249b7ed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Aug 2023 13:22:50.4890
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch 2/2] ACPI: processor: Add support to configure CPUFREQ
+ reduction pctg
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     <rui.zhang@intel.com>, <lenb@kernel.org>, <treding@nvidia.com>,
+        <jonathanh@nvidia.com>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sanjayc@nvidia.com>,
+        <ksitaraman@nvidia.com>, <srikars@nvidia.com>,
+        <jbrasen@nvidia.com>, <bbasu@nvidia.com>,
+        Sumit Gupta <sumitg@nvidia.com>
+References: <20230817093011.1378-1-sumitg@nvidia.com>
+ <20230817093011.1378-3-sumitg@nvidia.com>
+ <CAJZ5v0hkm6eou9E+CVwasURjPG3RtVH+TMvvzGqVwQnDDrBocA@mail.gmail.com>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <CAJZ5v0hkm6eou9E+CVwasURjPG3RtVH+TMvvzGqVwQnDDrBocA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.126.230.37]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D9:EE_|DM6PR12MB4089:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9114d8dd-3e0f-4f8b-e275-08dba249f1a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: //GyECLmB56FIz1JuoyY7tgsJ150qVlLSBU/dMz6mXEm1hmM6397mq6/YtecCaxkMZbWRgz9jobiunOXuAHsn4FERlKXQqqLEcfbTi1zr43bPSJoh4lDKGlMhA5KyIpVYy4o2/t94pqGmbUYflZGNdB7igB0DXff2xz9JjPujeBoDA990+Mn4vMYv/WQX1KKQ3W/CMGaqqBtwWzPDjKhAQTBNT8R/WcgyCxFKvu125oTuTP03W+tAJ+LSeh4jLp1aAU0LF8aiI2mf3wpWNtJIuepH7FAwl2BwrtcXaVgyJ47rY0hrAEpjKsEOlu12ME0zBeNKVqBBHJzwZrnBElvhi+MY4Fwu0G1a5oWn1lsjktMR8JbazgnXwvV6pkkWD7NhCb8pxa/p3x1SBEdemINsj1f77wWuOqSyminonlu9h0D9/6Zk0Qnu+KwcdzoXj6PIgna7JtyomTO3+HGmNrh+pZpyDl8hOdn9FbCerhcWqOmbwlVftDmX/d+2AT29KgOzzhgH7cmZiNv7ik+fNTcv7svKuEBFkPZCF75vVNN/46Nxsym/PJ8qrY+WZbdwxoYR04385QQOg4IRHOyv5M14QnZYchqgKIXi9tvtnkkt+phy5Ya97fcdv8OpT1GnV+yTj1C39ZFhLY4Ftwv/eTthldLHjC2qgFXz1PIXECls/q5Zsg+rnXQSEGWkx7QfIvJADPJfTax6jqD2qKMmPIMQfrOwyZusedRgOu2E+iFiz74LeR6OYZdp8dvmfyoNpTa9ryqjpGUOmDxmzDa7Qi2rg==
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(136003)(396003)(82310400011)(451199024)(186009)(1800799009)(36840700001)(40470700004)(46966006)(2906002)(53546011)(40480700001)(83380400001)(5660300002)(336012)(426003)(16526019)(26005)(86362001)(31686004)(36860700001)(31696002)(47076005)(8676002)(2616005)(8936002)(107886003)(4326008)(70206006)(316002)(16576012)(54906003)(6916009)(70586007)(478600001)(82740400003)(356005)(6666004)(36756003)(41300700001)(40460700003)(7636003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:24:27.2209
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: scGoqU+uwSUc0LCwgTRe3ig+sUDx3YPdBwlFS7u8Ey2vj5kIiVt9dCmoItPdXDPqiIaZEcOcpR1nz/akZjD4oQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DUZPR04MB9824
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9114d8dd-3e0f-4f8b-e275-08dba249f1a6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4089
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -128,69 +115,107 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Sent: Saturday, August 19, 2023 3:04 AM
-> To: Shenwei Wang <shenwei.wang@nxp.com>; Rob Herring
-> <robh+dt@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>; Ulf Hansson <ulf.hansson@linaro.org>; Liam Girdwoo=
-d
-> <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
-> imx@lists.linux.dev; devicetree@vger.kernel.org; linux-kernel@vger.kernel=
-.org;
-> dl-linux-imx <linux-imx@nxp.com>
-> Subject: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml =
-file
->
-> Caution: This is an external email. Please take care when clicking links =
-or
-> opening attachments. When in doubt, report the message using the 'Report =
-this
-> email' button
->
->
-> >>
-> >> This needs to answer why we need this.
-> >>
-> >> It looks like just an abstraction layer to make regulators look like
-> >> a power domain.
-> >>
-> >
-> > Yes, it is a wrapper that allows using regulators as a power domain.
-> > This removes the need to add regulator operating code in each consumer
-> > device driver. As a power domain, the regulator will be managed
-> > automatically by the device driver framework and PM subsystem.
-> >
-> > This is very useful when a device's power is controlled by a GPIO pin,
-> > which currently requires using the fixed-regulator to achieve the same
-> > purpose. However, the fixed-regulator approach may have to add code in =
-the
-> driver in order to use it.
->
-> Why do you start discussion from zero ignoring all previous history of th=
-is
-> patchset?
->
+On 19/08/23 00:10, Rafael J. Wysocki wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Thu, Aug 17, 2023 at 11:31 AM Sumit Gupta <sumitg@nvidia.com> wrote:
+>>
+>> From: Srikar Srimath Tirumala <srikars@nvidia.com>
+>>
+>> Add support to configure the CPUFREQ reduction percentage and set the
+>> maximum number of throttling steps accordingly. Current implementation
+>> of processor_thermal performs software throttling in fixed steps of
+>> "20%" which can be too coarse for some platforms. Change that by adding
+>> new config to provide the reduction percentage.
+>>
+>> Signed-off-by: Srikar Srimath Tirumala <srikars@nvidia.com>
+>> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+>> ---
+>>   drivers/acpi/Kconfig             | 15 +++++++++++++++
+>>   drivers/acpi/processor_thermal.c | 19 ++++++++++++++++---
+>>   2 files changed, 31 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+>> index 00dd309b6682..287cf58defbf 100644
+>> --- a/drivers/acpi/Kconfig
+>> +++ b/drivers/acpi/Kconfig
+>> @@ -254,6 +254,21 @@ config ACPI_DOCK
+>>   config ACPI_CPU_FREQ_PSS
+>>          bool
+>>
+>> +config ACPI_CPU_FREQ_THERM_HAS_PARAMS
+>> +       bool "CPU frequency throttling control"
+>> +       depends on ACPI_PROCESSOR
+>> +
+>> +config ACPI_CPU_FREQ_THERM_MIN_THROT_PCTG
+>> +       int "Minimum throttle percentage for processor_thermal cooling device"
+>> +       depends on ACPI_CPU_FREQ_THERM_HAS_PARAMS
+>> +       default 20
+>> +       help
+>> +         The processor_thermal driver uses this config to calculate the
+>> +         percentage amount by which cpu frequency must be reduced for each
+>> +         cooling state. The config is also used to calculate the maximum number
+>> +         of throttling steps or cooling states supported by the driver. Value
+>> +         must be an unsigned integer in the range [1, 50].
+>> +
+> 
+> I don't think that the new Kconfig symbols are particularly useful.
+> At least they don't help the distro vendors that each would need to
+> pick up a specific value for their kernel anyway.
+> 
+> I also wonder how the users building their own kernels are supposed to
+> determine the values suitable for the target systems.
+> 
 
-Thank you for providing the link. After reviewing the entire thread, I stil=
-l don't understand how
-to proceed. What is the conclusion regarding this commonly used use case bu=
-t overlooked feature
-in the upstream kernel?
+We observed some perf gain after reducing the throttle percentage.
+Currently, kept the default to '20%' as before.
 
-Thanks,
-Shenwei
+Based on need, a vendor can overwrite the default value with macro
+'CONFIG_ACPI_CPU_FREQ_THERM_MIN_THROT_PCTG'. Otherwise, the behavior
+will remain same.
 
-> https://lore.kern/
-> el.org%2Fall%2F20220609150851.23084-1-
-> max.oss.09%40gmail.com%2F&data=3D05%7C01%7Cshenwei.wang%40nxp.com%
-> 7C2cf40d23202c430302c908dba08add2e%7C686ea1d3bc2b4c6fa92cd99c5c301
-> 635%7C0%7C0%7C638280290493921016%7CUnknown%7CTWFpbGZsb3d8eyJ
-> WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C
-> 3000%7C%7C%7C&sdata=3D0O%2FIytE6YbJL26je7hoxEu0ayZYs07PBjfZkBDVaC1M
-> %3D&reserved=3D0
->
-> Best regards,
-> Krzysztof
+Thank you,
+Sumit Gupta
 
+>>   config ACPI_PROCESSOR_CSTATE
+>>          def_bool y
+>>          depends on ACPI_PROCESSOR
+>> diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
+>> index b7c6287eccca..ee443cc69b73 100644
+>> --- a/drivers/acpi/processor_thermal.c
+>> +++ b/drivers/acpi/processor_thermal.c
+>> @@ -25,8 +25,20 @@
+>>    * _any_ cpufreq driver and not only the acpi-cpufreq driver.
+>>    */
+>>
+>> -#define CPUFREQ_THERMAL_MIN_STEP 0
+>> -#define CPUFREQ_THERMAL_MAX_STEP 3
+>> +#define CPUFREQ_THERMAL_MIN_STEP       0
+>> +#ifdef CONFIG_ACPI_CPU_FREQ_THERM_HAS_PARAMS
+>> +#define CPUFREQ_THERMAL_PCTG           CONFIG_ACPI_CPU_FREQ_THERM_MIN_THROT_PCTG
+>> +
+>> +/* Derive the MAX_STEP from minimum throttle percentage so that the reduction
+>> + * percentage does end up becoming negative. Also cap the MAX_STEP so that
+>> + * the CPU performance doesn't become 0.
+>> + */
+>> +#define CPUFREQ_THERMAL_MAX_STEP       ((100 / CPUFREQ_THERMAL_PCTG) - 1)
+>> +
+>> +#else
+>> +#define CPUFREQ_THERMAL_MAX_STEP       3
+>> +#define CPUFREQ_THERMAL_PCTG           20
+>> +#endif
+>>
+>>   static DEFINE_PER_CPU(unsigned int, cpufreq_thermal_reduction_pctg);
+>>
+>> @@ -113,7 +125,8 @@ static int cpufreq_set_cur_state(unsigned int cpu, int state)
+>>                  if (!policy)
+>>                          return -EINVAL;
+>>
+>> -               max_freq = (policy->cpuinfo.max_freq * (100 - reduction_pctg(i) * 20)) / 100;
+>> +               max_freq = (policy->cpuinfo.max_freq *
+>> +                           (100 - reduction_pctg(i) * CPUFREQ_THERMAL_PCTG)) / 100;
+>>
+>>                  cpufreq_cpu_put(policy);
+>>
+>> --
