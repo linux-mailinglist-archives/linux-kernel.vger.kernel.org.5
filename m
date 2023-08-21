@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74567782992
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA40D782995
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbjHUMxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        id S235102AbjHUMx5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 08:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234004AbjHUMxl (ORCPT
+        with ESMTP id S234004AbjHUMx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:53:41 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FC9CB1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:53:39 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68a402c1fcdso578808b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692622418; x=1693227218;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FGj7cgUeosSqTN/BBHBDpq4ZyUn/x93LQfy/ClJCFOc=;
-        b=kyWX9hSLpAVOja1750OXW/QVKio4MmIVBBfRwhH6n/n9t+blozapD0mxyh02Dn7QWy
-         U8B3x0hIcNQPaIOb69glmycvy9xsWk5i00uLFy3iAwWUsoCWOM/6rEmHPj/y2vPT3IR8
-         43ZBusyxagmEdEWUZD7G3j1U+bUd31oBHxMETewPTlwhl4eZnvmgRfsNVeX7sZ24MDKS
-         ZnAG0p/YCbCuOaQSWJFFKGXrwVU7FNSjkFB2/NsY6gya2dfvDjceZavWXbm3GGpoiUKT
-         o1MCjctSze9XfjOwEWS5DFwWEZVNCzoJsJ2sMBiJ5QIwrVVxIfso+zQoUd/kQzexbAgl
-         6YGQ==
+        Mon, 21 Aug 2023 08:53:56 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D42DD1;
+        Mon, 21 Aug 2023 05:53:52 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-58fba83feb0so20451947b3.3;
+        Mon, 21 Aug 2023 05:53:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692622418; x=1693227218;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FGj7cgUeosSqTN/BBHBDpq4ZyUn/x93LQfy/ClJCFOc=;
-        b=UkYy0RoB15mUYyoG9AJN5qlnVNEe6GpDx5ec7UnO0OT/H/dI04qsAygi0dbvf28iYc
-         YoT+HkDmW8CPB/pcPY6czpjgdTFGTRR3pKxJ+C/1e6WB9Egobb4Yo0kkbdFOTX5DAAf1
-         C+aujO/wBKV0US2cKqsrt1FtKSxdwYq9s9OrfHKf0/BLTSfOVf3T/x7C+6LNXiFThjNS
-         yhYyKS0qk/GEuw9qpGq6vrvdZcaUoQ8cfNGVbhKKEsFdcy5obCwzCHZzynwwgJMBLs3N
-         KI2Z+ArQbEWcWXHykd/hg65ZWUolWFJLi7aAuE/YwexWmzDcGjBiu9kVrSBifo+rbgBI
-         8XSA==
-X-Gm-Message-State: AOJu0YzoKalo71n5JI+6ci0exDWWARDfNQE9YMTwqIspAeymaFLzlgtv
-        fI10ytbba27Hx/A7SjikIXnGnUTvRW5lxTwiTHs4Qe1J
-X-Google-Smtp-Source: AGHT+IGe4iVmkOrwuPWAugYbuiVpJRW6VeHjDTj1eIWYsr7cFWnlIOuVBua0w1tuWmu3DBw6edBQmQ==
-X-Received: by 2002:a05:6a20:96ce:b0:131:f3a:4020 with SMTP id hq14-20020a056a2096ce00b001310f3a4020mr3477088pzc.33.1692622418516;
-        Mon, 21 Aug 2023 05:53:38 -0700 (PDT)
-Received: from leoy-huanghe.lan ([94.177.131.100])
-        by smtp.gmail.com with ESMTPSA id q10-20020a17090311ca00b001b83dc8649dsm6942852plh.250.2023.08.21.05.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 05:53:38 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 20:53:22 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Gang Li <gang.li@linux.dev>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>, linux-doc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v1] docs/zh_CN: add zh_CN translation for
- memory-barriers.txt
-Message-ID: <20230821125322.GB57731@leoy-huanghe.lan>
-References: <214aed18-5df5-1014-b73d-a1748c0cca13@linux.dev>
- <20230819162526.GA274478@leoy-huanghe.lan>
- <f7eac106-abe4-aba1-14df-6c9d1bfdf3b3@linux.dev>
+        d=1e100.net; s=20221208; t=1692622431; x=1693227231;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3KBAyS2nelrV8Hc2Bh+9OdYb0ynFHCN4++LO/LB55WE=;
+        b=aoQEY1bRpp8nvIOGGZJzmgC3VcEsjht2A0NeNuj69k8iPt0wEKlS+z+akybclMKkJh
+         3zWh+SB1PI2EJZnwkaQkpZWvvyK1vEqielNQUW3HIaq1bTa+K8SxsRUURSIjOCeQKShx
+         xi1xlg7rOrAPXpHhbEMSJb/xGJTOzzoGewsFLanBXujUdLxG+Z5BWBV60jkDpc7uRqjy
+         xzBOtlso7IEFQ7eQNu5aN0252ywgfasPQ5ZbX4ha/gpQFuA8ayPMz4kfjPqKit1kZD5d
+         9cAoRpZQE6BFonio7xtOF+UA0A97dTJgWJBsIDSiFlzfAYbr2gOkPJvBO+k2DTCc9azP
+         KoDQ==
+X-Gm-Message-State: AOJu0Yx/jKzMdA5UEyXSGpk4KHzMOQh9QBuCX7LAmx9f2sKXEsdpyhip
+        5qaD+jFLim1yTkQtOZoPglqg1+Gix7y9Sw==
+X-Google-Smtp-Source: AGHT+IFuHIxhGscqxoXClrtki7YWU7ILZuWq6nJe6qgU5ZJFG0fHy4Xx5ypYm/WreYx/wCKm88M+2A==
+X-Received: by 2002:a0d:db56:0:b0:58c:93b0:17ba with SMTP id d83-20020a0ddb56000000b0058c93b017bamr5893384ywe.31.1692622431443;
+        Mon, 21 Aug 2023 05:53:51 -0700 (PDT)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id x186-20020a0deec3000000b00586108dd8f5sm2211699ywe.18.2023.08.21.05.53.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 05:53:51 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-58fba83feb0so20451807b3.3;
+        Mon, 21 Aug 2023 05:53:51 -0700 (PDT)
+X-Received: by 2002:a25:238b:0:b0:d19:d73d:7956 with SMTP id
+ j133-20020a25238b000000b00d19d73d7956mr5994381ybj.32.1692622430872; Mon, 21
+ Aug 2023 05:53:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7eac106-abe4-aba1-14df-6c9d1bfdf3b3@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230801-dt-changeset-fixes-v3-0-5f0410e007dd@kernel.org> <20230801-dt-changeset-fixes-v3-4-5f0410e007dd@kernel.org>
+In-Reply-To: <20230801-dt-changeset-fixes-v3-4-5f0410e007dd@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Aug 2023 14:53:39 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUvOTRBdYR=z1yp1_2j8dcazPaY-2E-MPaKeZut14hrLA@mail.gmail.com>
+Message-ID: <CAMuHMdUvOTRBdYR=z1yp1_2j8dcazPaY-2E-MPaKeZut14hrLA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/6] of: dynamic: Fix race in getting old property when
+ updating property
+To:     Rob Herring <robh@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 02:39:15PM +0800, Gang Li wrote:
-> Thanks for your review!
-> 
-> Your suggestions will be integrated into the next version(v2).
-> 
-> On 2023/8/20 00:25, Leo Yan wrote:
-> > > +		|       |   :   |        |   :   |       |
-> > > +		|       |   :   |        |   :   |       |
-> > > +		| CPU 1 |<----->|  内存  |<----->| CPU 2 |
-> > 
-> > Unalignment caused by extra space around "内存".
-> > 
-> If using Chinese, it is impossible to align properly no matter
-> how it is modified. If strict alignment is needed, the text in the
-> charts should not be translated.
+Hi Rob,
 
-In my editor (vim), a Chinese character is two-width of English
-character.  So you could see in above, I can simply remove a space for
-alignment.
+Thanks for your patch!
 
-Anyway, if you have different editor or configuration, using either
-langauge is fine for me.
+On Fri, Aug 18, 2023 at 10:41 PM Rob Herring <robh@kernel.org> wrote:
+> __of_update_property() returns the existing property if there is one, but
+> that value is never added to the changeset. Updates work because the
+> existing property is also retrieved in of_changeset_action(), but that is
 
-Please expect I will have more review.
+Perhaps s/is also retrieved/was also retrieved before/, as
+of_overlay_apply() calls build_changeset() before
+__of_changeset_apply_entries()?
 
-Thanks,
-Leo
+> racy as of_changeset_action() doesn't hold any locks. The property could
+> be changed before the changeset is applied.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
