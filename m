@@ -2,80 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F8E782D96
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B67D782D99
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbjHUPxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39246 "EHLO
+        id S231740AbjHUP41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236451AbjHUPxB (ORCPT
+        with ESMTP id S229852AbjHUP40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:53:01 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708B1A1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:52:59 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-58ddb534848so2377927b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:52:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1692633178; x=1693237978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=t00Z+mQcMCai4g8+ZNlrGqkLYK+YPlBN/K0yx63dyFI=;
-        b=PYrWHbzwLWe61qr58b7yipvRI3uI7LYUq6puVeMqAUnH5aYhC2bww+9D9PNEtx4JKg
-         e9umTs6g7/TvHjJWpojiqZK/9dk5Cug2ZO0FRLruFEXwiVHqKQIrsGDKti9gc5RqneXV
-         wyBgk8EqaaeeA8yrV0v46hnt6DxEgsNioNqxw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692633178; x=1693237978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=t00Z+mQcMCai4g8+ZNlrGqkLYK+YPlBN/K0yx63dyFI=;
-        b=SwySAob1UoNYT3lc1mDxdi+0e0FuU6lIJbDd7kkKCiET4E+OVcujQRTsciILwM5Vrd
-         ecp4XHyuUKvHjCh+/J6lYZborwn225KFIpHJu8NtWdCQhemmf9ih+XtvbWNVz8o9rjvZ
-         lDUD3Sa3XUoLuBXlEF316OEHBKLAk26mPD+9lvbiygEjyDqRx88YEXnbEmMmT9StPez9
-         OsrIkVm6wE5qDSmjKxunPk7GxC4Cs3mykdDCWQXgmuKLPvZckfJ3h3gKUc0MK52E4nLV
-         XEO1VMy3uQXVjnUxS4sMxbQ7ezlYrrhE0gU779ao32sAu5++cgWf8m/ij9DU5BXUGZC8
-         kHgA==
-X-Gm-Message-State: AOJu0Yz/wMENNHolE+P+LFYENS/6bz8xNF2zk+QlJuRVy9X/bfg4XFP+
-        MGWd6Sun8DtSaVXHDlye/lZULQ==
-X-Google-Smtp-Source: AGHT+IGSnVYnQZ8xAuQ1Rtjf6i7jON/WZ8Rvcr9+R6jCfIjY49BUPcdFPAo4U1Evo/P7LWavHqVFBw==
-X-Received: by 2002:a81:4e10:0:b0:583:fc63:7e01 with SMTP id c16-20020a814e10000000b00583fc637e01mr3770247ywb.3.1692633178654;
-        Mon, 21 Aug 2023 08:52:58 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id v22-20020a814816000000b005922c29c025sm303823ywa.108.2023.08.21.08.52.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 08:52:58 -0700 (PDT)
-Message-ID: <6822c914-4f11-be93-ed55-56447a5838f9@linuxfoundation.org>
-Date:   Mon, 21 Aug 2023 09:52:56 -0600
+        Mon, 21 Aug 2023 11:56:26 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4AAE7A1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:56:24 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E81242F4;
+        Mon, 21 Aug 2023 08:57:04 -0700 (PDT)
+Received: from [10.57.34.4] (unknown [10.57.34.4])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1A273F64C;
+        Mon, 21 Aug 2023 08:56:22 -0700 (PDT)
+Message-ID: <bb52b872-e41b-3894-285e-b52cfc849782@arm.com>
+Date:   Mon, 21 Aug 2023 16:56:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: linux-next: duplicate patch in the nolibc tree
-Content-Language: en-US
-To:     Christian Brauner <brauner@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, Willy Tarreau <w@1wt.eu>
-Cc:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230817133811.0a73c624@canb.auug.org.au>
- <e0af8d82-e099-49fa-9fbd-6f6bb63b7706@t-8ch.de>
- <9cfb4fe4-162b-3f26-646b-71bed3493925@linuxfoundation.org>
- <4c037ef2-9159-4528-8ecb-8596cb2a3889@paulmck-laptop>
- <20230817193909.GA30505@1wt.eu>
- <01d517c4-d91b-4426-b7f2-2b1277f21d8c@paulmck-laptop>
- <20230818-anblicken-mitinhaber-11cd07cce0a1@brauner>
- <e08e3dd5-48b8-5da2-5d0c-7d5b70a9e9be@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <e08e3dd5-48b8-5da2-5d0c-7d5b70a9e9be@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 1/2] drm/panfrost: Add fdinfo support to Panfrost
+Content-Language: en-GB
+To:     =?UTF-8?Q?Adri=c3=a1n_Larumbe?= <adrian.larumbe@collabora.com>,
+        robh@kernel.org, airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, kernel@collabora.com,
+        linux-kernel@vger.kernel.org
+References: <20230808222240.1016623-1-adrian.larumbe@collabora.com>
+ <20230808222240.1016623-2-adrian.larumbe@collabora.com>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20230808222240.1016623-2-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,84 +47,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/23 07:59, Shuah Khan wrote:
-> On 8/18/23 07:27, Christian Brauner wrote:
->> On Thu, Aug 17, 2023 at 01:41:45PM -0700, Paul E. McKenney wrote:
->>> On Thu, Aug 17, 2023 at 09:39:09PM +0200, Willy Tarreau wrote:
->>>> On Thu, Aug 17, 2023 at 11:46:57AM -0700, Paul E. McKenney wrote:
->>>>> On Thu, Aug 17, 2023 at 12:27:46PM -0600, Shuah Khan wrote:
->>>>>> On 8/17/23 10:30, Thomas Weißschuh wrote:
->>>>>>> On 2023-08-17 13:38:11+1000, Stephen Rothwell wrote:
->>>>>>>> The following commit is also in the vfs-brauner tree as a different commit
->>>>>>>> (but the same patch):
->>>>>>>>
->>>>>>>>     ba859b2e419c ("selftests/nolibc: drop test chmod_net")
->>>>>>>>
->>>>>>>> This is commit
->>>>>>>>
->>>>>>>>     49319832de90 ("selftests/nolibc: drop test chmod_net")
->>>>>>>>
->>>>>>>> in the vfs-brauner tree.
->>>>>>>
->>>>>>> I think we can drop the patch from the nolibc tree.
->>>>>>> The patch is only really necessary in combination with
->>>>>>> commit 18e66ae67673 ("proc: use generic setattr() for /proc/$PID/net")
->>>>>>> which already is and should stay in the vfs tree.
->>>>>>
->>>>>> Thomas,
->>>>>>
->>>>>> Do the rest of the nolibc patches build without this if we were
->>>>>> to drop this patch? Dorpping requires rebase and please see below.
->>>>>>
->>>>>> Willy, Paul,
->>>>>>
->>>>>> How do we want to handle this so we can avoid rebasing to keep
->>>>>> the Commit IDs the same as one ones in Willy's nolibc branch?
->>>>>
->>>>> The usual way would be for Willy to drop the patch, rebase, and republish
->>>>> his branch.  You would then discard the current branch and pull the
->>>>> new one.
->>>>>
->>>>>> I would recommend dropping this commit from vfs-brauner if it
->>>>>> doesn't cause problems.
->>>>>
->>>>> It might be good for nolibc patches to be going through Willy's tree.
->>>>
->>>> It would indeed be more logical as a general rule. However, here I don't
->>>> care as I don't see any issue caused by dropping it, I can adapt to what
->>>> is most convenient for most of us.
->>>>
->>>> Let's maybe just wait a little bit for Christian to suggest what he
->>>> prefers then we can adapt.
->>>>
->>>>> Or does Christian have some situation where it is necessary to make
->>>>> a coordinated vfs/nolibc change?
->>>>
->>>> I don't think there's any need for coordination on this one.
->>>
->>> It is always good when either option can be make to work.  ;-)
->>
->> The patch in the vfs tree will make the test fail so it makes sense to
->> have both go in together. I would normally be happy to drop it but I'm
->> rather unenthusiastic in this particular case because I replied to this
->> almost 5 weeks ago on Thursday, July 13 and since then this has been in
->> -next.
->>
+On 08/08/2023 23:22, Adrián Larumbe wrote:
+> We calculate the amount of time the GPU spends on a job with ktime samples,
+> and then add it to the cumulative total for the open DRM file, which is
+> what will be eventually exposed through the 'fdinfo' DRM file descriptor.
 > 
-> I totally understand you being unenthusiastic. Considering summer
-> vacation schedules and all, emails get missed at times.
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_device.c | 12 ++++++++
+>  drivers/gpu/drm/panfrost/panfrost_device.h | 10 +++++++
+>  drivers/gpu/drm/panfrost/panfrost_drv.c    | 32 +++++++++++++++++++++-
+>  drivers/gpu/drm/panfrost/panfrost_job.c    |  6 ++++
+>  drivers/gpu/drm/panfrost/panfrost_job.h    |  3 ++
+>  5 files changed, 62 insertions(+), 1 deletion(-)
 > 
-> I sincerely request you to consider dropping as it is the simpler route
-> for all involved.
-> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+> index fa1a086a862b..67a5e894d037 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -401,6 +401,18 @@ void panfrost_device_reset(struct panfrost_device *pfdev)
+>  	panfrost_job_enable_interrupts(pfdev);
+>  }
+>  
+> +struct drm_info_gpu panfrost_device_get_counters(struct panfrost_device *pfdev,
+> +						 struct panfrost_file_priv *panfrost_priv)
+> +{
+> +	struct drm_info_gpu gpu_info;
+> +
+> +	gpu_info.engine =  panfrost_priv->elapsed_ns;
+> +	gpu_info.cycles =  panfrost_priv->elapsed_ns * clk_get_rate(pfdev->clock);
+> +	gpu_info.maxfreq =  clk_get_rate(pfdev->clock);
 
-Christian,
+First, calling clk_get_rate() twice here is inefficient.
 
-Please let us know if my request failed to raise your enthusiasm level.
-We will go to our plan b of having Willy drop the patch, resend the
-pull request to me ....
+Second, I'm not sure it's really worth producing these derived values.
+As I understand it the purpose of cycles/maxfreq is to be able to
+provide a utilisation value which accounts for DVFS. I.e. if the GPU is
+clocked down the utilisation of cycles/maxfreq is low even if the GPU is
+active for the whole sample period.
 
+What we therefore need to report is the *maximum* frequency in
+clk_get_rate(). Also rather than just multiplying elapsed_ns by the
+current clock rate, we need to sum up cycles over time as the clock
+frequency changes. Alternatively it might be possible to use the actual
+GPU register (CYCLE_COUNT_LO/CYCLE_COUNT_HI at offset 0x90,0x94) -
+although note that this is reset when the GPU is reset.
 
-thanks,
--- Shuah
+Finally I doubt elapsed_ns is actually what user space is expecting. The
+GPU has multiple job slots (3, but only 2 are used in almost all cases)
+so can be running more than one job at a time. So there's going to be
+some double counting going on here.
+
+Sorry to poke holes in this, I think this would be a good feature. But
+if we're going to return information we want it to be at least
+reasonably correct.
+
+Thanks,
+
+Steve
+
+> +
+> +	return gpu_info;
+> +}
+> +
+>  static int panfrost_device_resume(struct device *dev)
+>  {
+>  	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index b0126b9fbadc..4621a2ece1bb 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -141,6 +141,14 @@ struct panfrost_file_priv {
+>  	struct drm_sched_entity sched_entity[NUM_JOB_SLOTS];
+>  
+>  	struct panfrost_mmu *mmu;
+> +
+> +	uint64_t elapsed_ns;
+> +};
+> +
+> +struct drm_info_gpu {
+> +	unsigned long long engine;
+> +	unsigned long long cycles;
+> +	unsigned int maxfreq;
+>  };
+>  
+>  static inline struct panfrost_device *to_panfrost_device(struct drm_device *ddev)
+> @@ -172,6 +180,8 @@ int panfrost_unstable_ioctl_check(void);
+>  int panfrost_device_init(struct panfrost_device *pfdev);
+>  void panfrost_device_fini(struct panfrost_device *pfdev);
+>  void panfrost_device_reset(struct panfrost_device *pfdev);
+> +struct drm_info_gpu panfrost_device_get_counters(struct panfrost_device *pfdev,
+> +						 struct panfrost_file_priv *panfrost_priv);
+>  
+>  extern const struct dev_pm_ops panfrost_pm_ops;
+>  
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index a2ab99698ca8..65fdc0e4c7cb 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -3,6 +3,7 @@
+>  /* Copyright 2019 Linaro, Ltd., Rob Herring <robh@kernel.org> */
+>  /* Copyright 2019 Collabora ltd. */
+>  
+> +#include "drm/drm_file.h"
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/pagemap.h>
+> @@ -267,6 +268,7 @@ static int panfrost_ioctl_submit(struct drm_device *dev, void *data,
+>  	job->requirements = args->requirements;
+>  	job->flush_id = panfrost_gpu_get_latest_flush_id(pfdev);
+>  	job->mmu = file_priv->mmu;
+> +	job->priv = file_priv;
+>  
+>  	slot = panfrost_job_get_slot(job);
+>  
+> @@ -523,7 +525,34 @@ static const struct drm_ioctl_desc panfrost_drm_driver_ioctls[] = {
+>  	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
+>  };
+>  
+> -DEFINE_DRM_GEM_FOPS(panfrost_drm_driver_fops);
+> +
+> +static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+> +				     struct panfrost_file_priv *panfrost_priv,
+> +				     struct drm_printer *p)
+> +{
+> +	struct drm_info_gpu gpu_info;
+> +
+> +	gpu_info = panfrost_device_get_counters(pfdev, panfrost_priv);
+> +
+> +	drm_printf(p, "drm-engine-gpu:\t%llu ns\n", gpu_info.engine);
+> +	drm_printf(p, "drm-cycles-gpu:\t%llu\n", gpu_info.cycles);
+> +	drm_printf(p, "drm-maxfreq-gpu:\t%u Hz\n", gpu_info.maxfreq);
+> +}
+> +
+> +static void panfrost_show_fdinfo(struct drm_printer *p, struct drm_file *file)
+> +{
+> +	struct drm_device *dev = file->minor->dev;
+> +	struct panfrost_device *pfdev = dev->dev_private;
+> +
+> +	panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
+> +
+> +}
+> +
+> +static const struct file_operations panfrost_drm_driver_fops = {
+> +	.owner = THIS_MODULE,
+> +	DRM_GEM_FOPS,
+> +	.show_fdinfo = drm_show_fdinfo,
+> +};
+>  
+>  /*
+>   * Panfrost driver version:
+> @@ -535,6 +564,7 @@ static const struct drm_driver panfrost_drm_driver = {
+>  	.driver_features	= DRIVER_RENDER | DRIVER_GEM | DRIVER_SYNCOBJ,
+>  	.open			= panfrost_open,
+>  	.postclose		= panfrost_postclose,
+> +	.show_fdinfo		= panfrost_show_fdinfo,
+>  	.ioctls			= panfrost_drm_driver_ioctls,
+>  	.num_ioctls		= ARRAY_SIZE(panfrost_drm_driver_ioctls),
+>  	.fops			= &panfrost_drm_driver_fops,
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index dbc597ab46fb..d0063cac9f72 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -157,6 +157,11 @@ static struct panfrost_job *
+>  panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
+>  {
+>  	struct panfrost_job *job = pfdev->jobs[slot][0];
+> +	job->priv->elapsed_ns +=
+> +		ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
+> +
+> +	/* Reset in case the job has to be requeued */
+> +	job->start_time = 0;
+>  
+>  	WARN_ON(!job);
+>  	pfdev->jobs[slot][0] = pfdev->jobs[slot][1];
+> @@ -233,6 +238,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+>  	subslot = panfrost_enqueue_job(pfdev, js, job);
+>  	/* Don't queue the job if a reset is in progress */
+>  	if (!atomic_read(&pfdev->reset.pending)) {
+> +		job->start_time = ktime_get();
+>  		job_write(pfdev, JS_COMMAND_NEXT(js), JS_COMMAND_START);
+>  		dev_dbg(pfdev->dev,
+>  			"JS: Submitting atom %p to js[%d][%d] with head=0x%llx AS %d",
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+> index 8becc1ba0eb9..b4318e476694 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+> @@ -32,6 +32,9 @@ struct panfrost_job {
+>  
+>  	/* Fence to be signaled by drm-sched once its done with the job */
+>  	struct dma_fence *render_done_fence;
+> +
+> +	struct panfrost_file_priv *priv;
+> +	ktime_t start_time;
+>  };
+>  
+>  int panfrost_job_init(struct panfrost_device *pfdev);
 
