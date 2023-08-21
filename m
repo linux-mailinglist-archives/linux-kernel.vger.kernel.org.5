@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0E5782B23
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45475782B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235652AbjHUOEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
+        id S235660AbjHUOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235615AbjHUOD4 (ORCPT
+        with ESMTP id S235635AbjHUOD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Aug 2023 10:03:56 -0400
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [5.144.164.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123DDE3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:03:52 -0700 (PDT)
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE475E9;
+        Mon, 21 Aug 2023 07:03:53 -0700 (PDT)
 Received: from [192.168.2.137] (bband-dyn221.178-41-211.t-com.sk [178.41.211.221])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 8BD393F312;
-        Mon, 21 Aug 2023 16:03:50 +0200 (CEST)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 510F53F324;
+        Mon, 21 Aug 2023 16:03:51 +0200 (CEST)
 From:   Martin Botka <martin.botka@somainline.org>
-Date:   Mon, 21 Aug 2023 16:03:47 +0200
-Subject: [PATCH v2 2/3] thermal: sun8i: Add support for H616 THS controller
+Date:   Mon, 21 Aug 2023 16:03:48 +0200
+Subject: [PATCH v2 3/3] arm64: dts: allwinner: h616: Add thermal sensor and
+ thermal zones
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+Message-Id: <20230821-ths-h616-v2-3-cda60d556798@somainline.org>
 References: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
 In-Reply-To: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
 To:     Vasily Khoruzhick <anarsoul@gmail.com>,
@@ -55,130 +56,151 @@ Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         Martin Botka <martin@biqu3d.com>,
         Martin Botka <martin.botka@somainline.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692626628; l=3663;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692626628; l=3135;
  i=martin.botka@somainline.org; s=20230811; h=from:subject:message-id;
- bh=3eq77nlTbm5Cngkl0jvZ6/DlERU3jpKgLGwvz/iFz7Y=;
- b=U/aPMfBD9D8cf/kdX6HO3vrpFdoTwFj+yd1eMvop5L1Iu+RV903eBhucrBxNcWGmaaAjHrmUl
- bl4QAHKwgZfC6tQQbES+YVE6AKfs9l42r1pE1DNsa+sMgnGc8hbFXZ0
+ bh=Y5wSSzIWuOFKSGGZMNJjnzIykv3kiku+VUt8NVG55u0=;
+ b=7EqC6e2dCq8+IHUQbrSK/ZIw526FrhhLr0JeelOvsJp1ijiF9qXcOtLFt9HQJg6vhbKiJtIGw
+ wVuertO4HyZDwx5j+3/wWqHiU6KJfvu92iSpV5FjkzUs1QKbOaIlE1C
 X-Developer-Key: i=martin.botka@somainline.org; a=ed25519;
  pk=aTCd3jmwU8GrJidWg3DSKLpdVMcpFzXzCSLXLR6NtWU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the thermal sensor found in H616 SoC
-which slightly resembles the H6 thermal sensor
-controller with few changes like 4 sensors.
+There are 4 thermal sensors:
+- CPU
+- GPU
+- VE
+- DRAM
+
+Add the thermal sensor configuration and thermal zones
 
 Signed-off-by: Martin Botka <martin.botka@somainline.org>
 ---
- drivers/thermal/sun8i_thermal.c | 74 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 74 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi | 87 ++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
-index 195f3c5d0b38..cf96ab6a445b 100644
---- a/drivers/thermal/sun8i_thermal.c
-+++ b/drivers/thermal/sun8i_thermal.c
-@@ -278,6 +278,66 @@ static int sun50i_h6_ths_calibrate(struct ths_device *tmdev,
- 	return 0;
- }
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+index d549d277d972..063db9634e5f 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h616.dtsi
+@@ -9,6 +9,7 @@
+ #include <dt-bindings/clock/sun6i-rtc.h>
+ #include <dt-bindings/reset/sun50i-h616-ccu.h>
+ #include <dt-bindings/reset/sun50i-h6-r-ccu.h>
++#include <dt-bindings/thermal/thermal.h>
  
-+static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
-+				     u16 *caldata, int callen)
-+{
-+	struct device *dev = tmdev->dev;
-+	int i, ft_temp;
+ / {
+ 	interrupt-parent = <&gic>;
+@@ -138,6 +139,10 @@ sid: efuse@3006000 {
+ 			reg = <0x03006000 0x1000>;
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
 +
-+	if (!caldata[0])
-+		return -EINVAL;
-+
-+	/*
-+	 * h616 efuse THS calibration data layout:
-+	 *
-+	 * 0      11  16     27   32     43   48    57
-+	 * +----------+-----------+-----------+-----------+
-+	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
-+	 * +----------+-----------+-----------+-----------+
-+	 *                      ^           ^           ^
-+	 *                      |           |           |
-+	 *                      |           |           sensor3[11:8]
-+	 *                      |           sensor3[7:4]
-+	 *                      sensor3[3:0]
-+	 *
-+	 * The calibration data on the H616 is the ambient temperature and
-+	 * sensor values that are filled during the factory test stage.
-+	 *
-+	 * The unit of stored FT temperature is 0.1 degree celsius.
-+	 */
-+	ft_temp = caldata[0] & FT_TEMP_MASK;
-+
-+	for (i = 0; i < tmdev->chip->sensor_num; i++) {
-+		int delta, cdata, offset, reg;
-+
-+		if (i == 3)
-+			reg = (caldata[1] >> 12)
-+			      | ((caldata[2] >> 12) << 4)
-+			      | ((caldata[3] >> 12) << 8);
-+		else
-+			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
-+
-+		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, reg);
-+
-+		delta = (sensor_temp - ft_temp * 100) * 10;
-+		delta /= tmdev->chip->scale;
-+		cdata = CALIBRATE_DEFAULT - delta;
-+		if (cdata & ~TEMP_CALIB_MASK) {
-+			dev_warn(dev, "sensor%d is not calibrated.\n", i);
-+
-+			continue;
-+		}
-+
-+		offset = (i % 2) * 16;
-+		regmap_update_bits(tmdev->regmap,
-+				   SUN50I_H6_THS_TEMP_CALIB + (i / 2 * 4),
-+				   TEMP_CALIB_MASK << offset,
-+				   cdata << offset);
-+	}
-+
-+	return 0;
-+}
-+
- static int sun8i_ths_calibrate(struct ths_device *tmdev)
- {
- 	struct nvmem_cell *calcell;
-@@ -608,6 +668,19 @@ static const struct ths_thermal_chip sun50i_h6_ths = {
- 	.calc_temp = sun8i_ths_calc_temp,
- };
++			ths_calibration: thermal-sensor-calibration@14 {
++				reg = <0x14 0x8>;
++			};
+ 		};
  
-+static const struct ths_thermal_chip sun50i_h616_ths = {
-+	.sensor_num = 4,
-+	.has_bus_clk_reset = true,
-+	.ft_deviation = 8000,
-+	.offset = 263655,
-+	.scale = 810,
-+	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
-+	.calibrate = sun50i_h616_ths_calibrate,
-+	.init = sun50i_h6_thermal_init,
-+	.irq_ack = sun50i_h6_irq_ack,
-+	.calc_temp = sun8i_ths_calc_temp,
-+};
+ 		watchdog: watchdog@30090a0 {
+@@ -511,6 +516,18 @@ mdio0: mdio {
+ 			};
+ 		};
+ 
++		ths: thermal-sensor@5070400 {
++			compatible = "allwinner,sun50i-h616-ths";
++			reg = <0x05070400 0x400>;
++			interrupts = <GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_THS>;
++			clock-names = "bus";
++			resets = <&ccu RST_BUS_THS>;
++			nvmem-cells = <&ths_calibration>;
++			nvmem-cell-names = "calibration";
++			#thermal-sensor-cells = <1>;
++		};
 +
- static const struct of_device_id of_ths_match[] = {
- 	{ .compatible = "allwinner,sun8i-a83t-ths", .data = &sun8i_a83t_ths },
- 	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
-@@ -616,6 +689,7 @@ static const struct of_device_id of_ths_match[] = {
- 	{ .compatible = "allwinner,sun50i-a100-ths", .data = &sun50i_a100_ths },
- 	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths },
- 	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths },
-+	{ .compatible = "allwinner,sun50i-h616-ths", .data = &sun50i_h616_ths },
- 	{ /* sentinel */ },
+ 		usbotg: usb@5100000 {
+ 			compatible = "allwinner,sun50i-h616-musb",
+ 				     "allwinner,sun8i-h3-musb";
+@@ -755,4 +772,74 @@ r_rsb: rsb@7083000 {
+ 			#size-cells = <0>;
+ 		};
+ 	};
++
++	thermal-zones {
++		cpu-thermal {
++			polling-delay-passive = <500>;
++			polling-delay = <1000>;
++			thermal-sensors = <&ths 2>;
++			sustainable-power = <1000>;
++
++			trips {
++				cpu_threshold: cpu-trip-0 {
++					temperature = <60000>;
++					type = "passive";
++					hysteresis = <0>;
++				};
++				cpu_target: cpu-trip-1 {
++					temperature = <70000>;
++					type = "passive";
++					hysteresis = <0>;
++				};
++				cpu_critical: cpu-trip-2 {
++					temperature = <110000>;
++					type = "critical";
++					hysteresis = <0>;
++				};
++			};
++		};
++
++		gpu-thermal {
++			polling-delay-passive = <500>;
++			polling-delay = <1000>;
++			thermal-sensors = <&ths 0>;
++			sustainable-power = <1100>;
++
++			trips {
++				gpu_temp_critical: gpu-trip-0 {
++					temperature = <110000>;
++					type = "critical";
++					hysteresis = <0>;
++				};
++			};
++		};
++
++		ve-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&ths 1>;
++
++			trips {
++				ve_temp_critical: ve-trip-0 {
++					temperature = <110000>;
++					type = "critical";
++					hysteresis = <0>;
++				};
++			};
++		};
++
++		ddr-thermal {
++			polling-delay-passive = <0>;
++			polling-delay = <0>;
++			thermal-sensors = <&ths 3>;
++
++			trips {
++				ddr_temp_critical: ddr-trip-0 {
++					temperature = <110000>;
++					type = "critical";
++					hysteresis = <0>;
++				};
++			};
++		};
++	};
  };
- MODULE_DEVICE_TABLE(of, of_ths_match);
 
 -- 
 2.41.0
