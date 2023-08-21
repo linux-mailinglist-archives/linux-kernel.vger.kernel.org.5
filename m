@@ -2,107 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3287828C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B357828C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234636AbjHUMPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47906 "EHLO
+        id S234674AbjHUMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:15:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbjHUMPv (ORCPT
+        with ESMTP id S234482AbjHUMPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:15:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF9DCC;
-        Mon, 21 Aug 2023 05:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692620148; x=1724156148;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=SWJbo7tRR27hpxLU8wMVzusoaS/OMxN+TKIypsZNcuw=;
-  b=VfzaiVjENMBibdLEuxc1+CT9fOpOLDudpfZy77JxtamSRfrRiZSG+fV5
-   seQpAtpqRbjvTehT/4wyCZVyX6/lzxZtYY11Jw4fU5Jh8yIwyN9Uo+54O
-   qcmUMHY1srctJyZX53YdzKx/O780WrdlwxIjpChnXgg4vxNT7yRMXfqFL
-   k+twYLwdY4oQGtIKXLXzIMptt0C4J05KJdx2+L/ILvPYm3RG2w+k93X8r
-   rCoUhfxFb9EAf7CwMrfeXkzd9fhV7ilNDWdLGl1Fi5jC1Mr0ollGaD1c0
-   T0Tk4D0liRq9ptYEdmW5Tfqw7IErDdf5f3gokYCunwYW1KdwIUHqf3vp0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="376322452"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="376322452"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 05:15:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="738878294"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="738878294"
-Received: from hpabst-mobl.ger.corp.intel.com (HELO localhost) ([10.252.54.190])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 05:15:45 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
- to give credits to who sponsored the patch
-In-Reply-To: <ZONTiijMLWbt6naQ@casper.infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
- <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
- <20230817232348.GC1175@pendragon.ideasonboard.com>
- <ZN65iiRiSLmXz89k@casper.infradead.org> <87ttss7q8o.fsf@intel.com>
- <ZONTiijMLWbt6naQ@casper.infradead.org>
-Date:   Mon, 21 Aug 2023 15:15:43 +0300
-Message-ID: <87o7j07frk.fsf@intel.com>
+        Mon, 21 Aug 2023 08:15:55 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249A4DB;
+        Mon, 21 Aug 2023 05:15:53 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so17752601fa.3;
+        Mon, 21 Aug 2023 05:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692620151; x=1693224951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=w291kJh6Uu4i4etCsCc/KObNvq4GhOSiMKf8RO4JKwI=;
+        b=liw57Uk0Mr3v9AE32HoCED+Z+eGisXzD1N2TWMBDG7+2J7cZASovAwzpbehu5BECoJ
+         5kxctTz67o5i9WB2Q1OW3g24p2644aigARruVJ9BlfHAEeyUr8Q/534H3YquXrNoSy3e
+         K0OywqMJYD6dC1J61zJlEt0QrkuZbJkaOcxQXgg0vQhFWRmGcnhdcymwtx1zZg5B39FD
+         ovVT87klInKXCp2Q6qDOGGuhvlUcM7YVKZSFN8CtTWRuclX+Y79zB0lErGQld+1pt/0P
+         +tcmDoDM3jiqph/FeJMiwm6acjbQgeXnrlT9VaIZuCm8Ec+jQlB/86yoZ/WaOpPEISCA
+         iC0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692620151; x=1693224951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w291kJh6Uu4i4etCsCc/KObNvq4GhOSiMKf8RO4JKwI=;
+        b=IGgW7BKLMGB7NwrtxaqTWrXPkUAvDEzRa7eAw6K9ArrcaUE0cKh5S5+/ZTM+bzS+3C
+         anTKlgssVY47z0Tq82q+1hdCyBhdOwVZDGfuXTvL3xu2lsU1GlIFQ/OmTruS/NzeGfzY
+         25AjoeE2WNMkhurLd6/6hxGOx3oh6s6ons9eiKcWDvRIBnHvz4pCe2g3F5cVzLy02JJC
+         ogKioR9MX8WRroHoJiT2BPDgdiFGxj18fw9X8QQWwiXTCnm1nmYKtIAxtVC8Xpt4MZtE
+         HFtiwatiOLgdXsasRrdpZfifCJ29TTyCRf36eKed1yb6UW6Xaf9xAzso5z53mzSb56Zi
+         sLEQ==
+X-Gm-Message-State: AOJu0YyBWDzXLnA3/QUaUQebUq83aOJea+0DlYChvLN8oujFlwFtLKlf
+        5B0AFhBwlamM1NhoWCIgynjVGerXcpFVIA==
+X-Google-Smtp-Source: AGHT+IHkdl1866Q0i9AdsppGYbOCZ6YcrUSM97FL7UV/7xWTfPO8VGxEiDCIbt+a16mcLybwg7FGnQ==
+X-Received: by 2002:a2e:9b8e:0:b0:2b4:6f0c:4760 with SMTP id z14-20020a2e9b8e000000b002b46f0c4760mr4707503lji.11.1692620151262;
+        Mon, 21 Aug 2023 05:15:51 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id h16-20020a2e3a10000000b002b9ccbe074bsm2250181lja.73.2023.08.21.05.15.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 05:15:50 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 15:15:48 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Rohan G Thomas <rohan.g.thomas@intel.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH net-next v5 1/2] dt-bindings: net: snps,dwmac: Tx queues
+ with coe
+Message-ID: <amprmav76sigvwr3vfxhb4sw4srzpld7qn3yrtue2cpxw7qsh7@qlnwdnjv4os5>
+References: <20230819023132.23082-1-rohan.g.thomas@intel.com>
+ <20230819023132.23082-2-rohan.g.thomas@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230819023132.23082-2-rohan.g.thomas@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
-> On Mon, Aug 21, 2023 at 11:29:27AM +0300, Jani Nikula wrote:
->> On Fri, 18 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
->> > but you might have (eg)
->> >
->> > Laurent Pinchard (Coca-Cola) <laurent.pinchart@ideasonboard.com>
->> >
->> > and then when working for another sponsor:
->> >
->> > Laurent Pinchard (Ford) <laurent.pinchart@ideasonboard.com>
->> 
->> Just an observation, git shortlog -s/-se groups/distinguishes,
->> respectively, the author and sponsor in Laurent's approach. Not so with
->> Matthew's approach.
->
-> Hm?
->
-> $ git shortlog -s next-20230817..
->      1  Matthew Wilcox (Novartis)
->     25  Matthew Wilcox (Oracle)
->
-> $ git shortlog -se next-20230817..
->      1  Matthew Wilcox (Novartis) <willy@infradead.org>
->     25  Matthew Wilcox (Oracle) <willy@infradead.org>
+On Sat, Aug 19, 2023 at 10:31:31AM +0800, Rohan G Thomas wrote:
+> Add dt-bindings for the number of tx queues with coe support. Some
+> dwmac IPs support tx queues only for a few initial tx queues,
+> starting from tx queue 0.
+> 
+> Signed-off-by: Rohan G Thomas <rohan.g.thomas@intel.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-$ git shortlog v6.4.. -s --author="Laurent Pinchart"
-    12  Laurent Pinchart
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-$ git shortlog v6.4.. -se --author="Laurent Pinchart"
-     2  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-    10  Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+-Serge(y)
 
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> ---
+>  Documentation/devicetree/bindings/net/snps,dwmac.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> index ddf9522a5dc2..0c6431c10cf9 100644
+> --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> @@ -313,6 +313,9 @@ properties:
+>        snps,tx-queues-to-use:
+>          $ref: /schemas/types.yaml#/definitions/uint32
+>          description: number of TX queues to be used in the driver
+> +      snps,tx-queues-with-coe:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description: number of TX queues that support TX checksum offloading
+>        snps,tx-sched-wrr:
+>          type: boolean
+>          description: Weighted Round Robin
+> -- 
+> 2.19.0
+> 
