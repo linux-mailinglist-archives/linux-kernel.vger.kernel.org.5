@@ -2,91 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAD87828B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9991F7828B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234539AbjHUMNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:13:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
+        id S234558AbjHUMOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbjHUMNk (ORCPT
+        with ESMTP id S231701AbjHUMOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:13:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F247BE
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692619969;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ECXndoZvyamApppBKPzFOUWu2BynJjW97KIWX+GR6Jk=;
-        b=WHNJ69ZTKP83i8+ewuurDnLy5dP3OGubWjpk6+h4Wx7JvT0XaUcw0QQAM6FlUvAjHIY1k6
-        BxasxQlpDUjnil9A8XkHvmFS/ctZgfVU2sX+fAxzC5QI5VJsKcYKLQ0U9EDSvitlzLxXjk
-        SNfqI1f/aKbNIPG9IOaHMTdR1Yg2djg=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-225-OfO7jHIFMyGsRauoelg5Nw-1; Mon, 21 Aug 2023 08:12:48 -0400
-X-MC-Unique: OfO7jHIFMyGsRauoelg5Nw-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-689fdf4c96dso600950b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:12:47 -0700 (PDT)
+        Mon, 21 Aug 2023 08:14:24 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2E8BE
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:14:22 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-319559fd67dso3048688f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:14:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692620061; x=1693224861;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+jZeDhZ6rG2eXOJmaq+YM/zeTECUDJRs4cIoio/GoLM=;
+        b=BQwHHl+fa5LX2NkPQJZvj4EIRN/nothMbgKkNK0mkrVnYYwi0NCuGTTc1cOwj0fc9N
+         CRn6LR1KJarxOLMRI91aHW0eOUximtNcj1VJXdTWSSQLMUCDn8rVzo7hJduZmIBrGhhw
+         bshqTPzUGCbNZqcocrnBJyBa9FTRKCM8Q2tPN+8e7bcIEvG44plZeCRPepCZGdHKTdM5
+         MPLQxtqz5bJve/ZUCPS7iGl7pmtfdfwu694DTESFPjDez+usx7Fp/t/iaAPkj2HTZUUY
+         8+o+Hv9izH/ZLFGLbG2u18i6R6LHkQYbr3BurE/+CxSDbKVF4QnqgsfrpOvgUE6YVhS1
+         ILPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692619966; x=1693224766;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ECXndoZvyamApppBKPzFOUWu2BynJjW97KIWX+GR6Jk=;
-        b=FmA+zS7DGH3JccmCuaQoC7rnAHT/bnAEdFNQO7a5cYKU4e+22rJ1LJu4WEttnpPcuv
-         6k9HTShZ2tXxohKMS1R/9hGodQhWfxwezL439dVTclIIgNgKcF7iW9qyc9i07lIkltj+
-         Xnk9XlWO9mQ16ZoYryFY5PP0d3zuhcaXRGupIifUEtjGC957z3iwkpubZMG35wPapwqf
-         p2wHLOKZZl48NBQBZpK3rqlB46B3ncLGMKQ4Ev6mf71mVj1pvFWk9rmhpU+kS0buuk4E
-         X0e5ynaG8lZoHchQPlq1XP1xmTabhvJ/E4oo6oru08tsazMxv44GU4oU+8yblc62tXGs
-         NaCA==
-X-Gm-Message-State: AOJu0YwYmxRk9XVqVobABsKMqsDxZPGoDkFyDmy9BUamONDAEvws9J17
-        ezU5x2BDgt3/aZap0LWbqV8UmcCfjmFjQE4rMIBjX3ABwduZGA3gi7+Xg5KzSKGaLs1w9vXHH++
-        WwQxp33diDmZCR1ZPyEIjlNg0
-X-Received: by 2002:a05:6a00:1f89:b0:68a:33fc:a091 with SMTP id bg9-20020a056a001f8900b0068a33fca091mr5833936pfb.3.1692619965772;
-        Mon, 21 Aug 2023 05:12:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFvw1hhG3XW7vCKln+lTK3xY6Su93VvprY9gNYjCOP5faDv3G1wVKA6bGu165soGXVLu5is+g==
-X-Received: by 2002:a05:6a00:1f89:b0:68a:33fc:a091 with SMTP id bg9-20020a056a001f8900b0068a33fca091mr5833910pfb.3.1692619965352;
-        Mon, 21 Aug 2023 05:12:45 -0700 (PDT)
-Received: from [10.72.112.73] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id j20-20020a62e914000000b00688c733fe92sm5982354pfh.215.2023.08.21.05.12.40
+        d=1e100.net; s=20221208; t=1692620061; x=1693224861;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+jZeDhZ6rG2eXOJmaq+YM/zeTECUDJRs4cIoio/GoLM=;
+        b=b/YIfTqpxovn5+wzeQLfj4C3hE9fKp7Z8mJX1UwtLmrfEtm+afkx6MIA9Aj41vb+ea
+         rFsQVjy5cZXudtubxQTNgaSHGEfpqn/SepnIcHppT2ZeTw0AeqRQTeEcU2akIfmv0xhv
+         vs75s2e+Z4ngfFQEGjNJgENN3E4XQZgnv77r2tW4uOQkZF+wojx9u4j3Svc2OF7wFsaY
+         +71ZAR6CH+1UlkgrFtfW9mPMgpbNxyY2z6MQyyMrnaLc1E3sdhcGeZyAj3dksGQlTn+o
+         9YgtL+hIF+3ufeZOJ1uMrTgS9XaZGQjyfZnpDeQya9a0Q7PrZ70uagDAgksGx9i0ZVUr
+         JmKg==
+X-Gm-Message-State: AOJu0YzB3OOeKbRy+bjZ4sq1HBFV1kt4Opq+e+wpy4R3Zep5TqBUEnen
+        sAViSt2fB6d/iyYcguA5qff4EMiW4j6zZyUGEiJsOQ==
+X-Google-Smtp-Source: AGHT+IFyJbTW8jQSyNnceEplKrsLLXGXCTkIBMUWsT78Qef/JlWfpZa2nzs/5jSg+rrrH3mBy9Z1zw==
+X-Received: by 2002:a5d:5102:0:b0:315:a1d5:a3d5 with SMTP id s2-20020a5d5102000000b00315a1d5a3d5mr5414513wrt.22.1692620060278;
+        Mon, 21 Aug 2023 05:14:20 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:cad:2140:4b:459f:81d3:47f3? ([2a01:e0a:cad:2140:4b:459f:81d3:47f3])
+        by smtp.gmail.com with ESMTPSA id q16-20020a05600000d000b0031c56218984sm2464418wrx.104.2023.08.21.05.14.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 05:12:44 -0700 (PDT)
-Message-ID: <6dc460d2-c7fb-e299-b0a3-55b43de31555@redhat.com>
-Date:   Mon, 21 Aug 2023 20:12:39 +0800
+        Mon, 21 Aug 2023 05:14:19 -0700 (PDT)
+Message-ID: <c58ed3f8-87bb-4a48-aae6-8d67f8f0b3ed@linaro.org>
+Date:   Mon, 21 Aug 2023 14:14:18 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
- PMCR_EL0.N for the guest
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] irqchip/qcom-pdc: add support for v3.2 HW
+Content-Language: en-US, fr
+To:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20230817003029.3073210-1-rananta@google.com>
- <20230817003029.3073210-9-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230817003029.3073210-9-rananta@google.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230821-topic-sm8x50-upstream-pdc-ver-v1-1-6d7f4dd95719@linaro.org>
+ <0439125b-2952-229b-497f-c44592621410@quicinc.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <0439125b-2952-229b-497f-c44592621410@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,155 +107,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
-
-On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
+On 21/08/2023 10:41, Maulik Shah (mkshah) wrote:
+> Hi,
 > 
-> KVM does not yet support userspace modifying PMCR_EL0.N (With
-> the previous patch, KVM ignores what is written by upserspace).
-> Add support userspace limiting PMCR_EL0.N.
+> On 8/21/2023 1:00 PM, Neil Armstrong wrote:
+>> The PDC Hw version 3.2 and later doesn't have the enable registers
+>> anymore, get the HW version from registers and stop accessing those
+>> registers starting at this version.
 > 
-> Disallow userspace to set PMCR_EL0.N to a value that is greater
-> than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
-> support more event counters than the host HW implements.
-> Although this is an ABI change, this change only affects
-> userspace setting PMCR_EL0.N to a larger value than the host.
-> As accesses to unadvertised event counters indices is CONSTRAINED
-> UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
-> on every vCPU reset before this series, I can't think of any
-> use case where a user space would do that.
+> Starting PDC v3.2, enable bit is moved from IRQ_ENABLE_BANK to the IRQ_i_CFG register.
+> we need to set enable bit to tell PDC HW whether IRQ is enabled / disabled in order to wake up from SoC sleep states.
 > 
-> Also, ignore writes to read-only bits that are cleared on vCPU reset,
-> and RES{0,1} bits (including writable bits that KVM doesn't support
-> yet), as those bits shouldn't be modified (at least with
-> the current KVM).
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+>>   drivers/irqchip/qcom-pdc.c | 64 ++++++++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 53 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
+>> index d96916cf6a41..620efb9fcc96 100644
+>> --- a/drivers/irqchip/qcom-pdc.c
+>> +++ b/drivers/irqchip/qcom-pdc.c
+>> @@ -26,6 +26,13 @@
+>>   #define IRQ_ENABLE_BANK        0x10
+>>   #define IRQ_i_CFG        0x110
+>> +#define PDC_VERSION        0x1000
+>> +
+>> +/* Notable PDC versions */
+>> +enum {
+>> +    PDC_VERSION_3_2    = 0x30200,
+>> +};
+>> +
+>>   struct pdc_pin_region {
+>>       u32 pin_base;
+>>       u32 parent_base;
+>> @@ -38,6 +45,7 @@ static DEFINE_RAW_SPINLOCK(pdc_lock);
+>>   static void __iomem *pdc_base;
+>>   static struct pdc_pin_region *pdc_region;
+>>   static int pdc_region_cnt;
+>> +static unsigned int pdc_version;
+>>   static void pdc_reg_write(int reg, u32 i, u32 val)
+>>   {
+>> @@ -183,6 +191,25 @@ static struct irq_chip qcom_pdc_gic_chip = {
+>>       .irq_set_affinity    = irq_chip_set_affinity_parent,
+>>   };
+>> +static struct irq_chip qcom_pdc_gic_chip_3_2 = {
+>> +    .name            = "PDC",
+>> +    .irq_eoi        = irq_chip_eoi_parent,
+>> +    .irq_mask        = irq_chip_mask_parent,
+>> +    .irq_unmask        = irq_chip_unmask_parent,
+>> +    .irq_disable        = irq_chip_disable_parent,
+>> +    .irq_enable        = irq_chip_enable_parent,
+>> +    .irq_get_irqchip_state    = irq_chip_get_parent_state,
+>> +    .irq_set_irqchip_state    = irq_chip_set_parent_state,
+>> +    .irq_retrigger        = irq_chip_retrigger_hierarchy,
+>> +    .irq_set_type        = qcom_pdc_gic_set_type,
+>> +    .flags            = IRQCHIP_MASK_ON_SUSPEND |
+>> +                  IRQCHIP_SET_TYPE_MASKED |
+>> +                  IRQCHIP_SKIP_SET_WAKE |
+>> +                  IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND,
+>> +    .irq_set_vcpu_affinity    = irq_chip_set_vcpu_affinity_parent,
+>> +    .irq_set_affinity    = irq_chip_set_affinity_parent,
+>> +};
+>> +
+> we should not need to have another irqchip defined for same as these remains same for old/new version.
 > 
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->   arch/arm64/include/asm/kvm_host.h |  3 ++
->   arch/arm64/kvm/pmu-emul.c         |  1 +
->   arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++++--
->   3 files changed, 51 insertions(+), 2 deletions(-)
+> Not sure if you have access to downstream change, or let me know i can post the same.
+> In downstream we do like...
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 0f2dbbe8f6a7e..c15ec365283d1 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -259,6 +259,9 @@ struct kvm_arch {
->   	/* PMCR_EL0.N value for the guest */
->   	u8 pmcr_n;
->   
-> +	/* Limit value of PMCR_EL0.N for the guest */
-> +	u8 pmcr_n_limit;
-> +
->   	/* Hypercall features firmware registers' descriptor */
->   	struct kvm_smccc_features smccc_feat;
->   	struct maple_tree smccc_filter;
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index ce7de6bbdc967..39ad56a71ad20 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
->   	 * while the latter does not.
->   	 */
->   	kvm->arch.pmcr_n = arm_pmu->num_events - 1;
-> +	kvm->arch.pmcr_n_limit = arm_pmu->num_events - 1;
->   
->   	return 0;
->   }
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 2075901356c5b..c01d62afa7db4 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->   	return 0;
->   }
->   
-> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-> +		    u64 val)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	u64 new_n, mutable_mask;
-> +	int ret = 0;
-> +
-> +	new_n = FIELD_GET(ARMV8_PMU_PMCR_N, val);
-> +
-> +	mutex_lock(&kvm->arch.config_lock);
-> +	if (unlikely(new_n != kvm->arch.pmcr_n)) {
-> +		/*
-> +		 * The vCPU can't have more counters than the PMU
-> +		 * hardware implements.
-> +		 */
-> +		if (new_n <= kvm->arch.pmcr_n_limit)
-> +			kvm->arch.pmcr_n = new_n;
-> +		else
-> +			ret = -EINVAL;
-> +	}
+> The 3rd bit in IRQ_i_CFG in PDC v3.2 is for enable/disable,
+> The 0-2 bits are for the IRQ type in all PDC versions..
+> 
+>      #define IRQ_i_CFG_IRQ_ENABLE   BIT(3)
+>      #define IRQ_i_CFG_TYPE_MASK    0x7
+> 
+> and modify pdc_enable_intr()
+> 
+>         if (pdc_version < PDC_VERSION_3_2) {
+>                 index = pin_out / 32;
+>                 mask = pin_out % 32;
+>                 enable = pdc_reg_read(IRQ_ENABLE_BANK, index);
+>                 __assign_bit(mask, &enable, on);
+>                 pdc_reg_write(IRQ_ENABLE_BANK, index, enable);
+>         } else {
+>                 index = d->hwirq;
+>                 enable = pdc_reg_read(IRQ_i_CFG, index);
+>                 __assign_bit(IRQ_i_CFG_IRQ_ENABLE, &enable, on);
+>                 pdc_reg_write(IRQ_i_CFG, index, enable);
+>         }
+> 
+> and qcom_pdc_gic_set_type(), add line to only take 0-2 bits from old_pdc_type as they are for type.
+> 
+>          old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
+> +       pdc_type |= (old_pdc_type & ~IRQ_i_CFG_TYPE_MASK);
+>> +        if (pdc_version < PDC_VERSION_3_2)
+>> +            pdc_enable_region(n);
+>>       }
+> 
+> you will still need to clear enable bits in version 3.2.
 
-Since we have set the default value of pmcr_n, if we want to set a new 
-pmcr_n, shouldn't it be a different value?
+Ack, thx for the review, I'll fix all that for v2.
 
-So how about change the checking to:
+Neil
 
-if (likely(new_n <= kvm->arch.pmcr_n_limit)
-	kvm->arch.pmcr_n = new_n;
-else
-	ret = -EINVAL;
-
-what do you think?
-
-> +	mutex_unlock(&kvm->arch.config_lock);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Ignore writes to RES0 bits, read only bits that are cleared on
-> +	 * vCPU reset, and writable bits that KVM doesn't support yet.
-> +	 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
-> +	 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
-> +	 * But, we leave the bit as it is here, as the vCPU's PMUver might
-> +	 * be changed later (NOTE: the bit will be cleared on first vCPU run
-> +	 * if necessary).
-> +	 */
-> +	mutable_mask = (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
-> +	val &= mutable_mask;
-> +	val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
-> +
-> +	/* The LC bit is RES1 when AArch32 is not supported */
-> +	if (!kvm_supports_32bit_el0())
-> +		val |= ARMV8_PMU_PMCR_LC;
-> +
-> +	__vcpu_sys_reg(vcpu, r->reg) = val;
-> +	return 0;
-> +}
-> +
->   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
->   #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
->   	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
-> @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->   	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
->   	{ SYS_DESC(SYS_SVCR), undef_access },
->   
-> -	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
-> -	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
-> +	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
-> +	  .reg = PMCR_EL0, .get_user = get_pmcr, .set_user = set_pmcr },
-
-A little confusing, since the PMU_SYS_REG() defines the default 
-visibility which is pmu_visibility can return REG_HIDDEN, the set_user 
-to pmcr will be blocked, how can it being set?
-
-Maybe I lose some details.
-
-Thanks,
-Shaoqin
-
->   	{ PMU_SYS_REG(PMCNTENSET_EL0),
->   	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
->   	{ PMU_SYS_REG(PMCNTENCLR_EL0),
-
--- 
-Shaoqin
+> 
+> Thanks,
+> Maulik
+> 
 
