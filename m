@@ -2,248 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97404782AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0336782AD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235514AbjHUNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        id S235518AbjHUNuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjHUNtK (ORCPT
+        with ESMTP id S233008AbjHUNuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:49:10 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5950EC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:49:07 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so12752a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692625746; x=1693230546;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GaYsz98fmO0AeRBJAu60FsVXxbkbmXArYB3D1Oortk0=;
-        b=NY8oaljNQrhtgW5K6S4sGaVlEXyY6+6r9N0NAQFWNvYz9Gzug4wf8p7dv4guqfoEr4
-         AVwsM1dro963Mwj8Y0+lLHxTVVT3qQS1vcLWcD0SbDJ0WEhAwX3QZ0dTWYyxq78d0pMU
-         /12tx20wlR4Nriid+x5wuEd5WHF8kOD4XjdId3gD9rPjpWg/I8NApWR7wvsC+l2cV1Jx
-         d/h8i0wWEK5vPskb5BONrZ22MgET40Y/ft8zcsu5KhD6tWyVzw18QjhwuSZ8oHefHSMA
-         FGWC2iyWlK8xThnXNjPxJRhGLC8u/gGGuTWOXYL81xjhkMpjkrhHgrK0nDja6sfzLZF0
-         m3BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692625746; x=1693230546;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GaYsz98fmO0AeRBJAu60FsVXxbkbmXArYB3D1Oortk0=;
-        b=fR3Ev5M0l5EhudpI3cHEjwU1cA3JwehCUFbXxaWKdWgcaM5yLJId3x2vStf+qyJa4u
-         7iseyGXWckZGeC8mmjVDfALVY8LOrHHA+o3TO/++Qs8PTooic2D6bQkt1ST987vGZ/gh
-         JO6xc4AeSlT6K0jmNjzN5UUrP0rxdzgqwOfkvDqQvB/WWnwFuFXIYWu4yhBx5tnIb4Jd
-         5TxBLIsjWcUVwlECDA/9H1eoG6dqJTxfWKKnT2nVpGxtDGhO2mVvdPYU2DIYCOSoEuiC
-         JC4gq4pfGIa+SE4MfoibnIybO/Ks5roPn6ZBnO0N9QzpJ1uwatsP72ULP0YxCYf8iXaE
-         1Kmg==
-X-Gm-Message-State: AOJu0Yw2YleKsQKs5SYuzzg7BnuoAXgbqN6SHN9KaTxrGcnDEjJla5yj
-        vUVpfjxD97juFaJiuGjUu9nRLoWLddO3ZMAuOsGnaA==
-X-Google-Smtp-Source: AGHT+IEsdYGt90fBKrN0wm/Vx4ISKupF2JySSM4rjWmpOgimEjZDuxmmOucFPn9uxTu62uO4TBLkuDp4Vn0QFAAIERQ=
-X-Received: by 2002:a50:ab17:0:b0:522:cc9c:f5a4 with SMTP id
- s23-20020a50ab17000000b00522cc9cf5a4mr271722edc.4.1692625745977; Mon, 21 Aug
- 2023 06:49:05 -0700 (PDT)
+        Mon, 21 Aug 2023 09:50:06 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2066.outbound.protection.outlook.com [40.107.95.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81632BC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:50:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lA88B9nGrj5sub1Vc+Bjq0RkPHPJZ3uDSMgX8C47rmDZ20pS4ADGtmmoyhSEEwywt6RR6TQw2u1M+ZGpFh1ggtSNmwlJ5wtogSNAdUXGsY81b8prCIGtXXonkpgI9WK+bd6hWf5ZDbWSmU2ZbGCol3KDjjes32cTFjgMxMm2cs68rqm67XaNynltE1jUFiuJ5ngXIh/NiAW6RDy3uLc7N1IkS8q2aOkgTAHkqQT+QXcq5NKgj3ii6vuYIdNayauMQC4aMTZlhnFbn1iOk8UIyQvMbC608sFyMW+bTmN03IfTqLKYnhsDjQhlrVEb5IXaPEKcRLZqYxr3icSf70HhZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Z1bM+DMIyDAWYAYELtZvHsR69uripy0c7WIv9i6xO7U=;
+ b=nYvoktXAmKvd6lxWRGopTcGCh6xSxNVHrs+KZvjIOssA8ItjEi7U1BYzLBf7sl4lR87tFbnVthCmJH5OJzHIVTuvhNcjX75V1kb8Kh9UTtbXL3ai460CIOw0MczprWfJoVp/HpJ/ehIHdv+ueJ0h3ehV0iDg6G+yC7CdYglE0yt8FCHkPoA/T14LHWEjWPYn/sbn11s+Ipzi/BMasQHswLhOPy7MSBlD28p2DmtpMtaQzBo/yzcdhNK8ANHI3tCV3ZqJJWzOQxtYkANGgWhXLckU2GOmpuEVKg+N0dOB95aefxDOTYLp7ZheljxhsairJ585QOXH3PbuYqTwQJQu/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Z1bM+DMIyDAWYAYELtZvHsR69uripy0c7WIv9i6xO7U=;
+ b=TstNhIReO0ZU3VCmGkkpWES3dXCsmGhWw5RaADOvPR2gWE4E2TgAlzyHOdd0GXWrQQJ68JxziSqiJeso/3lGw0+c2IYMzNkOYIe3Bqf+A7yEMcuFy8aJIWaPKFyUveh4JFUOiSeaMsO9yUp91QLgUG444CC5MzHeYCdG/llnRpg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by PH8PR12MB6699.namprd12.prod.outlook.com (2603:10b6:510:1ce::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
+ 2023 13:50:02 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
+ 13:50:02 +0000
+Message-ID: <bd2968b0-21bc-7398-f333-1ff11cb705a9@amd.com>
+Date:   Mon, 21 Aug 2023 15:49:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2 7/7] Revert "drm/amd/amdgpu: switch on/off vcn power
+ profile mode"
+Content-Language: en-US
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
+ <20230821064759.94223-8-Arvind.Yadav@amd.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <20230821064759.94223-8-Arvind.Yadav@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BE1P281CA0248.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:8b::10) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
 MIME-Version: 1.0
-References: <20230802071947.1683318-1-yangcong5@huaqin.corp-partner.google.com>
- <20230802071947.1683318-3-yangcong5@huaqin.corp-partner.google.com>
- <CAD=FV=Um8875aMt_kWvCvpNjb3EwSk8VjVTEgv_TJ9WDS+LniA@mail.gmail.com> <lyns4qkh57xhppnqroaooqtniypfsmr2l5fujlry3stmhrjww4@3iy5mmmrazl6>
-In-Reply-To: <lyns4qkh57xhppnqroaooqtniypfsmr2l5fujlry3stmhrjww4@3iy5mmmrazl6>
-From:   Doug Anderson <dianders@google.com>
-Date:   Mon, 21 Aug 2023 06:48:53 -0700
-Message-ID: <CAD=FV=UFM-5XFsTRt7LPXsN9Fjff33khYGQM+XqcLF1YdsRY4Q@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] HID: i2c-hid: elan: Add ili9882t timing
-To:     Benjamin Tissoires <bentiss@kernel.org>
-Cc:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-        benjamin.tissoires@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dmitry.torokhov@gmail.com, jikos@kernel.org, hsinyi@google.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|PH8PR12MB6699:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48f272d1-0c6a-4d04-584c-08dba24d83fe
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nuJBQRGtq45Ey8e+sDt7cKUGX58KiFOBWeAr4Gqoa0HKGLP03rtq8DW732SDEHdITRMx/9T/UvHekNO+XwckPMQ1eNOm2SVmmS6FuNLtZiWLgl2bRBy4lsZiazqxYzYwkKJ1ZvEgzp2Uhq/4xAn0d0JqNYnmcueiSLOFGGmmL8jm/rTabU6OMOo2h7oafm6NsD5BwJiM6QqqcHDYPYb/Z6ejbFvmuuwePgpti9/fBZnj9N4epXc9uptW8dvJj7xUTBU64mCd3A8ymhtpwD/FoYRm0sqkbivmCRI2zyHhcsXHKUxLIMF1/JYdrqFts8dBdCQVUsNO0PpY2RZLsqqnw+RXfjxSn2YnaxxhtPTC0EyzCSA9ZelKtkqlxcg7aK3gkkiB6vaxpCZw2O3ZDOOcE5As2gMfvhgym37R2C5ZTsBJaKvqDdjHGENQx5zBQ6FWl76FrRi186l/+IMzq8MfVTy5QF+hIOSMz361iMkiXj0dBO2blTAaWLLoeALCy+1fQDPbJdDbQfS7fx+OHX7pa5diUxvIJnYvyPpleADVb0cThvSEjTxQQUMKGj9Wlj83qpkz5PspevPD5fDBdSuzHWyTx+sngsX1LflIQ1Ia6wzNnXJZlLl7/+Yob8zM/wvHYadsbeIZ2vr99GC23yaHVA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(44832011)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(66556008)(66476007)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dEpCRlUyWWM3RUtZNXlXb2ZDU2dPMTh4VUJNSGEvdXZ4cGNDMnZDZVlCclJH?=
+ =?utf-8?B?bTlUSkRzNUoxZ3FjSEFwa1ZsZ0JXdG0xTGR6U3hraEcvd21GU3BLZzZuZGpt?=
+ =?utf-8?B?ZHBCTGx4Ym4wNXR0MG1hVFBTZFhKd2NOMW01OG84UEwzUTF6TjZvUDRmanda?=
+ =?utf-8?B?cXRzMTFiZVF2S0puT1MraFZEQmxjb3RMQmlnazdoS3FZRElmOXd3UHFGdXBC?=
+ =?utf-8?B?NXJDOENDTFNnWU9qOFFkLzUyMWpZbXE1S1FJamI3dG5yQjI0Ujg3YlRTb3Y1?=
+ =?utf-8?B?S2pHdjNYUjZsOE4xVFpoUDRSeHdJOHA3VmdEbUI0NXNYN1pJOE9QajFGSUpo?=
+ =?utf-8?B?RnVhaXdETXJiTTV5SE9yNjEzRHg0d1BBOThWSWdEVTVXRWhJUE5yVkN5ZVRY?=
+ =?utf-8?B?Yi9ZUGFabDYxekpKVWYxb3J3NUwzUmV3WGtCODRTY0FHNHMrU09IYytmMklT?=
+ =?utf-8?B?RGc3RHZHbmlRTVliL3dOS1NkT2NnTjcrR04wTE0vbmdwZmNRdVdDUmtXd01S?=
+ =?utf-8?B?Vzd1VnZVZmp6dUNGcFlzVllKSlAzU3lCWWUrR1BnK1cwRStSdXlqUXVJeEwv?=
+ =?utf-8?B?eTI2ZnVSZGxlS3JJWHVGaDU0OVhkYWZLdVJMbm11QXRqTGZwTnV2N0ZaS1Z1?=
+ =?utf-8?B?dDhVN3B4VFo4b2RXdWkzOGxmRkZmY3pTRTRUT2VSME9iZmwxeDVmLzBPOVBV?=
+ =?utf-8?B?OEdhd1owTmFoMEZaQ3dsRWFxZGNFNjlWRzl6MStrRlNVOUdtTk0vd0oxTG95?=
+ =?utf-8?B?NWZVZm84eURKcElVMzEySjd4Vi9Rem9PcU5vUDVKVFdyUVRMeFdFdTVIUUVZ?=
+ =?utf-8?B?YlpDblcxOUJmWW9zTTBSUGVyT1pURkt4VlVVZFdZcnFNUzdmdWkwN0VnVTFB?=
+ =?utf-8?B?VEFPMFFyN0YveUV2djBFcWh0WStMYmFLM3FNeTFVN0FXVnhycGFFSFoyL2xS?=
+ =?utf-8?B?TFQxNWYwVjhQYlJ0Rk9OSmFhcWgrb3dLa0ZhQXM1c1JKK3Q0WTB5NVVCZ3Mx?=
+ =?utf-8?B?b2hwczBSZE9FQ0h3Q3pwTW52ZUp5eGRQWHY4d204cGF1czc1T1dqTFR1MWxB?=
+ =?utf-8?B?UCtobDRRKzQvVGRNeGdrTytzVTI4dCs2Vi9nUnFsczcvZFVnK2VyQlo5MFBB?=
+ =?utf-8?B?QnJYVVhoaEJiSFpqT0RzSFBtaTJ0anZIVkt4di9HQ2pSQWM5dEY1OW9CMUZk?=
+ =?utf-8?B?d1V5YjBzcUhQb2NqQjFvbjluWnZyQkw2Tll5V2V2cE0xQjU0eFBRMytlcG9P?=
+ =?utf-8?B?OEg2VE1ERVRldW1tUW1TU2dJL3FUVmUwNDFac2FRUXpWL1JjdTlYUjRCU2VI?=
+ =?utf-8?B?WUcyakFtT2pwZnZETVBWa1h4WGxwbXpxdTlKQWExcGwyaTlPM3pPNC9nQkpm?=
+ =?utf-8?B?MWRJR3licXhlOWhFaTA3azFRaTZNc3kwQTZtL0lWMkhvSFB1ZGh5NnUxMDNi?=
+ =?utf-8?B?REt1NStPQmxjYnNPcmpmNEppU3dHMy81YnBET3VPY0VWWjRVTGEzaHV1c2dG?=
+ =?utf-8?B?cnFyejZ3ci9IeHRGZy9scDBjY0gxUGt4TEp0allvZFRaZXkyWllBYi9RZ1BR?=
+ =?utf-8?B?aldIenJlRnRleTUvVGNYcFczZE9lSW01bisvSGdhK0JpM3V5TDF6UmN1OGRx?=
+ =?utf-8?B?Z1hXOCtaYTRUZVZVOHNkVi96dktFSmpLNVgvN1dvOVhMeDZ6K0psQnhva2pn?=
+ =?utf-8?B?VG1iaHlmRTF3UlZWNEljTFNHMHVQc2VmeUxGczJTd1ZRNWpSNWpCTGd1RlY2?=
+ =?utf-8?B?UjEwZHAzZ0YyK0JuODRDNzRENDYraWM4emRvRU80d2ROK244TUZBRDRZSWZs?=
+ =?utf-8?B?RWRCcGd5ZkM1bUZOZVJzVUZEckJGd2JQMzl4RU1jczcyOHVaVlkxVUZSbnU1?=
+ =?utf-8?B?Y3pZNFpxU0NVNFdQOThlY2pwd0ltRzFKdSthZ216bmthcHpHenNmWUhYSTJY?=
+ =?utf-8?B?Qm5HaFF2MU10S2dPc2YyV3NneXVZa09IMW1sMExjRWlHNm42YlBVZFZoUVNy?=
+ =?utf-8?B?Z1JCN1FRSHRSWnhxZE54aEs4NVZrWDFjcmdidUdnSTJLZzh3eWFubGwvbFZH?=
+ =?utf-8?B?VFlWQ2JIL1JlQStNMjIvU3ZKZWdqUmtaV01iZzZ4eU9XZWNqa3JQaXBzTE5Q?=
+ =?utf-8?Q?zaE2rZ15hQjT9NcOhz/Ecf9zs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48f272d1-0c6a-4d04-584c-08dba24d83fe
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:50:01.9207
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 06F0fVfXddOFJEATr1Ik8u5tMAsNGT3cjlhifmZWp/yTB/CQMvNcqOwjRbbt965f+wJvOJq/qyOE/tn2fCXQjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6699
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Someone from MM should also confirm on this, but:
 
-On Mon, Aug 21, 2023 at 2:01=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
->
-> On Aug 02 2023, Doug Anderson wrote:
-> > Benjamin,
-> >
-> > On Wed, Aug 2, 2023 at 12:20=E2=80=AFAM Cong Yang
-> > <yangcong5@huaqin.corp-partner.google.com> wrote:
-> > >
-> > > The ili9882t is a TDDI IC (Touch with Display Driver). The
-> > > datasheet specifies there should be 60ms between touch SDA
-> > > sleep and panel RESX. Doug's series[1] allows panels and
-> > > touchscreens to power on/off together, so we can add the 65 ms
-> > > delay in i2c_hid_core_suspend before panel_unprepare.
-> > >
-> > > Because ili9882t touchscrgeen is a panel follower, and
-> > > needs to use vccio-supply instead of vcc33-supply, so set
-> > > it NULL to ili9882t_chip_data, then not use vcc33 regulator.
-> > >
-> > > [1]: https://lore.kernel.org/all/20230727171750.633410-1-dianders@chr=
-omium.org
-> > >
-> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> > > ---
-> > >  drivers/hid/i2c-hid/i2c-hid-of-elan.c | 50 ++++++++++++++++++++-----=
---
-> > >  1 file changed, 38 insertions(+), 12 deletions(-)
-> >
-> >
-> > >
-> > > diff --git a/drivers/hid/i2c-hid/i2c-hid-of-elan.c b/drivers/hid/i2c-=
-hid/i2c-hid-of-elan.c
-> > > index 029045d9661c..31abab57ad44 100644
-> > > --- a/drivers/hid/i2c-hid/i2c-hid-of-elan.c
-> > > +++ b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
-> > > @@ -18,9 +18,11 @@
-> > >  #include "i2c-hid.h"
-> > >
-> > >  struct elan_i2c_hid_chip_data {
-> > > -       unsigned int post_gpio_reset_delay_ms;
-> > > +       unsigned int post_gpio_reset_on_delay_ms;
-> > > +       unsigned int post_gpio_reset_off_delay_ms;
-> > >         unsigned int post_power_delay_ms;
-> > >         u16 hid_descriptor_address;
-> > > +       const char *main_supply_name;
-> > >  };
-> > >
-> > >  struct i2c_hid_of_elan {
-> > > @@ -38,9 +40,11 @@ static int elan_i2c_hid_power_up(struct i2chid_ops=
- *ops)
-> > >                 container_of(ops, struct i2c_hid_of_elan, ops);
-> > >         int ret;
-> > >
-> > > -       ret =3D regulator_enable(ihid_elan->vcc33);
-> > > -       if (ret)
-> > > -               return ret;
-> > > +       if (ihid_elan->vcc33) {
-> > > +               ret =3D regulator_enable(ihid_elan->vcc33);
-> > > +               if (ret)
-> > > +                       return ret;
-> > > +       }
-> > >
-> > >         ret =3D regulator_enable(ihid_elan->vccio);
-> > >         if (ret) {
-> > > @@ -52,8 +56,8 @@ static int elan_i2c_hid_power_up(struct i2chid_ops =
-*ops)
-> > >                 msleep(ihid_elan->chip_data->post_power_delay_ms);
-> > >
-> > >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 0);
-> > > -       if (ihid_elan->chip_data->post_gpio_reset_delay_ms)
-> > > -               msleep(ihid_elan->chip_data->post_gpio_reset_delay_ms=
-);
-> > > +       if (ihid_elan->chip_data->post_gpio_reset_on_delay_ms)
-> > > +               msleep(ihid_elan->chip_data->post_gpio_reset_on_delay=
-_ms);
-> > >
-> > >         return 0;
-> > >  }
-> > > @@ -64,8 +68,12 @@ static void elan_i2c_hid_power_down(struct i2chid_=
-ops *ops)
-> > >                 container_of(ops, struct i2c_hid_of_elan, ops);
-> > >
-> > >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 1);
-> > > +       if (ihid_elan->chip_data->post_gpio_reset_off_delay_ms)
-> > > +               msleep(ihid_elan->chip_data->post_gpio_reset_off_dela=
-y_ms);
-> > > +
-> > >         regulator_disable(ihid_elan->vccio);
-> > > -       regulator_disable(ihid_elan->vcc33);
-> > > +       if (ihid_elan->vcc33)
-> > > +               regulator_disable(ihid_elan->vcc33);
-> > >  }
-> > >
-> > >  static int i2c_hid_of_elan_probe(struct i2c_client *client)
-> > > @@ -89,24 +97,42 @@ static int i2c_hid_of_elan_probe(struct i2c_clien=
-t *client)
-> > >         if (IS_ERR(ihid_elan->vccio))
-> > >                 return PTR_ERR(ihid_elan->vccio);
-> > >
-> > > -       ihid_elan->vcc33 =3D devm_regulator_get(&client->dev, "vcc33"=
-);
-> > > -       if (IS_ERR(ihid_elan->vcc33))
-> > > -               return PTR_ERR(ihid_elan->vcc33);
-> > > -
-> > >         ihid_elan->chip_data =3D device_get_match_data(&client->dev);
-> > >
-> > > +       if (ihid_elan->chip_data->main_supply_name) {
-> > > +               ihid_elan->vcc33 =3D devm_regulator_get(&client->dev,
-> > > +                                                     ihid_elan->chip=
-_data->main_supply_name);
-> > > +               if (IS_ERR(ihid_elan->vcc33))
-> > > +                       return PTR_ERR(ihid_elan->vcc33);
-> > > +       }
-> > > +
-> > >         return i2c_hid_core_probe(client, &ihid_elan->ops,
-> > >                                   ihid_elan->chip_data->hid_descripto=
-r_address, 0);
-> > >  }
-> > >
-> > >  static const struct elan_i2c_hid_chip_data elan_ekth6915_chip_data =
-=3D {
-> > >         .post_power_delay_ms =3D 1,
-> > > -       .post_gpio_reset_delay_ms =3D 300,
-> > > +       .post_gpio_reset_on_delay_ms =3D 300,
-> > > +       .hid_descriptor_address =3D 0x0001,
-> > > +       .main_supply_name =3D "vcc33",
-> > > +};
-> > > +
-> > > +static const struct elan_i2c_hid_chip_data ilitek_ili9882t_chip_data=
- =3D {
-> > > +       .post_power_delay_ms =3D 1,
-> > > +       .post_gpio_reset_on_delay_ms =3D 200,
-> > > +       .post_gpio_reset_off_delay_ms =3D 65,
-> > >         .hid_descriptor_address =3D 0x0001,
-> > > +       /*
-> > > +        * this touchscreen is tightly integrated with the panel and =
-assumes
-> > > +        * that the relevant power rails (other than the IO rail) hav=
-e already
-> > > +        * been turned on by the panel driver because we're a panel f=
-ollower.
-> > > +        */
-> > > +       .main_supply_name =3D NULL,
-> > >  };
-> > >
-> > >  static const struct of_device_id elan_i2c_hid_of_match[] =3D {
-> > >         { .compatible =3D "elan,ekth6915", .data =3D &elan_ekth6915_c=
-hip_data },
-> > > +       { .compatible =3D "ilitek,ili9882t", .data =3D &ilitek_ili988=
-2t_chip_data },
-> >
-> > Logically, this patch depends on the panel-follower series that's now
-> > landed in drm-misc-next. With your Ack, I'm willing to land these two
-> > patches into drm-misc-next too. Other options:
->
-> If you are fine with the code, I think it could go with the drm tree
-> given that it depends on the panel-follower.
->
-> Unless it's too late for you to take 6.6 material (sorry I was off in
-> August and just came back).
->
-> Acked-By: Benjamin Tissoires <bentiss@kernel.org>
+Acked-by: Shashank Sharma <shashank.sharma@amd.com>
 
-Thanks for the Ack, but yeah, it's probably too late for drm-misc.
-Hopefully this can go through the normal tree after the next -rc1
-then. Thanks!
 
--Doug
+On 21/08/2023 08:47, Arvind Yadav wrote:
+> This reverts commit 5ce71f59bb9bd3d8a09b96afdbc92975cb6dc303.
+>
+> Reason for revert: New  amdgpu_workload_profile* api is added
+> to switch on/off profile mode. These new api will allow to
+> change the GPU power profile based on a submitted job.
+>
+> Cc: Shashank Sharma <shashank.sharma@amd.com>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c | 14 ++------------
+>   1 file changed, 2 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+> index 2d94f1b63bd6..70777fcfa626 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vcn.c
+> @@ -363,7 +363,6 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>   		container_of(work, struct amdgpu_device, vcn.idle_work.work);
+>   	unsigned int fences = 0, fence[AMDGPU_MAX_VCN_INSTANCES] = {0};
+>   	unsigned int i, j;
+> -	int r = 0;
+>   
+>   	for (j = 0; j < adev->vcn.num_vcn_inst; ++j) {
+>   		if (adev->vcn.harvest_config & (1 << j))
+> @@ -392,10 +391,6 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>   	if (!fences && !atomic_read(&adev->vcn.total_submission_cnt)) {
+>   		amdgpu_device_ip_set_powergating_state(adev, AMD_IP_BLOCK_TYPE_VCN,
+>   		       AMD_PG_STATE_GATE);
+> -		r = amdgpu_dpm_switch_power_profile(adev, PP_SMC_POWER_PROFILE_VIDEO,
+> -				false);
+> -		if (r)
+> -			dev_warn(adev->dev, "(%d) failed to disable video power profile mode\n", r);
+>   	} else {
+>   		schedule_delayed_work(&adev->vcn.idle_work, VCN_IDLE_TIMEOUT);
+>   	}
+> @@ -404,16 +399,11 @@ static void amdgpu_vcn_idle_work_handler(struct work_struct *work)
+>   void amdgpu_vcn_ring_begin_use(struct amdgpu_ring *ring)
+>   {
+>   	struct amdgpu_device *adev = ring->adev;
+> -	int r = 0;
+>   
+>   	atomic_inc(&adev->vcn.total_submission_cnt);
+>   
+> -	if (!cancel_delayed_work_sync(&adev->vcn.idle_work)) {
+> -		r = amdgpu_dpm_switch_power_profile(adev, PP_SMC_POWER_PROFILE_VIDEO,
+> -				true);
+> -		if (r)
+> -			dev_warn(adev->dev, "(%d) failed to switch to video power profile mode\n", r);
+> -	}
+> +	if (!cancel_delayed_work_sync(&adev->vcn.idle_work))
+> +		amdgpu_gfx_off_ctrl(adev, false);
+>   
+>   	mutex_lock(&adev->vcn.vcn_pg_lock);
+>   	amdgpu_device_ip_set_powergating_state(adev, AMD_IP_BLOCK_TYPE_VCN,
