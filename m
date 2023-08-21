@@ -2,125 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AED9782102
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E05782106
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbjHUBGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 21:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
+        id S232244AbjHUBLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 21:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbjHUBGk (ORCPT
+        with ESMTP id S230510AbjHUBLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 21:06:40 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A6399;
-        Sun, 20 Aug 2023 18:06:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692579996;
-        bh=U+DoApGrhEYg9skyatke/aQbjC6SuS7jT2aVsr2aNFM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cnwZ4QkQrq52IGnD4GkcoBLXy/aJp+DGfSlUvnW4mE06SB/VL+aGF70EkPekzScbU
-         mzW/j2yAHPhjocCBkdcBEduOxibdhWeudkUiNbmza+IjGOkD4ZiV/2dc+dpC1BplpB
-         CpLcRyZtA6h8zc+R0jYg2JEFwuZfJ+2QJ+FiGUlwBxum2eJI6LoHQ28aOfgATq+tUt
-         W0wAyaDhA6PeCnHYfm2DN1OQpmUgVQYG8hxlyPcazJc3A0oDoCMv01cdG0nzr2R9B7
-         qJDYX9V9ih/d9Lx7Y8Km3YGra74vOaI+L+BoayvwFxgG41QYRHrIy/JTibcLKKOpfw
-         v4Y85jR253zAw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTZ7H66zcz4wZn;
-        Mon, 21 Aug 2023 11:06:35 +1000 (AEST)
-Date:   Mon, 21 Aug 2023 11:06:33 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20230821110633.432a1599@canb.auug.org.au>
+        Sun, 20 Aug 2023 21:11:08 -0400
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5805FA0;
+        Sun, 20 Aug 2023 18:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1692580268; x=1724116268;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=+oj3MNohxcdTmrcPwpBi7p0R1DJSMKakt+IrmmmfESg=;
+  b=mXT+RRjIXN1CxdN5sd8wOiCPITSEpg9kAJqGZlW6v/YuqJgq/zlobQUA
+   SmHERTQhOTbLdSpCwv3s0gpjNvGnTHX5GASe/WveoshdrDzdtfABkRGEr
+   BiOM3o42ih8kmccSISYSpiBZ39DjBXnMXMGmjW7GiYdlzf/ZcGKRl95Wr
+   I=;
+X-IronPort-AV: E=Sophos;i="6.01,189,1684800000"; 
+   d="scan'208";a="233539961"
+Subject: RE: Tasks stuck jbd2 for a long time
+Thread-Topic: Tasks stuck jbd2 for a long time
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 01:11:05 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1e-m6i4x-529f0975.us-east-1.amazon.com (Postfix) with ESMTPS id 083BF474DD;
+        Mon, 21 Aug 2023 01:11:02 +0000 (UTC)
+Received: from EX19D002UWC002.ant.amazon.com (10.13.138.166) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 21 Aug 2023 01:10:58 +0000
+Received: from EX19D017UWC004.ant.amazon.com (10.13.139.199) by
+ EX19D002UWC002.ant.amazon.com (10.13.138.166) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 21 Aug 2023 01:10:58 +0000
+Received: from EX19D017UWC004.ant.amazon.com ([fe80::42ff:f31:f4d8:a730]) by
+ EX19D017UWC004.ant.amazon.com ([fe80::42ff:f31:f4d8:a730%6]) with mapi id
+ 15.02.1118.030; Mon, 21 Aug 2023 01:10:58 +0000
+From:   "Lu, Davina" <davinalu@amazon.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     "Bhatnagar, Rishabh" <risbhat@amazon.com>, Jan Kara <jack@suse.cz>,
+        "jack@suse.com" <jack@suse.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "Park, SeongJae" <sjpark@amazon.com>
+Thread-Index: AQHZ0T0hyB578WffgkKt4A53/u6dQa/vMecAgAAmqwCABI99MA==
+Date:   Mon, 21 Aug 2023 01:10:58 +0000
+Message-ID: <099884899291490caf6c529929339e50@amazon.com>
+References: <153d081d-e738-b916-4f72-364b2c1cc36a@amazon.com>
+ <20230816022851.GH2247938@mit.edu>
+ <17b6398c-859e-4ce7-b751-8688a7288b47@amazon.com>
+ <20230816145310.giogco2nbzedgak2@quack3>
+ <e716473e-7251-7a81-fa5e-6bf6ba34e49f@amazon.com>
+ <20230816215227.jlvmqasfbc73asi4@quack3>
+ <7f687907-8982-3be6-54ee-f55aae2f4692@amazon.com>
+ <20230817104917.bs46doo6duo7utlm@quack3>
+ <f8b8e655-7485-ef11-e151-7118b1531f16@amazon.com>
+ <d82df68eb8514951a7f7acc923132796@amazon.com>
+ <20230818024144.GD3464136@mit.edu>
+In-Reply-To: <20230818024144.GD3464136@mit.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.43.143.134]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ei2v3GXqxFAT/qw0=ZB97_Q";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ei2v3GXqxFAT/qw0=ZB97_Q
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the net-next tree got a conflict in:
+CAUTION: This email originated from outside of the organization. Do not cli=
+ck links or open attachments unless you can confirm the sender and know the=
+ content is safe.
 
-  include/net/inet_sock.h
+On Fri, Aug 18, 2023 at 01:31:35AM +0000, Lu, Davina wrote:
+>>
+>> Looks like this is a similar issue I saw before with fio test (buffered =
+IO with 100 threads), it is also shows "ext4-rsv-conversion" work queue tak=
+es lots CPU and make journal update every stuck.
 
-between commit:
+>Given the stack traces, it is very much a different problem.
 
-  f866fbc842de ("ipv4: fix data-races around inet->inet_id")
+I see, I thought it maybe the same since it is all related to convert unwri=
+tten extents to extents. I didn't look into details of the stuck though.
 
-from the net tree and commit:
+>> There is a patch and see if this is the same issue? this is not the=20
+>> finial patch since there may have some issue from Ted. I will forward=20
+>> that email to you in a different loop. I didn't continue on this patch=20
+>> that time since we thought is might not be the real case in RDS.
 
-  c274af224269 ("inet: introduce inet->inet_flags")
+>The patch which you've included is dangerous and can cause file system cor=
+ruption.  See my reply at [1], and your corrected patch which addressed my =
+concern at [2].  If folks want to try a patch, please use the one at [2], a=
+nd not the one you quoted in this thread, since it's missing critically nee=
+ded locking.
 
-from the net-next tree.
+>[1] https://lore.kernel.org/r/YzTMZ26AfioIbl27@mit.edu
+> [2] https://lore.kernel.org/r/53153bdf0cce4675b09bc2ee6483409f@amazon.com
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
 
---=20
-Cheers,
-Stephen Rothwell
+> The reason why we never pursued it is because (a) at one of our weekly
+> ext4 video chats, I was informed by Oleg Kiselev that the performance iss=
+ue was addressed in a different way, and (b) I'd want to reproduce the issu=
+e on a machine under my control so I could understand what was was going on=
+ and so we could examine the dynamics of what was happening with and withou=
+t the patch.  So I'd would have needed to know how many CPU's what kind of =
+storage device (HDD?, SSD?  md-raid?
+> etc.) was in use, in addition to the fio recipe.
 
-diff --cc include/net/inet_sock.h
-index 491ceb7ebe5d,acbb93d7607a..000000000000
---- a/include/net/inet_sock.h
-+++ b/include/net/inet_sock.h
-@@@ -218,12 -218,12 +218,12 @@@ struct inet_sock=20
-  #define inet_dport		sk.__sk_common.skc_dport
-  #define inet_num		sk.__sk_common.skc_num
- =20
-+ 	unsigned long		inet_flags;
-  	__be32			inet_saddr;
-  	__s16			uc_ttl;
-- 	__u16			cmsg_flags;
-- 	struct ip_options_rcu __rcu	*inet_opt;
-- 	atomic_t		inet_id;
-  	__be16			inet_sport;
-++	atomic_t		inet_id;
-+ 	struct ip_options_rcu __rcu	*inet_opt;
- -	__u16			inet_id;
- =20
-  	__u8			tos;
-  	__u8			min_ttl;
+Thanks for pointed out, I almost forget I did this version 2.=20
+How to replicate this issue : CPU is X86_64, 64 cores, 2.50GHZ, MEM is 256G=
+B (it is VM though). Attached with one NVME device (no lvm, drbd etc) with =
+IOPS 64000 and 16GiB. I can also replicate with 10000 IOPS 1000GiB NVME vol=
+ume.
 
---Sig_/ei2v3GXqxFAT/qw0=ZB97_Q
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Run fio test:=20
+1. Create new files, fio or dd, fio is: /usr/bin/fio --name=3D16kb_rand_wri=
+te_only_2048_jobs --directory=3D/rdsdbdata --rw=3Drandwrite --ioengine=3Dsy=
+nc --buffered=3D1 --bs=3D16k --max-jobs=3D2048 --numjobs=3D$1 --runtime=3D3=
+0 --thread --filesize=3D28800000 --fsync=3D1 --group_reporting --create_onl=
+y=3D1 > /dev/null
 
------BEGIN PGP SIGNATURE-----
+2. sudo echo 1 > /proc/sys/vm/drop_caches
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTiuJoACgkQAVBC80lX
-0Gxzmwf6A7r8T2PfS2DmKexlBnvaqDgXR3Zr6XHwLlfGcUH9+9uzEGLU4Lcck3ZE
-Bagl8MZQrl200AtZG4ycOvvbS13ZR8S0OCHV6VbQXRkQ27I2YGJuf3Gna0BPdfgp
-7gjx90aQHE1DGB404Tc2FOXn61ErOVXUBximGaKwRlqT818N1E78XwpXrXjLe2+W
-d/AuKY8evmIuRGbZNEM/tR+M8RqtQevio8m/ZFrZfUI6MKIBt+jwZe8kp1mPWPjZ
-RoPkQvOULtQPYjf6jCt77ObtraDc+xtkeqHyMglkVl5M4+6XX8t+VML1CMbuxcO1
-k0fdUiTRnDjoHWlDhWeg7nvK8Z2WYQ==
-=t4U7
------END PGP SIGNATURE-----
+3. fio --name=3D16kb_rand_write_only_2048_jobs --directory=3D/rdsdbdata --r=
+w=3Drandwrite --ioengine=3Dsync --buffered=3D1 --bs=3D16k --max-jobs=3D2048=
+ --numjobs=3D2048 --runtime=3D60 --time_based --thread --filesize=3D2880000=
+0 --fsync=3D1 --group_reporting
+Can see the IOPS drop from 17K to=20
+Jobs: 2048 (f=3D2048): [w(2048)] [13.3% done] [0KB/1296KB/0KB /s] [0/81/0 i=
+ops] [eta 00m:52s]  <----- IOPS drops to less than < 100
 
---Sig_/ei2v3GXqxFAT/qw0=ZB97_Q--
+The way to create and mount fs is:
+mke2fs -m 1 -t ext4 -b 4096 -L /rdsdbdata /dev/nvme5n1 -J size=3D128
+mount -o rw,noatime,nodiratime,data=3Dordered /dev/nvme5n1 /rdsdbdata
+
+Yes, Oleg is correct, there is another way to solve this: large the journal=
+ size from 128MB to 2GB. But looks like this is not an typical issue for RD=
+S background so we didn't continue much on this.
+What I can find is: the journal doesn't have enough space (cannot buffer mu=
+ch) so it has to wait all the current transaction completes in code add_tra=
+nsaction_credits() below:
+if (needed > journal->j_max_transaction_buffers / 2) {  =20
+               jbd2_might_wait_for_commit(journal);
+               wait_event(journal->j_wait_reserved,
+               atomic_read(&journal->j_reserved_credits) + rsv_blocks
+                                             <=3D journal->j_max_transactio=
+n_buffers / 2);
+And the journal locking journal=1B$B"*=1B(Bj_state_lock show stuck at a lon=
+g time. =20
+But not sure why the "ext4-rsv-conversion" also plays a role here, this sho=
+uld be triggered by ext4_writepages(). But what I can see is when the journ=
+al lock stuck, each core's utility is almost 100% and the ext4-rsv-conversi=
+on shows at that time.=20
+
+
+> Finally, I'm a bit nervous about setting the internal __WQ_ORDERED flag w=
+ith max_active > 1.  What was that all about, anyway?
+
+Yes, you are correct. I didn't use "__WQ_ORDERED" carefully, it better not =
+use with max_active > 1 . My purpose was try to guarantee the work queue ca=
+n be sequentially implemented on each core.
+
+Thanks
+Davina Lu
