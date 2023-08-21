@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F37782346
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4C6782348
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbjHUFor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 01:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        id S233234AbjHUFpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 01:45:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjHUFoo (ORCPT
+        with ESMTP id S233217AbjHUFpT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 01:44:44 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499EFA3;
-        Sun, 20 Aug 2023 22:44:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692596683; x=1724132683;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Gx3SgnfGV8hbt3rcGhG27+mleRZghv8tlf8VVTaLsFI=;
-  b=St3fGZgDt35K6o0A5vhsqFZS4yttSqTXI5D0I8E+En60k16RlkhD6tVP
-   4/GRCgCav5cVU6+taKLUEUlFbnL8tmpW6VuPiTHeV9duy57gxD+NUy3dA
-   VEROw2i96fBNezT8WvzS131HneVak8PnKUy3u6mVkIVEWgcru6bQNkOd2
-   Oz68qdquyZDY3iiSavNhYB5md2kEDIJzV8lQy/17/i/XwbbM2NLY5XH7h
-   N1SSgrEC9g2R1i/U+KhbBXXi+HGxejqjJ6uzkETT7KCuyRI67OIuc8Ur9
-   ZvbbC8rz64O64pFr9DMo8CwSFtHXQmPK8wG+X/n+ZT4ZwwPuLmturYXiP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="459869110"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="459869110"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 22:44:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="738780305"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="738780305"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.185.204]) ([10.252.185.204])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 22:44:37 -0700
-Message-ID: <51dfc143-aafd-fea2-26fe-e2e9025fcd21@linux.intel.com>
-Date:   Mon, 21 Aug 2023 13:44:33 +0800
+        Mon, 21 Aug 2023 01:45:19 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0981A3;
+        Sun, 20 Aug 2023 22:45:17 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37L4jt30025941;
+        Mon, 21 Aug 2023 05:45:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=r9+BJyQY7hx0+1mY9f8giJm35JddZIApbisPSpWK8qg=;
+ b=bC8kTa+XGsubBRbjMogigiwVpYAxOEyd5bQ8byOayf2IrwOYCu3EE54jnmEpW1k1ZZRS
+ RPgsw/Re/iNYm9BqEySomiEtzxv44B9eqbZjlQV65lUsnywhZiLdel5laf9/TugUUY8j
+ CoFLP305b2qG4f0xIvJ/x9jG381vaLTH0oJLyrJgx6pALR66a82Ne5LBNddA57pv9ki9
+ tnB5/Z5R9ZxDeqSNcOgSn1UGi91UXzPyrNAG+r6B7LDC9iWxhup8a+4dM9b+67xtQ37m
+ L3z0gQ4TaL/QwQzBM04WjT+yJlZGuBgCo2WCLn5PbKoA/cM9i9LdVYDPku34VGo8zdwA 3A== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjmrejr79-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 05:45:02 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37L5j1Ov020392
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 05:45:01 GMT
+Received: from [10.216.3.117] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 20 Aug
+ 2023 22:44:58 -0700
+Message-ID: <78220b51-da70-c2d6-3aaa-20c17251b021@quicinc.com>
+Date:   Mon, 21 Aug 2023 11:14:55 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] iommu: Make single-device group for PASID explicit
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230814011759.102089-1-baolu.lu@linux.intel.com>
- <20230814011759.102089-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ Thunderbird/102.9.1
+Subject: Re: linux-next: build failure after merge of the nand tree
 Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+CC:     Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20230821120213.403fcefe@canb.auug.org.au>
+From:   Md Sadre Alam <quic_mdalam@quicinc.com>
+In-Reply-To: <20230821120213.403fcefe@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zjm2fozz_I4re97MZl5TVVcoGQhrHi2Z
+X-Proofpoint-ORIG-GUID: zjm2fozz_I4re97MZl5TVVcoGQhrHi2Z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-20_15,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=977
+ malwarescore=0 adultscore=0 bulkscore=0 clxscore=1011 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308210053
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/18 11:56, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Monday, August 14, 2023 9:18 AM
->>
->> The PASID interfaces have always supported only single-device groups.
->> This was first introduced in commit 26b25a2b98e45 ("iommu: Bind process
->> address spaces to devices"), and has been kept consistent in subsequent
->> commits.
->>
->> However, the core code doesn't explicitly check for this requirement
->> after commit 201007ef707a8 ("PCI: Enable PASID only when ACS RR & UF
->> enabled on upstream path"), which made this requirement implicit.
->>
->> Restore the check to make it explicit that the PASID interfaces only
->> support devices belonging to single-device groups.
->>
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/iommu.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 71b9c41f2a9e..f1eba60e573f 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -3408,6 +3408,11 @@ int iommu_attach_device_pasid(struct
->> iommu_domain *domain,
->>   		return -ENODEV;
->>
->>   	mutex_lock(&group->mutex);
->> +	if (list_count_nodes(&group->devices) != 1) {
->> +		ret = -EINVAL;
->> +		goto out_unlock;
->> +	}
->> +
+
+
+On 8/21/2023 7:32 AM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> I wonder whether we should also block adding new device to this
-> group once the single-device has pasid enabled. Otherwise the
+> After merging the nand tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/mtd/nand/raw/qcom_nandc.c: In function 'qcom_parse_instructions':
+> drivers/mtd/nand/raw/qcom_nandc.c:2596:38: error: unused variable 'nandc' [-Werror=unused-variable]
+>   2596 |         struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>        |                                      ^~~~~
+> cc1: all warnings being treated as errors
+> 
+> Caused by commit
+> 
+>    5a7688a3e2e6 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
+> 
+> I have used the nand tree from next-20230818 for today.
 
-This has been guaranteed by pci_enable_pasid():
+   I have posted a patch to fix this build issue.
 
-         if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
-                 return -EINVAL;
+   Link: https://patchwork.kernel.org/project/linux-arm-msm/patch/20230821053513.13728-1-quic_mdalam@quicinc.com/
 
-> check alone at attach time doesn't mean this group won't be
-> expanded to have multiple devices later.
-
-Best regards,
-baolu
+> 
