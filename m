@@ -2,206 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204927827B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:15:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FEE7827B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231617AbjHULPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:15:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
+        id S231682AbjHULQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjHULPx (ORCPT
+        with ESMTP id S229992AbjHULQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:15:53 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F2DD9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:15:51 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff933f9ca8so4726679e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692616550; x=1693221350;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pCNxFRwbkJ020O8yAmNZqYiDYiRNbzGGv08xLI36/24=;
-        b=UwZxa3zrr8W09InDxNRghWM9jnOfPk8Sw5DIgwJv/KEe6/ia9MKEpfYklg1e1EKv1+
-         RRY+YEQSIih9L4A9+44ZukRTXj12IV/mJSpZjWb/qZIoG6amGeFGi3wt4OCXGTCjPvdv
-         nQRlFYYnW1Urydh7p10yffPkktkZMrFrcLhHy0cXHXPp+0iyIEnU2PMR9ga77qHozryD
-         JKIwmZW+tVPZUnQUylErMwZAQiQGDq0dbVS4VVXDw2hrJ/pdFRJMFeoaOUqFU0LgeR8s
-         18J+AEAudBVeItnwpKrf3f2OoGYIsHvyAXWg4z73Z2q0aLdqKsIuflzBTXqHBv2witXa
-         UJow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692616550; x=1693221350;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pCNxFRwbkJ020O8yAmNZqYiDYiRNbzGGv08xLI36/24=;
-        b=O3YSDyRq+7+XY4h//s0BAk+9ioO16ilYMZKiTa7h2fvPROGcMT3rqFwLASiHz2vfxs
-         BfK+AiSspB2FLJZGgCyy9cH/GsaW4vekK9wA2kq/B6N4mJlpI8R4XdOUuR7l2a6Tj/qV
-         I/i9ibaXHEeTkIeS0XYUuaOe3S+jryc9vMdLWOwAtDsC3FZVgziYVqn5CWGqiOOzx7Oi
-         cg2ISX2ZC89pTVny9BCA9InqT5wkZqxlaWTKcq4oi+jLi4/MFBLo9FYwFj3n9qI3Kd/z
-         71zXhq9ST561lBJhzG1ZMu6Syr9NF7RtPdgWLjO5F8n/Kng5mxUnUaFMdLt1DUzkYBto
-         AlmQ==
-X-Gm-Message-State: AOJu0YzozJx2BIO+wS1D8Wf9epR6QYhLCkoaAhr824Eu+zlROwodt2ry
-        I22jb6COnqHLiWxqgmyJ3rGtVzr7bAsm/S8hDBI/Iw==
-X-Google-Smtp-Source: AGHT+IGwT8MHmZFx4cdyyvS1B91C+7Ra8dKBonHa8okbMZNvnvcXtXmIZtVRLqgLNChIa1+QoK5mZCHS/3LjkFsrIeI=
-X-Received: by 2002:ac2:5496:0:b0:4fb:8359:e8c with SMTP id
- t22-20020ac25496000000b004fb83590e8cmr3808154lfk.34.1692616549259; Mon, 21
- Aug 2023 04:15:49 -0700 (PDT)
+        Mon, 21 Aug 2023 07:16:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 763F3E2;
+        Mon, 21 Aug 2023 04:16:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0EE9A61236;
+        Mon, 21 Aug 2023 11:16:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCC95C433C8;
+        Mon, 21 Aug 2023 11:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692616575;
+        bh=mmcV2ExFx6Fn62xDirue4eNqZQx4mWU+lrbRmgR6ouM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oYxnxf6GW5TIJQbrkvyyR3HLkuA4Z622Immqw7qbzIvXqS7wsx9SyKfK3N1CpMBfk
+         iKypIo6dM55MNTt1QdPhVBsjLoduX+vYrR5V6+s0OLmQFIpJG6l8xL6XU2I2Wmlv1a
+         UdOkwtOogKENTSpZ+2fI3d1LEybU+lj0swnhJVRSOR0BAiZhI13UDQYRKKpNVq8GtM
+         H1OdWZBN6OECcE7/KExhufau7ARXGljk799qnVnkkuwdrhSfJ6c0yjwQ6fvillSkoJ
+         ifq92bbLZNu1To0v7Q/hc9SqRUJiOOWQr3NJU/GNv9bnetjvKFOSFbjM/niz3C97kN
+         oViETufWF6pBQ==
+Date:   Mon, 21 Aug 2023 13:16:12 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        kernel test robot <yujie.liu@intel.com>,
+        kunit-dev@googlegroups.com
+Subject: Re: [PATCH 0/2] clk: kunit: Fix the lockdep warnings
+Message-ID: <krg4m5nckoaunsqounzehm4oyubblticfifgvpxrnbf5xf65xq@ignx6g2eqtev>
+References: <20230721-clk-fix-kunit-lockdep-v1-0-32cdba4c8fc1@kernel.org>
+ <088cc246369820d5a426bc8823c85c8e.sboyd@kernel.org>
+ <6534e4c349253da8ee467ffeda8221ed.sboyd@kernel.org>
 MIME-Version: 1.0
-References: <20230816100113.41034-1-linyunsheng@huawei.com>
- <20230816100113.41034-2-linyunsheng@huawei.com> <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
- <20230817091554.31bb3600@kernel.org> <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
- <20230817165744.73d61fb6@kernel.org> <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
- <20230818145145.4b357c89@kernel.org> <CAC_iWjKp_NKofQQTSgA810+bOt84Hgbm3YV=X=JWH9t=DHuzqQ@mail.gmail.com>
-In-Reply-To: <CAC_iWjKp_NKofQQTSgA810+bOt84Hgbm3YV=X=JWH9t=DHuzqQ@mail.gmail.com>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Mon, 21 Aug 2023 14:15:13 +0300
-Message-ID: <CAC_iWjLKFktPKCukT2M7oJUxB1ggzxUL4N7cb1yGoBeW_q3sgg@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
- arch with 64-bit DMA
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Mina Almasry <almasrymina@google.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Liang Chen <liangchen.linux@gmail.com>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cwgas5g24ob5yfsc"
+Content-Disposition: inline
+In-Reply-To: <6534e4c349253da8ee467ffeda8221ed.sboyd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 11:38, Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
->
-> resending for the mailing list apologies for the noise.
->
->
-> On Sat, 19 Aug 2023 at 00:51, Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Fri, 18 Aug 2023 09:12:09 +0300 Ilias Apalodimas wrote:
-> > > > Right, IIUC we don't have enough space to fit dma_addr_t and the
-> > > > refcount, but if we store the dma addr on a shifted u32 instead
-> > > > of using dma_addr_t explicitly - the refcount should fit?
-> > >
-> > > struct page looks like this:
-> > >
-> > > unsigned long dma_addr;
-> > > union {
-> > >       unsigned long dma_addr_upper;
-> > >       atomic_long_t pp_frag_count;
-> > > };
-> >
-> > I could be completely misunderstanding the problem.
->
-> You aren't!
->
-> > Let me show you the diff of what I was thinking more or less.
-> >
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 5e74ce4a28cd..58ffa8dc745f 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -126,11 +126,6 @@ struct page {
-> >                         unsigned long _pp_mapping_pad;
-> >                         unsigned long dma_addr;
-> >                         union {
-> > -                               /**
-> > -                                * dma_addr_upper: might require a 64-bit
-> > -                                * value on 32-bit architectures.
-> > -                                */
-> > -                               unsigned long dma_addr_upper;
-> >                                 /**
-> >                                  * For frag page support, not supported in
-> >                                  * 32-bit architectures with 64-bit DMA.
-> > diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> > index 94231533a369..6f87a0fa2178 100644
-> > --- a/include/net/page_pool/helpers.h
-> > +++ b/include/net/page_pool/helpers.h
-> > @@ -212,16 +212,24 @@ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
-> >         dma_addr_t ret = page->dma_addr;
-> >
-> >         if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> > -               ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
-> > +               ret <<= PAGE_SHIFT;
-> >
-> >         return ret;
-> >  }
-> >
-> > -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> > +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> >  {
-> > +       bool failed = false;
-> > +
-> >         page->dma_addr = addr;
-> > -       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
-> > -               page->dma_addr_upper = upper_32_bits(addr);
-> > +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
-> > +               page->dma_addr >>= PAGE_SHIFT;
-> > +               /* We assume page alignment to shave off bottom bits,
-> > +                * if this "compression" doesn't work we need to drop.
-> > +                */
-> > +               failed = addr != page->dma_addr << PAGE_SHIFT;
-> > +       }
-> > +       return failed;
-> >  }
-> >
-> >  static inline bool page_pool_put(struct page_pool *pool)
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index 77cb75e63aca..9ea42e242a89 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -211,10 +211,6 @@ static int page_pool_init(struct page_pool *pool,
-> >                  */
-> >         }
-> >
-> > -       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
-> > -           pool->p.flags & PP_FLAG_PAGE_FRAG)
-> > -               return -EINVAL;
-> > -
-> >  #ifdef CONFIG_PAGE_POOL_STATS
-> >         pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
-> >         if (!pool->recycle_stats)
-> > @@ -359,12 +355,19 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
-> >         if (dma_mapping_error(pool->p.dev, dma))
-> >                 return false;
-> >
-> > -       page_pool_set_dma_addr(page, dma);
-> > +       if (page_pool_set_dma_addr(page, dma))
-> > +               goto unmap_failed;
-> >
-> >         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> >                 page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> >
-> >         return true;
-> > +
-> > +unmap_failed:
-> > +       dma_unmap_page_attrs(pool->p.dev, dma,
-> > +                            PAGE_SIZE << pool->p.order, pool->p.dma_dir,
-> > +                            DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
-> > +       return false;
-> >  }
->
-> That seems reasonable and would work for pages > 4k as well. But is
-> 16TB enough?  I am more familiar with embedded than large servers,
-> which do tend to scale that high.
 
-Right never respond before coffee .... I think this is reasonable overall.
+--cwgas5g24ob5yfsc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-/Ilias
->
-> Regards
-> /Ilias
-> >
-> >  static void page_pool_set_pp_info(struct page_pool *pool,
+Hi Stephen,
+
+On Wed, Aug 09, 2023 at 06:37:30PM -0700, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2023-08-09 16:21:50)
+> > +kunit-dev
+> >=20
+> > Quoting Maxime Ripard (2023-07-21 00:09:31)
+> > > Hi,
+> > >=20
+> > > Here's a small series to address the lockdep warning we have when
+> > > running the clk kunit tests with lockdep enabled.
+> > >=20
+> > > For the record, it can be tested with:
+> > >=20
+> > > $ ./tools/testing/kunit/kunit.py run \
+> > >     --kunitconfig=3Ddrivers/clk \
+> > >     --cross_compile aarch64-linux-gnu- --arch arm64 \
+> > >     --kconfig_add CONFIG_DEBUG_KERNEL=3Dy \
+> > >     --kconfig_add CONFIG_PROVE_LOCKING=3Dy
+> > >=20
+> > > Let me know what you think,
+> >=20
+> > Thanks for doing this. I want to roll these helpers into the clk_kunit.c
+> > file that I had created for some other clk tests[1]. That's mostly
+> > because clk.c is already super long and adding kunit code there makes
+> > that problem worse. I'll try to take that patch out of the rest of the
+> > series and then add this series on top and resend.
+> >=20
+> > I don't know what to do about the case where CONFIG_KUNIT=3Dm though. We
+> > have to export clk_prepare_lock/unlock()? I really don't want to do that
+> > even if kunit is enabled (see EXPORT_SYMBOL_IF_KUNIT). Maybe if there
+> > was a GPL version of that, so proprietary modules can't get at kernel
+> > internals on kunit enabled kernels.
+> >=20
+> > But I also like the approach taken here of adding a small stub around
+> > the call to make sure a test is running. Maybe I'll make a kunit
+> > namespaced exported gpl symbol that bails if a test isn't running and
+> > calls the clk_prepare_lock/unlock functions inside clk.c and then move
+> > the rest of the code to clk_kunit.c to get something more strict.
+> >=20
+>=20
+> What if we don't try to do any wrapper or export symbols and test
+> __clk_determine_rate() how it is called from the clk framework? The
+> downside is the code is not as simple because we have to check things
+> from within the clk_ops::determine_rate(), but the upside is that we can
+> avoid exporting internal clk APIs or wrap them so certain preconditions
+> are met like requiring them to be called from within a clk_op.
+
+The main reason for that test was linked to commit 262ca38f4b6e ("clk:
+Stop forwarding clk_rate_requests to the parent"). Prior to it, if a
+clock had CLK_SET_RATE_PARENT, we could end up with its parent's parent
+hw struct and rate in best_parent_*.
+
+So that test was mostly about making sure that __clk_determine_rate will
+properly set the best_parent fields to match the clock's parent.
+
+If we do a proper clock that uses __clk_determine_rate, we lose the
+ability to check the content of the clk_rate_request returned by
+__clk_determine_rate. It's up to you to tell whether it's a bad thing or
+not :)
+
+> I also find it very odd to call clk_mux_determine_rate_closest() from a
+> clk that has one parent.
+
+Yeah, the behaviour difference between determine_rate and
+determine_rate_closest is weird to me too. We discussed it recently here:
+https://lore.kernel.org/linux-clk/mlgxmfim3poke2j45vwh2htkn66hrrjd6ozjebtqh=
+bf4wwljwo@hzi4dyplhdqg/
+
+> Maybe the clk op should call clk_hw_forward_rate_request() followed by
+> __clk_determine_rate() on the parent so we can test what the test
+> comment says it wants to test.
+
+I guess that would work too :)
+
+Maxime
+
+--cwgas5g24ob5yfsc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZONHfAAKCRDj7w1vZxhR
+xQl+AQCmHXtXzmKXnDgGPSiLCQQH3U89SQhseRhBOKsO/e5OWwEAjfNLJP0x4Hp2
+wiAohQL1Qrr7H31hLhXTJQ9jF8VHuwk=
+=m1pg
+-----END PGP SIGNATURE-----
+
+--cwgas5g24ob5yfsc--
