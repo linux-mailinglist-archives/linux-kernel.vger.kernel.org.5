@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80788782CEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E83782CEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbjHUPIX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 11:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
+        id S236120AbjHUPJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbjHUPIW (ORCPT
+        with ESMTP id S231829AbjHUPJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:08:22 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A529BC;
-        Mon, 21 Aug 2023 08:08:19 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37LF7WwyC031950, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37LF7WwyC031950
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Aug 2023 23:07:32 +0800
-Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Mon, 21 Aug 2023 23:07:54 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Mon, 21 Aug 2023 23:07:53 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Mon, 21 Aug 2023 23:07:53 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
-Thread-Topic: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
- automotive PCIe driver code
-Thread-Index: AQHZz4Ya38d07ViN20S7bf3O9T4Qta/q9pcAgAMgk2D//87KAIABzfpQ///CfgCABJnu0IAALOEAgACljtA=
-Date:   Mon, 21 Aug 2023 15:07:53 +0000
-Message-ID: <4db3248874d64418b63fdf5c5e8a0f79@realtek.com>
-References: <20230815143756.106623-1-justinlai0215@realtek.com>
- <20230815143756.106623-2-justinlai0215@realtek.com>
- <95f079a4-19f9-4501-90d9-0bcd476ce68d@lunn.ch>
- <4955506dbf6b4ebdb67cbb738750fbc8@realtek.com>
- <eb245c85-0909-4a75-830d-afb96ccd5d38@lunn.ch>
- <4951391892534eaeb2da96f052364e4c@realtek.com>
- <4b630aeb-3098-4108-b8dc-7da6e55a7cf1@lunn.ch>
- <6d35d56f78b7452b9330c3257748fa3c@realtek.com>
- <97f3744d-afbf-4562-9168-5b9e211fac1f@lunn.ch>
-In-Reply-To: <97f3744d-afbf-4562-9168-5b9e211fac1f@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 21 Aug 2023 11:09:22 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58B1E7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:09:20 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so13686a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692630559; x=1693235359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1oXoZoJuq/woE5y++bD9WQmvRVH8quzKKFsoooaxq1U=;
+        b=0VuG3D0cAeTL/+xjnA7JNL7tY4pXxB/TaRxiQmcFKvqB47W9SvpCkhRpS3yJVxVXyA
+         ZSTxAiuxf4wvJoOfayjhuMnJ7VnB8Pk7ctFrHAsgdXGUDJlhb2kPNNtU0AbJcvGrjVC2
+         MJBghAqUEM/oznwDye8sU4lHbx3zzgURcgRM+HYxW+PXkrlWy9EBDNHbtlOx8S8cuuPq
+         tZ4cqODsFbA2No6za+frgx125lKSY/nSllrTrm87PPYh0LLMUR2EL8d65LxH0S5D4lLQ
+         N7en3HcGgLyAkHJj5yfUtidQHRaLbpSsHO5QiHFk6jYC8jEe2W9l/iJJ4mND8fISrIJ7
+         r5bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692630559; x=1693235359;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1oXoZoJuq/woE5y++bD9WQmvRVH8quzKKFsoooaxq1U=;
+        b=U48tNYg+MSrgMUvmJtMHf0fCKTcMN5JMkER8dXVmTaJmn2SKi9iXl83gz9v6a0L9a7
+         IhZIeFHl0sOmQ9cmnHRlf5TPPWOsHCxdRHM3hbn6Vke3DZo5+xk5JLpp4xi09YJbNTx3
+         WWI/icxJ+pL/GmfT8pOEjTx+y/aINfJz7rcxZvBcIO4N+1/kAw5WmeH85ygnuPkZlwEp
+         9MM+JVpP7AJqWlsZ+5IuU9Q0VdQMC+LK6mYm9Mwv/9vVt3gPXUOLkw3xzEmbiMhO5hpk
+         a2w376raltn+k+GS6ADE8SxoYJMWbOBFvlbt24Hir8EbQKyHr6aI5hW+u0rGrmsw69Zn
+         nYHg==
+X-Gm-Message-State: AOJu0YznXG5esKw77Pl5yBUA9rY+FO3Cr17DDYAroNvBmH1PJNMywBec
+        A0xmSXGyqKWOW4JEsAf7xMe1qy3lIyJIsaNodDsmEA==
+X-Google-Smtp-Source: AGHT+IG+biksOoGPIZ3ACervhJwDQAtg5fB09XOFkWi+plYXi1gTQbF2w0KLDwnf9pV9btWcD9Fb9mxGBp51w5zIfnY=
+X-Received: by 2002:a50:d5c2:0:b0:522:4741:d992 with SMTP id
+ g2-20020a50d5c2000000b005224741d992mr255782edj.4.1692630559271; Mon, 21 Aug
+ 2023 08:09:19 -0700 (PDT)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
+ <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
+ <ZNrh6w9ICu4rMrhV@casper.infradead.org> <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
+ <CAHbLzko_xLiqkNgjA7DhVFBSW6qJdAwgfk557YKV+ZpwS2x16w@mail.gmail.com>
+ <CAAa6QmSxab2-m-RopQtZnBpxTLX25K=KZE+EPmA+wWb_yTqf0Q@mail.gmail.com> <CAHbLzko1J9ds_JfZe83JwEx=395sPExB7mQ0faju6OSaQ2tmnQ@mail.gmail.com>
+In-Reply-To: <CAHbLzko1J9ds_JfZe83JwEx=395sPExB7mQ0faju6OSaQ2tmnQ@mail.gmail.com>
+From:   "Zach O'Keefe" <zokeefe@google.com>
+Date:   Mon, 21 Aug 2023 08:08:42 -0700
+Message-ID: <CAAa6QmRLkh-g4ge4D9nQge=wHFwTz8CKB7AsjcJ9akDV8d0Z_A@mail.gmail.com>
+Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,25 +79,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Sorry, please allow me to explain again.
-> > The RTL90xx Series supports I2C, MDC/MDIO and SPI slave to access the
-> registers of Ethernet Switch Core and the external CPU could manage it via
-> these pins.
-> 
-> I was wondering if you had mis-understood my question. The bus 'master' is
-> the device which controls the bus. SPI and MDIO has one bus master, and there
-> can be multiple clients on the bus. I2C in theory can have multiple bus masters
-> on one bus, bit it is not done too often. Your switch is a client.
-> 
-> So my question was, are the bus masters also on PCIE enpoints within the chip.
-> From an architecture standpoint, it would make sense they are, all you need is
-> one 4x PCIE slot, and this chip gives you everything you need. But you can also
-> make use of the SoCs I2C, SPI or MDIO bus.
-> 
->     Andrew
+On Fri, Aug 18, 2023 at 2:21=E2=80=AFPM Yang Shi <shy828301@gmail.com> wrot=
+e:
+>
+> On Thu, Aug 17, 2023 at 11:29=E2=80=AFAM Zach O'Keefe <zokeefe@google.com=
+> wrote:
+> >
+> > On Thu, Aug 17, 2023 at 10:47=E2=80=AFAM Yang Shi <shy828301@gmail.com>=
+ wrote:
+> > >
+> > > On Wed, Aug 16, 2023 at 2:48=E2=80=AFPM Zach O'Keefe <zokeefe@google.=
+com> wrote:
+> > > >
+> > > > > We have a out of tree driver that maps huge pages through a file =
+handle and
+> > > > > relies on -> huge_fault. It used to work in 5.19 kernels but 6.1 =
+changed this
+> > > > > behaviour.
+> > > > >
+> > > > > I don=E2=80=99t think reverting the earlier behaviour of fault_pa=
+th for huge pages should
+> > > > > impact kernel negatively.
+> > > > >
+> > > > > Do you think we can restore this earlier behaviour of kernel to a=
+llow page fault
+> > > > > for huge pages via ->huge_fault.
+> > > >
+> > > > That seems reasonable to me. I think using the existence of a
+> > > > ->huge_fault() handler as a predicate to return "true" makes sense =
+to
+> > > > me. The "normal" flow for file-backed memory along fault path still
+> > > > needs to return "false", so that we correctly fallback to ->fault()
+> > > > handler. Unless there are objections, I can do that in a v2.
+> > >
+> > > Sorry for chiming in late. I'm just back from vacation and trying to =
+catch up...
+> > >
+> > > IIUC the out-of-tree driver tries to allocate huge page and install
+> > > PMD mapping via huge_fault() handler, but the cleanup of
+> > > hugepage_vma_check() prevents this due to the check to
+> > > VM_NO_KHUGEPAGED?
+> > >
+> > > So you would like to check whether a huge_fault() handler existed
+> > > instead of vma_is_dax()?
+> >
+> > Sorry for the multiple threads here. There are two problems: (a) the
+> > VM_NO_KHUGEPAGED check along fault path, and (b) we don't give
+> > ->huge_fault() a fair shake, if it exists, along fault path. The
+> > current code assumes vma_is_dax() iff ->huge_fault() exists.
+> >
+> > (a) is easy enough to fix. For (b), I'm currently looking at the
+> > possibility of not worrying about ->huge_fault() in
+> > hugepage_vma_check(), and just letting create_huge_pud() /
+> > create_huge_pmd() check and fallback as necessary. I think we'll need
+> > the explicit DAX check still, since we want to keep khugepaged and
+> > MADV_COLLAPSE away, and the presence / absence of ->huge_fault() isn't
+> > enough to know that (well.. today it kind of is, but we shouldn't
+> > depend on it).
+>
+> You meant something like:
+>
+> if (vma->vm_ops->huge_fault) {
+>     if (vma_is_dax(vma))
+>         return in_pf;
+>
+>     /Fall through */
+> }
 
-Thanks, I understand what you mean.
-But I2C, SPI, MDIO are connected to the SoC through this chip's external pins, not on the PCIe bus.
-Actually, there is the other function in the PCIe GMAC(Multiple function) to manage the registers of Switch Core.
-Should they be integrated into the MFD driver?
-Not everyone will use this function.
+I don't think this will work for Saurabh's case, since IIUC, they
+aren't using dax, but are using VM_HUGEPAGE|VM_MIXEDMAP, faulted in
+using ->huge_fault()
+
+The old (v5.19) fault path looked like:
+
+static inline bool transhuge_vma_enabled(struct vm_area_struct *vma,
+                                          unsigned long vm_flags)
+{
+        /* Explicitly disabled through madvise. */
+        if ((vm_flags & VM_NOHUGEPAGE) ||
+            test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+                return false;
+        return true;
+}
+
+/*
+ * to be used on vmas which are known to support THP.
+ * Use transparent_hugepage_active otherwise
+ */
+static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vm=
+a)
+{
+
+        /*
+         * If the hardware/firmware marked hugepage support disabled.
+         */
+        if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_NEVER_D=
+AX))
+                return false;
+
+        if (!transhuge_vma_enabled(vma, vma->vm_flags))
+                return false;
+
+        if (vma_is_temporary_stack(vma))
+                return false;
+
+        if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG))
+                return true;
+
+        if (vma_is_dax(vma))
+                return true;
+
+        if (transparent_hugepage_flags &
+                                (1 << TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG))
+                return !!(vma->vm_flags & VM_HUGEPAGE);
+
+        return false;
+}
+
+For non-anonymous, the next check (in create_huge_*) would be for that
+->huge_fault handler, falling back as necessary if it didn't exist.
+
+The patch I sent out last week[1] somewhat restores this logic -- the
+only difference being we do the check for ->huge_fault in
+hugepage_vma_check() as well. This is so smaps can surface this
+possibility with some accuracy. I just realized it will erroneously
+return "true" for the collapse path, however..
+
+Maybe Matthew was right about unifying everything here :P That's 2
+mistakes I've made in trying to fix this issue (but maybe that's just
+me).
+
+[1] https://lore.kernel.org/linux-mm/20230818211533.2523697-1-zokeefe@googl=
+e.com/
