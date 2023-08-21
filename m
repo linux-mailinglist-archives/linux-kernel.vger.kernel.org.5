@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3059782ECA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B163782ECD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236789AbjHUQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S236800AbjHUQvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236774AbjHUQvB (ORCPT
+        with ESMTP id S236786AbjHUQvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:51:01 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5093110D
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:58 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d6ce0c4489bso4624222276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:58 -0700 (PDT)
+        Mon, 21 Aug 2023 12:51:50 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25CF123
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:24 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcc0adab4so458458466b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692636657; x=1693241457;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DrXD26cwrSohEjsiyzQGHaMTNTd0Am1wC0c7gF01+5M=;
-        b=kB0qhS6MTVzMjer+btbUGYGmZadhhFxqtAdWeIcW1L9Qs/K5eBHRXTBcwo3IbTFk4l
-         Rbo02uv22lv3sDo4S9R1cq7/kmX/+Rn/4P1f8LPHPpFkk60gfmDU3GHO5vN9KtM159EP
-         mIFPdmbtOBYX5SZaP2wYlsM9N1nPmJshwy/2DS2JnYedr6UqXTQDjYELSUKWY5Q3IlPl
-         XxsmkU/NnNUsvIHz5WU6Y5L55xplKk/eg4lDRQjtJB9RVchJf+hFQrw1GITPA8XLhMXY
-         b7KwH5nUaMIoZ/HPEVE1L+BtRxiSsuvbWCb9GdHT+JEt+jGtU4ArvfKCtH9jfjkGHAhF
-         P7Wg==
+        d=chromium.org; s=google; t=1692636681; x=1693241481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sa3ckcVx6ipoG3jTmuVEQ3LyBGo5W15jbdVg5c4xR2E=;
+        b=hfHdDQNHWfSA8dcit8PsyYQuHGg8y9RxNjVUtJFSuJIMM7Pek/r7lWEQ0JU2HCPMCy
+         lDxnoMcVOSKTjI9q/HetyTAseHe6/W8DsMiV+rCE+NDQQ/fBGbEmMiRaBla4JHczXHrr
+         m3jhn2IHEzVp8gY6TzFPgqiJ80DJYeYiXhHfE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692636657; x=1693241457;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DrXD26cwrSohEjsiyzQGHaMTNTd0Am1wC0c7gF01+5M=;
-        b=ffFAaCudotK94mQEggt/KgnBrywDtP+C6m7M0sAv1rCwYog4GnPu5AW1FtImsU8h7l
-         RCokZjDufshW3lMN/7tukKsE7dGPBkrkGSeLmYBHdqgEF2csKS/QPX7YU/X5K+UGKvTA
-         UJjmS2QRBGaVESe29PIiicfzU907Y4E70NThajTGItEr1cw+7ZAQ41mmHIpPfXTeqPgj
-         FYh57mVUX5IsE7OoTdzmTVGRADgRepxvKiQRmUCxC2x2sm/XpCNCosdmZjNSF6NrW2ud
-         iMm3Bu/4mjuxcxQZ3Jzfi5PAxTlltVoBZOeUXnkM6ye5ZQSJUVlHYNpgPlxep4ywmBDI
-         fqiw==
-X-Gm-Message-State: AOJu0Yz7p/ijRhEBJ14y4NH92RcU0i++gPN387L91UMs56wvuG3lwkPE
-        G4tnJ7WzZLDA3LVurg6jhTnTH0D1L4g=
-X-Google-Smtp-Source: AGHT+IGDcRVJN5xrXnJ++QrK4QSZF2m59xIJaZVD8x78pxgBrcNoXX1F+BvA04cxk6udcTuYjBDMJWYCju8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:2442:0:b0:d11:6816:2d31 with SMTP id
- k63-20020a252442000000b00d1168162d31mr55337ybk.7.1692636657585; Mon, 21 Aug
- 2023 09:50:57 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 16:50:56 +0000
-In-Reply-To: <14f97819-11af-5072-d4f2-a7b4f16d734e@suse.com>
-Mime-Version: 1.0
-References: <cover.1692580085.git.jpoimboe@kernel.org> <a4d62162bcb501e50b0bb19b748702aa12260615.1692580085.git.jpoimboe@kernel.org>
- <45ef7bcc-d52e-3759-403b-e4b5a79a4a4f@citrix.com> <20230821162337.imzjf3golstkrrgd@treble>
- <ZOOSXc9NE1rMHDZ1@google.com> <14f97819-11af-5072-d4f2-a7b4f16d734e@suse.com>
-Message-ID: <ZOOV8CoKqC/71IUW@google.com>
-Subject: Re: [PATCH 03/22] KVM: x86: Support IBPB_BRTYPE and SBPB
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nikolay Borisov <nik.borisov@suse.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, David.Kaplan@amd.com,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20221208; t=1692636681; x=1693241481;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sa3ckcVx6ipoG3jTmuVEQ3LyBGo5W15jbdVg5c4xR2E=;
+        b=LOFfKUWeJDzMSw5RMd22+A61aHi0SKR9g0sSfUxIa6vwuTgcehgczAEsVvhMz01iXM
+         r5ATDBQM/D/kwjfxrakOZrWPd6e3ref8tZSh4//MCteNsNefN/8qVrxH/39dCCmKK2lB
+         4eJVrQllgA735RryhX7LHZrunXAwIymdBcmDXC1fbWnIeipz3WzPNqiUrCd+KojTVZWx
+         E63auQX+csrCbpMtZT2a396TwuRYtsoqp3a3hq8SwWXfUI0GnKHuL43QeHPmakaf9dU+
+         1FbA+VEBge5UnLtkxDzvxznUzxIJPPo9LvOQJNvdQb8hcdSyTNLtZ6I8xvWF8SN7lI5f
+         R97Q==
+X-Gm-Message-State: AOJu0YwGvstbuhAPda3IMje1XRk/pKolNzdWju3Td0kZS6ReEqE1Y5T0
+        i8PW7IxkEgOJQee16Q6k2RhIRwIF2mwwr5yRjpZCo4hj
+X-Google-Smtp-Source: AGHT+IFn1lOQoFqGEK0Mp4imwEHT8tXjEf2OzoM+GwxORsdqfGsA6sMEea6rCwny40Lz1w7WHYbv9g==
+X-Received: by 2002:a17:907:7792:b0:9a1:af6f:e375 with SMTP id ky18-20020a170907779200b009a1af6fe375mr375825ejc.35.1692636681490;
+        Mon, 21 Aug 2023 09:51:21 -0700 (PDT)
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com. [209.85.128.50])
+        by smtp.gmail.com with ESMTPSA id sa17-20020a170906edb100b00997d76981e0sm6738515ejb.208.2023.08.21.09.51.20
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 09:51:20 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so2815e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:51:20 -0700 (PDT)
+X-Received: by 2002:a05:600c:3ba0:b0:3fe:dd72:13ae with SMTP id
+ n32-20020a05600c3ba000b003fedd7213aemr6540wms.0.1692636680659; Mon, 21 Aug
+ 2023 09:51:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl> <682e260d8cb75c34f79ff7fcc3c4bb8586140cc4.1692484240.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <682e260d8cb75c34f79ff7fcc3c4bb8586140cc4.1692484240.git.mirq-linux@rere.qmqm.pl>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 21 Aug 2023 09:51:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
+Message-ID: <CAD=FV=XbfBf9y1sdt9T=81cTCRcRUbVqo3oKrHvBQZC+hHQpCQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] regulator: core: simplify lock_two()
+To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023, Nikolay Borisov wrote:
->=20
-> On 21.08.23 =D0=B3. 19:35 =D1=87., Sean Christopherson wrote:
-> > On Mon, Aug 21, 2023, Josh Poimboeuf wrote:
-> > +               if (!boot_cpu_has(X86_FEATURE_IBPB))
-> > +                       reserved_bits |=3D PRED_CMD_IBPB;
-> > +
-> > +               if (!boot_cpu_has(X86_FEATURE_SBPB))
-> > +                       reserved_bits |=3D PRED_CMD_SBPB;
-> > -               if (!boot_cpu_has(X86_FEATURE_IBPB) || (data & ~PRED_CM=
-D_IBPB))
-> > -                       return 1;
->=20
-> Surely data must be sanitized against reserved_bit before this if is
-> executed?
+Hi,
 
-Heh, yeah, I missed that minor detail in my quick write-up.
+On Sat, Aug 19, 2023 at 3:46=E2=80=AFPM Micha=C5=82 Miros=C5=82aw <mirq-lin=
+ux@rere.qmqm.pl> wrote:
+>
+> Make regulator_lock_two() shorter by observing that we have only two
+> locks and when swapped earlier the retry code becomes identical to the
+> normal (optimistic) path.
+>
+> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
+> ---
+>  drivers/regulator/core.c | 28 ++++++++++------------------
+>  1 file changed, 10 insertions(+), 18 deletions(-)
+
+This is quite nearly a direct revert of commit 37473397b852
+("regulator: core: Make regulator_lock_two() logic easier to follow"),
+which was requested by Stephen in:
+
+https://lore.kernel.org/r/CAE-0n53Eb1BeDPmjBycXUaQAF4ppiAM6UDWje_jiB9GAmR8M=
+Mw@mail.gmail.com
+
+I don't personally have a strong opinion, but do prefer not to flip-flop. ;=
+-)
+
+
+-Doug
