@@ -2,108 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6345D782ECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03852782ED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbjHUQwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S236824AbjHUQyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234544AbjHUQwO (ORCPT
+        with ESMTP id S234544AbjHUQyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:52:14 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B38CC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:52:03 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76da7f86d46so62373385a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:52:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1692636722; x=1693241522;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JkXwy1ISt6qrbrNZuCCq5IPH6kF6shpR2kgu96JJrek=;
-        b=TUUsTkKH5URw0jANzhVv1T58xuhiQN8AoY56op+SMW6dJqqBZda8RDoywrFBQnuz3+
-         iff2uk5g1UgRlXxQW+tuJj5yXCU9V7wWqr+lJGapFySbk7mC/eKW4FLVNyoSMxUXFRBR
-         YvQUQ9o2y3GI5GGSue750glVwG2u7MFOxOCO5h2V29DOhKsRMpSKdlGvpr3jWwjWcFcH
-         1VdQFHzo8a9pOqW+rhaOE2f7GTAfUNz3vidG+5vsqK97r4+gSZQlv/3IiBU9xx6Mrym9
-         Klab9eqEoCmD6EKz3OXjW4iANZ5nY0A0aWKyinVKVgiV6PJ83olsWG1alZ2kOZyzlZiw
-         qTog==
+        Mon, 21 Aug 2023 12:54:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11C5BEC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:53:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692636814;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xkaZXG8S2KS31Ed6S9yvZesu6cBtPabbNcGsCRxf3U0=;
+        b=Lk4P7XcHxNK5HdsXX1WmG5ipCHNjT/9lVz0421s9y48Ok0cNVWjG/1C6gUOhTPX+aDxg8t
+        aN/P8TdA1tlxjTTPlNqNfMDwN83Ie8Kz3nZxZSbx9Ok0T9QWs/Gna3Noz9LTV3miUk/DqZ
+        +VKG6nTroo+/XZowy48IunORbFkvGKM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-342-Tlzvq_O1NOW3nvCHDJHU2w-1; Mon, 21 Aug 2023 12:53:31 -0400
+X-MC-Unique: Tlzvq_O1NOW3nvCHDJHU2w-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-529fc4373bbso1336431a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:53:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692636722; x=1693241522;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JkXwy1ISt6qrbrNZuCCq5IPH6kF6shpR2kgu96JJrek=;
-        b=engDtnNbNIJZVjpZ6ltluRb43m7lC3mU4aDkgfRRB7sN6U9RSs/T7eB3gQU/FGz91s
-         iNPTD9j2mzoozAseOn4ZGo6F2YCFQe+7j6vApnurfzc8qklLhso6w7HDkBMaGlYGiMBH
-         PJr2ZlZ9XsE2zCFLX5L5Pcjjv4MShRK9JmPBmBAGR1TKSV5CzL+vfoScxmcOOn/mePhE
-         dyYaB9q3QXwACIPTvTuKwnsiLoIyncy53giOGOIaA88ljgilNsvZOyBZoDNd0ypMg4kz
-         yshuEQbvoPPyzZqtHW4kVkQprDdTWQn9B7DHc4B8QGIrLFwERKkjGwE4T+i0R+dsvI1u
-         wZqg==
-X-Gm-Message-State: AOJu0Yy4IkeavwwsWBpvAXfbMozth7xQ6bChu/rgzIgUAa3URfkZSK7H
-        Iba4LaauO/PHkmAi3N4qcEP/1g==
-X-Google-Smtp-Source: AGHT+IGIrArLMUjqUVsv2NQ4VGh6eVA/ApKYhx1ONwSB7QRBGzVgS5K5zRFadfQ4B9TvLMlxOhAyww==
-X-Received: by 2002:a05:620a:bd5:b0:76c:9ea2:545e with SMTP id s21-20020a05620a0bd500b0076c9ea2545emr8795157qki.3.1692636722684;
-        Mon, 21 Aug 2023 09:52:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id a5-20020a05620a124500b0076d9e298928sm1589751qkl.66.2023.08.21.09.52.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 09:52:02 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qY88H-00DuJL-7T;
-        Mon, 21 Aug 2023 13:52:01 -0300
-Date:   Mon, 21 Aug 2023 13:52:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Huang Jiaqing <jiaqing.huang@intel.com>
-Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, joro@8bytes.org, will@kernel.org,
-        robin.murphy@arm.com, kevin.tian@intel.com,
-        baolu.lu@linux.intel.com, jacob.jun.pan@linux.intel.com,
-        yi.l.liu@intel.com, yi.y.sun@intel.com
-Subject: Re: [PATCH] iommu/vt-d: Introduce a rb_tree for looking up device
-Message-ID: <ZOOWMUmwG2jXOaXL@ziepe.ca>
-References: <20230821071659.123981-1-jiaqing.huang@intel.com>
+        d=1e100.net; s=20221208; t=1692636810; x=1693241610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xkaZXG8S2KS31Ed6S9yvZesu6cBtPabbNcGsCRxf3U0=;
+        b=Ywyh497usF1TOnvoQYjYrYfTUvvKC9k4lx/pSb7IVo7S3bzW47gL2orAXhkV3oavnE
+         0NCaYVvx1PMWvOQ6fnYtn1w3romt/zZ1T4RSRxOQpCwE6moa+CTlj0Z0HJyTyvC/jkNy
+         zyXH2LhhYuuFrR9SBKX7+Cj1jPxwbbqHCAT0R9i3UqiYuySyJi/weNDgtcmlmdn1Rz4w
+         +vZrNVF2Vk5UCCPm7pPBKU+AbasC36wr9E+bvwbmZ99RI6+wGA1Nc/xbRSUJdA2E00VY
+         RGKHBPSw6ymXUdc89/GVY0NbtLGXko66KgqqXNaDchPhg8yGFeUW4Q3MsEV4p+MLWdic
+         BrLQ==
+X-Gm-Message-State: AOJu0Yz+OAf1KI9RlZWwM7V2Sfii7HaBIKUHXnPE5BfiPhQr/cnaDAmr
+        BnPC8JJDKeNbtv3FlOEDKbjqXzKi0dn9NvSOkprusciElLvn+3U+3IyixSMzUK8AfdoCMHGrFTw
+        ZNhFE85NyvuxHEjIoDJBqNPbE
+X-Received: by 2002:a50:ec8c:0:b0:525:4471:6b59 with SMTP id e12-20020a50ec8c000000b0052544716b59mr5682180edr.7.1692636809963;
+        Mon, 21 Aug 2023 09:53:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFyTFD8e4P4bXW4x+3w5anGhQd0zaiH3++gCKjrBnoKJKvvGUYzaWuhy4BtsmiJcCRY5IPszw==
+X-Received: by 2002:a50:ec8c:0:b0:525:4471:6b59 with SMTP id e12-20020a50ec8c000000b0052544716b59mr5682168edr.7.1692636809712;
+        Mon, 21 Aug 2023 09:53:29 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id d19-20020a056402517300b005272523b162sm6151345ede.69.2023.08.21.09.53.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 09:53:29 -0700 (PDT)
+Message-ID: <5180ac42-3d5c-a6dc-a6da-9ede451d6a14@redhat.com>
+Date:   Mon, 21 Aug 2023 18:53:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821071659.123981-1-jiaqing.huang@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] [v2] platform/mellanox: Fix mlxbf-tmfifo not handling all
+ virtio CONSOLE notifictions updated to use set_bit()
+Content-Language: en-US, nl
+To:     Shih-Yi Chen <shihyic@nvidia.com>, linux-kernel@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     Liming Sung <limings@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>
+References: <20230821150627.26075-1-shihyic@nvidia.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230821150627.26075-1-shihyic@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 12:16:59AM -0700, Huang Jiaqing wrote:
-> The existing IO page fault handler locates the PCI device by calling
-> pci_get_domain_bus_and_slot(), which searches the list of all PCI
-> devices until the desired PCI device is found. This is inefficient
-> because the algorithm efficiency of searching a list is O(n). In the
-> critical path of handling an IO page fault, this can cause a significant
-> performance bottleneck.
+Hi,
+
+On 8/21/23 17:06, Shih-Yi Chen wrote:
+> From: shihyic <shihyic@nvidia.com>
 > 
-> To improve the performance of the IO page fault handler, replace
-> pci_get_domain_bus_and_slot() with a local red-black tree. A red-black
-> tree is a self-balancing binary search tree, which means that the
-> average time complexity of searching a red-black tree is O(log(n)). This
-> is significantly faster than O(n), so it can significantly improve the
-> performance of the IO page fault handler.
+> rshim console does not show all entries of dmesg.
 > 
-> In addition, we can only insert the affected devices (those that have IO
-> page fault enabled) into the red-black tree. This can further improve
-> the performance of the IO page fault handler.
+> Fixed by setting MLXBF_TM_TX_LWM_IRQ for every CONSOLE notification.
 > 
-> Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
+> Signed-off-by: Shih-Yi Chen <shihyic@nvidia.com>
+> Reviewed-by: Liming Sung <limings@nvidia.com>, David Thompson <davthompson@nvidia.com>
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+
+Thank you for your patch, I've applied this patch to my fixes
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
+
+Note it will show up in my fixes branch once I've pushed my
+local branch there, which might take a while.
+
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
+
+Regards,
+
+Hans
+
+
+
 > ---
->  drivers/iommu/intel/iommu.c | 68 +++++++++++++++++++++++++++++++++++++
->  drivers/iommu/intel/iommu.h |  8 +++++
->  drivers/iommu/intel/svm.c   | 13 +++----
->  3 files changed, 81 insertions(+), 8 deletions(-)
+> v1->v2:
+>  - Per review comment, replaced test_and_set_bit() with set_bit()
+> 
+>  drivers/platform/mellanox/mlxbf-tmfifo.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index a79318e90a13..b600b77d91ef 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -887,6 +887,7 @@ static bool mlxbf_tmfifo_virtio_notify(struct virtqueue *vq)
+>  			tm_vdev = fifo->vdev[VIRTIO_ID_CONSOLE];
+>  			mlxbf_tmfifo_console_output(tm_vdev, vring);
+>  			spin_unlock_irqrestore(&fifo->spin_lock[0], flags);
+> +			set_bit(MLXBF_TM_TX_LWM_IRQ, &fifo->pend_events);
+>  		} else if (test_and_set_bit(MLXBF_TM_TX_LWM_IRQ,
+>  					    &fifo->pend_events)) {
+>  			return true;
 
-I feel like this should be a helper library provided by the core
-code, doesn't every PRI driver basically need the same thing?
-
-Jason
