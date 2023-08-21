@@ -2,145 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA20782438
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D7178243F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbjHUHNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        id S233608AbjHUHQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233594AbjHUHNi (ORCPT
+        with ESMTP id S232730AbjHUHQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:13:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5DAB1;
-        Mon, 21 Aug 2023 00:13:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EE48D6109A;
-        Mon, 21 Aug 2023 07:13:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6BFAC433C7;
-        Mon, 21 Aug 2023 07:13:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692602016;
-        bh=yQJkjn1BuHjZD/DDVzSLKknk7uYBVOvi9rbBEqifM8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HYNUL8tbq6MOMMwPeAK1JOppwdGTsa/QCpR7fMiX86xOTxAkjsGBjkAPPqLS2cZ6p
-         TK5K+8r6Lflan7YWciEwVOfjJEnFe1WnE9RWEy0zaVx61ACiVaZOzLQGZm/SxZyYoe
-         ALXUE6sYpCofsEulo4uZ95QpsqBMDbrp1iq4RtVhAladHrjpiG05qxw0j83hJu9E0e
-         I/uHI3UAjITlL/ESFiLtUwxG0T3GLvFE/RVIlRVgxMgqsnXAKjhbRpaJxeABKCmWBc
-         jVlnuSTOWJyh5PsLr1HibCBXiuD7eo63xx9aJ0s5DwP0SOjchLl8AiYvYGZtiYET6N
-         YVdHqE3E5btVg==
-Date:   Mon, 21 Aug 2023 08:13:31 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Jakob Hauser <jahau@rocketmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the battery tree
-Message-ID: <20230821071331.GC1380343@google.com>
-References: <20230821125741.3a2474d7@canb.auug.org.au>
- <20230821070731.GB1380343@google.com>
+        Mon, 21 Aug 2023 03:16:28 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id CEA5DA8;
+        Mon, 21 Aug 2023 00:16:24 -0700 (PDT)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id D8355606212E9;
+        Mon, 21 Aug 2023 15:16:21 +0800 (CST)
+Message-ID: <07ffd0f9-853c-8aca-d2b6-8f643f83c940@nfschina.com>
+Date:   Mon, 21 Aug 2023 15:16:21 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH] drm/ast: Avoid possible NULL dereference
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        airlied@redhat.com, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     eich@suse.de, tiwai@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+In-Reply-To: <38503377-ec27-09dd-dc6b-836a9ac0a5df@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230821070731.GB1380343@google.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023, Lee Jones wrote:
+On 2023/8/21 15:04, Christophe JAILLET wrote:
+> Le 21/08/2023 à 08:22, Su Hui a écrit :
+>> smatch error:
+>> drivers/gpu/drm/ast/ast_dp501.c:227 ast_launch_m68k() error:
+>> we previously assumed 'ast->dp501_fw' could be null (see line 223)
+>>
+>> when "!ast->dp501_fw" and "ast_load_dp501_microcode(dev) >= 0" is true,
+>> there will be a NULL dereference of 'ast->dp501_fw'.
+>>
+>> Fixes: 12f8030e05c6 ("drm/ast: Actually load DP501 firmware when 
+>> required")
+>> Signed-off-by: Su Hui <suhui@nfschina.com>
+>> ---
+>>   drivers/gpu/drm/ast/ast_dp501.c | 6 ++++--
+>>   1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/ast/ast_dp501.c 
+>> b/drivers/gpu/drm/ast/ast_dp501.c
+>> index 1bc35a992369..d9f3a0786a6f 100644
+>> --- a/drivers/gpu/drm/ast/ast_dp501.c
+>> +++ b/drivers/gpu/drm/ast/ast_dp501.c
+>> @@ -224,8 +224,10 @@ static bool ast_launch_m68k(struct drm_device *dev)
+>>                   ast_load_dp501_microcode(dev) < 0)
+>>                   return false;
+>>   -            fw_addr = (u8 *)ast->dp501_fw->data;
+>> -            len = ast->dp501_fw->size;
+>> +            if (ast->dp501_fw) {
+>> +                fw_addr = (u8 *)ast->dp501_fw->data;
+>> +                len = ast->dp501_fw->size;
+>> +            }
+>>           }
+>>           /* Get BootAddress */
+>>           ast_moutdwm(ast, 0x1e6e2000, 0x1688a8a8);
+>
+> Hi,
+>
+> this looks like a false positive.
+>
+> If "!ast->dp501_fw", and ast_load_dp501_microcode()>=0, then 
+> ast_load_dp501_microcode() will set a valid value in ast->dp501_fw.
 
-> On Mon, 21 Aug 2023, Stephen Rothwell wrote:
-> 
-> > Hi all,
-> > 
-> > After merging the battery tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> > 
-> > drivers/power/supply/rt5033_charger.c: In function 'rt5033_charger_probe':
-> > drivers/power/supply/rt5033_charger.c:694:19: error: implicit declaration of function 'of_parse_phandle' [-Werror=implicit-function-declaration]
-> 
-> Is this because your merge-conflict patch:
-> 
->   linux-next: manual merge of the battery tree with the mfd tree
-> 
->  ... removed of_device.h?
+Hi,
 
-Oh, that was Rob's patch.  I see now, thanks.
+Sorry for the noise, you are right, this is a false positive.
+I will take more careful next time.
 
-> >   694 |         np_conn = of_parse_phandle(pdev->dev.of_node, "richtek,usb-connector", 0);
-> >       |                   ^~~~~~~~~~~~~~~~
-> > drivers/power/supply/rt5033_charger.c:694:17: error: assignment to 'struct device_node *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-> >   694 |         np_conn = of_parse_phandle(pdev->dev.of_node, "richtek,usb-connector", 0);
-> >       |                 ^
-> > drivers/power/supply/rt5033_charger.c:695:19: error: implicit declaration of function 'of_get_parent'; did you mean 'kernfs_get_parent'? [-Werror=implicit-function-declaration]
-> >   695 |         np_edev = of_get_parent(np_conn);
-> >       |                   ^~~~~~~~~~~~~
-> >       |                   kernfs_get_parent
-> > drivers/power/supply/rt5033_charger.c:695:17: error: assignment to 'struct device_node *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
-> >   695 |         np_edev = of_get_parent(np_conn);
-> >       |                 ^
-> > 
-> > Caused by commit
-> > 
-> >   2ce8284c3115 ("power: Explicitly include correct DT includes")
-> > 
-> > interacting with commit
-> > 
-> >   12cc585f36b8 ("power: supply: rt5033_charger: Add cable detection and USB OTG supply")
-> > 
-> > from the mfd tree.
-> > 
-> > I have applied the following merge fix patch.
-> > 
-> > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Date: Mon, 21 Aug 2023 12:50:12 +1000
-> > Subject: [PATCH] fixup for "power: Explicitly include correct DT includes"
-> > 
-> > interacting with commit
-> > 
-> >   12cc585f36b8 ("power: supply: rt5033_charger: Add cable detection and USB OTG supply")
-> > 
-> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > ---
-> >  drivers/power/supply/rt5033_charger.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/power/supply/rt5033_charger.c b/drivers/power/supply/rt5033_charger.c
-> > index 4d1198d752b7..4ea769775fa5 100644
-> > --- a/drivers/power/supply/rt5033_charger.c
-> > +++ b/drivers/power/supply/rt5033_charger.c
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/extcon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/mutex.h>
-> > +#include <linux/of.h>
-> >  #include <linux/platform_device.h>
-> >  #include <linux/power_supply.h>
-> >  #include <linux/regmap.h>
-> > -- 
-> > 2.40.1
-> > 
-> > -- 
-> > Cheers,
-> > Stephen Rothwell
-> 
-> 
-> 
-> -- 
-> Lee Jones [李琼斯]
+Su Hui
 
--- 
-Lee Jones [李琼斯]
+>
+> CJ
