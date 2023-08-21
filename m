@@ -2,144 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5E6783631
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5F7783637
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbjHUXWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:22:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
+        id S231667AbjHUX0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjHUXWs (ORCPT
+        with ESMTP id S231328AbjHUX0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:22:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0BF710E;
-        Mon, 21 Aug 2023 16:22:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 35EDC6310B;
-        Mon, 21 Aug 2023 23:22:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88DE9C433CA;
-        Mon, 21 Aug 2023 23:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692660165;
-        bh=BarXtWf8LLGfZYp+dfsYDTkiHtsu62fLTsmmUhGyBvc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=s3qkdvWscoZrkbateydQOyws0J3McBDSuOG/1D6jNCspNKEjyTvOiA5P9mHlPer6R
-         UJwttaC9autU6r9uBsmtRf8cp11LZM9oxBDJdI6QP1B4dJUBYjQQgENu3eE2tAS+vL
-         bNEuv8wA25Da8zREP3OIT9rAbPXqnwjX7Ns04iqCww1JbJfn5QDYjMm0C2Lb7SsYGE
-         ciduDgE2Agf6/URVxWlSMBykt9Sz/QyacyvT004zzKct6+zwWyQ6jFTP7mNvtYg1yZ
-         +rLa9oiW0F8gb0N+o863e5fWySj8NFGl/Qk3QKGUq5eFs+uUI2qi8e+n/Am2MdOBdH
-         kuXtUDJI/nTDw==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so5958144e87.0;
-        Mon, 21 Aug 2023 16:22:45 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yy9rkMTX3PdqSg9+zjMQwy02tNoyEzSdpKbEPxr6PxZhjQsNewT
-        8LNQXQZD0557aB1QgUj4F5Jo1HBUmXoI9dUAMzA=
-X-Google-Smtp-Source: AGHT+IGyACduf5O3k20YR2XVhRVSxkHhqIq/9qUvLg7O1cESm2tUz0N7N/jnmmeEZU6uufOIx3sFektG/Xv9Jk4oALU=
-X-Received: by 2002:a05:6512:3ca2:b0:500:8257:4b34 with SMTP id
- h34-20020a0565123ca200b0050082574b34mr3093531lfv.68.1692660163515; Mon, 21
- Aug 2023 16:22:43 -0700 (PDT)
+        Mon, 21 Aug 2023 19:26:43 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20F310E
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:26:41 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fee2ba9d09so17495e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692660400; x=1693265200;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FdbRIBjZxWWV5ZwwSRxrLxhKvAkoN6k9wWXpDppy29M=;
+        b=j4Y6HSowqdbR1GqiRG/oBc2sY+KRWNqmxOMBrW5/6sw6Kp0z4CxiKeg7IC8nIZBkbI
+         ZSBrtJhd4SeKNWBTTqrasNSPVRnCOdBvF7WUeUj5VNv/f27+fjskEhkiBNleVROmAk4c
+         mWybmSCZOGNv0QyiTHrgPjdsuzxypIAY0f0y9GATPddLh5IaFu2YZRwLe9g083QiinvA
+         2jivLxZv/hJ58y6on0qluAZB6teUkM0YNVFNMAgAy236ThmaJYb+tnKkyzq7qrpDCcz0
+         i+riNCltBq7WW/O/+LV656psEq7sTjDdQm+d97scKoZC6gG6hYo/3ALUl0r+LdlHXuQD
+         RT0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692660400; x=1693265200;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FdbRIBjZxWWV5ZwwSRxrLxhKvAkoN6k9wWXpDppy29M=;
+        b=d75pJn2xiegcRC1Te9Gu0rlMmn4dihgpPHJHPlEq57eKONDsm6mRpX+ZlHc73CJVsS
+         PjoIBcO4+9ojvhFhMkTU+LBlojyF1NKCRceAiusm1X985JDI89ax3VVEK/4RPw9Ay02W
+         jL5PgLW2vkgk2pZhhliZxfzluX1MUWcK9rdvIsR+lu0REcmY52KkfDQ90KmdULYvmukt
+         TskWojpUgKWx3RWyhYOTDd5JVqfFyi6vHBVy64HbsVoQXnpL6WQMPl3ekqDBH32ys6SG
+         HQRnhqMb94KpvyIRXJL/w3DP47AjcimbXMWNgD7OgMdcTT12bLLKpguvLaEuWyDcZU/h
+         mCag==
+X-Gm-Message-State: AOJu0Ywn30inBFS7gNu/zzI9kXiRpnwd0zWweMI3b7amRK1EYx4iiv/W
+        I1pxnySClnIzPaoDxt9YvfZFxmBzM9OiDZ3/XXVvPg==
+X-Google-Smtp-Source: AGHT+IGnX9RjCHrnb/K0T/JB/xlTq4uin4K4kU47QkRsLqAPPdbmomkSs45W46x0anYc/DXtFyetXx3DW9AuyksLgwA=
+X-Received: by 2002:a05:600c:82c8:b0:3f7:e4d8:2569 with SMTP id
+ eo8-20020a05600c82c800b003f7e4d82569mr22225wmb.5.1692660400045; Mon, 21 Aug
+ 2023 16:26:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230820090949.2874537-1-yukuai1@huaweicloud.com> <20230820090949.2874537-7-yukuai1@huaweicloud.com>
-In-Reply-To: <20230820090949.2874537-7-yukuai1@huaweicloud.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Aug 2023 16:22:31 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
-Message-ID: <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
-Subject: Re: [PATCH -next v3 6/7] md: factor out a helper rdev_addable() from remove_and_add_spares()
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, mariusz.tkaczyk@linux.intel.com,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230814132309.32641-1-rf@opensource.cirrus.com>
+ <20230814132309.32641-7-rf@opensource.cirrus.com> <CABVgOS=WoKEpPU=0f=mSfdx1g6AkEtx6QJTiNru1XSTev3sGaQ@mail.gmail.com>
+ <a8804709-ee00-d2ea-d55d-f8138bd3a500@opensource.cirrus.com>
+ <CABVgOSmPqM_zt9jGzYcJN-=AQW3z62cC7dzPJkV-jx6rCcMy=g@mail.gmail.com> <0b780ce7-66a4-1a36-2a8a-a69c95f73d8a@opensource.cirrus.com>
+In-Reply-To: <0b780ce7-66a4-1a36-2a8a-a69c95f73d8a@opensource.cirrus.com>
+From:   David Gow <davidgow@google.com>
+Date:   Tue, 22 Aug 2023 07:26:27 +0800
+Message-ID: <CABVgOSkYYMOmYdY4zm3i2aMDyTnDVY+53JTDyUBtP5Kaj7Bqsw@mail.gmail.com>
+Subject: Re: [PATCH v4 06/10] kunit: string-stream: Pass struct kunit to string_stream_get_string()
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     brendan.higgins@linux.dev, rmoar@google.com,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000e5ac1606037735f7"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 2:13=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> There are no functional changes, just to make the code simpler and
-> prepare to delay remove_and_add_spares() to md_start_sync().
->
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 28 ++++++++++++++++------------
->  1 file changed, 16 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 11d27c934fdd..cdc361c521d4 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -9177,6 +9177,20 @@ static bool rdev_is_spare(struct md_rdev *rdev)
->                !test_bit(Faulty, &rdev->flags);
->  }
->
-> +static bool rdev_addable(struct md_rdev *rdev)
-> +{
-> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >=3D 0 |=
-|
-> +           test_bit(Faulty, &rdev->flags))
-> +               return false;
-> +
-> +       if (!test_bit(Journal, &rdev->flags) && !md_is_rdwr(rdev->mddev) =
-&&
+--000000000000e5ac1606037735f7
+Content-Type: text/plain; charset="UTF-8"
 
-Instead of straightforward refactoring, I hope we can make these rdev_*
-helpers more meaningful, and hopefullly reusable. For example, let's define
-the meaning of "addable", and write the function to match that meaning. In
-this case, I think we shouldn't check md_is_rdwr() inside rdev_addable().
-
-Does this make sense?
-
-Thanks,
-Song
-
-
-> +           !(rdev->saved_raid_disk >=3D 0 &&
-> +             !test_bit(Bitmap_sync, &rdev->flags)))
-> +               return false;
-> +
-> +       return true;
-> +}
-> +
->  static int remove_and_add_spares(struct mddev *mddev,
->                                  struct md_rdev *this)
->  {
-> @@ -9227,20 +9241,10 @@ static int remove_and_add_spares(struct mddev *md=
-dev,
->                         continue;
->                 if (rdev_is_spare(rdev))
->                         spares++;
-> -               if (test_bit(Candidate, &rdev->flags))
-> +               if (!rdev_addable(rdev))
->                         continue;
-> -               if (rdev->raid_disk >=3D 0)
-> -                       continue;
-> -               if (test_bit(Faulty, &rdev->flags))
-> -                       continue;
-> -               if (!test_bit(Journal, &rdev->flags)) {
-> -                       if (!md_is_rdwr(mddev) &&
-> -                           !(rdev->saved_raid_disk >=3D 0 &&
-> -                             !test_bit(Bitmap_sync, &rdev->flags)))
-> -                               continue;
-> -
-> +               if (!test_bit(Journal, &rdev->flags))
->                         rdev->recovery_offset =3D 0;
-> -               }
->                 if (mddev->pers->hot_add_disk(mddev, rdev) =3D=3D 0) {
->                         /* failure here is OK */
->                         sysfs_link_rdev(mddev, rdev);
-> --
-> 2.39.2
+On Tue, 22 Aug 2023 at 00:10, Richard Fitzgerald
+<rf@opensource.cirrus.com> wrote:
 >
+> On 17/08/2023 07:26, David Gow wrote:
+> > On Tue, 15 Aug 2023 at 17:57, Richard Fitzgerald
+> > <rf@opensource.cirrus.com> wrote:
+> >>
+> >> On 15/8/23 10:16, David Gow wrote:
+> >>> On Mon, 14 Aug 2023 at 21:23, Richard Fitzgerald
+> >>> <rf@opensource.cirrus.com> wrote:
+> >>>>
+> >>>> Pass a struct kunit* and gfp_t to string_stream_get_string(). Allocate
+> >>>> the returned buffer using these instead of using the stream->test and
+> >>>> stream->gfp.
+> >>>>
+> >>>> This is preparation for removing the dependence of string_stream on
+> >>>> struct kunit, so that string_stream can be used for the debugfs log.
+> >>>>
+> >>>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> >>>> ---
+> >>>
+> >>> Makes sense to me.
+> >>>
+> >>> I think that, if we weren't going to remove the struct kunit
+> >>> dependency, we'd want to either keep a version of
+> >>> string_stream_get_string() which uses it, or, e.g., fall back to it if
+> >>> the struct passed in is NULL.
+> >>>
+> >>
+> >> That was my first thought. But I thought that was open to subtle
+> >> accidental bugs in calling code - it might return you a managed
+> >> allocation, or it might return you an unmanaged allocation that you
+> >> must free.
+> >>
+> >> As there weren't many callers of string_stream_get_string() I decided
+> >> to go with changing the API to pass in test and gfp like other managed
+> >> allocations. This makes it more generalized, since the returned buffer
+> >> is not part of the stream itself, it's a temporary buffer owned by the
+> >> caller. It also makes it clearer that what you are getting back is
+> >> likely to be a managed allocation.
+> >>
+> >> If you'd prefer to leave string_stream_get_string() as it was, or make
+> >> it return an unmanged buffer, I can send a new version.
+> >>
+> >>> The other option is to have a version which doesn't manage the string
+> >>> at all, so just takes a gfp and requires the caller to free it (or
+> >>
+> >> I didn't add a companion function to get a raw unmanaged string buffer
+> >> because there's nothing that needs it. It could be added later if
+> >> it's needed.
+> >>
+> >
+> > Fair enough.
+> >
+> >>> register an action to do so). If we did that, we could get rid of the
+> >>> struct kunit pointer totally (though it may be better to keep it and
+> >>> have both versions).
+> >>>
+> >>
+> >> Another option is to make string_stream_get_string() return a raw
+> >> buffer and add a kunit_string_stream_geT_string() that returns a
+> >> managed buffer. This follows some consistency with the normal mallocs
+> >> where kunit_xxxx() is the managed version.
+> >>
+> >
+> > Ooh... I like this best. Let's go with that.
+> >
+>
+> I was busy last week with other things and have only got back to looking
+> at this.
+>
+> I'm trying to decide what to do with string_stream_get_string() and I'd
+> value an opinion.
+>
+> The only use for a test-managed get_string() is the string_stream test.
+> So I've thought of 4 options:
+>
+> 1) Add a kunit_string_stream_get_string() anyway. But only the test code
+> uses it.
+>
+> 2) Change the tests to have a local function to do the same thing, and
+> add an explicit test case for the (unmanaged)
+> string_stream_get_string() that ensures it's freed.
+>
+> 3) Change the tests to have a local function to get the string, which
+> calls string_stream_get_string() then copies it to a test-managed buffer
+> and frees the unmanaged buffer.
+>
+> 4) Implement a kunit_kfree_on_exit() function that takes an already-
+> allocated buffer and kfree()s it when the test exists, so that we can
+> do:
+>
+>     // on success kunit_kfree_on_exit() returns the buffer it was given
+>     str = kunit_kfree_on_exit(test, string_stream_get_string(stream));
+>     KUNIT_ASSERT_NOT_ERR_OR_NULL(test, str);
+>
+> I'm leaning towards (2) but open to going with any of the other options.
+
+I'd be happy with any of those options (though 3 is my least favourite).
+
+There is already a kfree_at_end() function in the executor test. It's
+not quite as nice as your proposed kunit_kfree_on_exit() function (I
+like this idea of passing the pointer through), but it proves the
+concept. I think your version of this would be a useful thing to have
+as an actual part of the KUnit API, rather than just a per-test hack:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/lib/kunit/executor_test.c#n131
+
+Cheers,
+-- David
+
+--000000000000e5ac1606037735f7
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+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
+ddIn9n5Jt6Z1o79zxraLMEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBtHFwIgQZjer5K
+H+4Q+wns10k7qN+4wN2Uf+JsyOYjukaMEgdLErfA1wwtQ9uHkoYQZcWBuVVkQFa5hI+sqI2m1Weq
+riMCFSiU38s1tADdMX12IMfJRN60Nznhrw+nPyDRZqRhUTW24TwnHorkDnFPW8PHo7fAw4FrpI0n
+impZAng7ccvvK09K3ZuhwTIxJMsPXCZYsrXWORTw5sczRAP6XvKbPBJnsJoSTe5dFBPBHOQJOGhU
+qWfEfWnWMJPF3LxSGLpLFQXO3RwQqmxv08avwXfVPouh1xuB3FX7rpDabT8YDhu9JgIZkLEKko7L
+yQt6zWwng7k8YF/jGbiAta6VMYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABzgV+4+mJnUzG7XDy6d2uMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCBV
+H27UdWdbxd1N9SDrr9Y9Hx63Y5u8FLr0elceCt52+DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMzA4MjEyMzI2NDBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAIa/lb/XlY3M867+ruhk3
+/atS4YlC57D20R+/GRxUzBFqD/I+qbQOlRuOIm2nY8wgakZG9SNKtYo6olfwhnQ0V+fG23kUUvwo
+E+Isiu5srwARV7y8jz2inpAHFVCT2bjpZgl7Gs3kiVQFQk63aFZ/cTUjVut1vSjg58/yIGDydedW
+UTc+MFtMNqDOu2xnmVGcku1YcAZD0LGClAKPA7ohUDZ0+m1axMl7ELZJaFxEpFKWqxDqykzd4Pd9
+e+kAXTxYJgfLQafvyGH4hQk/5xHkrDz18+86y2uofpUvcLcryG7pO3BbGkwh5gnR4QdVZ4iKn6EK
+DH/DHX58EUMVRjot+A==
+--000000000000e5ac1606037735f7--
