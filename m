@@ -2,462 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C583F782AA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A7D782AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbjHUNfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44354 "EHLO
+        id S235454AbjHUNfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:35:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233427AbjHUNf3 (ORCPT
+        with ESMTP id S233427AbjHUNfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:35:29 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2088.outbound.protection.outlook.com [40.107.237.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2438B9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:35:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QtaqdpmBP/fpErwGkg3CkummK89ztJkvt9wXVrQ6VF1+jQHEvFyyQc05qn0+vzV5MWjBqda7iwdl3A1L8QkhU7OG/BNjaDfCnb1OaRL5bqArO0dS/oTg/63DpOGCDJ1FhU++Nuy7oRN188CcMg6PgZgLB2lAN1F1/jV7etYsIRuVtD1jAVE2ulYSD+sNOJ42Vs9OHjO4ctbwgtWT4N2zrIUES750nS2UsfnBNoFlA1slwidOeRujFAnei4DxzyArtcUHNUDpcbIjoEyUwnf4F32T/Tnm01qt6lugwwV4GR6EP53bgtmrm91OB4IhuWeKBaGRMs4IKByJ2DHKoEMVuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LcdvDONO3jlFN+5fNeuhLZ0qPto8nPcarVhD0e7QbLU=;
- b=Ahq3FNQM/dXWT8FpWK4lNF2vPT4Cgex/APvykTjDw5OclxNoTzCS5q5rk8n0vbakf6FEEWs0rfxMdLBeYT9GFf96MkqdDskZmY3GlkRRQ9ipYnT2A/4sFlAgORLL9iBiNXh/2TaReSWqB8atkOKsFQ75G2yXJ1V07MNkiKY8wWc3Rm26yyerUaw4VC5uPwGFwTShilI/xcRTj2FKCVwPGBiNzQV6azwvAzax5cL/twlNX94sODius/CQEqHtV80j89JNeJZd830hnJcGDr+qu3ICpytFRDQjQvQWP9kcSresyHOoIG7mdffqixnqBtCLxHXjeJpL1vsqIP4XKCnjGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LcdvDONO3jlFN+5fNeuhLZ0qPto8nPcarVhD0e7QbLU=;
- b=hZG9mq3dbBkt7ZdA99inutojkYALvidYwwZElP2IZ8WrheQeHz8XpygQ4/cGFZSIX7WJCZrfa3k9Gmj45JZtldu9VdKoP6AQrl3+hpuUolOrA+s3/sD5ByXy8LFkdxeI2ahJvbfav8L9j0ujwN9UvqAzxlFSjRCQCNh1n73PHi0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
- by SJ0PR12MB5664.namprd12.prod.outlook.com (2603:10b6:a03:42b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
- 2023 13:35:22 +0000
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 13:35:22 +0000
-Message-ID: <90f7c142-3372-536f-accc-a04baaf9f666@amd.com>
-Date:   Mon, 21 Aug 2023 19:05:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 1/7] drm/amdgpu: Added init/fini functions for workload
-Content-Language: en-US
-To:     Shashank Sharma <shashank.sharma@amd.com>,
-        Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        amd-gfx@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
- <20230821064759.94223-2-Arvind.Yadav@amd.com>
- <3e20b067-c02a-1911-cac9-3e547a14b565@amd.com>
-From:   "Yadav, Arvind" <arvyadav@amd.com>
-In-Reply-To: <3e20b067-c02a-1911-cac9-3e547a14b565@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0097.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:9b::16) To PH7PR12MB6000.namprd12.prod.outlook.com
- (2603:10b6:510:1dc::15)
+        Mon, 21 Aug 2023 09:35:38 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0359B4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:35:36 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8F61822C40;
+        Mon, 21 Aug 2023 13:35:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692624935; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=RemgPkzn7YV1gXlFYwOOcos1TiBldSzEgE7RNTyAxDk=;
+        b=HvcB9UZF4OBtvlqu8DRi1fr3RXwFQH+IhdAgRas3xUzUCro1WkccaSyu+mE733GirVXRaL
+        bboby3uL1yz+pStj3bOIh0PkABaB2Iv3e+sNYmpInP03AncxogCBGxwtV/NUcAy4oqyE6E
+        aYUTiA1EvvnvJUamFldhLPLy5BDFu10=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5CDDD1330D;
+        Mon, 21 Aug 2023 13:35:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ksFyFSdo42RkYgAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 21 Aug 2023 13:35:35 +0000
+Message-ID: <70e1051e-b884-4c9b-8d14-698e3309ec19@suse.com>
+Date:   Mon, 21 Aug 2023 15:35:34 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|SJ0PR12MB5664:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2931116-a673-4332-170c-08dba24b77ca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: slSQhB1MMT2bG5QwGXSLHU6zqNycJsfU1WMPFvxm6VE+/SG0Cb+1nlPOSKLwYxabFRktJUUiSUngEPn0HItCA50FLK2EeFL0EUcaN4fQP044vMNKplxDA7SNfD7woktdX+wBBYbscp/gk2hRgABwBdnzYmMWVP8tbpZLYr0rdvTvaodMeQBuuAJ61u4EoOe2i8jpOvJEREqt3X0Um5g1+RN5WKpc+tvUKrtKP4siJh708jEur7v805zNe8A5G0iodn7WEJvon5TiGgxw2/hMiAfVvUW7W9M+hk2n3lXf4Mp6BL0gNBgmANhWvxPR5n8i+qRSXAvSBnzZe20kF8mqskFh7ZX0v5d8JBBt9eOfIea1xveMJY7Ugk0RrXIX8t62wLhq0js4KCSoqbhnstJU1XzvPEhXyczHmCuvRnUCaX45Qk97XPOTAhXMQeEKihYjxRBl7upqYkYJ/15UODEZ1zfSIqltd2QlngNKGS4bgEcjuDxentqbUY7ulMwJcleU16pRHQHHQ+IZCL7HePR0USslLLCVOho1Wxk4vaWXMksgdJRRYRQ4wVS043hwkj7vIxNu5c/dorJI2zNReJgumm7HTom+vVoOdlIYzeGctIkjPr2Q6bxL161bwsVLpiIELr/yBk1n2GcL5Cvo/OAKkw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(30864003)(45080400002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(26005)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(66556008)(66476007)(110136005)(66899024)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TkoydFptWklZcy80Z2xWQlN3aVRjUEVFeFFiZHZvbW1LUlRvSlRtL3NXVUJp?=
- =?utf-8?B?amo2cERLbE5vOURZS1RLbUpvS1hGSEJqVkR1ZXNnWjJ3L0Z3d2hhNGhNV1hK?=
- =?utf-8?B?dWR4Vm9lRzNUOWR5dXJ4ZkFHcnovUjJwS2JpSnBYTHUrUm1RQlQyZ2JVYlhM?=
- =?utf-8?B?bEl6REsvcE4zaHFHZWxsdUl6d3g1Z0FyOWhMcWU2ckJBenZqejFzQTEwSVc0?=
- =?utf-8?B?amUwVFlGNGRZYnFjWW9iWDhjaFJXd2NJemtpa3dJa0NVd0FreEJxMmVmdzQz?=
- =?utf-8?B?OStzWEkrWHJzYitwYWQ0V0I1VTBMUXhxRTNiSjI1YzMvOStpdUZ6MCtSS3Bl?=
- =?utf-8?B?WDlsdTVQVDBKQ3FmUzhjZkVqMnRtUWk4Qm0vZFpGRnFsMnlZVWJHSWdqY2lF?=
- =?utf-8?B?QWVXZnlaQVNXUjIyZlY0UXVRaFlIbGQ1VnBKYzd4L3IweklHL3RJS0pzQ1V3?=
- =?utf-8?B?ak01RENEdVc0WTNhSDVjOG43MzNlVnU4UWVsVjN2STcrYzJoSkFBZU1LbVJy?=
- =?utf-8?B?bFpDbTRCSEhEWGVkbkVlSE9xaXhSRUQ1QmF6TXVwZHFDUW9mUXFub21yTXpq?=
- =?utf-8?B?ZklieHhyVUhXOUFDTmhoTFdWSG15bnNhMnNkUnhtc3hHZE1IdmJ4SFpzdlU3?=
- =?utf-8?B?ck1ZWVBIQXViQlBVVXdWVHZINnV5c0VXaEhwZHUwQ3A5ZFpWbnppbCs1ZWw4?=
- =?utf-8?B?dW0vczBhcnBHQnFvVWFIT2U1eWgrdnZUQURMUHBtMGhnZU9UZlQvS2RVQ2lT?=
- =?utf-8?B?b01kWXVSaFFJR2E2UzR6TWpGL2lib2VCMmUvVzcwYllERWZJc0FBMzBPcDBE?=
- =?utf-8?B?SWJBU2FBdTJoNWFrMjVLMFFiWFdmUDF3YmhoMDhnb3A3a0ZBaDFOM0VBa0pV?=
- =?utf-8?B?NVVuZWYwK0J1cUVEajYxWVorTUZUWkRnUFVhcHZEenZiVnMrdlRuem1wQ3BU?=
- =?utf-8?B?cDNuNzNpY1h1VHNLTU5jT3o3QnFkcnZmaG1rdzdqNlJvZ254UHBFU2NTcUh3?=
- =?utf-8?B?ejN6QXI1bmsra0JEcWhlVnFMM3I4S0NNMUhQQ21CWmJDYnZVVFJBNVFMdkFB?=
- =?utf-8?B?cjJlSkpxemJHNVhrWlRZZG1DRU1SbjBPem5qbXZ1Tit2Ly9DUHVNdVkzMlZT?=
- =?utf-8?B?R1JhQVJIRTR4SVpBaVJDVENSZnZ2ZEh4RW1Td3ZLcFM5cHBhWUsybkR1bzRJ?=
- =?utf-8?B?cHhCcWQ1a0tFS1hueTd2S2QvWGJ6anZHS09GZkIxaDgzRVlNb2tFQmRDZXl3?=
- =?utf-8?B?NzZWSnd0Qk8xMEVFeVhqbXZMM2syWWIxMTlaWWlLeXFvL1FGTGZwVCtQNlJ3?=
- =?utf-8?B?ZkFHQ3pKaGw2RmIzWkJsaFpKejU2eHE5clVnSUFrTjVIb0VXZDJnM0JrdmY5?=
- =?utf-8?B?MGo4RkVEV29KaTVIczBweU10ZWJoVmdRK3IwblhOS2s3dXdjbGljYkR3UE1i?=
- =?utf-8?B?ZWkxdFM1eGJ1WWdWckp6clQxZWwwVlpoRUJMeEt5VDc4alBJRjMyYjhQQ3B6?=
- =?utf-8?B?eUt4OTM2UGlDV1BBQTE4QkpIdDd0S1cwNG9yMXNGUFVhS3RnSjA3MkV5U3N1?=
- =?utf-8?B?RWtXOUtiSTRFT2JFSi8zMTdrV2FFUWVyeXl2anhZN0tvZ2M1eXNNemI3RTVE?=
- =?utf-8?B?Z0VMQUhCRVAwWDhHaW1IV0ZCaGVPRHI3c3dndzJuRVZFdzVwamlaM24xZkVL?=
- =?utf-8?B?enJlcWVrSFVubjVIQnk2UmEzTnRSZkQ1Tm5iQTJJY1FMaXBBSi9SUkFxeXhh?=
- =?utf-8?B?cC85YWdEWmV5MmhtQVUzc3Z0M0RXU01ha1lIeUhtc2RBY2R1K3NXOVFmM1pU?=
- =?utf-8?B?dlhUb24rVnJOTXREZXEzanFDbTRwSTFJM3ZjUkMrYTFFMTY5Z2xmVGtZTDFR?=
- =?utf-8?B?cWR0N2RSdU9xQVp2d29maWZzcm9obS8xcE5RNmx1Rk8xeFd1di8raFc4MkR1?=
- =?utf-8?B?dG9NSGJBS1M5SkMzZm9lRWI2MDI4YzVERm5GNzBadllsT09wcjZsVUNqNy9s?=
- =?utf-8?B?MzRBaGpsbGVsNXp4LzV6V0E5VWgrY0dPUUNWQTA3bkhkelcybTMzTVhmeXZ6?=
- =?utf-8?B?VzMxbTA5RHVOeTJ1Nlg3VFJMdmFGQlhSbThKMXNjL1NzNEZ1WHd0VkhIcDZv?=
- =?utf-8?Q?Awpp8dfJ1od12S/Fg3G4W8yaU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2931116-a673-4332-170c-08dba24b77ca
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:35:22.3290
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3LDn7EOzhFHsrtV9Apt5vUgU0EN2Xjm2BQhP5NNNqCazxwQU7Zi5qh0/Pdoq7U6FEkJPH4qB5OL/doMXCfodPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5664
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] xen: Fix one kernel-doc comment
+To:     Yang Li <yang.lee@linux.alibaba.com>, sstabellini@kernel.org,
+        oleksandr_tyshchenko@epam.com
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+References: <20230731030037.123946-1-yang.lee@linux.alibaba.com>
+Content-Language: en-US
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20230731030037.123946-1-yang.lee@linux.alibaba.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------VofV00Z07tqJ5TyUB5S4lBcJ"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------VofV00Z07tqJ5TyUB5S4lBcJ
+Content-Type: multipart/mixed; boundary="------------CwEoT0Z79133mqqF0V4FVYM6";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Yang Li <yang.lee@linux.alibaba.com>, sstabellini@kernel.org,
+ oleksandr_tyshchenko@epam.com
+Cc: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+ Abaci Robot <abaci@linux.alibaba.com>
+Message-ID: <70e1051e-b884-4c9b-8d14-698e3309ec19@suse.com>
+Subject: Re: [PATCH -next] xen: Fix one kernel-doc comment
+References: <20230731030037.123946-1-yang.lee@linux.alibaba.com>
+In-Reply-To: <20230731030037.123946-1-yang.lee@linux.alibaba.com>
 
-On 8/21/2023 6:36 PM, Shashank Sharma wrote:
-> Hey Arvind,
->
-> On 21/08/2023 08:47, Arvind Yadav wrote:
->> The'struct amdgpu_smu_workload' initialization/cleanup
->> functions is added by this patch.
->>
->> v2:
->> - Splitting big patch into separate patches.
->> - Added new fini function.
->>
->> Cc: Shashank Sharma <shashank.sharma@amd.com>
->> Cc: Christian Koenig <christian.koenig@amd.com>
->> Cc: Alex Deucher <alexander.deucher@amd.com>
->> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/Makefile           |  2 +-
->>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  3 ++
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |  4 ++
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 44 +++++++++++++++
->>   drivers/gpu/drm/amd/include/amdgpu_workload.h | 53 +++++++++++++++++++
->>   5 files changed, 105 insertions(+), 1 deletion(-)
->>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->>   create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile 
->> b/drivers/gpu/drm/amd/amdgpu/Makefile
->> index 415a7fa395c4..6a9e187d61e1 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
->> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
->> @@ -60,7 +60,7 @@ amdgpu-y += amdgpu_device.o amdgpu_kms.o \
->>       amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
->>       amdgpu_fw_attestation.o amdgpu_securedisplay.o \
->>       amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
->> -    amdgpu_ring_mux.o
->> +    amdgpu_ring_mux.o amdgpu_workload.o
->>     amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
->>   diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->> index 02b827785e39..1939fa1af8a6 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->> @@ -107,6 +107,7 @@
->>   #include "amdgpu_fdinfo.h"
->>   #include "amdgpu_mca.h"
->>   #include "amdgpu_ras.h"
->> +#include "amdgpu_workload.h"
->>     #define MAX_GPU_INSTANCE        16
->>   @@ -1050,6 +1051,8 @@ struct amdgpu_device {
->>         bool                            job_hang;
->>       bool                            dc_enabled;
->> +
->> +    struct amdgpu_smu_workload    smu_workload;
->>   };
->>     static inline struct amdgpu_device *drm_to_adev(struct drm_device 
->> *ddev)
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> index 5c7d40873ee2..cd3bf641b630 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->> @@ -2243,6 +2243,8 @@ static int amdgpu_device_ip_early_init(struct 
->> amdgpu_device *adev)
->>       adev->cg_flags &= amdgpu_cg_mask;
->>       adev->pg_flags &= amdgpu_pg_mask;
->>   +    amdgpu_workload_profile_init(adev);
->> +
->>       return 0;
->>   }
->>   @@ -2890,6 +2892,8 @@ static int amdgpu_device_ip_fini(struct 
->> amdgpu_device *adev)
->>   {
->>       int i, r;
->>   +    amdgpu_workload_profile_fini(adev);
->> +
->>       if (amdgpu_sriov_vf(adev) && adev->virt.ras_init_done)
->>           amdgpu_virt_release_ras_err_handler_data(adev);
->>   diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c 
->> b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> new file mode 100644
->> index 000000000000..32166f482f77
->> --- /dev/null
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> @@ -0,0 +1,44 @@
->> +// SPDX-License-Identifier: MIT
->> +/*
->> + * Copyright 2023 Advanced Micro Devices, Inc.
->> + *
->> + * Permission is hereby granted, free of charge, to any person 
->> obtaining a
->> + * copy of this software and associated documentation files (the 
->> "Software"),
->> + * to deal in the Software without restriction, including without 
->> limitation
->> + * the rights to use, copy, modify, merge, publish, distribute, 
->> sublicense,
->> + * and/or sell copies of the Software, and to permit persons to whom 
->> the
->> + * Software is furnished to do so, subject to the following conditions:
->> + *
->> + * The above copyright notice and this permission notice shall be 
->> included in
->> + * all copies or substantial portions of the Software.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
->> EXPRESS OR
->> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
->> MERCHANTABILITY,
->> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO 
->> EVENT SHALL
->> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, 
->> DAMAGES OR
->> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
->> OTHERWISE,
->> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
->> USE OR
->> + * OTHER DEALINGS IN THE SOFTWARE.
->> + *
->> + */
->> +
->> +#include "amdgpu.h"
->> +
->> +void amdgpu_workload_profile_init(struct amdgpu_device *adev)
->> +{
->> +    adev->smu_workload.adev = adev;
->> +    adev->smu_workload.submit_workload_status = 0;
->> +    adev->smu_workload.initialized = true;
-> why do we need this variable ?
+--------------CwEoT0Z79133mqqF0V4FVYM6
+Content-Type: multipart/mixed; boundary="------------3JSiEzVSTlz0P2aZHbUua5em"
 
-Hi Shashank,
+--------------3JSiEzVSTlz0P2aZHbUua5em
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-If any error comes while the device is booting then amdgpu will start 
-unloading everything.
-So I am using 'initialized' for unloading a driver successfully. This 
-variable is to identify that the driver is loaded or not.
+T24gMzEuMDcuMjMgMDU6MDAsIFlhbmcgTGkgd3JvdGU6DQo+IFVzZSBjb2xvbiB0byBzZXBh
+cmF0ZSBwYXJhbWV0ZXIgbmFtZSBmcm9tIHRoZWlyIHNwZWNpZmljIG1lYW5pbmcuDQo+IHNp
+bGVuY2UgdGhlIHdhcm5pbmc6DQo+IA0KPiBkcml2ZXJzL3hlbi9ncmFudC10YWJsZS5jOjEw
+NTE6IHdhcm5pbmc6IEZ1bmN0aW9uIHBhcmFtZXRlciBvciBtZW1iZXIgJ25yX3BhZ2VzJyBu
+b3QgZGVzY3JpYmVkIGluICdnbnR0YWJfZnJlZV9wYWdlcycNCj4gDQo+IFJlcG9ydGVkLWJ5
+OiBBYmFjaSBSb2JvdCA8YWJhY2lAbGludXguYWxpYmFiYS5jb20+DQo+IENsb3NlczogaHR0
+cHM6Ly9idWd6aWxsYS5vcGVuYW5vbGlzLmNuL3Nob3dfYnVnLmNnaT9pZD02MDMwDQo+IFNp
+Z25lZC1vZmYtYnk6IFlhbmcgTGkgPHlhbmcubGVlQGxpbnV4LmFsaWJhYmEuY29tPg0KDQpB
+Y2tlZC1ieTogSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuY29tPg0KDQoNCkp1ZXJnZW4N
+Cg0K
+--------------3JSiEzVSTlz0P2aZHbUua5em
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-This is the below error for which the amdgpu driver is unloading when it 
-is not getting firmware.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-[   12.421609] amdgpu 0000:08:00.0: Direct firmware load for 
-amdgpu/renoir_ta.bin failed with error -2
-[   12.421618] [drm:amdgpu_device_init [amdgpu]] *ERROR* early_init of 
-IP block <psp> failed -19
-[   12.428207] [drm] VCN decode is enabled in VM mode
-[   12.428212] [drm] VCN encode is enabled in VM mode
-[   12.430925] [drm] JPEG decode is enabled in VM mode
-[   12.430931] amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
-[   12.431184] amdgpu 0000:08:00.0: amdgpu: amdgpu: finishing device.
-[   12.431296] ------------[ cut here ]------------
-[   12.431297] WARNING: CPU: 3 PID: 438 at kernel/workqueue.c:3379 
-__flush_work+0x22f/0x240
-[   12.431305] Modules linked in: ledtrig_audio snd_hda_codec_hdmi 
-snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec 
-snd_hda_core amdgpu(OE+) snd_hwdep snd_pcm kvm snd_seq_midi 
-snd_seq_midi_event drm_exec amdxcp snd_rawmidi iommu_v2 crct10dif_pclmul 
-drm_buddy gpu_sched ghash_clmulni_intel sha512_ssse3 snd_seq 
-drm_suballoc_helper aesni_intel drm_ttm_helper binfmt_misc crypto_simd 
-snd_seq_device ttm cryptd snd_timer drm_display_helper input_leds rapl 
-joydev cec wmi_bmof rc_core snd drm_kms_helper k10temp ccp soundcore 
-mac_hid sch_fq_codel msr parport_pc ppdev lp parport ramoops 
-reed_solomon drm pstore_blk pstore_zone efi_pstore ip_tables x_tables 
-autofs4 hid_generic usbhid hid crc32_pclmul nvme igb ahci i2c_piix4 
-xhci_pci i2c_algo_bit nvme_core libahci xhci_pci_renesas dca video wmi
-[   12.431360] CPU: 3 PID: 438 Comm: systemd-udevd Tainted: G        W  
-OE      6.5.0-rc2-custom #1
-[   12.431362] Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS 
-ELITE/X570 AORUS ELITE, BIOS F34 06/10/2021
-[   12.431364] RIP: 0010:__flush_work+0x22f/0x240
-[   12.431367] Code: 8b 43 30 48 8b 53 40 89 c1 e9 f9 fe ff ff 4c 89 f7 
-e8 45 0b db 00 e8 90 f5 08 00 45 31 ff e9 11 ff ff ff 0f 0b e9 0a ff ff 
-ff <0f> 0b 45 31 ff e9 00 ff ff ff e8 02 a0 d9 00 66 90 90 90 90 90 90
-[   12.431368] RSP: 0018:ffffb0668156f818 EFLAGS: 00010246
-[   12.431370] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
-0000000000000000
-[   12.431371] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 
-ffff9cea492c7840
-[   12.431372] RBP: ffffb0668156f890 R08: 0000000000000000 R09: 
-ffffb0668156f7a0
-[   12.431372] R10: 0000000000000001 R11: 0000000000000001 R12: 
-ffff9cea492c7840
-[   12.431373] R13: 0000000000000001 R14: ffff9cea43839940 R15: 
-0000000000000001
-[   12.431374] FS:  00007fde83c18880(0000) GS:ffff9cf15e2c0000(0000) 
-knlGS:0000000000000000
-[   12.431375] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   12.431376] CR2: 00007f2648000010 CR3: 00000001059e2000 CR4: 
-0000000000350ee0
-[   12.431377] Call Trace:
-[   12.431379]  <TASK>
-[   12.431384]  ? show_regs+0x68/0x70
-[   12.431388]  ? __flush_work+0x22f/0x240
-[   12.431389]  ? __warn+0x8f/0x150
-[   12.431392]  ? __flush_work+0x22f/0x240
-[   12.431394]  ? report_bug+0x1f5/0x200
-[   12.431399]  ? handle_bug+0x46/0x80
-[   12.431402]  ? exc_invalid_op+0x19/0x70
-[   12.431404]  ? asm_exc_invalid_op+0x1b/0x20
-[   12.431408]  ? __flush_work+0x22f/0x240
-[   12.431410]  ? irq_work_queue+0x10/0x60
-[   12.431414]  ? __wake_up_klogd.part.0+0x5a/0x80
-[   12.431419]  __cancel_work_timer+0x124/0x1b0
-[   12.431421]  ? _printk+0x58/0x80
-[   12.431423]  cancel_delayed_work_sync+0x13/0x20
-[   12.431427]  amdgpu_workload_profile_fini+0x25/0x40 [amdgpu]
-[   12.431854]  amdgpu_device_fini_sw+0x33/0x550 [amdgpu]
-[   12.432035]  amdgpu_driver_release_kms+0x16/0x30 [amdgpu]
-[   12.432213]  drm_dev_release+0x28/0x50 [drm]
-[   12.432256]  devm_drm_dev_init_release+0x38/0x60 [drm]
-[   12.432278]  devm_action_release+0x15/0x20
-[   12.432283]  release_nodes+0x40/0xc0
-[   12.432285]  devres_release_all+0x9e/0xe0
-[   12.432286]  device_unbind_cleanup+0x12/0x80
-[   12.432289]  really_probe+0x116/0x3e0
-[   12.432291]  __driver_probe_device+0x7e/0x170
-[   12.432293]  driver_probe_device+0x23/0xa0
-[   12.432295]  __driver_attach+0xc5/0x190
-[   12.432297]  ? __pfx___driver_attach+0x10/0x10
-[   12.432299]  bus_for_each_dev+0x7c/0xd0
-[   12.432302]  driver_attach+0x1e/0x30
-[   12.432304]  bus_add_driver+0x11c/0x220
-[   12.432306]  driver_register+0x64/0x130
-[   12.432309]  ? __pfx_amdgpu_init+0x10/0x10 [amdgpu]
-[   12.432491]  __pci_register_driver+0x68/0x70
-[   12.432494]  amdgpu_init+0x63/0xff0 [amdgpu]
-[   12.432667]  do_one_initcall+0x48/0x310
-[   12.432671]  ? kmalloc_trace+0x2a/0xa0
-[   12.432675]  do_init_module+0x6a/0x260
-[   12.432677]  load_module+0x1db3/0x2050
-[   12.432681]  init_module_from_file+0x9c/0xe0
-[   12.432682]  ? init_module_from_file+0x9c/0xe0
-[   12.432685]  idempotent_init_module+0x179/0x230
-[   12.432687]  __x64_sys_finit_module+0x5d/0xb0
-[   12.432689]  do_syscall_64+0x3b/0x90
-[   12.432691]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
->> +
->> +    mutex_init(&adev->smu_workload.workload_lock);
->> +}
->> +
->> +void amdgpu_workload_profile_fini(struct amdgpu_device *adev)
->> +{
->> +    if (!adev->smu_workload.initialized)
->> +        return;
->> +
->> +    adev->smu_workload.submit_workload_status = 0;
->> +    adev->smu_workload.initialized = false;
->> +    mutex_destroy(&adev->smu_workload.workload_lock);
->> +}
->> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h 
->> b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> new file mode 100644
->> index 000000000000..5d0f068422d4
->> --- /dev/null
->> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> @@ -0,0 +1,53 @@
->> +/* SPDX-License-Identifier: MIT */
->> +/*
->> + * Copyright 2023 Advanced Micro Devices, Inc.
->> + *
->> + * Permission is hereby granted, free of charge, to any person 
->> obtaining a
->> + * copy of this software and associated documentation files (the 
->> "Software"),
->> + * to deal in the Software without restriction, including without 
->> limitation
->> + * the rights to use, copy, modify, merge, publish, distribute, 
->> sublicense,
->> + * and/or sell copies of the Software, and to permit persons to whom 
->> the
->> + * Software is furnished to do so, subject to the following conditions:
->> + *
->> + * The above copyright notice and this permission notice shall be 
->> included in
->> + * all copies or substantial portions of the Software.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
->> EXPRESS OR
->> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
->> MERCHANTABILITY,
->> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO 
->> EVENT SHALL
->> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, 
->> DAMAGES OR
->> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
->> OTHERWISE,
->> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
->> USE OR
->> + * OTHER DEALINGS IN THE SOFTWARE.
->> + *
->> + */
->> +
->> +#ifndef _AMDGPU_WORKLOAD_H_
->> +#define _AMDGPU_WORKLOAD_H_
->> +
->> +struct amdgpu_smu_workload {
->> +    struct amdgpu_device    *adev;
->> +    struct mutex        workload_lock;
->> +    struct delayed_work    smu_delayed_work;
->
-> call it power_profile_work instead ? Looks good otherwise.
->
-Noted.
+--------------3JSiEzVSTlz0P2aZHbUua5em--
 
-Thank you
+--------------CwEoT0Z79133mqqF0V4FVYM6--
 
-~Arvind
+--------------VofV00Z07tqJ5TyUB5S4lBcJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-> - Shashank
->
->> +    uint32_t submit_workload_status;
->> +    bool            initialized;
->> +    atomic_t power_profile_ref[PP_SMC_POWER_PROFILE_COUNT];
->> +};
->> +
->> +/* Workload mode names */
->> +static const char * const amdgpu_workload_mode_name[] = {
->> +    "Default",
->> +    "3D",
->> +    "Powersaving",
->> +    "Video",
->> +    "VR",
->> +    "Compute",
->> +    "Custom",
->> +    "Window3D"
->> +};
->> +
->> +void amdgpu_workload_profile_init(struct amdgpu_device *adev);
->> +
->> +void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
->> +
->> +#endif
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTjaCYFAwAAAAAACgkQsN6d1ii/Ey+u
+ewf/cPDX6wzZma+BesKwqu1RmlzkpnotXi9XFxI0q9Xj+EO6INBetVXZi27d3/5hI32gx+k93uWc
+rFw5lS13qUR3nttCD/9UiiHVEOKwJika8XOfxV/3LgYs2U7vTaEmu2UeEp326hu4PTCb+P0Sjzwn
+3a1tG3ZpHrNvJzbwiEiRwcTd5YWu8fC118DKP6aL0gdmNVc57JPad3jG8a8HekxLbQaGEnwhY15y
+Yi997Hpzyola8FdpamPdwszzljaWA8NUmOzhFA6sPYnXulXJgxAqHB/jCbaeWXGytwPRcvpsErlE
+0r9yDMtbmqNyULzLpI4QSOC5dOLBjC3CH961i2H5IA==
+=FbZy
+-----END PGP SIGNATURE-----
+
+--------------VofV00Z07tqJ5TyUB5S4lBcJ--
