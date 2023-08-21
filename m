@@ -2,77 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8DA78238A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B3A78238C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbjHUGU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33304 "EHLO
+        id S233372AbjHUGU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232752AbjHUGUZ (ORCPT
+        with ESMTP id S233367AbjHUGU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:20:25 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id D6576AC;
-        Sun, 20 Aug 2023 23:20:23 -0700 (PDT)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 04D336061F45D;
-        Mon, 21 Aug 2023 14:20:03 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     Hawking.Zhang@amd.com, le.ma@amd.com, lijo.lazar@amd.com,
-        yifan1.zhang@amd.com, candice.li@amd.com, Yuliang.Shi@amd.com,
-        guchun.chen@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, Su Hui <suhui@nfschina.com>
-Subject: [PATCH] drm/amdgpu: Avoid possible buffer overflow
-Date:   Mon, 21 Aug 2023 14:19:45 +0800
-Message-Id: <20230821061944.197934-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 21 Aug 2023 02:20:28 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD8DA7
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:20:27 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-579de633419so34305517b3.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1692598826; x=1693203626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NecB1GfWBe3qprhWs8o+EF+8E8kECkHeGMXQJxLC3KA=;
+        b=CZNorsi897AjmuQ4jE18DDzhyy5kiDebgzFWk+fkX4tywJmZlcGhxbpor0DvYE7xtl
+         rDMnPp4N37bsboYRM/EFtgCJwnRxB8C639obnbkv3tOf4QrpySU6+bUvDyoRc8wJ9278
+         xI9X6akBUmaldLgvfuVYZ5OZfYjU4sbGCEnwkCMOmtzzOTaiDYlA6/S5HXX0Q/lZAjJM
+         HCgtc0bWYX91u2Mf3bE3JAA9c3mPsnOAJBuigCwCBXseZUAQ73YCDKsc9oWrZ0ihsnKE
+         kmp5iWrK3bfUcl4fV5/GVDP0HjY5RhLzA/oe6DPFrpngLzgtwxPoMaqLjuzpGgktEWFX
+         j9Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692598826; x=1693203626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NecB1GfWBe3qprhWs8o+EF+8E8kECkHeGMXQJxLC3KA=;
+        b=hBppsoKaUQ9gLfWiK0nFEGS66sG3UQBVod6jnO5K/bBnq8fxVrZHKJ/LP8MXdQh77b
+         3Bg6exs3HIgve2GWSEKoUCpTeuPFqqcfaVw9OavQSSy3tagx2O5engdkyPapn6rT7o5M
+         kFhCarDLdeQGUGAqS+V8VBbVTUxSVo0O/zfLeZPOvcdcmK/OjFwdc3gTSVRPKxP3h/c2
+         mGqprNpX6JKYROKUqUJGg3WvucolH4Co5occfKtMcaoNFtmCWfLoId/0Gcd1B1w1EisB
+         tx/YlpjELOvrZKw7OfatR+u6wPok4W85l9IV2n/wAKZddcQLRR6w4Ny7rRAYaUVujboz
+         yxfA==
+X-Gm-Message-State: AOJu0YytPVKSXkQYB1w7sqwTrktOLQzpJ5WDl80WT2Suws6kLJxPYyZi
+        hpVhbg2eQ7n52ycztp0gPzsB2vTFDgzo4ZK+O/KDGM3MnmWkW3JKepg=
+X-Google-Smtp-Source: AGHT+IG5D9JtGSkNz9oqGc8a4mP/+rHKVPjgs/mn0jbo69V6JwjO7IlN/hH3nvkDE46f7RsZKO9cNA3d7vNqoYlo4RE=
+X-Received: by 2002:a0d:ca4c:0:b0:570:63d3:9685 with SMTP id
+ m73-20020a0dca4c000000b0057063d39685mr5554782ywd.25.1692598826149; Sun, 20
+ Aug 2023 23:20:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230817071056.2125679-1-patrick.rudolph@9elements.com>
+ <20230817071056.2125679-4-patrick.rudolph@9elements.com> <20230820112304.bokph645wvqt5jfl@intel.intel>
+In-Reply-To: <20230820112304.bokph645wvqt5jfl@intel.intel>
+From:   Patrick Rudolph <patrick.rudolph@9elements.com>
+Date:   Mon, 21 Aug 2023 08:20:15 +0200
+Message-ID: <CALNFmy0d2brVmu-z4mQwe=wyQqP7FBnmjufCjRyHhhPJmeSUQg@mail.gmail.com>
+Subject: Re: [PATCH v15 3/4] i2c: muxes: pca954x: Add MAX735x/MAX736x support
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Peter Rosin <peda@axentia.se>, naresh.solanki@9elements.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smatch error:
-drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1257 amdgpu_discovery_reg_base_init() error:
-testing array offset 'adev->vcn.num_vcn_inst' after use.
+On Sun, Aug 20, 2023 at 1:23=E2=80=AFPM Andi Shyti <andi.shyti@kernel.org> =
+wrote:
+>
+> Hi Patrick,
+>
+> > diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2=
+c-mux-pca954x.c
+> > index 0ccee2ae5720..968111442625 100644
+> > --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> > @@ -4,6 +4,7 @@
+> >   *
+> >   * Copyright (c) 2008-2009 Rodolfo Giometti <giometti@linux.it>
+> >   * Copyright (c) 2008-2009 Eurotech S.p.A. <info@eurotech.it>
+> > + * Copyright (c) 2022 9elements GmbH <patrick.rudolph@9elements.com>
+>
+> 2023?
+>
+> One question, why are you adding yourself in the copyright?
 
-change the assignment order to avoid buffer overflow.
+Can't remember the reason. It's been a while since I created the first vers=
+ion.
+Will drop the line.
 
-Fixes: c40bdfb2ffa4 ("drm/amdgpu: fix incorrect VCN revision in SRIOV")
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> >   * This module supports the PCA954x and PCA984x series of I2C multiple=
+xer/switch
+> >   * chips made by NXP Semiconductors.
+> > @@ -11,6 +12,12 @@
+> >   *    PCA9540, PCA9542, PCA9543, PCA9544, PCA9545, PCA9546, PCA9547,
+> >   *    PCA9548, PCA9846, PCA9847, PCA9848 and PCA9849.
+> >   *
+> > + * It's also compatible to Maxims MAX735x I2C switch chips, which are =
+controlled
+> > + * as the NXP PCA9548 and the MAX736x chips that act like the PCA9544.
+> > + *
+> > + * This includes the:
+> > + *    MAX7356, MAX7357, MAX7358, MAX7367, MAX7368 and MAX7369
+> > + *
+> >   * These chips are all controlled via the I2C bus itself, and all have=
+ a
+> >   * single 8-bit register. The upstream "parent" bus fans out to two,
+> >   * four, or eight downstream busses or channels; which of these
+> > @@ -51,6 +58,12 @@
+> >  #define PCA954X_IRQ_OFFSET 4
+> >
+> >  enum pca_type {
+> > +     max_7356,
+> > +     max_7357,
+> > +     max_7358,
+> > +     max_7367,
+> > +     max_7368,
+> > +     max_7369,
+> >       pca_9540,
+> >       pca_9542,
+> >       pca_9543,
+> > @@ -90,8 +103,45 @@ struct pca954x {
+> >       raw_spinlock_t lock;
+> >  };
+> >
+> > -/* Provide specs for the PCA954x types we know about */
+> > +/* Provide specs for the MAX735x, PCA954x and PCA984x types we know ab=
+out */
+> >  static const struct chip_desc chips[] =3D {
+> > +     [max_7356] =3D {
+> > +             .nchans =3D 8,
+> > +             .muxtype =3D pca954x_isswi,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +     },
+> > +     [max_7357] =3D {
+> > +             .nchans =3D 8,
+> > +             .muxtype =3D pca954x_isswi,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +             /* No interrupt controller support.
+> > +                The interrupt provides information about stuck channel=
+s. */
+>
+> I'm sorry, Peter already commented on this, can you please fix
+> the commenting?
+>
+>                 /*
+>                  * No interrupt controller support.
+>                  * The interrupt provides information
+>                  * about stuck channels.
+>                  */
+>
+> Or
+>
+>                 /*
+>                  * No interrupt controller support. The interrupt
+>                  * provides information * about stuck channels.
+>                  */
+>
+> to save one line. (I prefer the latter, your choice)
+>
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-index 8e1cfc87122d..ba95526c3d45 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
-@@ -1250,11 +1250,12 @@ static int amdgpu_discovery_reg_base_init(struct amdgpu_device *adev)
- 				 *     0b10 : encode is disabled
- 				 *     0b01 : decode is disabled
- 				 */
--				adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
--					ip->revision & 0xc0;
-+
- 				ip->revision &= ~0xc0;
- 				if (adev->vcn.num_vcn_inst <
- 				    AMDGPU_MAX_VCN_INSTANCES) {
-+					adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
-+						ip->revision & 0xc0;
- 					adev->vcn.num_vcn_inst++;
- 					adev->vcn.inst_mask |=
- 						(1U << ip->instance_number);
--- 
-2.30.2
+I'm sorry, I overlooked this one. Will send a new version.
 
+> Rest looks good.
+>
+> Andi
+>
+> > +     },
+> > +     [max_7358] =3D {
+> > +             .nchans =3D 8,
+> > +             .muxtype =3D pca954x_isswi,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +             /* No interrupt controller support.
+> > +                The interrupt provides information about stuck channel=
+s. */
+> > +     },
+> > +     [max_7367] =3D {
+> > +             .nchans =3D 4,
+> > +             .muxtype =3D pca954x_isswi,
+> > +             .has_irq =3D 1,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +     },
+> > +     [max_7368] =3D {
+> > +             .nchans =3D 4,
+> > +             .muxtype =3D pca954x_isswi,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +     },
+> > +     [max_7369] =3D {
+> > +             .nchans =3D 4,
+> > +             .enable =3D 0x4,
+> > +             .muxtype =3D pca954x_ismux,
+> > +             .has_irq =3D 1,
+> > +             .id =3D { .manufacturer_id =3D I2C_DEVICE_ID_NONE },
+> > +     },
+> >       [pca_9540] =3D {
+> >               .nchans =3D 2,
+> >               .enable =3D 0x4,
+> > @@ -177,6 +227,12 @@ static const struct chip_desc chips[] =3D {
+> >  };
+> >
+> >  static const struct i2c_device_id pca954x_id[] =3D {
+> > +     { "max7356", max_7356 },
+> > +     { "max7357", max_7357 },
+> > +     { "max7358", max_7358 },
+> > +     { "max7367", max_7367 },
+> > +     { "max7368", max_7368 },
+> > +     { "max7369", max_7369 },
+> >       { "pca9540", pca_9540 },
+> >       { "pca9542", pca_9542 },
+> >       { "pca9543", pca_9543 },
+> > @@ -194,6 +250,12 @@ static const struct i2c_device_id pca954x_id[] =3D=
+ {
+> >  MODULE_DEVICE_TABLE(i2c, pca954x_id);
+> >
+> >  static const struct of_device_id pca954x_of_match[] =3D {
+> > +     { .compatible =3D "maxim,max7356", .data =3D &chips[max_7356] },
+> > +     { .compatible =3D "maxim,max7357", .data =3D &chips[max_7357] },
+> > +     { .compatible =3D "maxim,max7358", .data =3D &chips[max_7358] },
+> > +     { .compatible =3D "maxim,max7367", .data =3D &chips[max_7367] },
+> > +     { .compatible =3D "maxim,max7368", .data =3D &chips[max_7368] },
+> > +     { .compatible =3D "maxim,max7369", .data =3D &chips[max_7369] },
+> >       { .compatible =3D "nxp,pca9540", .data =3D &chips[pca_9540] },
+> >       { .compatible =3D "nxp,pca9542", .data =3D &chips[pca_9542] },
+> >       { .compatible =3D "nxp,pca9543", .data =3D &chips[pca_9543] },
+> > --
+> > 2.41.0
+> >
