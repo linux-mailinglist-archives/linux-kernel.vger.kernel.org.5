@@ -2,107 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D37782FF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5A6782FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237082AbjHUSIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S237087AbjHUSIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237041AbjHUSIE (ORCPT
+        with ESMTP id S234704AbjHUSIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:08:04 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C0010E
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:08:00 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf078d5fb7so22419075ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:08:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692641280; x=1693246080;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=C9KCTyEQmTzJ2AoVVtRj2q5ensCCizslMtl245k7Oc8=;
-        b=FGcqArs7DVaZTc+xNN2N3gLmdWMq4dzsQb9+vbF9C0ph+t2g1dyAJRdhXCdIeTpeJK
-         KK2WpBM1RtYPK+YYUYQJTv9iDOK3YKFROWs72Eb8EeBDkYOb2Q728jJij3+dVfDu0WFP
-         Uh5C/4U01yJA+09Dr98qdsXJx6KQlTLBQ7ZlU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692641280; x=1693246080;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C9KCTyEQmTzJ2AoVVtRj2q5ensCCizslMtl245k7Oc8=;
-        b=TnqCG94Q8bsL0nXlAlAzb8StFU6oU7NoDLL8gpQAxg0+eG39qJLdffrBqBi6WzNLzw
-         LBcITagofnIR39ajea7/1ftRhzD47VYqrADmYh0gVcrFKocvxwy3kkOdMzviMfD/SduF
-         r7gS4bSZozzkfMZjGfXxFB4pqPYrHyYuiDfTZifd0H/8QYKwUp9M9F4kdCa7za1iOsRZ
-         6I5MBsmHnkn3T+HiuIc3Upz2E4anu9TI0mauzQRzztv1tIZAF4luM5AjyTHBwUW2tJGQ
-         gbEJDJQDbspIY05rNTPcjTwL/FaSLAWoAXMhisK2wxxUpMEJqYWs6Pch1t+bpG6EbZTK
-         ieaA==
-X-Gm-Message-State: AOJu0YyYaZCfYLOfN0aRg+niIy89+oq/XuC+f1y71u69Qm/x9rX8TvIv
-        zLL5ne9qzk4M4w8iMlqb8CYZ2w==
-X-Google-Smtp-Source: AGHT+IHVVBCrzwc3bXE9J1IBDI694b58opdLYIe2kSbRwqtBExci3L9ntVkfSI6zbRYvHAcufxVwbw==
-X-Received: by 2002:a17:902:da89:b0:1bd:c956:2798 with SMTP id j9-20020a170902da8900b001bdc9562798mr6199513plx.46.1692641280381;
-        Mon, 21 Aug 2023 11:08:00 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o12-20020a170902d4cc00b001b8a897cd26sm7337781plg.195.2023.08.21.11.07.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 11:07:59 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 11:07:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        Song Liu <song@kernel.org>,
-        Francis Laniel <flaniel@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/1] tracing/kprobe: Add multi-probe support for
- 'perf_kprobe' PMU
-Message-ID: <202308211106.D2D2887@keescook>
-References: <4853240.31r3eYUQgx@pwmachine>
- <20230818142033.1d7685e9@gandalf.local.home>
- <20230819101519.568d658fbb6461cc60d348e5@kernel.org>
- <CAPhsuW7d4cMi_FAtvyTn4HJWzRdocJaEVq-uYVcW43=JDE_EnA@mail.gmail.com>
- <20230820183218.bf0b04be3c0ccac5e7b2a587@kernel.org>
- <CAPhsuW73yT+D9HhLhi8pafYZsgT=qsqk5foAwGRTvStnWCZwNA@mail.gmail.com>
- <20230820221612.33dfc3b3072f8bd8517f95b5@kernel.org>
- <CAPhsuW7+dRddDe9XLuM2ANnGZOa2J4MnSDkWZ_xZCGVxj02bXQ@mail.gmail.com>
- <20230821190152.c467e40a5ee3d57715600159@kernel.org>
- <20230821104550.57d60a75@gandalf.local.home>
+        Mon, 21 Aug 2023 14:08:22 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2041.outbound.protection.outlook.com [40.107.92.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DF811F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:08:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gmh5jxpj30luBnzOeB1Dh8qsnIkpOE9tTBZwp7/gUxCRxXDGknhWMyvA/TNxxEqRriPXBwIMr/6zQZDh/AJ7m48v2Ehp/RLtWk+BLgBR2CMopcxBzPalN06R/59NKCBBSque8akpGd2NDX960L/gq4mVlBgs/6rxyp7Ij/ASA2EAM3NaY6wVVs/HVKkm3N7WEC6d054J6IU0onp6yiKKYJTE4XOI38VF3C+imR5Us65bTCB4zpk6V7I9bdBqYP8zMVUmIJSsZ5uan7MWkX13WdQi3N68kei1dDcbLTlc2nLoJMqnSVBeMYN9cbfb8ktM7ztlnD1Ah0STBfaE8OdjPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zGBXzNkL5dnI+nvDZl+IqRqIFtsW0asEpa8GNjMVie0=;
+ b=AwbetVqlhkA3dFs8m+7YbI+GuQnU04WeUa81RKQ94rpMEm+ArSIRd7S9wTwB1DcWpst7gTvmw5DpwOjTjryyhXrkIM+F/mbTiPUnv/WsAVWmqhZNWlSHmbYrUnT5dqzWkj5KAoyOZNrl94LAZ4lBisFYLjZUYmFhXCh1RdgfTD8unmb1dm29t0CRlUV4bhKN+OHnjwrIn10MztrbDAgCHkNnRJ8+IYKc322K1ZX5lD5O9FP/GwPSaZBkg7mbnCpycBuFKt4XbFvym/u8oeLZUSAFl/nAAgzXRofAb9BGALSnjc9vNN/sBj6aDqJ5IzgBE6ohg/J0jUfD41tOgLFztw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zGBXzNkL5dnI+nvDZl+IqRqIFtsW0asEpa8GNjMVie0=;
+ b=tG1oCGctLbG+S8JET04PXi5cr57fIs83UNge1qQoXa3X30lof5i4lKGHUSDjxHfCA5l04IWRJHfVovDk6bAZFNHKNSIpHVjt9+31pqse7ExEAdgUNfNY8XjdquAh9zseCl3rEpTjkunXL0CdM0jNYOFwV6wrt8ZzU//vtMvjeuE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
+ by DS0PR12MB6581.namprd12.prod.outlook.com (2603:10b6:8:d3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 18:08:15 +0000
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
+ 18:08:15 +0000
+Message-ID: <18153a49-4b32-6053-b7fe-43ea12de45af@amd.com>
+Date:   Mon, 21 Aug 2023 23:38:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 2/7] drm/amdgpu: Add new function to set GPU power
+ profile
+Content-Language: en-US
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Arvind Yadav <Arvind.Yadav@amd.com>
+Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
+        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
+ <20230821064759.94223-3-Arvind.Yadav@amd.com>
+ <CADnq5_PreqOHyhF2v5FxViJcBO2RKjEjCCE2_RoYXoD66TX4eA@mail.gmail.com>
+From:   "Yadav, Arvind" <arvyadav@amd.com>
+In-Reply-To: <CADnq5_PreqOHyhF2v5FxViJcBO2RKjEjCCE2_RoYXoD66TX4eA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0011.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:95::15) To PH7PR12MB6000.namprd12.prod.outlook.com
+ (2603:10b6:510:1dc::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821104550.57d60a75@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|DS0PR12MB6581:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92ffe2ba-c95a-4ee9-0e15-08dba27196be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YGw/O5Vilj5AnV7edKT9NEEGDK33C2PQ0EA8KSrs8fzpeflaQ3NwqUnEu4B7geyBVLpo3W6qR4jcVmNROo5sGwduX+94ag64t5MfT/oxbCjHQvrx5/4yY0ax/XORNi4Zvth0sHM5l0AqFDYMlNE+AGpVoKN3dTQQhqXD344xtYabew8L9QS7b5PfCKMnsPONfKuoZvaUgSVvDfCQCK6ZUft8K4Fnk0i3s94LIMvGs2e2Swxbc+9VvjVp5lsa4+nv3d2oBd2fvutGleY1C417E7JsIANRPIo+m1tvMVwf/mqgk5m/7Gadqbpme5Wwa1l58dkkCYnMpUA5wG5moveBEZqJfhySJ6p/ikJyiQi3HNfPzN0sMtWGE09fYzbA7TmHG+uuL51WzMlRATBbAC3SRJ/dyRIWAQ0lNEWafy+DDRcrQyJDKGYxJBkqspypAWy9sHHIl2UVcRCssphdnwinOOOLG7JTCdeID+A4TbrJUzBL/7KL8GEH7MuNWvS8qEbaB7gtBQNsN8rM1UzY8sFiqaLYSHd62k+FPa0h0a5nnmTJfVIRymaQYEaZywibw5UMuDvzsnAolSTRqISrjfcPxiTKejOesoYsb+G6lPACZg/rcduVfqlWQSaYvt3nSoPw3aWXA69s1a8uG4zPyJ88sg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(451199024)(1800799009)(186009)(2906002)(83380400001)(53546011)(6486002)(38100700002)(6506007)(5660300002)(26005)(31686004)(31696002)(8676002)(8936002)(2616005)(4326008)(66946007)(316002)(6512007)(6636002)(66556008)(66476007)(110136005)(478600001)(6666004)(41300700001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UUMwNjNXV2xMRlJOQ2ZmMVRJR3Z5QkNaU3pFdTZFNjFsWEY1cW45SFRzK1Fz?=
+ =?utf-8?B?NmJiSHpJUEpqZGx6NWJ2R0UydWtFQ004VTZMazhYUi8rL29BOVJRU0UxeEpO?=
+ =?utf-8?B?U2QvSm9qZEs2ckNHNnlBbytKajRrdmVWU0srOSs5eGM3akZXWXVZTElNSTh6?=
+ =?utf-8?B?NHljSktNV2pVZTVzYjFvNmJWNVlLamZpdkNIWEd4YzhnRVRVbzN3SWc1KzZr?=
+ =?utf-8?B?YlgyMjU1ZkVwTXNoSTdRaFBQQWFaMTU2aEtoOTgyWnE4NHBBandkS0hSSzdM?=
+ =?utf-8?B?elp2NjZFZVVRNk1JL1ZVbzBNMEhSZ2tTTk5EYnY2bUpOTDdwZTFoRXVlOGxH?=
+ =?utf-8?B?T2VyZ3VPVGJjY29EbVZWUFpCZDdSWWs5M0txdUgvOFR3elRxb2Fsbkt1NFN2?=
+ =?utf-8?B?S0xZOEZLMlpybVVrc0gyQ0thWkZNUENBcWxFcmUvaGZlb1NobU1IUFgxeFRp?=
+ =?utf-8?B?U05OVWVqdWNRRXN6WUhRZWpldkRuNzFnSmUwSXVmdTRTZktPQ1AwV2xySkZX?=
+ =?utf-8?B?dXMrNWxUMmtQRzJwTExncTNsdWFtRFFibHBpajV4TTNOeFIvQWJQeHBFL2JQ?=
+ =?utf-8?B?VEVyTStsTDdnRGVYckZma0NLR1AvRUVXdTcwSnVvRkZ1WnFnZUFRR3NGQlB6?=
+ =?utf-8?B?SmNDRUdzeUprMzcyZmI2UldvUWh5UnhESzBpNHNodE1WT2pxNHVvV0JTRW1Q?=
+ =?utf-8?B?V21vK0NhRm4xZ1l5YWtZNDRqalVsVkp5bGQrZS9WVENjcFptdE9zdWxsZzBk?=
+ =?utf-8?B?ZkpVbE5uV0NEYnArZGpXR1pKNnJNbHZZNnJQYXFHbVBaYW9URlpRNXBXVUNC?=
+ =?utf-8?B?b1JJTy9JK2owQ2cwRC9NSmpQR01ScE1GelB5REQ0ajhCcUpTQzRaMWZIc3U1?=
+ =?utf-8?B?WlNYZ21qZWRUTU9xSThocU5yQXFYbTlEU0JNbFVDOUZHekxmWkZCcDdteW9D?=
+ =?utf-8?B?ZTBnbEFmc2kyZmc3UERWVHFaK0cwUzFIaTQ2ejJzZFdkZ1VrQUxKTUpDZE5l?=
+ =?utf-8?B?bFlad1RTTGdzQTJLRlZ4T0lub1RsSzlVc21ZbFAvWUpVdnVRbzluS1VkN01F?=
+ =?utf-8?B?SWFYNldMWWNxNjNxdGhySkwxKytvMGpnc1hackdUNkIxMC8rcVVIbThXdXVa?=
+ =?utf-8?B?dkpzMGV0bEUxclBXMHlWMXIvMVZOY2FHWExMYkJtSkFpL3p2NzVCcDNGczY5?=
+ =?utf-8?B?WVdEVC9oWnBKK1lVMmpsWlJOMTBkVUlrbG9uWjJVQTEvZGtNQnBValgyTUdE?=
+ =?utf-8?B?R2puRlFZTWVJMHZQdEt2QWZPbEJJcmRkaXB0MWkrTDFlQXpFWUN3WUNQbVd3?=
+ =?utf-8?B?cjB0T2x2YW9mU1d2eVQ1c1ZScnBGcVhTYjJESlF2dmViQXIwbTloU1B2ODRR?=
+ =?utf-8?B?ZXZFakJhRVVzVUFDdURJaklQWlkybzlrYUJhb3hVaDFiV21pRFhWSzcxS2xB?=
+ =?utf-8?B?bHVCdWxsa2pSTUowNUg5cUpYYW9ZU0hBUURpZi9VUnFsUFdZSU9FZFAvU3Y0?=
+ =?utf-8?B?Y095ZFVxR2FoakJpd3htUXVvd1BmUFRJOXZmYVJkeXdiMVhudE9nN0xheHFh?=
+ =?utf-8?B?RGcwNlNWeWxQRFUzMDJoaS92SFF4YzVNK1BnZG1FZGpmZmJzRWdDMmxKSloz?=
+ =?utf-8?B?bXZiTk1xZ3NldjBWb1RIVjZFQzRRNzdNRzNML3N2NHg2ODAwSS9MNXl4N215?=
+ =?utf-8?B?eHdkbzMxeWM5TE8zT3cwVWlDdUNZa0VqMm0yYlRzVjVpMDZ0UUpaYkhnUEYv?=
+ =?utf-8?B?akpVRjR3d0lYRGlMaytRdUtZLzM1T25GUXJ1QnFuSUdSSjRxMHZWYmg2V0cx?=
+ =?utf-8?B?WENxOXpzNlo2Rm5PNTd5WmZrYWtJUjc3ZTBZUjJCZnFrVVNZaEtwSmd5Wmht?=
+ =?utf-8?B?YlNTRnpZb1BDKy9zcFR6R0d1WE1YU1oyd2daYkJXaGNXMC9zZk1sMFdLQkNv?=
+ =?utf-8?B?MDNzYWRjSTVvTnVLMXhvUVA0d3drUThTNHdPUGVTb2xvdWtYeWsvay83cm5s?=
+ =?utf-8?B?NlFMSEZBVStrcFhOc3RDekJPVWlYczczNE5nRGlicTNvTnNlM0Jad0t3Q01s?=
+ =?utf-8?B?aW54ZEc3a0JDeDN6OFd1ZUpzUjVmV3RmSytHK29uQU5SOEtjK2E4S0k5VDBy?=
+ =?utf-8?Q?xYe/U5aYxMPIn8m6Sc9Bykvpf?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92ffe2ba-c95a-4ee9-0e15-08dba27196be
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 18:08:15.1027
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jwa1NNoucrgo0Jhh0PnnhiUDROoMtObZBbZVW7zAcbmG6Hsr6YoHQAWyGvzAiXfDAnYAr7vHly3yi2R8JMWUbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6581
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 10:45:50AM -0400, Steven Rostedt wrote:
-> On Mon, 21 Aug 2023 19:01:52 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > kprobe BPF program has access to pt_regs, so it can read ip of the
-> > > attached function. Can we do the same with regular kprobe (no bpf)?  
-> > 
-> > Yes, it can. So I think it is OK to expand CAP_PERFMON to access kallsyms.
-> > But this means CAP_PERMON itself is not safe in some case.
-> 
-> What are the privileges that CAP_PERFMON gives. I can see why Kees told me
-> to avoid capabilities when looking at what has access to tracefs. Because
-> it becomes very difficult to know what the privileges you are giving when
-> you give out a capability. I just stick to normal ACL (file permissions)
-> and everything is much easier and simpler to know what has access to what.
 
-At the very least, having a fd-based "handle" for access work. But yeah,
-capabilities get ugly quickly.
-
-Anyway... what does CAP_PERFMON have access to right now? If it is
-allowed to read arbitrary kernel memory, then resolving symbols is fine.
-If it doesn't, then no, it shouldn't: it becomes a oracle for probing
-symbol locations.
-
--- 
-Kees Cook
+On 8/21/2023 11:36 PM, Alex Deucher wrote:
+> On Mon, Aug 21, 2023 at 2:55 AM Arvind Yadav <Arvind.Yadav@amd.com> wrote:
+>> This patch adds a function which will change the GPU
+>> power profile based on a submitted job. This can optimize
+>> the power performance when the workload is on.
+>>
+>> v2:
+>> - Splitting workload_profile_set and workload_profile_put
+>>    into two separate patches.
+>> - Addressed review comment.
+>>
+>> Cc: Shashank Sharma <shashank.sharma@amd.com>
+>> Cc: Christian Koenig <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 56 +++++++++++++++++++
+>>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  3 +
+>>   2 files changed, 59 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>> index 32166f482f77..e661cc5b3d92 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+>> @@ -24,6 +24,62 @@
+>>
+>>   #include "amdgpu.h"
+>>
+>> +static enum PP_SMC_POWER_PROFILE
+>> +ring_to_power_profile(uint32_t ring_type)
+>> +{
+>> +       switch (ring_type) {
+>> +       case AMDGPU_RING_TYPE_GFX:
+>> +               return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
+>> +       case AMDGPU_RING_TYPE_COMPUTE:
+>> +               return PP_SMC_POWER_PROFILE_COMPUTE;
+>> +       case AMDGPU_RING_TYPE_UVD:
+>> +       case AMDGPU_RING_TYPE_VCE:
+>> +       case AMDGPU_RING_TYPE_UVD_ENC:
+>> +       case AMDGPU_RING_TYPE_VCN_DEC:
+>> +       case AMDGPU_RING_TYPE_VCN_ENC:
+>> +       case AMDGPU_RING_TYPE_VCN_JPEG:
+>> +               return PP_SMC_POWER_PROFILE_VIDEO;
+>> +       default:
+>> +               return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
+>> +       }
+>> +}
+>> +
+>> +static int
+>> +amdgpu_power_profile_set(struct amdgpu_device *adev,
+>> +                        enum PP_SMC_POWER_PROFILE profile)
+>> +{
+>> +       int ret = amdgpu_dpm_switch_power_profile(adev, profile, true);
+>> +
+>> +       if (!ret) {
+>> +               /* Set the bit for the submitted workload profile */
+>> +               adev->smu_workload.submit_workload_status |= (1 << profile);
+>> +               atomic_inc(&adev->smu_workload.power_profile_ref[profile]);
+>> +       }
+>> +
+>> +       return ret;
+>> +}
+>> +
+>> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
+>> +                                uint32_t ring_type)
+> Maybe rename this amdgpu_workload_profile_get() to align with put/get
+> naming semantics?
+Noted.
+>
+> Alex
+>
+>> +{
+>> +       struct amdgpu_smu_workload *workload = &adev->smu_workload;
+>> +       enum PP_SMC_POWER_PROFILE profile = ring_to_power_profile(ring_type);
+>> +       int ret;
+>> +
+>> +       if (profile == PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+>> +               return;
+>> +
+>> +       mutex_lock(&workload->workload_lock);
+>> +
+>> +       ret = amdgpu_power_profile_set(adev, profile);
+>> +       if (ret) {
+>> +               DRM_WARN("Failed to set workload profile to %s, error = %d\n",
+>> +                        amdgpu_workload_mode_name[profile], ret);
+>> +       }
+>> +
+>> +       mutex_unlock(&workload->workload_lock);
+>> +}
+>> +
+>>   void amdgpu_workload_profile_init(struct amdgpu_device *adev)
+>>   {
+>>          adev->smu_workload.adev = adev;
+>> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+>> index 5d0f068422d4..5022f28fc2f9 100644
+>> --- a/drivers/gpu/drm/amd/include/amdgpu_workload.h
+>> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+>> @@ -46,6 +46,9 @@ static const char * const amdgpu_workload_mode_name[] = {
+>>          "Window3D"
+>>   };
+>>
+>> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
+>> +                                uint32_t ring_type);
+>> +
+>>   void amdgpu_workload_profile_init(struct amdgpu_device *adev);
+>>
+>>   void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
+>> --
+>> 2.34.1
+>>
