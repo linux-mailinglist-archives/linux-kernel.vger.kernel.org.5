@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E287824F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0683782500
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjHUHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        id S233881AbjHUIAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 04:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbjHUHzc (ORCPT
+        with ESMTP id S229993AbjHUIAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:55:32 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF1CB5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:55:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id F31A322963;
-        Mon, 21 Aug 2023 07:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692604530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IwtOeMmA50HvxmSbZZZooAwwT+ziPY1jMwwTjLWzzcs=;
-        b=KmVbkxgXki4WY+h9XrPGY0W8fviA1OF1lbxINTBcEIaYvMOKqf9ImsMr9QE4pxkJCYnOYB
-        UwYWdjhEWgu23PD9+NlfdykkUhYZR9KAmUo/fxg4jJQSiDTCwwC4iu7lebozoBg+NbYV2k
-        Dk4tB4jv9zy5DxRYlVteunOJHLLjXuk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D514C1330D;
-        Mon, 21 Aug 2023 07:55:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id DMEIMXEY42SsKgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 21 Aug 2023 07:55:29 +0000
-Date:   Mon, 21 Aug 2023 09:55:27 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm: fix draining remote pageset
-Message-ID: <ZOMYb27IulTpDFpe@dhcp22.suse.cz>
-References: <20230811090819.60845-1-ying.huang@intel.com>
- <ZNYA6YWLqtDOdQne@dhcp22.suse.cz>
- <87r0o6bcyw.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZNxxaFnM9W8+imHD@dhcp22.suse.cz>
- <87jztv79co.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Mon, 21 Aug 2023 04:00:09 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD3BA8;
+        Mon, 21 Aug 2023 01:00:07 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fee5ddc334so8847015e9.1;
+        Mon, 21 Aug 2023 01:00:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692604806; x=1693209606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ot6x55z/o5kJL3OIQzE1UKq6wZSH+S1vm2jpybNx/zQ=;
+        b=pv6otCQ7MCFG3Tgp7tj89Dnz5pn6FyqUzChKMyWUhJTDEQdqz7SvBh26wcCijLA1b6
+         NGHx7DcyvaafU4NDn4q4zBKIT6TH2uZ2IRFpoMNHVcUINsmkL1qLbiv5yfd+mnMo479n
+         3yNkf3eQf/QXtVXRJHS/zJd1E6BR5sQt5yi1NOmUVzDLxewW9l4DqyU09ONgtFU9rL55
+         p8hBp4MEA9SFoK8qMIPTuOSpROu2K0rb3KtyMu36v+is18K1NdjMVjhCv7IUdDJk6ZzW
+         5niyVsq8ueJ24RNwMUCQ2J4dufQK6s4VUsNfZdKqg5IXLOqufXA2i3MG0Y+pD/EZfBCD
+         FLUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692604806; x=1693209606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ot6x55z/o5kJL3OIQzE1UKq6wZSH+S1vm2jpybNx/zQ=;
+        b=EDjsyVaQodXvmEt6wi5dC8+gnPbGmGLokaK+jQ8D9GATR8EyqAC8HY5j/mM/umGOxP
+         rcSDaSmfOh3Fdl+DU2jolHIuFgsT46qaJQeAddKQy8eyZtsMr9RveK5EEpMKfOii1fqY
+         ifoXGIDKnp7bGcxiOTHwJ/QMDqGcUHRR5I+6fJwCoSSsgt0SKoQL98x3GHmfROu6Hrs7
+         lPwge3H8i3teYKJTGnNmH5wND/PUzFU/qvoVtOT/G0DVI+cK1GJHJkFbNyZN9+UiqJ1e
+         VtiO7J/jIfPTE/ga7QFNPN3aiNptqoTgMIT0KlpHx7cPUHZAhJBb1U49ys0iEBeQ+VKt
+         v27g==
+X-Gm-Message-State: AOJu0YyzVC9IHEt4ZQU4TjJP841Wr/UQj7JCs7JfuZpBPniMnQMR/YBT
+        iTFR/lmNIrAoxcVgHvb1/fw=
+X-Google-Smtp-Source: AGHT+IEYLl5oXIc4TWT/aI34IjKXHvw/mEi3+rGhp9emNgXZmB1Ccj8ivADdvR7hvc8ttle93QSLIw==
+X-Received: by 2002:a7b:cd06:0:b0:3fe:df0:c10f with SMTP id f6-20020a7bcd06000000b003fe0df0c10fmr4338342wmj.17.1692604805766;
+        Mon, 21 Aug 2023 01:00:05 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id f6-20020a1c6a06000000b003fe2b6d64c8sm15223420wmc.21.2023.08.21.01.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 01:00:04 -0700 (PDT)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ALSA: hda/realtek: Fix spelling mistake "powe" -> "power"
+Date:   Mon, 21 Aug 2023 09:00:03 +0100
+Message-Id: <20230821080003.16678-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87jztv79co.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16-08-23 15:08:23, Huang, Ying wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-> 
-> > On Mon 14-08-23 09:59:51, Huang, Ying wrote:
-> >> Hi, Michal,
-> >> 
-> >> Michal Hocko <mhocko@suse.com> writes:
-> >> 
-> >> > On Fri 11-08-23 17:08:19, Huang Ying wrote:
-> >> >> If there is no memory allocation/freeing in the remote pageset after
-> >> >> some time (3 seconds for now), the remote pageset will be drained to
-> >> >> avoid memory wastage.
-> >> >> 
-> >> >> But in the current implementation, vmstat updater worker may not be
-> >> >> re-queued when we are waiting for the timeout (pcp->expire != 0) if
-> >> >> there are no vmstat changes, for example, when CPU goes idle.
-> >> >
-> >> > Why is that a problem?
-> >> 
-> >> The pages of the remote zone may be kept in the local per-CPU pageset
-> >> for long time as long as there's no page allocation/freeing on the
-> >> logical CPU.  In addition to the logical CPU goes idle, this is also
-> >> possible if the logical CPU is busy in the user space.
-> >
-> > But why is this a problem? Is the scale of the problem sufficient to
-> > trigger out of memory situations or be otherwise harmful?
-> 
-> This may trigger premature page reclaiming.  The pages in the PCP of the
-> remote zone would have been freed to satisfy the page allocation for the
-> remote zone to avoid page reclaiming.  It's highly possible that the
-> local CPU just allocate/free from/to the remote zone temporarily.
+There is a spelling mistake in a quirk entry. Fix it.
 
-I am slightly confused here but I suspect by zone you mean remote pcp.
-But more importantly is this a concern seen in real workload? Can you
-quantify it in some manner? E.g. with this patch we have X more kswapd
-scanning or even hit direct reclaim much less often.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> So,
-> we should free PCP pages of the remote zone if there is no page
-> allocation/freeing from/to the remote zone for 3 seconds.
-
-Well, I would argue this depends a lot. There are workloads which really
-like to have CPUs idle and yet they would like to benefit from the
-allocator fast path after that CPU goes out of idle because idling is
-their power saving opportunity while workloads want to act quickly after
-there is something to run.
-
-That being said, we really need some numbers (ideally from real world)
-that proves this is not just a theoretical concern.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6707db55f9c5..54e17791c6a8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9967,7 +9967,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
+ 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
+-	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual powe mode2 YC", ALC287_FIXUP_TAS2781_I2C),
++	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3884, "Y780 YG DUAL", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3886, "Y780 VECO DUAL", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x38a7, "Y780P AMD YG dual", ALC287_FIXUP_TAS2781_I2C),
 -- 
-Michal Hocko
-SUSE Labs
+2.39.2
+
