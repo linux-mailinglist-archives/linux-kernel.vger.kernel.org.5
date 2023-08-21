@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546A9782D2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE5C782D37
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236312AbjHUPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
+        id S236332AbjHUP0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbjHUPZR (ORCPT
+        with ESMTP id S236324AbjHUP0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:25:17 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EA13FE2;
-        Mon, 21 Aug 2023 08:25:14 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E07B2F4;
-        Mon, 21 Aug 2023 08:25:55 -0700 (PDT)
-Received: from [10.57.91.118] (unknown [10.57.91.118])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A0A43F740;
-        Mon, 21 Aug 2023 08:25:12 -0700 (PDT)
-Message-ID: <7dfefc7f-cc86-01a1-2b8a-58e025ecfaf9@arm.com>
-Date:   Mon, 21 Aug 2023 16:25:47 +0100
+        Mon, 21 Aug 2023 11:26:21 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7C5D9;
+        Mon, 21 Aug 2023 08:26:20 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68730bafa6bso2979481b3a.1;
+        Mon, 21 Aug 2023 08:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692631580; x=1693236380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dRNVXVCFNY+UAp3a/7xKqvOgphTENTBOPiaI1Ml0pY8=;
+        b=RCbqm+rF2yaI4yacjZbgZLO+iclVWqLpoMdHPQ5uG6qjCecueeGi5XHOP/Lq99DID6
+         OXpd01nQ/QFbPNCcj2nCJbAs1ebNTcgxfr92qawsKDoZmeDIvaXoFutZoj9EJBBGV4rr
+         SEcoOtmuuT134F4NzOVziWRt+LlvVbao81lV+vYCKA1+67OcGyxFbCOPkYksLqZ1sWxj
+         wU3KIry3h11QkfMaErrUr9UC9wL1sYboSX270peT2/Go/OrYhonLAFHBBr7DpJ92Q4ep
+         UnVvknnuXY+fWJSCgSTKWwNwpqe6cQssL/bfA5EXoPPDcLXdlUvIzrXkhpQqfb6psM6G
+         26Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692631580; x=1693236380;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dRNVXVCFNY+UAp3a/7xKqvOgphTENTBOPiaI1Ml0pY8=;
+        b=I/+C38vnvZIesXYNrOpMnSNpYBClJARvZh3KotswgdcmoB7luh0H3LTVFHFbkTEQu+
+         o8n128tC494RLFO4GiHV4i1WVr/u8uJC0WukONp1Vkrk3Rs7h7ZR7LeFGX9d92NmBf2N
+         UbKTUmeMVHsAtgJ1PPyQz+Y7TRci2c34CfhNiYgUJEe6xOKBq91swJYGbp9Ax4kyCFWh
+         M8wUdVwm91cGoXD4eWIkPxpY6MaDAbHfbkCf+UEXBRJDBBjt+i/Q2Wi11GikQq0VZCsL
+         JQ6ZDH0UBQ/dJ3cd7BYYXXsHE6o2xQeQL/72Ri5h5jAtB8JDmtzASsCxijajrs2Rhzuz
+         8iyQ==
+X-Gm-Message-State: AOJu0Yz+nNctSciLXuJhs3yr3Oy9RKrgkVRGIEkT1IT9NAFD7+VKKXja
+        NNqD2e1fI0N88zbU89MTIRU=
+X-Google-Smtp-Source: AGHT+IHVjVgqofdmH1MW157zPEVBDYtOITySPcuMe25EjXsQbquQ+ng+hIi/VKApxARhJ+H3qeMIIg==
+X-Received: by 2002:a05:6a20:8f1e:b0:133:31a5:51e7 with SMTP id b30-20020a056a208f1e00b0013331a551e7mr10088503pzk.15.1692631579772;
+        Mon, 21 Aug 2023 08:26:19 -0700 (PDT)
+Received: from vinayak-ubuntu.. ([2406:7400:81:e7e8:c1a2:4b35:18c4:443d])
+        by smtp.gmail.com with ESMTPSA id p27-20020a63741b000000b005651c9351e1sm6434860pgc.64.2023.08.21.08.26.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 08:26:19 -0700 (PDT)
+From:   Vinayak Hegde <vinayakph123@gmail.com>
+To:     sumit.semwal@linaro.org, gustavo@padovan.org
+Cc:     Vinayak Hegde <vinayakph123@gmail.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Remove the parameter not described warning
+Date:   Mon, 21 Aug 2023 20:56:06 +0530
+Message-Id: <20230821152606.10325-1-vinayakph123@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 08/12] PM: EM: Introduce runtime modifiable table
-Content-Language: en-US
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
-        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
-        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
-        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, rafael@kernel.org
-References: <20230721155022.2339982-1-lukasz.luba@arm.com>
- <20230721155022.2339982-9-lukasz.luba@arm.com>
- <8fa02b18-7e41-eaea-f054-6842f6e310c6@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <8fa02b18-7e41-eaea-f054-6842f6e310c6@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Signed-off-by: Vinayak Hegde <vinayakph123@gmail.com>
+---
+ include/uapi/linux/sync_file.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/include/uapi/linux/sync_file.h b/include/uapi/linux/sync_file.h
+index 7e42a5b7558b..ff0a931833e2 100644
+--- a/include/uapi/linux/sync_file.h
++++ b/include/uapi/linux/sync_file.h
+@@ -56,7 +56,7 @@ struct sync_fence_info {
+  * @name:	name of fence
+  * @status:	status of fence. 1: signaled 0:active <0:error
+  * @flags:	sync_file_info flags
+- * @num_fences	number of fences in the sync_file
++ * @num_fences:	number of fences in the sync_file
+  * @pad:	padding for 64-bit alignment, should always be zero
+  * @sync_fence_info: pointer to array of struct &sync_fence_info with all
+  *		 fences in the sync_file
+-- 
+2.34.1
 
-On 8/16/23 14:05, Dietmar Eggemann wrote:
-> On 21/07/2023 17:50, Lukasz Luba wrote:
->> This patch introduces the new feature: modifiable EM perf_state table.
-> 
-> nit pick: The first sentence doesn't add any information. I would skip it.
-> 
-> [...]
-> 
->> The runtime modifiable EM data is used by the Energy Aware Scheduler (EAS)
->> for the task placement. The EAS is the only user of the 'runtime
->> modifiable EM'.
-> 
-> The runtime modifiable EM is currently only used ...
-> The you can skip the next sentence: "The EAS is the only user ..."
-> 
-> All the other users (thermal, etc.) are still using the
->> default (basic) EM. This fact drove the design of this feature.
-> 
-> [...]
-> 
-
-Thanks, I'll remove them in the next version.
