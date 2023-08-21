@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3737823A2
+	by mail.lfdr.de (Postfix) with ESMTP id 871237823A3
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbjHUGVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:21:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
+        id S233407AbjHUGVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233393AbjHUGVL (ORCPT
+        with ESMTP id S229954AbjHUGVL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Aug 2023 02:21:11 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A25AB
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:07 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52a0856b4fdso929344a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:07 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B0BAC
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:08 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so3536909a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1692598866; x=1693203666;
+        d=9elements.com; s=google; t=1692598867; x=1693203667;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4T63oHx4mCgWjkztpRdYRdNA8hHPbwN5F4C8d65My+U=;
-        b=EpvS0Z2JGi25cb665fjMWh4qXkxgUd2oQpigrrJDlJ6oeb6XnpMy2ewqe0nskvt+7x
-         PT2Fm2birbAjZZcDHjSEvPMVmyjfhLpJ5n7ve1w8r6JpW80FB3AqIfKh1dYKYE+wUVWx
-         Ou/ls1c0vrS1nu+zYUf7Mtg0uTjMlCU7dU+M14FLar83OXYe2S3eUwcC+tWxYZyZam7X
-         weOgtlVvI3SAnsX5PgPPu5zW1J594qofH+rpTQpbPs7n17LV5VblpDCtqCMMQ3Tb9Er9
-         KrgKqyX1PQEIOY6H40vU4aPWUlL69mK4TFMs6aXHCFl9d6R3kNUGwemR9oFxBFVFfZi0
-         ky1w==
+        bh=mhOUt2tzecxNC3yGDp4EJrCLbLTReEQeCvGgn9oNECQ=;
+        b=EKo9ZH6gHObgt1HYVj8JaP2oiJ1d1oAzRgoGN7NeqvIeYixhvpoII7LbNQQTuL5kH1
+         IgUfpFsULPFPOjJKzf9/qtfyngPPpkivB6s5hZlTq8DR7aWgzwJsvMQSq4cPGkf2pNmE
+         ti2GsIujiM8m/y28T815DQyPQfHQ95sCF6a9oXxBz2GVw7+v+3aI2ptDGjm1xdp4sA+B
+         WxVh1ow2VMfBoiVhKA9tZYhAPW+zuJ6zUs+kyj/ulRC8/sF1Zb4xosMs4doQ28dgX+Ry
+         zCilvwh3RhIaUuVIyKMVPS3FtOXdnXQyqBt58BhEu3PV6iAktsYwlkxDSGpZV1W4J+iF
+         ZT2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692598866; x=1693203666;
+        d=1e100.net; s=20221208; t=1692598867; x=1693203667;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4T63oHx4mCgWjkztpRdYRdNA8hHPbwN5F4C8d65My+U=;
-        b=APMAMkYws6hi4LisoKG9bnHUSTF3w3af0DTZw8meSenD2ImIcNpX1LXHw2BUqW3RSC
-         vwjecww101+tijNOXnCIr7W7rWkaczzqwgseubbUj0+zoej9Px+k78zr+HnZAFm+ZNsy
-         vfFUl7GPd1qQWABucptZwoMhmy1vn/Tl+HTDUquqI0o/be1vf7H9AsUJfnOyqaBBnG5j
-         hwe4uIgncTz5VoapC0Cu/u1C4LcOkdhGslVKEzvqfeRQ/ooIitvS5l8j02NR5EyyTzFU
-         LZ11w+y5BPmqI5vFDEWW7KB8Qz+VzKtu5x9i4Irtq9/Jk2IjoRv7/nAii+JBWgVq2nWJ
-         CNOQ==
-X-Gm-Message-State: AOJu0YxkRkTXaS9iIUe6qMFH/OQya73DTWvHPPF7UKDBiN3wIgd8zFmZ
-        Vc3VqaqJsdtBncSJDful5FIf+g==
-X-Google-Smtp-Source: AGHT+IEYK4lqOqTB3cxbW6Ofi9kIkXd+VFVksT9JATNvaiW9da0BU9I1I8WWSvn/Gfhl2Y90L7s+ng==
-X-Received: by 2002:aa7:d058:0:b0:522:4c7a:d5a9 with SMTP id n24-20020aa7d058000000b005224c7ad5a9mr4519275edo.3.1692598865619;
-        Sun, 20 Aug 2023 23:21:05 -0700 (PDT)
+        bh=mhOUt2tzecxNC3yGDp4EJrCLbLTReEQeCvGgn9oNECQ=;
+        b=iSm6PS3ZIQ35AxROtlFhb6dFNdJm6TxJ9gqdedMF6PRRzcTGrago6eOs950b2/CZ3O
+         QPtvUcNxkCVl0Bkdn/E9/yN2MraCKMzEx8XmbAvDXCvM62zigGfmod4/CCSJfIsdQDB2
+         lffHPPgW9mQvCYzvSxEo1znHmS46WAMKEJuI0I1qXCd6iiS48IUeTmjLUp3WtRvSX3nV
+         hoXcBEv+42zFOmfRyAYF83Oql9ekLBz08v2xD+2ZupQ835ctkU1GTeBwikXZ/dYtkbNq
+         gaWEsL62xX5/Jii39JDm5UASzDjlvpigEwe9XXaVtjkiqJzd7zG6G1n3a6rOejJb6sdJ
+         Nfsg==
+X-Gm-Message-State: AOJu0Yx35vmsjSguZqstnDQucUsaLV2YBx6GQAaii47W2Q+a1EPCUtSq
+        c/hkxbjrdXBpj4U1JuMZlvNYBQ==
+X-Google-Smtp-Source: AGHT+IEZ1WGJCViXYgku7ZS537iNI1j7BtgGYKhrahmtuPd9m/nuY+r0npj3vob2/C6pkRBxjSVxWA==
+X-Received: by 2002:a05:6402:60f:b0:51d:fa7c:c330 with SMTP id n15-20020a056402060f00b0051dfa7cc330mr3787050edv.26.1692598866798;
+        Sun, 20 Aug 2023 23:21:06 -0700 (PDT)
 Received: from fedora.. (ip-095-222-150-251.um34.pools.vodafone-ip.de. [95.222.150.251])
-        by smtp.gmail.com with ESMTPSA id c4-20020aa7df04000000b00523b1335618sm5455003edy.97.2023.08.20.23.21.04
+        by smtp.gmail.com with ESMTPSA id c4-20020aa7df04000000b00523b1335618sm5455003edy.97.2023.08.20.23.21.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 23:21:05 -0700 (PDT)
+        Sun, 20 Aug 2023 23:21:06 -0700 (PDT)
 From:   Patrick Rudolph <patrick.rudolph@9elements.com>
 To:     Peter Rosin <peda@axentia.se>
 Cc:     naresh.solanki@9elements.com,
         Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [v16 3/4] i2c: muxes: pca954x: Add MAX735x/MAX736x support
-Date:   Mon, 21 Aug 2023 08:20:23 +0200
-Message-ID: <20230821062027.2631725-4-patrick.rudolph@9elements.com>
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [v16 4/4] i2c: muxes: pca954x: Add regulator support
+Date:   Mon, 21 Aug 2023 08:20:24 +0200
+Message-ID: <20230821062027.2631725-5-patrick.rudolph@9elements.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230821062027.2631725-1-patrick.rudolph@9elements.com>
 References: <20230821062027.2631725-1-patrick.rudolph@9elements.com>
@@ -73,156 +74,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the following Maxim chips using the existing PCA954x
-driver:
-- MAX7356
-- MAX7357
-- MAX7358
-- MAX7367
-- MAX7368
-- MAX7369
-
-All added Maxim chips behave like the PCA954x, where a single SMBUS byte
-write selects up to 8 channels to be bridged to the primary bus.
-
-While the MAX7357/MAX7358 have interrupt support, they don't act as
-interrupt controller like the PCA9545 does. Thus don't enable IRQ support
-and handle them like the PCA9548.
-
-Tested using the MAX7357.
+Add a vdd regulator and enable it for boards that have the
+mux powered off by default.
 
 Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 ---
- drivers/i2c/muxes/Kconfig           |  6 +--
- drivers/i2c/muxes/i2c-mux-pca954x.c | 67 ++++++++++++++++++++++++++++-
- 2 files changed, 69 insertions(+), 4 deletions(-)
+ drivers/i2c/muxes/i2c-mux-pca954x.c | 28 +++++++++++++++++++++++-----
+ 1 file changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/i2c/muxes/Kconfig b/drivers/i2c/muxes/Kconfig
-index ea838dbae32e..db1b9057612a 100644
---- a/drivers/i2c/muxes/Kconfig
-+++ b/drivers/i2c/muxes/Kconfig
-@@ -65,11 +65,11 @@ config I2C_MUX_PCA9541
- 	  will be called i2c-mux-pca9541.
- 
- config I2C_MUX_PCA954x
--	tristate "NXP PCA954x and PCA984x I2C Mux/switches"
-+	tristate "NXP PCA954x/PCA984x and Maxim MAX735x/MAX736x I2C Mux/switches"
- 	depends on GPIOLIB || COMPILE_TEST
- 	help
--	  If you say yes here you get support for the NXP PCA954x
--	  and PCA984x I2C mux/switch devices.
-+	  If you say yes here you get support for NXP PCA954x/PCA984x
-+	  and Maxim MAX735x/MAX736x I2C mux/switch devices.
- 
- 	  This driver can also be built as a module.  If so, the module
- 	  will be called i2c-mux-pca954x.
 diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 0ccee2ae5720..32873df56e33 100644
+index 32873df56e33..f36a26acb0d2 100644
 --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
 +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -11,6 +11,12 @@
-  *	 PCA9540, PCA9542, PCA9543, PCA9544, PCA9545, PCA9546, PCA9547,
-  *	 PCA9548, PCA9846, PCA9847, PCA9848 and PCA9849.
-  *
-+ * It's also compatible to Maxims MAX735x I2C switch chips, which are controlled
-+ * as the NXP PCA9548 and the MAX736x chips that act like the PCA9544.
-+ *
-+ * This includes the:
-+ *	 MAX7356, MAX7357, MAX7358, MAX7367, MAX7368 and MAX7369
-+ *
-  * These chips are all controlled via the I2C bus itself, and all have a
-  * single 8-bit register. The upstream "parent" bus fans out to two,
-  * four, or eight downstream busses or channels; which of these
-@@ -51,6 +57,12 @@
- #define PCA954X_IRQ_OFFSET 4
- 
- enum pca_type {
-+	max_7356,
-+	max_7357,
-+	max_7358,
-+	max_7367,
-+	max_7368,
-+	max_7369,
- 	pca_9540,
- 	pca_9542,
- 	pca_9543,
-@@ -90,8 +102,49 @@ struct pca954x {
+@@ -48,6 +48,7 @@
+ #include <linux/module.h>
+ #include <linux/pm.h>
+ #include <linux/property.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <dt-bindings/mux/mux.h>
+@@ -100,6 +101,7 @@ struct pca954x {
+ 	struct irq_domain *irq;
+ 	unsigned int irq_mask;
  	raw_spinlock_t lock;
++	struct regulator *supply;
  };
  
--/* Provide specs for the PCA954x types we know about */
-+/* Provide specs for the MAX735x, PCA954x and PCA984x types we know about */
- static const struct chip_desc chips[] = {
-+	[max_7356] = {
-+		.nchans = 8,
-+		.muxtype = pca954x_isswi,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+	},
-+	[max_7357] = {
-+		.nchans = 8,
-+		.muxtype = pca954x_isswi,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+		/*
-+		 * No interrupt controller support. The interrupt
-+		 * provides information about stuck channels.
-+		 */
-+	},
-+	[max_7358] = {
-+		.nchans = 8,
-+		.muxtype = pca954x_isswi,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+		/*
-+		 * No interrupt controller support. The interrupt
-+		 * provides information about stuck channels.
-+		 */
-+	},
-+	[max_7367] = {
-+		.nchans = 4,
-+		.muxtype = pca954x_isswi,
-+		.has_irq = 1,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+	},
-+	[max_7368] = {
-+		.nchans = 4,
-+		.muxtype = pca954x_isswi,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+	},
-+	[max_7369] = {
-+		.nchans = 4,
-+		.enable = 0x4,
-+		.muxtype = pca954x_ismux,
-+		.has_irq = 1,
-+		.id = { .manufacturer_id = I2C_DEVICE_ID_NONE },
-+	},
- 	[pca_9540] = {
- 		.nchans = 2,
- 		.enable = 0x4,
-@@ -177,6 +230,12 @@ static const struct chip_desc chips[] = {
- };
+ /* Provide specs for the MAX735x, PCA954x and PCA984x types we know about */
+@@ -447,6 +449,8 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
+ 	struct pca954x *data = i2c_mux_priv(muxc);
+ 	int c, irq;
  
- static const struct i2c_device_id pca954x_id[] = {
-+	{ "max7356", max_7356 },
-+	{ "max7357", max_7357 },
-+	{ "max7358", max_7358 },
-+	{ "max7367", max_7367 },
-+	{ "max7368", max_7368 },
-+	{ "max7369", max_7369 },
- 	{ "pca9540", pca_9540 },
- 	{ "pca9542", pca_9542 },
- 	{ "pca9543", pca_9543 },
-@@ -194,6 +253,12 @@ static const struct i2c_device_id pca954x_id[] = {
- MODULE_DEVICE_TABLE(i2c, pca954x_id);
++	regulator_disable(data->supply);
++
+ 	if (data->irq) {
+ 		for (c = 0; c < data->chip->nchans; c++) {
+ 			irq = irq_find_mapping(data->irq, c);
+@@ -499,10 +503,22 @@ static int pca954x_probe(struct i2c_client *client)
+ 	i2c_set_clientdata(client, muxc);
+ 	data->client = client;
  
- static const struct of_device_id pca954x_of_match[] = {
-+	{ .compatible = "maxim,max7356", .data = &chips[max_7356] },
-+	{ .compatible = "maxim,max7357", .data = &chips[max_7357] },
-+	{ .compatible = "maxim,max7358", .data = &chips[max_7358] },
-+	{ .compatible = "maxim,max7367", .data = &chips[max_7367] },
-+	{ .compatible = "maxim,max7368", .data = &chips[max_7368] },
-+	{ .compatible = "maxim,max7369", .data = &chips[max_7369] },
- 	{ .compatible = "nxp,pca9540", .data = &chips[pca_9540] },
- 	{ .compatible = "nxp,pca9542", .data = &chips[pca_9542] },
- 	{ .compatible = "nxp,pca9543", .data = &chips[pca_9543] },
++	data->supply = devm_regulator_get(dev, "vdd");
++	if (IS_ERR(data->supply))
++		return dev_err_probe(dev, PTR_ERR(data->supply),
++				"Failed to request regulator\n");
++
++	ret = regulator_enable(data->supply);
++	if (ret)
++		return dev_err_probe(dev, ret,
++				     "Failed to enable vdd supply\n");
++
+ 	/* Reset the mux if a reset GPIO is specified. */
+ 	gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+-	if (IS_ERR(gpio))
+-		return PTR_ERR(gpio);
++	if (IS_ERR(gpio)) {
++		ret = PTR_ERR(gpio);
++		goto fail_cleanup;
++	}
+ 	if (gpio) {
+ 		udelay(1);
+ 		gpiod_set_value_cansleep(gpio, 0);
+@@ -519,7 +535,7 @@ static int pca954x_probe(struct i2c_client *client)
+ 
+ 		ret = i2c_get_device_id(client, &id);
+ 		if (ret && ret != -EOPNOTSUPP)
+-			return ret;
++			goto fail_cleanup;
+ 
+ 		if (!ret &&
+ 		    (id.manufacturer_id != data->chip->id.manufacturer_id ||
+@@ -527,7 +543,8 @@ static int pca954x_probe(struct i2c_client *client)
+ 			dev_warn(dev, "unexpected device id %03x-%03x-%x\n",
+ 				 id.manufacturer_id, id.part_id,
+ 				 id.die_revision);
+-			return -ENODEV;
++			ret = -ENODEV;
++			goto fail_cleanup;
+ 		}
+ 	}
+ 
+@@ -546,7 +563,8 @@ static int pca954x_probe(struct i2c_client *client)
+ 	ret = pca954x_init(client, data);
+ 	if (ret < 0) {
+ 		dev_warn(dev, "probe failed\n");
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto fail_cleanup;
+ 	}
+ 
+ 	ret = pca954x_irq_setup(muxc);
 -- 
 2.41.0
 
