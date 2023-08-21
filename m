@@ -2,303 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D34C8782A8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E606782A94
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235429AbjHUNcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37142 "EHLO
+        id S235439AbjHUNdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:33:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233331AbjHUNcW (ORCPT
+        with ESMTP id S233427AbjHUNdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:32:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12779D1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692624692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k4wxv/avDlDhDoec6XFHqI1b4YUTQ1Kranoms8ixAYc=;
-        b=ReMmCPTAUs23bweUa3x064lzCGTz+LZ81+Wn4Ctluj/yVUspEQi6AAWrt/hDfrPzdXPGOJ
-        5QQhINayJ26ygPxdoNTy3wH/bsrqmIqur5agR2nGZIE5hjo1VRxB0XCkv2IAvVvDaO8/B0
-        7O547eVQKKvzd74wHULUZwI9amMt2Kk=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-Y4YdtumjPluK0_Ijm2ELjg-1; Mon, 21 Aug 2023 09:31:30 -0400
-X-MC-Unique: Y4YdtumjPluK0_Ijm2ELjg-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99bcf6ae8e1so224473766b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:31:30 -0700 (PDT)
+        Mon, 21 Aug 2023 09:33:18 -0400
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86356B4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:33:15 -0700 (PDT)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7a257fabae5so497037241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692624794; x=1693229594;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=khLlIHW+Jm6+gOuRPwp6mA1hqc/ytZ1HIVMa6QE2/hc=;
+        b=MXqe80sAtCGV+ehrYswoWLd5KZQCoK6YAWu+x7WyF7bblYFwKE8dxoIJCEKNNOqOlJ
+         Mt2GOg1xTnUJEsJddpIoaHb68m741jH19GWHZ6/N5iu8aVIXEPbzrOxypYsdTRQNWW1R
+         2f1YQZqbibNrPXuxOVZ2kLXGOk83zrkxtXB4EqyU6vm8XW08d195A1t+1nAO/dNyv3Or
+         9oQ0M0exaWivUrnn4YHQuODXM5FUQbQHDOGBQmkug+deAvhzv0UYalzocevQ7dbZza1v
+         aolc7gU+vocnsbh37DmZ5rKUoH9pH4RGDRsOEdRaHJbWbdz5V+D0j76QZZ4CNQFLGb5w
+         5dRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692624689; x=1693229489;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k4wxv/avDlDhDoec6XFHqI1b4YUTQ1Kranoms8ixAYc=;
-        b=a9QUunmf4XKkkfZMikGWlYSiHcJ73Ym1j7QS9P6S74v4tnoa/4fc1Z1Vb18a0z+eVi
-         QUto1WjC6I1zJQjivIEINbDqC7M6NjTVjJuNVh/XQsHXXarXFB06Q8LBJex74Jtk6R9e
-         GoNCKKWXLzYs+58Q7WC3txQETBeEmIHTt1pqFmUVJBWnmbwGIxE7GWhqt4nplulw0tzs
-         EEvUVvVAMVulmjpiYbhLefqWLGpfyFHg8tN/+d6SHlpe8iPiRTKI/SseorC1RadPO0l/
-         L8u3b0W0vnQmYXPsbxmb5Xu8MWHXYqVxfv/s335cQJhEjX9hZ00osQu9WL8cMzBZNWyg
-         JH7w==
-X-Gm-Message-State: AOJu0YyKcSvYwVKrZpCHDej2zJIKfK705Fi77Tw4eMYnkZwtqQpqMb3s
-        cFvkLqrWNrEEixvkVz+nlvMwH/JBdTTg1uisrbu6CHfCUZXraLR0jQwQo7ggDvnfOw02HczBdjT
-        MDQoyPJ3IQy1kNmIKuiXmhAtw
-X-Received: by 2002:a17:907:a075:b0:993:e752:1a71 with SMTP id ia21-20020a170907a07500b00993e7521a71mr4525399ejc.9.1692624689602;
-        Mon, 21 Aug 2023 06:31:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFUS+VZ2P3ROasIGo9h5cG0v6G3pPO8eybFoZbxVbEWk3WhrKt835Icxxq0nBI5i4n4/66tdw==
-X-Received: by 2002:a17:907:a075:b0:993:e752:1a71 with SMTP id ia21-20020a170907a07500b00993e7521a71mr4525382ejc.9.1692624689292;
-        Mon, 21 Aug 2023 06:31:29 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id jp23-20020a170906f75700b00989828a42e8sm6484448ejb.154.2023.08.21.06.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 06:31:28 -0700 (PDT)
-Message-ID: <18e99ff7-27a8-8a6d-146a-e0525a2f6fc2@redhat.com>
-Date:   Mon, 21 Aug 2023 15:31:28 +0200
+        d=1e100.net; s=20221208; t=1692624794; x=1693229594;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=khLlIHW+Jm6+gOuRPwp6mA1hqc/ytZ1HIVMa6QE2/hc=;
+        b=LeJM9I2YxvEIs9I2m1iKhN9K2f4ZVhmJDnTWydyDp91F1QqnJ6KiE5277UxNeRbVpJ
+         v6dC6a6r4WhxLGbBuzzzhhDerfO3gW/qBh6UC7ePU9suCGOcGBikmaCvSVKljOKGopvD
+         GXkfd9P26rJZpL2KDDSYNYYQOTmyq5vBJcPxpbJ9IWj61H/LXOCGei57PDsckTzgz9tn
+         I7hI3OOhOKT0l9YrYbXkyHosfs+QO+93Jfhnpi3MSSlJVIwRkfzIBzCylFCZoYb/iW5v
+         y4k1cMPPxcPTfF9OSlfY75kJ/qW2xBaRWTcWjI1UMGTl+z+QZWKTz058lQe/hwYjBR56
+         o3jQ==
+X-Gm-Message-State: AOJu0YzX12tqrEXBhBn0rDgwbnXiHPLctry5mrhMRkrVKKx4EW8WeA3I
+        5eDQJK7lHeMp7vje5hztwMqtidPYRKDHUUbsdS3J4Q==
+X-Google-Smtp-Source: AGHT+IGdiroFpyHjOCjxX3nFiWrenguPGn6R1CMfgDrH4PeozwIcKL/83yaISys0pAnDYUzENf41pAhVnMM9BFjR72s=
+X-Received: by 2002:a67:cd99:0:b0:430:e0:ac2e with SMTP id r25-20020a67cd99000000b0043000e0ac2emr6220213vsl.15.1692624794563;
+ Mon, 21 Aug 2023 06:33:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Fixes: a23870110a38 ("asus-wmi: add support for showing
- middle fan RPM")
-Content-Language: en-US
-To:     "Luke D. Jones" <luke@ljones.dev>
-Cc:     corentin.chary@gmail.com, markgross@kernel.org, jdelvare@suse.com,
-        linux@roeck-us.net, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-References: <20230815014209.44903-1-luke@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230815014209.44903-1-luke@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 21 Aug 2023 19:03:03 +0530
+Message-ID: <CA+G9fYsQBg2SwfAyzyJmkz2kOQa7Ef+NZVnpEwqc4y911DBzVw@mail.gmail.com>
+Subject: clang-17: selftests: vdso_standalone_test_x86.c:(.text+0x1e6):
+ undefined reference to `memcpy'
+To:     clang-built-linux <llvm@lists.linux.dev>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luke,
+Recently we have updated toolchain clang-17 version.
 
-The Fixes: tag goes into the Signed-off-by block, not in the Subject.
+While building selftests vdso following warnings / errors noticed on the
+Linux next with clang-17. but pass with gcc-13.
 
-I have fixed this up while merging this:
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+make[4]: Entering directory 'tools/testing/selftests/vDSO'
+clang --target=x86_64-linux-gnu -fintegrated-as
+-Werror=unknown-warning-option -Werror=ignored-optimization-argument
+-Werror=option-ignored -Werror=unused-command-line-argument
+--target=x86_64-linux-gnu -fintegrated-as -std=gnu99 -nostdlib
+-fno-asynchronous-unwind-tables -fno-stack-protector \
+vdso_standalone_test_x86.c parse_vdso.c \
+-o /vDSO/vdso_standalone_test_x86
+vdso_standalone_test_x86.c:73:16: warning: unknown attribute
+'externally_visible' ignored [-Wunknown-attributes]
+   73 | __attribute__((externally_visible)) void c_main(void **stack)
+      |                ^~~~~~~~~~~~~~~~~~
+1 warning generated.
+parse_vdso.c:65:9: warning: using the result of an assignment as a
+condition without parentheses [-Wparentheses]
+   65 |                 if (g = h & 0xf0000000)
+      |                     ~~^~~~~~~~~~~~~~~~
+parse_vdso.c:65:9: note: place parentheses around the assignment to
+silence this warning
+   65 |                 if (g = h & 0xf0000000)
+      |                       ^
+      |                     (                 )
+parse_vdso.c:65:9: note: use '==' to turn this assignment into an
+equality comparison
+   65 |                 if (g = h & 0xf0000000)
+      |                       ^
+      |                       ==
+parse_vdso.c:206:22: warning: passing 'const char *' to parameter of
+type 'const unsigned char *' converts between pointers to integer
+types where one is of the unique plain 'char' type and the other is
+not [-Wpointer-sign]
+  206 |         ver_hash = elf_hash(version);
+      |                             ^~~~~~~
+parse_vdso.c:59:52: note: passing argument to parameter 'name' here
+   59 | static unsigned long elf_hash(const unsigned char *name)
+      |                                                    ^
+parse_vdso.c:207:46: warning: passing 'const char *' to parameter of
+type 'const unsigned char *' converts between pointers to integer
+types where one is of the unique plain 'char' type and the other is
+not [-Wpointer-sign]
+  207 |         ELF(Word) chain = vdso_info.bucket[elf_hash(name) %
+vdso_info.nbucket];
+      |                                                     ^~~~
+parse_vdso.c:59:52: note: passing argument to parameter 'name' here
+   59 | static unsigned long elf_hash(const unsigned char *name)
+      |                                                    ^
+3 warnings generated.
+/usr/bin/x86_64-linux-gnu-ld: /tmp/vdso_standalone_test_x86-31b09f.o:
+in function `c_main':
+vdso_standalone_test_x86.c:(.text+0x1e6): undefined reference to `memcpy'
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+make[4]: Leaving directory 'tools/testing/selftests/vDSO'
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+Links:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230821/testrun/19213783/suite/kselftest-vDSO/test/shardfile-vDSO/details/
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+Steps to reproduce:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/tuxmake_reproducer.sh
 
-Regards,
-
-Hans
-
-
+tuxmake --runtime podman --target-arch x86_64 --toolchain clang-17
+--kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/config
+LLVM=1 LLVM_IAS=1 debugkernel cpupower headers kernel kselftest
+modules
 
 
-On 8/15/23 03:42, Luke D. Jones wrote:
-> After the addition of the mid fan custom curve functionality various
-> incorrect behaviour was uncovered. This commit fixes these areas.
-> 
-> - Ensure mid fan attributes actually use the correct fan ID
-> - Correction to a bit mask for selecting the correct fan data
-> - Refactor the curve show/store functions to be cleaner and and
->   match each others layout
-> 
-> Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> ---
->  drivers/platform/x86/asus-wmi.c | 78 ++++++++++++++++-----------------
->  1 file changed, 38 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-> index d14d0ea9d65f..14ee43c61eb2 100644
-> --- a/drivers/platform/x86/asus-wmi.c
-> +++ b/drivers/platform/x86/asus-wmi.c
-> @@ -2902,9 +2902,8 @@ static int fan_curve_get_factory_default(struct asus_wmi *asus, u32 fan_dev)
->  {
->  	struct fan_curve_data *curves;
->  	u8 buf[FAN_CURVE_BUF_LEN];
-> -	int fan_idx = 0;
-> +	int err, fan_idx;
->  	u8 mode = 0;
-> -	int err;
->  
->  	if (asus->throttle_thermal_policy_available)
->  		mode = asus->throttle_thermal_policy_mode;
-> @@ -2914,13 +2913,6 @@ static int fan_curve_get_factory_default(struct asus_wmi *asus, u32 fan_dev)
->  	else if (mode == 1)
->  		mode = 2;
->  
-> -	if (fan_dev == ASUS_WMI_DEVID_GPU_FAN_CURVE)
-> -		fan_idx = FAN_CURVE_DEV_GPU;
-> -
-> -	if (fan_dev == ASUS_WMI_DEVID_MID_FAN_CURVE)
-> -		fan_idx = FAN_CURVE_DEV_MID;
-> -
-> -	curves = &asus->custom_fan_curves[fan_idx];
->  	err = asus_wmi_evaluate_method_buf(asus->dsts_id, fan_dev, mode, buf,
->  					   FAN_CURVE_BUF_LEN);
->  	if (err) {
-> @@ -2928,9 +2920,17 @@ static int fan_curve_get_factory_default(struct asus_wmi *asus, u32 fan_dev)
->  		return err;
->  	}
->  
-> -	fan_curve_copy_from_buf(curves, buf);
-> +	fan_idx = FAN_CURVE_DEV_CPU;
-> +	if (fan_dev == ASUS_WMI_DEVID_GPU_FAN_CURVE)
-> +		fan_idx = FAN_CURVE_DEV_GPU;
-> +
-> +	if (fan_dev == ASUS_WMI_DEVID_MID_FAN_CURVE)
-> +		fan_idx = FAN_CURVE_DEV_MID;
-> +
-> +	curves = &asus->custom_fan_curves[fan_idx];
->  	curves->device_id = fan_dev;
->  
-> +	fan_curve_copy_from_buf(curves, buf);
->  	return 0;
->  }
->  
-> @@ -2960,7 +2960,7 @@ static struct fan_curve_data *fan_curve_attr_select(struct asus_wmi *asus,
->  {
->  	int index = to_sensor_dev_attr(attr)->index;
->  
-> -	return &asus->custom_fan_curves[index & FAN_CURVE_DEV_GPU];
-> +	return &asus->custom_fan_curves[index];
->  }
->  
->  /* Determine which fan the attribute is for if SENSOR_ATTR_2 */
-> @@ -2969,7 +2969,7 @@ static struct fan_curve_data *fan_curve_attr_2_select(struct asus_wmi *asus,
->  {
->  	int nr = to_sensor_dev_attr_2(attr)->nr;
->  
-> -	return &asus->custom_fan_curves[nr & FAN_CURVE_DEV_GPU];
-> +	return &asus->custom_fan_curves[nr & ~FAN_CURVE_PWM_MASK];
->  }
->  
->  static ssize_t fan_curve_show(struct device *dev,
-> @@ -2978,13 +2978,13 @@ static ssize_t fan_curve_show(struct device *dev,
->  	struct sensor_device_attribute_2 *dev_attr = to_sensor_dev_attr_2(attr);
->  	struct asus_wmi *asus = dev_get_drvdata(dev);
->  	struct fan_curve_data *data;
-> -	int value, index, nr;
-> +	int value, pwm, index;
->  
->  	data = fan_curve_attr_2_select(asus, attr);
-> +	pwm = dev_attr->nr & FAN_CURVE_PWM_MASK;
->  	index = dev_attr->index;
-> -	nr = dev_attr->nr;
->  
-> -	if (nr & FAN_CURVE_PWM_MASK)
-> +	if (pwm)
->  		value = data->percents[index];
->  	else
->  		value = data->temps[index];
-> @@ -3027,23 +3027,21 @@ static ssize_t fan_curve_store(struct device *dev,
->  	struct sensor_device_attribute_2 *dev_attr = to_sensor_dev_attr_2(attr);
->  	struct asus_wmi *asus = dev_get_drvdata(dev);
->  	struct fan_curve_data *data;
-> +	int err, pwm, index;
->  	u8 value;
-> -	int err;
-> -
-> -	int pwm = dev_attr->nr & FAN_CURVE_PWM_MASK;
-> -	int index = dev_attr->index;
->  
->  	data = fan_curve_attr_2_select(asus, attr);
-> +	pwm = dev_attr->nr & FAN_CURVE_PWM_MASK;
-> +	index = dev_attr->index;
->  
->  	err = kstrtou8(buf, 10, &value);
->  	if (err < 0)
->  		return err;
->  
-> -	if (pwm) {
-> +	if (pwm)
->  		data->percents[index] = value;
-> -	} else {
-> +	else
->  		data->temps[index] = value;
-> -	}
->  
->  	/*
->  	 * Mark as disabled so the user has to explicitly enable to apply a
-> @@ -3156,7 +3154,7 @@ static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point8_temp, fan_curve,
->  			       FAN_CURVE_DEV_CPU, 7);
->  
->  static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point1_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_CPU | FAN_CURVE_PWM_MASK, 0);
-> +				FAN_CURVE_DEV_CPU | FAN_CURVE_PWM_MASK, 0);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point2_pwm, fan_curve,
->  			       FAN_CURVE_DEV_CPU | FAN_CURVE_PWM_MASK, 1);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm1_auto_point3_pwm, fan_curve,
-> @@ -3209,40 +3207,40 @@ static SENSOR_DEVICE_ATTR_2_RW(pwm2_auto_point8_pwm, fan_curve,
->  			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 7);
->  
->  /* MID */
-> -static SENSOR_DEVICE_ATTR_RW(pwm3_enable, fan_curve_enable, FAN_CURVE_DEV_GPU);
-> +static SENSOR_DEVICE_ATTR_RW(pwm3_enable, fan_curve_enable, FAN_CURVE_DEV_MID);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point1_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 0);
-> +			       FAN_CURVE_DEV_MID, 0);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point2_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 1);
-> +			       FAN_CURVE_DEV_MID, 1);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point3_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 2);
-> +			       FAN_CURVE_DEV_MID, 2);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point4_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 3);
-> +			       FAN_CURVE_DEV_MID, 3);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point5_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 4);
-> +			       FAN_CURVE_DEV_MID, 4);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point6_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 5);
-> +			       FAN_CURVE_DEV_MID, 5);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point7_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 6);
-> +			       FAN_CURVE_DEV_MID, 6);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point8_temp, fan_curve,
-> -			       FAN_CURVE_DEV_GPU, 7);
-> +			       FAN_CURVE_DEV_MID, 7);
->  
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point1_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 0);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 0);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point2_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 1);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 1);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point3_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 2);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 2);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point4_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 3);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 3);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point5_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 4);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 4);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point6_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 5);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 5);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point7_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 6);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 6);
->  static SENSOR_DEVICE_ATTR_2_RW(pwm3_auto_point8_pwm, fan_curve,
-> -			       FAN_CURVE_DEV_GPU | FAN_CURVE_PWM_MASK, 7);
-> +			       FAN_CURVE_DEV_MID | FAN_CURVE_PWM_MASK, 7);
->  
->  static struct attribute *asus_fan_curve_attr[] = {
->  	/* CPU */
-
+--
+Linaro LKFT
+https://lkft.linaro.org
