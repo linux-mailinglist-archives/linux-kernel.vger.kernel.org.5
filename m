@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59AB8782155
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE74782159
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjHUCUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:20:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43212 "EHLO
+        id S232503AbjHUCWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjHUCUB (ORCPT
+        with ESMTP id S232389AbjHUCWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 22:20:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197059C;
-        Sun, 20 Aug 2023 19:20:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A402360B95;
-        Mon, 21 Aug 2023 02:19:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFF3C433C7;
-        Mon, 21 Aug 2023 02:19:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692584399;
-        bh=J4aanHv8aL7g1z0TXMNl+0w14e+lIrlmCKs7x3Ij/r0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VN3AACFBOgao56s96+LlpA/FzBfvdDMIDqOSVvVQpjQsgQHGrEtM9P69isiuz36F/
-         JnkbvVtvGAUjrVmbTsp/8+f8KEG5K67xkTL5pzzn7mRHEg1ri2yCeLrPFw9pVa//kF
-         /enEupMCfDzL7gr4HMSxsBqOa+AbSVNBC8ZCO7+Ff7V/jJISCJH3jZFr34hVh3KrPR
-         C2qnPA/cKSzF6l0crGTj06EJ8GG7nXzqlBHVViHYDR4StSTWf9sOZ86mSc2AtPOOs7
-         71xu+g0zJopcrshp/nRYzdZITyAktfRryD1Nq5S8DtbieXWnz8HMzTMhN8KRyYA8q0
-         e1Lu1MCYkRa0w==
-Date:   Mon, 21 Aug 2023 11:19:54 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Zheng Yejian <zhengyejian1@huawei.com>, <laijs@cn.fujitsu.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing: Introduce pipe_cpumask to avoid race on
- trace_pipes
-Message-Id: <20230821111954.8ca184e9fba62940825eb0e0@kernel.org>
-In-Reply-To: <20230819104257.80203c3916509cc9eb9327c1@kernel.org>
-References: <20230817115057.1637676-1-zhengyejian1@huawei.com>
-        <20230818022645.1948314-1-zhengyejian1@huawei.com>
-        <20230818140309.b0a720afa87b05a2b7b27315@kernel.org>
-        <20230818094128.7cf1d58b@gandalf.local.home>
-        <20230818232301.902ad9319569379ebd7df557@kernel.org>
-        <20230818115322.3dfda470@gandalf.local.home>
-        <20230819104257.80203c3916509cc9eb9327c1@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sun, 20 Aug 2023 22:22:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09539C
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692584533; x=1724120533;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=RohFg+AyWwBklRGlOXwUffXNwQqkzustdxDW53emd7E=;
+  b=Myk2q1KthHRRbpLphslc2wUtxmgBgfv8aaZrQjxu4M7d5e7U81uZjcq8
+   7G8P4FsE7dFNrkUKXA/4qqCastM8LOo+kOAax4wCaflilIeptNb+Cr1oi
+   plUL+X/7pkWCOWhIlnTrVcnPeS4TNaZh/c0LBxysdFFlen1wA96Hngo19
+   itQ2q+o2hvFU1wV6caeXGzmExIe8l7w2y+FDdUt8LgxG6LD6nCkUfD1wz
+   hi/q6kHLE/NY2qdeF+UUG0ZzK4Wf8/5ztikdDS6ScoQ0GYzCfHaHiRiy6
+   DLY+ltKGi9zaPKF8kCi/4kMQTwAcS+h0k3So5/Zps9V112t4Ydp7wc3Nm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="358452573"
+X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
+   d="scan'208";a="358452573"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 19:22:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="729240373"
+X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
+   d="scan'208";a="729240373"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 19:22:10 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     <akpm@linux-foundation.org>, <mgorman@techsingularity.net>,
+        <shy828301@gmail.com>, <david@redhat.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] mm: migrate: move migration validation into
+ numa_migrate_prep()
+References: <cover.1692440586.git.baolin.wang@linux.alibaba.com>
+        <a37b13dd91bd3eadcd56a08cb3c839616f8457e7.1692440586.git.baolin.wang@linux.alibaba.com>
+Date:   Mon, 21 Aug 2023 10:20:01 +0800
+In-Reply-To: <a37b13dd91bd3eadcd56a08cb3c839616f8457e7.1692440586.git.baolin.wang@linux.alibaba.com>
+        (Baolin Wang's message of "Sat, 19 Aug 2023 18:52:34 +0800")
+Message-ID: <87h6otdtm6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,92 +65,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Aug 2023 10:42:57 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-> On Fri, 18 Aug 2023 11:53:22 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Fri, 18 Aug 2023 23:23:01 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > 
-> > > It uses trace_pipe_raw. I guess if splice(from trace_pipe_raw to virtio-serial)
-> > > returns -1 and errno == EAGAIN, the trace data will be lost?
-> > 
-> > It shouldn't. If it does, then there's likely a bug. The code will block
-> > and if an interrupt comes in it will return immediately without reading
-> > from the buffer.
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/trace.c#n8262
-> > 
-> > I don't see where it would return -EINTR and consume data, but I may be
-> > missing something.
-> 
-> Hmm, I suspect the case if the spilice_to_pipe() returns -EAGAIN.
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/trace/trace.c#n8491
-> 
-> It seems not handling such case.
-> 
-> Anyway, I also think something wrong in virtio-serial (or misusing?), since
-> it can not read anything from the host sometimes. I just setup the virtio-trace
-> with below patch (ignore EAGAIN).
-> 
-> 
-> From 92242480285448360c9390a743ea7b3751bb3e61 Mon Sep 17 00:00:00 2001
-> From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-> Date: Thu, 17 Aug 2023 14:08:40 +0900
-> Subject: [PATCH 1/3] tools/virtio-trace: Ignore EAGAIN error on splice()
-> 
-> splice() can return EAGAIN error instead of returning 0 size read.
-> In that case, wait a while and try to call splice() again.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Now there are 3 places will validate if a page can mirate or not, and
+> some validations are performed later, which will waste some CPU to call
+> numa_migrate_prep().
+>
+> Thus we can move all the migration validation into numa_migrate_prep(),
+> which is more maintainable as well as saving some CPU resources. Another
+> benefit is that it can serve as a preparation for supporting batch migration
+> in do_numa_page() in future.
+>
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 > ---
->  tools/virtio/virtio-trace/trace-agent-rw.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/virtio/virtio-trace/trace-agent-rw.c b/tools/virtio/virtio-trace/trace-agent-rw.c
-> index ddfe7875eb16..e8a4c4f0c499 100644
-> --- a/tools/virtio/virtio-trace/trace-agent-rw.c
-> +++ b/tools/virtio/virtio-trace/trace-agent-rw.c
-> @@ -8,6 +8,7 @@
->   */
+>  mm/memory.c  | 19 +++++++++++++++++++
+>  mm/migrate.c | 19 -------------------
+>  2 files changed, 19 insertions(+), 19 deletions(-)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index d003076b218d..bee9b1e86ef0 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4747,6 +4747,25 @@ int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
+>  		*flags |= TNF_FAULT_LOCAL;
+>  	}
 >  
->  #define _GNU_SOURCE
-> +#include <errno.h>
->  #include <fcntl.h>
->  #include <stdio.h>
->  #include <stdlib.h>
-> @@ -127,10 +128,10 @@ static void *rw_thread_main(void *thread_info)
->  		rlen = splice(ts->in_fd, NULL, ts->read_pipe, NULL,
->  				ts->pipe_size, SPLICE_F_MOVE | SPLICE_F_MORE);
+> +	/*
+> +	 * Don't migrate file pages that are mapped in multiple processes
+> +	 * with execute permissions as they are probably shared libraries.
+> +	 */
+> +	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
+> +	    (vma->vm_flags & VM_EXEC))
+> +		return NUMA_NO_NODE;
+> +
+> +	/*
+> +	 * Also do not migrate dirty pages as not all filesystems can move
+> +	 * dirty pages in MIGRATE_ASYNC mode which is a waste of cycles.
+> +	 */
+> +	if (page_is_file_lru(page) && PageDirty(page))
+> +		return NUMA_NO_NODE;
+> +
+> +	/* Do not migrate THP mapped by multiple processes */
+> +	if (PageTransHuge(page) && total_mapcount(page) > 1)
+> +		return NUMA_NO_NODE;
+> +
+>  	return mpol_misplaced(page, vma, addr);
+
+In mpol_misplaced()->should_numa_migrate_memory(), accessing CPU and PID
+will be recorded.  So the code change above will introduce some behavior
+change.
+
+How about move these checks into a separate function which is called
+between numa_migrate_prep() and migrate_misplaced_page() after unlocking
+PTL?
+
+--
+Best Regards,
+Huang, Ying
+
+>  }
 >  
-> -		if (rlen < 0) {
-> -			pr_err("Splice_read in rw-thread(%d)\n", ts->cpu_num);
-> +		if (rlen < 0 && errno != EAGAIN) {
-> +			pr_err("Splice_read error (%d) in rw-thread(%d)\n", errno, ts->cpu_num);
->  			goto error;
-> -		} else if (rlen == 0) {
-> +		} else if (rlen == 0 || errno == EAGAIN) {
-
-Ah, this caused a drop. errno can be EAGAIN even if rlen > 0.
-I've fixed this and that works.
-BTW, I think this virtio-trace would be better to move under
-tools/tracing because it is a tracing tool.
-
-Thanks,
-
->  			/*
->  			 * If trace data do not exist or are unreadable not
->  			 * for exceeding the page size, splice_read returns
-> -- 
-> 2.34.1
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index e21d5a7e7447..9cc98fb1d6ec 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2485,10 +2485,6 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  
+>  	VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
+>  
+> -	/* Do not migrate THP mapped by multiple processes */
+> -	if (PageTransHuge(page) && total_mapcount(page) > 1)
+> -		return 0;
+> -
+>  	/* Avoid migrating to a node that is nearly full */
+>  	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
+>  		int z;
+> @@ -2533,21 +2529,6 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+>  	LIST_HEAD(migratepages);
+>  	int nr_pages = thp_nr_pages(page);
+>  
+> -	/*
+> -	 * Don't migrate file pages that are mapped in multiple processes
+> -	 * with execute permissions as they are probably shared libraries.
+> -	 */
+> -	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
+> -	    (vma->vm_flags & VM_EXEC))
+> -		goto out;
+> -
+> -	/*
+> -	 * Also do not migrate dirty pages as not all filesystems can move
+> -	 * dirty pages in MIGRATE_ASYNC mode which is a waste of cycles.
+> -	 */
+> -	if (page_is_file_lru(page) && PageDirty(page))
+> -		goto out;
+> -
+>  	isolated = numamigrate_isolate_page(pgdat, page);
+>  	if (!isolated)
+>  		goto out;
