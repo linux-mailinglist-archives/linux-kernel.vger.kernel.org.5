@@ -2,93 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D98782302
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7AD7822F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233089AbjHUEyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
+        id S233003AbjHUEwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:52:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHUEyp (ORCPT
+        with ESMTP id S229535AbjHUEwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:54:45 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 031D9A3;
-        Sun, 20 Aug 2023 21:54:41 -0700 (PDT)
-X-AuditID: a67dfc5b-d85ff70000001748-91-64e2ee0f13f7
-Date:   Mon, 21 Aug 2023 13:51:36 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
-        her0gyugyu@gmail.com
-Subject: Re: [RESEND PATCH v10 25/25] dept: Track the potential waits of
- PG_{locked,writeback}
-Message-ID: <20230821045136.GB73328@system.software.com>
-References: <20230821034637.34630-1-byungchul@sk.com>
- <20230821034637.34630-26-byungchul@sk.com>
- <ZOLnRSdH4Wcrl67L@casper.infradead.org>
+        Mon, 21 Aug 2023 00:52:32 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 71252A3;
+        Sun, 20 Aug 2023 21:52:30 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFFF91FB;
+        Sun, 20 Aug 2023 21:53:10 -0700 (PDT)
+Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.42.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BF25F3F740;
+        Sun, 20 Aug 2023 21:52:25 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V5 0/3] coresight: etm: Make cycle count threshold user configurable
+Date:   Mon, 21 Aug 2023 10:22:13 +0530
+Message-Id: <20230821045216.641499-1-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOLnRSdH4Wcrl67L@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTH9zz39rm3nXXX6rJHWDbt4rZgJi9xyYkuy7LE7Vm2JSa6D7oP
-        0K030lDQFEUgMcFZFXmtJsCo3VJgK4gVtRDFabWAUpgOmCBWBDI6NkFaSMCi5c21c2Z+Ofnl
-        /HN++X84IqfJIzGiIWOvbMrQGbVExauCy6ree2XSr0/4yxcPx4sSIPQonwfbWSeBnobTCJxN
-        BzGM3/gU7s4GEMz/1s1BRVkPgqqRIQ6a2ocRuOu+I9A7uhz6QlMEOssKCRyqOUvg94kFDIPl
-        JzCcdn0JNy3VGDzhBzxUjBM4WXEIR8YYhrCjXgBH3jrw11kFWBhJhM7hfgW4B9ZD5Y+DBK64
-        O3lob/Zj6P3FRmDY+VQBN9s7eOg5XqyAM5PVBCZmHRw4QlMC3PbYMZwzR0RHZpYU4C32YDjy
-        03kMffcuI7ia/wcGl7OfQFsogKHRVcbBXO0NBP6SoACHi8ICnDxYgqDwcDkP3YteBZgH34f5
-        Jzby0SbWFpjimLlxP3PP2nn2azVll6xDAjNfHRCY3bWPNdbFsZor45hVTYcUzFV/jDDX9AmB
-        FQT7MJvs6hJYx/fzPBvtq8BbY3eqPtDLRkOWbIr/MEWVeid4it+zoM4eaJ7m8tCcqgApRSpt
-        pI+8XvKcba3HhCjz0jpqu1jDR5lI71CfL8wVIFFcJb1LA01J0TUndahoqS03yiulFBqeKVVE
-        WS0BvXs0FGGVqJGKEP178fF/wQraWTnKPzuOo76lcRx1clIsrV0So2tlpILVEfi3zqvSW9Rz
-        wYujHiq1Kelg2IKf9VxNW+p8vAVJ1he01he01v+1dsTVI40hIytdZzBu3JCak2HI3vDt7nQX
-        ivyl48DC181oumdbK5JEpF2mTnndr9codFmZOemtiIqcdpU69vGIXqPW63JyZdPuZNM+o5zZ
-        imJFXvuaOml2v14j7dLtldNkeY9sep5iURmTh/Iv1qaVin+uuZYbszz+i13a5C3dQ1NHP37w
-        5Kn9K7tmDTemtWy+ntiwZfumYqOzqn+s5WffkvzyaBJrKekvfOlhsOz+/Vvw5uffxLy94t6l
-        ys/WX+tdO+MVCs7P+Q8kb+VIua6w4eEPOy5f6DKMrZ0wJ2TP5O5M039icb9x3X5KuXjOo+Uz
-        U3WJcZwpU/cPbz3LRJMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUyTZxSGfZ73k2ad7zqMT4A/62LcWKYyJTkJC5kZCU+mW/bDuYVp7Ov6
-        ZjQU0FaZkJngAFFEBLdaqZ0psBTEbs5CHH5gmiKFClMUVMawGx2bYxbYwOIqBddmM/PPyZVz
-        57pzfhyR0QS5JNFQsEsxFchGLa9iVe9klL26dCqoX9PavBTqqtdA+MEBFuxnXDwMfHMagat9
-        H4aJ7my4MxdCMP/9dQaslgEEDWN3GWj3BRB0tnzGw+D4szAUnubBbznEQ1nTGR5u3I9iGD12
-        FMNp99vQV9uIwRO5x4J1gocT1jIcG79jiDhbBXCWroBgi02A6Fga+AO3Oej60s9B58grUH9y
-        lIdLnX4WfB1BDIMX7DwEXI856PP1sjBQd5iDr6caebg/52TAGZ4W4KbHgeHb8ljb/tlFDnoO
-        ezDs/+oshqEfLiK4fOBnDG7XbR66wiEMbW4LA4+auxEEayYFqKiOCHBiXw2CQxXHWLi+0MNB
-        +Wg6zP9t59/IoF2haYaWt31CO+ccLL3aSOh5212Bll8eEajDvZu2taTSpksTmDbMhDnqbj3I
-        U/fMUYFWTQ5hOnXtmkB7j8+zdHzIit9NyVG9rleMhiLFtDpTp8q9NXmK3RFV7xnpmGFK0SNV
-        FUoQibSO2L0HhTiz0gpi/66JjTMvrSTDwxGmColiovQSCbW/Fl8zUq+KHLGXxPl5SUcis0e4
-        OKslIHcqwzFWiRqpGpHfFh7+FzxH/PXj7L9yKhlenMDxTkZKJs2LYnydEDvB5gzxcV4mvUg8
-        53pwLVLbnrJtT9m2/20HYlpRoqGgKF82GNNXmfNyiwsMe1Z9VJjvRrHPc+6N1nWgB4PZXiSJ
-        SPuMWpcS1Gs4uchcnO9FRGS0ierkh2N6jVovF5copsJtpt1GxexFySKrXa5+631Fp5E+lncp
-        eYqyQzE9SbGYkFSKlst+3ctrnasTgvXGYNSbkrRZ9lW2RAKWQE7apiUv7N346+jZ0kz6Re2W
-        gPWPtdu3/tT/ecbxbDus78hMG/nxlGND5rLHuor+bSunTecq+z4sPN+vajCVrKshH/wyJvz5
-        3vadliyblIjSPxWLXFfu/eULZOW9SYpzZ9cv2LI8ge4BLWvOldNSGZNZ/gfo2omcdQMAAA==
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,46 +46,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 05:25:41AM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 21, 2023 at 12:46:37PM +0900, Byungchul Park wrote:
-> > @@ -377,44 +421,88 @@ static __always_inline int Page##uname(struct page *page)		\
-> >  #define SETPAGEFLAG(uname, lname, policy)				\
-> >  static __always_inline						\
-> >  void folio_set_##lname(struct folio *folio)			\
-> > -{ set_bit(PG_##lname, folio_flags(folio, FOLIO_##policy)); }	\
-> > +{									\
-> > +	set_bit(PG_##lname, folio_flags(folio, FOLIO_##policy));	\
-> > +	dept_page_set_bit(&folio->page, PG_##lname);			\
-> 
-> The PG_locked and PG_writeback bits only actually exist in the folio;
-> the ones in struct page are just legacy and never actually used.
-> Perhaps we could make the APIs more folio-based and less page-based?
+This series makes ETM TRCCCCTRL based 'cc_threshold' user configurable via
+the perf event attribute. But first, this implements an errata work around
+affecting ETM TRCIDR3.CCITMIN value on certain cpus, overriding the field.
 
-Yeah. I need to make it more folio-based. I will work on it. Thank you.
+This series applies on v6.5-rc7.
 
-> >  static __always_inline void SetPage##uname(struct page *page)	\
-> > -{ set_bit(PG_##lname, &policy(page, 1)->flags); }
-> > +{									\
-> > +	set_bit(PG_##lname, &policy(page, 1)->flags);			\
-> > +	dept_page_set_bit(page, PG_##lname);				\
-> > +}
-> 
-> I don't think we ever call this for PG_writeback or PG_locked.  If
-> I'm wrong, we can probably fix that ;-)
+Cc: Catalin Marinas <catalin.marinas@arm.com> 
+Cc: Will Deacon <will@kernel.org>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com> 
+Cc: Mike Leach <mike.leach@linaro.org>
+Cc: James Clark <james.clark@arm.com>
+Cc: Leo Yan <leo.yan@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Cc: coresight@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
-Okay then, I will assume this will never be used. So are you asking me
-to get rid of this part, right?
+Changes in V5:
 
-> >  static __always_inline void __SetPage##uname(struct page *page)	\
-> > -{ __set_bit(PG_##lname, &policy(page, 1)->flags); }
-> > +{									\
-> > +	__set_bit(PG_##lname, &policy(page, 1)->flags);			\
-> > +	dept_page_set_bit(page, PG_##lname);				\
-> > +}
-> 
-> Umm.  We do call __SetPageLocked() though ... I'll fix those up to
-> be __set_folio_locked().
+- Replaced 'where as' with single word 'whereas'
+- Reworked 'cc_threshold' fallback to ETM_CYC_THRESHOLD_DEFAULT
 
-Haha Okay. Lemme know when you get done on it. Thanks.
+Changes in V4:
 
-	Byungchul
+https://lore.kernel.org/all/20230818112051.594986-1-anshuman.khandual@arm.com/
+
+- Fixed a typo s/rangess/ranges,
+- Renamed etm4_work_around_wrong_ccitmin() as etm4_core_reads_wrong_ccitmin()
+- Moved drvdata->ccitmin value check for 256 inside etm4_core_reads_wrong_ccitmin()
+- Moved the comment inside etm4_core_reads_wrong_ccitmin()
+
+Changes in V3:
+
+https://lore.kernel.org/all/20230811034600.944386-1-anshuman.khandual@arm.com/
+
+- Added errata work around affecting TRCIDR3.CCITMIN
+- Split the document update into a separate patch
+
+Changes in V2:
+
+https://lore.kernel.org/all/20230808074533.380537-1-anshuman.khandual@arm.com/
+
+- s/treshhold/threshold
+
+Changes in V1:
+
+https://lore.kernel.org/all/20230804044720.1478900-1-anshuman.khandual@arm.com/
+
+Anshuman Khandual (3):
+  coresight: etm: Override TRCIDR3.CCITMIN on errata affected cpus
+  coresight: etm: Make cycle count threshold user configurable
+  Documentation: coresight: Add cc_threshold tunable
+
+ Documentation/arch/arm64/silicon-errata.rst   | 10 +++++
+ Documentation/trace/coresight/coresight.rst   |  4 ++
+ .../hwtracing/coresight/coresight-etm-perf.c  |  2 +
+ .../coresight/coresight-etm4x-core.c          | 45 ++++++++++++++++++-
+ 4 files changed, 59 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
