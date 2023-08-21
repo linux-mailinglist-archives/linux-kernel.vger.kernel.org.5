@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 107CB782960
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E94782964
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235051AbjHUMq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47432 "EHLO
+        id S235063AbjHUMr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbjHUMqz (ORCPT
+        with ESMTP id S235061AbjHUMr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:46:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB6BC2;
-        Mon, 21 Aug 2023 05:46:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0608A6167C;
-        Mon, 21 Aug 2023 12:46:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0693C433C9;
-        Mon, 21 Aug 2023 12:46:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692622013;
-        bh=4DulVPM+YpEHTrMYx1DRU9SIjOoHAPVyvzLnF4PXuEM=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=aAO5mpJBgGTfndj3tXm5mRcOXJyni8kExU7/Uz4TSEdWoJo9VC/tanlTq/fsyySm1
-         VHLRRAbkLZr007Q3JJBVh62nairquAHcxRrUzEENgeRskLMglxjpybsblFuWQIesyy
-         oaNb+drd7/Zd7BWibycb2Z7lgpWg5JzYk9Ke8u3x04FKqcvZ2XuTBlTRMUilQcTmO6
-         17EdXlaVrnvw99lYBxnMsKtZV0kHzcIlgxo8qzE5RVX1A7J3mothRXbcy7ZUsUrm9B
-         Tn8pD3oSlZr1m7kWz1eJ4S1ZS3EJsq7SJrdw9I5fHns59ltJ8eRocU8oFlS6qlH2nW
-         JkwZ4Bpxf3m3Q==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     "Greenman, Gregory" <gregory.greenman@intel.com>
-Cc:     "duminjie@vivo.com" <duminjie@vivo.com>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "opensource.kernel@vivo.com" <opensource.kernel@vivo.com>
-Subject: Re: [PATCH v1] drivers/net: intel: iwlwifi: fix two parameters
- check in iwl_mei_dbgfs_register()
-References: <20230712131407.16462-1-duminjie@vivo.com>
-        <7860d8cbac1eb699de033210c8256afaa8f7b35b.camel@intel.com>
-Date:   Mon, 21 Aug 2023 15:46:49 +0300
-In-Reply-To: <7860d8cbac1eb699de033210c8256afaa8f7b35b.camel@intel.com>
-        (Gregory Greenman's message of "Sun, 13 Aug 2023 15:27:38 +0000")
-Message-ID: <877cpok1fq.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 21 Aug 2023 08:47:26 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98D4CF;
+        Mon, 21 Aug 2023 05:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692622041; x=1724158041;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WT0CppAYh4JWZnBJRGCct2icAFxfvQD2ozg66ant7VA=;
+  b=PehRDXWm18NvThT8+b+DoHE8aXSo/OmmqEdoLxS/3H076MREWIb0k1rw
+   yWw0XmQXThQ/Tgbqz5oZN6wNs+fuFrYyZJqkhujFrEFpiid+VaeU6m8oX
+   e19Nb7tJFQWER4sXZDIFcbmvaJbjfnQ00Y9PIyUDQKofRkxWO8BZDHx4J
+   QAc52GemUK8KNcdvT+kIq922T/n9SCpMiITXy24ZnZbwCBfqcTW6XBY37
+   9iYHntD6GWqQ1p4/ZKkWpVg1nKVVG46hs/WGkMFy2s/OMmGQ9YEaxqf2S
+   PgjAnOmy/La5PyXqzXsiMa2I2hVEU+WXha2mopN9N1IGdwvSfeztaegjo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="353895300"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="353895300"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 05:47:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="859460788"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="859460788"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP; 21 Aug 2023 05:47:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qY4JO-00ES7D-37;
+        Mon, 21 Aug 2023 15:47:14 +0300
+Date:   Mon, 21 Aug 2023 15:47:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kartik <kkartik@nvidia.com>
+Cc:     arnd@arndb.de, digetx@gmail.com, frank.li@vivo.com,
+        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, pdeschrijver@nvidia.com,
+        petlozup@nvidia.com, pshete@nvidia.com, robh@kernel.org,
+        stefank@nvidia.com, sumitg@nvidia.com, thierry.reding@gmail.com,
+        windhl@126.com
+Subject: Re: [PATCH 6/6] soc/tegra: fuse: Add support for Tegra241
+Message-ID: <ZONc0r5lJ8C32Kdc@smile.fi.intel.com>
+References: <ZN+Jzbsci3RLtEnW@smile.fi.intel.com>
+ <20230821114033.4446-1-kkartik@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821114033.4446-1-kkartik@nvidia.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Greenman, Gregory" <gregory.greenman@intel.com> writes:
+On Mon, Aug 21, 2023 at 05:10:33PM +0530, Kartik wrote:
+> On Fri, 2023-08-18 at 18:10 +0300, Andy Shevchenko wrote:
+> >On Fri, Aug 18, 2023 at 03:00:28PM +0530, Kartik wrote:
 
-> Hi,
->
-> On Wed, 2023-07-12 at 21:14 +0800, Minjie Du wrote:
->> Make IS_ERR() judge the debugfs_create_dir() function return
->> in iwl_mei_dbgfs_register().
->>=20
->> Signed-off-by: Minjie Du <duminjie@vivo.com>
->> ---
->> =C2=A0drivers/net/wireless/intel/iwlwifi/mei/main.c | 2 +-
->> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/net/wireless/intel/iwlwifi/mei/main.c
->> b/drivers/net/wireless/intel/iwlwifi/mei/main.c
->> index 54445f39f..e5d203a62 100644
->> --- a/drivers/net/wireless/intel/iwlwifi/mei/main.c
->> +++ b/drivers/net/wireless/intel/iwlwifi/mei/main.c
->> @@ -1888,7 +1888,7 @@ static void iwl_mei_dbgfs_register(struct iwl_mei =
-*mei)
->> =C2=A0{
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mei->dbgfs_dir =3D debug=
-fs_create_dir(KBUILD_MODNAME, NULL);
->> =C2=A0
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!mei->dbgfs_dir)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (IS_ERR(mei->dbgfs_dir))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return;
->> =C2=A0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0debugfs_create_ulong("st=
-atus", S_IRUSR,
->
-> The title should be:
->
-> wifi: iwlwifi: mei: ...
->
-> Also, why two parameters? It only fixes dbgfs_dir?
+...
 
-It would be better to just remove the check, from debugfs_create_dir():
+> >>  	case TEGRA234:
+> >>  		fuse->soc = &tegra234_fuse_soc;
+> >>  		break;
+> >> +#endif
+> >> +#if defined(CONFIG_ARCH_TEGRA_241_SOC)
+> >> +	case TEGRA241:
+> >> +		fuse->soc = &tegra241_fuse_soc;
+> >> +		break;
+> >>  #endif
+> >
+> >Have you tried --patience when formatting patches?
+> >Does it help them to look better?
+> 
+> No, I did not use --patience flag while formatting the patches.
+> Shall I post the next patch set using it?
 
- * NOTE: it's expected that most callers should _ignore_ the errors returned
- * by this function. Other debugfs functions handle the fact that the "dent=
-ry"
- * passed to them could be an error and they don't crash in that case.
- * Drivers should generally work fine even if debugfs fails to init anyway.
+Do you see the difference in the output? If yes, definitely use it.
+Otherwise it's recommended to use anyway.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
