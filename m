@@ -2,115 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1667B782B28
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8AB4782B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbjHUOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55400 "EHLO
+        id S235671AbjHUOJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232224AbjHUOG2 (ORCPT
+        with ESMTP id S230051AbjHUOJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:06:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F4BCE;
-        Mon, 21 Aug 2023 07:06:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9220563520;
-        Mon, 21 Aug 2023 14:06:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64BCCC433C7;
-        Mon, 21 Aug 2023 14:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692626785;
-        bh=jskCnmfcQS5EFi06b4333cYtIRY89QRwP0GiuGw2lz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OPZBm3I8NJHoZf7lNV4qSpa5xDGS9Hj6d9J+HQ41DwnpKpgECp2/T0IvOCJNncVya
-         KUOCkzttOoxWUVf7H+69kgVBsKZOKqz22xOIyUo7v+iP0131btrysBz0SMywPcyYhE
-         r1LIquZBVqSczHC4FriOFXStKLlwWUx/900G6VzQA/QFZ5AJ+cAqk8rJs5nNpuXjH/
-         tj3V7Cvm/SvDWo97FwWn3Xcjh5X78b0j+JKRlXkGx1lUIhLdZYMK68JF7e8T4ZvBiR
-         5QCv5J7Z3bgb6+r7F0T8wA32Q/jw4GdjpCsRAZe18V0ZmeVy9c/BFOAhNVhnSzL53g
-         +nsYCO0dsNUdA==
-Received: (nullmailer pid 1479558 invoked by uid 1000);
-        Mon, 21 Aug 2023 14:06:22 -0000
-Date:   Mon, 21 Aug 2023 09:06:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] ASoC: dt-bindings: fsl_easrc: Add support for
- imx8mp-easrc
-Message-ID: <20230821140622.GA1473812-robh@kernel.org>
-References: <20230820175655.206723-1-aford173@gmail.com>
- <f5b16676-04b9-7864-ffa7-1c48f3c2ca9c@linaro.org>
- <6089b46d-a580-af52-0cac-84b46fe11e6c@linaro.org>
- <CAHCN7xJyOjKSXbm17roAJDbk-gDKQHprE9t1d4VH2uYSMZcEDg@mail.gmail.com>
+        Mon, 21 Aug 2023 10:09:12 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6CBDB;
+        Mon, 21 Aug 2023 07:09:10 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LCZr87009066;
+        Mon, 21 Aug 2023 14:08:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=XlGvuJt/LzeYjlysCJ8r3NDkdbat2SlGcUuNyUz0y3Y=;
+ b=HQ1ncGgfC/N365N1wuwHBNwMptg7Q3r3BQ1qh518ULxtTqYWMBLKvm0/JP8hu5z+6yrs
+ +ZRoMY36BIObugRgZT94O6CloUvoqyUDbObUNS/i41rcPVFvZRp7r5DWRYO9EdzWf8tF
+ swWlzBhax0DXKtMGcxupTq+ehdE5QpOdtj1wPfhgMYWRkMXwA665gsj6DyohX4+E8jkb
+ H/YZISLNP3BkqZc440zOLzw0WEpe0E43RZinfTyZ5D0iaH2lKf1x9tNllXt7Eif/neoq
+ nCk3LyFDFJyh5zpm/s0HMtMwEpreUcxB5qQHyk/av9uk0HPpf2SSASI3641Cr7smj0PJ CQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm5mcrhm7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 14:08:59 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37LE8xPR015985
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 14:08:59 GMT
+Received: from [192.168.143.77] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 21 Aug
+ 2023 07:08:58 -0700
+Message-ID: <71bae7aa-f670-d265-8944-ef172f8c6953@quicinc.com>
+Date:   Mon, 21 Aug 2023 07:08:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHCN7xJyOjKSXbm17roAJDbk-gDKQHprE9t1d4VH2uYSMZcEDg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2] scsi: ufs: ufs-qcom: clear qunipro_g4_sel for HW major
+ version > 5
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+References: <20230821-topic-sm8x50-upstream-ufs-major-5-plus-v2-1-f42a4b712e58@linaro.org>
+From:   "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
+In-Reply-To: <20230821-topic-sm8x50-upstream-ufs-major-5-plus-v2-1-f42a4b712e58@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: MM3bgrKA0kW3lnQqqS38G2lVQ7I0ZyeZ
+X-Proofpoint-ORIG-GUID: MM3bgrKA0kW3lnQqqS38G2lVQ7I0ZyeZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-21_01,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=724
+ malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
+ mlxscore=0 impostorscore=0 phishscore=0 priorityscore=1501 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308210131
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 04:05:16PM -0500, Adam Ford wrote:
-> On Sun, Aug 20, 2023 at 3:33 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 20/08/2023 22:32, Krzysztof Kozlowski wrote:
-> > > On 20/08/2023 19:56, Adam Ford wrote:
-> > >> The i.MX8MP appears to have the same easrc support as the Nano, so
-> > >> add imx8mp as an option with a fallback to imx8mn.
-> > >>
-> > >> Signed-off-by: Adam Ford <aford173@gmail.com>
-> > >>
-> > >> diff --git a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> > >> index bdde68a1059c..2d53b3b10f2c 100644
-> > >> --- a/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> > >> +++ b/Documentation/devicetree/bindings/sound/fsl,easrc.yaml
-> > >> @@ -14,7 +14,11 @@ properties:
-> > >>      pattern: "^easrc@.*"
-> > >>
-> > >>    compatible:
-> > >> -    const: fsl,imx8mn-easrc
-> > >> +    oneOf:
-> > >> +      - items:
-> > >> +          - enum:
-> > >> +              - fsl,imx8mp-easrc
-> > >> +          - const: fsl,imx8mn-easrc
-> > >
-> > > You need here also const for fsl,imx8mn-easrc, otherwise you do not
-> > > allow it alone. Test it for fsl,imx8mn-easrc DTS - you will notice warnings.
-> >
-> > Actually, I see now Rob's report... you did not have to test DTS even.
-> > It was enough to test your change and this test was missing :(. Please
-> > test your changes before sending.
+On 8/21/2023 5:11 AM, Neil Armstrong wrote:
+> The qunipro_g4_sel clear is also needed for new platforms with
+> major version > 5, fix the version check to take this in account.
 > 
-> For what it's worth, I did run 'make dt_binding_check', but I didn't
-> run it with the extra flags from Rob's e-mail.  The tool didn't return
-> any errors.
+Change "version > 5, fix.." to "version > 5. Fix..."
+"into account."? Anyway..
 
-The error is not related to the '-m' (undocumented compatible) warning. 
-It is as Krzysztof said.
+Reviewed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
 
-Rob
