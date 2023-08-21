@@ -2,108 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4AF7824DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E41D07824E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbjHUHsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
+        id S233815AbjHUHv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjHUHsn (ORCPT
+        with ESMTP id S233730AbjHUHv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:48:43 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4DF92
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:48:41 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c0290f0a8so374663066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:48:41 -0700 (PDT)
+        Mon, 21 Aug 2023 03:51:28 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6AA92
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:51:26 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-58d41109351so56905047b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1692604120; x=1693208920;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CJHWjcXEkykiw944poxSFMTZcS7Csi+nBW+nX63BvpM=;
-        b=GCAFjf9CXoTlHF+Gv9UIMaQOvfrMZXNuDMhb0Q1sSq3Rq9j47swjXwd0CU7wvrKQMn
-         G/v7dqyXX6OeCsgvYrdnpJQbb9LpM433uxqBtQtBpoc83NnoGo1y2kFJh3vv3tmdRUe4
-         xmhg6mVHVZ/I3bibRVkf3jRqVaSmBv+rJqq10=
+        d=sifive.com; s=google; t=1692604286; x=1693209086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1IkOyMzrPXM2VgxHUc80scGsw2r/NO7mjPQDx+GPN74=;
+        b=dmDahYpzHs8mZ4mluw4fY4YqFdveuqRbJAHQ/01cpHcArnHwT9aj+1N+zVh0Il7KlK
+         v91zbtufrlxETSqxHueRYILxcaRcUW4ymO37hpdd5sSQweayETXouNgBrM8PIFpd7rgg
+         W7SgodZHm9Q//rEIvIkge7Ixl6/OuBa9y8NygWyWJJb1dju6fFxW/yRi8ojA0+Xf5o/U
+         xeIUQZbL3D1nEQ8YEUTLaFcMjhH6TdW5PVnOtME8EDeKLdsoGvmW6z2aAmGdsRUSNxAl
+         KSaOZESe56qpSc1DiE/4YGZFqlLzU/445giiYxBOb5xLVLOzT7SaKVIiLymIxebCBVbz
+         B2Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692604120; x=1693208920;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CJHWjcXEkykiw944poxSFMTZcS7Csi+nBW+nX63BvpM=;
-        b=FKur64fm4B1hfjzxqiB1KjeNiVFXday9mxBVJOj6Ily3JBlCjTFNSuGhdktZIOMt7O
-         VSn+DvSVV/24KqPuzGi4d0scduu4NxF7APp5gSHdIMKV5QMFBDJPbzKziawzURIs1vqD
-         GiY7mDlT+kREjTR/XKV+oAkgfGRE9aODn3iu7jCj5brqq9bt0J95Nuk1iLQx4WUv8OW2
-         AH9iqZdjY3nexe+RsaT2Sp0wRBRJFL5cdYZ0e+9Ld8KC9yWUrn9UPezAY8Mv0VIC6CpK
-         bgZiCNkF+ZGMMcN4/YrAjeJYCNIX9A9Etw2l7Lu4TSvUdlUvHfB+sQvdP8dy+bJl/Xs/
-         sGeg==
-X-Gm-Message-State: AOJu0YwZLXITV2v0KiC0bhZVh2Z003pXJysHcOcH7UD7TTGYTLOMUQBK
-        Y5cvV0ZDdrBV9B+HoG1pm4n3Nw2AzcsvGbpacVC27A==
-X-Google-Smtp-Source: AGHT+IGAlm58OKlJJoATdkE3tZSv8bLSeSt36BNqKJ89rux/TLSsJ6GE7t+pAXmbzsUAO7S78lB/Hg==
-X-Received: by 2002:a17:907:7845:b0:9a1:8f6f:6873 with SMTP id lb5-20020a170907784500b009a18f6f6873mr2065384ejc.33.1692604120158;
-        Mon, 21 Aug 2023 00:48:40 -0700 (PDT)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id z24-20020a170906075800b0099bcf563fe6sm6057207ejb.223.2023.08.21.00.48.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 00:48:39 -0700 (PDT)
-Message-ID: <f32995aa-df23-bf51-adb7-f024b76a33aa@rasmusvillemoes.dk>
-Date:   Mon, 21 Aug 2023 09:48:38 +0200
+        d=1e100.net; s=20221208; t=1692604286; x=1693209086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1IkOyMzrPXM2VgxHUc80scGsw2r/NO7mjPQDx+GPN74=;
+        b=bMRuHHGEbT45Y0NDi9ZHUCCw5MC06XBHOejZ6CxVhJbnYpLHtQqgYkpSnfvUTC4HeT
+         PxuHtAnkdNHiD32891oXYZu+eo27GlqFC9tfK8oe+iz/+aW1/MEg9YEZFGW2vhAWDnu3
+         5/7lYrDwU9EWh0tvRtx5rt0B8cQ2arMJTmNVYsXs0Ire897cZcdbN7Coin7h1BxF5ZKH
+         lTaDsvX1iEIFvN3rXOXS1Og8O2A6DOEQUPdrZlFjYxGnXLrsKhgbmXFivGFLHlFbfhI5
+         XN+hw7YMT8BD404R5dGbE70uY0U2sajF5O25lVyPfFKS5FwTm5L/BdJM7fcdKikKyhFn
+         Fntg==
+X-Gm-Message-State: AOJu0YxtNmTS+5SyTRWrp1uKKFtSsPsP96Ukrc1irbUTcoAeS03f4qar
+        XX28w7ZC3wNqJn0d+KoMqsmC929Z4M7f223rIwdT9w==
+X-Google-Smtp-Source: AGHT+IGsgfF/yqt3FJ2nXR1RxTsBuGTHFXhYYZYrd0vKqQuzmc6jZpHnNy5kwuoHkMasCmlduCzk9ohT+0c6ovX2VOY=
+X-Received: by 2002:a0d:e897:0:b0:589:f9c3:8b2e with SMTP id
+ r145-20020a0de897000000b00589f9c38b2emr4566061ywe.20.1692604286040; Mon, 21
+ Aug 2023 00:51:26 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20230815235934.47782-1-yury.norov@gmail.com>
- <ZN3qQPeFtdZQrLE4@smile.fi.intel.com> <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
- <ZN4tB7jkQrX/TKnh@yury-ThinkPad> <ZN4+nZwBu317dVjz@smile.fi.intel.com>
- <ZOAi9PB6+/p4orRN@yury-ThinkPad>
-Content-Language: en-US, da
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <ZOAi9PB6+/p4orRN@yury-ThinkPad>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230615072302.25638-1-nylon.chen@sifive.com> <20230615-unvisited-deceit-9beab8ce987a@wendy>
+ <CAHh=Yk_=oZJ6eY3jJzLavub5rGsvY=MKv4tGXeiqkz+rgJHwDQ@mail.gmail.com>
+ <20230615-luxurious-rewire-84ff9d639fea@wendy> <20230615084310.GA780@hsinchu15>
+ <mvmo7lh2ip6.fsf@suse.de> <20230615094732.GA8710@hsinchu15>
+In-Reply-To: <20230615094732.GA8710@hsinchu15>
+From:   Nylon Chen <nylon.chen@sifive.com>
+Date:   Mon, 21 Aug 2023 15:51:14 +0800
+Message-ID: <CAHh=Yk8upMOdhma4EDZj_TsA2rf8=MQVrP2sidhmwBh3G-ix-Q@mail.gmail.com>
+Subject: Re: [PATCH v2] RISC-V: Support 32_PCREL relocation type in kernel module
+To:     Andreas Schwab <schwab@suse.de>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        jszhang@kernel.org, ajones@ventanamicro.com, aou@eecs.berkeley.edu,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        greentime.hu@sifive.com, zong.li@sifive.com, nylon7717@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/08/2023 04.03, Yury Norov wrote:
-> On Thu, Aug 17, 2023 at 06:37:01PM +0300, Andy Shevchenko wrote:
+Hi Andreas,
 
->> But this gives +89 bytes on x86_64... :-(
-> 
-> Who cares if it gives a boost of performance for regular users?
+Currently, due to the lack of support for the unwind table in RISC-V,
+we have disabled it.
 
-"Regular users" never ever hit bitmap_remap, it's simply too esoteric.
-It has all of _two_ users in the whole tree, one in some gpio driver,
-another only reached via a system call that nobody ever uses, and if
-they do, it's most likely some one-time-per-process thing. It's about as
-far from a hot path that you can come.
+If RISC-V were to support the unwind table in the future, would we
+need to re-enable it? Would this require implementing related
+changes(module relocation type handler) at that time?
 
-If it wasn't for that xilinx user, those bitmap_remap and bitmap_onto
-etc. should be moved to be private to the NUMA code.
+Nylon Chen <nylon.chen@sifive.com> =E6=96=BC 2023=E5=B9=B46=E6=9C=8815=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:47=E5=AF=AB=E9=81=93=EF=BC=9A
 
-Anyway, I think those +89 was for Andy's own counterproposal. I haven't
-built Yury's patch, but from a quick look, it should not add that much,
-if anything - it adds a test, call, early return, but OTOH it helps the
-compiler to combine the two set_bit (since only the first argument
-differs), and loses the lock prefix.
 
-As for that latter point, I don't think a separate patch is worth it,
-just a comment in the commit log - we're already doing a bitmap_zero()
-on dst which certainly doesn't use any atomic ops, and in general all
-the bitmap_* functions expect the caller to handle locking.
-
-So I don't mind Yury's patch, but I highly doubt it matters at all. The
-comment mentions an example, do we even have that put in test code?
-
-Rasmus
-
+Nylon Chen <nylon.chen@sifive.com> =E6=96=BC 2023=E5=B9=B46=E6=9C=8815=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=885:47=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Thu, Jun 15, 2023 at 11:11:49AM +0200, Andreas Schwab wrote:
+> > On Jun 15 2023, Nylon Chen wrote:
+> >
+> Hi Andreas,
+> > > Because LLVM currently has it enabled by default(https://reviews.llvm=
+.org/D145164), it will generate this
+> > > relocation type.
+> > >
+> > >>From what I know, GCC will also enable it in the future.
+> >
+> > That's why the kernel explicitly disables it.
+> Ok, thanks for your feedback, after I cross-tested, there is indeed no re=
+levant relocation type generated.
+>
+> If this error no longer occurs.
+>
+> I am open to the idea of adding this patch to the upstream and would like=
+ to hear your thoughts on whether it is still necessary.
+> >
+> > --
+> > Andreas Schwab, SUSE Labs, schwab@suse.de
+> > GPG Key fingerprint =3D 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B=
+9D7
+> > "And now for something completely different."
