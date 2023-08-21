@@ -2,361 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDA5782864
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF942782865
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbjHUL5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S232800AbjHUL6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbjHUL5s (ORCPT
+        with ESMTP id S232285AbjHUL6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:57:48 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF3B4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:46 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565439b6b3fso1497406a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692619066; x=1693223866;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vv+yXgiJW+2qgzIrJ6uIx4879w0vACOVHI/CbLMMXRo=;
-        b=YzpDwpqTfqA/K8qsGYnBKvbO0A2tEqJjfP9A/kvx6NdvbG4W5JCtxPNyTEDj++/gsI
-         lEo/NUB63XM5COJFgFPOcdlq+d4N9ssM7ZPP1bw9tlqJE88JHXW+GAIRhIQ0QlWLyNQ9
-         UmyQnvPTrgrkTCPQBYSV9xeWjsQJNlHx/1WQlFuiHu9EsVAyIdH3y9gl2PkX+B1Ca2FS
-         gzMXTU1YjM4S1/70Q5uHgVwA8AZndzeLdFeo6xYg5A+OmE2oemeEgCgzeznoWZ2BCkqy
-         OCqU4K6u3AfgaShVwX91o+Kaf2tJwA0w5ZA7B4CEubJqUXTnfDt6PRweV8BQrG2TUZ/l
-         68MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692619066; x=1693223866;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vv+yXgiJW+2qgzIrJ6uIx4879w0vACOVHI/CbLMMXRo=;
-        b=Y8jZ1eo35wgLXzpMuGPl6tYrqfaIhou9UkDIWiN5xU6m+ZIkUhTwt7v/lv2XqHJ5rI
-         3cLJvG+wZNCcvUObwIt3MYk6iGAgHY0Ef0V285Wn6AWvEXtyQzHrjcocSpRAndwXKpWZ
-         IOetuHBWC7q/KIpPOLJKN0OQa7IOXpCdvHIHY4usWDnJ6ma+SJFVdunEwQ7tCAL9ZImC
-         yjQuhd76VsaCiBTRR1rwBKqEzMv3FecMoTHprSk4UPXMCt1aP75Eb8sRTyo2jDrphz26
-         wzDLrUR8uENNq98dxkJtKRCC3wWQs2G07PMq7xKn5vtl3bsiNRr8y2KFxaOEoP0dzQE5
-         GfMg==
-X-Gm-Message-State: AOJu0YwAZAm8tXlqRa1h2AXaVxUrou0el7EgAc2tTGx02tIExfdcukLU
-        2eBEeoGAuPwSSYb7KTNDVjxNA7VJpELV+IMgBRZvSg==
-X-Google-Smtp-Source: AGHT+IFM1DQBrSHS34AAts5aYanidGqfz/tX0Oa17FPVYw29/Auo3UTWQyIfSaAUxXv61+6lo0xOuepp2oKP5ktS/YM=
-X-Received: by 2002:a17:90b:4a01:b0:26d:2b1d:1982 with SMTP id
- kk1-20020a17090b4a0100b0026d2b1d1982mr3459827pjb.24.1692619066049; Mon, 21
- Aug 2023 04:57:46 -0700 (PDT)
+        Mon, 21 Aug 2023 07:58:06 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2064.outbound.protection.outlook.com [40.107.244.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE493BC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:58:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VlDd7xTDcpagX9b/ip/jruN8bmqJiZ1v3VRUiIVhFDgsc4OM2U2POjgy0De/pXnnmJEQKkfHsO9MECWjgN7c12Mp3ntWbmNFBkDpSw5/ysY1KtcGB6wWLkYOt3Q+1NjEvSe3W2gK6pZRFLaUsZXpOo8WMOMCa7OQc6/NaO3IJyVXJyP20Gkdkncj4xqPi5DpoD25rmnPe4h8Pi6qCQVBnpMeRTJU83CRNMJQ3MPYmOekriB5xi5/WVTu5xarZaP7pyBqAI2Tq51suwbQkrYK+HhvYMpQ/GOVbFAteDM/qgL6BWNVsFdpGwv/NEqApkUmvKUaJNobGo3A2GxNRVDd/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ycxcvEF+6SH7MC07D9iAEJ6msqu6OJSablnofSa1Syw=;
+ b=aWYy0nDk8QbfOWy/6WG76IWQ+g6bein8VDJ1KLdEDMgxJVtj0iUgZMhRTRwXMkyymkf7hNSjH7orgG9MixiJmDVKg+wAE5hPLRtO+9SPxc42jFAvKldyDy3jakDGkwhXtYXf769EWsFyE/yM33txLug6G04lC49UYprpXB1iIlNZ115TA+frYHLzoKUJAIJnSC/LqJYlBz2b0cNcORwAzdwuAdTwr67MNUjPmP4zQ8vSJOnMo8qC/9E5h40aZq+OKWHdohG4b+4INfITWJvc7SxpAGB8WwpSZsfDR4jEmbNCpP5AFSNAfY3XxJYVkHs1gD8AarCjmxiB9ZaRbRyYLw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ycxcvEF+6SH7MC07D9iAEJ6msqu6OJSablnofSa1Syw=;
+ b=b/0ShrksF5rlV46jb0gS+MZ3zCKI8dDFXP5sd3zSMkGuu2Cx+/tEGzSVBpkQU1FgfsjzYW+Rss9oZbR9W9ZJsQkjuheSXxij/LUg+IsobZ3UUKHv7Jj6utiHQQ/PPPxqYQuxJ3dttAnBLUFceMUbSfvJLhs2qTV83ojSRKa7ljkfwCs57joj/PQioE9T8EhjTZ21QRd3fysQWhzPBLwztmRdvXDgl6HTIED7EXMwUWcadn9ys3m+QYS3A13hvJ2F1oLjOwE8J4XG8lmqBaNkGOMeeGVOZcCTPe8BmywyUc2xqagfiGV4OaBD0fnTwflbIwF3bZGifx36yrm13SmDYw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BY5PR12MB4132.namprd12.prod.outlook.com (2603:10b6:a03:209::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 11:57:59 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
+ 11:57:59 +0000
+Date:   Mon, 21 Aug 2023 08:57:58 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, nicolinc@nvidia.com, tina.zhang@intel.com,
+        jean-philippe@linaro.org
+Subject: Re: [RFC PATCH v1 2/8] iommu/arm-smmu-v3: Perform invalidations over
+ installed_smmus
+Message-ID: <ZONRRubvUK7GXO4i@nvidia.com>
+References: <20230817182055.1770180-1-mshavit@google.com>
+ <20230818021629.RFC.v1.2.I782000a264a60e00ecad1bee06fd1413685f9253@changeid>
+ <ZN5y4N8ffSoiR/sm@nvidia.com>
+ <05f69a1a-97c9-ebca-5e01-c0b00699c93e@arm.com>
+ <CAKHBV27suc5nDoH7gMHebjYBONTNqsugWvxbo2E-fRjRGs288w@mail.gmail.com>
+ <ZN93TO9mRIrX1grw@nvidia.com>
+ <CAKHBV24L7pTajkStWCRiW7976+B8VtDHRDpo+Emta0RshkvRhQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKHBV24L7pTajkStWCRiW7976+B8VtDHRDpo+Emta0RshkvRhQ@mail.gmail.com>
+X-ClientProxiedBy: MN2PR05CA0043.namprd05.prod.outlook.com
+ (2603:10b6:208:236::12) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20230816024831.682107-1-aaron.lu@intel.com> <20230816024831.682107-2-aaron.lu@intel.com>
- <CAKfTPtB6sGva9eZPo2RjW1ZuzUxmKcO-9wBBJ3PJuGT9WtqwsQ@mail.gmail.com> <20230821060618.GA72709@ziqianlu-dell>
-In-Reply-To: <20230821060618.GA72709@ziqianlu-dell>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 21 Aug 2023 13:57:34 +0200
-Message-ID: <CAKfTPtD4PiTbUXkvByYv3_48xDW4pJR0zWkYLcDd1cJSiCdOLg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
-To:     Aaron Lu <aaron.lu@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        Nitin Tekchandani <nitin.tekchandani@intel.com>,
-        Yu Chen <yu.c.chen@intel.com>,
-        Waiman Long <longman@redhat.com>,
-        Deng Pan <pan.deng@intel.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BY5PR12MB4132:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4d5c0cf-26b2-415d-96b5-08dba23ddd5c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VI/rzJpwMkqX7dojogKJYI7EJbRGcY2gnBg9pRIFYl0uIIEDkEEpw2w2iQIXzoHrTb55VJJ/NIWQb4X9gCZXP/t/xN1d174tytd/Pjb27XFOixZyx+RCVG0o2uvs51D7yyG+KtyUJe7FFlYTsoSL1EC/Fdtn2+YWXnMbjhnvBBjcSSoE/nKoIYkOztSjomClIaZ2Gm06G/Va/05jloliQcIfUbenOMuc2iVB+49c6Wo27sXBCcf6SO9BK70dSzjZ9D8AhQlXUgNRboBoxxG/BmzTLBTeRKcocgC0BcFUEyS1veWFLR0IKItL5f0r1VjrqJj98YLEUgc15GQoH5GzW7JcNdawrsSHpjfgHsbmcOSoOuonIQ24MMu0QlHmivp1+IEqWhYSuw8mi1kztG1J5L3yR03SwHemuOt8yywX36okM3jOaKQL9I+aPTNVvM9wAnT8bvyGwkLCghyEWZcs/Z6PJ2WvGaBdfU+xf0DXD3lUcZheiLyp7iuDU4k7VWiN+jRxJwHK2ZFcZc6hXSWUYaXbSzJQKO6yU9BvJmW3+HVt8W827yQJh2TLaon+0R2k
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(376002)(366004)(346002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(26005)(86362001)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(6916009)(66556008)(66476007)(478600001)(36756003)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2vTH4LQKnu51UqMt2k9cVaNv2W5Et2cPJsEqH7HT3lAcGb/RdcNVaOgD/KTh?=
+ =?us-ascii?Q?tLOp8HTrD1euMmtpvn1uwL0WO1aVWGwCmF/m8PFonvpyoD5NhXlRaKP7UrZA?=
+ =?us-ascii?Q?rAWYaP358HJv9oHhlmBHgHvHYefULzgxsA6AeOf7QDlvQG+zWAFeRoFJJHAx?=
+ =?us-ascii?Q?l9GiSkXdcpdhwYcimcYU3u/a8Q8kzSiD2+hjqi2IEzC/jQUpFnWnmSO7uxUi?=
+ =?us-ascii?Q?bzYNYsgtYZArY01mLImGF/MY/YmvBhwntVbnCrUtB3bTPBI4rTSzw+O4I9ro?=
+ =?us-ascii?Q?0RaGdY1xCw5EBtP6CzUDzWxH1cUe/kiYVf3yJF+BHBIZLBiz1jVuQHyQHQ+8?=
+ =?us-ascii?Q?rAWOxV6puRjPG3A77tiTYX+a1scggcftomqsax+YxHciMoXm4hcTJnTw/1n+?=
+ =?us-ascii?Q?sbJJsfyRaklgiLUYHNSVgwyYYaDXSPPLzltZn7t0GkCVSwvNPuxdEI+UkfhD?=
+ =?us-ascii?Q?X2Qh1fNpxYTFThuBgXvF6wjwaKSGA8jcMue0hn5ESFLWMnMzSVYMnhxFSYH3?=
+ =?us-ascii?Q?kl7sumtxAxHYWM+G04T2U81bW0kdJ/g+e3ooxKPf+gPyxf7x2USMFPt/bbgs?=
+ =?us-ascii?Q?58/iE5lq6bVjnGJKYP/0sBLq0cxa3eLlBwIKFzH3s8r3UT0Z46qIY45oKPVT?=
+ =?us-ascii?Q?vy+fs/A1M4Kqi3PRXFe7IzMu88/yHhMMsyLIa0aEGcEtuK7vi0Q7yeItHCRJ?=
+ =?us-ascii?Q?J+v+iD3tNHBPKpNC6w0x9rN0bYOGNB1J8CuJ4XFrgUyzoQZifHHBoLSeaka0?=
+ =?us-ascii?Q?whkMgvd+DfXMiOIkklxr69+aWuvlI1+qsi8VI7RCiPe2PwFoUd+GEyO+rO1l?=
+ =?us-ascii?Q?jnDdMMhRnRGoJRq/7fQcKEoG9orLq9Gbmih3hrgN6mXCeFweDmcm1fj0FChb?=
+ =?us-ascii?Q?fGs++zLhYX91TNWtk6LWQn1iBC2o1cLCL3r+9Mbc7TQyUCClpnxXs+ni8mHr?=
+ =?us-ascii?Q?2lKqFiBCGD6K6lJpmQ07MxaNTsOGVDKFK865SUU9VmuKk6HD+ayZXf6YapDc?=
+ =?us-ascii?Q?C5XPFzl847SJ4riHZR5bldN5ilBGmMAnUHLH//8/xAgHliou6TTGxdWoYww5?=
+ =?us-ascii?Q?9T63kUhAI2OXqViE4ZB2yZLEa6O10rJKoWr9DpbRrH4gYEMxu320ttD5xaSA?=
+ =?us-ascii?Q?6ebnG7iiDEmSPDXaecNDOyA7g8Wg/0BWTkR69pgnMzPQyjN0gR7LRXrVtQFa?=
+ =?us-ascii?Q?rhHR1YS9DVqZi3UZhw67EXn7U6KodZpahP7LS5XVmOahCQT8Vp7B8iY8BKxg?=
+ =?us-ascii?Q?Oagav62Msyr91WH9ndy8O4PJ84K+XTJNur22kK/H42ewUlt8WpeiVHdETzX5?=
+ =?us-ascii?Q?g0O5eJphX3w678QaqL5DSvTSOPAn0M8CApplPp/V92GqkOzNH8ZzKUESbjnR?=
+ =?us-ascii?Q?mUxU6YKZkwKu/5NCrae4gTNUfR83BUUT/1t0ROPFcrmxXlcBbemxwyYKeSuE?=
+ =?us-ascii?Q?G3hfQptuD/FBtV2dYqqc3rPZ5N5qwSifUMQ2sjtnJAn7FTFPPBZJzfdEccqa?=
+ =?us-ascii?Q?zmSHX9Kj5AC84cE5JaH5BYU7UmSg/wRbed4KLcVDJ3ElB5dMTKlncBG4elJx?=
+ =?us-ascii?Q?A3c8aV8RVqQnDlEyRgQuJxyNdDKcSXVvJprUf7C4?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4d5c0cf-26b2-415d-96b5-08dba23ddd5c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 11:57:59.5048
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0H80KMD52KtGi5Gma3st4Y8SrhnzUZpB3ozjaUGkh4ipNi9fWb+LGnqvdrOUJHcs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4132
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 08:06, Aaron Lu <aaron.lu@intel.com> wrote:
->
-> On Thu, Aug 17, 2023 at 02:56:00PM +0200, Vincent Guittot wrote:
-> > On Wed, 16 Aug 2023 at 04:48, Aaron Lu <aaron.lu@intel.com> wrote:
-> > >
-> > > When using sysbench to benchmark Postgres in a single docker instance
-> > > with sysbench's nr_threads set to nr_cpu, it is observed there are ti=
-mes
-> > > update_cfs_group() and update_load_avg() shows noticeable overhead on
-> > > a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
-> > >
-> > >     13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
-> > >     10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
-> > >
-> > > Annotate shows the cycles are mostly spent on accessing tg->load_avg
-> > > with update_load_avg() being the write side and update_cfs_group() be=
-ing
-> > > the read side. tg->load_avg is per task group and when different task=
-s
-> > > of the same taskgroup running on different CPUs frequently access
-> > > tg->load_avg, it can be heavily contended.
-> > >
-> > > The frequent access to tg->load_avg is due to task migration on wakeu=
-p
-> > > path, e.g. when running postgres_sysbench on a 2sockets/112cores/224c=
-pus
-> > > Intel Sappire Rapids, during a 5s window, the wakeup number is 14mill=
-ions
-> > > and migration number is 11millions and with each migration, the task'=
-s
-> > > load will transfer from src cfs_rq to target cfs_rq and each change
-> > > involves an update to tg->load_avg. Since the workload can trigger as=
- many
-> > > wakeups and migrations, the access(both read and write) to tg->load_a=
-vg
-> > > can be unbound. As a result, the two mentioned functions showed notic=
-eable
-> > > overhead. With netperf/nr_client=3Dnr_cpu/UDP_RR, the problem is wors=
-e:
-> > > during a 5s window, wakeup number is 21millions and migration number =
-is
-> > > 14millions; update_cfs_group() costs ~25% and update_load_avg() costs=
- ~16%.
-> > >
-> > > Reduce the overhead by limiting updates to tg->load_avg to at most on=
-ce
-> > > per ms. After this change, the cost of accessing tg->load_avg is grea=
-tly
-> > > reduced and performance improved. Detailed test results below.
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > > postgres_sysbench on SPR:
-> > > 25%
-> > > base:   42382=C4=8519.8%
-> > > patch:  50174=C4=859.5%  (noise)
-> > >
-> > > 50%
-> > > base:   67626=C4=851.3%
-> > > patch:  67365=C4=853.1%  (noise)
-> > >
-> > > 75%
-> > > base:   100216=C4=851.2%
-> > > patch:  112470=C4=850.1% +12.2%
-> > >
-> > > 100%
-> > > base:    93671=C4=850.4%
-> > > patch:  113563=C4=850.2% +21.2%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > > hackbench on ICL:
-> > > group=3D1
-> > > base:    114912=C4=855.2%
-> > > patch:   117857=C4=852.5%  (noise)
-> > >
-> > > group=3D4
-> > > base:    359902=C4=851.6%
-> > > patch:   361685=C4=852.7%  (noise)
-> > >
-> > > group=3D8
-> > > base:    461070=C4=850.8%
-> > > patch:   491713=C4=850.3% +6.6%
-> > >
-> > > group=3D16
-> > > base:    309032=C4=855.0%
-> > > patch:   378337=C4=851.3% +22.4%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > > hackbench on SPR:
-> > > group=3D1
-> > > base:    100768=C4=852.9%
-> > > patch:   103134=C4=852.9%  (noise)
-> > >
-> > > group=3D4
-> > > base:    413830=C4=8512.5%
-> > > patch:   378660=C4=8516.6% (noise)
-> > >
-> > > group=3D8
-> > > base:    436124=C4=850.6%
-> > > patch:   490787=C4=853.2% +12.5%
-> > >
-> > > group=3D16
-> > > base:    457730=C4=853.2%
-> > > patch:   680452=C4=851.3% +48.8%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> > > netperf/udp_rr on ICL
-> > > 25%
-> > > base:    114413=C4=850.1%
-> > > patch:   115111=C4=850.0% +0.6%
-> > >
-> > > 50%
-> > > base:    86803=C4=850.5%
-> > > patch:   86611=C4=850.0%  (noise)
-> > >
-> > > 75%
-> > > base:    35959=C4=855.3%
-> > > patch:   49801=C4=850.6% +38.5%
-> > >
-> > > 100%
-> > > base:    61951=C4=856.4%
-> > > patch:   70224=C4=850.8% +13.4%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> > > netperf/udp_rr on SPR
-> > > 25%
-> > > base:   104954=C4=851.3%
-> > > patch:  107312=C4=852.8%  (noise)
-> > >
-> > > 50%
-> > > base:    55394=C4=854.6%
-> > > patch:   54940=C4=857.4%  (noise)
-> > >
-> > > 75%
-> > > base:    13779=C4=853.1%
-> > > patch:   36105=C4=851.1% +162%
-> > >
-> > > 100%
-> > > base:     9703=C4=853.7%
-> > > patch:   28011=C4=850.2% +189%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > netperf/tcp_stream on ICL (all in noise range)
-> > > 25%
-> > > base:    43092=C4=850.1%
-> > > patch:   42891=C4=850.5%
-> > >
-> > > 50%
-> > > base:    19278=C4=8514.9%
-> > > patch:   22369=C4=857.2%
-> > >
-> > > 75%
-> > > base:    16822=C4=853.0%
-> > > patch:   17086=C4=852.3%
-> > >
-> > > 100%
-> > > base:    18216=C4=850.6%
-> > > patch:   18078=C4=852.9%
-> > >
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > netperf/tcp_stream on SPR (all in noise range)
-> > > 25%
-> > > base:    34491=C4=850.3%
-> > > patch:   34886=C4=850.5%
-> > >
-> > > 50%
-> > > base:    19278=C4=8514.9%
-> > > patch:   22369=C4=857.2%
-> > >
-> > > 75%
-> > > base:    16822=C4=853.0%
-> > > patch:   17086=C4=852.3%
-> > >
-> > > 100%
-> > > base:    18216=C4=850.6%
-> > > patch:   18078=C4=852.9%
-> > >
-> > > Signed-off-by: Aaron Lu <aaron.lu@intel.com>
-> > > ---
-> > >  kernel/sched/fair.c  | 13 ++++++++++++-
-> > >  kernel/sched/sched.h |  1 +
-> > >  2 files changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index 6e79de26a25d..ab055c72cc64 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs=
-_rq *cfs_rq)
-> > >   */
-> > >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
-> > >  {
-> > > -       long delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_con=
-trib;
-> > > +       long delta;
-> > > +       u64 now;
-> > >
-> > >         /*
-> > >          * No need to update load_avg for root_task_group as it is no=
-t used.
-> > > @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct c=
-fs_rq *cfs_rq)
-> > >         if (cfs_rq->tg =3D=3D &root_task_group)
-> > >                 return;
-> > >
-> > > +       /*
-> > > +        * For migration heavy workload, access to tg->load_avg can b=
-e
-> > > +        * unbound. Limit the update rate to at most once per ms.
-> > > +        */
-> > > +       now =3D sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
-> > > +       if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
-> > > +               return;
-> > > +
-> > > +       delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
-> > >         if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
-> > >                 atomic_long_add(delta, &cfs_rq->tg->load_avg);
-> > >                 cfs_rq->tg_load_avg_contrib =3D cfs_rq->avg.load_avg;
-> > > +               cfs_rq->last_update_tg_load_avg =3D now;
-> > >         }
-> > >  }
-> > >
-> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > > index 19af1766df2d..228a298bf3b5 100644
-> > > --- a/kernel/sched/sched.h
-> > > +++ b/kernel/sched/sched.h
-> > > @@ -594,6 +594,7 @@ struct cfs_rq {
-> > >
-> > >  #ifdef CONFIG_FAIR_GROUP_SCHED
-> > >         unsigned long           tg_load_avg_contrib;
-> > > +       u64                     last_update_tg_load_avg;
+On Mon, Aug 21, 2023 at 04:33:36PM +0800, Michael Shavit wrote:
+> > Notice that arm_smmu_tlb_inv_range_asid() already duplicates
+> > arm_smmu_tlb_inv_range_domain().
 > >
-> > Moving last_update_tg_load_avg before tg_load_avg_contrib should
-> > minimize the padding on 32bits arch as long is only 4 Bytes
->
-> Got it. That would be:
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 6a8b7b9ed089..52ee7027def9 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -593,6 +593,7 @@ struct cfs_rq {
->         } removed;
->
->  #ifdef CONFIG_FAIR_GROUP_SCHED
-> +       u64                     last_update_tg_load_avg;
->         unsigned long           tg_load_avg_contrib;
->         long                    propagate;
->         long                    prop_runnable_sum;
-> --
-> 2.41.0
->
+> > IMHO I would split the ATC step out of arm_smmu_mm_invalidate_range(),
+> > get rid of arm_smmu_tlb_inv_range_domain(), and have the mmu notifier
+> > just do as it already does:
 > >
-> > Apart from this, looks good to me
+> >         if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM))
+> >                 arm_smmu_tlb_inv_range_domain_no_atc(start, size, smmu_mn->cd->asid,
+> >                                             PAGE_SIZE, false, smmu_domain);
+> >         arm_smmu_atc_inv_domain(smmu_domain, start, size);
+> >
+> > And make arm_smmu_tlb_inv_range_domain() just call
+> >    arm_smmu_tlb_inv_range_domain_no_atc();
+> >    arm_smmu_atc_inv_domain();
+> 
+> That's a nice clean-up but doesn't really solve the problem faced by this patch.
 >
-> Thanks a lot for your review!
-> Can I add your reviewed-by in my next update with the above change?
+> This patch series eliminates the smmu_domain->smmu handle, replacing
+> it for a list of SMMUs. So SVA can no longer optimize the
+> arm_smmu_tlb_inv_range_asid call away by checking whether the SMMU BTM
+> feature is enabled since there's now a list of SMMUs with possibly
+> heterogeneous support for the feature. 
 
-Yes with the above
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+You could also go in the direction of making a SVA BTM and SV non-BTM
+domain type and then you know what to do immediately in the notifier.
 
->
-> Regards,
-> Aaron
->
-> > >         long                    propagate;
-> > >         long                    prop_runnable_sum;
-> > >
-> > > --
-> > > 2.41.0
-> > >
+> Since there's now a loop over a series of SMMUs inside
+> arm_smmu_tlb_inv_range_asid, it makes sense to move the check into
+> that loop. This technically works because only SVA is calling
+> arm_smmu_tlb_inv_range_asid but can (IMO) risk introducing bugs in
+> the future since it's not obvious from the function name.
+
+Well, I would remove the duplication and add an argument if you intend
+to share the function that loops
+
+Jason
