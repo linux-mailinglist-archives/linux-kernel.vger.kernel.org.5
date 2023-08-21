@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F93782E58
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A4F782E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236614AbjHUQYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34702 "EHLO
+        id S236623AbjHUQZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:25:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234020AbjHUQYj (ORCPT
+        with ESMTP id S231825AbjHUQZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:24:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C026DE8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:24:37 -0700 (PDT)
+        Mon, 21 Aug 2023 12:25:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14503E4;
+        Mon, 21 Aug 2023 09:25:20 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DA3B63E19
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:24:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91FDC433C7;
-        Mon, 21 Aug 2023 16:24:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D2F963E19;
+        Mon, 21 Aug 2023 16:25:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F864C433C7;
+        Mon, 21 Aug 2023 16:25:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692635076;
-        bh=rh+mxk2XiwA0hIRSU2uiSF0lwTaOpoX7hUeSI+GftIc=;
+        s=k20201202; t=1692635119;
+        bh=oZ7WQRQ9itjy25Tt/rRhlhdNXYXUxndS4PkMFVRCZFY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DkQ/4HMvIHtmoa+Iyx2BUPnPvRz3pEt3XII2fhysU7IJ6JauOHFXqCxYk2yApb4n3
-         JTztA3RnFEMQUBj1yH/ami1p5V2/gHXDI7JYRk0wrUm+asGgVs6sLA0/aDTtY8dHWw
-         Any0hpk+zQCCkht2yqeqQ681dT2DimDJPH7fXbqfmJ3PeIO2lV8bnNrpIQ/xFiDHpY
-         Y6d7Mj74rM8c+2Sl04xn9rzQyrxnkJKKoY3gde3HKm0tBL5WCr+JBBZa3XncnW2eVM
-         5qa3l/mxradlqHMTqMz4Nt+08rWjZcMPl0ak3ZcgntmYf+TV7rN+NMz2gWTGVXqOwJ
-         WCZYWT70FEg2g==
-Date:   Mon, 21 Aug 2023 17:24:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ASoC: Delete UDA134x/L3 audio codec
-Message-ID: <01f4cbd3-b98a-4c8c-a19e-3e3eb2d45104@sirena.org.uk>
-References: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
+        b=CyHF7SPDkZ6ovolJzYQOcbwsmF0II6J72m2P+P6w2qyxivXmEcRz3V2yGeFWQdEao
+         7LCs811khkt6TKYCOU6SMNaRylk9AUphGjiYQaGEETmW8xWY4IfjcLgiO+XuDi5GeH
+         nXE2QZGHusr7PAhXy1trksze0ASTg8rpegrFlT80HrUTVobKp21fecGyefR8WMRwzf
+         YDNuwwj+yInw/z7eF9GLoRK473tZyIbHeaMxEC4Ps0Gg6YjSwsVVB6atW0YegAvRn8
+         AwxKjGvcUjJbbkGRzRinzdinaVoRgnPykCc/mNPQRrEVownudwITKsq4TGFz/WP51e
+         t+8lW320iAOVw==
+Received: (nullmailer pid 1844508 invoked by uid 1000);
+        Mon, 21 Aug 2023 16:25:17 -0000
+Date:   Mon, 21 Aug 2023 11:25:17 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, badhri@google.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: connector: Add child nodes for
+ multiple PD capabilities
+Message-ID: <20230821162517.GA1832382-robh@kernel.org>
+References: <20230807174159.1140957-1-kyletso@google.com>
+ <20230807174159.1140957-2-kyletso@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Bhuvj7fzxmUqme8u"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230821-delete-l3-v1-1-26d9cd32e7a2@linaro.org>
-X-Cookie: No campfires allowed.
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <20230807174159.1140957-2-kyletso@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,38 +61,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 08, 2023 at 01:41:58AM +0800, Kyle Tso wrote:
+> Define a new optional property "capabilities" which is a child node
+> under connector to contain multiple USB Power Delivery capabilities.
+> 
+> Define a new property with pattern (e.g. caps-0, caps-1) which is a
 
---Bhuvj7fzxmUqme8u
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A property in json-schema terms, but for DT it's a node not a property. 
+'Define a child node ...' would be clearer.
 
-On Mon, Aug 21, 2023 at 04:17:57PM +0200, Linus Walleij wrote:
-> This codec was used by the deleted S3C board
-> sound/soc/samsung/s3c24xx_uda134x.c.
+> child node under "capabilities". Each node contains PDO data of a
+> selectable Power Delivery capability.
+> 
+> Also define common properties for source-pdos, sink-pdos, and
+> op-sink-microwatt that can be referenced.
 
-This breaks an x86 allmodconfig build:
+Why do we need this? What issue does this solve? The commit message 
+should answer those questions (always).
 
-make --silent --keep-going --jobs=15 O=/build/stage/build-work ARCH=x86_64 SRCARCH=x86 CROSS_COMPILE=x86_64-linux-gnu-
-/build/stage/linux/sound/soc/codecs/l3.c: No such file or directory
-make[3]: *** [/build/stage/linux/scripts/Makefile.modpost:144: Module.symvers] Error 1
-make[3]: Target '__modpost' not remade because of errors.
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+> ---
+> v1 -> v2:
+> - move source/sink-pdos to $defs and reference them in properties
+> 
+>  .../bindings/connector/usb-connector.yaml     | 80 +++++++++++++------
+>  1 file changed, 57 insertions(+), 23 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> index 1c4d3eb87763..c6b02dbda83f 100644
+> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+> @@ -117,28 +117,10 @@ properties:
+>    # The following are optional properties for "usb-c-connector" with power
+>    # delivery support.
+>    source-pdos:
+> -    description: An array of u32 with each entry providing supported power
+> -      source data object(PDO), the detailed bit definitions of PDO can be found
+> -      in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
+> -      Source_Capabilities Message, the order of each entry(PDO) should follow
+> -      the PD spec chapter 6.4.1. Required for power source and power dual role.
+> -      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
+> -      defined in dt-bindings/usb/pd.h.
+> -    minItems: 1
+> -    maxItems: 7
+> -    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    $ref: "#/$defs/source-pdos"
+>  
+>    sink-pdos:
+> -    description: An array of u32 with each entry providing supported power sink
+> -      data object(PDO), the detailed bit definitions of PDO can be found in
+> -      "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
+> -      Sink Capabilities Message, the order of each entry(PDO) should follow the
+> -      PD spec chapter 6.4.1. Required for power sink and power dual role. User
+> -      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
+> -      in dt-bindings/usb/pd.h.
+> -    minItems: 1
+> -    maxItems: 7
+> -    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    $ref: "#/$defs/sink-pdos"
+>  
+>    sink-vdos:
+>      description: An array of u32 with each entry, a Vendor Defined Message Object (VDO),
+> @@ -164,9 +146,7 @@ properties:
+>      $ref: /schemas/types.yaml#/definitions/uint32-array
+>  
+>    op-sink-microwatt:
+> -    description: Sink required operating power in microwatt, if source can't
+> -      offer the power, Capability Mismatch is set. Required for power sink and
+> -      power dual role.
+> +    $ref: "#/$defs/op-sink-microwatt"
+>  
+>    port:
+>      $ref: /schemas/graph.yaml#/properties/port
+> @@ -228,6 +208,30 @@ properties:
+>        SNK_READY for non-pd link.
+>      type: boolean
+>  
+> +  capabilities:
+> +    description: A child node to contain all the selectable USB Power Delivery capabilities.
+> +    type: object
+> +
+> +    patternProperties:
+> +      "^caps-[0-9]+$":
+> +        description: Child nodes under "capabilities" node. Each node contains a selectable USB
+> +          Power Delivery capability.
+> +        type: object
+> +
+> +        properties:
+> +          source-pdos:
+> +            $ref: "#/$defs/source-pdos"
+> +
+> +          sink-pdos:
+> +            $ref: "#/$defs/sink-pdos"
+> +
+> +          op-sink-microwatt:
+> +            $ref: "#/$defs/op-sink-microwatt"
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+>  dependencies:
+>    sink-vdos-v1: [ 'sink-vdos' ]
+>    sink-vdos: [ 'sink-vdos-v1' ]
+> @@ -235,6 +239,36 @@ dependencies:
+>  required:
+>    - compatible
+>  
+> +$defs:
 
-The Makefile removal is partial.
+Make this:
 
+$defs:
+  capabilities:
+    properties:
+      ...
 
---Bhuvj7fzxmUqme8u
-Content-Type: application/pgp-signature; name="signature.asc"
+And then just reference "#/$defs/capabilities" at the top-level and in 
+caps-[0-9] node schema.
 
------BEGIN PGP SIGNATURE-----
+You'll need to use unevaluatedProperties instead of additionalProperties 
+as well.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTjj78ACgkQJNaLcl1U
-h9BBUAf7B1ABhYC/tCVDTcRPuPXweTcD7N4mzXgonKq4panMmO/+6yrEOvP84bke
-hV1k61bEYTUDu9J43e9TWSbPIuBiGCIKG4o3ueuJ2f4lSf8Jg+U/n4w8+NuqYqGK
-AVWqLe5eVuGYUXpGZDjO5HNLlGlWHLOBqRw8SkNC5vogHIJtuxiDVzAileYbaBqC
-4lrOKpr8x+bp0mRYsMbdQfNr+lJrum373JN3F/rk9tBH2SHra5zROt9eUpTu7eZq
-g16hRPxfiJwX+kSrEDMdk5nkhsRYtmqkS4/tIQgh07CJ6ZiGlpSAdz+++NjkoTzo
-Wihi9k/dgmoBwfFnOMCXOatQadVbQA==
-=Rq4B
------END PGP SIGNATURE-----
-
---Bhuvj7fzxmUqme8u--
+> +  source-pdos:
+> +    description: An array of u32 with each entry providing supported power
+> +      source data object(PDO), the detailed bit definitions of PDO can be found
+> +      in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
+> +      Source_Capabilities Message, the order of each entry(PDO) should follow
+> +      the PD spec chapter 6.4.1. Required for power source and power dual role.
+> +      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
+> +      defined in dt-bindings/usb/pd.h.
+> +    minItems: 1
+> +    maxItems: 7
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +  sink-pdos:
+> +    description: An array of u32 with each entry providing supported power sink
+> +      data object(PDO), the detailed bit definitions of PDO can be found in
+> +      "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
+> +      Sink Capabilities Message, the order of each entry(PDO) should follow the
+> +      PD spec chapter 6.4.1. Required for power sink and power dual role. User
+> +      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
+> +      in dt-bindings/usb/pd.h.
+> +    minItems: 1
+> +    maxItems: 7
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +  op-sink-microwatt:
+> +    description: Sink required operating power in microwatt, if source can't
+> +      offer the power, Capability Mismatch is set. Required for power sink and
+> +      power dual role.
+> +
+>  allOf:
+>    - if:
+>        properties:
+> -- 
+> 2.41.0.585.gd2178a4bd4-goog
+> 
