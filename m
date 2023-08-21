@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A193478230F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A73C782315
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbjHUFKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 01:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41512 "EHLO
+        id S233129AbjHUFR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 01:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjHUFK3 (ORCPT
+        with ESMTP id S233122AbjHUFR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 01:10:29 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F76BA3;
-        Sun, 20 Aug 2023 22:10:27 -0700 (PDT)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37L4wHMU021846;
-        Mon, 21 Aug 2023 05:10:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : content-type :
- mime-version; s=pp1; bh=arN6obsB5z1X5bmBF0j+L5h/b4zc+8NhRDKXN9z16mg=;
- b=PBUChxHi9fmpvP1BHoTvc4ducu4m2Nh08unQFuEeWZtcA/rHrkSfdxHYkN/9gznuJL2O
- w0keKGupauj0D2AVq/jajZV2hzyBhTnco5jbYCL2fhJLToz0NW2CLdx96ItDp/TWHzkF
- uXkUhvn9/qEbDCY7U/yeBMhpOxnKJWmGuxBrjQCGRwDJEcmjdSvcpS+co2DA7SkO8tSQ
- 2TUuH6nGMXCAkluWhMknxhssrzhIMIaa5DTYhR12r0YyFOpqqIxb5LOaEzSkbfZhBtGq
- ViN4VeN3er06/C9wLPKMr0mrooky+fOU9WPDVVYhUGyj3LegxgGiVdYrz0cHV0eAooqu mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sm1c9rdqh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 05:10:00 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37L50WAh027258;
-        Mon, 21 Aug 2023 05:09:59 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sm1c9rdq3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 05:09:59 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37L3MYj4018411;
-        Mon, 21 Aug 2023 05:09:58 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3sk82sgec6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 05:09:58 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37L59vas8389220
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Aug 2023 05:09:57 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1817F20040;
-        Mon, 21 Aug 2023 05:09:57 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D1CFD20043;
-        Mon, 21 Aug 2023 05:09:52 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.43.51.109])
-        by smtpav07.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Mon, 21 Aug 2023 05:09:52 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Mon, 21 Aug 2023 10:39:51 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc: Enable generic cpu idle-loop
-In-Reply-To: <875y5cwqdb.fsf@mail.lhotse>
-References: <20230818050739.827851-1-vaibhav@linux.ibm.com>
- <875y5cwqdb.fsf@mail.lhotse>
-Date:   Mon, 21 Aug 2023 10:39:51 +0530
-Message-ID: <875y59j80w.fsf@vajain21.in.ibm.com>
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: sehh3jbzZkK2hOKOFBHYgjGE_9waUpYt
-X-Proofpoint-ORIG-GUID: J25pHfOH4RGd8_kNhoWGpSr2fiFWeoMR
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 21 Aug 2023 01:17:58 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A425A6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:17:57 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3a751d2e6ecso2302002b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20221208.gappssmtp.com; s=20221208; t=1692595076; x=1693199876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OVPFeVwGL8kP97WkDZ9WBoD6Na/u2oCcPIlsc2AFaUc=;
+        b=VV0RPIxB5zDYAG/m0z51lWJ8XTOXDuhqGb5oy9EuIelkhJdU4qAetIlGJHhcXbYUfH
+         c/Qyuw8bikofrkW0tVXacc7Q8GJpG6emZtgmMU5khzsDOX3INnUkQVAqeqwmLZu6T93d
+         8BF6L9yFrX3j5z2pxDlCEKHzPuLwTBx6j5O9eoqqXSPH+U+Jo2Y6BGvyYyQsm3jNIOFq
+         BDf7A6wASDzhKK+s+QcB57hA/j/CUA5+ubuae0EHnx2Ippr/n3AvVvsOmMidPdP+OKL6
+         bEFqZhvF0kwN/hXqaTAIjYG6VZgVST6thQDZeq9feKsiE3d9Y6ZYF86aHa34qFR8W5U4
+         YHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692595076; x=1693199876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OVPFeVwGL8kP97WkDZ9WBoD6Na/u2oCcPIlsc2AFaUc=;
+        b=eaQx6WyvE97+TGIBuCM8yndGqoMHO8GrPj6ogzWtukCrEDMrSenEC74NAHApP2mw9Y
+         +WjAohH4OLdGhYwBgYw2NbNYTvgJfIwO/yRh+iSglLhmeDhlOBjzru6dVuqwUS9ilzy3
+         gMK3BNvtMI1djUXGfkSH8dT2EMgxJxBHsAlVtwdQAql09hzN105cX3XaZFOvX9WNOj2o
+         bAh+vQeNJhctTBN/dQGtaS9OFQUlsJ1EnxZPRGJHaybawYi4S5ZXSgZZfIXdot1wjBFb
+         PSAEuQJzpD/bYinPZi8zsX9fe0eZxBYYf0EmtLY93qKQU+10fFd3M+s9CP3rsEXq50P9
+         bCEQ==
+X-Gm-Message-State: AOJu0YyWOnyPq1y4X+5xa+zv6/+/CvqzpqRGk1CONY4RA4jHjB7RXo3S
+        TSZBjUBWc7F6zZ8+W6YogOI2xnA7JktFCvA8rCE=
+X-Google-Smtp-Source: AGHT+IF2XjOgsLrZeQVWU/wJsvi/ZqJyXhxvOiJgQon66xT0p0eKU1gXE4hD4zzROmCzxETerwGVXQ==
+X-Received: by 2002:aca:2419:0:b0:3a3:6450:f5c4 with SMTP id n25-20020aca2419000000b003a36450f5c4mr7536481oic.4.1692595076353;
+        Sun, 20 Aug 2023 22:17:56 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id j3-20020a62e903000000b006879493aca0sm5233715pfh.26.2023.08.20.22.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Aug 2023 22:17:55 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qXxIW-004RoY-2P;
+        Mon, 21 Aug 2023 15:17:52 +1000
+Date:   Mon, 21 Aug 2023 15:17:52 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     tglx@linutronix.de, peterz@infradead.org,
+        xfs <linux-xfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] xfs: fix per-cpu CIL structure aggregation racing
+ with dying cpus
+Message-ID: <ZOLzgBOuyWHapOyZ@dread.disaster.area>
+References: <20230804223854.GL11352@frogsfrogsfrogs>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-20_15,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- mlxscore=0 malwarescore=0 mlxlogscore=865 lowpriorityscore=0
- suspectscore=0 phishscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308210047
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230804223854.GL11352@frogsfrogsfrogs>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for looking at this patch Mpe.
+On Fri, Aug 04, 2023 at 03:38:54PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <djwong@kernel.org>
+> 
+> In commit 7c8ade2121200 ("xfs: implement percpu cil space used
+> calculation"), the XFS committed (log) item list code was converted to
+> use per-cpu lists and space tracking to reduce cpu contention when
+> multiple threads are modifying different parts of the filesystem and
+> hence end up contending on the log structures during transaction commit.
+> Each CPU tracks its own commit items and space usage, and these do not
+> have to be merged into the main CIL until either someone wants to push
+> the CIL items, or we run over a soft threshold and switch to slower (but
+> more accurate) accounting with atomics.
+> 
+> Unfortunately, the for_each_cpu iteration suffers from the same race
+> with cpu dying problem that was identified in commit 8b57b11cca88f
+> ("pcpcntrs: fix dying cpu summation race") -- CPUs are removed from
+> cpu_online_mask before the CPUHP_XFS_DEAD callback gets called.  As a
+> result, both CIL percpu structure aggregation functions fail to collect
+> the items and accounted space usage at the correct point in time.
+> 
+> If we're lucky, the items that are collected from the online cpus exceed
+> the space given to those cpus, and the log immediately shuts down in
+> xlog_cil_insert_items due to the (apparent) log reservation overrun.
+> This happens periodically with generic/650, which exercises cpu hotplug
+> vs. the filesystem code.
+> 
+> Applying the same sort of fix from 8b57b11cca88f to the CIL code seems
+> to make the generic/650 problem go away, but I've been told that tglx
+> was not happy when he saw:
+> 
+> "...the only thing we actually need to care about is that
+> percpu_counter_sum() iterates dying CPUs. That's trivial to do, and when
+> there are no CPUs dying, it has no addition overhead except for a
+> cpumask_or() operation."
+> 
+> I have no idea what the /correct/ solution is, but I've been holding on
+> to this patch for 3 months.  In that time, 8b57b11cca88 hasn't been
+> reverted and cpu_dying_mask hasn't been removed, so I'm sending this and
+> we'll see what happens.
+> 
+> So, how /do/ we perform periodic aggregation of per-cpu data safely?
+> Move the xlog_cil_pcp_dead call to the dying section, where at least the
+> other cpus will all be stopped?  And have it dump its items into any
+> online cpu's data structure?
 
-Michael Ellerman <mpe@ellerman.id.au> writes:
+I suspect that we have to stop using for_each_*cpu() and hotplug
+notifiers altogether for this code.
 
-> Vaibhav Jain <vaibhav@linux.ibm.com> writes:
->> This minor patch enables config option GENERIC_IDLE_POLL_SETUP for arch
->> powerpc. This should add support for kernel param 'nohlt'.
->
-> Which is named after an 8086 instruction :), but oh well.
->
-Thanks. This is an interesting trivia :)
+That is, we simply create our own bitmap for nr_possible_cpus in the
+CIL checkpoint context we allocate for each checkpoint (i.e. the
+struct xfs_cil_ctx). When we store something on that CPU for that
+CIL context, we set the corresponding bit for that CPU. Then when we
+are aggregating the checkpoint, we simply walk all the cpus with the
+"has items" bit set and grab everything.
 
->> Powerpc kernel also supports another kernel boot-time param called
->> 'powersave' which can also be used to disable all cpu idle-states and
->> forces CPU to an idle-loop similar to what cpu_idle_poll() does. This
->> patch however makes powerpc kernel-parameters better aligned to the
->> generic boot-time parameters.
->
-> It would be nice if we could make our powersave=off parameter just
-> enable this generic logic.
->
-> Have you looked at if that's possible? At a glance it looks like it
-> should be, when cpu_idle_force_poll is true do_idle() never calls
-> cpuidle_idle_call(), so the cpuidle drivers are never invoked.
+This gets rid of the need for hotplug notifiers completely - we just
+don't care if the CPU is online or offline when we sweep the CIL
+context for items at push time - if the bit is set then there's
+stuff to sweep...
 
-Thanks for suggesting this and it looks like a simple fix to arch/idle.c
-code. I have posted a v2 with the needed change on the mailing list at
-https://lore.kernel.org/all/20230821045928.1350893-1-vaibhav@linux.ibm.com
-
+-Dave.
 -- 
-Cheers
-~ Vaibhav
+Dave Chinner
+david@fromorbit.com
