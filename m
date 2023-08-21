@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE0B782173
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C97782177
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbjHUCdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:33:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S232540AbjHUCeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231927AbjHUCdH (ORCPT
+        with ESMTP id S229953AbjHUCeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 22:33:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F029C;
-        Sun, 20 Aug 2023 19:33:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 20 Aug 2023 22:34:00 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C2F9C;
+        Sun, 20 Aug 2023 19:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692585237;
+        bh=/oSBrquxZQcW7A+RvZq4mtocbjzgqdS40RYhUrN3v/o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CeS+wTYD9FFtSoChIIGrkiYW+suecVwJJk/JkipQOsXBP2HvNUf4P1Si/Hb2A46d5
+         BQekMXji2CbYhViEWVklvjYKBvac22rJJElePagRrDyDTR3sm81sFOYlRUzq+8Pge7
+         6E4dD9m3VYLWtU9cYiLmNMCXhtA1PNIYVQOBtE/EX0R/SKV5ZzTY+IAHCJ3TK9meX/
+         A5VCVaxqnbXqW8gQfY5gtLhdFDDHf11k4OFoZdsw0qO6KdGAAdg1ajJnxrctNLPrt7
+         V+wDxdDPhIq6h7SJAmmL03crBhzvUnHCBpwsDKBPAYC3oUZ68gfsxtfYAYl7stqXBA
+         4t9AaRk9yxQkw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD4E761772;
-        Mon, 21 Aug 2023 02:33:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85614C433C7;
-        Mon, 21 Aug 2023 02:33:04 +0000 (UTC)
-Date:   Sun, 20 Aug 2023 22:33:01 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Zheng Yejian <zhengyejian1@huawei.com>, <laijs@cn.fujitsu.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] tracing: Introduce pipe_cpumask to avoid race on
- trace_pipes
-Message-ID: <20230820223301.1a013170@rorschach.local.home>
-In-Reply-To: <20230821111954.8ca184e9fba62940825eb0e0@kernel.org>
-References: <20230817115057.1637676-1-zhengyejian1@huawei.com>
-        <20230818022645.1948314-1-zhengyejian1@huawei.com>
-        <20230818140309.b0a720afa87b05a2b7b27315@kernel.org>
-        <20230818094128.7cf1d58b@gandalf.local.home>
-        <20230818232301.902ad9319569379ebd7df557@kernel.org>
-        <20230818115322.3dfda470@gandalf.local.home>
-        <20230819104257.80203c3916509cc9eb9327c1@kernel.org>
-        <20230821111954.8ca184e9fba62940825eb0e0@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTc446Plwz4wxy;
+        Mon, 21 Aug 2023 12:33:56 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 12:33:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sebastian Reichel <sre@kernel.org>, Lee Jones <lee@kernel.org>
+Cc:     Jakob Hauser <jahau@rocketmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: linux-next: manual merge of the battery tree with the mfd tree
+Message-ID: <20230821123354.4d2684ca@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Type: multipart/signed; boundary="Sig_/Nkahc+Q4.5YAU6na9ej6+Tw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,16 +53,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 11:19:54 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+--Sig_/Nkahc+Q4.5YAU6na9ej6+Tw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> Ah, this caused a drop. errno can be EAGAIN even if rlen > 0.
-> I've fixed this and that works.
-> BTW, I think this virtio-trace would be better to move under
-> tools/tracing because it is a tracing tool.
+Hi all,
 
-I'm fine with that, as where it is, I'm very unfamiliar with this tool.
-It is likely not taking advantage of all the tracing tooling we
-have. I actually never even used it.
+Today's linux-next merge of the battery tree got a conflict in:
 
--- Steve
+  drivers/power/supply/rt5033_charger.c
+
+between commit:
+
+  12cc585f36b8 ("power: supply: rt5033_charger: Add cable detection and USB=
+ OTG supply")
+
+from the mfd tree and commit:
+
+  2ce8284c3115 ("power: Explicitly include correct DT includes")
+
+from the battery tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/power/supply/rt5033_charger.c
+index e0303ca5a8db,c0c516f22c66..000000000000
+--- a/drivers/power/supply/rt5033_charger.c
++++ b/drivers/power/supply/rt5033_charger.c
+@@@ -6,11 -6,8 +6,11 @@@
+   * Author: Beomho Seo <beomho.seo@samsung.com>
+   */
+ =20
++ #include <linux/mod_devicetable.h>
+ +#include <linux/devm-helpers.h>
+ +#include <linux/extcon.h>
+  #include <linux/module.h>
+ +#include <linux/mutex.h>
+- #include <linux/of_device.h>
+  #include <linux/platform_device.h>
+  #include <linux/power_supply.h>
+  #include <linux/regmap.h>
+
+--Sig_/Nkahc+Q4.5YAU6na9ej6+Tw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTizRIACgkQAVBC80lX
+0Gz6YQf/YUUVV7LP+8uW16ElnzJufoSV7OfgThC55ZCxIajymp6hRSdfjmqZlOG1
+ra2sutXWxIC+gx+HLVPb6eKTQriBaYCRRzy3cyNlyLWKvusrJKE2wqLNICjYtxrG
+HGm4tsTO4sSKKTrFSwfUSlI+nfDYgTw48E8rnOGjjYTsdkwpoPm+pUlB6GvAoFys
+JXB20Pn4vLgpyX20mktvCo6A0aUjFstPsLA4l5eGZDOW1bS40nE3RmUXsA+OsbIx
+f3/RwA3djcA1doR8IAZofxEPbe9SF/eHJ14xgGwApOrV363ymJ9Pesn8SVw8lZza
+tsIz631K4BflUMCqu2BJJfnhS6mxDA==
+=sNfb
+-----END PGP SIGNATURE-----
+
+--Sig_/Nkahc+Q4.5YAU6na9ej6+Tw--
