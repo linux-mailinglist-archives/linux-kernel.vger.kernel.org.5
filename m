@@ -2,134 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A9D783256
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 22:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A213C783328
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 22:23:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbjHUUE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S230231AbjHUUFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbjHUUE6 (ORCPT
+        with ESMTP id S230229AbjHUUFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:04:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37F0DF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692648246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L9M9C9+yscXpCealMXEoZ05GEoxC4MSE39A3CjhCgJY=;
-        b=Ss8LAscMLpSIyNd73XxJORmT/cpTTEVJ6pv1aAlNvoH4J2ISVW7xuduWoL4Po4YIj0vVQJ
-        dBvQozzYAnrh5mQDdMC3YtHm4PGzIvaZLeXc8RZLp5+T8+wGiQ/thq8ChbcFBU13Kp2QeG
-        lWo3ir8wrW/vUegOFfduHdbp8e0+S3I=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-224-LNwzOp-jNUya0I7KLufX-Q-1; Mon, 21 Aug 2023 16:04:00 -0400
-X-MC-Unique: LNwzOp-jNUya0I7KLufX-Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71E271C05EBD;
-        Mon, 21 Aug 2023 20:03:59 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.99])
-        by smtp.corp.redhat.com (Postfix) with SMTP id B0826140E950;
-        Mon, 21 Aug 2023 20:03:57 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 21 Aug 2023 22:03:14 +0200 (CEST)
-Date:   Mon, 21 Aug 2023 22:03:11 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
- get/put_task_struct
-Message-ID: <20230821200311.GA22497@redhat.com>
-References: <20230821150909.GA2431@redhat.com>
+        Mon, 21 Aug 2023 16:05:07 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A00129
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:05:04 -0700 (PDT)
+Received: from [2601:18c:8180:ac39:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qYB8H-0005n1-1a;
+        Mon, 21 Aug 2023 16:04:13 -0400
+Date:   Mon, 21 Aug 2023 16:04:09 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@meta.com, Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH,RFC] smp,csd: throw an error if a CSD lock is stuck for too
+ long
+Message-ID: <20230821160409.663b8ba9@imladris.surriel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821150909.GA2431@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_pid_task() makes no sense, the code does put_task_struct() soon after.
-Use find_task_by_pid_ns() instead of find_pid_ns + get_pid_task and kill
-kill put_task_struct(), this allows to do get_task_struct() only once
-before return.
+The CSD lock seems to get stuck in 2 "modes". When it gets stuck
+temporarily, it usually gets released in a few seconds, and sometimes
+up to one or two minutes.
 
-While at it, kill the unnecessary "if (!pid)" check in the "if (!*tid)"
-block, this matches the next usage of find_pid_ns() + get_pid_task() in
-this function.
+If the CSD lock stays stuck for more than several minutes, it never
+seems to get unstuck, and gradually more and more things in the system
+end up also getting stuck.
 
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+In the latter case, we should just give up, so the system can dump out
+a little more information about what went wrong, and, with panic_on_oops
+and a kdump kernel loaded, dump a whole bunch more information about
+what might have gone wrong.
+
+Question: should this have its own panic_on_ipistall switch in
+/proc/sys/kernel, or maybe piggyback on panic_on_oops in a different
+way than via BUG_ON?
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
 ---
- kernel/bpf/task_iter.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ kernel/smp.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 4d1125108014..1589ec3faded 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -42,9 +42,6 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
- 	if (!*tid) {
- 		/* The first time, the iterator calls this function. */
- 		pid = find_pid_ns(common->pid, common->ns);
--		if (!pid)
--			return NULL;
--
- 		task = get_pid_task(pid, PIDTYPE_TGID);
- 		if (!task)
- 			return NULL;
-@@ -66,17 +63,12 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
- 		return task;
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 385179dae360..8b808bff15e6 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -228,6 +228,7 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
  	}
  
--	pid = find_pid_ns(common->pid_visiting, common->ns);
--	if (!pid)
--		return NULL;
--
--	task = get_pid_task(pid, PIDTYPE_PID);
-+	task = find_task_by_pid_ns(common->pid_visiting, common->ns);
- 	if (!task)
- 		return NULL;
- 
- retry:
- 	next_task = next_thread(task);
--	put_task_struct(task);
- 
- 	saved_tid = *tid;
- 	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
-@@ -88,7 +80,6 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
- 		return NULL;
- 	}
- 
--	get_task_struct(next_task);
- 	common->pid_visiting = *tid;
- 
- 	if (skip_if_dup_files && task->files == task->group_leader->files) {
-@@ -96,6 +87,7 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
- 		goto retry;
- 	}
- 
-+	get_task_struct(next_task);
- 	return next_task;
- }
- 
+ 	ts2 = sched_clock();
++	/* How long since we last checked for a stuck CSD lock.*/
+ 	ts_delta = ts2 - *ts1;
+ 	if (likely(ts_delta <= csd_lock_timeout_ns || csd_lock_timeout_ns == 0))
+ 		return false;
+@@ -241,9 +242,17 @@ static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *
+ 	else
+ 		cpux = cpu;
+ 	cpu_cur_csd = smp_load_acquire(&per_cpu(cur_csd, cpux)); /* Before func and info. */
++	/* How long since this CSD lock was stuck. */
++	ts_delta = ts2 - ts0;
+ 	pr_alert("csd: %s non-responsive CSD lock (#%d) on CPU#%d, waiting %llu ns for CPU#%02d %pS(%ps).\n",
+-		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts2 - ts0,
++		 firsttime ? "Detected" : "Continued", *bug_id, raw_smp_processor_id(), ts_delta,
+ 		 cpu, csd->func, csd->info);
++	/*
++	 * If the CSD lock is still stuck after 5 minutes, it is unlikely
++	 * to become unstuck. Use a signed comparison to avoid triggering
++	 * on underflows when the TSC is out of sync between sockets.
++	 */
++	BUG_ON((s64)ts_delta > 300000000000LL);
+ 	if (cpu_cur_csd && csd != cpu_cur_csd) {
+ 		pr_alert("\tcsd: CSD lock (#%d) handling prior %pS(%ps) request.\n",
+ 			 *bug_id, READ_ONCE(per_cpu(cur_csd_func, cpux)),
 -- 
-2.25.1.362.g51ebf55
+2.41.0
 
 
