@@ -2,143 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADAE4782D50
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29807782D52
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236369AbjHUPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:32:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
+        id S236376AbjHUPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:32:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236370AbjHUPcD (ORCPT
+        with ESMTP id S232452AbjHUPcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:32:03 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B83E2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:32:01 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b962535808so56620531fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:32:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1692631920; x=1693236720;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ajMViAn999T2borJAKgty2s8eZcgpP+nQpjCt7tMLBs=;
-        b=LPFdKYxeQdVH2E7Q5TbeGpZWaOvYdTEZXRyPlf3Uhz0AYFvFnpGtzmk+HpqhZbnAD6
-         KRGlXIr+NdKupKVWthCveG9ysMQ9CXZJ/xeH+/BivusXCcmBfU962Y2wLtiNwqofGPHd
-         4809M+OmUMXmes72udljBpM36v6jkoKj42MgQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692631920; x=1693236720;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ajMViAn999T2borJAKgty2s8eZcgpP+nQpjCt7tMLBs=;
-        b=TEYCpVMGW2bz+QpUMlNAQIsYjflaP8fVmGPa+ltaidKMJHJtFBarCp7rdB7LyQQZZG
-         J7mblxyJ4bdzVFoZF/NETGesMgMJJbA+LONKbKcz0tU9J9OFAjFrDpgRF3c9dJacAA6Z
-         JrfiDBoFhldk9LoKfJ8gelccC5aJoHRddLQFZookZRvGK/zgzoX9e/Z/9sCJ4/o+1HJx
-         ytw/FOFNYdnoGpCwmivJ5coThz3cuoQtMy6PguDlc3dS6VomlMTNrkyAQ0ZfAG9OKvgK
-         TgpDmNHs1ZQBYJPYGccjFt5MqqBEGnZ0RVL776xfF4NiOHbFfw1LOfVCIGH5FazhfsEI
-         WYKA==
-X-Gm-Message-State: AOJu0YxVwnyy5d6nkOucGVofTNRc20HtoNc+1Cw4zdvMRouDJMqdgNu1
-        tC5AiQGfWE0JazWMsHeq3DysZmM7E/k+VZ+ect0hNA==
-X-Google-Smtp-Source: AGHT+IGdFCpqnhpi/bYMX4uNpBpHyfyXed6rturJBY7W67IqhYWLzE2x172dXVlzvSbZaEUD+auVrY4l54jFuZcovfk=
-X-Received: by 2002:a2e:980f:0:b0:2b9:ea6b:64b with SMTP id
- a15-20020a2e980f000000b002b9ea6b064bmr4949521ljj.37.1692631919785; Mon, 21
- Aug 2023 08:31:59 -0700 (PDT)
+        Mon, 21 Aug 2023 11:32:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF63F1;
+        Mon, 21 Aug 2023 08:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692631939; x=1724167939;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=D+hIMjI03uwL2llenz588/DRHQXH+NN8ZzzsZwNOX7w=;
+  b=lRg1Hfsw/JSOFaawlxLLT6jnfUpOgOKZR3z8Afuj3l5PvO1H+IScf2sq
+   CKZJcYQ/B/tPKC4zeq0A7kyJ6zTJxGOvqEg2/M/KLR1f9bo9cwGRXs9OP
+   xYRbECKbpK1RyTCcp3JXrijDbbRjwoJ/rSIrDxLTbXvPcDzQcrBcA2DC2
+   cBjDRg+zhTppCe0ErkxQB6tTetyfkjuiS00UNMnRcuoleGoiCrn74nODn
+   YXjifAisfVnmrdQf2UnhxTeJCdmuPPRUiy+sOn07KwY3tRMIVt5brA5Td
+   Ol1RkwN6AzFduqs9gcLBl0m/miqiyDlts8zwst78Bc4Xvfe67IW+FvMAD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376368145"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="376368145"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 08:32:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="805955498"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="805955498"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2023 08:32:16 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qY6t5-002VUo-0p;
+        Mon, 21 Aug 2023 18:32:15 +0300
+Date:   Mon, 21 Aug 2023 18:32:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yann Sionneau <yann@sionneau.net>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yann Sionneau <ysionneau@kalray.eu>,
+        Jonathan Borne <jborne@kalray.eu>
+Subject: Re: [PATCH v2] i2c: designware: fix __i2c_dw_disable() in case
+ master is holding SCL low
+Message-ID: <ZOODfgHq5BXDZnzG@smile.fi.intel.com>
+References: <20230821140103.5272-1-yann@sionneau.net>
 MIME-Version: 1.0
-References: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
- <CAJfpeguG4f4S-pq+_EXHxfB63mbof-VnaOy-7a-7seWLMj_xyQ@mail.gmail.com>
- <ZNozdrtKgTeTaMpX@tycho.pizza> <CAJfpegt6x_=F=mD8LEL4AZPbfCLGQrpurhtbDN4Ew50fd2ngqQ@mail.gmail.com>
- <ZNqseD4hqHWmeF2w@tycho.pizza> <CAJfpegtzj7=f99=m49DShDTgLpGAzx8gpHSakgPn0qe+dNjHdw@mail.gmail.com>
- <ZON8hKOAGRvTn83a@tycho.pizza>
-In-Reply-To: <ZON8hKOAGRvTn83a@tycho.pizza>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 21 Aug 2023 17:31:48 +0200
-Message-ID: <CAJfpegt2WrKBswYgSzurNogLefO-vU6ZpbCkrDrjFL365kcsug@mail.gmail.com>
-Subject: Re: [REGRESSION] fuse: execve() fails with ETXTBSY due to async fuse_flush
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     =?UTF-8?Q?J=C3=BCrg_Billeter?= <j@bitron.ch>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821140103.5272-1-yann@sionneau.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 17:02, Tycho Andersen <tycho@tycho.pizza> wrote:
->
-> On Mon, Aug 21, 2023 at 04:24:00PM +0200, Miklos Szeredi wrote:
-> > On Tue, 15 Aug 2023 at 00:36, Tycho Andersen <tycho@tycho.pizza> wrote:
-> > >
-> > > On Mon, Aug 14, 2023 at 04:35:56PM +0200, Miklos Szeredi wrote:
-> > > > On Mon, 14 Aug 2023 at 16:00, Tycho Andersen <tycho@tycho.pizza> wrote:
-> > > >
-> > > > > It seems like we really do need to wait here. I guess that means we
-> > > > > need some kind of exit-proof wait?
-> > > >
-> > > > Could you please recap the original problem?
-> > >
-> > > Sure, the symptom is a deadlock, something like:
-> > >
-> > > # cat /proc/1528591/stack
-> > > [<0>] do_wait+0x156/0x2f0
-> > > [<0>] kernel_wait4+0x8d/0x140
-> > > [<0>] zap_pid_ns_processes+0x104/0x180
-> > > [<0>] do_exit+0xa41/0xb80
-> > > [<0>] do_group_exit+0x3a/0xa0
-> > > [<0>] __x64_sys_exit_group+0x14/0x20
-> > > [<0>] do_syscall_64+0x37/0xb0
-> > > [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >
-> > > which is stuck waiting for:
-> > >
-> > > # cat /proc/1544574/stack
-> > > [<0>] request_wait_answer+0x12f/0x210
-> > > [<0>] fuse_simple_request+0x109/0x2c0
-> > > [<0>] fuse_flush+0x16f/0x1b0
-> > > [<0>] filp_close+0x27/0x70
-> > > [<0>] put_files_struct+0x6b/0xc0
-> > > [<0>] do_exit+0x360/0xb80
-> > > [<0>] do_group_exit+0x3a/0xa0
-> > > [<0>] get_signal+0x140/0x870
-> > > [<0>] arch_do_signal_or_restart+0xae/0x7c0
-> > > [<0>] exit_to_user_mode_prepare+0x10f/0x1c0
-> > > [<0>] syscall_exit_to_user_mode+0x26/0x40
-> > > [<0>] do_syscall_64+0x46/0xb0
-> > > [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > >
-> > > I have a reproducer here:
-> > > https://github.com/tych0/kernel-utils/blob/master/fuse2/Makefile#L7
-> >
-> > The issue seems to be that the server process is recursing into the
-> > filesystem it is serving (nested_fsync()).  It's quite easy to
-> > deadlock fuse this way, and I'm not sure why this would be needed for
-> > any server implementation.   Can you explain?
->
-> I think the idea is that they're saving snapshots of their own threads
-> to the fs for debugging purposes.
+On Mon, Aug 21, 2023 at 04:01:03PM +0200, Yann Sionneau wrote:
+> From: Yann Sionneau <ysionneau@kalray.eu>
+> 
+> The DesignWare IP can be synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
+> parameter.
+> In this case, when the TX FIFO gets empty and the last command didn't have
+> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
+> a new command is pushed into the TX FIFO or the transfer is aborted.
+> 
+> When the controller is holding SCL low, it cannot be disabled.
+> The transfer must first be aborted.
+> Also, the bus recovery won't work because SCL is held low by the master.
+> 
+> Check if the master is holding SCL low in __i2c_dw_disable() before trying
+> to disable the controller. If SCL is held low, an abort is initiated.
+> When the abort is done, then proceed with disabling the controller.
+> 
+> This whole situation can happen for instance during SMBus read data block
+> if the slave just responds with "byte count == 0".
+> This puts the driver in an unrecoverable state, because the controller is
+> holding SCL low and the current __i2c_dw_disable() procedure is not
+> working. In this situation only a SoC reset can fix the i2c bus.
 
-This seems a fairly special situation.   Have they (whoever they may
-be) thought about fixing this in their server?
+Thank you for an update!
+My comments below.
 
-> Whether this is a sane thing to do or not, it doesn't seem like it
-> should deadlock pid ns destruction.
+...
 
-True.   So the suggested solution is to allow wait_event_killable() to
-return if a terminal signal is pending in the exiting state and only
-in that case turn the flush into a background request?  That would
-still allow for regressions like the one reported, but that would be
-much less likely to happen in real life.  Okay, I said this for the
-original solution as well, so this may turn out to be wrong as well.
+>  void __i2c_dw_disable(struct dw_i2c_dev *dev)
+>  {
+> -	int timeout = 100;
 
-Anyway, I'd prefer if this was fixed in the server code, as it looks
-fairly special and adding complexity to the kernel for this case might
-not be justifiable.   But I'm also open to suggestions on fixing this
-in the kernel in a not too complex manner.
+I would leave this untouched to make patch less invasive and
+easier to backport.
 
-Thanks,
-Miklos
+> +	unsigned int raw_intr_stats;
+> +	bool abort_done = false;
+> +	int abort_timeout = 100;
+> +	int dis_timeout = 100;
+> +	unsigned int enable;
+> +	bool abort_needed;
+>  	u32 status;
+>  
+> +	regmap_read(dev->map, DW_IC_RAW_INTR_STAT, &raw_intr_stats);
+> +	regmap_read(dev->map, DW_IC_ENABLE, &enable);
+> +
+> +	abort_needed = raw_intr_stats & DW_IC_INTR_MST_ON_HOLD;
+
+> +
+
+This blank line is not needed.
+
+> +	if (abort_needed) {
+> +		regmap_write(dev->map, DW_IC_ENABLE, enable | DW_IC_ENABLE_ABORT);
+
+> +		do {
+> +			regmap_read(dev->map, DW_IC_ENABLE, &enable);
+> +			abort_done = !(enable & DW_IC_ENABLE_ABORT);
+> +			usleep_range(10, 20);
+> +		} while (!abort_done && abort_timeout--);
+
+Now as you split this loop, it may be replaced by regmap_read_poll_timeout()
+call.
+
+> +		if (!abort_done)
+> +			dev_err(dev->dev, "timeout while trying to abort current transfer\n");
+> +	}
+
+...
+
+Other than above, looks good to me.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
