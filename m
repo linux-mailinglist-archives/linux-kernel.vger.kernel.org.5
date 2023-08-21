@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 255C67824DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECC8782471
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233761AbjHUHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S233693AbjHUH12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:27:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjHUHuk (ORCPT
+        with ESMTP id S233687AbjHUH1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:50:40 -0400
-X-Greylist: delayed 1383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Aug 2023 00:50:38 PDT
-Received: from www.kot-begemot.co.uk (ns1.kot-begemot.co.uk [217.160.28.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F43392;
-        Mon, 21 Aug 2023 00:50:38 -0700 (PDT)
-Received: from 212-39-89-85.ip.btc-net.bg ([212.39.89.85] helo=[192.168.14.227])
-        by www.kot-begemot.co.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <anton.ivanov@cambridgegreys.com>)
-        id 1qXzJj-001Ag5-3l; Mon, 21 Aug 2023 07:27:15 +0000
-Message-ID: <02404242-ab8a-5300-ec76-fb13dc3fb403@cambridgegreys.com>
-Date:   Mon, 21 Aug 2023 08:27:12 +0100
+        Mon, 21 Aug 2023 03:27:25 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D549B1;
+        Mon, 21 Aug 2023 00:27:19 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 923D81BF209;
+        Mon, 21 Aug 2023 07:27:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692602838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oAgH0DvxLAEMiNliLKZ4cEqqgUQpI+wUaks5do5xsag=;
+        b=fX5ULKqLKwPWy4uS6/n2AutYTaG6w3xabcDKnAa5BrfXKl818y+QBXfRMyDVQtPynjzF0R
+        ZbqDOjtKk02raew9hFUKCGde6J+a5UTJKkcFkXT/pRwvysYf07IsqBWdkV18qkkbw4/XaC
+        mqRx/zSBQoxfGcUZVTlOyUAYYEMJODhsm1TjskJuTa/0NSc6YzFJxybnclB/QeIqnon2h2
+        0KqmHINHdeFbVPe+9JuS+OQBWQ+JAfeg//0lY2tvb/ixD1+0VbNZDaGMm/WxKEVmpdY7PJ
+        EMyD6WAErQd/Jt2ADnYP0wyGwh4fIfPly5B1zCs2qg8wNNLkrMoX495nwu1jPQ==
+Date:   Mon, 21 Aug 2023 09:27:15 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: linux-next: manual merge of the nand tree with the mtd tree
+Message-ID: <20230821092715.068a2666@xps-13>
+In-Reply-To: <20230821115507.229d85fc@canb.auug.org.au>
+References: <20230821115507.229d85fc@canb.auug.org.au>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH v4] um: vector: Fix exception handling in
- vector_eth_configure()
-Content-Language: en-US
-To:     Richard Weinberger <richard@nod.at>, Minjie Du <duminjie@vivo.com>
-Cc:     Johannes Berg <johannes@sipsolutions.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-um <linux-um@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        opensource kernel <opensource.kernel@vivo.com>
-References: <20230706013911.695-1-duminjie@vivo.com>
- <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
-From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
-In-Reply-To: <888265629.6490567.1692478887611.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.0
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
+sfr@canb.auug.org.au wrote on Mon, 21 Aug 2023 11:55:07 +1000:
 
-On 19/08/2023 22:01, Richard Weinberger wrote:
-> ----- Ursprüngliche Mail -----
->> The resource cleanup was incomplete in the implementation
->> of the function "vector_eth_configure".
->> Thus replace the jump target
->> "out_undo_user_init" by "out_free_netdev".
->> Delate the orphan function "out_undo_user_init"
->>
->> PATCH v1-v3: Modify the patch format.
->>
->> Signed-off-by: Minjie Du <duminjie@vivo.com>
->> ---
->> arch/um/drivers/vector_kern.c | 4 +---
->> 1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/arch/um/drivers/vector_kern.c b/arch/um/drivers/vector_kern.c
->> index 131b7cb29..7ae6ab8df 100644
->> --- a/arch/um/drivers/vector_kern.c
->> +++ b/arch/um/drivers/vector_kern.c
->> @@ -1646,7 +1646,7 @@ static void vector_eth_configure(
->> 	err = register_netdevice(dev);
->> 	rtnl_unlock();
->> 	if (err)
->> -		goto out_undo_user_init;
->> +		goto out_free_netdev;
->>
->> 	spin_lock(&vector_devices_lock);
->> 	list_add(&device->list, &vector_devices);
->> @@ -1654,8 +1654,6 @@ static void vector_eth_configure(
->>
->> 	return;
->>
->> -out_undo_user_init:
->> -	return;
-> 
-> I don't think this is correct.
-> vector_eth_configure() cannot communicate the failure since it is of type void.
-> So, vector_remove() will run and will call unregister_netdev(). That can cause a double-free.
+> Hi all,
+>=20
+> Today's linux-next merge of the nand tree got a conflict in:
+>=20
+>   drivers/mtd/nand/raw/qcom_nandc.c
+>=20
+> between commit:
+>=20
+>   c2fc6b694790 ("mtd: Explicitly include correct DT includes")
+>=20
+> from the mtd tree and commit:
+>=20
+>   93ca966b4a20 ("mtd: rawnand: qcom: Sort includes alphabetically")
+>=20
+> from the nand tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-vector_remove() will be called only once per device. It checks if the 
-device is in the device list and if it is not - bails. If it is in the 
-list it removes it from there and calls unregister_netdev() after that.
+Thanks for the warning, I'll handle it when merging nand/next into
+mtd/next before sending to Linus.
 
-So, unless I am missing something, there is no harm here - unregister 
-will not be called for a device that failed to register, because the 
-list is updated only if the device has registered successfully.
-
-However, on second read - if register fails, the current code leaks a 
-*device which was alloc-ed in the beginning of configure. So even if we 
-skip free_netdev, which invokes remove we still need to free that *device.
-
-> 
-> Thanks,
-> //richard
-> 
-
--- 
-Anton R. Ivanov
-Cambridgegreys Limited. Registered in England. Company Number 10273661
-https://www.cambridgegreys.com/
+Thanks,
+Miqu=C3=A8l
