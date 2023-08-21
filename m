@@ -2,164 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEC37834A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37417834A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbjHUVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
+        id S229672AbjHUVIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbjHUVHn (ORCPT
+        with ESMTP id S229728AbjHUVI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:07:43 -0400
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFC712D
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:32 -0700 (PDT)
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1bf3a2f44ffso26958045ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:32 -0700 (PDT)
+        Mon, 21 Aug 2023 17:08:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91D4D1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692652063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oQbG/Zrrtm4dTd/ljOBC/1/aflCxfw0pZXVgVdEOSI0=;
+        b=GWLFm9ungF6pQDfunBCyb8tRO9NeBvr5L3XRZG7o5ZEAcXI5xjwKrPHxhPzERwsm4ZU++9
+        r0TV6yxqTaKu3W8VZmeLkxytMiCs7uZArZC1hKqQJR0VZQ3hcfCaeoiKmWSAq6hvOvQt3U
+        Ue9K+ZEe/LxNwLYPTc0idq82z60HUI8=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-538-SWvl5sieOnmHgjXw8QIpfw-1; Mon, 21 Aug 2023 17:07:42 -0400
+X-MC-Unique: SWvl5sieOnmHgjXw8QIpfw-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6b9efedaeebso4340851a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692652052; x=1693256852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2dQacKiLurV1KhiKqUcMclj3Blk3C5ciRarkpZ4fb2Q=;
-        b=UuXll9nrbowzEk7gIW3wIDVaO92tV8JeKI5wZJr4l5cfcIT5RE+9QkQ6qGUxKwwc/l
-         7qF8EYKRgr9Da3+rz0vVSU5XUc2inEL1xuyghc4pS1Kyr57cvUq3BFPOIhPf3fWo/itf
-         5cZqLLCLCMAIvDeInjcmSlSSaih9YGY/T609277RR3MNML2cB1+xSdUzAbkD4KiyjDUB
-         Ch5BWL2P8lbkEB72ngHsyAN0O62/9NNDy47EkYt55rbGPORusRZkkJ/jsYx4OhSXVWLC
-         oOzG9drjN4I5ezWZ3FycfUtCTlnwWV0FzVQ8v92uGv46Eaoe8YF/Ms/TY3B1i6oxk31T
-         UQjg==
-X-Gm-Message-State: AOJu0YxZNO8qSFi+lGILK4+tx7hl87LgIe4RFN/igPn8EbqAopUeNIuQ
-        tnWzka/6t4hOeA5SxW9F4os=
-X-Google-Smtp-Source: AGHT+IFecUr3EwBjtJCL9C5gKjkmgVGFsErcMzgbX4EAMy+MQTH55g/Akiyj50l1tniL7PHZ3iZzrg==
-X-Received: by 2002:a17:902:f54f:b0:1bc:7c69:925a with SMTP id h15-20020a170902f54f00b001bc7c69925amr9159484plf.33.1692652051969;
-        Mon, 21 Aug 2023 14:07:31 -0700 (PDT)
-Received: from snowbird ([199.73.127.3])
-        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001b89a6164desm7539543pld.118.2023.08.21.14.07.30
+        d=1e100.net; s=20221208; t=1692652061; x=1693256861;
+        h=content-transfer-encoding:mime-version:organization:references
+         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oQbG/Zrrtm4dTd/ljOBC/1/aflCxfw0pZXVgVdEOSI0=;
+        b=QZPGFnHt87YZOa1kXj6KpYMHegIkfvyhqlmdRL0gORlEtJ9Fkk8YPzwXknGF8rkzfs
+         l/7UbR08hmEDh59xvj7x2n56UK/34k41/8no2yowfrNXS+EGEg7f+kW4Fal8CoI+Xxm5
+         SAMfQBgjF1bRLCqAZT6oOd0RY+KSQBqLz0Cy8mBNYsrMr3w5v9GMC+rNPhqsmdLziyak
+         L9TKnZmGqBZlzua8cL67D1GnQzyD/lSqZ/YsvUhqBBAUgzu9xwiXKta1PGjvunj5i0VU
+         J78TOBEJc1kl0OC2visSoO03hVLCM5rQUtiMnSHW5qOU+kryEMdM5wPQQ16PmvKcE63H
+         Uciw==
+X-Gm-Message-State: AOJu0YzKMd7istvCgUPUduUl7Qk5nURAdGEnKF7lpsSEEubpPwCPHEUd
+        aQMBOzEXK4LdKToFyOsMQeaTmDkW4T8nMJz19RQOp3j7PXljCMeGSyFA3u5ah+HHTTwhLtGzAvq
+        mT7CqXs3H0EySzGSSEnG2MdX/
+X-Received: by 2002:a05:6871:8a0:b0:1b7:2edd:df6d with SMTP id r32-20020a05687108a000b001b72edddf6dmr10382268oaq.10.1692652061580;
+        Mon, 21 Aug 2023 14:07:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHg53yS4+yqxYQU4Fqo7FjOoh3Pd04o9nYoiVuJ/o7Z0mFf9rf+RR12Qm6IWfmcknClaStmNA==
+X-Received: by 2002:a05:6871:8a0:b0:1b7:2edd:df6d with SMTP id r32-20020a05687108a000b001b72edddf6dmr10382253oaq.10.1692652061290;
+        Mon, 21 Aug 2023 14:07:41 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id r134-20020a4a378c000000b0056e45a34dcfsm4268234oor.1.2023.08.21.14.07.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 14:07:31 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 14:07:28 -0700
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
-        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
-Subject: Re: [PATCH 0/2] execve scalability issues, part 1
-Message-ID: <ZOPSEJTzrow8YFix@snowbird>
-References: <20230821202829.2163744-1-mjguzik@gmail.com>
+        Mon, 21 Aug 2023 14:07:40 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 15:07:38 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Gupta, Nipun" <nipun.gupta@amd.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        git@amd.com, pieter.jansen-van-vuuren@amd.com,
+        nikhil.agarwal@amd.com, michal.simek@amd.com,
+        abhijit.gangurde@amd.com, Shubham Rohila <shubham.rohila@amd.com>
+Subject: Re: [PATCH v6 3/3] vfio-cdx: add bus mastering device feature
+ support
+Message-ID: <20230821150738.63ff73b9.alex.williamson@redhat.com>
+In-Reply-To: <4f1dc1c5-ce18-5595-6667-3e6ce1d0e36c@amd.com>
+References: <20230810084409.4922-1-nipun.gupta@amd.com>
+        <20230810084409.4922-3-nipun.gupta@amd.com>
+        <20230816114610.79c9eccc.alex.williamson@redhat.com>
+        <2d94cffa-7ebf-a8ab-4f43-fc9ab1be41bb@amd.com>
+        <20230818083737.7ad97c2a.alex.williamson@redhat.com>
+        <4f1dc1c5-ce18-5595-6667-3e6ce1d0e36c@amd.com>
+Organization: Red Hat
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821202829.2163744-1-mjguzik@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 21 Aug 2023 16:27:40 +0530
+"Gupta, Nipun" <nipun.gupta@amd.com> wrote:
 
-On Mon, Aug 21, 2023 at 10:28:27PM +0200, Mateusz Guzik wrote:
-> To start I figured I'm going to bench about as friendly case as it gets
-> -- statically linked *separate* binaries all doing execve in a loop.
-> 
-> I borrowed the bench from found here:
-> http://apollo.backplane.com/DFlyMisc/doexec.c
-> 
-> $ cc -static -O2 -o static-doexec doexec.c
-> $ ./static-doexec $(nproc)
-> 
-> It prints a result every second (warning: first line is garbage).
-> 
-> My test box is temporarily only 26 cores and even at this scale I run
-> into massive lock contention stemming from back-to-back calls to
-> percpu_counter_init (and _destroy later).
-> 
-> While not a panacea, one simple thing to do here is to batch these ops.
-> Since the term "batching" is already used in the file, I decided to
-> refer to it as "grouping" instead.
-> 
-
-Unfortunately it's taken me longer to get back to and I'm actually not
-super happy with the results, I wrote a batch percpu allocation api.
-It's better than the starting place, but I'm falling short on the free
-path. I am/was also wrestling with the lifetime ideas (should these
-lifetimes be percpus problem or call site bound like you've done).
-
-What I like about this approach is you group the percpu_counter lock
-which batching percpu allocations wouldn't be able to solve no matter
-how well I do.
-
-I'll review this more closely today.
-
-> Even if this code could be patched to dodge these counters,  I would
-> argue a high-traffic alloc/free consumer is only a matter of time so it
-> makes sense to facilitate it.
-> 
-> With the fix I get an ok win, to quote from the commit:
-> > Even at a very modest scale of 26 cores (ops/s):
-> > before: 133543.63
-> > after:  186061.81 (+39%)
-> 
-> > While with the patch these allocations remain a significant problem,
-> > the primary bottleneck shifts to:
+> On 8/18/2023 8:07 PM, Alex Williamson wrote:
+> > On Fri, 18 Aug 2023 14:02:32 +0530
+> > "Gupta, Nipun" <nipun.gupta@amd.com> wrote:
+> >   
+> >> On 8/16/2023 11:16 PM, Alex Williamson wrote:  
+> >>> On Thu, 10 Aug 2023 14:14:09 +0530
+> >>> Nipun Gupta <nipun.gupta@amd.com> wrote:
+> >>>      
+> >>>> Support Bus master enable and disable on VFIO-CDX devices using
+> >>>> VFIO_DEVICE_FEATURE_BUS_MASTER flag over VFIO_DEVICE_FEATURE IOCTL.
+> >>>>
+> >>>> Co-developed-by: Shubham Rohila <shubham.rohila@amd.com>
+> >>>> Signed-off-by: Shubham Rohila <shubham.rohila@amd.com>
+> >>>> Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+> >>>> ---
+> >>>>
+> >>>> Changes v5->v6:
+> >>>> - Called CDX device reset at cdx_open_device()
+> >>>>
+> >>>> Changes v4->v5:
+> >>>> - Use device feature IOCTL instead of adding a new VFIO IOCTL
+> >>>>     for bus master feature.
+> >>>>
+> >>>> Changes in v4:
+> >>>> - This patch is newly added which uses cdx_set_master() and
+> >>>>     cdx_clear_master() APIs.
+> >>>>
+> >>>>    drivers/vfio/cdx/main.c | 46 +++++++++++++++++++++++++++++++++++++++--
+> >>>>    1 file changed, 44 insertions(+), 2 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/vfio/cdx/main.c b/drivers/vfio/cdx/main.c
+> >>>> index c376a69d2db2..bf0e1f56e0f9 100644
+> >>>> --- a/drivers/vfio/cdx/main.c
+> >>>> +++ b/drivers/vfio/cdx/main.c
+> >>>> @@ -14,7 +14,7 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
+> >>>>    		container_of(core_vdev, struct vfio_cdx_device, vdev);
+> >>>>    	struct cdx_device *cdx_dev = to_cdx_device(core_vdev->dev);
+> >>>>    	int count = cdx_dev->res_count;
+> >>>> -	int i;
+> >>>> +	int i, ret;
+> >>>>    
+> >>>>    	vdev->regions = kcalloc(count, sizeof(struct vfio_cdx_region),
+> >>>>    				GFP_KERNEL_ACCOUNT);
+> >>>> @@ -39,8 +39,11 @@ static int vfio_cdx_open_device(struct vfio_device *core_vdev)
+> >>>>    		if (!(cdx_dev->res[i].flags & IORESOURCE_READONLY))
+> >>>>    			vdev->regions[i].flags |= VFIO_REGION_INFO_FLAG_WRITE;
+> >>>>    	}
+> >>>> +	ret = cdx_dev_reset(core_vdev->dev);
+> >>>> +	if (ret)
+> >>>> +		kfree(vdev->regions);  
+> >>>
+> >>> AIUI, this reset clears bus master, but per the first patch in the
+> >>> series the ability to set or clear bus master depends on whether the
+> >>> underlying cdx_ops supports dev_configure.  Apparently all currently
+> >>> do, but will that always be true?
+> >>>
+> >>> It seems like this could make a gratuitous call to cdx_clear_master()
+> >>> to validate the return value and only conditionally support this device
+> >>> feature based on that result (or fail the device open if it's meant to
+> >>> be required).  
+> >>
+> >> CDX bus driver does not explicitly call cdx_clear_master during reset.
+> >> It is triggered by device implicitly and hence device_reset would never
+> >> fail due to lack of bus mastering capability.
+> >>
+> >> Do you mean if cdx_dev_reset() fails we should not set the
+> >> VFIO_DEVICE_FLAGS_RESET in vfio_device_info? something like:
+> >>
+> >> 	ret = cdx_dev_reset(core_vdev->dev);
+> >> 	if (ret == -EOPNOTSUPP)
+> >>    		/* make sure VFIO_DEVICE_FLAGS_RESET is not returned in
+> >> 		 * flags for device get info */
+> >> 	else if (ret)
+> >> 		kfree(vdev->regions);
+> >>
+> >>   From new device feature added for BUS mastering if cdx_clear_master()
+> >> fails due to no support, the bus driver will return -EOPNOTSUPP, so same
+> >> would be communicated to the user-space, so it seems fine from this end.  
 > > 
-> >     __pv_queued_spin_lock_slowpath+1
-> >     _raw_spin_lock_irqsave+57
-> >     folio_lruvec_lock_irqsave+91
-> >     release_pages+590
-> >     tlb_batch_pages_flush+61
-> >     tlb_finish_mmu+101
-> >     exit_mmap+327
-> >     __mmput+61
-> >     begin_new_exec+1245
-> >     load_elf_binary+712
-> >     bprm_execve+644
-> >     do_execveat_common.isra.0+429
-> >     __x64_sys_execve+50
-> >     do_syscall_64+46
-> >     entry_SYSCALL_64_after_hwframe+110
+> > It's inconsistent to the user to allow the bus master device feature
+> > probe to indicate the feature is available if it's going to fail on
+> > every call.  My suggestion was specifically relative to that, a
+> > gratuitous call to clear bus master, determine if the call works, then
+> > the feature probe could succeed or fail based on that result.
+> > 
+> > However, now that I look at cdx_dev_reset() I notice the inconsistency
+> > with dev_configure.  The reset path unconditionally calls
+> > dev_configure, but the bus master paths tests dev_configure.  Is
+> > dev_configure a required op or not?  Are reset and bus master control
+> > required features of CDX?  If the core CDX code requires these then the
+> > vfio support gets easier, we don't need to make all these conditional.  
 > 
-> I intend to do more work on the area to mostly sort it out, but I would
-> not mind if someone else took the hammer to folio. :)
+> Hi Alex,
 > 
-> With this out of the way I'll be looking at some form of caching to
-> eliminate these allocs as a problem.
+> dev_configure is a required op for CDX bus controller. The check in 
+> cdx_set_master()/cdx_clear_master() is just precautionary and can be 
+> removed.
 > 
+> On the other part where you mention making device feature optional, I 
+> was not able to locate any API/flags to export capabilities to the VFIO 
+> user regarding the features supported by the device. Though it is not 
+> required as all CDX devices would support the BUS mastering.
 
-I'm not against caching, this is just my first thought. Caching will
-have an impact on the backing pages of percpu. All it takes is 1
-allocation on a page for the current allocator to pin n pages of memory.
-A few years ago percpu depopulation was implemented so that limits the
-amount of resident backing pages.
+The flags for the feature itself is how the user determines whether the
+feature is available.  For example here we're expecting the user to
+call with flags (VFIO_DEVICE_FEATURE_PROBE | VFIO_DEVICE_FEATURE_SET)
+to determine the VFIO_DEVICE_FEATURE_BUS_MASTER is available.  This is
+handled automatically by the boilerplate usage of vfio_check_feature().
 
-Maybe the right thing to do is preallocate pools of common sized
-allocations so that way they can be recycled such that we don't have to
-think too hard about fragmentation that can occur if we populate these
-pools over time?
+In this series we introduce the possibility that there might be no
+dev_configure callback for a device, which would create a scenario were
+the vfio device feature probing indicates support for a feature that
+maybe isn't actually present.  Then, even if dev_configure is
+supported and required, it's just multiplexing the specific op via a
+switch statement, so we need to make a leap of faith whether every
+future dev_configure implementation will support these ops.
 
-Also as you've pointed out, it wasn't just the percpu allocation being
-the bottleneck, but percpu_counter's global lock too for hotplug
-support. I'm hazarding a guess most use cases of percpu might have
-additional locking requirements too such as percpu_counter.
+I wonder if dev_configure is really necessary or it wouldn't be better
+to to have .reset and .bus_master callbacks on struct cdx_ops.  Then
+the cdx subsystem could properly enforce required callbacks.  Thanks,
 
-Thanks,
-Dennis
+Alex
 
-> Thoughts?
-> 
-> Mateusz Guzik (2):
->   pcpcntr: add group allocation/free
->   fork: group allocation of per-cpu counters for mm struct
-> 
->  include/linux/percpu_counter.h | 19 ++++++++---
->  kernel/fork.c                  | 13 ++------
->  lib/percpu_counter.c           | 61 ++++++++++++++++++++++++----------
->  3 files changed, 60 insertions(+), 33 deletions(-)
-> 
-> -- 
-> 2.39.2
-> 
