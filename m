@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE408782EF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA03782EE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236885AbjHUQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
+        id S236843AbjHUQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236898AbjHUQ6T (ORCPT
+        with ESMTP id S236837AbjHUQ6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:58:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1605F10F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692637047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 21 Aug 2023 12:58:07 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50CBEC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:58:05 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 16:58:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1692637083;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CXGwgpHlf7D764T66ilzjBpaazpa9epIZyJVOx09W+I=;
-        b=f9VWf6Ox6/GDWqvt3mgwUun/ZNk8ykbMF0S+GB7VyDLWZuGws7bY/0F7yI9UcJOT31I4s0
-        93PRCbCDK3yKxwjYmLh3wnMRNdlGTElBwX56tU12J5d5wjvXe2RmF3sh1ew4WPGBkmZZq1
-        AjOfSUna9X/0Cgz/z0vMOAl7YZpIlIw=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-395-EPqoiiGWNy6ldlHeS9qWsg-1; Mon, 21 Aug 2023 12:57:23 -0400
-X-MC-Unique: EPqoiiGWNy6ldlHeS9qWsg-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2bb93f9a54fso35225081fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:57:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692637041; x=1693241841;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CXGwgpHlf7D764T66ilzjBpaazpa9epIZyJVOx09W+I=;
-        b=jryl6axWKeQk9trsbNgZQbU9PzgfwF62cCpjx0iyVYN3iNceKTVT+MN5OWJaNdG7Gv
-         sgn3tBZ2okBH1q+lOpQdKCdolbfRFzTXN+1CfRn/OrNIsEG9dGZHqDm6c9slmv+cCnXU
-         Fd27/r85JFskM2gR7IeYaHHM7qJnZhCfTHfPRuM1wXH8Gsu+m/dhkJdkKdijI/wVY0FW
-         uYueWxMxHIXV/qpHRGADh9Iduq7R2BTD3znq/39Fe9Ujb3aF2+8F3sfe8zHbIWyC56Ai
-         aB1Scqo+wpLqa0+4uAN4sb3R4rJebU+YaYBQggwuXCKWQ/kLICNJl6XFjffErZBvGY98
-         elGw==
-X-Gm-Message-State: AOJu0Yxhm/j7BCkR2a0EI1mm0VFQ0ySl0b3FIdvZExRINuZo/7gCwzZh
-        dTJwzo0RxOiS66TU7iOh+8iF9PUZqiOhjrusfaZp9aj6YKgIRDOKBwP73CKxQzVGxYVmeCsdjv9
-        SW6xxUQIuG8gdah75qBdMTVEPSutSvURJ
-X-Received: by 2002:a2e:8ec6:0:b0:2b6:e78e:1e58 with SMTP id e6-20020a2e8ec6000000b002b6e78e1e58mr5737989ljl.5.1692637041430;
-        Mon, 21 Aug 2023 09:57:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEXXokZi+oG0+t0TFrhKlNiKjd9bBY8JtXoMrFYUu8TiarXbXIKYyckEfoETRvAcowQEwbL1Q==
-X-Received: by 2002:a2e:8ec6:0:b0:2b6:e78e:1e58 with SMTP id e6-20020a2e8ec6000000b002b6e78e1e58mr5737978ljl.5.1692637041132;
-        Mon, 21 Aug 2023 09:57:21 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id xa13-20020a170907b9cd00b0099bd5d28dc4sm6839118ejc.195.2023.08.21.09.57.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 09:57:20 -0700 (PDT)
-Message-ID: <fb7d2d63-972a-b056-c7ae-a9995f1bf66b@redhat.com>
-Date:   Mon, 21 Aug 2023 18:57:19 +0200
+        bh=DS2dzeU2aC7oxd0XBgweSocIaBD4c+USkthmq/tTmKU=;
+        b=c+wzihCOOCRjr8g45WDX3PHF2/s1fwL4Gl1pTZOMZnr1HrdwTr+IY4wWoaaFQnsPMWmBnQ
+        7KCJ+UlR8wUnWtLnX/7Y59ZXuJ+kHmco+/vybpgZ4MDWnyPmF/qLnycTpfBGZPfTRgvj4N
+        7mSjkpUFxKUHUMXlpR8IIcJDXR+xJd8v5J8LX4SkC7iohka3hWm+8kULsJLvKPZ+cXd387
+        x2qxwBaqM3O/+4O7zaDE92KZCJ3BCg8Cfg+VWh0b5+h/2GCGfVV2UZTGZdqjBXKKlktZht
+        qGCEHz+1Y7GbOyZMNeKe2bEaMKkRIyYERQ3E9+u8VIkoxFyVWmy9gP/u7gR8qA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1692637083;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DS2dzeU2aC7oxd0XBgweSocIaBD4c+USkthmq/tTmKU=;
+        b=UhPU7Z5BUfMUoDXWB5XURJ5rtme+bQQ2ZpLM9XzPCEbjWyWLT5Odvu87Q3A9+cQvsP01bD
+        /GFZ8YFPqnCt53CQ==
+From:   "irqchip-bot for Huqiang Qin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqchip: Add support for Amlogic-C3 SoCs
+Cc:     Huqiang Qin <huqiang.qin@amlogic.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20230628091533.3884385-3-huqiang.qin@amlogic.com>
+References: <20230628091533.3884385-3-huqiang.qin@amlogic.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Update steps order list elements are evaluated
-Content-Language: en-US, nl
-To:     Jorge Lopez <jorgealtxwork@gmail.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
-        dan.carpenter@linaro.org
-References: <20230821144205.13529-1-jorge.lopez2@hp.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230821144205.13529-1-jorge.lopez2@hp.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <169263708219.27769.15374105447668886881.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-On 8/21/23 16:42, Jorge Lopez wrote:
-> Update steps how order list elements data and elements size are
-> evaluated
-> 
-> Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
-> 
-> ---
-> Based on the latest platform-drivers-x86.git/for-next
+Commit-ID:     19b5a44bee16518104e8a159ab9a60788292fbd4
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/19b5a44bee16518104e8a159ab9a60788292fbd4
+Author:        Huqiang Qin <huqiang.qin@amlogic.com>
+AuthorDate:    Wed, 28 Jun 2023 17:15:33 +08:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Mon, 21 Aug 2023 17:49:12 +01:00
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+irqchip: Add support for Amlogic-C3 SoCs
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+The Amlogic-C3 SoCs support 12 GPIO IRQ lines compared with previous
+serial chips and have something different, details are as below.
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+IRQ Number:
+- 54     1 pins on bank TESTN
+- 53:40 14 pins on bank X
+- 39:33  7 pins on bank D
+- 32:27  6 pins on bank A
+- 26:22  5 pins on bank E
+- 21:15  7 pins on bank C
+- 14:0  15 pins on bank B
 
-Regards,
+Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20230628091533.3884385-3-huqiang.qin@amlogic.com
+---
+ drivers/irqchip/irq-meson-gpio.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Hans
-
-
-
-
-
-
-
-> ---
->  .../platform/x86/hp/hp-bioscfg/order-list-attributes.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> index cffc1c9ba3e7..1ff09dfb7d7e 100644
-> --- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> +++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-> @@ -258,7 +258,6 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
->  				eloc++;
->  			break;
->  		case ORD_LIST_ELEMENTS:
-> -			size = ordered_list_data->elements_size;
->  
->  			/*
->  			 * Ordered list data is stored in hex and comma separated format
-> @@ -270,17 +269,14 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
->  
->  			part_tmp = tmpstr;
->  			part = strsep(&part_tmp, COMMA_SEP);
-> -			if (!part)
-> -				strscpy(ordered_list_data->elements[0],
-> -					tmpstr,
-> -					sizeof(ordered_list_data->elements[0]));
->  
-> -			for (olist_elem = 1; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
-> +			for (olist_elem = 0; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
->  				strscpy(ordered_list_data->elements[olist_elem],
->  					part,
->  					sizeof(ordered_list_data->elements[olist_elem]));
-> -				part = strsep(&part_tmp, SEMICOLON_SEP);
-> +				part = strsep(&part_tmp, COMMA_SEP);
->  			}
-> +			ordered_list_data->elements_size = olist_elem;
->  
->  			kfree(str_value);
->  			str_value = NULL;
-
+diff --git a/drivers/irqchip/irq-meson-gpio.c b/drivers/irqchip/irq-meson-gpio.c
+index 7da18ef..f88df39 100644
+--- a/drivers/irqchip/irq-meson-gpio.c
++++ b/drivers/irqchip/irq-meson-gpio.c
+@@ -150,6 +150,10 @@ static const struct meson_gpio_irq_params s4_params = {
+ 	INIT_MESON_S4_COMMON_DATA(82)
+ };
+ 
++static const struct meson_gpio_irq_params c3_params = {
++	INIT_MESON_S4_COMMON_DATA(55)
++};
++
+ static const struct of_device_id meson_irq_gpio_matches[] __maybe_unused = {
+ 	{ .compatible = "amlogic,meson8-gpio-intc", .data = &meson8_params },
+ 	{ .compatible = "amlogic,meson8b-gpio-intc", .data = &meson8b_params },
+@@ -160,6 +164,7 @@ static const struct of_device_id meson_irq_gpio_matches[] __maybe_unused = {
+ 	{ .compatible = "amlogic,meson-sm1-gpio-intc", .data = &sm1_params },
+ 	{ .compatible = "amlogic,meson-a1-gpio-intc", .data = &a1_params },
+ 	{ .compatible = "amlogic,meson-s4-gpio-intc", .data = &s4_params },
++	{ .compatible = "amlogic,c3-gpio-intc", .data = &c3_params },
+ 	{ }
+ };
+ 
