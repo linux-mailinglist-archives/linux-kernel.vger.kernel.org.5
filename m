@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4797825CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51797825D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbjHUIuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 04:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
+        id S234180AbjHUIvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 04:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbjHUIuQ (ORCPT
+        with ESMTP id S230403AbjHUIvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 04:50:16 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C6C1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:50:14 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VqF1WK9_1692607809;
-Received: from 30.97.48.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VqF1WK9_1692607809)
-          by smtp.aliyun-inc.com;
-          Mon, 21 Aug 2023 16:50:10 +0800
-Message-ID: <9749af5b-8c0b-49e4-d76e-129736472499@linux.alibaba.com>
-Date:   Mon, 21 Aug 2023 16:50:10 +0800
+        Mon, 21 Aug 2023 04:51:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5298F;
+        Mon, 21 Aug 2023 01:51:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B736761138;
+        Mon, 21 Aug 2023 08:51:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94205C433C8;
+        Mon, 21 Aug 2023 08:51:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692607869;
+        bh=nKi2XShAbwnotQpCpq0StyQSOBV8KJ5Knd9t3XoN5QU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XdYucQbkgXiek8fpT7Ybf8we0A9YnTl3ed+xopccFJl5dstqIvWmeXwH7NjTQy1zk
+         Puoqbp+sY+d+6x096fKDO0VaVawDjgNiZFER8s79jxvwF6k6dJ4hZq7ZcZIZxsb1Lj
+         oFoTYxUEz6Vk2Wdg/7UoWvQ6iDj2901+9FvYoS7KgUQZ227SmMT7mk2nJdoYj0I3VZ
+         QxIkl5OZaCJW6JzuD20Npho+11Odr/IiLu9jsoJzru6IYZRcMvHYXxfY2D0wqG7TWn
+         px8KZMlAamommXuvLtvDXVBy+BkCq9oGu4awAs5ECpM4XsIz8MM2O6njlIleY5aw0I
+         Bl1P2FveoR7vA==
+Date:   Mon, 21 Aug 2023 10:51:04 +0200
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Subject: Re: [PATCH v1 00/12] HID: cp2112: Cleanups and refactorings
+Message-ID: <ez2oewpi3yeaiejrvbe433ude75pgm3k3s5sh5gnn7pvnzm7b4@ajuopfgwocft>
+References: <20230703185222.50554-1-andriy.shevchenko@linux.intel.com>
+ <ZMK60UphgVuj4Z+L@smile.fi.intel.com>
+ <ZMydcGv8Dvu3Hje1@smile.fi.intel.com>
+ <nycvar.YFH.7.76.2308071319140.14207@cbobk.fhfr.pm>
+ <ZND/8wd67YbGs8d5@smile.fi.intel.com>
+ <nycvar.YFH.7.76.2308141128260.14207@cbobk.fhfr.pm>
+ <ZOMcHQc8Em/s6C+y@smile.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 0/4] Extend migrate_misplaced_page() to support batch
- migration
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        shy828301@gmail.com, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1692440586.git.baolin.wang@linux.alibaba.com>
- <87cyzhdt5r.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <21099f59-c660-41a3-e422-0c14ac5d0fac@linux.alibaba.com>
- <87r0nwdbxw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <87r0nwdbxw.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOMcHQc8Em/s6C+y@smile.fi.intel.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/21/2023 4:41 PM, Huang, Ying wrote:
-> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+On Aug 21 2023, Andy Shevchenko wrote:
+> On Mon, Aug 14, 2023 at 11:28:58AM +0200, Jiri Kosina wrote:
+> > On Mon, 7 Aug 2023, Andy Shevchenko wrote:
 > 
->> On 8/21/2023 10:29 AM, Huang, Ying wrote:
->>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
->>>
->>>> Hi,
->>>>
->>>> Currently, on our ARM servers with NUMA enabled, we found the cross-die latency
->>>> is a little larger that will significantly impact the workload's performance.
->>>> So on ARM servers we will rely on the NUMA balancing to avoid the cross-die
->>>> accessing. And I posted a patchset[1] to support speculative numa fault to
->>>> improve the NUMA balancing's performance according to the principle of data
->>>> locality. Moreover, thanks to Huang Ying's patchset[2], which introduced batch
->>>> migration as a way to reduce the cost of TLB flush, and it will also benefit
->>>> the migration of multiple pages all at once during NUMA balancing.
->>>>
->>>> So we plan to continue to support batch migration in do_numa_page() to improve
->>>> the NUMA balancing's performance, but before adding complicated batch migration
->>>> algorithm for NUMA balancing, some cleanup and preparation work need to do firstly,
->>>> which are done in this patch set. In short, this patchset extends the
->>>> migrate_misplaced_page() interface to support batch migration, and no functional
->>>> changes intended.
->>> Will these cleanup benefit anything except batching migration?  If
->>> not,
->>
->> I hope these cleanup can also benefit the compound page's NUMA
->> balancing, which was discussed in the thread[1]. IIUC, for the
->> compound page's NUMA balancing, it is possible that partial pages were
->> successfully migrated, so it is necessary to return the number of
->> pages that were successfully migrated from
->> migrate_misplaced_page(). (But I did not look this in detail yet,
->> please correct me if I missed something, and I will find some time to
->> look this in detail). That is why I think these cleanups are
->> straightforward.
->>
->> Yes, I will post the batch migration patches after more polish and
->> testing, but I think these cleanups are separate and straightforward,
->> so I plan to submit the patches separately.
+> ...
 > 
-> Then, please state the benefit explicitly in the patch description
-> instead of just preparation for batching migration.
+> > > > > > > After I updated GPIO library for the case Benjamin has with CP2112,
+> > > > > > > I have a brief look into the CP2112 driver itself.
+> > > > > > > 
+> > > > > > > From GPIO perspective it has two main (maitenance) issues:
+> > > > > > > - usage of ->to_irq() with IRQ chip present;
+> > > > > > > - having IRQ chip not immutable.
+> > > > > > > 
+> > > > > > > Besides that there are plenty small cleanups here and there.
+> > > > > > > Hence this series.
+> > > > > > 
+> > > > > > Any comments on this?
+> > > > > 
+> > > > > Gentle ping^2 for this...
+> > > > > 
+> > > > > Anything should I do to improve it or is it okay to go as is?
+> > > > 
+> > > > I have been off pretty much the whole July. I am now back and slowly 
+> > > > making my way through everything that accumulated, I will eventually get 
+> > > > to this.
+> > > > 
+> > > > Thanks for the patience,
+> > > 
+> > > Ah, okay, no worries and take your time!
+> > > 
+> > > I was thinking more on Benjamin's answer as last time he had a hw setup
+> > > to test... Not sure what the status of that now and if he has a chance
+> > > to test this or busy enough with something else.
+> > 
+> > Ah, that would be of course nice. Benjamin?
+> 
+> Benjamin? It almost full release cycle passed...
+> I understand if you are busy with something, just tell us.
 
-Sure, will do. Thanks.
+Sorry for not answering, I was off in August until just now.
+
+I tried you series just before taking time off, but the problem was that
+my automation relies on this driver to not be too far from the current
+upstream, as I need to patch it to be able to inject a node child in it.
+
+Which is why I was very interested in the ACPI/DT work so that I do not
+have to patch the driver.
+
+Long story short, I'm not able to test it right now (and I got quite
+some backlog as you can imagine). IIRC the code was fine, so I think we
+can just take the series as is, and work on the quirks (if any) later.
+
+Cheers,
+Benjamin
