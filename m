@@ -2,170 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E699C78301D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BDA783023
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237154AbjHUSRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:17:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        id S237169AbjHUSRn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 14:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbjHUSRP (ORCPT
+        with ESMTP id S237151AbjHUSRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:17:15 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2055.outbound.protection.outlook.com [40.107.243.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD65F10E;
-        Mon, 21 Aug 2023 11:17:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKP8CgoFZxrcbLrhNvR19pWVuktQkQPhR/o13SoYXIKgLvTfqp0eiBsSgp6zcaNJ3Cxp5xrl9q85QKzjjnDuQhPjBGO01N7KCVMU2fbeSvuDM0R4gcAOjbuK1KgR3IlvoEDewsfzcvF/aO8KQE+Lp0DCQ9IszfupMasWDy5Na06pDenQDfmPnZ58228LLJR6BR9KKU/2b2MfB9JnokL4go72y91RmJt2vlIaRfopuQu6NiceAhklgpNJM5tWrMVrUuYn6BfV6Bb/vBdkUN+RBBD0gUUK0slMzxP0oZQv3g+PXv2Bfb51EyjrtKJX9jZEdlr9eTe/Zun8Ki2VMxeD7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XYys7ee6K78uJ4ZYJ9Arec6AQuk5adHfwVNDLTAIajU=;
- b=b1j7f2Fm/IsQv6DKZwY5+oKiBTD4uB9+raKKhvrAs3s/fRpF38DlH9qWZ5I4MoMYEXlA/ONJyYUmJ3goxbnjutCVGR2Gbc7Rm6XkRLEek1mHdgKqXPmZpSZOs65ZTSiNdbX6wG/wS9gchwoZJDCKQm1qzokyqCDprHL8r1PtqvCVJ9fdPA76uUprYd0Nrw8RM5Dr3/K+P65kpGYOcw1WEJYmPFXlokRKmPcHRS6mUH0CcNpxe5mD8OG8TKIuC1jxupQvw0bf6QnD0RVeJpLeONiRWn9KdtpK2zBs/Y2shT6naJoTbjc2+h5+B4pezQ5x0xu4xrkI0jnbtbhIJFVrAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XYys7ee6K78uJ4ZYJ9Arec6AQuk5adHfwVNDLTAIajU=;
- b=SQTz4Sl1L4d8NQJqF1toaZ7CG5ObBYi0yxajSZZZsLZcmXNaDFY5tsBdR3EoxQgH3HIkfHa3j/Nw7ArfpKpwyGgcHHF+gX+4Kq+7wqilpAVT8Bvs0ND5AnzIuA9EHqSsc4TuYyvI1+78x2CobFepoNxokdevVOM8xCc0tUJFPYo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB4342.namprd12.prod.outlook.com (2603:10b6:208:264::7)
- by SN7PR12MB7935.namprd12.prod.outlook.com (2603:10b6:806:349::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
- 2023 18:17:10 +0000
-Received: from MN2PR12MB4342.namprd12.prod.outlook.com
- ([fe80::6787:e196:b8dc:93a1]) by MN2PR12MB4342.namprd12.prod.outlook.com
- ([fe80::6787:e196:b8dc:93a1%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 18:17:10 +0000
-Message-ID: <1ab95561-cfd2-f278-7dfd-fb35b00b7371@amd.com>
-Date:   Mon, 21 Aug 2023 23:46:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 0/4] drm/amdgpu: Explicitly add a flexible array at the
- end of 'struct amdgpu_bo_list' and simplify amdgpu_bo_list_create()
-Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "Prosyak, Vitaly" <Vitaly.Prosyak@amd.com>,
-        "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Felix.Kuehling@amd.com, daniel@ffwll.ch, airlied@gmail.com,
-        Xinhui.Pan@amd.com, alexander.deucher@amd.com
-References: <cover.1692524665.git.christophe.jaillet@wanadoo.fr>
- <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-From:   Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>
-In-Reply-To: <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0081.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:9a::20) To MN2PR12MB4342.namprd12.prod.outlook.com
- (2603:10b6:208:264::7)
+        Mon, 21 Aug 2023 14:17:41 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9223B126;
+        Mon, 21 Aug 2023 11:17:32 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-570b3ebb3faso149266eaf.0;
+        Mon, 21 Aug 2023 11:17:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692641852; x=1693246652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U915soG4Cn1Yj7ytPNls916oVCFFMGSgVOAvevB8apo=;
+        b=g+X1yCroxdTfGL7bIHi9QQxRdXHe53tzWNmpBXsa1Tu+tTJ1mkzVjyY6ZxRFqIOFZt
+         CZdFLrIDM2qUPV2PpVXa3rs/ccpHeAqVrQi15qogs0kDT78KdtipwWQq0IuoibIq/OSO
+         OE5myJTFvaI3HdeK2BgOv4Kgkq4tadqDN3HeEzd9Y449C42NgxMuYSi6hRH3iyGer9eH
+         fvCo509y9O1Fzu6QtfslSGNRbJMndO+54yVvg7b8zFN4Lvm9pMgoM2jKh+cvep0HTeKN
+         dLgKf21JlsLPvNf8vJR+1xBKS14hS+d/7K1cfL12BaH1Ih+Us3+KnY8l1QMEB9LoT5QM
+         y0KA==
+X-Gm-Message-State: AOJu0YxxUN6E/GzmykNtPXXNs1j95Ut/DnBpROHy+MHXDnLcMxezaX21
+        0IYHokfPuPGmKNzFqext5n1Isc1sUygCI4u/10I=
+X-Google-Smtp-Source: AGHT+IF+9Ah1rcdUWpT8kNAKyrdk+gBugPzYZRvqtM1UtgRsr+ffGm5/ww1QsbsEzCL1ZQrSZC9tWQoVUcXipOdNqEo=
+X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
+ n1-20020a4ae741000000b0056e94edc098mr6975400oov.0.1692641851710; Mon, 21 Aug
+ 2023 11:17:31 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4342:EE_|SN7PR12MB7935:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5e993aeb-32a5-49ff-9c4a-08dba272d605
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y04ZHIk8Dk3aHCQI3Iy3ZDzHzexLUUgXvCHNEP44JuAP6lWequ01d10GhieC+W8FuiA/cDowxM1lNYVMZwUaZqdDlUjNFQw5OvCOkiKO5EOAW2h/t3/cOXUl61wTSgWIaFN0l6a9DRzFiYbmcUkJuCnCtIG/Sbz/dgJy0z8kN4QZM6GPWq9x4XGEG+vK2teUJVfqXeYAJpYvBaRatI6iYIvPDt0XdVdF6p4o0kWOH8Wlr3VkML12W2ssw2zZhSnkFIHNsn1XrVS0LAoifZVjT8ANcsRKW05rqleZNDkbEwoxAIEegOAZLr8kJi2ajE6WKF1SoL9wknKdBT9yY355Ti8GoH7ORTZtHM2F4SzH3I/aFl8I2jEgvGohvAnE5TFhLwKX0tCslHwBNqpug5eqA5uiXqd8qtFUmdtLT96l9wNXvd2MIPQxBa62epYfp4aXe2T7tWfb7bHRPySHUYSXv/EWLJiAaf7QVYny/7wR+NABaC16CoaNr7d2/WeYj17nJ1/DPVaT74ZNTaHHyEuez8s5i11elMwMTR610grpXo3O1YJt0RhQhCRTrsSv2GlivjJJH8n4Dj0KcdzcOWWtUCiHhRmCl8bGLjMozAPbaHp647JPdhd/sTu7rk1oGeVGdXSjktonBaZ/skFSBhX3RQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4342.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(6636002)(66476007)(66556008)(316002)(66946007)(6512007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(86362001)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWsraWRieXhpZk5YREZkejZnQW5lUnVDRGpaNG9KN2JsV1FYZjFhOGhRU21x?=
- =?utf-8?B?WkwvSWg4d3pjVmsrZWorUW5iZzdvRmgvN2cxWkM5SzUxN201VjhmVUkzWWpS?=
- =?utf-8?B?U25lQnlEWHU3WlNYL3hXNm52S2pyb0x5RHUwUTAvZUg1a09SNjVNenBHcmdT?=
- =?utf-8?B?b1BWdzJ5NlpiM0ZrcWtudnJoZkp0UUgrMnkyOWxsc2RKeVJkaDhOTnZxUVFS?=
- =?utf-8?B?N2t5eDUxRjJmeEpVdjBxSks5eVhzeURwNThFamw2RW44RWsvajRTYVkrZ3Qv?=
- =?utf-8?B?UHRBZmZhTG45RnpmSDZhb3IvaGU2UUkxb29lTlhxY3dHUTZiL1VrdHJpbHBw?=
- =?utf-8?B?UVY2T0R0d0lsNWU0azYvaDA0SHhudjBaSm5qWmZrY1d0UW44NFphYU95TnhE?=
- =?utf-8?B?UWFtOElhUXcvbDNPanlNbDRqd2dYaFB6bW5CUlN4K0hGQ3BSWWZvemc3WlUw?=
- =?utf-8?B?ZGJUWUNBaFVzd3N6SFlUS2t1a2trRTR2b3NoNS8vbnBOYWVtVE5wVGhvWXpF?=
- =?utf-8?B?RFhodjNDbi80RHA0dkRWdjZSakIwdm9Wdis4TVkwbGN3K25TdDY4eGdyZ0NM?=
- =?utf-8?B?UklMaWJTc0RTOWY5SElwa0VrM0N4NGxabE02RGYrRHV3SjNCRGxyMGxMUmdS?=
- =?utf-8?B?VHZlbVRPR0JyNXNqcDJ5SHpCb0ZiSjhTSHpOQzlvV2k0aEJ0cnRWaEN4MWVH?=
- =?utf-8?B?QVNPdjJ1eU9sOGh2Mnd0STcvbW1WK0dSbGtKS2RGZ21OdllUOTY2R20yMld5?=
- =?utf-8?B?QU5xaC9YQlBteHFiKy96RHN5NjBsbmxJV3VDNGFsbHBLV3cxU01SZXZsZ0RD?=
- =?utf-8?B?SEJ5Z0hiTDdvZTdreVd1TWhrTkJpMUYrSlV1MlBsdCtRYUtUSkRPc0J6NTMr?=
- =?utf-8?B?QXl0RjR6c1NNR1FjWDEwaEZOdVBNQlRXNjIzUW9RdDEvYTc4cXp5L3VIdzVa?=
- =?utf-8?B?SHg3MDNkeFd3VFpnZGlXVFU2T2FnMzBKdzFwZ2VVbE5DMlVIeFlFMHd3b0lE?=
- =?utf-8?B?RlN5TS9VdThENkhKT3RQanVIQWNXU0U3VU5sRGVEMlkxTkJXZ2tKR1BNY3lU?=
- =?utf-8?B?Ykg2Y1FuRWdWdXhKYTBreWRXdjNJek54TmsrU3JuOUMvelZ1S2lCM04wNENC?=
- =?utf-8?B?TktCekVkWDhGT1hYUUVRbnJXMkdJUTkyWEtLN21ic1I3NFJJcVdnZ3Vucllk?=
- =?utf-8?B?ZXNuRzV4TXF2a0NiMXN1dkpUMDRQLy9DL2pyYi84Wk1ScWhXejVJa0VhcU1M?=
- =?utf-8?B?MVZ3M2N1eVRIazlxRkkrSlYyNElkbUJBNERFSG5oWXhmWHJXWDllT0JwQXVs?=
- =?utf-8?B?Yk9BWG50Vk5aOUVPNVliU1ZoelZhN2VUcUl2VkZFVGRER2NLZ2diUWVobGZY?=
- =?utf-8?B?TWJ2SGZoQmJwSnpYcVNZT3lxUUVQU3Bxd0pqaU1PQm81dkF5RHBlVlpGZlZs?=
- =?utf-8?B?UVBEa3M1LzRVa1lRaFhyWWdpK1ZNS05VTnYvczlRMFNxd0RDOFRvbHB0V2Nh?=
- =?utf-8?B?YXBYQlNUM2JENnNwcllzaFNJWXgzQ3ZBdGlrMStKcVJ6SEp2RWh4T1ZJZEs4?=
- =?utf-8?B?bFo0Y2o3Q3NxVjVJL0FZd2NIUzBsbC9KSmR2b0gyNW1BVElScUNUMjlHeW1y?=
- =?utf-8?B?RGlBTjBxOTlQMTdNbjBUYVpuWVFGM3hQUjR5NE5tZ1hvY3ZXamcxK0s4K1Zt?=
- =?utf-8?B?YjRhc2UyTzE2ZG43WDcyWStpT1hyV29IRk8zTFpQNzJhQkpXaXNKejZJTmJk?=
- =?utf-8?B?TzJ3VDJPRFdEM0dhcHR2akFuWk0vOUZRN3gwNWxjTEZUdHBzc1U1VnhGSnhB?=
- =?utf-8?B?cGI0eVNBRktTaGxmTDVTeVdFYk85U2g0RWw0V055blJNZGZLU0kzYzFIMGh2?=
- =?utf-8?B?Slo4bnlaSUlqSUYwS0lUbUlUVzdybmpBNnQ2eXRJakZwVUVCUnZUdExxMmFQ?=
- =?utf-8?B?aFpsT2VnVUdYOU5mVGlPeWxuNTVFYVM1QXI2MHAxUDZhRUpueHkvaHpZdjlx?=
- =?utf-8?B?V3pNL1ZGaHF3ai9mN25Xem1GNS9TakpMMUdYY01rRnpacE9rQWFHcWhyNVRG?=
- =?utf-8?B?OVpIU0dMTGUrT2FtVWN0WEsySG1paFhzbERkUUI0dG9BUnJBUHFjV0gvYWR4?=
- =?utf-8?Q?EKqpIfExlLcZ6i9JhuzTXeSNa?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5e993aeb-32a5-49ff-9c4a-08dba272d605
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4342.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 18:17:10.5805
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ySkLLQn6DEQV07Zn4JkHqQpVCGaNfveM0RIE+vgaBSbQTkzDmvdcTYbwRi89wGApEGgfRlG/vUL10n7cJ3XeWg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7935
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818193932.27187-1-mario.limonciello@amd.com>
+In-Reply-To: <20230818193932.27187-1-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Aug 2023 20:17:16 +0200
+Message-ID: <CAJZ5v0gwFKHLtd9rqNAe5ozgp_EWi3A158VukcX0oA4LBPBfOQ@mail.gmail.com>
+Subject: Re: [PATCH v14.a 1/1] PCI: Only put Intel PCIe ports >= 2015 into D3
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On Fri, Aug 18, 2023 at 9:40 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
+> from modern machines (>=2015) are allowed to be put into D3.
+>
+> Iain reports that USB devices can't be used to wake a Lenovo Z13
+> from suspend. This is because the PCIe root port has been put
+> into D3 and AMD's platform can't handle USB devices waking in this
+> case.
+>
+> This behavior is only reported on Linux. Comparing the behavior
+> on Windows and Linux, Windows doesn't put the root ports into D3.
+>
+> To fix the issue without regressing existing Intel systems,
+> limit the >=2015 check to only apply to Intel PCIe ports.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> Reported-by: Iain Lane <iain@orangesquash.org.uk>
+> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
+> Reviewed-by:Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-I ran GLMark2, unigine heaven and Tomb Raider on steam. I didn't observe 
-any issues.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-Regards,
-Arun.
-
-On 8/21/2023 4:33 PM, Christian König wrote:
-> Am 20.08.23 um 11:51 schrieb Christophe JAILLET:
->> This serie simplifies amdgpu_bo_list_create() and usage of the 'struct
->> amdgpu_bo_list'.
+> ---
+> In v14 this series has been split into 3 parts.
+>  part A: Immediate fix for AMD issue.
+>  part B: LPS0 export improvements
+>  part C: Long term solution for all vendors
+> v13->v14:
+>  * Reword the comment
+>  * add tag
+> v12->v13:
+>  * New patch
+> ---
+>  drivers/pci/pci.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
 >
-> Oh, yes please. That's something I always wanted to cleanup as well.
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0c..bfdad2eb36d13 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3037,10 +3037,15 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
+>                         return false;
 >
->> It is compile tested only.
+>                 /*
+> -                * It should be safe to put PCIe ports from 2015 or newer
+> -                * to D3.
+> +                * Allow Intel PCIe ports from 2015 onward to go into D3 to
+> +                * achieve additional energy conservation on some platforms.
+> +                *
+> +                * This is only set for Intel PCIe ports as it causes problems
+> +                * on both AMD Rembrandt and Phoenix platforms where USB keyboards
+> +                * can not be used to wake the system from suspend.
+>                  */
+> -               if (dmi_get_bios_year() >= 2015)
+> +               if (bridge->vendor == PCI_VENDOR_ID_INTEL &&
+> +                   dmi_get_bios_year() >= 2015)
+>                         return true;
+>                 break;
+>         }
+> --
+> 2.34.1
 >
-> That bothers me a bit. Arun, Vitaly, Shashank can anybody with time 
-> run a quick test on this? Preferable the IGT tests, but this just some 
-> game should probably do as well.
->
-> Apart from that looks good to me,
-> Christian.
->
->>
->> Christophe JAILLET (4):
->>    drm/amdgpu: Explicitly add a flexible array at the end of 'struct
->>      amdgpu_bo_list'
->>    drm/amdgpu: Remove a redundant sanity check
->>    drm/amdgpu: Remove amdgpu_bo_list_array_entry()
->>    drm/amdgpu: Use kvzalloc() to simplify code
->>
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 15 ++-------------
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 18 ++++++------------
->>   2 files changed, 8 insertions(+), 25 deletions(-)
->>
->
-
