@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E32782E85
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D4E782E86
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236661AbjHUQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
+        id S233521AbjHUQhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236651AbjHUQg7 (ORCPT
+        with ESMTP id S236663AbjHUQhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:36:59 -0400
-Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC5F91
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:57 -0700 (PDT)
-Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68a3b41fa66so1836207b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:57 -0700 (PDT)
+        Mon, 21 Aug 2023 12:37:01 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FF6109
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:58 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1bf681d3d04so19660705ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692635817; x=1693240617;
+        d=1e100.net; s=20221208; t=1692635818; x=1693240618;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=BDD5USCdzF0XvTmbtjPRBCArv23N9UaRYYO+TRRg6w8=;
-        b=QAaQwHieukf72VnujRVHUjJKCxJR0Z5Mjz4hjhOJq5IIKcDe4B25zL4l3dfDQcdOw4
-         5UV8DH3iTHeUyEbBIdiKjSo9ygdoaWjI/V0oAUZScAbDGBRHaBAyUhgQRbfalAc0Sn0A
-         G/dRoojExjFMdGAkxkOqbDe+15DDShUCqfowAU45JBfQO6mlX3zitXwIVnLLJWM6agrA
-         FHx87YrgboSHp6l5BJpQJvcKojCWAvFj+tTa4c4QWAmR+xTDxZxFLaaDpH4SekyKj4sj
-         D2Ak+OyixRD+08QSKexPD17tkUJCzGsi8mC3mb94O8857RGGKbeiKDLVOYT8u6TaFPCa
-         qhIw==
-X-Gm-Message-State: AOJu0YyFrowz+qBpykTRVcBOf31trXWG0fndsglihwIt2qOpgVMJMyDF
-        4eLsOSIROGzgHkyvXUc9/nRCVltDFIK0+HRd+/31aDc9hKEE
-X-Google-Smtp-Source: AGHT+IEjMZppxKe6/6h+fwsEG0O5XIgUEwl2q0PdLq/HL1dzzEReFBVuktFqgNu0ZmKfI45ftF2gtBIWDgmYMJqNxb03tr29wlIy
+        bh=7eioG8X10phzcVb5mcEi18JC2dsf8vnTpbGQbYGNGZ8=;
+        b=UeLrvWn0477oufzIc89KBYUHH8RYZzBjumtDp3jM1UF2FPnRbGSuV6yz8fYldTtMDY
+         4/sWCPzgihoIlJFr70PePzJwfmbYJ+zI/tNCyKO3gPtDaYHmaZ+jMzLGqnOHxZKXsrNo
+         ZJs8OEg6IOxUUJX3lNtz03qyTNCKio8RS0ekv8Oqe4ZQZOqYNw5zCPC/4NUrZpF8xGlw
+         mVVBBXTZULv5djcGR83uh5BECbZ9f4JFStp5rBOTgUFW7yilKH8p0f9ri3Hlffqn6VX6
+         U8eN7uHjbMwR76sMyKCv61BqsDB222HbDeZBq6UaU15Jj+QMyVMk9M+xAn8j6uak3Oow
+         a0Cw==
+X-Gm-Message-State: AOJu0YxDnJA/8qHHf3u33gYtN0sYI2RQgGfd0QZ7FfFmDXcZAoZxgDNR
+        lg/ZpuVnpPVyZCqa5aVPLsQCWAXSEOx43GRlSmZ21bUl14fx
+X-Google-Smtp-Source: AGHT+IF9eCq8JhsUzlL0IgH1ngneNUWv9Rjlha+PW/FByrO32aRIc+Xkv4Q/sLgDDkmst36rHFaF+fMv6woY1D6Jw756gFmkgeTx
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:2488:b0:68a:58e1:ebf5 with SMTP id
- c8-20020a056a00248800b0068a58e1ebf5mr1131975pfv.2.1692635817030; Mon, 21 Aug
+X-Received: by 2002:a17:902:e5cd:b0:1bf:cc5:7b57 with SMTP id
+ u13-20020a170902e5cd00b001bf0cc57b57mr3379189plf.3.1692635817920; Mon, 21 Aug
  2023 09:36:57 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 09:36:56 -0700
+Date:   Mon, 21 Aug 2023 09:36:57 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009bbb4b0603717cde@google.com>
-Subject: [syzbot] [batman?] WARNING in call_netdevice_notifiers_info
-From:   syzbot <syzbot+f8812454d9b3ac00d282@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, pabeni@redhat.com, sven@narfation.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000a958a90603717c84@google.com>
+Subject: [syzbot] [ntfs3?] [squashfs?] INFO: task hung in truncate_inode_pages_final
+From:   syzbot <syzbot+b6973d2babdaf51385eb@syzkaller.appspotmail.com>
+To:     almaz.alexandrovich@paragon-software.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ntfs3@lists.linux.dev, phillip@squashfs.org.uk,
+        squashfs-devel@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,88 +61,74 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    d44036cad311 net: dsa: felix: fix oversize frame dropping ..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10f7ce23a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
-dashboard link: https://syzkaller.appspot.com/bug?extid=f8812454d9b3ac00d282
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=125cb53ba80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=131847f7a80000
+HEAD commit:    c014c37159a1 Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=11904307a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b40c4aa62d29380a
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6973d2babdaf51385eb
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f81e5fa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d3b537a80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9936144a6193/disk-d44036ca.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1278ad87465f/vmlinux-d44036ca.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b1a057709018/bzImage-d44036ca.xz
-
-The issue was bisected to:
-
-commit c6a953cce8d0438391e6da48c8d0793d3fbfcfa6
-Author: Sven Eckelmann <sven@narfation.org>
-Date:   Wed Jul 19 07:29:29 2023 +0000
-
-    batman-adv: Trigger events for auto adjusted MTU
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=104ef373a80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=124ef373a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=144ef373a80000
+disk image: https://storage.googleapis.com/syzbot-assets/890b3d127b57/disk-c014c371.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/300e5c07650c/vmlinux-c014c371.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/eb10f2f51203/Image-c014c371.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/03d2fd0e1068/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f8812454d9b3ac00d282@syzkaller.appspotmail.com
-Fixes: c6a953cce8d0 ("batman-adv: Trigger events for auto adjusted MTU")
+Reported-by: syzbot+b6973d2babdaf51385eb@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-RTNL: assertion failed at net/core/dev.c (1953)
-WARNING: CPU: 0 PID: 5033 at net/core/dev.c:1953 call_netdevice_notifiers_info+0x107/0x130 net/core/dev.c:1953
-Modules linked in:
-CPU: 0 PID: 5033 Comm: syz-executor368 Not tainted 6.5.0-rc6-syzkaller-00126-gd44036cad311 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:call_netdevice_notifiers_info+0x107/0x130 net/core/dev.c:1953
-Code: f9 40 84 ed 75 8d e8 d8 68 5e f9 ba a1 07 00 00 48 c7 c6 e0 34 81 8b 48 c7 c7 20 35 81 8b c6 05 07 35 6e 06 01 e8 f9 2a 25 f9 <0f> 0b e9 62 ff ff ff 48 89 df e8 ea 75 b2 f9 e9 15 ff ff ff e8 e0
-RSP: 0018:ffffc900039df2b8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: ffffc900039df320 RCX: 0000000000000000
-RDX: ffff88802d421dc0 RSI: ffffffff814ccc86 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000018
-R13: ffff888078c30000 R14: ffff88807d45c0e8 R15: 0000000000000001
-FS:  0000555555ccd380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066a4e0 CR3: 000000007c0e3000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- call_netdevice_notifiers_extack net/core/dev.c:2000 [inline]
- call_netdevice_notifiers net/core/dev.c:2014 [inline]
- dev_set_mtu_ext+0x1e8/0x5d0 net/core/dev.c:8664
- dev_set_mtu+0xb1/0x160 net/core/dev.c:8694
- batadv_update_min_mtu+0x6e/0x90 net/batman-adv/hard-interface.c:645
- batadv_netlink_set_mesh+0x7d8/0x14e0 net/batman-adv/netlink.c:498
- genl_family_rcv_msg_doit.isra.0+0x1ef/0x2d0 net/netlink/genetlink.c:970
- genl_family_rcv_msg net/netlink/genetlink.c:1050 [inline]
- genl_rcv_msg+0x559/0x800 net/netlink/genetlink.c:1067
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2549
- genl_rcv+0x28/0x40 net/netlink/genetlink.c:1078
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1914
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2494
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2548
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2577
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7ff089227659
-Code: 48 83 c4 28 c3 e8 d7 19 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdbc91ce88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007ff089274390 RCX: 00007ff089227659
-RDX: 0000000000000000 RSI: 00000000200005c0 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000555500000000 R09: 0000555500000000
-R10: 0000555500000000 R11: 0000000000000246 R12: 00007ffdbc91ced0
-R13: 00007ffdbc91cea0 R14: 0000000000000001 R15: 00007ffdbc91ced0
- </TASK>
+INFO: task syz-executor142:6032 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-syzkaller-gc014c37159a1 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor142 state:D stack:0     pid:6032  ppid:6030   flags:0x00000004
+Call trace:
+ __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5381 [inline]
+ __schedule+0x1364/0x23b4 kernel/sched/core.c:6710
+ schedule+0xc4/0x170 kernel/sched/core.c:6786
+ io_schedule+0x8c/0x12c kernel/sched/core.c:9028
+ folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1304
+ __folio_lock+0x2c/0x3c mm/filemap.c:1632
+ folio_lock include/linux/pagemap.h:959 [inline]
+ truncate_inode_pages_range+0x930/0xf74 mm/truncate.c:422
+ truncate_inode_pages mm/truncate.c:449 [inline]
+ truncate_inode_pages_final+0x90/0xc0 mm/truncate.c:484
+ evict+0x26c/0x68c fs/inode.c:666
+ dispose_list fs/inode.c:697 [inline]
+ evict_inodes+0x6b4/0x74c fs/inode.c:747
+ generic_shutdown_super+0x9c/0x328 fs/super.c:478
+ kill_block_super+0x60/0xa0 fs/super.c:1417
+ deactivate_locked_super+0xac/0x124 fs/super.c:330
+ deactivate_super+0xe0/0x100 fs/super.c:361
+ cleanup_mnt+0x34c/0x3dc fs/namespace.c:1254
+ __cleanup_mnt+0x20/0x30 fs/namespace.c:1261
+ task_work_run+0x230/0x2e0 kernel/task_work.c:179
+ resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
+ do_notify_resume+0x2180/0x3c90 arch/arm64/kernel/signal.c:1305
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
+ el0_svc+0xa0/0x16c arch/arm64/kernel/entry-common.c:679
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+
+Showing all locks held in the system:
+1 lock held by rcu_tasks_kthre/13:
+ #0: ffff80008e2718d0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x44/0xcf4 kernel/rcu/tasks.h:522
+1 lock held by rcu_tasks_trace/14:
+ #0: ffff80008e271c90 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x44/0xcf4 kernel/rcu/tasks.h:522
+1 lock held by khungtaskd/29:
+ #0: ffff80008e271700 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:302
+2 locks held by getty/5744:
+ #0: ffff0000d3f64098 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff8000959122f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x414/0x1214 drivers/tty/n_tty.c:2187
+1 lock held by syz-executor142/6032:
+ #0: ffff0000c77bc0e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:360
+
+=============================================
+
 
 
 ---
@@ -152,7 +138,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
