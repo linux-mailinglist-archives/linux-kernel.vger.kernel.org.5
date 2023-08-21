@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013C77823C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DBB7823CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233450AbjHUGfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        id S233473AbjHUGjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbjHUGfh (ORCPT
+        with ESMTP id S231642AbjHUGja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:35:37 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D10A7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:35:35 -0700 (PDT)
-Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RTjMK3mXqzLp90;
-        Mon, 21 Aug 2023 14:32:29 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 21 Aug 2023 14:35:31 +0800
-Message-ID: <132f7a1a-3219-bdac-5ca4-ad5a54b09616@huawei.com>
-Date:   Mon, 21 Aug 2023 14:35:30 +0800
+        Mon, 21 Aug 2023 02:39:30 -0400
+Received: from out-27.mta1.migadu.com (out-27.mta1.migadu.com [95.215.58.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BC2A9
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:39:28 -0700 (PDT)
+Message-ID: <f7eac106-abe4-aba1-14df-6c9d1bfdf3b3@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692599965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CSfoQd3XwUpQ2de8+t1B67oe5dl5I//p69PX46d5rUI=;
+        b=Y9Gkcsuwz8GKzo/HVa2xnfBnTUBofFVRasCqWLC+irW23+SvnZVhzqfMRN4NWaF4LgfGRe
+        t/Swk8UqSL7FmrO5PqMOXWNGIV/qR51RnxvokXhWknTxsFeBrl3qwyhXR9wdeqnzCcg3ke
+        IOnT+4RKxGMnJEP/g1SGVmR1ffBLhGs=
+Date:   Mon, 21 Aug 2023 14:39:15 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH] mm: memory-failure: use rcu lock instead of tasklist_lock
- when collect_procs()
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230821022534.1381092-1-tongtiangen@huawei.com>
- <ZOLpbwwk4esztLaO@casper.infradead.org>
-From:   Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <ZOLpbwwk4esztLaO@casper.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v1] docs/zh_CN: add zh_CN translation for
+ memory-barriers.txt
+Content-Language: en-US
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, linux-doc@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jade Alglave <j.alglave@ucl.ac.uk>,
+        Luc Maranget <luc.maranget@inria.fr>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <214aed18-5df5-1014-b73d-a1748c0cca13@linux.dev>
+ <20230819162526.GA274478@leoy-huanghe.lan>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Gang Li <gang.li@linux.dev>
+In-Reply-To: <20230819162526.GA274478@leoy-huanghe.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.234]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks for your review!
 
+Your suggestions will be integrated into the next version(v2).
 
-在 2023/8/21 12:34, Matthew Wilcox 写道:
-> On Mon, Aug 21, 2023 at 10:25:34AM +0800, Tong Tiangen wrote:
->> +++ b/mm/memory-failure.c
->> @@ -546,24 +546,26 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
->>    * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
->>    * on behalf of the thread group. Return task_struct of the (first found)
->>    * dedicated thread if found, and return NULL otherwise.
->> - *
->> - * We already hold read_lock(&tasklist_lock) in the caller, so we don't
->> - * have to call rcu_read_lock/unlock() in this function.
->>    */
->>   static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
->>   {
->>   	struct task_struct *t;
->>   
->> +	rcu_read_lock();
->>   	for_each_thread(tsk, t) {
->>   		if (t->flags & PF_MCE_PROCESS) {
->>   			if (t->flags & PF_MCE_EARLY)
->> -				return t;
->> +				goto found;
->>   		} else {
->>   			if (sysctl_memory_failure_early_kill)
->> -				return t;
->> +				goto found;
->>   		}
->>   	}
->> -	return NULL;
->> +
->> +	t = NULL;
->> +found:
->> +	rcu_read_unlock();
->> +	return t;
->>   }
+On 2023/8/20 00:25, Leo Yan wrote:
+>> +		|       |   :   |        |   :   |       |
+>> +		|       |   :   |        |   :   |       |
+>> +		| CPU 1 |<----->|   内存  |<----->| CPU 2 |
 > 
-> I don't understand why you need to modify find_early_kill_thread() at
-> all.  It's still true that the caller holds _a_ lock protecting it; the
-> comment needs to be updated to reflect that it might be the RCU lock
-> or the tasklist_lock (or did you change all callers?), but there's no
-> need for this function to take the RCU lock itself, afaics?
+> Unalignment caused by extra space around "内存".
 > 
-> .
+If using Chinese, it is impossible to align properly no matter
+how it is modified. If strict alignment is needed, the text in the
+charts should not be translated.
 
-I've checked that all the paths that call find_early_kill_thread() 
-already hold the rcu lock, and there's really no need to hold the rcu 
-lock here.
-In the next patch version, here only the comments are modified.
-
-Thanks,
-Tong.
-
+Gang Li.
