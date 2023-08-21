@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C6C782143
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062A478214A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbjHUBzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 21:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        id S232454AbjHUCCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbjHUBzo (ORCPT
+        with ESMTP id S230271AbjHUCCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 21:55:44 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6055C9C;
-        Sun, 20 Aug 2023 18:55:42 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vq9G.uy_1692582938;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vq9G.uy_1692582938)
-          by smtp.aliyun-inc.com;
-          Mon, 21 Aug 2023 09:55:39 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, shannon.nelson@amd.com, brett.creeley@amd.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH net-next] pds_core: Fix some kernel-doc comments
-Date:   Mon, 21 Aug 2023 09:55:37 +0800
-Message-Id: <20230821015537.116268-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Sun, 20 Aug 2023 22:02:17 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199779C;
+        Sun, 20 Aug 2023 19:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692583334;
+        bh=AAlYUOAFZxo4cFfjXrIywnXyqsV4fN6hA8iruN65/8I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oPzxSXePDkuLTArCxrjDUuv/L7VraGC3f0+uxcK4A1kryPOPV2GVl3h6OUhKH8ORv
+         unL28lOicLMXSOO8SajDJCycI282ecG3FLxyP9RNgCHrhplcJVxn/BRU5Z4UjxwkiT
+         FProlDXHdquu1fDH/4jem54+cSUKsrndDsJGkjfjzql6tsN9p0W25/6jTnsc609b+K
+         xGHAV4npMa9eVGwRkXyUg7P4C0AikfLjv5qUITKN2J/tUoY8CzQXcTBZbsBcuI0yBN
+         FqpFkqMMoGtJi/L+0R1UqhJ57WJ+r7QCdV+iwIr4SOP7+X23L/tp1gzsQD84G89wRn
+         Em4pYmwDRB+LQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTbMV41vPz4wxy;
+        Mon, 21 Aug 2023 12:02:14 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 12:02:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Md Sadre Alam <quic_mdalam@quicinc.com>,
+        Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the nand tree
+Message-ID: <20230821120213.403fcefe@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/PPcDK=4VV4QZXtiRDRTN1Js";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some kernel-doc comments to silence the warnings:
+--Sig_/PPcDK=4VV4QZXtiRDRTN1Js
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-drivers/net/ethernet/amd/pds_core/auxbus.c:18: warning: Function parameter or member 'pf' not described in 'pds_client_register'
-drivers/net/ethernet/amd/pds_core/auxbus.c:18: warning: Excess function parameter 'pf_pdev' description in 'pds_client_register'
-drivers/net/ethernet/amd/pds_core/auxbus.c:58: warning: Function parameter or member 'pf' not described in 'pds_client_unregister'
-drivers/net/ethernet/amd/pds_core/auxbus.c:58: warning: Excess function parameter 'pf_pdev' description in 'pds_client_unregister'
+Hi all,
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/ethernet/amd/pds_core/auxbus.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+After merging the nand tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
-index 8ff21d36ea42..e0d4b8d5159f 100644
---- a/drivers/net/ethernet/amd/pds_core/auxbus.c
-+++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
-@@ -8,7 +8,7 @@
- 
- /**
-  * pds_client_register - Link the client to the firmware
-- * @pf_pdev:	ptr to the PF driver struct
-+ * @pf:	a pointer to the pdsc structure
-  * @devname:	name that includes service into, e.g. pds_core.vDPA
-  *
-  * Return: positive client ID (ci) on success, or
-@@ -48,7 +48,7 @@ EXPORT_SYMBOL_GPL(pds_client_register);
- 
- /**
-  * pds_client_unregister - Unlink the client from the firmware
-- * @pf_pdev:	ptr to the PF driver struct
-+ * @pf:	a pointer to the pdsc structure
-  * @client_id:	id returned from pds_client_register()
-  *
-  * Return: 0 on success, or
--- 
-2.20.1.7.g153144c
+drivers/mtd/nand/raw/qcom_nandc.c: In function 'qcom_parse_instructions':
+drivers/mtd/nand/raw/qcom_nandc.c:2596:38: error: unused variable 'nandc' [=
+-Werror=3Dunused-variable]
+ 2596 |         struct qcom_nand_controller *nandc =3D get_qcom_nand_contro=
+ller(chip);
+      |                                      ^~~~~
+cc1: all warnings being treated as errors
 
+Caused by commit
+
+  5a7688a3e2e6 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op pat=
+h")
+
+I have used the nand tree from next-20230818 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/PPcDK=4VV4QZXtiRDRTN1Js
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTixaUACgkQAVBC80lX
+0GyUwgf8DswX/eLzgLnjR6W/obgEVLmaYO74DdAG0cZQA765gNiJf7nvA11bkFIf
+uf6SUo84a7uxAXW7PUW6mBlflTeU062wlyBfAEc88b/5Lvt0jnAYmGm17FFNxGaK
+cM6uxxLfH1JXivr9QyN++xmTt+Naylxhte7asI9mYGZ1uCe/airW3jd8BFIny9Kt
+REYzwLtH7TVcRtWo7vxaHhMpQ8S6lt8r5mvjz7gzy0xkijrCAizd6LwR9JW90G7e
+dnBQ4PfTidGIlxhBi+mDzTPBcPsWQLIKYgrX/PlBhFs2uzMTFsv7wOty3LFzyJaZ
+3E7+bmeEMGcoDU7c3KdCKqo1Y+M4Hw==
+=piR0
+-----END PGP SIGNATURE-----
+
+--Sig_/PPcDK=4VV4QZXtiRDRTN1Js--
