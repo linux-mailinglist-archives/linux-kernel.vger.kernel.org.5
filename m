@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B15782642
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B475B782640
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjHUJ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58930 "EHLO
+        id S234358AbjHUJ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjHUJ3c (ORCPT
+        with ESMTP id S234326AbjHUJ33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:29:32 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E4891;
-        Mon, 21 Aug 2023 02:29:29 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id BDC0018666CB;
-        Mon, 21 Aug 2023 12:29:25 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Tm0BQ5SqM1UM; Mon, 21 Aug 2023 12:29:25 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 0C6BE1865CA8;
-        Mon, 21 Aug 2023 12:29:25 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id zpMtGT6orwvn; Mon, 21 Aug 2023 12:29:24 +0300 (MSK)
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.13.132])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id DED1B1865E97;
-        Mon, 21 Aug 2023 12:29:22 +0300 (MSK)
-From:   Anastasia Belova <abelova@astralinux.ru>
-To:     Chris Mason <clm@fb.com>
-Cc:     Anastasia Belova <abelova@astralinux.ru>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH 5.10] btrfs: fix region size in count_bitmap_extents
-Date:   Mon, 21 Aug 2023 12:29:02 +0300
-Message-Id: <20230821092902.31808-1-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+        Mon, 21 Aug 2023 05:29:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3D41291;
+        Mon, 21 Aug 2023 02:29:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA6F32F4;
+        Mon, 21 Aug 2023 02:30:08 -0700 (PDT)
+Received: from [10.57.3.137] (unknown [10.57.3.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07EC23F762;
+        Mon, 21 Aug 2023 02:29:25 -0700 (PDT)
+Message-ID: <2f1beb3e-c9df-46c5-fe5d-0d688a730521@arm.com>
+Date:   Mon, 21 Aug 2023 10:29:22 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5] perf: arm_cspmu: Separate Arm and vendor module
+Content-Language: en-GB
+To:     Besar Wicaksono <bwicaksono@nvidia.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     "ilkka@os.amperecomputing.com" <ilkka@os.amperecomputing.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Richard Wiley <rwiley@nvidia.com>,
+        Eric Funsten <efunsten@nvidia.com>
+References: <20230705104745.52255-1-bwicaksono@nvidia.com>
+ <e98abbc3-dab6-414d-8ce7-8b9572be41a0@arm.com>
+ <SJ0PR12MB5676F7D0749A35DCB185452EA018A@SJ0PR12MB5676.namprd12.prod.outlook.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <SJ0PR12MB5676F7D0749A35DCB185452EA018A@SJ0PR12MB5676.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,35 +59,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-count_bitmap_extents was deleted in version 5.11, but
-there is possible mistake in versions 5.6-5.10.
+On 2023-08-19 21:11, Besar Wicaksono wrote:
+[...]
+>>> +void arm_cspmu_impl_unregister(const struct arm_cspmu_impl_match
+>> *impl_match)
+>>> +{
+>>> +     struct device *dev;
+>>> +     struct arm_cspmu_impl_match *match;
+>>> +
+>>> +     match = arm_cspmu_impl_match_get(impl_match->pmiidr_val);
+>>> +
+>>> +     WARN_ON(!match);
 
-Region size should be calculated by subtracting
-the end from the beginning.
+Nit: do "if (WARN_ON(!match)) return;" rather than indenting almost the 
+whole function.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>> +
+>>> +     if (match) {
+>>> +             /* Unbind the driver from all matching backend devices. */
+>>> +dev_release:
+>>> +             dev = driver_find_device(&arm_cspmu_driver.driver, NULL,
+>>> +                     match, arm_cspmu_match_device);
+>>> +             if (dev) {
+>>> +                     device_release_driver(dev);
+>>> +                     goto dev_release;
+>>> +             }
+>>
+>> minor nit: We could simply do :
+>>
+>> static int arm_cspmu_release_driver(struct device *dev, void *data)
+>> {
+>>          struct arm_cspmu *cspmu =
+>> platform_get_drvdata(to_platform_device(dev));
+>>
+>>          if (cspmu && cspmu->impl.match == match)
+>>                  device_release_driver(dev);
+>>          return 0;
+>> }
+>>
+>>                  ret = driver_for_each_device(&driver, NULL, match,
+>> arm_csmpu_release_driver);
+>>
+> 
+> It doesn’t seem to work for me.
+> Is it safe to release while iterating via driver_for_each_device ?
 
-Fixes: dfb79ddb130e ("btrfs: track discardable extents for async discard"=
-)
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
----
- fs/btrfs/free-space-cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looking at the klist code it doesn't *obviously* appear safe to modify 
+the list during iteration, so probably best not to risk it anyway. 
+However, please try to write this loop as an actual loop, e.g.:
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 4989c60b1df9..a34e266a0969 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1930,7 +1930,7 @@ static int count_bitmap_extents(struct btrfs_free_s=
-pace_ctl *ctl,
-=20
- 	bitmap_for_each_set_region(bitmap_info->bitmap, rs, re, 0,
- 				   BITS_PER_BITMAP) {
--		bytes -=3D (rs - re) * ctl->unit;
-+		bytes -=3D (re - rs) * ctl->unit;
- 		count++;
-=20
- 		if (!bytes)
---=20
-2.30.2
+	while ((dev = driver_find_device()))
+		device_release_driver();
 
+At first glance I thought there was a bug here that it's only processing 
+a single device, then eventually I saw the goto and my thought changed 
+to "Eww..."
+
+Thanks,
+Robin.
