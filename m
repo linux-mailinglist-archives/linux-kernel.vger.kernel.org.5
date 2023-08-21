@@ -2,259 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771F678365C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588B178365F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231786AbjHUXbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:31:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S229883AbjHUXfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231759AbjHUXbp (ORCPT
+        with ESMTP id S230007AbjHUXfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:31:45 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2069.outbound.protection.outlook.com [40.107.92.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02FF19E;
-        Mon, 21 Aug 2023 16:31:19 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YHQjjeV/WJT9/1QVif6mEEuW/s2c/70/sCTRDFqale+4YJFW9MRLJGUGSiU56MsH1V+GyugXFHgb4hU/qt6YrjvPv2kojJxhWK7ioXxuWJGKo5CLPEn7bbXFm1TpD59xzm1aXHOiCxQJPs/8H8Xmtz5aIVQKo4ZBRnspb8LBRy6U/1hErwRmwvRLNioXqKriigZgy2JQ/WYQUulR7BX1aUtdsAYQ0evTHIl7oy+Sv07380/5d73wmdaAWRqZavG3CRHoWYhZnOh15fEEN/6TEPbX0oqFr0eMM5DhgvnzAGmugLKaOFyGj59LIdxZ8HRL6DnDN/bEswUPoBBywLkCPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+5JaRJlGzVTLm2l253/kTdU+ipXbVl1ECpEphihZf7Q=;
- b=fZOQJFKEM107IJv83fwPIMBg9gIKZ//cIoQLHZAlYU16ux/sPjetk/eJ+lqawO1mQyUmNw3qZlaZ7CFUcS+AR4BrFIpWur6zISs64Ti3yWDCOFz5csnuRiBl5QqjvJphEZU3qYgyueMJaB/DH735WLfvnZUg5Ktm+ok0QHpNqEbFIcaMoK9Ncitmzj5CINKEC4ma5tQ4mo/Q0e1K5Wyn3Drl5wTBQtdxzRTpLow1/fTS2LoqBtZoFAPtFj2BhdnM5HQIBilb53FQyJtda0UixoMFjZv4HHhw8vSb2NdnI+6lc2IBLaBI8bqxdL6iGKxXq4QVlj7QnXugwkJyhY74yA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lwn.net smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+5JaRJlGzVTLm2l253/kTdU+ipXbVl1ECpEphihZf7Q=;
- b=fiN/+YneJ/2bTH+0WbmAhbqXUOWdwuW8Qat7tsIZ0dZ446aRkfCMu+RF+we9RP7blZo5Wb6Yysxnx6XYvbHmIUKxmYfsSjc59oS+52M9JAt+wBTNVHhGAh/Tdu5AC1MK2avrg7+HiYOz9voUYvNuDQ+0IfyLYUSjG2j6OI91MgM=
-Received: from BYAPR21CA0017.namprd21.prod.outlook.com (2603:10b6:a03:114::27)
- by LV3PR12MB9354.namprd12.prod.outlook.com (2603:10b6:408:211::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Mon, 21 Aug
- 2023 23:31:17 +0000
-Received: from MWH0EPF000971E5.namprd02.prod.outlook.com
- (2603:10b6:a03:114:cafe::6a) by BYAPR21CA0017.outlook.office365.com
- (2603:10b6:a03:114::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.4 via Frontend
- Transport; Mon, 21 Aug 2023 23:31:17 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MWH0EPF000971E5.mail.protection.outlook.com (10.167.243.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Mon, 21 Aug 2023 23:31:17 +0000
-Received: from bmoger-ubuntu.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 21 Aug
- 2023 18:31:14 -0500
-From:   Babu Moger <babu.moger@amd.com>
-To:     <corbet@lwn.net>, <reinette.chatre@intel.com>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>
-CC:     <fenghua.yu@intel.com>, <dave.hansen@linux.intel.com>,
-        <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-        <akpm@linux-foundation.org>, <quic_neeraju@quicinc.com>,
-        <rdunlap@infradead.org>, <damien.lemoal@opensource.wdc.com>,
-        <songmuchun@bytedance.com>, <peterz@infradead.org>,
-        <jpoimboe@kernel.org>, <pbonzini@redhat.com>, <babu.moger@amd.com>,
-        <chang.seok.bae@intel.com>, <pawan.kumar.gupta@linux.intel.com>,
-        <jmattson@google.com>, <daniel.sneddon@linux.intel.com>,
-        <sandipan.das@amd.com>, <tony.luck@intel.com>,
-        <james.morse@arm.com>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bagasdotme@gmail.com>,
-        <eranian@google.com>, <christophe.leroy@csgroup.eu>,
-        <jarkko@kernel.org>, <adrian.hunter@intel.com>,
-        <quic_jiles@quicinc.com>, <peternewman@google.com>
-Subject: [PATCH v8 8/8] x86/resctrl: Display hardware ids of resource groups
-Date:   Mon, 21 Aug 2023 18:30:48 -0500
-Message-ID: <20230821233048.434531-9-babu.moger@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821233048.434531-1-babu.moger@amd.com>
-References: <20230821233048.434531-1-babu.moger@amd.com>
+        Mon, 21 Aug 2023 19:35:12 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C28CF8;
+        Mon, 21 Aug 2023 16:34:34 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qYEOV-0004Xb-34;
+        Mon, 21 Aug 2023 23:33:13 +0000
+Date:   Tue, 22 Aug 2023 00:32:58 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v2 4/4] net: ethernet: mtk_eth_soc: support
+ 36-bit DMA addressing on MT7988
+Message-ID: <ZOP0KrmKTzHPfD22@makrotopia.org>
+References: <cover.1692660046.git.daniel@makrotopia.org>
+ <e4121c507e065c5bca59ddae8909664374b5e396.1692660046.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E5:EE_|LV3PR12MB9354:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5425fc69-3ccb-4493-5f14-08dba29eb7d9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W2EYCSbynyH3+ZEfijxj9nTKO7iEXt4OXv7ri96oFEu95VgdxuMpdIAX5sm5BvoYJp1j2fW1u5LnMyoaQBUp8iQgHWhCYsgI0WK4Ck6XNxF+h/fPcT/isnyDxpj287Ns2IrMKqqHf21L+gllx3Oic4Z/X6mP6t4VcCViwXUDfDd4ZTqXYuDJuroE2Hxcd52CemkgBDLaKusZUdM8YFvrAYqZ3Z/0M0funEGK0uum0yEYrlj0vqS0ogkdlUm/oDv9em//HjCDZinumZRSXkZD+fWikdNVd6KAnqY/vqbCjo5/GZPC5buScPFn1yxvDfYYJuF7JQ6Tjti7LfnW0eO/8LDckmLvN9gecV1uBzc83CJmChtS9B1CI6xERJYwkoAvNAtd9/FzMsDJl7w99pzHHKJNs9RR5e0lRBqERXV6tmJoJ9c542N+KByOw+QVpkggy4D+qh91XSABQl6RLzi1VUGjCUhFS0GUIjQ86gbAOTHCwsjQho3AxqCkmmcoWIyAJ7a6gw3I7JAspm9NUWnh+5suephfgZS0PUl9Ci/sopszSCC+R7gIJUWa6zYFhO3EB7VqHzKCP+UxdCv7bZn7mgi0mlt7bT/M53WBpERnOW7QAH6NBiSmZBQJObnwf5GjJbg3nnDSXs0ndk5H+eniBMy49R/4TrVK5MLmLOP9VYds+ERgT6yq6yVtmi4JSerjCzrGiNTMUTtg1v87GY68i7hURUxCLCgrftHpgtuZ9ys6rJEG6F3Hiaxmv5y+9IosZjuiO5rxzlIt/CfBG137Tw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(396003)(376002)(39860400002)(82310400011)(451199024)(1800799009)(186009)(40470700004)(46966006)(36840700001)(86362001)(82740400003)(36756003)(81166007)(356005)(40480700001)(2616005)(16526019)(44832011)(110136005)(70206006)(70586007)(478600001)(316002)(7696005)(6666004)(54906003)(4326008)(5660300002)(1076003)(8936002)(26005)(8676002)(41300700001)(40460700003)(2906002)(36860700001)(336012)(426003)(7416002)(47076005)(7406005)(83380400001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 23:31:17.4347
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5425fc69-3ccb-4493-5f14-08dba29eb7d9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E5.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9354
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4121c507e065c5bca59ddae8909664374b5e396.1692660046.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In x86, hardware uses CLOSID and an RMID to identify a control group and
-a monitoring group respectively. When a user creates a control or monitor
-group these details are not visible to the user. These details can help
-debugging.
+On Tue, Aug 22, 2023 at 12:30:34AM +0100, Daniel Golle wrote:
+> Systems having 4 GiB of RAM and more require DMA addressing beyond the
+> current 32-bit limit. Starting from MT7988 the hardware now supports
+> 36-bit DMA addressing, let's use that new capability in the driver to
+> avoid running into swiotlb on systems with 4 GiB of RAM or more.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 34 ++++++++++++++++++---
+>  drivers/net/ethernet/mediatek/mtk_eth_soc.h | 22 +++++++++++--
+>  2 files changed, 50 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> index ec6a251a0f026..c40e69ac2eeaa 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+> @@ -1136,7 +1136,7 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
+>  	int i;
+>  
+>  	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM))
+> -		eth->scratch_ring = eth->sram_base;
+> +		eth->scratch_ring = (void __force *)eth->sram_base;
 
-Add CLOSID(ctrl_hw_id) and RMID(mon_hw_id) to the control/monitor groups
-display in resctrl interface. Users can see these details when resctrl
-is mounted with "-o debug" option.
+Ooops that was supposed to go into the previous commit obviously.
+I will submit v3 after some time with that fixed.
 
-Other architectures do not use "CLOSID" and "RMID". Use the names
-ctrl_hw_id and mon_hw_id to refer to "CLOSID" and "RMID" respectively in
-an effort to keep the naming generic.
-
-For example:
- $cat /sys/fs/resctrl/ctrl_grp1/ctrl_hw_id
- 1
- $cat /sys/fs/resctrl/mon_groups/mon_grp1/mon_hw_id
- 3
-
-Signed-off-by: Babu Moger <babu.moger@amd.com>
----
- Documentation/arch/x86/resctrl.rst     |  8 +++++
- arch/x86/kernel/cpu/resctrl/internal.h |  6 ++++
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 46 ++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
-
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index 5a2346d2c561..41ad9b1f0c6a 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -351,6 +351,10 @@ When control is enabled all CTRL_MON groups will also contain:
- 	file. On successful pseudo-locked region creation the mode will
- 	automatically change to "pseudo-locked".
- 
-+"ctrl_hw_id":
-+	Available only with debug option. The identifier used by hardware
-+	for the control group. On x86 this is the CLOSID.
-+
- When monitoring is enabled all MON groups will also contain:
- 
- "mon_data":
-@@ -364,6 +368,10 @@ When monitoring is enabled all MON groups will also contain:
- 	the sum for all tasks in the CTRL_MON group and all tasks in
- 	MON groups. Please see example section for more details on usage.
- 
-+"mon_hw_id":
-+	Available only with debug option. The identifier used by hardware
-+	for the monitor group. On x86 this is the RMID.
-+
- Resource allocation rules
- -------------------------
- 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index 2fae6d9e24d3..3fa32c1c2677 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -296,9 +296,15 @@ struct rdtgroup {
-  *	--> RFTYPE_BASE (Files common for both MON and CTRL groups)
-  *	    Files: cpus, cpus_list, tasks
-  *
-+ *		--> RFTYPE_DEBUG (Files to help resctrl debugging)
-+ *		    File: mon_hw_id
-+ *
-  *		--> RFTYPE_CTRL (Files only for CTRL group)
-  *		    Files: mode, schemata, size
-  *
-+ *			--> RFTYPE_DEBUG (Files to help resctrl debugging)
-+ *			    File: ctrl_hw_id
-+ *
-  */
- #define RFTYPE_INFO			BIT(0)
- #define RFTYPE_BASE			BIT(1)
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 94bd69f9964c..e0c2479acf49 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -776,6 +776,38 @@ static int rdtgroup_tasks_show(struct kernfs_open_file *of,
- 	return ret;
- }
- 
-+static int rdtgroup_closid_show(struct kernfs_open_file *of,
-+				struct seq_file *s, void *v)
-+{
-+	struct rdtgroup *rdtgrp;
-+	int ret = 0;
-+
-+	rdtgrp = rdtgroup_kn_lock_live(of->kn);
-+	if (rdtgrp)
-+		seq_printf(s, "%u\n", rdtgrp->closid);
-+	else
-+		ret = -ENOENT;
-+	rdtgroup_kn_unlock(of->kn);
-+
-+	return ret;
-+}
-+
-+static int rdtgroup_rmid_show(struct kernfs_open_file *of,
-+			      struct seq_file *s, void *v)
-+{
-+	struct rdtgroup *rdtgrp;
-+	int ret = 0;
-+
-+	rdtgrp = rdtgroup_kn_lock_live(of->kn);
-+	if (rdtgrp)
-+		seq_printf(s, "%u\n", rdtgrp->mon.rmid);
-+	else
-+		ret = -ENOENT;
-+	rdtgroup_kn_unlock(of->kn);
-+
-+	return ret;
-+}
-+
- #ifdef CONFIG_PROC_CPU_RESCTRL
- 
- /*
-@@ -1837,6 +1869,13 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdtgroup_tasks_show,
- 		.fflags		= RFTYPE_BASE,
- 	},
-+	{
-+		.name		= "mon_hw_id",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdtgroup_rmid_show,
-+		.fflags		= RFTYPE_BASE | RFTYPE_DEBUG,
-+	},
- 	{
- 		.name		= "schemata",
- 		.mode		= 0644,
-@@ -1860,6 +1899,13 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdtgroup_size_show,
- 		.fflags		= RFTYPE_CTRL_BASE,
- 	},
-+	{
-+		.name		= "ctrl_hw_id",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdtgroup_closid_show,
-+		.fflags		= RFTYPE_CTRL_BASE | RFTYPE_DEBUG,
-+	},
- 
- };
- 
--- 
-2.34.1
-
+>  	else
+>  		eth->scratch_ring = dma_alloc_coherent(eth->dma_dev,
+>  						       cnt * soc->txrx.txd_size,
+> @@ -1328,6 +1328,10 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
+>  	data = TX_DMA_PLEN0(info->size);
+>  	if (info->last)
+>  		data |= TX_DMA_LS0;
+> +
+> +	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
+> +		data |= TX_DMA_PREP_ADDR64(info->addr);
+> +
+>  	WRITE_ONCE(desc->txd3, data);
+>  
+>  	 /* set forward port */
+> @@ -1997,6 +2001,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  	bool xdp_flush = false;
+>  	int idx;
+>  	struct sk_buff *skb;
+> +	u64 addr64 = 0;
+>  	u8 *data, *new_data;
+>  	struct mtk_rx_dma_v2 *rxd, trxd;
+>  	int done = 0, bytes = 0;
+> @@ -2112,7 +2117,10 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  				goto release_desc;
+>  			}
+>  
+> -			dma_unmap_single(eth->dma_dev, trxd.rxd1,
+> +			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
+> +				addr64 = RX_DMA_GET_ADDR64(trxd.rxd2);
+> +
+> +			dma_unmap_single(eth->dma_dev, ((u64)trxd.rxd1 | addr64),
+>  					 ring->buf_size, DMA_FROM_DEVICE);
+>  
+>  			skb = build_skb(data, ring->frag_size);
+> @@ -2178,6 +2186,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
+>  		else
+>  			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
+>  
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
+> +			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
+> +
+>  		ring->calc_idx = idx;
+>  		done++;
+>  	}
+> @@ -2450,7 +2461,7 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
+>  		goto no_tx_mem;
+>  
+>  	if (MTK_HAS_CAPS(soc->caps, MTK_SRAM)) {
+> -		ring->dma = eth->sram_base + ring_size * sz;
+> +		ring->dma = (void __force *)eth->sram_base + ring_size * sz;
+>  		ring->phys = eth->phy_scratch_ring + ring_size * (dma_addr_t)sz;
+>  	} else {
+>  		ring->dma = dma_alloc_coherent(eth->dma_dev, ring_size * sz,
+> @@ -2670,6 +2681,9 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+>  		else
+>  			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
+>  
+> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
+> +			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
+> +
+>  		rxd->rxd3 = 0;
+>  		rxd->rxd4 = 0;
+>  		if (mtk_is_netsys_v2_or_greater(eth)) {
+> @@ -2716,6 +2730,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+>  
+>  static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
+>  {
+> +	u64 addr64 = 0;
+>  	int i;
+>  
+>  	if (ring->data && ring->dma) {
+> @@ -2729,7 +2744,10 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_
+>  			if (!rxd->rxd1)
+>  				continue;
+>  
+> -			dma_unmap_single(eth->dma_dev, rxd->rxd1,
+> +			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
+> +				addr64 = RX_DMA_GET_ADDR64(rxd->rxd2);
+> +
+> +			dma_unmap_single(eth->dma_dev, ((u64)rxd->rxd1 | addr64),
+>  					 ring->buf_size, DMA_FROM_DEVICE);
+>  			mtk_rx_put_buff(ring, ring->data[i], false);
+>  		}
+> @@ -4734,6 +4752,14 @@ static int mtk_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> +	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA)) {
+> +		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
+> +		if (err) {
+> +			dev_err(&pdev->dev, "Wrong DMA config\n");
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+>  	spin_lock_init(&eth->page_lock);
+>  	spin_lock_init(&eth->tx_irq_lock);
+>  	spin_lock_init(&eth->rx_irq_lock);
+> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> index 7c180aedcc0cd..186767bcf6837 100644
+> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+> @@ -331,6 +331,14 @@
+>  #define TX_DMA_PLEN1(x)		((x) & eth->soc->txrx.dma_max_len)
+>  #define TX_DMA_SWC		BIT(14)
+>  #define TX_DMA_PQID		GENMASK(3, 0)
+> +#define TX_DMA_ADDR64_MASK	GENMASK(3, 0)
+> +#if IS_ENABLED(CONFIG_64BIT)
+> +# define TX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(TX_DMA_ADDR64_MASK, (x))) << 32)
+> +# define TX_DMA_PREP_ADDR64(x)	FIELD_PREP(TX_DMA_ADDR64_MASK, ((x) >> 32))
+> +#else
+> +# define TX_DMA_GET_ADDR64(x)	(0)
+> +# define TX_DMA_PREP_ADDR64(x)	(0)
+> +#endif
+>  
+>  /* PDMA on MT7628 */
+>  #define TX_DMA_DONE		BIT(31)
+> @@ -343,6 +351,14 @@
+>  #define RX_DMA_PREP_PLEN0(x)	(((x) & eth->soc->txrx.dma_max_len) << eth->soc->txrx.dma_len_offset)
+>  #define RX_DMA_GET_PLEN0(x)	(((x) >> eth->soc->txrx.dma_len_offset) & eth->soc->txrx.dma_max_len)
+>  #define RX_DMA_VTAG		BIT(15)
+> +#define RX_DMA_ADDR64_MASK	GENMASK(3, 0)
+> +#if IS_ENABLED(CONFIG_64BIT)
+> +# define RX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(RX_DMA_ADDR64_MASK, (x))) << 32)
+> +# define RX_DMA_PREP_ADDR64(x)	FIELD_PREP(RX_DMA_ADDR64_MASK, ((x) >> 32))
+> +#else
+> +# define RX_DMA_GET_ADDR64(x)	(0)
+> +# define RX_DMA_PREP_ADDR64(x)	(0)
+> +#endif
+>  
+>  /* QDMA descriptor rxd3 */
+>  #define RX_DMA_VID(x)		((x) & VLAN_VID_MASK)
+> @@ -942,6 +958,7 @@ enum mkt_eth_capabilities {
+>  	MTK_RSTCTRL_PPE2_BIT,
+>  	MTK_U3_COPHY_V2_BIT,
+>  	MTK_SRAM_BIT,
+> +	MTK_36BIT_DMA_BIT,
+>  
+>  	/* MUX BITS*/
+>  	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
+> @@ -978,6 +995,7 @@ enum mkt_eth_capabilities {
+>  #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
+>  #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
+>  #define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
+> +#define MTK_36BIT_DMA	BIT_ULL(MTK_36BIT_DMA_BIT)
+>  
+>  #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
+>  	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
+> @@ -1059,8 +1077,8 @@ enum mkt_eth_capabilities {
+>  		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+>  		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
+>  
+> -#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
+> -		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
+> +#define MT7988_CAPS  (MTK_36BIT_DMA | MTK_GDM1_ESW | MTK_QDMA | \
+> +		      MTK_RSTCTRL_PPE1 | MTK_RSTCTRL_PPE2 | MTK_SRAM)
+>  
+>  struct mtk_tx_dma_desc_info {
+>  	dma_addr_t	addr;
+> -- 
+> 2.41.0
+> 
