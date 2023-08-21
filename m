@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE7978367A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65AE78367C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjHUXsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:48:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S231803AbjHUXvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjHUXsw (ORCPT
+        with ESMTP id S229610AbjHUXvH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:48:52 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C6E4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:48:50 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cf42a3313so53422927b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692661730; x=1693266530;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YCOyIsFUlLjTnVIlQjRMIQSr9BmEp4/1j6SRmVYuUQQ=;
-        b=1vRA8NFDehhZixvfUqi0M0SQpQ2MFDSs44seZB949NKKzBZzpVSxGDWwO/LNrXjrHy
-         Ada9q6DbnJx8rN+sOeayQJ4TFmInwlfhnYp0unQOmBy2T+vbbSdOyVnplEv2mJvZ+Dff
-         SWMYWuIB0eBOo1HwE8yLGk6cfIC2ia61Kt6fyO4lPPzrlwqb072OXA+mpUn3Wz61zk70
-         yvfG0y1E/5HgQJxDdxwmvUU40pkNMUL4jVvCsxGbvVM+JZAZ6YkxUZ7RnqYUA7xg5wq+
-         Pn/vFjpRIqpYBlKiPfoBO6l4+ZHwhY2Abs59vVQqDFyNamEoftAu3ozdwKw/sjtLR59T
-         lppw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692661730; x=1693266530;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YCOyIsFUlLjTnVIlQjRMIQSr9BmEp4/1j6SRmVYuUQQ=;
-        b=MJn980HTsxiUix7GA5b52fnRXhkXvIbd4nbXEjoUv593LdZ5tgwXuEf+oMKUB+TiuQ
-         TndaQtY2rzNl9rodm03aAeSMo3Fa18xtSsMVN+yGrS2SrwWUA1YthqTyRPinYca5ZItB
-         /LJnaTqigCqdJtju70xGoPNvQs6ndFRL4ZepXD6Gzg2cJZp4cXFFEA1bvhHZK+o1MqW6
-         UFpFhs+6f67eD+y5mYK6H+WSqzd8Ox41R2mVAzBuoDjGD9FA4IJ28pOcTuspjLWhix+w
-         OszRyYgaH98OZ5jL7n49HfDu1O633EVldMZplVusma5pPw0u9JjkWUSfOgL19ElyMPtK
-         KExQ==
-X-Gm-Message-State: AOJu0Yxoi8lO7oS2JAT9Pg5/T+MJ6ggRB02bAOAbsRTNwtxkhOZzH5GW
-        kjrEmCdOgiBNtXO2iBcqid51WQVT+2t1
-X-Google-Smtp-Source: AGHT+IF/HIypG9hKuqBUy9shzQU2f2lrrmetedwPUcFRd7NrkxJpYSdhCJsQY85/dvUbv4G15qj30HF917UZ
-X-Received: from zokeefe3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1b6])
- (user=zokeefe job=sendgmr) by 2002:a81:4304:0:b0:577:619e:d3c9 with SMTP id
- q4-20020a814304000000b00577619ed3c9mr79027ywa.10.1692661729731; Mon, 21 Aug
- 2023 16:48:49 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 16:48:44 -0700
+        Mon, 21 Aug 2023 19:51:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3172AE4;
+        Mon, 21 Aug 2023 16:51:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B96AE6143D;
+        Mon, 21 Aug 2023 23:51:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB915C433C7;
+        Mon, 21 Aug 2023 23:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692661861;
+        bh=t8ZC1/hEix5LDwCxrMqOZDOEQvYXb18PrM5aegQ/9M0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XeZHg0GL0LyHsXU67Kyyw/C9OwjpLxNFumDun+LeQWvzGmytze4PXp7u8J6SVg11S
+         HdskExZxok3W1zxlENFQCefXioQfdANw1aBFFQ9qZLGabTGTZQ7Ahu7cQiCEaNoVAE
+         1EfyQqGgFVd5ndMQKSm2KigxjOyGQfZDFO1RXxUPiVMOBhSjjXcDeXSu/Q4jnLOYYq
+         6Vecqwxk/SkKBDXtI5e4zbUVoQsRIJuITb6LmifURT7IZXSdKwHEq0pzMgUj8ESC4p
+         1J0xxJLYRHKcYdWgIrW3PQhNp/2J+kDZisymhtFB8bwQ22IJAW29GJfQNaYlkc6jvp
+         KWI4mZP5jdpww==
+Date:   Tue, 22 Aug 2023 08:50:57 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: Fix to avoid wakeup loop in splice read of
+ per-cpu buffer
+Message-Id: <20230822085057.f4d5fa6499bb3ab2a297657c@kernel.org>
+In-Reply-To: <20230821112703.23b1964b@gandalf.local.home>
+References: <169262755804.106231.8245792908363050528.stgit@devnote2>
+        <20230822001639.7a3cbedc3ad6e3938ee76e16@kernel.org>
+        <20230821112703.23b1964b@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230821234844.699818-1-zokeefe@google.com>
-Subject: [PATCH v3] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
-From:   "Zach O'Keefe" <zokeefe@google.com>
-To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, "Zach O'Keefe" <zokeefe@google.com>,
-        Saurabh Singh Sengar <ssengar@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 6.0 commits:
+On Mon, 21 Aug 2023 11:27:03 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
-commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+> On Tue, 22 Aug 2023 00:16:39 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> 
+> > BTW, even with this fix, blocking splice still causes a strange behavior.
+> > If I set '400' to buffer_size_kb (so 100 pages) and '1' to buffer_percent,
+> > splice always returns 8192 (2 pages) to read. But I expected that should
+> > return 4096 (1 page). This means splice() waits longer than I thought.
+> > 
+> > I think the fullfilled percentage calculation will be a bit wrong.
+> 
+> Note, the percentage is when to wake up the task. If between the wakeup and
+> the read/splice, another ring buffer page gets filled more, then it will
+> give that as well. The buffer_percent is just how long to wait, not for how
+> much to read.
 
-merged "can we have THPs in this VMA?" logic that was previously done
-separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+Yes, but I used the trace_marker as Zheng did for testing, and I saw the
+buffer is filled more than 4096 bytes via tracefs/per_cpu/cpu*/stats.
 
-During the process, the semantics of the fault path check changed in two
-ways:
+> 
+> Now if you test this with just adding enough to fill one page, and it
+> doesn't wake up the reader, then that would be a bug.
 
-1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
-2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
-   handler that could satisfy the fault.  Previously, this check had been
-   done in create_huge_pud() and create_huge_pmd() routines, but after
-   the changes, we never reach those routines.
+Yes.
 
-During the review of the above commits, it was determined that in-tree
-users weren't affected by the change; most notably, since the only relevant
-user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
-explicitly approved early in approval logic.  However, there is at least
-one occurrence where an out-of-tree driver that used
-VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
+Run trace_agent with 1% buffer_percent == 1 page;
 
-Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
-any ->huge_fault handler a chance to handle the fault.  Note that we
-don't validate the file mode or mapping alignment, which is consistent
-with the behavior before the aforementioned commits.
+ # echo 400 > /sys/kernel/tracing/buffer_size_kb
+ # echo 1 > /sys/kernel/tracing/buffer_percent
+ # trace-agent &
 
-Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
-Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
-Signed-off-by: Zach O'Keefe <zokeefe@google.com>
-Cc: Yang Shi <shy828301@gmail.com>
----
-Changed from v2[1]:
-	- Fixed false negative in smaps check when !dax && ->huge_fault
-Changed from v1[2]:
-	- [Saurabhi] Allow ->huge_fault handler to handle fault, if it exists
+Ready to read in the host side,
 
-There are some logical holes in smaps' THPeligible checks here, but those
-are best dealt with in follow-up patches.  For now, just make sure the
-fault path is dealt with.
+$ for i in `seq 0 7`; do cat trace-path-cpu$i.out > trace-data.$i & done
+$ echo 1 > agent-ctl-path.in
 
-[1] https://lore.kernel.org/linux-mm/20230818211533.2523697-1-zokeefe@google.com/
-[2] https://lore.kernel.org/linux-mm/CAAa6QmQw+F=o6htOn=6ADD6mwvMO=Ow_67f3ifBv3GpXx9Xg_g@mail.gmail.com/
+Write events on per-cpu buffer in the guest
+ # for i in `seq 1 1000`; do echo "test event data $i" | tee /sys/kernel/tracing/trace_marker > /dev/null; done 
 
----
- mm/huge_memory.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+But trace_agent doesn't wake up. The data is still there.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index eb3678360b97..901dcf8db8d2 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -96,11 +96,11 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
- 		return in_pf;
- 
- 	/*
--	 * Special VMA and hugetlb VMA.
-+	 * khugepaged special VMA and hugetlb VMA.
- 	 * Must be checked after dax since some dax mappings may have
- 	 * VM_MIXEDMAP set.
- 	 */
--	if (vm_flags & VM_NO_KHUGEPAGED)
-+	if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
- 		return false;
- 
- 	/*
-@@ -128,12 +128,18 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
- 					   !hugepage_flags_always())))
- 		return false;
- 
--	/* Only regular file is valid */
--	if (!in_pf && file_thp_enabled(vma))
--		return true;
--
--	if (!vma_is_anonymous(vma))
-+	if (!vma_is_anonymous(vma)) {
-+		/*
-+		 * Trust that ->huge_fault() handlers know what they are doing
-+		 * in fault path.
-+		 */
-+		if (((in_pf || smaps)) && vma->vm_ops->huge_fault)
-+			return true;
-+		/* Only regular file is valid in collapse path */
-+		if (((!in_pf || smaps)) && file_thp_enabled(vma))
-+			return true;
- 		return false;
-+	}
- 
- 	if (vma_is_temporary_stack(vma))
- 		return false;
+ # grep bytes /sys/kernel/tracing/per_cpu/cpu*/stats 
+/sys/kernel/tracing/per_cpu/cpu0/stats:bytes: 5936
+/sys/kernel/tracing/per_cpu/cpu1/stats:bytes: 5584
+/sys/kernel/tracing/per_cpu/cpu2/stats:bytes: 6368
+/sys/kernel/tracing/per_cpu/cpu3/stats:bytes: 4704
+/sys/kernel/tracing/per_cpu/cpu4/stats:bytes: 5972
+/sys/kernel/tracing/per_cpu/cpu5/stats:bytes: 5620
+/sys/kernel/tracing/per_cpu/cpu6/stats:bytes: 6588
+/sys/kernel/tracing/per_cpu/cpu7/stats:bytes: 3496
+
+And write more events via trace_marker again
+
+ # for i in `seq 1001 2000`; do echo "test event data $i" | tee /sys/kernel/tracing/trace_marker > /dev/null; done 
+
+The data is read;
+
+ # grep bytes /sys/kernel/tracing/per_cpu/cpu*/stats 
+/sys/kernel/tracing/per_cpu/cpu0/stats:bytes: 3220
+/sys/kernel/tracing/per_cpu/cpu1/stats:bytes: 3960
+/sys/kernel/tracing/per_cpu/cpu2/stats:bytes: 2420
+/sys/kernel/tracing/per_cpu/cpu3/stats:bytes: 2024
+/sys/kernel/tracing/per_cpu/cpu4/stats:bytes: 2912
+/sys/kernel/tracing/per_cpu/cpu5/stats:bytes: 1064
+/sys/kernel/tracing/per_cpu/cpu6/stats:bytes: 5004
+/sys/kernel/tracing/per_cpu/cpu7/stats:bytes: 2684
+
+I think this full_hit() function is somewhat wrong.
+
+static __always_inline bool full_hit(struct trace_buffer *buffer, int cpu, int full)
+{
+...
+        return (dirty * 100) > (full * nr_pages);
+}
+
+Ah, I also found a mistake on this patch too.
+
+Thanks, 
+
 -- 
-2.42.0.rc1.204.g551eb34607-goog
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
