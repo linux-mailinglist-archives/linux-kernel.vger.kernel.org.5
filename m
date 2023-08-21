@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB6F782A7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A577D782A7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbjHUN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S235406AbjHUN1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbjHUN0f (ORCPT
+        with ESMTP id S231479AbjHUN1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:26:35 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB408F;
-        Mon, 21 Aug 2023 06:26:34 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so4311236a12.2;
-        Mon, 21 Aug 2023 06:26:34 -0700 (PDT)
+        Mon, 21 Aug 2023 09:27:47 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7885F8F;
+        Mon, 21 Aug 2023 06:27:45 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9a1869f2c06so324056066b.0;
+        Mon, 21 Aug 2023 06:27:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692624393; x=1693229193;
+        d=gmail.com; s=20221208; t=1692624464; x=1693229264;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ivp3Kmvd1KiyuA0TajyJFX+EMDTxCUTbleFELmRAXdc=;
-        b=kOBLPfwyxwwTzXem9eYsvblIj9PNfqrNLntcyl84RNSWbCUmBGHBwy+3xY7zxJk/mX
-         lm177M31nVSSJmVKXiLQGmFqkXEdyZGNNoO4b2gbEA98xEFJoMogBUOCghmJ4rrDEAV4
-         HaFv4BGetogqjcrDN1WJzFhtnSaSrVS2jVABDSKsqK3xERyBuy0hfCQvZMz6Y1eH9EaZ
-         cOkoGd6DhGkDaUXA9/CEFhP9PkRBmISlJWwb0AM7u9Iw2f3ejKXWNuNxX2cl01Sjt3xN
-         lA1EbeJ4fmFdJoQ1qnMw+ullOU6NH6rfYPpByqLu+Py9NP2VEvkcxLqQ+mu0zOopfKlL
-         S1Yg==
+        bh=6+iFwgTYe6alOqlhRqK0d1Txw36ocFuLjRCLnCJY2MY=;
+        b=glhxce2bBkGqmRfW15Hwgy0j0BlSFJKXQU7HEYq15yE79mNe/b4vwHojRNMkTD2rM/
+         g7IgqH93uJH7KAeqkejDClXYy441N4XM807/+Ld4d0817y7GuX6FwhA/hI6AxmESzP4b
+         t/jqO+UTa+gpL5dPhGItXhSA6xyD/QZwc2238ApbMEojgX7qiA0atDX/MHw9aEQFAuak
+         yEMiSzu0G0kOIFAh6pmq/nkC58ec0bggFQZQBb6pqzEpuCd8DE45BV8yHxNd2GgJynRL
+         HHElLjAfKt3cwp+f0aDMQft5+N7/2IZ8H1sU8gK9PFp8CxjvHGOjzooEMohTH8rzzNrD
+         Zfxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692624393; x=1693229193;
+        d=1e100.net; s=20221208; t=1692624464; x=1693229264;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ivp3Kmvd1KiyuA0TajyJFX+EMDTxCUTbleFELmRAXdc=;
-        b=dN3RW3i3jNnu1R7HrMITJXszVENZAlXr35cgrRYK2pcjyUxGup0mgL/+Gc2Qgpbkc6
-         gsaqhTwI3ktnFWbqoVWBuY8hujvGi4ua1mOU73t7dQ4SaoH1j6WDF6Tkkdx0pdW1OMq+
-         j207Nu4cIdjHcuP+Eb4ruowXmLaM6n2K7zahDRwJrGqIfzEprqtzL26vCvqPes1glATV
-         7oOZK6m8tjZEzCpGQJ77BqNqIWc8HWPeRv1VoHSw+C+xdvZM8ZPp3KxC9HfYfRH03Zqs
-         yDBRAVsiUbSv6sMPzLR4cIgS2UAYAhGHFnzzF4dhiycWScc2cJi8eJ+dDWJzF8xFAzG0
-         ojkQ==
-X-Gm-Message-State: AOJu0YyLXt4hgLxdsQiBLC1ncjE/qm5eMkvD1LX63FZ3di7brNOj98e6
-        Ry23mYNLLH+2w0TrxT3G3cRsqTepYwOdyX0f+BA=
-X-Google-Smtp-Source: AGHT+IEVuYuf/qp19UPbKwtg758s0lJ66lQhjhFhYzfyWwydig257yItnAqpSmQLFo3ZIXBLtdzuuVy4LcxCVObTIJU=
-X-Received: by 2002:a05:6402:505:b0:525:3e99:8ab9 with SMTP id
- m5-20020a056402050500b005253e998ab9mr5110542edv.10.1692624392358; Mon, 21 Aug
- 2023 06:26:32 -0700 (PDT)
+        bh=6+iFwgTYe6alOqlhRqK0d1Txw36ocFuLjRCLnCJY2MY=;
+        b=OuDZb+UwwVg/DYHqC1JuoQ34f+St9g+7f+MzPG2vA21PWAWzS5v7kINWDSRYJ0/j4G
+         TEKRoodi++gaOQxK6oo0or0nxPUjSb20/eoBtow5nJuLxRcMfcSJfWZIU58wmRVFov5l
+         Y4NkpXfRpnaLqFQAyFlFwyQdMBHra2YCxg9ypI8fWhsZ6C6cTxTsZ6KAG8zv/w5dS3OR
+         9Z9STjay1J8C84xtTXeiiiBj6nrjeVNdxOYixOmHrV6FV1tslIwRCvJi/1RQMDErwwab
+         lSatq/ddUqEWlw+xczYDmc4y1nbXibl4T7WeF11y2DlY1CG1Y3z5IDFuAbzEyB7uK2Je
+         Deuw==
+X-Gm-Message-State: AOJu0Yw7ve4Bg+khBSBVAM7oizAVSrI2xs252SMnIUAxuuTq0ktxxLpb
+        VATjCHjq4xWgsAaXZ4d/CNAcGXpY8UIDroQQWSM=
+X-Google-Smtp-Source: AGHT+IH+t4GWbCUro8fWUdvspcxpEZAy2Wn1mIHuSevK73gBQcvl2B6Qi3H1dL0YcyW1ddaNJXwdWH5nA//+XpzVfDE=
+X-Received: by 2002:a17:906:d4:b0:9a1:8ce6:620e with SMTP id
+ 20-20020a17090600d400b009a18ce6620emr4403593eji.17.1692624463867; Mon, 21 Aug
+ 2023 06:27:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
- <20230816111310.1656224-3-keguang.zhang@gmail.com> <c1499974-17c5-2f6b-8d6b-be225299fa9c@linaro.org>
-In-Reply-To: <c1499974-17c5-2f6b-8d6b-be225299fa9c@linaro.org>
+ <20230816111310.1656224-4-keguang.zhang@gmail.com> <ZOESdApO8NN8kDQc@vergenet.net>
+In-Reply-To: <ZOESdApO8NN8kDQc@vergenet.net>
 From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Mon, 21 Aug 2023 21:26:16 +0800
-Message-ID: <CAJhJPsUpAOhNH9q6gqrUjc=0WGMmSj1xJAgZoMBZ_6+pHdN5fA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: net: Add Loongson-1 DWMAC glue layer
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Date:   Mon, 21 Aug 2023 21:27:27 +0800
+Message-ID: <CAJhJPsX1k1L3yWt0k2P+_fNuUFipeYTSnyMdGvTdpviForbbwQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
+To:     Simon Horman <horms@kernel.org>
 Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
@@ -82,61 +82,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 19, 2023 at 10:26=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+On Sun, Aug 20, 2023 at 3:05=E2=80=AFAM Simon Horman <horms@kernel.org> wro=
+te:
 >
-> On 16/08/2023 13:13, Keguang Zhang wrote:
-> > Add devicetree binding document for Loongson-1 DWMAC glue layer.
+> On Wed, Aug 16, 2023 at 07:13:09PM +0800, Keguang Zhang wrote:
+> > This glue driver is created based on the arch-code
+> > implemented earlier with the platform-specific settings.
 > >
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> > V1 -> V2: Fix "clock-names" and "interrupt-names" property
-> >           Rename the syscon property to "loongson,dwmac-syscon"
-> >           Drop "phy-handle" and "phy-mode" requirement
-> >           Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
-> >           to snps,dwmac.yaml
+> > Use syscon for SYSCON register access.
 > >
-> >  .../bindings/net/loongson,ls1x-dwmac.yaml     | 98 +++++++++++++++++++
-> >  1 file changed, 98 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1x=
--dwmac.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.=
-yaml b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
-> > new file mode 100644
-> > index 000000000000..cf5477450e29
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
-> > @@ -0,0 +1,98 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/loongson,ls1x-dwmac.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Loongson-1 DWMAC glue layer
+> > Partialy based on the previous work by Serge Semin.
 >
-> Please implement Serge's comments about title and description. Rest
-> looks good:
+> Hi Keguang Zhang,
+>
+> as it looks like there will be a v3 for other reasons,
+> a minor nit from my side: Partialy -> Partially
 >
 Will do.
-
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-As suggested by Serge, this file will be split into
-loongson,ls1b-gmac.yaml and loongson,ls1c-mac.yaml.
-Due to this significant change, I'm not sure whether I should keep
-your Reviewed-by tag or not.
-
 Thanks!
-
-> Best regards,
-> Krzysztof
->
+> ...
 
 
 
---
+--=20
 Best regards,
 
 Keguang Zhang
