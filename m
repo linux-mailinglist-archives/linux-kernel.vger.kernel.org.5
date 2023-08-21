@@ -2,48 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9637783682
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F01783685
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbjHUXzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52302 "EHLO
+        id S231316AbjHUX5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbjHUXzn (ORCPT
+        with ESMTP id S230442AbjHUX5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:55:43 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F18513E;
-        Mon, 21 Aug 2023 16:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692662139;
-        bh=D7cysqJUdxEabQucfhKj8eQuyrVbcsTOyOAjVa1RXzA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LH5JPbNM0vOi7aMV3ND0unkuIsYzJaiux8V3b90uwn+rGDKQ9tlrtLHKdKhxMa1N9
-         yD54ak7ZgUVk62xdijXgxJBle3q0AI6IxCFrKEC8e5XRjKiL1xheo8NFY82vHUzVgQ
-         XzTIMVZljKExRn/QbZqJTk/Hgp0IjoC+2RBZMJB5FTRMITPAl4aMADWCi5Gjj06T9K
-         rmA4wQyB3JNXDeqE8zKNIEWLo/N6VFF8usXHqgCKPKGK4t5nTOa6fjz2crI6h/8M+C
-         EAf1QtmjRTJb9COTrbkP+Ds1fT05hzjhgrIR4rqvgidjT6Cmyj875hDYbrzNVzErsQ
-         rN2QV+rULv9jw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RV8Vy6wqbz4wZJ;
-        Tue, 22 Aug 2023 09:55:38 +1000 (AEST)
-Date:   Tue, 22 Aug 2023 09:55:37 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm tree
-Message-ID: <20230822095537.500047f7@canb.auug.org.au>
+        Mon, 21 Aug 2023 19:57:44 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92F0C7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:57:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692662261; x=1724198261;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=x77maobvxv0716Z79bZDjjOJtOUA6+M6SN0qi1SRP9Y=;
+  b=EotC3lcxMRL6xhESrJLDh/TFypimAzLXhQmTwwI5HC9eAjdzXFBJuF5V
+   tah92asPYNUsNV8GrAbMkUxVIbxw1sMUiGHD0NutRvX8PqkT9c5a2nhGd
+   Ua+TSpwjyJ3j+eByA7HNUwYWK2CpoCU8PrL+WMOMADA+chXUqx6I/0QU1
+   MHiM/z1UnG5N2P/q/Q09imqdpvF/ORxq9QxlAKKhCeXs9dFL1o1krKriL
+   /mySMXjDwpY9QkEIyqKZrDeHTtCqg99axNNmkipr4KV8ck1YX2lPVUbh0
+   AdMlIXgAgs33BuObYTmWohpL7RQ8Ke2MSEB0bmWGWJLlPW47uCfXNYG9K
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="437653898"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="437653898"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 16:57:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="806092429"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="806092429"
+Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2023 16:57:39 -0700
+Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYEm7-000155-22;
+        Mon, 21 Aug 2023 23:57:37 +0000
+Date:   Tue, 22 Aug 2023 07:56:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: /bin/bash: line 1: 36578 Segmentation fault
+      LLVM_OBJCOPY="llvm-objcopy" pahole -J --btf_gen_floats -j
+ --lang_exclude=rust --skip_encoding_btf_inconsistent_proto
+ --btf_gen_optimized --btf_base vmlinux drivers/rpmsg/virtio_rpmsg_bus.ko
+Message-ID: <202308220712.sxPVZGmi-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2z+KtNqgbzpgh41lXutc3lf";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,181 +65,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2z+KtNqgbzpgh41lXutc3lf
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f7757129e3dea336c407551c98f50057c22bb266
+commit: a0e35a648faf9170e0c32c98b22e66f0a2d964d3 Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
+date:   3 months ago
+config: hexagon-randconfig-r001-20230821 (https://download.01.org/0day-ci/archive/20230822/202308220712.sxPVZGmi-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20230822/202308220712.sxPVZGmi-lkp@intel.com/reproduce)
 
-Hi all,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308220712.sxPVZGmi-lkp@intel.com/
 
-After merging the mm tree, today's linux-next build
-(powerpc_ppc64_defconfig) failed like this:
+All errors (new ones prefixed by >>):
 
-In file included from include/trace/trace_events.h:27,
-                 from include/trace/define_trace.h:102,
-                 from fs/xfs/xfs_trace.h:4428,
-                 from fs/xfs/xfs_trace.c:45:
-include/linux/pgtable.h:8:25: error: initializer element is not constant
-    8 | #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/stages/init.h:20:31: note: in definition of macro 'TRACE_DEFI=
-NE_ENUM'
-   20 |                 .eval_value =3D a                         \
-      |                               ^
-fs/xfs/./xfs_trace.h:805:19: note: in expansion of macro 'PMD_ORDER'
-  805 | TRACE_DEFINE_ENUM(PMD_ORDER);
-      |                   ^~~~~~~~~
-include/linux/pgtable.h:8:25: note: (near initialization for '__TRACE_SYSTE=
-M_PMD_ORDER.eval_value')
-    8 | #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/stages/init.h:20:31: note: in definition of macro 'TRACE_DEFI=
-NE_ENUM'
-   20 |                 .eval_value =3D a                         \
-      |                               ^
-fs/xfs/./xfs_trace.h:805:19: note: in expansion of macro 'PMD_ORDER'
-  805 | TRACE_DEFINE_ENUM(PMD_ORDER);
-      |                   ^~~~~~~~~
-include/linux/pgtable.h:9:25: error: initializer element is not constant
-    9 | #define PUD_ORDER       (PUD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/stages/init.h:20:31: note: in definition of macro 'TRACE_DEFI=
-NE_ENUM'
-   20 |                 .eval_value =3D a                         \
-      |                               ^
-fs/xfs/./xfs_trace.h:806:19: note: in expansion of macro 'PUD_ORDER'
-  806 | TRACE_DEFINE_ENUM(PUD_ORDER);
-      |                   ^~~~~~~~~
-include/linux/pgtable.h:9:25: note: (near initialization for '__TRACE_SYSTE=
-M_PUD_ORDER.eval_value')
-    9 | #define PUD_ORDER       (PUD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/stages/init.h:20:31: note: in definition of macro 'TRACE_DEFI=
-NE_ENUM'
-   20 |                 .eval_value =3D a                         \
-      |                               ^
-fs/xfs/./xfs_trace.h:806:19: note: in expansion of macro 'PUD_ORDER'
-  806 | TRACE_DEFINE_ENUM(PUD_ORDER);
-      |                   ^~~~~~~~~
-fs/xfs/./xfs_trace.h: In function 'trace_raw_output_xfs_filemap_fault':
-include/linux/pgtable.h:8:25: error: initializer element is not constant
-    8 | #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_=
-EVENT_CLASS'
-  203 |         trace_event_printf(iter, print);                           =
-     \
-      |                                  ^~~~~
-include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-   45 |                              PARAMS(print));                   \
-      |                              ^~~~~~
-fs/xfs/./xfs_trace.h:811:1: note: in expansion of macro 'TRACE_EVENT'
-  811 | TRACE_EVENT(xfs_filemap_fault,
-      | ^~~~~~~~~~~
-fs/xfs/./xfs_trace.h:826:9: note: in expansion of macro 'TP_printk'
-  826 |         TP_printk("dev %d:%d ino 0x%llx %s write_fault %d",
-      |         ^~~~~~~~~
-fs/xfs/./xfs_trace.h:829:19: note: in expansion of macro '__print_symbolic'
-  829 |                   __print_symbolic(__entry->order,
-      |                   ^~~~~~~~~~~~~~~~
-fs/xfs/./xfs_trace.h:831:27: note: in expansion of macro 'PMD_ORDER'
-  831 |                         { PMD_ORDER,    "PMD" },
-      |                           ^~~~~~~~~
-include/linux/pgtable.h:8:25: note: (near initialization for 'symbols[1].ma=
-sk')
-    8 | #define PMD_ORDER       (PMD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_=
-EVENT_CLASS'
-  203 |         trace_event_printf(iter, print);                           =
-     \
-      |                                  ^~~~~
-include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-   45 |                              PARAMS(print));                   \
-      |                              ^~~~~~
-fs/xfs/./xfs_trace.h:811:1: note: in expansion of macro 'TRACE_EVENT'
-  811 | TRACE_EVENT(xfs_filemap_fault,
-      | ^~~~~~~~~~~
-fs/xfs/./xfs_trace.h:826:9: note: in expansion of macro 'TP_printk'
-  826 |         TP_printk("dev %d:%d ino 0x%llx %s write_fault %d",
-      |         ^~~~~~~~~
-fs/xfs/./xfs_trace.h:829:19: note: in expansion of macro '__print_symbolic'
-  829 |                   __print_symbolic(__entry->order,
-      |                   ^~~~~~~~~~~~~~~~
-fs/xfs/./xfs_trace.h:831:27: note: in expansion of macro 'PMD_ORDER'
-  831 |                         { PMD_ORDER,    "PMD" },
-      |                           ^~~~~~~~~
-include/linux/pgtable.h:9:25: error: initializer element is not constant
-    9 | #define PUD_ORDER       (PUD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_=
-EVENT_CLASS'
-  203 |         trace_event_printf(iter, print);                           =
-     \
-      |                                  ^~~~~
-include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-   45 |                              PARAMS(print));                   \
-      |                              ^~~~~~
-fs/xfs/./xfs_trace.h:811:1: note: in expansion of macro 'TRACE_EVENT'
-  811 | TRACE_EVENT(xfs_filemap_fault,
-      | ^~~~~~~~~~~
-fs/xfs/./xfs_trace.h:826:9: note: in expansion of macro 'TP_printk'
-  826 |         TP_printk("dev %d:%d ino 0x%llx %s write_fault %d",
-      |         ^~~~~~~~~
-fs/xfs/./xfs_trace.h:829:19: note: in expansion of macro '__print_symbolic'
-  829 |                   __print_symbolic(__entry->order,
-      |                   ^~~~~~~~~~~~~~~~
-fs/xfs/./xfs_trace.h:832:27: note: in expansion of macro 'PUD_ORDER'
-  832 |                         { PUD_ORDER,    "PUD" }),
-      |                           ^~~~~~~~~
-include/linux/pgtable.h:9:25: note: (near initialization for 'symbols[2].ma=
-sk')
-    9 | #define PUD_ORDER       (PUD_SHIFT - PAGE_SHIFT)
-      |                         ^
-include/trace/trace_events.h:203:34: note: in definition of macro 'DECLARE_=
-EVENT_CLASS'
-  203 |         trace_event_printf(iter, print);                           =
-     \
-      |                                  ^~~~~
-include/trace/trace_events.h:45:30: note: in expansion of macro 'PARAMS'
-   45 |                              PARAMS(print));                   \
-      |                              ^~~~~~
-fs/xfs/./xfs_trace.h:811:1: note: in expansion of macro 'TRACE_EVENT'
-  811 | TRACE_EVENT(xfs_filemap_fault,
-      | ^~~~~~~~~~~
-fs/xfs/./xfs_trace.h:826:9: note: in expansion of macro 'TP_printk'
-  826 |         TP_printk("dev %d:%d ino 0x%llx %s write_fault %d",
-      |         ^~~~~~~~~
-fs/xfs/./xfs_trace.h:829:19: note: in expansion of macro '__print_symbolic'
-  829 |                   __print_symbolic(__entry->order,
-      |                   ^~~~~~~~~~~~~~~~
-fs/xfs/./xfs_trace.h:832:27: note: in expansion of macro 'PUD_ORDER'
-  832 |                         { PUD_ORDER,    "PUD" }),
-      |                           ^~~~~~~~~
+   die__process: got compile_unit unexpected tag after DW_TAG_compile_unit!
+>> /bin/bash: line 1: 36578 Segmentation fault      LLVM_OBJCOPY="llvm-objcopy" pahole -J --btf_gen_floats -j --lang_exclude=rust --skip_encoding_btf_inconsistent_proto --btf_gen_optimized --btf_base vmlinux drivers/rpmsg/virtio_rpmsg_bus.ko
 
-Caused by commit
-
-  b8088235e872 ("mm: remove enum page_entry_size")
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2z+KtNqgbzpgh41lXutc3lf
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTj+XkACgkQAVBC80lX
-0Gyh9wf8DjilA0C679EsCsfhZ8WsE4hVWHAFICAwAv4A44FVnnmO+JHJ6G7FqOBM
-LsP7Uu0kCE32XgHCQe4Xr1HBeGI+k6lAE0KKo13wlDrG2pewyZ3NXrVHfQ9Y5Q+I
-OpEPvJ+CeEGnXJ50F4L8fp720vMK7Bf0GcICE4Hljj66o7ykf3sBlwEV0FlZ6vYz
-/7ta2PmhTtISTJoSmIKqxS/YrImYn1OV57mSJx5jwCBo96pFX4h92e50mLYZxswz
-gPGjcU0DJJh5ouZGejD4w/Oe/qWrtj+tTekxYCxJOF4g77H7DFTwBlvQr7aiojoL
-jaEh1/TK48GRNXjnLkEUNbLX54CV4A==
-=xSfW
------END PGP SIGNATURE-----
-
---Sig_/2z+KtNqgbzpgh41lXutc3lf--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
