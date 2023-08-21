@@ -2,69 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7F57824C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4AF7824DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233835AbjHUHp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38306 "EHLO
+        id S233730AbjHUHsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233831AbjHUHp4 (ORCPT
+        with ESMTP id S229757AbjHUHsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:45:56 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDF2B5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:45:55 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5657ca46a56so525665a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:45:55 -0700 (PDT)
+        Mon, 21 Aug 2023 03:48:43 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4DF92
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:48:41 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c0290f0a8so374663066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:48:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692603955; x=1693208755;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0JatILT8l8vU5uaY93FjgQ+V4CU+ZgdOl49NPz6kWPo=;
-        b=PiG4+A1Fyu8T7gw9wldqBbS2vyE6nrc8Riexzk8DreS3oVJxkpg6Otm1nDVuhcYAOy
-         DOBA1DLo9UhvvHp0RgeTZqqX9ibSfMHRPfcta6r/m6TbK+/CtxZhmh8Z7GmEBwdjfbht
-         AdR7OOe81qiD7mqmcyT8Y4kM5rIgU7abl6IZN6Y5ujmpHbz/Y6B+hs3JYcL85VlLzODe
-         gwHVAbso1SGsLeVnfA/KUH+3OlXhsxnIoq7emePy6E2ZAEYO03HmijmkADlj0YD9si+P
-         L2PNQNcWQbgM5I1pHoGyL9rzIiIi/eYDSBuIj9x/ai7+eBEnneTZKgdrnmdrDuNx6Aln
-         +4tA==
+        d=rasmusvillemoes.dk; s=google; t=1692604120; x=1693208920;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CJHWjcXEkykiw944poxSFMTZcS7Csi+nBW+nX63BvpM=;
+        b=GCAFjf9CXoTlHF+Gv9UIMaQOvfrMZXNuDMhb0Q1sSq3Rq9j47swjXwd0CU7wvrKQMn
+         G/v7dqyXX6OeCsgvYrdnpJQbb9LpM433uxqBtQtBpoc83NnoGo1y2kFJh3vv3tmdRUe4
+         xmhg6mVHVZ/I3bibRVkf3jRqVaSmBv+rJqq10=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692603955; x=1693208755;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0JatILT8l8vU5uaY93FjgQ+V4CU+ZgdOl49NPz6kWPo=;
-        b=X/aAynqsWCfAUL2ToITV8/E59y4GE+ookFMNROMttekYia+VIS+p4JQBAz5gCn/aOU
-         2a8zb6X2NRkZPXRnTc9AqbPyDDncxCSxSV3huUJ/cM2rFWExYVaZC4uP2yIILBfAhYLm
-         i7dkkCi4WmDLZe8HJlIHgpv2WnUt8fTQ9MVmNzF1kQFeSaSv0Majn2/B4552T0sl/zAb
-         KcoZRcDhfjcd7AloqjMZzJicw8BDm7n3ArEiedYvRl8sDv9Y8yim0UbNHGTGPCkcz2Xs
-         Ao8IX/jwIZjrbPoFZgIRuufdsZ272NvULGkduYFFw75jRMOHmFPhxjBlDq/7ytXSFCSy
-         eZJQ==
-X-Gm-Message-State: AOJu0Yw8mfFo5pUuamVV3EeDjTDSWKsbvtaSOCekuA/+BsBWDtR4Wr14
-        9MkDFRcmGi8lQLb8r41UdAQ=
-X-Google-Smtp-Source: AGHT+IE1ASKPeoJ4AKqXgxZW2cAcu80pLjrgaAGnVV894dy3rMZCRQ4LWdYPFGlZQ4B6WqBMD1hzOQ==
-X-Received: by 2002:a17:902:e743:b0:1be:f087:7fbf with SMTP id p3-20020a170902e74300b001bef0877fbfmr7229006plf.3.1692603955036;
-        Mon, 21 Aug 2023 00:45:55 -0700 (PDT)
-Received: from mail.google.com (125-237-52-155-fibre.sparkbb.co.nz. [125.237.52.155])
-        by smtp.gmail.com with ESMTPSA id n15-20020a170902e54f00b001b89536974bsm6342753plf.202.2023.08.21.00.45.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 00:45:54 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 19:45:49 +1200
-From:   Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>
-To:     Andrew Donnellan <ajd@linux.ibm.com>
-Cc:     masahiroy@kernel.org, bgray@linux.ibm.com, n.schier@avm.de,
-        linux-kernel@vger.kernel.org, keescook@chromium.org
-Subject: Re: [PATCH] [next] initramfs: Parse KBUILD_BUILD_TIMESTAMP as UTC
- date
-Message-ID: <ZOMWLeftCkxx3JgW@mail.google.com>
-References: <ZMSdUS37BD5b/dn7@mail.google.com>
- <98defebbdd3f0be69f76f5e6c3d7b72935f072a9.camel@linux.ibm.com>
+        d=1e100.net; s=20221208; t=1692604120; x=1693208920;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CJHWjcXEkykiw944poxSFMTZcS7Csi+nBW+nX63BvpM=;
+        b=FKur64fm4B1hfjzxqiB1KjeNiVFXday9mxBVJOj6Ily3JBlCjTFNSuGhdktZIOMt7O
+         VSn+DvSVV/24KqPuzGi4d0scduu4NxF7APp5gSHdIMKV5QMFBDJPbzKziawzURIs1vqD
+         GiY7mDlT+kREjTR/XKV+oAkgfGRE9aODn3iu7jCj5brqq9bt0J95Nuk1iLQx4WUv8OW2
+         AH9iqZdjY3nexe+RsaT2Sp0wRBRJFL5cdYZ0e+9Ld8KC9yWUrn9UPezAY8Mv0VIC6CpK
+         bgZiCNkF+ZGMMcN4/YrAjeJYCNIX9A9Etw2l7Lu4TSvUdlUvHfB+sQvdP8dy+bJl/Xs/
+         sGeg==
+X-Gm-Message-State: AOJu0YwZLXITV2v0KiC0bhZVh2Z003pXJysHcOcH7UD7TTGYTLOMUQBK
+        Y5cvV0ZDdrBV9B+HoG1pm4n3Nw2AzcsvGbpacVC27A==
+X-Google-Smtp-Source: AGHT+IGAlm58OKlJJoATdkE3tZSv8bLSeSt36BNqKJ89rux/TLSsJ6GE7t+pAXmbzsUAO7S78lB/Hg==
+X-Received: by 2002:a17:907:7845:b0:9a1:8f6f:6873 with SMTP id lb5-20020a170907784500b009a18f6f6873mr2065384ejc.33.1692604120158;
+        Mon, 21 Aug 2023 00:48:40 -0700 (PDT)
+Received: from [172.16.11.116] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id z24-20020a170906075800b0099bcf563fe6sm6057207ejb.223.2023.08.21.00.48.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 00:48:39 -0700 (PDT)
+Message-ID: <f32995aa-df23-bf51-adb7-f024b76a33aa@rasmusvillemoes.dk>
+Date:   Mon, 21 Aug 2023 09:48:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98defebbdd3f0be69f76f5e6c3d7b72935f072a9.camel@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] bitmap: optimize bitmap_remap()
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <20230815235934.47782-1-yury.norov@gmail.com>
+ <ZN3qQPeFtdZQrLE4@smile.fi.intel.com> <ZN3qlCd+TcYiZg+s@smile.fi.intel.com>
+ <ZN4tB7jkQrX/TKnh@yury-ThinkPad> <ZN4+nZwBu317dVjz@smile.fi.intel.com>
+ <ZOAi9PB6+/p4orRN@yury-ThinkPad>
+Content-Language: en-US, da
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+In-Reply-To: <ZOAi9PB6+/p4orRN@yury-ThinkPad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,24 +75,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:32:46AM +1000, Andrew Donnellan wrote:
-> > 
-> > Parse KBUILD_BUILD_TIMESTAMP date string as UTC so no localtime
-> > conversion is done which fixes the edge case aforementioned.
-> > 
-> > Signed-off-by: Paulo Miguel Almeida
-> > <paulo.miguel.almeida.rodenas@gmail.com>
+On 19/08/2023 04.03, Yury Norov wrote:
+> On Thu, Aug 17, 2023 at 06:37:01PM +0300, Andy Shevchenko wrote:
+
+>> But this gives +89 bytes on x86_64... :-(
 > 
-> This should also be documented in Documentation/kbuild/kbuild.rst,
-> including a note that you can still use local time if you include the
-> timezone specifier.
-> 
-> Thanks,
+> Who cares if it gives a boost of performance for regular users?
 
-Thanks for the review Andrew and Nicolas.
+"Regular users" never ever hit bitmap_remap, it's simply too esoteric.
+It has all of _two_ users in the whole tree, one in some gpio driver,
+another only reached via a system call that nobody ever uses, and if
+they do, it's most likely some one-time-per-process thing. It's about as
+far from a hot path that you can come.
 
-Will send a new patch shortly with the changes requested.
+If it wasn't for that xilinx user, those bitmap_remap and bitmap_onto
+etc. should be moved to be private to the NUMA code.
 
-thanks,
+Anyway, I think those +89 was for Andy's own counterproposal. I haven't
+built Yury's patch, but from a quick look, it should not add that much,
+if anything - it adds a test, call, early return, but OTOH it helps the
+compiler to combine the two set_bit (since only the first argument
+differs), and loses the lock prefix.
 
-- Paulo A.
+As for that latter point, I don't think a separate patch is worth it,
+just a comment in the commit log - we're already doing a bitmap_zero()
+on dst which certainly doesn't use any atomic ops, and in general all
+the bitmap_* functions expect the caller to handle locking.
+
+So I don't mind Yury's patch, but I highly doubt it matters at all. The
+comment mentions an example, do we even have that put in test code?
+
+Rasmus
+
