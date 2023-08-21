@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F3E78260D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5164D782613
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjHUJJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        id S234280AbjHUJLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232445AbjHUJJf (ORCPT
+        with ESMTP id S230367AbjHUJLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:09:35 -0400
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D6FC6;
-        Mon, 21 Aug 2023 02:09:32 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bcc0adab4so393699666b.2;
-        Mon, 21 Aug 2023 02:09:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692608971; x=1693213771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G3IanIreuKKd6oid8gIK418X48snCHg9yrUKvAdOxbs=;
-        b=DGSA6iIKmEi0XFRKPjUlW15ZAdIzDaYKw00Kw5JCLXjH6n6/U9R+TBQ55sohWID3uE
-         I60//7k5i5/6nr64r5xBnS+M7NXAZ3fJ5D0Ctiwa1HsQBZb/p6mUwiHyIUur96jzY0un
-         uK+mi69O7Gtuj9T3UbwKj2m8Dmq6jCzbkOuRi8Wh6D1arsgHtbmekjmi32r+TDtHntRq
-         GbRw2tBYys7+3CbiT0I9UyssO/Ar8tCZ9969k67AtP55+UvhFg5JYWIMlJ00isharuP0
-         ANUpPNf4kc1DlR9pxfqndaOpFshlVIbaDihEQX7Mu+5YNVlp8HrqVNM3X5Dtg9IFtr0H
-         FTaQ==
-X-Gm-Message-State: AOJu0YzqT6UOUisyR/GQMYLbQ4jaPcXk+vxTwmpnIReW+89Q9oc2lLIn
-        tGs25vLHWI8G3qaIha4vn+s=
-X-Google-Smtp-Source: AGHT+IETWV8T6vtneT+4l5a1uiQOc2A3mGi8+jnIWL6WwJCuN7klY8X0PX9zHVVOsWlY5Px9lJnhCg==
-X-Received: by 2002:a17:906:224e:b0:9a1:68ff:a161 with SMTP id 14-20020a170906224e00b009a168ffa161mr5036529ejr.52.1692608970347;
-        Mon, 21 Aug 2023 02:09:30 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-009.fbsv.net. [2a03:2880:31ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170906828200b00977cad140a8sm6161655ejx.218.2023.08.21.02.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 02:09:29 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 02:09:26 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v3 6/9] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
-Message-ID: <ZOMpxrTzvSGQRwYi@gmail.com>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-7-leitao@debian.org>
- <87zg2p345l.fsf@suse.de>
+        Mon, 21 Aug 2023 05:11:23 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65567C4;
+        Mon, 21 Aug 2023 02:11:21 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hao.xiang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VqEqKAv_1692609076;
+Received: from 30.221.109.103(mailfrom:hao.xiang@linux.alibaba.com fp:SMTPD_---0VqEqKAv_1692609076)
+          by smtp.aliyun-inc.com;
+          Mon, 21 Aug 2023 17:11:17 +0800
+Message-ID: <6d10dcf7-7912-25a2-8d8e-ef7d71a4ce83@linux.alibaba.com>
+Date:   Mon, 21 Aug 2023 17:11:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zg2p345l.fsf@suse.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] kvm: x86: emulate MSR_PLATFORM_INFO msr bits
+Content-Language: en-US
+To:     Chao Gao <chao.gao@intel.com>
+Cc:     kvm@vger.kernel.org, shannon.zhao@linux.alibaba.com,
+        pbonzini@redhat.com, seanjc@google.com,
+        linux-kernel@vger.kernel.org
+References: <1692588392-58155-1-git-send-email-hao.xiang@linux.alibaba.com>
+ <ZOMWM+YmScUG3U5W@chao-email>
+From:   Hao Xiang <hao.xiang@linux.alibaba.com>
+In-Reply-To: <ZOMWM+YmScUG3U5W@chao-email>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Gabriel,
+For reason that,
 
-On Thu, Aug 17, 2023 at 02:38:46PM -0400, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
+The turbo frequency info depends on specific machine type. And the msr 
+value of MSR_PLATFORM_INFO may be diferent on diffrent generation machine.
+
+Get following msr bits (needed by turbostat on intel platform) by rdmsr 
+MSR_PLATFORM_INFO directly in KVM is more reasonable. And set these msr 
+bits as vcpu->arch.msr_platform_info default value.
+  -bit 15:8, Maximum Non-Turbo Ratio (MAX_NON_TURBO_LIM_RATIO)
+  -bit 47:40, Maximum Efficiency Ratio (MAX_EFFICIENCY_RATIO)
+
+On 2023/8/21 15:52, Chao Gao wrote:
+> On Mon, Aug 21, 2023 at 11:26:32AM +0800, Hao Xiang wrote:
+>> For intel platform, The BzyMhz field of Turbostat shows zero
+>> due to the missing of part msr bits of MSR_PLATFORM_INFO.
+>>
+>> Acquire necessary msr bits, and expose following msr info to guest,
+>> to make sure guest can get correct turbo frequency info.
 > 
-> > +#if defined(CONFIG_NET)
-> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> >  {
-> >  	struct socket *sock = cmd->file->private_data;
-> > @@ -189,8 +219,16 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> >  		if (ret)
-> >  			return ret;
-> >  		return arg;
-> > +	case SOCKET_URING_OP_GETSOCKOPT:
-> > +		return io_uring_cmd_getsockopt(sock, cmd, issue_flags);
-> >  	default:
-> >  		return -EOPNOTSUPP;
-> >  	}
-> >  }
-> > +#else
-> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
-> > +{
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +#endif
-> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
+> Userspace VMM (e.g., QEMU) can configure this MSR for guests. Please refer to
+> tools/testing/selftests/kvm/x86_64/platform_info_test.c.
 > 
-> The CONFIG_NET guards are unrelated and need to go in a separate commit.
-> Specially because it is not only gating getsockopt, but also the already
-> merged SOCKET_URING_OP_SIOCINQ/_OP_SIOCOUTQ.
-
-Well, so far, if CONFIG_NET is disable, and you call
-io_uring_cmd_getsockopt, the callbacks will be called and returned
--EOPNOTSUPP.
-
-With this new patch, it will eventually call sk_getsockopt which does
-not exist in the CONFIG_NET=n world. That is why I have this
-protection now. I.e, this `#if defined(CONFIG_NET)` is only necessary now,
-since it is the first time this function (io_uring_cmd_sock) will call a
-function that does not exist if CONFIG_NET is disabled.
-
-I can split it in a different patch, if you think it makes a difference.
+> The question is why KVM needs this patch given KVM already provides interfaces
+> for QEMU to configure the MSR.
