@@ -2,74 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6F178312D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A797783155
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjHUTlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 15:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S230057AbjHUToW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 15:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjHUTlJ (ORCPT
+        with ESMTP id S230056AbjHUToV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 15:41:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1258EC2;
-        Mon, 21 Aug 2023 12:41:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B65464396;
-        Mon, 21 Aug 2023 19:41:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3E0C433C7;
-        Mon, 21 Aug 2023 19:41:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692646864;
-        bh=FUQx9TyKqHG33MB6C6Nk6beM/jCqOVRrZrugXYnTOLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cJGJz2S+W9aNYDNl/lV1jkalwVIz+alVULA4flzq1FlEJeKXLBGNNdrAzV0Kz2oy6
-         exAAI6oJLVbP67PFSnsBW0FLu03K6IZDbjydkfl5QI1OILLbG1cR1i10GpyCuVmGT4
-         tcP/JDAM9hw1QYllyRPW/oL1iyXLo9ipROTMqFveK84ETGKqpsZSL5MbL6sBQeeDVM
-         aqNZDHPCrxqMZYXLqu0e87jkkRkjkEDmbY/UawLIr//pOGmFnDHObyDh1KzyU0RyK5
-         ty0ymNBVH+ObtUcVsORHOHjsUm+xZj+00Kuq3Lbb8KNWC3dUZbx7Q4YT8gjIksDU4w
-         4nygFjEKH1n4g==
-Received: (nullmailer pid 2173935 invoked by uid 1000);
-        Mon, 21 Aug 2023 19:41:01 -0000
-Date:   Mon, 21 Aug 2023 14:41:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Seven Lee <wtli@nuvoton.com>
-Cc:     YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, broonie@kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, supercraig0719@gmail.com, scott6986@gmail.com,
-        alsa-devel@alsa-project.org, KCHSU0@nuvoton.com, WTLI@nuvoton.com,
-        SJLIN0@nuvoton.com, dardar923@gmail.com, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: dt-bindings: nau8821: Add single-ended input
- feature
-Message-ID: <169264686097.2173895.14562323557073774140.robh@kernel.org>
-References: <20230816080006.1624342-1-wtli@nuvoton.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816080006.1624342-1-wtli@nuvoton.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 15:44:21 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2887CC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:44:19 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bde651db83so43901625ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692647059; x=1693251859;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SSCma3xFa9r8jkJRJYtQ3UJXMDuR6ih/O0h93W+17hY=;
+        b=PGySCjo26AZB9cqV8KpF/JMeY7vWef/kDAGS6lGDo0Q2RuJIf9UzSHhuepJrUdYeDP
+         3wsRtqVlyyhBzLg4NgnhNCDBql5wFYZXsWqJsTcRl1mU2NMggXSYZeYvlEGM5PpwIXvP
+         Iielz22yjvHt+QiS4NJj5jraczBUg9QlX3xA9A8GDGKLxHpG8GP/uEWad2wSPgfT93sp
+         EZ7hJaU0K7Ub0I5m2uJSamCTcj1KKMUbq+P7B36rHl21GsY7ypgdNkMCI3OMsw5Bbwl2
+         k8PVgGtQS/r/6BfdZ40O7B8paUefkaPLaVdXZYLeI194w5SGzeP5V2ybLicvfal8Jy53
+         Rw+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692647059; x=1693251859;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SSCma3xFa9r8jkJRJYtQ3UJXMDuR6ih/O0h93W+17hY=;
+        b=BjUoDwaiH7P5oTrtVWA9Ba8FqXJ1NHaMOkjpOAKov7Y17fDisB/fraj5cFdAUUL5hR
+         JAFQzDKvCVpd0wI73GHFapSwmcwitevf1ZmvdpmbRUdv6vpDul1LAGpsARhu/jw1iOO/
+         hzzS4HEnCgC8Hbm57rr5in6cjYTOwoxht0x5ABUjDEQOUnf1VuX8StWI4TyaD7unWK7/
+         K2fmqB5siF/0JQK/x2zEfM7RrhN/kFwA40TSS6waGDI1v2hE4EDRbYEmIR0Hzyv9hz2D
+         yxX6UeallWVlkns6ymyNOXyvh+Dfj0w7FPbKqJfRHvkWcQag2aWvO/OsoIlurbe39HEx
+         XgUA==
+X-Gm-Message-State: AOJu0YxpYj8IITumeIi66Jof4llTl9HaHhTGxUr4DN1XhgQaR7q0RwC/
+        lVleavSYf5K/+1fFH6MBB8/sBSyHE72GV8Hnpg==
+X-Google-Smtp-Source: AGHT+IFZOgwoG4uIlCSpVcliJBnuI18zwdWZJ8yxViklw8jp6EKLckJ2Gu/KsjtW8j9EbVROEO3Wi7ZjHJ6bUpcQ0Q==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a17:903:41d0:b0:1b8:84d9:dea6 with
+ SMTP id u16-20020a17090341d000b001b884d9dea6mr3274875ple.12.1692647059281;
+ Mon, 21 Aug 2023 12:44:19 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 19:44:11 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230821194411.2165757-1-ackerleytng@google.com>
+Subject: [PATCH] KVM: selftests: Add tests - invalid inputs for KVM_CREATE_GUEST_MEMFD
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     pbonzini@redhat.com, seanjc@google.com, tglx@linutronix.de,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, shuah@kernel.org, andrew.jones@linux.dev,
+        ricarkol@google.com, chao.p.peng@linux.intel.com, tabba@google.com,
+        jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        vannapurve@google.com, ackerleytng@google.com,
+        erdemaktas@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Test that invalid inputs for KVM_CREATE_GUEST_MEMFD, such as
+non-page-aligned page size and invalid flags, are rejected by the
+KVM_CREATE_GUEST_MEMFD with EINVAL
 
-On Wed, 16 Aug 2023 16:00:05 +0800, Seven Lee wrote:
-> Add input with single-ended control.
-> 
-> Signed-off-by: Seven Lee <wtli@nuvoton.com>
-> ---
->  .../devicetree/bindings/sound/nuvoton,nau8821.yaml         | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+---
+ .../testing/selftests/kvm/guest_memfd_test.c  | 33 +++++++++++++++++++
+ .../selftests/kvm/include/kvm_util_base.h     | 11 +++++--
+ 2 files changed, 42 insertions(+), 2 deletions(-)
 
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+index eb93c608a7e0..a8e37f001297 100644
+--- a/tools/testing/selftests/kvm/guest_memfd_test.c
++++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+@@ -90,6 +90,37 @@ static void test_fallocate(int fd, size_t page_size, size_t total_size)
+ 	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
+ }
+ 
++static void test_create_guest_memfd_invalid(struct kvm_vm *vm, size_t page_size)
++{
++	int fd;
++	uint64_t size;
++	uint64_t flags;
++	uint64_t valid_flags = 0;
++
++	for (size = 1; size < page_size; size++) {
++		fd = __vm_create_guest_memfd(vm, size, 0);
++		TEST_ASSERT(
++			fd == -1,
++			"Creating guest memfds with non-page-aligned page sizes should fail");
++		TEST_ASSERT(errno == EINVAL, "... and errno should be set to EINVAL");
++	}
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
++#endif
++
++	for (flags = 1; flags; flags <<= 1) {
++		if (flags & valid_flags)
++			continue;
++
++		fd = __vm_create_guest_memfd(vm, page_size, flags);
++		TEST_ASSERT(
++			fd == -1,
++			"Creating guest memfds with invalid flags should fail");
++		TEST_ASSERT(errno == EINVAL, "... and errno should be set to EINVAL");
++	}
++}
++
+ 
+ int main(int argc, char *argv[])
+ {
+@@ -103,6 +134,8 @@ int main(int argc, char *argv[])
+ 
+ 	vm = vm_create_barebones();
+ 
++	test_create_guest_memfd_invalid(vm, page_size);
++
+ 	fd = vm_create_guest_memfd(vm, total_size, 0);
+ 
+ 	test_file_read_write(fd);
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index 39b38c75b99c..8bdfadd72349 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -474,7 +474,8 @@ static inline uint64_t vm_get_stat(struct kvm_vm *vm, const char *stat_name)
+ }
+ 
+ void vm_create_irqchip(struct kvm_vm *vm);
+-static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
++
++static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
+ 					uint64_t flags)
+ {
+ 	struct kvm_create_guest_memfd gmem = {
+@@ -482,7 +483,13 @@ static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
+ 		.flags = flags,
+ 	};
+ 
+-	int fd = __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &gmem);
++	return __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &gmem);
++}
++
++static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
++					uint64_t flags)
++{
++	int fd = __vm_create_guest_memfd(vm, size, flags);
+ 
+ 	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_GUEST_MEMFD, fd));
+ 	return fd;
+-- 
+2.42.0.rc1.204.g551eb34607-goog
 
