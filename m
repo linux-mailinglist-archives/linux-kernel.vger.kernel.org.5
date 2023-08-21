@@ -2,124 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983337822D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC2A7822E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbjHUEey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54830 "EHLO
+        id S233038AbjHUEf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbjHUEet (ORCPT
+        with ESMTP id S231841AbjHUEf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:34:49 -0400
-Received: from out-43.mta0.migadu.com (out-43.mta0.migadu.com [91.218.175.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C62099
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:34:47 -0700 (PDT)
-Message-ID: <c2f564a3-f942-d275-3ecb-b679aa0810ec@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692592485; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQ3+8fFgZPBnKHzt/pbHvIk2a6srPidqNvlwyrLGsa0=;
-        b=iYEcXNNTWGHp/TS4M1UGtGRa/KMZvi79XLGBInTQ4C3EeglmOSzWImmpy43QjX1FhrdulZ
-        IgBCYoOml7Sy7F179Y463RKOj0f2e9TBd9f2eXJ52nN85AstH/wwhf+0flSBd0radljLWr
-        xb5PZWfrV/GhR1k5hlfsZKGqPboGUVw=
-Date:   Sun, 20 Aug 2023 21:34:37 -0700
+        Mon, 21 Aug 2023 00:35:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB829D
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:35:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u5DXn3RCOBSJ44dL6qFWPU5pU6G66h+YoZliAofL6wY=; b=XS4ka/R3I6a2u1Lf7ZwEhgEADY
+        jDNbYFgT/R6B4Q9TsLi/bp32Iy9+2GtIOg2gDLYcNaxL7oqQasjWL+maul+4VXs/uswgbPRGMed5e
+        peHCdNlknOqjOTBMzlTsEPu4qXhL14H9OG0rC7YOllBanDn2nXnfv54HX1Lr7RyU0vZwNjdULDGEg
+        GGaF5lRt5cI8ntM2rMxVItixo6NpkMbb/xXcr6oa0jhkpLQO4qI/iGqVXWLr2rgSFNEqJTBT+t308
+        n1sYy0B4gOf9SKrNu68sS41vf/jR5reHiBotO7eOWpD/o81Ynuxg4zcnK2sFKiZsSMfOyTPZECxzW
+        /FUg3+Kw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qXwcx-0089YH-Ro; Mon, 21 Aug 2023 04:34:55 +0000
+Date:   Mon, 21 Aug 2023 05:34:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, wangkefeng.wang@huawei.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memory-failure: use rcu lock instead of
+ tasklist_lock when collect_procs()
+Message-ID: <ZOLpbwwk4esztLaO@casper.infradead.org>
+References: <20230821022534.1381092-1-tongtiangen@huawei.com>
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v5] selftests/bpf: trace_helpers.c: optimize
- kallsyms cache
-Content-Language: en-US
-To:     Rong Tao <rtoax@foxmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
-        mykolal@fb.com, olsajiri@gmail.com, rongtao@cestc.cn,
-        sdf@google.com, shuah@kernel.org, song@kernel.org
-References: <817af9ec-0ba3-fab0-6d8a-4529ede337b5@linux.dev>
- <tencent_ADC403037821ABAC8ECB6F15C6D7A3510507@qq.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <tencent_ADC403037821ABAC8ECB6F15C6D7A3510507@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821022534.1381092-1-tongtiangen@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 21, 2023 at 10:25:34AM +0800, Tong Tiangen wrote:
+> +++ b/mm/memory-failure.c
+> @@ -546,24 +546,26 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
+>   * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
+>   * on behalf of the thread group. Return task_struct of the (first found)
+>   * dedicated thread if found, and return NULL otherwise.
+> - *
+> - * We already hold read_lock(&tasklist_lock) in the caller, so we don't
+> - * have to call rcu_read_lock/unlock() in this function.
+>   */
+>  static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
+>  {
+>  	struct task_struct *t;
+>  
+> +	rcu_read_lock();
+>  	for_each_thread(tsk, t) {
+>  		if (t->flags & PF_MCE_PROCESS) {
+>  			if (t->flags & PF_MCE_EARLY)
+> -				return t;
+> +				goto found;
+>  		} else {
+>  			if (sysctl_memory_failure_early_kill)
+> -				return t;
+> +				goto found;
+>  		}
+>  	}
+> -	return NULL;
+> +
+> +	t = NULL;
+> +found:
+> +	rcu_read_unlock();
+> +	return t;
+>  }
 
-
-On 8/20/23 7:03 PM, Rong Tao wrote:
-> Sorry Song, I did not state clear.
-> 
-> libbpf_ensure_mem() is declared in libbpf_internal.h, we want to use
-> libbpf_ensure_mem() in trace_helpers.c, Unforturnately, we could only include
-> the headers 'install_headers:' defined in tools/lib/bpf/Makefile, the
-> 'install_headers:' target does not include libbpf_internal.h, like:
-> 
-> 	tools/testing/selftests/bpf/trace_helpers.c:17:10:
-> 	fatal error: libbpf_internal.h: No such file or directory
-> 	   17 | #include "libbpf_internal.h"
-> 	      |          ^~~~~~~~~~~~~~~~~~~
-> 
-> 	tools/testing/selftests/bpf/trace_helpers.c:17:10:
-> 	fatal error: bpf/libbpf_internal.h: No such file or directory
-> 	   17 | #include "bpf/libbpf_internal.h"
-> 	      |           ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-It works fine for me. On top of your patch, the following works fine:
-
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c 
-b/tools/testing/selftests/bpf/trace_helpers.c
-index 0053ba22f0cb..087383c5dc3a 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -14,6 +14,7 @@
-  #include <linux/limits.h>
-  #include <libelf.h>
-  #include <gelf.h>
-+#include "bpf/libbpf_internal.h"
-
-  #define TRACEFS_PIPE   "/sys/kernel/tracing/trace_pipe"
-  #define DEBUGFS_PIPE   "/sys/kernel/debug/tracing/trace_pipe"
-
-With V=1 when building selftests, the following is the compilation
-command line:
-clang --target=x86_64-linux-gnu -fintegrated-as -g -O0 -rdynamic -Wall 
--Werror   -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf 
--I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include 
--I/home/yhs/work/bpf-next/include/generated 
--I/home/yhs/work/bpf-next/tools/lib 
--I/home/yhs/work/bpf-next/tools/include 
--I/home/yhs/work/bpf-next/tools/include/uapi 
--I/home/yhs/work/bpf-next/tools/testing/selftests/bpf 
--Wno-unused-command-line-argument  -c trace_helpers.c -lelf -lz -lrt 
--lpthread -o 
-/home/yhs/work/bpf-next/tools/testing/selftests/bpf/trace_helpers.o
-
-This include path
-   /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
-will make including 'bpf/libbpf_internal.h' work.
-
-> 
-> How about
-> 
-> 1. dup-declare libbpf_ensure_mem() in trace_helpers.c
-> 2. move libbpf_ensure_mem() declare into libbpf_common.h
-> 
-> Which one do you like best.
-> 
-> Best wishes,
-> Rong Tao
-> 
-> 
+I don't understand why you need to modify find_early_kill_thread() at
+all.  It's still true that the caller holds _a_ lock protecting it; the
+comment needs to be updated to reflect that it might be the RCU lock
+or the tasklist_lock (or did you change all callers?), but there's no
+need for this function to take the RCU lock itself, afaics?
