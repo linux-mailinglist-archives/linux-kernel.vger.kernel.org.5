@@ -2,230 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 857BC7827FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8117827DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbjHULdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S232116AbjHUL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjHULdN (ORCPT
+        with ESMTP id S232057AbjHUL04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:33:13 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2073.outbound.protection.outlook.com [40.107.237.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F020E4;
-        Mon, 21 Aug 2023 04:33:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hYDnRHC6WOfS0S2q/oO779uaTGlmsXgXVOz78tmCr0oTpW3hGysYfHkGQcNq/wKWMzzpaNmh9djuWw3NAF6MqPh6YiF2qwnicR1rtcLuIoxwk9LCt6eoor3aEJXqmU70liMZptCvLphaxWBWTTb58C+Jay4aebM/yZcT6LC0O4lYivH9F6plXKwRzeKXVQm0TutDlnDSbsWU/2f92yG4z92iZjb641LTPKXkoRZJbTiMrd3eHKmkaNaYmUUcRjc5iIzbY8bz3UmXwZmcXZHA4uSyLEEFYf5s921YEC/2HZqBqNpzfFO69JUlqZIn6RvL3hI9PKOxMgGlBAeR9/GAYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OfJXu1LYhFCTeTDCA2gLIqvQ2b3aZ3/DUdbn7RKKv2w=;
- b=crQnBYz+eW4chyQXergYepsSsMOph+uZSnzgN/0NKnEMHQagtV7vatnDlzA3W9OBH5CzAUpdP9WsD3lfk9p0HMvQhCq6UrytorWEKwjjy80DCgKjK5xXKSBRrCLXLVFgZMAGudCbtU8f4IN3f1IZD8t962ZygpdcWuz/WbYjNjtx9pdiHjYb/biE5jZwYs9+71wllKqsG1FG7mRVK3pQWdlb3wsoaMUiSwq4hCjO9VGIXqZ+JauyG2J7cUwQSJ4aIUm9jnUE4htCKpzdNIuCVc0xouhab3vtnx46aunYkv4JcdX6oZbGODBIJu/m8hQ0tUD0pJmoFTzsn9LF7vXcdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OfJXu1LYhFCTeTDCA2gLIqvQ2b3aZ3/DUdbn7RKKv2w=;
- b=OF2vtrpDYHDqE2w3AD54Y/V045K4nQFSKvWqhBFpQGr286GN8pku+3O0cx95WoGVuA/tB9hkaN9LNlCY60ofIEgsc2TEqPyzNtOaMe5GGX6VMLfImtGD/0gRFYoVow51kkkNvTrMnw2TiG4m5FbsHzbnOpY32bmcVya4Ci12FXjw4NnjvDyWNlNMK6GIwAMpHGaqV5yhwhZnRFwxndNccLlP5xki/T4/cqHq/DiMiWvcYP34aF9K/LaI6u/S6ncJvFLAUkwycx1fqt7iK3RL+Yk0uggTj50hWNAvWgh7v74Xm3JHJOcatJZbST2hNo3hO7psfnzh9NYT7WgfSmha3g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com (2603:10b6:a03:134::26)
- by DM6PR12MB4433.namprd12.prod.outlook.com (2603:10b6:5:2a1::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 11:33:06 +0000
-Received: from BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::3bf6:11f3:64d7:2475]) by BYAPR12MB3176.namprd12.prod.outlook.com
- ([fe80::3bf6:11f3:64d7:2475%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 11:33:06 +0000
-References: <20230721012932.190742-1-ying.huang@intel.com>
- <20230721012932.190742-2-ying.huang@intel.com>
- <87r0owzqdc.fsf@nvdebian.thelocal>
- <87r0owy95t.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87sf9cxupz.fsf@nvdebian.thelocal>
- <878rb3xh2x.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87351axbk6.fsf@nvdebian.thelocal>
- <87edkuvw6m.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87y1j2vvqw.fsf@nvdebian.thelocal>
- <87a5vhx664.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87lef0x23q.fsf@nvdebian.thelocal>
- <87r0oack40.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Alistair Popple <apopple@nvidia.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH RESEND 1/4] memory tiering: add abstract distance
- calculation algorithms management
-Date:   Mon, 21 Aug 2023 21:26:24 +1000
-In-reply-to: <87r0oack40.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Message-ID: <87cyzgwrys.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY5PR01CA0089.ausprd01.prod.outlook.com
- (2603:10c6:10:1f5::8) To BYAPR12MB3176.namprd12.prod.outlook.com
- (2603:10b6:a03:134::26)
+        Mon, 21 Aug 2023 07:26:56 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4090CDC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:26:54 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-79da1a3e2e2so664261241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:26:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1692617213; x=1693222013;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yQweSB9p5x5zw2Ntwmkzw5TwR7FXShxzU1EdWKawLYM=;
+        b=mUkhrVmKi5g6KT8AQIPzesSpQcOlIKn7deqxTPTvuhA/LlTysRMOHnunvMFHKQIUqj
+         nM4Emmc2akecQe0OG5LJ2F8SVLInSz8VZ6NP5Iz1lxG0XrBlBGZaeQqwyKFLYTg8I8cA
+         BuGtuCIWZkysBAkdV8U2+GPPZ+jSDockvpQXe1SKGrfDlc/u/F8VepkKrv+RnP+PVF0/
+         kwaSX5/jYjHclHmo2HWdRF5RkpspusAHhXiHluxXdV2uNlHTAbU3LuzqEXEuFQdfWp0u
+         I77CqQFpnVF1XAWXQVvhQDfGHIrENi9XH1DlD4DmtGb57EuaJM5pGhhuhbUcItBlNxxa
+         eRmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692617213; x=1693222013;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yQweSB9p5x5zw2Ntwmkzw5TwR7FXShxzU1EdWKawLYM=;
+        b=IUglyWZaNdOPFk8tNMuDMRgPoZWNmTukNyxRNuzwEh6A13ubqQATOIDFKfaXCx7LHg
+         fE9V+B75QyTCfo+YrYbSu1/GdjQ7RcEYBnukql9OAa4SgoEYvbYkVpgRv5q4ZUq9Z5s/
+         MkbfFjf88etUC3SXHkDmCeXGiGT5VhOSU7j7SwmUPYR+tAsU2tpwtdcHphgqbePv/ssH
+         gfiuyA6MopDy30Rt+23j8MKAXFkazq9CCe02p+Zgqx7EgXnKpcutulhFreTaLrtEj2U/
+         he8J8dKKJy1o3LvfpDNZS/jWfN21APDHyp5bmOeQcDFN82ltQIdlt4+ezTsoO3eIUiiZ
+         IJmw==
+X-Gm-Message-State: AOJu0Yx31NgbDYVsVkgXDa9zNrhWALETuwZ22BcDkBwk4aoCC9Kd1h0D
+        9KndRZ3XYzMTcIj9Nm2M1SwyJFct5YoaFeoYa9WyiA==
+X-Google-Smtp-Source: AGHT+IH1WohFwbV87N0flbmQLLGc0pmH1ostods2crtfhYOlROCT28GQIIHF0NrkZU7PH7ZKQtocXHJunhNN1gAHGFo=
+X-Received: by 2002:a67:e25a:0:b0:447:ba75:9c81 with SMTP id
+ w26-20020a67e25a000000b00447ba759c81mr2408427vse.28.1692617213324; Mon, 21
+ Aug 2023 04:26:53 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB3176:EE_|DM6PR12MB4433:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bfb2ee7-46ed-4a1c-76ea-08dba23a62fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7Y3QW3GMcANihZGzC7n6CqPOghHWyRyFMgfU6+G+rKC4KKJmwvc+/FaxHxVdPn99hZBZcGQhDQvNo9GlT/Z2GSu8UWfm1ItxFFvUPM3m4szSrYbSV/nTb6Hj1+igcSO51QH81lGXFIRK5ck4OO7vxAwLZtZkBWbQfo82ffH9yEPSUn6bWsFMJ3l8JFO42DWFiGRHA9gDa/3mnaQyHWShKyMcnACXO5CjTpgup6/MTtXUwPgJkHR3WXjAI9iP0rIhyCYDn1YN+nCgiDMxE+T1zilixWiJv3NWKOOK1U6W9PyuuVniX3rszYbvf260hIylXwUhM6ays9wulRAJLs2uNctob0r3rO5n+1npeQRYlY1e3OPRFo3XddrFRCXEf4B4I8UzpwbgB/wqprEP6wNZlxD8LtzSntFYj2Bnlbjkyd96yp+HOjyc04KxCa9DwF4GxAN5mtUKs6LTl9itO6Dx/7wDhEVqnFMLXQDzg2qt94MrN1jVFVq9lQFcT1H+MHQp38x3ySw12bttzYfW7ExVY6lcP3iUcX0lro8iMzG2yAqLdVr8+L8MMpPoWfXPXHqo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB3176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(451199024)(186009)(1800799009)(2906002)(7416002)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(26005)(86362001)(8676002)(8936002)(4326008)(316002)(9686003)(66946007)(6512007)(54906003)(6916009)(66556008)(66476007)(478600001)(6666004)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CD5NvBMqEUreUa17lhONdCJubY/OQrwFmEBcvL2AhpE4V8oMwfZFRN2qzWMT?=
- =?us-ascii?Q?Of2Z8UdYbhqGas1r7ny6uX6wxNEkoooT2B5zeMK0dSwzd4Rq4Sxetv5ue/SF?=
- =?us-ascii?Q?qRiqGw4ryJGuIKBzpwV2EzpgpyS0rKqakg3kF2BhVrA7V63ALq3JPKr+8+V2?=
- =?us-ascii?Q?Y2DGpyqcR4Eeh4gmdAeWU1wjLojodu6m4gdtPYKpTD5C+8MbuMd29uYxmtd3?=
- =?us-ascii?Q?ESX8NfCwr+/UfwbNwusseNAjJA8FjjjxKBiWQ/dt0vIrquqrPSNf3jRr0Zk2?=
- =?us-ascii?Q?DSnp8UkBtvJaNoyFCFBtAkILsMGloZaXdM0PBdpn8/YtA53nrl+nWk7rHvP4?=
- =?us-ascii?Q?I4oO8w19oaX5AW/AzjLVVxEmF/hzh1nw7Y6rwOMnO52EiyvIzb8/bAb0E7uP?=
- =?us-ascii?Q?QRIvUlDcA28LA3jlVT4vBYuuXhsU567FxKpe18F+z/RMv99bIKbtqhe7FZhI?=
- =?us-ascii?Q?jzxSP/zl+9GiGordNq+eQ1c7hE38avtUhhkDs/euS4rg0sX6Pq3MeZtah8+w?=
- =?us-ascii?Q?38FN0zuQVeFR2wroMK+52euvZYzVq5oNI33DxQkIicwGJxlG+hY3Uu2FSX1X?=
- =?us-ascii?Q?QUda3ey493SAH6pjWMmEbBlOcza5cEBoxqcIihtzYQzld2U7WImRhsVOz1UP?=
- =?us-ascii?Q?z4TLlYdyACdxjfEossBRyiuWbfOmG4EzjAlrbT4V13AWNULUVGnNJTQIf1RZ?=
- =?us-ascii?Q?l8+9vComNQAeMSv9HYAfSGs866i7MRcha6CmtmvQgdyTRX8EmJDlILQcD+m/?=
- =?us-ascii?Q?KzH7sI+RazCOd57ZlFsim6kFQYF7MlyYD9/LrYsJXtkdMTK8fg0sqAFn8/y6?=
- =?us-ascii?Q?bCTSaVf2QF+r0bkZVW/z50gcDrdaYBEzKe0GeR0EXuZZ8qNQiBF44oad9YDD?=
- =?us-ascii?Q?sTEGzmN8y4wbXN+2Tn8+glD0SVD6VKxVqj/ulDoF3+uhOt+S+x6SQuc4/KNW?=
- =?us-ascii?Q?1L4N7He6QdQh6maH2qx3UuaQtO76Fj12eVEDFUs32OJbqY/zaChXLBzhl3BG?=
- =?us-ascii?Q?SAUtU6tNFkSxNMjJCtX/9j0SzKaViDgBvDi19a+GfX8/8bsGGtWcPYkXydBr?=
- =?us-ascii?Q?j8TpqwaggU2zJ3dvNZOv1lnc6j0n66JZlQ4/5f1P8MFuejxMS157L5FwmaW8?=
- =?us-ascii?Q?keHy/7aBVuFLl14FuImHf1rjDhS0UGEDlgCm2fZNdqfLIiRJaybfoB02DVuP?=
- =?us-ascii?Q?pZVRRt6YgmZVHyZkYVLWmw3Yoz5pI4XwcjqCFVgjSHck/ptm6YW9j0sx3wPs?=
- =?us-ascii?Q?wN1tOZYqZ/IRtPfFgs/aqBkAqALLaVR8pv9s/z9CnbyBjW4Yn2qlYsPwU/3s?=
- =?us-ascii?Q?a9WdRfwqEcOnidwcenDvYHMF7SzeMBtIDkAiIV/We7IEPnEpDjApfpERUxxL?=
- =?us-ascii?Q?pzo8IcCk9eH45i3KssAsjE55xEQhUg0p0Z4xje2RH22rkeFQRK4sWkzr1SgI?=
- =?us-ascii?Q?QTIap4fvF2aEV8t/9ZrHkS4RclsMPuGSdiFmVJlHLrY67hAElZ5gtJIflwNW?=
- =?us-ascii?Q?4hN3wft0bJczWrBRDcMv3Uem/6IMQZsteb7uaUPWdxanoXPSRC/bFOrPyhkD?=
- =?us-ascii?Q?c33+TPNMJ5ulrOICfKlJ/Pu47/9mor8tUtpJ0akx?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bfb2ee7-46ed-4a1c-76ea-08dba23a62fc
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB3176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 11:33:05.6718
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Pojw71rq2sBxaQVn1+9cWA3rseKKZLr4/qzCwRtNY/Vk+wpJe+WJxTmENhJHUWKMloctmrqAsQ0fBW4VH0WRqw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4433
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org> <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com> <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com> <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org> <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+ <118d00df-131b-4ea6-98eb-bb39424ffb72@linaro.org>
+In-Reply-To: <118d00df-131b-4ea6-98eb-bb39424ffb72@linaro.org>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Mon, 21 Aug 2023 12:26:38 +0100
+Message-ID: <CAPY8ntC2Zf=dYw45r9a8R9CJpS5AbiOdyi7HWr6tX5MMbKLinA@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     neil.armstrong@linaro.org,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dmitry
 
-"Huang, Ying" <ying.huang@intel.com> writes:
-
-> Hi, Alistair,
+On Fri, 18 Aug 2023 at 11:27, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
 >
-> Sorry for late response.  Just come back from vacation.
-
-Ditto for this response :-)
-
-I see Andrew has taken this into mm-unstable though, so my bad for not
-getting around to following all this up sooner.
-
-> Alistair Popple <apopple@nvidia.com> writes:
+> On 18/08/2023 11:25, neil.armstrong@linaro.org wrote:
+> > Hi Dmitry,
+> >
+> > On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+> >> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+> >>> Hi Abhinav,
+> >>>
+> >>> On 14/08/2023 20:02, Abhinav Kumar wrote:
+> >
+> > <snip>
+> >
+> >>>
+> >>> Sending HS commands will always work on any controller, it's all
+> >>> about LP commands.
+> >>> The Samsung panels you listed only send HS commands so they can use
+> >>> prepare_prev_first
+> >>> and work on any controllers.
+> >>
+> >> I think there is some misunderstanding there, supported by the
+> >> description of the flag.
+> >>
+> >> If I remember correctly, some hosts (sunxi) can not send DCS commands
+> >> after enabling video stream and switching to HS mode, see [1]. Thus,
+> >> as you know, most of the drivers have all DSI panel setup commands in
+> >> drm_panel_funcs::prepare() / drm_bridge_funcs::pre_enable() callbacks,
+> >> not paying attention whether these commands are to be sent in LP or in
+> >> HS mode.
+> >>
+> >> Previously DSI source drivers could power on the DSI link either in
+> >> mode_set() or in pre_enable() callbacks, with mode_set() being the
+> >> hack to make panel/bridge drivers to be able to send commands from
+> >> their prepare() / pre_enable() callbacks.
+> >>
+> >> With the prev_first flags being introduced, we have established that
+> >> DSI link should be enabled in DSI host's pre_enable() callback and
+> >> switched to HS mode (be it command or video) in the enable() callback.
+> >>
+> >> So far so good.
+> >
+> > It seems coherent, I would like first to have a state of all DSI host
+> > drivers and make this would actually work first before adding the
+> > prev_first flag to all the required panels.
+> >
+> >>
+> >> Unfortunately this change is not fully backwards-compatible. This
+> >> requires that all DSI panels sending commands from prepare() should
+> >> have the prepare_prev_first flag. In some sense, all such patches
+> >> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+> >> flag to drm_panel").
+> >
+> > This kind of migration should be done *before* any possible regression,
+> > not the other way round.
+> >
+> > If all panels sending commands from prepare() should have the
+> > prepare_prev_first flag, then it should be first, check for regressions
+> > then continue.
+> >
+> > <snip>
+> >
+> >>>
+> >>> I understand, but this patch doesn't qualify as a fix for
+> >>> 9e15123eca79 and is too late to be merged in drm-misc-next for v6.6,
+> >>> and since 9e15123eca79 actually breaks some support it should be
+> >>> reverted (+ deps) since we are late in the rc cycles.
+> >>
+> >> If we go this way, we can never reapply these patches. There will be
+> >> no guarantee that all panel drivers are completely converted. We
+> >> already have a story without an observable end -
+> >> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+> >
+> > I don't understand this point, who would block re-applying the patches =
+?
 >
->> "Huang, Ying" <ying.huang@intel.com> writes:
->>
->>> Alistair Popple <apopple@nvidia.com> writes:
->>>
->>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>
->>>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>>
->>>>>>>>> While other memory device drivers can use the general notifier chain
->>>>>>>>> interface at the same time.
->>>>>>
->>>>>> How would that work in practice though? The abstract distance as far as
->>>>>> I can tell doesn't have any meaning other than establishing preferences
->>>>>> for memory demotion order. Therefore all calculations are relative to
->>>>>> the rest of the calculations on the system. So if a driver does it's own
->>>>>> thing how does it choose a sensible distance? IHMO the value here is in
->>>>>> coordinating all that through a standard interface, whether that is HMAT
->>>>>> or something else.
->>>>>
->>>>> Only if different algorithms follow the same basic principle.  For
->>>>> example, the abstract distance of default DRAM nodes are fixed
->>>>> (MEMTIER_ADISTANCE_DRAM).  The abstract distance of the memory device is
->>>>> in linear direct proportion to the memory latency and inversely
->>>>> proportional to the memory bandwidth.  Use the memory latency and
->>>>> bandwidth of default DRAM nodes as base.
->>>>>
->>>>> HMAT and CDAT report the raw memory latency and bandwidth.  If there are
->>>>> some other methods to report the raw memory latency and bandwidth, we
->>>>> can use them too.
->>>>
->>>> Argh! So we could address my concerns by having drivers feed
->>>> latency/bandwidth numbers into a standard calculation algorithm right?
->>>> Ie. Rather than having drivers calculate abstract distance themselves we
->>>> have the notifier chains return the raw performance data from which the
->>>> abstract distance is derived.
->>>
->>> Now, memory device drivers only need a general interface to get the
->>> abstract distance from the NUMA node ID.  In the future, if they need
->>> more interfaces, we can add them.  For example, the interface you
->>> suggested above.
->>
->> Huh? Memory device drivers (ie. dax/kmem.c) don't care about abstract
->> distance, it's a meaningless number. The only reason they care about it
->> is so they can pass it to alloc_memory_type():
->>
->> struct memory_dev_type *alloc_memory_type(int adistance)
->>
->> Instead alloc_memory_type() should be taking bandwidth/latency numbers
->> and the calculation of abstract distance should be done there. That
->> resovles the issues about how drivers are supposed to devine adistance
->> and also means that when CDAT is added we don't have to duplicate the
->> calculation code.
+> Consider us reverting 9e15123eca79 now and then reapplying it next
+> cycle. Then another panel / bridge that was not converted to use
+> pre_enable_prev_first pops up. And suddently we have to revert them again=
+.
 >
-> In the current design, the abstract distance is the key concept of
-> memory types and memory tiers.  And it is used as interface to allocate
-> memory types.  This provides more flexibility than some other interfaces
-> (e.g. read/write bandwidth/latency).  For example, in current
-> dax/kmem.c, if HMAT isn't available in the system, the default abstract
-> distance: MEMTIER_DEFAULT_DAX_ADISTANCE is used.  This is still useful
-> to support some systems now.  On a system without HMAT/CDAT, it's
-> possible to calculate abstract distance from ACPI SLIT, although this is
-> quite limited.  I'm not sure whether all systems will provide read/write
-> bandwith/latency data for all memory devices.
+> > The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
+> > Linux version and went smoothly because we reverted
+> > regressing patches and restarted when needed, I don't understand why we
+> > can't do this here aswell.
 >
-> HMAT and CDAT or some other mechanisms may provide the read/write
-> bandwidth/latency data to be used to calculate abstract distance.  For
-> them, we can provide a shared implementation in mm/memory-tiers.c to map
-> from read/write bandwith/latency to the abstract distance.  Can this
-> solve your concerns about the consistency among algorithms?  If so, we
-> can do that when we add the second algorithm that needs that.
+> With DRM_BRIDGE_ATTACH_NO_CONNECTOR both host and peripheral drivers
+> were involved. This way they share knowledge about the migration state.
+>
+> With prev_first we do not have such shared knowledge. Host assumes that
+> it can work according to the documentation: turn DSI link to LP-11 in
+> pre_enable(), switch to HS in enable(). It can not check whether the
+> next bridge did not set pre_enable_prev_first because of it not being
+> required (like for the Parade bridge) or because next bridge is not
+> converted yet (and thus DSI host should power up the link in
+> atomic_mode_set).
+>
+> Granted that there is no way for the DSI host driver to attune itself to
+> the DSI peripheral driver requirements, I can only consider
+> corresponding (requiring prev_first) panel drivers broken since
+> 5ea6b1702781 ("drm/panel: Add prepare_prev_first flag to drm_panel") and
+> all bridge drivers with this issue broken since 4fb912e5e190
+> ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order"=
+).
 
-I guess it would address my concerns if we did that now. I don't see why
-we need to wait for a second implementation for that though - the whole
-series seems to be built around adding a framework for supporting
-multiple algorithms even though only one exists. So I think we should
-support that fully, or simplfy the whole thing and just assume the only
-thing that exists is HMAT and get rid of the general interface until a
-second algorithm comes along.
+Can I point out that even prior to 5ea6b1702781 the docs stated [1]
+
+"Also note that those callbacks can be called no matter the state the
+host is in. Drivers that need the underlying device to be powered to
+perform these operations will first need to make sure it=E2=80=99s been
+properly enabled."
+
+added in bacbab58f09dc. So your DSI host driver isn't working in the
+documented manner prior to 5ea6b1702781, therefore 5ea6b1702781
+doesn't cause a regression in itself, and there was no direct
+requirement for 5ea6b1702781 to add the flag to all panels.
+
+Looking at JDI LT070ME05000 [2], the backlight is controlled via DCS
+commands, therefore transfer can be called at any time to change or
+read the backlight intensity, not just between pre_enable and
+post_disable.
+
+
+5ea6b1702781 and 4fb912e5e190 were largely trying to address the
+requirements of devices such as TI's SN65DSI83 that require the DSI
+data lanes to be in LP-11 before the bridge is brought out of reset
+otherwise they malfunction. Being able to add better definition over
+when the DSI host needs to be powered up/down is a bonus, but it
+doesn't trump the requirement for transfer to be callable at any time.
+
+  Dave
+
+[1] https://www.kernel.org/doc/html/latest/gpu/drm-kms-helpers.html#c.mipi_=
+dsi_host_ops
+[2] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/panel/pan=
+el-jdi-lt070me05000.c
+
+
+> >
+> >>
+> >> I'd consider that the DSI driver is correct here and it is about the
+> >> panel drivers that require fixes patches. If you care about the
+> >> particular Fixes tag, I have provided one several lines above.
+> >
+> > Unfortunately it should be done in the other way round, prepare for
+> > migration, then migrate,
+> >
+> > I mean if it's a required migration, then it should be done and I'll
+> > support it from both bridge and panel PoV.
+> >
+> > So, first this patch has the wrong Fixes tag, and I would like a better
+> > explanation on the commit message in any case.
+> > Then I would like to have an ack from some drm-misc maintainers before
+> > applying it because it fixes a patch that
+> > was sent via the msm tree thus per the drm-misc rules I cannot apply it
+> > via the drm-misc-next-fixes tree.
+> >
+> > Neil
+> >
+> > <snip>
+> >
+>
+> --
+> With best wishes
+> Dmitry
+>
