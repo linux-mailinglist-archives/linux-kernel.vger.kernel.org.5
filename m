@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3880F782A86
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD06782A89
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235418AbjHUN3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S235424AbjHUNb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:31:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232593AbjHUN3e (ORCPT
+        with ESMTP id S232593AbjHUNb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:29:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72264A8;
-        Mon, 21 Aug 2023 06:29:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 107CC6373C;
-        Mon, 21 Aug 2023 13:29:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD4BC433C8;
-        Mon, 21 Aug 2023 13:29:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692624572;
-        bh=fSfkleXtNPj98d5b1azTlZSdZRBfJtnFl1WtA8fTpRA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=paC4E0fkT/z5I0yHawolGIex2U3OfGFyvI8vSgjX1Y8ghvyX0zZJIVT4HX4rHAAi4
-         QyVHKFHUScuNpNnrYfGGvNwOVuMkfNztA/BqmEoeGg2APaAd3an3E0nITqhshFct3x
-         Ps5Fm8/ex74ml9qhJAhbYA8ZVO0sAqYnhFbFWbgzYclDxxoksRBxvnLBxF+/VcTBSS
-         11+zQkiqJxWtc3ZBq9McQ8uqeIdw0VMOIk7spV/Z3NYoIXoixbaFb/qb9IAfV4HEgX
-         ZPZ2x9yMWczzit2pJ5Pz03J37B6tIYocq+d4Ljbvz3L1WOLFHvKv8DqAy7g/k/7u2j
-         IHmPyDesc758Q==
-Received: from johan by theta with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qY4yG-0000j4-1k;
-        Mon, 21 Aug 2023 15:29:28 +0200
-Date:   Mon, 21 Aug 2023 15:29:28 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Manikanta Pubbisetty <quic_mpubbise@quicinc.com>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "Revert "wifi: ath11k: Enable threaded NAPI""
-Message-ID: <ZONmuKhShSxBUHZH@hovoldconsulting.com>
-References: <20230809073432.4193-1-johan+linaro@kernel.org>
- <42f78c02-1ddc-cf1c-694f-abf9059dfb60@quicinc.com>
- <ZNNZVsFb3_Dt_NMb@hovoldconsulting.com>
- <25b778d4-81dc-506b-47f1-e9f16d49682f@quicinc.com>
+        Mon, 21 Aug 2023 09:31:27 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE06A8F;
+        Mon, 21 Aug 2023 06:31:23 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RTtcw27jQzrSxK;
+        Mon, 21 Aug 2023 21:29:52 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 21 Aug 2023 21:31:19 +0800
+Message-ID: <1a141fc4-b362-4f05-8881-abeed34396c2@huawei.com>
+Date:   Mon, 21 Aug 2023 21:31:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25b778d4-81dc-506b-47f1-e9f16d49682f@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH 00/13] scsi: Support LUN/target based error handle
+Content-Language: en-US
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Dan Carpenter <error27@gmail.com>, <louhongxiang@huawei.com>
+References: <20230723234422.1629194-1-haowenchao2@huawei.com>
+From:   "haowenchao (C)" <haowenchao2@huawei.com>
+In-Reply-To: <20230723234422.1629194-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 10, 2023 at 10:16:21AM +0530, Manikanta Pubbisetty wrote:
+On 2023/7/24 7:44, Wenchao Hao wrote:
+> The origin error handle would set host to recovery state and perform
+> error recovery operations, and makes all LUNs which share a same host
+> can not handle IOs. This phenomenon is unbearable for systems which
+> deploy many LUNs in one HBA.
+> 
+> This patchset introduce support for LUN/target based error handle,
+> drivers can chose if to implement it. They can implement LUN, target or
+> both of LUN and target based error handle by their own error handle
+> strategy. The first patch defined this framework, it abstract three
+> key operations which are: add error command, wake up error handle, block
+> ios when error command is added and recoverying. Drivers should
+> implement these three function callbacks and setup to SCSI middle level.
+> 
 
-> Also it is worth to give a try with this patch here https://patchwork.kernel.org/project/linux-wireless/patch/20230601033840.2997-1-quic_bqiang@quicinc.com/
-> . This seems to be fixing some known interrupt issue on WCN6855. Could you
-> pls give a try?
+Ping...
 
-That patch makes no difference as the X13s use multiple MSIs (so
-ath11k_pci_set_irq_affinity_hint() is a noop).
+Is anyone reviewing these changes?
 
-Johan
+> Besides the basic framework, this patchset also add a basic LUN/target
+> based error handle strategy.
+> 
+> For LUN based eh, it would try check sense, start unit and reset LUN,
+> if all above steps can not recovery all error commands, fallback to
+> further recovery like tartget based (if implemented) or host based error
+> handle.
+> 
+> It's same for tartget based eh, it would try check sense, start unit,
+> reset LUN and reset target. If all above steps can not recovery all error
+> commands, fallback to further recovery which is host based error handle.
+> 
+> This patchset is tested by scsi_debug which support single LUN error
+> injection, the scsi_debug patches is here:
+> 
+> https://lore.kernel.org/linux-scsi/20230723234105.1628982-1-haowenchao2@huawei.com/T/#t
+> 
+> Wenchao Hao (13):
+>    scsi: Define basic framework for driver LUN/target based error handle
+>    scsi:scsi_error: Move complete variable eh_action from shost to sdevice
+>    scsi:scsi_error: Check if to do reset in scsi_try_xxx_reset
+>    scsi:scsi_error: Add helper scsi_eh_sdev_stu to do START_UNIT
+>    scsi:scsi_error: Add helper scsi_eh_sdev_reset to do lun reset
+>    scsi:scsi_error: Add flags to mark error handle steps has done
+>    scsi:scsi_error: Define helper to perform LUN based error handle
+>    scsi:scsi_error: Add LUN based error handler based previous helper
+>    scsi:core: increase/decrease target_busy without check can_queue
+>    scsi:scsi_error: Define helper to perform target based error handle
+>    scsi:scsi_error: Add target based error handler based previous helper
+>    scsi:scsi_debug: Add param to control if setup LUN based error handle
+>    scsi:scsi_debug: Add param to control if setup target based error handle
+> 
+>   drivers/scsi/scsi_debug.c  |  19 +
+>   drivers/scsi/scsi_error.c  | 705 ++++++++++++++++++++++++++++++++++---
+>   drivers/scsi/scsi_lib.c    |  23 +-
+>   drivers/scsi/scsi_priv.h   |  20 ++
+>   include/scsi/scsi_device.h |  97 +++++
+>   include/scsi/scsi_eh.h     |   4 +
+>   include/scsi/scsi_host.h   |   2 -
+>   7 files changed, 813 insertions(+), 57 deletions(-)
+> 
+
