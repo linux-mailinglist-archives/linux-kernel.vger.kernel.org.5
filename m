@@ -2,135 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9AE7822F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 695F37822EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbjHUEkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
+        id S233054AbjHUEkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:40:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbjHUEky (ORCPT
+        with ESMTP id S231791AbjHUEkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:40:54 -0400
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93114A8;
-        Sun, 20 Aug 2023 21:40:48 -0700 (PDT)
-X-AuditID: a67dfc5b-d6dff70000001748-09-64e2eacf1ef5
-Date:   Mon, 21 Aug 2023 13:37:44 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
-        her0gyugyu@gmail.com
-Subject: Re: [RESEND PATCH v10 08/25] dept: Apply
- sdt_might_sleep_{start,end}() to PG_{locked,writeback} wait
-Message-ID: <20230821043744.GA73328@system.software.com>
-References: <20230821034637.34630-1-byungchul@sk.com>
- <20230821034637.34630-9-byungchul@sk.com>
- <ZOLjiF2oKxBvVzyw@casper.infradead.org>
+        Mon, 21 Aug 2023 00:40:35 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA4499;
+        Sun, 20 Aug 2023 21:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692592832;
+        bh=H2bmdkltZ26Ec+PUJuphMKVkQe4a/Axwlp4oH2FDr08=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NuAQn9D8a2Elx8iuy9qFXbXhrFFkJt80DF6nFmcpnS0ubmpsJP7rHj0ZaSIa7cGdo
+         WmLbyHk7K0K9Z37GpnKgF38qAWGwLdheUrOcWmYiBTb5rioqsNx7/J8X8Kkrh60m+o
+         LDzQuXxMXW8UeZF7N1yf9NitHHhQ9WWmAOEIOUyAJcsf4wuJS/W4hv+LJgcOf+n6+G
+         67qPa/JEI0NiHbxUgTWJOr0tphg1T5cxQ8ys8jhVZfO677BBS1fM8gPJywLgMXgBTB
+         JnwuynH2uh2NVLKx708R1aAcKBiZoo4OFjXLa7R6gzQyiZR5+KmQ7iPt3rIkt/PaYW
+         oF4Z3whP6H9Xg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTft73h01z4wxy;
+        Mon, 21 Aug 2023 14:40:31 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 14:40:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: linux-next: manual merge of the coresight tree with the arm-perf,
+ arm64 trees
+Message-ID: <20230821144030.52ab1357@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOLjiF2oKxBvVzyw@casper.infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxTH8zz3lWrnpZP4SBenXcgWFpwyDCebMUu2yE0WExM1cfoBm/Vm
-        NFIgrYD4FphFWxAGmtJZiULB2mDV7YKuY+AYRKCSSafMdYhEauNAeUmY7caKZXTEzC8nv5yX
-        X/4fDk+pFphkXp93QDLmaXM1rIJWTC13pg0+Deo2XPe+D7WnNkD4uYWG+mseFvxXLyPwtJVh
-        mLiVBb9FJhFEfx6kwG7zI2gce0hBW+8ogk73lyzcC70GQ+EZFny2ShaON11j4Zdn8xhG6k5j
-        uCxvg4EaJ4auuT9osE+wcM5+HC+WcQxzrhYOXKUpEHQ7OJgf2wi+0fsMdA6/C2fPj7DQ0emj
-        odcbxHCvvZ6FUc8CAwO9/TT4a6sYuDLtZOFZxEWBKzzDwd2uBgzfmBdFJ/6MMdBX1YXhRPO3
-        GIZ+/wHBTcsjDLLnPgs94UkMrbKNgn8u3UIQrJ7ioPzUHAfnyqoRVJbX0TD4oo8B88gmiP5d
-        z370gdgzOUOJ5tZisTPSQIu3nUT83vGQE803hzmxQS4UW92pYlPHBBYbZ8OMKLdYWVGePc2J
-        FVNDWJy+c4cT+7+O0mJoyI63q/coNuukXH2RZHxvyz5FzsIZF1NgW3bQed2PS9E4X4ESeCJk
-        kMrwc/olB0K1KM60kEKuTv/4H7PC2yQQmKMqEM+vFN4hk23p8TYl9CvIV/WH4vy6kE8CNXVU
-        nJUCEIttnK1ACl4lVCJir75BLw0Sie9siF46TiWB2ASOOylBTS7F+DgmLEZ4IhfHN5KEt0jX
-        jT4c1xChJ4E0mcu4pZiryU/uAF2DBMcrVscrVsf/1gZEtSCVPq/IoNXnZqzPKcnTH1z/eb5B
-        Rotv6To6v9eLZv07upHAI81y5b43gjoVoy0ylRi6EeEpzUql+q8xnUqp05Yckoz52cbCXMnU
-        jdQ8rVmlTI8U61TCF9oD0n5JKpCML6eYT0guRUmqgoHD9geJR5PhceRu7aO6C+FW7yp5RVm3
-        J5M9aazaneXZuoJe3Uzah73R8pD5Y3U0p3nti2NPvmvM2Gk1RT/b2dG+69O9+z/MzvzVkJh2
-        clZT8klqtu7YRV12e6HVYjlyxprmc1ulp6pYeWwQ39785o6ZlPTMNVnrmpJco1sMGtqUo92Y
-        ShlN2n8BhnS87JIDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0yTZxTH9zzvlY7qS4f6BlxiuhiVecPM5MTLLlmmT1w0274s3iKNfZXG
-        AqZVEBINSm2Qm6CUQkWD1RUCKFrQ4LTagFw6olQh2hlA2zRCtYIyC3YgjM4s88vJL+d/fifn
-        w+EphZeJ4zWpByRdqkqrZGW0bMvanGXdL3zqlb/5Y6CkYCWE3ubSUNlQz4L7ch2C+qajGAJt
-        G+HxWBDBxL1uCswmN4Lz3n4KmtoHEDhqjrHQ458FvaERFlymfBZyLjSw8ODlJIa+slMY6uyb
-        oavYisEZHqTBHGDhjDkHz5QhDGFbLQe27IXgq7FwMOlNBNfAIwZaz7oYcDz5EirO9bFwy+Gi
-        ob3Zh6Hn90oWBuqnGehq76TBXVLIwKVhKwsvx2wU2EIjHDx0VmG4YpjZZvxrioGOQicG48Wr
-        GHr/vIngdu4zDPb6Ryy0hoIYGu0mCv6ubkPgK3rFwfGCMAdnjhYhyD9eRkP3+w4GDH2rYeJd
-        JfvtWtIaHKGIoTGDOMaqaPKHVSQ3LP0cMdx+wpEq+0HSWJNALtwKYHJ+NMQQe+0JlthHT3Ek
-        71UvJsP373Oks3yCJv5eM/5p/jbZOrWk1aRLuhVfJ8mSp0/bmP2mTw9Zr7lxNhri81AULwpf
-        iR5/CYowLSwULw/f+ZdZYZHo8YSpPMTzscJiMdi0KtKmhE6ZeLIyK8KfCWmip7iMirBcADHX
-        NMTmIRmvEPKRaC66Tn8IYkRXhZ/+ICeInqkAjuykhHixeoqPYNTMCc/tGZGJOcIXovN6By5G
-        cstHsuUj2fK/XIWoWhSrSU1PUWm0q5fr9yVnpmoOLd+dlmJHM49nOzxZ0oze9mxsQQKPlNHy
-        pPk+tYJRpeszU1qQyFPKWHn8uFetkKtVmVmSLm2X7qBW0regeJ5WzpNv+lVKUgh7VQekfZK0
-        X9L9l2I+Ki4bFW6PCWjftyZ6v/9l9pK42J8rjtyZNj60ij9QBaUvvpsoX7rmRuZOxY6x7NHB
-        Je+efeL+PDh7gWf9+CqT87F7q/DNyd13l5ZmvfnxQWlGc8OGuW0xr/d4jTv5dZsdmxJed8Fe
-        W13AHDaoPesHo/sHNuwoP5afcU89q7q6jzydvBg9fsKopPXJqsQESqdX/QMZ9r0hdAMAAA==
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/lp8528AKDoGlE4+qFjTkdaX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 05:09:44AM +0100, Matthew Wilcox wrote:
-> On Mon, Aug 21, 2023 at 12:46:20PM +0900, Byungchul Park wrote:
-> > @@ -1219,6 +1220,9 @@ static inline bool folio_trylock_flag(struct folio *folio, int bit_nr,
-> >  /* How many times do we accept lock stealing from under a waiter? */
-> >  int sysctl_page_lock_unfairness = 5;
-> >  
-> > +static struct dept_map __maybe_unused PG_locked_map = DEPT_MAP_INITIALIZER(PG_locked_map, NULL);
-> > +static struct dept_map __maybe_unused PG_writeback_map = DEPT_MAP_INITIALIZER(PG_writeback_map, NULL);
-> 
-> Hmm, why are these "maybe unused"?  *digs*.  Ah.  Because
-> sdt_might_sleep_start() becomes a no-op macro if DEPT is disabled.
-> 
-> OK, the right way to handle this is
-> 
-> #ifdef CONFIG_DEPT
-> #define DEPT_MAP(name)	static struct dept_map name = \
-> 		DEPT_MAP_INITIALIZER(name, NULL)
-> #else
-> #define DEPT_MAP(name)	/* */
-> #endif
-> 
-> And now DEPT takes up no space if disabled.
+--Sig_/lp8528AKDoGlE4+qFjTkdaX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Currently:
+Hi all,
 
-   #if !defined(CONFIG_DEPT)
-   struct dept_map { }; 
-   #endif
+Today's linux-next merge of the coresight tree got a conflict in:
 
-So I think it doesn't take space at all. Do you think I still need to
-introduce e.g. DEPT_MAP()? Then I will. Thank you!
+  drivers/hwtracing/coresight/coresight-trbe.c
 
-	Byungchul
+between commit:
 
-> /* */; is a somewhat unusual thing to see, but since this must work at
-> top level, we can't use "do { } while (0)" like we usually do.  Given
-> where else this is likely to be used, i don't think it's going to be
-> a problem ...
+  e926b8e9eb40 ("coresight: trbe: Add a representative coresight_platform_d=
+ata for TRBE")
+
+from the arm-perf, arm64 trees and commit:
+
+  39744738a67d ("coresight: trbe: Allocate platform data per device")
+
+from the coresight tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/hwtracing/coresight/coresight-trbe.c
+index 9c59e2652b20,e20c1c6acc73..000000000000
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@@ -1244,6 -1254,10 +1254,21 @@@ static void arm_trbe_register_coresight
+  	if (!desc.name)
+  		goto cpu_clear;
+ =20
+ -	desc.pdata =3D coresight_get_platform_data(dev);
+++	/*
+++	 * TRBE coresight devices do not need regular connections
+++	 * information, as the paths get built between all percpu
+++	 * source and their respective percpu sink devices. Though
+++	 * coresight_register() expect device connections via the
+++	 * platform_data, which TRBE devices do not have. As they
+++	 * are not real ACPI devices, coresight_get_platform_data()
+++	 * ends up failing. Instead let's allocate a dummy zeroed
+++	 * coresight_platform_data structure and assign that back
+++	 * into the device for that purpose.
+++	 */
+++	desc.pdata =3D devm_kzalloc(dev, sizeof(*desc.pdata), GFP_KERNEL);
++ 	if (IS_ERR(desc.pdata))
++ 		goto cpu_clear;
++=20
+  	desc.type =3D CORESIGHT_DEV_TYPE_SINK;
+  	desc.subtype.sink_subtype =3D CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
+  	desc.ops =3D &arm_trbe_cs_ops;
+
+--Sig_/lp8528AKDoGlE4+qFjTkdaX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTi6r4ACgkQAVBC80lX
+0Gyu6wf9Fip2E4hzb6oqboBigMsj5ulb6dcl2r4Yjlk2lJ+wYpZbh2uT5l3FCZB4
+PAx4uY4NUP1ccHn0DDP+H/Zxpk+QpTFsFYDj4DaX55Xp0rACGvhp1pmYv5ofqnD6
+L9dS9b+tGvsTfbcdkDMe+Pnoc8XlArIgvMBtkKnUGn6neK8KERBe+FXykphctQ41
+TdHkZ4WjIhs8Y+cmMQL3DlR49312Jq4N6OKeeNLGBFqheHya9x1zsov2Q5hX2UnH
+zMveywsYXgAb7RJ9uxqrKvhcS5au8IAXKhSJk2eRwpc7Ms/q+BCLc/eKT34LpHqb
+uiXU7Tn7YrOJyVOJ7zPa0QiI+19jfQ==
+=olF6
+-----END PGP SIGNATURE-----
+
+--Sig_/lp8528AKDoGlE4+qFjTkdaX--
