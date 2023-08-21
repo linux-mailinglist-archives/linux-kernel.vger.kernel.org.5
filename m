@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B9D7822C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE8D7822C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbjHUEZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:25:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjHUEZ4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232967AbjHUEZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Aug 2023 00:25:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4209B;
-        Sun, 20 Aug 2023 21:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+ThJSbWV78NlzV1/8C4mbgmYWZr69CC6aj59sQ9jdrI=; b=GrUAGT6/KObw5bPBQ7exfokg3U
-        ynl1o6BaBJE2w8dxWn4SHwihK33nGtJXtQSf9WII5QNzRQ2K/FxjOeVh+I3cjJNNkdtdWtKYo9QXK
-        L1nLWdqK2Q2UfESbpjBtH/wGVGA9F2JGqgVtY6LJfU5xpdm1d9Obs7iRoLeHn5+Fk4u9lWEzssWKz
-        v3voHD9tHVIJeSzrbvkM2TyQTv/4lGmEmBmfGOENaS2YUABDuZDOlr+lPFyQjvTKPSjdOTcR16Q+W
-        wkXH6nfN409c0r0+HFEB6nQP6TIFVNFeqlDel+ejgohfCksc0lt18vCEm9FV/ufHxoZNkWyxoln6Q
-        dG471p0Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qXwU2-0086y2-1U; Mon, 21 Aug 2023 04:25:42 +0000
-Date:   Mon, 21 Aug 2023 05:25:41 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Byungchul Park <byungchul@sk.com>
-Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
-        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
-        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
-        tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
-        gregkh@linuxfoundation.org, kernel-team@lge.com,
-        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
-        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-        ngupta@vflare.org, linux-block@vger.kernel.org,
-        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
-        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
-        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
-        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
-        her0gyugyu@gmail.com
-Subject: Re: [RESEND PATCH v10 25/25] dept: Track the potential waits of
- PG_{locked,writeback}
-Message-ID: <ZOLnRSdH4Wcrl67L@casper.infradead.org>
-References: <20230821034637.34630-1-byungchul@sk.com>
- <20230821034637.34630-26-byungchul@sk.com>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbjHUEZz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Aug 2023 00:25:55 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD2899;
+        Sun, 20 Aug 2023 21:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692591952;
+        bh=QHP4/ScTADNlkdUO5kiWe32Y9eBYZcifYSXLpN4bqos=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UfN/xatQXFhE2szHQvpPiyZqJNq5Ok7M7cBMxK6CXD7UM8LLKetCk0VJsSDGBsdMl
+         HwyHe+aUDCE1/JGRtdG4a13g0dclyitOX9gEEhSs6bj1CSx+uIEOF/ZSPm5EHWFdq6
+         sV1quZp1zvyPHBangR6e8j07GITGCu2nQNOnLmsrLb6zzVuwQFqKW3S5FC8ucWPV5G
+         Jauf5W1CFMGyk9XOtf9c3z9tAYUXRC7SY3R7ARkYynL3riygSqI8ChFJdLlAza83Pj
+         L+uxRu+/LYkiv0VOjPTOVRUOkxjyRlIznB5pGN8qIGDlK5vGjYWo0BEKYDI1BfzI42
+         MzqIeqRZH1eCA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTfYC5LB6z4wb5;
+        Mon, 21 Aug 2023 14:25:51 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 14:25:50 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, Joel Stanley <joel@jms.id.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: linux-next: manual merge of the char-misc tree with the jc_docs
+ tree
+Message-ID: <20230821142550.232faf95@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821034637.34630-26-byungchul@sk.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/g9K7Af3c8fXET0tbLeMsDuB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 12:46:37PM +0900, Byungchul Park wrote:
-> @@ -377,44 +421,88 @@ static __always_inline int Page##uname(struct page *page)		\
->  #define SETPAGEFLAG(uname, lname, policy)				\
->  static __always_inline							\
->  void folio_set_##lname(struct folio *folio)				\
-> -{ set_bit(PG_##lname, folio_flags(folio, FOLIO_##policy)); }		\
-> +{									\
-> +	set_bit(PG_##lname, folio_flags(folio, FOLIO_##policy));	\
-> +	dept_page_set_bit(&folio->page, PG_##lname);			\
+--Sig_/g9K7Af3c8fXET0tbLeMsDuB
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The PG_locked and PG_writeback bits only actually exist in the folio;
-the ones in struct page are just legacy and never actually used.
-Perhaps we could make the APIs more folio-based and less page-based?
+Hi all,
 
->  static __always_inline void SetPage##uname(struct page *page)		\
-> -{ set_bit(PG_##lname, &policy(page, 1)->flags); }
-> +{									\
-> +	set_bit(PG_##lname, &policy(page, 1)->flags);			\
-> +	dept_page_set_bit(page, PG_##lname);				\
-> +}
+Today's linux-next merge of the char-misc tree got a conflict in:
 
-I don't think we ever call this for PG_writeback or PG_locked.  If
-I'm wrong, we can probably fix that ;-)
+  Documentation/ABI/testing/sysfs-bus-fsi-devices-sbefifo
 
->  static __always_inline void __SetPage##uname(struct page *page)		\
-> -{ __set_bit(PG_##lname, &policy(page, 1)->flags); }
-> +{									\
-> +	__set_bit(PG_##lname, &policy(page, 1)->flags);			\
-> +	dept_page_set_bit(page, PG_##lname);				\
-> +}
+between commit:
 
-Umm.  We do call __SetPageLocked() though ... I'll fix those up to
-be __set_folio_locked().
+  ebab9426cd73 ("Documentation/ABI: Fix typos")
 
+from the jc_docs tree and commit:
+
+  2cd9ec2a5147 ("docs: ABI: fix spelling/grammar in SBEFIFO timeout interfa=
+ce")
+
+from the char-misc tree.
+
+I fixed it up (the latter is a superset of the former) and can carry the
+fix as necessary. This is now fixed as far as linux-next is concerned,
+but any non trivial conflicts should be mentioned to your upstream
+maintainer when your tree is submitted for merging.  You may also want
+to consider cooperating with the maintainer of the conflicting tree to
+minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/g9K7Af3c8fXET0tbLeMsDuB
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTi504ACgkQAVBC80lX
+0GwKyQf+JvDAf2PyVGNZsw4Xe6ZslCpnyDfS7YayxzoXqhMneNMWC6VbKWNKjkab
+SXrKUUQrIa4C1T+6Pco5k4EDCRJ7ouPYiWItVg3JLVlj2jXCXmv9497PSn/Ll3lX
+4Onn+KUgjxBbXJ3qSUBFJIfbYC2wmRLKCQ8cSiXyICfarqUtSfmINIl5l+UFFtFC
+Sr9iYT3HWRlaIIKfBdDTyz0vnj2jLqK9zBdpOw0OhFMxeEpQTfnLDv3qAaWigV6/
+qUwIwg9v3sfj5v1o5do+3hOXXfuFe+V9Hm19x0ZIdOlrZq4NuY2YqftnOZM3aWJk
+Q4ijotIfJeACc8wB/Rp7iM1NpsqdLQ==
+=MVlu
+-----END PGP SIGNATURE-----
+
+--Sig_/g9K7Af3c8fXET0tbLeMsDuB--
