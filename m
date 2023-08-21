@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D419778280A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8334578280D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbjHULf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        id S232908AbjHULgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232736AbjHULfw (ORCPT
+        with ESMTP id S230460AbjHULgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:35:52 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E894EDF;
-        Mon, 21 Aug 2023 04:35:49 -0700 (PDT)
-Received: from [IPV6:2405:201:0:21ea:73f6:2283:f432:3936] (unknown [IPv6:2405:201:0:21ea:73f6:2283:f432:3936])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 21 Aug 2023 07:36:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FB2DC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:36:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: shreeya)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C187466071B1;
-        Mon, 21 Aug 2023 12:35:41 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692617748;
-        bh=RUeyD6fiUTInSG+vr6OnkVhCqjVHmBcaBXTucCoGaj0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=U6OUHJ+E5Ae2IEp9b3Ecss5bZQRKbOxHTaX/XHV/gkgTguh7jOZ7nppyIBGZT0Vt1
-         GT/DzB3uwT0FdClmA1JIZ2TmQN7H9qrGza911OVNMCi7YQ/0bWL5dVKzCJhECtcdBk
-         jZBskPu3HKlHlHePWozlCECyGOdf8tv6k8/5eU5OUzNhLRCvu+VvLwD5qDKbPIE1Gr
-         ZioyPEqL624HIWq7YdSw0fwJPHu6dpj3jjJHITNEcWgKQqdX3pZOVpcp1a1WlMgfIt
-         eL56iTviF7vKgE9YXIqA41ZjPAF9kr0U5ZtRzXCQ7OZ/6HR2pOy0UtLBe9OzBtOEQp
-         Lf6b4BRtaCxhg==
-Message-ID: <97b06c78-da3c-d8ab-ca72-ff37b9976f2a@collabora.com>
-Date:   Mon, 21 Aug 2023 17:05:37 +0530
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 56D88631DC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:36:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A74C433C9;
+        Mon, 21 Aug 2023 11:36:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692617799;
+        bh=s4tqcywFY5x1xGLeQKFZevnSfrIFMKwbbnMDg6Jc8Fw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2W7gJBzoEw+B7iH/bPkybSUxVGzK2rgbPbYdD/aJPiZDUu7WB4+DsNuJDcnmtaq2
+         h9ji5rU+BCw34ddba8x95xa4VB/HyquWE+Fxo/DIX/wB6w8uOzNlSwVPV1fC3KYtpE
+         QEMX5uVZURRb/Vg8K1rNWhUIkqsFQbyev2ZLBawGbJzBdpbz+xs0gZz7zVIRicCuWy
+         03yj+TlZEpAsl+0Pt/GILSvbi6pc/DRFNdJgAQyvJdSwn7obu0LXXdJcakLfCBz56N
+         RbWpYOsKvk538cmB/kMM2oDIRgGB6+w8XwvBCAI6qTL9wmuhVlB20Vr5EAmHVfaHUi
+         26GwOU13TO4BQ==
+Date:   Mon, 21 Aug 2023 13:36:36 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     neil.armstrong@linaro.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+Message-ID: <kfslzajqd3y3zjreivjbku7lhtqgook7r24mvkcm2dre6yzrsh@6w4iprh7qqbx>
+References: <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+ <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+ <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
+ <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+ <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+ <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
- deferred_probe_timeout interaction
-Content-Language: en-US
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <jstultz@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
-        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo_Navarro?= 
-        <ricardo.canuelo@collabora.com>,
-        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
-        usama.anjum@collabora.com, kernelci@lists.linux.dev
-References: <20220613094924.913340374@linuxfoundation.org>
- <20220613094928.793712131@linuxfoundation.org>
- <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com>
- <2023081619-slapping-congrats-8e85@gregkh>
- <471bf84d-9d58-befc-8224-359a62e29786@collabora.com>
- <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
- <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
- <CAGETcx-DUm417mM-Nmyqj-e_rKUw69m=rTe5R6_Vxd_rsKMmGg@mail.gmail.com>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-In-Reply-To: <CAGETcx-DUm417mM-Nmyqj-e_rKUw69m=rTe5R6_Vxd_rsKMmGg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="puzmiyi66lskaags"
+Content-Disposition: inline
+In-Reply-To: <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -92,166 +76,155 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 19/08/23 01:49, Saravana Kannan wrote:
-> On Thu, Aug 17, 2023 at 4:13 PM Shreeya Patel
-> <shreeya.patel@collabora.com> wrote:
->> Hi Geert, Saravana,
->>
->> On 18/08/23 00:03, Saravana Kannan wrote:
->>> On Thu, Aug 17, 2023 at 4:37 AM Shreeya Patel
->>> <shreeya.patel@collabora.com> wrote:
->>>> Hi Greg,
->>>>
->>>> On 16/08/23 20:33, Greg Kroah-Hartman wrote:
->>>>> On Wed, Aug 16, 2023 at 03:09:27PM +0530, Shreeya Patel wrote:
->>>>>> On 13/06/22 15:40, Greg Kroah-Hartman wrote:
->>>>>>> From: Saravana Kannan<saravanak@google.com>
->>>>>>>
->>>>>>> [ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
->>>>>>>
->>>>>>> Mounting NFS rootfs was timing out when deferred_probe_timeout was
->>>>>>> non-zero [1].  This was because ip_auto_config() initcall times out
->>>>>>> waiting for the network interfaces to show up when
->>>>>>> deferred_probe_timeout was non-zero. While ip_auto_config() calls
->>>>>>> wait_for_device_probe() to make sure any currently running deferred
->>>>>>> probe work or asynchronous probe finishes, that wasn't sufficient to
->>>>>>> account for devices being deferred until deferred_probe_timeout.
->>>>>>>
->>>>>>> Commit 35a672363ab3 ("driver core: Ensure wait_for_device_probe() waits
->>>>>>> until the deferred_probe_timeout fires") tried to fix that by making
->>>>>>> sure wait_for_device_probe() waits for deferred_probe_timeout to expire
->>>>>>> before returning.
->>>>>>>
->>>>>>> However, if wait_for_device_probe() is called from the kernel_init()
->>>>>>> context:
->>>>>>>
->>>>>>> - Before deferred_probe_initcall() [2], it causes the boot process to
->>>>>>>       hang due to a deadlock.
->>>>>>>
->>>>>>> - After deferred_probe_initcall() [3], it blocks kernel_init() from
->>>>>>>       continuing till deferred_probe_timeout expires and beats the point of
->>>>>>>       deferred_probe_timeout that's trying to wait for userspace to load
->>>>>>>       modules.
->>>>>>>
->>>>>>> Neither of this is good. So revert the changes to
->>>>>>> wait_for_device_probe().
->>>>>>>
->>>>>>> [1] -https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
->>>>>>> [2] -https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-3990X/
->>>>>>> [3] -https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
->>>>>> Hi Saravana, Greg,
->>>>>>
->>>>>>
->>>>>> KernelCI found this patch causes the baseline.bootrr.deferred-probe-empty test to fail on r8a77960-ulcb,
->>>>>> see the following details for more information.
->>>>>>
->>>>>> KernelCI dashboard link:
->>>>>> https://linux.kernelci.org/test/plan/id/64d2a6be8c1a8435e535b264/
->>>>>>
->>>>>> Error messages from the logs :-
->>>>>>
->>>>>> + UUID=11236495_1.5.2.4.5
->>>>>> + set +x
->>>>>> + export 'PATH=/opt/bootrr/libexec/bootrr/helpers:/lava-11236495/1/../bin:/sbin:/usr/sbin:/bin:/usr/bin'
->>>>>> + cd /opt/bootrr/libexec/bootrr
->>>>>> + sh helpers/bootrr-auto
->>>>>> e6800000.ethernet
->>>>>> e6700000.dma-controller
->>>>>> e7300000.dma-controller
->>>>>> e7310000.dma-controller
->>>>>> ec700000.dma-controller
->>>>>> ec720000.dma-controller
->>>>>> fea20000.vsp
->>>>>> feb00000.display
->>>>>> fea28000.vsp
->>>>>> fea30000.vsp
->>>>>> fe9a0000.vsp
->>>>>> fe9af000.fcp
->>>>>> fea27000.fcp
->>>>>> fea2f000.fcp
->>>>>> fea37000.fcp
->>>>>> sound
->>>>>> ee100000.mmc
->>>>>> ee140000.mmc
->>>>>> ec500000.sound
->>>>>> /lava-11236495/1/../bin/lava-test-case
->>>>>> <8>[   17.476741] <LAVA_SIGNAL_TESTCASE TEST_CASE_ID=deferred-probe-empty RESULT=fail>
->>>>>>
->>>>>> Test case failing :-
->>>>>> Baseline Bootrr deferred-probe-empty test -https://github.com/kernelci/bootrr/blob/main/helpers/bootrr-generic-tests
->>>>>>
->>>>>> Regression Reproduced :-
->>>>>>
->>>>>> Lava job after reverting the commit 5ee76c256e92
->>>>>> https://lava.collabora.dev/scheduler/job/11292890
->>>>>>
->>>>>>
->>>>>> Bisection report from KernelCI can be found at the bottom of the email.
->>>>>>
->>>>>> Thanks,
->>>>>> Shreeya Patel
->>>>>>
->>>>>> #regzbot introduced: 5ee76c256e92
->>>>>> #regzbot title: KernelCI: Multiple devices deferring on r8a77960-ulcb
->>>>>>
->>>>>> ---------------------------------------------------------------------------------------------------------------------------------------------------
->>>>>>
->>>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
->>>>>> * If you do send a fix, please include this trailer: *
->>>>>> * Reported-by: "kernelci.org bot" <bot@...> *
->>>>>> * *
->>>>>> * Hope this helps! *
->>>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
->>>>>>
->>>>>> stable-rc/linux-5.10.y bisection: baseline.bootrr.deferred-probe-empty on
->>>>>> r8a77960-ulcb
->>>>> You are testing 5.10.y, yet the subject says 5.17?
->>>>>
->>>>> Which is it here?
->>>> Sorry, I accidentally used the lore link for 5.17 while reporting this
->>>> issue,
->>>> but this test does fail on all the stable releases from 5.10 onwards.
->>>>
->>>> stable 5.15 :-
->>>> https://linux.kernelci.org/test/case/id/64dd156a5ac58d0cf335b1ea/
->>>> mainline :-
->>>> https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
->>>>
->>> Shreeya, can you try the patch Geert suggested and let us know if it
->>> helps? If not, then I can try to take a closer look.
->> I tried to test the kernel with 9be4cbd09da8 but it didn't change the
->> result.
->> https://lava.collabora.dev/scheduler/job/11311615
->>
->> Also, I am not sure if this can change things but just FYI, KernelCI
->> adds some kernel parameters when running these tests and one of the
->> parameter is deferred_probe_timeout=60.
-> Ah this is good to know.
+--puzmiyi66lskaags
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Aug 21, 2023 at 12:01:19PM +0200, neil.armstrong@linaro.org wrote:
+> Hi Maxime,
+>=20
+> On 21/08/2023 10:17, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wro=
+te:
+> > > On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+> > > > On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+> > > > > Sending HS commands will always work on any controller, it's all
+> > > > > about LP commands. The Samsung panels you listed only send HS
+> > > > > commands so they can use prepare_prev_first and work on any
+> > > > > controllers.
+> > > >=20
+> > > > I think there is some misunderstanding there, supported by the
+> > > > description of the flag.
+> > > >=20
+> > > > If I remember correctly, some hosts (sunxi) can not send DCS
+> > > > commands after enabling video stream and switching to HS mode, see
+> > > > [1]. Thus, as you know, most of the drivers have all DSI panel setup
+> > > > commands in drm_panel_funcs::prepare() /
+> > > > drm_bridge_funcs::pre_enable() callbacks, not paying attention
+> > > > whether these commands are to be sent in LP or in HS mode.
+> > > >=20
+> > > > Previously DSI source drivers could power on the DSI link either in
+> > > > mode_set() or in pre_enable() callbacks, with mode_set() being the
+> > > > hack to make panel/bridge drivers to be able to send commands from
+> > > > their prepare() / pre_enable() callbacks.
+> > > >=20
+> > > > With the prev_first flags being introduced, we have established that
+> > > > DSI link should be enabled in DSI host's pre_enable() callback and
+> > > > switched to HS mode (be it command or video) in the enable()
+> > > > callback.
+> > > >=20
+> > > > So far so good.
+> > >=20
+> > > It seems coherent, I would like first to have a state of all DSI host
+> > > drivers and make this would actually work first before adding the
+> > > prev_first flag to all the required panels.
+> >=20
+> > This is definitely what we should do in an ideal world, but at least for
+> > sunxi there's no easy way for it at the moment. There's no documentation
+> > for it and the driver provided doesn't allow this to happen.
+> >=20
+> > Note that I'm not trying to discourage you or something here, I'm simply
+> > pointing out that this will be something that we will have to take into
+> > account. And it's possible that other drivers are in a similar
+> > situation.
+> >=20
+> > > > Unfortunately this change is not fully backwards-compatible. This
+> > > > requires that all DSI panels sending commands from prepare() should
+> > > > have the prepare_prev_first flag. In some sense, all such patches
+> > > > might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+> > > > flag to drm_panel").
+> > >=20
+> > > This kind of migration should be done *before* any possible
+> > > regression, not the other way round.
+> > >=20
+> > > If all panels sending commands from prepare() should have the
+> > > prepare_prev_first flag, then it should be first, check for
+> > > regressions then continue.
+> > >=20
+> > > <snip>
+> > >=20
+> > > > >=20
+> > > > > I understand, but this patch doesn't qualify as a fix for
+> > > > > 9e15123eca79 and is too late to be merged in drm-misc-next for
+> > > > > v6.6, and since 9e15123eca79 actually breaks some support it
+> > > > > should be reverted (+ deps) since we are late in the rc cycles.
+> > > >=20
+> > > > If we go this way, we can never reapply these patches. There will be
+> > > > no guarantee that all panel drivers are completely converted. We
+> > > > already have a story without an observable end -
+> > > > DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+> > >=20
+> > > I don't understand this point, who would block re-applying the patche=
+s ?
+> > >=20
+> > > The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
+> > > Linux version and went smoothly because we reverted regressing patches
+> > > and restarted when needed, I don't understand why we can't do this
+> > > here aswell.
+> > >=20
+> > > > I'd consider that the DSI driver is correct here and it is about the
+> > > > panel drivers that require fixes patches. If you care about the
+> > > > particular Fixes tag, I have provided one several lines above.
+> > >=20
+> > > Unfortunately it should be done in the other way round, prepare for
+> > > migration, then migrate,
+> > >=20
+> > > I mean if it's a required migration, then it should be done and I'll
+> > > support it from both bridge and panel PoV.
+> > >=20
+> > > So, first this patch has the wrong Fixes tag, and I would like a
+> > > better explanation on the commit message in any case. Then I would
+> > > like to have an ack from some drm-misc maintainers before applying it
+> > > because it fixes a patch that was sent via the msm tree thus per the
+> > > drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+> >=20
+> > Sorry, it's not clear to me what you'd like our feedback on exactly?
+>=20
+> So let me resume the situation:
+>=20
+> - pre_enable_prev_first was introduced in [1]
+> - some panels made use of pre_enable_prev_first
+> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 kerne=
+ls and before
+> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 s=
+ystems (and probably other Video mode panels on Qcom platforms)
+> - this fix was sent late, and is now too late to be merged via drm-misc-n=
+ext
+>=20
+> I do not consider it's the right way to fix regression caused by [2] I
+> consider [2] should be reverted, panels migrated to
+> pre_enable_prev_first when needed, tested and the [2] applied again
+>=20
+> I have no objection about [2] and it should be done widely over the
+> whole DSI controllers and DSI Video panels.
 >
->> You can check this in the definition details given in the Lava job. I
->> also tried to remove this parameter and rerun the test but again I got
->> the same result.
-> How long does the test wait after boot before checking for the
-> deferred devices list?
->
+> I also object about the Fixes tag of this patch, which is wrong, and
+> Dmitry considers [1] should be used but it's even more wrong since [2]
+> really caused the regression.
 
-AFAIK, script for running the tests is immediately ran after the boot 
-process is complete so there is no wait time.
+Ok.
 
->> I will try to add 9be4cbd09da8 to mainline kernel and see what results I
->> get.
-> Now I'm confused. What do you mean by mainline? Are you saying the tip
-> of tree of Linus's tree is also hitting this issue?
+> And if [2] was to correct one to use, it was pushed via the MSM tree so i=
+t couldn't be
+> applied via drm-misc-next-fixes, right ?
 
+AFAICT, 2 is in 6.5 now, so it would be drm-misc-fixes. But yeah, it
+would make more sense to take it through the MSM tree.
 
-KernelCI runs tests on different kernel branches and trees, we also have 
-this same test running on mainline tree.
-Following is the link to the dashboard for it and as you can see, it 
-does fail there too.
+Maxime
 
+--puzmiyi66lskaags
+Content-Type: application/pgp-signature; name="signature.asc"
 
-https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZONMRAAKCRDj7w1vZxhR
+xdAAAQC8k6mwvjiPF0bwlparlXC2d1HvJZEGd+BDvNZYQuAD9gD/VWvY/lZjqtf7
+XK1hEg2W7jitmdtigOE4XxRm45JdRgo=
+=sZ74
+-----END PGP SIGNATURE-----
 
-> -Saravana
->
+--puzmiyi66lskaags--
