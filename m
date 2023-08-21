@@ -2,163 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7497829D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7497829E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235177AbjHUNB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58468 "EHLO
+        id S235200AbjHUNEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234093AbjHUNB5 (ORCPT
+        with ESMTP id S235197AbjHUNEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:01:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BED7CD;
-        Mon, 21 Aug 2023 06:01:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF476614F3;
-        Mon, 21 Aug 2023 13:01:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2088DC433D9;
-        Mon, 21 Aug 2023 13:01:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692622914;
-        bh=jRjj6/i45ISAqAgmwrx/DQ8yITENPJ7mT9VW43TABG4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bw8TqkcrGyVtu2cNtKRWLUPkTS+l57cRbhbtkbmdP2e8xnnQWCUuSxVGese6DYpof
-         aH3Mof+PZiThtiwKMP/u7KdvAiO8rsWZ6VXZQufP69koIXniTaKr1D0BZvhruEiYSA
-         z9GxswYJUzzeN6qZYQn2Z+xHEaylL6/t38P1kuVAMcESfWrbJdXfjej+vEvrQXPlWD
-         y/sel6+ZgZnVree34y2UoNiiJm9rIie3ZStq3FxOIcxMMiiiarW12P7k9ny06PsFV8
-         K8n4OFGxQRXZ22SIpI4gadPsIVkpi0J16LWlZd1pWuYR9BaTmJk8RPqIUCelnuf7qO
-         y4OnfcVnX+cuA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 919B940722; Mon, 21 Aug 2023 10:01:51 -0300 (-03)
-Date:   Mon, 21 Aug 2023 10:01:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf jevents: Raise exception for no definition of a
- arch std event
-Message-ID: <ZONgPy7pK7Qc7Cc6@kernel.org>
-References: <20230807111631.3033102-1-john.g.garry@oracle.com>
- <373e8253-656c-84dc-c05-b578e3725d@os.amperecomputing.com>
- <CAP-5=fVsePTVU2qeeUzVFkWA7Oxj6bgSq+yWzO=t3y283vOgOw@mail.gmail.com>
- <dd4bc3fe-5b8e-6e64-bcec-29263df43086@oracle.com>
+        Mon, 21 Aug 2023 09:04:06 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C69EE8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:04:04 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d7260fae148so3394176276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692623043; x=1693227843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fftlaxB/hAY2qV7eGstMIqoqzzhLCuD6MNuSzMJeQ8Q=;
+        b=uxHabXuXp1KNAVNO3m4TW3krW7hKeDEIgsHNMRhkluZkuCE7glVzKQTrDLKRiZdt9o
+         7iXt0XB065FT5V9zE4KcvFQ3JXP+GzXFoTKtLSuXZKtbExY6exBJJ0tr0fAiWeB0AbiZ
+         bw//4cbd8H/i6QCxQYPztItUwbnaTqiOholRPwbWCRxs4IZvXkwUW3zcJ+Nab0Jc//8K
+         ITr5jTI4UB/E92ootLJcML4ki3fL8XWUIYt5ZrKlP+xKuoSb47lWikDmwJCkbcF+hfcv
+         y3vxcLqXL3FBTwO42d7fkO/pqJmvEc0/bksPDQor39+2FpGk1AjATL0Mz5cwzfdel4BK
+         Bddg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692623043; x=1693227843;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fftlaxB/hAY2qV7eGstMIqoqzzhLCuD6MNuSzMJeQ8Q=;
+        b=h9JJIXcIm5qdUnCCRxWhMjVazN+k2Lm7YOTH08ObZEcCzUZXQyIudE12dNuDxBmu8k
+         3XHx3let2taITLWMk7g4jHZE4PCF7wwOAUALLkA7i++AUcWsH91hDnNyqcEoUZIxVHcH
+         XQFmpJqEQllEXDgosyGF5qfaumdRbOAbGTxVhXzjyGyMqDI85QOY0ysClNpr/bs+37ON
+         3YDzpHmjDh9F/6zEOt0R4y9lg2wSrgN9VDIYUCHdnHh7debg3KWy0I7amRIm+Nlb2S0Y
+         rDSeyWR7JRRTaC5a9+7dCyPJLgJVMxJIGw39abdgosiKoEGwF4xag5qLi869byZ6E6/1
+         5BMQ==
+X-Gm-Message-State: AOJu0YyGWXlkSXgsQ0Jtb8dDarlh9KTG2ZJcU5HMt50CIuBt1dqPK4yK
+        Su3OztxTR09uElI3wMbgpnW2hZc9jdb0aMawaCkcqA==
+X-Google-Smtp-Source: AGHT+IF4hK9dTEy+qIC8KIyQfLc1auoMEebGvpJ7FiQxroEgxJgWgjBLCC6gtgisiv3apV0M7Qt2YoGTdUi3bIWiHwU=
+X-Received: by 2002:a25:3746:0:b0:d3b:e659:5329 with SMTP id
+ e67-20020a253746000000b00d3be6595329mr5894894yba.9.1692623043275; Mon, 21 Aug
+ 2023 06:04:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dd4bc3fe-5b8e-6e64-bcec-29263df43086@oracle.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230817184958.25349-1-brgl@bgdev.pl> <20230817184958.25349-5-brgl@bgdev.pl>
+ <ZN9IYYgD6q/H3EuG@smile.fi.intel.com> <CAMRc=MfHCz8CfJniDXhuHXovPZ5AvNdTFUT3-LNYM4sQ15d=yA@mail.gmail.com>
+In-Reply-To: <CAMRc=MfHCz8CfJniDXhuHXovPZ5AvNdTFUT3-LNYM4sQ15d=yA@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 21 Aug 2023 15:03:52 +0200
+Message-ID: <CAMRc=MdtEwZKtySM0DXrrQWz+nFDxDZxwXBhWXywctmz8gAX1A@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] gpio: cdev: wake up chardev poll() on device unbind
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Aug 21, 2023 at 11:46:20AM +0100, John Garry escreveu:
-> On 10/08/2023 20:27, Ian Rogers wrote:
-> > On Wed, Aug 9, 2023 at 10:11 PM Ilkka Koskinen
-> > <ilkka@os.amperecomputing.com> wrote:
-> > > 
-> > > 
-> > > Hi John,
-> > > 
-> > > On Mon, 7 Aug 2023, John Garry wrote:
-> > > > Recently Ilkka reported that the JSONs for the AmpereOne arm64-based
-> > > > platform included a dud event which referenced a non-existent arch std
-> > > > event [0].
-> > > 
-> > > I wish I had found the bug in my patch a long time ago but, in fact, it
-> > > was Dave Kleikamp who initially pointed it out to me and figured out the
-> > > difference between jevents.c and jevents.py when porting the patch to 5.15
-> > > kernel.
-> > > 
-> > > https://urldefense.com/v3/__http://lists.infradead.org/pipermail/linux-arm-kernel/2023-June/844874.html__;!!ACWV5N9M2RV99hQ!It9EhKK4s2uBUJyQvLg-ruUfENAA6Sw7TWVo_hF8XmFoQ6q565iYafTnN-yoBNh3EQ1IFa2tHknUjNHs5dI$
-> > > 
-> > > > 
-> > > > Previously in the times of jevents.c, we would raise an exception for this.
-> > > > 
-> > > > This is still invalid, even though the current code just ignores such an
-> > > > event.
-> > > > 
-> > > > Re-introduce code to raise an exception for when no definition exists to
-> > > > help catch as many invalid JSONs as possible.
-> > > > 
-> > > > [0] https://urldefense.com/v3/__https://lore.kernel.org/linux-perf-users/9e851e2a-26c7-ba78-cb20-be4337b2916a@oracle.com/__;!!ACWV5N9M2RV99hQ!It9EhKK4s2uBUJyQvLg-ruUfENAA6Sw7TWVo_hF8XmFoQ6q565iYafTnN-yoBNh3EQ1IFa2tHknU_t28TiE$
-> > > > 
-> > > > Signed-off-by: John Garry <john.g.garry@oracle.com>
-> > > 
-> > > Thanks for the patch! I quickly tested it and it worked as expected. Just
-> > > in case this is needed:
-> > > 
-> > > Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> > 
-> > Reviewed-by: Ian Rogers <irogers@google.com>
-> 
-> Hi Arnaldo,
-> 
-> Can you consider applying this patch along with https://lore.kernel.org/linux-perf-users/CAP-5=fX2uE=B_Vb90nn5EV0mw+AJBpjDecP9w29OUn=j7HKPPg@mail.gmail.com/
-> 
-> I think that we should expect another version of that series with changes
-> elsewhere.
+On Mon, Aug 21, 2023 at 2:43=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Fri, Aug 18, 2023 at 12:31=E2=80=AFPM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Thu, Aug 17, 2023 at 08:49:56PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Add a notifier block to the gpio_chardev_data structure and register =
+it
+> > > with the gpio_device's device notifier. Upon reception of an event, w=
+ake
+> > > up the wait queue so that the user-space be forced out of poll() and =
+need
+> > > to go into a new system call which will then fail due to the chip bei=
+ng
+> > > gone.
+> >
+> > ...
+> >
+> > > +     struct gpio_chardev_data *cdev =3D container_of(nb,
+> > > +                                                   struct gpio_chard=
+ev_data,
+> > > +                                                   device_unregister=
+ed_nb);
+> >
+> >         struct gpio_chardev_data *cdev =3D
+> >                 container_of(nb, struct gpio_chardev_data, device_unreg=
+istered_nb);
+> >
+> > ?
+>
+> I could live with the other version but sure, why not.
+>
+> I will send a v3 with a helper wrapper around
+> blocking_notifier_call_chain() for more brevity.
+>
 
-Done, thanks for the ping.
+Scratch that, I need coffee. This was supposed to go under the line
+state notifications patch.
 
-- Arnaldo
- 
-> Thanks,
-> John
-> 
-> > 
-> > Thanks,
-> > Ian
-> > 
-> > > Cheers, Ilkka
-> > > 
-> > > > ---
-> > > > Please do not apply before [0], above.
-> > > > 
-> > > > diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> > > > index 8cd561aa606a..98cccc3fcbbd 100755
-> > > > --- a/tools/perf/pmu-events/jevents.py
-> > > > +++ b/tools/perf/pmu-events/jevents.py
-> > > > @@ -347,12 +347,15 @@ class JsonEvent:
-> > > >        if self.desc and not self.desc.endswith('. '):
-> > > >          self.desc += '. '
-> > > >        self.desc = (self.desc if self.desc else '') + ('Unit: ' + self.pmu + ' ')
-> > > > -    if arch_std and arch_std.lower() in _arch_std_events:
-> > > > -      event = _arch_std_events[arch_std.lower()].event
-> > > > -      # Copy from the architecture standard event to self for undefined fields.
-> > > > -      for attr, value in _arch_std_events[arch_std.lower()].__dict__.items():
-> > > > -        if hasattr(self, attr) and not getattr(self, attr):
-> > > > -          setattr(self, attr, value)
-> > > > +    if arch_std:
-> > > > +      if arch_std.lower() in _arch_std_events:
-> > > > +        event = _arch_std_events[arch_std.lower()].event
-> > > > +        # Copy from the architecture standard event to self for undefined fields.
-> > > > +        for attr, value in _arch_std_events[arch_std.lower()].__dict__.items():
-> > > > +          if hasattr(self, attr) and not getattr(self, attr):
-> > > > +            setattr(self, attr, value)
-> > > > +      else:
-> > > > +        raise argparse.ArgumentTypeError('Cannot find arch std event:', arch_std)
-> > > > 
-> > > >      self.event = real_event(self.name, event)
-> > > > 
-> > > > --
-> > > > 2.35.3
-> > > > 
-> > > > 
-> 
-
--- 
-
-- Arnaldo
+Bart
