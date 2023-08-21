@@ -2,76 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18902782CCF
+	by mail.lfdr.de (Postfix) with ESMTP id 61FEE782CD0
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234295AbjHUO5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:57:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S234888AbjHUO5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234074AbjHUO53 (ORCPT
+        with ESMTP id S234273AbjHUO5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:57:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B8BE8;
-        Mon, 21 Aug 2023 07:57:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 21 Aug 2023 10:57:30 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92594D1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:57:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D8EA613EA;
-        Mon, 21 Aug 2023 14:57:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 423BEC433C8;
-        Mon, 21 Aug 2023 14:57:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692629844;
-        bh=81+nv/icHm8Osb2n8YAqxJA369nqyLSBAVtVs6fRHWw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DgPUKUyomJkxjqH/7WJuL/3m4moNAp9/mTDCRqUrNAL+4z68IXfmQgcbLokALLFqP
-         6dAVTMdCToCgORIvzJ9/5nuyWn0P1j38qlrldcENRtmmlU3KGd5x2qGBYdjb7FgpoM
-         qxs9z2HWW4kXAjVMNzqVMLPqr3arCGkbiVQ0dpIoNqRixt7mjrSo/wlbbhMaUbVg+e
-         idpYDhrYcfmUN9M75Irvs57od8f1L0I2OgOI9khHO7hErhlG2Flzby0iWZAajP4RoF
-         6g8m+eXKiAP6XmgwcpfjCG0hjBnsfTTVAl9j+Q/IIECnIHZZdAlFf4B4YPkYArRPzG
-         s4Qkvzq5u0hkA==
-Date:   Mon, 21 Aug 2023 07:57:23 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
- to give credits to who sponsored the patch
-Message-ID: <20230821075723.17944dcb@kernel.org>
-In-Reply-To: <CAMuHMdVY7vaU8wpJrMD4HNkQwkJD0Rd9sL-xFDYXxJEcP91yuw@mail.gmail.com>
-References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
-        <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
-        <20230817232348.GC1175@pendragon.ideasonboard.com>
-        <28289906-4fd1-26aa-b1c4-eb393ac52d48@benettiengineering.com>
-        <CAMuHMdVY7vaU8wpJrMD4HNkQwkJD0Rd9sL-xFDYXxJEcP91yuw@mail.gmail.com>
-MIME-Version: 1.0
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 4BF151F74D;
+        Mon, 21 Aug 2023 14:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692629847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V98p/YiWIWokd7MMMWY1a9uv78umHOiuzlwzq+4f/0o=;
+        b=FafZxmpn6U071PAre4Ph5+LQ77TsQ/lccFzIGlp4Zp4XYw893JEhCjap44TOjvJPut8Pec
+        h0QtlNC2F/XA/xRqLIQqhSk9lSetqSFG4K0Y/XbK9L3pRivMpwCSfB03A1DUrfFs0OIcBQ
+        n113eULrYuklTkKdhgQsa3lNUR+QQSo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692629847;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V98p/YiWIWokd7MMMWY1a9uv78umHOiuzlwzq+4f/0o=;
+        b=Ks3ppezo2/tIXo/LmHywYytG5VL+tUcdd3alLGMIbbP0mmn4mZ3itL7sJEtrry3wQ1Vtrv
+        5FUclnJbWyDgcJAQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D0C8F13421;
+        Mon, 21 Aug 2023 14:57:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RJv5MVZ742QMDwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 21 Aug 2023 14:57:26 +0000
+Date:   Mon, 21 Aug 2023 16:57:26 +0200
+Message-ID: <871qfw78a1.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Shenghao Ding <shenghao-ding@ti.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
+        13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v3 1/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <146f393a-665b-110b-b55b-d3452c3123e8@linux.intel.com>
+References: <20230818085558.1431-1-shenghao-ding@ti.com>
+        <9f910785-e856-1539-e3e4-c9817af5fe67@linux.intel.com>
+        <87il9a9hu2.wl-tiwai@suse.de>
+        <146f393a-665b-110b-b55b-d3452c3123e8@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 09:40:59 +0200 Geert Uytterhoeven wrote:
-> Personally, I would respond "I'm sorry, but the only advertising
-> space we offer are Copyright headers (for employees) and
-> "user+customer@..." or "name (customer) user@..." (for contractors).
+On Mon, 21 Aug 2023 16:43:31 +0200,
+Pierre-Louis Bossart wrote:
+> 
+> 
+> >>> +static void tas2781_hda_playback_hook(struct device *dev, int action)
+> >>> +{
+> >>> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> >>> +
+> >>> +	dev_dbg(tas_priv->dev, "%s: action = %d\n", __func__, action);
+> >>> +	switch (action) {
+> >>> +	case HDA_GEN_PCM_ACT_OPEN:
+> >>> +		pm_runtime_get_sync(dev);
+> >>
+> >> test if this actually works?
+> > 
+> > To be fair, most of driver codes don't check it, including the
+> > HD-audio core.  (Actually, over 900 of 1300 calls have no check in the
+> > whole tree.)
+> > 
+> > It implies that forcing the check in each place is moot; rather the
+> > helper needs to be coded not to fail, IMO.
+> 
+> Maybe that's true for HDaudio, for the SoundWire parts we absolutely
+> need to detect if the resume worked. There are more steps involved, the
+> clock-stop mode entry/exit, context restoration, re-enumeration, etc.
+> 
+> I think it'd be a mistake to sit on our hands and assume the world is
+> perfect. We have to track cases where the codec isn't properly resumed
+> and prevent it from accessing resources that are just unavailable.
 
-+1
+Yeah, I don't mean that it's wrong or bad to have the check.  The
+check should be there.
 
-> And this is a separate tag, so it's harder for the analysis tools
-> (whose output your customers must be interested in, too?) to
-> match the tag to the actual Author/Reviewer/...
+But, I feel that it's time to rather switch to the proper call.
+Basically pm_runtime_resume_and_get() is the better alternative
+(except for its long naming), and we may think of converting the
+whole.
 
-I think that's a key point. Having a separate tag denote the sponsor
-would make analysis a lot harder. We'd need to start writing parsers
-with much more context awareness.
+> >>> +static int tas2781_system_suspend(struct device *dev)
+> >>> +{
+> >>> +	struct tasdevice_priv *tas_priv = dev_get_drvdata(dev);
+> >>> +	int ret;
+> >>> +
+> >>> +	dev_dbg(tas_priv->dev, "System Suspend\n");
+> >>> +
+> >>> +	ret = pm_runtime_force_suspend(dev);
+> >>> +	if (ret)
+> >>> +		return ret;
+> >>
+> >> that's usually the other way around, for system suspend you either want
+> >> the device to be pm_runtime active, or if it's already suspended do nothing.
+> >>
+> >> This is very odd to me.
+> > 
+> > This is a normal procedure, as stated in pm_runtime_force_suspend()
+> > definition:
+> > 
+> > /**
+> >  * pm_runtime_force_suspend - Force a device into suspend state if needed.
+> > ....
+> >  * Typically this function may be invoked from a system suspend callback to make
+> >  * sure the device is put into low power state and it should only be used during
+> >  * system-wide PM transitions to sleep states.  It assumes that the analogous
+> >  * pm_runtime_force_resume() will be used to resume the device.
+> 
+> It's possible that it's fine for HDaudio, it wouldn't work in all cases
+> for SoundWire where we have to make sure all pm_runtime suspended
+> devices are brought back to D0 and then the regular system suspend
+> happens. That's mainly because pm_runtime suspend relies on clock stop
+> and system suspend does not.
+> 
+> In other words, this isn't a generic solution at all.
+
+Well, I suppose rather that soundwire is an exception :)
+
+For majority of devices, the system suspend/resume is nothing but
+pm_runtime_force_*() calls.  e.g. take a look at
+DEFINE_RUNTIME_DEV_PM_OPS() in linux/pm_runtime.h.
+
+
+Takashi
