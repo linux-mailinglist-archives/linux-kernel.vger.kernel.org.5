@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F057C78240A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221A0782412
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbjHUGw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:52:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S233542AbjHUG5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:57:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjHUGwz (ORCPT
+        with ESMTP id S229721AbjHUG5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:52:55 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFA4AF
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:52:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a85c5854deso373280b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:52:54 -0700 (PDT)
+        Mon, 21 Aug 2023 02:57:18 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FE1B1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:57:14 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso389033466b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692600773; x=1693205573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ve8D51PRNPIO0v8XFqJRtrlKQMMc1izQOOwzjOms4oM=;
-        b=HVgK2a04PyDpRfBCjcc//cMVzFPNj8VWQJlHGXckaQe38UawlQwmRbTjbQu51UlR5p
-         oTkpoSkmfnyEHehX3ZrBX545FhsRM2vxrHrSsKZKPK5xII4Ep8dkpnkvPt5+8WW3dCDy
-         rMbw1OMLUBMJyHGggmu3JDzILHxhYgzkBBAe80Bf+gm6WDsFGowxR4RqfuJvJkRtcs2p
-         l1kuBJ+1LQbjz0EPeARLbsgAF3UVfXJJHidizN7GwxXyZqry/FEaScrW1nnh7atq8/pg
-         oV2cQhSNsRlmbddFVC0NS+584xYBw5jiXhz3sn0WjPSfQVj7IRUK6JiVoT6YCYitROVD
-         ZSew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692600773; x=1693205573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1692601033; x=1693205833;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ve8D51PRNPIO0v8XFqJRtrlKQMMc1izQOOwzjOms4oM=;
-        b=R5mg1Pb6nwZUIX9QiqHI1QfGEfTl50jpRhk3EAtmTMgeD8FlppH4ynMRdkYNpE3q+4
-         /TylcoZBHd1kqMKKdMLfhPkMWbfw4krHtdUg2CxxmkeMAEIOgSeRuzDl/h2MF0DsNe06
-         J+ARNB3EmWkujVTAq/vIU7b1dRe6w9vMlXBHx/tZKj7X1naN39UBfvpY/gazXZtSzscR
-         T+1ImVkdvJBL1Ct0+0CMFWckvEnjU2EZVY3J9gPlzrdEQBi8n66lj2aw1of7CWhK8Mlj
-         IBW8FY20dMG1q2gS/9RbrvMNc4PN2phOLbXVRbwIgewiup5b59hhz9F1+mkXZKASBmVf
-         IAzA==
-X-Gm-Message-State: AOJu0YzVKQ62Mmw2cQaLeNxHSAT5mhO60u9c6i3Ph9xJyy1COkhaWFH6
-        +iOLRAKRrxMh9zAbRhNYA2PL9bsMiqe8471TXiE=
-X-Google-Smtp-Source: AGHT+IHCzbmFF/CCMTXlVU/61Q8U5IED/IrulPQT4R1ZXNHBKizJ+8pmgnMHsjQoT+FflakA4O/aWw==
-X-Received: by 2002:a54:4e1b:0:b0:3a8:4392:5b7 with SMTP id a27-20020a544e1b000000b003a8439205b7mr7489784oiy.39.1692600773712;
-        Sun, 20 Aug 2023 23:52:53 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id u15-20020a62ed0f000000b006887be16675sm5394897pfh.205.2023.08.20.23.52.52
+        bh=GcUST9SZiLfr9X1fVF/lhK99tBClYRjItpkjDoIilrQ=;
+        b=wy2C8SHGuYf3WfuX009mdzZ5XZKXm6x5wMJpS4OiokkuziP4cqnZdG+fHzQ2QU5akQ
+         WBx+QVHhzUKtcyMWCgKqeH+Lregd2W9LER2JfbaSHFRgTodkPg3vqhpnh30OkuVoiQJV
+         +PrBrZE7Bc8LC37QHBohIp452Sw5E9AJqeDNieWfb5DhnjTqMuKWYGClzsNBNS+74GrP
+         AW9S0TO6MGEG9Fw2tcCoYb2baNT7C6y3wMkxVf3fg+6MS5sieGbVOH/cYYnYrqyr2pRR
+         pPIG+EztF4fvGvIlY+fq4c8xGNL3nvNN28q3wxwd3NKv6L8VhlYAxY8uXmsSGXAyV78u
+         rvWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692601033; x=1693205833;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GcUST9SZiLfr9X1fVF/lhK99tBClYRjItpkjDoIilrQ=;
+        b=cwthZpw4FSirxfPhoP5V8ojgWwYfSVa8EQ2nTF9ze/kDmTJE3CwoQLL9mFymJHpX7N
+         rXDev9ESi2kivkuzJp5+NKghtGDOCd0vjSPesrgB59rF+UBMjQS5K5FD3S8dWtibLR6e
+         LKVLT2C/P63kvze4hS2+k/GqjMhZEJFtI4QGyO/DFvR7WnZvjl8pSGWIbTDgRI48eG40
+         M9NzZSZht+kq74O8Qfl45htqnX+5hDdcv26TAkzZXET8Xq20p7dUfaeOe1LWak4Nrqx/
+         wSI8VLLlDdRkg8zs1QUvC/T/icmDc6ITBjQFvVHheVz+TJmFEgMccfdhHtVIO0tqkE5a
+         98cQ==
+X-Gm-Message-State: AOJu0YxsHXV2fsA63DeZzEGkCiA434aXmn3i98peScphLssWTeRD3LZt
+        DtkMCYSNsQMW4T/HtNF9niixgD+jUe9xNaVuw7s=
+X-Google-Smtp-Source: AGHT+IFUiUHh7317bQXeLITJXa9V8OWztbob/uSWKTijDJIT0Ls0uhKEVMBmxWVIjxt06llzNnnQRQ==
+X-Received: by 2002:a17:906:209c:b0:99e:f3b:2f7d with SMTP id 28-20020a170906209c00b0099e0f3b2f7dmr4999921ejq.74.1692601032834;
+        Sun, 20 Aug 2023 23:57:12 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id m11-20020a170906160b00b00992f81122e1sm6073850ejd.21.2023.08.20.23.57.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 23:52:52 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 12:22:50 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: stats: Improve the performance of
- cpufreq_stats_create_table()
-Message-ID: <20230821065250.oz7jga5jcveiddlg@vireshk-i7>
-References: <20230818095000.937633-1-liaochang1@huawei.com>
+        Sun, 20 Aug 2023 23:57:12 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
+In-Reply-To: <20230816130057.28717-1-quic_kbajaj@quicinc.com>
+References: <20230816130057.28717-1-quic_kbajaj@quicinc.com>
+Subject: Re: [PATCH] nvmem: sec-qfprom: Remove unused variable 'ret'
+Message-Id: <169260103196.7216.15564466275943552417.b4-ty@linaro.org>
+Date:   Mon, 21 Aug 2023 07:57:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818095000.937633-1-liaochang1@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.2
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
@@ -73,40 +74,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-08-23, 09:50, Liao Chang wrote:
-> In the worst case, the freq_table of policy data is not sorted and
-> contains duplicate frequencies, this means that it needs to iterate
-> through the entire freq_table of policy to ensure each frequency is
-> unique in the freq_table of stats data, this has a time complexity of
-> O(N^2), where N is the number of frequencies in the freq_table of
-> policy.
-> 
-> However, if the policy.freq_table is already sorted and contains no
-> duplicate frequencices, it can reduce the time complexity of creating
-> stats.freq_table to O(N), the 'freq_table_sorted' field of policy data
-> can be used to indicate whether the policy.freq_table is sorted.
-> 
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
-> ---
->  drivers/cpufreq/cpufreq_stats.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq_stats.c b/drivers/cpufreq/cpufreq_stats.c
-> index 55c7ffd37d1c..fcb74050711a 100644
-> --- a/drivers/cpufreq/cpufreq_stats.c
-> +++ b/drivers/cpufreq/cpufreq_stats.c
-> @@ -243,7 +243,8 @@ void cpufreq_stats_create_table(struct cpufreq_policy *policy)
->  
->  	/* Find valid-unique entries */
->  	cpufreq_for_each_valid_entry(pos, policy->freq_table)
-> -		if (freq_table_get_index(stats, pos->frequency) == -1)
-> +		if ((policy->freq_table_sorted != CPUFREQ_TABLE_UNSORTED) ||
-> +		    (freq_table_get_index(stats, pos->frequency) == -1))
->  			stats->freq_table[i++] = pos->frequency;
->  
->  	stats->state_num = i;
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Wed, 16 Aug 2023 18:30:57 +0530, Komal Bajaj wrote:
+> This fixes:
+> drivers/nvmem/sec-qfprom.c:59:13: warning: unused variable 'ret' [-Wunused-variable]
+> 
+> 
 
+Applied, thanks!
+
+[1/1] nvmem: sec-qfprom: Remove unused variable 'ret'
+      commit: 2b30c8e6c9ac18d57a6afa09cb95d5d2cb28ba5f
+
+Best regards,
 -- 
-viresh
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
