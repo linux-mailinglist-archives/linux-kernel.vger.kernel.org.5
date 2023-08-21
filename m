@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6787782FBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A9C782FBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237046AbjHURz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 13:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45894 "EHLO
+        id S237050AbjHUR4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235538AbjHURz5 (ORCPT
+        with ESMTP id S235538AbjHUR4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:55:57 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E9A110
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:55:55 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7921b70c1a5so74009639f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:55:55 -0700 (PDT)
+        Mon, 21 Aug 2023 13:56:04 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906F4114;
+        Mon, 21 Aug 2023 10:56:01 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-579de633419so42713807b3.3;
+        Mon, 21 Aug 2023 10:56:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692640555; x=1693245355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4LXp8BI/ZNzwYn+mG+5eDjxBLnJtrOm6ePBhlGaTD0=;
-        b=Hu5+LaITbogxcRInB4RTgTaW3RfvrI2HKW10oGE8mh0mSlv7LxmfUCrLdlqgacejnZ
-         TUVELCwKBVZSWN9+E+g5JxtL4R7ZNAlgeUEkR3MX9DAA2jYNiZ8xaMUZggkq3YsfTEoq
-         +CqfXULnVABxeoBByjL1ExpK8RfBBpgJh09gs=
+        d=gmail.com; s=20221208; t=1692640561; x=1693245361;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1IL6PsZ9OIW8CBBVXv2ehcLQIm+WWtIFnIzb/l+zpLk=;
+        b=TWX7lffBPct1qvlfW3qU9Ap9Fg+KRhbsxXOv7jRclmTBu71TCxzsEsYYbjQjJA4Ss4
+         vn1V1eHrwyaARc2LpByLVKfJgL5I+fCN/NybF/u0YkAKX/vKR31O3ontvFJHl7dfID+5
+         LWDlgKai40GlUrsrnYpn2TzJZ7xBkIvRxkBOWAGQuIignlF81HU7qzipy2/86MeWWxyc
+         yeJao7ezJh5JmqPdxyfpgJuEmMHJnwDHPM982ScwWsXgtHy6cJKsGJ1bshzRBoDpxpQ7
+         R9B1DvxlEjG2gDp1BerJrsZtjBgyE0kwmeMLSnDBV+RnMHJ9Dp5FjAEY0isgktZj/FaQ
+         xBBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692640555; x=1693245355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f4LXp8BI/ZNzwYn+mG+5eDjxBLnJtrOm6ePBhlGaTD0=;
-        b=ed4ew6eyVqTcA0w+OAuO13xO/rM7RLKYRdO6r+MH9E1mZ6rjLzjm7h9vy83uMhEIV7
-         0szvQlyLzeeZRTOlBVsFUwssWaRTnP9vk5Z8pY3DR32Yf7U5NWY8U66XKTsRDyMQ8ikh
-         4nWnC/4D+sG8MBX71ji4nmWEqLfR9KIVB4H1TxGubUKDiOxXZ1M1yPFpBPE8W+esD3hN
-         YEY5dlKM+o0zdRhZGenW/X2P+wLiD1uFzeW7k2cgcqa2lcpR0NQZhuSGh5rtsbS/PZjM
-         ffG9uz8bZIPxs6UYtSoz1bDxY14nvSQ9ssfTpsq5s2gu5Os7C9vwfmkovoGQiaSRfqg/
-         cUNw==
-X-Gm-Message-State: AOJu0YzNMSc9oBYsUDd2btcxKN/VcR4jYHeEhZQ1+OBfDSX8WWpPvMdo
-        aQv/cOgo5N8dJtHOEWRrDtzXZA==
-X-Google-Smtp-Source: AGHT+IF7TTnToC23XlxUnS7LX48Lh/k0kd/vsHG2ZzfbWw891Kpv0bPaK8uV//GK7RZHZd+Hp9T3WA==
-X-Received: by 2002:a5d:9acc:0:b0:790:fa58:69d2 with SMTP id x12-20020a5d9acc000000b00790fa5869d2mr8598705ion.20.1692640555286;
-        Mon, 21 Aug 2023 10:55:55 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id q23-20020a02c8d7000000b0042baffe832fsm2519018jao.101.2023.08.21.10.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 10:55:54 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 17:55:54 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Tong Tiangen <tongtiangen@huawei.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] sched: Assert for_each_thread() is properly locked
-Message-ID: <20230821175554.GA595469@google.com>
-References: <20230821134428.2504912-1-willy@infradead.org>
+        d=1e100.net; s=20221208; t=1692640561; x=1693245361;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1IL6PsZ9OIW8CBBVXv2ehcLQIm+WWtIFnIzb/l+zpLk=;
+        b=ZXdtvZ9TG8E2t34d1k2qkkwDwOb4biv29j638/BKVJ6/hU8+Wu8uHVZVRdtBNfDM94
+         X7prhiJBidQsH5u0rZNn5RfQFp/TBvv0nppVHauTUbzKtUsyS8Ab46DpdTsNqUMevBa/
+         bF1ydHldJFIudk0itK5pc0SPm8sCZBxJqrD0YrSMXS3ImqUcvhayAZpvadjsqqMwYWDB
+         5rP4kHz88oEO7AEqCbt4NNjvOnjXQHsOv3JpQCc54BJdPiW/6Fp9sdACc2NXRZLrQShy
+         vYBnbrtCJ0FF/mkS5edldBLn8FZdUB4Ed44CBhfV2pmyRf5Ft3uCe8CXtNflszt/Ehs+
+         KYrw==
+X-Gm-Message-State: AOJu0Yy4CcDJDR5JsO1R6hlXreyimoZUDAerh6xMPhPRlZc8XZ5KJg05
+        +adFuaBR+mJqUCgIyNfa8DE=
+X-Google-Smtp-Source: AGHT+IGEBqzSbRI4exsGEK9v4MJmiN2lyZ9CEzVrmeK5vIqQRgEDCF/LuTfgi61qPIk74i3RmrApcw==
+X-Received: by 2002:a0d:ea91:0:b0:57a:6a2c:f4dd with SMTP id t139-20020a0dea91000000b0057a6a2cf4ddmr7888075ywe.36.1692640560176;
+        Mon, 21 Aug 2023 10:56:00 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:62f2:baa4:a7c0:4986? ([2600:1700:6cf8:1240:62f2:baa4:a7c0:4986])
+        by smtp.gmail.com with ESMTPSA id h129-20020a0dc587000000b00589f4021f84sm2370008ywd.37.2023.08.21.10.55.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 10:55:59 -0700 (PDT)
+Message-ID: <e0c71c5c-09e6-d94e-6db3-3acf3ee502d6@gmail.com>
+Date:   Mon, 21 Aug 2023 10:55:58 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821134428.2504912-1-willy@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ next_thread()
+To:     Oleg Nesterov <oleg@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230821150909.GA2431@redhat.com>
+Content-Language: en-US
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230821150909.GA2431@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 02:44:28PM +0100, Matthew Wilcox (Oracle) wrote:
-> list_for_each_entry_rcu() takes an optional fourth argument which
-> allows RCU to assert that the correct lock is held.  Several callers
-> of for_each_thread() rely on their caller to be holding the appropriate
-> lock, so this is a useful assertion to include.
+
+
+On 8/21/23 08:09, Oleg Nesterov wrote:
+> 1. find_pid_ns() + get_pid_task() under rcu_read_lock() guarantees that we
+>     can safely iterate the task->thread_group list. Even if this task exits
+>     right after get_pid_task() (or goto retry) and pid_alive() returns 0 >
+>     Kill the unnecessary pid_alive() check.
+
+This function will return next_task holding a refcount, and release the
+refcount until the next time calling the same function. Meanwhile,
+the returned task A may be killed, and its next task B may be
+killed after A as well, before calling this function again.
+However, even task B is destroyed (free), A's next is still pointing to
+task B. When this function is called again for the same iterator,
+it doesn't promise that B is still there.
+
+Does that make sense to you?
+
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-thanks,
-
- - Joel
-
-
+> 2. next_thread() simply can't return NULL, kill the bogus "if (!next_task)"
+>     check.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
 > ---
->  include/linux/sched/signal.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>   kernel/bpf/task_iter.c | 7 -------
+>   1 file changed, 7 deletions(-)
 > 
-> diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-> index 669e8cff40c7..f1eae7f53be9 100644
-> --- a/include/linux/sched/signal.h
-> +++ b/include/linux/sched/signal.h
-> @@ -659,7 +659,8 @@ extern bool current_is_single_threaded(void);
->  	while ((t = next_thread(t)) != g)
->  
->  #define __for_each_thread(signal, t)	\
-> -	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node)
-> +	list_for_each_entry_rcu(t, &(signal)->thread_head, thread_node, \
-> +		lockdep_is_held(&tasklist_lock))
->  
->  #define for_each_thread(p, t)		\
->  	__for_each_thread((p)->signal, t)
-> -- 
-> 2.40.1
-> 
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index c4ab9d6cdbe9..4d1125108014 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -75,15 +75,8 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+>   		return NULL;
+>   
+>   retry:
+> -	if (!pid_alive(task)) {
+> -		put_task_struct(task);
+> -		return NULL;
+> -	}
+> -
+>   	next_task = next_thread(task);
+>   	put_task_struct(task);
+> -	if (!next_task)
+> -		return NULL;
+>   
+>   	saved_tid = *tid;
+>   	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
