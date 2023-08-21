@@ -2,137 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E194478261B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE0E78261C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbjHUJPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56792 "EHLO
+        id S234298AbjHUJPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjHUJPA (ORCPT
+        with ESMTP id S231462AbjHUJPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:15:00 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8444C4;
-        Mon, 21 Aug 2023 02:14:58 -0700 (PDT)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so417813466b.2;
-        Mon, 21 Aug 2023 02:14:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692609297; x=1693214097;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UpG3bxwS+S9drLhaB5/FobyEs+sUxj7iEfo0y874pXk=;
-        b=a8j096j1+xDQ1WsG1Fk8KGbcijGj8MCLho+lN2F68bByzv40lzTx3uQfzNA064cdOV
-         co2XmofkYCB25He3PPjyAWbdSkxLGv8tLKN5wkNARjb4O4fdHCIv1huHGZ5JCAfIKGTM
-         Cx58R14mvjOKu0wqG/rJOmWY4qKfymzNx+1VS+9HP/mCapf9mnVMVhJWDBnY6VMwC32l
-         LUQ25OdLCY0NBNfqSr/X7lZh6tfPAmXV2/I9nz0t7sJHao2sUQvpARNHiWAzgH5gYeu3
-         xdAuHNlKK87G30Wi5/ySts/nojrhGbMdVvezoAwctMBnOJjHmgrzZjc1IA+aAt9AC1F5
-         I8/g==
-X-Gm-Message-State: AOJu0YxTrQGTgHI5hbFTFheik0/PmecmrI75kTp+CzdrrwBvqVL2yQd7
-        rZ17WVYgV9kU9Bgn5BRSnfA=
-X-Google-Smtp-Source: AGHT+IGFic37eOYov7SsTkxzJmjYislTT3nebBTbCkzivHmNuaErR7LQXe3TwD4/wsDnov6EXzZ1sA==
-X-Received: by 2002:a17:907:778d:b0:99e:1265:5463 with SMTP id ky13-20020a170907778d00b0099e12655463mr4836781ejc.46.1692609297146;
-        Mon, 21 Aug 2023 02:14:57 -0700 (PDT)
-Received: from gmail.com (fwdproxy-cln-007.fbsv.net. [2a03:2880:31ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id s16-20020a1709067b9000b009932337747esm6170342ejo.86.2023.08.21.02.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 02:14:56 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 02:14:55 -0700
-From:   Breno Leitao <leitao@debian.org>
-To:     Gabriel Krisman Bertazi <krisman@suse.de>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
-Message-ID: <ZOMrD1DHeys0nFwt@gmail.com>
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-9-leitao@debian.org>
- <87pm3l32rk.fsf@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pm3l32rk.fsf@suse.de>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 05:15:03 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3DEC4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:15:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AA77F205D1;
+        Mon, 21 Aug 2023 09:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1692609300; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8hLfrEfmkYRdElw8Vnuc1F8YeyR+EXUajtCjcvHBUg=;
+        b=EF1EJYsEonKlQFeYcgRZxP+lFxb9MGXTIN3ApbeZsK+xRyiPL94m7Eh6veWXzhXUtXCbjF
+        lSwUzgVdIRZqgUZQCs+HNtFiolerVLKf0vJAtkz42byw7lpZfZBN12CSb9vjIFzavSjazr
+        jevmyudPmxrJJy30glO0DmROvghQyms=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1692609300;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l8hLfrEfmkYRdElw8Vnuc1F8YeyR+EXUajtCjcvHBUg=;
+        b=QIwWoN2vdqVRUjKakqnuINngn/d1tWypJDIyf3bCBH14x8YIVjvfDm0TXlsRHMEoHn4Jv/
+        RvhHrf5NYxmiSsBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 485231330D;
+        Mon, 21 Aug 2023 09:15:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id hGv9DxQr42TYVQAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 21 Aug 2023 09:15:00 +0000
+Date:   Mon, 21 Aug 2023 11:14:59 +0200
+Message-ID: <87jzto92p8.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Shenghao Ding <shenghao-ding@ti.com>, robh+dt@kernel.org,
+        lgirdwood@gmail.com, perex@perex.cz, kevin-lu@ti.com,
+        13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v3 2/2] ALSA: hda/tas2781: Add tas2781 HDA driver
+In-Reply-To: <ZOMpDEZoF8ZK7vU0@smile.fi.intel.com>
+References: <20230818085558.1431-1-shenghao-ding@ti.com>
+        <20230818085558.1431-2-shenghao-ding@ti.com>
+        <4c1b44b5-995a-fac7-a72b-89b8bf816dd2@linux.intel.com>
+        <ZN+j3LmfUW2vB+QS@smile.fi.intel.com>
+        <87jztq9iqv.wl-tiwai@suse.de>
+        <ZOMpDEZoF8ZK7vU0@smile.fi.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 03:08:47PM -0400, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
+On Mon, 21 Aug 2023 11:06:20 +0200,
+Andy Shevchenko wrote:
 > 
-> > Add BPF hook support for getsockopts io_uring command. So, BPF cgroups
-> > programs can run when SOCKET_URING_OP_GETSOCKOPT command is executed
-> > through io_uring.
-> >
-> > This implementation follows a similar approach to what
-> > __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
-> > kernel pointer.
-> >
-> > Signed-off-by: Breno Leitao <leitao@debian.org>
-> > ---
-> >  io_uring/uring_cmd.c | 18 +++++++++++++-----
-> >  1 file changed, 13 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
-> > index a567dd32df00..9e08a14760c3 100644
-> > --- a/io_uring/uring_cmd.c
-> > +++ b/io_uring/uring_cmd.c
-> > @@ -5,6 +5,8 @@
-> >  #include <linux/io_uring.h>
-> >  #include <linux/security.h>
-> >  #include <linux/nospec.h>
-> > +#include <linux/compat.h>
-> > +#include <linux/bpf-cgroup.h>
-> >  
-> >  #include <uapi/linux/io_uring.h>
-> >  #include <uapi/asm-generic/ioctls.h>
-> > @@ -184,17 +186,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
-> >  	if (err)
-> >  		return err;
-> >  
-> > -	if (level == SOL_SOCKET) {
-> > +	err = -EOPNOTSUPP;
-> > +	if (level == SOL_SOCKET)
-> >  		err = sk_getsockopt(sock->sk, level, optname,
-> >  				    USER_SOCKPTR(optval),
-> >  				    KERNEL_SOCKPTR(&optlen));
-> > -		if (err)
-> > -			return err;
-> >  
-> > +	if (!(issue_flags & IO_URING_F_COMPAT))
-> > +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
-> > +						     optname,
-> > +						     USER_SOCKPTR(optval),
-> > +						     KERNEL_SOCKPTR(&optlen),
-> > +						     optlen, err);
-> > +
-> > +	if (!err)
-> >  		return optlen;
-> > -	}
+> On Sun, Aug 20, 2023 at 11:16:08AM +0200, Takashi Iwai wrote:
+> > On Fri, 18 Aug 2023 19:01:16 +0200,
+> > Andy Shevchenko wrote:
+> > > On Fri, Aug 18, 2023 at 11:00:34AM -0500, Pierre-Louis Bossart wrote:
 > 
-> Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
-> running the hook?
-> Before this patch, it would bail out with EOPNOTSUPP,
-> but now the bpf hook gets called even for level!=SOL_SOCKET, which
-> doesn't fit __sys_getsockopt. Am I misreading the code?
+> ...
+> 
+> > > > > +static void tas2781_fixup_i2c(struct hda_codec *cdc,
+> > > > > +	const struct hda_fixup *fix, int action)
+> > > > > +{
+> > > > > +	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+> > > > 
+> > > > TI ACPI ID is TXNW
+> > > > 
+> > > > https://uefi.org/ACPI_ID_List?search=TEXAS
+> > > > 
+> > > > There's also a PNP ID PXN
+> > > > 
+> > > > https://uefi.org/PNP_ID_List?search=TEXAS
+> > > > 
+> > > > "TIAS" looks like an invented identifier. It's not uncommon but should
+> > > > be recorded with a comment if I am not mistaken.
+> > > > 
+> > > > > +}
+> > > 
+> > > Thank you, but actually it's a strong NAK to this even with the comment.
+> > > We have to teach people to follow the specification (may be even hard way).
+> > > 
+> > > So where did you get the ill-formed ACPI ID?
+> > > Is Texas Instrument aware of this?
+> > > Can we have a confirmation letter from TI for this ID, please?
+> > 
+> > This is used already for products that have been long in the market,
+> > so it's way too late to correct it, I'm afraid.
+> > 
+> > What we can do is to get the confirmation from TI, complain it, and
+> > some verbose comment in the code, indeed.
+> 
+> Oh, no! Who made that ID, I really want to point that at their faces.
+> Look at the Coreboot (successful) case, they created something, but
+> in time asked and then actually fixed the ill-formed ID (that was for
+> one of RTC chips).
+> 
+> For this, please make sure that commit message has that summary, explaining that
+> - states that ID is ill-formed
+> - states that there are products with it (DSDT excerpt is a must)
+> - lists (a few?) products where that ID is used
+> - ideally explains who invented that and Cc them to the patch, so they will
+>   know they made a big mistake
 
-Not really, sock->ops->getsockopt() does not suport sockptr_t, but
-__user addresses, differently from setsockopt()
+Sure, we should complain further and ask them that such a problem
+won't happen again.  I'm 100% for it.
 
-          int             (*setsockopt)(struct socket *sock, int level,
-                                        int optname, sockptr_t optval,
-                                        unsigned int optlen);
-          int             (*getsockopt)(struct socket *sock, int level,
-                                        int optname, char __user *optval, int __user *optlen);
+But the fact is that lots of machines have been already shipped with
+this ID since long time ago, and 99.99% of them have been running on
+Windows.  Hence I expect that the chance to get a corrected ID is very
+very low, and waiting for the support on Linux until the correction of
+ID actually happens makes little sense; that's my point.
 
-In order to be able to call sock->ops->getsockopt(), the callback
-function will need to accepted sockptr.
 
+Takashi
