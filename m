@@ -2,226 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892B9782B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CB7782B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbjHUOOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
+        id S235134AbjHUOTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235707AbjHUOOD (ORCPT
+        with ESMTP id S233018AbjHUOTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:14:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68587EA;
-        Mon, 21 Aug 2023 07:14:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 058C7638C1;
-        Mon, 21 Aug 2023 14:14:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D104DC433C8;
-        Mon, 21 Aug 2023 14:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692627240;
-        bh=5gUTAfgaNjeoGwu/2apaMA0aLSQXYkeQRVkPLtuVPZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m/J7A79A0SDzdrAEKBdpzJr9N8DNZ/e5xLBvuOshu9HA7JrGvcFz12W/63FwVo25F
-         eZ78QznYij9DisqTzauIVgagS+eVIU8/Ih09qntNdCYvp0kuhnRVAD1okhCHVS+J9e
-         UrXzENOm1IcNz1TnB4jrQPb7fKykQtPYrOGXBmhtAHthPSr3WhnTYa+nEmxwr81ReV
-         DoJUAXcdhwal/Sut1CRL5a1vhcZwBZzD67RZNVYR4qftfE/+B8mb+6y9Ce4yf/agk8
-         ugDSs1f4xj6R2co8+/7KsKefeOADtzsALYSzEQ1Wxtkxf43diNrGDjyDiEmomlesFL
-         sSWqiJW3KMyaQ==
-Date:   Mon, 21 Aug 2023 16:13:54 +0200
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Doug Anderson <dianders@google.com>
-Cc:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-        benjamin.tissoires@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        dmitry.torokhov@gmail.com, jikos@kernel.org, hsinyi@google.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] HID: i2c-hid: elan: Add ili9882t timing
-Message-ID: <dqom52gdxgsglhkfrl43peoh2lw2npmx6libdeulmyi67nszat@vqlvijq5mld7>
-References: <20230802071947.1683318-1-yangcong5@huaqin.corp-partner.google.com>
- <20230802071947.1683318-3-yangcong5@huaqin.corp-partner.google.com>
- <CAD=FV=Um8875aMt_kWvCvpNjb3EwSk8VjVTEgv_TJ9WDS+LniA@mail.gmail.com>
- <lyns4qkh57xhppnqroaooqtniypfsmr2l5fujlry3stmhrjww4@3iy5mmmrazl6>
- <CAD=FV=UFM-5XFsTRt7LPXsN9Fjff33khYGQM+XqcLF1YdsRY4Q@mail.gmail.com>
+        Mon, 21 Aug 2023 10:19:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D111B11C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692627567; x=1724163567;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DcPW1SNfyQwZtUyE3xJVKI0a6fgEAr7OmdT6jvOGal0=;
+  b=NFIfxVX9ac4lejG79Zj2t0IcmQ4TJOo9b1ZE6qZqv6r7qJ9eP6PkN5Jf
+   g9ua2zbxYQWoNlYn/G7e7H2HDTFJPJWtMDNxgc2c/PCttDYjD9CZi7LdX
+   BXhHShgTZ08iPwe59almEbpM5QD3gkQVRJogmj6zlI6gebuZ3MHQ9MkIX
+   8r9WfKKhwoRdjqAyyrwgxiS/iRqwlmiT7ablSgZzPamUwVmdhjm+N5MHQ
+   e9empEDJe4Bks1xS3eUH8P1bpV+4L85MqjD+kAmv3VDDDHv1iA2lGJYFj
+   uBzbBQd1/wTrUYAbVsSvfv5U0lhOJL2IXq6AoJmjev18g0mwsdPyqkqRb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="459969616"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="459969616"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 07:18:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="735847107"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="735847107"
+Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 21 Aug 2023 07:18:41 -0700
+Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qY5in-0000Yd-2B;
+        Mon, 21 Aug 2023 14:17:56 +0000
+Date:   Mon, 21 Aug 2023 22:14:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>
+Subject: arch/arm/common/locomo.c:368: warning: Function parameter or member
+ 'me' not described in '__locomo_probe'
+Message-ID: <202308212211.KSITn7l9-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=UFM-5XFsTRt7LPXsN9Fjff33khYGQM+XqcLF1YdsRY4Q@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 21 2023, Doug Anderson wrote:
-> Hi,
-> 
-> On Mon, Aug 21, 2023 at 2:01 AM Benjamin Tissoires <bentiss@kernel.org> wrote:
-> >
-> > On Aug 02 2023, Doug Anderson wrote:
-> > > Benjamin,
-> > >
-> > > On Wed, Aug 2, 2023 at 12:20 AM Cong Yang
-> > > <yangcong5@huaqin.corp-partner.google.com> wrote:
-> > > >
-> > > > The ili9882t is a TDDI IC (Touch with Display Driver). The
-> > > > datasheet specifies there should be 60ms between touch SDA
-> > > > sleep and panel RESX. Doug's series[1] allows panels and
-> > > > touchscreens to power on/off together, so we can add the 65 ms
-> > > > delay in i2c_hid_core_suspend before panel_unprepare.
-> > > >
-> > > > Because ili9882t touchscrgeen is a panel follower, and
-> > > > needs to use vccio-supply instead of vcc33-supply, so set
-> > > > it NULL to ili9882t_chip_data, then not use vcc33 regulator.
-> > > >
-> > > > [1]: https://lore.kernel.org/all/20230727171750.633410-1-dianders@chromium.org
-> > > >
-> > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > > > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
-> > > > ---
-> > > >  drivers/hid/i2c-hid/i2c-hid-of-elan.c | 50 ++++++++++++++++++++-------
-> > > >  1 file changed, 38 insertions(+), 12 deletions(-)
-> > >
-> > >
-> > > >
-> > > > diff --git a/drivers/hid/i2c-hid/i2c-hid-of-elan.c b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
-> > > > index 029045d9661c..31abab57ad44 100644
-> > > > --- a/drivers/hid/i2c-hid/i2c-hid-of-elan.c
-> > > > +++ b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
-> > > > @@ -18,9 +18,11 @@
-> > > >  #include "i2c-hid.h"
-> > > >
-> > > >  struct elan_i2c_hid_chip_data {
-> > > > -       unsigned int post_gpio_reset_delay_ms;
-> > > > +       unsigned int post_gpio_reset_on_delay_ms;
-> > > > +       unsigned int post_gpio_reset_off_delay_ms;
-> > > >         unsigned int post_power_delay_ms;
-> > > >         u16 hid_descriptor_address;
-> > > > +       const char *main_supply_name;
-> > > >  };
-> > > >
-> > > >  struct i2c_hid_of_elan {
-> > > > @@ -38,9 +40,11 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *ops)
-> > > >                 container_of(ops, struct i2c_hid_of_elan, ops);
-> > > >         int ret;
-> > > >
-> > > > -       ret = regulator_enable(ihid_elan->vcc33);
-> > > > -       if (ret)
-> > > > -               return ret;
-> > > > +       if (ihid_elan->vcc33) {
-> > > > +               ret = regulator_enable(ihid_elan->vcc33);
-> > > > +               if (ret)
-> > > > +                       return ret;
-> > > > +       }
-> > > >
-> > > >         ret = regulator_enable(ihid_elan->vccio);
-> > > >         if (ret) {
-> > > > @@ -52,8 +56,8 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *ops)
-> > > >                 msleep(ihid_elan->chip_data->post_power_delay_ms);
-> > > >
-> > > >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 0);
-> > > > -       if (ihid_elan->chip_data->post_gpio_reset_delay_ms)
-> > > > -               msleep(ihid_elan->chip_data->post_gpio_reset_delay_ms);
-> > > > +       if (ihid_elan->chip_data->post_gpio_reset_on_delay_ms)
-> > > > +               msleep(ihid_elan->chip_data->post_gpio_reset_on_delay_ms);
-> > > >
-> > > >         return 0;
-> > > >  }
-> > > > @@ -64,8 +68,12 @@ static void elan_i2c_hid_power_down(struct i2chid_ops *ops)
-> > > >                 container_of(ops, struct i2c_hid_of_elan, ops);
-> > > >
-> > > >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 1);
-> > > > +       if (ihid_elan->chip_data->post_gpio_reset_off_delay_ms)
-> > > > +               msleep(ihid_elan->chip_data->post_gpio_reset_off_delay_ms);
-> > > > +
-> > > >         regulator_disable(ihid_elan->vccio);
-> > > > -       regulator_disable(ihid_elan->vcc33);
-> > > > +       if (ihid_elan->vcc33)
-> > > > +               regulator_disable(ihid_elan->vcc33);
-> > > >  }
-> > > >
-> > > >  static int i2c_hid_of_elan_probe(struct i2c_client *client)
-> > > > @@ -89,24 +97,42 @@ static int i2c_hid_of_elan_probe(struct i2c_client *client)
-> > > >         if (IS_ERR(ihid_elan->vccio))
-> > > >                 return PTR_ERR(ihid_elan->vccio);
-> > > >
-> > > > -       ihid_elan->vcc33 = devm_regulator_get(&client->dev, "vcc33");
-> > > > -       if (IS_ERR(ihid_elan->vcc33))
-> > > > -               return PTR_ERR(ihid_elan->vcc33);
-> > > > -
-> > > >         ihid_elan->chip_data = device_get_match_data(&client->dev);
-> > > >
-> > > > +       if (ihid_elan->chip_data->main_supply_name) {
-> > > > +               ihid_elan->vcc33 = devm_regulator_get(&client->dev,
-> > > > +                                                     ihid_elan->chip_data->main_supply_name);
-> > > > +               if (IS_ERR(ihid_elan->vcc33))
-> > > > +                       return PTR_ERR(ihid_elan->vcc33);
-> > > > +       }
-> > > > +
-> > > >         return i2c_hid_core_probe(client, &ihid_elan->ops,
-> > > >                                   ihid_elan->chip_data->hid_descriptor_address, 0);
-> > > >  }
-> > > >
-> > > >  static const struct elan_i2c_hid_chip_data elan_ekth6915_chip_data = {
-> > > >         .post_power_delay_ms = 1,
-> > > > -       .post_gpio_reset_delay_ms = 300,
-> > > > +       .post_gpio_reset_on_delay_ms = 300,
-> > > > +       .hid_descriptor_address = 0x0001,
-> > > > +       .main_supply_name = "vcc33",
-> > > > +};
-> > > > +
-> > > > +static const struct elan_i2c_hid_chip_data ilitek_ili9882t_chip_data = {
-> > > > +       .post_power_delay_ms = 1,
-> > > > +       .post_gpio_reset_on_delay_ms = 200,
-> > > > +       .post_gpio_reset_off_delay_ms = 65,
-> > > >         .hid_descriptor_address = 0x0001,
-> > > > +       /*
-> > > > +        * this touchscreen is tightly integrated with the panel and assumes
-> > > > +        * that the relevant power rails (other than the IO rail) have already
-> > > > +        * been turned on by the panel driver because we're a panel follower.
-> > > > +        */
-> > > > +       .main_supply_name = NULL,
-> > > >  };
-> > > >
-> > > >  static const struct of_device_id elan_i2c_hid_of_match[] = {
-> > > >         { .compatible = "elan,ekth6915", .data = &elan_ekth6915_chip_data },
-> > > > +       { .compatible = "ilitek,ili9882t", .data = &ilitek_ili9882t_chip_data },
-> > >
-> > > Logically, this patch depends on the panel-follower series that's now
-> > > landed in drm-misc-next. With your Ack, I'm willing to land these two
-> > > patches into drm-misc-next too. Other options:
-> >
-> > If you are fine with the code, I think it could go with the drm tree
-> > given that it depends on the panel-follower.
-> >
-> > Unless it's too late for you to take 6.6 material (sorry I was off in
-> > August and just came back).
-> >
-> > Acked-By: Benjamin Tissoires <bentiss@kernel.org>
-> 
-> Thanks for the Ack, but yeah, it's probably too late for drm-misc.
-> Hopefully this can go through the normal tree after the next -rc1
-> then. Thanks!
+Hi Nathan,
 
-We don't have those strict rules in hid.git. And given that I was in
-PTO, I think it's fine if we take the patch now if it's compiling fine
-on its own and doesn't break on existing hardware. What are the
-consequences of using this patch without the panel-follower series?
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-Also, does it has enough reviews from the DT folks?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f7757129e3dea336c407551c98f50057c22bb266
+commit: 5eb6e280432ddc9b755193552f3a070da8d7455c ARM: 9289/1: Allow pre-ARMv5 builds with ld.lld 16.0.0 and newer
+date:   7 months ago
+config: arm-collie_defconfig (https://download.01.org/0day-ci/archive/20230821/202308212211.KSITn7l9-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce: (https://download.01.org/0day-ci/archive/20230821/202308212211.KSITn7l9-lkp@intel.com/reproduce)
 
-Cheers,
-Benjamin
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308212211.KSITn7l9-lkp@intel.com/
 
-> 
-> -Doug
+All warnings (new ones prefixed by >>):
+
+>> arch/arm/common/locomo.c:368: warning: Function parameter or member 'me' not described in '__locomo_probe'
+>> arch/arm/common/locomo.c:368: warning: Function parameter or member 'mem' not described in '__locomo_probe'
+>> arch/arm/common/locomo.c:368: warning: Function parameter or member 'irq' not described in '__locomo_probe'
+>> arch/arm/common/locomo.c:368: warning: expecting prototype for locomo_probe(). Prototype was for __locomo_probe() instead
+--
+>> drivers/pcmcia/pxa2xx_sharpsl.c:206:5: warning: no previous prototype for function 'pcmcia_collie_init' [-Wmissing-prototypes]
+     206 | int pcmcia_collie_init(struct device *dev)
+         |     ^
+   drivers/pcmcia/pxa2xx_sharpsl.c:206:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     206 | int pcmcia_collie_init(struct device *dev)
+         | ^
+         | static 
+   1 warning generated.
+--
+>> drivers/video/fbdev/sa1100fb.c:1219:12: warning: no previous prototype for function 'sa1100fb_init' [-Wmissing-prototypes]
+    1219 | int __init sa1100fb_init(void)
+         |            ^
+   drivers/video/fbdev/sa1100fb.c:1219:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+    1219 | int __init sa1100fb_init(void)
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +368 arch/arm/common/locomo.c
+
+b38d950d3aedf9 John Lenz         2005-09-08  352  
+4ebf2d00260bac Pavel Machek      2006-03-15  353  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  354  /**
+^1da177e4c3f41 Linus Torvalds    2005-04-16  355   *	locomo_probe - probe for a single LoCoMo chip.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  356   *	@phys_addr: physical address of device.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  357   *
+^1da177e4c3f41 Linus Torvalds    2005-04-16  358   *	Probe for a LoCoMo chip.  This must be called
+^1da177e4c3f41 Linus Torvalds    2005-04-16  359   *	before any other locomo-specific code.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  360   *
+^1da177e4c3f41 Linus Torvalds    2005-04-16  361   *	Returns:
+^1da177e4c3f41 Linus Torvalds    2005-04-16  362   *	%-ENODEV	device not found.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  363   *	%-EBUSY		physical address already marked in-use.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  364   *	%0		successful.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  365   */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  366  static int
+^1da177e4c3f41 Linus Torvalds    2005-04-16  367  __locomo_probe(struct device *me, struct resource *mem, int irq)
+^1da177e4c3f41 Linus Torvalds    2005-04-16 @368  {
+ac609d266e4af4 Eric Miao         2010-02-04  369  	struct locomo_platform_data *pdata = me->platform_data;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  370  	struct locomo *lchip;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  371  	unsigned long r;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  372  	int i, ret = -ENODEV;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  373  
+d2a02b93cf7820 Russell King      2006-03-20  374  	lchip = kzalloc(sizeof(struct locomo), GFP_KERNEL);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  375  	if (!lchip)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  376  		return -ENOMEM;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  377  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  378  	spin_lock_init(&lchip->lock);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  379  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  380  	lchip->dev = me;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  381  	dev_set_drvdata(lchip->dev, lchip);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  382  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  383  	lchip->phys = mem->start;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  384  	lchip->irq = irq;
+ac609d266e4af4 Eric Miao         2010-02-04  385  	lchip->irq_base = (pdata) ? pdata->irq_base : NO_IRQ;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  386  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  387  	/*
+^1da177e4c3f41 Linus Torvalds    2005-04-16  388  	 * Map the whole region.  This also maps the
+^1da177e4c3f41 Linus Torvalds    2005-04-16  389  	 * registers for our children.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  390  	 */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  391  	lchip->base = ioremap(mem->start, PAGE_SIZE);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  392  	if (!lchip->base) {
+^1da177e4c3f41 Linus Torvalds    2005-04-16  393  		ret = -ENOMEM;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  394  		goto out;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  395  	}
+^1da177e4c3f41 Linus Torvalds    2005-04-16  396  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  397  	/* locomo initialize */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  398  	locomo_writel(0, lchip->base + LOCOMO_ICR);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  399  	/* KEYBOARD */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  400  	locomo_writel(0, lchip->base + LOCOMO_KEYBOARD + LOCOMO_KIC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  401  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  402  	/* GPIO */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  403  	locomo_writel(0, lchip->base + LOCOMO_GPO);
+2a52efb2cecf78 Thomas Kunze      2008-04-29  404  	locomo_writel((LOCOMO_GPIO(1) | LOCOMO_GPIO(2) | LOCOMO_GPIO(13) | LOCOMO_GPIO(14))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  405  			, lchip->base + LOCOMO_GPE);
+2a52efb2cecf78 Thomas Kunze      2008-04-29  406  	locomo_writel((LOCOMO_GPIO(1) | LOCOMO_GPIO(2) | LOCOMO_GPIO(13) | LOCOMO_GPIO(14))
+^1da177e4c3f41 Linus Torvalds    2005-04-16  407  			, lchip->base + LOCOMO_GPD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  408  	locomo_writel(0, lchip->base + LOCOMO_GIE);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  409  
+e4423781850025 Richard Purdie    2006-06-26  410  	/* Frontlight */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  411  	locomo_writel(0, lchip->base + LOCOMO_FRONTLIGHT + LOCOMO_ALS);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  412  	locomo_writel(0, lchip->base + LOCOMO_FRONTLIGHT + LOCOMO_ALD);
+4ebf2d00260bac Pavel Machek      2006-03-15  413  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  414  	/* Longtime timer */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  415  	locomo_writel(0, lchip->base + LOCOMO_LTINT);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  416  	/* SPI */
+1b0d76cb9d5a65 H Hartley Sweeten 2010-03-22  417  	locomo_writel(0, lchip->base + LOCOMO_SPI + LOCOMO_SPIIE);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  418  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  419  	locomo_writel(6 + 8 + 320 + 30 - 10, lchip->base + LOCOMO_ASD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  420  	r = locomo_readl(lchip->base + LOCOMO_ASD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  421  	r |= 0x8000;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  422  	locomo_writel(r, lchip->base + LOCOMO_ASD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  423  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  424  	locomo_writel(6 + 8 + 320 + 30 - 10 - 128 + 4, lchip->base + LOCOMO_HSD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  425  	r = locomo_readl(lchip->base + LOCOMO_HSD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  426  	r |= 0x8000;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  427  	locomo_writel(r, lchip->base + LOCOMO_HSD);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  428  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  429  	locomo_writel(128 / 8, lchip->base + LOCOMO_HSC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  430  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  431  	/* XON */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  432  	locomo_writel(0x80, lchip->base + LOCOMO_TADC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  433  	udelay(1000);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  434  	/* CLK9MEN */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  435  	r = locomo_readl(lchip->base + LOCOMO_TADC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  436  	r |= 0x10;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  437  	locomo_writel(r, lchip->base + LOCOMO_TADC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  438  	udelay(100);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  439  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  440  	/* init DAC */
+^1da177e4c3f41 Linus Torvalds    2005-04-16  441  	r = locomo_readl(lchip->base + LOCOMO_DAC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  442  	r |= LOCOMO_DAC_SCLOEB | LOCOMO_DAC_SDAOEB;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  443  	locomo_writel(r, lchip->base + LOCOMO_DAC);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  444  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  445  	r = locomo_readl(lchip->base + LOCOMO_VER);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  446  	printk(KERN_INFO "LoCoMo Chip: %lu%lu\n", (r >> 8), (r & 0xff));
+^1da177e4c3f41 Linus Torvalds    2005-04-16  447  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  448  	/*
+^1da177e4c3f41 Linus Torvalds    2005-04-16  449  	 * The interrupt controller must be initialised before any
+^1da177e4c3f41 Linus Torvalds    2005-04-16  450  	 * other device to ensure that the interrupts are available.
+^1da177e4c3f41 Linus Torvalds    2005-04-16  451  	 */
+ac609d266e4af4 Eric Miao         2010-02-04  452  	if (lchip->irq != NO_IRQ && lchip->irq_base != NO_IRQ)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  453  		locomo_setup_irq(lchip);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  454  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  455  	for (i = 0; i < ARRAY_SIZE(locomo_devices); i++)
+^1da177e4c3f41 Linus Torvalds    2005-04-16  456  		locomo_init_one_child(lchip, &locomo_devices[i]);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  457  	return 0;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  458  
+^1da177e4c3f41 Linus Torvalds    2005-04-16  459   out:
+^1da177e4c3f41 Linus Torvalds    2005-04-16  460  	kfree(lchip);
+^1da177e4c3f41 Linus Torvalds    2005-04-16  461  	return ret;
+^1da177e4c3f41 Linus Torvalds    2005-04-16  462  }
+^1da177e4c3f41 Linus Torvalds    2005-04-16  463  
+
+:::::: The code at line 368 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
