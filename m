@@ -2,253 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8117827DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC1C7827E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjHUL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
+        id S232313AbjHUL1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232057AbjHUL04 (ORCPT
+        with ESMTP id S232252AbjHUL1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:26:56 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4090CDC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:26:54 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-79da1a3e2e2so664261241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:26:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1692617213; x=1693222013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yQweSB9p5x5zw2Ntwmkzw5TwR7FXShxzU1EdWKawLYM=;
-        b=mUkhrVmKi5g6KT8AQIPzesSpQcOlIKn7deqxTPTvuhA/LlTysRMOHnunvMFHKQIUqj
-         nM4Emmc2akecQe0OG5LJ2F8SVLInSz8VZ6NP5Iz1lxG0XrBlBGZaeQqwyKFLYTg8I8cA
-         BuGtuCIWZkysBAkdV8U2+GPPZ+jSDockvpQXe1SKGrfDlc/u/F8VepkKrv+RnP+PVF0/
-         kwaSX5/jYjHclHmo2HWdRF5RkpspusAHhXiHluxXdV2uNlHTAbU3LuzqEXEuFQdfWp0u
-         I77CqQFpnVF1XAWXQVvhQDfGHIrENi9XH1DlD4DmtGb57EuaJM5pGhhuhbUcItBlNxxa
-         eRmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692617213; x=1693222013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yQweSB9p5x5zw2Ntwmkzw5TwR7FXShxzU1EdWKawLYM=;
-        b=IUglyWZaNdOPFk8tNMuDMRgPoZWNmTukNyxRNuzwEh6A13ubqQATOIDFKfaXCx7LHg
-         fE9V+B75QyTCfo+YrYbSu1/GdjQ7RcEYBnukql9OAa4SgoEYvbYkVpgRv5q4ZUq9Z5s/
-         MkbfFjf88etUC3SXHkDmCeXGiGT5VhOSU7j7SwmUPYR+tAsU2tpwtdcHphgqbePv/ssH
-         gfiuyA6MopDy30Rt+23j8MKAXFkazq9CCe02p+Zgqx7EgXnKpcutulhFreTaLrtEj2U/
-         he8J8dKKJy1o3LvfpDNZS/jWfN21APDHyp5bmOeQcDFN82ltQIdlt4+ezTsoO3eIUiiZ
-         IJmw==
-X-Gm-Message-State: AOJu0Yx31NgbDYVsVkgXDa9zNrhWALETuwZ22BcDkBwk4aoCC9Kd1h0D
-        9KndRZ3XYzMTcIj9Nm2M1SwyJFct5YoaFeoYa9WyiA==
-X-Google-Smtp-Source: AGHT+IH1WohFwbV87N0flbmQLLGc0pmH1ostods2crtfhYOlROCT28GQIIHF0NrkZU7PH7ZKQtocXHJunhNN1gAHGFo=
-X-Received: by 2002:a67:e25a:0:b0:447:ba75:9c81 with SMTP id
- w26-20020a67e25a000000b00447ba759c81mr2408427vse.28.1692617213324; Mon, 21
- Aug 2023 04:26:53 -0700 (PDT)
+        Mon, 21 Aug 2023 07:27:33 -0400
+Received: from esa3.hc3370-68.iphmx.com (esa3.hc3370-68.iphmx.com [216.71.145.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C939C3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:27:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1692617251;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+GjJMJBMnIjNb7IoAj9YQgAPR3WDw+7KrmPdjN04OSU=;
+  b=XbXvcC7Iowb8/IRiyP5p2McMBWG7gZLgIkEsrog07b8SqOnWdWCVdizj
+   YhPp3BDsAHZye1x4eoDSfeTnbuq0HzHDK4o8CULtW1eAhqeZgmCcHS0U2
+   oEfqZh90+i/272LO2hpv+2tstK726Nb+hkBlyaVhgZkb/RbdAByyc88x+
+   g=;
+Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+X-SBRS: 4.0
+X-MesageID: 120127124
+X-Ironport-Server: esa3.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.123
+X-Policy: $RELAYED
+IronPort-Data: A9a23:vDiPLqnUr5A85LKB/mRw22no5gwoJkRdPkR7XQ2eYbSJt1+Wr1Gzt
+ xIbXjzQbq6IN2H1fNEnPYu1oB8Gv8SHnNY1SVdrrSxgFSMWpZLJC+rCIxarNUt+DCFhoGFPt
+ JxCN4aafKjYaleG+39B55C49SEUOZmgH+a6U6icfHgqH2eIcQ954Tp7gek1n4V0ttawBgKJq
+ LvartbWfVSowFaYCEpNg064gE0p5K2aVA8w5ARkPqgb5gaGzRH5MbpETU2PByqgKmVrNrbSq
+ 9brlNmR4m7f9hExPdKp+p6TnpoiG+O60aCm0xK6aoD66vRwjnVaPpUTbZLwXXx/mTSR9+2d/
+ f0W3XCGpaXFCYWX8AgVe0Ew/yiTpsSq8pefSZS0mZT7I0Er7xIAahihZa07FdRwxwp5PY1B3
+ eEVKTI3RR6Ku/mdn/G2QMh8oMoRMMa+aevzulk4pd3YJfMvQJSFSKTW/95Imjw3g6iiH96HO
+ ZBfM2A2Kk2dPVsWYAx/5JEWxY9EglHWdTFCpU3Tjq0w+2XJlyR60aT3McqTcduPLSlQth/C/
+ jucoD2jXnn2MvTA9BSgyE/9h9SMgDGqYd8ICpqk3OB11Qj7Kms7V0RNCArTTeOCokq/Xc9Pb
+ k8Z4CwjqYAs+0GxCNrwRRu1pDiDpBF0c9BIO+Q+6QyLmuzY7m6xHmUYQyRTQN0gutU/STEj2
+ hmOhdyBLSw/7pWWRGib+7PSqim9UQAXNWgDYCUDQCMG7sPlrYV1iQjAJv5pGaSoyNjyFjzq6
+ zmPoG41gLB7peICyaS3u3POmzaloLDASwJz7QLSNkqj7wA/bom/Zpev93DA8O1Nao2eSzGps
+ 2IJlMuexOQPC4ydmiuQRukEALCu4bCCKjK0qUJgG4kJ8zWr5mK5eoZR8HdyKS9U3t0sIGGzJ
+ hWJ4EUIucEVZSHxBUNqX26vI9knzKraPtrsauv/MZlDaLlhUgG14C47MCZ8wFvRuEQrlKg+P
+ 7KSfsCtEWsWBMxb8damewsO+eR1n35jnAs/Ubi+lk36iuTGOBZ5XJ9faDOzgvYFALRoSek/2
+ /JWLIO0xhpWS4USiQGHoNdIfTjmwZXWbK0aSvC7lMbYe2KK+0l7UZc9JI/NnKQ8xMxoeh/gp
+ C3VZ6Oh4AOXaYf7AQuLcGt/T7jkQIxyq3k2VQR1YwfyhiV9PdnysftOH3fSQVXA3LY/pcOYs
+ tFfI5nQahixYmqvF8shgWnV89U5KUXDafOmNCu5ejkvF6OMtCSQkuIIijDHrXFUZgLu7JtWn
+ lFV/l+DKXb1b1g4XZm+hTPG5w/ZgEXxb8orABuVc4cLKRSzmGWoQgSo5sIKzwg3AU2r7lOnO
+ 8y+WH/0ecGlT1cJzeT0
+IronPort-HdrOrdr: A9a23:bhfiSas6KOves1Icygs5RCza7skDWNV00zEX/kB9WHVpm62j+P
+ xG+c5x6faaskd3ZJhNo7G90dC7MBbhHP1Oj7X5Q43SODUO41HYT72KhLGKq1eMdxEWkNQts5
+ uIGJIfNDSfNykAsS/S2njbL/8QhPWB7aC0laP/4h5WPHtXgnhbnn5E49CgYzVLeDU=
+X-Talos-CUID: =?us-ascii?q?9a23=3AjDuopGlX38Uv+QJOTTRCl9heH5rXOWDQzXXqCEG?=
+ =?us-ascii?q?xNX1CF/6YQ36A3q1Wj8U7zg=3D=3D?=
+X-Talos-MUID: =?us-ascii?q?9a23=3ACITEng+HKLBi+WbaD3pFT/mQf5hVzYGUNREMqtY?=
+ =?us-ascii?q?bqZi9aDZuHCu3kiviFw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="6.01,190,1684814400"; 
+   d="scan'208";a="120127124"
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     Andrew Cooper <andrew.cooper3@citrix.com>, <x86@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Babu Moger <babu.moger@amd.com>, <David.Kaplan@amd.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH 0/4] x86/srso: Reduce overhead of the mitigation
+Date:   Mon, 21 Aug 2023 12:27:19 +0100
+Message-ID: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
- <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org> <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com> <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com> <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org> <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <118d00df-131b-4ea6-98eb-bb39424ffb72@linaro.org>
-In-Reply-To: <118d00df-131b-4ea6-98eb-bb39424ffb72@linaro.org>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Mon, 21 Aug 2023 12:26:38 +0100
-Message-ID: <CAPY8ntC2Zf=dYw45r9a8R9CJpS5AbiOdyi7HWr6tX5MMbKLinA@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox VTDR6130
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     neil.armstrong@linaro.org,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        quic_parellan@quicinc.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry
+The main point of this series is patch 4 to remove one taken branch from every
+function return.  Everything else is cleanup.
 
-On Fri, 18 Aug 2023 at 11:27, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On 18/08/2023 11:25, neil.armstrong@linaro.org wrote:
-> > Hi Dmitry,
-> >
-> > On 17/08/2023 20:35, Dmitry Baryshkov wrote:
-> >> On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
-> >>> Hi Abhinav,
-> >>>
-> >>> On 14/08/2023 20:02, Abhinav Kumar wrote:
-> >
-> > <snip>
-> >
-> >>>
-> >>> Sending HS commands will always work on any controller, it's all
-> >>> about LP commands.
-> >>> The Samsung panels you listed only send HS commands so they can use
-> >>> prepare_prev_first
-> >>> and work on any controllers.
-> >>
-> >> I think there is some misunderstanding there, supported by the
-> >> description of the flag.
-> >>
-> >> If I remember correctly, some hosts (sunxi) can not send DCS commands
-> >> after enabling video stream and switching to HS mode, see [1]. Thus,
-> >> as you know, most of the drivers have all DSI panel setup commands in
-> >> drm_panel_funcs::prepare() / drm_bridge_funcs::pre_enable() callbacks,
-> >> not paying attention whether these commands are to be sent in LP or in
-> >> HS mode.
-> >>
-> >> Previously DSI source drivers could power on the DSI link either in
-> >> mode_set() or in pre_enable() callbacks, with mode_set() being the
-> >> hack to make panel/bridge drivers to be able to send commands from
-> >> their prepare() / pre_enable() callbacks.
-> >>
-> >> With the prev_first flags being introduced, we have established that
-> >> DSI link should be enabled in DSI host's pre_enable() callback and
-> >> switched to HS mode (be it command or video) in the enable() callback.
-> >>
-> >> So far so good.
-> >
-> > It seems coherent, I would like first to have a state of all DSI host
-> > drivers and make this would actually work first before adding the
-> > prev_first flag to all the required panels.
-> >
-> >>
-> >> Unfortunately this change is not fully backwards-compatible. This
-> >> requires that all DSI panels sending commands from prepare() should
-> >> have the prepare_prev_first flag. In some sense, all such patches
-> >> might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
-> >> flag to drm_panel").
-> >
-> > This kind of migration should be done *before* any possible regression,
-> > not the other way round.
-> >
-> > If all panels sending commands from prepare() should have the
-> > prepare_prev_first flag, then it should be first, check for regressions
-> > then continue.
-> >
-> > <snip>
-> >
-> >>>
-> >>> I understand, but this patch doesn't qualify as a fix for
-> >>> 9e15123eca79 and is too late to be merged in drm-misc-next for v6.6,
-> >>> and since 9e15123eca79 actually breaks some support it should be
-> >>> reverted (+ deps) since we are late in the rc cycles.
-> >>
-> >> If we go this way, we can never reapply these patches. There will be
-> >> no guarantee that all panel drivers are completely converted. We
-> >> already have a story without an observable end -
-> >> DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> >
-> > I don't understand this point, who would block re-applying the patches =
-?
->
-> Consider us reverting 9e15123eca79 now and then reapplying it next
-> cycle. Then another panel / bridge that was not converted to use
-> pre_enable_prev_first pops up. And suddently we have to revert them again=
-.
->
-> > The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
-> > Linux version and went smoothly because we reverted
-> > regressing patches and restarted when needed, I don't understand why we
-> > can't do this here aswell.
->
-> With DRM_BRIDGE_ATTACH_NO_CONNECTOR both host and peripheral drivers
-> were involved. This way they share knowledge about the migration state.
->
-> With prev_first we do not have such shared knowledge. Host assumes that
-> it can work according to the documentation: turn DSI link to LP-11 in
-> pre_enable(), switch to HS in enable(). It can not check whether the
-> next bridge did not set pre_enable_prev_first because of it not being
-> required (like for the Parade bridge) or because next bridge is not
-> converted yet (and thus DSI host should power up the link in
-> atomic_mode_set).
->
-> Granted that there is no way for the DSI host driver to attune itself to
-> the DSI peripheral driver requirements, I can only consider
-> corresponding (requiring prev_first) panel drivers broken since
-> 5ea6b1702781 ("drm/panel: Add prepare_prev_first flag to drm_panel") and
-> all bridge drivers with this issue broken since 4fb912e5e190
-> ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order"=
-).
+Patch 3 has an issue that sadly may invalidate this as a technique.  Patch 4
+needs some objtool whispering to fix.
 
-Can I point out that even prior to 5ea6b1702781 the docs stated [1]
+Based on x86/urgent but I suspect this may want rebasing around other fixes in
+flight.
 
-"Also note that those callbacks can be called no matter the state the
-host is in. Drivers that need the underlying device to be powered to
-perform these operations will first need to make sure it=E2=80=99s been
-properly enabled."
+Andrew Cooper (4):
+  x86/srso: Rename srso_alias_*() to srso_fam19_*()
+  x86/srso: Rename fam17 SRSO infrastructure to srso_fam17_*()
+  x86/ret-thunk: Support CALL-ing to the ret-thunk
+  x86/srso: Use CALL-based return thunks to reduce overhead
 
-added in bacbab58f09dc. So your DSI host driver isn't working in the
-documented manner prior to 5ea6b1702781, therefore 5ea6b1702781
-doesn't cause a regression in itself, and there was no direct
-requirement for 5ea6b1702781 to add the flag to all panels.
-
-Looking at JDI LT070ME05000 [2], the backlight is controlled via DCS
-commands, therefore transfer can be called at any time to change or
-read the backlight intensity, not just between pre_enable and
-post_disable.
+ arch/x86/include/asm/nospec-branch.h |  9 ++--
+ arch/x86/kernel/alternative.c        |  4 +-
+ arch/x86/kernel/cpu/bugs.c           |  9 ++--
+ arch/x86/kernel/ftrace.c             |  8 +--
+ arch/x86/kernel/static_call.c        | 10 ++--
+ arch/x86/kernel/vmlinux.lds.S        | 10 ++--
+ arch/x86/lib/retpoline.S             | 75 ++++++++++++----------------
+ arch/x86/net/bpf_jit_comp.c          |  5 +-
+ 8 files changed, 67 insertions(+), 63 deletions(-)
 
 
-5ea6b1702781 and 4fb912e5e190 were largely trying to address the
-requirements of devices such as TI's SN65DSI83 that require the DSI
-data lanes to be in LP-11 before the bridge is brought out of reset
-otherwise they malfunction. Being able to add better definition over
-when the DSI host needs to be powered up/down is a bonus, but it
-doesn't trump the requirement for transfer to be callable at any time.
+base-commit: 6405b72e8d17bd1875a56ae52d23ec3cd51b9d66
+-- 
+2.30.2
 
-  Dave
-
-[1] https://www.kernel.org/doc/html/latest/gpu/drm-kms-helpers.html#c.mipi_=
-dsi_host_ops
-[2] https://github.com/torvalds/linux/blob/master/drivers/gpu/drm/panel/pan=
-el-jdi-lt070me05000.c
-
-
-> >
-> >>
-> >> I'd consider that the DSI driver is correct here and it is about the
-> >> panel drivers that require fixes patches. If you care about the
-> >> particular Fixes tag, I have provided one several lines above.
-> >
-> > Unfortunately it should be done in the other way round, prepare for
-> > migration, then migrate,
-> >
-> > I mean if it's a required migration, then it should be done and I'll
-> > support it from both bridge and panel PoV.
-> >
-> > So, first this patch has the wrong Fixes tag, and I would like a better
-> > explanation on the commit message in any case.
-> > Then I would like to have an ack from some drm-misc maintainers before
-> > applying it because it fixes a patch that
-> > was sent via the msm tree thus per the drm-misc rules I cannot apply it
-> > via the drm-misc-next-fixes tree.
-> >
-> > Neil
-> >
-> > <snip>
-> >
->
-> --
-> With best wishes
-> Dmitry
->
