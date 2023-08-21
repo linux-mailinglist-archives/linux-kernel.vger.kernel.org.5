@@ -2,219 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A4F782E5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F03782E66
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbjHUQZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
+        id S236626AbjHUQ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:26:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbjHUQZV (ORCPT
+        with ESMTP id S232526AbjHUQ0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:25:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14503E4;
-        Mon, 21 Aug 2023 09:25:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D2F963E19;
-        Mon, 21 Aug 2023 16:25:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F864C433C7;
-        Mon, 21 Aug 2023 16:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692635119;
-        bh=oZ7WQRQ9itjy25Tt/rRhlhdNXYXUxndS4PkMFVRCZFY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CyHF7SPDkZ6ovolJzYQOcbwsmF0II6J72m2P+P6w2qyxivXmEcRz3V2yGeFWQdEao
-         7LCs811khkt6TKYCOU6SMNaRylk9AUphGjiYQaGEETmW8xWY4IfjcLgiO+XuDi5GeH
-         nXE2QZGHusr7PAhXy1trksze0ASTg8rpegrFlT80HrUTVobKp21fecGyefR8WMRwzf
-         YDNuwwj+yInw/z7eF9GLoRK473tZyIbHeaMxEC4Ps0Gg6YjSwsVVB6atW0YegAvRn8
-         AwxKjGvcUjJbbkGRzRinzdinaVoRgnPykCc/mNPQRrEVownudwITKsq4TGFz/WP51e
-         t+8lW320iAOVw==
-Received: (nullmailer pid 1844508 invoked by uid 1000);
-        Mon, 21 Aug 2023 16:25:17 -0000
-Date:   Mon, 21 Aug 2023 11:25:17 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, badhri@google.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: connector: Add child nodes for
- multiple PD capabilities
-Message-ID: <20230821162517.GA1832382-robh@kernel.org>
-References: <20230807174159.1140957-1-kyletso@google.com>
- <20230807174159.1140957-2-kyletso@google.com>
+        Mon, 21 Aug 2023 12:26:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 217C7E3;
+        Mon, 21 Aug 2023 09:26:28 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93D2B2F4;
+        Mon, 21 Aug 2023 09:27:08 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C54CA3F64C;
+        Mon, 21 Aug 2023 09:26:24 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 17:26:22 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alan Ma <tech@biqu3d.com>,
+        Luke Harrison <bttuniversity@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin@biqu3d.com>
+Subject: Re: [PATCH v2 2/3] thermal: sun8i: Add support for H616 THS
+ controller
+Message-ID: <20230821172622.688821b1@donnerap.manchester.arm.com>
+In-Reply-To: <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+References: <20230821-ths-h616-v2-0-cda60d556798@somainline.org>
+        <20230821-ths-h616-v2-2-cda60d556798@somainline.org>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807174159.1140957-2-kyletso@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 01:41:58AM +0800, Kyle Tso wrote:
-> Define a new optional property "capabilities" which is a child node
-> under connector to contain multiple USB Power Delivery capabilities.
-> 
-> Define a new property with pattern (e.g. caps-0, caps-1) which is a
+On Mon, 21 Aug 2023 16:03:47 +0200
+Martin Botka <martin.botka@somainline.org> wrote:
 
-A property in json-schema terms, but for DT it's a node not a property. 
-'Define a child node ...' would be clearer.
+Hi Martin,
 
-> child node under "capabilities". Each node contains PDO data of a
-> selectable Power Delivery capability.
-> 
-> Also define common properties for source-pdos, sink-pdos, and
-> op-sink-microwatt that can be referenced.
+thanks for the changes, that looks good to me now.
+Just some tiny nitpick below, but only if you need to re-spin the series
+for whatever reason.
 
-Why do we need this? What issue does this solve? The commit message 
-should answer those questions (always).
+> Add support for the thermal sensor found in H616 SoC
+> which slightly resembles the H6 thermal sensor
+> controller with few changes like 4 sensors.
 
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+Regardless:
+
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
 > ---
-> v1 -> v2:
-> - move source/sink-pdos to $defs and reference them in properties
+>  drivers/thermal/sun8i_thermal.c | 74 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
 > 
->  .../bindings/connector/usb-connector.yaml     | 80 +++++++++++++------
->  1 file changed, 57 insertions(+), 23 deletions(-)
+> diff --git a/drivers/thermal/sun8i_thermal.c b/drivers/thermal/sun8i_thermal.c
+> index 195f3c5d0b38..cf96ab6a445b 100644
+> --- a/drivers/thermal/sun8i_thermal.c
+> +++ b/drivers/thermal/sun8i_thermal.c
+> @@ -278,6 +278,66 @@ static int sun50i_h6_ths_calibrate(struct ths_device *tmdev,
+>  	return 0;
+>  }
+>  
+> +static int sun50i_h616_ths_calibrate(struct ths_device *tmdev,
+> +				     u16 *caldata, int callen)
+> +{
+> +	struct device *dev = tmdev->dev;
+> +	int i, ft_temp;
+> +
+> +	if (!caldata[0])
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * h616 efuse THS calibration data layout:
+> +	 *
+> +	 * 0      11  16     27   32     43   48    57
+> +	 * +----------+-----------+-----------+-----------+
+> +	 * |  temp |  |sensor0|   |sensor1|   |sensor2|   |
+> +	 * +----------+-----------+-----------+-----------+
+> +	 *                      ^           ^           ^
+> +	 *                      |           |           |
+> +	 *                      |           |           sensor3[11:8]
+> +	 *                      |           sensor3[7:4]
+> +	 *                      sensor3[3:0]
+> +	 *
+> +	 * The calibration data on the H616 is the ambient temperature and
+> +	 * sensor values that are filled during the factory test stage.
+> +	 *
+> +	 * The unit of stored FT temperature is 0.1 degree celsius.
+> +	 */
+> +	ft_temp = caldata[0] & FT_TEMP_MASK;
+> +
+> +	for (i = 0; i < tmdev->chip->sensor_num; i++) {
+> +		int delta, cdata, offset, reg;
+> +
+> +		if (i == 3)
+> +			reg = (caldata[1] >> 12)
+> +			      | ((caldata[2] >> 12) << 4)
+> +			      | ((caldata[3] >> 12) << 8);
+> +		else
+> +			reg = (int)caldata[i + 1] & TEMP_CALIB_MASK;
+> +
+> +		int sensor_temp = tmdev->chip->calc_temp(tmdev, i, reg);
+
+If you shorten that variable name by a bit, you can fit the division on
+the same line below. And that it looks all neat and satisfying again ;-)
+
+Cheers,
+Andre
+
+> +
+> +		delta = (sensor_temp - ft_temp * 100) * 10;
+> +		delta /= tmdev->chip->scale;
+> +		cdata = CALIBRATE_DEFAULT - delta;
+> +		if (cdata & ~TEMP_CALIB_MASK) {
+> +			dev_warn(dev, "sensor%d is not calibrated.\n", i);
+> +
+> +			continue;
+> +		}
+> +
+> +		offset = (i % 2) * 16;
+> +		regmap_update_bits(tmdev->regmap,
+> +				   SUN50I_H6_THS_TEMP_CALIB + (i / 2 * 4),
+> +				   TEMP_CALIB_MASK << offset,
+> +				   cdata << offset);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int sun8i_ths_calibrate(struct ths_device *tmdev)
+>  {
+>  	struct nvmem_cell *calcell;
+> @@ -608,6 +668,19 @@ static const struct ths_thermal_chip sun50i_h6_ths = {
+>  	.calc_temp = sun8i_ths_calc_temp,
+>  };
+>  
+> +static const struct ths_thermal_chip sun50i_h616_ths = {
+> +	.sensor_num = 4,
+> +	.has_bus_clk_reset = true,
+> +	.ft_deviation = 8000,
+> +	.offset = 263655,
+> +	.scale = 810,
+> +	.temp_data_base = SUN50I_H6_THS_TEMP_DATA,
+> +	.calibrate = sun50i_h616_ths_calibrate,
+> +	.init = sun50i_h6_thermal_init,
+> +	.irq_ack = sun50i_h6_irq_ack,
+> +	.calc_temp = sun8i_ths_calc_temp,
+> +};
+> +
+>  static const struct of_device_id of_ths_match[] = {
+>  	{ .compatible = "allwinner,sun8i-a83t-ths", .data = &sun8i_a83t_ths },
+>  	{ .compatible = "allwinner,sun8i-h3-ths", .data = &sun8i_h3_ths },
+> @@ -616,6 +689,7 @@ static const struct of_device_id of_ths_match[] = {
+>  	{ .compatible = "allwinner,sun50i-a100-ths", .data = &sun50i_a100_ths },
+>  	{ .compatible = "allwinner,sun50i-h5-ths", .data = &sun50i_h5_ths },
+>  	{ .compatible = "allwinner,sun50i-h6-ths", .data = &sun50i_h6_ths },
+> +	{ .compatible = "allwinner,sun50i-h616-ths", .data = &sun50i_h616_ths },
+>  	{ /* sentinel */ },
+>  };
+>  MODULE_DEVICE_TABLE(of, of_ths_match);
 > 
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index 1c4d3eb87763..c6b02dbda83f 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -117,28 +117,10 @@ properties:
->    # The following are optional properties for "usb-c-connector" with power
->    # delivery support.
->    source-pdos:
-> -    description: An array of u32 with each entry providing supported power
-> -      source data object(PDO), the detailed bit definitions of PDO can be found
-> -      in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
-> -      Source_Capabilities Message, the order of each entry(PDO) should follow
-> -      the PD spec chapter 6.4.1. Required for power source and power dual role.
-> -      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
-> -      defined in dt-bindings/usb/pd.h.
-> -    minItems: 1
-> -    maxItems: 7
-> -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    $ref: "#/$defs/source-pdos"
->  
->    sink-pdos:
-> -    description: An array of u32 with each entry providing supported power sink
-> -      data object(PDO), the detailed bit definitions of PDO can be found in
-> -      "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
-> -      Sink Capabilities Message, the order of each entry(PDO) should follow the
-> -      PD spec chapter 6.4.1. Required for power sink and power dual role. User
-> -      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
-> -      in dt-bindings/usb/pd.h.
-> -    minItems: 1
-> -    maxItems: 7
-> -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +    $ref: "#/$defs/sink-pdos"
->  
->    sink-vdos:
->      description: An array of u32 with each entry, a Vendor Defined Message Object (VDO),
-> @@ -164,9 +146,7 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32-array
->  
->    op-sink-microwatt:
-> -    description: Sink required operating power in microwatt, if source can't
-> -      offer the power, Capability Mismatch is set. Required for power sink and
-> -      power dual role.
-> +    $ref: "#/$defs/op-sink-microwatt"
->  
->    port:
->      $ref: /schemas/graph.yaml#/properties/port
-> @@ -228,6 +208,30 @@ properties:
->        SNK_READY for non-pd link.
->      type: boolean
->  
-> +  capabilities:
-> +    description: A child node to contain all the selectable USB Power Delivery capabilities.
-> +    type: object
-> +
-> +    patternProperties:
-> +      "^caps-[0-9]+$":
-> +        description: Child nodes under "capabilities" node. Each node contains a selectable USB
-> +          Power Delivery capability.
-> +        type: object
-> +
-> +        properties:
-> +          source-pdos:
-> +            $ref: "#/$defs/source-pdos"
-> +
-> +          sink-pdos:
-> +            $ref: "#/$defs/sink-pdos"
-> +
-> +          op-sink-microwatt:
-> +            $ref: "#/$defs/op-sink-microwatt"
-> +
-> +        additionalProperties: false
-> +
-> +    additionalProperties: false
-> +
->  dependencies:
->    sink-vdos-v1: [ 'sink-vdos' ]
->    sink-vdos: [ 'sink-vdos-v1' ]
-> @@ -235,6 +239,36 @@ dependencies:
->  required:
->    - compatible
->  
-> +$defs:
 
-Make this:
-
-$defs:
-  capabilities:
-    properties:
-      ...
-
-And then just reference "#/$defs/capabilities" at the top-level and in 
-caps-[0-9] node schema.
-
-You'll need to use unevaluatedProperties instead of additionalProperties 
-as well.
-
-> +  source-pdos:
-> +    description: An array of u32 with each entry providing supported power
-> +      source data object(PDO), the detailed bit definitions of PDO can be found
-> +      in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
-> +      Source_Capabilities Message, the order of each entry(PDO) should follow
-> +      the PD spec chapter 6.4.1. Required for power source and power dual role.
-> +      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
-> +      defined in dt-bindings/usb/pd.h.
-> +    minItems: 1
-> +    maxItems: 7
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +  sink-pdos:
-> +    description: An array of u32 with each entry providing supported power sink
-> +      data object(PDO), the detailed bit definitions of PDO can be found in
-> +      "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
-> +      Sink Capabilities Message, the order of each entry(PDO) should follow the
-> +      PD spec chapter 6.4.1. Required for power sink and power dual role. User
-> +      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
-> +      in dt-bindings/usb/pd.h.
-> +    minItems: 1
-> +    maxItems: 7
-> +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> +
-> +  op-sink-microwatt:
-> +    description: Sink required operating power in microwatt, if source can't
-> +      offer the power, Capability Mismatch is set. Required for power sink and
-> +      power dual role.
-> +
->  allOf:
->    - if:
->        properties:
-> -- 
-> 2.41.0.585.gd2178a4bd4-goog
-> 
