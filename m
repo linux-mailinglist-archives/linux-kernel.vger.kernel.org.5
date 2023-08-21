@@ -2,174 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F01B7829BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:00:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CF47829B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235165AbjHUNAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:00:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        id S235154AbjHUNAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235150AbjHUNAd (ORCPT
+        with ESMTP id S230486AbjHUNAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:00:33 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2070.outbound.protection.outlook.com [40.107.94.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5C1E1;
-        Mon, 21 Aug 2023 06:00:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K7ltfhD3OxemPtNwO55r3pmFs5KqTdWR6Spq58+orPdQn25mOmaVZD8KAakBe5cvnfuOeaoNVaRUzidvM4eQiUnoQyUKexmQAfkGJ9GEDLe+HQeFstCiIOWqlEZkbVIZMArnXvJERE3EMqKolB+ahypITQHaJBsAow5jBS0q+ZetRThnwHHlpXdkZVGsj8p1Px0zr4GWFOAdcSD1qbj0o3Uw1URsinARNvbypxOKGcLNJAHOmc/sG4U+LOGP0JRTRdJLRXbwrhcPose3sH0NGyUKkzCtaoLggnM968k6z1iu6ZbL0u0bZf1Dz6rsbT9jiv9HmHsZQWAACcL5aXPoAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CCL6n89sXFPlYBpHyOCY5Znsoz1gPA9N4+cKQwx/w4o=;
- b=D8Z5arwNQi2J++jN/vgspF40r1PX+PvcDA24CbSBLBFAUmrVnPOeW/BQHMkaskOI6hO83UacqG7QIr5CjKkisvmjnhOaa2n7b9V9BLHvxyIvtZ1AjBjb1mawzU3j7dlTej96YSAA07wUg2cPtlaYOoB4Nvwbc6SJIbp2f7Y0Ok+c21aLuwz2lKWSlKomwEzqUM2+suSBH7SlBTE9CQ7EEy6dqqvZJ+lbS4XtPwWRk4djriwMGhKVrldfxmaqsnWL1KXPr0zQfSv11wJ1beBos+QpvT4Av6QdO4IIpwzrjBuJixxA5+XRbQ/upppouXZfhlJ5wqFi7a7Oo8Yxgymxtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CCL6n89sXFPlYBpHyOCY5Znsoz1gPA9N4+cKQwx/w4o=;
- b=PgbkaHK4MZK8enVtVACZdf5rbd18ReLj/BIg4/ufo0FsZWisxk//Ls9iydMZJ/9uFcfKEZu79k+iY6YNt4qxFH0QRaXJ9jAkt6Vfkhjulk7TDFgBgEjYUQNI+rlG1VP/dYXBUTavtjQOHVPZiQimORS6d2FlKXDXpe89cd0LsYM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by DM4PR12MB6134.namprd12.prod.outlook.com (2603:10b6:8:ad::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 13:00:25 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 13:00:25 +0000
-Message-ID: <09943fe4-792f-e2b8-05d0-2c11f688b8bd@amd.com>
-Date:   Mon, 21 Aug 2023 15:00:13 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH 0/4] drm/amdgpu: Explicitly add a flexible array at the
- end of 'struct amdgpu_bo_list' and simplify amdgpu_bo_list_create()
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arunpravin.PaneerSelvam@amd.com,
-        "Prosyak, Vitaly" <Vitaly.Prosyak@amd.com>,
-        "Somalapuram, Amaranath" <Amaranath.Somalapuram@amd.com>
-Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Felix.Kuehling@amd.com, daniel@ffwll.ch, airlied@gmail.com,
-        Xinhui.Pan@amd.com, alexander.deucher@amd.com
-References: <cover.1692524665.git.christophe.jaillet@wanadoo.fr>
- <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-Content-Language: en-US
-From:   Shashank Sharma <shashank.sharma@amd.com>
-In-Reply-To: <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BE1P281CA0110.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:7b::18) To MW4PR12MB5667.namprd12.prod.outlook.com
- (2603:10b6:303:18a::10)
+        Mon, 21 Aug 2023 09:00:22 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71807E1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:00:19 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4ffae5bdc9aso2770732e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692622818; x=1693227618;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AXD55IpQ28QwNaboUgeu7XR1+/pauVVuQAUGdvfKMhg=;
+        b=SIOAOocUezetqG5twCI7hF/qncTfZLbIPZOiWX6cYFlDV0eNdQ/mJzhcXEa8tJIzC6
+         7oRqNRltLeU1JumuerXcdysf+jNVVDPADr0lTYtdnb334jaDRn6iH0L0Ghe+52vb9eFY
+         N2II1e8D3lt+3LLBR0hhH+aZR6HSkc7fxVlWVGkPj67B6hGvrkQvjm1os5OYZgCuPj0y
+         G4iLJ/R9UmQlA16kZSllKAmT0CfRArGUOXvrrsCFCmoKsSOXie7nyPoDfeLfUWBlRF0f
+         CIqzoyEOJV8b530GcgP1hv9LOYTug7GwHyc4QXm69kXKPplYJ5R32IdKE9sMNFbryMEB
+         oRAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692622818; x=1693227618;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXD55IpQ28QwNaboUgeu7XR1+/pauVVuQAUGdvfKMhg=;
+        b=YuuY5hArkA8Vw6EMNpD2qSAtgoUk/uwWlMN/p/G790Mz0T8TiRASbOBpUAp2ePkhDp
+         8s/fY5kEgqOb8ryiwhUgro+fX5Eeu5t2rWod6da4T5ksYjrLWlk6pyt0vZ8yR0hyDCOQ
+         zalzqeLouDVrl2qsQWIRHpMCgdybUUX1V6/67k/s8WEvMC3iQDRrzHAdS3SNX/SQd+rF
+         pzEXoZo7t8f4rbBIVFmyWeJK/WfrqKJpUpV/u/v3jrvsaTRFPfSWfhQ5lNvZMMObhSX4
+         a550ZDUgWAgRpYXllxKYMysmAROnceIWOJ7kUJteCDgDpgSYB1HBOQiv/JdSrwGlnnI0
+         W8bQ==
+X-Gm-Message-State: AOJu0YwE4UTG+7IrY1O/kDt/d31Ue5d5phufe4iwnBN5yozsp5HJnExN
+        R8EpBouF6STcSGvUyzzqCwVcXw==
+X-Google-Smtp-Source: AGHT+IEso7aKT7I1eVkoH1fesBsxFN+42Ir0Pvzb2Q+oH9fL/5fQI8T3LD4xRCNGC7DIcrEbuBwr3w==
+X-Received: by 2002:a05:6512:3d8a:b0:4ff:793f:fbf8 with SMTP id k10-20020a0565123d8a00b004ff793ffbf8mr5838272lfv.51.1692622817567;
+        Mon, 21 Aug 2023 06:00:17 -0700 (PDT)
+Received: from [192.168.2.107] ([79.115.63.107])
+        by smtp.gmail.com with ESMTPSA id b7-20020a170906d10700b00992d122af63sm6495471ejz.89.2023.08.21.06.00.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 06:00:15 -0700 (PDT)
+Message-ID: <697712da-bff9-4621-28ac-9c9f68a76e43@linaro.org>
+Date:   Mon, 21 Aug 2023 14:00:13 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|DM4PR12MB6134:EE_
-X-MS-Office365-Filtering-Correlation-Id: 69472fbf-f868-4866-513e-08dba24695a8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4SOc3rX1akBd2MOOiZpBCUw766ipG4gtsnLqaFCAf2WdfL9gmbmpNOYHGS6XOXtZKmGOo+i26rXFudUBOKDVFXPRXxSpm0SGWnA61G5/1oMcfgYfybdxfgXo8RB/brkUEhpi5a4MmZnv72OAeujpfhjzZ4029OCikTami3C36xigsru1kDvvhTk01GLAjJ5TXZwaQotZohfZYZA+WaGYgFJsIAoV8eyJ2LBIOGwmhEE/k53NvWGigNhfVwacbOgXLtUXtFn/uirv4Fx4pibkuQa5QEqyg/q0PU4NQOWbUdrIJEMslqcWMJK/y7RGK+uNkAtuhFLii8hGHUEGwN/b0dQrDKoLpcbhbBuU9bpi1E9olsZPYRaIwAP7q45s4j7soyBXsMVDSTDmoLYJMp1mlpJAXa6CDEyJTrUVHBaO5nUHg5Am31vvJdokTQeIImrGsdITTZXcQXrA1qIGxT/07Snln3fKCvvXX9y9iq2f5tFqwU0kHOJrkeL9r6YRYt+SJeL+hNnpFLiSJk92f8MxIAcBH7fzRe8hdfPjHvFK2pIsvPytToCRAPaQaXxNc4wP3giTEtMRrYwfvCB6lruFKk2Jswyl6hTahluB2H6x72nl+8ynRaGLom9KB4v4inZybxxb+K0p6baAuKlC2SrMUw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(44832011)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(6636002)(66556008)(66476007)(110136005)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?KzNiNDcwZUIycUUvL1JDVnN4NE9lTkNjbFJlY2s0YnpsZkhQRElkRndMNWhn?=
- =?utf-8?B?SjVTS1lGT0FxaU5DVVRZenVjOElWd09XQnMxU0plVDJVblNOSlI5MnYyTjhD?=
- =?utf-8?B?aVlSSWJjTEI2bUsyYThCTGZhaHl2QlBUYWx4ZnZ3VTFkM0E5Y2F6MFVDWGVD?=
- =?utf-8?B?TW1XRGxiRHhFNFFRZTh5alNLTjlWMWsyaU9taUNuMDlXOEZVVnluS0c5MjlL?=
- =?utf-8?B?K0xWaC9VVWFOT3BscXdoQTdmN093V29WaFI4TmNPNmlhd1l2NmZtRVBQWW52?=
- =?utf-8?B?dVdFSFNYSHhHWWZQSzEzcW9QME1LVjN0VkFndHU3ald1QWEzRHp2eGxMUG1o?=
- =?utf-8?B?aE5sZWZqWUc5VFJOL3dGa2FvWnJVMmx5ZWZ2YzZwVGdQVzZwTzVVdHV6UVJt?=
- =?utf-8?B?UGF0V0FObVVZd3JtMzVPck1vQWt3NVVhQkIrd1hDc0dIQ1lnekpOaWxsQnYv?=
- =?utf-8?B?c3pxemdJeTdkZUZhYmk5NDl4ZWE5MXhJRDh1T01HL25ZZ3lnQVlUVFk5cUVE?=
- =?utf-8?B?b3B4cDN4TkI0MzhaandIaXhldnRlWE1XWHpWM0I0bzFvK2hheXRxSHpsRzEy?=
- =?utf-8?B?Y3J0a0VoWjV1NnVtTldYQXMxYWZnOVFNNDk3eHpqdlFtSWhqVkRRV0ZNMC84?=
- =?utf-8?B?aGN0NGJjeTN3R2Z4SDZWR1pBaWNlUnM2NmhhN1FYbzNBMlBhMVNHZjc5Yy9N?=
- =?utf-8?B?VjZVbXM3a1JNR0xTUTN5Nngrbm93SWNoTmp6RktOdXUwUzc3T200aU9nc1R6?=
- =?utf-8?B?aHRvMnQrd3ZZM2RsTnJpNVA3TitBR1RlZFNFdmNjdjVGL29HYllvY1JDUWds?=
- =?utf-8?B?K1JENjBTc0RKVGlOU29NOWR2SGFNcGN1UDZOayszTWF4UXBUMmVZRFVIYkdI?=
- =?utf-8?B?MUtDOGl1WnZuZXdLbVVSeWVBVVFGYUJKeWtEQTEwTG5rMm9va2hUaG1xOW9X?=
- =?utf-8?B?bG9WSGZXTTJ1NXlXMkp4QnlybDR0YmlaZFFnYjcvN05HWERMTWxBblEwdTAw?=
- =?utf-8?B?amlocHVZNHU1UUpodnZyVnVVMWk5cHRuRFZPOThhNE1zNHVZL2pmTnRuV2xn?=
- =?utf-8?B?NVZoVUlpTWNDemFaSmxMVStFUUMwNDdGTVZlbUUxQzhjcGkxUjdJM0NyaGVu?=
- =?utf-8?B?WkpCbUplQWl4S1U5RU51Q0Fjc3NCbzF1azcyTW9FM2JWY21aMzJ4b2Z6Ty9G?=
- =?utf-8?B?US9RNnJzZlFSelAvQWRwb2NycVpWcVhyOWFxWjNnU1U4ei91QnNXdlFSU0Qz?=
- =?utf-8?B?anVld2pMdXVBUkRRTXNmZmVjUGt0U3pJTGJrT1FQYnNFZEs1TTJGeHowQmph?=
- =?utf-8?B?UytBUTBZNE43VGNmTEFtbmxzWlVsR2FLNzFVcVlUZ3RpUmFzZU1oNTYrdkNM?=
- =?utf-8?B?eCtzRUNFRlNjaVVTWUwzdURraDVTU1hTaHVLRks5TG9lYVdXYnFvYmg1TjRv?=
- =?utf-8?B?RXdCRTlwOFBFM1JVM0VsRFFiOTFleld2MUE0WElwcUlkUU5zaHFJdzFoWmtP?=
- =?utf-8?B?THpKeXA5djA0ek8vRnlPQ3NCdUVuc2o0QkNIeGlubURWcGdMMjdqWFNENzVH?=
- =?utf-8?B?L2tReTJOTEJDQWpDbDRoTjFwdDg5Ny8vRU8ycjFGQ1p1WGxEZkhzRnFoekdi?=
- =?utf-8?B?ZXdETy9OQXdIUDVKQVhoQVM3ODlwdFVKVE5iVndhQTBENUtLa0dNdU5xa3Rm?=
- =?utf-8?B?MWx6QVhVQ29lSStIL1EwajNYM0JkR2RGdGVoVXVMeHpJUGdOWHJBRDVGTXh5?=
- =?utf-8?B?VVlvZGc5ZVk2cVBmaWNiNS90cGtnV2JGd0Y2aHhnblAwcCtzYlBVRXFib2tq?=
- =?utf-8?B?amN4aGxXaExLQ29rVzhBcGJIcEdtcTh3REpLTDQ0bTFScUlwcEd2VHBnOHRV?=
- =?utf-8?B?RlRwVHNoTkZwRmVpanVselhyY2o1OEQrTjRMcXVib0xMNDF2TmRJUUp4STZM?=
- =?utf-8?B?djZXejBBc0VtcEIwcXNDUy9IRzQyQ2UvTU9BTm1aaTFvQWp1UlNUbHljalN2?=
- =?utf-8?B?QUVEa3R3V3d2L2VkRG1ibmpjZ2VyOVp4b0g5Sm51UzRRQkZremRlVEJVcThy?=
- =?utf-8?B?TEJTRmdUM2hTM01ackliNzEwNDN3OGdmcDRHYWZ1cWxjRGF5NXVSVkxObDBm?=
- =?utf-8?Q?jdH6jA1r7mMXB/05cBtaugnKn?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 69472fbf-f868-4866-513e-08dba24695a8
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:00:24.8624
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RqrHUQdb+fgIANTkkm69fPAMf042djgh0tS2D0Pg6L6QNo63e8QLJJQtPL4dJBJAW0+aplRNk0xecw7ZeMhV5g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6134
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v3 11/50] dt-bindings: crypto: add sam9x7 in Atmel TDES
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Varshini.Rajendran@microchip.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230728102442.265820-1-varshini.rajendran@microchip.com>
+ <09bd1388-02aa-32c7-319e-d7150a0f3e9c@linaro.org>
+ <1ec901d0-44c2-1d28-5976-d93abfffee67@microchip.com>
+ <37782447-43c7-50f9-b9b4-5fbca94ce8c6@linaro.org>
+ <96033a59-a2ea-c906-a033-84119c5783d7@linaro.org>
+ <adeed0b2-e09b-78cf-ebfd-08d3949ca9ea@microchip.com>
+ <57e9a9ff-26ed-62d1-91f8-cd5596f1c308@linaro.org>
+ <5235260c-8fd6-2b2a-58b9-703191fff526@linaro.org>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <5235260c-8fd6-2b2a-58b9-703191fff526@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Amar should be able to help.
-
-Amar,
-
-Can you please check this patch (series if required) with a few IGTs and 
-probably with Xonotic as well ?
 
 
-Regards
-
-Shashank
-
-On 21/08/2023 13:03, Christian König wrote:
-> Am 20.08.23 um 11:51 schrieb Christophe JAILLET:
->> This serie simplifies amdgpu_bo_list_create() and usage of the 'struct
->> amdgpu_bo_list'.
->
-> Oh, yes please. That's something I always wanted to cleanup as well.
->
->> It is compile tested only.
->
-> That bothers me a bit. Arun, Vitaly, Shashank can anybody with time 
-> run a quick test on this? Preferable the IGT tests, but this just some 
-> game should probably do as well.
->
-> Apart from that looks good to me,
-> Christian.
->
+On 8/21/23 13:10, Krzysztof Kozlowski wrote:
+> On 21/08/2023 11:54, Tudor Ambarus wrote:
+>>>>>> I am aware that there is no change in the crypto IP used. This patch is
+>>>
+>>> Actually, recent history showed us that it's not only the IP itself but
+>>> its integration into final product that could have an influence on the
+>>> behavior.
+>>>
+>>>>>> to add a SoC specific compatible as expected by writing-bindings
+>>>>>> guideline. Maybe a bit more explanation in the commit description might
+>>>>>> do the trick.
+>>>>>>
+>>>>>
+>>>>> So you add a compatible that will never be used just to comply with
+>>>>> the writing bindings guideline?
+>>>>
+>>>> How do you know that it is never going to be used? The guideline asks
 >>
->> Christophe JAILLET (4):
->>    drm/amdgpu: Explicitly add a flexible array at the end of 'struct
->>      amdgpu_bo_list'
->>    drm/amdgpu: Remove a redundant sanity check
->>    drm/amdgpu: Remove amdgpu_bo_list_array_entry()
->>    drm/amdgpu: Use kvzalloc() to simplify code
+>> See
+>> https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git/tree/drivers/crypto/atmel-tdes.c?h=at91-dt#n1120
+> 
+> What's there? One compatible? How does it prove that it will not be
+> used? It only proves that currently it is not used... And anyway this is
+
+Correct, as of now the compatible was not used to determine the hw caps,
+the capabilities were retrieved by checking at runtime a version
+register. I'm against adding a compatible that will not be used, in this
+particular case, defining "microchip,sam9x7-tdes" in the driver but
+still solely relying on the runtime version register interrogation.
+Unfortunately the commit message does not reveal any intention and from
+there these emails changed. Maybe it's just a matter of personal
+preference, so I'll stop commenting on this.
+
+> just one implementation in one system. How can you possibly know all
+> other possible implementations (other bootloaders/firmwares/systems)?
+> One cannot. The guideline is there for specific reason.
+> 
+
+I didn't say the guideline is wrong, I just tried to understand how this
+particular case is handled.
+> 
+> 
 >>
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 15 ++-------------
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 18 ++++++------------
->>   2 files changed, 8 insertions(+), 25 deletions(-)
+>>>> for this on purpose, so any future quirks or incompatibilities can be
+>>>> easily addressed.
+>>>
+>>> In this recent case, having a an adapted compatibility string is an
+>>> added value.
+>>>
+>>> And yes, I changed my mind and would like to be systematic now with
+>>> at91/microchip DT compatibility strings. Our long history and big legacy
+>>> in arm-soc is sometimes difficult to handle, but we're moving little by
+>>> little to comply with guidelines.
+>>>
+>>> My conclusion is that Varshini's addition is the way to go.
 >>
->
+>> Ok, fine by me. Then it would be good if one adds compatibles for the
+>> previous SoCs as well and add a comment in the drivers that inform
+>> readers that the atmel_*_get_cap() methods are used as backup where
+>> "atmel,at91sam9g46-" compatibles are used. You'll then have all the
+>> previous SoCs have their own dedicated compatibles which will have
+>> "atmel,at91sam9g46-" compatible as backup, and "sam9x7" will be the
+>> first that will not need the "atmel,at91sam9g46-" backup compatible.
+>> In the drivers you'll have 2 flavors of identifying the IP caps, the
+>> first one that backups to atmel_*_get_cap(), and a second one where
+>> of_device_id data will suffice.
+>>
+>> If the commit message described how the driver will handle the new
+>> compatible, Varshini would have spared us of all these emails exchanged.
+> 
+> The driver does not have to handle the new compatible, because it is
+> independent question. Although if you meant to explicitly say that
+
+As you wish. I retrieve my NACK.
+
+Cheers,
+ta
+> device is compatible in commit msg, although it is obvious from the
+> patch, then sure.
+> 
+>> Varshini, please update the commit message in the next iteration and
+>> describe how the driver will handle the new compatible.
+> 
+> Best regards,
+> Krzysztof
+> 
