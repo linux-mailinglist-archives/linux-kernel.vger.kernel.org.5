@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE43078344A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58546783466
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjHUUpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60862 "EHLO
+        id S231420AbjHUUwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:52:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231372AbjHUUow (ORCPT
+        with ESMTP id S231431AbjHUUwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:44:52 -0400
+        Mon, 21 Aug 2023 16:52:30 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA8B1723
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:44:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F44E1727
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=uZKmm6KWu5gIA8MZSDwDZfTtk9T5DcLVj5SgxVN7+4w=; b=v0t2Syi3ZRpGhRgAu0OekJV8fg
-        i1bZOE90UDMiASJIcuWOZSxmfOOePDQlvt8HvZfsbeZ6oq5e/e3hdmJa6CjWaFDpueGvhk5C4O7RG
-        mM3iWkWtoMQIoEsJRcifKq6bTwVt/5uIPogb9Y4GHBmo/+CAqeS21plFM9t9F/hJ8SyqTLDKZw6ZJ
-        fl/px1t9awQR5d266OlhyEh/q6fQ1QH7FNmMZYESIgL6huigzRGkKtCQwXvAWgD40tyLj/m54ZLp8
-        yj46PeNE7g2cbyCrU4r6JMxWVOD71/V7EEtmktVZCqtbvz3nLMg1bcnMJF1HOVhJs+M4eBiIC1uZs
-        1Z1cVBng==;
+        bh=0TDRpjnt3h85NYff/3U+8TfIQhuK6SlrkWQVnJ9yr4o=; b=aiiT88YK6Uq8pKYYh93LEy3hCo
+        ajum08THddgPaTpbnBA3jfDAgrJJ5E79QHuouJ+U0j4Z/1E1CUN/BUnXceIybVt8GPL3Nu+B9PjzD
+        AE0yomUGbAvwFIS2TFZPuFY1qBtBDW1m7tHXVozEnoS1/QH7ZAu+6nsWmQ59131mZAYmBC1PP1OnB
+        gfEaUoDsI/W/CwDvz0kgSGufTriLT0IvyIVDV8y3oisW93lDCHIdxaFDKi1oyXkhEpZQxqzBXROWX
+        ca6+SPI7sfqyPbDKo0gSkQ8ipUxXCD9KpFQkWChmtkVI406PQiDMBYZDV/twMf8te4IPV3GP4di19
+        6qq////Q==;
 Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qYBlE-00CL0D-RA; Mon, 21 Aug 2023 20:44:28 +0000
+        id 1qYBlF-00CL0M-CQ; Mon, 21 Aug 2023 20:44:29 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org,
         dennis@kernel.org, tj@kernel.org, cl@linux.com,
         akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 4/7] mm: Use folios_put() in __folio_batch_release()
-Date:   Mon, 21 Aug 2023 21:44:22 +0100
-Message-Id: <20230821204425.2940496-4-willy@infradead.org>
+Subject: [PATCH 5/7] memcg: Add mem_cgroup_uncharge_batch()
+Date:   Mon, 21 Aug 2023 21:44:23 +0100
+Message-Id: <20230821204425.2940496-5-willy@infradead.org>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20230821204425.2940496-1-willy@infradead.org>
 References: <ZOPMNyZ3gKb/bdjO@casper.infradead.org>
@@ -50,28 +50,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to indirect through release_pages() and iterate
-over this batch of folios an extra time; we can just use the batch
-that we have.
+Almost identical to mem_cgroup_uncharge_list(), except it takes a
+folio_batch instead of a list_head.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- mm/swap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/memcontrol.h | 12 ++++++++++++
+ mm/memcontrol.c            | 13 +++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 11ca25d4843f..9d31185dc27b 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1072,7 +1072,7 @@ void __folio_batch_release(struct folio_batch *fbatch)
- 		lru_add_drain();
- 		fbatch->percpu_pvec_drained = true;
- 	}
--	release_pages(fbatch->folios, folio_batch_count(fbatch));
-+	folios_put(fbatch);
- 	folio_batch_reinit(fbatch);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3bd00f224224..4ea6f8399b05 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -708,6 +708,14 @@ static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
+ 	__mem_cgroup_uncharge_list(page_list);
  }
- EXPORT_SYMBOL(__folio_batch_release);
+ 
++void __mem_cgroup_uncharge_batch(struct folio_batch *fbatch);
++static inline void mem_cgroup_uncharge_batch(struct folio_batch *fbatch)
++{
++	if (mem_cgroup_disabled())
++		return;
++	__mem_cgroup_uncharge_batch(fbatch);
++}
++
+ void mem_cgroup_migrate(struct folio *old, struct folio *new);
+ 
+ /**
+@@ -1269,6 +1277,10 @@ static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
+ {
+ }
+ 
++static inline void mem_cgroup_uncharge_batch(struct folio_batch *fbatch)
++{
++}
++
+ static inline void mem_cgroup_migrate(struct folio *old, struct folio *new)
+ {
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 67bda1ceedbe..205aa28c2672 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -33,6 +33,7 @@
+ #include <linux/shmem_fs.h>
+ #include <linux/hugetlb.h>
+ #include <linux/pagemap.h>
++#include <linux/pagevec.h>
+ #include <linux/vm_event_item.h>
+ #include <linux/smp.h>
+ #include <linux/page-flags.h>
+@@ -7194,6 +7195,18 @@ void __mem_cgroup_uncharge_list(struct list_head *page_list)
+ 		uncharge_batch(&ug);
+ }
+ 
++void __mem_cgroup_uncharge_batch(struct folio_batch *fbatch)
++{
++	struct uncharge_gather ug;
++	unsigned int i;
++
++	uncharge_gather_clear(&ug);
++	for (i = 0; i < fbatch->nr; i++)
++		uncharge_folio(fbatch->folios[i], &ug);
++	if (ug.memcg)
++		uncharge_batch(&ug);
++}
++
+ /**
+  * mem_cgroup_migrate - Charge a folio's replacement.
+  * @old: Currently circulating folio.
 -- 
 2.40.1
 
