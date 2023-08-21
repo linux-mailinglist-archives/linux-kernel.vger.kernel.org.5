@@ -2,169 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1C8782947
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2778B78294A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbjHUMjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        id S235003AbjHUMjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:39:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbjHUMjD (ORCPT
+        with ESMTP id S232895AbjHUMjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:39:03 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2914CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:39:00 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-447b64b0555so710028137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692621540; x=1693226340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OmV/mQgttZiD5+/KFAqCw9SpurlcxE+hr5x79h/UGWo=;
-        b=2d6HlQ8r9gDTXZYNEv6VOKM7VLs9c0n4xcHA6waXKVvYfZgpbiE7FrNN0jSjN1bSQ6
-         iX6ga1s0vGN83Jyb5Af5uCaCPjqlI9rqiM/nMZjozsY6AZd1oPL3V6ujltQwtUNdj3DR
-         0UhvhOy4i/mXU/cB0Ap3mRuj4Pz0LSk8QWNvBI26RAKEpNK1+BIKUjRkDRtzvOKDhfjz
-         MyioRWK3pFtdRT0dvvt83qNu+nUbYPDeSgPJbx8HUR+qqP+1GT+La9E8RmpELO28Hx/m
-         4dEJWjCO76G7ynlYo/G332zDwOparZUEKvOf38lZk3oySDO7aLjSjiYiZqHDw9HJMS7/
-         M0RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692621540; x=1693226340;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OmV/mQgttZiD5+/KFAqCw9SpurlcxE+hr5x79h/UGWo=;
-        b=h2j5DLjQdIR7Y/yBpToUkBHHzGtamnKzDx/gom/nm3jaoQocEZJGF6n/ef9bKqQMLS
-         9HZ9JVk5qS6Gz4UVa5Ojm7Rf2fFhxiFazAD3ycVrlPk3io7mSUovY32HZ+on1Wo2JN7+
-         BaTZK3sUz7W6TWyC6Hoi8COyx2StkrTD1W2HO+YRwRTiWPKxSvT/I+GKgnqgJTIV5Vvb
-         d+YsvH73gvlyHaqUghdTpxYdvQSIK6ALdwc0G6LyFtGPgvnxJ4hDQQNtFwDJa646lOdL
-         fMZ/nUA9T1uelkREI/3q2Usc4O4hz8h+Ew/geiTgbL25Egx9Ni8rJ92s5v1hthtcbbo4
-         dzig==
-X-Gm-Message-State: AOJu0YxWtk3bQ1QTyIwte5tkb0lAZju78CDLkRH3ydas61crF9Ca9Dn/
-        oJsYHg+3raa8ry31caZi6DqwGl1CaTSTYlG++BJcZw==
-X-Google-Smtp-Source: AGHT+IFZU8UDDCuwx63KXvqAvjirNOb8YmlXDwnhi5j+FeTjihTGtpCOuyoxPMcc1i/2joq/uPvC0L1FTPgsgxdFMIM=
-X-Received: by 2002:a67:e25a:0:b0:447:ba75:9c81 with SMTP id
- w26-20020a67e25a000000b00447ba759c81mr2582523vse.28.1692621539741; Mon, 21
- Aug 2023 05:38:59 -0700 (PDT)
+        Mon, 21 Aug 2023 08:39:35 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF9C891;
+        Mon, 21 Aug 2023 05:39:32 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DC792F4;
+        Mon, 21 Aug 2023 05:40:13 -0700 (PDT)
+Received: from [10.57.3.137] (unknown [10.57.3.137])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6A3D3F762;
+        Mon, 21 Aug 2023 05:39:27 -0700 (PDT)
+Message-ID: <6d7a7ecc-1364-5cbe-0485-01d693dbdc6c@arm.com>
+Date:   Mon, 21 Aug 2023 13:39:11 +0100
 MIME-Version: 1.0
-References: <20230818164314.8505-1-asmaa@nvidia.com> <20230818164314.8505-3-asmaa@nvidia.com>
-In-Reply-To: <20230818164314.8505-3-asmaa@nvidia.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 21 Aug 2023 14:38:49 +0200
-Message-ID: <CAMRc=Mccsc=RY5Evw4-k8LYDrfuxFoWsn6wajybY4SY_89fjNw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] gpio: mlxbf3: Support add_pin_ranges()
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
+ deferred_probe_timeout interaction
+Content-Language: en-GB
+To:     Shreeya Patel <shreeya.patel@collabora.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, John Stultz <jstultz@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        =?UTF-8?Q?Ricardo_Ca=c3=b1uelo_Navarro?= 
+        <ricardo.canuelo@collabora.com>,
+        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
+        usama.anjum@collabora.com, kernelci@lists.linux.dev
+References: <20220613094924.913340374@linuxfoundation.org>
+ <20220613094928.793712131@linuxfoundation.org>
+ <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com>
+ <2023081619-slapping-congrats-8e85@gregkh>
+ <471bf84d-9d58-befc-8224-359a62e29786@collabora.com>
+ <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
+ <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
+ <CAGETcx-DUm417mM-Nmyqj-e_rKUw69m=rTe5R6_Vxd_rsKMmGg@mail.gmail.com>
+ <97b06c78-da3c-d8ab-ca72-ff37b9976f2a@collabora.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <97b06c78-da3c-d8ab-ca72-ff37b9976f2a@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 6:43=E2=80=AFPM Asmaa Mnebhi <asmaa@nvidia.com> wro=
-te:
->
-> Support add_pin_ranges() so that pinctrl_gpio_request() can be called.
-> The GPIO value is not modified when the user runs the "gpioset" tool.
-> This is because when gpiochip_generic_request is invoked by the gpio-mlxb=
-f3
-> driver, "pin_ranges" is empty so it skips "pinctrl_gpio_request()".
-> pinctrl_gpio_request() is essential in the code flow because it changes t=
-he
-> mux value so that software has control over modifying the GPIO value.
-> Adding add_pin_ranges() creates a dependency on the pinctrl-mlxbf3.c driv=
-er.
->
-> Fixes: cd33f216d24 ("gpio: mlxbf3: Add gpio driver support")
-> Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
-> v4->v5:
-> - Add "Reviewed-By" Tag
-> v3->v4:
-> - Drop the common define for MLXBF3_GPIO_MAX_PINS_BLOCK0
-> v2->v3:
-> - Replace boolean logic by clear switch statement logic in
->   mlxbf3_gpio_add_pin_ranges()
-> v1->v2:
-> - Cleanup mlxbf3_gpio_add_pin_ranges()
->
->  drivers/gpio/gpio-mlxbf3.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->
-> diff --git a/drivers/gpio/gpio-mlxbf3.c b/drivers/gpio/gpio-mlxbf3.c
-> index e30cee108986..0a5f241a8352 100644
-> --- a/drivers/gpio/gpio-mlxbf3.c
-> +++ b/drivers/gpio/gpio-mlxbf3.c
-> @@ -19,6 +19,8 @@
->   * gpio[1]: HOST_GPIO32->HOST_GPIO55
->   */
->  #define MLXBF3_GPIO_MAX_PINS_PER_BLOCK 32
-> +#define MLXBF3_GPIO_MAX_PINS_BLOCK0    32
-> +#define MLXBF3_GPIO_MAX_PINS_BLOCK1    24
->
->  /*
->   * fw_gpio[x] block registers and their offset
-> @@ -158,6 +160,26 @@ static const struct irq_chip gpio_mlxbf3_irqchip =3D=
- {
->         GPIOCHIP_IRQ_RESOURCE_HELPERS,
->  };
->
-> +static int mlxbf3_gpio_add_pin_ranges(struct gpio_chip *chip)
-> +{
-> +       unsigned int id;
-> +
-> +       switch(chip->ngpio) {
-> +       case MLXBF3_GPIO_MAX_PINS_BLOCK0:
-> +               id =3D 0;
-> +               break;
-> +       case MLXBF3_GPIO_MAX_PINS_BLOCK1:
-> +               id =3D 1;
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       return gpiochip_add_pin_range(chip, "MLNXBF34:00",
-> +                       chip->base, id * MLXBF3_GPIO_MAX_PINS_PER_BLOCK,
-> +                       chip->ngpio);
-> +}
-> +
->  static int mlxbf3_gpio_probe(struct platform_device *pdev)
->  {
->         struct device *dev =3D &pdev->dev;
-> @@ -197,6 +219,7 @@ static int mlxbf3_gpio_probe(struct platform_device *=
-pdev)
->         gc->request =3D gpiochip_generic_request;
->         gc->free =3D gpiochip_generic_free;
->         gc->owner =3D THIS_MODULE;
-> +       gc->add_pin_ranges =3D mlxbf3_gpio_add_pin_ranges;
->
->         irq =3D platform_get_irq(pdev, 0);
->         if (irq >=3D 0) {
-> @@ -243,6 +266,7 @@ static struct platform_driver mlxbf3_gpio_driver =3D =
-{
->  };
->  module_platform_driver(mlxbf3_gpio_driver);
->
-> +MODULE_SOFTDEP("pre: pinctrl-mlxbf3");
->  MODULE_DESCRIPTION("NVIDIA BlueField-3 GPIO Driver");
->  MODULE_AUTHOR("Asmaa Mnebhi <asmaa@nvidia.com>");
->  MODULE_LICENSE("Dual BSD/GPL");
-> --
-> 2.30.1
->
+On 2023-08-21 12:35, Shreeya Patel wrote:
+> 
+> On 19/08/23 01:49, Saravana Kannan wrote:
+>> On Thu, Aug 17, 2023 at 4:13 PM Shreeya Patel
+>> <shreeya.patel@collabora.com> wrote:
+>>> Hi Geert, Saravana,
+>>>
+>>> On 18/08/23 00:03, Saravana Kannan wrote:
+>>>> On Thu, Aug 17, 2023 at 4:37 AM Shreeya Patel
+>>>> <shreeya.patel@collabora.com> wrote:
+>>>>> Hi Greg,
+>>>>>
+>>>>> On 16/08/23 20:33, Greg Kroah-Hartman wrote:
+>>>>>> On Wed, Aug 16, 2023 at 03:09:27PM +0530, Shreeya Patel wrote:
+>>>>>>> On 13/06/22 15:40, Greg Kroah-Hartman wrote:
+>>>>>>>> From: Saravana Kannan<saravanak@google.com>
+>>>>>>>>
+>>>>>>>> [ Upstream commit 5ee76c256e928455212ab759c51d198fedbe7523 ]
+>>>>>>>>
+>>>>>>>> Mounting NFS rootfs was timing out when deferred_probe_timeout was
+>>>>>>>> non-zero [1].  This was because ip_auto_config() initcall times out
+>>>>>>>> waiting for the network interfaces to show up when
+>>>>>>>> deferred_probe_timeout was non-zero. While ip_auto_config() calls
+>>>>>>>> wait_for_device_probe() to make sure any currently running deferred
+>>>>>>>> probe work or asynchronous probe finishes, that wasn't 
+>>>>>>>> sufficient to
+>>>>>>>> account for devices being deferred until deferred_probe_timeout.
+>>>>>>>>
+>>>>>>>> Commit 35a672363ab3 ("driver core: Ensure 
+>>>>>>>> wait_for_device_probe() waits
+>>>>>>>> until the deferred_probe_timeout fires") tried to fix that by 
+>>>>>>>> making
+>>>>>>>> sure wait_for_device_probe() waits for deferred_probe_timeout to 
+>>>>>>>> expire
+>>>>>>>> before returning.
+>>>>>>>>
+>>>>>>>> However, if wait_for_device_probe() is called from the 
+>>>>>>>> kernel_init()
+>>>>>>>> context:
+>>>>>>>>
+>>>>>>>> - Before deferred_probe_initcall() [2], it causes the boot 
+>>>>>>>> process to
+>>>>>>>>       hang due to a deadlock.
+>>>>>>>>
+>>>>>>>> - After deferred_probe_initcall() [3], it blocks kernel_init() from
+>>>>>>>>       continuing till deferred_probe_timeout expires and beats 
+>>>>>>>> the point of
+>>>>>>>>       deferred_probe_timeout that's trying to wait for userspace 
+>>>>>>>> to load
+>>>>>>>>       modules.
+>>>>>>>>
+>>>>>>>> Neither of this is good. So revert the changes to
+>>>>>>>> wait_for_device_probe().
+>>>>>>>>
+>>>>>>>> [1] 
+>>>>>>>> -https://lore.kernel.org/lkml/TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com/
+>>>>>>>> [2] 
+>>>>>>>> -https://lore.kernel.org/lkml/YowHNo4sBjr9ijZr@dev-arch.thelio-3990X/
+>>>>>>>> [3] -https://lore.kernel.org/lkml/Yo3WvGnNk3LvLb7R@linutronix.de/
+>>>>>>> Hi Saravana, Greg,
+>>>>>>>
+>>>>>>>
+>>>>>>> KernelCI found this patch causes the 
+>>>>>>> baseline.bootrr.deferred-probe-empty test to fail on r8a77960-ulcb,
+>>>>>>> see the following details for more information.
+>>>>>>>
+>>>>>>> KernelCI dashboard link:
+>>>>>>> https://linux.kernelci.org/test/plan/id/64d2a6be8c1a8435e535b264/
+>>>>>>>
+>>>>>>> Error messages from the logs :-
+>>>>>>>
+>>>>>>> + UUID=11236495_1.5.2.4.5
+>>>>>>> + set +x
+>>>>>>> + export 
+>>>>>>> 'PATH=/opt/bootrr/libexec/bootrr/helpers:/lava-11236495/1/../bin:/sbin:/usr/sbin:/bin:/usr/bin'
+>>>>>>> + cd /opt/bootrr/libexec/bootrr
+>>>>>>> + sh helpers/bootrr-auto
+>>>>>>> e6800000.ethernet
+>>>>>>> e6700000.dma-controller
+>>>>>>> e7300000.dma-controller
+>>>>>>> e7310000.dma-controller
+>>>>>>> ec700000.dma-controller
+>>>>>>> ec720000.dma-controller
+>>>>>>> fea20000.vsp
+>>>>>>> feb00000.display
+>>>>>>> fea28000.vsp
+>>>>>>> fea30000.vsp
+>>>>>>> fe9a0000.vsp
+>>>>>>> fe9af000.fcp
+>>>>>>> fea27000.fcp
+>>>>>>> fea2f000.fcp
+>>>>>>> fea37000.fcp
+>>>>>>> sound
+>>>>>>> ee100000.mmc
+>>>>>>> ee140000.mmc
+>>>>>>> ec500000.sound
+>>>>>>> /lava-11236495/1/../bin/lava-test-case
+>>>>>>> <8>[   17.476741] <LAVA_SIGNAL_TESTCASE 
+>>>>>>> TEST_CASE_ID=deferred-probe-empty RESULT=fail>
+>>>>>>>
+>>>>>>> Test case failing :-
+>>>>>>> Baseline Bootrr deferred-probe-empty test 
+>>>>>>> -https://github.com/kernelci/bootrr/blob/main/helpers/bootrr-generic-tests
+>>>>>>>
+>>>>>>> Regression Reproduced :-
+>>>>>>>
+>>>>>>> Lava job after reverting the commit 5ee76c256e92
+>>>>>>> https://lava.collabora.dev/scheduler/job/11292890
+>>>>>>>
+>>>>>>>
+>>>>>>> Bisection report from KernelCI can be found at the bottom of the 
+>>>>>>> email.
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Shreeya Patel
+>>>>>>>
+>>>>>>> #regzbot introduced: 5ee76c256e92
+>>>>>>> #regzbot title: KernelCI: Multiple devices deferring on 
+>>>>>>> r8a77960-ulcb
+>>>>>>>
+>>>>>>> ---------------------------------------------------------------------------------------------------------------------------------------------------
+>>>>>>>
+>>>>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **
+>>>>>>> * If you do send a fix, please include this trailer: *
+>>>>>>> * Reported-by: "kernelci.org bot" <bot@...> *
+>>>>>>> * *
+>>>>>>> * Hope this helps! *
+>>>>>>> * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+>>>>>>>
+>>>>>>> stable-rc/linux-5.10.y bisection: 
+>>>>>>> baseline.bootrr.deferred-probe-empty on
+>>>>>>> r8a77960-ulcb
+>>>>>> You are testing 5.10.y, yet the subject says 5.17?
+>>>>>>
+>>>>>> Which is it here?
+>>>>> Sorry, I accidentally used the lore link for 5.17 while reporting this
+>>>>> issue,
+>>>>> but this test does fail on all the stable releases from 5.10 onwards.
+>>>>>
+>>>>> stable 5.15 :-
+>>>>> https://linux.kernelci.org/test/case/id/64dd156a5ac58d0cf335b1ea/
+>>>>> mainline :-
+>>>>> https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
+>>>>>
+>>>> Shreeya, can you try the patch Geert suggested and let us know if it
+>>>> helps? If not, then I can try to take a closer look.
+>>> I tried to test the kernel with 9be4cbd09da8 but it didn't change the
+>>> result.
+>>> https://lava.collabora.dev/scheduler/job/11311615
+>>>
+>>> Also, I am not sure if this can change things but just FYI, KernelCI
+>>> adds some kernel parameters when running these tests and one of the
+>>> parameter is deferred_probe_timeout=60.
+>> Ah this is good to know.
+>>
+>>> You can check this in the definition details given in the Lava job. I
+>>> also tried to remove this parameter and rerun the test but again I got
+>>> the same result.
+>> How long does the test wait after boot before checking for the
+>> deferred devices list?
+>>
+> 
+> AFAIK, script for running the tests is immediately ran after the boot 
+> process is complete so there is no wait time.
 
-It's not clear to me whether this depends on patch 1? If only at
-run-time then I guess Linus and I can take the two patches through
-ours respective trees?
+Regardless of what the kernel is doing, it seems like a fundamentally 
+dumb test to specifically ask deferred probe to wait for up to a minute 
+then complain that it hasn't finished after 11 seconds :/
 
-Bart
+If anything, it seems plausible that the "regression" might actually be 
+the correct behaviour, and it was wrong before. I can't manage to pull 
+up a boot log for a pre-5.10 kernel since all the async stuff on the 
+KernelCI dashboard always just times out for me with a helpful "Error 
+while loading data from the server (error code: 0)", but what would be 
+interesting is whether those devices on the list are expected to 
+successfully probe anyway - the mainline log below also shows other 
+stuff failing to probe and CPUs failing to come online, so it's clearly 
+not a very happy platform to begin with.
+
+Robin.
+
+>>> I will try to add 9be4cbd09da8 to mainline kernel and see what results I
+>>> get.
+>> Now I'm confused. What do you mean by mainline? Are you saying the tip
+>> of tree of Linus's tree is also hitting this issue?
+> 
+> 
+> KernelCI runs tests on different kernel branches and trees, we also have 
+> this same test running on mainline tree.
+> Following is the link to the dashboard for it and as you can see, it 
+> does fail there too.
+> 
+> 
+> https://linux.kernelci.org/test/case/id/64dc13d55cb51357a135b209/
+> 
+> 
+>> -Saravana
+>>
