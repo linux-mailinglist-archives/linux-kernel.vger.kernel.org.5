@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052AF783036
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA8B783037
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237187AbjHUSXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S237197AbjHUSXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237182AbjHUSXB (ORCPT
+        with ESMTP id S237182AbjHUSXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:23:01 -0400
+        Mon, 21 Aug 2023 14:23:03 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0760DDB
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:22:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D7EFA1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:23:01 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92C972F4;
-        Mon, 21 Aug 2023 11:23:38 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 592DC11FB;
+        Mon, 21 Aug 2023 11:23:42 -0700 (PDT)
 Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 617D83F762;
-        Mon, 21 Aug 2023 11:22:56 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 314963F762;
+        Mon, 21 Aug 2023 11:23:00 -0700 (PDT)
 From:   Robin Murphy <robin.murphy@arm.com>
 To:     joro@8bytes.org
 Cc:     will@kernel.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org, zhangzekun11@huawei.com,
         john.g.garry@oracle.com, dheerajkumar.srivastava@amd.com,
         jsnitsel@redhat.com
-Subject: [PATCH v2 0/2] iommu/iova: Make the rcache depot properly flexible
-Date:   Mon, 21 Aug 2023 19:22:50 +0100
-Message-Id: <cover.1692641204.git.robin.murphy@arm.com>
+Subject: [PATCH v2 1/2] iommu/iova: Make the rcache depot scale better
+Date:   Mon, 21 Aug 2023 19:22:51 +0100
+Message-Id: <fe7beab68167c4d86e770eb309985dfd3905bd8b.1692641204.git.robin.murphy@arm.com>
 X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
+In-Reply-To: <cover.1692641204.git.robin.murphy@arm.com>
+References: <cover.1692641204.git.robin.murphy@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -42,24 +44,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1: https://lore.kernel.org/linux-iommu/cover.1692033783.git.robin.murphy@arm.com/
+The algorithm in the original paper specifies the storage of full
+magazines in the depot as an unbounded list rather than a fixed-size
+array. It turns out to be pretty straightforward to do this in our
+implementation with no significant loss of efficiency. This allows
+the depot to scale up to the working set sizes of larger systems,
+while also potentially saving some memory on smaller ones too.
 
-Hi all,
+Since this involves touching struct iova_magazine with the requisite
+care, we may as well reinforce the comment with a proper assertion too.
 
-Here's a quick update, cleaning up the silly bugs from v1 and taking
-John's suggestion to improve the comments.
+Reviewed-by: John Garry <john.g.garry@oracle.com>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
 
-Cheers,
-Robin.
+v2: Fix freeing loops, Improve comment and add matching assertion
 
+ drivers/iommu/iova.c | 65 ++++++++++++++++++++++++--------------------
+ 1 file changed, 35 insertions(+), 30 deletions(-)
 
-Robin Murphy (2):
-  iommu/iova: Make the rcache depot scale better
-  iommu/iova: Manage the depot list size
-
- drivers/iommu/iova.c | 94 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 64 insertions(+), 30 deletions(-)
-
+diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+index 10b964600948..dd2309e9a6c5 100644
+--- a/drivers/iommu/iova.c
++++ b/drivers/iommu/iova.c
+@@ -622,15 +622,19 @@ EXPORT_SYMBOL_GPL(reserve_iova);
+ /*
+  * As kmalloc's buffer size is fixed to power of 2, 127 is chosen to
+  * assure size of 'iova_magazine' to be 1024 bytes, so that no memory
+- * will be wasted.
++ * will be wasted. Since only full magazines are inserted into the depot,
++ * we don't need to waste PFN capacity on a separate list head either.
+  */
+ #define IOVA_MAG_SIZE 127
+-#define MAX_GLOBAL_MAGS 32	/* magazines per bin */
+ 
+ struct iova_magazine {
+-	unsigned long size;
++	union {
++		unsigned long size;
++		struct iova_magazine *next;
++	};
+ 	unsigned long pfns[IOVA_MAG_SIZE];
+ };
++static_assert(!(sizeof(struct iova_magazine) & (sizeof(struct iova_magazine) - 1)));
+ 
+ struct iova_cpu_rcache {
+ 	spinlock_t lock;
+@@ -640,8 +644,7 @@ struct iova_cpu_rcache {
+ 
+ struct iova_rcache {
+ 	spinlock_t lock;
+-	unsigned long depot_size;
+-	struct iova_magazine *depot[MAX_GLOBAL_MAGS];
++	struct iova_magazine *depot;
+ 	struct iova_cpu_rcache __percpu *cpu_rcaches;
+ };
+ 
+@@ -717,6 +720,21 @@ static void iova_magazine_push(struct iova_magazine *mag, unsigned long pfn)
+ 	mag->pfns[mag->size++] = pfn;
+ }
+ 
++static struct iova_magazine *iova_depot_pop(struct iova_rcache *rcache)
++{
++	struct iova_magazine *mag = rcache->depot;
++
++	rcache->depot = mag->next;
++	mag->size = IOVA_MAG_SIZE;
++	return mag;
++}
++
++static void iova_depot_push(struct iova_rcache *rcache, struct iova_magazine *mag)
++{
++	mag->next = rcache->depot;
++	rcache->depot = mag;
++}
++
+ int iova_domain_init_rcaches(struct iova_domain *iovad)
+ {
+ 	unsigned int cpu;
+@@ -734,7 +752,6 @@ int iova_domain_init_rcaches(struct iova_domain *iovad)
+ 
+ 		rcache = &iovad->rcaches[i];
+ 		spin_lock_init(&rcache->lock);
+-		rcache->depot_size = 0;
+ 		rcache->cpu_rcaches = __alloc_percpu(sizeof(*cpu_rcache),
+ 						     cache_line_size());
+ 		if (!rcache->cpu_rcaches) {
+@@ -776,7 +793,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+ 				 struct iova_rcache *rcache,
+ 				 unsigned long iova_pfn)
+ {
+-	struct iova_magazine *mag_to_free = NULL;
+ 	struct iova_cpu_rcache *cpu_rcache;
+ 	bool can_insert = false;
+ 	unsigned long flags;
+@@ -794,12 +810,7 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+ 
+ 		if (new_mag) {
+ 			spin_lock(&rcache->lock);
+-			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+-				rcache->depot[rcache->depot_size++] =
+-						cpu_rcache->loaded;
+-			} else {
+-				mag_to_free = cpu_rcache->loaded;
+-			}
++			iova_depot_push(rcache, cpu_rcache->loaded);
+ 			spin_unlock(&rcache->lock);
+ 
+ 			cpu_rcache->loaded = new_mag;
+@@ -812,11 +823,6 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+ 
+ 	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+ 
+-	if (mag_to_free) {
+-		iova_magazine_free_pfns(mag_to_free, iovad);
+-		iova_magazine_free(mag_to_free);
+-	}
+-
+ 	return can_insert;
+ }
+ 
+@@ -854,9 +860,9 @@ static unsigned long __iova_rcache_get(struct iova_rcache *rcache,
+ 		has_pfn = true;
+ 	} else {
+ 		spin_lock(&rcache->lock);
+-		if (rcache->depot_size > 0) {
++		if (rcache->depot) {
+ 			iova_magazine_free(cpu_rcache->loaded);
+-			cpu_rcache->loaded = rcache->depot[--rcache->depot_size];
++			cpu_rcache->loaded = iova_depot_pop(rcache);
+ 			has_pfn = true;
+ 		}
+ 		spin_unlock(&rcache->lock);
+@@ -895,9 +901,8 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+ 	struct iova_rcache *rcache;
+ 	struct iova_cpu_rcache *cpu_rcache;
+ 	unsigned int cpu;
+-	int i, j;
+ 
+-	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
++	for (int i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+ 		rcache = &iovad->rcaches[i];
+ 		if (!rcache->cpu_rcaches)
+ 			break;
+@@ -907,8 +912,8 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+ 			iova_magazine_free(cpu_rcache->prev);
+ 		}
+ 		free_percpu(rcache->cpu_rcaches);
+-		for (j = 0; j < rcache->depot_size; ++j)
+-			iova_magazine_free(rcache->depot[j]);
++		while (rcache->depot)
++			iova_magazine_free(iova_depot_pop(rcache));
+ 	}
+ 
+ 	kfree(iovad->rcaches);
+@@ -942,16 +947,16 @@ static void free_global_cached_iovas(struct iova_domain *iovad)
+ {
+ 	struct iova_rcache *rcache;
+ 	unsigned long flags;
+-	int i, j;
+ 
+-	for (i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
++	for (int i = 0; i < IOVA_RANGE_CACHE_MAX_SIZE; ++i) {
+ 		rcache = &iovad->rcaches[i];
+ 		spin_lock_irqsave(&rcache->lock, flags);
+-		for (j = 0; j < rcache->depot_size; ++j) {
+-			iova_magazine_free_pfns(rcache->depot[j], iovad);
+-			iova_magazine_free(rcache->depot[j]);
++		while (rcache->depot) {
++			struct iova_magazine *mag = iova_depot_pop(rcache);
++
++			iova_magazine_free_pfns(mag, iovad);
++			iova_magazine_free(mag);
+ 		}
+-		rcache->depot_size = 0;
+ 		spin_unlock_irqrestore(&rcache->lock, flags);
+ 	}
+ }
 -- 
 2.39.2.101.g768bb238c484.dirty
 
