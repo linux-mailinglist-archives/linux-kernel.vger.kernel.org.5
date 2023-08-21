@@ -2,237 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E2A783029
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3590783030
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237180AbjHUSSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
+        id S237087AbjHUSVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237177AbjHUSSV (ORCPT
+        with ESMTP id S232317AbjHUSVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:18:21 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2092.outbound.protection.outlook.com [40.107.215.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9AA13E;
-        Mon, 21 Aug 2023 11:18:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FE353Sc4Dj8WNEVdNgIs15L+YzRffb7a0vmjx2hQ7iugnGGINCDsSE2jmej/2bNYSbp2ZAz3y4L0+ePsQxBDC4qYrF8fq+deXuLyR4o/v7gzfAWmMq12mtxFYnTB1R5PdHvIKjLo5u4xAg46r6kKQS31cS76URPkFHFf0ZluL34xP4+rCnljJCMd3LkPHRVPNjyiPUQD7ckFCBWm+tRRltts5hj9H/iokddZtH9x6lRvL4M5ENqHAOOV2O6mAP3NGK1qxIwBtAg8rDLKJB3Xo00VT+XpUA9xMbBtPK8YuHOSHwKaZ22YYZQrvY/IrA616lsZjQtC1pq6JeqQyL3ATg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NXVNYKySDoCGNiKR7PgD61+8xi+H2NuFzeyypxp6FRs=;
- b=A9PuPjyXC5FSuTnG9CjgqBNwoz9JnFy5ekbsidpc9ujwbC7YhJh/fzqyl9GV7PRRHJh1O9ldKJl/PltIOtZprxlX1hCXA6Bf0dUIVRHOgWmlhPlzddI1Ka88tYA+o8y4keq82qOm8wdDNhCOSER+GI2JiWS+bP6fnWnx5ZQGzXYYyr7qgJTKtTE5tWPZpyds4odT0z0hOi0crP1+8kcMB97rMcTTWMSTPnf3tzSO08obWSmtg5x+mTtAX68t5l7JJs8Gzk7oJuI3Dwr7yI7RB4UAiTjXN7zFOktli633nzf6oamjVfpiofirlsYfhlCzQLNLeZ3ur4d2q1ghB4jJvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NXVNYKySDoCGNiKR7PgD61+8xi+H2NuFzeyypxp6FRs=;
- b=XkaCIzeUo7S2s+yaTLxyid4EBOs9uRI7vo7Z/dVicjwXXnqS4N7LQdbrP2XaLQxinEUnHzofl7cNsBalwaSIoKrGzTcxqXnzT6o4nyt9JwT+hpS2dsXBrw1WwS4lDr+X2Q2isazqKPyQeos1r3UdEX9nXBJbpYF1BF4ExwMGuTo=
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM (2603:1096:301:e2::8) by
- SI2P153MB0656.APCP153.PROD.OUTLOOK.COM (2603:1096:4:1fb::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.4; Mon, 21 Aug 2023 18:18:00 +0000
-Received: from PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188]) by PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
- ([fe80::4153:b8b:7077:5188%6]) with mapi id 15.20.6745.001; Mon, 21 Aug 2023
- 18:18:00 +0000
-From:   Saurabh Singh Sengar <ssengar@microsoft.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
-CC:     "patches@lists.linux.dev" <patches@lists.linux.dev>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "apais@linux.microsoft.com" <apais@linux.microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        MUKESH RATHOR <mukeshrathor@microsoft.com>,
-        "stanislav.kinsburskiy@gmail.com" <stanislav.kinsburskiy@gmail.com>,
-        "jinankjain@linux.microsoft.com" <jinankjain@linux.microsoft.com>,
-        vkuznets <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>
-Subject: RE: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Thread-Topic: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Thread-Index: AQHZ0VZ96EEPB9Xi80mUoj983vpcr6/0nE6Q
-Date:   Mon, 21 Aug 2023 18:18:00 +0000
-Message-ID: <PUZP153MB063571CB1D30770996948726BE1EA@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
-References: <1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
-In-Reply-To: <1692309711-5573-16-git-send-email-nunodasneves@linux.microsoft.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=04ba616b-a491-405f-96ca-e4549b2dd16a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-21T11:06:10Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0635:EE_|SI2P153MB0656:EE_
-x-ms-office365-filtering-correlation-id: 1612834f-a648-42b5-b6b3-08dba272f3c8
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Cmpin80+P+AH5QWrnJaF11yVYJTDg04jI+wqcq9kphzxqTb+v7KXkikJlwSIGwnq2FL3zWQPEvSoAuUcgSRriUhvBF2lGyM/4OkGY9qOjNcH9kUfQtz0JBHSgs09zwvRFY5Y3PZG+RBPxMTJRCMQfv/xuqLygtNeg+aktmp7HGV9E/VwG655mvebOnFei7O7ZS3PtiHlwxtVZ2QVK9ArZrXEfYvVtAgvCPquEeIW19iUD/jj111SiCrnIlr2yw6xW8say522D+aFX8JTAvIeYCgLb1h3VdVEf7mtJqSVuCA+uKsTeIVzzxTWGpjquAMZbT0XAhcVgK0iqKRS9nwfYgXfzGkseyYXbDqCYBduJGcwmeP54kVZr3CZjRI/ycnAJWFpt7WoQvwHE0jW6y6NfyJv6raINc4Y6So+1im3vvJjB+tcWxlbRSi2YMT4KNPCE2F77JXUYDB3HDP1gNMNgipChz1Xj+IM1y1HfQPmdKHlk4KPEM1vye0J1qGyMQeGGRg2tzO6OP/HUs7j+45A7n4t5tx6ulRY/Jiikq++/ArXP76NFThJYwjfQ/6CqVna+yMNP2ZgYf6yofgOwaUnX7N4RqaekdeNHxoX40lTDkP7EfCMp5OBarGlD7HvbIX07cdMlwcqYutZ4LPRA3mCXhIRqzwqg3/4u/uZmgJY3pIzKOF+MV4dBct+St0Wc/JR2S5fBT4r3JtDgYOcQTotJg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0635.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(136003)(396003)(366004)(186009)(1800799009)(451199024)(10290500003)(478600001)(71200400001)(53546011)(55016003)(6506007)(7696005)(41300700001)(12101799020)(54906003)(316002)(66476007)(66556008)(66946007)(76116006)(64756008)(66446008)(110136005)(9686003)(8936002)(8676002)(52536014)(4326008)(5660300002)(33656002)(8990500004)(82960400001)(38070700005)(38100700002)(122000001)(82950400001)(83380400001)(86362001)(2906002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NkywCGsNKpr/f8RboeJqGaStjW+8b8WgZpGrpSdSATr53eBTHntsCqaUDJA0?=
- =?us-ascii?Q?8tbplpDNE09idHBpIPgUMlqJIKS2PmTAWZqvFe2BdfSmf4ezCetPIhRjCYbq?=
- =?us-ascii?Q?gdck3+frTF1Mc7ye5dU2DDunoxmajDh8Gq7vT0gSOB2PfU6UPbewwP6oWW2n?=
- =?us-ascii?Q?zvIT2gCfZ9EGQDTr2et4RrQcliEbDlF25GcHXJ1T3xrGILdLx6T/EnpBoEkO?=
- =?us-ascii?Q?1srkITDfDPNPW9P3Q2i8pBrJqXOjW6hMz/+hCpV5pMdT+j1Z94glbKJVFcLd?=
- =?us-ascii?Q?/uclx5FdITwW0L6Xhbb1pglkFSDvkMi0HmMRJMNgLAW+5NpGlP4OPHKLLjZy?=
- =?us-ascii?Q?DHNAIzIOD4BiGQ3FMvSIxdJjCs+NvGZt3rAqc/Iy6tehTRHMVYosncXg82zF?=
- =?us-ascii?Q?/wskJidDetfJwVY68d6tvI6aNrGsYa/flx3Neq+TO89DbJnkFIR25CwORF5q?=
- =?us-ascii?Q?MRgtGcI2hURAPOZAtCVpp58AIZk76W3KIHUaYlFxAYfgo66QBCfupqzCc1ym?=
- =?us-ascii?Q?QxioQaDf9sWKASrsg8/yXHV2ZOOAlY0chz3W5Vf6lmae9K/HXdjPXCpt7JeQ?=
- =?us-ascii?Q?v+k9fjju6H67wXcluXBeQrfB5ODChRo7kPioZVH1BLxYpFdCwDEXrH1diuiz?=
- =?us-ascii?Q?U+C0ieXZcDURReSmKtLjxw2zg7v6eH+M2coXqkslozYxaNYGWuNeCrhIgdzV?=
- =?us-ascii?Q?zN90qSgtUFXCZ4tCxwZyvu72HACDKH3cVws+PhVsvE9GyELhYC5gOp3Qaqfe?=
- =?us-ascii?Q?wDHB4heiq2s/GoyJYzXQ8qJDGW85lGVn64/iaw9ENRYA7v+VQaimvRQYvgFl?=
- =?us-ascii?Q?pOzqvF8wVq0hx5dc4raB5sIVazJkXxZsiw1Hv/m3fLFQhkF+14uOFKjv1ZpB?=
- =?us-ascii?Q?VCmdYs4TU8tD/sw3ysWOmOU/iCvC/KLneblcp9x6lkr/Zoi7OoPFyQ9eW2Ll?=
- =?us-ascii?Q?ODdaFMt1y4vWY9osUMbIBYJydOHAjKGzX+M0UEtL4jypfogZag2RbQVWRgcj?=
- =?us-ascii?Q?1d4zyBMuW7WwS7ZLqUBcW5Wn7za2kL4L00+/JbUYyIW7IDkXmJmMaiTEyT+3?=
- =?us-ascii?Q?3HQI/KYaLo7gm2euoJCzfIrzSs1GqvuZQsK+WQomIbe4ar8HNTid1df0UOrp?=
- =?us-ascii?Q?taehTUgD09t6fSijJlSvFSaMqAqnhjFZOrMTV/LXkuymDQle2jmVhUhExq6o?=
- =?us-ascii?Q?qBPjiAJ27Kk0ic67ugEBAWN6557Gr6pLuueqM6rwmdpoqMcwGoD3PXEZqBW8?=
- =?us-ascii?Q?a+SXC/X1W14xplGqrRXiL9Dy35QN4Ij6xJRBC7BWnXrjCMSw7tTLm39jy47J?=
- =?us-ascii?Q?ezUOnyB84X8DCD/umnvUEoj2vJTJDkoN7D/hXWwZPu7ALeNhHwl4H/elN2RA?=
- =?us-ascii?Q?v1C6JVG55j/SdN+YXut8NmD1gLyX7MX1S1tP5iJ+WCyy0OJMS/XMGpPI/2wn?=
- =?us-ascii?Q?GbvQsOQNStZHrPkQjOVda3auTXJGxwjE+otLjOOuR29o3Fy3+PpjgJS57fp6?=
- =?us-ascii?Q?/mxX4RmGOed0ROGGZriiKKZBrcn1OjBaN6vBGVEhYN/OE5sK4GSUQfYTbltR?=
- =?us-ascii?Q?O3lMhBrAF6dsaWH36Ig7xI1fwkKE472YKdrA8AxL?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Aug 2023 14:21:08 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865B8DB
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:21:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a3236a414so1669832b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:21:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692642066; x=1693246866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WMRvtQ0OeEguDDqLUeJcBfQqYljKtL7yUUjmCfDbAp4=;
+        b=jc1qHonRZAQUt2+1YpNcR9AwUucjGgltbWERJ+92ideW5UR+jhS7efr9htN6b9NG2P
+         ukObyiHRIHDgdhkKXuzYeYW4xR3Z8/r9KrEGQF5jw0xYGnitJJ2M7RqGyiboh1Ar6e2c
+         zjoQvifmIUGd1G6NzfxWO9q7+VqnQq9Kdj8xQ9zxB5bIoFKFQXdvi497ai7T1RpYAADn
+         r4C2FZkwG8jREwTzmMWaK83S2NTA+oBJT6wUukRuyYzGAtyAzP3ItZfST0aMzn5xCZzP
+         UFmn7WspvvaEnVCN5reIb+9lEoE4nY/cxhGXj8o1EGy24eyb3YjU3FASEYYVNvqBxMnr
+         +Z5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692642066; x=1693246866;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WMRvtQ0OeEguDDqLUeJcBfQqYljKtL7yUUjmCfDbAp4=;
+        b=OprtnnAJ+2dG0ooYO2Z99yUaMd94jtZVPP3BByjnZjXD78PH3eYKBU4hwM+Y/UEOIJ
+         c4V7ITZXn4/gk3xkzRxWies33BXe441Hzk2nBlIajH5Y0TN5WxrtDqSAQ+z1ctUdf30b
+         +Oy687V0mXUxhJbZ0l246tfAA61P6NjGVD9wjxOFB+tD10e5IzwUvxUgO0aPSjN2pzUP
+         xKN9B4yjyzvnYA2Aimp7qpHAVoSVbZUqgWPKa8HuVizZwezw8dkN8kqZCyffgV6TBnIq
+         aFb7889q3YU7YEkSP/4QC85aQfSwM6LngSki3UoiNoDxucjuTw6HoX7bWuzFBUeozGb9
+         eTWw==
+X-Gm-Message-State: AOJu0YxlUtzMrOvatOPPt33KyMcPd7czwg0B19rdiPdN2B/NMYazr9I0
+        hNPSTSfZ3x7jauJEWa/sexnhDwGZfJzdJQ==
+X-Google-Smtp-Source: AGHT+IGoNWVHhpQT09obUTj8KDIZnwB2hziWcFswUWmyzFroKqJvcEKVOIPziKs3wFyhzGuRVLskBA==
+X-Received: by 2002:a05:6a20:4425:b0:149:7fea:d88e with SMTP id ce37-20020a056a20442500b001497fead88emr1467914pzb.24.1692642065500;
+        Mon, 21 Aug 2023 11:21:05 -0700 (PDT)
+Received: from Osmten.. ([103.84.150.75])
+        by smtp.gmail.com with ESMTPSA id h26-20020aa786da000000b0067777e960d9sm6432065pfo.155.2023.08.21.11.21.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 11:21:05 -0700 (PDT)
+From:   Osama Muhammad <osmtendev@gmail.com>
+To:     shaggy@kernel.org
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Osama Muhammad <osmtendev@gmail.com>,
+        syzbot+55a7541cfd25df68109e@syzkaller.appspotmail.com,
+        Mushahid Hussain <mushi.shar@gmail.com>
+Subject: [PATCH] FS:JFS:UBSAN:array-index-out-of-bounds in xtInsert
+Date:   Mon, 21 Aug 2023 23:20:24 +0500
+Message-Id: <20230821182024.14522-1-osmtendev@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0635.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1612834f-a648-42b5-b6b3-08dba272f3c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Aug 2023 18:18:00.2852
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: QQUtYt4i3N2Z8/vDZgOgpmvKRYA9ZXcDD9S3wrwmQU1b/120yS5g1w0NOLQz9z319dvj/+lqY8Q6hVCeuwycKg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0656
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Syzkaller reported the following issue:
 
+UBSAN: array-index-out-of-bounds in fs/jfs/jfs_xtree.c:622:9
+index 19 is out of range for type 'xad_t [18]'
+CPU: 1 PID: 3614 Comm: syz-executor388 Not tainted 6.0.0-rc6-syzkaller-00321-g105a36f3694e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/26/2022
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e3/0x2cb lib/dump_stack.c:106
+ ubsan_epilogue lib/ubsan.c:151 [inline]
+ __ubsan_handle_out_of_bounds+0x107/0x150 lib/ubsan.c:283
+ xtInsert+0xfbe/0x1020 fs/jfs/jfs_xtree.c:622
+ extAlloc+0xaa4/0x1030 fs/jfs/jfs_extent.c:145
+ jfs_get_block+0x410/0xe30 fs/jfs/inode.c:248
+ __block_write_begin_int+0x6f6/0x1d70 fs/buffer.c:2006
+ __block_write_begin fs/buffer.c:2056 [inline]
+ block_write_begin+0x93/0x1e0 fs/buffer.c:2117
+ jfs_write_begin+0x2d/0x60 fs/jfs/inode.c:304
+ generic_perform_write+0x314/0x610 mm/filemap.c:3738
+ __generic_file_write_iter+0x176/0x400 mm/filemap.c:3866
+ generic_file_write_iter+0xab/0x310 mm/filemap.c:3898
+ do_iter_write+0x6f0/0xc50 fs/read_write.c:855
+ vfs_writev fs/read_write.c:928 [inline]
+ do_writev+0x27a/0x470 fs/read_write.c:971
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x2b/0x70 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0e179f7fb9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffed4fe4448 EFLAGS: 00000246 ORIG_RAX: 0000000000000014
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f0e179f7fb9
+RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00007f0e179b7780 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000f8008000
+R13: 0000000000000000 R14: 00080000000000f4 R15: 0000000000000000
+ </TASK>
 
-> -----Original Message-----
-> From: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> Sent: Friday, August 18, 2023 3:32 AM
-> To: linux-hyperv@vger.kernel.org; linux-kernel@vger.kernel.org;
-> x86@kernel.org; linux-arm-kernel@lists.infradead.org; linux-
-> arch@vger.kernel.org
-> Cc: patches@lists.linux.dev; Michael Kelley (LINUX)
-> <mikelley@microsoft.com>; KY Srinivasan <kys@microsoft.com>;
-> wei.liu@kernel.org; Haiyang Zhang <haiyangz@microsoft.com>; Dexuan Cui
-> <decui@microsoft.com>; apais@linux.microsoft.com; Tianyu Lan
-> <Tianyu.Lan@microsoft.com>; ssengar@linux.microsoft.com; MUKESH
-> RATHOR <mukeshrathor@microsoft.com>; stanislav.kinsburskiy@gmail.com;
-> jinankjain@linux.microsoft.com; vkuznets <vkuznets@redhat.com>;
-> tglx@linutronix.de; mingo@redhat.com; bp@alien8.de;
-> dave.hansen@linux.intel.com; hpa@zytor.com; will@kernel.org;
-> catalin.marinas@arm.com
-> Subject: [PATCH v2 15/15] Drivers: hv: Add modules to expose /dev/mshv to
-> VMMs running on Hyper-V
->=20
-> Add mshv, mshv_root, and mshv_vtl modules:
->=20
+The issue is caused when the value of index becomes greater than the
+max size of array. Introducing check before accessing solves the issue.
 
-<snip>
+The patch is tested via syzbot.
 
-> +	ret =3D mshv_set_vp_registers(vp->index, vp->partition->id,
-> +				    1, &dispatch_suspend);
-> +	if (ret)
-> +		pr_err("%s: failed to suspend partition %llu vp %u\n",
-> +			__func__, vp->partition->id, vp->index);
-> +
-> +	return ret;
-> +}
-> +
-> +static int
-> +get_vp_signaled_count(struct mshv_vp *vp, u64 *count)
-> +{
-> +	int ret;
-> +	struct hv_register_assoc root_signal_count =3D {
-> +		.name =3D HV_REGISTER_VP_ROOT_SIGNAL_COUNT,
-> +	};
-> +
-> +	ret =3D mshv_get_vp_registers(vp->index, vp->partition->id,
-> +				    1, &root_signal_count);
-> +
-> +	if (ret) {
-> +		pr_err("%s: failed to get root signal count for partition %llu vp
-> %u",
-> +			__func__, vp->partition->id, vp->index);
-> +		*count =3D 0;
+Reported-by: syzbot+55a7541cfd25df68109e@syzkaller.appspotmail.com
+Link: https://syzkaller.appspot.com/bug?extid=55a7541cfd25df68109e
+Signed-off-by: Osama Muhammad <osmtendev@gmail.com>
+Signed-off-by: Mushahid Hussain <mushi.shar@gmail.com>
+---
+ fs/jfs/jfs_xtree.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Have we missed a return here ?
-Moreover, the return type of this function is never checked consider
-checking it or change it to void.
+diff --git a/fs/jfs/jfs_xtree.c b/fs/jfs/jfs_xtree.c
+index 2d304cee8..034a1613f 100644
+--- a/fs/jfs/jfs_xtree.c
++++ b/fs/jfs/jfs_xtree.c
+@@ -619,6 +619,10 @@ int xtInsert(tid_t tid,		/* transaction id */
+ 			(nextindex - index) * sizeof(xad_t));
+ 
+ 	/* insert the new entry: mark the entry NEW */
++	if (index >= XTROOTMAXSLOT) {
++		rc = -EINVAL;
++		goto out;
++	}
+ 	xad = &p->xad[index];
+ 	XT_PUTENTRY(xad, xflag, xoff, xlen, xaddr);
+ 
+-- 
+2.34.1
 
-<snip>
-
-> +
-> +/* Retrieve and stash the supported scheduler type */
-> +static int __init mshv_retrieve_scheduler_type(void)
-> +{
-> +	struct hv_input_get_system_property *input;
-> +	struct hv_output_get_system_property *output;
-> +	unsigned long flags;
-> +	u64 status;
-> +
-> +	local_irq_save(flags);
-> +	input =3D *this_cpu_ptr(hyperv_pcpu_input_arg);
-> +	output =3D *this_cpu_ptr(hyperv_pcpu_output_arg);
-> +
-> +	memset(input, 0, sizeof(*input));
-> +	memset(output, 0, sizeof(*output));
-> +	input->property_id =3D HV_SYSTEM_PROPERTY_SCHEDULER_TYPE;
-> +
-> +	status =3D hv_do_hypercall(HVCALL_GET_SYSTEM_PROPERTY, input,
-> output);
-> +	if (!hv_result_success(status)) {
-> +		local_irq_restore(flags);
-> +		pr_err("%s: %s\n", __func__, hv_status_to_string(status));
-> +		return hv_status_to_errno(status);
-> +	}
-> +
-> +	hv_scheduler_type =3D output->scheduler_type;
-> +	local_irq_restore(flags);
-> +
-> +	pr_info("mshv: hypervisor using %s\n",
-> scheduler_type_to_string(hv_scheduler_type));
-
-Nit: In this file we are using two styles of prints, few are appended with
-"mshv:" and few with "__func__".  It's better to have a single style
-for one module.
