@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2379D7822B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7D67822BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232881AbjHUERu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 00:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        id S232922AbjHUEV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjHUERu (ORCPT
+        with ESMTP id S229842AbjHUEV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:17:50 -0400
-Received: from outboundhk.mxmail.xiaomi.com (outboundhk.mxmail.xiaomi.com [118.143.206.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F9AB93
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:17:47 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.01,189,1684771200"; 
-   d="scan'208";a="63057912"
-From:   sunshijie <sunshijie@xiaomi.com>
-To:     <xiang@kernel.org>, <chao@kernel.org>, <huyue2@coolpad.com>,
-        <jefflexu@linux.alibaba.com>
-CC:     <linux-erofs@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        sunshijie <sunshijie@xiaomi.com>
-Subject: [v2] erofs: don't warn dedupe and fragments features anymore
-Date:   Mon, 21 Aug 2023 12:17:37 +0800
-Message-ID: <20230821041737.2673401-1-sunshijie@xiaomi.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 21 Aug 2023 00:21:58 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE4993;
+        Sun, 20 Aug 2023 21:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692591711;
+        bh=CftIs09yf/pwmz1hoN5TS+6593RXp5QcPkjoWjnJ19Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FQXSlkhMydN6++XO549gGeeQAzepoHasPFMT9I+ooSjFBEkiboi6l6qPwr82wfJBf
+         DtAuWhhvSduhxoz5ofKE6nOUHiOdw/IgjvRGqCAHf984LKqQ7vlRcvpCh1tzNGcIXa
+         TQlmkJJq4rCvBGluXWbkpiRIkxZCoYJbOb/BnbIt+hsAXIeVteNkyduGh4O1rgdE/S
+         9TGXMJn1onJ6h5jTJvusHehAL66oHtHmDczexk04v+oFEObegzAGtppZ2XfZZrpEmD
+         RYXfHJt+qFe/YqXGGZV99WOcD+PgPhoNmeb52sCy7vHcDfIyqUvnSCGZOKAVyhL79A
+         +tnQ59yKmzPAw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTfSZ151tz4x2D;
+        Mon, 21 Aug 2023 14:21:49 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 14:21:48 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the usb tree with the jc_docs tree
+Message-ID: <20230821142148.14b1b4be@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain
-X-Originating-IP: [10.237.8.11]
-X-ClientProxiedBy: BJ-MBX08.mioffice.cn (10.237.8.128) To BJ-MBX18.mioffice.cn
- (10.237.8.138)
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_SOFTFAIL,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/sozIqTv3MEBEyWUZq/idQKF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `dedupe` and `fragments` features have been merged for a year.  They are
-mostly stable now.
+--Sig_/sozIqTv3MEBEyWUZq/idQKF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: sunshijie <sunshijie@xiaomi.com>
----
- fs/erofs/super.c | 4 ----
- 1 file changed, 4 deletions(-)
+Hi all,
 
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 566f68ddf..075d476a4 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -420,10 +420,6 @@ static int erofs_read_superblock(struct super_block *sb)
+Today's linux-next merge of the usb tree got a conflict in:
 
-        if (erofs_is_fscache_mode(sb))
-                erofs_info(sb, "EXPERIMENTAL fscache-based on-demand read feature in use. Use at your own risk!");
--       if (erofs_sb_has_fragments(sbi))
--               erofs_info(sb, "EXPERIMENTAL compressed fragments feature in use. Use at your own risk!");
--       if (erofs_sb_has_dedupe(sbi))
--               erofs_info(sb, "EXPERIMENTAL global deduplication feature in use. Use at your own risk!");
- out:
-        erofs_put_metabuf(&buf);
-        return ret;
---
-2.41.0
+  Documentation/ABI/testing/sysfs-bus-umc
+  Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
 
-#/******本邮件及其附件含有小米公司的保密信息，仅限于发送给上面地址中列出的个人或群组。禁止任何其他人以任何形式使用（包括但不限于全部或部分地泄露、复制、或散发）本邮件中的信息。如果您错收了本邮件，请您立即电话或邮件通知发件人并删除本邮件！ This e-mail and its attachments contain confidential information from XIAOMI, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you receive this e-mail in error, please notify the sender by phone or email immediately and delete it!******/#
+between commit:
+
+  ebab9426cd73 ("Documentation/ABI: Fix typos")
+
+from the jc_docs tree and commit:
+
+  f176638af476 ("USB: Remove Wireless USB and UWB documentation")
+
+from the usb tree.
+
+I fixed it up (I rmeoved the files) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/sozIqTv3MEBEyWUZq/idQKF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTi5lwACgkQAVBC80lX
+0GxmMgf/coLXJ8BwL/wEabKUyL5fhgdNqEYdglTKpwSlLQ9l9UTR/1vGhJzUyE9c
++Pc8iNY6ey0ghxy23TLs2AMEjPsYbqpoZpjPLHMQ1b819lTkuX1pyha5T9IIQefr
+frWUv02VectWY1XRoAX8msg9++oCK1ScfWy7c4YSTzyanp/Zr8sFt8m+O42XesFe
+B21hAXc2AGIPEWISyqvg67UqGwVycaBOtXgjcSCeYVhYbRpHDrY/AhP9+YJWTYKx
+CCBo43bMs9s7rRBec8Hn9H+hcVifQkZs0LJu38yIHLOAybnjc17tDSrSNvxa0zdT
+rbSG687pnSfuRogtXhoPSh1vc8QMMw==
+=mykT
+-----END PGP SIGNATURE-----
+
+--Sig_/sozIqTv3MEBEyWUZq/idQKF--
