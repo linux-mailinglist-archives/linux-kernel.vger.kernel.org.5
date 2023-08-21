@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA65F78307C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC9F783088
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229472AbjHUSx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        id S229524AbjHUSyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjHUSx4 (ORCPT
+        with ESMTP id S229458AbjHUSyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:53:56 -0400
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E75148CCC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:53:24 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-31aec0a1a8bso1421827f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:53:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692643921; x=1693248721;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zCtenRCjXXMg5T6uzuSAM+POnJmMfnMhSwDV8nofr7M=;
-        b=iVERGBgjqfA46CdXTSzrqZEX8b3lJrt02ilp+nvqeCCzs9suPzxQrFDFE+JTYqzoZl
-         4JKR4Ud877MnlFzqLNsFeyWZftJIazb5XCvSXmMhxt5GK1BZs2vf8g7DttbDRCPvBs0Y
-         VkbxcIPnQorhIuSzlkoT8IkbSSF1M4pGqI2MW6LlQb9WrUWfebzYilzgvPsyOGKCh7i/
-         NvT2SrktOPoQhtqGCccKXMXndXTNzGVoYO3NfOlLvoSKHTBgdAiwKvPJ31gGQgZxPo+h
-         xbjSG6NM6EpaqZjlkHIZad2rprdGkYyGmdiMr/u19FhV/ULmo1ChIsJdNS5DXMhhkWuQ
-         6zcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692643921; x=1693248721;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zCtenRCjXXMg5T6uzuSAM+POnJmMfnMhSwDV8nofr7M=;
-        b=jl0Ww4Wg5x8r2lu8T89RMGexq76AsrTNea0cTZdi3i9QD91GNyzkJCDyoY5YBJfetG
-         MxxirfG4/HLcBxyCFgzj0XRlNxEzXDKtMtPm9nCvdMoHAf7ekZA+a4u6Jy/jsuHW0ukV
-         RE9CDA2DeCi0mI+BWA3pZFWYcrXIVFUEh8rMjRllwAygsuBTclGl5kXrnCPooqCkcj7y
-         nFyxz08iQP6xZqZ2vO5sKPOap9GI1LGKG9I0yp4AnODENTcEgdw4C2ttiygcPR6HyywQ
-         S+7Ab0fPdOy5wi6k1GTuRjCtbmiaH00B9uL+GGuHpCJNcnx2yxK26GWwJk3OQcyImil1
-         rvXA==
-X-Gm-Message-State: AOJu0YyoIfnLW/46iF1CmMvPhO1goEkx+nbO3vTkHE/BfrH9WqegvSiW
-        lKkYs06oTYR4VwfQIiENDJmuFg==
-X-Google-Smtp-Source: AGHT+IEIBL5BILI0Pd6OWt114UByKQoedPY/3p8aG6w/uJFzgAGbmiKQooOd5z2oKWcFGRNX4goGEQ==
-X-Received: by 2002:adf:f74b:0:b0:319:7c17:4c65 with SMTP id z11-20020adff74b000000b003197c174c65mr7259307wrp.12.1692643921096;
-        Mon, 21 Aug 2023 11:52:01 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id p6-20020a5d68c6000000b00317c742ca9asm13494807wrw.43.2023.08.21.11.51.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 11:52:00 -0700 (PDT)
-Message-ID: <62859b0e-cfee-f094-2ae9-bf0e243e2929@linaro.org>
-Date:   Mon, 21 Aug 2023 19:51:59 +0100
+        Mon, 21 Aug 2023 14:54:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958A976B2;
+        Mon, 21 Aug 2023 11:53:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8400964180;
+        Mon, 21 Aug 2023 18:52:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81722C433C7;
+        Mon, 21 Aug 2023 18:52:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692643957;
+        bh=9Yw86enLpID5U94hXBP0Cn3sQwsJbGoXb+O9UlFco2A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bMGxPQ8rqPAL5n5G3OsOHhxVHf494arO950h0E03Bkpq/ThOfFIcvfpU40WvxVeKV
+         aHkA1HtScEGLObzbbd+6tL3CXSZMGXEvg+JaHyZ03iY1ja2ys0omgqQepmYFZrwvzi
+         mLS62DmzD4oDTyvstiobOa4nEjsduQIRNmSECOoneqWKmdGmZYcMYTFlK+5558d9oa
+         tUbzRusq5FsHISJIAMZeuhHGQP9V//IzCuACBej/v3vZbxEEz551rZL0t9ufxRFT+d
+         YnEEbAaRyNQJ6UO5v2gJol+93ylEwF5svR5zpLSwZf5dV1JL8et34ik50QG/Bu2MiQ
+         AlaGlNaOmwT8A==
+Date:   Mon, 21 Aug 2023 11:52:34 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v4 21/28] net: wan: Add framer framework support
+Message-ID: <20230821115234.3aa55965@kernel.org>
+In-Reply-To: <fc5f1daa-58a1-fb86-65ba-c6b236051d45@csgroup.eu>
+References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
+        <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
+        <CACRpkdamyFvzqrQ1=k04CbfEJn1azOF+yP5Ls2Qa3Ux6WGq7_A@mail.gmail.com>
+        <fc5f1daa-58a1-fb86-65ba-c6b236051d45@csgroup.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v0 8/9] media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE
- when VC is greater than 3
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230814141007.3721197-1-bryan.odonoghue@linaro.org>
- <20230814141007.3721197-9-bryan.odonoghue@linaro.org>
- <edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/2023 10:53, Hans Verkuil wrote:
-> +		u8 dt_id = vc * 4;
+On Mon, 21 Aug 2023 05:19:22 +0000 Christophe Leroy wrote:
+> As I said in the cover letter, this series only fixes critical build=20
+> failures that happened when CONFIG_MODULES is set. The purpose was to=20
+> allow robots to perform their job up to the end. Other feedback and=20
+> comments will be taken into account by Herv=C3=A9 when he is back from ho=
+lidays.
 
-You're right.
+I missed this too, FTR this is unacceptable.
 
-dt_id = vc is wrong but so is dt_id = vc * 4.
+Quoting documentation:
 
-I'll post a fix for the dt_id as a separate patch.
-
----
-bod
+  **Do not** post your patches just to run them through the checks.
+  You must ensure that your patches are ready by testing them locally
+  before posting to the mailing list. The patchwork build bot instance
+  gets overloaded very easily and netdev@vger really doesn't need more
+  traffic if we can help it.
+ =20
+See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#pa=
+tchwork-checks
