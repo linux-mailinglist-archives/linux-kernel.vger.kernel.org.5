@@ -2,280 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF7B7825EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B4217825F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234240AbjHUI7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 04:59:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
+        id S234256AbjHUJBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbjHUI72 (ORCPT
+        with ESMTP id S232615AbjHUJBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 04:59:28 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1F5EC1;
-        Mon, 21 Aug 2023 01:59:25 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2A22F2F4;
-        Mon, 21 Aug 2023 02:00:06 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.34.216])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDF0E3F762;
-        Mon, 21 Aug 2023 01:59:23 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 09:59:17 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Xu Zhao <zhaoxu.35@bytedance.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouyibo@bytedance.com,
-        zhouliang.001@bytedance.com, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev
-Subject: Re: [RFC] KVM: arm/arm64: optimize vSGI injection performance
-Message-ID: <ZOMnZY_w83vTYnTo@FVFF77S0Q05N>
-References: <20230818104704.7651-1-zhaoxu.35@bytedance.com>
+        Mon, 21 Aug 2023 05:01:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E98DC1;
+        Mon, 21 Aug 2023 02:01:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 07BC661197;
+        Mon, 21 Aug 2023 09:01:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A96C433C8;
+        Mon, 21 Aug 2023 09:01:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692608494;
+        bh=bpgMRFrtUvUUXxIRX8UHoRJTPj6PZfbFDNTb259U9fg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L9aT17ZhTZ4u963nqxRiyPFs17esZyEzjnVQoPKyaBwDxHm+BtAxAoszFELC08uct
+         KQAxtC21QSla3nTAqOBoXCq8e99DpHegUAfTuSqyHhOUM56cjermFvrEfAp2Zkv1fG
+         bEy6F7a4r9V7ceiKkx8NWRZxrMw7kiLVrJSngh3t7Vv8RQuvK+2ssuI6Ut+6seY87a
+         VPWZkdtDlENOXZtF8zn3kpmuIyMS0Y0MaNKxDbqZ8eCpGgm9f7IGhPCFleLMGRP8/D
+         qyEoEcOH64tJkmNW9FLpgPYAMz0OunghvcjDAAWDShdOHvuFYCM7JH/hHqXOVUfA9A
+         F8QDE0ilv3UsA==
+Date:   Mon, 21 Aug 2023 11:01:28 +0200
+From:   Benjamin Tissoires <bentiss@kernel.org>
+To:     Doug Anderson <dianders@google.com>
+Cc:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
+        benjamin.tissoires@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dmitry.torokhov@gmail.com, jikos@kernel.org, hsinyi@google.com,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] HID: i2c-hid: elan: Add ili9882t timing
+Message-ID: <lyns4qkh57xhppnqroaooqtniypfsmr2l5fujlry3stmhrjww4@3iy5mmmrazl6>
+References: <20230802071947.1683318-1-yangcong5@huaqin.corp-partner.google.com>
+ <20230802071947.1683318-3-yangcong5@huaqin.corp-partner.google.com>
+ <CAD=FV=Um8875aMt_kWvCvpNjb3EwSk8VjVTEgv_TJ9WDS+LniA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230818104704.7651-1-zhaoxu.35@bytedance.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=Um8875aMt_kWvCvpNjb3EwSk8VjVTEgv_TJ9WDS+LniA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding the KVM/arm64 maintainers & list]
+On Aug 02 2023, Doug Anderson wrote:
+> Benjamin,
+> 
+> On Wed, Aug 2, 2023 at 12:20 AM Cong Yang
+> <yangcong5@huaqin.corp-partner.google.com> wrote:
+> >
+> > The ili9882t is a TDDI IC (Touch with Display Driver). The
+> > datasheet specifies there should be 60ms between touch SDA
+> > sleep and panel RESX. Doug's series[1] allows panels and
+> > touchscreens to power on/off together, so we can add the 65 ms
+> > delay in i2c_hid_core_suspend before panel_unprepare.
+> >
+> > Because ili9882t touchscrgeen is a panel follower, and
+> > needs to use vccio-supply instead of vcc33-supply, so set
+> > it NULL to ili9882t_chip_data, then not use vcc33 regulator.
+> >
+> > [1]: https://lore.kernel.org/all/20230727171750.633410-1-dianders@chromium.org
+> >
+> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> > ---
+> >  drivers/hid/i2c-hid/i2c-hid-of-elan.c | 50 ++++++++++++++++++++-------
+> >  1 file changed, 38 insertions(+), 12 deletions(-)
+> 
+> 
+> >
+> > diff --git a/drivers/hid/i2c-hid/i2c-hid-of-elan.c b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
+> > index 029045d9661c..31abab57ad44 100644
+> > --- a/drivers/hid/i2c-hid/i2c-hid-of-elan.c
+> > +++ b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
+> > @@ -18,9 +18,11 @@
+> >  #include "i2c-hid.h"
+> >
+> >  struct elan_i2c_hid_chip_data {
+> > -       unsigned int post_gpio_reset_delay_ms;
+> > +       unsigned int post_gpio_reset_on_delay_ms;
+> > +       unsigned int post_gpio_reset_off_delay_ms;
+> >         unsigned int post_power_delay_ms;
+> >         u16 hid_descriptor_address;
+> > +       const char *main_supply_name;
+> >  };
+> >
+> >  struct i2c_hid_of_elan {
+> > @@ -38,9 +40,11 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *ops)
+> >                 container_of(ops, struct i2c_hid_of_elan, ops);
+> >         int ret;
+> >
+> > -       ret = regulator_enable(ihid_elan->vcc33);
+> > -       if (ret)
+> > -               return ret;
+> > +       if (ihid_elan->vcc33) {
+> > +               ret = regulator_enable(ihid_elan->vcc33);
+> > +               if (ret)
+> > +                       return ret;
+> > +       }
+> >
+> >         ret = regulator_enable(ihid_elan->vccio);
+> >         if (ret) {
+> > @@ -52,8 +56,8 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *ops)
+> >                 msleep(ihid_elan->chip_data->post_power_delay_ms);
+> >
+> >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 0);
+> > -       if (ihid_elan->chip_data->post_gpio_reset_delay_ms)
+> > -               msleep(ihid_elan->chip_data->post_gpio_reset_delay_ms);
+> > +       if (ihid_elan->chip_data->post_gpio_reset_on_delay_ms)
+> > +               msleep(ihid_elan->chip_data->post_gpio_reset_on_delay_ms);
+> >
+> >         return 0;
+> >  }
+> > @@ -64,8 +68,12 @@ static void elan_i2c_hid_power_down(struct i2chid_ops *ops)
+> >                 container_of(ops, struct i2c_hid_of_elan, ops);
+> >
+> >         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 1);
+> > +       if (ihid_elan->chip_data->post_gpio_reset_off_delay_ms)
+> > +               msleep(ihid_elan->chip_data->post_gpio_reset_off_delay_ms);
+> > +
+> >         regulator_disable(ihid_elan->vccio);
+> > -       regulator_disable(ihid_elan->vcc33);
+> > +       if (ihid_elan->vcc33)
+> > +               regulator_disable(ihid_elan->vcc33);
+> >  }
+> >
+> >  static int i2c_hid_of_elan_probe(struct i2c_client *client)
+> > @@ -89,24 +97,42 @@ static int i2c_hid_of_elan_probe(struct i2c_client *client)
+> >         if (IS_ERR(ihid_elan->vccio))
+> >                 return PTR_ERR(ihid_elan->vccio);
+> >
+> > -       ihid_elan->vcc33 = devm_regulator_get(&client->dev, "vcc33");
+> > -       if (IS_ERR(ihid_elan->vcc33))
+> > -               return PTR_ERR(ihid_elan->vcc33);
+> > -
+> >         ihid_elan->chip_data = device_get_match_data(&client->dev);
+> >
+> > +       if (ihid_elan->chip_data->main_supply_name) {
+> > +               ihid_elan->vcc33 = devm_regulator_get(&client->dev,
+> > +                                                     ihid_elan->chip_data->main_supply_name);
+> > +               if (IS_ERR(ihid_elan->vcc33))
+> > +                       return PTR_ERR(ihid_elan->vcc33);
+> > +       }
+> > +
+> >         return i2c_hid_core_probe(client, &ihid_elan->ops,
+> >                                   ihid_elan->chip_data->hid_descriptor_address, 0);
+> >  }
+> >
+> >  static const struct elan_i2c_hid_chip_data elan_ekth6915_chip_data = {
+> >         .post_power_delay_ms = 1,
+> > -       .post_gpio_reset_delay_ms = 300,
+> > +       .post_gpio_reset_on_delay_ms = 300,
+> > +       .hid_descriptor_address = 0x0001,
+> > +       .main_supply_name = "vcc33",
+> > +};
+> > +
+> > +static const struct elan_i2c_hid_chip_data ilitek_ili9882t_chip_data = {
+> > +       .post_power_delay_ms = 1,
+> > +       .post_gpio_reset_on_delay_ms = 200,
+> > +       .post_gpio_reset_off_delay_ms = 65,
+> >         .hid_descriptor_address = 0x0001,
+> > +       /*
+> > +        * this touchscreen is tightly integrated with the panel and assumes
+> > +        * that the relevant power rails (other than the IO rail) have already
+> > +        * been turned on by the panel driver because we're a panel follower.
+> > +        */
+> > +       .main_supply_name = NULL,
+> >  };
+> >
+> >  static const struct of_device_id elan_i2c_hid_of_match[] = {
+> >         { .compatible = "elan,ekth6915", .data = &elan_ekth6915_chip_data },
+> > +       { .compatible = "ilitek,ili9882t", .data = &ilitek_ili9882t_chip_data },
+> 
+> Logically, this patch depends on the panel-follower series that's now
+> landed in drm-misc-next. With your Ack, I'm willing to land these two
+> patches into drm-misc-next too. Other options:
 
-Mark.
+If you are fine with the code, I think it could go with the drm tree
+given that it depends on the panel-follower.
 
-On Fri, Aug 18, 2023 at 06:47:04PM +0800, Xu Zhao wrote:
-> In the worst case scenario, it may iterate over all vCPUs in the vm in order to complete
-> injecting an SGI interrupt. However, the ICC_SGI_* register provides affinity routing information,
-> and we are interested in exploring the possibility of utilizing this information to reduce iteration
-> times from a total of vcpu numbers to 16 (the length of the targetlist), or even 8 times.
+Unless it's too late for you to take 6.6 material (sorry I was off in
+August and just came back).
+
+Acked-By: Benjamin Tissoires <bentiss@kernel.org>
+
+Cheers,
+Benjamin
+
 > 
-> This work is based on v5.4, and here is test data:
-> 4 cores with vcpu pinning:
-> 	  	 |               ipi benchmark           |	 vgic_v3_dispatch_sgi      |
-> 		 |    original  |  with patch  | impoved | original | with patch | impoved |
-> | core0 -> core1 | 292610285 ns	| 299856696 ns |  -2.5%	 |  1471 ns |   1508 ns  |  -2.5%  |
-> | core0 -> core3 | 333815742 ns	| 327647989 ns |  +1.8%  |  1578 ns |   1532 ns  |  +2.9%  |
-> |  core0 -> all  | 439754104 ns | 433987192 ns |  +1.3%  |  2970 ns |   2875 ns  |  +3.2%  |
+> a) We could land the two patches in the i2c-hid tree since they don't
+> appear to conflict. The touchscreen won't actually function until the
+> patches meetup in linux-next but I don't think they'll give any
+> compile errors (I haven't double-checked that, but I can). ...though
+> it's possible that the dt bindings might generate errors? Again, I can
+> investigate if we want to go this way.
 > 
-> 32 cores with vcpu pinning:
->                   |               ipi benchmark                |        vgic_v3_dispatch_sgi      |
->                   |    original    |    with patch  |  impoved | original | with patch | impoved  |
-> |  core0 -> core1 |  269153219 ns  |   261636906 ns |  +2.8%   |  1743 ns |   1706 ns  |  +2.1%   |
-> | core0 -> core31 |  685199666 ns  |   355250664 ns |  +48.2%  |  4238 ns |   1838 ns  |  +56.6%  |
-> |   core0 -> all  |  7281278980 ns |  3403240773 ns |  +53.3%  | 30879 ns |  13843 ns  |  +55.2%  |
+> b) We can snooze this for a few months and you can pick it to i2c-hid
+> when my series reaches mainline.
 > 
-> Based on the test results, the performance of vm  with less than 16 cores remains almost the same,
-> while significant improvement can be observed with more than 16 cores.
+> Let me know how you'd like to proceed.
 > 
-> Signed-off-by: Xu Zhao <zhaoxu.35@bytedance.com>
-> ---
->  include/linux/kvm_host.h         |   5 ++
->  virt/kvm/arm/vgic/vgic-mmio-v3.c | 136 +++++++++++++++----------------
->  2 files changed, 73 insertions(+), 68 deletions(-)
-> 
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 027e155daf8c..efc7b96946c1 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -580,6 +580,11 @@ static inline struct kvm_vcpu *kvm_get_vcpu(struct kvm *kvm, int i)
->  	     (vcpup = kvm_get_vcpu(kvm, idx)) != NULL; \
->  	     idx++)
->  
-> +#define kvm_for_each_target_vcpus(idx, target_cpus) \
-> +	for (idx = target_cpus & 0xff ? 0 : (ICC_SGI1R_AFFINITY_1_SHIFT>>1); \
-> +		(1 << idx) <= target_cpus; \
-> +		idx++)
-> +
->  static inline struct kvm_vcpu *kvm_get_vcpu_by_id(struct kvm *kvm, int id)
->  {
->  	struct kvm_vcpu *vcpu = NULL;
-> diff --git a/virt/kvm/arm/vgic/vgic-mmio-v3.c b/virt/kvm/arm/vgic/vgic-mmio-v3.c
-> index 24011280c4b1..bb64148ab75b 100644
-> --- a/virt/kvm/arm/vgic/vgic-mmio-v3.c
-> +++ b/virt/kvm/arm/vgic/vgic-mmio-v3.c
-> @@ -852,44 +852,60 @@ int vgic_v3_has_attr_regs(struct kvm_device *dev, struct kvm_device_attr *attr)
->  
->  	return 0;
->  }
-> +
->  /*
-> - * Compare a given affinity (level 1-3 and a level 0 mask, from the SGI
-> - * generation register ICC_SGI1R_EL1) with a given VCPU.
-> - * If the VCPU's MPIDR matches, return the level0 affinity, otherwise
-> - * return -1.
-> + * Get affinity routing index from ICC_SGI_* register
-> + * format:
-> + *     aff3       aff2       aff1            aff0
-> + * |- 8 bits -|- 8 bits -|- 8 bits -|- 4 bits or 8bits -|
->   */
-> -static int match_mpidr(u64 sgi_aff, u16 sgi_cpu_mask, struct kvm_vcpu *vcpu)
-> +static u64 sgi_to_affinity(unsigned long reg)
->  {
-> -	unsigned long affinity;
-> -	int level0;
-> +	u64 aff;
->  
-> -	/*
-> -	 * Split the current VCPU's MPIDR into affinity level 0 and the
-> -	 * rest as this is what we have to compare against.
-> -	 */
-> -	affinity = kvm_vcpu_get_mpidr_aff(vcpu);
-> -	level0 = MPIDR_AFFINITY_LEVEL(affinity, 0);
-> -	affinity &= ~MPIDR_LEVEL_MASK;
-> +	/* aff3 - aff1 */
-> +	aff = (((reg) & ICC_SGI1R_AFFINITY_3_MASK) >> ICC_SGI1R_AFFINITY_3_SHIFT) << 16 |
-> +		(((reg) & ICC_SGI1R_AFFINITY_2_MASK) >> ICC_SGI1R_AFFINITY_2_SHIFT) << 8 |
-> +		(((reg) & ICC_SGI1R_AFFINITY_1_MASK) >> ICC_SGI1R_AFFINITY_1_SHIFT);
->  
-> -	/* bail out if the upper three levels don't match */
-> -	if (sgi_aff != affinity)
-> -		return -1;
-> +	/* if use range selector, TargetList[n] represents aff0 value ((RS * 16) + n) */
-> +	if ((reg) & ICC_SGI1R_RS_MASK) {
-> +		aff <<= 4;
-> +		aff |= (reg) & ICC_SGI1R_RS_MASK;
-> +	}
->  
-> -	/* Is this VCPU's bit set in the mask ? */
-> -	if (!(sgi_cpu_mask & BIT(level0)))
-> -		return -1;
-> +	/* aff0, the length of targetlist in sgi register is 16, which is 4bit  */
-> +	aff <<= 4;
->  
-> -	return level0;
-> +	return aff;
->  }
->  
->  /*
-> - * The ICC_SGI* registers encode the affinity differently from the MPIDR,
-> - * so provide a wrapper to use the existing defines to isolate a certain
-> - * affinity level.
-> + * inject a vsgi to vcpu
->   */
-> -#define SGI_AFFINITY_LEVEL(reg, level) \
-> -	((((reg) & ICC_SGI1R_AFFINITY_## level ##_MASK) \
-> -	>> ICC_SGI1R_AFFINITY_## level ##_SHIFT) << MPIDR_LEVEL_SHIFT(level))
-> +static inline void vgic_v3_inject_sgi(struct kvm_vcpu *vcpu, int sgi, bool allow_group1)
-> +{
-> +	struct vgic_irq *irq;
-> +	unsigned long flags;
-> +
-> +	irq = vgic_get_irq(vcpu->kvm, vcpu, sgi);
-> +
-> +	raw_spin_lock_irqsave(&irq->irq_lock, flags);
-> +
-> +	/*
-> +	 * An access targeting Group0 SGIs can only generate
-> +	 * those, while an access targeting Group1 SGIs can
-> +	 * generate interrupts of either group.
-> +	 */
-> +	if (!irq->group || allow_group1) {
-> +		irq->pending_latch = true;
-> +		vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
-> +	} else {
-> +		raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
-> +	}
-> +
-> +	vgic_put_irq(vcpu->kvm, irq);
-> +}
->  
->  /**
->   * vgic_v3_dispatch_sgi - handle SGI requests from VCPUs
-> @@ -910,64 +926,48 @@ void vgic_v3_dispatch_sgi(struct kvm_vcpu *vcpu, u64 reg, bool allow_group1)
->  	struct kvm *kvm = vcpu->kvm;
->  	struct kvm_vcpu *c_vcpu;
->  	u16 target_cpus;
-> -	u64 mpidr;
->  	int sgi, c;
->  	int vcpu_id = vcpu->vcpu_id;
->  	bool broadcast;
-> -	unsigned long flags;
-> +	u64 aff_index;
->  
->  	sgi = (reg & ICC_SGI1R_SGI_ID_MASK) >> ICC_SGI1R_SGI_ID_SHIFT;
->  	broadcast = reg & BIT_ULL(ICC_SGI1R_IRQ_ROUTING_MODE_BIT);
->  	target_cpus = (reg & ICC_SGI1R_TARGET_LIST_MASK) >> ICC_SGI1R_TARGET_LIST_SHIFT;
-> -	mpidr = SGI_AFFINITY_LEVEL(reg, 3);
-> -	mpidr |= SGI_AFFINITY_LEVEL(reg, 2);
-> -	mpidr |= SGI_AFFINITY_LEVEL(reg, 1);
->  
->  	/*
-> -	 * We iterate over all VCPUs to find the MPIDRs matching the request.
-> -	 * If we have handled one CPU, we clear its bit to detect early
-> -	 * if we are already finished. This avoids iterating through all
-> -	 * VCPUs when most of the times we just signal a single VCPU.
-> +	 * Writing IRM bit is not a frequent behavior, so separate SGI injection into two parts.
-> +	 * If it is not broadcast, compute the affinity routing index first,
-> +	 * then iterate targetlist to find the target VCPU.
-> +	 * Or, inject sgi to all VCPUs but the calling one.
->  	 */
-> -	kvm_for_each_vcpu(c, c_vcpu, kvm) {
-> -		struct vgic_irq *irq;
-> -
-> -		/* Exit early if we have dealt with all requested CPUs */
-> -		if (!broadcast && target_cpus == 0)
-> -			break;
-> -
-> -		/* Don't signal the calling VCPU */
-> -		if (broadcast && c == vcpu_id)
-> -			continue;
-> +	if (likely(!broadcast)) {
-> +		/* compute affinity routing index */
-> +		aff_index = sgi_to_affinity(reg);
->  
-> -		if (!broadcast) {
-> -			int level0;
-> +		/* Exit if meet a wrong affinity value */
-> +		if (aff_index >= atomic_read(&kvm->online_vcpus))
-> +			return;
->  
-> -			level0 = match_mpidr(mpidr, target_cpus, c_vcpu);
-> -			if (level0 == -1)
-> +		/* Iterate target list */
-> +		kvm_for_each_target_vcpus(c, target_cpus) {
-> +			if (!(target_cpus & (1 << c)))
->  				continue;
->  
-> -			/* remove this matching VCPU from the mask */
-> -			target_cpus &= ~BIT(level0);
-> -		}
-> -
-> -		irq = vgic_get_irq(vcpu->kvm, c_vcpu, sgi);
-> -
-> -		raw_spin_lock_irqsave(&irq->irq_lock, flags);
-> +			c_vcpu = kvm_get_vcpu_by_id(kvm, aff_index+c);
-> +			if (!c_vcpu)
-> +				break;
->  
-> -		/*
-> -		 * An access targetting Group0 SGIs can only generate
-> -		 * those, while an access targetting Group1 SGIs can
-> -		 * generate interrupts of either group.
-> -		 */
-> -		if (!irq->group || allow_group1) {
-> -			irq->pending_latch = true;
-> -			vgic_queue_irq_unlock(vcpu->kvm, irq, flags);
-> -		} else {
-> -			raw_spin_unlock_irqrestore(&irq->irq_lock, flags);
-> +			vgic_v3_inject_sgi(c_vcpu, sgi, allow_group1);
->  		}
-> +	} else {
-> +		kvm_for_each_vcpu(c, c_vcpu, kvm) {
-> +			/* don't signal the calling vcpu  */
-> +			if (c_vcpu->vcpu_id == vcpu_id)
-> +				continue;
->  
-> -		vgic_put_irq(vcpu->kvm, irq);
-> +			vgic_v3_inject_sgi(c_vcpu, sgi, allow_group1);
-> +		}
->  	}
->  }
->  
-> -- 
-> 2.20.1
-> 
+> -Doug
