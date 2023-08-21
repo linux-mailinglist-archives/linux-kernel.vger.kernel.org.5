@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EE4783044
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF4A783041
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229580AbjHUSb4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 14:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52866 "EHLO
+        id S229379AbjHUSbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjHUSbz (ORCPT
+        with ESMTP id S229446AbjHUSbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:31:55 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A02826400;
-        Mon, 21 Aug 2023 11:31:52 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-570b3ebb3faso150858eaf.0;
-        Mon, 21 Aug 2023 11:31:52 -0700 (PDT)
+        Mon, 21 Aug 2023 14:31:44 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9EE24E94
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:31:42 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76db1d65eefso5357585a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1692642701; x=1693247501;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qa8AAhwTy8YVFRv18LCXMk4AitxTlf/jcp6uThOwTlI=;
+        b=l5SYXEQEwNSLSpOqdZ7OFW/9Ozb1e02BEhCThpq+gziOR6jGc/3fhOTIkqj8+7DWtV
+         F1/qyOcX4Sc3kjJJAxThcjvSY6ia/rdTdWclGKe+uXJqbtm2mMOObOqfvFAT+3HZw5XO
+         8nu+6h+mAbl26TlNA3xmflqADodafTE2J6chgjzlYhiJ4vD7VFo3YwKo1yK8yhUMd4KV
+         qky6rV59c/y93FwGgnG5ZevLbtCgovrG3VIBG/xBY07UwSROH7qEW55xflMG4wf7MLR1
+         DrGkL8t6nv7iGMZ1HDBWIOqh8AaQVViFvktJV06V5CklxDcTaRhI0tQwlY1z8BZzGRXw
+         gXJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692642712; x=1693247512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7cpTLlf63vU43t54PAMmVd0PPwP7u1THayVq4sVIl7g=;
-        b=JfGzh3qk8vtdTilYPOxmK7ODFgBb6zGRaALDrC6rBApqlCoaUWBQBl6R0PRMqyZzy0
-         LqMQRVBuP1+um0sWg18ifcaEQjBTPMKwyQ1/qOKC6errJwgdHDQ0bdTlzWjQdyNzBj8i
-         r+/FSM6+2D2xkqQaEnJDbzlr//PhTYJ1vIm6K649fpMw55QH2XNiQSWDliuULqq1N4VW
-         Emy7ex555sMBz9TTnNefzy3PQSERr3cWEVodq83d0eRdxz/ajW1U7zwrqy+01SujR/7D
-         vb0+C0R6CNThKJhPIa8r8ubTb8VyIUEDaMwisNAlrrfXsrnCtIMswx/XZlPT0pmERXvf
-         cISg==
-X-Gm-Message-State: AOJu0YwOchjWyXp7FLCNb4+FBBiN0xlPHz+LXmT4nsC1VokY218m/mTj
-        nNO/KY9xf6XSPZf38srQj4kDaYnxKbDoluWboZc=
-X-Google-Smtp-Source: AGHT+IGQl/N1CAf5FS93CymNiEu99nmDY0DB59wzwQEm40CQxDSHEExh6kjRB5xk8iBFKZURM3XAjRbeUAN7YLVx7dg=
-X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
- n1-20020a4ae741000000b0056e94edc098mr7004853oov.0.1692642712068; Mon, 21 Aug
- 2023 11:31:52 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692642701; x=1693247501;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qa8AAhwTy8YVFRv18LCXMk4AitxTlf/jcp6uThOwTlI=;
+        b=KaTMHH9RVyVJ6e5n0+mkwdekqdt+zF1YutZ6m1sQxRBm7nrCXqAOsn6rCy3T9ai5kh
+         JbFk0n6YJMSHTHMK+vfM3U6OQ0tbuybqGM6TXG7n9eHqFZaOXGovPQ6Umb6pzik+z2Sd
+         QHD2cuSk328VwuVsQkwUebP/N0t/2hSukh7aj+eyLji3kEhY60lFa5LV9ORS4+0s03O6
+         fkzF6RHLuZ24t8a7+NaJJb7nWm/j3euwKV/XVAc9p1t1b1/1sGstj9kHdrF/gMyyYUlM
+         lo+LEZbNRJ6GtWaagM/uAiB6jQF0c1PPv2qTlX9ooV4MAbJNwr8DHZyO2yEgeqvLeXfQ
+         DFVA==
+X-Gm-Message-State: AOJu0YyEwYpT75WySwyvA323II8Glg4+ns+Vdm4WEkSzRiTfhKF1m24v
+        qXx3rUPSI953hJApvOG8vjw7ug==
+X-Google-Smtp-Source: AGHT+IEJB+mpBoo2O0eM3iFfDQGTfF2egcAVTPb5TnSsKiZjFNPmdYIulJ1Rkf9qhiRRCV7nCD4Uow==
+X-Received: by 2002:a05:620a:462b:b0:768:1031:4028 with SMTP id br43-20020a05620a462b00b0076810314028mr9919562qkb.30.1692642701703;
+        Mon, 21 Aug 2023 11:31:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id c16-20020a05620a165000b0076da29c4497sm1316113qko.112.2023.08.21.11.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 11:31:41 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qY9gi-00DzLb-HN;
+        Mon, 21 Aug 2023 15:31:40 -0300
+Date:   Mon, 21 Aug 2023 15:31:40 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/11] iommu: Prepare to deliver page faults to user
+ space
+Message-ID: <ZOOtjJLumarsBzwN@ziepe.ca>
+References: <20230817234047.195194-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-References: <20230818194007.27410-1-mario.limonciello@amd.com>
-In-Reply-To: <20230818194007.27410-1-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Aug 2023 20:31:36 +0200
-Message-ID: <CAJZ5v0gNZNRs4hpV5QxxTaPDu1Mp-vDhN-fZZ+_6AZg+nDmg1A@mail.gmail.com>
-Subject: Re: [PATCH v14.b 0/7] Export LPS0 constraints
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817234047.195194-1-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 9:40 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> LPS0 constraints can be useful to other parts of the kernel to make
-> decisions what state to put devices into.
->
-> In v14 this series has been split into 3 parts.
->  part A: Immediate fix for AMD issue.
->  part B: LPS0 export improvements
->  part C: Long term solution for all vendors
->
-> This is part B, it can be applied and reviewed independently from part A.
->
-> Andy Shevchenko (1):
->   ACPI: x86: s2idle: Add for_each_lpi_constraint() helper
->
-> Mario Limonciello (6):
->   ACPI: Adjust #ifdef for *_lps0_dev use
->   ACPI: x86: s2idle: Post-increment variables when getting constraints
->   ACPI: x86: s2idle: Catch multiple ACPI_TYPE_PACKAGE objects
->   ACPI: x86: s2idle: Fix a logic error parsing AMD constraints table
->   ACPI: x86: s2idle: Add more debugging for AMD constraints parsing
->   ACPI: x86: s2idle: Add a function to get constraints for a device
->
->  drivers/acpi/x86/s2idle.c | 96 +++++++++++++++++++++++++--------------
->  include/linux/acpi.h      | 10 +++-
->  2 files changed, 70 insertions(+), 36 deletions(-)
->
-> --
+On Fri, Aug 18, 2023 at 07:40:36AM +0800, Lu Baolu wrote:
+> When a user-managed page table is attached to an IOMMU, it is necessary
+> to deliver IO page faults to user space so that they can be handled
+> appropriately. One use case for this is nested translation, which is
+> currently being discussed in the mailing list.
+> 
+> I have posted a RFC series [1] that describes the implementation of
+> delivering page faults to user space through IOMMUFD. This series has
+> received several comments on the IOMMU refactoring, which I am trying to
+> address in this series.
 
-All applied as 6.6 material, but I rewrote the last patch my way, so
-please see the result in the bleeding-edge branch and let me know if
-there's anything wrong with it.
+Looking at this after all the patches are applied..
 
-Thanks!
+iommu_report_device_fault() and iommu_queue_iopf() should be put in
+the same file.
+
+iommu_queue_iopf() seems misnamed since it isn't queuing anything. It
+is delivering the fault to the domain.
+
+It is weird that iommu_sva_domain_alloc is not in the sva file
+
+iopf_queue_work() wrappers a work queue, but it should trampoline
+through another function before invoking the driver's callback and not
+invoke it with a weird work_struct - decode the group and get back the
+domain. Every single handler will require the group and domain.
+
+Same for domain->iopf_handler, the domain should be an argument if we
+are invoking the function on a domain.
+
+Perhaps group->domain is a simple answer.
+
+Jason
