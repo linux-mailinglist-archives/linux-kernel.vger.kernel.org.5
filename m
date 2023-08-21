@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F24782462
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA9F78246C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjHUHWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        id S233648AbjHUH0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjHUHWj (ORCPT
+        with ESMTP id S233024AbjHUH0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:22:39 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F8DC7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:22:12 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d73c595b558so3012623276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:22:12 -0700 (PDT)
+        Mon, 21 Aug 2023 03:26:08 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EF7B5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:26:05 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-ccc462deca6so3048098276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:26:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692602526; x=1693207326;
+        d=linaro.org; s=google; t=1692602765; x=1693207565;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZgI1MYhv8309+bCWxdxoJqdqvZCrtsQ/VE9m30u9HF4=;
-        b=u5QT6x/FxMVr+1aoFCgsJDj0QEzfuHcrI2+VtQeO3v/dDMfnEXre6eKjslbAPuUGTR
-         aDUsBu03dfbFVS8OhYUJcmZRNRxDOJQK6WxjkipX7+Fd0mFDQ5MV5BjVeGuHVtrGJNbJ
-         ABD+WhvSqFyI0oNdtM/dDZBfYoqbEG8UatfAl8s4MibiV1a0vVRj7TTPWy3g6zF6Zlnv
-         Hnx7JSh5IjFD1Zj9/8hUuYRLDQAMHhlxn4UXcU4/t3qc+6D+q93GHHvFJ7feucAIuzzw
-         Ytn4kIvomeBgbEXGMAFSY06730ouBsxWljY/tT5fZycl1G5UNmE9iI7QTtvC2zGFK9Jf
-         7sSA==
+        bh=N+rE6meNwqWac3G4k6sNGIx2jUyibWVh8hjz7HQuPrY=;
+        b=s1Zm8bn5NqYKIvs3Zi+mMQ41rJPBLFlZRkQQAHy7VXLKM//E158wT4xfkK5nMLx8p9
+         7hYTehNFHUkr8ESExDlGN8npU3rkhCUxemaR1kSrGnQySNlP2sDGUK2uCHgO8d40uPWF
+         FmqX7Phhys95uuN6yYb1nJk7EoL++vI0UL8glUoU5vfAiGI6YAFhsMKRQdSbllK/2hGj
+         +k7ElsYdKt/U7h0l58g0LTC2/5ka1WzwsKz8YUiWghvwxVoDJ0bICt8N/vfA9OotAYEC
+         8xzirWiCLl7qxDCajFdGUmdcSgNGggScSPOIyrT6bG9jcOeAfRrywRjBaWcXQcPvUHbY
+         z2SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692602526; x=1693207326;
+        d=1e100.net; s=20221208; t=1692602765; x=1693207565;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZgI1MYhv8309+bCWxdxoJqdqvZCrtsQ/VE9m30u9HF4=;
-        b=Gqm82gW2bBdqUn1v/e1CPm/peIem8MXh38SChgx3/oayGpyYETn0TLfiA19v0LLcSX
-         9LKlVLjsQniWPZMSI5aU0+5u0YXXwBR72lMRkdTVdNKz44NQVCr10xb08ttIoc0LxNeU
-         UAagQuG5svPE+iPVkNPrjIvNfWVjCvJL+e+ESQfnObA0dg+86UcVSXzrB1KQft+aYHbv
-         GFc4mzk2Nx5TM/sso/ijBx7+aenvHjIqW1HHWaD4NrsNhRaMs4wyBQ5/DENYfruVSoAv
-         Q+UiENqewHR5TACvmXQDgUhxRTO/UKdXI/rw7sKkgqieTFsNh2sAB4AiWo2C11u0ZQLg
-         uvDg==
-X-Gm-Message-State: AOJu0YylbPLmNyCEvzZ3ymEbwcBWkJq3JK2DrFD0jqa8fZYJpUBnirld
-        wfMtmY31mnsdn38K+UWZydBetedcVcka9vMSC3u9tg==
-X-Google-Smtp-Source: AGHT+IF/JTlr0dFi7ImP5aRW58ulW03tzkcnFFuhr9AUEC0SHkebzyrNv7zePScJNAsfPiEBnyQ9/wv9Y8G7TlIDK6A=
-X-Received: by 2002:a25:abeb:0:b0:d5b:1dd9:8e3f with SMTP id
- v98-20020a25abeb000000b00d5b1dd98e3fmr6148796ybi.41.1692602526568; Mon, 21
- Aug 2023 00:22:06 -0700 (PDT)
+        bh=N+rE6meNwqWac3G4k6sNGIx2jUyibWVh8hjz7HQuPrY=;
+        b=Z1LbQOw0SeekIiNz+pIM/26VRZ7blVonW5rqkS2A/sH8TN/rhupwni+uJAJDKxG1oa
+         X3VWO1IkpwfIiXgZxQqDGGYuM6ihpxmeqgylAPXUKWbeslW4Un5qqC5ZOK+aH90DvPl2
+         2Qo1w055M0+iAINbkrfmw9A4ySt1deTBmROUIOSFyrAWg/SJ/JdSaAMt6c2IlVjGimVg
+         jxkdnT1LUy4ht2nKCbKO9c+ypsFzgOtceJmfrNu3iUoTmvZZpy6mL4y09ZVukh7NNFR4
+         OYNSLg1Nx3LwolSpJyU0N0q2/4Rtp+22ZMsl8Ia50fek21I8IdLida3ughfCbFbOAikK
+         4Zbg==
+X-Gm-Message-State: AOJu0YxnKDiaOnykDgGefgRfdMwvHNgXQhCyPCCSvpQzEl+W3oHSixlm
+        FtHDRtxIaKp4zeTM5ypEushAWHjVjkaQoiWqIwKRxQ==
+X-Google-Smtp-Source: AGHT+IHsw1qMAqe28F2s7Wg6FQ9bbA42/D6ramMw5ZI5K+ot6Q1NYtJOqc8q+x6cSmNyJOQHtlAL+Kd/2JyG+pp5hJM=
+X-Received: by 2002:a5b:991:0:b0:d07:60bd:89f4 with SMTP id
+ c17-20020a5b0991000000b00d0760bd89f4mr6980082ybq.37.1692602765123; Mon, 21
+ Aug 2023 00:26:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1692376360.git.christophe.leroy@csgroup.eu>
- <5f671caf19be0a9bb7ea7b96a6c86381e243ca4c.1692376361.git.christophe.leroy@csgroup.eu>
- <CACRpkdamyFvzqrQ1=k04CbfEJn1azOF+yP5Ls2Qa3Ux6WGq7_A@mail.gmail.com> <fc5f1daa-58a1-fb86-65ba-c6b236051d45@csgroup.eu>
-In-Reply-To: <fc5f1daa-58a1-fb86-65ba-c6b236051d45@csgroup.eu>
+References: <20230506085928.933737-1-haibo.chen@nxp.com> <20230506085928.933737-2-haibo.chen@nxp.com>
+ <CACRpkdYUGwEn-4T+Ay-KckO3ChFNqOrdVuP93u=gs5uc9fY0yw@mail.gmail.com> <DB7PR04MB40102AA686099ED666C93EF5901EA@DB7PR04MB4010.eurprd04.prod.outlook.com>
+In-Reply-To: <DB7PR04MB40102AA686099ED666C93EF5901EA@DB7PR04MB4010.eurprd04.prod.outlook.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 21 Aug 2023 09:21:54 +0200
-Message-ID: <CACRpkdaiW1QgQAjaC3hTsTjwvuWw9OUwXGsH2t3X8k+ueuBN4A@mail.gmail.com>
-Subject: Re: [PATCH v4 21/28] net: wan: Add framer framework support
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+Date:   Mon, 21 Aug 2023 09:25:54 +0200
+Message-ID: <CACRpkdZ-2Lyk_c8EJfS=YHK81wt2RAWnZAg+vxvZZijYFwmDDA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: mxc: switch to dynamic allocat GPIO base
+To:     Bough Chen <haibo.chen@nxp.com>
+Cc:     "brgl@bgdev.pl" <brgl@bgdev.pl>,
         "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 7:19=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
-> Le 20/08/2023 =C3=A0 23:06, Linus Walleij a =C3=A9crit :
-> > On Fri, Aug 18, 2023 at 6:41=E2=80=AFPM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >
-> >> From: Herve Codina <herve.codina@bootlin.com>
-> >>
-> >> A framer is a component in charge of an E1/T1 line interface.
-> >> Connected usually to a TDM bus, it converts TDM frames to/from E1/T1
-> >> frames. It also provides information related to the E1/T1 line.
-> >>
-> >> The framer framework provides a set of APIs for the framer drivers
-> >> (framer provider) to create/destroy a framer and APIs for the framer
-> >> users (framer consumer) to obtain a reference to the framer, and
-> >> use the framer.
-> >>
-> >> This basic implementation provides a framer abstraction for:
-> >>   - power on/off the framer
-> >>   - get the framer status (line state)
-> >>   - be notified on framer status changes
-> >>   - get/set the framer configuration
-> >>
-> >> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> >> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >
-> > I had these review comments, you must have missed them?
-> > https://lore.kernel.org/netdev/CACRpkdZQ9_f6+9CseV1L_wGphHujFPAYXMjJfjU=
-rzSZRakOBzg@mail.gmail.com/
-> >
->
-> As I said in the cover letter, this series only fixes critical build
-> failures that happened when CONFIG_MODULES is set. The purpose was to
-> allow robots to perform their job up to the end. Other feedback and
-> comments will be taken into account by Herv=C3=A9 when he is back from ho=
-lidays.
+On Mon, Aug 21, 2023 at 4:47=E2=80=AFAM Bough Chen <haibo.chen@nxp.com> wro=
+te:
 
-Ah I see. I completely missed this.
+> Hi Linus and Bartosz,
+>
+> For this patch, still not in the main trunk (Linux 6.5-rc7) and linux-nex=
+t(next-20230818).
+> Can you help apply or any comment?
+
+As pointed out by Bartosz you cannot just mechanically switch the base
+to -1.
+
+You also need to convince us that this doesn't break any systems, and if
+it does, fix them so they don't break before submitting this patch.
 
 Yours,
 Linus Walleij
