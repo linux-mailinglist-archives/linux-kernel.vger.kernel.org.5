@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFA678232D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C8C782330
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbjHUFbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 01:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56354 "EHLO
+        id S233175AbjHUFcc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 01:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjHUFbU (ORCPT
+        with ESMTP id S233142AbjHUFcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 01:31:20 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15977A3;
-        Sun, 20 Aug 2023 22:31:18 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37L54abN025014;
-        Mon, 21 Aug 2023 05:30:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=c8uUEEZWKdhdjMO4DdNXq1RHRVYBuI0mJCa8u5UnvD0=;
- b=nXIV8CmzyHyecUi3DLWXPyDfB23Dj/xN9tf/48gvlOfVv489UPpOvEAOOd/w1bl8RoCv
- A1vlYRy5lZGZ4YfuD4NxPpSjUhC6fwpYqKsFugWasbzXwAJnR4d90grvsrXl4qE7t5mn
- eAjszgKrg846IFsAdrGQMGtkqgCJha65HNAJkHdRl4PVcKIdMhyUCShvWBma+AtMGDU4
- 8rFTxvTMcmhX0mjLH4WAlyNu9n/4P8NIjIsqLUQRqh0kcs7p3I5DL1rT6/bwy+wira9h
- eHySLtYaWeYLB/5TRmmjvqdWJpGzgHb8SDxIurrfvYZIHsf/w1vwFMrmmvIFEcYAYk0d tg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjmpxk0d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 05:30:37 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37L5UavZ031646
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 05:30:36 GMT
-Received: from [10.201.3.104] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 20 Aug
- 2023 22:30:33 -0700
-Message-ID: <1ee5a95c-2fe4-2163-5ff2-0c01d05c30cf@quicinc.com>
-Date:   Mon, 21 Aug 2023 11:00:05 +0530
+        Mon, 21 Aug 2023 01:32:31 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C3DF0A3;
+        Sun, 20 Aug 2023 22:32:27 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37L5VLoK4004057, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37L5VLoK4004057
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Aug 2023 13:31:21 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Mon, 21 Aug 2023 13:31:10 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Mon, 21 Aug 2023 13:31:10 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Mon, 21 Aug 2023 13:31:10 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
+Thread-Topic: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
+ automotive PCIe driver code
+Thread-Index: AQHZz4Ya38d07ViN20S7bf3O9T4Qta/q9pcAgAMgk2D//87KAIABzfpQ///CfgCABJnu0A==
+Date:   Mon, 21 Aug 2023 05:31:09 +0000
+Message-ID: <6d35d56f78b7452b9330c3257748fa3c@realtek.com>
+References: <20230815143756.106623-1-justinlai0215@realtek.com>
+ <20230815143756.106623-2-justinlai0215@realtek.com>
+ <95f079a4-19f9-4501-90d9-0bcd476ce68d@lunn.ch>
+ <4955506dbf6b4ebdb67cbb738750fbc8@realtek.com>
+ <eb245c85-0909-4a75-830d-afb96ccd5d38@lunn.ch>
+ <4951391892534eaeb2da96f052364e4c@realtek.com>
+ <4b630aeb-3098-4108-b8dc-7da6e55a7cf1@lunn.ch>
+In-Reply-To: <4b630aeb-3098-4108-b8dc-7da6e55a7cf1@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 1/3] mtd: rawnand: qcom: Update read_loc size to 512
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <mani@kernel.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
-References: <20230818145101.23825-1-quic_mdalam@quicinc.com>
- <20230818145101.23825-2-quic_mdalam@quicinc.com>
- <20230818215908.0e60b00b@xps-13>
-Content-Language: en-US
-From:   Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <20230818215908.0e60b00b@xps-13>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nL12fBierDu-ThJenNzDjeTF1ZFvVonP
-X-Proofpoint-ORIG-GUID: nL12fBierDu-ThJenNzDjeTF1ZFvVonP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-20_15,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 mlxscore=0
- adultscore=0 spamscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308210051
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,56 +79,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/19/2023 1:29 AM, Miquel Raynal wrote:
-> Hi Md,
+> > > Is the 'line' speed of the MAC fixed? It operates at one speed, and that is
+> it?
+> >
+> > Hi, Andrew
+> >
 > 
-> quic_mdalam@quicinc.com wrote on Fri, 18 Aug 2023 20:20:59 +0530:
+> > The "line" speed of the MAC is fixed 5G, but the throughput will be
+> > determined according to the speed of the PCIe link. For example, if
+> > the link speed is gen 3, the throughput will be 5G. if the link speed
+> > is gen 2, the throughput will be 2.5G. if the link speed is gen 1, the
+> > throughput will be 1G.
 > 
->> For parameter page read upper layer is passing len
->> as 256 bytes and if we try to configure 256 bytes
->> size in read loaction register then subsequent bam
->> transaction is getting timed out for 4K nand devices.
->> So update this length as one step size if its
->> less than NANDC_STEP_SIZE.
->>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
+> ksettings does not return throughput, it returns the line speed. throughput is
+> determined by a lot of different things, can the CPU handle frames fast enough,
+> is the memory bandwidth high enough, what is happening on other ports of
+> the PCIe switch etc.
 > 
-> I'm fine with patches 2 and 3 and will take them. But this one does not
-> seem legitimate. I don't like it. Are you sure the ECC engine was not
-> enabled when it timed out? Default should be having the ECC disabled
-> and it should just get enabled when you need it. There is no reason
-> why, specifically on NAND devices, it would not be possible to read 256
-> bytes.
+> There is at least one driver i know of which reports a warning at probe time, if
+> it finds the device is on a bus which cannot support the full bandwidth. Maybe
+> copy that.
 > 
 
-    Yes default ECC engine is disabled only. When length was 512 bytes for
-    parameter page read it was causing BAM timeout error on SDX65, but it
-    was working fine on IPQ807x.
-    We will drop this patch for now. Let me check on SDX65 and try to fix
-    all the error.
+Hi, Andrew
 
->> ---
->>   drivers/mtd/nand/raw/qcom_nandc.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
->> index d4ba0d04c970..413e214c8e87 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -2885,6 +2885,9 @@ static int qcom_param_page_type_exec(struct nand_chip *chip,  const struct nand_
->>   	op_id = q_op.data_instr_idx;
->>   	len = nand_subop_get_data_len(subop, op_id);
->>   
->> +	if (len < NANDC_STEP_SIZE)
->> +		len = NANDC_STEP_SIZE;
->> +
->>   	nandc_set_read_loc(chip, 0, 0, 0, len, 1);
->>   
->>   	if (!nandc->props->qpic_v2) {
+Thanks for your guidance, we have represented the actual connection speed in the next version.
+
+> > There is no extra fields in DMA descriptors for tagging protocol. The
+> > tag added by switch hardware instead of this driver.
 > 
+> > > Are the I2C, MDIO and SPI bus masters also hanging off a PCIE
+> > > endpoint? Can they probe independently? I'm just want to check this
+> > > should not be part of an MFD driver.
+> >
 > 
-> Thanks,
-> Miquèl
+> > The I2C, MDIO and SPI bus masters are not hanging off the PCIE
+> > endpoints, but on the switch core.
+> 
+> So the switch core is also an PCIE endpoint?
+
+Sorry, please allow me to explain again.
+The RTL90xx Series supports I2C, MDC/MDIO and SPI slave to access the registers of Ethernet Switch Core and the external CPU could manage it via these pins.
+You are right, there is a tag protocol in the switch core. But It's for the other ports, usually the cpu port, not this pcie gmac interface.
+You can think of this pcie gmac as a NIC connecting to the external ethernet switch directly.
+
+> 
+>    Andrew
+> .
