@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA52C782CE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80788782CEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234934AbjHUPHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S235706AbjHUPIX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbjHUPHJ (ORCPT
+        with ESMTP id S231829AbjHUPIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:07:09 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B3BD1;
-        Mon, 21 Aug 2023 08:07:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JZ6I2DZZz2EUrWkCuyeg8dv7BgFqk1ukLA4J2TvVwEvPf44N2LrUEc9g79xiqD4CXLyXlxPdpGTlNKGBKP2LJ0u1Qm+6TlhEvAHnfDTCkyLxsXJu+DFUPLGdHzMsbC4mQHNl9v4UYy18UPAiF0FL5FQLKcxQcV7bHqee3EPuu8VXmI8ccHh/XJai4x+nTj6AWJrpjYPE3zjKjMgbStXH1YwxJ28NcnWbXBp4JRqF5J6qqDGNTR4xcWp0Qu5pVxUMnj7uV9J6LXRt/zk33Zg+Z6Mfa4tVWZob3daNILsH/ljJI3Ye4RWAb984v2h2gSHVkR1F0QNmfPXoHMLGiasv6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=crmS/WivdPQKYd3aKMn/RcggR7JNT44mq8vQ2IYCylE=;
- b=Xz2A8CZt2aG2ZB89RF9sxl5QxyiQxA3gdJ+cu9TcGa2CT9dEVMx7yXVtqesr71+nylmenC41uD8mlnuuyZeQgt8cQ1hEk9jfVZ24zSoODxQB3HLxfWnlVNqtWXtDTMYV/JMbrIoO4lxUGx5qd+EvVIoEesqFNPBBBCYdF1wi6me2jxfZGS2DfcZfRlcmqS6KRRoZxtlAlVq2zqgnwagZvgcA0q2S4+PI83RzONFA6xIe9uR3C84MiXXUCQqRCwEnrQkXcGwaeY9I8TsxVaFKnzKiPu8wxDRZ9919DhYybyT1fjOJLKZJUoiFwL9rEocxsLRx1N5BKatFnP6WOygVXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=crmS/WivdPQKYd3aKMn/RcggR7JNT44mq8vQ2IYCylE=;
- b=LutAVMnbtx/qoTGv+gpKmq0v+Nh0LRMwg2N0rj0iHZiEAvlW2O0sazu1Ay6GzYdEw9We07juq8ijblmn6G9/fIJxZfrCQX71sUUIjBsIZZIIN0bOYCOYaFqkLrEJQhNiGIpkFjbPWWilpwodUdAYTt50q1JJjbgvKAsTf8tSY9PLHwP3OezQ8zsTDojr+o35H3tBVWxlsb9PKQKDDdYOvYIWY7/u9JMmDSLmMAnw2B/boJ0B17CfZ5zX7xTpvvgFlY1jMwf+fVQofE2dL5KZJnj88+CAOjrFmCs/7y+CcE6arxxJucswuw6M4Ab05F0/9Q5a3I6bREVgSPWGJ5DeAw==
-Received: from CYZPR05CA0046.namprd05.prod.outlook.com (2603:10b6:930:a3::6)
- by CY8PR12MB7241.namprd12.prod.outlook.com (2603:10b6:930:5a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 15:07:03 +0000
-Received: from CY4PEPF0000E9CE.namprd03.prod.outlook.com
- (2603:10b6:930:a3:cafe::2f) by CYZPR05CA0046.outlook.office365.com
- (2603:10b6:930:a3::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.14 via Frontend
- Transport; Mon, 21 Aug 2023 15:07:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000E9CE.mail.protection.outlook.com (10.167.241.141) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.14 via Frontend Transport; Mon, 21 Aug 2023 15:07:02 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 21 Aug 2023
- 08:06:46 -0700
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Mon, 21 Aug 2023 08:06:45 -0700
-Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.126.190.181)
- with Microsoft SMTP Server id 15.2.986.37 via Frontend Transport; Mon, 21 Aug
- 2023 08:06:44 -0700
-From:   Shih-Yi Chen <shihyic@nvidia.com>
-To:     <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Mark Gross" <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        <platform-driver-x86@vger.kernel.org>
-CC:     shihyic <shihyic@nvidia.com>, Liming Sung <limings@nvidia.com>,
-        "David Thompson" <davthompson@nvidia.com>
-Subject: [PATCH] [v2] platform/mellanox: Fix mlxbf-tmfifo not handling all virtio CONSOLE notifictions      updated to use set_bit()
-Date:   Mon, 21 Aug 2023 11:06:27 -0400
-Message-ID: <20230821150627.26075-1-shihyic@nvidia.com>
-X-Mailer: git-send-email 2.30.1
+        Mon, 21 Aug 2023 11:08:22 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A529BC;
+        Mon, 21 Aug 2023 08:08:19 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37LF7WwyC031950, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37LF7WwyC031950
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Aug 2023 23:07:32 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Mon, 21 Aug 2023 23:07:54 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Mon, 21 Aug 2023 23:07:53 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Mon, 21 Aug 2023 23:07:53 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
+Thread-Topic: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
+ automotive PCIe driver code
+Thread-Index: AQHZz4Ya38d07ViN20S7bf3O9T4Qta/q9pcAgAMgk2D//87KAIABzfpQ///CfgCABJnu0IAALOEAgACljtA=
+Date:   Mon, 21 Aug 2023 15:07:53 +0000
+Message-ID: <4db3248874d64418b63fdf5c5e8a0f79@realtek.com>
+References: <20230815143756.106623-1-justinlai0215@realtek.com>
+ <20230815143756.106623-2-justinlai0215@realtek.com>
+ <95f079a4-19f9-4501-90d9-0bcd476ce68d@lunn.ch>
+ <4955506dbf6b4ebdb67cbb738750fbc8@realtek.com>
+ <eb245c85-0909-4a75-830d-afb96ccd5d38@lunn.ch>
+ <4951391892534eaeb2da96f052364e4c@realtek.com>
+ <4b630aeb-3098-4108-b8dc-7da6e55a7cf1@lunn.ch>
+ <6d35d56f78b7452b9330c3257748fa3c@realtek.com>
+ <97f3744d-afbf-4562-9168-5b9e211fac1f@lunn.ch>
+In-Reply-To: <97f3744d-afbf-4562-9168-5b9e211fac1f@lunn.ch>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.210.185]
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9CE:EE_|CY8PR12MB7241:EE_
-X-MS-Office365-Filtering-Correlation-Id: f8386f04-497a-4273-c20e-08dba25846a7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YmsJs4K5Ap08hTcN8ZOsIdEdd9w3JpAki8NDrr18EaLJzvVR5h/8UIGYrObx4PnIQnHIEtP0e2Z0lw4znQwn49HCRt80WVEWAD8MPIVIQiDUSsRtymbVpaY5ebp93iI69uOkEI6QfXtSLClH8GKURCyQoum2K+3R1Q7+MH4wsvzIJpkTXVgIpcn/OUJy8gkdOdiMM5PS/kAFSIGHeoKXXDGygNlE4KY6YclAeOOvyCBGR5W5nfd1WGLoUw2Zu6h4cTopGkeG45RTlw06jQnLn3HYquWAu9z5B/nAgAQq1klQusSXDMb2+wKsmmL8Ye3SLQvPyljYsUX3ye+uU5XTINFgAxlmmNl53dONvW86L4h/Z2qFi+HVL3HSiz56fNWTlD0Jy/dg2aL8iazUrRn9j8+xbyODLl7gAaBPZ7iO3epMDPlZkw6k1Tp4+KNXj0RXuqUhnfmBzUgL14CApR0cYBKLNYXsVpa8giJws6xPRQMebN+3O7DAq+v7NXgr//tG52FkS2227BVRmvtlDjT20xoFWhV2YwfQJOqT9/OTeoaBghLoKMrwWbPfpMlrg8eHQEb5B7NwL2wy1iXOgyzlK9M63/oHosbrCgpI8DmlK+orSCXncY5ve8yFuhFFBJDyTO1vHrP+6HS62qmeSn6TfL1OJXnywRpjsGtr2SFoLpZnWJBjncpQEI+jlf92Ay9is6BP5rIIN8M5HfPmtywYEkdtnEo5mOnrWtZSPlFlVcuCmCiIB5bobENo1d10IqV4
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(376002)(136003)(396003)(82310400011)(451199024)(186009)(1800799009)(36840700001)(40470700004)(46966006)(2906002)(40480700001)(15650500001)(83380400001)(5660300002)(336012)(426003)(26005)(7696005)(86362001)(36860700001)(47076005)(8676002)(2616005)(8936002)(107886003)(4326008)(70206006)(316002)(54906003)(70586007)(110136005)(478600001)(82740400003)(356005)(6666004)(36756003)(41300700001)(40460700003)(7636003)(1076003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 15:07:02.8184
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8386f04-497a-4273-c20e-08dba25846a7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9CE.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7241
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: shihyic <shihyic@nvidia.com>
+> > Sorry, please allow me to explain again.
+> > The RTL90xx Series supports I2C, MDC/MDIO and SPI slave to access the
+> registers of Ethernet Switch Core and the external CPU could manage it via
+> these pins.
+> 
+> I was wondering if you had mis-understood my question. The bus 'master' is
+> the device which controls the bus. SPI and MDIO has one bus master, and there
+> can be multiple clients on the bus. I2C in theory can have multiple bus masters
+> on one bus, bit it is not done too often. Your switch is a client.
+> 
+> So my question was, are the bus masters also on PCIE enpoints within the chip.
+> From an architecture standpoint, it would make sense they are, all you need is
+> one 4x PCIE slot, and this chip gives you everything you need. But you can also
+> make use of the SoCs I2C, SPI or MDIO bus.
+> 
+>     Andrew
 
-rshim console does not show all entries of dmesg.
-
-Fixed by setting MLXBF_TM_TX_LWM_IRQ for every CONSOLE notification.
-
-Signed-off-by: Shih-Yi Chen <shihyic@nvidia.com>
-Reviewed-by: Liming Sung <limings@nvidia.com>, David Thompson <davthompson@nvidia.com>
-Reviewed-by: David Thompson <davthompson@nvidia.com>
----
-v1->v2:
- - Per review comment, replaced test_and_set_bit() with set_bit()
-
- drivers/platform/mellanox/mlxbf-tmfifo.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-index a79318e90a13..b600b77d91ef 100644
---- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-+++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-@@ -887,6 +887,7 @@ static bool mlxbf_tmfifo_virtio_notify(struct virtqueue *vq)
- 			tm_vdev = fifo->vdev[VIRTIO_ID_CONSOLE];
- 			mlxbf_tmfifo_console_output(tm_vdev, vring);
- 			spin_unlock_irqrestore(&fifo->spin_lock[0], flags);
-+			set_bit(MLXBF_TM_TX_LWM_IRQ, &fifo->pend_events);
- 		} else if (test_and_set_bit(MLXBF_TM_TX_LWM_IRQ,
- 					    &fifo->pend_events)) {
- 			return true;
--- 
-2.30.1
-
+Thanks, I understand what you mean.
+But I2C, SPI, MDIO are connected to the SoC through this chip's external pins, not on the PCIe bus.
+Actually, there is the other function in the PCIe GMAC(Multiple function) to manage the registers of Switch Core.
+Should they be integrated into the MFD driver?
+Not everyone will use this function.
