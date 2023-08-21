@@ -2,159 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7BF783153
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F6078317A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229646AbjHUTTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 15:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49630 "EHLO
+        id S229905AbjHUTVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 15:21:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjHUTTr (ORCPT
+        with ESMTP id S229638AbjHUTVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 15:19:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B936CDF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:19:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692645580; x=1724181580;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=g6J+YlLs47gxFdtcECVNbnwj3L9gC579vbJHvHlKX/k=;
-  b=BxlijJjr+HuTVkfRm22Yt5NZomBP7tpWt6WV82NNVJf7BX5oaHUNpQoW
-   K4r5SozRU0nVdRBMm2Ab/ZZvoAYPyUmKiiabB/UmfGrpyU9af3ZtjlP/8
-   UB81+fjDC6vyBLjnBDlwXPNvP8tjEJ6j3RPWfHQGj4s1xXf5feWF9ATa4
-   uZ/Y9hRMgAAxnqo9iv0pJgkJaPfk8T5wfuJD6PE8rqHXWWr7i3R+XMFoZ
-   z1RL4cHgf8jTzQyrxTzx0J4TW//sZo5wDHYGM9Yy6/dbnBogg2xjE6KKJ
-   dHqm62a/qZQ825MI119ZiRb//JEFRQgVPoApgnT7FNKGm511RY8I0pvN1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="377427397"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="377427397"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 12:19:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="771072038"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="771072038"
-Received: from fanl-mobl.amr.corp.intel.com (HELO [10.212.237.108]) ([10.212.237.108])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 12:19:40 -0700
-Message-ID: <61cb0511b15612f43f390c750d2e9325bd7af4dd.camel@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, peterz@infradead.org
-Cc:     bristot@redhat.com, bsegall@google.com, dietmar.eggemann@arm.com,
-        hdanton@sina.com, ionela.voinescu@arm.com, juri.lelli@redhat.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
-        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
-        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
-        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
-        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
-        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
-        yangyicong@hisilicon.com, yu.c.chen@intel.com
-Date:   Mon, 21 Aug 2023 12:19:40 -0700
-In-Reply-To: <4118c2e3-fd34-2ebe-3faa-1c6ac9cbbac2@linux.vnet.ibm.com>
-References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
-         <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
-         <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
-         <6b20e0c0cd82d0d1aafc2a7fb14d9456e19c2c85.camel@linux.intel.com>
-         <4118c2e3-fd34-2ebe-3faa-1c6ac9cbbac2@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Mon, 21 Aug 2023 15:21:46 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C856101
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:21:44 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso23008835e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692645703; x=1693250503;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QCgpyh71dVt3W3LBFrSznrNheB+BKG7vXO+g/h59Vfc=;
+        b=q2Cr+sIDmW2TTnw7X/GxBw0ZusZ19EFQny+eoBahzn2hR6bo37fVbmUp8X/SQ9JcXu
+         CM7QTDMtC1H1uqp8BNy7Vz9li32ppteoshl0MB/x8u7M5vk3Ssf9Y5GHRUZrECHmI7Sq
+         rS4pVvEyyeAVhAQID6gINSvr4K+jLs0h6Nhwvw7O3dsk6yyKzpBnmghw1sB02B7xfF7o
+         w6SbIDVWzQypOC7bjnhJKLHkfMbpHLIA4uJ7MuYRLnDQSE5WzkbMtESioaumV8p/R3Tg
+         m3nIrjdhazQinntet08cNYrY5/MJwjiwr0aNu1+duNs88U/jn7YI8rEwDP35Yy8Vsiy3
+         ar4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692645703; x=1693250503;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QCgpyh71dVt3W3LBFrSznrNheB+BKG7vXO+g/h59Vfc=;
+        b=X45L7J/iWGd08xgvC0n+f8lsTRaadrO5xUySKLIYi6Osko5rer/OAZiL5kh0o3dri+
+         QtICVrqEn19w9PMrXVwqEZ/4jyyK6uO8cxST2Hey6B6R16ju5AlGFZBBZZEpQhVCF9oz
+         NqN/Iq/tL3sQXh7Ff1olWkslGReWM/vKPZ8jM2BuByb5Vf9zatdiAVvgGybp12AUtaA8
+         SbW3makNGwOS6tD2XsX4sWZEwo0bwTQcCAfXlvkdtVH4M/59VT8o9kn6d9z5MvNqHg7a
+         b/76lWBsxhWVOUcnw5uVeJFYsOCgDNPgUEQ0hYPTy+Hs6UmpPX2q5e3dLFfjV2t6nRS/
+         1JEA==
+X-Gm-Message-State: AOJu0YydvEAcx6QEiSw7D1tZ39zNlN1qZHPbW9XiXL3kkwVajGe+5aZd
+        llkprLvyV1nOnd6h1LBYaqrkOXTrbcA0ys4/W6s=
+X-Google-Smtp-Source: AGHT+IEeHrhLcTtWt5ccBkDBQjNiNxgflDdO+OEzPBkSgZYtHn11r69zWafIqMU7rFG7sivnyoxF1A==
+X-Received: by 2002:a5d:4389:0:b0:306:46c4:d313 with SMTP id i9-20020a5d4389000000b0030646c4d313mr4773914wrq.28.1692645703084;
+        Mon, 21 Aug 2023 12:21:43 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id e1-20020adfe7c1000000b0031b2c01f342sm7499797wrn.87.2023.08.21.12.21.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 12:21:42 -0700 (PDT)
+Message-ID: <9447f63a-50a2-d699-606b-b32d16aaa56a@linaro.org>
+Date:   Mon, 21 Aug 2023 20:21:41 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v0 8/9] media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE
+ when VC is greater than 3
+Content-Language: en-US
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20230814141007.3721197-1-bryan.odonoghue@linaro.org>
+ <20230814141007.3721197-9-bryan.odonoghue@linaro.org>
+ <edd4bf9b-0e1b-883c-1a4d-50f4102c3924@xs4all.nl>
+ <62859b0e-cfee-f094-2ae9-bf0e243e2929@linaro.org>
+In-Reply-To: <62859b0e-cfee-f094-2ae9-bf0e243e2929@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-07 at 15:06 +0530, Shrikanth Hegde wrote:
-> >=20
-> > From: Tim Chen <tim.c.chen@linux.intel.com>
-> > Date: Fri, 14 Jul 2023 16:09:30 -0700
-> > Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-> >=20
-> > For SMT4, any group with more than 2 tasks will be marked as
-> > group_smt_balance. Retain the behaviour of group_has_spare by marking
-> > the busiest group as the group which has the least number of idle_cpus.
-> >=20
-> > Also, handle rounding effect of adding (ncores_local + ncores_busy)
-> > when the local is fully idle and busy group has more than 2 tasks.
-> > Local group should try to pull at least 1 task in this case.
-> >=20
-> > Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-> > ---
-> >  kernel/sched/fair.c | 18 ++++++++++++++++--
-> >  1 file changed, 16 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index a87988327f88..566686c5f2bd 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9563,7 +9563,7 @@ static inline long sibling_imbalance(struct lb_en=
-v *env,
-> >  	imbalance /=3D ncores_local + ncores_busiest;
-> > =20
-> >  	/* Take advantage of resource in an empty sched group */
-> > -	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-> > +	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
-> >  	    busiest->sum_nr_running > 1)
-> >  		imbalance =3D 2;
-> > =20
-> > @@ -9751,6 +9751,20 @@ static bool update_sd_pick_busiest(struct lb_env=
- *env,
-> >  		break;
-> > =20
-> >  	case group_smt_balance:
-> > +		/* no idle cpus on both groups handled by group_fully_busy below */
-> > +		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-> > +			if (sgs->idle_cpus > busiest->idle_cpus)
-> > +				return false;
-> > +			if (sgs->idle_cpus < busiest->idle_cpus)
-> > +				return true;
-> > +			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
-> > +				return false;
-> > +			else
-> > +				return true;
-> > +		}
-> > +		goto fully_busy;
-> > +		break;
-> > +
-> >  	case group_fully_busy:
-> >  		/*
-> >  		 * Select the fully busy group with highest avg_load. In
-> > @@ -9763,7 +9777,7 @@ static bool update_sd_pick_busiest(struct lb_env =
-*env,
-> >  		 * select the 1st one, except if @sg is composed of SMT
-> >  		 * siblings.
-> >  		 */
-> > -
-> > +fully_busy:
-> >  		if (sgs->avg_load < busiest->avg_load)
-> >  			return false;
-> > =20
->=20
-> Hi Tim, Peter.=20
->=20
-> group_smt_balance(cluster scheduling), patches are in tip/sched/core. I d=
-ont=20
-> see this above patch there yet. Currently as is, this can cause function =
-difference=20
-> in SMT4 systems( such as Power10).=20
->=20
-> Can we please have the above patch as well in tip/sched/core?
->=20
-> Acked-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+On 21/08/2023 19:51, Bryan O'Donoghue wrote:
+> On 21/08/2023 10:53, Hans Verkuil wrote:
+>> +        u8 dt_id = vc * 4;
+> 
+> You're right.
+> 
+> dt_id = vc is wrong but so is dt_id = vc * 4.
+> 
+> I'll post a fix for the dt_id as a separate patch.
+> 
+> ---
+> bod
 
-Hi Peter,
+No wait.. dt_id = vc is _fine_
 
-Just back from my long vacation.  Wonder if you have any comments on the ab=
-ove patch
-for fixing the SMT4 case?
+I'll add a patch to document what this does since the provenance of the 
+changes for this value are undocumented and confusing even to me, with 
+access to the documentation for it.
 
-Tim
-
+---
+bod
