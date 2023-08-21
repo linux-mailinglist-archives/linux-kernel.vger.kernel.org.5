@@ -2,210 +2,621 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA77782AD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5900C782ADE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbjHUNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        id S235540AbjHUNvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235520AbjHUNuQ (ORCPT
+        with ESMTP id S235480AbjHUNvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:50:16 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2070.outbound.protection.outlook.com [40.107.93.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE989CE
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:50:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bbVIDBRF1fq/l/VlxYpBHAC1wRNCreRBFNATBC1+l2IOTnZlMvLJCFE4hj3RSpp+cEXlPy3LB5PYRnXylrzNkuC35UKshBlljyUL/Nj9tcR99s5LmSkwgLiU/9meuSMSe+38gw57yHaXh5Xj8WRI0OoR1xo1dOaejH55UJflIFTyL3AlTBTeBjl/bsHXT+VEwRsWrl618KvXzgEP6o8hIli+sGAQhN5FwTZzymVzf2D45Mf2u3AQjhpJC3B3OA/klU8+jaXz34KZpFI2NJ5LhIw71NWnBlNQtajMzbla66Kr3OfwcAvWCNxAf6N/Nnv/cadGqXneu3Siet2R2E+kPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PiTFDJUb/Oiur5ylRf7zJNhdYPXmsI7JvGU8NB3RvPw=;
- b=JwyPKXvqCmoGsrfjIsiYneH9BEi6lsvF1uw742gXsUv8iB+NMlgP31uWsrNo9ywn+7URiBuuTCf6rDWGIKAShqgZxbK14qcP+Xh1UtyCJgZHFOKmO+600Op7OCaE0j01cjFwS9mw7Ma6QAM8m/gBSGN5xSkswG4z62D7NAUTBcMKkakTBr2UGXmpwSiiXECNtJwdqqCeW+J0ciCOzyiFT1kID8ENzmPPuU7/PopRVROwXgywatf5XpzQ1th6N6HnkAafQbU5d3sJH3yKcDIARhmj4Ngh1QvMJRKlTMFEy5cQtu73xVenMFLdbThWU/2OXWmSDso0d+IfQ2TXdpZ+Aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PiTFDJUb/Oiur5ylRf7zJNhdYPXmsI7JvGU8NB3RvPw=;
- b=OD6nQmneL2BRSUepF8kS7dwTrb+1Q4ercnAgO2I0y0sj/T383EZbKAEv9vxAPz19cJ0Z0czGMg87Le296SExeQq1lBel9gbXPF6dFApaAa5Kv6vYrZJ5I0Trn0YyfTZzGVxm/QOxSMPWBLBm7mf6jNLor/lezj3QvFrIx6KJ+Y6Ym6+lW3M1nJf7IrU7iW2kqlq9TtHGGM9J/zVqSwBe9+tQkUScGhcZ9yqihdFOiBsOlyyFczW4QAYKiQICZh3NpQ4uuJ89Nrd2TzqLhZAviNnVDC80NMaaR5pr6gfz3U+MEvb5nrZAyNeZeGK+zPGohyVZ+vDehC6PDqlaL8/2SQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by LV3PR12MB9353.namprd12.prod.outlook.com (2603:10b6:408:21b::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Mon, 21 Aug
- 2023 13:50:11 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 13:50:11 +0000
-Date:   Mon, 21 Aug 2023 10:50:09 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, nicolinc@nvidia.com,
-        tina.zhang@intel.com, jean-philippe@linaro.org,
-        robin.murphy@arm.com
-Subject: Re: [RFC PATCH v1 3/8] iommu/arm-smmu-v3-sva: Allocate new ASID from
- installed_smmus
-Message-ID: <ZONrkVX6kZjX/wus@nvidia.com>
-References: <20230817182055.1770180-1-mshavit@google.com>
- <20230818021629.RFC.v1.3.I326c62dc062aed8d901d319aa665dbe983c7904c@changeid>
- <ZN5pK03Drao/egeF@nvidia.com>
- <CAKHBV27k8F0ZLy=RA=WhjJ7+C9JMHRRnKs=4W4pJMNmxrMEXxw@mail.gmail.com>
- <ZONQgNh6qarqgA+f@nvidia.com>
- <CAKHBV26oTZLssq5bopePojqgrEJwukKHYEbhU02nAvHHVB13mw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKHBV26oTZLssq5bopePojqgrEJwukKHYEbhU02nAvHHVB13mw@mail.gmail.com>
-X-ClientProxiedBy: MN2PR20CA0054.namprd20.prod.outlook.com
- (2603:10b6:208:235::23) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 21 Aug 2023 09:51:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FB4E1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692625861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=10Fo2ozRX3AHiAUCjC/DOAP9UJ/a8nPM6586lexVlDI=;
+        b=MWcEtgatxXN5fne0hfiC9ACNZz3beor74ULsvZfTFXwkYdddIOdwntUAICmMRO+WXXbPFW
+        ErCFueOla6wEZXsKvKQXR0Hp3Mg2+YNLESbyATR++aS8Ec1wU88HDzhpOJDjTDhXj8IaGl
+        CFT6mp7SjfenpVWXARhpG+4BKF4QBEU=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515-xYYKhu0sP9a1xM1em_3PWg-1; Mon, 21 Aug 2023 09:51:00 -0400
+X-MC-Unique: xYYKhu0sP9a1xM1em_3PWg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99cc5d18f78so219810966b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:51:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692625859; x=1693230659;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=10Fo2ozRX3AHiAUCjC/DOAP9UJ/a8nPM6586lexVlDI=;
+        b=SQAed2hJZEBJn7RCUOWbWqjUY4xaEHlfzLAcnxroGNmDIAYpCijBFSbPCuTRibhFJW
+         o860P4lNpgrXWWlyLHSrOuFQITAJTb/VTzs60okJYppgCO1ZW1FvkV0Z0fTcKQYUrR0w
+         lpEDBhgkEnIYd8aawEGLZsdriyS5Cf+x9HtF/ayLNFE+noeIO+ji92GUI59/uzv48MUa
+         y4EzHr7RFrbxf1jO1xDwmwHBFcBlf23L3E5i4YnvWCYQ3S30O3O3jljvYTwDusZBsMU4
+         F1Vp3aL6XdvWhIG82+XLt/IJQTOgBV39zfChNl+eD/pB8ZVEb1F0sKmqAYvfw45GHBY8
+         xpVw==
+X-Gm-Message-State: AOJu0YwkJ7U8OWZjEGs7LPb6Mj3k4Bbm+kLpWstsGrzb1gILSpU5k3WC
+        Z0z/xZu4dciVbEpucDvc4dAvxCsVqfny3FzM7rZ+Y0htt5rjwaEMwTYERVukNkCRpeu1GcMGjEM
+        b8MBcWDWEgzd7uDSaTRkd/WDV
+X-Received: by 2002:a17:906:5a53:b0:993:d7cf:f58 with SMTP id my19-20020a1709065a5300b00993d7cf0f58mr5721803ejc.2.1692625859188;
+        Mon, 21 Aug 2023 06:50:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGaV3h7zCYtJ8lRvqiCvScPFq7FOXZJnHAjgqSpV3bAx8lal3SR33cEkHxv1vyOGEX0xO4Tkg==
+X-Received: by 2002:a17:906:5a53:b0:993:d7cf:f58 with SMTP id my19-20020a1709065a5300b00993d7cf0f58mr5721781ejc.2.1692625858805;
+        Mon, 21 Aug 2023 06:50:58 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id q16-20020a170906b29000b0099ddc81903asm6568858ejz.221.2023.08.21.06.50.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 06:50:58 -0700 (PDT)
+Message-ID: <e0bee8fa-fc7c-fd94-e56d-16054e6d114d@redhat.com>
+Date:   Mon, 21 Aug 2023 15:50:57 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|LV3PR12MB9353:EE_
-X-MS-Office365-Filtering-Correlation-Id: fb39326f-ce08-4361-351a-08dba24d896e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sTXuFwIRq4PxCBTJbmzsbOPyv87ABUD6yVVbcVg7QJCQYlbK0w2ymzljL8nnbOA1IqddF8JodIcVNGpi7kbFX5WYZiRLjEoZeGVxNQ9xQh4ootdFMSeDENntTUQUGj1/4stas/MU8MsyeTUk7DxMpJabSScF8yTCMS+kSrm0NyzMvInXmNLHdYy6YP7c/x4ypxfAjZI1X0Q9Oa/wqKvgnJdm969NGLucP59zDdIQEicVUWMzfTanRDSEdczCRSlRc/LjqbEEIEash20TEoPXUBxyeYmzXLuBYGbxJb0GBmSAn9Uhq7jlSs6S8PkWPhFCrHTSKyM0DlptpM8rfcnWNiGzKxJNGyR1rFQUy3h/t1rnW0xGf5+tX+sQryh8F/lRLVEMxY87DCMOjR4rmx7GCF9319f8NqitYm+m6qM6Cu1dG4AhOqjc9Z08qnPVaNnhmzFAn7In/RjYElB8+Ew9XjtgVqYfIwhXIA+zIO6WxPylnMHCHHIQnsvNAjw1ls0eHjTRhnJF0YY6zxJT8gdcfWv1OKZhCVJ5+7egNbt42Oe6PqFot0cX7+of15yMCIwj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(1800799009)(451199024)(186009)(5660300002)(83380400001)(38100700002)(316002)(66476007)(66556008)(6916009)(478600001)(2906002)(41300700001)(8936002)(8676002)(4326008)(53546011)(6512007)(2616005)(66946007)(6506007)(26005)(6486002)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YVVsODRqcVV4MjZqei9pWFFxdU5Ocks1UWJraUV0WDYxV2daS2R3T21hTGxw?=
- =?utf-8?B?Q3N1YVkzUXdLaDArYmFlNjZJWDRrazYzWGxucFlEOSt4RzBnYVhHRUpyTjRy?=
- =?utf-8?B?YnNQTDVwRVFwNEdkaDl3ODVFSUR5NmFWbTRTUGxRVG9IakVCdWJubjZFdWov?=
- =?utf-8?B?cUR4MHlDbWM1VzhsWlM3eWEwVUtPMTdWREZWTzZuSXQ1aXFvVlpBSFF0cEJJ?=
- =?utf-8?B?enhrTExYalp0YUtwT3o2MVZGRVRqc09ibnRNVGttTlRzejdaMG03SHh6dW9N?=
- =?utf-8?B?L2pQcHZNbk5DcVdOV3RYblpPdlZONHA0RkRxL0pjMEo1czcyVzdYYVE3bEsr?=
- =?utf-8?B?N05SeG1IdmtEU0NhRkNacFBCTDRCRFNMMnpiQTRwajNEL2ovWlRaTnhTRi81?=
- =?utf-8?B?Qzl4TS9xZUMyV1hpczZBS2VqcHV0T0UvZjBTdEhKWmt2SFVhL25ldmtSajFN?=
- =?utf-8?B?RkpLakhMMHFHdU5jUnkwd1NrSFVRc1kzS0dEQjFWZnNPL3JJWWdlRzA0d0ZL?=
- =?utf-8?B?d1BXRE1VTHIvNHVmQ3RZaVhRWkZFbXVGRnhVcy8yVXZvbGZCeWdvUzQ0d1E4?=
- =?utf-8?B?Wmx1bVh4UU5ETVcxT09VUDhlUzFKVUt5T2dpdUFoM1hROVQrNjZXeUNUZ1JE?=
- =?utf-8?B?SDdqc1lDWkhnNWFBcmU0Zm9EY3BtVUFXc09vMkxNdjgzTHB4Z1Vsd3VoSlhC?=
- =?utf-8?B?a2I5M0ZMUHhwaUhTVldXTUhDYkluZlFXOHFCc0RYMmFYejh5Q3BJdFpCY25t?=
- =?utf-8?B?SzB3SkZHM2FBaGlBYVhSMDlZMXBPVytOeFh0bU9WM0pMczlIZmxHMVliRFgv?=
- =?utf-8?B?WEtaampMVm1ybEZRYzNGc2JGRzR5VHJHTnJxQnlWT1Zhei91dTlQYTJOT1BF?=
- =?utf-8?B?QXIvSm5ZRXM2K2VpMk1YZDRxRkNyMWtsQXZ0TlNjS0J2QWdtOTdHMVA0R3lw?=
- =?utf-8?B?T2dyb0p2ZTVpVG82OXVGTmRrZ0o2QW5qcEcweVlCNVFGa0tUUEhVOFNRSmkx?=
- =?utf-8?B?RDNVRFJCRExVdmRtNGVzcXE2MnNhWmg3N0pzTzNwZGtlK3hudXptWFNXK2s4?=
- =?utf-8?B?aUR1ekhhWGV2K01PdmJyNGhMNjMzdnVHdXRSSzlPRHFjRW05bHVoVFU4dFFU?=
- =?utf-8?B?dTNqSUtzOFhkb2JRY3VZeHZ3ZVJFemhKYmY5NWVIL1FNYVdnME9kY0N2TElT?=
- =?utf-8?B?SlRlZzM5ZzJ1VHdPOWVGSzFMWkRNNDhXTzg4M3JiMDA3ME8vT1Z2amtrMTUr?=
- =?utf-8?B?SVVuSHNnNlZsMWdWUnFvbVFqdmhmYkIraWlZYVdGRjBOQk5HOEpZWExncXI5?=
- =?utf-8?B?bHN0ZFpTaXdPVTVnVlB6aU1yV0tOcXlFVXUrOWlaQ3d3dmRqd1FyZmR3dE84?=
- =?utf-8?B?em1RNThUZUc2dVNQYUNyek9pQmk2UzZkZ0I0VUZmMUE3TUd2L0V5VjFZcWNL?=
- =?utf-8?B?Ti9Tbm1OdmIrdGw5cHlGOE1yNzREK1hsMUpjbTFHeVNoV09ERklyUWV4VWI5?=
- =?utf-8?B?dUlvbXc5QzZVV3l6eWFmLzdPSmJFSFFIeUxQZlNkd2pXYmNhd21KbjNwWnhj?=
- =?utf-8?B?d2tIcGZDYmJOekNzWlNiSVVxeGo5VG9mZjFVMXZTajdIcDFWYW85RkEyQ1o0?=
- =?utf-8?B?VU4xU0NjYmt5UVRTWEdUZFhmVTRjK3ljOTdYUmpXK3JNaTlvSEpCa2N6cVBt?=
- =?utf-8?B?MEUzQUJiY092amFsVk96L1ROWEJXNkwxSW1NRVRNTERJVUN5bkNiTXpnVG1h?=
- =?utf-8?B?bXJnUlRkS0FremgweW5pVGNsTWsyRjZWUmlHRDNoTi8zd0N6Q2NOeVJnMTZB?=
- =?utf-8?B?eVRNWDFLMGdaeVdHYTF2czBHcGljSk5HOUpwWHhBQks1am10ZVdyTCtFWno2?=
- =?utf-8?B?ZjZhckt1bEZOOG1XdGxjd3dZanVQOXFxemI5dCtHRDBicTBFRE16ZEpwVmVI?=
- =?utf-8?B?ZmNUYTJnQU5NeThHMFFzcDFYTmFNUmN5STA1UHlMbzV2cGxmeW5oRHQvR3F5?=
- =?utf-8?B?amljZUN5WGtpRXd4MWF2RE04bTdJaWVuU3N0UU8yczJGRk40VFdzVjBRQ1Vw?=
- =?utf-8?B?TzhqVW1QZ2oyVHJaamVWOUprY1FVd0FRazNPbUJHVFlmTVppVzVUc2hxbmVr?=
- =?utf-8?Q?ius32ufL/VM/9PdU3o29hgeJE?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fb39326f-ce08-4361-351a-08dba24d896e
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:50:11.1243
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KOu8BfkKPeKLVTSfF90vK8lDrRUovbFN27VvK2sf53PLLyGcTRAJUoF8vLn/2zoH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9353
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] mlxbf-bootctl: Support sysfs entries for MFG fields
+Content-Language: en-US
+To:     David Thompson <davthompson@nvidia.com>,
+        ilpo.jarvinen@linux.intel.com, markgross@kernel.org,
+        vadimp@nvidia.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shravankr@nvidia.com
+References: <20230818213417.17942-1-davthompson@nvidia.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230818213417.17942-1-davthompson@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 09:38:40PM +0800, Michael Shavit wrote:
-> On Mon, Aug 21, 2023 at 7:54 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Mon, Aug 21, 2023 at 05:31:23PM +0800, Michael Shavit wrote:
-> > > On Fri, Aug 18, 2023 at 2:38 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > > >
-> > > > On Fri, Aug 18, 2023 at 02:16:25AM +0800, Michael Shavit wrote:
-> > > > > Pick an ASID that is within the supported range of all SMMUs that the
-> > > > > domain is installed to.
-> > > > >
-> > > > > Signed-off-by: Michael Shavit <mshavit@google.com>
-> > > > > ---
-> > > >
-> > > > This seems like a pretty niche scenario, maybe we should just keep a
-> > > > global for the max ASID?
-> > > >
-> > > > Otherwise we need a code to change the ASID, even for non-SVA domains,
-> > > > when the domain is installed in different devices if the current ASID
-> > > > is over the instance max..
-> > >
-> > > This RFC took the other easy way out for this problem by rejecting
-> > > attaching a domain if its currently assigned ASID/VMID
-> > > is out of range when attaching to a new SMMU. But I'm not sure
-> > > which of the two options is the right trade-off.
-> > > Especially if we move VMID to a global allocator (which I plan to add
-> > > for v2), setting a global maximum for VMID of 256 sounds small.
-> >
-> > IMHO the simplest and best thing is to make both vmid and asid as
-> > local allocators. Then alot of these problems disappear
+Hi David,
+
+On 8/18/23 23:34, David Thompson wrote:
+> This patch extends the mlxbf-bootctl driver's sysfs entries
+> to support read and write access for the manufacturing (MFG)
+> fields in the board-level EEPROM.  The MFG fields are set
+> once during the board manufacturing phase, and then the MFG
+> fields are write-protected.
 > 
-> Well that does sound like the most flexible, but IMO quite a lot more
-> complicated.
+> Signed-off-by: David Thompson <davthompson@nvidia.com>
+> Reviewed-by: Shravan Kumar Ramani <shravankr@nvidia.com>
+> ---
+> v1->v2
+>    - use ETH_ALEN instead of custom #define (MLNX_MFG_OOB_MAC_LEN)
+>    - changes to xxx_show() methods:
+>       a) removed unnecessary memcpy() calls, instead use data from xxx_data[]
+>       b) increment size of xxx_data[] by 1 to ensure null termination
+>    - changed "byte[]" variable to unsigned int in oob_mac_store()
+>    - use sysfs_format_mac() in oob_mac_show()
+
+Thank you for the new version.
+
+Please add documentation for the newly added sysfs attributes to:
+
+Documentation/ABI/testing/sysfs-platform-mellanox-bootctl
+
+this will make it easier for me to review the new userspace API
+for this.
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/mellanox/mlxbf-bootctl.c | 438 ++++++++++++++++++++++
+>  drivers/platform/mellanox/mlxbf-bootctl.h |   8 +
+>  2 files changed, 446 insertions(+)
 > 
-> I'll post a v2 RFC that removes the `iommu/arm-smmu-v3: Add list of
-> installed_smmus` patch and uses a flat master list in smmu_domain as
-> suggested by Robin, for comparison with the v1. But at a glance using a
-> local allocator would require:
+> diff --git a/drivers/platform/mellanox/mlxbf-bootctl.c b/drivers/platform/mellanox/mlxbf-bootctl.c
+> index 0bf29eee1e70..4ee7bb431b7c 100644
+> --- a/drivers/platform/mellanox/mlxbf-bootctl.c
+> +++ b/drivers/platform/mellanox/mlxbf-bootctl.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/acpi.h>
+>  #include <linux/arm-smccc.h>
+>  #include <linux/delay.h>
+> +#include <linux/if_ether.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+> @@ -81,6 +82,49 @@ static const char * const mlxbf_rsh_log_level[] = {
+>  
+>  static DEFINE_MUTEX(icm_ops_lock);
+>  static DEFINE_MUTEX(os_up_lock);
+> +static DEFINE_MUTEX(mfg_ops_lock);
+> +
+> +/*
+> + * Objects are stored within the MFG partition per type.
+> + * Type 0 is not supported.
+> + */
+> +enum {
+> +	MLNX_MFG_TYPE_OOB_MAC = 1,
+> +	MLNX_MFG_TYPE_OPN_0,
+> +	MLNX_MFG_TYPE_OPN_1,
+> +	MLNX_MFG_TYPE_OPN_2,
+> +	MLNX_MFG_TYPE_SKU_0,
+> +	MLNX_MFG_TYPE_SKU_1,
+> +	MLNX_MFG_TYPE_SKU_2,
+> +	MLNX_MFG_TYPE_MODL_0,
+> +	MLNX_MFG_TYPE_MODL_1,
+> +	MLNX_MFG_TYPE_MODL_2,
+> +	MLNX_MFG_TYPE_SN_0,
+> +	MLNX_MFG_TYPE_SN_1,
+> +	MLNX_MFG_TYPE_SN_2,
+> +	MLNX_MFG_TYPE_UUID_0,
+> +	MLNX_MFG_TYPE_UUID_1,
+> +	MLNX_MFG_TYPE_UUID_2,
+> +	MLNX_MFG_TYPE_UUID_3,
+> +	MLNX_MFG_TYPE_UUID_4,
+> +	MLNX_MFG_TYPE_REV,
+> +};
+> +
+> +#define MLNX_MFG_OPN_VAL_LEN         24
+> +#define MLNX_MFG_SKU_VAL_LEN         24
+> +#define MLNX_MFG_MODL_VAL_LEN        24
+> +#define MLNX_MFG_SN_VAL_LEN          24
+> +#define MLNX_MFG_UUID_VAL_LEN        40
+> +#define MLNX_MFG_REV_VAL_LEN         8
+> +#define MLNX_MFG_VAL_QWORD_CNT(type) \
+> +	(MLNX_MFG_##type##_VAL_LEN / sizeof(u64))
+> +
+> +/*
+> + * The MAC address consists of 6 bytes (2 digits each) separated by ':'.
+> + * The expected format is: "XX:XX:XX:XX:XX:XX"
+> + */
+> +#define MLNX_MFG_OOB_MAC_FORMAT_LEN \
+> +	((ETH_ALEN * 2) + (ETH_ALEN - 1))
+>  
+>  /* ARM SMC call which is atomic and no need for lock. */
+>  static int mlxbf_bootctl_smc(unsigned int smc_op, int smc_arg)
+> @@ -454,6 +498,384 @@ static ssize_t os_up_store(struct device *dev,
+>  	return count;
+>  }
+>  
+> +static ssize_t oob_mac_show(struct device *dev,
+> +			    struct device_attribute *attr, char *buf)
+> +{
+> +	struct arm_smccc_res res;
+> +	u8 *mac_byte_ptr;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO, MLNX_MFG_TYPE_OOB_MAC, 0, 0, 0,
+> +		      0, 0, 0, &res);
+> +	mutex_unlock(&mfg_ops_lock);
+> +	if (res.a0)
+> +		return -EPERM;
+> +
+> +	mac_byte_ptr = (u8 *)&res.a1;
+> +
+> +	return sysfs_format_mac(buf, mac_byte_ptr, ETH_ALEN);
+> +}
+> +
+> +static ssize_t oob_mac_store(struct device *dev,
+> +			     struct device_attribute *attr,
+> +			     const char *buf, size_t count)
+> +{
+> +	unsigned int byte[MLNX_MFG_OOB_MAC_FORMAT_LEN] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int byte_idx, len;
+> +	u64 mac_addr = 0;
+> +	u8 *mac_byte_ptr;
+> +
+> +	if ((count - 1) != MLNX_MFG_OOB_MAC_FORMAT_LEN)
+> +		return -EINVAL;
+> +
+> +	len = sscanf(buf, "%02x:%02x:%02x:%02x:%02x:%02x",
+> +		     &byte[0], &byte[1], &byte[2],
+> +		     &byte[3], &byte[4], &byte[5]);
+> +	if (len != ETH_ALEN)
+> +		return -EINVAL;
+> +
+> +	mac_byte_ptr = (u8 *)&mac_addr;
+> +
+> +	for (byte_idx = 0; byte_idx < ETH_ALEN; byte_idx++)
+> +		mac_byte_ptr[byte_idx] = (u8)byte[byte_idx];
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO, MLNX_MFG_TYPE_OOB_MAC,
+> +		      ETH_ALEN, mac_addr, 0, 0, 0, 0, &res);
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return res.a0 ? -EPERM : count;
+> +}
+> +
+> +static ssize_t opn_show(struct device *dev,
+> +			struct device_attribute *attr, char *buf)
+> +{
+> +	u64 opn_data[MLNX_MFG_VAL_QWORD_CNT(OPN) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(OPN); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_OPN_0 + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		opn_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)opn_data);
+> +}
+> +
+> +static ssize_t opn_store(struct device *dev,
+> +			 struct device_attribute *attr,
+> +			 const char *buf, size_t count)
+> +{
+> +	u64 opn[MLNX_MFG_VAL_QWORD_CNT(OPN)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_OPN_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(opn, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(OPN); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_OPN_0 + word,
+> +			      sizeof(u64), opn[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t sku_show(struct device *dev,
+> +			struct device_attribute *attr, char *buf)
+> +{
+> +	u64 sku_data[MLNX_MFG_VAL_QWORD_CNT(SKU) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(SKU); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_SKU_0 + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		sku_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)sku_data);
+> +}
+> +
+> +static ssize_t sku_store(struct device *dev,
+> +			 struct device_attribute *attr,
+> +			 const char *buf, size_t count)
+> +{
+> +	u64 sku[MLNX_MFG_VAL_QWORD_CNT(SKU)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_SKU_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(sku, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(SKU); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_SKU_0 + word,
+> +			      sizeof(u64), sku[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t modl_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	u64 modl_data[MLNX_MFG_VAL_QWORD_CNT(MODL) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(MODL); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_MODL_0 + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		modl_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)modl_data);
+> +}
+> +
+> +static ssize_t modl_store(struct device *dev,
+> +			  struct device_attribute *attr,
+> +			  const char *buf, size_t count)
+> +{
+> +	u64 modl[MLNX_MFG_VAL_QWORD_CNT(MODL)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_MODL_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(modl, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(MODL); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_MODL_0 + word,
+> +			      sizeof(u64), modl[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t sn_show(struct device *dev,
+> +		       struct device_attribute *attr, char *buf)
+> +{
+> +	u64 sn_data[MLNX_MFG_VAL_QWORD_CNT(SN) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(SN); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_SN_0 + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		sn_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)sn_data);
+> +}
+> +
+> +static ssize_t sn_store(struct device *dev,
+> +			struct device_attribute *attr,
+> +			const char *buf, size_t count)
+> +{
+> +	u64 sn[MLNX_MFG_VAL_QWORD_CNT(SN)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_SN_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(sn, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(SN); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_SN_0 + word,
+> +			      sizeof(u64), sn[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t uuid_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+> +{
+> +	u64 uuid_data[MLNX_MFG_VAL_QWORD_CNT(UUID) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(UUID); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_UUID_0 + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		uuid_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)uuid_data);
+> +}
+> +
+> +static ssize_t uuid_store(struct device *dev,
+> +			  struct device_attribute *attr,
+> +			  const char *buf, size_t count)
+> +{
+> +	u64 uuid[MLNX_MFG_VAL_QWORD_CNT(UUID)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_UUID_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(uuid, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(UUID); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_UUID_0 + word,
+> +			      sizeof(u64), uuid[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t rev_show(struct device *dev,
+> +			struct device_attribute *attr, char *buf)
+> +{
+> +	u64 rev_data[MLNX_MFG_VAL_QWORD_CNT(REV) + 1] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(REV); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_GET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_REV + word,
+> +			      0, 0, 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +		rev_data[word] = res.a1;
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return snprintf(buf, PAGE_SIZE, "%s", (char *)rev_data);
+> +}
+> +
+> +static ssize_t rev_store(struct device *dev,
+> +			 struct device_attribute *attr,
+> +			 const char *buf, size_t count)
+> +{
+> +	u64 rev[MLNX_MFG_VAL_QWORD_CNT(REV)] = { 0 };
+> +	struct arm_smccc_res res;
+> +	int word;
+> +
+> +	if (count > MLNX_MFG_REV_VAL_LEN)
+> +		return -EINVAL;
+> +
+> +	memcpy(rev, buf, count);
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	for (word = 0; word < MLNX_MFG_VAL_QWORD_CNT(REV); word++) {
+> +		arm_smccc_smc(MLXBF_BOOTCTL_SET_MFG_INFO,
+> +			      MLNX_MFG_TYPE_REV + word,
+> +			      sizeof(u64), rev[word], 0, 0, 0, 0, &res);
+> +		if (res.a0) {
+> +			mutex_unlock(&mfg_ops_lock);
+> +			return -EPERM;
+> +		}
+> +	}
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+> +static ssize_t mfg_lock_store(struct device *dev,
+> +			      struct device_attribute *attr,
+> +			      const char *buf, size_t count)
+> +{
+> +	struct arm_smccc_res res;
+> +	unsigned long val;
+> +	int err;
+> +
+> +	err = kstrtoul(buf, 10, &val);
+> +	if (err)
+> +		return err;
+> +
+> +	if (val != 1)
+> +		return -EINVAL;
+> +
+> +	mutex_lock(&mfg_ops_lock);
+> +	arm_smccc_smc(MLXBF_BOOTCTL_LOCK_MFG_INFO, 0, 0, 0, 0, 0, 0, 0, &res);
+> +	mutex_unlock(&mfg_ops_lock);
+> +
+> +	return count;
+> +}
+> +
+>  static DEVICE_ATTR_RW(post_reset_wdog);
+>  static DEVICE_ATTR_RW(reset_action);
+>  static DEVICE_ATTR_RW(second_reset_action);
+> @@ -463,6 +885,14 @@ static DEVICE_ATTR_WO(fw_reset);
+>  static DEVICE_ATTR_WO(rsh_log);
+>  static DEVICE_ATTR_RW(large_icm);
+>  static DEVICE_ATTR_WO(os_up);
+> +static DEVICE_ATTR_RW(oob_mac);
+> +static DEVICE_ATTR_RW(opn);
+> +static DEVICE_ATTR_RW(sku);
+> +static DEVICE_ATTR_RW(modl);
+> +static DEVICE_ATTR_RW(sn);
+> +static DEVICE_ATTR_RW(uuid);
+> +static DEVICE_ATTR_RW(rev);
+> +static DEVICE_ATTR_WO(mfg_lock);
+>  
+>  static struct attribute *mlxbf_bootctl_attrs[] = {
+>  	&dev_attr_post_reset_wdog.attr,
+> @@ -474,6 +904,14 @@ static struct attribute *mlxbf_bootctl_attrs[] = {
+>  	&dev_attr_rsh_log.attr,
+>  	&dev_attr_large_icm.attr,
+>  	&dev_attr_os_up.attr,
+> +	&dev_attr_oob_mac.attr,
+> +	&dev_attr_opn.attr,
+> +	&dev_attr_sku.attr,
+> +	&dev_attr_modl.attr,
+> +	&dev_attr_sn.attr,
+> +	&dev_attr_uuid.attr,
+> +	&dev_attr_rev.attr,
+> +	&dev_attr_mfg_lock.attr,
+>  	NULL
+>  };
+>  
+> diff --git a/drivers/platform/mellanox/mlxbf-bootctl.h b/drivers/platform/mellanox/mlxbf-bootctl.h
+> index 613963d448f2..1299750a8661 100644
+> --- a/drivers/platform/mellanox/mlxbf-bootctl.h
+> +++ b/drivers/platform/mellanox/mlxbf-bootctl.h
+> @@ -81,6 +81,14 @@
+>   */
+>  #define MLXBF_BOOTCTL_FW_RESET  0x8200000D
+>  
+> +/*
+> + * SMC function IDs to set, get and lock the manufacturing information
+> + * stored within the eeprom.
+> + */
+> +#define MLXBF_BOOTCTL_SET_MFG_INFO    0x8200000E
+> +#define MLXBF_BOOTCTL_GET_MFG_INFO    0x8200000F
+> +#define MLXBF_BOOTCTL_LOCK_MFG_INFO   0x82000011
+> +
+>  /*
+>   * SMC function IDs to set and get the large ICM carveout size
+>   * stored in the eeprom.
 
-> 1. Keeping that patch so we can track the asid/vmid for a domain on a
-> per smmu instance
-
-You'd have to store the cache tag in the per-master struct on that
-list and take it out of the domain struct.
-
-Ie the list of attached masters contains the per-master cache tag
-instead of a global cache tag.
-
-The only place you need the cache tag is when iterating over the list
-of masters, so it is OK.
-
-If the list of masters is sorted by smmu then the first master of each
-smmu can be used to perform the cache tag invalidation, then the rest
-of the list is the ATC invalidation.
-
-The looping code will be a bit ugly.
-
-> 2. Keeping a map in the smmu struct so that arm_smmu_share_asid can
-> find any arm_smmu_installed_smmu that need to have their asid
-> updated
-
-Yes, the global xarray moves into the smmu
-
-> (on a loop over every smmu the domain in arm_smmu_mmu_notifier_get is
-> attached to, which just at a glance looks headache inducing because of
-> sva's piggybacking on the rid domain.)
-
-Not every smmu, just the one you are *currently* attaching to. We
-don't care if the *other* smmu's have different ASIDs, maybe they are
-not using BTM, or won't use SVA.
-
-We care that *our* smmu has the right ASID when we go to attach the
-domain.
-
-So the logic is not really any different, you already know the smmu
-because it is attaching, and you do the same locking xarray stuff as
-was done globally, just against this local smmu.
-
-Jason
