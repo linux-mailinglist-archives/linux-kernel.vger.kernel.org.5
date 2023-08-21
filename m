@@ -2,98 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 637757825CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4797825CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbjHUItv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 04:49:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        id S232318AbjHUIuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 04:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234106AbjHUItt (ORCPT
+        with ESMTP id S234159AbjHUIuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 04:49:49 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7299BBB;
-        Mon, 21 Aug 2023 01:49:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692607787; x=1724143787;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4OvhXE9BEH8lho9tHmIhx8J5oxgCxOBcUfxNpjfihmc=;
-  b=BvXwRbVcYp8fJsiDqgWmW4kw4HzgZZ+QExr47DOlFUH1P3MmNJseMNG8
-   iSZsOC9sN/719A7IF5zULUKx0W6HZeEKwIKmMP/s+ZEhZIwioRIeXn9Ed
-   TmJW+2wiOz08TRfGTvWqmqXooMalLPdShO1bdddyFwAwqmGVimxhP+2zd
-   Fx9B9Qej5zyLyBm/BhaR3oX/+A62kiZWMgEYz4BNknlHQjsddkODCHtnb
-   o70CVC6VNKRaU+dPx1eHdqpvt6HBjJJG+98qcHGUm2XJTSEvA83Xe/Cmo
-   IlPO+jZlhgNrXPwvPBfmB1Gq6dZklrCrW1FUPQkXw0LabTPGV5POki3Tc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="377274510"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="377274510"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 01:49:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="859409797"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="859409797"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP; 21 Aug 2023 01:49:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qY0bV-006Myi-0E;
-        Mon, 21 Aug 2023 11:49:41 +0300
-Date:   Mon, 21 Aug 2023 11:49:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Justin Chen <justin.chen@broadcom.com>
-Cc:     linux-serial@vger.kernel.org, Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
-        "open list:TTY LAYER" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] serial: 8250_bcm7271: improve bcm7271 8250 port
-Message-ID: <ZOMlJAKfQC8W6OkE@smile.fi.intel.com>
-References: <1692393971-31361-1-git-send-email-justin.chen@broadcom.com>
+        Mon, 21 Aug 2023 04:50:16 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C6C1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:50:14 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VqF1WK9_1692607809;
+Received: from 30.97.48.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VqF1WK9_1692607809)
+          by smtp.aliyun-inc.com;
+          Mon, 21 Aug 2023 16:50:10 +0800
+Message-ID: <9749af5b-8c0b-49e4-d76e-129736472499@linux.alibaba.com>
+Date:   Mon, 21 Aug 2023 16:50:10 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1692393971-31361-1-git-send-email-justin.chen@broadcom.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 0/4] Extend migrate_misplaced_page() to support batch
+ migration
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        shy828301@gmail.com, david@redhat.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1692440586.git.baolin.wang@linux.alibaba.com>
+ <87cyzhdt5r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <21099f59-c660-41a3-e422-0c14ac5d0fac@linux.alibaba.com>
+ <87r0nwdbxw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <87r0nwdbxw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-13.3 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 02:26:08PM -0700, Justin Chen wrote:
-> The 8250 BCM7271 UART is not a direct match to PORT_16550A and other
-> generic ports do not match its hardware capabilities. PORT_ALTR matches
-> the rx trigger levels, but its vendor configurations are not compatible.
-> Unfortunately this means we need to create another port to fully capture
-> the hardware capabilities of the BCM7271 UART.
+
+
+On 8/21/2023 4:41 PM, Huang, Ying wrote:
+> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 > 
-> To alleviate some latency pressures, we default the rx trigger level to 8.
+>> On 8/21/2023 10:29 AM, Huang, Ying wrote:
+>>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+>>>
+>>>> Hi,
+>>>>
+>>>> Currently, on our ARM servers with NUMA enabled, we found the cross-die latency
+>>>> is a little larger that will significantly impact the workload's performance.
+>>>> So on ARM servers we will rely on the NUMA balancing to avoid the cross-die
+>>>> accessing. And I posted a patchset[1] to support speculative numa fault to
+>>>> improve the NUMA balancing's performance according to the principle of data
+>>>> locality. Moreover, thanks to Huang Ying's patchset[2], which introduced batch
+>>>> migration as a way to reduce the cost of TLB flush, and it will also benefit
+>>>> the migration of multiple pages all at once during NUMA balancing.
+>>>>
+>>>> So we plan to continue to support batch migration in do_numa_page() to improve
+>>>> the NUMA balancing's performance, but before adding complicated batch migration
+>>>> algorithm for NUMA balancing, some cleanup and preparation work need to do firstly,
+>>>> which are done in this patch set. In short, this patchset extends the
+>>>> migrate_misplaced_page() interface to support batch migration, and no functional
+>>>> changes intended.
+>>> Will these cleanup benefit anything except batching migration?  If
+>>> not,
+>>
+>> I hope these cleanup can also benefit the compound page's NUMA
+>> balancing, which was discussed in the thread[1]. IIUC, for the
+>> compound page's NUMA balancing, it is possible that partial pages were
+>> successfully migrated, so it is necessary to return the number of
+>> pages that were successfully migrated from
+>> migrate_misplaced_page(). (But I did not look this in detail yet,
+>> please correct me if I missed something, and I will find some time to
+>> look this in detail). That is why I think these cleanups are
+>> straightforward.
+>>
+>> Yes, I will post the batch migration patches after more polish and
+>> testing, but I think these cleanups are separate and straightforward,
+>> so I plan to submit the patches separately.
+> 
+> Then, please state the benefit explicitly in the patch description
+> instead of just preparation for batching migration.
 
-...
-
-> v3
-> 	- Switch PORT_BCM7271 to 13
-
-This was very bad suggestion, sorry. You need to use another gap.
-
-So, that seventy something was good enough.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sure, will do. Thanks.
