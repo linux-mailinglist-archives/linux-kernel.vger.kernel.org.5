@@ -2,55 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC70782AF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B468782AFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbjHUNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S235557AbjHUNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235603AbjHUNwl (ORCPT
+        with ESMTP id S233454AbjHUNyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:52:41 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA8FFB;
-        Mon, 21 Aug 2023 06:52:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 38F23637DC;
-        Mon, 21 Aug 2023 13:52:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77AA4C433CC;
-        Mon, 21 Aug 2023 13:52:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692625933;
-        bh=cvZKI6CutDqUJMhqEq/JkcDvLQxKRqv6XPP79QB6G0w=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ApNztc2OWU3LwGej6PnbpU79gILicADLqoie1CwkEWOIrnYO2WypP756GjH519lnA
-         1jebdMU7Ixr8HK3VIyhn+s+okVc/SfW9YFfJFTaM7sNAJBUjRiD4hELsOkBdmhUIGJ
-         s/E7U7Et1jlgjY2nXamYcKR/iqZ/oI5DWdbzSn23sWUlHzV4bNVcxZaDBOkkFtp9PK
-         U64oEwaqoN0pxb03tmH+v/7pPTKrQHvXz20Z2VnXtR45loYQ9SNhpcBKe7cDmLqe5m
-         D/5Jdm4RVVRtJczh+SLX2fx11ThfNqNBru0RFhukUdQSPKAmA2JRmdDjJg/IMV3OQq
-         aSRQFVWjfj+ZA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dave Jiang <dave.jiang@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-Cc:     dmaengine@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230811012635.535413-1-fenghua.yu@intel.com>
-References: <20230811012635.535413-1-fenghua.yu@intel.com>
-Subject: Re: [PATCH 1/2] dmaengine: idxd: Allow ATS disable update only for
- configurable devices
-Message-Id: <169262593212.224153.5681728730609800123.b4-ty@kernel.org>
-Date:   Mon, 21 Aug 2023 19:22:12 +0530
+        Mon, 21 Aug 2023 09:54:19 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B796E8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:54:00 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M13K1DG98SJXnbzho2IkNQR7+4QRApDi9LdVGIIAfjK6vtmtlRWG/GevRyMMqHaZsPpZ2wh2GEWfPn2p1f7y+0PSLShtD3pSXNojne6pilWr3tgxrhYDRIk8Kc0s91wJ7pOPAuSMfyGfGh7XqOmQCDXxrQBF9ZeGgygtKZ1XAfthcRvGDixbzAbTWKxmXsaiYpCRfLomp04tiNaxTYN/xIzvpoWVFcpuWedYGXulM+KgQjHpHZ4hzgIsTbasNZR4s2YjJPu4XCsx/4oS1ZzTuQIoPGfsGqe3t/YbsEAb6ge9jV4ocpFGo6jkfCOk4p0vRVYMbZZHLl0VrHVAbmj5pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9iYRfRQhfrhIbj6+RBezZKBk64ChdA4/jlAxCwDkxPs=;
+ b=KfuD6iQwDmxag9rN/07ZsvSFuf/nHoPHLn586pQlFYq1gObJgdmY1KNv77mJb8XVJhBMHqhV6FRmzLUdW+ktDwHUIc0kKeMJDCymu7ddXVEPujiJSt1+7tW3by73dW7g3e9UfXKe//R0wX/bT/LIDk+ZORbCySfXAF60ICTZ9sAV+wvYvY43y86YFsIi4GJP6DSif83+sa6AeUVvWw8zS99jslK5SD5Gg+Mgu0wg4Gtowdt/Z1mX7t2+GjnxtLxB3nU/vgb5979KDHCWo+1lWHJghTwjud1ilt9mqfTg/d+LqeUt84on5PYI1fzGQ9ULpKl/ce0kAivOhjPR5uCQoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9iYRfRQhfrhIbj6+RBezZKBk64ChdA4/jlAxCwDkxPs=;
+ b=YyDjbz8Z6zJvMKMBnf++tQPDD9pU395rCnq+bvxHbbkdXWSj0a4maFEl27k03+GNXvqGZBDaQxSrX7sCI3/7GuUKF3BX7aO2hdgvnKNs5v3syNiFK4akBGTylIFj+FVM6ay1MAaft0wzEqqBVHn5WqSbVJwjqD/7nVfZwwuxWXs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
+ by LV8PR12MB9359.namprd12.prod.outlook.com (2603:10b6:408:1fe::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.31; Mon, 21 Aug
+ 2023 13:53:34 +0000
+Received: from PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
+ ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
+ 13:53:34 +0000
+Message-ID: <bf49713a-15ec-b986-40f5-34de87123f6f@amd.com>
+Date:   Mon, 21 Aug 2023 19:23:23 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 5/7] drm/amdgpu: Switch on/off GPU workload profile
+Content-Language: en-US
+To:     Shashank Sharma <shashank.sharma@amd.com>,
+        Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
+ <20230821064759.94223-6-Arvind.Yadav@amd.com>
+ <5436e99a-fb23-29cb-d20f-48fb91d57950@amd.com>
+From:   "Yadav, Arvind" <arvyadav@amd.com>
+In-Reply-To: <5436e99a-fb23-29cb-d20f-48fb91d57950@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0181.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e8::7) To PH7PR12MB6000.namprd12.prod.outlook.com
+ (2603:10b6:510:1dc::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|LV8PR12MB9359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7107a621-9206-4b78-75a1-08dba24e02ca
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QyrjyI8gYFBdhvKWDxxIHEq8IUs0OFkBiv2NY0UCQBSARs0/8XEjhWPZ19QPKJEdqwTGnr96QwG6bB8CrLCOXXkCcXY0oPjzQ7JnBXCHsgcDs5xtz4J4L7d2MotQbEfjNd6Zx/kXLvf+h2b/YJFkh+oMGeENvFxwI8Zd/RtFCC1l5SsBAJxwNHveB/5AhE1i9VtE6pWsyWZDWSlUniAXlhkCGuD8Rk95XHfIL4rRueD4hUQiLDm6BRzxlt6mbHu2/ZeUicp3xpxhGOdoh+FyHOO3DSfJpI0ojbrZU3OD/Qi7jTciVCUw43IhPNxzgCyep/dQL9msXbrVcnq4rxxVPnQjw2s61j9ChZZOxyG6l0iLbNbBZ0eLGti0I94m9U0nKH4+qfzJDjH9sF2THo+jcms9Kp+Eq9jH7eHJLuZFe0xYs3eDriJZ2QjMuNq5azzktSft4pg/e6LQFKrSoqf4t++vXITplw5qy5ICdrwytHTvMmEWOfCH1BjTrRa7EJnQZ3agzITwT+lxxss/1aRn1faSCY7kbQIU1KljFGWg4+rUOmM8BGMz+opeOjuU8jDWTwUdLzgnBxaRGgherGB+AOEETK7jpTVWg3DZnvx7W7v7ev67NxSZTtLPi46orB96NaSt2d4sAte9oCtqmQZ05A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(39860400002)(346002)(396003)(451199024)(186009)(1800799009)(36756003)(31696002)(31686004)(6486002)(4326008)(5660300002)(2906002)(41300700001)(53546011)(8936002)(26005)(6506007)(2616005)(6666004)(6512007)(8676002)(110136005)(478600001)(316002)(66946007)(38100700002)(66476007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZTlZbEk0UFNWVHlOcEFXa1N2MElITTU5b0ZkUERXVWRlM1haQ2tkTmt0MWRG?=
+ =?utf-8?B?WHVNSUxJbEYzeEFhbGNOOXhsNXMzZUZnTndZTSszaVhicDR2TUx5QUZ2UWkr?=
+ =?utf-8?B?LzVnN3gwOWttZStxUDV6VUM3UFE2V1g4bVNaOGgydUhHSDVSbVhFb1A4cjRj?=
+ =?utf-8?B?WkxEVk01cHF2QWRoRzVVRk41TjBCejhTUVUxanpXeVRsWUlCN1RMY0FZRWcr?=
+ =?utf-8?B?SktTUlRKNHJPOGRSdUxwVURET2huZ25GVk1XbTNtYlFnTHFUUjFacGpkdDhk?=
+ =?utf-8?B?STFGckRUS3VnTDV6Mnl3MURtc293bElrM3J2L3Y0a1B0ZVZhQlVoNlRHRmRz?=
+ =?utf-8?B?dmd6NnRUR2FIUmFyYm5IT0lvYlJBcFQ0T0txTzl0U3ptSE5oVGQxTnk2QlVL?=
+ =?utf-8?B?bS9ITzdlRDZWK3plRzBwdXNmY0lwMWxyZzRYcjE0bkIzM0JEWEQ5RytKWGg4?=
+ =?utf-8?B?cHptWC9KTy8vL2cwZHRjVjd5S2tnTFplOXZOTUhJWC9PSTJpdTI5TURpejlK?=
+ =?utf-8?B?YnU4dS9iRWJyTUpYQ2lleFY0clJxRnpNc0pnWVlUblE4clgxVTAwRUVqU244?=
+ =?utf-8?B?UzNoYXN5SVp5ekkydERWelN4L3VUZjRocjhGNGIvR2RzVkxFNXBuellTdnkw?=
+ =?utf-8?B?UU9TWkhuYmEvQlFSUDBFQXZ6c0JTMWxONVRJTzA3L3R5L0NueEliYVpWZkQy?=
+ =?utf-8?B?M2NRQkVHT2pkcnV2c0oyTTRIeUp5N2dzSk5UNGwybkFlTUt0MEx6R0NlM1p4?=
+ =?utf-8?B?RzZNMkluYTNCQmxoWXdNcXhmRnU0Y1JTOXZtMG9meUlsMUYzNmM3US9tbzR2?=
+ =?utf-8?B?VmVtZWRmbVU2ZGRKNCt2WXVZeEVsLzI0SDRuNjhOblBaRGtSWDJKN1FXbGNQ?=
+ =?utf-8?B?SndEdkVJTGdDQmZtdnZtWlJTNnNEVGtubmZHNm03YW5IZnJKclcrZ0E3NldS?=
+ =?utf-8?B?UlhqNCtBalpwMHRnWGM3Zy9keFRqS1RRWjdaVHZBbkZURElVZDY5ajc0dGlI?=
+ =?utf-8?B?N3AxYjJ5d2dBaUsrOURHSkt0czdLa3JtWElsMTdpUWE4VWh4UE9RSFFFTkU1?=
+ =?utf-8?B?QUU5SXpoU05aanNWYVdXbyt5UnowanRwSzdielFDYTNiRDhyMEo0ZFNlQUpx?=
+ =?utf-8?B?dmNtRHJNM3hWc1A5emZBODNKM0pQencxaHhHNmpSZysrZGtrWFQ5d3FyNjUv?=
+ =?utf-8?B?RGY4UHBBczkzbTBVU0svT0dsZXdjdk9qcnIrRERjWkovN2h6VnpmMEtyUHoy?=
+ =?utf-8?B?YnNGOGhPUGpJdUdUYXdiRE11c0Vjc0xZaVdaV1FpRnV1dGM0Nmd5bXIzem1q?=
+ =?utf-8?B?R2JJZ21STGo3eHBzZ1pROWFZalFiTk1zV29lRkJLMWJlRUE5TFNtLzRzekJ3?=
+ =?utf-8?B?QWY1alZPMVgwM2J3VlozSUVWdTdtMml6SWpHMTNWY1gyT0hlK0ZoUE5LSWhy?=
+ =?utf-8?B?ZHVyM09ocSt0V245R0hmSStQUUpmVHJQR0ZZOGd2UExGUzFIRjJxdkx2S1RH?=
+ =?utf-8?B?UE9KRHkySUQvd3M4YzFvSW9Oejh4bUVqYUZKQ1BkTS91VjNWZFN6TUoxYldz?=
+ =?utf-8?B?QTNZY1dvaktjaE92dkhDOUp4SUJMc09zNGgrOUVBR1dZNGRzVWgxVlhwd2ls?=
+ =?utf-8?B?K3R6VlludEYyRk9JRmg1V0xEakd1OUJ1Nzl2djZCL1ZRRVhwM3VZTVhwdVdH?=
+ =?utf-8?B?c25VMlJhS2ZQNVB1blpwdFVNRG8xaG00N0hYQ2M1MUI1Q0ZraFBsQkFjYXlJ?=
+ =?utf-8?B?TzNXRzREM0dFenJwOWxDQk5ydjJKanBMOXRVV3JtbDdKWGxZaiszeGNIZUIv?=
+ =?utf-8?B?ZWIvMDduTzlhZkptaDJ0MlhZRG5HaWVobm1WNTBjR05qVnlTMmNEdHY0YXFh?=
+ =?utf-8?B?REFLOCswNXVzMUQ4UVlNcnRLOFkzOGJOdi9NaFVOdjEwR2dQMllWLzhTNjNY?=
+ =?utf-8?B?bktHdldXaktXVE44SXVaaExGVnpoZytwZ2VDaFN3MXA3b1BOUDdhUEFUckZD?=
+ =?utf-8?B?U24yZmNla1hpeG1rNHc0ZmdVQVBocWh5NTBlWEQ1czhwejdLZVdJZ3JrMmgw?=
+ =?utf-8?B?QVplUlNlOTI2MmNNR0tDSjZoVENVbEFnZXRpcjRQMTFhOE5vWnhxMGJsZkl2?=
+ =?utf-8?Q?N0xWKZWNbn9dnrKBOzbPotkzA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7107a621-9206-4b78-75a1-08dba24e02ca
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:53:34.4712
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l0SrZQzgN7YAUUVy1WCwlphAvZPPzzih6WYrJtu986s3/vEmK+SgN3RgFNWORahpXx2e7jKguqAAtn7s2zdfLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9359
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,22 +130,54 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 10 Aug 2023 18:26:34 -0700, Fenghua Yu wrote:
-> ATS disable status in a WQ is read-only if the device is not configurable.
-> This change ensures that the ATS disable attribute can be modified via
-> sysfs only on configurable devices.
-> 
-> 
+On 8/21/2023 7:16 PM, Shashank Sharma wrote:
+>
+> On 21/08/2023 08:47, Arvind Yadav wrote:
+>> This patch is to switch the GPU workload profile based
+>> on the submitted job. The workload profile is reset to
+>> default when the job is done.
+>>
+>> Cc: Shashank Sharma <shashank.sharma@amd.com>
+>> Cc: Christian Koenig <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_job.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c 
+>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>> index c3d9d75143f4..c2b0fda6ba26 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_job.c
+>> @@ -176,6 +176,9 @@ void amdgpu_job_free_resources(struct amdgpu_job 
+>> *job)
+>>   static void amdgpu_job_free_cb(struct drm_sched_job *s_job)
+>>   {
+>>       struct amdgpu_job *job = to_amdgpu_job(s_job);
+>> +    struct amdgpu_ring *ring = to_amdgpu_ring(s_job->sched);
+>> +
+>> +    amdgpu_workload_profile_put(ring->adev, ring->funcs->type);
+>>         drm_sched_job_cleanup(s_job);
+>>   @@ -295,6 +298,8 @@ static struct dma_fence *amdgpu_job_run(struct 
+>> drm_sched_job *sched_job)
+>>               DRM_ERROR("Error scheduling IBs (%d)\n", r);
+>>       }
+>>   +    amdgpu_workload_profile_set(adev, ring->funcs->type);
+>> +
+>>       job->job_run_counter++;
+>>       amdgpu_job_free_resources(job);
+>
+> Instead of calling switch on/off in title, may we call it set/reset 
+> GPU workload profile ?
+>
+> With that minor nitpick handled, please feel free to use:
+>
+Noted.
 
-Applied, thanks!
-
-[1/2] dmaengine: idxd: Allow ATS disable update only for configurable devices
-      commit: 0056a7f07b0a63e6cee815a789eabba6f3a710f0
-[2/2] dmaengine: idxd: Fix issues with PRS disable sysfs knob
-      commit: 8cae66574398326134a41513b419e00ad4e380ca
-
-Best regards,
--- 
-~Vinod
-
-
+Thank You
+~Arvind
+> Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
+>
+> - Shashank
+>
