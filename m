@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E61B782D20
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B7F782D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbjHUPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:22:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S236271AbjHUPWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:22:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236274AbjHUPWj (ORCPT
+        with ESMTP id S234483AbjHUPWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:22:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF597E2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:22:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DE6960DB9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:22:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B758CC433CB;
-        Mon, 21 Aug 2023 15:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692631357;
-        bh=ynZnTfGNCO4mTd9MdNcmARd7SztGSRA/yI7ID5fgvvg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tD3qMbD4+7opo/3MzmIdjEVSXZDbNCWIAtnbjqpvXCfTXPB2EgdAR/CmXyWb5VoG0
-         vrV4RWS8wBcCSGP7/1ix8IEMPENKl+DGWV+SduMgnMQxOEjBguoOGdFU920zqE3Mhm
-         Ds6JsapZJdIsDQ6SnSn+QuTYiFoneoMToWpVQfwBj3ZT49spwtGsTFR4JboektWYpM
-         FmHX8MCRkzKpdmPGC8xSSyW6wPrQ1J1XmRDWQGqD8yPhkSAMzjfBFyUVpliiFShfk/
-         N1gKrQljfse/UFWeOq9m1WyyCa7fDo4kTuixHqqHJSgK2dk+3/6+3LxYrjx1eNgvau
-         4J2Hax6p1kkAQ==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <chao@kernel.org>
-Subject: [PATCH 3/3] f2fs: compress: fix to assign compress_level for lz4 correctly
-Date:   Mon, 21 Aug 2023 23:22:25 +0800
-Message-Id: <20230821152225.4086924-3-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230821152225.4086924-1-chao@kernel.org>
-References: <20230821152225.4086924-1-chao@kernel.org>
+        Mon, 21 Aug 2023 11:22:00 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 05DC1E2;
+        Mon, 21 Aug 2023 08:21:58 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66ED82F4;
+        Mon, 21 Aug 2023 08:22:39 -0700 (PDT)
+Received: from [10.57.91.118] (unknown [10.57.91.118])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F2D943F740;
+        Mon, 21 Aug 2023 08:21:55 -0700 (PDT)
+Message-ID: <de53f559-0e12-d754-52e7-9ee3bee5ffa6@arm.com>
+Date:   Mon, 21 Aug 2023 16:22:31 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 06/12] PM: EM: Refactor struct em_perf_domain and add
+ default_table
+Content-Language: en-US
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
+        mhiramat@kernel.org, linux-pm@vger.kernel.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230721155022.2339982-1-lukasz.luba@arm.com>
+ <20230721155022.2339982-7-lukasz.luba@arm.com>
+ <d4bb4680-fbde-00f5-32ca-4e5478f73647@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <d4bb4680-fbde-00f5-32ca-4e5478f73647@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After remount, F2FS_OPTION().compress_level was assgin to
-LZ4HC_DEFAULT_CLEVEL incorrectly, result in lz4hc:9 was enabled, fix it.
+Hi Dietmar,
 
-1. mount /dev/vdb
-/dev/vdb on /mnt/f2fs type f2fs (...,compress_algorithm=lz4,compress_log_size=2,...)
-2. mount -t f2fs -o remount,compress_log_size=3 /mnt/f2fs/
-3. mount|grep f2fs
-/dev/vdb on /mnt/f2fs type f2fs (...,compress_algorithm=lz4:9,compress_log_size=3,...)
+On 8/16/23 14:04, Dietmar Eggemann wrote:
+> On 21/07/2023 17:50, Lukasz Luba wrote:
+>> The Energy Model is going to support runtime modifications. Refactor old
+>> implementation which accessed struct em_perf_state and introduce
+>> em_perf_domain::default_table to clean up the design. This new field
+>> will help to better distinguish 2 performance state tables.
+>>
+>> Update all drivers or frameworks which used the old field:
+>> em_perf_domain::table and now should use em_perf_domain::default_table.
+>>
+> 
+> This doesn't compile:
+> 
+>    SYNC    include/config/auto.conf.cmd
+>    UPD     include/config/kernel.release
+>    UPD     include/generated/utsrelease.h
+>    CC      arch/arm64/kernel/asm-offsets.s
+> In file included from ./include/linux/device.h:16,
+>                   from ./include/linux/acpi.h:14,
+>                   from ./include/acpi/apei.h:9,
+>                   from ./include/acpi/ghes.h:5,
+>                   from ./include/linux/arm_sdei.h:8,
+>                   from arch/arm64/kernel/asm-offsets.c:10:
+> ./include/linux/energy_model.h: In function ‘em_cpu_energy’:
+> ./include/linux/energy_model.h:256:10: error: ‘struct em_perf_domain’ has no member named ‘table’
+>    256 |  ps = &pd->table[pd->nr_perf_states - 1];
+>        |          ^~
+> ./include/linux/energy_model.h:266:34: error: ‘struct em_perf_domain’ has no member named ‘table’
+>    266 |  i = em_pd_get_efficient_state(pd->table, pd->nr_perf_states, freq,
+>        |                                  ^~
+> ./include/linux/energy_model.h:268:10: error: ‘struct em_perf_domain’ has no member named ‘table’
+>    268 |  ps = &pd->table[i];
+>        |          ^~
+> make[2]: *** [scripts/Makefile.build:116: arch/arm64/kernel/asm-offsets.s] Error 1
+> make[1]: *** [/opt/git/kernel_org/Makefile:1275: prepare0] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
+> 
+> In v2 this patch was much later in the set.
+> 
+> 
+> 
 
-Fixes: 00e120b5e4b5 ("f2fs: assign default compression level")
-Signed-off-by: Chao Yu <chao@kernel.org>
----
- fs/f2fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, you are right. It didn't trigger somehow in my build testing
+probably due to my ccache or missed step and built+test the whole set.
+My apologies for that, I'll double check that next time.
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index a067466a694c..8d9d2ee7f3c7 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -591,7 +591,7 @@ static int f2fs_set_lz4hc_level(struct f2fs_sb_info *sbi, const char *str)
- 	unsigned int level;
- 
- 	if (strlen(str) == 3) {
--		F2FS_OPTION(sbi).compress_level = LZ4HC_DEFAULT_CLEVEL;
-+		F2FS_OPTION(sbi).compress_level = 0;
- 		return 0;
- 	}
- 
--- 
-2.40.1
-
+Regards,
+Lukasz
