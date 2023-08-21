@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F2D7830D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE62783097
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjHUTNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 15:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49746 "EHLO
+        id S229559AbjHUSzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjHUTNG (ORCPT
+        with ESMTP id S229553AbjHUSzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 15:13:06 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A637CE77
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:12:57 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-319e93a1594so3432441f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:12:57 -0700 (PDT)
+        Mon, 21 Aug 2023 14:55:15 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C331A9EFE
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:54:09 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-977e0fbd742so465242866b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692645176; x=1693249976;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O1jfWqRFqEX/V4IMqa029q2gEFfs8XGqFtJjj4sRi5k=;
-        b=uW5jyVF/yuXzGkSTxjiKp/5ntJBeHaOkd+4xfhAxDvHfn1yaHl0h+xNIrxwlBk81LH
-         WaTJs8vU8iugxYsErSaowPzuwyU2QvUidPbf9IVaNP5CsXiDGVDorzM12UNCnXhq2cAl
-         4CHCP/RMx1oaD+hbAA5KDF9tn0dVWKTx1c8XFRi6W+KcGsVju1TTXytDpTaG/86RyaQ3
-         eSHuNUcPSmHsVvqLk1631SLwsTAsRlcHJJixFKirWXJ0WAVZwfAjr3mP2QmyN/6UhH7E
-         Opz4LF+tCgOZwjs6JT0F573bY63qUoe2jR3fEUgSoYWc9webL5O6GKO2duye5ljEz69Q
-         a1fg==
+        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1692644046; x=1693248846;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=J1bPOG4b+YloUifqT7Rk+dQEUBL9OO+h1q+JajXVUOs=;
+        b=zM0Zvm9QVHKO8iQyGlkowGK5ww+I2o69vV6IlExZpbMO5f+Q/Vtv3zjw0mMRTGOJeQ
+         wvClPyM5tWhdrPfUTqHOpNd64mb0iPTP6Smm3VgnRAI1nDqQCueaAH6S1A8FopD1ZkrT
+         3IZ1t3VJgjbyGFQPMvwvLcyIe6YjGS4+gyZ/KihY1LP1Rq0+1NeVC3zNv2rHwn7S9Jun
+         yMKHKnN9FB6ZaUp1aK3O8okj+EWu3fEls1CR1AzznaOBBZcqrN19wkNAzUjci85zdWI5
+         bnc8k3sdYTai4WDlYsISndAiCuPa506HXq83/rxWXsSRjwG9EllSilmeE+dS+aMvKAvW
+         SE4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692645176; x=1693249976;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1jfWqRFqEX/V4IMqa029q2gEFfs8XGqFtJjj4sRi5k=;
-        b=WQ7V1VegSW5LoBRY0OK7aMZdaYfe9XRyTF6/maBcp08m3FKQPN7lCq/rI+Iyk68ot6
-         d7vxkONQSbyzpBggVHq0TYbg+QUhMs8sWhVUDUQR+eMWjA4c6WJZ/t3BnD4zLMeW7sK/
-         0GYcPpHlsFQv2WGm+y21uPGQWplxNyl3i/FVkVke5Oqdy4B3zwFcUmNC1eRTF8IrlGqB
-         AQkCtDImrYwlCMg2qpHyPEL0CLLXnkOqMrqOOdKR9CYIj6mBuQ8UbDJTlXqyRjnnOVer
-         kMmYL3kinR94TcjTRb5nDJP47S3txAUQ8HEe1J+IJ3PUx77l2RQwSzNX+JMCcZIxmrwR
-         2J5Q==
-X-Gm-Message-State: AOJu0YxIVbqIw8JgjYeVzFmwBrA1rbXlcMKZr5tSGbJJMNnGzn81MGhi
-        iS3AcyCFO/wKegl0mEEd0V3qZT/0TzRdHWpHA3o=
-X-Google-Smtp-Source: AGHT+IFGAXFhnHGo2FpM5aCmnviNTFRiZ/WCyyzjZnj8MJtw/TSwL8XbhsAY1GaPqh4Dk3AZ7uEsGg==
-X-Received: by 2002:a17:907:2c6b:b0:988:9ec1:a8c5 with SMTP id ib11-20020a1709072c6b00b009889ec1a8c5mr5605427ejc.55.1692643304233;
-        Mon, 21 Aug 2023 11:41:44 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id e16-20020a170906045000b0098dfec235ccsm6855882eja.47.2023.08.21.11.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 11:41:43 -0700 (PDT)
-Message-ID: <8fd5b5e6-792c-3b7f-0828-5d647993ec7d@linaro.org>
-Date:   Mon, 21 Aug 2023 20:41:42 +0200
+        d=1e100.net; s=20221208; t=1692644046; x=1693248846;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J1bPOG4b+YloUifqT7Rk+dQEUBL9OO+h1q+JajXVUOs=;
+        b=bZPQL7thYy3Qx5HbW+WZBQP1k/gFT4ygG/GMPe7rnjTLaGAyix/vALrRRTcWILZwd2
+         qCEj3UZHxfyVlbTFlxfG+qMpfERsI2WvN1NBT1thOuZY7/93TnYcdAys3OY6Gk2hVa0k
+         pZze33VWAzjxvULy22oFWdWA9MFMSqymSd2wd1XNENw4FZS/jVkmq1j/JLHDQqrBXLpO
+         LLvKuxn61uYNp+EoD5a4zvVvJcupU1Y+SVc4JsXks6VCij3VBqb4l91nTSxDzRNvv/HX
+         5VyOYxdRxqXDOua+IJA52G8BKP5ShVteNePUw1G2zNQhEHieqPILQ1SqyESFl81CpNGV
+         hOWg==
+X-Gm-Message-State: AOJu0Ywe23NDo4J9px8Lo0C00Sf8GW+HIWvFoX4n/t6ROVamQPxRZzxi
+        1DHYAwbDojF94s91i657/Wz6o7Lpl9bUSw12W7U=
+X-Google-Smtp-Source: AGHT+IEthwuxN1Toa5Mr0lSr2fZ63x5sTSrzhhPevyvctTWOgtn884Tztzzip0ASVSL9Vn9A2tb2hg==
+X-Received: by 2002:a05:6402:2025:b0:521:ae63:ee63 with SMTP id ay5-20020a056402202500b00521ae63ee63mr5925942edb.16.1692643611060;
+        Mon, 21 Aug 2023 11:46:51 -0700 (PDT)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id ca3-20020aa7cd63000000b00529fa63ef6fsm4815116edb.57.2023.08.21.11.46.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 11:46:50 -0700 (PDT)
+References: <20230711093303.1433770-1-aliceryhl@google.com>
+ <20230711093303.1433770-2-aliceryhl@google.com>
+User-agent: mu4e 1.10.5; emacs 28.2.50
+From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     rust-for-linux@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?utf-8?Q?Bj?= =?utf-8?Q?=C3=B6rn?= Roy Baron 
+        <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Wedson Almeida Filho <walmeida@microsoft.com>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+Subject: Re: [PATCH v3 1/9] rust: add offset_of! macro
+Date:   Mon, 21 Aug 2023 20:43:08 +0200
+In-reply-to: <20230711093303.1433770-2-aliceryhl@google.com>
+Message-ID: <874jksp71i.fsf@metaspace.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] drivers: regulator: Add MAX77503 regulator driver
-Content-Language: en-US
-To:     Gokhan Celik <gokhan.celik@analog.com>, outreachy@lists.linux.dev
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <cover.1692634090.git.gokhan.celik@analog.com>
- <b45b07c3bdbfac1608b171f96aa0ae4ca5a0dd82.1692634090.git.gokhan.celik@analog.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <b45b07c3bdbfac1608b171f96aa0ae4ca5a0dd82.1692634090.git.gokhan.celik@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,22 +80,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/2023 18:28, Gokhan Celik wrote:
-> Add MAX77503 buck converter driver.
-> 
-> Signed-off-by: Gokhan Celik <gokhan.celik@analog.com>
-> ---
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
+Hi Alice,
 
->  drivers/regulator/Kconfig              |  10 ++
->  drivers/regulator/Makefile             |   1 +
->  drivers/regulator/max77503-regulator.c | 137 +++++++++++++++++++++++++
->  3 files changed, 148 insertions(+)
+Alice Ryhl <aliceryhl@google.com> writes:
 
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
+>
+> This macro is used to compute the offset of a field in a struct.
+>
+> This commit enables an unstable feature that is necessary for using
+> the macro in a constant. However, this is not a problem as the macro
+> will become available from the Rust standard library soon [1]. The
+> unstable feature can be disabled again once that happens.
+>
+> The macro in this patch does not support sub-fields. That is, you cannot
+> write `offset_of!(MyStruct, field.sub_field)` to get the offset of
+> `sub_field` with `field`'s type being a struct with a field called
+> `sub_field`. This is because `field` might be a `Box<SubStruct>`, which
+> means that you would be trying to compute the offset to something in an
+> entirely different allocation. There's no easy way to fix the current
+> macro to support subfields, but the version being added to the standard
+> library should support it, so the limitation is temporary and not a big
+> deal.
 
-Best regards,
-Krzysztof
+I think `#![feature(offset_of)]` is available in 1.71.0, can we use that directly?
 
+BR Andreas
