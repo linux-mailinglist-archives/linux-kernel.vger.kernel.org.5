@@ -2,243 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588B178365F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7BA783668
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbjHUXfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:35:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        id S231767AbjHUXhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjHUXfM (ORCPT
+        with ESMTP id S231759AbjHUXhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:35:12 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C28CF8;
-        Mon, 21 Aug 2023 16:34:34 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qYEOV-0004Xb-34;
-        Mon, 21 Aug 2023 23:33:13 +0000
-Date:   Tue, 22 Aug 2023 00:32:58 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v2 4/4] net: ethernet: mtk_eth_soc: support
- 36-bit DMA addressing on MT7988
-Message-ID: <ZOP0KrmKTzHPfD22@makrotopia.org>
-References: <cover.1692660046.git.daniel@makrotopia.org>
- <e4121c507e065c5bca59ddae8909664374b5e396.1692660046.git.daniel@makrotopia.org>
+        Mon, 21 Aug 2023 19:37:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26AA189;
+        Mon, 21 Aug 2023 16:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692661021; x=1724197021;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=lyG/72iRKaKPXkXbLzVHa9J51DlyHySbY0/hxJRW8/0=;
+  b=WRrc35K04ZX06NrV8igIABf/MWdu6qx13WcafxXW6xtWeoqVm2jJ9Q4t
+   lBmUIkCHxYEMrUVkoELDV/BoJogcE5UXgYFxrPQu3CXVb93/jBg/T0tWg
+   iSGloXZZCwXvF1I0O/2zbogN0JN6YdxRg/JacbiQvUxGAzdJ6TjyAtMhX
+   MifkuGuEUTRijIT41DWJyoNDtd8rAWp5I5YBWkquxZ2G6XJj1dtaiCAjW
+   0uFGwkiujVo8q3ukZ5dierlbAEd8t4pKzl+QZWtv8I8aRM3ClfjmzeZwQ
+   XNwfrFbTzBAe46GAuRLXDkNAZ6VsqBTlte2mOLL1cO66isaz0woDJmC4F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="440097320"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="440097320"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 16:35:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="850368628"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="850368628"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 16:35:33 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Wei Xu <weixugc@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Rafael J Wysocki <rafael.j.wysocki@intel.com>
+Subject: Re: [PATCH RESEND 4/4] dax, kmem: calculate abstract distance with
+ general interface
+References: <20230721012932.190742-1-ying.huang@intel.com>
+        <20230721012932.190742-5-ying.huang@intel.com>
+        <87edkwznsf.fsf@nvdebian.thelocal>
+        <87cz0gxylp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <871qfwwqi3.fsf@nvdebian.thelocal>
+Date:   Tue, 22 Aug 2023 07:33:28 +0800
+In-Reply-To: <871qfwwqi3.fsf@nvdebian.thelocal> (Alistair Popple's message of
+        "Mon, 21 Aug 2023 22:03:43 +1000")
+Message-ID: <87a5ukc6nr.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e4121c507e065c5bca59ddae8909664374b5e396.1692660046.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 12:30:34AM +0100, Daniel Golle wrote:
-> Systems having 4 GiB of RAM and more require DMA addressing beyond the
-> current 32-bit limit. Starting from MT7988 the hardware now supports
-> 36-bit DMA addressing, let's use that new capability in the driver to
-> avoid running into swiotlb on systems with 4 GiB of RAM or more.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  drivers/net/ethernet/mediatek/mtk_eth_soc.c | 34 ++++++++++++++++++---
->  drivers/net/ethernet/mediatek/mtk_eth_soc.h | 22 +++++++++++--
->  2 files changed, 50 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> index ec6a251a0f026..c40e69ac2eeaa 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> @@ -1136,7 +1136,7 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
->  	int i;
->  
->  	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM))
-> -		eth->scratch_ring = eth->sram_base;
-> +		eth->scratch_ring = (void __force *)eth->sram_base;
+Alistair Popple <apopple@nvidia.com> writes:
 
-Ooops that was supposed to go into the previous commit obviously.
-I will submit v3 after some time with that fixed.
+> "Huang, Ying" <ying.huang@intel.com> writes:
+>
+>> Alistair Popple <apopple@nvidia.com> writes:
+>>
+>>> Huang Ying <ying.huang@intel.com> writes:
+>>>
+>>>> Previously, a fixed abstract distance MEMTIER_DEFAULT_DAX_ADISTANCE is
+>>>> used for slow memory type in kmem driver.  This limits the usage of
+>>>> kmem driver, for example, it cannot be used for HBM (high bandwidth
+>>>> memory).
+>>>>
+>>>> So, we use the general abstract distance calculation mechanism in kmem
+>>>> drivers to get more accurate abstract distance on systems with proper
+>>>> support.  The original MEMTIER_DEFAULT_DAX_ADISTANCE is used as
+>>>> fallback only.
+>>>>
+>>>> Now, multiple memory types may be managed by kmem.  These memory types
+>>>> are put into the "kmem_memory_types" list and protected by
+>>>> kmem_memory_type_lock.
+>>>
+>>> See below but I wonder if kmem_memory_types could be a common helper
+>>> rather than kdax specific?
+>>>
+>>>> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>>>> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+>>>> Cc: Wei Xu <weixugc@google.com>
+>>>> Cc: Alistair Popple <apopple@nvidia.com>
+>>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>>> Cc: Dave Hansen <dave.hansen@intel.com>
+>>>> Cc: Davidlohr Bueso <dave@stgolabs.net>
+>>>> Cc: Johannes Weiner <hannes@cmpxchg.org>
+>>>> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>>> Cc: Michal Hocko <mhocko@kernel.org>
+>>>> Cc: Yang Shi <shy828301@gmail.com>
+>>>> Cc: Rafael J Wysocki <rafael.j.wysocki@intel.com>
+>>>> ---
+>>>>  drivers/dax/kmem.c           | 54 +++++++++++++++++++++++++++---------
+>>>>  include/linux/memory-tiers.h |  2 ++
+>>>>  mm/memory-tiers.c            |  2 +-
+>>>>  3 files changed, 44 insertions(+), 14 deletions(-)
+>>>>
+>>>> diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
+>>>> index 898ca9505754..837165037231 100644
+>>>> --- a/drivers/dax/kmem.c
+>>>> +++ b/drivers/dax/kmem.c
+>>>> @@ -49,14 +49,40 @@ struct dax_kmem_data {
+>>>>  	struct resource *res[];
+>>>>  };
+>>>>  
+>>>> -static struct memory_dev_type *dax_slowmem_type;
+>>>> +static DEFINE_MUTEX(kmem_memory_type_lock);
+>>>> +static LIST_HEAD(kmem_memory_types);
+>>>> +
+>>>> +static struct memory_dev_type *kmem_find_alloc_memorty_type(int adist)
+>>>> +{
+>>>> +	bool found = false;
+>>>> +	struct memory_dev_type *mtype;
+>>>> +
+>>>> +	mutex_lock(&kmem_memory_type_lock);
+>>>> +	list_for_each_entry(mtype, &kmem_memory_types, list) {
+>>>> +		if (mtype->adistance == adist) {
+>>>> +			found = true;
+>>>> +			break;
+>>>> +		}
+>>>> +	}
+>>>> +	if (!found) {
+>>>> +		mtype = alloc_memory_type(adist);
+>>>> +		if (!IS_ERR(mtype))
+>>>> +			list_add(&mtype->list, &kmem_memory_types);
+>>>> +	}
+>>>> +	mutex_unlock(&kmem_memory_type_lock);
+>>>> +
+>>>> +	return mtype;
+>>>> +}
+>>>> +
+>>>>  static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>>>>  {
+>>>>  	struct device *dev = &dev_dax->dev;
+>>>>  	unsigned long total_len = 0;
+>>>>  	struct dax_kmem_data *data;
+>>>> +	struct memory_dev_type *mtype;
+>>>>  	int i, rc, mapped = 0;
+>>>>  	int numa_node;
+>>>> +	int adist = MEMTIER_DEFAULT_DAX_ADISTANCE;
+>>>>  
+>>>>  	/*
+>>>>  	 * Ensure good NUMA information for the persistent memory.
+>>>> @@ -71,6 +97,11 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
+>>>>  		return -EINVAL;
+>>>>  	}
+>>>>  
+>>>> +	mt_calc_adistance(numa_node, &adist);
+>>>> +	mtype = kmem_find_alloc_memorty_type(adist);
+>>>> +	if (IS_ERR(mtype))
+>>>> +		return PTR_ERR(mtype);
+>>>> +
+>>>
+>>> I wrote my own quick and dirty module to test this and wrote basically
+>>> the same code sequence.
+>>>
+>>> I notice your using a list of memory types here though. I think it would
+>>> be nice to have a common helper that other users could call to do the
+>>> mt_calc_adistance() / kmem_find_alloc_memory_type() /
+>>> init_node_memory_type() sequence and cleanup as my naive approach would
+>>> result in a new memory_dev_type per device even though adist might be
+>>> the same. A common helper would make it easy to de-dup those.
+>>
+>> If it's useful, we can move kmem_find_alloc_memory_type() to
+>> memory-tier.c after some revision.  But I tend to move it after we have
+>> the second user.  What do you think about that?
+>
+> Usually I would agree, but this series already introduces a general
+> interface for calculating adist even though there's only one user and
+> implementation. So if we're going to add a general interface I think it
+> would be better to make it more usable now rather than after variations
+> of it have been cut and pasted into other drivers.
 
->  	else
->  		eth->scratch_ring = dma_alloc_coherent(eth->dma_dev,
->  						       cnt * soc->txrx.txd_size,
-> @@ -1328,6 +1328,10 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
->  	data = TX_DMA_PLEN0(info->size);
->  	if (info->last)
->  		data |= TX_DMA_LS0;
-> +
-> +	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-> +		data |= TX_DMA_PREP_ADDR64(info->addr);
-> +
->  	WRITE_ONCE(desc->txd3, data);
->  
->  	 /* set forward port */
-> @@ -1997,6 +2001,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
->  	bool xdp_flush = false;
->  	int idx;
->  	struct sk_buff *skb;
-> +	u64 addr64 = 0;
->  	u8 *data, *new_data;
->  	struct mtk_rx_dma_v2 *rxd, trxd;
->  	int done = 0, bytes = 0;
-> @@ -2112,7 +2117,10 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
->  				goto release_desc;
->  			}
->  
-> -			dma_unmap_single(eth->dma_dev, trxd.rxd1,
-> +			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-> +				addr64 = RX_DMA_GET_ADDR64(trxd.rxd2);
-> +
-> +			dma_unmap_single(eth->dma_dev, ((u64)trxd.rxd1 | addr64),
->  					 ring->buf_size, DMA_FROM_DEVICE);
->  
->  			skb = build_skb(data, ring->frag_size);
-> @@ -2178,6 +2186,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
->  		else
->  			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
->  
-> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-> +			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-> +
->  		ring->calc_idx = idx;
->  		done++;
->  	}
-> @@ -2450,7 +2461,7 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
->  		goto no_tx_mem;
->  
->  	if (MTK_HAS_CAPS(soc->caps, MTK_SRAM)) {
-> -		ring->dma = eth->sram_base + ring_size * sz;
-> +		ring->dma = (void __force *)eth->sram_base + ring_size * sz;
->  		ring->phys = eth->phy_scratch_ring + ring_size * (dma_addr_t)sz;
->  	} else {
->  		ring->dma = dma_alloc_coherent(eth->dma_dev, ring_size * sz,
-> @@ -2670,6 +2681,9 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
->  		else
->  			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
->  
-> +		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-> +			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-> +
->  		rxd->rxd3 = 0;
->  		rxd->rxd4 = 0;
->  		if (mtk_is_netsys_v2_or_greater(eth)) {
-> @@ -2716,6 +2730,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
->  
->  static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
->  {
-> +	u64 addr64 = 0;
->  	int i;
->  
->  	if (ring->data && ring->dma) {
-> @@ -2729,7 +2744,10 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_
->  			if (!rxd->rxd1)
->  				continue;
->  
-> -			dma_unmap_single(eth->dma_dev, rxd->rxd1,
-> +			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-> +				addr64 = RX_DMA_GET_ADDR64(rxd->rxd2);
-> +
-> +			dma_unmap_single(eth->dma_dev, ((u64)rxd->rxd1 | addr64),
->  					 ring->buf_size, DMA_FROM_DEVICE);
->  			mtk_rx_put_buff(ring, ring->data[i], false);
->  		}
-> @@ -4734,6 +4752,14 @@ static int mtk_probe(struct platform_device *pdev)
->  		}
->  	}
->  
-> +	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA)) {
-> +		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
-> +		if (err) {
-> +			dev_err(&pdev->dev, "Wrong DMA config\n");
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
->  	spin_lock_init(&eth->page_lock);
->  	spin_lock_init(&eth->tx_irq_lock);
->  	spin_lock_init(&eth->rx_irq_lock);
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-> index 7c180aedcc0cd..186767bcf6837 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-> @@ -331,6 +331,14 @@
->  #define TX_DMA_PLEN1(x)		((x) & eth->soc->txrx.dma_max_len)
->  #define TX_DMA_SWC		BIT(14)
->  #define TX_DMA_PQID		GENMASK(3, 0)
-> +#define TX_DMA_ADDR64_MASK	GENMASK(3, 0)
-> +#if IS_ENABLED(CONFIG_64BIT)
-> +# define TX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(TX_DMA_ADDR64_MASK, (x))) << 32)
-> +# define TX_DMA_PREP_ADDR64(x)	FIELD_PREP(TX_DMA_ADDR64_MASK, ((x) >> 32))
-> +#else
-> +# define TX_DMA_GET_ADDR64(x)	(0)
-> +# define TX_DMA_PREP_ADDR64(x)	(0)
-> +#endif
->  
->  /* PDMA on MT7628 */
->  #define TX_DMA_DONE		BIT(31)
-> @@ -343,6 +351,14 @@
->  #define RX_DMA_PREP_PLEN0(x)	(((x) & eth->soc->txrx.dma_max_len) << eth->soc->txrx.dma_len_offset)
->  #define RX_DMA_GET_PLEN0(x)	(((x) >> eth->soc->txrx.dma_len_offset) & eth->soc->txrx.dma_max_len)
->  #define RX_DMA_VTAG		BIT(15)
-> +#define RX_DMA_ADDR64_MASK	GENMASK(3, 0)
-> +#if IS_ENABLED(CONFIG_64BIT)
-> +# define RX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(RX_DMA_ADDR64_MASK, (x))) << 32)
-> +# define RX_DMA_PREP_ADDR64(x)	FIELD_PREP(RX_DMA_ADDR64_MASK, ((x) >> 32))
-> +#else
-> +# define RX_DMA_GET_ADDR64(x)	(0)
-> +# define RX_DMA_PREP_ADDR64(x)	(0)
-> +#endif
->  
->  /* QDMA descriptor rxd3 */
->  #define RX_DMA_VID(x)		((x) & VLAN_VID_MASK)
-> @@ -942,6 +958,7 @@ enum mkt_eth_capabilities {
->  	MTK_RSTCTRL_PPE2_BIT,
->  	MTK_U3_COPHY_V2_BIT,
->  	MTK_SRAM_BIT,
-> +	MTK_36BIT_DMA_BIT,
->  
->  	/* MUX BITS*/
->  	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
-> @@ -978,6 +995,7 @@ enum mkt_eth_capabilities {
->  #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
->  #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
->  #define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
-> +#define MTK_36BIT_DMA	BIT_ULL(MTK_36BIT_DMA_BIT)
->  
->  #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
->  	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
-> @@ -1059,8 +1077,8 @@ enum mkt_eth_capabilities {
->  		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
->  		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
->  
-> -#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
-> -		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
-> +#define MT7988_CAPS  (MTK_36BIT_DMA | MTK_GDM1_ESW | MTK_QDMA | \
-> +		      MTK_RSTCTRL_PPE1 | MTK_RSTCTRL_PPE2 | MTK_SRAM)
->  
->  struct mtk_tx_dma_desc_info {
->  	dma_addr_t	addr;
-> -- 
-> 2.41.0
-> 
+In general, I would like to introduce complexity when necessary.  So, we
+can discuss the necessity of the general interface firstly.  We can do
+that in [1/4] of the series.
+
+--
+Best Regards,
+Huang, Ying
