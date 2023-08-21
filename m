@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B85A782304
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939E7782305
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233093AbjHUEz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:55:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
+        id S233097AbjHUE6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjHUEzZ (ORCPT
+        with ESMTP id S231553AbjHUE6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:55:25 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EDDA6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:55:22 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b962535808so47185801fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:55:22 -0700 (PDT)
+        Mon, 21 Aug 2023 00:58:08 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C94A3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:58:05 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99df11828c6so836736866b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:58:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692593721; x=1693198521;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBPIa0Y0nf44GPXwWTAaO4yGtE4FDjY8r9GXV2YK4UU=;
-        b=T0gz4gUTApxGAH1pTeA2eFV29EqZD07oYhbvzgVYvn3oDP7QcSZJhspwirBZOk4Hir
-         hoWUa9ReKe6H1h3jx8LcSsEHKnFKqcqEFDIqSNv56QGF65Vgg3GNIwWwE7xKZaCflFHt
-         7a43VWcG0d7mcafYGJy54/bfrBGzTxEQN3juk=
+        d=jms.id.au; s=google; t=1692593884; x=1693198684;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MQnlMj7kzE9dCiaVDYV86soTAPtlGDeMTtTorKnXjJo=;
+        b=P3eoVjxzcooXy3dKqareoJbq/JQEiD1dr3jU/LmUb1arR/8CWPmZpHafq+iAq3Twls
+         vnOoeoucqidlP4R6RagbmbttSGZweCIhklCuFI/cvAwn4uZgBd0tG6JHeUyaUaU8a5HN
+         sUef+XHEtHFsOJQAgcGD0DAgUU59Mb4iqV0L4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692593721; x=1693198521;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bBPIa0Y0nf44GPXwWTAaO4yGtE4FDjY8r9GXV2YK4UU=;
-        b=P6vATdRjTSU1bHOVB5vptBflEM/M3oj561ZEINYaqt+6rWCxgndIwL+fOALae9IjKV
-         sqqJYdY/A+vvz6ZeGfpuDXwpPB0FWe+ylVTp6Zi29zzeDUNDlDyVFZcmi9gmMNa3Abke
-         Qu0dqSVQ4KNhNHJ9Y2SffefbSvw16hG15YP5WcdZiMVDjuZq5yL3/TpoFNhEuuhnNJsT
-         5qLpnfgn7jqaCEV5pkJs6TmbsuHph02mzke/1UaAATZFB/60d7BWD/YnUFNia4CO/TL5
-         PhAff7RLx2KzBn4IEJSFSkIy1+ul2ySULyRNLkxzkxdIVIru6QclEzYBcNaN7m7YGIpw
-         Bfzg==
-X-Gm-Message-State: AOJu0YwKhKuE82GaTORA6cqBq0kVRdppNwmUR7bh/b2jMMP4EA0Z2GQ5
-        IdYAviuc8VEX1Fmsim2WMBNJW92mAwAk/FZdt5RPajo3
-X-Google-Smtp-Source: AGHT+IF12pgL76qgcV0t/0ciLxBbP6mNpol7PyfcAXZFVXrbz6NeLP1kDT0atKCWPLI4L2HwF7wUlg==
-X-Received: by 2002:ac2:4557:0:b0:4fd:fef8:7a81 with SMTP id j23-20020ac24557000000b004fdfef87a81mr3227019lfm.55.1692593720694;
-        Sun, 20 Aug 2023 21:55:20 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id 28-20020ac2485c000000b004fddbd29457sm1542148lfy.7.2023.08.20.21.55.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Aug 2023 21:55:20 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2b962535808so47185281fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:55:19 -0700 (PDT)
-X-Received: by 2002:a2e:9b49:0:b0:2b9:bf49:901b with SMTP id
- o9-20020a2e9b49000000b002b9bf49901bmr3580293ljj.6.1692593719477; Sun, 20 Aug
- 2023 21:55:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692593884; x=1693198684;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MQnlMj7kzE9dCiaVDYV86soTAPtlGDeMTtTorKnXjJo=;
+        b=dHNXltfdVw+4v7PU6kGViXbxb4RtB8w/G0/JuzR5juHkwbm2UnwRufaN6iv2P3RYzE
+         +Ca/krMoFA2yxSBKA6TcQS6SGCcuLKMQqwBVP4GItS2L2VmAZgnI/GKI+azmkuhQaZnZ
+         vJPHAVJFpoBOR4QoS6JAFJUv2N5Qb2BL2ArLHk2m0EjPvZLbZT1vJF+CNIzxozhEJMi0
+         xjH6qcyqBUoIvGnbKp1y7oqmxZ8LSmEltWMd/p0+SdRWAzwN7j23hSh/5WY/0VbiXMsi
+         xPcV9SX1nlKyROHISj2/v7ucXMSpyqNCgzcOcf8erHCtXRQBJ+Q+xoNIxNsymOYbcjzR
+         fOkw==
+X-Gm-Message-State: AOJu0Yzv2QOjTW4kXx0iRIG8PIRWpb+AM/354W8jHcHuBhR4ojFokmDK
+        RmEfy/f1aKicsV4QqDlsD7n6fAXQe6hXj3xZJMVwam98
+X-Google-Smtp-Source: AGHT+IEGZV2Q63iCluq91jNesmkZwouRSXwFtdGfqrc2ai1Jhi9v0+OdLhNvNvsKP+t/qF1IWkfROPfEgjwUKB1ws28=
+X-Received: by 2002:a17:906:209d:b0:99e:f3:67ae with SMTP id
+ 29-20020a170906209d00b0099e00f367aemr6413345ejq.31.1692593884032; Sun, 20 Aug
+ 2023 21:58:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230820104303.2083444-1-mjguzik@gmail.com> <ZOJXgFJybD1ljCHL@casper.infradead.org>
- <20230821011303.hoeqjbmjaxajh255@f> <ZOLg2kmvKb4eGDrt@casper.infradead.org>
-In-Reply-To: <ZOLg2kmvKb4eGDrt@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 21 Aug 2023 06:55:02 +0200
-X-Gmail-Original-Message-ID: <CAHk-=win-keZbx6GFC4Q6VXUiFLfWxVDqcAUoV2A38rN29H5Xw@mail.gmail.com>
-Message-ID: <CAHk-=win-keZbx6GFC4Q6VXUiFLfWxVDqcAUoV2A38rN29H5Xw@mail.gmail.com>
-Subject: Re: [PATCH] mm: remove unintentional voluntary preemption in get_mmap_lock_carefully
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mateusz Guzik <mjguzik@gmail.com>, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230816171944.123705-1-u.kleine-koenig@pengutronix.de>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 21 Aug 2023 04:57:52 +0000
+Message-ID: <CACPK8XdP=t4fLioXE=hnxN_oA1Qyo9VZxjqoUSnNCBErWKRXEQ@mail.gmail.com>
+Subject: Re: [PATCH] fsi: i2cr: Switch to use struct i2c_driver's .probe()
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Eddie James <eajames@linux.ibm.com>, Jeremy Kerr <jk@ozlabs.org>,
+        Alistar Popple <alistair@popple.id.au>,
+        linux-fsi@lists.ozlabs.org, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_CSS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 05:58, Matthew Wilcox <willy@infradead.org> wrote:
+On Wed, 16 Aug 2023 at 17:20, Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
 >
-> The might_sleep() is clearly safe, but I thought of a different take on
-> the problem you've found, which is that we used to check need_resched
-> on _every_ page fault, because we used to take the mmap_lock on every
-> page fault.  Now we only check it on the minority of page faults which
-> can't be handled under the VMA lock.  But we can't just slam a
-> might_resched() into the start of the fault handler, because of the
-> problem you outlined above.
+> struct i2c_driver::probe_new is about to go away. Switch the driver to
+> use the probe callback with the same prototype.
+>
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+> ---
+> Hello,
+>
+> this driver appeared in next just today. I intend to drop .probe_new
+> from struct i2c_driver after v6.6-rc1, so it would be great if this
+> patch would go in together with the commit adding this driver.
 
-Bah.
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
-I decided that there is no way the might_sleep() can be the right
-thing to do inside get_mmap_lock_carefully(), because the whole point
-of that function existing is that we might have a kernel bug causing a
-wild pointer access.
+Greg, can you please take this for 6.6?
 
-And that kernel bug would be about the subsequent oops, not the fact
-that we might be sleeping in a bad context.
-
-So I have just removed the existing might_sleep() entirely, because
-both the warning it can generate _and_ the voluntary scheduling point
-are bad things in that context.
-
-I do think that maybe we should then re-introduce the might_sleep() in
-some actually appropriate place in the page fault path, which might be
-'handle_mm_fault()'.
-
-But I think that's a separate - if related - issue to the whole "this
-was always the wrong point for might_sleep()" issue that Mateusz
-noticed.
-
-We are generally much too timid about removing old debug checks that
-don't really make sense.
-
-               Linus
+>
+> Thanks
+> Uwe
+>
+>  drivers/fsi/fsi-master-i2cr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/fsi/fsi-master-i2cr.c b/drivers/fsi/fsi-master-i2cr.=
+c
+> index 61659c27a973..40f1f4d231e5 100644
+> --- a/drivers/fsi/fsi-master-i2cr.c
+> +++ b/drivers/fsi/fsi-master-i2cr.c
+> @@ -301,7 +301,7 @@ static const struct of_device_id i2cr_ids[] =3D {
+>  MODULE_DEVICE_TABLE(of, i2cr_ids);
+>
+>  static struct i2c_driver i2cr_driver =3D {
+> -       .probe_new =3D i2cr_probe,
+> +       .probe =3D i2cr_probe,
+>         .remove =3D i2cr_remove,
+>         .driver =3D {
+>                 .name =3D "fsi-master-i2cr",
+>
+> base-commit: 53e89e3e4490d6630a68e61a3cb478e7a7f2ce8b
+> --
+> 2.40.1
+>
