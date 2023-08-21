@@ -2,494 +2,402 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8617A782B3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F53782B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbjHUOMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34550 "EHLO
+        id S235683AbjHUON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235670AbjHUOMk (ORCPT
+        with ESMTP id S232660AbjHUON5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:12:40 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2F9E2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:12:36 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NwtW6TLx6RVK6omKRRmD7XcSk6blO9KMnIYvBUzdL3m6Z+A8qHwPjNh4Q702AEwf64HokA5zziKUGzr4cz6lfWsOWwidYVIVwc21SC0vf9kI/SnuxX3XLvcmdI3ubFmgVTy5yIg+RTs5AXbBJVjlB5lecJ8SZwpOGKme9Z7pQULr0VXk/PYU7ILhvTwf6S17khvlTbZFbIDDMvGTY3WsVs4Fyg3C9PKVH7B4srZq136f2XJ2WmU+0nPBV9N2KCPvQNLQu6mhjM13PQ1QVDWKm96POc2e3DLX1dBbtef7aXJXvM4X/qYS7TcdymPyZf4xDWnDOjasab0b2DjHICQ3OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UmV0NKq7POsG4qMFltSdBZDyvlInXpUbm39d7lD4BXM=;
- b=XyOC/wotOwDZB8h40VLrHLlHz4fiJrtdmix9JQ2vGUmQpmCE/kLRjsZD5GemH3GyEtc1hTgSIkzcoi+dXrG06i+q6+cmFiN64BOzHMmwskbwWtUERPc73iMTIHO1jJEs7cS+4ORGTTSa1Sn9ujVvneh4P3XKP6xNzGMmD8yYWxa4iARTmIhqnxmvxLTVunIE5aJU+m6emYTaWdNif8jeitEJ95S7gYh4/St/TuTIxiPOs3hnr/YW148ZneYV88N0vJQkj8mcpCwY4laPd/hp5v5hUCdhPmxFrr+VToeQVGVECarvsbQwxzqG5CvocUH3rzuu/S7Po92qIFe7q/1EYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UmV0NKq7POsG4qMFltSdBZDyvlInXpUbm39d7lD4BXM=;
- b=acvyJW4580GjEo6SMC0UuJBUk/iSvM3RgriH9I7jnm8lIGh/ELFhQ1ly9B+LfG2/hDdXwwjJO3xyixaJDIhlS+6XVwlHtZOYg7EWtEUedYwrCfCMTW9q3jtFEI+lEaA9XEDTTPkp/wC08ERVuuLMy4hgqy1RGI7IL/EmHiBvUcw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
- by BY5PR12MB4998.namprd12.prod.outlook.com (2603:10b6:a03:1d4::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 14:12:33 +0000
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 14:12:33 +0000
-Message-ID: <c3de920a-9630-c26a-e418-f42d3572509b@amd.com>
-Date:   Mon, 21 Aug 2023 19:42:20 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 1/7] drm/amdgpu: Added init/fini functions for workload
-Content-Language: en-US
-To:     Shashank Sharma <shashank.sharma@amd.com>,
-        Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
-        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        amd-gfx@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
- <20230821064759.94223-2-Arvind.Yadav@amd.com>
- <3e20b067-c02a-1911-cac9-3e547a14b565@amd.com>
- <90f7c142-3372-536f-accc-a04baaf9f666@amd.com>
- <2d5e672a-aebc-0972-1f7d-2668e26e7198@amd.com>
-From:   "Yadav, Arvind" <arvyadav@amd.com>
-In-Reply-To: <2d5e672a-aebc-0972-1f7d-2668e26e7198@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN3PR01CA0169.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:de::13) To PH7PR12MB6000.namprd12.prod.outlook.com
- (2603:10b6:510:1dc::15)
+        Mon, 21 Aug 2023 10:13:57 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AA7E3;
+        Mon, 21 Aug 2023 07:13:55 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LALMmj027900;
+        Mon, 21 Aug 2023 14:13:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
+ subject : mime-version : content-type : content-transfer-encoding :
+ message-id : to : cc; s=qcppdkim1;
+ bh=pBf5rfOuZnk0fZM7AWeGe7l0NsKwLyxeWi7K67R7t04=;
+ b=EQ9bJGbZWct8XkdFCC5lvI+q46c25y1aiXOctLu1AXbiyhgtWq9IPNHh+MRN6usppRcT
+ BH6kaFC53+StzwdhxKSdUrSO5UGbLvF/vBD/h0T9GUrgzXkPMmpenaJKDNT9bTTITfZp
+ +cppUnGLVxzy1sReQiTPEkE5OdLFZ3A4rLNiZSwBeq68FyTADnKFbFp82PaXBXqhSeRD
+ hs7cUO/QdluMTcnLp8Cgw1eBZoLLSVlprIeO5aJLXjANNEL9gN8BKnDSaJt5+6vLYmAC
+ J++WPxJCETvTMkWyZtaC+RvUvXbEb7JKVJB8GAU4e9CSGDiH8Eca8r7rOzxALgc5d88C qA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm3xv8wm2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 14:13:44 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37LEDhA0024199
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 14:13:43 GMT
+Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 21 Aug 2023 07:13:42 -0700
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+Date:   Mon, 21 Aug 2023 07:13:36 -0700
+Subject: [PATCH] wifi: ath11k: Consistently use ath11k_vif_to_arvif()
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|BY5PR12MB4998:EE_
-X-MS-Office365-Filtering-Correlation-Id: 00b1a0fa-dc35-4866-d14a-08dba250a99f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OmdR86RA3LQxA5/P3QXRymKuAdUIJQFTlGESuNVjeOX+oaee5luGekgdcVN/nTRRWqWeABzzeTz8sTu027pGaHqU+eCRJIg+BoElh14ACJDhhuxmjoHTpU3/QdLyHW2KTMxsjyG+LMgfVsh093bq4D35ohHVLpYNazr/X1dNeCZWk0dYwNfrgXIUzZxiWk+8HVNtOuHTnAdutfhZLiVnjeOK4S0qj3zQwumzSqSKstvmBTkDAFWbVNMYlhSyVgULHRfJnbQ3U62XQH3ru5h3yQdaqRGFEScEgkbZJqdAuMmmQa0raqs2UbrbkfCs0L+uSCJh+ApKs82T/PQe4m7muhm87QVGx0jwU2IVVfA+i/1C8SKF/ncS1+eX2vhWytB9kzMQGgTC4dEMmJv7lLqCOXdWzdA6UCtzlHiGP3Uw2mWKJ/sc+HaLjr2FqjEFnZ6jpdslEWC0hhm5tU/r3rHXaOQcQAfe+q1/yL3YoR2uCh/gVzVX8umpVn+qRG+tECO0pU0rTCpiAsyLV844Pmk0lyGnV4YWSM7KuEg2PAp8Vw4DbfyWJFZYq96gzIk+j6b1pjaKRKzGmE7qCw+L+eqLSfklhbcrBgmVZoK69mapw50m8cuhgypBI03zozCS4EOaDtkYZtIkcfXGmtPx9HCkaA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(30864003)(45080400002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(26005)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(66556008)(66476007)(110136005)(66899024)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTZuckllTFlUNUszUDJYSFhUV3M0NXVldHF6WWNjT2NnV2g3ZVdOZjZyL3No?=
- =?utf-8?B?YkZDdXpkNXR3SmNKeFpaMlVycHVjRlNMVzRraXpjeS9YT2NyTUcxeHBUM3JG?=
- =?utf-8?B?Ykc3R01kdzc2K0hGY1VmRzBhb2h4WDFEdlNGYjZOMWhTQXBSeUQ2aVY3UzBQ?=
- =?utf-8?B?RExrT3lwd2FBeUY4Y25HdVlaZlJYdDQxd0F3NFRxZVppcHN6UVljbGYxN0JV?=
- =?utf-8?B?WHdPendUVDlFY0FIb0hOcGE4VWM2WE0zNHRVNHY0TG1wNzVVVHYrL0M0TXNy?=
- =?utf-8?B?VHFDc1p6Q3FRazFndGQ2UlNnZWpURlNqTyt3OXZoYjV6WUt2alhnQldCV2hG?=
- =?utf-8?B?bU1raDFYVEo3MDV4N3d4aHg0b0pFQzJHdXZZcUFOSkJ3U0JlL2hyVUpQbk8v?=
- =?utf-8?B?RGEyTW14bjJqSVpGUmtkeTAyUVNQRytXRjhyTDhsOTh4ZElrdmhzT09PT0ha?=
- =?utf-8?B?VlZpNHJFV282MCtub0lEN3RtNURoU3NiZ3hqMUt2R1ZTZElkT3RsSjN4cllD?=
- =?utf-8?B?eVplYndqdHRVSWZqaDBEN0JEQVJJL1RwR0M5SmNEdWxRMmE4dktLdDA1MVlx?=
- =?utf-8?B?ejFOK1RzU1ppSmVwOU00S3NVNUJvMllySm1CUGQwSk54SnFIVHVaaVdEczBL?=
- =?utf-8?B?L0psQkhJT3hPRGMzQ1RaZDFDc3FOQWk3dm1ieU5BTENVSndGbmlCNFNqdWQ2?=
- =?utf-8?B?WHlOS0Z4TXp3THFBdTdXbHZrVmZqRTBON0x2YnJ6N0VZMGh0TTU3NXNjUVha?=
- =?utf-8?B?TGZPUVI0empwQXRZeVFYVUdhYnJTQlVLSTVPWlBlUmwyNGo4ZDNVRy9POVZB?=
- =?utf-8?B?Z3hSQTZVL2ZFb203QUVGNHlsQ1NwdStlcld5YkpjdytNcXNJSEFUUURxdjlM?=
- =?utf-8?B?U3ovclE5dWtmN1AySi9yM1dobGhCUjRCUzkrK0lQb0V3RXJaY1VvMEh6azdW?=
- =?utf-8?B?amprdElzNXdxdW01RzUzMk1RNS8vc2U5N25ZamVkQ2poSmxuK1NjSXYvRTBL?=
- =?utf-8?B?Znh0bStZTW9lcFA4ZnNmMTJaVkltaFdWUFEvL1pxNC8yY1hJazRIUHh3dW9G?=
- =?utf-8?B?RmJUWE90TzJDM3NzQXpxMXJaVWFkS2twTXFrMUhGbnJ0ZzM0ZWd1ZzFTRUxN?=
- =?utf-8?B?bDg1WC9RWERIRmptSGZLZkRlY0xxSEtLSUFialMxczduQWlrdWIxbWh2VUp5?=
- =?utf-8?B?UDNzSEE5VzJFUk9kUVVTZThtbWg5cDJWQ3VENm1rTExYVnN6OWp5Um13QU92?=
- =?utf-8?B?bjZsYlhUOWwxWXUzcUc1YVE0SE5JSEEzaEhkQnB2WUtzQlVxUEdzYm5yeFFY?=
- =?utf-8?B?OVdQVzZPZW1DNDBPNWtqMHFDZ2RaM0lBTTdtQm5MZXZwRGYrMlVsMzVKV3d2?=
- =?utf-8?B?bzFRT0VKMnZEQmQ5TmZzZFRzSzdVQUlHTFhYVnpPcUx4bmgwa0tZKzRqSkE1?=
- =?utf-8?B?N0szTTZXOW05dnZ5MnV6aWcwUWFLbnI2cEVyRDBtd24xTmJ1dm94Njc3TThx?=
- =?utf-8?B?c0thbkVVUi9DaUNuSklpOWhYakJEb0Y5NnRvNmJwTUlocng3eitUejVod0w4?=
- =?utf-8?B?MTlZL0Fub2RsMTVBakhlNWVwNmdmRVc2T2lJZXA4TDlzQitxbnFFNlp3T2sx?=
- =?utf-8?B?MzE0NG1OQ1ZzQnVkRFMzeTNld1lRanhsZ3RLOTBoWFRwOFBXNHlVVnpQOU1W?=
- =?utf-8?B?S0srZU40VFJVb2FOdW41d1JYMnlPN2xSSFJJWjB5aERHaTRuM1hlQWdnR0h3?=
- =?utf-8?B?Ynp5NUdaTDM3dzZkYnRaR3BuVWl5c2MzeDIvVk4yUnlMVGpuV1lraUpkNU44?=
- =?utf-8?B?YUp2OGs1d3lpQy9ueGxkR3Z5RlpvaDBTNnZGaXlVb25NL3NzVUFzYVRsY1oz?=
- =?utf-8?B?U3FtLzlsL1R1LytpWGxGdEl1YmhlaVp4bUZvRjg0blZ1MDI2MGlCVjRZeDlK?=
- =?utf-8?B?TUx5OWo0bmxNNGZzeCtJTk9qM1R4U0dYNm8yd00rZVpEOGNuRVZnNW1ab3Jj?=
- =?utf-8?B?NFd2aFZpUzIxcEszZXpEajR3Nzg0Y3JQL3ZYSTJreUhFZlM4YjJ6aXVkVEt1?=
- =?utf-8?B?QzN3N3RsQ25qTm9abE5mZGR4eHROZDBCUWdBcmhwc250aWFTVVlkUitpODBO?=
- =?utf-8?Q?2c01kAtRKjzEaqjtCf3Iz+ul9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00b1a0fa-dc35-4866-d14a-08dba250a99f
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 14:12:33.3639
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Veugo2B80rrmstY97K0wIn36xZdR3D90mrHOi8+J4GiYLmLHMFnWnRHF/g8V9qdm1WZxoiOekhP+0UVa+ujgyw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4998
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20230821-ath11k_vif_to_arvif-v1-1-fa2c3b60b5cf@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAA9x42QC/32NUQrCMBBEr1L228hui2j88h5SSky3ZhETTWJQS
+ u9u7AH8mzcwb2ZIHIUTHJsZIhdJEnwF2jRgnfFXVjJWhhbbDg+EymRHdBuKTEMOg4k1KNRoL4T
+ IuttDXT4iT/Jeree+spOUQ/ysJ4V+7X9fIUVK7xg7nEZCxtPzJVa83dpwh35Zli9n9aFfuAAAA
+ A==
+To:     Kalle Valo <kvalo@kernel.org>
+CC:     <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: po6G8UgkJll4s1spkrHzoYLQQyV-chuI
+X-Proofpoint-ORIG-GUID: po6G8UgkJll4s1spkrHzoYLQQyV-chuI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-21_01,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 adultscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308210131
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Helper function ath11k_vif_to_arvif() exists to retrieve a struct
+ath11k_vif from a struct ieee80211_vif. However, in multiple places
+this logic is open-coded with inline typecasting. Since the
+typecasting prevents the compiler from type-checking the source and
+destination, update the driver to consistently use the helper
+function.
 
-On 8/21/2023 7:24 PM, Shashank Sharma wrote:
->
-> On 21/08/2023 15:35, Yadav, Arvind wrote:
->>
->> On 8/21/2023 6:36 PM, Shashank Sharma wrote:
->>> Hey Arvind,
->>>
->>> On 21/08/2023 08:47, Arvind Yadav wrote:
->>>> The'struct amdgpu_smu_workload' initialization/cleanup
->>>> functions is added by this patch.
->>>>
->>>> v2:
->>>> - Splitting big patch into separate patches.
->>>> - Added new fini function.
->>>>
->>>> Cc: Shashank Sharma <shashank.sharma@amd.com>
->>>> Cc: Christian Koenig <christian.koenig@amd.com>
->>>> Cc: Alex Deucher <alexander.deucher@amd.com>
->>>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->>>> ---
->>>>   drivers/gpu/drm/amd/amdgpu/Makefile           |  2 +-
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h           |  3 ++
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    |  4 ++
->>>>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 44 +++++++++++++++
->>>>   drivers/gpu/drm/amd/include/amdgpu_workload.h | 53 
->>>> +++++++++++++++++++
->>>>   5 files changed, 105 insertions(+), 1 deletion(-)
->>>>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->>>>   create mode 100644 drivers/gpu/drm/amd/include/amdgpu_workload.h
->>>>
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile 
->>>> b/drivers/gpu/drm/amd/amdgpu/Makefile
->>>> index 415a7fa395c4..6a9e187d61e1 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
->>>> @@ -60,7 +60,7 @@ amdgpu-y += amdgpu_device.o amdgpu_kms.o \
->>>>       amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
->>>>       amdgpu_fw_attestation.o amdgpu_securedisplay.o \
->>>>       amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
->>>> -    amdgpu_ring_mux.o
->>>> +    amdgpu_ring_mux.o amdgpu_workload.o
->>>>     amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
->>>>   diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>>> index 02b827785e39..1939fa1af8a6 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
->>>> @@ -107,6 +107,7 @@
->>>>   #include "amdgpu_fdinfo.h"
->>>>   #include "amdgpu_mca.h"
->>>>   #include "amdgpu_ras.h"
->>>> +#include "amdgpu_workload.h"
->>>>     #define MAX_GPU_INSTANCE        16
->>>>   @@ -1050,6 +1051,8 @@ struct amdgpu_device {
->>>>         bool                            job_hang;
->>>>       bool                            dc_enabled;
->>>> +
->>>> +    struct amdgpu_smu_workload    smu_workload;
->>>>   };
->>>>     static inline struct amdgpu_device *drm_to_adev(struct 
->>>> drm_device *ddev)
->>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->>>> index 5c7d40873ee2..cd3bf641b630 100644
->>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
->>>> @@ -2243,6 +2243,8 @@ static int amdgpu_device_ip_early_init(struct 
->>>> amdgpu_device *adev)
->>>>       adev->cg_flags &= amdgpu_cg_mask;
->>>>       adev->pg_flags &= amdgpu_pg_mask;
->>>>   +    amdgpu_workload_profile_init(adev);
->>>> +
->>>>       return 0;
->>>>   }
->>>>   @@ -2890,6 +2892,8 @@ static int amdgpu_device_ip_fini(struct 
->>>> amdgpu_device *adev)
->>>>   {
->>>>       int i, r;
->>>>   +    amdgpu_workload_profile_fini(adev);
->>>> +
->>>>       if (amdgpu_sriov_vf(adev) && adev->virt.ras_init_done)
->>>>           amdgpu_virt_release_ras_err_handler_data(adev);
->>>>   diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c 
->>>> b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->>>> new file mode 100644
->>>> index 000000000000..32166f482f77
->>>> --- /dev/null
->>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->>>> @@ -0,0 +1,44 @@
->>>> +// SPDX-License-Identifier: MIT
->>>> +/*
->>>> + * Copyright 2023 Advanced Micro Devices, Inc.
->>>> + *
->>>> + * Permission is hereby granted, free of charge, to any person 
->>>> obtaining a
->>>> + * copy of this software and associated documentation files (the 
->>>> "Software"),
->>>> + * to deal in the Software without restriction, including without 
->>>> limitation
->>>> + * the rights to use, copy, modify, merge, publish, distribute, 
->>>> sublicense,
->>>> + * and/or sell copies of the Software, and to permit persons to 
->>>> whom the
->>>> + * Software is furnished to do so, subject to the following 
->>>> conditions:
->>>> + *
->>>> + * The above copyright notice and this permission notice shall be 
->>>> included in
->>>> + * all copies or substantial portions of the Software.
->>>> + *
->>>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
->>>> EXPRESS OR
->>>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
->>>> MERCHANTABILITY,
->>>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
->>>> EVENT SHALL
->>>> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, 
->>>> DAMAGES OR
->>>> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
->>>> OTHERWISE,
->>>> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
->>>> USE OR
->>>> + * OTHER DEALINGS IN THE SOFTWARE.
->>>> + *
->>>> + */
->>>> +
->>>> +#include "amdgpu.h"
->>>> +
->>>> +void amdgpu_workload_profile_init(struct amdgpu_device *adev)
->>>> +{
->>>> +    adev->smu_workload.adev = adev;
->>>> +    adev->smu_workload.submit_workload_status = 0;
->>>> +    adev->smu_workload.initialized = true;
->>> why do we need this variable ?
->>
->> Hi Shashank,
->>
->> If any error comes while the device is booting then amdgpu will start 
->> unloading everything.
->> So I am using 'initialized' for unloading a driver successfully. This 
->> variable is to identify that the driver is loaded or not.
->
-> I am not sure if I am getting this right. This variable is only 
-> getting used in this patch here, just being set and reset.
->
-> How does this flag help us ? I guess if AMDGPU driver is getting 
-> unloaded we already know that we can't set power profile.
->
-We are setting "initialized = true" and checking in 
-amdgpu_workload_profile_fini() that 'initialized' is set or not set because
-amdgpu_workload_profile_fini() is destroying mutex and same for delayed 
-work which I have implemented in patch 0003.
+No functional changes, compile tested only.
 
-In the below error case where amdgpu_workload_profile_init() was not 
-called because psp firmware failed to load but amdgpu driver is
-calling all unload function as well amdgpu_workload_profile_fini().
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+---
+ drivers/net/wireless/ath/ath11k/mac.c      | 64 +++++++++++++++---------------
+ drivers/net/wireless/ath/ath11k/testmode.c |  2 +-
+ 2 files changed, 33 insertions(+), 33 deletions(-)
 
-ThankYou
-~Arvind
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index 2aadf2c387b6..c071bf5841af 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -566,7 +566,7 @@ static void ath11k_get_arvif_iter(void *data, u8 *mac,
+ 				  struct ieee80211_vif *vif)
+ {
+ 	struct ath11k_vif_iter *arvif_iter = data;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 
+ 	if (arvif->vdev_id == arvif_iter->vdev_id)
+ 		arvif_iter->arvif = arvif;
+@@ -1464,7 +1464,7 @@ static int ath11k_mac_setup_bcn_tmpl_ema(struct ath11k_vif *arvif)
+ 	u32 params = 0;
+ 	u8 i = 0;
+ 
+-	tx_arvif = (void *)arvif->vif->mbssid_tx_vif->drv_priv;
++	tx_arvif = ath11k_vif_to_arvif(arvif->vif->mbssid_tx_vif);
+ 
+ 	beacons = ieee80211_beacon_get_template_ema_list(tx_arvif->ar->hw,
+ 							 tx_arvif->vif, 0);
+@@ -1520,8 +1520,8 @@ static int ath11k_mac_setup_bcn_tmpl_mbssid(struct ath11k_vif *arvif)
+ 	struct sk_buff *bcn;
+ 	int ret;
+ 
+-	if (arvif->vif->mbssid_tx_vif) {
+-		tx_arvif = (void *)arvif->vif->mbssid_tx_vif->drv_priv;
++	if (vif->mbssid_tx_vif) {
++		tx_arvif = ath11k_vif_to_arvif(vif->mbssid_tx_vif);
+ 		if (tx_arvif != arvif) {
+ 			ar = tx_arvif->ar;
+ 			ab = ar->ab;
+@@ -1562,7 +1562,7 @@ static int ath11k_mac_setup_bcn_tmpl(struct ath11k_vif *arvif)
+ 	 * non-transmitting interfaces, and results in a crash if sent.
+ 	 */
+ 	if (vif->mbssid_tx_vif &&
+-	    arvif != (void *)vif->mbssid_tx_vif->drv_priv && arvif->is_up)
++	    arvif != ath11k_vif_to_arvif(vif->mbssid_tx_vif) && arvif->is_up)
+ 		return 0;
+ 
+ 	if (vif->bss_conf.ema_ap && vif->mbssid_tx_vif)
+@@ -1626,7 +1626,7 @@ static void ath11k_control_beaconing(struct ath11k_vif *arvif,
+ 	ether_addr_copy(arvif->bssid, info->bssid);
+ 
+ 	if (arvif->vif->mbssid_tx_vif)
+-		tx_arvif = (struct ath11k_vif *)arvif->vif->mbssid_tx_vif->drv_priv;
++		tx_arvif = ath11k_vif_to_arvif(arvif->vif->mbssid_tx_vif);
+ 
+ 	ret = ath11k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
+ 				 arvif->bssid,
+@@ -1649,7 +1649,7 @@ static void ath11k_mac_handle_beacon_iter(void *data, u8 *mac,
+ {
+ 	struct sk_buff *skb = data;
+ 	struct ieee80211_mgmt *mgmt = (void *)skb->data;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 
+ 	if (vif->type != NL80211_IFTYPE_STATION)
+ 		return;
+@@ -1672,7 +1672,7 @@ static void ath11k_mac_handle_beacon_miss_iter(void *data, u8 *mac,
+ 					       struct ieee80211_vif *vif)
+ {
+ 	u32 *vdev_id = data;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct ath11k *ar = arvif->ar;
+ 	struct ieee80211_hw *hw = ar->hw;
+ 
+@@ -1718,7 +1718,7 @@ static void ath11k_peer_assoc_h_basic(struct ath11k *ar,
+ 				      struct ieee80211_sta *sta,
+ 				      struct peer_assoc_params *arg)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	u32 aid;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+@@ -1746,7 +1746,7 @@ static void ath11k_peer_assoc_h_crypto(struct ath11k *ar,
+ 	struct ieee80211_bss_conf *info = &vif->bss_conf;
+ 	struct cfg80211_chan_def def;
+ 	struct cfg80211_bss *bss;
+-	struct ath11k_vif *arvif = (struct ath11k_vif *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	const u8 *rsnie = NULL;
+ 	const u8 *wpaie = NULL;
+ 
+@@ -1804,7 +1804,7 @@ static void ath11k_peer_assoc_h_rates(struct ath11k *ar,
+ 				      struct ieee80211_sta *sta,
+ 				      struct peer_assoc_params *arg)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct wmi_rate_set_arg *rateset = &arg->peer_legacy_rates;
+ 	struct cfg80211_chan_def def;
+ 	const struct ieee80211_supported_band *sband;
+@@ -1867,7 +1867,7 @@ static void ath11k_peer_assoc_h_ht(struct ath11k *ar,
+ 				   struct peer_assoc_params *arg)
+ {
+ 	const struct ieee80211_sta_ht_cap *ht_cap = &sta->deflink.ht_cap;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct cfg80211_chan_def def;
+ 	enum nl80211_band band;
+ 	const u8 *ht_mcs_mask;
+@@ -2064,7 +2064,7 @@ static void ath11k_peer_assoc_h_vht(struct ath11k *ar,
+ 				    struct peer_assoc_params *arg)
+ {
+ 	const struct ieee80211_sta_vht_cap *vht_cap = &sta->deflink.vht_cap;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct cfg80211_chan_def def;
+ 	enum nl80211_band band;
+ 	u16 *vht_mcs_mask;
+@@ -2261,7 +2261,7 @@ static void ath11k_peer_assoc_h_he(struct ath11k *ar,
+ 				   struct ieee80211_sta *sta,
+ 				   struct peer_assoc_params *arg)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct cfg80211_chan_def def;
+ 	const struct ieee80211_sta_he_cap *he_cap = &sta->deflink.he_cap;
+ 	enum nl80211_band band;
+@@ -2584,7 +2584,7 @@ static void ath11k_peer_assoc_h_qos(struct ath11k *ar,
+ 				    struct ieee80211_sta *sta,
+ 				    struct peer_assoc_params *arg)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 
+ 	switch (arvif->vdev_type) {
+ 	case WMI_VDEV_TYPE_AP:
+@@ -2747,7 +2747,7 @@ static void ath11k_peer_assoc_h_phymode(struct ath11k *ar,
+ 					struct ieee80211_sta *sta,
+ 					struct peer_assoc_params *arg)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct cfg80211_chan_def def;
+ 	enum nl80211_band band;
+ 	const u8 *ht_mcs_mask;
+@@ -2933,7 +2933,7 @@ static bool ath11k_mac_vif_recalc_sta_he_txbf(struct ath11k *ar,
+ 					      struct ieee80211_vif *vif,
+ 					      struct ieee80211_sta_he_cap *he_cap)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct ieee80211_he_cap_elem he_cap_elem = {0};
+ 	struct ieee80211_sta_he_cap *cap_band = NULL;
+ 	struct cfg80211_chan_def def;
+@@ -2995,7 +2995,7 @@ static void ath11k_bss_assoc(struct ieee80211_hw *hw,
+ 			     struct ieee80211_bss_conf *bss_conf)
+ {
+ 	struct ath11k *ar = hw->priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct peer_assoc_params peer_arg;
+ 	struct ieee80211_sta *ap_sta;
+ 	struct ath11k_peer *peer;
+@@ -3111,7 +3111,7 @@ static void ath11k_bss_disassoc(struct ieee80211_hw *hw,
+ 				struct ieee80211_vif *vif)
+ {
+ 	struct ath11k *ar = hw->priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	int ret;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+@@ -3160,7 +3160,7 @@ static void ath11k_recalculate_mgmt_rate(struct ath11k *ar,
+ 					 struct ieee80211_vif *vif,
+ 					 struct cfg80211_chan_def *def)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	const struct ieee80211_supported_band *sband;
+ 	u8 basic_rate_idx;
+ 	int hw_rate_code;
+@@ -4632,7 +4632,7 @@ static int ath11k_station_disassoc(struct ath11k *ar,
+ 				   struct ieee80211_vif *vif,
+ 				   struct ieee80211_sta *sta)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	int ret = 0;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+@@ -5160,7 +5160,7 @@ static int ath11k_mac_op_sta_set_txpwr(struct ieee80211_hw *hw,
+ 				       struct ieee80211_sta *sta)
+ {
+ 	struct ath11k *ar = hw->priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	int ret = 0;
+ 	s16 txpwr;
+ 
+@@ -5210,7 +5210,7 @@ static void ath11k_mac_op_sta_rc_update(struct ieee80211_hw *hw,
+ {
+ 	struct ath11k *ar = hw->priv;
+ 	struct ath11k_sta *arsta = (struct ath11k_sta *)sta->drv_priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct ath11k_peer *peer;
+ 	u32 bw, smps;
+ 
+@@ -5337,7 +5337,7 @@ static int ath11k_mac_op_conf_tx(struct ieee80211_hw *hw,
+ 				 const struct ieee80211_tx_queue_params *params)
+ {
+ 	struct ath11k *ar = hw->priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct wmi_wmm_params_arg *p = NULL;
+ 	int ret;
+ 
+@@ -6455,7 +6455,7 @@ static int ath11k_mac_setup_vdev_params_mbssid(struct ath11k_vif *arvif,
+ 		return 0;
+ 	}
+ 
+-	tx_arvif = (void *)tx_vif->drv_priv;
++	tx_arvif = ath11k_vif_to_arvif(tx_vif);
+ 
+ 	if (arvif->vif->bss_conf.nontransmitted) {
+ 		if (ar->hw->wiphy != ieee80211_vif_to_wdev(tx_vif)->wiphy)
+@@ -7408,7 +7408,7 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 	/* TODO: Update ar->rx_channel */
+ 
+ 	for (i = 0; i < n_vifs; i++) {
+-		arvif = (void *)vifs[i].vif->drv_priv;
++		arvif = ath11k_vif_to_arvif(vifs[i].vif);
+ 
+ 		if (WARN_ON(!arvif->is_started))
+ 			continue;
+@@ -7450,7 +7450,7 @@ ath11k_mac_update_vif_chan(struct ath11k *ar,
+ 
+ 		mbssid_tx_vif = arvif->vif->mbssid_tx_vif;
+ 		if (mbssid_tx_vif)
+-			tx_arvif = (struct ath11k_vif *)mbssid_tx_vif->drv_priv;
++			tx_arvif = ath11k_vif_to_arvif(mbssid_tx_vif);
+ 
+ 		ret = ath11k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
+ 					 arvif->bssid,
+@@ -7546,7 +7546,7 @@ static int ath11k_start_vdev_delay(struct ieee80211_hw *hw,
+ {
+ 	struct ath11k *ar = hw->priv;
+ 	struct ath11k_base *ab = ar->ab;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	int ret;
+ 
+ 	if (WARN_ON(arvif->is_started))
+@@ -7596,7 +7596,7 @@ ath11k_mac_op_assign_vif_chanctx(struct ieee80211_hw *hw,
+ {
+ 	struct ath11k *ar = hw->priv;
+ 	struct ath11k_base *ab = ar->ab;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	int ret;
+ 	struct peer_create_params param;
+ 
+@@ -7686,7 +7686,7 @@ ath11k_mac_op_unassign_vif_chanctx(struct ieee80211_hw *hw,
+ {
+ 	struct ath11k *ar = hw->priv;
+ 	struct ath11k_base *ab = ar->ab;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct ath11k_peer *peer;
+ 	int ret;
+ 
+@@ -8307,7 +8307,7 @@ ath11k_mac_op_set_bitrate_mask(struct ieee80211_hw *hw,
+ 			       struct ieee80211_vif *vif,
+ 			       const struct cfg80211_bitrate_mask *mask)
+ {
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct cfg80211_chan_def def;
+ 	struct ath11k_pdev_cap *cap;
+ 	struct ath11k *ar = arvif->ar;
+@@ -8904,7 +8904,7 @@ static int ath11k_mac_op_remain_on_channel(struct ieee80211_hw *hw,
+ 					   enum ieee80211_roc_type type)
+ {
+ 	struct ath11k *ar = hw->priv;
+-	struct ath11k_vif *arvif = (void *)vif->drv_priv;
++	struct ath11k_vif *arvif = ath11k_vif_to_arvif(vif);
+ 	struct scan_req_params arg;
+ 	int ret;
+ 	u32 scan_time_msec;
+diff --git a/drivers/net/wireless/ath/ath11k/testmode.c b/drivers/net/wireless/ath/ath11k/testmode.c
+index 8fc5cddb28bd..43bb23265d34 100644
+--- a/drivers/net/wireless/ath/ath11k/testmode.c
++++ b/drivers/net/wireless/ath/ath11k/testmode.c
+@@ -350,7 +350,7 @@ static int ath11k_tm_cmd_wmi(struct ath11k *ar, struct nlattr *tb[],
+ 	if (ar->ab->fw_mode != ATH11K_FIRMWARE_MODE_FTM &&
+ 	    (tag == WMI_TAG_VDEV_SET_PARAM_CMD || tag == WMI_TAG_UNIT_TEST_CMD)) {
+ 		if (vif) {
+-			arvif = (struct ath11k_vif *)vif->drv_priv;
++			arvif = ath11k_vif_to_arvif(vif);
+ 			*ptr = arvif->vdev_id;
+ 		} else {
+ 			ret = -EINVAL;
 
-> - Shashank
->
->>
->> This is the below error for which the amdgpu driver is unloading when 
->> it is not getting firmware.
->>
->> [   12.421609] amdgpu 0000:08:00.0: Direct firmware load for 
->> amdgpu/renoir_ta.bin failed with error -2
->> [   12.421618] [drm:amdgpu_device_init [amdgpu]] *ERROR* early_init 
->> of IP block <psp> failed -19
->> [   12.428207] [drm] VCN decode is enabled in VM mode
->> [   12.428212] [drm] VCN encode is enabled in VM mode
->> [   12.430925] [drm] JPEG decode is enabled in VM mode
->> [   12.430931] amdgpu 0000:08:00.0: amdgpu: Fatal error during GPU init
->> [   12.431184] amdgpu 0000:08:00.0: amdgpu: amdgpu: finishing device.
->> [   12.431296] ------------[ cut here ]------------
->> [   12.431297] WARNING: CPU: 3 PID: 438 at kernel/workqueue.c:3379 
->> __flush_work+0x22f/0x240
->> [   12.431305] Modules linked in: ledtrig_audio snd_hda_codec_hdmi 
->> snd_hda_intel snd_intel_dspcfg snd_intel_sdw_acpi snd_hda_codec 
->> snd_hda_core amdgpu(OE+) snd_hwdep snd_pcm kvm snd_seq_midi 
->> snd_seq_midi_event drm_exec amdxcp snd_rawmidi iommu_v2 
->> crct10dif_pclmul drm_buddy gpu_sched ghash_clmulni_intel sha512_ssse3 
->> snd_seq drm_suballoc_helper aesni_intel drm_ttm_helper binfmt_misc 
->> crypto_simd snd_seq_device ttm cryptd snd_timer drm_display_helper 
->> input_leds rapl joydev cec wmi_bmof rc_core snd drm_kms_helper 
->> k10temp ccp soundcore mac_hid sch_fq_codel msr parport_pc ppdev lp 
->> parport ramoops reed_solomon drm pstore_blk pstore_zone efi_pstore 
->> ip_tables x_tables autofs4 hid_generic usbhid hid crc32_pclmul nvme 
->> igb ahci i2c_piix4 xhci_pci i2c_algo_bit nvme_core libahci 
->> xhci_pci_renesas dca video wmi
->> [   12.431360] CPU: 3 PID: 438 Comm: systemd-udevd Tainted: G        
->> W  OE      6.5.0-rc2-custom #1
->> [   12.431362] Hardware name: Gigabyte Technology Co., Ltd. X570 
->> AORUS ELITE/X570 AORUS ELITE, BIOS F34 06/10/2021
->> [   12.431364] RIP: 0010:__flush_work+0x22f/0x240
->> [   12.431367] Code: 8b 43 30 48 8b 53 40 89 c1 e9 f9 fe ff ff 4c 89 
->> f7 e8 45 0b db 00 e8 90 f5 08 00 45 31 ff e9 11 ff ff ff 0f 0b e9 0a 
->> ff ff ff <0f> 0b 45 31 ff e9 00 ff ff ff e8 02 a0 d9 00 66 90 90 90 
->> 90 90 90
->> [   12.431368] RSP: 0018:ffffb0668156f818 EFLAGS: 00010246
->> [   12.431370] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 
->> 0000000000000000
->> [   12.431371] RDX: 0000000000000001 RSI: 0000000000000001 RDI: 
->> ffff9cea492c7840
->> [   12.431372] RBP: ffffb0668156f890 R08: 0000000000000000 R09: 
->> ffffb0668156f7a0
->> [   12.431372] R10: 0000000000000001 R11: 0000000000000001 R12: 
->> ffff9cea492c7840
->> [   12.431373] R13: 0000000000000001 R14: ffff9cea43839940 R15: 
->> 0000000000000001
->> [   12.431374] FS:  00007fde83c18880(0000) GS:ffff9cf15e2c0000(0000) 
->> knlGS:0000000000000000
->> [   12.431375] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   12.431376] CR2: 00007f2648000010 CR3: 00000001059e2000 CR4: 
->> 0000000000350ee0
->> [   12.431377] Call Trace:
->> [   12.431379]  <TASK>
->> [   12.431384]  ? show_regs+0x68/0x70
->> [   12.431388]  ? __flush_work+0x22f/0x240
->> [   12.431389]  ? __warn+0x8f/0x150
->> [   12.431392]  ? __flush_work+0x22f/0x240
->> [   12.431394]  ? report_bug+0x1f5/0x200
->> [   12.431399]  ? handle_bug+0x46/0x80
->> [   12.431402]  ? exc_invalid_op+0x19/0x70
->> [   12.431404]  ? asm_exc_invalid_op+0x1b/0x20
->> [   12.431408]  ? __flush_work+0x22f/0x240
->> [   12.431410]  ? irq_work_queue+0x10/0x60
->> [   12.431414]  ? __wake_up_klogd.part.0+0x5a/0x80
->> [   12.431419]  __cancel_work_timer+0x124/0x1b0
->> [   12.431421]  ? _printk+0x58/0x80
->> [   12.431423]  cancel_delayed_work_sync+0x13/0x20
->> [   12.431427]  amdgpu_workload_profile_fini+0x25/0x40 [amdgpu]
->> [   12.431854]  amdgpu_device_fini_sw+0x33/0x550 [amdgpu]
->> [   12.432035]  amdgpu_driver_release_kms+0x16/0x30 [amdgpu]
->> [   12.432213]  drm_dev_release+0x28/0x50 [drm]
->> [   12.432256]  devm_drm_dev_init_release+0x38/0x60 [drm]
->> [   12.432278]  devm_action_release+0x15/0x20
->> [   12.432283]  release_nodes+0x40/0xc0
->> [   12.432285]  devres_release_all+0x9e/0xe0
->> [   12.432286]  device_unbind_cleanup+0x12/0x80
->> [   12.432289]  really_probe+0x116/0x3e0
->> [   12.432291]  __driver_probe_device+0x7e/0x170
->> [   12.432293]  driver_probe_device+0x23/0xa0
->> [   12.432295]  __driver_attach+0xc5/0x190
->> [   12.432297]  ? __pfx___driver_attach+0x10/0x10
->> [   12.432299]  bus_for_each_dev+0x7c/0xd0
->> [   12.432302]  driver_attach+0x1e/0x30
->> [   12.432304]  bus_add_driver+0x11c/0x220
->> [   12.432306]  driver_register+0x64/0x130
->> [   12.432309]  ? __pfx_amdgpu_init+0x10/0x10 [amdgpu]
->> [   12.432491]  __pci_register_driver+0x68/0x70
->> [   12.432494]  amdgpu_init+0x63/0xff0 [amdgpu]
->> [   12.432667]  do_one_initcall+0x48/0x310
->> [   12.432671]  ? kmalloc_trace+0x2a/0xa0
->> [   12.432675]  do_init_module+0x6a/0x260
->> [   12.432677]  load_module+0x1db3/0x2050
->> [   12.432681]  init_module_from_file+0x9c/0xe0
->> [   12.432682]  ? init_module_from_file+0x9c/0xe0
->> [   12.432685]  idempotent_init_module+0x179/0x230
->> [   12.432687]  __x64_sys_finit_module+0x5d/0xb0
->> [   12.432689]  do_syscall_64+0x3b/0x90
->> [   12.432691]  entry_SYSCALL_64_after_hwframe+0x6e/0xd8
->>
->>>> +
->>>> +    mutex_init(&adev->smu_workload.workload_lock);
->>>> +}
->>>> +
->>>> +void amdgpu_workload_profile_fini(struct amdgpu_device *adev)
->>>> +{
->>>> +    if (!adev->smu_workload.initialized)
->>>> +        return;
->>>> +
->>>> +    adev->smu_workload.submit_workload_status = 0;
->>>> +    adev->smu_workload.initialized = false;
->>>> + mutex_destroy(&adev->smu_workload.workload_lock);
->>>> +}
->>>> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h 
->>>> b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->>>> new file mode 100644
->>>> index 000000000000..5d0f068422d4
->>>> --- /dev/null
->>>> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->>>> @@ -0,0 +1,53 @@
->>>> +/* SPDX-License-Identifier: MIT */
->>>> +/*
->>>> + * Copyright 2023 Advanced Micro Devices, Inc.
->>>> + *
->>>> + * Permission is hereby granted, free of charge, to any person 
->>>> obtaining a
->>>> + * copy of this software and associated documentation files (the 
->>>> "Software"),
->>>> + * to deal in the Software without restriction, including without 
->>>> limitation
->>>> + * the rights to use, copy, modify, merge, publish, distribute, 
->>>> sublicense,
->>>> + * and/or sell copies of the Software, and to permit persons to 
->>>> whom the
->>>> + * Software is furnished to do so, subject to the following 
->>>> conditions:
->>>> + *
->>>> + * The above copyright notice and this permission notice shall be 
->>>> included in
->>>> + * all copies or substantial portions of the Software.
->>>> + *
->>>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
->>>> EXPRESS OR
->>>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
->>>> MERCHANTABILITY,
->>>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
->>>> EVENT SHALL
->>>> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, 
->>>> DAMAGES OR
->>>> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
->>>> OTHERWISE,
->>>> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
->>>> USE OR
->>>> + * OTHER DEALINGS IN THE SOFTWARE.
->>>> + *
->>>> + */
->>>> +
->>>> +#ifndef _AMDGPU_WORKLOAD_H_
->>>> +#define _AMDGPU_WORKLOAD_H_
->>>> +
->>>> +struct amdgpu_smu_workload {
->>>> +    struct amdgpu_device    *adev;
->>>> +    struct mutex        workload_lock;
->>>> +    struct delayed_work    smu_delayed_work;
->>>
->>> call it power_profile_work instead ? Looks good otherwise.
->>>
->> Noted.
->>
->> Thank you
->>
->> ~Arvind
->>
->>> - Shashank
->>>
->>>> +    uint32_t submit_workload_status;
->>>> +    bool            initialized;
->>>> +    atomic_t power_profile_ref[PP_SMC_POWER_PROFILE_COUNT];
->>>> +};
->>>> +
->>>> +/* Workload mode names */
->>>> +static const char * const amdgpu_workload_mode_name[] = {
->>>> +    "Default",
->>>> +    "3D",
->>>> +    "Powersaving",
->>>> +    "Video",
->>>> +    "VR",
->>>> +    "Compute",
->>>> +    "Custom",
->>>> +    "Window3D"
->>>> +};
->>>> +
->>>> +void amdgpu_workload_profile_init(struct amdgpu_device *adev);
->>>> +
->>>> +void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
->>>> +
->>>> +#endif
+---
+base-commit: 3f257461ab0ab19806bae2bfde4c3cd88dbf050e
+change-id: 20230810-ath11k_vif_to_arvif-090cb100e937
+
+Best regards,
+-- 
+Jeff Johnson <quic_jjohnson@quicinc.com>
+
