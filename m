@@ -2,173 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A8F78349D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEC37834A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbjHUVHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        id S229581AbjHUVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHUVHk (ORCPT
+        with ESMTP id S229568AbjHUVHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:07:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60E511C
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692652049; x=1724188049;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Y4ms5ktb/CMeFkV2h7UxjjgJTX5Qm+SU0EhuHx6jOfQ=;
-  b=fZ5t8oiauO7uX7SvlXDUdODPS7paSSt7VqDWZgPnKlr2uZ0KzErqV70f
-   dYGDQglL/I+O4P/spMYj4P6R0M5OiJ8eOncBNSRQLb/4lrsqG1qocrU1p
-   jPzJaK//ACsgycX4mKQwfyl24bPaJ8DadBXPknvPQcAM+iGP5KbYaBRpU
-   RHA836AFVoxhYxA7DvWpLOpHA48l7+MPvhkPXVPgAju/6li/RfdZiqwky
-   6dEa2yt0Y/mXxPDM0bSzGSehzVw4GqSEXaF8LoSlzcJkMHtI9P9hXM/Qs
-   N0lJAVwbcS7o6ypQq228l05QouVNRvojey3Ep7dZBAzbytPi1MMZzg4sB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="353275421"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="353275421"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 14:07:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="909846002"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="909846002"
-Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 21 Aug 2023 14:07:27 -0700
-Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYC7S-0000vY-2O;
-        Mon, 21 Aug 2023 21:07:26 +0000
-Date:   Tue, 22 Aug 2023 05:07:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>
-Subject: drivers/dma/at_hdmac.c:240: warning: Function parameter or member
- 'sglen' not described in 'at_desc'
-Message-ID: <202308220538.UNfyRiI2-lkp@intel.com>
+        Mon, 21 Aug 2023 17:07:43 -0400
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFC712D
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:32 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1bf3a2f44ffso26958045ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:07:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692652052; x=1693256852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2dQacKiLurV1KhiKqUcMclj3Blk3C5ciRarkpZ4fb2Q=;
+        b=UuXll9nrbowzEk7gIW3wIDVaO92tV8JeKI5wZJr4l5cfcIT5RE+9QkQ6qGUxKwwc/l
+         7qF8EYKRgr9Da3+rz0vVSU5XUc2inEL1xuyghc4pS1Kyr57cvUq3BFPOIhPf3fWo/itf
+         5cZqLLCLCMAIvDeInjcmSlSSaih9YGY/T609277RR3MNML2cB1+xSdUzAbkD4KiyjDUB
+         Ch5BWL2P8lbkEB72ngHsyAN0O62/9NNDy47EkYt55rbGPORusRZkkJ/jsYx4OhSXVWLC
+         oOzG9drjN4I5ezWZ3FycfUtCTlnwWV0FzVQ8v92uGv46Eaoe8YF/Ms/TY3B1i6oxk31T
+         UQjg==
+X-Gm-Message-State: AOJu0YxZNO8qSFi+lGILK4+tx7hl87LgIe4RFN/igPn8EbqAopUeNIuQ
+        tnWzka/6t4hOeA5SxW9F4os=
+X-Google-Smtp-Source: AGHT+IFecUr3EwBjtJCL9C5gKjkmgVGFsErcMzgbX4EAMy+MQTH55g/Akiyj50l1tniL7PHZ3iZzrg==
+X-Received: by 2002:a17:902:f54f:b0:1bc:7c69:925a with SMTP id h15-20020a170902f54f00b001bc7c69925amr9159484plf.33.1692652051969;
+        Mon, 21 Aug 2023 14:07:31 -0700 (PDT)
+Received: from snowbird ([199.73.127.3])
+        by smtp.gmail.com with ESMTPSA id b19-20020a170902ed1300b001b89a6164desm7539543pld.118.2023.08.21.14.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 14:07:31 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 14:07:28 -0700
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <ZOPSEJTzrow8YFix@snowbird>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230821202829.2163744-1-mjguzik@gmail.com>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f7757129e3dea336c407551c98f50057c22bb266
-commit: ac803b56860f6506c55a3c9330007837e3f4edda dmaengine: at_hdmac: Convert driver to use virt-dma
-date:   9 months ago
-config: arm-randconfig-r003-20230821 (https://download.01.org/0day-ci/archive/20230822/202308220538.UNfyRiI2-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308220538.UNfyRiI2-lkp@intel.com/reproduce)
+Hello,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308220538.UNfyRiI2-lkp@intel.com/
+On Mon, Aug 21, 2023 at 10:28:27PM +0200, Mateusz Guzik wrote:
+> To start I figured I'm going to bench about as friendly case as it gets
+> -- statically linked *separate* binaries all doing execve in a loop.
+> 
+> I borrowed the bench from found here:
+> http://apollo.backplane.com/DFlyMisc/doexec.c
+> 
+> $ cc -static -O2 -o static-doexec doexec.c
+> $ ./static-doexec $(nproc)
+> 
+> It prints a result every second (warning: first line is garbage).
+> 
+> My test box is temporarily only 26 cores and even at this scale I run
+> into massive lock contention stemming from back-to-back calls to
+> percpu_counter_init (and _destroy later).
+> 
+> While not a panacea, one simple thing to do here is to batch these ops.
+> Since the term "batching" is already used in the file, I decided to
+> refer to it as "grouping" instead.
+> 
 
-All warnings (new ones prefixed by >>):
+Unfortunately it's taken me longer to get back to and I'm actually not
+super happy with the results, I wrote a batch percpu allocation api.
+It's better than the starting place, but I'm falling short on the free
+path. I am/was also wrestling with the lifetime ideas (should these
+lifetimes be percpus problem or call site bound like you've done).
 
->> drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'sglen' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'boundary' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'dst_hole' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'src_hole' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'memset_buffer' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'memset_paddr' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:240: warning: Function parameter or member 'memset_vaddr' not described in 'at_desc'
-   drivers/dma/at_hdmac.c:249: warning: cannot understand function prototype: 'enum atc_status '
->> drivers/dma/at_hdmac.c:284: warning: Function parameter or member 'cyclic' not described in 'at_dma_chan'
-   drivers/dma/at_hdmac.c:348: warning: Function parameter or member 'regs' not described in 'at_dma'
-   drivers/dma/at_hdmac.c:348: warning: Function parameter or member 'memset_pool' not described in 'at_dma'
+What I like about this approach is you group the percpu_counter lock
+which batching percpu allocations wouldn't be able to solve no matter
+how well I do.
 
+I'll review this more closely today.
 
-vim +240 drivers/dma/at_hdmac.c
+> Even if this code could be patched to dodge these counters,  I would
+> argue a high-traffic alloc/free consumer is only a matter of time so it
+> makes sense to facilitate it.
+> 
+> With the fix I get an ok win, to quote from the commit:
+> > Even at a very modest scale of 26 cores (ops/s):
+> > before: 133543.63
+> > after:  186061.81 (+39%)
+> 
+> > While with the patch these allocations remain a significant problem,
+> > the primary bottleneck shifts to:
+> > 
+> >     __pv_queued_spin_lock_slowpath+1
+> >     _raw_spin_lock_irqsave+57
+> >     folio_lruvec_lock_irqsave+91
+> >     release_pages+590
+> >     tlb_batch_pages_flush+61
+> >     tlb_finish_mmu+101
+> >     exit_mmap+327
+> >     __mmput+61
+> >     begin_new_exec+1245
+> >     load_elf_binary+712
+> >     bprm_execve+644
+> >     do_execveat_common.isra.0+429
+> >     __x64_sys_execve+50
+> >     do_syscall_64+46
+> >     entry_SYSCALL_64_after_hwframe+110
+> 
+> I intend to do more work on the area to mostly sort it out, but I would
+> not mind if someone else took the hammer to folio. :)
+> 
+> With this out of the way I'll be looking at some form of caching to
+> eliminate these allocs as a problem.
+> 
 
-ac803b56860f65 Tudor Ambarus 2022-10-25  216  
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  217  /**
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  218   * struct at_desc - software descriptor
-ac803b56860f65 Tudor Ambarus 2022-10-25  219   * @vd: pointer to the virtual dma descriptor.
-ac803b56860f65 Tudor Ambarus 2022-10-25  220   * @atchan: pointer to the atmel dma channel.
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  221   * @total_len: total transaction byte count
-ac803b56860f65 Tudor Ambarus 2022-10-25  222   * @sg_len: number of sg entries.
-ac803b56860f65 Tudor Ambarus 2022-10-25  223   * @sg: array of sgs.
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  224   */
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  225  struct at_desc {
-ac803b56860f65 Tudor Ambarus 2022-10-25  226  	struct				virt_dma_desc vd;
-ac803b56860f65 Tudor Ambarus 2022-10-25  227  	struct				at_dma_chan *atchan;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  228  	size_t				total_len;
-ac803b56860f65 Tudor Ambarus 2022-10-25  229  	unsigned int			sglen;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  230  	/* Interleaved data */
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  231  	size_t				boundary;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  232  	size_t				dst_hole;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  233  	size_t				src_hole;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  234  
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  235  	/* Memset temporary buffer */
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  236  	bool				memset_buffer;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  237  	dma_addr_t			memset_paddr;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  238  	int				*memset_vaddr;
-ac803b56860f65 Tudor Ambarus 2022-10-25  239  	struct atdma_sg			sg[];
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25 @240  };
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  241  
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  242  /*--  Channels  --------------------------------------------------------*/
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  243  
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  244  /**
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  245   * atc_status - information bits stored in channel status flag
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  246   *
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  247   * Manipulated with atomic operations.
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  248   */
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  249  enum atc_status {
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  250  	ATC_IS_PAUSED = 1,
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  251  	ATC_IS_CYCLIC = 24,
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  252  };
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  253  
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  254  /**
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  255   * struct at_dma_chan - internal representation of an Atmel HDMAC channel
-ac803b56860f65 Tudor Ambarus 2022-10-25  256   * @vc: virtual dma channel entry.
-ac803b56860f65 Tudor Ambarus 2022-10-25  257   * @atdma: pointer to the driver data.
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  258   * @ch_regs: memory mapped register base
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  259   * @mask: channel index in a mask
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  260   * @per_if: peripheral interface
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  261   * @mem_if: memory interface
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  262   * @status: transmit status information from irq/prep* functions
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  263   *                to tasklet (use atomic operations)
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  264   * @save_cfg: configuration register that is saved on suspend/resume cycle
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  265   * @save_dscr: for cyclic operations, preserve next descriptor address in
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  266   *             the cyclic list on suspend/resume cycle
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  267   * @dma_sconfig: configuration for slave transfers, passed via
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  268   * .device_config
-ac803b56860f65 Tudor Ambarus 2022-10-25  269   * @desc: pointer to the atmel dma descriptor.
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  270   */
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  271  struct at_dma_chan {
-ac803b56860f65 Tudor Ambarus 2022-10-25  272  	struct virt_dma_chan	vc;
-ac803b56860f65 Tudor Ambarus 2022-10-25  273  	struct at_dma		*atdma;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  274  	void __iomem		*ch_regs;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  275  	u8			mask;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  276  	u8			per_if;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  277  	u8			mem_if;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  278  	unsigned long		status;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  279  	u32			save_cfg;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  280  	u32			save_dscr;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  281  	struct dma_slave_config	dma_sconfig;
-ac803b56860f65 Tudor Ambarus 2022-10-25  282  	bool			cyclic;
-ac803b56860f65 Tudor Ambarus 2022-10-25  283  	struct at_desc		*desc;
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25 @284  };
-5cecadc3e2a4fb Tudor Ambarus 2022-10-25  285  
+I'm not against caching, this is just my first thought. Caching will
+have an impact on the backing pages of percpu. All it takes is 1
+allocation on a page for the current allocator to pin n pages of memory.
+A few years ago percpu depopulation was implemented so that limits the
+amount of resident backing pages.
 
-:::::: The code at line 240 was first introduced by commit
-:::::: 5cecadc3e2a4fb72ab37d9420df0a9e1179b8a3e dmaengine: at_hdmac: Keep register definitions and structures private to at_hdmac.c
+Maybe the right thing to do is preallocate pools of common sized
+allocations so that way they can be recycled such that we don't have to
+think too hard about fragmentation that can occur if we populate these
+pools over time?
 
-:::::: TO: Tudor Ambarus <tudor.ambarus@microchip.com>
-:::::: CC: Vinod Koul <vkoul@kernel.org>
+Also as you've pointed out, it wasn't just the percpu allocation being
+the bottleneck, but percpu_counter's global lock too for hotplug
+support. I'm hazarding a guess most use cases of percpu might have
+additional locking requirements too such as percpu_counter.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Dennis
+
+> Thoughts?
+> 
+> Mateusz Guzik (2):
+>   pcpcntr: add group allocation/free
+>   fork: group allocation of per-cpu counters for mm struct
+> 
+>  include/linux/percpu_counter.h | 19 ++++++++---
+>  kernel/fork.c                  | 13 ++------
+>  lib/percpu_counter.c           | 61 ++++++++++++++++++++++++----------
+>  3 files changed, 60 insertions(+), 33 deletions(-)
+> 
+> -- 
+> 2.39.2
+> 
