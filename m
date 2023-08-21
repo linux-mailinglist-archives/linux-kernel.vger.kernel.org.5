@@ -2,70 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F44782777
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A22878277B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbjHUK7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S230098AbjHULAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjHUK7U (ORCPT
+        with ESMTP id S229596AbjHULAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:59:20 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8160DB;
-        Mon, 21 Aug 2023 03:59:18 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bf078d5fb7so18829285ad.0;
-        Mon, 21 Aug 2023 03:59:18 -0700 (PDT)
+        Mon, 21 Aug 2023 07:00:24 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213E4DB;
+        Mon, 21 Aug 2023 04:00:22 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-525656acf4bso4077385a12.0;
+        Mon, 21 Aug 2023 04:00:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692615558; x=1693220358;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=b6YFpODidN8i7T/aP4iShz2e2fi5e15POjDGjX+rUFg=;
-        b=gu5GWaz87DfV65dOTC9F5iRJQ16BaGKY75Tq4b9NFx0I7DYD4c/oPXIM80+ux050wQ
-         GAmcaOq1WotiU/Wr4WPoEnlzLC/c5I2YuEBHwB0D2dWNIG3FIpBOZLiYXFzOX0p0d5Y6
-         scZH5csVhg9qSBKpoYlJuTLCov62FlU/EAwmUj+xYwBw3R+gm5ZHM7+0d7KxLW5zv3hc
-         tzFHhl5SeM9C1mOoFOIqcAScHiH0yZDelwfxTMTZr2Lc8d4SZVM6i030YUdobAI9/ije
-         yxoQr81I4gqHF1oq/PwpfYluOfEppE0fhXtHQAn99xNSqbxggUnNgJ9v/V2yQx7pJ7hg
-         vy2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692615558; x=1693220358;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692615620; x=1693220420;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b6YFpODidN8i7T/aP4iShz2e2fi5e15POjDGjX+rUFg=;
-        b=apG6KJYXRUyNaf5nUC7gDsAIKu5z+JkJmGHbu7VI1WMuF09LVwpTiuqAqN2J7j89W6
-         /7c0QwuF4FOBMdYKiyJo4NTcRlaxRE4KnYHWbiAet0/uqNTOCodw0I7Kj1nPu9qN7bkS
-         osfQ//OtbhWXhruNT2K4E+gX1DwOIjeAG3F2kZtmOOdIrl/1exsCN4am42kn2kDYcjDW
-         R3MU8SgfmA5t63HcjTj6WDU6CXPIxvNsqLNJmjk838RKb1/oWO2cNs3osgHr7vEwD8sq
-         4HPMQfEiHvk7n0VyYCMxVlOtnPMDs64L+EvbU6uVdfn9l9Sc6eAi9ZMuE0xw7TU/tEt0
-         LtZg==
-X-Gm-Message-State: AOJu0YzNCzkqwg0OQrQB5pfuJK7YRE4F5oDFpyFyN+Y1S2mu8KyMqpzh
-        9Yeg557C9oIycQRIB/ns7GY=
-X-Google-Smtp-Source: AGHT+IFl9SuBL6vPLEQ85TvOumpA4k6la5gh99FaD1LoRKvveEV35/YUilJYWxc1+VXGZVBXNJneLA==
-X-Received: by 2002:a17:903:44a:b0:1bf:574d:d206 with SMTP id iw10-20020a170903044a00b001bf574dd206mr3891099plb.36.1692615558191;
-        Mon, 21 Aug 2023 03:59:18 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id g9-20020a170902c38900b001a1b66af22fsm6786879plg.62.2023.08.21.03.59.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 03:59:17 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 8F717819DE4A; Mon, 21 Aug 2023 17:59:14 +0700 (WIB)
-Date:   Mon, 21 Aug 2023 17:59:14 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Luigi Baldoni <aloisio@gmx.com>, linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Antti Palosaari <crope@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: Video glitch with Hanftek Astrometa
-Message-ID: <ZONDguFpqRTHf_UV@debian.me>
-References: <trinity-4a9cf567-5613-4ace-8e63-fa27d4450df6-1692446595564@3c-app-mailcom-bs14>
+        bh=oGlPkN5vR6/cXafRltT2qDHXCkNMNiZanfUv1AGHWHA=;
+        b=cX28qcpIpFYdPtU2I6lF4if5HSOmOSyw06W7Tg050kD8WyF6yNDeNL6Giqf5ThEeC6
+         e+CybgtXogLy1uRbi3c2NTFpPb5+3FW9KLQrNffSu/E6SPRzwYDMuY8Fcl1jjelnB6hR
+         DFLIIRXbErUnGoMwvNH+BRWPPrt5r9E6jM637DJfAtF+pSo1wfQjUyTd81EER2Kqzowt
+         TA7gQR12TEiAhwSKfUZf+PY/xsazKqKfnuidzBMw5rdtX+ubvcts6oeOoiLv40ADR5w1
+         8j4LyLq3ky5XjGj+mflB7wCBqjeEGJ+gL9SxRArHrORVqCi6+T+FsZz6eM8gLMUsgGzV
+         bG/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692615620; x=1693220420;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oGlPkN5vR6/cXafRltT2qDHXCkNMNiZanfUv1AGHWHA=;
+        b=TmKumA7K2KnXcypxvBwn0I7eQf9Ol93IaCbok9WkpeVssrezKCFHkH/W0l2BHKMHJV
+         GACnAv9N0CuT7N+d2AZhwzP2fglIE/5bX982WZtFC6E3HGrOVZQnPRgKeJYC9+uRujEZ
+         aihHuQ8bAT87abz/jSrce3H8x2fYAC9ef1qYSihUCkzzmCB2w52htYplM7Z6L97GZjsV
+         +bzxZ7Qq8cOeB5JbTDoi/RDZAFUkKNgIcWIksvYZZw2/ObP0dvwp3tQEyHXgY+PeuA4k
+         FzjxPOuZOBk6UOGNFIdp/K/ZMC1Rl4y1hcQ0khAYkZ1q0Izxz29DW7kOs+W2San+bOOx
+         ck0Q==
+X-Gm-Message-State: AOJu0YyUr2FA1HGJIhHk/2bAleSwJUj1WeCCciSJLpr9lEI4tTYiTx/O
+        ielDl0YB8GSlilTvCux7bDgCXVjNoj7veFWJI98=
+X-Google-Smtp-Source: AGHT+IG+XWmQXevDO4t9KhuUGEuXpHar0oV8iglmHHAb/6YvZIzsSvu2qUz631d6EAz7jMsg2rQMSqh3+Q8bPUyHvoE=
+X-Received: by 2002:a17:906:1dd:b0:99b:dd1d:bc58 with SMTP id
+ 29-20020a17090601dd00b0099bdd1dbc58mr5612591ejj.41.1692615620275; Mon, 21 Aug
+ 2023 04:00:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/8dnAOMNvZulVrcy"
-Content-Disposition: inline
-In-Reply-To: <trinity-4a9cf567-5613-4ace-8e63-fa27d4450df6-1692446595564@3c-app-mailcom-bs14>
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-2-keguang.zhang@gmail.com> <a9a7b65c-ef0b-9f66-b197-548733728d44@linaro.org>
+In-Reply-To: <a9a7b65c-ef0b-9f66-b197-548733728d44@linaro.org>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Mon, 21 Aug 2023 19:00:03 +0800
+Message-ID: <CAJhJPsXEf0Yuxasq24X=x_JtUJZrNC1aowfeuu9QM2kz+A=asQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: mfd: syscon: Add compatibles for
+ Loongson-1 syscon
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -76,61 +83,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 19, 2023 at 10:23=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 16/08/2023 13:13, Keguang Zhang wrote:
+> > Add Loongson LS1B and LS1C compatibles for system controller.
+>
+> I asked not to use the same compatible for different blocks. Compatible
+> is dwmac, but are you still going to use for other blocks? Please write
+> proper description of the hardware.
+>
+Sorry. I didn't make myself clear.
+The SoC only has one syscon with two registers.
+And Each register contains settings for multiple devices.
+Besides DWMAC, this syscon will be used for other devices.
+Should I keep using loongson,ls1b-syscon/loongson,ls1c-syscon?
 
---/8dnAOMNvZulVrcy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Aug 19, 2023 at 02:03:15PM +0200, Luigi Baldoni wrote:
->    Hello everyone,
-> last year I replaced my old RTL2832U/R820T DVB-T dongle (which worked
-> perfectly) and replaced it with a Hanftek Astrometa (RTL2832/CXD2837ER)
-> DVB-T2 one and my troubles started.
-> Every channel I tune to shows a periodic glitch, as per included sample.
->=20
-> I tried the following things:
->  * connected a regular TV set to the same antenna cable and the picture l=
-ooks
->    fine
->  * replaced the usb cable
->  * switched distros (from debian to arch)
->  * installed a current kernel snapshot
->  * replaced the minipc on which it's installed
->  * used usbip to access the hardware from my desktop machine and tested
->    it directly with vlc, mpv and kaffeine: at best the stream was glitchy
->    and at worst the app crashed
->  * toggled every parameter available for each involved module
->  * ran tzap directly
->=20
-> None of the above made the slightest difference, therefore I'm asking you
-> if there's something I might have overlooked or if this is truly a bug.
->=20
-> Video sample here, captured with tzap:
-> https://www.mediafire.com/file/qantvq916uy7o4k/rai1hd.ts/file
-> https://www.4shared.com/s/folTulDcljq
->=20
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > V1 -> V2: Make the syscon compatibles more specific
+> >
+> >  Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Docume=
+ntation/devicetree/bindings/mfd/syscon.yaml
+> > index 8103154bbb52..d701fff02abe 100644
+> > --- a/Documentation/devicetree/bindings/mfd/syscon.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+> > @@ -49,6 +49,8 @@ properties:
+> >                - hisilicon,peri-subctrl
+> >                - hpe,gxp-sysreg
+> >                - intel,lgm-syscon
+> > +              - loongson,ls1b-dwmac-syscon
+> > +              - loongson,ls1c-dwmac-syscon
+>
+>
+> Best regards,
+> Krzysztof
+>
 
-(also Cc: RTL2832 and media subsystem maintainers)
 
-What kernel version are you running?
+--
+Best regards,
 
-Also, can you try with different dongle (ideally with different chipset)?
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---/8dnAOMNvZulVrcy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZONDdwAKCRD2uYlJVVFO
-o/AJAPoDxA+QbdrImZNvSwhpl/6j7mvhm1LD120OrR0KfWf7UgD+NmwraDJfqIqa
-LEoOwDTq84brr8qeHuSF8EyduV1EKgQ=
-=fINR
------END PGP SIGNATURE-----
-
---/8dnAOMNvZulVrcy--
+Keguang Zhang
