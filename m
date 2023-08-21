@@ -2,122 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E41782165
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF7E782164
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbjHUC3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        id S232518AbjHUC3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232514AbjHUC3R (ORCPT
+        with ESMTP id S232512AbjHUC3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 20 Aug 2023 22:29:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE9E99
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:29:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4iyN5XJixW9XMMjoB8nCsjnA5CisXfjAJRdmQ4Uv0Ag=; b=uL1QVT9dnEbMu7ZjDin2zcuQa+
-        Z3qsxmhBtwFWzq4ektkwJ23hUTrQqgJP8qHSo54z48uyBI7qQfBwbmXkU9gwqyuMgk9OX4x53wF7H
-        iJtIdYgxBI+hsvoERpFCv4LwKc5BGhYS75fXW8gvIlVG/x09bV/aC2s9QbRKoLmWDtALkiEY6rZS3
-        ium4AHlX7NYAKdmRuGQ0g21pxxwoYgmdlA+xsb366PAergxxIkh4Sc5E8mf7RzAmpotda81Gof6Uc
-        U6ZqhDaJ8LtplJ3hWJNxPUPZM1RVLwkLoj7XzwJxj1b9ySyeH9GcQP9jdIkYcQyX4dcbOj40Z7IO6
-        jOTW5nPQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qXuf7-007bBg-5I; Mon, 21 Aug 2023 02:29:01 +0000
-Date:   Mon, 21 Aug 2023 03:29:01 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: Wire up tail page poisoning over ->mappings
-Message-ID: <ZOLL7f+Ihc93lyo0@casper.infradead.org>
-References: <20230815210659.430010-1-peterx@redhat.com>
- <ZN/tRLy0e+Iod9z3@casper.infradead.org>
- <ZOK6U4vOFn8IbcGp@x1n>
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A535B0;
+        Sun, 20 Aug 2023 19:29:11 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F8BD1FB;
+        Sun, 20 Aug 2023 19:29:51 -0700 (PDT)
+Received: from [10.162.42.6] (a077893.blr.arm.com [10.162.42.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1034B3F762;
+        Sun, 20 Aug 2023 19:29:06 -0700 (PDT)
+Message-ID: <e62d00bc-52ee-9828-9b73-08c685d4052a@arm.com>
+Date:   Mon, 21 Aug 2023 07:59:03 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZOK6U4vOFn8IbcGp@x1n>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V4 2/3] coresight: etm: Make cycle count threshold user
+ configurable
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+References: <20230818112051.594986-1-anshuman.khandual@arm.com>
+ <20230818112051.594986-3-anshuman.khandual@arm.com>
+ <75147373-d5f0-b9cc-cdf8-15b5093fb8e2@arm.com>
+ <CAJ9a7Vhg+OznPN_wfVFXgJ9Zx2Y1bCOJZEXpuXK-Ot0JertYyw@mail.gmail.com>
+ <23b73617-1d42-df19-0ff6-27afbf8b7a77@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <23b73617-1d42-df19-0ff6-27afbf8b7a77@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 09:13:55PM -0400, Peter Xu wrote:
-> > https://lore.kernel.org/linux-mm/ZNp7yUgUrIpILnXu@casper.infradead.org/
+
+
+On 8/18/23 18:34, Suzuki K Poulose wrote:
+> On 18/08/2023 14:01, Mike Leach wrote:
+>> On Fri, 18 Aug 2023 at 12:25, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>>
+>>> On 18/08/2023 12:20, Anshuman Khandual wrote:
+>>>> Cycle counting is enabled, when requested and supported but with a default
+>>>> threshold value ETM_CYC_THRESHOLD_DEFAULT i.e 0x100 getting into TRCCCCTLR,
+>>>> representing the minimum interval between cycle count trace packets.
+>>>>
+>>>> This makes cycle threshold user configurable, from the user space via perf
+>>>> event attributes. Although it falls back using ETM_CYC_THRESHOLD_DEFAULT,
+>>>> in case no explicit request. As expected it creates a sysfs file as well.
+>>>>
+>>>> /sys/bus/event_source/devices/cs_etm/format/cc_threshold
+>>>>
+>>>> New 'cc_threshold' uses 'event->attr.config3' as no more space is available
+>>>> in 'event->attr.config1' or 'event->attr.config2'.
+>>>>
+>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>> Cc: James Clark <james.clark@arm.com>
+>>>> Cc: Leo Yan <leo.yan@linaro.org>
+>>>> Cc: coresight@lists.linaro.org
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-doc@vger.kernel.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Reviewed-by: Mike Leach <mike.leach@linaro.org>
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>>    drivers/hwtracing/coresight/coresight-etm-perf.c   |  2 ++
+>>>>    drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 ++++++++++--
+>>>>    2 files changed, 12 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>>>> index 5ca6278baff4..09f75dffae60 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+>>>> @@ -68,6 +68,7 @@ PMU_FORMAT_ATTR(preset,             "config:0-3");
+>>>>    PMU_FORMAT_ATTR(sinkid,             "config2:0-31");
+>>>>    /* config ID - set if a system configuration is selected */
+>>>>    PMU_FORMAT_ATTR(configid,   "config2:32-63");
+>>>> +PMU_FORMAT_ATTR(cc_threshold,        "config3:0-11");
+>>>>
+>>>>
+>>>>    /*
+>>>> @@ -101,6 +102,7 @@ static struct attribute *etm_config_formats_attr[] = {
+>>>>        &format_attr_preset.attr,
+>>>>        &format_attr_configid.attr,
+>>>>        &format_attr_branch_broadcast.attr,
+>>>> +     &format_attr_cc_threshold.attr,
+>>>>        NULL,
+>>>>    };
+>>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> index 591fab73ee79..3193dafa7618 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+>>>> @@ -635,7 +635,7 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+>>>>        struct etmv4_config *config = &drvdata->config;
+>>>>        struct perf_event_attr *attr = &event->attr;
+>>>>        unsigned long cfg_hash;
+>>>> -     int preset;
+>>>> +     int preset, cc_threshold;
+>>>>
+>>>>        /* Clear configuration from previous run */
+>>>>        memset(config, 0, sizeof(struct etmv4_config));
+>>>> @@ -658,7 +658,15 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+>>>>        if (attr->config & BIT(ETM_OPT_CYCACC)) {
+>>>>                config->cfg |= TRCCONFIGR_CCI;
+>>>>                /* TRM: Must program this for cycacc to work */
+>>>> -             config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>>>> +             cc_threshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+>>>> +             if (cc_threshold) {
+>>>> +                     if (cc_threshold < drvdata->ccitmin)
+>>>> +                             config->ccctlr = drvdata->ccitmin;
+>>>> +                     else
+>>>> +                             config->ccctlr = cc_threshold;
+>>>> +             } else {
+>>>> +                     config->ccctlr = ETM_CYC_THRESHOLD_DEFAULT;
+>>>
+>>> Ideally this must be the ccitmin ? Theoretically, default value could be
+>>> bigger than the minimum value supported by the implementation (i.e.,
+>>> ccitmin)
+>>>
+>>> Suzuki
+>>>
+>>
+>> In order not to change existing behaviour unexpectedly this could be
+>> re-ordered...
+>>
+>> cc_threshold = attr->config3 & ETM_CYC_THRESHOLD_MASK;
+>> if (!cc_threshold)
+>>           cc_threshold = ETM_CYC_THRESHOLD_DEFAULT;
+>> if (cc_threshold < drvdata->ccitmin)
+>>           cc_threshold = drvdata->ccitmin
+>> config->ccctlr = cc_threshold;
 > 
-> https://lore.kernel.org/linux-mm/ZNqFv0AwkfDKExiw@x1n/#t
-> 
-> Firstly, I've answered and you didn't follow that up.
+> That sounds better, Thanks Mike
 
-I didn't see it.  I get a lot of email ...
-
-> > > More importantly, I think this is over-parametrisation.  If you start to
-> > > use extra fields in struct folio, just change the code in page_alloc.c
-> > > directly.
-> 
-> Change the hard-coded "2"s in different functions?  Can you kindly explain
-> why can't we just have a macro to help?
-
-Because it's unnecessary.  You're putting in way too much effort here
-for something that might happen once.
-
-> Setting tail mapping for tail 1/2 is even wrong, which part of this patch
-> fixes:
-> 
-> @@ -428,7 +428,8 @@ static inline void prep_compound_tail(struct page *head, int tail_idx)
->  {
->         struct page *p = head + tail_idx;
-> 
-> -       p->mapping = TAIL_MAPPING;
-> +       if (tail_idx > TAIL_MAPPING_REUSED_MAX)
-> +               p->mapping = TAIL_MAPPING;
->         set_compound_head(p, head);
->         set_page_private(p, 0);
->  }
-
-I didn't see this.  This is wrong.  tail->mapping is only reused for
-large rmappable pages.  It's not reused for other compound pages.
-
-If you really insist on cleaning this up, the special casing of tail pages
-should move out of page_alloc entirely.  folio_undo_large_rmappable()
-should restore TAIL_MAPPING for all tail pages that were modified by
-folio_prep_large_rmappable().
-
-The other thing we should do is verify that the additional large-rmap
-fields have the correct values in folio_undo_large_rmappable().
-
-But let's look back to why TAIL_MAPPING was introduced.  Commit
-1c290f642101e poisoned tail->mapping to catch users which forgot to
-call compound_head().  So we can actually remove TAIL_MAPPING entirely
-if we get rid of page->mapping.
-
-You probably think that's an unattainable goal; there are something like
-340 occurrences of the string 'page->mapping' in the kernel right now
-(and there are probably instances of struct page named something other
-than 'page'), but a lot of those are actually in comments, which would
-be my fault for not fixing them during folio conversions.
-
-However, I have a small patch series which enables 'allnoconfig' to
-build after renaming page->mapping to page->_mapping.  Aside from fs/
-there are *very* few places which look at page->mapping [1].  I'll post
-that patch series tomorrow.
-
-I think with some serious work, we can land "remove page->mapping"
-(which would include removing TAIL_MAPPING) by the end of the year.
-And that work gets us closer to the goal of shrinking struct page.
-
-[1] device-dax, intel_th, mthca, cortina, fb_defio
-
+Sure, will change as suggested.
