@@ -2,453 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C655E7834F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CBA7834FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjHUVo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57642 "EHLO
+        id S230257AbjHUVxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231162AbjHUVoy (ORCPT
+        with ESMTP id S229638AbjHUVx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:44:54 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2088.outbound.protection.outlook.com [40.107.93.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6DA13D;
-        Mon, 21 Aug 2023 14:44:45 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=atQpNDpRvyxuSS6ZkrpZcacPXHqPxUpX+8uxPaIoqLtIe7s0/VqlIr+qNlj7qu5RNxkIy2r9bUII/bqM48uCyAxNY9cv2+3y47WXh10bsy7ZtRUZwbeBq6jz/PSvcHe7o52Sdd9mlnepcYKLlPUhQwuxe1KwMplow/tSxKoKnanE6Sn1FZExxDNPyRICebIF1P5nXz5eXN8KBopJWpu0dlO0vi6zx0jWCO6DbDUTMOfMJK418/Y1jQ5+g6YyF+UBsRDa7XcGFmxa0NTOUIb4IqB184pFHsxJMhubsUv7jREnIhVJ6KXNPUOD/hsOaDCF7Uk/03eiUuwSm+QBJLO/0g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=613CMAj7Lt/zjJaAE+Mr0xZ/QD7w9yfz3FwBX5j2/ZQ=;
- b=Jn4oQ1W2FBdgxwwHY47Jbhgg9Bjk2qZZOGNN7BpJ63r967gcRO1uQ/V5s5vgOWG1OJY+DWkZzn5vl4sKIa8Lu4gEUebEbbJwqinRbx8evelFGT4sAFd6xGujc2XMDsNVfnEvOCi4/WVWAHuJ0tyR6YNLUuDR4/OQ+HJjUbopyhspTO9a21lJDtmnBpTnT2WF6qAZv3qeKX0Ghhaxy6LtWNjwrFHH8epVxKTXug8gomAy5emRlZEuT33VzrGnDYvaUrXLRhtWeXVnZ6JZnWYOw2Bd71jGeIAnPoheAXSr9hhQMV09KvHtQnN596EoMS54Z+1Dg8r8cEkNX4cykZagUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=613CMAj7Lt/zjJaAE+Mr0xZ/QD7w9yfz3FwBX5j2/ZQ=;
- b=atjwjAe5KDQEcNqsiQwnMCCJUyOERscp+iQgAAuJOcsGQUBjm1sOd7zH7J3ZxVY/E20yG4cZzCWG8Lv9iXpw2/A8PNZ/cV/hhFrw6Y8w9MijT/T6M7jqHvzpOfz8u2y86cB9DXPHaQpSMduafNHOeg2T9LWjq0m3YS6ULyuNAI4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by MN2PR12MB4046.namprd12.prod.outlook.com (2603:10b6:208:1da::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 21:44:41 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::af15:9d:25ab:206b]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::af15:9d:25ab:206b%3]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 21:44:41 +0000
-Message-ID: <df49bbb2-92c0-7792-ab90-e748be570b5d@amd.com>
-Date:   Mon, 21 Aug 2023 16:44:37 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH 4/8] KVM: gmem: protect kvm_mmu_invalidate_end()
-Content-Language: en-US
-To:     Mingwei Zhang <mizhang@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jacky Li <jackyli@google.com>
-Cc:     isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-References: <cover.1692119201.git.isaku.yamahata@intel.com>
- <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
- <ZN+whX3/lSBcZKUj@google.com> <52c6a8a6-3a0a-83ba-173d-0833e16b64fd@amd.com>
- <ZN/0aefp2gw5wDXk@google.com>
- <CAL715WL9TJzDxZE8_gfhUQFGtOAydG0kyuSbzkqWTs3pc57j7A@mail.gmail.com>
-From:   "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <CAL715WL9TJzDxZE8_gfhUQFGtOAydG0kyuSbzkqWTs3pc57j7A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DS7PR03CA0117.namprd03.prod.outlook.com
- (2603:10b6:5:3b7::32) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        Mon, 21 Aug 2023 17:53:29 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D51A130
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:53:28 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34bb6d58f84so10695905ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:53:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1692654807; x=1693259607;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzKHHKsc1oNVhWOXOd0iXbx+J2ukeg/zGyUL4tDF0II=;
+        b=UAnlPLrtlHizbNbu5RWNAx7gZJGyPCOnC2Yo474e+6Fiu9x5ELalVKQOb/dh2+eBtM
+         77PQH1rJe9G8/J4ZlnYVzpZGBvaVtyaEGeUkDVPYWd4MzqE5Do3FIM2TxrteUgQpm6jO
+         Wd8T9l7RK8exdslDUJdVbCuHO/e4CADQV3+Sg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692654807; x=1693259607;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzKHHKsc1oNVhWOXOd0iXbx+J2ukeg/zGyUL4tDF0II=;
+        b=l7fFysMaGIhu+Qb9vTpNhn+AGJdYPwLvCH2Nf8I+hwGSEmu0ttWmz6yEPtbaou40vP
+         kzxnJTERM+MR8vavathcjNOO9eLQpXF8s2uoTP5oEpF3/DeabW1EC+DHAF2u46x/BK87
+         hniJ4zVMSlaCSeznUd0VD0l63YTdf96mzE9J6xCbl5u5TJn+4Qkavug5axQJUD8FEFJr
+         SP1ZTVLYfgiYwUqzsgKUaBLBwHl+ZAbnx4tvTbY7BBgExTv0RXa2Ni7BZZGFYK71UYZM
+         3VdEQp+OUzdrB4IjRGBZfdOKxFoDTYkMCQGMOBxcBNnQ86XZkLNIujy9DQUTxxhRGebX
+         Xmpw==
+X-Gm-Message-State: AOJu0YxilChPmKpOtxwwCkLlE2T1b4PRPX7KRlQ/ZI9BR+/xeIwtNbdz
+        +BcrZY7hCuLSa9rTrdZgdtHqFFNN5b4cKzFEun8=
+X-Google-Smtp-Source: AGHT+IGiGz7KVWEg1gJBb/4veXGzvQeHA4fqyh3mVZDiGDeVSQRusmru50bBxp+OQMgHiXBk9jKzcA==
+X-Received: by 2002:a05:6e02:190d:b0:346:1185:31d0 with SMTP id w13-20020a056e02190d00b00346118531d0mr10905783ilu.9.1692654807388;
+        Mon, 21 Aug 2023 14:53:27 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id d2-20020a639902000000b00564b313d526sm6744406pge.54.2023.08.21.14.53.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 14:53:26 -0700 (PDT)
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+To:     stable@vger.kernel.org
+Cc:     Justin Chen <justin.chen@broadcom.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        netdev@vger.kernel.org (open list:BROADCOM ETHERNET PHY DRIVERS),
+        linux-kernel@vger.kernel.org (open list),
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH stable 5.4] net: phy: broadcom: stub c45 read/write for 54810
+Date:   Mon, 21 Aug 2023 14:53:18 -0700
+Message-Id: <20230821215318.3123426-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2023082132-jaundice-applaud-eb72@gregkh>
+References: <2023082132-jaundice-applaud-eb72@gregkh>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|MN2PR12MB4046:EE_
-X-MS-Office365-Filtering-Correlation-Id: 412b00df-7563-4d0d-35b8-08dba28fd369
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i+GDlmIR+zqrcIgQq/LeGmGX3Cgo22inUj9unTniBQSY2QGJCz4LAewuO650nHxVM5/3lr/yzbu7ZAuSVCPJnCUa5imZUJDxY+TYjIxSUwQ5GzhD2ue8XToPiv/5HYLLuUfFgMr+rUiPu9K1sYPqE7auNAYk0+TF2SXO293Ar24iaIlcyH0+SuSorTR2nnshkQZwDmja3qssMSZXclxI5HIJn5bOZ7pi/TSeDKh3J120OOhOk6ogPKAPSubBbwT0YlkcNOWm6PvqRf0U3/lFDbCCckJmmdy8QAGCIt67AnwCp/x3+3rsLgWq5OGWBjADyF0nKoDbkjgHbeQoo3xMhkxrODifHPXqtNduoUGnqZk+v8SI1VkJxqAILbQR5YVXy3Ib4n55nvbHUbuS6H19p+PoVUfE/X2jCPvMH5GcEEq7u+ruTnuz3ufRO5hTXwPpHbSznVLEp0mN/awr/emsWzwE5sXgA9ma9QgleoO48vTSRe35pCC0b75ty++zdd2BlIJDqrKwr33dil2vO7wuUwOCEwrJyG16VEXhqhwcXTHZNUMzzm6iU8fb1TxPH+0rJs1a/1jgmlcc/xV0t2lBrWS4rNZbJgh+IqH6Ha48+KsF+cK02C6fdxblTOmrzSIYFWH5RUlX9XFAMBpQkXYpNQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(1800799009)(186009)(2906002)(83380400001)(7416002)(53546011)(6486002)(38100700002)(6506007)(5660300002)(26005)(31686004)(86362001)(31696002)(8676002)(8936002)(2616005)(4326008)(66946007)(316002)(6512007)(54906003)(66556008)(66476007)(110136005)(478600001)(6666004)(41300700001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UE9Dd1lkL01aNTBUZmJ0VHFIQlZRemNFV2Z5d1JLVjdSdDZ1YUV1dm8yZ3FX?=
- =?utf-8?B?R1JGN1JkcHFyZmszM3VpK2FoUUl3QWhPUnFiVVJTM0lnSlZIbmF0czhRcTZl?=
- =?utf-8?B?Yk5PQmlxNnBxQ2Fyd242c2ZtV05qTSt6YXRCKy9zK1czTStLZHFleHRaK2xm?=
- =?utf-8?B?eDh0Z3QwVzNvRmJEVVF4aGJ5dUlvTm1ObW9TL08vNmtpVVM3WnBQbWFlaHU5?=
- =?utf-8?B?cjdhWEhxeElqUUJlbFNCTUN4Yk95ZWZqN1hJeEM0QXRsRkhSMWpPUDFPSVB1?=
- =?utf-8?B?UVVxbjJsZzg3MzNsWFQ1dDZOUVFvNDhubHBBMXM1bUFRTmdTSDFPSWM1WVJB?=
- =?utf-8?B?TjFVQzZkR3J3d2ZxUnU2ZlFJK1laeWxVc2tGMHJKc21TZXRJMEs3RkIvRU5F?=
- =?utf-8?B?WkZvdWdzYzdMUDhBSEl3TWVYV2JuQThJczZ1SE9md0tBTWVXSWdIcEFhcXJT?=
- =?utf-8?B?Z09YLzA4d1QzMnRKVUxhdVM0TU53OEZpZTFsT095SzdmNTdMOGxRYkxNS0VY?=
- =?utf-8?B?aEtHeHpQMGhXNEEwdmwwOW1ZVXJyMEhocS9uRkRhNnRXL1EzUTZ6Mm9kWVZt?=
- =?utf-8?B?bzdYUWlCdDZUMTlsMlA1OUphTWlFS3FGMkQ2elZYanZJYUY1RVJUaE0rc2o2?=
- =?utf-8?B?SmZzcWRhTWxqZU00UGVxbHJBNXcwdTJnbnVWWVRmeTlYRFlJTVpFTktBcVBP?=
- =?utf-8?B?MkpETEI4dnRkTmw5WjJ5T0UyL0NleS9aKzNDclNLVjdPU1JKUzhwYUkydGEv?=
- =?utf-8?B?Z2toSW1FbXlLYmtCZUNxTmJqQzFFbll6bXYxRlZ4VGc3YS9pZS9rTzdlSmtU?=
- =?utf-8?B?TXA1WTVIUlA3K3htNmZNWVc2QUV2OVY3a01FZ2FFZ3Y1YTZ5bm1XazB2UlVG?=
- =?utf-8?B?ZUxWc20rMXFnYzQ3ZWt1NWtBYmkvNFptbDcrd0o2Z2J6eU1tdjBDMjhMYjZx?=
- =?utf-8?B?K1FwY3ROVTk3OU9zd21WWnJyRFVadU1TdUQvdnMxNVlwNXJPaHhRcTZra1pE?=
- =?utf-8?B?K2tOSlNjSC9tdjN3aW9wakRmaEtrcFZWMVl2V1cwSDNkREFVVVJ4dGlIUTZN?=
- =?utf-8?B?bk1STXY4alBnbzlna01yaytzU0RVWC9Oekk3NUpxaCtXNktKOEY3NXcwdjlV?=
- =?utf-8?B?NUNaNVdQL2VKOVFrMXZHM0xaZ3EyTzh4eEFXY3daWlMxaFg0ejM0ZzR3WmJ1?=
- =?utf-8?B?NW9LRHlNWVhGaTRjODVhSUhoM3JISVdxOHpvdGpTRnJFNHpxN216d0xteWNX?=
- =?utf-8?B?TStHRVVxSHBROERLSTRPZEROcCtNN0MzZk9lSmpYcmFCTkVtZ1ZMZnpNVDhI?=
- =?utf-8?B?YzFwWi8reXpjOGs3bTdBdFpmN1UvclZiZE0zbzcwRWhzTlNMUC9IakNpSWdt?=
- =?utf-8?B?ZzRib2orUXJLa3FZWHU1ZmkwQWRlWFF6V2liUzVGNEQzb2VtMWliR1U2OS9u?=
- =?utf-8?B?M1FZNWZJRHE0OWNqNi9MNnpJWFREdmFnbDYwWE5FVHZvSThGTmhaanZpeWVS?=
- =?utf-8?B?Y3ZRRVh3NEUwRmdwSGpzSEJ0WnkxR205SFYzdkQvbUZkWEhXT1hMbDhKa2t4?=
- =?utf-8?B?ekdvYnB4eFdUdjAzNHI1K29NQzJtQWlJYW13cElrUUhDanFWWWtkWXFlRTRx?=
- =?utf-8?B?VU96V004czZua2JneEFGdC95Y3h6WDlKQ1pudDlGWEFLV3lxeEc5TGRNWEJP?=
- =?utf-8?B?Y0RyMFRxZXEzVlkybUlwUS9mRFUrMEIwM0VsSGdWdlVKQzR5SE5VMDVnSGdk?=
- =?utf-8?B?ZytFWVpYOE9KY1BiWGlwZHNjSU1Nd1JzSElXQWx4d2lPaWc2dGp6blBrOE1y?=
- =?utf-8?B?dlBMZEQvbXpLVzJzenBNNkZyQ1FYV3Q3dEJKb2J1KzcrTnZ3dmRKM1kvS2Yy?=
- =?utf-8?B?R2JoTjhsZlhSeTFiRG53U2o4YmVlL0trbjhET2UzN1FrWVlhd3N6TEpxSTNt?=
- =?utf-8?B?cG1tMTNOVTkweUpnUUZGZlk3dDBOVSs4OERGdHhySDBYcDRyTjFRK1ovY3BE?=
- =?utf-8?B?Nk13Qi9ibWVpSVpoN2VJUzIvdTh3bmNUTEI3WGhCelU5SG5KYXpjQ3B1MFBK?=
- =?utf-8?B?MWk1cVFBQnY4NElCYUEwV2FIL3oydmI4VWFLdHE5Mk1WY2JkUXpxcUNUdWNT?=
- =?utf-8?Q?u42l+1WHkEKpXXF09mZjmW+GU?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 412b00df-7563-4d0d-35b8-08dba28fd369
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 21:44:41.6518
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6epRltLNEdj5Sabe8f0j8aHhMPIiStCNcut6kO2DKKZ5dhnfCfq7N8YzCsIbHg6IMmqaTBplIkVe3e7KqEesbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4046
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000089a49b060375e840"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Mingwei & Sean,
+--00000000000089a49b060375e840
+Content-Transfer-Encoding: 8bit
 
-On 8/18/2023 9:08 PM, Mingwei Zhang wrote:
-> +Jacky Li
-> 
-> On Fri, Aug 18, 2023 at 3:45 PM Sean Christopherson <seanjc@google.com> wrote:
->>
->> +Mingwei to correct me if I'm wrong
->>
->> On Fri, Aug 18, 2023, Ashish Kalra wrote:
->>>
->>> On 8/18/2023 12:55 PM, Sean Christopherson wrote:
->>>> On Tue, Aug 15, 2023, isaku.yamahata@intel.com wrote:
->>>>> From: Isaku Yamahata <isaku.yamahata@intel.com>
->>>>>
->>>>> kvm_mmu_invalidate_end() updates struct kvm::mmu_invalidate_in_progress
->>>>> and it's protected by kvm::mmu_lock.  call kvm_mmu_invalidate_end() before
->>>>> unlocking it. Not after the unlock.
->>>>>
->>>>> Fixes: 8e9009ca6d14 ("KVM: Introduce per-page memory attributes")
->>>>
->>>> This fixes is wrong.  It won't matter in the long run, but it makes my life that
->>>> much harder.
->>>>
->>>>> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->>>>> ---
->>>>>    virt/kvm/kvm_main.c | 15 ++++++++++++++-
->>>>>    1 file changed, 14 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
->>>>> index 8bfeb615fc4d..49380cd62367 100644
->>>>> --- a/virt/kvm/kvm_main.c
->>>>> +++ b/virt/kvm/kvm_main.c
->>>>> @@ -535,6 +535,7 @@ struct kvm_mmu_notifier_range {
->>>>>            } arg;
->>>>>            gfn_handler_t handler;
->>>>>            on_lock_fn_t on_lock;
->>>>> + on_unlock_fn_t before_unlock;
->>>>>            on_unlock_fn_t on_unlock;
->>>>
->>>> Ugh, shame on my past me.  Having on_lock and on_unlock be asymmetrical with respect
->>>> to the lock is nasty.
->>>>
->>>> I would much rather we either (a) be explicit, e.g. before_(un)lock and after_(un)lock,
->>>> or (b) have just on_(un)lock, make them symetrical, and handle the SEV mess a
->>>> different way.
->>>>
->>>> The SEV hook doesn't actually care about running immediately after unlock, it just
->>>> wants to know if there was an overlapping memslot.  It can run after SRCU is dropped,
->>>> because even if we make the behavior more precise (right now it blasts WBINVD),
->>>> just having a reference to memslots isn't sufficient, the code needs to guarantee
->>>> memslots are *stable*.  And that is already guaranteed by the notifier code, i.e.
->>>> the SEV code could just reacquire SRCU.
->>>
->>> On a separate note here, the SEV hook blasting WBINVD is still causing
->>> serious performance degradation issues with SNP triggered via
->>> AutoNUMA/numad/KSM, etc. With reference to previous discussions related to
->>> it, we have plans to replace WBINVD with CLFLUSHOPT.
->>
->> Isn't the flush unnecessary when freeing shared memory?  My recollection is that
->> the problematic scenario is when encrypted memory is freed back to the host,
->> because KVM already flushes when potentially encrypted mapping memory into the
->> guest.
->>
->> With SNP+guest_memfd, private/encrypted memory should be unreachabled via the
->> hva-based mmu_notifiers.  gmem should have full control of the page lifecycles,
->> i.e. can get the kernel virtual address as appropriated, and so it SNP shouldn't
->> need the nuclear option.
->>
->> E.g. something like this?
->>
->> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->> index 07756b7348ae..1c6828ae391d 100644
->> --- a/arch/x86/kvm/svm/sev.c
->> +++ b/arch/x86/kvm/svm/sev.c
->> @@ -2328,7 +2328,7 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
->>
->>   void sev_guest_memory_reclaimed(struct kvm *kvm)
->>   {
->> -       if (!sev_guest(kvm))
->> +       if (!sev_guest(kvm) || sev_snp_guest(kvm))
->>                  return;
->>
->>          wbinvd_on_all_cpus();
-> 
-> I hope this is the final solution :)
-> 
-> So, short answer: no.
-> 
-> SNP+guest_memfd prevent untrusted host user space from directly
-> modifying the data, this is good enough for CVE-2022-0171, but there
-> is no such guarantee that the host kernel in some scenarios could
-> access the data and generate dirty caches. In fact, AFAIC, SNP VM does
-> not track whether each page is previously shared, isn't it? If a page
-> was previously shared and was written by the host kernel or devices
-> before it was changed to private. No one tracks it and dirty caches
-> are there!
-> 
-> So, to avoid any corner case situations like the above, it seems
-> currently we have to retain the property: flushing the cache when the
-> guest memory mapping leaves KVM NPT.
-> 
-> Of course, this is fundamentally because SME_COHERENT only applies to
-> CPU cores, but not DMA. If SME_COHERENT is complete, flushing is no
-> longer needed. Alternatively, we need extra bookkeeping for KVM to
-> know whether each page has dirty cache lines. Another alternative is
-> to filter mmu_notifier reasons, which is the part that I am planning
-> to take. thoughts?
-> 
+From: Justin Chen <justin.chen@broadcom.com>
 
-Now running SNP+guest_memfd with discard=both option enabled:
+commit 096516d092d54604d590827d05b1022c8f326639 upstream
 
-# bpftrace -e 'kprobe:sev_guest_memory_reclaimed {@[kstack]=count()}'
-Attaching 1 probe...
-^C
+The 54810 does not support c45. The mmd_phy_indirect accesses return
+arbirtary values leading to odd behavior like saying it supports EEE
+when it doesn't. We also see that reading/writing these non-existent
+MMD registers leads to phy instability in some cases.
 
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_release+60
-     __mmu_notifier_release+128
-     exit_mmap+657
-     __mmput+72
-     mmput+49
-     do_exit+752
-     do_group_exit+57
-     get_signal+2486
-     arch_do_signal_or_restart+51
-     exit_to_user_mode_prepare+257
-     syscall_exit_to_user_mode+42
-     do_syscall_64+109
-     entry_SYSCALL_64_after_hwframe+114
-]: 1
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+869
-     __mmu_notifier_invalidate_range_start+152
-     change_protection+4628
-     change_prot_numa+93
-     task_numa_work+588
-     task_work_run+108
-     exit_to_user_mode_prepare+337
-     syscall_exit_to_user_mode+42
-     do_syscall_64+109
-     entry_SYSCALL_64_after_hwframe+114
-]: 2
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+869
-     __mmu_notifier_invalidate_range_start+152
-     change_protection+4628
-     change_prot_numa+93
-     task_numa_work+588
-     task_work_run+108
-     xfer_to_guest_mode_handle_work+228
-     kvm_arch_vcpu_ioctl_run+1572
-     kvm_vcpu_ioctl+671
-     __x64_sys_ioctl+153
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]: 2
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_set_memslot+740
-     __kvm_set_memory_region.part.0+411
-     kvm_set_memory_region+89
-     kvm_vm_ioctl+1482
-     __x64_sys_ioctl+153
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]: 104
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+869
-     __mmu_notifier_invalidate_range_start+152
-     zap_page_range_single+384
-     unmap_mapping_range+279
-     shmem_fallocate+932
-     vfs_fallocate+345
-     __x64_sys_fallocate+71
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]: 5465
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+869
-     __mmu_notifier_invalidate_range_start+152
-     zap_page_range_single+384
-     madvise_vma_behavior+1967
-     madvise_walk_vmas+190
-     do_madvise.part.0+264
-     __x64_sys_madvise+98
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]: 69677
+Fixes: b14995ac2527 ("net: phy: broadcom: Add BCM54810 PHY entry")
+Signed-off-by: Justin Chen <justin.chen@broadcom.com>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Link: https://lore.kernel.org/r/1691901708-28650-1-git-send-email-justin.chen@broadcom.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+[florian: resolved conflicts in 5.4]
+Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+---
+ drivers/net/phy/broadcom.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-The maximum hits are seen with shmem_fallocate and madvise, which we 
-believe are response to shared<->private
-GHCB page-state-chage requests. discard=both handles discard both for
-private and shared memory, so freeing shared memory
-via fallocate(shared_memfd, FALLOC_FL_PUNCH_HOLE, ...) would trigger the
-notifiers when freeing shared pages after guest converts a GPA to
-private.
+diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
+index 7be75a611e9e..0e0bcc304d6c 100644
+--- a/drivers/net/phy/broadcom.c
++++ b/drivers/net/phy/broadcom.c
+@@ -425,6 +425,17 @@ static int bcm5482_read_status(struct phy_device *phydev)
+ 	return err;
+ }
+ 
++static int bcm54810_read_mmd(struct phy_device *phydev, int devnum, u16 regnum)
++{
++	return -EOPNOTSUPP;
++}
++
++static int bcm54810_write_mmd(struct phy_device *phydev, int devnum, u16 regnum,
++			      u16 val)
++{
++	return -EOPNOTSUPP;
++}
++
+ static int bcm5481_config_aneg(struct phy_device *phydev)
+ {
+ 	struct device_node *np = phydev->mdio.dev.of_node;
+@@ -696,6 +707,8 @@ static struct phy_driver broadcom_drivers[] = {
+ 	.phy_id_mask    = 0xfffffff0,
+ 	.name           = "Broadcom BCM54810",
+ 	/* PHY_GBIT_FEATURES */
++	.read_mmd	= bcm54810_read_mmd,
++	.write_mmd	= bcm54810_write_mmd,
+ 	.config_init    = bcm54xx_config_init,
+ 	.config_aneg    = bcm5481_config_aneg,
+ 	.ack_interrupt  = bcm_phy_ack_intr,
+-- 
+2.34.1
 
-Now, as with SNP+guest_memfd, guest private memory is not mapped in host 
-anymore, so i added a generic fix (instead of Sean's proposed patch of 
-checking for SNP guest inside sev_guest_memory_reclaimed()):
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -593,6 +593,9 @@ static __always_inline int 
-__kvm_handle_hva_range(struct kvm *kvm,
-                         unsigned long hva_start, hva_end;
+--00000000000089a49b060375e840
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-                         slot = container_of(node, struct 
-kvm_memory_slot, hva_node[slots->node_idx]);
-+                       if (kvm_slot_can_be_private(slot)) {
-+                               continue;
-+                       }
-                         hva_start = max(range->start, 
-slot->userspace_addr);
-                         hva_end = min(range->end, slot->userspace_addr +
-                                                   (slot->npages << 
-PAGE_SHIFT));
-
-With this fix added, the traces are as follows:
-
-# bpftrace -e 'kprobe:sev_guest_memory_reclaimed {@[kstack]=count()}'
-Attaching 1 probe...
-^C
-
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+812
-     __mmu_notifier_invalidate_range_start+152
-     change_protection+4628
-     change_prot_numa+93
-     task_numa_work+588
-     task_work_run+108
-     exit_to_user_mode_prepare+337
-     syscall_exit_to_user_mode+42
-     do_syscall_64+109
-     entry_SYSCALL_64_after_hwframe+114
-]: 1
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_release+60
-     __mmu_notifier_release+128
-     exit_mmap+657
-     __mmput+72
-     mmput+49
-     do_exit+752
-     do_group_exit+57
-     get_signal+2486
-     arch_do_signal_or_restart+51
-     exit_to_user_mode_prepare+257
-     syscall_exit_to_user_mode+42
-     do_syscall_64+109
-     entry_SYSCALL_64_after_hwframe+114
-]: 1
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_mmu_notifier_invalidate_range_start+812
-     __mmu_notifier_invalidate_range_start+152
-     change_protection+4628
-     change_prot_numa+93
-     task_numa_work+588
-     task_work_run+108
-     xfer_to_guest_mode_handle_work+228
-     kvm_arch_vcpu_ioctl_run+1572
-     kvm_vcpu_ioctl+671
-     __x64_sys_ioctl+153
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]:
-@[
-     sev_guest_memory_reclaimed+5
-     kvm_set_memslot+740
-     __kvm_set_memory_region.part.0+411
-     kvm_set_memory_region+89
-     kvm_vm_ioctl+1482
-     __x64_sys_ioctl+153
-     do_syscall_64+96
-     entry_SYSCALL_64_after_hwframe+114
-]: 104
-#
-
-As expected, the SEV hook is not invoked for the guest private memory 
-pages (no more invalidation from shmem_fallocate() + madvise()).
-
-Isn't it better to skip invoking the KVM MMU invalidation notifier when 
-the invalidated range belongs to guest private memory ?
-
- > In fact, AFAIC, SNP VM does
- > not track whether each page is previously shared, isn't it? If a page
- > was previously shared and was written by the host kernel or devices
- > before it was changed to private. No one tracks it and dirty caches
- > are there!
-
-The skipped invalidation here covered the case Mingwei mentioned above, 
-where the pages are changed from private->shared and subsequent freeing 
-of shared pages triggered the invalidation.
-
-But, then why are we concerned about this, i thought we have concerns 
-about the case where the dirty cache lines contain encrypted guest data ?
-
-Thanks,
-Ashish
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIPsym+4rfK9uDQf5
+EJdtY2RbM1YR9iQnXwHdoJc+5Te9MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgyMTIxNTMyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBdtKindVETeQyUOij9Z0hlPCdQY76yPXnx
+lxWX6fcFtNbO+7ErO1xRUfWFwTOLT1ZtRw7QaQkmrI/Ca4MUlZOLp+ZegCHKZIpXg997QKRqhssu
+ylxr+N6WoGFnq1MzLBDCtbDbCjDWIsWAUa8nmDIpycmqSWKQP0I5OHy0v8Ro9IKFIJt9n8RGK7lE
+Ekn9X52kjvOQf19uRwLFfjrqovBZqvTP/n3HmsvhEhqfQORYb/PyuGlqNsLahQdA78I33vxS+mYK
+69265uGT9Qads/Whl0qCvlQ4YxbTtDGbAnw12TiVAKAIHaO8IUYy7Zm+XsqSDWdcqmtH1N5Bl13u
+1VGw
+--00000000000089a49b060375e840--
