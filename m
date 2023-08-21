@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C411F78358E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D3478358F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbjHUWUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 18:20:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S230406AbjHUWW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 18:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbjHUWUi (ORCPT
+        with ESMTP id S229866AbjHUWW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 18:20:38 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4743DB
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:20:27 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so36693075e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:20:27 -0700 (PDT)
+        Mon, 21 Aug 2023 18:22:57 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E331B9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:22:16 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52164adea19so4831551a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:22:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692656426; x=1693261226;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ddy6FCEY5hzeS0746oHXREKMbN9QVr6NPEwblklvNZo=;
-        b=4LGFXD8A8ENlsep9RQwGl10vPxO88NsvzMgXD+9eNRZ/7DkjwMT1Zi45Y77ZHu5j35
-         fAR/SWi67fTJGy6DPHA5dGI0BYGOP9hZRMzlgCTW8qYqB9Ph1w4Hecrw80DG03EL+91s
-         KANRNANdrqCmfVVCsebcxcdAsgsG82MH/roQ1LK+1P2+qhUN+FO31C/FheHaizkfb1Lj
-         EB7ETBvwnb85T1LCOCXiKyHbjloZva22BLI3QZ5anM/mQ6CY4lpl+j0BzBzOZWPDxbMm
-         p0AnclTj2DwBoi/mLAlySk0v3njaL+AL0rpvxPoGFmFSd/hq2dKwRHgy0p4VXMoPEwIz
-         d4Mg==
+        d=gmail.com; s=20221208; t=1692656533; x=1693261333;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=z8zs5R1yv/FPCc0JPFhm89lCNeRIwrocWVxU6CC7ui0=;
+        b=aX1O8VRczlfYN55hMC9NizKEq6XP2KZ1MedjYMOwsNNaZqHHO7zteuJstI18Qzmo8B
+         /09YKlXzzxqdgJXfK64tCudVfaMtNf9JpBWv4zc7mGQtpfIMX0TpiPA+X7uAH0NUHMXT
+         klFLHCFC7/eXhO4iSd248tHO0yUKqHT9FcLiKw66QLF03G4p3/WblRGEiNNJWABI68q3
+         E8/ZQVNPB1JQG3y/S6tifNqYXVLESMjmjzKJ/f1KvqzVhUTq3cbONtINqVw2Edbxu7s8
+         YMqgOFIiasfpAxhc6ETL4H3GvMuRNY9ciXmuCvyW/nbSFJ5ViL2RYWMfO2yy91Szrlxy
+         9QCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692656426; x=1693261226;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ddy6FCEY5hzeS0746oHXREKMbN9QVr6NPEwblklvNZo=;
-        b=PLpmv/fQMmkgzD5dkK3UWA24gF1WAI8RSyeR5GTqwV9oy+WSopdQ0gg14fgZhoej/U
-         3WGRRFsbb+TazPiaOSI4rfyWQmADDbuwNhbtFyzI0EAR7/T+KbNtmzfP+FIz5HEV64lw
-         y8QDi+1U1ZRUhFmotNU6wnpuirMpGHvvqiJynY2HTsm+v56zZ2Dd5HBTJ7uqois+I0zs
-         ZQWw2QAVuJyqW3+BvDFNIIA3QQ1MGtzU57UP7f5jwZ0fp+JmYFNuvrzbQm1A2jBmrpPy
-         K8GYnDMvIEDzo+exHEHGFGfzUTLhhgCIOeBOctDqjZHHg5q2X7ik/a8XqWlxlrtG5mpO
-         i7dg==
-X-Gm-Message-State: AOJu0YwZSFvIUzwJS/0NYoo2/Tth9Vd2JdTR74Xh6uxxV4C2WR2MM5RV
-        /z1NcxxEE9VCkXOPrBNNwLJZJw==
-X-Google-Smtp-Source: AGHT+IGuL4lJ6a+Hcvj9IHHW0ZedYrdkuqW75STmYvkP3MfMFqU7cHV/ivmQuIUtxDCkFoP1IOnzQg==
-X-Received: by 2002:a05:600c:214a:b0:3fc:25:ced6 with SMTP id v10-20020a05600c214a00b003fc0025ced6mr6358964wml.13.1692656426229;
-        Mon, 21 Aug 2023 15:20:26 -0700 (PDT)
-Received: from airbuntu.. (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id hn40-20020a05600ca3a800b003fe61c33df5sm17751154wmb.3.2023.08.21.15.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 15:20:25 -0700 (PDT)
-From:   Qais Yousef <qyousef@layalina.io>
-To:     stable@vger.kernel.org
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Qais Yousef <qyousef@layalina.io>
-Subject: [PATCH 6/6] cgroup/cpuset: Free DL BW in case can_attach() fails
-Date:   Mon, 21 Aug 2023 23:19:56 +0100
-Message-Id: <20230821221956.698117-7-qyousef@layalina.io>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230821221956.698117-1-qyousef@layalina.io>
-References: <20230821221956.698117-1-qyousef@layalina.io>
+        d=1e100.net; s=20221208; t=1692656533; x=1693261333;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=z8zs5R1yv/FPCc0JPFhm89lCNeRIwrocWVxU6CC7ui0=;
+        b=H05E3ZVCHBdCvO9/TwAPZH5RX3dCCe/Vz40zS1m3PJFb9vlyIwpXKlp41zROVbvdrQ
+         yBFGpoaSfeB4/bs36bImOB6OA67DkXanAS53viR2pH5VlCQ1jbKeR8Ix7j50QvR5rgP0
+         zBfcwHj0ezTz84+kALAh625XQjZsPfjDUJJfdSR42xWlfPp66NZi0GMAYW7yPiOs70VM
+         bOnAS4Yl7HxDgOIMUmv0DrGQPxeVqEAy3TUxHrMv85of1iz0w/Af9XbWWb/amfPsvLP1
+         ITlI/HX68xrN318vXHYci2JNus11+JjJrerhSpTFR+7JoPLwsf/aYCGR9D4N+51THqEV
+         ZVVw==
+X-Gm-Message-State: AOJu0Ywrb9qqD6DrQiCTYvr1zzcd3ApXKB/ZdqMS4XEUyoUDb1xr9vYr
+        FRlgmtnTB+jA8chthpwb+ns=
+X-Google-Smtp-Source: AGHT+IF5NxI8c2iIaQO4DJRWJO32K+wmKFB3dnLH0kyVDdKeGGFX6PVfm2bhqonftzV7Wx2jeCnVjg==
+X-Received: by 2002:a05:6402:1206:b0:51e:5251:8f45 with SMTP id c6-20020a056402120600b0051e52518f45mr6838098edw.4.1692656532949;
+        Mon, 21 Aug 2023 15:22:12 -0700 (PDT)
+Received: from ?IPV6:2a02:908:8b3:1840:ab60:7575:6541:6820? ([2a02:908:8b3:1840:ab60:7575:6541:6820])
+        by smtp.gmail.com with ESMTPSA id u9-20020aa7d0c9000000b00523a43f9b1dsm6528035edo.22.2023.08.21.15.22.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 15:22:12 -0700 (PDT)
+Message-ID: <e151e29e-7dc7-e237-aeed-4005911d9583@gmail.com>
+Date:   Tue, 22 Aug 2023 00:22:10 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 03/12] drm/bridge: tc358768: Fix bit updates
+Content-Language: en-US
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+References: <20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com>
+ <20230816-tc358768-v2-3-242b9d5f703a@ideasonboard.com>
+From:   Maxim Schwalm <maxim.schwalm@gmail.com>
+In-Reply-To: <20230816-tc358768-v2-3-242b9d5f703a@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,202 +86,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Hi Tomi,
 
-commit 2ef269ef1ac006acf974793d975539244d77b28f upstream.
+On 16.08.23 13:25, Tomi Valkeinen wrote:
+> The driver has a few places where it does:
+> 
+> if (thing_is_enabled_in_config)
+> 	update_thing_bit_in_hw()
+> 
+> This means that if the thing is _not_ enabled, the bit never gets
+> cleared. This affects the h/vsyncs and continuous DSI clock bits.
+> 
+> Fix the driver to always update the bit.
+> 
+> Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/gpu/drm/bridge/tc358768.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+> index bc97a837955b..b668f77673c3 100644
+> --- a/drivers/gpu/drm/bridge/tc358768.c
+> +++ b/drivers/gpu/drm/bridge/tc358768.c
+> @@ -794,8 +794,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  		val |= BIT(i + 1);
+>  	tc358768_write(priv, TC358768_HSTXVREGEN, val);
+>  
+> -	if (!(mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
+> -		tc358768_write(priv, TC358768_TXOPTIONCNTRL, 0x1);
+> +	tc358768_write(priv, TC358768_TXOPTIONCNTRL,
+> +		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
+>  
+>  	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+>  	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
+> @@ -861,11 +861,12 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+>  	tc358768_write(priv, TC358768_DSI_HACT, hact);
+>  
+>  	/* VSYNC polarity */
+> -	if (!(mode->flags & DRM_MODE_FLAG_NVSYNC))
+> -		tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5), BIT(5));
+> +	tc358768_update_bits(priv, TC358768_CONFCTL, BIT(5),
+> +			     (mode->flags & DRM_MODE_FLAG_PVSYNC) ? BIT(5) : 0);
+> +
+>  	/* HSYNC polarity */
+> -	if (mode->flags & DRM_MODE_FLAG_PHSYNC)
+> -		tc358768_update_bits(priv, TC358768_PP_MISC, BIT(0), BIT(0));
+> +	tc358768_update_bits(priv, TC358768_PP_MISC, BIT(0),
+> +			     (mode->flags & DRM_MODE_FLAG_PHSYNC) ? BIT(0) : 0);
+>  
+>  	/* Start DSI Tx */
+>  	tc358768_write(priv, TC358768_DSI_START, 0x1);
+> 
 
-cpuset_can_attach() can fail. Postpone DL BW allocation until all tasks
-have been checked. DL BW is not allocated per-task but as a sum over
-all DL tasks migrating.
+shouldn't the last patch of this series be moved before this one?
+Currently, this patch will still lead to a temporary regression until
+patch #12 is applied.
 
-If multiple controllers are attached to the cgroup next to the cpuset
-controller a non-cpuset can_attach() can fail. In this case free DL BW
-in cpuset_cancel_attach().
+Best regards,
+Maxim
 
-Finally, update cpuset DL task count (nr_deadline_tasks) only in
-cpuset_attach().
-
-Suggested-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-(cherry picked from commit 2ef269ef1ac006acf974793d975539244d77b28f)
-Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
----
- include/linux/sched.h  |  2 +-
- kernel/cgroup/cpuset.c | 53 ++++++++++++++++++++++++++++++++++++++----
- kernel/sched/core.c    | 17 ++------------
- 3 files changed, 51 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 0bee06542450..2553918f0b61 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1852,7 +1852,7 @@ current_restore_flags(unsigned long orig_flags, unsigned long flags)
- }
- 
- extern int cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
--extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_effective_cpus);
-+extern int task_can_attach(struct task_struct *p);
- extern int dl_bw_alloc(int cpu, u64 dl_bw);
- extern void dl_bw_free(int cpu, u64 dl_bw);
- #ifdef CONFIG_SMP
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index b7168970fff2..2c76fcd9f0bc 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -198,6 +198,8 @@ struct cpuset {
- 	 * know when to rebuild associated root domain bandwidth information.
- 	 */
- 	int nr_deadline_tasks;
-+	int nr_migrate_dl_tasks;
-+	u64 sum_migrate_dl_bw;
- 
- 	/* Invalid partition error code, not lock protected */
- 	enum prs_errcode prs_err;
-@@ -2496,16 +2498,23 @@ static int cpuset_can_attach_check(struct cpuset *cs)
- 	return 0;
- }
- 
-+static void reset_migrate_dl_data(struct cpuset *cs)
-+{
-+	cs->nr_migrate_dl_tasks = 0;
-+	cs->sum_migrate_dl_bw = 0;
-+}
-+
- /* Called by cgroups to determine if a cpuset is usable; cpuset_mutex held */
- static int cpuset_can_attach(struct cgroup_taskset *tset)
- {
- 	struct cgroup_subsys_state *css;
--	struct cpuset *cs;
-+	struct cpuset *cs, *oldcs;
- 	struct task_struct *task;
- 	int ret;
- 
- 	/* used later by cpuset_attach() */
- 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-+	oldcs = cpuset_attach_old_cs;
- 	cs = css_cs(css);
- 
- 	mutex_lock(&cpuset_mutex);
-@@ -2516,7 +2525,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 		goto out_unlock;
- 
- 	cgroup_taskset_for_each(task, css, tset) {
--		ret = task_can_attach(task, cs->effective_cpus);
-+		ret = task_can_attach(task);
- 		if (ret)
- 			goto out_unlock;
- 		ret = security_task_setscheduler(task);
-@@ -2524,11 +2533,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 			goto out_unlock;
- 
- 		if (dl_task(task)) {
--			cs->nr_deadline_tasks++;
--			cpuset_attach_old_cs->nr_deadline_tasks--;
-+			cs->nr_migrate_dl_tasks++;
-+			cs->sum_migrate_dl_bw += task->dl.dl_bw;
- 		}
- 	}
- 
-+	if (!cs->nr_migrate_dl_tasks)
-+		goto out_success;
-+
-+	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-+		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-+
-+		if (unlikely(cpu >= nr_cpu_ids)) {
-+			reset_migrate_dl_data(cs);
-+			ret = -EINVAL;
-+			goto out_unlock;
-+		}
-+
-+		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-+		if (ret) {
-+			reset_migrate_dl_data(cs);
-+			goto out_unlock;
-+		}
-+	}
-+
-+out_success:
- 	/*
- 	 * Mark attach is in progress.  This makes validate_change() fail
- 	 * changes which zero cpus/mems_allowed.
-@@ -2551,6 +2580,14 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
- 	cs->attach_in_progress--;
- 	if (!cs->attach_in_progress)
- 		wake_up(&cpuset_attach_wq);
-+
-+	if (cs->nr_migrate_dl_tasks) {
-+		int cpu = cpumask_any(cs->effective_cpus);
-+
-+		dl_bw_free(cpu, cs->sum_migrate_dl_bw);
-+		reset_migrate_dl_data(cs);
-+	}
-+
- 	mutex_unlock(&cpuset_mutex);
- }
- 
-@@ -2651,6 +2688,12 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- out:
- 	cs->old_mems_allowed = cpuset_attach_nodemask_to;
- 
-+	if (cs->nr_migrate_dl_tasks) {
-+		cs->nr_deadline_tasks += cs->nr_migrate_dl_tasks;
-+		oldcs->nr_deadline_tasks -= cs->nr_migrate_dl_tasks;
-+		reset_migrate_dl_data(cs);
-+	}
-+
- 	cs->attach_in_progress--;
- 	if (!cs->attach_in_progress)
- 		wake_up(&cpuset_attach_wq);
-@@ -3330,7 +3373,7 @@ static int cpuset_can_fork(struct task_struct *task, struct css_set *cset)
- 	if (ret)
- 		goto out_unlock;
- 
--	ret = task_can_attach(task, cs->effective_cpus);
-+	ret = task_can_attach(task);
- 	if (ret)
- 		goto out_unlock;
- 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 50fab8114260..90005760003f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9294,8 +9294,7 @@ int cpuset_cpumask_can_shrink(const struct cpumask *cur,
- 	return ret;
- }
- 
--int task_can_attach(struct task_struct *p,
--		    const struct cpumask *cs_effective_cpus)
-+int task_can_attach(struct task_struct *p)
- {
- 	int ret = 0;
- 
-@@ -9308,21 +9307,9 @@ int task_can_attach(struct task_struct *p,
- 	 * success of set_cpus_allowed_ptr() on all attached tasks
- 	 * before cpus_mask may be changed.
- 	 */
--	if (p->flags & PF_NO_SETAFFINITY) {
-+	if (p->flags & PF_NO_SETAFFINITY)
- 		ret = -EINVAL;
--		goto out;
--	}
--
--	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
--					      cs_effective_cpus)) {
--		int cpu = cpumask_any_and(cpu_active_mask, cs_effective_cpus);
- 
--		if (unlikely(cpu >= nr_cpu_ids))
--			return -EINVAL;
--		ret = dl_bw_alloc(cpu, p->dl.dl_bw);
--	}
--
--out:
- 	return ret;
- }
- 
--- 
-2.34.1
 
