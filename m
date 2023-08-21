@@ -2,148 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29807782D52
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA82782D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236376AbjHUPcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:32:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        id S236390AbjHUPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjHUPcX (ORCPT
+        with ESMTP id S235487AbjHUPds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:32:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF63F1;
-        Mon, 21 Aug 2023 08:32:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692631939; x=1724167939;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=D+hIMjI03uwL2llenz588/DRHQXH+NN8ZzzsZwNOX7w=;
-  b=lRg1Hfsw/JSOFaawlxLLT6jnfUpOgOKZR3z8Afuj3l5PvO1H+IScf2sq
-   CKZJcYQ/B/tPKC4zeq0A7kyJ6zTJxGOvqEg2/M/KLR1f9bo9cwGRXs9OP
-   xYRbECKbpK1RyTCcp3JXrijDbbRjwoJ/rSIrDxLTbXvPcDzQcrBcA2DC2
-   cBjDRg+zhTppCe0ErkxQB6tTetyfkjuiS00UNMnRcuoleGoiCrn74nODn
-   YXjifAisfVnmrdQf2UnhxTeJCdmuPPRUiy+sOn07KwY3tRMIVt5brA5Td
-   Ol1RkwN6AzFduqs9gcLBl0m/miqiyDlts8zwst78Bc4Xvfe67IW+FvMAD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376368145"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="376368145"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 08:32:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="805955498"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="805955498"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP; 21 Aug 2023 08:32:16 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qY6t5-002VUo-0p;
-        Mon, 21 Aug 2023 18:32:15 +0300
-Date:   Mon, 21 Aug 2023 18:32:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yann Sionneau <yann@sionneau.net>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yann Sionneau <ysionneau@kalray.eu>,
-        Jonathan Borne <jborne@kalray.eu>
-Subject: Re: [PATCH v2] i2c: designware: fix __i2c_dw_disable() in case
- master is holding SCL low
-Message-ID: <ZOODfgHq5BXDZnzG@smile.fi.intel.com>
-References: <20230821140103.5272-1-yann@sionneau.net>
+        Mon, 21 Aug 2023 11:33:48 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED8FEE
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:33:45 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31977ace1c8so3186082f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692632024; x=1693236824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8R1/slw2ObDAER9IEfUgOB80CoZbmunAI+YkW3aWCw=;
+        b=3/2Udm2k0WRG4OwIudeOQicDI/IsQoZ7sqFCfFwknq4HCZ1dBHbl+YbuSns1Vokt4/
+         Syx9EfOasPSOKJgz0QE+oHtAJ5NqmgnBIJ9PMTKhIsfPhma6K1pkLbgZ9UKPFj2xaudP
+         LfmHBfdylcrdmLVqpvx/c65pmMykCgd6Ltb4cJP5GkoTWOJ8B8xWeusTVWbxYqK24SOS
+         ceqZ7yubGwsI1uTnIn2JYVoDzIa5j2tJVjpnmPIA7cmUy2Re4IZ9LFBE+eoUQtGgcreB
+         BNati6WRfbODEHin+idl6dAdu7krn5ylGlNOYphBZD/0cd4v4jNwiSg4qK0ScFMe5OHa
+         70iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692632024; x=1693236824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c8R1/slw2ObDAER9IEfUgOB80CoZbmunAI+YkW3aWCw=;
+        b=WJC6Vigur/d7OGqBOdgHoyXLN5GtBWatz1IH8FXnP3SZR7ZRx5euBLpcEGIN9kN3RB
+         C4Bkpf8PVY79hwCde22u+6hVfZnYf5ndNgg9yXqvov6pg9QaOTIbxksZu33NUWTQmd/o
+         n9ATDPv1P+vGB2H4E/kKa2vrpTFNIn4veFzSRTR1Auo4nZoqje7H+0t9/8KdiY1Du/qb
+         79JWG9WNdK28I20SVCMnMjFA7ipmBTVnZK0aDrr+U3D2rwIF5T0GiG8sdxBr/Bd45F60
+         dxE4+sQTz3vELgJa01n9BTRgOaRwevF/tYYNpIkWGixKPqX/TMcraeq+BEWhJgk4CqKT
+         xmig==
+X-Gm-Message-State: AOJu0Yxor4ue5dn3ND8WHeZ+hth5MHkWdRnwcLut/Q2fjE+3iMQZl+4V
+        lnUhfo8G/+LvdtscEa6sfEogoA==
+X-Google-Smtp-Source: AGHT+IGGwAhHolhP4hUrSPoxGxw5r7IPDLLkCF71hcVgj5yGI8+uoo5+NA0vuy3gLrBLIkCslk7yvA==
+X-Received: by 2002:adf:f287:0:b0:315:7d2f:fc36 with SMTP id k7-20020adff287000000b003157d2ffc36mr5066885wro.20.1692632023873;
+        Mon, 21 Aug 2023 08:33:43 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:677:995b:9c07:d7fc])
+        by smtp.gmail.com with ESMTPSA id w18-20020a5d4052000000b0031c5ce91ad6sm1256601wrp.97.2023.08.21.08.33.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 08:33:43 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [libgpiod v1.6.x][PATCH] tests: mockup: unbind mockup devices before unloading the module
+Date:   Mon, 21 Aug 2023 17:33:39 +0200
+Message-Id: <20230821153339.26305-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821140103.5272-1-yann@sionneau.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 04:01:03PM +0200, Yann Sionneau wrote:
-> From: Yann Sionneau <ysionneau@kalray.eu>
-> 
-> The DesignWare IP can be synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
-> parameter.
-> In this case, when the TX FIFO gets empty and the last command didn't have
-> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
-> a new command is pushed into the TX FIFO or the transfer is aborted.
-> 
-> When the controller is holding SCL low, it cannot be disabled.
-> The transfer must first be aborted.
-> Also, the bus recovery won't work because SCL is held low by the master.
-> 
-> Check if the master is holding SCL low in __i2c_dw_disable() before trying
-> to disable the controller. If SCL is held low, an abort is initiated.
-> When the abort is done, then proceed with disabling the controller.
-> 
-> This whole situation can happen for instance during SMBus read data block
-> if the slave just responds with "byte count == 0".
-> This puts the driver in an unrecoverable state, because the controller is
-> holding SCL low and the current __i2c_dw_disable() procedure is not
-> working. In this situation only a SoC reset can fix the i2c bus.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Thank you for an update!
-My comments below.
+gpio-mockup relies on the GPIO devices being registered in module's __init
+function and them being unregistered in __exit. This works with the GPIO
+subsystem as it only takes a reference to the underlying owner module when
+a GPIO descriptor is requested and not when the GPIO device is
+instantiated.
 
-...
+This behavior may change in the future in the kernel so make the behavior
+of libgpiomockup more correct and have it unbind all mockup devices over
+sysfs before unloading the module.
 
->  void __i2c_dw_disable(struct dw_i2c_dev *dev)
->  {
-> -	int timeout = 100;
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ tests/mockup/gpio-mockup.c | 50 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-I would leave this untouched to make patch less invasive and
-easier to backport.
-
-> +	unsigned int raw_intr_stats;
-> +	bool abort_done = false;
-> +	int abort_timeout = 100;
-> +	int dis_timeout = 100;
-> +	unsigned int enable;
-> +	bool abort_needed;
->  	u32 status;
->  
-> +	regmap_read(dev->map, DW_IC_RAW_INTR_STAT, &raw_intr_stats);
-> +	regmap_read(dev->map, DW_IC_ENABLE, &enable);
-> +
-> +	abort_needed = raw_intr_stats & DW_IC_INTR_MST_ON_HOLD;
-
-> +
-
-This blank line is not needed.
-
-> +	if (abort_needed) {
-> +		regmap_write(dev->map, DW_IC_ENABLE, enable | DW_IC_ENABLE_ABORT);
-
-> +		do {
-> +			regmap_read(dev->map, DW_IC_ENABLE, &enable);
-> +			abort_done = !(enable & DW_IC_ENABLE_ABORT);
-> +			usleep_range(10, 20);
-> +		} while (!abort_done && abort_timeout--);
-
-Now as you split this loop, it may be replaced by regmap_read_poll_timeout()
-call.
-
-> +		if (!abort_done)
-> +			dev_err(dev->dev, "timeout while trying to abort current transfer\n");
-> +	}
-
-...
-
-Other than above, looks good to me.
-
+diff --git a/tests/mockup/gpio-mockup.c b/tests/mockup/gpio-mockup.c
+index fa27bd7..387e449 100644
+--- a/tests/mockup/gpio-mockup.c
++++ b/tests/mockup/gpio-mockup.c
+@@ -5,6 +5,7 @@
+  * Copyright (C) 2019 Bartosz Golaszewski <bgolaszewski@baylibre.com>
+  */
+ 
++#include <dirent.h>
+ #include <errno.h>
+ #include <libkmod.h>
+ #include <libudev.h>
+@@ -357,6 +358,51 @@ err_out:
+ 	return -1;
+ }
+ 
++static int dir_filter(const struct dirent *entry)
++{
++	return !strncmp(entry->d_name, "gpio-mockup.", 12);
++}
++
++static void free_dirs(struct dirent **entries, size_t count)
++{
++	size_t i;
++
++	for (i = 0; i < count; i++)
++		free(entries[i]);
++	free(entries);
++}
++
++static int unbind_devices(void)
++{
++	struct dirent **entries;
++	int i, count, fd;
++	ssize_t ret;
++
++	count = scandir("/sys/bus/platform/drivers/gpio-mockup", &entries,
++			dir_filter, alphasort);
++	if (count < 0)
++		return -1;
++
++	fd = open("/sys/bus/platform/drivers/gpio-mockup/unbind", O_WRONLY);
++	if (fd < 0) {
++		free_dirs(entries, count);
++		return -1;
++	}
++
++	for (i = 0; i < count; i++) {
++		ret = write(fd, entries[i]->d_name, strlen(entries[i]->d_name));
++		if (ret < 0) {
++			close(fd);
++			free_dirs(entries, count);
++			return -1;
++		}
++	}
++
++	close(fd);
++	free_dirs(entries, count);
++	return 0;
++}
++
+ EXPORT int gpio_mockup_remove(struct gpio_mockup *ctx)
+ {
+ 	unsigned int i;
+@@ -367,6 +413,10 @@ EXPORT int gpio_mockup_remove(struct gpio_mockup *ctx)
+ 		return -1;
+ 	}
+ 
++	rv = unbind_devices();
++	if (rv)
++		return -1;
++
+ 	rv = kmod_module_remove_module(ctx->module, 0);
+ 	if (rv)
+ 		return -1;
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
