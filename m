@@ -2,120 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227B6782B5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370A6782B52
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:15:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235764AbjHUOQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235736AbjHUOP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235724AbjHUOP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 21 Aug 2023 10:15:56 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B257EA;
-        Mon, 21 Aug 2023 07:15:53 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LCxV0n015340;
-        Mon, 21 Aug 2023 14:15:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=P2pxWYrUAq5IVWa8JMqth4Lq064tcqTCVzu8AMdl10U=;
- b=BtssP9ME07JuhzRlh+Bi4AbNgVMCrs1VrB0Wv5Ckpikt/FwA73qJ6i7JG/UD4iax4P2F
- 9gKtFFm2ekwKP45IvO7RoOacyZCQ7BRxphTQLvaM9Dsn/QKq7TMRNKTGv8yXxxoSs7ve
- FRo4mkHWTlvEQHqYbjFkv7vl0ykbULXBieE3t+k4A4urQknOL3Ib3DZVW6v+XYAKh85X
- aH9WrrGBmq5mhhJfuaW9mn3yp4v4NqDa6mZ/LIt+uvInVrVwkHFYQS+UhxbGPVrsxZEu
- PcNy/aOHKBuXbz25x5kCjNToOp7rEfqCZUg+ieDhzwh5WqFpj5d9x9QuButpe13dPcGP RA== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm6uugdf8-1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235721AbjHUOPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Aug 2023 10:15:54 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A795FA;
+        Mon, 21 Aug 2023 07:15:51 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LDarDX009618;
+        Mon, 21 Aug 2023 14:15:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=m1u70u61gLTo70AR3r6Jj+sm6TQg8PhXTIvui3IQJcI=;
+ b=aSvshNbG+bFb1ScsGp4x5O5DD65qcLGYsE3QRYTQzfFDp1vGeNqf6ntjVoPkFGFhnfiE
+ Dj5rcQqJIDwroqxwym93aH4kBvwjxnbb+ynXu9p9+Wocl1i44G/TjiJrdREBSxJhAaDX
+ 5nNzzh6UuLENGiAK7xJrBpAEZsWrdxvFvXvIz5bxkCMgrzLoBj0U9pYhqGNNAA1rJ3DV
+ lN/eAaqgoUxW1sb8WTcCLxHUAhUj0g08DBmg9rlDr17oq2BdMpczToKEfcQudYP9rZpo
+ w20E2pj44R7+sEZeVW+vRwml2NY+SAArg/vKrPZ+QgvPo8DUGrBehkI8ZiKK0hsHo/jw lg== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sjk3tky7b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 14:15:40 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37LEFdrv018571
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Aug 2023 14:15:39 GMT
-Received: from [192.168.143.77] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 21 Aug
- 2023 07:15:39 -0700
-Message-ID: <d4ef1d99-58f9-96d0-19e8-740bf5b76791@quicinc.com>
-Date:   Mon, 21 Aug 2023 07:15:38 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH V1 1/2] scsi: ufs: qcom: dt-bindings: Add SC7280
- compatible string
-Content-Language: en-US
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>, <mani@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <alim.akhtar@samsung.com>,
-        <bvanassche@acm.org>, <robh+dt@kernel.org>, <avri.altman@wdc.com>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230821094937.13059-1-quic_nitirawa@quicinc.com>
- <20230821094937.13059-2-quic_nitirawa@quicinc.com>
-From:   "Bao D. Nguyen" <quic_nguyenb@quicinc.com>
-In-Reply-To: <20230821094937.13059-2-quic_nitirawa@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
+        Mon, 21 Aug 2023 14:15:48 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 37LEFj6O009997;
+        Mon, 21 Aug 2023 14:15:45 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sjptkpqf1-1;
+        Mon, 21 Aug 2023 14:15:45 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37LEFj7U009989;
+        Mon, 21 Aug 2023 14:15:45 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 37LEFiCb009988;
+        Mon, 21 Aug 2023 14:15:45 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 3B98C4C12; Mon, 21 Aug 2023 19:45:44 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v3 0/3] PCI: qcom: Add support for OPP
+Date:   Mon, 21 Aug 2023 19:45:40 +0530
+Message-Id: <1692627343-4380-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JmSI3S2eqjjMRUBS4gTg9MNlTH-P8hah
-X-Proofpoint-GUID: JmSI3S2eqjjMRUBS4gTg9MNlTH-P8hah
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 2jURpxmrZzkds84plSqG8UVqMSeBx3N2
+X-Proofpoint-ORIG-GUID: 2jURpxmrZzkds84plSqG8UVqMSeBx3N2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-21_01,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308210132
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ mlxlogscore=602 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308210131
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/2023 2:49 AM, Nitin Rawat wrote:
-> Document the compatible string for the UFS found on SC7280.
-> 
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> ---
->   Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> index bdfa86a0cc98..861bbf6a57f6 100644
-> --- a/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> +++ b/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml
-> @@ -27,6 +27,7 @@ properties:
->             - qcom,msm8996-ufshc
->             - qcom,msm8998-ufshc
->             - qcom,sa8775p-ufshc
-> +          - qcom,sc7280-ufshc
->             - qcom,sc8280xp-ufshc
->             - qcom,sdm845-ufshc
->             - qcom,sm6350-ufshc
-> @@ -111,6 +112,7 @@ allOf:
->               enum:
->                 - qcom,msm8998-ufshc
->                 - qcom,sa8775p-ufshc
-> +              - qcom,sc7280-ufshc
->                 - qcom,sc8280xp-ufshc
->                 - qcom,sm8250-ufshc
->                 - qcom,sm8350-ufshc
-> --
-> 2.17.1
-> 
+This patch adds support for OPP to vote for the performance state of RPMH
+power domain based upon GEN speed it PCIe got enumerated.
 
-Reviewed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
+Before link up PCIe driver will vote for the maximum performance state.
+
+changes from v3:
+	- Instead of using the freq based opp search use level based as suggested
+	  by Dmitry Baryshkov.
+Changes from v1:
+        - Addressed comments from Krzysztof Kozlowski.
+        - Added the rpmhpd_opp_xxx phandle as suggested by pavan.
+        - Added dev_pm_opp_set_opp API call which was missed on previous patch.
+
+Krishna chaitanya chundru (3):
+  dt-bindings: pci: qcom: Add binding for operating-points-v2
+  arm64: dts: qcom: sm8450: Add opp table support to PCIe
+  PCI: qcom: Add OPP support for speed based performance state of RPMH
+
+ .../devicetree/bindings/pci/qcom,pcie.yaml         |  4 ++
+ arch/arm64/boot/dts/qcom/sm8450.dtsi               | 47 ++++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             | 47 ++++++++++++++++++++++
+ 3 files changed, 98 insertions(+)
+
+-- 
+2.7.4
+
