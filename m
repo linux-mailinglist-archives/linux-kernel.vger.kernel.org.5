@@ -2,189 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C79C87827C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FF17827CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbjHULTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
+        id S231983AbjHULTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:19:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbjHULTH (ORCPT
+        with ESMTP id S231925AbjHULTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:19:07 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DACE4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:19:05 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-64f4ac604c2so37276d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:19:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692616744; x=1693221544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MABuIgO/otMKwHO3IQArWtPwphnBdU0rfjs7SwDiKys=;
-        b=olGcE6bbDPyeEpAEzSFYYVNDMYT1wyzD8qqPvo9MRoiT7DNGQ0QBoNkLz8Hv2jG8YT
-         8jbYcrz4F2KoUgGnyNV1uJ1L7HWzLukD3M3f8MZICcx2S4xhaKTaKz7b0pwLaxa2LLAM
-         qMU4+rjEatqcjMP0stIJ0wWgsQDJIhMmpf13tlWB4UUGWLMVau5oe3WgypqTCRJuSYl3
-         ZD3B1ipxn269JkKbx97ZywEujLNcTJ/8nSjmaD6l8VqBNcNyaAEqDKqVPPxz0HbelLHJ
-         N68TJ9cYDglounOK54pbz+Bf4FDr+WwJ5UJbHgB77Ve2EUcSGmKkiI5NR5y98WDN2G4y
-         Evyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692616744; x=1693221544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MABuIgO/otMKwHO3IQArWtPwphnBdU0rfjs7SwDiKys=;
-        b=Sl0IPCvIJZAw+E6NZP4kGeyZCzAv1Ap+ggGFdISzikhxBYEI8YF0pELjvxYk8mV2jm
-         YdUMRI2EQX41eyk5QrZRYAQtO81r8Rw+kfX5rBTq/VYFO0JO7DvvGztuwTY2LajIsMkp
-         JY08yv3FYB6PuNRQymLViZthyjL5wcBvz43S6iHvdtAi+NU3couU3sG9JmRgf/EjOiaZ
-         f1DU/+Ls8pDP6m/H475FatvxHscPWaHYdJT6GFkzIWh7+jd56EgJAYV//nPSb785i+yP
-         hZv10BHbD4uNAD/4GfjDhAUH0JRHZxI0qK4hwAL4EvjxGMn6CnZVdY5HJpsBnOmsPipc
-         0cNQ==
-X-Gm-Message-State: AOJu0Yx5C54k1CiSonFu5mWvJYYLjrx/Tt2Ede9uEAKb+lS3I5EZ5dS2
-        NSHJno52PuKUVkc5gIcFu7nUxNB4T9p8yCc1uH342w==
-X-Google-Smtp-Source: AGHT+IHc2VXTlDniE230YR2A78IFk4m6ZOcAIpq197VySFdMHqSmnKBxBuW3OgXSJMUg9onxvCuHYF6R5700PxdwiAY=
-X-Received: by 2002:a0c:eb4c:0:b0:641:8878:29a6 with SMTP id
- c12-20020a0ceb4c000000b00641887829a6mr4708587qvq.65.1692616744117; Mon, 21
- Aug 2023 04:19:04 -0700 (PDT)
+        Mon, 21 Aug 2023 07:19:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A631DF;
+        Mon, 21 Aug 2023 04:19:41 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37LApbL2025772;
+        Mon, 21 Aug 2023 11:19:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=bOyxypRSIGKt6D/e7LEaYFk9t4eLni0qi1Sh8IwYmjc=;
+ b=l8QUZ5bULMehgiPHW/7h3ZCF50i3SzgCqH1yvXwXLM0dplBV3u23BgozkpOUUDOdIu7g
+ hvyoJmeOb0+HmzD8udeieZExg8Q28bFxQIcw6DHNFim30kRjvP+fxe2fJnRhmU4AKx1W
+ GrKIP7X2+sAhYKgQocr83BlOrScjR6xM0wFAvVV9mtcSdDWn9cz2Y/msKBo2R81QYjIb
+ vlhoKNFdTmJ09p71oscD1aDEloNole66qex57sI+6Ri46V0Qv7D5kpXC46n5fUe01Qlk
+ F0UybH7NrkmopqALbXfPqtnWtlen47tFSgs0HjKvs1z0hwwaVJJ+qu1+skyGWcHtW+zu oQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm6f9r1st-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 11:19:31 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37LBJUCL007775
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 11:19:30 GMT
+Received: from [10.216.38.78] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 21 Aug
+ 2023 04:19:25 -0700
+Message-ID: <3fa6ba13-d5cc-c733-bf38-e862380d97df@quicinc.com>
+Date:   Mon, 21 Aug 2023 16:49:20 +0530
 MIME-Version: 1.0
-References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com>
- <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
- <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com> <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org>
- <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com>
-In-Reply-To: <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 21 Aug 2023 13:18:53 +0200
-Message-ID: <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com>
-Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB) driver
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Shyam Saini <shyamsaini@linux.microsoft.com>,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Allen Pais <apais@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH] scsi: ufs: ufs-qcom: clear qunipro_g4_sel for HW major
+ version > 5
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230821-topic-sm8x50-upstream-ufs-major-5-plus-v1-1-c14cce209f21@linaro.org>
+ <20230821103851.GB36455@thinkpad>
+Content-Language: en-US
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <20230821103851.GB36455@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VhXuiBwq7vEaVzng-kZdm7yv_JAHSRfg
+X-Proofpoint-ORIG-GUID: VhXuiBwq7vEaVzng-kZdm7yv_JAHSRfg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-21_01,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308210105
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 12:03=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org>=
- wrote:
->
-> On Mon, 21 Aug 2023 at 15:19, Jerome Forissier
-> <jerome.forissier@linaro.org> wrote:
-> >
-> >
-> >
-> > On 8/17/23 01:31, Shyam Saini wrote:
-> > >
-> > > Hi Ulf,
-> > >
-> > >> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
-> > >> <shyamsaini@linux.microsoft.com> wrote:
-> > >>>
-> > >>> From: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> > >>>
-> > >>> [This is patch 1 from [1] Alex's submission and this RPMB layer was
-> > >>> originally proposed by [2]Thomas Winkler ]
-> > >>>
-> > >>> A number of storage technologies support a specialised hardware
-> > >>> partition designed to be resistant to replay attacks. The underlyin=
-g
-> > >>> HW protocols differ but the operations are common. The RPMB partiti=
-on
-> > >>> cannot be accessed via standard block layer, but by a set of specif=
-ic
-> > >>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> > >>> partition provides authenticated and replay protected access, hence
-> > >>> suitable as a secure storage.
-> > >>>
-> > >>> The initial aim of this patch is to provide a simple RPMB Driver wh=
-ich
-> > >>> can be accessed by Linux's optee driver to facilitate fast-path for
-> > >>> RPMB access to optee OS(secure OS) during the boot time. [1] Curren=
-tly,
-> > >>> Optee OS relies on user-tee supplicant to access eMMC RPMB partitio=
-n.
-> > >>>
-> > >>> A TEE device driver can claim the RPMB interface, for example, via
-> > >>> class_interface_register(). The RPMB driver provides a series of
-> > >>> operations for interacting with the device.
-> > >>
-> > >> I don't quite follow this. More exactly, how will the TEE driver kno=
-w
-> > >> what RPMB device it should use?
-> > >
-> > > I don't have complete code to for this yet, but i think OP-TEE driver
-> > > should register with RPMB subsystem and then we can have eMMC/UFS/NVM=
-e
-> > > specific implementation for RPMB operations.
-> > >
-> > > Linux optee driver can handle RPMB frames and pass it to RPMB subsyst=
-em
-> > >
->
-> It would be better to have this OP-TEE use case fully implemented. So
-> that we can justify it as a valid user for this proposed RPMB
-> subsystem. If you are looking for any further suggestions then please
-> let us know.
 
-+1
 
->
-> > > [1] U-Boot has mmc specific implementation
-> > >
-> > > I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
-> > > CFG_RPMB_FS_DEV_ID=3D1 for /dev/mmcblk1rpmb,
-> >
-> > Correct. Note that tee-supplicant will ignore this device ID if --rmb-c=
-id
-> > is given and use the specified RPMB instead (the CID is a non-ambiguous=
- way
-> > to identify a RPMB device).
-> >
-> > > but in case if a
-> > > system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
-> > > should be declared as secure storage and optee should access that one=
- only.
-> >
-> > Indeed, that would be an equivalent of tee-supplicant's --rpmb-cid.
-> >
-> > > Sumit, do you have suggestions for this ?
-> >
->
-> I would suggest having an OP-TEE secure DT property that would provide
-> the RPMB CID which is allocated to the secure world.
+On 8/21/2023 4:08 PM, Manivannan Sadhasivam wrote:
+> On Mon, Aug 21, 2023 at 09:41:54AM +0200, Neil Armstrong wrote:
+>> The qunipro_g4_sel clear is also needed for new platforms with
+>> major version > 5, fix the version check to take this in account.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> 
+> This is a fix, isn't it? With the fixes tag for 9c02aa24bf40,
+> 
+> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+> 
+> - Mani
+> 
+>> ---
+>>   drivers/ufs/host/ufs-qcom.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>> index f88febb23123..d1149b1c3ed5 100644
+>> --- a/drivers/ufs/host/ufs-qcom.c
+>> +++ b/drivers/ufs/host/ufs-qcom.c
+>> @@ -365,7 +365,7 @@ static void ufs_qcom_select_unipro_mode(struct ufs_qcom_host *host)
+>>   		   ufs_qcom_cap_qunipro(host) ? QUNIPRO_SEL : 0,
+>>   		   REG_UFS_CFG1);
+>>   
+>> -	if (host->hw_ver.major == 0x05)
+>> +	if (host->hw_ver.major >= 0x05)
+>>   		ufshcd_rmwl(host->hba, QUNIPRO_G4_SEL, 0, REG_UFS_CFG0);
+>>   
+>>   	/* make sure above configuration is applied before we return */
+>>
+>> ---
+>> base-commit: 47d9bb711707d15b19fad18c8e2b4b027a264a3a
+>> change-id: 20230821-topic-sm8x50-upstream-ufs-major-5-plus-4eaad3f3d857
+>>
+>> Best regards,
+>> -- 
+>> Neil Armstrong <neil.armstrong@linaro.org>
+>>
+> 
 
-Another option is for OP-TEE to iterate over all RPMBs with a
-programmed key and test if the key OP-TEE would use works. That should
-avoid the problem of provisioning a device-unique secure DTB. I'd
-expect that the RPMB key is programmed by a trusted provisioning tool
-since allowing OP-TEE to program the RPMB key has never been secure,
-not unless the OP-TEE binary is rollback protected.
 
-Cheers,
-Jens
+Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 
->
-> -Sumit
->
-> >
-> > --
-> > Jerome
+Regards,
+Nitin
