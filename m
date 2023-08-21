@@ -2,130 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F11DF782861
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BDA5782864
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbjHUL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35854 "EHLO
+        id S234058AbjHUL5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:57:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbjHUL5D (ORCPT
+        with ESMTP id S232285AbjHUL5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:57:03 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79A85D7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:01 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so17425831fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:01 -0700 (PDT)
+        Mon, 21 Aug 2023 07:57:48 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF3B4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:46 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565439b6b3fso1497406a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:57:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692619020; x=1693223820;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fTe8WhjRtDtvKnWUy8DQUNNiHCly37L9aOxfVWfr51I=;
-        b=XF7BVjGw4rayXAII/RwNEc0RYR/qTaKbatZCOC8m1yillv73HuEt1VDgLR/3UvlgPM
-         trG01vienb53PUZ3OKewXqP6w6obD7RlvsPrx/X2K+UiLz6we42bhtsPnUeDSr6AOAxa
-         qNcN/xhSqekNVpy1OdUlBDsTvifbA3vbkogy03DFyiQSYFg7+Ip/r+PjtK2QM3eJ/pLR
-         IBoBPaUtKYjuJxLb/BtyMqeoWecUJFGdSlljPGNjL4aSc5nOYlY4BrJKNnw2gQHiyhYI
-         5cP0pSBlrAJE3ciqrxGcD7qIMm4ygGqvQf/hU/56SxBBO1Ih34LY/9csXllYY63AjDu2
-         7/gQ==
+        d=linaro.org; s=google; t=1692619066; x=1693223866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vv+yXgiJW+2qgzIrJ6uIx4879w0vACOVHI/CbLMMXRo=;
+        b=YzpDwpqTfqA/K8qsGYnBKvbO0A2tEqJjfP9A/kvx6NdvbG4W5JCtxPNyTEDj++/gsI
+         lEo/NUB63XM5COJFgFPOcdlq+d4N9ssM7ZPP1bw9tlqJE88JHXW+GAIRhIQ0QlWLyNQ9
+         UmyQnvPTrgrkTCPQBYSV9xeWjsQJNlHx/1WQlFuiHu9EsVAyIdH3y9gl2PkX+B1Ca2FS
+         gzMXTU1YjM4S1/70Q5uHgVwA8AZndzeLdFeo6xYg5A+OmE2oemeEgCgzeznoWZ2BCkqy
+         OCqU4K6u3AfgaShVwX91o+Kaf2tJwA0w5ZA7B4CEubJqUXTnfDt6PRweV8BQrG2TUZ/l
+         68MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692619020; x=1693223820;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fTe8WhjRtDtvKnWUy8DQUNNiHCly37L9aOxfVWfr51I=;
-        b=KyLL2cahVqt9S2fAFB0ed8SoHwwRUr3eMyp5E/3hmXQNMgeuTN3U2P8F6Y0d4vJjdT
-         wFY88uyPWr2WlXBr+7T77bZvGHX2u9UlQX/kMzGjit9eX3LuLQxJDu8cFLuM3Aiz7Ki7
-         HG9wLx5AFGRIwx8Ybq6cBVLXJQZ7/1jxSBtYQny9/EtZhZu3Tr1Ovxs6SqbsYszRn/Pc
-         kZdiPN6fmW5XGwM5w9HC4px+5SQK7JsWYN7pGv/b7vvJOLM6VYSAunQyl3y0h6GHQwl8
-         kbS8HAayl/b7M1S4MzwYTPesHEqPXzMllzzqs1c6rBdS+OVNq0CVd4BLu8F/VClyrdLE
-         QSwg==
-X-Gm-Message-State: AOJu0Yyw1ySCoe+3Hr5wUDwQq4u1bAHTf2IjlBQNLLty0nDoIZhLEGlE
-        2Wn4GLCy/7LamlBa8RFv4C1Jrg==
-X-Google-Smtp-Source: AGHT+IG0T2AjDHN5OsFOZSB3biLx14nIVjHc9Jc5o9uNqCi2+5w0B4twWxLtoP6QfozGZyP02ebPXA==
-X-Received: by 2002:a19:7111:0:b0:4f7:6775:2a66 with SMTP id m17-20020a197111000000b004f767752a66mr3729911lfc.53.1692619019522;
-        Mon, 21 Aug 2023 04:56:59 -0700 (PDT)
-Received: from [192.168.1.101] (abyk181.neoplus.adsl.tpnet.pl. [83.9.30.181])
-        by smtp.gmail.com with ESMTPSA id z7-20020a19f707000000b004fe1e0ded25sm1721276lfe.184.2023.08.21.04.56.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 04:56:58 -0700 (PDT)
-Message-ID: <1f7f00c4-e671-49a7-9cd6-b0cc25b6042c@linaro.org>
-Date:   Mon, 21 Aug 2023 13:56:57 +0200
+        d=1e100.net; s=20221208; t=1692619066; x=1693223866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vv+yXgiJW+2qgzIrJ6uIx4879w0vACOVHI/CbLMMXRo=;
+        b=Y8jZ1eo35wgLXzpMuGPl6tYrqfaIhou9UkDIWiN5xU6m+ZIkUhTwt7v/lv2XqHJ5rI
+         3cLJvG+wZNCcvUObwIt3MYk6iGAgHY0Ef0V285Wn6AWvEXtyQzHrjcocSpRAndwXKpWZ
+         IOetuHBWC7q/KIpPOLJKN0OQa7IOXpCdvHIHY4usWDnJ6ma+SJFVdunEwQ7tCAL9ZImC
+         yjQuhd76VsaCiBTRR1rwBKqEzMv3FecMoTHprSk4UPXMCt1aP75Eb8sRTyo2jDrphz26
+         wzDLrUR8uENNq98dxkJtKRCC3wWQs2G07PMq7xKn5vtl3bsiNRr8y2KFxaOEoP0dzQE5
+         GfMg==
+X-Gm-Message-State: AOJu0YwAZAm8tXlqRa1h2AXaVxUrou0el7EgAc2tTGx02tIExfdcukLU
+        2eBEeoGAuPwSSYb7KTNDVjxNA7VJpELV+IMgBRZvSg==
+X-Google-Smtp-Source: AGHT+IFM1DQBrSHS34AAts5aYanidGqfz/tX0Oa17FPVYw29/Auo3UTWQyIfSaAUxXv61+6lo0xOuepp2oKP5ktS/YM=
+X-Received: by 2002:a17:90b:4a01:b0:26d:2b1d:1982 with SMTP id
+ kk1-20020a17090b4a0100b0026d2b1d1982mr3459827pjb.24.1692619066049; Mon, 21
+ Aug 2023 04:57:46 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 7/9] media: qcom: camss: Fix invalid clock enable bit
- disjunction
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        sakari.ailus@linux.intel.com, andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230814141007.3721197-1-bryan.odonoghue@linaro.org>
- <20230814141007.3721197-8-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230814141007.3721197-8-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20230816024831.682107-1-aaron.lu@intel.com> <20230816024831.682107-2-aaron.lu@intel.com>
+ <CAKfTPtB6sGva9eZPo2RjW1ZuzUxmKcO-9wBBJ3PJuGT9WtqwsQ@mail.gmail.com> <20230821060618.GA72709@ziqianlu-dell>
+In-Reply-To: <20230821060618.GA72709@ziqianlu-dell>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 21 Aug 2023 13:57:34 +0200
+Message-ID: <CAKfTPtD4PiTbUXkvByYv3_48xDW4pJR0zWkYLcDd1cJSiCdOLg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] sched/fair: ratelimit update to tg->load_avg
+To:     Aaron Lu <aaron.lu@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Tim Chen <tim.c.chen@intel.com>,
+        Nitin Tekchandani <nitin.tekchandani@intel.com>,
+        Yu Chen <yu.c.chen@intel.com>,
+        Waiman Long <longman@redhat.com>,
+        Deng Pan <pan.deng@intel.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.08.2023 16:10, Bryan O'Donoghue wrote:
-> define CSIPHY_3PH_CMN_CSI_COMMON_CTRL5_CLK_ENABLE BIT(7)
-> 
-> disjunction for gen2 ? BIT(7) : is a nop we are setting the same bit
-> either way.
-> 
-> Fixes: 4abb21309fda ("media: camss: csiphy: Move to hardcode CSI Clock Lane number")
-> Cc: stable@vger.kernel.org
-"eeeh"
+On Mon, 21 Aug 2023 at 08:06, Aaron Lu <aaron.lu@intel.com> wrote:
+>
+> On Thu, Aug 17, 2023 at 02:56:00PM +0200, Vincent Guittot wrote:
+> > On Wed, 16 Aug 2023 at 04:48, Aaron Lu <aaron.lu@intel.com> wrote:
+> > >
+> > > When using sysbench to benchmark Postgres in a single docker instance
+> > > with sysbench's nr_threads set to nr_cpu, it is observed there are ti=
+mes
+> > > update_cfs_group() and update_load_avg() shows noticeable overhead on
+> > > a 2sockets/112core/224cpu Intel Sapphire Rapids(SPR):
+> > >
+> > >     13.75%    13.74%  [kernel.vmlinux]           [k] update_cfs_group
+> > >     10.63%    10.04%  [kernel.vmlinux]           [k] update_load_avg
+> > >
+> > > Annotate shows the cycles are mostly spent on accessing tg->load_avg
+> > > with update_load_avg() being the write side and update_cfs_group() be=
+ing
+> > > the read side. tg->load_avg is per task group and when different task=
+s
+> > > of the same taskgroup running on different CPUs frequently access
+> > > tg->load_avg, it can be heavily contended.
+> > >
+> > > The frequent access to tg->load_avg is due to task migration on wakeu=
+p
+> > > path, e.g. when running postgres_sysbench on a 2sockets/112cores/224c=
+pus
+> > > Intel Sappire Rapids, during a 5s window, the wakeup number is 14mill=
+ions
+> > > and migration number is 11millions and with each migration, the task'=
+s
+> > > load will transfer from src cfs_rq to target cfs_rq and each change
+> > > involves an update to tg->load_avg. Since the workload can trigger as=
+ many
+> > > wakeups and migrations, the access(both read and write) to tg->load_a=
+vg
+> > > can be unbound. As a result, the two mentioned functions showed notic=
+eable
+> > > overhead. With netperf/nr_client=3Dnr_cpu/UDP_RR, the problem is wors=
+e:
+> > > during a 5s window, wakeup number is 21millions and migration number =
+is
+> > > 14millions; update_cfs_group() costs ~25% and update_load_avg() costs=
+ ~16%.
+> > >
+> > > Reduce the overhead by limiting updates to tg->load_avg to at most on=
+ce
+> > > per ms. After this change, the cost of accessing tg->load_avg is grea=
+tly
+> > > reduced and performance improved. Detailed test results below.
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > > postgres_sysbench on SPR:
+> > > 25%
+> > > base:   42382=C4=8519.8%
+> > > patch:  50174=C4=859.5%  (noise)
+> > >
+> > > 50%
+> > > base:   67626=C4=851.3%
+> > > patch:  67365=C4=853.1%  (noise)
+> > >
+> > > 75%
+> > > base:   100216=C4=851.2%
+> > > patch:  112470=C4=850.1% +12.2%
+> > >
+> > > 100%
+> > > base:    93671=C4=850.4%
+> > > patch:  113563=C4=850.2% +21.2%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > > hackbench on ICL:
+> > > group=3D1
+> > > base:    114912=C4=855.2%
+> > > patch:   117857=C4=852.5%  (noise)
+> > >
+> > > group=3D4
+> > > base:    359902=C4=851.6%
+> > > patch:   361685=C4=852.7%  (noise)
+> > >
+> > > group=3D8
+> > > base:    461070=C4=850.8%
+> > > patch:   491713=C4=850.3% +6.6%
+> > >
+> > > group=3D16
+> > > base:    309032=C4=855.0%
+> > > patch:   378337=C4=851.3% +22.4%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+> > > hackbench on SPR:
+> > > group=3D1
+> > > base:    100768=C4=852.9%
+> > > patch:   103134=C4=852.9%  (noise)
+> > >
+> > > group=3D4
+> > > base:    413830=C4=8512.5%
+> > > patch:   378660=C4=8516.6% (noise)
+> > >
+> > > group=3D8
+> > > base:    436124=C4=850.6%
+> > > patch:   490787=C4=853.2% +12.5%
+> > >
+> > > group=3D16
+> > > base:    457730=C4=853.2%
+> > > patch:   680452=C4=851.3% +48.8%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+> > > netperf/udp_rr on ICL
+> > > 25%
+> > > base:    114413=C4=850.1%
+> > > patch:   115111=C4=850.0% +0.6%
+> > >
+> > > 50%
+> > > base:    86803=C4=850.5%
+> > > patch:   86611=C4=850.0%  (noise)
+> > >
+> > > 75%
+> > > base:    35959=C4=855.3%
+> > > patch:   49801=C4=850.6% +38.5%
+> > >
+> > > 100%
+> > > base:    61951=C4=856.4%
+> > > patch:   70224=C4=850.8% +13.4%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> > > netperf/udp_rr on SPR
+> > > 25%
+> > > base:   104954=C4=851.3%
+> > > patch:  107312=C4=852.8%  (noise)
+> > >
+> > > 50%
+> > > base:    55394=C4=854.6%
+> > > patch:   54940=C4=857.4%  (noise)
+> > >
+> > > 75%
+> > > base:    13779=C4=853.1%
+> > > patch:   36105=C4=851.1% +162%
+> > >
+> > > 100%
+> > > base:     9703=C4=853.7%
+> > > patch:   28011=C4=850.2% +189%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > netperf/tcp_stream on ICL (all in noise range)
+> > > 25%
+> > > base:    43092=C4=850.1%
+> > > patch:   42891=C4=850.5%
+> > >
+> > > 50%
+> > > base:    19278=C4=8514.9%
+> > > patch:   22369=C4=857.2%
+> > >
+> > > 75%
+> > > base:    16822=C4=853.0%
+> > > patch:   17086=C4=852.3%
+> > >
+> > > 100%
+> > > base:    18216=C4=850.6%
+> > > patch:   18078=C4=852.9%
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > netperf/tcp_stream on SPR (all in noise range)
+> > > 25%
+> > > base:    34491=C4=850.3%
+> > > patch:   34886=C4=850.5%
+> > >
+> > > 50%
+> > > base:    19278=C4=8514.9%
+> > > patch:   22369=C4=857.2%
+> > >
+> > > 75%
+> > > base:    16822=C4=853.0%
+> > > patch:   17086=C4=852.3%
+> > >
+> > > 100%
+> > > base:    18216=C4=850.6%
+> > > patch:   18078=C4=852.9%
+> > >
+> > > Signed-off-by: Aaron Lu <aaron.lu@intel.com>
+> > > ---
+> > >  kernel/sched/fair.c  | 13 ++++++++++++-
+> > >  kernel/sched/sched.h |  1 +
+> > >  2 files changed, 13 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 6e79de26a25d..ab055c72cc64 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -3664,7 +3664,8 @@ static inline bool cfs_rq_is_decayed(struct cfs=
+_rq *cfs_rq)
+> > >   */
+> > >  static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+> > >  {
+> > > -       long delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_con=
+trib;
+> > > +       long delta;
+> > > +       u64 now;
+> > >
+> > >         /*
+> > >          * No need to update load_avg for root_task_group as it is no=
+t used.
+> > > @@ -3672,9 +3673,19 @@ static inline void update_tg_load_avg(struct c=
+fs_rq *cfs_rq)
+> > >         if (cfs_rq->tg =3D=3D &root_task_group)
+> > >                 return;
+> > >
+> > > +       /*
+> > > +        * For migration heavy workload, access to tg->load_avg can b=
+e
+> > > +        * unbound. Limit the update rate to at most once per ms.
+> > > +        */
+> > > +       now =3D sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
+> > > +       if (now - cfs_rq->last_update_tg_load_avg < NSEC_PER_MSEC)
+> > > +               return;
+> > > +
+> > > +       delta =3D cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+> > >         if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+> > >                 atomic_long_add(delta, &cfs_rq->tg->load_avg);
+> > >                 cfs_rq->tg_load_avg_contrib =3D cfs_rq->avg.load_avg;
+> > > +               cfs_rq->last_update_tg_load_avg =3D now;
+> > >         }
+> > >  }
+> > >
+> > > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > > index 19af1766df2d..228a298bf3b5 100644
+> > > --- a/kernel/sched/sched.h
+> > > +++ b/kernel/sched/sched.h
+> > > @@ -594,6 +594,7 @@ struct cfs_rq {
+> > >
+> > >  #ifdef CONFIG_FAIR_GROUP_SCHED
+> > >         unsigned long           tg_load_avg_contrib;
+> > > +       u64                     last_update_tg_load_avg;
+> >
+> > Moving last_update_tg_load_avg before tg_load_avg_contrib should
+> > minimize the padding on 32bits arch as long is only 4 Bytes
+>
+> Got it. That would be:
+>
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 6a8b7b9ed089..52ee7027def9 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -593,6 +593,7 @@ struct cfs_rq {
+>         } removed;
+>
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+> +       u64                     last_update_tg_load_avg;
+>         unsigned long           tg_load_avg_contrib;
+>         long                    propagate;
+>         long                    prop_runnable_sum;
+> --
+> 2.41.0
+>
+> >
+> > Apart from this, looks good to me
+>
+> Thanks a lot for your review!
+> Can I add your reviewed-by in my next update with the above change?
 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Yes with the above
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Konrad
+>
+> Regards,
+> Aaron
+>
+> > >         long                    propagate;
+> > >         long                    prop_runnable_sum;
+> > >
+> > > --
+> > > 2.41.0
+> > >
