@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 270FF7821B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C63B7821B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbjHUCxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        id S232585AbjHUCxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjHUCxn (ORCPT
+        with ESMTP id S229908AbjHUCxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 22:53:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F388CA6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:53:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692586419; x=1724122419;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=IkjujvBsdlsoDFEpFOiG+vgVcyT2VHYJYSw2RNjYJXE=;
-  b=eQnqpr/t8zE8LD34R5aarNE3riRT/t/iZaIcsnTLYt96azcdxEbHIfe3
-   KA0MhjGe8GzG96SkVpIdX9xTFwT5Uedc5V0fBWDvyft1nQ4fbfhooJP1S
-   F43SjSegMVx+ADDVo/oVNfLZUIVy3Oo96gSZGb/C0mvxz69c73JoL6qyp
-   fDe0i6UgmTD5VS5rPMf9oQoPM+WQKvXJxzf9hWR4e39RWTPGQqpniXOh8
-   rBBjGYr119wXH9Yqx7AMb8X+5BfBYe/p1ObRvRDn/nBUaAhZzzLlihZj9
-   okndrKOXYPCLyI/ocC/NrSEs7wPot1bFuaVDJiIGRWEu3jsgwJbr56RfT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="373450685"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="373450685"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 19:53:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="825768632"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="825768632"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2023 19:53:35 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Byungchul Park <byungchul@sk.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel_team@skhynix.com>, <akpm@linux-foundation.org>,
-        <namit@vmware.com>, <xhao@linux.alibaba.com>,
-        <mgorman@techsingularity.net>, <hughd@google.com>,
-        <willy@infradead.org>, <david@redhat.com>, <peterz@infradead.org>,
-        <luto@kernel.org>, <dave.hansen@linux.intel.com>
-Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst
- folios at migration
-References: <20230804061850.21498-1-byungchul@sk.com>
-        <20230804061850.21498-3-byungchul@sk.com>
-        <877cpx9jsx.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230816001307.GA44941@system.software.com>
-        <87r0o37qcn.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230821012804.GA43847@system.software.com>
-Date:   Mon, 21 Aug 2023 10:51:31 +0800
-In-Reply-To: <20230821012804.GA43847@system.software.com> (Byungchul Park's
-        message of "Mon, 21 Aug 2023 10:28:05 +0900")
-Message-ID: <878ra5ds5o.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Sun, 20 Aug 2023 22:53:24 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C659C
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:53:22 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so3365245a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:53:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692586401; x=1693191201;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yk6N/H89rG2XGekr3UL0YyNLbJwptjYVEPotSs/smck=;
+        b=c02Zp6aXh2uGpgMqgk2Ppw1Vt7hCRaxZCVWABIl3WHT24TcytfIuKm4oZSNQgEP2yK
+         OcQm6IvMgQv+CHW2txcg7SDef4G7r+izU1rclrNE74wGdRyagBEVQNj13+GYlC9ZtA00
+         9qtjn6V/QBTvzL5ncpbyeMC+vZE9fFdWnazykiXvXEUQcv5Twm0nXJyuRY0FnKBBF5x+
+         7jIC6BCMrbErVNqwHHkQn5O8NmzTbhYfJv3bgnXRbWxw6YvRuSyaZVAkZFSlT8nPZglA
+         8jKalMKZlGSDkknmAQ0d684eoEp58dLZagKvgLU7e3yIdXfbz8EZQZZ2ldMzjMCmPgl5
+         bnQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692586401; x=1693191201;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yk6N/H89rG2XGekr3UL0YyNLbJwptjYVEPotSs/smck=;
+        b=el7uIHM5rgRB+Bk21mXeut5Z0bYy6z/CQI5LK3hwArzETMS5CygqV6JgBEEThXZ0N9
+         SiR4oKVTD+NOUviwhj+E/NLNUUt52/CyKU4ZwKA8c37nyzLPgDv7g9jhn0/QgvOW5c1c
+         ViESKeu6ISqHbgU87C1qH3T49/O2o0c2FLlrLF0s5rjDV86FhIzyuQ4GZcub28MfwYDN
+         wUFyGQkNUrPn2Hwod0geHDrAGhMq5zg7+qBaovu++75NZ3NR7Fo4M21IlyL1usGSRjX7
+         q+1FSj8tq7/YSPpe2wsXLJ7tQK/vPGQcwSfXTaVnK5zUN+84iKV5htbF732lk3byeCEZ
+         1K2Q==
+X-Gm-Message-State: AOJu0Yy7OlMOgTeSMxAxx6vEnXn3zp75K5DL3ZA+0bvquH19ke9qHADf
+        PW/t9VaoPPplzDgnfq2i1935uuzP7EeZ9UV7/wH2Tt+jzkOWKw==
+X-Google-Smtp-Source: AGHT+IGpcuIkBMuljYqNy8fyhXeLygXxQIfEVdNqZXzRPTI7GcpoBSmzuovQead8nkhaQOuXQke305jrcS0G63+23J4=
+X-Received: by 2002:a17:906:5a68:b0:99b:d178:f059 with SMTP id
+ my40-20020a1709065a6800b0099bd178f059mr3755330ejc.35.1692586401025; Sun, 20
+ Aug 2023 19:53:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230820222920.2344-1-dakr@redhat.com>
+In-Reply-To: <20230820222920.2344-1-dakr@redhat.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Mon, 21 Aug 2023 12:53:09 +1000
+Message-ID: <CAPM=9txjnd_MrhANjoGqJ4iU1sNvz92MdsRUm_XbzGR-=daBTg@mail.gmail.com>
+Subject: Re: [PATCH drm-misc-next] drm/nouveau: uvmm: fix unset region pointer
+ on remap
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     daniel@ffwll.ch, bskeggs@redhat.com, kherbst@redhat.com,
+        lyude@redhat.com, dri-devel@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Byungchul Park <byungchul@sk.com> writes:
+Reviewed-by: Dave Airlie <airlied@redhat.com>
 
-> On Wed, Aug 16, 2023 at 09:01:12AM +0800, Huang, Ying wrote:
->> Byungchul Park <byungchul@sk.com> writes:
->> 
->> > On Tue, Aug 15, 2023 at 09:27:26AM +0800, Huang, Ying wrote:
->> >> Byungchul Park <byungchul@sk.com> writes:
->> >> 
->> >> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
->> >> >
->> >> > We always face the migration overhead at either promotion or demotion,
->> >> > while working with tiered memory e.g. CXL memory and found out TLB
->> >> > shootdown is a quite big one that is needed to get rid of if possible.
->> >> >
->> >> > Fortunately, TLB flush can be defered or even skipped if both source and
->> >> > destination of folios during migration are kept until all TLB flushes
->> >> > required will have been done, of course, only if the target PTE entries
->> >> > have read only permission, more precisely speaking, don't have write
->> >> > permission. Otherwise, no doubt the folio might get messed up.
->> >> >
->> >> > To achieve that:
->> >> >
->> >> >    1. For the folios that have only non-writable TLB entries, prevent
->> >> >       TLB flush by keeping both source and destination of folios during
->> >> >       migration, which will be handled later at a better time.
->> >> >
->> >> >    2. When any non-writable TLB entry changes to writable e.g. through
->> >> >       fault handler, give up CONFIG_MIGRC mechanism so as to perform
->> >> >       TLB flush required right away.
->> >> >
->> >> >    3. TLB flushes can be skipped if all TLB flushes required to free the
->> >> >       duplicated folios have been done by any reason, which doesn't have
->> >> >       to be done from migrations.
->> >> >
->> >> >    4. Adjust watermark check routine, __zone_watermark_ok(), with the
->> >> >       number of duplicated folios because those folios can be freed
->> >> >       and obtained right away through appropreate TLB flushes.
->> >> >
->> >> >    5. Perform TLB flushes and free the duplicated folios pending the
->> >> >       flushes if page allocation routine is in trouble due to memory
->> >> >       pressure, even more aggresively for high order allocation.
->> >> 
->> >> Is the optimization restricted for page migration only?  Can it be used
->> >> for other places?  Like page reclaiming?
->> >
->> > Just to make sure, are you talking about the (5) description? For now,
->> > it's performed at the beginning of __alloc_pages_slowpath(), say, before
->> > page recaiming. Do you think it'd be meaningful to perform it during page
->> > reclaiming? Or do you mean something else?
->> 
->> Not for (5).  TLB needs to be flushed during page reclaiming too.  Can
->> similar method be used to reduce TLB flushing there too?
+On Mon, 21 Aug 2023 at 08:29, Danilo Krummrich <dakr@redhat.com> wrote:
 >
-> If you were talking about unmapping for swap while reclaiming, then I
-> think yes. The case can also take benefit from CONFIG_MIGRC.
-
-Yes.  Thanks for explanation.
-
---
-Best Regards,
-Huang, Ying
-
+> Transfer the region pointer of a uvma to the new uvma(s) on re-map to
+> prevent potential shader faults when the re-mapped uvma(s) are unmapped.
+>
+> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_uvmm.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> index 3a1e8538f205..aae780e4a4aa 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
+> @@ -639,6 +639,7 @@ nouveau_uvmm_sm_prepare(struct nouveau_uvmm *uvmm,
+>                         struct drm_gpuva *va = r->unmap->va;
+>                         struct uvmm_map_args remap_args = {
+>                                 .kind = uvma_from_va(va)->kind,
+> +                               .region = uvma_from_va(va)->region,
+>                         };
+>                         u64 ustart = va->va.addr;
+>                         u64 urange = va->va.range;
+>
+> base-commit: 25205087df1ffe06ccea9302944ed1f77dc68c6f
+> --
+> 2.41.0
+>
