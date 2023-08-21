@@ -2,286 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AED1782F23
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1F3782F27
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236982AbjHURJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 13:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S231221AbjHURL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236972AbjHURJq (ORCPT
+        with ESMTP id S231216AbjHURLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:09:46 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE200102;
-        Mon, 21 Aug 2023 10:09:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 798A86400F;
-        Mon, 21 Aug 2023 17:09:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68D7EC433C7;
-        Mon, 21 Aug 2023 17:09:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692637783;
-        bh=0EvABdbJ4Z1kB1jX+ziLiwThb3n8YOIfz/SX5RXeABk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vge6KqFftqBke0o1C5n4H2cW6VBEMbWNC40xHsm8PCygFV5LGjDHi4KDU99TfKJHm
-         SxR2zIm7B+3gPXBedVlGHl49b6wtsf/g1AbJJNlBFvBC/UYXk4BXEGij/195g8ZtTJ
-         0NX6M0IwPqbTPxW3G9Z0UyfQBfKA10hiYWrxknccQxkjDa32M34+DSbPeV5WM3z5jq
-         uNWnk29yQevNKwYeqIxt/b32ZM4R4vAlmEOG625DOQQikNExVY4zZHNk/vYS/JlRt8
-         YmLikXOcQolpBl5bkTi+3LzM1glGyq5O48E86Apsv12+6v4nHhVnwwYDtzrdhxAGWK
-         prV/QaRqv9o1Q==
-Received: (nullmailer pid 1961401 invoked by uid 1000);
-        Mon, 21 Aug 2023 17:09:41 -0000
-Date:   Mon, 21 Aug 2023 12:09:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     linus.walleij@linaro.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, avifishman70@gmail.com, tali.perry1@gmail.com,
-        joel@jms.id.au, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v5 1/2] dt-binding: pinctrl: Add NPCM8XX pinctrl
- and GPIO documentation
-Message-ID: <20230821170941.GA1915730-robh@kernel.org>
-References: <20230809185722.248787-1-tmaimon77@gmail.com>
- <20230809185722.248787-2-tmaimon77@gmail.com>
+        Mon, 21 Aug 2023 13:11:25 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C68CC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:11:23 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76d97f2e4d9so187365385a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:11:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1692637882; x=1693242682;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DZQ59N6at0zbBieDZtWXJGjAejF7XYSgNeSZUJ/Ek3E=;
+        b=bubdLBZKqa22OI94f2vUw7HIQe/Y1oDy1YGiTPGnDEt0ni7Wg3SYPyx9VnV4TQl4mC
+         5u1Isb3wLJvyvzaNiPRKBwB/rjlmKWaP2jDgo34bOYjZFArDuZKTgHSio/FMXF0NFcg6
+         oFJQtbcxtZiS/uXRI4mkdubJdvc8ZSagJ8p7cAzMsEfD2O4+Us96+ou6Yk9H1B7JGsHT
+         M0rc0OJedwzh0O5dJ0NV9n/dp4hzlb7Igc0DeWWbZQcePuRlLPhXiR7VAws0hxlfmWfT
+         0EUpJXDi2oje6rv6/RU7tpijdtWYqM4NZn5XjK1JxftkgC+5h5La27n7qTjvkhZ6gdjr
+         +WhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692637882; x=1693242682;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DZQ59N6at0zbBieDZtWXJGjAejF7XYSgNeSZUJ/Ek3E=;
+        b=ZZQ7mF2lBwymuK/ga3tBCdCZee/YcQIkVo+Mq+BQJ8rkqdqhxgnVJCroE59jjUSwJd
+         qve4Zo/504ubss2VUoXNad05ixGQtrSPHzuOoD09aoQNFnNyziPXzUKrUQOLk3eBEkuq
+         LWwXhPAwu7ph7bYEznH+qZ5DAh84H/BIvEuIKQwtJwZFpwMGgydGARmnu+Ap5oEruAhI
+         3xPYucVNJJAo5JVCgjGY2vjSUjIxyHyl+xlKl7qjD+LfUF/rgMVgrC1z8Cb1lDK/I4Bj
+         qWxXzkI5GTMDSWoqGZERAAcqvjUNTIDNLIvkUVKoJIW9FjrulWFueuhb2xQsqzVhXgDm
+         ejPg==
+X-Gm-Message-State: AOJu0YwQ1qcpsZpd5wyCRqcMRZLnIoaxSsrGdr9sXPFo94pZOePfpAYQ
+        x1XePk+b6GgXp9rFQiQPwjNnYQ==
+X-Google-Smtp-Source: AGHT+IH+ma5zsrikDgBqZbfg/lBTwpLwrxV8rmHy0wDGJg7fciff2u7AqewHPoadTAmit1jAmacP2Q==
+X-Received: by 2002:a05:620a:1026:b0:76c:c90d:2eef with SMTP id a6-20020a05620a102600b0076cc90d2eefmr8357328qkk.42.1692637882428;
+        Mon, 21 Aug 2023 10:11:22 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id c8-20020a05620a134800b0076dae4753efsm274426qkl.14.2023.08.21.10.11.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 10:11:21 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qY8Qz-00DvG9-DQ;
+        Mon, 21 Aug 2023 14:11:21 -0300
+Date:   Mon, 21 Aug 2023 14:11:21 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/11] iommu: Make iommu_queue_iopf() more generic
+Message-ID: <ZOOauSJpcE2YgIzG@ziepe.ca>
+References: <20230817234047.195194-1-baolu.lu@linux.intel.com>
+ <20230817234047.195194-10-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230809185722.248787-2-tmaimon77@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230817234047.195194-10-baolu.lu@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 09:57:21PM +0300, Tomer Maimon wrote:
-> Added device tree binding documentation for Nuvoton Arbel BMC NPCM8XX
-> pinmux and GPIO controller.
+On Fri, Aug 18, 2023 at 07:40:45AM +0800, Lu Baolu wrote:
+> This completely separates the IO page fault handling framework from the
+> SVA implementation. Previously, the SVA implementation was tightly coupled
+> with the IO page fault handling framework. This makes SVA a "customer" of
+> the IO page fault handling framework by converting domain's page fault
+> handler to handle a group of faults and calling it directly from
+> iommu_queue_iopf().
 > 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 > ---
->  .../pinctrl/nuvoton,npcm845-pinctrl.yaml      | 215 ++++++++++++++++++
->  1 file changed, 215 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml
+>  include/linux/iommu.h      |  5 +++--
+>  drivers/iommu/iommu-sva.h  |  8 --------
+>  drivers/iommu/io-pgfault.c | 16 +++++++++++++---
+>  drivers/iommu/iommu-sva.c  | 14 ++++----------
+>  drivers/iommu/iommu.c      |  4 ++--
+>  5 files changed, 22 insertions(+), 25 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml
-> new file mode 100644
-> index 000000000000..8a12f5134450
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml
-> @@ -0,0 +1,215 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pinctrl/nuvoton,npcm845-pinctrl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index ff292eea9d31..cf1cb0bb46af 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -41,6 +41,7 @@ struct iommu_sva;
+>  struct iommu_fault_event;
+>  struct iommu_dma_cookie;
+>  struct iopf_queue;
+> +struct iopf_group;
+>  
+>  #define IOMMU_FAULT_PERM_READ	(1 << 0) /* read */
+>  #define IOMMU_FAULT_PERM_WRITE	(1 << 1) /* write */
+> @@ -175,8 +176,7 @@ struct iommu_domain {
+>  	unsigned long pgsize_bitmap;	/* Bitmap of page sizes in use */
+>  	struct iommu_domain_geometry geometry;
+>  	struct iommu_dma_cookie *iova_cookie;
+> -	enum iommu_page_response_code (*iopf_handler)(struct iommu_fault *fault,
+> -						      void *data);
+> +	int (*iopf_handler)(struct iopf_group *group);
+>  	void *fault_data;
+>  	union {
+>  		struct {
+> @@ -526,6 +526,7 @@ struct iopf_group {
+>  	struct list_head		faults;
+>  	struct work_struct		work;
+>  	struct device			*dev;
+> +	void				*data;
+>  };
+>  
+>  int iommu_device_register(struct iommu_device *iommu,
+> diff --git a/drivers/iommu/iommu-sva.h b/drivers/iommu/iommu-sva.h
+> index 510a7df23fba..cf41e88fac17 100644
+> --- a/drivers/iommu/iommu-sva.h
+> +++ b/drivers/iommu/iommu-sva.h
+> @@ -22,8 +22,6 @@ int iopf_queue_flush_dev(struct device *dev);
+>  struct iopf_queue *iopf_queue_alloc(const char *name);
+>  void iopf_queue_free(struct iopf_queue *queue);
+>  int iopf_queue_discard_partial(struct iopf_queue *queue);
+> -enum iommu_page_response_code
+> -iommu_sva_handle_iopf(struct iommu_fault *fault, void *data);
+>  void iopf_free_group(struct iopf_group *group);
+>  int iopf_queue_work(struct iopf_group *group, work_func_t func);
+>  int iommu_sva_handle_iopf_group(struct iopf_group *group);
+> @@ -65,12 +63,6 @@ static inline int iopf_queue_discard_partial(struct iopf_queue *queue)
+>  	return -ENODEV;
+>  }
+>  
+> -static inline enum iommu_page_response_code
+> -iommu_sva_handle_iopf(struct iommu_fault *fault, void *data)
+> -{
+> -	return IOMMU_PAGE_RESP_INVALID;
+> -}
+> -
+>  static inline void iopf_free_group(struct iopf_group *group)
+>  {
+>  }
+> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
+> index 00c2e447b740..a61c2aabd1b8 100644
+> --- a/drivers/iommu/io-pgfault.c
+> +++ b/drivers/iommu/io-pgfault.c
+> @@ -11,8 +11,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/workqueue.h>
+>  
+> -#include "iommu-sva.h"
+> -
+>  /**
+>   * struct iopf_queue - IO Page Fault queue
+>   * @wq: the fault workqueue
+> @@ -93,6 +91,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>  {
+>  	int ret;
+>  	struct iopf_group *group;
+> +	struct iommu_domain *domain;
+>  	struct iopf_fault *iopf, *next;
+>  	struct iommu_fault_param *iopf_param;
+>  	struct dev_iommu *param = dev->iommu;
+> @@ -124,6 +123,16 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>  		return 0;
+>  	}
+>  
+> +	if (fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID)
+> +		domain = iommu_get_domain_for_dev_pasid(dev, fault->prm.pasid, 0);
+> +	else
+> +		domain = iommu_get_domain_for_dev(dev);
 > +
-> +title: Nuvoton NPCM845 Pin Controller and GPIO
+> +	if (!domain || !domain->iopf_handler) {
+> +		ret = -ENODEV;
+> +		goto cleanup_partial;
+> +	}
 > +
-> +maintainers:
-> +  - Tomer Maimon <tmaimon77@gmail.com>
-> +
-> +description:
-> +  The Nuvoton BMC NPCM8XX Pin Controller multi-function routed through
-> +  the multiplexing block, Each pin supports GPIO functionality (GPIOx)
-> +  and multiple functions that directly connect the pin to different
-> +  hardware blocks.
-> +
-> +properties:
-> +  compatible:
-> +    const: nuvoton,npcm845-pinctrl
-> +
-> +  ranges:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 1
-> +
-> +  nuvoton,sysgcr:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: a phandle to access GCR registers.
-> +
-> +patternProperties:
-> +  '^gpio@':
-> +    type: object
-> +
-> +    description:
-> +      Eight GPIO banks that each contain 32 GPIOs.
-> +
-> +    properties:
-> +      gpio-controller: true
-> +
-> +      '#gpio-cells':
-> +        const: 2
-> +
-> +      reg:
-> +        maxItems: 1
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +      gpio-ranges:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - gpio-controller
-> +      - '#gpio-cells'
-> +      - reg
-> +      - interrupts
-> +      - gpio-ranges
-> +
-> +  '-mux$':
-> +    $ref: pinmux-node.yaml#
-> +
-> +    properties:
-> +      groups:
-> +        description:
-> +          One or more groups of pins to mux to a certain function
-> +        items:
-> +          enum: [ iox1, iox2, smb1d, smb2d, lkgpo1, lkgpo2, ioxh, gspi,
-> +                  smb5b, smb5c, lkgpo0, pspi, jm1, jm2, smb4den, smb4b,
-> +                  smb4c, smb15, smb16, smb17, smb18, smb19, smb20, smb21,
-> +                  smb22, smb23, smb23b, smb4d, smb14, smb5, smb4, smb3,
-> +                  spi0cs1, spi0cs2, spi0cs3, spi1cs0, spi1cs1, spi1cs2,
-> +                  spi1cs3, spi1cs23, smb3c, smb3b, bmcuart0a, uart1, jtag2,
-> +                  bmcuart1, uart2, sg1mdio, bmcuart0b, r1err, r1md, r1oen,
-> +                  r2oen, rmii3, r3oen, smb3d, fanin0, fanin1, fanin2, fanin3,
-> +                  fanin4, fanin5, fanin6, fanin7, fanin8, fanin9, fanin10,
-> +                  fanin11, fanin12, fanin13, fanin14, fanin15, pwm0, pwm1, pwm2,
-> +                  pwm3, r2, r2err, r2md, r3rxer, ga20kbc, smb5d, lpc, espi, rg2,
-> +                  ddr, i3c0, i3c1, i3c2, i3c3, i3c4, i3c5, smb0, smb1, smb2,
-> +                  smb2c, smb2b, smb1c, smb1b, smb8, smb9, smb10, smb11, sd1,
-> +                  sd1pwr, pwm4, pwm5, pwm6, pwm7, pwm8, pwm9, pwm10, pwm11,
-> +                  mmc8, mmc, mmcwp, mmccd, mmcrst, clkout, serirq, lpcclk,
-> +                  scipme, smi, smb6, smb7, spi1, faninx, r1, spi3, spi3cs1,
-> +                  spi3quad, spi3cs2, spi3cs3, nprd_smi, smb0b, smb0c, smb0den,
-> +                  smb0d, ddc, rg2mdio, wdog1, wdog2, smb12, smb13, spix,
-> +                  spixcs1, clkreq, hgpio0, hgpio1, hgpio2, hgpio3, hgpio4,
-> +                  hgpio5, hgpio6, hgpio7 ]
-> +
-> +      function:
-> +        description:
-> +          The function that a group of pins is muxed to
-> +        enum: [ iox1, iox2, smb1d, smb2d, lkgpo1, lkgpo2, ioxh, gspi,
-> +                smb5b, smb5c, lkgpo0, pspi, jm1, jm2, smb4den, smb4b,
-> +                smb4c, smb15, smb16, smb17, smb18, smb19, smb20, smb21,
-> +                smb22, smb23, smb23b, smb4d, smb14, smb5, smb4, smb3,
-> +                spi0cs1, spi0cs2, spi0cs3, spi1cs0, spi1cs1, spi1cs2,
-> +                spi1cs3, spi1cs23, smb3c, smb3b, bmcuart0a, uart1, jtag2,
-> +                bmcuart1, uart2, sg1mdio, bmcuart0b, r1err, r1md, r1oen,
-> +                r2oen, rmii3, r3oen, smb3d, fanin0, fanin1, fanin2, fanin3,
-> +                fanin4, fanin5, fanin6, fanin7, fanin8, fanin9, fanin10,
-> +                fanin11, fanin12, fanin13, fanin14, fanin15, pwm0, pwm1, pwm2,
-> +                pwm3, r2, r2err, r2md, r3rxer, ga20kbc, smb5d, lpc, espi, rg2,
-> +                ddr, i3c0, i3c1, i3c2, i3c3, i3c4, i3c5, smb0, smb1, smb2,
-> +                smb2c, smb2b, smb1c, smb1b, smb8, smb9, smb10, smb11, sd1,
-> +                sd1pwr, pwm4, pwm5, pwm6, pwm7, pwm8, pwm9, pwm10, pwm11,
-> +                mmc8, mmc, mmcwp, mmccd, mmcrst, clkout, serirq, lpcclk,
-> +                scipme, smi, smb6, smb7, spi1, faninx, r1, spi3, spi3cs1,
-> +                spi3quad, spi3cs2, spi3cs3, nprd_smi, smb0b, smb0c, smb0den,
-> +                smb0d, ddc, rg2mdio, wdog1, wdog2, smb12, smb13, spix,
-> +                spixcs1, clkreq, hgpio0, hgpio1, hgpio2, hgpio3, hgpio4,
-> +                hgpio5, hgpio6, hgpio7 ]
-> +
-> +    dependencies:
-> +      groups: [ function ]
-> +      function: [ groups ]
-> +
-> +    additionalProperties: false
-> +
-> +  '^pin':
-> +    $ref: pincfg-node.yaml#
-> +
-> +    properties:
-> +      pins:
-> +        description:
-> +          A list of pins to configure in certain ways, such as enabling
-> +          debouncing
-> +
-> +      bias-disable: true
-> +
-> +      bias-pull-up: true
-> +
-> +      bias-pull-down: true
-> +
-> +      input-enable: true
-> +
-> +      output-low: true
-> +
-> +      output-high: true
-> +
-> +      drive-push-pull: true
-> +
-> +      drive-open-drain: true
-> +
-> +      input-debounce:
-> +        description:
-> +          Debouncing periods in microseconds, one period per interrupt
-> +          bank found in the controller
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> +        minItems: 1
-> +        maxItems: 4
-> +
-> +      slew-rate:
-> +        description: |
-> +          0: Low rate
-> +          1: High rate
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [0, 1]
-> +
-> +      drive-strength:
-> +        enum: [ 0, 1, 2, 4, 8, 12 ]
-> +
-> +    additionalProperties: false
-> +
-> +allOf:
-> +  - $ref: pinctrl.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - ranges
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - nuvoton,sysgcr
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      pinctrl: pinctrl@f0800260 {
-> +        compatible = "nuvoton,npcm845-pinctrl";
-> +        ranges = <0x0 0x0 0xf0010000 0x8000>;
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        nuvoton,sysgcr = <&gcr>;
-> +
-> +        gpio0: gpio@f0010000 {
+>  	group = kzalloc(sizeof(*group), GFP_KERNEL);
+>  	if (!group) {
+>  		/*
+> @@ -137,6 +146,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>  
+>  	group->dev = dev;
+>  	group->last_fault.fault = *fault;
+> +	group->data = domain->fault_data;
+>  	INIT_LIST_HEAD(&group->faults);
+>  	list_add(&group->last_fault.list, &group->faults);
+>  
+> @@ -147,7 +157,7 @@ int iommu_queue_iopf(struct iommu_fault *fault, struct device *dev)
+>  			list_move(&iopf->list, &group->faults);
+>  	}
+>  
+> -	ret = iommu_sva_handle_iopf_group(group);
+> +	ret = domain->iopf_handler(group);
+>  	if (ret)
+>  		iopf_free_group(group);
+>  
+> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
+> index df8734b6ec00..2811f34947ab 100644
+> --- a/drivers/iommu/iommu-sva.c
+> +++ b/drivers/iommu/iommu-sva.c
+> @@ -148,13 +148,14 @@ EXPORT_SYMBOL_GPL(iommu_sva_get_pasid);
+>  /*
+>   * I/O page fault handler for SVA
+>   */
+> -enum iommu_page_response_code
+> +static enum iommu_page_response_code
+>  iommu_sva_handle_iopf(struct iommu_fault *fault, void *data)
+>  {
+>  	vm_fault_t ret;
+>  	struct vm_area_struct *vma;
+> -	struct mm_struct *mm = data;
+>  	unsigned int access_flags = 0;
+> +	struct iommu_domain *domain = data;
+> +	struct mm_struct *mm = domain->mm;
+>  	unsigned int fault_flags = FAULT_FLAG_REMOTE;
+>  	struct iommu_fault_page_request *prm = &fault->prm;
+>  	enum iommu_page_response_code status = IOMMU_PAGE_RESP_INVALID;
+> @@ -231,23 +232,16 @@ static void iommu_sva_iopf_handler(struct work_struct *work)
+>  {
+>  	struct iopf_fault *iopf;
+>  	struct iopf_group *group;
+> -	struct iommu_domain *domain;
+>  	enum iommu_page_response_code status = IOMMU_PAGE_RESP_SUCCESS;
+>  
+>  	group = container_of(work, struct iopf_group, work);
+> -	domain = iommu_get_domain_for_dev_pasid(group->dev,
+> -				group->last_fault.fault.prm.pasid, 0);
+> -	if (!domain || !domain->iopf_handler)
+> -		status = IOMMU_PAGE_RESP_INVALID;
+> -
+>  	list_for_each_entry(iopf, &group->faults, list) {
+>  		/*
+>  		 * For the moment, errors are sticky: don't handle subsequent
+>  		 * faults in the group if there is an error.
+>  		 */
+>  		if (status == IOMMU_PAGE_RESP_SUCCESS)
+> -			status = domain->iopf_handler(&iopf->fault,
+> -						      domain->fault_data);
+> +			status = iommu_sva_handle_iopf(&iopf->fault, group->data);
+>  	}
+>  
+>  	iommu_sva_complete_iopf(group->dev, &group->last_fault, status);
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index b280b9f4d8b4..9b622088c741 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -3395,8 +3395,8 @@ struct iommu_domain *iommu_sva_domain_alloc(struct device *dev,
+>  	domain->type = IOMMU_DOMAIN_SVA;
+>  	mmgrab(mm);
+>  	domain->mm = mm;
+> -	domain->iopf_handler = iommu_sva_handle_iopf;
+> -	domain->fault_data = mm;
+> +	domain->iopf_handler = iommu_sva_handle_iopf_group;
+> +	domain->fault_data = domain;
 
-unit-address should be 0.
+Why fault_data? The domain handling the fault should be passed
+through naturally without relying on fault_data.
 
-Otherwise,
+eg make 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+  iommu_sva_handle_iopf(struct iommu_fault *fault, void *data)
 
-> +          gpio-controller;
-> +          #gpio-cells = <2>;
-> +          reg = <0x0 0xB0>;
+into
+  iommu_sva_handle_iopf(struct iommu_fault *fault, struct iommu_domain *domain)
+
+And delete domain->fault_data until we have some use for it.
+
+The core code should be keeping track of the iommu_domain lifetime.
+
+Jason
