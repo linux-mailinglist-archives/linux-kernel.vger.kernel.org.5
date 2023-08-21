@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0740C783059
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C2978305B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbjHUShs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
+        id S229805AbjHUShv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:37:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbjHUShs (ORCPT
+        with ESMTP id S229789AbjHUShu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:37:48 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAF35068
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:37:43 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-64c1d487e72so19158206d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:37:43 -0700 (PDT)
+        Mon, 21 Aug 2023 14:37:50 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D5157A99
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:37:45 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3a850f07fadso1383539b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1692643062; x=1693247862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hxW29R58ZmFpg/rPJgqQ3VkRYdS419AYIG4Hav75F/o=;
-        b=ZMy9LilUbtHaMB8a2Bc9S+CTYD8of9JLuHTQfeCD4NwFL27z0kKncoczddhT5Hkg0z
-         x5QqUUE/AhnBHqO/PTpGJukrdQd3Eqobf1Ghno3MwWAKR+zNZZcB1BAlcriQMWvPUExr
-         xqo9fFWzITkM0TDqdec52HjfHdgkDP3lZp0NV0FjzjO5HvOQa08PUmglBsDMUyPhMh29
-         tBmxeC3Jr7ot3YQNZGIvnRCo/+UBOuEJM4ibv7jFsftN5kMb3sX3nBaHH3LN8OuxsiXU
-         sKqbovAAYS7ZDY0aVjDgxSPjTLLUIz64y30G25tdyNzmndtcEBtCaUnLl735iwhhfqXT
-         lJbg==
+        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1692643063; x=1693247863;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3E/b9O2HlTOi/IQwrvX2RmX6ugx51n+ANVahrlt1y9E=;
+        b=bs78ZLqFzdCBNP5WOZIQbmPxf0MB2IdxbI0+wTHjK3eA21DMWZU3ExKk5aSnGUtSGv
+         VxXOxMtw21FDXY9J49x9bWd5kOiUDCL8lWn93rQTeUBXsM20t9bNh7PH/yUTZL5+Chzj
+         r2jw52FRRe82audJSSNDAz3Dir5MIn2g0TgWAgipTEF9Pte+5X+Fm3UfzQo1qgUAV9i4
+         Vquc0HF8tqg2Xl3K08/Bc4G/ic+rkduZ24lP/J7PZMU1qeh2WaPyWWJMLjcOglEig1p5
+         mp+7h9SeFU5gRyklMRXybBl3jNbOKpbAw+pKb/mvWIH0jGBjP4LK4u0bxrbPXxhKO8aB
+         h4KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692643062; x=1693247862;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hxW29R58ZmFpg/rPJgqQ3VkRYdS419AYIG4Hav75F/o=;
-        b=jPGb5JVxCjoX2mXliufxCwcwqNmwLMjzAO/aklM0z5IeCrSw/PqufJEdeKQZbWCLvy
-         AZsY+iKGE6fbkLV/Eki7GjvWneGlAG/kI9R8cPUUWb64q5l6xtInBOGk4l4QyelMzelU
-         dhKs8mUGBKCFHdUxAy1MP5+2MoTNBM4WjDnQys0bTwVg2jQhJQ0XPEoOwKspBDOv72+I
-         1eiScVCberMreyDHYONSNQj0u0oqUF+qvGLSSkP/5M+bUWisMaTda2LA8x7PHqGOoare
-         3Jfeqt8azddZSvTicLAhuiJ4ihjtWZ7kYJv6yoTL26os6F9wUbcJlghI0ik6kP9rk6lh
-         qYdg==
-X-Gm-Message-State: AOJu0YzB/xdAG9J8RfSsFh9jRYWqvQR/PNdOvw3EeXTQ9H/Fl+Vmn3YE
-        2pNTJZ0kEsNX5oDPfaKHRmmg0y0F4puW8mnHFUNTpQ==
-X-Google-Smtp-Source: AGHT+IGy8J3qOalYFiRMZVkh+1jZEMs5H+0oIK7/2greDFHUnnDFEMOD0EUG29cPhWcOuKvVixoW0w==
-X-Received: by 2002:a0c:c991:0:b0:63d:70f6:8f6f with SMTP id b17-20020a0cc991000000b0063d70f68f6fmr9159374qvk.43.1692643062274;
-        Mon, 21 Aug 2023 11:37:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692643063; x=1693247863;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3E/b9O2HlTOi/IQwrvX2RmX6ugx51n+ANVahrlt1y9E=;
+        b=hWWB4uuuSGKJykENPjxQvidxc7m2mIyvdy3FBIqbIBHh0uBDef7RDucux6sf7mMQ66
+         o5W+kNJvozkvUYFlSfqbRw6Vz6X9UOBvG2F9GZHygiQG9iZxGzWWQukFST7rCspS2um3
+         /VrJNlj0CAgPVN1pl20QfijzORHAh48LH6k7ZXVs9PtiozeNH3xVMwsr5FVENSLN22xb
+         T6ZWH2ST8hRBGK5vB4BmZEyPfKV0A2+oxJcaGtLJIZdI3OqCOE9jyTXnKRM4qGjkDgIq
+         T5Va1LPsl/oqSrZJxi4tAXjwPDfyDiJeWzBZ1BndD9VeKS5nvb/U+Mo+cG6N16v0TD38
+         +/dA==
+X-Gm-Message-State: AOJu0Yyjeqped4/KnyqyLkmjPJmwNsGyBJdYXMzHx+BTGhJB0YCSFg4L
+        ey5+Pjnk4lnHJSc6aFuGjRbthQ==
+X-Google-Smtp-Source: AGHT+IGBSQnPB0tu7RVp53PncovhzE7SzTwHvY1Hwz+2KHc+6UHEFujdqz0TZEhwDQ+r7m42MeMWvg==
+X-Received: by 2002:a05:6358:90e:b0:130:df70:b9cd with SMTP id r14-20020a056358090e00b00130df70b9cdmr5101720rwi.12.1692643063580;
+        Mon, 21 Aug 2023 11:37:43 -0700 (PDT)
 Received: from localhost (2603-7000-0c01-2716-699c-6fe1-d2a8-6a30.res6.spectrum.com. [2603:7000:c01:2716:699c:6fe1:d2a8:6a30])
-        by smtp.gmail.com with ESMTPSA id m5-20020a0cf185000000b00649d9781acesm1453832qvl.2.2023.08.21.11.37.41
+        by smtp.gmail.com with ESMTPSA id m18-20020ae9e712000000b0076d4bb714afsm2634476qka.50.2023.08.21.11.37.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 11:37:41 -0700 (PDT)
+        Mon, 21 Aug 2023 11:37:43 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Vlastimil Babka <vbabka@suse.cz>,
         Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] mm: page_alloc: freelist migratetype hygiene
-Date:   Mon, 21 Aug 2023 14:33:32 -0400
-Message-ID: <20230821183733.106619-1-hannes@cmpxchg.org>
+Subject: [PATCH 1/8] mm: page_alloc: use get_pfnblock_migratetype where pfn available
+Date:   Mon, 21 Aug 2023 14:33:33 -0400
+Message-ID: <20230821183733.106619-2-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230821183733.106619-1-hannes@cmpxchg.org>
+References: <20230821183733.106619-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -69,69 +72,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a breakout series from the huge page allocator patches[1].
+Save a pfn_to_page() lookup when the pfn is right there already.
 
-While testing and benchmarking the series incrementally, as per
-reviewer request, it became apparent that there are several sources of
-freelist migratetype violations that later patches in the series hid.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/page_alloc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Those violations occur when pages of one migratetype end up on the
-freelists of another type. This encourages incompatible page mixing
-down the line, where allocation requests ask for one migrate type, but
-receives pages of another. This defeats the mobility grouping.
-
-The series addresses those causes. The last patch adds type checks on
-all freelist movements to rule out any violations. I used these checks
-to identify the violations fixed up in the preceding patches.
-
-The series is a breakout, but has merit on its own: Less type mixing
-means improved grouping, means less work for compaction, means higher
-THP success rate and lower allocation latencies. The results can be
-seen in a mixed workload that stresses the machine with a kernel build
-job while periodically attempting to allocate batches of THP. The data
-is averaged over 50 consecutive defconfig builds:
-
-                                                        VANILLA      PATCHED-CLEANLISTS
-Hugealloc Time median                     14642.00 (    +0.00%)   10506.00 (   -28.25%)
-Hugealloc Time min                         4820.00 (    +0.00%)    4783.00 (    -0.77%)
-Hugealloc Time max                      6786868.00 (    +0.00%) 6556624.00 (    -3.39%)
-Kbuild Real time                            240.03 (    +0.00%)     241.45 (    +0.59%)
-Kbuild User time                           1195.49 (    +0.00%)    1195.69 (    +0.02%)
-Kbuild System time                           96.44 (    +0.00%)      97.03 (    +0.61%)
-THP fault alloc                           11490.00 (    +0.00%)   11802.30 (    +2.72%)
-THP fault fallback                          782.62 (    +0.00%)     478.88 (   -38.76%)
-THP fault fail rate %                         6.38 (    +0.00%)       3.90 (   -33.52%)
-Direct compact stall                        297.70 (    +0.00%)     224.56 (   -24.49%)
-Direct compact fail                         265.98 (    +0.00%)     191.56 (   -27.87%)
-Direct compact success                       31.72 (    +0.00%)      33.00 (    +3.91%)
-Direct compact success rate %                13.11 (    +0.00%)      17.26 (   +29.43%)
-Compact daemon scanned migrate          1673661.58 (    +0.00%) 1591682.18 (    -4.90%)
-Compact daemon scanned free             2711252.80 (    +0.00%) 2615217.78 (    -3.54%)
-Compact direct scanned migrate           384998.62 (    +0.00%)  261689.42 (   -32.03%)
-Compact direct scanned free              966308.94 (    +0.00%)  667459.76 (   -30.93%)
-Compact migrate scanned daemon %             80.86 (    +0.00%)      83.34 (    +3.02%)
-Compact free scanned daemon %                74.41 (    +0.00%)      78.26 (    +5.10%)
-Alloc stall                                 338.06 (    +0.00%)     440.72 (   +30.28%)
-Pages kswapd scanned                    1356339.42 (    +0.00%) 1402313.42 (    +3.39%)
-Pages kswapd reclaimed                   581309.08 (    +0.00%)  587956.82 (    +1.14%)
-Pages direct scanned                      56384.18 (    +0.00%)  141095.04 (  +150.24%)
-Pages direct reclaimed                    17055.54 (    +0.00%)   22427.96 (   +31.50%)
-Pages scanned kswapd %                       96.38 (    +0.00%)      93.60 (    -2.86%)
-Swap out                                  41528.00 (    +0.00%)   47969.92 (   +15.51%)
-Swap in                                    6541.42 (    +0.00%)    9093.30 (   +39.01%)
-File refaults                            127666.50 (    +0.00%)  135766.84 (    +6.34%)
-
-The series is based on v6.5-rc7.
-
- include/linux/mm.h             |  18 +-
- include/linux/page-isolation.h |   2 +-
- include/linux/vmstat.h         |   8 -
- mm/debug_page_alloc.c          |  12 +-
- mm/internal.h                  |   5 -
- mm/page_alloc.c                | 382 +++++++++++++++++++++------------------
- mm/page_isolation.c            |  23 ++-
- 7 files changed, 230 insertions(+), 220 deletions(-)
-
-[1] https://lore.kernel.org/lkml/20230418191313.268131-1-hannes@cmpxchg.org/
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 977bb4d5e8e1..e430ac45df7c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -824,7 +824,7 @@ static inline void __free_one_page(struct page *page,
+ 			 * pageblock isolation could cause incorrect freepage or CMA
+ 			 * accounting or HIGHATOMIC accounting.
+ 			 */
+-			int buddy_mt = get_pageblock_migratetype(buddy);
++			int buddy_mt = get_pfnblock_migratetype(buddy, buddy_pfn);
+ 
+ 			if (migratetype != buddy_mt
+ 					&& (!migratetype_is_mergeable(migratetype) ||
+@@ -900,7 +900,7 @@ int split_free_page(struct page *free_page,
+ 		goto out;
+ 	}
+ 
+-	mt = get_pageblock_migratetype(free_page);
++	mt = get_pfnblock_migratetype(free_page, free_page_pfn);
+ 	if (likely(!is_migrate_isolate(mt)))
+ 		__mod_zone_freepage_state(zone, -(1UL << order), mt);
+ 
+-- 
+2.41.0
 
