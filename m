@@ -2,121 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CC3782741
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F007A78273F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbjHUKlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
+        id S234803AbjHUKkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbjHUKk7 (ORCPT
+        with ESMTP id S234799AbjHUKkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:40:59 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D17D9;
-        Mon, 21 Aug 2023 03:40:52 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37LAeZQA059233;
-        Mon, 21 Aug 2023 05:40:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692614435;
-        bh=Ozlne59YLraqabgL+WJG3qc//rmNi/GH2L2V0xkKtsU=;
-        h=From:To:CC:Subject:Date;
-        b=Q8liWzOPPB4SI2rn0o1wF//KnAuDWQe250j6M9/it7mcvV451K/Tkja0e7NCZzrcx
-         9h++jfWf0uzbqjTvidAri68gwAFj+J+8f+rm+PMa47EeqHpKhrOeOzV9Kjovnw7ZoB
-         4LlP4oqu7n5gF0FVgXA6ZLcdbTYQDRQg5yJh2ypA=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37LAeZVM001603
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Aug 2023 05:40:35 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 21
- Aug 2023 05:40:35 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 21 Aug 2023 05:40:35 -0500
-Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37LAeVd1006179;
-        Mon, 21 Aug 2023 05:40:32 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <j-luthra@ti.com>,
-        <j-choudhary@ti.com>, <francesco@dolcini.it>
-Subject: [PATCH] dmaengine: ti: k3-udma: Fix teardown timeout for cyclic mode
-Date:   Mon, 21 Aug 2023 16:10:03 +0530
-Message-ID: <20230821104003.3001021-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 21 Aug 2023 06:40:32 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09ECFED
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:40:29 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-58fae4a5285so24029197b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:40:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692614428; x=1693219228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qlC9WzvPLj1udXhDgs5mN/rA7M/i5witjQfQthytlpA=;
+        b=lEGYS0+/m2RXDHmGzNT/IeCYMT2c4iKzkEHrfthtsslruS/BGNSt9Qw/hAbsmwooGd
+         XDsKaaQvYKJjlAoALNP+YXz0uNkdYv8kP5/v3FPxaI+VyKJuQBs6ZUW+fW2iJhMw3thl
+         oHEEyCXKhlU2yBr8RBNSjDOk29vg3CmE6B2e4Y4Ry6RTmtJWFXmW6z4vttjeLXCMuF9/
+         7TEvzE2cQIh6tWhypp3SJoP3PUBoB9b21SLyD490RawRd1uqVyaYb01cwKFFiKQ836X7
+         fB11AS9c/tfm54SzK5PW0NUq3z3XKXKoHQgAB+nwIBqxWIXYLyzkHhEuV4vIpWG4YuGx
+         +bCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692614428; x=1693219228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qlC9WzvPLj1udXhDgs5mN/rA7M/i5witjQfQthytlpA=;
+        b=fu2d7OM3ZwXyw1JnN2if0J5mAHFycOO1E3K2OSpALY64roQZ5ZqSk+3ZqvarCsquap
+         dA6iEXpB3aPFO3Nb8x04jKjX7B0yQauxZGRrvEsfhNLgEkzT3SGZJVmmWZ2MaraXO7kt
+         LXXHh8G40dRspAClag7elIh2TeADjGjX+ozw925fo7WDPsSJDPQznROukTYMEraDy0Lt
+         KX9O2TtdJQbGsnVRo+dC9BgaOzuTo21f+vjbMqY54FFKY0Se6pNNtWYG2Ppq5g7dL1ho
+         prfcOQbQqYMGKA9RqArXJxQdN0IkCy/pX4bUDQqganh/CfOY/NZwetTRwMazyy0MKhFa
+         lyBQ==
+X-Gm-Message-State: AOJu0YyC8YwReFtDhwr++yCgfgJ4tCX4kXG8U6F720ZRLP5i/9eowfMX
+        iVyTcNVbdv3v5hdlWg4zDwyWMJFY37HO5f7xMUvVDA==
+X-Google-Smtp-Source: AGHT+IEij7GtqhbEmiG1OmAYGBYbDU814/39PfKVABeSfeoimu6g7FqhFvg5sPRBjX8bW4TgvYUsOrRpqYZU1N0XD4I=
+X-Received: by 2002:a25:abe7:0:b0:cea:6760:d2c6 with SMTP id
+ v94-20020a25abe7000000b00cea6760d2c6mr6144912ybi.41.1692614428225; Mon, 21
+ Aug 2023 03:40:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <7bcc8ead25dbfabc7f5a85d066224a926fbb4941.1692327317.git.daniel@makrotopia.org>
+In-Reply-To: <7bcc8ead25dbfabc7f5a85d066224a926fbb4941.1692327317.git.daniel@makrotopia.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 21 Aug 2023 12:40:17 +0200
+Message-ID: <CACRpkdYpLkPp0-3rT5xxbzO9Lf35020Aid7QX6iqZGaW3C5x0g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: mediatek: fix pull_type data for MT7981
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Sean Wang <sean.wang@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Rob Herring <robh@kernel.org>,
+        Sam Shih <sam.shih@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In cyclic mode, last descriptor needs to have EOP flag set so that
-teardown flushes data towards PDMA in case of MEM_TO_DMA.  Else,
-operation will not complete successfully leading to spurious timeout on
-channel terminate.
+On Fri, Aug 18, 2023 at 5:02=E2=80=AFAM Daniel Golle <daniel@makrotopia.org=
+> wrote:
 
-Without this terminating aplay cmd outputs false error msg like:
-[116.402800] ti-bcdma 485c0100.dma-controller: chan1 teardown timeout!
+> MediaTek has released pull_type data for MT7981 in their SDK.
+> Use it and set functions to configure pin bias.
+>
+> Fixes: 6c83b2d94fcc ("pinctrl: add mt7981 pinctrl driver")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-This doesn't seem to be problem with UDMA-P on J7xx devices (although is
-a requirement as per spec) but shows up easily on BCDMA + McASP. Fix
-this by setting the appropriate flag
+This looks pretty urgent but I applied it for v6.6 (non-urgent)
+for now so we get some testing in linux-next.
 
-Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
-Suggested-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
+Can some maintainer step in and ACK this and indicate if we
+should even put it into fixes?
 
-This complete reimplementation based on learning of HW behavior for problems
-reported at
-https://lore.kernel.org/linux-arm-kernel/20220215044112.161634-1-vigneshr@ti.com/
-
- drivers/dma/ti/k3-udma.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 30fd2f386f36..02aac7be8d28 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -3476,6 +3476,10 @@ udma_prep_dma_cyclic_tr(struct udma_chan *uc, dma_addr_t buf_addr,
- 	u16 tr0_cnt0, tr0_cnt1, tr1_cnt0;
- 	unsigned int i;
- 	int num_tr;
-+	u32 period_csf = 0;
-+
-+	if (uc->config.ep_type == PSIL_EP_PDMA_XY && dir == DMA_MEM_TO_DEV)
-+		period_csf = CPPI5_TR_CSF_EOP;
- 
- 	num_tr = udma_get_tr_counters(period_len, __ffs(buf_addr), &tr0_cnt0,
- 				      &tr0_cnt1, &tr1_cnt0);
-@@ -3525,8 +3529,10 @@ udma_prep_dma_cyclic_tr(struct udma_chan *uc, dma_addr_t buf_addr,
- 		}
- 
- 		if (!(flags & DMA_PREP_INTERRUPT))
--			cppi5_tr_csf_set(&tr_req[tr_idx].flags,
--					 CPPI5_TR_CSF_SUPR_EVT);
-+			period_csf |= CPPI5_TR_CSF_SUPR_EVT;
-+
-+		if (period_csf)
-+			cppi5_tr_csf_set(&tr_req[tr_idx].flags, period_csf);
- 
- 		period_addr += period_len;
- 	}
--- 
-2.41.0
-
+Yours,
+Linus Walleij
