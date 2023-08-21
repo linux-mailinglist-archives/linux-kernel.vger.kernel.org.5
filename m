@@ -2,54 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDDD78253A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC67178253D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbjHUIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 04:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
+        id S233325AbjHUIRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 04:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbjHUIQl (ORCPT
+        with ESMTP id S231202AbjHUIRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 04:16:41 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9939993
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:16:39 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-113-9_BOF_yAPvOdY0vZpb4dPw-1; Mon, 21 Aug 2023 09:16:28 +0100
-X-MC-Unique: 9_BOF_yAPvOdY0vZpb4dPw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 21 Aug
- 2023 09:16:17 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 21 Aug 2023 09:16:17 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alejandro Colomar' <alx@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-CC:     LKML <linux-kernel@vger.kernel.org>
-Subject: RE: struct_size() using sizeof() vs offsetof()
-Thread-Topic: struct_size() using sizeof() vs offsetof()
-Thread-Index: AQHZ0KEzXPZ5QWstfUGUK20udA0j8K/0arpg
-Date:   Mon, 21 Aug 2023 08:16:17 +0000
-Message-ID: <55bb7e4f633340db9a9c013b91afedd6@AcuMS.aculab.com>
-References: <74e8cf91-d095-33e3-c548-34d80b691089@kernel.org>
-In-Reply-To: <74e8cf91-d095-33e3-c548-34d80b691089@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 21 Aug 2023 04:17:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 737FF93
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:17:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0BE4E614E5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:17:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6BFBC433C8;
+        Mon, 21 Aug 2023 08:17:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692605831;
+        bh=3ZKJpinIH2/iut+h/CCtDPASeiIXBc799WdevH/qqmk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GhLbEeM7EQQhU0UIM04FQCnt5+vhHA6CR0ZGY0uq07g0IgJdYmDFOK4EniRI9rhb3
+         orGayhWzwAkYxYJDRRUyzmhRWKQ1Vd8nG3dU3vS6yeB/T2E+d00aCQ0utJ7bKH4YZJ
+         /s9aKI8uKtoouKBCGAS7j4cHIF4XO7BJAF23x/8zNQFJkUvtfoDbockCkRfZ2A5wXb
+         JfI4iwOcgbqrwWQdxSoIp62ZwsxljM6emsxlo2Z24cTu7NV02NrOK/VPav5QFxX1Uf
+         2akPfkHU0hhF8KTU2Rud3Eh002npAOaogioU6RE0xaBZPFXfDIk4Ie9F83+I8NaSa8
+         u27Jwa7Kq4oow==
+Date:   Mon, 21 Aug 2023 10:17:08 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     neil.armstrong@linaro.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
+Message-ID: <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+ <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+ <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
+ <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
+ <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
+ <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
+ <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
+ <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
+ <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fbbdtuo55smypndw"
+Content-Disposition: inline
+In-Reply-To: <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,44 +74,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWxlamFuZHJvIENvbG9tYXINCj4gU2VudDogVGh1cnNkYXksIEF1Z3VzdCAxNywgMjAy
-MyAxOjIzIEFNDQo+IA0KPiBIaSBLZWVzLCBHdXN0YXZvLA0KPiANCj4gSSd2ZSBiZWVuIGRpc2N1
-c3Npbmcgd2l0aCBhIGZyaWVuZCBhYm91dCB0aGUgYXBwcm9wcmlhdGVuZXNzIG9mIHNpemVvZigp
-DQo+IHZzIG9mZnNldG9mKCkgZm9yIGNhbGN1bGF0aW5nIHRoZSBzaXplIG9mIGEgc3RydWN0dXJl
-IHdpdGggYSBmbGV4aWJsZQ0KPiBhcnJheSBtZW1iZXIgKEZBTSkuDQo+IA0KPiBBZnRlciByZWFk
-aW5nIEplbnMgR3VzdGVkdCdzIGJsb2cgcG9zdCBhYm91dCBpdFsxXSwgd2UgdHJpZWQgc29tZSB0
-ZXN0cywNCj4gYW5kIHdlIGdvdCBzb21lIGludGVyZXN0aW5nIHJlc3VsdHMgdGhhdCBkaXNjb3Vy
-YWdlZCBtZSBmcm9tIHVzaW5nIHNpemVvZigpLg0KPiBTZWUgYmVsb3cuDQo+IA0KPiBCdXQgdGhl
-biwgc2FpZCBmcmllbmQgcG9pbnRlZCB0byBtZSB0aGF0IHRoZSBrZXJuZWwgdXNlcyBzaXplb2Yo
-KSBpbg0KPiBzdHJ1Y3Rfc2l6ZSgpLCBhbmQgd2Ugd29uZGVyZWQgd2h5IHlvdSB3b3VsZCBoYXZl
-IGNob3NlbiBpdC4gIEl0J3Mgc2FmZQ0KPiBhcyBsb25nIGFzIHlvdSBfa25vd18gdGhhdCB0aGVy
-ZSdzIG5vIHBhZGRpbmcsIG9yIHRoYXQgdGhlIGFsaWdubWVudCBvZg0KPiB0aGUgRkFNIGlzIGFz
-IGxhcmdlIGFzIHRoZSBwYWRkaW5nICh3aGljaCB5b3UgcHJvYmFibHkga25vdyBpbiB0aGUga2Vy
-bmVsKSwNCj4gYnV0IGl0IHNlZW1zIHNhZmVyIHRvIHVzZQ0KPiANCj4gCU1BWChzaXplb2Yocyks
-IG9mZnNldG9mKHMsIGZhbSkgKyBzaXplb2ZfbWVtYmVyKHMsIGZhbSkgKiBjb3VudCkNCj4gDQo+
-IFRoZSB0aGluZyBpcywgaWYgdGhlcmUncyBhbnkgdHJhaWxpbmcgcGFkZGluZyBpbiB0aGUgc3Ry
-dWN0LCB0aGUgRkFNIG1heQ0KPiBvdmVybGFwIHRoZSBwYWRkaW5nLCBhbmQgdGhlIGNhbGN1bGF0
-aW9uIHdpdGggc2l6ZW9mKCkgd2lsbCB3YXN0ZSBhIGZldw0KPiBieXRlcywgYW5kIGlmIG1pc3Vz
-ZWQgdG8gZ2V0IHRoZSBsb2NhdGlvbiBvZiB0aGUgRkFNLCB0aGUgcHJvYmxlbSB3aWxsIGJlDQo+
-IGJpZ2dlciwgYXMgeW91J2xsIGdldCBhIHdyb25nIGxvY2F0aW9uLg0KPiANCj4gU28sIEkganVz
-dCB3YW50ZWQgdG8gcHJ5IHdoYXQgYW5kIGVzcGVjaWFsbHkgd2h5IHRoZSBrZXJuZWwgY2hvc2Ug
-dG8gcHJlZmVyDQo+IGEgc2ltcGxlIHNpemVvZigpLg0KPiANCj4gQ2hlZXJzLA0KPiBBbGV4DQo+
-IA0KPiAtLS0NCi4uLi4uDQo+IAlzdHJjcHkocy0+ZmFtLCAiSGVsbG8sIHNpemVvZiEiKTsNCj4g
-CXAgPSAoY2hhciAqKSBzICsgc2l6ZW9mKHN0cnVjdCBzKTsNCj4gCXB1dHMocCk7DQoNCldoeSBv
-biBlYXJ0aCB3b3VsZCB5b3UgZXhwZWN0IHRoZSBhYm92ZSB0byBkbyBhbnl0aGluZyBzZW5zaWJs
-ZT8NCg0KSXQgaXMgYSBzaGFtZSB5b3UgY2FuIGp1c3QgdXNlIG9mZnNldG9mKHR5cGUsIG1lbWJl
-cltjb3VudCArIDFdKS4NClRoYXQgaXMgZmluZSBmb3IgY29uc3RhbnRzLCBidXQgdGhlIEMgbGFu
-Z3VhZ2UgcmVxdWlyZXMgb2Zmc2V0b2YoKQ0KdG8gYmUgYSBjb21waWxlLXRpbWUgY29uc3RhbnQg
-LSBJIGNhbid0IGhlbHAgZmVlbGluZyB0aGUgc3RhbmRhcmRzDQpib2R5IGRpZG4ndCBjb25zaWRl
-ciBub24tY29uc3RhbnQgYXJyYXkgb2Zmc2V0cy4NCihUaGUgY29tcGlsZXIgZm9yIGEgd2VsbCBr
-bm93biBPUyB3b24ndCBjb21waWxlIHRoYXQgKG9yIGFueXRoaW5nDQp0aGF0IGxvb2tzIGxpa2Ug
-aXQpIGV2ZW4gZm9yIGEgY29uc3RhbnQgYXJyYXkgc3Vic2NyaXB0ISkNCg0KVGhlIGFjdHVhbCBw
-cm9ibGVtIHdpdGggdXNpbmcgb2Zmc2V0b2YoKSBpcyB0aGF0IHlvdSBtaWdodCBlbmQNCnVwIHdp
-dGggc29tZXRoaW5nIHNtYWxsZXIgdGhhbiB0aGUgc3RydWN0dXJlIHNpemUuDQooV2hlbiB0aGUg
-dmFyaWFibGUgc2l6ZWQgYXJyYXkgaXMgc21hbGxlciB0aGFuIHRoZSBwYWRkaW5nLikNCg0KV2hp
-bGUgbWF4KCkgd2lsbCBnZW5lcmF0ZSBhIGNvbnN0YW50IGZvciBjb25zdGFudCBpbnB1dCwgaXQN
-CndpbGwgYmUgYSByZWFsIGNvbXBhcmUgZm9yIG5vbi1jb25zdGFudCBpbnB1dC4NCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
 
+--fbbdtuo55smypndw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wrote:
+> On 17/08/2023 20:35, Dmitry Baryshkov wrote:
+> > On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
+> > > Sending HS commands will always work on any controller, it's all
+> > > about LP commands. The Samsung panels you listed only send HS
+> > > commands so they can use prepare_prev_first and work on any
+> > > controllers.
+> >=20
+> > I think there is some misunderstanding there, supported by the
+> > description of the flag.
+> >=20
+> > If I remember correctly, some hosts (sunxi) can not send DCS
+> > commands after enabling video stream and switching to HS mode, see
+> > [1]. Thus, as you know, most of the drivers have all DSI panel setup
+> > commands in drm_panel_funcs::prepare() /
+> > drm_bridge_funcs::pre_enable() callbacks, not paying attention
+> > whether these commands are to be sent in LP or in HS mode.
+> >=20
+> > Previously DSI source drivers could power on the DSI link either in
+> > mode_set() or in pre_enable() callbacks, with mode_set() being the
+> > hack to make panel/bridge drivers to be able to send commands from
+> > their prepare() / pre_enable() callbacks.
+> >=20
+> > With the prev_first flags being introduced, we have established that
+> > DSI link should be enabled in DSI host's pre_enable() callback and
+> > switched to HS mode (be it command or video) in the enable()
+> > callback.
+> >
+> > So far so good.
+>=20
+> It seems coherent, I would like first to have a state of all DSI host
+> drivers and make this would actually work first before adding the
+> prev_first flag to all the required panels.
+
+This is definitely what we should do in an ideal world, but at least for
+sunxi there's no easy way for it at the moment. There's no documentation
+for it and the driver provided doesn't allow this to happen.
+
+Note that I'm not trying to discourage you or something here, I'm simply
+pointing out that this will be something that we will have to take into
+account. And it's possible that other drivers are in a similar
+situation.
+
+> > Unfortunately this change is not fully backwards-compatible. This
+> > requires that all DSI panels sending commands from prepare() should
+> > have the prepare_prev_first flag. In some sense, all such patches
+> > might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
+> > flag to drm_panel").
+>=20
+> This kind of migration should be done *before* any possible
+> regression, not the other way round.
+>=20
+> If all panels sending commands from prepare() should have the
+> prepare_prev_first flag, then it should be first, check for
+> regressions then continue.
+>=20
+> <snip>
+>=20
+> > >=20
+> > > I understand, but this patch doesn't qualify as a fix for
+> > > 9e15123eca79 and is too late to be merged in drm-misc-next for
+> > > v6.6, and since 9e15123eca79 actually breaks some support it
+> > > should be reverted (+ deps) since we are late in the rc cycles.
+> >=20
+> > If we go this way, we can never reapply these patches. There will be
+> > no guarantee that all panel drivers are completely converted. We
+> > already have a story without an observable end -
+> > DRM_BRIDGE_ATTACH_NO_CONNECTOR.
+>=20
+> I don't understand this point, who would block re-applying the patches ?
+>=20
+> The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
+> Linux version and went smoothly because we reverted regressing patches
+> and restarted when needed, I don't understand why we can't do this
+> here aswell.
+>=20
+> > I'd consider that the DSI driver is correct here and it is about the
+> > panel drivers that require fixes patches. If you care about the
+> > particular Fixes tag, I have provided one several lines above.
+>=20
+> Unfortunately it should be done in the other way round, prepare for
+> migration, then migrate,
+>=20
+> I mean if it's a required migration, then it should be done and I'll
+> support it from both bridge and panel PoV.
+>=20
+> So, first this patch has the wrong Fixes tag, and I would like a
+> better explanation on the commit message in any case. Then I would
+> like to have an ack from some drm-misc maintainers before applying it
+> because it fixes a patch that was sent via the msm tree thus per the
+> drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
+
+Sorry, it's not clear to me what you'd like our feedback on exactly?
+
+Maxime
+
+--fbbdtuo55smypndw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZOMdhAAKCRDj7w1vZxhR
+xZT/AQCD0eZvXfqc9oKaTnL8HrP+5UOzFRLh0XdZwb5uzpQUhQEAirhafu7tNxGY
+OLbi1TOM0JsONkjEE0PCn/teKuS72Q4=
+=KHaG
+-----END PGP SIGNATURE-----
+
+--fbbdtuo55smypndw--
