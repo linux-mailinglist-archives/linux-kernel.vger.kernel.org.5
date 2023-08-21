@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D253782ADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECDD782AE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:51:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbjHUNv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        id S235549AbjHUNv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232370AbjHUNv1 (ORCPT
+        with ESMTP id S235506AbjHUNv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:51:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7168BC;
-        Mon, 21 Aug 2023 06:51:25 -0700 (PDT)
+        Mon, 21 Aug 2023 09:51:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1111F4;
+        Mon, 21 Aug 2023 06:51:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6BFE66311E;
-        Mon, 21 Aug 2023 13:51:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D5DFC433C7;
-        Mon, 21 Aug 2023 13:51:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6622763683;
+        Mon, 21 Aug 2023 13:51:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65268C433C7;
+        Mon, 21 Aug 2023 13:51:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692625884;
-        bh=raW/eJ/IekLFv76LPt/xjV+ChKw/iEEDviThfP0LNIQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=K1rO2pp7CuRPqKRyFO0K7tg3mOBJdE+6WL2eCf3huaAoG4ar6+WJxPMk2I/lU4G9B
-         3DvwYrqj5rgYoTyQF8ckDhUw5fX4/t/8RSiavijEwXkQG8YHXravbW5IWmsjoJLErS
-         WguPbdKVTGvvNyzjeTSaG+yGhvIVL47kRRVfVibdZs+vGP4SxU55jaqnR4oXfNhwa0
-         8dfj3B6wh02vC4TyuYEbtwNo6IXGw7zZR1nt6ucIRQkloGoviePhgAlq1IXtcPvDWx
-         jQqP8r0gn5WYWxbtrSLgkJ3AHt2eARZHAeG/+dug92afpPZRy9k2lsL6JPQmGpd+u7
-         rGmgVYz/3AZCA==
-Message-ID: <96e7cc13-1169-12ab-6dad-7624e33346ab@kernel.org>
-Date:   Mon, 21 Aug 2023 15:51:22 +0200
+        s=k20201202; t=1692625910;
+        bh=Hbyy/W/jZVSIZxz8hNREGg+bVQgyuozT2jp1B0cXH+Y=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=eFiw57LmaUvaM6Bt8/edvk6BDN/rgzxkOC5o3Fmj04MgsZnI9TZe2KXNAszc4C60q
+         sobTAbSUEHhEQquw9MyFewxooGaaKZrT+DZCQSPgefUEO9NfzZGpT/jJ9Ddq6Hw+Zd
+         mYsmKTV4wDw1PetF4N5XaVMTBMa7ykBv4/bPl2UmXO3ibFsEdLk7djrhRhgKfHp4hj
+         dijpHxGzBy56PfiwI1kxXstswgXfPt3ukv9mF7B/nVur/8oW0ZjlTanVtN/hxpa8g5
+         cfNKN2vDHvLFhgxdgjAh2S0tfJPwEzZQETsGN0dMAceVXKVOb32lqQSUD2xtjcIslW
+         J3k9AGTOCVFjw==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     fenghua.yu@intel.com, dave.jiang@intel.com,
+        Yue Haibing <yuehaibing@huawei.com>
+Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230817114135.50264-1-yuehaibing@huawei.com>
+References: <20230817114135.50264-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH v3] dmaengine: idxd: Remove unused declarations
+Message-Id: <169262590904.224153.1527521964317716805.b4-ty@kernel.org>
+Date:   Mon, 21 Aug 2023 19:21:49 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: struct_size() using sizeof() vs offsetof()
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <74e8cf91-d095-33e3-c548-34d80b691089@kernel.org>
- <202308161913.91369D4A@keescook>
- <09b4a2ce-da74-3a19-6961-67883f634d98@kernel.org>
- <f12c6f14-66c4-6afb-e768-fa7abcfd1bbc@embeddedor.com>
- <df8fdd4a-490f-6b2a-03b6-0333e3302dce@kernel.org>
- <d3c4c953c9a742ae98ae9b9036561b38@AcuMS.aculab.com>
-From:   Alejandro Colomar <alx@kernel.org>
-Organization: Linux
-In-Reply-To: <d3c4c953c9a742ae98ae9b9036561b38@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,79 +56,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-21 10:38, David Laight wrote:
-> From: Alejandro Colomar <alx@kernel.org>
->> Sent: Thursday, August 17, 2023 7:38 PM
->>
->> Hi Gustavo,
->>
->> On 2023-08-17 18:05, Gustavo A. R. Silva wrote:
->>>
->>>> -               tp_c =3D kzalloc(sizeof(*tp_c), GFP_KERNEL);
->>>> +               tp_c =3D kzalloc(struct_size(tp_c, hlist->ht, 1), GF=
-P_KERNEL);
->>>
->>> I just sent a fix[1].
->>>
->>> Thanks for reporting this! :)
->=20
-> Perhaps struct_size() should include an assertion that:
-> 	(offsetof(type, field[8]) > sizeof (type))
-> That will ensure that field is an array member
 
-There's already an assertion that the field in struct_size() is an
-array:
+On Thu, 17 Aug 2023 19:41:35 +0800, Yue Haibing wrote:
+> Commit c05257b5600b ("dmanegine: idxd: open code the dsa_drv registration")
+> removed idxd_{un}register_driver() definitions but not the declarations.
+> Commit 034b3290ba25 ("dmaengine: idxd: create idxd_device sub-driver")
+> declared idxd_{un}register_idxd_drv() but never implemented it.
+> Commit 8f47d1a5e545 ("dmaengine: idxd: connect idxd to dmaengine
+> subsystem") declared idxd_parse_completion_status() but never implemented
+> it.
+> 
+> [...]
 
-$ grepc struct_size include/
-include/linux/overflow.h:291:
-#define struct_size(p, member, count)					\
-	__builtin_choose_expr(__is_constexpr(count),			\
-		sizeof(*(p)) + flex_array_size(p, member, count),	\
-		size_add(sizeof(*(p)), flex_array_size(p, member, count)))
-$ grepc flex_array_size include/
-include/linux/overflow.h:275:
-#define flex_array_size(p, member, count)				\
-	__builtin_choose_expr(__is_constexpr(count),			\
-		(count) * sizeof(*(p)->member) + __must_be_array((p)->member),	\
-		size_mul(count, sizeof(*(p)->member) + __must_be_array((p)->member)))
+Applied, thanks!
 
+[1/1] dmaengine: idxd: Remove unused declarations
+      commit: 3c935af7a8e5db7f59d65fad86add19fe558bb29
 
-Notice the must_be_array() there.
+Best regards,
+-- 
+~Vinod
 
-
-> and reasonably
-> near the end of the structure.
-
-I did add a must_be_zero_sizeof() assertion to my implementation of
-sizeof_fam0(), so I think that's a reasonable assertion that it's
-really a FAM.  You can still add a zero-length array in the middle
-of a struct and pass those two assertions, but it's unlikely.
-
->=20
-> A more complex calculation (using _Alignof(type) and the offset/size
-> of field) could be used.
-> But I don't think you can actually detect it is field[] (or even the
-> last member).
-
-I'm thinking now that you can plug an assertion that offsetof_fam()
-is >=3D sizeof(struct) - alignof(struct).  That should make it even
-harder to pass all the assertions without really having the field at
-the end.  A [0] at the end of a structure would still pass all those
-assertions, but linters probably catch those.  So I think it's a
-pretty robust assertion.
-
-Cheers,
-Alex
-
->=20
-> 	David
->=20
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, M=
-K1 1PT, UK
-> Registration No: 1397386 (Wales)
-
---=20
-<http://www.alejandro-colomar.es/>
-GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
 
