@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDAB7821FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 05:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EEB782206
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 05:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232701AbjHUDik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 23:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34488 "EHLO
+        id S232366AbjHUDyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 23:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbjHUDij (ORCPT
+        with ESMTP id S229992AbjHUDyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 23:38:39 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0D394;
-        Sun, 20 Aug 2023 20:38:04 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qXvjb-00610g-Gg; Mon, 21 Aug 2023 11:37:44 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Mon, 21 Aug 2023 11:37:44 +0800
-Date:   Mon, 21 Aug 2023 11:37:44 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
-Subject: [GIT PULL] Crypto Fixes for 6.5
-Message-ID: <ZOLcCC523FoBAyv0@gondor.apana.org.au>
-References: <YpC1/rWeVgMoA5X1@gondor.apana.org.au>
- <Yqw7bf7ln6vtU/VH@gondor.apana.org.au>
- <Yr1XPJsAH2l1cx3A@gondor.apana.org.au>
- <Y0zcWCmNmdXnX8RP@gondor.apana.org.au>
- <Y1thZ/+Gh/ONyf7x@gondor.apana.org.au>
- <Y7fmtJHWT1Zx+A1j@gondor.apana.org.au>
- <ZARrt99wJb7IhoY4@gondor.apana.org.au>
- <ZFeldCJcieIlXKJ8@gondor.apana.org.au>
- <ZHQe9A8CC93iCFMG@gondor.apana.org.au>
- <ZKtH5zrS4pR22PGT@gondor.apana.org.au>
+        Sun, 20 Aug 2023 23:54:15 -0400
+Received: from out28-4.mail.aliyun.com (out28-4.mail.aliyun.com [115.124.28.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5686D8E;
+        Sun, 20 Aug 2023 20:54:12 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.410237|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00758011-0.000204805-0.992215;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=like@awinic.com;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.ULtK3sr_1692590038;
+Received: from awinic..(mailfrom:like@awinic.com fp:SMTPD_---.ULtK3sr_1692590038)
+          by smtp.aliyun-inc.com;
+          Mon, 21 Aug 2023 11:54:05 +0800
+From:   like@awinic.com
+To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        liweilei@awinic.com, liangdong@awinic.com,
+        wangweidong.a@awinic.com, Alec Li <like@awinic.com>
+Subject: [PATCH v5 0/2] regulator: aw37503: add regulator driver for Awinic AW37503
+Date:   Mon, 21 Aug 2023 03:53:53 +0000
+Message-ID: <20230821035355.1269976-1-like@awinic.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZKtH5zrS4pR22PGT@gondor.apana.org.au>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        PDS_RDNS_DYNAMIC_FP,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS,TVD_RCVD_IP autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus:
+From: Alec Li <like@awinic.com>
 
-The following changes since commit 419caed6cc77f19148faefe13515f8685ede219b:
+Add regulator driver for the device Awinic AW37503 which is
+single inductor - dual output power supply device. AW37503
+device is designed to support general positive/negative
+driven applications like TFT display panels.
 
-  Merge tag 'v6.5-p2' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 (2023-07-10 09:53:11 -0700)
+v4->v5: Delete the unnecessary '|' in the awinic,aw37503.yaml.
+v3->v4: Correct yamllint warnings/errors.
+v2->v3: Switch to use the dev_err_probe().
+        Keep the Kconfig and Makefile sorted.
+        Correct yamllint warnings/errors.
+v1->v2: Remove unneeded fields and correct yamllint warnings/errors.
 
-are available in the Git repository at:
+Alec Li (2):
+  regulator: aw37503: add regulator driver for Awinic AW37503
+  regulator: dt-bindings: Add Awinic AW37503
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6 tags/v6.5-p3
+ .../bindings/regulator/awinic,aw37503.yaml    |  78 ++++++
+ drivers/regulator/Kconfig                     |   8 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/aw37503-regulator.c         | 240 ++++++++++++++++++
+ 4 files changed, 327 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/awinic,aw37503.yaml
+ create mode 100644 drivers/regulator/aw37503-regulator.c
 
-for you to fetch changes up to 080aa61e370b9c5cafe71cacadbfe0e72db4d6df:
 
-  crypto: fix uninit-value in af_alg_free_resources (2023-08-18 18:30:09 +0800)
-
-----------------------------------------------------------------
-This push fixes a regression in the caam driver and af_alg.
-----------------------------------------------------------------
-Herbert Xu (1):
-      Revert "crypto: caam - adjust RNG timing to support more devices"
-
-Pavel Skripkin (1):
-      crypto: fix uninit-value in af_alg_free_resources
-
- crypto/af_alg.c            | 4 ++--
- drivers/crypto/caam/ctrl.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-Thanks,
+base-commit: 706a741595047797872e669b3101429ab8d378ef
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.41.0
+
