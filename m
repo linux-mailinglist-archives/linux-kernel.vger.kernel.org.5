@@ -2,143 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F07C7827A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204927827B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjHULNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:13:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
+        id S231617AbjHULPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjHULNv (ORCPT
+        with ESMTP id S229992AbjHULPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:13:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F52E1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692616387;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FLv+TkAFGQoQHMU5iUg8DMV6ijqUrDP2mgBfimkSRB8=;
-        b=Vs5Gi8kzYdTXaI8t8WhjlqQQOZT/gUSqbQKRPSIUk7Pa+YchXXk4rHXx8C/uTMktkqdnHG
-        YwenJO4ZTWX6xEWsUqplnne0eUpLKOFHpoW9TTuVSndtwJ1sprpaPNFoXBdlOmyblcAwls
-        uqjKC7Z9XSZk0hn08CDWHuEhU9Yn5Z8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-573-Nqm2trGWOCeWrib4Wbv_3Q-1; Mon, 21 Aug 2023 07:13:05 -0400
-X-MC-Unique: Nqm2trGWOCeWrib4Wbv_3Q-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-52a0f5f74d7so524777a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:13:05 -0700 (PDT)
+        Mon, 21 Aug 2023 07:15:53 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F2DD9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:15:51 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4ff933f9ca8so4726679e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:15:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692616550; x=1693221350;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pCNxFRwbkJ020O8yAmNZqYiDYiRNbzGGv08xLI36/24=;
+        b=UwZxa3zrr8W09InDxNRghWM9jnOfPk8Sw5DIgwJv/KEe6/ia9MKEpfYklg1e1EKv1+
+         RRY+YEQSIih9L4A9+44ZukRTXj12IV/mJSpZjWb/qZIoG6amGeFGi3wt4OCXGTCjPvdv
+         nQRlFYYnW1Urydh7p10yffPkktkZMrFrcLhHy0cXHXPp+0iyIEnU2PMR9ga77qHozryD
+         JKIwmZW+tVPZUnQUylErMwZAQiQGDq0dbVS4VVXDw2hrJ/pdFRJMFeoaOUqFU0LgeR8s
+         18J+AEAudBVeItnwpKrf3f2OoGYIsHvyAXWg4z73Z2q0aLdqKsIuflzBTXqHBv2witXa
+         UJow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692616384; x=1693221184;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FLv+TkAFGQoQHMU5iUg8DMV6ijqUrDP2mgBfimkSRB8=;
-        b=B96xhrbsN2MIcqmKUaHJX6pW9FJe0xyzs/3sRWsXkDDgNf7ts5gRi9mRAafsnt/DI2
-         lxIBBGRNI5Kgs3BPtRJrgV+KxdTqpDlzckUbNp/735EaJN+YfpQS1ZJgSJoZGxA/CwR7
-         JpBQubTCmur34wRaniy+tG8MCsHAyS06aDUQ5lFQcP3kpiq95+Vkl64w6Yqai5E+6n3A
-         6V/NVSFozXRk6rlfIRfZYp+Xmet3n57neRWQdUCScQuqJX+zHufurbsw/P/fEHlFwxOv
-         OMZJN8wMMxDFH/+waJdecwNL1hvMT09cgIOMtBkimfW+XMqYt/FGk1G4/Ba/Dux6tIGd
-         VsYA==
-X-Gm-Message-State: AOJu0YwLt/ErCNxPavF8VBujZReZrn9w70LmhNrH07sJ8XEflv7d1RIO
-        r2nl5HfwPB8yFLvcKC+xYpiYGD+Prau5LmBU0FxSg97Ng2CcFoJOiA/j29JazMvd3LWfp0Ry/Si
-        Nxiot8ciFg/ep0joZX+vHAUWL
-X-Received: by 2002:a17:906:cc48:b0:99c:bb4d:f5a0 with SMTP id mm8-20020a170906cc4800b0099cbb4df5a0mr4863398ejb.14.1692616384694;
-        Mon, 21 Aug 2023 04:13:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGHWHdNmfToWu5FBCGghpN2lVEXfePQq5j5r60KTclBOe+eLY3OTLQaTvwFKHiCQS8piS/PcQ==
-X-Received: by 2002:a17:906:cc48:b0:99c:bb4d:f5a0 with SMTP id mm8-20020a170906cc4800b0099cbb4df5a0mr4863391ejb.14.1692616384514;
-        Mon, 21 Aug 2023 04:13:04 -0700 (PDT)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id o22-20020a170906289600b0099bd86f9248sm6379338ejd.63.2023.08.21.04.13.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 04:13:04 -0700 (PDT)
-Message-ID: <3d537df6-d5b1-835c-b856-1783747f4eb4@redhat.com>
-Date:   Mon, 21 Aug 2023 13:13:03 +0200
+        d=1e100.net; s=20221208; t=1692616550; x=1693221350;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pCNxFRwbkJ020O8yAmNZqYiDYiRNbzGGv08xLI36/24=;
+        b=O3YSDyRq+7+XY4h//s0BAk+9ioO16ilYMZKiTa7h2fvPROGcMT3rqFwLASiHz2vfxs
+         BfK+AiSspB2FLJZGgCyy9cH/GsaW4vekK9wA2kq/B6N4mJlpI8R4XdOUuR7l2a6Tj/qV
+         I/i9ibaXHEeTkIeS0XYUuaOe3S+jryc9vMdLWOwAtDsC3FZVgziYVqn5CWGqiOOzx7Oi
+         cg2ISX2ZC89pTVny9BCA9InqT5wkZqxlaWTKcq4oi+jLi4/MFBLo9FYwFj3n9qI3Kd/z
+         71zXhq9ST561lBJhzG1ZMu6Syr9NF7RtPdgWLjO5F8n/Kng5mxUnUaFMdLt1DUzkYBto
+         AlmQ==
+X-Gm-Message-State: AOJu0YzozJx2BIO+wS1D8Wf9epR6QYhLCkoaAhr824Eu+zlROwodt2ry
+        I22jb6COnqHLiWxqgmyJ3rGtVzr7bAsm/S8hDBI/Iw==
+X-Google-Smtp-Source: AGHT+IGwT8MHmZFx4cdyyvS1B91C+7Ra8dKBonHa8okbMZNvnvcXtXmIZtVRLqgLNChIa1+QoK5mZCHS/3LjkFsrIeI=
+X-Received: by 2002:ac2:5496:0:b0:4fb:8359:e8c with SMTP id
+ t22-20020ac25496000000b004fb83590e8cmr3808154lfk.34.1692616549259; Mon, 21
+ Aug 2023 04:15:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: Add support for new hotkeys
- found on ThinkBook 14s Yoga ITL
-Content-Language: en-US
-To:     =?UTF-8?Q?Andr=c3=a9_Apitzsch?= <git@apitzsch.eu>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230819-lenovo_keys-v1-1-9d34eac88e0a@apitzsch.eu>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230819-lenovo_keys-v1-1-9d34eac88e0a@apitzsch.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230816100113.41034-1-linyunsheng@huawei.com>
+ <20230816100113.41034-2-linyunsheng@huawei.com> <CAC_iWjJd8Td_uAonvq_89WquX9wpAx0EYYxYMbm3TTxb2+trYg@mail.gmail.com>
+ <20230817091554.31bb3600@kernel.org> <CAC_iWjJQepZWVrY8BHgGgRVS1V_fTtGe-i=r8X5z465td3TvbA@mail.gmail.com>
+ <20230817165744.73d61fb6@kernel.org> <CAC_iWjL4YfCOffAZPUun5wggxrqAanjd+8SgmJQN0yyWsvb3sg@mail.gmail.com>
+ <20230818145145.4b357c89@kernel.org> <CAC_iWjKp_NKofQQTSgA810+bOt84Hgbm3YV=X=JWH9t=DHuzqQ@mail.gmail.com>
+In-Reply-To: <CAC_iWjKp_NKofQQTSgA810+bOt84Hgbm3YV=X=JWH9t=DHuzqQ@mail.gmail.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Mon, 21 Aug 2023 14:15:13 +0300
+Message-ID: <CAC_iWjLKFktPKCukT2M7oJUxB1ggzxUL4N7cb1yGoBeW_q3sgg@mail.gmail.com>
+Subject: Re: [PATCH net-next v7 1/6] page_pool: frag API support for 32-bit
+ arch with 64-bit DMA
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Mina Almasry <almasrymina@google.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Liang Chen <liangchen.linux@gmail.com>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 21 Aug 2023 at 11:38, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> resending for the mailing list apologies for the noise.
+>
+>
+> On Sat, 19 Aug 2023 at 00:51, Jakub Kicinski <kuba@kernel.org> wrote:
+> >
+> > On Fri, 18 Aug 2023 09:12:09 +0300 Ilias Apalodimas wrote:
+> > > > Right, IIUC we don't have enough space to fit dma_addr_t and the
+> > > > refcount, but if we store the dma addr on a shifted u32 instead
+> > > > of using dma_addr_t explicitly - the refcount should fit?
+> > >
+> > > struct page looks like this:
+> > >
+> > > unsigned long dma_addr;
+> > > union {
+> > >       unsigned long dma_addr_upper;
+> > >       atomic_long_t pp_frag_count;
+> > > };
+> >
+> > I could be completely misunderstanding the problem.
+>
+> You aren't!
+>
+> > Let me show you the diff of what I was thinking more or less.
+> >
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 5e74ce4a28cd..58ffa8dc745f 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -126,11 +126,6 @@ struct page {
+> >                         unsigned long _pp_mapping_pad;
+> >                         unsigned long dma_addr;
+> >                         union {
+> > -                               /**
+> > -                                * dma_addr_upper: might require a 64-bit
+> > -                                * value on 32-bit architectures.
+> > -                                */
+> > -                               unsigned long dma_addr_upper;
+> >                                 /**
+> >                                  * For frag page support, not supported in
+> >                                  * 32-bit architectures with 64-bit DMA.
+> > diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> > index 94231533a369..6f87a0fa2178 100644
+> > --- a/include/net/page_pool/helpers.h
+> > +++ b/include/net/page_pool/helpers.h
+> > @@ -212,16 +212,24 @@ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+> >         dma_addr_t ret = page->dma_addr;
+> >
+> >         if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> > -               ret |= (dma_addr_t)page->dma_addr_upper << 16 << 16;
+> > +               ret <<= PAGE_SHIFT;
+> >
+> >         return ret;
+> >  }
+> >
+> > -static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> > +static inline bool page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
+> >  {
+> > +       bool failed = false;
+> > +
+> >         page->dma_addr = addr;
+> > -       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT)
+> > -               page->dma_addr_upper = upper_32_bits(addr);
+> > +       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT) {
+> > +               page->dma_addr >>= PAGE_SHIFT;
+> > +               /* We assume page alignment to shave off bottom bits,
+> > +                * if this "compression" doesn't work we need to drop.
+> > +                */
+> > +               failed = addr != page->dma_addr << PAGE_SHIFT;
+> > +       }
+> > +       return failed;
+> >  }
+> >
+> >  static inline bool page_pool_put(struct page_pool *pool)
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index 77cb75e63aca..9ea42e242a89 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -211,10 +211,6 @@ static int page_pool_init(struct page_pool *pool,
+> >                  */
+> >         }
+> >
+> > -       if (PAGE_POOL_DMA_USE_PP_FRAG_COUNT &&
+> > -           pool->p.flags & PP_FLAG_PAGE_FRAG)
+> > -               return -EINVAL;
+> > -
+> >  #ifdef CONFIG_PAGE_POOL_STATS
+> >         pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
+> >         if (!pool->recycle_stats)
+> > @@ -359,12 +355,19 @@ static bool page_pool_dma_map(struct page_pool *pool, struct page *page)
+> >         if (dma_mapping_error(pool->p.dev, dma))
+> >                 return false;
+> >
+> > -       page_pool_set_dma_addr(page, dma);
+> > +       if (page_pool_set_dma_addr(page, dma))
+> > +               goto unmap_failed;
+> >
+> >         if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+> >                 page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+> >
+> >         return true;
+> > +
+> > +unmap_failed:
+> > +       dma_unmap_page_attrs(pool->p.dev, dma,
+> > +                            PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+> > +                            DMA_ATTR_SKIP_CPU_SYNC | DMA_ATTR_WEAK_ORDERING);
+> > +       return false;
+> >  }
+>
+> That seems reasonable and would work for pages > 4k as well. But is
+> 16TB enough?  I am more familiar with embedded than large servers,
+> which do tend to scale that high.
 
-On 8/19/23 09:12, André Apitzsch wrote:
-> The Lenovo Thinkbook 14s Yoga ITL has 4 new symbols/shortcuts on their
-> F9-F11 and PrtSc keys:
-> 
-> F9:    Has a symbol of a head with a headset, the manual says "Service key"
-> F10:   Has a symbol of a telephone horn which has been picked up from the
->        receiver, the manual says: "Answer incoming calls"
-> F11:   Has a symbol of a telephone horn which is resting on the receiver,
->        the manual says: "Reject incoming calls"
-> PrtSc: Has a symbol of a siccor and a dashed ellipse, the manual says:
->        "Open the Windows 'Snipping' Tool app"
-> 
-> This commit adds support for these 4 new hkey events.
-> 
-> Signed-off-by: André Apitzsch <git@apitzsch.eu>
+Right never respond before coffee .... I think this is reasonable overall.
 
-Thank you for your patch, I've applied this patch to my fixes
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
-
-Note it will show up in my fixes branch once I've pushed my
-local branch there, which might take a while.
-
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
-> ---
->  drivers/platform/x86/ideapad-laptop.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-> index d2fee9a3e239..6d9297c1d96c 100644
-> --- a/drivers/platform/x86/ideapad-laptop.c
-> +++ b/drivers/platform/x86/ideapad-laptop.c
-> @@ -1049,6 +1049,11 @@ static const struct key_entry ideapad_keymap[] = {
->  	{ KE_IGNORE,	0x03 | IDEAPAD_WMI_KEY },
->  	/* Customizable Lenovo Hotkey ("star" with 'S' inside) */
->  	{ KE_KEY,	0x01 | IDEAPAD_WMI_KEY, { KEY_FAVORITES } },
-> +	{ KE_KEY,	0x04 | IDEAPAD_WMI_KEY, { KEY_SELECTIVE_SCREENSHOT } },
-> +	/* Lenovo Support */
-> +	{ KE_KEY,	0x07 | IDEAPAD_WMI_KEY, { KEY_HELP } },
-> +	{ KE_KEY,	0x0e | IDEAPAD_WMI_KEY, { KEY_PICKUP_PHONE } },
-> +	{ KE_KEY,	0x0f | IDEAPAD_WMI_KEY, { KEY_HANGUP_PHONE } },
->  	/* Dark mode toggle */
->  	{ KE_KEY,	0x13 | IDEAPAD_WMI_KEY, { KEY_PROG1 } },
->  	/* Sound profile switch */
-> 
-> ---
-> base-commit: 7271b2a530428b879443b274c191b34536a4ea11
-> change-id: 20230819-lenovo_keys-ed658f4d34d7
-> 
-> Best regards,
-
+Thanks
+/Ilias
+>
+> Regards
+> /Ilias
+> >
+> >  static void page_pool_set_pp_info(struct page_pool *pool,
