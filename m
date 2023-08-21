@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEB6782EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FF8782EC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236736AbjHUQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:48:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56356 "EHLO
+        id S236748AbjHUQsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233005AbjHUQsE (ORCPT
+        with ESMTP id S236738AbjHUQsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:48:04 -0400
-Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4409DEC
+        Mon, 21 Aug 2023 12:48:05 -0400
+Received: from mail-pf1-f205.google.com (mail-pf1-f205.google.com [209.85.210.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652C4FB
         for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:48:02 -0700 (PDT)
-Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-56c2d67da6aso1185715a12.2
+Received: by mail-pf1-f205.google.com with SMTP id d2e1a72fcca58-68a3b41fa66so1850002b3a.2
         for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:48:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1692636482; x=1693241282;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tQTTJ8fXjIB81GOy5ni1MUXSobm5nylA0yZFhXsnUWw=;
-        b=EA//l7vP20YsI2xH9Sn9z/e+SXJ6SnFzFBpfS8nU/9QZUH1c9eeGH4CSQYmYXGw0QF
-         HIJgPBAU5Sr61KeKxRYFCnOLvxUSouGRmagvngdynqi0rOD/9yc4uSzvAH8JMg2FV3UI
-         BEotjtk6w2C0QChwFrk0dioWchAH3GEfO9pbDbIklDRADKMuj97rcHSq5Xeo55V8cezZ
-         8GfJsolkOinAXHYS3R2OC47aIu2Vh/OKysvOXLyrAa7ucx9vd/9/s3iwyr/498jP43Vc
-         Q4uZlMcesB2XdeS8yM8LwWH9m/TAEMRzWuRC19+XJVhpbGsle4qtcSI09SBIpLWErNtC
-         wonQ==
-X-Gm-Message-State: AOJu0Yz7hhaX9f/DJGgSIizyPKczZ0hoXtSvgNNnf1XboGrmxe8DGhlQ
-        B5n4Rt7cwUASOBnNwtZcnjAKQ7GKUgO7nDfL+J/rX2QKX5ZA
-X-Google-Smtp-Source: AGHT+IGuNxVRuaq+belOvOMacb7r6weHQ2XTP98+kC65hCyBehfm0ikwbP9p/q9XwVUkSpf7m6R+rmsSwidCfxFEirOLj0YRZKqi
+        bh=z6avjvyZDjVCRKOfj/6cbcAUyMuDBKp30LSpGvu//wg=;
+        b=K2zG95SdKnhyGRvAwe+PvSjV5T0HznJHgMFuB3gpYgQC9EDNwZIhvrq+76pFYDNEU1
+         TxQ0zGKqt7F773PrEFeLLnUQF3nr/e4hvLlQYYVA9oTGgaXUJQfYw5CKS9UpXHFW7/Da
+         Nm6NBGMQnIvMx/RDW+n6LPmLyIlQGDyVtOctX+p6r7Ge3scsbE5sgwPW5N4P+wwi70AQ
+         ApK5jvH/vmpJXsWOcYmqBegYqSsezbE2KJIqrvK2BbUlxW3xJcO6MkeuKKBz7dMSnBES
+         BkkzLGioVBQM6khj95U6Ux9Ku8h3josgaEfQ762+EeRGOu5pe/+KUvYUWAC6qWIqTfq4
+         8p2Q==
+X-Gm-Message-State: AOJu0YyXPhEno3OtnkrYmGFFB8iBfFueR5pgW/jVpRgUznmXUyuI2K7v
+        9oy3P2nEh5midVabjKIs2Jc2g4JEFetgH+NJtFd2i1WH891m
+X-Google-Smtp-Source: AGHT+IFhdmLZUVD+sMYSI3r6eU8dkdJUCwEZy/nD7+1BD1iKPKv2/irBsYknATITdC5fldU/xWpASGqWJKE0xDG7A+2y6vjpwzLv
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:986:b0:688:7ce7:f29c with SMTP id
- u6-20020a056a00098600b006887ce7f29cmr4448979pfg.3.1692636481434; Mon, 21 Aug
+X-Received: by 2002:a05:6a00:1348:b0:687:da95:a15c with SMTP id
+ k8-20020a056a00134800b00687da95a15cmr4501711pfu.5.1692636481939; Mon, 21 Aug
  2023 09:48:01 -0700 (PDT)
 Date:   Mon, 21 Aug 2023 09:48:01 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000035beba060371a468@google.com>
-Subject: [syzbot] [input?] KASAN: slab-use-after-free Read in input_dev_uevent
-From:   syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>
-To:     davidgow@google.com, dmitry.torokhov@gmail.com,
-        gregkh@linuxfoundation.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mripard@kernel.org,
-        rydberg@bitmath.org, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000003d73d3060371a47e@google.com>
+Subject: [syzbot] [usb?] INFO: task hung in get_bMaxPacketSize0
+From:   syzbot <syzbot+f7ac46d91cf13b4591a4@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,85 +60,42 @@ syzbot found the following issue on:
 
 HEAD commit:    7271b2a53042 Add linux-next specific files for 20230818
 git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11edc0d3a80000
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10e05763a80000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a0ebe8a52b89c63739d
+dashboard link: https://syzkaller.appspot.com/bug?extid=f7ac46d91cf13b4591a4
 compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17998f03a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b81223a80000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1085e265a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14290117a80000
 
 Downloadable assets:
 disk image: https://storage.googleapis.com/syzbot-assets/d81109bc02c1/disk-7271b2a5.raw.xz
 vmlinux: https://storage.googleapis.com/syzbot-assets/4b3bf8e2a4f7/vmlinux-7271b2a5.xz
 kernel image: https://storage.googleapis.com/syzbot-assets/6404cd473c1e/bzImage-7271b2a5.xz
 
-The issue was bisected to:
-
-commit 699fb50d99039a50e7494de644f96c889279aca3
-Author: David Gow <davidgow@google.com>
-Date:   Thu Jul 20 12:45:09 2023 +0000
-
-    drivers: base: Free devm resources when unregistering a device
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13140083a80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10940083a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17140083a80000
-
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com
-Fixes: 699fb50d9903 ("drivers: base: Free devm resources when unregistering a device")
+Reported-by: syzbot+f7ac46d91cf13b4591a4@syzkaller.appspotmail.com
 
-usb 1-1: USB disconnect, device number 2
-==================================================================
-BUG: KASAN: slab-use-after-free in string_nocheck lib/vsprintf.c:645 [inline]
-BUG: KASAN: slab-use-after-free in string+0x394/0x3d0 lib/vsprintf.c:727
-Read of size 1 at addr ffff88801c8c6ca8 by task kworker/1:3/4508
-
-CPU: 1 PID: 4508 Comm: kworker/1:3 Not tainted 6.5.0-rc6-next-20230818-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+INFO: task kworker/0:1:9 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-next-20230818-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:kworker/0:1     state:D stack:26768 pid:9     ppid:2      flags:0x00004000
 Workqueue: usb_hub_wq hub_event
 Call Trace:
  <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- string_nocheck lib/vsprintf.c:645 [inline]
- string+0x394/0x3d0 lib/vsprintf.c:727
- vsnprintf+0xc5f/0x1870 lib/vsprintf.c:2818
- add_uevent_var+0x17c/0x390 lib/kobject_uevent.c:665
- input_dev_uevent+0x162/0x8f0 drivers/input/input.c:1691
- dev_uevent+0x305/0x760 drivers/base/core.c:2599
- kobject_uevent_env+0x623/0x1800 lib/kobject_uevent.c:557
- device_del+0x642/0xa50 drivers/base/core.c:3830
- input_unregister_device+0xb9/0x100 drivers/input/input.c:2440
- hidinput_disconnect+0x160/0x3e0 drivers/hid/hid-input.c:2386
- hid_disconnect+0x143/0x1b0 drivers/hid/hid-core.c:2273
- hid_hw_stop+0x16/0x70 drivers/hid/hid-core.c:2322
- uclogic_remove+0x47/0x90 drivers/hid/hid-uclogic-core.c:485
- hid_device_remove+0xce/0x250 drivers/hid/hid-core.c:2682
- device_remove+0xc8/0x170 drivers/base/dd.c:567
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3812
- hid_remove_device drivers/hid/hid-core.c:2859 [inline]
- hid_destroy_device+0xe5/0x150 drivers/hid/hid-core.c:2879
- usbhid_disconnect+0xa0/0xe0 drivers/hid/usbhid/hid-core.c:1456
- usb_unbind_interface+0x1dd/0x8d0 drivers/usb/core/driver.c:458
- device_remove drivers/base/dd.c:569 [inline]
- device_remove+0x11f/0x170 drivers/base/dd.c:561
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3812
- usb_disable_device+0x36c/0x7f0 drivers/usb/core/message.c:1416
- usb_disconnect+0x2e1/0x890 drivers/usb/core/hub.c:2252
- hub_port_connect drivers/usb/core/hub.c:5280 [inline]
+ context_switch kernel/sched/core.c:5382 [inline]
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+ usb_kill_urb.part.0+0x1c6/0x250 drivers/usb/core/urb.c:713
+ usb_kill_urb+0x83/0xa0 drivers/usb/core/urb.c:702
+ usb_start_wait_urb+0x251/0x4c0 drivers/usb/core/message.c:65
+ usb_internal_control_msg drivers/usb/core/message.c:103 [inline]
+ usb_control_msg+0x327/0x4a0 drivers/usb/core/message.c:154
+ get_bMaxPacketSize0.constprop.0+0xa5/0x1c0 drivers/usb/core/hub.c:4725
+ hub_port_init+0x680/0x3850 drivers/usb/core/hub.c:4921
+ hub_port_connect drivers/usb/core/hub.c:5369 [inline]
  hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
  port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x1db7/0x4e00 drivers/usb/core/hub.c:5822
+ hub_event+0x2b64/0x4e00 drivers/usb/core/hub.c:5822
  process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
  process_scheduled_works kernel/workqueue.c:2703 [inline]
  worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
@@ -148,171 +103,61 @@ Call Trace:
  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
  </TASK>
-
-Allocated by task 782:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1004 [inline]
- __kmalloc_node_track_caller+0x61/0x100 mm/slab_common.c:1024
- alloc_dr drivers/base/devres.c:119 [inline]
- devm_kmalloc+0xa5/0x230 drivers/base/devres.c:829
- devm_kzalloc include/linux/device.h:314 [inline]
- uclogic_input_configured+0x251/0x610 drivers/hid/hid-uclogic-core.c:151
- hidinput_connect+0x1bf4/0x2b60 drivers/hid/hid-input.c:2344
- hid_connect+0x139e/0x18a0 drivers/hid/hid-core.c:2187
- hid_hw_start drivers/hid/hid-core.c:2302 [inline]
- hid_hw_start+0xa0/0x130 drivers/hid/hid-core.c:2293
- uclogic_probe+0x235/0x380 drivers/hid/hid-uclogic-core.c:221
- __hid_device_probe drivers/hid/hid-core.c:2626 [inline]
- hid_device_probe+0x2e4/0x480 drivers/hid/hid-core.c:2663
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x11f1/0x1b40 drivers/base/core.c:3623
- hid_add_device+0x371/0xa60 drivers/hid/hid-core.c:2809
- usbhid_probe+0xd0a/0x1360 drivers/hid/usbhid/hid-core.c:1429
- usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x11f1/0x1b40 drivers/base/core.c:3623
- usb_set_configuration+0x10cb/0x1c40 drivers/usb/core/message.c:2207
- usb_generic_driver_probe+0xca/0x130 drivers/usb/core/generic.c:238
- usb_probe_device+0xda/0x2c0 drivers/usb/core/driver.c:293
- call_driver_probe drivers/base/dd.c:579 [inline]
- really_probe+0x234/0xc90 drivers/base/dd.c:658
- __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
- __device_attach_driver+0x1d4/0x300 drivers/base/dd.c:958
- bus_for_each_drv+0x157/0x1d0 drivers/base/bus.c:457
- __device_attach+0x1e8/0x4b0 drivers/base/dd.c:1030
- bus_probe_device+0x17c/0x1c0 drivers/base/bus.c:532
- device_add+0x11f1/0x1b40 drivers/base/core.c:3623
- usb_new_device+0xd80/0x1960 drivers/usb/core/hub.c:2589
- hub_port_connect drivers/usb/core/hub.c:5440 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
- port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x2daf/0x4e00 drivers/usb/core/hub.c:5822
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+INFO: lockdep is turned off.
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.5.0-rc6-next-20230818-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x277/0x380 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x299/0x300 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xfac/0x1230 kernel/hung_task.c:379
  kthread+0x33a/0x430 kernel/kthread.c:388
  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-Freed by task 4508:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- release_nodes drivers/base/devres.c:506 [inline]
- devres_release_all+0x192/0x240 drivers/base/devres.c:535
- device_del+0x628/0xa50 drivers/base/core.c:3827
- input_unregister_device+0xb9/0x100 drivers/input/input.c:2440
- hidinput_disconnect+0x160/0x3e0 drivers/hid/hid-input.c:2386
- hid_disconnect+0x143/0x1b0 drivers/hid/hid-core.c:2273
- hid_hw_stop+0x16/0x70 drivers/hid/hid-core.c:2322
- uclogic_remove+0x47/0x90 drivers/hid/hid-uclogic-core.c:485
- hid_device_remove+0xce/0x250 drivers/hid/hid-core.c:2682
- device_remove+0xc8/0x170 drivers/base/dd.c:567
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3812
- hid_remove_device drivers/hid/hid-core.c:2859 [inline]
- hid_destroy_device+0xe5/0x150 drivers/hid/hid-core.c:2879
- usbhid_disconnect+0xa0/0xe0 drivers/hid/usbhid/hid-core.c:1456
- usb_unbind_interface+0x1dd/0x8d0 drivers/usb/core/driver.c:458
- device_remove drivers/base/dd.c:569 [inline]
- device_remove+0x11f/0x170 drivers/base/dd.c:561
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
- bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
- device_del+0x39a/0xa50 drivers/base/core.c:3812
- usb_disable_device+0x36c/0x7f0 drivers/usb/core/message.c:1416
- usb_disconnect+0x2e1/0x890 drivers/usb/core/hub.c:2252
- hub_port_connect drivers/usb/core/hub.c:5280 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
- port_event drivers/usb/core/hub.c:5740 [inline]
- hub_event+0x1db7/0x4e00 drivers/usb/core/hub.c:5822
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-The buggy address belongs to the object at ffff88801c8c6c80
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 40 bytes inside of
- freed 64-byte region [ffff88801c8c6c80, ffff88801c8c6cc0)
-
-The buggy address belongs to the physical page:
-page:ffffea0000723180 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1c8c6
-anon flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012c41640 0000000000000000 dead000000000001
-raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 49, tgid 49 (kworker/u4:4), ts 8866051578, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
- alloc_slab_page mm/slub.c:1870 [inline]
- allocate_slab+0x251/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1003 [inline]
- __kmalloc+0x4f/0x100 mm/slab_common.c:1017
- kmalloc include/linux/slab.h:604 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- lsm_task_alloc security/security.c:654 [inline]
- security_task_alloc+0x1d4/0x270 security/security.c:2869
- copy_process+0x24d7/0x7400 kernel/fork.c:2490
- kernel_clone+0xfd/0x930 kernel/fork.c:2916
- user_mode_thread+0xb4/0xf0 kernel/fork.c:2994
- call_usermodehelper_exec_work kernel/umh.c:172 [inline]
- call_usermodehelper_exec_work+0xcb/0x170 kernel/umh.c:158
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff88801c8c6b80: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
- ffff88801c8c6c00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
->ffff88801c8c6c80: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-                                  ^
- ffff88801c8c6d00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
- ffff88801c8c6d80: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-==================================================================
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 5041 Comm: strace-static-x Not tainted 6.5.0-rc6-next-20230818-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:wait_consider_task+0x94/0x4030 kernel/exit.c:1391
+Code: c7 40 08 00 f3 f3 f3 65 48 8b 04 25 28 00 00 00 48 89 84 24 f0 00 00 00 31 c0 e8 67 da 38 00 4c 89 f8 48 c1 e8 03 0f b6 14 28 <4c> 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 d8 18 00 00 45
+RSP: 0018:ffffc90003cdfb30 EFLAGS: 00000a06
+RAX: 1ffff1100ddcfbcf RBX: ffffc90003cdfcf8 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff814ef909 RDI: ffffc90003cdfcf8
+RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffff88806ee7d940 R14: 0000000000000000 R15: ffff88806ee7de78
+FS:  0000000000ad73c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbbc40e6c00 CR3: 0000000027552000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ ptrace_do_wait kernel/exit.c:1514 [inline]
+ do_wait+0x88c/0xc70 kernel/exit.c:1621
+ kernel_wait4+0x16d/0x280 kernel/exit.c:1780
+ __do_sys_wait4+0x15b/0x170 kernel/exit.c:1808
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x4d6ad6
+Code: 00 00 00 90 31 c9 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 49 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 11 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 5a c3 90 48 83 ec 28 89 54 24 14 48 89 74 24
+RSP: 002b:00007fff4d5e5ec8 EFLAGS: 00000246 ORIG_RAX: 000000000000003d
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00000000004d6ad6
+RDX: 0000000040000000 RSI: 00007fff4d5e5eec RDI: 00000000ffffffff
+RBP: 0000000000000000 R08: 0000000000000017 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000add3f0
+R13: 00007fff4d5e5eec R14: 0000000000ad8b90 R15: 000000000063f160
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.221 msecs
 
 
 ---
@@ -322,7 +167,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
