@@ -2,67 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAD5782714
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500BD782715
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjHUK3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        id S234709AbjHUKaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:30:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234576AbjHUK3m (ORCPT
+        with ESMTP id S234706AbjHUKaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:29:42 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B042CF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:29:40 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d7485d37283so1527044276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:29:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692613779; x=1693218579;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HClNkkt1LPNSP32CQjmEgSvFflcpDxIkOOxKyLAh2QA=;
-        b=UcrEdBjt5NDCsNnQMqLMtShcldwpYPw6Qaw3sLm8h2W1ugwrxDq1eA1ZRO2sXOdW+l
-         FLX3BoMAU65JlVrdi7L/5WKTS/ijHmBmnzLEE8YXbKg5xpto2dKcuZJ/grBA1N+d933C
-         nHFgvknea0t7vVBQxHGrRGQbO3b7mttnkITuD6WAVGcFcGBQsDcqDoioSDmwKeO9QhHJ
-         XpCGNYIyIGkLfUaTTsdX6PsolR1/JGI0yaSdvq218wApvlalFLrs2vaItuyATBTLeeTY
-         xuezyOhGw7Ucne08ZpplzxxOCy83lzwxoo/9CNOOECdAcWvH8GZqv5sZPRY+SIIRsB9F
-         t2lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692613779; x=1693218579;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HClNkkt1LPNSP32CQjmEgSvFflcpDxIkOOxKyLAh2QA=;
-        b=k+4dWrqLaZiMKQnrFpI6YPF67roveFMTkeyOIfegK3EGnkvG+n2BIklKkOBYvF6cPE
-         G4zW0xQTy1EWZ3DckyqkrosTBV1KVf5oZXV5oMv0LvEVDqy31YqPHXl0upMNj4X7n1ap
-         Ro1rXn6zbhkZFQukzfEhK/1HRVyPsQcYiFpNQ3eNF6wUum/TefdM4wV9Y4Pe56OxiwRM
-         a7U3p2Wy6BWhN0YCh4TrXaTck7w1soxVM1BUIlwH/EXWaFpFgOWiOWIfuYWW1sTTcod2
-         WSS/FzQx8vGp/pwENEwJ2Qwu5RA13+1WrFZwi1RoOdgaURBewL1j/Vi+4dLAQlgK5Ykm
-         9bvA==
-X-Gm-Message-State: AOJu0Yx1fvB4c01DoM61sLtay3n7EvFCrs0PWXyg3fsvGieUrWFxFl2f
-        vXjCqwy7GTOk7+f8pSp22puUc42Eap92Ck+/1QW7xQ==
-X-Google-Smtp-Source: AGHT+IElbpEXRCwCzwUjY67gH5o/HQteT8vWYdkfiv68uy64ksJ8qaKJ1LJHiNAKZvyM4n6ARgb33Tczj1IITBeA8zg=
-X-Received: by 2002:a25:938c:0:b0:d62:796e:241f with SMTP id
- a12-20020a25938c000000b00d62796e241fmr6812080ybm.7.1692613779665; Mon, 21 Aug
- 2023 03:29:39 -0700 (PDT)
+        Mon, 21 Aug 2023 06:30:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFFEDB
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:30:13 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0c:5a83:9103:1700:7ffc:59a:ffce:ded])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: rcn)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7AAF76606EFD;
+        Mon, 21 Aug 2023 11:30:11 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692613811;
+        bh=3/SpDn4E/YYhiEBouzxukYNTQ4Iz0kF66TTL4tJYLSo=;
+        h=From:To:Cc:Cc:Subject:References:In-reply-to:Date:From;
+        b=nu2b9sg+XBfDx+1Q6998faAp9JCeba9ElDRqA99Thl8OOW5W87WK6Kh8TBPiZdLLM
+         4nJQNWPYRcjkxhe5ga5g5mblRa6HQYT6mGp1neY0LM08ma/SZHUQCUTyd7W3XNNFr2
+         7clr28GaKyo3QJ5hMg+4CETFKOXc60qx1vn1ZjYBvcEwDpVrrpwZ04xZ1lSS0NcrK8
+         1En56btg2BKo1uSaFQy7nzh46JfCx4MJsKRRHaRJpN0YOPDuhXacZs2RzFJGLZGJxi
+         NYnGETNYtXz+1jsBsj2FA3ePlSPolqf/phixY6r/uT9qwNIgxNs9fHLWkLl4HLtHo8
+         Huic0ZIG2jWiQ==
+From:   Ricardo =?utf-8?Q?Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        kernelci@lists.linux.dev, gregkh@linuxfoundation.org,
+        thorsten@leemhuis.info, regressions@lists.linux.dev
+Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org,
+        Gustavo Padovan <gustavo.padovan@collabora.com>,
+        Shreeya Patel <shreeya.patel@collabora.com>
+Subject: Re: Kernel regression tracking/reporting initiatives and KCIDB
+References: <874jljhtmj.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me> <c7120c90-e40b-0433-0175-f23f928daa50@collabora.com> <87o7j4hjqc.fsf@collabora.com> <517c702f-5b75-b999-2224-bc27951f03f3@collabora.com>
+In-reply-to: <517c702f-5b75-b999-2224-bc27951f03f3@collabora.com>
+Date:   Mon, 21 Aug 2023 12:30:08 +0200
+Message-ID: <87jztohemn.fsf@collabora.com>
 MIME-Version: 1.0
-References: <20230818144850.1439-1-mario.limonciello@amd.com>
-In-Reply-To: <20230818144850.1439-1-mario.limonciello@amd.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 21 Aug 2023 12:29:28 +0200
-Message-ID: <CACRpkdaM820GMVyViKKkvFHfgAnNt2f3DvoZbC9HT1d7FBPBXg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: amd: Mask wake bits on probe again
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Basavaraj.Natikar@amd.com, Shyam-sundar.S-k@amd.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sachi King <nakato@nakato.io>, stable@vger.kernel.org,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        Shubhra Prakash Nandi <email2shubhra@gmail.com>,
-        Carsten Hatger <xmb8dsv4@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -72,50 +55,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 4:49=E2=80=AFPM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
+On vie, ago 18 2023 at 22:11:52, Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+> KernelCI is not any CI, it's designed to be the main system for
+> the upstream kernel.  So it already took the high-level approach
+> to look at all this after becoming an LF project and we came up
+> with KCIDB and now the new API as the community still needs
+> an "active" system and not just a database for collecting data
+> from other systems.
 
-> Shubhra reports that their laptop is heating up over s2idle. Even though
-> it's getting into the deepest state, it appears to be having spurious
-> wakeup events.
->
-> While debugging a tangential issue with the RTC Carsten reports that rece=
-nt
-> 6.1.y based kernel face a similar problem.
->
-> Looking at acpidump and GPIO register comparisons these spurious wakeup
-> events are from the GPIO associated with the I2C touchpad on both laptops
-> and occur even when the touchpad is not marked as a wake source by the
-> kernel.
->
-> This means that the boot firmware has programmed these bits and because
-> Linux didn't touch them lead to spurious wakeup events from that GPIO.
->
-> To fix this issue, restore most of the code that previously would clear a=
-ll
-> the bits associated with wakeup sources. This will allow the kernel to on=
-ly
-> program the wake up sources that are necessary.
->
-> This is similar to what was done previously; but only the wake bits are
-> cleared by default instead of interrupts and wake bits.  If any other
-> problems are reported then it may make sense to clear interrupts again to=
-o.
->
-> Cc: Sachi King <nakato@nakato.io>
-> Cc: stable@vger.kernel.org
-> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
-> Fixes: 65f6c7c91cb2 ("pinctrl: amd: Revert "pinctrl: amd: disable and mas=
-k interrupts on probe"")
-> Reported-by: "Shubhra Prakash Nandi" <email2shubhra@gmail.com>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217754
-> Reported-by: "Carsten Hatger" <xmb8dsv4@gmail.com>
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D217626#c28
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+That sounds good and I think that's the way to go, but does that mean
+that, in theory, most or all current CI systems (0-day, CKI, etc) will
+"push" their results to the new KernelCI in the future?
 
-Patch applied for fixes so we get some rotation in linux-next.
+> Right, except you might hit another deprecation hurdle if we
+> start changing how things are designed around KCIDB and the new
+> API.  There's no doubt KCIDB will be supported for a long time,
+> but taking into considerations all the new developments can save
+> you a lot of trouble.
 
-Thanks for looking into this Mario!
+So, if using KCIDB as a data source is not a good idea right now, do you
+have any suggestions on how to keep contributing to the improvement of
+regression analysis?
 
-Yours,
-Linus Walleij
+If the new KernelCI API is already working with a large enough
+regression database maybe this analysis work can be plugged into the
+pipeline and we can start working on that.
+
+> My point here is that KernelCI started tackling this issue of
+> reporting kernel bugs several years ago at a very high level and
+> we've come up with some carefully engineered solutions for it, so
+> it looks like you're walking in our footsteps now.  The new web
+> dashboard, new API & Pipeline and KCIDB which pioneered working
+> outside the native realm of KernelCI provide some answers to the
+> challenges you're currently investigating.  So maybe it is
+> actually the best strategy for you to carry on doing things
+> independently, but it would seem to me like due diligence for
+> each of us to know what others are doing.
+
+I surely must have missed most of those discussions but I couldn't find
+any traces of the functionalities I listed either in a design document
+or implemented anywhere. We certainly wouldn't have started this stream
+of work if we knew this was already a work in progress. If there are
+already concrete plans and some kind of design for this, let me know so
+we can contribute to it.
+
+If the solutions that have been engineered so far are still unplanned,
+then I agree it'll be better to keep improving on this
+independently. But in order to do that we'd need to be able to use other
+data sources (KCIDB). Then, once the new KernelCI is ready to implement
+these functionalities we can try to move them there after they've been
+tested independently.
+
+Cheers,
+Ricardo
