@@ -2,131 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A1778286B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFAB782873
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbjHUMAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S234160AbjHUMBN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 08:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjHUMAb (ORCPT
+        with ESMTP id S232800AbjHUMBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:00:31 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B54B4;
-        Mon, 21 Aug 2023 05:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1692619161; x=1693223961; i=deller@gmx.de;
- bh=mdelTfLMnGPJUyvNJd7xipF1TZZ44AqAVCUXPVXywQA=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=ZHvwnyPZiqWfGD2mTa2r/1mk/gS3ETk323MSPc2kr0LQJfPyjAmuejYJ7OGbJIlY7BY6cdH
- GlVgXlu7F/l98WEc7GrM4YuUxRQhgU2Cx2A7P2EmwbqXTXt4e8gRPPYbC/USI8XJewBrr9sIF
- Fshf67NZnJBdN7RyD+GT4WhXJC1QoPnzZ2qtmfD6osV5NRYZ32tlkIdbXgB2oeLEjul8oJyfO
- yf99x3ZKg3+diEfOutOYG0ck9XEga/G5m2IM6A5EMI3z2KSY9hVUlVZvZJVjFiwqK3dfjh9JW
- cEQJrzw86uGqh+TLWFs5+NsGrjKxSuUgG7RqtG48rw/j1I2JHLEQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.156.203]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1wll-1paUng0po1-012ILg; Mon, 21
- Aug 2023 13:59:21 +0200
-Message-ID: <fd051aec-9aad-a608-59d6-7bee3a340801@gmx.de>
-Date:   Mon, 21 Aug 2023 13:59:18 +0200
+        Mon, 21 Aug 2023 08:01:12 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D416DE9;
+        Mon, 21 Aug 2023 05:01:08 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59231a1ca9eso4289017b3.1;
+        Mon, 21 Aug 2023 05:01:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692619268; x=1693224068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oUUJ2/PRflFLbJIM097SQqKNn2Udb4Em6AFpSfljQKM=;
+        b=Xs1I1Bv4hIsYOvhC1G3PNzQydshwLaND1SvecruEHscDwxgEH3bTDAf13f3NLSTC4S
+         pUkWpocnIPhbrCA4YMR+/5+etP1AeVy43lelOaC3jR+IaDc+Zu53xK3orS90At5oCJwF
+         NTC5Ss3SGpj6llggflZUC4KvpDOSs5Oc0gDkMj1SdXN69Vt5B3mXIvqdWUOFSHiVJ4cB
+         NRC1dvyf3BOfIvPKTHMt1GUEbEQf7pAiPTLO0Y9klkkU4UW4PKW+CIStM4GrfeIlntEk
+         RiqlNLEXLXZ19Zy9R4DbKDCppXRDitfhUrvXJfMS6gabZiTSVUySUrp1s6NQHk/sD/Vu
+         t6hA==
+X-Gm-Message-State: AOJu0YwL6lfeafBcUE9wVF6lQiCY/BYEt+BdKn+zb14pNSLt4sIoU0x6
+        dweCUOUHaNs7l0CE2bpRu8TE4T+dnt8y8A==
+X-Google-Smtp-Source: AGHT+IGmDSzPhFYwMdcIrHFIzxQtJC76YO8IEpS2URkdLJE9bBDTmIfVHkmsg+iK0EDMfwrhU5i7QQ==
+X-Received: by 2002:a05:690c:3409:b0:58a:4b31:cbaf with SMTP id fn9-20020a05690c340900b0058a4b31cbafmr5495027ywb.35.1692619267911;
+        Mon, 21 Aug 2023 05:01:07 -0700 (PDT)
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
+        by smtp.gmail.com with ESMTPSA id b67-20020a0dd946000000b005773b750d95sm2172330ywe.28.2023.08.21.05.01.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 05:01:07 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-d7484cfdc11so1581536276.1;
+        Mon, 21 Aug 2023 05:01:07 -0700 (PDT)
+X-Received: by 2002:a25:ca54:0:b0:d13:e334:241b with SMTP id
+ a81-20020a25ca54000000b00d13e334241bmr6529985ybg.21.1692619267052; Mon, 21
+ Aug 2023 05:01:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
- sigbus
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-Cc:     catalin.marinas@arm.com, James.Bottomley@HansenPartnership.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
-References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
- <20230821105025.GB19469@willie-the-truck>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <20230821105025.GB19469@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IVeM96pUticIvBhwoOnDbFmJ+lT/5LMU21eOcF6EwIMKtNxOSoc
- bUokuBJCBIk6zKzXvdWxx8KRouWbbPYLOkmMAnl909dYPr54k7WaocN9eLdS7gn2TGf96Q8
- aUHX1OR0URngbIG/9QEpxe488uAfd8dsMkBFgmObYFVCxN+o8AbGdVy+OgpRDLGUbNOZqGj
- /G5/w3jDXtnGZomzBXrfg==
-UI-OutboundReport: notjunk:1;M01:P0:2Lfi+p9wf00=;qG6PSUZO2ECGpwRqm4SV1ORPw/p
- T/Oewr5iyBLQJ/P24b7ft6xQvXPz1TRybuIn9uqDno19rcmS836t1usieJSx67Z8bcfjRSRUv
- Ar2BIUJALJhsqRvMkPwRPaXEGj0/RlBCYH1NELXYl3LGiz8FP0F6axM371Zq1YzbF8BsP50Sj
- oQoyjB7/Ik02js3jmUvwgptnsJaRMEwy+IdboJ2fLGNZk3Np9eng8j5f3McTQIi34X8osIx47
- ZnchMTa1abPjbqkqHBoBqjsOqqBuMyfXUHKcPcOmGrjN8HKfRzzgBKiGYwMhKQyDCJht4fxVw
- 6+CJJYoAUHyR61KRbQls/pxRG0mo4ySUNYLvf3SORIhUej5jaHRlP9GVCAfSWqbtaQyS0zS8f
- Z2Rxr38i1Yg5fvHxNLwiYI4/2OhU5jeJ9353hKpezNQKeGkwSHtLnH4A2cUPCtVUrXGhFWmDS
- fqFcYN7RYed1zjSe/0HtC2/zuCHF4l5cC76KoJc+hX/86TooxL1jEIUghW42BmH28pixAgxtT
- 4p9HCUhVHFFIa3PA224g8RqwyYw932JIi5XqhSUBBHKF6b9nV4E/inOe1XGHSGgTkpoMP0T5c
- 6G9F5eEnlj7f5hlNnt8uWK/tjM0Sy7pWMB0CkyvCPrkSIUXJ+obuY8gXmINfvpnhk6oypxuvc
- SptvJG6DN/sK+nevtA3kUEVrlUczmkNQRy863cV/4fNxjJJYq27KYoqMURoUeWMv0kZn/q8jS
- rYIG7CK66T3lYpSrn+Tn5JbhwBx81DuiqdZBmjb3dOy0+fUfI3A4Tuv9ZJW9Oa0bkcf93qifM
- g7MkA+bTHhpgvZ+U9UbsXQpHQuCZkRggEiyOyM83GL9kkYFfZoT/1UXKy9Hnsdp0ypt5Uss4I
- IbD3gnR6UEV3NuKwrVRsXlmELsHyuQVok3Y9LTC0ydnBOPCHVCL6mNJf6b6maAH/BeTfoG4NS
- DiAKopHGM4O+2u72xtmX0FAfpzM=
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <20230819010928.916438-1-robh@kernel.org> <CACRpkda94qc1Mc_yz+c2rYFdyhXsX-XRFTntv1fiw=HrpDqAOg@mail.gmail.com>
+In-Reply-To: <CACRpkda94qc1Mc_yz+c2rYFdyhXsX-XRFTntv1fiw=HrpDqAOg@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Aug 2023 14:00:56 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVUJ0U0ftjr+s=2p8gYwwEtxaKe7vGpm7CxCiGPq92y4g@mail.gmail.com>
+Message-ID: <CAMuHMdVUJ0U0ftjr+s=2p8gYwwEtxaKe7vGpm7CxCiGPq92y4g@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: renesas,rza2: Use
+ 'additionalProperties' for child nodes
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 12:50, Will Deacon wrote:
-> On Sat, Aug 19, 2023 at 06:22:12PM +0800, Shuai Xue wrote:
->> When a process tries to access a page that is already offline
->
-> How does this happen?
->
->> the kernel will send a sigbus signal with the BUS_MCEERR_AR code. This
->> signal is typically handled by a registered sigbus handler in the
->> process. However, if the process does not have a registered sigbus
->> handler, it is important for end users to be informed about what
->> happened.
->>
->> To address this, add an error message similar to those implemented on
->> the x86, powerpc, and parisc platforms.
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> ---
->>   arch/arm64/mm/fault.c  | 2 ++
->>   arch/parisc/mm/fault.c | 5 ++---
->>   arch/x86/mm/fault.c    | 3 +--
->>   3 files changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
->> index 3fe516b32577..38e2186882bd 100644
->> --- a/arch/arm64/mm/fault.c
->> +++ b/arch/arm64/mm/fault.c
->> @@ -679,6 +679,8 @@ static int __kprobes do_page_fault(unsigned long fa=
-r, unsigned long esr,
->>   	} else if (fault & (VM_FAULT_HWPOISON_LARGE | VM_FAULT_HWPOISON)) {
->>   		unsigned int lsb;
->>
->> +		pr_err("MCE: Killing %s:%d due to hardware memory corruption fault a=
-t %lx\n",
->> +		       current->comm, current->pid, far);
->>   		lsb =3D PAGE_SHIFT;
->>   		if (fault & VM_FAULT_HWPOISON_LARGE)
->>   			lsb =3D hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
->
-> Hmm, I'm not convinced by this. We have 'show_unhandled_signals' already=
-,
-> and there's plenty of code in memory-failure.c for handling poisoned pag=
-es
-> reported by e.g. GHES. I don't think dumping extra messages in dmesg fro=
-m
-> the arch code really adds anything.
+Hi Linus,
 
-I added the parisc hunk in commit 606f95e42558 due to the memory fault inj=
-ections by the LTP
-testsuite (madvise07). Not sure if there were any other kernel messages wh=
-en this happened.
+On Mon, Aug 21, 2023 at 12:34 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Sat, Aug 19, 2023 at 3:09 AM Rob Herring <robh@kernel.org> wrote:
+> > A schema under 'additionalProperties' works better for matching any
+> > property/node other than the ones explicitly listed. Convert the schema
+> > to use that rather than the wildcard and if/then schema.
+> >
+> > Drop 'phandle' properties which never need to be explicitly listed while
+> > we're here.
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
 
-Helge
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+> Looks good to me, but Geert usually handles Renesas stuff so not
+> applying unless I get asked explicitly to do so.
+
+Unless some new bugs show up (hold wood etc.), I do not plan to
+send more pin control PRs for v6.5 or v6.6, so please take it.
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
