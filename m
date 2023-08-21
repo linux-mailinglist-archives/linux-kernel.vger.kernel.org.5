@@ -2,166 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFE9783678
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:44:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE7978367A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbjHUXo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        id S231719AbjHUXsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:48:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbjHUXo6 (ORCPT
+        with ESMTP id S229610AbjHUXsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:44:58 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A727CE4;
-        Mon, 21 Aug 2023 16:44:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692661497; x=1724197497;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=RjWmkrjp61T+DEgxt+tYGm5Ix30GlsHMt73+DAVajF0=;
-  b=H2ALhC4oDZ7ZFsuTZXs9c5sXkTBXgy/ZZpZgYRVNkkUPHMxK4f1o/ieC
-   rU4Vwq4zS+jicE9/z+mnloNJHMrtvzgUEHXcpN5uO0WKDGRYmzTQYFK0E
-   dO7lrnuVgJ3ZvQdxSSannR58jQPymY/gov9VqFCy3TjvG86xAj+FIKPho
-   kPmkfv6hClAPpGRkpLBA8T0KgJcfGkmySaLE8BDKv3kCoN/RF+cnXjelK
-   AgiAPYybM0ifZXJoE53lzFyvb9j1h5k1yvqdLPjTzSrIZ5TivSo094VWQ
-   svU3/A22fM7YGUfM1WbspS40JDkELlO5423rRvo32uaceb4YTcS1EDdIs
-   A==;
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="541211"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 21 Aug 2023 16:44:57 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Mon, 21 Aug 2023 16:44:23 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Mon, 21 Aug 2023 16:44:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZ6COnZ/VXGsO6VQnkkcvhqgbAzaMvdohm+rgRkL2SvF0Hy/HC7Lx4/sJJLBwEL1sBoi0uNt2n/LC1Z9MJ3j2a1wiykIJUBPpBKoMdJhkrn6Rg7RfJBOIgxnAFQmSshj6VUtZeKv9U5P3PwiRgUyrP1MTGYe11r8zVM9ivpt6V7KdQch+0hMODnpTEUkrYorz+VnDbOeEacgs4KAmia9WCCH4ANdRMrYP0JDHcg5j+UCTWUEpZFB0YWuGSwNcKnba07GPz2oSCBB1zTZ8q+6YpsPQWHFNKrmZ+1w/71G/71BBRmkpEXC+DfMnMnB+ba0fTOgi8veEWnBqmDLjkE2fQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RjWmkrjp61T+DEgxt+tYGm5Ix30GlsHMt73+DAVajF0=;
- b=JTiRAIcxKjrG0YEJw9BUqqrMexgYL0QGD9H+b4wSkkXeB+71HqKzy9toE44YrkCVDL+qTo9oCf8F3Pom9Q6IfGe7C3Uuc1YreH07WEi6R+gM7M1JDYbZE/bSGOF1pZBVXL7Qo4W2Gio7BHO1wQEp/ZDfMN5Oq6s0008lqJiBoOhmf8lx7GoOVrJYHRtt91UTv00HjebGrTgYSyiNWsJWBPcUm1N8NkeYboj0xxkw/gY4qQ0MQ+hj6y2ioDVc72iKRWVAiG6fX+8C6M+ZGzVdlxsDsMb+np7DdnxBLGUYjOyb0Dy8uwyQRzeEgQyafFukEkUPfb40A/Oi6Hqlz9EeEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Mon, 21 Aug 2023 19:48:52 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885C6E4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:48:50 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cf42a3313so53422927b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:48:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RjWmkrjp61T+DEgxt+tYGm5Ix30GlsHMt73+DAVajF0=;
- b=j7iyONMrSWN3GnvgsJxSXtb97GsE+p4Gvdmz4uFQ/qieb7u5Br4c288TrtYBef97Jxqaq5LvDy7pEtJTIlGJuqxRBym1oeTx1WZooanIC/ZLiZ44/mp395BQv43KvVxF7QR7nK0QE7B1992VQjnye+aTK1Xp0P4leiPYjRCQhR4=
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
- by CH3PR11MB7762.namprd11.prod.outlook.com (2603:10b6:610:151::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 23:44:20 +0000
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::44ee:c980:b097:33df]) by CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::44ee:c980:b097:33df%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 23:44:20 +0000
-From:   <Kelvin.Cao@microchip.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <George.Ge@microchip.com>,
-        <hch@infradead.org>, <linux-kernel@vger.kernel.org>,
-        <logang@deltatee.com>, <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Thread-Topic: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
- engine PCI driver
-Thread-Index: AQHZwZllP9AErauFFUmKz13YRSBKD6/VzMKAgAIhf4CAHaFYgA==
-Date:   Mon, 21 Aug 2023 23:44:19 +0000
-Message-ID: <fa5f1932c9adf1eacea839e8f4952f0e7bb53531.camel@microchip.com>
-References: <20230728200327.96496-1-kelvin.cao@microchip.com>
-         <20230728200327.96496-2-kelvin.cao@microchip.com> <ZMlSLXaYaMry7ioA@matsya>
-         <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
-In-Reply-To: <fd597a2a71f1c5146c804bb9fce3495864212d69.camel@microchip.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CO6PR11MB5618:EE_|CH3PR11MB7762:EE_
-x-ms-office365-filtering-correlation-id: d54ed4cb-9988-40d6-d180-08dba2a08a26
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FUirwlLPN9q7aYtsKXmc+dZ+HPSorobZN0nUZEf2llaPF9dz7ZOaWXdtm4pnxCcsbyzv7VZm5TKeDv5xoumeaRwA4KKIeLtuAOnk2trSvEM+VyiR86A0hxv8UXGKqN8fW9YXrthJjeh/H9xjQmaxuWB+1aR2RCqr9tfjt0c0csBeKUJELeAnLArvVDcoN3VrbSUu2zLzS+TUA35wm6lyHgK1KbOWT2E6riwYwi5PlGi7ZKB5IEecv0F4hAY9/vS9uzEba+YiO73cHaw4DoMvv4bi+M+z3KbqAURLu16y4x/EY5z+s6yLn0aGyJA1PfjBS9m1CrMpOMvprroFimtEQmfV32G+oicjTNE1g6Mi/svade//y+K0N24sIHhAkAE4lCup2c7A0ztA/dDiucMVoH5ZCbljFCciyfT2LqlLPbmj59dvVVo/0uI+Rt/Ayi8/coblzwRA5dvSKlWa0OHk3McnUV7C0vSrqUaGdLZZDOZN3+yLLVDxiV552tsOC/jYmnQzaKBUvGS3rH7Il03TNi2n4nZNqZEVK0jamrx6RSkI/M6AS2NR8btpeBSNKYqaoYkUjE6xiXK5XY/uFY/gSkNquavYAHz+K30VA1xPi5gX2hTQxoJcza+gMYhBx4Po
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(54906003)(6916009)(66446008)(76116006)(66476007)(66556008)(64756008)(316002)(6512007)(66946007)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(122000001)(478600001)(71200400001)(38100700002)(38070700005)(6506007)(6486002)(83380400001)(558084003)(2906002)(86362001)(5660300002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?STE4WmV4Q3NVN2JPVVhaQ1dDMTBGTmtENzZ3dExibElreVEwSXJmVkIrSHo5?=
- =?utf-8?B?TVkwcDFjRDQ2eHFHMjRaN1pLdEsrbjN6QnpDdXp5YnlzU2N1VHoyd0VLOXNG?=
- =?utf-8?B?UENENzgwdTVXQ0VDc2R6YStCaXpadmlqc2g5YnFVNkJkVmdySzJpUU12NHhI?=
- =?utf-8?B?SzlFd2Z5bjZteTdjaUl2UFlxcE9Da093V2JZVkd2YTJrc3NYQXdlK1Z3cVVU?=
- =?utf-8?B?T1RWdVpTM3FKN2NsaXdHbkFQdFpWOXFmcWNEeGNTSzNoODQwQmZZdmNjY0RB?=
- =?utf-8?B?NUFCSU02bjhnQUZkTFdxMjl5Nnh5cXFnZ3AxZlMrOWNqZmFzTncrSXlmVlM1?=
- =?utf-8?B?WDd4ZGNvSE5oM1A2UWFMak41SzE5cklKVkI5cU9pYnFzOTFZOTR6MW96K2h2?=
- =?utf-8?B?UFNERmV0TDdrTVhEbXBNclBRaGZRL2dXQnl4MXB2eDhJTzBYZjA0b2RhQ29u?=
- =?utf-8?B?VXBsdXFQZEJnaWM5RFJLMWZhYTNWLzlydkJvbTA4K3VEc3RnN1U2TDc2SjlZ?=
- =?utf-8?B?Yk85WUtSdnJITWhvdDRnUUdaUVUxeU5GbnA4dVNzd0ZSUVZjVGJ1L3FZdUVr?=
- =?utf-8?B?OXFocUtZZ2JGTzhVVmNYNC9VcCtETDR3YTFsQ2tUSFJNQlN6UnY3citYVXMz?=
- =?utf-8?B?R3dwcTFVL2UrRnVrM3BWa3AvM1JlMVQ4VW4wVDd1WEh1bWVuamh5ZWdGQjhH?=
- =?utf-8?B?RnRDVHl5YnNuZWEzQ0UwbXgvQ1BjNkNoK21RdldOdlpTcTkzRXN5ZlBIajY1?=
- =?utf-8?B?akR4NEpaSTBlUmxxQmNOT2QvQkJhYnIraVd2a3lhYndPU1V6ZUdjbUd6ZDRa?=
- =?utf-8?B?bzI1ZnBKaVRwQ2Y5VllRRTJCRW9XUkNGZmVkeGNjV0VvTlFwR1hJcm53VHZp?=
- =?utf-8?B?amRhQXVkL3RoMjR0M3FZa2xCMlNsdkwyR1lMRFNGWTRMSUdVRnpWSnFPNUhL?=
- =?utf-8?B?NUlRZXFjcDlWWEJZZXNrc0ZWTHpMTHRMTnBtb1hUR2xMM3JrN1NEYzVGTDVs?=
- =?utf-8?B?eDZrbHhBOW9IaDVMUWZqV1ExdDVRRkpjaTRmd3pnT0pLRUdrSExkRWM1OHps?=
- =?utf-8?B?dDFOUThBU1JvMkdvZUQwWnB2cURvZUE0T0dLbjNQWTVjNXFNRFFDYzVZWVVL?=
- =?utf-8?B?MzVoSHJLMzU2bFM5RkRzQndHVzVDYmZ1QjZhN1VwQS90RFRnTjZSaWJ0dDVB?=
- =?utf-8?B?K2pSbkJRSnFUZW5PYlFuWVdQdXZYNXZZbXludXBnZUJ0eWZYK3hsY0xET2oy?=
- =?utf-8?B?d1Q2VnlIRERPUlYwd291ZnBrQkNQNTViTFdCNlRoOTdRVlNnUFV2ekRMVlFO?=
- =?utf-8?B?Y3NDYng5SWZoYjBtcXR0dnFQVXdDTEVhNzkyMHBEdEdMTDhkQ1N2aDgvYldn?=
- =?utf-8?B?NTd4SUV5a2prT2ZsZ0pJenJLRDlBRnRmTm8zTmhjdnVKcFZkMzNrVTlHOEFi?=
- =?utf-8?B?WVlFVnRzWW9pSlk2U3hScEI4SVFDbEduUjZsUkd4QVRtWjRJeXRtZkcxVnFo?=
- =?utf-8?B?TEJOdklxTUpoMmd0WE9qR09CYklneWRaSzFoQlByQ1hhek85Y0xFUndsNVRs?=
- =?utf-8?B?RGdXYU9KTnNMS3VrMnBBRWVUTkFWNEZ1Ni9yUGhhMjRKTUFUUlJMVGdzaFZV?=
- =?utf-8?B?MmQwRjdoVytGWHBvRVgxQkl0b2ZiWStieFM0dUFCMzg5dGpFUDhZZG51UFBB?=
- =?utf-8?B?bXVxeFVqMFU4Y2ZCUTNTQ2MyVm93dU0rZFY4T1IvZ2ovV1FOL1czNmt2VnIv?=
- =?utf-8?B?OUZibXpVNkdXZmpteXRIU3FJdFM5VVVqa2JUeUhTRU5nUzRnYjZWZHdnNlVG?=
- =?utf-8?B?SVAxRHE0SnI2ZloycEpEZHlMd09TN3l6TEJ6em9Pa1FTU0orZGZHaE15dGdv?=
- =?utf-8?B?SFFUUFVyTm1Nbkx4dExKRzdUYSszWmdiQ2x2dWZPdHZ2TndsWktseUU2VENs?=
- =?utf-8?B?eXdwMDBVY1lZV24zV3NrMkp3MHZlOUk5WFdyWXAzbnZNVTd1K1BlbTkxVDVS?=
- =?utf-8?B?ZnFIY2dENlBPL1ZBYXhTTmFoOTFvdWlhV3ZBRGlHSkpLd1VwbjZuWUhkNi9U?=
- =?utf-8?B?YmZnd0xQN003UzI4MzBjeTVZR3g4QjhNVFZjVk1oSW42Z3RoWlNUbkFiMHZt?=
- =?utf-8?B?c3F4UnorT1RYZFZZa0EyZ1NCWHY0OU5CZ29HdmdmZ0FNZjVnV2xzOWRsZXdn?=
- =?utf-8?B?YUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DE7231559903DE4EA466E93C59D48336@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d54ed4cb-9988-40d6-d180-08dba2a08a26
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Aug 2023 23:44:19.9307
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p0z9iPgNz734cTz2dAZEjcP1YSEcbe2G68OsusfR/tfLUtiGsB53LdVnRxgSelwBCJ3gI1SZBlPOxkixtq0oRGdpkszjNQu8++ugu+H9c3U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7762
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=google.com; s=20221208; t=1692661730; x=1693266530;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YCOyIsFUlLjTnVIlQjRMIQSr9BmEp4/1j6SRmVYuUQQ=;
+        b=1vRA8NFDehhZixvfUqi0M0SQpQ2MFDSs44seZB949NKKzBZzpVSxGDWwO/LNrXjrHy
+         Ada9q6DbnJx8rN+sOeayQJ4TFmInwlfhnYp0unQOmBy2T+vbbSdOyVnplEv2mJvZ+Dff
+         SWMYWuIB0eBOo1HwE8yLGk6cfIC2ia61Kt6fyO4lPPzrlwqb072OXA+mpUn3Wz61zk70
+         yvfG0y1E/5HgQJxDdxwmvUU40pkNMUL4jVvCsxGbvVM+JZAZ6YkxUZ7RnqYUA7xg5wq+
+         Pn/vFjpRIqpYBlKiPfoBO6l4+ZHwhY2Abs59vVQqDFyNamEoftAu3ozdwKw/sjtLR59T
+         lppw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692661730; x=1693266530;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YCOyIsFUlLjTnVIlQjRMIQSr9BmEp4/1j6SRmVYuUQQ=;
+        b=MJn980HTsxiUix7GA5b52fnRXhkXvIbd4nbXEjoUv593LdZ5tgwXuEf+oMKUB+TiuQ
+         TndaQtY2rzNl9rodm03aAeSMo3Fa18xtSsMVN+yGrS2SrwWUA1YthqTyRPinYca5ZItB
+         /LJnaTqigCqdJtju70xGoPNvQs6ndFRL4ZepXD6Gzg2cJZp4cXFFEA1bvhHZK+o1MqW6
+         UFpFhs+6f67eD+y5mYK6H+WSqzd8Ox41R2mVAzBuoDjGD9FA4IJ28pOcTuspjLWhix+w
+         OszRyYgaH98OZ5jL7n49HfDu1O633EVldMZplVusma5pPw0u9JjkWUSfOgL19ElyMPtK
+         KExQ==
+X-Gm-Message-State: AOJu0Yxoi8lO7oS2JAT9Pg5/T+MJ6ggRB02bAOAbsRTNwtxkhOZzH5GW
+        kjrEmCdOgiBNtXO2iBcqid51WQVT+2t1
+X-Google-Smtp-Source: AGHT+IF/HIypG9hKuqBUy9shzQU2f2lrrmetedwPUcFRd7NrkxJpYSdhCJsQY85/dvUbv4G15qj30HF917UZ
+X-Received: from zokeefe3.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:1b6])
+ (user=zokeefe job=sendgmr) by 2002:a81:4304:0:b0:577:619e:d3c9 with SMTP id
+ q4-20020a814304000000b00577619ed3c9mr79027ywa.10.1692661729731; Mon, 21 Aug
+ 2023 16:48:49 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 16:48:44 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230821234844.699818-1-zokeefe@google.com>
+Subject: [PATCH v3] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+From:   "Zach O'Keefe" <zokeefe@google.com>
+To:     linux-mm@kvack.org, Yang Shi <shy828301@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, "Zach O'Keefe" <zokeefe@google.com>,
+        Saurabh Singh Sengar <ssengar@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVmlub2QsDQoNCk5vdCBzdXJlIGlmIHRoZSBwcmV2aW91cyBlbWFpbHMgaGl0IHlvdXIgaW5i
-b3guIEkgZGlkbid0IGhlYXIgYmFjayBmcm9tDQp5b3UgcmVnYXJkaW5nIG15IGNvbW1lbnRzIHRv
-IHlvdXIgcmV2aWV3cyBzaW5jZSB2NS4gQ2FuIHlvdSBwbGVhc2UgdGFrZQ0KYSBsb29rIGF0IG15
-IGNvbW1lbnRzIGluIHRoZSBwcmV2aW91cyBlbWFpbCBpbiB0aGUgdGhyZWFkPw0KDQpUaGFua3Ms
-DQpLZWx2aW4NCg==
+The 6.0 commits:
+
+commit 9fec51689ff6 ("mm: thp: kill transparent_hugepage_active()")
+commit 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+
+merged "can we have THPs in this VMA?" logic that was previously done
+separately by fault-path, khugepaged, and smaps "THPeligible" checks.
+
+During the process, the semantics of the fault path check changed in two
+ways:
+
+1) A VM_NO_KHUGEPAGED check was introduced (also added to smaps path).
+2) We no longer checked if non-anonymous memory had a vm_ops->huge_fault
+   handler that could satisfy the fault.  Previously, this check had been
+   done in create_huge_pud() and create_huge_pmd() routines, but after
+   the changes, we never reach those routines.
+
+During the review of the above commits, it was determined that in-tree
+users weren't affected by the change; most notably, since the only relevant
+user (in terms of THP) of VM_MIXEDMAP or ->huge_fault is DAX, which is
+explicitly approved early in approval logic.  However, there is at least
+one occurrence where an out-of-tree driver that used
+VM_HUGEPAGE|VM_MIXEDMAP with a vm_ops->huge_fault handler, was broken.
+
+Remove the VM_NO_KHUGEPAGED check when not in collapse path and give
+any ->huge_fault handler a chance to handle the fault.  Note that we
+don't validate the file mode or mapping alignment, which is consistent
+with the behavior before the aforementioned commits.
+
+Fixes: 7da4e2cb8b1f ("mm: thp: kill __transhuge_page_enabled()")
+Reported-by: Saurabh Singh Sengar <ssengar@microsoft.com>
+Signed-off-by: Zach O'Keefe <zokeefe@google.com>
+Cc: Yang Shi <shy828301@gmail.com>
+---
+Changed from v2[1]:
+	- Fixed false negative in smaps check when !dax && ->huge_fault
+Changed from v1[2]:
+	- [Saurabhi] Allow ->huge_fault handler to handle fault, if it exists
+
+There are some logical holes in smaps' THPeligible checks here, but those
+are best dealt with in follow-up patches.  For now, just make sure the
+fault path is dealt with.
+
+[1] https://lore.kernel.org/linux-mm/20230818211533.2523697-1-zokeefe@google.com/
+[2] https://lore.kernel.org/linux-mm/CAAa6QmQw+F=o6htOn=6ADD6mwvMO=Ow_67f3ifBv3GpXx9Xg_g@mail.gmail.com/
+
+---
+ mm/huge_memory.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index eb3678360b97..901dcf8db8d2 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -96,11 +96,11 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+ 		return in_pf;
+ 
+ 	/*
+-	 * Special VMA and hugetlb VMA.
++	 * khugepaged special VMA and hugetlb VMA.
+ 	 * Must be checked after dax since some dax mappings may have
+ 	 * VM_MIXEDMAP set.
+ 	 */
+-	if (vm_flags & VM_NO_KHUGEPAGED)
++	if (!in_pf && !smaps && (vm_flags & VM_NO_KHUGEPAGED))
+ 		return false;
+ 
+ 	/*
+@@ -128,12 +128,18 @@ bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+ 					   !hugepage_flags_always())))
+ 		return false;
+ 
+-	/* Only regular file is valid */
+-	if (!in_pf && file_thp_enabled(vma))
+-		return true;
+-
+-	if (!vma_is_anonymous(vma))
++	if (!vma_is_anonymous(vma)) {
++		/*
++		 * Trust that ->huge_fault() handlers know what they are doing
++		 * in fault path.
++		 */
++		if (((in_pf || smaps)) && vma->vm_ops->huge_fault)
++			return true;
++		/* Only regular file is valid in collapse path */
++		if (((!in_pf || smaps)) && file_thp_enabled(vma))
++			return true;
+ 		return false;
++	}
+ 
+ 	if (vma_is_temporary_stack(vma))
+ 		return false;
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
