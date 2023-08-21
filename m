@@ -2,83 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC30B7823E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D03C67823E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjHUGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33208 "EHLO
+        id S233416AbjHUGr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjHUGsS (ORCPT
+        with ESMTP id S230261AbjHUGr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:48:18 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3CFC0B6;
-        Sun, 20 Aug 2023 23:48:09 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxTeunCONk8YIaAA--.48966S3;
-        Mon, 21 Aug 2023 14:48:07 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx_yONCONkWUxfAA--.60821S3;
-        Mon, 21 Aug 2023 14:48:07 +0800 (CST)
-Message-ID: <520723e3-ca6e-a55d-cbd0-132b2991c9bc@loongson.cn>
-Date:   Mon, 21 Aug 2023 14:47:41 +0800
+        Mon, 21 Aug 2023 02:47:59 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE3A83
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:47:56 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id XyhbqE06S8hXQXyhcqw3V8; Mon, 21 Aug 2023 08:47:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1692600473;
+        bh=VKY79l4BMS+XNL5J3gXH51QA4MGqOn2fyIFQ894irYI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=oNAWQvmZI2xUCvFd5vsfvc4Rg0xT2d57oXjSqUqVl4pql2iZjSkXoNLUed4xgtROS
+         lMtOos2PRov4AvnMnHY3xputg8PHPn6P1PPDAF/JczkmsBgoGlYjAg46MdS/DsZ8xd
+         Zu7nxgmgu3aG98h+TmKWs0qboDrUkArStJLQF4YcQzl/DjMsU9IryeQfJEENWxlBVL
+         jOLsBDjvexg3I+bBvEyALisDOBRSqYBIz2kGHLko2gokb8cLE/noTRfU7rhg/OAP4x
+         GcIDw2ZbeOAPMVq1waCs0uyCnzYsbkm7uKrrJmm76cJvt7AWCcM9G1oWg9DcQ5S4UV
+         3qgzUpWmE2JVQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 21 Aug 2023 08:47:53 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <7ac675b6-a000-6ad7-36f3-a3ce186414b6@wanadoo.fr>
+Date:   Mon, 21 Aug 2023 08:47:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH v4] PCI/VGA: Make the vga_is_firmware_default() less
- arch-dependent
-From:   suijingfeng <suijingfeng@loongson.cn>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        loongson-kernel@lists.loongnix.cn, linux-pci@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230817220853.GA328159@bhelgaas>
- <fb242a7e-b1ee-7be0-cbc4-be710e246279@loongson.cn>
-Content-Language: en-US
-In-Reply-To: <fb242a7e-b1ee-7be0-cbc4-be710e246279@loongson.cn>
+Subject: Re: [PATCH] drm/amdgpu: Avoid possible buffer overflow
+Content-Language: fr
+To:     Su Hui <suhui@nfschina.com>, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     Hawking.Zhang@amd.com, le.ma@amd.com, lijo.lazar@amd.com,
+        yifan1.zhang@amd.com, candice.li@amd.com, Yuliang.Shi@amd.com,
+        guchun.chen@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20230821061944.197934-1-suhui@nfschina.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230821061944.197934-1-suhui@nfschina.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8Dx_yONCONkWUxfAA--.60821S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E
-        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
-        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCF54CYxVAaw2AFwI0_Jrv_JF1l4I8I3I0E
-        4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j83kZUUUUU=
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le 21/08/2023 à 08:19, Su Hui a écrit :
+> smatch error:
+> drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c:1257 amdgpu_discovery_reg_base_init() error:
+> testing array offset 'adev->vcn.num_vcn_inst' after use.
+> 
+> change the assignment order to avoid buffer overflow.
+> 
+> Fixes: c40bdfb2ffa4 ("drm/amdgpu: fix incorrect VCN revision in SRIOV")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> index 8e1cfc87122d..ba95526c3d45 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_discovery.c
+> @@ -1250,11 +1250,12 @@ static int amdgpu_discovery_reg_base_init(struct amdgpu_device *adev)
+>   				 *     0b10 : encode is disabled
+>   				 *     0b01 : decode is disabled
+>   				 */
+> -				adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
+> -					ip->revision & 0xc0;
+> +
+>   				ip->revision &= ~0xc0;
+>   				if (adev->vcn.num_vcn_inst <
+>   				    AMDGPU_MAX_VCN_INSTANCES) {
+> +					adev->vcn.vcn_config[adev->vcn.num_vcn_inst] =
+> +						ip->revision & 0xc0;
+
 Hi,
+I don't think that the patch is correct.
+
+Because of the "ip->revision &= ~0xc0" which is now above it, 
+"ip->revision & 0xc0" should now always be 0.
+
+Maybe both lines should be moved within the "if"?
+
+CJ
 
 
-On 2023/8/18 18:20, suijingfeng wrote:
->
-> 1) The "weird" logic completely overrides whatever decision VGAARB 
-> ever made.
->
-> It seems to say that the decision ever made by VGAARB is useless.
-> Well, I think VGAARB shouldn't endure this; VGAARB has to be small. 
 
 
-VGAARB have to be smart!
 
-The "weird logic" here refer to the weird pci_fixup_vgadev() function.
+>   					adev->vcn.num_vcn_inst++;
+>   					adev->vcn.inst_mask |=
+>   						(1U << ip->instance_number);
 
