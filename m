@@ -2,170 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 871237823A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9093C7823A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbjHUGVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S233409AbjHUGWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjHUGVL (ORCPT
+        with ESMTP id S229954AbjHUGWw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:21:11 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B0BAC
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:08 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so3536909a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:21:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1692598867; x=1693203667;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mhOUt2tzecxNC3yGDp4EJrCLbLTReEQeCvGgn9oNECQ=;
-        b=EKo9ZH6gHObgt1HYVj8JaP2oiJ1d1oAzRgoGN7NeqvIeYixhvpoII7LbNQQTuL5kH1
-         IgUfpFsULPFPOjJKzf9/qtfyngPPpkivB6s5hZlTq8DR7aWgzwJsvMQSq4cPGkf2pNmE
-         ti2GsIujiM8m/y28T815DQyPQfHQ95sCF6a9oXxBz2GVw7+v+3aI2ptDGjm1xdp4sA+B
-         WxVh1ow2VMfBoiVhKA9tZYhAPW+zuJ6zUs+kyj/ulRC8/sF1Zb4xosMs4doQ28dgX+Ry
-         zCilvwh3RhIaUuVIyKMVPS3FtOXdnXQyqBt58BhEu3PV6iAktsYwlkxDSGpZV1W4J+iF
-         ZT2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692598867; x=1693203667;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mhOUt2tzecxNC3yGDp4EJrCLbLTReEQeCvGgn9oNECQ=;
-        b=iSm6PS3ZIQ35AxROtlFhb6dFNdJm6TxJ9gqdedMF6PRRzcTGrago6eOs950b2/CZ3O
-         QPtvUcNxkCVl0Bkdn/E9/yN2MraCKMzEx8XmbAvDXCvM62zigGfmod4/CCSJfIsdQDB2
-         lffHPPgW9mQvCYzvSxEo1znHmS46WAMKEJuI0I1qXCd6iiS48IUeTmjLUp3WtRvSX3nV
-         hoXcBEv+42zFOmfRyAYF83Oql9ekLBz08v2xD+2ZupQ835ctkU1GTeBwikXZ/dYtkbNq
-         gaWEsL62xX5/Jii39JDm5UASzDjlvpigEwe9XXaVtjkiqJzd7zG6G1n3a6rOejJb6sdJ
-         Nfsg==
-X-Gm-Message-State: AOJu0Yx35vmsjSguZqstnDQucUsaLV2YBx6GQAaii47W2Q+a1EPCUtSq
-        c/hkxbjrdXBpj4U1JuMZlvNYBQ==
-X-Google-Smtp-Source: AGHT+IEZ1WGJCViXYgku7ZS537iNI1j7BtgGYKhrahmtuPd9m/nuY+r0npj3vob2/C6pkRBxjSVxWA==
-X-Received: by 2002:a05:6402:60f:b0:51d:fa7c:c330 with SMTP id n15-20020a056402060f00b0051dfa7cc330mr3787050edv.26.1692598866798;
-        Sun, 20 Aug 2023 23:21:06 -0700 (PDT)
-Received: from fedora.. (ip-095-222-150-251.um34.pools.vodafone-ip.de. [95.222.150.251])
-        by smtp.gmail.com with ESMTPSA id c4-20020aa7df04000000b00523b1335618sm5455003edy.97.2023.08.20.23.21.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Aug 2023 23:21:06 -0700 (PDT)
-From:   Patrick Rudolph <patrick.rudolph@9elements.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     naresh.solanki@9elements.com,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [v16 4/4] i2c: muxes: pca954x: Add regulator support
-Date:   Mon, 21 Aug 2023 08:20:24 +0200
-Message-ID: <20230821062027.2631725-5-patrick.rudolph@9elements.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230821062027.2631725-1-patrick.rudolph@9elements.com>
-References: <20230821062027.2631725-1-patrick.rudolph@9elements.com>
+        Mon, 21 Aug 2023 02:22:52 -0400
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id A16AA102;
+        Sun, 20 Aug 2023 23:22:15 -0700 (PDT)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 7DC1B6061F466;
+        Mon, 21 Aug 2023 14:22:06 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     airlied@redhat.com, tzimmermann@suse.de, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     eich@suse.de, tiwai@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Su Hui <suhui@nfschina.com>
+Subject: [PATCH] drm/ast: Avoid possible NULL dereference
+Date:   Mon, 21 Aug 2023 14:22:00 +0800
+Message-Id: <20230821062159.198691-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a vdd regulator and enable it for boards that have the
-mux powered off by default.
+smatch error:
+drivers/gpu/drm/ast/ast_dp501.c:227 ast_launch_m68k() error:
+we previously assumed 'ast->dp501_fw' could be null (see line 223)
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+when "!ast->dp501_fw" and "ast_load_dp501_microcode(dev) >= 0" is true,
+there will be a NULL dereference of 'ast->dp501_fw'.
+
+Fixes: 12f8030e05c6 ("drm/ast: Actually load DP501 firmware when required")
+Signed-off-by: Su Hui <suhui@nfschina.com>
 ---
- drivers/i2c/muxes/i2c-mux-pca954x.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/ast/ast_dp501.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
-index 32873df56e33..f36a26acb0d2 100644
---- a/drivers/i2c/muxes/i2c-mux-pca954x.c
-+++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
-@@ -48,6 +48,7 @@
- #include <linux/module.h>
- #include <linux/pm.h>
- #include <linux/property.h>
-+#include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <dt-bindings/mux/mux.h>
-@@ -100,6 +101,7 @@ struct pca954x {
- 	struct irq_domain *irq;
- 	unsigned int irq_mask;
- 	raw_spinlock_t lock;
-+	struct regulator *supply;
- };
+diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
+index 1bc35a992369..d9f3a0786a6f 100644
+--- a/drivers/gpu/drm/ast/ast_dp501.c
++++ b/drivers/gpu/drm/ast/ast_dp501.c
+@@ -224,8 +224,10 @@ static bool ast_launch_m68k(struct drm_device *dev)
+ 			    ast_load_dp501_microcode(dev) < 0)
+ 				return false;
  
- /* Provide specs for the MAX735x, PCA954x and PCA984x types we know about */
-@@ -447,6 +449,8 @@ static void pca954x_cleanup(struct i2c_mux_core *muxc)
- 	struct pca954x *data = i2c_mux_priv(muxc);
- 	int c, irq;
- 
-+	regulator_disable(data->supply);
-+
- 	if (data->irq) {
- 		for (c = 0; c < data->chip->nchans; c++) {
- 			irq = irq_find_mapping(data->irq, c);
-@@ -499,10 +503,22 @@ static int pca954x_probe(struct i2c_client *client)
- 	i2c_set_clientdata(client, muxc);
- 	data->client = client;
- 
-+	data->supply = devm_regulator_get(dev, "vdd");
-+	if (IS_ERR(data->supply))
-+		return dev_err_probe(dev, PTR_ERR(data->supply),
-+				"Failed to request regulator\n");
-+
-+	ret = regulator_enable(data->supply);
-+	if (ret)
-+		return dev_err_probe(dev, ret,
-+				     "Failed to enable vdd supply\n");
-+
- 	/* Reset the mux if a reset GPIO is specified. */
- 	gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
--	if (IS_ERR(gpio))
--		return PTR_ERR(gpio);
-+	if (IS_ERR(gpio)) {
-+		ret = PTR_ERR(gpio);
-+		goto fail_cleanup;
-+	}
- 	if (gpio) {
- 		udelay(1);
- 		gpiod_set_value_cansleep(gpio, 0);
-@@ -519,7 +535,7 @@ static int pca954x_probe(struct i2c_client *client)
- 
- 		ret = i2c_get_device_id(client, &id);
- 		if (ret && ret != -EOPNOTSUPP)
--			return ret;
-+			goto fail_cleanup;
- 
- 		if (!ret &&
- 		    (id.manufacturer_id != data->chip->id.manufacturer_id ||
-@@ -527,7 +543,8 @@ static int pca954x_probe(struct i2c_client *client)
- 			dev_warn(dev, "unexpected device id %03x-%03x-%x\n",
- 				 id.manufacturer_id, id.part_id,
- 				 id.die_revision);
--			return -ENODEV;
-+			ret = -ENODEV;
-+			goto fail_cleanup;
+-			fw_addr = (u8 *)ast->dp501_fw->data;
+-			len = ast->dp501_fw->size;
++			if (ast->dp501_fw) {
++				fw_addr = (u8 *)ast->dp501_fw->data;
++				len = ast->dp501_fw->size;
++			}
  		}
- 	}
- 
-@@ -546,7 +563,8 @@ static int pca954x_probe(struct i2c_client *client)
- 	ret = pca954x_init(client, data);
- 	if (ret < 0) {
- 		dev_warn(dev, "probe failed\n");
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto fail_cleanup;
- 	}
- 
- 	ret = pca954x_irq_setup(muxc);
+ 		/* Get BootAddress */
+ 		ast_moutdwm(ast, 0x1e6e2000, 0x1688a8a8);
 -- 
-2.41.0
+2.30.2
 
