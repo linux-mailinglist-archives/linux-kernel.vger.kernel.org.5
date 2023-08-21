@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C8778344F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A66678345C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjHUUoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S230062AbjHUUoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjHUUni (ORCPT
+        with ESMTP id S231394AbjHUUn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:43:38 -0400
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23ABCF3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:42:12 -0700 (PDT)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1bf3c0362f7so38396085ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:42:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692650532; x=1693255332;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L2+zyESOsFHr6OKCoXoHDulmqthrco1Hmm/wWbD+8ec=;
-        b=dMLE2GJZT3n15Rvd7BslsZnFvn1uD3sl1OJDERz45tJafYlPm+kbEUMxpsITdNwMJ1
-         NyIbIvCvELRZoFdxvxiL6cozqXNpbTqtzsLvlT4ciJZM8k9DK6+BpW0k7MOlCX7yGtH0
-         NnIF7iqOVbDUSfRR3lcef/H7mDmAWiQnI4HZ6tYIItO1OKaURLlC4+rA6x2vgVX9Rryo
-         zPqwvrFxbG6yoRGHMgdFcMQZs5gYk8ds2sG87fdnb0jJIsjA8WsAW0KJAbDY2rP2TOVx
-         FzxSzT+xuGfn/Wit9xXol3MNrsYewABk67SRAQxRFbwC6Rhn3/KtRVteSPnqlkSL78rj
-         7dRg==
-X-Gm-Message-State: AOJu0YyigtjnZtjdPQth0/zZPclYPnaCaEhfRGCisYiHHbQ1Ml/lEsMw
-        hn/4N9Qd9j0ki5JmcBR/hMilDl7tfJNGqDS5TlztomuHTg6s
-X-Google-Smtp-Source: AGHT+IGyhbJNaw58JigChgXQOYGOGBDShDQ+rv8G3fWrvuyeMKzsnqNuCB8MY9SJ33ZPXHrYeO04vtY8IL5lQy3iWPK2TEI3myay
+        Mon, 21 Aug 2023 16:43:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C393CE5C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CfTLPs2L3oXCEz4CISXc6ITznDvMqhqDEKATU13XeAg=; b=V4YMFgC+g4OYRPMeH0zXq1bZJF
+        qG5C+S3Ngm28nQlUZn3lvhSkzHWIJdcrGZvk/lpmZP6hzWud24Z++6b2EUcni7q+qoTOaZEx0l2gV
+        henrEYKyXUzFpVavviPNHhdJgc/W60ra8efyrauieBwmSHcjquuuSemaYG3J6oVCFtKwrlsvJ+ik3
+        BJD/ite8thS/THZnzL3yUvcZ/nTV9MJtJMjSr9TSHfgZ3WJlytR5wybA414gylmbbeDdc9vfiKcBc
+        9HfM0BMIYN1RqQ2O4TP5aHVlmcLFqbq86ieHwEyvFCbXWfzFLhScC2uUS73Kr54FtQLmcq38BeiY2
+        Ud7VuahA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qYBjL-00CIfE-TN; Mon, 21 Aug 2023 20:42:31 +0000
+Date:   Mon, 21 Aug 2023 21:42:31 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, dennis@kernel.org, tj@kernel.org,
+        cl@linux.com, akpm@linux-foundation.org, shakeelb@google.com,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <ZOPMNyZ3gKb/bdjO@casper.infradead.org>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e743:b0:1b8:a555:3865 with SMTP id
- p3-20020a170902e74300b001b8a5553865mr3937298plf.6.1692650532383; Mon, 21 Aug
- 2023 13:42:12 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 13:42:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b6320d060374e933@google.com>
-Subject: [syzbot] Monthly hams report (Aug 2023)
-From:   syzbot <syzbot+list1892093e816ecfe5f01a@syzkaller.appspotmail.com>
-To:     linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821202829.2163744-1-mjguzik@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello hams maintainers/developers,
+On Mon, Aug 21, 2023 at 10:28:27PM +0200, Mateusz Guzik wrote:
+> > While with the patch these allocations remain a significant problem,
+> > the primary bottleneck shifts to:
+> > 
+> >     __pv_queued_spin_lock_slowpath+1
+> >     _raw_spin_lock_irqsave+57
+> >     folio_lruvec_lock_irqsave+91
+> >     release_pages+590
+> >     tlb_batch_pages_flush+61
+> >     tlb_finish_mmu+101
+> >     exit_mmap+327
+> >     __mmput+61
+> >     begin_new_exec+1245
+> >     load_elf_binary+712
+> >     bprm_execve+644
+> >     do_execveat_common.isra.0+429
+> >     __x64_sys_execve+50
+> >     do_syscall_64+46
+> >     entry_SYSCALL_64_after_hwframe+110
+> 
+> I intend to do more work on the area to mostly sort it out, but I would
+> not mind if someone else took the hammer to folio. :)
 
-This is a 31-day syzbot report for the hams subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/hams
-
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 30 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 17      No    general protection fault in rose_transmit_link (3)
-                  https://syzkaller.appspot.com/bug?extid=677921bcd8c3a67a3df3
-<2> 4       Yes   memory leak in nr_create (3)
-                  https://syzkaller.appspot.com/bug?extid=d327a1f3b12e1e206c16
-<3> 3       Yes   general protection fault in prepare_to_wait (2)
-                  https://syzkaller.appspot.com/bug?extid=666c97e4686410e79649
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Funny you should ask ... these patches are from ~3 weeks ago.  They may
+or may not apply to a current tree, but I'm working on this area.
