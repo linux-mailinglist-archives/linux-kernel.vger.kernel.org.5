@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 143DA78241D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A80782421
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbjHUHEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
+        id S233563AbjHUHE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbjHUHEm (ORCPT
+        with ESMTP id S232495AbjHUHE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:04:42 -0400
-Received: from smtp.smtpout.orange.fr (smtp-24.smtpout.orange.fr [80.12.242.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D0BAF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:04:41 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id XyxoqoQ3VuWDMXyxoqWxoR; Mon, 21 Aug 2023 09:04:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1692601479;
-        bh=omj5Cu2WnrhUZEiagPndlyI+KCEZ2ygnsWdsBFXoZkU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FaIiZCnPi+DVyWDLrR4bakN/8a69A89ZzRDO20POhotfGmeAUjpz4tNHBO6oYCjsh
-         DbsInWWbowgaYYSU3i1+E4Hy5I5mqoEmD1qVvqoxIZSTpMKxU18Y/FgGM+Pvqc0Hh0
-         T4O5RyOK1Sbmxr5knc/0NC0xUNLmfYv7zMa9KMG/hkRMXXzRQnA/tyn6Fz4R2Jj+RA
-         V6b6/2CC/yj9OzG2XZnjWJC9d7imqBcfvhOu7C/IsLrTXEofczwErycukQ6b3Y/ExA
-         R3vXVhlrawUvILzR1MlBs69kNOzV8qBmaYy2sGKdCWYmovfkrTah8O/we/IrEUwZrN
-         RWo+2jpJpQJXQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 21 Aug 2023 09:04:39 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <38503377-ec27-09dd-dc6b-836a9ac0a5df@wanadoo.fr>
-Date:   Mon, 21 Aug 2023 09:04:36 +0200
+        Mon, 21 Aug 2023 03:04:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 831B2B8;
+        Mon, 21 Aug 2023 00:04:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 109AE6112E;
+        Mon, 21 Aug 2023 07:04:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50780C433CB;
+        Mon, 21 Aug 2023 07:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692601491;
+        bh=VNweNV1L08Rq884RMKUGXDd7wmz0jE86MHEuZ1Jj6tE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uiukNN7seQyV9G5FKIlRX6fsyrhTK2/bOfeMI+qNuDabh+SLh2xX8g6Hb8QxxqbA5
+         ReQ1GoBuAlM2lwcKwYtDMFjjTBHY4DYO3n5pptpUo+uZC52InGwBNdS9rKTvFOs+Mc
+         I9BAC2ihmE/e64HyBsXuTGnZHctzJjhoksI14Dg49eHyRLfgmBFndKdAE9+thhp83q
+         Zv5voY67YJz644OK/5gwzzNznPdV07aWPPqN+8vSMzW+QxvSd6cyz2Tnx9AV0L0LKY
+         /ERDxYZfsRV59MSTmCqnVJZWjKJKeDJHr5242aQEwNxN6gd44phqdcRTNlzqeily8Y
+         dwW91v6HrzXOA==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so4405815e87.2;
+        Mon, 21 Aug 2023 00:04:51 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxAcd2immdEhtFROUMot6iMz0v/na2P0V2DbBRxxxD78y7vucXm
+        oiN0phpwaWJ2mAsGZyVofQHp01GKBKoFK8DQYqg=
+X-Google-Smtp-Source: AGHT+IGuvoBE2EpEdTnjYx1Pb6if7EzgP3pUW2uJRFuVnJZjxZ0bR/bf5bSdGiCvqj4k/9uNpjOuvPz+Ycny8SySERs=
+X-Received: by 2002:a05:6512:e93:b0:4fb:7c40:9f95 with SMTP id
+ bi19-20020a0565120e9300b004fb7c409f95mr4756212lfb.47.1692601489315; Mon, 21
+ Aug 2023 00:04:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] drm/ast: Avoid possible NULL dereference
-Content-Language: fr
-To:     Su Hui <suhui@nfschina.com>, airlied@redhat.com,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch
-Cc:     eich@suse.de, tiwai@suse.de, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20230821062159.198691-1-suhui@nfschina.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230821062159.198691-1-suhui@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818134422.380032-1-ardb@kernel.org> <20230818134422.380032-18-ardb@kernel.org>
+ <46832047-567e-5699-fbec-8c3e991cfe0a@zytor.com> <CAMj1kXG5X2ZUNs2W8o5_c83fznRDjLjPZcEqEgfpFUBS1DX5Pg@mail.gmail.com>
+ <d8c2f362-bfe9-560a-541c-a298f8685be1@zytor.com>
+In-Reply-To: <d8c2f362-bfe9-560a-541c-a298f8685be1@zytor.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 21 Aug 2023 09:04:38 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGw5_pLx=+RSFndd6PxXBe5-TyOmWDpyD5v4+YhOxYMBA@mail.gmail.com>
+Message-ID: <CAMj1kXGw5_pLx=+RSFndd6PxXBe5-TyOmWDpyD5v4+YhOxYMBA@mail.gmail.com>
+Subject: Re: [PATCH 17/17] x86/boot: Drop CRC-32 checksum and the build tool
+ that generates it
+To:     "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Marvin_H=C3=A4user?= <mhaeuser@posteo.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 21/08/2023 à 08:22, Su Hui a écrit :
-> smatch error:
-> drivers/gpu/drm/ast/ast_dp501.c:227 ast_launch_m68k() error:
-> we previously assumed 'ast->dp501_fw' could be null (see line 223)
-> 
-> when "!ast->dp501_fw" and "ast_load_dp501_microcode(dev) >= 0" is true,
-> there will be a NULL dereference of 'ast->dp501_fw'.
-> 
-> Fixes: 12f8030e05c6 ("drm/ast: Actually load DP501 firmware when required")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->   drivers/gpu/drm/ast/ast_dp501.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_dp501.c
-> index 1bc35a992369..d9f3a0786a6f 100644
-> --- a/drivers/gpu/drm/ast/ast_dp501.c
-> +++ b/drivers/gpu/drm/ast/ast_dp501.c
-> @@ -224,8 +224,10 @@ static bool ast_launch_m68k(struct drm_device *dev)
->   			    ast_load_dp501_microcode(dev) < 0)
->   				return false;
->   
-> -			fw_addr = (u8 *)ast->dp501_fw->data;
-> -			len = ast->dp501_fw->size;
-> +			if (ast->dp501_fw) {
-> +				fw_addr = (u8 *)ast->dp501_fw->data;
-> +				len = ast->dp501_fw->size;
-> +			}
->   		}
->   		/* Get BootAddress */
->   		ast_moutdwm(ast, 0x1e6e2000, 0x1688a8a8);
+On Mon, 21 Aug 2023 at 02:37, H. Peter Anvin <hpa@zytor.com> wrote:
+>
+> On 8/20/23 05:57, Ard Biesheuvel wrote:
+> >
+> > I understand. I deliberately put this change at the very end because I
+> > was anticipating some debate on this.
+> >
+> > Do you have any recollection of why this CRC32 was introduced in the
+> > first place? The commit logs are empty and the lore thread doesn't
+> > contain any justification either.
+>  >
+>
+> The justification is that firmware is notoriously unreliable and gives
+> the boot loader an independent way to verify the load and have a
+> fallback, rather than jumping to the kernel and having the decompressor
+> fail.
+>
+> At this time it is impossible to know what might rely on it. The EFI
+> signing issue aside, there are a ton of Linux bootloaders for non-EFI
+> systems using the BIOS or raw kernel entry points - and there is no
+> telling what those environments might do.
+>
 
-Hi,
+Fair enough.
 
-this looks like a false positive.
+The PE header happens to have a checksum field that a) is not used by
+EFI at all, and b) is not covered by the signature. So it wouldn't be
+too hard to put a doctored value in that field that forces the CRC-32
+of the entire image to 0xffff_ffff *after* signing, and this would
+even work if the image did not have a CRC-32 at the end in the first
+place. (So the signing tools wouldn't need to know whether they are
+signing a x86 bzImage or some other PE executable). Note that pesign
+and sbsign currently follow the PE/windows spec for generating this
+checksum, but EFI never looks at it. (It is documented as being
+intended for checksumming critical system DLLs on Windows)
 
-If "!ast->dp501_fw", and ast_load_dp501_microcode()>=0, then 
-ast_load_dp501_microcode() will set a valid value in ast->dp501_fw.
+But that is a lot of trouble for no known use case, so let's not
+bother with that right now. But I'll withdraw this patch from the
+series.
 
-CJ
+Thanks,
+Ard.
