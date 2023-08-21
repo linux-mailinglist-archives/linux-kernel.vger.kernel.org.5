@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 597A378360A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E11A3783608
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjHUW7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 18:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S231639AbjHUW7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 18:59:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbjHUW7u (ORCPT
+        with ESMTP id S229866AbjHUW7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 18:59:50 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1666196
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:59:42 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d74a6dfb0deso2208186276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:59:42 -0700 (PDT)
+        Mon, 21 Aug 2023 18:59:30 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F613130
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:59:26 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2767505a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:59:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692658782; x=1693263582;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=WojTsyHJlQQoruGt5rJF23KrHwn53DulZRTBhsYqmPM=;
-        b=Xt4OmnWTg7A1bjVlc1q8eZptmz5K2KqmSUzXT/8gqV5GOaACpuxw0gxMfS2/kZRwWA
-         +YeRpkFzN58QNhMU52t3YOip8FLYfk2phrZLdia6BQO9c5kjd2RLX/Pz65dm8u/htRmO
-         IEu22y/b+4NYqo9L2Yfdd0CoerUxwwqhUpljSpwKXYuOqJOutMCzXlDAa2+XvRBhpYCz
-         VykoD2C8Z0ZXtgz8SSsXLmHMX1tWxok5N4GsxB8a3yvKNxVVwE5v6yab9cw0tVusGKPW
-         bAorv2RHU/G/1/Qga2eUAC0X++45x/Eq0N9gi0m609JJVkvPmGjRhXss35lR2STNX41I
-         EVVw==
+        d=gmail.com; s=20221208; t=1692658765; x=1693263565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+LmedZxDfFGgAEEh0N7SyrX0MHcYG3rwrJniXF4d67g=;
+        b=eAssCcwvnR59Mdn/XnFl+9hml/3sYg1/nXIMKd5HvTDTQT2HgLEXDS8EfzdwKmDDkM
+         93SdAsxCVbQGDP8MDryGRQym73gIkLi3phZjnhYlDuN78xxdIktZGm6eaiVQ98AYLmVP
+         C2UWBhaTl6cMt0V0ysuNaFL9CLHqsqmsAwSkb6Zn56viJE+q+MXDDmy74Y4pvK/c6vih
+         omz3rqM9jp5LdGcKbx7PeFPC3ECewo6bP5YsGd9wh6Z6n9RwK39MIQrCc9rAU2xZDyZU
+         7Nh4f2mzLoEygimbRZIGPmAsiWcWXV2eb5y78NFH4PZkbFIEbvanqqZKBXvK7rQ9arN3
+         PadA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692658782; x=1693263582;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WojTsyHJlQQoruGt5rJF23KrHwn53DulZRTBhsYqmPM=;
-        b=ih9WlPehpYgoXrOQHFgFyhl29oPDFRMw/peTmG0r+fDJKFtJ3ucdzhNmZLUIzV+FEy
-         96vSx+kEpuXcpzO/Bp0Owogy2hpRMAazXBjIz3xcy+PoDJk3eJXnvq8leqRXc6grwV0j
-         oz/GOQvIOaDB5QnmI/AmU3aEwoD3YTkCNf1J42NnJgdtWHXQjS3yIGW1JsRqUIquds33
-         H6mPH4l9pC1gOBgpi1e1n4TYMd6gd9xFutEEFsGZpiBBopTNFempi/CzpcyzEFyQXXg3
-         rb3e0DO8K95xvAuj3DGz5iqZkVsoR0wsYdffzH3qjuAc2eCiS8AEa5+Q0R2570gDEBJX
-         olmA==
-X-Gm-Message-State: AOJu0YxemvD5xm8tH8ZCFbPUruPOvOsPy5lPmFIzELiQnQdSYLArZhxA
-        WNjxshUicxcDqKA2iUzL5DzL/HvpdVFHkJKeqw==
-X-Google-Smtp-Source: AGHT+IF0Ms/Uieqvin5sgKbBWkvCy9IWIrxUUGRBd6tv8X2fNrhb6Ijj2ZCUahyed72rzlUp+zhVkPwpTiB73Kz99A==
-X-Received: from riemann.sea.corp.google.com ([2620:15c:100:201:61be:5074:9774:e5b])
- (user=srutherford job=sendgmr) by 2002:a05:6902:1141:b0:d58:6cea:84de with
- SMTP id p1-20020a056902114100b00d586cea84demr87039ybu.11.1692658782154; Mon,
- 21 Aug 2023 15:59:42 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 15:58:59 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230821225859.883120-1-srutherford@google.com>
-Subject: [PATCH v2] x86/sev: Make enc_dec_hypercall() accept a size instead of npages
-From:   Steve Rutherford <srutherford@google.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>, thomas.lendacky@amd.com,
-        pankaj.gupta@amd.com
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com,
-        Steve Rutherford <srutherford@google.com>
+        d=1e100.net; s=20221208; t=1692658765; x=1693263565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+LmedZxDfFGgAEEh0N7SyrX0MHcYG3rwrJniXF4d67g=;
+        b=iBV7ldZyQQhZTeW2vYzGxXMNciZM9DyrbvX9Mk8X9lBbUnFDEotsewpT+EloPjo/3z
+         N4xqXNlcZLjSVCHZbNlh6aUp/okXOHezJGp2C7dJW121VJPjQ7plrM5IJdin7nbYJxP2
+         ZmI+P20hOCi0vSThmz7WusivBvY/jsz0dKN2jRYgbeu6pd9ZmpldHftPHfnUFHYb4MlB
+         pxMMFv2nA5+f0D5WoYJFLGY7XpGOk9HFGeW+/DAawIueYHvlvs7TVv/hpS/P3l+D/0cU
+         e4gxbkqtOzr4Py4TQEavBexjzzPycy5Wbkgt25uM/pJkQY9cXV2hngI3lso2BPpXc16a
+         XN4A==
+X-Gm-Message-State: AOJu0Yz6LW4dlZKzonOoSiJeLWMi42tPqUtH3yuCZF1cCf+w+l68bunP
+        u9OaEHpUyDpCUqakGy39YD4cjXwXUemGZ5MFpPQ=
+X-Google-Smtp-Source: AGHT+IHVwUnwQEF4T0pfm18ovL3KnLP73yi7xxCws64T6jqYm+O3bm+xt3N/R3/tjhZb8ISX+EDqX+l4Bpv3LipsS2E=
+X-Received: by 2002:a17:90a:6941:b0:25b:c454:a366 with SMTP id
+ j1-20020a17090a694100b0025bc454a366mr7506521pjm.5.1692658765445; Mon, 21 Aug
+ 2023 15:59:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230812210053.2325091-1-zokeefe@google.com> <PUZP153MB06358FF02518EF3B279F5DD4BE16A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmSrwe2m4MjS9mGO+DeGNGSv=B2uZ72EAxnZk2jsDh39rQ@mail.gmail.com>
+ <ZNp7JDaPhT3Se4de@casper.infradead.org> <CAAa6QmSN4NhaDL0DQsRd-F8HTnCCjq1ULRNk88LAA9gVbDXE4g@mail.gmail.com>
+ <ZNrh6w9ICu4rMrhV@casper.infradead.org> <PUZP153MB063529C4869A7A666C275B23BE15A@PUZP153MB0635.APCP153.PROD.OUTLOOK.COM>
+ <CAAa6QmRrnRHEEQMMYe20GLXj7g+LVVHVRAKUdSLy=jUW=khb2A@mail.gmail.com>
+ <CAHbLzko_xLiqkNgjA7DhVFBSW6qJdAwgfk557YKV+ZpwS2x16w@mail.gmail.com>
+ <CAAa6QmSxab2-m-RopQtZnBpxTLX25K=KZE+EPmA+wWb_yTqf0Q@mail.gmail.com>
+ <CAHbLzko1J9ds_JfZe83JwEx=395sPExB7mQ0faju6OSaQ2tmnQ@mail.gmail.com> <CAAa6QmRLkh-g4ge4D9nQge=wHFwTz8CKB7AsjcJ9akDV8d0Z_A@mail.gmail.com>
+In-Reply-To: <CAAa6QmRLkh-g4ge4D9nQge=wHFwTz8CKB7AsjcJ9akDV8d0Z_A@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 21 Aug 2023 15:59:13 -0700
+Message-ID: <CAHbLzkp6BW5sHiG5aFkOz0yq-5ZvbE0AhFYN4YEN4Mkx0koZeQ@mail.gmail.com>
+Subject: Re: [EXTERNAL] [PATCH] mm/thp: fix "mm: thp: kill __transhuge_page_enabled()"
+To:     "Zach O'Keefe" <zokeefe@google.com>
+Cc:     Saurabh Singh Sengar <ssengar@microsoft.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,110 +79,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-enc_dec_hypercall() accepted a page count instead of a size, which
-forced its callers to round up. As a result, non-page aligned
-vaddrs caused pages to be spuriously marked as decrypted via the
-encryption status hypercall, which in turn caused consistent
-corruption of pages during live migration. Live migration requires
-accurate encryption status information to avoid migrating pages
-from the wrong perspective.
+On Mon, Aug 21, 2023 at 8:09=E2=80=AFAM Zach O'Keefe <zokeefe@google.com> w=
+rote:
+>
+> On Fri, Aug 18, 2023 at 2:21=E2=80=AFPM Yang Shi <shy828301@gmail.com> wr=
+ote:
+> >
+> > On Thu, Aug 17, 2023 at 11:29=E2=80=AFAM Zach O'Keefe <zokeefe@google.c=
+om> wrote:
+> > >
+> > > On Thu, Aug 17, 2023 at 10:47=E2=80=AFAM Yang Shi <shy828301@gmail.co=
+m> wrote:
+> > > >
+> > > > On Wed, Aug 16, 2023 at 2:48=E2=80=AFPM Zach O'Keefe <zokeefe@googl=
+e.com> wrote:
+> > > > >
+> > > > > > We have a out of tree driver that maps huge pages through a fil=
+e handle and
+> > > > > > relies on -> huge_fault. It used to work in 5.19 kernels but 6.=
+1 changed this
+> > > > > > behaviour.
+> > > > > >
+> > > > > > I don=E2=80=99t think reverting the earlier behaviour of fault_=
+path for huge pages should
+> > > > > > impact kernel negatively.
+> > > > > >
+> > > > > > Do you think we can restore this earlier behaviour of kernel to=
+ allow page fault
+> > > > > > for huge pages via ->huge_fault.
+> > > > >
+> > > > > That seems reasonable to me. I think using the existence of a
+> > > > > ->huge_fault() handler as a predicate to return "true" makes sens=
+e to
+> > > > > me. The "normal" flow for file-backed memory along fault path sti=
+ll
+> > > > > needs to return "false", so that we correctly fallback to ->fault=
+()
+> > > > > handler. Unless there are objections, I can do that in a v2.
+> > > >
+> > > > Sorry for chiming in late. I'm just back from vacation and trying t=
+o catch up...
+> > > >
+> > > > IIUC the out-of-tree driver tries to allocate huge page and install
+> > > > PMD mapping via huge_fault() handler, but the cleanup of
+> > > > hugepage_vma_check() prevents this due to the check to
+> > > > VM_NO_KHUGEPAGED?
+> > > >
+> > > > So you would like to check whether a huge_fault() handler existed
+> > > > instead of vma_is_dax()?
+> > >
+> > > Sorry for the multiple threads here. There are two problems: (a) the
+> > > VM_NO_KHUGEPAGED check along fault path, and (b) we don't give
+> > > ->huge_fault() a fair shake, if it exists, along fault path. The
+> > > current code assumes vma_is_dax() iff ->huge_fault() exists.
+> > >
+> > > (a) is easy enough to fix. For (b), I'm currently looking at the
+> > > possibility of not worrying about ->huge_fault() in
+> > > hugepage_vma_check(), and just letting create_huge_pud() /
+> > > create_huge_pmd() check and fallback as necessary. I think we'll need
+> > > the explicit DAX check still, since we want to keep khugepaged and
+> > > MADV_COLLAPSE away, and the presence / absence of ->huge_fault() isn'=
+t
+> > > enough to know that (well.. today it kind of is, but we shouldn't
+> > > depend on it).
+> >
+> > You meant something like:
+> >
+> > if (vma->vm_ops->huge_fault) {
+> >     if (vma_is_dax(vma))
+> >         return in_pf;
+> >
+> >     /Fall through */
+> > }
+>
+> I don't think this will work for Saurabh's case, since IIUC, they
+> aren't using dax, but are using VM_HUGEPAGE|VM_MIXEDMAP, faulted in
+> using ->huge_fault()
+>
+> The old (v5.19) fault path looked like:
+>
+> static inline bool transhuge_vma_enabled(struct vm_area_struct *vma,
+>                                           unsigned long vm_flags)
+> {
+>         /* Explicitly disabled through madvise. */
+>         if ((vm_flags & VM_NOHUGEPAGE) ||
+>             test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+>                 return false;
+>         return true;
+> }
+>
+> /*
+>  * to be used on vmas which are known to support THP.
+>  * Use transparent_hugepage_active otherwise
+>  */
+> static inline bool __transparent_hugepage_enabled(struct vm_area_struct *=
+vma)
+> {
+>
+>         /*
+>          * If the hardware/firmware marked hugepage support disabled.
+>          */
+>         if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_NEVER=
+_DAX))
+>                 return false;
+>
+>         if (!transhuge_vma_enabled(vma, vma->vm_flags))
+>                 return false;
+>
+>         if (vma_is_temporary_stack(vma))
+>                 return false;
+>
+>         if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG)=
+)
+>                 return true;
+>
+>         if (vma_is_dax(vma))
+>                 return true;
+>
+>         if (transparent_hugepage_flags &
+>                                 (1 << TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG)=
+)
+>                 return !!(vma->vm_flags & VM_HUGEPAGE);
+>
+>         return false;
+> }
+>
+> For non-anonymous, the next check (in create_huge_*) would be for that
+> ->huge_fault handler, falling back as necessary if it didn't exist.
 
-Fixes: 064ce6c550a0 ("mm: x86: Invoke hypercall when page encryption status is changed")
-Signed-off-by: Steve Rutherford <srutherford@google.com>
----
- arch/x86/include/asm/mem_encrypt.h |  6 +++---
- arch/x86/kernel/kvm.c              |  4 +---
- arch/x86/mm/mem_encrypt_amd.c      | 13 ++++++-------
- 3 files changed, 10 insertions(+), 13 deletions(-)
+Yeah, you are right. I just replied to your v2 patch.
 
-diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
-index 7f97a8a97e24..473b16d73b47 100644
---- a/arch/x86/include/asm/mem_encrypt.h
-+++ b/arch/x86/include/asm/mem_encrypt.h
-@@ -50,8 +50,8 @@ void __init sme_enable(struct boot_params *bp);
- 
- int __init early_set_memory_decrypted(unsigned long vaddr, unsigned long size);
- int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size);
--void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages,
--					    bool enc);
-+void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr,
-+					    unsigned long size, bool enc);
- 
- void __init mem_encrypt_free_decrypted_mem(void);
- 
-@@ -85,7 +85,7 @@ early_set_memory_decrypted(unsigned long vaddr, unsigned long size) { return 0;
- static inline int __init
- early_set_memory_encrypted(unsigned long vaddr, unsigned long size) { return 0; }
- static inline void __init
--early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc) {}
-+early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool enc) {}
- 
- static inline void mem_encrypt_free_decrypted_mem(void) { }
- 
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index 6a36db4f79fd..b8ab9ee5896c 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -966,10 +966,8 @@ static void __init kvm_init_platform(void)
- 		 * Ensure that _bss_decrypted section is marked as decrypted in the
- 		 * shared pages list.
- 		 */
--		nr_pages = DIV_ROUND_UP(__end_bss_decrypted - __start_bss_decrypted,
--					PAGE_SIZE);
- 		early_set_mem_enc_dec_hypercall((unsigned long)__start_bss_decrypted,
--						nr_pages, 0);
-+						__end_bss_decrypted - __start_bss_decrypted, 0);
- 
- 		/*
- 		 * If not booted using EFI, enable Live migration support.
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index 54bbd5163e8d..6faea41e99b6 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -288,11 +288,10 @@ static bool amd_enc_cache_flush_required(void)
- 	return !cpu_feature_enabled(X86_FEATURE_SME_COHERENT);
- }
- 
--static void enc_dec_hypercall(unsigned long vaddr, int npages, bool enc)
-+static void enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool enc)
- {
- #ifdef CONFIG_PARAVIRT
--	unsigned long sz = npages << PAGE_SHIFT;
--	unsigned long vaddr_end = vaddr + sz;
-+	unsigned long vaddr_end = vaddr + size;
- 
- 	while (vaddr < vaddr_end) {
- 		int psize, pmask, level;
-@@ -342,7 +341,7 @@ static bool amd_enc_status_change_finish(unsigned long vaddr, int npages, bool e
- 		snp_set_memory_private(vaddr, npages);
- 
- 	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
--		enc_dec_hypercall(vaddr, npages, enc);
-+		enc_dec_hypercall(vaddr, npages << PAGE_SHIFT, enc);
- 
- 	return true;
- }
-@@ -466,7 +465,7 @@ static int __init early_set_memory_enc_dec(unsigned long vaddr,
- 
- 	ret = 0;
- 
--	early_set_mem_enc_dec_hypercall(start, PAGE_ALIGN(size) >> PAGE_SHIFT, enc);
-+	early_set_mem_enc_dec_hypercall(start, size, enc);
- out:
- 	__flush_tlb_all();
- 	return ret;
-@@ -482,9 +481,9 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
- 	return early_set_memory_enc_dec(vaddr, size, true);
- }
- 
--void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, int npages, bool enc)
-+void __init early_set_mem_enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool enc)
- {
--	enc_dec_hypercall(vaddr, npages, enc);
-+	enc_dec_hypercall(vaddr, size, enc);
- }
- 
- void __init sme_early_init(void)
--- 
-2.42.0.rc1.204.g551eb34607-goog
+>
+> The patch I sent out last week[1] somewhat restores this logic -- the
+> only difference being we do the check for ->huge_fault in
+> hugepage_vma_check() as well. This is so smaps can surface this
+> possibility with some accuracy. I just realized it will erroneously
+> return "true" for the collapse path, however..
+>
+> Maybe Matthew was right about unifying everything here :P That's 2
+> mistakes I've made in trying to fix this issue (but maybe that's just
+> me).
 
+IMHO, no rush on fixing it.
+
+>
+> [1] https://lore.kernel.org/linux-mm/20230818211533.2523697-1-zokeefe@goo=
+gle.com/
