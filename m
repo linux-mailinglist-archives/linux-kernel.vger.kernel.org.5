@@ -2,133 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E6E782CF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACD1782CFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236199AbjHUPJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57080 "EHLO
+        id S236211AbjHUPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:11:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236194AbjHUPJq (ORCPT
+        with ESMTP id S232052AbjHUPL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:09:46 -0400
+        Mon, 21 Aug 2023 11:11:29 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2FEE2;
-        Mon, 21 Aug 2023 08:09:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F89ABC;
+        Mon, 21 Aug 2023 08:11:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 371A463B46;
-        Mon, 21 Aug 2023 15:09:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9624EC433C8;
-        Mon, 21 Aug 2023 15:09:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CC9163852;
+        Mon, 21 Aug 2023 15:11:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0CE2C433C7;
+        Mon, 21 Aug 2023 15:11:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692630583;
-        bh=FI4K6BFk3RcP+iLGylJ5QutVzletJNgfqF0MXLNwUf0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dCKmpbvy7HJWTMFrBCj2/oKy5v78TCPMMm8WyuM+OEI+vYqq5+RaH3CnWLF7Y+df2
-         Okr8hYkNswmMkxJOH1vIFrT9YnSkvPJk818OI6D6uno1ZVz+PZpRYGoL3S+dQV+yHv
-         nWXIUNBh4HZf28mqMmWviX9yTVPJDCQbxl+YN5Pk/AasnLeNmY/RUsIEzxrq9SIuoJ
-         BR9kDsPsuhDTWQUq6DVp5JPiZC0iHOiuGCHvrNczDwBTEpEe47c9w849ea2lIbyrD9
-         GkeedOeN6HapZAa2Bcdna2Lvakkw3i1BUzBw/ZdEJ6Ec3nWSSnvWcVuhg01AozFdyz
-         dGHAukZZPMMMw==
-Date:   Tue, 22 Aug 2023 00:09:39 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v5 0/9] tracing: Improbe BTF support on probe events
-Message-Id: <20230822000939.81897c0c904934bfb9156a59@kernel.org>
-In-Reply-To: <169137686814.271367.11218568219311636206.stgit@devnote2>
-References: <169137686814.271367.11218568219311636206.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1692630686;
+        bh=UVYQliexQj6Ct6ph9H57DS+cyQIloXYH7JLofz5E6pA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aUI/d1oE+BbQqD2g21LKuKRV1+HsaZYAvrKMEa23Y4v9gPKMAAeY6pViNHNA2zK/Q
+         2cUGKLv3M6QF6DYpHqklCc99BATU5IT0tTV6aXUlfPRkPITkzujvDY4cS/XD7Uw+lH
+         GW2iAxO7VVqg7x8w/N+PUOZ0G1usRFMjEMNs6SjedKnHrxJbce8DfNRkQ3qiBrJG/5
+         PkCba5I8LZFJUpBE1TeVQMEMpZqOBQOELonj9ryBNU61l13XyPugUCoJ4MwR8Z6Ior
+         4immhFbD93ozJrtLivmHQvUiROj1qKyUmllWvQFSp1Ib5AJd8IDU/O1shq7W6C7acz
+         x4NztL8TeZWXQ==
+Received: (nullmailer pid 1642259 invoked by uid 1000);
+        Mon, 21 Aug 2023 15:11:23 -0000
+Date:   Mon, 21 Aug 2023 10:11:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] arm64: dts: qcom: Add the rpmhpd header
+Message-ID: <20230821151123.GA1607676-robh@kernel.org>
+References: <1690781104-2290-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1690781104-2290-4-git-send-email-quic_rohiagar@quicinc.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690781104-2290-4-git-send-email-quic_rohiagar@quicinc.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
+On Mon, Jul 31, 2023 at 10:55:03AM +0530, Rohit Agarwal wrote:
+> Add the rpmhpd header having the definition of the regulator levels
+> for Qualcomm SoCs.
 
-Can you review this series?
-I would like to push this to for-next.
+Why? (Commit msgs should answer that question)
 
-Thank you,
-
-On Mon,  7 Aug 2023 11:54:28 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
-
-> Hi,
 > 
-> Here is the 5th version of series to improve the BTF support on probe events.
-> The previous series is here:
-> 
-> https://lore.kernel.org/all/169078860386.173706.3091034523220945605.stgit@devnote2/
-> 
-> This version introduces kernel/trace/trace_btf.c to separate the btf generic
-> functions. These functions will be moved to btf.c next merge window.
-> This fixes the member-search function to return the bit-offset of the
-> parent anonymous union/structure. Thus the caller can calculate the real
-> bit-offset from the root data structure.
-> This also fixes the ftrace selftest issue which fails if the kernel
-> supports only BTF args but not support field access.
-> 
-> This series can be applied on top of "probes/core" branch of
-> https://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git/
-> 
-> You can also get this series from:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git topic/fprobe-event-ext
-> 
-> Thank you,
-> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 > ---
+>  arch/arm64/boot/dts/qcom/qdu1000.dtsi  | 1 +
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi  | 1 +
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sc8180x.dtsi  | 1 +
+>  arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 1 +
+>  arch/arm64/boot/dts/qcom/sdm670.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sm6350.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sm8150.dtsi   | 1 +
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi   | 1 -
+>  arch/arm64/boot/dts/qcom/sm8350.dtsi   | 1 -
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi   | 1 -
+>  arch/arm64/boot/dts/qcom/sm8550.dtsi   | 1 -
+>  14 files changed, 10 insertions(+), 4 deletions(-)
 > 
-> Masami Hiramatsu (Google) (9):
->       tracing/probes: Support BTF argument on module functions
->       tracing/probes: Move finding func-proto API and getting func-param API to trace_btf
->       tracing/probes: Add a function to search a member of a struct/union
->       tracing/probes: Support BTF based data structure field access
->       tracing/probes: Support BTF field access from $retval
->       tracing/probes: Add string type check with BTF
->       tracing/fprobe-event: Assume fprobe is a return event by $retval
->       selftests/ftrace: Add BTF fields access testcases
->       Documentation: tracing: Update fprobe event example with BTF field
-> 
-> 
->  Documentation/trace/fprobetrace.rst                |   64 ++-
->  include/linux/btf.h                                |    1 
->  kernel/bpf/btf.c                                   |    2 
->  kernel/trace/Makefile                              |    1 
->  kernel/trace/trace.c                               |    3 
->  kernel/trace/trace_btf.c                           |  109 ++++
->  kernel/trace/trace_btf.h                           |   11 
->  kernel/trace/trace_eprobe.c                        |    4 
->  kernel/trace/trace_fprobe.c                        |   59 ++
->  kernel/trace/trace_kprobe.c                        |    1 
->  kernel/trace/trace_probe.c                         |  499 +++++++++++++++-----
->  kernel/trace/trace_probe.h                         |   27 +
->  kernel/trace/trace_uprobe.c                        |    1 
->  .../ftrace/test.d/dynevent/add_remove_btfarg.tc    |   20 +
->  .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |   10 
->  15 files changed, 637 insertions(+), 175 deletions(-)
->  create mode 100644 kernel/trace/trace_btf.c
->  create mode 100644 kernel/trace/trace_btf.h
-> 
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> diff --git a/arch/arm64/boot/dts/qcom/qdu1000.dtsi b/arch/arm64/boot/dts/qcom/qdu1000.dtsi
+> index 1c0e5d2..2210447 100644
+> --- a/arch/arm64/boot/dts/qcom/qdu1000.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/qdu1000.dtsi
+> @@ -9,6 +9,7 @@
+>  #include <dt-bindings/interconnect/qcom,qdu1000-rpmh.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  
+>  / {
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index b130136..a17dffdb 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -11,6 +11,7 @@
+>  #include <dt-bindings/interconnect/qcom,sa8775p-rpmh.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  
+>  / {
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index e25dc2b..ed77e04 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -16,6 +16,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/phy/phy-qcom-qusb2.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index a0e8db8..e35a73e 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -19,6 +19,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sc8180x.dtsi b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> index d3ae185..8482437 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8180x.dtsi
+> @@ -12,6 +12,7 @@
+>  #include <dt-bindings/interconnect/qcom,sc8180x.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/thermal/thermal.h>
+>  
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> index ac0596d..a579716 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+> @@ -15,6 +15,7 @@
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/phy/phy-qcom-qmp.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,gpr.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/sound/qcom,q6afe.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sdm670.dtsi b/arch/arm64/boot/dts/qcom/sdm670.dtsi
+> index a1c207c..898831c 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm670.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm670.dtsi
+> @@ -14,6 +14,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/phy/phy-qcom-qusb2.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  
+>  / {
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index 02a6ea0..0156460 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -20,6 +20,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/phy/phy-qcom-qusb2.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+>  #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+>  #include <dt-bindings/soc/qcom,apr.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> index 30e7701..46b3ea5 100644
+> --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> @@ -16,6 +16,7 @@
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/phy/phy-qcom-qmp.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  
+>  / {
+> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> index 18c822a..dc75d28 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+> @@ -7,6 +7,7 @@
+>  #include <dt-bindings/dma/qcom-gpi.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> +#include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+>  #include <dt-bindings/clock/qcom,dispcc-sm8150.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 22bf99c..fe04d25 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -15,7 +15,6 @@
+>  #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>  #include <dt-bindings/interconnect/qcom,sm8250.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+> -#include <dt-bindings/power/qcom-rpmpd.h>
 
+Doesn't match the patch description. 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,apr.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8350.dtsi b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> index edc072e..07779c6 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8350.dtsi
+> @@ -14,7 +14,6 @@
+>  #include <dt-bindings/interconnect/qcom,sm8350.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/phy/phy-qcom-qmp.h>
+> -#include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+>  #include <dt-bindings/thermal/thermal.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 6bd6a6c..3f86b2c 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -13,7 +13,6 @@
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+>  #include <dt-bindings/phy/phy-qcom-qmp.h>
+> -#include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/interconnect/qcom,sm8450.h>
+>  #include <dt-bindings/soc/qcom,gpr.h>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 59bd1c7..c316ba8 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -14,7 +14,6 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/interconnect/qcom,sm8550-rpmh.h>
+>  #include <dt-bindings/mailbox/qcom-ipcc.h>
+> -#include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/soc/qcom,gpr.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+> -- 
+> 2.7.4
+> 
