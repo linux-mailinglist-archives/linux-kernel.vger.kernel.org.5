@@ -2,491 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C151A782F3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E5C782F48
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237035AbjHURN3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 13:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        id S236165AbjHURRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbjHURN2 (ORCPT
+        with ESMTP id S234823AbjHURRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:13:28 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9C5113;
-        Mon, 21 Aug 2023 10:13:04 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56e280cc606so504508eaf.1;
-        Mon, 21 Aug 2023 10:13:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692637983; x=1693242783;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XlnPSJHhkBXVNpPjVaRUHf+giLiXCwdP3rlNy/7aC0Y=;
-        b=OtlaSz8y5tv5SdJ+ny8iXuylaw8F/Xj0GLhx3S36y9sQ0IzUWRCI/e3IZlR0zNiUBM
-         TJV/klYXgfn9NKFfcBjfSa+Yn53fo5kDXhwpKIeBHJS3CKSKmjq4mU66g+sBxS5Daz98
-         xNNvRF7bt7+ilUHSnbVjU1WwNsXbXoLVXmU85M71fNvxHIWogFR0Kn4eIYeuipAS5nlu
-         Lx0mo/S57rpq32fIi8VYjnmCXuu/AWnteAdYNeFd/VvBTF4f+4M2n3AxCD+RYmemFEzT
-         fATosprbp0agnv88ixgVgH7+meHn9bS+T69gWnLZfQ9a71emlBeRfBCIKpb1GkOs5lSU
-         VruA==
-X-Gm-Message-State: AOJu0Yz/esbG+BMsx1c1IChK+cAtx8g1FlOeTjKiN9IeO2I3fvzJuXPL
-        8QgJXHaM5ZJlk2FwL2gHlLVoUdCF7PHHATXRx+g=
-X-Google-Smtp-Source: AGHT+IH/bN0yriWqMcZUFRw307hjYWDbxCwfVM6kJe0hedemvwdStnc1gf5EmRl0c87mzWEAyYIy3VcXREfvRfYdIDc=
-X-Received: by 2002:a4a:bc82:0:b0:569:a08a:d9c5 with SMTP id
- m2-20020a4abc82000000b00569a08ad9c5mr6195383oop.0.1692637983505; Mon, 21 Aug
- 2023 10:13:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230810234856.2580143-1-avadhut.naik@amd.com>
- <a0ab4d07-fb73-418b-b88d-c3ad6aa4cf49@intel.com> <655c916e-356c-03e3-6c67-aa40886dd5e2@amd.com>
- <CAJZ5v0j0R1GK=0z+LJd_PSh4zDv9Ydw2YA7HWm1R5wjCUsbbYQ@mail.gmail.com> <1c579c96-5010-4e5b-aa27-afb4f4f6746a@amd.com>
-In-Reply-To: <1c579c96-5010-4e5b-aa27-afb4f4f6746a@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Aug 2023 19:12:47 +0200
-Message-ID: <CAJZ5v0iPRCJLH5bkKyhjUq_tmjmR6R73fhUm3JnKptcm1cn9fQ@mail.gmail.com>
+        Mon, 21 Aug 2023 13:17:54 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467FDF7;
+        Mon, 21 Aug 2023 10:17:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=avp+33UCqsTeRDnQbHOVdRECCS7uyZd7N2dWyD1kx71oRxQpU5MeIUOaEXlzyzuiUh7sCXjVAkfZ9fmYUf3FY2bSdocyfMBtBJPi6wFzCv21nJzGEVZqAe7vG8HOXu6YPwdScxx5+gjKu4cUuswRWlvUXBpubSn4GgZcuG5fyjrXfu5ephDywTP1pF1vnYv3wxGo75nMVOvlbpRVZrifdcJIdnvxTmjr8Ul5hDKiMyNpFxxFoKCy6RcnsOu7X7qkYZSa6veC4EElJxDSLhrhAbZ3og4et+FKzx9UaYk+QrsYD7TWwCAYlGsX+VND0dD+JdihuPc2smgnMh9sqXi3mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ObvFWugpHVKBJ/a0vAEZ7qKggkQVrCiHfDoqucFxOJU=;
+ b=CRVKAI0oaLkwnH053dhKW2/c0tVNte2mlTRUOz/isM0Ld0/9AOJ4z1OGIjOPWMp1ROlL9aG8ckAtm71qaSOTaN6h4rnJTMiRtDSr1VEiEwqZv/wIrs5aM/STW1xifEcVoJlreNprzg2l7+m1NC2koCKiOifBmzbdkX7i+n8p4uxmnAn2PJV5juuHQ0XalEJ+nUnTHQkiHm8+mel33yuucFAoD+MZ0qIGoPMzCcJDJTCY8/Uo1KmA/KoQyvNR+1dVoOXlp4qf5a/+eYeXrpp9w+gthjxDNp6n+6vOxUMxV5X7hWGag87Iv4sD3GjYkEKdzmPEF5VWudqHAXImWRfIuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ObvFWugpHVKBJ/a0vAEZ7qKggkQVrCiHfDoqucFxOJU=;
+ b=qlKUvhaxY4bF9f3CP0RDEdFJXUgjSb7Z8peol+VHEPpebXRtfEkdduFD4Le/Qf9pb7Kz0R/QVFvyq01dAtpVkkLhyLxrVmcKYJvR8fN0cm/t4l6F7Z3Vg2fTozwZKhg0atWXlQaBvQdUyF7ipIQRlH8RjA66xk2rL5UXL6GYeKA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SN7PR12MB7180.namprd12.prod.outlook.com (2603:10b6:806:2a8::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
+ 2023 17:17:49 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
+ 17:17:49 +0000
+Message-ID: <6bc15195-aa26-4e29-b625-74fca84f7a6f@amd.com>
+Date:   Mon, 21 Aug 2023 12:17:46 -0500
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] ACPI: PHAT: Add Platform Health Assessment Table support
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Avadhut Naik <avadnaik@amd.com>,
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Avadhut Naik <avadnaik@amd.com>,
         "Wilczynski, Michal" <michal.wilczynski@intel.com>,
         Avadhut Naik <avadhut.naik@amd.com>, lenb@kernel.org,
         linux-acpi@vger.kernel.org, yazen.ghannam@amd.com,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230810234856.2580143-1-avadhut.naik@amd.com>
+ <a0ab4d07-fb73-418b-b88d-c3ad6aa4cf49@intel.com>
+ <655c916e-356c-03e3-6c67-aa40886dd5e2@amd.com>
+ <CAJZ5v0j0R1GK=0z+LJd_PSh4zDv9Ydw2YA7HWm1R5wjCUsbbYQ@mail.gmail.com>
+ <1c579c96-5010-4e5b-aa27-afb4f4f6746a@amd.com>
+ <CAJZ5v0iPRCJLH5bkKyhjUq_tmjmR6R73fhUm3JnKptcm1cn9fQ@mail.gmail.com>
+From:   "Limonciello, Mario" <mario.limonciello@amd.com>
+In-Reply-To: <CAJZ5v0iPRCJLH5bkKyhjUq_tmjmR6R73fhUm3JnKptcm1cn9fQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR11CA0044.namprd11.prod.outlook.com
+ (2603:10b6:5:14c::21) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SN7PR12MB7180:EE_
+X-MS-Office365-Filtering-Correlation-Id: c2d5475e-2dee-4e72-b11f-08dba26a8b62
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: prO2MmFwlaHO0Ql+h+XrjDgdv2CJVG6DTZrgivWM7G6aEKZ5ANVyhzYiSFBK/z4KK0bcGG/+yvzm9EG8rICBsnpZ79ujGY+rwbkAEvpiGs1Ibb4ols+CSkY7HuE0yA6MGTvypoxJd62lvAs960ndbHqkKDZu36HLSmgRBzJdXWNjcycu75sBTta4jKa/wfiZWLVI9OoTY4xk8xFcs5gQMRz/CIvyz0RCMIxvxYGOWGv21JxP0Ckl6ueyxWfOoQtZQ8akHJZskA8LpQqE9qZukEGVERp0dQwS9qlzgNl8WU//mJJaiDEX1aWIrCelUFRSxA3kggtWFVau1owmBbmUIQyPRt8RXyvwtNJfLCV8Cm3EwG5+F0i7iwPOxpj01eMGu6cs8vY9DLCDfFML9u55x8nORIGJJQhyYFKQ/YeKMAEKvxfUrqLHUVa+30DOpE1BepUW9YVuWqDzk029jmIyx1C/aO1Q1zseJwEUw87u4ME32C0xN7SBc0U4ja1fVyWrXBju4cSjDQ9O8NoupwGpgATsZABVAStSS3hRAeBAowGuE/m/KhvtiTiYQAENA5hn4y2vsMg+bWbHZtR0/x86DlJDzkUWSk4k9+Lxh6y2AAkeRn3o8mVMZ8oPdXgVxDVrg0PW0wmcDmsKl+1lEHH0XA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(54906003)(6916009)(66476007)(66556008)(316002)(66946007)(6512007)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(86362001)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b3lYMkJ6QjgwemhzczNjTURqSXNDZllvVjZEVklpMWs4TTljajJmZEprVnQ3?=
+ =?utf-8?B?TlF4SUkwbmNza29wRFA5WjZ3Z0pmS2luZzZQSGNUSm8vKzJ0Zm9uR0tiUnhY?=
+ =?utf-8?B?d0RPM1FwY2VDclVMTzJTbmZ2M3JwNjR4S1c2QzVzVGhZVVhadmR1dW1XTWNk?=
+ =?utf-8?B?VUtYL0JIYWxVS2thcFhROGplZXZYbkhVQTQ4a2VUc0hpQ3N6TldNdEw2bXNm?=
+ =?utf-8?B?djhyMEoxdGIxd0RjZUR5ODR1eHhKOXZ6UlNwZVdLSWZIYkJZMDR2Rm5mQzkz?=
+ =?utf-8?B?VVNkV1JWd3Y5cjZSRmc2ZmRsdE5ObUI0b09TY2grS0xJdVZ4MVV4dC8zSmdj?=
+ =?utf-8?B?TS9JNkNFZWdwM0xUYzh4NlNVUjBhM1liT1dQbUFBWGlPVkhvVHIxd1pXNVF2?=
+ =?utf-8?B?Z3B0OXhvRzJTOEhNRUJkNlo1UE41TjU2UXRaWCtMcm5Call2TjI5L2pCTGRi?=
+ =?utf-8?B?cE1jaVgvRkkrKzZFNlFLUzNtd2E5STdxcm8zRGJFai9qOHJtUGZJUTlIVDZR?=
+ =?utf-8?B?WE9UUWJjb05yQjU3TVdoY0oydjl2RlN1ME91N1NRY2c3emhpZllUdkVNVGJp?=
+ =?utf-8?B?ZzkyWEhGNzYxdUFRWXpCdk1kemhLK1BtUFprVGMwUnRXMHpPNFpvSSt0VjI1?=
+ =?utf-8?B?NkxhVkpnYzdTazN4ZHFlVWZvVmNvYjloMmlhNkUvL2RDZ3plNVB5T3o1cDM1?=
+ =?utf-8?B?UkVPV0FwWWVFVHhzL2J5V1FlVkRhelRJcEczYjFrQVMrSkdwRkFIR09CemdD?=
+ =?utf-8?B?YWFQRmkrSkx3RFBEaDIyUnNFdlVlRnpJelNtenJ6ZGN1cDFETGprNWF4aTA1?=
+ =?utf-8?B?ZW9zY1pzZ1dTUXhNbFJlNXRkUk4vemRZdk01UkMxZ3h5eEI1emhlbTFORis4?=
+ =?utf-8?B?NFNQVjNVK0o1WVAxY1JQYmJ2LzU0UGlKTkxTc1Z1cEZGeDNCYS84c0ltQ3hS?=
+ =?utf-8?B?MkpqYXd0RE0wRG5sV2tHeGpwUUpSL2Y4eGlOUCtVVWpNWm9MMnl5NERQQy9I?=
+ =?utf-8?B?bEhSWWo1L3Z0NHZYNFFOVzVpRjZCM1ZWTWprbkR2NDgzVDBvWlZXK3NEMXpY?=
+ =?utf-8?B?ZWk1cldQZ0lhaDNtRjJpaWxPSy96QkpqZVRUOGlIMVlJR3VFUTJmM2s0RTFH?=
+ =?utf-8?B?Szh3OEExdmdaeHI2cGt3M1FUVGgxTG9YTDFzenB5YXBvVnRSS1YwRzVlalhO?=
+ =?utf-8?B?YUhuVFk4L0dTVS8xMXVVdFBRNXhpVkNydEhadXpzVW1KZWJsMmM2dFgwTGwz?=
+ =?utf-8?B?N21WQyt0SURJWjNSbWFQU1ZIMzh0R0h4NU0rTkQwRUFyVkxKNUF1RTgrb0g1?=
+ =?utf-8?B?Y3J0Y01Wd1QxZmxRZGpKQWs2OU9iNzI4OHVYbGJkYVp2aGhsSE93Ukg4U25D?=
+ =?utf-8?B?RWRvcTFIdWs2cUc3dEdCeVNmMktFOXNBNXJ4cXY0TnU1dm1vVTFsUWdTOGdI?=
+ =?utf-8?B?dUF4OE5XbHFYeDAvUTkvSmJlemkxakh3K3VwRm1HcXpYMVdMUjljeFdPMnFa?=
+ =?utf-8?B?U0JpVmZlRWwrK1BpZVpMN2NJQjY0QjNHMzJFVGVmbVpPTTRoeXYwWmdRVjlT?=
+ =?utf-8?B?MlhPOHdPM29LMFVnd2hWVXRsUFVXR0pIRmJpRTIwNzNMcU1sdnF1SklQWUhu?=
+ =?utf-8?B?OEdnOXhQbUR0L2trUHRCR1diL1ZUeHE0NWlZWjBhWWhhR3Y2d1VxemE2TTk0?=
+ =?utf-8?B?Tnk5czRXeEFPb2dDZjdNZTB1WDRCbWUxa3FYOFVzazNlZm1YRmZORURReFVr?=
+ =?utf-8?B?KzhDVTIycHV3bmtzYUg2eCtQR01Wbk44OTFsVkFsMFZPbG9NdFhNU0s4eE9I?=
+ =?utf-8?B?alF2c1RDQVRibkZ1eWxuQkViRFpmRkVLTWFKaUdKMjdIN0pVQnhGenFadlFq?=
+ =?utf-8?B?d3RjNlZZQzIzT1FEMGJYbjVSeFVtYkpqZkFQYnJNT2QxVUhoMnJIckE2bUJ1?=
+ =?utf-8?B?WS9YRXNkNEZ4TmVGR2U1NURyMERKWERMdjVyLzY5eXpiRGFHK3lmQ3VqbXdi?=
+ =?utf-8?B?dEFTbVFSbWxXTlg0V2trR0tQV0JaMm9HVzNOOTFEM2hkOHVQWktneHN4aEhj?=
+ =?utf-8?B?MG9wVzVzV2U0d1o3elRPZmwxdStueHNiczNaVGJGdi9haVhjd2VwVjVpSDhw?=
+ =?utf-8?Q?uM0OFRRiC32X00XtmSt51FjGl?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2d5475e-2dee-4e72-b11f-08dba26a8b62
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 17:17:49.3321
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SLifyCILDQ4FXKHVNXhOiTdTgzatvcPxcpthzO4wjfqH1KmtnoPEI4jLnpcREzzssPAK9kEuDl4yBnIv+pXCpg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7180
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 7:06 PM Limonciello, Mario
-<mario.limonciello@amd.com> wrote:
->
->
->
-> On 8/18/2023 2:49 AM, Rafael J. Wysocki wrote:
-> > On Thu, Aug 17, 2023 at 10:43 PM Avadhut Naik <avadnaik@amd.com> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On 8/16/2023 06:35, Wilczynski, Michal wrote:
-> >>> Hi,
-> >>>
-> >>> On 8/11/2023 1:48 AM, Avadhut Naik wrote:
-> >>>> ACPI Platform Health Assessment Table (PHAT) enables a platform to expose
-> >>>> an extensible set of platform health related telemetry. The telemetry is
-> >>>> exposed through Firmware Version and Firmware Health Data Records which
-> >>>> provide version data and health-related information of their associated
-> >>>> components respectively.
-> >>>>
-> >>>> Additionally, the platform also provides Reset Reason Health Record in
-> >>>> the PHAT table highlighting the cause of last system reset or boot in case
-> >>>> of both expected and unexpected events. Vendor-specific data capturing the
-> >>>> underlying state of the system during reset can also be optionally provided
-> >>>> through the record.[1]
-> >>>>
-> >>>> Add support to parse the PHAT table during system bootup and have its
-> >>>> information logged into the dmesg buffer.
-> >>>>
-> >>>> [1] ACPI specification 6.5, section 5.2.31.5
-> >>>>
-> >>>> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
-> >>>> ---
-> >>>>   .../admin-guide/kernel-parameters.txt         |   4 +
-> >>>>   drivers/acpi/Kconfig                          |   9 +
-> >>>>   drivers/acpi/Makefile                         |   1 +
-> >>>>   drivers/acpi/phat.c                           | 270 ++++++++++++++++++
-> >>>>   include/acpi/actbl2.h                         |  18 ++
-> >>>>   5 files changed, 302 insertions(+)
-> >>>>   create mode 100644 drivers/acpi/phat.c
-> >>>>
-> >>>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> >>>> index 722b6eca2e93..33b932302ece 100644
-> >>>> --- a/Documentation/admin-guide/kernel-parameters.txt
-> >>>> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> >>>> @@ -4490,6 +4490,10 @@
-> >>>>                       allocator.  This parameter is primarily for debugging
-> >>>>                       and performance comparison.
-> >>>>
-> >>>> +    phat_disable=   [ACPI]
-> >>>> +                    Disable PHAT table parsing and logging of Firmware
-> >>>> +                    Version and Health Data records.
-> >>>> +
-> >>>>       pirq=           [SMP,APIC] Manual mp-table setup
-> >>>>                       See Documentation/arch/x86/i386/IO-APIC.rst.
-> >>>>
-> >>>> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> >>>> index 00dd309b6682..06a7dd6e5a40 100644
-> >>>> --- a/drivers/acpi/Kconfig
-> >>>> +++ b/drivers/acpi/Kconfig
-> >>>> @@ -96,6 +96,15 @@ config ACPI_FPDT
-> >>>>         This table provides information on the timing of the system
-> >>>>         boot, S3 suspend and S3 resume firmware code paths.
-> >>>>
-> >>>> +config ACPI_PHAT
-> >>>> +    bool "ACPI Platform Health Assessment Table (PHAT) support"
-> >>>> +    depends on X86_64 || ARM64
-> >>>> +    help
-> >>>> +      Enable support for Platform Health Assessment Table (PHAT).
-> >>>> +      This table exposes an extensible set of platform health
-> >>>> +      related telemetry through Firmware Version and Firmware Health
-> >>>> +      Data Records.
-> >>>> +
-> >>>>   config ACPI_LPIT
-> >>>>       bool
-> >>>>       depends on X86_64
-> >>>> diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-> >>>> index 3fc5a0d54f6e..93a4ec57ba6d 100644
-> >>>> --- a/drivers/acpi/Makefile
-> >>>> +++ b/drivers/acpi/Makefile
-> >>>> @@ -69,6 +69,7 @@ acpi-$(CONFIG_ACPI_WATCHDOG)       += acpi_watchdog.o
-> >>>>   acpi-$(CONFIG_ACPI_PRMT)    += prmt.o
-> >>>>   acpi-$(CONFIG_ACPI_PCC)             += acpi_pcc.o
-> >>>>   acpi-$(CONFIG_ACPI_FFH)             += acpi_ffh.o
-> >>>> +acpi-$(CONFIG_ACPI_PHAT)    += phat.o
-> >>>>
-> >>>>   # Address translation
-> >>>>   acpi-$(CONFIG_ACPI_ADXL)    += acpi_adxl.o
-> >>>> diff --git a/drivers/acpi/phat.c b/drivers/acpi/phat.c
-> >>>> new file mode 100644
-> >>>> index 000000000000..6006dd7615fa
-> >>>> --- /dev/null
-> >>>> +++ b/drivers/acpi/phat.c
-> >>>> @@ -0,0 +1,270 @@
-> >>>> +// SPDX-License-Identifier: GPL-2.0
-> >>>> +/*
-> >>>> + * Platform Health Assessment Table (PHAT) support
-> >>>> + *
-> >>>> + * Copyright (C) 2023 Advanced Micro Devices, Inc.
-> >>>> + *
-> >>>> + * Author: Avadhut Naik <avadhut.naik@amd.com>
-> >>>> + *
-> >>>> + * This file implements parsing of the Platform Health Assessment Table
-> >>>> + * through which a platform can expose an extensible set of platform
-> >>>> + * health related telemetry. The telemetry is exposed through Firmware
-> >>>> + * Version Data Records and Firmware Health Data Records. Additionally,
-> >>>> + * a platform, through system firmware, also exposes Reset Reason Health
-> >>>> + * Record to inform the operating system of the cause of last system
-> >>>> + * reset or boot.
-> >>>> + *
-> >>>> + * For more information on PHAT, please refer to ACPI specification
-> >>>> + * version 6.5, section 5.2.31
-> >>>> + */
-> >>>> +
-> >>>> +#include <linux/acpi.h>
-> >>>> +
-> >>>> +static int phat_disable __initdata;
-> >>>> +static const char *prefix = "ACPI PHAT: ";
-> >>>
-> >>> Wouldn't it be better if you used pr_fmt macro instead ?
-> >>>
-> >>          Have explained below.
-> >>>> +
-> >>>> +/* Reset Reason Health Record GUID */
-> >>>> +static const guid_t reset_guid =
-> >>>> +    GUID_INIT(0x7a014ce2, 0xf263, 0x4b77,
-> >>>> +              0xb8, 0x8a, 0xe6, 0x33, 0x6b, 0x78, 0x2c, 0x14);
-> >>>> +
-> >>>> +static struct { u8 mask; const char *str; } const reset_sources[] = {
-> >>>> +    {BIT(0), "Unknown source"},
-> >>>> +    {BIT(1), "Hardware Source"},
-> >>>> +    {BIT(2), "Firmware Source"},
-> >>>> +    {BIT(3), "Software initiated reset"},
-> >>>> +    {BIT(4), "Supervisor initiated reset"},
-> >>>> +};
-> >>>> +
-> >>>> +static struct { u8 val; const char *str; } const reset_reasons[] = {
-> >>>> +    {0, "UNKNOWN"},
-> >>>> +    {1, "COLD BOOT"},
-> >>>> +    {2, "COLD RESET"},
-> >>>> +    {3, "WARM RESET"},
-> >>>> +    {4, "UPDATE"},
-> >>>> +    {32, "UNEXPECTED RESET"},
-> >>>> +    {33, "FAULT"},
-> >>>> +    {34, "TIMEOUT"},
-> >>>> +    {35, "THERMAL"},
-> >>>> +    {36, "POWER LOSS"},
-> >>>> +    {37, "POWER BUTTON"},
-> >>>> +};
-> >>>> +
-> >>>> +/*
-> >>>> + * Print the last PHAT Version Element associated with a Firmware
-> >>>> + * Version Data Record.
-> >>>> + * Firmware Version Data Record consists of an array of PHAT Version
-> >>>> + * Elements with each entry in the array representing a modification
-> >>>> + * undertaken on a given platform component.
-> >>>> + * In the event the array has multiple entries, minimize logs on the
-> >>>> + * console and print only the last version element since it denotes
-> >>>> + * the currently running instance of the component.
-> >>>> + */
-> >>>> +static int phat_version_data_parse(const char *pfx,
-> >>>> +                               struct acpi_phat_version_data *version)
-> >>>> +{
-> >>>> +    char newpfx[64];
-> >>>> +    u32 num_elems = version->element_count - 1;
-> >>>> +    struct acpi_phat_version_element *element;
-> >>>> +    int offset = sizeof(struct acpi_phat_version_data);
-> >>>> +
-> >>>> +    if (!version->element_count) {
-> >>>> +            pr_info("%sNo PHAT Version Elements found.\n", prefix);
-> >>>> +            return 0;
-> >>>> +    }
-> >>>> +
-> >>>> +    offset += num_elems * sizeof(struct acpi_phat_version_element);
-> >>>> +    element = (void *)version + offset;
-> >>>> +
-> >>>> +    pr_info("%sPHAT Version Element:\n", pfx);
-> >>>> +    snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> >>>> +    pr_info("%sComponent ID: %pUl\n", newpfx, element->guid);
-> >>>> +    pr_info("%sVersion: 0x%llx\n", newpfx, element->version_value);
-> >>>> +    snprintf(newpfx, sizeof(newpfx), KERN_INFO "%s ", pfx);
-> >>>> +    print_hex_dump(newpfx, "Producer ID: ", DUMP_PREFIX_NONE, 16, 4,
-> >>>> +                   &element->producer_id, sizeof(element->producer_id), true);
-> >>>
-> >>> I do have to admit that all this dancing with pfx and newpfx confuses me. Couldn't you
-> >>> just use pr_fmt for everything printed using pr_* family of functions ? print_hex_dump()
-> >>> is not impacted by pr_fmt, as it just uses printk to do it's printing.
-> >>>
-> >> I had considered using pr_fmt initially but since the ACPI spec says that PHAT health records,
-> >> especially reset reason health record is intended to complement existing fault reporting
-> >> mechanisms like BERT Tables, CPER, decided to have their outputs in identical formats, like has
-> >> been implemented in cper_estatus_print().
-> >>
-> >>>> +
-> >>>> +    return 0;
-> >>>> +}
-> >>>> +
-> >>>> +/*
-> >>>> + * Print the Reset Reason Health Record
-> >>>> + */
-> >>>> +static int phat_reset_reason_parse(const char *pfx,
-> >>>> +                               struct acpi_phat_health_data *record)
-> >>>> +{
-> >>>> +    int idx;
-> >>>> +    void *data;
-> >>>> +    u32 data_len;
-> >>>> +    char newpfx[64];
-> >>>> +    struct acpi_phat_reset_reason *rr;
-> >>>> +    struct acpi_phat_vendor_reset_data *vdata;
-> >>>> +
-> >>>> +    rr = (void *)record + record->device_specific_offset;
-> >>>> +
-> >>>> +    for (idx = 0; idx < ARRAY_SIZE(reset_sources); idx++) {
-> >>>> +            if (!rr->reset_source) {
-> >>>> +                    pr_info("%sUnknown Reset Source.\n", pfx);
-> >>>> +                    break;
-> >>>> +            }
-> >>>> +            if (rr->reset_source & reset_sources[idx].mask) {
-> >>>> +                    pr_info("%sReset Source: 0x%x\t%s\n", pfx, reset_sources[idx].mask,
-> >>>> +                            reset_sources[idx].str);
-> >>>> +                    /* According to ACPI v6.5 Table 5.168, Sub-Source is
-> >>>> +                     * defined only for Software initiated reset.
-> >>>> +                     */
-> >>>> +                    if (idx == 0x3 && rr->reset_sub_source)
-> >>>> +                            pr_info("%sReset Sub-Source: %s\n", pfx,
-> >>>> +                                    rr->reset_sub_source == 0x1 ?
-> >>>> +                                    "Operating System" : "Hypervisor");
-> >>>> +                    break;
-> >>>> +            }
-> >>>> +    }
-> >>>> +
-> >>>> +    for (idx = 0; idx < ARRAY_SIZE(reset_reasons); idx++) {
-> >>>> +            if (rr->reset_reason == reset_reasons[idx].val) {
-> >>>> +                    pr_info("%sReset Reason: 0x%x\t%s\n", pfx, reset_reasons[idx].val,
-> >>>> +                            reset_reasons[idx].str);
-> >>>> +                    break;
-> >>>> +            }
-> >>>> +    }
-> >>>> +
-> >>>> +    if (!rr->vendor_count)
-> >>>> +            return 0;
-> >>>> +
-> >>>> +    pr_info("%sReset Reason Vendor Data:\n", pfx);
-> >>>> +    vdata = (void *)rr + sizeof(*rr);
-> >>>> +
-> >>>> +    for (idx = 0; idx < rr->vendor_count; idx++) {
-> >>>> +            snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> >>>> +            data_len = vdata->length - sizeof(*vdata);
-> >>>> +            data = (void *)vdata + sizeof(*vdata);
-> >>>> +            pr_info("%sVendor Data ID: %pUl\n", newpfx, vdata->vendor_id);
-> >>>> +            pr_info("%sRevision: 0x%x\n", newpfx, vdata->revision);
-> >>>> +            snprintf(newpfx, sizeof(newpfx), KERN_INFO "%s ", pfx);
-> >>>> +            print_hex_dump(newpfx, "Data: ", DUMP_PREFIX_NONE, 16, 4,
-> >>>> +                           data, data_len, false);
-> >>>> +            vdata = (void *)vdata + vdata->length;
-> >>>> +    }
-> >>>> +
-> >>>> +    return 0;
-> >>>> +}
-> >>>> +
-> >>>> +/*
-> >>>> + * Print the Firmware Health Data Record.
-> >>>> + */
-> >>>> +static int phat_health_data_parse(const char *pfx,
-> >>>> +                              struct acpi_phat_health_data *record)
-> >>>> +{
-> >>>> +    void *data;
-> >>>> +    u32 data_len;
-> >>>> +    char newpfx[64];
-> >>>> +
-> >>>> +    pr_info("%sHealth Records.\n", pfx);
-> >>>> +    snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> >>>> +    pr_info("%sDevice Signature: %pUl\n", newpfx, record->device_guid);
-> >>>> +
-> >>>> +    switch (record->health) {
-> >>>> +    case ACPI_PHAT_ERRORS_FOUND:
-> >>>> +            pr_info("%sAmHealthy: Errors found\n", newpfx);
-> >>>> +            break;
-> >>>> +    case ACPI_PHAT_NO_ERRORS:
-> >>>> +            pr_info("%sAmHealthy: No errors found.\n", newpfx);
-> >>>> +            break;
-> >>>> +    case ACPI_PHAT_UNKNOWN_ERRORS:
-> >>>> +            pr_info("%sAmHealthy: Unknown.\n", newpfx);
-> >>>> +            break;
-> >>>> +    case ACPI_PHAT_ADVISORY:
-> >>>> +            pr_info("%sAmHealthy: Advisory – additional device-specific data exposed.\n",
-> >>>> +                    newpfx);
-> >>>> +            break;
-> >>>> +    default:
-> >>>> +            break;
-> >>>> +    }
-> >>>> +
-> >>>> +    if (!record->device_specific_offset)
-> >>>> +            return 0;
-> >>>> +
-> >>>> +    /* Reset Reason Health Record has a unique GUID and is created as
-> >>>> +     * a Health Record in the PHAT table. Check if this Health Record
-> >>>> +     * is a Reset Reason Health Record.
-> >>>> +     */
-> >>>> +    if (guid_equal((guid_t *)record->device_guid, &reset_guid)) {
-> >>>> +            phat_reset_reason_parse(newpfx, record);
-> >>>> +            return 0;
-> >>>> +    }
-> >>>> +
-> >>>> +    data = (void *)record + record->device_specific_offset;
-> >>>> +    data_len = record->header.length - record->device_specific_offset;
-> >>>> +    snprintf(newpfx, sizeof(newpfx), KERN_INFO "%s ", pfx);
-> >>>> +    print_hex_dump(newpfx, "Device Data: ", DUMP_PREFIX_NONE, 16, 4,
-> >>>> +                   data, data_len, false);
-> >>>> +
-> >>>> +    return 0;
-> >>>> +}
-> >>>> +
-> >>>> +static int parse_phat_table(const char *pfx, struct acpi_table_phat *phat_tab)
-> >>>> +{
-> >>>> +    char newpfx[64];
-> >>>> +    u32 offset = sizeof(*phat_tab);
-> >>>> +    struct acpi_phat_header *phat_header;
-> >>>> +
-> >>>> +    snprintf(newpfx, sizeof(newpfx), "%s ", pfx);
-> >>>> +
-> >>>> +    while (offset < phat_tab->header.length) {
-> >>>> +            phat_header = (void *)phat_tab + offset;
-> >>>> +            switch (phat_header->type) {
-> >>>> +            case ACPI_PHAT_TYPE_FW_VERSION_DATA:
-> >>>> +                    phat_version_data_parse(newpfx, (struct acpi_phat_version_data *)
-> >>>> +                        phat_header);
-> >>>> +                    break;
-> >>>> +            case ACPI_PHAT_TYPE_FW_HEALTH_DATA:
-> >>>> +                    phat_health_data_parse(newpfx, (struct acpi_phat_health_data *)
-> >>>> +                        phat_header);
-> >>>> +                    break;
-> >>>> +            default:
-> >>>> +                    break;
-> >>>> +            }
-> >>>> +            offset += phat_header->length;
-> >>>> +    }
-> >>>> +    return 0;
-> >>>> +}
-> >>>> +
-> >>>> +static int __init setup_phat_disable(char *str)
-> >>>> +{
-> >>>> +    phat_disable = 1;
-> >>>> +    return 1;
-> >>>> +}
-> >>>> +__setup("phat_disable", setup_phat_disable);
-> >>>> +
-> >>>> +static int __init acpi_phat_init(void)
-> >>>> +{
-> >>>> +    acpi_status status;
-> >>>> +    struct acpi_table_phat *phat_tab;
-> >>>> +
-> >>>> +    if (acpi_disabled)
-> >>>> +            return 0;
-> >>>> +
-> >>>> +    if (phat_disable) {
-> >>>> +            pr_err("%sPHAT support has been disabled.\n", prefix);
-> >>>> +            return 0;
-> >>>> +    }
-> >>>> +
-> >>>> +    status = acpi_get_table(ACPI_SIG_PHAT, 0,
-> >>>> +                            (struct acpi_table_header **)&phat_tab);
-> >>>> +
-> >>>> +    if (status == AE_NOT_FOUND) {
-> >>>> +            pr_info("%sPHAT Table not found.\n", prefix);
-> >>>> +            return 0;
-> >>>> +    } else if (ACPI_FAILURE(status)) {
-> >>>> +            pr_err("%sFailed to get PHAT Table: %s.\n", prefix,
-> >>>> +                   acpi_format_exception(status));
-> >>>> +            return -EINVAL;
-> >>>> +    }
-> >>>> +
-> >>>> +    pr_info("%sPlatform Telemetry Records.\n", prefix);
-> >>>> +    parse_phat_table(prefix, phat_tab);
-> >>>
-> >>> So for now you're only dumping tables to the dmesg output ?
-> >>> Are you planning to create some sysfs interfaces similar to let's
-> >>> say EINJ ?
-> >>>
-> >> Yes, for now, the output is being posted to dmesg only.
-> >
-> > So it is not particularly useful for anything practical.
-> >
-> >> If there is a consensus, we can have the information exported through
-> >> sysfs too.
-> >
-> > That depends on how you want to use it which should be explained in
-> > the patch changelog.
-> >
-> > Now it's basically "it's there, so dump it" which leads to the obvious
-> > question: "Who's going to need it?"
-> >
->
-> I was just talking to some colleagues about PHAT recently as well.
->
-> The use case that jumps out is "system randomly rebooted while I was
-> doing XYZ".  You don't know what happened, but you keep using your
-> system.  Then it happens again.
->
-> If the reason for the random reboot is captured to dmesg you can cross
-> reference your journal from the next boot after any random reboot and
-> get the reason for it.  If a user reports this to a Gitlab issue tracker
-> or Bugzilla it can be helpful in establishing a pattern.
->
-> >> The below location may be appropriate in that case:
-> >> /sys/firmware/acpi/
-> >
-> > Yes, it may. >
-> >> We already have FPDT and BGRT being exported from there.
-> >
-> > In fact, all of the ACPI tables can be retrieved verbatim from
-> > /sys/firmware/acpi/tables/ already, so why exactly do you want the
-> > kernel to parse PHAT in particular?
-> >
->
-> It's not to say that /sys/firmware/acpi/PHAT isn't useful, but having
-> something internal to the kernel "automatically" parsing it and saving
-> information to a place like the kernel log that is already captured by
-> existing userspace tools I think is "more" useful.
+On 8/21/2023 12:12 PM, Rafael J. Wysocki wrote:
+<snip>
+>> I was just talking to some colleagues about PHAT recently as well.
+>>
+>> The use case that jumps out is "system randomly rebooted while I was
+>> doing XYZ".  You don't know what happened, but you keep using your
+>> system.  Then it happens again.
+>>
+>> If the reason for the random reboot is captured to dmesg you can cross
+>> reference your journal from the next boot after any random reboot and
+>> get the reason for it.  If a user reports this to a Gitlab issue tracker
+>> or Bugzilla it can be helpful in establishing a pattern.
+>>
+>>>> The below location may be appropriate in that case:
+>>>> /sys/firmware/acpi/
+>>>
+>>> Yes, it may. >
+>>>> We already have FPDT and BGRT being exported from there.
+>>>
+>>> In fact, all of the ACPI tables can be retrieved verbatim from
+>>> /sys/firmware/acpi/tables/ already, so why exactly do you want the
+>>> kernel to parse PHAT in particular?
+>>>
+>>
+>> It's not to say that /sys/firmware/acpi/PHAT isn't useful, but having
+>> something internal to the kernel "automatically" parsing it and saving
+>> information to a place like the kernel log that is already captured by
+>> existing userspace tools I think is "more" useful.
+> 
+> What existing user space tools do you mean?  Is there anything already
+> making use of the kernel's PHAT output?
+> 
 
-What existing user space tools do you mean?  Is there anything already
-making use of the kernel's PHAT output?
+I was meaning things like systemd already capture the kernel long 
+ringbuffer.  If you save stuff like this into the kernel log, it's going 
+to be indexed and easier to grep for boots that had it.
 
-And why can't user space simply parse PHAT by itself?
+> And why can't user space simply parse PHAT by itself?
+>  > There are multiple ACPI tables that could be dumped into the kernel
+> log, but they aren't.  Guess why.
 
-There are multiple ACPI tables that could be dumped into the kernel
-log, but they aren't.  Guess why.
+Right; there's not reason it can't be done by userspace directly.
+
+Another way to approach this problem could be to modify tools that 
+excavate records from a reboot to also get PHAT.  For example 
+systemd-pstore will get any kernel panics from the previous boot from 
+the EFI pstore and put them into /var/lib/systemd/pstore.
+
+No reason that couldn't be done automatically for PHAT too.
+
