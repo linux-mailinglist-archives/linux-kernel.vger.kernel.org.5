@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B78C7827D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4A67827D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232003AbjHULXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        id S232043AbjHULZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231625AbjHULXr (ORCPT
+        with ESMTP id S229967AbjHULZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:23:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F7BD8;
-        Mon, 21 Aug 2023 04:23:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 00F016100B;
-        Mon, 21 Aug 2023 11:23:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C0EFC433C8;
-        Mon, 21 Aug 2023 11:23:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692617025;
-        bh=v4yx1jU68ILujJ9Flvf3NQrZH6ekak8E8uv+0YCIRjk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=osKG4OpylgJrXV6nktjlRCaGsfMdp5qEq0SFhzKunOWwS8T26Ar+H87wl7UjUf8LY
-         KukTl4j4PPMqsJGAGDloN8Zc1Vw4oV5zj7XghPq/rn6PiwzJP2ZxhgS9VCz93HNaAh
-         fPStFfWIc578y09Gl86Qfi7HDhbznVqm66x4rGMKJ7a2JplF8Y5v+qg7GgbF20BozV
-         n4MGcoj9Y/REeNWKwa/dtv6Qa6yF8sKhCvsSRHCT1xeEwOaXyEpjvawOJqAh+oAu9l
-         95scwyVykPL9Q5GG5IltfF/wlaqS5RBdbef+1BRU1a+SavPIRgg2hvbNS1tvZWS4Fz
-         m6XogVB1qC8xQ==
-Message-ID: <c750428f-cbeb-53f5-5865-fa0af263b15e@kernel.org>
-Date:   Mon, 21 Aug 2023 13:23:41 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] linux/container_of.h: Add memberof()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     qat-linux@intel.com, Alejandro Colomar <alx.manpages@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-References: <ZN8v/2McQboR3dIu@smile.fi.intel.com>
- <20230820195222.279069-1-alx@kernel.org>
- <ZONIFMSmLZMeFPOY@smile.fi.intel.com>
-Content-Language: en-US
-From:   Alejandro Colomar <alx@kernel.org>
-Organization: Linux
-In-Reply-To: <ZONIFMSmLZMeFPOY@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 07:25:06 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9A4D8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:25:03 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cbf62bae8so46128117b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692617103; x=1693221903;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KNwlE0hptEJ+KomxedbhNDZdQW8nX6UaNAvgVOd3YTE=;
+        b=DqYbQAqTPQYpujtcLYwSGJB6scOaDUgrpKcB1gNAriudu9qoLwTPXxTSLZ5kmAiqvq
+         ZtUugMzKUiimHHWbnvjmP/cP1LtcksHcdFvDPRhov/AeIInzkZlFdTuCpufy9/OmoO09
+         jhymM6UxghCuAKYy4j+Dp+DxnZujMVH+ZqhupYyyLuSR0Mi1WDRbwyq80Iq5pBDhUTG8
+         i3jB2nDtQpdvsHgBjlyeG5TjE2BBxYrc/O5gFpsNNdYBQ1n7Pi2mSqrxZPrZq4g3ndlu
+         /hZi+m+DI5Tf9AlMAkxRg3HvY66XstbLFnnbtBjIw/NwI1hOaUecO4GjNBN1Sahhv4wK
+         0n+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692617103; x=1693221903;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KNwlE0hptEJ+KomxedbhNDZdQW8nX6UaNAvgVOd3YTE=;
+        b=OfmZpVF7KQca85sVhQb0JqoBoCjYZNK9z43dE7n35q45RJ/IqTuhX3SdxcNG8+vrux
+         wDA9+mM5OjpY3BIZBfCUbmhNWs+unoP+0Pn7mrXx6iMJEc/l0pMMPCMl6R4kjXKuLzXT
+         5A7oJMT/8ynuGZpH7Z79jKbU00r3hYkMfR1bDhbhKUnnakpoSsa6JZMwdUua+aYDhq8V
+         UcV2KT2hYc980NeO1Y4UehdjVC1zX3b5dN1iYfHl6ixOC0JchJkZGvGc6S5p9UUNahp5
+         6ve+xuH/uGoIV0IGfl7HDGKPdOG5RWzgg2FuNCk9YgMaK3R5aLEGa1kM+8n5vUwGZ9ar
+         8DoA==
+X-Gm-Message-State: AOJu0YxOGSpPrUECN+NxcrHCLUt18FL5m458ovVe5e2UfUVQ2bQ9sF4c
+        UpGfaYgB7+Ye2O5U6CjtSGtHgS0L2faFCd8=
+X-Google-Smtp-Source: AGHT+IEyI+l1AmBVra+jc/USX7OIpJ/VyLZPOuiV4jSok8FXOhINKd/eEKL8WvEoKj4KrH4vZ1m4Y2YlYLCvU+I=
+X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
+ (user=aliceryhl job=sendgmr) by 2002:a05:6902:18c6:b0:c72:2386:7d26 with SMTP
+ id ck6-20020a05690218c600b00c7223867d26mr71861ybb.0.1692617102826; Mon, 21
+ Aug 2023 04:25:02 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 11:24:57 +0000
+In-Reply-To: <20230814084602.25699-13-benno.lossin@proton.me>
+Mime-Version: 1.0
+References: <20230814084602.25699-13-benno.lossin@proton.me>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230821112457.1363843-1-aliceryhl@google.com>
+Subject: Re: [PATCH v4 12/13] rust: init: add `{pin_}chain` functions to
+ `{Pin}Init<T, E>`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me
+Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+        lina@asahilina.net, linux-kernel@vger.kernel.org, nmi@metaspace.dk,
+        ojeda@kernel.org, patches@lists.linux.dev,
+        rust-for-linux@vger.kernel.org, wedsonaf@gmail.com,
+        yakoyoku@gmail.com
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On 2023-08-21 13:18, Andy Shevchenko wrote:
-> On Sun, Aug 20, 2023 at 09:52:22PM +0200, Alejandro Colomar wrote:
->>  
->> -#define typeof_member(T, m)	typeof(((T*)0)->m)
->> +
->> +#define memberof(T, member)  ((T){}.member)
+Benno Lossin <benno.lossin@proton.me> writes:
+> The `{pin_}chain` functions extend an initializer: it not only
+> initializes the value, but also executes a closure taking a reference to
+> the initialized value. This allows to do something with a value directly
+> after initialization.
 > 
-> I'm not sure. This seems to me utilization of compound literal, while above
-> uses direct struct member pointer calculations.
+> Suggested-by: Asahi Lina <lina@asahilina.net>
+> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-Both can be used in most cases.  The only exception is offsetof(3), where
-you need the pointer calculation.  The good thing about the compound
-literal is that it's farther away from causing UB, but if that's not a
-concern --using sizeof() or typeof() will usually make things safe from
-UB, as there's really no dereference, but just to be a little paranoic--,
-I could change the definition of memberof() to use the pointer thing.
-
-Should I send a v2 with the pointer thing?
-
-[I'll take some time, as I need to restore my USB with keys, which just
-died yesterday.  I didn't sign this email due to that.]
-
-Cheers,
-Alex
-
-> 
->> +#define typeof_member(T, m)  typeof(memberof(T, m))
-> 
-
--- 
-<http://www.alejandro-colomar.es/>
-GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
-
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
