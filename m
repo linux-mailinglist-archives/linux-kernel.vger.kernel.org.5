@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E18AD7824BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:43:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7453F7824C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbjHUHna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S233799AbjHUHoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:44:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233790AbjHUHn1 (ORCPT
+        with ESMTP id S233054AbjHUHoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:43:27 -0400
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEFBC5;
-        Mon, 21 Aug 2023 00:43:19 -0700 (PDT)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-3fe1f70a139so5988315e9.0;
-        Mon, 21 Aug 2023 00:43:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692603798; x=1693208598;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L6hlRFuEO18ewfLVhWL/VLpc0gMEa3vQtcpOVMBFDnE=;
-        b=SRkOalP30b3QYyaTKxtIXw5HvkiHJd+jRPby4VDt4ucCJOUq6zKapl/L7wjfUWC/HB
-         0igNL6VU5SDf+nFc87hVvMOOJmbpAv4+z2RXOgZgQLVwY9cIwbMmOmzPx0Qc83uNH0iO
-         Dr/hZatzA8ZftaayqSnY5nSSTlFV9rKv208oMhFRTIuxR+a0IGhl6RBrjfG0iz0JHz/6
-         iMSFhbvne01Srfs4JVfURZ7fBHWWRsbimP7a5IAMAvMk8SU1Ysj0Yql5AWirqyJnXFjC
-         8WPgrPNcVuQIdBkTziQE09AriA8Nymhi8aeQtI40z6r/K6/DaBkT5TjuslbgXoVFjZv5
-         wuAA==
-X-Gm-Message-State: AOJu0Yy+QXvKblGVEnWtRJUewtQliTmh6B4TjcNZD6QKO/hkb3I2S/+v
-        LIz4gKqTB1V3djxsrDfiClk=
-X-Google-Smtp-Source: AGHT+IHDt7naLH0gcQQARK8rQAsDXjJZrHcQgGMzMpPBtCojQBs1ERrRjAWBRx5UUBj9r+yPoyICZw==
-X-Received: by 2002:adf:f4ce:0:b0:317:f1d6:997c with SMTP id h14-20020adff4ce000000b00317f1d6997cmr4443599wrp.0.1692603798154;
-        Mon, 21 Aug 2023 00:43:18 -0700 (PDT)
-Received: from [192.168.64.157] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id e11-20020a5d65cb000000b0031416362e23sm11696178wrw.3.2023.08.21.00.43.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 00:43:17 -0700 (PDT)
-Message-ID: <fc4d55db-dbd3-d2e5-ab2a-3eed07b30676@grimberg.me>
-Date:   Mon, 21 Aug 2023 10:43:14 +0300
+        Mon, 21 Aug 2023 03:44:23 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D9592;
+        Mon, 21 Aug 2023 00:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1692603861; x=1724139861;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=bHaF/DVGn2+wBr6abyJEpnFTf2Pua+abRANrnRPvJWQ=;
+  b=bagmNwNX8zTeptwr6EI4ghvjKKf9GfpJPFUOPOH3VSse6L1JQ6Rr2Pyw
+   GQpd0JSTwp9gJ0RZj2Xb4pN4osSDaaByfDA5vkSPjBbpY3Y7WpTQsEsFe
+   jqBn2Jp6ybrtwrgzadYOBBvyNtfSQbEwkV5+17ZlqqsVTRljfTmrlQmPy
+   1Z+5FMTjcUG/lp+3q8WIjENuIX/5LEB3AsONPnmEP4IaLPC5drCnRhkPH
+   zvQInh0ck10A18ZzF0aLTTvVI6FpFrXjE0Uoc4+SYbNMf7q1oVc95Buan
+   nhyKU1EGR7pQORbkD/k9bHnu2ljiks7zKUKZeAfoPec/m+lROadvgUSo7
+   w==;
+X-IronPort-AV: E=Sophos;i="6.01,189,1684792800"; 
+   d="scan'208";a="32533488"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 21 Aug 2023 09:44:18 +0200
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.21])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 456BA280075;
+        Mon, 21 Aug 2023 09:44:18 +0200 (CEST)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Bough Chen <haibo.chen@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     "brgl@bgdev.pl" <brgl@bgdev.pl>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 2/2] gpio: mxc: switch to dynamic allocat GPIO base
+Date:   Mon, 21 Aug 2023 09:44:18 +0200
+Message-ID: <12270129.O9o76ZdvQC@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <CACRpkdZ-2Lyk_c8EJfS=YHK81wt2RAWnZAg+vxvZZijYFwmDDA@mail.gmail.com>
+References: <20230506085928.933737-1-haibo.chen@nxp.com> <DB7PR04MB40102AA686099ED666C93EF5901EA@DB7PR04MB4010.eurprd04.prod.outlook.com> <CACRpkdZ-2Lyk_c8EJfS=YHK81wt2RAWnZAg+vxvZZijYFwmDDA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH blktests v2 3/3] nvme: introduce
- nvmet_target_{setup/cleanup} common code
-Content-Language: en-US
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Chaitanya Kulkarni <kch@nvidia.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        Hannes Reinecke <hare@suse.de>, Jason Gunthorpe <jgg@ziepe.ca>
-References: <20230818141537.22332-1-dwagner@suse.de>
- <20230818141537.22332-4-dwagner@suse.de>
- <3713297b-a5fb-b027-c34b-d56526155c4c@grimberg.me>
- <u2esnihohobu5jaxgz3xdfpjfvfrnmkklzajjrckdnr6g3i54b@qofopy4bhhlp>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <u2esnihohobu5jaxgz3xdfpjfvfrnmkklzajjrckdnr6g3i54b@qofopy4bhhlp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
->>> diff --git a/tests/nvme/003 b/tests/nvme/003
->>> index 71b82ce758a3..eed1f549866a 100755
->>> --- a/tests/nvme/003
->>> +++ b/tests/nvme/003
->>> @@ -22,15 +22,8 @@ test() {
->>>    	_setup_nvmet
->>> -	local loop_dev
->>> -	local port
->>> -	port="$(_create_nvmet_port "${nvme_trtype}")"
->>> -
->>> -	loop_dev="$(losetup -f)"
->>> -
->>> -	_create_nvmet_subsystem "${def_subsysnqn}" "${loop_dev}"
->>> -	_add_nvmet_subsys_to_port "${port}" "${def_subsysnqn}"
->>> +	_nvmet_target_setup --blkdev=device
->>
->> --blkdev=device by default no?
-> 
-> Yes. I thought it is better to be explicit in the tests. I don't mind
-> dropping --blkdev=device if you think we should use the defaults.
+Am Montag, 21. August 2023, 09:25:54 CEST schrieb Linus Walleij:
+> On Mon, Aug 21, 2023 at 4:47=E2=80=AFAM Bough Chen <haibo.chen@nxp.com> w=
+rote:> > Hi=20
+Linus and Bartosz,
+> >=20
+> > For this patch, still not in the main trunk (Linux 6.5-rc7) and
+> > linux-next(next-20230818). Can you help apply or any comment?
+>=20
+> As pointed out by Bartosz you cannot just mechanically switch the base
+> to -1.
+>=20
+> You also need to convince us that this doesn't break any systems, and if
+> it does, fix them so they don't break before submitting this patch.
 
-Just wondering why it is different than all the rest of the defaults?
-It probably can be omitted from the callers.
+I think it's hard to tell if something breaks, this driver is used in a lot=
+ of=20
+boards. AFAIR some people are relying on the assumption of fixed order. Usi=
+ng=20
+dynamic allocation this not ensured. A possible fix is to use aliases [1].
+
+Best regards,
+Alexander
+
+[1] https://lore.kernel.org/lkml/20230215092421.143199-1-alexander.stein@ew=
+=2Etq-group.com/T/#u
+=2D-=20
+TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Germ=
+any
+Amtsgericht M=C3=BCnchen, HRB 105018
+Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan Sch=
+neider
+http://www.tq-group.com/
+
+
