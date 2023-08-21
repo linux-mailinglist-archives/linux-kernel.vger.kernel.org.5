@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D4E782E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF21C782E87
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbjHUQhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:37:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52742 "EHLO
+        id S236692AbjHUQhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:37:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236663AbjHUQhB (ORCPT
+        with ESMTP id S236657AbjHUQhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:37:01 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FF6109
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:58 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1bf681d3d04so19660705ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:58 -0700 (PDT)
+        Mon, 21 Aug 2023 12:37:00 -0400
+Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD67103
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:57 -0700 (PDT)
+Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-565aee93236so3803453a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:36:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692635818; x=1693240618;
+        d=1e100.net; s=20221208; t=1692635817; x=1693240617;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=7eioG8X10phzcVb5mcEi18JC2dsf8vnTpbGQbYGNGZ8=;
-        b=UeLrvWn0477oufzIc89KBYUHH8RYZzBjumtDp3jM1UF2FPnRbGSuV6yz8fYldTtMDY
-         4/sWCPzgihoIlJFr70PePzJwfmbYJ+zI/tNCyKO3gPtDaYHmaZ+jMzLGqnOHxZKXsrNo
-         ZJs8OEg6IOxUUJX3lNtz03qyTNCKio8RS0ekv8Oqe4ZQZOqYNw5zCPC/4NUrZpF8xGlw
-         mVVBBXTZULv5djcGR83uh5BECbZ9f4JFStp5rBOTgUFW7yilKH8p0f9ri3Hlffqn6VX6
-         U8eN7uHjbMwR76sMyKCv61BqsDB222HbDeZBq6UaU15Jj+QMyVMk9M+xAn8j6uak3Oow
-         a0Cw==
-X-Gm-Message-State: AOJu0YxDnJA/8qHHf3u33gYtN0sYI2RQgGfd0QZ7FfFmDXcZAoZxgDNR
-        lg/ZpuVnpPVyZCqa5aVPLsQCWAXSEOx43GRlSmZ21bUl14fx
-X-Google-Smtp-Source: AGHT+IF9eCq8JhsUzlL0IgH1ngneNUWv9Rjlha+PW/FByrO32aRIc+Xkv4Q/sLgDDkmst36rHFaF+fMv6woY1D6Jw756gFmkgeTx
+        bh=DscXzbPNxTBR1mFGaAB02zyy+OW3MXcEY6WXJZDd5nU=;
+        b=HOBM7PS6MEqCoC82tXQtQrhtNTjlGZTnhfvpKyefYNCOdTXuCvMISnTG9WxIZYVJSY
+         gbu4zL+NO1wEuOBU2fbT2/mgiojFCriq2ON2W+ybfpsq3OSy/zkeChn/YUzP+OuycO0J
+         G638Dd+knjqMeOLa7M0xCKc5TRz3omHtoD81b/LM7+xD3cjo2o5KmNaNNYIrUebCtAXS
+         lgfpjZcmHoKOuLMV4V0KR3UJX6tkiNccN0psxBeN2WBW5y/6B64ozcTqbfnLgWJHEEtP
+         UxH/qMS6eAbOkbNJeCAuALHy03Z0f13kyK8Fwz4HjVfxZI5vuwkXjb5PB7ua2w+UmJL/
+         zgcw==
+X-Gm-Message-State: AOJu0YyJJdkgN0YsfmmNuQiQWIOhquIE+fdRlJ+1YWS3dDM0T+odaEa2
+        itMzozHuDhgqd+T+0QXlX5imKQz842jMh1b6ltDtKzBT7sKF
+X-Google-Smtp-Source: AGHT+IEQDWXwjb92oMzfXVoJdYwEHSi8DF11A7NLabTRacYoPPK2B/zbPpb4aoA/KqQaIFuvq1P2bXDHwug+ycWqbGfLzVMcjuKK
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:e5cd:b0:1bf:cc5:7b57 with SMTP id
- u13-20020a170902e5cd00b001bf0cc57b57mr3379189plf.3.1692635817920; Mon, 21 Aug
+X-Received: by 2002:a63:a319:0:b0:565:e467:ef5e with SMTP id
+ s25-20020a63a319000000b00565e467ef5emr1099865pge.5.1692635817459; Mon, 21 Aug
  2023 09:36:57 -0700 (PDT)
 Date:   Mon, 21 Aug 2023 09:36:57 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a958a90603717c84@google.com>
-Subject: [syzbot] [ntfs3?] [squashfs?] INFO: task hung in truncate_inode_pages_final
-From:   syzbot <syzbot+b6973d2babdaf51385eb@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, phillip@squashfs.org.uk,
-        squashfs-devel@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <000000000000a249880603717c15@google.com>
+Subject: [syzbot] [net?] [wireless?] INFO: task hung in reg_process_self_managed_hints
+From:   syzbot <syzbot+1f16507d9ec05f64210a@syzkaller.appspotmail.com>
+To:     bigeasy@linutronix.de, davem@davemloft.net, edumazet@google.com,
+        johannes@sipsolutions.net, kerneljasonxing@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,74 +62,50 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c014c37159a1 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=11904307a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b40c4aa62d29380a
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6973d2babdaf51385eb
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12f81e5fa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d3b537a80000
+HEAD commit:    d4ddefee5160 Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1653bc65a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa796b6080b04102
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f16507d9ec05f64210a
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e59507a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16cd6137a80000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/890b3d127b57/disk-c014c371.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/300e5c07650c/vmlinux-c014c371.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/eb10f2f51203/Image-c014c371.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/03d2fd0e1068/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/6187f26c7496/disk-d4ddefee.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8bb63089fdb5/vmlinux-d4ddefee.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/1579fb12e27b/bzImage-d4ddefee.xz
+
+The issue was bisected to:
+
+commit d15121be7485655129101f3960ae6add40204463
+Author: Paolo Abeni <pabeni@redhat.com>
+Date:   Mon May 8 06:17:44 2023 +0000
+
+    Revert "softirq: Let ksoftirqd do its job"
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=115fece3a80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=135fece3a80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=155fece3a80000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6973d2babdaf51385eb@syzkaller.appspotmail.com
+Reported-by: syzbot+1f16507d9ec05f64210a@syzkaller.appspotmail.com
+Fixes: d15121be7485 ("Revert "softirq: Let ksoftirqd do its job"")
 
-INFO: task syz-executor142:6032 blocked for more than 143 seconds.
-      Not tainted 6.5.0-rc6-syzkaller-gc014c37159a1 #0
+INFO: task syz-executor296:5042 blocked for more than 143 seconds.
+      Not tainted 6.5.0-rc6-syzkaller-00200-gd4ddefee5160 #0
 "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor142 state:D stack:0     pid:6032  ppid:6030   flags:0x00000004
-Call trace:
- __switch_to+0x320/0x754 arch/arm64/kernel/process.c:556
+task:syz-executor296 state:D stack:24336 pid:5042  ppid:5038   flags:0x00004002
+Call Trace:
+ <TASK>
  context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0x1364/0x23b4 kernel/sched/core.c:6710
- schedule+0xc4/0x170 kernel/sched/core.c:6786
- io_schedule+0x8c/0x12c kernel/sched/core.c:9028
- folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1304
- __folio_lock+0x2c/0x3c mm/filemap.c:1632
- folio_lock include/linux/pagemap.h:959 [inline]
- truncate_inode_pages_range+0x930/0xf74 mm/truncate.c:422
- truncate_inode_pages mm/truncate.c:449 [inline]
- truncate_inode_pages_final+0x90/0xc0 mm/truncate.c:484
- evict+0x26c/0x68c fs/inode.c:666
- dispose_list fs/inode.c:697 [inline]
- evict_inodes+0x6b4/0x74c fs/inode.c:747
- generic_shutdown_super+0x9c/0x328 fs/super.c:478
- kill_block_super+0x60/0xa0 fs/super.c:1417
- deactivate_locked_super+0xac/0x124 fs/super.c:330
- deactivate_super+0xe0/0x100 fs/super.c:361
- cleanup_mnt+0x34c/0x3dc fs/namespace.c:1254
- __cleanup_mnt+0x20/0x30 fs/namespace.c:1261
- task_work_run+0x230/0x2e0 kernel/task_work.c:179
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- do_notify_resume+0x2180/0x3c90 arch/arm64/kernel/signal.c:1305
- exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:137 [inline]
- exit_to_user_mode arch/arm64/kernel/entry-common.c:144 [inline]
- el0_svc+0xa0/0x16c arch/arm64/kernel/entry-common.c:679
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffff80008e2718d0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x44/0xcf4 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffff80008e271c90 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x44/0xcf4 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/29:
- #0: ffff80008e271700 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:302
-2 locks held by getty/5744:
- #0: ffff0000d3f64098 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
- #1: ffff8000959122f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x414/0x1214 drivers/tty/n_tty.c:2187
-1 lock held by syz-executor142/6032:
- #0: ffff0000c77bc0e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:360
-
-=============================================
-
+ __schedule+0xee1/0x59f0 kernel/sched/core.c:6710
+ schedule+0xe7/0x1b0 kernel/sched/core.c:6786
+ schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
+ __mutex_lock_common kernel/locking/mutex.c:679 [inline]
+ __mutex_lock+0x967/0x1340 kernel/locking/mutex.c:747
+ wiphy_lock include/net/cfg80211.h:5776 [inline]
+ reg_process_self_managed_hints+0x78/0x170 net/wireless/reg.c:3181
 
 
 ---
@@ -138,6 +115,7 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
 If the bug is already fixed, let syzbot know by replying with:
 #syz fix: exact-commit-title
