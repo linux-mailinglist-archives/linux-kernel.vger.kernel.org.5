@@ -2,57 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A17678227F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 351AC782289
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbjHUEKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S230332AbjHUELL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjHUEKd (ORCPT
+        with ESMTP id S232120AbjHUELI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:10:33 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E740EFD
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:09:55 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vq9jTDA_1692590934;
-Received: from 30.221.131.184(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vq9jTDA_1692590934)
-          by smtp.aliyun-inc.com;
-          Mon, 21 Aug 2023 12:08:55 +0800
-Message-ID: <d360c1d4-55c9-5d82-1bc8-9e3595e65ade@linux.alibaba.com>
-Date:   Mon, 21 Aug 2023 12:08:53 +0800
+        Mon, 21 Aug 2023 00:11:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D64BD11D;
+        Sun, 20 Aug 2023 21:10:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sTOdBFeZC0ZITAjiSCC8ryUnVRY9Lhk36Ip26KjeYr4=; b=ICymlCyLpaJ6lmuyoMFR5kttyw
+        UBm9C082xuk3Z6hhwZEKWSF+ox3NgccEuO8Z/43fptOWwRZsWum/7FRoRaW1UQbyW1qJwMW+RtTE5
+        LuYT1pNyy0SaxkHsTTkacsbgLDntlcgS1wSJqQvwXrvlQeAEdAYSdM61NzEaEm48NI/eOnoim4ojj
+        8vV9ewOGSLgUh2r2vGs4nVL8ZJ4gZ46GXf8M9SfbYoQvZdxJbeNQKkzbyh3E1MLZutAHTaZUuOqIq
+        1S/Hr371deuhKGgzMbb+5HqLyRiiOPcO8oCTUXpithV1sUUXjoat+U6z6h/eBmQhpwA7bLdvom+us
+        SUX4CjPw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qXwEa-0081su-Uu; Mon, 21 Aug 2023 04:09:45 +0000
+Date:   Mon, 21 Aug 2023 05:09:44 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Byungchul Park <byungchul@sk.com>
+Cc:     linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+        torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+        linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+        will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+        joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+        duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org,
+        tytso@mit.edu, david@fromorbit.com, amir73il@gmail.com,
+        gregkh@linuxfoundation.org, kernel-team@lge.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org, mhocko@kernel.org,
+        minchan@kernel.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        sj@kernel.org, jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+        ngupta@vflare.org, linux-block@vger.kernel.org,
+        josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
+        dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+        dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+        melissa.srw@gmail.com, hamohammed.sa@gmail.com,
+        42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
+        gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
+        boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
+        her0gyugyu@gmail.com
+Subject: Re: [RESEND PATCH v10 08/25] dept: Apply
+ sdt_might_sleep_{start,end}() to PG_{locked,writeback} wait
+Message-ID: <ZOLjiF2oKxBvVzyw@casper.infradead.org>
+References: <20230821034637.34630-1-byungchul@sk.com>
+ <20230821034637.34630-9-byungchul@sk.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH] erofs: don't warn dedupe and fragments features anymore
-To:     sunshijie <sunshijie@xiaomi.com>, xiang@kernel.org,
-        chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com
-Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20230821040430.2673259-1-sunshijie@xiaomi.com>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20230821040430.2673259-1-sunshijie@xiaomi.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-14.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821034637.34630-9-byungchul@sk.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 21, 2023 at 12:46:20PM +0900, Byungchul Park wrote:
+> @@ -1219,6 +1220,9 @@ static inline bool folio_trylock_flag(struct folio *folio, int bit_nr,
+>  /* How many times do we accept lock stealing from under a waiter? */
+>  int sysctl_page_lock_unfairness = 5;
+>  
+> +static struct dept_map __maybe_unused PG_locked_map = DEPT_MAP_INITIALIZER(PG_locked_map, NULL);
+> +static struct dept_map __maybe_unused PG_writeback_map = DEPT_MAP_INITIALIZER(PG_writeback_map, NULL);
 
+Hmm, why are these "maybe unused"?  *digs*.  Ah.  Because
+sdt_might_sleep_start() becomes a no-op macro if DEPT is disabled.
 
-On 2023/8/21 12:04, sunshijie wrote:
-> The dedupe and fragments features has been merged for a year, it has been mostly
-> stable now.
+OK, the right way to handle this is
 
-some grammer fix:
+#ifdef CONFIG_DEPT
+#define DEPT_MAP(name)	static struct dept_map name = \
+		DEPT_MAP_INITIALIZER(name, NULL)
+#else
+#define DEPT_MAP(name)	/* */
+#endif
 
-The `dedupe` and `fragments` features have been merged for a year.  They are
-mostly stable now.
+And now DEPT takes up no space if disabled.
 
-Thanks,
-Gao Xiang
+/* */; is a somewhat unusual thing to see, but since this must work at
+top level, we can't use "do { } while (0)" like we usually do.  Given
+where else this is likely to be used, i don't think it's going to be
+a problem ...
+
