@@ -2,83 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDC77834ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548767834F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjHUVdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
+        id S230120AbjHUVj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjHUVc7 (ORCPT
+        with ESMTP id S229638AbjHUVj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:32:59 -0400
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3F2C7;
-        Mon, 21 Aug 2023 14:32:56 -0700 (PDT)
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-268bc714ce0so3318345a91.0;
-        Mon, 21 Aug 2023 14:32:56 -0700 (PDT)
+        Mon, 21 Aug 2023 17:39:58 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DCB10E
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:39:56 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2bc63e0d8cdso35247341fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692653994; x=1693258794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G0EKwEgwpxLoJoQonV7N63EDw/RpmfssFT2FoDBVEL8=;
+        b=g7qX7sQ/Rs8bZjNmNyXLm5+gc5kNDYyDLFNc3q5+ZrkAbAMffug47cj8hWl9GApAL4
+         ePKRg5CDGMT5ZpX2I1Qjf4fnPHZSsAIpyaqJAAPuRW/r8m2Xmh5BMDLOU+I5sVXO2D/J
+         nouLUEYFCYm0ok2N9fL3DPJF9jmhqmNABcnfRvJ2TP3hYDrKIqt7omtEqU55rmK3qZ98
+         bYZHX5wSpr0UaAEyAmlK+Kw4tbkYJR9fb0WMxSmJZFJ+wXELO0s6Rm3YjGBorY7Ruqar
+         oYh+jsMrkagvojX8gWt9A3Fcdsmd66pkMh4lQ8qwHozOVBui5gh4rx8oc+3jqKtYUJmb
+         Isow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692653576; x=1693258376;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4G37Wei01Y8O5fp9JSSi3pMAhLBKchH3SUOVoOVUVXs=;
-        b=U3yXZytJesTJagePJ98RGBX1JMf5FdTCiGZsKJOuTWNgzNfrO/fw7CjD4yhC+EdXg2
-         tl7Mqb+4cEh0NeRM7olNuj4RgFz4ootyKT57O/G3fT0NuBMucn+aRjr+KpkidfxID3Yv
-         wAfENokK6TjQBPqazNS7evBlmas8Nlyg72iS+JpUvjpxV7g/VeKGN6hzJuq9esOg7GiH
-         HzqqfvQIx6a9n5iiXGbXpWeJHDRZf6EOepZfEwVAkIPC4Bncknxr9FIgWvdc/F/BbYVh
-         LQPvgxl/8yRf1EgpvK0memykmnkSJc8RsWFe/TbdGwFsXW0iC9BHyGqFjX7ev7Lx52cj
-         bckg==
-X-Gm-Message-State: AOJu0Yx0toQZasiTrQTGGvKm8cd8EHJ+31AgYifGgY6WWqNp59BMZgce
-        BAMhhrZDr1k24tmW9TV7nZA=
-X-Google-Smtp-Source: AGHT+IGXXfibu8Rfw5jNXwLQ4L2lqd508ae2M0Gvn3NC34yifVuYege5cUOyGY3t9H6aM4ujkQFAtw==
-X-Received: by 2002:a17:90a:df08:b0:26d:3e6a:cd93 with SMTP id gp8-20020a17090adf0800b0026d3e6acd93mr11192492pjb.17.1692653576196;
-        Mon, 21 Aug 2023 14:32:56 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:ef58:6534:ec7a:8ab2? ([2620:15c:211:201:ef58:6534:ec7a:8ab2])
-        by smtp.gmail.com with ESMTPSA id cx17-20020a17090afd9100b00262eccfa29fsm8322024pjb.33.2023.08.21.14.32.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 14:32:55 -0700 (PDT)
-Message-ID: <01b61118-a192-dde2-09aa-de73f2ab2b5c@acm.org>
-Date:   Mon, 21 Aug 2023 14:32:54 -0700
+        d=1e100.net; s=20221208; t=1692653994; x=1693258794;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G0EKwEgwpxLoJoQonV7N63EDw/RpmfssFT2FoDBVEL8=;
+        b=fajLqXujT6XYSbXzNLFXLT1Wz1f+OEqPooThLWBsaJb/V+1yaP21mCOOb8YOEilq4X
+         8IIva7Spnx2vOu3nys7GyOfExd3RVEH5ZWnUihblDeFQN++xLQHmn2MphjKDlhGNakJb
+         hoHhkCdJrt8vMSpm/YlHnTrIBMr2MXYqSooweTEKKK/mM1JgVIUpeI779Zq53vo1q5Ex
+         Zx4SKZ2hVoSwxPHF85zW8t+IEMxoHW3AfnD9u1YudktfeBlrOjSG/VnSA8aBpNZ68p+0
+         8bvYsrNH/coy9aCBfOraQAhQWvOocH0P9onAjnjhKbJbx1yB1MHDmHqRgDOIIkj9lhuz
+         WGWw==
+X-Gm-Message-State: AOJu0YwZmBQg+aS1TF32mp9yfenBmrF6ldGZJ7LaOV0HabX/uINs2XVl
+        sc6P33z3/ipJGwq/rSgWzsI=
+X-Google-Smtp-Source: AGHT+IHhOmR8TzN4tM4XCWA5/HiA4fDXN4ZfpxFnlpl5S1uIRiE68fdOsY2fCkQtdbQwwvvHB6Yu/w==
+X-Received: by 2002:a2e:9d58:0:b0:2bc:bc7e:e2df with SMTP id y24-20020a2e9d58000000b002bcbc7ee2dfmr3010671ljj.33.1692653994101;
+        Mon, 21 Aug 2023 14:39:54 -0700 (PDT)
+Received: from f (cst-prg-85-121.cust.vodafone.cz. [46.135.85.121])
+        by smtp.gmail.com with ESMTPSA id k26-20020a1709062a5a00b00997cce73cc7sm7161693eje.29.2023.08.21.14.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 14:39:53 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 23:39:51 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] execve scalability issues, part 1
+Message-ID: <20230821213951.bx3yyqh7omdvpyae@f>
+References: <20230821202829.2163744-1-mjguzik@gmail.com>
+ <ZOPSEJTzrow8YFix@snowbird>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 4/4] blk-mq-tag: update or fix functions documentation
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, axboe@kernel.dk, ming.lei@redhat.com,
-        hch@lst.de
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouchengming@bytedance.com
-References: <20230821073528.3469210-1-chengming.zhou@linux.dev>
- <20230821073528.3469210-5-chengming.zhou@linux.dev>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230821073528.3469210-5-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZOPSEJTzrow8YFix@snowbird>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 00:35, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+On Mon, Aug 21, 2023 at 02:07:28PM -0700, Dennis Zhou wrote:
+> On Mon, Aug 21, 2023 at 10:28:27PM +0200, Mateusz Guzik wrote:
+> > With this out of the way I'll be looking at some form of caching to
+> > eliminate these allocs as a problem.
+> > 
 > 
-> There are some misleading or wrong documentation in the functions of
-> blk-mq-tag, update it as we're here.
+> I'm not against caching, this is just my first thought. Caching will
+> have an impact on the backing pages of percpu. All it takes is 1
+> allocation on a page for the current allocator to pin n pages of memory.
+> A few years ago percpu depopulation was implemented so that limits the
+> amount of resident backing pages.
+> 
 
-Are all changes in this patch updates for documentation that should have been
-updated by commit 2dd6532e9591 ("blk-mq: Drop 'reserved' arg of busy_tag_iter_fn")?
-If not, please move any unrelated changes into a separate patch.
+I'm painfully aware.
 
-Please also consider adding the following to this patch:
+> Maybe the right thing to do is preallocate pools of common sized
+> allocations so that way they can be recycled such that we don't have to
+> think too hard about fragmentation that can occur if we populate these
+> pools over time?
+> 
 
-Fixes: 2dd6532e9591 ("blk-mq: Drop 'reserved' arg of busy_tag_iter_fn")
+This is what I was going to suggest :)
 
-Thanks,
+FreeBSD has a per-cpu allocator which pretends to be the same as the
+slab allocator, except handing out per-cpu bufs. So far it has sizes 4,
+8, 16, 32 and 64 and you can act as if you are mallocing in that size.
 
-Bart.
+Scales perfectly fine of course since it caches objs per-CPU, but there
+is some waste and I have 0 idea how it compares to what Linux is doing
+on that front.
+
+I stress though that even if you were to carve out certain sizes, a
+global lock to handle ops will still kill scalability.
+
+Perhaps granularity better than global, but less than per-CPU would be a
+sweet spot for scalabability vs memory waste.
+
+That said...
+
+> Also as you've pointed out, it wasn't just the percpu allocation being
+> the bottleneck, but percpu_counter's global lock too for hotplug
+> support. I'm hazarding a guess most use cases of percpu might have
+> additional locking requirements too such as percpu_counter.
+> 
+
+True Fix(tm) is a longer story.
+
+Maybe let's sort out this patchset first, whichever way. :)
+
+> Thanks,
+> Dennis
+> 
+> > Thoughts?
+> > 
+> > Mateusz Guzik (2):
+> >   pcpcntr: add group allocation/free
+> >   fork: group allocation of per-cpu counters for mm struct
+> > 
+> >  include/linux/percpu_counter.h | 19 ++++++++---
+> >  kernel/fork.c                  | 13 ++------
+> >  lib/percpu_counter.c           | 61 ++++++++++++++++++++++++----------
+> >  3 files changed, 60 insertions(+), 33 deletions(-)
+> > 
+> > -- 
+> > 2.39.2
+> > 
