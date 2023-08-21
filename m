@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A6F78260A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F3E78260D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbjHUJIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        id S234095AbjHUJJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbjHUJIA (ORCPT
+        with ESMTP id S232445AbjHUJJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:08:00 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B1FC1;
-        Mon, 21 Aug 2023 02:07:59 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 2adb3069b0e04-4ff09632194so4149366e87.2;
-        Mon, 21 Aug 2023 02:07:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692608877; x=1693213677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JKWRJTfGQowIKvL3XjiDWE9FYLrusIoybiwsp0Evuyk=;
-        b=i74RrRT/nZrpfBRl2fhQa9dTPKM7u23SB+mv35LcAjV0iW0uW4MTr18kiBqE7k5aqx
-         aCT3Z+ejZmORg8iaYsiMmuRcRjj/RDzCVwAyZjkVY9tzG2J3Q0fLI37k5RI2BxB3NGaD
-         5DUsAOByVq5e5epmlSCDyT6lkkxwOq5XxXDL+8Rn4+w+bIApLATl6jz0n+fDRkTJ5EmA
-         HwW6Yjs826uPaDIjWXGNAhW7OcyMxTQrj8NKSmbYuu0HwHywkz5B6WkeDlf/+pokItQW
-         U8w21AQbmfLOwmI4hkPUknEPlgCnHbQd22h9iKijRahoqG8UbDSn4/pFWoTfNAfM3KVu
-         aAwA==
+        Mon, 21 Aug 2023 05:09:35 -0400
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D6FC6;
+        Mon, 21 Aug 2023 02:09:32 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bcc0adab4so393699666b.2;
+        Mon, 21 Aug 2023 02:09:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692608877; x=1693213677;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JKWRJTfGQowIKvL3XjiDWE9FYLrusIoybiwsp0Evuyk=;
-        b=IWqMYS/bqI4//jC+H84KAMF7yLm16UiKGJCYow6H4D9oYB5Ltv1q6/hrZX441uHk/+
-         4tnmPYvkqjjK51R1Q9yIDe6rpgohU4EVdfcJoVQBqzmpwrG0XPUnsvQyGmSgCVUxN2nh
-         hThJqK+Awdze1bqE2McxKFIDLFWffqmuSUpB7N9YVkGs68bzEJFk6d+7kEDX5zZUjpNd
-         NqOrt1oSvLOJUH+daRc/XkCZQ+rLLCN0alh8j7V+KWEVnyYo6mfBuGGZ2ktuvFmX5N3E
-         ALLYHBqF0C78EXOS8MEzEQfod/a92ELQ6NBavSGOiLPbWWwDpwGBLDTtQuV//rULom77
-         JOAw==
-X-Gm-Message-State: AOJu0Yz+qJIQb/ZBA8MHgR5kyPgnrQaRJrsP2l3u2abxGFiBpURfneG1
-        obkgioG4/OjYa7KpQwfyPRrwRwXP4rBublfxN50=
-X-Google-Smtp-Source: AGHT+IGcyGcLR9ieZcYZFcxkxoF+t0ejjZ6vHbUf6OXAnQs7ZPV/jSisWOFHbcHRF2Inn7DmUzEGs8tATvEeswPHF9A=
-X-Received: by 2002:a05:6512:e84:b0:4fe:61f:3025 with SMTP id
- bi4-20020a0565120e8400b004fe061f3025mr5145487lfb.61.1692608876970; Mon, 21
- Aug 2023 02:07:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692608971; x=1693213771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G3IanIreuKKd6oid8gIK418X48snCHg9yrUKvAdOxbs=;
+        b=DGSA6iIKmEi0XFRKPjUlW15ZAdIzDaYKw00Kw5JCLXjH6n6/U9R+TBQ55sohWID3uE
+         I60//7k5i5/6nr64r5xBnS+M7NXAZ3fJ5D0Ctiwa1HsQBZb/p6mUwiHyIUur96jzY0un
+         uK+mi69O7Gtuj9T3UbwKj2m8Dmq6jCzbkOuRi8Wh6D1arsgHtbmekjmi32r+TDtHntRq
+         GbRw2tBYys7+3CbiT0I9UyssO/Ar8tCZ9969k67AtP55+UvhFg5JYWIMlJ00isharuP0
+         ANUpPNf4kc1DlR9pxfqndaOpFshlVIbaDihEQX7Mu+5YNVlp8HrqVNM3X5Dtg9IFtr0H
+         FTaQ==
+X-Gm-Message-State: AOJu0YzqT6UOUisyR/GQMYLbQ4jaPcXk+vxTwmpnIReW+89Q9oc2lLIn
+        tGs25vLHWI8G3qaIha4vn+s=
+X-Google-Smtp-Source: AGHT+IETWV8T6vtneT+4l5a1uiQOc2A3mGi8+jnIWL6WwJCuN7klY8X0PX9zHVVOsWlY5Px9lJnhCg==
+X-Received: by 2002:a17:906:224e:b0:9a1:68ff:a161 with SMTP id 14-20020a170906224e00b009a168ffa161mr5036529ejr.52.1692608970347;
+        Mon, 21 Aug 2023 02:09:30 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-009.fbsv.net. [2a03:2880:31ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170906828200b00977cad140a8sm6161655ejx.218.2023.08.21.02.09.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 02:09:29 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 02:09:26 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     Gabriel Krisman Bertazi <krisman@suse.de>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com
+Subject: Re: [PATCH v3 6/9] io_uring/cmd: Introduce SOCKET_URING_OP_GETSOCKOPT
+Message-ID: <ZOMpxrTzvSGQRwYi@gmail.com>
+References: <20230817145554.892543-1-leitao@debian.org>
+ <20230817145554.892543-7-leitao@debian.org>
+ <87zg2p345l.fsf@suse.de>
 MIME-Version: 1.0
-References: <20230814115108.45741-1-cloudliang@tencent.com>
- <20230814115108.45741-3-cloudliang@tencent.com> <56873cf7-ddaf-3e8d-3589-78700934c999@gmail.com>
-In-Reply-To: <56873cf7-ddaf-3e8d-3589-78700934c999@gmail.com>
-From:   Jinrong Liang <ljr.kernel@gmail.com>
-Date:   Mon, 21 Aug 2023 17:07:45 +0800
-Message-ID: <CAFg_LQXmcPZnCUP1eWt-cH2=rHtDRWVWDyg7RXK6_QW=eYnp9g@mail.gmail.com>
-Subject: Re: [PATCH v3 02/11] KVM: selftests: Add pmu.h for PMU events and
- common masks
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jinrong Liang <cloudliang@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87zg2p345l.fsf@suse.de>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like Xu <like.xu.linux@gmail.com> =E4=BA=8E2023=E5=B9=B48=E6=9C=8821=E6=97=
-=A5=E5=91=A8=E4=B8=80 16:56=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 14/8/2023 7:50 pm, Jinrong Liang wrote:
-> > +#define ARCH_PERFMON_EVENTSEL_EDGE           BIT_ULL(18)
-> > +#define ARCH_PERFMON_EVENTSEL_PIN_CONTROL    BIT_ULL(19)
-> > +#define ARCH_PERFMON_EVENTSEL_INT            BIT_ULL(20)
-> > +#define ARCH_PERFMON_EVENTSEL_ANY            BIT_ULL(21)
-> > +#define ARCH_PERFMON_EVENTSEL_ENABLE         BIT_ULL(22)
-> > +#define ARCH_PERFMON_EVENTSEL_INV            BIT_ULL(23)
-> > +#define ARCH_PERFMON_EVENTSEL_CMASK          GENMASK_ULL(31, 24)
->
-> Could you write more test cases to cover all EVENTSEL bits including ENAB=
-LE bit ?
+Hello Gabriel,
 
-I am more than willing to write additional test cases to cover all
-EVENTSEL bits, including the ENABLE bit.
+On Thu, Aug 17, 2023 at 02:38:46PM -0400, Gabriel Krisman Bertazi wrote:
+> Breno Leitao <leitao@debian.org> writes:
+> 
+> > +#if defined(CONFIG_NET)
+> >  int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  {
+> >  	struct socket *sock = cmd->file->private_data;
+> > @@ -189,8 +219,16 @@ int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> >  		if (ret)
+> >  			return ret;
+> >  		return arg;
+> > +	case SOCKET_URING_OP_GETSOCKOPT:
+> > +		return io_uring_cmd_getsockopt(sock, cmd, issue_flags);
+> >  	default:
+> >  		return -EOPNOTSUPP;
+> >  	}
+> >  }
+> > +#else
+> > +int io_uring_cmd_sock(struct io_uring_cmd *cmd, unsigned int issue_flags)
+> > +{
+> > +	return -EOPNOTSUPP;
+> > +}
+> > +#endif
+> >  EXPORT_SYMBOL_GPL(io_uring_cmd_sock);
+> 
+> The CONFIG_NET guards are unrelated and need to go in a separate commit.
+> Specially because it is not only gating getsockopt, but also the already
+> merged SOCKET_URING_OP_SIOCINQ/_OP_SIOCOUTQ.
 
-If you have any specific suggestions or scenarios you'd like me to
-cover in the new test cases, please feel free to share them. I am open
-to any ideas that can further improve the coverage and quality of our
-selftests.
+Well, so far, if CONFIG_NET is disable, and you call
+io_uring_cmd_getsockopt, the callbacks will be called and returned
+-EOPNOTSUPP.
 
-Thanks
+With this new patch, it will eventually call sk_getsockopt which does
+not exist in the CONFIG_NET=n world. That is why I have this
+protection now. I.e, this `#if defined(CONFIG_NET)` is only necessary now,
+since it is the first time this function (io_uring_cmd_sock) will call a
+function that does not exist if CONFIG_NET is disabled.
+
+I can split it in a different patch, if you think it makes a difference.
