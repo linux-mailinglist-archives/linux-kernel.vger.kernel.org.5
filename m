@@ -2,202 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BEC782D58
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C76F782D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbjHUPeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43868 "EHLO
+        id S236401AbjHUPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:34:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235487AbjHUPeJ (ORCPT
+        with ESMTP id S236400AbjHUPeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:34:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3648F4;
-        Mon, 21 Aug 2023 08:34:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692632047; x=1724168047;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kXlM/pwJGzRIMSIfVIy6urX8rZiLt3tsyIjFnb54JgE=;
-  b=eeaQm6UKHkUmLXMgg8LlP46HXzoa81mYCM3RqD/bvtR2jGjRQn+/XyNr
-   Xx1uQB0RJCT2eK3cyBs2pGViKyn0E2KYdW4HPPmv4I7dWRUK8K3tuqzNP
-   CHx5hU0/prAPoKgu2pU6271Jhd4bBnNUnbnCwjbT/QVhp1jiE/3M9Ymdh
-   tSiCHIWgJ+r5FKrpp2oznDNoxJwhKC7ryCFWzt1oKY5hv49ZSDVNOCP5K
-   EyKHx4SemodrgwNamyIWLTDcyTdyZ+JO0YxQaun8IPQ02kNEx8oaPsoWJ
-   qWMkWEZzHVfw2PKRx2j4ILo3xTVgKEb+ZeST4ubltA4odcpj6zzQaAVBf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="372520836"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="372520836"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 08:34:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="982518254"
-X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
-   d="scan'208";a="982518254"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga006.fm.intel.com with ESMTP; 21 Aug 2023 08:33:58 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qY6uj-002ZBE-04;
-        Mon, 21 Aug 2023 18:33:57 +0300
-Date:   Mon, 21 Aug 2023 18:33:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] gpiolib: provide and use gpiod_line_state_notify()
-Message-ID: <ZOOD5BrhsX3O6TQG@smile.fi.intel.com>
-References: <20230821141827.18061-1-brgl@bgdev.pl>
+        Mon, 21 Aug 2023 11:34:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BF110B;
+        Mon, 21 Aug 2023 08:34:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E415D63C31;
+        Mon, 21 Aug 2023 15:34:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7809DC433C8;
+        Mon, 21 Aug 2023 15:34:17 +0000 (UTC)
+Date:   Mon, 21 Aug 2023 11:34:31 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "GONG, Ruiqi" <gongruiqi@huaweicloud.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        gongruiqi1@huawei.com
+Subject: Re: [PATCH] samples: ftrace: replace bti assembly with hint for
+ older compiler
+Message-ID: <20230821113431.068088f4@gandalf.local.home>
+In-Reply-To: <20230820111509.1470826-1-gongruiqi@huaweicloud.com>
+References: <20230820111509.1470826-1-gongruiqi@huaweicloud.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821141827.18061-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 04:18:27PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+Strange, I had to download this from lore. I only noticed this from
+patchwork, but this email never made it to my inbox, nor to either my
+kernel-tracing or LKML folders :-/
+
+Anyway,
+
+Mark, can you review this?
+
+// patchwork link:
+//    https://patchwork.kernel.org/project/linux-trace-kernel/patch/20230820111509.1470826-1-gongruiqi@huaweicloud.com/
+
+-- Steve
+
+
+On Sun, 20 Aug 2023 19:15:09 +0800
+"GONG, Ruiqi" <gongruiqi@huaweicloud.com> wrote:
+
+> From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
 > 
-> Wrap the calls to blocking_notifier_call_chain() for the line state
-> notifier with a helper that allows us to use fewer lines of code and
-> simpler syntax.
-
-This change I like, no questions asked.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> When cross-building the arm64 kernel with allmodconfig using GCC 9.4,
+> the following error occurs on multiple files under samples/ftrace/:
+> 
+> /tmp/ccPC1ODs.s: Assembler messages:
+> /tmp/ccPC1ODs.s:8: Error: selected processor does not support `bti c'
+> 
+> Fix this issue by replacing `bti c` with `hint 34`, which is compatible
+> for the older compiler.
+> 
+> Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
 > ---
->  drivers/gpio/gpiolib-cdev.c | 17 +++++------------
->  drivers/gpio/gpiolib.c      | 12 ++++++++----
->  drivers/gpio/gpiolib.h      |  1 +
->  3 files changed, 14 insertions(+), 16 deletions(-)
+>  samples/ftrace/ftrace-direct-modify.c       | 4 ++--
+>  samples/ftrace/ftrace-direct-multi-modify.c | 4 ++--
+>  samples/ftrace/ftrace-direct-multi.c        | 2 +-
+>  samples/ftrace/ftrace-direct-too.c          | 2 +-
+>  samples/ftrace/ftrace-direct.c              | 2 +-
+>  5 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index 35dcaf78aed6..e39d344feb28 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -230,9 +230,7 @@ static long linehandle_set_config(struct linehandle_state *lh,
->  				return ret;
->  		}
->  
-> -		blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -					     GPIO_V2_LINE_CHANGED_CONFIG,
-> -					     desc);
-> +		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
->  	}
->  	return 0;
->  }
-> @@ -414,8 +412,7 @@ static int linehandle_create(struct gpio_device *gdev, void __user *ip)
->  				goto out_free_lh;
->  		}
->  
-> -		blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -					     GPIO_V2_LINE_CHANGED_REQUESTED, desc);
-> +		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_REQUESTED);
->  
->  		dev_dbg(&gdev->dev, "registered chardev handle for line %d\n",
->  			offset);
-> @@ -1420,9 +1417,7 @@ static long linereq_set_config_unlocked(struct linereq *lr,
->  
->  		WRITE_ONCE(line->edflags, edflags);
->  
-> -		blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -					     GPIO_V2_LINE_CHANGED_CONFIG,
-> -					     desc);
-> +		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_CONFIG);
->  	}
->  	return 0;
->  }
-> @@ -1737,8 +1732,7 @@ static int linereq_create(struct gpio_device *gdev, void __user *ip)
->  
->  		lr->lines[i].edflags = edflags;
->  
-> -		blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -					     GPIO_V2_LINE_CHANGED_REQUESTED, desc);
-> +		gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_REQUESTED);
->  
->  		dev_dbg(&gdev->dev, "registered chardev handle for line %d\n",
->  			offset);
-> @@ -2156,8 +2150,7 @@ static int lineevent_create(struct gpio_device *gdev, void __user *ip)
->  	if (ret)
->  		goto out_free_le;
->  
-> -	blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -				     GPIO_V2_LINE_CHANGED_REQUESTED, desc);
-> +	gpiod_line_state_notify(desc, GPIO_V2_LINE_CHANGED_REQUESTED);
->  
->  	irq = gpiod_to_irq(desc);
->  	if (irq <= 0) {
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 0737952882cd..43162fd71d92 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -2160,8 +2160,7 @@ static bool gpiod_free_commit(struct gpio_desc *desc)
->  	}
->  
->  	spin_unlock_irqrestore(&gpio_lock, flags);
-> -	blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -				     GPIOLINE_CHANGED_RELEASED, desc);
-> +	gpiod_line_state_notify(desc, GPIOLINE_CHANGED_RELEASED);
->  
->  	return ret;
->  }
-> @@ -3729,6 +3728,12 @@ int gpiod_set_array_value_cansleep(unsigned int array_size,
->  }
->  EXPORT_SYMBOL_GPL(gpiod_set_array_value_cansleep);
->  
-> +void gpiod_line_state_notify(struct gpio_desc *desc, unsigned long action)
-> +{
-> +	blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> +				     action, desc);
-
-action can be on previous line, but this is the logical split, so fine as is.
-
-> +}
-> +
->  /**
->   * gpiod_add_lookup_table() - register GPIO device consumers
->   * @table: table of consumers to register
-> @@ -3996,8 +4001,7 @@ static struct gpio_desc *gpiod_find_and_request(struct device *consumer,
->  		return ERR_PTR(ret);
->  	}
->  
-> -	blocking_notifier_call_chain(&desc->gdev->line_state_notifier,
-> -				     GPIOLINE_CHANGED_REQUESTED, desc);
-> +	gpiod_line_state_notify(desc, GPIOLINE_CHANGED_REQUESTED);
->  
->  	return desc;
->  }
-> diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-> index 54012605b4a4..0d81ac3bbb40 100644
-> --- a/drivers/gpio/gpiolib.h
-> +++ b/drivers/gpio/gpiolib.h
-> @@ -146,6 +146,7 @@ int gpiod_set_array_value_complex(bool raw, bool can_sleep,
->  extern spinlock_t gpio_lock;
->  extern struct list_head gpio_devices;
->  
-> +void gpiod_line_state_notify(struct gpio_desc *desc, unsigned long action);
->  
->  /**
->   * struct gpio_desc - Opaque descriptor for a GPIO
-> -- 
-> 2.39.2
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+> diff --git a/samples/ftrace/ftrace-direct-modify.c b/samples/ftrace/ftrace-direct-modify.c
+> index e5ed08098ff3..e2a6a69352df 100644
+> --- a/samples/ftrace/ftrace-direct-modify.c
+> +++ b/samples/ftrace/ftrace-direct-modify.c
+> @@ -105,7 +105,7 @@ asm (
+>  "	.type		my_tramp1, @function\n"
+>  "	.globl		my_tramp1\n"
+>  "   my_tramp1:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #16\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	bl	my_direct_func1\n"
+> @@ -117,7 +117,7 @@ asm (
+>  "	.type		my_tramp2, @function\n"
+>  "	.globl		my_tramp2\n"
+>  "   my_tramp2:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #16\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	bl	my_direct_func2\n"
+> diff --git a/samples/ftrace/ftrace-direct-multi-modify.c b/samples/ftrace/ftrace-direct-multi-modify.c
+> index 292cff2b3f5d..2e349834d63c 100644
+> --- a/samples/ftrace/ftrace-direct-multi-modify.c
+> +++ b/samples/ftrace/ftrace-direct-multi-modify.c
+> @@ -112,7 +112,7 @@ asm (
+>  "	.type		my_tramp1, @function\n"
+>  "	.globl		my_tramp1\n"
+>  "   my_tramp1:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #32\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	str	x0, [sp, #16]\n"
+> @@ -127,7 +127,7 @@ asm (
+>  "	.type		my_tramp2, @function\n"
+>  "	.globl		my_tramp2\n"
+>  "   my_tramp2:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #32\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	str	x0, [sp, #16]\n"
+> diff --git a/samples/ftrace/ftrace-direct-multi.c b/samples/ftrace/ftrace-direct-multi.c
+> index b4391e08c913..9243dbfe4d0c 100644
+> --- a/samples/ftrace/ftrace-direct-multi.c
+> +++ b/samples/ftrace/ftrace-direct-multi.c
+> @@ -75,7 +75,7 @@ asm (
+>  "	.type		my_tramp, @function\n"
+>  "	.globl		my_tramp\n"
+>  "   my_tramp:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #32\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	str	x0, [sp, #16]\n"
+> diff --git a/samples/ftrace/ftrace-direct-too.c b/samples/ftrace/ftrace-direct-too.c
+> index e9804c5307c0..e39c3563ae4e 100644
+> --- a/samples/ftrace/ftrace-direct-too.c
+> +++ b/samples/ftrace/ftrace-direct-too.c
+> @@ -81,7 +81,7 @@ asm (
+>  "	.type		my_tramp, @function\n"
+>  "	.globl		my_tramp\n"
+>  "   my_tramp:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #48\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	stp	x0, x1, [sp, #16]\n"
+> diff --git a/samples/ftrace/ftrace-direct.c b/samples/ftrace/ftrace-direct.c
+> index 20f4a7caa810..32c477da1e9a 100644
+> --- a/samples/ftrace/ftrace-direct.c
+> +++ b/samples/ftrace/ftrace-direct.c
+> @@ -72,7 +72,7 @@ asm (
+>  "	.type		my_tramp, @function\n"
+>  "	.globl		my_tramp\n"
+>  "   my_tramp:"
+> -"	bti	c\n"
+> +"	hint	34\n" // bti	c
+>  "	sub	sp, sp, #32\n"
+>  "	stp	x9, x30, [sp]\n"
+>  "	str	x0, [sp, #16]\n"
 
