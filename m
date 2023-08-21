@@ -2,214 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC707823D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640557823DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 08:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbjHUGpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 02:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        id S233385AbjHUGqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 02:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbjHUGpj (ORCPT
+        with ESMTP id S231597AbjHUGq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 02:45:39 -0400
-Received: from out203-205-251-27.mail.qq.com (out203-205-251-27.mail.qq.com [203.205.251.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D19ABAC;
-        Sun, 20 Aug 2023 23:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1692600333;
-        bh=paBRn6eelvFWTUlP54KQNmNcr2N3P9kR/VQ6xAidyfw=;
-        h=From:To:Cc:Subject:Date;
-        b=ZRJCfEfF61JikHlYO+SZWxbMSwg0XnFQ7NpiDb0/B0S46wJoj/DBr72pMB+I2Ov1o
-         18mSi2pUftX5P1xWAhKNSjL03zx4pP/sgpzEXttK4ptsNLyxcf04jip7CImvmqPo2L
-         XUECILS8wpPIbzAab7mAODzvIiAa78Maq3O1brwk=
-Received: from localhost.localdomain ([39.156.73.12])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id B5CA7E83; Mon, 21 Aug 2023 14:45:28 +0800
-X-QQ-mid: xmsmtpt1692600328t1kcyelb7
-Message-ID: <tencent_4A09A36F883A06EA428A593497642AF8AF08@qq.com>
-X-QQ-XMAILINFO: MFdGPHhuqhNoD+8K/Ve4A6z/kl50vAYdg+04s0OTjfBjVrQSKL41J5MzOfJcF5
-         U5sJHiMlEElBzhQvNgs1q2wVyQDR/8CxcwAY1akClh0Go83WBI+fqrjzG7x9h6m0LoIMrQYUuuf0
-         uIilB21GWvlFlTWlaCSg7K7CMJlwDCkHb1KeXiI2hxnJNQWPDV8p/KgFDgHG8tagEG/a/CF7ZXMS
-         6t5wYgy4WWpexsP/bx8rJC2FximvEe4/Z+tF9za8+07CFTU0U1n6UL2xFLzGUXAA57lbT2Qj2rDn
-         PJQzxsfx8eEulb2Slc1NcoBL1UQ7kDKBs4tec53V1kevu4nbjwipkb3WKPm1lmAcbWuYtcthL3op
-         S7BtBTAanH35F+Hnda5wzordEEKavLAC525QtEAKzlShI0xbZXlz0CPFaSSBApAIy98lnNVTa6A5
-         Qcc7dInBzWUMW/qxw2hUoh9xQPaUlOBFFS76QWvpUIQheBtbjO0c27/JXbNQ2FS2PScJMKnySrbg
-         HRnUB6jLuiKWaHlHRNWrzJjockHG2DB50d0owX9JA21tjEvxJ1KaZQw8XJ2MCk/DWaxXlg47snQP
-         Y4M01MmEFk2yDhYb7dKF8xkk10p13b804UmoWJkoVQ4RBBNZXVbbirXdhyDVEA7ziAfEibeJIlIM
-         zd/UE7MWFfKg9T2sT7ASbHNnx9Wr9zD7DiFy2aEja68ek9FTSFdEe9oQC4gR8ud1VtuiA6qlblIR
-         0i5pJFyQ5qjok2ux7k1wpgLzebJI8VvjFxILYt7IcGIcmD/gk+yDNqhQ7gmIdsF7KXO1ue52zasU
-         VMjciDi+H3RT2jGnGtsyJfjzpZ7+JabWYN/BW7cOYB3mAwVFsRqngLFhFoZwmsDsQTA1tq1xxQOa
-         ZJoik8wihI16eEPQrPrdyL9D6s5PRQX15yXHmP5kkf3c+CCSIZjAoi/KnzDgIlwhFmQdNGEcy8tz
-         Bg7i6l9byUYJFqJ1Ik+mm6Zyn9ot6BEp82KjOY6baFdrRskQ3kZW95Yo3ylYg2av3yOGhBjjqCao
-         LyMDQt0w==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     andrii@kernel.org, daniel@iogearbox.net, sdf@google.com,
-        yonghong.song@linux.dev
-Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK)
-Subject: [PATCH bpf-next v6] selftests/bpf: trace_helpers.c: optimize kallsyms cache
-Date:   Mon, 21 Aug 2023 14:45:20 +0800
-X-OQ-MSGID: <20230821064520.156321-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.39.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 02:46:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCEA7AC
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692600341;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rUH8EM/c4BgCyJddNU6uELLJ8bA/pGDspC2Nb/HHUYY=;
+        b=jC6II0PDu6LOwaf0BX6sQkJxAnR5aeGN12DFhcbiwhFUzpDYxcefgK3SLZaxDxc9muKTwr
+        v/HzlLa7QbDFsYbaC1W87rWNLrSn/oUlBJKiAu6teZ2bASvSndSXNMLvT058ktJ1d4PMUR
+        WvVk2PhQTEIFSErDd9WbaLY9qNY5+PM=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-651-8iYlv8DTPQeMEuKjhgGRig-1; Mon, 21 Aug 2023 02:45:38 -0400
+X-MC-Unique: 8iYlv8DTPQeMEuKjhgGRig-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-26f3fce5b0bso1051672a91.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 23:45:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692600337; x=1693205137;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rUH8EM/c4BgCyJddNU6uELLJ8bA/pGDspC2Nb/HHUYY=;
+        b=aZXUBeK+SNFX7rQ+Rf5TVL6nzjFMEp96t9tdzO16L3HelmLsnn32QzWdkSr+QtM3Cd
+         iUBRC+8mAF8xnpGcJiICvVfU6v4NIhJHO5Y0b5xcbyMI9Nf7Oi99Ken/ZbQLbxP1g1JB
+         wmy77x3rZLqhB1NZPkk3Rl9A1b2IOBB42LL0IYmfdBojjMPkQsmU7y8u6SoJN1bn3bJI
+         JSAYQapE/Jbkd+s982J+qgRDYYUTiuz6BH8dXLyc856C/F4jj38dLIP0fFftqKFy5RG6
+         uwrUEX9EliGMxGBKHJyCjw/qomforobB1koPTWfcPajYv/ma8Nvdlke3Iml3ikzRBt3b
+         ws7A==
+X-Gm-Message-State: AOJu0YxaqQ2dPiTi0/4gblirGygQhVwoP9ORN2jXIerPR8P+rWwrND/B
+        93rhTiRqBlyYxMQgCpFCWlebVJaHYklRZD7V7HhUZnkbvHqailUNfIJsMeY1+mzd99Nxj5aCGR9
+        Ggbk6nw6XJt5/aTSTtH5AOfDw
+X-Received: by 2002:a17:90a:2f06:b0:268:37b:a10e with SMTP id s6-20020a17090a2f0600b00268037ba10emr2885282pjd.11.1692600337173;
+        Sun, 20 Aug 2023 23:45:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHhMxnaElq+qOTcktFtonqQ5m9DNcuZEtAl/95cxPPiE918/oL2gA20Hrfq336KSnmg4f84nA==
+X-Received: by 2002:a17:90a:2f06:b0:268:37b:a10e with SMTP id s6-20020a17090a2f0600b00268037ba10emr2885246pjd.11.1692600336873;
+        Sun, 20 Aug 2023 23:45:36 -0700 (PDT)
+Received: from smtpclient.apple ([49.207.201.27])
+        by smtp.gmail.com with ESMTPSA id d19-20020a17090ae29300b00267eead2f16sm5376430pjz.36.2023.08.20.23.45.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Aug 2023 23:45:36 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.4\))
+Subject: Re: [PATCH v3] hv/hv_kvp_daemon: Add support for keyfile config based
+ connection profile in NM
+From:   Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <20230808054248.GA12620@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Date:   Mon, 21 Aug 2023 12:15:29 +0530
+Cc:     Wei Liu <wei.liu@kernel.org>, Olaf Hering <olaf@aepfle.de>,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Long Li <longli@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5A8AA269-FBDB-4023-9809-273C046B2BCD@redhat.com>
+References: <1683265875-3706-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <20230508095340.2ca1630f.olaf@aepfle.de>
+ <ZFknuu+f74e1zHZe@liuwe-devbox-debian-v2>
+ <20230508191246.2fcd6eb5.olaf@aepfle.de>
+ <ZFkuY4dmwiPsUJ3+@liuwe-devbox-debian-v2>
+ <20230523053627.GA10913@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <53E9AC1D-C907-4B55-97F2-FC10DCD4D470@redhat.com>
+ <4142F3A4-8AB4-4DE2-8D03-D3A8F8776BF9@redhat.com>
+ <20230808054248.GA12620@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+To:     Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3696.120.41.1.4)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
 
-Static ksyms often have problems because the number of symbols exceeds the
-MAX_SYMS limit. Like changing the MAX_SYMS from 300000 to 400000 in
-commit e76a014334a6("selftests/bpf: Bump and validate MAX_SYMS") solves
-the problem somewhat, but it's not the perfect way.
 
-This commit uses dynamic memory allocation, which completely solves the
-problem caused by the limitation of the number of kallsyms.
+> On 08-Aug-2023, at 11:12 AM, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>=20
+> On Tue, Aug 08, 2023 at 10:41:21AM +0530, Ani Sinha wrote:
+>>=20
+>>=20
+>>> On 12-Jul-2023, at 12:32 PM, Ani Sinha <anisinha@redhat.com> wrote:
+>>>=20
+>>>=20
+>>>=20
+>>>> On 23-May-2023, at 11:06 AM, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>>>>=20
+>>>> On Mon, May 08, 2023 at 05:16:19PM +0000, Wei Liu wrote:
+>>>>> On Mon, May 08, 2023 at 07:12:46PM +0200, Olaf Hering wrote:
+>>>>>> Mon, 8 May 2023 16:47:54 +0000 Wei Liu <wei.liu@kernel.org>:
+>>>>>>=20
+>>>>>>> Olaf, is this a reviewed-by from you? :-)
+>>>>>>=20
+>>>>>> Sorry, I did not review the new functionality, just tried to make =
+sure there will be no regression for existing consumers.
+>>>>>=20
+>>>>> Okay, this is fine, too. Thank you for looking into this.
+>>>>>=20
+>>>>>=20
+>>>>>>=20
+>>>>>> Olaf
+>>>>>=20
+>>>>=20
+>>>> Gentle reminder.
+>>>>=20
+>>>=20
+>>> I have a comment about the following change:
+>>>=20
+>>> +		error =3D fprintf(nmfile, "\n[ipv4]\n");
+>>> +		if (error < 0)
+>>> +			goto setval_error;
+>>> +
+>>> +		if (new_val->dhcp_enabled) {
+>>> +			error =3D kvp_write_file(nmfile, "method", "", =
+"auto");
+>>> +			if (error < 0)
+>>> +				goto setval_error;
+>>> +		} else {
+>>> +			error =3D kvp_write_file(nmfile, "method", "", =
+"manual");
+>>> +			if (error < 0)
+>>> +				goto setval_error;
+>>> +		}
+>>>=20
+>>> I think the method equally would apply for ipv6 as it applies for =
+ipv4.=20
+>>> We can use =
+https://www.golinuxcloud.com/nmcli-command-examples-cheatsheet-centos-rhel=
+/#18_Disable_IPv6_Address_for_ethernet_connection_IPV6INIT as a =
+reference.=20
+>>> So setting the method should be common to both ipv4 and ipv6.
+>>=20
+>> Ping once more ???
+>> Can anyone comment on the avove and/or review the patchset?
+> That's correct Ani, this needs to be enabled for ipv6 as well, will =
+send out another version. Thanks for catching this.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
-v6: Apply libbpf_ensure_mem()
-v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
-    Release the allocated memory once the load_kallsyms_refresh() upon error
-    given it's dynamically allocated.
-v4: https://lore.kernel.org/lkml/tencent_59C74613113F0C728524B2A82FE5540A5E09@qq.com/
-    Make sure most cases we don't need the realloc() path to begin with,
-    and check strdup() return value.
-v3: https://lore.kernel.org/lkml/tencent_50B4B2622FE7546A5FF9464310650C008509@qq.com/
-    Do not use structs and judge ksyms__add_symbol function return value.
-v2: https://lore.kernel.org/lkml/tencent_B655EE5E5D463110D70CD2846AB3262EED09@qq.com/
-    Do the usual len/capacity scheme here to amortize the cost of realloc, and
-    don't free symbols.
-v1: https://lore.kernel.org/lkml/tencent_AB461510B10CD484E0B2F62E3754165F2909@qq.com/
----
- samples/bpf/Makefile                        |  1 +
- tools/testing/selftests/bpf/trace_helpers.c | 59 +++++++++++++++++----
- 2 files changed, 49 insertions(+), 11 deletions(-)
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 595b98d825ce..a49d0f759f5a 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -199,6 +199,7 @@ TPROGS_CFLAGS += -I$(srctree)/tools/testing/selftests/bpf/
- TPROGS_CFLAGS += -I$(LIBBPF_INCLUDE)
- TPROGS_CFLAGS += -I$(srctree)/tools/include
- TPROGS_CFLAGS += -I$(srctree)/tools/perf
-+TPROGS_CFLAGS += -I$(srctree)/tools/lib
- TPROGS_CFLAGS += -DHAVE_ATTR_TEST=0
- 
- ifdef SYSROOT
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index f83d9f65c65b..316a7874a12b 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -14,14 +14,48 @@
- #include <linux/limits.h>
- #include <libelf.h>
- #include <gelf.h>
-+#ifndef __must_check
-+#define __must_check
-+#endif
-+#include "bpf/libbpf_internal.h"
- 
- #define TRACEFS_PIPE	"/sys/kernel/tracing/trace_pipe"
- #define DEBUGFS_PIPE	"/sys/kernel/debug/tracing/trace_pipe"
- 
--#define MAX_SYMS 400000
--static struct ksym syms[MAX_SYMS];
-+static struct ksym *syms;
-+static size_t sym_cap;
- static int sym_cnt;
- 
-+static int ksyms__add_symbol(const char *name, unsigned long addr)
-+{
-+	void *tmp;
-+
-+	tmp = strdup(name);
-+	if (!tmp)
-+		return -ENOMEM;
-+	syms[sym_cnt].addr = addr;
-+	syms[sym_cnt].name = tmp;
-+
-+	sym_cnt++;
-+
-+	return 0;
-+}
-+
-+static void ksyms__free(void)
-+{
-+	unsigned int i;
-+
-+	if (!syms)
-+		return;
-+
-+	for (i = 0; i < sym_cnt; i++)
-+		free(syms[i].name);
-+	free(syms);
-+	syms = NULL;
-+	sym_cnt = 0;
-+	sym_cap = 0;
-+}
-+
- static int ksym_cmp(const void *p1, const void *p2)
- {
- 	return ((struct ksym *)p1)->addr - ((struct ksym *)p2)->addr;
-@@ -33,9 +67,7 @@ int load_kallsyms_refresh(void)
- 	char func[256], buf[256];
- 	char symbol;
- 	void *addr;
--	int i = 0;
--
--	sym_cnt = 0;
-+	int ret;
- 
- 	f = fopen("/proc/kallsyms", "r");
- 	if (!f)
-@@ -46,17 +78,22 @@ int load_kallsyms_refresh(void)
- 			break;
- 		if (!addr)
- 			continue;
--		if (i >= MAX_SYMS)
--			return -EFBIG;
- 
--		syms[i].addr = (long) addr;
--		syms[i].name = strdup(func);
--		i++;
-+		ret = libbpf_ensure_mem((void **) &syms, &sym_cap,
-+					sizeof(struct ksym), sym_cnt + 1);
-+		if (ret)
-+			goto error;
-+		ret = ksyms__add_symbol(func, (unsigned long)addr);
-+		if (ret)
-+			goto error;
- 	}
- 	fclose(f);
--	sym_cnt = i;
- 	qsort(syms, sym_cnt, sizeof(struct ksym), ksym_cmp);
- 	return 0;
-+
-+error:
-+	ksyms__free();
-+	return ret;
- }
- 
- int load_kallsyms(void)
--- 
-2.39.3
+Have you sent out a new version? I do not see anything in my inbox.
+>=20
 
