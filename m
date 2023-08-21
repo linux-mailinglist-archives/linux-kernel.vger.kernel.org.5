@@ -2,127 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B11782A02
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D8C782A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235230AbjHUNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S235241AbjHUNK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjHUNKO (ORCPT
+        with ESMTP id S230407AbjHUNKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:10:14 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2060.outbound.protection.outlook.com [40.107.237.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A6FCD;
-        Mon, 21 Aug 2023 06:10:12 -0700 (PDT)
+        Mon, 21 Aug 2023 09:10:55 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2078.outbound.protection.outlook.com [40.107.237.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6548F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:10:53 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AZZHEZaA+S3TUUokWPFI47AYgUbYtNJ6buJZTLwzkUL9ScA55HEwJdGbaGUe1ytntdo5LEO45gc+I+beXlVk8hPzg4j0uGFa6McG/vCru0xYPUleDmfHSp+2nCLu+vTmfPPg11+RjZypKvf26hQwqMtVUg46jpEivCjJ1Bn5Gd57lPwLbdQyPis0WDKRfpb4eKQyakeBXhsU9Jg4G7JGgC/vTbPxkvPR+rltWfhCn5ExFooeZ41CwGxN5lN24w9xwHX3j3ORnDPrNt6mN5R/VjzqD/7//OBy2DKCZEnmAtf2OMO3zAmYKkY+vzDWJSY967Zwmqk4VbAy732DD7Z3AQ==
+ b=U/yJBUEzyS+By5mva5VgqQJ4GNImF+X+9QDY828vXznmp3vIp5vbsuBrx+Zv70hsagc6yHMObCr8AZYjagq5Rh0Q99BSKtqc+3G93ROx1roms7XT+yNK74peuhchZI+7Sh1TC+KwEM7RIra2nNc/GRpaG4d9J3wU+fiWV0lsySDNzSvjWelgGPY0wkz5fRyn2Ls6pEsANZYpj+CxazuaJ+6y0GkonBh88qW7+ZzE7s6SqhBMrVT3xeMK3skBT/WtgPWuqf7NzlVDApjJrDkgYXShs4SijTLNFtfuPATv6HMzWFvRT0XtGtIhHiT2fKMk5phXHRoWTVHsCC6OJGUDYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vtSziLT2hvhUlfbqnTxnAxRMTqI5F6fR0SlK0tqQOW4=;
- b=KYaWQMg7o8/wUX4mM0ltqnRBP2YOeSMH9Lm2yPiLkF/isNiQTpj6FWRFBQj7DiB9GU1CBNFwUVQtEo1Oot3m3fjwqlJg5pDcqD5RRahuyqRnKhPj7AD1toCJDV8RJgo90WK7dEOqqVIvZQSVgySWi7rxDNyKbibmzdPL3sSFBDBSFzuehPx1DfNM8nWHd3PPAyx4yLnHYxBqczY2a078PJBTQrYPhDXN7AFivY7XkJdCFQT0QQfxoICE3G9udMuG9ClYwPcMZN+XI+1wRP+D1RkNA9H6W+LrDM5W0USpe0ju6aFSv8C7ZOSZJLK0xKoKhgweS5sBiIfW4ZZx6Pib4g==
+ bh=AMR22lEU7+fdSAqAc3j3gnNtsSdk3SZHfraALqU1a54=;
+ b=GvjJ3AaEOooN5pk+bnqTccTcNz3JST9pn8iptXOgDMhUoFlKw7IjqRGFYv3EWt6A3B5zs/8CqKi1zMC4jPppO1Y3dOspTlPstFrnMXRLVsDiFFET5Ii94pGbaClghnb5EhsK7t2uupqNLp2C1P+O1pqi/s1xAWe0QyFWoI+M5bAJlpwVHHSg+L4naPotTTmXy4zRCbQlXuDysFVVGiHdv9s287fkKbs1modPbN3S4c8917Im/vvQI/KDtVzbXuH0WdcaiWCF+NNPbm/SfmAhSI3gzH/Q6uIkz/fgg35a3CvI3QoHpPsO2zzsMHGjg3tK903MY4SD4WKhzv25/V0sBA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vtSziLT2hvhUlfbqnTxnAxRMTqI5F6fR0SlK0tqQOW4=;
- b=xT3jILX91XhONd1PPeM9vO+HiPqb2k0T+L07rBkmQvPuAtq/VQtR0ugPCRyL39EOjhHxu+w51Jxj77TeIU/EAXSp1O3DrEO05PdpRWvgWQS5z+Xky6+WqTQ+LqWoEhQmXCkjt2+vm4X0vlw/4lr798rv+rTMCqNVdnFK0zODtso=
+ bh=AMR22lEU7+fdSAqAc3j3gnNtsSdk3SZHfraALqU1a54=;
+ b=rNFP9LCONasKFg0LYAVyN2vvgcAMYMU7UN3QhoovJAyoStie0OGhHq9hYVit65FwzHx9vTcU/8mCBctlN5uFRUHjQoL2xa0n3H13plloxG2PCt1S1mwsZA64LYT93RHAj3bK4a/fT6etBXvsdCQmG3Ndocw1erE/ZpiGhBorP5Q=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by BY5PR12MB4083.namprd12.prod.outlook.com (2603:10b6:a03:20d::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 13:10:08 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 13:10:08 +0000
-Message-ID: <08418fc0-839a-f2fb-1c2e-b4f077d2647b@amd.com>
-Date:   Mon, 21 Aug 2023 08:10:05 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page
- aligned
-To:     Steve Rutherford <srutherford@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
-References: <20230818233451.3615464-1-srutherford@google.com>
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by DM4PR12MB5892.namprd12.prod.outlook.com (2603:10b6:8:68::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.24; Mon, 21 Aug 2023 13:10:51 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
+ 13:10:50 +0000
+Message-ID: <75462233-df16-c647-89e7-c0a507e0d981@amd.com>
+Date:   Mon, 21 Aug 2023 15:10:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v2 2/7] drm/amdgpu: Add new function to set GPU power
+ profile
 Content-Language: en-US
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20230818233451.3615464-1-srutherford@google.com>
+To:     Arvind Yadav <Arvind.Yadav@amd.com>, Christian.Koenig@amd.com,
+        alexander.deucher@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
+ <20230821064759.94223-3-Arvind.Yadav@amd.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <20230821064759.94223-3-Arvind.Yadav@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR04CA0101.namprd04.prod.outlook.com
- (2603:10b6:805:f2::42) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+X-ClientProxiedBy: BE1P281CA0034.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:22::16) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|BY5PR12MB4083:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3cc8cb4d-9103-4072-2d30-08dba247f194
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|DM4PR12MB5892:EE_
+X-MS-Office365-Filtering-Correlation-Id: e1badea5-1f4c-4dd3-b917-08dba2480ac6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: O/GtOnhWVDmSriOWOLQ9oQ7J7KR7mVW6Hpwf4auU4k/RtIYwx7fN4YophEXnYSmHhqvLu44BBOBD9YmsoWwJbXRDwap0BbpFiwnL/oC48AU5Ls+ISQiC/p4rJ1BOlp4btxNSFkpSiNywjxUBMTR5vxW3nyEhtKOcQiTVDtm15/E4EMaljbzwVWZuIBH+vmLmqtuzR2BOZ/9BNPFCpSnWFettns3hv+FT3uV7JNqlBNeNtrSGk6J0DM3WuiFigMYgA6YJX4sXVuVCSZ48vyItHTcNsYcE3mZ2I4iQe28/Pp45NRubr/7M4tFQFLGYTqA0Wm6y6DYAaJLRWdF+zOVpM0IKJlFohx8Hyh4l0gaUMMz+AXEmMYbo+J+NT1H9sMr9OIbOVX2TTo4/IqIVKcuEKHNcOyRcG+fHUxaXKmyrY2QPJuU0Du1LkS8aTEATP8MGcxULhbopuT8SnrmDq6HRau1jZCnjpo2DajdlTFB0ZiW08wViHjIJ/8h9kJK5m7reJc4N89xPWu3MrLzoA28WSkhXd0t5ioKXOV4FI1usdmM8S2e/8vfuf9pLqVlQqT2rNlrMMo+c8NDaINQGZEXxGlAi9HGEL3rSoi+oRdO9Esu4o7imeqrIw3PuRDRW8kMqUqw/SkEWaOvhn5scz7SCBg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(7416002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(54906003)(66556008)(66476007)(110136005)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: PzdnBZ8WA1UV+WHq9ns0O4MqbdmhWMTTTHuw0Vf/DdmidBxzpO/2bX5r+99XOPpjKqhLA0zNjw9/127yHiMWoz6yBOJQubuvGtTWJm69iknXg6gSrBmqNsdespldU+npj1oykPn1ANbV0F9hBL5UISu/CiX5PNkGpnZxlqm+MQ91IfnHmerV1Mrx6Q208OpE9YpnzlK1Su+ShCasQ/Rr7mBWAtz6NfkyoZeFPdymH83hPi45V6UR4RBGxaPiZHKjvhddp47mxu4E2IsZePi1tFPpqYPQfTBW1T1vewI8ClQtXLlwcC0xpcb1DH3T4v99APXj2kzH2mkGWiwesPDPSen59fY+ZhSVAP/uzU/y2q71a4CvRZ3uKFJhLIeRdpQzh2ngRDRCxnft8UNnR+fOPnhnk2lF63Gh2b3Gg4cAimlURwxD0o2oZfPMIRnN37KIqCaGHkAy+XcZVrblMWk8VrUxBePzNdM5FmAId2myzRQdM+thUMXb7kdbqfNNlE9j11pzShpUS+Yo4O720Ejvnb76VFzf0Tyh3WTaZMQqJuEIaiLArdfWOTMJaHALa1EUJkU7p158M/whh4hLpCwtBzZ8XVbe8Dk+fCvRcrio/bYgSynXU6v8n/9oArATxEfOOLGbhWCDdyzM3PXT2Sm9/g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(44832011)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(66556008)(66476007)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzdMNm5kSy8zWVBxM1dJcU1qelNwQmdITUNBYXZRVGphU2RqNnhKSlB5Umg4?=
- =?utf-8?B?eERSRU1mTWUzNzZaMm85bjlBcE5acEw3S1NMRG9Md3VLaU5lckNHb2xUMmJr?=
- =?utf-8?B?Njd4NzM1eHlGNlUvdXZrYjFFUHBSUzZnOXRaVjVyY2Z1REIzdDZRN2twTGRE?=
- =?utf-8?B?eW8wWW9TUmw1YjJnOGdEODBFZ2d1N2IwTmlaOWdBK0hLTkFYM25LMGdzNXNI?=
- =?utf-8?B?RFlxaVBwYTRreUM4R2MxeDRMUWxzcmxrNHBOUGhGbzZ1Z0I1QU5hMHlsb0xS?=
- =?utf-8?B?K21taU4zWGt6Y0xJTUVnUnl4NUk0RU00Q2RaL3NNRmdpQTMvSFNLdEZyYXo0?=
- =?utf-8?B?YWtxVkEvQXhYdEc2L0diZUZXS0RwTlppVU8rNkVCREpOQXJjT0x6QU9OMStR?=
- =?utf-8?B?UlpRZ2hHVE82NzB4MTdtOXR5ZVRTUERpSzJBNnJLT3IwZFVRSWFiS1pOSG1O?=
- =?utf-8?B?d3ZIdXFGRi8yRStnck1UL1hmRmtZUHdlMFM2RFpWQjhLV2Zrb2M1WTA1M0lN?=
- =?utf-8?B?ZnpXanlENWZwZ2VIOEdRSHdiUVZqT3pxRXNsWm81dy9BZWxzSnZka0hLRVNa?=
- =?utf-8?B?b0JZNTQ3OXh1VUdxVSt6WWFTRzBkQmxlc2o5S2JkVFU0M1JraWE0dW0wZCtG?=
- =?utf-8?B?dzgzOWlaaEZLRmdDMlYzcEJ3VjNqdDJMRFpNN0xCQnFXQnZzSXlLdGNTSUhX?=
- =?utf-8?B?MmtmUG0xM2F5MXE4ZGppeW0wdUhYZzZzNFpKQVhKazBIeHI4clFlYkpwaTRG?=
- =?utf-8?B?ajRXVysxdFRjTGpiVDhQUWYrc2hCajRDd3JBUmNRZU52RUUyMlRUSDZYUWd1?=
- =?utf-8?B?MGdtRzFKL3U2STVJTnQ1UWF0M1J3ZDM2UHNlZG5zZmFCaTBKZTRFSVl5dUFZ?=
- =?utf-8?B?c3VrdG5GK09iSktKMkFUM0kwVlFPTGxPcytFbWRVY0Iyc0w3dmU3dWppdEJs?=
- =?utf-8?B?RVJEalFsQWxCeE1TTDNJeERlcFMxdFZGSHk1MWZNdWRaVEtyK210Y2pGMlA1?=
- =?utf-8?B?U05IbE9YMm5vMVYzL2hJaWdtdlVJa2RsMGtNaWplWnR1WlZPeVVkOFNtMTRK?=
- =?utf-8?B?aHhSRFdzV1MrOWwwekZmekVMaUF3S25lRDdJMUdXQ2JiVUM2OEVKMXZzYVEr?=
- =?utf-8?B?eElhbjNBd1ZmUjB4U3hSeG8xd0lvbmhoei9vd2R1dlNhT0p5NDROdVBpTlF4?=
- =?utf-8?B?Rzh1ZzgyQ3hRSkdiZk11OFhkZk5reWVsdU9YeWtIY3RObHl5MEkydExwbkpv?=
- =?utf-8?B?TnFqNk9EV1BUa1dubS9iRjdCZ1JvaVdmdWIwb1EwZW54Qm1VbFFGR1UvRmpL?=
- =?utf-8?B?cHgxc2Q0QWZiR1RaZi9WdThvZXF3Snd1aS9GR20yZjBVOXhWcHhMV0F6Tk5E?=
- =?utf-8?B?Q21OSXNoVmQvYXY4UjVrWVgycWJYS1haamZBaDF1SEMwMkliT1I5WXRMSlNy?=
- =?utf-8?B?N3pFUC9hOHFXNXBrZGllNEN0SWp6YVBoK0o3U0ltT1lxdUwxYVZzTGtxeDNV?=
- =?utf-8?B?UmhzaDZOVVNFZGExRVRubEdUZG44RnFnM283NmtkTkZTazRvRXc0cUFML2Q5?=
- =?utf-8?B?Zzl0T2ZNWmMydFJTa25hZkpKYXBuT0t4MCtnSlFTTnFBUTBZd3gxYkZpQWli?=
- =?utf-8?B?dExrS25OOXB2T01qS0wzVXBoNnRIQXV6VmFOQ2xOMXByRFlCdWIyc1JsNTBy?=
- =?utf-8?B?OGpnUk9oTi84U3l1Yk5HNjFwMk55d2JpaS8wVFBrLzhteE8rRVNnZ0dLMWpB?=
- =?utf-8?B?dlpSTG53QXFzdkhJQ1ZFYUhQZk1oMTVPTXd0T1BiVjdUYnIrRDhwUi80Y29r?=
- =?utf-8?B?RWlTa0pDR3VQckZnT0ljRXRaZWNjbWdrOXBMYmoyWnBRSnlTVmkyU25zQkM3?=
- =?utf-8?B?eDlrVlBWWUgySzlRQmU2Mm9EcU5HWDAxZ1ltZktMS0ROdTYxdURWUmxXYzdo?=
- =?utf-8?B?eFJQOXZlSmJ5OGwwTkdVYmVZT1ZpRnEyYmlYYmRnZmFMb09RWXJXTUtnK2lx?=
- =?utf-8?B?WjkzS21BVnVab0diSVRmZUdRc0JRS0hiejVXazFkS2tSRzh4STFRT29ZdnFI?=
- =?utf-8?B?UzJwbTJQbDk3YmFQcHVIbzQxVjdPRmdpM3BNdkZJc1pXVFFGRGl1WndsOVhv?=
- =?utf-8?Q?IuN1sj6/PwkBPIT2WcyDTjWjZ?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MCtEaWNMRzI0Q1Axb0ltdFljS1BYMkpjVUlnYkN6NS85dFI1TTVwTjdBSlRu?=
+ =?utf-8?B?b0pNNmhTeEc2V0JJLyt5UFhTQzkvTkZ1d3k2emRYUXJLYjRJV0FYSXdKQlNa?=
+ =?utf-8?B?dFJkUTR3WnlRcno5YU1zYjg3MEgrNVRCY0w4bE0rZUw1em5KTERjeHl0Mnk5?=
+ =?utf-8?B?OXd1NHpDd3Q3YVkzZWpYSDl4RXdnL2d1eDJSVGJMRVp0UGJKa2R0d2x5OWlQ?=
+ =?utf-8?B?ZzczSWlKaUNObVVvTDFrUGdhTDlrNDVYaHVrTTRPZnVWdEJ2NXJzcHp0ZUhp?=
+ =?utf-8?B?TytvU0FKSVNJQjZxOWZLaTNsTk0zMFZCMEUyUTdZdHQvQ2twM2h3azBLZkNW?=
+ =?utf-8?B?eldMOUZMOWZkNlhadkFYNk1TdUJUSUhRVkY4TC9DMXRnY2d0Z21GOUR6SkxH?=
+ =?utf-8?B?TXdvUnBScU1LL0FEQ3JHVlZtQ2d2V0hPaUJEc0FRM3IxWUxvTmwxb011R2lo?=
+ =?utf-8?B?bkZESjdsRE5Nck15TlIxRit1TU0xL0QwSGtLSXNVOEZVTGlhUGFOcWZzMHFx?=
+ =?utf-8?B?KzkrRFV0bi91NUxSbDhybzN3WWY2OUx6TkE2citKWFlkQWxaMDV5V1U5dzdm?=
+ =?utf-8?B?RUZ2YmMvSEV6WU1DRHgvaWRmVUNoQ3pScnBaNjRKb3k4K1NmOHUyS05WbXdV?=
+ =?utf-8?B?cllqZjYrbVk3L21qNDlmeVF0c0lpaThpdVJpSlNpbnQzOFFNY0tacWVVd2lp?=
+ =?utf-8?B?aU5CeFM0SS93MlByQ0RyeHVDV2dYdHlDckROc3oyZURnbjBub3dDRDJtNnRx?=
+ =?utf-8?B?ODJRVzFHdk54YjhXSUY4emtDbituS2V4ZzBraDdSdGg4WWhza1hMQ1daL1kz?=
+ =?utf-8?B?UEhSZ0gyZFNXb3E2cmxrSm9VTllTWEEzbkRNQmRDOTA1OHBXY2dnQm14Tkd1?=
+ =?utf-8?B?bFlZR3pkYWdRSWNBRlNteWFCMGZ0TXZJUmhJQlVUTWFBa2tyWlgxbG9uSHRn?=
+ =?utf-8?B?RWNnbHJMQVZCdkJmVzhmWU8vN1lJbHRzdSs4RE9qVnl4Q3dVNTF0U2ZYTGs4?=
+ =?utf-8?B?TzNzTWJ6L0M3djEyYTRRSjlyUituNWhuM2o4cXhRR0Q2eE9xNk9uUXJTbTVm?=
+ =?utf-8?B?WmlURERqUE5YMEZ2YUQwUjFvSko4TTBORmN6RE90bTVRZE9CSDZreWdBZlNw?=
+ =?utf-8?B?RTQxQlp6dUZaY3F0ZERWMy9XUlE0Zm5IRTlEQ1RGNU9kdXVqdFMyL2I0QW9i?=
+ =?utf-8?B?dmJzNkNhbGd1VkhDNWFtUFpYck54ZzVXaTM5eDV0dUJnY0lvMkgySEdMNXBD?=
+ =?utf-8?B?Y3pQa0xmc0tYd1U2ZkVvQ0hoVWRmOE9DU1VBUUJobk9PTEVHQnczSGtXZjVG?=
+ =?utf-8?B?ZkNoS2FKSGZUL0creDhWc1V1czZGVmNIS1o2UWE5RVcycTBad2lPOE1od2FU?=
+ =?utf-8?B?UEVKanRMeHBDU1k2dnBmUTNYeXJQMjNyU0hwbjgvenNNMDhUN1krcHZsNmF0?=
+ =?utf-8?B?RW1HMjIzSWp6MC81Q0pBZTArcFY3SlF1NE5jK0l2Y1cyUDRHSjN0Myt5dWtP?=
+ =?utf-8?B?a1h3dnhSU2VVbjB6VFpGTnpEdVFFbXA5YjRhbGppSGcrZW82Qy9YNmliUHln?=
+ =?utf-8?B?RWRRbGhRSXVseW0wc0ZrOThmbnE2SVBvblZoOFJWM3dEMExZb1B5cU1mTkhp?=
+ =?utf-8?B?R0NwSG1jUVRFN1ludWl4L3V0ay9LenBVaFMyZHNuZWNIMno5K2lQQjJHd3N6?=
+ =?utf-8?B?dk0zVk5id0luYndSbWFyMVhzdnEvQWJ6a0VKUHJFZ2lYbkFjY2dpNi8zL3FL?=
+ =?utf-8?B?SGJSRU9rRjRsSHFpMjZ1eTNYVjJMTmpEeU9kZ0dkQnBMdmxnR1FNT01nK28y?=
+ =?utf-8?B?ZisvN2NPUTEzSFluWlZLSTY1UEV0eTltMUozcHJ6Y2FRcEVjNWloRXZ6Y1dt?=
+ =?utf-8?B?UDJodk94MzRFNldiL0RtUExHM0tkMXJTQ1d3cEp4M3F2bGNLYm9GTHFrVDQ3?=
+ =?utf-8?B?a04vRk1xYUJvSG9DWGF2YnJWUjhoM2FYQWYyRElVNVVKa1FTbnFrVTdBcEQw?=
+ =?utf-8?B?Q3FCOG1MQVBEb3k0c3VmYXMwaFRLOXp2TXdkQUpSOEJ4cU5NTHcyYys5SE8y?=
+ =?utf-8?B?bkYzRVpNRnBBUFc3RDlENHdjSWxUTTNTaXNZU205WlV0V0ZJRCtqSVB6azNV?=
+ =?utf-8?Q?6Djr17fVPG/HtQZZXfkHffWul?=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cc8cb4d-9103-4072-2d30-08dba247f194
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e1badea5-1f4c-4dd3-b917-08dba2480ac6
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:10:08.3988
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:10:50.8390
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jrew+AczKnwnZaWCcUzdFyaDPfDVZzimqHS5u5HzCRyO0g8z+kmwfDvyl2rKYskSMTljhbAOVpXnjuQa2t7mQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4083
+X-MS-Exchange-CrossTenant-UserPrincipalName: 1z1CouOiS5N724zqO6wxR3QbZPvjBG/syZzfcj+rIWfF3HH2nWM3VK9uWkMGSWgY9xakGcbwttf4TV0cG7Sk1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5892
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
@@ -133,62 +127,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/18/23 18:34, Steve Rutherford wrote:
-> early_set_memory_decrypted() assumes its parameters are page aligned.
-> Non-page aligned calls result in additional pages being marked as
-> decrypted via the encryption status hypercall, which results in
-> consistent corruption of pages during live migration. Live
-> migration requires accurate encryption status information to avoid
-> migrating pages from the wrong perspective.
-
-Hmmm... I'm not sure this is the proper fix. The code is actually doing 
-the right thing from a encyrption/decryption point of view by checking the 
-c-bit for the PTE associated with the virtual address and the size 
-(possibly crossing page boundaries).
-
-I think the problem is on the call to early_set_mem_enc_dec_hypercall() 
-where it doesn't take into account the possible crossing of page 
-boundaries and so can under-count the number of pages, right?
-
-Thanks,
-Tom
-
-> 
-> Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when SEV is active")
-> Signed-off-by: Steve Rutherford <srutherford@google.com>
+On 21/08/2023 08:47, Arvind Yadav wrote:
+> This patch adds a function which will change the GPU
+> power profile based on a submitted job. This can optimize
+> the power performance when the workload is on.
+>
+> v2:
+> - Splitting workload_profile_set and workload_profile_put
+>    into two separate patches.
+> - Addressed review comment.
+>
+> Cc: Shashank Sharma <shashank.sharma@amd.com>
+> Cc: Christian Koenig <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
 > ---
->   arch/x86/kernel/kvm.c | 14 +++++++++++++-
->   1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 6a36db4f79fd..a0c072d3103c 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -419,7 +419,14 @@ static u64 kvm_steal_clock(int cpu)
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 56 +++++++++++++++++++
+>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  3 +
+>   2 files changed, 59 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> index 32166f482f77..e661cc5b3d92 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
+> @@ -24,6 +24,62 @@
 >   
->   static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
->   {
-> -	early_set_memory_decrypted((unsigned long) ptr, size);
-> +	/*
-> +	 * early_set_memory_decrypted() requires page aligned parameters, but
-> +	 * this function needs to handle ptrs offset into a page.
-> +	 */
-> +	unsigned long start = PAGE_ALIGN_DOWN((unsigned long) ptr);
-> +	unsigned long end = (unsigned long) ptr + size;
+>   #include "amdgpu.h"
+>   
+> +static enum PP_SMC_POWER_PROFILE
+> +ring_to_power_profile(uint32_t ring_type)
+> +{
+> +	switch (ring_type) {
+> +	case AMDGPU_RING_TYPE_GFX:
+> +		return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
+> +	case AMDGPU_RING_TYPE_COMPUTE:
+> +		return PP_SMC_POWER_PROFILE_COMPUTE;
+> +	case AMDGPU_RING_TYPE_UVD:
+> +	case AMDGPU_RING_TYPE_VCE:
+> +	case AMDGPU_RING_TYPE_UVD_ENC:
+> +	case AMDGPU_RING_TYPE_VCN_DEC:
+> +	case AMDGPU_RING_TYPE_VCN_ENC:
+> +	case AMDGPU_RING_TYPE_VCN_JPEG:
+> +		return PP_SMC_POWER_PROFILE_VIDEO;
+> +	default:
+> +		return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
+> +	}
+> +}
 > +
-> +	early_set_memory_decrypted(start, end - start);
->   }
+> +static int
+> +amdgpu_power_profile_set(struct amdgpu_device *adev,
+> +			 enum PP_SMC_POWER_PROFILE profile)
+> +{
+> +	int ret = amdgpu_dpm_switch_power_profile(adev, profile, true);
+> +
+> +	if (!ret) {
+> +		/* Set the bit for the submitted workload profile */
+> +		adev->smu_workload.submit_workload_status |= (1 << profile);
+> +		atomic_inc(&adev->smu_workload.power_profile_ref[profile]);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
+> +				 uint32_t ring_type)
+> +{
+> +	struct amdgpu_smu_workload *workload = &adev->smu_workload;
+> +	enum PP_SMC_POWER_PROFILE profile = ring_to_power_profile(ring_type);
+> +	int ret;
+> +
+> +	if (profile == PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
+> +		return;
+> +
+> +	mutex_lock(&workload->workload_lock);
+> +
+> +	ret = amdgpu_power_profile_set(adev, profile);
+> +	if (ret) {
+> +		DRM_WARN("Failed to set workload profile to %s, error = %d\n",
+> +			 amdgpu_workload_mode_name[profile], ret);
+> +	}
+> +
+> +	mutex_unlock(&workload->workload_lock);
+> +}
+> +
+>   void amdgpu_workload_profile_init(struct amdgpu_device *adev)
+>   {
+>   	adev->smu_workload.adev = adev;
+> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> index 5d0f068422d4..5022f28fc2f9 100644
+> --- a/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
+> @@ -46,6 +46,9 @@ static const char * const amdgpu_workload_mode_name[] = {
+>   	"Window3D"
+>   };
 >   
->   /*
-> @@ -438,6 +445,11 @@ static void __init sev_map_percpu_data(void)
->   		return;
+> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
+> +				 uint32_t ring_type);
+> +
+>   void amdgpu_workload_profile_init(struct amdgpu_device *adev);
 >   
->   	for_each_possible_cpu(cpu) {
-> +		/*
-> +		 * Calling __set_percpu_decrypted() for each per-cpu variable is
-> +		 * inefficent, since it may decrypt the same page multiple times.
-> +		 * That said, it avoids the need for more complicated logic.
-> +		 */
->   		__set_percpu_decrypted(&per_cpu(apf_reason, cpu), sizeof(apf_reason));
->   		__set_percpu_decrypted(&per_cpu(steal_time, cpu), sizeof(steal_time));
->   		__set_percpu_decrypted(&per_cpu(kvm_apic_eoi, cpu), sizeof(kvm_apic_eoi));
+>   void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
+
+Please feel free to use:
+
+Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
+
