@@ -2,122 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADF578347F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0416783493
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjHUUZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S230505AbjHUU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjHUUZh (ORCPT
+        with ESMTP id S230495AbjHUU2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:25:37 -0400
-Received: from out-53.mta0.migadu.com (out-53.mta0.migadu.com [IPv6:2001:41d0:1004:224b::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32C7101
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:25:35 -0700 (PDT)
-Message-ID: <6ae89b3a-b53d-dd2c-ecc6-1094f9b95586@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1692649534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YJAWYPnodYoeBpKkUTCQlu4SlvDmRYHPhXTtqm0naOM=;
-        b=ZFDUkMqFhwu5CLHg1A++Nw4In7Ml6vzH6SjQLIEzLB1KKROG/TGkUa7NMrGVrgGHQLyleh
-        NDpX51ZLNWZAeHEH16mJ/zSNZLMqzOMpyYESBcYVVIIJY/vmP/yT6VTZ6T6s538gXxaAsw
-        bSPSAFYLmk8mIqJFSkSlDdHHfM3Gsso=
-Date:   Mon, 21 Aug 2023 13:25:25 -0700
+        Mon, 21 Aug 2023 16:28:43 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBA1123
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:40 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so4788229a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692649718; x=1693254518;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ypTOlttmO9qqbmmzfV/SSOD9CPm3O5A8OgG4B0eFddk=;
+        b=bMRQ0kzROXqg2RUFT1ECxbCN7VIAsmdxl1AXLcQb/IOUcX49zPoIRcPjFllUMxDJdu
+         FC/XGCf2ToxMZKBcBuzEBnmI+0OzjsDs2Uftn+ap9cznywVa57usqgqmrYxe41Wfwd45
+         x+ZvuPlbMGSVuyWwmAAvVRqWKebKXDNaO9sAwzis3OY23bQGxOrhafW+XCNbuRnekziE
+         FuSgdSFiiDt+iAY8YF4cfSqawE2PdT7cUeCY96z8LC38HjiReykJYvihoLDvkyUy1Nk3
+         6QTKTIUa0MKX03TM36cbQIs3g02J9tpjZHhNJgwNtN4FPHUTEzrdabbegQoCLsN7RuME
+         z7tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692649718; x=1693254518;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ypTOlttmO9qqbmmzfV/SSOD9CPm3O5A8OgG4B0eFddk=;
+        b=M7unHZmz8bWADfThyrD29ztHOcWLkjSceyqjjkIBhtAQVybUAJIKsVITu6DQImfezH
+         1hpKWKBBkysim5VdQM6of8IRC7Ai2XvfnSJV8WlINrsLhU8k+TIzdQmSFELUm+pIwYzH
+         /N6ssV2PFXLd5acT2ajBq9wqcudvxJgCZ0RZ/11icgAxECtWvCKWfk9c/Do8F5MU7qCR
+         GZj9RZwzJOowS/kwJ4DawVi+8V+b4IxabQm/Cq9yqEoX3U6yLYJEaVhWdbXKr3ghVSOy
+         sO6Dn3+L7vrG3djvfQoaK43+iMjmALkB1PgQoMGNSuSdf9TqTBKpY4KuNomG0/iE68z4
+         WqzA==
+X-Gm-Message-State: AOJu0YxEyyy316Q8ETy2OYDfHbaX7Lq+g3Dw92GP1YLh5dziG9KxELn9
+        URECXy8Q0Uv9wOAKu7/gdIY5PUD967o81g==
+X-Google-Smtp-Source: AGHT+IHdO9dQo5jT6szR56qVdF48goDlysiNHz/4gKeh9UDB2o/hVZFIAh0E81l3pDLo2S/Luepx3g==
+X-Received: by 2002:a17:906:5199:b0:9a1:b6e1:c2e with SMTP id y25-20020a170906519900b009a1b6e10c2emr209558ejk.33.1692649718268;
+        Mon, 21 Aug 2023 13:28:38 -0700 (PDT)
+Received: from f.. (cst-prg-85-121.cust.vodafone.cz. [46.135.85.121])
+        by smtp.gmail.com with ESMTPSA id k26-20020a1709062a5a00b00997cce73cc7sm7084450eje.29.2023.08.21.13.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 13:28:37 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     dennis@kernel.org, tj@kernel.org, cl@linux.com,
+        akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH 0/2] execve scalability issues, part 1
+Date:   Mon, 21 Aug 2023 22:28:27 +0200
+Message-Id: <20230821202829.2163744-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
-Content-Language: en-US
-To:     Gabriel Krisman Bertazi <krisman@suse.de>,
-        Breno Leitao <leitao@debian.org>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        io-uring@vger.kernel.org, kuba@kernel.org, pabeni@redhat.com
-References: <20230817145554.892543-1-leitao@debian.org>
- <20230817145554.892543-9-leitao@debian.org> <87pm3l32rk.fsf@suse.de>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <87pm3l32rk.fsf@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/17/23 12:08 PM, Gabriel Krisman Bertazi wrote:
-> Breno Leitao <leitao@debian.org> writes:
-> 
->> Add BPF hook support for getsockopts io_uring command. So, BPF cgroups
->> programs can run when SOCKET_URING_OP_GETSOCKOPT command is executed
->> through io_uring.
->>
->> This implementation follows a similar approach to what
->> __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
->> kernel pointer.
->>
->> Signed-off-by: Breno Leitao <leitao@debian.org>
->> ---
->>   io_uring/uring_cmd.c | 18 +++++++++++++-----
->>   1 file changed, 13 insertions(+), 5 deletions(-)
->>
->> diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
->> index a567dd32df00..9e08a14760c3 100644
->> --- a/io_uring/uring_cmd.c
->> +++ b/io_uring/uring_cmd.c
->> @@ -5,6 +5,8 @@
->>   #include <linux/io_uring.h>
->>   #include <linux/security.h>
->>   #include <linux/nospec.h>
->> +#include <linux/compat.h>
->> +#include <linux/bpf-cgroup.h>
->>   
->>   #include <uapi/linux/io_uring.h>
->>   #include <uapi/asm-generic/ioctls.h>
->> @@ -184,17 +186,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
->>   	if (err)
->>   		return err;
->>   
->> -	if (level == SOL_SOCKET) {
->> +	err = -EOPNOTSUPP;
->> +	if (level == SOL_SOCKET)
->>   		err = sk_getsockopt(sock->sk, level, optname,
->>   				    USER_SOCKPTR(optval),
->>   				    KERNEL_SOCKPTR(&optlen));
->> -		if (err)
->> -			return err;
->>   
->> +	if (!(issue_flags & IO_URING_F_COMPAT))
->> +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
->> +						     optname,
->> +						     USER_SOCKPTR(optval),
->> +						     KERNEL_SOCKPTR(&optlen),
->> +						     optlen, err);
->> +
->> +	if (!err)
->>   		return optlen;
->> -	}
-> 
-> Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
-> running the hook?  Before this patch, it would bail out with EOPNOTSUPP,
-> but now the bpf hook gets called even for level!=SOL_SOCKET, which
-> doesn't fit __sys_getsockopt. Am I misreading the code?
-I agree it should not call into bpf if the io_uring cannot support non 
-SOL_SOCKET optnames. Otherwise, the bpf prog will get different optval and 
-optlen when running in _sys_getsockopt vs io_uring getsockopt (e.g. in regular 
-_sys_getsockopt(SOL_TCP), bpf expects the optval returned from tcp_getsockopt).
+To start I figured I'm going to bench about as friendly case as it gets
+-- statically linked *separate* binaries all doing execve in a loop.
 
-I think __sys_getsockopt can also be refactored similar to __sys_setsockopt in 
-patch 3. Yes, for non SOL_SOCKET it only supports __user *optval and __user 
-*optlen but may be a WARN_ON_ONCE/BUG_ON(sockpt_is_kernel(optval)) can be added 
-before calling ops->getsockopt()? Then this details can be hidden away from the 
-io_uring.
+I borrowed the bench from found here:
+http://apollo.backplane.com/DFlyMisc/doexec.c
+
+$ cc -static -O2 -o static-doexec doexec.c
+$ ./static-doexec $(nproc)
+
+It prints a result every second (warning: first line is garbage).
+
+My test box is temporarily only 26 cores and even at this scale I run
+into massive lock contention stemming from back-to-back calls to
+percpu_counter_init (and _destroy later).
+
+While not a panacea, one simple thing to do here is to batch these ops.
+Since the term "batching" is already used in the file, I decided to
+refer to it as "grouping" instead.
+
+Even if this code could be patched to dodge these counters,  I would
+argue a high-traffic alloc/free consumer is only a matter of time so it
+makes sense to facilitate it.
+
+With the fix I get an ok win, to quote from the commit:
+> Even at a very modest scale of 26 cores (ops/s):
+> before: 133543.63
+> after:  186061.81 (+39%)
+
+> While with the patch these allocations remain a significant problem,
+> the primary bottleneck shifts to:
+> 
+>     __pv_queued_spin_lock_slowpath+1
+>     _raw_spin_lock_irqsave+57
+>     folio_lruvec_lock_irqsave+91
+>     release_pages+590
+>     tlb_batch_pages_flush+61
+>     tlb_finish_mmu+101
+>     exit_mmap+327
+>     __mmput+61
+>     begin_new_exec+1245
+>     load_elf_binary+712
+>     bprm_execve+644
+>     do_execveat_common.isra.0+429
+>     __x64_sys_execve+50
+>     do_syscall_64+46
+>     entry_SYSCALL_64_after_hwframe+110
+
+I intend to do more work on the area to mostly sort it out, but I would
+not mind if someone else took the hammer to folio. :)
+
+With this out of the way I'll be looking at some form of caching to
+eliminate these allocs as a problem.
+
+Thoughts?
+
+Mateusz Guzik (2):
+  pcpcntr: add group allocation/free
+  fork: group allocation of per-cpu counters for mm struct
+
+ include/linux/percpu_counter.h | 19 ++++++++---
+ kernel/fork.c                  | 13 ++------
+ lib/percpu_counter.c           | 61 ++++++++++++++++++++++++----------
+ 3 files changed, 60 insertions(+), 33 deletions(-)
+
+-- 
+2.39.2
 
