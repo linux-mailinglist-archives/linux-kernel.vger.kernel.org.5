@@ -2,194 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71D47829AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F01B7829BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbjHUM6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S235165AbjHUNAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbjHUM6i (ORCPT
+        with ESMTP id S235150AbjHUNAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:58:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9DFB1;
-        Mon, 21 Aug 2023 05:58:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6CBD76356E;
-        Mon, 21 Aug 2023 12:58:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52CF6C433C8;
-        Mon, 21 Aug 2023 12:58:33 +0000 (UTC)
-Message-ID: <c0c40891-416d-5acd-7a9c-d980c6a24997@xs4all.nl>
-Date:   Mon, 21 Aug 2023 14:58:31 +0200
+        Mon, 21 Aug 2023 09:00:33 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2070.outbound.protection.outlook.com [40.107.94.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5C1E1;
+        Mon, 21 Aug 2023 06:00:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K7ltfhD3OxemPtNwO55r3pmFs5KqTdWR6Spq58+orPdQn25mOmaVZD8KAakBe5cvnfuOeaoNVaRUzidvM4eQiUnoQyUKexmQAfkGJ9GEDLe+HQeFstCiIOWqlEZkbVIZMArnXvJERE3EMqKolB+ahypITQHaJBsAow5jBS0q+ZetRThnwHHlpXdkZVGsj8p1Px0zr4GWFOAdcSD1qbj0o3Uw1URsinARNvbypxOKGcLNJAHOmc/sG4U+LOGP0JRTRdJLRXbwrhcPose3sH0NGyUKkzCtaoLggnM968k6z1iu6ZbL0u0bZf1Dz6rsbT9jiv9HmHsZQWAACcL5aXPoAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CCL6n89sXFPlYBpHyOCY5Znsoz1gPA9N4+cKQwx/w4o=;
+ b=D8Z5arwNQi2J++jN/vgspF40r1PX+PvcDA24CbSBLBFAUmrVnPOeW/BQHMkaskOI6hO83UacqG7QIr5CjKkisvmjnhOaa2n7b9V9BLHvxyIvtZ1AjBjb1mawzU3j7dlTej96YSAA07wUg2cPtlaYOoB4Nvwbc6SJIbp2f7Y0Ok+c21aLuwz2lKWSlKomwEzqUM2+suSBH7SlBTE9CQ7EEy6dqqvZJ+lbS4XtPwWRk4djriwMGhKVrldfxmaqsnWL1KXPr0zQfSv11wJ1beBos+QpvT4Av6QdO4IIpwzrjBuJixxA5+XRbQ/upppouXZfhlJ5wqFi7a7Oo8Yxgymxtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CCL6n89sXFPlYBpHyOCY5Znsoz1gPA9N4+cKQwx/w4o=;
+ b=PgbkaHK4MZK8enVtVACZdf5rbd18ReLj/BIg4/ufo0FsZWisxk//Ls9iydMZJ/9uFcfKEZu79k+iY6YNt4qxFH0QRaXJ9jAkt6Vfkhjulk7TDFgBgEjYUQNI+rlG1VP/dYXBUTavtjQOHVPZiQimORS6d2FlKXDXpe89cd0LsYM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by DM4PR12MB6134.namprd12.prod.outlook.com (2603:10b6:8:ad::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 13:00:25 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
+ 13:00:25 +0000
+Message-ID: <09943fe4-792f-e2b8-05d0-2c11f688b8bd@amd.com>
+Date:   Mon, 21 Aug 2023 15:00:13 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH 0/4] drm/amdgpu: Explicitly add a flexible array at the
+ end of 'struct amdgpu_bo_list' and simplify amdgpu_bo_list_create()
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Arunpravin.PaneerSelvam@amd.com,
+        "Prosyak, Vitaly" <Vitaly.Prosyak@amd.com>,
+        "Somalapuram, Amaranath" <Amaranath.Somalapuram@amd.com>
+Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Felix.Kuehling@amd.com, daniel@ffwll.ch, airlied@gmail.com,
+        Xinhui.Pan@amd.com, alexander.deucher@amd.com
+References: <cover.1692524665.git.christophe.jaillet@wanadoo.fr>
+ <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
+Content-Language: en-US
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BE1P281CA0110.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:7b::18) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v7 0/5] Add Toshiba Visconti Video Input Interface driver
-Content-Language: en-US, nl
-To:     Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20230714015059.18775-1-yuji2.ishikawa@toshiba.co.jp>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-In-Reply-To: <20230714015059.18775-1-yuji2.ishikawa@toshiba.co.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|DM4PR12MB6134:EE_
+X-MS-Office365-Filtering-Correlation-Id: 69472fbf-f868-4866-513e-08dba24695a8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4SOc3rX1akBd2MOOiZpBCUw766ipG4gtsnLqaFCAf2WdfL9gmbmpNOYHGS6XOXtZKmGOo+i26rXFudUBOKDVFXPRXxSpm0SGWnA61G5/1oMcfgYfybdxfgXo8RB/brkUEhpi5a4MmZnv72OAeujpfhjzZ4029OCikTami3C36xigsru1kDvvhTk01GLAjJ5TXZwaQotZohfZYZA+WaGYgFJsIAoV8eyJ2LBIOGwmhEE/k53NvWGigNhfVwacbOgXLtUXtFn/uirv4Fx4pibkuQa5QEqyg/q0PU4NQOWbUdrIJEMslqcWMJK/y7RGK+uNkAtuhFLii8hGHUEGwN/b0dQrDKoLpcbhbBuU9bpi1E9olsZPYRaIwAP7q45s4j7soyBXsMVDSTDmoLYJMp1mlpJAXa6CDEyJTrUVHBaO5nUHg5Am31vvJdokTQeIImrGsdITTZXcQXrA1qIGxT/07Snln3fKCvvXX9y9iq2f5tFqwU0kHOJrkeL9r6YRYt+SJeL+hNnpFLiSJk92f8MxIAcBH7fzRe8hdfPjHvFK2pIsvPytToCRAPaQaXxNc4wP3giTEtMRrYwfvCB6lruFKk2Jswyl6hTahluB2H6x72nl+8ynRaGLom9KB4v4inZybxxb+K0p6baAuKlC2SrMUw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199024)(186009)(1800799009)(2906002)(53546011)(38100700002)(6506007)(6486002)(83380400001)(5660300002)(44832011)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(6636002)(66556008)(66476007)(110136005)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?KzNiNDcwZUIycUUvL1JDVnN4NE9lTkNjbFJlY2s0YnpsZkhQRElkRndMNWhn?=
+ =?utf-8?B?SjVTS1lGT0FxaU5DVVRZenVjOElWd09XQnMxU0plVDJVblNOSlI5MnYyTjhD?=
+ =?utf-8?B?aVlSSWJjTEI2bUsyYThCTGZhaHl2QlBUYWx4ZnZ3VTFkM0E5Y2F6MFVDWGVD?=
+ =?utf-8?B?TW1XRGxiRHhFNFFRZTh5alNLTjlWMWsyaU9taUNuMDlXOEZVVnluS0c5MjlL?=
+ =?utf-8?B?K0xWaC9VVWFOT3BscXdoQTdmN093V29WaFI4TmNPNmlhd1l2NmZtRVBQWW52?=
+ =?utf-8?B?dVdFSFNYSHhHWWZQSzEzcW9QME1LVjN0VkFndHU3ald1QWEzRHp2eGxMUG1o?=
+ =?utf-8?B?aE5sZWZqWUc5VFJOL3dGa2FvWnJVMmx5ZWZ2YzZwVGdQVzZwTzVVdHV6UVJt?=
+ =?utf-8?B?UGF0V0FObVVZd3JtMzVPck1vQWt3NVVhQkIrd1hDc0dIQ1lnekpOaWxsQnYv?=
+ =?utf-8?B?c3pxemdJeTdkZUZhYmk5NDl4ZWE5MXhJRDh1T01HL25ZZ3lnQVlUVFk5cUVE?=
+ =?utf-8?B?b3B4cDN4TkI0MzhaandIaXhldnRlWE1XWHpWM0I0bzFvK2hheXRxSHpsRzEy?=
+ =?utf-8?B?Y3J0a0VoWjV1NnVtTldYQXMxYWZnOVFNNDk3eHpqdlFtSWhqVkRRV0ZNMC84?=
+ =?utf-8?B?aGN0NGJjeTN3R2Z4SDZWR1pBaWNlUnM2NmhhN1FYbzNBMlBhMVNHZjc5Yy9N?=
+ =?utf-8?B?VjZVbXM3a1JNR0xTUTN5Nngrbm93SWNoTmp6RktOdXUwUzc3T200aU9nc1R6?=
+ =?utf-8?B?aHRvMnQrd3ZZM2RsTnJpNVA3TitBR1RlZFNFdmNjdjVGL29HYllvY1JDUWds?=
+ =?utf-8?B?K1JENjBTc0RKVGlOU29NOWR2SGFNcGN1UDZOayszTWF4UXBUMmVZRFVIYkdI?=
+ =?utf-8?B?MUtDOGl1WnZuZXdLbVVSeWVBVVFGYUJKeWtEQTEwTG5rMm9va2hUaG1xOW9X?=
+ =?utf-8?B?bG9WSGZXTTJ1NXlXMkp4QnlybDR0YmlaZFFnYjcvN05HWERMTWxBblEwdTAw?=
+ =?utf-8?B?amlocHVZNHU1UUpodnZyVnVVMWk5cHRuRFZPOThhNE1zNHVZL2pmTnRuV2xn?=
+ =?utf-8?B?NVZoVUlpTWNDemFaSmxMVStFUUMwNDdGTVZlbUUxQzhjcGkxUjdJM0NyaGVu?=
+ =?utf-8?B?WkpCbUplQWl4S1U5RU51Q0Fjc3NCbzF1azcyTW9FM2JWY21aMzJ4b2Z6Ty9G?=
+ =?utf-8?B?US9RNnJzZlFSelAvQWRwb2NycVpWcVhyOWFxWjNnU1U4ei91QnNXdlFSU0Qz?=
+ =?utf-8?B?anVld2pMdXVBUkRRTXNmZmVjUGt0U3pJTGJrT1FQYnNFZEs1TTJGeHowQmph?=
+ =?utf-8?B?UytBUTBZNE43VGNmTEFtbmxzWlVsR2FLNzFVcVlUZ3RpUmFzZU1oNTYrdkNM?=
+ =?utf-8?B?eCtzRUNFRlNjaVVTWUwzdURraDVTU1hTaHVLRks5TG9lYVdXYnFvYmg1TjRv?=
+ =?utf-8?B?RXdCRTlwOFBFM1JVM0VsRFFiOTFleld2MUE0WElwcUlkUU5zaHFJdzFoWmtP?=
+ =?utf-8?B?THpKeXA5djA0ek8vRnlPQ3NCdUVuc2o0QkNIeGlubURWcGdMMjdqWFNENzVH?=
+ =?utf-8?B?L2tReTJOTEJDQWpDbDRoTjFwdDg5Ny8vRU8ycjFGQ1p1WGxEZkhzRnFoekdi?=
+ =?utf-8?B?ZXdETy9OQXdIUDVKQVhoQVM3ODlwdFVKVE5iVndhQTBENUtLa0dNdU5xa3Rm?=
+ =?utf-8?B?MWx6QVhVQ29lSStIL1EwajNYM0JkR2RGdGVoVXVMeHpJUGdOWHJBRDVGTXh5?=
+ =?utf-8?B?VVlvZGc5ZVk2cVBmaWNiNS90cGtnV2JGd0Y2aHhnblAwcCtzYlBVRXFib2tq?=
+ =?utf-8?B?amN4aGxXaExLQ29rVzhBcGJIcEdtcTh3REpLTDQ0bTFScUlwcEd2VHBnOHRV?=
+ =?utf-8?B?RlRwVHNoTkZwRmVpanVselhyY2o1OEQrTjRMcXVib0xMNDF2TmRJUUp4STZM?=
+ =?utf-8?B?djZXejBBc0VtcEIwcXNDUy9IRzQyQ2UvTU9BTm1aaTFvQWp1UlNUbHljalN2?=
+ =?utf-8?B?QUVEa3R3V3d2L2VkRG1ibmpjZ2VyOVp4b0g5Sm51UzRRQkZremRlVEJVcThy?=
+ =?utf-8?B?TEJTRmdUM2hTM01ackliNzEwNDN3OGdmcDRHYWZ1cWxjRGF5NXVSVkxObDBm?=
+ =?utf-8?Q?jdH6jA1r7mMXB/05cBtaugnKn?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69472fbf-f868-4866-513e-08dba24695a8
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 13:00:24.8624
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RqrHUQdb+fgIANTkkm69fPAMf042djgh0tS2D0Pg6L6QNo63e8QLJJQtPL4dJBJAW0+aplRNk0xecw7ZeMhV5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6134
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yuji,
++ Amar should be able to help.
 
-On 14/07/2023 03:50, Yuji Ishikawa wrote:
-> This series is the Video Input Interface driver
-> for Toshiba's ARM SoC, Visconti[0].
-> This provides DT binding documentation,
-> device driver, documentation and MAINTAINER files.
-> 
-> A visconti VIIF driver instance exposes
-> 1 media control device file and 3 video device files
-> for a VIIF hardware.
-> Detailed HW/SW are described in documentation directory.
-> The VIIF hardware has CSI2 receiver,
-> image signal processor and DMAC inside.
-> The subdevice for image signal processor provides
-> vendor specific V4L2 controls.
-> 
-> The device driver depends on two other drivers under development;
-> clock framework driver and IOMMU driver.
-> Corresponding features will be added later.
+Amar,
 
-Trying to compile this series on top of our latest staging tree fails
-due to v4l2-async changes that have been merged. So for v8 please
-rebase to the staging tree.
+Can you please check this patch (series if required) with a few IGTs and 
+probably with Xonotic as well ?
 
-I also got a few kerneldoc warnings:
 
-drivers/media/platform/toshiba/visconti/viif.h:217: warning: Function parameter or member 'ops_lock' not described in 'isp_subdev'
-drivers/media/platform/toshiba/visconti/viif.h:233: warning: Function parameter or member 'ops_lock' not described in 'csi2rx_subdev'
-drivers/media/platform/toshiba/visconti/viif.h:254: warning: Function parameter or member 'post_enable_flag' not described in 'viif_l2_roi_path_info'
+Regards
 
-Regards,
+Shashank
 
-	Hans
-
-> 
-> Best regards,
-> Yuji
-> 
-> Changelog v2:
-> - Resend v1 because a patch exceeds size limit.
-> 
-> Changelog v3:
-> - Add documentation to describe SW and HW
-> - Adapted to media control framework
-> - Introduced ISP subdevice, capture device
-> - Remove private IOCTLs and add vendor specific V4L2 controls
-> - Change function name avoiding camelcase and uppercase letters
-> 
-> Changelog v4:
-> - Split patches because a patch exceeds size limit
-> - fix dt-bindings document
-> - stop specifying ID numbers for driver instance explicitly at device tree
-> - use pm_runtime to trigger initialization of HW
->   along with open/close of device files.
-> - add a entry for a header file at MAINTAINERS file
-> 
-> Changelog v5:
-> - Fix coding style problem in viif.c (patch 2/6)
-> 
-> Changelog v6:
-> - add register definition of BUS-IF and MPU in dt-bindings
-> - add CSI2RX subdevice (separeted from ISP subdevice)
-> - change directory layout (moved to media/platform/toshiba/visconti)
-> - change source file layout (removed hwd_xxxx.c)
-> - pointer to userland memory is removed from uAPI parameters
-> - change register access (from struct style to macro style)
-> - remove unused macros
-> 
-> Changelog v7:
-> - remove redundant "bindings" from header and description text
-> - fix multiline text of "description"
-> - change "compatible" to "visconti5-viif"
-> - explicitly define allowed properties for port::endpoint
-> - remove unused variables
-> - update kerneldoc comments
-> - update references to headers
-> 
-> Yuji Ishikawa (5):
->   dt-bindings: media: platform: visconti: Add Toshiba Visconti Video
->     Input Interface
->   media: platform: visconti: Add Toshiba Visconti Video Input Interface
->     driver
->   media: add V4L2 vendor specific control handlers
->   documentation: media: add documentation for Toshiba Visconti Video
->     Input Interface driver
->   MAINTAINERS: Add entries for Toshiba Visconti Video Input Interface
-> 
->  .../bindings/media/toshiba,visconti-viif.yaml |  108 +
->  .../driver-api/media/drivers/index.rst        |    1 +
->  .../media/drivers/visconti-viif.rst           |  462 +++
->  MAINTAINERS                                   |    4 +
->  drivers/media/platform/Kconfig                |    1 +
->  drivers/media/platform/Makefile               |    1 +
->  drivers/media/platform/toshiba/Kconfig        |    6 +
->  drivers/media/platform/toshiba/Makefile       |    2 +
->  .../media/platform/toshiba/visconti/Kconfig   |   18 +
->  .../media/platform/toshiba/visconti/Makefile  |    8 +
->  .../media/platform/toshiba/visconti/viif.c    |  681 ++++
->  .../media/platform/toshiba/visconti/viif.h    |  375 ++
->  .../platform/toshiba/visconti/viif_capture.c  | 1485 +++++++
->  .../platform/toshiba/visconti/viif_capture.h  |   22 +
->  .../platform/toshiba/visconti/viif_common.c   |  199 +
->  .../platform/toshiba/visconti/viif_common.h   |   38 +
->  .../platform/toshiba/visconti/viif_controls.c | 3407 +++++++++++++++++
->  .../platform/toshiba/visconti/viif_controls.h |   18 +
->  .../platform/toshiba/visconti/viif_csi2rx.c   |  684 ++++
->  .../platform/toshiba/visconti/viif_csi2rx.h   |   24 +
->  .../toshiba/visconti/viif_csi2rx_regs.h       |  102 +
->  .../platform/toshiba/visconti/viif_isp.c      | 1258 ++++++
->  .../platform/toshiba/visconti/viif_isp.h      |   24 +
->  .../platform/toshiba/visconti/viif_regs.h     |  716 ++++
->  include/uapi/linux/v4l2-controls.h            |    6 +
->  include/uapi/linux/visconti_viif.h            | 1800 +++++++++
->  26 files changed, 11450 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/toshiba,visconti-viif.yaml
->  create mode 100644 Documentation/driver-api/media/drivers/visconti-viif.rst
->  create mode 100644 drivers/media/platform/toshiba/Kconfig
->  create mode 100644 drivers/media/platform/toshiba/Makefile
->  create mode 100644 drivers/media/platform/toshiba/visconti/Kconfig
->  create mode 100644 drivers/media/platform/toshiba/visconti/Makefile
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_capture.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_common.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_csi2rx_regs.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.c
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_isp.h
->  create mode 100644 drivers/media/platform/toshiba/visconti/viif_regs.h
->  create mode 100644 include/uapi/linux/visconti_viif.h
-> 
-
+On 21/08/2023 13:03, Christian König wrote:
+> Am 20.08.23 um 11:51 schrieb Christophe JAILLET:
+>> This serie simplifies amdgpu_bo_list_create() and usage of the 'struct
+>> amdgpu_bo_list'.
+>
+> Oh, yes please. That's something I always wanted to cleanup as well.
+>
+>> It is compile tested only.
+>
+> That bothers me a bit. Arun, Vitaly, Shashank can anybody with time 
+> run a quick test on this? Preferable the IGT tests, but this just some 
+> game should probably do as well.
+>
+> Apart from that looks good to me,
+> Christian.
+>
+>>
+>> Christophe JAILLET (4):
+>>    drm/amdgpu: Explicitly add a flexible array at the end of 'struct
+>>      amdgpu_bo_list'
+>>    drm/amdgpu: Remove a redundant sanity check
+>>    drm/amdgpu: Remove amdgpu_bo_list_array_entry()
+>>    drm/amdgpu: Use kvzalloc() to simplify code
+>>
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 15 ++-------------
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 18 ++++++------------
+>>   2 files changed, 8 insertions(+), 25 deletions(-)
+>>
+>
