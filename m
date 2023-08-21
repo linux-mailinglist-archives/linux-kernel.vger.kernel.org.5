@@ -2,85 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D23D782AE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D05D782AED
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbjHUNwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        id S235552AbjHUNwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235548AbjHUNv7 (ORCPT
+        with ESMTP id S235585AbjHUNwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:51:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5747AE8;
-        Mon, 21 Aug 2023 06:51:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF7EA634B8;
-        Mon, 21 Aug 2023 13:51:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AE4DC433C9;
-        Mon, 21 Aug 2023 13:51:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692625914;
-        bh=Ij1Fky1SzjNGU19dxA9VEMP/m+IgopJUmHpYOQtDxZk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=NYdogs3jbqTRkOYTYeZW38QExUCqBvCA+ZyJaiEMrZb5K31onx0mb1UBwO5k5IVwP
-         IT6qGW3XAth0Kw2j7EAxjLdnDge2Fi1kZysQJsY6uOEhaat8e89GmMAkYqEyAoVFIQ
-         sB9BXEKd1hsXJHJGI733yUgpFnL76W7eeSVXnaXZOIJRG4n2Pi1NZIGCN75+l7tFwi
-         YHmZ3+u05XVjzC3VgkXFZ5XuyOYaSviUHhfGYk+MtIak1VHu2GfHwzwVTTiKSHTD27
-         hfC4QD6EEEdsz8KWx10/OH+hsePhIQrUJz0rhht3NcG+XiT/agnD2DSL/wFbAdDnAP
-         fsq3YFYa4VdUA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?utf-8?q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-In-Reply-To: <20230816-void-drivers-dma-owl-dma-v1-1-a0a5e085e937@google.com>
-References: <20230816-void-drivers-dma-owl-dma-v1-1-a0a5e085e937@google.com>
-Subject: Re: [PATCH] dmaengine: owl-dma: fix clang
- -Wvoid-pointer-to-enum-cast warning
-Message-Id: <169262591106.224153.11282362277012403845.b4-ty@kernel.org>
-Date:   Mon, 21 Aug 2023 19:21:51 +0530
+        Mon, 21 Aug 2023 09:52:10 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CDD10E
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:52:04 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-79a10807b4fso1036250241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:52:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692625923; x=1693230723;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7DMvDXB2k6+AbrdhdkHJ/XB86AMGB7xb0Ezbn7WAlNw=;
+        b=SeArUD9jqncDCi5AobrC4EKlTl4unjyBWOuzgGjuNG1EdNFY/4x47bGTtYx6Q8xaZb
+         t8tWtoC3mu8/oe6/+k4+qkTocYzwH3h14SWXxr+w1OhvB7MR7etgzmDAr8pg7hQex1hj
+         SF2SaGm7MwoRIONvu5CcC2e4tE2cwFHms1ISnaWvSVOTwW+qtWXjT3ceVk/ecTNpUGdw
+         xfzM3KPyTQAeC3soCVxLJcQPqEKQCLieQ1OqrApxzHZSxZZ9sDtAhuo7Wq3M5kg+faCb
+         Mc+Wo4rKWndmbModFMk/xAyY0UGM/KGcyHR/C6mo30l+B4ASd4OOj/Z8cVRXdqH0FkJT
+         jVhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692625923; x=1693230723;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7DMvDXB2k6+AbrdhdkHJ/XB86AMGB7xb0Ezbn7WAlNw=;
+        b=dQXmD8ZugRQZGI+kNMrxKguOE7UNfjEX7rYO2HsE2bA8oJzi4XUOTxrwuqfaIUTZ9T
+         gayg3P3gN+TY2LGW5TDzTrkkd5iLSd3A8aArpo25hiEZpd07iZhJMYTRAqG9gT7/Sf6D
+         6LKItyGb/NFKuXrUqb2ZA6rhY8kc267we0tn+G52rpt3rzO4X0vGSrxs+vc394stiXVB
+         DIOzVSOBXq4T18feJM50/B8vWqkDJhFUARkIIVBpes1+mjbHdMXX/DgI18IkRZtfSdLo
+         2b/xNhLbueZewxCbaadoVca/8pAzsjgz3qOJEFkF42eP7YThG/C4W+sRXToV6TDj05G4
+         N6vQ==
+X-Gm-Message-State: AOJu0YwcFLDfkaKtG8725SRrobNbmDhc9FM12FQJqpmdNOvz1AxeEofq
+        o3GW7pVfSzr8UvOQGtIE6vpC3G7v1bf8HjowvAX7uQ==
+X-Google-Smtp-Source: AGHT+IHJYha+6wVZ4QRVAf0iayKUmBS8wsPnI5ar076fcn0KaGGb/MngAUY0k7zm+LVQSeRE8E9HnAsK0eBQu0c6UUM=
+X-Received: by 2002:a05:6102:282b:b0:447:5ed3:cb21 with SMTP id
+ ba11-20020a056102282b00b004475ed3cb21mr4746191vsb.28.1692625923288; Mon, 21
+ Aug 2023 06:52:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 21 Aug 2023 19:21:52 +0530
+Message-ID: <CA+G9fYtdRe5x=mS4Xonb+ZZsArO2o7vuNL+qJsv5DkNvcirQbA@mail.gmail.com>
+Subject: clang-17: selftests: sgx: clang: error: -z noexecstack: 'linker'
+ input unused [-Werror,-Wunused-command-line-argument]
+To:     clang-built-linux <llvm@lists.linux.dev>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Recently we have updated the toolchain clang-17 version.
 
-On Wed, 16 Aug 2023 20:12:50 +0000, Justin Stitt wrote:
-> When building with clang 18 I see the following warning:
-> |       drivers/dma/owl-dma.c:1119:14: warning: cast to smaller integer type
-> |       'enum owl_dma_id' from 'const void *' [-Wvoid-pointer-to-enum-cast]
-> |        1119 | od->devid = (enum owl_dma_id)of_device_get_match_data(&pdev->dev);
-> 
-> This is due to the fact that `of_device_get_match_data()` returns a
-> void* while `enum owl_dma_id` has the size of an int.
-> 
-> [...]
+While building selftests sgx following warnings / errors noticed on the
+Linux next with clang-17.
 
-Applied, thanks!
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-[1/1] dmaengine: owl-dma: fix clang -Wvoid-pointer-to-enum-cast warning
-      commit: 1fbda5f4c7c1c8bd51cd3bc3d2ff19176c696b74
+sgx/main.o
+clang: error: -z noexecstack: 'linker' input unused
+[-Werror,-Wunused-command-line-argument]
 
-Best regards,
--- 
-~Vinod
+Links:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/
+
+Steps to reproduce:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/tuxmake_reproducer.sh
+
+tuxmake --runtime podman --target-arch x86_64 --toolchain clang-17
+--kconfig https://storage.tuxsuite.com/public/linaro/lkft/builds/2UHhSg0TPLhjp9Uq9EFceoQd0VL/config
+LLVM=1 LLVM_IAS=1 debugkernel cpupower headers kernel kselftest
+modules
 
 
+--
+Linaro LKFT
+https://lkft.linaro.org
