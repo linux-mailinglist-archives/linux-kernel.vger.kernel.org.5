@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1A7782866
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B379B782867
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbjHUL6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S233993AbjHUL7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbjHUL63 (ORCPT
+        with ESMTP id S230477AbjHUL7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:58:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76267C7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:58:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E8B3632C6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:58:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91230C433C8;
-        Mon, 21 Aug 2023 11:58:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692619105;
-        bh=T4xgCx5Z7Da6zvQfuv9RvMhCD7j3XXVo0DgN+vZ0gKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aJIHohZYinbcN8n8Y1M/EzZR6AsYhe/nWTtkSgUSlur4uewOJrrG2ChhvPwPImXXO
-         0KjpEnfGmyyoFGrMo0HHL7uRNga4vC0bLUzA1IC79UhcUVe8qt3uf12SKq5u8BMq5H
-         ZyrzaAi+OyLV/erqtY7PJ1edsnyhErk8HNBkpqFMxCZyX5avgNT+76DUZgmElINV7p
-         pqpD/sDIWS1aBaKlsbHLe4vr6GoLlfmvobE2C/MmZ3nD2BOmUFTPj2PhwKcaSolmZL
-         CvYgjz+OoJH8mGNex+jkfEPGMXmB+Tu8x7P48Z3/rwVwH/wS8lQAqbAG2+tBuQ2c+J
-         f4RwImtk5PLrg==
-Date:   Mon, 21 Aug 2023 12:58:20 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     jonathan.cameron@huawei.com, mark.rutland@arm.com,
-        chenhao418@huawei.com, shenjian15@huawei.com,
-        wangjie125@huawei.com, liuyonglong@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH drivers/perf: hisi: 1/2] drivers/perf: hisi: hns3:
- default use hardware event 0 as group leader event.
-Message-ID: <20230821115820.GA19617@willie-the-truck>
-References: <20230816094619.3563784-1-shaojijie@huawei.com>
- <20230816094619.3563784-2-shaojijie@huawei.com>
+        Mon, 21 Aug 2023 07:59:32 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF0AC90
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:59:30 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1c4c7a83bcdso2009134fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:59:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692619170; x=1693223970;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=vTg7Pfzlgj1crJFBBTiAr+4TTj7YL+SlhsKNIKDeb0c=;
+        b=abr26lyW0+UkasnMMAQUwJFaYIOTMS/l++CwOOuUP9Z8F3vU0seHByEdRYji0yJ1iD
+         /jwQl1Gljv+/m0aFPn8SRBQpdsjnTY5A9JLTv11EV6/ZdIYjxtKTo9+LTYtuVEIrKlXr
+         44Ohq41ak3AzCGzy9sW1UR8Y6ZlLBhV1oYdYx0EAhrNyKfFZoWbXfA4swe9NiLDPqsi+
+         gGT/gBj4N0Gi63iJS+Qwb9fzVMg617IeJi2YmbyyK79zQi+EZxm+GY5KCD26Ija7eFez
+         KINRrHHoau6gXtuALsp9q9lqp+mnQnBJEcM7JnDX5RLC9zeEouvHaNbeFuDYZE3Pvune
+         9tWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692619170; x=1693223970;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vTg7Pfzlgj1crJFBBTiAr+4TTj7YL+SlhsKNIKDeb0c=;
+        b=ihYoKLgqWWeDI9BArLX2baFrSIW1lAevGDpzCKJWZYoQhvzmH+cHxwO0n7/AkZgNjR
+         mWMQzepfOvj5/7PlTk6zgfI4vdVOz12W+oVtCbEWZn2hnZZfHF9XREI3ORxaeR/Bkl+m
+         VizUIu4Td8QMqY4LtYjwUSmTYNJrJOMl2zRFa8NOJj+5KQPjBOgI9BZfYthV2xmzLy7Z
+         Jj6CrzWcLERnvGiP7t+SjT41FOMYuUODfXwtpRgZG0i0BNjstMq9OF7ZjXuORVg64N0N
+         w87mEnm+uv5vU54z8+XxCA5xaHXiGE4scg4loEbfMc3iz+R9/qQSBCZpprGobJ43hyhv
+         lgsQ==
+X-Gm-Message-State: AOJu0YyAMXmSG9unLCMsbqFvqPWqcFjVieKT/1lHLcuZ8bJ/kKhLvC8/
+        frnYK4Yy20e/Z41IG42N7cSjqiAyqvb63Gd4oPG39A==
+X-Google-Smtp-Source: AGHT+IFiiitBFVLXpwUe3sP/WkQ8fH+MysnM3V0IQlHVMFkm/mZANHhnDctsuY6avFLbAoPsi1ZYsvtkahKcKGv0qGM=
+X-Received: by 2002:a05:6870:63a3:b0:1bb:c50d:7437 with SMTP id
+ t35-20020a05687063a300b001bbc50d7437mr9170386oap.53.1692619170037; Mon, 21
+ Aug 2023 04:59:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816094619.3563784-2-shaojijie@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZN87UsqkWcFLDxea@swlinux02> <20230818132148.2237811-1-chengming.zhou@linux.dev>
+In-Reply-To: <20230818132148.2237811-1-chengming.zhou@linux.dev>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 21 Aug 2023 13:59:18 +0200
+Message-ID: <CAKfTPtAwDtchtLBWNmwO2NWWf52Ra7BhdNnSLXQ6_bBwseWg0A@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: Fix cfs_rq_is_decayed() on !SMP
+To:     chengming.zhou@linux.dev
+Cc:     mingo@redhat.com, peterz@infradead.org, ycliang@andestech.com,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        zhouchengming@bytedance.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 05:46:18PM +0800, Jijie Shao wrote:
-> From: Hao Chen <chenhao418@huawei.com>
-> 
-> For hns3 pmu events, we use command as below before:
-> perf stat -g -e hns3_pmu_sicl_0/config=0x00105,global=1/
-> -e hns3_pmu_sicl_0/config=0x10105,global=1/ -I 1000
-> 
-> We want to use -g parameter to make 0x00105 event and 0x10105 event
-> share a hardware event, but for kernel 6.2, 'commit 5f8f95673f68
-> ("perf evlist: Remove group option.")' remove -g parameter.
-> 
-> So add this patch to set default related event idx as 0 to share
-> the first hardware event.
+On Fri, 18 Aug 2023 at 15:22, <chengming.zhou@linux.dev> wrote:
+>
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+>
+> We don't need to maintain per-queue leaf_cfs_rq_list on !SMP, since
+> it's used for cfs_rq load tracking & balance on SMP.
+>
+> But sched debug interface use it to print per-cfs_rq stats, which
+> maybe better to change to use walk_tg_tree_from() instead.
+>
+> This patch just fix the !SMP version cfs_rq_is_decayed(), so the
+> per-queue leaf_cfs_rq_list is also maintained correctly on !SMP,
+> to fix the warning in assert_list_leaf_cfs_rq().
+>
+> Fixes: 0a00a354644e ("sched/fair: Delete useless condition in tg_unthrottle_up()")
+> Reported-by: Leo Liang <ycliang@andestech.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-Hmm, but the change cited above is a userspace change so I don't think
-we should be making driver-side changes for that. Furthermore, the commit
-message there suggests that you should be using a different syntax,
-introduced by 89efb029502d ("perf tools: Add support to parse event
-group syntax") (which describes the grammer and has some examples too).
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-Will
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a80a73909dc2..05e004515fde 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4654,7 +4654,7 @@ static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+>
+>  static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+>  {
+> -       return true;
+> +       return !(cfs_rq->nr_running);
+>  }
+>
+>  #define UPDATE_TG      0x0
+> --
+> 2.41.0
+>
