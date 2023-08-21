@@ -2,47 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C460782B9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973BA782BA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235895AbjHUOWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
+        id S235892AbjHUOXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjHUOWi (ORCPT
+        with ESMTP id S235820AbjHUOXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:22:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DC1188
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=gG7pdGsI6/OPp6WkwdrC+mA3dT68163o1ZnN7Zyaym0=; b=nNI19ZuWtiV5y5m/vpr8ocAr2U
-        chezZLz3ntHiSOjSP7k8oAvqJp0hovvGuzPTvh24Ly8kabrlM4rc5e0s5adQOvN9Khi+TdJv0DhAg
-        beRGqyW/uUx6FD/CJbgTboBkSqyHVNr5tCvpvjfeTnGjSi4Fzaw8wHP1Tnxm2V+jQSzt0iMSx7CTO
-        I0JmDgLJtDvOTOyv6O3xJpXXdIIT0MVbPXcrYjxBhnU8FxbK15jewIguBLKgg2yqfrBFNlphukmtK
-        0HLNvPdrNeJmzDLAFfDRokKBR4ILRj47cWI0wb5LVpEifImmRAP+LpNynnemAPaBO+4GIAux9TZck
-        K66BRrmQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qY5nF-00Ae1V-Ml; Mon, 21 Aug 2023 14:22:09 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Ingo Molnar <mingo@redhat.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
+        Mon, 21 Aug 2023 10:23:14 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2059.outbound.protection.outlook.com [40.107.100.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2B0F5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:23:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V4Vy67fpjXFl81U3yqZyv1cRqOVF7CDznxU6ipWKNZwsMtAFj1f3GERIoQd4U2bcWKqu8xMXJ96zdxsaorBKEZJpDapnrBQ071q3f4IMlRvSKNw2IpgkZDnNoL0zRtvAAc46FimxyqWfubqiuJfA2FVHGATBeOyc3NeCwACaTnZ2VKsD/6LbM7D6D5p1jZk+Kz+6NDhL8YDYVbu7+lsflYovzfSu6IMgU4MA18U0kBLOriLeUB9JNxBqTAeS3+fyFMAXctPFQO9Skb4PAx/eMR8hi1PlmOJL9HawdyofeQgPSJMw2DU9w5MYeIEBA126I4mQ8doHR3D8NDSiqs/aEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LBS0/doGbWu38g+8092ACQHgwhtkLBDohox39dB3fK4=;
+ b=OzHxyvvB9l0qth/ab9YVQs2KeuccRhIbmmsYbGbG09XAe82/MNCY+pUUjjj9ci9Y1IpT/fpXe/Tbfs8gV+8iCb59K8/JjkwQOOXhYoao9qSLXXL1OTzmVZkhP4Y2A3C9/yXMWVUp47QjkBMVxc1PdMisVcYNTPhIth/WFEp/W6Dir9u2DB7Y2unSjd7OrnNpsC7eY/IjJQgM8CpOPqK0pA1tcMq1Ex1YrJkwlc8fP3KXC1kmCVrbGTMF6C8D3Ty1pug+CDD6ZezLztcXb/xBM2niZv5Qu3cvgk8wYwsftqZMF5dfDvSJqESSYA9Z3cYrIewrVNPlZS7ffbhW6Xg1gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LBS0/doGbWu38g+8092ACQHgwhtkLBDohox39dB3fK4=;
+ b=NN6QrHKmG59LIND9IVL/nQxWvpU02L397zdNHmL/r4plEDhwffPcJLAEEVLzMn2sM+ojKEye2TiylvIsJvmnFPp8YThsklgND380Lx3rmEIqFzfLO5ecJ+35P6VMmZYhG1j2SNgHBW3+KQp7Sk26RSje3I9uSy0vNxmW5ntra2g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
+ by DS7PR12MB6360.namprd12.prod.outlook.com (2603:10b6:8:93::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 14:23:06 +0000
+Received: from MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86]) by MW4PR12MB5667.namprd12.prod.outlook.com
+ ([fe80::dc06:ffb3:46ec:6b86%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
+ 14:23:06 +0000
+Message-ID: <7e785b0a-aa1e-b733-2521-694941b7593f@amd.com>
+Date:   Mon, 21 Aug 2023 16:22:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH v5 4/5] drm/amdgpu: Move coredump code to amdgpu_reset
+ file
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] futex: Use a folio instead of a page
-Date:   Mon, 21 Aug 2023 15:22:07 +0100
-Message-Id: <20230821142207.2537124-1-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-MIME-Version: 1.0
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>
+References: <20230817182050.205925-1-andrealmeid@igalia.com>
+ <20230817182050.205925-5-andrealmeid@igalia.com>
+From:   Shashank Sharma <shashank.sharma@amd.com>
+In-Reply-To: <20230817182050.205925-5-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+X-ClientProxiedBy: BE1P281CA0176.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:66::19) To MW4PR12MB5667.namprd12.prod.outlook.com
+ (2603:10b6:303:18a::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|DS7PR12MB6360:EE_
+X-MS-Office365-Filtering-Correlation-Id: 45c14085-4a45-4405-be56-08dba2522322
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0/bMSnqNYslR63z6jOQYXv9JxSglXaaLIsJl0+bg0zaSRRQ9L1M1bDpSgnRNF2kl/TA+iUvSe1PR3QcVJFVnoK82Jt83sq++H9jlCWFEtNV8m6QzYWoxfvCU1/1QVVwasA5lbKDBw40s7EAjnJ7yEB0ZNS9mZmVCGQEghZm1rcHlGUjpvBKhgtIzG3HLZKAK6USFdSLtNXImpkxC/95JGir/050BEKOTJP/RvRaT9ZmQQ/NwgdrWm+35cE410KCw0xVVqw0pCp+NsH1UM2/qFeteYtlAcFsmWjMx7kkc1PpOiZoRtOwsQLoOLVMaxDx6EGXNzMvgBJrdtAw9ZwjAq7gFMyudQlinlGYOMTUk3y9tNCV2CXKx40dyOauU8yDtw4rO4qRkuNCb2A0Msq43nGgcrth4h2xCF6mvBr9fVjvfm7adCo13d/egfRDhNT5knLxSLGgK74qWfghLTHhBIGn+xWtudlGhQKMnKqBNQXH+YRr4s6PqHTmIFIuYdxL7AfLOu/Qf4Vy5HNH0KyTVoy1Y+wf4iE13WqyjK2iYxlNzFKBWDH8WxuCbWCw6IlHlVXcl9YP7aCQ+CZOknEJ4a6RXspIC2lmIomYrIXBTtnjGpS/masZQgoBtQHR9E0wbP7hV6bcqRJ/JTob9USGwKg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(376002)(366004)(346002)(186009)(1800799009)(451199024)(54906003)(66556008)(66946007)(66476007)(316002)(6512007)(8936002)(8676002)(2616005)(4326008)(41300700001)(36756003)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(2906002)(83380400001)(86362001)(31696002)(31686004)(44832011)(5660300002)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OFVwUWo5bTRTU0k0Z2oyc0tIK00vWWtiYlNLTjlRRERRVm9hZXJxOVRlWkxo?=
+ =?utf-8?B?Y2lEWXFURms0UWNiZ0Q1dHpnZFBSeFZYZ2dWWjZKelpqTUdJclc0ck5sbmQ0?=
+ =?utf-8?B?VnNSMElhZnFKZElQRGw2OXNnN1FCVm5UbmJmdHRKYjA1L3VhOFJGR2JIOFZk?=
+ =?utf-8?B?WUlHd09iTVBhZlJHUDJUNU1yTWFpMU5Kd2I2U0twRG1CZk15QUpzdFBPWE45?=
+ =?utf-8?B?Uk0yNkRoQWI4RlFBenVZL3FoYkZ6V1Y4TG9TNUZYZElsTmpjcXk3VjYwZDk5?=
+ =?utf-8?B?TWZjSWp4aTFtWlozQWR3cmd3K0RUZTBQdk1YUXVjejlITEt3Tm5jWHZjdVhF?=
+ =?utf-8?B?SE9reU9WOTN1bUpGekNsUlJBNTZTMlNnUk83UVRXdm5sbzJUdkJvMWkyUVhh?=
+ =?utf-8?B?dU90YTZFMHpGTXE0RVNHK3NaMmdLYUR3dDkyekk2ODAvTVNpcGs2bkFxbUN0?=
+ =?utf-8?B?TTBJcEx2ZkJLQlhLTTIrUzUyUlQyZldKVHlMd24rYUp0NGxYb2JkTjJIKytJ?=
+ =?utf-8?B?NVgrVThDWTh2amFOWEQxKytLRXovV21yZnVTRTZQbVFtYVF2TjFDZkxmbjN0?=
+ =?utf-8?B?Qk5Vc09EZitZSWwrNzRGM2ZPTW41NjVGWTRYZjQveEZCRk9TeENoUG5ZVFVM?=
+ =?utf-8?B?YzlBU3VSaEdxOC9qTnhycFVXM1V1Rk9Ram5pa2FBZjNBVVVmaUZJMWlib0Ex?=
+ =?utf-8?B?UU1PYnM1L01oay92VUdhWjBjTUI2VmR2Q01wNGFpV245U1Z3N3pzc29ZeHM2?=
+ =?utf-8?B?eFN0ZTNRdFl4enlyK2g4MVZDSnBGdFZSdkdzRWd4Mm1JUjdVQ3p1YUJ6NTAy?=
+ =?utf-8?B?empETXVvU2dyeUg2Zk84SXdjdDY3amxNSmh2ZHd3a1oxOXFseksrWHZ3REZO?=
+ =?utf-8?B?eFkzZjQwSjMzZVlmQndmckxOYmdURDhTY21mY3N6djF2ODBkNFZUaUQzWi9R?=
+ =?utf-8?B?Ymt0MTFYZmc0TUN0MCtGNXQ5bCtDdzc5b1Mzdi9YTFpwM1pDbDRLV0UyVHJh?=
+ =?utf-8?B?ZGNkeG8xVGN2Szd3WUtMUGRzNUp0OEU0VmJxTGphSlBnT1F3bERvS2liOWxo?=
+ =?utf-8?B?R1EzQWlGRWlkRmhZeEgwbnBOZi94ZFVnMjBodUZRelVVME9TQkY0dmN0MW4y?=
+ =?utf-8?B?WVpmaFFhT2dzRmlGZ2lXbjFLWDFJbFhCNEdveXQ3RFJ1NDdKV1hzRnEwd3lj?=
+ =?utf-8?B?Zm5nTEhPbEZ2dDFKbUUwRldtbXpKVmswa3YwRXByUnlHWEJkd1UxRWxIT1Nq?=
+ =?utf-8?B?dTRnajNTVFp4aE82SDdPbWJtaFhJdW5pdWJVOWhPOSs4dE4yY1lYM21md056?=
+ =?utf-8?B?aVhOOGJlazVzS3had1doc2taZWF1aW1mbGRXcktyUy9KM0dLaHZlU1hNVWtW?=
+ =?utf-8?B?ZENEemt2S3kyTUxpbE5DTEtUWmVlaGk4TnRTeVZIRmhya2F5ZlN5TlFLUmc2?=
+ =?utf-8?B?dTRWdWZpVWFma0grS2IvVHBGd3RDSk94ZjJmQm9WWi9DL2RXSjJxQllyY0h0?=
+ =?utf-8?B?T1Q0U2NXUW9ZQ0E0WC8xNUZ5UDB0a3FFMElJRHpmWVQzUzB6ci85OHFmcjJX?=
+ =?utf-8?B?bDh6U1k1TFlCRUVJYmc1VUxGdk5qWDI5Zkxia2NQZzk0QnIvaDVoU1ZNV3JI?=
+ =?utf-8?B?ZGhES2RTazkxMjJmMU1SbzdDWStzaUtwRlVoZm9zUE5GdmV4WW9YZlliODlm?=
+ =?utf-8?B?MkRsZlZ2QUxsMHZOYjBCMXNyUUVzUmVwSWdYVW1PT2h3c3Vhbm5ORnlrYVdK?=
+ =?utf-8?B?UXhSYzkrNlhHU29HRGhnWGtDeWd1NXMrQ0s1R1drNGkwV1pjdSszUFpIcUxw?=
+ =?utf-8?B?RERsMTEwN2RPdkhjcEZPc0JlWG11VGU0R1F3S1JKUndlNmNKOEoxRUJMejN1?=
+ =?utf-8?B?Z1JBYjBIMlVOL0Z3TXFISU9UclRWemRtUUNsWTNoY3ZpOWJJT1JSbTcwVVY1?=
+ =?utf-8?B?N3BRZzAwZG5RREt1Y08vbGxzYU8rcFN6UkNKbTRaRzRtckpoRzltdEVhSlZu?=
+ =?utf-8?B?NDErVFQ3cDArR1J3ak9wQnhqVnJqckIyWXFtd214UForUHcvUjlpN2dVZFJ5?=
+ =?utf-8?B?VGMyeXErNnZTamJrSjlHZ3MrU0lNYTAvSitPM3NnUkdIODY1R0hYNVhzT09L?=
+ =?utf-8?Q?hYDxTWjDSTmDrGCNg8S0W5GyU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45c14085-4a45-4405-be56-08dba2522322
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 14:23:06.6854
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: k7p26FiC6c+BoSsjA3Uzaf1vl5o9uylkEmg/kBDTBM0i3A8YoH3OY5PvIKeLswJ7UazgMLHXr6NNQiOxB1L1Qw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6360
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,171 +132,257 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The futex code already handles compound pages correctly, but using a
-folio lets us tell the compiler that we already have the head page and
-it doesn't need to call compound_head() again.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- kernel/futex/core.c | 67 ++++++++++++++++++++++-----------------------
- 1 file changed, 33 insertions(+), 34 deletions(-)
+On 17/08/2023 20:20, André Almeida wrote:
+> Giving that we use codedump just for device resets, move it's functions
+> and structs to a more semantic file, the amdgpu_reset.{c, h}.
+>
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> ---
+> v5: no change
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h        |  9 ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 78 ----------------------
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c  | 76 +++++++++++++++++++++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h  | 10 +++
+>   4 files changed, 86 insertions(+), 87 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index 56d78ca6e917..b11187d153ef 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -781,15 +781,6 @@ struct amdgpu_mqd {
+>   #define AMDGPU_PRODUCT_NAME_LEN 64
+>   struct amdgpu_reset_domain;
+>   
+> -#ifdef CONFIG_DEV_COREDUMP
+> -struct amdgpu_coredump_info {
+> -	struct amdgpu_device	*adev;
+> -	struct amdgpu_task_info reset_task_info;
+> -	struct timespec64	reset_time;
+> -	bool			reset_vram_lost;
+> -};
+> -#endif
+> -
+>   struct amdgpu_reset_info {
+>   	/* reset dump register */
+>   	u32 *reset_dump_reg_list;
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> index 96975591841d..883953f2ae53 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+> @@ -32,8 +32,6 @@
+>   #include <linux/slab.h>
+>   #include <linux/iommu.h>
+>   #include <linux/pci.h>
+> -#include <linux/devcoredump.h>
+> -#include <generated/utsrelease.h>
+>   #include <linux/pci-p2pdma.h>
+>   #include <linux/apple-gmux.h>
+>   
+> @@ -4799,82 +4797,6 @@ static int amdgpu_reset_reg_dumps(struct amdgpu_device *adev)
+>   	return 0;
+>   }
+>   
+> -#ifndef CONFIG_DEV_COREDUMP
+> -static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> -			    struct amdgpu_reset_context *reset_context)
+> -{
+> -}
+> -#else
+> -static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+> -		size_t count, void *data, size_t datalen)
+> -{
+> -	struct drm_printer p;
+> -	struct amdgpu_coredump_info *coredump = data;
+> -	struct drm_print_iterator iter;
+> -	int i;
+> -
+> -	iter.data = buffer;
+> -	iter.offset = 0;
+> -	iter.start = offset;
+> -	iter.remain = count;
+> -
+> -	p = drm_coredump_printer(&iter);
+> -
+> -	drm_printf(&p, "**** AMDGPU Device Coredump ****\n");
+> -	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
+> -	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
+> -	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
+> -	if (coredump->reset_task_info.pid)
+> -		drm_printf(&p, "process_name: %s PID: %d\n",
+> -			   coredump->reset_task_info.process_name,
+> -			   coredump->reset_task_info.pid);
+> -
+> -	if (coredump->reset_vram_lost)
+> -		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+> -	if (coredump->adev->reset_info.num_regs) {
+> -		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
+> -
+> -		for (i = 0; i < coredump->adev->reset_info.num_regs; i++)
+> -			drm_printf(&p, "0x%08x: 0x%08x\n",
+> -				   coredump->adev->reset_info.reset_dump_reg_list[i],
+> -				   coredump->adev->reset_info.reset_dump_reg_value[i]);
+> -	}
+> -
+> -	return count - iter.remain;
+> -}
+> -
+> -static void amdgpu_devcoredump_free(void *data)
+> -{
+> -	kfree(data);
+> -}
+> -
+> -static void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> -			    struct amdgpu_reset_context *reset_context)
+> -{
+> -	struct amdgpu_coredump_info *coredump;
+> -	struct drm_device *dev = adev_to_drm(adev);
+> -
+> -	coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
+> -
+> -	if (!coredump) {
+> -		DRM_ERROR("%s: failed to allocate memory for coredump\n", __func__);
+> -		return;
+> -	}
+> -
+> -	coredump->reset_vram_lost = vram_lost;
+> -
+> -	if (reset_context->job && reset_context->job->vm)
+> -		coredump->reset_task_info = reset_context->job->vm->task_info;
+> -
+> -	coredump->adev = adev;
+> -
+> -	ktime_get_ts64(&coredump->reset_time);
+> -
+> -	dev_coredumpm(dev->dev, THIS_MODULE, coredump, 0, GFP_NOWAIT,
+> -		      amdgpu_devcoredump_read, amdgpu_devcoredump_free);
+> -}
+> -#endif
+> -
+>   int amdgpu_do_asic_reset(struct list_head *device_list_handle,
+>   			 struct amdgpu_reset_context *reset_context)
+>   {
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> index 5fed06ffcc6b..579b70a3cdab 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> @@ -21,6 +21,9 @@
+>    *
+>    */
+>   
+> +#include <linux/devcoredump.h>
+> +#include <generated/utsrelease.h>
+> +
+>   #include "amdgpu_reset.h"
+>   #include "aldebaran.h"
+>   #include "sienna_cichlid.h"
+> @@ -167,5 +170,78 @@ void amdgpu_device_unlock_reset_domain(struct amdgpu_reset_domain *reset_domain)
+>   	up_write(&reset_domain->sem);
+>   }
+>   
+> +#ifndef CONFIG_DEV_COREDUMP
+> +void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> +		     struct amdgpu_reset_context *reset_context)
+> +{
+> +}
+> +#else
+> +static ssize_t amdgpu_devcoredump_read(char *buffer, loff_t offset,
+> +		size_t count, void *data, size_t datalen)
+> +{
+> +	struct drm_printer p;
+> +	struct amdgpu_coredump_info *coredump = data;
+> +	struct drm_print_iterator iter;
+> +	int i;
+> +
+> +	iter.data = buffer;
+> +	iter.offset = 0;
+> +	iter.start = offset;
+> +	iter.remain = count;
+> +
+> +	p = drm_coredump_printer(&iter);
+> +
+> +	drm_printf(&p, "**** AMDGPU Device Coredump ****\n");
+> +	drm_printf(&p, "kernel: " UTS_RELEASE "\n");
+> +	drm_printf(&p, "module: " KBUILD_MODNAME "\n");
+> +	drm_printf(&p, "time: %lld.%09ld\n", coredump->reset_time.tv_sec, coredump->reset_time.tv_nsec);
+> +	if (coredump->reset_task_info.pid)
+> +		drm_printf(&p, "process_name: %s PID: %d\n",
+> +			   coredump->reset_task_info.process_name,
+> +			   coredump->reset_task_info.pid);
+> +
+> +	if (coredump->reset_vram_lost)
+> +		drm_printf(&p, "VRAM is lost due to GPU reset!\n");
+> +	if (coredump->adev->reset_info.num_regs) {
+> +		drm_printf(&p, "AMDGPU register dumps:\nOffset:     Value:\n");
+> +
+> +		for (i = 0; i < coredump->adev->reset_info.num_regs; i++)
+> +			drm_printf(&p, "0x%08x: 0x%08x\n",
+> +				   coredump->adev->reset_info.reset_dump_reg_list[i],
+> +				   coredump->adev->reset_info.reset_dump_reg_value[i]);
+> +	}
+> +
+> +	return count - iter.remain;
+> +}
+>   
+> +static void amdgpu_devcoredump_free(void *data)
+> +{
+> +	kfree(data);
+> +}
+>   
+> +void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> +			    struct amdgpu_reset_context *reset_context)
+> +{
+> +	struct amdgpu_coredump_info *coredump;
+> +	struct drm_device *dev = adev_to_drm(adev);
+> +
+> +	coredump = kzalloc(sizeof(*coredump), GFP_NOWAIT);
+> +
+> +	if (!coredump) {
+> +		DRM_ERROR("%s: failed to allocate memory for coredump\n", __func__);
+> +		return;
+> +	}
+> +
+> +	coredump->reset_vram_lost = vram_lost;
+> +
+> +	if (reset_context->job && reset_context->job->vm)
+> +		coredump->reset_task_info = reset_context->job->vm->task_info;
+> +
+> +	coredump->adev = adev;
+> +
+> +	ktime_get_ts64(&coredump->reset_time);
+> +
+> +	dev_coredumpm(dev->dev, THIS_MODULE, coredump, 0, GFP_NOWAIT,
+> +		      amdgpu_devcoredump_read, amdgpu_devcoredump_free);
+> +}
+> +#endif
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> index f4a501ff87d9..01e8183ade4b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.h
+> @@ -87,6 +87,14 @@ struct amdgpu_reset_domain {
+>   	atomic_t reset_res;
+>   };
+>   
+> +#ifdef CONFIG_DEV_COREDUMP
+> +struct amdgpu_coredump_info {
+> +	struct amdgpu_device		*adev;
+> +	struct amdgpu_task_info         reset_task_info;
+> +	struct timespec64               reset_time;
+> +	bool                            reset_vram_lost;
+> +};
+> +#endif
+>   
+>   int amdgpu_reset_init(struct amdgpu_device *adev);
+>   int amdgpu_reset_fini(struct amdgpu_device *adev);
+> @@ -126,4 +134,6 @@ void amdgpu_device_lock_reset_domain(struct amdgpu_reset_domain *reset_domain);
+>   
+>   void amdgpu_device_unlock_reset_domain(struct amdgpu_reset_domain *reset_domain);
+>   
+> +void amdgpu_coredump(struct amdgpu_device *adev, bool vram_lost,
+> +		     struct amdgpu_reset_context *reset_context);
+>   #endif
 
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index f10587d1d481..d1d7b3c175a4 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -222,7 +222,8 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- {
- 	unsigned long address = (unsigned long)uaddr;
- 	struct mm_struct *mm = current->mm;
--	struct page *page, *tail;
-+	struct page *page;
-+	struct folio *folio;
- 	struct address_space *mapping;
- 	int err, ro = 0;
- 
-@@ -273,54 +274,52 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- 		err = 0;
- 
- 	/*
--	 * The treatment of mapping from this point on is critical. The page
--	 * lock protects many things but in this context the page lock
-+	 * The treatment of mapping from this point on is critical. The folio
-+	 * lock protects many things but in this context the folio lock
- 	 * stabilizes mapping, prevents inode freeing in the shared
- 	 * file-backed region case and guards against movement to swap cache.
- 	 *
--	 * Strictly speaking the page lock is not needed in all cases being
--	 * considered here and page lock forces unnecessarily serialization
-+	 * Strictly speaking the folio lock is not needed in all cases being
-+	 * considered here and folio lock forces unnecessarily serialization.
- 	 * From this point on, mapping will be re-verified if necessary and
--	 * page lock will be acquired only if it is unavoidable
-+	 * folio lock will be acquired only if it is unavoidable
- 	 *
--	 * Mapping checks require the head page for any compound page so the
--	 * head page and mapping is looked up now. For anonymous pages, it
--	 * does not matter if the page splits in the future as the key is
--	 * based on the address. For filesystem-backed pages, the tail is
--	 * required as the index of the page determines the key. For
--	 * base pages, there is no tail page and tail == page.
-+	 * Mapping checks require the folio so it is looked up now. For
-+	 * anonymous pages, it does not matter if the folio is split
-+	 * in the future as the key is based on the address. For
-+	 * filesystem-backed pages, the precise page is required as the
-+	 * index of the page determines the key.
- 	 */
--	tail = page;
--	page = compound_head(page);
--	mapping = READ_ONCE(page->mapping);
-+	folio = page_folio(page);
-+	mapping = READ_ONCE(folio->mapping);
- 
- 	/*
--	 * If page->mapping is NULL, then it cannot be a PageAnon
-+	 * If folio->mapping is NULL, then it cannot be an anonymous
- 	 * page; but it might be the ZERO_PAGE or in the gate area or
- 	 * in a special mapping (all cases which we are happy to fail);
- 	 * or it may have been a good file page when get_user_pages_fast
- 	 * found it, but truncated or holepunched or subjected to
--	 * invalidate_complete_page2 before we got the page lock (also
-+	 * invalidate_complete_page2 before we got the folio lock (also
- 	 * cases which we are happy to fail).  And we hold a reference,
- 	 * so refcount care in invalidate_inode_page's remove_mapping
- 	 * prevents drop_caches from setting mapping to NULL beneath us.
- 	 *
- 	 * The case we do have to guard against is when memory pressure made
- 	 * shmem_writepage move it from filecache to swapcache beneath us:
--	 * an unlikely race, but we do need to retry for page->mapping.
-+	 * an unlikely race, but we do need to retry for folio->mapping.
- 	 */
- 	if (unlikely(!mapping)) {
- 		int shmem_swizzled;
- 
- 		/*
--		 * Page lock is required to identify which special case above
--		 * applies. If this is really a shmem page then the page lock
-+		 * Folio lock is required to identify which special case above
-+		 * applies. If this is really a shmem page then the folio lock
- 		 * will prevent unexpected transitions.
- 		 */
--		lock_page(page);
--		shmem_swizzled = PageSwapCache(page) || page->mapping;
--		unlock_page(page);
--		put_page(page);
-+		folio_lock(folio);
-+		shmem_swizzled = folio_test_swapcache(folio) || folio->mapping;
-+		folio_unlock(folio);
-+		folio_put(folio);
- 
- 		if (shmem_swizzled)
- 			goto again;
-@@ -331,14 +330,14 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- 	/*
- 	 * Private mappings are handled in a simple way.
- 	 *
--	 * If the futex key is stored on an anonymous page, then the associated
-+	 * If the futex key is stored in anonymous memory, then the associated
- 	 * object is the mm which is implicitly pinned by the calling process.
- 	 *
- 	 * NOTE: When userspace waits on a MAP_SHARED mapping, even if
- 	 * it's a read-only handle, it's expected that futexes attach to
- 	 * the object not the particular process.
- 	 */
--	if (PageAnon(page)) {
-+	if (folio_test_anon(folio)) {
- 		/*
- 		 * A RO anonymous page will never change and thus doesn't make
- 		 * sense for futex operations.
-@@ -357,10 +356,10 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- 
- 		/*
- 		 * The associated futex object in this case is the inode and
--		 * the page->mapping must be traversed. Ordinarily this should
--		 * be stabilised under page lock but it's not strictly
-+		 * the folio->mapping must be traversed. Ordinarily this should
-+		 * be stabilised under folio lock but it's not strictly
- 		 * necessary in this case as we just want to pin the inode, not
--		 * update the radix tree or anything like that.
-+		 * update i_pages or anything like that.
- 		 *
- 		 * The RCU read lock is taken as the inode is finally freed
- 		 * under RCU. If the mapping still matches expectations then the
-@@ -368,9 +367,9 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- 		 */
- 		rcu_read_lock();
- 
--		if (READ_ONCE(page->mapping) != mapping) {
-+		if (READ_ONCE(folio->mapping) != mapping) {
- 			rcu_read_unlock();
--			put_page(page);
-+			folio_put(folio);
- 
- 			goto again;
- 		}
-@@ -378,19 +377,19 @@ int get_futex_key(u32 __user *uaddr, bool fshared, union futex_key *key,
- 		inode = READ_ONCE(mapping->host);
- 		if (!inode) {
- 			rcu_read_unlock();
--			put_page(page);
-+			folio_put(folio);
- 
- 			goto again;
- 		}
- 
- 		key->both.offset |= FUT_OFF_INODE; /* inode-based key */
- 		key->shared.i_seq = get_inode_sequence_number(inode);
--		key->shared.pgoff = page_to_pgoff(tail);
-+		key->shared.pgoff = folio->index + folio_page_idx(folio, page);
- 		rcu_read_unlock();
- 	}
- 
- out:
--	put_page(page);
-+	folio_put(folio);
- 	return err;
- }
- 
--- 
-2.40.1
+Reviewed-by: Shashank Sharma <shashank.sharma@amd.com>
 
+- Shashank
