@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99D0782D4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAE4782D50
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236367AbjHUPbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        id S236369AbjHUPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjHUPbX (ORCPT
+        with ESMTP id S236370AbjHUPcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:31:23 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC5BE9;
-        Mon, 21 Aug 2023 08:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1692631860; x=1693236660; i=efault@gmx.de;
- bh=RvTOcjhkwkdL/XPptRRQ6fgVBPYApdVYW7TRDCKlrcg=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=tor7zYcqKnG63CQPWW83waAFXdCpoLyGIwoePHrHBk+1m9DL2k+YAzWzFgsPgL5h3fydb9+
- rZ8Zm1/yeAElKx2QUzAG/E7ZeIq1E5ZzqI6KByHYgOGa/Ys75meBTEKw+FiLHtnTqWxJ8+UEU
- IYvQtyBDjc2MvINO7JSlkxMk1cjOpgi5dL8rug9wISympa15c0A7Yz/ObyZ3qRrRnxyGvcCoR
- OdXFI/z2Sx27q4GOsoHtYHfzZYK7vU7686UA/mVi5GNE6V0ndnlEtuRwTVbyizvhaHlvAq/wc
- JJmq4w20f/hOrthmNXmD9yYx37Wk28tVm3YCrUK45TiQhFUszNxQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.146.50.129]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MrQEx-1puhdM3zmx-00oSaw; Mon, 21
- Aug 2023 17:31:00 +0200
-Message-ID: <02f6a15f094adb3c8d9957b031941d6bd10c2e43.camel@gmx.de>
-Subject: Re: [tip: sched/core] sched/eevdf: Curb wakeup-preemption
-From:   Mike Galbraith <efault@gmx.de>
-To:     K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-        x86@kernel.org, Chen Yu <yu.c.chen@intel.com>,
-        Gautham Shenoy <gautham.shenoy@amd.com>
-Date:   Mon, 21 Aug 2023 17:30:58 +0200
-In-Reply-To: <21f3d376-17d6-8fb6-5f35-507ea931c0d3@amd.com>
-References: <20230816134059.GC982867@hirez.programming.kicks-ass.net>
-         <169228500414.27769.13366308319134164264.tip-bot2@tip-bot2>
-         <21f3d376-17d6-8fb6-5f35-507ea931c0d3@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Mon, 21 Aug 2023 11:32:03 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B83E2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:32:01 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b962535808so56620531fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1692631920; x=1693236720;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ajMViAn999T2borJAKgty2s8eZcgpP+nQpjCt7tMLBs=;
+        b=LPFdKYxeQdVH2E7Q5TbeGpZWaOvYdTEZXRyPlf3Uhz0AYFvFnpGtzmk+HpqhZbnAD6
+         KRGlXIr+NdKupKVWthCveG9ysMQ9CXZJ/xeH+/BivusXCcmBfU962Y2wLtiNwqofGPHd
+         4809M+OmUMXmes72udljBpM36v6jkoKj42MgQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692631920; x=1693236720;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ajMViAn999T2borJAKgty2s8eZcgpP+nQpjCt7tMLBs=;
+        b=TEYCpVMGW2bz+QpUMlNAQIsYjflaP8fVmGPa+ltaidKMJHJtFBarCp7rdB7LyQQZZG
+         J7mblxyJ4bdzVFoZF/NETGesMgMJJbA+LONKbKcz0tU9J9OFAjFrDpgRF3c9dJacAA6Z
+         JrfiDBoFhldk9LoKfJ8gelccC5aJoHRddLQFZookZRvGK/zgzoX9e/Z/9sCJ4/o+1HJx
+         ytw/FOFNYdnoGpCwmivJ5coThz3cuoQtMy6PguDlc3dS6VomlMTNrkyAQ0ZfAG9OKvgK
+         TgpDmNHs1ZQBYJPYGccjFt5MqqBEGnZ0RVL776xfF4NiOHbFfw1LOfVCIGH5FazhfsEI
+         WYKA==
+X-Gm-Message-State: AOJu0YxVwnyy5d6nkOucGVofTNRc20HtoNc+1Cw4zdvMRouDJMqdgNu1
+        tC5AiQGfWE0JazWMsHeq3DysZmM7E/k+VZ+ect0hNA==
+X-Google-Smtp-Source: AGHT+IGdFCpqnhpi/bYMX4uNpBpHyfyXed6rturJBY7W67IqhYWLzE2x172dXVlzvSbZaEUD+auVrY4l54jFuZcovfk=
+X-Received: by 2002:a2e:980f:0:b0:2b9:ea6b:64b with SMTP id
+ a15-20020a2e980f000000b002b9ea6b064bmr4949521ljj.37.1692631919785; Mon, 21
+ Aug 2023 08:31:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xHTzzPiK0iuD1E4+FVjhO07q5AAny9TWqj4klWjnGgF1JdvwQNo
- XHYgHXqVFKEy5HfMyd8ZTMHx8kh9dzgfNx5nS2lEHSDOea8wGNENJh5dSlOnJRk74Bjd1DH
- S8uTWMnLMh0GnlJqQwasGAnD57xXIhdpEVq+XvHV/3jQM58yzOmQTorK8iPWTaavHZhNnoR
- fXeTVil9taUaT4HzpSbGg==
-UI-OutboundReport: notjunk:1;M01:P0:LMz3OiYQf3Q=;B8BMLFYf0rH8cPFFd2k96Sf4E4L
- CIkeFuE9Y0fqr4DpXjKmquVVzOFT7xSXZnO0ecIU6J4CoFsgh7cIoftPwL/pJZZTrsFABxdzr
- pc3lTDBYRChh4gqbMotzQkE11VennwAM+hdiLjZky+VIJLXPTX78k9oHDasP40SxkHY6zN20B
- lQ0IVofDQVBe3Sb/CLFsNw3mGF2mVC2P53Mqb4au6IucQFfjS+9E4SWcHy2GyLr3/uuul75la
- 3owq2uTbj3qkBrHHRbXTGNJta2sai0lb4qfQVNHJg3hP2sBMfJGhhfMXEeMY86RdGGGtUWJ5I
- nbyFPrEIiZ7qVey0zF9qGXv2SyAboSV9eJu4q7J0e/iQR+telHWMLcEZFF9t/QwtSunvdgj8M
- H+WV60JCzx6AyYoi8zcDPO8+cdOiyqr3HQe4xlDmktFLxZ2mMaR8nEj7ANGRcrH5+M+yvs+pO
- RF6VLtZkPLgiZN6gjjCSNRNmbm3n0jyk4eV8LtmIB2jwtiI/gxU/HqkIxnctEz1S1aC0YyqXY
- fOtxHZfEy0rzf0IPi/jkzztCA5rhFTK7UVaSz2hDPgCtzF1r6drm5iTgEfQ2Zl4PbTLAAnRsL
- Fs7aDhkIYpZsdt2AlySyZ7pB/tPBDJHNGD9q0ra372q+fEodI4t8LqDuG4ca8+0EmdfM4S4dK
- W5P/TU46bQCkVNQdvDTvyzFSr5BzBNnoKiNJ1RXZzXLVyIhKZngQuJ7Uma537ZB8gYlXR1qei
- wU+ce7tuLrPKmdcEcs0vGxaLag6cRxCanHLENrmiVeN5fRBF7yKvy9aF0jyVWs2znJ0Aqagbw
- m9RaeXHZqqv0GY8vNl06M91Se0e6uDJ4cW54IPKMfwzR2DmxbnXG8EG1t0o3dz+UBVug+9RyW
- 4kKLF8W9csUKj8e667F7dmxxK3e0idxgMEnIewXeydjPUVZTk3XCNwaIYlHpDa4NGLYS85MJ/
- MI1sOE5aYkXY9rxvEwifhhOFaAs=
+References: <4f66cded234462964899f2a661750d6798a57ec0.camel@bitron.ch>
+ <CAJfpeguG4f4S-pq+_EXHxfB63mbof-VnaOy-7a-7seWLMj_xyQ@mail.gmail.com>
+ <ZNozdrtKgTeTaMpX@tycho.pizza> <CAJfpegt6x_=F=mD8LEL4AZPbfCLGQrpurhtbDN4Ew50fd2ngqQ@mail.gmail.com>
+ <ZNqseD4hqHWmeF2w@tycho.pizza> <CAJfpegtzj7=f99=m49DShDTgLpGAzx8gpHSakgPn0qe+dNjHdw@mail.gmail.com>
+ <ZON8hKOAGRvTn83a@tycho.pizza>
+In-Reply-To: <ZON8hKOAGRvTn83a@tycho.pizza>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 21 Aug 2023 17:31:48 +0200
+Message-ID: <CAJfpegt2WrKBswYgSzurNogLefO-vU6ZpbCkrDrjFL365kcsug@mail.gmail.com>
+Subject: Re: [REGRESSION] fuse: execve() fails with ETXTBSY due to async fuse_flush
+To:     Tycho Andersen <tycho@tycho.pizza>
+Cc:     =?UTF-8?Q?J=C3=BCrg_Billeter?= <j@bitron.ch>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,28 +69,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-08-21 at 16:09 +0530, K Prateek Nayak wrote:
-> Hello Peter,
+On Mon, 21 Aug 2023 at 17:02, Tycho Andersen <tycho@tycho.pizza> wrote:
 >
-> Sorry for being late to the party but couple of benchmarks are unhappy
-> (very!) with eevdf, even with this optimization. I'll leave the results
-> of testing on a dual socket 3rd Generation EPYC System (2 x 64C/128T)
-> running in NPS1 mode below.
+> On Mon, Aug 21, 2023 at 04:24:00PM +0200, Miklos Szeredi wrote:
+> > On Tue, 15 Aug 2023 at 00:36, Tycho Andersen <tycho@tycho.pizza> wrote:
+> > >
+> > > On Mon, Aug 14, 2023 at 04:35:56PM +0200, Miklos Szeredi wrote:
+> > > > On Mon, 14 Aug 2023 at 16:00, Tycho Andersen <tycho@tycho.pizza> wrote:
+> > > >
+> > > > > It seems like we really do need to wait here. I guess that means we
+> > > > > need some kind of exit-proof wait?
+> > > >
+> > > > Could you please recap the original problem?
+> > >
+> > > Sure, the symptom is a deadlock, something like:
+> > >
+> > > # cat /proc/1528591/stack
+> > > [<0>] do_wait+0x156/0x2f0
+> > > [<0>] kernel_wait4+0x8d/0x140
+> > > [<0>] zap_pid_ns_processes+0x104/0x180
+> > > [<0>] do_exit+0xa41/0xb80
+> > > [<0>] do_group_exit+0x3a/0xa0
+> > > [<0>] __x64_sys_exit_group+0x14/0x20
+> > > [<0>] do_syscall_64+0x37/0xb0
+> > > [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > >
+> > > which is stuck waiting for:
+> > >
+> > > # cat /proc/1544574/stack
+> > > [<0>] request_wait_answer+0x12f/0x210
+> > > [<0>] fuse_simple_request+0x109/0x2c0
+> > > [<0>] fuse_flush+0x16f/0x1b0
+> > > [<0>] filp_close+0x27/0x70
+> > > [<0>] put_files_struct+0x6b/0xc0
+> > > [<0>] do_exit+0x360/0xb80
+> > > [<0>] do_group_exit+0x3a/0xa0
+> > > [<0>] get_signal+0x140/0x870
+> > > [<0>] arch_do_signal_or_restart+0xae/0x7c0
+> > > [<0>] exit_to_user_mode_prepare+0x10f/0x1c0
+> > > [<0>] syscall_exit_to_user_mode+0x26/0x40
+> > > [<0>] do_syscall_64+0x46/0xb0
+> > > [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > >
+> > > I have a reproducer here:
+> > > https://github.com/tych0/kernel-utils/blob/master/fuse2/Makefile#L7
+> >
+> > The issue seems to be that the server process is recursing into the
+> > filesystem it is serving (nested_fsync()).  It's quite easy to
+> > deadlock fuse this way, and I'm not sure why this would be needed for
+> > any server implementation.   Can you explain?
 >
-> tl;dr
->
-> - Hackbench with medium load, tbench when overloaded, and DeathStarBench
-> =C2=A0 are not a fan of EEVDF so far :(
+> I think the idea is that they're saving snapshots of their own threads
+> to the fs for debugging purposes.
 
-FWIW, there are more tbench shards lying behind EEVDF than in front.
+This seems a fairly special situation.   Have they (whoever they may
+be) thought about fixing this in their server?
 
-tbench 8 on old i7-4790 box
-4.4.302      4024
-6.4.11       3668
-6.4.11-eevdf 3522
+> Whether this is a sane thing to do or not, it doesn't seem like it
+> should deadlock pid ns destruction.
 
-I went a-hunting once, but it didn't go well.  There were a couple
-identifiable sched related dips/recoveries, but the overall result was
-a useless downward trending mess.
+True.   So the suggested solution is to allow wait_event_killable() to
+return if a terminal signal is pending in the exiting state and only
+in that case turn the flush into a background request?  That would
+still allow for regressions like the one reported, but that would be
+much less likely to happen in real life.  Okay, I said this for the
+original solution as well, so this may turn out to be wrong as well.
 
-	-Mike
+Anyway, I'd prefer if this was fixed in the server code, as it looks
+fairly special and adding complexity to the kernel for this case might
+not be justifiable.   But I'm also open to suggestions on fixing this
+in the kernel in a not too complex manner.
+
+Thanks,
+Miklos
