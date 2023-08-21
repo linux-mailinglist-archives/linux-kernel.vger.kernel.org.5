@@ -2,121 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEE578231F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AC3782321
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 07:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbjHUFWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 01:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
+        id S233146AbjHUFZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 01:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231699AbjHUFWJ (ORCPT
+        with ESMTP id S229542AbjHUFZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 01:22:09 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE144A3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:22:06 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf092a16c9so22996435ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 22:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20221208.gappssmtp.com; s=20221208; t=1692595326; x=1693200126;
-        h=message-id:in-reply-to:to:references:date:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rNJgKrjuFkLbTkmBrNhAZtgomNh0/6AE1OSuW3nAGwo=;
-        b=NacVtxYfsB4aDWiFomdWx/iRVikuaPFaFPJz5D2QnJp1v6zFn6gvGEgpYfgJGiDrB4
-         D/X0Fy1EPW2HammOnRzVEAzDVYnk5ron47j39UAbeMcOSYVUkl04UqVH9dNpayyqMeeE
-         JB+Dsz15/4l3fj3Sl2o0FavANZmFboL9WGo6XWy32Ueu1jr06hnNVgsjjyvYq5k2Hyum
-         Dk/m+hvDErbFZsVbUpCLyxxq/OBLjFCuQe76bhYqd8h41vfELcYw9YKXXg4PrBSFhLl2
-         o0/Wws3Pc9cM28CSCCuLjFmOJyFTddHWRh1kNDQhw0S2H+KgY+yIKSEv0T5QEeb3BRk0
-         IAfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692595326; x=1693200126;
-        h=message-id:in-reply-to:to:references:date:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rNJgKrjuFkLbTkmBrNhAZtgomNh0/6AE1OSuW3nAGwo=;
-        b=PTIeKPptAr7jo/ylUXucqzDOq5CF4+8cKZN2vd6Tif1CMMo2P0M8ozQsVMRcB4om1S
-         RDuLWxtyI2moOvDtwSRDQaBzFRIDM5ZEViV9t32t8/zwY7tb0SnMzj2ivGkoD/wA+ltt
-         p5DUrarGo1Gm21GZ/Ilxe2gk2T+XEFXObZ6e5OF2WpciwcR1pg6oJhCBoMBiVcD4Ryfx
-         NwzKW8nt9XKSsUGv/zzzCmDGORc+jMn/9GHNHIuMOd3+PWOU/xVxpgms4R8fpDSTpCEo
-         dzLj0TdwvY7mhg4JnUtcvIPD0ljGb6EcYDZPKLDNEydSHv78I58TB45yHAtn8UOkZeRy
-         AwaA==
-X-Gm-Message-State: AOJu0YzUrv6VgUl1v46QeV3/CwcUBJtHyIC8dDugEeliZHUJqdnVtFth
-        RQXhMY38B++Z8mHf9znS1uLOWA==
-X-Google-Smtp-Source: AGHT+IG3ZPgRomyYKb15GlJLOX3HPI9YTShqcmyYEBasQL87VWmKT/tCwp9szHJ3kxrePf6C5Xx1cw==
-X-Received: by 2002:a17:902:d510:b0:1bb:ee0f:ab0f with SMTP id b16-20020a170902d51000b001bbee0fab0fmr7162181plg.17.1692595325830;
-        Sun, 20 Aug 2023 22:22:05 -0700 (PDT)
-Received: from smtpclient.apple ([47.75.78.161])
-        by smtp.gmail.com with ESMTPSA id e12-20020a170902d38c00b001b05e96d859sm5978858pld.135.2023.08.20.22.22.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Aug 2023 22:22:05 -0700 (PDT)
-From:   Li Feng <fengli@smartx.com>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.300.101.1.3\))
-Subject: Re: [PATCH] block: fix unexpected split in bio_discard_limit
-Date:   Mon, 21 Aug 2023 13:22:48 +0800
-References: <20230817075509.1438569-1-fengli@smartx.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-In-Reply-To: <20230817075509.1438569-1-fengli@smartx.com>
-Message-Id: <B7093938-9D67-4987-8B6B-B05890147580@smartx.com>
-X-Mailer: Apple Mail (2.3731.300.101.1.3)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 01:25:45 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98ABA3;
+        Sun, 20 Aug 2023 22:25:43 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37KLmv1t002614;
+        Sun, 20 Aug 2023 22:25:32 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=lqQinl0zasEpGN80WFsNbE2rMOp3JQR78UH6v0Fh6xo=;
+ b=Vy5TJkZYwhnGdlus0eICzVC7O+QptEQR2mTuuv35cxdO7gw/a17o3gMqLHae5yE+tB7B
+ H8XD29uLCiB9cHcu2tdKdOkwoln6WwGwVlkVrKOqOypWotmzPdxGAf6QcPXfwCaFBegT
+ VchQoY+9DuUb0Bnyp4dkVPUiFcKs+KaUPQPghV3CjXS5iFq3tCNZyHAj+jdq9hgm3CPC
+ tXJIixP1bKysZ/o6G63Pgh0+k6Ns/VFFUXtkLnlmmtdV2nJpbtT2Y6I4q5RXi4fFIMiZ
+ txunqTjOujqZkpvs2cUzlii6N/AGvmCUS/eSL7E8AHe1HgcG1NUv/CWpopZwBCphRlGv EA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3sju3qksa7-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 20 Aug 2023 22:25:31 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 20 Aug
+ 2023 22:25:23 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Sun, 20 Aug 2023 22:25:23 -0700
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 02B4E3F7081;
+        Sun, 20 Aug 2023 22:25:18 -0700 (PDT)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net PATCH V3 0/3] Fix PFC related issues
+Date:   Mon, 21 Aug 2023 10:55:13 +0530
+Message-ID: <20230821052516.398572-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: GLWv27Ny2guya2igx5IPumq442831Q2p
+X-Proofpoint-ORIG-GUID: GLWv27Ny2guya2igx5IPumq442831Q2p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-20_15,2023-08-18_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping=E2=80=A6
+This patchset fixes multiple PFC related issues related to Octeon.
 
-Thanks,
-Li
+Patch #1: octeontx2-pf: Fix PFC TX scheduler free
 
-> 2023=E5=B9=B48=E6=9C=8817=E6=97=A5 =E4=B8=8B=E5=8D=883:55=EF=BC=8CLi =
-Feng <fengli@smartx.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> bio_discard_limit() enforces discard boundaries within the range of =
-32-bit
-> unsigned integers, resulting in unexpected discard cut boundaries.
->=20
-> For example, max discard size =3D 1MiB, discard_granularity =3D 512B, =
-then the
-> discard lengths sent in the range [0,4G) are 1MiB, 1MiB... (1MiB-512).
-> The next discard offset from 4G is [4G-512, 4G-512+1MiB).
-> The discard of the 4G offset boundary does not comply with the optimal =
-1MiB
-> size.
->=20
-> Signed-off-by: Li Feng <fengli@smartx.com>
-> ---
-> block/blk-lib.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/block/blk-lib.c b/block/blk-lib.c
-> index e59c3069e835..ec95508c3593 100644
-> --- a/block/blk-lib.c
-> +++ b/block/blk-lib.c
-> @@ -32,7 +32,7 @@ static sector_t bio_discard_limit(struct =
-block_device *bdev, sector_t sector)
-> 	 * Align the bio size to the discard granularity to make =
-splitting the bio
-> 	 * at discard granularity boundaries easier in the driver if =
-needed.
-> 	 */
-> -	return round_down(UINT_MAX, discard_granularity) >> =
-SECTOR_SHIFT;
-> +	return round_down(ULONG_MAX, discard_granularity) >> =
-SECTOR_SHIFT;
-> }
->=20
-> int __blkdev_issue_discard(struct block_device *bdev, sector_t sector,
-> --=20
-> 2.41.0
->=20
+Patch #2: octeontx2-af: CN10KB: fix PFC configuration
+
+Patch #3: octeonxt2-pf: Fix backpressure config for multiple PFC priorities to
+work simultaneously
+
+Hariprasad Kelam (1):
+  octeontx2-af: CN10KB: fix PFC configuration
+
+Suman Ghosh (2):
+  octeontx2-pf: Fix PFC TX scheduler free
+  cteonxt2-pf: Fix backpressure config for multiple PFC priorities to
+    work simultaneously
+
+---
+v3 changes:
+	Removed patch #1 from v2 patchset due to review comment from Jakub.
+	I will find a more accurate fix for that and will push a separate
+	patch.
+
+v2 changes:
+	1. Fixed compilation error in patch #2
+	ERROR: modpost: "otx2_txschq_free_one"
+	[drivers/net/ethernet/marvell/octeontx2/nic/rvu_nicvf.ko] undefined!
+	2. Added new patch #4 to the patch set. This patch fixes another PFC
+	related issue.
+
+ .../net/ethernet/marvell/octeontx2/af/rpm.c   | 17 +++++++++--------
+ .../marvell/octeontx2/nic/otx2_common.c       |  1 +
+ .../marvell/octeontx2/nic/otx2_dcbnl.c        | 19 ++++++-------------
+ 3 files changed, 16 insertions(+), 21 deletions(-)
+
+-- 
+2.25.1
 
