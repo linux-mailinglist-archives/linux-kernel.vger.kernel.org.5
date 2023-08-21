@@ -2,118 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B77778311E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD8E783189
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbjHUTYr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 15:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
+        id S229638AbjHUT02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 15:26:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbjHUTYq (ORCPT
+        with ESMTP id S229899AbjHUT01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 15:24:46 -0400
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3772F11D;
-        Mon, 21 Aug 2023 12:24:45 -0700 (PDT)
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-570b3ebb3faso157016eaf.0;
-        Mon, 21 Aug 2023 12:24:45 -0700 (PDT)
+        Mon, 21 Aug 2023 15:26:27 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37D9E3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:26:25 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-529fa243739so3012a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:26:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692645984; x=1693250784;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BNjhVvrEQg8GonkhyW8XalC7qWWsc9W4khrMuBFsz9E=;
+        b=JgzqeI9lv3u3IFyiAjON2GheNsIJ6/VZuMa2fEeT7/6hvC93mF2FQGNL6tyHCaEMpX
+         BeV1tUaiFZPqPGlQ5+lvV/VE/lOkDlAvzLkx3M+E+zXe8TJzCuiqyDFrZ8lKPO84oZzW
+         /0HFC8JIthdllTtbFBfPsUaKnh51eHNJkjzRUXUSqVy9XrSKAhpefeOSXZr5vnxUHGKA
+         zK2Y/iSg8bRnPuDDNsIaQaxShCsAdRFccNd35jHJXQGB8G9hV90DKiBzwIJa1J+t7911
+         8KoLasgDQjKWrIY5pN57q0aPfw6d2Z/1XNgwrzGFSWqO+PlOQ5G6AhynE16PkL/v7NzE
+         Z7Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692645884; x=1693250684;
+        d=1e100.net; s=20221208; t=1692645984; x=1693250784;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G/Oag4Z7Z5QXMnbgTamk1Dv4MZuDjKDPwDHH2S9rxXc=;
-        b=Vinu1K0ZRI46NByaQxxKsmNBVIf+euTq3GJ/0+Stlh4kQfba1nY78Sv7Cg2YehYCoX
-         svHxY9oi5byWTd5hBIKSxQlYna07ze8H0stCwDJycv5HEKCVuMCUKPbk3NLfPa+mz914
-         qZnitAvMd8CNdNGHyjpbwtjAtX+s/3frZ4ipaglrpuip3zdRGgoYQs1YTv4qWOqqApGe
-         vDDy9X2J5pAPerNsrPxevXSl76UFPKr2/3v6YghNJaqtdLMiGCzpx7R5w31gfq5rDleB
-         jyFem6g3NAufnWHP3HWtIJV4RNscP3EiFAYsTGl+VNw3i9JdHM/d5zQ4Lz+QWE1kiNp0
-         7N+A==
-X-Gm-Message-State: AOJu0YyXfW3EQ6vQIRcSSb76XnmjcE5sCNnUJRF8rwUeFWjrKdAl7grz
-        6reec+b4xYRoDx5Qavd+KieSM+N2KyNIfPVnvxY4Eoij
-X-Google-Smtp-Source: AGHT+IF7CL9uUoXHdaya8+tzstnnnipw/wznUqwMJiBQnqRlthb15+sVRhW7Vt0VPHM7TMkV3Uw1NB2Mk+dftqo//FI=
-X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
- n1-20020a4ae741000000b0056e94edc098mr7121268oov.0.1692645884454; Mon, 21 Aug
- 2023 12:24:44 -0700 (PDT)
+        bh=BNjhVvrEQg8GonkhyW8XalC7qWWsc9W4khrMuBFsz9E=;
+        b=JMcryEK8+Il5Kx4bpS7OMvE1NiuRD7aXUObAIxdoKehgWL9a3tt+VCsbDiyyke+VKR
+         8Ei2dkhYhRvNjuC2vvw4qKEAWez5n0lQAVwOXdUqJzkEjZzAtSFiCUoLaXkDb46ZdYO8
+         dr5aF4XyNSQks7qyF7rR2rO4lbNPvt9FaF+H6UnEbLWpPGdM+mB7ldxK7Bx8suyPrtGK
+         kQV5AS2gPo5MYQnEtlPQ2oGYhPe80sCazVG3nw5MHfuX/6Z0oUX4NE0HpkUvR+wThWYr
+         yUmLnt5gzLpqK2/U4nF11VLILInfTmuK2UFjTOaeie0fgZ4vdZS8hS5cRG4CSsn6Q7k3
+         RPzQ==
+X-Gm-Message-State: AOJu0YwB5rZfXzs4BGbwslsnOwuL9Y4eB9xmlLAqUY6OPK1TEG8oGAco
+        4enKo12uQZ98yuyHI7UgFuyzVU3x9hqMwhHGiRhkaQ==
+X-Google-Smtp-Source: AGHT+IG2SYWw0/gEIzO3YykIw9nP9jvRJc6MtYtXIUNdBQNCqUSwkzeLDmmU7f78DJ+NHE7Ph0Us4aNzl9WgOWOKC00=
+X-Received: by 2002:a50:d50b:0:b0:522:4741:d992 with SMTP id
+ u11-20020a50d50b000000b005224741d992mr26306edi.4.1692645984073; Mon, 21 Aug
+ 2023 12:26:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230818194027.27559-1-mario.limonciello@amd.com>
- <20230818194027.27559-5-mario.limonciello@amd.com> <CAJZ5v0j_tmW1uWZF7ShK=fwnVGjjy8CSf7DJErJdSaD_dgW8WQ@mail.gmail.com>
- <2bec7ee5-2ead-4c46-b6eb-f4d7a2249293@amd.com>
-In-Reply-To: <2bec7ee5-2ead-4c46-b6eb-f4d7a2249293@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Aug 2023 21:24:33 +0200
-Message-ID: <CAJZ5v0jpWJC_9VEkXckZAPwcJESDvwncx3WzbLZn8a42U-zU1Q@mail.gmail.com>
-Subject: Re: [PATCH v14.c 4/4] PCI: ACPI: Limit the Intel specific opt-in to
- D3 to 2024
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20230818233451.3615464-1-srutherford@google.com>
+ <08418fc0-839a-f2fb-1c2e-b4f077d2647b@amd.com> <CABayD+cw3s1UDSN7oR4gWfRT4-snWEqOgAN-y4rzOpe-8D=KdA@mail.gmail.com>
+ <2a391d50-d474-eec5-76ea-e5dc5590609c@amd.com>
+In-Reply-To: <2a391d50-d474-eec5-76ea-e5dc5590609c@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Mon, 21 Aug 2023 12:25:47 -0700
+Message-ID: <CABayD+f3BLjg4ekO=b4yweqsV4-kA3nfDjKh7MieMh+=zvkA=Q@mail.gmail.com>
+Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page aligned
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
+        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 9:18 PM Limonciello, Mario
-<mario.limonciello@amd.com> wrote:
+On Mon, Aug 21, 2023 at 11:54=E2=80=AFAM Tom Lendacky <thomas.lendacky@amd.=
+com> wrote:
 >
->
->
-> On 8/21/2023 1:46 PM, Rafael J. Wysocki wrote:
-> > On Fri, Aug 18, 2023 at 9:40 PM Mario Limonciello
-> > <mario.limonciello@amd.com> wrote:
+> On 8/21/23 13:15, Steve Rutherford wrote:
+> > On Mon, Aug 21, 2023 at 6:10=E2=80=AFAM Tom Lendacky <thomas.lendacky@a=
+md.com> wrote:
 > >>
-> >> Intel systems that need to have PCIe ports in D3 for low power idle
-> >> specify this by constraints on the ACPI PNP0D80 device. As this information
-> >> is queried by acpi_pci_bridge_d3(), limit the DMI BIOS year check to stop
-> >> at 2024. This will allow future systems to rely on the constraints check
-> >> and ACPI checks to set up policy like non-Intel systems do.
+> >> On 8/18/23 18:34, Steve Rutherford wrote:
+> >>> early_set_memory_decrypted() assumes its parameters are page aligned.
+> >>> Non-page aligned calls result in additional pages being marked as
+> >>> decrypted via the encryption status hypercall, which results in
+> >>> consistent corruption of pages during live migration. Live
+> >>> migration requires accurate encryption status information to avoid
+> >>> migrating pages from the wrong perspective.
+> >>
+> >> Hmmm... I'm not sure this is the proper fix. The code is actually doin=
+g
+> >> the right thing from a encyrption/decryption point of view by checking=
+ the
+> >> c-bit for the PTE associated with the virtual address and the size
+> >> (possibly crossing page boundaries).
+> >>
+> >> I think the problem is on the call to early_set_mem_enc_dec_hypercall(=
+)
+> >> where it doesn't take into account the possible crossing of page
+> >> boundaries and so can under-count the number of pages, right?
 > >
-> > So I'm not sure about the value of this change.
-> >
-> > The behavior is made Intel-specific in [14a 1/1] and it will be that
-> > way at least for some time.  This change only sets the date after
-> > which it won't be Intel-specific any more, but for what reason
-> > exactly?
-> >
-> > And why is 2024 the cut-off year (and not 2025, for example)?
+> > Right now, if you request decryption of e.g. a non-page aligned 0x40
+> > byte structure, it rounds the 0x40 bytes up to one page, and then
+> > hypercalls to mark both the page it's on and the subsequent page as
+> > decrypted (since the rounding stretches the structure onto the next
+> > page spuriously). The arithmetic in the combination of
+> > early_set_memory_enc_dec() and early_set_mem_enc_dec_hypercall() are
+> > correct if they are called with page aligned vaddrs (non-page-aligned
+> > sizes are fine iiuc).
 >
-> No particular reason other than it's a few kernel cycles to get this
-> tested and working or revert it if it's a bad idea after all.
->
-> >
-> > If Intel platforms continue to be OK with putting all PCIe ports into
-> > D3hot beyond 2024, why restrict the kernel from doing so on them?
->
-> OK let me try to explain my thought process.
->
-> The reason that root ports were put into D3 on Intel systems was that
-> it's required for the system to get into the deepest state.
->
-> At the time that it was introduced there wasn't a way for the firmware
-> to express this desire for root ports that were not power manageable by
-> ACPI.
->
-> Constraints are a good way to express it, so by limiting the Intel
-> hardcode to a number of years gets everyone onto the same codepaths.
+> Ah, right, correct. It is still related to how the page count is
+> calculated for the hypercall, though, right? The encryption/decryption
+> operations function properly.
 
-Assuming that the will be used in future systems, but that is beyond
-the control of anyone involved here I think.
+Yep! It's just the hypercall that behaves poorly in this situation.
+>
+> If another caller of early_set_memory_decrypted() gets added, it would
+> need to know to do the same thing. So I just wonder if this wouldn't be
+> better fixed in early_set_memory_enc_dec() by using a page aligned addres=
+s
+> and proper number of pages when calling early_set_mem_enc_dec_hypercall()
+> or in early_set_mem_enc_dec_hypercall() where it would take a size
+> argument instead of a page count and does the proper work to get a page
+> aligned address and proper page count.
+>
+> Also, if it is the hypercall that is causing the issue, should the Fixes
+> tag be 064ce6c550a0 ("mm: x86: Invoke hypercall when page encryption
+> status is changed") since the problem is around the hypercall.
 
-> But that being said - if you would rather keep Intel as hardcode forever
-> this patch can be dropped from the series.
+Fair question. I was torn about where to point this, since either
+fixing up the value inside early_set_memory_enc_dec() or fixing up the
+per-cpu callers is correct. The non-early version
+(__set_memory_enc_pgtable()) calls WARN_ONCE for misaligned addresses
+under the hood, so I thought the early version should have the same
+contract (though, obviously, this lacks the actual WARN_ONCE). I can
+re-upload with a WARN_ONCE or with the masking moved into
+early_set_memory_enc_dec().
+Thanks,
+Steve
 
-This change can be made at any time and I don't see a particular
-reason for making it right now.
+>
+> Thanks,
+> Tom
+>
+> >
+> > Thanks,
+> > Steve
+> >>
+> >> Thanks,
+> >> Tom
+> >>
+> >>>
+> >>> Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when =
+SEV is active")
+> >>> Signed-off-by: Steve Rutherford <srutherford@google.com>
+> >>> ---
+> >>>    arch/x86/kernel/kvm.c | 14 +++++++++++++-
+> >>>    1 file changed, 13 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+> >>> index 6a36db4f79fd..a0c072d3103c 100644
+> >>> --- a/arch/x86/kernel/kvm.c
+> >>> +++ b/arch/x86/kernel/kvm.c
+> >>> @@ -419,7 +419,14 @@ static u64 kvm_steal_clock(int cpu)
+> >>>
+> >>>    static inline void __set_percpu_decrypted(void *ptr, unsigned long=
+ size)
+> >>>    {
+> >>> -     early_set_memory_decrypted((unsigned long) ptr, size);
+> >>> +     /*
+> >>> +      * early_set_memory_decrypted() requires page aligned parameter=
+s, but
+> >>> +      * this function needs to handle ptrs offset into a page.
+> >>> +      */
+> >>> +     unsigned long start =3D PAGE_ALIGN_DOWN((unsigned long) ptr);
+> >>> +     unsigned long end =3D (unsigned long) ptr + size;
+> >>> +
+> >>> +     early_set_memory_decrypted(start, end - start);
+> >>>    }
+> >>>
+> >>>    /*
+> >>> @@ -438,6 +445,11 @@ static void __init sev_map_percpu_data(void)
+> >>>                return;
+> >>>
+> >>>        for_each_possible_cpu(cpu) {
+> >>> +             /*
+> >>> +              * Calling __set_percpu_decrypted() for each per-cpu va=
+riable is
+> >>> +              * inefficent, since it may decrypt the same page multi=
+ple times.
+> >>> +              * That said, it avoids the need for more complicated l=
+ogic.
+> >>> +              */
+> >>>                __set_percpu_decrypted(&per_cpu(apf_reason, cpu), size=
+of(apf_reason));
+> >>>                __set_percpu_decrypted(&per_cpu(steal_time, cpu), size=
+of(steal_time));
+> >>>                __set_percpu_decrypted(&per_cpu(kvm_apic_eoi, cpu), si=
+zeof(kvm_apic_eoi));
