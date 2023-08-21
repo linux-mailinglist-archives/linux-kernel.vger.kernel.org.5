@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF4A783041
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 668D4783047
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjHUSbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
+        id S229635AbjHUSdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 14:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHUSbo (ORCPT
+        with ESMTP id S229512AbjHUSdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:31:44 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9EE24E94
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:31:42 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-76db1d65eefso5357585a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1692642701; x=1693247501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qa8AAhwTy8YVFRv18LCXMk4AitxTlf/jcp6uThOwTlI=;
-        b=l5SYXEQEwNSLSpOqdZ7OFW/9Ozb1e02BEhCThpq+gziOR6jGc/3fhOTIkqj8+7DWtV
-         F1/qyOcX4Sc3kjJJAxThcjvSY6ia/rdTdWclGKe+uXJqbtm2mMOObOqfvFAT+3HZw5XO
-         8nu+6h+mAbl26TlNA3xmflqADodafTE2J6chgjzlYhiJ4vD7VFo3YwKo1yK8yhUMd4KV
-         qky6rV59c/y93FwGgnG5ZevLbtCgovrG3VIBG/xBY07UwSROH7qEW55xflMG4wf7MLR1
-         DrGkL8t6nv7iGMZ1HDBWIOqh8AaQVViFvktJV06V5CklxDcTaRhI0tQwlY1z8BZzGRXw
-         gXJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692642701; x=1693247501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qa8AAhwTy8YVFRv18LCXMk4AitxTlf/jcp6uThOwTlI=;
-        b=KaTMHH9RVyVJ6e5n0+mkwdekqdt+zF1YutZ6m1sQxRBm7nrCXqAOsn6rCy3T9ai5kh
-         JbFk0n6YJMSHTHMK+vfM3U6OQ0tbuybqGM6TXG7n9eHqFZaOXGovPQ6Umb6pzik+z2Sd
-         QHD2cuSk328VwuVsQkwUebP/N0t/2hSukh7aj+eyLji3kEhY60lFa5LV9ORS4+0s03O6
-         fkzF6RHLuZ24t8a7+NaJJb7nWm/j3euwKV/XVAc9p1t1b1/1sGstj9kHdrF/gMyyYUlM
-         lo+LEZbNRJ6GtWaagM/uAiB6jQF0c1PPv2qTlX9ooV4MAbJNwr8DHZyO2yEgeqvLeXfQ
-         DFVA==
-X-Gm-Message-State: AOJu0YyEwYpT75WySwyvA323II8Glg4+ns+Vdm4WEkSzRiTfhKF1m24v
-        qXx3rUPSI953hJApvOG8vjw7ug==
-X-Google-Smtp-Source: AGHT+IEJB+mpBoo2O0eM3iFfDQGTfF2egcAVTPb5TnSsKiZjFNPmdYIulJ1Rkf9qhiRRCV7nCD4Uow==
-X-Received: by 2002:a05:620a:462b:b0:768:1031:4028 with SMTP id br43-20020a05620a462b00b0076810314028mr9919562qkb.30.1692642701703;
-        Mon, 21 Aug 2023 11:31:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id c16-20020a05620a165000b0076da29c4497sm1316113qko.112.2023.08.21.11.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 11:31:41 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qY9gi-00DzLb-HN;
-        Mon, 21 Aug 2023 15:31:40 -0300
-Date:   Mon, 21 Aug 2023 15:31:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/11] iommu: Prepare to deliver page faults to user
- space
-Message-ID: <ZOOtjJLumarsBzwN@ziepe.ca>
-References: <20230817234047.195194-1-baolu.lu@linux.intel.com>
+        Mon, 21 Aug 2023 14:33:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E2B33D01
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:33:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=vu2sn8uiKNBiL4iK4hRUUcDFbAOWrQuXONejz0HgL1U=; b=ZhGcng4lc98Mb2e5bxCEjqTnSQ
+        NJWcQKzVq40aIFGRYmpexG7JV8fbVxItxsdjUKsnVCKNraNUpW2cwpFwMJ4eHawj/+yPRrWMtTDEe
+        dB8lMBtgmrp5JJ5uXkiuAMu+j1xdgBWmRfnh6G+vubq760m0MJbUas19z3OfTuSKpe1gsPC8NzQWk
+        PveB3erh+Vhnk3zxQ7DwgSyWRBBaX9l94gmJA6DL2ra+QgIoQthwPLRmK8lxC3eWIbSbAxzK/RveA
+        VdvTBJliQ06Y/lri1W4z2+fi+9DfSgSA11XMV87/wKMS1C21Hy22i0J7gvwRM/OD51kBEJlK++RQL
+        8MoymHuQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qY9iD-00Blax-GK; Mon, 21 Aug 2023 18:33:13 +0000
+Date:   Mon, 21 Aug 2023 19:33:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, wangkefeng.wang@huawei.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: memory-failure: use rcu lock instead of
+ tasklist_lock when collect_procs()
+Message-ID: <ZOOt6S+I9ywyNQjP@casper.infradead.org>
+References: <20230821091312.2034844-1-tongtiangen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230817234047.195194-1-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230821091312.2034844-1-tongtiangen@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 07:40:36AM +0800, Lu Baolu wrote:
-> When a user-managed page table is attached to an IOMMU, it is necessary
-> to deliver IO page faults to user space so that they can be handled
-> appropriately. One use case for this is nested translation, which is
-> currently being discussed in the mailing list.
+On Mon, Aug 21, 2023 at 05:13:12PM +0800, Tong Tiangen wrote:
+> We found a softlock issue in our test, analyzed the logs, and found that
+> the relevant CPU call trace as follows:
 > 
-> I have posted a RFC series [1] that describes the implementation of
-> delivering page faults to user space through IOMMUFD. This series has
-> received several comments on the IOMMU refactoring, which I am trying to
-> address in this series.
+> CPU0:
+>   _do_fork
+>     -> copy_process()
+>       -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
+>       					 //tasklist_lock
+> 
+> CPU1:
+>   wp_page_copy()
+>     ->pte_offset_map_lock()
+>       -> spin_lock(&page->ptl);        //Hold page->ptl
+>     -> ptep_clear_flush()
+>       -> flush_tlb_others() ...
+>         -> smp_call_function_many()
+>           -> arch_send_call_function_ipi_mask()
+>             -> csd_lock_wait()         //Waiting for other CPUs respond
+> 	                               //IPI
+> 
+> CPU2:
+>   collect_procs_anon()
+>     -> read_lock(&tasklist_lock)       //Hold tasklist_lock
+>       ->for_each_process(tsk)
+>         -> page_mapped_in_vma()
+>           -> page_vma_mapped_walk()
+> 	    -> map_pte()
+>               ->spin_lock(&page->ptl)  //Waiting for page->ptl
+> 
+> We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
+> unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
+> softlockup is triggered.
+> 
+> For collect_procs_anon(), we will not modify the tasklist, but only perform
+> read traversal. Therefore, we can use rcu lock instead of spin lock
+> tasklist_lock, from this, we can break the softlock chain above.
 
-Looking at this after all the patches are applied..
+The only thing that's giving me pause is that there's no discussion
+about why this is safe.  "We're not modifying it" isn't really enough
+to justify going from read_lock() to rcu_read_lock().  When you take a
+normal read_lock(), writers are not permitted and so you see an atomic
+snapshot of the list.  With rcu_read_lock() you can see inconsistencies.
+For example, if new tasks can be added to the tasklist, they may not
+be seen by an iteration.  Is this OK?  Tasks may be removed from the
+tasklist after they have been seen by the iteration.  Is this OK?
 
-iommu_report_device_fault() and iommu_queue_iopf() should be put in
-the same file.
-
-iommu_queue_iopf() seems misnamed since it isn't queuing anything. It
-is delivering the fault to the domain.
-
-It is weird that iommu_sva_domain_alloc is not in the sva file
-
-iopf_queue_work() wrappers a work queue, but it should trampoline
-through another function before invoking the driver's callback and not
-invoke it with a weird work_struct - decode the group and get back the
-domain. Every single handler will require the group and domain.
-
-Same for domain->iopf_handler, the domain should be an argument if we
-are invoking the function on a domain.
-
-Perhaps group->domain is a simple answer.
-
-Jason
+As I understand the list RCU code, it guarantees that all tasks which
+were on the list before rcu_read_lock() and remain on the list after
+rcu_read_unlock() will be seen by a list iteration, while tasks which
+are added or removed during that time may or may not be seen.
