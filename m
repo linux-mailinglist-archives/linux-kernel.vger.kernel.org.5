@@ -2,229 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8334578280D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72282782810
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbjHULgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:36:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        id S232966AbjHULhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbjHULgm (ORCPT
+        with ESMTP id S230460AbjHULhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:36:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8FB2DC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:36:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 56D88631DC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27A74C433C9;
-        Mon, 21 Aug 2023 11:36:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692617799;
-        bh=s4tqcywFY5x1xGLeQKFZevnSfrIFMKwbbnMDg6Jc8Fw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A2W7gJBzoEw+B7iH/bPkybSUxVGzK2rgbPbYdD/aJPiZDUu7WB4+DsNuJDcnmtaq2
-         h9ji5rU+BCw34ddba8x95xa4VB/HyquWE+Fxo/DIX/wB6w8uOzNlSwVPV1fC3KYtpE
-         QEMX5uVZURRb/Vg8K1rNWhUIkqsFQbyev2ZLBawGbJzBdpbz+xs0gZz7zVIRicCuWy
-         03yj+TlZEpAsl+0Pt/GILSvbi6pc/DRFNdJgAQyvJdSwn7obu0LXXdJcakLfCBz56N
-         RbWpYOsKvk538cmB/kMM2oDIRgGB6+w8XwvBCAI6qTL9wmuhVlB20Vr5EAmHVfaHUi
-         26GwOU13TO4BQ==
-Date:   Mon, 21 Aug 2023 13:36:36 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     neil.armstrong@linaro.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        quic_parellan@quicinc.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
- VTDR6130
-Message-ID: <kfslzajqd3y3zjreivjbku7lhtqgook7r24mvkcm2dre6yzrsh@6w4iprh7qqbx>
-References: <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
- <2f9a9450-438b-257d-759c-22b273a7b35d@quicinc.com>
- <c183d823-81d4-6d7c-98d9-649fa4041262@quicinc.com>
- <6c0dd9fd-5d8e-537c-804f-7a03d5899a07@linaro.org>
- <548b0333-103b-ac66-0fc5-f29e7cc50596@quicinc.com>
- <6e1f6cb7-7f88-48dc-b494-1a5e990e1a33@linaro.org>
- <ff1b04c3-c852-4e28-9054-3cebb4ca5d6e@linaro.org>
- <c7c5c8f0-16e6-47bd-94e8-ce924163dfd3@linaro.org>
- <giimknikofbipipawfmrcjiar5qfyw3t7sqy3iewjahsm3ktkt@qcn4g23zfcnj>
- <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
+        Mon, 21 Aug 2023 07:37:12 -0400
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2080.outbound.protection.outlook.com [40.107.212.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBFEDF;
+        Mon, 21 Aug 2023 04:37:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k2Vh4uepDXtXUgf3Ns8rVfYJ3TEOq/oSt4375dfsOlGbgkzpEm+rjPnOkTeQl115hZ7KUyeOP2T2aiFN0vWyzABottFvbHASuy5vFSeqx9pvyLU9W9oPV5mi+zdKc7ReuSahytiLEtQ2qPlUThVjxKGlde8/wZeho1uHpWOmr++1zAfHE5W7InHUCSAiA14YvAuEfkUFOvJ73EPhp+YgQI3euKRnSWkMCl/RTL0/X1ZXBzv1teQrpyT6AKkWS+QpcD+TEjs+XviihTO73jqkYKxlClxkp0Gvj2Ug+L306HvLigzIkQbp8RdbnIdI8AgMq3vM/EhPzvw1ieZYH8zsjw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=c+915wjKjs6ipNAXE/xlqWT6Lny3n5wVHkPwevCSWEc=;
+ b=MAb2uV7iChLtYzSJ03M2IqjU++xsOJKL4eG79YOcRV4kjpDcgDRNYE2xqcc4x6w1FHKQKbqVDNUGJxXmCKhPUf0sHCongditEmEW2VY6hlzoYSKABdTJc5Es8pJnUAYdkSNABgj46wHpRGuIFY465RsbrrQw+Is6XCrVOPfjmTEXXpMMvp9xb9MtRiO8IOoliepf5bpJ0bldBTZ6oqNEc5e8TbiwB4ejHXiqpOCZDESTaJlF86L9DMXMp9HfERy+bE3zdECG7B1zLl3LKER8lGyWN82EzJ+djmfhXyUPG2XCT0QxY4XVxmOnC0Rx4QwNKuwq0/LrGNUP7jpA7w+GVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c+915wjKjs6ipNAXE/xlqWT6Lny3n5wVHkPwevCSWEc=;
+ b=gsZRFEpECXZ5J8uVocafLP/m7jux+YHwrnpe8ps+fGY0mWQmu+a75Cg7fVl7/yJEKeFbj7SPh+pmxq21cNLx38tOO3urkWbw0H5/QO3l7/s56URS8d+0Z05Hm3PIBLmvguRF59yoI+iK6fJhE6YEWW1oUYIc2PAgUUpqMM19htMMNtDG+y9i/zAtQ/Na0pnVSgK+O5QOGSmzRBoMKKchpnu+8H0wiHKIVegxAHOHiiTd7hOEzGHTXKOBd5KuZrNWuJDguf/PcY6lc4cwExnAZvJMT/GaJ4XSSsCYRv7QBRGuZV8Ht6Do7orO2UrvYWcD4/jBRvwYMth1hmbk6Xeuyw==
+Received: from CY5PR15CA0251.namprd15.prod.outlook.com (2603:10b6:930:66::23)
+ by PH8PR12MB7183.namprd12.prod.outlook.com (2603:10b6:510:228::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
+ 2023 11:37:09 +0000
+Received: from CY4PEPF0000EE3C.namprd03.prod.outlook.com
+ (2603:10b6:930:66:cafe::a9) by CY5PR15CA0251.outlook.office365.com
+ (2603:10b6:930:66::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
+ Transport; Mon, 21 Aug 2023 11:37:08 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CY4PEPF0000EE3C.mail.protection.outlook.com (10.167.242.16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Mon, 21 Aug 2023 11:37:08 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 21 Aug 2023
+ 04:36:59 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 21 Aug
+ 2023 04:36:58 -0700
+Received: from localhost.localdomain (10.127.8.10) by mail.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Mon, 21 Aug 2023 04:36:53 -0700
+From:   Kartik <kkartik@nvidia.com>
+To:     <andriy.shevchenko@linux.intel.com>
+CC:     <arnd@arndb.de>, <digetx@gmail.com>, <frank.li@vivo.com>,
+        <jonathanh@nvidia.com>, <kkartik@nvidia.com>,
+        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <pdeschrijver@nvidia.com>, <petlozup@nvidia.com>,
+        <pshete@nvidia.com>, <robh@kernel.org>, <stefank@nvidia.com>,
+        <sumitg@nvidia.com>, <thierry.reding@gmail.com>, <windhl@126.com>
+Subject: Re: [PATCH 3/6] soc/tegra: fuse: Add function to add lookups
+Date:   Mon, 21 Aug 2023 17:06:45 +0530
+Message-ID: <20230821113645.4373-1-kkartik@nvidia.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZN961t8WesCG2J0+@smile.fi.intel.com>
+References: <ZN961t8WesCG2J0+@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="puzmiyi66lskaags"
-Content-Disposition: inline
-In-Reply-To: <76e76728-974e-46ff-8046-c61c54d07c76@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3C:EE_|PH8PR12MB7183:EE_
+X-MS-Office365-Filtering-Correlation-Id: 334d04e8-d3da-4492-f6ef-08dba23af3b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4gVE/srFpS/hO4c08tW2xECLSh+copSm3bNTB8zhQ8qiHL/q1EqD4w/LBQMpK8E3Miwp7ymDOnv9GUf2+V7FfEk+5V0vdwpjgGdCGWSk1AVQFmV7UtUMcihEMPyO83QZLrUqcfIwBj2KMS9e+Zk/32kdDhdNRHbJJnvuJdCKYFAdIE37NPQ9tHNu3yEue+PLjqBYbpke0MWCIXPltrV0ijng65+ngClp2pfjUAdP10ctqCaukx/PEx7FxXaNIWkCUXyLnStMTZ5RhtkY1U4NT2Teo3ndxRSKZ/wU1bs59ec/DRCy7Mu9j7t0/TfSAPp2hFIGDUkbwLlqOUMCmzK990DR6jLrRFp116Pj+2EABPZ8URK1nKIUW/9L2T2YuTkitPacN9ds6pjArozDdWUUqAyiW3VJZdqdxGy1T10elxI+P24HhBT/6ALrQrciRfg8teqep8yu1cA3of9ODJwq2dUAijlR5kS9M0tN2LSyWVW+h/lYbwZ25yShTeumpVRC4FP9z053TMHC27DLCa+P7YhmQtAXOLCmPSPiZP1gA3RnetobwkvP17byJzvlt3s6BRK5HrrV0V4WhIlYcbKHJKb9Q7Q4f3rc4Mk81rByjvZZHrgenCRaIJhukNfiFuB34/HxP6wXiT5I/6vrI8CsipMoVqTe808SXt8sRchQyfL1OkgaQ06DPC3Y7zaq6+e6rQ7pR6fIKUx/qwvTxLAqR+QRX1sdnUkYBcNJ/8AKo9DibPEc0IQ6twqHS13nUiMI
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(39860400002)(346002)(396003)(136003)(1800799009)(451199024)(186009)(82310400011)(36840700001)(40470700004)(46966006)(6666004)(4326008)(40480700001)(8936002)(8676002)(316002)(6916009)(478600001)(54906003)(70206006)(70586007)(41300700001)(47076005)(7636003)(356005)(82740400003)(36860700001)(26005)(36756003)(426003)(336012)(40460700003)(66899024)(5660300002)(2616005)(1076003)(4744005)(2906002)(86362001)(83380400001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 11:37:08.2751
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 334d04e8-d3da-4492-f6ef-08dba23af3b8
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE3C.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7183
+X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_PASS,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---puzmiyi66lskaags
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Aug 21, 2023 at 12:01:19PM +0200, neil.armstrong@linaro.org wrote:
-> Hi Maxime,
->=20
-> On 21/08/2023 10:17, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Fri, Aug 18, 2023 at 10:25:48AM +0200, neil.armstrong@linaro.org wro=
-te:
-> > > On 17/08/2023 20:35, Dmitry Baryshkov wrote:
-> > > > On 16/08/2023 10:51, neil.armstrong@linaro.org wrote:
-> > > > > Sending HS commands will always work on any controller, it's all
-> > > > > about LP commands. The Samsung panels you listed only send HS
-> > > > > commands so they can use prepare_prev_first and work on any
-> > > > > controllers.
-> > > >=20
-> > > > I think there is some misunderstanding there, supported by the
-> > > > description of the flag.
-> > > >=20
-> > > > If I remember correctly, some hosts (sunxi) can not send DCS
-> > > > commands after enabling video stream and switching to HS mode, see
-> > > > [1]. Thus, as you know, most of the drivers have all DSI panel setup
-> > > > commands in drm_panel_funcs::prepare() /
-> > > > drm_bridge_funcs::pre_enable() callbacks, not paying attention
-> > > > whether these commands are to be sent in LP or in HS mode.
-> > > >=20
-> > > > Previously DSI source drivers could power on the DSI link either in
-> > > > mode_set() or in pre_enable() callbacks, with mode_set() being the
-> > > > hack to make panel/bridge drivers to be able to send commands from
-> > > > their prepare() / pre_enable() callbacks.
-> > > >=20
-> > > > With the prev_first flags being introduced, we have established that
-> > > > DSI link should be enabled in DSI host's pre_enable() callback and
-> > > > switched to HS mode (be it command or video) in the enable()
-> > > > callback.
-> > > >=20
-> > > > So far so good.
-> > >=20
-> > > It seems coherent, I would like first to have a state of all DSI host
-> > > drivers and make this would actually work first before adding the
-> > > prev_first flag to all the required panels.
-> >=20
-> > This is definitely what we should do in an ideal world, but at least for
-> > sunxi there's no easy way for it at the moment. There's no documentation
-> > for it and the driver provided doesn't allow this to happen.
-> >=20
-> > Note that I'm not trying to discourage you or something here, I'm simply
-> > pointing out that this will be something that we will have to take into
-> > account. And it's possible that other drivers are in a similar
-> > situation.
-> >=20
-> > > > Unfortunately this change is not fully backwards-compatible. This
-> > > > requires that all DSI panels sending commands from prepare() should
-> > > > have the prepare_prev_first flag. In some sense, all such patches
-> > > > might have Fixes: 5ea6b1702781 ("drm/panel: Add prepare_prev_first
-> > > > flag to drm_panel").
-> > >=20
-> > > This kind of migration should be done *before* any possible
-> > > regression, not the other way round.
-> > >=20
-> > > If all panels sending commands from prepare() should have the
-> > > prepare_prev_first flag, then it should be first, check for
-> > > regressions then continue.
-> > >=20
-> > > <snip>
-> > >=20
-> > > > >=20
-> > > > > I understand, but this patch doesn't qualify as a fix for
-> > > > > 9e15123eca79 and is too late to be merged in drm-misc-next for
-> > > > > v6.6, and since 9e15123eca79 actually breaks some support it
-> > > > > should be reverted (+ deps) since we are late in the rc cycles.
-> > > >=20
-> > > > If we go this way, we can never reapply these patches. There will be
-> > > > no guarantee that all panel drivers are completely converted. We
-> > > > already have a story without an observable end -
-> > > > DRM_BRIDGE_ATTACH_NO_CONNECTOR.
-> > >=20
-> > > I don't understand this point, who would block re-applying the patche=
-s ?
-> > >=20
-> > > The migration to DRM_BRIDGE_ATTACH_NO_CONNECTOR was done over multiple
-> > > Linux version and went smoothly because we reverted regressing patches
-> > > and restarted when needed, I don't understand why we can't do this
-> > > here aswell.
-> > >=20
-> > > > I'd consider that the DSI driver is correct here and it is about the
-> > > > panel drivers that require fixes patches. If you care about the
-> > > > particular Fixes tag, I have provided one several lines above.
-> > >=20
-> > > Unfortunately it should be done in the other way round, prepare for
-> > > migration, then migrate,
-> > >=20
-> > > I mean if it's a required migration, then it should be done and I'll
-> > > support it from both bridge and panel PoV.
-> > >=20
-> > > So, first this patch has the wrong Fixes tag, and I would like a
-> > > better explanation on the commit message in any case. Then I would
-> > > like to have an ack from some drm-misc maintainers before applying it
-> > > because it fixes a patch that was sent via the msm tree thus per the
-> > > drm-misc rules I cannot apply it via the drm-misc-next-fixes tree.
-> >=20
-> > Sorry, it's not clear to me what you'd like our feedback on exactly?
->=20
-> So let me resume the situation:
->=20
-> - pre_enable_prev_first was introduced in [1]
-> - some panels made use of pre_enable_prev_first
-> - Visionox VTDR6130 was enabled on SM8550 systems and works on v6.5 kerne=
-ls and before
-> - patch [2] was introduced on MSM DRM tree, breaking VTDR6130 on SM8550 s=
-ystems (and probably other Video mode panels on Qcom platforms)
-> - this fix was sent late, and is now too late to be merged via drm-misc-n=
-ext
->=20
-> I do not consider it's the right way to fix regression caused by [2] I
-> consider [2] should be reverted, panels migrated to
-> pre_enable_prev_first when needed, tested and the [2] applied again
->=20
-> I have no objection about [2] and it should be done widely over the
-> whole DSI controllers and DSI Video panels.
+On Fri, 2023-08-18 at 17:06 +0300, Andy Shevchenko wrote:
+>On Fri, Aug 18, 2023 at 03:00:25PM +0530, Kartik wrote:
+>> Add helper function tegra_fuse_add_lookups() to register Tegra fuse
+>> nvmem lookups. So, this can be shared between tegra_fuse_init() and
+>> ACPI probe, which is to be introduced later.
 >
-> I also object about the Fixes tag of this patch, which is wrong, and
-> Dmitry considers [1] should be used but it's even more wrong since [2]
-> really caused the regression.
+>...
+>
+>> +	size = sizeof(*fuse->lookups) * fuse->soc->num_lookups;
+>
+>At least this should use size_mul().
+>
+>> +	fuse->lookups = kmemdup(fuse->soc->lookups, size, GFP_KERNEL);
+>> +	if (!fuse->lookups)
+>> +		return -ENOMEM;
+>
+>But ideally you need to add a patch that brings kmemdup_array().
+>
+>Okay, it seems it's in the original code :-(
+>Can you add in your ToDo list to amend this?
+>
+>-- 
+>With Best Regards,
+>Andy Shevchenko
 
-Ok.
+I will update this in the next patch.
 
-> And if [2] was to correct one to use, it was pushed via the MSM tree so i=
-t couldn't be
-> applied via drm-misc-next-fixes, right ?
-
-AFAICT, 2 is in 6.5 now, so it would be drm-misc-fixes. But yeah, it
-would make more sense to take it through the MSM tree.
-
-Maxime
-
---puzmiyi66lskaags
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZONMRAAKCRDj7w1vZxhR
-xdAAAQC8k6mwvjiPF0bwlparlXC2d1HvJZEGd+BDvNZYQuAD9gD/VWvY/lZjqtf7
-XK1hEg2W7jitmdtigOE4XxRm45JdRgo=
-=sZ74
------END PGP SIGNATURE-----
-
---puzmiyi66lskaags--
+Regards,
+Kartik
