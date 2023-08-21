@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFE6782F16
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E04DD782F18
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236942AbjHURHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 13:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S236960AbjHURIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbjHURHA (ORCPT
+        with ESMTP id S234315AbjHURIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:07:00 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1D0101
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:06:55 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-565f2567422so2238969eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1692637614; x=1693242414;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VcpesrdOKBjIBH3tlZ3q44ls+ILnPyIbnyYqKr2W+dE=;
-        b=i6Kb4H1cvgEso7109Gj9Y553yi7GSJelnA0xjnD/VxAY2DUlnrNnvON3JHvIfxm0tM
-         Khe2hq6wX6BQKnboV5ic2Ud2ZF/0lJjL/6ybD+FZbFoyBmonG2o8OrcUvSPMJ/E0DU7Q
-         Sm9u9VdsJcaR6XJk+XU5WXOCjz+L0eyorS9BupLzbzhhqGPNPdABoJl5zSI+K2C5t8S4
-         u/QKDmkT+DtZrqFJ90SuPsJ+b/skNq3EtbseQZWSRoAjpFiXnxmpeykw/PtavxcZvoOH
-         uFHR/4KkKRLb8Rh6ptTotGQknfASXOc9KV+D42hlAvVcxAPaSFKn4WI9BrKMAac1JOUh
-         mM8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692637614; x=1693242414;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VcpesrdOKBjIBH3tlZ3q44ls+ILnPyIbnyYqKr2W+dE=;
-        b=khJnvOSvqwBakvV4tRIbGB7vimVs8+Nb9Y4dN62O9wm8Voq7EgnxdaawhhFZWnCYvL
-         qQuecl3M7Hvqv2X13wtkdbckc4qLWgIhMZniuzcyrlvXnr7pU0L0raURsU5svZeTymCc
-         D/uuwUrogWXLQxvCAWoRlzwixNPVRZGgUUF8FXL7MSbkPekEpnH756d++hA8aZVEtY0c
-         VtKh138ZdExecei77gFZPiPS8rkaMPqCQWUPCAGlq1zaXpDtcqt0NQh8v8O9midGF1d9
-         a6bHajtLAmYeQkQYCjbVHMerJOJTo/mQtQFD384UdVoGQIvU7mK3iJleyBW7132THAE5
-         RFrg==
-X-Gm-Message-State: AOJu0Yy0t1Q094vhWmMA4r8lHnwpXGTA6FgVYL/K5g1FquqSS4SgBuSg
-        73Zgkl/xDvH7PU3s/v2/5No8hA==
-X-Google-Smtp-Source: AGHT+IG8X+l5Motw2UgXh3Pll87HnD6q0vanSSPX/5vtlKoHrD+t0K/F+xFSEdJ9OFLGAZ+9gB3oFw==
-X-Received: by 2002:a05:6358:41a3:b0:134:dc90:b7d1 with SMTP id w35-20020a05635841a300b00134dc90b7d1mr5913387rwc.25.1692637614702;
-        Mon, 21 Aug 2023 10:06:54 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
-        by smtp.gmail.com with ESMTPSA id s8-20020a05622a1a8800b004035b79860dsm2455049qtc.81.2023.08.21.10.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 10:06:54 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qY8Mf-00Dv3E-Ob;
-        Mon, 21 Aug 2023 14:06:53 -0300
-Date:   Mon, 21 Aug 2023 14:06:53 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/11] iommu: Prepare for separating SVA and IOPF
-Message-ID: <ZOOZrbb13QjGEJ9c@ziepe.ca>
-References: <20230817234047.195194-1-baolu.lu@linux.intel.com>
- <20230817234047.195194-8-baolu.lu@linux.intel.com>
+        Mon, 21 Aug 2023 13:08:19 -0400
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 9A3F7101
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:08:16 -0700 (PDT)
+Received: (qmail 124052 invoked by uid 1000); 21 Aug 2023 13:08:14 -0400
+Date:   Mon, 21 Aug 2023 13:08:14 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     syzbot <syzbot+f7ac46d91cf13b4591a4@syzkaller.appspotmail.com>
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [usb?] INFO: task hung in get_bMaxPacketSize0
+Message-ID: <45312cb5-47c2-44d7-a5ce-0745e878d810@rowland.harvard.edu>
+References: <0000000000003d73d3060371a47e@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230817234047.195194-8-baolu.lu@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <0000000000003d73d3060371a47e@google.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 07:40:43AM +0800, Lu Baolu wrote:
-> Move iopf_group data structure to iommu.h. This is being done to make it
-> a minimal set of faults that a domain's page fault handler should handle.
+On Mon, Aug 21, 2023 at 09:48:01AM -0700, syzbot wrote:
+> Hello,
 > 
-> Add two new helpers for the domain's page fault handler:
-> - iopf_free_group: free a fault group after all faults in the group are
->   handled.
-> - iopf_queue_work: queue a given work item for a fault group.
+> syzbot found the following issue on:
 > 
-> This will simplify the sequential patches.
+> HEAD commit:    7271b2a53042 Add linux-next specific files for 20230818
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10e05763a80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+> dashboard link: https://syzkaller.appspot.com/bug?extid=f7ac46d91cf13b4591a4
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1085e265a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14290117a80000
 > 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  include/linux/iommu.h      | 12 ++++++++++
->  drivers/iommu/io-pgfault.c | 49 ++++++++++++++++++++++----------------
->  2 files changed, 41 insertions(+), 20 deletions(-)
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/d81109bc02c1/disk-7271b2a5.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/4b3bf8e2a4f7/vmlinux-7271b2a5.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/6404cd473c1e/bzImage-7271b2a5.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+f7ac46d91cf13b4591a4@syzkaller.appspotmail.com
+> 
+> INFO: task kworker/0:1:9 blocked for more than 143 seconds.
+>       Not tainted 6.5.0-rc6-next-20230818-syzkaller #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:1     state:D stack:26768 pid:9     ppid:2      flags:0x00004000
+> Workqueue: usb_hub_wq hub_event
+> Call Trace:
+>  <TASK>
+>  context_switch kernel/sched/core.c:5382 [inline]
+>  __schedule+0xee1/0x59f0 kernel/sched/core.c:6695
+>  schedule+0xe7/0x1b0 kernel/sched/core.c:6771
+>  usb_kill_urb.part.0+0x1c6/0x250 drivers/usb/core/urb.c:713
+>  usb_kill_urb+0x83/0xa0 drivers/usb/core/urb.c:702
+>  usb_start_wait_urb+0x251/0x4c0 drivers/usb/core/message.c:65
+>  usb_internal_control_msg drivers/usb/core/message.c:103 [inline]
+>  usb_control_msg+0x327/0x4a0 drivers/usb/core/message.c:154
+>  get_bMaxPacketSize0.constprop.0+0xa5/0x1c0 drivers/usb/core/hub.c:4725
+>  hub_port_init+0x680/0x3850 drivers/usb/core/hub.c:4921
+>  hub_port_connect drivers/usb/core/hub.c:5369 [inline]
+>  hub_port_connect_change drivers/usb/core/hub.c:5580 [inline]
+>  port_event drivers/usb/core/hub.c:5740 [inline]
+>  hub_event+0x2b64/0x4e00 drivers/usb/core/hub.c:5822
+>  process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+>  process_scheduled_works kernel/workqueue.c:2703 [inline]
+>  worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+>  kthread+0x33a/0x430 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+>  </TASK>
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Although it's not apparent from the bug report, this bug appears to stem 
+from a problem in the usbip drivers, as can be seen in the console 
+output URL given above.
 
-Jason
+Apparently vhci_hcd sometimes fails to dequeue or complete an URB.  As a 
+result, a process calling usb_kill_urb() can hang indefinitely.  This 
+single issue is behind a bunch of outstanding syzbot bug reports.
+
+Alan Stern
