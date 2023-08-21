@@ -2,158 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E86C782DE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6654E782DF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235855AbjHUQJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56318 "EHLO
+        id S234821AbjHUQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235802AbjHUQJN (ORCPT
+        with ESMTP id S234661AbjHUQLJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:09:13 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3760113;
-        Mon, 21 Aug 2023 09:09:08 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf7423ef3eso7520985ad.3;
-        Mon, 21 Aug 2023 09:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692634148; x=1693238948;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v4YPhBhbkeJXRl8/+PVtRKWaqwE1QR1R3FATdc2dNh8=;
-        b=WKKevl7mdfLah0BqTHk5rx1sgI6wOssbr5onffid3tM4D3tx/MmDEKSABKw9VKSHjM
-         0VZcnREkeHq3yjsk0JkYDPR25I+tE+YNjWGGTAJddHjbzc+2PWUTQss/5I2nh4fq1rm8
-         k3HNoolEQ2jQwHnjdJ5r6ElJSsQ6LnH7ls6D8UJy9+Wfe/2gZid4vuP47njpkNGWWrfv
-         LFcwAaMRgc2WQkZQaQ92Ki6KqZBZkoNKUOBxidopw/+wn0uBpChVMjLoYdTdyhaZQ2mU
-         M2NaJ35tZKazdYzS7mVq5SA89hF2gmLn1jKLzQnEb7EBrKUqzqYg1+y8Z8zK2B5K4MZv
-         vaEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692634148; x=1693238948;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v4YPhBhbkeJXRl8/+PVtRKWaqwE1QR1R3FATdc2dNh8=;
-        b=F0V2LGCI9k8mKuemhmSKqLhDNcHh2Tcs+ihkT/2FUvJ1BMEl4GQv9ePsRHdGp6vcnC
-         rj3E2XqoVCNP0YtDHTq/4qKLHGiqbJDRkjLnkmOVfnjOsQwkAMEW/QZo8HTOrLXdAGw8
-         7DL0QTws1ilvZ5VG80149TXwbE2djvv3tfvG1F48BqlbtsUvI2mcuP2naACS6mBbsgR/
-         TcStZgtbhx+DWysuIfxDUCElvbZZxq0FmsKOhNy2z8bKCyxOAT0dk0H+1vuXnrugTQ7i
-         iBA9Ext0VJMhV2eAOFUjRlcmE7hpD2vC020TcqxllrGPqXrZPbBMQt5FSojyqRsW6lfN
-         tL5Q==
-X-Gm-Message-State: AOJu0Yy+VcNBz4spz6OpngA8EFDioKjwXPovmXWCAyjbbGAgdQz9Qr9B
-        A9kdbpeJl/4zNmNflEEV2RM=
-X-Google-Smtp-Source: AGHT+IFMTK9I2PPRletulwnBQa4mvExHRjg43rsaYXCxtErrOeRkkxYP0OejXplpIQ03WnhZadcc6A==
-X-Received: by 2002:a17:903:234a:b0:1c0:8a05:f356 with SMTP id c10-20020a170903234a00b001c08a05f356mr713290plh.54.1692634148062;
-        Mon, 21 Aug 2023 09:09:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id jg5-20020a17090326c500b001bc445e2497sm7286979plb.79.2023.08.21.09.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 09:09:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 21 Aug 2023 09:09:06 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Huibin Shi <henrys@silicom-usa.com>
-Cc:     Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>
-Subject: Re: [PATCH] Add Silicom Platform Driver
-Message-ID: <b0ad739c-7c96-4603-87aa-94fbce220ec8@roeck-us.net>
-References: <20230818154341.20553-1-henryshi2018@gmail.com>
- <8b8b0503-8f8f-4615-97ab-11d2c0e1a960@roeck-us.net>
- <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com>
- <7f537cef-d5cd-4816-a07b-9df27954ef93@roeck-us.net>
- <PA4PR04MB9222CA6111C291AE1C7D1B3D9A1EA@PA4PR04MB9222.eurprd04.prod.outlook.com>
+        Mon, 21 Aug 2023 12:11:09 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1E91BD;
+        Mon, 21 Aug 2023 09:10:31 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37LDXE4c021949;
+        Mon, 21 Aug 2023 11:10:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=daAm8nYc/MlFTPQHoO2+LlahLDiH/l9JMNn68PlbW10=; b=
+        aLf8dbET2liRhgakxWdGBYEVI9H0KFWy+BcNh47WLu4hdE3CbJ/lWc/4QVVMJctz
+        By+CncIDhJ4XBAA0wTHcGoMj4fWwPk82TmC971LC6vdbI+7Y+YM7tMoyXDih/FzX
+        uVDJGbw6v9tB6rxa5mOZAXdEEWV+/8TilQ0z8XOrgQF7QzKxMoVmB+WKXBPtakU/
+        DNFeRBEXEbKq2xpbM+bl/8jLpj35Cg3AZj8KMOLys97S4bKevcJTv/0kKblgMWw6
+        8bsvJzggtQPB1jfPFC/E2xjwwJnr0rSr/CKG5h2/RwKldRK2b+TQrs+mCbX+J4Bb
+        mkJW2qDD1LoQNk3mhz4Wgg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sktt5rs5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Aug 2023 11:10:18 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 21 Aug
+ 2023 17:10:16 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Mon, 21 Aug 2023 17:10:16 +0100
+Received: from [198.90.251.75] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.75])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 686303560;
+        Mon, 21 Aug 2023 16:10:16 +0000 (UTC)
+Message-ID: <0b780ce7-66a4-1a36-2a8a-a69c95f73d8a@opensource.cirrus.com>
+Date:   Mon, 21 Aug 2023 17:10:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PA4PR04MB9222CA6111C291AE1C7D1B3D9A1EA@PA4PR04MB9222.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v4 06/10] kunit: string-stream: Pass struct kunit to
+ string_stream_get_string()
+To:     David Gow <davidgow@google.com>
+CC:     <brendan.higgins@linux.dev>, <rmoar@google.com>,
+        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+References: <20230814132309.32641-1-rf@opensource.cirrus.com>
+ <20230814132309.32641-7-rf@opensource.cirrus.com>
+ <CABVgOS=WoKEpPU=0f=mSfdx1g6AkEtx6QJTiNru1XSTev3sGaQ@mail.gmail.com>
+ <a8804709-ee00-d2ea-d55d-f8138bd3a500@opensource.cirrus.com>
+ <CABVgOSmPqM_zt9jGzYcJN-=AQW3z62cC7dzPJkV-jx6rCcMy=g@mail.gmail.com>
+Content-Language: en-US
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <CABVgOSmPqM_zt9jGzYcJN-=AQW3z62cC7dzPJkV-jx6rCcMy=g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: 5MUIGkWS4uW8tNCta8On_OtB1Na3c--j
+X-Proofpoint-ORIG-GUID: 5MUIGkWS4uW8tNCta8On_OtB1Na3c--j
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 03:48:33PM +0000, Huibin Shi wrote:
-> Guenter,
+On 17/08/2023 07:26, David Gow wrote:
+> On Tue, 15 Aug 2023 at 17:57, Richard Fitzgerald
+> <rf@opensource.cirrus.com> wrote:
+>>
+>> On 15/8/23 10:16, David Gow wrote:
+>>> On Mon, 14 Aug 2023 at 21:23, Richard Fitzgerald
+>>> <rf@opensource.cirrus.com> wrote:
+>>>>
+>>>> Pass a struct kunit* and gfp_t to string_stream_get_string(). Allocate
+>>>> the returned buffer using these instead of using the stream->test and
+>>>> stream->gfp.
+>>>>
+>>>> This is preparation for removing the dependence of string_stream on
+>>>> struct kunit, so that string_stream can be used for the debugfs log.
+>>>>
+>>>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>>>> ---
+>>>
+>>> Makes sense to me.
+>>>
+>>> I think that, if we weren't going to remove the struct kunit
+>>> dependency, we'd want to either keep a version of
+>>> string_stream_get_string() which uses it, or, e.g., fall back to it if
+>>> the struct passed in is NULL.
+>>>
+>>
+>> That was my first thought. But I thought that was open to subtle
+>> accidental bugs in calling code - it might return you a managed
+>> allocation, or it might return you an unmanaged allocation that you
+>> must free.
+>>
+>> As there weren't many callers of string_stream_get_string() I decided
+>> to go with changing the API to pass in test and gfp like other managed
+>> allocations. This makes it more generalized, since the returned buffer
+>> is not part of the stream itself, it's a temporary buffer owned by the
+>> caller. It also makes it clearer that what you are getting back is
+>> likely to be a managed allocation.
+>>
+>> If you'd prefer to leave string_stream_get_string() as it was, or make
+>> it return an unmanged buffer, I can send a new version.
+>>
+>>> The other option is to have a version which doesn't manage the string
+>>> at all, so just takes a gfp and requires the caller to free it (or
+>>
+>> I didn't add a companion function to get a raw unmanaged string buffer
+>> because there's nothing that needs it. It could be added later if
+>> it's needed.
+>>
 > 
-> See my comments below.
+> Fair enough.
 > 
-> Thanks
-> Henry
+>>> register an action to do so). If we did that, we could get rid of the
+>>> struct kunit pointer totally (though it may be better to keep it and
+>>> have both versions).
+>>>
+>>
+>> Another option is to make string_stream_get_string() return a raw
+>> buffer and add a kunit_string_stream_geT_string() that returns a
+>> managed buffer. This follows some consistency with the normal mallocs
+>> where kunit_xxxx() is the managed version.
+>>
 > 
-> -----Original Message-----
-> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-> Sent: Saturday, August 19, 2023 10:36 AM
-> To: Huibin Shi <henrys@silicom-usa.com>
-> Cc: Henry Shi <henryshi2018@gmail.com>; hbshi69@hotmail.com; tglx@linutronix.de; mingo@redhat.com; bp@alien8.de; dave.hansen@linux.intel.com; x86@kernel.org; hpa@zytor.com; hdegoede@redhat.com; markgross@kernel.org; jdelvare@suse.com; linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org; linux-hwmon@vger.kernel.org; hb_shi2003@yahoo.com; Wen Wang <wenw@silicom-usa.com>
-> Subject: Re: [PATCH] Add Silicom Platform Driver
-> 
-> Caution: This is an external email. Please take care when clicking links or opening attachments.
-> 
-> 
-> On Sat, Aug 19, 2023 at 02:20:32PM +0000, Huibin Shi wrote:
-> > Hi Guenter,
-> >
-> > Thanks for your comments. Probably, I should not resubmit patch too rushed. I will add version number to subject and change log in cover letter for next resubmission.
-> >
-> > See my comments below. Please let me know whether you accept my explanation.
-> >
-> > Henry
-> > -----Original Message-----
-> [ ... ]
-> 
-> > > +
-> > > +static u32 temp_get(void)
-> > > +{
-> > > +     u32 reg;
-> > > +
-> > > +     mutex_lock(&mec_io_mutex);
-> > > +     /* Select memory region */
-> > > +     outb(IO_REG_BANK, EC_ADDR_MSB);
-> > > +     outb(0xc, EC_ADDR_LSB);
-> > > +     /* Get current data from the address */
-> > > +     reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
-> > > +     mutex_unlock(&mec_io_mutex);
-> > > +
-> > > +     return (reg >> 16) / 10;
-> >
-> > The hwmon ABI expects temperatures to be reported in milli-degrees C.
-> > The above sets the maximum temperature to 65,535 / 10 = 6,553 milli-degrees or 6.553 degrees C. It is very unlikely that this is correct.
-> >
-> > Again, I commented on this before.
-> >
-> > Henry: this is due to an internal implementation of MIcor-controller firmware, instead of putting real temperature to the register, it put (real temperature * 10 ) to the register. So, in order to report correct temperature to user space application, the read value is divided by 10, then report to user space.
-> >
-> > Please let me know if you accept this. If not, I can change the code, but let user space application to do adjustment.
-> 
-> No, I do not accept this. I do not believe that the maximum temperature reported by the microcontroller is 6.553 degrees C. I suspect it reports 10th of degrees C. In that case, the number reported should be multiplied by 100 to make it milli-degrees C as expected by the ABI.
-> 
-> Henry: OK, I will remove "/10" in driver, and let user space application (or script) to the calculation.
+> Ooh... I like this best. Let's go with that.
 > 
 
-Sorry, I completely fail to understand why you refuse to follow the ABI.
-The temperature must be reported in milli-degrees C, not in some arbitrary
-unit, period.
+I was busy last week with other things and have only got back to looking
+at this.
 
-FWIW, that really deserves a NACK now.
+I'm trying to decide what to do with string_stream_get_string() and I'd
+value an opinion.
 
-Guenter
+The only use for a test-managed get_string() is the string_stream test.
+So I've thought of 4 options:
+
+1) Add a kunit_string_stream_get_string() anyway. But only the test code
+uses it.
+
+2) Change the tests to have a local function to do the same thing, and
+add an explicit test case for the (unmanaged)
+string_stream_get_string() that ensures it's freed.
+
+3) Change the tests to have a local function to get the string, which
+calls string_stream_get_string() then copies it to a test-managed buffer
+and frees the unmanaged buffer.
+
+4) Implement a kunit_kfree_on_exit() function that takes an already-
+allocated buffer and kfree()s it when the test exists, so that we can
+do:
+
+    // on success kunit_kfree_on_exit() returns the buffer it was given
+    str = kunit_kfree_on_exit(test, string_stream_get_string(stream));
+    KUNIT_ASSERT_NOT_ERR_OR_NULL(test, str);
+
+I'm leaning towards (2) but open to going with any of the other options.
