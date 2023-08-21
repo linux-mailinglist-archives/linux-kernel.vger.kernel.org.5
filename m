@@ -2,130 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE476783053
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1FB78304B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229721AbjHUSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 14:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49486 "EHLO
+        id S229675AbjHUSfY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 14:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjHUSgS (ORCPT
+        with ESMTP id S229548AbjHUSfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:36:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BFC4280
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 11:35:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692642936;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VnozOf1ZSQALyFb1iX/34LT/2tx9Fp66PH2IuRGYQt0=;
-        b=ON5/5u0Kl0B+DpqN21N0SBZ0eLShnbm+oR4W7SHucwxO0BtaUQW6YFjB+qNnaD4yIQ2F58
-        iIABvrMjgRIJstVj8rtkZD+iiIMUSm0TPrDLqYW4dGefHteul1QWOgXmQpfeoOaUqQ7sNg
-        Qa37mKk6WACLzcktZp2xK9VSUKrKsi4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-510-mt3hkESpNAmYolWgawQYDg-1; Mon, 21 Aug 2023 14:35:32 -0400
-X-MC-Unique: mt3hkESpNAmYolWgawQYDg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E39E2101B450;
-        Mon, 21 Aug 2023 18:35:31 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.99])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D53E72166B25;
-        Mon, 21 Aug 2023 18:35:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 21 Aug 2023 20:34:46 +0200 (CEST)
-Date:   Mon, 21 Aug 2023 20:34:43 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Kui-Feng Lee <sinquersw@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
- next_thread()
-Message-ID: <20230821183443.GA12526@redhat.com>
-References: <20230821150909.GA2431@redhat.com>
- <e0c71c5c-09e6-d94e-6db3-3acf3ee502d6@gmail.com>
+        Mon, 21 Aug 2023 14:35:23 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117BA41E5D;
+        Mon, 21 Aug 2023 11:35:20 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6bb1133b063so486765a34.1;
+        Mon, 21 Aug 2023 11:35:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692642920; x=1693247720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=03epZPgoSBqLoqs55VcIbrAIzSLe1XSwVSLHjIr/5go=;
+        b=eXq8IUN3j+ksPfrPG+qHRoW83iWJOQoCCmhyO53MiXlqcDhhPkVifWcyonEyaG87HP
+         LOeWuY7Ej7ZXfv8ihsVBF/ByOzlFwFSjkjT/zl5JOrHBghSPVapNdCa3LyE195u2oBQI
+         mxMm91/6TmJ7fnZBohXYUxhWMku/qUjkShj08JVyRQP6aRhEifjMCN/NANkOjyPCIREk
+         Tsgih5xxLnVTXWztOEU5e0sbX2crs7KBkP95o4vYawIvSZPxvLPl0uHvufoJgpI8okJY
+         rcdga2AqnLtT4zOOKX/yDdHT5wbw0YbRc3ZU9DfA6uKJczS3JlGTesMjWFzLdC+GUgVs
+         AnIQ==
+X-Gm-Message-State: AOJu0YxPgvjW57g9QS3+E8GHqAK9DFzKPW0bUKTUAA9tzPbpriDngT7w
+        KaoXhaPwJg12cbGPUdY2HccCbrjd+4YTRd/FjcJxLxFi
+X-Google-Smtp-Source: AGHT+IEV5cMwi4Lyeh9FPXP0fH4B4pjAg+sFZZZgVJq9zMIdGYhTtMhugu9JeQWsWgMoMUZUDgRmUPA4m9qFxNkyKsg=
+X-Received: by 2002:a4a:e882:0:b0:570:d852:f77f with SMTP id
+ g2-20020a4ae882000000b00570d852f77fmr3014293ooe.1.1692642920037; Mon, 21 Aug
+ 2023 11:35:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0c71c5c-09e6-d94e-6db3-3acf3ee502d6@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818194027.27559-1-mario.limonciello@amd.com> <20230818194027.27559-2-mario.limonciello@amd.com>
+In-Reply-To: <20230818194027.27559-2-mario.limonciello@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Aug 2023 20:35:04 +0200
+Message-ID: <CAJZ5v0hzPPgnUTPcpfebSxBN=e5U6WLA9T=86QDTkyK0uwPq3w@mail.gmail.com>
+Subject: Re: [PATCH v14.c 1/4] PCI: ACPI: Add helper functions for converting
+ ACPI <-> PCI states
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/21, Kui-Feng Lee wrote:
+On Fri, Aug 18, 2023 at 9:40 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
 >
+> Several functions do internal mappings in either direction. Add
+> helpers for this functionality.  No intended functional changes.
 >
-> On 8/21/23 08:09, Oleg Nesterov wrote:
-> >1. find_pid_ns() + get_pid_task() under rcu_read_lock() guarantees that we
-> >    can safely iterate the task->thread_group list. Even if this task exits
-> >    right after get_pid_task() (or goto retry) and pid_alive() returns 0 >
-> >    Kill the unnecessary pid_alive() check.
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v10->v11:
+>  * New patch
+> ---
+>  drivers/pci/pci-acpi.c | 87 +++++++++++++++++++++++++-----------------
+>  1 file changed, 53 insertions(+), 34 deletions(-)
 >
-> This function will return next_task holding a refcount, and release the
-> refcount until the next time calling the same function. Meanwhile,
-> the returned task A may be killed, and its next task B may be
-> killed after A as well, before calling this function again.
-> However, even task B is destroyed (free), A's next is still pointing to
-> task B. When this function is called again for the same iterator,
-> it doesn't promise that B is still there.
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index a05350a4e49cb..b5b65cdfa3b8b 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -884,6 +884,56 @@ acpi_status pci_acpi_add_pm_notifier(struct acpi_device *dev,
+>         return acpi_add_pm_notifier(dev, &pci_dev->dev, pci_acpi_wake_dev);
+>  }
+>
+> +/**
+> + * map_pci_to_acpi - map a PCI power state to an ACPI D-state
+> + * @state: PCI power state to map
+> + *
+> + * Returns: Corresponding ACPI D-state, otherwise ACPI_STATE_UNKNOWN
+> + */
+> +static u8 map_pci_to_acpi(pci_power_t state)
 
-Not sure I understand...
+I would prefer to call this pci_power_state_to_acpi() and analogously
+for the other one.
 
-OK, if we have a task pointer with incremented refcount and do not hold
-rcu lock, then yes, you can't remove the pid_alive() check in this code:
+With this addressed, please feel free to add my ACK to the patch.
 
-	rcu_read_lock();
-	if (pid_alive(task))
-		do_something(next_thread(task));
-	rcu_read_unlock();
-
-because task and then task->next can exit and do call_rcu(delayed_put_task_struct)
-before we take rcu_read_lock().
-
-But if you do something like
-
-	rcu_read_lock();
-
-	task = find_task_in_some_rcu_protected_list();
-	do_something(next_thread(task));
-
-	rcu_read_unlock();
-
-then next_thread(task) should be safe without pid_alive().
-
-And iiuc task_group_seq_get_next() always does
-
-	rcu_read_lock();	// the caller does lock/unlock
-
-	task = get_pid_task(pid, PIDTYPE_PID);
-	if (!task)
-		return;
-	
-	next_task = next_thread(task);
-
-	rcu_read_unlock();
-
-Yes, both task and task->next can exit right after get_pid_task(), but since
-can only happen after we took rcu_read_lock(), delayed_put_task_struct() can't
-be called until we drop rcu lock.
-
-What have I missed?
-
-Oleg.
-
+> +{
+> +       switch (state) {
+> +       case PCI_D0:
+> +               return ACPI_STATE_D0;
+> +       case PCI_D1:
+> +               return ACPI_STATE_D1;
+> +       case PCI_D2:
+> +               return ACPI_STATE_D2;
+> +       case PCI_D3hot:
+> +               return ACPI_STATE_D3_HOT;
+> +       case PCI_D3cold:
+> +               return ACPI_STATE_D3_COLD;
+> +       }
+> +
+> +       return ACPI_STATE_UNKNOWN;
+> +}
+> +
+> +/**
+> + * map_acpi_to_pci - map an ACPI D-state to a PCI power state
+> + * @state: ACPI D-state to map
+> + *
+> + * Returns: Corresponding PCI power state, otherwise PCI_POWER_ERROR.
+> + */
+> +static pci_power_t map_acpi_to_pci(int state)
+> +{
+> +       switch (state) {
+> +       case ACPI_STATE_D0:
+> +               return PCI_D0;
+> +       case ACPI_STATE_D1:
+> +               return PCI_D1;
+> +       case ACPI_STATE_D2:
+> +               return PCI_D2;
+> +       case ACPI_STATE_D3_HOT:
+> +               return PCI_D3hot;
+> +       case ACPI_STATE_D3_COLD:
+> +               return PCI_D3cold;
+> +       case ACPI_STATE_UNKNOWN:
+> +               return PCI_UNKNOWN;
+> +       }
+> +
+> +       return PCI_POWER_ERROR;
+> +}
+> +
+>  /*
+>   * _SxD returns the D-state with the highest power
+>   * (lowest D-state number) supported in the S-state "x".
+> @@ -919,19 +969,7 @@ pci_power_t acpi_pci_choose_state(struct pci_dev *pdev)
+>         if (acpi_state < 0)
+>                 return PCI_POWER_ERROR;
+>
+> -       switch (acpi_state) {
+> -       case ACPI_STATE_D0:
+> -               return PCI_D0;
+> -       case ACPI_STATE_D1:
+> -               return PCI_D1;
+> -       case ACPI_STATE_D2:
+> -               return PCI_D2;
+> -       case ACPI_STATE_D3_HOT:
+> -               return PCI_D3hot;
+> -       case ACPI_STATE_D3_COLD:
+> -               return PCI_D3cold;
+> -       }
+> -       return PCI_POWER_ERROR;
+> +       return map_acpi_to_pci(acpi_state);
+>  }
+>
+>  static struct acpi_device *acpi_pci_find_companion(struct device *dev);
+> @@ -1056,13 +1094,6 @@ static void acpi_pci_config_space_access(struct pci_dev *dev, bool enable)
+>  int acpi_pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  {
+>         struct acpi_device *adev = ACPI_COMPANION(&dev->dev);
+> -       static const u8 state_conv[] = {
+> -               [PCI_D0] = ACPI_STATE_D0,
+> -               [PCI_D1] = ACPI_STATE_D1,
+> -               [PCI_D2] = ACPI_STATE_D2,
+> -               [PCI_D3hot] = ACPI_STATE_D3_HOT,
+> -               [PCI_D3cold] = ACPI_STATE_D3_COLD,
+> -       };
+>         int error;
+>
+>         /* If the ACPI device has _EJ0, ignore the device */
+> @@ -1089,7 +1120,7 @@ int acpi_pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>                 acpi_pci_config_space_access(dev, false);
+>         }
+>
+> -       error = acpi_device_set_power(adev, state_conv[state]);
+> +       error = acpi_device_set_power(adev, map_pci_to_acpi(state));
+>         if (error)
+>                 return error;
+>
+> @@ -1111,23 +1142,11 @@ int acpi_pci_set_power_state(struct pci_dev *dev, pci_power_t state)
+>  pci_power_t acpi_pci_get_power_state(struct pci_dev *dev)
+>  {
+>         struct acpi_device *adev = ACPI_COMPANION(&dev->dev);
+> -       static const pci_power_t state_conv[] = {
+> -               [ACPI_STATE_D0]      = PCI_D0,
+> -               [ACPI_STATE_D1]      = PCI_D1,
+> -               [ACPI_STATE_D2]      = PCI_D2,
+> -               [ACPI_STATE_D3_HOT]  = PCI_D3hot,
+> -               [ACPI_STATE_D3_COLD] = PCI_D3cold,
+> -       };
+> -       int state;
+>
+>         if (!adev || !acpi_device_power_manageable(adev))
+>                 return PCI_UNKNOWN;
+>
+> -       state = adev->power.state;
+> -       if (state == ACPI_STATE_UNKNOWN)
+> -               return PCI_UNKNOWN;
+> -
+> -       return state_conv[state];
+> +       return map_acpi_to_pci(adev->power.state);
+>  }
+>
+>  void acpi_pci_refresh_power_state(struct pci_dev *dev)
+> --
+> 2.34.1
+>
