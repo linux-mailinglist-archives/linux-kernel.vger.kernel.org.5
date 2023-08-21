@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59184782A3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EE4782A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbjHUNPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:15:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S235351AbjHUNQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbjHUNPB (ORCPT
+        with ESMTP id S232651AbjHUNQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:15:01 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205D8F4;
-        Mon, 21 Aug 2023 06:14:30 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5236b2b4cdbso4214809a12.3;
-        Mon, 21 Aug 2023 06:14:30 -0700 (PDT)
+        Mon, 21 Aug 2023 09:16:37 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B77139
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:16:04 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40c72caec5cso436311cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:16:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692623598; x=1693228398;
+        d=google.com; s=20221208; t=1692623743; x=1693228543;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oX0xWKQkXrYavLJXfvsEkt1aDI7IkJr5D/pUmxA4EgU=;
-        b=msRWNKPV74iHu+isJb6p0zwb80yPBowEDPJNAdfbwhHJ4EmktivtMHNk0Iack0Svjq
-         VWcyjzjrhlzJf++3epO6bkJ/P2qx10S/kRYQfJBpwBSwk7RIHss5jl4pjdLQWN3vCUFl
-         YyjFlalgtqD5fNQyk0YO6eIvoICnRWK7Ign50JpCFCUGx/5XrHhwr9EohTe3iwKi5OzU
-         3KA2gPe8aiikuzs8qeXwvuWkLO+Z3qis7KD1QGXW3CuS716gJSJAOjzP3DFmcl2Oy1VS
-         +T4acbUfJ2D1ifGBcteb2ZswHziUdfLqM5zN2xFx61V5P7RcseQ6dh5q6rtMdN4OXqBz
-         RYxw==
+        bh=tnSB4QbuCs2L6o1hVVPxHfaphrL2l/lk2QJ6apgrG4E=;
+        b=4pUCD503HaLMzhbdwRIvap/zbRa1LXu/iQU0cWYjedob1cWikSPlvoG/eVzQrzyDqD
+         Yn2HrFl+SuNxHjqb0NOQ8uVQriWnLMknRO7HOkg2Cd1RO/Nj1G4tNNJnWn9uDgkcAGs1
+         6u7aoOP6wkb1CTaK4Nb7TpArBN9XGG/SflZ8scvYZH8CbHN0dkwJzsMBY38a6LUHiNWf
+         Z+EoqfPKOttegPq46S4f/5Sk/HEcTgB3KR3Nc3pJHzDlXz1q+N7dG32nesECZTcZRYGO
+         kSGFv5cjxouIi7KwMWK39JtZln1jxt8iV6SQqJzjXF3kh4/q/jeJDF5ATZ7jgQf93r7A
+         o0vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692623598; x=1693228398;
+        d=1e100.net; s=20221208; t=1692623743; x=1693228543;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oX0xWKQkXrYavLJXfvsEkt1aDI7IkJr5D/pUmxA4EgU=;
-        b=PjQ+G30Tr9Eslq3Jn6V2kSgb1V503W6XmzrjhqXcK3AdGjgeoWo7+1r1XpDgNookpg
-         pHpd4+kf0aT1vci5M3dgYSntb3KE+kU0lrzQWDGMryx7Msn0OF8RXbnjuay2GVLJ9SS5
-         gk+d0yZpDCVskjE44ABltDiSAmaaqNxIwDJeyxogI76eJJjhdz64ZuiKARvKcsFa/ULa
-         SFwcsVX7/7dIY/KY872GQ/L45f50s/dR91A+m+13x47c1gpkg/zRvnSCW5CQGzrS2T/Y
-         a6F6zvdQDfnfrPDHMW4j9mDXdQdjuCo/5FJMvloEgw3eLlwXe0CDosktO2O0jFAwVsyP
-         pCUg==
-X-Gm-Message-State: AOJu0YxxZjtvpk22KaaglM1j0bg3mSlvd80mXTEUvlSHswtagKzRt1NS
-        nah/Iw5cZynkFOO6psgTNWkIFH0eTc+uWahbJ9A=
-X-Google-Smtp-Source: AGHT+IGgODVe3sxeZIdVpzBoAXIab50YLpc7teJAxlyvaIySQPuigyCmcQ+XsuzZd5DvLV7LMUSrT+Brha9biAsqTBY=
-X-Received: by 2002:a50:fa93:0:b0:523:102f:3cdd with SMTP id
- w19-20020a50fa93000000b00523102f3cddmr5285515edr.19.1692623598394; Mon, 21
- Aug 2023 06:13:18 -0700 (PDT)
+        bh=tnSB4QbuCs2L6o1hVVPxHfaphrL2l/lk2QJ6apgrG4E=;
+        b=MT8DroYmiZEQb3o93RK9tbeU/cvfDL4iUtelLEO2hFGPb1/maurLK/OZWIaEcbNafZ
+         W8A6Ux87cZM69Q98MG4axGLkW69lKYAet/B1NTPt0GAT0SJ3lkQFE9eE6xB6SytppTmR
+         MeBFWp5U5C7//6DF/4XEqNCLZdqEqHCmiCyuYLdFFBh362PMY5IoNjL/nqFYmrcckWNY
+         JA9cozizYjCzR22/GbHP0Xm9S6eiNwNxX6Nog1jdpTH2AEvqmERp3WLVH4polPBc5917
+         QWJ5KpR59jq35UKwPI3vd7CDKTB8s675yEKSp8ayrDOBLT0XEsMbu6wS7WCq51axjLnJ
+         YJDg==
+X-Gm-Message-State: AOJu0YwnboiRCI4aE/M1H4T+GzydTYT699z9wws9N6d0bE13B/dl3xS6
+        INLHSoR3G1m3W1YmhNGlxeN0YA22v+yQdPz2CIxSxg==
+X-Google-Smtp-Source: AGHT+IH4XJZUBCEpS7xwhb553C3R2A2vLKwXbPhQkBSvPkXEmMejADowiIsZUdBnPNAxTNb4joqq5lmdAKTYN8aw+I8=
+X-Received: by 2002:ac8:7e93:0:b0:40f:c60d:1c79 with SMTP id
+ w19-20020ac87e93000000b0040fc60d1c79mr565484qtj.28.1692623742367; Mon, 21 Aug
+ 2023 06:15:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
- <20230812151135.1028780-4-keguang.zhang@gmail.com> <thdwhlbs5salnufag24tqk4txqs3skidhq5nmzdeyxt3ni5pos@duj55rpqskl3>
- <CAJhJPsV9g2hSu4Ga8bH573JsJsrA_3dwi8T0oQBtq0FydHKrPg@mail.gmail.com> <jjpwnfc3bjpw44fdzqmekbxqaqeus34aeuezas3fqrfbsvp4gp@yhv4ig5ypj3g>
-In-Reply-To: <jjpwnfc3bjpw44fdzqmekbxqaqeus34aeuezas3fqrfbsvp4gp@yhv4ig5ypj3g>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Mon, 21 Aug 2023 21:13:01 +0800
-Message-ID: <CAJhJPsUAssk7wHzM8ptEAB_TWchdvuZyWw92+YGZL+YuTD+sgw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] dt-bindings: net: Add Loongson-1 DWMAC glue layer
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230814043140.1108917-1-rekanorman@chromium.org>
+ <20230814043140.1108917-8-rekanorman@chromium.org> <a834b202-7d5c-2a04-fc69-1913cd063a67@xs4all.nl>
+In-Reply-To: <a834b202-7d5c-2a04-fc69-1913cd063a67@xs4all.nl>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Mon, 21 Aug 2023 06:15:30 -0700
+Message-ID: <CABXOdTdkBM70i=cbBak99ph=P0roaRvhiRpE8O7t4JNkGWUDAw@mail.gmail.com>
+Subject: Re: [PATCH 7/9] media: cros-ec-cec: Allow specifying multiple HDMI connectors
+To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     Reka Norman <rekanorman@chromium.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Daisuke Nojiri <dnojiri@chromium.org>,
+        Stefan Adolfsson <sadolfsson@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,309 +78,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 9:48=E2=80=AFPM Serge Semin <fancer.lancer@gmail.co=
-m> wrote:
+On Mon, Aug 21, 2023 at 2:12=E2=80=AFAM Hans Verkuil <hverkuil-cisco@xs4all=
+.nl> wrote:
 >
-> On Fri, Aug 18, 2023 at 06:42:42PM +0800, Keguang Zhang wrote:
-> > On Wed, Aug 16, 2023 at 8:54=E2=80=AFPM Serge Semin <fancer.lancer@gmai=
-l.com> wrote:
-> > >
-> > > Hi Keguang
-> > >
-> > > On Sat, Aug 12, 2023 at 11:11:33PM +0800, Keguang Zhang wrote:
-> > > > Add devicetree binding document for Loongson-1 DWMAC glue layer.
-> > > >
-> > > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > > > ---
-> > > >  .../bindings/net/loongson,ls1x-dwmac.yaml     | 98 +++++++++++++++=
-++++
-> > > >  .../devicetree/bindings/net/snps,dwmac.yaml   |  2 +
-> > > >  2 files changed, 100 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/net/loongson,=
-ls1x-dwmac.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/net/loongson,ls1x-dw=
-mac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..150799460599
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yam=
-l
-> > > > @@ -0,0 +1,98 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/net/loongson,ls1x-dwmac.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > >
-> > > > +title: Loongson-1 DWMAC glue layer
-> > >
-> > > DT-schemas describe a device. It has nothing to do with the glue
-> > > driver/layer/whatever.
-> > >
+> Hi Reka,
 >
-> > OK. But what about the MODULE_DESCRIPTION in dwmac-loongson1.c
-> > MODULE_DESCRIPTION("Loongson1 DWMAC glue layer");
-> > Should the two parts be aligned with each other?
->
-> No they shouldn't. MODULE_DESCRIPTION() describes the driver module.
-> "Loongson1 (G)MAC glue layer" is a correct description of the kernel
-> driver module.
->
-> > If not, what's your suggestion then?
->
-> Something like "Loongson-1 Ethernet controller" or "Loongson-1 (G)MAC
-> controller". A name which would refer to the device itself
-> irrespective to the driver name, driver design, etc.
->
-> * Note the already available DW (XG)MAC vendor-specific DT-bindings
-> * referring to the glue layer/driver in the title property are wrong
-> * in doing that.
->
+> On 14/08/2023 06:29, Reka Norman wrote:
+> > Update the cec_dmi_match_table to allow specifying multiple HDMI
+> > connectors for each device.
 > >
-> > > Also I suggest to add a brief device description in the
-> > > "description:" property and add there a brief info regarding the SoCs
-> > > the controllers can be found on, the DW (G)MAC IP-core version the
-> > > ethernet controllers are based on and if possible some data about the
-> > > synthesize parameters: SMA (MDIO-bus), Tx/Rx COE, DMA FIFOs size,
-> > > perfect and hash MAC-filters size, L3L4 frame filters availability,
-> > > PHY interfaces (MII, RMII, RGMII, etc), EEE support, IEEE 1588(-2008)
-> > > Timestamping support, PMT and Wake-up frame support, MAC Management
-> > > counters (MMC).
-> > >
-> > > Note DMA FIFO sizes can be also constrained in the properties
-> > > "rx-fifo-depth" and "tx-fifo-depth"; perfect and hash MAC-filter size=
-s -
-> > > in "snps,perfect-filter-entries" and "snps,multicast-filter-bins".
-> > >
-> > OK. The description could be added in next version.
+> > Signed-off-by: Reka Norman <rekanorman@chromium.org>
+> > ---
 > >
-> > > > +
-> > > > +maintainers:
-> > > > +  - Keguang Zhang <keguang.zhang@gmail.com>
-> > > > +
-> > > > +select:
-> > > > +  properties:
-> > > > +    compatible:
-> > > > +      contains:
-> > > > +        enum:
-> > > > +          - loongson,ls1b-dwmac
-> > > > +          - loongson,ls1c-dwmac
-> > > > +  required:
-> > > > +    - compatible
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    items:
-> > > > +      - enum:
->
-> > > > +          - loongson,ls1b-dwmac
-> > > > +          - loongson,ls1c-dwmac
->
-> BTW referring to the DW IP-core in the compatible string isn't very
-> much useful especially seeing you have a generic fallback compatible.
->
-> The next names would be more descriptive:
-> loongson,ls1b-gmac - seeing MAC supports 10/100/1000 speed modes
-> loongson,ls1c-mac - seeing MAC support 10/100 speed modes only
->
->
-> > > > +      - const: snps,dwmac-3.50a
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  clocks:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  clock-names:
-> > > > +    const: stmmaceth
-> > > > +
-> > > > +  interrupts:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  interrupt-names:
-> > > > +    const: macirq
-> > > > +
-> > >
-> > > > +  syscon:
-> > > > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > > > +    description:
-> > > > +      Phandle to the syscon containing some extra configurations
-> > > > +      including PHY interface mode.
-> > >
-> > > I believe the property is supposed to have a vendor-specific name lik=
-e
-> > > "loongson,ls1-syscon" or similar.
+> >  .../media/cec/platform/cros-ec/cros-ec-cec.c  | 47 +++++++++++--------
+> >  1 file changed, 28 insertions(+), 19 deletions(-)
 > >
+> > diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers=
+/media/cec/platform/cros-ec/cros-ec-cec.c
+> > index c68ed5d4bda0..f2f397d9a6d8 100644
+> > --- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+> > +++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+> > @@ -284,38 +284,41 @@ static SIMPLE_DEV_PM_OPS(cros_ec_cec_pm_ops,
+> >  #if IS_ENABLED(CONFIG_PCI) && IS_ENABLED(CONFIG_DMI)
+> >
+> >  /*
+> > - * The Firmware only handles a single CEC interface tied to a single H=
+DMI
+> > - * connector we specify along with the DRM device name handling the HD=
+MI output
+> > + * Specify the DRM device name handling the HDMI output and the HDMI c=
+onnector
+> > + * corresponding to each CEC port. The order of connectors must match =
+the order
+> > + * in the EC (first connector is EC port 0, ...), and the number of co=
+nnectors
+> > + * must match the number of ports in the EC (which can be queried usin=
+g the
+> > + * EC_CMD_CEC_PORT_COUNT host command).
+> >   */
+> >
+> >  struct cec_dmi_match {
+> >       const char *sys_vendor;
+> >       const char *product_name;
+> >       const char *devname;
+> > -     const char *conn;
+> > +     const char *conns[EC_CEC_MAX_PORTS];
 >
-> > This has been fixed in v2.
+> Since EC_CEC_MAX_PORTS is 16, this will waste a lot of space here.
 >
-> The name "loongson,dwmac-syscon" doesn't look correct because "dwmac-"
-> prefix refer to some DWMAC system controller meanwhile the phandle
-> passed to the device is a generic Loongson1 SoC system controller. So
-> "loongson,ls1-syscon" looks more suitable.
+> I would suggest creating a separate define (CEC_MAX_PORTS?) that is set
+> to 2 and is the max port that is actually used.
 >
-Will do.
 
-> > Could you please review v2?
-> > Thanks!
->
-> I'll have a look at v3 since v2 doesn't have my comments taken into
-> account. BTW don't rush with resubmitting your series. Give it at
-> least one week or so to hang out in the reviewers mail boxes as the
-> Linux kernel patches review process suggests.
->
-> > >
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - clocks
-> > > > +  - clock-names
-> > > > +  - interrupts
-> > > > +  - interrupt-names
-> > > > +  - phy-handle
-> > >
-> > > > +  - phy-mode
-> > >
-> > > You may want to specify the enum-constraints with the value permitted
-> > > for the particular Loongson (G)MAC controller. Seeing ls1b and ls1c
-> > > imply different sets of the PHY-modes the constraints are better to b=
-e
-> > > defined in the allOf sub-schemas. Alternatively you can split the
-> > > DT-schema file into two: one for ls1b-dwmac, another one for
-> > > ls1c-dwmac. IMO the later option seems better.
-> > >
->
-> > The "phy-mode", as pointed by Krzysztof, is defined in
-> > ethernet-controller and already required by snps,dwmac.
-> > So I have dropped it in v2.
->
-> My point was in specifying a particular constraints on the "phy-mode"
-> property. Krzysztof correctly suggested to drop the property from the
-> "required" list since it's already required by the snps,dwmac.yaml
-> schema. One doesn't contradict to another.
->
-> > For allOf sub-schemas, do you mean something below?
-> > allOf:
-> >  - $ref: snps,dwmac.yaml#
-> >
-> >  - if:
-> >      properties:
-> >        compatible:
-> >          contains:
-> >            const: loongson,ls1b-dwmac
-> >    then:
-> >      properties:
-> >        phy-mode:
-> >          enum:
-> >            - mii
-> >            - rgmii
-> >
-> >  - if:
-> >      properties:
-> >        compatible:
-> >          contains:
-> >            const: loongson,ls1c-dwmac
-> >    then:
-> >      properties:
-> >        phy-mode:
-> >          enum:
-> >            - mii
-> >            - rmii
->
-> Yes. But IMO in order to prevent having such complicated multi-level
-> schemas you can just split up your bindings into two:
-> loongson,ls1b-dwmac.yaml
-> and
-> loongson,ls1c-dwmac.yaml
->
-> Thus you'll be able to have a device-specific generic "title" and
-> "description" in each of them (especially seeing LS1-C MAC lacks of
-> 1000Mbps mode support which you said you would add to the bindings
-> description), simpler "compatible" and "phy-mode" property
-> constraints.
->
-OK. I will split this file into loongson,ls1b-gmac.yaml and
-loongson,ls1c-mac.yaml.
-Thanks for your review!
+Possibly it could also be declared as const char * const ** and be
+terminated with NULL (though that would require {{ "Port B", NULL } in
+the declarations). Not sure which one is better.
 
+Guenter
 
-
-> -Serge(y)
+> When you get the actual number of ports from the EC you can check if
+> CEC_MAX_PORTS isn't too small and return an error if it is.
 >
+> You can use CEC_MAX_PORTS here and in the ports array of struct cros_ec_c=
+ec.
+>
+> Regards,
+>
+>         Hans
+>
+> >  };
 > >
-> > > -Serge(y)
-> > >
-> > > > +  - syscon
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: snps,dwmac.yaml#
-> > > > +
-> > > > +unevaluatedProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-> > > > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > > > +
-> > > > +    gmac0: ethernet@1fe10000 {
-> > > > +        compatible =3D "loongson,ls1b-dwmac", "snps,dwmac-3.50a";
-> > > > +        reg =3D <0x1fe10000 0x10000>;
-> > > > +
-> > > > +        clocks =3D <&clkc LS1X_CLKID_AHB>;
-> > > > +        clock-names =3D "stmmaceth";
-> > > > +
-> > > > +        interrupt-parent =3D <&intc1>;
-> > > > +        interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +        interrupt-names =3D "macirq";
-> > > > +
-> > > > +        phy-handle =3D <&phy0>;
-> > > > +        phy-mode =3D "mii";
-> > > > +
-> > > > +        snps,pbl =3D <1>;
-> > > > +        syscon =3D <&syscon>;
-> > > > +
-> > > > +        mdio {
-> > > > +            #address-cells =3D <1>;
-> > > > +            #size-cells =3D <0>;
-> > > > +            compatible =3D "snps,dwmac-mdio";
-> > > > +
-> > > > +            phy0: ethernet-phy@0 {
-> > > > +                reg =3D <0x0>;
-> > > > +            };
-> > > > +        };
-> > > > +    };
-> > > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml =
-b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > index ddf9522a5dc2..e1a956cf171e 100644
-> > > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-> > > > @@ -66,6 +66,8 @@ properties:
-> > > >          - ingenic,x2000-mac
-> > > >          - loongson,ls2k-dwmac
-> > > >          - loongson,ls7a-dwmac
-> > > > +        - loongson,ls1b-dwmac
-> > > > +        - loongson,ls1c-dwmac
-> > > >          - qcom,qcs404-ethqos
-> > > >          - qcom,sa8775p-ethqos
-> > > >          - qcom,sc8280xp-ethqos
-> > > > --
-> > > > 2.39.2
-> > > >
+> >  static const struct cec_dmi_match cec_dmi_match_table[] =3D {
+> >       /* Google Fizz */
+> > -     { "Google", "Fizz", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Fizz", "0000:00:02.0", { "Port B" } },
+> >       /* Google Brask */
+> > -     { "Google", "Brask", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Brask", "0000:00:02.0", { "Port B" } },
+> >       /* Google Moli */
+> > -     { "Google", "Moli", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Moli", "0000:00:02.0", { "Port B" } },
+> >       /* Google Kinox */
+> > -     { "Google", "Kinox", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Kinox", "0000:00:02.0", { "Port B" } },
+> >       /* Google Kuldax */
+> > -     { "Google", "Kuldax", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Kuldax", "0000:00:02.0", { "Port B" } },
+> >       /* Google Aurash */
+> > -     { "Google", "Aurash", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Aurash", "0000:00:02.0", { "Port B" } },
+> >       /* Google Gladios */
+> > -     { "Google", "Gladios", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Gladios", "0000:00:02.0", { "Port B" } },
+> >       /* Google Lisbon */
+> > -     { "Google", "Lisbon", "0000:00:02.0", "Port B" },
+> > +     { "Google", "Lisbon", "0000:00:02.0", { "Port B" } },
+> >  };
 > >
+> >  static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+> > -                                             const char **conn)
+> > +                                             const char * const **conn=
+s)
+> >  {
+> >       int i;
 > >
+> > @@ -332,7 +335,7 @@ static struct device *cros_ec_cec_find_hdmi_dev(str=
+uct device *dev,
+> >                       if (!d)
+> >                               return ERR_PTR(-EPROBE_DEFER);
+> >                       put_device(d);
+> > -                     *conn =3D m->conn;
+> > +                     *conns =3D m->conns;
+> >                       return d;
+> >               }
+> >       }
+> > @@ -346,7 +349,7 @@ static struct device *cros_ec_cec_find_hdmi_dev(str=
+uct device *dev,
+> >  #else
 > >
-> > --
-> > Best regards,
+> >  static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+> > -                                             const char **conn)
+> > +                                             const char * const **conn=
+s)
+> >  {
+> >       return ERR_PTR(-ENODEV);
+> >  }
+> > @@ -388,7 +391,7 @@ static int cros_ec_cec_get_write_cmd_version(struct=
+ cros_ec_cec *cros_ec_cec)
+> >  static int cros_ec_cec_init_port(struct device *dev,
+> >                                struct cros_ec_cec *cros_ec_cec,
+> >                                int port_num, struct device *hdmi_dev,
+> > -                              const char *conn)
+> > +                              const char * const *conns)
+> >  {
+> >       struct cros_ec_cec_port *port;
+> >       int ret;
+> > @@ -406,7 +409,13 @@ static int cros_ec_cec_init_port(struct device *de=
+v,
+> >       if (IS_ERR(port->adap))
+> >               return PTR_ERR(port->adap);
 > >
-> > Keguang Zhang
-
-
-
---
-Best regards,
-
-Keguang Zhang
+> > -     port->notify =3D cec_notifier_cec_adap_register(hdmi_dev, conn,
+> > +     if (!conns[port_num]) {
+> > +             dev_err(dev, "no conn for port %d\n", port_num);
+> > +             ret =3D -ENODEV;
+> > +             goto out_probe_adapter;
+> > +     }
+> > +
+> > +     port->notify =3D cec_notifier_cec_adap_register(hdmi_dev, conns[p=
+ort_num],
+> >                                                     port->adap);
+> >       if (!port->notify) {
+> >               ret =3D -ENOMEM;
+> > @@ -435,10 +444,10 @@ static int cros_ec_cec_probe(struct platform_devi=
+ce *pdev)
+> >       struct cros_ec_cec *cros_ec_cec;
+> >       struct cros_ec_cec_port *port;
+> >       struct device *hdmi_dev;
+> > -     const char *conn =3D NULL;
+> > +     const char * const *conns =3D NULL;
+> >       int ret;
+> >
+> > -     hdmi_dev =3D cros_ec_cec_find_hdmi_dev(&pdev->dev, &conn);
+> > +     hdmi_dev =3D cros_ec_cec_find_hdmi_dev(&pdev->dev, &conns);
+> >       if (IS_ERR(hdmi_dev))
+> >               return PTR_ERR(hdmi_dev);
+> >
+> > @@ -460,7 +469,7 @@ static int cros_ec_cec_probe(struct platform_device=
+ *pdev)
+> >
+> >       for (int i =3D 0; i < cros_ec_cec->num_ports; i++) {
+> >               ret =3D cros_ec_cec_init_port(&pdev->dev, cros_ec_cec, i,
+> > -                                         hdmi_dev, conn);
+> > +                                         hdmi_dev, conns);
+> >               if (ret)
+> >                       goto unregister_ports;
+> >       }
+>
