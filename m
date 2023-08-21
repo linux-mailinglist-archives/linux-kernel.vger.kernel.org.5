@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CCAB7826E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5017826E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbjHUKQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S232569AbjHUKQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234597AbjHUKQr (ORCPT
+        with ESMTP id S231183AbjHUKQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:16:47 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992B8DC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:16:45 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40c72caec5cso384461cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692613005; x=1693217805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4DBlaKc14FwN7oz3yb3olsvOOqmt5j3x+R4hTmIZQs4=;
-        b=FNcTkll9b2OQnSTIUj9oooC6DOgVDY8CQJjvh4hSROYjpLVwHPXk7BIiBc9Zn2rfN5
-         zmFhMetAOKN0N37o+cGuNKUqpt1wAHDI4+v+2rCPEOp/5H6Cht28SKNI7cKyUY3JrlIS
-         5JxoxqftTexzBMTLrfBoxvUTfqxmtMCG6DWOIvUlsiX2PE0V61D68jCp5dmDKTv78pqG
-         +SH05jm2peGOBr/AuRQUFmMu12SV3O+9bpGtuc2F4aGp3ry/+ciQ+j7C1FAV5C9jM23B
-         BK4ogzi7gUmt/QEESoJ6PZTooygwHo2Xh8Sri2f3FVx6EEcON+rHIO3t6K82FHBWDtFS
-         IOyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692613005; x=1693217805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4DBlaKc14FwN7oz3yb3olsvOOqmt5j3x+R4hTmIZQs4=;
-        b=UMIdj1xRLHbcImzZzm83eTHheUEieTuPJZk4SGRfcv/RC96DH49l1smr7EH2wouE/y
-         9gb+5nO5Jb+gNPYVeJPIVVtBKf0WbuVrCUuMPawHxF3QXSrKE6Bujxi90srSYJDprPU+
-         Z6ETr3baCZFs69A+GIPDGwP4XNdxXT6IZ8uhy76hH9GYzGtYIMf4zdjGeM1msoJqsqxz
-         LWTkHpuVh46qf6+bq5ca6RoanRadicH1T+EVUkjuUiqkwg4jBHYKXGxQrwL1vcuk9WLV
-         iAKkbuRJrMZK6RD1HDHqWhk2mBkbVwL8o64EDFXFBZBGK/ywsp7wAJNUAA0OvIQAZOiW
-         2DWA==
-X-Gm-Message-State: AOJu0YyJCefHuNgBFSrFtspeQxkA7e9uUJAy2sfVLevcIMF1ys4M0LEc
-        0fP328U2GtDBaN49kIIVPck2BjF6VjeeAsAZ3d3EBA==
-X-Google-Smtp-Source: AGHT+IHR+XOAWuayL0J0548thwTL5vNN/km9VwmcCAbpWlgoxTxZq9SZ2XoemRnY4jNkovDAtrOPYb+nUZ2rZU01heI=
-X-Received: by 2002:ac8:5703:0:b0:403:f5b8:2bd2 with SMTP id
- 3-20020ac85703000000b00403f5b82bd2mr444300qtw.9.1692613004602; Mon, 21 Aug
- 2023 03:16:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230816131925.2521220-1-mshavit@google.com> <20230816211849.v6.9.Idedc0f496231e2faab3df057219c5e2d937bbfe4@changeid>
-In-Reply-To: <20230816211849.v6.9.Idedc0f496231e2faab3df057219c5e2d937bbfe4@changeid>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Mon, 21 Aug 2023 18:16:08 +0800
-Message-ID: <CAKHBV274tBz2ydskRfghR2C_u-ibxh9MuEn3dGSaS7tGm8FuTQ@mail.gmail.com>
-Subject: Re: [PATCH v6 09/10] iommu/arm-smmu-v3: Skip cd sync if CD table
- isn't active
-To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>
-Cc:     robin.murphy@arm.com, jean-philippe@linaro.org, jgg@nvidia.com,
-        nicolinc@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 21 Aug 2023 06:16:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD54CA;
+        Mon, 21 Aug 2023 03:16:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AAC16625BE;
+        Mon, 21 Aug 2023 10:16:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCB31C433C8;
+        Mon, 21 Aug 2023 10:16:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692612993;
+        bh=ail/1jTb7rtKZsa1M8PPf3UgwIcIYbTAUY5HqpbucYo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qzYufCGDNqKSOeiMFwBL0ylCmXpR4q3AVdruQLyys1dr0CXOiq75HsZhkInPF2L1/
+         PIfOLJN5se8zMJOC8yJ/Woc3smojyS68uYgw8my2BojKIRXlt3KGuhpFLZk0hGTeLo
+         w0hAhux3WGCRG31rWGXbsgZFQCV3FZBZgyIMMzP3zBrqEMSQ4VTnZfgFo5lKCmhxDS
+         OLbl6uELfBH5Cvsw8iuAxarNPxBHWT0s2ArYA+Y0efVVeTAPyQ1FU5v+GSBZNnhiKH
+         tNyqWYJlxT6lea36bngFgIiMgHWYAZ/lAoeZtfg15uWnTCbMMS7vHd/pwN69rvwmm4
+         vjx6mv8OYCjvQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qY1xX-006bFJ-9q;
+        Mon, 21 Aug 2023 11:16:31 +0100
+Date:   Mon, 21 Aug 2023 11:16:30 +0100
+Message-ID: <86msykg0ox.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Xu Zhao <zhaoxu.35@bytedance.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouyibo@bytedance.com,
+        zhouliang.001@bytedance.com, Oliver Upton <oliver.upton@linux.dev>,
+        kvmarm@lists.linux.dev, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [RFC] KVM: arm/arm64: optimize vSGI injection performance
+In-Reply-To: <ZOMnZY_w83vTYnTo@FVFF77S0Q05N>
+References: <20230818104704.7651-1-zhaoxu.35@bytedance.com>
+        <ZOMnZY_w83vTYnTo@FVFF77S0Q05N>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: zhaoxu.35@bytedance.com, pbonzini@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, zhouyibo@bytedance.com, zhouliang.001@bytedance.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, mark.rutland@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,23 +70,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 9:20=E2=80=AFPM Michael Shavit <mshavit@google.com>=
- wrote:
->
-> This commit explicitly keeps track of whether a CD table is installed in
-> an STE so that arm_smmu_sync_cd can skip the sync when unnecessary. This
-> was previously achieved through the domain->devices list, but we are
-> moving to a model where arm_smmu_sync_cd directly operates on a master
-> and the master's CD table instead of a domain.
->
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> ---
-> Happy to drop this commit if we don't think it's useful.
+On Mon, 21 Aug 2023 09:59:17 +0100,
+Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> [adding the KVM/arm64 maintainers & list]
 
-Hi Will,
-Do you have any recommendations for keeping or dropping this commit in
-the end? It's only purpose is to minimize any potential performance
-impact from the refactor but can certainly be dropped if you don't
-think it's worth the complication.
+Thanks for that.
+
+> 
+> Mark.
+> 
+> On Fri, Aug 18, 2023 at 06:47:04PM +0800, Xu Zhao wrote:
+> > In the worst case scenario, it may iterate over all vCPUs in the vm in order to complete
+> > injecting an SGI interrupt. However, the ICC_SGI_* register provides affinity routing information,
+> > and we are interested in exploring the possibility of utilizing this information to reduce iteration
+> > times from a total of vcpu numbers to 16 (the length of the targetlist), or even 8 times.
+> > 
+> > This work is based on v5.4, and here is test data:
+
+This is a 4 year old kernel. I'm afraid you'll have to provide
+something that is relevant to a current (e.i. v6.5) kernel.
+
+> > 4 cores with vcpu pinning:
+> > 	  	 |               ipi benchmark           |	 vgic_v3_dispatch_sgi      |
+> > 		 |    original  |  with patch  | impoved | original | with patch | impoved |
+> > | core0 -> core1 | 292610285 ns	| 299856696 ns |  -2.5%	 |  1471 ns |   1508 ns  |  -2.5%  |
+> > | core0 -> core3 | 333815742 ns	| 327647989 ns |  +1.8%  |  1578 ns |   1532 ns  |  +2.9%  |
+> > |  core0 -> all  | 439754104 ns | 433987192 ns |  +1.3%  |  2970 ns |   2875 ns  |  +3.2%  |
+> > 
+> > 32 cores with vcpu pinning:
+> >                   |               ipi benchmark                |        vgic_v3_dispatch_sgi      |
+> >                   |    original    |    with patch  |  impoved | original | with patch | impoved  |
+> > |  core0 -> core1 |  269153219 ns  |   261636906 ns |  +2.8%   |  1743 ns |   1706 ns  |  +2.1%   |
+> > | core0 -> core31 |  685199666 ns  |   355250664 ns |  +48.2%  |  4238 ns |   1838 ns  |  +56.6%  |
+> > |   core0 -> all  |  7281278980 ns |  3403240773 ns |  +53.3%  | 30879 ns |  13843 ns  |  +55.2%  |
+> > 
+> > Based on the test results, the performance of vm  with less than 16 cores remains almost the same,
+> > while significant improvement can be observed with more than 16
+> > cores.
+
+This triggers multiple questions:
+
+- what is the test being used? on what hardware? how can I reproduce
+  this data?
+
+- which current guest OS *currently* make use of broadcast or 1:N
+  SGIs? Linux doesn't and overall SGI multicasting is pretty useless
+  to an OS.
+
+[...]
+
+> >  /*
+> > - * Compare a given affinity (level 1-3 and a level 0 mask, from the SGI
+> > - * generation register ICC_SGI1R_EL1) with a given VCPU.
+> > - * If the VCPU's MPIDR matches, return the level0 affinity, otherwise
+> > - * return -1.
+> > + * Get affinity routing index from ICC_SGI_* register
+> > + * format:
+> > + *     aff3       aff2       aff1            aff0
+> > + * |- 8 bits -|- 8 bits -|- 8 bits -|- 4 bits or 8bits -|
+
+OK, so you are implementing RSS support:
+
+- Why isn't that mentioned anywhere in the commit log?
+
+- Given that KVM actively limits the MPIDR to 4 bits at Aff0, how does
+  it even work the first place?
+
+- How is that advertised to the guest?
+
+- How can the guest enable RSS support?
+
+This is not following the GICv3 architecture, and I'm sceptical that
+it actually works as is (I strongly suspect that you have additional
+patches...).
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
