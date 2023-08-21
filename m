@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A904C782DEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A339C782DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236183AbjHUQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
+        id S235779AbjHUQJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235986AbjHUQKG (ORCPT
+        with ESMTP id S235684AbjHUQJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:10:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62580FE
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692634152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=J/PlBgSOglEnVLTJqu2zbMYsJDvOn/SB34qHQ+lZyNk=;
-        b=gP6Ft9YJ0vVj1169p7RdODEkACqQ6fb1lUmjqbzc5Bf6Uv+/gWA/2UU/NVwy/13yHenr2N
-        to8ei6q5zAv9gItA8atSHTKNkrMYggDmY/OEtcj1UFY8jetnhJxoZQIkbz4leAR4B+KFaI
-        emg2B5tFos25WPJFOJ3Dr/5JANFzz7U=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-211-Afa7N3q2MaOpDmVf2OHBqA-1; Mon, 21 Aug 2023 12:09:09 -0400
-X-MC-Unique: Afa7N3q2MaOpDmVf2OHBqA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 67DB9858EED;
-        Mon, 21 Aug 2023 16:09:08 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.192.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 219E8492C13;
-        Mon, 21 Aug 2023 16:09:02 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: [PATCH mm-unstable v1 4/4] mm/huge_memory: work on folio->swap instead of page->private when splitting folio
-Date:   Mon, 21 Aug 2023 18:08:49 +0200
-Message-ID: <20230821160849.531668-5-david@redhat.com>
-In-Reply-To: <20230821160849.531668-1-david@redhat.com>
-References: <20230821160849.531668-1-david@redhat.com>
+        Mon, 21 Aug 2023 12:09:02 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB05109
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:08:59 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so1461065b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692634139; x=1693238939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yaHdRkYkPRI69aZ/lmvZ478sSBPpifQtYAZYN/ChpUk=;
+        b=BfhKszstxVugd4QaXKP6AKbVdheAmpXmwLBTkJkrEwF1b9tdmdhyJQ1wCjiHwI2uJh
+         2cx+mg75Wn7zmMvD+fACBuuJktjZRPWKtGdCxWDjXEQ0BHRCcLR3p7uPKpxsf7tTPi4Z
+         4o9xjU5MXBWcKouKHQqe+4hhOhZ3Kl9uQT44k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692634139; x=1693238939;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yaHdRkYkPRI69aZ/lmvZ478sSBPpifQtYAZYN/ChpUk=;
+        b=YqaXj7cKR1YFBWSoLsojMnkylqxfLIxjhPXywSldLfjU60rWxz2RlijXfF+F0N4nCy
+         arv3Ele89Pj2D6oWyfhfChvX3hLF3SAYK81fIIW34/+aZQ32PLe0oRkGBMMD9y/y4EGb
+         mm/nGy+iotG50XeBNnEqRII7oN8pzqxk6TkbKxK/EA63cC9APZ2i+S/8QA7EHPWdTpeZ
+         UdR1hbPnl7oUWMjYVJoxMgJUFoO+8726leC/S0HSLDZDsFg9/B3RUIQaGsBZxnaXObSx
+         fBkbZeOcZkppFqqNp0Gi6wd6BdC8d3aGBWYvCrRLmJv8fPflRMcAzgXhFOWy7/cK0nI2
+         g2sw==
+X-Gm-Message-State: AOJu0Yw+o4EwvjVwPmBGsmwS+GnPza+5dWAvIZKOYVSSGYTKmuM8MS7q
+        GKKeb8ZGs2IoVjbMfk/W2cI5LA==
+X-Google-Smtp-Source: AGHT+IEOgTyR4jaB6XtqhahHvy0ziUqApkFMs3XvCv9+1wdEIAaSHh7YR1f9BPyQSwl9uXmMQ9DBEw==
+X-Received: by 2002:a05:6a00:234a:b0:688:11cc:ed88 with SMTP id j10-20020a056a00234a00b0068811cced88mr9337228pfj.33.1692634138793;
+        Mon, 21 Aug 2023 09:08:58 -0700 (PDT)
+Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
+        by smtp.gmail.com with ESMTPSA id v24-20020aa78098000000b006877a17b578sm6359010pff.40.2023.08.21.09.08.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 09:08:58 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 01:08:53 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
+Message-ID: <20230821160853.GA3913@google.com>
+References: <20230817012007.131868-1-senozhatsky@chromium.org>
+ <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
+ <20230820024519.GK907732@google.com>
+ <CAK7LNAS9KC1GjPgadMEivSpy4TMYU8mQ+BrtfJpNs2kvhK18yA@mail.gmail.com>
+ <20230820072119.GM907732@google.com>
+ <20230820073332.GN907732@google.com>
+ <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's work on folio->swap instead. While at it, use folio_test_anon() and
-folio_test_swapcache() -- the original folio remains valid even after
-splitting (but is then an order-0 folio).
+On (23/08/21 21:27), Masahiro Yamada wrote:
+> > +       const char *list_missing;
+> >
+> > +       list_missing = getenv("KCONFIG_LIST_MISSING");
+> 
+> 
+> My (original) hope was to add a single switch, KCONFIG_VERBOSE, to address both:
+> 
+>   - A CONFIG option is hidden by unmet dependency (Ying Sun's case)
+>   - A CONFIG option no longer exists  (your case)
+>   - Anything else we need to be careful
 
-We can probably convert a lot more to folios in that code, let's focus
-on folio->swap handling only for now.
+So I see a "no longer existing option" as a terminal condition. In
+general there is no point in continuing the build because the build
+will not include some driver/functionality that is still expected to
+be there. (This has actually happened to us).
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/huge_memory.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+[..]
+> > @@ -482,6 +490,12 @@ int conf_read_simple(const char *name, int def)
+> >
+> >                         sym = sym_find(line + strlen(CONFIG_));
+> >                         if (!sym) {
+> > +                               if (list_missing) {
+> > +                                       conf_warning("unknown symbol: %s",
+> > +                                                    line + strlen(CONFIG_));
+> > +                                       continue;
+> > +                               }
+> > +
+> 
+> 
+> This should be warned only if (def != S_DEF_AUTO),
+> otherwise the same warning will be displayed twice.
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index c04702ae71d2..4465915711c3 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2401,10 +2401,16 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
- 	}
- }
- 
--static void __split_huge_page_tail(struct page *head, int tail,
-+static void __split_huge_page_tail(struct folio *folio, int tail,
- 		struct lruvec *lruvec, struct list_head *list)
- {
-+	struct page *head = &folio->page;
- 	struct page *page_tail = head + tail;
-+	/*
-+	 * Careful: new_folio is not a "real" folio before we cleared PageTail.
-+	 * Don't pass it around before clear_compound_head().
-+	 */
-+	struct folio *new_folio = (struct folio *)page_tail;
- 
- 	VM_BUG_ON_PAGE(atomic_read(&page_tail->_mapcount) != -1, page_tail);
- 
-@@ -2453,8 +2459,8 @@ static void __split_huge_page_tail(struct page *head, int tail,
- 		VM_WARN_ON_ONCE_PAGE(true, page_tail);
- 		page_tail->private = 0;
- 	}
--	if (PageSwapCache(head))
--		set_page_private(page_tail, (unsigned long)head->private + tail);
-+	if (folio_test_swapcache(folio))
-+		new_folio->swap.val = folio->swap.val + tail;
- 
- 	/* Page flags must be visible before we make the page non-compound. */
- 	smp_wmb();
-@@ -2500,11 +2506,9 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	/* complete memcg works before add pages to LRU */
- 	split_page_memcg(head, nr);
- 
--	if (PageAnon(head) && PageSwapCache(head)) {
--		swp_entry_t entry = { .val = page_private(head) };
--
--		offset = swp_offset(entry);
--		swap_cache = swap_address_space(entry);
-+	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
-+		offset = swp_offset(folio->swap);
-+		swap_cache = swap_address_space(folio->swap);
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
-@@ -2514,7 +2518,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 	ClearPageHasHWPoisoned(head);
- 
- 	for (i = nr - 1; i >= 1; i--) {
--		__split_huge_page_tail(head, i, lruvec, list);
-+		__split_huge_page_tail(folio, i, lruvec, list);
- 		/* Some pages can be beyond EOF: drop them from page cache */
- 		if (head[i].index >= end) {
- 			struct folio *tail = page_folio(head + i);
-@@ -2559,11 +2563,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 
- 	remap_page(folio, nr);
- 
--	if (PageSwapCache(head)) {
--		swp_entry_t entry = { .val = page_private(head) };
--
--		split_swap_cluster(entry);
--	}
-+	if (folio_test_swapcache(folio))
-+		split_swap_cluster(folio->swap);
- 
- 	for (i = 0; i < nr; i++) {
- 		struct page *subpage = head + i;
--- 
-2.41.0
+Good point.
 
+> > @@ -530,6 +544,13 @@ int conf_read_simple(const char *name, int def)
+> >         }
+> >         free(line);
+> >         fclose(in);
+> > +
+> > +       if (list_missing) {
+> > +               if (conf_warnings)
+> > +                       exit(1);
+> > +               exit(0);
+> > +       }
+> > +
+> 
+> This is something different because you are making these
+> errors instead of warnings.
+
+Right. So "verbose" and "list missing" probably have slightly different
+requirements.
+
+When "verbose" complaints about a downgraded option, for instance, then
+you can regenerate the config and continue, because the symbol is still
+there.
+
+When "list missing" complaints about an option then we should stop and
+investigate. That option, for example, can be added by build infra based
+on some USE flags switch, etc. So there can be multiple parties that
+needs to be fixed. Apart from that we need to figure out what option
+(if any) replaces the gone symbol. "list missing" is basically "missed
+expectations", we need to do some work before we can build the kernel.
+
+I can "list missing" under KCONFIG_VERBOSE. It probably still better
+error exit if missing symbols are found. Thoughts?
