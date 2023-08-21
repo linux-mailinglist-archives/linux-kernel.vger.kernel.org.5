@@ -2,79 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C618782B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEB5782B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235848AbjHUOV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52312 "EHLO
+        id S235866AbjHUOVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235851AbjHUOVY (ORCPT
+        with ESMTP id S235858AbjHUOV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:21:24 -0400
+        Mon, 21 Aug 2023 10:21:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7093D138
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:21:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6B2188
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:21:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C9544617CA
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:20:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70E9DC433C8;
-        Mon, 21 Aug 2023 14:20:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2756C62B57
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:20:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9613C433C7;
+        Mon, 21 Aug 2023 14:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692627626;
-        bh=zfy8G2F327LaRSMwUwL6CEsZ16UtB8P0JW9ckCJnC/E=;
+        s=k20201202; t=1692627633;
+        bh=6halJ5bWFOpfD5Uzu3pfLpn+c1jV5oOJUbrgcWavBcs=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=chEMzjYosxJWAipp0dTHL1WKwkTRYHLGNmJdZTOy/voD+HcudKBykNFfmoUbzyEal
-         3ZQYV6SIfsZ4AxlaAlQqdAcWL6XzaJo/+Trvhrg3+yrOLeXi2TwjVHHyx+shKptftd
-         i9cQz16q0Z19v6wcBA5uit67Y7G57u8BNk8qc3+4CUszB1LXs5ipghNMUHbIxnEwvy
-         P56v47dSgcMYC26aG8+gFbhdgfki9T5hfiztCrw6+qnb2Tyl5JRO2JubBQpg+SYV89
-         aOw6b7u/H1w/YA4yP0AOl8RdNqQhxHtYtN61QQrXM4G6P7SzMHJ2cYRFXF63HOYZua
-         OIdJQ/gnI9LCw==
+        b=uCoeGLLxQn9emuNcm/5A82e6wBDD0yoo89Vo5gAmGtWwbKYd1lWmDQ4KE2hg3HDbj
+         atA+NAxsL/F8ks3Hyr9djfacu5rg/q1TpNzk145FHABD1cL/AimpgDHFU9jJKqtqyO
+         OuiX9cy4pMP70TkANmDdQNcRxIA6rGrtxZ8NRl5ojiMHH5rdJDCA04oNkxdSQkvBTX
+         8KbT4P+/0uNqVKR5GYIHGo0/icoOlB8jtHYxA0mSsJpR4qsRCPUI5AgtiBOJ2jnsw+
+         Azzw1PSh0x1ZIAiZ40eTRMOtL9zdEzhPebwj94+u9udYsJNwomZVDo6URgSGcJst/L
+         mK51KdtUUSZwQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     BrenoRCBrito <brenorcbrito@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        linkt <xazrael@hotmail.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230818211417.32167-1-brenorcbrito@gmail.com>
-References: <20230818211417.32167-1-brenorcbrito@gmail.com>
-Subject: Re: [PATCH] ASoC: amd: yc: Add VivoBook Pro 15 to quirks list for
- acp6x
-Message-Id: <169262762417.266100.4223916224469728296.b4-ty@kernel.org>
-Date:   Mon, 21 Aug 2023 15:20:24 +0100
+To:     lgirdwood@gmail.com, Yue Haibing <yuehaibing@huawei.com>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20230818124227.15084-1-yuehaibing@huawei.com>
+References: <20230818124227.15084-1-yuehaibing@huawei.com>
+Subject: Re: [PATCH -next] regulator: db8500-prcmu: Remove unused
+ declaration power_state_active_is_enabled()
+Message-Id: <169262763261.266290.9042568039745231877.b4-ty@kernel.org>
+Date:   Mon, 21 Aug 2023 15:20:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,TVD_SUBJ_WIPE_DEBT autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023 18:14:16 -0300, BrenoRCBrito wrote:
-> VivoBook Pro 15 Ryzen Edition uses Ryzen 6800H processor, and adding to
->  quirks list for acp6x will enable internal mic.
+On Fri, 18 Aug 2023 20:42:27 +0800, Yue Haibing wrote:
+> Commit 38e968380b27 ("regulators/db8500: split off shared dbx500 code")
+> removed this but not its declaration.
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: amd: yc: Add VivoBook Pro 15 to quirks list for acp6x
-      commit: 3b1f08833c45d0167741e4097b0150e7cf086102
+[1/1] regulator: db8500-prcmu: Remove unused declaration power_state_active_is_enabled()
+      commit: 35acbdfaf17c94d64ee336282f21b2981676748a
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
