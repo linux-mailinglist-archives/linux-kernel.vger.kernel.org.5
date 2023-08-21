@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21388783056
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 20:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A948A7830AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 21:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbjHUSh2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 14:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57070 "EHLO
+        id S229707AbjHUTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 15:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjHUSh1 (ORCPT
+        with ESMTP id S229708AbjHUTBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 14:37:27 -0400
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FC955046;
-        Mon, 21 Aug 2023 11:37:23 -0700 (PDT)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6b9cd6876bbso1000366a34.1;
-        Mon, 21 Aug 2023 11:37:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692643012; x=1693247812;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lLN5fVke3UiE4d8PldnT9vbamakvgY2iEAu+8/GhTRs=;
-        b=bP3Sq7oOV+lN+c8Lh6RZYnDyhiPzXk6tByu4T5LdRPU1XFmiCZLd7DsnJQMB/SANkA
-         rt01ilUsBSfYO2w+ueLkMdk/NdteLZHqbbkDDIfQyaK/gc3W3X/5wqLiqxBkEc//c0/j
-         EnRwON1XqGLXpxA5UfPpt6Zpnpdk6H46xqj7B7bY3KwRnLvtuZkhsaNeh16ya6sGcA4n
-         occMlrkV+H+MNZEY2y6daPUztpXgkOAayBHrEyLQbnm+32zssMb4AP5HPjmHjFW37d8d
-         QDE0n3YZ7YA9Ug4FMVtZiAXxl3+qGlmiWOh0sVAB/DGZ+AX7Z8sNlDryT2FPmTHzlH7J
-         jC5Q==
-X-Gm-Message-State: AOJu0Yxl8TeI4m5h8GR4/pTAkvDbhsgG1faj2J3tPmfXrNjtiOactjJ4
-        wbFYqVjGEvjTXsCwuP2Cv1Sy/VDEZ5G/lmpBb6o/d2Q/
-X-Google-Smtp-Source: AGHT+IHFSj6NlHd3WUqvMhgYOEr0g69zmYhq8Xxe/pVdYKuLur2tvJrWNoPWpi1JVIqOn5JLCaCczdhuZRAbjZGcVVk=
-X-Received: by 2002:a4a:da10:0:b0:56e:6532:467a with SMTP id
- e16-20020a4ada10000000b0056e6532467amr6560066oou.1.1692643011815; Mon, 21 Aug
- 2023 11:36:51 -0700 (PDT)
+        Mon, 21 Aug 2023 15:01:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7F03C19
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692644485; x=1724180485;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1MZsQ8+jftqlEqF5TqG7ViteX4VHYpdU+NLSuN1XZoI=;
+  b=IfDipeMjLXfODxnjkMtKphmzzqwuVSFUDDMs28s/x8vhEgHj5pqTH9YJ
+   g7uhzqI3cO6ZwMNntNMeHd4YUWAI1d7QDxBS7bMD0y/IDZhthXgwUfXX+
+   uXekd70cBgGlemd3aMFN+EgYNuYjrgfuMCKw2q7GYeV295chgtiTjWcZ1
+   s+dEBgnQLJnBV2GkBoOKts1HDwRJDgdq/MhNQtXBzyYu+bJRsOHFP9oYA
+   nrnjXff6mAC5AeCm1Oc8sGvmtjgSy3Y66BV6PlSRrxLoZzUxKQZQYUDg6
+   lF2kvsUv/NSgGTzcBOfdnAYdFf0184Fc28AVWbeh84Q0cJ905T4VTBKL/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="377417118"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="377417118"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 11:38:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="685755155"
+X-IronPort-AV: E=Sophos;i="6.01,190,1684825200"; 
+   d="scan'208";a="685755155"
+Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 21 Aug 2023 11:38:34 -0700
+Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qY9nK-0000ni-2k;
+        Mon, 21 Aug 2023 18:38:32 +0000
+Date:   Tue, 22 Aug 2023 02:37:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Huacai Chen <chenhuacai@kernel.org>
+Subject: kernel/trace/trace_events.c:2102:37: warning: 'ftrace_event_id_fops'
+ defined but not used
+Message-ID: <202308220210.4uvlS2Zx-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230818194027.27559-1-mario.limonciello@amd.com> <20230818194027.27559-3-mario.limonciello@amd.com>
-In-Reply-To: <20230818194027.27559-3-mario.limonciello@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Aug 2023 20:36:40 +0200
-Message-ID: <CAJZ5v0jvaT1XR0_BDAvg70CHhNjZ+KHEe7pgewaSBaaqROGpOQ@mail.gmail.com>
-Subject: Re: [PATCH v14.c 2/4] PCI: ACPI: Consider non-hotplug bridges for D3
- in acpi_pci_bridge_d3()
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        Iain Lane <iain@orangesquash.org.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 9:40 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> acpi_pci_bridge_d3() only runs on hotplug bridges. Two checks are made
-> for _S0W and for whether a device is power manageable contingent upon
-> an ACPI companion being present.
->
-> These checks also make sense for non-hotplug bridges, so move the
-> check for hotplug bridge after the acpi companion checks.
->
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f7757129e3dea336c407551c98f50057c22bb266
+commit: 93a4fa622eb061f75f87f0cf9609ab4e69c67d01 LoongArch: Add STACKTRACE support
+date:   1 year ago
+config: loongarch-randconfig-r014-20230821 (https://download.01.org/0day-ci/archive/20230822/202308220210.4uvlS2Zx-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230822/202308220210.4uvlS2Zx-lkp@intel.com/reproduce)
 
-Looks reasonable to me.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308220210.4uvlS2Zx-lkp@intel.com/
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+All warnings (new ones prefixed by >>):
 
-> ---
->  drivers/pci/pci-acpi.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index b5b65cdfa3b8b..64e6ada024235 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -1017,7 +1017,7 @@ bool acpi_pci_bridge_d3(struct pci_dev *dev)
->         struct acpi_device *adev, *rpadev;
->         const union acpi_object *obj;
->
-> -       if (acpi_pci_disabled || !dev->is_hotplug_bridge)
-> +       if (acpi_pci_disabled)
->                 return false;
->
->         adev = ACPI_COMPANION(&dev->dev);
-> @@ -1039,6 +1039,9 @@ bool acpi_pci_bridge_d3(struct pci_dev *dev)
->                         return true;
->         }
->
-> +       if (!dev->is_hotplug_bridge)
-> +               return false;
-> +
->         rpdev = pcie_find_root_port(dev);
->         if (!rpdev)
->                 return false;
-> --
+>> kernel/trace/trace_events.c:2102:37: warning: 'ftrace_event_id_fops' defined but not used [-Wunused-const-variable=]
+    2102 | static const struct file_operations ftrace_event_id_fops = {
+         |                                     ^~~~~~~~~~~~~~~~~~~~
+--
+   In file included from kernel/locking/lockdep.c:61:
+>> kernel/locking/lockdep_internals.h:69:28: warning: 'LOCKF_USED_IN_IRQ_READ' defined but not used [-Wunused-const-variable=]
+      69 | static const unsigned long LOCKF_USED_IN_IRQ_READ =
+         |                            ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/locking/lockdep_internals.h:63:28: warning: 'LOCKF_ENABLED_IRQ_READ' defined but not used [-Wunused-const-variable=]
+      63 | static const unsigned long LOCKF_ENABLED_IRQ_READ =
+         |                            ^~~~~~~~~~~~~~~~~~~~~~
+>> kernel/locking/lockdep_internals.h:57:28: warning: 'LOCKF_USED_IN_IRQ' defined but not used [-Wunused-const-variable=]
+      57 | static const unsigned long LOCKF_USED_IN_IRQ =
+         |                            ^~~~~~~~~~~~~~~~~
+>> kernel/locking/lockdep_internals.h:51:28: warning: 'LOCKF_ENABLED_IRQ' defined but not used [-Wunused-const-variable=]
+      51 | static const unsigned long LOCKF_ENABLED_IRQ =
+         |                            ^~~~~~~~~~~~~~~~~
+
+
+vim +/ftrace_event_id_fops +2102 kernel/trace/trace_events.c
+
+981d081ec8b958 Steven Rostedt 2009-03-02  2101  
+23725aeeab10ba Peter Zijlstra 2009-03-19 @2102  static const struct file_operations ftrace_event_id_fops = {
+23725aeeab10ba Peter Zijlstra 2009-03-19  2103  	.read = event_id_read,
+6038f373a3dc1f Arnd Bergmann  2010-08-15  2104  	.llseek = default_llseek,
+23725aeeab10ba Peter Zijlstra 2009-03-19  2105  };
+23725aeeab10ba Peter Zijlstra 2009-03-19  2106  
+
+:::::: The code at line 2102 was first introduced by commit
+:::::: 23725aeeab10ba02bcf10ec49ad73146b54cb52f ftrace: provide an id file for each event
+
+:::::: TO: Peter Zijlstra <a.p.zijlstra@chello.nl>
+:::::: CC: Ingo Molnar <mingo@elte.hu>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
