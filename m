@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A321782EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C18782EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbjHUQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51492 "EHLO
+        id S236043AbjHUQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236043AbjHUQu7 (ORCPT
+        with ESMTP id S236773AbjHUQvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:50:59 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE48510F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:49 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52683b68c2fso4356312a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:49 -0700 (PDT)
+        Mon, 21 Aug 2023 12:51:01 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE24FF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:56 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so5400815e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692636647; x=1693241447;
+        d=chromium.org; s=google; t=1692636654; x=1693241454;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tpjLrb+pKSYIjqjv7xW6/veZs90sc4TEOdIEA9zoCfI=;
-        b=chcp+PeZ+xvcYwbyusqzVgY0wU3/uVO5C5iNJc1hgmzlUAGGpFgDNNtBPIjzjCOKMo
-         sbLfrq8xqBMwdoMrnw6JQV3cbspkwRjfRAacg89410uYmLKAkxz4T3fp2O5FLiwxQ6L5
-         g9wokEXVEtBfN1D7svVS8fE2Z2kPTB4NJ2FW8=
+        bh=b9fodBt04c536LJWMoMDjUdEcEJp/A4h9B/3P+dVr/w=;
+        b=L4K1/yuC13QeQPEZEH++k6DTUyC5VFBGXvs/DHvyVBvBZZNdsUgEgbDEGpgXTZr8Bi
+         pa0S+XAVz7r5xxUeRE2cawnJ2085GBhNXj0YkPfEwTzwN17DohTxM633BQS6ZEIfviQC
+         B/PcXQvp5ihCkSXwN846E6Ac5NrR7auLEFCc8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692636647; x=1693241447;
+        d=1e100.net; s=20221208; t=1692636654; x=1693241454;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tpjLrb+pKSYIjqjv7xW6/veZs90sc4TEOdIEA9zoCfI=;
-        b=AQ9i/QvBlSZMuCO4bfaoS5mFtFGHWaBXG8ewCPI5BKfoZ0hhnNg1mwCSNy3mC7PBXG
-         1psrded65QeDcOER7v9YCrfRvrsFUVBOb7fsYdC5rlWzF675jq1v3cAjZMgrybwkCIF8
-         IVeF0uxHKGXF7XIiW1SC5sVEU1/ZpqQ7fTqxVEREjPGRklboSKQOiyNu8jyc+2r4unCX
-         UvwYlr6KIFJj8315O3DrzFMU1bw/F0XvXaw/bxruq5RYjDfdLUVNrKu3mf6cvotgx5/g
-         UBseBQ8lGUVezFWR0XtjWMibLcvMyRSHAiDL0V82tIBMVCAyCKgMOdpM1LL6oLag0xUV
-         Q4Dg==
-X-Gm-Message-State: AOJu0Ywy9zBMGYW++xCfujk1zVDJRrkcQZALQ33RouEjlad/2XdkVTkT
-        zx51uv5E+aUghBI4rfQ7ZNLA75tjo4Qu6aPw5noHXuOM
-X-Google-Smtp-Source: AGHT+IEqd+vlkO/h+CJIDB+kUAZp21IRADIY+AQn1AQxnDDHzLXt5sLm2Q+x6IlxQUmgZUkDiXruNA==
-X-Received: by 2002:a17:906:3caa:b0:99d:f056:5d6b with SMTP id b10-20020a1709063caa00b0099df0565d6bmr6019557ejh.20.1692636646868;
-        Mon, 21 Aug 2023 09:50:46 -0700 (PDT)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id ss21-20020a170907039500b00992076f4a01sm6787926ejb.190.2023.08.21.09.50.46
+        bh=b9fodBt04c536LJWMoMDjUdEcEJp/A4h9B/3P+dVr/w=;
+        b=bjyibdif37smuAbFkUO8v061GVqX78bh9BTwe4eWljqCa4twxookOEsOJgI7frIpvX
+         /MZe2E3XWAyJqe6UmxlCXEhUdwmOG4I6/dGtXQB0dzgY2s6WzUX4Ed3JaDoIIdPWW7I8
+         IaygHcbOytD8cuMwyIGpfjUuDA5bsaLz9atOS1qQHtX2+i6KAdSIp2XjR7pUYFXpaYPY
+         IFaQd5G0HtZgWOG8hVAOReQ3xd7s/Cvwvex8yaTI7t6cIgf4IY7GyNuQ2vypGOmFi6Qo
+         sUBjBkMgOG/nZmZRjye0sDPlaOsWbjqq27YlvT9L9+O9NwIyflO8vOVXN06tH0hNsl1S
+         qPHw==
+X-Gm-Message-State: AOJu0YwT6+/ueo9GgbaUSyEWQsUrRKSk2KOtb01LY/Vs2ZBrgqvRsRKg
+        5Ys6zsgDCbp5VQ9dgkhA3f2gAq9h/kd+lLIrGM8b1DZU
+X-Google-Smtp-Source: AGHT+IHKHACGmYUai/fKJSE4iNHnPpuyYNgZiKoH/TGK3POYmSwiT0moICS6aZ+0bTr4O+KweBnmQg==
+X-Received: by 2002:a05:6512:20c2:b0:4fe:ca4:7cd3 with SMTP id u2-20020a05651220c200b004fe0ca47cd3mr4034982lfr.23.1692636654691;
+        Mon, 21 Aug 2023 09:50:54 -0700 (PDT)
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com. [209.85.128.42])
+        by smtp.gmail.com with ESMTPSA id i1-20020a056402054100b005255ddb67c7sm6260505edx.40.2023.08.21.09.50.54
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 09:50:46 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-3fef56e85edso1695e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:46 -0700 (PDT)
-X-Received: by 2002:a05:600c:518f:b0:3fe:5228:b7a2 with SMTP id
- fa15-20020a05600c518f00b003fe5228b7a2mr598wmb.5.1692636645902; Mon, 21 Aug
- 2023 09:50:45 -0700 (PDT)
+        Mon, 21 Aug 2023 09:50:54 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-3fe2d620d17so2735e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:54 -0700 (PDT)
+X-Received: by 2002:a05:600c:3ba0:b0:3fe:dd72:13ae with SMTP id
+ n32-20020a05600c3ba000b003fedd7213aemr6498wms.0.1692636654089; Mon, 21 Aug
+ 2023 09:50:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl> <7d678e7b55e88e630491086f59120253fabeb386.1692484240.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <7d678e7b55e88e630491086f59120253fabeb386.1692484240.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1692484240.git.mirq-linux@rere.qmqm.pl> <a50c32692cfecfa0449ef4943388e9ad9bf4615f.1692484240.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <a50c32692cfecfa0449ef4943388e9ad9bf4615f.1692484240.git.mirq-linux@rere.qmqm.pl>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 21 Aug 2023 09:50:32 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VHvi-2GPxXsDaiPKzgJHqBpX1a6+0CUwp1y8vfr8-Xtg@mail.gmail.com>
-Message-ID: <CAD=FV=VHvi-2GPxXsDaiPKzgJHqBpX1a6+0CUwp1y8vfr8-Xtg@mail.gmail.com>
-Subject: Re: [PATCH 3/6] regulator: core: simplify nested locking
+Date:   Mon, 21 Aug 2023 09:50:42 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XLmnOnZns5kEwRPm8=MS21i8kuApAq7y1zT7iS3r395Q@mail.gmail.com>
+Message-ID: <CAD=FV=XLmnOnZns5kEwRPm8=MS21i8kuApAq7y1zT7iS3r395Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] regulator: core: remove `goto`s from resolve_supply()
 To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        linux-kernel@vger.kernel.org
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,90 +81,17 @@ Hi,
 On Sat, Aug 19, 2023 at 3:46=E2=80=AFPM Micha=C5=82 Miros=C5=82aw <mirq-lin=
 ux@rere.qmqm.pl> wrote:
 >
-> Simplify regulator locking by removing locking around locking.
-> rdev->ref check when unlocking is moved inside the critical section.
+> Since 14a71d509ac8 ("Fix lockdep warning resolving supplies") the `out`
+> label is just `return ret;`. Inline it for easier reading.
 >
-> This patch depends on 12235da8c80a ("kernel/locking: Add context to
-> ww_mutex_trylock()").
-
-nit: when I run checkpatch, it always wants me to put the word
-"commit" before the git hash when I refer to a commit. ;-)
-
-
 > Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
 > ---
->  drivers/regulator/core.c | 19 +++++--------------
->  1 file changed, 5 insertions(+), 14 deletions(-)
+>  drivers/regulator/core.c | 29 +++++++++++------------------
+>  1 file changed, 11 insertions(+), 18 deletions(-)
 >
 > diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-> index 921c7039baa3..87e54b776a0f 100644
-> --- a/drivers/regulator/core.c
-> +++ b/drivers/regulator/core.c
-> @@ -34,7 +34,6 @@
->  #include "internal.h"
->
->  static DEFINE_WW_CLASS(regulator_ww_class);
-> -static DEFINE_MUTEX(regulator_nesting_mutex);
->  static DEFINE_MUTEX(regulator_list_mutex);
->  static LIST_HEAD(regulator_map_list);
->  static LIST_HEAD(regulator_ena_gpio_list);
-> @@ -143,23 +142,18 @@ static inline int regulator_lock_nested(struct regu=
-lator_dev *rdev,
->  {
->         int ret =3D 0;
 
-nit: remove initialization of "ret" to 0 since changing "return ret"
-to "return 0" below. Those changes belong in one of the previous
-patch, too.
+Please also remove the initialization of ret to 0 ("int ret =3D 0;") at
+the start of the function. Then:
 
-
-> -       mutex_lock(&regulator_nesting_mutex);
-> -
->         if (!ww_mutex_trylock(&rdev->mutex, ww_ctx) &&
-> -           rdev->mutex_owner !=3D current) {
-> -               mutex_unlock(&regulator_nesting_mutex);
-> +           READ_ONCE(rdev->mutex_owner) !=3D current) {
->                 ret =3D ww_mutex_lock(&rdev->mutex, ww_ctx);
-> +
->                 if (ret =3D=3D -EDEADLK)
->                         return ret;
-> -               mutex_lock(&regulator_nesting_mutex);
->         }
->
->         rdev->ref_cnt++;
->         rdev->mutex_owner =3D current;
->
-> -       mutex_unlock(&regulator_nesting_mutex);
-> -
-> -       return ret;
-> +       return 0;
->  }
->
->  /**
-> @@ -186,16 +180,13 @@ static void regulator_lock(struct regulator_dev *rd=
-ev)
->   */
->  static void regulator_unlock(struct regulator_dev *rdev)
->  {
-> -       mutex_lock(&regulator_nesting_mutex);
-> +       if (WARN_ON_ONCE(rdev->ref_cnt <=3D 0))
-> +               return;
->
->         if (--rdev->ref_cnt =3D=3D 0) {
->                 rdev->mutex_owner =3D NULL;
->                 ww_mutex_unlock(&rdev->mutex);
->         }
-> -
-> -       WARN_ON_ONCE(rdev->ref_cnt < 0);
-> -
-> -       mutex_unlock(&regulator_nesting_mutex);
-
-I guess the "fix" you talked about in the cover letter is moving the
-WARN_ON up? That could be done in patch #1 and marked as a "Fix",
-right?
-
-I'm not 100% sure why we needed the "regulator_nesting_mutex" to begin
-with. I'm also not 100% sure why we depend on commit 12235da8c80a
-("kernel/locking: Add context to ww_mutex_trylock()"). Could you add
-something to the commit message to make this more obvious so I don't
-need to work so hard to figure it out? ;-)
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
