@@ -2,260 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6BA78347D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D77783437
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbjHUUYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S230473AbjHUUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjHUUYM (ORCPT
+        with ESMTP id S230463AbjHUUYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:24:12 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2087.outbound.protection.outlook.com [40.107.92.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DF7101;
-        Mon, 21 Aug 2023 13:24:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kYsuDg71AJ+sMdII2fYAbH7Xz9OGhGep8UdaJ/44olsRrcCiZaO1oUgp7wLdxhQx8ct0jeiwKWA1uJC2PIddF+/eBW3/XK19DHnv0lkDl110CE9fJ/mm2UXUKEkzT3DiQ3AIylBMWRWN7IxDHo8JhpavWWm4o5+K/9GNec8p6Eud1bNl4xOyz3uJcCx5EHcQL0bVtzh45OhxF8y0kxak7Rzvl3yeiSUcKPG7rJXPJVPiEd9KgeUbDSS4Pj1fHSQL5hW3oci+inD0blcM2R/WvVlA5+XRp7PXeNAtejBFqEv/o2RF6Gu5tRuNJB4PhpZHWgTwzFB0l/d6pMEzklkzmA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LVR4jTTo8Bt9J9ags44VtcQUyN4ahE+yrvWHnwtqRGA=;
- b=W8ZiElbDDFj6LUXCzwQcnh8yDKkUfCI+j4V+eTSA738L+g7xSmVYq0uTntBeJgqxqGsus2bdDzuy9Cbj7dJD5O1oOBg81cQUP8QD5/3BVXGgf+xOBilmZNNHZeV7lySCEsaE9q6cV1wTarSry+xWnl44/b9vH9ml3zkMw0yDOG5IdLTxKzBYuu/S9sJ/rv8iA+eUT9gd2yZZWGzdZtZ42J9aFKZOBlBRXSbjN0U23FmYuRje6hIVJck0hKJ2CmA/vvg3ZPRfizt9LZginkdzCnMHLxXL+jhTWlvFTRqgHYBk19s0p7oAbyPDTfXwx4gPkEWIwNESTToUYAeJ2gTl0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LVR4jTTo8Bt9J9ags44VtcQUyN4ahE+yrvWHnwtqRGA=;
- b=0l74L9RBX5SAvRF61OLu5EuIDxRo2f4TlO2fUlvTo75ulE/d4GlxWHqeVooPnT76UpBMNCYvr8STRBgbLO21Q1w7WXzwGvb45epWTrqZEtQ5yoXDDb1PGwvp+73d6CKXPuT8zP6pXQA7s1Pef+nBPKoWlcbxPr+bpOupwmYtLdg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by MW4PR12MB7167.namprd12.prod.outlook.com (2603:10b6:303:225::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 20:24:05 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 20:24:05 +0000
-Message-ID: <303d2eb7-d337-8516-1120-13c4c2443d2e@amd.com>
-Date:   Mon, 21 Aug 2023 15:24:02 -0500
+        Mon, 21 Aug 2023 16:24:08 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B51FE3;
+        Mon, 21 Aug 2023 13:24:07 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d776e1f181bso655006276.3;
+        Mon, 21 Aug 2023 13:24:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692649446; x=1693254246;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a9DMAMrtIpnMqNo+FLHLK8ZcgXNwUBz98EDAXfME1O4=;
+        b=bK3OrDeNnJy1hVq4bY50sNFZsg4NZOMNo55kgjLnSXa4CMcPOOxLYVoBliGq2CbgpW
+         DBRS2Z8L79M45Cjh32kemBQAZGkSpeTX4OPCKdqA/lx6f8J2Rb8IfrKPpZFOVUkyu2c2
+         guoJpTXxHKVeMVvgR0oyxoa07i7Fks7qRTt5/1AMXhMQow6Z/HlWzNmxHOHxoUb2sFlY
+         VC0g5mukE/M4u3PrXPfN2mpDbugOFmj75fJPAJqgXynHcVsg0ToW5CSmlY3sKHJSvA7t
+         SqnYKsl94tZomd2doq8pEY1GK9/GvBsJgj43t+UoQ9DBzIbv2bOAhu3Ior2n6z1zrRx+
+         zNgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692649446; x=1693254246;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a9DMAMrtIpnMqNo+FLHLK8ZcgXNwUBz98EDAXfME1O4=;
+        b=PWrlWvR3S9oT1Sk2R+7TkaoEWvlgc98BCJtXShEslXyknQ19OrKb8AfXaWcTJKY5ZT
+         6Lynv5zM+ENTM2aQiOYB4O6Ru8AkozWmfuvLeN5ySYxTLtuXc3xhoNV7C5HmGcfrltBT
+         rxLSJsjI/CyKZP1T2D96Zhhal9rliIYIE1S6/uP/AXGmqP9pKa1RkT2OpQ9f5zaDNOZa
+         TmJxQXqcVi4VjqH9wt5QiHRfXeAhkEUc8gDJ17RDtnuMsaBRj9egBkJb/TuV7UCa8qOb
+         ha3tBA9tJk3hSx/ZTuXTKP7Uhqlfv2TdxPZURhPmEoga78kTrFP6jUDd9pEjTdVOhfK9
+         mI6A==
+X-Gm-Message-State: AOJu0Yx4Y0W/RhbVK0RZv8xgHHupsRrCVQ/45eBmLkU88hXPyV7kHJ7w
+        gMPcnv2Jy9kf7rbjESKOn8c=
+X-Google-Smtp-Source: AGHT+IFzAgzgQMi6E7c9/99wpYP97SCh/zmEcxHB86fE3bmUpsPpr4j+k7Pa3CX0IV2myAxrgJHLdw==
+X-Received: by 2002:a25:aa32:0:b0:d21:18a9:eddb with SMTP id s47-20020a25aa32000000b00d2118a9eddbmr8398887ybi.11.1692649446470;
+        Mon, 21 Aug 2023 13:24:06 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:62f2:baa4:a7c0:4986? ([2600:1700:6cf8:1240:62f2:baa4:a7c0:4986])
+        by smtp.gmail.com with ESMTPSA id e3-20020a258743000000b00d749a394c87sm968757ybn.16.2023.08.21.13.24.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 13:24:06 -0700 (PDT)
+Message-ID: <8c0db9b3-9342-35e2-cd5b-934789f9744d@gmail.com>
+Date:   Mon, 21 Aug 2023 13:24:04 -0700
+MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] x86/sev: Make early_set_memory_decrypted() calls page
- aligned
+Subject: Re: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ next_thread()
 Content-Language: en-US
-To:     Steve Rutherford <srutherford@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David.Kaplan@amd.com,
-        jacobhxu@google.com, patelsvishal@google.com, bhillier@google.com
-References: <20230818233451.3615464-1-srutherford@google.com>
- <08418fc0-839a-f2fb-1c2e-b4f077d2647b@amd.com>
- <CABayD+cw3s1UDSN7oR4gWfRT4-snWEqOgAN-y4rzOpe-8D=KdA@mail.gmail.com>
- <2a391d50-d474-eec5-76ea-e5dc5590609c@amd.com>
- <CABayD+f3BLjg4ekO=b4yweqsV4-kA3nfDjKh7MieMh+=zvkA=Q@mail.gmail.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <CABayD+f3BLjg4ekO=b4yweqsV4-kA3nfDjKh7MieMh+=zvkA=Q@mail.gmail.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230821150909.GA2431@redhat.com>
+ <e0c71c5c-09e6-d94e-6db3-3acf3ee502d6@gmail.com>
+ <20230821183443.GA12526@redhat.com>
+From:   Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20230821183443.GA12526@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SA1PR04CA0012.namprd04.prod.outlook.com
- (2603:10b6:806:2ce::15) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|MW4PR12MB7167:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7108e812-17e5-4019-3f37-08dba28490e4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rA5dLjEnvGtt2gxoXfDQ7BSzk0vBqnObY7DCgRvgjX/U6ORUXfDw/Zs+Ho18INHpxG0kG/BkwgXVsg3QUcDfN1Z9AVPg4XEIgPmFJd1RGG7kSRieyqjoLjXsxsuV1t7SQDVLmqD/DcjwkXJcsqSlBEMrLoCKHo+DCwUaAPzucYTZMdroNHKiyAPnDFjvwFv3ftxkd12s2GZJLfR3TSuA5la8Oan9q/c/FBOhspKfQ0z1+pP+GilpgCjFXVLMWYqNe3SRDlUts244gyPRRBZzzbwtgWou8Pfo35KF2/RAR2e4EauEuEUb1QvDx6iOviYX/XVvUM/Vw3zAGbikUf8zUXoYHE4iN6HbAbS6uJP/2PiMqZBZ81BuJd7Ozd0xeRsa2lMDAmqW/HQL/wntW28aPyLXWa74d+HOLdm4c/3340nOmOtNCrQo66bqdA9Xg5+aWijNFuu7BTNDLlq/rNx98vHMzrpI0dC+MbG1sCv7Vn3T9660AgO/m+qxvybgptry9/NOaEh3Riua6kpdj+9/TNiM1sjbzhic2R01RucZM1vZm1E/WMTleSxwgJuLe1BgIuTm75Ag/bp2IbFrbRrpeEf0TC7wM77z4u6d2Jyq+YKbqiqXQCgrEdC+VOb4LxO/zayk98eoWI3Gg7t+bQ2d0Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(54906003)(6916009)(66476007)(66556008)(316002)(66946007)(6512007)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(7416002)(86362001)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z2VPdWhZRmZCQURCOTlBNlVrdmRxMzdTM3FOL0VKOWsza1dZVmNnYTlIM2U2?=
- =?utf-8?B?VGdENDBPUzJaQXhSbC9wTkRpdXpGQ1ZveE5DK1ZhaEN3dFpFbStsZXdOMWQw?=
- =?utf-8?B?OVVnNm9iVXNERDhpVm1TODQwMjhjTFE5N0p5NmJEL2oxc3JTTGp3TFBoYVE1?=
- =?utf-8?B?OWxKY0ZxVEJHQXVkUHdDSGQyRmdyZHNrblg3SGlQbFZ4UDQ2bStxUWw4MnYw?=
- =?utf-8?B?MldSL3EwYTc4YVV3UHJtc216VUZKY2JOdlRQQ24rUm9HL013U3JaK3U2V2J5?=
- =?utf-8?B?Z2luRmtva0wreHc4WGJGRU4zNGppV3E3c3NudGNFc21YbmdJS0lmR3FGeGpJ?=
- =?utf-8?B?WFpjY0dSMXFkaVdkR2Q3UExta3NKY3ByS2hWU052MElIdEt5cXphYlQwRkZD?=
- =?utf-8?B?Z05GaTl0bjhaVGhDME5UdTlHUGVNWEZmRUM1VUFhRFVkam50a2hFZXF1S2FC?=
- =?utf-8?B?enBhU0txYlNzaUd5K29xS3hFK0laekEwZ25sSUNYNFdZSGlpNURLaVNVOWpX?=
- =?utf-8?B?aHVjWk12RnR6dlNOVENSS216ODRodWp3OUwzMUY3NmczUlRGWkpwY0NRZUZP?=
- =?utf-8?B?cmhSZEFmWk14UEwrWXcxNk52Vkt2OTJxRFUwUmY1OTl3V2xyclBoaDViUmEr?=
- =?utf-8?B?TjRpWk4vRjdnbDN0bXg0NW80VzM1eDcxakNjWGVvSklGT25PZmhnS2NhOGJl?=
- =?utf-8?B?ejlWOWE4cEwxMGlVUTZpOGY1ZGpuK0RteUZ5U2FoWXhuVS8vWkIycCs5OUJO?=
- =?utf-8?B?VjlwM1p6ZWFjSVBlYjM2Slc1Z2NzLzRPMlEwK2dNQjQ0bDhkTlBmQzBZL3NF?=
- =?utf-8?B?cUUzSmJtUURoQlpSY0Jjd3NPcnBmNWxVTDBZY1RJcDdsY2RpR09ENmVBU1lU?=
- =?utf-8?B?S2tzb1ZzMVpjMkErR3Rod1kwRTAyd2JDVVpsRkdibjVsbUJoc0JNY0FKNTFS?=
- =?utf-8?B?U0NrWXdNTTZCNlMrWmd5M2ljSFRjbENHZjlTTzNMalN1MWV4cXZ3cFNmQVNG?=
- =?utf-8?B?RlJVSFhQd3dhcGNva1BYaTVRMFdTdmJvcFdZTEFHdDVzdEo2bytZTHlKSVhT?=
- =?utf-8?B?WXMzOVRrV3FjMC9mN1V4Sk9iRDUwakdxNitSc3ZKTjFCVnV6RjN0NU0wYkJ2?=
- =?utf-8?B?MGJMa1k4bkZDSXFDdFZQUGJzcjA1c3lSQ3luWXI2M2RhVUJUVWNNTWNFVkU2?=
- =?utf-8?B?cjBqWm9hdGNkNHJxYzJKWVQ3a2NNTFJmKzBZcGJQTzVVMWVzRXc2UUFrckc0?=
- =?utf-8?B?VkJzVGxMZTRGM2I2UTAxaUJMdzExOGpsL2N2MHYwZis2ekhGSnpDMFVSd1JE?=
- =?utf-8?B?V1J4ZTg4TS82akRrVlZOQVFuZjhyb1l1aFYzU3F0ZjMzd3luZ0cxaW9mNWg1?=
- =?utf-8?B?QmczVjBvYlo5aE5kRU9MRUh2dnFwNytrU3IwOC96T1N1UTJTaDZpUG9yY3cy?=
- =?utf-8?B?M0FqZ1hRU3FyeUVSejlwSS9KZTlBKzdvekZiR3U2OUNCbWxoQWdOQ2xWQ0hw?=
- =?utf-8?B?YXZiNitGYzZNNUh0VVJsbnRENzBNSDBmNE9xaEQ1Y0wwRjhxSWVXdGQ1TjZT?=
- =?utf-8?B?WWZjNXE1SWN1ZXFCdXFzU3g5NFpSRGp2dGxPSUJhV043RnRETDVRWmU0bTUy?=
- =?utf-8?B?NFpVTXF0d0k4REJOcmJWVWpJaWQ0WmpSbkM2KzZvY1JqY0NmcUlyWUZtNXdV?=
- =?utf-8?B?R2Z5am0rRDlobmY5azJuTEJLQjBFOUxBOWNHY0hNZzdDejZodnlXT1ZmMTho?=
- =?utf-8?B?SFM1UGladjc3M1RjMmZERjEvZWRNRWpMd0JuaGQ4QWhRRWhUYW5xWFFzazVT?=
- =?utf-8?B?MHdEb2pkTkJOSDUzTEVJUUhIUlVIdGkxTm81OHBrYjVUcG1lemhJTkRwMi80?=
- =?utf-8?B?YXNvUFJId1l1WVhjaDdYYVVQM0RlNS9aQ0c3aFZVa3dPcHd6eHNNK2lLdHBK?=
- =?utf-8?B?ZU13a1JnVTdEYjZybTViUkRwNlJkSkdEWGIyODlMK25VVVplZGJtSmhNSHJ1?=
- =?utf-8?B?WlN4cWxVQkZRVmJWaWczdm9vODFnY3lVQ0t0ZTlwdTA3NzFWS1V5M0hUWVdB?=
- =?utf-8?B?MTR5cmtrWmk1TXdRSitFQ09TdEhWWDB3U2ovZ2lyeU1vVjV3dlgxREttTjg2?=
- =?utf-8?Q?NFWxOqCOegLGINtDYpY2C1R8z?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7108e812-17e5-4019-3f37-08dba28490e4
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 20:24:05.4976
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wPYBe0nkk+KbzzxbMDBPesIdxpybne8rLndu3lmevSF8QeaPPDE8qBhmT+jPJvUuFsCCeF6kKW2/PaXq/Evdbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7167
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 14:25, Steve Rutherford wrote:
-> On Mon, Aug 21, 2023 at 11:54 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+
+
+On 8/21/23 11:34, Oleg Nesterov wrote:
+> On 08/21, Kui-Feng Lee wrote:
 >>
->> On 8/21/23 13:15, Steve Rutherford wrote:
->>> On Mon, Aug 21, 2023 at 6:10 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->>>>
->>>> On 8/18/23 18:34, Steve Rutherford wrote:
->>>>> early_set_memory_decrypted() assumes its parameters are page aligned.
->>>>> Non-page aligned calls result in additional pages being marked as
->>>>> decrypted via the encryption status hypercall, which results in
->>>>> consistent corruption of pages during live migration. Live
->>>>> migration requires accurate encryption status information to avoid
->>>>> migrating pages from the wrong perspective.
->>>>
->>>> Hmmm... I'm not sure this is the proper fix. The code is actually doing
->>>> the right thing from a encyrption/decryption point of view by checking the
->>>> c-bit for the PTE associated with the virtual address and the size
->>>> (possibly crossing page boundaries).
->>>>
->>>> I think the problem is on the call to early_set_mem_enc_dec_hypercall()
->>>> where it doesn't take into account the possible crossing of page
->>>> boundaries and so can under-count the number of pages, right?
->>>
->>> Right now, if you request decryption of e.g. a non-page aligned 0x40
->>> byte structure, it rounds the 0x40 bytes up to one page, and then
->>> hypercalls to mark both the page it's on and the subsequent page as
->>> decrypted (since the rounding stretches the structure onto the next
->>> page spuriously). The arithmetic in the combination of
->>> early_set_memory_enc_dec() and early_set_mem_enc_dec_hypercall() are
->>> correct if they are called with page aligned vaddrs (non-page-aligned
->>> sizes are fine iiuc).
 >>
->> Ah, right, correct. It is still related to how the page count is
->> calculated for the hypercall, though, right? The encryption/decryption
->> operations function properly.
+>> On 8/21/23 08:09, Oleg Nesterov wrote:
+>>> 1. find_pid_ns() + get_pid_task() under rcu_read_lock() guarantees that we
+>>>     can safely iterate the task->thread_group list. Even if this task exits
+>>>     right after get_pid_task() (or goto retry) and pid_alive() returns 0 >
+>>>     Kill the unnecessary pid_alive() check.
+>>
+>> This function will return next_task holding a refcount, and release the
+>> refcount until the next time calling the same function. Meanwhile,
+>> the returned task A may be killed, and its next task B may be
+>> killed after A as well, before calling this function again.
+>> However, even task B is destroyed (free), A's next is still pointing to
+>> task B. When this function is called again for the same iterator,
+>> it doesn't promise that B is still there.
 > 
-> Yep! It's just the hypercall that behaves poorly in this situation.
-
-Ok, cool.
-
->>
->> If another caller of early_set_memory_decrypted() gets added, it would
->> need to know to do the same thing. So I just wonder if this wouldn't be
->> better fixed in early_set_memory_enc_dec() by using a page aligned address
->> and proper number of pages when calling early_set_mem_enc_dec_hypercall()
->> or in early_set_mem_enc_dec_hypercall() where it would take a size
->> argument instead of a page count and does the proper work to get a page
->> aligned address and proper page count.
->>
->> Also, if it is the hypercall that is causing the issue, should the Fixes
->> tag be 064ce6c550a0 ("mm: x86: Invoke hypercall when page encryption
->> status is changed") since the problem is around the hypercall.
+> Not sure I understand...
 > 
-> Fair question. I was torn about where to point this, since either
-> fixing up the value inside early_set_memory_enc_dec() or fixing up the
-> per-cpu callers is correct. The non-early version
-> (__set_memory_enc_pgtable()) calls WARN_ONCE for misaligned addresses
-> under the hood, so I thought the early version should have the same
-> contract (though, obviously, this lacks the actual WARN_ONCE). I can
-> re-upload with a WARN_ONCE or with the masking moved into
-> early_set_memory_enc_dec().
-
-I like the fix for the hypercall being in early_set_memory_enc_dec(). This 
-way the behavior doesn't change for existing callers and doesn't require 
-adding a WARN.
-
-Thanks,
-Tom
-
-> Thanks,
-> Steve
+> OK, if we have a task pointer with incremented refcount and do not hold
+> rcu lock, then yes, you can't remove the pid_alive() check in this code:
 > 
->>
->> Thanks,
->> Tom
->>
->>>
->>> Thanks,
->>> Steve
->>>>
->>>> Thanks,
->>>> Tom
->>>>
->>>>>
->>>>> Fixes: 4716276184ec ("X86/KVM: Decrypt shared per-cpu variables when SEV is active")
->>>>> Signed-off-by: Steve Rutherford <srutherford@google.com>
->>>>> ---
->>>>>     arch/x86/kernel/kvm.c | 14 +++++++++++++-
->>>>>     1 file changed, 13 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
->>>>> index 6a36db4f79fd..a0c072d3103c 100644
->>>>> --- a/arch/x86/kernel/kvm.c
->>>>> +++ b/arch/x86/kernel/kvm.c
->>>>> @@ -419,7 +419,14 @@ static u64 kvm_steal_clock(int cpu)
->>>>>
->>>>>     static inline void __set_percpu_decrypted(void *ptr, unsigned long size)
->>>>>     {
->>>>> -     early_set_memory_decrypted((unsigned long) ptr, size);
->>>>> +     /*
->>>>> +      * early_set_memory_decrypted() requires page aligned parameters, but
->>>>> +      * this function needs to handle ptrs offset into a page.
->>>>> +      */
->>>>> +     unsigned long start = PAGE_ALIGN_DOWN((unsigned long) ptr);
->>>>> +     unsigned long end = (unsigned long) ptr + size;
->>>>> +
->>>>> +     early_set_memory_decrypted(start, end - start);
->>>>>     }
->>>>>
->>>>>     /*
->>>>> @@ -438,6 +445,11 @@ static void __init sev_map_percpu_data(void)
->>>>>                 return;
->>>>>
->>>>>         for_each_possible_cpu(cpu) {
->>>>> +             /*
->>>>> +              * Calling __set_percpu_decrypted() for each per-cpu variable is
->>>>> +              * inefficent, since it may decrypt the same page multiple times.
->>>>> +              * That said, it avoids the need for more complicated logic.
->>>>> +              */
->>>>>                 __set_percpu_decrypted(&per_cpu(apf_reason, cpu), sizeof(apf_reason));
->>>>>                 __set_percpu_decrypted(&per_cpu(steal_time, cpu), sizeof(steal_time));
->>>>>                 __set_percpu_decrypted(&per_cpu(kvm_apic_eoi, cpu), sizeof(kvm_apic_eoi));
+> 	rcu_read_lock();
+> 	if (pid_alive(task))
+> 		do_something(next_thread(task));
+> 	rcu_read_unlock();
+> 
+> because task and then task->next can exit and do call_rcu(delayed_put_task_struct)
+> before we take rcu_read_lock().
+> 
+> But if you do something like
+> 
+> 	rcu_read_lock();
+> 
+> 	task = find_task_in_some_rcu_protected_list();
+> 	do_something(next_thread(task));
+> 
+> 	rcu_read_unlock();
+> 
+> then next_thread(task) should be safe without pid_alive().
+> 
+> And iiuc task_group_seq_get_next() always does
+> 
+> 	rcu_read_lock();	// the caller does lock/unlock
+> 
+> 	task = get_pid_task(pid, PIDTYPE_PID);
+> 	if (!task)
+> 		return;
+> 	
+> 	next_task = next_thread(task);
+> 
+> 	rcu_read_unlock();
+> 
+> Yes, both task and task->next can exit right after get_pid_task(), but since
+> can only happen after we took rcu_read_lock(), delayed_put_task_struct() can't
+> be called until we drop rcu lock.
+> 
+> What have I missed?
+
+Then, it makes sense to me! Thank you for the explanation.
+
+> 
+> Oleg.
+> 
