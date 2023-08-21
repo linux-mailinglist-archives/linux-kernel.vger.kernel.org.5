@@ -2,269 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81489782FB2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FBE782FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236961AbjHURyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 13:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S237041AbjHURyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:54:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236564AbjHURyF (ORCPT
+        with ESMTP id S235424AbjHURyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:54:05 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2042.outbound.protection.outlook.com [40.107.223.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E2F8E9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:54:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZPMSeDDU6+aH28QGLebbDZVMiNBqj7oFNFwGkxUb1ToXzJXKLidPScfMP/X7F/IU8Ws92BhwhI5tn5QzdwCEqPSXTq+3EkG6sqjKLfEKl+XE3RzsXaRhFSm0Xed1AGybwIDAiu8fkyRwQ71ChFPxj8eNNO2gbOlpNoUG7+kJIULEIQ2YnBGiZFLMQVL/bXzB8uF7ylbE9LVg3vDNmZWiJuHpSruV7rMZT0F9RKmmfRgoJDi9T5Cz/PC4zymTibWCI0zk9vSOHw1DlmdNyoCwEVCPag+lY1n9joJ5Fxv2N96P6euJkLAIwe7T4eFldkgJ5+ai/akn8jzVhyJCuaZPnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n1DSp0JNVl68fgqDRIBuXNwPYR+sJeZ8incHaJKyNVM=;
- b=CybhMaKlV/7s2xxHXWKDJKCriD4Vblz+7i/LyzAW+4qhH6bUymU+JABJsHPSPXyUPa8ciGgwQOFTmAtiyNTSWVPhXgKcdZZdzpuPkfJeZqATGa/vTYTe6uvOMoFkTwNLnEV1/Ut5NYzVaqfnnlGtNbWbOaEumX/src5I7Xhzmx8IM+LsR9U0SwRUyYvcsUjT2ELp+TxmHBL4/ohVC6u2j/iHDhshwHd6MW2PLJSMJvaI/rfU4TB6tjIw/0yKsEwOE78vCOjpLSRcP3MfzOGm+HwU3U7OAu0WOf4GJtc5wyKznSKFoeTLmz/0tOw73j5iwpaeZeL0csmDMlTGu5IVhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n1DSp0JNVl68fgqDRIBuXNwPYR+sJeZ8incHaJKyNVM=;
- b=x4BKI43+rDdur9WtOvUYh1JGEwYzlrXI6lWYcbij7/F3jg9Wf5QQStqsVKZrDjL2GuQP+OqnJ3KVWu26JhVdimWrA7cgqHbl3nRHYd+P2yzsVBcRuOBpDT8ez6iSWoJThkjlffhBmbr/hxxPLc/xUAAbXdEvwU1YgS4LNjLWSr4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com (2603:10b6:510:1dc::15)
- by MW4PR12MB7015.namprd12.prod.outlook.com (2603:10b6:303:218::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 17:53:58 +0000
-Received: from PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4]) by PH7PR12MB6000.namprd12.prod.outlook.com
- ([fe80::f78e:33f4:56d2:1ef4%7]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 17:53:58 +0000
-Message-ID: <fff2391b-fc18-af9f-6fe0-7b4c6650dcdd@amd.com>
-Date:   Mon, 21 Aug 2023 23:23:43 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 2/7] drm/amdgpu: Add new function to set GPU power
- profile
-Content-Language: en-US
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Arvind Yadav <Arvind.Yadav@amd.com>
-Cc:     Christian.Koenig@amd.com, alexander.deucher@amd.com,
-        shashank.sharma@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230821064759.94223-1-Arvind.Yadav@amd.com>
- <20230821064759.94223-3-Arvind.Yadav@amd.com>
- <CADnq5_OBLh=fzsifOEhV3F2F1XGOcCujtVAba3KZ75MkY+tKHg@mail.gmail.com>
-From:   "Yadav, Arvind" <arvyadav@amd.com>
-In-Reply-To: <CADnq5_OBLh=fzsifOEhV3F2F1XGOcCujtVAba3KZ75MkY+tKHg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PN2PR01CA0180.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:26::35) To PH7PR12MB6000.namprd12.prod.outlook.com
- (2603:10b6:510:1dc::15)
+        Mon, 21 Aug 2023 13:54:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CB127;
+        Mon, 21 Aug 2023 10:54:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 815C061F9B;
+        Mon, 21 Aug 2023 17:54:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23B92C433C7;
+        Mon, 21 Aug 2023 17:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692640458;
+        bh=eULPeh9pcpIpgr9n3QKkncPC16Bdlg+o+kHreVFr5n0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BrWbWRtDp0sKSJrWAQKeLiEyMgEDfDNX+CoCjIBPnfX7kGpxJEE06KMQcoejyh4QK
+         aKusKDihtP0LLZTsTTQBS2j5qoD+vPZ5+NkeV/CSllzz1eqbbRxSpaMTd0bZ6ZRFwh
+         1TaxiCkDS9+9SECz+5oseNL4WIBL/+J5Tye+3JvagXwCL7J5nrw5fhIGzh4sOB8aE/
+         sjkkaGyuV/BqVh2ZhVQuAcpt5D2rgOXhUqaIDOdaFiG0F0R2HKsb//iGrBV+DShDqS
+         MK9qdGWdzqx78Lj4PwSgMSNxWOKEcs0MltNv1aXfl/OFH9XYSUTakgcj4rM4gtqKdd
+         oD3GjxRJVZo3A==
+Received: (nullmailer pid 2032613 invoked by uid 1000);
+        Mon, 21 Aug 2023 17:54:16 -0000
+Date:   Mon, 21 Aug 2023 12:54:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Mao Jinlong <quic_jinlmao@quicinc.com>
+Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: arm: Adds CoreSight CSR hardware
+ definitions
+Message-ID: <20230821175416.GA2022808-robh@kernel.org>
+References: <20230813151253.38128-1-quic_jinlmao@quicinc.com>
+ <20230813151253.38128-3-quic_jinlmao@quicinc.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6000:EE_|MW4PR12MB7015:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12dbae70-c387-4a76-cb44-08dba26f9836
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 817m/UcBxx5w9XkFOd53Ffz3WFxvrRYifbI/X1JsD94siqi/ADYPsPFTrga9vWCoYuuTT+DEfahIv1PVVXwzwfuGIge8vH+Cavf4h6uuOtO4nM2dtT/wKYi95WNGYVT80cW+A0Lnh06N9RHQhnuRRyPIjUPuOXd1dLxYrP0g2Gt/akDYQ7zf7myxjYvbcAbXEirsOF0kMY9PVu4OMwWQRoD9elRILOkY3hgIDZYEtCR+cuGrwfyUcb1ctfJgdD4120hkWkt+ndeCZ/iVGaRhvFww/t7soVe+33CQFEqlQbdfUDEDZ9M6R9GhGopOTzn/e/LwAm3vHrKg1q/bFCwMaqj5BHkG1jjjdjZFPuYbCJ8JkleEOSLwLQ1aYL7K9ush7zm4Sh2T53AWlyGkMtH5mPImm1BdHW9HNJG0Rn/0x+ezaQqcdXp6e0kGlwgBFTRmPbpNey+k6d0iVHjwZ/kVs2TY8r1it2zEfxdPX3qjKKgKlysUYsV+xqgVfSJ1DzEhAD4jt9mxRyIHEdFYhJoMHLpJ2TBFyiLkGBWX1rkzxevymCMithbACwhelINxNQhlWWrwUKq3W/254FKnxb722GSwrDdEJg4zqHdec8nxsdu67AV9qlw17SarIyhVPTZSCEmfMf8dpTlBNciUJZ8evw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6000.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(6636002)(66476007)(66556008)(316002)(66946007)(6512007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUJva2ZkUHFLUlNUeUpHVEZEOTZGNjFSRndJU2dtUzF3R25ZTTYwUktDR1ZU?=
- =?utf-8?B?YTVDdlhYV3ZwRDJKWkYrd0RQV3N4Q2lYV0tpNldVeG5yQTkrcXVQTytnQUhx?=
- =?utf-8?B?YUFVcTR2Q05URUV0MWQ0MFVnbnpjSS81Zm8wblByeUpkWE95SHllNVpzRU9W?=
- =?utf-8?B?U1YrYm1reW9KNUQxa0RrRmVDc2FLR0I1ck9GcndPZTVMYjdJa0JPRWNjTFhR?=
- =?utf-8?B?WUwvZ3NyZEF0NHplNFpFQ2tVMDd3TUpjS2NvczU2K2p4RDVMaFNoQlBSWkJD?=
- =?utf-8?B?RmtZL0Z0ZGVIRVEzZHJJbFZpUWN6aVoyelkrcU56ZEdHVnVKdUIxMGF2M2lC?=
- =?utf-8?B?eUxSRnZSTGU4Nmk0V0RzdGhrK1dKSGpwZjI1bDErRnZFRU85TjN6RGxCT3Fu?=
- =?utf-8?B?TVc4a0lPWnNOSFRWaG1GMUE5allXTy9KbzhsdXk3YkU5U1QzOGZYZGkrWS9M?=
- =?utf-8?B?cGFhbHJFaFFVN3ZTSU5Tb25vekpnaElTMDA1aG0zV2xwYmxtTTRyLzJSaURN?=
- =?utf-8?B?Q0JMcHdPQmNQVUgvdDdZeUlUNC9NNnR4OVI5TFA5ZzY4Y3FtSXFJbkhCWTJx?=
- =?utf-8?B?azJ3dGc5N0xwWjBUeE8ycHYvU1FvNGsvZGV0ay9tSnpOMnNvM1VscUtTbWNR?=
- =?utf-8?B?cUIxTjZHMGhUYnFndHpUSWlKcURQTkZQWkJkR2d1NkxibTF5TE9SUW5OMDk0?=
- =?utf-8?B?d0lEVHFMaGFGMWNoY2xibmo4QnA0TkdtYVFRb2xYdjE5S290ZVVzejVrU1VI?=
- =?utf-8?B?Y2VrZ3RFZDB2UlNwN3RZVGVGTzZaOW53bXBwZTJtYkVwQ1JmODV1M1N5WjlS?=
- =?utf-8?B?QkVFWjJSRzJFampEeTliQmJTMnRiYUlXYnl4R09laXlRZGdUTFI4SWphd0kr?=
- =?utf-8?B?TmRycEJ5Y25VL3VSMkhXS2VyV21EaGZMY1J0YkttUnBxVVpteTNmdXRnMTAz?=
- =?utf-8?B?QnBmd0I3U3FnZVowZWVHYThYRkFhYW9hWjM4S3YydEJ6SGN0OUFMUTc3S2lv?=
- =?utf-8?B?OXFJM2xjdHdIR3Iwclk0KzlOVjdzc0txWXlMUHZaVFVkeENaWlhEQ0pHODdC?=
- =?utf-8?B?K3BWQmJmYTV1MHZLVEd2Zkg0S3FMWFcvd09WRjNZenR1K3BweXdVQmxXVHZ3?=
- =?utf-8?B?N2hsMUtYU0Y3cUdUeW51cEZKK0NDcEtnWFFaL0xhS2xNdTMzY2RVMVpoRmFG?=
- =?utf-8?B?UHlFcmtDeGYvejFoc01RZGd4RG5YTm8rSExlNlJYNWNrSHErdkYzUzlwblVj?=
- =?utf-8?B?a1VUVjRQNnB1QWx5ZzVMQ1E0T3Q2YjRJUWJSbkQ3RjBhS1AyQk15RzIza0FI?=
- =?utf-8?B?S0M1Y0tCcysxencxNDZJZ1ZDVlNvdzlvY2JsSUhWTzNyYW9pYTRpajZOdWw0?=
- =?utf-8?B?Z1pXQUJYdEdEbWo5WXJuUWZtUnkxWGF6cTNhRHVMWHNjSXZ0dEFMRmF1WndS?=
- =?utf-8?B?NFIyRWV0YWxqNHNqQlpUNWF3cytpOTRKVXZRNGJqUHdQdVBQMFRQRW84NW9Z?=
- =?utf-8?B?cmtSVm9mQVJlU1VxVG9ONkxMVXNobGFwdStGdTJTNHdZYlhjVDBUemNXU2Qz?=
- =?utf-8?B?N2FsbGhQcUYwcDU0RHROa3IvRFBleW8wdFNWWGQ4WFgzWENRS2NvVURidmNZ?=
- =?utf-8?B?OThTbXBBb21uZUxSbnJoTW1oNTJQbEdDQStkTnc2MmZPWDVxM3FFUGRCZTI1?=
- =?utf-8?B?Mk9VZFh3b3Q4eFFRWVZ2TEx5V2dId0lURzVXam9CeDNoZ1RKWDBrVytPbHFX?=
- =?utf-8?B?WWNuUkZzVDdTKzlZaWlzbjdvWVB5YWRSdy9yK3k2dkZBUVgwakV2NEcxY2xQ?=
- =?utf-8?B?c3hBUkVudHNwSEdtMm1FamNMaE40R2RMNFN4aTA4U0NNWGt4ZG5tZmJvT29L?=
- =?utf-8?B?RmJ6Q1A3YUhweEQzSTc4a2R3K0w1OVBnM29YZnlTbTY5TEZIUzg3YkJYWm9y?=
- =?utf-8?B?dkM4OHNROGxhM0tlSDZTay9rdE91TmFVelBCcjRRSS9KOFRDemxrdVhwbUpV?=
- =?utf-8?B?K01XajVBSTVaMjhsNVI1Nmk3RGMwME11RUtNUkR6ZkYzRXFoVW04SU0wdXRX?=
- =?utf-8?B?VFM3OHpjNUxha20razNDalVsMTFaMTVxcUhGVEFmcWxiZHFFRHZuVi9GZWhr?=
- =?utf-8?Q?3284/fIBiUiTT2Jcg2jOR5ZG3?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12dbae70-c387-4a76-cb44-08dba26f9836
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6000.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 17:53:58.5918
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZX4dqrkSS0PWP7TEt1q3oj3gEVfUQMkXxa3nJq7BPjgsIZgaMF4WRk3za8qP+al9Y1a66VunNj8Uzz/vi8lzSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7015
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230813151253.38128-3-quic_jinlmao@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 13, 2023 at 11:12:52PM +0800, Mao Jinlong wrote:
+> Adds new coresight-csr.yaml file describing the bindings required
+> to define csr in the device trees.
 
-On 8/21/2023 9:52 PM, Alex Deucher wrote:
-> On Mon, Aug 21, 2023 at 2:55 AM Arvind Yadav <Arvind.Yadav@amd.com> wrote:
->> This patch adds a function which will change the GPU
->> power profile based on a submitted job. This can optimize
->> the power performance when the workload is on.
->>
->> v2:
->> - Splitting workload_profile_set and workload_profile_put
->>    into two separate patches.
->> - Addressed review comment.
->>
->> Cc: Shashank Sharma <shashank.sharma@amd.com>
->> Cc: Christian Koenig <christian.koenig@amd.com>
->> Cc: Alex Deucher <alexander.deucher@amd.com>
->> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c  | 56 +++++++++++++++++++
->>   drivers/gpu/drm/amd/include/amdgpu_workload.h |  3 +
->>   2 files changed, 59 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> index 32166f482f77..e661cc5b3d92 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_workload.c
->> @@ -24,6 +24,62 @@
->>
->>   #include "amdgpu.h"
->>
->> +static enum PP_SMC_POWER_PROFILE
->> +ring_to_power_profile(uint32_t ring_type)
->> +{
->> +       switch (ring_type) {
->> +       case AMDGPU_RING_TYPE_GFX:
->> +               return PP_SMC_POWER_PROFILE_FULLSCREEN3D;
->> +       case AMDGPU_RING_TYPE_COMPUTE:
->> +               return PP_SMC_POWER_PROFILE_COMPUTE;
->> +       case AMDGPU_RING_TYPE_UVD:
->> +       case AMDGPU_RING_TYPE_VCE:
->> +       case AMDGPU_RING_TYPE_UVD_ENC:
->> +       case AMDGPU_RING_TYPE_VCN_DEC:
->> +       case AMDGPU_RING_TYPE_VCN_ENC:
->> +       case AMDGPU_RING_TYPE_VCN_JPEG:
->> +               return PP_SMC_POWER_PROFILE_VIDEO;
->> +       default:
->> +               return PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT;
->> +       }
->> +}
->> +
->> +static int
->> +amdgpu_power_profile_set(struct amdgpu_device *adev,
->> +                        enum PP_SMC_POWER_PROFILE profile)
->> +{
->> +       int ret = amdgpu_dpm_switch_power_profile(adev, profile, true);
->> +
->> +       if (!ret) {
->> +               /* Set the bit for the submitted workload profile */
->> +               adev->smu_workload.submit_workload_status |= (1 << profile);
->> +               atomic_inc(&adev->smu_workload.power_profile_ref[profile]);
->> +       }
->> +
->> +       return ret;
->> +}
->> +
->> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
->> +                                uint32_t ring_type)
->> +{
->> +       struct amdgpu_smu_workload *workload = &adev->smu_workload;
->> +       enum PP_SMC_POWER_PROFILE profile = ring_to_power_profile(ring_type);
->> +       int ret;
->> +
->> +       if (profile == PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT)
->> +               return;
-> Why is this one skipped?  How do we get back to the boot up profile?
+Why?
 
-Hi Alex,
+What is CSR? Control & Status Registers in my book.
 
-enum PP_SMC_POWER_PROFILE {
-     PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT = 0x0,
-     PP_SMC_POWER_PROFILE_FULLSCREEN3D = 0x1,
-     PP_SMC_POWER_PROFILE_POWERSAVING  = 0x2,
-     PP_SMC_POWER_PROFILE_VIDEO        = 0x3,
-     PP_SMC_POWER_PROFILE_VR           = 0x4,
-     PP_SMC_POWER_PROFILE_COMPUTE      = 0x5,
-     PP_SMC_POWER_PROFILE_CUSTOM       = 0x6,
-     PP_SMC_POWER_PROFILE_WINDOW3D     = 0x7,
-     PP_SMC_POWER_PROFILE_COUNT,
-};
+> 
+> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
+> ---
+>  .../bindings/arm/qcom,coresight-csr.yaml      | 130 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  include/dt-bindings/arm/coresight-csr-dt.h    |  12 ++
+>  3 files changed, 143 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/arm/qcom,coresight-csr.yaml
+>  create mode 100644 include/dt-bindings/arm/coresight-csr-dt.h
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-csr.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-csr.yaml
+> new file mode 100644
+> index 000000000000..de4baa335fdb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-csr.yaml
+> @@ -0,0 +1,130 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/qcom,coresight-csr.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: CoreSight Slave Register - CSR
+> +
+> +description: |
 
-These are all the profiles. We are using which is > 
-PP_SMC_POWER_PROFILE_BOOTUP_DEFAULT.
-Now suppose the profile was DEFAULT and we set it to VIDEO, SMU will 
-move the profile to a higher level.
-When we reset the VIDEO profile then SMU will move back to the DEFAULT one.
+Don't need '|'
 
-Our job is to set the profile and reset it after the job is done.
-SMU will take care to move to a higher profile and after reset, it will 
-move back to DEFAULT.
+> +  CoreSight Slave Register block hosts miscellaneous configuration registers.
+> +  Those configuration registers can be used to control, various coresight
+> +  configurations.
 
-ThankYou,
-~Arvind
+I still have no idea what this block does other than something related 
+to Coresight.
 
->
-> Alex
->
->> +
->> +       mutex_lock(&workload->workload_lock);
->> +
->> +       ret = amdgpu_power_profile_set(adev, profile);
->> +       if (ret) {
->> +               DRM_WARN("Failed to set workload profile to %s, error = %d\n",
->> +                        amdgpu_workload_mode_name[profile], ret);
->> +       }
->> +
->> +       mutex_unlock(&workload->workload_lock);
->> +}
->> +
->>   void amdgpu_workload_profile_init(struct amdgpu_device *adev)
->>   {
->>          adev->smu_workload.adev = adev;
->> diff --git a/drivers/gpu/drm/amd/include/amdgpu_workload.h b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> index 5d0f068422d4..5022f28fc2f9 100644
->> --- a/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> +++ b/drivers/gpu/drm/amd/include/amdgpu_workload.h
->> @@ -46,6 +46,9 @@ static const char * const amdgpu_workload_mode_name[] = {
->>          "Window3D"
->>   };
->>
->> +void amdgpu_workload_profile_set(struct amdgpu_device *adev,
->> +                                uint32_t ring_type);
->> +
->>   void amdgpu_workload_profile_init(struct amdgpu_device *adev);
->>
->>   void amdgpu_workload_profile_fini(struct amdgpu_device *adev);
->> --
->> 2.34.1
->>
+> +
+> +maintainers:
+> +  - Mao Jinlong <quic_jinlmao@quicinc.com>
+> +  - Hao Zhang <quic_hazha@quicinc.com>
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^csr(@[0-9a-f]+)$"
+> +  compatible:
+> +    items:
+> +      - const: qcom,coresight-csr
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: apb_pclk
+> +
+> +  # size cells and address cells required if assoc_device node present.
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +patternProperties:
+> +  '^assoc_device@([0-9]+)$':
+
+Unit-addresses are typically hex.
+
+> +    type: object
+> +    description:
+> +      A assocated device child node which describes the required configs
+> +      between this CSR and another hardware device. This device may be ETR or
+> +      TPDM device.
+> +
+> +    properties:
+> +      reg:
+> +        maxItems: 1
+
+I don't understand what 'reg' signifies here.
+
+> +
+> +      arm,cs-dev-assoc:
+> +        $ref: /schemas/types.yaml#/definitions/phandle
+> +        description:
+> +          defines a phandle reference to an associated CoreSight trace device.
+> +          When the associated trace device is enabled, then the respective CSR
+> +          will be enabled. If the associated device has not been registered
+> +          then the node name will be stored as the assocated name for later
+> +          resolution.
+
+registered? Sounds like a OS detail that doesn't belong in DT.
+
+> +
+> +      qcom,cs-dev-type:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Device type of the Assocated device. Types are in coresight-csr-dt.h.
+
+Constraints?
+
+> +
+> +      qcom,csr-bytecntr-offset:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          The ETR irqctrl register offset. If the assocated device is ETR
+> +          device and there are more than one ETR devices, this property need
+> +          to be added.
+
+You should know the register offset based on the ETR compatible.
+
+> +
+> +      interrupts:
+> +        minItems: 1
+> +
+> +      interrupt-names:
+> +        minItems: 1
+> +
+> +    required:
+> +      - reg
+> +      - qcom,cs-dev-type
+> +      - qcom,cs-dev-assoc
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # minimum CSR definition.
+> +  - |
+> +    csr@10001000 {
+> +      compatible = "qcom,coresight-csr";
+> +      reg = <0 0x10001000 0 0x1000>;
+> +
+> +      clocks = <&aoss_qmp>;
+> +      clock-names = "apb_pclk";
+> +    };
+> +  # Assocated with ETR device
+> +  - |
+> +    #include <dt-bindings/arm/coresight-csr-dt.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +
+> +    csr@10001000 {
+> +      compatible = "qcom,coresight-csr";
+> +      reg = <0 0x10001000 0 0x1000>;
+> +
+> +      clocks = <&aoss_qmp>;
+> +      clock-names = "apb_pclk";
+> +
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      assoc_device@0 {
+> +        reg = <0>;
+> +        qcom,cs-dev-type = <CSR_ASSOC_DEV_ETR>;
+> +        qcom,cs-dev-assoc = <&tmc_etr>;
+> +        qcom,csr-bytecntr-offset = <0x6c>;
+> +        interrupts = <GIC_SPI 270 IRQ_TYPE_EDGE_RISING>;
+> +        interrupt-names = "byte-cntr-irq";
+> +      };
+> +    };
+> +...
+> +
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d516295978a4..3ed81a8fd1d0 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2042,7 +2042,7 @@ F:	Documentation/devicetree/bindings/arm/arm,trace-buffer-extension.yaml
+>  F:	Documentation/devicetree/bindings/arm/qcom,coresight-*.yaml
+>  F:	Documentation/trace/coresight/*
+>  F:	drivers/hwtracing/coresight/*
+> -F:	include/dt-bindings/arm/coresight-cti-dt.h
+> +F:	include/dt-bindings/arm/coresight-*.h
+>  F:	include/linux/coresight*
+>  F:	samples/coresight/*
+>  F:	tools/perf/arch/arm/util/auxtrace.c
+> diff --git a/include/dt-bindings/arm/coresight-csr-dt.h b/include/dt-bindings/arm/coresight-csr-dt.h
+> new file mode 100644
+> index 000000000000..804b9bbeb2bd
+> --- /dev/null
+> +++ b/include/dt-bindings/arm/coresight-csr-dt.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> +/*
+> + * This header provides constants for the defined device
+> + * types on CoreSight CSR.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_ARM_CORESIGHT_CSR_DT_H
+> +#define _DT_BINDINGS_ARM_CORESIGHT_CSR_DT_H
+> +
+> +#define CSR_ASSOC_DEV_ETR	1
+> +
+> +#endif /*_DT_BINDINGS_ARM_CORESIGHT_CSR_DT_H */
+> -- 
+> 2.17.1
+> 
