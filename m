@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 986CB78288F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2ED78288C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234271AbjHUMHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
+        id S234264AbjHUMGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjHUMHY (ORCPT
+        with ESMTP id S230098AbjHUMGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:07:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA7390
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692619594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3QSAAa/hMYp89U1EDlmo0karZdp2ZmKwZOL2+v/7j1U=;
-        b=GqSZLxDphmxTqAC0zBOCAbGgbDya+xeGz/Sef6lIo2LODbjJCtLgsuL+kPMuMIsDSWdFo/
-        egZfSJyPwPcNSkyyTqEIJtf+HFZabYYj9RGjd9ux9xc2rvAmdNZgjvqUC7P5wJrFBD/YeD
-        9ByP+DIGNSKY9o2JYiChCk7f67FfDWg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-135-YYDCick5MoOzbJ5JsUr1PA-1; Mon, 21 Aug 2023 08:06:32 -0400
-X-MC-Unique: YYDCick5MoOzbJ5JsUr1PA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31ad77537ebso1941214f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:32 -0700 (PDT)
+        Mon, 21 Aug 2023 08:06:46 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B90A8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:45 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-523bf06f7f8so3904156a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692619603; x=1693224403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2S+WETvfAyrCVF8DP9tvmJJ5EWf71P/PjeMnXn7n6Lo=;
+        b=AKZiy1IcmrTnS8t3Aj69f9szwT2W6buD4JdkJG4PhzNFd6RC8DEOEnJzG38wHiY0Ct
+         lmbiwczvEAh2uxmGvZAgXbiZ017Oi4wm9iR7//3Zuuf7YMYcMNn1aUN82CmnWaEzEQIg
+         ZhBKp2uSyMsg1I9vn/xFo1RVwdnSQA6OtyXdtESjctJucwdoOQ9sn2Nb/5uw9G7DlkqG
+         qloCTWdZbnsV72yu1caka78IiEqhakoJYJKc60vARtuWBqeL7KqzEXi13BSS9L90bhTF
+         angIuJ2m55GyWnP4ZlERe4CPo6mqJtDkwRVBdSh7h7nCsvmDBiJsGgxCo54DH/y+MXo6
+         ou3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692619591; x=1693224391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3QSAAa/hMYp89U1EDlmo0karZdp2ZmKwZOL2+v/7j1U=;
-        b=fl74RYtkg7lzM8Xh3xHEAQeagEp4DwMUDh/555XpDW7ecvZS0LUnNYCm6cdzLVayDw
-         HUL94ALMTcV2am1Fg4joQecMqhNunS3cz5ikQTgCE927781pAUyEGKNh5X5uaArN7f3N
-         nHr25KXjmyL6hBAAqCw8joZXWOpPIg1d5sEdcb7+86XDYxfanJrphRs0earu0Y9b7r/P
-         4Y0q0AMSWNHY7gEh9oBPLhG1YROuGTFQH5KcTzhuiN3CWPu9AGQ/drZJcic5qdu6URcW
-         zMV2cnuxtn1kOLu5bo7mMaH3ptfPW8TlKsQxJ6scJxuuYzLUasqUWDObmdZyKS3IAPfm
-         Tifw==
-X-Gm-Message-State: AOJu0YxJ8hx8Dot6UGInzc+MA4ZcwMJXOgbw8CGTBAT+OibuMe8bwytX
-        OXkuGhhG0Qcv2xyHtI9pw0OSsKcZkhjybeOaoeeWCOyKu7uQju1cd034K7qF1sPmZhCrUeG74oh
-        8rZKLDkH9DUFqd//Hq8Tir4+1itXPpKKKIPr4BMWp
-X-Received: by 2002:adf:ef91:0:b0:317:cff4:7357 with SMTP id d17-20020adfef91000000b00317cff47357mr4737664wro.20.1692619591807;
-        Mon, 21 Aug 2023 05:06:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IH58LLzlTU5gEdiu40AT9vFc4WW8xCtVM1yBFGzym0AW6o47Dvx/FCXoPkJ3vQs3bw9CWtv8MWi9osUZgsbZPg=
-X-Received: by 2002:adf:ef91:0:b0:317:cff4:7357 with SMTP id
- d17-20020adfef91000000b00317cff47357mr4737647wro.20.1692619591515; Mon, 21
- Aug 2023 05:06:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692619603; x=1693224403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2S+WETvfAyrCVF8DP9tvmJJ5EWf71P/PjeMnXn7n6Lo=;
+        b=F5tjBt+lAItLhrVO26dfq772tgL5X6NG8zlkHmSshjfcrUDO/z5ngHPccN85muifmm
+         YKOM3d2B5p5qQyTsPIG1j6ROvTCbBaNiXlI+JLQjp/fyVZw5PV+KrBH3w5xaLBp/rJ8R
+         0s+3sVwBELLRir2oL8kcR8vameNh7gufsWOU5ea5rdgb4Dgqw8ZC2harRwdq3wZnHbYD
+         NvK4v43zLzEjTmkCT7wn1wRx9Qt9LjD68tlj5w3dvUAmlhxYG8hEgfFkqRkxY+SW4UeB
+         bQ0HkLyWEO5KwIhz3S5O0mvKEBIc855J0TIKMN9fj1lFfHl6iXRwDLtSUQ0DJKcITnDD
+         5z4w==
+X-Gm-Message-State: AOJu0YzntyC/0Iu47MR2Q9PHq++kuvrvFgzpepjTUX3H4NjpQB6gL1Qf
+        OBEZ9XVC9efMKPbHCVUctGmoCsphdAc9r23yUMc=
+X-Google-Smtp-Source: AGHT+IGA3fcwCUwoHfQmYSY/wtDyAlgOxfO0or6c6j0Qcinb4t2/XgeaIcZi4syQvHqfZpMf9jNYmQ==
+X-Received: by 2002:a50:fa93:0:b0:525:d95b:cd46 with SMTP id w19-20020a50fa93000000b00525d95bcd46mr4674958edr.2.1692619603593;
+        Mon, 21 Aug 2023 05:06:43 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id g4-20020a056402180400b00525727db542sm5974464edy.54.2023.08.21.05.06.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 05:06:43 -0700 (PDT)
+Message-ID: <ebad4f91-3d4e-c50f-0bde-f11f16061214@linaro.org>
+Date:   Mon, 21 Aug 2023 14:06:41 +0200
 MIME-Version: 1.0
-References: <ZMK60UphgVuj4Z+L@smile.fi.intel.com> <ZMydcGv8Dvu3Hje1@smile.fi.intel.com>
- <nycvar.YFH.7.76.2308071319140.14207@cbobk.fhfr.pm> <ZND/8wd67YbGs8d5@smile.fi.intel.com>
- <nycvar.YFH.7.76.2308141128260.14207@cbobk.fhfr.pm> <ZOMcHQc8Em/s6C+y@smile.fi.intel.com>
- <ez2oewpi3yeaiejrvbe433ude75pgm3k3s5sh5gnn7pvnzm7b4@ajuopfgwocft>
- <ZOMvpmoWLCgcAyJR@smile.fi.intel.com> <ZOMv4VB0bZpupNlN@smile.fi.intel.com>
- <CAO-hwJ+Pa0yMV5taEc9+RXEWJzkotpyj4gz2qftyLV4G73F-mg@mail.gmail.com> <ZOM9SLLuWJzeHTiO@smile.fi.intel.com>
-In-Reply-To: <ZOM9SLLuWJzeHTiO@smile.fi.intel.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 21 Aug 2023 14:06:20 +0200
-Message-ID: <CAO-hwJJdztp_HCitHsp2CnK9N72oeHo-UiSm1Uz1_oZghuGLwQ@mail.gmail.com>
-Subject: Re: [PATCH v1 00/12] HID: cp2112: Cleanups and refactorings
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Benjamin Tissoires <bentiss@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 1/4] dt-bindings: mfd: syscon: Add compatibles for
+ Loongson-1 syscon
+Content-Language: en-US
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-2-keguang.zhang@gmail.com>
+ <a9a7b65c-ef0b-9f66-b197-548733728d44@linaro.org>
+ <CAJhJPsXEf0Yuxasq24X=x_JtUJZrNC1aowfeuu9QM2kz+A=asQ@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAJhJPsXEf0Yuxasq24X=x_JtUJZrNC1aowfeuu9QM2kz+A=asQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 12:32=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Aug 21, 2023 at 12:19:39PM +0200, Benjamin Tissoires wrote:
-> > On Mon, Aug 21, 2023 at 11:35=E2=80=AFAM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Mon, Aug 21, 2023 at 12:34:30PM +0300, Andy Shevchenko wrote:
-> > > > On Mon, Aug 21, 2023 at 10:51:04AM +0200, Benjamin Tissoires wrote:
-> > > > > On Aug 21 2023, Andy Shevchenko wrote:
->
-> ...
->
-> > > > > Long story short, I'm not able to test it right now (and I got qu=
-ite
-> > > > > some backlog as you can imagine). IIRC the code was fine, so I th=
-ink we
-> > > > > can just take the series as is, and work on the quirks (if any) l=
-ater.
-> > > >
-> > > > Thank you!
-> > > >
-> > > > The thing that might be broken is interrupts handling. If that work=
-s,
-> > > > I'm pretty confident with the rest.
-> > >
-> > > I.o.w. first 5 patches to test is already 98% of guarantee that every=
-thing
-> > > is fine.
-> >
-> > Actually I applied you series locally, and applied Danny's patches on
-> > top, and I could run your series in qemu with the cp2112 as USB
-> > passthrough.
-> >
-> > Everything is working fine, so I can take this one just now.
->
-> Thank you! I assume you have some IRQ (like GPIO button) to test with tha=
-t.
+On 21/08/2023 13:00, Keguang Zhang wrote:
+> On Sat, Aug 19, 2023 at 10:23 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 16/08/2023 13:13, Keguang Zhang wrote:
+>>> Add Loongson LS1B and LS1C compatibles for system controller.
+>>
+>> I asked not to use the same compatible for different blocks. Compatible
+>> is dwmac, but are you still going to use for other blocks? Please write
+>> proper description of the hardware.
+>>
+> Sorry. I didn't make myself clear.
+> The SoC only has one syscon with two registers.
+> And Each register contains settings for multiple devices.
+> Besides DWMAC, this syscon will be used for other devices.
+> Should I keep using loongson,ls1b-syscon/loongson,ls1c-syscon?
 
-Yeah, binding a test i2c-hid touchpad on top of hid forces you to use
-GPIOs. Otherwise you are polling, and it's not allowed in i2c-hid
-anymore IIRC :)
+Ah, ok, then the naming of the compatible should reflect the name of
+this syscon block. If it does not have any name and it is the only
+syscon, then name like "loongson,ls1b-syscon" is good. If the block has
+some name - use it in compatible.
 
-> If no, it's easily to describe (in ACPI, see [1]) and use a wire to emula=
-te
-> the button presses. In that case the /proc/interrupts should show the
-> different numbers.
-
-Thanks, but again, the GPIO is tested just by checking if the touchpad
-can send events when touched.
-
-Now I need to update my CI to rely on danny's patches and a DSDT overwrite =
-:)
-
-Cheers,
-Benjamin
-
->
-> [1]: https://github.com/westeri/meta-acpi/blob/master/recipes-bsp/acpi-ta=
-bles/samples/edison/buttons.asli
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Best regards,
+Krzysztof
 
