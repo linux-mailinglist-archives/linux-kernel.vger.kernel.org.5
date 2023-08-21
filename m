@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7D67822BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1106F7822BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 06:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbjHUEV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 00:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
+        id S232924AbjHUEW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 00:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbjHUEV6 (ORCPT
+        with ESMTP id S229842AbjHUEW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 00:21:58 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE4993;
-        Sun, 20 Aug 2023 21:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1692591711;
-        bh=CftIs09yf/pwmz1hoN5TS+6593RXp5QcPkjoWjnJ19Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FQXSlkhMydN6++XO549gGeeQAzepoHasPFMT9I+ooSjFBEkiboi6l6qPwr82wfJBf
-         DtAuWhhvSduhxoz5ofKE6nOUHiOdw/IgjvRGqCAHf984LKqQ7vlRcvpCh1tzNGcIXa
-         TQlmkJJq4rCvBGluXWbkpiRIkxZCoYJbOb/BnbIt+hsAXIeVteNkyduGh4O1rgdE/S
-         9TGXMJn1onJ6h5jTJvusHehAL66oHtHmDczexk04v+oFEObegzAGtppZ2XfZZrpEmD
-         RYXfHJt+qFe/YqXGGZV99WOcD+PgPhoNmeb52sCy7vHcDfIyqUvnSCGZOKAVyhL79A
-         +tnQ59yKmzPAw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTfSZ151tz4x2D;
-        Mon, 21 Aug 2023 14:21:49 +1000 (AEST)
-Date:   Mon, 21 Aug 2023 14:21:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the usb tree with the jc_docs tree
-Message-ID: <20230821142148.14b1b4be@canb.auug.org.au>
+        Mon, 21 Aug 2023 00:22:27 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419D4A2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 21:22:25 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vq9jX1I_1692591740;
+Received: from 30.221.131.184(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Vq9jX1I_1692591740)
+          by smtp.aliyun-inc.com;
+          Mon, 21 Aug 2023 12:22:21 +0800
+Message-ID: <3a107c60-532a-dbc9-d899-40cfcaf9327a@linux.alibaba.com>
+Date:   Mon, 21 Aug 2023 12:22:20 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/sozIqTv3MEBEyWUZq/idQKF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [v2] erofs: don't warn dedupe and fragments features anymore
+To:     sunshijie <sunshijie@xiaomi.com>, xiang@kernel.org,
+        chao@kernel.org, huyue2@coolpad.com, jefflexu@linux.alibaba.com
+Cc:     linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20230821041737.2673401-1-sunshijie@xiaomi.com>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20230821041737.2673401-1-sunshijie@xiaomi.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-14.2 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/sozIqTv3MEBEyWUZq/idQKF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+The subject should be:
+[PATCH v2] erofs: don't warn dedupe and fragments features anymore
 
-Today's linux-next merge of the usb tree got a conflict in:
+but it's not really needed to resend.
 
-  Documentation/ABI/testing/sysfs-bus-umc
-  Documentation/ABI/testing/sysfs-class-uwb_rc-wusbhc
+On 2023/8/21 12:17, sunshijie wrote:
+> The `dedupe` and `fragments` features have been merged for a year.  They are
+> mostly stable now.
+> 
+> Signed-off-by: sunshijie <sunshijie@xiaomi.com>
 
-between commit:
+Reviewed-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-  ebab9426cd73 ("Documentation/ABI: Fix typos")
-
-from the jc_docs tree and commit:
-
-  f176638af476 ("USB: Remove Wireless USB and UWB documentation")
-
-from the usb tree.
-
-I fixed it up (I rmeoved the files) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/sozIqTv3MEBEyWUZq/idQKF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTi5lwACgkQAVBC80lX
-0GxmMgf/coLXJ8BwL/wEabKUyL5fhgdNqEYdglTKpwSlLQ9l9UTR/1vGhJzUyE9c
-+Pc8iNY6ey0ghxy23TLs2AMEjPsYbqpoZpjPLHMQ1b819lTkuX1pyha5T9IIQefr
-frWUv02VectWY1XRoAX8msg9++oCK1ScfWy7c4YSTzyanp/Zr8sFt8m+O42XesFe
-B21hAXc2AGIPEWISyqvg67UqGwVycaBOtXgjcSCeYVhYbRpHDrY/AhP9+YJWTYKx
-CCBo43bMs9s7rRBec8Hn9H+hcVifQkZs0LJu38yIHLOAybnjc17tDSrSNvxa0zdT
-rbSG687pnSfuRogtXhoPSh1vc8QMMw==
-=mykT
------END PGP SIGNATURE-----
-
---Sig_/sozIqTv3MEBEyWUZq/idQKF--
+Thanks,
+Gao Xiang
