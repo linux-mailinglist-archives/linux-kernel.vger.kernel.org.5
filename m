@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2A67829A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5AF7829A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbjHUM4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S235134AbjHUM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235102AbjHUM4R (ORCPT
+        with ESMTP id S235090AbjHUM5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:56:17 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F391D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:56:14 -0700 (PDT)
+        Mon, 21 Aug 2023 08:57:21 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B242B1;
+        Mon, 21 Aug 2023 05:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=bZuXrJnycDPuWsVWT2G7AaUlErg2xS9Lt8LBAxiLYG8=; b=0dc2CaV81hgg0b9IKZ6hSLULgy
-        +rz0Vi9EuPClZOLAAnIPmA632QV1vODZhVwckDuAEGo4dQAfs0QIEe21qFLqukhI3JQIJ+nlru49B
-        G889dqmgZfC70ftNtB0w1I9UmwY6flzLmLvM60VsDx0x3J9XhwIDlpR2zX8wzUB/ZzoBFMQbYip14
-        RS8F0G9yTMvfNy83FeiLA1FA7nhaFn7bMHkd2XHRenfxNNKtdHGNDSsPQqmpZVSDngDPBPx7u4gez
-        88aaTXi394snz9GXA4BGLNCk7gqdQcjb0dGbG79vlAZTpN8/ZtgaZTzihcakvYlFdfDWOycPae1lf
-        e+EhE6+Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41892)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qY4Rz-0008Va-2B;
-        Mon, 21 Aug 2023 13:56:07 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qY4Rz-0004mn-3l; Mon, 21 Aug 2023 13:56:07 +0100
-Date:   Mon, 21 Aug 2023 13:56:07 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Helge Deller <deller@gmx.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][RESEND] arm: Fix flush_dcache_page() for usage from irq
- context
-Message-ID: <ZONe5/SuQ0qpb7R0@shell.armlinux.org.uk>
-References: <ZN/bYak6eLE02LJP@p100>
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bkpIHgJ72JldiWUel9wVfgGF2ysEoVcz7b0lE+gT6jg=; b=KQ5ekz5vxHnK1vYsygUx286252
+        wC/k81Uz0vXgbfMXfbYd7VEJ+FI/9GEX2VVAdfdEALcbJUc+CBei90d2g5U4kRXMoG5Ob1qkcUWSu
+        R5GkY6BHiP/gBoTaARanxeNcZlIq97x4IW+46JrXCoI242sxhLQKXXoYZt1MJK4hp+g25ZQBsjEuE
+        hVpq2u4TRwZkSxi9Xmf60gv+Kg9LzK8HndFeTog/7l7Rl0wxPi4qVMPK3NOBTo2hTBczoXn8+axfF
+        mPe5a0lCNTzriPNwDFxsknbOIviTDiyLQ931aoKOZk+awBJLPg3a8Kh0pRVYC0W9KcDugFaZLz7eY
+        I5+DtpMA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qY4T2-00AIWb-Jt; Mon, 21 Aug 2023 12:57:12 +0000
+Date:   Mon, 21 Aug 2023 13:57:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
+ to give credits to who sponsored the patch
+Message-ID: <ZONfKKwFaDQpuZ9w@casper.infradead.org>
+References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
+ <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
+ <20230817232348.GC1175@pendragon.ideasonboard.com>
+ <ZN65iiRiSLmXz89k@casper.infradead.org>
+ <87ttss7q8o.fsf@intel.com>
+ <ZONTiijMLWbt6naQ@casper.infradead.org>
+ <87o7j07frk.fsf@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZN/bYak6eLE02LJP@p100>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <87o7j07frk.fsf@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 10:58:09PM +0200, Helge Deller wrote:
-> Since at least kernel 6.1, flush_dcache_page() is called with IRQs
-> disabled, e.g. from aio_complete().
+On Mon, Aug 21, 2023 at 03:15:43PM +0300, Jani Nikula wrote:
+> On Mon, 21 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
+> > On Mon, Aug 21, 2023 at 11:29:27AM +0300, Jani Nikula wrote:
+> >> On Fri, 18 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
+> >> > but you might have (eg)
+> >> >
+> >> > Laurent Pinchard (Coca-Cola) <laurent.pinchart@ideasonboard.com>
+> >> >
+> >> > and then when working for another sponsor:
+> >> >
+> >> > Laurent Pinchard (Ford) <laurent.pinchart@ideasonboard.com>
+> >> 
+> >> Just an observation, git shortlog -s/-se groups/distinguishes,
+> >> respectively, the author and sponsor in Laurent's approach. Not so with
+> >> Matthew's approach.
+> >
+> > Hm?
+> >
+> > $ git shortlog -s next-20230817..
+> >      1  Matthew Wilcox (Novartis)
+> >     25  Matthew Wilcox (Oracle)
+> >
+> > $ git shortlog -se next-20230817..
+> >      1  Matthew Wilcox (Novartis) <willy@infradead.org>
+> >     25  Matthew Wilcox (Oracle) <willy@infradead.org>
 > 
-> But the current implementation for flush_dcache_page() on ARM (32-bit)
-> unintentionally re-enables IRQs, which may lead to deadlocks.
+> $ git shortlog v6.4.. -s --author="Laurent Pinchart"
+>     12  Laurent Pinchart
 > 
-> Fix it by using xa_lock_irqsave() and xa_unlock_irqrestore()
-> for the flush_dcache_mmap_*lock() macros instead.
-> 
-> Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Helge Deller <deller@gmx.de>
+> $ git shortlog v6.4.. -se --author="Laurent Pinchart"
+>      2  Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+>     10  Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Please submit to the patch system, details can be found in my email
-signature below.
+I must not be understanding your point correctly.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+$ git shortlog v6.4.. -s --author="Matthew Wilcox"
+     7  Matthew Wilcox
+     1  Matthew Wilcox (Novartis)
+   123  Matthew Wilcox (Oracle)
+
+That seems to me like it successfully distinguishes my fake commit on
+behalf of Novartis (who I haven't actually worked for since 1997) from
+my real commits on behalf of Oracle.  It also shows a few places where
+my commits weren't attributed to Oracle (I think this happens when I
+send patches using mutt instead of git-send-email)
