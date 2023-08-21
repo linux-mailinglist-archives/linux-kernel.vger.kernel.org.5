@@ -2,239 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48761782C45
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B033782C4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236099AbjHUOmR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 10:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43340 "EHLO
+        id S236120AbjHUOmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236060AbjHUOmM (ORCPT
+        with ESMTP id S236090AbjHUOmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:42:12 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0DA10B;
-        Mon, 21 Aug 2023 07:41:58 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id DF0E924E2A8;
-        Mon, 21 Aug 2023 22:41:56 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:56 +0800
-Received: from localhost.localdomain (113.72.145.205) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 21 Aug
- 2023 22:41:55 +0800
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Claudiu Beznea <Claudiu.Beznea@microchip.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     Jose Abreu <joabreu@synopsys.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        "Xingyu Wu" <xingyu.wu@starfivetech.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v2 5/5] riscv: dts: starfive: Add the nodes and pins of I2Srx/I2Stx0/I2Stx1
-Date:   Mon, 21 Aug 2023 22:41:51 +0800
-Message-ID: <20230821144151.207339-6-xingyu.wu@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
-References: <20230821144151.207339-1-xingyu.wu@starfivetech.com>
+        Mon, 21 Aug 2023 10:42:16 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509AFE7;
+        Mon, 21 Aug 2023 07:42:08 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3a7f74134e7so2514443b6e.1;
+        Mon, 21 Aug 2023 07:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692628927; x=1693233727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=niRR0I8vNh+UgrE9dgAw0mTmrgJypa/tdMhRQCasF5c=;
+        b=Mp3wQbMkztPW2+/ZUoIKP0tCMDSg6ni4R8HJgOhd9ZpQAaMToJInGltabwGA1B82ER
+         oB6Ajmp1sgDbCvqeK8leUtrIjUvkzPfSJ2NdTJEctyUjFjzTwfaSCS4hvV8g7H1TmJO+
+         IOj2SuMZEut+6uw5rfUDa6VPgczcbYIbzDJyla4mSr1IXaNET+qR4y9+sjJaBzm4kGbc
+         2veFTNX11P3S4jnwQ02WGYBS7pVOUgGvPME4qRV4r1yumJHmwWbrpML7LOcwXw8OjIDN
+         WOOr4qmM/TxQYFooUTYTMztUedWWTFzRwwoLBDwKHXqxvtc8wAO0sVqB3SQ6HDXdvvQ+
+         SR5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692628927; x=1693233727;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=niRR0I8vNh+UgrE9dgAw0mTmrgJypa/tdMhRQCasF5c=;
+        b=TjXqOY63ReA4tRPPhVfx2WRZlLtGaKuGlM6ItZWPw/lgtTkrPjAR0603hk64ghDpk8
+         qz6POQBRPqaMKFa7sRURItdPu8uRN0fGC2c1fjP+qtMi3nuz3Bw3Ux3V5x9o+gNgqJyJ
+         j1Ze4Qkdjo1+RyHPUBb3SXyVNQi4o1NkoOYX7XMYqnbvKMdQjGs9jfAB+RsJ1FA677C9
+         RqgEmiMjJ/5Jz5FCJhW9sXyt8/zXYgYk2jmiFr2uFEYieyn7vKoyHi/0KkOBgVfElSe2
+         S1n5tFhWa206siFAtCvI14zpokOjRlQSHUGQoBGmeGBxFMyd8tySb670VLDIfw9dqpCw
+         /w+Q==
+X-Gm-Message-State: AOJu0YxjVWZC4OSA2VAu8qMn4a7gUG9aPG/a3r21bx9PtXFD9apMl9DQ
+        kDz1xlx2/eWrHI1H0WSLaVI=
+X-Google-Smtp-Source: AGHT+IFz/ERShvBKzkGk13sAA0L+8DpvEfRtYs29tFk4Hv62VEK12oyztzlVHpwJY+hR1dRu0JuGmA==
+X-Received: by 2002:a05:6808:2028:b0:3a7:5557:16c2 with SMTP id q40-20020a056808202800b003a7555716c2mr12056866oiw.0.1692628927554;
+        Mon, 21 Aug 2023 07:42:07 -0700 (PDT)
+Received: from grumpy-VECTOR.hsd1.tx.comcast.net ([2601:2c3:480:7390:33b3:b7f9:ce8a:596a])
+        by smtp.gmail.com with ESMTPSA id k1-20020a544401000000b003a371c611f6sm3599856oiw.18.2023.08.21.07.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 07:42:07 -0700 (PDT)
+From:   Jorge Lopez <jorgealtxwork@gmail.com>
+X-Google-Original-From: Jorge Lopez <jorge.lopez2@hp.com>
+To:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
+        ilpo.jarvinen@linux.intel.com, dan.carpenter@linaro.org
+Subject: [PATCH] Update steps order list elements are evaluated
+Date:   Mon, 21 Aug 2023 09:42:05 -0500
+Message-Id: <20230821144205.13529-1-jorge.lopez2@hp.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.145.205]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add I2Srx/I2Stx0/I2Stx1 nodes and pins configuration for the
-StarFive JH7110 SoC.
+Update steps how order list elements data and elements size are
+evaluated
 
-Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
+
 ---
- .../jh7110-starfive-visionfive-2.dtsi         | 58 +++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 65 +++++++++++++++++++
- 2 files changed, 123 insertions(+)
+Based on the latest platform-drivers-x86.git/for-next
+---
+ .../platform/x86/hp/hp-bioscfg/order-list-attributes.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index d79f94432b27..7179f1a31cf2 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -203,6 +203,24 @@ &i2c6 {
- 	status = "okay";
- };
+diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+index cffc1c9ba3e7..1ff09dfb7d7e 100644
+--- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
++++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+@@ -258,7 +258,6 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
+ 				eloc++;
+ 			break;
+ 		case ORD_LIST_ELEMENTS:
+-			size = ordered_list_data->elements_size;
  
-+&i2srx {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2srx_pins>;
-+	status = "okay";
-+};
-+
-+&i2stx0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mclk_ext_pins>;
-+	status = "okay";
-+};
-+
-+&i2stx1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2stx1_pins>;
-+	status = "okay";
-+};
-+
- &mmc0 {
- 	max-frequency = <100000000>;
- 	bus-width = <8>;
-@@ -337,6 +355,46 @@ GPOEN_SYS_I2C6_DATA,
- 		};
- 	};
+ 			/*
+ 			 * Ordered list data is stored in hex and comma separated format
+@@ -270,17 +269,14 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
  
-+	i2srx_pins: i2srx-0 {
-+		clk-sd-pins {
-+			pinmux = <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_LRCK)>,
-+				 <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_LRCK)>,
-+				 <GPIOMUX(61, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_SDIN0)>;
-+			input-enable;
-+		};
-+	};
-+
-+	i2stx1_pins: i2stx1-0 {
-+		sd-pins {
-+			pinmux = <GPIOMUX(44, GPOUT_SYS_I2STX1_SDO0,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>;
-+			bias-disable;
-+			input-disable;
-+		};
-+	};
-+
-+	mclk_ext_pins: mclk-ext-0 {
-+		mclk-ext-pins {
-+			pinmux = <GPIOMUX(4, GPOUT_LOW,
-+					     GPOEN_DISABLE,
-+					     GPI_SYS_MCLK_EXT)>;
-+			input-enable;
-+		};
-+	};
-+
- 	mmc0_pins: mmc0-0 {
- 		 rst-pins {
- 			pinmux = <GPIOMUX(62, GPOUT_SYS_SDIO0_RST,
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index e85464c328d0..621b68c02ea8 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -512,6 +512,30 @@ tdm: tdm@10090000 {
- 			status = "disabled";
- 		};
+ 			part_tmp = tmpstr;
+ 			part = strsep(&part_tmp, COMMA_SEP);
+-			if (!part)
+-				strscpy(ordered_list_data->elements[0],
+-					tmpstr,
+-					sizeof(ordered_list_data->elements[0]));
  
-+		i2srx: i2s@100e0000 {
-+			compatible = "starfive,jh7110-i2srx";
-+			reg = <0x0 0x100e0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2SRX_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_LRCK>,
-+				 <&i2srx_bclk_ext>,
-+				 <&i2srx_lrck_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSRST_I2SRX_BCLK>;
-+			dmas = <0>, <&dma 24>;
-+			dma-names = "tx", "rx";
-+			starfive,syscon = <&sys_syscon 0x18 0x2>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		usb0: usb@10100000 {
- 			compatible = "starfive,jh7110-usb";
- 			ranges = <0x0 0x0 0x10100000 0x100000>;
-@@ -736,6 +760,47 @@ spi6: spi@120a0000 {
- 			status = "disabled";
- 		};
+-			for (olist_elem = 1; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
++			for (olist_elem = 0; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
+ 				strscpy(ordered_list_data->elements[olist_elem],
+ 					part,
+ 					sizeof(ordered_list_data->elements[olist_elem]));
+-				part = strsep(&part_tmp, SEMICOLON_SEP);
++				part = strsep(&part_tmp, COMMA_SEP);
+ 			}
++			ordered_list_data->elements_size = olist_elem;
  
-+		i2stx0: i2s@120b0000 {
-+			compatible = "starfive,jh7110-i2stx0";
-+			reg = <0x0 0x120b0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2STX0_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner","mclk_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX0_BCLK>;
-+			dmas = <&dma 47>;
-+			dma-names = "tx";
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2stx1: i2s@120c0000 {
-+			compatible = "starfive,jh7110-i2stx1";
-+			reg = <0x0 0x120c0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2STX1_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_LRCK>,
-+				 <&i2stx_bclk_ext>,
-+				 <&i2stx_lrck_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX1_BCLK>;
-+			dmas = <&dma 48>;
-+			dma-names = "tx";
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		sfctemp: temperature-sensor@120e0000 {
- 			compatible = "starfive,jh7110-temp";
- 			reg = <0x0 0x120e0000 0x0 0x10000>;
+ 			kfree(str_value);
+ 			str_value = NULL;
 -- 
-2.25.1
+2.34.1
 
