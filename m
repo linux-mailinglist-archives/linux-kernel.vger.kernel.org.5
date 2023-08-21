@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF06A7835FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 583D47835F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjHUWxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 18:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        id S230314AbjHUWwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 18:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbjHUWxE (ORCPT
+        with ESMTP id S229564AbjHUWwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 18:53:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474F6131;
-        Mon, 21 Aug 2023 15:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692658382; x=1724194382;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=LWApvfOUqHT4CVxPmBOO1cFmnp8lGFEMfYD9ICj0u+Q=;
-  b=JaKYXShNyfbPcGCHJ7F5GOIpd0Az0eKj7ekcgvMvde3e9uIsx0SMapGT
-   9DG4R2TTf7ZNYjmro7tLLDcU+KhzWYY2IAeGC3XIBxZkYvFellf+6P563
-   fBxHPVOyQ8TbY9kM5xT41fCsdN+U6pbl5IemsMVjC+VBwqCct7eWuZkMz
-   xGNSTdEmEvMsasUc0YbxSUwmjNCpGqFXU5LLsbzfTzuVKMSlf1p4h2gh2
-   r6akXKHjm+liNewigwI08UryXLZs5I9EAcQM0Zdf9SswmFjdiC7nUx7Tp
-   Hc67PL+ANuRp1MUD/UfIznfCLEODvgrChnz3qVCkPR4XfKFvXVyL/zoH2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="363888718"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="363888718"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 15:53:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="909872297"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="909872297"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 15:52:56 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH RESEND 1/4] memory tiering: add abstract distance
- calculation algorithms management
-References: <20230721012932.190742-1-ying.huang@intel.com>
-        <20230721012932.190742-2-ying.huang@intel.com>
-        <87r0owzqdc.fsf@nvdebian.thelocal>
-        <87r0owy95t.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87sf9cxupz.fsf@nvdebian.thelocal>
-        <878rb3xh2x.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87351axbk6.fsf@nvdebian.thelocal>
-        <87edkuvw6m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87y1j2vvqw.fsf@nvdebian.thelocal>
-        <87a5vhx664.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87lef0x23q.fsf@nvdebian.thelocal>
-        <87r0oack40.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87cyzgwrys.fsf@nvdebian.thelocal>
-Date:   Tue, 22 Aug 2023 06:50:51 +0800
-In-Reply-To: <87cyzgwrys.fsf@nvdebian.thelocal> (Alistair Popple's message of
-        "Mon, 21 Aug 2023 21:26:24 +1000")
-Message-ID: <87il98c8ms.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Mon, 21 Aug 2023 18:52:03 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9527B11C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:52:01 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe655796faso5909379e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692658320; x=1693263120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2dE6nYqHEQ+L2sVPS8kGSIPJdfk2Hjn75SWNwK5Pro0=;
+        b=Dg76P64PwO3nG6/UvR3SJ2crar4x0BoHHXHT2WzLVI3B0KfOR0p7iPifmdvowi0DTM
+         kTv+5YaHGnFjCRJDRT2wt548tL4R+2HVl1bW0VQULNYNbtlYc3k8kiymEvXSA0NcfLzu
+         gM2zTb4ro68+7meBHP0IJqjDly6p71vXC27Rvst5r9iRtqpmzOGLMyKGu5JD1IP0pKMh
+         u/22droJ8Jg+oUV9vzcW5LsYXaR8XaWEInDN6qFsu9GMOueLm9+9w4yT52Xc8xOcVl9Z
+         ZH35XxNb/plUC7GykePEH8hnYujRj8idtY7aYXibLp9hEpPrdDKVaL0ye9TDF+W/+zv0
+         eDUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692658320; x=1693263120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2dE6nYqHEQ+L2sVPS8kGSIPJdfk2Hjn75SWNwK5Pro0=;
+        b=Qd1ZkocTRHxocoZqPabGIE6HS3Wxbo68t+ZaRtKCtYedmoWZTx2DtYUPBgOsH4rM1d
+         4vDLa+jAZ2bNBpAVVzg0vfmu7scEubOxIU5DVZUlMgSv8S4ol8CuDx4bqVU5z/wl3pjx
+         P7WdAnohAyAdFloyWYeqL2cZn+F71/4KrB+ChLYBvvfYJP7lTUUQ5y01IPO8me1+Wbzc
+         FsQwX++93tyASUgOkjyIo6nU8DbayxVoyFKsBkpEnTWEd3kmEX6cZsT+627Gv6lHA3s4
+         wQMXluVEha0mDUfE0BjzSkifv4if2aSadet4qj52hToVoQTNkxU8RtCZiiCl0ocYjqr7
+         lhBw==
+X-Gm-Message-State: AOJu0YyKV6I/uUHi5hXDmj9Hdqf4e51qbnfPj7PNaJHXPopmJ8z1QgIJ
+        qBlrWbYHKA/CnLn3MSgePCU=
+X-Google-Smtp-Source: AGHT+IGZd1jrqEw1dVkjrAJ/bDRy2K3+CfKx1zY6ZqCcI5cvFFx5BK1x2jeM2iJezypWpGy8Oc/erg==
+X-Received: by 2002:a05:6512:1186:b0:4f8:752f:3722 with SMTP id g6-20020a056512118600b004f8752f3722mr5028337lfr.5.1692658319459;
+        Mon, 21 Aug 2023 15:51:59 -0700 (PDT)
+Received: from f.. (cst-prg-85-121.cust.vodafone.cz. [46.135.85.121])
+        by smtp.gmail.com with ESMTPSA id i22-20020a170906445600b009937dbabbdasm7144044ejp.217.2023.08.21.15.51.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 15:51:58 -0700 (PDT)
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Liam.Howlett@oracle.com
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, maple-tree@lists.infradead.org,
+        Mateusz Guzik <mjguzik@gmail.com>
+Subject: [PATCH] maple_tree: shrink struct maple_tree from 24 to 16 bytes on LP64
+Date:   Tue, 22 Aug 2023 00:51:45 +0200
+Message-Id: <20230821225145.2169848-1-mjguzik@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alistair Popple <apopple@nvidia.com> writes:
+by plugging a padding hole.
 
-> "Huang, Ying" <ying.huang@intel.com> writes:
->
->> Hi, Alistair,
->>
->> Sorry for late response.  Just come back from vacation.
->
-> Ditto for this response :-)
->
-> I see Andrew has taken this into mm-unstable though, so my bad for not
-> getting around to following all this up sooner.
->
->> Alistair Popple <apopple@nvidia.com> writes:
->>
->>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>
->>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>
->>>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>>
->>>>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>>>
->>>>>>>>>> While other memory device drivers can use the general notifier chain
->>>>>>>>>> interface at the same time.
->>>>>>>
->>>>>>> How would that work in practice though? The abstract distance as far as
->>>>>>> I can tell doesn't have any meaning other than establishing preferences
->>>>>>> for memory demotion order. Therefore all calculations are relative to
->>>>>>> the rest of the calculations on the system. So if a driver does it's own
->>>>>>> thing how does it choose a sensible distance? IHMO the value here is in
->>>>>>> coordinating all that through a standard interface, whether that is HMAT
->>>>>>> or something else.
->>>>>>
->>>>>> Only if different algorithms follow the same basic principle.  For
->>>>>> example, the abstract distance of default DRAM nodes are fixed
->>>>>> (MEMTIER_ADISTANCE_DRAM).  The abstract distance of the memory device is
->>>>>> in linear direct proportion to the memory latency and inversely
->>>>>> proportional to the memory bandwidth.  Use the memory latency and
->>>>>> bandwidth of default DRAM nodes as base.
->>>>>>
->>>>>> HMAT and CDAT report the raw memory latency and bandwidth.  If there are
->>>>>> some other methods to report the raw memory latency and bandwidth, we
->>>>>> can use them too.
->>>>>
->>>>> Argh! So we could address my concerns by having drivers feed
->>>>> latency/bandwidth numbers into a standard calculation algorithm right?
->>>>> Ie. Rather than having drivers calculate abstract distance themselves we
->>>>> have the notifier chains return the raw performance data from which the
->>>>> abstract distance is derived.
->>>>
->>>> Now, memory device drivers only need a general interface to get the
->>>> abstract distance from the NUMA node ID.  In the future, if they need
->>>> more interfaces, we can add them.  For example, the interface you
->>>> suggested above.
->>>
->>> Huh? Memory device drivers (ie. dax/kmem.c) don't care about abstract
->>> distance, it's a meaningless number. The only reason they care about it
->>> is so they can pass it to alloc_memory_type():
->>>
->>> struct memory_dev_type *alloc_memory_type(int adistance)
->>>
->>> Instead alloc_memory_type() should be taking bandwidth/latency numbers
->>> and the calculation of abstract distance should be done there. That
->>> resovles the issues about how drivers are supposed to devine adistance
->>> and also means that when CDAT is added we don't have to duplicate the
->>> calculation code.
->>
->> In the current design, the abstract distance is the key concept of
->> memory types and memory tiers.  And it is used as interface to allocate
->> memory types.  This provides more flexibility than some other interfaces
->> (e.g. read/write bandwidth/latency).  For example, in current
->> dax/kmem.c, if HMAT isn't available in the system, the default abstract
->> distance: MEMTIER_DEFAULT_DAX_ADISTANCE is used.  This is still useful
->> to support some systems now.  On a system without HMAT/CDAT, it's
->> possible to calculate abstract distance from ACPI SLIT, although this is
->> quite limited.  I'm not sure whether all systems will provide read/write
->> bandwith/latency data for all memory devices.
->>
->> HMAT and CDAT or some other mechanisms may provide the read/write
->> bandwidth/latency data to be used to calculate abstract distance.  For
->> them, we can provide a shared implementation in mm/memory-tiers.c to map
->> from read/write bandwith/latency to the abstract distance.  Can this
->> solve your concerns about the consistency among algorithms?  If so, we
->> can do that when we add the second algorithm that needs that.
->
-> I guess it would address my concerns if we did that now. I don't see why
-> we need to wait for a second implementation for that though - the whole
-> series seems to be built around adding a framework for supporting
-> multiple algorithms even though only one exists. So I think we should
-> support that fully, or simplfy the whole thing and just assume the only
-> thing that exists is HMAT and get rid of the general interface until a
-> second algorithm comes along.
+[sounds like an obvious thing to do, am I missing something?]
 
-We will need a general interface even for one algorithm implementation.
-Because it's not good to make a dax subsystem driver (dax/kmem) to
-depend on a ACPI subsystem driver (acpi/hmat).  We need some general
-interface at subsystem level (memory tier here) between them.
+Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
+---
+ include/linux/maple_tree.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards,
-Huang, Ying
+diff --git a/include/linux/maple_tree.h b/include/linux/maple_tree.h
+index 295548cca8b3..5bdd3ce34cb9 100644
+--- a/include/linux/maple_tree.h
++++ b/include/linux/maple_tree.h
+@@ -212,8 +212,8 @@ struct maple_tree {
+ 		spinlock_t	ma_lock;
+ 		lockdep_map_p	ma_external_lock;
+ 	};
+-	void __rcu      *ma_root;
+ 	unsigned int	ma_flags;
++	void __rcu      *ma_root;
+ };
+ 
+ /**
+-- 
+2.39.2
+
