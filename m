@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0649782127
+	by mail.lfdr.de (Postfix) with ESMTP id 870A1782126
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbjHUBUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 21:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44872 "EHLO
+        id S232430AbjHUBUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 21:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjHUBTv (ORCPT
+        with ESMTP id S232419AbjHUBT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 21:19:51 -0400
+        Sun, 20 Aug 2023 21:19:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD96AEB
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 18:19:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F52FC
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 18:19:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48885625F7
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D66FB6268E
         for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:19:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44843C433CC;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D656EC433CB;
         Mon, 21 Aug 2023 01:19:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692580779;
-        bh=ABB0VEm/1qgHSMYLRDciSz5DC9qBJP3kxsxjFgJZZ5Q=;
+        s=k20201202; t=1692580780;
+        bh=qkJxCGkZPlZlG/BJ/AajbqkIuFwM6PWAkTDJOR+28gA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WpK/wBKT6GpIMS/8IETxzEpkcHpLnvA9UsqO92eoDLBs99jIMhyVrlhW9jJzghW/1
-         +dp+CPf3Xu4AZUDYX12af367DJWF37hKsebdxbyaC0irs5eKXvv6TfuKCemNcygLuS
-         csw+q6zuFy22vxEAN8JXX3hDzGS6sIgkYF+JtTyMV7G267gC2BVWPs7KbM3Hac7v+C
-         JVlt4YBAci80ZKZlQA3ushe58ywyXomV0s8a4JjZoipLLi010ey02sVY0NUwzwuo0A
-         7GvkaWHzjouqK/v+oSpjshtdtsCiyMZrTVYhA2e1IhQVOW9U/fmT9Uq8M6NwkiJX/z
-         4LHfCGUIvDD+g==
+        b=hgZ+MZWK2NryulPLM9PrOKBnFkY3uqEpDHiVYoKoHLJQcRXIKrFPLX0r2pZetKAH9
+         HtQZcSe3BBBrvXhL/pidiOB4ZyfGwSXIOhcFM9YFzKipw38Sa1xgKdXcdEwiNf1oac
+         5KY9S4dr/XYOE6XTZ8xwMjrpNtftuKgr+18FVB9k/1fWqDIV/jB6R3OL9I+4v4rw+l
+         cjfd7YGdVoiOQreiFWDbLn6vdq7QfcA4ry1Q4yPIMT4WUrB//u9/BivH93MOdfPm43
+         a0ruG+IhYdMmv9pMWkcxBX4kAiJVTKy+7oKosmuTn1NCwKNY3X7f2QRpqQfuUf9E4+
+         P3fzAEk720UYg==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
@@ -43,9 +43,9 @@ Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Nikolay Borisov <nik.borisov@suse.com>,
         gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 21/22] x86/nospec: Refactor UNTRAIN_RET[_*]
-Date:   Sun, 20 Aug 2023 18:19:18 -0700
-Message-ID: <316ee83d450de92924273f65580a7d23f7355f40.1692580085.git.jpoimboe@kernel.org>
+Subject: [PATCH 22/22] x86/calldepth: Rename __x86_return_skl() to call_depth_return_thunk()
+Date:   Sun, 20 Aug 2023 18:19:19 -0700
+Message-ID: <1d7c2ce1c5723902389e0268042f1c98a8783c46.1692580085.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <cover.1692580085.git.jpoimboe@kernel.org>
 References: <cover.1692580085.git.jpoimboe@kernel.org>
@@ -60,63 +60,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out the UNTRAIN_RET[_*] common bits into a helper macro.
+For consistency with the other return thunks, rename __x86_return_skl()
+to call_depth_return_thunk().
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/x86/include/asm/nospec-branch.h | 31 +++++++++-------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 13 ++++---------
+ arch/x86/kernel/cpu/bugs.c           |  3 ++-
+ arch/x86/lib/retpoline.S             |  4 ++--
+ 3 files changed, 8 insertions(+), 12 deletions(-)
 
 diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 51e3f1a287d2..dcc78477a38d 100644
+index dcc78477a38d..14cd3cd5f85a 100644
 --- a/arch/x86/include/asm/nospec-branch.h
 +++ b/arch/x86/include/asm/nospec-branch.h
-@@ -288,35 +288,24 @@
-  * As such, this must be placed after every *SWITCH_TO_KERNEL_CR3 at a point
-  * where we have a stack but before any RET instruction.
-  */
--.macro UNTRAIN_RET
-+.macro __UNTRAIN_RET ibpb_feature, call_depth_insns
- #if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
- 	VALIDATE_UNRET_END
- 	ALTERNATIVE_3 "",						\
- 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
--		     __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
-+		      "call entry_ibpb", \ibpb_feature,			\
-+		     __stringify(\call_depth_insns), X86_FEATURE_CALL_DEPTH
+@@ -358,12 +358,7 @@ extern void entry_ibpb(void);
+ extern void (*x86_return_thunk)(void);
+ 
+ #ifdef CONFIG_CALL_DEPTH_TRACKING
+-extern void __x86_return_skl(void);
+-
+-static inline void x86_set_skl_return_thunk(void)
+-{
+-	x86_return_thunk = &__x86_return_skl;
+-}
++extern void call_depth_return_thunk(void);
+ 
+ #define CALL_DEPTH_ACCOUNT					\
+ 	ALTERNATIVE("",						\
+@@ -376,12 +371,12 @@ DECLARE_PER_CPU(u64, __x86_ret_count);
+ DECLARE_PER_CPU(u64, __x86_stuffs_count);
+ DECLARE_PER_CPU(u64, __x86_ctxsw_count);
  #endif
- .endm
+-#else
+-static inline void x86_set_skl_return_thunk(void) {}
++#else /* !CONFIG_CALL_DEPTH_TRACKING */
  
--.macro UNTRAIN_RET_VM
--#if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
--	VALIDATE_UNRET_END
--	ALTERNATIVE_3 "",						\
--		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT,	\
--		      __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
--#endif
--.endm
-+#define UNTRAIN_RET \
-+	__UNTRAIN_RET X86_FEATURE_ENTRY_IBPB, __stringify(RESET_CALL_DEPTH)
++static inline void call_depth_return_thunk(void) {}
+ #define CALL_DEPTH_ACCOUNT ""
  
--.macro UNTRAIN_RET_FROM_CALL
--#if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
--	VALIDATE_UNRET_END
--	ALTERNATIVE_3 "",						\
--		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
--		      __stringify(RESET_CALL_DEPTH_FROM_CALL), X86_FEATURE_CALL_DEPTH
 -#endif
--.endm
-+#define UNTRAIN_RET_VM \
-+	__UNTRAIN_RET X86_FEATURE_IBPB_ON_VMEXIT, __stringify(RESET_CALL_DEPTH)
++#endif /* CONFIG_CALL_DEPTH_TRACKING */
+ 
+ #ifdef CONFIG_RETPOLINE
+ 
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 73d10e54fc1f..83eb3f77d911 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -1060,7 +1060,8 @@ static void __init retbleed_select_mitigation(void)
+ 	case RETBLEED_MITIGATION_STUFF:
+ 		setup_force_cpu_cap(X86_FEATURE_RETHUNK);
+ 		setup_force_cpu_cap(X86_FEATURE_CALL_DEPTH);
+-		x86_set_skl_return_thunk();
 +
-+#define UNTRAIN_RET_FROM_CALL \
-+	__UNTRAIN_RET X86_FEATURE_ENTRY_IBPB, __stringify(RESET_CALL_DEPTH_FROM_CALL)
++		x86_return_thunk = call_depth_return_thunk;
+ 		break;
  
+ 	default:
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 49f2be7c7b35..6376d0164395 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -321,7 +321,7 @@ __EXPORT_THUNK(entry_untrain_ret)
+ #ifdef CONFIG_CALL_DEPTH_TRACKING
  
- .macro CALL_DEPTH_ACCOUNT
+ 	.align 64
+-SYM_FUNC_START(__x86_return_skl)
++SYM_FUNC_START(call_depth_return_thunk)
+ 	ANNOTATE_NOENDBR
+ 	/*
+ 	 * Keep the hotpath in a 16byte I-fetch for the non-debug
+@@ -348,7 +348,7 @@ SYM_FUNC_START(__x86_return_skl)
+ 	ANNOTATE_UNRET_SAFE
+ 	ret
+ 	int3
+-SYM_FUNC_END(__x86_return_skl)
++SYM_FUNC_END(call_depth_return_thunk)
+ 
+ #endif /* CONFIG_CALL_DEPTH_TRACKING */
+ 
 -- 
 2.41.0
 
