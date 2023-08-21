@@ -2,44 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164CF78215E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D28782161
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbjHUCZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S232508AbjHUC27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231585AbjHUCZl (ORCPT
+        with ESMTP id S230261AbjHUC27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 22:25:41 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D129D
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:25:39 -0700 (PDT)
-Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RTbqw4nB5zVjNj;
-        Mon, 21 Aug 2023 10:23:24 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 21 Aug 2023 10:25:36 +0800
-From:   Tong Tiangen <tongtiangen@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Miaohe Lin <linmiaohe@huawei.com>, <wangkefeng.wang@huawei.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm: memory-failure: use rcu lock instead of tasklist_lock when collect_procs()
-Date:   Mon, 21 Aug 2023 10:25:34 +0800
-Message-ID: <20230821022534.1381092-1-tongtiangen@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 20 Aug 2023 22:28:59 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D1DE99;
+        Sun, 20 Aug 2023 19:28:55 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Cx7+vly+Jk6XQaAA--.53002S3;
+        Mon, 21 Aug 2023 10:28:53 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxPCPjy+JkVShfAA--.17092S3;
+        Mon, 21 Aug 2023 10:28:51 +0800 (CST)
+Subject: Re: [PATCH v4 3/4] MIPS: Return earlier in die() if notify_die()
+ returns NOTIFY_STOP
+To:     Huacai Chen <chenhuacai@kernel.org>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
+ <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <467fb231-4b0a-478e-0f68-358d0651fc05@loongson.cn>
+Date:   Mon, 21 Aug 2023 10:28:51 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600017.china.huawei.com (7.193.23.234)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-CM-TRANSID: AQAAf8DxPCPjy+JkVShfAA--.17092S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Zw13Aw4UZrWUArWxKrWUZFc_yoW8GF1Up3
+        yDJayUKFW5XF1UW347tFsaqryaq3s8tayxuanFyw4FvwsIvwn5GF1kWFnIqayFvryrK3W0
+        9Fy0qr1qka9xAagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
+        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+        6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
+        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
+        0xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
+        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
+        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2MKZDUUUU
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,192 +67,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found a softlock issue in our test, analyzed the logs, and found that
-the relevant CPU call trace as follows:
 
-CPU0:
-  _do_fork
-    -> copy_process()
-      -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
-      					 //tasklist_lock
 
-CPU1:
-  wp_page_copy()
-    ->pte_offset_map_lock()
-      -> spin_lock(&page->ptl);        //Hold page->ptl
-    -> ptep_clear_flush()
-      -> flush_tlb_others() ...
-        -> smp_call_function_many()
-          -> arch_send_call_function_ipi_mask()
-            -> csd_lock_wait()         //Waiting for other CPUs respond
-	                               //IPI
+On 08/20/2023 04:53 PM, Huacai Chen wrote:
+> Hi, Tiezhu,
+>
+> On Sun, Aug 20, 2023 at 7:21 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>> After the call to oops_exit(), it should not panic or execute
+>> the crash kernel if the oops is to be suppressed.
+>>
+>> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>  arch/mips/kernel/traps.c | 6 ++++--
+>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+>> index 8e528a8..fd770dc 100644
+>> --- a/arch/mips/kernel/traps.c
+>> +++ b/arch/mips/kernel/traps.c
+>> @@ -412,6 +412,9 @@ void die(const char *str, struct pt_regs *regs)
+>>
+>>         oops_exit();
+>>
+>> +       if (ret == NOTIFY_STOP)
+>> +               return;
+>> +
+>>         if (in_interrupt())
+>>                 panic("Fatal exception in interrupt");
+>>
+>> @@ -421,8 +424,7 @@ void die(const char *str, struct pt_regs *regs)
+>>         if (regs && kexec_should_crash(current))
+>>                 crash_kexec(regs);
+>>
+>> -       if (ret != NOTIFY_STOP)
+>> -               make_task_dead(SIGSEGV);
+>> +       make_task_dead(SIGSEGV);
+> Then you call make_task_dead() at the end unconditionally, and die()
+> becomes a noreturn function again.
 
-CPU2:
-  collect_procs_anon()
-    -> read_lock(&tasklist_lock)       //Hold tasklist_lock
-      ->for_each_process(tsk)
-        -> page_mapped_in_vma()
-          -> page_vma_mapped_walk()
-	    -> map_pte()
-              ->spin_lock(&page->ptl)  //Waiting for page->ptl
+No, it can return if (ret == NOTIFY_STOP), so die() is a return
+function now, please see objdump -d arch/mips/kernel/traps.o.
 
-We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
-unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
-softlockup is triggered.
-
-For collect_procs_anon(), we will not modify the tasklist, but only perform
-read traversal. Therefore, we can use rcu lock instead of spin lock
-tasklist_lock, from this, we can break the softlock chain above.
-
-The same logic can also be applied to:
- - collect_procs_file()
- - collect_procs_fsdax()
- - collect_procs_ksm()
- - find_early_kill_thread()
-
-Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
----
-Changes since RFC[1]:
- - 1. According to Naoya's suggestion, modify the tasklist_lock in the
-      comment about locking order in mm/filemap.c.
- - 2. According to Kefeng's suggestion, optimize the implementation of
-      find_early_kill_thread() without functional changes.
- - 3. Modify the title description.
-
-[1] https://lore.kernel.org/lkml/20230815130154.1100779-1-tongtiangen@huawei.com/
----
- mm/filemap.c        |  3 ---
- mm/ksm.c            |  4 ++--
- mm/memory-failure.c | 26 ++++++++++++++------------
- 3 files changed, 16 insertions(+), 17 deletions(-)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 014b73eb96a1..dfade1ef1765 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -121,9 +121,6 @@
-  *    bdi.wb->list_lock		(zap_pte_range->set_page_dirty)
-  *    ->inode->i_lock		(zap_pte_range->set_page_dirty)
-  *    ->private_lock		(zap_pte_range->block_dirty_folio)
-- *
-- * ->i_mmap_rwsem
-- *   ->tasklist_lock            (memory_failure, collect_procs_ao)
-  */
- 
- static void page_cache_delete(struct address_space *mapping,
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 8d6aee05421d..981af9c72e7a 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -2925,7 +2925,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
- 		struct anon_vma *av = rmap_item->anon_vma;
- 
- 		anon_vma_lock_read(av);
--		read_lock(&tasklist_lock);
-+		rcu_read_lock();
- 		for_each_process(tsk) {
- 			struct anon_vma_chain *vmac;
- 			unsigned long addr;
-@@ -2944,7 +2944,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
- 				}
- 			}
- 		}
--		read_unlock(&tasklist_lock);
-+		rcu_read_unlock();
- 		anon_vma_unlock_read(av);
- 	}
- }
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index 7b01fffe7a79..3e4fd8beec31 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -546,24 +546,26 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
-  * Find a dedicated thread which is supposed to handle SIGBUS(BUS_MCEERR_AO)
-  * on behalf of the thread group. Return task_struct of the (first found)
-  * dedicated thread if found, and return NULL otherwise.
-- *
-- * We already hold read_lock(&tasklist_lock) in the caller, so we don't
-- * have to call rcu_read_lock/unlock() in this function.
-  */
- static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
- {
- 	struct task_struct *t;
- 
-+	rcu_read_lock();
- 	for_each_thread(tsk, t) {
- 		if (t->flags & PF_MCE_PROCESS) {
- 			if (t->flags & PF_MCE_EARLY)
--				return t;
-+				goto found;
- 		} else {
- 			if (sysctl_memory_failure_early_kill)
--				return t;
-+				goto found;
- 		}
- 	}
--	return NULL;
-+
-+	t = NULL;
-+found:
-+	rcu_read_unlock();
-+	return t;
- }
- 
- /*
-@@ -609,7 +611,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
- 		return;
- 
- 	pgoff = page_to_pgoff(page);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	for_each_process(tsk) {
- 		struct anon_vma_chain *vmac;
- 		struct task_struct *t = task_early_kill(tsk, force_early);
-@@ -626,7 +628,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
- 			add_to_kill_anon_file(t, page, vma, to_kill);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	anon_vma_unlock_read(av);
- }
- 
-@@ -642,7 +644,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
- 	pgoff_t pgoff;
- 
- 	i_mmap_lock_read(mapping);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	pgoff = page_to_pgoff(page);
- 	for_each_process(tsk) {
- 		struct task_struct *t = task_early_kill(tsk, force_early);
-@@ -662,7 +664,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
- 				add_to_kill_anon_file(t, page, vma, to_kill);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- 
-@@ -685,7 +687,7 @@ static void collect_procs_fsdax(struct page *page,
- 	struct task_struct *tsk;
- 
- 	i_mmap_lock_read(mapping);
--	read_lock(&tasklist_lock);
-+	rcu_read_lock();
- 	for_each_process(tsk) {
- 		struct task_struct *t = task_early_kill(tsk, true);
- 
-@@ -696,7 +698,7 @@ static void collect_procs_fsdax(struct page *page,
- 				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
- 		}
- 	}
--	read_unlock(&tasklist_lock);
-+	rcu_read_unlock();
- 	i_mmap_unlock_read(mapping);
- }
- #endif /* CONFIG_FS_DAX */
--- 
-2.25.1
+Thanks,
+Tiezhu
 
