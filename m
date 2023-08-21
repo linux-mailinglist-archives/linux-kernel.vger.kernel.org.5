@@ -2,181 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A1678269C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A777826A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbjHUJ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S234497AbjHUJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234494AbjHUJ4D (ORCPT
+        with ESMTP id S231553AbjHUJ5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:56:03 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2043.outbound.protection.outlook.com [40.107.92.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0616CF;
-        Mon, 21 Aug 2023 02:56:01 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XXyLZDJrwgw5AH42b71/svzb444gC7dLsZxkdkpByX+p7ahr5LGZ5J/1+mmZGgfFCUp7erwqkexB4ln2jAeTZ2w7lhAL40QD4nQSFeKxI8Nij7naGDKrpB0LzdI16QQPrL6yM14tDiRDUxx6pMdp3MXjPdTsQSq69h82h9Ra3omNgXhp0FlOs+MFv/MCFwsCoOmqAWjsghUirQp3M2nAeuXrt8aXVmpUvQn/cLaj1MtU/2CVzaVc6PQedcYtOo5Izpochg9VaKnOdvsnFzBn7Q+ysqV5HH0/hllvE0VT8UYpSqJbrlcbYmQST2CPRzHWRDNOCBHUoL9qoI6DgffqLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1FuPL7FmuIQgEDPkCDqfM1Ni9PxwH61leV+wFWQGML4=;
- b=KJptosJbEI0D16hpk0zplxwYzmGs7W7gXWnt+Tv6aEWYlN7+LMMb45jKY79DNXHH/UX4PN4AB6Nle06OfUpqz+kTwwgXC/IZ14ubcr79fI6f1MUwDMPdC7ZcHGxU032tKhJwGVkVI4VU3zNi7OKqZEF2iMJLiET5tXHotdC26Smk/QB+8xhjLqPCf7lYYCxH0XXEGGPVRb6rM1jMAZHGcsbS5fCt1DUnfLE4nOS/oLL5BwblAf1X9b+YXss1A8GcozNKCraexGuk33dtHdrvhbfG4xEgwCiWlgPFZ3IYat8T41fr6v2zlPL0dFA6E5zyaEWXQNLmJit+32kyoZVeaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1FuPL7FmuIQgEDPkCDqfM1Ni9PxwH61leV+wFWQGML4=;
- b=IQ+/wfbF+pvOA8S0FnVvKJZ2sglfCHPENsfKDr1ZsBx2D+qVJeH0/dyZI2/9CxG9jxZNnuCiE0vrrOAwJrY25/8XnIluSQmclF8H8Pve9i4noNO1SXzvSwJ7eBFdKi0VxbdBvZvT7X8m4ExRxk11m0M0WE1WUsbM0Zag0HKKIrc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com (2603:10b6:5:24a::19)
- by SN4PR03MB6734.namprd03.prod.outlook.com (2603:10b6:806:1ee::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20; Mon, 21 Aug
- 2023 09:55:58 +0000
-Received: from DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25]) by DM6PR03MB5196.namprd03.prod.outlook.com
- ([fe80::411c:e486:3837:cc25%3]) with mapi id 15.20.6699.022; Mon, 21 Aug 2023
- 09:55:58 +0000
-Message-ID: <242cf022-503d-553a-8b78-f0abdb58d374@synaptics.com>
-Date:   Mon, 21 Aug 2023 17:55:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Hsia-Jun Li <Randy.Li@synaptics.com>
-Subject: [PATCH] dma-buf/heaps: map CMA all pages for user
-Content-Language: en-GB
-To:     linaro-mm-sig@lists.linaro.org
-Cc:     sumit.semwal@linaro.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian.Starkey@arm.com, jstultz@google.com, tjmercier@google.com,
-        christian.koenig@amd.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR05CA0197.namprd05.prod.outlook.com
- (2603:10b6:a03:330::22) To DM6PR03MB5196.namprd03.prod.outlook.com
- (2603:10b6:5:24a::19)
+        Mon, 21 Aug 2023 05:57:36 -0400
+Received: from out-12.mta1.migadu.com (out-12.mta1.migadu.com [95.215.58.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07292A1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:57:34 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692611853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HTQQLcZjy5SOyzVREu6p8o8uUAQapiAefMRwTkFEijM=;
+        b=N3xaoeoc/ub7B7aT+bcMxfGMMOZ4MaMCof7Tj9Fam2czFP1dDEkSYNQZPY6gFgtIn5PgbU
+        4t6Xk1VOKTbfF7PROi3MAcfecOdsQ1dM3mtrRiDT1qHZ1da6wM1r2W0ahfSQW5CvfE8UmK
+        Mn560Q2cidZVTJxkY1MukQ+s7n72wv4=
+From:   chengming.zhou@linux.dev
+To:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com,
+        bvanassche@acm.org
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com
+Subject: [PATCH 1/3] blk-mq: fix tags leak when shrink nr_hw_queues
+Date:   Mon, 21 Aug 2023 17:56:00 +0800
+Message-ID: <20230821095602.70742-1-chengming.zhou@linux.dev>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR03MB5196:EE_|SN4PR03MB6734:EE_
-X-MS-Office365-Filtering-Correlation-Id: 198c29c1-f463-4852-34bb-08dba22cd1a5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0xZMuP1vzxcvyqaQFQ39jWTV2gm0RuaLV+tXm01qisvaJL/t3E5fNaDx3wCx7D2fRo76MJQpiiyGr7+UPQw8aeh0c9H5KFSyE6qPaZt6nrCFOVjTAAsqQAoxVS1RGOPQv8030S08hcHM/d8QLSp+MCn89MYFZh8zPFDM++DN2UJW6FfYKWcqgHkQW6gQMQJbOo7rGCtiFZkw4ngIQVTu6kTxAOZWmogobIlW3svXpJTTKTvie+/4OSjRg434EKJacU8IRO6OhfPaMf2+RRUrfQRdJuf70JG+NA7xzmhaMVKsIbdNbEgIFdwhR3DBEZMxqcE44KI1IYuylyGl/q9pXp9reIoP3RQfpQYdEQiUp78AWBKtG5ytfKJPhny6HqsRysK96JaJDkYnFQxWT83kOzpQGfMlYoMi9gSUaEKrTX15Jd6T6Rq8YSquiiXJz1PXeOSbAul3ZoM3Qpy8t2cIncNw9cMQpq5KTHK2Vo++PA7RTYl1Kyw50zRBCBwi2H15jP++yd1USzJjcPEll9RvbFrvHgndRt1r+ecjvRs64wO7AlWuapQEO3jE060/tqhnCKcFPXwBAyV2aBeJLBdUfmn26V/xA5wFiVx1GVcisRCzbZYSc5rZ71kc8UqTm1+hnQCbSRIrNC4wgrG+bJqydPpIi3yXLTUVIlzAu/RVvTuMu+nQBxArgY1stAbQubi/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB5196.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(366004)(136003)(396003)(346002)(451199024)(1800799009)(186009)(86362001)(5660300002)(41300700001)(2616005)(66476007)(6916009)(316002)(66946007)(2906002)(66556008)(54906003)(7416002)(31686004)(8676002)(4326008)(8936002)(478600001)(31696002)(6666004)(6486002)(38350700002)(52116002)(6506007)(38100700002)(6512007)(26005)(36756003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T0kxK0VyeUFwci9QbTRLZDhCSmNQSGtiWWhtSTJOaEkzQzZFVTZPYWh5ZVlo?=
- =?utf-8?B?YWRscTJnRElWcS9CSW0wcWEyV1ltU01nM2FLN05SZGZtc00rWU5yQTBGMmFF?=
- =?utf-8?B?akJvVzRyK0RBOTdBSXNDeWZVZ3VFNVRFZWd0RkpGQ0NialF0QUI3YUk2K2tu?=
- =?utf-8?B?RDBOZENBRjhpSUZNeVZuT0dScmdnREdHQzNWLzFGRm5WMWMzQ3ZUNGxpVHg0?=
- =?utf-8?B?R1preENJQm1pY2tiWnZKaGkvQVpMT2VxWm13QUJoY2pBTVlvSUNMQWN4TEVn?=
- =?utf-8?B?dzE5Q0dNTlFEWlEvZithcU9hRmVzclRhWnZodEI3VDZqWjhVTjlBNHFvNjhX?=
- =?utf-8?B?ellEU2JUeFF1cFRBelBMN3VTY0JNSHdJQnByek9QVG1ySG9KVXozcmNSZVp4?=
- =?utf-8?B?SnBpU2pHZlBUeGlHL3pFS0taSEdNZUk3S1VrcnQyNXVEVzZUUnAzY21HWmNM?=
- =?utf-8?B?OHNMRFZxMVZHWllRK0VuY0orWkR1MDBnRXR4ZFFsTTIwdVhhOWQyRyt6TTE2?=
- =?utf-8?B?VVh3OGdTdkdnMURDeC9GYWVvbXBUaXBWNTcrVVBIWDBTSmtYemlBNjNUNGw4?=
- =?utf-8?B?eGwwb0l1K1FCRmlOR1Z2anBmQzVqWlM3YUo4VmJMeUhmd0IvR3hseFo1Mjh2?=
- =?utf-8?B?aTFmZDBmeE1zVC9PSVBOMEFhSjZPblpBNzFwRUEyaE5ielhEQlEyMHRzSm8v?=
- =?utf-8?B?Ukp4RWs5djJITWxWWTcySCtTNWd4ak5JdWFucmFOOHEycU1UalYxZVpPN0xu?=
- =?utf-8?B?S2RaVDFCTnVOcDh3NkFna0IvQWVjSzRadWVyQi9ZRm1PMEJCb1prd0hPMWRQ?=
- =?utf-8?B?REZOL3doY0l5ZmtpNmh5TnAraUxoMHdnajRGNTVlaStVTXluVXlWVEVlNTBP?=
- =?utf-8?B?aEIvelpjQlZMa0pLcmc3V0tBdm5JNzgvNW1xS05YdldpRE9vU01Hb0VveSt1?=
- =?utf-8?B?RTZVNnZBZ1dnRU0vTzNWdG1hNVpQNy9pSmZadzUyMFBKUUVzbklZMmhpWE9h?=
- =?utf-8?B?bEpjdk4zaDRhSUxmc0d2a0M3SVZIYnljREVFYmR1U1d4Q0t6cHd6enBpNzUx?=
- =?utf-8?B?VDJ4bjlmZVFheCtkMFRWYlJ4QVQ5dGlvZUdNSUUvMzNGSHNEeCtndndFMlh4?=
- =?utf-8?B?Tm9mSHkyakhyRU9qeU5jdjZTSG9WK0tCRDdIOWpVQ0tFVFNPbzhiZXJMTmNt?=
- =?utf-8?B?TTE2VWJpZURxck1zZkFIRDJic0RneGNuQ1lFeUNXaVI3cUNzeHVEcUJ2K2hh?=
- =?utf-8?B?aklBMWN6MHdra2pRS1owUk1obzZ2bTBNdUZXeWpQZ1J3MEZqMTZqNytldm1w?=
- =?utf-8?B?UURNMG54VG5XWjNUUVdHOEgzUS8rU2NlVUtDVzNyd2EvUmZ5V3B5eUljbHJq?=
- =?utf-8?B?bGxNeVVOR09yZWQxZTdIcFJ3MjVFRi91NFRHWS9PWG9MTU1ib1lLNkxBRkRZ?=
- =?utf-8?B?VTZ5L0xXNG1ZR2puU3dhV0NjUVJTenRZNkpNbUtZUktwMno5SHlQUHNjZzhN?=
- =?utf-8?B?QW0vUWR0RXhtM2tZOFp2N3NSUDB6aE0rdkpiWVIzU3V6dmRTK29XbDR2K1Y3?=
- =?utf-8?B?WmhRUGRYclFGY25wVGJJWUE5aExqYzlEaFVBTzFYdTN3VlBPWVU2QSt6bkhz?=
- =?utf-8?B?dmxPc3BFWTcwZnFOOG5UWjdTbVNtQnhNQUpMTVBSdEhxNXBKN3FOMzhvQnNk?=
- =?utf-8?B?Z1ZyVkdwNCtwdDZEYjRjc2RKMWFvaFJhUURhM3E3SGFsT0lZNS8yVjhkZGJu?=
- =?utf-8?B?VzdNdGlZdGh1YlExeHJ3SDRPc2lmVjk0YktMT0g0bVdkTnI5dUZZcEx1NXlC?=
- =?utf-8?B?YkZqQndTSVBLZXA3MGhLTFFaUjdOeFBtdjBKeDRpL2ljeWNZTDZqN24xczVO?=
- =?utf-8?B?VjRNT3FNZm9Jbkp6VS9EaXo0b1N1OEdPZVBvc1dONUh3VzVrUTVvN21UQnJO?=
- =?utf-8?B?T0hNaTFQbmtaTTcrQmpucEtnWE1RdWdubTFtWjhoZjY5N3plMWFGS2J1NzNG?=
- =?utf-8?B?cWo4RHBYYnlIbG4zcVhuY1NmODU1Y3lGWU92M2crYlhDZTdERzRWSHFWWGc2?=
- =?utf-8?B?SmNrcy9mMUZRS2I1aExmWDNxWGRBWkd0SG0xczlWUmJwNVozYnJGNmtHRGti?=
- =?utf-8?Q?qOzV9UYMs/1HAPRKMEXpXqj74?=
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 198c29c1-f463-4852-34bb-08dba22cd1a5
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB5196.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 09:55:58.4594
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: E34fHlxjgHQ6MhmvC/b578MZEfvdNU9adnORjoppHde8QiZPuLgLullFoxkl1H3DgdUFilMXEIQrRtMndivECg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR03MB6734
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Page fault would raise a CPU interrupt, it is not
-a good idea.
+From: Chengming Zhou <zhouchengming@bytedance.com>
 
-Signed-off-by: Hsia-Jun(Randy) Li <randy.li@synaptics.com>
+Although we don't need to realloc set->tags[] when shrink nr_hw_queues,
+we need to free them. Or these tags will be leaked.
+
+How to reproduce:
+1. mount -t configfs configfs /mnt
+2. modprobe null_blk nr_devices=0 submit_queues=8
+3. mkdir /mnt/nullb/nullb0
+4. echo 1 > /mnt/nullb/nullb0/power
+5. echo 4 > /mnt/nullb/nullb0/submit_queues
+6. rmdir /mnt/nullb/nullb0
+
+In step 4, will alloc 9 tags (8 submit queues and 1 poll queue), then
+in step 5, new_nr_hw_queues = 5 (4 submit queues and 1 poll queue).
+At last in step 6, only these 5 tags are freed, the other 4 tags leaked.
+
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
-  drivers/dma-buf/heaps/cma_heap.c | 26 +++-----------------------
-  1 file changed, 3 insertions(+), 23 deletions(-)
+ block/blk-mq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/dma-buf/heaps/cma_heap.c 
-b/drivers/dma-buf/heaps/cma_heap.c
-index ee899f8e6721..7d0b15ad21a7 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -160,35 +160,15 @@ static int cma_heap_dma_buf_end_cpu_access(struct 
-dma_buf *dmabuf,
-  	return 0;
-  }
-  -static vm_fault_t cma_heap_vm_fault(struct vm_fault *vmf)
--{
--	struct vm_area_struct *vma = vmf->vma;
--	struct cma_heap_buffer *buffer = vma->vm_private_data;
--
--	if (vmf->pgoff > buffer->pagecount)
--		return VM_FAULT_SIGBUS;
--
--	vmf->page = buffer->pages[vmf->pgoff];
--	get_page(vmf->page);
--
--	return 0;
--}
--
--static const struct vm_operations_struct dma_heap_vm_ops = {
--	.fault = cma_heap_vm_fault,
--};
--
-  static int cma_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct 
-*vma)
-  {
-  	struct cma_heap_buffer *buffer = dmabuf->priv;
--
-  	if ((vma->vm_flags & (VM_SHARED | VM_MAYSHARE)) == 0)
-  		return -EINVAL;
-  -	vma->vm_ops = &dma_heap_vm_ops;
--	vma->vm_private_data = buffer;
--
--	return 0;
-+	return remap_pfn_range(vma, vma->vm_start,
-+			       page_to_pfn(buffer->pages[vma->vm_pgoff]),
-+			       vma->vm_end - vma->vm_start, vma->vm_page_prot);
-  }
-   static void *cma_heap_do_vmap(struct cma_heap_buffer *buffer)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index f14b8669ac69..8af29a3b1400 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4386,9 +4386,13 @@ static int blk_mq_realloc_tag_set_tags(struct blk_mq_tag_set *set,
+ 				       int new_nr_hw_queues)
+ {
+ 	struct blk_mq_tags **new_tags;
++	int i;
+ 
+-	if (set->nr_hw_queues >= new_nr_hw_queues)
++	if (set->nr_hw_queues >= new_nr_hw_queues) {
++		for (i = new_nr_hw_queues; i < set->nr_hw_queues; i++)
++			__blk_mq_free_map_and_rqs(set, i);
+ 		goto done;
++	}
+ 
+ 	new_tags = kcalloc_node(new_nr_hw_queues, sizeof(struct blk_mq_tags *),
+ 				GFP_KERNEL, set->numa_node);
 -- 
-2.17.1
+2.41.0
 
