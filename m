@@ -2,148 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6366782585
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3DB78258A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbjHUIeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 04:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50870 "EHLO
+        id S234021AbjHUIfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 04:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjHUIeP (ORCPT
+        with ESMTP id S229516AbjHUIfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 04:34:15 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E59A6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:34:13 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-40c72caec5cso355821cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 01:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692606852; x=1693211652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SVU/Nryq1OKFV/57dRCXe3Tz8/JE0s1HOyjf1K6mQAA=;
-        b=SVbxWMRl2XXD6/2UwEQS9lOlAvrGmy6841NebQiw2Meun2Ufvzr1pV+erEzIt6I4jB
-         jkU6hH0tS8ezkTvI5rdPxQp7Njc/+Q4XEzZqs/2eOKLfhd/PRT8YU/+1XWnoRbFLguxr
-         jGqJvUMyaoAc+26H6qTfaBRGyKdokkWDto+iKb7fCmTh5IQqTZ9yXxhWtiwAXnHNwGjz
-         cfmPuJPTeJeXt9Vented9LfLJ0gpQPnDszsm2VigVz1j0zR20anQTTqJ9kvDy6XourAF
-         tE1k7nOlltwKMU69UZCxnhdeKbDYaKKEuIo3kcw3JMGKxP6h3vD/dbZ6EBYiikBtKgfJ
-         FsdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692606853; x=1693211653;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SVU/Nryq1OKFV/57dRCXe3Tz8/JE0s1HOyjf1K6mQAA=;
-        b=eyPxW1ln2TOU3ysP7eAMbOaRd6d8C1noHpHaVs+ZyJYwbEcqjTSZaOPR01MjSSnBck
-         XFRLGxS287yuwNJB246BpmVAif+ESdovO/phpYCBAGbhFkcsNim74wAGAmhu2wNjnfYb
-         +xEpvu8qoIKLGKk8TGEtzshTlaG66XwadyqbkzsukeEJehoM3620PdNra9hAMNcpEH4o
-         k5aJZmuuPlXTyZUVW94utxdF7PuAf2B4/UDlAc5SNzoq4U5BBOwCljpwAqgXsPJfgYmd
-         gThXzbkUkA91AhuONtYZwu/heEvP0N9qGOURY3VIb0V99ggG06UkLfEZj3MkgqSkeaf0
-         +H/w==
-X-Gm-Message-State: AOJu0Yz4++oFHmxvh/Rrr+wW1Ma3RisokvhuOB8rm/D9jyouL91CC35t
-        QfBf4Utz9J5Q4tE59CzdNwDN6fybMMP5iuk+UC3byg==
-X-Google-Smtp-Source: AGHT+IF5lj8CqHKSU+fGMj/v8EBHtUcF6dqeGwaeTNaKC8TL0GuPMcu82VpIJISeaDPykuUbG2akzADW3j32bjwlPZg=
-X-Received: by 2002:ac8:5bc4:0:b0:410:8ba3:21c7 with SMTP id
- b4-20020ac85bc4000000b004108ba321c7mr191159qtb.18.1692606852525; Mon, 21 Aug
- 2023 01:34:12 -0700 (PDT)
+        Mon, 21 Aug 2023 04:35:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC79B5;
+        Mon, 21 Aug 2023 01:35:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C775862D31;
+        Mon, 21 Aug 2023 08:34:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE5BC433C7;
+        Mon, 21 Aug 2023 08:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692606898;
+        bh=oEQbal5/vxqRGZ3YLafZj8Knbvn9kAOi/AFZtF9uDxU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KTDJqY5Yjj4O2DGZawjCbvMfpNiue4Yewjl6wur35PIheVqyPapwog1sJB5n89Ajm
+         jvZ0Y0a9XpQ39CzToNwGXA0cCcfRVNsNzZB80eFLy2SnIkCi0eYp2mOLyajO52bIeF
+         Gysae0y+8BV1c4+/IJtvMD1LB+TZa0gtQzc0+AXQegNjbA7xXv3eHDi7ojoOdnBCXV
+         /ICtDfJN3agBpY0kkaQcJjRgoh9r8optOCWGCUYjQ0omVc1F/WxYvUsApbnxHzSX4Y
+         rGbTeDp46sriFOPRhAC8FddeSDgr35+GEvy8jVUmyDFDtIaxE+/APWux6jEeRDxpGR
+         Ygd+84jMdrElg==
+Date:   Mon, 21 Aug 2023 10:34:51 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jim Quinlan <jim2101024@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 0/5] PCI: brcmstb: Configure appropriate HW CLKREQ#
+ mode
+Message-ID: <ZOMhq8a/wnURWsFP@lpieralisi>
+References: <20230623144100.34196-1-james.quinlan@broadcom.com>
 MIME-Version: 1.0
-References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.2.I782000a264a60e00ecad1bee06fd1413685f9253@changeid>
- <ZN5y4N8ffSoiR/sm@nvidia.com> <05f69a1a-97c9-ebca-5e01-c0b00699c93e@arm.com>
- <CAKHBV27suc5nDoH7gMHebjYBONTNqsugWvxbo2E-fRjRGs288w@mail.gmail.com> <ZN93TO9mRIrX1grw@nvidia.com>
-In-Reply-To: <ZN93TO9mRIrX1grw@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Mon, 21 Aug 2023 16:33:36 +0800
-Message-ID: <CAKHBV24L7pTajkStWCRiW7976+B8VtDHRDpo+Emta0RshkvRhQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 2/8] iommu/arm-smmu-v3: Perform invalidations over installed_smmus
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, nicolinc@nvidia.com, tina.zhang@intel.com,
-        jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230623144100.34196-1-james.quinlan@broadcom.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 9:51=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
->
-> On Fri, Aug 18, 2023 at 11:44:55AM +0800, Michael Shavit wrote:
-> > On Fri, Aug 18, 2023 at 3:41=E2=80=AFAM Robin Murphy <robin.murphy@arm.=
-com> wrote:
-> > >
-> > > On 2023-08-17 20:20, Jason Gunthorpe wrote:
-> > > > It is certainly wrong to skip invalidations generated for any other
-> > > > reason.
-> > > >
-> > > >  From what I can tell SVA domains should have their CD table entry
-> > > > programmed with "ASET=3D0" and normal paging domains should be
-> > > > programmed with "ASET=3D1". This causes only the SVA domains to lis=
-ten
-> > > > to the BTM invalidations.
-> > >
-> > > Correct.
-> > >
-> > > Thanks,
-> > > Robin.
-> >
-> > Would it be fair to rename arm_smmu_tlb_inv_asid (or move into
-> > arm-smmu-v3-sva) to make it explicit that it shouldn't be used outside
-> > of SVA then? Or add a parameter such as skip_btm_capable_devices.
->
-> ???
->
-> arm_smmu_tlb_inv_asid() is generally used in many places and has
-> nothing to do with BTM..
->
-> Did you mean arm_smmu_tlb_inv_range_asid ?
+On Fri, Jun 23, 2023 at 10:40:53AM -0400, Jim Quinlan wrote:
+> v6 -- No code has been changed.
+>    -- Changed commit subject and comment in "#PERST" commit (Bjorn, Cyril)
+>    -- Changed sign-off and author email address for all commits.
+>       This was due to a change in Broadcom's upstreaming policy.
+> 
+> v5 -- Remove DT property "brcm,completion-timeout-us" from	 
+>       "DT bindings" commit.  Although this error may be reported	 
+>       as a completion timeout, its cause was traced to an	 
+>       internal bus timeout which may occur even when there is	 
+>       no PCIe access being processed.  We set a timeout of four	 
+>       seconds only if we are operating in "L1SS CLKREQ#" mode.
+>    -- Correct CEM 2.0 reference provided by HW engineer,
+>       s/3.2.5.2.5/3.2.5.2.2/ (Bjorn)
+>    -- Add newline to dev_info() string (Stefan)
+>    -- Change variable rval to unsigned (Stefan)
+>    -- s/implementaion/implementation/ (Bjorn)
+>    -- s/superpowersave/powersupersave/ (Bjorn)
+>    -- Slightly modify message on "PERST#" commit.
+>    -- Rebase to torvalds master
+> 
+> v4 -- New commit that asserts PERST# for 2711/RPi SOCs at PCIe RC
+>       driver probe() time.  This is done in Raspian Linux and its
+>       absence may be the cause of a failing test case.
+>    -- New commit that removes stale comment.
+> 
+> v3 -- Rewrote commit msgs and comments refering panics if L1SS
+>       is enabled/disabled; the code snippet that unadvertises L1SS
+>       eliminates the panic scenario. (Bjorn)
+>    -- Add reference for "400ns of CLKREQ# assertion" blurb (Bjorn)
+>    -- Put binding names in DT commit Subject (Bjorn)
+>    -- Add a verb to a commit's subject line (Bjorn)
+>    -- s/accomodat(\w+)/accommodat$1/g (Bjorn)
+>    -- Rewrote commit msgs and comments refering panics if L1SS
+>       is enabled/disabled; the code snippet that unadvertises L1SS
+>       eliminates the panic scenario. (Bjorn)
+> 
+> v2 -- Changed binding property 'brcm,completion-timeout-msec' to
+>       'brcm,completion-timeout-us'.  (StefanW for standard suffix).
+>    -- Warn when clamping timeout value, and include clamped
+>       region in message. Also add min and max in YAML. (StefanW)
+>    -- Qualify description of "brcm,completion-timeout-us" so that
+>       it refers to PCIe transactions. (StefanW)
+>    -- Remvove mention of Linux specifics in binding description. (StefanW)
+>    -- s/clkreq#/CLKREQ#/g (Bjorn)
+>    -- Refactor completion-timeout-us code to compare max and min to
+>       value given by the property (as opposed to the computed value).
+> 
+> v1 -- The current driver assumes the downstream devices can
+>       provide CLKREQ# for ASPM.  These commits accomodate devices
+>       w/ or w/o clkreq# and also handle L1SS-capable devices.
+> 
+>    -- The Raspian Linux folks have already been using a PCIe RC
+>       property "brcm,enable-l1ss".  These commits use the same
+>       property, in a backward-compatible manner, and the implementaion
+>       adds more detail and also automatically identifies devices w/o
+>       a clkreq# signal, i.e. most devices plugged into an RPi CM4
+>       IO board.
+> 
+> 
+> Jim Quinlan (5):
+>   dt-bindings: PCI: brcmstb: Add brcm,enable-l1ss property
+>   PCI: brcmstb: Configure HW CLKREQ# mode appropriate for downstream
+>     device
 
-Whoops yes that's what I meant.
+I am not merging the first two patches since the discussion thread
+is still open and I'd like to understand better what can/should be
+done, sorry.
+
+>   PCI: brcmstb: Set higher value for internal bus timeout
+>   PCI: brcmstb: Assert PERST# on BCM2711
+>   PCI: brcmstb: Remove stale comment
+
+Is it OK to apply these three on their own ? Overall it would be
+great to avoid mixing patches with different end goals in a single
+series.
+
+Thanks,
+Lorenzo
+
+>  .../bindings/pci/brcm,stb-pcie.yaml           |  9 ++
+>  drivers/pci/controller/pcie-brcmstb.c         | 91 ++++++++++++++++---
+>  2 files changed, 89 insertions(+), 11 deletions(-)
+> 
+> 
+> base-commit: 8a28a0b6f1a1dcbf5a834600a9acfbe2ba51e5eb
+> -- 
+> 2.17.1
+> 
 
 
->
-> Broadly, invalidation is not SVA specific..
->
-> Notice that arm_smmu_tlb_inv_range_asid() already duplicates
-> arm_smmu_tlb_inv_range_domain().
->
-> IMHO I would split the ATC step out of arm_smmu_mm_invalidate_range(),
-> get rid of arm_smmu_tlb_inv_range_domain(), and have the mmu notifier
-> just do as it already does:
->
->         if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM))
->                 arm_smmu_tlb_inv_range_domain_no_atc(start, size, smmu_mn=
-->cd->asid,
->                                             PAGE_SIZE, false, smmu_domain=
-);
->         arm_smmu_atc_inv_domain(smmu_domain, start, size);
->
-> And make arm_smmu_tlb_inv_range_domain() just call
->    arm_smmu_tlb_inv_range_domain_no_atc();
->    arm_smmu_atc_inv_domain();
-
-That's a nice clean-up but doesn't really solve the problem faced by this p=
-atch.
-
-This patch series eliminates the smmu_domain->smmu handle, replacing
-it for a list of SMMUs. So SVA can no longer optimize the
-arm_smmu_tlb_inv_range_asid call away by checking whether the SMMU BTM
-feature is enabled since there's now a list of SMMUs with possibly
-heterogeneous support for the feature. Since there's now a loop over a
-series of SMMUs inside arm_smmu_tlb_inv_range_asid, it makes sense to
-move the check into that loop. This technically works because only SVA
-is calling arm_smmu_tlb_inv_range_asid but can (IMO) risk introducing
-bugs in the future since it's not obvious from the function name.
-
-The suggestion was then to introduce a parameter to
-arm_smmu_tlb_inv_range_asid (or arm_smmu_tlb_inv_range_domain_no_atc)
-to make this behavior explicit in the API.
