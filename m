@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192C778273D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CC3782741
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbjHUKkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
+        id S234808AbjHUKlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjHUKkU (ORCPT
+        with ESMTP id S234805AbjHUKk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:40:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C409D9;
-        Mon, 21 Aug 2023 03:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692614419; x=1724150419;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=T3pqH57YeRysEQczHrN7LymfQeIVRRCVLyFCg4RwBgM=;
-  b=fp7y7dUpU631MgHWai5Y3qyxWrhVFuyIMW4ivjBiijk0jGFmdR29MJOQ
-   aMmY66q+0O5weOW+Hvrj3BNJceasxPABG2+gPqGisOC/bBunjhdnnmlxF
-   oUJu/uAy935gaFThedr/WcXjSUvEcU/Ub7SEyKmtSUR+4yzIubZRNMQo8
-   KnCnXrnS1Xc1chQazAEi19bo0NR7xRNoBUG0YD+3I0+82ioJy1nG1JgRh
-   DoqWuZcMfoPCu8ElA3iv5xQv1fmrxP6MThTzEQzItylCD06YxBAW44o0Z
-   yct3+oNmxym4sWsVjKM2Yb0VKAbfXHm3Z3bf77Q6CyOknkDvWKg/WkpyT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="370987904"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="370987904"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 03:40:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10808"; a="729380551"
-X-IronPort-AV: E=Sophos;i="6.01,189,1684825200"; 
-   d="scan'208";a="729380551"
-Received: from nsnaveen-mobl.gar.corp.intel.com ([10.252.54.252])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 03:39:57 -0700
-Date:   Mon, 21 Aug 2023 13:39:55 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Huibin Shi <henrys@silicom-usa.com>
-cc:     Henry Shi <henryshi2018@gmail.com>,
-        "hbshi69@hotmail.com" <hbshi69@hotmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "hb_shi2003@yahoo.com" <hb_shi2003@yahoo.com>,
-        Wen Wang <wenw@silicom-usa.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] Add Silicom Platform Driver
-In-Reply-To: <7f537cef-d5cd-4816-a07b-9df27954ef93@roeck-us.net>
-Message-ID: <1ecd7ad-3878-c826-45a5-7123e55d8527@linux.intel.com>
-References: <20230818154341.20553-1-henryshi2018@gmail.com> <8b8b0503-8f8f-4615-97ab-11d2c0e1a960@roeck-us.net> <PA4PR04MB9222910BAC2754A073A70E609A18A@PA4PR04MB9222.eurprd04.prod.outlook.com> <7f537cef-d5cd-4816-a07b-9df27954ef93@roeck-us.net>
+        Mon, 21 Aug 2023 06:40:59 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D17D9;
+        Mon, 21 Aug 2023 03:40:52 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37LAeZQA059233;
+        Mon, 21 Aug 2023 05:40:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692614435;
+        bh=Ozlne59YLraqabgL+WJG3qc//rmNi/GH2L2V0xkKtsU=;
+        h=From:To:CC:Subject:Date;
+        b=Q8liWzOPPB4SI2rn0o1wF//KnAuDWQe250j6M9/it7mcvV451K/Tkja0e7NCZzrcx
+         9h++jfWf0uzbqjTvidAri68gwAFj+J+8f+rm+PMa47EeqHpKhrOeOzV9Kjovnw7ZoB
+         4LlP4oqu7n5gF0FVgXA6ZLcdbTYQDRQg5yJh2ypA=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37LAeZVM001603
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Aug 2023 05:40:35 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 21
+ Aug 2023 05:40:35 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 21 Aug 2023 05:40:35 -0500
+Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37LAeVd1006179;
+        Mon, 21 Aug 2023 05:40:32 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <j-luthra@ti.com>,
+        <j-choudhary@ti.com>, <francesco@dolcini.it>
+Subject: [PATCH] dmaengine: ti: k3-udma: Fix teardown timeout for cyclic mode
+Date:   Mon, 21 Aug 2023 16:10:03 +0530
+Message-ID: <20230821104003.3001021-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Aug 2023, Guenter Roeck wrote:
+In cyclic mode, last descriptor needs to have EOP flag set so that
+teardown flushes data towards PDMA in case of MEM_TO_DMA.  Else,
+operation will not complete successfully leading to spurious timeout on
+channel terminate.
 
-> On Sat, Aug 19, 2023 at 02:20:32PM +0000, Huibin Shi wrote:
-> > Hi Guenter,
-> > 
-> > Thanks for your comments. Probably, I should not resubmit patch too rushed. I will add version number to subject and change log in cover letter for next resubmission.
-> > 
-> > See my comments below. Please let me know whether you accept my explanation.
-> > 
-> > Henry
-> > -----Original Message-----
-> [ ... ]
-> 
-> > > +
-> > > +static u32 temp_get(void)
-> > > +{
-> > > +     u32 reg;
-> > > +
-> > > +     mutex_lock(&mec_io_mutex);
-> > > +     /* Select memory region */
-> > > +     outb(IO_REG_BANK, EC_ADDR_MSB);
-> > > +     outb(0xc, EC_ADDR_LSB);
-> > > +     /* Get current data from the address */
-> > > +     reg = inl(MEC_DATA(DEFAULT_CHAN_LO));
-> > > +     mutex_unlock(&mec_io_mutex);
-> > > +
-> > > +     return (reg >> 16) / 10;
-> > 
-> > The hwmon ABI expects temperatures to be reported in milli-degrees C.
-> > The above sets the maximum temperature to 65,535 / 10 = 6,553 milli-degrees or 6.553 degrees C. It is very unlikely that this is correct.
-> > 
-> > Again, I commented on this before.
-> > 
-> > Henry: this is due to an internal implementation of MIcor-controller firmware, instead of putting real temperature to the register, it put (real temperature * 10 ) to the register. So, in order to report correct temperature to user space application, the read value is divided by 10, then report to user space. 
-> > 
-> > Please let me know if you accept this. If not, I can change the code, but let user space application to do adjustment. 
-> 
-> No, I do not accept this. I do not believe that the maximum temperature
-> reported by the microcontroller is 6.553 degrees C. I suspect it reports
-> 10th of degrees C. In that case, the number reported should be multiplied
-> by 100 to make it milli-degrees C as expected by the ABI.
+Without this terminating aplay cmd outputs false error msg like:
+[116.402800] ti-bcdma 485c0100.dma-controller: chan1 teardown timeout!
 
-...And for that multiplication, please use the constant defined in 
-include/linux/units.h instead of a literal.
+This doesn't seem to be problem with UDMA-P on J7xx devices (although is
+a requirement as per spec) but shows up easily on BCDMA + McASP. Fix
+this by setting the appropriate flag
 
+Fixes: 017794739702 ("dmaengine: ti: k3-udma: Initial support for K3 BCDMA")
+Suggested-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
 
-And please do version the patches properly, it's getting messy to track 
-which version is which (if something is new or not). If you use git 
-format-patch, it has an argument that can be used to add the version, no 
-need to add it by hand.
+This complete reimplementation based on learning of HW behavior for problems
+reported at
+https://lore.kernel.org/linux-arm-kernel/20220215044112.161634-1-vigneshr@ti.com/
 
+ drivers/dma/ti/k3-udma.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 30fd2f386f36..02aac7be8d28 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -3476,6 +3476,10 @@ udma_prep_dma_cyclic_tr(struct udma_chan *uc, dma_addr_t buf_addr,
+ 	u16 tr0_cnt0, tr0_cnt1, tr1_cnt0;
+ 	unsigned int i;
+ 	int num_tr;
++	u32 period_csf = 0;
++
++	if (uc->config.ep_type == PSIL_EP_PDMA_XY && dir == DMA_MEM_TO_DEV)
++		period_csf = CPPI5_TR_CSF_EOP;
+ 
+ 	num_tr = udma_get_tr_counters(period_len, __ffs(buf_addr), &tr0_cnt0,
+ 				      &tr0_cnt1, &tr1_cnt0);
+@@ -3525,8 +3529,10 @@ udma_prep_dma_cyclic_tr(struct udma_chan *uc, dma_addr_t buf_addr,
+ 		}
+ 
+ 		if (!(flags & DMA_PREP_INTERRUPT))
+-			cppi5_tr_csf_set(&tr_req[tr_idx].flags,
+-					 CPPI5_TR_CSF_SUPR_EVT);
++			period_csf |= CPPI5_TR_CSF_SUPR_EVT;
++
++		if (period_csf)
++			cppi5_tr_csf_set(&tr_req[tr_idx].flags, period_csf);
+ 
+ 		period_addr += period_len;
+ 	}
 -- 
- i.
+2.41.0
 
