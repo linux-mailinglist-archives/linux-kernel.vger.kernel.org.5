@@ -2,189 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3539B782A47
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E13782A4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:18:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbjHUNRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51642 "EHLO
+        id S235275AbjHUNSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbjHUNRb (ORCPT
+        with ESMTP id S232488AbjHUNSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:17:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62441102;
-        Mon, 21 Aug 2023 06:17:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E64D5616C0;
-        Mon, 21 Aug 2023 13:16:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D6DC433C7;
-        Mon, 21 Aug 2023 13:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692623805;
-        bh=KPa/AwkosoOhlmZaq4JF40z1lU8eMUi0EpScWLPvrao=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oQGcvU4wKYUz0g3IFUpnVo7fmvXH7c9xTWmCvN5nKublD+oTZFbwrvB3/fwz8vUXJ
-         9Nl6MsOfLIliTwSVVUKXvzsDRSq8wj1kmRmUkPv+xrfgUbT+uC7GSD1sgeCJk3CThJ
-         vpTdTDw3Tcn/dygVBsT2eM5u9/5AjyG5Qt1TXzW76qYiF78o2j7ALb78FbMI7YtxyN
-         p0dUhg52o9EIbf4VbRmGelqxpVrit3dcUW4kstNvfH+1ZxYa54rN2HYQKQwoNeeaTJ
-         w35WMwpMqKX1LySH82BEguEDeP9cepX6bYCiGi5zAFyLmFmTcoK1+gAoWKMLA7Y+B3
-         17Yhm6PEzfOnQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 648F340722; Mon, 21 Aug 2023 10:16:42 -0300 (-03)
-Date:   Mon, 21 Aug 2023 10:16:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "liwei (GF)" <liwei391@huawei.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf header: Fix missing PMU caps
-Message-ID: <ZONjuqVhDNzWPIQ3@kernel.org>
-References: <20230818171952.3719251-1-irogers@google.com>
- <b244a320-5f00-d382-a4ab-0168a80c55fe@huawei.com>
+        Mon, 21 Aug 2023 09:18:39 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B864A8;
+        Mon, 21 Aug 2023 06:18:37 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.169])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RTtMp5TDSz4f3lKX;
+        Mon, 21 Aug 2023 21:18:30 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgD3hqklZONkve76BA--.48806S3;
+        Mon, 21 Aug 2023 21:18:30 +0800 (CST)
+Subject: Re: Fwd: Infiniate systemd loop when power off the machine with
+ multiple MD RAIDs
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>,
+        AceLan Kao <acelan@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <433392a3-5ec4-cd63-fa5b-58e24deb56b9@huaweicloud.com>
+Date:   Mon, 21 Aug 2023 21:18:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b244a320-5f00-d382-a4ab-0168a80c55fe@huawei.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgD3hqklZONkve76BA--.48806S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw1DWr4kWFy5ur1rAr1rCrg_yoW5Jw1Upr
+        1UZFn09rsIqr47KF4IkF4IgF15twnayws5KryF9w4a934rtFyxA3Wftry5Ja4UGw1F9rWD
+        Ar1qv34kWFWqv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sat, Aug 19, 2023 at 12:16:09PM +0800, liwei (GF) escreveu:
-> Hi Ian:
+Hi,
+
+在 2023/08/16 17:37, Bagas Sanjaya 写道:
+> Hi,
 > 
-> On 2023/8/19 1:19, Ian Rogers wrote:
-> > PMU caps are written as HEADER_PMU_CAPS or for the special case of the
-> > PMU "cpu" as HEADER_CPU_PMU_CAPS. As the PMU "cpu" is special, and not
-> > any "core" PMU, the logic had become broken and core PMUs not called
-> > "cpu" were not having their caps written. This affects ARM and s390
-> > non-hybrid PMUs.
-> > 
-> > Simplify the PMU caps writing logic to scan one fewer time and to be
-> > more explicit in its behavior.
-> > 
-> > Reported-by: Wei Li <liwei391@huawei.com>
-> > Fixes: 178ddf3bad98 ("perf header: Avoid hybrid PMU list in write_pmu_caps")
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/header.c | 31 ++++++++++++++++---------------
-> >  1 file changed, 16 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> > index 52fbf526fe74..13c71d28e0eb 100644
-> > --- a/tools/perf/util/header.c
-> > +++ b/tools/perf/util/header.c
-> > @@ -1605,8 +1605,15 @@ static int write_pmu_caps(struct feat_fd *ff,
-> >  	int ret;
-> >  
-> >  	while ((pmu = perf_pmus__scan(pmu))) {
-> > -		if (!pmu->name || !strcmp(pmu->name, "cpu") ||
-> > -		    perf_pmu__caps_parse(pmu) <= 0)
-> > +		if (!strcmp(pmu->name, "cpu")) {
+> I notice a regression report on Bugzilla [1]. Quoting from it:
 > 
-> So you removed the check of 'pmu->name', does this check really redundant? since
-> we can find such checks in many places in the perf code. If not, i think it is
-> necessary for strcmp().
+>> It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10, RAID5 and RAID10) and then you will see below error repeatly(need to use serial console to see it)
+>>
+>> [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
+>> [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all dirs
+>> [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/bus
+>> [ 205.380427] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/class
+>> [ 205.388257] systemd-shutdown[1]: Stopping MD /dev/md127 (9:127).
+>> [ 205.394880] systemd-shutdown[1]: Failed to sync MD block device /dev/md127, ignoring: Input/output error
+>> [ 205.404975] md: md127 stopped.
+>> [ 205.470491] systemd-shutdown[1]: Stopping MD /dev/md126 (9:126).
+>> [ 205.770179] md: md126: resync interrupted.
+>> [ 205.776258] md126: detected capacity change from 1900396544 to 0
+>> [ 205.783349] md: md126 stopped.
+>> [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125).
+>> [ 205.862435] md: md126 stopped.
+>> [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device /dev/md125, ignoring: Input/output error
+>> [ 205.872845] block device autoloading is deprecated and will be removed.
+>> [ 205.880955] md: md125 stopped.
+>> [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md124p2 (259:7).
+>> [ 205.947707] systemd-shutdown[1]: Could not stop MD /dev/md124p2: Device or resource busy
+>> [ 205.957004] systemd-shutdown[1]: Stopping MD /dev/md124p1 (259:6).
+>> [ 205.964177] systemd-shutdown[1]: Could not stop MD /dev/md124p1: Device or resource busy
+>> [ 205.973155] systemd-shutdown[1]: Stopping MD /dev/md124 (9:124).
+>> [ 205.979789] systemd-shutdown[1]: Could not stop MD /dev/md124: Device or resource busy
+>> [ 205.988475] systemd-shutdown[1]: Not all MD devices stopped, 4 left.
 
-Indeed, when sorting in tools/perf/util/pmus.c in cmp_sevent() we have:
+Without the problem, did the log complain about this?
 
-        /* Order by PMU name. */
-        if (as->pmu != bs->pmu) {
-                a_pmu_name = a_pmu_name ?: (as->pmu->name ?: "");
-                b_pmu_name = b_pmu_name ?: (bs->pmu->name ?: "");
-                ret = strcmp(a_pmu_name, b_pmu_name);
-                if (ret)
-                        return ret;
-        }
+Could not stop MD...Device or resource busy
 
+Thanks,
+Kuai
 
-And even if in this specific case, for some reason, we could guarantee
-that pmu->name isn't NULL, then removing that check should be best left
-for a separate patch with an explanation as to why that is safe.
-
-Having it as:
-
- 	while ((pmu = perf_pmus__scan(pmu))) {
--		if (!pmu->name || !strcmp(pmu->name, "cpu") ||
--		    perf_pmu__caps_parse(pmu) <= 0)
-+		if (!pmu->name || !strcmp(pmu->name, "cpu")) {
-
-even eases a bit reviewing, as we see we're just removing that
-perf_pmu__caps_parse(pmu) line.
-
-Ian?
-
-- Arnaldo
-
- 
-> > +			/*
-> > +			 * The "cpu" PMU is special and covered by
-> > +			 * HEADER_CPU_PMU_CAPS. Note, core PMUs are
-> > +			 * counted/written here for ARM, s390 and Intel hybrid.
-> > +			 */
-> > +			continue;
-> > +		}
-> > +		if (perf_pmu__caps_parse(pmu) <= 0)
-> >  			continue;
-> >  		nr_pmu++;
-> >  	}
-> > @@ -1619,23 +1626,17 @@ static int write_pmu_caps(struct feat_fd *ff,
-> >  		return 0;
-> >  
-> >  	/*
-> > -	 * Write hybrid pmu caps first to maintain compatibility with
-> > -	 * older perf tool.
-> > +	 * Note older perf tools assume core PMUs come first, this is a property
-> > +	 * of perf_pmus__scan.
-> >  	 */
-> > -	if (perf_pmus__num_core_pmus() > 1) {
-> > -		pmu = NULL;
-> > -		while ((pmu = perf_pmus__scan_core(pmu))) {
-> > -			ret = __write_pmu_caps(ff, pmu, true);
-> > -			if (ret < 0)
-> > -				return ret;
-> > -		}
-> > -	}
-> > -
-> >  	pmu = NULL;
-> >  	while ((pmu = perf_pmus__scan(pmu))) {
-> > -		if (pmu->is_core || !pmu->nr_caps)
-> > +		if (!strcmp(pmu->name, "cpu")) {
 > 
-> same here
+> See Bugzilla for the full thread and attached full journalctl log.
 > 
-> Thanks,
-> Wei
+> Anyway, I'm adding this regression to be tracked by regzbot:
 > 
-> > +			/* Skip as above. */
-> > +			continue;
-> > +		}
-> > +		if (perf_pmu__caps_parse(pmu) <= 0)
-> >  			continue;
-> > -
-> >  		ret = __write_pmu_caps(ff, pmu, true);
-> >  		if (ret < 0)
-> >  			return ret;
+> #regzbot introduced: 12a6caf273240a https://bugzilla.kernel.org/show_bug.cgi?id=217798
+> #regzbot title: systemd shutdown hang on machine with different RAID levels
+> 
+> Thanks.
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217798
+> 
 
--- 
-
-- Arnaldo
