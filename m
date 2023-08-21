@@ -2,154 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 177587824EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6FD7824F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233866AbjHUHxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57662 "EHLO
+        id S233870AbjHUHze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:55:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbjHUHxA (ORCPT
+        with ESMTP id S230415AbjHUHzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 03:53:00 -0400
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D81B1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:52:57 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VqE2ap9_1692604372;
-Received: from 30.97.48.69(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VqE2ap9_1692604372)
-          by smtp.aliyun-inc.com;
-          Mon, 21 Aug 2023 15:52:53 +0800
-Message-ID: <d2d2f545-ca85-846c-fdda-94ec96c7c7e8@linux.alibaba.com>
-Date:   Mon, 21 Aug 2023 15:52:53 +0800
+        Mon, 21 Aug 2023 03:55:32 -0400
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27840B1;
+        Mon, 21 Aug 2023 00:55:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1692604531; x=1724140531;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WarJnYSIIDCoK08Blaeh9upNnOdNiIg5pqTIPcpbuWA=;
+  b=RCudqmiK2HRxPtCNSvs1FVe+gYbJxtPOMrlEzFBd80e6uOO/SRf0pn5x
+   X5d0sPMs6hRLzkagtQAnZHNgct4pv1I43/vo1CNIl+33+3pILcFoe26bi
+   jGkIo4BYn4SnTCmKSo9UHS/Uk6ZibleOnvk4pVwzCdJld+V2i954LUhiW
+   I=;
+X-IronPort-AV: E=Sophos;i="6.01,189,1684800000"; 
+   d="scan'208";a="23717432"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 07:55:30 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id F02B860E80;
+        Mon, 21 Aug 2023 07:55:29 +0000 (UTC)
+Received: from EX19D010UWA004.ant.amazon.com (10.13.138.204) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 21 Aug 2023 07:55:29 +0000
+Received: from u0acfa43c8cad58.ant.amazon.com (10.142.138.205) by
+ EX19D010UWA004.ant.amazon.com (10.13.138.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Mon, 21 Aug 2023 07:55:29 +0000
+From:   Munehisa Kamata <kamatam@amazon.com>
+To:     <casey@schaufler-ca.com>
+CC:     <jmorris@namei.org>, <kamatam@amazon.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-unionfs@vger.kernel.org>, <mengcc@amazon.com>,
+        <miklos@szeredi.hu>, <paul@paul-moore.com>,
+        <roberto.sassu@huawei.com>, <roberto.sassu@huaweicloud.com>,
+        <serge@hallyn.com>, <yoonjaeh@amazon.com>, <zohar@linux.ibm.com>
+Subject: Re: [RFC][PATCH 1/2] smack: Retrieve transmuting information in smack_inode_getsecurity()
+Date:   Mon, 21 Aug 2023 00:55:17 -0700
+Message-ID: <20230821075517.2320555-1-kamatam@amazon.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <b0a4fa15-df54-46df-afe7-2af03c3d56df@schaufler-ca.com>
+References: <b0a4fa15-df54-46df-afe7-2af03c3d56df@schaufler-ca.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/4] mm: migrate: move migration validation into
- numa_migrate_prep()
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        shy828301@gmail.com, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1692440586.git.baolin.wang@linux.alibaba.com>
- <a37b13dd91bd3eadcd56a08cb3c839616f8457e7.1692440586.git.baolin.wang@linux.alibaba.com>
- <87h6otdtm6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <87h6otdtm6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-14.2 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.142.138.205]
+X-ClientProxiedBy: EX19D037UWB001.ant.amazon.com (10.13.138.123) To
+ EX19D010UWA004.ant.amazon.com (10.13.138.204)
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Casey, Roberto
 
-
-On 8/21/2023 10:20 AM, Huang, Ying wrote:
-> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
+On Thu, 2023-05-11 17:12:50 +0000, Casey Schaufler wrote:
+>
+> On 5/8/2023 10:02 AM, Roberto Sassu wrote:
+> > From: Roberto Sassu <roberto.sassu@huawei.com>
+> >
+> > Enhance smack_inode_getsecurity() to retrieve the value for
+> > SMACK64TRANSMUTE from the inode security blob, similarly to SMACK64.
+> >
+> > This helps to display accurate values in the situation where the security
+> > labels come from mount options and not from xattrs.
+> >
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > 
->> Now there are 3 places will validate if a page can mirate or not, and
->> some validations are performed later, which will waste some CPU to call
->> numa_migrate_prep().
->>
->> Thus we can move all the migration validation into numa_migrate_prep(),
->> which is more maintainable as well as saving some CPU resources. Another
->> benefit is that it can serve as a preparation for supporting batch migration
->> in do_numa_page() in future.
->>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->>   mm/memory.c  | 19 +++++++++++++++++++
->>   mm/migrate.c | 19 -------------------
->>   2 files changed, 19 insertions(+), 19 deletions(-)
->>
->> diff --git a/mm/memory.c b/mm/memory.c
->> index d003076b218d..bee9b1e86ef0 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -4747,6 +4747,25 @@ int numa_migrate_prep(struct page *page, struct vm_area_struct *vma,
->>   		*flags |= TNF_FAULT_LOCAL;
->>   	}
->>   
->> +	/*
->> +	 * Don't migrate file pages that are mapped in multiple processes
->> +	 * with execute permissions as they are probably shared libraries.
->> +	 */
->> +	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
->> +	    (vma->vm_flags & VM_EXEC))
->> +		return NUMA_NO_NODE;
->> +
->> +	/*
->> +	 * Also do not migrate dirty pages as not all filesystems can move
->> +	 * dirty pages in MIGRATE_ASYNC mode which is a waste of cycles.
->> +	 */
->> +	if (page_is_file_lru(page) && PageDirty(page))
->> +		return NUMA_NO_NODE;
->> +
->> +	/* Do not migrate THP mapped by multiple processes */
->> +	if (PageTransHuge(page) && total_mapcount(page) > 1)
->> +		return NUMA_NO_NODE;
->> +
->>   	return mpol_misplaced(page, vma, addr);
-> 
-> In mpol_misplaced()->should_numa_migrate_memory(), accessing CPU and PID
-> will be recorded.  So the code change above will introduce some behavior
-> change.
+> Looks good. I have added to smack next.
 
-Indeed.
+Do you have any objections to backporting these patches to -stable? If not,
+I'll ask it in the stable list along with another overlayfs-related fix
+387ef964460f ("Smack:- Use overlay inode label in smack_inode_copy_up()").
+
+
+Thanks,
+Munehisa
 
 > 
-> How about move these checks into a separate function which is called
-> between numa_migrate_prep() and migrate_misplaced_page() after unlocking
-> PTL?
-
-Sounds reasonable to me. Thanks for your input.
-
+> > ---
+> >  security/smack/smack_lsm.c | 22 ++++++++++++++++++----
+> >  1 file changed, 18 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
+> > index 7a3e9ab137d..c7e37ed2799 100644
+> > --- a/security/smack/smack_lsm.c
+> > +++ b/security/smack/smack_lsm.c
+> > @@ -1463,10 +1463,19 @@ static int smack_inode_getsecurity(struct mnt_idmap *idmap,
+> >  	struct super_block *sbp;
+> >  	struct inode *ip = inode;
+> >  	struct smack_known *isp;
+> > +	struct inode_smack *ispp;
+> > +	size_t label_len;
+> > +	char *label = NULL;
+> >  
+> > -	if (strcmp(name, XATTR_SMACK_SUFFIX) == 0)
+> > +	if (strcmp(name, XATTR_SMACK_SUFFIX) == 0) {
+> >  		isp = smk_of_inode(inode);
+> > -	else {
+> > +	} else if (strcmp(name, XATTR_SMACK_TRANSMUTE) == 0) {
+> > +		ispp = smack_inode(inode);
+> > +		if (ispp->smk_flags & SMK_INODE_TRANSMUTE)
+> > +			label = TRANS_TRUE;
+> > +		else
+> > +			label = "";
+> > +	} else {
+> >  		/*
+> >  		 * The rest of the Smack xattrs are only on sockets.
+> >  		 */
+> > @@ -1488,13 +1497,18 @@ static int smack_inode_getsecurity(struct mnt_idmap *idmap,
+> >  			return -EOPNOTSUPP;
+> >  	}
+> >  
+> > +	if (!label)
+> > +		label = isp->smk_known;
+> > +
+> > +	label_len = strlen(label);
+> > +
+> >  	if (alloc) {
+> > -		*buffer = kstrdup(isp->smk_known, GFP_KERNEL);
+> > +		*buffer = kstrdup(label, GFP_KERNEL);
+> >  		if (*buffer == NULL)
+> >  			return -ENOMEM;
+> >  	}
+> >  
+> > -	return strlen(isp->smk_known);
+> > +	return label_len;
+> >  }
+> >  
+> >  
 > 
-> --
-> Best Regards,
-> Huang, Ying
-> 
->>   }
->>   
->> diff --git a/mm/migrate.c b/mm/migrate.c
->> index e21d5a7e7447..9cc98fb1d6ec 100644
->> --- a/mm/migrate.c
->> +++ b/mm/migrate.c
->> @@ -2485,10 +2485,6 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
->>   
->>   	VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
->>   
->> -	/* Do not migrate THP mapped by multiple processes */
->> -	if (PageTransHuge(page) && total_mapcount(page) > 1)
->> -		return 0;
->> -
->>   	/* Avoid migrating to a node that is nearly full */
->>   	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
->>   		int z;
->> @@ -2533,21 +2529,6 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
->>   	LIST_HEAD(migratepages);
->>   	int nr_pages = thp_nr_pages(page);
->>   
->> -	/*
->> -	 * Don't migrate file pages that are mapped in multiple processes
->> -	 * with execute permissions as they are probably shared libraries.
->> -	 */
->> -	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
->> -	    (vma->vm_flags & VM_EXEC))
->> -		goto out;
->> -
->> -	/*
->> -	 * Also do not migrate dirty pages as not all filesystems can move
->> -	 * dirty pages in MIGRATE_ASYNC mode which is a waste of cycles.
->> -	 */
->> -	if (page_is_file_lru(page) && PageDirty(page))
->> -		goto out;
->> -
->>   	isolated = numamigrate_isolate_page(pgdat, page);
->>   	if (!isolated)
->>   		goto out;
