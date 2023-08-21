@@ -2,158 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE94878284F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D90782851
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbjHULy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        id S233449AbjHULzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232585AbjHULy4 (ORCPT
+        with ESMTP id S230178AbjHULzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:54:56 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2040.outbound.protection.outlook.com [40.107.223.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C18115
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:54:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mdDlEZeNiq9rxb2/mW3v/nd2KK0syOz9O9S6YCp4HOQ13Z+yGgrqCYTSuTiXn8fsrcSm8yeA5kE8FOu8ka2eJg5ksqMZOMxF0zbmYZNbzpr5KKQNDT899LyyIPAO9vRm9Sk+dPQb71AEt4aMqD5wKmtrMfCdEUtJtvSy9Z/tazYmKVDqgHVrDHZ4LGipUNYht6EmgpBnbgy00PSNQe0Tw5Tvf1fs8o2WECQmkVy7PCIMGCTsr8vm2yUwCPXhSRFglqD/zElUIBD0+fPaHniOi6xFZuVs/ixSsr9Rghevouq4kFk2gIV/lQM1tw6tjlEzAcmQfZrXbfmaUMt+soUEqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UPCjdg6G5GlRahv5dFok27QTHrcNBTBezZCaIlx1xow=;
- b=gOyB2byhPPHlk5bNv2Tb0KlmyySGZea1OHUSA0RYYXXIJNGD59r7O4ICKTDds7xgiGI199xbP12+kFbgZcqTOKhP5Wu6kOs8hzKBbMRVQg02o0VnswOtAj+uRoB7/fLp+/HDpBYyGtk0B9mvMvpW9f4x7LmtGtyr0mHAFMVpdwJrF1Y5k51lk5mLarQoKNEeEuqqL8Z1CouT4nH/qsyyOfmp/QAVIzC/vnKNfik2tkGQiaDeuqdptR2PhCd89oLWQvfl/+usRGsRuTTLfzoF8etrfDVPomLRT7x67Hq2Lo8TtUrXF+8M15r/X3ZYHzHrOlBNXoPtm4qJRJGQVG7p4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UPCjdg6G5GlRahv5dFok27QTHrcNBTBezZCaIlx1xow=;
- b=n9UiD/DEWQ86jN/YhgeCxvDtnW1fCXt5ke3M/lu1c9YZVNR/7YDfTb3z8EEzGQN3KxukhtZqistVxXcow2kjlN+05jDJx3qBacmueSgyZT8oszl9Dc84cuUhjdg0yC2oZ3hl8v/gM0cps90htGr8DJ1c+FYHFk+/lzmG7cCpAliBqeeDo4kFEBlH+lxrqR15HJGLEAiVIczcIZOzpad8SAv/+y8XAAshu8g4hTW2zOg0rQbyYSMP890lUUcZCy9iF4RA+4IjFbhSKkIvnFlDmr3sxlu+MMYVuJbvG8QIcPl4rMVQgfSp1STYQ0+QVTQgqbU9y6cUTf0z61uyYUrbKg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH0PR12MB8821.namprd12.prod.outlook.com (2603:10b6:510:28d::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Mon, 21 Aug
- 2023 11:54:42 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6699.020; Mon, 21 Aug 2023
- 11:54:42 +0000
-Date:   Mon, 21 Aug 2023 08:54:40 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org, nicolinc@nvidia.com,
-        tina.zhang@intel.com, jean-philippe@linaro.org,
-        robin.murphy@arm.com
-Subject: Re: [RFC PATCH v1 3/8] iommu/arm-smmu-v3-sva: Allocate new ASID from
- installed_smmus
-Message-ID: <ZONQgNh6qarqgA+f@nvidia.com>
-References: <20230817182055.1770180-1-mshavit@google.com>
- <20230818021629.RFC.v1.3.I326c62dc062aed8d901d319aa665dbe983c7904c@changeid>
- <ZN5pK03Drao/egeF@nvidia.com>
- <CAKHBV27k8F0ZLy=RA=WhjJ7+C9JMHRRnKs=4W4pJMNmxrMEXxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKHBV27k8F0ZLy=RA=WhjJ7+C9JMHRRnKs=4W4pJMNmxrMEXxw@mail.gmail.com>
-X-ClientProxiedBy: BL1PR13CA0137.namprd13.prod.outlook.com
- (2603:10b6:208:2bb::22) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 21 Aug 2023 07:55:37 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB57129
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:55:11 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-79af014b555so1012869241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:55:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692618910; x=1693223710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0gR8I8Q6lx9u8Hp3ihISykSpTYB0L05CPENUuRUE8Ag=;
+        b=D9GP2yfrhDGiqqYYGcGKvFWhUtpwmb+1csMOfoZuC338sR+Dg10xlYhB1j6yuQdU3m
+         5tRJ7LZnLBSsDYQHZGWnFciHZELXTrF0l+n71FgFdd+PIheqOhHJ3QI2vbmV06M714El
+         7aTOIBxaHsc0DlnR8Y0Ji/CuK+C2ECBNlbsZMHp35PPzdJhlFm7M1AxtxLdbFCuJFzXy
+         WxCZUE0736lF679uCYpiCQs3/ZDb94Md17FW+H6i0tqvUROfxpwPgbUL+O/uTxeQ3Wpc
+         7mo2VxValkuAdVCRO5DKgRaMLFUATi7+Mg37/kxzWeVjeKei1YpbG4CyfOAC8dI/KrpI
+         NSbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692618910; x=1693223710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0gR8I8Q6lx9u8Hp3ihISykSpTYB0L05CPENUuRUE8Ag=;
+        b=WVvkT0AvETgIvtxRtUVWMrsNs7F8Vcix/jvYynD03O9VxTSxjWxr/gfnha1mF0yP2I
+         pwDnZ6zPApGIcACkEWHUSMLa8sibXaiW2EPHLfQ0jyEV59nrstIH3C/je3E9s+6QwciL
+         3yaj0+jVXxMtFrRpUWpkwccwNu6muEJQkBcPLsEGkut1TB353Qs1zVnPFEQ1rcFIM7Li
+         XSzmgcoxme0fPCouxZcC2uMngkLGUU7MKfzJkvG4fh5sTsDwmmADSId8fuIkoYtEBJFO
+         BOLCG9Pz8oSgHEaI4NPqhV8YvoK/WuTMa3592nn1JmC2u0Ik9RveEnQqM+cfLW2ppQbT
+         bLrg==
+X-Gm-Message-State: AOJu0Ywgz+lKCzZZ1IP9D2ihGuRn8BgnMCFLTFGnOQwFWgjeZQJuzI90
+        uHmO2zRtQybUE6DeIx9fZow238nV2ielXKwQloy55Q==
+X-Google-Smtp-Source: AGHT+IE2rHnMRiJRqvuyXM+0ECA3Mi1TUyfIRuccTB+v5EBSEi+uLFZvVob9chbPnXA+QkWaZ2U8AYaVn9pSrGt/c18=
+X-Received: by 2002:a67:f70b:0:b0:44d:4385:1627 with SMTP id
+ m11-20020a67f70b000000b0044d43851627mr2822642vso.14.1692618910548; Mon, 21
+ Aug 2023 04:55:10 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH0PR12MB8821:EE_
-X-MS-Office365-Filtering-Correlation-Id: ecd7a99d-868e-4490-b6db-08dba23d67b3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Xxa61HHch5ycapu3nhn4aYW0abI/or4nb22DhUB2pH1U/V7lKVVE4gu1kIh/xkir7gAC3rY5YSGk9sKw1lR73Ezhb+UzxHBQgdv80pF0cxCWeA626LSEGgNahzLn1vHYAUqi7mDX4l1nkpYfB/MaEtaxWPv1FtDsW4Gh88dnqFYiJcyLeDLD7W4eJpgPqediNip8yasji0gjgitu7AONBJ2zIziA0nglm3/fJzUEfycrJ6QWIz2nk8AO+tYaT3NMd+IVkbf+05IDjBwPEGiWwp+tMXTx2JBeVE0xxjnFbW+Lwf653hyS6EfCjs4A1lxe41+BRIrP7K7noWoGRDWz50Y7q5XHukJl9eOT7850GRUmUK3x5Z0+viB/U2LYZH9cMauOX2FpakijexU3Sq2FX7ito6+eCTJZeD8VulcOg3/XS1cGItu2G4ycYPYey0BakK3hgiJH9+lJXYQYAicEipG08JMpTzWLlbuJ7tM5MjjjSzrlxaWYg25TKsNoU4HiryJ43SSx2Yn+/JLZXvvvGv6UTZqyAaV97WywsRdERWfytK3GXJmN4V6RdP6/3B6f1Z6w0G3RQ+K0f7RY2iGKYLKSFWZWCJ//CIPTliw+mm0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(451199024)(186009)(1800799009)(2906002)(53546011)(38100700002)(6506007)(6486002)(5660300002)(26005)(86362001)(8676002)(2616005)(8936002)(4326008)(316002)(66946007)(6512007)(6916009)(66556008)(66476007)(478600001)(36756003)(41300700001)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eE5lTXBldlIxbXFENW5wMyswRGIrN2V1NDV3SmtqUGczYkwxWkhjNVNRSnZS?=
- =?utf-8?B?alNFQzMrTGhNTmtWWlZRRkdLOWxtcE9XYUpzMHB5WkdWSHdJdHdNb1RjeEJs?=
- =?utf-8?B?SE5xY3dMN3N2SEFSSCsyS3Zpd3R5M1FxaitmdFFUZUxPeEZLWSt0bjFzYlVH?=
- =?utf-8?B?U1V1c1JOT2JiMnUrMS8veVdWelZnbVBSUi8wcTN6MS9UWWtaV0dOaW0zMXcz?=
- =?utf-8?B?NTVpVEtzMjF3dUlTS1ZuMkxEV0NocHdKMHFhVFV4QmdQdEoydjB3b2xkajEx?=
- =?utf-8?B?UXExZWQ1RTRLTnM1KzUzUUQzY3dQNDNQQmpRdU90SGhDSjhWd0tVWWdaRmJM?=
- =?utf-8?B?UFVJQi8xd1dFT1BEQ3paVm00RkRWU05kZGlSQUxFb3RubHluUVZlNHlFNFJm?=
- =?utf-8?B?K0Q0aHNNZ2xySmJZSU1EaGJ0b3l5eTZqS3hpSG1DVFBPYW03QWFNOFVCUzB6?=
- =?utf-8?B?TnZXbEFhNzlNQ2lTMEt1N3U4RUlsaDZENGMyN2Q3djBpUTZEYmkrTmJuZkFM?=
- =?utf-8?B?aDF0NHdONktjS2xmcDNFRlVtR0tReVNMK3Vrd1FuazNuNnVIQ2pud2c1dlUr?=
- =?utf-8?B?dmQ5c0c4S0hMUmdkVll3SE5aZ09lbUFhMmV5ME1yeGdlMndLSTRRUXhxdm1S?=
- =?utf-8?B?d1E2U21YTzdjamdTcS8xTWVKYmp6OTlaZDlrd1A4SjZ1OFRPMVZHd21mcUl0?=
- =?utf-8?B?TktGS3pZbGFEUEFvUklTenNjNHU3SE12T1diakxRRCtwdTZmb2dRekhLUEdV?=
- =?utf-8?B?aERjcnRCSmpvc3FVS0REdnQxd2o2VlJjbmt5RVdTNzQwZ3FrUnp5UW5jRUpj?=
- =?utf-8?B?bDBYdlBTeWZUbTNZRElvaSs2T0w0SEYxanlSQjNYNHAwb3RKMVdIWFB6b01L?=
- =?utf-8?B?czV0M2dvaFFEQmMxeCtvRGR2Q1FvV1RPQnVPVmN6VlJHSVhzUFdIOWUwcGk5?=
- =?utf-8?B?V2J4SXcyTDV0Mm9RWE1yQUJNQlNWS2VmUXpWVWtkNTlHVkNTOXBOUkgwczVY?=
- =?utf-8?B?d0xKdnZ1Z3c5QStldTdyRXFMUVJWN3VIVHh2R1ViUXBGbGoxTjQvOU16RUJY?=
- =?utf-8?B?YVZCRkFNTkk0YVRzVHp1b2xaemlUbmpJd20xODZHdDBNOTBiUlhSQlVsOTNa?=
- =?utf-8?B?WWkrU283TlRXNjUvUWNTTlZLcWhWU2t1ckhjZzVpaVhUbjllcUtER24vRGF2?=
- =?utf-8?B?ZnMyOU5qeEQwT0xucHRHdEVHcUlrQjVUR2swZlFUZFZ2MjFJenl4TDloZXcx?=
- =?utf-8?B?Z3NrRWFMcDdoQldmZExxdGx0cnhvNjV1Vi9ZdlpUTXkwOE8vQXZPMnlXOGhr?=
- =?utf-8?B?MFIvSHFsRE9ZVWEvN21xT2xsb0dVNEpLZTdiZHpabTcwT2FFNDhGUEh1aVVu?=
- =?utf-8?B?bit4VUprSTRpMndHemFqM3pSZjdpTTRLZHRoeStTTW9lSGVhR05jTjI1NHI3?=
- =?utf-8?B?azNMTUQzVCticjNTM2IxME4xcmpMOTFTMWEwN24vbmw0VGxXSWVWc0oyZUdL?=
- =?utf-8?B?TmpFK092MGM5eWNkS2RGNmFHczhkcWpNUEh4cTFYbnFOMi95bHhoOUMvTnZS?=
- =?utf-8?B?Qkpkc01vT1BIOEZQOXpaOW1MWStTbk5LSGNiZGpTU0hZdUN1dFBNQm5ueHZx?=
- =?utf-8?B?bXJoQk9ZQ3BtQmdCNkduYXVBMDlTa2dPa1FWMXFYQWRTTnRESVRRYW5aeTlQ?=
- =?utf-8?B?azFUWEZWWHpwazQ3WGZ0QWppMXFpbmlObWFOa0V1cmFkbnh2L0h6OFRSSFhD?=
- =?utf-8?B?VU5rSktEckNDQUxTelJVNjJRUndWbjEyVGNRTERESkNGbDAyUmw5cjZPTm9k?=
- =?utf-8?B?MUg3VVZPd3RNalJaeHFmUmxxWVRkck96UzNNVDc1K01NWTBrdEJGb084bTB0?=
- =?utf-8?B?anNWQndHejVSU0ZPSUFHMHV1S3lXbERwK3RzSFcxMUJBSUZoM1YrcmZVMnc3?=
- =?utf-8?B?WWZPUXlVZ21vQjhIM2pLays1VHhMMXcxL3M4c1hZSS9CVTBBeTdoV0pZQ2RP?=
- =?utf-8?B?RjVXWDhMUVRlV0hEZ1RFalN0ZDgxa1BBK0owWnh3YWw1eVlGdGFPNnUwVWxh?=
- =?utf-8?B?dGVzdDZmNjhRbGNZWm4zSkM5TWRlNzBBdi8xSGx3OUczNGRWcWY1aG5HenNz?=
- =?utf-8?Q?AUDQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecd7a99d-868e-4490-b6db-08dba23d67b3
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Aug 2023 11:54:42.1773
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8UrcjmZKL0oqDravLSPxy4eIRSYIoKSxMC8IaUcY3RjcSwn5TRzE1pHW8vpeEyfT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8821
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com>
+ <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
+ <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com> <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org>
+ <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com> <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com>
+In-Reply-To: <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 21 Aug 2023 17:24:59 +0530
+Message-ID: <CAFA6WYMLuvmXcc3FVoT_mOPsBrjPc3ucSoLK6qY_5995+ygHDw@mail.gmail.com>
+Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB) driver
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     Shyam Saini <shyamsaini@linux.microsoft.com>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
+        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd.bergmann@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Tyler Hicks <code@tyhicks.com>,
+        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
+        Paul Moore <paul@paul-moore.com>,
+        Allen Pais <apais@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 05:31:23PM +0800, Michael Shavit wrote:
-> On Fri, Aug 18, 2023 at 2:38 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+On Mon, 21 Aug 2023 at 16:49, Jens Wiklander <jens.wiklander@linaro.org> wr=
+ote:
+>
+> On Mon, Aug 21, 2023 at 12:03=E2=80=AFPM Sumit Garg <sumit.garg@linaro.or=
+g> wrote:
 > >
-> > On Fri, Aug 18, 2023 at 02:16:25AM +0800, Michael Shavit wrote:
-> > > Pick an ASID that is within the supported range of all SMMUs that the
-> > > domain is installed to.
+> > On Mon, 21 Aug 2023 at 15:19, Jerome Forissier
+> > <jerome.forissier@linaro.org> wrote:
 > > >
-> > > Signed-off-by: Michael Shavit <mshavit@google.com>
-> > > ---
+> > >
+> > >
+> > > On 8/17/23 01:31, Shyam Saini wrote:
+> > > >
+> > > > Hi Ulf,
+> > > >
+> > > >> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
+> > > >> <shyamsaini@linux.microsoft.com> wrote:
+> > > >>>
+> > > >>> From: Alex Benn=C3=A9e <alex.bennee@linaro.org>
+> > > >>>
+> > > >>> [This is patch 1 from [1] Alex's submission and this RPMB layer w=
+as
+> > > >>> originally proposed by [2]Thomas Winkler ]
+> > > >>>
+> > > >>> A number of storage technologies support a specialised hardware
+> > > >>> partition designed to be resistant to replay attacks. The underly=
+ing
+> > > >>> HW protocols differ but the operations are common. The RPMB parti=
+tion
+> > > >>> cannot be accessed via standard block layer, but by a set of spec=
+ific
+> > > >>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
+> > > >>> partition provides authenticated and replay protected access, hen=
+ce
+> > > >>> suitable as a secure storage.
+> > > >>>
+> > > >>> The initial aim of this patch is to provide a simple RPMB Driver =
+which
+> > > >>> can be accessed by Linux's optee driver to facilitate fast-path f=
+or
+> > > >>> RPMB access to optee OS(secure OS) during the boot time. [1] Curr=
+ently,
+> > > >>> Optee OS relies on user-tee supplicant to access eMMC RPMB partit=
+ion.
+> > > >>>
+> > > >>> A TEE device driver can claim the RPMB interface, for example, vi=
+a
+> > > >>> class_interface_register(). The RPMB driver provides a series of
+> > > >>> operations for interacting with the device.
+> > > >>
+> > > >> I don't quite follow this. More exactly, how will the TEE driver k=
+now
+> > > >> what RPMB device it should use?
+> > > >
+> > > > I don't have complete code to for this yet, but i think OP-TEE driv=
+er
+> > > > should register with RPMB subsystem and then we can have eMMC/UFS/N=
+VMe
+> > > > specific implementation for RPMB operations.
+> > > >
+> > > > Linux optee driver can handle RPMB frames and pass it to RPMB subsy=
+stem
+> > > >
 > >
-> > This seems like a pretty niche scenario, maybe we should just keep a
-> > global for the max ASID?
+> > It would be better to have this OP-TEE use case fully implemented. So
+> > that we can justify it as a valid user for this proposed RPMB
+> > subsystem. If you are looking for any further suggestions then please
+> > let us know.
+>
+> +1
+>
 > >
-> > Otherwise we need a code to change the ASID, even for non-SVA domains,
-> > when the domain is installed in different devices if the current ASID
-> > is over the instance max..
-> 
-> This RFC took the other easy way out for this problem by rejecting
-> attaching a domain if its currently assigned ASID/VMID
-> is out of range when attaching to a new SMMU. But I'm not sure
-> which of the two options is the right trade-off.
-> Especially if we move VMID to a global allocator (which I plan to add
-> for v2), setting a global maximum for VMID of 256 sounds small.
+> > > > [1] U-Boot has mmc specific implementation
+> > > >
+> > > > I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
+> > > > CFG_RPMB_FS_DEV_ID=3D1 for /dev/mmcblk1rpmb,
+> > >
+> > > Correct. Note that tee-supplicant will ignore this device ID if --rmb=
+-cid
+> > > is given and use the specified RPMB instead (the CID is a non-ambiguo=
+us way
+> > > to identify a RPMB device).
+> > >
+> > > > but in case if a
+> > > > system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
+> > > > should be declared as secure storage and optee should access that o=
+ne only.
+> > >
+> > > Indeed, that would be an equivalent of tee-supplicant's --rpmb-cid.
+> > >
+> > > > Sumit, do you have suggestions for this ?
+> > >
+> >
+> > I would suggest having an OP-TEE secure DT property that would provide
+> > the RPMB CID which is allocated to the secure world.
+>
+> Another option is for OP-TEE to iterate over all RPMBs with a
+> programmed key and test if the key OP-TEE would use works.
 
-IMHO the simplest and best thing is to make both vmid and asid as
-local allocators. Then alot of these problems disappear
+That would require intercepting OP-TEE RPMB frames such that any
+"write key" frame is blocked. As we don't want OP-TEE to occupy
+unprovisioned RPMB partitions.
 
-Jason
+> That should
+> avoid the problem of provisioning a device-unique secure DTB.
+
+Okay I see the scalability concerns. So how about instead we have a
+UFS/eMMC/NVMe controller specific boolean secure RPMB DT property?
+
+> I'd
+> expect that the RPMB key is programmed by a trusted provisioning tool
+> since allowing OP-TEE to program the RPMB key has never been secure,
+> not unless the OP-TEE binary is rollback protected.
+
+Agree but any such RPMB key provisioning tool should either belong to
+OP-TEE, u-boot or Linux.
+
+-Sumit
+
+>
+> Cheers,
+> Jens
+>
+> >
+> > -Sumit
+> >
+> > >
+> > > --
+> > > Jerome
