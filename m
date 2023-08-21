@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D1B783501
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D49783505
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbjHUVxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 17:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S231130AbjHUVyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 17:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbjHUVxx (ORCPT
+        with ESMTP id S230489AbjHUVyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 17:53:53 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FFE133
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:53:52 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a410316a2so1031124b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:53:52 -0700 (PDT)
+        Mon, 21 Aug 2023 17:54:18 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E344C133
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:54:14 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf7a6509deso9262355ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 14:54:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1692654831; x=1693259631;
+        d=broadcom.com; s=google; t=1692654854; x=1693259654;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dkTD6REIqn/AGkRcmta54Hp/h31S1eHGRxwKLmLFS7Y=;
-        b=Px00Jl10BQDsWtVR6yYw8TWKBdDr99IMGbpHrZwgy2niKIU9AVJwZnlbclD7r6S2hu
-         coMQLMQvIKH4H1KMG7ZMKUCT/rBY4g/gXW/689KekqkRUNmgglQd+mbLpkBQc2PIerdB
-         Hmkby6+c3k+6w0ZLlAjE3tyOnoor9u5hUOuDQ=
+        bh=kbWfxRSlqvurNGR3fmlF5cgmi63hS5HBSpzSGEhhkUU=;
+        b=O3QhGXHAxK2rOIMr7WShyLgLKhE9JooD65sft9iQ0pqD19tSXkLRYEhAoNrutVND4a
+         nyxfV1kl2YlxHuoapL9IqNWRiWqepptaxeZndzazg5KaDhshXuQAfYdLjkG9WvJG9N0P
+         oT8KCkSVsxFFLpammYvKmeWUHFOMxca536M3c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692654831; x=1693259631;
+        d=1e100.net; s=20221208; t=1692654854; x=1693259654;
         h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
          :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dkTD6REIqn/AGkRcmta54Hp/h31S1eHGRxwKLmLFS7Y=;
-        b=SmmUciKhLn1IRL/RwbTzZ2ji6YBn1+bt19puBrITvTA0lyRZvGkItsJpxQylVxcPPc
-         3fpORwvPTs7x9hLLLCtx8XLtISDNxLwNcAcsaCvgVAg12w/IFLEIFJtPSL+zc00V1FmP
-         rs5L51sMLT36JIqYHwzwiENklJjcxaOkrnpVRZ6PGSJ9lSj9DqVTQ8kfVXOUU2is9Oqj
-         fUX9sms+N+xe+FvGzEzHCxruxt2a1hro+8bUxz9qU7WAtgtjc/zTO2BtJacviiMKwijF
-         R9UVIarXb5tnU+7X6Bw4Nvl1HTkGKwomKBgugd3XyeaMK/Vb7PDgrcG9Peq/RSVQYa2w
-         8jfQ==
-X-Gm-Message-State: AOJu0YyyVLEK5RoXK0EndSDHXoR+mosQYMJrN60DQJd2Zcj0spKZweEJ
-        znrzUusz5/WbjctRz6AIGNwXog==
-X-Google-Smtp-Source: AGHT+IFF9NQu4s+2wsWcjkY9usJ/s1YOa8+RxH/KvQiBxc/agIr/sKP5Kxc0TbplCHnaWFiECp54Lg==
-X-Received: by 2002:a05:6a00:234a:b0:689:eed5:609b with SMTP id j10-20020a056a00234a00b00689eed5609bmr6584215pfj.27.1692654831582;
-        Mon, 21 Aug 2023 14:53:51 -0700 (PDT)
+        bh=kbWfxRSlqvurNGR3fmlF5cgmi63hS5HBSpzSGEhhkUU=;
+        b=j5bV7kXDsH1S/ZpMDXAivvt0enE4o3SHNTrQVd4/aHZFLdFNbzxaN3pkT5sefVYL7v
+         2G8K/qG/I8UKK+wzC7TMvI/gfqK4SB9UCSegOpM/tXm9dy7D07s1eW5WooXlQGk1BUsY
+         Qg0jjBZPpAYYPUm2SlcEP0aduRHHu4V6a3+nXs60D0+C+pNuGsyY/62RZc89+QlF1Tqr
+         zmr2At273wt0X0OLmf3jCl5+rXIkEFrtb0NOJYmPXyz7MXFH84LpEHh/QPcGh2vVtdHp
+         56+fHCN4+Leg26QW15Zr31d+xKdxibo61cob09gwq3/FmKC30vg6Y8XoLRUaaeLgCxZv
+         aebA==
+X-Gm-Message-State: AOJu0Yz79gyYDeafkjim2S3HJOT3q5l3RQSZKf6vMUjP9fJeDzbbvUGI
+        BXcFil598Unu2GCvCiT5Rakrvw==
+X-Google-Smtp-Source: AGHT+IHh9ty2CycuUXpwEMLBU6aXGOZVQkATtihtpRrC5tv87ckbu2bHDsjEx/325B+xJRlVLd7iRw==
+X-Received: by 2002:a17:903:278f:b0:1b8:c1f:fcfc with SMTP id jw15-20020a170903278f00b001b80c1ffcfcmr4911565plb.11.1692654854316;
+        Mon, 21 Aug 2023 14:54:14 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id d5-20020aa78685000000b00689f8dc26c2sm1698956pfo.133.2023.08.21.14.53.50
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709028c9800b001bb1f0605b2sm7487455plo.214.2023.08.21.14.54.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 14:53:51 -0700 (PDT)
+        Mon, 21 Aug 2023 14:54:13 -0700 (PDT)
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
 To:     stable@vger.kernel.org
 Cc:     Justin Chen <justin.chen@broadcom.com>,
@@ -62,15 +62,15 @@ Cc:     Justin Chen <justin.chen@broadcom.com>,
         linux-kernel@vger.kernel.org (open list),
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH stable 4.19] net: phy: broadcom: stub c45 read/write for 54810
-Date:   Mon, 21 Aug 2023 14:53:47 -0700
-Message-Id: <20230821215348.3123487-1-florian.fainelli@broadcom.com>
+Subject: [PATCH stable 4.14] net: phy: broadcom: stub c45 read/write for 54810
+Date:   Mon, 21 Aug 2023 14:54:10 -0700
+Message-Id: <20230821215410.3123513-1-florian.fainelli@broadcom.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <2023082133-mashing-flick-3a50@gregkh>
-References: <2023082133-mashing-flick-3a50@gregkh>
+In-Reply-To: <2023082134-chain-tubular-c681@gregkh>
+References: <2023082134-chain-tubular-c681@gregkh>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000fc7c8e060375e998"
+        boundary="000000000000567919060375ebfb"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -81,7 +81,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000fc7c8e060375e998
+--000000000000567919060375ebfb
 Content-Transfer-Encoding: 8bit
 
 From: Justin Chen <justin.chen@broadcom.com>
@@ -98,17 +98,17 @@ Signed-off-by: Justin Chen <justin.chen@broadcom.com>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 Link: https://lore.kernel.org/r/1691901708-28650-1-git-send-email-justin.chen@broadcom.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-[florian: resolved conflicts in 4.19]
+[florian: resolved conflicts in 4.14]
 Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
  drivers/net/phy/broadcom.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
 diff --git a/drivers/net/phy/broadcom.c b/drivers/net/phy/broadcom.c
-index 94622d119abc..49fb62d02a76 100644
+index 97e017a54eb5..2fbb1277b3a8 100644
 --- a/drivers/net/phy/broadcom.c
 +++ b/drivers/net/phy/broadcom.c
-@@ -421,6 +421,17 @@ static int bcm5482_read_status(struct phy_device *phydev)
+@@ -403,6 +403,17 @@ static int bcm5482_read_status(struct phy_device *phydev)
  	return err;
  }
  
@@ -126,7 +126,7 @@ index 94622d119abc..49fb62d02a76 100644
  static int bcm5481_config_aneg(struct phy_device *phydev)
  {
  	struct device_node *np = phydev->mdio.dev.of_node;
-@@ -684,6 +695,8 @@ static struct phy_driver broadcom_drivers[] = {
+@@ -650,6 +661,8 @@ static struct phy_driver broadcom_drivers[] = {
  	.name           = "Broadcom BCM54810",
  	.features       = PHY_GBIT_FEATURES,
  	.flags          = PHY_HAS_INTERRUPT,
@@ -134,12 +134,12 @@ index 94622d119abc..49fb62d02a76 100644
 +	.write_mmd	= bcm54810_write_mmd,
  	.config_init    = bcm54xx_config_init,
  	.config_aneg    = bcm5481_config_aneg,
- 	.ack_interrupt  = bcm_phy_ack_intr,
+ 	.read_status    = genphy_read_status,
 -- 
 2.34.1
 
 
---000000000000fc7c8e060375e998
+--000000000000567919060375ebfb
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -210,14 +210,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJF0/piwLZ5wJKWq
-b2w4KL3JgCmBKmVToGrcXN2moea/MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMDgyMTIxNTM1MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDiVOz1DqtzYVMcq
+A1j8G5RwhjQkTStHPDWetRMIUnHfMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMDgyMTIxNTQxNFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDg3mJSYhXWYdtWDCiGexBpBe3rRdLHVzQd
-vgVaH0ll8jWtoqWhZ1jlp+sPVkrUg0PjixSNb/Dt+vlUlHUzZ5qVyMeP66kpn2Vcc5wsmtc0Mtap
-PTbtZD5qd2yvRLcmW+fmnFxXuf5ZKaPbzq7qDEZvviv7zKQsq57WH8hkw9QT8bAgScWQ0odeIf1O
-6rdkakExFWH4T1VmeBxR0PyyBJj/ixq4x4wLMij9rBl+p/1vsP5qcXEwjoFJP3Oe/WDPcqRmFxJ7
-ewacof1CR0zqT20xq//ieaM5eAtEmH30BBiDdiZeGBS/NKIafiXTVWANCxw/zsDnyJbYo4VUegjg
-35tT
---000000000000fc7c8e060375e998--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDeqgwLW2qYPYn8eK9Q2Tc/hVKwXPnA0osg
+CgAoRtQyxfYZgDYOOwINFWAHsg8ZvYJ+MCTuArXUD3uXbCea/gLJ6UqlxCYjov9E4j5nf2EKSFF+
+4xNejFZ36TNZwNyW1Pwqe5iHw4TEJIei+m7Fr48De9QtHan3n7wFiKqfAOe1dJlxAsQEuEEvUNnR
+8Hwl6/vIs1DvhpHiy93Te9yP6O5wDAjTHtVeuYOw7pd6VuuWJRtt5Q8GusLqjhGp5T+4HgbpXAWA
+PCt7/D6V0jercIF0lsrw1Tg2qamfZoRbSzcNuKITADB1UpyCU2a73eGhskkd4AfdG8f893nQRCIk
+popa
+--000000000000567919060375ebfb--
