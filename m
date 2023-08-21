@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A74C782892
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36079782895
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234293AbjHUMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S229932AbjHUMIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbjHUMHw (ORCPT
+        with ESMTP id S233488AbjHUMIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:07:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07B0BE;
-        Mon, 21 Aug 2023 05:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JqoZh4j5vDPGDIYjMUoDWXygkriwUyqpdmDkXxwFKUY=; b=kHbNoNIQmnKW3eiIhvfmiMTBQw
-        oGMjbNzTExz6otTNkAShMEu1bvig7HkVfaLiH3BkeGUlYEpazVo19ETIVdSKj7i/+ic2BJzrySwRu
-        31dfjjQmFXsOgvfi0fs5a5IYZFoCLBXMYw7EWZ4VoymRmwOwPbLsDs6+9+V9iSmrIZnMWw46vLokd
-        mjo34ABh0rV3PhAw94bwGG8IusAbeg0mr4b0Iz9KIn1Za0R9vRNu+GYesMlH2sI0ZzfH6IOgK5xeI
-        SBHkHf06PIe4tBkM1YjG1Xc2kpyxnAsqAHP04IZHs24hx1E5TTVdRFRv4xvdT5BgcxvEMwVcAsl52
-        laC4ZHOA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qY3h4-00A50W-Jp; Mon, 21 Aug 2023 12:07:38 +0000
-Date:   Mon, 21 Aug 2023 13:07:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jani Nikula <jani.nikula@intel.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Giulio Benetti <giulio.benetti@benettiengineering.com>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/1] docs: submitting-patches: Add Sponsored-by tag
- to give credits to who sponsored the patch
-Message-ID: <ZONTiijMLWbt6naQ@casper.infradead.org>
-References: <20230817220957.41582-1-giulio.benetti@benettiengineering.com>
- <20230817220957.41582-2-giulio.benetti@benettiengineering.com>
- <20230817232348.GC1175@pendragon.ideasonboard.com>
- <ZN65iiRiSLmXz89k@casper.infradead.org>
- <87ttss7q8o.fsf@intel.com>
+        Mon, 21 Aug 2023 08:08:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BF7BC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:08:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D360C632CD
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:08:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ECEEC433C7;
+        Mon, 21 Aug 2023 12:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692619698;
+        bh=PVrW88G27NaeeJAhpiG0fUdgU3T6lmCSgLklwhQPUcM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tdtBgc1Zdzz9XycBCO0HvY8k0JMEZI7SSV2GV49arWbVvzA56OVGAQ/K7B9/WRqAw
+         iuO8kq4u503GRmKDkMS7jTQT7hOSibslO/INQJEjgA8LcauNsOmLXBKVT27z1VmOyw
+         MlmbSHYmh0kn9BmwZeVB87uuBrHMMaSrjz2z05Em7/diTEUEcvf8UGCmxzH+wVGVNY
+         4ZgV+bLOo+CuthiWTRni0MYkQEQo2OXJXjV7fdgirMOVyChF8DvKLnoPW/hZ0msQsB
+         pYi9Zcz27RTyLIHzclotFjDbbCvqWx+XGFLekHm2dchA7c5yKZpA/H8+aFdhR3WvjZ
+         oI9VbJWTm+IIQ==
+Date:   Mon, 21 Aug 2023 13:08:12 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jijie Shao <shaojijie@huawei.com>
+Cc:     jonathan.cameron@huawei.com, mark.rutland@arm.com,
+        chenhao418@huawei.com, shenjian15@huawei.com,
+        wangjie125@huawei.com, liuyonglong@huawei.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        huangguangbin2@huawei.com, zhangshaokun@hisilicon.com
+Subject: Re: [PATCH drivers/perf: hisi: 2/2] drivers/perf: hisi: fix set
+ wrong filter mode for running events issue
+Message-ID: <20230821120812.GC19617@willie-the-truck>
+References: <20230816094619.3563784-1-shaojijie@huawei.com>
+ <20230816094619.3563784-3-shaojijie@huawei.com>
+ <20230821120440.GB19617@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ttss7q8o.fsf@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230821120440.GB19617@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 11:29:27AM +0300, Jani Nikula wrote:
-> On Fri, 18 Aug 2023, Matthew Wilcox <willy@infradead.org> wrote:
-> > but you might have (eg)
-> >
-> > Laurent Pinchard (Coca-Cola) <laurent.pinchart@ideasonboard.com>
-> >
-> > and then when working for another sponsor:
-> >
-> > Laurent Pinchard (Ford) <laurent.pinchart@ideasonboard.com>
-> 
-> Just an observation, git shortlog -s/-se groups/distinguishes,
-> respectively, the author and sponsor in Laurent's approach. Not so with
-> Matthew's approach.
+On Mon, Aug 21, 2023 at 01:04:40PM +0100, Will Deacon wrote:
+> [+Guangbin Huang and Shaokun Zhang]
 
-Hm?
+                   The mail system
 
-$ git shortlog -s next-20230817..
-     1  Matthew Wilcox (Novartis)
-    25  Matthew Wilcox (Oracle)
+<zhangshaokun@hisilicon.com>: host mx5.hisilicon.com[124.71.93.234] said: 551
+    5.1.1 <zhangshaokun@hisilicon.com>: Recipient address rejected: Failed
+    recipient validation check.: host 127.0.0.1[127.0.0.1] said: 554 5.7.1
+    recipient verify from ldap failed (in reply to RCPT TO command) (in reply
+    to RCPT TO command)
 
-$ git shortlog -se next-20230817..
-     1  Matthew Wilcox (Novartis) <willy@infradead.org>
-    25  Matthew Wilcox (Oracle) <willy@infradead.org>
+<huangguangbin2@huawei.com>: host mx5.huawei.com[124.71.93.234] said: 551 5.1.1
+    <huangguangbin2@huawei.com>: Recipient address rejected: Failed recipient
+    validation check.: host 127.0.0.1[127.0.0.1] said: 554 5.7.1 recipient
+    verify from ldap failed (in reply to RCPT TO command) (in reply to RCPT TO
+    command)
 
+
+So it's only Jonathan left in MAINTAINERS for "HISILICON HNS3 PMU DRIVER".
+Lucky him!
+
+Please can you update MAINTAINERS?
+
+Will
