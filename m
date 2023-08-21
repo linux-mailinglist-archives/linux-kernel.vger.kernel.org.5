@@ -2,50 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB11E783649
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8A8783646
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 01:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjHUXbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 19:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
+        id S231710AbjHUXbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 19:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231712AbjHUXbI (ORCPT
+        with ESMTP id S231421AbjHUXbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 19:31:08 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90CE19F;
-        Mon, 21 Aug 2023 16:30:56 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qYEMC-0004WB-0x;
-        Mon, 21 Aug 2023 23:30:49 +0000
-Date:   Tue, 22 Aug 2023 00:30:34 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v2 4/4] net: ethernet: mtk_eth_soc: support 36-bit
- DMA addressing on MT7988
-Message-ID: <e4121c507e065c5bca59ddae8909664374b5e396.1692660046.git.daniel@makrotopia.org>
-References: <cover.1692660046.git.daniel@makrotopia.org>
+        Mon, 21 Aug 2023 19:31:00 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478D218E
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:30:48 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-649edb3a3d6so17137246d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 16:30:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692660647; x=1693265447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uRPhHLIFOC8+rZAMEC/eSxC1aQDd+7O3GdPrzvXAbeU=;
+        b=FCO2jOTgybSwTEOoBWlDWVWb9EZGWHeqf3Y3WsTPfn2u6Pq2f9IowLNNIZjHp9UJO6
+         vX/O9IWM8KxCSlXHDVdJd0vUdhqEosYyse6NhcR7Qo3sjd9gSeeOSDwxEA5qAUX1ag5J
+         zYdl7C2+SeEmOzMDIZvDtbSJyRQC7wa3IgR6I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692660647; x=1693265447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uRPhHLIFOC8+rZAMEC/eSxC1aQDd+7O3GdPrzvXAbeU=;
+        b=SkJy4uDDBhHGZE0HYUcPrcNKybgk3hyeEK9NUWdK3ysgJv9pGSggdzKFnN0O+J+FJr
+         7XRwNpchGP7DBgDkn0FfJvs91Vv/5XbuJmXn6U7HwzR9mRBu0orFSw5fLHYID0xZZHnJ
+         lQNEdOGd5ECS7b9f7ihT/42fDgngGmwaZNjV0kytYRof6wfaeW4UDFkRoL3B3Y2XqHrW
+         FIHVUX0GTWR/jbRRK9NKPnxwweOHmO6h9/PK2IKMHKeC+nZMSxgrNJ747MS7qfYm5VGx
+         iouCvLJdc1/s4nHpy5nPiZkvW2uRAUumuo4E4tjtpvBI2xf/lV/DqE4Hl0K39WTTDEOV
+         LWqg==
+X-Gm-Message-State: AOJu0YwgmdnJfGeNA3TffCDN+OOG5bnMf+QOSH9x4StZfOWeacKtkv5h
+        wJOvZlq2hUklOkjaSm3GSElSkYDeoDHCWTGfGUlbwg==
+X-Google-Smtp-Source: AGHT+IGrcSNzfqiuuSO6RekCnVY3lNO5U5gzbH6kH8e4H8ETUqnnzFAsUZP1EsPplBf++yOTPrLHRmenNM1FN3B2hiU=
+X-Received: by 2002:a05:6214:29e8:b0:637:2eb:6c23 with SMTP id
+ jv8-20020a05621429e800b0063702eb6c23mr222336qvb.18.1692660647465; Mon, 21 Aug
+ 2023 16:30:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692660046.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+References: <20230718024703.1013367-1-utkarsh.h.patel@intel.com>
+ <20230718024703.1013367-2-utkarsh.h.patel@intel.com> <ZN+j/z97Yy0wv/if@chromium.org>
+ <MWHPR11MB0048DAF02954ACC66C026533A91EA@MWHPR11MB0048.namprd11.prod.outlook.com>
+In-Reply-To: <MWHPR11MB0048DAF02954ACC66C026533A91EA@MWHPR11MB0048.namprd11.prod.outlook.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Mon, 21 Aug 2023 16:30:36 -0700
+Message-ID: <CACeCKacWhrZE6LFFwF=vDO8362u9feN71pPO8Qr8XoaRgwj5uw@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] platform/chrome: cros_ec_typec: Configure Retimer
+ cable type
+To:     "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
+        "bleung@chromium.org" <bleung@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,185 +71,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Systems having 4 GiB of RAM and more require DMA addressing beyond the
-current 32-bit limit. Starting from MT7988 the hardware now supports
-36-bit DMA addressing, let's use that new capability in the driver to
-avoid running into swiotlb on systems with 4 GiB of RAM or more.
+On Mon, Aug 21, 2023 at 10:18=E2=80=AFAM Patel, Utkarsh H
+<utkarsh.h.patel@intel.com> wrote:
+>
+> Hi Prashant,
+>
+> Thank you for the review.
+>
+> > -----Original Message-----
+> > From: Prashant Malani <pmalani@chromium.org>
+> > Sent: Friday, August 18, 2023 10:02 AM
+> > To: Patel, Utkarsh H <utkarsh.h.patel@intel.com>
+> > Cc: linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org;
+> > heikki.krogerus@linux.intel.com; bleung@chromium.org
+> > Subject: Re: [PATCH v4 1/2] platform/chrome: cros_ec_typec: Configure
+> > Retimer cable type
+> >
+> > >  /*
+> > >   * Spoof the VDOs that were likely communicated by the partner for T=
+BT alt
+> > >   * mode.
+> > > @@ -432,6 +453,9 @@ static int cros_typec_enable_tbt(struct
+> > > cros_typec_data *typec,
+> > >
+> > >     /* Cable Discover Mode VDO */
+> > >     data.cable_mode =3D TBT_MODE;
+> > > +
+> > > +   data.cable_mode |=3D cros_typec_get_cable_vdo(port,
+> > > +USB_TYPEC_TBT_SID);
+> > > +
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 34 ++++++++++++++++++---
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 22 +++++++++++--
- 2 files changed, 50 insertions(+), 6 deletions(-)
+Here is the first call to cros_typec_get_cable_vdo(port, TBT)....
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index ec6a251a0f026..c40e69ac2eeaa 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1136,7 +1136,7 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
- 	int i;
- 
- 	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM))
--		eth->scratch_ring = eth->sram_base;
-+		eth->scratch_ring = (void __force *)eth->sram_base;
- 	else
- 		eth->scratch_ring = dma_alloc_coherent(eth->dma_dev,
- 						       cnt * soc->txrx.txd_size,
-@@ -1328,6 +1328,10 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
- 	data = TX_DMA_PLEN0(info->size);
- 	if (info->last)
- 		data |= TX_DMA_LS0;
-+
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+		data |= TX_DMA_PREP_ADDR64(info->addr);
-+
- 	WRITE_ONCE(desc->txd3, data);
- 
- 	 /* set forward port */
-@@ -1997,6 +2001,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 	bool xdp_flush = false;
- 	int idx;
- 	struct sk_buff *skb;
-+	u64 addr64 = 0;
- 	u8 *data, *new_data;
- 	struct mtk_rx_dma_v2 *rxd, trxd;
- 	int done = 0, bytes = 0;
-@@ -2112,7 +2117,10 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 				goto release_desc;
- 			}
- 
--			dma_unmap_single(eth->dma_dev, trxd.rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(trxd.rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)trxd.rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 
- 			skb = build_skb(data, ring->frag_size);
-@@ -2178,6 +2186,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		ring->calc_idx = idx;
- 		done++;
- 	}
-@@ -2450,7 +2461,7 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
- 		goto no_tx_mem;
- 
- 	if (MTK_HAS_CAPS(soc->caps, MTK_SRAM)) {
--		ring->dma = eth->sram_base + ring_size * sz;
-+		ring->dma = (void __force *)eth->sram_base + ring_size * sz;
- 		ring->phys = eth->phy_scratch_ring + ring_size * (dma_addr_t)sz;
- 	} else {
- 		ring->dma = dma_alloc_coherent(eth->dma_dev, ring_size * sz,
-@@ -2670,6 +2681,9 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		rxd->rxd3 = 0;
- 		rxd->rxd4 = 0;
- 		if (mtk_is_netsys_v2_or_greater(eth)) {
-@@ -2716,6 +2730,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 
- static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
- {
-+	u64 addr64 = 0;
- 	int i;
- 
- 	if (ring->data && ring->dma) {
-@@ -2729,7 +2744,10 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_
- 			if (!rxd->rxd1)
- 				continue;
- 
--			dma_unmap_single(eth->dma_dev, rxd->rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(rxd->rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)rxd->rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 			mtk_rx_put_buff(ring, ring->data[i], false);
- 		}
-@@ -4734,6 +4752,14 @@ static int mtk_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA)) {
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
-+		if (err) {
-+			dev_err(&pdev->dev, "Wrong DMA config\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	spin_lock_init(&eth->page_lock);
- 	spin_lock_init(&eth->tx_irq_lock);
- 	spin_lock_init(&eth->rx_irq_lock);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 7c180aedcc0cd..186767bcf6837 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -331,6 +331,14 @@
- #define TX_DMA_PLEN1(x)		((x) & eth->soc->txrx.dma_max_len)
- #define TX_DMA_SWC		BIT(14)
- #define TX_DMA_PQID		GENMASK(3, 0)
-+#define TX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#if IS_ENABLED(CONFIG_64BIT)
-+# define TX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(TX_DMA_ADDR64_MASK, (x))) << 32)
-+# define TX_DMA_PREP_ADDR64(x)	FIELD_PREP(TX_DMA_ADDR64_MASK, ((x) >> 32))
-+#else
-+# define TX_DMA_GET_ADDR64(x)	(0)
-+# define TX_DMA_PREP_ADDR64(x)	(0)
-+#endif
- 
- /* PDMA on MT7628 */
- #define TX_DMA_DONE		BIT(31)
-@@ -343,6 +351,14 @@
- #define RX_DMA_PREP_PLEN0(x)	(((x) & eth->soc->txrx.dma_max_len) << eth->soc->txrx.dma_len_offset)
- #define RX_DMA_GET_PLEN0(x)	(((x) >> eth->soc->txrx.dma_len_offset) & eth->soc->txrx.dma_max_len)
- #define RX_DMA_VTAG		BIT(15)
-+#define RX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#if IS_ENABLED(CONFIG_64BIT)
-+# define RX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(RX_DMA_ADDR64_MASK, (x))) << 32)
-+# define RX_DMA_PREP_ADDR64(x)	FIELD_PREP(RX_DMA_ADDR64_MASK, ((x) >> 32))
-+#else
-+# define RX_DMA_GET_ADDR64(x)	(0)
-+# define RX_DMA_PREP_ADDR64(x)	(0)
-+#endif
- 
- /* QDMA descriptor rxd3 */
- #define RX_DMA_VID(x)		((x) & VLAN_VID_MASK)
-@@ -942,6 +958,7 @@ enum mkt_eth_capabilities {
- 	MTK_RSTCTRL_PPE2_BIT,
- 	MTK_U3_COPHY_V2_BIT,
- 	MTK_SRAM_BIT,
-+	MTK_36BIT_DMA_BIT,
- 
- 	/* MUX BITS*/
- 	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
-@@ -978,6 +995,7 @@ enum mkt_eth_capabilities {
- #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
- #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
- #define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
-+#define MTK_36BIT_DMA	BIT_ULL(MTK_36BIT_DMA_BIT)
- 
- #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
- 	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
-@@ -1059,8 +1077,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
- 
--#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
--		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
-+#define MT7988_CAPS  (MTK_36BIT_DMA | MTK_GDM1_ESW | MTK_QDMA | \
-+		      MTK_RSTCTRL_PPE1 | MTK_RSTCTRL_PPE2 | MTK_SRAM)
- 
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
--- 
-2.41.0
+> > >     data.cable_mode |=3D TBT_SET_CABLE_SPEED(pd_ctrl->cable_speed);
+> > >
+> > >     if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE) @@ -
+> > 522,8
+> > > +546,10 @@ static int cros_typec_enable_usb4(struct cros_typec_data
+> > *typec,
+> > >     /* Cable Type */
+> > >     if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE)
+> > >             data.eudo |=3D EUDO_CABLE_TYPE_OPTICAL <<
+> > EUDO_CABLE_TYPE_SHIFT;
+> > > -   else if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
+> > > +   else if (cros_typec_get_cable_vdo(port, USB_TYPEC_TBT_SID) &
+> > > +TBT_CABLE_RETIMER)
+
+And here is the 2nd.
+
+> > >             data.eudo |=3D EUDO_CABLE_TYPE_RE_TIMER <<
+> > EUDO_CABLE_TYPE_SHIFT;
+> > We shouldn't need to call cros_typec_get_cable_vdo more than once. Eith=
+er
+> > call it once earlier when you are crafting the data.cable_mode member a=
+nd
+> > then re-use that variable here. Or don't call it there and just call it=
+ here.
+>
+> We are only calling it once depending upon which mode we enter TBT Alt or=
+ USB4.
+
+There should only be 1 "call site" and that should be sufficient to
+grab the VDO from the
+framework for all circumstances. Whether the other invocation doesn't get c=
+alled
+under certain circumstances isn't as relevant.
