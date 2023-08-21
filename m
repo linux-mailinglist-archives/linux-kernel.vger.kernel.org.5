@@ -2,128 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C44F782D63
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD40D782D66
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 17:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbjHUPhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 11:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S236419AbjHUPi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 11:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236423AbjHUPhC (ORCPT
+        with ESMTP id S236391AbjHUPi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 11:37:02 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF74E2;
-        Mon, 21 Aug 2023 08:37:01 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-48d0db157efso481707e0c.1;
-        Mon, 21 Aug 2023 08:37:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692632220; x=1693237020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0xyVHx1jRHtcJdeUzOo6rApb73WW21TZmOmliSqn3Mo=;
-        b=C9IYT3+OtUW9hwweWvu3GiC1mPSXAKKkf5CvbN45O6kJgQa/GIZAh1Mk0IKAjv6rlP
-         kTKx7DrtRTGVuSPdoYltArXgJvfuGB5j/YyTWQ18onlBGeXTLUvs75NdULQCf99A2zns
-         UyWqmIhKFpyX/5Jo8I6jj4dB38OZH2FEyDiN0lm2ACX7ytHpCtzQLz8uvYwUnRJ8EVUQ
-         2lcjjRwoRkWZSUD9C7tpLam32Kyq66bkPHKqqLmMJyc6Cx1y5btKLIu4ima4+PtJXSJu
-         TCbNhWcrBYxnb/aYEQmJLWhJT2lmTBrqwgjLZTuDDd7EmQdB66WWEyOk7wH/71+ey2yQ
-         ZzGw==
+        Mon, 21 Aug 2023 11:38:28 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729D9F1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:38:26 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C1F533FAED
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:38:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1692632304;
+        bh=dR4fKCf3aiQm5QfYjYybq78zJOJhhlX1qhg84BiXcbQ=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=EXPSXZzYaQZqNhOguMkurHQHhnrfiH1NSuSp57mBhQ85xAsh4/CumFGK3Qd3eerSL
+         0PSs+y43wZ1DrPnrDrXAlFTDMZDdsVX/yXYQweThvUjogr43IYRjThZwdfdfeSe/tN
+         Iat3csqlzOVL0nI61ebIm8F9DQe2r97WOkVVOP62BwDxv1Uu/qEypDaZRxVFQnnf1n
+         OqiIR5ySjSTUGfk0McaAeqVLsWdyTN5c6hwNS9Bg2toPn93VUd5EhRfSal37P1jTHl
+         THzeRmhb38Vn37YGddY32KkhWGH0UNRg1D1dBoXCYYVGZTYqF+GrI9V8KmGBuRab/b
+         x2DlV8/6JHHLw==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40fdb989957so48964251cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 08:38:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692632220; x=1693237020;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0xyVHx1jRHtcJdeUzOo6rApb73WW21TZmOmliSqn3Mo=;
-        b=LQ9zT4tSREzV4DYUhlfxN9MJfvUnvBapkjpVeQoexCMv1/+tJaq4eZKndWa7DL3/iP
-         /+gjuyn+FFzQbdM/1FI+78MsKsouoorsSWcDYmfOJR970kQigXm9NJ+jLdu5ahS+GUlj
-         cfsUe2ASoNQ6G2NJgQ8o4kAakRLEKdbYTgwRE+TeVFbFm5VsAfIGv/0U9nkogXoJjlsp
-         ZI9CVDn5d1BvuKrb8d90OTRdyF6EY+2vQdMd2gaM+VSzVpEALxhjRyURIH5WlwrR2/bw
-         CRFlr+xAFFQ7mRCsq8X6hsSBv7V18k4NTBnoURvuf3IOAvZS+SEvR1u4oPoNHZMAy/Ny
-         5U5g==
-X-Gm-Message-State: AOJu0YwRJ/zsgPBX0Ej7+WtU2xr2uA4fWU4Oh10U4cMmp1LqMhMpUzqc
-        GTWAODz/bpUZMBKnqe0BToQei8u/AoKgjQ1grdEPKhfMciM=
-X-Google-Smtp-Source: AGHT+IF5/v+rHolsxAAStdBDux4Y1lDOsbPIWa+OZFr/WjW9nAhGLgjS7+TCkBPZcczXIon7gB3pqgs7vJbUFJmqIsk=
-X-Received: by 2002:a1f:ed84:0:b0:48d:1fcd:9723 with SMTP id
- l126-20020a1fed84000000b0048d1fcd9723mr2586888vkh.1.1692632220125; Mon, 21
- Aug 2023 08:37:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692632304; x=1693237104;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dR4fKCf3aiQm5QfYjYybq78zJOJhhlX1qhg84BiXcbQ=;
+        b=VDIu5SGRSDUltCYs+bx8sCdjUIHSFpSMUpyVS4hIqoE2eUCxy+Ui5MDQfZ+WAApmfY
+         odDQjzk8EhMQ25ZBFq8Kpltb3Ff6EqbDzpdAEQ7gVPVLqz/S2wlq7mh6KZJozY17s+8h
+         8I9seQKPP9dgDB9K9O1RtZctXRNQ4EIiWxhHtwF5mbo86CIqh+xUDoqYdnLzap8jIgBf
+         M8yNbl+er9of0VwFYB/pk4UVF+8nHj1zP1Ok6BOZlEG+DxLsGr0CzFu2zmAhHLR7KjrK
+         4go6i+S4QoFgf3lvXNumfyw96VjZoYNth+6tXaZJmlTlQo08qVKxQV7Wo7EerSKkHMKD
+         CgPw==
+X-Gm-Message-State: AOJu0Yx1MlTrJL4pHsBgUAaYusfU7Q/uivF5EF0ysy0xL3P2XGbIX2ma
+        jGg5we3dA0c4plNxVW2RpNQgIzKjE3x3VccR5uCMJty3bwE3AvYAbDp3SjRTVzfqdAzM8JEHSCJ
+        Pqf+7Ltuf6C1xLVtxXPCGwPNuwMTu3sgpdiq9DyshfbS4UuUrQ/A1LEp4eA==
+X-Received: by 2002:a05:622a:1a09:b0:406:56cb:b617 with SMTP id f9-20020a05622a1a0900b0040656cbb617mr9994483qtb.53.1692632303864;
+        Mon, 21 Aug 2023 08:38:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHOYpfoMWqn7rvTpD6etYQwz44SATS6402V5zdFc7+JvhQ9JNi2SjP6xefOXetLZpEzWzQHpVpIrE+AxYw1GVM=
+X-Received: by 2002:a05:622a:1a09:b0:406:56cb:b617 with SMTP id
+ f9-20020a05622a1a0900b0040656cbb617mr9994469qtb.53.1692632303608; Mon, 21 Aug
+ 2023 08:38:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230818151039.40566-1-twoerner@gmail.com> <20230818151039.40566-2-twoerner@gmail.com>
-In-Reply-To: <20230818151039.40566-2-twoerner@gmail.com>
-From:   Robert Nelson <robertcnelson@gmail.com>
-Date:   Mon, 21 Aug 2023 10:36:34 -0500
-Message-ID: <CAOCHtYgdxeoOvTcFjwB=iqLD5K4JzeoRF8zeQPzM_1nLh5ReYA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ARM: dts: am335x-pocketbeagle: update LED information
-To:     Trevor Woerner <twoerner@gmail.com>
-Cc:     drew@beagleboard.org,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+References: <20230821152915.208366-1-xingyu.wu@starfivetech.com>
+In-Reply-To: <20230821152915.208366-1-xingyu.wu@starfivetech.com>
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Date:   Mon, 21 Aug 2023 17:38:07 +0200
+Message-ID: <CAJM55Z_XxHeC-X2d4qcsRK6THLyqWV4SsSW3S+cC8yszpPD9Og@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: starfive: jh7110-sys: Fix lower rate of CPUfreq
+ by setting PLL0 rate to 1.5GHz
+To:     Xingyu Wu <xingyu.wu@starfivetech.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 5:24=E2=80=AFAM Trevor Woerner <twoerner@gmail.com>=
- wrote:
+On Mon, 21 Aug 2023 at 17:29, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
 >
-> The "label" property is deprecated. Replace the "label" property with
-> "color" and "description" properties.
+> CPUfreq supports 4 cpu frequency loads on 375/500/750/1500MHz.
+> But now PLL0 rate is 1GHz and the cpu frequency loads become
+> 333/500/500/1000MHz in fact.
 >
-> Signed-off-by: Trevor Woerner <twoerner@gmail.com>
+> So PLL0 rate should be set to 1.5GHz. Change the parent of cpu_root clock
+> and the divider of cpu_core before the setting.
+>
+> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+> Fixes: e2c510d6d630 ("riscv: dts: starfive: Add cpu scaling for JH7110 SoC")
+> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
 > ---
->  arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
 >
-> diff --git a/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts b/arch/arm=
-/boot/dts/ti/omap/am335x-pocketbeagle.dts
-> index 5dfe4d4bab93..1c11245f6864 100644
-> --- a/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts
-> +++ b/arch/arm/boot/dts/ti/omap/am335x-pocketbeagle.dts
-> @@ -8,6 +8,7 @@
+> Hi Stephen and Emil,
 >
->  #include "am33xx.dtsi"
->  #include "am335x-osd335x-common.dtsi"
-> +#include <dt-bindings/leds/common.h>
+> This patch fixes the issue about lower rate of CPUfreq[1]
+> and sets PLL0 rate to 1.5GHz. In order not to affect the cpu
+> operation, the cpu_root's parent clock should be changed first.
+> And the divider of the cpu_core clock should be set to 2 so they
+> won't crash when setting 1.5GHz without voltage regulation.
+
+Hi Xingyu,
+
+It sounds like this is something the driver should handle
+automatically whenever clk_set_rate() is called on the PLL0 clock.
+Then we should be able to use regular assigned-clocks /
+assigned-clock-rates stanzas in the device tree instead of having this
+1.5GHz rate hard-coded in the driver.
+
+/Emil
+
+> [1]: https://github.com/starfive-tech/VisionFive2/issues/55
 >
->  / {
->         model =3D "TI AM335x PocketBeagle";
-> @@ -24,28 +25,32 @@ leds {
->                 compatible =3D "gpio-leds";
+> This patch is based on linux-next(20230818) which has merge PLL driver
+> on the StarFive JH7110 SoC.
 >
->                 led-usr0 {
-> -                       label =3D "beaglebone:green:usr0";
-> +                       color =3D <LED_COLOR_ID_BLUE>;
-> +                       function =3D LED_FUNCTION_HEARTBEAT;
-
-So some background, while the LED are not Green, and this is not the Beagle=
-Bone.
-
-We used these specific labels to keep all user documents going back to
-the original BeagleBone (white) (with 3.8.x kernel), the same so users
-could easily blink an led from user-space even on newer boards.
-
-So it became our un-official abi for new users for the BeagleBoard
-family of devices..
-
-It's even what we do on the BeaglePlay..
-
-https://git.beagleboard.org/beagleboard/BeagleBoard-DeviceTrees/-/blob/v5.1=
-0.x-ti-unified/src/arm64/k3-am625-beagleplay.dts#L179-217
-
-Regards,
-
---=20
-Robert Nelson
-https://rcn-ee.com/
+> Thanks,
+> Xingyu Wu
+>
+> ---
+>  .../clk/starfive/clk-starfive-jh7110-sys.c    | 47 ++++++++++++++++++-
+>  1 file changed, 46 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> index 3884eff9fe93..b6b9e967dfc7 100644
+> --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+> @@ -501,7 +501,52 @@ static int __init jh7110_syscrg_probe(struct platform_device *pdev)
+>         if (ret)
+>                 return ret;
+>
+> -       return jh7110_reset_controller_register(priv, "rst-sys", 0);
+> +       ret = jh7110_reset_controller_register(priv, "rst-sys", 0);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * Set PLL0 rate to 1.5GHz
+> +        * In order to not affect the cpu when the PLL0 rate is changing,
+> +        * we need to switch the parent of cpu_root clock to osc clock first,
+> +        * and then switch back after setting the PLL0 rate.
+> +        */
+> +       pllclk = clk_get(priv->dev, "pll0_out");
+> +       if (!IS_ERR(pllclk)) {
+> +               struct clk *osc = clk_get(&pdev->dev, "osc");
+> +               struct clk *cpu_root = priv->reg[JH7110_SYSCLK_CPU_ROOT].hw.clk;
+> +               struct clk *cpu_core = priv->reg[JH7110_SYSCLK_CPU_CORE].hw.clk;
+> +
+> +               if (IS_ERR(osc)) {
+> +                       clk_put(pllclk);
+> +                       return PTR_ERR(osc);
+> +               }
+> +
+> +               /*
+> +                * CPU need voltage regulation by CPUfreq if set 1.5GHz.
+> +                * So in this driver, cpu_core need to be set the divider to be 2 first
+> +                * and will be 750M after setting parent.
+> +                */
+> +               ret = clk_set_rate(cpu_core, clk_get_rate(cpu_core) / 2);
+> +               if (ret)
+> +                       goto failed_set;
+> +
+> +               ret = clk_set_parent(cpu_root, osc);
+> +               if (ret)
+> +                       goto failed_set;
+> +
+> +               ret = clk_set_rate(pllclk, 1500000000);
+> +               if (ret)
+> +                       goto failed_set;
+> +
+> +               ret = clk_set_parent(cpu_root, pllclk);
+> +
+> +failed_set:
+> +               clk_put(pllclk);
+> +               clk_put(osc);
+> +       }
+> +
+> +       return ret;
+>  }
+>
+>  static const struct of_device_id jh7110_syscrg_match[] = {
+> --
+> 2.25.1
+>
