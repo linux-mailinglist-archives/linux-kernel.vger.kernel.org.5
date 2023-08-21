@@ -2,167 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2C3782EE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE408782EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236834AbjHUQ5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
+        id S236885AbjHUQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjHUQ5R (ORCPT
+        with ESMTP id S236898AbjHUQ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:57:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A999100;
-        Mon, 21 Aug 2023 09:57:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18E73620E7;
-        Mon, 21 Aug 2023 16:57:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D07C433C7;
-        Mon, 21 Aug 2023 16:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692637034;
-        bh=g4MJjIAVMlnPsdA6QHRst4Po2TwWEXM1AKPvoTZLmWw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QQNqxOMU4BUdmVTLLhIh+r4VtiJ56HgDWBNklFThS2M1sxckZQU9bsLk7GZEHEvsb
-         EkijTZLH48pjGoLHgPZi0Lq5iOEhIWOJ3DVbD5g/6s91AmN7m/J0asXQ+f3XyXVLJg
-         WZNb0HqgF7qB8ruxDsOi4+RlXNQwvlOrGwQYGC4pS1MiqTaZhpl+syGImkKwf0JJls
-         tkDJn3rlSEtIsjEDyZomqBLfZdrKEulCk5A/BDivEpMEJzLVjXr9NlDmaYFR2/OwBC
-         qwqg2yPNMjqazHE/NGJv3UNb79N1bj5l/NhFEhDservRuBf0BfMG5pT8UvzDQQk2ym
-         IAAzYsiWJ+FNQ==
-Received: (nullmailer pid 1886744 invoked by uid 1000);
-        Mon, 21 Aug 2023 16:57:12 -0000
-Date:   Mon, 21 Aug 2023 11:57:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>
-Cc:     "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
-Subject: Re: [PATCH v4 4/4] dt-bindings: firmware: arm,scmi: Add support for
- pinctrl protocol
-Message-ID: <20230821165712.GA1876025-robh@kernel.org>
-References: <cover.1691518313.git.oleksii_moisieiev@epam.com>
- <1dcf25b5c6b16b7138534e3c13827287f7c644cf.1691518314.git.oleksii_moisieiev@epam.com>
+        Mon, 21 Aug 2023 12:58:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1605F10F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692637047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CXGwgpHlf7D764T66ilzjBpaazpa9epIZyJVOx09W+I=;
+        b=f9VWf6Ox6/GDWqvt3mgwUun/ZNk8ykbMF0S+GB7VyDLWZuGws7bY/0F7yI9UcJOT31I4s0
+        93PRCbCDK3yKxwjYmLh3wnMRNdlGTElBwX56tU12J5d5wjvXe2RmF3sh1ew4WPGBkmZZq1
+        AjOfSUna9X/0Cgz/z0vMOAl7YZpIlIw=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-395-EPqoiiGWNy6ldlHeS9qWsg-1; Mon, 21 Aug 2023 12:57:23 -0400
+X-MC-Unique: EPqoiiGWNy6ldlHeS9qWsg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2bb93f9a54fso35225081fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:57:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692637041; x=1693241841;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CXGwgpHlf7D764T66ilzjBpaazpa9epIZyJVOx09W+I=;
+        b=jryl6axWKeQk9trsbNgZQbU9PzgfwF62cCpjx0iyVYN3iNceKTVT+MN5OWJaNdG7Gv
+         sgn3tBZ2okBH1q+lOpQdKCdolbfRFzTXN+1CfRn/OrNIsEG9dGZHqDm6c9slmv+cCnXU
+         Fd27/r85JFskM2gR7IeYaHHM7qJnZhCfTHfPRuM1wXH8Gsu+m/dhkJdkKdijI/wVY0FW
+         uYueWxMxHIXV/qpHRGADh9Iduq7R2BTD3znq/39Fe9Ujb3aF2+8F3sfe8zHbIWyC56Ai
+         aB1Scqo+wpLqa0+4uAN4sb3R4rJebU+YaYBQggwuXCKWQ/kLICNJl6XFjffErZBvGY98
+         elGw==
+X-Gm-Message-State: AOJu0Yxhm/j7BCkR2a0EI1mm0VFQ0ySl0b3FIdvZExRINuZo/7gCwzZh
+        dTJwzo0RxOiS66TU7iOh+8iF9PUZqiOhjrusfaZp9aj6YKgIRDOKBwP73CKxQzVGxYVmeCsdjv9
+        SW6xxUQIuG8gdah75qBdMTVEPSutSvURJ
+X-Received: by 2002:a2e:8ec6:0:b0:2b6:e78e:1e58 with SMTP id e6-20020a2e8ec6000000b002b6e78e1e58mr5737989ljl.5.1692637041430;
+        Mon, 21 Aug 2023 09:57:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEXXokZi+oG0+t0TFrhKlNiKjd9bBY8JtXoMrFYUu8TiarXbXIKYyckEfoETRvAcowQEwbL1Q==
+X-Received: by 2002:a2e:8ec6:0:b0:2b6:e78e:1e58 with SMTP id e6-20020a2e8ec6000000b002b6e78e1e58mr5737978ljl.5.1692637041132;
+        Mon, 21 Aug 2023 09:57:21 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id xa13-20020a170907b9cd00b0099bd5d28dc4sm6839118ejc.195.2023.08.21.09.57.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 09:57:20 -0700 (PDT)
+Message-ID: <fb7d2d63-972a-b056-c7ae-a9995f1bf66b@redhat.com>
+Date:   Mon, 21 Aug 2023 18:57:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1dcf25b5c6b16b7138534e3c13827287f7c644cf.1691518314.git.oleksii_moisieiev@epam.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Update steps order list elements are evaluated
+Content-Language: en-US, nl
+To:     Jorge Lopez <jorgealtxwork@gmail.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas@t-8ch.de, ilpo.jarvinen@linux.intel.com,
+        dan.carpenter@linaro.org
+References: <20230821144205.13529-1-jorge.lopez2@hp.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230821144205.13529-1-jorge.lopez2@hp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 06:25:36PM +0000, Oleksii Moisieiev wrote:
-> Add new SCMI v3.2 pinctrl protocol bindings definitions and example.
+Hi,
+
+On 8/21/23 16:42, Jorge Lopez wrote:
+> Update steps how order list elements data and elements size are
+> evaluated
 > 
-> Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
 > 
 > ---
-> Changes v3 -> v4
->   - reworked protocol@19 format
+> Based on the latest platform-drivers-x86.git/for-next
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+
 > ---
->  .../bindings/firmware/arm,scmi.yaml           | 53 +++++++++++++++++++
->  1 file changed, 53 insertions(+)
+>  .../platform/x86/hp/hp-bioscfg/order-list-attributes.c | 10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> index 5824c43e9893..5318fe72354e 100644
-> --- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> +++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-> @@ -233,6 +233,39 @@ properties:
->        reg:
->          const: 0x18
+> diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> index cffc1c9ba3e7..1ff09dfb7d7e 100644
+> --- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> +++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
+> @@ -258,7 +258,6 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
+>  				eloc++;
+>  			break;
+>  		case ORD_LIST_ELEMENTS:
+> -			size = ordered_list_data->elements_size;
 >  
-> +  protocol@19:
-> +    type: object
-> +    allOf:
-> +      - $ref: "#/$defs/protocol-node"
-> +      - $ref: "../pinctrl/pinctrl.yaml"
-
-/schemas/pinctrl/...
-
-And drop the quotes.
-
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x19
-> +
-> +      '#pinctrl-cells':
-
-Use either ' or ". You've used both. Go with whatever the rest of the 
-doc uses.
-
-> +        const: 0
-> +
-> +    patternProperties:
-> +      '-pins$':
-> +        type: object
-> +        allOf:
-> +          - $ref: "../pinctrl/pincfg-node.yaml#"
-> +          - $ref: "../pinctrl/pinmux-node.yaml#"
-
-Full path and no quotes.
-
-Surely there's some restrictions on which properties are valid and 
-contraints on the values?
-
-> +        unevaluatedProperties: false
-> +
-> +        description:
-> +          A pin multiplexing sub-node describe how to configure a
-> +          set of pins is some desired function.
-> +          A single sub-node may define several pin configurations.
-> +          This sub-node is using default pinctrl bindings to configure
-> +          pin multiplexing and using SCMI protocol to apply specified
-> +          configuration using SCMI protocol.
-> +
-> +    required:
-> +      - reg
-> +
->  additionalProperties: false
+>  			/*
+>  			 * Ordered list data is stored in hex and comma separated format
+> @@ -270,17 +269,14 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
 >  
->  $defs:
-> @@ -384,6 +417,26 @@ examples:
->              scmi_powercap: protocol@18 {
->                  reg = <0x18>;
->              };
-> +
-> +            scmi_pinctrl: protocol@19 {
-> +                reg = <0x19>;
-> +                #pinctrl-cells = <0>;
-> +
-> +                i2c2-pins {
-> +                    groups = "i2c2_a", "i2c2_b";
-> +                    function = "i2c2";
-> +                };
-> +
-> +                mdio-pins {
-> +                    groups = "avb_mdio";
-> +                    drive-strength = <24>;
-> +                };
-> +
-> +                keys_pins: keys-pins {
-> +                    pins = "GP_5_17", "GP_5_20", "GP_5_22", "GP_2_1";
-> +                    bias-pull-up;
-> +                };
-> +            };
->          };
->      };
+>  			part_tmp = tmpstr;
+>  			part = strsep(&part_tmp, COMMA_SEP);
+> -			if (!part)
+> -				strscpy(ordered_list_data->elements[0],
+> -					tmpstr,
+> -					sizeof(ordered_list_data->elements[0]));
 >  
-> -- 
-> 2.25.1
+> -			for (olist_elem = 1; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
+> +			for (olist_elem = 0; olist_elem < MAX_ELEMENTS_SIZE && part; olist_elem++) {
+>  				strscpy(ordered_list_data->elements[olist_elem],
+>  					part,
+>  					sizeof(ordered_list_data->elements[olist_elem]));
+> -				part = strsep(&part_tmp, SEMICOLON_SEP);
+> +				part = strsep(&part_tmp, COMMA_SEP);
+>  			}
+> +			ordered_list_data->elements_size = olist_elem;
+>  
+>  			kfree(str_value);
+>  			str_value = NULL;
+
