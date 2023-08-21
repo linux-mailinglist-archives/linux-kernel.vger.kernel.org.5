@@ -2,55 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4E7782A77
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFB6F782A7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235395AbjHUN0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
+        id S235401AbjHUN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233695AbjHUN0I (ORCPT
+        with ESMTP id S231479AbjHUN0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:26:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4249EB1;
-        Mon, 21 Aug 2023 06:26:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D473561E94;
-        Mon, 21 Aug 2023 13:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9B89C433C7;
-        Mon, 21 Aug 2023 13:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692624366;
-        bh=wo0AEq7EVLKcJNozUw706Dbt/mblagvb19WS0DocC+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V/U5FQXfP7owWoyl3u1JxwD1cHjEUFKG09746gRFkXDP1fKWXpzqEutKp5T+YVlIw
-         6D6CY94Zcc1Emt2MBjamEHENJfOnn/7+afTAltLYm3pkNlcrocUDqmGateOT0InCAn
-         AUxwehIro76XKzfZ3YhS8n84UtJuLMwwG0dhQEG0=
-Date:   Mon, 21 Aug 2023 15:26:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Qais Yousef <qyousef@layalina.io>
-Cc:     stable@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>, Hao Luo <haoluo@google.com>,
-        John Stultz <jstultz@google.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Backport rework of deadline bandwidth restoration
- for 6.1.y
-Message-ID: <2023082140-dreaded-hemstitch-84b9@gregkh>
-References: <20230820152417.518806-1-qyousef@layalina.io>
+        Mon, 21 Aug 2023 09:26:35 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB408F;
+        Mon, 21 Aug 2023 06:26:34 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so4311236a12.2;
+        Mon, 21 Aug 2023 06:26:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692624393; x=1693229193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ivp3Kmvd1KiyuA0TajyJFX+EMDTxCUTbleFELmRAXdc=;
+        b=kOBLPfwyxwwTzXem9eYsvblIj9PNfqrNLntcyl84RNSWbCUmBGHBwy+3xY7zxJk/mX
+         lm177M31nVSSJmVKXiLQGmFqkXEdyZGNNoO4b2gbEA98xEFJoMogBUOCghmJ4rrDEAV4
+         HaFv4BGetogqjcrDN1WJzFhtnSaSrVS2jVABDSKsqK3xERyBuy0hfCQvZMz6Y1eH9EaZ
+         cOkoGd6DhGkDaUXA9/CEFhP9PkRBmISlJWwb0AM7u9Iw2f3ejKXWNuNxX2cl01Sjt3xN
+         lA1EbeJ4fmFdJoQ1qnMw+ullOU6NH6rfYPpByqLu+Py9NP2VEvkcxLqQ+mu0zOopfKlL
+         S1Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692624393; x=1693229193;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ivp3Kmvd1KiyuA0TajyJFX+EMDTxCUTbleFELmRAXdc=;
+        b=dN3RW3i3jNnu1R7HrMITJXszVENZAlXr35cgrRYK2pcjyUxGup0mgL/+Gc2Qgpbkc6
+         gsaqhTwI3ktnFWbqoVWBuY8hujvGi4ua1mOU73t7dQ4SaoH1j6WDF6Tkkdx0pdW1OMq+
+         j207Nu4cIdjHcuP+Eb4ruowXmLaM6n2K7zahDRwJrGqIfzEprqtzL26vCvqPes1glATV
+         7oOZK6m8tjZEzCpGQJ77BqNqIWc8HWPeRv1VoHSw+C+xdvZM8ZPp3KxC9HfYfRH03Zqs
+         yDBRAVsiUbSv6sMPzLR4cIgS2UAYAhGHFnzzF4dhiycWScc2cJi8eJ+dDWJzF8xFAzG0
+         ojkQ==
+X-Gm-Message-State: AOJu0YyLXt4hgLxdsQiBLC1ncjE/qm5eMkvD1LX63FZ3di7brNOj98e6
+        Ry23mYNLLH+2w0TrxT3G3cRsqTepYwOdyX0f+BA=
+X-Google-Smtp-Source: AGHT+IEVuYuf/qp19UPbKwtg758s0lJ66lQhjhFhYzfyWwydig257yItnAqpSmQLFo3ZIXBLtdzuuVy4LcxCVObTIJU=
+X-Received: by 2002:a05:6402:505:b0:525:3e99:8ab9 with SMTP id
+ m5-20020a056402050500b005253e998ab9mr5110542edv.10.1692624392358; Mon, 21 Aug
+ 2023 06:26:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230820152417.518806-1-qyousef@layalina.io>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
+ <20230816111310.1656224-3-keguang.zhang@gmail.com> <c1499974-17c5-2f6b-8d6b-be225299fa9c@linaro.org>
+In-Reply-To: <c1499974-17c5-2f6b-8d6b-be225299fa9c@linaro.org>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Mon, 21 Aug 2023 21:26:16 +0800
+Message-ID: <CAJhJPsUpAOhNH9q6gqrUjc=0WGMmSj1xJAgZoMBZ_6+pHdN5fA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: net: Add Loongson-1 DWMAC glue layer
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,25 +82,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 04:24:11PM +0100, Qais Yousef wrote:
-> This is a backport of the series that fixes the way deadline bandwidth
-> restoration is done which is causing noticeable delay on resume path. It also
-> converts the cpuset lock back into a mutex which some users on Android too.
-> I lack the details but AFAIU the read/write semaphore was slower on high
-> contention.
-> 
-> Compile tested against some randconfig for different archs and tested against
-> android14-6.1 GKI kernel.
-> 
-> My testing is limited to resume path only; and general phone usage to make sure
-> nothing falls apart. Would be good to have some deadline specific testing done
-> too.
-> 
-> Based on v6.1.46
+On Sat, Aug 19, 2023 at 10:26=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 16/08/2023 13:13, Keguang Zhang wrote:
+> > Add devicetree binding document for Loongson-1 DWMAC glue layer.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > V1 -> V2: Fix "clock-names" and "interrupt-names" property
+> >           Rename the syscon property to "loongson,dwmac-syscon"
+> >           Drop "phy-handle" and "phy-mode" requirement
+> >           Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
+> >           to snps,dwmac.yaml
+> >
+> >  .../bindings/net/loongson,ls1x-dwmac.yaml     | 98 +++++++++++++++++++
+> >  1 file changed, 98 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1x=
+-dwmac.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.=
+yaml b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
+> > new file mode 100644
+> > index 000000000000..cf5477450e29
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
+> > @@ -0,0 +1,98 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/net/loongson,ls1x-dwmac.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Loongson-1 DWMAC glue layer
+>
+> Please implement Serge's comments about title and description. Rest
+> looks good:
+>
+Will do.
 
-I can't take these for only some branches, as you know.  Any reason why
-you didn't also do 6.4.y?
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>
+As suggested by Serge, this file will be split into
+loongson,ls1b-gmac.yaml and loongson,ls1c-mac.yaml.
+Due to this significant change, I'm not sure whether I should keep
+your Reviewed-by tag or not.
 
-thanks,
+Thanks!
 
-greg k-h
+> Best regards,
+> Krzysztof
+>
+
+
+
+--
+Best regards,
+
+Keguang Zhang
