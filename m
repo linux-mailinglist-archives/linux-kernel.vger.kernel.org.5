@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6FD7824F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E287824F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 09:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233870AbjHUHze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 03:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        id S233876AbjHUHzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 03:55:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbjHUHzc (ORCPT
+        with ESMTP id S232010AbjHUHzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Aug 2023 03:55:32 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27840B1;
-        Mon, 21 Aug 2023 00:55:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1692604531; x=1724140531;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WarJnYSIIDCoK08Blaeh9upNnOdNiIg5pqTIPcpbuWA=;
-  b=RCudqmiK2HRxPtCNSvs1FVe+gYbJxtPOMrlEzFBd80e6uOO/SRf0pn5x
-   X5d0sPMs6hRLzkagtQAnZHNgct4pv1I43/vo1CNIl+33+3pILcFoe26bi
-   jGkIo4BYn4SnTCmKSo9UHS/Uk6ZibleOnvk4pVwzCdJld+V2i954LUhiW
-   I=;
-X-IronPort-AV: E=Sophos;i="6.01,189,1684800000"; 
-   d="scan'208";a="23717432"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 07:55:30 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-af372327.us-west-2.amazon.com (Postfix) with ESMTPS id F02B860E80;
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF1CB5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 00:55:31 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F31A322963;
         Mon, 21 Aug 2023 07:55:29 +0000 (UTC)
-Received: from EX19D010UWA004.ant.amazon.com (10.13.138.204) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 21 Aug 2023 07:55:29 +0000
-Received: from u0acfa43c8cad58.ant.amazon.com (10.142.138.205) by
- EX19D010UWA004.ant.amazon.com (10.13.138.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 21 Aug 2023 07:55:29 +0000
-From:   Munehisa Kamata <kamatam@amazon.com>
-To:     <casey@schaufler-ca.com>
-CC:     <jmorris@namei.org>, <kamatam@amazon.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-unionfs@vger.kernel.org>, <mengcc@amazon.com>,
-        <miklos@szeredi.hu>, <paul@paul-moore.com>,
-        <roberto.sassu@huawei.com>, <roberto.sassu@huaweicloud.com>,
-        <serge@hallyn.com>, <yoonjaeh@amazon.com>, <zohar@linux.ibm.com>
-Subject: Re: [RFC][PATCH 1/2] smack: Retrieve transmuting information in smack_inode_getsecurity()
-Date:   Mon, 21 Aug 2023 00:55:17 -0700
-Message-ID: <20230821075517.2320555-1-kamatam@amazon.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <b0a4fa15-df54-46df-afe7-2af03c3d56df@schaufler-ca.com>
-References: <b0a4fa15-df54-46df-afe7-2af03c3d56df@schaufler-ca.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692604530; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IwtOeMmA50HvxmSbZZZooAwwT+ziPY1jMwwTjLWzzcs=;
+        b=KmVbkxgXki4WY+h9XrPGY0W8fviA1OF1lbxINTBcEIaYvMOKqf9ImsMr9QE4pxkJCYnOYB
+        UwYWdjhEWgu23PD9+NlfdykkUhYZR9KAmUo/fxg4jJQSiDTCwwC4iu7lebozoBg+NbYV2k
+        Dk4tB4jv9zy5DxRYlVteunOJHLLjXuk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D514C1330D;
+        Mon, 21 Aug 2023 07:55:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DMEIMXEY42SsKgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Mon, 21 Aug 2023 07:55:29 +0000
+Date:   Mon, 21 Aug 2023 09:55:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: fix draining remote pageset
+Message-ID: <ZOMYb27IulTpDFpe@dhcp22.suse.cz>
+References: <20230811090819.60845-1-ying.huang@intel.com>
+ <ZNYA6YWLqtDOdQne@dhcp22.suse.cz>
+ <87r0o6bcyw.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZNxxaFnM9W8+imHD@dhcp22.suse.cz>
+ <87jztv79co.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.142.138.205]
-X-ClientProxiedBy: EX19D037UWB001.ant.amazon.com (10.13.138.123) To
- EX19D010UWA004.ant.amazon.com (10.13.138.204)
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87jztv79co.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Casey, Roberto
-
-On Thu, 2023-05-11 17:12:50 +0000, Casey Schaufler wrote:
->
-> On 5/8/2023 10:02 AM, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> >
-> > Enhance smack_inode_getsecurity() to retrieve the value for
-> > SMACK64TRANSMUTE from the inode security blob, similarly to SMACK64.
-> >
-> > This helps to display accurate values in the situation where the security
-> > labels come from mount options and not from xattrs.
-> >
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Wed 16-08-23 15:08:23, Huang, Ying wrote:
+> Michal Hocko <mhocko@suse.com> writes:
 > 
-> Looks good. I have added to smack next.
-
-Do you have any objections to backporting these patches to -stable? If not,
-I'll ask it in the stable list along with another overlayfs-related fix
-387ef964460f ("Smack:- Use overlay inode label in smack_inode_copy_up()").
-
-
-Thanks,
-Munehisa
-
-> 
-> > ---
-> >  security/smack/smack_lsm.c | 22 ++++++++++++++++++----
-> >  1 file changed, 18 insertions(+), 4 deletions(-)
+> > On Mon 14-08-23 09:59:51, Huang, Ying wrote:
+> >> Hi, Michal,
+> >> 
+> >> Michal Hocko <mhocko@suse.com> writes:
+> >> 
+> >> > On Fri 11-08-23 17:08:19, Huang Ying wrote:
+> >> >> If there is no memory allocation/freeing in the remote pageset after
+> >> >> some time (3 seconds for now), the remote pageset will be drained to
+> >> >> avoid memory wastage.
+> >> >> 
+> >> >> But in the current implementation, vmstat updater worker may not be
+> >> >> re-queued when we are waiting for the timeout (pcp->expire != 0) if
+> >> >> there are no vmstat changes, for example, when CPU goes idle.
+> >> >
+> >> > Why is that a problem?
+> >> 
+> >> The pages of the remote zone may be kept in the local per-CPU pageset
+> >> for long time as long as there's no page allocation/freeing on the
+> >> logical CPU.  In addition to the logical CPU goes idle, this is also
+> >> possible if the logical CPU is busy in the user space.
 > >
-> > diff --git a/security/smack/smack_lsm.c b/security/smack/smack_lsm.c
-> > index 7a3e9ab137d..c7e37ed2799 100644
-> > --- a/security/smack/smack_lsm.c
-> > +++ b/security/smack/smack_lsm.c
-> > @@ -1463,10 +1463,19 @@ static int smack_inode_getsecurity(struct mnt_idmap *idmap,
-> >  	struct super_block *sbp;
-> >  	struct inode *ip = inode;
-> >  	struct smack_known *isp;
-> > +	struct inode_smack *ispp;
-> > +	size_t label_len;
-> > +	char *label = NULL;
-> >  
-> > -	if (strcmp(name, XATTR_SMACK_SUFFIX) == 0)
-> > +	if (strcmp(name, XATTR_SMACK_SUFFIX) == 0) {
-> >  		isp = smk_of_inode(inode);
-> > -	else {
-> > +	} else if (strcmp(name, XATTR_SMACK_TRANSMUTE) == 0) {
-> > +		ispp = smack_inode(inode);
-> > +		if (ispp->smk_flags & SMK_INODE_TRANSMUTE)
-> > +			label = TRANS_TRUE;
-> > +		else
-> > +			label = "";
-> > +	} else {
-> >  		/*
-> >  		 * The rest of the Smack xattrs are only on sockets.
-> >  		 */
-> > @@ -1488,13 +1497,18 @@ static int smack_inode_getsecurity(struct mnt_idmap *idmap,
-> >  			return -EOPNOTSUPP;
-> >  	}
-> >  
-> > +	if (!label)
-> > +		label = isp->smk_known;
-> > +
-> > +	label_len = strlen(label);
-> > +
-> >  	if (alloc) {
-> > -		*buffer = kstrdup(isp->smk_known, GFP_KERNEL);
-> > +		*buffer = kstrdup(label, GFP_KERNEL);
-> >  		if (*buffer == NULL)
-> >  			return -ENOMEM;
-> >  	}
-> >  
-> > -	return strlen(isp->smk_known);
-> > +	return label_len;
-> >  }
-> >  
-> >  
+> > But why is this a problem? Is the scale of the problem sufficient to
+> > trigger out of memory situations or be otherwise harmful?
 > 
+> This may trigger premature page reclaiming.  The pages in the PCP of the
+> remote zone would have been freed to satisfy the page allocation for the
+> remote zone to avoid page reclaiming.  It's highly possible that the
+> local CPU just allocate/free from/to the remote zone temporarily.
+
+I am slightly confused here but I suspect by zone you mean remote pcp.
+But more importantly is this a concern seen in real workload? Can you
+quantify it in some manner? E.g. with this patch we have X more kswapd
+scanning or even hit direct reclaim much less often.
+
+> So,
+> we should free PCP pages of the remote zone if there is no page
+> allocation/freeing from/to the remote zone for 3 seconds.
+
+Well, I would argue this depends a lot. There are workloads which really
+like to have CPUs idle and yet they would like to benefit from the
+allocator fast path after that CPU goes out of idle because idling is
+their power saving opportunity while workloads want to act quickly after
+there is something to run.
+
+That being said, we really need some numbers (ideally from real world)
+that proves this is not just a theoretical concern.
+-- 
+Michal Hocko
+SUSE Labs
