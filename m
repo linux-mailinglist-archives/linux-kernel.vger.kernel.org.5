@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE990782881
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986CB78288F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 14:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbjHUMEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 08:04:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58662 "EHLO
+        id S234271AbjHUMHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 08:07:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234230AbjHUMEv (ORCPT
+        with ESMTP id S232663AbjHUMHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 08:04:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67384BC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:04:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED51C632F6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 12:04:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2983AC433C9;
-        Mon, 21 Aug 2023 12:04:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692619486;
-        bh=ku0b1PSf0bDhMBqqwhIxMLwB0rhuhLByM8FxU1qMgxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xq2ZYtAPJaUbsccqXtaw0kX6XBsUs/5/JqQXOCC+cbMqLwqqJt8XR9Vce1Q0vdQYb
-         d43l2Kqfrbw6RKb8munNFk1MwcNsqnQLtA62bQU/ksPRjHaO960AwU3Te+NUNzBpgt
-         FmIdi9UPuEGeABlJ+DBZPJtijf0SKvt6NtPyJpznpGEPziryc7WP/jZPUvXrM8iqhT
-         qEqf0ixw7wUMuzbUhf+XxWaSsqKMnxVoyg5h71T7p9Gt9jXTBeCIae29DWKgvLP/o3
-         rve7RTzOlzrc3eHA/+6Oxm27Zv1y6YYTfI0itz+ttO1h9t/3DIT40WXy7zr495UH2T
-         qxvn9W2earLNw==
-Date:   Mon, 21 Aug 2023 13:04:40 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Jijie Shao <shaojijie@huawei.com>
-Cc:     jonathan.cameron@huawei.com, mark.rutland@arm.com,
-        chenhao418@huawei.com, shenjian15@huawei.com,
-        wangjie125@huawei.com, liuyonglong@huawei.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        huangguangbin2@huawei.com, zhangshaokun@hisilicon.com
-Subject: Re: [PATCH drivers/perf: hisi: 2/2] drivers/perf: hisi: fix set
- wrong filter mode for running events issue
-Message-ID: <20230821120440.GB19617@willie-the-truck>
-References: <20230816094619.3563784-1-shaojijie@huawei.com>
- <20230816094619.3563784-3-shaojijie@huawei.com>
+        Mon, 21 Aug 2023 08:07:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA7390
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692619594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3QSAAa/hMYp89U1EDlmo0karZdp2ZmKwZOL2+v/7j1U=;
+        b=GqSZLxDphmxTqAC0zBOCAbGgbDya+xeGz/Sef6lIo2LODbjJCtLgsuL+kPMuMIsDSWdFo/
+        egZfSJyPwPcNSkyyTqEIJtf+HFZabYYj9RGjd9ux9xc2rvAmdNZgjvqUC7P5wJrFBD/YeD
+        9ByP+DIGNSKY9o2JYiChCk7f67FfDWg=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-135-YYDCick5MoOzbJ5JsUr1PA-1; Mon, 21 Aug 2023 08:06:32 -0400
+X-MC-Unique: YYDCick5MoOzbJ5JsUr1PA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31ad77537ebso1941214f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 05:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692619591; x=1693224391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3QSAAa/hMYp89U1EDlmo0karZdp2ZmKwZOL2+v/7j1U=;
+        b=fl74RYtkg7lzM8Xh3xHEAQeagEp4DwMUDh/555XpDW7ecvZS0LUnNYCm6cdzLVayDw
+         HUL94ALMTcV2am1Fg4joQecMqhNunS3cz5ikQTgCE927781pAUyEGKNh5X5uaArN7f3N
+         nHr25KXjmyL6hBAAqCw8joZXWOpPIg1d5sEdcb7+86XDYxfanJrphRs0earu0Y9b7r/P
+         4Y0q0AMSWNHY7gEh9oBPLhG1YROuGTFQH5KcTzhuiN3CWPu9AGQ/drZJcic5qdu6URcW
+         zMV2cnuxtn1kOLu5bo7mMaH3ptfPW8TlKsQxJ6scJxuuYzLUasqUWDObmdZyKS3IAPfm
+         Tifw==
+X-Gm-Message-State: AOJu0YxJ8hx8Dot6UGInzc+MA4ZcwMJXOgbw8CGTBAT+OibuMe8bwytX
+        OXkuGhhG0Qcv2xyHtI9pw0OSsKcZkhjybeOaoeeWCOyKu7uQju1cd034K7qF1sPmZhCrUeG74oh
+        8rZKLDkH9DUFqd//Hq8Tir4+1itXPpKKKIPr4BMWp
+X-Received: by 2002:adf:ef91:0:b0:317:cff4:7357 with SMTP id d17-20020adfef91000000b00317cff47357mr4737664wro.20.1692619591807;
+        Mon, 21 Aug 2023 05:06:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH58LLzlTU5gEdiu40AT9vFc4WW8xCtVM1yBFGzym0AW6o47Dvx/FCXoPkJ3vQs3bw9CWtv8MWi9osUZgsbZPg=
+X-Received: by 2002:adf:ef91:0:b0:317:cff4:7357 with SMTP id
+ d17-20020adfef91000000b00317cff47357mr4737647wro.20.1692619591515; Mon, 21
+ Aug 2023 05:06:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230816094619.3563784-3-shaojijie@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <ZMK60UphgVuj4Z+L@smile.fi.intel.com> <ZMydcGv8Dvu3Hje1@smile.fi.intel.com>
+ <nycvar.YFH.7.76.2308071319140.14207@cbobk.fhfr.pm> <ZND/8wd67YbGs8d5@smile.fi.intel.com>
+ <nycvar.YFH.7.76.2308141128260.14207@cbobk.fhfr.pm> <ZOMcHQc8Em/s6C+y@smile.fi.intel.com>
+ <ez2oewpi3yeaiejrvbe433ude75pgm3k3s5sh5gnn7pvnzm7b4@ajuopfgwocft>
+ <ZOMvpmoWLCgcAyJR@smile.fi.intel.com> <ZOMv4VB0bZpupNlN@smile.fi.intel.com>
+ <CAO-hwJ+Pa0yMV5taEc9+RXEWJzkotpyj4gz2qftyLV4G73F-mg@mail.gmail.com> <ZOM9SLLuWJzeHTiO@smile.fi.intel.com>
+In-Reply-To: <ZOM9SLLuWJzeHTiO@smile.fi.intel.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 21 Aug 2023 14:06:20 +0200
+Message-ID: <CAO-hwJJdztp_HCitHsp2CnK9N72oeHo-UiSm1Uz1_oZghuGLwQ@mail.gmail.com>
+Subject: Re: [PATCH v1 00/12] HID: cp2112: Cleanups and refactorings
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Benjamin Tissoires <bentiss@kernel.org>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Guangbin Huang and Shaokun Zhang]
+On Mon, Aug 21, 2023 at 12:32=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Mon, Aug 21, 2023 at 12:19:39PM +0200, Benjamin Tissoires wrote:
+> > On Mon, Aug 21, 2023 at 11:35=E2=80=AFAM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Mon, Aug 21, 2023 at 12:34:30PM +0300, Andy Shevchenko wrote:
+> > > > On Mon, Aug 21, 2023 at 10:51:04AM +0200, Benjamin Tissoires wrote:
+> > > > > On Aug 21 2023, Andy Shevchenko wrote:
+>
+> ...
+>
+> > > > > Long story short, I'm not able to test it right now (and I got qu=
+ite
+> > > > > some backlog as you can imagine). IIRC the code was fine, so I th=
+ink we
+> > > > > can just take the series as is, and work on the quirks (if any) l=
+ater.
+> > > >
+> > > > Thank you!
+> > > >
+> > > > The thing that might be broken is interrupts handling. If that work=
+s,
+> > > > I'm pretty confident with the rest.
+> > >
+> > > I.o.w. first 5 patches to test is already 98% of guarantee that every=
+thing
+> > > is fine.
+> >
+> > Actually I applied you series locally, and applied Danny's patches on
+> > top, and I could run your series in qemu with the cp2112 as USB
+> > passthrough.
+> >
+> > Everything is working fine, so I can take this one just now.
+>
+> Thank you! I assume you have some IRQ (like GPIO button) to test with tha=
+t.
 
-On Wed, Aug 16, 2023 at 05:46:19PM +0800, Jijie Shao wrote:
-> From: Hao Chen <chenhao418@huawei.com>
-> 
-> hns3_pmu_select_filter_mode() includes a series of mode judgments such
-> as global mode ,function mode, function-queue mode, port mode, port-tc
-> mode.
-> 
-> For a special scenario, command use parameter "bdf=0x3700,config=0x3,
-> queue=0x0", it is expected to enter function-queue mode, but event of
-> config 0x3 doesn't support func-queue mode, then it enter port-tc mode.
-> it's not up to expectations.
-> 
-> It shouldn't enter any modes but return -ENOENT.
-> 
-> So, add judgement of bdf parameter to fix it.
-> 
-> Fixes: 66637ab137b4 ("drivers/perf: hisi: add driver for HNS3 PMU")
-> Signed-off-by: Hao Chen <chenhao418@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  drivers/perf/hisilicon/hns3_pmu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-> index 6a4d04cbae91..7f38a9e489d4 100644
-> --- a/drivers/perf/hisilicon/hns3_pmu.c
-> +++ b/drivers/perf/hisilicon/hns3_pmu.c
-> @@ -1000,12 +1000,13 @@ static bool
->  hns3_pmu_is_enabled_port_tc_mode(struct perf_event *event,
->  				 struct hns3_pmu_event_attr *pmu_event)
->  {
-> +	u16 bdf = hns3_pmu_get_bdf(event);
->  	u8 tc_id = hns3_pmu_get_tc(event);
->  
->  	if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_PORT_TC))
->  		return false;
->  
-> -	return tc_id != HNS3_PMU_FILTER_ALL_TC;
-> +	return (tc_id != HNS3_PMU_FILTER_ALL_TC) && (!bdf);
->  }
+Yeah, binding a test i2c-hid touchpad on top of hid forces you to use
+GPIOs. Otherwise you are polling, and it's not allowed in i2c-hid
+anymore IIRC :)
 
-Sorry, but I'm struggling to see how this correlates with your example
-in the commit message, which implies that it's the config of 0x3 causing
-the problem rather than the bdf.
+> If no, it's easily to describe (in ACPI, see [1]) and use a wire to emula=
+te
+> the button presses. In that case the /proc/interrupts should show the
+> different numbers.
 
-Please can you explain the problem in more detail?
+Thanks, but again, the GPIO is tested just by checking if the touchpad
+can send events when touched.
 
-Thanks,
+Now I need to update my CI to rely on danny's patches and a DSDT overwrite =
+:)
 
-Will
+Cheers,
+Benjamin
+
+>
+> [1]: https://github.com/westeri/meta-acpi/blob/master/recipes-bsp/acpi-ta=
+bles/samples/edison/buttons.asli
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
+
