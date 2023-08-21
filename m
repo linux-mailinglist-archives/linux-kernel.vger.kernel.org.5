@@ -2,127 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2695782EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF7AC782EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236751AbjHUQuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48038 "EHLO
+        id S236659AbjHUQuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:50:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjHUQuB (ORCPT
+        with ESMTP id S233720AbjHUQuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:50:01 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E6CCC
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:00 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7475f45d31so2962424276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:50:00 -0700 (PDT)
+        Mon, 21 Aug 2023 12:50:17 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26A9CC;
+        Mon, 21 Aug 2023 09:50:15 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-56a3e6bce68so745206a12.1;
+        Mon, 21 Aug 2023 09:50:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692636599; x=1693241399;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8i+P5WxQIihs8Lc+oerWsvDy9PhdE2AhLCs+M13OZMQ=;
-        b=rOC9vWbZ2cg6CxR35iSybXVMDp5HUN6pol+gCJXQ/gS8w2jSwfk0iYh57pV66llQRG
-         wPQ1CjDZkXRrnkhaaIW2xo/fIG8jYDLqVzEaj70yFMSDZfMRbk2Psu2n+qyE+BR9bSkf
-         P96cIof9+YCsLxRTFNKwAkPmWfPqNK1go7bJI4QjzKPIEKxqwryhPYSkjOVPTXWzgcle
-         VzFX5Pjgy2/nB0eK0ap3cf/w90NpwQYikdvb7fClePwddSh4grb4GdWhwgRgh1D/6IBy
-         W0I/iaFNgX7MhS1z10MsrnVQlzhh5ZFaqjHOs6H0v1oIgdy5vznbU0MAzu77ahg0aTlM
-         LaSA==
+        d=gmail.com; s=20221208; t=1692636615; x=1693241415;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XR2yyunJzTVylJd0O9OMot2bWsAj0OOysrvklSnCbu4=;
+        b=awZ8EcWECM2Gf+b7+fHdgw7ooZozUCf5/xbrV8Ub3ayWY6HpgbjDxyBaftAx1939KQ
+         8FdzvU5QvNOhM0GVlZSjFPyIQcAvKd5R9bEPOvOnrlf/okLkmNHBnx68cRIk1VhsaJiJ
+         npsotZm3pgEy2PPoIRVeNmERJX2icwmibmwnyON8jH62HlZVgjURKt3tA32bdWv014UF
+         5PzaLSFwLs8lemgh8PpYr/+qs/ZbN8leBkT4yqPyEHxmCz255vES8MNIg/TWcmOuDIeN
+         p9FPHH9NuuZk5YA1GMgZzOqWhFKWbmnfi6IAsvlBNBRrzaEjcT0BosLYUj7MXMXjpQD5
+         K6PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692636599; x=1693241399;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8i+P5WxQIihs8Lc+oerWsvDy9PhdE2AhLCs+M13OZMQ=;
-        b=CRzVtIYGvGDj00gAPy4ehZ/Qvcc+8TsyiKdg3uonDq1+i4bzf3tYIugKqJinJBIftQ
-         0KDFuzJyCLqVxe1PlItVqJ083yv7NfA1nxMGlJHI1wScd/jIav7tV9hkx22dFRpJlzEp
-         zE4u59HsmozmalKGGYv6jXTeLlciYRf3S46HrKwnMpNYw3RWXr0wT9nW5VIUYHDrkS/I
-         3wRZMcarQz1GERM+61Oyi622O+PzYjKdeM7r+/Wf+fCEXZYWUOJZbZCnqIDsmxbiAGcM
-         dJsKaEYWCWvex5mIYb58wUioAQeXZesCmLpQA+j/SWB7ipZdEq81Gu+3i6ha8VhZ27mx
-         q84g==
-X-Gm-Message-State: AOJu0YwsGNH61RID2LL17QvsLJ+Cv++5hGI5/AWWP0aozFGLfD2wi/s3
-        F2txzyjb5lfzFGsuxfh6h5fFY70ohes=
-X-Google-Smtp-Source: AGHT+IEIZwInuPbNM5ZjkxcXNKb42ioZDSPJlciPck6Z5k4a3n358dyK2f/LIQkIIEKNAyTdkvgUa+cTODg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:6602:0:b0:d44:be8a:ca39 with SMTP id
- a2-20020a256602000000b00d44be8aca39mr65365ybc.7.1692636599411; Mon, 21 Aug
- 2023 09:49:59 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 16:49:57 +0000
-In-Reply-To: <a4d62162bcb501e50b0bb19b748702aa12260615.1692580085.git.jpoimboe@kernel.org>
-Mime-Version: 1.0
-References: <cover.1692580085.git.jpoimboe@kernel.org> <a4d62162bcb501e50b0bb19b748702aa12260615.1692580085.git.jpoimboe@kernel.org>
-Message-ID: <ZOOVtYB5GXJT+Fk6@google.com>
-Subject: Re: [PATCH 03/22] KVM: x86: Support IBPB_BRTYPE and SBPB
-From:   Sean Christopherson <seanjc@google.com>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1692636615; x=1693241415;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XR2yyunJzTVylJd0O9OMot2bWsAj0OOysrvklSnCbu4=;
+        b=h239MUI0lUFM0wqH3ljN5NdcUmZw+uwjievFU/58TkpBItA3Aeq6WEV9eVNdixFDwK
+         Q9TGqiFj2FyR2eKPVOHHZ7D6fBI0K5Tb+Nsce6pste1xVvw8N80faAdjVGKNMu7/Xb48
+         zg14Ea2wAQXfweQatDkWqYMgPQ3yIrzu+HpoO93EXy+ctFNCg7G2n2mhCN+0xDGVJb/X
+         2u3Tpxj48Svk99SlSMAQjEM3wJaQSgPAxQpWfFbLMgBJulaDSGrVJvwO1GVv9sM7WQji
+         CA4GgSK0YPYmB3BXVlCcTEUTewOrfFl7ginTB6wulgaW3xGHKz+Al3AVqFhXMnRbkI79
+         Ogxg==
+X-Gm-Message-State: AOJu0Yx5ZQjpblt9TkprHTim79GN3g0fiqqHTf5V6qzmGtxSmQLu3+hS
+        MKLIZ9E3n4H+IO9JLTkewn2dw+IV1e2cvyaH5Kw=
+X-Google-Smtp-Source: AGHT+IHiuWf7GBuYIkxaCdpdgJmZc6c20f/H/tO0At/LUg3HH4ULaGaMZtK6LsAajICuZKR1GOO0Hq8s4upJ2qM2zYU=
+X-Received: by 2002:a17:90a:a389:b0:269:7eea:d7f6 with SMTP id
+ x9-20020a17090aa38900b002697eead7f6mr3862231pjp.49.1692636615233; Mon, 21 Aug
+ 2023 09:50:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230817101014.3484715-1-martin@geanix.com> <20230817101014.3484715-2-martin@geanix.com>
+ <20230817094529.68ae1083@kernel.org> <CAMZ6RqLvbp8EStaSRFQUimhUMpn75=3pkQZYspnP1gYRsspv-g@mail.gmail.com>
+ <CAMZ6RqLmNJ0zL9XO9zGCu=CbUHgm68M42fwqkSKk-rSAosCWzg@mail.gmail.com> <cca27b04-8b06-78d1-fe0a-50a10dcbebe2@hartkopp.net>
+In-Reply-To: <cca27b04-8b06-78d1-fe0a-50a10dcbebe2@hartkopp.net>
+From:   Vincent Mailhol <vincent.mailhol@gmail.com>
+Date:   Tue, 22 Aug 2023 01:50:04 +0900
+Message-ID: <CAMZ6RqJGjEMfst=4ksGeTnxovbALpSH4DX0fnajqKrO8Jivgag@mail.gmail.com>
+Subject: Re: [PATCH 1/2] can: netlink: support setting hardware filters
+To:     Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?Q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023, Josh Poimboeuf wrote:
-> The IBPB_BRTYPE and SBPB CPUID bits aren't set by HW.
-> 
-> From the AMD SRSO whitepaper:
-> 
->   "Hypervisor software should synthesize the value of both the
->   IBPB_BRTYPE and SBPB CPUID bits on these platforms for use by guest
->   software."
-> 
-> These bits are already set during kernel boot.  Manually propagate them
-> to the guest.
+On Mon. 21 Aug. 2023 at 04:21, Oliver Hartkopp <socketcan@hartkopp.net> wro=
+te:
+> On 19.08.23 15:29, Vincent Mailhol wrote:
+> > On Sat. 19 Aug. 2023 at 22:10, Vincent Mailhol
+> > <vincent.mailhol@gmail.com> wrote:
+> >> On Sat. 19 Aug. 2023, 01:19, Jakub Kicinski <kuba@kernel.org> wrote:
+> >>>
+> >>> On Thu, 17 Aug 2023 12:10:13 +0200 Martin Hundeb=C3=B8ll wrote:
+> >>>> +             int len =3D nla_len(data[IFLA_CAN_HW_FILTER]);
+> >>>> +             int num_filter =3D len / sizeof(struct can_filter);
+> >>>> +             struct can_filter *filter =3D nla_data(data[IFLA_CAN_H=
+W_FILTER]);
+> >>>
+> >>> This will prevent you from ever extending struct can_filter in
+> >>> a backward-compatible fashion, right? I obviously know very little
+> >>> about CAN but are you confident a more bespoke API to manipulate
+> >>> filters individually and allow extensibility is not warranted?
+> >>
+> >> I follow Jakub's point of view.
+> >>
+> >> The current struct can_filter is not sound. Some devices such as the
+> >> ES582.1 supports filtering of the CAN frame based on the flags (i.e.
+> >> SFF/EFF, RTR, FDF).
+> >
+> > I wrote too fast. The EFF and RTR flags are contained in the canid_t,
+> > so the current struct can_filter is able to handle these two flags.
+> > But it remains true that the CAN-FD flags (FDF and BRS) are currently
+> > not handled. Not to mention that more flags will come with the
+> > upcoming CAN XL.
+>
+> You are right with FDF where we could use the former CAN_ERR_FLAG value
+> which is not needed for hw filter API.
 
-Setting the bits in kvm_cpu_caps just advertises them to userspace, i.e. it doesn't
-propagate them to the guest, that's up to userspace.
+And what about the BRS flag?
 
-> Also, propagate PRED_CMD_SBPB writes.
-> 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> ---
->  arch/x86/kvm/cpuid.c | 4 ++++
->  arch/x86/kvm/x86.c   | 9 +++++----
->  2 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index d3432687c9e6..cdf703eec42d 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -729,6 +729,10 @@ void kvm_set_cpu_caps(void)
->  		F(NULL_SEL_CLR_BASE) | F(AUTOIBRS) | 0 /* PrefetchCtlMsr */
->  	);
->  
-> +	if (cpu_feature_enabled(X86_FEATURE_SBPB))
-> +		kvm_cpu_cap_set(X86_FEATURE_SBPB);
+> But regarding CAN XL we could use the Standard 11 bit ID handling with
+> another flag inside the remaining 18 bits.
 
-This can simply be:
+Then, wouldn't you still need one more flag to indicate that this is a
+CAN XL filter?
 
-	kvm_cpu_cap_check_and_set(X86_FEATURE_SBPB);
-
-If there's a strong desire to use cpu_feature_enabled() instead of boot_cpu_has(),
-then I would rather make than change in kvm_cpu_cap_check_and_set() for all features.
-
-> +	if (cpu_feature_enabled(X86_FEATURE_IBPB_BRTYPE))
-> +		kvm_cpu_cap_set(X86_FEATURE_IBPB_BRTYPE);
-
-Assuming IBPB_BRTYPE doesn't require any extra support, it's probably best to add
-that one in a separate patch, as SBPB support is likely going to be a bit more
-involved.
-
->  	if (cpu_feature_enabled(X86_FEATURE_SRSO_NO))
->  		kvm_cpu_cap_set(X86_FEATURE_SRSO_NO);
-
-Ah, this snuck in without going through the normal review channels.  This too
-can use kvm_cpu_cap_check_and_set().
+> The general concept of re-using the struct can_filter makes sense to me
+> as this follows the widely used pattern in the af_can.c core and CAN_RAW
+> sockets.
+>
+> Best regards,
+> Oliver
+>
+> >
+> >> I think that each of the fields of the filter should have its own NLA
+> >> declaration with the whole thing wrapped within a NLA_NESTED_ARRAY.
+> >>
+> >> I also think that there should then be a method to report the precise
+> >> filtering capabilities of the hardware.
+> >>
+> >>
+> >> Yours sincerely,
+> >> Vincent Mailhol
