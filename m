@@ -2,68 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C781C782BA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459E0782BA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235898AbjHUOX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 10:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S235912AbjHUOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235894AbjHUOX1 (ORCPT
+        with ESMTP id S235822AbjHUOXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:23:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D301E7;
-        Mon, 21 Aug 2023 07:23:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2490E639A4;
-        Mon, 21 Aug 2023 14:23:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E60C433C9;
-        Mon, 21 Aug 2023 14:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692627804;
-        bh=OaWNqSvQEiD1xmCg4SPCQRjx+fMWtx5iLMEQKBnd8cw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rwhlq4tC4EvRUmr/wbT0Ue51oVpNlMsu83qtdLFrxL3InwKNRZ9fv9Q1CT7yhYQUq
-         2n1NzCWETXNLMkaMpID1GNQcgdbYEnMOfU3D94e3DYOBJhwhpBJYSVRAaHVNTKsEh8
-         pMea45h+BUy5LQJGwAL+M/2vdzp2jW77Ebp55DzJmZ4OdgErQ0WbH6A60lOrqWZp3g
-         Nuo7DXXHAQD7aty3rQ+/oLuDvvBMPUadlGTtJQoA1gZHjy13VFq5oXUm+WPMrWyZ91
-         7y2jsova6Uz0AJlK9FAzH/WsUGhzHFwqcZqKJyDobBESaB2g3eiSj6cJYVK7XRuQqn
-         8ygIBIfSdlkdw==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso22164741fa.1;
-        Mon, 21 Aug 2023 07:23:24 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwomV6JvOJwE1Sj++0x8wrqifA6Hn0z6K1MyI0lX4qq7QJA7a31
-        CWN9RQnxQarNrUzPk0DtoFWHXzkx226Yvtqocw==
-X-Google-Smtp-Source: AGHT+IGqWIjI4t81zqE/7ga2ouKLVTQbXY0MKa0xbyIPjA5d60S4eHI9X7anlOsfqpBvu7tnpqhcRmdxmQ2XPK6mec0=
-X-Received: by 2002:a2e:9d96:0:b0:2b6:c2e4:a57a with SMTP id
- c22-20020a2e9d96000000b002b6c2e4a57amr5393041ljj.38.1692627802545; Mon, 21
- Aug 2023 07:23:22 -0700 (PDT)
+        Mon, 21 Aug 2023 10:23:51 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EE1EA
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:23:48 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d6b0c2cca0aso3386997276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:23:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692627828; x=1693232628;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qI4t8SDVJMhXzDamC4q86X6ieBjYdmuT6UT0C+IJ2Og=;
+        b=bS3lH48mYdBNX7MAw649CJx0NJABczQrfg8v+P2nTXm0EmwA6Fvw7NI3XcQLURinCQ
+         NIrTj2+EVwXdQDrW9aD8GwmZOl6hAKX6QAyKguViuJh80M9yGN5MUs5OFZLrMWqM0SSv
+         hq2ithUtqT4wULnTqR1i49+e7Dc/T7DgLkjKVnVLtCFTw7U3ZXNSGqWp/Cnkw6aVOdC/
+         ziMwuECpNBQ5jY9otfSFJZPUXjagWLLE56LxmXsVlJacYFfINB/J7PpoO/ASKbGNhe37
+         bcCwhIRm8SFx2vykm5Xq4Gt7GuIABQSTpj/pUVamPHoCcvoNDdBK1sXcHBsJJTKoME81
+         I22A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692627828; x=1693232628;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qI4t8SDVJMhXzDamC4q86X6ieBjYdmuT6UT0C+IJ2Og=;
+        b=Yvdq1OsxeDX/tVZQZu7I3cqmEvIyEBNdUlJcKdDDjzYVEG3h+SvnH+LhZKAT8F5nX6
+         Z+0m+7M0jE8Mknpv19Vqd2XcOk23KJ6/nlYEHnwj9MOdLMv0wFZwiwk9UsEtYKAnC00u
+         6caPjT+SV3bexZFtPkDyZ4yRtriwCIVZJQMBJwrxTZWTQWFyA8X+qWSDRy7ratsV/smv
+         pWafPJ2Xe2pjh/xlaA7CaYpg+HpBhp09pwJ6okqOaN5Gp1vjdPBCIhWEDFyaHsYIDOYQ
+         hYho+qewWfo+tCT5layhvmjp9vp+qp34bXc7GPmbDummdSFB33uaBUFHK/+P75jSEPjT
+         tHWQ==
+X-Gm-Message-State: AOJu0YxHuFgvnHywTsjZtlHxBGfpdKzI8oAQkIiklzuxxYFXYXhcwZ2M
+        gxBRXobNLURPyRJZ46oOvF2N8zXju2XnKqIDhYlJkQ==
+X-Google-Smtp-Source: AGHT+IG8w7sOTs96ZQbK783vPuu7KIpqKAevj7gF4qW1xaxthEWCfaFl/an/E9olSOG2iOL03miEu7a+d+VYztk6RPE=
+X-Received: by 2002:a25:258a:0:b0:d21:ef87:c1c4 with SMTP id
+ l132-20020a25258a000000b00d21ef87c1c4mr7280290ybl.33.1692627827942; Mon, 21
+ Aug 2023 07:23:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801-dt-changeset-fixes-v3-0-5f0410e007dd@kernel.org>
- <20230801-dt-changeset-fixes-v3-5-5f0410e007dd@kernel.org> <CAMuHMdXi+fAH=sqMb941BGNidg=GtLiByPtMpoHX4Bf-5Cjv4A@mail.gmail.com>
-In-Reply-To: <CAMuHMdXi+fAH=sqMb941BGNidg=GtLiByPtMpoHX4Bf-5Cjv4A@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 21 Aug 2023 09:23:10 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLU4Oy3aiw6mnPUnxSPiXyydpR+zyESDvqS26cSVo=ngA@mail.gmail.com>
-Message-ID: <CAL_JsqLU4Oy3aiw6mnPUnxSPiXyydpR+zyESDvqS26cSVo=ngA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] of: dynamic: Move dead property list check into
- property add/update functions
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230713141738.23970-1-ulf.hansson@linaro.org>
+ <20230713141738.23970-10-ulf.hansson@linaro.org> <20230719152426.qwc5qqewrfjsarlz@bogus>
+ <CAPDyKFogrwFnz2ZuKE-mLrCQmTCQcrtjhhyzB4CnoVnxAXqKEg@mail.gmail.com>
+ <20230721143728.GB1092306-robh@kernel.org> <CAPDyKFr9V6iPJhXXrv5RxgAE-YvXDboN5GP8E=q2VHnjs8cL5w@mail.gmail.com>
+In-Reply-To: <CAPDyKFr9V6iPJhXXrv5RxgAE-YvXDboN5GP8E=q2VHnjs8cL5w@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 21 Aug 2023 16:23:11 +0200
+Message-ID: <CAPDyKFq=WaR-=xO-OTLYRxN0QF_WtgCk4axMFO0kB4XWLbL=7g@mail.gmail.com>
+Subject: Re: [PATCH v2 09/11] cpufreq: scmi: Add support to parse domain-id
+ using #power-domain-cells
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,39 +77,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 8:05=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
+On Wed, 26 Jul 2023 at 13:20, Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> Hi Rob,
->
-> Thanks for your patch!
->
->
-> On Fri, Aug 18, 2023 at 10:41=E2=80=AFPM Rob Herring <robh@kernel.org> wr=
-ote:
-> > The changeset code checks for a property in the deadprops list when
-> > adding/updating a property, but of_add_property() and
-> > of_update_property() do not. As the users of these functions are pretty
-> > simple, they have not hit this scenario or else the property lists
-> > would get corrupted.
+> On Fri, 21 Jul 2023 at 16:37, Rob Herring <robh@kernel.org> wrote:
 > >
-> > With this there are 3 cases of removing a property from either deadprop=
-s
-> > or properties lists, so add a helper to find and remove a matching
-> > property.
+> > On Fri, Jul 21, 2023 at 01:52:17PM +0200, Ulf Hansson wrote:
+> > > On Wed, 19 Jul 2023 at 17:24, Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > > >
+> > > > On Thu, Jul 13, 2023 at 04:17:36PM +0200, Ulf Hansson wrote:
+> > > > > The performance domain-id can be described in DT using the power-domains
+> > > > > property or the clock property. The latter is already supported, so let's
+> > > > > add support for the power-domains too.
+> > > > >
+> > > >
+> > > > How is this supposed to work for the CPUs ? The CPU power domains are
+> > > > generally PSCI on most of the platforms and the one using OSI explicitly
+> > > > need to specify the details while ones using PC will not need to. Also they
+> > > > can never be performance domains too. So I am not sure if I am following this
+> > > > correctly.
+> > >
+> > > Your concerns are certainly correct, I completely forgot about this.
+> > > We need to specify what power-domain index belongs to what, by using
+> > > power-domain-names in DT. So a CPU node, that has both psci for power
+> > > and scmi for performance would then typically look like this:
+> > >
+> > > power-domains = <&CPU_PD0>, <&scmi_dvfs 4>;
+> > > power-domain-names = "psci", "scmi";
 > >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > That is completely backwards. Entries are named based on the consumer
+> > side. The function of each clock or interrupt for example. Here your
+> > entries are based on the provider which should be opaque to the
+> > consumer.
 >
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Thanks!
-
+> Okay, so you would rather prefer something along the lines of the below?
 >
-> Perhaps this needs a Fixes tag?
+> power-domain-names = "power", "perf";
+>
+> The "psci" name is already part of the current cpus DT binding
+> (Documentation/devicetree/bindings/arm/cpus.yaml), so then it looks
+> like that deserves an update too. Right?
 
-I didn't simply because in the decades that these functions existed,
-no one cared. It would require a specific sequence of calls which we
-could pretty much determine doesn't happen just looking at the callers
-in the kernel.
+Rob, may I have your thoughts around this? Is this an acceptable way
+forward? Please advise me on what power-domain-names I should use
+then.
 
-Rob
+Or, if you are insisting on using the performance-domain bindings?
+
+Kind regards
+Uffe
