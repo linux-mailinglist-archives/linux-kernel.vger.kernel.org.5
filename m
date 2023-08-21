@@ -2,120 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F31FB782136
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137F178213B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 03:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbjHUBar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 21:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40522 "EHLO
+        id S232434AbjHUBcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 21:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbjHUBai (ORCPT
+        with ESMTP id S232381AbjHUBcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 21:30:38 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C3CA8;
-        Sun, 20 Aug 2023 18:30:33 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RTZZd6Q3rztRpW;
-        Mon, 21 Aug 2023 09:26:49 +0800 (CST)
-Received: from localhost.localdomain (10.67.174.95) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 21 Aug 2023 09:30:30 +0800
-From:   Yang Jihong <yangjihong1@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
-        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
-        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v6 7/7] perf test: Add perf_event_attr test for record selected CPUs exclude_user
-Date:   Mon, 21 Aug 2023 01:27:34 +0000
-Message-ID: <20230821012734.18241-8-yangjihong1@huawei.com>
-X-Mailer: git-send-email 2.30.GIT
-In-Reply-To: <20230821012734.18241-1-yangjihong1@huawei.com>
-References: <20230821012734.18241-1-yangjihong1@huawei.com>
+        Sun, 20 Aug 2023 21:32:18 -0400
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B9BAA3
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 18:31:44 -0700 (PDT)
+X-AuditID: a67dfc5b-d6dff70000001748-a6-64e2be5bc41e
+Date:   Mon, 21 Aug 2023 10:28:05 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        dave.hansen@linux.intel.com
+Subject: Re: [RFC 2/2] mm: Defer TLB flush by keeping both src and dst folios
+ at migration
+Message-ID: <20230821012804.GA43847@system.software.com>
+References: <20230804061850.21498-1-byungchul@sk.com>
+ <20230804061850.21498-3-byungchul@sk.com>
+ <877cpx9jsx.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20230816001307.GA44941@system.software.com>
+ <87r0o37qcn.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.95]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r0o37qcn.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC9ZZnoW70vkcpBq8+6FjMWb+GzeLFhnZG
+        i6/rfzFbPP3Ux2JxedccNot7a/6zWpzftZbVYsfSfUwW13c9ZLQ43nuAyeL3D6DsnClWFidn
+        TWZx4PVYsKnUY/MKLY/Fe14yeWxa1cnmsenTJHaPEzN+s3jsfGjpMe9koMf7fVfZPLb+svP4
+        vEnO4938t2wBPFFcNimpOZllqUX6dglcGbvO9bMV/BKteDrlKVsD4xuBLkZODgkBE4knrYfZ
+        YeznG+6xgNgsAqoSP/YfYQWx2QTUJW7c+MkMYosIaEh8WrgcrJ5ZYBuTxIJ7DiC2sECMxIkt
+        n5lAbF4BC4lrD9sZuxi5OIQEfjBK7N91hQ0iIShxcuYTFohmLYkb/14CNXAA2dISy/9xgIQ5
+        Bewkvp+cDDZfVEBZ4sC240wgcyQEmtklNp6/yQhxqKTEwRU3WCYwCsxCMnYWkrGzEMYuYGRe
+        xSiUmVeWm5iZY6KXUZmXWaGXnJ+7iREYU8tq/0TvYPx0IfgQowAHoxIPb4LMoxQh1sSy4src
+        Q4wSHMxKIrzS3x+mCPGmJFZWpRblxxeV5qQWH2KU5mBREuc1+laeIiSQnliSmp2aWpBaBJNl
+        4uCUamAsmxHs+Wap8M0TnFJ5fm05mvEzoyru7ig/b5FTt9/OzkaIUdrr++rTXi9/S2sJ6vCe
+        FLixKvJz7QL9SdElv76v79XpfSwpXFy74d4S9Ye5B2aolfR/9tMRr1tz7HnhoeC/4Xbh92fs
+        W79Jb8GkGd17r2x/lNj2S3/Kog1eBj9YMvs5/k1qMfuixFKckWioxVxUnAgAA8kjM6UCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJLMWRmVeSWpSXmKPExsXC5WfdrBu971GKwdKXahZz1q9hs3ixoZ3R
+        4uv6X8wWTz/1sVgcnnuS1eLyrjlsFvfW/Ge1OL9rLavFjqX7mCyu73rIaHG89wCTxe8fQNk5
+        U6wsTs6azOLA57FgU6nH5hVaHov3vGTy2LSqk81j06dJ7B4nZvxm8dj50NJj3slAj/f7rrJ5
+        LH7xgclj6y87j8+b5DzezX/LFsAbxWWTkpqTWZZapG+XwJWx61w/W8Ev0YqnU56yNTC+Eehi
+        5OSQEDCReL7hHguIzSKgKvFj/xFWEJtNQF3ixo2fzCC2iICGxKeFy9lBbGaBbUwSC+45gNjC
+        AjESJ7Z8ZgKxeQUsJK49bGfsYuTiEBL4wSixf9cVNoiEoMTJmU9YIJq1JG78ewnUwAFkS0ss
+        /8cBEuYUsJP4fnIy2HxRAWWJA9uOM01g5J2FpHsWku5ZCN0LGJlXMYpk5pXlJmbmmOoVZ2dU
+        5mVW6CXn525iBEbIsto/E3cwfrnsfohRgINRiYc3QeZRihBrYllxZe4hRgkOZiURXunvD1OE
+        eFMSK6tSi/Lji0pzUosPMUpzsCiJ83qFpyYICaQnlqRmp6YWpBbBZJk4OKUaGKddscz3Phgg
+        l3HzqqRB0Ckt+zaxlOr/doFqEzseLXbh0Cu9/fuAWmSB3ZYJgYczWZS91bo3n3zzm/GM/DOe
+        xZFq70OyDT5cvtzEqsEaYPgm7orpi6Kii7X7Ij6GH5iR2/Yhz1uqrXfapPhT9+a3lx6rT7fj
+        8avN/pF10P7f+S1K6yv2dImqK7EUZyQaajEXFScCAMmg4uWMAgAA
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If all (non-dummy) evsel have exclude_user, system_wide sideband is not
-needed. Add this test scenario.
+On Wed, Aug 16, 2023 at 09:01:12AM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > On Tue, Aug 15, 2023 at 09:27:26AM +0800, Huang, Ying wrote:
+> >> Byungchul Park <byungchul@sk.com> writes:
+> >> 
+> >> > Implementation of CONFIG_MIGRC that stands for 'Migration Read Copy'.
+> >> >
+> >> > We always face the migration overhead at either promotion or demotion,
+> >> > while working with tiered memory e.g. CXL memory and found out TLB
+> >> > shootdown is a quite big one that is needed to get rid of if possible.
+> >> >
+> >> > Fortunately, TLB flush can be defered or even skipped if both source and
+> >> > destination of folios during migration are kept until all TLB flushes
+> >> > required will have been done, of course, only if the target PTE entries
+> >> > have read only permission, more precisely speaking, don't have write
+> >> > permission. Otherwise, no doubt the folio might get messed up.
+> >> >
+> >> > To achieve that:
+> >> >
+> >> >    1. For the folios that have only non-writable TLB entries, prevent
+> >> >       TLB flush by keeping both source and destination of folios during
+> >> >       migration, which will be handled later at a better time.
+> >> >
+> >> >    2. When any non-writable TLB entry changes to writable e.g. through
+> >> >       fault handler, give up CONFIG_MIGRC mechanism so as to perform
+> >> >       TLB flush required right away.
+> >> >
+> >> >    3. TLB flushes can be skipped if all TLB flushes required to free the
+> >> >       duplicated folios have been done by any reason, which doesn't have
+> >> >       to be done from migrations.
+> >> >
+> >> >    4. Adjust watermark check routine, __zone_watermark_ok(), with the
+> >> >       number of duplicated folios because those folios can be freed
+> >> >       and obtained right away through appropreate TLB flushes.
+> >> >
+> >> >    5. Perform TLB flushes and free the duplicated folios pending the
+> >> >       flushes if page allocation routine is in trouble due to memory
+> >> >       pressure, even more aggresively for high order allocation.
+> >> 
+> >> Is the optimization restricted for page migration only?  Can it be used
+> >> for other places?  Like page reclaiming?
+> >
+> > Just to make sure, are you talking about the (5) description? For now,
+> > it's performed at the beginning of __alloc_pages_slowpath(), say, before
+> > page recaiming. Do you think it'd be meaningful to perform it during page
+> > reclaiming? Or do you mean something else?
+> 
+> Not for (5).  TLB needs to be flushed during page reclaiming too.  Can
+> similar method be used to reduce TLB flushing there too?
 
-Test result:
+If you were talking about unmapping for swap while reclaiming, then I
+think yes. The case can also take benefit from CONFIG_MIGRC.
 
-  # ./perf test list 2>&1 | grep 'Setup struct perf_event_attr'
-   17: Setup struct perf_event_attr
-  # ./perf test 17 -v
-   17: Setup struct perf_event_attr                                    :
-  --- start ---
-  test child forked, pid 720198
-  <SNIP>
-  running './tests/attr/test-record-C0-all-kernel'
-  <SNIP>
-  test child finished with 0
-  ---- end ----
-  Setup struct perf_event_attr: Ok
-
-Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-Tested-by: Adrian Hunter <adrian.hunter@intel.com>
----
- .../perf/tests/attr/test-record-C0-all-kernel | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 tools/perf/tests/attr/test-record-C0-all-kernel
-
-diff --git a/tools/perf/tests/attr/test-record-C0-all-kernel b/tools/perf/tests/attr/test-record-C0-all-kernel
-new file mode 100644
-index 000000000000..2d7549277c1e
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-C0-all-kernel
-@@ -0,0 +1,32 @@
-+[config]
-+command = record
-+args    = --no-bpf-event --all-kernel -C 0 kill >/dev/null 2>&1
-+ret     = 1
-+
-+[event:base-record]
-+cpu=0
-+
-+# no enable on exec for CPU attached
-+enable_on_exec=0
-+
-+# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
-+# PERF_SAMPLE_PERIOD | PERF_SAMPLE_IDENTIFIER
-+# + PERF_SAMPLE_CPU added by -C 0
-+sample_type=65927
-+
-+# Dummy event handles mmaps, comm and task.
-+mmap=0
-+comm=0
-+task=0
-+
-+# exclude_user for all-kernel option
-+exclude_user=1
-+
-+[event:system-wide-dummy]
-+
-+# system_wide is not need for all (non-dummy) events have exclude_user
-+cpu=0
-+
-+# exclude_user for all-kernel option
-+exclude_user=1
-+exclude_kernel=0
--- 
-2.30.GIT
-
+	Byungchul
