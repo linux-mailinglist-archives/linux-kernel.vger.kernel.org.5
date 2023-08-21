@@ -2,206 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95554782615
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20118782616
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234286AbjHUJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38158 "EHLO
+        id S234056AbjHUJNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 05:13:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbjHUJMM (ORCPT
+        with ESMTP id S231593AbjHUJNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:12:12 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676ADC4;
-        Mon, 21 Aug 2023 02:12:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EBA7960EF3;
-        Mon, 21 Aug 2023 09:12:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344E4C433C8;
-        Mon, 21 Aug 2023 09:12:05 +0000 (UTC)
-Message-ID: <a834b202-7d5c-2a04-fc69-1913cd063a67@xs4all.nl>
-Date:   Mon, 21 Aug 2023 11:12:04 +0200
+        Mon, 21 Aug 2023 05:13:20 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2A4BA
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:13:17 -0700 (PDT)
+Received: from kwepemm600017.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RTmv81yWhz1L9FL;
+        Mon, 21 Aug 2023 17:11:48 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 21 Aug 2023 17:13:14 +0800
+From:   Tong Tiangen <tongtiangen@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, <wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Tong Tiangen <tongtiangen@huawei.com>
+Subject: [PATCH v2] mm: memory-failure: use rcu lock instead of tasklist_lock when collect_procs()
+Date:   Mon, 21 Aug 2023 17:13:12 +0800
+Message-ID: <20230821091312.2034844-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH 7/9] media: cros-ec-cec: Allow specifying multiple HDMI
- connectors
-Content-Language: en-US, nl
-To:     Reka Norman <rekanorman@chromium.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Daisuke Nojiri <dnojiri@chromium.org>,
-        Stefan Adolfsson <sadolfsson@google.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-References: <20230814043140.1108917-1-rekanorman@chromium.org>
- <20230814043140.1108917-8-rekanorman@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230814043140.1108917-8-rekanorman@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Reka,
+We found a softlock issue in our test, analyzed the logs, and found that
+the relevant CPU call trace as follows:
 
-On 14/08/2023 06:29, Reka Norman wrote:
-> Update the cec_dmi_match_table to allow specifying multiple HDMI
-> connectors for each device.
-> 
-> Signed-off-by: Reka Norman <rekanorman@chromium.org>
-> ---
-> 
->  .../media/cec/platform/cros-ec/cros-ec-cec.c  | 47 +++++++++++--------
->  1 file changed, 28 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> index c68ed5d4bda0..f2f397d9a6d8 100644
-> --- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> +++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> @@ -284,38 +284,41 @@ static SIMPLE_DEV_PM_OPS(cros_ec_cec_pm_ops,
->  #if IS_ENABLED(CONFIG_PCI) && IS_ENABLED(CONFIG_DMI)
->  
->  /*
-> - * The Firmware only handles a single CEC interface tied to a single HDMI
-> - * connector we specify along with the DRM device name handling the HDMI output
-> + * Specify the DRM device name handling the HDMI output and the HDMI connector
-> + * corresponding to each CEC port. The order of connectors must match the order
-> + * in the EC (first connector is EC port 0, ...), and the number of connectors
-> + * must match the number of ports in the EC (which can be queried using the
-> + * EC_CMD_CEC_PORT_COUNT host command).
->   */
->  
->  struct cec_dmi_match {
->  	const char *sys_vendor;
->  	const char *product_name;
->  	const char *devname;
-> -	const char *conn;
-> +	const char *conns[EC_CEC_MAX_PORTS];
+CPU0:
+  _do_fork
+    -> copy_process()
+      -> write_lock_irq(&tasklist_lock)  //Disable irq,waiting for
+      					 //tasklist_lock
 
-Since EC_CEC_MAX_PORTS is 16, this will waste a lot of space here.
+CPU1:
+  wp_page_copy()
+    ->pte_offset_map_lock()
+      -> spin_lock(&page->ptl);        //Hold page->ptl
+    -> ptep_clear_flush()
+      -> flush_tlb_others() ...
+        -> smp_call_function_many()
+          -> arch_send_call_function_ipi_mask()
+            -> csd_lock_wait()         //Waiting for other CPUs respond
+	                               //IPI
 
-I would suggest creating a separate define (CEC_MAX_PORTS?) that is set
-to 2 and is the max port that is actually used.
+CPU2:
+  collect_procs_anon()
+    -> read_lock(&tasklist_lock)       //Hold tasklist_lock
+      ->for_each_process(tsk)
+        -> page_mapped_in_vma()
+          -> page_vma_mapped_walk()
+	    -> map_pte()
+              ->spin_lock(&page->ptl)  //Waiting for page->ptl
 
-When you get the actual number of ports from the EC you can check if
-CEC_MAX_PORTS isn't too small and return an error if it is.
+We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
+unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
+softlockup is triggered.
 
-You can use CEC_MAX_PORTS here and in the ports array of struct cros_ec_cec.
+For collect_procs_anon(), we will not modify the tasklist, but only perform
+read traversal. Therefore, we can use rcu lock instead of spin lock
+tasklist_lock, from this, we can break the softlock chain above.
 
-Regards,
+The same logic can also be applied to:
+ - collect_procs_file()
+ - collect_procs_fsdax()
+ - collect_procs_ksm()
 
-	Hans
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Acked-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+Since v1:
+ - 1. According to Matthew's suggestion, only the comments of
+      find_early_kill_thread() are modified, no need to hold the rcu lock.
 
->  };
->  
->  static const struct cec_dmi_match cec_dmi_match_table[] = {
->  	/* Google Fizz */
-> -	{ "Google", "Fizz", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Fizz", "0000:00:02.0", { "Port B" } },
->  	/* Google Brask */
-> -	{ "Google", "Brask", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Brask", "0000:00:02.0", { "Port B" } },
->  	/* Google Moli */
-> -	{ "Google", "Moli", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Moli", "0000:00:02.0", { "Port B" } },
->  	/* Google Kinox */
-> -	{ "Google", "Kinox", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Kinox", "0000:00:02.0", { "Port B" } },
->  	/* Google Kuldax */
-> -	{ "Google", "Kuldax", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Kuldax", "0000:00:02.0", { "Port B" } },
->  	/* Google Aurash */
-> -	{ "Google", "Aurash", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Aurash", "0000:00:02.0", { "Port B" } },
->  	/* Google Gladios */
-> -	{ "Google", "Gladios", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Gladios", "0000:00:02.0", { "Port B" } },
->  	/* Google Lisbon */
-> -	{ "Google", "Lisbon", "0000:00:02.0", "Port B" },
-> +	{ "Google", "Lisbon", "0000:00:02.0", { "Port B" } },
->  };
->  
->  static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
-> -						const char **conn)
-> +						const char * const **conns)
->  {
->  	int i;
->  
-> @@ -332,7 +335,7 @@ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
->  			if (!d)
->  				return ERR_PTR(-EPROBE_DEFER);
->  			put_device(d);
-> -			*conn = m->conn;
-> +			*conns = m->conns;
->  			return d;
->  		}
->  	}
-> @@ -346,7 +349,7 @@ static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
->  #else
->  
->  static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
-> -						const char **conn)
-> +						const char * const **conns)
->  {
->  	return ERR_PTR(-ENODEV);
->  }
-> @@ -388,7 +391,7 @@ static int cros_ec_cec_get_write_cmd_version(struct cros_ec_cec *cros_ec_cec)
->  static int cros_ec_cec_init_port(struct device *dev,
->  				 struct cros_ec_cec *cros_ec_cec,
->  				 int port_num, struct device *hdmi_dev,
-> -				 const char *conn)
-> +				 const char * const *conns)
->  {
->  	struct cros_ec_cec_port *port;
->  	int ret;
-> @@ -406,7 +409,13 @@ static int cros_ec_cec_init_port(struct device *dev,
->  	if (IS_ERR(port->adap))
->  		return PTR_ERR(port->adap);
->  
-> -	port->notify = cec_notifier_cec_adap_register(hdmi_dev, conn,
-> +	if (!conns[port_num]) {
-> +		dev_err(dev, "no conn for port %d\n", port_num);
-> +		ret = -ENODEV;
-> +		goto out_probe_adapter;
-> +	}
-> +
-> +	port->notify = cec_notifier_cec_adap_register(hdmi_dev, conns[port_num],
->  						      port->adap);
->  	if (!port->notify) {
->  		ret = -ENOMEM;
-> @@ -435,10 +444,10 @@ static int cros_ec_cec_probe(struct platform_device *pdev)
->  	struct cros_ec_cec *cros_ec_cec;
->  	struct cros_ec_cec_port *port;
->  	struct device *hdmi_dev;
-> -	const char *conn = NULL;
-> +	const char * const *conns = NULL;
->  	int ret;
->  
-> -	hdmi_dev = cros_ec_cec_find_hdmi_dev(&pdev->dev, &conn);
-> +	hdmi_dev = cros_ec_cec_find_hdmi_dev(&pdev->dev, &conns);
->  	if (IS_ERR(hdmi_dev))
->  		return PTR_ERR(hdmi_dev);
->  
-> @@ -460,7 +469,7 @@ static int cros_ec_cec_probe(struct platform_device *pdev)
->  
->  	for (int i = 0; i < cros_ec_cec->num_ports; i++) {
->  		ret = cros_ec_cec_init_port(&pdev->dev, cros_ec_cec, i,
-> -					    hdmi_dev, conn);
-> +					    hdmi_dev, conns);
->  		if (ret)
->  			goto unregister_ports;
->  	}
+Changes since RFC[1]:
+ - 1. According to Naoya's suggestion, modify the tasklist_lock in the
+      comment about locking order in mm/filemap.c.
+ - 2. According to Kefeng's suggestion, optimize the implementation of
+      find_early_kill_thread() without functional changes.
+ - 3. Modify the title description.
+
+[1] https://lore.kernel.org/lkml/20230815130154.1100779-1-tongtiangen@huawei.com/
+---
+ mm/filemap.c        |  3 ---
+ mm/ksm.c            |  4 ++--
+ mm/memory-failure.c | 16 ++++++++--------
+ 3 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 014b73eb96a1..dfade1ef1765 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -121,9 +121,6 @@
+  *    bdi.wb->list_lock		(zap_pte_range->set_page_dirty)
+  *    ->inode->i_lock		(zap_pte_range->set_page_dirty)
+  *    ->private_lock		(zap_pte_range->block_dirty_folio)
+- *
+- * ->i_mmap_rwsem
+- *   ->tasklist_lock            (memory_failure, collect_procs_ao)
+  */
+ 
+ static void page_cache_delete(struct address_space *mapping,
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 8d6aee05421d..981af9c72e7a 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2925,7 +2925,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+ 		struct anon_vma *av = rmap_item->anon_vma;
+ 
+ 		anon_vma_lock_read(av);
+-		read_lock(&tasklist_lock);
++		rcu_read_lock();
+ 		for_each_process(tsk) {
+ 			struct anon_vma_chain *vmac;
+ 			unsigned long addr;
+@@ -2944,7 +2944,7 @@ void collect_procs_ksm(struct page *page, struct list_head *to_kill,
+ 				}
+ 			}
+ 		}
+-		read_unlock(&tasklist_lock);
++		rcu_read_unlock();
+ 		anon_vma_unlock_read(av);
+ 	}
+ }
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 7b01fffe7a79..4d6e43c88489 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -547,8 +547,8 @@ static void kill_procs(struct list_head *to_kill, int forcekill, bool fail,
+  * on behalf of the thread group. Return task_struct of the (first found)
+  * dedicated thread if found, and return NULL otherwise.
+  *
+- * We already hold read_lock(&tasklist_lock) in the caller, so we don't
+- * have to call rcu_read_lock/unlock() in this function.
++ * We already hold rcu lock in the caller, so we don't have to call
++ * rcu_read_lock/unlock() in this function.
+  */
+ static struct task_struct *find_early_kill_thread(struct task_struct *tsk)
+ {
+@@ -609,7 +609,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+ 		return;
+ 
+ 	pgoff = page_to_pgoff(page);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	for_each_process(tsk) {
+ 		struct anon_vma_chain *vmac;
+ 		struct task_struct *t = task_early_kill(tsk, force_early);
+@@ -626,7 +626,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+ 			add_to_kill_anon_file(t, page, vma, to_kill);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	anon_vma_unlock_read(av);
+ }
+ 
+@@ -642,7 +642,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+ 	pgoff_t pgoff;
+ 
+ 	i_mmap_lock_read(mapping);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	pgoff = page_to_pgoff(page);
+ 	for_each_process(tsk) {
+ 		struct task_struct *t = task_early_kill(tsk, force_early);
+@@ -662,7 +662,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+ 				add_to_kill_anon_file(t, page, vma, to_kill);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	i_mmap_unlock_read(mapping);
+ }
+ 
+@@ -685,7 +685,7 @@ static void collect_procs_fsdax(struct page *page,
+ 	struct task_struct *tsk;
+ 
+ 	i_mmap_lock_read(mapping);
+-	read_lock(&tasklist_lock);
++	rcu_read_lock();
+ 	for_each_process(tsk) {
+ 		struct task_struct *t = task_early_kill(tsk, true);
+ 
+@@ -696,7 +696,7 @@ static void collect_procs_fsdax(struct page *page,
+ 				add_to_kill_fsdax(t, page, vma, to_kill, pgoff);
+ 		}
+ 	}
+-	read_unlock(&tasklist_lock);
++	rcu_read_unlock();
+ 	i_mmap_unlock_read(mapping);
+ }
+ #endif /* CONFIG_FS_DAX */
+-- 
+2.25.1
 
