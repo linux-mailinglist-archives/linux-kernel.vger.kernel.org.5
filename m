@@ -2,971 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A24A2782BD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4D3782BDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 16:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235990AbjHUOaa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 10:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53950 "EHLO
+        id S235996AbjHUObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 10:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235988AbjHUOa2 (ORCPT
+        with ESMTP id S232804AbjHUObE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 10:30:28 -0400
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0462F1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:30:20 -0700 (PDT)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68a56401b92so962391b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:30:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692628220; x=1693233020;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+        Mon, 21 Aug 2023 10:31:04 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D182E4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:30:46 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d71dd633f33so3477451276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 07:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692628245; x=1693233045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OL7RZntWi2M6CVAej4Rmm2qt88fQu26I6TT1XoPVdSM=;
-        b=bTpvtUpg1poj+0A2JT5oiqlJMfsYA7hBrRlv3w427QiwKVznxBNRiJ5AO4mHhHQG6b
-         CKfC61zPlOklqjkAV1fKRB8U9GMpi9uukNzyRrFq6N10I/vo8ulsulsTYvm3lgVDB7IP
-         UQzi6+z5KUkeI+q0eZJQUnsYe4FenVO5L2OsIFpaZynQmELYWxNvicJ2Un+7I8sfHvik
-         xGIxPJe1DMoh0eSz5iyHj8dq31ExScDpHVspdunI6zAvaPvnW1obEkGLMsGxs+o/Hn5K
-         sfHORilmSUfjzrSqdTgpceP6/TMY1nfc5TrIrYxuvMofcgCpLMKTYjozFLetIl0eUg5G
-         NYaQ==
-X-Gm-Message-State: AOJu0YwfGI2oOCPxOd6VOsvT3OXehu8/62PFK/ifI8wQk3ajQF6xNq3b
-        aCdpb9IaCH/ewTePNW0RLounYg7dBwVTR597ufsnD9v1lQFb
-X-Google-Smtp-Source: AGHT+IEXZR4fgnps4rTOBnf2rXskoQfPtgQ20MRrDCxdIGBWLwb+nciS6qhwwsf47Gqm8PnLiOlPXea9Dj3MScVPNrB9AfztkTwz
+        bh=nLZAfwWae+l7KovvQb+xvjIIf9zbIN7GukHDovbcWdU=;
+        b=wkhk4IBHW4nyUq9sDk45zUvDNZ2LgmkjW/6P7OlrngQasHMDRd2pNfaZfztdGLUAUG
+         ZzURPCJwzrY/GwrBV0HdGK0d1t+PyWJ517+SnEObWUef60OO6CFVlurjW2opXCVIZ3ww
+         o0/Ec+tUMqj+8lKMwwEDtQs9RcDI7vTYOkThkTIs2ViDamUoLgwf7LjjaRm6rLOdbo1+
+         BULkM8FLEPPMi9IoBE+OqIYohKQ8z5BveWxt1KkRTb5mmDAmQsshAgf8RNDNmGPweegb
+         GU6uBF29clTmjwCnquHPUuEt04Cr6vB92FLA4MWzKVZoZvfYidLFHqIt+nNCNpOLJmLz
+         s9Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692628245; x=1693233045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nLZAfwWae+l7KovvQb+xvjIIf9zbIN7GukHDovbcWdU=;
+        b=K3j15cFO8zGMAnkt+oP8TZSoc4I/BP6IrX+PqaGf/xfXWFpoSuYXX2KQa64BiPtN/O
+         70y6ZBfLpKByogctd5osGh12EObN8lihbM5JYhiOugDYPSHYpkKTWkXSKSxExl7/kxy5
+         lAKFxNYLOBNj37gnSBU7zKUjbIZVEK0G8kWpDR0jo1xZc4fJA+pJio1B5+SIjfz+8QMn
+         TCr9/Foj5YTMRin/wx7+Q9qinRIuhBnUSd3Su5y0Avkko9HGyuA4KjfV13g2LkpT6gRK
+         DHNtFKABo1almLEOXMy6snUhvfoXkPboraayCao5ZIP5jkirpGhiENOOql9LkTYuFw2z
+         APiw==
+X-Gm-Message-State: AOJu0Yy7UnGv9ZO5K7l+NfiVFay938bJmffdEc6OZ3+usQfbMI/fs83v
+        jyzD4PKdxTMYUCy9XH61t5w7enCHm4yaTpuPpGjxYQ==
+X-Google-Smtp-Source: AGHT+IEtI7kyvzHlCjmS2t5LAWH1HO1EYTttLTmUAkp9ChovA1koUFNUJoeIE4gvFDjLiS2vuBccKf4ylGjPcMOM6ZA=
+X-Received: by 2002:a25:ae08:0:b0:d09:d53:ce41 with SMTP id
+ a8-20020a25ae08000000b00d090d53ce41mr6390313ybj.55.1692628232389; Mon, 21 Aug
+ 2023 07:30:32 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:2d07:b0:68a:2c24:57d1 with SMTP id
- fa7-20020a056a002d0700b0068a2c2457d1mr3711767pfb.1.1692628220353; Mon, 21 Aug
- 2023 07:30:20 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 07:30:20 -0700
-In-Reply-To: <20230821135047.2538-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cfa60306036fb7a1@google.com>
-Subject: Re: [syzbot] [input?] [usb?] [serial?] INFO: rcu detected stall in console_callback
-From:   syzbot <syzbot+32af18ae7b894a681f2d@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
+ <20230728-solid-fill-v5-2-053dbefa909c@quicinc.com> <CAA8EJpq=pbDoYc9wqKKrX+RahXp8zWTPFqVqA=S-0TkWXXJUjQ@mail.gmail.com>
+ <CA+hFU4y38MTTUsbri1jy=n4Vyp7xx2CosD9Nmk97z_au6NHCdQ@mail.gmail.com>
+ <CAA8EJpoFpUcQL_7pb0toDoLFsK=9GdBLQH+h_MMffrp9k7eCyw@mail.gmail.com>
+ <20230818135133.3fdeddba@eldfell> <c4b7e9eb-fb5d-4b2f-8358-f41598d7d983@linaro.org>
+ <20230818165500.50360195@eldfell>
+In-Reply-To: <20230818165500.50360195@eldfell>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 21 Aug 2023 17:30:21 +0300
+Message-ID: <CAA8EJpqigb8OJ-u7W9VeZtXp5rhXyU30_5wALeUDsf+rhe-kEA@mail.gmail.com>
+Subject: Re: [PATCH RFC v5 02/10] drm: Introduce solid fill DRM plane property
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     Sebastian Wick <sebastian.wick@redhat.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        quic_abhinavk@quicinc.com, contact@emersion.fr,
+        laurent.pinchart@ideasonboard.com, ville.syrjala@linux.intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 18 Aug 2023 at 16:55, Pekka Paalanen <ppaalanen@gmail.com> wrote:
+>
+> On Fri, 18 Aug 2023 14:03:14 +0300
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+>
+> > On 18/08/2023 13:51, Pekka Paalanen wrote:
+> > > On Fri, 4 Aug 2023 16:59:00 +0300
+> > > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> > >
+> > >> On Fri, 4 Aug 2023 at 16:44, Sebastian Wick <sebastian.wick@redhat.c=
+om> wrote:
+> > >>>
+> > >>> On Fri, Aug 4, 2023 at 3:27=E2=80=AFPM Dmitry Baryshkov
+> > >>> <dmitry.baryshkov@linaro.org> wrote:
+> > >>>>
+> > >>>> On Fri, 28 Jul 2023 at 20:03, Jessica Zhang <quic_jesszhan@quicinc=
+.com> wrote:
+> > >>>>>
+> > >>>>> Document and add support for solid_fill property to drm_plane. In
+> > >>>>> addition, add support for setting and getting the values for soli=
+d_fill.
+> > >>>>>
+> > >>>>> To enable solid fill planes, userspace must assign a property blo=
+b to
+> > >>>>> the "solid_fill" plane property containing the following informat=
+ion:
+> > >>>>>
+> > >>>>> struct drm_mode_solid_fill {
+> > >>>>>          u32 version;
+> > >>>>>          u32 r, g, b;
+> > >>>>> };
+> > >>>>>
+> > >>>>> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> > >>>>> ---
+> > >>>>>   drivers/gpu/drm/drm_atomic_state_helper.c |  9 +++++
+> > >>>>>   drivers/gpu/drm/drm_atomic_uapi.c         | 55 ++++++++++++++++=
++++++++++++++++
+> > >>>>>   drivers/gpu/drm/drm_blend.c               | 30 ++++++++++++++++=
++
+> > >>>>>   include/drm/drm_blend.h                   |  1 +
+> > >>>>>   include/drm/drm_plane.h                   | 35 ++++++++++++++++=
+++++
+> > >>>>>   include/uapi/drm/drm_mode.h               | 24 ++++++++++++++
+> > >>>>>   6 files changed, 154 insertions(+)
+> > >>>>>
+> > >>>>
+> > >>>> [skipped most of the patch]
+>
+> ...
+>
+> > >>> Maybe another COLOR_FILL enum value
+> > >>> with alpha might be better? Maybe just doing the alpha via the alph=
+a
+> > >>> property is good enough.
+> > >>
+> > >> One of our customers has a use case for setting the opaque solid fil=
+l,
+> > >> while keeping the plane's alpha intact.
+> > >
+> > > Could you explain more about why they must keep plane alpha intact
+> > > instead of reprogramming everything with atomic? Is there some
+> > > combination that just cannot reach the same end result via userspace
+> > > manipulation of the solid fill values with plane alpha?
+> > >
+> > > Or is it a matter of userspace architecture where you have independen=
+t
+> > > components responsible for different KMS property values?
+>
+> > The latter one. The goal is to be able to switch between pixel sources
+> > without touching any additional properties (including plane's alpha val=
+ue).
+>
+> Sorry, but that does not seem like a good justification for KMS UAPI
+> design.
+>
+> It is even in conflict with how atomic KMS UAPI was designed to work:
+> collect all your changes into a single commit, and push it at once.
+> Here we are talking about separate components changing the different
+> properties of the same KMS plane even. If you want to change both plane
+> opacity and contents, does it mean you need two refresh cycles, one at
+> a time? Could the two components be even racing with each other,
+> stalling each other randomly?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: rcu detected stall in do_idle
+Most likely I was not verbose enough.
 
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	1-...!: (196 ticks this GP) idle=ddec/0/0x1 softirq=25731/25733 fqs=7
-rcu: 	(detected by 0, t=10537 jiffies, g=20753, q=159 ncpus=2)
-Sending NMI from CPU 0 to CPUs 1:
- 2812 6735
-NMI backtrace for cpu 1
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:vsnprintf+0x12b/0x1870 lib/vsprintf.c:2769
-Code: 6c 14 00 00 44 0f b6 23 31 ff 44 89 e6 e8 2d 9a 13 fb 45 84 e4 48 8b 6c 24 18 48 8d 44 24 50 48 89 44 24 08 0f 84 53 14 00 00 <e8> e0 9e 13 fb 48 8b 74 24 08 48 89 df e8 e3 f3 fe ff 48 c7 c6 20
-RSP: 0018:ffffc90000187ff8 EFLAGS: 00000002
-RAX: 0000000000000000 RBX: ffffffff8688734b RCX: ffffffff8638af33
-RDX: ffff888103a68000 RSI: 0000000000000100 RDI: 0000000000000001
-RBP: ffffc900001882bd R08: 0000000000000001 R09: 0000000000000000
-R10: 000000000000005d R11: 000000000011f9f0 R12: ffffffff8688734b
-R13: 000000000000005d R14: ffffc900001880e0 R15: 0000000000000009
-FS:  0000000000000000(0000) GS:ffff8881f6700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056004a2ce148 CR3: 000000011691d000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- sprintf+0xcd/0x100 lib/vsprintf.c:3021
- print_time kernel/printk/printk.c:1327 [inline]
- info_print_prefix+0x258/0x350 kernel/printk/printk.c:1353
- record_print_text+0x143/0x410 kernel/printk/printk.c:1402
- printk_get_next_message+0x2ca/0x7c0 kernel/printk/printk.c:2809
- console_emit_next_record kernel/printk/printk.c:2844 [inline]
- console_flush_all+0x39e/0xf50 kernel/printk/printk.c:2933
- console_unlock+0xc6/0x1f0 kernel/printk/printk.c:3007
- vprintk_emit+0x1c5/0x640 kernel/printk/printk.c:2307
- vprintk+0x89/0xa0 kernel/printk/printk_safe.c:50
- _printk+0xc8/0x100 kernel/printk/printk.c:2328
- __show_free_areas+0x1239/0x2140 mm/show_mem.c:352
- __show_mem+0x34/0x140 mm/show_mem.c:409
- k_spec drivers/tty/vt/keyboard.c:667 [inline]
- k_spec+0xea/0x140 drivers/tty/vt/keyboard.c:656
- kbd_keycode drivers/tty/vt/keyboard.c:1524 [inline]
- kbd_event+0xcc8/0x17c0 drivers/tty/vt/keyboard.c:1543
- input_to_handler+0x382/0x4c0 drivers/input/input.c:132
- input_pass_values.part.0+0x542/0x7b0 drivers/input/input.c:163
- input_pass_values drivers/input/input.c:148 [inline]
- input_event_dispose+0x5ee/0x770 drivers/input/input.c:380
- input_handle_event+0x11c/0xd80 drivers/input/input.c:408
- input_repeat_key+0x251/0x340 drivers/input/input.c:2265
- call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
- expire_timers kernel/time/timer.c:1751 [inline]
- __run_timers+0x764/0xb10 kernel/time/timer.c:2022
- run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
- __do_softirq+0x20b/0x94e kernel/softirq.c:553
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xa7/0x110 kernel/softirq.c:644
- sysvec_apic_timer_interrupt+0x8e/0xb0 arch/x86/kernel/apic/apic.c:1109
- </IRQ>
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
-RIP: 0010:acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:113
-Code: ed c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 65 48 8b 04 25 c0 a7 03 00 48 8b 00 a8 08 75 0c 66 90 0f 00 2d 97 17 6f 00 fb f4 <fa> c3 0f 1f 00 0f b6 47 08 3c 01 74 0b 3c 02 74 05 8b 7f 04 eb 9f
-RSP: 0018:ffffc9000011fd60 EFLAGS: 00000246
-RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff863f3a2e
-RDX: 0000000000000001 RSI: ffff888101e75800 RDI: ffff888101e75864
-RBP: ffff888101e75864 R08: 0000000000000001 R09: ffffed103ece6d4d
-R10: ffff8881f6736a6b R11: 0000000000000000 R12: ffff88810e645000
-R13: ffffffff882efc00 R14: 0000000000000001 R15: 0000000000000000
- acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:707
- cpuidle_enter_state+0x82/0x500 drivers/cpuidle/cpuidle.c:267
- cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:388
- cpuidle_idle_call kernel/sched/idle.c:215 [inline]
- do_idle+0x315/0x3f0 kernel/sched/idle.c:282
- cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
- start_secondary+0x200/0x290 arch/x86/kernel/smpboot.c:326
- secondary_startup_64_no_verify+0x167/0x16b
- </TASK>
-rcu: rcu_preempt kthread starved for 10523 jiffies! g20753 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=0
- 6735
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R
-lowmem_reserve[]: 0
-  running task     stack:29136 pid:15    ppid:2      flags:0x00004000
- 0
-Call Trace:
- <TASK>
- 3923 3923
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0xc79/0x30a0 kernel/sched/core.c:6710
+We want to setup the blending scene, including the FB and the solid
+fill properties for the plane. FB is set up in the RGBA format, each
+pixel having its own alpha value in addition to the plane's alpha
+value. Then under certain circumstances, the plane gets hidden by the
+solid fill (think of a curtain). We do not want to touch the global
+scene setup (including plane alpha value), just switch the curtain on
+and off.
+I think this plays good enough with the defined plane blending rules,
+where one can use pre-multiplied blending mode or use coverage
+blending mode.
 
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0
- 0 0
- schedule+0xe7/0x1b0 kernel/sched/core.c:6786
- 0
- schedule_timeout+0x157/0x2c0 kernel/time/timer.c:2167
 
-Node 0 
-DMA: 0*4kB 
-0*8kB 
-0*16kB 
-0*32kB 
- rcu_gp_fqs_loop+0x1ec/0xa50 kernel/rcu/tree.c:1609
-0*64kB 
-0*128kB 
-0*256kB 
- rcu_gp_kthread+0x249/0x380 kernel/rcu/tree.c:1808
-0*512kB 
-1*1024kB 
-(U) 1*2048kB 
-(M) 3*4096kB 
- kthread+0x33a/0x430 kernel/kthread.c:389
-(M) = 15360kB
-Node 0 
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
-DMA32: 3*4kB 
-(M) 1*8kB 
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-(M) 2*16kB 
- </TASK>
-(M) 3*32kB 
-rcu: Stack dump where RCU GP kthread last ran:
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.5.0-rc7-syzkaller-00004-gf7757129e3de-dirty #0
-(M) 3*64kB 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-(M) 3*128kB 
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0x31/0x70 kernel/locking/spinlock.c:194
-(M) 2*256kB 
-Code: f5 53 48 8b 74 24 10 48 89 fb 48 83 c7 18 e8 c6 31 ec fa 48 89 df e8 9e b0 ec fa f7 c5 00 02 00 00 75 1f 9c 58 f6 c4 02 75 2f <bf> 01 00 00 00 e8 15 37 e1 fa 65 8b 05 26 47 c2 79 85 c0 74 12 5b
-(M) 2*512kB 
-RSP: 0018:ffffc90000007c90 EFLAGS: 00000246
-(M) 2*1024kB 
 
-RAX: 0000000000000006 RBX: ffff88812c3b7218 RCX: 1ffffffff16f79d6
-(M) 2*2048kB 
-RDX: 0000000000000000 RSI: ffffffff8687a2c0 RDI: ffffffff86a59c00
-(M) 701*4096kB 
-RBP: 0000000000000246 R08: 0000000000000001 R09: fffffbfff16eed4d
-(M) = 2879700kB
-R10: ffffffff8b776a6f R11: 00000000000257e0 R12: ffff88812c3b7110
-Node 0 
-R13: 1ffff92000000f96 R14: ffffffff84583670 R15: 0000000000000001
-Normal: 170*4kB 
-FS:  0000000000000000(0000) GS:ffff8881f6600000(0000) knlGS:0000000000000000
-(UME) 1513*8kB 
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-(UME) 358*16kB 
-CR2: 00007f70d89c1497 CR3: 000000012d6b6000 CR4: 00000000003506f0
-(UM) 1*32kB 
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-(E) 4*64kB 
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-(UME) 3*128kB 
-Call Trace:
- <IRQ>
-(UME) 2*256kB 
-(UM) 1*512kB 
-(U) 2*1024kB 
-(UM) 3*2048kB 
-(UME) 
-784*4096kB 
-(M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0
- 2812 6735
- 6735
-
-Node 0 
-DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
- call_timer_fn+0x1a0/0x580 kernel/time/timer.c:1700
-lowmem_reserve[]: 0
- 0 3923
- 3923
-
-Node 0 
- expire_timers kernel/time/timer.c:1751 [inline]
- __run_timers+0x764/0xb10 kernel/time/timer.c:2022
-Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0
- 0 0
- 0
-Node 0 
- run_timer_softirq+0x58/0xd0 kernel/time/timer.c:2035
-DMA: 0*4kB 
- __do_softirq+0x20b/0x94e kernel/softirq.c:553
-0*8kB 
-0*16kB 
- invoke_softirq kernel/softirq.c:427 [inline]
- __irq_exit_rcu kernel/softirq.c:632 [inline]
- irq_exit_rcu+0xa7/0x110 kernel/softirq.c:644
-0*32kB 
- sysvec_apic_timer_interrupt+0x8e/0xb0 arch/x86/kernel/apic/apic.c:1109
-0*64kB 
- </IRQ>
-0*128kB 
- <TASK>
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
-0*256kB 
-RIP: 0010:native_irq_disable arch/x86/include/asm/irqflags.h:37 [inline]
-RIP: 0010:arch_local_irq_disable arch/x86/include/asm/irqflags.h:72 [inline]
-RIP: 0010:acpi_safe_halt+0x1b/0x20 drivers/acpi/processor_idle.c:113
-0*512kB 
-Code: ed c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90 65 48 8b 04 25 c0 a7 03 00 48 8b 00 a8 08 75 0c 66 90 0f 00 2d 97 17 6f 00 fb f4 <fa> c3 0f 1f 00 0f b6 47 08 3c 01 74 0b 3c 02 74 05 8b 7f 04 eb 9f
-1*1024kB 
-RSP: 0018:ffffffff87c07d70 EFLAGS: 00000246
-(U) 1*2048kB 
-
-RAX: 0000000000004000 RBX: 0000000000000001 RCX: ffffffff863f3a2e
-(M) 3*4096kB 
-RDX: 0000000000000001 RSI: ffff888101e75000 RDI: ffff888101e75064
-(M) 
-RBP: ffff888101e75064 R08: 0000000000000001 R09: ffffed103ecc6d4d
-= 15360kB
-R10: ffff8881f6636a6b R11: 0000000000000000 R12: ffff88810e644800
-Node 0 DMA32: 
-R13: ffffffff882efc00 R14: 0000000000000000 R15: 0000000000000000
-3*4kB 
-(M) 1*8kB 
- acpi_idle_enter+0xc5/0x160 drivers/acpi/processor_idle.c:707
-(M) 2*16kB 
- cpuidle_enter_state+0x82/0x500 drivers/cpuidle/cpuidle.c:267
-(M) 3*32kB 
-(M) 3*64kB 
- cpuidle_enter+0x4e/0xa0 drivers/cpuidle/cpuidle.c:388
-(M) 3*128kB 
- cpuidle_idle_call kernel/sched/idle.c:215 [inline]
- do_idle+0x315/0x3f0 kernel/sched/idle.c:282
-(M) 2*256kB 
-(M) 2*512kB 
- cpu_startup_entry+0x18/0x20 kernel/sched/idle.c:379
-(M) 2*1024kB 
- rest_init+0x16f/0x2b0 init/main.c:726
-(M) 2*2048kB 
-(M) 701*4096kB 
-(M) = 2879700kB
- arch_call_rest_init+0x13/0x30 init/main.c:823
-Node 0 
- start_kernel+0x39a/0x470 init/main.c:1068
-Normal: 170*4kB 
- x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:556
-(UME) 1513*8kB 
- x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:537
-(UME) 358*16kB 
- secondary_startup_64_no_verify+0x167/0x16b
-(UM) 1*32kB 
- </TASK>
-(E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:3484kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:4856kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048kB
-52019 total pagecache pages
-0 pages in swap cache
-Free swap  = 124996kB
-Total swap = 124996kB
-2097051 pages RAM
-0 pages HighMem/MovableOnly
-367867 pages reserved
-Mem-Info:
-active_anon:106 inactive_anon:9083 isolated_anon:0
- active_file:8428 inactive_file:43413 isolated_file:0
- unevictable:0 dirty:4 writeback:0
- slab_reclaimable:9358 slab_unreclaimable:65661
- mapped:7047 shmem:178 pagetables:470
- sec_pagetables:0 bounce:0
- kernel_misc_reclaimable:0
- free:1533681 free_pcp:2610 free_cma:0
-Node 0 active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:28188kB dirty:16kB writeback:0kB shmem:712kB writeback_tmp:0kB kernel_stack:4476kB pagetables:1880kB sec_pagetables:0kB all_unreclaimable? no
-Node 0 DMA free:15360kB boost:0kB min:20kB low:32kB high:44kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 2812 6735 6735
-Node 0 DMA32 free:2879700kB boost:0kB min:4380kB low:7256kB high:10132kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129332kB managed:2883248kB mlocked:0kB bounce:0kB free_pcp:3548kB local_pcp:64kB free_cma:0kB
-lowmem_reserve[]: 0 0 3923 3923
-Node 0 Normal free:3239664kB boost:0kB min:6112kB low:10128kB high:14144kB reserved_highatomic:0KB active_anon:424kB inactive_anon:36332kB active_file:33712kB inactive_file:173652kB unevictable:0kB writepending:16kB present:5242880kB managed:4018128kB mlocked:0kB bounce:0kB free_pcp:6892kB local_pcp:2036kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0
-Node 0 DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15360kB
-Node 0 DMA32: 3*4kB (M) 1*8kB (M) 2*16kB (M) 3*32kB (M) 3*64kB (M) 3*128kB (M) 2*256kB (M) 2*512kB (M) 2*1024kB (M) 2*2048kB (M) 701*4096kB (M) = 2879700kB
-Node 0 Normal: 170*4kB (UME) 1513*8kB (UME) 358*16kB (UM) 1*32kB (E) 4*64kB (UME) 3*128kB (UME) 2*256kB (UM) 1*512kB (U) 2*1024kB (UM) 3*2048kB (UME) 784*4096kB (M) = 3239664kB
-Node 0 hugepages_total=4 hugepages_free=4 hugepages_surp=0 hugepages_size=2048k
-
-Tested on:
-
-commit:         f7757129 Merge tag 'v6.5-p3' of git://git.kernel.org/p..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=134533a0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b764e732a6b12d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=32af18ae7b894a681f2d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16cc0c97a80000
-
+--
+With best wishes
+Dmitry
