@@ -2,254 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE97078272D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:34:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276C178272F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbjHUKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        id S234769AbjHUKe2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 06:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234770AbjHUKeS (ORCPT
+        with ESMTP id S234765AbjHUKeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:34:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0F6EB;
-        Mon, 21 Aug 2023 03:34:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 00DF263048;
-        Mon, 21 Aug 2023 10:34:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1767DC433C8;
-        Mon, 21 Aug 2023 10:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692614055;
-        bh=V8jNWGK/w70MbYYsY5Sv9WvKJR1us7t+YIKDHFfEVFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BzKRQSkZS3pcsylS9Xb+eR147O/3mSfYsNTa1bJGyqpgZg/dlEZJc547PrNkbTaHm
-         kjuw1J7vSzfs+AGn9JPQMJ1wKbUxfrY6fO85oFSrdBnIprBSwHZHetYNhwbMkhZrzI
-         QqTabHLZ9lHUO1zfW5CudtwoqV1UGwwNQZoql1/lXcTnunHnzLczuAwGS9reYFFAEu
-         yfOWfj8WtE/IbP4y2z8j6EgqxJKQU41qwZ5wzeGSQ+hsoNrOxsHiKqHYIdaXdtLoAj
-         5L6Rocg+E979zg0I1X25lgmkUaQO6sE+58K/N067nzlYmQpHuVdXBmiOpF1N96P1us
-         eRs9e4GZEYbwA==
-Date:   Mon, 21 Aug 2023 16:03:57 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     Frank Li <Frank.li@nxp.com>, manivannan.sadhasivam@linaro.org,
-        helgaas@kernel.org, bhelgaas@google.com,
-        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
-        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, minghuan.lian@nxp.com,
-        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
-        shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v11 3/3] PCI: layerscape: Add power management support
- for ls1028a
-Message-ID: <20230821103357.GA36455@thinkpad>
-References: <20230809153540.834653-1-Frank.Li@nxp.com>
- <20230809153540.834653-4-Frank.Li@nxp.com>
- <ZNzrgr3a13vm6Yqi@lpieralisi>
- <ZN6iarqhryMHmwLh@lizhi-Precision-Tower-5810>
- <ZOMecaueyN3cutUH@lpieralisi>
+        Mon, 21 Aug 2023 06:34:23 -0400
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 820C7E3;
+        Mon, 21 Aug 2023 03:34:22 -0700 (PDT)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6b9cd6876bbso914066a34.1;
+        Mon, 21 Aug 2023 03:34:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692614062; x=1693218862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Re72V6BeZKtZ/a9D1veoORPiF+NDDFb8xZ/o+5KvXIM=;
+        b=BxHqzrH0LQF6PABG0VrXpzwdL43C0Z+l04Q+Z3/hCtmVnm70JllBSishTfliH9jNZH
+         FSBvHX4BVKi6a1nEfvDrAMDAEo326g34lM73FGLTlBEI2yJylRjdcnLc73ytx8HlUQOl
+         rusTP9hd8+uqQPDbEQMwyop6O5cBVZP7v4bY2pEtGP9VmkSM++IdEaI7lHNUiaZZsndF
+         SKsVRgfCEt/TrtzjeVXY6u+JVeYffvU6mRvo0h5v7kOoirKJM2EZGoVzOex224n0Z1xv
+         p3g0Jr3eR0Y4ltlki5GeNMB6fj/dmPjOoD6bPM4ZXHfFErcdnv5oqTwCYlzrFKjuE1tN
+         HA8Q==
+X-Gm-Message-State: AOJu0YxFruZABK2uUPMIVBpVAxJXFyXh0cH12e8Zm3l1CDvTM4sGD4zD
+        OKG/CKPsukcoUvfa0N56KXbH4naD/kNNmV2QqOw=
+X-Google-Smtp-Source: AGHT+IEl8uJHZjylgJUYx/CkJvCBSBek95QEaUoSD0JiPf8+JDXWvz8jz9v3PmcUNRBF3ruNKHSF4hVq5so0j5VruNU=
+X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
+ n1-20020a4ae741000000b0056e94edc098mr5753921oov.0.1692614061699; Mon, 21 Aug
+ 2023 03:34:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZOMecaueyN3cutUH@lpieralisi>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230820210640.585311-1-qyousef@layalina.io>
+In-Reply-To: <20230820210640.585311-1-qyousef@layalina.io>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Aug 2023 12:34:06 +0200
+Message-ID: <CAJZ5v0jjwKr0py8H34-8ZRS8xS455YUuew8GxBex13uRq7LBPQ@mail.gmail.com>
+Subject: Re: [PATCH 0/4] Fix dvfs_headroom escaping uclamp constraints
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 10:21:05AM +0200, Lorenzo Pieralisi wrote:
-> On Thu, Aug 17, 2023 at 06:42:50PM -0400, Frank Li wrote:
-> > On Wed, Aug 16, 2023 at 05:30:10PM +0200, Lorenzo Pieralisi wrote:
-> > > On Wed, Aug 09, 2023 at 11:35:40AM -0400, Frank Li wrote:
-> > > > From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > > > 
-> > > > Add PME_Turn_off/PME_TO_Ack handshake sequence for ls1028a platform. Call
-> > > > common dwc dw_pcie_suspend(resume)_noirq() function when system enter/exit
-> > > > suspend state.
-> > > > 
-> > > > Acked-by: Manivannan Sadhasivam <mani@kernel.org>
-> > > > Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > > ---
-> > > >  drivers/pci/controller/dwc/pci-layerscape.c | 130 ++++++++++++++++++--
-> > > >  1 file changed, 121 insertions(+), 9 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > > index ed5fb492fe084..b49f654335fd7 100644
-> > > > --- a/drivers/pci/controller/dwc/pci-layerscape.c
-> > > > +++ b/drivers/pci/controller/dwc/pci-layerscape.c
-> > > > @@ -8,9 +8,11 @@
-> > > >   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
-> > > >   */
-> > > >  
-> > > > +#include <linux/delay.h>
-> > > >  #include <linux/kernel.h>
-> > > >  #include <linux/interrupt.h>
-> > > >  #include <linux/init.h>
-> > > > +#include <linux/iopoll.h>
-> > > >  #include <linux/of_pci.h>
-> > > >  #include <linux/of_platform.h>
-> > > >  #include <linux/of_address.h>
-> > > > @@ -20,6 +22,7 @@
-> > > >  #include <linux/mfd/syscon.h>
-> > > >  #include <linux/regmap.h>
-> > > >  
-> > > > +#include "../../pci.h"
-> > > >  #include "pcie-designware.h"
-> > > >  
-> > > >  /* PEX Internal Configuration Registers */
-> > > > @@ -27,12 +30,26 @@
-> > > >  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
-> > > >  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
-> > > >  
-> > > > +/* PF Message Command Register */
-> > > > +#define LS_PCIE_PF_MCR		0x2c
-> > > > +#define PF_MCR_PTOMR		BIT(0)
-> > > > +#define PF_MCR_EXL2S		BIT(1)
-> > > > +
-> > > >  #define PCIE_IATU_NUM		6
-> > > >  
-> > > > +struct ls_pcie_drvdata {
-> > > > +	const u32 pf_off;
-> > > > +	bool pm_support;
-> > > > +};
-> > > > +
-> > > >  struct ls_pcie {
-> > > >  	struct dw_pcie *pci;
-> > > > +	const struct ls_pcie_drvdata *drvdata;
-> > > > +	void __iomem *pf_base;
-> > > > +	bool big_endian;
-> > > >  };
-> > > >  
-> > > > +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
-> > > >  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
-> > > >  
-> > > >  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
-> > > > @@ -73,6 +90,60 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
-> > > >  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
-> > > >  }
-> > > >  
-> > > > +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
-> > > > +{
-> > > > +	if (pcie->big_endian)
-> > > > +		return ioread32be(pcie->pf_base + off);
-> > > > +
-> > > > +	return ioread32(pcie->pf_base + off);
-> > > > +}
-> > > > +
-> > > > +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
-> > > > +{
-> > > > +	if (pcie->big_endian)
-> > > > +		iowrite32be(val, pcie->pf_base + off);
-> > > > +	else
-> > > > +		iowrite32(val, pcie->pf_base + off);
-> > > > +}
-> > > > +
-> > > > +static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-> > > > +{
-> > > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > > +	u32 val;
-> > > > +	int ret;
-> > > > +
-> > > > +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> > > > +	val |= PF_MCR_PTOMR;
-> > > > +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> > > > +
-> > > > +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> > > > +				 val, !(val & PF_MCR_PTOMR),
-> > > > +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-> > > > +				 PCIE_PME_TO_L2_TIMEOUT_US);
-> > > > +	if (ret)
-> > > > +		dev_err(pcie->pci->dev, "PME_Turn_off timeout\n");
-> > > > +}
-> > > > +
-> > > > +static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-> > > > +{
-> > > > +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> > > > +	struct ls_pcie *pcie = to_ls_pcie(pci);
-> > > > +	u32 val;
-> > > > +	int ret;
-> > > > +
-> > > > +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
-> > > > +	val |= PF_MCR_EXL2S;
-> > > > +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
-> > > 
-> > > What is this write transaction generating in HW ?
-> > 
-> > I don't think send anything to to pci bus because it was called before
-> > host init.
-> > 
-> > The spec of ls1028 is not clear enough.
-> > 
-> > `EXL2S: exit l2 state command. when set to 1, an L2 exit command is
-> > generated. The bit is self clearing. Once the bit is set. SW needs to wait
-> > for the bit to selfclear before sending a new command'
-> > 
-> > > 
-> > > Why is it needed ? Shouldn't L2 exit happen automatically
-> > > in HW ?
-> > 
-> > I tried remove this, PCI can't resume. I think this is specific for ls1028
-> > chip to clear internal logic.
-> 
-> Well, if you don't even know what this does how can you write a sane
-> device driver ?
-> 
-> Can you ask designers a more detailed description please ?
-> 
+On Sun, Aug 20, 2023 at 11:08 PM Qais Yousef <qyousef@layalina.io> wrote:
+>
+> DVFS headroom, or map_util_perf(), is applied after uclamp restrictions are
+> applied in effective_cpu_util(). This will lead to two problems for uclamp:
+>
+>         1. If util < uclamp_min, we'll run faster than uclamp_min. For example
+>            util = 50, uclamp_min = 100. map_util_perf() = 125 instead of 100.
+>
+>         2. If util > uclamp_max, we'll run faster than uclamp_max. For example
+>            util = 900, uclamp_max = 800, map_util_perf() = 1000.
+>
+> First patch rename the function to apply_dvfs_headroom() to reflect what it
+> really does. It is not really mapping util, but provides some headroom for the
+> util to grow. Provide a documentation for the function too.
+>
+> Second patch is the actual fix.
+>
+> Third patch moves apply_dvfs_headroom() to sched.h as there are no longer
+> users outside the scheduler.
+>
+> Fourth patch is an RFC to redefine what the headroom means for RT, DL and IRQ
+> pressures.
+>
+> Thanks!
 
-I often encounter hw quirks like this one and the hw designers will just say
-that "set bit X to make Y happpen". IMO a comment saying that the driver need to
-set PF_MCR_EXL2S bit in LS_PCIE_PF_MCR register for the link to exit L2 state is
-good enough.
+For the first 3 patches in the series
 
-> > > > +
-> > > > +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
-> > > > +				 val, !(val & PF_MCR_EXL2S),
-> > > > +				 PCIE_PME_TO_L2_TIMEOUT_US/10,
-> > > > +			PCIE_PME_TO_L2_TIMEOUT_US);
-> > > 
-> > > And why is the timeout value the same used for the PME_turn_off message ?
-> > 
-> > I think No spec define it, just reused it. use PCIE_PME_TO_L2_TIMEOUT_US
-> > may cause confuse. What's do you prefered? Just use number,such as 10ms.
-> 
-> This delay value is misleading, it is not good to reuse a value for
-> a delay that is most certainly controller specific.
-> 
-> From this discussion I would say that having pme_turn_off() and
-> exit_from_l2() hooks is generalizing something we don't know yet
-> it is needed for all DWC based controllers.
-> 
-> It is probably worth keeping the layerscape specific changes in
-> the layerscape driver and from there call the "generic" DWC
-> suspend/resume functions:
-> 
-> dw_pcie_suspend_noirq()
-> dw_pcie_resume_noirq()
-> 
-> rather than adding hooks that we barely know what they are needed for.
-> 
-> Mani, what do you think ?
-> 
-
-PME_Turn_off procedure may vary between controllers and is really required
-from core DWC perspective. So I'd prefer to keep the pme_turn_off() callback
-and leave exit_from_l2() since later seems to be only required for layerscape.
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
