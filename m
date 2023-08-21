@@ -2,149 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 375D77835D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E007835E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 00:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjHUWg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 18:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47632 "EHLO
+        id S231564AbjHUWmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 18:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHUWgy (ORCPT
+        with ESMTP id S229445AbjHUWmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 18:36:54 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EFAFD
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:36:52 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fee769fd53so22100315e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 15:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20221208.gappssmtp.com; s=20221208; t=1692657411; x=1693262211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MFj0aDdnMwdjhjqXyKxvEjp7gWB0IRos9bPslxm0vQc=;
-        b=ZHnGVUixa7Edk6VVjgSY6LC9844CN6w2zXKnIuHQ2Fpro1Mf3NHyDLa7XG7ucXpVgu
-         2Zq+P1O+jnmGWmW5YBWcNc6lelKqCSoR2FLHJKdiZ9ct5upu9mjW8fAkkzfKspA6kBas
-         deMffRQNHXXO2kHQs2dlV5m+74cB4iAcQPZC07U0BFZL8/e+0n7VjA6EZFMosGbBBknB
-         94cG+EW8EvqTbKWAJ+dLUjwJqcyRMi5b4mYngsKd9kjE7yRgxKXXopJ+wWrenS3w7zlk
-         dnsMe9a1Cq8Ndvpg/CWuCY2FW7kjJZ6Y4TvsfKAtj8LqwmkYSnkXfb+LH44s6ksHJ0Fb
-         wUWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692657411; x=1693262211;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MFj0aDdnMwdjhjqXyKxvEjp7gWB0IRos9bPslxm0vQc=;
-        b=c64gu9z17aNIh+v5fQvOj6IieKAxyFCRDNt6h2876AunRjy9k7VsM+kwkEXMVb1snU
-         ZPCEAIfj4BZX5rbcq+pfi1lNz58lvgcD6aB+SWla5hW6We0tinhAT5yQMuyYWe7yYE7q
-         9sEswPQSF2Z7ze9PPZhZnhFul5TI6wc9aY9Vh7tMzu/6QJLthSdc8I1rGBBkhfryVTNZ
-         jworCr5ne6vAEAOjrvzt0j2rsav9Pgq9OHmHUdj0FDebppoF3kbs29jfXQAhxL8Brv5a
-         RS+iVs5Tmdt9CG5HSrnoPJ+qmpiIDPie0LQ4es5cRHgOsj6UQCxPs2WWvljAOmZKwlIf
-         XzCQ==
-X-Gm-Message-State: AOJu0YyJ1zG1/POXgas+obQMxkLWNn2smBGA8v3CE8L8qdZ0DfIbC8D3
-        UdRMH1Mxu2ryoXoEZJGoHTaiuQ==
-X-Google-Smtp-Source: AGHT+IFW9qGZBkIRx0vNpbniJEtTJvOapJlaPfxOf1JeC64fp87YabYgkQUCcUwCGU1/SGUS3WXhwQ==
-X-Received: by 2002:a7b:c7d4:0:b0:3fa:93b0:a69c with SMTP id z20-20020a7bc7d4000000b003fa93b0a69cmr5919589wmk.24.1692657411282;
-        Mon, 21 Aug 2023 15:36:51 -0700 (PDT)
-Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
-        by smtp.gmail.com with ESMTPSA id q1-20020a1cf301000000b003feea62440bsm7427273wmq.43.2023.08.21.15.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 15:36:50 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 23:36:49 +0100
-From:   Qais Yousef <qyousef@layalina.io>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, Wei Wang <wvw@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Xuewen Yan <xuewen.yan94@gmail.com>,
-        Hank <han.lin@mediatek.com>,
-        Jonathan JMChen <Jonathan.JMChen@mediatek.com>,
-        Hongyan Xia <hongyan.xia2@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH v3 3/3] sched/tp: Add new tracepoint to track compute
- energy computation
-Message-ID: <20230821223649.aixoldq3udm2jw6t@airbuntu>
-References: <20230717215717.309174-1-qyousef@layalina.io>
- <20230717215717.309174-4-qyousef@layalina.io>
- <0491f666-0995-357c-0905-6c9863ee9c9f@arm.com>
+        Mon, 21 Aug 2023 18:42:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A42711C;
+        Mon, 21 Aug 2023 15:42:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D41860B61;
+        Mon, 21 Aug 2023 22:42:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9A8C433C8;
+        Mon, 21 Aug 2023 22:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692657730;
+        bh=wnGPBph7Q+YS0lgZNbdSI4MH/lKrnH8xevzYsEDK9DY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=F+iESIhKAuiC0AqtVgOkNdPVExHLcRC88dW2Tq0nf4rmxSin0vO5NMsvLMyqjvEMv
+         Nducytwp7mnf5M8IqMoWaSla0kXQRfcCa8cTLR0dnZE2Qjcl4dNY6iy4jHt3GtqkZE
+         8D/o7xdFLUdvGhAlXsyYD1SR18p8x4edIsWnRaa8+/z85KLldpWYhq4K+B6g2Eb6D6
+         FQhOhMPy+FuU88VZ3UJ+2T46uj0OD1iEnu1HHhaayPtvPMRVq5Uxvz0vDblYLvX7tw
+         bmKuKSb0q0PDZZMrLmOYaviaLISUND7l4gcntVqj1Hu07XERZ9o0QpxetKd6kyC8Qr
+         zj3BTHdYy1TeQ==
+Date:   Mon, 21 Aug 2023 17:42:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v14.a 1/1] PCI: Only put Intel PCIe ports >= 2015 into D3
+Message-ID: <20230821224207.GA369432@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0491f666-0995-357c-0905-6c9863ee9c9f@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230818193932.27187-1-mario.limonciello@amd.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukasz
-
-On 08/21/23 10:04, Lukasz Luba wrote:
-> Hi Qais,
+On Fri, Aug 18, 2023 at 02:39:32PM -0500, Mario Limonciello wrote:
+> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
+> from modern machines (>=2015) are allowed to be put into D3.
 > 
-> On 7/17/23 22:57, Qais Yousef wrote:
-> > It was useful to track feec() placement decision and debug the spare
-> > capacity and optimization issues vs uclamp_max.
-> > 
-> > Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
-> > ---
-> >   include/trace/events/sched.h | 4 ++++
-> >   kernel/sched/core.c          | 1 +
-> >   kernel/sched/fair.c          | 7 ++++++-
-> >   3 files changed, 11 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-> > index fbb99a61f714..20cc884f72ff 100644
-> > --- a/include/trace/events/sched.h
-> > +++ b/include/trace/events/sched.h
-> > @@ -735,6 +735,10 @@ DECLARE_TRACE(sched_update_nr_running_tp,
-> >   	TP_PROTO(struct rq *rq, int change),
-> >   	TP_ARGS(rq, change));
-> > +DECLARE_TRACE(sched_compute_energy_tp,
-> > +	TP_PROTO(struct task_struct *p, int dst_cpu, unsigned long energy),
-> > +	TP_ARGS(p, dst_cpu, energy));
-> > +
-> >   #endif /* _TRACE_SCHED_H */
-> >   /* This part must be outside protection */
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 83e36547af17..2deca2dca625 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -114,6 +114,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
-> >   EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
-> >   EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
-> >   EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
-> > +EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
-> >   DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index c701f490ca4c..23e026393210 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -7493,11 +7493,16 @@ compute_energy(struct energy_env *eenv, struct perf_domain *pd,
-> >   {
-> >   	unsigned long max_util = eenv_pd_max_util(eenv, pd_cpus, p, dst_cpu);
-> >   	unsigned long busy_time = eenv->pd_busy_time;
-> > +	unsigned long energy;
-> >   	if (dst_cpu >= 0)
-> >   		busy_time = min(eenv->pd_cap, busy_time + eenv->task_busy_time);
-> > -	return em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
-> > +	energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
-> > +
-> > +	trace_sched_compute_energy_tp(p, dst_cpu, energy);
+> Iain reports that USB devices can't be used to wake a Lenovo Z13
+> from suspend. This is because the PCIe root port has been put
+> into D3 and AMD's platform can't handle USB devices waking in this
+> case.
 > 
-> You've probably missed to add the change that we discussed in v2:
+> This behavior is only reported on Linux. Comparing the behavior
+> on Windows and Linux, Windows doesn't put the root ports into D3.
 > 
-> https://lore.kernel.org/lkml/20230221120832.x642tqohxv5nascr@airbuntu/
+> To fix the issue without regressing existing Intel systems,
+> limit the >=2015 check to only apply to Intel PCIe ports.
 > 
-> The max_util and busy_time. This would help us in our tool.
+> Cc: stable@vger.kernel.org
+> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> Reported-by: Iain Lane <iain@orangesquash.org.uk>
+> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
+> Reviewed-by:Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> In v14 this series has been split into 3 parts.
+>  part A: Immediate fix for AMD issue.
+>  part B: LPS0 export improvements
+>  part C: Long term solution for all vendors
+> v13->v14:
+>  * Reword the comment
+>  * add tag
+> v12->v13:
+>  * New patch
+> ---
+>  drivers/pci/pci.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 60230da957e0c..bfdad2eb36d13 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -3037,10 +3037,15 @@ bool pci_bridge_d3_possible(struct pci_dev *bridge)
+>  			return false;
+>  
+>  		/*
+> -		 * It should be safe to put PCIe ports from 2015 or newer
+> -		 * to D3.
+> +		 * Allow Intel PCIe ports from 2015 onward to go into D3 to
+> +		 * achieve additional energy conservation on some platforms.
+> +		 *
+> +		 * This is only set for Intel PCIe ports as it causes problems
+> +		 * on both AMD Rembrandt and Phoenix platforms where USB keyboards
+> +		 * can not be used to wake the system from suspend.
+>  		 */
+> -		if (dmi_get_bios_year() >= 2015)
+> +		if (bridge->vendor == PCI_VENDOR_ID_INTEL &&
+> +		    dmi_get_bios_year() >= 2015)
+>  			return true;
 
-Ah, I did indeed. Sorry about that. Will send v4 then.
+Hmm.  I'm really not a fan of checks like this that aren't connected
+to an actual property of the platform.  The Intel Vendor ID tells us
+nothing about what the actual problem is, which makes it really hard
+to maintain in the future.  It's also very AMD- and Intel-centric,
+when this code is ostensibly arch-agnostic, so this potentially
+regresses ARM64, RISC-V, powerpc, etc.
 
+It's bad enough that we check for 2015.  A BIOS security update to a
+2014 platform will break things, even though the update has nothing to
+do with D3.  We're stuck with that one, and it's old enough that maybe
+it won't bite us any more, but I hate to add more.
 
-Cheers
+The list of conditions in pci_bridge_d3_possible() is a pretty good
+clue that we don't really know what we're doing, and all we can do is
+find configurations that happen to work.  
 
---
-Qais Yousef
+I don't have any better suggestions, other than that this should be
+described somehow via ACPI (and not in vendor-specific stuff like
+PNP0D80).
+
+Bjorn
