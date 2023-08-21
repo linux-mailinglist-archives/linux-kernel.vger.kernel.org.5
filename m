@@ -2,66 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C63B7821B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317747821B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 04:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjHUCxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 22:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39050 "EHLO
+        id S232600AbjHUC5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 22:57:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjHUCxY (ORCPT
+        with ESMTP id S229908AbjHUC5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 22:53:24 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C659C
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:53:22 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so3365245a12.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Aug 2023 19:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692586401; x=1693191201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Yk6N/H89rG2XGekr3UL0YyNLbJwptjYVEPotSs/smck=;
-        b=c02Zp6aXh2uGpgMqgk2Ppw1Vt7hCRaxZCVWABIl3WHT24TcytfIuKm4oZSNQgEP2yK
-         OcQm6IvMgQv+CHW2txcg7SDef4G7r+izU1rclrNE74wGdRyagBEVQNj13+GYlC9ZtA00
-         9qtjn6V/QBTvzL5ncpbyeMC+vZE9fFdWnazykiXvXEUQcv5Twm0nXJyuRY0FnKBBF5x+
-         7jIC6BCMrbErVNqwHHkQn5O8NmzTbhYfJv3bgnXRbWxw6YvRuSyaZVAkZFSlT8nPZglA
-         8jKalMKZlGSDkknmAQ0d684eoEp58dLZagKvgLU7e3yIdXfbz8EZQZZ2ldMzjMCmPgl5
-         bnQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692586401; x=1693191201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Yk6N/H89rG2XGekr3UL0YyNLbJwptjYVEPotSs/smck=;
-        b=el7uIHM5rgRB+Bk21mXeut5Z0bYy6z/CQI5LK3hwArzETMS5CygqV6JgBEEThXZ0N9
-         SiR4oKVTD+NOUviwhj+E/NLNUUt52/CyKU4ZwKA8c37nyzLPgDv7g9jhn0/QgvOW5c1c
-         ViESKeu6ISqHbgU87C1qH3T49/O2o0c2FLlrLF0s5rjDV86FhIzyuQ4GZcub28MfwYDN
-         wUFyGQkNUrPn2Hwod0geHDrAGhMq5zg7+qBaovu++75NZ3NR7Fo4M21IlyL1usGSRjX7
-         q+1FSj8tq7/YSPpe2wsXLJ7tQK/vPGQcwSfXTaVnK5zUN+84iKV5htbF732lk3byeCEZ
-         1K2Q==
-X-Gm-Message-State: AOJu0Yy7OlMOgTeSMxAxx6vEnXn3zp75K5DL3ZA+0bvquH19ke9qHADf
-        PW/t9VaoPPplzDgnfq2i1935uuzP7EeZ9UV7/wH2Tt+jzkOWKw==
-X-Google-Smtp-Source: AGHT+IGpcuIkBMuljYqNy8fyhXeLygXxQIfEVdNqZXzRPTI7GcpoBSmzuovQead8nkhaQOuXQke305jrcS0G63+23J4=
-X-Received: by 2002:a17:906:5a68:b0:99b:d178:f059 with SMTP id
- my40-20020a1709065a6800b0099bd178f059mr3755330ejc.35.1692586401025; Sun, 20
- Aug 2023 19:53:21 -0700 (PDT)
+        Sun, 20 Aug 2023 22:57:46 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B952D9C;
+        Sun, 20 Aug 2023 19:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692586663;
+        bh=Is75wYt5QzY2hAeJvc/3rRdKASy9fYylAGmehUp4C+k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=D4X8O4a4ZcGiCOsoiONe3ftRNhRdQtLlvxZqhnR3JAv1VQoQYHFRyDskRfpM9mziC
+         RXoBSsROJPiaJF+qljk6GPa2MXWBDs5x2J1gwNZ6O45KU/TnHCXJjtAbilDUl38HHQ
+         /9X3i5mvBqD+lBHIcooGj/XgSJwTQ4bfFf4fz63t5KHwdcnywi7w3XWOBa3mT0uPU6
+         uHtsCm+tEx/uh6m6ilkrpk7yJse6iDgkbcEGlhVZN4F3hXZBUe170ZVYwkYBHceaNw
+         NTu0w8TMbRIoCU7u/lhl4rzCMzOwHm3SrfndI6W8/VRYdPd6T+onVEx6NDDcyL0rVD
+         A48tu5XSHgHZQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RTcbW05Pzz4wxy;
+        Mon, 21 Aug 2023 12:57:42 +1000 (AEST)
+Date:   Mon, 21 Aug 2023 12:57:41 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Sebastian Reichel <sre@kernel.org>, Lee Jones <lee@kernel.org>
+Cc:     Jakob Hauser <jahau@rocketmail.com>, Rob Herring <robh@kernel.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the battery tree
+Message-ID: <20230821125741.3a2474d7@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230820222920.2344-1-dakr@redhat.com>
-In-Reply-To: <20230820222920.2344-1-dakr@redhat.com>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Mon, 21 Aug 2023 12:53:09 +1000
-Message-ID: <CAPM=9txjnd_MrhANjoGqJ4iU1sNvz92MdsRUm_XbzGR-=daBTg@mail.gmail.com>
-Subject: Re: [PATCH drm-misc-next] drm/nouveau: uvmm: fix unset region pointer
- on remap
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     daniel@ffwll.ch, bskeggs@redhat.com, kherbst@redhat.com,
-        lyude@redhat.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/tt1ua=Rn96Hi2_2wveJVrCP";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,32 +52,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Dave Airlie <airlied@redhat.com>
+--Sig_/tt1ua=Rn96Hi2_2wveJVrCP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 21 Aug 2023 at 08:29, Danilo Krummrich <dakr@redhat.com> wrote:
->
-> Transfer the region pointer of a uvma to the new uvma(s) on re-map to
-> prevent potential shader faults when the re-mapped uvma(s) are unmapped.
->
-> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_uvmm.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> index 3a1e8538f205..aae780e4a4aa 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> @@ -639,6 +639,7 @@ nouveau_uvmm_sm_prepare(struct nouveau_uvmm *uvmm,
->                         struct drm_gpuva *va = r->unmap->va;
->                         struct uvmm_map_args remap_args = {
->                                 .kind = uvma_from_va(va)->kind,
-> +                               .region = uvma_from_va(va)->region,
->                         };
->                         u64 ustart = va->va.addr;
->                         u64 urange = va->va.range;
->
-> base-commit: 25205087df1ffe06ccea9302944ed1f77dc68c6f
-> --
-> 2.41.0
->
+Hi all,
+
+After merging the battery tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
+
+drivers/power/supply/rt5033_charger.c: In function 'rt5033_charger_probe':
+drivers/power/supply/rt5033_charger.c:694:19: error: implicit declaration o=
+f function 'of_parse_phandle' [-Werror=3Dimplicit-function-declaration]
+  694 |         np_conn =3D of_parse_phandle(pdev->dev.of_node, "richtek,us=
+b-connector", 0);
+      |                   ^~~~~~~~~~~~~~~~
+drivers/power/supply/rt5033_charger.c:694:17: error: assignment to 'struct =
+device_node *' from 'int' makes pointer from integer without a cast [-Werro=
+r=3Dint-conversion]
+  694 |         np_conn =3D of_parse_phandle(pdev->dev.of_node, "richtek,us=
+b-connector", 0);
+      |                 ^
+drivers/power/supply/rt5033_charger.c:695:19: error: implicit declaration o=
+f function 'of_get_parent'; did you mean 'kernfs_get_parent'? [-Werror=3Dim=
+plicit-function-declaration]
+  695 |         np_edev =3D of_get_parent(np_conn);
+      |                   ^~~~~~~~~~~~~
+      |                   kernfs_get_parent
+drivers/power/supply/rt5033_charger.c:695:17: error: assignment to 'struct =
+device_node *' from 'int' makes pointer from integer without a cast [-Werro=
+r=3Dint-conversion]
+  695 |         np_edev =3D of_get_parent(np_conn);
+      |                 ^
+
+Caused by commit
+
+  2ce8284c3115 ("power: Explicitly include correct DT includes")
+
+interacting with commit
+
+  12cc585f36b8 ("power: supply: rt5033_charger: Add cable detection and USB=
+ OTG supply")
+
+from the mfd tree.
+
+I have applied the following merge fix patch.
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 21 Aug 2023 12:50:12 +1000
+Subject: [PATCH] fixup for "power: Explicitly include correct DT includes"
+
+interacting with commit
+
+  12cc585f36b8 ("power: supply: rt5033_charger: Add cable detection and USB=
+ OTG supply")
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ drivers/power/supply/rt5033_charger.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/power/supply/rt5033_charger.c b/drivers/power/supply/r=
+t5033_charger.c
+index 4d1198d752b7..4ea769775fa5 100644
+--- a/drivers/power/supply/rt5033_charger.c
++++ b/drivers/power/supply/rt5033_charger.c
+@@ -11,6 +11,7 @@
+ #include <linux/extcon.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/power_supply.h>
+ #include <linux/regmap.h>
+--=20
+2.40.1
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/tt1ua=Rn96Hi2_2wveJVrCP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTi0qUACgkQAVBC80lX
+0Gzl7gf+N44HkOh1P7sKck4HIUphYggGFchB2U+Uvck2mRIm5E+amwHlPRPBtdY0
+rLpMQaxxstEeaXSPa77dy6NxwZ93CGInhFpbKJkvfZlZHyIdJlvvnQr6R3AHit32
+Bt1vV/TNjx9uMaUsV6xQmfQBZaf+XBzqjrxNfsGB9lmVeoSGzesbkvUTsb8rxPZc
+dKoinY7BlzyQHrBb3Vc+Qzvi5zj3T3Y+k+lj/hfjcbLlwCkexYUtNgv+tpS7V0q7
+F6aVehgeRHeQuqacOAmu3XL+O6i6omFMLPHFkBa6yNe38frICRD1uiXMMsFvZE3x
+4Rb+U7GfpE+MyudgblXvD4x9Wn2MPQ==
+=yKKf
+-----END PGP SIGNATURE-----
+
+--Sig_/tt1ua=Rn96Hi2_2wveJVrCP--
