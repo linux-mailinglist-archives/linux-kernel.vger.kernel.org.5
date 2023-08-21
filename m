@@ -2,131 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC87782A0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72653782A12
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 15:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbjHUNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 09:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S235252AbjHUNMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 09:12:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjHUNLn (ORCPT
+        with ESMTP id S232017AbjHUNMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 09:11:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524EFE8;
-        Mon, 21 Aug 2023 06:11:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC7B563544;
-        Mon, 21 Aug 2023 13:11:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81813C433C8;
-        Mon, 21 Aug 2023 13:11:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692623500;
-        bh=fKeIzDelBhcXSFwPC4v8AT95YfiJ57nqdgQdtNrfJN4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VsfbPZUkFt08a+Wx0UN0m8lvTnb/61UGGxfrg1HRj7GndsGHSlQ6Z7DiMk+vQwlho
-         TTSL29bxPpzAy02jyElUvTTOnXNiWXT/Mm/G5GFQJAL8AzvZs4N9NR9yS8DvmAsiE2
-         X+/mMIN1FnSaaYoXTbhV7ANfuPzYQzpLlF75tlgPgbFAs/ooMbq7cGQILEV6ZpWJ2k
-         fGLfYtU0WktuizrYDj2suYlO/9wI2muPELUhvd5nfPR+Jq8iAyGqaNVy/PnM6qo171
-         9dek6upF92jpbeNkPF5C1jx2jDXOUklt8z3S0Mf4ZbxHLmC1ei/bIkCxIDhEy2Doqs
-         a/DT28fVwfJnQ==
-Date:   Mon, 21 Aug 2023 14:11:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Stultz <jstultz@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Basil Eljuse <Basil.Eljuse@arm.com>,
-        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        linux-pm@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= Navarro 
-        <ricardo.canuelo@collabora.com>,
-        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
-        usama.anjum@collabora.com, kernelci@lists.linux.dev
-Subject: Re: [PATCH 5.17 127/298] driver core: Fix wait_for_device_probe() &
- deferred_probe_timeout interaction
-Message-ID: <0a06a54e-0348-4964-ab90-48c648712ed6@sirena.org.uk>
-References: <20220613094924.913340374@linuxfoundation.org>
- <20220613094928.793712131@linuxfoundation.org>
- <6283c4b1-2513-207d-4ed6-fdabf3f3880e@collabora.com>
- <2023081619-slapping-congrats-8e85@gregkh>
- <471bf84d-9d58-befc-8224-359a62e29786@collabora.com>
- <CAGETcx-NVoN7b8XCV09ouof81XxZk4wtGhEcqcFAt6Gs=JWKdw@mail.gmail.com>
- <d8f8ddf6-8063-fb3a-7dad-4064a47c5fe8@collabora.com>
- <CAGETcx-DUm417mM-Nmyqj-e_rKUw69m=rTe5R6_Vxd_rsKMmGg@mail.gmail.com>
- <97b06c78-da3c-d8ab-ca72-ff37b9976f2a@collabora.com>
- <6d7a7ecc-1364-5cbe-0485-01d693dbdc6c@arm.com>
+        Mon, 21 Aug 2023 09:12:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54753E3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692623502;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8jlzIYKgKmR2UBRoCBcFv7SS0ZLgGsr3htxCffkKfOg=;
+        b=ev8pSrPaTv2QnhIV/i4HmSlh62cVgwhI1yeRsPBSDn8PG3sSz75BwebuTOvn0/Bcgimc02
+        ZCeIqGguMgjDd0ePP7WhDTsFgqlv3Ai6XCiqblNvc3x3IDyFRnduIvTmNAVUIl1kAjSdjn
+        OBMOL414xylCKM0VPiphUqAwpt0+vKk=
+Received: from mail-yw1-f197.google.com (mail-yw1-f197.google.com
+ [209.85.128.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-651-y_Ir6XThPT6E5-0m7WcrMA-1; Mon, 21 Aug 2023 09:11:41 -0400
+X-MC-Unique: y_Ir6XThPT6E5-0m7WcrMA-1
+Received: by mail-yw1-f197.google.com with SMTP id 00721157ae682-58cbf62bae8so47273107b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 06:11:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692623500; x=1693228300;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8jlzIYKgKmR2UBRoCBcFv7SS0ZLgGsr3htxCffkKfOg=;
+        b=e0kVEjTEcTyUAR6xccr5TvtRzZ1ZW1C3+vf0S++FJHqX7jqCJR4zY4LiWEopvii5eS
+         fCftuHMJNtkO269XF255LWsqQ8RkxemHAZqbsQvZvirjX85ACjUb8o71Am+2YOP/hzcd
+         b6ooliNxba5EyMSF5CPTRord6lpSrtaqQLdiXGxBH8DEYpq7dgltIA8TALA4S0BWqnqf
+         tQSXyzJUV2E12nO79DQc0Yqb4D67Troz5+UnBt9/ERhG646BOfUf2OR1pK6tnVyIRTsO
+         fM7np4kyB7Eekje6DaI8PzkH8XcBhJxYJJ9V8koUEOUbKYfMvbyV089cEfp9aKM0LNym
+         WtLQ==
+X-Gm-Message-State: AOJu0YwbIuMZOTYh/wUmpvFsIPabEYOxBhcW8C271dvZaWv8Rb9WA3aO
+        GZRuTRKGugYPAZsVzAq9xBG6dQivOeTp29IUj7+K2UGGrA4rXVk8Hbk3LPCN4F7dP8xJlal0Pjb
+        /l9vCW+PGS4hnCqpiSOc+nNWM
+X-Received: by 2002:a0d:dfd1:0:b0:57a:897e:abce with SMTP id i200-20020a0ddfd1000000b0057a897eabcemr9208171ywe.7.1692623500702;
+        Mon, 21 Aug 2023 06:11:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFYvkFaI4yVV4NClUb0bxAuCbQrwyZPApNnu6TfahyfIVJgPfoUnef2NcETLjYTx5bvN/PN+A==
+X-Received: by 2002:a0d:dfd1:0:b0:57a:897e:abce with SMTP id i200-20020a0ddfd1000000b0057a897eabcemr9208148ywe.7.1692623500477;
+        Mon, 21 Aug 2023 06:11:40 -0700 (PDT)
+Received: from brian-x1 (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
+        by smtp.gmail.com with ESMTPSA id z1-20020a818901000000b005869d9535dcsm2231861ywf.55.2023.08.21.06.11.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 06:11:39 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 09:11:37 -0400
+From:   Brian Masney <bmasney@redhat.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Konrad Dybcio <konrad.dybcio@linaro.org>, andersson@kernel.org,
+        linus.walleij@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: qcom-pmic-gpio: silence -EPROBE_DEFER message
+ on probe
+Message-ID: <ZONiidFpXf7MR6y9@brian-x1>
+References: <20230817145941.1091418-1-bmasney@redhat.com>
+ <a3431eaf-053a-4e1c-b082-e87a3aaefbf3@linaro.org>
+ <ZN5KIlI+RDu92jsi@brian-x1>
+ <09df85cd-27c7-d64c-9792-41110bf32fce@kernel.org>
+ <1dd0bad4-fbb4-3861-9bc0-7a5f3067aeaf@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9yeLbFu7ADkQpySe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6d7a7ecc-1364-5cbe-0485-01d693dbdc6c@arm.com>
-X-Cookie: Do not write below this line.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1dd0bad4-fbb4-3861-9bc0-7a5f3067aeaf@kernel.org>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Aug 18, 2023 at 03:59:18PM +0200, Krzysztof Kozlowski wrote:
+> On 18/08/2023 15:51, Krzysztof Kozlowski wrote:
+> >>     qcom-spmi-gpio c440000.spmi:pmic@2:gpio@8800: no hogs found
+> >>     qcom-spmi-gpio c440000.spmi:pmic@2:gpio@8800: error -EPROBE_DEFER: can't add gpio chip
+> >>     qcom-spmi-gpio c440000.spmi:pmic@2:gpio@8800: Driver qcom-spmi-gpio requests probe deferral
+> >>     platform c440000.spmi:pmic@2:gpio@8800: Added to deferred list
+> >>
+> >> The second time it probes the device is successfully added.
+> > 
+> > There is a bug in DTS. I'll send a patch.
+> 
+> https://lore.kernel.org/linux-arm-msm/20230818135538.47481-1-krzysztof.kozlowski@linaro.org/T/#u
 
---9yeLbFu7ADkQpySe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for sending that. I didn't look at the DTS. Let's just drop the
+patch that I posted here since that message may help someone in the
+future identify this same type of issue for another platform.
 
-On Mon, Aug 21, 2023 at 01:39:11PM +0100, Robin Murphy wrote:
-> On 2023-08-21 12:35, Shreeya Patel wrote:
+Brian
 
-> > AFAIK, script for running the tests is immediately ran after the boot
-> > process is complete so there is no wait time.
-
-> Regardless of what the kernel is doing, it seems like a fundamentally dumb
-> test to specifically ask deferred probe to wait for up to a minute then
-> complain that it hasn't finished after 11 seconds :/
-
-IIRC that stuff is expecting the modules to be loaded from the initramfs
-and checking from the main system which is a bit more sensible (at least
-in the case where there is a main filesystem).  It's vulnerable to races
-but less so, especially given the time a Debian rootfs typically takes
-to boot over NFS.
-
---9yeLbFu7ADkQpySe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTjYoEACgkQJNaLcl1U
-h9A6Swf/XtoTqsAUrhDq/Wh7JfVm3BoLQKbTuySudRcbCDjKQqaSOK6krL2dOyho
-pMlwv20MA3H+NF8I/hbsKh76FXvk08d1iLcKHll3kfZOxLUmdhOXY56bn88FStfd
-Yja0b9OFe5TkkxZngSggpps6F+hhI0Q1GbuX+VZKqwZ3+1cbM+osTfZDzxy5Y47x
-NwqGj95If45WtM2T1uom9ODZS1xKNH3Y7TO7Ifkpqf9sV0h+l4cWYEUOahfcEh6z
-hIH1+EeAJSqWhvoWxXgc0KkmrTV3MQetnfOOpofb9YEO7zvRnU2k/vzhY142cS3Z
-MfbPxUXC9o6LeMMrbYdhvLEEImawAQ==
-=cxsG
------END PGP SIGNATURE-----
-
---9yeLbFu7ADkQpySe--
