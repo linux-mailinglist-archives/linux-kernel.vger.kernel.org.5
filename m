@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C844783491
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01522783468
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 23:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjHUU26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54128 "EHLO
+        id S230518AbjHUU27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbjHUU25 (ORCPT
+        with ESMTP id S230495AbjHUU26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:28:57 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AB0B139
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:53 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c93638322so775153266b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:53 -0700 (PDT)
+        Mon, 21 Aug 2023 16:28:58 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9F9123
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:56 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c353a395cso500449066b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692649732; x=1693254532;
+        d=gmail.com; s=20221208; t=1692649734; x=1693254534;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dcR7quqcdfLIpDV/BrSlU217Tc1djQCifnGeh+jON88=;
-        b=HaTnWJYE97VIyQjGgW8oXxjKuiWkeUDWXj46fGZH1mL4dDpwmq7tmfpX5SktuZoiP5
-         hUtFQbd9VD/uRaVPfssMjRXUDKkjwj2A6IZCCObm/PzrXt7RdvIk2/Cx4n+EwScduqvq
-         5zdLlfCcmOL+WnnWtVzhfdFeWiK/jVpRbHz0NrJBS3m51vhUAsJ9GDYSkLvN5V35GGPk
-         LknmQ4pZAN4UBzap1Q9GHexrXPs5Msp2Y7p+LDXQgxRUj4sz/RO9X+apujJZ7Kp0PLnR
-         DMtpZchQSUEMIRLKVAZZ2I3YyabBIp1fK5tZvPcgOUQXZ8aW3aduoK0roeYwuO9Ki75r
-         nQvA==
+        bh=bg7FamlUBikKy1ZdTRl5d2sgxVAImmgfb9egeVVkijU=;
+        b=GS9/2BnUwu1b5bIuLG08EYaNXH+HEHCTChQxHxg55sLB8NOoGwX+vmAnKuiPbbDf9b
+         mZ7LpTBMnC3a1Nnzgv3bbrPFZ9IRYV8A3nWgKv9m3THXrC6NdegX590Uq5kun9tMH5S5
+         5zlojrZmE82bf49ARL1iHeWmcDVQkaRvkbWrcnKAPyQYo3U4lCYpvLAjaa/YOB8Q01Zc
+         u7K/ecFioIx+x8qXdfKm7gGhaPRhdHsGjU5rZaGLpBhTiv92bL2bScXiQDmWFMjvy85e
+         Lh0w+bXwcDn6prStj+dkCeBnGR68a6gMpfE3b9sVu7ld7iurMfMYdHnlYp1I1OxpvK3l
+         +Uig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692649732; x=1693254532;
+        d=1e100.net; s=20221208; t=1692649734; x=1693254534;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dcR7quqcdfLIpDV/BrSlU217Tc1djQCifnGeh+jON88=;
-        b=Dh4CzQ2nZGbW03dVurvFK9ENCLnQn/peoK3gkTNbQm7uy2XopyhziG95nHB/+z/rts
-         +MYr2VnUOKg7iNUpht8rHNdPvY6SGpT/31/54sDYLKjCPgPg4v+H1oYROqvQc/K4+O2P
-         9DCz2fqwFyfEPpq/V6WSAG6qvhPj6VsAXXeD5F7mA5S9gAJ7OsPzJ+Ts/90H1BPHdXIB
-         83u5nARx2hCKI2tRW5UQNlPTyq0xmnd1TbOK7iZz+h33vJn4TV/f5kUi3ci5IkQo/h8W
-         rkgP1thzRR+FeRF64WtDMTu6IdWLTIZ8XrGrgQVAh51gXPgeNHzRVC9CATGYjTq8Ly/m
-         j2Bg==
-X-Gm-Message-State: AOJu0YzL+6CIIRABHmAgQhF79H1N3nQVR9DAWVEqwmjAAOGkVZSqDzUM
-        PmRr+1MA963REzFGiN4Pj/btl3suOBUygQ==
-X-Google-Smtp-Source: AGHT+IEEFRgYy+w0a0gW6U6MQsAvYVD8DCQhrRJusGPWmQcAHJH5nXLue/UF1odPjC5zuNn88lHHTw==
-X-Received: by 2002:a17:907:6d9a:b0:99b:cadd:c2ee with SMTP id sb26-20020a1709076d9a00b0099bcaddc2eemr8773312ejc.29.1692649732008;
-        Mon, 21 Aug 2023 13:28:52 -0700 (PDT)
+        bh=bg7FamlUBikKy1ZdTRl5d2sgxVAImmgfb9egeVVkijU=;
+        b=GcQSoDyiVpkw22wPU0e1YRRqbQnsc3O3ngkE0Fy0I3Vm+zesp5U4+qBz2nT3y3d/yH
+         dvje9z7q0TY4sX5/nOB7bhlg9cN5ufhEpPh6IawebfzEcNeSB3bSEmwDYrogIMe7fWqu
+         dzxzuDAG5YTL8izM2xuacbsylmoy6WnUDxgs0Oj2lWDOwX9swg529rckaqppJl6G7YrB
+         dzjIh4xuLXE0SJP3buWlXMg/GNevZhINjUFp3eUZNuVzUl6DtHtwJGBp7LkWm5I82qvA
+         TsvZ5nPLoQdPZgS8obg/4p2G8bUb67K092NJsczx7pJMV/YSyGdhFa0ipvSHvrYBMkEa
+         w4nA==
+X-Gm-Message-State: AOJu0YyR531RkfXSczGznzWJ/g3waY8xaR1WHfJbz8uHoT3PR/prMjiQ
+        EALaA9af9u6FRRldX5hE3OasetwwAwsFIw==
+X-Google-Smtp-Source: AGHT+IGf2yh/BOotGTgsXmYaaGQBLu0XGFOT2TeDIDab903lxvXLvovWRyYYSDCXy47puh+eVEdJ8g==
+X-Received: by 2002:a17:906:105d:b0:992:ab3a:f0d4 with SMTP id j29-20020a170906105d00b00992ab3af0d4mr5901843ejj.17.1692649734243;
+        Mon, 21 Aug 2023 13:28:54 -0700 (PDT)
 Received: from f.. (cst-prg-85-121.cust.vodafone.cz. [46.135.85.121])
-        by smtp.gmail.com with ESMTPSA id k26-20020a1709062a5a00b00997cce73cc7sm7084450eje.29.2023.08.21.13.28.50
+        by smtp.gmail.com with ESMTPSA id k26-20020a1709062a5a00b00997cce73cc7sm7084450eje.29.2023.08.21.13.28.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 13:28:51 -0700 (PDT)
+        Mon, 21 Aug 2023 13:28:53 -0700 (PDT)
 From:   Mateusz Guzik <mjguzik@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     dennis@kernel.org, tj@kernel.org, cl@linux.com,
         akpm@linux-foundation.org, shakeelb@google.com, linux-mm@kvack.org,
         Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH 1/2] pcpcntr: add group allocation/free
-Date:   Mon, 21 Aug 2023 22:28:28 +0200
-Message-Id: <20230821202829.2163744-2-mjguzik@gmail.com>
+Subject: [PATCH 2/2] fork: group allocation of per-cpu counters for mm struct
+Date:   Mon, 21 Aug 2023 22:28:29 +0200
+Message-Id: <20230821202829.2163744-3-mjguzik@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230821202829.2163744-1-mjguzik@gmail.com>
 References: <20230821202829.2163744-1-mjguzik@gmail.com>
@@ -73,153 +73,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocations and frees are globally serialized on the pcpu lock (and the
-CPU hotplug lock if enabled, which is the case on Debian).
+A trivial execve scalability test which tries to be very friendly
+(statically linked binaries, all separate) is predominantly bottlenecked
+by back-to-back per-cpu counter allocations which serialize on global
+locks.
 
-At least one frequent consumer allocates 4 back-to-back counters (and
-frees them in the same manner), exacerbating the problem.
+Ease the pain by allocating and freeing them in one go.
 
-While this does not fully remedy scalability issues, it is a step
-towards that goal and provides immediate relief.
+Bench can be found here:
+http://apollo.backplane.com/DFlyMisc/doexec.c
+
+$ cc -static -O2 -o static-doexec doexec.c
+$ ./static-doexec $(nproc)
+
+Even at a very modest scale of 26 cores (ops/s):
+before:	133543.63
+after:	186061.81 (+39%)
+
+While with the patch these allocations remain a significant problem,
+the primary bottleneck shifts to:
+
+    __pv_queued_spin_lock_slowpath+1
+    _raw_spin_lock_irqsave+57
+    folio_lruvec_lock_irqsave+91
+    release_pages+590
+    tlb_batch_pages_flush+61
+    tlb_finish_mmu+101
+    exit_mmap+327
+    __mmput+61
+    begin_new_exec+1245
+    load_elf_binary+712
+    bprm_execve+644
+    do_execveat_common.isra.0+429
+    __x64_sys_execve+50
+    do_syscall_64+46
+    entry_SYSCALL_64_after_hwframe+110
 
 Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
 ---
- include/linux/percpu_counter.h | 19 ++++++++---
- lib/percpu_counter.c           | 61 ++++++++++++++++++++++++----------
- 2 files changed, 57 insertions(+), 23 deletions(-)
+ kernel/fork.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
-index 75b73c83bc9d..ff5850b07124 100644
---- a/include/linux/percpu_counter.h
-+++ b/include/linux/percpu_counter.h
-@@ -30,17 +30,26 @@ struct percpu_counter {
- 
- extern int percpu_counter_batch;
- 
--int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
--			  struct lock_class_key *key);
-+int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
-+			  struct lock_class_key *key, u32 count);
- 
--#define percpu_counter_init(fbc, value, gfp)				\
-+#define percpu_counter_init_many(fbc, value, gfp, count)		\
- 	({								\
- 		static struct lock_class_key __key;			\
- 									\
--		__percpu_counter_init(fbc, value, gfp, &__key);		\
-+		__percpu_counter_init_many(fbc, value, gfp, &__key, count);\
- 	})
- 
--void percpu_counter_destroy(struct percpu_counter *fbc);
-+
-+#define percpu_counter_init(fbc, value, gfp)				\
-+	percpu_counter_init_many(fbc, value, gfp, 1)
-+
-+void percpu_counter_destroy_many(struct percpu_counter *fbc, u32 count);
-+static inline void percpu_counter_destroy(struct percpu_counter *fbc)
-+{
-+	percpu_counter_destroy_many(fbc, 1);
-+}
-+
- void percpu_counter_set(struct percpu_counter *fbc, s64 amount);
- void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount,
- 			      s32 batch);
-diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-index 5004463c4f9f..2a33cf23df55 100644
---- a/lib/percpu_counter.c
-+++ b/lib/percpu_counter.c
-@@ -151,48 +151,73 @@ s64 __percpu_counter_sum(struct percpu_counter *fbc)
- }
- EXPORT_SYMBOL(__percpu_counter_sum);
- 
--int __percpu_counter_init(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
--			  struct lock_class_key *key)
-+int __percpu_counter_init_many(struct percpu_counter *fbc, s64 amount, gfp_t gfp,
-+			  struct lock_class_key *key, u32 count)
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d2e12b6d2b18..86ff78e001c1 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -909,8 +909,6 @@ static void cleanup_lazy_tlbs(struct mm_struct *mm)
+  */
+ void __mmdrop(struct mm_struct *mm)
  {
- 	unsigned long flags __maybe_unused;
-+	s32 __percpu *counters;
-+	u32 i;
+-	int i;
+-
+ 	BUG_ON(mm == &init_mm);
+ 	WARN_ON_ONCE(mm == current->mm);
  
--	raw_spin_lock_init(&fbc->lock);
--	lockdep_set_class(&fbc->lock, key);
--	fbc->count = amount;
--	fbc->counters = alloc_percpu_gfp(s32, gfp);
--	if (!fbc->counters)
-+	counters = __alloc_percpu_gfp(sizeof(*counters) * count,
-+				      sizeof(*counters), gfp);
-+	if (!counters) {
-+		fbc[0].counters = NULL;
- 		return -ENOMEM;
-+	}
+@@ -925,9 +923,8 @@ void __mmdrop(struct mm_struct *mm)
+ 	put_user_ns(mm->user_ns);
+ 	mm_pasid_drop(mm);
+ 	mm_destroy_cid(mm);
++	percpu_counter_destroy_many(mm->rss_stat, NR_MM_COUNTERS);
  
--	debug_percpu_counter_activate(fbc);
-+	for (i = 0; i < count; i++) {
-+		raw_spin_lock_init(&fbc[i].lock);
-+		lockdep_set_class(&fbc[i].lock, key);
-+#ifdef CONFIG_HOTPLUG_CPU
-+		INIT_LIST_HEAD(&fbc[i].list);
-+#endif
-+		fbc[i].count = amount;
-+		fbc[i].counters = &counters[i];
-+
-+		debug_percpu_counter_activate(&fbc[i]);
-+	}
- 
- #ifdef CONFIG_HOTPLUG_CPU
--	INIT_LIST_HEAD(&fbc->list);
- 	spin_lock_irqsave(&percpu_counters_lock, flags);
--	list_add(&fbc->list, &percpu_counters);
-+	for (i = 0; i < count; i++) {
-+		list_add(&fbc[i].list, &percpu_counters);
-+	}
- 	spin_unlock_irqrestore(&percpu_counters_lock, flags);
- #endif
- 	return 0;
+-	for (i = 0; i < NR_MM_COUNTERS; i++)
+-		percpu_counter_destroy(&mm->rss_stat[i]);
+ 	free_mm(mm);
  }
--EXPORT_SYMBOL(__percpu_counter_init);
-+EXPORT_SYMBOL(__percpu_counter_init_many);
- 
--void percpu_counter_destroy(struct percpu_counter *fbc)
-+void percpu_counter_destroy_many(struct percpu_counter *fbc, u32 count)
+ EXPORT_SYMBOL_GPL(__mmdrop);
+@@ -1252,7 +1249,6 @@ static void mm_init_uprobes_state(struct mm_struct *mm)
+ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	struct user_namespace *user_ns)
  {
- 	unsigned long flags __maybe_unused;
-+	u32 i;
+-	int i;
  
--	if (!fbc->counters)
-+	if (WARN_ON_ONCE(!fbc))
- 		return;
+ 	mt_init_flags(&mm->mm_mt, MM_MT_FLAGS);
+ 	mt_set_external_lock(&mm->mm_mt, &mm->mmap_lock);
+@@ -1301,17 +1297,14 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
+ 	if (mm_alloc_cid(mm))
+ 		goto fail_cid;
  
--	debug_percpu_counter_deactivate(fbc);
-+	if (!fbc[0].counters)
-+		return;
-+
-+	for (i = 0; i < count; i++) {
-+		debug_percpu_counter_deactivate(&fbc[i]);
-+	}
+-	for (i = 0; i < NR_MM_COUNTERS; i++)
+-		if (percpu_counter_init(&mm->rss_stat[i], 0, GFP_KERNEL_ACCOUNT))
+-			goto fail_pcpu;
++	if (percpu_counter_init_many(mm->rss_stat, 0, GFP_KERNEL_ACCOUNT, NR_MM_COUNTERS))
++		goto fail_pcpu;
  
- #ifdef CONFIG_HOTPLUG_CPU
- 	spin_lock_irqsave(&percpu_counters_lock, flags);
--	list_del(&fbc->list);
-+	for (i = 0; i < count; i++) {
-+		list_del(&fbc[i].list);
-+	}
- 	spin_unlock_irqrestore(&percpu_counters_lock, flags);
- #endif
--	free_percpu(fbc->counters);
--	fbc->counters = NULL;
-+
-+	free_percpu(fbc[0].counters);
-+
-+	for (i = 0; i < count; i++) {
-+		fbc[i].counters = NULL;
-+	}
- }
--EXPORT_SYMBOL(percpu_counter_destroy);
-+EXPORT_SYMBOL(percpu_counter_destroy_many);
+ 	mm->user_ns = get_user_ns(user_ns);
+ 	lru_gen_init_mm(mm);
+ 	return mm;
  
- int percpu_counter_batch __read_mostly = 32;
- EXPORT_SYMBOL(percpu_counter_batch);
+ fail_pcpu:
+-	while (i > 0)
+-		percpu_counter_destroy(&mm->rss_stat[--i]);
+ 	mm_destroy_cid(mm);
+ fail_cid:
+ 	destroy_context(mm);
 -- 
 2.39.2
 
