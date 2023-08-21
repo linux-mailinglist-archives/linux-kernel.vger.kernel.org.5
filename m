@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B557E782EE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE21782EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236854AbjHUQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
+        id S236913AbjHUQ6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236836AbjHUQ6H (ORCPT
+        with ESMTP id S236852AbjHUQ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:58:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B57ED
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:58:05 -0700 (PDT)
-Date:   Mon, 21 Aug 2023 16:58:03 -0000
+        Mon, 21 Aug 2023 12:58:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F05CC
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 09:58:08 -0700 (PDT)
+Date:   Mon, 21 Aug 2023 16:58:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1692637083;
+        s=2020; t=1692637085;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vym+lz9cNJAS9ggGgChev+ggKlIKd/nP1pNuX21dw5E=;
-        b=GOtJEhBwxYm2ywfzxDIVston9tIvLfYIbRY2EoWKIBc18sA5WuIJC2waXudBRSHH4ZjGav
-        KdDTkbNjJtzvpg4bQFycJPmZI/QiiL7XiZxUKJADQEWPMvdvnazobQHcrxFlfbCaWCnl+W
-        WUh7sK+WSN4rsNPliC4USjs48A5BCo7tuQh3aCC0N/vV/CTzIbIK5EkdYARPcyK1++2E/z
-        W/PO+nPDMeJR17mX2VkfEodMxXE5EYtQpbPNu6AmZH0ixpkqJ2iO0zRL0UooJCzX4CaBwQ
-        fRds7/KDWQs/RGaRE5WTcZT+akqY6lFudfFJqqqmdQ3hBtnikUCwZJnV6rmEMw==
+        bh=bxb29NF0KumIhoIrce0BH+Vc5w3HBklR/hhHtC+FhZc=;
+        b=z/xb8VE+7TYyrpr5b89YVDgOJUulDRSUOJEY83jmfJVm210O4q3DX6yMlNYk96DUZJy+j1
+        01pGC0l/y4tDS+f0rWXgyNPv7O3Hmhhw3phgvpzB1vaW9tJWqSEQHESiCGwFeY6TH4sr+n
+        zYk1GeajMWxnBM8Pr1W8jtu8F5oEwtjM26fBfE1s0exDJt4Gs5YlgLctabCARNBeED0nRl
+        pz1o25I3QnluLNPWyRcpVWhIS1rJ+zqO1EPFVKSxov6QHRFoTjvumrDIqVBlDZ89DcfiPr
+        +DJl8dYbCnSa+4nkJ7m8JYJGYcDtz+WWgYApOElvyD8D60j09IRXtknJ21Kd0Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1692637083;
+        s=2020e; t=1692637085;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Vym+lz9cNJAS9ggGgChev+ggKlIKd/nP1pNuX21dw5E=;
-        b=U4PCdNgFyMZRDP+t4bumV1qzZ7U3bH1Tunn5y/mZDc24vba3x6g53TQeDzxzMXTsLW67Nm
-        ZkgTXAchC9ifg3DQ==
-From:   "irqchip-bot for Yangtao Li" <tip-bot2@linutronix.de>
+        bh=bxb29NF0KumIhoIrce0BH+Vc5w3HBklR/hhHtC+FhZc=;
+        b=PEWiEldZg972IkcXz2WeDV+hiaGG8HR6hci+qx1MQ1lKa1BHlhv1ZzaT1zPpkdAPUrYpO9
+        yOgxRBpdHlp38DBw==
+From:   "irqchip-bot for Yang Yingliang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] irqchip/irq-mvebu-sei: Use
- devm_platform_get_and_ioremap_resource()
-Cc:     Yangtao Li <frank.li@vivo.com>, Andrew Lunn <andrew@lunn.ch>,
+Subject: [irqchip: irq/irqchip-next] irqchip/orion: Use of_address_count() helper
+Cc:     Yang Yingliang <yangyingliang@huawei.com>,
         Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20230704100253.36045-2-frank.li@vivo.com>
-References: <20230704100253.36045-2-frank.li@vivo.com>
+In-Reply-To: <20230726030741.1136244-1-yangyingliang@huawei.com>
+References: <20230726030741.1136244-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Message-ID: <169263708321.27769.10287078291229984853.tip-bot2@tip-bot2>
+Message-ID: <169263708481.27769.7213742246735909985.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -66,38 +65,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Commit-ID:     69da32b5438a9f3dc5b26eee0a94372b232a603c
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/69da32b5438a9f3dc5b26eee0a94372b232a603c
-Author:        Yangtao Li <frank.li@vivo.com>
-AuthorDate:    Tue, 04 Jul 2023 18:02:53 +08:00
+Commit-ID:     70befedaf5b020a08d397e2d6a9c306f0f611cfb
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/70befedaf5b020a08d397e2d6a9c306f0f611cfb
+Author:        Yang Yingliang <yangyingliang@huawei.com>
+AuthorDate:    Wed, 26 Jul 2023 11:07:41 +08:00
 Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Mon, 21 Aug 2023 17:49:11 +01:00
+CommitterDate: Mon, 21 Aug 2023 17:48:59 +01:00
 
-irqchip/irq-mvebu-sei: Use devm_platform_get_and_ioremap_resource()
+irqchip/orion: Use of_address_count() helper
 
-Convert platform_get_resource(), devm_ioremap_resource() to a single
-call to devm_platform_get_and_ioremap_resource(), as this is exactly
-what this function does.
+After commit 16988c742968 ("of/address: introduce of_address_count() helper"),
+Use of_address_count() to instead of open-coding it, it's no functional change.
 
-Signed-off-by: Yangtao Li <frank.li@vivo.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20230704100253.36045-2-frank.li@vivo.com
+Link: https://lore.kernel.org/r/20230726030741.1136244-1-yangyingliang@huawei.com
 ---
- drivers/irqchip/irq-mvebu-sei.c | 3 +--
+ drivers/irqchip/irq-orion.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/irqchip/irq-mvebu-sei.c b/drivers/irqchip/irq-mvebu-sei.c
-index 4ecef6d..a48dbe9 100644
---- a/drivers/irqchip/irq-mvebu-sei.c
-+++ b/drivers/irqchip/irq-mvebu-sei.c
-@@ -377,8 +377,7 @@ static int mvebu_sei_probe(struct platform_device *pdev)
- 	mutex_init(&sei->cp_msi_lock);
- 	raw_spin_lock_init(&sei->mask_lock);
+diff --git a/drivers/irqchip/irq-orion.c b/drivers/irqchip/irq-orion.c
+index 17c2c7a..4e4e874 100644
+--- a/drivers/irqchip/irq-orion.c
++++ b/drivers/irqchip/irq-orion.c
+@@ -57,8 +57,7 @@ static int __init orion_irq_init(struct device_node *np,
+ 	struct resource r;
  
--	sei->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	sei->base = devm_ioremap_resource(sei->dev, sei->res);
-+	sei->base = devm_platform_get_and_ioremap_resource(pdev, 0, &sei->res);
- 	if (IS_ERR(sei->base))
- 		return PTR_ERR(sei->base);
+ 	/* count number of irq chips by valid reg addresses */
+-	while (of_address_to_resource(np, num_chips, &r) == 0)
+-		num_chips++;
++	num_chips = of_address_count(np);
  
+ 	orion_irq_domain = irq_domain_add_linear(np,
+ 				num_chips * ORION_IRQS_PER_CHIP,
