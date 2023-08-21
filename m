@@ -2,161 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3B2782F00
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A14D782F05
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 19:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236890AbjHURDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 13:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46644 "EHLO
+        id S236867AbjHUREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 13:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236867AbjHURDN (ORCPT
+        with ESMTP id S236894AbjHUREn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 13:03:13 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BFFAEE;
-        Mon, 21 Aug 2023 10:03:11 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 13DAC22C36;
-        Mon, 21 Aug 2023 17:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692637390; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SLJykvxuZvqJ+C4mN0x9FvUi2rRqmrHd1orjK7FFMsI=;
-        b=fr+7s4BC6VeEFmYTKeLSlLmCmG4kqom83BSHYONhbsPm/dy0Z7tC+7gbjWSoPBFyHpycNq
-        efbc0AwMv4JeFOILdc4qEKvaUHA7b1ZXRdhGl+jtrsv8DOjWFdCh6ihMNpuWM7zsGxE7ew
-        rcedEbMxJUH31F6sEzqcihuDPleH9n0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692637390;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SLJykvxuZvqJ+C4mN0x9FvUi2rRqmrHd1orjK7FFMsI=;
-        b=cMNGb62gPZo/M23xiXN3LVNbAaeKgjjWWp6dJudi7Q3YjsA/Fh7TOX31foIq4KAURCLVgm
-        naLMFN4SvWRf5sAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CF9FA13421;
-        Mon, 21 Aug 2023 17:03:09 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id YTjtLM2Y42TsSAAAMHmgww
-        (envelope-from <krisman@suse.de>); Mon, 21 Aug 2023 17:03:09 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v3 8/9] io_uring/cmd: BPF hook for getsockopt cmd
-In-Reply-To: <ZOMrD1DHeys0nFwt@gmail.com> (Breno Leitao's message of "Mon, 21
-        Aug 2023 02:14:55 -0700")
-Organization: SUSE
-References: <20230817145554.892543-1-leitao@debian.org>
-        <20230817145554.892543-9-leitao@debian.org> <87pm3l32rk.fsf@suse.de>
-        <ZOMrD1DHeys0nFwt@gmail.com>
-Date:   Mon, 21 Aug 2023 13:03:08 -0400
-Message-ID: <875y58nx9v.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Mon, 21 Aug 2023 13:04:43 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA8BED
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:04:41 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-6490c2c4702so18261956d6.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 10:04:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1692637480; x=1693242280;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=N09QE0C3lW8oGWF50bQOxZXPyK36qtYOYonsxv0HH8c=;
+        b=W8UiYFg+/p47ajmvb6c1GFVVsTww14hmsjS5g9VC4iS2FHmq5Kh2J4UXCkjHEV2psl
+         wOnx7oxSVJMPy87Jhn+p/NmwbERhsnldbAJss4S/NI39ueJJE3zW0AlKAPZ1xL7/5RWE
+         ZmAKI6n90zrXzrNKDL22m3mDMYky5E6pY9IDza2nNh92AXqoQQtwzfBMGtLzId4zpzf6
+         cqqfU6USK+z9/mpRopcvcmWHGSCak6EZxzEUMDK0bepYk8UrqpqCrsO9h4NhxMJm0Ri6
+         BYJy5qoIh2ZLiXuISwm8iYIwh/bXAZRTBxunmW2e1/CZcg/8bpG+tPoRTTHRR+susG1M
+         6gCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692637480; x=1693242280;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N09QE0C3lW8oGWF50bQOxZXPyK36qtYOYonsxv0HH8c=;
+        b=X8hlTj8OdVBThMhH1gwinl2OGvl4fdjzf8/ssrZLD3qqGJHXVQrwwSy3g86f9Yi53q
+         W+7XrpQg3ve8ciX/LKmj0dOakVdiEguBGUCyGseVbK5htg2TZJdM6SQZyqyRjKuDlv4V
+         zd28dVCuuLfTEZ60cNehczs/J5P7gFYfGObux3QewrSdmOxQSuX9ntymVACtzqCI2DnS
+         UE81kRNVYOpnFgMh1NClS9MgzS2oTud2+pemCc9HKXkZhaNzQFaUOBzvPCUl4oqaaAtq
+         oRTY7avxRbrLeG8DVWA0nbMenzw39eEpN51nt3m+mF9ESRjCzYr6CMxUOzJyDe48SmMx
+         GkYw==
+X-Gm-Message-State: AOJu0YxqcFy5m6SxXgdJebJLQE9pqt/Zb8n2HwFQ/U5ExDpUpTMEwQCc
+        hlyc9PAlMrupTIEs+KmFN6mvwA==
+X-Google-Smtp-Source: AGHT+IFE3U9YWvQ4iNtyRxFqDyhWmNE+Ii8wn6FvWBNTRn+lXBSa2bgUJEP4lLxtiNKJjpRUuW8z8w==
+X-Received: by 2002:a0c:a9d8:0:b0:64f:3b07:c50b with SMTP id c24-20020a0ca9d8000000b0064f3b07c50bmr5161926qvb.43.1692637480297;
+        Mon, 21 Aug 2023 10:04:40 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id i26-20020a05620a145a00b00767b0c35c15sm2590622qkl.91.2023.08.21.10.04.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 10:04:39 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qY8KV-00Duwr-Bb;
+        Mon, 21 Aug 2023 14:04:39 -0300
+Date:   Mon, 21 Aug 2023 14:04:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 05/11] iommu: Merge iopf_device_param into
+ iommu_fault_param
+Message-ID: <ZOOZJ/aQNKY2UDxj@ziepe.ca>
+References: <20230817234047.195194-1-baolu.lu@linux.intel.com>
+ <20230817234047.195194-6-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230817234047.195194-6-baolu.lu@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao <leitao@debian.org> writes:
+On Fri, Aug 18, 2023 at 07:40:41AM +0800, Lu Baolu wrote:
+> @@ -472,21 +473,31 @@ struct iommu_fault_event {
+>   * struct iommu_fault_param - per-device IOMMU fault data
+>   * @handler: Callback function to handle IOMMU faults at device level
+>   * @data: handler private data
+> - * @faults: holds the pending faults which needs response
+>   * @lock: protect pending faults list
+> + * @dev: the device that owns this param
+> + * @queue: IOPF queue
+> + * @queue_list: index into queue->devices
+> + * @partial: faults that are part of a Page Request Group for which the last
+> + *           request hasn't been submitted yet.
+> + * @faults: holds the pending faults which needs response
+>   */
+>  struct iommu_fault_param {
+>  	iommu_dev_fault_handler_t handler;
+>  	void *data;
+> -	struct list_head faults;
+> -	struct mutex lock;
+> +	struct mutex			lock;
+> +
+> +	struct device			*dev;
+> +	struct iopf_queue		*queue;
+> +	struct list_head		queue_list;
+> +
+> +	struct list_head		partial;
+> +	struct list_head		faults;
+>  };
 
-> On Thu, Aug 17, 2023 at 03:08:47PM -0400, Gabriel Krisman Bertazi wrote:
->> Breno Leitao <leitao@debian.org> writes:
->> 
->> > Add BPF hook support for getsockopts io_uring command. So, BPF cgroups
->> > programs can run when SOCKET_URING_OP_GETSOCKOPT command is executed
->> > through io_uring.
->> >
->> > This implementation follows a similar approach to what
->> > __sys_getsockopt() does, but, using USER_SOCKPTR() for optval instead of
->> > kernel pointer.
->> >
->> > Signed-off-by: Breno Leitao <leitao@debian.org>
->> > ---
->> >  io_uring/uring_cmd.c | 18 +++++++++++++-----
->> >  1 file changed, 13 insertions(+), 5 deletions(-)
->> >
->> > diff --git a/io_uring/uring_cmd.c b/io_uring/uring_cmd.c
->> > index a567dd32df00..9e08a14760c3 100644
->> > --- a/io_uring/uring_cmd.c
->> > +++ b/io_uring/uring_cmd.c
->> > @@ -5,6 +5,8 @@
->> >  #include <linux/io_uring.h>
->> >  #include <linux/security.h>
->> >  #include <linux/nospec.h>
->> > +#include <linux/compat.h>
->> > +#include <linux/bpf-cgroup.h>
->> >  
->> >  #include <uapi/linux/io_uring.h>
->> >  #include <uapi/asm-generic/ioctls.h>
->> > @@ -184,17 +186,23 @@ static inline int io_uring_cmd_getsockopt(struct socket *sock,
->> >  	if (err)
->> >  		return err;
->> >  
->> > -	if (level == SOL_SOCKET) {
->> > +	err = -EOPNOTSUPP;
->> > +	if (level == SOL_SOCKET)
->> >  		err = sk_getsockopt(sock->sk, level, optname,
->> >  				    USER_SOCKPTR(optval),
->> >  				    KERNEL_SOCKPTR(&optlen));
->> > -		if (err)
->> > -			return err;
->> >  
->> > +	if (!(issue_flags & IO_URING_F_COMPAT))
->> > +		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock->sk, level,
->> > +						     optname,
->> > +						     USER_SOCKPTR(optval),
->> > +						     KERNEL_SOCKPTR(&optlen),
->> > +						     optlen, err);
->> > +
->> > +	if (!err)
->> >  		return optlen;
->> > -	}
->> 
->> Shouldn't you call sock->ops->getsockopt for level!=SOL_SOCKET prior to
->> running the hook?
->> Before this patch, it would bail out with EOPNOTSUPP,
->> but now the bpf hook gets called even for level!=SOL_SOCKET, which
->> doesn't fit __sys_getsockopt. Am I misreading the code?
->
-> Not really, sock->ops->getsockopt() does not suport sockptr_t, but
-> __user addresses, differently from setsockopt()
->
->           int             (*setsockopt)(struct socket *sock, int level,
->                                         int optname, sockptr_t optval,
->                                         unsigned int optlen);
->           int             (*getsockopt)(struct socket *sock, int level,
->                                         int optname, char __user *optval, int __user *optlen);
->
-> In order to be able to call sock->ops->getsockopt(), the callback
-> function will need to accepted sockptr.
+Don't add the horizontal spaces
 
-So, it seems you won't support !SOL_SOCKETs here.  Then, I think you
-shouldn't call the hook for those sockets. My main concern is that we
-remain compatible to __sys_getsockopt when invoking the hook.
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-I think you should just have the following as the very first thing in
-the function (but after the security_ check).
-
-if (level != SOL_SOCKET)
-   return -EOPNOTSUPP;
-
--- 
-Gabriel Krisman Bertazi
+Jason
+-
