@@ -2,161 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620117826BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:03:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40987826C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234554AbjHUKDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 06:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43154 "EHLO
+        id S234562AbjHUKEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjHUKDq (ORCPT
+        with ESMTP id S230423AbjHUKEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 06:03:46 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5190AA1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:03:45 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-447b64b0555so652787137.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:03:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692612224; x=1693217024;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+5JLVI5Xk4lK0PmKDVbDYnuovDxJaPByMRBhbwCuLSg=;
-        b=qj7PwLlimoyEEuIVU9stZFmVBicsc8tADQ/RXFCz3gGIkRnwydP8/AuZYG4d0Guqyb
-         7l9AY8ip21KHQnjIPSia3MC3FXMvTgurcTCeb+QsLs8WHSSplCm7PcP3uuEr2+g6aXfu
-         s21QcOu6/axpOPINhRWlwdpaLDhqpmTaaH5fc/4lHa5SuCc7vBJSH9xpilpUNTbpxAGL
-         TtPm1ZTv8JVsN2l29DE6EYzEE1mz4nwDU/W6vJvsdLht66L6HmP1RM26gTIpVCvX5W3P
-         SlvYY2w+qz7XWhXf81jQSb6fFljG8MRHiYElRgD0ZDzZXL4QPD04iNoedDJgYh64rSCt
-         tg7w==
+        Mon, 21 Aug 2023 06:04:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57A0DE
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692612244;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xg9daV7uWAmIhLcF/R04spGodJ9GWcUQaJbU5Trx9fQ=;
+        b=ABqglO1Rqq80e9pdr3HM4YvXBLA0Jeds2ZGi6bzEizTXxUuo2Z6cvTxEA90Caq2r4oRp7r
+        LWnqdovARuwlGmeDb8l3crGgnHq9o/b30pG4emxS3lFnp17CCiseHqCZfivNO1LGM+6EY+
+        j+PcgpIvHQmeqRhUwsy5JEC0XVn36fA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-oIRDONRkM2aK8DcUC1ikUw-1; Mon, 21 Aug 2023 06:04:02 -0400
+X-MC-Unique: oIRDONRkM2aK8DcUC1ikUw-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99df23d6926so210985166b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:04:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692612224; x=1693217024;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+5JLVI5Xk4lK0PmKDVbDYnuovDxJaPByMRBhbwCuLSg=;
-        b=SpHx3XJ/QqxzCWOotGjrDFW6b7w1DDD7iL6S7/wwbFd5UdaizMeDupTfJrcB06P9dY
-         uT+NQt4dI/iwBr7dYRQAYeLQ/K/rB8vh3JHedo2I1StynZEB18EkesqXyH0JGyNJt4yU
-         LLEcjHHcZjAOxd9V+jFbKNvd/V0QojhtX/zh+fSJycCZPzERxZ6gas3hHSe67TuBrQyW
-         SFKwvRJsL7hAd40Uj3Ci6GMXl/CiAlXltF3IkfL19TbKP9JUy93yv66BBRHR/QqRlusZ
-         A1pjU8bDSXUJLH+RJQu2neoJDWEmiKQAy7dvFlIJKBUuXLg4V7XZc2NS1JNye/EipD2C
-         YwNA==
-X-Gm-Message-State: AOJu0Yzq6QYXjUAc2UckbyYF4EQYwBAAmK+eItgk3MUijRS6UlrmrkkX
-        87Bgh4nRBv+0O7TWn669E0hLXbA0E8cT+cgcJiBH+w==
-X-Google-Smtp-Source: AGHT+IFwiNZUqz6PPoYS8ZMAeA3/YxgChg4za63k/bbsfq4tHpjrYnu95jtmavoOcdLv9S583LN3OQNCe+Au9W2Nzw8=
-X-Received: by 2002:a67:b603:0:b0:443:b014:e5af with SMTP id
- d3-20020a67b603000000b00443b014e5afmr2173372vsm.6.1692612224334; Mon, 21 Aug
- 2023 03:03:44 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692612241; x=1693217041;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xg9daV7uWAmIhLcF/R04spGodJ9GWcUQaJbU5Trx9fQ=;
+        b=DW2CSwZrO4hDLpxq12QTGSi4Mne2Butw9zog1O7vkzouW3dg6wbtgR3yH0v1ldOdx3
+         oHInZTfX966nbSWSddVXirdrvUrJCIcZzGsafR30fXIWafdEUerFmDhp2O6R3Q9RTavt
+         c+2JSVh30ZTaf0+Pt7w8Ab+dSYDxBuyS27hyMdnFNEo8Keai0fKDwNZBFjCvxm82e4oJ
+         dY8KF360JQaYhfiolSFbATa5Te0wX6F5bEwPYEorkfmdm8+bo7nHo8n7S2NClDyyqPru
+         MKWXZtdVcLgHWApqsugent5AYQ2kGkPIL7PAYsgMLXdtEL2wny/a99hQrylfx5gPi+Ac
+         1pvQ==
+X-Gm-Message-State: AOJu0YwgL7uy9nMW/QVtYlS/h3sedT+pQHuhSwhWJIF2iHLzclOHpcZE
+        bUxdyMz9BiW6ItaTp97rx/HB0gjYopq3NK6oTM4UVmUtGSrinTBRcuhHy/LGSPrMKmSYeQWMyUn
+        fJqFVIEvdP/uQbPAuPHpnVtehkXdTo66h
+X-Received: by 2002:a17:906:113:b0:99d:dc0b:a898 with SMTP id 19-20020a170906011300b0099ddc0ba898mr3819182eje.69.1692612241359;
+        Mon, 21 Aug 2023 03:04:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE+kOx3h4pL6VVinVKGtauFYxSqWn9IHcE9L+rnnke+HTGQpb9UPTXLilgemLfOfaH9txtzmw==
+X-Received: by 2002:a17:906:113:b0:99d:dc0b:a898 with SMTP id 19-20020a170906011300b0099ddc0ba898mr3819173eje.69.1692612241047;
+        Mon, 21 Aug 2023 03:04:01 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id p9-20020a170906140900b0099bca8b9a31sm6238818ejc.100.2023.08.21.03.04.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 03:04:00 -0700 (PDT)
+Message-ID: <6f57cd3a-f10d-d94e-d74d-685e2722d11f@redhat.com>
+Date:   Mon, 21 Aug 2023 12:03:59 +0200
 MIME-Version: 1.0
-References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com>
- <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
- <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com> <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org>
-In-Reply-To: <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 21 Aug 2023 15:33:33 +0530
-Message-ID: <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com>
-Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB) driver
-To:     Shyam Saini <shyamsaini@linux.microsoft.com>,
-        Jerome Forissier <jerome.forissier@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-kernel@vger.kernel.org,
-        linux-mmc@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        linux-scsi@vger.kernel.org,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Allen Pais <apais@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] [v1] platform/mellanox: Fix mlxbf-tmfifo not handling
+ all virtio CONSOLE notifictions
+Content-Language: en-US
+To:     Shiih-Yi Chen <shihyic@nvidia.com>, linux-kernel@vger.kernel.org,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     davthompson@nvidia.com, limings@nvidia.com
+References: <20230814175313.7101-1-shihyic@nvidia.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230814175313.7101-1-shihyic@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 15:19, Jerome Forissier
-<jerome.forissier@linaro.org> wrote:
->
->
->
-> On 8/17/23 01:31, Shyam Saini wrote:
-> >
-> > Hi Ulf,
-> >
-> >> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
-> >> <shyamsaini@linux.microsoft.com> wrote:
-> >>>
-> >>> From: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> >>>
-> >>> [This is patch 1 from [1] Alex's submission and this RPMB layer was
-> >>> originally proposed by [2]Thomas Winkler ]
-> >>>
-> >>> A number of storage technologies support a specialised hardware
-> >>> partition designed to be resistant to replay attacks. The underlying
-> >>> HW protocols differ but the operations are common. The RPMB partition
-> >>> cannot be accessed via standard block layer, but by a set of specific
-> >>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> >>> partition provides authenticated and replay protected access, hence
-> >>> suitable as a secure storage.
-> >>>
-> >>> The initial aim of this patch is to provide a simple RPMB Driver whic=
-h
-> >>> can be accessed by Linux's optee driver to facilitate fast-path for
-> >>> RPMB access to optee OS(secure OS) during the boot time. [1] Currentl=
-y,
-> >>> Optee OS relies on user-tee supplicant to access eMMC RPMB partition.
-> >>>
-> >>> A TEE device driver can claim the RPMB interface, for example, via
-> >>> class_interface_register(). The RPMB driver provides a series of
-> >>> operations for interacting with the device.
-> >>
-> >> I don't quite follow this. More exactly, how will the TEE driver know
-> >> what RPMB device it should use?
-> >
-> > I don't have complete code to for this yet, but i think OP-TEE driver
-> > should register with RPMB subsystem and then we can have eMMC/UFS/NVMe
-> > specific implementation for RPMB operations.
-> >
-> > Linux optee driver can handle RPMB frames and pass it to RPMB subsystem
-> >
+Hi,
 
-It would be better to have this OP-TEE use case fully implemented. So
-that we can justify it as a valid user for this proposed RPMB
-subsystem. If you are looking for any further suggestions then please
-let us know.
+On 8/14/23 19:53, Shiih-Yi Chen wrote:
+> From: shihyic <shihyic@nvidia.com>
+> 
+> rshim console does not show all entries of dmesg.
+> 
+> Fixed by setting MLXBF_TM_TX_LWM_IRQ for every CONSOLE notification. 
+>  
+> 
+> Signed-off-by: shihyic <shihyic@nvidia.com>
+> Review-by: limings@nvidia.com
+> 
+> ---
+>  drivers/platform/mellanox/mlxbf-tmfifo.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index a79318e90a13..4561b7d42412 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -887,6 +887,8 @@ static bool mlxbf_tmfifo_virtio_notify(struct virtqueue *vq)
+>  			tm_vdev = fifo->vdev[VIRTIO_ID_CONSOLE];
+>  			mlxbf_tmfifo_console_output(tm_vdev, vring);
+>  			spin_unlock_irqrestore(&fifo->spin_lock[0], flags);
+> +			test_and_set_bit(MLXBF_TM_TX_LWM_IRQ,
+> +					 &fifo->pend_events);
 
-> > [1] U-Boot has mmc specific implementation
-> >
-> > I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
-> > CFG_RPMB_FS_DEV_ID=3D1 for /dev/mmcblk1rpmb,
->
-> Correct. Note that tee-supplicant will ignore this device ID if --rmb-cid
-> is given and use the specified RPMB instead (the CID is a non-ambiguous w=
-ay
-> to identify a RPMB device).
->
-> > but in case if a
-> > system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
-> > should be declared as secure storage and optee should access that one o=
-nly.
->
-> Indeed, that would be an equivalent of tee-supplicant's --rpmb-cid.
->
-> > Sumit, do you have suggestions for this ?
->
+You are not doing anything with the test result of test_and_set_bit() here,
+so I think you can just use a (cheaper) set_bit() call here ?
 
-I would suggest having an OP-TEE secure DT property that would provide
-the RPMB CID which is allocated to the secure world.
+Regards,
 
--Sumit
+Hans
 
->
-> --
-> Jerome
+
+
+>  		} else if (test_and_set_bit(MLXBF_TM_TX_LWM_IRQ,
+>  					    &fifo->pend_events)) {
+>  			return true;
+
