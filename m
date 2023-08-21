@@ -2,74 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD29A782DFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01664782E00
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 18:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236362AbjHUQNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 12:13:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        id S236401AbjHUQNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 12:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232788AbjHUQNT (ORCPT
+        with ESMTP id S232788AbjHUQNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 12:13:19 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C476FF;
+        Mon, 21 Aug 2023 12:13:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1E11100;
+        Mon, 21 Aug 2023 09:13:20 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6D004143D;
+        Mon, 21 Aug 2023 09:14:01 -0700 (PDT)
+Received: from [10.57.91.118] (unknown [10.57.91.118])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 077B83F64C;
         Mon, 21 Aug 2023 09:13:17 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5656a5c6721so1922223a12.1;
-        Mon, 21 Aug 2023 09:13:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692634396; x=1693239196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e9mifx+UGkE0S0xzchpKkc4eAFsqEElU8pnoSlp1HjE=;
-        b=Kr++x1Q5c+VVlqGOpGdREoAyY7Rz9EybuoNnZx0rRQAdamseTB7czC/SOr6X6+M8e0
-         JsDvdGJhdyjR/pyqxgBOnJjTYR3t85l2Ju5ZNRXnDL0lIbc4ileDzbzlCv0Ya/fBVRy+
-         RMkCVaGoN3yUca48BHRQBERHuKtzQv/Wfmnr23V9mqD6eAWI07vsZ6K78AVR1/gHrN2c
-         NTCUQuds13x16QfgopvUBQTphbK6Rijwf28gATgawwazFNmgfs98rD+uH79i7IwbdfM2
-         n/VcwIYHwJF+rR/YaMnPtzdBmDbyg93kO9X8pxT93b6U9GWj8BI6txmUiU8HvhnrVfxp
-         8m+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692634396; x=1693239196;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e9mifx+UGkE0S0xzchpKkc4eAFsqEElU8pnoSlp1HjE=;
-        b=L63OtBmRrWHGB+6Y2H+Iladprr1yQcISFug27dGEXuF6HxhdNGtG3psslVBErF79N0
-         azR4CyFmi5+hkK1dt6lNoZWS8VuhbxoXOZvqy1i6wHoetZokJcvrUJAO8u7rdggQNEak
-         /hhgKh7UZ82Suk3BCEZR6R+LBv9kVi44tbhudDpBX8bVc/QHRlF6v1E5RoAVbzka4k9F
-         F89R8CsPe3dxAn67/sLOOwGNrkRNCI5k9yIQbx8YMHomgkCBLkcdjtqnrr6I3Mwh7aRM
-         4OggnpNHKb6x/OWQ7NubMoDFKGXtgdjcm/qhm+ckzW98ZhAc6V8eB2vFE+7Hf7iDkeLE
-         BARg==
-X-Gm-Message-State: AOJu0Yx9DqEgL/To86llTcf7Lmg7NDQNo+OlzxKzxuesrXR867slTSUQ
-        RgOCAgiQK0hCwiO1QEzDfBeyexB323+ak00sHZs=
-X-Google-Smtp-Source: AGHT+IF15BDPIoOFdDsEOMQDbVtZnwck13z+KDafRvH5+e66BhdxZ9xKieeRJmgfCqlRj38YAo4LvbHq48d9PGqmxeM=
-X-Received: by 2002:a17:90b:e07:b0:269:2682:11fb with SMTP id
- ge7-20020a17090b0e0700b00269268211fbmr4259608pjb.8.1692634396071; Mon, 21 Aug
- 2023 09:13:16 -0700 (PDT)
+Message-ID: <a0adb942-03a3-b0d0-1b4d-1e2111247fab@arm.com>
+Date:   Mon, 21 Aug 2023 17:13:53 +0100
 MIME-Version: 1.0
-References: <CA+fCnZcQSYy63ichdivAH5-fYvN2UMzTtZ--h=F6nK0jfVou3Q@mail.gmail.com>
- <20230818010815.4kcue67idma5yguf@synopsys.com> <bb470c47-c9dc-4dae-ae3f-c7d4736ee7e9@rowland.harvard.edu>
- <20230818031045.wovf5tj2un7nwf72@synopsys.com> <cfc7ae18-140b-4223-9cc2-7ee4b9ddea28@rowland.harvard.edu>
- <20230818194922.ys26zrqc4pocqq7q@synopsys.com> <45d9ef53-e2be-4740-a93a-d36f18a49b39@rowland.harvard.edu>
- <20230819000643.7mddkitzr4aqjsms@synopsys.com> <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
-In-Reply-To: <e63ba783-f5a4-4442-8736-987a3b134e7f@rowland.harvard.edu>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Mon, 21 Aug 2023 18:13:05 +0200
-Message-ID: <CA+fCnZcmb78DMaffb3cq2JeCNxcGBeyt8hxeJq3SaTTkbZ3ewA@mail.gmail.com>
-Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Thinh Nguyen <thinh.nguyen@synopsys.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 12/12] Documentation: EM: Update with runtime
+ modification design
+Content-Language: en-US
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        amit.kachhap@gmail.com, daniel.lezcano@linaro.org,
+        viresh.kumar@linaro.org, len.brown@intel.com, pavel@ucw.cz,
+        Pierre.Gondois@arm.com, ionela.voinescu@arm.com,
+        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, rafael@kernel.org
+References: <20230721155022.2339982-1-lukasz.luba@arm.com>
+ <20230721155022.2339982-13-lukasz.luba@arm.com>
+ <2b54b79f-5313-497d-55ae-1ffa1f4c6bf5@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <2b54b79f-5313-497d-55ae-1ffa1f4c6bf5@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,82 +52,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 20, 2023 at 4:20=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
-du> wrote:
->
-> > > > > This may be a holdover from the early days of the Gadget subsyste=
-m.  My
-> > > > > memory from back then isn't very good; I vaguely recall that the =
-first
-> > > > > UDC drivers would queue their automatic Status-stage requests if =
-wLength
-> > > > > was 0 and ->setup() returned 0 (which would explain why
-> > > > > USB_GADGET_DELAYED_STATUS had to be invented).  Unless I'm comple=
-tely
-> > > > > confused, that's not how UDC drivers are supposed to act now.
-> > >
-> > > I did a little checking.  The USB_GADGET_DELAYED_STATUS mechanism was
-> > > introduced for use by the composite framework -- not in order to make=
- a
-> > > UDC driver work properly.
-> >
-> > Hm... perhaps we can update so that it's applicable outside of the
-> > composite framework. Currently dwc3 treats it as such, which may not
-> > work if the gadget driver does not know about USB_GADGET_DELAYED_STATUS=
-.
->
-> I think USB_GADGET_DELAYED_STATUS belongs entirely inside the composite
-> framework and it should not be used by UDC drivers at all.
->
-> That return code makes some sense in composite.c, because the composite
-> framework juggles several function drivers in a single gadget.  It has
-> to know when all of them are ready to complete a configuration change;
-> it can't assume each function is ready when the callback returns.
 
-Out of curiosity, I also did some digging around USB_GADGET_DELAYED_STATUS.
 
-1. USB_GADGET_DELAYED_STATUS was introduced in 1b9ba000177 ("usb:
-gadget: composite: Allow function drivers to pause control
-transfers"). It looks like it was indeed initially intended for the
-composite framework, as nor that commit nor the directly following
-commits use USB_GADGET_DELAYED_STATUS in any UDC drivers. However,
-this commit had an unintended (?) side-effect of returning
-USB_GADGET_DELAYED_STATUS from the ->setup() call of the composite
-framework gadget driver.
+On 8/16/23 14:08, Dietmar Eggemann wrote:
+> On 21/07/2023 17:50, Lukasz Luba wrote:
+>> Add a new section 'Design' which covers the information about Energy
+>> Model. It contains the design decisions, describes models and how they
+>> reflect the reality. Add description of the basic const. EM. Change the
+> 
+> Nit pick: Can we just use one tag for this EM? I would propose
+> 'default'. So code and doc are aligned.
 
-2. In 5bdb1dcc6330 ("usb: dwc3: ep0: handle delayed_status again"),
-the dwc3 driver was the first one to start relying on
-USB_GADGET_DELAYED_STATUS to decide when to avoid auto-completing the
-Status stage (+Sebastian). The commit description mentions some
-previous rework of the driver that made it lose the ability of handle
-delayed Status stage handling, but I couldn't figure out the exact
-commit it refers to.
+Yes, I'll change it.
 
-3. Following that, a few other UDC drivers also started using
-USB_GADGET_DELAYED_STATUS, potentially using the dwc3 behavior as a
-reference.
+> 
+>> other section IDs. Add documentation bit for the new feature which
+>> allows o modify the EM in runtime.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   Documentation/power/energy-model.rst | 150 +++++++++++++++++++++++++--
+>>   1 file changed, 140 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/Documentation/power/energy-model.rst b/Documentation/power/energy-model.rst
+>> index ef341be2882b..01d4d806a123 100644
+>> --- a/Documentation/power/energy-model.rst
+>> +++ b/Documentation/power/energy-model.rst
+>> @@ -72,16 +72,70 @@ required to have the same micro-architecture. CPUs in different performance
+>>   domains can have different micro-architectures.
+>>   
+>>   
+>> -2. Core APIs
+>> +2. Design
+>> +-----------------
+>> +
+>> +2.1 Basic EM
+>> +^^^^^^^^^^^^
+>> +
+>> +The basic EM is built around constant power information for each performance
+>> +state, which is accessible in: 'dev->em_pd->default_table->state'. This model
+>> +can be derived based on power measurements of the device e.g. CPU while
+>> +running some benchmark. The benchmark might be integer heavy or floating point
+>> +computation with a data set fitting into the CPU cache or registers. Bare in
+>> +mind that this model might not cover all possible workloads running on CPUs.
+>> +Thus, please run a few different benchmarks and verify with some real
+>> +workloads your power model values. The power variation due to the workload
+>> +instruction mix and data set is not modeled. The static power, which can
+>> +change during runtime due to variation of SOC temperature, is not modeled in
+>> +this basic EM.
+> 
+> s/in this basic EM/either
 
-Interestingly, in 946ef68ad4e4 ("usb: gadget: ffs: Let setup() return
-USB_GADGET_DELAYED_STATUS"), the FunctionFS composite driver had to
-add USB_GADGET_DELAYED_STATUS to specifically avoid failures when dwc3
-is used. This is the same "fix" that worked for me with Raw Gadget.
+OK
 
-Right now dwc2, dwc3, mtu3, cdns3, bdc, and renesas have special
-handling for USB_GADGET_DELAYED_STATUS. Surprisingly, dwc2 works with
-Raw Gadget as is nevertheless. dwc3 fails as I described. For the
-others, I don't have the hardware to test them.
+> 
+>> +
+>> +2.2 Runtime modifiable EM
+>> +^^^^^^^^^^^^^^^^^^^^^^^^^
+>> +
+>> +To better reflect power variation due to static power (leakage) the EM
+>> +supports runtime modifications of the power values. The mechanism relies on
+>> +RCU to free the modifiable EM perf_state table memory. Its user, the task
+>> +scheduler, also uses RCU to access this memory. The EM framework is
+>> +responsible for allocating the new memory for the modifiable EM perf_state
+>> +table. The old memory is freed automatically using RCU callback mechanism.
+>> +This design decision is made based on task scheduler using that data and
+>> +to prevent wrong usage of kernel modules if they would be responsible for the
+>> +memory management.
+>> +
+>> +There are two structures with the performance state tables in the EM:
+>> +a) dev->em_pd->default_table
+>> +b) dev->em_pd->runtime_table
+>> +They both point to the same memory location via:
+>> +'em_perf_table::state' pointer, until the first modification of the values
+>> +This should save memory on platforms which would never modify the EM. When
+>> +the first modification is made the 'default_table' (a) contains the old
+>> +EM which was created during the setup. The modified EM is available in the
+>> +'runtime_table' (b).
+>> +
+>> +Only EAS uses the 'runtime_table' and benefits from the updates to the
+>> +EM values. Other sub-systems (thermal, powercap) use the 'default_table' (a)
+>> +since they don't need such optimization.
+> 
+> The interested user immediately ask WHY here. Maybe skip this last part
+> of the sentence in case you don't want to provide the WHY here.
 
-I guess the proper solution would be to contain
-USB_GADGET_DELAYED_STATUS within the composite framework and make all
-UDCs not to handle the Status stage on their own. However, this would
-require a collaborative effort from the maintainers of the UDC drivers
-I mentioned.
+Agree, I'll remove that bit.
 
-An alternative would to declare USB_GADGET_DELAYED_STATUS to be usable
-outside of the composite framework and leave everything as is
-otherwise (but change Raw Gadget to return USB_GADGET_DELAYED_STATUS).
-The downside is the discrepancy in the interface of different UDCs
-(some require USB_GADGET_DELAYED_STATUS, others imply), but perhaps
-it's not that bad provided that this discrepancy is documented.
+> 
+>> +The drivers which want to modify the EM values are protected from concurrent
+> 
+> Does it have to be a driver?
 
-Thank you!
+No, it can be any kernel code. I'll change that description to:
+s/drivers/kernel code
+
+> 
+>> +access using a mutex. Therefore, the drivers must use sleeping context when
+>> +they want to modify the EM. The runtime modifiable EM might also be used for
+>> +better reflecting real workload scenarios, e.g. when they pop-up on the screen
+> 
+> I would describe this a little bit more generic. The current description
+> seems to be linked to Android foreground processes.
+
+OK, I'll change to more generic scenario.
+
+> 
+>> +and will run for longer period, such as: games, video recoding or playing,
+>> +video calls, etc. It is up to the platform engineers to experiment and choose
+>> +the right approach for their device.
+> 
+> Maybe you can say here that with the runtime modifiable EM we switch
+> from a 'single and during the entire runtime static EM' (system
+> property) design to a 'single EM which can be changed during runtime
+> according e.g. to the workload' (system and workload property) design.
+
+Yes, that's better and more generic description. I'll take it.
+
+> 
+> [...]
+> 
+>> +3.4 Runtime modifications
+>> +^^^^^^^^^^^^^^^^^^^^^^^^^
+>> +
+>> +Drivers willing to modify the EM at runtime should use the following API::
+>> +
+>>   
+>> +  int em_dev_update_perf_domain(struct device *dev,
+>> +			struct em_data_callback *cb, void *priv);
+>>   
+>> -2.4 Description details of this API
+>> +Drivers must provide a callback .update_power() returning power value for each
+>> +performance state. The callback function provided by the driver is free
+>> +to fetch data from any relevant location (DT, firmware, ...) or sensor.
+>> +The .update_power() callback is called by the EM for each performance state to
+>> +provide new power value. In the Section 4.2 there is an example driver
+>> +which shows simple implementation of this mechanism. The callback can be
+>> +declared with EM_UPDATE_CB() macro. The caller of that callback also passes
+>> +a private void pointer back to the driver which tries to update EM.
+>> +It is useful and helps to maintain the consistent context for all performance
+>> +state calls for a given EM.
+>> +The artificial EM also supports runtime modifications. For this type of EM
+>> +there is a need to provide one more callback: .get_cost(). The .get_cost()
+>> +returns the cost value for each performance state, which better reflects the
+>> +efficiency of the CPUs which use artificial EM. Those two callbacks:
+>> +.update_power() and get .get_cost() can be declared with one macro
+>> +EM_ADV_UPDATE_CB() and then passed to the em_dev_update_perf_domain().
+> 
+> Can't find EM_ADV_UPDATE_CB().
+> 
+> [...]
+> 
+
+Good catch, that macro was for the artificial EM but we dropped that
+feature from it.
