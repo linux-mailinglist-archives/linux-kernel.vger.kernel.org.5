@@ -2,214 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D90782851
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66E0782856
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 13:55:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbjHULzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 07:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
+        id S233624AbjHULzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 07:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbjHULzh (ORCPT
+        with ESMTP id S233572AbjHULzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 07:55:37 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB57129
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:55:11 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-79af014b555so1012869241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 04:55:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692618910; x=1693223710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0gR8I8Q6lx9u8Hp3ihISykSpTYB0L05CPENUuRUE8Ag=;
-        b=D9GP2yfrhDGiqqYYGcGKvFWhUtpwmb+1csMOfoZuC338sR+Dg10xlYhB1j6yuQdU3m
-         5tRJ7LZnLBSsDYQHZGWnFciHZELXTrF0l+n71FgFdd+PIheqOhHJ3QI2vbmV06M714El
-         7aTOIBxaHsc0DlnR8Y0Ji/CuK+C2ECBNlbsZMHp35PPzdJhlFm7M1AxtxLdbFCuJFzXy
-         WxCZUE0736lF679uCYpiCQs3/ZDb94Md17FW+H6i0tqvUROfxpwPgbUL+O/uTxeQ3Wpc
-         7mo2VxValkuAdVCRO5DKgRaMLFUATi7+Mg37/kxzWeVjeKei1YpbG4CyfOAC8dI/KrpI
-         NSbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692618910; x=1693223710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0gR8I8Q6lx9u8Hp3ihISykSpTYB0L05CPENUuRUE8Ag=;
-        b=WVvkT0AvETgIvtxRtUVWMrsNs7F8Vcix/jvYynD03O9VxTSxjWxr/gfnha1mF0yP2I
-         pwDnZ6zPApGIcACkEWHUSMLa8sibXaiW2EPHLfQ0jyEV59nrstIH3C/je3E9s+6QwciL
-         3yaj0+jVXxMtFrRpUWpkwccwNu6muEJQkBcPLsEGkut1TB353Qs1zVnPFEQ1rcFIM7Li
-         XSzmgcoxme0fPCouxZcC2uMngkLGUU7MKfzJkvG4fh5sTsDwmmADSId8fuIkoYtEBJFO
-         BOLCG9Pz8oSgHEaI4NPqhV8YvoK/WuTMa3592nn1JmC2u0Ik9RveEnQqM+cfLW2ppQbT
-         bLrg==
-X-Gm-Message-State: AOJu0Ywgz+lKCzZZ1IP9D2ihGuRn8BgnMCFLTFGnOQwFWgjeZQJuzI90
-        uHmO2zRtQybUE6DeIx9fZow238nV2ielXKwQloy55Q==
-X-Google-Smtp-Source: AGHT+IE2rHnMRiJRqvuyXM+0ECA3Mi1TUyfIRuccTB+v5EBSEi+uLFZvVob9chbPnXA+QkWaZ2U8AYaVn9pSrGt/c18=
-X-Received: by 2002:a67:f70b:0:b0:44d:4385:1627 with SMTP id
- m11-20020a67f70b000000b0044d43851627mr2822642vso.14.1692618910548; Mon, 21
- Aug 2023 04:55:10 -0700 (PDT)
+        Mon, 21 Aug 2023 07:55:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D30123;
+        Mon, 21 Aug 2023 04:55:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 65A17631B1;
+        Mon, 21 Aug 2023 11:55:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7CC4C433C7;
+        Mon, 21 Aug 2023 11:55:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692618933;
+        bh=igfPK8Ut0G6WW9AgjVkO2dIZKnXUDkIdWv6y8DUVBtU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jPUZgDWXRA0kI9T8IdWEZjlzn50ZLdy+d8JKJlI5iwbppWAJEfcSEfkvA4sjdbOc1
+         HqC+/w5124SiKljJLUCZZVGTOdF1bWE1IptWcZH91elOVyCDwzx09CtaJZ62jniuv0
+         3Bkt4p/KbbQnu33KkUaGbp62ybqIdaK5iQuu3kj1LuIRXLyvbLaTZRzCnUXBMzJeB9
+         vzpxGaYEY2LD8ruQwXXCsCAII+Lbo9VlaShZJ+RQmA2LcE7o+FmfdFaKc3LNxjYU8s
+         xaSI2qhN+QvhMgmfocvyzfHf0jcutAj1JODTh52MGBt6Lzm/Z4XwI4CF7MgOqJx0w+
+         BplsdCbRpr8DA==
+Message-ID: <ac153c9b-f698-47f4-9d52-b3ea5c9ba213@kernel.org>
+Date:   Mon, 21 Aug 2023 13:55:27 +0200
 MIME-Version: 1.0
-References: <20230722014037.42647-1-shyamsaini@linux.microsoft.com>
- <20230722014037.42647-2-shyamsaini@linux.microsoft.com> <CAPDyKFoBC+GaGerGDEAjg9q4ayV9mMBKkfFk3nO-zcQzOZ_H6Q@mail.gmail.com>
- <b875892c-1777-d84a-987e-1b0d5ac29df@linux.microsoft.com> <94728786-b41b-1467-63c1-8e2d5acfa5e4@linaro.org>
- <CAFA6WYNPViMs=3cbNsEdhqnjNOUCsHE_8uqiDTzwCKDNNiDkCw@mail.gmail.com> <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com>
-In-Reply-To: <CAHUa44Ek0k2b-igA6Gd1ZXVzibTh2sNDMnE-weQwFFKEZ_1jOA@mail.gmail.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon, 21 Aug 2023 17:24:59 +0530
-Message-ID: <CAFA6WYMLuvmXcc3FVoT_mOPsBrjPc3ucSoLK6qY_5995+ygHDw@mail.gmail.com>
-Subject: Re: [RFC, PATCH 1/1] rpmb: add Replay Protected Memory Block (RPMB) driver
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     Shyam Saini <shyamsaini@linux.microsoft.com>,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org, linux-scsi@vger.kernel.org,
-        =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd.bergmann@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Tyler Hicks <code@tyhicks.com>,
-        "Srivatsa S . Bhat" <srivatsa@csail.mit.edu>,
-        Paul Moore <paul@paul-moore.com>,
-        Allen Pais <apais@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: Enable tsens and thermal for
+ sa8775p SoC
+Content-Language: en-US
+To:     Priyansh Jain <quic_priyjain@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_manafm@quicinc.com
+References: <20230821112928.19284-1-quic_priyjain@quicinc.com>
+ <20230821112928.19284-3-quic_priyjain@quicinc.com>
+From:   Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20230821112928.19284-3-quic_priyjain@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 16:49, Jens Wiklander <jens.wiklander@linaro.org> wr=
-ote:
->
-> On Mon, Aug 21, 2023 at 12:03=E2=80=AFPM Sumit Garg <sumit.garg@linaro.or=
-g> wrote:
-> >
-> > On Mon, 21 Aug 2023 at 15:19, Jerome Forissier
-> > <jerome.forissier@linaro.org> wrote:
-> > >
-> > >
-> > >
-> > > On 8/17/23 01:31, Shyam Saini wrote:
-> > > >
-> > > > Hi Ulf,
-> > > >
-> > > >> On Sat, 22 Jul 2023 at 03:41, Shyam Saini
-> > > >> <shyamsaini@linux.microsoft.com> wrote:
-> > > >>>
-> > > >>> From: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> > > >>>
-> > > >>> [This is patch 1 from [1] Alex's submission and this RPMB layer w=
-as
-> > > >>> originally proposed by [2]Thomas Winkler ]
-> > > >>>
-> > > >>> A number of storage technologies support a specialised hardware
-> > > >>> partition designed to be resistant to replay attacks. The underly=
-ing
-> > > >>> HW protocols differ but the operations are common. The RPMB parti=
-tion
-> > > >>> cannot be accessed via standard block layer, but by a set of spec=
-ific
-> > > >>> commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> > > >>> partition provides authenticated and replay protected access, hen=
-ce
-> > > >>> suitable as a secure storage.
-> > > >>>
-> > > >>> The initial aim of this patch is to provide a simple RPMB Driver =
-which
-> > > >>> can be accessed by Linux's optee driver to facilitate fast-path f=
-or
-> > > >>> RPMB access to optee OS(secure OS) during the boot time. [1] Curr=
-ently,
-> > > >>> Optee OS relies on user-tee supplicant to access eMMC RPMB partit=
-ion.
-> > > >>>
-> > > >>> A TEE device driver can claim the RPMB interface, for example, vi=
-a
-> > > >>> class_interface_register(). The RPMB driver provides a series of
-> > > >>> operations for interacting with the device.
-> > > >>
-> > > >> I don't quite follow this. More exactly, how will the TEE driver k=
-now
-> > > >> what RPMB device it should use?
-> > > >
-> > > > I don't have complete code to for this yet, but i think OP-TEE driv=
-er
-> > > > should register with RPMB subsystem and then we can have eMMC/UFS/N=
-VMe
-> > > > specific implementation for RPMB operations.
-> > > >
-> > > > Linux optee driver can handle RPMB frames and pass it to RPMB subsy=
-stem
-> > > >
-> >
-> > It would be better to have this OP-TEE use case fully implemented. So
-> > that we can justify it as a valid user for this proposed RPMB
-> > subsystem. If you are looking for any further suggestions then please
-> > let us know.
->
-> +1
->
-> >
-> > > > [1] U-Boot has mmc specific implementation
-> > > >
-> > > > I think OPTEE-OS has CFG_RPMB_FS_DEV_ID option
-> > > > CFG_RPMB_FS_DEV_ID=3D1 for /dev/mmcblk1rpmb,
-> > >
-> > > Correct. Note that tee-supplicant will ignore this device ID if --rmb=
--cid
-> > > is given and use the specified RPMB instead (the CID is a non-ambiguo=
-us way
-> > > to identify a RPMB device).
-> > >
-> > > > but in case if a
-> > > > system has multiple RPMB devices such as UFS/eMMC/NVMe, one them
-> > > > should be declared as secure storage and optee should access that o=
-ne only.
-> > >
-> > > Indeed, that would be an equivalent of tee-supplicant's --rpmb-cid.
-> > >
-> > > > Sumit, do you have suggestions for this ?
-> > >
-> >
-> > I would suggest having an OP-TEE secure DT property that would provide
-> > the RPMB CID which is allocated to the secure world.
->
-> Another option is for OP-TEE to iterate over all RPMBs with a
-> programmed key and test if the key OP-TEE would use works.
+On 21.08.2023 13:29, Priyansh Jain wrote:
+> Add tsens and thermal devicetree node for sa8775p SoC.
+> 
+> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi | 1096 +++++++++++++++++++++++++
+>  1 file changed, 1096 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sa8775p.dtsi b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> index b130136acffe..b9c622b3bf7e 100644
+> --- a/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sa8775p.dtsi
+> @@ -2306,6 +2306,1102 @@
+>  
+>  			#freq-domain-cells = <1>;
+>  		};
+> +
+> +		tsens0: thermal-sensor@c222000 {
+> +			compatible = "qcom,sa8775p-tsens", "qcom,tsens-v2";
+> +			reg = <0x0C263000 0x1ff>,  /* TM */
+> +				<0x0C222000 0x1ff>; /* SROT */
+1. Test your patches. This will obviously not work due to the
+   #address/size-cells values of /soc@0.
 
-That would require intercepting OP-TEE RPMB frames such that any
-"write key" frame is blocked. As we don't want OP-TEE to occupy
-unprovisioned RPMB partitions.
+2. Use lowercase hex.
 
-> That should
-> avoid the problem of provisioning a device-unique secure DTB.
+3. Align subsequent entries for a property with the previous line
 
-Okay I see the scalability concerns. So how about instead we have a
-UFS/eMMC/NVMe controller specific boolean secure RPMB DT property?
+4. Are you sure SROT is 0x1ff-long?
 
-> I'd
-> expect that the RPMB key is programmed by a trusted provisioning tool
-> since allowing OP-TEE to program the RPMB key has never been secure,
-> not unless the OP-TEE binary is rollback protected.
+5. The usefulness of these comments is questionable, many DTs have
+   them because of copypasta but I think it's time to stop that.
 
-Agree but any such RPMB key provisioning tool should either belong to
-OP-TEE, u-boot or Linux.
+6. No pdc wake-capable interrupts?
 
--Sumit
+> +			#qcom,sensors = <12>;
+> +			interrupts = <GIC_SPI 506 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 508 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "uplow","critical";
+Missing space after the comma
 
->
-> Cheers,
-> Jens
->
-> >
-> > -Sumit
-> >
-> > >
-> > > --
-> > > Jerome
+Please move interrupt properties right after 'reg'.
+
+Konrad
