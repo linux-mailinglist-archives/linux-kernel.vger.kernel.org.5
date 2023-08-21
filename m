@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A8C7826B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 11:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6AB7826B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 12:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234525AbjHUJ7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 05:59:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S234538AbjHUKAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 06:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234509AbjHUJ7Y (ORCPT
+        with ESMTP id S232433AbjHUKAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 05:59:24 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BAA1D3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:59:22 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so3750242a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 02:59:21 -0700 (PDT)
+        Mon, 21 Aug 2023 06:00:44 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD42A1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:00:42 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-48d0239cb67so534829e0c.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 03:00:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692611960; x=1693216760;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NfnhEnLWB5KwPnq+5sUX4rq+xUeecsyqh2xi9cV8plo=;
-        b=aegEo+5bPsOgM7Abn79QB6cXz2xQt9xi7cdVNNPmg9B7tT06PiGKgX1InoNGDl8bxZ
-         338mHckrPEE6CLB39U6vZu8e2dHjLZ3g1hSeEIFfzUmSZe/pLjll6pM/vOiOw7SPe9pV
-         6TKLHcwpfpFbDK7WYdfP/Oxj2UvZVX5fgihzmiBjduobni/IJL4C4m54oJJC0wj/zFXW
-         IF6v01ixmdqh3LL3JnWCHdll3zJzuFo5dw2OP6JlZr7ja0tRF5q+vKed9x++YVwoYWe+
-         nF5lnXrdXUW7v51dx+9n9p0UXoxNBpNOm1ZMgs+eool586xi8FMx3BZLVcAWl+sEGi57
-         6aWg==
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692612042; x=1693216842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2t3uCIPsl1iINeIMvwEyX0kxSd+RFCfqpS5u/vlUKTQ=;
+        b=t55VeJ/+tl1wh7B287pa9FXc2OHka2rWMvVFuHyILMs5Ik9VUahnTgvzKclhS296T9
+         o0xAZMLlirNMP2KYgrle9qm55MBnaGzIC9J3d1h4EYBCVndHGQS62ImhjotXvacA66sl
+         sjsECUvm6tTadybO5nFVTiUwrercN8FREu0gh/j+6gSoQqZIN7GyknXUzyaufqVP1QLs
+         5rzhRGqLXXJxSRdndWR4RsVedTeStu8N9kXOLK3mSpZTzNrX1YWeBfKI0yTs1rZpy0ZF
+         PDb1bSwuPKO0E6TA+36ZFLGwaiFeAkTLsHfG6/DbxBfQvurr8GeUCikU4n5Sd18x8Y/3
+         PKlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692611960; x=1693216760;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NfnhEnLWB5KwPnq+5sUX4rq+xUeecsyqh2xi9cV8plo=;
-        b=kIGXZJZEXhQ+LZAR7w05g9buAsw/GSdIVuJWM1jMkvmqEoiMrC/nBm2LXJnwOHkUY+
-         OM/1mUBsnH/vnWouuFFqcS6zvyNGoJcU3Yi4MVemTSU+k3ZLbrN+3nzst2SQ120FjWoK
-         5y1libtXQ0CKmzDWYqf0etBABDst89fdgjdktWyNiq/c8To+GufWboZeX34ryOomwq5x
-         HJFaeq3pBr/yFd6Yi+Ezt9pu9yiF1o6CbwZ0rjNKRUzQ45i1dYPoujZXSXu6JDwPity1
-         z91DeB/KH4mkCqihxDQaRk7uMTZLpcdX+wH09LtXglQIPGjK9pbYaaEKEvpv0OWizg9E
-         ISMA==
-X-Gm-Message-State: AOJu0YyFrNo8Ut1qcNlq5Q7zoazoRgZ6Nm09jZMpEP8Nsnf0+AwpzBfl
-        uWChRPAiyHF+NwZqWvbogzSMmQ==
-X-Google-Smtp-Source: AGHT+IG001d1cAQKIxx4riu0MNWkOswLnbQRQh6hkZ4rOg4g8XJRaQpDdMYLSRFQQO+P0HYNtp6SfA==
-X-Received: by 2002:aa7:d3d2:0:b0:521:a4bb:374f with SMTP id o18-20020aa7d3d2000000b00521a4bb374fmr4510485edr.5.1692611960545;
-        Mon, 21 Aug 2023 02:59:20 -0700 (PDT)
-Received: from [192.168.2.107] ([79.115.63.107])
-        by smtp.gmail.com with ESMTPSA id y2-20020aa7d502000000b00529fb5fd3b9sm3996607edq.80.2023.08.21.02.59.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 02:59:20 -0700 (PDT)
-Message-ID: <6c76b28e-e995-2082-6dfa-378002989bcd@linaro.org>
-Date:   Mon, 21 Aug 2023 10:59:18 +0100
+        d=1e100.net; s=20221208; t=1692612042; x=1693216842;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2t3uCIPsl1iINeIMvwEyX0kxSd+RFCfqpS5u/vlUKTQ=;
+        b=bc79ucmt4E6E4oTemjBtFtE4ifIDQ39XsQ/4o66zMRbfTi8LghE5kcznG8ORxfi9E0
+         WCdvBiIWmWcWlZFWp1dZPsPjdBO3kUasXryoJ492tTVaeGgZZoj036btq4CfBdCBic4t
+         /HcA9SK8d5j/FsV+iOLkimNntQkAwtBxDfqsIcKtLZMeYwepSIW7V+50M6BEs2MG7xDQ
+         bmSTt+M/+2mU3UguNeqSVZrChElNpHxEFBNi4jmtKBzKq6ZDHlS04v/vYxOEzx9dyxx8
+         iQJ71ZFsWsAHrhBSLjslLZZQQ6riA28egcqonmUfdDZtKmUOEh0ueEV7OiN7MD4FPL57
+         tnqQ==
+X-Gm-Message-State: AOJu0Yyn+2+OR4kJyMfFC39jNwCYVuX1wEENQlIdyF5Pj5jApcciyoAO
+        UqLPu5i5J5TJdT1Srtiu0RgJ6osIxnMWfBMVK1nCdg==
+X-Google-Smtp-Source: AGHT+IGYXmGhN/DODmuPopOeFVUxe6RUYwsmZ0blG+xptOBAK7cMQAC1nDdxg7BVHqE47I4Q0NOl9ooyPHIcPtYcS48=
+X-Received: by 2002:a05:6122:98c:b0:48d:b7c:56c8 with SMTP id
+ g12-20020a056122098c00b0048d0b7c56c8mr3877386vkd.0.1692612041871; Mon, 21 Aug
+ 2023 03:00:41 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v3 11/50] dt-bindings: crypto: add sam9x7 in Atmel TDES
-Content-Language: en-US
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Varshini Rajendran <varshini.rajendran@microchip.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, alexandre.belloni@bootlin.com,
-        claudiu.beznea@microchip.com, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230728102442.265820-1-varshini.rajendran@microchip.com>
- <a7b84b23-a1c1-23df-79db-d965ed261223@microchip.com>
-From:   Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <a7b84b23-a1c1-23df-79db-d965ed261223@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20230818190108.22031-1-brgl@bgdev.pl> <ZOMxue7lvHFWMCCb@smile.fi.intel.com>
+In-Reply-To: <ZOMxue7lvHFWMCCb@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 21 Aug 2023 12:00:30 +0200
+Message-ID: <CAMRc=Mci-HjN8-Gta7G604grUCzDKmOYDxJ1PJU=x=AmfHohKA@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: tie module references to GPIO devices, not
+ requested descs
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,50 +71,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Aug 21, 2023 at 11:43=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Aug 18, 2023 at 09:01:08PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > After a deeper look at commit 3386fb86ecde ("gpiolib: fix reference
+> > leaks when removing GPIO chips still in use") I'm now convinced that
+> > gpiolib gets module reference counting wrong.
+> >
+> > As we only take the reference to the owner module when a descriptor is
+> > requested and put it when it's freed, we can easily trigger a crash by
+> > removing a module which registered a driver bound to a GPIO chip which
+> > is unused as nothing prevents us from doing so.
+> >
+> > For correct behavior, we should take the reference to the module when
+> > we're creating a GPIO device and only put it when that device is
+> > released as it's at this point that we can safely remove the module's
+> > code from memory.
+>
+> Two cases to consider:
+> 1) legacy gpio_*() APIs, do they suppose to create a GPIO device?
 
+Legacy uses descriptors under the hood so there must be a GPIO device.
 
-On 8/21/23 09:59, Nicolas Ferre wrote:
-> On 28/07/2023 at 12:24, Varshini Rajendran wrote:
->> Add DT bindings for atmel TDES.
+> 2) IRQ request without GPIO being requested, is it the case?
 
-this commit message is way too succinct and hides the complexity that's
-needed in the driver
+I need to double-check and also test this but it seems to me that
+right now if you do this (request an irq from a GPIO irqchip), the
+reference count of the module will not be increased. With this change
+it will have already been at 1 until the GPIO device backing this irq
+will go down. So it should actually fix another use-after-free bug.
+But don't take my word for it, I will test it later when I have the
+time.
 
->>
->> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> 
-> Following my answer to the email thread:
-> Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-> 
-> Thanks, best regards,
->   Nicolas
-> 
->> ---
->>   .../devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml  | 6 +++++-
->>   1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git
->> a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
->> b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
->> index 3d6ed24b1b00..6a441f79efea 100644
->> ---
->> a/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
->> +++
->> b/Documentation/devicetree/bindings/crypto/atmel,at91sam9g46-tdes.yaml
->> @@ -12,7 +12,11 @@ maintainers:
->>     properties:
->>     compatible:
->> -    const: atmel,at91sam9g46-tdes
->> +    oneOf:
->> +      - const: atmel,at91sam9g46-tdes
->> +      - items:
->> +          - const: microchip,sam9x7-tdes
->> +          - const: atmel,at91sam9g46-tdes
+There's another issue that will become visible with this patch -
+namely the modules that register devices from their init functions,
+will no longer allow unloading until the device is unbound first. This
+is not wrong wrong as module's init is not the place to register
+devices, platform or otherwise but I'm wondering if it counts as
+breaking someone's setup?
 
-why do you backup to "atmel,at91sam9g46-tdes"? Simply relying on
-"microchip,sam9x7-tdes" and its of_device_id data should be enough.
+Bart
 
-
->>       reg:
->>       maxItems: 1
-> 
+>
+> Seems to me that the 1) is the case, while 2) is not.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
