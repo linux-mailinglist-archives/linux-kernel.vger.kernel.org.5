@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D6978322E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 22:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A9D783256
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 22:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbjHUUCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 16:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        id S230219AbjHUUE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 16:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbjHUUCq (ORCPT
+        with ESMTP id S230218AbjHUUE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 16:02:46 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC2F11C
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:02:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rkMx3QCdkHsHd4DpWtJVECdQPGcyggajnYUXBpzw15w=; b=EADq7rmE7GqaIGEfqJn7DfTL3f
-        iUjUJxP8Z7CSXigjq1oBS+lwDFwrd9pB8nLZ0Zd3NomDntKyrh6JK4n6CQ0H9E2kQ8JWFqqNCIfoi
-        eGKuHptuFiQFRX9LF7zoq5Y0RDMqBuYiUPRFqkq1vn5sqRUx2MAYqLAiqKPwEKeJIIp4FBXQ99219
-        ZTUvafOEKXg0/qQJrFvCQdQqKTKx0sVsQMtfhGupKHTwzMO9o3SukOrG7Y8rymsrWKdtwIL+vI6dB
-        Nf5x9UYvna/0pmr6EpwUPHBhJSJs/51aCCC86e/yVptlesZGhKHfjYnh8HRHdsp+JSNt/4D7OxDdC
-        9OsMhXtg==;
-Received: from [187.35.42.59] (helo=[192.168.1.111])
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-        id 1qYB6X-00DrMF-0V; Mon, 21 Aug 2023 22:02:25 +0200
-Message-ID: <d36ba832-3100-4a31-96a4-56e6e459b090@igalia.com>
-Date:   Mon, 21 Aug 2023 17:02:19 -0300
+        Mon, 21 Aug 2023 16:04:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37F0DF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 13:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692648246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L9M9C9+yscXpCealMXEoZ05GEoxC4MSE39A3CjhCgJY=;
+        b=Ss8LAscMLpSIyNd73XxJORmT/cpTTEVJ6pv1aAlNvoH4J2ISVW7xuduWoL4Po4YIj0vVQJ
+        dBvQozzYAnrh5mQDdMC3YtHm4PGzIvaZLeXc8RZLp5+T8+wGiQ/thq8ChbcFBU13Kp2QeG
+        lWo3ir8wrW/vUegOFfduHdbp8e0+S3I=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-224-LNwzOp-jNUya0I7KLufX-Q-1; Mon, 21 Aug 2023 16:04:00 -0400
+X-MC-Unique: LNwzOp-jNUya0I7KLufX-Q-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 71E271C05EBD;
+        Mon, 21 Aug 2023 20:03:59 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.99])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B0826140E950;
+        Mon, 21 Aug 2023 20:03:57 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 21 Aug 2023 22:03:14 +0200 (CEST)
+Date:   Mon, 21 Aug 2023 22:03:11 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Yonghong Song <yhs@fb.com>, Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf: task_group_seq_get_next: cleanup the usage of
+ get/put_task_struct
+Message-ID: <20230821200311.GA22497@redhat.com>
+References: <20230821150909.GA2431@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-To:     =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>
-Cc:     pierre-eric.pelloux-prayer@amd.com, amd-gfx@lists.freedesktop.org,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Stone <daniel@fooishbar.org>, hwentlan@amd.com,
-        Rob Clark <robdclark@gmail.com>,
-        wayland-devel@lists.freedesktop.org, ville.syrjala@linux.intel.com,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        Dave Airlie <airlied@gmail.com>, christian.koenig@amd.com,
-        joshua@froggi.es
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
- <20230815185710.159779-7-andrealmeid@igalia.com>
- <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
-Content-Language: en-US
-From:   =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-In-Reply-To: <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821150909.GA2431@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michel,
+get_pid_task() makes no sense, the code does put_task_struct() soon after.
+Use find_task_by_pid_ns() instead of find_pid_ns + get_pid_task and kill
+kill put_task_struct(), this allows to do get_task_struct() only once
+before return.
 
-Em 17/08/2023 07:37, Michel Dänzer escreveu:
-> On 8/15/23 20:57, André Almeida wrote:
->> From: Pekka Paalanen <pekka.paalanen@collabora.com>
->>
->> Specify how the atomic state is maintained between userspace and
->> kernel, plus the special case for async flips.
->>
->> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
->> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> 
-> [...]
-> 
->> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
->> +effectively change only the FB_ID property on any planes. No-operation changes
->> +are ignored as always. [...]
-> 
-> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
-> 
+While at it, kill the unnecessary "if (!pid)" check in the "if (!*tid)"
+block, this matches the next usage of find_pid_ns() + get_pid_task() in
+this function.
 
-I believe the documentation already addresses that sending redundant 
-information may not lead to the desired behavior during an async flip. 
-Do you think adding a note about using the same FB_ID would be helpful?
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ kernel/bpf/task_iter.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 4d1125108014..1589ec3faded 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -42,9 +42,6 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+ 	if (!*tid) {
+ 		/* The first time, the iterator calls this function. */
+ 		pid = find_pid_ns(common->pid, common->ns);
+-		if (!pid)
+-			return NULL;
+-
+ 		task = get_pid_task(pid, PIDTYPE_TGID);
+ 		if (!task)
+ 			return NULL;
+@@ -66,17 +63,12 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+ 		return task;
+ 	}
+ 
+-	pid = find_pid_ns(common->pid_visiting, common->ns);
+-	if (!pid)
+-		return NULL;
+-
+-	task = get_pid_task(pid, PIDTYPE_PID);
++	task = find_task_by_pid_ns(common->pid_visiting, common->ns);
+ 	if (!task)
+ 		return NULL;
+ 
+ retry:
+ 	next_task = next_thread(task);
+-	put_task_struct(task);
+ 
+ 	saved_tid = *tid;
+ 	*tid = __task_pid_nr_ns(next_task, PIDTYPE_PID, common->ns);
+@@ -88,7 +80,6 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+ 		return NULL;
+ 	}
+ 
+-	get_task_struct(next_task);
+ 	common->pid_visiting = *tid;
+ 
+ 	if (skip_if_dup_files && task->files == task->group_leader->files) {
+@@ -96,6 +87,7 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+ 		goto retry;
+ 	}
+ 
++	get_task_struct(next_task);
+ 	return next_task;
+ }
+ 
+-- 
+2.25.1.362.g51ebf55
+
+
