@@ -2,225 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1A87820F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 02:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5048C7820F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Aug 2023 02:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231584AbjHUA1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Aug 2023 20:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
+        id S232097AbjHUAh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Aug 2023 20:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjHUA1k (ORCPT
+        with ESMTP id S231135AbjHUAhz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Aug 2023 20:27:40 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C836A6;
-        Sun, 20 Aug 2023 17:27:38 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 24A6121A81;
-        Mon, 21 Aug 2023 00:27:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1692577657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AY/1rkFsff3ua8LyvK9x7k/GK7tr57jHaYZvKmjWRhU=;
-        b=0Sm5IAmtq7eH6sUQQXZd/oxwVs+4eZ6LvV+LuGrLE+2QfImPpowfwnywH8fm8+ojIEbX48
-        2cByreO//79B5oJHSg0v/1jJA+xfaSKftCqwt7GKwfCWgZ1SIM8uMTOHpi0zpNDfnTD9+g
-        d1vQdQs7vS1ZKZ6Vc6U4/zHV+RfjnRo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1692577657;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AY/1rkFsff3ua8LyvK9x7k/GK7tr57jHaYZvKmjWRhU=;
-        b=tmnT77nKXVFHiTfZo8W6sHQ22pddg/qFMIYSBVz3mg8nQMGcaCbsPbFN9kWwkdiEEq5MoF
-        HspuenZ2QTDRgLBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A45B813458;
-        Mon, 21 Aug 2023 00:27:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id GnnqFXWv4mQgfQAAMHmgww
-        (envelope-from <neilb@suse.de>); Mon, 21 Aug 2023 00:27:33 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 20 Aug 2023 20:37:55 -0400
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C479A1;
+        Sun, 20 Aug 2023 17:37:54 -0700 (PDT)
+Received: from [172.27.2.41] ([73.231.166.163])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 37L0axcK2825490
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Sun, 20 Aug 2023 17:36:59 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 37L0axcK2825490
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023081101; t=1692578227;
+        bh=LS0t3eJMC3oEeUYwbzUIhxo77/Qn4L8MnyaKAPL1sZU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ptgg4K8diZPQ+mazet/va6n+IKglvW07tcdbfTmv1EqMD8Kk7ifL7+4H5gT0s9xaq
+         leLQglh/BgQrkBwAYebD39ue6Gz82b/OmCFiK/hPW0NVkhc4KLqEObZaSbOiZ6Z9Bb
+         +aRVM5uZoSWV4O0GPJkbxm1wPnpRmaRpwe2DyZJCdfQw60zRyAkrJfbMKFPzvlemh0
+         1PNZ5RTv9/77glDJgq+fNpcWHp1ggsyXswRQl343Bpmwpf21ueCxBbdZguByvuemyN
+         aexrxG52oXEg+U31k7wgimmxMPsPOI82RtNOTzFf5ibCzUXbMerh37912WVzXJjNBk
+         KTMg+1dtiUUBg==
+Message-ID: <d8c2f362-bfe9-560a-541c-a298f8685be1@zytor.com>
+Date:   Sun, 20 Aug 2023 17:37:01 -0700
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Haodong Wong" <haydenw.kernel@gmail.com>
-Cc:     chuck.lever@oracle.com, jlayton@kernel.org, haodong.wong@nio.com,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfsd: fix race condition in nfsd_file_acquire
-In-reply-to: <20230818065507.1280625-1-haydenw.kernel@gmail.com>
-References: <20230818065507.1280625-1-haydenw.kernel@gmail.com>
-Date:   Mon, 21 Aug 2023 10:27:23 +1000
-Message-id: <169257764320.11865.9867985815081936092@noble.neil.brown.name>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 17/17] x86/boot: Drop CRC-32 checksum and the build tool
+ that generates it
+Content-Language: en-US
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Jones <pjones@redhat.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?Q?Marvin_H=c3=a4user?= <mhaeuser@posteo.de>
+References: <20230818134422.380032-1-ardb@kernel.org>
+ <20230818134422.380032-18-ardb@kernel.org>
+ <46832047-567e-5699-fbec-8c3e991cfe0a@zytor.com>
+ <CAMj1kXG5X2ZUNs2W8o5_c83fznRDjLjPZcEqEgfpFUBS1DX5Pg@mail.gmail.com>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+In-Reply-To: <CAMj1kXG5X2ZUNs2W8o5_c83fznRDjLjPZcEqEgfpFUBS1DX5Pg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Aug 2023, Haodong Wong wrote:
-> Before Kernel 6.1, we observed the following OOPS in the stress test
-> caused by reorder on set bit NFSD_FILE_HASHED and NFSD_FILE_PENDING,
-> and smp_mb__after_atomic() should be a paire.
+On 8/20/23 05:57, Ard Biesheuvel wrote:
+> 
+> I understand. I deliberately put this change at the very end because I
+> was anticipating some debate on this.
+> 
+> Do you have any recollection of why this CRC32 was introduced in the
+> first place? The commit logs are empty and the lore thread doesn't
+> contain any justification either.
+ >
 
-If you saw this "before kernel 6.1" does that mean you don't see it
-after kernel 6.1?  So has it already been fixed?
+The justification is that firmware is notoriously unreliable and gives 
+the boot loader an independent way to verify the load and have a 
+fallback, rather than jumping to the kernel and having the decompressor 
+fail.
 
-What kernel are you targeting with your patch?  It doesn't apply to
-mainline, but looks like it might to 6.0.  The oops message is from
-5.10.104.  Maybe that is where you want a fix?
+At this time it is impossible to know what might rely on it. The EFI 
+signing issue aside, there are a ton of Linux bootloaders for non-EFI 
+systems using the BIOS or raw kernel entry points - and there is no 
+telling what those environments might do.
 
-I assume you want this fix to go to a -stable kernel?  It would be good
-to identify which upstream patch fixed the problem, then either backport
-that, or explain why something simpler is needed.
-
->=20
-> Task A:                         Task B:
->=20
-> nfsd_file_acquire:
->=20
->                           new =3D nfsd_file_alloc()
->                           open_file:
->                           refcount_inc(&nf->nf_ref);
-
-The key step in Task A is=20
-	hlist_add_head_rcu(&nf->nf_node,
-		 &nfsd_file_hashtbl[hashval].nfb_head);
-
-Until that completes, nfsd_file_find_locked() cannot find the new file.
-hlist_add_head_rcu() uses "rcu_assign_pointer()" which should include
-all the barriers needed.
-
->                                  nf =3D nfsd_file_find_locked();
->                                  wait_for_construction:
->=20
->                                  since nf_flags is zero it will not wait
->=20
->                                  wait_on_bit(&nf->nf_flags,
->                                                     NFSD_FILE_PENDING);
->=20
->                                 if (status =3D=3D nfs_ok) {
->                                      *pnf =3D nf;      //OOPS happen!
-
-The oops message suggests that after nfsd_read() calls
-nfsd_file_acquire() there is no error, but nf is NULL.
-So the  nf->nf_file access causes the oops.  nf_file is at offset
-0x28, which is the virtual address mentioned in the oops.
-
-So do you think 'nf' is NULL at this point where you write "OOPS
-happen!" ??=20
-I cannot see how that might happen even if wait_on_bit() didn't
-actually wait.
-
-Maybe if you could explain if a bit more detail what you think is
-happening.  What exactly is NULL which causes the OOPS, and how exactly
-does it end up being NULL.
-I cannot see what might be the cause, but the oops makes it clear that
-it did happen.
-
-Also is this a pure 5.10.104 kernel, or are there other patches on it?
-
-Thanks,
-NeilBrown
-
-
-
->=20
-> Unable to handle kernel NULL pointer at virtual address 0000000000000028
-> Mem abort info:
->   ESR =3D 0x96000004
->   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->   SET =3D 0, FnV =3D 0
->   EA =3D 0, S1PTW =3D 0
-> Data abort info:
->   ISV =3D 0, ISS =3D 0x00000004
->   CM =3D 0, WnR =3D 0
-> user pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000152546000
-> [0000000000000028] pgd=3D0000000000000000, p4d=3D0000000000000000
-> Internal error: Oops: 96000004 [#1] PREEMPT_RT SMP
-> CPU: 7 PID: 1767 Comm: nfsd Not tainted 5.10.104 #1
-> pstate: 40c00005 (nZcv daif +PAN +UAO -TCO BTYPE=3D--)
-> pc : nfsd_read+0x78/0x280 [nfsd]
-> lr : nfsd_read+0x68/0x280 [nfsd]
-> sp : ffff80001c0b3c70
-> x29: ffff80001c0b3c70 x28: 0000000000000000
-> x27: 0000000000000002 x26: ffff0000c8a3ca70
-> x25: ffff0000c8a45180 x24: 0000000000002000
-> x23: ffff0000c8a45178 x22: ffff0000c8a45008
-> x21: ffff0000c31aac40 x20: ffff0000c8a3c000
-> x19: 0000000000000000 x18: 0000000000000001
-> x17: 0000000000000007 x16: 00000000b35db681
-> x15: 0000000000000156 x14: ffff0000c3f91300
-> x13: 0000000000000000 x12: 0000000000000000
-> x11: 0000000000000000 x10: 0000000000000000
-> x9 : 0000000000000000 x8 : ffff000118014a80
-> x7 : 0000000000000002 x6 : ffff0002559142dc
-> x5 : ffff0000c31aac40 x4 : 0000000000000004
-> x3 : 0000000000000001 x2 : 0000000000000000
-> x1 : 0000000000000001 x0 : ffff000255914280
-> Call trace:
->  nfsd_read+0x78/0x280 [nfsd]
->  nfsd3_proc_read+0x98/0xc0 [nfsd]
->  nfsd_dispatch+0xc8/0x160 [nfsd]
->  svc_process_common+0x440/0x790
->  svc_process+0xb0/0xd0
->  nfsd+0xfc/0x160 [nfsd]
->  kthread+0x17c/0x1a0
->  ret_from_fork+0x10/0x18
->=20
-> Signed-off-by: Haodong Wong <haydenw.kernel@gmail.com>
-> ---
->  fs/nfsd/filecache.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->=20
-> diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-> index e30e1ddc1ace..ba980369e6b4 100644
-> --- a/fs/nfsd/filecache.c
-> +++ b/fs/nfsd/filecache.c
-> @@ -974,8 +974,12 @@ nfsd_file_acquire(struct svc_rqst *rqstp, struct svc_f=
-h *fhp,
->  	nfsd_file_slab_free(&new->nf_rcu);
-> =20
->  wait_for_construction:
-> +	/* In case of set bit NFSD_FILE_PENDING and NFSD_FILE_HASHED reorder */
-> +	smp_rmb();
->  	wait_on_bit(&nf->nf_flags, NFSD_FILE_PENDING, TASK_UNINTERRUPTIBLE);
-> =20
-> +	/* Be a paire of smp_mb after clear bit NFSD_FILE_PENDING */
-> +	smp_mb__after_atomic();
->  	/* Did construction of this file fail? */
->  	if (!test_bit(NFSD_FILE_HASHED, &nf->nf_flags)) {
->  		if (!retry) {
-> @@ -1018,8 +1022,11 @@ nfsd_file_acquire(struct svc_rqst *rqstp, struct svc=
-_fh *fhp,
->  	nf =3D new;
->  	/* Take reference for the hashtable */
->  	refcount_inc(&nf->nf_ref);
-> -	__set_bit(NFSD_FILE_HASHED, &nf->nf_flags);
->  	__set_bit(NFSD_FILE_PENDING, &nf->nf_flags);
-> +	/* Ensure set bit order set NFSD_FILE_HASHED after set NFSD_FILE_PENDING =
-*/
-> +	smp_wmb();
-> +	__set_bit(NFSD_FILE_HASHED, &nf->nf_flags);
-> +
->  	list_lru_add(&nfsd_file_lru, &nf->nf_lru);
->  	hlist_add_head_rcu(&nf->nf_node, &nfsd_file_hashtbl[hashval].nfb_head);
->  	++nfsd_file_hashtbl[hashval].nfb_count;
-> --=20
-> 2.25.1
->=20
->=20
-
+	-hpa
