@@ -2,148 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDD57837CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149437837D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbjHVCSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        id S231881AbjHVCU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjHVCSm (ORCPT
+        with ESMTP id S230230AbjHVCU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:18:42 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27CA9FD
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:18:41 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so6991148a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:18:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692670719; x=1693275519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HJXlFOteHKVLHeYr+snSmPCLP+Kkg8KkznNpC4Ohn2U=;
-        b=oyUKrebEodO8eBe4eCBxrUam8TTXfzWLUqr66grKvJs9PiENIqlWPsskUJe4z1lPJ6
-         mOFcED65FYHXQBDOWPofmMxVwVz1fqIf2qVTqBlQqeGuJ5wIIW/FK+0vHbN+MEHFgh+n
-         eKV9M/auehk+ks1yMzfz4OPj3r8tDMkruzCGkAru7f6EJBcNYBNAVILDqWoL6Y2xXHKX
-         e1BCgNwk4l2o5DjpmaAH7oKVvuDtpUFAy8MgzQMCgSFAhClSxYW4C/M/1QDJighZJxEf
-         gtESioQKo9ZmBNUu600/Zj71S8AQTjVATYNWJdNX2L8rYYdPf5qWGiB8CjQvOT58mzh1
-         kfrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692670719; x=1693275519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HJXlFOteHKVLHeYr+snSmPCLP+Kkg8KkznNpC4Ohn2U=;
-        b=H23TGAPxZXHdj7eDp87SwVFU6EyB/T0vz5dvugVMSutW5YJvR1ZUCvFwGzdtTvEEyy
-         +Q1RItyUMSN/8d32dv/vG5PyjSt+EHts3qHTEx91aHkEPKRh/gsgamOjEdTNHoHVqpmc
-         yHBwKleGb7ptwsYDD5zhTBw1jX3G6LVhM7D6KOJT3/pA5Yww8Uh4XB218mjWjzXONkSh
-         d31Nqa+FuSPJ2g+cyD4o/kWgM6nstS23rTyC44Iavxq25+1+xHZ4KlWgN+0P2DboOCV2
-         mVq/lz9ABq+KE/q2Pta5p1pJSKiLSblwXxp+tZURaGVIdJWxdlfNBbYVdyYgbGZVtmrd
-         GPSw==
-X-Gm-Message-State: AOJu0YwIVanEtALaZ9Yk2aW40wM+fLVseHrZxgoCsdZwZRM1lGMJY0mh
-        p9I3SpuuZOB+4jKRKk3Cw3ca2s24QwmpkWZlKJM=
-X-Google-Smtp-Source: AGHT+IFNkRjoVyAheSXa8tJIeWpkCBCCqwGPsvgGJf4WYdFivvJtkgK/J6KHVOYP+1GwpwtquHU31CzzdIB+p4tKbCQ=
-X-Received: by 2002:aa7:d058:0:b0:522:18b6:c01f with SMTP id
- n24-20020aa7d058000000b0052218b6c01fmr9447384edo.3.1692670719483; Mon, 21 Aug
- 2023 19:18:39 -0700 (PDT)
+        Mon, 21 Aug 2023 22:20:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33EEFD
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:20:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B85F617CF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:20:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BF374C433C9;
+        Tue, 22 Aug 2023 02:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692670824;
+        bh=WiuutlKZGSfnMqcEk2Hi4ACANiW2639zyoroXwPM8rY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=qWwXRsyzXz/KvxTnNXQ9LEanWGs786Wm+OXoPuh2fuCHLLhwhBE8yyKxOB0xk3Wvj
+         qDfNH2UoUt2j0sAFtlNTwJZwF/2DBvjBgyf+4wpsO+ex5Jc2laV4fuPavls02355Ki
+         MTg6o6ODcPUVQm2aYtF6GXCB2zp2O9IXm2CzInxd0WO39M7KaIwsJ6TAJhh1jsgoIJ
+         yu3HQat2zAsLmpM1pA7v1MEC9nfyT85wY1PuueulyBpaDQC5S3lAAFxKSd7hImXWak
+         O5ShNTCb+xbbCva0BjuzdEWmYhIuyITcTiWUYgDWSVLl2SUB7KtpcuVMhosMCNMY/x
+         S6noww69Hm7vg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A0B5BE4EAFB;
+        Tue, 22 Aug 2023 02:20:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CADXzsigVPkgkx4vmaKnhGuMdjt_3w0Fo3eFqDNSwyoH9JCrRQw@mail.gmail.com>
- <46e286cb-ca1a-4b5a-153f-0e0cade22bb9@metux.net>
-In-Reply-To: <46e286cb-ca1a-4b5a-153f-0e0cade22bb9@metux.net>
-From:   Raj J Putari <jmaharaj2013@gmail.com>
-Date:   Mon, 21 Aug 2023 19:18:28 -0700
-Message-ID: <CADXzsihPteW5_gjg94AVd=Fa1fgAsdAR7rvz+4VK_fZMHUtjfw@mail.gmail.com>
-Subject: Re: using gpu's to accelerate the linux kernel
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: pcs: lynxi: implement pcs_disable op
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169267082465.27540.3832216650125518638.git-patchwork-notify@kernel.org>
+Date:   Tue, 22 Aug 2023 02:20:24 +0000
+References: <f23d1a60d2c9d2fb72e32dcb0eaa5f7e867a3d68.1692327891.git.daniel@makrotopia.org>
+In-Reply-To: <f23d1a60d2c9d2fb72e32dcb0eaa5f7e867a3d68.1692327891.git.daniel@makrotopia.org>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     lynxis@fe80.eu, andrew@lunn.ch, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nice read!
+Hello:
 
-i was thinking of a kernel module that does stuff like offload some
-work to the gpu.. like we can have like gpuaccel.ko that does stuff
-like wrap gpu calls to stuff like compiles or low level stuff like
-heavy computes, just looked up a few apis and it looks like opencl and
-cuda are meant for 3d computation, so some way to access the gpus
-compute internals would take some hacking, not sure if its possible
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-it would be awesome if we can offload some compilation from stuff like
-cc and c++ to the gpu, if the technology is available (maybe with
-amd?)
+On Fri, 18 Aug 2023 04:07:46 +0100 you wrote:
+> When switching from 10GBase-R/5GBase-R/USXGMII to one of the interface
+> modes provided by mtk-pcs-lynxi we need to make sure to always perform
+> a full configuration of the PHYA.
+> 
+> Implement pcs_disable op which resets the stored interface mode to
+> PHY_INTERFACE_MODE_NA to trigger a full reconfiguration once the LynxI
+> PCS driver had previously been deselected in favor of another PCS
+> driver such as the to-be-added driver for the USXGMII PCS found in
+> MT7988.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: pcs: lynxi: implement pcs_disable op
+    https://git.kernel.org/netdev/net-next/c/90308679c297
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On Mon, Aug 21, 2023 at 7:21=E2=80=AFAM Enrico Weigelt, metux IT consult
-<info@metux.net> wrote:
->
-> On 27.04.23 12:51, Raj J Putari wrote:
->
-> > id write it but im an amatuer and i dont have time to read the kernel
-> > source and experiment, we're talking about nvidia and amd video cards
-> > assisting in processing heavy data.
->
-> obviously not w/ NVidia (except for some old, already reverse-engineered
-> gpus), since Nvidia is doing all they can hiding the necessary specs
-> to write drivers from us.
->
-> Forget about Nvidia. Never ever waste a single penny on that.
->
-> > lets say youre compiling a kernel, you can write optimizations into
-> > the kernel through a cuda module and offload cpu data directly to the
-> > gpu using opencl or cuda or what amd supplies,
->
-> cuda, opencl, etc, are *userland* *library* APIs. They don't work inside
-> the kernel. One had to write something similar *inside* the kernel
-> (which is working very differently from userland). Also consider that
-> the most complex stuff (eg. creating command streams) is done in
-> userland (eg. mesa's pipe drivers, ...), the kernel is just responsible
-> for some more lowlevel things like buffer management, modesetting, etc.
->
->
-> If you wanna go that route, you'd have to create something like Mesa's
-> Gallium inside the kernel. Besides that this is a pretty huge task
-> (and you'd have to reimplement lots of drivers), you'd also have to
-> find a way to get a good performance when calling from userland (note
-> that syscalls, even ioctls, etc, are much more expensive than just
-> plain library function calls inside the same process). Probably comes
-> down to using some bytecode (tgsi ?) and loading it somewhat similar
-> to bpf.
->
->
-> Assuming that's really up and running one day, it indeed could solve
-> other problems, eg. clear separation between containers and hosts
-> (for now, containers still needs the userland parts of gpu drivers
-> for the corresponding host hardware).
->
-> But be warned: this is a huge endavour, *a lot* work to do and hard
-> to get it right.
->
->
-> OTOH, I'm yet sceptical whether there's much practical use cases for
-> using GPUs by the kernel *itself*. What exactly do you have in mind
-> here ?
->
->
-> --mtx
->
-> --
-> ---
-> Hinweis: unverschl=C3=BCsselte E-Mails k=C3=B6nnen leicht abgeh=C3=B6rt u=
-nd manipuliert
-> werden ! F=C3=BCr eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schl=C3=BCssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
