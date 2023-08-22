@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9944078398F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B094783990
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbjHVFyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 01:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56494 "EHLO
+        id S232822AbjHVFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 01:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232506AbjHVFyg (ORCPT
+        with ESMTP id S232828AbjHVFyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 01:54:36 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D43186
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:54:34 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bfcf4c814so538319366b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692683673; x=1693288473;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7TQX4y/uBks8nVow/iPGHdMMait3YhGPxYbRER/vAHI=;
-        b=D2WKJgnPmiNc5DtPRLx3K/1bi+ALPO6Ox0BPf7MgWLCXGX+ugGmtbq6PTYiqkbsdXo
-         pevGNinraFDgfmH0udKrxvA+87fIwn/o39IbxKDK2xuVdh69NujFmNtjV6Cq5YPe3Age
-         Q6RtEx5OuvQRG7nuGwlY5HTkmtGbQbjM/IGdSlo/Mzlhiut4s3E5rxa726v6FRTlg5Oz
-         hMkZ9FYIHP5yrD5OnYjsa1JLh6mAlcKh0DO0CakQeSXO6lVYNfvEd47N2rdrfhWQi8pl
-         f6YhzJ6X+Re0bu/TQsYPyg6w1Wy5Az6uDAcKb+dcSpKEcX1OVcWO3AFd3nXE6gKAmToL
-         lAuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692683673; x=1693288473;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7TQX4y/uBks8nVow/iPGHdMMait3YhGPxYbRER/vAHI=;
-        b=Sg/92/ylXFNbgcSxoBVhgYMUfLxG1Kwd+SPWw5B9bkK2xMgesQJ0s5FqifERjlCke9
-         jDvnj/idi/qdE4Mt/JVa/Bwi+84QfT16AGUZKmlxScX670WEzDxrr4fPxYlMoL2KG71n
-         0aUp7kgQ1qL/+vmg1sC6A65N59qReNoewm9po9AnWfhxTMxTeRyAfl3gPHnM/R9GEwbY
-         Fadrv1CODwmqgEoqiwmKDcK4sRrQDIy1cnQsRrMIjM3wmWTG3z8sX5bLnkZUSWck87b0
-         1s6GXQDnMWWO14uwMTsmXYupTSn7kFf9qGUEit7bbwfuZBNPlZPYNOQ89osrtNRfyXyy
-         Oh0g==
-X-Gm-Message-State: AOJu0Ywq7lG6jkQiF3fzQ91/ntwUpswRDrVE5wweQUNragyEUlgtd5xd
-        sgL3DELnxm3YlA8nebinQGzIAw==
-X-Google-Smtp-Source: AGHT+IEhDWurn+BYTTaGcgwpERqWG0ysoExljMCFTqgXhHbhp9OQXV6bd64JEdpjuDYl/Vu3vIfg7g==
-X-Received: by 2002:a17:907:a076:b0:99b:d2a9:9a01 with SMTP id ia22-20020a170907a07600b0099bd2a99a01mr6856980ejc.0.1692683673252;
-        Mon, 21 Aug 2023 22:54:33 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id a6-20020a170906368600b0099bc038eb2bsm7588168ejc.58.2023.08.21.22.54.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Aug 2023 22:54:32 -0700 (PDT)
-Message-ID: <07c6a89b-f545-a49a-db21-ec361811e4be@linaro.org>
-Date:   Tue, 22 Aug 2023 07:54:31 +0200
+        Tue, 22 Aug 2023 01:54:53 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC17C1A2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:54:50 -0700 (PDT)
+Received: from nazgul.tnic (unknown [78.130.214.203])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 326E01EC0105;
+        Tue, 22 Aug 2023 07:54:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1692683689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TUNYdX+jAgiy5w5ejIw89GCQEjBsUm2NlTPPddQmmaw=;
+        b=fXIveyE/weQit9im9mDVuO2gmI6XaOkYTnCP8LJNVUi1Dnv2HbFMyFU2xWJ6dwzyraRBJn
+        1z3Jp9UwfSOF/Vfq1ZR9MoPnoFVaozFHePNIPOAGwvrkSa5tw+66zmtSv2l24vsFPtChN7
+        ++1FX5S3POJxdKefDtjPe4+zIaKJZjU=
+Date:   Tue, 22 Aug 2023 07:54:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 04/22] x86/srso: Fix SBPB enablement for
+ spec_rstack_overflow=off
+Message-ID: <20230822055452.GDZORNrNdYc3OmGygU@fat_crate.local>
+References: <cover.1692580085.git.jpoimboe@kernel.org>
+ <23a121e309d5e880eb35c441d9bdfa642d6d59f4.1692580085.git.jpoimboe@kernel.org>
+ <20230821141619.GCZONxs5OdbbXFYSq2@fat_crate.local>
+ <20230821163649.dyhxdeewlf6eerda@treble>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/4] dt-bindings: touchscreen: neonode,zforce: Use
- standard properties
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>, dmitry.torokhov@gmail.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        rydberg@bitmath.org, u.kleine-koenig@pengutronix.de,
-        Jonathan.Cameron@huawei.com, linus.walleij@linaro.org,
-        heiko@sntech.de, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230821171151.555091-1-andreas@kemnade.info>
- <20230821171151.555091-3-andreas@kemnade.info>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230821171151.555091-3-andreas@kemnade.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230821163649.dyhxdeewlf6eerda@treble>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/08/2023 19:11, Andreas Kemnade wrote:
-> Enable touchscreen orientation to be specified by using standard
-> properties.
-> 
-> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> ---
+On Mon, Aug 21, 2023 at 09:36:49AM -0700, Josh Poimboeuf wrote:
+> Hm?  How exactly is this overriding the retbleed IBPB mitigation?
 
-Rob reviewed yesterday v1 (although adding 3rd party tags might not work
-with some tools):
+Sorry, clearly -ETOOMANYMITIGATIONS.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I meant the spectre_v2_user thing which does
+indirect_branch_prediction_barrier() based on X86_FEATURE_USE_IBPB.
 
-Best regards,
-Krzysztof
+indirect_branch_prediction_barrier() uses x86_pred_cmd to select which
+MSR bits to set and it is initialized by default to PRED_CMD_IBPB.
 
+If you goto pred_cmd, you will overwrite it with PRED_CMD_SBPB here.
+
+I think it should not overwrite it and simply return like before.
+Meaning: if SRSO mitigation is off but the spectre_v2_user isn't so you
+get what you want.
+
+If you do mitigations=off - which is what most use cases do when they
+don't care about mitigations - then it'll work too.
+
+I don't see a sensible use case where user->user spectre_v2 is enabled
+but SRSO is off. Maybe there is...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
