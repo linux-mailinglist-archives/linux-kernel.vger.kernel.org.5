@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE5D784D53
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A14784D57
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231733AbjHVXbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41852 "EHLO
+        id S231741AbjHVXcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:32:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjHVXbL (ORCPT
+        with ESMTP id S229663AbjHVXcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:31:11 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B4DCF;
-        Tue, 22 Aug 2023 16:31:08 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4ff882397ecso7683334e87.3;
-        Tue, 22 Aug 2023 16:31:08 -0700 (PDT)
+        Tue, 22 Aug 2023 19:32:05 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A47B1B0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:32:00 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34b4b2608e3so16264645ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:32:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692747067; x=1693351867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KiVsbcQ1calg/mgIA/8p2AIsEEXhjJvmCX/Nb9G73+8=;
-        b=QGEBDW107RW9l0/oBgV0fIpwlZiidK/GJ7fTcsTcyzsiWdxUKW/j+/2mJY4aLK+PsG
-         31/9BinUD/PkkbOa/OBwvY614Bm81qEXzJY3Ktmp9sGPFyGfPNx4sPESHn4cEzo/VXoc
-         NbPUmjHMhyn+iHypuKkFMzim46ZQ6WCwotueLhhsSKLmc5GHuEfjJrPnFftU+AdHmiED
-         daAWEdtKEY9tzYTAsUVFnZ1iZSWUGjDXw9kG+ckgxDzczTmtMv5EfDtgcW0wliaIK+eK
-         za3EKe0Ssn/Fg6jS2OrbzzuZNuPu8i8rBZUU2epJ1/LSY8aDuvYa3bNte+K+/9kdOTbw
-         +z4Q==
+        d=google.com; s=20221208; t=1692747119; x=1693351919;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A48iafCxDBmdB76Di4OyxxThhIm7L7khUnw54MyTEFU=;
+        b=ksx/HF/f/a2eZMuBu7vZlxniISHSGHTWZ3NhpeJBHu4fdyW+PRX5gax8XJWCaADBsM
+         PMXd8DeQH/fGIpGZRMnQQlb9W7Vij+1gzPtZboZSFYaIiFpWV33u+geDoRS5d8OZo/nC
+         n0QxnOGtWy6vjJ2jsDeqhk+joftSrpsZpTnbLukYcJHOXavj/8FyBJ5IM6oG7COJbSl9
+         Z2GQMdkm2Qe4SqrhLeGmSZBu6STmyFuENp+iwl2DVLccb8xgGVWFFjUbeeULK5r3QPjA
+         bXAo/myOLM0rF8zH2t+ZKXzSJYRh5Ncajl+86HDDhJjZOiEdnLRJMcq3jM4ovK/ui/aC
+         Nqug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692747067; x=1693351867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KiVsbcQ1calg/mgIA/8p2AIsEEXhjJvmCX/Nb9G73+8=;
-        b=QvpsAV9VbpDclq51w1zP5zyXl0dzH+wrC7jdwQZsrkN7BbBmPYuaDV0u6ICICaKrh0
-         87Tvv3T9h/CtORxKhRdKtrIGetstk2HwHk6v0s9l4b4RJU1jdPng9BCMznSm7dhLbem1
-         RhWc4iwgKCI1WpPpGgbHgX9lNTtkgGAUmsko7r0UVtc6u4GRryR3JuARZ6+XzENxYO/0
-         sWZXrrztG+a5YGmbpvJCgxafPzPSUUuPwC4yXKRaB7HX6XTQ7Bdjfh5Yrd5DOj+vbsxA
-         SPlTWrbyMXBpHCQ8H5eDI7Vlj/PXG970Gf1ua/NVGNIUtZp+ZXfw06Nn99GrPhtWhSjz
-         mNzg==
-X-Gm-Message-State: AOJu0YwxMXxGBhZaAj97h9kt03V7SPmIen6Bscc21tqU9tGV84bkh+7O
-        fSA1AixcpH6ouQRS6agWTyOVER7Sn/4DgnRF8beHCGkQ
-X-Google-Smtp-Source: AGHT+IHlEgG9P/8QbyLaWdXEtuE/H/EjLYnQCkm8HRBhtVJb/u+ifdl1gIhardVeS5xH9Ahx7bTyLyO9W4osu7Az32U=
-X-Received: by 2002:a05:6512:3189:b0:4f7:6453:f3f1 with SMTP id
- i9-20020a056512318900b004f76453f3f1mr10156407lfe.15.1692747066558; Tue, 22
- Aug 2023 16:31:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692747119; x=1693351919;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A48iafCxDBmdB76Di4OyxxThhIm7L7khUnw54MyTEFU=;
+        b=J3DI+PRO5n/rt3+czbTMuTcCbBq5UxsE+9+xXn67WZjQMkLs5YeNwyI+UaKZvp8lV6
+         9SKTFhCdo9p+jebD+cBfbOMJY0px2WybRqlHWluTQ/IX3V2/GsCU87ptR8iZJfNEOOYN
+         HS2xx4Qeg08EW18wJerk+qQBylbzyYe0Ih+LlvoFKbLT3Exl3KBlx/YnZwLsbcx+d0iF
+         55y4dd6o31aMNgWDdLw968408PFd13CaTlFnMYUzNaDw9jFUas2CooOVNc8lukYR+ER9
+         9dya4lP9plDahrY/98tWgHMpkQbM9XQolf2rv4zD6a2D8q3cdNy+OJ+JioeWB568PZRs
+         pXoQ==
+X-Gm-Message-State: AOJu0Yx74U+rWcQNHQpMJxlmQtXTWl5RIo9zPifODkWJOJxmJGKlYx+V
+        QiVGnZv1pAkDI1o/CaiUelVX7DiaAlavscHs59p6LA==
+X-Google-Smtp-Source: AGHT+IEMzLwkafbmN9QvF2BymaJAsTcu9+7k4JbwNofcXLCDv2c04gQwl3bNbwnBz3PK9ju9DREnEQ==
+X-Received: by 2002:a05:6e02:2189:b0:34b:ae9d:9b38 with SMTP id j9-20020a056e02218900b0034bae9d9b38mr1209194ila.30.1692747119508;
+        Tue, 22 Aug 2023 16:31:59 -0700 (PDT)
+Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id s6-20020a92c5c6000000b0034b58dd5694sm3478307ilt.15.2023.08.22.16.31.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 16:31:58 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 23:31:56 +0000
+From:   Justin Stitt <justinstitt@google.com>
+To:     yang.yang29@zte.com.cn
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xu.panda@zte.com.cn,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH linux-next] block: use strscpy() to instead of strncpy()
+Message-ID: <20230822233156.54ah7nf56y53astz@google.com>
+References: <202212031422587503771@zte.com.cn>
 MIME-Version: 1.0
-References: <20230811084739.GY3902@linux.vnet.ibm.com> <20230816122133.1231599-1-vishalc@linux.ibm.com>
-In-Reply-To: <20230816122133.1231599-1-vishalc@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 22 Aug 2023 16:30:54 -0700
-Message-ID: <CAEf4BzZeCzEUM+=D7F5vNAe3fgmbGf0qo_DQ1nKSUJ-G78iFyw@mail.gmail.com>
-Subject: Re: [PATCH] Fix invalid escape sequence warnings
-To:     Vishal Chourasia <vishalc@linux.ibm.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Cc:     srikar@linux.vnet.ibm.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com,
-        jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-        netdev@vger.kernel.org, sachinp@linux.ibm.com, sdf@google.com,
-        song@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202212031422587503771@zte.com.cn>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,194 +73,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 5:22=E2=80=AFAM Vishal Chourasia <vishalc@linux.ibm=
-.com> wrote:
+On Sat, Dec 03, 2022 at 02:22:58PM +0800, yang.yang29@zte.com.cn wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
 >
-> The Python script `bpf_doc.py` uses regular expressions with
-> backslashes in string literals, which results in SyntaxWarnings
-> during its execution.
+> The implementation of strscpy() is more robust and safer.
+> That's now the recommended way to copy NUL terminated strings.
 >
-> This patch addresses these warnings by converting relevant string
-> literals to raw strings, which interpret backslashes as literal
-> characters. This ensures that the regular expressions are parsed
-> correctly without causing any warnings.
->
-> Signed-off-by: Vishal Chourasia <vishalc@linux.ibm.com>
-> Reported-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
->
+> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com>
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+Cc: linux-hardening@vger.kernel.org
+
 > ---
->  scripts/bpf_doc.py | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
+>  block/partitions/cmdline.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
 >
-> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-> index eaae2ce78381..dfd819c952b2 100755
-> --- a/scripts/bpf_doc.py
-> +++ b/scripts/bpf_doc.py
-> @@ -59,9 +59,9 @@ class Helper(APIElement):
->          Break down helper function protocol into smaller chunks: return =
-type,
->          name, distincts arguments.
->          """
-> -        arg_re =3D re.compile('((\w+ )*?(\w+|...))( (\**)(\w+))?$')
-> +        arg_re =3D re.compile(r'((\w+ )*?(\w+|...))( (\**)(\w+))?$')
->          res =3D {}
-> -        proto_re =3D re.compile('(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})\=
-)$')
-> +        proto_re =3D re.compile(r'(.+) (\**)(\w+)\(((([^,]+)(, )?){1,5})=
-\)$')
+> diff --git a/block/partitions/cmdline.c b/block/partitions/cmdline.c
+> index 1af610f0ba8c..c03bc105e575 100644
+> --- a/block/partitions/cmdline.c
+> +++ b/block/partitions/cmdline.c
+> @@ -81,8 +81,7 @@ static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
 >
->          capture =3D proto_re.match(self.proto)
->          res['ret_type'] =3D capture.group(1)
-> @@ -114,11 +114,11 @@ class HeaderParser(object):
->          return Helper(proto=3Dproto, desc=3Ddesc, ret=3Dret)
+>  		length = min_t(int, next - partdef,
+>  			       sizeof(new_subpart->name) - 1);
+> -		strncpy(new_subpart->name, partdef, length);
+> -		new_subpart->name[length] = '\0';
+> +		strscpy(new_subpart->name, partdef, length);
 >
->      def parse_symbol(self):
-> -        p =3D re.compile(' \* ?(BPF\w+)$')
-> +        p =3D re.compile(r' \* ?(BPF\w+)$')
->          capture =3D p.match(self.line)
->          if not capture:
->              raise NoSyscallCommandFound
-> -        end_re =3D re.compile(' \* ?NOTES$')
-> +        end_re =3D re.compile(r' \* ?NOTES$')
->          end =3D end_re.match(self.line)
->          if end:
->              raise NoSyscallCommandFound
-> @@ -133,7 +133,7 @@ class HeaderParser(object):
->          #   - Same as above, with "const" and/or "struct" in front of ty=
-pe
->          #   - "..." (undefined number of arguments, for bpf_trace_printk=
-())
->          # There is at least one term ("void"), and at most five argument=
-s.
-> -        p =3D re.compile(' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|\=
-.\.\.)( \**\w+)?)(, )?){1,5}\))$')
-> +        p =3D re.compile(r' \* ?((.+) \**\w+\((((const )?(struct )?(\w+|=
-\.\.\.)( \**\w+)?)(, )?){1,5}\))$')
->          capture =3D p.match(self.line)
->          if not capture:
->              raise NoHelperFound
-> @@ -141,7 +141,7 @@ class HeaderParser(object):
->          return capture.group(1)
+>  		partdef = ++next;
+>  	} else
+> @@ -140,8 +139,7 @@ static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
+>  	}
 >
->      def parse_desc(self, proto):
-> -        p =3D re.compile(' \* ?(?:\t| {5,8})Description$')
-> +        p =3D re.compile(r' \* ?(?:\t| {5,8})Description$')
->          capture =3D p.match(self.line)
->          if not capture:
->              raise Exception("No description section found for " + proto)
-> @@ -154,7 +154,7 @@ class HeaderParser(object):
->              if self.line =3D=3D ' *\n':
->                  desc +=3D '\n'
->              else:
-> -                p =3D re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-> +                p =3D re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
->                  capture =3D p.match(self.line)
->                  if capture:
->                      desc_present =3D True
-> @@ -167,7 +167,7 @@ class HeaderParser(object):
->          return desc
+>  	length = min_t(int, next - bdevdef, sizeof(newparts->name) - 1);
+> -	strncpy(newparts->name, bdevdef, length);
+> -	newparts->name[length] = '\0';
+> +	strscpy(newparts->name, bdevdef, length);
+>  	newparts->nr_subparts = 0;
 >
->      def parse_ret(self, proto):
-> -        p =3D re.compile(' \* ?(?:\t| {5,8})Return$')
-> +        p =3D re.compile(r' \* ?(?:\t| {5,8})Return$')
->          capture =3D p.match(self.line)
->          if not capture:
->              raise Exception("No return section found for " + proto)
-> @@ -180,7 +180,7 @@ class HeaderParser(object):
->              if self.line =3D=3D ' *\n':
->                  ret +=3D '\n'
->              else:
-> -                p =3D re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-> +                p =3D re.compile(r' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
->                  capture =3D p.match(self.line)
->                  if capture:
->                      ret_present =3D True
-> @@ -219,12 +219,12 @@ class HeaderParser(object):
->          self.seek_to('enum bpf_cmd {',
->                       'Could not find start of bpf_cmd enum', 0)
->          # Searches for either one or more BPF\w+ enums
-> -        bpf_p =3D re.compile('\s*(BPF\w+)+')
-> +        bpf_p =3D re.compile(r'\s*(BPF\w+)+')
->          # Searches for an enum entry assigned to another entry,
->          # for e.g. BPF_PROG_RUN =3D BPF_PROG_TEST_RUN, which is
->          # not documented hence should be skipped in check to
->          # determine if the right number of syscalls are documented
-> -        assign_p =3D re.compile('\s*(BPF\w+)\s*=3D\s*(BPF\w+)')
-> +        assign_p =3D re.compile(r'\s*(BPF\w+)\s*=3D\s*(BPF\w+)')
->          bpf_cmd_str =3D ''
->          while True:
->              capture =3D assign_p.match(self.line)
-> @@ -239,7 +239,7 @@ class HeaderParser(object):
->                  break
->              self.line =3D self.reader.readline()
->          # Find the number of occurences of BPF\w+
-> -        self.enum_syscalls =3D re.findall('(BPF\w+)+', bpf_cmd_str)
-> +        self.enum_syscalls =3D re.findall(r'(BPF\w+)+', bpf_cmd_str)
+>  	next_subpart = &newparts->subpart;
+> @@ -153,8 +151,7 @@ static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
+>  		length = (!next) ? (sizeof(buf) - 1) :
+>  			min_t(int, next - bdevdef, sizeof(buf) - 1);
 >
->      def parse_desc_helpers(self):
->          self.seek_to(helpersDocStart,
-> @@ -263,7 +263,7 @@ class HeaderParser(object):
->          self.seek_to('#define ___BPF_FUNC_MAPPER(FN, ctx...)',
->                       'Could not find start of eBPF helper definition lis=
-t')
->          # Searches for one FN(\w+) define or a backslash for newline
-> -        p =3D re.compile('\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
-> +        p =3D re.compile(r'\s*FN\((\w+), (\d+), ##ctx\)|\\\\')
->          fn_defines_str =3D ''
->          i =3D 0
->          while True:
-> @@ -278,7 +278,7 @@ class HeaderParser(object):
->                  break
->              self.line =3D self.reader.readline()
->          # Find the number of occurences of FN(\w+)
-> -        self.define_unique_helpers =3D re.findall('FN\(\w+, \d+, ##ctx\)=
-', fn_defines_str)
-> +        self.define_unique_helpers =3D re.findall(r'FN\(\w+, \d+, ##ctx\=
-)', fn_defines_str)
+> -		strncpy(buf, bdevdef, length);
+> -		buf[length] = '\0';
+> +		strscpy(buf, bdevdef, length);
 >
->      def validate_helpers(self):
->          last_helper =3D ''
-> @@ -425,7 +425,7 @@ class PrinterRST(Printer):
->          try:
->              cmd =3D ['git', 'log', '-1', '--pretty=3Dformat:%cs', '--no-=
-patch',
->                     '-L',
-> -                   '/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimit=
-er)]
-> +                   r'/{}/,/\*\//:include/uapi/linux/bpf.h'.format(delimi=
-ter)]
-
-this one is not a regex, do we still need to change it?
-
->              date =3D subprocess.run(cmd, cwd=3DlinuxRoot,
->                                    capture_output=3DTrue, check=3DTrue)
->              return date.stdout.decode().rstrip()
-> @@ -496,7 +496,7 @@ HELPERS
->                              date=3DlastUpdate))
+>  		ret = parse_subpart(next_subpart, buf);
+>  		if (ret)
+> @@ -267,8 +264,7 @@ static int add_part(int slot, struct cmdline_subpart *subpart,
 >
->      def print_footer(self):
-> -        footer =3D '''
-> +        footer =3D r'''
-
-same here, not a regex string
-
->  EXAMPLES
->  =3D=3D=3D=3D=3D=3D=3D=3D
+>  	label_min = min_t(int, sizeof(info->volname) - 1,
+>  			  sizeof(subpart->name));
+> -	strncpy(info->volname, subpart->name, label_min);
+> -	info->volname[label_min] = '\0';
+> +	strscpy(info->volname, subpart->name, label_min);
 >
-> @@ -598,7 +598,7 @@ SEE ALSO
->              one_arg =3D '{}{}'.format(comma, a['type'])
->              if a['name']:
->                  if a['star']:
-> -                    one_arg +=3D ' {}**\ '.format(a['star'].replace('*',=
- '\\*'))
-> +                    one_arg +=3D r' {}**\ '.format(a['star'].replace('*'=
-, '\\*'))
-
-and this one as well?
-
->                  else:
->                      one_arg +=3D '** '
->                  one_arg +=3D '*{}*\\ **'.format(a['name'])
+>  	snprintf(tmp, sizeof(tmp), "(%s)", info->volname);
+>  	strlcat(state->pp_buf, tmp, PAGE_SIZE);
 > --
-> 2.41.0
->
+> 2.15.2
