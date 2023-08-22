@@ -2,53 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B60E7843EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E87C47843F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236534AbjHVOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        id S236584AbjHVOYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjHVOXg (ORCPT
+        with ESMTP id S231964AbjHVOYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:23:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4DDFB;
-        Tue, 22 Aug 2023 07:23:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D27C658BC;
-        Tue, 22 Aug 2023 14:23:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D43BC433C9;
-        Tue, 22 Aug 2023 14:23:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692714213;
-        bh=DvmRTbc7FiFkB6N+0RgDXMx/7Pm2H0TTbTq5N8sv1Gs=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=Zn6XODWEilEuWyYjBd3ledFCKuaB5eQAlHx2xT2vbqpWf6YPA5uhAnXoPOq9C0bu2
-         7QE9qUXFfpZvqqRh1XEhjnEGqGBZw2HDAJkS8UQVwPqb+CKkGT+Zqpc0Mazif9rqxc
-         GJAZ9N/hau0OyZVDOwx94D+bVD5iewMPNZKyRqGTJEk05pRe/lYOMNuPUXTrztvJ+s
-         n6HJxnyHI3qncdiQf5ampO3voHwlo8+gHLC3Ntu6TQqiZE7woAUOZafdBENyJI+ylS
-         r86chX1F4+m2KzpleZ0wXJhusFAKUDkBnSLRYbwt1RVkjgdB9o+qV3U8Ig8vpaQH/N
-         4QR0KnZg70GXA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rohit Chavan <roheetchavan@gmail.com>
-In-Reply-To: <20230822091304.7312-1-roheetchavan@gmail.com>
-References: <20230822091304.7312-1-roheetchavan@gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Fix redundant break statement in switch-case.
-Message-Id: <169271420934.37184.9960349249889873256.b4-ty@kernel.org>
-Date:   Tue, 22 Aug 2023 17:23:29 +0300
+        Tue, 22 Aug 2023 10:24:37 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3EBFFB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:34 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so6946906e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692714273; x=1693319073;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2SIlnYFerITavvyBuBn7niOt47EHR9cCOd4x+UDBwnY=;
+        b=uDpjnrI4dlnFBUNK/zyDg4AUz3nM4E7mWfxyVpDDSu2rWU+tdXzReb7Z67xq3+G1NN
+         b4MSgmTSDz/hK+06j9mMu8Qqw7tiYFCxGHaM9HzmYWVwp9n4tgV+x04eVt+SFJMZpfjd
+         XbgT7FKNi7DQrIcXEmg3xTZn1Y1hiK/+8vB/Dfdtud7z6VW6FFM3A8Nq96zOgu5zZPzS
+         dVmdEiPoYdDrY89ejiA9bwWBtGjf7q2Wz4BhXffwKYXyKnWA50jyxFyyTExvtheB0ndE
+         n9OaLuM1vhe+0S4V30zMXrRz0K+98X8JGi0NBNSV64AaCboQokaJPcb8ANkah9QWfrcG
+         QzRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692714273; x=1693319073;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2SIlnYFerITavvyBuBn7niOt47EHR9cCOd4x+UDBwnY=;
+        b=fb0nUdvbK7YQaNvGHgCDhA/4hFEGdDOcNybz+ZAfQQf3v98+bJkolWO85Kaaz6z6NH
+         oO9HQMYUZVNZyyPc6M9Hd9LxXzAkEdgBPL8fRWdz4KAws9d97S4zaf79UFlzOQQ6a4Fg
+         TSWwPKGgH69HM6wM08HTsmtF0A/F2SGIr4bERrd6X4voRSMM82kzBlqaLmqQJTD5RcGB
+         CKNHTn4x9nF5jmfKgdJ5UCe5wk+zKDGgALwxKOJZlveLlwkAyqJaqIpG2MgZVFB/qPVb
+         Cq27OGLxi5/fBoxemcgd6ffSuYfoml1uRcDULYuJI+DvQ/feI8Z0ecQM/+YfjN1Sjvgx
+         sapA==
+X-Gm-Message-State: AOJu0Yy42/TDwyveM9VY3qEHyvrCGAmLeIuwQd/I3Gmr5lBqs4VRF+lK
+        q8n3v0ciYwrPItU8tbXt0+NPTg==
+X-Google-Smtp-Source: AGHT+IHBYGhadBk8YEwfcGL3lgMdmOMhR2OIBxXzTtKoCD5QgWXldjnpBnYG7zLOhBYIaiM9RX43qQ==
+X-Received: by 2002:a05:6512:2208:b0:4ff:74e2:4268 with SMTP id h8-20020a056512220800b004ff74e24268mr8638455lfu.56.1692714272798;
+        Tue, 22 Aug 2023 07:24:32 -0700 (PDT)
+Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
+        by smtp.gmail.com with ESMTPSA id b11-20020ac247eb000000b004fddb0eb961sm2241255lfp.18.2023.08.22.07.24.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 07:24:32 -0700 (PDT)
+Message-ID: <fc805cf2-e07e-42e5-b872-ac19fafca3b8@linaro.org>
+Date:   Tue, 22 Aug 2023 16:24:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: regulator: qcom,rpmh-regulator: allow i,
+ j, l, m & n as RPMh resource name suffix
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v2-1-136b315085a4@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v2-1-136b315085a4@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,17 +118,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 22 Aug 2023 14:43:04 +0530, Rohit Chavan wrote:
-> Removed unreachable break statement after return.
+On 22.08.2023 12:03, Neil Armstrong wrote:
+> Add "i", "j", "l", "m" and "n" to the allowed subffix list as they can be
+> used as RPMh resource name suffixes on new platforms.
 > 
-> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+> Changes in v2:
+> - Add m & n as konriad reported, confirmed used on sm8550-qrd
+> - Also add l since it's also an used suffix on sm8550-qrd
+> - Link to v1: https://lore.kernel.org/r/20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v1-1-23fda17f81f7@linaro.org
+> ---
+Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Applied, thanks!
-
-[1/1] RDMA/rxe: Fix redundant break statement in switch-case.
-      https://git.kernel.org/rdma/rdma/c/6812e069990547
-
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Konrad
