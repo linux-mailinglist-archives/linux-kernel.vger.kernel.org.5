@@ -2,146 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C8B784149
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A320278414C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235864AbjHVMz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:55:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
+        id S235875AbjHVM4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235826AbjHVMz4 (ORCPT
+        with ESMTP id S235866AbjHVM4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:55:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F3CCD0;
-        Tue, 22 Aug 2023 05:55:54 -0700 (PDT)
-Received: from [IPV6:2a01:e0a:120:3210:3563:6666:ae23:a4c4] (unknown [IPv6:2a01:e0a:120:3210:3563:6666:ae23:a4c4])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4F1A2660720C;
-        Tue, 22 Aug 2023 13:55:52 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692708952;
-        bh=zXRypGU5FsRfhkFlbeXKbtBhVbkG+5Y4xfAintMySxw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ARcDBLfBysC7onBBYtCrspJOHt8EjSFAYAgeuylL762rhXnUM4p5fvNTe7DvIRXPT
-         BSHTBxBQKj1T6VjIPUWTrKxwyTUoLQXcrL8j4Z5ocRtVmmuIpCUrT4P+lahDjflprW
-         LecaZRMcz4V9esjesDljvzQ/XJ+qtAnNsTL3b2ndkaKpdBbtE/zTpCaphUPYhpo9T1
-         gw/LfuDvfdNI6znMPbQze6xvhJPs8I9GTN1hah3HQIOFL7eJ1s4gabuu8aSLCBqV89
-         b+hiQVys4wFCRGeKoYYZab+W1908q6RRSKmhV9D5SqPRbghXNrdpw4/PB5Ap7Irp00
-         khZZl03hn60LA==
-Message-ID: <37dec78e-462c-b7a4-1acb-253520e47c1e@collabora.com>
-Date:   Tue, 22 Aug 2023 14:55:49 +0200
+        Tue, 22 Aug 2023 08:56:01 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382B0CD4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:55:59 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4ff91f2d7e2so6314411e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692708957; x=1693313757;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3KoBISRC3A8VLVGCVV3tR+5wTWoeEGilZejzXYvgBsw=;
+        b=klsqRMhpdt6ISIYJ5BIId/pjYf4AJhUg8yoLERaflRX7km1el7e1Yj7IDwYT80ZlBC
+         I3mIqF60sgKckN7MPyYZTlWgIFqMpZVcHNnL96kgrSdqphWzWvwTqbvNsa3if+r/9Kj3
+         RRAEBABne5eIaRv9G+4O6jcBaxfKEDoS5yjyuMUg+z9fFGygp/XD1vP4IqR8XlaoLy5T
+         Ww7JqjqAjMrV8zsEDuZYMmMhtgDGPoGKBXWt4ce05noLWA2RvnWmwj6wsP0dRhMBnB99
+         kIlEuBEH8xFuar2+TCgALctxvhcQue7PxbJacjfoRWVmLH+/xLwBSnRBpiqcjrUtOFTj
+         CWmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692708957; x=1693313757;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3KoBISRC3A8VLVGCVV3tR+5wTWoeEGilZejzXYvgBsw=;
+        b=C6SO/M1YBXuPGmgfnYCefJGEVv5+V3ezYQyE0DlGWGaoPs/djRRCM+YwLN5FrNOq9V
+         AdvuMy1OBS8GTSL+gI6WVYWHT4gyJKJoSvmtlWGD2Yl9tL3pKBDqTk9b0NxjB3qDUYuE
+         cE7yHT48ybAzRSerPtxdpVoSbAmMjnT91XpjrG2uMHBjt3ZJJWl5vFgScTMUA7iInLhA
+         OCEBST8tdkGm9RYENrY1BrBrYl6uE1frIAZZuEzqFYhs7LoWRtbPCRwEc/3xW3mupWI0
+         KTjx3eYXMzs10jBuMzwXkKCHa7VpORd4/fhAIyGEGZKPPouiETFsDP501looYjUBXJgC
+         ITWg==
+X-Gm-Message-State: AOJu0YxFN3qJ4cCw7+cyXHybByX3Dreqka/01h9NJrqDZkPvupKam+G7
+        2oeKC/Y+MLllbJvODoosaKIaSw==
+X-Google-Smtp-Source: AGHT+IFNBk+xnnpO2QNBmcgZSn1n7BzTLOXF8Qc/I/E/+r68TpKnLhsmXBDnYmr83wQR1A3UgKlg5w==
+X-Received: by 2002:a05:6512:1192:b0:4fc:265d:fc62 with SMTP id g18-20020a056512119200b004fc265dfc62mr9122363lfr.18.1692708957360;
+        Tue, 22 Aug 2023 05:55:57 -0700 (PDT)
+Received: from rayden (h-46-59-78-111.A175.priv.bahnhof.se. [46.59.78.111])
+        by smtp.gmail.com with ESMTPSA id p6-20020a19f006000000b004fdb913af80sm2185580lfc.209.2023.08.22.05.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 05:55:56 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 14:55:55 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        jarkko@kernel.org, jejb@linux.ibm.com, zohar@linux.ibm.com,
+        sudeep.holla@arm.com, achin.gupta@arm.com,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KEYS: trusted: tee: Refactor register SHM usage
+Message-ID: <20230822125555.GA82256@rayden>
+References: <20230822112933.1550062-1-sumit.garg@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 05/10] media: verisilicon: Store chroma and motion
- vectors offset
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, mchehab@kernel.org,
-        tfiga@chromium.org, m.szyprowski@samsung.com, ming.qian@nxp.com,
-        ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de,
-        gregkh@linuxfoundation.org, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230705121056.37017-1-benjamin.gaignard@collabora.com>
- <20230705121056.37017-6-benjamin.gaignard@collabora.com>
- <1b87f062-9d5e-fa8e-3d3b-e766362c6e3b@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <1b87f062-9d5e-fa8e-3d3b-e766362c6e3b@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230822112933.1550062-1-sumit.garg@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 22, 2023 at 04:59:33PM +0530, Sumit Garg wrote:
+> The OP-TEE driver using the old SMC based ABI permits overlapping shared
+> buffers, but with the new FF-A based ABI each physical page may only
+> be registered once.
+> 
+> As the key and blob buffer are allocated adjancently, there is no need
+> for redundant register shared memory invocation. Also, it is incompatibile
+> with FF-A based ABI limitation. So refactor register shared memory
+> implementation to use only single invocation to register both key and blob
+> buffers.
+> 
+> Fixes: 4615e5a34b95 ("optee: add FF-A support")
+> Reported-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  security/keys/trusted-keys/trusted_tee.c | 64 ++++++++----------------
+>  1 file changed, 20 insertions(+), 44 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_tee.c b/security/keys/trusted-keys/trusted_tee.c
+> index ac3e270ade69..aa3d477de6db 100644
+> --- a/security/keys/trusted-keys/trusted_tee.c
+> +++ b/security/keys/trusted-keys/trusted_tee.c
+> @@ -65,24 +65,16 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+>  	int ret;
+>  	struct tee_ioctl_invoke_arg inv_arg;
+>  	struct tee_param param[4];
+> -	struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> +	struct tee_shm *reg_shm = NULL;
+>  
+>  	memset(&inv_arg, 0, sizeof(inv_arg));
+>  	memset(&param, 0, sizeof(param));
+>  
+> -	reg_shm_in = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> -						 p->key_len);
+> -	if (IS_ERR(reg_shm_in)) {
+> -		dev_err(pvt_data.dev, "key shm register failed\n");
+> -		return PTR_ERR(reg_shm_in);
+> -	}
+> -
+> -	reg_shm_out = tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> -						  sizeof(p->blob));
+> -	if (IS_ERR(reg_shm_out)) {
+> -		dev_err(pvt_data.dev, "blob shm register failed\n");
+> -		ret = PTR_ERR(reg_shm_out);
+> -		goto out;
+> +	reg_shm = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> +					      sizeof(p->key) + sizeof(p->blob));
 
-Le 21/08/2023 à 16:41, Hans Verkuil a écrit :
-> On 05/07/2023 14:10, Benjamin Gaignard wrote:
->> Store computed values of chroma and motion vectors offset because
->> they depends on width and height values which change if the resolution
->> change.
-> Is this a bug fix? Does this patch belong in this series?
->
-> Same actually for the next few verisilicon patches. Shouldn't they be
-> part of a separate 'fixes' patch series? It's confusing to see them
-> in this series.
+This is somewhat fragile. What if struct trusted_key_payload has a small
+unexpected change in layout?
 
-They fix bugs that happens only when VP9 resolution change without doing stream off/on
-that why they are in this series.
+Thanks,
+Jens
 
-This one, for example, is useless if the resolution change on a keyframe because the
-frame will have the same resolution than the current one but is need to store resolution
-of each frames if the resize happens between keyframes.
-
-Benjamin
-
->
-> Regards,
->
-> 	Hans
->
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   drivers/media/platform/verisilicon/hantro.h            | 2 ++
->>   drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c | 6 ++++--
->>   2 files changed, 6 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/media/platform/verisilicon/hantro.h b/drivers/media/platform/verisilicon/hantro.h
->> index c8a3cf10cc64..53be00142473 100644
->> --- a/drivers/media/platform/verisilicon/hantro.h
->> +++ b/drivers/media/platform/verisilicon/hantro.h
->> @@ -320,6 +320,8 @@ struct hantro_vp9_decoded_buffer_info {
->>   	/* Info needed when the decoded frame serves as a reference frame. */
->>   	unsigned short width;
->>   	unsigned short height;
->> +	size_t chroma_offset;
->> +	size_t mv_offset;
->>   	u32 bit_depth : 4;
->>   };
->>   
->> diff --git a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
->> index 6fc4b555517f..6db1c32fce4d 100644
->> --- a/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
->> +++ b/drivers/media/platform/verisilicon/hantro_g2_vp9_dec.c
->> @@ -158,9 +158,11 @@ static void config_output(struct hantro_ctx *ctx,
->>   
->>   	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
->>   	hantro_write_addr(ctx->dev, G2_OUT_CHROMA_ADDR, chroma_addr);
->> +	dst->vp9.chroma_offset = chroma_offset(ctx, dec_params);
->>   
->>   	mv_addr = luma_addr + mv_offset(ctx, dec_params);
->>   	hantro_write_addr(ctx->dev, G2_OUT_MV_ADDR, mv_addr);
->> +	dst->vp9.mv_offset = mv_offset(ctx, dec_params);
->>   }
->>   
->>   struct hantro_vp9_ref_reg {
->> @@ -195,7 +197,7 @@ static void config_ref(struct hantro_ctx *ctx,
->>   	luma_addr = hantro_get_dec_buf_addr(ctx, &buf->base.vb.vb2_buf);
->>   	hantro_write_addr(ctx->dev, ref_reg->y_base, luma_addr);
->>   
->> -	chroma_addr = luma_addr + chroma_offset(ctx, dec_params);
->> +	chroma_addr = luma_addr + buf->vp9.chroma_offset;
->>   	hantro_write_addr(ctx->dev, ref_reg->c_base, chroma_addr);
->>   }
->>   
->> @@ -238,7 +240,7 @@ static void config_ref_registers(struct hantro_ctx *ctx,
->>   	config_ref(ctx, dst, &ref_regs[2], dec_params, dec_params->alt_frame_ts);
->>   
->>   	mv_addr = hantro_get_dec_buf_addr(ctx, &mv_ref->base.vb.vb2_buf) +
->> -		  mv_offset(ctx, dec_params);
->> +		  mv_ref->vp9.mv_offset;
->>   	hantro_write_addr(ctx->dev, G2_REF_MV_ADDR(0), mv_addr);
->>   
->>   	hantro_reg_write(ctx->dev, &vp9_last_sign_bias,
+> +	if (IS_ERR(reg_shm)) {
+> +		dev_err(pvt_data.dev, "shm register failed\n");
+> +		return PTR_ERR(reg_shm);
+>  	}
+>  
+>  	inv_arg.func = TA_CMD_SEAL;
+> @@ -90,13 +82,13 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+>  	inv_arg.num_params = 4;
+>  
+>  	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> -	param[0].u.memref.shm = reg_shm_in;
+> +	param[0].u.memref.shm = reg_shm;
+>  	param[0].u.memref.size = p->key_len;
+>  	param[0].u.memref.shm_offs = 0;
+>  	param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> -	param[1].u.memref.shm = reg_shm_out;
+> +	param[1].u.memref.shm = reg_shm;
+>  	param[1].u.memref.size = sizeof(p->blob);
+> -	param[1].u.memref.shm_offs = 0;
+> +	param[1].u.memref.shm_offs = sizeof(p->key);
+>  
+>  	ret = tee_client_invoke_func(pvt_data.ctx, &inv_arg, param);
+>  	if ((ret < 0) || (inv_arg.ret != 0)) {
+> @@ -107,11 +99,7 @@ static int trusted_tee_seal(struct trusted_key_payload *p, char *datablob)
+>  		p->blob_len = param[1].u.memref.size;
+>  	}
+>  
+> -out:
+> -	if (reg_shm_out)
+> -		tee_shm_free(reg_shm_out);
+> -	if (reg_shm_in)
+> -		tee_shm_free(reg_shm_in);
+> +	tee_shm_free(reg_shm);
+>  
+>  	return ret;
+>  }
+> @@ -124,24 +112,16 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+>  	int ret;
+>  	struct tee_ioctl_invoke_arg inv_arg;
+>  	struct tee_param param[4];
+> -	struct tee_shm *reg_shm_in = NULL, *reg_shm_out = NULL;
+> +	struct tee_shm *reg_shm = NULL;
+>  
+>  	memset(&inv_arg, 0, sizeof(inv_arg));
+>  	memset(&param, 0, sizeof(param));
+>  
+> -	reg_shm_in = tee_shm_register_kernel_buf(pvt_data.ctx, p->blob,
+> -						 p->blob_len);
+> -	if (IS_ERR(reg_shm_in)) {
+> -		dev_err(pvt_data.dev, "blob shm register failed\n");
+> -		return PTR_ERR(reg_shm_in);
+> -	}
+> -
+> -	reg_shm_out = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> -						  sizeof(p->key));
+> -	if (IS_ERR(reg_shm_out)) {
+> -		dev_err(pvt_data.dev, "key shm register failed\n");
+> -		ret = PTR_ERR(reg_shm_out);
+> -		goto out;
+> +	reg_shm = tee_shm_register_kernel_buf(pvt_data.ctx, p->key,
+> +					      sizeof(p->key) + sizeof(p->blob));
+> +	if (IS_ERR(reg_shm)) {
+> +		dev_err(pvt_data.dev, "shm register failed\n");
+> +		return PTR_ERR(reg_shm);
+>  	}
+>  
+>  	inv_arg.func = TA_CMD_UNSEAL;
+> @@ -149,11 +129,11 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+>  	inv_arg.num_params = 4;
+>  
+>  	param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INPUT;
+> -	param[0].u.memref.shm = reg_shm_in;
+> +	param[0].u.memref.shm = reg_shm;
+>  	param[0].u.memref.size = p->blob_len;
+> -	param[0].u.memref.shm_offs = 0;
+> +	param[0].u.memref.shm_offs = sizeof(p->key);
+>  	param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_OUTPUT;
+> -	param[1].u.memref.shm = reg_shm_out;
+> +	param[1].u.memref.shm = reg_shm;
+>  	param[1].u.memref.size = sizeof(p->key);
+>  	param[1].u.memref.shm_offs = 0;
+>  
+> @@ -166,11 +146,7 @@ static int trusted_tee_unseal(struct trusted_key_payload *p, char *datablob)
+>  		p->key_len = param[1].u.memref.size;
+>  	}
+>  
+> -out:
+> -	if (reg_shm_out)
+> -		tee_shm_free(reg_shm_out);
+> -	if (reg_shm_in)
+> -		tee_shm_free(reg_shm_in);
+> +	tee_shm_free(reg_shm);
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.34.1
+> 
