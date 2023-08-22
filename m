@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D99678482E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977CF784837
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238002AbjHVREQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:04:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54210 "EHLO
+        id S238011AbjHVRFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235151AbjHVREP (ORCPT
+        with ESMTP id S237959AbjHVRFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:04:15 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2078.outbound.protection.outlook.com [40.107.100.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB58A1;
-        Tue, 22 Aug 2023 10:04:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RwsYt2LFXvyQCUEm7R8vaufTEkMtjb6BJRWPz78VfFpSdr1uIcCexwDFRYO4NqH1YzMOKGCOfpnHbLtmmJeEhHnTymFJxFgAF+vgKieJ8fL13faiWW+Znr0X8srksPMa5nGV6P5OSVeNMi0dufG9AuzxH0Q8jZALOM++WsCKI1Q4wVwU7BgWqWkNddFOoM+k+984PesZAWKgBk4OxUnbbaA/LV2YwY7zeKNIzTH9+Y2FMJHbqaAnutWWttV95Myp0lEKkr0WYfDCCg3oJG5y2b/A8wQUC+Qp2rrZXAdfWN8ZxrxWCy9xJpigCFeyPtdOCqryIvFUrLU+O60wKyd7Ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EjRBJRxdRyeW8SkkpY42Wfz4bLZMQ/B7Qo6MGIIWBTM=;
- b=YXfP+3lNrAyl+nMARXoE24q3o+qz6+scgX+j+lS+BFs4YaZ8R02DhSQef72grGQ6la6MJghnqY7NigQ+A9WawOU/450R/URnOIDiVOk9QJqdKVM3rMj+O7fn0nLIT2BSn1cvetNUrpFsDZ+g0LwCfXegzOPDI/ZSuVi/OqDr4JS6hyGe2teu9c1OdHEhqz1eXlrGWUS/hbf9rTWKFtSo6ixOITZ44rfH89TR8TP9v4fAwJIxoEH3FdcOa0WRC05o3pPm011oCgD4xahDvy5qLA+rmR9QyGmv3VaxcU8CFPijqyvkNfMW03hRJ98N5h+Kb9k5B0thhFJo0nQv8cwnsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EjRBJRxdRyeW8SkkpY42Wfz4bLZMQ/B7Qo6MGIIWBTM=;
- b=qtIxL2FDOXgtjQnJVUiHFKzLqwJC51UtOUsD4bFjbOfP5ooaCABwpFXb0Q83Qv2dsVJH/OFdC7QGmywDA6x9I5hGaLWFkW0nfdYp3zRekbpJut+lzOjux2u077w2tcm53vY2Bpc2P+PnBCQOUQ+IiAyCdyHW/SkGjFx4PiZmCGk=
-Received: from BY5PR03CA0030.namprd03.prod.outlook.com (2603:10b6:a03:1e0::40)
- by CH2PR12MB4247.namprd12.prod.outlook.com (2603:10b6:610:7c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 17:04:02 +0000
-Received: from SA2PEPF000015CB.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0:cafe::60) by BY5PR03CA0030.outlook.office365.com
- (2603:10b6:a03:1e0::40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.20 via Frontend
- Transport; Tue, 22 Aug 2023 17:04:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF000015CB.mail.protection.outlook.com (10.167.241.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6699.14 via Frontend Transport; Tue, 22 Aug 2023 17:04:01 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 22 Aug
- 2023 12:04:00 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>
-CC:     Hamza Mahfooz <hamza.mahfooz@amd.com>, <stable@vger.kernel.org>,
-        "Swapnil Patel" <swapnil.patel@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        "Leo Li" <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        "Alex Deucher" <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
-        Wayne Lin <wayne.lin@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/amd/display: register edp_backlight_control() for DCN301
-Date:   Tue, 22 Aug 2023 13:03:42 -0400
-Message-ID: <20230822170343.137958-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 22 Aug 2023 13:05:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012ABD7;
+        Tue, 22 Aug 2023 10:05:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 804EF621B9;
+        Tue, 22 Aug 2023 17:05:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C885FC433C8;
+        Tue, 22 Aug 2023 17:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692723928;
+        bh=+/XUXGpY2ACCPD3YzzrpK3JtSQqnOrDZMR5OCAEhgDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G928dxMHkk1xDk/SX1dNnL+spqkcZRuq0C5Z40fu1Tb9wObRKQhtFzT0ipOQBh80X
+         M0BVrVcY8VmxczuqKrntaU8eZ0hqbR8EE1e7UAwRJz7snKD2v4GCMfQ9hgFuv0aBvc
+         38dD7dDK0lef3oOPG14kshG+9z1JoNQxNiubdga4OgfcfWS0/Ve3yY/2BVaHKd3pvN
+         cYaVOE7zu3UopoUb04Il5Y+Q0rXflj/XshyiU6vP1UN0j8lgReDw7ES6DUIaCc0AWt
+         YsDqY20pamlKghLyhjkFUTLoZ7KEg8lQf5JmsfEUOmiIbu47LoB18jET0Zcw96dt7s
+         2Z35AOyitp5nQ==
+Date:   Tue, 22 Aug 2023 18:05:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 21/36] arm64/mm: Implement map_shadow_stack()
+Message-ID: <007e1239-1258-4b89-b5db-a1c505e7aff5@sirena.org.uk>
+References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
+ <20230807-arm64-gcs-v4-21-68cfa37f9069@kernel.org>
+ <ZNZkADhSnodXuH5F@arm.com>
+ <9c722954-8f30-425e-a0a4-6edad463620f@sirena.org.uk>
+ <ZOTlBpAbSX6TSZzW@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015CB:EE_|CH2PR12MB4247:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1eb5ec72-4a4b-419a-ab42-08dba331c8c0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qLg/1gS1O4/u9YyZkiIUvUvt5CTAnZBa2rNH2n/y19aNmSCUZQw/aEdR02PZikvjYMhOc40o1eHXvFLopzfsp+hTxlcpqywVDY88ZIMjo5z4KILpQQ72bouf6/nMDFYrTd05MJAIdifEHCO9m24XQBhqdTTorr6hg/zH5/5sWTRgJN58sgUezPgJP9jFDiBMk9ckeWsFKZWZTvXuUDtTK8g9NXms/FtLl/xY+rLGfPmzZEZImYOwv3wADDFMOlozxoAJr7xZlM1wF/Lqu+eKg9mHzGFGmOgy5oWlV9CwmHcl8GWGrVHQWwQj0PTE5lhWHpuvXA2qud8+WYGxXCUtV0FbWXB4VIZLE/hhmuaLg8qQ2xK8kYvu6NbLC/2mfF91w8WrVe9zeuH/6UCwTaH6S8DL11vFhU/fDnALvV9XyghkXmnHbTwgwx3jI3jaL7kisqOfErptXF2dWG39pNexZwe94z07yVna/ZTRMAWzQUNtJ9+Uum2HxNYYEwD/SPiImJ8LDdoXNZ+jsl7cNrF/nBc3ppKmwD/gNCZ1+gXj7nnaF3HBAaG9Wk4IbzaYN/bC1lsGsc9Q0hC0zAtaVkBq3pvwmxDjHLDGYiFAaHYUIev6jSFeduznGC24UhDTZJ91mF3hu1j+Ksymglhptk9zZocvatKmKsSACYC81W3b0mTqkXxCW7xuBTeYg0sj/MKvkoKrZvRPsHJEfYrGd2nWyZsX5u7jyWsEO3UxGUqOq0ifLk//+mdz+bD0suzps3oBYMbiK5xDo5pf0Jj/OjIAmf0ebdQViPtfAN44FukpSos=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(136003)(346002)(376002)(186009)(1800799009)(82310400011)(451199024)(36840700001)(40470700004)(46966006)(54906003)(6916009)(70586007)(316002)(70206006)(966005)(8676002)(8936002)(2616005)(4326008)(36756003)(40460700003)(41300700001)(1076003)(356005)(81166007)(82740400003)(478600001)(6666004)(40480700001)(83380400001)(2906002)(47076005)(36860700001)(86362001)(44832011)(426003)(336012)(5660300002)(26005)(16526019)(16060500005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 17:04:01.8758
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1eb5ec72-4a4b-419a-ab42-08dba331c8c0
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015CB.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4247
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="exkeVuAAvGvWqCpS"
+Content-Disposition: inline
+In-Reply-To: <ZOTlBpAbSX6TSZzW@arm.com>
+X-Cookie: MIT:
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As made mention of in commit 099303e9a9bd ("drm/amd/display: eDP
-intermittent black screen during PnP"), we need to turn off the
-display's backlight before powering off an eDP display. Not doing so
-will result in undefined behaviour according to the eDP spec. So, set
-DCN301's edp_backlight_control() function pointer to
-dce110_edp_backlight_control().
 
-Cc: stable@vger.kernel.org
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2765
-Fixes: 9c75891feef0 ("drm/amd/display: rework recent update PHY state commit")
-Suggested-by: Swapnil Patel <swapnil.patel@amd.com>
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c | 1 +
- 1 file changed, 1 insertion(+)
+--exkeVuAAvGvWqCpS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
-index 257df8660b4c..61205cdbe2d5 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
-@@ -75,6 +75,7 @@ static const struct hw_sequencer_funcs dcn301_funcs = {
- 	.get_hw_state = dcn10_get_hw_state,
- 	.clear_status_bits = dcn10_clear_status_bits,
- 	.wait_for_mpcc_disconnect = dcn10_wait_for_mpcc_disconnect,
-+	.edp_backlight_control = dce110_edp_backlight_control,
- 	.edp_power_control = dce110_edp_power_control,
- 	.edp_wait_for_hpd_ready = dce110_edp_wait_for_hpd_ready,
- 	.set_cursor_position = dcn10_set_cursor_position,
--- 
-2.41.0
+On Tue, Aug 22, 2023 at 05:40:38PM +0100, Catalin Marinas wrote:
+> On Fri, Aug 18, 2023 at 06:08:52PM +0100, Mark Brown wrote:
 
+> > mprotect() uses arch_validate_flags() which we're already having cover
+> > this so it's already covered.
+
+> I searched the patches and there's no change to the arm64
+> arch_validate_flags(). Maybe I missed it.
+
+It's in v5, the update to arch_validate_flags() was one of your comments
+=66rom another patch in the series.
+
+--exkeVuAAvGvWqCpS
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTk6s4ACgkQJNaLcl1U
+h9DssAf9EW4nFH7RlADvE4EkIEjYj6kUziCf6Hh2iZGyNLK3aFRxnL1nY1u1zP6j
+q/ACfgdD1+OLEnvbezfXu1bJ6avmKqmnJHnkP7zF5C/63tXoF8IUUwodZXV4d3DP
+54ezvT4yQ8Yu5AxpmLPCItJkHbeLAezr41EbEpcJWSfkAnXqhT/cO7JREhVKH/3f
+czlWXKNy8c+vwIXC7x7mRKOCeBcJ4mofi6i5T8JDYcL1b59ItFYO7zfcB1H/nPh7
+qV10AxG61aXsJoiboml1UjyOA8+ZaiLpjgGmxZ1YEZSF3C+TVw2Ul5Z4yHtgdVdA
+FQHfQawXdzOTgnqQG2uCel7CjV9LDQ==
+=ME24
+-----END PGP SIGNATURE-----
+
+--exkeVuAAvGvWqCpS--
