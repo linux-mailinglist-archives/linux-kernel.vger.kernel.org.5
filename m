@@ -2,63 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E9E78459A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7088784598
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237144AbjHVPb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:31:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
+        id S237135AbjHVPby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237056AbjHVPb4 (ORCPT
+        with ESMTP id S237056AbjHVPbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:31:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F679113
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692718315; x=1724254315;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=2aIJm0a8QdmtYpvImn6u5PG+h0jxorbO3SNA1lhBiIo=;
-  b=OPCQOtDB97aQZ1Zj+Yf/4r/bxkhjA0sX5FyccWDg5RSgYJhgAs+m6/16
-   AEauOkz1ERCub3a9A7toY9AdhvLINzkYx6E4G0x9L4aSZEDfIQDrAPWtC
-   nDj+sEo3PzoA/uoftqDe2mN1c8cQd+h1vys9E4GVU45sOBpUZXTrB1LkZ
-   1CPSckZXGFj3l4f1KLRI/4eDLeIzeXEuLwrW+QXEfR7CasYS+80pJAq6R
-   wE3thvfTKWyQCwbiTTsI5oWpDlhNvFLuvGitlifGhyPv6AUa+b/cQSVZ1
-   oCOR82HD5LOyNuQ32YnSKctlKi4+4R9ger/kDSVKfdbtHFZpAsKYdmMPp
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="440282744"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="440282744"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 08:31:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="686084286"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="686084286"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 22 Aug 2023 08:31:30 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYTLt-0000I3-11;
-        Tue, 22 Aug 2023 15:31:29 +0000
-Date:   Tue, 22 Aug 2023 23:30:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>,
-        Kees Cook <keescook@chromium.org>
-Subject: [tip:x86/shstk 10/24] arch/x86/kernel/shstk.c:244:29: sparse:
- sparse: incorrect type in argument 1 (different address spaces)
-Message-ID: <202308222312.Jt4Tog5T-lkp@intel.com>
+        Tue, 22 Aug 2023 11:31:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86091CE9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:31:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692718266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PqLO2V0ZPwoCiwmUHn1tH4GQt5T66HZTGlrG692z+68=;
+        b=CsYnvAotBGwAq4d+OsW9ZNCQhC2EqNRKNfYqJofLdcUPa9j0a572E8TQU/xT35vAsX3Kdv
+        9ixgh2YRKqqH7W7FoDbmjV3NheAFffOoTlMa9/k0B3PuslIA6OOJOSxbTHPsNaRadr+mNe
+        rqKSBecuQipNUEGGp3XxXPVCgXH95uU=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-235-NcqLKGp1NjeZRtajKUzuHQ-1; Tue, 22 Aug 2023 11:31:05 -0400
+X-MC-Unique: NcqLKGp1NjeZRtajKUzuHQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-99e168f4f38so57778666b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:31:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692718263; x=1693323063;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PqLO2V0ZPwoCiwmUHn1tH4GQt5T66HZTGlrG692z+68=;
+        b=IW+on9Tuoy1kUHYSQEDbg1hkJtWoRXPEYEXgJNvz5vDT8y15apBKh1rZF0eTMipiRj
+         DTd+M6i4cKEyR8qUNKprTFQw+VXaf32A/X0fV72vdKN1qJJCDsA9kLOy35rAHL1BUsKg
+         Br5TXX8WTK/e7GdHkG+qBY2RfH1DKUKEc21wnMldFT29LyhZXWF98NJZNjqTtGQ9eZWN
+         rFV3I6E52ju6vQqdbl4eB+/tDqmUUtLU42+WdjfbiZJxjCTY0o1iNg+Sr93gppKTsG3V
+         e5vbaJrdnroZNCLE023/8CNKXoPrbvjL7BUUYBXHRyA20x80usycD9aJ2od91flJYYL+
+         y3kg==
+X-Gm-Message-State: AOJu0Yz2lP5mbTAM9sjp8bdEQh0zMDATp8DxrV6VdXIwi6T8vmA598t0
+        HXAjp1blahsNfu3Wudk/hZmii1Jos4vqBMYBkNPqRyLqG5OEd1oMucCzEuPV6+vzrXy/lryYm+Z
+        NqaaLaffG8JJU8AbgBrX3XVsL
+X-Received: by 2002:a17:906:51ce:b0:9a1:b4f9:b1db with SMTP id v14-20020a17090651ce00b009a1b4f9b1dbmr1930715ejk.1.1692718263253;
+        Tue, 22 Aug 2023 08:31:03 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF4qLldO9SHriB/biC2xhIUus+4dimS51pERtZRGR9Vw2TOIqYiK47v/foUI/IPbMNkxI46ig==
+X-Received: by 2002:a17:906:51ce:b0:9a1:b4f9:b1db with SMTP id v14-20020a17090651ce00b009a1b4f9b1dbmr1930697ejk.1.1692718262982;
+        Tue, 22 Aug 2023 08:31:02 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-4.dyn.eolo.it. [146.241.241.4])
+        by smtp.gmail.com with ESMTPSA id c25-20020a170906529900b0099cf840527csm8299419ejm.153.2023.08.22.08.31.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 08:31:02 -0700 (PDT)
+Message-ID: <f80fcd476a230c354bf9758762250c43a1f3d5cc.camel@redhat.com>
+Subject: Re: [PATCH] sock: Fix sk_sleep return invalid pointer
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     eadavis@sina.com,
+        syzbot+666c97e4686410e79649@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, ralf@linux-mips.org,
+        syzkaller-bugs@googlegroups.com, hdanton@sina.com
+Date:   Tue, 22 Aug 2023 17:31:00 +0200
+In-Reply-To: <20230822124419.1838055-1-eadavis@sina.com>
+References: <000000000000e6c05806033522d3@google.com>
+         <20230822124419.1838055-1-eadavis@sina.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,99 +84,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/shstk
-head:   c6cfcbd8ca43766851a8c952e3b570727147020f
-commit: 05e36022c0543ba55a3de55af455b00cb3eb4fcc [10/24] x86/shstk: Handle signals for shadow stack
-config: x86_64-randconfig-r133-20230822 (https://download.01.org/0day-ci/archive/20230822/202308222312.Jt4Tog5T-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308222312.Jt4Tog5T-lkp@intel.com/reproduce)
+On Tue, 2023-08-22 at 20:44 +0800, eadavis@sina.com wrote:
+> From: Edward AD <eadavis@sina.com>
+>=20
+> The parameter sk_sleep(sk) passed in when calling prepare_to_wait may=20
+> return an invalid pointer due to nr-release reclaiming the sock.
+> Here, schedule_timeout_interruptible is used to replace the combination=
+=20
+> of 'prepare_to_wait, schedule, finish_wait' to solve the problem.
+>=20
+> Reported-and-tested-by: syzbot+666c97e4686410e79649@syzkaller.appspotmail=
+.com
+> Signed-off-by: Edward AD <eadavis@sina.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308222312.Jt4Tog5T-lkp@intel.com/
+This looks wrong. No syscall should race with sock_release(). It looks
+like you are papering over the real issue.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/x86/kernel/shstk.c:244:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected unsigned long long [noderef] [usertype] __user *addr @@     got void *[noderef] __user @@
-   arch/x86/kernel/shstk.c:244:29: sparse:     expected unsigned long long [noderef] [usertype] __user *addr
-   arch/x86/kernel/shstk.c:244:29: sparse:     got void *[noderef] __user
->> arch/x86/kernel/shstk.c:295:55: sparse: sparse: cast removes address space '__user' of expression
+As the reproducer shows a disconnect on an connected socket, I'm wild
+guessing something alike 4faeee0cf8a5d88d63cdbc3bab124fb0e6aed08c
+should be more appropriate.
 
-vim +244 arch/x86/kernel/shstk.c
+Cheers,
 
-   234	
-   235	static int shstk_push_sigframe(unsigned long *ssp)
-   236	{
-   237		unsigned long target_ssp = *ssp;
-   238	
-   239		/* Token must be aligned */
-   240		if (!IS_ALIGNED(target_ssp, 8))
-   241			return -EINVAL;
-   242	
-   243		*ssp -= SS_FRAME_SIZE;
- > 244		if (put_shstk_data((void *__user)*ssp, target_ssp))
-   245			return -EFAULT;
-   246	
-   247		return 0;
-   248	}
-   249	
-   250	static int shstk_pop_sigframe(unsigned long *ssp)
-   251	{
-   252		unsigned long token_addr;
-   253		int err;
-   254	
-   255		err = get_shstk_data(&token_addr, (unsigned long __user *)*ssp);
-   256		if (unlikely(err))
-   257			return err;
-   258	
-   259		/* Restore SSP aligned? */
-   260		if (unlikely(!IS_ALIGNED(token_addr, 8)))
-   261			return -EINVAL;
-   262	
-   263		/* SSP in userspace? */
-   264		if (unlikely(token_addr >= TASK_SIZE_MAX))
-   265			return -EINVAL;
-   266	
-   267		*ssp = token_addr;
-   268	
-   269		return 0;
-   270	}
-   271	
-   272	int setup_signal_shadow_stack(struct ksignal *ksig)
-   273	{
-   274		void __user *restorer = ksig->ka.sa.sa_restorer;
-   275		unsigned long ssp;
-   276		int err;
-   277	
-   278		if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
-   279		    !features_enabled(ARCH_SHSTK_SHSTK))
-   280			return 0;
-   281	
-   282		if (!restorer)
-   283			return -EINVAL;
-   284	
-   285		ssp = get_user_shstk_addr();
-   286		if (unlikely(!ssp))
-   287			return -EINVAL;
-   288	
-   289		err = shstk_push_sigframe(&ssp);
-   290		if (unlikely(err))
-   291			return err;
-   292	
-   293		/* Push restorer address */
-   294		ssp -= SS_FRAME_SIZE;
- > 295		err = write_user_shstk_64((u64 __user *)ssp, (u64)restorer);
-   296		if (unlikely(err))
-   297			return -EFAULT;
-   298	
-   299		fpregs_lock_and_load();
-   300		wrmsrl(MSR_IA32_PL3_SSP, ssp);
-   301		fpregs_unlock();
-   302	
-   303		return 0;
-   304	}
-   305	
+Paolo
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
