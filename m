@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79500783EE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD9B783EF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234829AbjHVLcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35880 "EHLO
+        id S234848AbjHVLcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbjHVLcF (ORCPT
+        with ESMTP id S234835AbjHVLcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:32:05 -0400
+        Tue, 22 Aug 2023 07:32:19 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2746CDF;
-        Tue, 22 Aug 2023 04:31:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78BECF3;
+        Tue, 22 Aug 2023 04:32:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F21F6525F;
-        Tue, 22 Aug 2023 11:31:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17862C433C8;
-        Tue, 22 Aug 2023 11:31:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46E5C65260;
+        Tue, 22 Aug 2023 11:31:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EBC9C433C8;
+        Tue, 22 Aug 2023 11:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703889;
-        bh=vUD2YiFwO8PxTtU4FsBb6DWzVnZZ6MMI6fj037Vq/+8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aDQ7JRNJcc3Wv8EwWsLzug0zk8HQvDyU1mgeBKz4AtweeGhxD1GgPDz1po4PHo3x2
-         r7FArd2bQVRDGgUE1PdCQFrgWiFD15Jp00KFQc0XhXFwK7/RJp2pCwIj/RJuDuFTKL
-         c+KjUFfuFwJCuoY6fJCY3J8lhCRR8Zl9kJlMNqeeTzV0h78Mp1JEWCochySOd6STWx
-         GgGK8/eK48tZi8sE5TpDsgRnbu9C+pO81rRVQYhsFIt/vEoyh+pW+DqOvokM543q/x
-         KiTKC2zp7y0hPokJwFdj+LIcipgyHcPF1DN21FPlq5+NoMZkSda9/o3F3GOk4imPH8
-         AQeDY75+npIOw==
+        s=k20201202; t=1692703893;
+        bh=/+js/vWWPi+yyBgt6H+mjcGqL68sQdGJ9HFeAjQVUJ8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RIGR+JTESDaiCku5dGqxnjo33ZS4dwpHuLSDSR4iR+noefUYf7YEwqXlfu+niHcOk
+         kkZSgoA+eZAw9c5A5n+8blOm6MBN1jNciVM7JzDB3dMFmyN4oSkuudQEr/haYSeZq1
+         9fOqcGQTBi7oK1ZAK0ElUGyVScP5LmSkGcq34hoLQosIT2of94B59P4Ix0R1sGvtlK
+         /bJxZbOh6bxozTxSvsr1OX6u1L778EZESwj96U8T7+zXA0lXKW+WiLZ7Ykuvm0r8+d
+         w3wdYWj0qXG0/fyhm4Y1yvoT7iI/STfq4Q83GgNMhgtxbIrqD8qfBrw/VT5j09mta0
+         dIx4dOQR25+nw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Saurabh Sengar <ssengar@linux.microsoft.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 10/10] x86/hyperv: add noop functions to x86_init mpparse functions
-Date:   Tue, 22 Aug 2023 07:31:00 -0400
-Message-Id: <20230822113101.3549915-10-sashal@kernel.org>
+Cc:     Baoquan He <bhe@redhat.com>, kernel test robot <lkp@intel.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 1/9] clk: fixed-mmio: make COMMON_CLK_FIXED_MMIO depend on HAS_IOMEM
+Date:   Tue, 22 Aug 2023 07:31:22 -0400
+Message-Id: <20230822113130.3550050-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230822113101.3549915-1-sashal@kernel.org>
-References: <20230822113101.3549915-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.11
+X-stable-base: Linux 6.1.46
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -62,49 +58,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
+From: Baoquan He <bhe@redhat.com>
 
-[ Upstream commit 9e2d0c336524706fb327e9b87477f5f3337ad7a6 ]
+[ Upstream commit e7dd44f4f3166db45248414f5df8f615392de47a ]
 
-Hyper-V can run VMs at different privilege "levels" known as Virtual
-Trust Levels (VTL). Sometimes, it chooses to run two different VMs
-at different levels but they share some of their address space. In
-such setups VTL2 (higher level VM) has visibility of all of the
-VTL0 (level 0) memory space.
+On s390 systems (aka mainframes), it has classic channel devices for
+networking and permanent storage that are currently even more common
+than PCI devices. Hence it could have a fully functional s390 kernel
+with CONFIG_PCI=n, then the relevant iomem mapping functions
+[including ioremap(), devm_ioremap(), etc.] are not available.
 
-When the CONFIG_X86_MPPARSE is enabled for VTL2, the VTL2 kernel
-performs a search within the low memory to locate MP tables. However,
-in systems where VTL0 manages the low memory and may contain valid
-tables, this scanning can result in incorrect MP table information
-being provided to the VTL2 kernel, mistakenly considering VTL0's MP
-table as its own
+Here let COMMON_CLK_FIXED_MMIO depend on HAS_IOMEM so that it won't
+be built to cause below compiling error if PCI is unset:
 
-Add noop functions to avoid MP parse scan by VTL2.
+------
+ld: drivers/clk/clk-fixed-mmio.o: in function `fixed_mmio_clk_setup':
+clk-fixed-mmio.c:(.text+0x5e): undefined reference to `of_iomap'
+ld: clk-fixed-mmio.c:(.text+0xba): undefined reference to `iounmap'
+------
 
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Link: https://lore.kernel.org/r/1687537688-5397-1-git-send-email-ssengar@linux.microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202306211329.ticOJCSv-lkp@intel.com/
+Signed-off-by: Baoquan He <bhe@redhat.com>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: linux-clk@vger.kernel.org
+Link: https://lore.kernel.org/r/20230707135852.24292-8-bhe@redhat.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_vtl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/clk/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-index 85d38b9f35861..db5d2ea39fc0d 100644
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -25,6 +25,10 @@ void __init hv_vtl_init_platform(void)
- 	x86_init.irqs.pre_vector_init = x86_init_noop;
- 	x86_init.timers.timer_init = x86_init_noop;
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index 5da82f2bdd211..a5dcc7293a836 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -427,6 +427,7 @@ config COMMON_CLK_BD718XX
+ config COMMON_CLK_FIXED_MMIO
+ 	bool "Clock driver for Memory Mapped Fixed values"
+ 	depends on COMMON_CLK && OF
++	depends on HAS_IOMEM
+ 	help
+ 	  Support for Memory Mapped IO Fixed clocks
  
-+	/* Avoid searching for BIOS MP tables */
-+	x86_init.mpparse.find_smp_config = x86_init_noop;
-+	x86_init.mpparse.get_smp_config = x86_init_uint_noop;
-+
- 	x86_platform.get_wallclock = get_rtc_noop;
- 	x86_platform.set_wallclock = set_rtc_noop;
- 	x86_platform.get_nmi_reason = hv_get_nmi_reason;
 -- 
 2.40.1
 
