@@ -2,221 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED227849C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983D57849C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjHVSyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 14:54:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48540 "EHLO
+        id S229790AbjHVS4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 14:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjHVSyr (ORCPT
+        with ESMTP id S229537AbjHVS4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 14:54:47 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF425CD1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:54:45 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d77b9d574f8so114527276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:54:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692730485; x=1693335285;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EC4FoWXo6SNQKwsXxt28KsctazZB0KZm2Dgg9LreMAM=;
-        b=1YIoFqVN55j3XEBWw5UYnqxvNjoz+koElbxuVIP/CJlJ0hkI9N8eMY39So2s6Zh8e0
-         lYOJwoMEQBCBGM9ObvuUJ43RLHkBTQhPIi4D2e21eC0WOzSMo3w6Pej51GXssjJncxsr
-         40V/Mu1pMG/D3T0D49sODOZIfKYGqNqFAaOkTMSHTKzO6xb16qy4PWhFgzJJXzDEWNDd
-         syAPBovHWWRT8jV5/JwCsG9j6lWmyoq166pYQYj+5LjUZx2PNOAhbu+jAuVXXYMq6btV
-         oWcKnK9p1XjuZsNocTtOJIfHWsLUDWxxgnOuAfTnpiEG8/nc/26eHsq/XlCM+fMpNl17
-         lGng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692730485; x=1693335285;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EC4FoWXo6SNQKwsXxt28KsctazZB0KZm2Dgg9LreMAM=;
-        b=JlHDUEGe/oqZarYgLHVvCvmg+1isqWu2W8n4nHn+Eatsq+TRGe0xyC1zfCT4huNFgZ
-         R76zg23QF2CgrBWBQxDPErMeXkEEtKR5309UnslttETSw7Cispoi8tFusUwrXjn+jTK1
-         o6U5/hgP83gsBhRXJC6eeKOQlFRDhIrG7+ZTLE1vQJvzkqjMfq8OREpK+q4pkG19dQlE
-         Pyi+InpZZl89jLUi3/A8b0PsormasZI592w1m+N6mi3mlC2jipjsYA8QhQ9A6PAZx7/s
-         niRDEKjAB2wgxtcPo/XY555t2R51ZICxrBZ6Z/pHA7uS00tiBCtS0dEqy5pHwAJQLCJh
-         XoLQ==
-X-Gm-Message-State: AOJu0YzMuWtwoooWL2aCTFTrcbaCRk03XYa/zH6fZl0PbN+5nqeqbIzQ
-        UTHTOwKp/PyQq7jYBP6w2CIAMg==
-X-Google-Smtp-Source: AGHT+IFpHQvIMwN5WYlfI56GAofuwQT9IU67DR/OnesR0CbZe8XpbWpAMdSzZjh6aZoI7atOZrgvQQ==
-X-Received: by 2002:a81:4843:0:b0:583:2df2:35f3 with SMTP id v64-20020a814843000000b005832df235f3mr9917420ywa.1.1692730484669;
-        Tue, 22 Aug 2023 11:54:44 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id r64-20020a815d43000000b00545a08184cesm2915469ywb.94.2023.08.22.11.54.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 11:54:44 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 11:54:39 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Jann Horn <jannh@google.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
-        Zach O'Keefe <zokeefe@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        sparclinux@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH mm-unstable] mm/khugepaged: fix collapse_pte_mapped_thp()
- versus uffd
-In-Reply-To: <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
-Message-ID: <82d294-c9b0-d7b4-71c9-cfed3925c47b@google.com>
-References: <4d31abf5-56c0-9f3d-d12f-c9317936691@google.com> <CAG48ez1XAePj5MUG8AUmnTjRLcxKre-NGYV82kB68-X8Rh6fxA@mail.gmail.com> <f2dc6d6b-c516-932-1598-a58e2afffe9a@google.com> <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
+        Tue, 22 Aug 2023 14:56:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396C7CC;
+        Tue, 22 Aug 2023 11:56:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBC9A61939;
+        Tue, 22 Aug 2023 18:56:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BA24C433CB;
+        Tue, 22 Aug 2023 18:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692730579;
+        bh=aet0iF2o60a3c3pvv775GQV7jYkTtlDneGAO4LGrg3U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LD/fAycgmTPpfuWhXoXWMjXLsWZ5Z3g4HT6kJ6ryF7BSwS/3g+D5fhp9hXeUVZBdT
+         Z3BORWNKPzWt5hlPiPhX5YqRNqiNKgkoLcTKG7TnMQZiVjp65zeSu99wgiU0J9+1zh
+         pcvWZiqfSV84FhSiDiRRUbOdMmw0kD2IJQqint14nXnOrGTvghg4XyyWxEQHhiukKm
+         +XTbs5nx1szt9mHQQkh9+WInae+76lM0maeKNkVqYyvXa+cmyh1i2LdYqRoeMwVpSH
+         gxQRpa1Y0yujT88pf3ZWYfdFVtFrrM4ayin/W2vn31T1388Pebnt5osLkgDeR6tVgo
+         1e8jKwCN6voBQ==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso44475841fa.1;
+        Tue, 22 Aug 2023 11:56:19 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxAXhAYBpOpwfciKHb4vgVEiO2CjRfhrAI3PzfAPqsUuU8M+bQL
+        yCTaNP7aHnTqEn8R97Gwm/x70u0ziH6gVGv/Qdk=
+X-Google-Smtp-Source: AGHT+IHfAxcIi9Piq9Oj+V7RJku3LNFwWPGReKt1Mh0J9dUOB/gWYXDpP9XgEFnPQKf/xnz8LucrZFMvCC3ooqVRyYU=
+X-Received: by 2002:a05:6512:3b28:b0:4f9:596d:c803 with SMTP id
+ f40-20020a0565123b2800b004f9596dc803mr9936842lfv.53.1692730577195; Tue, 22
+ Aug 2023 11:56:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463760895-405531799-1692730484=:3162"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+In-Reply-To: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 22 Aug 2023 11:56:04 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5Od9tczboEBxC8gn+2XLkEbirfCUm7WuJBey5MKQjwDA@mail.gmail.com>
+Message-ID: <CAPhsuW5Od9tczboEBxC8gn+2XLkEbirfCUm7WuJBey5MKQjwDA@mail.gmail.com>
+Subject: Re: Infiniate systemd loop when power off the machine with multiple
+ MD RAIDs
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Christoph Hellwig <hch@lst.de>, AceLan Kao <acelan@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
----1463760895-405531799-1692730484=:3162
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-On Tue, 22 Aug 2023, Jann Horn wrote:
-> On Tue, Aug 22, 2023 at 4:51=E2=80=AFAM Hugh Dickins <hughd@google.com> w=
-rote:
-> > On Mon, 21 Aug 2023, Jann Horn wrote:
-> > > On Mon, Aug 21, 2023 at 9:51=E2=80=AFPM Hugh Dickins <hughd@google.co=
-m> wrote:
-> > > > Just for this case, take the pmd_lock() two steps earlier: not beca=
-use
-> > > > it gives any protection against this case itself, but because ptloc=
-k
-> > > > nests inside it, and it's the dropping of ptlock which let the bug =
-in.
-> > > > In other cases, continue to minimize the pmd_lock() hold time.
-> > >
-> > > Special-casing userfaultfd like this makes me a bit uncomfortable; bu=
-t
-> > > I also can't find anything other than userfaultfd that would insert
-> > > pages into regions that are khugepaged-compatible, so I guess this
-> > > works?
+On Wed, Aug 16, 2023 at 2:37=E2=80=AFAM Bagas Sanjaya <bagasdotme@gmail.com=
+> wrote:
+>
+> Hi,
+>
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+>
+> > It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10, RAID=
+5 and RAID10) and then you will see below error repeatly(need to use serial=
+ console to see it)
 > >
-> > I'm as sure as I can be that it's solely because userfaultfd breaks
-> > the usual rules here (and in fairness, IIRC Andrea did ask my permissio=
-n
-> > before making it behave that way on shmem, COWing without a source page=
-).
-> >
-> > Perhaps something else will want that same behaviour in future (it's
-> > tempting, but difficult to guarantee correctness); for now, it is just
-> > userfaultfd (but by saying "_armed" rather than "_missing", I'm half-
-> > expecting uffd to add more such exceptional modes in future).
->=20
-> Hm, yeah, sounds okay. (I guess we'd also run into this if we ever
-> wanted to make it possible to reliably install PTE markers with
-> madvise() or something like that, which might be nice for allowing
-> userspace to create guard pages without unnecessary extra VMAs...)
+> > [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
+> > [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all dirs
+> > [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/=
+bus
+> > [ 205.380427] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys/=
+class
+> > [ 205.388257] systemd-shutdown[1]: Stopping MD /dev/md127 (9:127).
+> > [ 205.394880] systemd-shutdown[1]: Failed to sync MD block device /dev/=
+md127, ignoring: Input/output error
+> > [ 205.404975] md: md127 stopped.
+> > [ 205.470491] systemd-shutdown[1]: Stopping MD /dev/md126 (9:126).
+> > [ 205.770179] md: md126: resync interrupted.
+> > [ 205.776258] md126: detected capacity change from 1900396544 to 0
+> > [ 205.783349] md: md126 stopped.
+> > [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125).
+> > [ 205.862435] md: md126 stopped.
+> > [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device /dev/=
+md125, ignoring: Input/output error
+> > [ 205.872845] block device autoloading is deprecated and will be remove=
+d.
+> > [ 205.880955] md: md125 stopped.
+> > [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md124p2 (259:7).
+> > [ 205.947707] systemd-shutdown[1]: Could not stop MD /dev/md124p2: Devi=
+ce or resource busy
+> > [ 205.957004] systemd-shutdown[1]: Stopping MD /dev/md124p1 (259:6).
+> > [ 205.964177] systemd-shutdown[1]: Could not stop MD /dev/md124p1: Devi=
+ce or resource busy
+> > [ 205.973155] systemd-shutdown[1]: Stopping MD /dev/md124 (9:124).
+> > [ 205.979789] systemd-shutdown[1]: Could not stop MD /dev/md124: Device=
+ or resource busy
+> > [ 205.988475] systemd-shutdown[1]: Not all MD devices stopped, 4 left.
 
-I see the mailthread has taken inspiration from your comment there,
-and veered off in that direction: but I'll ignore those futures.
+From systemd code, i.e. function delete_md(), this error:
 
->=20
-> > > I guess an alternative would be to use a spin_trylock() instead of th=
-e
-> > > current pmd_lock(), and if that fails, temporarily drop the page tabl=
-e
-> > > lock and then restart from step 2 with both locks held - and at that
-> > > point the page table scan should be fast since we expect it to usuall=
-y
-> > > be empty.
-> >
-> > That's certainly a good idea, if collapse on userfaultfd_armed private
-> > is anything of a common case (I doubt, but I don't know).  It may be a
-> > better idea anyway (saving a drop and retake of ptlock).
->=20
-> I was thinking it also has the advantage that it would still perform
-> okay if we got rid of the userfaultfd_armed() condition at some point
-> - though I realize that designing too much for hypothetical future
-> features is an antipattern.
->=20
-> > I gave it a try, expecting to end up with something that would lead
-> > me to say "I tried it, but it didn't work out well"; but actually it
-> > looks okay to me.  I wouldn't say I prefer it, but it seems reasonable,
-> > and no more complicated (as Peter rightly observes) than the original.
-> >
-> > It's up to you and Peter, and whoever has strong feelings about it,
-> > to choose between them: I don't mind (but I shall be sad if someone
-> > demands that I indent that comment deeper - I'm not a fan of long
-> > multi-line comments near column 80).
->=20
-> I prefer this version because it would make it easier to remove the
-> "userfaultfd_armed()" check in the future if we have to, but I guess
-> we could also always change it later if that becomes necessary, so I
-> don't really have strong feelings on it at this point.
+[ 205.957004] systemd-shutdown[1]: Stopping MD /dev/md124p1 (259:6).
+[ 205.964177] systemd-shutdown[1]: Could not stop MD /dev/md124p1:
+Device or resource busy
 
-Thanks for considering them both, Jann.  I do think your trylock way,
-as in v2, is in principle superior, and we may well have good reason
-to switch over to it in future; but I find it slightly more confusing,
-so will follow your and Peter's "no strong feelings" for now, and ask
-Andrew please to take the original (implicit v1).
+is most likely triggered by ioctl(STOP_ARRAY).
 
-Overriding reason: I realized overnight that v2 is not quite correct:
-I was clever enough to realize that nr_ptes needed to be reset to 0
-to get the accounting right with a recheck pass, but not clever enough
-to realize that resetting it to 0 there would likely skip the abort
-path's flush_tlb_mm(mm), when we actually had cleared entries on the
-first pass.  It needs a separate bool to decide the flush_tlb_mm(mm),
-or it needs that (ridiculously minor!) step 3 to be moved down.
+And based on the code, I think the ioctl fails here:
 
-But rather than reworking it, please let's just go with v1 for now.
+        if (cmd =3D=3D STOP_ARRAY || cmd =3D=3D STOP_ARRAY_RO) {
+                /* Need to flush page cache, and ensure no-one else opens
+                 * and writes
+                 */
+                mutex_lock(&mddev->open_mutex);
+                if (mddev->pers && atomic_read(&mddev->openers) > 1) {
+                        mutex_unlock(&mddev->open_mutex);
+                        err =3D -EBUSY;
+                        goto out;        ////////////////////// HERE
+                }
+                if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
+                        mutex_unlock(&mddev->open_mutex);
+                        err =3D -EBUSY;
+                        goto out;
+                }
+                did_set_md_closing =3D true;
+                mutex_unlock(&mddev->open_mutex);
+                sync_blockdev(bdev);
+        }
+
+>
+> See Bugzilla for the full thread and attached full journalctl log.
+>
+> Anyway, I'm adding this regression to be tracked by regzbot:
+>
+> #regzbot introduced: 12a6caf273240a https://bugzilla.kernel.org/show_bug.=
+cgi?id=3D217798
+> #regzbot title: systemd shutdown hang on machine with different RAID leve=
+ls
+
+But the observation above doesn't seem to match the bisect result
+and it doesn't seem to be related to different RAID levels.
 
 Thanks,
-Hugh
----1463760895-405531799-1692730484=:3162--
+Song
+
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217798
+>
+> --
+> An old man doll... just what I always wanted! - Clara
