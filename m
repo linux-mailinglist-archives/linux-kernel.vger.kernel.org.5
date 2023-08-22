@@ -2,155 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FC7784BF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688DC784C05
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbjHVV0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S231295AbjHVVar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjHVV0Y (ORCPT
+        with ESMTP id S231287AbjHVVap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:26:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8852E42
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:26:19 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so12341923a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:26:19 -0700 (PDT)
+        Tue, 22 Aug 2023 17:30:45 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD50ACEC
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:30:43 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bf62258c4dso21264215ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692739578; x=1693344378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32tFknpYUltGX7BrfzpOF/XJEJkxSlIebbE3WJkd8PM=;
-        b=7AkQbKGj7c2iyU1W1VleqR2BeJQxs9NQg4Dm4uTnHgD0my3qkctcx7KwwqdM17qsAG
-         tL3hMHIxigb2XVJGm1XzIcPBfVamX7KeRvrLHAtKdleDm6KUtL+rxHo0R+f2WRBPsiHS
-         yOR0jmYmcdpVcxe8AXGWkldfDIIjuFItsUpHs9dF8x6PG2sd9tDFnEYswintcvIb2REK
-         WjI/9McRGQDEze9QncuOg2aWiECZ9Gq8lKKBLrlxA5jb2hup3Nfr5pGBbrOZVNlIfacr
-         UXbl3v5rxMaYDIiB0pdyoWvxdN25vilG09QK6kdBb3wLSI+BVNTZJS/XUPSWdLSJRXdY
-         N/fg==
+        d=chromium.org; s=google; t=1692739843; x=1693344643;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kSHi/syeOYlCBnhJOJQl5cWk2sa2bkZnAfAcQGZrzNU=;
+        b=WPVY2tmh/Pe0LvBCNsIytE2xjzJE2pZ3O+oUz0K2jus47YsX6dc/oJlpAvnXL5dabN
+         74wjaxbh96qJLKDPIjtFphPFpyNBI7kWCHTpxreULO781eXZpFiSWqcBimBKnwU8ld39
+         PlqW6jAdCnzG3hxNvi4UFycvFrmOQCoS1RAdQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692739578; x=1693344378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=32tFknpYUltGX7BrfzpOF/XJEJkxSlIebbE3WJkd8PM=;
-        b=dQxdDIg2weFiCvE3YdXmTjDOdb0ESW0TojFNCjjLsAqiN0T6NHM7GCjwTOnp3zf6bW
-         OOHNdfsklbyh8tYrhBLCH1ykov3YoGq5nY6b8cYnDZhAjHJcTpvDed4B45Y0Z2eogtl3
-         X4yD6t4cnyJvfKbdLqR1/X5DHCJR5LvNxschqJ58rSdxg9f2EBqrO13g/ZEnBFmDV13D
-         QhyjAPe4CLJMXKfmY+JW9n8CAEhy9yjCcdorDWosiSq/9C7i15pSgEKlJ4Th4hzpg/MI
-         Qz3dyW58YhOIw0+gZo8zGLliaSR6nfp+5JjLMeEhm5QlXSGGwak6Gy1WE7ycZLpeXE1g
-         VILA==
-X-Gm-Message-State: AOJu0YySFS4FVO2BmX6vGcrj6itG+WEpBQEldeOoABmhQj6s3Q8NcEMw
-        WUVHpNAWUxDrhiH8xB+WMHwTPBCalFKM0G5it9JBvQ==
-X-Google-Smtp-Source: AGHT+IEWAA9h4kEyYMlZHbSoVul6EaKjAtvHTpIGULLsioKqmRhgMN2F6THcR1biYGczo4vK53pCZCjRO/rt5x2G900=
-X-Received: by 2002:aa7:c414:0:b0:523:b133:5c7a with SMTP id
- j20-20020aa7c414000000b00523b1335c7amr10629299edq.21.1692739577864; Tue, 22
- Aug 2023 14:26:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692739843; x=1693344643;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kSHi/syeOYlCBnhJOJQl5cWk2sa2bkZnAfAcQGZrzNU=;
+        b=QZf8n58oHrPgGpThbcUNTGYqNbfdL9vymZIsuLuxXIyweumiMMaxHyqhJD+l4fQWUT
+         z5q2lnB71+c+kPoa3b+wfjMcqhDium0kBIhedtl89/iuMhWvtEJXY7+23l1vepF6iWVz
+         5ySSrEn+GRm48E/hwXTYtOBrJfUlOvFyw/c7vU4AAEuDW9gOKUkf9FffG6iapXAeN2mB
+         f5A5SkMLJxD7ydZA3PTV6TI0duKq3Z54sZ4Z6i2WegBPyXyVURyCiCrZT+u9sGw88p0z
+         nD44tdtsGMlloe6g7fbs1kY8QVjPPAvpCQRpQ/JnY6LJvrjBlDhdwUY5Q6oEaVbIi4Cq
+         QrDQ==
+X-Gm-Message-State: AOJu0YyCyfKAOSZZEzP6M6gnR9pSDbgVExLLyVyAGo00c444n6ZFw5vc
+        GoELEkcje95A9/dN/USJ0IVs6w==
+X-Google-Smtp-Source: AGHT+IG4QToJsGC6o9soaVW2sjuvWEefbBSECLVN0cckuPYvuBes5wsi/X233dzMRrArhGLuFsDkXw==
+X-Received: by 2002:a17:902:ced1:b0:1be:1fc:8ce0 with SMTP id d17-20020a170902ced100b001be01fc8ce0mr9627176plg.12.1692739843142;
+        Tue, 22 Aug 2023 14:30:43 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:83f0:2bc5:38c4:a9de])
+        by smtp.gmail.com with ESMTPSA id t7-20020a170902e84700b001befac3b3cbsm9451475plg.290.2023.08.22.14.30.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 14:30:42 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        kgdb-bugreport@lists.sourceforge.net, ito-yuichi@fujitsu.com,
+        Stephen Boyd <swboyd@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v10 0/6] arm64: Add IPI for backtraces / kgdb; try to use NMI for some IPIs
+Date:   Tue, 22 Aug 2023 14:26:55 -0700
+Message-ID: <20230822212927.249645-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
- <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
- <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
- <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com> <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
-In-Reply-To: <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 22 Aug 2023 14:26:06 -0700
-Message-ID: <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 2:15=E2=80=AFPM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Tue, Aug 22, 2023 at 11:06=E2=80=AFPM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 10:57=E2=80=AFPM Justin Stitt <justinstitt@goog=
-le.com> wrote:
-> > >
-> > [...]
-> > > > > > Here's the invocation I am running to build kselftest:
-> > > > > > `$ make LLVM=3D1 ARCH=3Dx86_64 mrproper headers && make LLVM=3D=
-1 ARCH=3Dx86_64
-> > > > > > -j128 V=3D1 -C tools/testing/selftests`
-> > > >
-> > > > I think I fixed the same issue in the script I am running to launch
-> > > > those tests in a VM. This was in commit
-> > > > f9abdcc617dad5f14bbc2ebe96ee99f3e6de0c4e (in the v6.5-rc+ series).
-> > > >
-> > > > And in the commit log, I wrote:
-> > > > ```
-> > > > According to commit 01d6c48a828b ("Documentation: kselftest:
-> > > > "make headers" is a prerequisite"), running the kselftests requires
-> > > > to run "make headers" first.
-> > > > ```
-> > > >
-> > > > So my assumption is that you also need to run "make headers" with t=
-he
-> > > > proper flags before compiling the selftests themselves (I might be
-> > > > wrong but that's how I read the commit).
-> > >
-> > > In my original email I pasted the invocation I used which includes th=
-e
-> > > headers target. What are the "proper flags" in this case?
-> > >
-> >
-> > "make LLVM=3D1 ARCH=3Dx86_64 headers" no?
-> >
-> > But now I'm starting to wonder if that was not the intent of your
-> > combined "make mrproper headers". I honestly never tried to combine
-> > the 2. It's worth a try to split them I would say.
->
-> Apologies, I just tested it, and it works (combining the 2).
->
-> Which kernel are you trying to test?
-> I tested your 2 commands on v6.5-rc7 and it just works.
+This is an attempt to resurrect Sumit's old patch series [1] that
+allowed us to use the arm64 pseudo-NMI to get backtraces of CPUs and
+also to round up CPUs in kdb/kgdb. The last post from Sumit that I
+could find was v7, so I started my series at v8. I haven't copied all
+of his old changelongs here, but you can find them from the link.
 
-I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
+This patch series targets v6.6. Specifically it can't land in v6.5
+since it depends on commit 36759e343ff9 ("nmi_backtrace: allow
+excluding an arbitrary CPU").
 
-I ran these exact commands:
-|    $ make mrproper
-|    $ make LLVM=3D1 ARCH=3Dx86_64 headers
-|    $ make LLVM=3D1 ARCH=3Dx86_64 -j128 -C tools/testing/selftests
-TARGETS=3Dhid &> out
+It should be noted that Mark still feels there might be some corner
+cases where pseudo-NMI is not production ready [2] [3], but as far as
+I'm aware there are no concrete/documented issues. Regardless of
+whether this should be enabled for production, though, this series
+will be invaluable to anyone trying to debug crashes on arm64
+machines.
 
-and here's the contents of `out` (still warnings/errors):
-https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f59c6d
+v10 of this series attempts to address all of Mark's feedback on
+v9. As a quick summary:
+- It includes his patch to remove IPI_WAKEUP, freeing up an extra IPI.
+- It no longer combines the "kgdb" and "backtrace" IPIs. If we need
+  another IPI these could always be recombined later.
+- It promotes IPI_CPU_STOP and IPI_CPU_CRASH_STOP to NMI.
+- It puts nearly all the code directly in smp.c.
+- Several of the patches are squashed together.
+- Patch #6 ("kgdb: Provide a stub kgdb_nmicallback() if !CONFIG_KGDB")
+  was dropped from the series since it landed.
 
-I have a feeling I'm doing something fundamentally incorrectly. Any ideas?
+Between v8 and v9, I had cleaned up this patch series by integrating
+the 10th patch from v8 [4] into the whole series. As part of this, I
+renamed the "NMI IPI" to the "debug IPI" since it could now be backed
+by a regular IPI in the case that pseudo NMIs weren't available. With
+the fallback, this allowed me to drop some extra patches from the
+series. This feels (to me) to be pretty clean and hopefully others
+agree. Any patch I touched significantly I removed Masayoshi and
+Chen-Yu's tags from.
 
-To be clear, I can build the Kernel itself just fine across many
-configs and architectures. I have, at the very least, the dependencies
-required to accomplish that.
+...also in v8, I reorderd the patches a bit in a way that seemed a
+little cleaner to me.
 
->
-> FTR:
-> $> git checkout v6.5-rc7
-> $> make LLVM=3D1 ARCH=3Dx86_64 mrproper headers
-> $> make LLVM=3D1 ARCH=3Dx86_64 -j8 -C tools/testing/selftests TARGETS=3Dh=
-id
->
-> ->   BINARY   hid_bpf
->
-> Cheers,
-> Benjamin
->
+Since v7, I have:
+* Addressed the small amount of feedback that was there for v7.
+* Rebased.
+* Added a new patch that prevents us from spamming the logs with idle
+  tasks.
+* Added an extra patch to gracefully fall back to regular IPIs if
+  pseudo-NMIs aren't there.
+
+It can be noted that this patch series works very well with the recent
+"hardlockup" patches that have landed through Andrew Morton's tree and
+are currently in linuxnext. It works especially well with the "buddy"
+lockup detector.
+
+[1] https://lore.kernel.org/linux-arm-kernel/1604317487-14543-1-git-send-email-sumit.garg@linaro.org/
+[2] https://lore.kernel.org/lkml/ZFvGqD%2F%2Fpm%2FlZb+p@FVFF77S0Q05N.cambridge.arm.com/
+[3] https://lore.kernel.org/lkml/ZNDKVP2m-iiZCz3v@FVFF77S0Q05N.cambridge.arm.com
+[4] https://lore.kernel.org/r/20230419155341.v8.10.Ic3659997d6243139d0522fc3afcdfd88d7a5f030@changeid/
+
+Changes in v10:
+- ("IPI_CPU_STOP and IPI_CPU_CRASH_STOP should try for NMI") new for v10.
+- ("arm64: smp: Remove dedicated wakeup IPI") new for v10.
+- Backtrace now directly supported in smp.c
+- Don't allocate the cpumask on the stack; just iterate.
+- Moved kgdb calls to smp.c to avoid needing to export IPI info.
+- Rewrite as needed for 5.11+ as per Mark Rutland and Sumit.
+- Squash backtrace into patch adding support for pseudo-NMI IPIs.
+- kgdb now has its own IPI.
+
+Changes in v9:
+- Added comments that we might not be using NMI always.
+- Added to commit message that this doesn't catch all cases.
+- Fold in v8 patch #10 ("Fallback to a regular IPI if NMI isn't enabled")
+- Moved header file out of "include" since it didn't need to be there.
+- Remove arm64_supports_nmi()
+- Remove fallback for when debug IPI isn't available.
+- Renamed "NMI IPI" to "debug IPI" since it might not be backed by NMI.
+- arch_trigger_cpumask_backtrace() no longer returns bool
+
+Changes in v8:
+- "Tag the arm64 idle functions as __cpuidle" new for v8
+- Removed "#ifdef CONFIG_SMP" since arm64 is always SMP
+- debug_ipi_setup() and debug_ipi_teardown() no longer take cpu param
+
+Douglas Anderson (5):
+  irqchip/gic-v3: Enable support for SGIs to act as NMIs
+  arm64: idle: Tag the arm64 idle functions as __cpuidle
+  arm64: smp: Add arch support for backtrace using pseudo-NMI
+  arm64: smp: IPI_CPU_STOP and IPI_CPU_CRASH_STOP should try for NMI
+  arm64: kgdb: Implement kgdb_roundup_cpus() to enable pseudo-NMI
+    roundup
+
+Mark Rutland (1):
+  arm64: smp: Remove dedicated wakeup IPI
+
+ arch/arm64/include/asm/irq.h              |   3 +
+ arch/arm64/include/asm/smp.h              |   4 +-
+ arch/arm64/kernel/acpi_parking_protocol.c |   2 +-
+ arch/arm64/kernel/idle.c                  |   4 +-
+ arch/arm64/kernel/smp.c                   | 135 +++++++++++++++++-----
+ drivers/irqchip/irq-gic-v3.c              |  54 ++++++---
+ 6 files changed, 153 insertions(+), 49 deletions(-)
+
+-- 
+2.42.0.rc1.204.g551eb34607-goog
+
