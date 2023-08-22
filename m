@@ -2,280 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A144A784086
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A46C784081
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235616AbjHVMQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46442 "EHLO
+        id S235456AbjHVMPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:15:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235613AbjHVMQI (ORCPT
+        with ESMTP id S229796AbjHVMPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:16:08 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ACBCC6;
-        Tue, 22 Aug 2023 05:16:04 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MBfjAX018699;
-        Tue, 22 Aug 2023 12:16:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=0f5+93+p5YLyZ1/qfnEU1OvGCbc+rGgnLNB7GT77aKs=;
- b=E6Oj681eOlO+vdMa0P1Sj2F1DCKGOhTt08EpoXumrWaC/SAmtWH0iXqGTRnZDCb3X2Mh
- fM50YQnsqMazK8/Y281aVJ2vWguCD5AztRGHq2nbx46p8Qzf53WYhj1X5sMhKJawsHkc
- JzF1ozNU9kTsMDd/Zte1cKjyYlS8Ony0Lpapyt4UUQpCWFFIQR1f4BuTPPpYYlc3XZfi
- mkfmmv22gnb8itbHNnJKZPU15ksOakw2+6/9LO+o62Inf7/DuCXufrmRrtEPOkrTx+Ip
- azTLmu/E/Nsw8KKDbRSBqYuMP3iuloYsIu4qmycXdJOQ+eOAzfj4OeKLIQxUTc+asiUK 1g== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smgeq18m1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 12:16:00 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MCFwVA019069
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 12:15:59 GMT
-Received: from hu-ninanaik-blr.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 22 Aug 2023 05:15:54 -0700
-From:   Ninad Naik <quic_ninanaik@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>
-CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Ninad Naik <quic_ninanaik@quicinc.com>
-Subject: [RFC PATCH 1/1] soc: qcom: Add driver to read secondary bootloader (XBL) log
-Date:   Tue, 22 Aug 2023 17:45:12 +0530
-Message-ID: <20230822121512.8631-2-quic_ninanaik@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
-References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
+        Tue, 22 Aug 2023 08:15:37 -0400
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A993193
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:15:35 -0700 (PDT)
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-565e5961ddbso6151716a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:15:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692706535; x=1693311335;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A11YOkupM8IJbU9SaQPhsmn7gkacmQLBZxZUZfpi3gQ=;
+        b=CoqVadH+ShaVRmcbn3SCR3q7H2quwSveigpTAwBd9Qq2qR1TBdDuwqQk7YL2QmTRMB
+         NsWE6obx8Sl8udrHngKqV3nHt3IuLifp+HGbAaF2VaI5aR1LWKBg/Vn8n5vSbteSB4ul
+         FCEI2l9F2LoCIs8NwfhnXdWStYnF0tre5/GUq9+0fKP1mLWXnZqmwC16mUhTmp45dgaq
+         q+PJuun1zz+Lt4bRm8PKFYNJun3cv143yO+lROxCaIKP83EIJkHcWJevIQ+q35Fa4tva
+         hhLZuODIblpQ+cLeJeJ0/+RCvlA+mahxOstq6mTg0u1JuKMAsJ/hsU8++rBiZQBMjpcd
+         XkAw==
+X-Gm-Message-State: AOJu0YzzMkSy2g0Ak6P73pl16R3KLl1ILaaf5TTSboaPtel7rXQ7O4EJ
+        1PkN9cSquVAuvy9aaQfuxpPSi+X6vC3/M/fRqf1XVDx9jZz4
+X-Google-Smtp-Source: AGHT+IHgyt+3sNFDSzaR7NZ1fM9jyBzLm2GLj7lI3wYliFfJ80D0LHL2L32EmvgkKocGYT1KdBso5TXNm88I2+38oSVptLCCZu6t
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8Rt9ykVtr_bB4Fq9mnX7VkqXRvagTTXr
-X-Proofpoint-ORIG-GUID: 8Rt9ykVtr_bB4Fq9mnX7VkqXRvagTTXr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_11,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0 suspectscore=0
- bulkscore=0 impostorscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=945
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308220091
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a63:7b15:0:b0:563:962e:e912 with SMTP id
+ w21-20020a637b15000000b00563962ee912mr1627152pgc.0.1692706534808; Tue, 22 Aug
+ 2023 05:15:34 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 05:15:34 -0700
+In-Reply-To: <20230822112701.2655-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b7617e060381f3ab@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
+From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qualcomm secondary bootloader (XBL) boot log holds information to
-identify various firmware configuration currently set on the SoC.
-The XBL log is stored in a predefined reserved memory region.
+Hello,
 
-This drivers provides a way to print XBL logs on the console. To
-do so, it provides a debugfs entry which captures the logs stored
-in this reserved memory region. This entry can now be used to read
-and print the XBL logs to console.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in hci_send_acl
 
-User can use the below command to print XBL log to console:
-        cat /sys/kernel/debug/xbl_log
+==================================================================
+BUG: KASAN: slab-use-after-free in hci_send_acl+0xdf4/0xf30 net/bluetooth/hci_core.c:3228
+Read of size 8 at addr ffff888069713618 by task kworker/0:4/5435
 
-Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
----
- drivers/soc/qcom/Kconfig        |  13 +++
- drivers/soc/qcom/Makefile       |   1 +
- drivers/soc/qcom/dump_xbl_log.c | 139 ++++++++++++++++++++++++++++++++
- 3 files changed, 153 insertions(+)
- create mode 100644 drivers/soc/qcom/dump_xbl_log.c
+CPU: 0 PID: 5435 Comm: kworker/0:4 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events l2cap_info_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ hci_send_acl+0xdf4/0xf30 net/bluetooth/hci_core.c:3228
+ l2cap_send_cmd+0x6dd/0x920 net/bluetooth/l2cap_core.c:977
+ l2cap_send_conn_req+0x1e5/0x260 net/bluetooth/l2cap_core.c:1286
+ l2cap_start_connection+0x11e/0x420 net/bluetooth/l2cap_core.c:1514
+ l2cap_conn_start+0x7ae/0xa40 net/bluetooth/l2cap_core.c:1661
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
-diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
-index 715348869d04..4489d37e924d 100644
---- a/drivers/soc/qcom/Kconfig
-+++ b/drivers/soc/qcom/Kconfig
-@@ -291,4 +291,17 @@ config QCOM_INLINE_CRYPTO_ENGINE
- 	tristate
- 	select QCOM_SCM
- 
-+config QCOM_DUMP_XBL_LOG
-+	tristate "Qualcomm driver to print XBL logs on console from debugfs"
-+	help
-+	  This driver is used to capture secondary bootloader (xbl) log
-+	  from a reserved memory region and provide a debugfs entry to read
-+	  logs captured from this memory region and print them on console.
-+	  User can use below command to print the xbl log on console:
-+
-+                cat /sys/kernel/debug/xbl_log
-+
-+	  These logs help to identify firmware configuration information on
-+	  the SoC. The name of the built module will be dump_xbl_log
-+
- endmenu
-diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
-index bbca2e1e55bb..aac088a1a0b6 100644
---- a/drivers/soc/qcom/Makefile
-+++ b/drivers/soc/qcom/Makefile
-@@ -32,3 +32,4 @@ obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
- obj-$(CONFIG_QCOM_ICC_BWMON)	+= icc-bwmon.o
- qcom_ice-objs			+= ice.o
- obj-$(CONFIG_QCOM_INLINE_CRYPTO_ENGINE)	+= qcom_ice.o
-+obj-$(CONFIG_QCOM_DUMP_XBL_LOG)	+= dump_xbl_log.o
-diff --git a/drivers/soc/qcom/dump_xbl_log.c b/drivers/soc/qcom/dump_xbl_log.c
-new file mode 100644
-index 000000000000..ea335a5e660b
---- /dev/null
-+++ b/drivers/soc/qcom/dump_xbl_log.c
-@@ -0,0 +1,139 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/memblock.h>
-+#include <linux/of_address.h>
-+#include <linux/err.h>
-+#include <linux/debugfs.h>
-+
-+struct xbl_log_data {
-+	struct device *dev;
-+	size_t buf_size;
-+	void __iomem *xbl_buf;
-+	struct dentry *dbg_file;
-+	struct debugfs_blob_wrapper dbg_data;
-+};
-+
-+static int map_addr_range(struct device_node **parent, const char *name,
-+			  struct xbl_log_data *xbl_data)
-+{
-+	struct device_node *node;
-+	struct resource res;
-+	int ret;
-+
-+	node = of_find_node_by_name(*parent, name);
-+	if (!node)
-+		return -ENODEV;
-+
-+	ret = of_address_to_resource(node, 0, &res);
-+	if (ret) {
-+		dev_err(xbl_data->dev, "Failed to parse memory region\n");
-+		return ret;
-+	}
-+	of_node_put(node);
-+
-+	if (!resource_size(&res)) {
-+		dev_err(xbl_data->dev, "Failed to parse memory region size\n");
-+		return -ENODEV;
-+	}
-+
-+	xbl_data->buf_size = resource_size(&res) - 1;
-+	xbl_data->xbl_buf = devm_memremap(xbl_data->dev, res.start,
-+					  xbl_data->buf_size, MEMREMAP_WB);
-+	if (!xbl_data->xbl_buf) {
-+		dev_err(xbl_data->dev, "%s: memory remap failed\n", name);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static int xbl_log_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct xbl_log_data *xbl_data;
-+	struct device_node *parent;
-+	int ret;
-+
-+	xbl_data = devm_kzalloc(dev, sizeof(*xbl_data), GFP_KERNEL);
-+	if (!xbl_data)
-+		return -ENOMEM;
-+
-+	xbl_data->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, xbl_data);
-+
-+	parent = of_find_node_by_path("/reserved-memory");
-+	if (!parent) {
-+		dev_err(xbl_data->dev, "reserved-memory node missing\n");
-+		return -ENODEV;
-+	}
-+
-+	ret = map_addr_range(&parent, "uefi-log", xbl_data);
-+	if (ret)
-+		goto put_node;
-+
-+	xbl_data->dbg_data.data = xbl_data->xbl_buf;
-+	xbl_data->dbg_data.size = xbl_data->buf_size;
-+	xbl_data->dbg_file = debugfs_create_blob("xbl_log", 0400, NULL,
-+						 &xbl_data->dbg_data);
-+	if (IS_ERR(xbl_data->dbg_file)) {
-+		dev_err(xbl_data->dev, "failed to create debugfs entry\n");
-+		ret = PTR_ERR(xbl_data->dbg_file);
-+	}
-+
-+put_node:
-+	of_node_put(parent);
-+	return ret;
-+}
-+
-+static int xbl_log_remove(struct platform_device *pdev)
-+{
-+	struct xbl_log_data *xbl_data = platform_get_drvdata(pdev);
-+
-+	debugfs_remove_recursive(xbl_data->dbg_file);
-+	return 0;
-+}
-+
-+static struct platform_driver xbl_log_driver = {
-+	.probe = xbl_log_probe,
-+	.remove = xbl_log_remove,
-+	.driver = {
-+		   .name = "xbl-log",
-+		   },
-+};
-+
-+static struct platform_device xbl_log_device = {
-+	.name = "xbl-log",
-+};
-+
-+static int __init xbl_log_init(void)
-+{
-+	int ret = 0;
-+
-+	ret = platform_driver_register(&xbl_log_driver);
-+	if (!ret) {
-+		ret = platform_device_register(&xbl_log_device);
-+		if (ret)
-+			platform_driver_unregister(&xbl_log_driver);
-+	}
-+	return ret;
-+}
-+
-+static void __exit xbl_log_exit(void)
-+{
-+	platform_device_unregister(&xbl_log_device);
-+	platform_driver_unregister(&xbl_log_driver);
-+}
-+
-+module_init(xbl_log_init);
-+module_exit(xbl_log_exit);
-+
-+MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) XBL log driver");
-+MODULE_LICENSE("GPL");
--- 
-2.41.0
+Allocated by task 5466:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:600 [inline]
+ kzalloc include/linux/slab.h:721 [inline]
+ hci_chan_create+0xa6/0x3a0 net/bluetooth/hci_conn.c:2691
+ l2cap_conn_add.part.0+0x1a/0xdf0 net/bluetooth/l2cap_core.c:7839
+ l2cap_conn_add include/net/bluetooth/l2cap.h:866 [inline]
+ l2cap_chan_connect+0x15b9/0x2140 net/bluetooth/l2cap_core.c:8051
+ bt_6lowpan_connect net/bluetooth/6lowpan.c:894 [inline]
+ lowpan_control_write+0x3d6/0x730 net/bluetooth/6lowpan.c:1129
+ full_proxy_write+0x124/0x190 fs/debugfs/file.c:236
+ vfs_write+0x2a4/0xe40 fs/read_write.c:582
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 5045:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ hci_chan_list_flush+0x81/0xf0 net/bluetooth/hci_conn.c:2731
+ hci_conn_cleanup net/bluetooth/hci_conn.c:152 [inline]
+ hci_conn_del+0x1fc/0xd10 net/bluetooth/hci_conn.c:1140
+ hci_abort_conn_sync+0xacb/0xe20 net/bluetooth/hci_sync.c:5432
+ abort_conn_sync+0x18e/0x3a0 net/bluetooth/hci_conn.c:2878
+ hci_cmd_sync_work+0x1a4/0x3c0 net/bluetooth/hci_sync.c:306
+ process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+The buggy address belongs to the object at ffff888069713600
+ which belongs to the cache kmalloc-128 of size 128
+The buggy address is located 24 bytes inside of
+ freed 128-byte region [ffff888069713600, ffff888069713680)
+
+The buggy address belongs to the physical page:
+page:ffffea0001a5c4c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x69713
+flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000800 ffff888012c418c0 dead000000000122 0000000000000000
+raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x112cc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY), pid 5400, tgid 5400 (syz-executor.0), ts 92397723620, free_ts 92397302327
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ alloc_slab_page mm/slub.c:1872 [inline]
+ allocate_slab+0xa1/0x380 mm/slub.c:2017
+ new_slab mm/slub.c:2070 [inline]
+ ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
+ __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1003 [inline]
+ __kmalloc_node+0x52/0x110 mm/slab_common.c:1011
+ kmalloc_array_node include/linux/slab.h:698 [inline]
+ kcalloc_node include/linux/slab.h:703 [inline]
+ memcg_alloc_slab_cgroups+0xa9/0x170 mm/memcontrol.c:2895
+ memcg_slab_post_alloc_hook+0xaa/0x390 mm/slab.h:530
+ slab_post_alloc_hook mm/slab.h:770 [inline]
+ slab_alloc_node mm/slub.c:3478 [inline]
+ slab_alloc mm/slub.c:3486 [inline]
+ __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
+ kmem_cache_alloc+0x1a7/0x3b0 mm/slub.c:3502
+ prepare_creds+0x43/0x7b0 kernel/cred.c:263
+ copy_creds+0xa7/0xe50 kernel/cred.c:368
+ copy_process+0xeb6/0x7400 kernel/fork.c:2368
+ kernel_clone+0xfd/0x930 kernel/fork.c:2916
+ __do_sys_clone+0xba/0x100 kernel/fork.c:3059
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2348
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2441
+ vfree+0x181/0x7a0 mm/vmalloc.c:2842
+ __do_replace+0x7bf/0x9c0 net/ipv4/netfilter/arp_tables.c:937
+ do_replace net/ipv6/netfilter/ip6_tables.c:1154 [inline]
+ do_ip6t_set_ctl+0x93a/0xbd0 net/ipv6/netfilter/ip6_tables.c:1636
+ nf_setsockopt+0x87/0xe0 net/netfilter/nf_sockopt.c:101
+ ipv6_setsockopt+0x12b/0x190 net/ipv6/ipv6_sockglue.c:1017
+ tcp_setsockopt+0x9d/0x100 net/ipv4/tcp.c:3677
+ __sys_setsockopt+0x2cd/0x5b0 net/socket.c:2307
+ __do_sys_setsockopt net/socket.c:2318 [inline]
+ __se_sys_setsockopt net/socket.c:2315 [inline]
+ __x64_sys_setsockopt+0xbd/0x150 net/socket.c:2315
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff888069713500: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
+ ffff888069713580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888069713600: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff888069713680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888069713700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
+Tested on:
+
+commit:         7271b2a5 Add linux-next specific files for 20230818
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1555b1bba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1766e9bba80000
 
