@@ -2,58 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6789C784476
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE269784478
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236844AbjHVOgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S236850AbjHVOgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjHVOgg (ORCPT
+        with ESMTP id S231316AbjHVOgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:36:36 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF5291;
-        Tue, 22 Aug 2023 07:36:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2087F63513;
-        Tue, 22 Aug 2023 14:36:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF417C433C7;
-        Tue, 22 Aug 2023 14:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692714993;
-        bh=xQvQvrIK437NyWJbIp30mYO6bonnV3gFmgFZCl8XdxQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lZZFW4BrrEmNyruPWDJmhRl42aB1WoBTJ7fhRqGJMCZfzxyj8jU4BFI19rFELpvRE
-         9IPFwsEgiTxz6tJ9AOzMZ6i1JwxtQ8Ysr4OwqCRKRHSVUn05n3ZcA6A/bvYaiYbBA0
-         CUkMp6nvC9coz54LQB70PdVx/dhuVVHRviwS4WDPDusKbgMb1nRgy+VxyBF9AiRnz0
-         eE/XRuDf8T+r1tGAs/rKED7MVzYd7leB4BIkP8Nx8purnT2/NVp7ksjz4f6gpfpjTc
-         OhZ1sU0n5+mgkPWwkeVTKgo5gJzEME+SSi0XdeovkanNjvRehfC3NrXY9xkREF3G1M
-         BmdAk1zLNx9Hg==
-Date:   Tue, 22 Aug 2023 23:36:29 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <martin.lau@linux.dev>, bpf@vger.kernel.org,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: [PATCH v5 3/9] tracing/probes: Add a function to search a
- member of a struct/union
-Message-Id: <20230822233629.669b3a891a0155addf52f461@kernel.org>
-In-Reply-To: <20230822093720.016c3554@rorschach.local.home>
-References: <169137686814.271367.11218568219311636206.stgit@devnote2>
-        <169137689818.271367.4200174950023036516.stgit@devnote2>
-        <20230822093720.016c3554@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Tue, 22 Aug 2023 10:36:42 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F224F93;
+        Tue, 22 Aug 2023 07:36:40 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id D787A92009C; Tue, 22 Aug 2023 16:36:36 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id D197C92009B;
+        Tue, 22 Aug 2023 15:36:36 +0100 (BST)
+Date:   Tue, 22 Aug 2023 15:36:36 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+cc:     Sanath S <sanaths2@amd.com>, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mario.limonciello@amd.com, Sanjay R Mehta <sanju.mehta@amd.com>
+Subject: Re: [PATCH] PCI: Allocate maximum available buses to help extending
+ the daisy chain
+In-Reply-To: <20230818045611.GE3465@black.fi.intel.com>
+Message-ID: <alpine.DEB.2.21.2308220330360.49340@angie.orcam.me.uk>
+References: <20230816051923.2287912-1-Sanath.S@amd.com> <ffd5401b-400b-79e2-51f2-e6866251000f@amd.com> <20230817102430.GD3465@black.fi.intel.com> <0aa6cb16-27af-345d-7e6c-cf985290d1b4@amd.com> <20230818045611.GE3465@black.fi.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,90 +43,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 09:37:20 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Fri, 18 Aug 2023, Mika Westerberg wrote:
 
-> On Mon,  7 Aug 2023 11:54:58 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> > > > > Link: https://bugzilla.kernel.org/show_bug.cgi?id=216000
+> > > Did you get confirmation that this actually solves the issue?
+> > I've tested this on my setup, it is resolving the issue.
 > 
-> > --- a/kernel/trace/trace_btf.c
-> > +++ b/kernel/trace/trace_btf.c
-> > @@ -50,3 +50,60 @@ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s3
-> >  		return NULL;
-> >  }
-> >  
-> > +#define BTF_ANON_STACK_MAX	16
-> > +
-> > +/*
-> > + * Find a member of data structure/union by name and return it.
-> > + * Return NULL if not found, or -EINVAL if parameter is invalid.
-> > + * If the member is an member of anonymous union/structure, the offset
-> > + * of that anonymous union/structure is stored into @anon_offset. Caller
-> > + * can calculate the correct offset from the root data structure by
-> > + * adding anon_offset to the member's offset.
-> > + */
-> > +const struct btf_member *btf_find_struct_member(struct btf *btf,
-> > +						const struct btf_type *type,
-> > +						const char *member_name,
-> > +						u32 *anon_offset)
-> > +{
-> > +	struct {
-> > +		u32 tid;
-> > +		u32 offset;
-> > +	} anon_stack[BTF_ANON_STACK_MAX];
-> 
-> Where is this called as the above is 128 bytes, which is a bit large
-> for the stack. It may not be bad if it's not that generic of a
-> function. But if the stack is getting tight, this could still be an
-> issue.
+> Right, but it would be good to get confirmation from the person who
+> reported the issue that this actually helps. There is nothing in the
+> bugzilla whether the patch worked or not.
 
-OK, let me allocate an array then.
+ If you do change the defaults, then please don't forget to update 
+Documentation/admin-guide/kernel-parameters.txt in the same commit 
+accordingly for `hpbussize=nn', etc.
 
-Thank you,
+ NB it seems a common problem with vendor firmware failing to assign a 
+reasonable quantity of downstream buses for hot-plug ports.  E.g. with my 
+production laptop back from 2018 a single-device ExpressCard option, such 
+as a PCIe serial port works just fine with hot-plug, however if I hot-plug 
+a whole bus hierarchy in an external enclosure, then the system runs out 
+of buses at the first PCIe switch (unless I use `hpbussize=nn', etc.).
 
-> 
-> -- Steve
-> 
-> 
-> > +	const struct btf_member *member;
-> > +	u32 tid, cur_offset = 0;
-> > +	const char *name;
-> > +	int i, top = 0;
-> > +
-> > +retry:
-> > +	if (!btf_type_is_struct(type))
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	for_each_member(i, type, member) {
-> > +		if (!member->name_off) {
-> > +			/* Anonymous union/struct: push it for later use */
-> > +			type = btf_type_skip_modifiers(btf, member->type, &tid);
-> > +			if (type && top < BTF_ANON_STACK_MAX) {
-> > +				anon_stack[top].tid = tid;
-> > +				anon_stack[top++].offset =
-> > +					cur_offset + member->offset;
-> > +			}
-> > +		} else {
-> > +			name = btf_name_by_offset(btf, member->name_off);
-> > +			if (name && !strcmp(member_name, name)) {
-> > +				if (anon_offset)
-> > +					*anon_offset = cur_offset;
-> > +				return member;
-> > +			}
-> > +		}
-> > +	}
-> > +	if (top > 0) {
-> > +		/* Pop from the anonymous stack and retry */
-> > +		tid = anon_stack[--top].tid;
-> > +		cur_offset = anon_stack[top].offset;
-> > +		type = btf_type_by_id(btf, tid);
-> > +		goto retry;
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+  Maciej
