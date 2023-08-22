@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FFA783E78
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C91D783E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbjHVK7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36196 "EHLO
+        id S234304AbjHVLAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:00:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234259AbjHVK7K (ORCPT
+        with ESMTP id S234259AbjHVLAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:59:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F07CE5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692701889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2QwF53F9zwST/a/bBNMeCL1+CzbCBl/0QSzpdsdnjcM=;
-        b=ICrvpjmtbus9SjBwkBhWj9i7T8SM6QtMPUvqgsYqaJ0d1Nf1BNjlbmpFeErP4JeCSoT38+
-        3wiDUlXDF7ozoQeUSCPzvbAD/Lqjts0TbB28FDC7uUQKJlOfkEhDCX7XjB9lOXx6fdWtaJ
-        jV0I9UfT93jBSrGEyOeNIHJfnHG9KkU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-586-JoQ19cEGPNqyHYtjZJXPlA-1; Tue, 22 Aug 2023 06:58:08 -0400
-X-MC-Unique: JoQ19cEGPNqyHYtjZJXPlA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31c5ce917eeso183145f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692701887; x=1693306687;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2QwF53F9zwST/a/bBNMeCL1+CzbCBl/0QSzpdsdnjcM=;
-        b=SrOPFV0jRw6J/PKk7r/lX0VwETmqmT9dSvhxXZ9AaqzEvnBIpxG9B43yhCjfJ66srb
-         lpLAyVeGtnmae+gdQypsJ/4bjLoJHqaxnwGaZqdnOvHoGvc053kg9fza8E6cH2Doknm+
-         1UMK/kwsqf87qE2Ii3tg+0ssODfKkfJwO024FEIHTp2D8xmAPRdeZKcw9AhifqC8fxyX
-         GkWT1jPC0ejNw94SE2sqaS5WS0GCCcPcD8kl92DQZUcW7pyVykjLfxzAtJVLSE5CCq3v
-         xlBdGMQtfpvrDqTaidGNqKsOifyOn/OjB3uwUkMYKZF2V2MEp29flEnvSizREUabdr1y
-         UJsQ==
-X-Gm-Message-State: AOJu0YyeXjLWjkfL/CcfFCKPxDn67vIP9TPRUz2x8mqIdgy06pctCyje
-        7M8c5yZKSnafOvfH8aIyhGqKdtU4FjRlgVRUzFanJhrF+Mw0x+U3sJv+V6pP1isMQqJrXwQdCd/
-        RjkI1y+Q/i0bfSK0Okgt8T3C8
-X-Received: by 2002:a5d:5242:0:b0:31a:d2f9:736b with SMTP id k2-20020a5d5242000000b0031ad2f9736bmr6776129wrc.1.1692701887016;
-        Tue, 22 Aug 2023 03:58:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG/gfvQP+q86KUqFZ7cXqs4O29Y4pdllPQAUHuNmDQpG9Jrfa9VxnrVCNIRTHBEC4+4zm6fbw==
-X-Received: by 2002:a5d:5242:0:b0:31a:d2f9:736b with SMTP id k2-20020a5d5242000000b0031ad2f9736bmr6776114wrc.1.1692701886650;
-        Tue, 22 Aug 2023 03:58:06 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-241-4.dyn.eolo.it. [146.241.241.4])
-        by smtp.gmail.com with ESMTPSA id z7-20020a5d4d07000000b00317afc7949csm15422903wrt.50.2023.08.22.03.58.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 03:58:06 -0700 (PDT)
-Message-ID: <d3073c7b5d54e1ad4790b16c419e862fee952350.camel@redhat.com>
-Subject: Re: [net PATCH V3 1/3] octeontx2-pf: Fix PFC TX scheduler free
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Simon Horman <horms@kernel.org>, Suman Ghosh <sumang@marvell.com>
-Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, lcherian@marvell.com, jerinj@marvell.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 22 Aug 2023 12:58:04 +0200
-In-Reply-To: <20230822071101.GI2711035@kernel.org>
-References: <20230821052516.398572-1-sumang@marvell.com>
-         <20230821052516.398572-2-sumang@marvell.com>
-         <20230822071101.GI2711035@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 22 Aug 2023 07:00:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF15CF9;
+        Tue, 22 Aug 2023 04:00:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 58C45651FD;
+        Tue, 22 Aug 2023 11:00:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3243AC433C8;
+        Tue, 22 Aug 2023 11:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692702020;
+        bh=deQQMGTa5DqJgxvuclOljoYtiCOmhjCpDiH4LVTbozk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tccfDqjJDQplfAq0AkrK8go9+E+ZD6Z985cZfbnjOtg3EpTtZ/fp2Ab0ra0e7bBna
+         FzcpWHZ2xMnlnvSfwa7XGV7wE00C8fg4snK7Jq0u8P39nCUytnBAZSVNX/lHwh7VoT
+         1VgNSwEe9BCLbciSnYj9XRFwUIKyOG0wkKdtOSnGv3bKkHvgedT/EqADlQz0scqoZG
+         TuE/f1Ap+nailCPUBUXwZijMNqVn9Gf1ZZw78NfNCiJhDCILAy48CB+1ivKJ+F1Imw
+         tfPBb7WMWTl86rBx+MvhMSoF60fPrH52j3gyuBtJdZVGC+J3zfDW90sLxnanI6cexp
+         upr4liWPjeckg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.4 000/234] 6.4.12-rc1 review
+Date:   Tue, 22 Aug 2023 11:00:17 +0000
+Message-Id: <20230822110017.64926-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230821194128.754601642@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-22 at 09:11 +0200, Simon Horman wrote:
-> On Mon, Aug 21, 2023 at 10:55:14AM +0530, Suman Ghosh wrote:
-> > During PFC TX schedulers free, flag TXSCHQ_FREE_ALL was being set
-> > which caused free up all schedulers other than the PFC schedulers.
-> > This patch fixes that to free only the PFC Tx schedulers.
-> >=20
-> > Fixes: 99c969a83d82 ("octeontx2-pf: Add egress PFC support")
-> > Signed-off-by: Suman Ghosh <sumang@marvell.com>
-> > ---
-> >  .../ethernet/marvell/octeontx2/nic/otx2_common.c  |  1 +
-> >  .../ethernet/marvell/octeontx2/nic/otx2_dcbnl.c   | 15 ++++-----------
-> >  2 files changed, 5 insertions(+), 11 deletions(-)
-> >=20
-> > diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b=
-/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > index 77c8f650f7ac..289371b8ce4f 100644
-> > --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-> > @@ -804,6 +804,7 @@ void otx2_txschq_free_one(struct otx2_nic *pfvf, u1=
-6 lvl, u16 schq)
-> > =20
-> >  	mutex_unlock(&pfvf->mbox.lock);
-> >  }
-> > +EXPORT_SYMBOL(otx2_txschq_free_one);
->=20
-> Hi Suman,
->=20
-> Given that the licence of both this file and otx2_dcbnl.c is GPLv2,
-> I wonder if EXPORT_SYMBOL_GPL would be more appropriate here.
+On Mon, 21 Aug 2023 21:39:23 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-AFAICS all the symbols exported by otx2_common use plain
-EXPORT_SYMBOL(). I think we can keep that for consistency in a -net
-patch. In the long run it would be nice to move all of them to
-EXPORT_SYMBOL_GPL :)
+> This is the start of the stable review cycle for the 6.4.12 release.
+> There are 234 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
 
-Cheers,
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-Paolo
+Tested-by: SeongJae Park <sj@kernel.org>
 
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 2a85de3fab43 ("Linux 6.4.12-rc1")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ [32m
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
+_remote_run_corr.sh SUCCESS
