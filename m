@@ -2,220 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CBB783837
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FDE78383A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjHVCyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44970 "EHLO
+        id S232400AbjHVC7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbjHVCyN (ORCPT
+        with ESMTP id S231926AbjHVC7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:54:13 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2073.outbound.protection.outlook.com [40.107.243.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAF5CCA;
-        Mon, 21 Aug 2023 19:54:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ehCAEF4DnxLYXk8hGW04V8ZtODthys9nysrvKKirOfYn+jgDAfH//wiItEEZb44al9lRiJhgYyWQ1XbqeHAiKtzwxXqXml6Lg5CiBXa+zDC15ZvlB8T3ZoNmeSMrB1Tp3ukxZVG1v4xzmyHNmwEqRY9TjTQVSfBwnIRehZWskPLQPfqXdApmvzBP8kI/uWFpBWyIOQh+Fhn3QIMCTMezMJUPpLj8I/Gs1SN3S6B5hS/cchCYYhWxtinfKsJbZExqrFyg7p6QesoLDXtYd3j/cfg0K/VQSco+ybwDaP1Jw9ZNNsYp2rSn9HmWLRUq2f8b1U8igHzK2P0g+okoBjpjKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kPCJE0THL9Zf7IiDKy8FG5EXXy3a86r+MVaWKFMGRhE=;
- b=Mb9VyyOWaZv3cqOX4RW26jTS/QZA9+cyM43C0qxmBtI/Np8Lux1YlK1hEYQSD9NFixCrWysxMKpCVqiKeipbVPtmhOckGo5QrD9l5T2Z0xwhdiBR5LeAoW1FtMjWK/9SsebZVfr+4Gf6FPwt14AafMaApCNOiqlWkNURbKrBhuHyvWyUSiidq2+PdClGXymAZaDXMMKvuvr4gid7VVOkNeEuhHDbTdZPSM1CDm7ec5hi5weL7kX7XmfZ3+iW5x4P2aw0iRyJhTe/1Z5POTnLjVVXr8HkrNUG1UC0YDVXCHFBeWb/jW3y5KQ9SmYyu/CVn+LjzxswWCGj4xQXsMxf0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kPCJE0THL9Zf7IiDKy8FG5EXXy3a86r+MVaWKFMGRhE=;
- b=EOexNP+fO47upCSpqQr8ZAQ28Z9hDnlsPw+Vg3ADkopBXVhKNFHdR8/H06MzOg2/I5nlH/9EehVdjk+fq/vbR2UkU8pfNXXwolHp2abpmgzQ6EMsD65QRWDa2hXFDDIxnokMdRMz58p1VTTUHgfmkPcGVe2J1Fm0c1OYXJ0HLIE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by SA3PR12MB7808.namprd12.prod.outlook.com (2603:10b6:806:31b::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 02:54:02 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
- 02:54:02 +0000
-Message-ID: <aa7a6b97-fed2-41cb-9ea4-0f42acaaeaba@amd.com>
-Date:   Mon, 21 Aug 2023 21:53:58 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ACPI: PHAT: Add Platform Health Assessment Table support
-Content-Language: en-US
-To:     Yazen Ghannam <yazen.ghannam@amd.com>
-Cc:     Avadhut Naik <avadnaik@amd.com>,
-        "Wilczynski, Michal" <michal.wilczynski@intel.com>,
-        Avadhut Naik <avadhut.naik@amd.com>, lenb@kernel.org,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <20230810234856.2580143-1-avadhut.naik@amd.com>
- <a0ab4d07-fb73-418b-b88d-c3ad6aa4cf49@intel.com>
- <655c916e-356c-03e3-6c67-aa40886dd5e2@amd.com>
- <CAJZ5v0j0R1GK=0z+LJd_PSh4zDv9Ydw2YA7HWm1R5wjCUsbbYQ@mail.gmail.com>
- <1c579c96-5010-4e5b-aa27-afb4f4f6746a@amd.com>
- <CAJZ5v0iPRCJLH5bkKyhjUq_tmjmR6R73fhUm3JnKptcm1cn9fQ@mail.gmail.com>
- <6bc15195-aa26-4e29-b625-74fca84f7a6f@amd.com>
- <CAJZ5v0jEcD_1+jHfAk9eN0YYJFbDZN2rZ97KHyH2-w6EqRN9+g@mail.gmail.com>
- <43b65307-bc3f-4014-9bf8-a96c6ed15d9b@amd.com>
- <CAJZ5v0g+uVZwoOr-2W19Ux9u-D=WiY=-dtcQZwYU0Ov_GE5d=w@mail.gmail.com>
- <CAJZ5v0g_DyQAnSuigBc-f0UNmW0mo=0yMadES+0NhphJs_k+cw@mail.gmail.com>
- <9d491dfe-13d8-4072-a90b-5f68107fcf95@amd.com>
- <CAJZ5v0jxKwtHM3vhtw44TW5=J916XvXSeP3DyNLcJDo+eTSRHw@mail.gmail.com>
- <fbc0b21d-33e6-4c32-bc34-3fbfe5e99b1f@amd.com>
- <CAJZ5v0i-=kfBPp2oW-40mNSAFnOzTEeey0EhDUsN6qNU+QY4Ug@mail.gmail.com>
- <0c1fcac6-5497-4a0d-9038-9eebf988268e@amd.com>
- <e608bda7-aadf-438f-bb51-2db599418634@amd.com>
-From:   "Limonciello, Mario" <mario.limonciello@amd.com>
-In-Reply-To: <e608bda7-aadf-438f-bb51-2db599418634@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0077.namprd11.prod.outlook.com
- (2603:10b6:806:d2::22) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Mon, 21 Aug 2023 22:59:31 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587A3184
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:59:29 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M2p47Q009298;
+        Tue, 22 Aug 2023 02:59:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=MMwpKZTR3loitLXFWxg9FyWYJi69JC54MDLGW2Rxaik=;
+ b=T81PzbdUlOp/KZfeN2QXUlp/zvFl6IrMbHJ7F98V1ofolG6+4IhLpjwtM848Y2LDUQOQ
+ yKWZNQrHLrNe/Qtb7uNXLl2Y7MybYJdPn/gWk596zIzoS60IzBY2oNnA4gX8BJuE4B9F
+ Qg6CpyGM5Gul3eh5lacRR/OcOL1ntsGnHYaYw4R6CXRiUtkizxUTUkhryVTdiR2zaN8c
+ MU+JgCZV6zbuum/G/EiNa3fecx6mvBafBk9cUTX4O6bmfToAzIUn+2sd76iOawSrQ5d1
+ lu0HqInh5KgL2v0obtiLQGq/m+2ZrLqxaOg7yQKR881eQ90DlB8VZrugxsnDBsfJDjAm Qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3smmkn03ts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 02:59:22 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 37M2pYfY011129;
+        Tue, 22 Aug 2023 02:59:22 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3smmkn03tn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 02:59:21 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 37M1FF7l007242;
+        Tue, 22 Aug 2023 02:59:21 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3smc7w36yq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 02:59:21 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 37M2xJB524379974
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Aug 2023 02:59:19 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6C61D20049;
+        Tue, 22 Aug 2023 02:59:19 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 708EE20040;
+        Tue, 22 Aug 2023 02:59:18 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Aug 2023 02:59:18 +0000 (GMT)
+Received: from jarvis.ozlabs.ibm.com (haven.au.ibm.com [9.192.254.114])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 629A360113;
+        Tue, 22 Aug 2023 12:59:15 +1000 (AEST)
+Message-ID: <6672135f7db2ae6481b605d7d33f2265a562712f.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] [next] initramfs: Parse KBUILD_BUILD_TIMESTAMP as
+ UTC date
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+To:     Paulo Miguel Almeida <paulo.miguel.almeida.rodenas@gmail.com>,
+        masahiroy@kernel.org, bgray@linux.ibm.com, n.schier@avm.de
+Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org
+Date:   Tue, 22 Aug 2023 12:59:15 +1000
+In-Reply-To: <ZOPTbkHvj8XQiott@mail.google.com>
+References: <ZOPTbkHvj8XQiott@mail.google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HiRkfrUS_4nZYAGFmDMo2ewKwDgumj-c
+X-Proofpoint-ORIG-GUID: fG2oGBsHWrjXLQGmQ5jB4BB_znbUNj2i
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SA3PR12MB7808:EE_
-X-MS-Office365-Filtering-Correlation-Id: b806e337-68d7-4387-de85-08dba2bb0a67
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ywK2B5ipDCR5sylHoP8Nfiuw52hJ1BUoAAnB9HMfbJaZRWBYMmh5/IBIvjJTFcbGqPXBAj41zvUcxnnocEJJpdhBEL//PY9v9cu/F4QYwDVN3fVkPLjBzQo2/FjmNa7zH3x3aNjxg+yX1B8toSgq1n2YPCzwd172Hw+6tdbQb4eVwMpZUrXn7MRGF1c2uZ+WlhMwySajWhpfUk85Xl638tQCMEvuOOl6qja/Yx5GW3wOK21Lovnj7QzHfzucwAWXRS5JbtFaBXSwrQJjC6KIltRO3FBhkJlJKk77s3zT4qZesMGxqrRGrU42MQ5ebSxQleJWdFa/v4dfd7KDWT8VLeddFMn3J298KR98FxnHt2gtfygXk0RNAq5N4qlKTupGR0rt3FyIyq2dlRQoXVks6i9xRrQbqcNbjMmiKy/sADXDGZOJkdfSUb7mIMUikJJzNW33jxbBB3mcHJbYsDOf/jhTAY6jWOWcVQZFGCY6E3CkgDrKf+JEzsboIHq+rhLrPwRQxbtVQb2+JJfUiQJFQMuNDjwziaemBT4xy1a31/8IQg6dVRlhf4X7FmXx60eGLgiBphz3EBxizr5JRmZZ77Ius9LnizLGzfu1rQeb5hJKFEYJG3pp2Iqba7EHCjM1/SSpS9EIX+f+mDWYl6wEcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(376002)(346002)(366004)(1800799009)(186009)(451199024)(54906003)(6636002)(66476007)(37006003)(66556008)(316002)(66946007)(6512007)(8676002)(8936002)(2616005)(6862004)(4326008)(41300700001)(36756003)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(86362001)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cENObDR3OWUxNDA1TGNJQnczN2x3Y3pGUTRmdnBVTkl5MmRyNEI0R2tNWmNp?=
- =?utf-8?B?VEoyWFJGUWEyb3VTMWlGY2RJdWpLb1hjOSs2YkxXQ1ZPY3FZUW9iWVROV0Z4?=
- =?utf-8?B?MWEydlhrRTNLMkNmanRjYllYN3lmQmlCZE5DK09Dems1b0VvUXpnY2s0YXFP?=
- =?utf-8?B?Y1FjcE9xQ1RXR1p1MmEzSnJwVFV1cHpYUVNxalpCanR6cnNNNFMzR3dGRE9z?=
- =?utf-8?B?MlFvZ3UvRWVVRDcvQ1YxaDdpbHQ4d3g3M2RaTEh6M3NhNFU5Mk5mMUtCd2VV?=
- =?utf-8?B?WGZ1ZDU0TlBvTmdwSEgramhaYyttSWUwQ1JDcE9TVFhzSmFUODZabnNsRzRk?=
- =?utf-8?B?dGhhbmhYd1dTS1BnYitLcmNRVXhvdFlhWkRtMFdENEErS3pZY3QzUHdhbUJV?=
- =?utf-8?B?RWVYYlRub2pQRmhlSERnQm1nU3dGK3FWZm15d3l1aVEwUmRja01kRm02MkFM?=
- =?utf-8?B?Z0ZlZWF1MEpPUVY3cUQ3SC9BRDM0SkhsMG4rNURwZzN0dURmdTV1WXJZWG82?=
- =?utf-8?B?dk80QWoxQzdOTUZJOW81dGlBUWJQb241RVhZeDBGbDVqb0t4V0pNNEh0Sk9E?=
- =?utf-8?B?d28xUDhObWluVkEwT3kwUEVZaGNQRW0zWnZYUlBEa2xzYmYyWmhsT3FEem1j?=
- =?utf-8?B?S1dnRDh3YTQ4ampsTU5wMUVDS0VONzVxL0ZYTmRVRzZya1U5UWcrMWRwUXRm?=
- =?utf-8?B?bzI4WW5vd0J4ZG1KZFZXa1RxcWtkdDNFTW5qbjVWUDhqZXZ1TlNLV2VVUHlr?=
- =?utf-8?B?UjJMQUh0Rlp6V3Rqa1lJblhUMXFjZFUwbWhWODRIUWFsa0xHa0lNUmRyZ2tE?=
- =?utf-8?B?TFJLd3FaVldESlpQTDd4UENhUlhDb21hMWtDYW9WUnp4aUk3eWxmVllIN05q?=
- =?utf-8?B?VUJ2cFdKWFdMdFZ0c1ZKNC9rWE1yOEVMZjZZYWxlUGNFSEw3dzdqaFlxM0VT?=
- =?utf-8?B?TXE1bDcyLzZRNmlpanEzTnhSK0RQNDdQZXdwM0ExZW9Uc0xydTh3SE04dWJq?=
- =?utf-8?B?WXhNT0FndVN0TXdOYWlPQXpjWng0bGZXUXF4cG1zSkxVRmN3SUxzUFNFbWFR?=
- =?utf-8?B?TXdaN3BHQ1Y5RDI0cDh4eFdsenBNeUEyOENsbGUwWTBQMjNDNkNFSTRoTzZj?=
- =?utf-8?B?ZmFEVXVXRlBQREI0bDhBN0JnS1FjV1FaMHRmemV1ak54aVhrckJ6QUk5dmpM?=
- =?utf-8?B?Tk45UldNQmx6bk5PWEk2YTE3ell4L1pqeVppSEVaTUpweTExRTNWZFJYL3Av?=
- =?utf-8?B?djJ6ZzZoL0o4L1Rsc3duQ1pCclIydlZIbTFyWFA5ZXUzazc2MnJkcHhKdXY5?=
- =?utf-8?B?clgzanlGd3pBUTk1YnltTm1pTytaZlJXTTF1aHZrVWZtVzRLeE54b0lBcmJN?=
- =?utf-8?B?K21zd0JUL2hQdFNGdnFIZysvQkJHeFBiYkdldU4yTXBSSE5RdlJGOWZMY2VH?=
- =?utf-8?B?TFQyUjZrRUZ6ajF1L3Avek5uTjEwMk51YW8wUUxGcXkvUTRvemZ6UlRoSmRE?=
- =?utf-8?B?OENBSjIyOHlXcnVERDZHaWtjMHBPWkR0UGJpS2ZRWXJyME9NaTF4OTRnOW9n?=
- =?utf-8?B?Zno2ZWRCdkozcHAxcmo2TUplcmljRTVaRHlLKzdKUWxHZ1pmVFVBSTdJMml5?=
- =?utf-8?B?Q2d0SUNHSHo4YmVuV3lXVjNSd2V5bFBtUmx6L3R6REFhMElkTzNGZ3BVVWVH?=
- =?utf-8?B?Y1JjYnpRN2dpb3huUGNPVjRkTGtXQktUNTlQa041TVBpQUc5Ry9BRGt2enM4?=
- =?utf-8?B?YmU3TUxsMWNVczdndVpsUWFuang3dkM0emh5YU1VcVQ1TXNoUm8zbGFxdjJi?=
- =?utf-8?B?YjRjSGJrL2F4NzBoN2JodnFteG1uMjdxdWx2M2VYbFpmNVAyQ2I2bGhJM2pC?=
- =?utf-8?B?TDdCSGw1YmxqZzZHbnFpVVRzRkxCMVNlNDY2SitydHl3ZE1xVG9hUmswRFlS?=
- =?utf-8?B?eHo1SVI4ZG9qRi81aWlQTk9xVys5QmtjWWxsaEJrZWJlWUk2UFd1OEg1aXlL?=
- =?utf-8?B?Rm92WUN5VVZsTFJqWU1CQUJ5Z09FUkd6cmVZV2ZrbnJLdTMvb09uSkJmWG5B?=
- =?utf-8?B?d0hoeHBMK0VjQnVzVG14dUJ6YXZZbmUrNENxTTBRMm5HMDJxZmFud0dZMkkv?=
- =?utf-8?Q?G5ke/lS6YC7qHBRcWGELLAeCT?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b806e337-68d7-4387-de85-08dba2bb0a67
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 02:54:02.2535
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6fd8v7E+yXSovdvIZKTOKbv44ljQHM48V54e4NfChZrmhWzn6L2mjmAWSBtY8jp8LZGQFyUuhDCHLNAvmjrp/Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7808
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-21_13,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ bulkscore=0 adultscore=0 impostorscore=0 malwarescore=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220019
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-08-22 at 09:13 +1200, Paulo Miguel Almeida wrote:
+> When KBUILD_BUILD_TIMESTAMP is specified, the date command will parse
+> it to Unix Epoch time in UTC. However, the date command is
+> timezone-aware so it will convert from the local timezone to UTC
+> first
+> which hits some of the sanity checks added on commit 5efb685bb3af1
+> ("initramfs: Check negative timestamp to prevent broken cpio
+> archive")
+>=20
+> This creates an edge case for the UTC+<N> part of the world. For
+> instance
+>=20
+> =C2=A0- In New Zealand (UTC+12:00):
+> =C2=A0=C2=A0=C2=A0=C2=A0 $ date -d"1970-01-01" +%s
+> =C2=A0=C2=A0=C2=A0=C2=A0 -43200
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D1970-01-01
+> =C2=A0=C2=A0=C2=A0=C2=A0 make[1]: Entering directory '<snip>/linux/'
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GEN=C2=A0=C2=A0=C2=A0=C2=A0 Makefile
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DESCEND objtool
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INSTALL libsubcmd_headers
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CALL=C2=A0=C2=A0=C2=A0 ../scripts/ch=
+ecksyscalls.sh
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GEN=C2=A0=C2=A0=C2=A0=C2=A0 usr/init=
+ramfs_data.cpio
+> =C2=A0=C2=A0=C2=A0=C2=A0 ERROR: Timestamp out of range for cpio format
+> =C2=A0=C2=A0=C2=A0=C2=A0 make[4]: *** [../usr/Makefile:76: usr/initramfs_=
+data.cpio] Error
+> 1
+>=20
+> =C2=A0- In Seattle, WA (UTC-07:00):
+> =C2=A0=C2=A0=C2=A0=C2=A0 $ date -d"1970-01-01" +%s
+> =C2=A0=C2=A0=C2=A0=C2=A0 32400
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D1970-01-01
+> =C2=A0=C2=A0=C2=A0=C2=A0 <builds fine>
+>=20
+> Parse KBUILD_BUILD_TIMESTAMP date string as UTC so no localtime
+> conversion is done, which fixes the edge case aforementioned
+>=20
+> Signed-off-by: Paulo Miguel Almeida
+> <paulo.miguel.almeida.rodenas@gmail.com>
 
+Thanks!
 
-On 8/21/2023 6:33 PM, Yazen Ghannam wrote:
-> On 8/21/23 3:23 PM, Limonciello, Mario wrote:
->>
->>
->> On 8/21/2023 2:16 PM, Rafael J. Wysocki wrote:
->> <snip>
->>>>>> Is there a preferred set of tools that can be updated?
->>>>>
->>>>> I think you need to talk to distro people about this.
->>>>>
->>>>>> If not, would it make sense to develop a set of common kernel tools for
->>>>>> this?
->>>>>
->>>>> Yes, it would, but please see above in the first place.
->>>>>
->>>>>> In my experience, it seems many folks use tools from their vendors or
->>>>>> custom tools.
->>>>>
->>>>> This observation matches my own experience.
->>>>
->>>> For the sake of discussion, and from a kernel developer's point of view,
->>>> should the tools be part of a separate project? Or should the tools be
->>>> part of the kernel tree like perf, etc.? Assuming that this needs to
->>>> start from scratch and not extending an existing project.
->>>
->>> It can be both in principle, but from the practical standpoint it is
->>> more likely to get all of the people to use the same set of tools if
->>> they are included into the kernel source tree.
->>
->> Yazen,
->>
->> You generally envision tools like this to only be used when there is a problem, and not something that's run critical path on every boot right?
->>
-> 
-> Hi Mario,
-> 
-> Generally, I think yes. But you summarized one issue earlier, and that
-> is the case where a user doesn't explicitly fetch the information and it
-> gets lost. This can be especially painful if the issue is difficult to
-> reproduce or has a long time to failure. Of course, this is new and
-> supplemental info, but every clue helps during debug.
-> 
-> Some highlights from the ACPI spec...
-> 
-> The PHAT is not urgent nor actionable by the OS:
-> "It is not expected that the OSPM would act on the data being exposed."
-> 
-> The info may be useful on each boot regardless of any problems:
-> "The Reset Reason Health Record defines a mechanism to describe the
-> cause of the last system reset or boot. The record will be created as a
-> Health Record in the PHAT table. This provides a standard way for system
-> firmware to inform the operating system of the cause of the last reset.
-> This includes both expected and unexpected events to support insights
-> across a fleet of systems by way of collecting the reset reason records
-> on each boot."
-> 
-> Note that it says "last reset", so it doesn't seem intended to keep a
-> running log to be fetched later.
-> 
->> If so, how about doing it in a high level language with easily importable libraries like Python?
->>
-> 
-> This sounds good to me. Anything that can handle binary files.
-> 
->> Then the tools can still be stored "in kernel tree" and distributed with distro "kernel tools" packages but you can more easily use them on random old kernels too since the binary via /sys/firmware/acpi/tables should be widely available.
-> 
-> Yes, I agree. And I think we should give examples for running the tools
-> as services at boot. And documentation is needed, of course.
-> 
-> I don't exactly follow your last statement. Do you mean that new ACPI
-> tables will be exposed in sysfs even without explicit kernel updates?
+Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
 
-Yeah that's what I was meaning.  For example look at other tables the 
-kernel doesn't parse like SLIC or MSDM.  These don't have any changes to 
-show up there.
+> ---
+> Changelog:
+>=20
+> - v2: Document behaviour and way to override it on
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Documentation/kbuild/kbuild.rst. (Req: And=
+rew Donnellan)
+>=20
+> - v1:
+> https://lore.kernel.org/lkml/ZMSdUS37BD5b%2Fdn7@mail.google.com/
+> ---
+> =C2=A0Documentation/kbuild/kbuild.rst | 9 ++++++++-
+> =C2=A0usr/gen_initramfs.sh=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 2 +-
+> =C2=A02 files changed, 9 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/kbuild/kbuild.rst
+> b/Documentation/kbuild/kbuild.rst
+> index bd906407e307..8c204186c762 100644
+> --- a/Documentation/kbuild/kbuild.rst
+> +++ b/Documentation/kbuild/kbuild.rst
+> @@ -296,7 +296,14 @@ KBUILD_BUILD_TIMESTAMP
+> =C2=A0Setting this to a date string overrides the timestamp used in the
+> =C2=A0UTS_VERSION definition (uname -v in the running kernel). The value
+> has to
+> =C2=A0be a string that can be passed to date -d. The default value
+> -is the output of the date command at one point during build.
+> +is the output of the date command at one point during build. E.g.::
+> +
+> +=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D"1991-08-25"
+> +
+> +By default, the value is interpreted as UTC. To override this,
+> append
+> +the desired timezone. E.g.::
+> +
+> +=C2=A0=C2=A0=C2=A0 $ make KBUILD_BUILD_TIMESTAMP=3D"1991-08-25 UTC+03:00"
+> =C2=A0
+> =C2=A0KBUILD_BUILD_USER, KBUILD_BUILD_HOST
+> =C2=A0------------------------------------
+> diff --git a/usr/gen_initramfs.sh b/usr/gen_initramfs.sh
+> index 14b5782f961a..a90316d9a080 100755
+> --- a/usr/gen_initramfs.sh
+> +++ b/usr/gen_initramfs.sh
+> @@ -221,7 +221,7 @@ while [ $# -gt 0 ]; do
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0shi=
+ft
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0;;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0"-d")=C2=A0=C2=A0=C2=A0# date for file mtimes
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=
+=3D"$(date -d"$1" +%s || :)"
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=
+=3D"$(date -d"$1" -u +%s || :)"
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if =
+test -n "$timestamp"; then
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0timestamp=3D"-t $timestamp"
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fi
+
+--=20
+Andrew Donnellan    OzLabs, ADL Canberra
+ajd@linux.ibm.com   IBM Australia Limited
