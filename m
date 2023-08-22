@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF1C7840AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD77E784047
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbjHVMYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S235511AbjHVMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232256AbjHVMYI (ORCPT
+        with ESMTP id S235161AbjHVMEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:24:08 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C421B2;
-        Tue, 22 Aug 2023 05:24:06 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M9Uu5P019649;
-        Tue, 22 Aug 2023 11:46:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=q3CEcAMK1BPwNANS5ZGNItwwcCsuN+Y63PbtS+iHC9s=;
- b=dIwOctzEiMo3HPyNiyMLpdl/lcRvQ5FfuRhCUWKsdkv61ytOL08u/bHNg3md9GIt7lYx
- 79bAD9e1sSA+FgekgkaOlMMKmb2ZxA4cFxJ/2Bs52VXJ6oDaQqFNKgTutQ7rj3viUOo8
- NqiX5xRN6hPRP0zPLLuK2bp8Ao97SigPCm2a6FSbfjw73cIs2KxcfS/yrtM5hYAyKzU5
- LKlqLCIBGadkSLNX91eGkspwyUpfUaluSk061kVKzq5gDwRWtuRaOIIVqpHFuZzWG/Ue
- U1OoUt7JaGXSo9FGl0c3fy4NvSeZ7YQbq97xcDUlQO/XzbiR8BgJ2NR/niZkcJIS7+5i rg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smf3q9fvk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 11:46:50 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MBkmZY013267
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 11:46:48 GMT
-Received: from [10.216.34.168] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 22 Aug
- 2023 04:46:44 -0700
-Message-ID: <1136bf59-3ecb-db33-6dd6-eeca7fb8accc@quicinc.com>
-Date:   Tue, 22 Aug 2023 17:16:40 +0530
+        Tue, 22 Aug 2023 08:04:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B406D1;
+        Tue, 22 Aug 2023 05:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692705885; x=1724241885;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eztHma/mzu8sG2UYtgl/yLjwZ9Wr42jHwVgx08YQoeY=;
+  b=CEVWpBSm88VDB8g6tLKP8NitiX+L3pe++9oGKl1YhF/1fOa7wNZhzfzy
+   W5ZYkZ47WaPW2iqsnZApLkpLywXJ+avUcNCwvThXyIueK+fpzTiaK1fTm
+   BMoHh+w9nDPgtnwBUf5V4mBF8TtGVFGq28X+2I7IfH8ZbZ1CGu+0gEHZd
+   W/XyjkufOQsPWc2EmgpTRjbMH1Gj6rmAPfwlHvt2t4jpEi7Zdqo7AbjlS
+   wG+67MAUeVmbHVxqfs+IzQUDmd4A/2cMnjBDeaP2nsukUVeyyaGZY+SE0
+   H7vv8otdTfPBgtnC8h3zVLg4j7jEQAjZgj8ewpmqoPt77uBVwK0tEN8Ee
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="353425370"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="353425370"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 05:04:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="771333640"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="771333640"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga001.jf.intel.com with ESMTP; 22 Aug 2023 05:04:37 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qYQ7f-009Ken-1x;
+        Tue, 22 Aug 2023 15:04:35 +0300
+Date:   Tue, 22 Aug 2023 15:04:35 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yann Sionneau <ysionneau@kalray.eu>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Currently if the SoC needs pinctrl to switch the SCL
+ and SDA from the I2C function to GPIO function, the recovery won't work.
+Message-ID: <ZOSkU4SbErYI8Rb4@smile.fi.intel.com>
+References: <20230822091555.18015-1-ysionneau@kalray.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 3/4] clk: qcom: Add ECPRICC driver support for QDU1000 and
- QRU1000
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>
-CC:     Taniya Das <quic_tdas@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>
-References: <20230808051407.647395-1-quic_imrashai@quicinc.com>
- <20230808051407.647395-4-quic_imrashai@quicinc.com>
- <7d9ac1c6-be2d-4fd6-ba56-3976ec847274@linaro.org>
-From:   Imran Shaik <quic_imrashai@quicinc.com>
-In-Reply-To: <7d9ac1c6-be2d-4fd6-ba56-3976ec847274@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eECfzVK_BxfDF8UlXUBdgLpgs1xsL3Un
-X-Proofpoint-ORIG-GUID: eECfzVK_BxfDF8UlXUBdgLpgs1xsL3Un
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_10,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 priorityscore=1501 adultscore=0 mlxlogscore=525
- bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 phishscore=0
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308220089
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822091555.18015-1-ysionneau@kalray.eu>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,24 +69,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/10/2023 1:31 AM, Konrad Dybcio wrote:
-> On 8.08.2023 07:14, Imran Shaik wrote:
->> Add ECPRI Clock Controller (ECPRICC) support for QDU1000 and QRU1000 SoCs.
->>
->> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
->> ---
-> Please ensure inline hex is lowercase
+On Tue, Aug 22, 2023 at 11:15:55AM +0200, Yann Sionneau wrote:
+> scl-gpio = <>;
+> sda-gpio = <>;
 > 
-
-Sure, will update all the hex values in lowercase and push another series.
-
-> No GDSCs in this clock controller?
+> Are not enough for some SoCs to have a working recovery.
+> Some need:
 > 
-> Konrad
+> scl-gpio = <>;
+> sda-gpio = <>;
+> pinctrl-names = "default", "recovery";
+> pinctrl-0 = <&i2c_pins_hw>;
+> pinctrl-1 = <&i2c_pins_gpio>;
+> 
+> The driver was not filling rinfo->pinctrl with the device node
+> pinctrl data which is needed by generic recovery code.
 
-There are no GDSCs in this clock controller.
+With or without my suggestion, FWIW,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks,
-Imran
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
