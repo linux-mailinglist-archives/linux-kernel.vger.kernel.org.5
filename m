@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63561784D2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 246BC784D2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbjHVXFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:05:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        id S231631AbjHVXKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjHVXFU (ORCPT
+        with ESMTP id S229472AbjHVXKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:05:20 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1685CD1;
-        Tue, 22 Aug 2023 16:05:18 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso665568266b.1;
-        Tue, 22 Aug 2023 16:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692745517; x=1693350317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Tl1tPAJsY+6HeQIjw/xN1e5yMc1WTSncxxsEvTVmB8M=;
-        b=J3AHJmH5FH5EWYJY8LWPuAdZqR9BdWQ9dx2Mj9W8vbp91TJ1UXiMgOCaUxI2aniiPB
-         f1leJ9g1sr121JreOI3n55cXPjQ7zA4o+tr/7Xj74XSjU5xhQVWLAfv65/vuYbr+kS+Q
-         /ovh7L4fXD1jtqk7udukzQ4S+YSX4HiRJ6H32pFUdajFJgi8zouIDKUDCUd8weXZcFy5
-         ZQdQmjTtG2icVUMVYzlmKfRIHEZx+3QyGoKxKz9zH+LFSEbggDHgyj35mT8loDz5Q5Ms
-         keThPZVmZN3bIb4H+MsLBJ3MXYDN+EbaYcEO8+DwlnB7dfUrh5WDAO80g84MD1k1IB9r
-         87Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692745517; x=1693350317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Tl1tPAJsY+6HeQIjw/xN1e5yMc1WTSncxxsEvTVmB8M=;
-        b=bpSOXZCQg6AZilc/N7UwfYo6CMI5GyuDYWHKNCf4thadvtQALvap6CJBcGhdgeqIvB
-         S8o0UmgLb5kxrGl1EfpTLpEWp0lnOJyqCrg2vmFZeh4aIAiNxTMfKMiBb0HbzlR4ydjd
-         1qTjkMJENfkE63zRPgW6b5S3O77V1Y8mGgzSJUuk4TDqR2UKPaYamneOg4cmYfP1c/w4
-         xsaYmN4u0p30VQ7SrtUgmon4SAVQYC809iozizgvm6E2+QPFX14547BwRuUAriLbNsdM
-         CeaQSCQN1UUdNfwU98bdbVLgcYvFixiOMeIbORC6hSQJUhqfo8h3IMLRqFteQzzBHHLK
-         LqJA==
-X-Gm-Message-State: AOJu0YxYtLzzTfNGMX3IY729jIJbyoNMLxD/V0MXn4lJUzRs2UuW3nUJ
-        fu/8kYC60E2ZSpoO+0hfY6IHRc1dMi+tvxti4h0=
-X-Google-Smtp-Source: AGHT+IGc4vnfO5SO2rv82RsYq+TW7/uByZDfWyswWgwX0GX8iv3xt75IkRdZmjAU5aKwi0tBJtJFC8zrCiSUE6S0eJg=
-X-Received: by 2002:a17:906:535d:b0:98e:f13:e908 with SMTP id
- j29-20020a170906535d00b0098e0f13e908mr9494142ejo.60.1692745517251; Tue, 22
- Aug 2023 16:05:17 -0700 (PDT)
+        Tue, 22 Aug 2023 19:10:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE53810D;
+        Tue, 22 Aug 2023 16:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692745848; x=1724281848;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3c2oE48QdtSIDfdgYyeQETAU7cBTOr2uHvBC3KHuxjw=;
+  b=NnSUtIrD6RxZVD6f8vcvMeWLEls3YVmQ3pNEgocHIjsV6ZRah3S5HFsg
+   6JK5ZsoRN+GeoN0IPs0cK5A7SMxDW03aF+tunWU/FaKBVmz3ekeLLnl1s
+   TJ0Av73m6+KTe/IqKUZUO4MYYQilk6kW2k3vh3SRCY/mfB4sVXDKqTn89
+   Dl8d8vbAPU8qt0vtjH06vJyKMjyOfKAEWdH0o79STECJyhNB4FvQcW1i1
+   1hr7PCWv2s0MqtBZQ8Avp1YxKrmOAQ4X3VLz8gysFFbP+fWEUZM0qvOd2
+   b+NLJ02QomNokLzYXcoWemzX+LLeFVQ98XD2p5EMo1sYJbakkw80q2EgO
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="405015243"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="405015243"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 16:10:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="736414493"
+X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
+   d="scan'208";a="736414493"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 22 Aug 2023 16:10:43 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYaWI-0000bs-1u;
+        Tue, 22 Aug 2023 23:10:42 +0000
+Date:   Wed, 23 Aug 2023 07:10:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "(open list:OPERATING PERFORMANCE POINTS (OPP))" 
+        <linux-pm@vger.kernel.org>
+Subject: Re: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most
+ the provided level
+Message-ID: <202308230637.gz3wmjrT-lkp@intel.com>
+References: <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-References: <20230714174702.4059100-1-robh@kernel.org>
-In-Reply-To: <20230714174702.4059100-1-robh@kernel.org>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Tue, 22 Aug 2023 18:05:06 -0500
-Message-ID: <CABb+yY0ZEkU2fEoFcihDM0GPuNBkCJHYXfkq-+bLJY1xtbf5Jw@mail.gmail.com>
-Subject: Re: [PATCH] mailbox: Explicitly include correct DT includes
-To:     Rob Herring <robh@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michal Simek <michal.simek@amd.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1692717141-32743-4-git-send-email-quic_krichai@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:47=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
-e:
->
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
->
-I thought I was to pick the patch. But I see you intend to do it. Np.
+Hi Krishna,
 
-Acked-by: Jassi Brar <jassisinghbrar@gmail.com>
+kernel test robot noticed the following build warnings:
 
-thanks
+[auto build test WARNING on pci/for-linus]
+[also build test WARNING on robh/for-next rafael-pm/linux-next linus/master v6.5-rc7 next-20230822]
+[cannot apply to pci/next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/dt-bindings-pci-qcom-Add-opp-table/20230822-232104
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git for-linus
+patch link:    https://lore.kernel.org/r/1692717141-32743-4-git-send-email-quic_krichai%40quicinc.com
+patch subject: [PATCH v4 3/4] OPP: Add api to retrieve opps which is at most the provided level
+config: x86_64-randconfig-073-20230823 (https://download.01.org/0day-ci/archive/20230823/202308230637.gz3wmjrT-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230637.gz3wmjrT-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308230637.gz3wmjrT-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/opp/core.c:756: warning: Function parameter or member 'level' not described in 'dev_pm_opp_find_level_floor'
+>> drivers/opp/core.c:756: warning: Excess function parameter 'freq' description in 'dev_pm_opp_find_level_floor'
+   drivers/opp/core.c:2025: warning: Function parameter or member 'opp_table' not described in '_opp_set_supported_hw'
+   drivers/opp/core.c:2025: warning: Excess function parameter 'dev' description in '_opp_set_supported_hw'
+   drivers/opp/core.c:2068: warning: Function parameter or member 'opp_table' not described in '_opp_set_prop_name'
+   drivers/opp/core.c:2068: warning: Excess function parameter 'dev' description in '_opp_set_prop_name'
+   drivers/opp/core.c:2109: warning: Function parameter or member 'opp_table' not described in '_opp_set_regulators'
+   drivers/opp/core.c:2109: warning: Excess function parameter 'count' description in '_opp_set_regulators'
+   drivers/opp/core.c:2213: warning: Function parameter or member 'opp_table' not described in '_opp_set_clknames'
+   drivers/opp/core.c:2213: warning: Function parameter or member 'config_clks' not described in '_opp_set_clknames'
+   drivers/opp/core.c:2311: warning: Function parameter or member 'opp_table' not described in '_opp_set_config_regulators_helper'
+   drivers/opp/core.c:2375: warning: Function parameter or member 'opp_table' not described in '_opp_attach_genpd'
+   drivers/opp/core.c:2602: warning: Function parameter or member 'token' not described in 'dev_pm_opp_clear_config'
+   drivers/opp/core.c:2602: warning: Excess function parameter 'opp_table' description in 'dev_pm_opp_clear_config'
+
+
+vim +756 drivers/opp/core.c
+
+   734	
+   735	
+   736	/**
+   737	 * dev_pm_opp_find_level_floor() - Search for a rounded floor freq
+   738	 * @dev:	device for which we do this operation
+   739	 * @freq:	Start level
+   740	 *
+   741	 * Search for the matching floor *available* OPP from a starting level
+   742	 * for a device.
+   743	 *
+   744	 * Return: matching *opp and refreshes *level accordingly, else returns
+   745	 * ERR_PTR in case of error and should be handled using IS_ERR. Error return
+   746	 * values can be:
+   747	 * EINVAL:	for bad pointer
+   748	 * ERANGE:	no match found for search
+   749	 * ENODEV:	if device not found in list of registered devices
+   750	 *
+   751	 * The callers are required to call dev_pm_opp_put() for the returned OPP after
+   752	 * use.
+   753	 */
+   754	struct dev_pm_opp *dev_pm_opp_find_level_floor(struct device *dev,
+   755						      unsigned long *level)
+ > 756	{
+   757		return _find_key_floor(dev, level, 0, true, _read_level, NULL);
+   758	}
+   759	EXPORT_SYMBOL_GPL(dev_pm_opp_find_level_floor);
+   760	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
