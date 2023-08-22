@@ -2,213 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D9E783C3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAA7783C34
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbjHVIz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35482 "EHLO
+        id S234037AbjHVIzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234055AbjHVIzx (ORCPT
+        with ESMTP id S233949AbjHVIzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:55:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1CB1B2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692694498;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FpNZZm0xrOZji3+sFL4gaEKA2aO8eVbYxQuyUN3O8GQ=;
-        b=RnT8NdUDC1Fs9z1fW+1BOl3s9QCtN3sQmNVOqCsvBTwoSffMb6d+ypCm9m+DeS/XCLxqCq
-        B2KYTm/A4GFLzGtq7WJN93ROhjkzUF9ucO7oKqICQfBwN01guEXn+5xCSXx47karsA7MMs
-        LJs+n1XhVEzwjcR7uGVAxMHr4zPrrQU=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-4FgLMsqFPkyxfvb7WMh3eg-1; Tue, 22 Aug 2023 04:54:56 -0400
-X-MC-Unique: 4FgLMsqFPkyxfvb7WMh3eg-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b980182002so29640041fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:54:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692694494; x=1693299294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FpNZZm0xrOZji3+sFL4gaEKA2aO8eVbYxQuyUN3O8GQ=;
-        b=kxyRcpjbWbMzvcxyxuSeSndlu+ZKH+W9/4wO5DDVU7hFL3ZtiT9wP7ujGEoicDH5AA
-         jZ5GJzl5sAe6inpdqJBkyn9JMyOUan/zCYB2jZqrszVyy2rLa4YeR/6WeJU2WpMoiUaM
-         baW4NAMTR7HKFnx32uf1np212s9zUJeABE1X+1z+AlpmmfUrSqMddHkGGKO3OsZm6a1A
-         pVfuB5bUGD3rdkWVlzVVWzn4386McSYOW9hUEVuKmIP0xiBUVw5UCGIltt3InPY7TOkX
-         ihzFeqgeeXx2qCafXr2ROGqBnSIFlBpefcuUYuwK2wTaFhP+Pw469c39NS/wSHS1MRMp
-         /m6Q==
-X-Gm-Message-State: AOJu0Yw+tsCPLekCKVShhqKiJZ4xwtWjM7SfAOBaZKgBQGJ81CedJ21z
-        YCqzghsVqjw+l5q7Lk4NJtTPKpHm+V32KSH0q9CLy4Ge+M56bIgyZlGIGol+87ACqNOOxxJPhDb
-        bEjVsjWSd7ritX+LlsaIMllXN8u7ZageP+h0bYX9JQVs0LI4z1Lo=
-X-Received: by 2002:a2e:90cd:0:b0:2bc:c052:25b4 with SMTP id o13-20020a2e90cd000000b002bcc05225b4mr1761820ljg.19.1692694494523;
-        Tue, 22 Aug 2023 01:54:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsgvEvyPuN1nmaPQF0XF6UL0KXVvbjLrlQKHixu27C8/EN+LiH2p4Q7Ehyg4xJLpbfwhFF3ui+1btbYMHi5Z0=
-X-Received: by 2002:a2e:90cd:0:b0:2bc:c052:25b4 with SMTP id
- o13-20020a2e90cd000000b002bcc05225b4mr1761812ljg.19.1692694494200; Tue, 22
- Aug 2023 01:54:54 -0700 (PDT)
+        Tue, 22 Aug 2023 04:55:32 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE98C1B5;
+        Tue, 22 Aug 2023 01:55:29 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxueoAeORkwdwaAA--.44984S3;
+        Tue, 22 Aug 2023 16:55:28 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB83+d+RkbS9gAA--.30949S3;
+        Tue, 22 Aug 2023 16:55:27 +0800 (CST)
+Subject: Re: [PATCH v4 3/4] MIPS: Return earlier in die() if notify_die()
+ returns NOTIFY_STOP
+To:     Huacai Chen <chenhuacai@kernel.org>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
+ <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn>
+ <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+ <467fb231-4b0a-478e-0f68-358d0651fc05@loongson.cn>
+ <CAAhV-H7KRGM-Aw9mNUxypE7RKLdK6HPh0fx4hg5bavL_CsFE_g@mail.gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <7982dff9-c052-fec1-8473-5bc8431decc6@loongson.cn>
+Date:   Tue, 22 Aug 2023 16:55:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <CACGkMEseKv8MzaF8uxVTjkaAm2xvei578g=rNVzogfPQRQPOhQ@mail.gmail.com>
- <1692063807-5018-1-git-send-email-si-wei.liu@oracle.com> <1692063807-5018-5-git-send-email-si-wei.liu@oracle.com>
- <CACGkMEuCDN7U2ANYvRa1TuhH5iR5rb2cdHVixwE_C9zgP__9GQ@mail.gmail.com>
- <ea6ecd2b-5391-3820-d3fd-411b60a5a2ec@oracle.com> <CACGkMEvEpAsAA_kP=rgUfyeoq_Kj+rpZxEsxmPEZD5braxcT+Q@mail.gmail.com>
- <9f118fc9-4f6f-dd67-a291-be78152e47fd@oracle.com>
-In-Reply-To: <9f118fc9-4f6f-dd67-a291-be78152e47fd@oracle.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Tue, 22 Aug 2023 16:54:42 +0800
-Message-ID: <CACGkMEtNZnGw+O2PkZkCgOd+NiU3kw7asYsGH3EkuOHd=GvCnA@mail.gmail.com>
-Subject: Re: [PATCH RFC 4/4] vhost-vdpa: introduce IOTLB_PERSIST backend
- feature bit
-To:     Si-Wei Liu <si-wei.liu@oracle.com>
-Cc:     eperezma@redhat.com, gal@nvidia.com, linux-kernel@vger.kernel.org,
-        mst@redhat.com, virtualization@lists.linux-foundation.org,
-        xuanzhuo@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H7KRGM-Aw9mNUxypE7RKLdK6HPh0fx4hg5bavL_CsFE_g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxB83+d+RkbS9gAA--.30949S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7CrW8XFWUXr48Zr1ktrW7Jrc_yoW8Ar1Up3
+        yUJa1UKF4UXF4UXr17tFsYqryaq3s8tFyxua1vyw4FqwnFvw1fGF18WF17ua4FvryrKa10
+        vFW0gr129asxAFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4AhLUUUUU
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 17, 2023 at 7:44=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
-wrote:
->
->
->
-> On 8/15/2023 6:48 PM, Jason Wang wrote:
-> > On Wed, Aug 16, 2023 at 6:31=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.c=
-om> wrote:
-> >>
-> >>
-> >> On 8/14/2023 7:25 PM, Jason Wang wrote:
-> >>> On Tue, Aug 15, 2023 at 9:45=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle=
-.com> wrote:
-> >>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> >>>> ---
-> >>>>    drivers/vhost/vdpa.c             | 16 +++++++++++++++-
-> >>>>    include/uapi/linux/vhost_types.h |  2 ++
-> >>>>    2 files changed, 17 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> >>>> index 62b0a01..75092a7 100644
-> >>>> --- a/drivers/vhost/vdpa.c
-> >>>> +++ b/drivers/vhost/vdpa.c
-> >>>> @@ -406,6 +406,14 @@ static bool vhost_vdpa_can_resume(const struct =
-vhost_vdpa *v)
-> >>>>           return ops->resume;
-> >>>>    }
-> >>>>
-> >>>> +static bool vhost_vdpa_has_persistent_map(const struct vhost_vdpa *=
-v)
-> >>>> +{
-> >>>> +       struct vdpa_device *vdpa =3D v->vdpa;
-> >>>> +       const struct vdpa_config_ops *ops =3D vdpa->config;
-> >>>> +
-> >>>> +       return (!ops->set_map && !ops->dma_map) || ops->reset_map;
-> >>> So this means the IOTLB/IOMMU mappings have already been decoupled
-> >>> from the vdpa reset.
-> >> Not in the sense of API, it' been coupled since day one from the
-> >> implementations of every on-chip IOMMU parent driver, namely mlx5_vdpa
-> >> and vdpa_sim. Because of that, later on the (improper) support for
-> >> virtio-vdpa, from commit 6f5312f80183 ("vdpa/mlx5: Add support for
-> >> running with virtio_vdpa") and 6c3d329e6486 ("vdpa_sim: get rid of DMA
-> >> ops") misused the .reset() op to realize 1:1 mapping, rendering strong
-> >> coupling between device reset and reset of iotlb mappings. This series
-> >> try to rectify that implementation deficiency, while keep userspace
-> >> continuing to work with older kernel behavior.
-> >>
-> >>>    So it should have been noticed by the userspace.
-> >> Yes, userspace had noticed this no-chip IOMMU discrepancy since day on=
-e
-> >> I suppose. Unfortunately there's already code in userspace with this
-> >> assumption in mind that proactively tears down and sets up iotlb mappi=
-ng
-> >> around vdpa device reset...
-> >>> I guess we can just fix the simulator and mlx5 then we are fine?
-> >> Only IF we don't care about running new QEMU on older kernels with
-> >> flawed on-chip iommu behavior around reset. But that's a big IF...
-> > So what I meant is:
-> >
-> > Userspace doesn't know whether the vendor specific mappings (set_map)
-> > are required or not. And in the implementation of vhost_vdpa, if
-> > platform IOMMU is used, the mappings are decoupled from the reset. So
-> > if the Qemu works with parents with platform IOMMU it means Qemu can
-> > work if we just decouple vendor specific mappings from the parents
-> > that uses set_map.
-> I was aware of this, and if you may notice I don't even offer a way
-> backward to retain/emulate the flawed vhost-iotlb reset behavior for
-> older userspace - I consider it more of a bug in .set_map driver
-> implementation of its own rather than what the vhost-vdpa iotlb
-> abstraction wishes to expose to userspace in the first place.
 
-That's my understanding as well.
 
->
-> If you ever look into QEMU's vhost_vdpa_reset_status() function, you may
-> see memory_listener_unregister() will be called to evict all of the
-> existing iotlb mappings right after vhost_vdpa_reset_device() across
-> device reset, and later on at vhost_vdpa_dev_start(),
-> memory_listener_register() will set up all iotlb mappings again. In an
-> ideal world without this on-chip iommu deficiency QEMU should not have
-> to behave this way - this is what I mentioned earlier that userspace had
-> already noticed the discrepancy and it has to "proactively tear down and
-> set up iotlb mapping around vdpa device reset". Apparently from
-> functionality perspective this trick works completely fine with platform
-> IOMMU, however, it's sub-optimal in the performance perspective.
+On 08/22/2023 03:38 PM, Huacai Chen wrote:
+> On Mon, Aug 21, 2023 at 10:29 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>
+>>
+>>
+>> On 08/20/2023 04:53 PM, Huacai Chen wrote:
+>>> Hi, Tiezhu,
+>>>
+>>> On Sun, Aug 20, 2023 at 7:21 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>>>>
+>>>> After the call to oops_exit(), it should not panic or execute
+>>>> the crash kernel if the oops is to be suppressed.
+>>>>
+>>>> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+>>>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>>>> ---
+>>>>  arch/mips/kernel/traps.c | 6 ++++--
+>>>>  1 file changed, 4 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+>>>> index 8e528a8..fd770dc 100644
+>>>> --- a/arch/mips/kernel/traps.c
+>>>> +++ b/arch/mips/kernel/traps.c
+>>>> @@ -412,6 +412,9 @@ void die(const char *str, struct pt_regs *regs)
+>>>>
+>>>>         oops_exit();
+>>>>
+>>>> +       if (ret == NOTIFY_STOP)
+>>>> +               return;
+>>>> +
+>>>>         if (in_interrupt())
+>>>>                 panic("Fatal exception in interrupt");
+>>>>
+>>>> @@ -421,8 +424,7 @@ void die(const char *str, struct pt_regs *regs)
+>>>>         if (regs && kexec_should_crash(current))
+>>>>                 crash_kexec(regs);
+>>>>
+>>>> -       if (ret != NOTIFY_STOP)
+>>>> -               make_task_dead(SIGSEGV);
+>>>> +       make_task_dead(SIGSEGV);
+>>> Then you call make_task_dead() at the end unconditionally, and die()
+>>> becomes a noreturn function again.
+>>
+>> No, it can return if (ret == NOTIFY_STOP), so die() is a return
+>> function now, please see objdump -d arch/mips/kernel/traps.o.
+> Then should loongarch patches need to be updated, too?
 
-Right.
+Yes, I think so, will do it.
 
->
-> We can't simply fix QEMU by moving this memory_listener_unregister()
-> call out of the reset path unconditionally, as we don't want to break
-> the already-functioning older kernel even though it's suboptimal in
-> performance.
-
-I'm not sure how things can be broken in this case? Or why it is
-specific to parent with set_map.
-
-> Instead, to keep new QEMU continuing to work on top of the
-> existing or older kernels, QEMU has to check this IOTLB_PERSIST feature
-> flag to decide whether it is safe not to bother flushing and setting up
-> iotlb across reset. For the platform IOMMU case, vdpa parent driver
-> won't implement either the .set_map or .dma_map op, so it should be
-> covered in the vhost_vdpa_has_persistent_map() check I suppose.
-
-Just to make sure we are at the same page.
-
-From the userspace point of view, the IOTLB persists and vhost-vDPA
-doesn't reset the IOTLB during vDPA reset. But we have are two levels
-of the coupling in other places:
-
-1) Qemu level: memory listener is coupled with DRIVER_OK/reset
-2) vDPA parent level: mlx5 build/destroy MR during DRIVER_OK/reset
-
-If I understand you correctly, since we've coupled in 1), Qemu can't
-be aware of whether the mapping is coupled with reset or not? If we
-simply decouple in 1), memory mappigns might be lost during vDPA rset.
-
-Thanks
-
->
->
-> Thanks,
-> -Siwei
-> > Thanks
-> >
-> >> Regards,
-> >> -Siwei
-> >>> Thanks
-> >>>
->
+Thanks,
+Tiezhu
 
