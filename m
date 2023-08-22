@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA12C78466A
+	by mail.lfdr.de (Postfix) with ESMTP id 9654C784669
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237468AbjHVP6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
+        id S237462AbjHVP6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237458AbjHVP6D (ORCPT
+        with ESMTP id S237454AbjHVP6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:58:03 -0400
+        Tue, 22 Aug 2023 11:58:02 -0400
 Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2716C185
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:01 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bb734a9081so64913851fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ADA12C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:00 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bbad32bc79so78556021fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692719879; x=1693324679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dtMS2qZ053vosx7bv0u9n/UHZ6ydIsAbk9FsHZhbXiI=;
-        b=D5uE5WbXrVn1LX9P9N5AjWi/+kHTV7f0Imkhlmh/RaaUVfGbIxYeyO3/QuQQkm1KX/
-         a1HXJH1j6DJC1ArZul6QROQgoxCTdNXLPvrVrrgyIfPWTxk81CoHmYFpqrok+6hXW8lH
-         0+nYkc42A2v1v4xEdZU/4M3/FF9gSlNXaRc4k=
+        d=linaro.org; s=google; t=1692719878; x=1693324678;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ziQuC645DrIZLGT5VV7OX3wRBfSiQDkNJDxc2Uc2oXw=;
+        b=Y7NgyweM5DH3Gm2s9TufjiIGig+WFCgkXWcJGvd7/by/T1HVwHC5f6cO0OMGFXmCwR
+         FjOCvQ8d5Fu3q0bk4OE1rm9i2OOGwiMnwEb49iuzc+ejIPAL37iR8Jz8c80HU/zQGwwX
+         YGmMGibXiwWYnmWC/Mend1Hyi+vyj70md1bGNIlpPnofaip2Wm7TugJ82uBzzkE3wMSZ
+         9Ce9FU7fpyH8bz2BHLnBZTQb+M+FJmYCoaBenL8y13tH5dWOBQcQRnlV2wu1mXhFe4pv
+         SOyMDono7ZPmCzGEsEGCSan2XzBKgioNpXHH7aDBT7ZowTUhJWjxIOdbDOhNdhMl7d24
+         8hEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692719879; x=1693324679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dtMS2qZ053vosx7bv0u9n/UHZ6ydIsAbk9FsHZhbXiI=;
-        b=PRUjSaooMcTic4Vb1vTpZnQApgI52lE7FjQgZG1iqDyeoAtfoi+RpHK6/b64y3+Q54
-         NWMd1tvBU3Ligj/VRsHBF+t1qXQcKYLaK7/xliyVhJncbaNGik6431iXG5Hr9CnKxrT2
-         ow+FQYjy0CfJ6+FOaV2hGRUuHRi7fsRJaXw2MPX9SCD/zZ/cJF4xe8acOy4vrj6HlY0h
-         CHtNSyND3EBzHBHilIRdloAL41VoVZhSZctOems/lwQIjcZrsjJNZG/oyoCRbhkxH6FN
-         yQwC1X6yspAODbkaeNEJzOBE9Z7PFfSZn2s62JRRixdJjagnC2EV5gLw48uKjziCSp3s
-         bs1Q==
-X-Gm-Message-State: AOJu0YyPtdOeok+S/hqVhhWAkjqdMvQc2nE8SjqFOWAJsWbypb6qHlEP
-        g8G9bOEzE9UPlT/Ywr/QVSESBEBwbGkOZZO1/G8m6Q==
-X-Google-Smtp-Source: AGHT+IFn//2QSGqnl/QhFfJfnyVd3D/1RDdkwf8iN9sT6CYdW0X0AaEd9fuWzktm5OHJR/TPXsz6Lw9QhlcWLMKIrRI=
-X-Received: by 2002:a2e:8e75:0:b0:2bc:d3b1:d6c1 with SMTP id
- t21-20020a2e8e75000000b002bcd3b1d6c1mr644017ljk.9.1692719879084; Tue, 22 Aug
- 2023 08:57:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692719878; x=1693324678;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ziQuC645DrIZLGT5VV7OX3wRBfSiQDkNJDxc2Uc2oXw=;
+        b=eOTe+7XcfysnW7dgfgPb6trnW/UEK21QAmySHYZelQRChCtDajs39ujByoc5GolsEj
+         sRktEhOt9cwDKswb1XUTjDcbpSu3D3AmnkOQ3x3fdCXQFrCxN5SePM5E/Anjl/N2KnSN
+         8NPVhtQnWSGiRXrqWQL5CK3uo9ZYPC7rdkL4OILb+BKwWE4lsDXthkS9fHqgKe8FTXvf
+         XQP7EMEjQjBkPj1NQMOQconn0fbZP4G2oV6LpveRQVvVMsRf1NGZYlmGKxmbVDEYjjJ+
+         qH4kx44Xh6vAamAd7QjdbC8Oo3PDAVk8lBaLEXBb5LU/PQidbvUDl7wIzCpL/4C5r2EM
+         160Q==
+X-Gm-Message-State: AOJu0YwV3pLhu9i5UsfXxJ6mr0RSOJQ1nQC0xIqV5/wG5EXV67m2hooA
+        i2qwVvBScBvQoDvJDukHsPpDVA==
+X-Google-Smtp-Source: AGHT+IGTiH0yWLnVA01NmPlWC40z88n4Ts80NmctR6S8tLxvtl5DLS8LM8jvfx6OVVJQwZJAghSsSQ==
+X-Received: by 2002:a05:6512:2354:b0:4ff:a8c6:d1aa with SMTP id p20-20020a056512235400b004ffa8c6d1aamr8302630lfu.48.1692719878499;
+        Tue, 22 Aug 2023 08:57:58 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id q6-20020aa7d446000000b0052718577668sm7698214edr.11.2023.08.22.08.57.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 08:57:58 -0700 (PDT)
+Message-ID: <e146782f-a93c-e694-1b08-7c2dba597bcf@linaro.org>
+Date:   Tue, 22 Aug 2023 17:57:56 +0200
 MIME-Version: 1.0
-References: <20230822040248.329442-1-chenhuacai@loongson.cn>
- <20230822153416.GA72567@google.com> <CAAhV-H75vwt5RPeE2uh1eK=0osepStq+j88BM9iEspSC1CvZTg@mail.gmail.com>
-In-Reply-To: <CAAhV-H75vwt5RPeE2uh1eK=0osepStq+j88BM9iEspSC1CvZTg@mail.gmail.com>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 22 Aug 2023 11:57:48 -0400
-Message-ID: <CAEXW_YS8YQkTqJQ_DJzPLGcExOUU18esYXWPb9j81gS02uRLgw@mail.gmail.com>
-Subject: Re: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml
+ file
+Content-Language: en-US
+To:     Shenwei Wang <shenwei.wang@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <20230818153446.1076027-1-shenwei.wang@nxp.com>
+ <CAL_Jsq+XA_P-aRK9_WuGPmJ0_xJgsSr9smZy4BRbKZbmVsMQBQ@mail.gmail.com>
+ <PAXPR04MB918539A19B8F817F623BBD1F891BA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+ <9927403d-6dd9-3e5e-8f9d-f38e6640f95f@linaro.org>
+ <PAXPR04MB91850D8807CE374BD7C30CC5891EA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+ <CAL_JsqJ3dr7gxq+D5DYG8oQ=igzjARz=beQoYL7rrydV4SwDTw@mail.gmail.com>
+ <PAXPR04MB918567C378D420DB4830B869891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+ <51bc0ccf-425b-5f16-b8f2-94d7cc979fae@linaro.org>
+ <PAXPR04MB9185F7B520E8BE94B97C4908891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <PAXPR04MB9185F7B520E8BE94B97C4908891FA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,117 +92,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 11:48=E2=80=AFAM Huacai Chen <chenhuacai@kernel.org=
-> wrote:
->
-> Hi, Joel,
->
-> On Tue, Aug 22, 2023 at 11:34=E2=80=AFPM Joel Fernandes <joel@joelfernand=
-es.org> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 12:02:48PM +0800, Huacai Chen wrote:
-> > > The KGDB initial breakpoint gets an rcu stall warning after commit
-> > > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
-> > > rcu_cpu_stall_reset()").
-> > >
-> > > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
-> > [...]
-> > >
-> > > [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loo=
-ngson.cn/T/#t
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detect=
-ion in rcu_cpu_stall_reset()")
-> > > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > > ---
-> > > V2: Use NMI safe functions.
-> > > V3: Add comments to explain why.
-> > >
-> > >  kernel/rcu/tree_stall.h | 17 ++++++++++++++++-
-> > >  1 file changed, 16 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > > index b10b8349bb2a..e4e53113d062 100644
-> > > --- a/kernel/rcu/tree_stall.h
-> > > +++ b/kernel/rcu/tree_stall.h
-> > > @@ -150,11 +150,26 @@ static void panic_on_rcu_stall(void)
-> > >   * rcu_cpu_stall_reset - restart stall-warning timeout for current g=
-race period
-> > >   *
-> > >   * The caller must disable hard irqs.
-> > > + *
-> > > + * The jiffies updating may be delayed for a very long time due to t=
-ickless and
-> > > + * irq disabled, especially in the KGDB case, so we need to add the =
-delayed time
-> > > + * (delta) to rcu_state.jiffies_stall.
-> > > + *
-> > > + * This function may be called in NMI context, so we cannot use ktim=
-e_get_ns()
-> > > + * and ktime_get_coarse_ns(). Instead, we use their inaccurate but s=
-afe friends
-> > > + * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cause=
- rcu_state.
-> > > + * jiffies_stall to be a little large than expected (harmless and sa=
-fer).
-> > >   */
-> > >  void rcu_cpu_stall_reset(void)
-> > >  {
-> > > +     u64 curr, last, delta;
-> > > +
-> > > +     curr =3D ktime_get_mono_fast_ns();
-> > > +     last =3D ktime_get_seconds() * NSEC_PER_SEC;
-> > > +     delta =3D nsecs_to_jiffies(curr - last);
-> > > +
-> > >       WRITE_ONCE(rcu_state.jiffies_stall,
-> > > -                jiffies + rcu_jiffies_till_stall_check());
-> > > +                jiffies + delta + rcu_jiffies_till_stall_check());
-> > >  }
-> >
-> > I prefer the following diff on top of your patch to take advantage of U=
-BSAN
-> > detecting overflows.
-> >
-> > If you take my diff, feel free to add:
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > ---8<-----------------------
-> >
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index 5e9e4779bdf1..3398cf2d19c5 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -162,14 +162,15 @@ static void panic_on_rcu_stall(void)
-> >   */
-> >  void rcu_cpu_stall_reset(void)
-> >  {
-> > -       u64 curr, last, delta;
-> > +       ktime_t last, delta_ns;
-> > +       u64 delta_jiff;
-> >
-> > -       curr =3D ktime_get_mono_fast_ns();
-> >         last =3D ktime_get_seconds() * NSEC_PER_SEC;
-> > -       delta =3D nsecs_to_jiffies(curr - last);
-> > +       delta_ns =3D ktime_sub(ktime_get_mono_fast_ns(), last);
-> Though ktime_t is the same as s64/u64 now,
+On 22/08/2023 17:50, Shenwei Wang wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Sent: Tuesday, August 22, 2023 10:26 AM
+>> To: Shenwei Wang <shenwei.wang@nxp.com>; Rob Herring
+>> <robh+dt@kernel.org>
+>> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+>> <conor+dt@kernel.org>; Ulf Hansson <ulf.hansson@linaro.org>; Liam Girdwood
+>> <lgirdwood@gmail.com>; Mark Brown <broonie@kernel.org>;
+>> imx@lists.linux.dev; devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> dl-linux-imx <linux-imx@nxp.com>
+>> Subject: [EXT] Re: [PATCH 1/2] dt-bindings: power: Add regulator-pd yaml file
+>>>
+>>> No offend. :) Sorry for my poor word. To provide more context, a
+>>> common use case example is using a GPIO pin as a power switch. The
+>>> current implementation operates as a fixed regulator, which makes it
+>>> difficult to control the on/off timing without modifying its driver.
+>>
+>> So it is a problem of a driver?
+>>
+> 
+> That is arguable too. The driver may assume its power is on when probed, which 
+> aligns with how the PD behaves.
 
-No, you are incorrect.  ktime_t is a signed int not u64. I prefer to
-use types designed for a specific purpose where possible. It makes the
-code safer.
+So everything in driver... no discussion about bindings.
 
-> but I think we'd better to
-> not mix them. Then, ktime_get() and ktime_get_coarse() return ktime_t;
-> ktime_get_ns(), ktime_get_coarse_ns() and ktime_get_mono_fast_ns()
-> return s64/u64 (means nanoseconds); ktime_get_seconds() returns
-> seconds but ktime_get_seconds() * NSEC_PER_SEC is also nanoseconds.
-> So, the type definition in your diff is not suitable,
-> ktime_sub(ktime_get_mono_fast_ns(), last) is not suitable too.
->
+> 
+>>> It also lacks power management support.
+>>
+>> Which is not related to bindings but implementation in given driver.
+>>
+> 
+> For those simple drivers, the default power management logic can handle 
+> power correctly without requiring any specialized implementation in the 
+> driver code.
 
-Is there a technical reason for your concern? ktime_get_mono_fast_ns()
-is assigned to ktime_t in other places. I am not seeing what the
-problem is.
+You can create any drivers you wish or change existing ones. I don't see
+a problem here.
 
-Thanks.
+> 
+>>>
+>>>> The detail that power-domains get handled automatically is an
+>>>> implementation detail in the kernel (currently). That could easily
+>>>> change and you'd be in the same position as with regulator supplies.
+>>>
+>>> The proposed regulator-pd driver follows the standard PD driver
+>>> framework, so it for sure relies on certain kernel implementation
+>>> details. If those underlying implementation details change in the
+>>> future, this driver as well as other PD drivers built on the same framework
+>> would need to be updated accordingly.
+>>
+>> We talk about bindings which you would not be allowed to change. Thus your
+>> case would stop working...
+>>
+> 
+> As a new driver, it has to involve some new bindings especially the compatible 
+> string.
+
+I am not talking about this. I do not speak about creating new bindings,
+but changing them.
+> 
+>>>
+>>>> We could just as easily decide to make the driver core turn on all
+>>>> supplies in a node. That would give you the same "feature". Why would
+>>>> you design your DT around implementation decisions of the OS?
+>>>>
+>>>
+>>> This DT properties are proposed solely for this specific driver, not
+>>> to hack the OS. This is no different than other PD drivers like gpc/scu-
+>> pd/imx93-pd.
+>>
+>> I am not sure if you got Rob's point, I have feelings that not. Argument that
+>> some OS implements something some way, is not an argument for a new
+>> binding, barely hardware related.
+>>
+> 
+> Thank you for the clarification. The issue is that this driver is purely a software layer 
+> that wraps the regulators as a power domain. The bindings make the implementation 
+> clean and easy to understand.  I don't think we should add extra complex logic inside 
+> the driver solely to avoid introducing new bindings.
+
+Since bindings are not for software layers, I don't think we should be
+talking about them just to avoid introducing driver changes.
+
+Best regards,
+Krzysztof
+
