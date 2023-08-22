@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D46784C5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6213A784CA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjHVV7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:59:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
+        id S231528AbjHVWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjHVV7H (ORCPT
+        with ESMTP id S229555AbjHVWFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:59:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661A5CE8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:59:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 037FF60EA0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 21:59:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D606BC433C7;
-        Tue, 22 Aug 2023 21:59:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692741544;
-        bh=sfm1SPxcuzXHDiKsq8vWr9D2Z8Po/kb2b91YeVVlxEs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bTL/cfik2EBAetBY5d9zs3VVGPWGM2570QAHibQ8QhiMUaWqfnDqTwZrj9Zrf+M5M
-         /fZjqo4q1iDSvYX0/T5X1OxAsYLhNnCYb9PVqADTSRpJ4oJx6zGTOGuO7GfqrUriSo
-         BdEPcIvQqH1ganyJLo61lNqDU8q4Ts2mZOYCwraHEUdmSgC1jo/eVxb2HkmWHIjU04
-         V4RPOLk4E6EtI4c4Tqemz69PnC5AXtKkGGFOeWRNFvzzNwQzKPQcFTs+zg033/uQeu
-         mxOSb77L0WAZiVw5iKJEyHxvrAEZTxRxaY9WZTqcnNMWAabQYcPPTbTPyBhiwumj+9
-         t2S0q1v5t19Cw==
-Date:   Tue, 22 Aug 2023 14:59:01 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 04/22] x86/srso: Fix SBPB enablement for
- spec_rstack_overflow=off
-Message-ID: <20230822215901.nkikxpcmlrssi42l@treble>
-References: <cover.1692580085.git.jpoimboe@kernel.org>
- <23a121e309d5e880eb35c441d9bdfa642d6d59f4.1692580085.git.jpoimboe@kernel.org>
- <20230821141619.GCZONxs5OdbbXFYSq2@fat_crate.local>
- <20230821163649.dyhxdeewlf6eerda@treble>
- <20230822055452.GDZORNrNdYc3OmGygU@fat_crate.local>
- <20230822060706.GEZORQiq136ZR5Tnc0@fat_crate.local>
+        Tue, 22 Aug 2023 18:05:00 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4D311F;
+        Tue, 22 Aug 2023 15:04:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1692741895; x=1693346695; i=deller@gmx.de;
+ bh=xY/2+QyySjuCzXpTOznTGPpaO1FAuAXckq+otWDEeRc=;
+ h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
+ b=meesxSB46CrRLY9BxOovDIYo2YRRIJGmrq8c4Mn/YACOlv8SLaFu0xL77Tvwq6CcvmMl3FK
+ qfLZmKHuXwB8I0oUtxEMzvf8zX8+ciEA74z05kizeYLFOgMRe6rp9KoXeulZ0HG9EVuXYa8g3
+ cUVeRWNJsE22hjS9KEo368UFkCrM7E+K2JmjHHUfCHgSXpCRsx6d/Y5SHK9lpcZMK/o318jME
+ hUsz35X0gtBYBGMfH8bEQ2DuZBw1Chk6L/A8uXKhATQ1TC1/vy3mPI3vpRinKpt+whYjZDQi2
+ /e1hHNF+bqaqQYAkOMh6jkxapydHWxbOq3TUpLNPfweOipjJ+2Ag==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.154.33]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6Ue3-1qet1b3Tuj-006yac; Wed, 23
+ Aug 2023 00:04:54 +0200
+Message-ID: <a1a19e05-0cfd-cae5-9edb-9d63e70ee06d@gmx.de>
+Date:   Wed, 23 Aug 2023 00:04:54 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230822060706.GEZORQiq136ZR5Tnc0@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] procfs: Fix /proc/self/maps output for 32-bit kernel
+ and compat tasks
+Content-Language: en-US
+From:   Helge Deller <deller@gmx.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrei Vagin <avagin@openvz.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>
+References: <ZOR95DiR8tdcHDfq@p100>
+ <20230822113453.acc69f8540bed25cde79e675@linux-foundation.org>
+ <8eb38faf-16a2-a538-b243-1b4706f73169@gmx.de>
+In-Reply-To: <8eb38faf-16a2-a538-b243-1b4706f73169@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JVY7fCK5v9wIrnBlZE4htJ33HQe7Ld+JMw3YMCTGofeBjCy3OgZ
+ rTXx/E1wJNn79gz8MRdNvff7mqPJoKUIjNw8MCXIyGiV+6hWFRBniI7FLg9gcmLMfnSaksb
+ sKKBkBNqEeBKYCDvBtgJdJgDASkArsTdP1lV6mRumtKCtVog4HEOiJXM2JrN5xk5nvWz+pv
+ hiMGYC1sLRU432TNN20zg==
+UI-OutboundReport: notjunk:1;M01:P0:3C4JX0WuOeA=;DvqILYy0YE33/S8D4xbe+hBWs7q
+ jK6K5mTdoZG1Femfk2n6BevtKXkb2O/4iPOdeYUlGtyl5CVel4QeHc9gUH7K7eLr6ln1xbDkc
+ kcRpuba2zahxX4IhQ37cXSRIvI4d5qKV/xYB9SsXkT5ukrRp6cPiPTkURt4bXhOJiflqNnaCT
+ Nhqz9pfMfxUEarrAslbTEoQb3P3sii8yibUJMgo15iJRibXjQlXixB2clVRXxCVYAxmyGQH6F
+ luOTNqCYvW5ROw/6PTaIwG1G9KJIlbPlbbfdohjozLgmZrW1WPMJXcKH3pmSdrYMBDYgBF90b
+ PJd6Ip4SbUuGK+VMYcrk5MhC6kL3EFDksBn7HKr+kcdyqW+0dSmKyOIavfSY4ngtxiVeiP/QZ
+ 3tuHqbyObEKTHa+ZX77yQI2Yo4vp1JEHG+48j/35NR0BqjRd3a0xIb5IEFdFIj2gSgPoE9ipJ
+ BCpzVKyFUKzl725Rl2h1IDIpycb4vArBFv9QodL3URgIs14I9lbUsSCcKPFoDmgVl40rV+k89
+ 9VokyzyQIgwvLT2UI/MAfIafwcHlfg6diYRSUgWdVn6ph/QMqe6FjJ2OSEtGaOLe5nX89+ufB
+ 4w+T8RNg84SkCVyaRVZ+Gj/FfWVy3TefGbqNcTpj/y1wjHv2jxqk2grhAmr3zNYI3yMtqcbPf
+ Ph89IybQsT2smPLaGbuh/BC5TH3SW6rgKwc+xHjeJLaj3Z0xU0k4af9RXyPgcr8K9Z91TzOJh
+ ybaUliMY1MOMzA/Uwrz/jivCf6W8SPM3CC83Ns5wN8CRfXkE5EowbPUZtyTLMNURS2fiLHEJd
+ BIqpEu49BdUkUZ0p61/owNURVpGz0PbXWVyYkcqlHsVXCULZxcWJnSay+kClzJ5ZTky7Isfqp
+ YahjHHkAvWYp3aS0TNxKPtr2say9YgH1e0dKhRRrizX9gBP9GZNMDECPRc/OqpnpXhGgF6mFb
+ TIdSBO2geJO9OLtQSS/sfTD5+us=
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 08:07:06AM +0200, Borislav Petkov wrote:
-> On Tue, Aug 22, 2023 at 07:54:52AM +0200, Borislav Petkov wrote:
-> > If you goto pred_cmd, you will overwrite it with PRED_CMD_SBPB here.
-> 
-> Looking at this more:
-> 
-> "If SRSO mitigation is not required or is disabled, software may use
-> SBPB on context/virtual machine switch to help protect against
-> vulnerabilities like Spectre v2."
-> 
-> I think we actually want this overwrite to happen.
+On 8/22/23 22:53, Helge Deller wrote:
+> On 8/22/23 20:34, Andrew Morton wrote:
+>> On Tue, 22 Aug 2023 11:20:36 +0200 Helge Deller <deller@gmx.de> wrote:
+>>
+>>> On a 32-bit kernel addresses should be shown with 8 hex digits, e.g.:
+>>>
+>>> root@debian:~# cat /proc/self/maps
+>>> 00010000-00019000 r-xp 00000000 08:05 787324=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/bin/cat
+>>> 00019000-0001a000 rwxp 00009000 08:05 787324=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/bin/cat
+>>> 0001a000-0003b000 rwxp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 [heap]
+>>> f7551000-f770d000 r-xp 00000000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/libc.so.6
+>>> f770d000-f770f000 r--p 001bc000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/libc.so.6
+>>> f770f000-f7714000 rwxp 001be000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/libc.so.6
+>>> f7d39000-f7d68000 r-xp 00000000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/ld.so.1
+>>> f7d68000-f7d69000 r--p 0002f000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/ld.so.1
+>>> f7d69000-f7d6d000 rwxp 00030000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
+usr/lib/hppa-linux-gnu/ld.so.1
+>>> f7ea9000-f7eaa000 r-xp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 [vdso]
+>>> f8565000-f8587000 rwxp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 [stack]
+>>>
+>>> But since commmit 0e3dc0191431 ("procfs: add seq_put_hex_ll to speed u=
+p
+>>> /proc/pid/maps") even on native 32-bit kernels the output looks like t=
+his:
+>>>
+>>> root@debian:~# cat /proc/self/maps
+>>> 0000000010000-0000000019000 r-xp 00000000 000000008:000000005 787324=
+=C2=A0 /usr/bin/cat
+>>> 0000000019000-000000001a000 rwxp 000000009000 000000008:000000005 7873=
+24=C2=A0 /usr/bin/cat
+>>> 000000001a000-000000003b000 rwxp 00000000 00:00 0=C2=A0 [heap]
+>>> 00000000f73d1000-00000000f758d000 r-xp 00000000 000000008:000000005 79=
+4765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
+>>> 00000000f758d000-00000000f758f000 r--p 000000001bc000 000000008:000000=
+005 794765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
+>>> 00000000f758f000-00000000f7594000 rwxp 000000001be000 000000008:000000=
+005 794765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
+>>> 00000000f7af9000-00000000f7b28000 r-xp 00000000 000000008:000000005 79=
+4759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
+>>> 00000000f7b28000-00000000f7b29000 r--p 000000002f000 000000008:0000000=
+05 794759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
+>>> 00000000f7b29000-00000000f7b2d000 rwxp 0000000030000 000000008:0000000=
+05 794759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
+>>> 00000000f7e0c000-00000000f7e0d000 r-xp 00000000 00:00 0=C2=A0 [vdso]
+>>> 00000000f9061000-00000000f9083000 rwxp 00000000 00:00 0=C2=A0 [stack]
+>>>
+>>> This patch brings back the old default 8-hex digit output for
+>>> 32-bit kernels and compat tasks.
+>>>
+>>> Fixes: 0e3dc0191431 ("procfs: add seq_put_hex_ll to speed up /proc/pid=
+/maps")
+>>
+>> That was five years ago.=C2=A0 Given there is some risk of breaking exi=
+sting
+>> parsers, is it worth fixing this?
+>
+> Huh... that's right!
+> Nevertheless, kernel 6.1.45 has it right, which isn't 5 years old.
+> I don't see the reason for that change right now, so I'll need to figure=
+ out what changed...
 
-Yeah, I had seen that.  The combination of spectre_v2_user=on with
-srso=off doesn't make a whole lot of sense, but... give the user what
-they want and all.  Which would presumably be IBPB *without* the SRSO
-mitigation (aka SBPB).
+It seems to be due to a new bug in gcc's __builtin_clzll()
+function (at least on parisc), which seems to return values
+for "long" (32bit) instead for "long long" (64bit).
 
-> But then if retbleed=ibpb, entry_ibpb() will do bit 0 unconditionally...
-> 
-> Hmm, lemme talk to people.
+Please ignore this patch for now.
 
-I don't think we need to worry about that, SBPB is >= fam19 but retbleed
-is <= fam17.  So either way (0x17 or 0x19) entry_ibpb() should do IBPB.
-
--- 
-Josh
+Thanks!
+Helge
