@@ -2,164 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F277849F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215FA7849F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbjHVTHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36130 "EHLO
+        id S230025AbjHVTKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbjHVTHe (ORCPT
+        with ESMTP id S229638AbjHVTKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:07:34 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C344CCEA
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:07:28 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-31aeedbb264so2994549f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:07:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692731247; x=1693336047;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=obssRPZea66XUVKQdWwZ33dXszmaEL2LdLWjJbTk+Gw=;
-        b=KUnAO4SW42IhcDBvVHqom6OK4Iq7p0gYwp5mGFxDT9egzI1LbAQcHqCtW0SstRVDeb
-         1zbVVW5zPY+apawMt76dvbhZDZ8W8bKio0pkKSrqC5d7b79XY31RkYuocEX6QwBSYcC5
-         l3ef6vUPSNCCP22pAytGYiQ/igsmjE8o5c3mH8RO5+0pZroLCqjZfZsVNORm8Z7LpSNi
-         /QWEPTR80zllG1jA7pkcm+wXLNCTi/qXoFUgHMagt5Zv9qB8xeDwmLUDBYHsxCm9udlM
-         +p7UVlLPYkR7KBGMASVpFEKAr81Vwuok63CqaS+lkOWiF1mghRCcQb+YcikrbTpgPdbc
-         bKdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692731247; x=1693336047;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=obssRPZea66XUVKQdWwZ33dXszmaEL2LdLWjJbTk+Gw=;
-        b=fV4faWq+1gv2dhNAc/IPQKpnpfsTEu4uUKAARFcawVBqWbqNxXY2pofNOm5/ShPyQ2
-         W1GbnZYXfBAHYteQ6zzguXDscuDvZHmXf5q/+T6Yjad0RbSzLhBGxinv+CEaPQxQYDXK
-         +X2mAPvuQecBwAmmPSQ3hbIISVllZGw+G8RYEICuw6wXnmL5Za9WWBQ3159iPj5W1Qck
-         mn0+xPKViG2X5El+gmduBC7pqyygpYj9UwGllfonhszxodxG6aaQdBjIUQ7MgI8GHcKg
-         luKtE4qVqPkZCY8FeSl2oZXOiTd8XHbGqopUsUKks/JLCFJi522H8kgdRA/wmsogUtg6
-         Z7DQ==
-X-Gm-Message-State: AOJu0Yxyx2aJVwY0c6XqqskAEotmeieD3Yu3zUcPSBkev/DiWDd4Rzjk
-        Y2bxeg8ODCGuxrNcmc3K4TgcHg==
-X-Google-Smtp-Source: AGHT+IFM0hpeI/IXnPxfPzo186m7+lcVFbqtZnZp2Y5HLgb7U3nyZZ7vpWSmoR0OU/Yvxo01LBxECA==
-X-Received: by 2002:a5d:65c5:0:b0:319:76a2:36e9 with SMTP id e5-20020a5d65c5000000b0031976a236e9mr8064149wrw.56.1692731246769;
-        Tue, 22 Aug 2023 12:07:26 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id k12-20020adfe3cc000000b0031ad5470f89sm16738544wrm.18.2023.08.22.12.07.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 12:07:26 -0700 (PDT)
-Message-ID: <8a4db962-423a-16c1-5756-66878b50b264@linaro.org>
-Date:   Tue, 22 Aug 2023 20:07:25 +0100
+        Tue, 22 Aug 2023 15:10:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D65ECD1;
+        Tue, 22 Aug 2023 12:10:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 060AD63F0C;
+        Tue, 22 Aug 2023 19:10:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 423E6C433C7;
+        Tue, 22 Aug 2023 19:10:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692731429;
+        bh=eu9VEfAYz4xOHMvSGfeTJy1FSyA8KLmA3Mo65tCtRWg=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=F8DzFuQCUHOw1eYq0kub61a6e48jKYbrToANBn5UzrgTPQfr5gi/rF6JOwHMxloUc
+         YaTD8qdgzndT7FD+RbaNZwVtQ59rU6CiaEAwyTFwo+v6yWXX8dncSeqG1o72UezOwt
+         EqRk3r3Pn7QCXrWuzTfJtzk1SlhocDZ3Hms60HDBZRl0kW/42Go+emToHL4fUA38yu
+         uMzVllBc+7LoyRlB8tvFcJuJxwC//A+LJr4QxV/SvzUDl3vhaSg3WtIWbfjy9Lg5QV
+         U0WSTb57JW3OiuA5yDnIhzZWOIEPDBojG7kR+JJ4bmrjYByYwCUA0I9Jl/524QQNmf
+         jY0i/uwhJQSng==
+Message-ID: <6e781c2d21e346cdd7f84c3b7a57dafc.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v1 9/9] media: qcom: camss: Fix csid-gen2 for test pattern
- generator
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
- <20230822161620.1915110-10-bryan.odonoghue@linaro.org>
- <4f271226-c45a-42a8-95ff-8ec008ce7e72@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <4f271226-c45a-42a8-95ff-8ec008ce7e72@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6ebdcbdc-409c-0c08-1e5d-f9aa0b92c3b2@quicinc.com>
+References: <20230810115419.25539-1-quic_luoj@quicinc.com> <20230810115419.25539-4-quic_luoj@quicinc.com> <9dec09fa-a5a3-416c-9b4d-4b4c4e10320b@linaro.org> <9a55016f-0049-f185-f2be-d138fe33384b@quicinc.com> <631d5a82-7d24-49cd-9868-74c7b3c08bcd@linaro.org> <6ebdcbdc-409c-0c08-1e5d-f9aa0b92c3b2@quicinc.com>
+Subject: Re: [PATCH v3 3/3] clk: qcom: add clock controller driver for qca8386/qca8084
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+To:     Jie Luo <quic_luoj@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, agross@kernel.org,
+        andersson@kernel.org, catalin.marinas@arm.com, conor+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org, will@kernel.org
+Date:   Tue, 22 Aug 2023 12:10:25 -0700
+User-Agent: alot/0.10
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 17:38, Konrad Dybcio wrote:
-> On 22.08.2023 18:16, Bryan O'Donoghue wrote:
->> From: Andrey Konovalov <andrey.konovalov@linaro.org>
->>
->> In the current driver csid Test Pattern Generator (TPG) doesn't work.
->> This change:
->> - fixes writing frame width and height values into CSID_TPG_DT_n_CFG_0
->> - fixes the shift by one between test_pattern control value and the
->>    actual pattern.
->> So that TPG starts working, but with the below limitations:
->> - only test_pattern=9 works as it should
->> - test_pattern=8 and test_pattern=7 produce black frame (all zeroes)
->> - the rest of test_pattern's don't work (yavta doesn't get the data)
->> - regardless of the CFA pattern set by 'media-ctl -V' the actual pixel
->>    order is always the same (RGGB for any RAW8 or RAW10P format in
->>    4608x2592 resolution).
->>
->> Tested with:
->>
->> RAW10P format, VC0:
->>   media-ctl -V '"msm_csid0":0[fmt:SRGGB10/4608x2592 field:none]'
->>   media-ctl -V '"msm_vfe0_rdi0":0[fmt:SRGGB10/4608x2592 field:none]'
->>   media-ctl -l '"msm_csid0":1->"msm_vfe0_rdi0":0[1]'
->>   v4l2-ctl -d /dev/v4l-subdev6 -c test_pattern=9
->>   yavta -B capture-mplane --capture=3 -n 3 -f SRGGB10P -s 4608x2592 /dev/video0
->>
->> RAW10P format, VC1:
->>   media-ctl -V '"msm_csid0":2[fmt:SRGGB10/4608x2592 field:none]'
->>   media-ctl -V '"msm_vfe0_rdi1":0[fmt:SRGGB10/4608x2592 field:none]'
->>   media-ctl -l '"msm_csid0":2->"msm_vfe0_rdi1":0[1]'
->>   v4l2-ctl -d /dev/v4l-subdev6 -c test_pattern=9
->>   yavta -B capture-mplane --capture=3 -n 3 -f SRGGB10P -s 4608x2592 /dev/video1
->>
->> RAW8 format, VC0:
->>   media-ctl --reset
->>   media-ctl -V '"msm_csid0":0[fmt:SRGGB8/4608x2592 field:none]'
->>   media-ctl -V '"msm_vfe0_rdi0":0[fmt:SRGGB8/4608x2592 field:none]'
->>   media-ctl -l '"msm_csid0":1->"msm_vfe0_rdi0":0[1]'
->>   yavta -B capture-mplane --capture=3 -n 3 -f SRGGB8 -s 4608x2592 /dev/video0
->>
->> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
-> That's a whole lot to unroll..
-> 
-> [...]
->>   		if (tg->enabled) {
->> -			/* Config Test Generator */
->> -			vc = 0xa;
->> -
-> Which part does this hunk correlate to?
-> 
->>   			/* configure one DT, infinite frames */
->>   			val = vc << TPG_VC_CFG0_VC_NUM;
->>   			val |= INTELEAVING_MODE_ONE_SHOT << TPG_VC_CFG0_LINE_INTERLEAVING_MODE;
->> @@ -370,14 +367,14 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
->>   
->>   			writel_relaxed(0x12345678, csid->base + CSID_TPG_LFSR_SEED);
->>   
->> -			val = input_format->height & 0x1fff << TPG_DT_n_CFG_0_FRAME_HEIGHT;
->> -			val |= input_format->width & 0x1fff << TPG_DT_n_CFG_0_FRAME_WIDTH;
->> +			val = (input_format->height & 0x1fff) << TPG_DT_n_CFG_0_FRAME_HEIGHT;
->> +			val |= (input_format->width & 0x1fff) << TPG_DT_n_CFG_0_FRAME_WIDTH;
->>   			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
-> This screams necessity for FIELD_PREP/GET! Could you please convert
-> it in another series if you have time for it?
+Quoting Jie Luo (2023-08-14 03:58:26)
+>=20
+>=20
+> On 8/12/2023 6:56 PM, Konrad Dybcio wrote:
+> > My main point is, why can't you use qcom_cc_really_probe?
+> >=20
+>=20
+> Hi Konrad,
+> qcom_cc_really_probe is taking the platform_device as the input=20
+> parameter, but the nss_cc_qca8k_probe takes the mdio_device as the probe =
 
-I mean yes I want to or want it done. To me 1 << somevalue is just silly 
-when you can say BIT(somevalue).
+> parameter.
 
-There will be a "make it pretty series".
-
-I'll do a V2 of this series and explain in the commit log what's 
-happening with the removal of vc = 0xa; since if someone has to ask, its 
-not obvious whats going on.
-
----
-bod
-
+There's no real reason why it takes a platform device instead of a plain
+struct device. You can have an earlier patch change that function to
+take a struct device instead.
