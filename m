@@ -2,89 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F5B78489E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518237848A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229533AbjHVRoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        id S229544AbjHVRqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:46:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHVRoy (ORCPT
+        with ESMTP id S229459AbjHVRqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:44:54 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8DB10B
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68730bafa6bso3855440b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692726292; x=1693331092;
-        h=content-transfer-encoding:subject:from:reply-to:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D83pxoorKSMZ3KXT4tteloMjPSR576OWtj/BqTWoltc=;
-        b=VfouFOcEQm14bIP+hmAy9H5Cbv7pd8goiWgJvgc1/lWxlzx8olBW3oKzSwr9VnqdBi
-         plsJsRPUMXz4Ru4PwMrCp8aDdrOWhuSSnIDwGnUP7utY8nrhv5bXAZKjtoxpOs3IRcT7
-         U9wXwvDoj9coLJ+9yMf4iMbS9wKZ4ZxoM7D8k8xSlgYWlS/VtCgnOy9Tk9nxZ5r6nKX7
-         03DGfI9Q0eZ6mRNWgpH6ppeR+3UoBXmuuCDsj63/RyrVJzvmsxzgaEx9ZaFZi9TuUGVS
-         VtC7G+VBbngPYQTX0KFlorQMeFIm9skopJwZAwnQgZaJKA6LdrMC1srd+bEbmBtsaG+D
-         khag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692726292; x=1693331092;
-        h=content-transfer-encoding:subject:from:reply-to:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D83pxoorKSMZ3KXT4tteloMjPSR576OWtj/BqTWoltc=;
-        b=MpkwgvQYFVAvqNdd/FIUr068x8YaGRtxGjCyIbgYFd0KCYxjcZw5NELAm6f8Z505Rn
-         oikKpL+heYS6Ssl0M4L43WmF3/cfaKLRkEYceernndZlrojdMTFmq54rL0xH4INlu4zb
-         6QbzWQ9EWj0julp8mv/+LyESHjYRazDm2vtnaLvOLwOUhx/ph6pU9sC04OjWgN1Gr0iP
-         VKFDGjhY32+690chNfVWjxLyze99yuXlIxVghN5gvC2ccTJoZe94RdgLN/ydNaN1/YiC
-         4covwD104o5bd+/lo/F5fvFXKruU/gTl3ayB+8jtzsGxv+T+lTVSOIVfT8D2ESDMTphz
-         45lw==
-X-Gm-Message-State: AOJu0YxTjP4XSGe5njH6fV9vCz3SU5wJbkcCaQhu6hfAZ5qdDTDv1nKS
-        XF/0dBLJ0OY5sd54dLNc/Ho=
-X-Google-Smtp-Source: AGHT+IFKTE7SIbTMMWJAx0oW0kr9RcAgSRKog0enFdYErkO+dy/8hNTNi/3zJPYuYshsZtVCFglNpw==
-X-Received: by 2002:a05:6a20:1456:b0:13f:c159:63ec with SMTP id a22-20020a056a20145600b0013fc15963ecmr14333954pzi.24.1692726292148;
-        Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
-Received: from [10.0.2.15] ([103.37.201.176])
-        by smtp.gmail.com with ESMTPSA id n15-20020aa78a4f000000b00682a27905b9sm4500417pfa.13.2023.08.22.10.44.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 10:44:51 -0700 (PDT)
-Message-ID: <f2b664d5-0710-67ae-fda8-d407af4df6fe@gmail.com>
-Date:   Tue, 22 Aug 2023 23:14:46 +0530
+        Tue, 22 Aug 2023 13:46:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC989213E;
+        Tue, 22 Aug 2023 10:46:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6820F6234E;
+        Tue, 22 Aug 2023 17:46:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CA9CC433CA;
+        Tue, 22 Aug 2023 17:46:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692726384;
+        bh=+AEJDgQND+MTKWXpZoLOxttSEcb4AQ/a1ssvaTQGP4M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HJtg7BRliVQUq3lHWyuW+tkwc73Eb8qIWb4ZhDElf0goLMWuSuH0/Pb63EJtmb2Zr
+         M8q5eh7a2Rs1nC9ACTvEUt2Et/eGlntqsRIwz51kUAqp5OeDoYICMStpoYuflhRN8Z
+         CwzEl8o/nQXt6OwXEaDDHnYatmVsAqv++nrZtLlw=
+Date:   Tue, 22 Aug 2023 19:46:21 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Georgi Djakov <djakov@kernel.org>
+Cc:     Mike Tipton <quic_mdtipton@quicinc.com>, rafael@kernel.org,
+        corbet@lwn.net, linux-pm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_okukatla@quicinc.com,
+        quic_viveka@quicinc.com, peterz@infradead.org,
+        quic_pkondeti@quicinc.com
+Subject: Re: [PATCH v3 1/3] debugfs: Add write support to debugfs_create_str()
+Message-ID: <2023082242-udder-refinish-1f6e@gregkh>
+References: <20230807142914.12480-1-quic_mdtipton@quicinc.com>
+ <20230807142914.12480-2-quic_mdtipton@quicinc.com>
+ <2023081203-happier-mutable-e4f0@gregkh>
+ <44a63cb2-1ae5-f52b-19d2-fe03d48fd44d@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     anton@tuxera.com, linkinjeon@kernel.org,
-        syzbot+ef50f8eb00b54feb7ba2@syzkaller.appspotmail.com
-Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Linux-kernel-mentees@lists.linuxfoundation.org
-Reply-To: 000000000000aefc5005f5df169b@google.com
-From:   Manas Ghandat <ghandatmanas@gmail.com>
-Subject: fs/ntfs : use-after-free Read in ntfs_attr_find
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44a63cb2-1ae5-f52b-19d2-fe03d48fd44d@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 18, 2023 at 01:05:57PM +0300, Georgi Djakov wrote:
+> Hi Greg,
+> 
+> On 12.08.23 13:40, Greg KH wrote:
+> > On Mon, Aug 07, 2023 at 07:29:12AM -0700, Mike Tipton wrote:
+> > > Currently, debugfs_create_str() only supports reading strings from
+> > > debugfs. Add support for writing them as well.
+> > > 
+> > > Based on original implementation by Peter Zijlstra [0]. Write support
+> > > was present in the initial patch version, but dropped in v2 due to lack
+> > > of users. We have a user now, so reintroduce it.
+> > > 
+> > > [0] https://lore.kernel.org/all/YF3Hv5zXb%2F6lauzs@hirez.programming.kicks-ass.net/
+> > > 
+> > > Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
+> > > ---
+> > >   fs/debugfs/file.c | 48 +++++++++++++++++++++++++++++++++++++++++++++--
+> > >   1 file changed, 46 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> > > index b7711888dd17..87b3753aa4b1 100644
+> > > --- a/fs/debugfs/file.c
+> > > +++ b/fs/debugfs/file.c
+> > > @@ -904,8 +904,52 @@ EXPORT_SYMBOL_GPL(debugfs_create_str);
+> > >   static ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
+> > >   				      size_t count, loff_t *ppos)
+> > >   {
+> > > -	/* This is really only for read-only strings */
+> > > -	return -EINVAL;
+> > > +	struct dentry *dentry = F_DENTRY(file);
+> > > +	char *old, *new = NULL;
+> > > +	int pos = *ppos;
+> > > +	int r;
+> > > +
+> > > +	r = debugfs_file_get(dentry);
+> > > +	if (unlikely(r))
+> > > +		return r;
+> > > +
+> > > +	old = *(char **)file->private_data;
+> > > +
+> > > +	/* only allow strict concatenation */
+> > > +	r = -EINVAL;
+> > > +	if (pos && pos != strlen(old))
+> > > +		goto error;
+> > > +
+> > > +	r = -E2BIG;
+> > > +	if (pos + count + 1 > PAGE_SIZE)
+> > > +		goto error;
+> > > +
+> > > +	r = -ENOMEM;
+> > > +	new = kmalloc(pos + count + 1, GFP_KERNEL);
+> > > +	if (!new)
+> > > +		goto error;
+> > > +
+> > > +	if (pos)
+> > > +		memcpy(new, old, pos);
+> > > +
+> > > +	r = -EFAULT;
+> > > +	if (copy_from_user(new + pos, user_buf, count))
+> > > +		goto error;
+> > > +
+> > > +	new[pos + count] = '\0';
+> > > +	strim(new);
+> > > +
+> > > +	rcu_assign_pointer(*(char **)file->private_data, new);
+> > > +	synchronize_rcu();
+> > > +	kfree(old);
+> > > +
+> > > +	debugfs_file_put(dentry);
+> > > +	return count;
+> > > +
+> > > +error:
+> > > +	kfree(new);
+> > > +	debugfs_file_put(dentry);
+> > > +	return r;
+> > >   }
+> > 
+> > So you just added write support for ALL debugfs files that use the
+> > string interface, what did you just allow to break?
+> 
+> Not true. Write support is added only for debugfs string files that are
+> created with +w permissions. All existing files are created as read-only
+> and use the fops_str_ro ops.
+> 
+> > I recommend just using your own debugfs file function instead, as this
+> > could cause bad problems, right?  Are you sure that all string calls can
+> > handle the variable be freed underneath it like this call will allow to
+> > happen?
+> > 
+> > So I wouldn't recommend doing this, sorry.
+> > 
+> 
+> Maybe you missed the fact that the different file ops are already there
+> and are selected based on permissions:
+> 
+> > static const struct file_operations fops_str = {
+> >         .read =         debugfs_read_file_str,
+> >         .write =        debugfs_write_file_str,
+> >         .open =         simple_open,
+> >         .llseek =       default_llseek,
+> > };
+> > 
+> > static const struct file_operations fops_str_ro = {
+> >         .read =         debugfs_read_file_str,
+> >         .open =         simple_open,
+> >         .llseek =       default_llseek,
+> > };
+> > 
+> > static const struct file_operations fops_str_wo = {
+> >         .write =        debugfs_write_file_str,
+> >         .open =         simple_open,
+> >         .llseek =       default_llseek,
+> > };
+> 
+> ...so this patch is doing exactly what you suggested? If you agree,
+> could you ack it again please?
 
-I was looking at this syzbot issue : 
-https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
+Yes, I did miss that, sorry, my appologies for dragging this out so
+long:
 
-While debugging I found that when we are traversing through the 
-attribute list, there is case when the next attribute is null (most 
-likely we are traversing out of the list) and thus there is this error. 
-I was wondering if we could add a size field to this attribute list. 
-This would fix this issue. Currently we are just parsing to the next 
-attribute using the length field.
-
-
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
