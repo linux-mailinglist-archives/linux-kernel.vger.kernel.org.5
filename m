@@ -2,52 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9D5784419
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C916978441E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbjHVO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:27:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S236678AbjHVO2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236697AbjHVO1h (ORCPT
+        with ESMTP id S236674AbjHVO2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:27:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F360FB;
-        Tue, 22 Aug 2023 07:27:36 -0700 (PDT)
+        Tue, 22 Aug 2023 10:28:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D349CF7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:27:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3596265910;
-        Tue, 22 Aug 2023 14:27:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A82AC433C9;
-        Tue, 22 Aug 2023 14:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692714455;
-        bh=QZSUoPCgcLxeWjkj2eOMQVMDZITD5UA9cVOOEyzbt+Y=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=nK2upDBRIiRJgJXuslULpDaYj1ySOe/SdhWD9rkm7hVoBZVHhFLWqs5DD69D5e09f
-         iMU6OoJxusSwrPp92HsT9De1PT7f5U1zOiFVuhwBPntjI+t1Di8Ng1SGLORWi+hZrs
-         GadNdD+tl5x723CpMhz5fkqs5jzOLB8D5fBKBTWYx1xcbY+hFrZZDHJT5B1OjisTf6
-         pCRts9uSmnmXiAnaJr5HZAz+dgiaH5ujcXwhudV0jnqko2Ie1kCS7kq5xNkvlzjqmX
-         R1/ah+PTvnnxlYvjTPUf5sgY0RVeugmIbdvtL2nNMplOq2jMY2zxH0c7Me7kB27IZd
-         WDVhIMlx+yQhg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rohit Chavan <roheetchavan@gmail.com>
-In-Reply-To: <20230822120451.8215-1-roheetchavan@gmail.com>
-References: <20230822120451.8215-1-roheetchavan@gmail.com>
-Subject: Re: [PATCH] RDMA/mlx5: Fix trailing */ formatting in block comment
-Message-Id: <169271445172.40133.1713604810471374671.b4-ty@kernel.org>
-Date:   Tue, 22 Aug 2023 17:27:31 +0300
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DED5B6590E
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:27:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 452AAC433C7;
+        Tue, 22 Aug 2023 14:27:52 +0000 (UTC)
+Date:   Tue, 22 Aug 2023 16:27:49 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Dinh Nguyen <dinguyen@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] nios2: Fix flush_dcache_page() for usage from irq context
+Message-ID: <ZOTF5WWURQNH9+iw@p100>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,18 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Since at least kernel 6.1, flush_dcache_page() is called with IRQs
+disabled, e.g. from aio_complete().
 
-On Tue, 22 Aug 2023 17:34:51 +0530, Rohit Chavan wrote:
-> Resolved a formatting issue where the trailing */ in a block comment
-> was placed on a same line instead of separate line.
-> 
-> 
+But the current implementation for flush_dcache_page() on NIOS2
+unintentionally re-enables IRQs, which may lead to deadlocks.
 
-Applied, thanks!
+Fix it by using xa_lock_irqsave() and xa_unlock_irqrestore()
+for the flush_dcache_mmap_*lock() macros instead.
 
-[1/1] RDMA/mlx5: Fix trailing */ formatting in block comment
-      https://git.kernel.org/rdma/rdma/c/d3c2245754220b
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Signed-off-by: Helge Deller <deller@gmx.de>
 
-Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+---
+v2:
+- rebased patch on top of for-next series, to be applied
+  after the folio patches
+
+---
+
+diff --git a/arch/nios2/include/asm/cacheflush.h b/arch/nios2/include/asm/cacheflush.h
+index 7c48c5213fb7..348cea097792 100644
+--- a/arch/nios2/include/asm/cacheflush.h
++++ b/arch/nios2/include/asm/cacheflush.h
+@@ -52,5 +52,9 @@ extern void invalidate_dcache_range(unsigned long start, unsigned long end);
+ 
+ #define flush_dcache_mmap_lock(mapping)		xa_lock_irq(&mapping->i_pages)
+ #define flush_dcache_mmap_unlock(mapping)	xa_unlock_irq(&mapping->i_pages)
++#define flush_dcache_mmap_lock_irqsave(mapping, flags)		\
++		xa_lock_irqsave(&mapping->i_pages, flags)
++#define flush_dcache_mmap_unlock_irqrestore(mapping, flags)	\
++		xa_unlock_irqrestore(&mapping->i_pages, flags)
+ 
+ #endif /* _ASM_NIOS2_CACHEFLUSH_H */
+diff --git a/arch/nios2/mm/cacheflush.c b/arch/nios2/mm/cacheflush.c
+index 28b805f465a8..0ee9c5f02e08 100644
+--- a/arch/nios2/mm/cacheflush.c
++++ b/arch/nios2/mm/cacheflush.c
+@@ -75,12 +75,13 @@ static void flush_aliases(struct address_space *mapping, struct folio *folio)
+ {
+ 	struct mm_struct *mm = current->active_mm;
+ 	struct vm_area_struct *vma;
++	unsigned long flags;
+ 	pgoff_t pgoff;
+ 	unsigned long nr = folio_nr_pages(folio);
+ 
+ 	pgoff = folio->index;
+ 
+-	flush_dcache_mmap_lock(mapping);
++	flush_dcache_mmap_lock_irqsave(mapping, flags);
+ 	vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff + nr - 1) {
+ 		unsigned long start;
+ 
+@@ -92,7 +93,7 @@ static void flush_aliases(struct address_space *mapping, struct folio *folio)
+ 		start = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+ 		flush_cache_range(vma, start, start + nr * PAGE_SIZE);
+ 	}
+-	flush_dcache_mmap_unlock(mapping);
++	flush_dcache_mmap_unlock_irqrestore(mapping, flags);
+ }
+ 
+ void flush_cache_all(void)
