@@ -2,176 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DB278489F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410F17848AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229462AbjHVRqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:46:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
+        id S229539AbjHVRtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHVRqs (ORCPT
+        with ESMTP id S229457AbjHVRtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:46:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724B52127
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:46:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DD22861465
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 17:46:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7A6C433C9;
-        Tue, 22 Aug 2023 17:46:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692726384;
-        bh=0FEgRhV8yNWhQi1CIj+s7tSaB44ukKDzU3V+uAdWVqA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=lwBWBCeLkIz6irJr/u7yeut3YceaWcW4CYLLmUfdrwFHVw51iGSOkeh2euyF0KISX
-         N1IR/lJ3+6a3eP+OGQr8tANLOdq0ObuIrFDDeqi+XDI0yAmBQKgtg7CmBCWDTNS5/6
-         Fd4pIzf26eavj1qrVPPFPI7oZMFMFgq83JmtZ4/ACIwqpkjnjF4PSZ6ci5gtDsd312
-         Ve48I5lZKcECBAygfMoKWdyi2/1zrU36DVI8do1yNWaCwgvrVNnd0hS33mbIAx7M81
-         BfzXNGSjnNUUCXj33jYTtTD6vsCQaCkql3ZH1kN2XaCicvrVe2782dxhu4CPqwAdDA
-         1DkxhFZm4rfsg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C0D8CCE0898; Tue, 22 Aug 2023 10:46:23 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 10:46:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Question on __torture_rt_boost() else clause
-Message-ID: <df999cba-a090-4461-8db6-7ddd788ddf85@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <1393d18f-4928-45da-b504-7e5b6a681e51@paulmck-laptop>
- <20230822161850.GB74437@google.com>
+        Tue, 22 Aug 2023 13:49:06 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 950E7CD5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:49:04 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a3c55532fso1914785b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692726544; x=1693331344;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gjhjUhDDffkOIUaZDJIu5PrTOrHAFrTP4TrU/Wpefq0=;
+        b=IljsDgrISbgSERcWxlAwIMfYZ/0cSg9rQLJSpMlXud+ssJK7urVfIOeX92KgfkqQ9+
+         Qro/WVUCsjbbScLCXco5FhRWVuxOGVaKeT07QM4JO09n60XuHx1Q391GnnRwbMEhY48u
+         pRXHgQxT9vNRyMSTHvVjm1eJqkpj/V5KdH8Wk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692726544; x=1693331344;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gjhjUhDDffkOIUaZDJIu5PrTOrHAFrTP4TrU/Wpefq0=;
+        b=T77Cgp+xj0mqtSUU/iXfX9rclawNcqkGrB/Ba2tKGC9v/0WHfSrp0BzvQkDbVNtyEu
+         SrY33T0sewZYUqVK+0g45D0k30ZE5xW/mSegsp2Hljwr+ndDvrDdkflj4oVOY3eUclq1
+         h+JOWDHZzWH+1HrlRKjkH9GeuVROA5tZ1aENADvV9f4zMPd5IiXJLurdxKk2PdCKXTDZ
+         isLtpyZngCWsIm740wRzb0riQHOPmHpyjhMeGpdtdzKxGbmzTw8GcoyJSFvMxoHg6c4n
+         BDMKZZSuRbKhj5hm8jRoEFMFhhUehUGi0yVZVsxG0QZChNNz2NgaIQN5ryUbFp3CYTVq
+         BlrQ==
+X-Gm-Message-State: AOJu0Yz+KyN5oUfDwiyrlX1WfE1vwWf4BTWMs6byjV4VYpLUBGGcsJki
+        b6r9aePi0A21KfabbZdXSpnPvg==
+X-Google-Smtp-Source: AGHT+IHdnPPtB09/YhHDM1CEZhegP+sfv2Vtsp194uiz+xZX2iHZXkAcgQ1rKhQ26Db+dyAQ9YbnTQ==
+X-Received: by 2002:a17:90a:db08:b0:26b:3f10:820f with SMTP id g8-20020a17090adb0800b0026b3f10820fmr7055221pjv.36.1692726544092;
+        Tue, 22 Aug 2023 10:49:04 -0700 (PDT)
+Received: from localhost ([2620:15c:2d3:205:cd6c:a3a2:6d96:d21a])
+        by smtp.gmail.com with UTF8SMTPSA id a17-20020a17090abe1100b0026b76edd607sm8222696pjs.15.2023.08.22.10.49.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 10:49:03 -0700 (PDT)
+From:   Denis Nikitin <denik@chromium.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     denik@chromium.org, Fangrui Song <maskray@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH v2] modpost: Skip .llvm.call-graph-profile section check
+Date:   Tue, 22 Aug 2023 10:48:34 -0700
+Message-ID: <20230822174835.253469-1-denik@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+In-Reply-To: <20230822065256.163660-1-denik@chromium.org>
+References: <20230822065256.163660-1-denik@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822161850.GB74437@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 04:18:50PM +0000, Joel Fernandes wrote:
-> Hi Paul,
-> 
-> On Mon, Aug 21, 2023 at 08:12:50PM -0700, Paul E. McKenney wrote:
-> > Hello, Joel!
-> > 
-> > A quick question for you...
-> > 
-> > I am doing catch-up additions of locktorture module parameters
-> > to kernel-parameters.txt, and came across rt_boost_factor.  The
-> > multiplication by cxt.nrealwriters_stress in the !rt_task(current)
-> > then-clause makes sense:  No matter how many writers you have, the
-> > number of boost operations per unit time remains roughly constant.
-> 
-> > But I am having some difficulty rationalizing a similar multiplication
-> > in the else-clause.  That would seem to leave boosting in effect for
-> > longer times the more writers there were.
-> 
-> But the number of de-boost operations per-unit time should also remain a
-> constant? I think you (or the original authors) wanted it to boost at every
-> 50k ops at deboost at 500k ops originally.
+.llvm.call-graph-profile section is added by clang when the kernel is
+built with profiles (e.g. -fprofile-sample-use= or -fprofile-use=).
 
-The else-clause controls the boost duration.  So if I am understanding
-the code correctly, the more writers there are, the longer each writer
-stays boosted.  Which might be a good thing, but seemed strange.
+The section contains edge information derived from text sections,
+so .llvm.call-graph-profile itself doesn't need more analysis as
+the text sections have been analyzed.
 
-> > Is that the intent?
-> 
-> The original change before my patch to make boosting possible for non-rtmutex
-> types already had that multiplication, see below for diff from my patch. My
-> patch just kept the same thing to make the logic consistent (i.e. deboost
-> less often).
+This change fixes the kernel build with clang and a sample profile
+which currently fails with:
 
-Ah, you are right, I should have told "git blame" to dig deeper.
+"FATAL: modpost: Please add code to calculate addend for this architecture"
 
-But hey, you did touch the code at one point!  ;-)
+Signed-off-by: Denis Nikitin <denik@chromium.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ scripts/mod/modpost.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > Also, I am rationalizing the choice of 2 as default for rt_boost by
-> > noting that "mutex" and "ww_mutex_lock" don't do boosting and that
-> > preemption-disabling makes non-RT spinlocks immune from priority
-> > inversion.  Is this what you had in mind, or am I off in the weeds here?
-> 
-> The 2 was just to make sure that we don't deboost as often as we boost, which
-> is also what the old logic was trying to do.
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index b29b29707f10..64bd13f7199c 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -761,6 +761,7 @@ static const char *const section_white_list[] =
+ 	".fmt_slot*",			/* EZchip */
+ 	".gnu.lto*",
+ 	".discard.*",
++	".llvm.call-graph-profile",	/* call graph */
+ 	NULL
+ };
+ 
+-- 
+2.42.0.rc1.204.g551eb34607-goog
 
-This is a different "2".  The rt_boost=0 says never boost, rt_boost=1
-says boost only if the lock in question supports priority boosting, and
-rt_boost=2 (the default) says boost unconditionally, aside from lock
-types that don't define cur_ops->task_boost.  Except that they all
-define cur_ops->task_boost.
-
-I am not seeing failures in my torture.sh testing, so maybe OK, but it
-does seem a bit strange.
-
-(And this probably predates your involvement as well, but so it goes!)
-
-> What is the drawback of keeping the boost active for longer than not? It will
-> trigger the PI-boosting (and in the future proxy exec) more often.
-
-My concern is someone running this on a 1,000-CPU system.  Though locking
-being what it is, there is a non-negligible possibility that something
-else breaks first.
-
-> Also by making the factor configurable, I allow it to control how often we
-> boost and deboost. IIRC, it was boosting much less often before I did that.
-
-No argument with the frequency of boosting, just curiosity about the
-duration increasing with increasing numbers of CPUs.  I can rationalize
-it, but then again, I can rationalize pretty much anything.  ;-)
-
-> > I am putting my best guess in the patch, and am including you on CC.
-> 
-> Ok, thanks,
-
-On the other hand, it looks like I can now reproduce a qspinlock hang
-that happens maybe five to ten times a week across the entire fleet
-in a few tens of minutes.  On my laptop.  ;-)
-
-Now to start adding debug.  Which will affect the reproduction times,
-but life is like that sometimes...
-
-							Thanx, Paul
-
->  - Joel
-> 
-> 
-> -static void torture_rtmutex_boost(struct torture_random_state *trsp)
-> -{
-> -       const unsigned int factor = 50000; /* yes, quite arbitrary */
-> -
-> -       if (!rt_task(current)) {
-> -               /*
-> -                * Boost priority once every ~50k operations. When the
-> -                * task tries to take the lock, the rtmutex it will account
-> -                * for the new priority, and do any corresponding pi-dance.
-> -                */
-> -               if (trsp && !(torture_random(trsp) %
-> -                             (cxt.nrealwriters_stress * factor))) {
-> -                       sched_set_fifo(current);
-> -               } else /* common case, do nothing */
-> -                       return;
-> -       } else {
-> -               /*
-> -                * The task will remain boosted for another ~500k operations,
-> -                * then restored back to its original prio, and so forth.
-> -                *
-> -                * When @trsp is nil, we want to force-reset the task for
-> -                * stopping the kthread.
-> -                */
-> -               if (!trsp || !(torture_random(trsp) %
-> -                              (cxt.nrealwriters_stress * factor * 2))) {
-> -                       sched_set_normal(current, 0);
-> -               } else /* common case, do nothing */
-> -                       return;
-> -       }
-> -}
-> -
