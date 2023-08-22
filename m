@@ -2,197 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FAD783B9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCD5783B9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233749AbjHVIRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:17:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S233766AbjHVISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbjHVIRl (ORCPT
+        with ESMTP id S233773AbjHVISJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:17:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E5C1BE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692692212;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zckv6oFww2IAYABuKXRpSyWhyYXXDqhNviwTg2vLyFU=;
-        b=LAdDYHbCSyJumHz74n6lmcXUHewrY3jdQRYVCOibCTR1eAIMux1+7mB0QnQCmQ2cERqFXL
-        JUu6rQX481vA+q3xyyh3h+2p/cc/MD0BCEpu8ws84XAOaCCSzHjowglo8UxB9g/p4q4nix
-        yg2QpEuFzmZAuEnrmMqYjnLc4mroqUg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-379-7HivMZUbP1ilkf0NHj-1Ew-1; Tue, 22 Aug 2023 04:16:50 -0400
-X-MC-Unique: 7HivMZUbP1ilkf0NHj-1Ew-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-51e3bb0aeedso404239a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:16:50 -0700 (PDT)
+        Tue, 22 Aug 2023 04:18:09 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6194D1AE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:08 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-40a47e8e38dso164071cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:18:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692692287; x=1693297087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Y+P92gaIOtxmJ4GQuI1gvrZz/VMhfETxorK5TKfzBk=;
+        b=XTbK95xrJra6oEzO1gFH4l3LUyPCQjhZVzPiUtK12pfKx1SfKU/ZmRcBAyKT6CYABK
+         HKyrx3uFVJcTcBmsvdmN7zERpPi1u+63GNjEr8uaoOAd5l254TvXdetBum+neGos1/xj
+         znnlKqJv0gPnoKlPNvUK/E8aiGqMv6ihs76Z0ezD6UaJYbqqVZ7arIE4fDWPKUecZze2
+         4rnMhiYUUjnZ4KcHp5jHFfBIeqSep+q9So0PEC69rRHb0JgqBGm+N5Jo0OFmfnRA3eUp
+         pjB4/txnakmdH/53EJfRWnVrmwTGIOydAWTGEdbbzdG3xSj4itwzPnN1N/CAVz6NXIMx
+         zWHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692692209; x=1693297009;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zckv6oFww2IAYABuKXRpSyWhyYXXDqhNviwTg2vLyFU=;
-        b=O/mgMjhySuG/91I1TBYDV+fYOW2nFKkftLpVe4HRARqxK1ESrbo5MEcAaZK+AY6TBg
-         LhTohC1H6otK1tzykYx/sH4cDoKuLiA3bAOq3L6RDS4zNsvvDtgv2PzWxVjFYOPUhVfy
-         YqUio8iQl3SiM4TcmuH5ebW6MKGTKMb7PqAtIu+KqpCHJ30rI90NSynfGtK6CGzVTs/L
-         msNZwodg8KsVP+FsacSu8PLNU8LtYz81hMjaGBqyp0z55ty1R2ArXnDPh2okJ/nkClfn
-         gXB7e5XlMDxS/PC5Fp1uhR/BMzyn5iSP8/1SUpVXWA57ikQ6QKENf93WsPKHRoxD/35W
-         2qCQ==
-X-Gm-Message-State: AOJu0Yy6VMUgG8j65VJ6t6tt+fZFJUG6nNG65LvbYq2897JoMeibEp/X
-        yKVq77hYQG5dZ2p0RpoNzkn74eOOtUZH7UXU6xy9gpTXtvCwp2qevlApuR2Yxhpu/HNbSTC8Csa
-        6/FzIafKd8C93oGPKk+pM1vDj
-X-Received: by 2002:a05:6402:268e:b0:523:2e64:122b with SMTP id w14-20020a056402268e00b005232e64122bmr6755164edd.3.1692692209657;
-        Tue, 22 Aug 2023 01:16:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHLSFMBKhUwaZNzwUhuDk7yvXSZjSgwouQMRlutTKOK/6Gw8nbnhQGL5h8TQ+NkO3C5To+oqw==
-X-Received: by 2002:a05:6402:268e:b0:523:2e64:122b with SMTP id w14-20020a056402268e00b005232e64122bmr6755152edd.3.1692692209318;
-        Tue, 22 Aug 2023 01:16:49 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-241-4.dyn.eolo.it. [146.241.241.4])
-        by smtp.gmail.com with ESMTPSA id m4-20020aa7c484000000b0052328d4268asm7109439edq.81.2023.08.22.01.16.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 01:16:48 -0700 (PDT)
-Message-ID: <85ff931ea180e19ae3df83367cf1e7cac99fa0d8.camel@redhat.com>
-Subject: Re: [PATCH net-next v6 2/4] vsock/virtio: support to send
- non-linear skb
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Date:   Tue, 22 Aug 2023 10:16:47 +0200
-In-Reply-To: <20230814212720.3679058-3-AVKrasnov@sberdevices.ru>
-References: <20230814212720.3679058-1-AVKrasnov@sberdevices.ru>
-         <20230814212720.3679058-3-AVKrasnov@sberdevices.ru>
+        d=1e100.net; s=20221208; t=1692692287; x=1693297087;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Y+P92gaIOtxmJ4GQuI1gvrZz/VMhfETxorK5TKfzBk=;
+        b=NWGmGtnTzTYgGB05rHVjSpxSVD13ZZ1B35GX5ccVh8WP60CeDpm26V6/qk7HyDBdmY
+         XWF7VrrJ4MCzW79v6QN7K8bL4FAEFtyfngCMMdlOYMiL7LMuJEXNH0WDl6GKLgbrDEqP
+         F1kErndIVcKjc5SqKmC9/dn6hnTyyW/MiPSHE64lCbWV+nfkX3yIMEXTnDG5BrdM68rq
+         q955OQFFSjqTLI1q3vMOQqRP8LowJp59SEQY0i+Ep6MNFePdlgry9S1PdN8HLZA9Up1m
+         buKO4wDuHW1uBXSVsqKX8mqPl6ptxbW9yQpx/fJiCGiVoMdgaiXbGaTwiGiXzGYUoMsi
+         Dnfg==
+X-Gm-Message-State: AOJu0YzWGig0d6pDvzt6RwdT0HN2EqfYrHwufgIve9SsxVyppg67TjyO
+        5Sn7JRP+YY24oDa76oC+TIkDEtU00r7HH7uyAtfBl49+tRUH0eDdwn20cw==
+X-Google-Smtp-Source: AGHT+IG6Imz+hb2H6ThrnJJSyj9TF/FlinkAsxgSUw9yPUDKDS984QzNxxtXbKl1fI2UbBLRqax8GK76LtgImM4gJkA=
+X-Received: by 2002:ac8:5cc4:0:b0:410:9855:acd with SMTP id
+ s4-20020ac85cc4000000b0041098550acdmr209444qta.14.1692692287343; Tue, 22 Aug
+ 2023 01:18:07 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230817182055.1770180-1-mshavit@google.com> <20230818021629.RFC.v1.2.I782000a264a60e00ecad1bee06fd1413685f9253@changeid>
+ <ZN5y4N8ffSoiR/sm@nvidia.com> <05f69a1a-97c9-ebca-5e01-c0b00699c93e@arm.com>
+ <CAKHBV27suc5nDoH7gMHebjYBONTNqsugWvxbo2E-fRjRGs288w@mail.gmail.com>
+ <ZN93TO9mRIrX1grw@nvidia.com> <CAKHBV24L7pTajkStWCRiW7976+B8VtDHRDpo+Emta0RshkvRhQ@mail.gmail.com>
+ <ZONRRubvUK7GXO4i@nvidia.com>
+In-Reply-To: <ZONRRubvUK7GXO4i@nvidia.com>
+From:   Michael Shavit <mshavit@google.com>
+Date:   Tue, 22 Aug 2023 16:17:31 +0800
+Message-ID: <CAKHBV26knnw7WjUP-6kw1v0T9=196d3cJa5zO1tQa4kjteO-fg@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 2/8] iommu/arm-smmu-v3: Perform invalidations over installed_smmus
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, nicolinc@nvidia.com, tina.zhang@intel.com,
+        jean-philippe@linaro.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Aug 21, 2023 at 7:58=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
+ote:
+>
+> > Since there's now a loop over a series of SMMUs inside
+> > arm_smmu_tlb_inv_range_asid, it makes sense to move the check into
+> > that loop. This technically works because only SVA is calling
+> > arm_smmu_tlb_inv_range_asid but can (IMO) risk introducing bugs in
+> > the future since it's not obvious from the function name.
+>
+> Well, I would remove the duplication and add an argument if you intend
+> to share the function that loops
 
-I'm sorry for the long delay here. I was OoO in the past few weeks.
+What do you think about this as a final stage:
+Once the set_dev_pasid and sva refactor lands, SVA could call a common
+arm_smmu_inv_range_domain implementation which would:
+1. Skip the TLB invalidation on a per-smmu basis if it detects that
+the domain type is SVA, or based on a passed-in parameter that is only
+set True by SVA.
+2. Issue ATC invalidations with SSIDs found in the arm_smmu_domain.
+This common function would be used for all use-cases: invalidations of
+domains attached on RIDs, on PASIDs (SVA and non SVA).
 
-On Tue, 2023-08-15 at 00:27 +0300, Arseniy Krasnov wrote:
-> For non-linear skb use its pages from fragment array as buffers in
-> virtio tx queue. These pages are already pinned by 'get_user_pages()'
-> during such skb creation.
->=20
-> Signed-off-by: Arseniy Krasnov <AVKrasnov@sberdevices.ru>
-> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->  Changelog:
->  v2 -> v3:
->   * Comment about 'page_to_virt()' is updated. I don't remove R-b,
->     as this change is quiet small I guess.
->=20
->  net/vmw_vsock/virtio_transport.c | 41 +++++++++++++++++++++++++++-----
->  1 file changed, 35 insertions(+), 6 deletions(-)
->=20
-> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_tran=
-sport.c
-> index e95df847176b..7bbcc8093e51 100644
-> --- a/net/vmw_vsock/virtio_transport.c
-> +++ b/net/vmw_vsock/virtio_transport.c
-> @@ -100,7 +100,9 @@ virtio_transport_send_pkt_work(struct work_struct *wo=
-rk)
->  	vq =3D vsock->vqs[VSOCK_VQ_TX];
-> =20
->  	for (;;) {
-> -		struct scatterlist hdr, buf, *sgs[2];
-> +		/* +1 is for packet header. */
-> +		struct scatterlist *sgs[MAX_SKB_FRAGS + 1];
-> +		struct scatterlist bufs[MAX_SKB_FRAGS + 1];
-
-Note that MAX_SKB_FRAGS depends on a config knob (CONFIG_MAX_SKB_FRAGS)
-and valid/reasonable values are up to 45. The total stack usage can be
-pretty large (~700 bytes).
-
-As this is under the vsk tx lock, have you considered moving such data
-in the virtio_vsock struct?
-
->  		int ret, in_sg =3D 0, out_sg =3D 0;
->  		struct sk_buff *skb;
->  		bool reply;
-> @@ -111,12 +113,39 @@ virtio_transport_send_pkt_work(struct work_struct *=
-work)
-> =20
->  		virtio_transport_deliver_tap_pkt(skb);
->  		reply =3D virtio_vsock_skb_reply(skb);
-> +		sg_init_one(&bufs[out_sg], virtio_vsock_hdr(skb),
-> +			    sizeof(*virtio_vsock_hdr(skb)));
-> +		sgs[out_sg] =3D &bufs[out_sg];
-> +		out_sg++;
-> +
-> +		if (!skb_is_nonlinear(skb)) {
-> +			if (skb->len > 0) {
-> +				sg_init_one(&bufs[out_sg], skb->data, skb->len);
-> +				sgs[out_sg] =3D &bufs[out_sg];
-> +				out_sg++;
-> +			}
-> +		} else {
-> +			struct skb_shared_info *si;
-> +			int i;
-> +
-> +			si =3D skb_shinfo(skb);
-
-This assumes that the paged skb does not carry any actual data in the
-head buffer (only the header). Is that constraint enforced somewhere
-else? Otherwise a
-
-	WARN_ON_ONCE(skb_headlen(skb) > sizeof(*virtio_vsock_hdr(skb))
-
-could be helpful to catch early possible bugs.
-
-Thanks!
-
-Paolo
-
-> +
-> +			for (i =3D 0; i < si->nr_frags; i++) {
-> +				skb_frag_t *skb_frag =3D &si->frags[i];
-> +				void *va;
-> =20
-> -		sg_init_one(&hdr, virtio_vsock_hdr(skb), sizeof(*virtio_vsock_hdr(skb)=
-));
-> -		sgs[out_sg++] =3D &hdr;
-> -		if (skb->len > 0) {
-> -			sg_init_one(&buf, skb->data, skb->len);
-> -			sgs[out_sg++] =3D &buf;
-> +				/* We will use 'page_to_virt()' for the userspace page
-> +				 * here, because virtio or dma-mapping layers will call
-> +				 * 'virt_to_phys()' later to fill the buffer descriptor.
-> +				 * We don't touch memory at "virtual" address of this page.
-> +				 */
-> +				va =3D page_to_virt(skb_frag->bv_page);
-> +				sg_init_one(&bufs[out_sg],
-> +					    va + skb_frag->bv_offset,
-> +					    skb_frag->bv_len);
-> +				sgs[out_sg] =3D &bufs[out_sg];
-> +				out_sg++;
-> +			}
->  		}
-> =20
->  		ret =3D virtqueue_add_sgs(vq, sgs, out_sg, in_sg, skb, GFP_KERNEL);
-
+Then we have two options for the intermediate stage with this series:
+1. Non-SVA code uses arm_smmu_inv_range_domain which calls
+arm_smmu_tlb_inv_range_domain(_no_atc) and arm_smmu_atc_range_domain,
+SVA code individually calls those two functions.
+arm_smmu_tlb_inv_range_domain(_no_atc) accepts a parameter to skip the
+invalidation if BTM feature is set.
+2. Same as option 1, but SVA also calls arm_smmu_inv_range_domain.
+arm_smmu_inv_range_domain accepts both a parameter to skip TLB inv
+when BTM is set, as well as an SSID for the atc invalidation. SSID
+would be 0 in non-sva callers, and mm->pasid for SVA.
