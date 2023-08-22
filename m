@@ -2,104 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3E6784D3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32182784D3F
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjHVXQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S231674AbjHVXR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjHVXQl (ORCPT
+        with ESMTP id S231667AbjHVXR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:16:41 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9231010D
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:16:39 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso7684950e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:16:39 -0700 (PDT)
+        Tue, 22 Aug 2023 19:17:27 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AFFCFC
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:17:25 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bdc89af101so62203145ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:17:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692746198; x=1693350998;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ne+QvARLPyJmWPOSrJZ8X8fHhrReARdSQtc8gHYhPWM=;
-        b=izNsxqeDDqR8Taw686A/JA+R7wjulCx21d26ehlcDp+uRH97AKfo5hOYOJXQkMbFCy
-         M0FYJLb865lMOG1vVO6DMGqss7CgorD/JW37SopF2VFiIMH5VQV3NxymxZFo50zvh+1s
-         v8ycX3TpMlw7qflkWF5J5NBHcRsErx7InAtEE=
+        d=google.com; s=20221208; t=1692746245; x=1693351045;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oFwVY5f5dTBaMzDscxqMGNrjI0xrE58qgkFcYAhYpMc=;
+        b=75CU7MMPm59DuVURW4I5Awl+gGVby465miL42+4YWEZODWWEL1GIFpxXTJekpZnNnl
+         N2+UnX2W4vOlRH75+HBCFSmi5KGyPUK+mTvBnhZwlFmzX9cCvSTIE7ZL1eAz9khnzhtP
+         rknG3bjV6rcHOM9m2TBB2RUQgzFIUj/yrDi0u9in7pP+Djas/sZ1r/Eb7aIR9uP5sx0B
+         hKeT31r+ZeTT5KpzX3mpjuNkpOeSLI6FVVRN8X1Q8PjrcDEOIGp6x27azlCmYj9H+sBZ
+         V4N/le27vTaBzt7aJ4R4VYM2mXzinjZXff2aSp37hu/O48S1EavfVsSROouHe2adoqLg
+         7g2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692746198; x=1693350998;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ne+QvARLPyJmWPOSrJZ8X8fHhrReARdSQtc8gHYhPWM=;
-        b=LwRqZrQZk9eJAKFkHx9i68jydAyRUSX97h393NqPPtXTCaB4EuUM3Wv6hmO8gMB13J
-         MbRamVjkUOT+q8hIcIQAq/F8mil3QlcYXHdr4AD4fr65/sg8XW1BFoTYS66YU8rPsHan
-         jfKMtyOAGbil3Mg3FQofuDo7TMId5W7tVYaHQZNXNnCs79cb9SunHxG+Fi54JqYNeYmi
-         3VpLsjWN7iCsQPqv9WE4l1eRa42ze4C39FchJv/vQPe4RimWlKO9N2tjlrBma5BCbOpu
-         20xyG2LFWuIDlSMvOcZA4mnHv3/v/AppEI9bEemFkyVhwu4yLbz9r4sh+JAwQaWJX2G+
-         hVKg==
-X-Gm-Message-State: AOJu0YyL/lcDTceBSPHcRK3h3wjw8rYiBFJ4cyL6j9GmQoOLSa1xeqEJ
-        9iikyMehPutJ1Qc1CEk4zp/OtleiiSkQS37m1Fqq1Q==
-X-Google-Smtp-Source: AGHT+IEMIIqUR2cKKxkSn0Xl2le40m5jCfwmqglTjMHe6IOHN8s+YCUP9cEbCmqaWfq8WalCP496sNNT5QAilRON1vI=
-X-Received: by 2002:a05:6512:6ca:b0:4ff:9eed:b68d with SMTP id
- u10-20020a05651206ca00b004ff9eedb68dmr9502586lff.58.1692746197816; Tue, 22
- Aug 2023 16:16:37 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 22 Aug 2023 16:16:37 -0700
-MIME-Version: 1.0
-In-Reply-To: <20230822142644.v10.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
-References: <20230822212927.249645-1-dianders@chromium.org> <20230822142644.v10.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Tue, 22 Aug 2023 16:16:37 -0700
-Message-ID: <CAE-0n50va9r7wrRzbK2KduNPdNNimiKT9CkuP=meA6JaoMTpWw@mail.gmail.com>
-Subject: Re: [PATCH v10 3/6] arm64: smp: Remove dedicated wakeup IPI
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        kgdb-bugreport@lists.sourceforge.net, ito-yuichi@fujitsu.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1692746245; x=1693351045;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oFwVY5f5dTBaMzDscxqMGNrjI0xrE58qgkFcYAhYpMc=;
+        b=Bmn1JL7GvkCccHrF3miGqVhf7KlobarUqvKyrjq7WTLoqLpYHxrnuHr3Nm/+2abb0C
+         4UO4Jhk09AWpt4Dp7aGDu8MuTZzgyuNsnvS9ar4m21RgdYCQpcQwecapcILdHNKk5ZIJ
+         Ky2by2DiXncAKccx72qDlT+Lvb3QMcXI0pxeQNSwRvMGaLudWib5AUTksRkgUYRj4Wv7
+         1bEgfqEx9HbmgSRmNBtFGSq2GCT10IuVjzVnDawDAGnCGBysryHjB+POxU4UvBudxRSm
+         qGo04WEcmakwWZndcHgC2v6QVqekij/GYLJVAQPSs+9y8LCNQtjb3f7ccN5QF4oHpTbP
+         FMXQ==
+X-Gm-Message-State: AOJu0YyV764U97820Nw0gX+NdM6FSyzBSU/VTRqJeEs4COlzwrh/AcSa
+        6eRQtqse/UihvFcYhbT39zf6c5Ahaho=
+X-Google-Smtp-Source: AGHT+IH25EflXFYRsSAIONlQdF4yEYShAZMjZEb7bXaRk6krlSYytMpTmCeiKJi71iN2KbTqlbAvt/EfaUY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:fb03:b0:1bb:8c42:79f4 with SMTP id
+ le3-20020a170902fb0300b001bb8c4279f4mr4246479plb.2.1692746245174; Tue, 22 Aug
+ 2023 16:17:25 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 16:17:23 -0700
+In-Reply-To: <df49bbb2-92c0-7792-ab90-e748be570b5d@amd.com>
+Mime-Version: 1.0
+References: <cover.1692119201.git.isaku.yamahata@intel.com>
+ <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
+ <ZN+whX3/lSBcZKUj@google.com> <52c6a8a6-3a0a-83ba-173d-0833e16b64fd@amd.com>
+ <ZN/0aefp2gw5wDXk@google.com> <CAL715WL9TJzDxZE8_gfhUQFGtOAydG0kyuSbzkqWTs3pc57j7A@mail.gmail.com>
+ <df49bbb2-92c0-7792-ab90-e748be570b5d@amd.com>
+Message-ID: <ZOVCAweRM8Es6rJ4@google.com>
+Subject: Re: [PATCH 4/8] KVM: gmem: protect kvm_mmu_invalidate_end()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Mingwei Zhang <mizhang@google.com>, Jacky Li <jackyli@google.com>,
+        isaku.yamahata@intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+        Michael Roth <michael.roth@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        linux-coco@lists.linux.dev,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Yuan Yao <yuan.yao@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
+        Fuad Tabba <tabba@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2023-08-22 14:26:58)
-> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-> index 9b31e6d0da17..798fd76a883a 100644
-> --- a/arch/arm64/include/asm/smp.h
-> +++ b/arch/arm64/include/asm/smp.h
-> @@ -89,9 +89,9 @@ extern void arch_send_call_function_single_ipi(int cpu);
->  extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
->
->  #ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
-> -extern void arch_send_wakeup_ipi_mask(const struct cpumask *mask);
-> +extern void arch_send_wakeup_ipi(int cpu);
+On Mon, Aug 21, 2023, Ashish Kalra wrote:
+> Hello Mingwei & Sean,
+> 
+> On 8/18/2023 9:08 PM, Mingwei Zhang wrote:
+> The maximum hits are seen with shmem_fallocate and madvise, which we believe
+> are response to shared<->private
+> GHCB page-state-chage requests. discard=both handles discard both for
+> private and shared memory, so freeing shared memory
+> via fallocate(shared_memfd, FALLOC_FL_PUNCH_HOLE, ...) would trigger the
+> notifiers when freeing shared pages after guest converts a GPA to
+> private.
+> 
+> Now, as with SNP+guest_memfd, guest private memory is not mapped in host
+> anymore, so i added a generic fix (instead of Sean's proposed patch of
+> checking for SNP guest inside sev_guest_memory_reclaimed()):
+> 
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -593,6 +593,9 @@ static __always_inline int __kvm_handle_hva_range(struct
+> kvm *kvm,
+>                         unsigned long hva_start, hva_end;
+> 
+>                         slot = container_of(node, struct kvm_memory_slot,
+> hva_node[slots->node_idx]);
+> +                       if (kvm_slot_can_be_private(slot)) {
+> +                               continue;
+> +                       }
+>                         hva_start = max(range->start, slot->userspace_addr);
+>                         hva_end = min(range->end, slot->userspace_addr +
+>                                                   (slot->npages <<
+> PAGE_SHIFT));
 
-Is int used instead of unsigned int because we want to sometimes pass a
-negative value to indicate an error? Maybe it should be unsigned int.
+...
+
+> As expected, the SEV hook is not invoked for the guest private memory pages
+> (no more invalidation from shmem_fallocate() + madvise()).
+> 
+> Isn't it better to skip invoking the KVM MMU invalidation notifier when the
+> invalidated range belongs to guest private memory ?
+
+Oooh, you're running into problems where KVM blasts both the private and shared
+mappings even though invalidations from the mmu_notifier are shared-only by
+definition.
+
+The answer is "yes", but simply skipping slots that _can_ be private is wrong,
+as KVM still needs to zap any shared mappings.  I have a plan[*], but I completely
+spaced on incorporating the idea into the gmem RFC.  I'll add that to the "list
+of todos for merging gmem", which I need to get sent out asap.
+
+https://lore.kernel.org/all/ZJX0hk+KpQP0KUyB@google.com
+
+> > In fact, AFAIC, SNP VM does not track whether each page is previously
+> > shared, isn't it? If a page was previously shared and was written by the
+> > host kernel or devices before it was changed to private. No one tracks it
+> > and dirty caches are there!
+> 
+> The skipped invalidation here covered the case Mingwei mentioned above,
+> where the pages are changed from private->shared and subsequent freeing of
+> shared pages triggered the invalidation.
+> 
+> But, then why are we concerned about this, i thought we have concerns about
+> the case where the dirty cache lines contain encrypted guest data ?
+
+Yes, that's my understanding as well (assuming by "this" you mean the case where
+the CPU cache has dirty lines for _shared_ addresses).
