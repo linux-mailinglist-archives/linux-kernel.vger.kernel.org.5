@@ -2,168 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D8A78376B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54660783786
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232048AbjHVBhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S232090AbjHVBjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjHVBhO (ORCPT
+        with ESMTP id S232068AbjHVBjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:37:14 -0400
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528E1110
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:37:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RVBm20ykgz4f3mK5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:37:06 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP3 (Coremail) with SMTP id _Ch0CgD3Fr9EEeRkvV7UBA--.32703S2;
-        Tue, 22 Aug 2023 09:37:09 +0800 (CST)
-Subject: Re: [PATCH 4/9] mm/compaction: simplify pfn iteration in
- isolate_freepages_range
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, david@redhat.com
-References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
- <20230805110711.2975149-5-shikemeng@huaweicloud.com>
- <ecb315f9-a5cd-4fb3-bae6-eb94a08eccb3@linux.alibaba.com>
- <43b726c1-3ea6-9acc-d4e4-c7deabcf7ecd@huaweicloud.com>
- <3729c50f-6f8e-2548-8932-f39045402299@linux.alibaba.com>
- <3574ed6e-34c8-47a1-8218-9e4cf1327184@huaweicloud.com>
- <d9403099-7fa8-ba34-4260-21da36175432@linux.alibaba.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <d4b2307e-6a43-820f-1b31-41e34f153844@huaweicloud.com>
-Date:   Tue, 22 Aug 2023 09:37:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Mon, 21 Aug 2023 21:39:19 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2873E13E;
+        Mon, 21 Aug 2023 18:39:16 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso2841307a12.1;
+        Mon, 21 Aug 2023 18:39:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692668355; x=1693273155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rhIOJpykyDzQ+VCn+TLVVSTJ6B4L1SH3F+7Lz/pPEA4=;
+        b=c11QZBS+r7x0CWEUP4FACwNzMvKDz2Fw5BKcKmU/aDUOKnIECH43SbcUAmYVS1t2e8
+         FRydUSvCAfCQZD0oM87hbrqoJB82tjTs2V1joK+gNfa5WEG1RhByV55rmdYDuPV3a0Mk
+         ZsLAI+OJm/uKtA/2QdgAK3eYXcmnONVBvwDAIq8EhyuzXPaiQMVm8t6DZx9URPuc2Fr1
+         C/kO2Ovs6GrjgQa8i/xubZ3p3dxzqMIHFuN6k+Z8srcj+I/IZtGtc3vLj7VEzPrEfU2O
+         EdVtxVRLlF1IT63XwKrbckSTagrq/H5ZmzScgsXna9Qyzy3Ph1rk4QLCtY6XvmpuHwCV
+         3R2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692668355; x=1693273155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rhIOJpykyDzQ+VCn+TLVVSTJ6B4L1SH3F+7Lz/pPEA4=;
+        b=ZYP0157p7KuSPoobN7Wj94fsYORIryTRm9x32e1ICoYhVtJcSkDrL5w61lfgGL5AkM
+         0C5mno0Zsq03+pxm/x3c7TS1TZDSMqzy/AU5QQB99uCLJZoAv8RSStvrNhqVoKpGsavV
+         5Q6muAO7bJmYXHUqPzxbKoUSZUdd6maF5ZLG2dW4RwQb7CT6rpvnL6AEdI4ltlg4YpNA
+         EmY4S5YKpG1n5ERl2nhp55+Au2djMcC51A9xG8xJVoXMnMhancujFDXi6s0WAVWFKmsB
+         EAvEDpJwirAkGPFpL6PPzwb5tWNgEXvm/qdbcLHvGbNN8Q24IWfv6Z5E5vOjpyS+ai/U
+         mVWw==
+X-Gm-Message-State: AOJu0YxgSn2vauzq/S5GknyHYbI7O7p35WKoH69/lSJIkTnws+K3rxYY
+        eWK4THWXjDvNiSKTIeLJ+aORUqXl6N+cUwrKHnk=
+X-Google-Smtp-Source: AGHT+IFoyc4kNW3AYbcpR0x17NEZoO6nJrd2PM+kI4viupEvlkQz3g5cDYIR987jn1pTI/2AjTgn7tSIY3buuBX60qQ=
+X-Received: by 2002:a17:90b:1d8b:b0:268:5c3b:6f37 with SMTP id
+ pf11-20020a17090b1d8b00b002685c3b6f37mr7081291pjb.0.1692668355384; Mon, 21
+ Aug 2023 18:39:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d9403099-7fa8-ba34-4260-21da36175432@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _Ch0CgD3Fr9EEeRkvV7UBA--.32703S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFy5ZFWDJr1UGFy3GryUKFg_yoW7Jw1kpa
-        4xJF1xCryDGa48XF1Utw1DZryUKw4Uta1UXr4UJF1UJFyktF9FgrnrZr1qgFyjqr4xAr4q
-        vr4DtFZFv3WDZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com> <433392a3-5ec4-cd63-fa5b-58e24deb56b9@huaweicloud.com>
+In-Reply-To: <433392a3-5ec4-cd63-fa5b-58e24deb56b9@huaweicloud.com>
+From:   AceLan Kao <acelan@gmail.com>
+Date:   Tue, 22 Aug 2023 09:39:03 +0800
+Message-ID: <CAMz9Wg8kanG=2g6Y8TVcB7-=O8MgXrjgJ0YCewqa0cM51nXf=g@mail.gmail.com>
+Subject: Re: Fwd: Infiniate systemd loop when power off the machine with
+ multiple MD RAIDs
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux RAID <linux-raid@vger.kernel.org>,
+        "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yu Kuai <yukuai1@huaweicloud.com> =E6=96=BC 2023=E5=B9=B48=E6=9C=8821=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=889:18=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> =E5=9C=A8 2023/08/16 17:37, Bagas Sanjaya =E5=86=99=E9=81=93:
+> > Hi,
+> >
+> > I notice a regression report on Bugzilla [1]. Quoting from it:
+> >
+> >> It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10, RAI=
+D5 and RAID10) and then you will see below error repeatly(need to use seria=
+l console to see it)
+> >>
+> >> [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
+> >> [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all dirs
+> >> [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys=
+/bus
+> >> [ 205.380427] systemd-shutdown[1]: sd-device-enumerator: Scanning /sys=
+/class
+> >> [ 205.388257] systemd-shutdown[1]: Stopping MD /dev/md127 (9:127).
+> >> [ 205.394880] systemd-shutdown[1]: Failed to sync MD block device /dev=
+/md127, ignoring: Input/output error
+> >> [ 205.404975] md: md127 stopped.
+> >> [ 205.470491] systemd-shutdown[1]: Stopping MD /dev/md126 (9:126).
+> >> [ 205.770179] md: md126: resync interrupted.
+> >> [ 205.776258] md126: detected capacity change from 1900396544 to 0
+> >> [ 205.783349] md: md126 stopped.
+> >> [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125).
+> >> [ 205.862435] md: md126 stopped.
+> >> [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device /dev=
+/md125, ignoring: Input/output error
+> >> [ 205.872845] block device autoloading is deprecated and will be remov=
+ed.
+> >> [ 205.880955] md: md125 stopped.
+> >> [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md124p2 (259:7).
+> >> [ 205.947707] systemd-shutdown[1]: Could not stop MD /dev/md124p2: Dev=
+ice or resource busy
+> >> [ 205.957004] systemd-shutdown[1]: Stopping MD /dev/md124p1 (259:6).
+> >> [ 205.964177] systemd-shutdown[1]: Could not stop MD /dev/md124p1: Dev=
+ice or resource busy
+> >> [ 205.973155] systemd-shutdown[1]: Stopping MD /dev/md124 (9:124).
+> >> [ 205.979789] systemd-shutdown[1]: Could not stop MD /dev/md124: Devic=
+e or resource busy
+> >> [ 205.988475] systemd-shutdown[1]: Not all MD devices stopped, 4 left.
+>
+> Without the problem, did the log complain about this?
+>
+> Could not stop MD...Device or resource busy
+>
+> Thanks,
+> Kuai
+>
+> >
+> > See Bugzilla for the full thread and attached full journalctl log.
+> >
+> > Anyway, I'm adding this regression to be tracked by regzbot:
+> >
+> > #regzbot introduced: 12a6caf273240a https://bugzilla.kernel.org/show_bu=
+g.cgi?id=3D217798
+> > #regzbot title: systemd shutdown hang on machine with different RAID le=
+vels
+> >
+> > Thanks.
+> >
+> > [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D217798
+> >
+>
+Hi Yu,
+
+Everything looks normal.
+I can see the MD raids stop without any warning/error messages.
+
+$ sudo journalctl -b -2 -k -o short-monotonic | egrep md[0-9]+
+[   13.418154] u-Precision-7960-Tower kernel: md/raid10:md125: active
+with 4 out of 4 devices
+[   13.424050] u-Precision-7960-Tower kernel: md125: detected capacity
+change from 0 to 1900396544
+[   13.525198] u-Precision-7960-Tower kernel: md123: detected capacity
+change from 0 to 1900396544
+[   13.576770] u-Precision-7960-Tower kernel: md122: detected capacity
+change from 0 to 1900417024
+[   13.585705] u-Precision-7960-Tower kernel:  md122: p1 p2 p3
+[   14.323717] u-Precision-7960-Tower kernel: EXT4-fs (md122p3):
+mounted filesystem 6d53dc8e-3f45-4efa-bc0e-4af477fac217 ro with
+ordered data mode. Quota mode: none.
+[   14.814365] u-Precision-7960-Tower systemd-gpt-auto-generator[587]:
+md122p3: Root device /dev/md122.
+[   14.829064] u-Precision-7960-Tower kernel: block md122: the
+capability attribute has been deprecated.
+[   18.133316] u-Precision-7960-Tower systemd[1]:
+unit_file_build_name_map: normal unit file:
+/lib/systemd/system/casper-md5check.service
+[   20.609948] u-Precision-7960-Tower kernel: EXT4-fs (md122p3):
+re-mounted 6d53dc8e-3f45-4efa-bc0e-4af477fac217 r/w. Quota mode: none.
+[   39.161554] u-Precision-7960-Tower kernel: md: requested-resync of
+RAID array md125
+[   77.344788] u-Precision-7960-Tower systemd[1]: Got message
+type=3Dsignal sender=3Dorg.freedesktop.DBus
+destination=3Dorg.freedesktop.systemd1 path=3D/org/freedesktop/DBus int
+erface=3Dorg.freedesktop.systemd1.Activator member=3DActivationRequest
+cookie=3D89 reply_cookie=3D0 signature=3Ds error-name=3Dn/a error-message=
+=3Dn/a
+[   77.736790] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DUnitNew cookie=3D716 reply_cookie=3D0 signature=3Dso
+error-name=3Dn/a error-message=3Dn/a
+[   77.772791] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DUnitRemoved cookie=3D717 reply_cookie=3D0 signature=3Dso
+error-name=3Dn/a error-message=3Dn/a
+[   77.808791] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DUnitNew cookie=3D718 reply_cookie=3D0 signature=3Dso
+error-name=3Dn/a error-message=3Dn/a
+[   77.844795] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DUnitRemoved cookie=3D719 reply_cookie=3D0 signature=3Dso
+error-name=3Dn/a error-message=3Dn/a
+[   77.880866] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DUnitNew cookie=3D720 reply_cookie=3D0 signature=3Dso
+error-name=3Dn/a error-message=3Dn/a
+[   77.916817] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a path=3D/org/freedesktop/system=
+d1
+interface=3Dorg.freedesktop.systemd1.M
+anager member=3DJobNew cookie=3D721 reply_cookie=3D0 signature=3Duos
+error-name=3Dn/a error-message=3Dn/a
+[   79.072786] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a
+path=3D/org/freedesktop/systemd1/unit/systemd_2dlocaled_2eservice int
+erface=3Dorg.freedesktop.DBus.Properties member=3DPropertiesChanged
+cookie=3D724 reply_cookie=3D0 signature=3Dsa{sv}as error-name=3Dn/a
+error-message=3Dn/a
+[   79.112778] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a
+path=3D/org/freedesktop/systemd1/unit/systemd_2dlocaled_2eservice int
+erface=3Dorg.freedesktop.DBus.Properties member=3DPropertiesChanged
+cookie=3D725 reply_cookie=3D0 signature=3Dsa{sv}as error-name=3Dn/a
+error-message=3Dn/a
+[   79.188801] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a
+path=3D/org/freedesktop/systemd1/unit/systemd_2dlocaled_2eservice int
+erface=3Dorg.freedesktop.DBus.Properties member=3DPropertiesChanged
+cookie=3D726 reply_cookie=3D0 signature=3Dsa{sv}as error-name=3Dn/a
+error-message=3Dn/a
+[   79.228790] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a
+path=3D/org/freedesktop/systemd1/unit/systemd_2dlocaled_2eservice int
+erface=3Dorg.freedesktop.DBus.Properties member=3DPropertiesChanged
+cookie=3D727 reply_cookie=3D0 signature=3Dsa{sv}as error-name=3Dn/a
+error-message=3Dn/a
+[   79.268794] u-Precision-7960-Tower systemd[1]: Sent message
+type=3Dsignal sender=3Dn/a destination=3Dn/a
+path=3D/org/freedesktop/systemd1/job/1915 interface=3Dorg.freedesktop.D
+Bus.Properties member=3DPropertiesChanged cookie=3D728 reply_cookie=3D0
+signature=3Dsa{sv}as error-name=3Dn/a error-message=3Dn/a
+[   81.064804] u-Precision-7960-Tower systemd[1]: Got message
+type=3Dmethod_call sender=3D:1.67 destination=3Dorg.freedesktop.systemd1
+path=3D/org/freedesktop/systemd1 interface
+=3Dorg.freedesktop.DBus.Properties member=3DGet cookie=3D31 reply_cookie=3D=
+0
+signature=3Dss error-name=3Dn/a error-message=3Dn/a
+[  286.066341] u-Precision-7960-Tower kernel: md123: detected capacity
+change from 1900396544 to 0
+[  286.073500] u-Precision-7960-Tower kernel: md: md123 stopped.
+[  286.175794] u-Precision-7960-Tower kernel: md: md124 stopped.
 
 
-on 8/19/2023 7:58 PM, Baolin Wang wrote:
-> 
-> 
-> On 8/15/2023 6:37 PM, Kemeng Shi wrote:
->>
->>
->> on 8/15/2023 6:07 PM, Baolin Wang wrote:
->>>
->>>
->>> On 8/15/2023 5:32 PM, Kemeng Shi wrote:
->>>>
->>>>
->>>> on 8/15/2023 4:38 PM, Baolin Wang wrote:
->>>>>
->>>>>
->>>>> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
->>>>>> We call isolate_freepages_block in strict mode, continuous pages in
->>>>>> pageblock will be isolated if isolate_freepages_block successed.
->>>>>> Then pfn + isolated will point to start of next pageblock to scan
->>>>>> no matter how many pageblocks are isolated in isolate_freepages_block.
->>>>>> Use pfn + isolated as start of next pageblock to scan to simplify the
->>>>>> iteration.
->>>>>
->>>>> IIUC, the isolate_freepages_block() can isolate high-order free pages, which means the pfn + isolated can be larger than the block_end_pfn. So in your patch, the 'block_start_pfn' and 'block_end_pfn' can be in different pageblocks, that will break pageblock_pfn_to_page().
->>>>>
->>>> In for update statement, we always update block_start_pfn to pfn and
->>>
->>> I mean, you changed to:
->>> 1) pfn += isolated;
->>> 2) block_start_pfn = pfn;
->>> 3) block_end_pfn = pfn + pageblock_nr_pages;
->>>
->>> But in 1) pfn + isolated can go outside of the currnet pageblock if isolating a high-order page, for example, located in the middle of the next pageblock. So that the block_start_pfn can point to the middle of the next pageblock, not the start position. Meanwhile after 3), the block_end_pfn can point another pageblock. Or I missed something else?
->>>
->> Ah, I miss to explain this in changelog.
->> In case we could we have buddy page with order higher than pageblock:
->> 1. page in buddy page is aligned with it's order
->> 2. order of page is higher than pageblock order
->> Then page is aligned with pageblock order. So pfn of page and isolated pages
->> count are both aligned pageblock order. So pfn + isolated is pageblock order
->> aligned.
-> 
-> That's not what I mean. pfn + isolated is not always pageblock-aligned, since the isolate_freepages_block() can isolated high-order free pages (for example: order-1, order-2 ...).
-> 
-> Suppose the pageblock size is 2M, when isolating a pageblock (suppose the pfn range is 0 - 511 to make the arithmetic easy) by isolate_freepages_block(), and suppose pfn 0 to pfn 510 are all order-0 page, but pfn 511 is order-1 page, so you will isolate 513 pages from this pageblock, which will make 'pfn + isolated' not pageblock aligned.
-This is also no supposed to happen as low order buddy pages should never span
-cross boundary of high order pages:
-In buddy system, we always split order N pages into two order N - 1 pages as
-following:
-|        order N        |
-|order N - 1|order N - 1|
-So buddy pages with order N - 1 will never cross boudary of order N. Similar,
-buddy pages with order N - 2 will never cross boudary of order N - 1 and so
-on. Then any pages with order less than N will never cross boudary of order
-N.
-
-> 
->>>> update block_end_pfn to pfn + pageblock_nr_pages. So they should point
->>>> to the same pageblock. I guess you missed the change to update of
->>>> block_end_pfn. :)
->>>>>>
->>>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->>>>>> ---
->>>>>>     mm/compaction.c | 14 ++------------
->>>>>>     1 file changed, 2 insertions(+), 12 deletions(-)
->>>>>>
->>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
->>>>>> index 684f6e6cd8bc..8d7d38073d30 100644
->>>>>> --- a/mm/compaction.c
->>>>>> +++ b/mm/compaction.c
->>>>>> @@ -733,21 +733,11 @@ isolate_freepages_range(struct compact_control *cc,
->>>>>>         block_end_pfn = pageblock_end_pfn(pfn);
->>>>>>           for (; pfn < end_pfn; pfn += isolated,
->>>>>> -                block_start_pfn = block_end_pfn,
->>>>>> -                block_end_pfn += pageblock_nr_pages) {
->>>>>> +                block_start_pfn = pfn,
->>>>>> +                block_end_pfn = pfn + pageblock_nr_pages) {
->>>>>>             /* Protect pfn from changing by isolate_freepages_block */
->>>>>>             unsigned long isolate_start_pfn = pfn;
->>>>>>     -        /*
->>>>>> -         * pfn could pass the block_end_pfn if isolated freepage
->>>>>> -         * is more than pageblock order. In this case, we adjust
->>>>>> -         * scanning range to right one.
->>>>>> -         */
->>>>>> -        if (pfn >= block_end_pfn) {
->>>>>> -            block_start_pfn = pageblock_start_pfn(pfn);
->>>>>> -            block_end_pfn = pageblock_end_pfn(pfn);
->>>>>> -        }
->>>>>> -
->>>>>>             block_end_pfn = min(block_end_pfn, end_pfn);
->>>>>>               if (!pageblock_pfn_to_page(block_start_pfn,
->>>>>
->>>
-> 
-> 
-
+--=20
+Chia-Lin Kao(AceLan)
+http://blog.acelan.idv.tw/
+E-Mail: acelan.kaoATcanonical.com (s/AT/@/)
