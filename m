@@ -2,129 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555BE78486C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3746D78486E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjHVRaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47024 "EHLO
+        id S229549AbjHVRbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbjHVRaH (ORCPT
+        with ESMTP id S230267AbjHVRb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:30:07 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E23667C0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:30:02 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a1681fa868so563470166b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:30:02 -0700 (PDT)
+        Tue, 22 Aug 2023 13:31:27 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D568A6E525
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:31:24 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4ff7ecd0a0dso1387406e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:31:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692725401; x=1693330201;
+        d=gmail.com; s=20221208; t=1692725483; x=1693330283;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=VWmvOza6gjsuYC3fbqv9jfUKP4L6c+PuYoC8WcgK5tM=;
-        b=BOwWgIfwtHnkTpBd6W+Dg2CiR6w5oevSFMxcDYG930GdKktLMsMbRo4TU/AwtkYSum
-         UDVcsGQTUStPikR7SbwZ4qwKGfqkHbZmTE8HatRw6tKOy9QZsHJY526Yi2SngtemIPtB
-         KkpDg9flJ6tMjMS7yfMdc5klHYAHWpqDH5KQVYKV/zLlRixg3aHGkneWA5hwz+64BbUP
-         wvzPfFkHwa989XV5UIm7LN/Qb4gC71kZ1ym8kebLpKNt0s3/6MaebJAAKLhZGmzfo9El
-         n/RaaMSmYilg4dENPLehz0AtJKrufjQafTsAMtJ6jjgkifzMiugJpKpyhUeMPRc8OHkH
-         jaUA==
+        bh=QfKHgUSTtafoCDv9qIGxx5rTmDvawh/uB7wOQLfeuKA=;
+        b=Lm7nygwsiSap6Z09Y/8KweIlb6brFubBzcq23SZTWxfuTRXe+8kS4e0IYA410F/OgF
+         qC7nrZ1hp+zP6GtYf68mpBc3B/gyxRikAbFZpeko/66y1kZzTKA5KyjjC7nQMFuzuwae
+         WLcXo0tKqn1TNQabSXTgFYs42Qihic5AYYfkJmJqZ/HnZjan68yxxNvXYryMaK0kCtF5
+         09shWohCJRUizhD28gKpGgjoMSUt+4clMPfBG3l73cDJxLPtpNyIolPJxxdlhExNCX3T
+         rGGmOwXDkUcNt8zJqAxzhfiJPRpWZxopd8Cu8r4CHGqZP2wmSg0uD8yJbRSEotXGuZJ6
+         V1xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692725401; x=1693330201;
+        d=1e100.net; s=20221208; t=1692725483; x=1693330283;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VWmvOza6gjsuYC3fbqv9jfUKP4L6c+PuYoC8WcgK5tM=;
-        b=iwuogJmzXLMQsQEnDu4n7sQvtQW/TN06SqSvI7Jeq/IVKb3QMQC5ZUZx83zhLoBK/R
-         ETnuUUjEIty1bSQAGHsDKX8uGvYlbo8oo/DmmtiLfnDgcxyjx/pIcTUcLprqhpS+TRSR
-         sEJ0Rnm1TrZ69YEKmDvoR7HR8jYEEaRZ7Nkvdazz3Eclk0Oe5+Hp+Llt7I4auzXxHDD6
-         p8GD7P4WIA0xzEyzm3JWguWGG/orXMJPVZ7mEf3zIk3lY1U7NOfFmApVSDxStbwWZmkx
-         fuBbTuwmS9RZNJAEbdjcYaXMqvOd/0zr8ynZaZ/gDZBxWyHzRl7JgMiFu5S2oYBQFtT0
-         O02w==
-X-Gm-Message-State: AOJu0YwiCh7oTnhofDj+ofsHZdSwjui+s+858RrmHpae+2Yl36gpK/ij
-        1C/LE/5vQ/DUMriG2Y//CKZihLbkYL/hse7Mmcc=
-X-Google-Smtp-Source: AGHT+IGuvA3uDSJ9w9X7WxYpv8HpbTOqs10LgSQNQn+p+OiZf4+6uNZEHnaVjH6Wf1qriNVhaoftcg==
-X-Received: by 2002:a17:906:3051:b0:99c:f47a:2354 with SMTP id d17-20020a170906305100b0099cf47a2354mr8371875ejd.70.1692725400682;
-        Tue, 22 Aug 2023 10:30:00 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id md21-20020a170906ae9500b009829d2e892csm8552636ejb.15.2023.08.22.10.29.56
+        bh=QfKHgUSTtafoCDv9qIGxx5rTmDvawh/uB7wOQLfeuKA=;
+        b=aO3QOwYnlDHOI23Fooz7OXOtd9hdAwoEMq/bcSP+Iw71E2BHltzhSfM6Q4nBH/KtT8
+         wM94Sg3MgnL3FQuHjStWmM48JFjF7RLTm734TE+MkBor8mrOiayKMnLailUcGSXIa5W9
+         BJaDhIW0k2qpqR65KXcBxB4aXQDMLw8QFgIJvUDCOwRy1HVqQKsGj6xPRJlV6h3KGYL/
+         KOIMns7qcQ1hU+EogAJv3fxZgFAjZzz1iynwg0pg/J3yt59OG/4L15Tvk9comKSw0J/T
+         LY63IsxfKsvKmimmj07PgaL5+POX0o7GSf0/+qyXKQUuDrz7hNWWzHmCRngR6qAgKTw+
+         xNkA==
+X-Gm-Message-State: AOJu0YzTmqBIXYNj+m/QwpACwQeoXK6yyU7skXeGPWRE6c5MRCaeQqHa
+        D3KFQKSGOs0lk4wBzPKux7I=
+X-Google-Smtp-Source: AGHT+IFKsA5y+4A45gtr4oOX0jTZC3l4FhZV7lIud8i/1g+uNYS7PKF7EUvH1WKUiZXGy9HenbYx+g==
+X-Received: by 2002:a19:f81a:0:b0:4fb:9477:f713 with SMTP id a26-20020a19f81a000000b004fb9477f713mr5925771lff.6.1692725482596;
+        Tue, 22 Aug 2023 10:31:22 -0700 (PDT)
+Received: from [192.168.0.100] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id x20-20020a05600c2a5400b003fef60005b5sm4049810wme.9.2023.08.22.10.31.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 10:30:00 -0700 (PDT)
-Message-ID: <6e3b58d0-4017-9051-9337-7d86a6be55de@linaro.org>
-Date:   Tue, 22 Aug 2023 18:29:54 +0100
+        Tue, 22 Aug 2023 10:31:22 -0700 (PDT)
+Message-ID: <e5eb5935-5219-4d43-892b-96a03f8eb755@gmail.com>
+Date:   Tue, 22 Aug 2023 19:31:21 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH 00/22] nvmem: patches for v6.6
+Subject: Re: [PATCH] staging: vt6655: replace camel case by snake case
 Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20230814165252.93422-1-srinivas.kandagatla@linaro.org>
- <2023082217-banter-craftwork-281a@gregkh>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <2023082217-banter-craftwork-281a@gregkh>
+To:     Pavan Bobba <opensource206@gmail.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        outreachy@lists.linux.dev
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <ZOTUCRICU6lSYfdn@ubuntu.myguest.virtualbox.org>
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <ZOTUCRICU6lSYfdn@ubuntu.myguest.virtualbox.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22/08/2023 15:34, Greg KH wrote:
-> On Mon, Aug 14, 2023 at 05:52:30PM +0100, Srinivas Kandagatla wrote:
->> Here are some nvmem patches slightly more than usual for 6.6 that includes
->>
->> - Support for NXP eFuse, qcom secure qfprom, QCM2290 nvmem providers
->> - core level cleanup around error handling and layout creation.
->> - few minor cleanups across providers drivers to use better
->>    apis and a typo fix.
->>
->> Can you please queue them up for 6.6.
+On 8/22/23 17:28, Pavan Bobba wrote:
+> Replace formal arguments of few functions and local variables of camel case by snake case.
+> Issue found by checkpatch
 > 
-> I did, thanks, but your email system needs to be fixed:
+> Signed-off-by: Pavan Bobba<opensource206@gmail.com>
 
+Hi,
 
-Do you mean Attestation failing part or something else?
+please find a unique subject so that we see it is something new.
 
---srini
-> 
->   Link: https://lore.kernel.org/r/20230818124338.37880-1-yuehaibing@huawei.com
->   Base: applies clean to current tree
->         git checkout -b 20230818_yuehaibing_huawei_com HEAD
-> Applying: greybus: svc: Remove unused declarations
-> Press any key to continue...
-> Grabbing thread from lore.kernel.org/all/20230814165252.93422-1-srinivas.kandagatla@linaro.org/t.mbox.gz
-> Analyzing 23 messages in the thread
-> Checking attestation on all messages, may take a moment...
-> ---
->    ✗ [PATCH 1/22] dt-bindings: nvmem: fixed-cell: add compatible for MAC cells
->    ✗ [PATCH 2/22] nvmem: sunxi_sid: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH 3/22] nvmem: brcm_nvram: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH 4/22] nvmem: lpc18xx_otp: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH 5/22] nvmem: meson-mx-efuse: Convert to devm_platform_ioremap_resource()
->    ✗ [PATCH 6/22] nvmem: rockchip-efuse: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH 7/22] nvmem: stm32-romem: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH 8/22] nvmem: qfprom: do some cleanup
->    ✗ [PATCH 9/22] nvmem: uniphier: Use devm_platform_get_and_ioremap_resource()
->    ✗ [PATCH 10/22] dt-bindings: nvmem: qfprom: Add compatible for MSM8226
->    ✗ [PATCH 11/22] dt-bindings: nvmem: Add t1023-sfp efuse support
->    ✗ [PATCH 12/22] nvmem: add new NXP QorIQ eFuse driver
->    ✗ [PATCH 13/22] nvmem: Explicitly include correct DT includes
->    ✗ [PATCH 14/22] nvmem: Kconfig: Fix typo "drive" -> "driver"
->    ✗ [PATCH 15/22] dt-bindings: nvmem: Add compatible for QCM2290
->    ✗ [PATCH 16/22] dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
->    ✗ [PATCH 17/22] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
->    ✗ [PATCH 18/22] nvmem: u-boot-env:: Replace zero-length array with DECLARE_FLEX_ARRAY() helper
->    ✗ [PATCH 19/22] nvmem: core: Create all cells before adding the nvmem device
->    ✗ [PATCH 20/22] nvmem: core: Return NULL when no nvmem layout is found
->    ✗ [PATCH 21/22] nvmem: core: Do not open-code existing functions
->    ✗ [PATCH 22/22] nvmem: core: Notify when a new layout is registered
->    ---
->    ✗ BADSIG: DKIM/linaro.org
+Thanks
+
+Bye Philipp
