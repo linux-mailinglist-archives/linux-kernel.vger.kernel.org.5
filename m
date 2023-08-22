@@ -2,86 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA68784022
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB6878402D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjHVLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
+        id S235524AbjHVLzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjHVLx1 (ORCPT
+        with ESMTP id S235505AbjHVLzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:53:27 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628A0E70;
-        Tue, 22 Aug 2023 04:53:12 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 7197E320084E;
-        Tue, 22 Aug 2023 07:52:15 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 22 Aug 2023 07:52:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1692705135; x=1692791535; bh=7J
-        qCoAJuk8u8xSkOV38YwLmi1T9XqDBxcThvHVj3fmQ=; b=wmfhwMyd1w5NblHAM3
-        8z9Xpfnc0/u+D5YvYkzjriC8ltohHitQiN6Jbqh9m4Py9a43svCAUwvxspV6OjH4
-        3HJhlVSNBedy08dNoEgm7kA6KKJlxuNNe1e50c5xzJltk4nPG9n+/cBb16RytBGA
-        0rlcpWiz0CwI6EUle7HGn0Nhp8uLwSl6HGM4xswtzRxZoWN00QatYIAcdg0QDP0K
-        nqcON8wFfZZCshYkoboLLBvGjTH8/0mRrpJsUQH78rJiTzZ1gG7hdF32oq7n3WRl
-        guyq+nuxGAjEVYtpQXGdqHTbRR1IauIAup1nMNagSElL1z60PMGlbBVt3RhtMNNf
-        jRLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1692705135; x=1692791535; bh=7JqCoAJuk8u8x
-        SkOV38YwLmi1T9XqDBxcThvHVj3fmQ=; b=zKOFuO5B2nHDMEWcv4xRcXBRP7TSB
-        i/WeataN7k9z1/mqKwSGfBFiLBWbHMe6hzDRclCbDOkQBHzz+Oo2zEiTQww0/rnc
-        0cr11FkQ+09Rj/55XtwT4oImFWEoy7FGbMcHYoRI42YCTOTZW/xc/ueS/BrP69FX
-        N32GMqgJ61ctpl9qhyX7Lu3HLptRnF0ip2oGGl8w3IstORK98p4uH0AK7PJ0OEj7
-        2xW2tICctF8I+2wBAeFykE4yw2yLkUjWnr+Irg+eH4j8XaHskhWgf00Z2yFSzif1
-        KMCp9/AMdTPfR+oY9YbNjkr26UnZQUzcyzifL4x9k23B4km7g2h/WoGNQ==
-X-ME-Sender: <xms:bqHkZCTxx2hAQ8LMDCb0ySR_eYdDn10iotCzv_iwUf5ZQPASqkqB9w>
-    <xme:bqHkZHwg7gyohhbJvVXrLryrqwcdPSw9KKZXba15EVwDzMCLj-KiV9OjZiNqANTLn
-    qmo_XfOpx9XnQ>
-X-ME-Received: <xmr:bqHkZP2UQ-TdXRhayMMVXT4rsVbQJ1icR2z4VxJFlA0tkjN-D1YfPuVsQnmRnCs4UbrJdRewhS-gHtcb8_h_iPnHC4SZkR66cmYizQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvuddggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
-    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
-    thgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
-    hhrdgtohhm
-X-ME-Proxy: <xmx:bqHkZOApwexpATu_wnEnvdcWiIADsR5Vp8V2cBVLiBhB3wPTRc9SWw>
-    <xmx:bqHkZLjYoXCFP6xJqnEKdaD1mlK_EtI6awDK0f2_fOMi6U8ZyGcnkw>
-    <xmx:bqHkZKoyJTiJDc2JmTtgvP6SBrhkGs-rbNlbfipkFJR_ldKK_vbeQQ>
-    <xmx:b6HkZL52JE4ust_cMXkNnC5P4lZpprk1FtbrD8Rq3Kg6PC8L28b2nQ>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 22 Aug 2023 07:52:14 -0400 (EDT)
-Date:   Tue, 22 Aug 2023 13:52:12 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: linux-next: manual merge of the char-misc tree with the jc_docs
- tree
-Message-ID: <2023082203-pueblo-octane-3ca5@gregkh>
-References: <20230821142550.232faf95@canb.auug.org.au>
+        Tue, 22 Aug 2023 07:55:32 -0400
+X-Greylist: delayed 102299 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Aug 2023 04:55:07 PDT
+Received: from forwardcorp1c.mail.yandex.net (forwardcorp1c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:df01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31959E62
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:55:07 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:6284:0:640:e19:0])
+        by forwardcorp1c.mail.yandex.net (Yandex) with ESMTP id 043B85FE11;
+        Tue, 22 Aug 2023 14:55:04 +0300 (MSK)
+Received: from valesini-ubuntu.yandex.net (unknown [2a02:6b8:82:604:f7ab:b25b:2f4e:2225])
+        by mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id usHYCO1OfGk0-VtpEPObl;
+        Tue, 22 Aug 2023 14:55:03 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1692705303; bh=kiHZXs5iE8Gyoe6UL2Siy5/b6iTb8Nm+bXgaiJCnhc0=;
+        h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
+        b=m922+I79sQ9pR0N2FJACRj/0lwi1JwsRyti41CVsudjwQGj+fKT+GGezfdt2kcUrH
+         odipnKsCOOQBc+LAnAcxKBHOLW+sfV6OggXF9M6B/AB6HYyPkI7ODLxVLZbmKvy8o/
+         9YeP8kkPlAeeXJ2I8AyfNiRsnYbufc6KYP5rEp8I=
+Authentication-Results: mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+From:   Valentine Sinitsyn <valesini@yandex-team.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/2] kernfs: sysfs: support custom llseek method for sysfs entries
+Date:   Tue, 22 Aug 2023 16:54:54 +0500
+Message-Id: <20230822115455.310222-1-valesini@yandex-team.ru>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230822075107.224512-2-valesini@yandex-team.ru>
+References: <20230822075107.224512-2-valesini@yandex-team.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821142550.232faf95@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,30 +54,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 02:25:50PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the char-misc tree got a conflict in:
-> 
->   Documentation/ABI/testing/sysfs-bus-fsi-devices-sbefifo
-> 
-> between commit:
-> 
->   ebab9426cd73 ("Documentation/ABI: Fix typos")
-> 
-> from the jc_docs tree and commit:
-> 
->   2cd9ec2a5147 ("docs: ABI: fix spelling/grammar in SBEFIFO timeout interface")
-> 
-> from the char-misc tree.
-> 
-> I fixed it up (the latter is a superset of the former) and can carry the
-> fix as necessary. This is now fixed as far as linux-next is concerned,
-> but any non trivial conflicts should be mentioned to your upstream
-> maintainer when your tree is submitted for merging.  You may also want
-> to consider cooperating with the maintainer of the conflicting tree to
-> minimise any particularly complex conflicts.
+As of now, seeking in sysfs files is handled by generic_file_llseek().
+There are situations where one may want to customize seeking logic:
 
-Thanks for the notice, all looks good.
+- Many sysfs entries are fixed files while generic_file_llseek() accepts
+  past-the-end positions. Not only being useless by itself, this
+  also means a bug in userspace code will trigger not at lseek(), but at
+  some later point making debugging harder.
+- generic_file_llseek() relies on f_mapping->host to get the file size
+  which might not be correct for all sysfs entries.
+  See commit 636b21b50152 ("PCI: Revoke mappings like devmem") as an example.
 
-greg k-h
+Implement llseek method to override this behavior at sysfs attribute
+level. The method is optional, and if it is absent,
+generic_file_llseek() is called to preserve backwards compatibility.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
+---
+v4:
+        - Fix builds which #define HAVE_PCI_LEGACY (e.g. PowerPC)
+v3:
+        - Grammar fixes
+        - Add base-patch: and prerequisite-patch-id: to make kernel test
+          robot happy
+v2:
+        - Add infrastructure to customize llseek per sysfs entry type
+        - Override llseek for PCI sysfs entries with fixed_file_llseek()
+
+ fs/kernfs/file.c       | 14 +++++++++++++-
+ fs/sysfs/file.c        | 13 +++++++++++++
+ include/linux/kernfs.h |  1 +
+ include/linux/sysfs.h  |  2 ++
+ 4 files changed, 29 insertions(+), 1 deletion(-)
+
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 180906c36f51..6166bf74d5b8 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -903,6 +903,18 @@ static __poll_t kernfs_fop_poll(struct file *filp, poll_table *wait)
+ 	return ret;
+ }
+ 
++static loff_t kernfs_fop_llseek(struct file *file, loff_t offset, int whence)
++{
++	struct kernfs_open_file *of = kernfs_of(file);
++	const struct kernfs_ops *ops;
++
++	ops = kernfs_ops(of->kn);
++	if (ops->llseek)
++		return ops->llseek(of, offset, whence);
++	else
++		return generic_file_llseek(file, offset, whence);
++}
++
+ static void kernfs_notify_workfn(struct work_struct *work)
+ {
+ 	struct kernfs_node *kn;
+@@ -1005,7 +1017,7 @@ EXPORT_SYMBOL_GPL(kernfs_notify);
+ const struct file_operations kernfs_file_fops = {
+ 	.read_iter	= kernfs_fop_read_iter,
+ 	.write_iter	= kernfs_fop_write_iter,
+-	.llseek		= generic_file_llseek,
++	.llseek		= kernfs_fop_llseek,
+ 	.mmap		= kernfs_fop_mmap,
+ 	.open		= kernfs_fop_open,
+ 	.release	= kernfs_fop_release,
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index a12ac0356c69..6b7652fb8050 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -167,6 +167,18 @@ static int sysfs_kf_bin_mmap(struct kernfs_open_file *of,
+ 	return battr->mmap(of->file, kobj, battr, vma);
+ }
+ 
++static loff_t sysfs_kf_bin_llseek(struct kernfs_open_file *of, loff_t offset,
++				  int whence)
++{
++	struct bin_attribute *battr = of->kn->priv;
++	struct kobject *kobj = of->kn->parent->priv;
++
++	if (battr->llseek)
++		return battr->llseek(of->file, kobj, battr, offset, whence);
++	else
++		return generic_file_llseek(of->file, offset, whence);
++}
++
+ static int sysfs_kf_bin_open(struct kernfs_open_file *of)
+ {
+ 	struct bin_attribute *battr = of->kn->priv;
+@@ -249,6 +261,7 @@ static const struct kernfs_ops sysfs_bin_kfops_mmap = {
+ 	.write		= sysfs_kf_bin_write,
+ 	.mmap		= sysfs_kf_bin_mmap,
+ 	.open		= sysfs_kf_bin_open,
++	.llseek		= sysfs_kf_bin_llseek,
+ };
+ 
+ int sysfs_add_file_mode_ns(struct kernfs_node *parent,
+diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+index 73f5c120def8..9ed535930259 100644
+--- a/include/linux/kernfs.h
++++ b/include/linux/kernfs.h
+@@ -316,6 +316,7 @@ struct kernfs_ops {
+ 			 struct poll_table_struct *pt);
+ 
+ 	int (*mmap)(struct kernfs_open_file *of, struct vm_area_struct *vma);
++	loff_t (*llseek)(struct kernfs_open_file *of, loff_t offset, int whence);
+ };
+ 
+ /*
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index fd3fe5c8c17f..b717a70219f6 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -181,6 +181,8 @@ struct bin_attribute {
+ 			char *, loff_t, size_t);
+ 	ssize_t (*write)(struct file *, struct kobject *, struct bin_attribute *,
+ 			 char *, loff_t, size_t);
++	loff_t (*llseek)(struct file *, struct kobject *, struct bin_attribute *,
++			 loff_t, int);
+ 	int (*mmap)(struct file *, struct kobject *, struct bin_attribute *attr,
+ 		    struct vm_area_struct *vma);
+ };
+
+base-commit: f7757129e3dea336c407551c98f50057c22bb266
+-- 
+2.34.1
+
