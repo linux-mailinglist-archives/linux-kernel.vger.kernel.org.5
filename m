@@ -2,93 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B856C783FD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F83C783FE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbjHVLpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S235207AbjHVLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235147AbjHVLpx (ORCPT
+        with ESMTP id S235194AbjHVLq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:45:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69790CCA;
-        Tue, 22 Aug 2023 04:45:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 22 Aug 2023 07:46:56 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B52E4D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:46:30 -0700 (PDT)
+Received: from eldfell (unknown [194.136.85.206])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05A6E6536A;
-        Tue, 22 Aug 2023 11:44:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76106C433C9;
-        Tue, 22 Aug 2023 11:44:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692704672;
-        bh=MirI7WFJqbzZP+o1PS5JUAE3PTXvaZM8yhv/B4WwiiY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=md29PFr7vr5/llR1qWFR3O0n/ZnHiVZa7KfqypeX6hmQQxLCiclDg7ucXwxVXXg7A
-         RJbu7S8G2iKJ9sKegW/w079a63nM9De4nVaGORIZXrjITyB5Fwbs11aR3w/+82puSr
-         HhWdRuwcLjdu5fDFKwbeYOak4orjl7ppuhzooAFIs8FDi0DlMwPIdQck8fWz/0gwEJ
-         xn+vel8ulD9kzVDOUJrjS8Rp8+O2D7OgQMT0+O73IDEwX4E/UQz5/bjVVUNk9+ufMZ
-         HJYUTxVYxcpAYgTi/jJExntL4w8DWkR0ptJyfhjOFUZQD66feYl2P/6Sji55ImNWbB
-         ptIUFaS18YOsg==
-Date:   Tue, 22 Aug 2023 12:44:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     AS50 WTLi <WTLI@nuvoton.com>
-Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-        KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-        scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-Subject: Re: [PATCH 2/2] ASoC: nau8821: Improve AMIC recording performance.
-Message-ID: <9594bc07-ccaf-4f40-a988-a33491cea7c4@sirena.org.uk>
-References: <20230816080006.1624342-1-wtli@nuvoton.com>
- <20230816080006.1624342-2-wtli@nuvoton.com>
- <2f72d241-7617-48c0-a0c9-86bd14c50ac8@sirena.org.uk>
- <5129f779-79e5-3c0a-aeca-ce558393f2cc@nuvoton.com>
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9AB71660722B;
+        Tue, 22 Aug 2023 12:45:38 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692704739;
+        bh=MiJSYH5aW1TpyRdaUDOPV16m9eaLpiLtrZPWgi287yk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RpVt+bSRSdhckPdWvAGEnbs9W/bbR3uDHl2LTJsedZInchLCm/QmsZgBLt3+mMEnf
+         jtVoec8DsojWdcLVcapjdcbRgSfXwZrbDvGDTLU9k78pU5L5GbbwQGrxC6s24PNUvR
+         h+atZn/jTBla3G76X05rjAEHrjwdviZ4KhanVaiDK9SUCAqq2On5m6ZHWLY34BEswQ
+         gBpnUnnbE72twMhnN2f7S+Ii2AePNzrySDbW325jNgSn1VFlJBTnzKnxcA3XDDbUIi
+         Xeu0TaLF6Zk9o/kXTc4LwJusgWxX2NCdM621kQ1l1BAyFNQKkT9tYs1MfXBdniEayc
+         tJApRTgSFUevw==
+Date:   Tue, 22 Aug 2023 14:45:35 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/34] drm/amd/display: document AMDGPU pre-defined
+ transfer functions
+Message-ID: <20230822144535.2105ac46.pekka.paalanen@collabora.com>
+In-Reply-To: <20230810160314.48225-9-mwen@igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-9-mwen@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pl7C7D3cmDRMFxGL"
-Content-Disposition: inline
-In-Reply-To: <5129f779-79e5-3c0a-aeca-ce558393f2cc@nuvoton.com>
-X-Cookie: MIT:
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 10 Aug 2023 15:02:48 -0100
+Melissa Wen <mwen@igalia.com> wrote:
 
---pl7C7D3cmDRMFxGL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Brief documentation about pre-defined transfer function usage on AMD
+> display driver and standardized EOTFs and inverse EOTFs.
+> 
+> Co-developed-by: Harry Wentland <harry.wentland@amd.com>
+> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> ---
+>  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 39 +++++++++++++++++++
+>  1 file changed, 39 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> index cc2187c0879a..7f13bcdaf016 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> @@ -85,6 +85,45 @@ void amdgpu_dm_init_color_mod(void)
+>  }
+>  
+>  #ifdef AMD_PRIVATE_COLOR
+> +/* Pre-defined Transfer Functions (TF)
+> + *
+> + * AMD driver supports pre-defined mathematical functions for transferring
+> + * between encoded values and optical/linear space. Depending on HW color caps,
+> + * ROMs and curves built by the AMD color module support these transforms.
+> + *
+> + * The driver-specific color implementation exposes properties for pre-blending
+> + * degamma TF, shaper TF (before 3D LUT), and blend(dpp.ogam) TF and
+> + * post-blending regamma (mpc.ogam) TF. However, only pre-blending degamma
+> + * supports ROM curves. AMD color module uses pre-defined coefficients to build
+> + * curves for the other blocks. What can be done by each color block is
+> + * described by struct dpp_color_capsand struct mpc_color_caps.
+> + *
+> + * AMD driver-specific color API exposes the following pre-defined transfer
+> + * functions:
+> + *
+> + * - Linear/Unity: linear/identity relationship between pixel value and
+> + *   luminance value;
 
-On Tue, Aug 22, 2023 at 06:49:50PM +0800, AS50 WTLi wrote:
+I asked about linear/unity on the previous patch.
 
-> Okay, but I have a question. After correcting the patch, do I only upload patch 2/2 or resend the entire patch?
-> because I saw Acked mail by Rob.
+> + * - Gamma 2.2, Gamma 2.4, Gamma 2.6: pure gamma functions;
 
-Please resend everything, include any acks or other tags you've already
-got when you repost.
+I'd explain these as pure power functions. Gamma function is
+something completely different:
+https://en.wikipedia.org/wiki/Gamma_function
 
---pl7C7D3cmDRMFxGL
-Content-Type: application/pgp-signature; name="signature.asc"
+> + * - sRGB: 2.4 gamma with small initial linear section as standardized by IEC
+> + *   61966-2-1:1999;
 
------BEGIN PGP SIGNATURE-----
+I'd leave out the mention of "2.4 gamma". Yes, the value of the gamma
+parameter is 2.4, but the curve is actually an approximation of the
+pure 2.2 power function suitable for integer arithmetic[1].
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTkn5kACgkQJNaLcl1U
-h9C0CQf+Lqh/3eJWWArHN+sBdV+pZx1TpHGWjNRXwBlG/zRveFRMPakbQ40AkVvD
-K6e6UCbL7snOJv3OEwAJkj3j7Ew8vkjlhRenZJrosFf85CGr2+MeSS678gVtlaCe
-R93CnpK+0K4qaD6UHUB0QMS47qww3TUJn51DFvTNtv+qrPV49wdXImpjA4yi7WXm
-lBP/5DMQA3iFarvl9b36R0l4+V/oqLsLEHfttyc/auzkQMwVSsYJA/x6wIuhUDYT
-8r36q0ohef0ukemaPaqZS6jn+UzPn6O5Io+9ejAdOSF/PFXfjq5nlhCklxFZw6QC
-h8zqnzA+/b8xwKep/gWGrpmvgE+8Rg==
-=sCVo
------END PGP SIGNATURE-----
+One could call it "The piece-wise transfer function from IEC ...".
 
---pl7C7D3cmDRMFxGL--
+[1] https://www.w3.org/Graphics/Color/sRGB.html
+
+> + * - BT.709 (BT.1886): 2.4 gamma with differences in the dark end of the scale.
+> + *   Used in HD-TV and standardized by ITU-R BT.1886;
+
+BT.1886 has two more parameters (a.k.a contrast and brightness). What
+are their values?
+
+It's also quite different from BT.709 inverse OETF. BT.1886 uses
+exponent 2.4 while inverse of BT.709 OETF has exponent approximately
+2.22. This difference is intentional and accounts for shooting vs.
+viewing environment differences.
+
+Either the curve comes from BT.709 or BT.1886. Which one is it?
+
+Would be nice to spell out the mathematical formula in these cases.
+
+> + * - PQ (Perceptual Quantizer): used for HDR display, allows luminance range
+> + *   capability of 0 to 10,000 nits; standardized by SMPTE ST 2084.
+
+Right, but since we are working on numbers here,
+is the PQ EOTF [0, 1] -> [0, 1] or [0, 10000]?
+
+
+Thanks,
+pq
+
+> + *
+> + * In the driver-specific API, color block names attached to TF properties
+> + * suggest the intention regarding non-linear encoding pixel's luminance
+> + * values. As some newer encodings don't use gamma curve, we make encoding and
+> + * decoding explicit by defining an enum list of transfer functions supported
+> + * in terms of EOTF and inverse EOTF, where:
+> + *
+> + * - EOTF (electro-optical transfer function): is the transfer function to go
+> + *   from the encoded value to an optical (linear) value. De-gamma functions
+> + *   traditionally do this.
+> + * - Inverse EOTF (simply the inverse of the EOTF): is usually intended to go
+> + *   from an optical/linear space (which might have been used for blending)
+> + *   back to the encoded values. Gamma functions traditionally do this. 
+> + */
+>  static const char * const
+>  amdgpu_transfer_function_names[] = {
+>  	[AMDGPU_TRANSFER_FUNCTION_DEFAULT]		= "Default",
+
