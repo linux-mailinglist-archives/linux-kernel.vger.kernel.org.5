@@ -2,85 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787A2784CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65643784CF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbjHVWjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
+        id S231549AbjHVWj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjHVWjp (ORCPT
+        with ESMTP id S231173AbjHVWj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:39:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567B3CEC;
-        Tue, 22 Aug 2023 15:39:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D76D0641CD;
-        Tue, 22 Aug 2023 22:39:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45C7CC433CB;
-        Tue, 22 Aug 2023 22:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692743982;
-        bh=CZFmwYUtV9SMtahTpYBt42jtzaSy6GGw/CbrKYzHKlo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bcZmaaVcQdtn/FKC78HUE09ulwiiWH8oDgA/vu+YTq+OSK/6o6HZ+K5VBfjgPqFy6
-         ThPQRE7OOxXiTLcuU3+vJg0UtRCsyasblvYmWSwUqw1tclLZ5YLm8WOEQ6aTMtT0CZ
-         FsY5I7uITrAXGDO+iAyzd45c8nwLu2eqTH/WucSo5oznJyk/OFWqcoa3TyF+DqnWmf
-         UJG7vmoivPhsIgo6rEA4r23lbk2RIKrxXn74+Gz/F5AyP4l8YNKKisvbrtUZzwa2zY
-         pu3rJ9ZKlKhcI9STO1u3gjju1ckZ0L5xqwVKvuQNxJm5zVqIeSwZyua9LjkMYhZ8SZ
-         mtDS4caQfa1Yg==
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2b9a2033978so77850781fa.0;
-        Tue, 22 Aug 2023 15:39:42 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzytcSMWFe5NSrecVGpW6w4DqMAZL2hjqcXikoWdyvGwfR1CAP5
-        gixe/znzG0gvT3BseVc0zg21byp/QUBGDRVDrw==
-X-Google-Smtp-Source: AGHT+IFdzdumhqguxAy1uaCpYr5SwhOBwkYrmDKcqzRgaHzAhY/zR9+y+s4AFjWOtuvUMl/KgrRNt6BxR0EUirFwiEo=
-X-Received: by 2002:a2e:3a09:0:b0:2bc:b54b:c024 with SMTP id
- h9-20020a2e3a09000000b002bcb54bc024mr6089895lja.29.1692743980259; Tue, 22 Aug
- 2023 15:39:40 -0700 (PDT)
+        Tue, 22 Aug 2023 18:39:57 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F1A8BCF1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:39:54 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 0B1A792009C; Wed, 23 Aug 2023 00:39:54 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 0601692009B;
+        Tue, 22 Aug 2023 23:39:53 +0100 (BST)
+Date:   Tue, 22 Aug 2023 23:39:53 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Andy Chiu <andy.chiu@sifive.com>
+cc:     linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>, greentime.hu@sifive.com,
+        guoren@linux.alibaba.com, bjorn@kernel.org,
+        conor.dooley@microchip.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>,
+        Vincent Chen <vincent.chen@sifive.com>,
+        =?UTF-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@rivosinc.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [v1, 2/3] RISC-V: vector: export VLENB csr in
+ __sc_riscv_v_state
+In-Reply-To: <CABgGipXhfz6iQgf86wj-=e9kzxiJp5N-u7OjL_Aj=wTP1MvRnQ@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2308222103310.49340@angie.orcam.me.uk>
+References: <20230816155450.26200-1-andy.chiu@sifive.com> <20230816155450.26200-3-andy.chiu@sifive.com> <alpine.DEB.2.21.2308170158460.8596@angie.orcam.me.uk> <CABgGipXhfz6iQgf86wj-=e9kzxiJp5N-u7OjL_Aj=wTP1MvRnQ@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20230714174702.4059100-1-robh@kernel.org>
-In-Reply-To: <20230714174702.4059100-1-robh@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 22 Aug 2023 17:39:28 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLkxm_A6+AP4iSzsu4snsYfDNoZ_PNF6nzdVY-_nBEU8Q@mail.gmail.com>
-Message-ID: <CAL_JsqLkxm_A6+AP4iSzsu4snsYfDNoZ_PNF6nzdVY-_nBEU8Q@mail.gmail.com>
-Subject: Re: [PATCH] mailbox: Explicitly include correct DT includes
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,255 +50,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 12:47=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
-e:
->
-> The DT of_device.h and of_platform.h date back to the separate
-> of_platform_bus_type before it as merged into the regular platform bus.
-> As part of that merge prepping Arm DT support 13 years ago, they
-> "temporarily" include each other. They also include platform_device.h
-> and of.h. As a result, there's a pretty much random mix of those include
-> files used throughout the tree. In order to detangle these headers and
-> replace the implicit includes with struct declarations, users need to
-> explicitly include the correct includes.
->
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/mailbox/arm_mhu.c            | 1 +
->  drivers/mailbox/arm_mhu_db.c         | 1 -
->  drivers/mailbox/hi3660-mailbox.c     | 1 +
->  drivers/mailbox/hi6220-mailbox.c     | 1 +
->  drivers/mailbox/imx-mailbox.c        | 3 ++-
->  drivers/mailbox/mailbox-mpfs.c       | 1 +
->  drivers/mailbox/mailbox.c            | 1 +
->  drivers/mailbox/mtk-adsp-mailbox.c   | 3 ++-
->  drivers/mailbox/mtk-cmdq-mailbox.c   | 2 +-
->  drivers/mailbox/omap-mailbox.c       | 2 +-
->  drivers/mailbox/platform_mhu.c       | 1 +
->  drivers/mailbox/rockchip-mailbox.c   | 2 +-
->  drivers/mailbox/sprd-mailbox.c       | 2 +-
->  drivers/mailbox/stm32-ipcc.c         | 1 +
->  drivers/mailbox/tegra-hsp.c          | 1 -
->  drivers/mailbox/zynqmp-ipi-mailbox.c | 2 --
->  16 files changed, 15 insertions(+), 10 deletions(-)
+On Wed, 23 Aug 2023, Andy Chiu wrote:
 
-Ping!
+> > > diff --git a/arch/riscv/include/uapi/asm/ptrace.h b/arch/riscv/include/uapi/asm/ptrace.h
+> > > index e17c550986a6..283800130614 100644
+> > > --- a/arch/riscv/include/uapi/asm/ptrace.h
+> > > +++ b/arch/riscv/include/uapi/asm/ptrace.h
+> > > @@ -97,6 +97,7 @@ struct __riscv_v_ext_state {
+> > >       unsigned long vl;
+> > >       unsigned long vtype;
+> > >       unsigned long vcsr;
+> > > +     unsigned long vlenb;
+> > >       void *datap;
+> >
+> >  I think we really ought to make a distinct structure holding the vector
+> > CSR state only, and then have it included as a leading member of a pair of
+> > other structures, one for the signal context with a trailing `datap' (or
+> > `vregp' or `vreg') member and another one for the regset with a flexible
+> > array member of the `char' type, e.g. (actual names TBD):
+> >
+> > struct __riscv_v_csr_state {
+> >         unsigned long vstart;
+> >         unsigned long vl;
+> >         unsigned long vtype;
+> >         unsigned long vcsr;
+> >         unsigned long vlenb;
+> > };
+> >
+> > struct __riscv_v_signal_state {
+> >         struct __riscv_v_csr_state csr;
+> >         void *vregp;
+> > };
+> >
+> > struct __riscv_v_regset_state {
+> >         struct __riscv_v_csr_state csr;
+> >         char vreg[];
+> > };
+> >
+> > This will make the API cleaner and avoid both UB with making accesses
+> > beyond the end of a structure and clutter with an unused entry in core
+> > files and data exchanged via ptrace(2).
+> 
+> Yes, and may I understand why there is a need for having struct
+> __riscv_v_csr_state? Unless there is a need for getting CSRs only, yet
+> vector CSRs are not meaningful without the content of Vector
+> registers.
 
->
-> diff --git a/drivers/mailbox/arm_mhu.c b/drivers/mailbox/arm_mhu.c
-> index 22243cabe056..537f7bfb7b06 100644
-> --- a/drivers/mailbox/arm_mhu.c
-> +++ b/drivers/mailbox/arm_mhu.c
-> @@ -12,6 +12,7 @@
->  #include <linux/io.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->
->  #define INTR_STAT_OFS  0x0
->  #define INTR_SET_OFS   0x8
-> diff --git a/drivers/mailbox/arm_mhu_db.c b/drivers/mailbox/arm_mhu_db.c
-> index aa0a4d83880f..27a510d46908 100644
-> --- a/drivers/mailbox/arm_mhu_db.c
-> +++ b/drivers/mailbox/arm_mhu_db.c
-> @@ -15,7 +15,6 @@
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->
->  #define INTR_STAT_OFS  0x0
->  #define INTR_SET_OFS   0x8
-> diff --git a/drivers/mailbox/hi3660-mailbox.c b/drivers/mailbox/hi3660-ma=
-ilbox.c
-> index ab24e731a782..17c29e960fbf 100644
-> --- a/drivers/mailbox/hi3660-mailbox.c
-> +++ b/drivers/mailbox/hi3660-mailbox.c
-> @@ -11,6 +11,7 @@
->  #include <linux/iopoll.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->
-> diff --git a/drivers/mailbox/hi6220-mailbox.c b/drivers/mailbox/hi6220-ma=
-ilbox.c
-> index 1c73c63598f5..f77741ce42e7 100644
-> --- a/drivers/mailbox/hi6220-mailbox.c
-> +++ b/drivers/mailbox/hi6220-mailbox.c
-> @@ -15,6 +15,7 @@
->  #include <linux/kfifo.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
->
-> diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.=
-c
-> index 20f2ec880ad6..3ef4dd8adf5d 100644
-> --- a/drivers/mailbox/imx-mailbox.c
-> +++ b/drivers/mailbox/imx-mailbox.c
-> @@ -14,7 +14,8 @@
->  #include <linux/kernel.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/suspend.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/mailbox/mailbox-mpfs.c b/drivers/mailbox/mailbox-mpf=
-s.c
-> index 162df49654fb..20ee283a04cc 100644
-> --- a/drivers/mailbox/mailbox-mpfs.c
-> +++ b/drivers/mailbox/mailbox-mpfs.c
-> @@ -14,6 +14,7 @@
->  #include <linux/module.h>
->  #include <linux/kernel.h>
->  #include <linux/interrupt.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/platform_device.h>
->  #include <linux/mailbox_controller.h>
->  #include <soc/microchip/mpfs.h>
-> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> index adf36c05fa43..ebff3baf3045 100644
-> --- a/drivers/mailbox/mailbox.c
-> +++ b/drivers/mailbox/mailbox.c
-> @@ -17,6 +17,7 @@
->  #include <linux/bitops.h>
->  #include <linux/mailbox_client.h>
->  #include <linux/mailbox_controller.h>
-> +#include <linux/of.h>
->
->  #include "mailbox.h"
->
-> diff --git a/drivers/mailbox/mtk-adsp-mailbox.c b/drivers/mailbox/mtk-ads=
-p-mailbox.c
-> index 14bc0057de81..91487aa4d7da 100644
-> --- a/drivers/mailbox/mtk-adsp-mailbox.c
-> +++ b/drivers/mailbox/mtk-adsp-mailbox.c
-> @@ -10,7 +10,8 @@
->  #include <linux/kernel.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
->  #include <linux/slab.h>
->
->  struct mtk_adsp_mbox_priv {
-> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmd=
-q-mailbox.c
-> index b18d47ea13a0..4d62b07c1411 100644
-> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
-> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
-> @@ -15,7 +15,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/mailbox/mtk-cmdq-mailbox.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
->
->  #define CMDQ_OP_CODE_MASK              (0xff << CMDQ_OP_CODE_SHIFT)
->  #define CMDQ_NUM_CMD(t)                        (t->cmd_buf_size / CMDQ_I=
-NST_SIZE)
-> diff --git a/drivers/mailbox/omap-mailbox.c b/drivers/mailbox/omap-mailbo=
-x.c
-> index fa2ce3246b70..792bcaebbc9b 100644
-> --- a/drivers/mailbox/omap-mailbox.c
-> +++ b/drivers/mailbox/omap-mailbox.c
-> @@ -16,7 +16,7 @@
->  #include <linux/kfifo.h>
->  #include <linux/err.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/omap-mailbox.h>
-> diff --git a/drivers/mailbox/platform_mhu.c b/drivers/mailbox/platform_mh=
-u.c
-> index a5922ac0b0bf..54161303a36b 100644
-> --- a/drivers/mailbox/platform_mhu.c
-> +++ b/drivers/mailbox/platform_mhu.c
-> @@ -15,6 +15,7 @@
->  #include <linux/slab.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/mailbox_controller.h>
-> diff --git a/drivers/mailbox/rockchip-mailbox.c b/drivers/mailbox/rockchi=
-p-mailbox.c
-> index 116286ecc5a0..10c7bee2a915 100644
-> --- a/drivers/mailbox/rockchip-mailbox.c
-> +++ b/drivers/mailbox/rockchip-mailbox.c
-> @@ -8,8 +8,8 @@
->  #include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/mailbox_controller.h>
-> +#include <linux/of.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->
->  #define MAILBOX_A2B_INTEN              0x00
-> diff --git a/drivers/mailbox/sprd-mailbox.c b/drivers/mailbox/sprd-mailbo=
-x.c
-> index e3c899abeed8..9ae57de77d4d 100644
-> --- a/drivers/mailbox/sprd-mailbox.c
-> +++ b/drivers/mailbox/sprd-mailbox.c
-> @@ -11,7 +11,7 @@
->  #include <linux/io.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/clk.h>
->
-> diff --git a/drivers/mailbox/stm32-ipcc.c b/drivers/mailbox/stm32-ipcc.c
-> index 15d538fe2113..4ad3653f3866 100644
-> --- a/drivers/mailbox/stm32-ipcc.c
-> +++ b/drivers/mailbox/stm32-ipcc.c
-> @@ -11,6 +11,7 @@
->  #include <linux/io.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/module.h>
-> +#include <linux/of.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_wakeirq.h>
->
-> diff --git a/drivers/mailbox/tegra-hsp.c b/drivers/mailbox/tegra-hsp.c
-> index 7f98e7436d94..c87c2b900b64 100644
-> --- a/drivers/mailbox/tegra-hsp.c
-> +++ b/drivers/mailbox/tegra-hsp.c
-> @@ -8,7 +8,6 @@
->  #include <linux/io.h>
->  #include <linux/mailbox_controller.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm.h>
->  #include <linux/slab.h>
-> diff --git a/drivers/mailbox/zynqmp-ipi-mailbox.c b/drivers/mailbox/zynqm=
-p-ipi-mailbox.c
-> index d097f45b0e5f..e4fcac97dbfa 100644
-> --- a/drivers/mailbox/zynqmp-ipi-mailbox.c
-> +++ b/drivers/mailbox/zynqmp-ipi-mailbox.c
-> @@ -16,8 +16,6 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
-> -#include <linux/of_device.h>
-> -#include <linux/of_irq.h>
->  #include <linux/platform_device.h>
->
->  /* IPI agent ID any */
-> --
-> 2.40.1
->
+ Well, it's a data type only, it doesn't *have* to be used on it's own 
+just because it exists.
+
+> Personally I'd like to have one universal structure for
+> both ptrace/signal/context-swicth(internal to the kernel), or one for
+> UAPI and the other for kernel internal-used. Because then we don't
+> have to mess with all kinds of access helpers for similar things.
+
+ I'm not sure what kind of access helpers you mean, please elaborate.
+
+> Maybe I lost something or just haven't read enough but doesn't it
+> sound confusing that we create two structures in UAPI just for the
+> Vector registers dump?
+
+ AFAICT we need two structures, one for the signal context and another for 
+the debug stuff, because we represent the vector context differently in 
+each of these two cases.  I proposed the embedded `__riscv_v_csr_state' 
+structure as a named member, because C doesn't have syntax available for 
+embedding an already defined structure as an anonymous member and I didn't 
+want to make use of a macro (which would then become a part of the uAPI) 
+as means for the same data definition not to be repeated.
+
+ Maybe it's not a big deal though.  If we inlined the CSR context in both
+structures, then the definitions could look like:
+
+struct __riscv_v_signal_state {
+	unsigned long vstart;
+	unsigned long vl;
+	unsigned long vtype;
+	unsigned long vcsr;
+	unsigned long vlenb;
+	void *vregp;
+};
+
+struct __riscv_v_regset_state {
+	unsigned long vstart;
+	unsigned long vl;
+	unsigned long vtype;
+	unsigned long vcsr;
+	unsigned long vlenb;
+	char vreg[];
+};
+
+OTOH I'm not fully convinced this is actually cleaner.  And the CSR state 
+is distinct in a way here.
+
+ NB I'm only concerned about the user API and ABI here, because once we've 
+set them they'll have been cast in stone.  Conversely we can change an 
+internal representation of the vector context at any time, so if we make a 
+mistake or change our minds for whatever reason, it is not going to be a 
+big deal.
+
+ Cc-ing LKML in case someone not subscribed to linux-riscv wanted to chime 
+in.  It's always a good idea to cc LKML on patch submissions anyway.
+
+  Maciej
