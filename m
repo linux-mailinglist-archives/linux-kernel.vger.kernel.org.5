@@ -2,45 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C446778379E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4007837A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232152AbjHVBxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S232166AbjHVBzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232108AbjHVBxe (ORCPT
+        with ESMTP id S230266AbjHVBzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:53:34 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D0C113;
-        Mon, 21 Aug 2023 18:53:32 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVC5G6LfDz1L9ZS;
-        Tue, 22 Aug 2023 09:52:02 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.21) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 22 Aug 2023 09:53:30 +0800
-From:   Zhu Wang <wangzhu9@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <john.g.garry@oracle.com>, <bvanassche@acm.org>,
-        <bblock@linux.ibm.com>, <dan.carpenter@linaro.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <wangzhu9@huawei.com>
-Subject: [PATCH -next v2] scsi: Remove raid_component_add()
-Date:   Tue, 22 Aug 2023 01:52:54 +0000
-Message-ID: <20230822015254.184270-1-wangzhu9@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 21 Aug 2023 21:55:23 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F2013E
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:21 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-349a94f3d69so12223855ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692669320; x=1693274120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kduaF6NEmqtdigQR12l4zIQ9Z7Qe4cQI7f7goF2YonA=;
+        b=dI1NF1M+qizhBIuBYOb+MBxjF0sUdkyIROhUTZohfN3aqISp/JA4m5jbZcgSPWZegi
+         aasvoXFYkhoA2/ZBaoZysBBdmhpS90nBfblwsKbPPUpeQ+QbB5AEEj3GcTFRzke0Zst7
+         Q+A31Fzlxgud3p4yedSBCBhWkDA9+KHXqyQWM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692669320; x=1693274120;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kduaF6NEmqtdigQR12l4zIQ9Z7Qe4cQI7f7goF2YonA=;
+        b=Gg2HBOdRL4gGGs2ulaB3xXd6VHoV6j+CTyrZ6QVkrh609Dwg4nUzJyGKkPLE2mJtoh
+         AhcZPDpW8hBRW2baAMB+SirK/YYNtRbFQsSR0Ba7NhLc2aNbrPa+9Nio/l9wFNPjz2as
+         dujNWpXovsC5/8sCPz4/TKCuoJAYcsVhKGh6qhJQQcx7gv0GzFWmaH2LRa24s0frLkB/
+         5HY/ufGKLsUFYOqqV+OP17YFljEk3V/kkPBxYqqpye1v3wM5spnT1aTYUaX77Q07XK8t
+         zb3hQmLjgWfxOzfwmj1txZ7HjJzVVBSLJoOpnno/ExwBaiwPUgN59IQU5MU+SopK/7zQ
+         8lGQ==
+X-Gm-Message-State: AOJu0YxS4ZVmg6c3f+aqp34QiuQb6btqAlwOqAJYW/mqDuBOGQfmYCPg
+        CRjcfzm3vdjCcppR+XOs/RCsoW9jmHggSSOFPVc=
+X-Google-Smtp-Source: AGHT+IFmsUAfJcyPXse8Hdp3SRmHFbe0cau7P07MO9wJsFGPEkow2OKRUv5tZ1eDPB6D8C1Kxe3K9Q==
+X-Received: by 2002:a05:6e02:1523:b0:349:345b:6595 with SMTP id i3-20020a056e02152300b00349345b6595mr8918842ilu.11.1692669319980;
+        Mon, 21 Aug 2023 18:55:19 -0700 (PDT)
+Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id q11-20020a92d40b000000b0034886587bdcsm2907390ilm.18.2023.08.21.18.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Aug 2023 18:55:19 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Shuah Khan <shuah@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Kirill A Shutemov <kirill@shutemov.name>,
+        "Liam R. Howlett" <liam.howlett@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Subject: [PATCH v5 0/7] Optimize mremap during mutual alignment within PMD
+Date:   Tue, 22 Aug 2023 01:54:53 +0000
+Message-ID: <20230822015501.791637-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.21]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,89 +77,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The raid_component_add() function was added to the kernel tree via
-patch "[SCSI] embryonic RAID class" (2005). Remove this function since
-it never has had any callers in the Linux kernel. And also
-raid_component_release is only used in raid_component_add(), so it is
-also removed.
+Hello!
 
-Signed-off-by: Zhu Wang <wangzhu9@huawei.com>
----
- drivers/scsi/raid_class.c  | 48 --------------------------------------
- include/linux/raid_class.h |  4 ----
- 2 files changed, 52 deletions(-)
+Here is v5 of the mremap start address optimization / fix for exec warning.
 
-diff --git a/drivers/scsi/raid_class.c b/drivers/scsi/raid_class.c
-index 711252e52d8e..95a86e0dfd77 100644
---- a/drivers/scsi/raid_class.c
-+++ b/drivers/scsi/raid_class.c
-@@ -209,54 +209,6 @@ raid_attr_ro_state(level);
- raid_attr_ro_fn(resync);
- raid_attr_ro_state_fn(state);
- 
--static void raid_component_release(struct device *dev)
--{
--	struct raid_component *rc =
--		container_of(dev, struct raid_component, dev);
--	dev_printk(KERN_ERR, rc->dev.parent, "COMPONENT RELEASE\n");
--	put_device(rc->dev.parent);
--	kfree(rc);
--}
--
--int raid_component_add(struct raid_template *r,struct device *raid_dev,
--		       struct device *component_dev)
--{
--	struct device *cdev =
--		attribute_container_find_class_device(&r->raid_attrs.ac,
--						      raid_dev);
--	struct raid_component *rc;
--	struct raid_data *rd = dev_get_drvdata(cdev);
--	int err;
--
--	rc = kzalloc(sizeof(*rc), GFP_KERNEL);
--	if (!rc)
--		return -ENOMEM;
--
--	INIT_LIST_HEAD(&rc->node);
--	device_initialize(&rc->dev);
--	rc->dev.release = raid_component_release;
--	rc->dev.parent = get_device(component_dev);
--	rc->num = rd->component_count++;
--
--	dev_set_name(&rc->dev, "component-%d", rc->num);
--	list_add_tail(&rc->node, &rd->component_list);
--	rc->dev.class = &raid_class.class;
--	err = device_add(&rc->dev);
--	if (err)
--		goto err_out;
--
--	return 0;
--
--err_out:
--	put_device(&rc->dev);
--	list_del(&rc->node);
--	rd->component_count--;
--	put_device(component_dev);
--	kfree(rc);
--	return err;
--}
--EXPORT_SYMBOL(raid_component_add);
--
- struct raid_template *
- raid_class_attach(struct raid_function_template *ft)
- {
-diff --git a/include/linux/raid_class.h b/include/linux/raid_class.h
-index 6a9b177d5c41..e50416ba9cd9 100644
---- a/include/linux/raid_class.h
-+++ b/include/linux/raid_class.h
-@@ -77,7 +77,3 @@ DEFINE_RAID_ATTRIBUTE(enum raid_state, state)
- 	
- struct raid_template *raid_class_attach(struct raid_function_template *);
- void raid_class_release(struct raid_template *);
--
--int __must_check raid_component_add(struct raid_template *, struct device *,
--				    struct device *);
--
--- 
-2.34.1
+Description of patches
+======================
+These patches optimizes the start addresses in move_page_tables() and tests the
+changes. It addresses a warning [1] that occurs due to a downward, overlapping
+move on a mutually-aligned offset within a PMD during exec. By initiating the
+copy process at the PMD level when such alignment is present, we can prevent
+this warning and speed up the copying process at the same time. Linus Torvalds
+suggested this idea.
+
+Please check the individual patches for more details.
+
+[1] https://lore.kernel.org/all/ZB2GTBD%2FLWTrkOiO@dhcp22.suse.cz/
+
+Link to v4:
+https://lore.kernel.org/all/20230531220807.2048037-1-joel@joelfernandes.org/
+
+History of patches:
+v4->v5:
+1. Rebased on mainline.
+2. Several improvement suggestions from Lorenzo.
+
+v3->v4:
+1. Care to be taken to move purely within a VMA, in other words this check
+   in call_align_down():
+    if (vma->vm_start != addr_masked)
+            return false;
+
+    As an example of why this is needed:
+    Consider the following range which is 2MB aligned and is
+    a part of a larger 10MB range which is not shown. Each
+    character is 256KB below making the source and destination
+    2MB each. The lower case letters are moved (s to d) and the
+    upper case letters are not moved.
+
+    |DDDDddddSSSSssss|
+
+    If we align down 'ssss' to start from the 'SSSS', we will end up destroying
+    SSSS. The above if statement prevents that and I verified it.
+
+    I also added a test for this in the last patch.
+
+2. Handle the stack case separately. We do not care about #1 for stack movement
+   because the 'SSSS' does not matter during this move. Further we need to do this
+   to prevent the stack move warning.
+
+    if (!for_stack && vma->vm_start <= addr_masked)
+            return false;
+
+v2->v3:
+1. Masked address was stored in int, fixed it to unsigned long to avoid truncation.
+2. We now handle moves happening purely within a VMA, a new test is added to handle this.
+3. More code comments.
+
+v1->v2:
+1. Trigger the optimization for mremaps smaller than a PMD. I tested by tracing
+that it works correctly.
+
+2. Fix issue with bogus return value found by Linus if we broke out of the
+above loop for the first PMD itself.
+
+v1: Initial RFC.
+
+Joel Fernandes (1):
+selftests: mm: Add a test for moving from an offset from start of
+mapping
+
+Joel Fernandes (Google) (6):
+mm/mremap: Optimize the start addresses in move_page_tables()
+mm/mremap: Allow moves within the same VMA
+selftests: mm: Fix failure case when new remap region was not found
+selftests: mm: Add a test for mutually aligned moves > PMD size
+selftests: mm: Add a test for remapping to area immediately after
+existing mapping
+selftests: mm: Add a test for remapping within a range
+
+fs/exec.c                                |   2 +-
+include/linux/mm.h                       |   2 +-
+mm/mremap.c                              |  69 +++++-
+tools/testing/selftests/mm/mremap_test.c | 301 +++++++++++++++++++----
+4 files changed, 325 insertions(+), 49 deletions(-)
+
+--
+2.42.0.rc1.204.g551eb34607-goog
 
