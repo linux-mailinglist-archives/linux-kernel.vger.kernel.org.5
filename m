@@ -2,393 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4580783B66
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9837783B69
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbjHVIGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
+        id S233644AbjHVIIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbjHVIGK (ORCPT
+        with ESMTP id S233062AbjHVIIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:06:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38801196;
-        Tue, 22 Aug 2023 01:06:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 22 Aug 2023 04:08:09 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9234AE9;
+        Tue, 22 Aug 2023 01:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692691686;
+        bh=9OAl8UNeJmRCk89ZGQRyLugIhvPcIdQswDnXJ0EIDtw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AU2ryrD9D9ZAB9c6jjgMau4MZtS30SP8q7xD+tmRm+6dOR7SAN+0+u6b3BA5TjsoV
+         OzLjmGAQqXf3S2foEMwXuiN0XsCsFIV0nCFr8nyq0DklA1FTHG/qM7AHsL5/JTRXG6
+         f1Ud4ge8Ug2fcoCYKMLal4onScVmTYlQcsg1LYt2MyTj3KhmGMJdJUiSJL48UjQj5x
+         v6ZUzb0DqU51gFcarXFQBeugufXkoFhPRLyjiEvQEdmliO7JMQmL+Gdg5ueEbL0sMQ
+         ic6LuEWZKd4fW6Y4J0PhWGXntAfYftD8PHI6fJgx3zlsH19B0r5mzKsIgozUiTckkn
+         0zzumdN+AOuQg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B1E46614CF;
-        Tue, 22 Aug 2023 08:06:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75EEEC433C7;
-        Tue, 22 Aug 2023 08:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692691566;
-        bh=7nFJmQsg0QQl+DVMPOeNrxjR2t6HRodjAeDtQY+RzMY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E4zym6stsQOD/oBgW4YMDgyiJ2/IgugzWRbQLeY9Yjqb7LXagafkUqJlkdk7VH7D4
-         SXN2d0pu10kYKPRz8a6uXxritxXM10MNKPvY4GqZWYb1QdK7xgoPIb3BNRK5g0sqYH
-         BiZiE0//YTj51qYz1vG8s5OTBL0spF71OQwD+qIvSUMzD71W+0LtGrCEcB8EEy55g6
-         TTOak4+0A74e9aQoNHSGtj1llNdVTalJSL9SV/v1IR7DN72hw89T+7u3NC82Ykyqxw
-         Dbl0t0va3Ln5udNpoPebLiuc/sNnLZfECY0uawJ0NVvwcr8QeJITvfrmWYe9FLALU2
-         CGxxCZ8YkGUgw==
-Date:   Tue, 22 Aug 2023 10:06:02 +0200
-From:   "mripard@kernel.org" <mripard@kernel.org>
-To:     Ying Liu <victor.liu@nxp.com>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        Guido =?utf-8?Q?G=C3=BCnther?= <guido.gunther@puri.sm>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        "Laurentiu Palcu (OSS)" <laurentiu.palcu@oss.nxp.com>,
-        "robh@kernel.org" <robh@kernel.org>
-Subject: Re: [PATCH v14 0/6] drm/imx: Introduce i.MX8qm/qxp DPU DRM
-Message-ID: <x3odw5zxaz5r52zmwf6owdgalthkhbjogsvblzuj3vjaugu3kr@6jr4lsaxkkn3>
-References: <20230106055056.2883302-1-victor.liu@nxp.com>
- <AM7PR04MB7046E7F22B817FC6FE8DA95A981FA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RVMRB1x7tz4wZp;
+        Tue, 22 Aug 2023 18:08:06 +1000 (AEST)
+Date:   Tue, 22 Aug 2023 18:08:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the efi tree
+Message-ID: <20230822180805.483c10ee@canb.auug.org.au>
+In-Reply-To: <CAMj1kXGKtpGNYx6hqygya+k_gQaMTiwEZnRGk9rZ=hcbcagKXA@mail.gmail.com>
+References: <20230822164859.26b0b8f6@canb.auug.org.au>
+        <CAMj1kXGKtpGNYx6hqygya+k_gQaMTiwEZnRGk9rZ=hcbcagKXA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b7dz62g3jq6f5w2p"
-Content-Disposition: inline
-In-Reply-To: <AM7PR04MB7046E7F22B817FC6FE8DA95A981FA@AM7PR04MB7046.eurprd04.prod.outlook.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/9/eG_NrfjUci6_wy9/YuMUd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---b7dz62g3jq6f5w2p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/9/eG_NrfjUci6_wy9/YuMUd
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Ard,
 
-On Tue, Aug 22, 2023 at 05:36:14AM +0000, Ying Liu wrote:
-> Hi,
+On Tue, 22 Aug 2023 09:32:31 +0200 Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> Hello Stephen,
 >=20
-> > On Friday, January 6, 2023 1:50 PM Ying Liu wrote:
-> >=20
-> > Hi,
-> >=20
-> >=20
-> > This is the v14 series to introduce i.MX8qm/qxp Display Processing Unit=
-(DPU)
-> > DRM support.
-> >=20
-> > DPU is comprised of a blit engine for 2D graphics, a display controller
-> > and a command sequencer.  Outside of DPU, optional prefetch engines can
-> > fetch data from memory prior to some DPU fetchunits of blit engine and
-> > display controller.  The pre-fetchers support linear formats and Vivante
-> > GPU tile formats.
-> >=20
-> > Reference manual can be found at:
-> > https://www.nxp.com/webapp/Download?colCode=3DIMX8DQXPRM
-> >=20
-> >=20
-> > This patch set adds kernel modesetting support for the display controll=
-er part.
-> > It supports two CRTCs per display controller, several planes, prefetch
-> > engines and some properties of CRTC and plane.  Currently, the register=
-s of
-> > the controller is accessed without command sequencer involved, instead =
-just
-> > by
-> > using CPU.  DRM connectors would be created from the DPU KMS driver.
-> >=20
-> >=20
-> > Patch 1 ~ 3 add dt-bindings for DPU and prefetch engines.
-> > Patch 4 is a minor improvement of a macro to suppress warning as the KMS
-> > driver
-> > uses it.
-> > Patch 5 introduces the DPU DRM support.
-> > Patch 6 updates MAINTAINERS.
-> >=20
-> > Welcome comments, thanks.
-> >=20
-> > v13->v14:
-> > * Rebase the patch series to the latest drm-misc-next branch(v6.1-rc6 b=
-ased).
-> > * Include drm_fbdev_generic.h in dpu_drv.c due to the rebase.
-> > * Fix dpu drm driver suspend/resume by properly get drm device through
-> >   dev_get_drvdata().
-> > * Use pm_ptr() macro for dpu core driver PM operations.
-> > * Use pm_sleep_ptr() macro for dpu drm driver PM operations.
-> > * Use DEFINE_SIMPLE_DEV_PM_OPS() macro to define dpu drm driver PM
-> > operations,
-> >   instead of SIMPLE_DEV_PM_OPS().
-> > * Update year of Copyright.
-> > * Add SoC series name 'i.MX8'/'IMX8'/'imx8' to dpu driver module decrip=
-tion,
-> >   Kconfig name, dpu driver names and dpu driver object name.
-> >=20
-> > v12->v13:
-> > * Drop 'drm->irq_enabled =3D true;' from patch 5/6 to fix a potential b=
-uild
-> >   break reported by 'kernel test robot <lkp@intel.com>'.  drm->irq_enab=
-led
-> >   should not be used by imx-dpu drm as it is only used by legacy drivers
-> >   with userspace modesetting.
-> >=20
-> > v11->v12:
-> > * Rebase the series upon v6.1-rc1.
-> > * Minor update on Kconfigs, struct names and macro names for patch 5/6
-> >   due to the rebase.
-> >=20
-> > v10->v11:
-> > * Rebase the series upon v6.0-rc1.
-> > * Include drm_blend.h and drm_framebuffer.h in dpu-kms.c and dpu-
-> > plane.c
-> >   to fix build errors due to the rebase.
-> > * Fix a checkpatch warning for dpu-crtc.c.
-> > * Properly use dev_err_probe() to return it's return value directly whe=
-re
-> >   possible.
-> >=20
-> > v9->v10:
-> > * Rebase the series upon v5.18-rc1.
-> > * Make 'checkpatch.pl --strict' happier for patch 5/6.
-> > * Add Rob's R-b tag on patch 3/6.
-> > * Add Laurentiu's R-b tag on patch 5/6.
-> > * Add Laurentiu's A-b tag on patch 6/6.
-> >=20
-> > v8->v9:
-> > * Use drm_atomic_get_new_plane_state() in dpu_plane_atomic_update()
-> > for
-> >   patch 5/6. (Laurentiu)
-> > * Drop getting DPU DT alias ID for patch 5/6, as it is unused.
-> > * Reference 'interrupts-extended' schema instead of 'interrupts' for pa=
-tch
-> > 3/6
-> >   to require an additional DPR interrupt(r_rtram_stall) because the ref=
-erence
-> >   manual does mention it, though the driver doesn't get/use it for now.
-> >   Reference 'interrupt-names' schema to define the two DPR interrupt na=
-mes
-> > -
-> >   'dpr_wrap' and 'r_rtram_stall'.  Accordingly, patch 5/6 gets the 'dpr=
-_wrap'
-> >   interrupt by name.
-> > * Drop Rob's R-b tag on patch 3/6, as review is needed.
-> >=20
-> > v7->v8:
-> > * Rebase this series up onto the latest drm-misc-next branch, due to DRM
-> > plane
-> >   helper functions API change(atomic_check and atomic_update) from DRM
-> > atomic
-> >   core.  So, dpu_plane_atomic_check() and dpu_plane_atomic_update() are
-> > updated
-> >   accordingly in patch 5/6.  Also, rename plane->state variables and re=
-levant
-> >   DPU plane state variables in those two functions to reflect they are =
-new
-> >   states, like the patch 'drm: Rename plane->state variables in atomic =
-update
-> >   and disable' recently landed in drm-misc-next.
-> > * Replace drm_gem_fb_prepare_fb() with
-> > drm_gem_plane_helper_prepare_fb() in
-> >   patch 5/6, due to DRM core API change.
-> > * Improve DPR burst length for GPU standard tile and 32bpp GPU super ti=
-le in
-> >   patch 5/6 to align with the latest version of internal HW documention.
-> >=20
-> > v6->v7:
-> > * Fix return value of dpu_get_irqs() if platform_get_irq() fails. (Laur=
-entiu)
-> > * Use the function array dpu_irq_handler[] to store individual DPU irq
-> > handlers.
-> >   (Laurentiu)
-> > * Call get/put() hooks directly to get/put DPU fetchunits for DPU plane=
- groups.
-> >   (Laurentiu)
-> > * Shorten the names of individual DPU irq handlers by using DPU unit ab=
-brev
-> >   names to make writing dpu_irq_handler[] easier.
-> > * Add Rob's R-b tag back on DPU dt-binding patch as change in v6 was
-> > reviewed.
-> >=20
-> > v5->v6:
-> > * Use graph schema in the DPU dt-binding.
-> > * Do not use macros where possible in the DPU DRM driver. (Laurentiu)
-> > * Break dpu_plane_atomic_check() into some smaller functions. (Laurenti=
-u)
-> > * Address some minor comments from Laurentiu on the DPU DRM driver.
-> > * Add dpu_crtc_err() helper marco in the DPU DRM driver to tell dmesg
-> >   which CRTC generates error.
-> > * Drop calling dev_set_drvdata() from dpu_drm_bind/unbind() in the DPU
-> > DRM
-> >   driver as it is done in dpu_drm_probe().
-> > * Some trivial tweaks.
-> >=20
-> > v4->v5:
-> > * Rebase up onto the latest drm-misc-next branch and remove the hook to
-> >   drm_atomic_helper_legacy_gamma_set() from patch 5/6, because it was
-> > dropped
-> >   by the newly landed commit 'drm: automatic legacy gamma support'.
-> > * Remove a redundant blank line from dpu_plane_atomic_update() in patch
-> > 5/6.
-> >=20
-> > v3->v4:
-> > * Improve compatible properties in DPU and prefetch engines' dt bindings
-> >   by using enum instead of oneOf+const.
-> > * Add Rob's R-b tags on dt binding patches(patch 1/6, 2/6 and 3/6).
-> > * Add Daniel's A-b tag on patch 4/6.
-> >=20
-> > v2->v3:
-> > * Fix DPU DRM driver build warnings which are
-> >   Reported-by: kernel test robot <lkp@intel.com>.
-> > * Drop DPU DRM driver build dependency on IMX_SCU, as dummy SCU
-> > functions have
-> >   been added in header files by the patch 'firmware: imx: add dummy
-> > functions'
-> >   which has landed in linux-next/master branch.
-> > * Add a missing blank line in include/drm/drm_atomic.h.
-> >=20
-> > v1->v2:
-> > * Test this patch set also with i.MX8qm LVDS displays.
-> > * Drop the device tree patches because we'll use new dt binding way to
-> >   support i.MX8qm/qxp clocks.  This depends on a not-yet-landed patch s=
-et
-> >   to do basic conversions for the platforms.
-> > * Fix dt binding yamllint warnings.
-> > * Require bypass0 and bypass1 clocks for both i.MX8qxp and i.MX8qm in
-> > DPU's
-> >   dt binding documentation.
-> > * Use new dt binding way to add clocks in the dt binding examples.
-> > * Address several comments from Laurentiu on the DPU DRM patch.
-> >=20
-> >=20
-> > Liu Ying (6):
-> >   dt-bindings: display: imx: Add i.MX8qxp/qm DPU binding
-> >   dt-bindings: display: imx: Add i.MX8qxp/qm PRG binding
-> >   dt-bindings: display: imx: Add i.MX8qxp/qm DPR channel binding
-> >   drm/atomic: Avoid unused-but-set-variable warning on
-> >     for_each_old_plane_in_state
-> >   drm/imx: Introduce i.MX8qm/qxp DPU DRM
-> >   MAINTAINERS: add maintainer for i.MX8qxp DPU DRM driver
-> >=20
-> >  .../display/imx/fsl,imx8qxp-dprc.yaml         |  100 ++
-> >  .../bindings/display/imx/fsl,imx8qxp-dpu.yaml |  387 ++++++
-> >  .../bindings/display/imx/fsl,imx8qxp-prg.yaml |   60 +
-> >  MAINTAINERS                                   |    9 +
-> >  drivers/gpu/drm/imx/Kconfig                   |    1 +
-> >  drivers/gpu/drm/imx/Makefile                  |    1 +
-> >  drivers/gpu/drm/imx/dpu/Kconfig               |    9 +
-> >  drivers/gpu/drm/imx/dpu/Makefile              |   10 +
-> >  drivers/gpu/drm/imx/dpu/dpu-constframe.c      |  171 +++
-> >  drivers/gpu/drm/imx/dpu/dpu-core.c            | 1044 +++++++++++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-crtc.c            |  969 +++++++++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-crtc.h            |   72 ++
-> >  drivers/gpu/drm/imx/dpu/dpu-disengcfg.c       |  117 ++
-> >  drivers/gpu/drm/imx/dpu/dpu-dprc.c            |  715 +++++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-dprc.h            |   40 +
-> >  drivers/gpu/drm/imx/dpu/dpu-drv.c             |  294 +++++
-> >  drivers/gpu/drm/imx/dpu/dpu-drv.h             |   28 +
-> >  drivers/gpu/drm/imx/dpu/dpu-extdst.c          |  299 +++++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c     |  292 +++++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetcheco.c        |  224 ++++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c      |  152 +++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetchunit.c       |  610 ++++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetchunit.h       |  195 +++
-> >  drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c       |  248 ++++
-> >  drivers/gpu/drm/imx/dpu/dpu-framegen.c        |  395 +++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-gammacor.c        |  223 ++++
-> >  drivers/gpu/drm/imx/dpu/dpu-hscaler.c         |  275 +++++
-> >  drivers/gpu/drm/imx/dpu/dpu-kms.c             |  542 +++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-kms.h             |   23 +
-> >  drivers/gpu/drm/imx/dpu/dpu-layerblend.c      |  348 ++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-plane.c           |  804 +++++++++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-plane.h           |   59 +
-> >  drivers/gpu/drm/imx/dpu/dpu-prg.c             |  433 +++++++
-> >  drivers/gpu/drm/imx/dpu/dpu-prg.h             |   45 +
-> >  drivers/gpu/drm/imx/dpu/dpu-prv.h             |  231 ++++
-> >  drivers/gpu/drm/imx/dpu/dpu-tcon.c            |  250 ++++
-> >  drivers/gpu/drm/imx/dpu/dpu-vscaler.c         |  308 +++++
-> >  drivers/gpu/drm/imx/dpu/dpu.h                 |  385 ++++++
-> >  include/drm/drm_atomic.h                      |    5 +-
-> >  39 files changed, 10372 insertions(+), 1 deletion(-)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dprc.yaml
-> >  create mode 100644
-> > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-dpu.yaml
-> >  create mode 100644
-> > Documentation/devicetree/bindings/display/imx/fsl,imx8qxp-prg.yaml
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/Kconfig
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/Makefile
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-constframe.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-core.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-crtc.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-disengcfg.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-dprc.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-drv.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-extdst.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchdecode.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetcheco.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchlayer.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchunit.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-fetchwarp.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-framegen.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-gammacor.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-hscaler.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-kms.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-layerblend.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-plane.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prg.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-prv.h
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-tcon.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu-vscaler.c
-> >  create mode 100644 drivers/gpu/drm/imx/dpu/dpu.h
-> >=20
-> > --
-> > 2.37.1
+> On Tue, 22 Aug 2023 at 08:49, Stephen Rothwell <sfr@canb.auug.org.au> wro=
+te:
+> >
+> > Hi all,
+> >
+> > After merging the efi tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > failed like this:
+> >
+> > In file included from drivers/platform/x86/uv_sysfs.c:14:
+> > arch/x86/include/asm/uv/bios.h:118:22: error: expected ')' before '*' t=
+oken
+> >   118 |         u64 (__efiapi *function)(enum uv_bios_cmd, ...);
+> >       |                      ^~
+> >       |                      )
+> >
+> > Caused by commit
+> >
+> >   73632c8c865f ("efi/runtime-wrappers: Remove duplicated macro for serv=
+ice returning void")
+> > =20
 >=20
-> This patch series has been submitted for a quite long period of time.
+> Thanks for the report.
 >=20
-> Anything I can do to have it landed ?
+> I cannot reproduce this with Debian's GCC 12.2.0 when building the
+> efi/next tree either in isolation, or merged into yesterday's next.
+>=20
+> Could you please share the compiler version and the .config you used? Tha=
+nks.
 
-I'm not sure why it fell through the cracks, but given that it's more
-than 6 monthes old, please rebase and resend it.
+$ x86_64-linux-gnu-gcc --version
+x86_64-linux-gnu-gcc (Debian 12.3.0-4) 12.3.0
+(this is Debian's cross compiler that is ppcle64 hosted)
 
-Maxime
+and (see above) it is a x86_64 allmodconfig build.
 
---b7dz62g3jq6f5w2p
-Content-Type: application/pgp-signature; name="signature.asc"
+Maybe there is some interaction with something else in today's
+linux-next (just released).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/9/eG_NrfjUci6_wy9/YuMUd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZORsagAKCRDj7w1vZxhR
-xVLOAP0S4rsQCxdj1ZEL2g/aGj7r1ilhBbBzQNtVF0hihATPxgEAqgK6F5DoRQDb
-7snvA50RUsoRg0vNAk16bzAhEIXP0gY=
-=mLl3
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTkbOUACgkQAVBC80lX
+0Gy8yAf7BZfZJMin9PDBt0c7eEZyagCxLBcsnsLdeOutLDY0PCNpgs3dNrolDJke
+Zvkdkv4r+KJ8/HzFt9rbyyw9/q55njCUP4IHqgkTYOfDEao1GQJa1X3jJE45Pcuo
+sJLixHvv86ELmJEELHsg0oHA+StxK0eeHoPLPVYqXcG0jEDEJut4WhskAh1UXD6h
+NTUxH2IwpVd0gEpcCUlJz0eMBkKN+O9KqXAKR3d8Co36qFhc43coR2/oLynnQbJW
+nKu+xE4JBiKnxZPS6eD7+CXvtOb0GxIGJrp1ce4D3bgYZZpZ5aHntf0FzSvD/Ziv
+aES3SCV3C/+UJIEJ6FJGUTQEZ80ioA==
+=xN05
 -----END PGP SIGNATURE-----
 
---b7dz62g3jq6f5w2p--
+--Sig_/9/eG_NrfjUci6_wy9/YuMUd--
