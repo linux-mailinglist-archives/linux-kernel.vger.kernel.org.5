@@ -2,121 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC7D7848B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4057848B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjHVRvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33928 "EHLO
+        id S229573AbjHVRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjHVRvR (ORCPT
+        with ESMTP id S229577AbjHVRvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:51:17 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9E4196
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:51:15 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so35101cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692726674; x=1693331474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HTQHxKG2D5LbRoD1UXRmuUXHuB7AJbXnzw+23CsotMg=;
-        b=BFKbjhidrHsnQIwzb82AQGRT2a0QCnLlD78C+BChYGJ+4KywPdEVN7H9NkYWTSENtV
-         PpQiOiKA8vCLtQb26ZmoX+9N9ba6VlbEiLIMpiesyYZhYW6svghc0Yv/cTEWeln8Ux3H
-         0Gn3QFi6JvwghAXDJlLQSSN3D4ZhK1t4U1VYIlxAXsTMGM0UEbjimlZQA+q03aWZJih9
-         8Aws/YLO8+VCX06ywZAWCT86oEomaGyX9RTa/72fz+I1TSEzyaovPUArABUmTXyV5UKA
-         aPiO45OACjhSujvGPthBRtFfQtAXiiGxjVWhFoFpWgbGuuLas9TF1FWxPzuKdkYlt7Nf
-         TE3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692726674; x=1693331474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HTQHxKG2D5LbRoD1UXRmuUXHuB7AJbXnzw+23CsotMg=;
-        b=QkzDRNfxOKXdtzwRMzc5X50icoUD3g7/va8+jAVCWMkRblutu2h/f58Vqk9nx35r2c
-         2an04AKnATKQr5ACNQc+/VxsdozhtNZdBBmkq1Fu+q9SzUPT3AqxWKM2Qr1I8Qzisjfu
-         zfWvHXi7IoZ9uO2wIONDmk2GrXfgbbfNVWbWxhAuniQfxWBE/8T9vu5xwEoiIXFFo+qk
-         X3pSFLiSDCCUTgZd77tO7Vh76VVOiEM95F87gXm2ujpDrneLvTjOVaMSow/wiGmZIUsn
-         svHV7ep0ptd+srd++juz+7M5QTqlU68muV4Z5Y4xFgAPDenm8JDA/nWwEOpsHenllvER
-         DmWA==
-X-Gm-Message-State: AOJu0YyYqpeb38y2/K7j2dRY5nWOZ4fRjRkA3ctKTH9KYFeVz8dMSYfQ
-        nOFKc0/iqiZWfo5KiVG6cTVP4jzCz4Gd07nLmKAuQA==
-X-Google-Smtp-Source: AGHT+IH8CcGn1FXMoAKRlf73hzf0gvM8a+jzi/t6hcmvWwSTQP9yOtL9F6zEdJuVNx2nfT4ZMWZ+QL4DMpachfRO/Rw=
-X-Received: by 2002:a05:622a:1a90:b0:3ef:302c:319e with SMTP id
- s16-20020a05622a1a9000b003ef302c319emr347014qtc.8.1692726674341; Tue, 22 Aug
- 2023 10:51:14 -0700 (PDT)
+        Tue, 22 Aug 2023 13:51:43 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14466196;
+        Tue, 22 Aug 2023 10:51:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ntj7K6XXlQwLgtMfVD+ZqplWIe/c7G12xO0Z+/57Prw=; b=kQwYTqnqqO7imz3poYmNGtCO5R
+        PNfzxDEQRvqz9SWTu15F4NhOyp6tSUWTJa4tpLs1sT+rw90QrSdxwPaup7YK4fdBYYmEP5n5rSVJO
+        USfYqIaiUfD+MuYH0EAcxvmDe9c2488CT4H8Est5jYUC72C9lAmby6euWBM0yhqLTMfY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qYVXN-004o2v-Su; Tue, 22 Aug 2023 19:51:29 +0200
+Date:   Tue, 22 Aug 2023 19:51:29 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Justin Lai <justinlai0215@realtek.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, jiri@resnulli.us
+Subject: Re: [PATCH net-next v6 1/2] net/ethernet/realtek: Add Realtek
+ automotive PCIe driver code
+Message-ID: <c9bbd802-27da-4775-8176-fa73e6ec4381@lunn.ch>
+References: <20230822031805.4752-1-justinlai0215@realtek.com>
+ <20230822031805.4752-2-justinlai0215@realtek.com>
 MIME-Version: 1.0
-References: <20230822065256.163660-1-denik@chromium.org> <20230822174835.253469-1-denik@chromium.org>
-In-Reply-To: <20230822174835.253469-1-denik@chromium.org>
-From:   Fangrui Song <maskray@google.com>
-Date:   Tue, 22 Aug 2023 10:51:03 -0700
-Message-ID: <CAFP8O3KunP9CzT_U2cj1_oysojTxCNJRWX_kvvu_wOx4tbYHug@mail.gmail.com>
-Subject: Re: [PATCH v2] modpost: Skip .llvm.call-graph-profile section check
-To:     Denis Nikitin <denik@chromium.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822031805.4752-2-justinlai0215@realtek.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 10:49=E2=80=AFAM Denis Nikitin <denik@chromium.org>=
- wrote:
->
-> .llvm.call-graph-profile section is added by clang when the kernel is
-> built with profiles (e.g. -fprofile-sample-use=3D or -fprofile-use=3D).
->
-> The section contains edge information derived from text sections,
-> so .llvm.call-graph-profile itself doesn't need more analysis as
-> the text sections have been analyzed.
->
-> This change fixes the kernel build with clang and a sample profile
-> which currently fails with:
->
-> "FATAL: modpost: Please add code to calculate addend for this architectur=
-e"
->
-> Signed-off-by: Denis Nikitin <denik@chromium.org>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> +static int rtase_set_pauseparam(struct net_device *dev, struct ethtool_pauseparam *pause)
+> +{
+> +	const struct rtase_private *tp = netdev_priv(dev);
+> +	u16 value = RTL_R16(tp, CPLUS_CMD);
+> +
+> +	value &= ~(FORCE_TXFLOW_EN | FORCE_RXFLOW_EN);
+> +
+> +	if (pause->tx_pause)
+> +		value |= FORCE_TXFLOW_EN;
+> +
+> +	if (pause->rx_pause)
+> +		value |= FORCE_RXFLOW_EN;
+> +
+> +	RTL_W16(tp, CPLUS_CMD, value);
+> +	return 0;
+> +}
 
-Thanks. The new commit message looks good to me.
+I'm pretty sure i said if pause->autoneg is true, you should return
+-EOPNOTUSPP.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
-
-> ---
->  scripts/mod/modpost.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index b29b29707f10..64bd13f7199c 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -761,6 +761,7 @@ static const char *const section_white_list[] =3D
->         ".fmt_slot*",                   /* EZchip */
->         ".gnu.lto*",
->         ".discard.*",
-> +       ".llvm.call-graph-profile",     /* call graph */
->         NULL
->  };
->
-> --
-> 2.42.0.rc1.204.g551eb34607-goog
->
-
-
---=20
-=E5=AE=8B=E6=96=B9=E7=9D=BF
+	Andrew
