@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F6B7844AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 350937844AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236930AbjHVOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:48:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        id S236920AbjHVOr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:47:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236922AbjHVOsP (ORCPT
+        with ESMTP id S231997AbjHVOr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:48:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A155CC6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:48:13 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-67-D5qlW6B2MLuti1GsDH0uYA-1; Tue, 22 Aug 2023 15:48:10 +0100
-X-MC-Unique: D5qlW6B2MLuti1GsDH0uYA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 22 Aug
- 2023 15:48:09 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 22 Aug 2023 15:48:09 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Willem de Bruijn' <willemdebruijn.kernel@gmail.com>
-CC:     Mahmoud Maatuq <mahmoudmatook.mm@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>
-Subject: RE: [PATCH 1/2] selftests: Provide local define of min() and max()
-Thread-Topic: [PATCH 1/2] selftests: Provide local define of min() and max()
-Thread-Index: AQHZ03nFpJJs9cS/jEaiicM+CY14+6/0t4aQgAGcP4CAABL1kA==
-Date:   Tue, 22 Aug 2023 14:48:08 +0000
-Message-ID: <d33fbb24119c4d09864e79ea9dfbb881@AcuMS.aculab.com>
-References: <20230819195005.99387-1-mahmoudmatook.mm@gmail.com>
- <20230819195005.99387-2-mahmoudmatook.mm@gmail.com>
- <64e22df53d1e6_3580162945b@willemb.c.googlers.com.notmuch>
- <7e8c2597c71647f38cd4672cbef53a66@AcuMS.aculab.com>
- <CAF=yD-+6cWTiDgpsu=hUV+OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com>
-In-Reply-To: <CAF=yD-+6cWTiDgpsu=hUV+OvzDFRaT2ZUmtQo9qTrCB9i-+7ng@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 22 Aug 2023 10:47:58 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121D110B;
+        Tue, 22 Aug 2023 07:47:54 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F1E14E000D;
+        Tue, 22 Aug 2023 14:47:51 +0000 (UTC)
+Date:   Tue, 22 Aug 2023 16:48:29 +0200
+From:   Remi Pommarel <repk@triplefau.lt>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sabrina Dubroca <sd@queasysnail.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH net] net: stmmac: remove disable_irq() from
+ ->ndo_poll_controller()
+Message-ID: <ZOTKvRCeocjmPYFt@pilgrim>
+References: <20230810083716.29653-1-repk@triplefau.lt>
+ <20230811182025.7473bf63@kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811182025.7473bf63@kernel.org>
+X-GND-Sasl: repk@triplefau.lt
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+ID4gVGhhdCB0eXBlY2hlY2soKSBpcyBob3JyaWQuDQo+ID4gSXQgbWF5IHdlbGwgaGF2
-ZSBjYXVzZWQgbW9yZSBidWdzIGR1ZSB0byBpbmNvcnJlY3QgY2FzdHMgdGhhdA0KPiA+IGl0IGFj
-dHVhbGx5IGRldGVjdGVkLg0KPiA+DQo+ID4gSSdkIHN1Z2dlc3QgdGhlIHZlcnNpb24gdGhhdCBq
-dXN0IGF2b2lkcyBtdWx0aXBsZSBldmFsdWF0aW9ucy4NCj4gPiBPciBqdXN0IGVycm9yIHNpZ25l
-ZCB2IHVuc2lnbmVkIGNvbXBhcmlzb25zLg0KPiA+IFNlZSAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5v
-cmcvYWxsL2I0Y2U5ZGFkNzQ4ZTQ4OWY5MzE0YTJkYzk1NjE1MDMzQEFjdU1TLmFjdWxhYi5jb20v
-DQo+ID4gZm9yIGFuIGV4YW1wbGUgcGF0Y2ggc2V0Lg0KPiANCj4gSW50ZXJlc3RpbmcsIHRoYW5r
-cy4gVGhhdCBpcyBhbHNvIHNpbXBsZXIuDQo+IA0KPiBBbHNvLCB0aGUgZXhpc3RpbmcgcGF0Y2gg
-aXMgbm8gd29yc2UgdGhhbiB0aGUgb3BlbiBjb2RlZCBjb2RlIHRvZGF5LA0KPiBzbyBldmVuIHdp
-dGhvdXQgY29kZSB0byBhdm9pZCBtdWx0aXBsZSBldmFsdWF0aW9ucywgSSBndWVzcyBpdCdzIG9r
-YXkNCj4gdG8gbWVyZ2UuDQo+IA0KPiBUaGUgY29jY2luZWxsZSB3YXJuaW5ncyBhcmUgYXJndWFi
-bHkgZmFsc2UgcG9zaXRpdmVzLCB1c2luZyBjaGVja3MgZm9yDQo+IGtlcm5lbCBjb2RlLCBidXQg
-YmVpbmcgcnVuIGFnYWluc3QgdXNlcnNwYWNlIGNvZGUgdGhhdCBoYXMgbm8gYWNjZXNzDQo+IHRv
-IHRob3NlIGhlbHBlcnMuIEJ1dCBmaW5lIHRvIHNpbGVuY2UgdGhlbS4NCg0KWW91IGNhbid0IHVz
-ZSBpc19jb25zdGV4cHIoKSB1bmxlc3MgJ3NpemVvZiAqKHZvaWQgKiknIGlzIHZhbGlkLg0KQW5k
-IGJ1aWx0aW5fY29uc3RhbnQoKSBpc24ndCBnb29kIGVub3VnaCBmb3IgYnVpbHRpbl9jaG9vc2Vf
-ZXhwcigpLg0KDQpUaGF0IG1pZ2h0IGJlIG9rIGZvciBzZWxmdGVzdHMgYW5kIHRvb2xzLCBidXQg
-bm90IGZvciBnZW5lcmFsdXNlcnNwYWNlLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
-ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
-MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Fri, Aug 11, 2023 at 06:20:25PM -0700, Jakub Kicinski wrote:
+> On Thu, 10 Aug 2023 10:37:16 +0200 Remi Pommarel wrote:
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > index 4727f7be4f86..bbe509abc5dc 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+> > @@ -5958,8 +5958,8 @@ static void stmmac_poll_controller(struct net_device *dev)
+> >  		for (i = 0; i < priv->plat->tx_queues_to_use; i++)
+> >  			stmmac_msi_intr_tx(0, &priv->dma_conf.tx_queue[i]);
+> >  	} else {
+> > -		disable_irq(dev->irq);
+> > -		stmmac_interrupt(dev->irq, dev);
+> > +		if (disable_hardirq(dev->irq))
+> > +			stmmac_interrupt(dev->irq, dev);
+> >  		enable_irq(dev->irq);
+> 
+> Implementing .ndo_poll_controller is only needed if driver doesn't use
+> NAPI. This driver seems to use NAPI on all paths, AFAICT you can simply
+> delete this function completely.
 
+Looks like since [0] you are right. Will send a new PATCH removing
+stmmac_poll_controller.
+
+Thanks.
+
+[0]: ac3d9dd034e5 ("netpoll: make ndo_poll_controller() optional")
+
+-- 
+Remi
