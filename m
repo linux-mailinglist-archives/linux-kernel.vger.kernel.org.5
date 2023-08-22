@@ -2,122 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3931C784CBA
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF4D784CCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231552AbjHVWNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
+        id S231524AbjHVWSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjHVWNn (ORCPT
+        with ESMTP id S231196AbjHVWSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:13:43 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DF8CCB
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:13:41 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58fbc0e0c6dso44687737b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:13:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692742421; x=1693347221;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xmjVsGgx6gF9dMVPPrLxg3tMP8b+7Z4gdwQXJbdCgco=;
-        b=DbMG4atXV04JeA1MlW5YM7QZEFAcLCcbYhd+q3Kl//ACedYN6oe2Fx+a1RIfufErAe
-         IUT8kbXSuCyjKsT+9snF4ikwgpUqx2C3e1qBKhpjaxZT29AQtuiebZ8iO4u4JC3liD2m
-         uLC1kp1LK3j/isA8qa9Gewhx+4tUKRnl6Lt9OpGByfDmV6a6BIHcaKs0ak7GKTX0i1Y7
-         FbM5FFz+vYdX+/HuObwWg/7qp78bXOBrLj6WF8ZgahP8ptM0e/Pk62Cu4buPraagFZg2
-         emQBRuKBHul46vWmNQ8OEzn5LBZYC0ygn7NREdyHR3KsACHhId+oxosa0yg2OkI8C89D
-         0T/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692742421; x=1693347221;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xmjVsGgx6gF9dMVPPrLxg3tMP8b+7Z4gdwQXJbdCgco=;
-        b=NEyVLWRpCm0gxnWsycLVNFwsL0Ph63qjoxD7vjBn8x2e0WbZHIHadkPHho4V4vi5fU
-         hFQItMo9x9d5mR+xP/6wkspKIGy/A3IlMH8SSk7ozMuuFKrXuw88QML2Twc0u2HRh0CH
-         opw/m446oxfSC//hx9pEjTCC4Ipn47OCv9rabxLSN130DzQZC4qTqP+0FyTwiaGFTHXC
-         uI1n+lf4eMR0GnFJr+Eaq0sUBeJBfzZ5UIdx0wdASTlN4eVltND7cprZ/z7lhzJgCnCn
-         w49sb4qNbe2xSQPICGISYvSJaxwSBQOkYPflfPzz8rWEF25OSvNle+hr2WivNyl7SyPl
-         SaoA==
-X-Gm-Message-State: AOJu0YxFf69Vv5baI2kp8iSbClIm0XtMgregojLVsJl9EfU63f0iNkZ8
-        H162oKSORgc5iKtEBC83Mfje5rT/W7ibzbN/hw==
-X-Google-Smtp-Source: AGHT+IGE6GoIEbEH7DYVNW4HTiMGU+iCqd+cjZZkK4wdjIzwI/89TsZlV9fO7SSVysshSkpTnvseKNXgG3iQx/dYOg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:118a:b0:d05:7ba4:67f9 with
- SMTP id m10-20020a056902118a00b00d057ba467f9mr138492ybu.3.1692742421250; Tue,
- 22 Aug 2023 15:13:41 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 22:13:36 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAA8z5WQC/x3MQQ6CMBAF0KuQWTsJVsTqVQgLaD90oqnNlBAM4
- e40Lt/m7ZShgkyvaifFKlm+seB6qciFIc5g8cVkanOrrTGcF40u/XhQF3izLb+hER8OCQs3/v5 wo7cYny2VIikm2f591x/HCVo5fvNuAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692742420; l=1686;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=W25RC9CnsMsDX2n9Nx4KPoyzwG23ZFjcDXue4o9Kb6w=; b=0QcIzSUF693AP4G0xx/Dhih8ldcUVnRy4oxKaohCBvY6PwUjw/rulIO1ilg7PD2+HIcoaGr1K
- X/gNQPei+BEBto244jiaJPh20B53KKtAHiByBBLgF0+NLT49VGP8dyQ
-X-Mailer: b4 0.12.3
-Message-ID: <20230822-strncpy-arch-x86-kernel-hpet-v1-1-2c7d3be86f4a@google.com>
-Subject: [PATCH] x86/hpet: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 22 Aug 2023 18:18:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A28CCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:18:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D534C62877
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 22:18:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A277FC433C8;
+        Tue, 22 Aug 2023 22:18:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692742711;
+        bh=68hXbjLaCQXJJIn/fZKNn5XJdGeUPJs/ti87OYETE0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cGpLFj9yB+VprPQ1IUQvNZJdHrRpy3jA9dB6CA+s3budJIkFoFpAAh9WbYeMEcjHd
+         DyXvkai5Ko8eAar3pQzCD8t0fx8OcHnouWGhG+HpQ+P/eIfz12wOcMP1st2Y/VXNC6
+         tT8msZ8JEdHWHHDhYvIgVvxIcoaWBOcbbNBWU/oxQH0Lr35QHslL9UhM6TFfa0MrUL
+         SaIi1bnVQKiFEn68LSS2+ZieT0b2HtXLOl8bepM8PRRZxFycyZfsk7E8mVk3tA57dl
+         iqaExesmN4pYpHsXYZgWw86oEj36h7t5PtdnmfV1zp2TNSwAe/J6h9LDQ0WxmLjdF2
+         JaEXbwBKhvUTA==
+Date:   Tue, 22 Aug 2023 15:18:28 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Nikolay Borisov <nik.borisov@suse.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
+ overhead
+Message-ID: <20230822221828.htnwidmr22gtjhcd@treble>
+References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
+ <20230821112723.3995187-5-andrew.cooper3@citrix.com>
+ <20230821151636.onk2e6tlhmjg5yz5@treble>
+ <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+ <20230822022229.xlctyccmgdxiy6ic@treble>
+ <9565380a-4654-f267-c8ac-a4d6ab81156a@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9565380a-4654-f267-c8ac-a4d6ab81156a@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+On Tue, Aug 22, 2023 at 09:45:07AM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 22.08.23 г. 5:22 ч., Josh Poimboeuf wrote:
+> > On Tue, Aug 22, 2023 at 12:01:29AM +0100, Andrew Cooper wrote:
+> > > On 21/08/2023 4:16 pm, Josh Poimboeuf wrote:
+> > > > On Mon, Aug 21, 2023 at 12:27:23PM +0100, Andrew Cooper wrote:
+> > > > > The SRSO safety depends on having a CALL to an {ADD,LEA}/RET sequence which
+> > > > > has been made safe in the BTB.  Specifically, there needs to be no pertubance
+> > > > > to the RAS between a correctly predicted CALL and the subsequent RET.
+> > > > > 
+> > > > > Use the new infrastructure to CALL to a return thunk.  Remove
+> > > > > srso_fam1?_safe_ret() symbols and point srso_fam1?_return_thunk().
+> > > > > 
+> > > > > This removes one taken branch from every function return, which will reduce
+> > > > > the overhead of the mitigation.  It also removes one of three moving pieces
+> > > > > from the SRSO mess.
+> > > > So, the address of whatever instruction comes after the 'CALL
+> > > > srso_*_return_thunk' is added to the RSB/RAS, and that might be
+> > > > speculated to when the thunk returns.  Is that a concern?
+> > > 
+> > > That is very intentional, and key to the safety.
+> > > 
+> > > Replacing a RET with a CALL/{ADD,LEA}/RET sequence is a form of
+> > > retpoline thunk.  The only difference with regular retpolines is that
+> > > the intended target is already on the stack, and not in a GPR.
+> > > 
+> > > 
+> > > If the CALL mispredicts, it doesn't matter.  When decode catches up
+> > > (allegedly either instantaneously on Fam19h, or a few cycles late on
+> > > Fam17h), the top of the RAS is corrected will point at the INT3
+> > > following the CALL instruction.
+> > 
+> > That's the thing though, at least with my kernel/compiler combo there's
+> > no INT3 after the JMP __x86_return_thunk, and there's no room to patch
+> > one in after the CALL, as the JMP and CALL are both 5 bytes.
+> 
+> FWIW gcc's mfunction-return=thunk-return only ever generates a jmp,
+> thunk/thunk-inline OTOH generates a "full fledged" thunk with all the
+> necessary speculation catching tricks.
+> 
+> For reference:
+> 
+> https://godbolt.org/z/M1avYc63b
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
+The problem is the call-site, not the thunk.  Ideally we'd have an
+option which adds an INT3 after the 'JMP __x86_return_thunk'.
 
-In this case, it is a simple swap from `strncpy` to `strscpy`. There is
-one slight difference, though. If NUL-padding is a functional
-requirement here we should opt for `strscpy_pad`. It seems like this
-shouldn't be needed as I see no obvious signs of any padding being
-required.
-
-Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
----
- arch/x86/kernel/hpet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index c8eb1ac5125a..1648aa0204d9 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -421,7 +421,7 @@ static void __init hpet_legacy_clockevent_register(struct hpet_channel *hc)
- 	 * the IO_APIC has been initialized.
- 	 */
- 	hc->cpu = boot_cpu_data.cpu_index;
--	strncpy(hc->name, "hpet", sizeof(hc->name));
-+	strscpy(hc->name, "hpet", sizeof(hc->name));
- 	hpet_init_clockevent(hc, 50);
- 
- 	hc->evt.tick_resume	= hpet_clkevt_legacy_resume;
-
----
-base-commit: 706a741595047797872e669b3101429ab8d378ef
-change-id: 20230822-strncpy-arch-x86-kernel-hpet-4d57cbd8eb96
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+-- 
+Josh
