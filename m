@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C5A783EF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C4F783EC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbjHVLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S234735AbjHVLbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234862AbjHVLcW (ORCPT
+        with ESMTP id S232181AbjHVLbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:32:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94312CE7;
-        Tue, 22 Aug 2023 04:32:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 59EE265286;
-        Tue, 22 Aug 2023 11:31:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA598C433C7;
-        Tue, 22 Aug 2023 11:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703914;
-        bh=ztcJ1CN4cWHcEnGXHXCyGiTRo9NclIPqHiohb6JvUTU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mA9ZNhOCf9VKnInkT427v4vrHQHRNtN9U+hE0sgG+9ICJWq0SzYSAnPx8Ay5xdRuL
-         QiB9FvW87JbQZ3ZmtUDXWi1cJ5momn8FYs0JEnpPLA+hOzSQH+d+Lxa9HhUdAP4qSo
-         erApMzpkWGxfMqPhBBHQkh5ujaypEFVndZZUv14Jrt1JRrjrObf/ANhqih1DrzXF2x
-         hJRBaOOtbz94O1U4BSttnxyWFjIy7JSaXmIrlqndkinwbdgMGBUceUEyYXljw8Cdvo
-         zVZz/1zg+lkpDtXpJ4Z5ylXXKIMv+IF1PqDPfPFp4GhJ2lS49CTmuokWQAZgyM7B+q
-         2keAGgAyigG6Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Benjamin Gray <bgray@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 6.1 9/9] powerpc/powermac: Use early_* IO variants in via_calibrate_decr()
+        Tue, 22 Aug 2023 07:31:01 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285CFCCA
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1692703859;
+        bh=Rhxx1505nyaBKkevGIY3vs2MQF3lYf7OC0CY8zRoL1w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eKCvInwcr1LuD6mieeKO3A5krOYureCDE6pUSXQx+cxDnmKQA8ni2oyVGFZUue4bx
+         O4EWCbjNaNI94dVcZd6zv2mg9TVfhHpl2eILovOP2wKrL3hZnoo+ucpa3RrNjGc4Ia
+         DFa0AlSirt7JoZRZiR916tPQLpSLRPFwFfkQVvbqS9deGTw9ZcvlhnOjNviZM/GA+F
+         9M+noEDozNGTO4jTosCSW/CQHkarGBHndZjgMmFT1xyU5xN04U9ALwVcPyH0/nq7Jf
+         3tzsm7MW5rvFhhwzb9QAodq9ZqtWfXdyRfujYcMR2Jel1oAKlI3mpkruqmUACM+wed
+         +dtdt8krMOaBA==
+Received: from thinkos.home (unknown [142.120.205.109])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RVRxH1mZcz1M0x;
+        Tue, 22 Aug 2023 07:30:59 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
+Subject: [RFC PATCH v3 0/3] sched: Skip queued wakeups only when L2 is shared
 Date:   Tue, 22 Aug 2023 07:31:30 -0400
-Message-Id: <20230822113130.3550050-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230822113130.3550050-1-sashal@kernel.org>
-References: <20230822113130.3550050-1-sashal@kernel.org>
+Message-Id: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.1.46
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Benjamin Gray <bgray@linux.ibm.com>
+This series improves performance of scheduler wakeups on large systems
+by skipping queued wakeups only when CPUs share their L2 cache, rather
+than when they share their LLC.
 
-[ Upstream commit 86582e6189dd8f9f52c25d46c70fe5d111da6345 ]
+The speedup mainly reproduces on workloads which have at least *some*
+idle time (because it significantly increases the number of migrations,
+and thus remote wakeups), *and* it needs to have a sufficient load to
+cause contention on the runqueue locks.
 
-On a powermac platform, via the call path:
+Feedback is welcome,
 
-  start_kernel()
-    time_init()
-      ppc_md.calibrate_decr() (pmac_calibrate_decr)
-        via_calibrate_decr()
+Thanks,
 
-ioremap() and iounmap() are called. The unmap can enable interrupts
-unexpectedly (cond_resched() in vunmap_pmd_range()), which causes a
-warning later in the boot sequence in start_kernel().
+Mathieu
 
-Use the early_* variants of these IO functions to prevent this.
+Mathieu Desnoyers (3):
+  sched: Rename cpus_share_cache to cpus_share_llc
+  sched: Introduce cpus_share_l2c (v3)
+  sched: ttwu_queue_cond: skip queued wakeups across different l2 caches
 
-The issue is pre-existing, but is surfaced by commit 721255b9826b
-("genirq: Use a maple tree for interrupt descriptor management").
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: Julien Desfossez <jdesfossez@digitalocean.com>
+Cc: x86@kernel.org
 
-Signed-off-by: Benjamin Gray <bgray@linux.ibm.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/20230706010816.72682-1-bgray@linux.ibm.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/powerpc/platforms/powermac/time.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-mq.c                 |  2 +-
+ include/linux/sched/topology.h | 10 ++++++++--
+ kernel/sched/core.c            | 14 +++++++++++---
+ kernel/sched/fair.c            |  8 ++++----
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        | 32 +++++++++++++++++++++++++++++---
+ 6 files changed, 55 insertions(+), 13 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powermac/time.c b/arch/powerpc/platforms/powermac/time.c
-index 4c5790aff1b54..8633891b7aa58 100644
---- a/arch/powerpc/platforms/powermac/time.c
-+++ b/arch/powerpc/platforms/powermac/time.c
-@@ -26,8 +26,8 @@
- #include <linux/rtc.h>
- #include <linux/of_address.h>
- 
-+#include <asm/early_ioremap.h>
- #include <asm/sections.h>
--#include <asm/io.h>
- #include <asm/machdep.h>
- #include <asm/time.h>
- #include <asm/nvram.h>
-@@ -182,7 +182,7 @@ static int __init via_calibrate_decr(void)
- 		return 0;
- 	}
- 	of_node_put(vias);
--	via = ioremap(rsrc.start, resource_size(&rsrc));
-+	via = early_ioremap(rsrc.start, resource_size(&rsrc));
- 	if (via == NULL) {
- 		printk(KERN_ERR "Failed to map VIA for timer calibration !\n");
- 		return 0;
-@@ -207,7 +207,7 @@ static int __init via_calibrate_decr(void)
- 
- 	ppc_tb_freq = (dstart - dend) * 100 / 6;
- 
--	iounmap(via);
-+	early_iounmap((void *)via, resource_size(&rsrc));
- 
- 	return 1;
- }
 -- 
-2.40.1
+2.39.2
 
