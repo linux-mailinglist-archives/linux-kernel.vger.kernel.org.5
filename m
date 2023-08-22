@@ -2,212 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DEE78372B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D04783730
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjHVBAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
+        id S231268AbjHVBE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjHVBAr (ORCPT
+        with ESMTP id S229449AbjHVBES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:00:47 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922CAD7;
-        Mon, 21 Aug 2023 18:00:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692666043; x=1724202043;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=PpIQtwVVDLgNvYt1ipLFOy1XV/k+n83Ca/rODVEtFaw=;
-  b=JUWsQNKWf6AJdzsIvdMQ1EY0fW32TFu7VxCMze1FiLSOV1X/hq0HhJcu
-   6bG766P3T9SOfGJkZCV/M/9Ksh7Mbefz73ZXv8VUcfX8tgrhSBpZSRjH6
-   Q/Ce3ZldSuvSHNhwZOHILSSYQ8eLWO3jRnqBYHc6JqVWmlriYfSIL7amD
-   LixXTCS4T+Vn7YMBhXL1k3GQM6bc+bC2cLWwFdPablQym4RjMuH2YTAOW
-   0QJROYpo+i67nEecDJ1gFG9MB2CH05vn05dtRAQhNOpAZ9VHrsLjEojBF
-   o5PHOV6YDX08fWLECM4P2lbsQ/I8Izh+uv18E+KMEHylC5dtdx4EM3cEQ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354072402"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="354072402"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 18:00:42 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="685853988"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="685853988"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 18:00:35 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-        <nvdimm@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Jonathan Cameron" <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Rafael J Wysocki <rafael.j.wysocki@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH RESEND 1/4] memory tiering: add abstract distance
- calculation algorithms management
-References: <20230721012932.190742-1-ying.huang@intel.com>
-        <20230721012932.190742-2-ying.huang@intel.com>
-        <87r0owzqdc.fsf@nvdebian.thelocal>
-        <87r0owy95t.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87sf9cxupz.fsf@nvdebian.thelocal>
-        <878rb3xh2x.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87351axbk6.fsf@nvdebian.thelocal>
-        <87edkuvw6m.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87y1j2vvqw.fsf@nvdebian.thelocal>
-        <87a5vhx664.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87lef0x23q.fsf@nvdebian.thelocal>
-        <87r0oack40.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87cyzgwrys.fsf@nvdebian.thelocal>
-        <87il98c8ms.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <87edjwlzn7.fsf@nvdebian.thelocal>
-Date:   Tue, 22 Aug 2023 08:58:20 +0800
-In-Reply-To: <87edjwlzn7.fsf@nvdebian.thelocal> (Alistair Popple's message of
-        "Tue, 22 Aug 2023 09:52:43 +1000")
-Message-ID: <875y57dhar.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 21 Aug 2023 21:04:18 -0400
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F110213D;
+        Mon, 21 Aug 2023 18:04:12 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 74037580B0C;
+        Mon, 21 Aug 2023 21:04:09 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 21 Aug 2023 21:04:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1692666249; x=1692673449; bh=qh
+        2CEBnXfgbEiktWUfRJjND/5Zat3Dd90949X0OO51Q=; b=H/HSy01numTud2NhfV
+        iwYgxWNVHTY7qmQo2LJUW/vLLjoZoXpmIt/7C1aA7YOzJsjziV6twMQVydM8Ihd5
+        YgEKlFt6JxGCF5zx7tRVwP0E/vqK2EnqmssDd5tzEAyQ9cJmxBoM3FNwFhJGAz/7
+        IgR2DxPGEDaskpggR08r28NCSaxyAO1yGUK/jCq4BGsrgQGY4P8JOohdOnBrXAxV
+        TQ+Btl6lHiCGpLCOjvBcCOqFYyzfamVZQ++ZMCgH3dCzBk7C/3JFr7V5NDoa95kn
+        xPIVmwcjW8fXjok0rtIYeOVPY3Pnr1wNvJhq3zyDw1vSNl5rN5dV6vNoMebQ1+f/
+        bQCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1692666249; x=1692673449; bh=qh2CEBnXfgbEi
+        ktWUfRJjND/5Zat3Dd90949X0OO51Q=; b=O7SKG7KQHhG7tXidrMdNKr+WyRw0t
+        dkXpvWRFazxtDK4PomrIPwyM+9S6Ub5Ip/ZQ5nbl4LiqOiA58oeofiuJEM5gLS7P
+        2gms/5u+Jd4pHfbWLGzdZA+LsS70aaBvYVMztjRIaHz2z77hszu3t62LgSxbtcgc
+        SNjNh+cnq/DasFADiC21yL38GEC8zRF+xLlie+6wtXPbFsioaofYWEpJFnRCoY4W
+        oiMOTg2E3Xrla8abD+izeZtcGiXNELBD7OXDa8tClxNeI8MQJJwx5fHqIGAe2xYd
+        +UUagAfkST6p85heilhUhwZ9Ee6Fmm6A5BIkAj2mVMTuZrJ+mDN2Zl3RA==
+X-ME-Sender: <xms:iAnkZJ9YK-iCxdeJWVdDS90L4ZuIv0_9bOkKmqOprzMBbmOoI9QCvg>
+    <xme:iAnkZNuxnai4KRWbLirda7qYBUMv_U3BrFXcweu7_Cv9-WuQDpBkNOg9fV9JeHTZ5
+    UCnN3T00ZAYnUzrCzY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedruddvtddggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:iAnkZHDUM1Bt3-3KTwZiB6I0MfHCZMUbT167o-q7vvB1YTcHYTUnYw>
+    <xmx:iAnkZNd_EfM-meaNWCblZxXKJxVn41Tb1LEUysNtibp1mboCRTmyFQ>
+    <xmx:iAnkZONcxr99azeIyV0m47kJAkNUzMS9ouiavhmzoesUd0xjggimQA>
+    <xmx:iQnkZKm8VF6a4MKJf9NNVNHXWrv_lKptknMxkDw0SYz6jFizNlOZOA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 62E01B60089; Mon, 21 Aug 2023 21:04:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-647-g545049cfe6-fm-20230814.001-g545049cf
+Mime-Version: 1.0
+Message-Id: <556a5e72-4001-4d28-affb-831f5c8f9e26@app.fastmail.com>
+In-Reply-To: <20230803063703.5659-1-zhuyinbo@loongson.cn>
+References: <20230803063703.5659-1-zhuyinbo@loongson.cn>
+Date:   Mon, 21 Aug 2023 21:03:48 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Yinbo Zhu" <zhuyinbo@loongson.cn>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        soc@kernel.org, "Ulf Hansson" <ulf.hansson@linaro.org>
+Cc:     "Jianmin Lv" <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
+        "Liu Peibao" <liupeibao@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn, loongarch@lists.linux.dev,
+        "Liu Yun" <liuyun@loongson.cn>
+Subject: Re: [PATCH v6 0/2] soc: loongson2_pm: add power management support
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alistair Popple <apopple@nvidia.com> writes:
-
-> "Huang, Ying" <ying.huang@intel.com> writes:
+On Thu, Aug 3, 2023, at 02:37, Yinbo Zhu wrote:
+> Loongson-2 platform support Power Management Controller (ACPI) and this
+> series patch was to add PM driver that base on dts and PM binding support.
 >
->> Alistair Popple <apopple@nvidia.com> writes:
->>
->>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>
->>>> Hi, Alistair,
->>>>
->>>> Sorry for late response.  Just come back from vacation.
->>>
->>> Ditto for this response :-)
->>>
->>> I see Andrew has taken this into mm-unstable though, so my bad for not
->>> getting around to following all this up sooner.
->>>
->>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>
->>>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>>
->>>>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>>>
->>>>>>> "Huang, Ying" <ying.huang@intel.com> writes:
->>>>>>>
->>>>>>>> Alistair Popple <apopple@nvidia.com> writes:
->>>>>>>>
->>>>>>>>>>>> While other memory device drivers can use the general notifier chain
->>>>>>>>>>>> interface at the same time.
->>>>>>>>>
->>>>>>>>> How would that work in practice though? The abstract distance as far as
->>>>>>>>> I can tell doesn't have any meaning other than establishing preferences
->>>>>>>>> for memory demotion order. Therefore all calculations are relative to
->>>>>>>>> the rest of the calculations on the system. So if a driver does it's own
->>>>>>>>> thing how does it choose a sensible distance? IHMO the value here is in
->>>>>>>>> coordinating all that through a standard interface, whether that is HMAT
->>>>>>>>> or something else.
->>>>>>>>
->>>>>>>> Only if different algorithms follow the same basic principle.  For
->>>>>>>> example, the abstract distance of default DRAM nodes are fixed
->>>>>>>> (MEMTIER_ADISTANCE_DRAM).  The abstract distance of the memory device is
->>>>>>>> in linear direct proportion to the memory latency and inversely
->>>>>>>> proportional to the memory bandwidth.  Use the memory latency and
->>>>>>>> bandwidth of default DRAM nodes as base.
->>>>>>>>
->>>>>>>> HMAT and CDAT report the raw memory latency and bandwidth.  If there are
->>>>>>>> some other methods to report the raw memory latency and bandwidth, we
->>>>>>>> can use them too.
->>>>>>>
->>>>>>> Argh! So we could address my concerns by having drivers feed
->>>>>>> latency/bandwidth numbers into a standard calculation algorithm right?
->>>>>>> Ie. Rather than having drivers calculate abstract distance themselves we
->>>>>>> have the notifier chains return the raw performance data from which the
->>>>>>> abstract distance is derived.
->>>>>>
->>>>>> Now, memory device drivers only need a general interface to get the
->>>>>> abstract distance from the NUMA node ID.  In the future, if they need
->>>>>> more interfaces, we can add them.  For example, the interface you
->>>>>> suggested above.
->>>>>
->>>>> Huh? Memory device drivers (ie. dax/kmem.c) don't care about abstract
->>>>> distance, it's a meaningless number. The only reason they care about it
->>>>> is so they can pass it to alloc_memory_type():
->>>>>
->>>>> struct memory_dev_type *alloc_memory_type(int adistance)
->>>>>
->>>>> Instead alloc_memory_type() should be taking bandwidth/latency numbers
->>>>> and the calculation of abstract distance should be done there. That
->>>>> resovles the issues about how drivers are supposed to devine adistance
->>>>> and also means that when CDAT is added we don't have to duplicate the
->>>>> calculation code.
->>>>
->>>> In the current design, the abstract distance is the key concept of
->>>> memory types and memory tiers.  And it is used as interface to allocate
->>>> memory types.  This provides more flexibility than some other interfaces
->>>> (e.g. read/write bandwidth/latency).  For example, in current
->>>> dax/kmem.c, if HMAT isn't available in the system, the default abstract
->>>> distance: MEMTIER_DEFAULT_DAX_ADISTANCE is used.  This is still useful
->>>> to support some systems now.  On a system without HMAT/CDAT, it's
->>>> possible to calculate abstract distance from ACPI SLIT, although this is
->>>> quite limited.  I'm not sure whether all systems will provide read/write
->>>> bandwith/latency data for all memory devices.
->>>>
->>>> HMAT and CDAT or some other mechanisms may provide the read/write
->>>> bandwidth/latency data to be used to calculate abstract distance.  For
->>>> them, we can provide a shared implementation in mm/memory-tiers.c to map
->>>> from read/write bandwith/latency to the abstract distance.  Can this
->>>> solve your concerns about the consistency among algorithms?  If so, we
->>>> can do that when we add the second algorithm that needs that.
->>>
->>> I guess it would address my concerns if we did that now. I don't see why
->>> we need to wait for a second implementation for that though - the whole
->>> series seems to be built around adding a framework for supporting
->>> multiple algorithms even though only one exists. So I think we should
->>> support that fully, or simplfy the whole thing and just assume the only
->>> thing that exists is HMAT and get rid of the general interface until a
->>> second algorithm comes along.
->>
->> We will need a general interface even for one algorithm implementation.
->> Because it's not good to make a dax subsystem driver (dax/kmem) to
->> depend on a ACPI subsystem driver (acpi/hmat).  We need some general
->> interface at subsystem level (memory tier here) between them.
->
-> I don't understand this argument. For a single algorithm it would be
-> simpler to just define acpi_hmat_calculate_adistance() and a static
-> inline version of it that returns -ENOENT when !CONFIG_ACPI than adding
-> a layer of indirection through notifier blocks. That breaks any
-> dependency on ACPI and there's plenty of precedent for this approach in
-> the kernel already.
+> Change in v6:
+> 		1. The patch "[PATCH v3 1/3] loongarch: export some arch-specific
+> 		   pm interfaces" had been merged into mainline tree in v6.5-rc1
+> 		   thus this v6 series patch need drop it and need depend on it
+> 		   and it's patch link was:
+> https://lore.kernel.org/all/20230615091757.24686-2-zhuyinbo@loongson.cn/
+> 		2. Adding Ulf Hansson to Cc.
+> 		3. Adding soc@kernel.org to Cc.
+> 		4. Keep indented with one tab +2 spaces in Kconfig help text.
 
-ACPI is a subsystem, so it's OK for dax/kmem to depends on CONFIG_ACPI.
-But HMAT is a driver of ACPI subsystem (controlled via
-CONFIG_ACPI_HMAT).  It's not good for a driver of DAX subsystem
-(dax/kmem) to depend on a *driver* of ACPI subsystem.
+I talked to WANG Xuerui on IRC, and he was able to clarify some of the
+missing bits of information for me, after which I merged both patches,
+even though my concerns are not fully addressed:
 
-Yes.  Technically, there's no hard wall to prevent this.  But I think
-that a good design should make drivers depends on subsystems or drivers
-of the same subsystem, NOT drivers of other subsystems.
+- I still think that branching into ROM code from the kernel is a mistake
+  and we should have never allowed that as an ad-hoc interface in the ACPI
+  variant to start with. It's hard to change that now though, and having
+  a DT interface to access the same entry point does not really make it
+  worse. This might need a redesign for future firmware though, to have
+  a proper runtime interface
 
---
-Best Regards,
-Huang, Ying
+- The bigger problem I still see is the DT-enabled boot with PMon without
+  the UEFI firmware. This does not impact the DT binding, but I would
+  consider all non-UEFI booting firmware images broken and not supported
+  by the kernel, as we originally discussed when merging the kernel.
+  These should still be fixable by upgrading PMon to a UEFI-enabled
+  version.
+
+     Arnd
