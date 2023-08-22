@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B310783B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9BB783B39
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjHVHyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S233565AbjHVHzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjHVHyi (ORCPT
+        with ESMTP id S231759AbjHVHzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:54:38 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757C012C
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:54:36 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68781a69befso727251b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:54:36 -0700 (PDT)
+        Tue, 22 Aug 2023 03:55:35 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49F9D12C;
+        Tue, 22 Aug 2023 00:55:34 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3179ed1dfbbso3902627f8f.1;
+        Tue, 22 Aug 2023 00:55:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1692690876; x=1693295676;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f4jgfORi8SmWQDQbZiOec8xn7xqyqjppzAhLAq8G/jM=;
-        b=SOneL3NtXO9oBFlq98JcoX4t3EnesJboldSnWumz5DiUkBnpG7CqEL1eKt5K9rqcA2
-         U3RRuLkwT/GCIUVInlzMYcDj50xv/uxs2qyBQzzhPTYMtkXg2PqKFlKcIAWegMjhGkJZ
-         +fKZaiHC6mfcqYHxcipesaABAxYak2/MZ+QrJr3V6cvvZyagkXZ1QARSjdPbn3ezO8GR
-         DM/xTyQvFqdpZfQWlB4kjX8ZI5jxXRK08bUzQm7S1Pr0J54SUbds0ZKp7eHCmdt5Dn0n
-         NGugvmaAkNnFAW1NpNnaUcyir+eJIXKp9n7vk7+IuTaAiuOSGyKdmnu+jJCHneFWcinO
-         cGiQ==
+        d=gmail.com; s=20221208; t=1692690933; x=1693295733;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Pyw7HPK+xHieuJcUWxvPWFNip6TqzROQ+caJEui+Sw=;
+        b=hNxYkbqaXZY6G1gX3OHllwQY96THYAEYI6lmNEJ06Rp4qaMJiMQuL4dSXUvmRR5yHH
+         IehXqKAwxryb6T8TLbqE6DhCN9NTE0SScbhKIb2wbRVNBuRNclghNolhaX+kWUiOAiq7
+         aTwHaaVsfG3qwuh+GNS+U9s48LZJg+1ZaeMH3UhAv/e0UEibKGgwRiAIYuEXwM7rAy5k
+         7hsqiM4dFr9e2AjEsNy5mLaX6ga0XMUdFvAtbmHdqr7EsrFjpMZ27MGXQJh5HWX8e1QD
+         Xc349GvZHCfLoReXzZ4gKmC2y6Qrge4pYfwnfcPKBYgKQUvR9ouz95OsY50+KpsQbden
+         TGTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692690876; x=1693295676;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f4jgfORi8SmWQDQbZiOec8xn7xqyqjppzAhLAq8G/jM=;
-        b=GynZRGUzVKuHje/+Pu/n8UF9nZZDkUlHyUoNJZyst76kcX5jMAwn8wtqABrhFDt1EI
-         1pJyyQW8A4CrXzyDNVcxP+0GBhygFEw3ZeVxU60BmV2vOJ35VL5QCFxSQ0ShM+z7WIPe
-         HM2f+YQRSlIDjZtfWTX4aP9/9GH0jkkBPFDmUdYcYGoShbUXlwZcVUrk8uG10N1VAnjJ
-         DaB0BkyOL8hPkCD7667F+xpWWk+ECoqZr8yMJTuwAu5wVvzfua2U55PZmb4fu9nXLk++
-         4WEMQuAF4kg4wNpVvUPNxW4hi1Q5nDf3+tZH4PA0Wn/my7llCO1RLvDr8QA7s0XrYYqu
-         2Krw==
-X-Gm-Message-State: AOJu0YwsdHxX2H1CAqLEK0i2p1aSMRwWC40fkUZYq1HaZQAPd82IvCYx
-        /m3KKtCf6SMqCudSioMNSWtteA==
-X-Google-Smtp-Source: AGHT+IGcQ/Vaoo9QWtXIDxo0cmgc5wb+yjqs29/LxRS2cKLFil77dp/RF48DaAlmNeNv2ExX4nw11A==
-X-Received: by 2002:a05:6a21:788a:b0:13a:3649:dc1a with SMTP id bf10-20020a056a21788a00b0013a3649dc1amr12492491pzc.0.1692690875899;
-        Tue, 22 Aug 2023 00:54:35 -0700 (PDT)
-Received: from [10.70.252.135] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b001bbdd44bbb6sm8506831plb.136.2023.08.22.00.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 00:54:35 -0700 (PDT)
-Message-ID: <c6f933ee-751f-def1-31f6-0940e2ee0108@bytedance.com>
-Date:   Tue, 22 Aug 2023 15:54:25 +0800
+        d=1e100.net; s=20221208; t=1692690933; x=1693295733;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Pyw7HPK+xHieuJcUWxvPWFNip6TqzROQ+caJEui+Sw=;
+        b=FpBjzK1n7vjOosOK9vBnGnNjycocu66G3tiDav3t2RAR06m5oslsYHGTuiBYAt2969
+         XaYsH7N2gs2y4RWEb4f5bAL8AD9FeKMsXcs1Fp265X3fqsw00WKbxTN5D+NH/BSwdtR1
+         YZQYggFyfYO159KvSyJTpjcEseoRHiTeri71CNfLpvraHIjPEYAwZLNAZm6OzYTny/Lb
+         wZi4k9eTQV8xknXzzctF7Cxn7McOEXqBZYyEgBd4jY7vlr4dii9JJA8W/V+DtPTXZS8u
+         93ePqAUs6lgQvN+gcWAIdRgNw2u+42HEoKjrkgjjF2KrruxbSifIz2k2RMTNYJR+4/D/
+         ebsw==
+X-Gm-Message-State: AOJu0YxCR7wauT36xEQPsDdTBtc1m9shc3Z1yuOCPuMZj2iOhyVcF1Ov
+        xePvWcLpJovGZsq9RP2gR9xTAN+YY4w=
+X-Google-Smtp-Source: AGHT+IFmBEpq5gk7+dXAFv8bYJ2V6eP47ALqdwODVT0Pl7xU05uLvOja2iHwLjTzNYErcCVzdrG7mw==
+X-Received: by 2002:a05:6000:10b:b0:317:6849:2d39 with SMTP id o11-20020a056000010b00b0031768492d39mr6291650wrx.10.1692690932594;
+        Tue, 22 Aug 2023 00:55:32 -0700 (PDT)
+Received: from orome (p200300e41f1bd600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f1b:d600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id s7-20020a5d69c7000000b0031c5ee51638sm2049572wrw.109.2023.08.22.00.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 00:55:32 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 09:55:30 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Kartik <kkartik@nvidia.com>
+Cc:     jonathanh@nvidia.com, sumitg@nvidia.com, arnd@arndb.de,
+        pshete@nvidia.co, andriy.shevchenko@linux.intel.com,
+        digetx@gmail.com, petlozup@nvidia.com, windhl@126.com,
+        frank.li@vivo.com, robh@kernel.org, stefank@nvidia.com,
+        pdeschrijver@nvidia.com, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] soc/tegra: fuse: Add function to print SKU info
+Message-ID: <ZORp8n6c3TrpiFiA@orome>
+References: <20230818093028.7807-1-kkartik@nvidia.com>
+ <20230818093028.7807-5-kkartik@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v2 0/5] use refcount+RCU method to implement lockless slab
- shrink (part 1)
-Content-Language: en-US
-To:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
-        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
-        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
-        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
-        yujie.liu@intel.com, gregkh@linuxfoundation.org,
-        muchun.song@linux.dev, joel@joelfernandes.org,
-        christian.koenig@amd.com
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        dri-devel@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-References: <20230817112402.77010-1-zhengqi.arch@bytedance.com>
-From:   Qi Zheng <zhengqi.arch@bytedance.com>
-In-Reply-To: <20230817112402.77010-1-zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RKs60H4+8uOWGCre"
+Content-Disposition: inline
+In-Reply-To: <20230818093028.7807-5-kkartik@nvidia.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,68 +80,37 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--RKs60H4+8uOWGCre
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2023/8/17 19:23, Qi Zheng wrote:
-> Hi all,
-> 
-> To make reviewing and updating easier, I've chosen to split the previous
-> patchset[1] into the following three parts:
-> 
-> part 1: some cleanups and preparations
-> part 2: introduce new APIs and convert all shrinnkers to use these
-> part 3: implement lockless slab shrink
-> 
-> This series is the part 1 and is based on the next-20230815.
-> 
-> Comments and suggestions are welcome.
-> 
-> [1]. https://lore.kernel.org/lkml/20230807110936.21819-1-zhengqi.arch@bytedance.com/
-> 
-> Thanks,
-> Qi
-> 
-> Changlog in part 1 v1 -> part 1 v2:
->   - fix compilation warning in [PATCH 1/5]
->   - rename synchronize_shrinkers() to ttm_pool_synchronize_shrinkers()
->     (pointed by Christian König)
->   - collect Reviewed-by
-> 
-> Changlog in v4 -> part 1 v1:
->   - split from the previous large patchset
->   - fix comment format in [PATCH v4 01/48] (pointed by Muchun Song)
->   - change to use kzalloc_node() and fix typo in [PATCH v4 44/48]
->     (pointed by Dave Chinner)
->   - collect Reviewed-bys
->   - rebase onto the next-20230815
+On Fri, Aug 18, 2023 at 03:00:26PM +0530, Kartik wrote:
+> Add helper function tegra_fuse_pr_sku_info() to print Tegra SKU
 
-Hi all,
+Nit: I'd prefer tegra_fuse_print_sku_info(). This is already quite long,
+so the extra 3 characters aren't going to make things a lot worse, but
+they improve readability quite a bit.
 
-Any more comments and suggestions for this part 1? Or can this part
-be merged first (just some cleanups and preparations)? Or should I
-post the part 2 and part 3 first for everyone to review together?
+Thierry
 
-Either one is fine for me. :)
+--RKs60H4+8uOWGCre
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Qi
+-----BEGIN PGP SIGNATURE-----
 
-> 
-> Qi Zheng (5):
->    mm: move some shrinker-related function declarations to mm/internal.h
->    mm: vmscan: move shrinker-related code into a separate file
->    mm: shrinker: remove redundant shrinker_rwsem in debugfs operations
->    drm/ttm: introduce pool_shrink_rwsem
->    mm: shrinker: add a secondary array for shrinker_info::{map,
->      nr_deferred}
-> 
->   drivers/gpu/drm/ttm/ttm_pool.c |  17 +-
->   include/linux/memcontrol.h     |  12 +-
->   include/linux/shrinker.h       |  37 +-
->   mm/Makefile                    |   4 +-
->   mm/internal.h                  |  28 ++
->   mm/shrinker.c                  | 751 +++++++++++++++++++++++++++++++++
->   mm/shrinker_debug.c            |  18 +-
->   mm/vmscan.c                    | 701 ------------------------------
->   8 files changed, 818 insertions(+), 750 deletions(-)
->   create mode 100644 mm/shrinker.c
-> 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmTkafIACgkQ3SOs138+
+s6EFDRAAnYqGBgan06elWAHrHHRw2s75niOr04MaZs4dxVPwY5JZBtnq58e4xEzA
+NX2Q58ZNWe5llkvQbJJltM9V2WYlstDd/5dhrdAH/HYAZwDhDj8DimggwblkBNdS
+iYQ5ABx26KDZNGPNFGKA2gsLoPTpTgiWwT9JW4q7KZalku0fJmeQ8z5tldZ1qShk
+ffVboREpI8xpIjQSwZ3IrluKJ/aTNBqmWoyyIDwI2eS2Urx8kgStgyotobEhSHfO
+D2Ef1JAS9YoggHsKwUdz0M72IMp3GTL+Gg1XrNCjaf2SBWh8EPI+sh3nahK0/X6R
+wKtCXEeuQL+qc2HfUYPqqhCm4tyLw4+Ler50el2n7Dtvz6JfkhP72ZVpxF7IzFtx
+35BV/YmVoPBFRCQYtSXqfE4fxk5ZxBGzPhKsxlpv2fEo78L/QFxIYIQonJMv15az
+gYVLy40A4/rTHgYRnHTNfAHuB6/57TMIVmaCyGj0Zk2EnX2EytAM/HMcwTvQ3IBb
+qChok/+XMT90cu1M9eAuHJf1jCrFv075XkI95KxoUJLsjjDs8D/+C5bbF3Ac1bk9
+8w0AhKcZjvn4Lb43u7U1dSjqGTZ6tX92OSSTXvhEov5cVKORcXEVfcTPn54Q3HNY
+fFI63I3odn8r8YjQ1Qtdnk4rxcEH0IQCx5tQXpEsc5j/LN1Gx7M=
+=L1cY
+-----END PGP SIGNATURE-----
+
+--RKs60H4+8uOWGCre--
