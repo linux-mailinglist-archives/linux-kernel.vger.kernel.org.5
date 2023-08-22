@@ -2,149 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD585784AE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D2D784AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229790AbjHVTzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        id S229878AbjHVT7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjHVTzb (ORCPT
+        with ESMTP id S229816AbjHVT7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:55:31 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9954193
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:55:29 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-410915344aeso18784131cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1692734129; x=1693338929;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1Q9PzSJsZpgiOu1CVR72fJVbG7GMfY5u21uosrtHcwo=;
-        b=e3zMTcqZjXEoGwBVWslC3ZpORwORyOL8dxtzfaTXF0oqIPtpxkjNbFkGpNXZCbEG6V
-         p3l8wskGUPtH5zQuvFZd4rieO5HZAaAumQFvuhWH0dIwYKcQ86kSCVyGCr0XFT08LPPx
-         Hrh/+4VQmxmbCoo0AH+lCdwcW2FXaVSuYhf4JHrSxYSw0cEqa2WqgdzUKn5Re66+AGop
-         JBPDgHVp3djIAPe+8R9TapVgrTkconhjvsKcU+lFzcU9j3914mj1Dq10kAno3MvAcKQe
-         JrFrZ34MWWkV6OShu8/9uWHsOoaCynSGhgZFOMp+y6Cd8gT5+O/7IdZtqX+dS1WD0BBF
-         eBKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692734129; x=1693338929;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1Q9PzSJsZpgiOu1CVR72fJVbG7GMfY5u21uosrtHcwo=;
-        b=l476fk4O6GEb3yvKyWXNdnY8dXghcIJSDJMa2VGO+z7Lm7VYNXhYQksfGwfFCGsAnp
-         t5gy2dIsbp96xN4lleyqZBi39HXnJspG9YFJGMtzlLV+Mk7GGNxi4Hpo2wowXTBU7jYJ
-         Zugnq6yB8MwpgDqRlwEtarjOYW1jC3Y54kr/7/NvavLHo+cV281Tpy8Q38z9sQWcsGOg
-         z4wPos5otZ2830RxDhV8Ldfnrq6bvEa6InTnTvyD0iIsaQWsHOcM+TOlR7kmlrfEn0va
-         4t28ptJu1xZCP1vq/9hl9a6/mF2ezMk1jZMY44AoNo9RIh4jKYdZgaSTl0I7t4otWvEp
-         Qxiw==
-X-Gm-Message-State: AOJu0YwQIlTjV6UQnzDgQn/P+XoYbRTfpxBJiasjQeCCpmbqm6MHx/VO
-        2/Iv+h+6IKhuhSK/zXil7+hMOvjFGwVqIMhVqNI=
-X-Google-Smtp-Source: AGHT+IEObsx+c/lJX6FbQ9Yn/pe9TNRfUYz1pwlmVs/i9iXFeO8P55SdRnWrfg6NgJo4SUTzH6qpmw==
-X-Received: by 2002:a05:622a:1907:b0:3e4:e2ce:526f with SMTP id w7-20020a05622a190700b003e4e2ce526fmr15163657qtc.39.1692734128793;
-        Tue, 22 Aug 2023 12:55:28 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
-        by smtp.gmail.com with ESMTPSA id e19-20020ac86713000000b00407ffb2c24dsm3227005qtp.63.2023.08.22.12.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 12:55:28 -0700 (PDT)
-Message-ID: <9e3c7a11ed1d50c4afdf4f181aae7d4a6a425329.camel@ndufresne.ca>
-Subject: Re: [RFC]: shmem fd for non-DMA buffer sharing cross drivers
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Hsia-Jun Li <Randy.Li@synaptics.com>, linux-mm@kvack.org
-Cc:     dri-devel@lists.freedesktop.org,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        hughd@google.com, akpm@linux-foundation.org,
-        Simon Ser <contact@emersion.fr>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomasz Figa <tfiga@chromium.org>, daniels@collabora.com,
-        ayaka <ayaka@soulik.info>, linux-kernel@vger.kernel.org
-Date:   Tue, 22 Aug 2023 15:55:27 -0400
-In-Reply-To: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
-References: <029b982f-da62-4fa8-66c4-ab11a515574a@synaptics.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 22 Aug 2023 15:59:47 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2056.outbound.protection.outlook.com [40.107.94.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC731AD;
+        Tue, 22 Aug 2023 12:59:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FUptiYd4GhH9cjA1Yj9ztoLGI85sAHGujUs3d23eRmMpPkd4keivhcfAijplnvMalZChhGGqP02+20EELq6tFxbeZvmDwhuAKIXa3vbJKs0sNbb1ZrkdDgyBYqECnMT15aft/unMhRezLQsGHKnqQtD22JzGoesYAY+wzvOZgGnG+pogUbnu+VUtNiJqkVaEV3Bh5JwnK3GKXzVsfCdj0+QiDDKKibjOY8PL58iFJb1CHtZ0eWY3s6j+6919IfKAWDPJESm5T418aNyOZCWFZMbyhDoWYaFJfyob1QuKcrh8p23yrFcZvf2UTNQmKbW+F42ti6MvijoB32KkAzFYZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8cFIMbU9T4DVU9aCC+0eQh4Hcqs6NKy56SsjNoDgP6s=;
+ b=fZ6iZdS6xZJ8KN7V2lo3w0fIPoYamDhkZ82qehI4l3L49LhBvR2a7BpkF97H+TEHi7dY+A2I2BxhkZnYzkq97Ry1tmaZsVPGW30Il+VqeZ0GCr2HUdBxvbL/GDW/oUMdtncHpgE32EvfjmjHGtc5/f2g3EzdVcp/gyDjbL2d+HiFjJJavhHUjRFH7gmkVN1SYfpgm7OdS8RHX2Gjy5YXEkhcVCfw0nyljF6a/8TQc8lV4uVLdJy2DtqljOEFDKWjSWMOwwcLckX8eA6x9vVAm563AEPT2H8Gs28WaSN0iUwr40ZnPC97CTukUrnAK6ha58QXCagr1U7v8+voRRPv/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8cFIMbU9T4DVU9aCC+0eQh4Hcqs6NKy56SsjNoDgP6s=;
+ b=KTPhHjYkfOA6lXciZbqQSM5jCmj9aDxFYGniHdZufArVfjWjR9hVG3D2t9TSaUX91gDwasJGWJpuOGqLkLk7gT6VCYVyhfoHpKVaiJeviwxG+maSZT8Z/M7riljZKhbUDoAqmBXk20YCffuy28NtHxRu0uBJ8uJSmap3DPCG6nItzXl05XZ3TZip+gfKsznjjHKpC99Yrs+PUYG0IY6d5zEClINz9pNIajkdg6xQRFQkgfzNGNiCOOR42VcnT4uXR3yQE5sJxaJuIbJ8UO3eZfWQ48JpbEekJCdG4qpTkcLDvw7vvykkNeFMP1UQVPe5PPGPWR7X8C6x01pX3gIyFA==
+Received: from MW4PR04CA0390.namprd04.prod.outlook.com (2603:10b6:303:81::35)
+ by CY5PR12MB6082.namprd12.prod.outlook.com (2603:10b6:930:2a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 19:59:42 +0000
+Received: from CO1PEPF000042A9.namprd03.prod.outlook.com
+ (2603:10b6:303:81:cafe::65) by MW4PR04CA0390.outlook.office365.com
+ (2603:10b6:303:81::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25 via Frontend
+ Transport; Tue, 22 Aug 2023 19:59:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CO1PEPF000042A9.mail.protection.outlook.com (10.167.243.38) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6699.14 via Frontend Transport; Tue, 22 Aug 2023 19:59:42 +0000
+Received: from drhqmail201.nvidia.com (10.126.190.180) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 22 Aug 2023
+ 12:59:32 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail201.nvidia.com (10.126.190.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Tue, 22 Aug 2023 12:59:32 -0700
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Tue, 22 Aug 2023 12:59:31 -0700
+From:   Liming Sun <limings@nvidia.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+CC:     Liming Sun <limings@nvidia.com>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v10 1/2] mmc : sdhci-of-dwcmshc : add error handling in dwcmshc_resume
+Date:   Tue, 22 Aug 2023 15:59:28 -0400
+Message-ID: <20230822195929.168552-1-limings@nvidia.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000042A9:EE_|CY5PR12MB6082:EE_
+X-MS-Office365-Filtering-Correlation-Id: 020c9517-087b-45d5-91b4-08dba34a5372
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W8K64XFUNgI7eP4X/ZTAwbuJJQRL2Mw2/J+/VHW9khtMHB3H5/NmDeYbebj+xpi7k37Ij0f2kteeciNA+RwRzqeY3qfILgJlkZN/a+ru4cO17ogQ8ia8kyX7H+bBDVyeH9aX1CHaDhIFqPyyEkFzp0t5wDbsOgx7AbwkzQt0kg/mZmYrAcHWLa3M4Jn4lGNjBy3yteHPmYoaQHmDcOf76o08ZC13/frFAmy6mTawjavp/PhZAwbNUx90LflZX75IiKxnUWV2qTz3PeGCI+r4sx4H+Gs6cAE6Z24xWI8ZiBcEqVgEMFoN+cLiSft7MZzx75Sv3lk61xmvmdRCbYjyOFSl7Xxv2C7rvcx0tCCjYpPyMtsbLMc7PtdIMq6pbTTcfTI729qEf44VbxgCKqTJXXLo6+9Yu5O7L2pB7az3ijpff275xrgIwp+8wthY/Lj8xDLqwZmTN6tGsVzNgKrwKtjO/qUWntnuEJN3GAZZLSt+g836qQdS75LNsf322ozxf0HWsKDNz97h8anIzwflGRLI4td31ch+Ni7uva4gSAsUPaZdMTJNqsz+wOlA4TaNZGNJkiNJggFtXXo3ws7SkO6542a6txBemGFdxuHD+AvieDLAUQ/uWHoCp6UPdhlj8PTH6mRbC63j7L0jVSmXEcwhlF7ZwhtbHHEiu9k+GNmB1Ejv1D/AQv4YWqUvmT8WqnaaRC0M29YeUi2yZY/YlN3zV951HIdU+Sm4resg0t1RlU51uVszylGIQnZnPXB4deUkUC8Gcu7sjV2mcJTF6w==
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(396003)(39860400002)(136003)(451199024)(82310400011)(186009)(1800799009)(36840700001)(40470700004)(46966006)(2906002)(40480700001)(83380400001)(5660300002)(426003)(336012)(26005)(36860700001)(86362001)(47076005)(7696005)(8676002)(2616005)(8936002)(4326008)(316002)(70586007)(54906003)(110136005)(70206006)(478600001)(356005)(82740400003)(6666004)(40460700003)(36756003)(1076003)(41300700001)(7636003)(133343001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 19:59:42.5200
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 020c9517-087b-45d5-91b4-08dba34a5372
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042A9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6082
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This commit adds handling in dwcmshc_resume() for different error
+cases.
 
-Le mardi 22 ao=C3=BBt 2023 =C3=A0 19:14 +0800, Hsia-Jun Li a =C3=A9crit=C2=
-=A0:
-> Hello
->=20
-> I would like to introduce a usage of SHMEM slimier to DMA-buf, the major=
-=20
-> purpose of that is sharing metadata or just a pure container for cross=
-=20
-> drivers.
->=20
-> We need to exchange some sort of metadata between drivers, likes dynamic=
-=20
-> HDR data between video4linux2 and DRM. Or the graphics frame buffer is=
-=20
-> too complex to be described with plain plane's DMA-buf fd.
-> An issue between DRM and V4L2 is that DRM could only support 4 planes=20
-> while it is 8 for V4L2. It would be pretty hard for DRM to expend its=20
-> interface to support that 4 more planes which would lead to revision of=
-=20
-> many standard likes Vulkan, EGL.
->=20
-> Also, there is no reason to consume a device's memory for the content=20
-> that device can't read it, or wasting an entry of IOMMU for such data.
-> Usually, such a metadata would be the value should be written to a=20
-> hardware's registers, a 4KiB page would be 1024 items of 32 bits register=
-s.
->=20
-> Still, I have some problems with SHMEM:
-> 1. I don't want thhe userspace modify the context of the SHMEM allocated=
-=20
-> by the kernel, is there a way to do so?
-> 2. Should I create a helper function for installing the SHMEM file as a f=
-d?
+Signed-off-by: Liming Sun <limings@nvidia.com>
+---
+ drivers/mmc/host/sdhci-of-dwcmshc.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-Please have a look at memfd and the seal feature, it does cover the reason =
-why
-unsealed shared memory require full trust. For controls, the SEAL_WRITE is =
-even
-needed, as with appropriate timing, a malicous process can modify the data =
-in-
-between validation and allocation, causing possible memory overflow.
+diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+index 31c1892f4ecd..bc332a035032 100644
+--- a/drivers/mmc/host/sdhci-of-dwcmshc.c
++++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+@@ -630,17 +630,32 @@ static int dwcmshc_resume(struct device *dev)
+ 	if (!IS_ERR(priv->bus_clk)) {
+ 		ret = clk_prepare_enable(priv->bus_clk);
+ 		if (ret)
+-			return ret;
++			goto disable_clk;
+ 	}
+ 
+ 	if (rk_priv) {
+ 		ret = clk_bulk_prepare_enable(RK35xx_MAX_CLKS,
+ 					      rk_priv->rockchip_clks);
+ 		if (ret)
+-			return ret;
++			goto disable_bus_clk;
+ 	}
+ 
+-	return sdhci_resume_host(host);
++	ret = sdhci_resume_host(host);
++	if (ret)
++		goto disable_rockchip_clks;
++
++	return 0;
++
++disable_rockchip_clks:
++	if (rk_priv)
++		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
++					   rk_priv->rockchip_clks);
++disable_bus_clk:
++	if (!IS_ERR(priv->bus_clk))
++		clk_disable_unprepare(priv->bus_clk);
++disable_clk:
++	clk_disable_unprepare(pltfm_host->clk);
++	return ret;
+ }
+ #endif
+ 
+-- 
+2.30.1
 
-https://man7.org/linux/man-pages/man2/memfd_create.2.html
-File sealing
-       In the absence of file sealing, processes that communicate via
-       shared memory must either trust each other, or take measures to
-       deal with the possibility that an untrusted peer may manipulate
-       the shared memory region in problematic ways.  For example, an
-       untrusted peer might modify the contents of the shared memory at
-       any time, or shrink the shared memory region.  The former
-       possibility leaves the local process vulnerable to time-of-check-
-       to-time-of-use race conditions (typically dealt with by copying
-       data from the shared memory region before checking and using it).
-       The latter possibility leaves the local process vulnerable to
-       SIGBUS signals when an attempt is made to access a now-
-       nonexistent location in the shared memory region.  (Dealing with
-       this possibility necessitates the use of a handler for the SIGBUS
-       signal.)
-
-       Dealing with untrusted peers imposes extra complexity on code
-       that employs shared memory.  Memory sealing enables that extra
-       complexity to be eliminated, by allowing a process to operate
-       secure in the knowledge that its peer can't modify the shared
-       memory in an undesired fashion.
-
-       [...]
-
-regards,
-Nicolas
