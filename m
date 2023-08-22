@@ -2,186 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8DF7839D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE3E7839E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:23:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbjHVGST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S232981AbjHVGXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:23:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbjHVGSR (ORCPT
+        with ESMTP id S232969AbjHVGXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:18:17 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1F81A4;
-        Mon, 21 Aug 2023 23:18:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 22 Aug 2023 02:23:51 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE47E9;
+        Mon, 21 Aug 2023 23:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692685416;
+        bh=baux6wKyrSwGF5u0Zk4EklCqNw3y1Nb0sygcmX9Ue7w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=FClRdczx5wK/P/QoyaHSszcy9YaRmDIgADZPuV99fGSsTY0sh7yF3VgxdbUZykIlg
+         ZaB93+ayJJVKktT+WHTrwRFv85FsYzmC1E6v6N5wWaMkB4fh+989Z4Vo1HuIayltFo
+         zoUfPzrWgDHF65+aHxiITil5h/+dSf4wIAjy00ru/YGDR/E6YnFBYu5un/eysDHPt0
+         dlzYpoW0QDeHVPajGjksOr7E2QIoQ4HftQaEEHkpaPvPLw6amTgXlHtXyGtFoBNg4G
+         jWSKaYh59267Qr7RfnsUGEOeMCwUfktag4PPRNvuV/rC4KoYRkupbLWRy/HjCfUKoe
+         WLCkhq8CS13AQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60B4C63615;
-        Tue, 22 Aug 2023 06:18:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80714C433CC;
-        Tue, 22 Aug 2023 06:18:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692685088;
-        bh=+MGLTXNbrFnnrTitTj7A9hMBuY9jQ/3Yp97qYAAvB1g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=S5dU7Trh7ZiLW6LeyT9BNNvGy7usNy5Ff7G7/q11kNF97UPnNuCZXct55PfCfVyeT
-         g6rJYlN8Cpk2MXam9KzUN7Qy8uJfznF8e28yFqMnNEFClD6qykGiED4fvldFAuNwgm
-         ll3f7t0Rg/KIaWKH9QzoqNYdBcLP59cFP4Y91zWyPMJhPHeoLdvNIZ636XrW3mxtV/
-         m4IGxBOO+9BhTUk8Vd40IuHAMk3G42+quMuBNx1bUR+eP1pMMhApDETIw8/PpBeIue
-         nfWbhevBHf3RFQ+poeNvN1YYtE2uaEEGvfZMC2xZSn4nBJBmWsNt3qG55ecZqwxzPB
-         UwRRtbPlSB5fw==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so6223009e87.2;
-        Mon, 21 Aug 2023 23:18:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0Yw5gdmPP7K8BCFTNa1iO8NeSwiBY81JeNcgFDSH+RLblHtw7/az
-        hLuwFoFqEDgwIEBARMUlqv2/iItFlpFu5Uwkzh8=
-X-Google-Smtp-Source: AGHT+IHI+/Y4BA4mcN+yUjE57pWT/7CCgdwsQZMtMBTNuSlPXNLqrv+JFh6B6z6cbCIT5WrjJs6J6InsN4zQh4OTdFA=
-X-Received: by 2002:a05:6512:1296:b0:4fe:993:2218 with SMTP id
- u22-20020a056512129600b004fe09932218mr8129241lfs.31.1692685086445; Mon, 21
- Aug 2023 23:18:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
- <20230818101630.000027f4@linux.intel.com> <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
-In-Reply-To: <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Aug 2023 23:17:54 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
-Message-ID: <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, AceLan Kao <acelan@gmail.com>,
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RVK6b4N2Sz4wxR;
+        Tue, 22 Aug 2023 16:23:35 +1000 (AEST)
+Date:   Tue, 22 Aug 2023 16:23:33 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     Benno Lossin <benno.lossin@proton.me>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the rust tree with the kunit-next tree
+Message-ID: <20230822162333.752217fa@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/.0Ilvkk/dX+C.ZPDJM0yq9a";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 8:51=E2=80=AFPM Guoqing Jiang <guoqing.jiang@linux.=
-dev> wrote:
->
->
->
-> On 8/18/23 16:16, Mariusz Tkaczyk wrote:
-> > On Wed, 16 Aug 2023 16:37:26 +0700
-> > Bagas Sanjaya<bagasdotme@gmail.com>  wrote:
-> >
-> >> Hi,
-> >>
-> >> I notice a regression report on Bugzilla [1]. Quoting from it:
-> >>
-> >>> It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10, RA=
-ID5
-> >>> and RAID10) and then you will see below error repeatly(need to use se=
-rial
-> >>> console to see it)
-> >>>
-> >>> [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
-> >>> [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all dir=
-s
-> >>> [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning /sy=
-s/bus
-> >>> [ 205.380427] systemd-shutdown[1]: sd-device-enumerator: Scanning /sy=
-s/class
-> >>> [ 205.388257] systemd-shutdown[1]: Stopping MD /dev/md127 (9:127).
-> >>> [ 205.394880] systemd-shutdown[1]: Failed to sync MD block device
-> >>> /dev/md127, ignoring: Input/output error [ 205.404975] md: md127 stop=
-ped.
-> >>> [ 205.470491] systemd-shutdown[1]: Stopping MD /dev/md126 (9:126).
-> >>> [ 205.770179] md: md126: resync interrupted.
-> >>> [ 205.776258] md126: detected capacity change from 1900396544 to 0
-> >>> [ 205.783349] md: md126 stopped.
-> >>> [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125).
-> >>> [ 205.862435] md: md126 stopped.
-> >>> [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device
-> >>> /dev/md125, ignoring: Input/output error [ 205.872845] block device
-> >>> autoloading is deprecated and will be removed. [ 205.880955] md: md12=
-5
-> >>> stopped. [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md124p2
-> >>> (259:7). [ 205.947707] systemd-shutdown[1]: Could not stop MD /dev/md=
-124p2:
-> >>> Device or resource busy [ 205.957004] systemd-shutdown[1]: Stopping M=
-D
-> >>> /dev/md124p1 (259:6). [ 205.964177] systemd-shutdown[1]: Could not st=
-op MD
-> >>> /dev/md124p1: Device or resource busy [ 205.973155] systemd-shutdown[=
-1]:
-> >>> Stopping MD /dev/md124 (9:124). [ 205.979789] systemd-shutdown[1]: Co=
-uld
-> >>> not stop MD /dev/md124: Device or resource busy [ 205.988475]
-> >>> systemd-shutdown[1]: Not all MD devices stopped, 4 left.
-> >> See Bugzilla for the full thread and attached full journalctl log.
-> >>
-> >> Anyway, I'm adding this regression to be tracked by regzbot:
-> >>
-> >> #regzbot introduced: 12a6caf273240a
-> >> https://bugzilla.kernel.org/show_bug.cgi?id=3D217798  #regzbot title: =
-systemd
-> >> shutdown hang on machine with different RAID levels
-> >>
-> >> Thanks.
-> >>
-> >> [1]:https://bugzilla.kernel.org/show_bug.cgi?id=3D217798
-> >>
-> > Hello,
-> > The issue is reproducible with IMSM metadata too, around 20% of reboot =
-hangs. I
-> > will try to raise the priority in the bug because it is valid high- the
-> > base functionality of the system is affected.
->
-> Since it it reproducible from your side, is it possible to turn the
-> reproduce steps into a test case
-> given the importance?
->
-> I guess If all arrays are set with MD_DELETED flag, then reboot might
-> hang, not sure whether
-> below (maybe need to flush wq as well  before list_del) helps or not,
-> just FYI.
->
-> @@ -9566,8 +9566,10 @@ static int md_notify_reboot(struct notifier_block
-> *this,
->
->          spin_lock(&all_mddevs_lock);
->          list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) {
-> -               if (!mddev_get(mddev))
-> +               if (!mddev_get(mddev)) {
-> +                       list_del(&mddev->all_mddevs);
->                          continue;
-> +               }
+--Sig_/.0Ilvkk/dX+C.ZPDJM0yq9a
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I am still not able to reproduce this, probably due to differences in the
-timing. Maybe we only need something like:
+Hi all,
 
-diff --git i/drivers/md/md.c w/drivers/md/md.c
-index 5c3c19b8d509..ebb529b0faf8 100644
---- i/drivers/md/md.c
-+++ w/drivers/md/md.c
-@@ -9619,8 +9619,10 @@ static int md_notify_reboot(struct notifier_block *t=
-his,
+Today's linux-next merge of the rust tree got a conflict in:
 
-        spin_lock(&all_mddevs_lock);
-        list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) {
--               if (!mddev_get(mddev))
-+               if (!mddev_get(mddev)) {
-+                       need_delay =3D 1;
-                        continue;
-+               }
-                spin_unlock(&all_mddevs_lock);
-                if (mddev_trylock(mddev)) {
-                        if (mddev->pers)
+  rust/kernel/init.rs
 
+between commit:
 
-Thanks,
-Song
+  a30e94c29673 ("rust: init: make doctests compilable/testable")
+
+from the kunit-next tree and commit:
+
+  35e7fca2ff59 ("rust: init: add `..Zeroable::zeroed()` syntax for zeroing =
+all missing fields")
+
+from the rust tree.
+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc rust/kernel/init.rs
+index e05563aad2ed,0071b2834b78..000000000000
+--- a/rust/kernel/init.rs
++++ b/rust/kernel/init.rs
+@@@ -522,9 -517,11 +526,10 @@@ macro_rules! stack_try_pin_init=20
+  /// For instance:
+  ///
+  /// ```rust
+- /// # use kernel::{macros::pin_data, pin_init};
+ -/// # use kernel::pin_init;
+ -/// # use macros::{Zeroable, pin_data};
+++/// # use kernel::{macros::Zeroable, pin_data, pin_init};
+  /// # use core::{ptr::addr_of_mut, marker::PhantomPinned};
+  /// #[pin_data]
++ /// #[derive(Zeroable)]
+  /// struct Buf {
+  ///     // `ptr` points into `buf`.
+  ///     ptr: *mut u8,
+
+--Sig_/.0Ilvkk/dX+C.ZPDJM0yq9a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTkVGUACgkQAVBC80lX
+0Gx9AAgAku/zfspUpHuWIE1cnLHuuGbHpxE3dSE2ejzItREptjIRJA7xYLWxMesH
+//kPRFVqfPj4ECbmySnrCf9+fg1PUPPlMedfpdaSSImyJoFZWh3TQMHscxE/iR38
+ZLJEWoMvlJrqMcOrQ8F6n02uLAjX80cOesggb07wvqry9DNLNcGcJpauU4k6LZDD
+Ygg2WURYIyzjZ0MIE/RiXCW+cfzU1nrq1UUhs5kAYPMg9rKQNBLPhQbCPrSbUKEl
+U0dSPs1vm77cXdRuWX5oQ9lpPhfpXFrneePKnV2KdHQ7y+hfAGe+I7ibbThXfgUv
+HvR48/BL9cBxvUgqMLxFgix4uQ8h4g==
+=2oZR
+-----END PGP SIGNATURE-----
+
+--Sig_/.0Ilvkk/dX+C.ZPDJM0yq9a--
