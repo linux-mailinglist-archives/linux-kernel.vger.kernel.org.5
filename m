@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEC0783BC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01B4783BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbjHVI2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37930 "EHLO
+        id S233871AbjHVI3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbjHVI2s (ORCPT
+        with ESMTP id S233846AbjHVI2z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:28:48 -0400
+        Tue, 22 Aug 2023 04:28:55 -0400
 Received: from mail-sh.amlogic.com (mail-sh.amlogic.com [58.32.228.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6BF19F;
-        Tue, 22 Aug 2023 01:28:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32B219C;
+        Tue, 22 Aug 2023 01:28:06 -0700 (PDT)
 Received: from droid06.amlogic.com (10.18.11.248) by mail-sh.amlogic.com
  (10.18.11.5) with Microsoft SMTP Server id 15.1.2507.13; Tue, 22 Aug 2023
- 16:27:56 +0800
+ 16:28:00 +0800
 From:   Yu Tu <yu.tu@amlogic.com>
 To:     <linux-clk@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
@@ -34,80 +34,138 @@ To:     <linux-clk@vger.kernel.org>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 CC:     <kelvin.zhang@amlogic.com>, <qi.duan@amlogic.com>,
         Yu Tu <yu.tu@amlogic.com>
-Subject: [PATCH V10 0/4] Add S4 SoC PLLs and Peripheral clock
-Date:   Tue, 22 Aug 2023 16:27:46 +0800
-Message-ID: <20230822082750.27633-1-yu.tu@amlogic.com>
+Subject: [PATCH V10 1/4] dt-bindings: clock: document Amlogic S4 SoC PLL clock controller
+Date:   Tue, 22 Aug 2023 16:27:47 +0800
+Message-ID: <20230822082750.27633-2-yu.tu@amlogic.com>
 X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20230822082750.27633-1-yu.tu@amlogic.com>
+References: <20230822082750.27633-1-yu.tu@amlogic.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.18.11.248]
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. Add S4 SoC PLLs and Peripheral clock controller dt-bindings.
-2. Add PLLs and Peripheral clock controller driver for S4 SOC.
+Add the S4 PLL clock controller dt-bindings in the S4 SoC family.
 
-
-Yu Tu (4):
-  dt-bindings: clock: document Amlogic S4 SoC PLL clock controller
-  dt-bindings: clock: document Amlogic S4 SoC peripherals clock
-    controller
-  clk: meson: S4: add support for Amlogic S4 SoC PLL clock driver
-  clk: meson: S4: add support for Amlogic S4 SoC peripheral clock
-    controller
-
-V9 -> V10:
-1. Change the relevant S4 CLK patch based on Neil's recently modified
-patch.
-2. Change patch 0003/0004 clocks comment, format and clock flags suggested
-by Jerome.
-
-V8 -> V9: Add patch 0001/0002 dt-bindings tag. Suggested by Krzysztof.
-V7 -> V8:
-1. Change patch 0001/0002 dt-bindings title description, remove "meson".
-Suggested by Dmitry, Neil.
-2. Change patch 0003/0004 clocks comment, format and clock flags suggested by
-Dmitry, Neil, Jerome.
-
-V6 -> V7: Change send patch series as well change format and clock flags
-suggested by Jerome. Change dt-bindings suggested by Krzysztof.
-V5 -> V6: Change send patch series, as well change format and clock flags.
-V4 -> V5: change format and clock flags and adjust the patch series
-as suggested by Jerome.
-V3 -> V4: change format and clock flags.
-V2 -> V3: Use two clock controller.
-V1 -> V2: Change format as discussed in the email.
-
-Link:https://lore.kernel.org/linux-amlogic/20230517070215.28463-1-yu.tu@amlogic.com/
-
- .../clock/amlogic,s4-peripherals-clkc.yaml    |   96 +
- .../bindings/clock/amlogic,s4-pll-clkc.yaml   |   49 +
- drivers/clk/meson/Kconfig                     |   23 +
- drivers/clk/meson/Makefile                    |    2 +
- drivers/clk/meson/s4-peripherals.c            | 3787 +++++++++++++++++
- drivers/clk/meson/s4-peripherals.h            |   57 +
- drivers/clk/meson/s4-pll.c                    |  867 ++++
- drivers/clk/meson/s4-pll.h                    |   38 +
- .../clock/amlogic,s4-peripherals-clkc.h       |  236 +
- .../dt-bindings/clock/amlogic,s4-pll-clkc.h   |   43 +
- 10 files changed, 5198 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4-peripherals-clkc.yaml
+Signed-off-by: Yu Tu <yu.tu@amlogic.com>
+---
+ .../bindings/clock/amlogic,s4-pll-clkc.yaml   | 49 +++++++++++++++++++
+ .../dt-bindings/clock/amlogic,s4-pll-clkc.h   | 43 ++++++++++++++++
+ 2 files changed, 92 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/clock/amlogic,s4-pll-clkc.yaml
- create mode 100644 drivers/clk/meson/s4-peripherals.c
- create mode 100644 drivers/clk/meson/s4-peripherals.h
- create mode 100644 drivers/clk/meson/s4-pll.c
- create mode 100644 drivers/clk/meson/s4-pll.h
- create mode 100644 include/dt-bindings/clock/amlogic,s4-peripherals-clkc.h
  create mode 100644 include/dt-bindings/clock/amlogic,s4-pll-clkc.h
 
-
-base-commit: bd0f6c57c2b324b6f92ccfe13a8005ff829287b8
+diff --git a/Documentation/devicetree/bindings/clock/amlogic,s4-pll-clkc.yaml b/Documentation/devicetree/bindings/clock/amlogic,s4-pll-clkc.yaml
+new file mode 100644
+index 000000000000..d8932ec26ca8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/amlogic,s4-pll-clkc.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright (C) 2022-2023 Amlogic, Inc. All rights reserved
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/amlogic,s4-pll-clkc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Amlogic S4 PLL Clock Controller
++
++maintainers:
++  - Yu Tu <yu.tu@amlogic.com>
++
++properties:
++  compatible:
++    const: amlogic,s4-pll-clkc
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: xtal
++
++  "#clock-cells":
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - "#clock-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    clkc_pll: clock-controller@fe008000 {
++      compatible = "amlogic,s4-pll-clkc";
++      reg = <0xfe008000 0x1e8>;
++      clocks = <&xtal>;
++      clock-names = "xtal";
++      #clock-cells = <1>;
++    };
++
++...
+diff --git a/include/dt-bindings/clock/amlogic,s4-pll-clkc.h b/include/dt-bindings/clock/amlogic,s4-pll-clkc.h
+new file mode 100644
+index 000000000000..af9f110f8b62
+--- /dev/null
++++ b/include/dt-bindings/clock/amlogic,s4-pll-clkc.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
++/*
++ * Copyright (c) 2022-2023 Amlogic, Inc. All rights reserved.
++ * Author: Yu Tu <yu.tu@amlogic.com>
++ */
++
++#ifndef _DT_BINDINGS_CLOCK_AMLOGIC_S4_PLL_CLKC_H
++#define _DT_BINDINGS_CLOCK_AMLOGIC_S4_PLL_CLKC_H
++
++#define CLKID_FIXED_PLL_DCO		0
++#define CLKID_FIXED_PLL			1
++#define CLKID_FCLK_DIV2_DIV		2
++#define CLKID_FCLK_DIV2			3
++#define CLKID_FCLK_DIV3_DIV		4
++#define CLKID_FCLK_DIV3			5
++#define CLKID_FCLK_DIV4_DIV		6
++#define CLKID_FCLK_DIV4			7
++#define CLKID_FCLK_DIV5_DIV		8
++#define CLKID_FCLK_DIV5			9
++#define CLKID_FCLK_DIV7_DIV		10
++#define CLKID_FCLK_DIV7			11
++#define CLKID_FCLK_DIV2P5_DIV		12
++#define CLKID_FCLK_DIV2P5		13
++#define CLKID_GP0_PLL_DCO		14
++#define CLKID_GP0_PLL			15
++#define CLKID_HIFI_PLL_DCO		16
++#define CLKID_HIFI_PLL			17
++#define CLKID_HDMI_PLL_DCO		18
++#define CLKID_HDMI_PLL_OD		19
++#define CLKID_HDMI_PLL			20
++#define CLKID_MPLL_50M_DIV		21
++#define CLKID_MPLL_50M			22
++#define CLKID_MPLL_PREDIV		23
++#define CLKID_MPLL0_DIV			24
++#define CLKID_MPLL0			25
++#define CLKID_MPLL1_DIV			26
++#define CLKID_MPLL1			27
++#define CLKID_MPLL2_DIV			28
++#define CLKID_MPLL2			29
++#define CLKID_MPLL3_DIV			30
++#define CLKID_MPLL3			31
++
++#endif /* _DT_BINDINGS_CLOCK_AMLOGIC_S4_PLL_CLKC_H */
 -- 
 2.33.1
 
