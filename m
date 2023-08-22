@@ -2,60 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A487838AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55A17838B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjHVEDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 00:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53650 "EHLO
+        id S232545AbjHVEES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 00:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbjHVEDx (ORCPT
+        with ESMTP id S229531AbjHVEEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 00:03:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D31189
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 21:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692677031; x=1724213031;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qVa2mz+7SAMK1AI7G5hf54O0co/nPIRYwI1Xu5ZS7iI=;
-  b=it2fXhjTsfa/0U4sRvp+aIlV8/ik0LUTGhn8XD2jhXIZaTYavGuSBbQS
-   SgSiHeERFaNZlQ1Hp2SxocJ7uCcCerzsEdMkLNmBorJYmZIeQnb2yOWj0
-   QFHoEhHGuppaMnSp1Xnn6jgm2HK3CWag90uLZYSl9dYhBz4Hv/C8G4cBO
-   JcbTztGcBSfI+Q5IUa7NnooiY4kt98BUEs3IasLYgpuvIaTpHHiXakNtV
-   hL7/xCTJWoNYCXwAUa0rkQf1rxGIgRsihycjOfu8vLvyXl3jOPnM2AKHU
-   fvvTlyrDzjTM1inxXSjtBTVY7JgIWj2P1PTkrdjJYg7qd54Kbnmig80P5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354101227"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="354101227"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 21:03:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="909949302"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="909949302"
-Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 21 Aug 2023 21:03:26 -0700
-Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYIc2-0001Ka-0X;
-        Tue, 22 Aug 2023 04:03:26 +0000
-Date:   Tue, 22 Aug 2023 12:02:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>
-Subject: include/linux/gpio/driver.h:31:19: error: field has incomplete type
- 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-Message-ID: <202308221127.sHuxETLk-lkp@intel.com>
+        Tue, 22 Aug 2023 00:04:16 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C0C193;
+        Mon, 21 Aug 2023 21:04:11 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M42Pmk030740;
+        Tue, 22 Aug 2023 04:03:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=wg9c5TjeH+uwYknKtQQ4OzrxTvY8oxOG1F7P0n/+Hps=;
+ b=loWcS/5sjLuwjgF+3ZRcOUgRGDUcFML8e+PYTJX8+R4FmhnDZqA+cfWQ/Q8KnVGZdC2w
+ +dUBYON+XQ/drCcPIywFHKQK3bUhOMaK6B8Z1e/IejEedWPP9yYoVn/vAJoL5H3uyZs5
+ HaA88xN5HF8PS81daHxeg4spyBhYi18amK0/yIXAp8GXkP3vgRcSLjNDze11IdGuUZ0c
+ Us3Szo25FS+4s3v2VUkEh0WxgbDwhpSZlSWWtX4ldOQPwhhQzM7FBRT0hljrtd3ujECS
+ 7xS2gf/kwWrHSdWnGmvWVpY88C9LRQ8YtzbKctHWcYZ5s9t1EcsTmxMgVWTQG32EvlkL oA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smdhwgr1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 04:03:58 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37M43vN4019215
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 04:03:57 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Mon, 21 Aug 2023 21:03:51 -0700
+Date:   Tue, 22 Aug 2023 09:33:48 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_parass@quicinc.com>,
+        <krzysztof.kozlowski@linaro.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v3 3/3] PCI: qcom: Add OPP support for speed based
+ performance state of RPMH
+Message-ID: <95078a8b-857d-4900-8737-a495212db935@quicinc.com>
+References: <1692627343-4380-1-git-send-email-quic_krichai@quicinc.com>
+ <1692627343-4380-4-git-send-email-quic_krichai@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+In-Reply-To: <1692627343-4380-4-git-send-email-quic_krichai@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: noE1vk51qwNrmBmMuR4yEVRjyyWds4Ay
+X-Proofpoint-GUID: noE1vk51qwNrmBmMuR4yEVRjyyWds4Ay
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_01,2023-08-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ impostorscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220031
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,170 +88,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f7757129e3dea336c407551c98f50057c22bb266
-commit: 70afdab904d2d1e68bffe75fe08e7e48e0b0ff8e irqchip: Add IMX MU MSI controller driver
-date:   11 months ago
-config: i386-buildonly-randconfig-006-20230821 (https://download.01.org/0day-ci/archive/20230822/202308221127.sHuxETLk-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308221127.sHuxETLk-lkp@intel.com/reproduce)
+On Mon, Aug 21, 2023 at 07:45:43PM +0530, Krishna chaitanya chundru wrote:
+> Before link training vote for the maximum performance state of RPMH
+> and once link is up, vote for the performance state based upon the link
+> speed.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 47 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 47 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 7a87a47..c57ca1a 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -22,6 +22,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/of_gpio.h>
+>  #include <linux/pci.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/pcie.h>
+> @@ -1357,6 +1358,32 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>  	return 0;
+>  }
+>  
+> +static void qcom_pcie_opp_update(struct qcom_pcie *pcie)
+> +{
+> +	struct dw_pcie *pci = pcie->pci;
+> +	struct dev_pm_opp *opp;
+> +	u32 offset, status;
+> +	int speed, ret = 0;
+> +
+> +	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
+> +	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
+> +
+> +	/* Only update constraints if link is up. */
+> +	if (!(status & PCI_EXP_LNKSTA_DLLLA))
+> +		return;
+> +
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308221127.sHuxETLk-lkp@intel.com/
+What happens if link is not up during probe? We set max vote before
+this, should not we bring it down in suspend and vote it back again in
+resume? 
 
-All errors (new ones prefixed by >>):
+> +	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
+> +
+> +	opp = dev_pm_opp_find_level_exact(pci->dev, speed);
+> +	if (!IS_ERR(opp)) {
+> +		ret = dev_pm_opp_set_opp(pci->dev, opp);
+> +		if (ret)
+> +			dev_err(pci->dev, "Failed to set opp: %d\n", ret);
+> +		dev_pm_opp_put(opp);
+> +	}
 
-   In file included from drivers/leds/leds-lp8788.c:16:
-   In file included from include/linux/mfd/lp8788.h:13:
-   In file included from include/linux/gpio.h:62:
-   In file included from include/asm-generic/gpio.h:11:
->> include/linux/gpio/driver.h:31:19: error: field has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t        msiinfo;
-                                   ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   1 error generated.
---
-   In file included from drivers/leds/leds-pca9532.c:19:
->> include/linux/gpio/driver.h:31:19: error: field has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t        msiinfo;
-                                   ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   drivers/leds/leds-pca9532.c:352:6: warning: variable 'gpios' set but not used [-Wunused-but-set-variable]
-           int gpios = 0;
-               ^
-   1 warning and 1 error generated.
---
->> drivers/base/platform-msi.c:26:20: error: field has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t                arg;
-                                           ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   1 error generated.
---
-   In file included from drivers/mmc/host/dw_mmc.c:38:
-   In file included from include/linux/of_gpio.h:14:
->> include/linux/gpio/driver.h:31:19: error: field has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t        msiinfo;
-                                   ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   drivers/mmc/host/dw_mmc.c:3040:33: warning: shift count >= width of type [-Wshift-count-overflow]
-                           if (!dma_set_mask(host->dev, DMA_BIT_MASK(64)))
-                                                        ^~~~~~~~~~~~~~~~
-   include/linux/dma-mapping.h:76:54: note: expanded from macro 'DMA_BIT_MASK'
-   #define DMA_BIT_MASK(n) (((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
-                                                        ^ ~~~
-   drivers/mmc/host/dw_mmc.c:3042:13: warning: shift count >= width of type [-Wshift-count-overflow]
-                                                         DMA_BIT_MASK(64));
-                                                         ^~~~~~~~~~~~~~~~
-   include/linux/dma-mapping.h:76:54: note: expanded from macro 'DMA_BIT_MASK'
-   #define DMA_BIT_MASK(n) (((n) == 64) ? ~0ULL : ((1ULL<<(n))-1))
-                                                        ^ ~~~
-   2 warnings and 1 error generated.
---
-   In file included from drivers/char/tpm/st33zp24/i2c.c:9:
-   In file included from include/linux/gpio.h:62:
-   In file included from include/asm-generic/gpio.h:11:
->> include/linux/gpio/driver.h:31:19: error: field has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t        msiinfo;
-                                   ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   In file included from drivers/char/tpm/st33zp24/i2c.c:17:
-   In file included from drivers/char/tpm/st33zp24/../tpm.h:28:
-   include/linux/tpm_eventlog.h:167:6: warning: variable 'mapping_size' set but not used [-Wunused-but-set-variable]
-           int mapping_size;
-               ^
-   1 warning and 1 error generated.
---
->> kernel/irq/msi.c:585:12: error: incomplete definition of type 'struct irq_alloc_info'
-           return arg->hwirq;
-                  ~~~^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
->> kernel/irq/msi.c:591:23: error: invalid application of 'sizeof' to an incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           memset(arg, 0, sizeof(*arg));
-                                ^~~~~~
-   arch/x86/include/asm/string_32.h:195:52: note: expanded from macro 'memset'
-   #define memset(s, c, count) __builtin_memset(s, c, count)
-                                                      ^~~~~
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   kernel/irq/msi.c:598:5: error: incomplete definition of type 'struct irq_alloc_info'
-           arg->desc = desc;
-           ~~~^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
->> kernel/irq/msi.c:858:19: error: variable has incomplete type 'msi_alloc_info_t' (aka 'struct irq_alloc_info')
-           msi_alloc_info_t arg = { };
-                            ^
-   arch/x86/include/asm/msi.h:7:16: note: forward declaration of 'struct irq_alloc_info'
-   typedef struct irq_alloc_info msi_alloc_info_t;
-                  ^
-   4 errors generated.
---
->> arch/x86/kernel/hpet.c:520:39: error: incomplete definition of type 'struct irq_alloc_info'
-           irq_domain_set_info(domain, virq, arg->hwirq, info->chip, NULL,
-                                             ~~~^
-   arch/x86/include/asm/io_apic.h:90:8: note: forward declaration of 'struct irq_alloc_info'
-   struct irq_alloc_info;
-          ^
-   arch/x86/kernel/hpet.c:521:28: error: incomplete definition of type 'struct irq_alloc_info'
-                               handle_edge_irq, arg->data, "edge");
-                                                ~~~^
-   arch/x86/include/asm/io_apic.h:90:8: note: forward declaration of 'struct irq_alloc_info'
-   struct irq_alloc_info;
-          ^
->> arch/x86/kernel/hpet.c:550:6: error: use of undeclared identifier 'x86_vector_domain'
-           if (x86_vector_domain == NULL)
-               ^
-   arch/x86/kernel/hpet.c:577:16: error: use of undeclared identifier 'x86_vector_domain'
-           if (parent != x86_vector_domain)
-                         ^
->> arch/x86/kernel/hpet.c:598:24: error: variable has incomplete type 'struct irq_alloc_info'
-           struct irq_alloc_info info;
-                                 ^
-   arch/x86/include/asm/io_apic.h:90:8: note: forward declaration of 'struct irq_alloc_info'
-   struct irq_alloc_info;
-          ^
->> arch/x86/kernel/hpet.c:600:2: error: call to undeclared function 'init_irq_alloc_info'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-           init_irq_alloc_info(&info, NULL);
-           ^
->> arch/x86/kernel/hpet.c:601:14: error: use of undeclared identifier 'X86_IRQ_ALLOC_TYPE_HPET'
-           info.type = X86_IRQ_ALLOC_TYPE_HPET;
-                       ^
-   7 errors generated.
+Since you added an error message, make it more useful by printing the
+opp level also. dev_pm_opp_get_level().
 
+> +
+> +}
+> +
+>  static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
+>  {
+>  	struct dw_pcie *pci = pcie->pci;
+> @@ -1439,8 +1466,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
+>  static int qcom_pcie_probe(struct platform_device *pdev)
+>  {
+>  	const struct qcom_pcie_cfg *pcie_cfg;
+> +	unsigned long max_freq = INT_MAX;
+>  	struct device *dev = &pdev->dev;
+>  	struct qcom_pcie *pcie;
+> +	struct dev_pm_opp *opp;
+>  	struct dw_pcie_rp *pp;
+>  	struct resource *res;
+>  	struct dw_pcie *pci;
+> @@ -1511,6 +1540,22 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto err_pm_runtime_put;
+>  
+> +	/* OPP table is optional */
+> +	ret = devm_pm_opp_of_add_table(dev);
+> +	if (ret && ret != -ENODEV) {
+> +		dev_err(dev, "Invalid OPP table in Device tree\n");
+> +		goto err_pm_runtime_put;
+> +	}
+> +
+> +	/* vote for max level in the opp table */
+> +	opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
+> +	if (!IS_ERR(opp)) {
+> +		ret = dev_pm_opp_set_opp(dev, opp);
+> +		if (ret)
+> +			dev_err(pci->dev, "Failed to set opp: %d\n", ret);
+> +		dev_pm_opp_put(opp);
+> +	}
+> +
 
-vim +31 include/linux/gpio/driver.h
+This needs an update since you moved from frequency based voting to link
+speed based voting.
 
-fdd61a013a24f2 Linus Walleij 2019-08-08  27  
-91a29af413def6 Marc Zyngier  2022-07-07  28  union gpio_irq_fwspec {
-91a29af413def6 Marc Zyngier  2022-07-07  29  	struct irq_fwspec	fwspec;
-91a29af413def6 Marc Zyngier  2022-07-07  30  #ifdef CONFIG_GENERIC_MSI_IRQ_DOMAIN
-91a29af413def6 Marc Zyngier  2022-07-07 @31  	msi_alloc_info_t	msiinfo;
-91a29af413def6 Marc Zyngier  2022-07-07  32  #endif
-91a29af413def6 Marc Zyngier  2022-07-07  33  };
-91a29af413def6 Marc Zyngier  2022-07-07  34  
+>  	ret = pcie->cfg->ops->get_resources(pcie);
+>  	if (ret)
+>  		goto err_pm_runtime_put;
+> @@ -1531,6 +1576,8 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  
+>  	qcom_pcie_icc_update(pcie);
+>  
+> +	qcom_pcie_opp_update(pcie);
+> +
+>  	if (pcie->mhi)
+>  		qcom_pcie_init_debugfs(pcie);
+>  
+> 
 
-:::::: The code at line 31 was first introduced by commit
-:::::: 91a29af413def677495e447fb9a06957ebc8bed5 gpio: Remove dynamic allocation from populate_parent_alloc_arg()
-
-:::::: TO: Marc Zyngier <maz@kernel.org>
-:::::: CC: Marc Zyngier <maz@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+Pavan
