@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9514F783F14
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77941783FF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234930AbjHVLdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        id S235338AbjHVLsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbjHVLdN (ORCPT
+        with ESMTP id S235329AbjHVLsm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:33:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7247FE55;
-        Tue, 22 Aug 2023 04:32:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4D3CC652F5;
-        Tue, 22 Aug 2023 11:32:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9DC7C433C8;
-        Tue, 22 Aug 2023 11:32:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703963;
-        bh=MAgeVFiQ/GLoFOhlmi6vWUoGiAmhRDDsCJPJF1xdZb0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LKMMx60/y7bhsu7B293vJrWUyg3cW66w+K5oLdEKN3y0MAT0zikb3NhAVYuSAnQjP
-         TKM0vB3SZH4Ik/V5hjBHNq8xxMZgFYUO/Y4WJr78mE7U7t2RW9AKNTe5YYP+fubdNz
-         nZrT0ierubE1tT2KjOdxda7Y0Hit6z1ETXkPsJQxxx7bygycs+OQUcvBh/YbsfY5+s
-         hYUaIMaXdjkPoHCSoVxzLIz0nQPnnoV0a1CCL8nJO21tRXlQUhatsLVI+SR/6VM1VN
-         ieNQcC3wZS0oTN8CP6Nfks1ybc9grIQNRKMGcK49kaltGQ9szL7zxc4BPDC95hNsJ3
-         m4oYUJT9oEZfA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        aspriel@gmail.com, hante.meuleman@broadcom.com,
-        linus.walleij@linaro.org, marcan@marcan.st, gustavoars@kernel.org,
-        ryohei.kondo@cypress.com, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: [PATCH AUTOSEL 4.14 2/2] wifi: brcmfmac: Fix field-spanning write in brcmf_scan_params_v2_to_v1()
-Date:   Tue, 22 Aug 2023 07:32:35 -0400
-Message-Id: <20230822113236.3550450-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230822113236.3550450-1-sashal@kernel.org>
-References: <20230822113236.3550450-1-sashal@kernel.org>
+        Tue, 22 Aug 2023 07:48:42 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 193BFE77
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:48:18 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a18a4136a9so327495366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1692704864; x=1693309664;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O/NIHQP9t9FWAMyIX2X2xC1QDnFwKfnIeXzDlJpOVxc=;
+        b=bUMHOEwUjqsywS0wWf18cHYzNanJpHq4Qz0JpgfMgeWDEE+l4xd/uz9UsqfVUvlLqj
+         8+qSjmr+D3g1DfdIOCDC/rb748dXAUcl+HZlHnVm1Pwfp1ismWYOh+qpEzGgQcbS/9yc
+         qHwQTRyWVqsUyt4xhzrfddQ/By8VBCzstjtEhIoJqq9umOPCt7n6E3f27ymPvJbFKmM9
+         lDzGSyfP252zDQdM7uR5HXSze1hPDa7iyGP7I8BkWkqTsQz4I559xgFo10rFRRKGpwjX
+         7XdlfFlpVblTHPZoVvZMA87t9Uc/brNb0B8V8yOtDYgjLi4/2Tl4EAfIFv9DT76XxwHx
+         4cig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692704864; x=1693309664;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O/NIHQP9t9FWAMyIX2X2xC1QDnFwKfnIeXzDlJpOVxc=;
+        b=IpvelWSdCTcabGu5J+kBTubCePcN47+KvPtpHy6jwlzfCCUGkZ+h0ZJRwF8lb3cHeE
+         r2n4txn2R5tvgMbMKhGizF2OcvXuunm90RSAyQxfC1NrXl/Brax9BK5QG96CXXlxHQcj
+         NHSpEEsLrHvdmrvMRmBvU6CY+UjSfYguGrklgwFfJFLdvDLKDlfS2pNS6kDWN8rtsQOw
+         NWp2YDzYMAPn7fd4rP6xguUfDjwG6rRP02YfFBzaXyMjTeG8mI8TlWpGwgh8/VNcjpwu
+         8a7htn3No2Bxw1rFNe0H5MDdoBgCV9/0LtgklPXWqmWJvNV5qRv7TDz4xtV2YPHxvtQ5
+         iWCQ==
+X-Gm-Message-State: AOJu0YwHTTPm0IPoTpZ8qAHOfTABeB9fz2RGZJkYq855UqU7xU3qLAHf
+        HZJJp9Z6c0l8qbFYHYWjjiem+m8M7oh7KfZXWNA=
+X-Google-Smtp-Source: AGHT+IF4BkC3dItCe8+LWY7rH+IOmTjUHBRnT8M+Yenfj6xxQDBw3yl0SAR1SoFVSjpnVIKOk0hH4g==
+X-Received: by 2002:a05:6512:1584:b0:4fb:94c6:fd63 with SMTP id bp4-20020a056512158400b004fb94c6fd63mr8155443lfb.17.1692703987423;
+        Tue, 22 Aug 2023 04:33:07 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id t11-20020ac24c0b000000b004ffa28ef3a4sm1202792lfq.100.2023.08.22.04.33.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 04:33:06 -0700 (PDT)
+Message-ID: <a9aee232-7bf2-4f4d-b42a-1f7ec1434393@linaro.org>
+Date:   Tue, 22 Aug 2023 14:33:06 +0300
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.323
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 1/4] phy: qcom: m31: Fix indentation issues
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        vkoul@kernel.org, kishon@kernel.org, arnd@arndb.de,
+        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
+        peng.fan@nxp.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org
+References: <cover.1692699472.git.quic_varada@quicinc.com>
+ <6d1638daf9b0616816fdecb529df86a394db7942.1692699472.git.quic_varada@quicinc.com>
+ <CAA8EJpryKOzGd42NjG470D9jGr1Huv5D-F-NqaTo-0EJeFUr+A@mail.gmail.com>
+Content-Language: en-GB
+In-Reply-To: <CAA8EJpryKOzGd42NjG470D9jGr1Huv5D-F-NqaTo-0EJeFUr+A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,63 +82,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+On 22/08/2023 13:55, Dmitry Baryshkov wrote:
+> On Tue, 22 Aug 2023 at 13:31, Varadarajan Narayanan
+> <quic_varada@quicinc.com> wrote:
+>>
+>> * Fix indentation
+>> * Drop simple success messages
+>>
+>> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+>> ---
+>> v9:
+>>          Fix line break alignment
+>>          Remove register success print
+>>          v8 version of the driver has been picked up for merge.
+>>          (https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
+>> v8:
+>>          Change commit subject and message per review comments
+>>          Don't include of_platform.h
+>>          Change struct init coding style
+>>          GENMASK -> BIT for one define
+>> v6:
+>>          Kconfig:Add COMPILE_TEST and remove USB_GADGET from 'depends'
+>>                  Change 'selects' USB_PHY -> GENERIC_PHY
+>>          Driver: Use correct headers
+>>                  const int -> unsigned int for 'nregs' in private data
+>>                  Use generic names for clk, phy in m31 phy structure
+>>                  Init register details directly instead of using macro
+>>                  Use dev_err_probe in the error paths of driver probe
+>> v5:
+>>          Kconfig and Makefile:- place snippet according to sorted order
+>>          Use generic phy instead of usb-phy
+>>          Use ARRAY_SIZE for reg init instead of blank last entry
+>>          Fix copyright year
+>>
+>> v4:
+>>          Remove unused enum
+>>          Error handling for devm_clk_get
+>> v1:
+>>          Combine driver, makefile and kconfig into 1 patch
+>>          Remove 'qscratch' region and its usage. The controller driver takes care
+>>          of those settings
+>>          Use compatible/data to handle ipq5332 init
+>>          Drop the default case
+>>          Get resources by index instead of name as there is only one resource
+>>          Add clock
+>>          Fix review comments in the driver
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-m31.c | 8 +++-----
+>>   1 file changed, 3 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
+>> index ed08072..ea79c18 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-m31.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-m31.c
+>> @@ -242,7 +242,7 @@ static int m31usb_phy_probe(struct platform_device *pdev)
+>>          qphy->clk = devm_clk_get(dev, NULL);
+>>          if (IS_ERR(qphy->clk))
+>>                  return dev_err_probe(dev, PTR_ERR(qphy->clk),
+>> -                                               "failed to get clk\n");
+>> +                                    "failed to get clk\n");
+> 
+> But why are you trying to fix this? aligning next line to the opening
+> bracket is perfectly fine (and is one of the endorsed styles).
 
-[ Upstream commit 16e455a465fca91907af0108f3d013150386df30 ]
+Ugh, excuse me. My mailer displayed alignment in a wrong way.
 
-Using brcmfmac with 6.5-rc3 on a brcmfmac43241b4-sdio triggers
-a backtrace caused by the following field-spanning warning:
+This LGTM except the last chunk (removal of the info message).
 
-memcpy: detected field-spanning write (size 120) of single field
-  "&params_le->channel_list[0]" at
-  drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1072 (size 2)
+> 
+>>
+>>          data = of_device_get_match_data(dev);
+>>          qphy->regs              = data->regs;
+>> @@ -252,18 +252,16 @@ static int m31usb_phy_probe(struct platform_device *pdev)
+>>          qphy->phy = devm_phy_create(dev, NULL, &m31usb_phy_gen_ops);
+>>          if (IS_ERR(qphy->phy))
+>>                  return dev_err_probe(dev, PTR_ERR(qphy->phy),
+>> -                                               "failed to create phy\n");
+>> +                                    "failed to create phy\n");
+>>
+>>          qphy->vreg = devm_regulator_get(dev, "vdda-phy");
+>>          if (IS_ERR(qphy->vreg))
+>>                  return dev_err_probe(dev, PTR_ERR(qphy->phy),
+>> -                                               "failed to get vreg\n");
+>> +                                    "failed to get vreg\n");
+>>
+>>          phy_set_drvdata(qphy->phy, qphy);
+>>
+>>          phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+>> -       if (!IS_ERR(phy_provider))
+>> -               dev_info(dev, "Registered M31 USB phy\n");
+> 
+> This is irrelevant to the indentation.
+> 
+>>
+>>          return PTR_ERR_OR_ZERO(phy_provider);
+>>   }
+>> --
+>> 2.7.4
+>>
+> 
+> 
 
-The driver still works after this warning. The warning was introduced by the
-new field-spanning write checks which were enabled recently.
-
-Fix this by replacing the channel_list[1] declaration at the end of
-the struct with a flexible array declaration.
-
-Most users of struct brcmf_scan_params_le calculate the size to alloc
-using the size of the non flex-array part of the struct + needed extra
-space, so they do not care about sizeof(struct brcmf_scan_params_le).
-
-brcmf_notify_escan_complete() however uses the struct on the stack,
-expecting there to be room for at least 1 entry in the channel-list
-to store the special -1 abort channel-id.
-
-To make this work use an anonymous union with a padding member
-added + the actual channel_list flexible array.
-
-Cc: Kees Cook <keescook@chromium.org>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Franky Lin <franky.lin@broadcom.com>
-Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://lore.kernel.org/r/20230729140500.27892-1-hdegoede@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- .../net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h  | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index 05bd636011ec9..58338b6443f8d 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-@@ -354,7 +354,12 @@ struct brcmf_scan_params_le {
- 				 * fixed parameter portion is assumed, otherwise
- 				 * ssid in the fixed portion is ignored
- 				 */
--	__le16 channel_list[1];	/* list of chanspecs */
-+	union {
-+		__le16 padding;	/* Reserve space for at least 1 entry for abort
-+				 * which uses an on stack brcmf_scan_params_le
-+				 */
-+		DECLARE_FLEX_ARRAY(__le16, channel_list);	/* chanspecs */
-+	};
- };
- 
- struct brcmf_scan_results {
 -- 
-2.40.1
+With best wishes
+Dmitry
 
