@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E508784D85
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:53:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1989784D89
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbjHVXxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
+        id S231819AbjHVX5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjHVXxy (ORCPT
+        with ESMTP id S229796AbjHVX5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:53:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF79CFE;
-        Tue, 22 Aug 2023 16:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692748433; x=1724284433;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=S6aNe+EVKfavzRzFWZfuxF/UFuLG6/wm1koeauKhU4k=;
-  b=Ss5CMgSNpoH3K26j02US6iChobLOoQgf+4XxeLr8O9ECCYiKl7VKqjHj
-   5W10rWN20Zjm9zjLJZSPGqaqTOaSlg1zfB/9Mu8IEHRa9oLGkTckM0wau
-   d+cd8hFMYt5+e5+iTdSfl/jnqAwpeN9hsVeXShW0JySmw9TTy4TZGYkg0
-   oKxrk5pczfYlu37LbxbVqlHYpTTNr1f6s02Wbb1BSAUwZ8imhiCzaFg4w
-   UbhG/jky3ylRYUqgziJTtRhrr8a5IRuiKaCI9+ERV3bZpEuv6A4g2CKNU
-   oSqLW3XsvldGpNx0beM+EtlfpLm1xPd82gbSb55mwaeWeFOabRCuvc0AB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="372909075"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="372909075"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 16:53:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10810"; a="801884468"
-X-IronPort-AV: E=Sophos;i="6.01,194,1684825200"; 
-   d="scan'208";a="801884468"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Aug 2023 16:53:50 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYbC1-0000dE-2w;
-        Tue, 22 Aug 2023 23:53:49 +0000
-Date:   Wed, 23 Aug 2023 07:53:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bart Van Assche <bvanassche@acm.org>,
-        Zhu Wang <wangzhu9@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, dan.carpenter@linaro.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: Re: [PATCH -next] scsi: core: fix double free in
- raid_component_add()
-Message-ID: <202308230741.jbMc6KYG-lkp@intel.com>
-References: <baecaad7-7124-b9ae-ab79-1b7c6fa95c98@acm.org>
+        Tue, 22 Aug 2023 19:57:37 -0400
+X-Greylist: delayed 90 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 22 Aug 2023 16:57:35 PDT
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B77CF9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:57:35 -0700 (PDT)
+Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
+        by cmsmtp with ESMTP
+        id Y9giqHCk8OzKlYbECq98ZG; Tue, 22 Aug 2023 23:56:04 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id YbECqvPV3NE1FYbECq4iD8; Tue, 22 Aug 2023 23:56:04 +0000
+X-Authority-Analysis: v=2.4 cv=Tu/1ORbh c=1 sm=1 tr=0 ts=64e54b14
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=EQwu3T12zX-_ASVHoRwA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=sHXcsrcQ2JX7PaJS3xNaWPJAISzumo8tG3P7erCaBfI=; b=Umscmz2J1uDsZ0JCtM72gWzEDo
+        b5rSRI3K/GkdBEDbVtGo626Ksn2M/bBklkIUiArBVIcNZcWkDEl4Nq3nrRjgvj3Tn1faEuIFCC9KH
+        h5xYpKjCsFaHTHDUUk6V4VdC0hTCWWoT7RbM7s7qLUFny2Ez9mCfl+v0BxRpzNIj56Ho9anLPqfYC
+        +DnozoHT/MiOn02+wyNQfpKIzIGNxoPzNw+YcQzBLuPXdfxKSznQZjMbzflTF7bja+h6ZwOO8NOrl
+        4lI/qK1Nl2/coqQjxdYMglNchIOaJygDJX3mV2qIAgSGNX5vBKPBRnJByMMjhgefsTOIq+Yt6HdyA
+        CxbXguVw==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:52760 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qYbEA-0020jC-0A;
+        Tue, 22 Aug 2023 17:56:02 -0600
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230821194122.695845670@linuxfoundation.org>
+In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <65a9032d-6083-cb4d-78db-9d4e77292fd6@w6rz.net>
+Date:   Tue, 22 Aug 2023 16:55:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <baecaad7-7124-b9ae-ab79-1b7c6fa95c98@acm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qYbEA-0020jC-0A
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:52760
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfPuJ9x8vvz8hcpJGXRoRkfv+zh5Vp9rodjaoA1YjhHswPCIuv282ovQ3g5UpLtFMDxvJWPyD2aj7e1J+38HuwuNHMF3GvPub0oj+jHfFKuU5DjK6i3uZ
+ IeBek3BbW/foZSwDmI4OSFZbvBvuw5fCp/m9kUqvIv5yjwdIODp6Hw6hZa60dk+/cSk09VoAkAVPJOyla9WQch/jKv4tYl3tmkk=
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart,
+On 8/21/23 12:39 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.47 release.
+> There are 194 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.47-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-kernel test robot noticed the following build warnings:
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-[auto build test WARNING on mkp-scsi/for-next]
-[cannot apply to next-20230821 jejb-scsi/for-next linus/master v6.5-rc7 next-20230822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Tested-by: Ron Economos <re@w6rz.net>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Bart-Van-Assche/Re-PATCH-next-scsi-core-fix-double-free-in-raid_component_add/20230822-035432
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
-patch link:    https://lore.kernel.org/r/baecaad7-7124-b9ae-ab79-1b7c6fa95c98%40acm.org
-patch subject: Re: [PATCH -next] scsi: core: fix double free in raid_component_add()
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230823/202308230741.jbMc6KYG-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230741.jbMc6KYG-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308230741.jbMc6KYG-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/scsi/raid_class.c:212:13: warning: 'raid_component_release' defined but not used [-Wunused-function]
-     212 | static void raid_component_release(struct device *dev)
-         |             ^~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/raid_component_release +212 drivers/scsi/raid_class.c
-
-b1081ea6f000de James Bottomley 2005-11-06  211  
-ee959b00c335d7 Tony Jones      2008-02-22 @212  static void raid_component_release(struct device *dev)
-b1081ea6f000de James Bottomley 2005-11-06  213  {
-ee959b00c335d7 Tony Jones      2008-02-22  214  	struct raid_component *rc =
-ee959b00c335d7 Tony Jones      2008-02-22  215  		container_of(dev, struct raid_component, dev);
-ee959b00c335d7 Tony Jones      2008-02-22  216  	dev_printk(KERN_ERR, rc->dev.parent, "COMPONENT RELEASE\n");
-ee959b00c335d7 Tony Jones      2008-02-22  217  	put_device(rc->dev.parent);
-b1081ea6f000de James Bottomley 2005-11-06  218  	kfree(rc);
-b1081ea6f000de James Bottomley 2005-11-06  219  }
-61a7afa2c476a3 James Bottomley 2005-08-16  220  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
