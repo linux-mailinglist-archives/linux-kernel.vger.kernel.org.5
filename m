@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CB6783E6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46635783E6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbjHVK5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49706 "EHLO
+        id S233912AbjHVK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233815AbjHVK5v (ORCPT
+        with ESMTP id S233936AbjHVK56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:57:51 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3721A1B2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:50 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58cb845f2f2so61983427b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:50 -0700 (PDT)
+        Tue, 22 Aug 2023 06:57:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9030CF0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:55 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d74a6dfb0deso2642020276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692701869; x=1693306669;
+        d=google.com; s=20221208; t=1692701875; x=1693306675;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMqZtDvlSX07gyZ0u5Dl6BMVcufM2gRGniU6L1WlEwU=;
-        b=Ix94X6F96wzJuSjo8aNRndBwhpicfnsuKrnh/oKMivxMGel4dqf/ogPNg5Cjxvi5nr
-         AB8AM/bRuJIrrA2LkbIZv5WEt0WUI8brlEapCeVt9GCvMcnD3igwxweGtHcPpHjgvUPP
-         pv9/113iyGn0oOkSawXSC5qJDnIB64Zdyu1HfagqXJnoBMRljhv7MafWdZ08MfLITQzj
-         21J0HSfeNwlbaaDlfi6LLhjcmPouoCOnSrty8NKTE60KbB8hskmCwJ6xGsM/80vkjilK
-         np0gAcI5YY62LjgdlEyDYVZw6pBStWJBQQYAVoUl0Io2mwf/zMAZy8YXueXOcT35V3v2
-         YuLA==
+        bh=/fIEK+scFoPaQOWipSrbqlwk87RaTCX5IMBMHhwH0rc=;
+        b=VzPvLxPEkUWtvGRxaI4vgChrPgBtjf6/0dO4DMIS0sPgv7fDNtvVXPrbRKl0S6dUJG
+         5Jif4cnLgI2SCQegLHuKV6Ak4FpQ5uV5ha/XyE96/30mOKtY80ezUODmcLJR7lN/E4kj
+         oFARbyu2wcSqnVV4Vx7NMcXOH5qGa3vTVWgioQ5cHoX27qkYhbvOYyEP4aYyicsnmHgI
+         H6eDa0S8GVMMekyTEt3vZkmhl8Zj0XCgFGBH/v64XbaWn+dP6J04Ryf7QlXsFMV/HynZ
+         BTlRcj7wq/qZJYEPC//+OeNhBH7vb9knU6I0fmh0RYk7s8pNxp6+lXRt0tRHaizJP9fA
+         SWQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692701869; x=1693306669;
+        d=1e100.net; s=20221208; t=1692701875; x=1693306675;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eMqZtDvlSX07gyZ0u5Dl6BMVcufM2gRGniU6L1WlEwU=;
-        b=gdbfC/+9FnNfRsMBXApoeEEINrQBJYavphWU0F3xpQncG2jbWFC9jrUT+uDKekXlau
-         7rAygigwoZ/3tC0u7YDeX4pcBhB/K2JjA78yMzPTaBNIgG3AOfgSi1H7h6YI/Ogv5OaS
-         XjJpZXChtjjndNiujV2NVw2v0vvDTdyZoQR95c7/GzwjtbfKkoZaHPCJ6khmthPgTtoG
-         lOUpRihb5+TmNLYwQfuvTGms+kUDHBt8OBkROAWbMdr22Xq5amaW6EZS1l3TmxGGRGrm
-         0egeL12fRvxPfjf4lJUm+2fuFhmRhgUBXtbNnaskzYyCd4NOGXkAQYKjNCuQbIzhWwDD
-         PmAA==
-X-Gm-Message-State: AOJu0YwAy9RMFeVLsCjJH1TIOWwU9ATpA1E9CfrHi2IgR39jYaGy2ZCA
-        KHjHShIaNNErH2/bnmPbksiv1/vCDCPJ
-X-Google-Smtp-Source: AGHT+IFl31R48qo4ur1dLKvDtJJz2U6vSie9HrG6LLwP12qhr8EwPDR8M4v6oArRwgOrfdiaqHOQuhpRrYQ8
+        bh=/fIEK+scFoPaQOWipSrbqlwk87RaTCX5IMBMHhwH0rc=;
+        b=W1vnGOVJdbTWvwUuIgQ/5nMdd6Sx6YZ1FvaTvxZ/MrKEaeFURztjuv6sO5Xu4kMEZw
+         aRPPaWHTUPk1Ozpfsqe+ZEVxG3h6ISQv2oQDyD7C8hFzlKrRqkUqSTr9Cij6K4fqaWXQ
+         130aANHpxVrmua8yuURBRGAPD7+uhSCmtEVD0ntEI8DCMChsnApC6SOdhHZkhxdLySt6
+         aEhheMUv+cttUmbtkGPHFLOeSvqTAZlJTX0/oayxC8V6pzgfxwLhPRt4t8o/+yx1+aic
+         JR0+fZs0UfuzbSSCdedbb2hpWgWYe3ZcCGNOhyPQ5IKPoSwgoef66lLyOfLcZZ6FXfG2
+         Gemw==
+X-Gm-Message-State: AOJu0YyecWFPgBJVDtUaAbRcM/n5bPH2rGeCyI3wWwQL3WIK2ZvDoHsh
+        a8elsQ78P3nMtHAzl1ingcljjSs2xscZ
+X-Google-Smtp-Source: AGHT+IEeWLCXictoCF2DKIdsuoaCa730sOxBT91INqbmQdApKPT2Vvx2k50fuMZ0N/jHCgwdsRZutgwQV7Yp
 X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:44ad:3968:8aaa:c4fe])
- (user=mshavit job=sendgmr) by 2002:a0d:ec47:0:b0:579:e07c:2798 with SMTP id
- r7-20020a0dec47000000b00579e07c2798mr95478ywn.2.1692701869478; Tue, 22 Aug
- 2023 03:57:49 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 18:56:57 +0800
+ (user=mshavit job=sendgmr) by 2002:a25:874c:0:b0:d35:bf85:5aa0 with SMTP id
+ e12-20020a25874c000000b00d35bf855aa0mr82026ybn.4.1692701875089; Tue, 22 Aug
+ 2023 03:57:55 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 18:56:58 +0800
 In-Reply-To: <20230822105738.1607365-1-mshavit@google.com>
 Mime-Version: 1.0
 References: <20230822105738.1607365-1-mshavit@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230822185632.RFC.v2.1.Ib87a2696f25414e0fc39cc22dc74e31a4415c2a1@changeid>
-Subject: [RFC PATCH v2 1/9] iommu/arm-smmu-v3: group attached devices by smmu
+Message-ID: <20230822185632.RFC.v2.2.I9e9adbe1cb8164398d7a8f56907e6823fddb45bf@changeid>
+Subject: [RFC PATCH v2 2/9] iommu/arm-smmu-v3-sva: Move SVA optimization into arm_smmu_tlb_inv_range_asid
 From:   Michael Shavit <mshavit@google.com>
 To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
@@ -75,10 +75,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Always insert a new master in the devices_list besides other masters
-that belong to the same smmu.
-This allows code to batch commands by SMMU when iterating over masters
-that a domain is attached to.
+This will allow the optimization to be decided on a per SMMU basis when
+arm_smmu_tlb_inv_range_asid operates on multiple SMMUs.
 
 Signed-off-by: Michael Shavit <mshavit@google.com>
 ---
@@ -86,49 +84,61 @@ Signed-off-by: Michael Shavit <mshavit@google.com>
 Changes in v2:
 - New commit
 
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 22 ++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c | 5 ++---
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c     | 4 ++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h     | 1 +
+ 3 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index f17704c35858d..37b9223c145ba 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2382,6 +2382,24 @@ static void arm_smmu_detach_dev(struct arm_smmu_master *master)
- 		arm_smmu_write_ctx_desc(master, 0, NULL);
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index 238ede8368d10..53f65a89a55f9 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -230,9 +230,8 @@ static void arm_smmu_mm_invalidate_range(struct mmu_notifier *mn,
+ 	 */
+ 	size = end - start;
+ 
+-	if (!(smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM))
+-		arm_smmu_tlb_inv_range_asid(start, size, smmu_mn->cd->asid,
+-					    PAGE_SIZE, false, smmu_domain);
++	arm_smmu_tlb_inv_range_asid(start, size, smmu_mn->cd->asid,
++				    PAGE_SIZE, false, true, smmu_domain);
+ 	arm_smmu_atc_inv_domain(smmu_domain, mm->pasid, start, size);
  }
  
-+static void arm_smmu_domain_device_list_add(struct arm_smmu_domain *smmu_domain,
-+					   struct arm_smmu_master *master)
-+{
-+	struct arm_smmu_master *iter;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-+	if (list_empty(&smmu_domain->devices))
-+		list_add(&master->domain_head, &smmu_domain->devices);
-+	else {
-+		list_for_each_entry(iter, &smmu_domain->devices, domain_head)
-+			if (iter->smmu == master->smmu)
-+				break;
-+		list_add(&master->domain_head, &iter->domain_head);
-+	}
-+	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-+}
-+
- static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 37b9223c145ba..db4df9d6aef10 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1974,6 +1974,7 @@ static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+ 
+ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
+ 				 size_t granule, bool leaf,
++				 bool skip_btm_capable_devices,
+ 				 struct arm_smmu_domain *smmu_domain)
  {
- 	int ret = 0;
-@@ -2435,9 +2453,7 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	if (smmu_domain->stage != ARM_SMMU_DOMAIN_BYPASS)
- 		master->ats_enabled = arm_smmu_ats_supported(master);
+ 	struct arm_smmu_cmdq_ent cmd = {
+@@ -1985,6 +1986,9 @@ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
+ 		},
+ 	};
  
--	spin_lock_irqsave(&smmu_domain->devices_lock, flags);
--	list_add(&master->domain_head, &smmu_domain->devices);
--	spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-+	arm_smmu_domain_device_list_add(smmu_domain, master);
++	if (skip_btm_capable_devices &&
++	    smmu_domain->smmu->features & ARM_SMMU_FEAT_BTM)
++		return;
+ 	__arm_smmu_tlb_inv_range(&cmd, iova, size, granule, smmu_domain);
+ }
  
- 	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
- 		if (!master->cd_table.cdtab) {
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 83d2790b701e7..05599914eb0a0 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -751,6 +751,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_master *smmu_master, int ssid,
+ void arm_smmu_tlb_inv_asid(struct arm_smmu_device *smmu, u16 asid);
+ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
+ 				 size_t granule, bool leaf,
++				 bool skip_btm_capable_devices,
+ 				 struct arm_smmu_domain *smmu_domain);
+ bool arm_smmu_free_asid(struct arm_smmu_ctx_desc *cd);
+ int arm_smmu_atc_inv_domain(struct arm_smmu_domain *smmu_domain, int ssid,
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
