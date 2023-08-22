@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0412C7844B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A53997844BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236946AbjHVOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        id S236974AbjHVOvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:51:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbjHVOvD (ORCPT
+        with ESMTP id S235762AbjHVOvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:51:03 -0400
+        Tue, 22 Aug 2023 10:51:45 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED0D187;
-        Tue, 22 Aug 2023 07:51:00 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7BA6CEE;
+        Tue, 22 Aug 2023 07:51:30 -0700 (PDT)
 Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MCSfLl001448;
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M8KlSi002021;
         Tue, 22 Aug 2023 14:50:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
  subject : mime-version : content-type : content-transfer-encoding :
  message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=5D+PB0ZbAeo8Gyavkbx9fNQpxl64Z0BmTiW2PI+8EBM=;
- b=HYpza8WyFlnRW5FYyND654Oud8mro59GY1f8eoGdQPrKXHRfzjXIqOtAsMx+TDLjsk8C
- MN4Gt4LLuoXKq75nMIc7EtV5F2f9VpjGUiw5iBFYLdtt/6fxXWvQYMt00R1y4tq9r+ln
- x/D72SCaPGMHDquOTRyYdsf7v7GvD4MPGLUTsXqWXiwDTsmp4h/nUUndfZ5O+y4BdIHG
- Cd1pj4Z2SHDh7MYGSRmTItYkagrZAcrFVX+GqqbaY7wSLXqirY85mF/Yc6pwuKjVHSkU
- KmOKCAoysENL3Uwsu6NZsdWM/NHmXd/zRwRg0lDgdZrZOxpqpIoIOff3Apkbrwn2kG/b Bw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smfjs9p86-1
+ bh=2dl+LHrfehLIiNC5ETXJvv6T3K9bYXbgbwVsdshjTB0=;
+ b=S8GUxND1XuxIskXend56x9oPsEZecQkr1HjU+94TbbjASt8PNSohfaNvi4OGhrcYF0uc
+ 8/s081o04sujUz8xgdcrsXaNJQF7Mic7MPmJQH+INvwJLHpH9W3L96qb5R7LtAuOi5NE
+ /sC5qBRceudTembK5ABzam1tSLh6CffPlb4GiB9wBGOx3h5yKYzjT/GHuz56vLG7YTja
+ ftJLNtDl6zb/8vfr/3e8VWixEGH98DHhMxGFJw64UWbdQ5XG+HLKNhz4qu9f9Q5HoLop
+ MNUNesVqthQWyk6I6Gmf+AT7Ln71w0HsywWpFzyquT4eAM3LwTPedYrzJDJfdGIoXvau ZQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smfjs9p88-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 22 Aug 2023 14:50:52 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MEopGm021375
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MEopbW008793
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 22 Aug 2023 14:50:51 GMT
 Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 22 Aug 2023 07:50:50 -0700
+ 15.2.1118.36; Tue, 22 Aug 2023 07:50:51 -0700
 From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-Date:   Tue, 22 Aug 2023 07:50:48 -0700
-Subject: [PATCH 1/3] wifi: ath10k: Fix a few spelling errors
+Date:   Tue, 22 Aug 2023 07:50:49 -0700
+Subject: [PATCH 2/3] wifi: ath11k: Fix a few spelling errors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230822-ath_spelling-v1-1-8e2698759564@quicinc.com>
+Message-ID: <20230822-ath_spelling-v1-2-8e2698759564@quicinc.com>
 References: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
 In-Reply-To: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
 To:     Kalle Valo <kvalo@kernel.org>,
@@ -59,8 +59,8 @@ X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: ZI3CklBJo_vDtzvz7xQOdp1UOP-iiIqJ
-X-Proofpoint-GUID: ZI3CklBJo_vDtzvz7xQOdp1UOP-iiIqJ
+X-Proofpoint-ORIG-GUID: OaV4s_iopqYNx0M6d_lqzRxZKHrADQ-e
+X-Proofpoint-GUID: OaV4s_iopqYNx0M6d_lqzRxZKHrADQ-e
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
@@ -83,88 +83,50 @@ Fix a few issues flagged by 'codespell'.
 
 Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h  | 4 ++--
- drivers/net/wireless/ath/ath10k/pci.c  | 2 +-
- drivers/net/wireless/ath/ath10k/sdio.c | 2 +-
- drivers/net/wireless/ath/ath10k/wmi.h  | 8 ++++----
- 4 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath11k/dp.h    | 2 +-
+ drivers/net/wireless/ath/ath11k/dp_rx.c | 2 +-
+ drivers/net/wireless/ath/ath11k/dp_tx.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index e0c9f45e7476..7b24297146e7 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -69,7 +69,7 @@ struct htt_ver_req {
-  * The HTT tx descriptor is defined in two manners: by a struct with
-  * bitfields, and by a series of [dword offset, bit mask, bit shift]
-  * definitions.
-- * The target should use the struct def, for simplicitly and clarity,
-+ * The target should use the struct def, for simplicity and clarity,
-  * but the host shall use the bit-mast + bit-shift defs, to be endian-
-  * neutral.  Specifically, the host shall use the get/set macros built
-  * around the mask + shift defs.
-@@ -2086,7 +2086,7 @@ static inline bool ath10k_htt_rx_proc_rx_frag_ind(struct ath10k_htt *htt,
-  * for correctly accessing rx descriptor data.
-  */
+diff --git a/drivers/net/wireless/ath/ath11k/dp.h b/drivers/net/wireless/ath/ath11k/dp.h
+index d04f78ab6b37..15815af453b2 100644
+--- a/drivers/net/wireless/ath/ath11k/dp.h
++++ b/drivers/net/wireless/ath/ath11k/dp.h
+@@ -635,7 +635,7 @@ enum htt_ppdu_stats_tag_type {
+  *          b'24    - status_swap: 1 is to swap status TLV
+  *          b'25    - pkt_swap:  1 is to swap packet TLV
+  *          b'26:31 - rsvd1:  reserved for future use
+- * dword1 - b'0:16  - ring_buffer_size: size of bufferes referenced by rx ring,
++ * dword1 - b'0:16  - ring_buffer_size: size of buffers referenced by rx ring,
+  *                    in byte units.
+  *                    Valid only for HW_TO_SW_RING and SW_TO_HW_RING
+  *        - b'16:31 - rsvd2: Reserved for future use
+diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
+index 1e488eed282b..62bc98852f0f 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -3423,7 +3423,7 @@ static int ath11k_dp_rx_h_defrag_reo_reinject(struct ath11k *ar, struct dp_rx_ti
+ 	ath11k_hal_rx_buf_addr_info_set(msdu0, paddr, cookie,
+ 					ab->hw_params.hal_params->rx_buf_rbm);
  
--/* base struct used for abstracting the rx descritor representation */
-+/* base struct used for abstracting the rx descriptor representation */
- struct htt_rx_desc {
- 	union {
- 		/* This field is filled on the host using the msdu buffer
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a7f44f6335fb..57177890a463 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1636,7 +1636,7 @@ static int ath10k_pci_dump_memory_generic(struct ath10k *ar,
- 						      buf,
- 						      current_region->len);
+-	/* Fill mpdu details into reo entrace ring */
++	/* Fill mpdu details into reo entrance ring */
+ 	srng = &ab->hal.srng_list[ab->dp.reo_reinject_ring.ring_id];
  
--	/* No individiual memory sections defined so we can
-+	/* No individual memory sections defined so we can
- 	 * copy the entire memory region.
- 	 */
- 	ret = ath10k_pci_diag_read_mem(ar,
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 79e09c7a82b3..56fbcfb80bf8 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2389,7 +2389,7 @@ static int ath10k_sdio_dump_memory_generic(struct ath10k *ar,
- 						      buf,
- 						      current_region->len);
+ 	spin_lock_bh(&srng->lock);
+diff --git a/drivers/net/wireless/ath/ath11k/dp_tx.c b/drivers/net/wireless/ath/ath11k/dp_tx.c
+index a34833de7c67..352e76fc4c1f 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_tx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_tx.c
+@@ -238,7 +238,7 @@ int ath11k_dp_tx(struct ath11k *ar, struct ath11k_vif *arvif,
+ 		spin_unlock_bh(&tcl_ring->lock);
+ 		ret = -ENOMEM;
  
--	/* No individiual memory sections defined so we can
-+	/* No individual memory sections defined so we can
- 	 * copy the entire memory region.
- 	 */
- 	if (fast_dump)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 6d04a66fe5e0..b112e8826093 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3854,9 +3854,9 @@ enum wmi_pdev_param {
- 	 * retransmitting frames.
- 	 */
- 	WMI_PDEV_PARAM_DYNAMIC_BW,
--	/* Non aggregrate/ 11g sw retry threshold.0-disable */
-+	/* Non aggregate/ 11g sw retry threshold.0-disable */
- 	WMI_PDEV_PARAM_NON_AGG_SW_RETRY_TH,
--	/* aggregrate sw retry threshold. 0-disable*/
-+	/* aggregate sw retry threshold. 0-disable*/
- 	WMI_PDEV_PARAM_AGG_SW_RETRY_TH,
- 	/* Station kickout threshold (non of consecutive failures).0-disable */
- 	WMI_PDEV_PARAM_STA_KICKOUT_TH,
-@@ -3953,9 +3953,9 @@ enum wmi_10x_pdev_param {
- 	WMI_10X_PDEV_PARAM_PROTECTION_MODE,
- 	/* Dynamic bandwidth 0: disable 1: enable */
- 	WMI_10X_PDEV_PARAM_DYNAMIC_BW,
--	/* Non aggregrate/ 11g sw retry threshold.0-disable */
-+	/* Non aggregate/ 11g sw retry threshold.0-disable */
- 	WMI_10X_PDEV_PARAM_NON_AGG_SW_RETRY_TH,
--	/* aggregrate sw retry threshold. 0-disable*/
-+	/* aggregate sw retry threshold. 0-disable*/
- 	WMI_10X_PDEV_PARAM_AGG_SW_RETRY_TH,
- 	/* Station kickout threshold (non of consecutive failures).0-disable */
- 	WMI_10X_PDEV_PARAM_STA_KICKOUT_TH,
+-		/* Checking for available tcl descritors in another ring in
++		/* Checking for available tcl descriptors in another ring in
+ 		 * case of failure due to full tcl ring now, is better than
+ 		 * checking this ring earlier for each pkt tx.
+ 		 * Restart ring selection if some rings are not checked yet.
 
 -- 
 2.25.1
