@@ -2,220 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 541747846E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687B97846F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237643AbjHVQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44662 "EHLO
+        id S237669AbjHVQU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:20:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236596AbjHVQTp (ORCPT
+        with ESMTP id S237666AbjHVQUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:19:45 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4D319A
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:19:43 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31c615eb6feso717284f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692721182; x=1693325982;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e2sK25pHmy+ze1Ybz8hn3pPQzDyrBRYa60rRH4NH4K4=;
-        b=EIr1I4lkGWcsjJhSARAeppBKOlivRpYDEKnMMlMqc8br9LSs+W/8+ObH7xmN6/O8mB
-         CEk9ec26vYMXxU1M0Zr1+kTvvkeZmB6JOxDu7UkvfMzIdWBopKpEGT8dmNjIKXwLj3ul
-         0CnlGGh4HMrIMeFYK7IsgNeL+Wdx4zSePl15f3jdiSJQ7JTY/0aA15J4+gWF4xtgmpof
-         Ufih+szZNwlgZIt/0sFRCPp/BnLx6oFpwqp5Yd5okz5ofoloAxIqdpzD2gXDf85q4xrY
-         9gklxTxamFUMMpAmkJ5sL6ZAoETDIV1DpNJ++428Fmxc0gJ2bMTM6KW+xHOZmzlXDqVF
-         Iotg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692721182; x=1693325982;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=e2sK25pHmy+ze1Ybz8hn3pPQzDyrBRYa60rRH4NH4K4=;
-        b=QR0PbjffSUYRwXu8zitVnUtT6RXSc5OHIUGG8zAhucjRQtbypd6ERK07MFC47nKkLF
-         UjZ9c2iA+uUyOdM0Aw986wmrxOsxxPbpn0DbgQRnh2p2Y70Lr1rkQQZYp4ZrMx4Wy81D
-         QTki/XwAcyeNKzDmN8omFYd16BD1mf3IiyF5+EUBN15eeMxTKsH3fdbOp0swi1QGRFd0
-         cKNwbAjrUi5L7B/icDKf4yBraewXG6W+0LnF2benyu3W1Ltj1fdKhkOJLEMe31ep680v
-         on2rP8qZreWePK33urFLRsnWxv0mPd/kjSThIkQxBuusybNrYhTmio4S3wLRca3eExpj
-         +q9g==
-X-Gm-Message-State: AOJu0YyuuND6hYu6RFf41Ib+iy3O9YPWUYMcLKTk7Smh4+71e5Ij8UGC
-        tsnDhIiJT8uzrbTVILgiQftcTA==
-X-Google-Smtp-Source: AGHT+IFV2T7QA2Y8bKBQIemr3twqEOx//JFK9SnUvRdlu3ELv5Fb8pjW8G6OT+xALpwoMCsJaKtPYQ==
-X-Received: by 2002:adf:e548:0:b0:317:5c82:10c5 with SMTP id z8-20020adfe548000000b003175c8210c5mr7196004wrm.17.1692721182281;
-        Tue, 22 Aug 2023 09:19:42 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:cad:2140:de4a:6da8:c7fc:12c? ([2a01:e0a:cad:2140:de4a:6da8:c7fc:12c])
-        by smtp.gmail.com with ESMTPSA id y17-20020a5d4ad1000000b0031984b370f2sm16289955wrs.47.2023.08.22.09.19.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 09:19:41 -0700 (PDT)
-Message-ID: <36efbd0b-7f33-4c11-8e8e-f07bea4b3455@linaro.org>
-Date:   Tue, 22 Aug 2023 18:19:40 +0200
+        Tue, 22 Aug 2023 12:20:11 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A259CDF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:20:10 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7CA201211;
+        Tue, 22 Aug 2023 18:18:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692721131;
+        bh=iDd9OrJ4bpmdl8qtzo/3tkFMlKMFCIwaFWqa4j8y33E=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=T7eUk08Ibe9wWt1sgUpKnNQvikAJC6uymUkZaYpt55bEIneH9cJQXcyA7wnSCdD4j
+         ZdvQcIyuY6FMOaWIeStqiSWhsTjFVNPIRyMUpH3l0QME3S67JKU7LNIRPRlTs7aZN5
+         5EAt1na5dZaWKRfnTS0Uxf3Hm4TqofX+0PiuWK1c=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date:   Tue, 22 Aug 2023 19:19:40 +0300
+Subject: [PATCH v3 07/12] drm/bridge: tc358768: Print logical values, not
+ raw register values
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v5 0/4] input: touchscreen: add initial support for Goodix
- Berlin touchscreen IC
-Content-Language: en-US, fr
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Bastien Nocera <hadess@hadess.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Jeff LaBundy <jeff@labundy.com>
-Cc:     linux-input@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>
-References: <20230801-topic-goodix-berlin-upstream-initial-v5-0-079252935593@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20230801-topic-goodix-berlin-upstream-initial-v5-0-079252935593@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20230822-tc358768-v3-7-c82405dac0c1@ideasonboard.com>
+References: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
+In-Reply-To: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4217;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=iDd9OrJ4bpmdl8qtzo/3tkFMlKMFCIwaFWqa4j8y33E=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk5OAsEl6Q8ufgvMP/BxJYbWiuFtQ8WUKiNwJjJ
+ wrxgcoCKdSJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZOTgLAAKCRD6PaqMvJYe
+ 9RjPD/97ZXakRJ9h99taRFa4/PZKCitu2IvkUHsUjHvy9ji47SYpZR1qTv2j4ynzu1UDiQQ1lh8
+ fi+lx4UaPNhx66JkVI6wxqwPmdrCA4iFgSxhs61c0rp7Ygxp6AKT6UKyP3CQdjy1x4KaAymbrOF
+ /YJZhW6O1LGFMjrqQH6pAsTv3/KuHZeNgMPnzA8eyU4ucFKlunf3GBb83dPUpbQdZ7ODEqa0PK0
+ 6vjP5Sk21klElTlktIR1APF1/GopwFhwOnuTyPAdu7mbqf25PQuPgGZwpjE+oWaE8nXcNgMy/Gz
+ 0959vyRiX6eNRsk5lMS5mAlV3VXIEzkOhNY4iRa98DDpX/9GkWG7+ZvtnVht8ykz/fqXnhCFdqX
+ Oxx6kbFVapjQIn0NoI9rL2pAkrLi8vz4mGQ6mTDslyTLE7pnjkK8pA3Z8jUvk/3XClvRQF870CY
+ VUk9LNr1hixKiYYs/mYX2dKwYTWIILY1T7qYrMwndGASK2B5jmKYzzuo5b76sugUisnuLZUz7KO
+ M+7OuyGHPrYZlOYQXTFZRV8k1tOkQT5gz98PeSAhk8eiwkLFMZswYskSBsNEtnPq1QgRP5wri4g
+ tgAOTdRdyLYk9I+wFX8mprkqdQNEMVrQ4v7TJ1lqEhPCb10TFZaFJUTPM5u514pzoU8KNnLEFCT
+ Di4qhcJeURO7T9g==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The driver debug prints DSI related timings as raw register values in
+hex. It is much more useful to see the "logical" value of the timing,
+not the register value.
 
-On 01/08/2023 14:15, Neil Armstrong wrote:
-> These touchscreen ICs support SPI, I2C and I3C interface, up to
-> 10 finger touch, stylus and gestures events.
-> 
-> This initial driver is derived from the Goodix goodix_ts_berlin
-> available at [1] and [2] and only supports the GT9916 IC
-> present on the Qualcomm SM8550 MTP & QRD touch panel.
-> 
-> The current implementation only supports BerlinD, aka GT9916.
-> 
-> Support for advanced features like:
-> - Firmware & config update
-> - Stylus events
-> - Gestures events
-> - Previous revisions support (BerlinA or BerlinB)
-> is not included in current version.
-> 
-> The current support will work with currently flashed firmware
-> and config, and bail out if firmware or config aren't flashed yet.
+Change the prints to print the values separately, in case a single
+register contains multiple values, and use %u to have it in a more human
+consumable form.
 
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+ drivers/gpu/drm/bridge/tc358768.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
 
-Gentle ping, is there any changes to be made in order to get this driver in ?
+diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+index b98c517c4726..88060f961064 100644
+--- a/drivers/gpu/drm/bridge/tc358768.c
++++ b/drivers/gpu/drm/bridge/tc358768.c
+@@ -739,57 +739,59 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 
+ 	/* LP11 > 100us for D-PHY Rx Init */
+ 	val = tc358768_ns_to_cnt(100 * 1000, dsibclk_nsk) - 1;
+-	dev_dbg(priv->dev, "LINEINITCNT: 0x%x\n", val);
++	dev_dbg(priv->dev, "LINEINITCNT: %u\n", val);
+ 	tc358768_write(priv, TC358768_LINEINITCNT, val);
+ 
+ 	/* LPTimeCnt > 50ns */
+ 	val = tc358768_ns_to_cnt(50, dsibclk_nsk) - 1;
+ 	lptxcnt = val;
+-	dev_dbg(priv->dev, "LPTXTIMECNT: 0x%x\n", val);
++	dev_dbg(priv->dev, "LPTXTIMECNT: %u\n", val);
+ 	tc358768_write(priv, TC358768_LPTXTIMECNT, val);
+ 
+ 	/* 38ns < TCLK_PREPARE < 95ns */
+ 	val = tc358768_ns_to_cnt(65, dsibclk_nsk) - 1;
++	dev_dbg(priv->dev, "TCLK_PREPARECNT %u\n", val);
+ 	/* TCLK_PREPARE + TCLK_ZERO > 300ns */
+ 	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
+ 				  dsibclk_nsk) - 2;
++	dev_dbg(priv->dev, "TCLK_ZEROCNT %u\n", val2);
+ 	val |= val2 << 8;
+-	dev_dbg(priv->dev, "TCLK_HEADERCNT: 0x%x\n", val);
+ 	tc358768_write(priv, TC358768_TCLK_HEADERCNT, val);
+ 
+ 	/* TCLK_TRAIL > 60ns AND TEOT <= 105 ns + 12*UI */
+ 	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), dsibclk_nsk) - 5;
+ 	val = clamp(raw_val, 0, 127);
+-	dev_dbg(priv->dev, "TCLK_TRAILCNT: 0x%x\n", val);
++	dev_dbg(priv->dev, "TCLK_TRAILCNT: %u\n", val);
+ 	tc358768_write(priv, TC358768_TCLK_TRAILCNT, val);
+ 
+ 	/* 40ns + 4*UI < THS_PREPARE < 85ns + 6*UI */
+ 	val = 50 + tc358768_to_ns(4 * ui_nsk);
+ 	val = tc358768_ns_to_cnt(val, dsibclk_nsk) - 1;
++	dev_dbg(priv->dev, "THS_PREPARECNT %u\n", val);
+ 	/* THS_PREPARE + THS_ZERO > 145ns + 10*UI */
+ 	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), dsibclk_nsk) - 10;
+ 	val2 = clamp(raw_val, 0, 127);
++	dev_dbg(priv->dev, "THS_ZEROCNT %u\n", val2);
+ 	val |= val2 << 8;
+-	dev_dbg(priv->dev, "THS_HEADERCNT: 0x%x\n", val);
+ 	tc358768_write(priv, TC358768_THS_HEADERCNT, val);
+ 
+ 	/* TWAKEUP > 1ms in lptxcnt steps */
+ 	val = tc358768_ns_to_cnt(1020000, dsibclk_nsk);
+ 	val = val / (lptxcnt + 1) - 1;
+-	dev_dbg(priv->dev, "TWAKEUP: 0x%x\n", val);
++	dev_dbg(priv->dev, "TWAKEUP: %u\n", val);
+ 	tc358768_write(priv, TC358768_TWAKEUP, val);
+ 
+ 	/* TCLK_POSTCNT > 60ns + 52*UI */
+ 	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
+ 				 dsibclk_nsk) - 3;
+-	dev_dbg(priv->dev, "TCLK_POSTCNT: 0x%x\n", val);
++	dev_dbg(priv->dev, "TCLK_POSTCNT: %u\n", val);
+ 	tc358768_write(priv, TC358768_TCLK_POSTCNT, val);
+ 
+ 	/* max(60ns + 4*UI, 8*UI) < THS_TRAILCNT < 105ns + 12*UI */
+ 	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
+ 				     dsibclk_nsk) - 4;
+ 	val = clamp(raw_val, 0, 15);
+-	dev_dbg(priv->dev, "THS_TRAILCNT: 0x%x\n", val);
++	dev_dbg(priv->dev, "THS_TRAILCNT: %u\n", val);
+ 	tc358768_write(priv, TC358768_THS_TRAILCNT, val);
+ 
+ 	val = BIT(0);
+@@ -803,10 +805,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ 	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
+ 	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
+ 	val = tc358768_ns_to_cnt(val, dsibclk_nsk) / 4 - 1;
++	dev_dbg(priv->dev, "TXTAGOCNT: %u\n", val);
+ 	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk),
+ 				  dsibclk_nsk) - 2;
++	dev_dbg(priv->dev, "RXTASURECNT: %u\n", val2);
+ 	val = val << 16 | val2;
+-	dev_dbg(priv->dev, "BTACNTRL1: 0x%x\n", val);
+ 	tc358768_write(priv, TC358768_BTACNTRL1, val);
+ 
+ 	/* START[0] */
 
-Thanks,
-Neil
-
-> 
-> [1] https://github.com/goodix/goodix_ts_berlin
-> [2] https://git.codelinaro.org/clo/la/platform/vendor/opensource/touch-drivers
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-> Changes in v5:
-> - rebased on next-20230801
-> - Link to v4: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v4-0-0947c489be17@linaro.org
-> 
-> Changes in v4:
-> - Core updates:
->   - drop kconfig depends, deps will be handled by _SPI and _I2C
->   - change power_on() error labels
->   - print errors on all dev_err() prints
->   - remove useless default variable initialization
->   - switch irq touch checksum error to dev_err()
->   - add Jeff's review tag
-> - I2C changes
->   - change REGMAP_I2C Kconfig from depends to select
->   - add Jeff's review tag
-> - SPI changes
->   - add select REGMAP to Kconfig
->   - added GOODIX_BERLIN_ prefix to defines
->   - switched from ret to error
->   - add Jeff's review tag
-> - Link to v3: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v3-0-f0577cead709@linaro.org
-> 
-> Changes in v3:
-> - Another guge cleanups after Jeff's review:
->   - appended goodix_berlin_ before all defines
->   - removed some unused defines
->   - removed retries on most of read functions, can be added back later
->   - added __le to ic_info structures
->   - reworked and simplified irq handling, dropped enum and ts_event structs
->   - added struct for touch data
->   - simplified and cleaned goodix_berlin_check_checksum & goodix_berlin_is_dummy_data
->   - moved touch_data_addr to the end of the main code_data
->   - reworked probe to get_irq last and right before setip input device
->   - cleaned probe by removing the "cd->dev"
->   - added short paragraph to justify new driver for berlin devices
->   - defined all offsets & masks
-> - Added bindings review tag
-> - Link to v2: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v2-0-26bc8fe1e90e@linaro.org
-> 
-> Changes in v2:
-> - Huge cleanups after Jeff's review:
->   - switch to error instead of ret
->   - drop dummy vendor/product ids
->   - drop unused defined/enums
->   - drop unused ic_info and only keep needes values
->   - cleanup namings and use goodix_berlin_ everywhere
->   - fix regulator setup
->   - fix default variables value when assigned afterwars
->   - removed indirections
->   - dropped debugfs
->   - cleaned input_dev setup
->   - dropped _remove()
->   - sync'ed i2c and spi drivers
-> - fixed yaml bindings
-> - Link to v1: https://lore.kernel.org/r/20230606-topic-goodix-berlin-upstream-initial-v1-0-4a0741b8aefd@linaro.org
-> 
-> ---
-> Neil Armstrong (4):
->        dt-bindings: input: document Goodix Berlin Touchscreen IC
->        input: touchscreen: add core support for Goodix Berlin Touchscreen IC
->        input: touchscreen: add I2C support for Goodix Berlin Touchscreen IC
->        input: touchscreen: add SPI support for Goodix Berlin Touchscreen IC
-> 
->   .../bindings/input/touchscreen/goodix,gt9916.yaml  |  95 ++++
->   drivers/input/touchscreen/Kconfig                  |  31 ++
->   drivers/input/touchscreen/Makefile                 |   3 +
->   drivers/input/touchscreen/goodix_berlin.h          | 159 ++++++
->   drivers/input/touchscreen/goodix_berlin_core.c     | 581 +++++++++++++++++++++
->   drivers/input/touchscreen/goodix_berlin_i2c.c      |  69 +++
->   drivers/input/touchscreen/goodix_berlin_spi.c      | 173 ++++++
->   7 files changed, 1111 insertions(+)
-> ---
-> base-commit: a734662572708cf062e974f659ae50c24fc1ad17
-> change-id: 20230606-topic-goodix-berlin-upstream-initial-ba97e8ec8f4c
-> 
-> Best regards,
+-- 
+2.34.1
 
