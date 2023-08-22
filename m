@@ -2,191 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F197845C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 014257845CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237225AbjHVPkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:40:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
+        id S237236AbjHVPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbjHVPkB (ORCPT
+        with ESMTP id S234657AbjHVPlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:40:01 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2041.outbound.protection.outlook.com [40.107.101.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B829E4B;
-        Tue, 22 Aug 2023 08:39:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BzkIg2pN+Ugoscc0CgG4MWQnxLVlY8TVuSDQsbAXOIeAtsy9ZltSxNXSQ5rnuVrzUpwqOBvW4HOqonNTqvev7SYsOjVT2/ltRgmjL88/8MpMGgbz89oPTaAiAXEXgzBTAcP9I/Wxwu7qorqgY73Hw34cLuxe8Xpouws3TrJaWsqkFgWu+Yk1PDiA0IJ00lqav44wb05hBZOvFZGp+vc7KvHUxvKAOigiNssH6iA+EY3uC/7G3/86edVXJSnz+FI/rOuSFSAUntS+hj5lzPfMa2KDHTD4zSvoIvNgSyyaeAmibuXzoxMrGBFjL6T7gBO8yLYs35z4+zqVnTdkfDxGVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZOSIkAfz+sIs+9rXwuNiWdMvhgYU/dRm/C+7HeuuPmc=;
- b=jh0JZTh5Kw0J3I9YFLoPLcdbK4/GddiB4SpIG6fSnQjb0viC9eXyNcCb1iRmfwcZjVrIUn5/qf8R4eRdZ6Qp3TozvyTWJW7dI2H8KIOJWb1cX4mZyGK9YitaGBawogAR8YcDfwwf39/fRsEDxWQecTuZBOII6Amo+Gmi1WidY2qjJAtxtVMsHnZhS7V29+a08VY9semjIiN88F0tl4quBqJUc7gvjrBRw2PlvoN1Ybx/e9jBIs8I0k1BmOm0djfuO3jRcfoijqOsk3d78ubeGlDmtU01p6vQZzcMfjE+ENDxjz6MWnTugFg9cKmtsidFW1hEbe26TRn790inMqB+QA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZOSIkAfz+sIs+9rXwuNiWdMvhgYU/dRm/C+7HeuuPmc=;
- b=R5jXaDjxI2Lmeo2jnvXSaObWKiYIjNXWjXiHTVd3FAOrA3VnXI46WZpefxBHY1lgJhBpxTqJDZAoc+vA75CZ8XUhf/njFkQ32wy6RMY806AgDMZFuIQzR3kJilA+yymI3R2WkGuu0afES/zlUilVobpGdbRYpRCEDYQ3sKmulNM=
-Received: from BN9PR12MB5146.namprd12.prod.outlook.com (2603:10b6:408:137::16)
- by PH7PR12MB9075.namprd12.prod.outlook.com (2603:10b6:510:2f0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 15:39:30 +0000
-Received: from BN9PR12MB5146.namprd12.prod.outlook.com
- ([fe80::858f:e2c1:3f1e:fefe]) by BN9PR12MB5146.namprd12.prod.outlook.com
- ([fe80::858f:e2c1:3f1e:fefe%4]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
- 15:39:30 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-CC:     "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Mike Lothian <mike@fireburn.co.uk>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: RE: [PATCH AUTOSEL 6.4 11/11] drm/amdkfd: disable IOMMUv2 support for
- Raven
-Thread-Topic: [PATCH AUTOSEL 6.4 11/11] drm/amdkfd: disable IOMMUv2 support
- for Raven
-Thread-Index: AQHZ1OzllPBwJJxnfUGAZu/Pwn6Z+q/2c8Ig
-Date:   Tue, 22 Aug 2023 15:39:30 +0000
-Message-ID: <BN9PR12MB51467557D8E5FEA426BBC7BEF71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
-References: <20230822113553.3551206-1-sashal@kernel.org>
- <20230822113553.3551206-11-sashal@kernel.org>
-In-Reply-To: <20230822113553.3551206-11-sashal@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=efe47be6-ed58-4635-87b4-bfcf698e0e1b;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
- 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2023-08-22T15:39:22Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR12MB5146:EE_|PH7PR12MB9075:EE_
-x-ms-office365-filtering-correlation-id: a15e3079-7306-4238-78cd-08dba325fa14
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /jmYrSYp/na1XKdj/af5IaNjUJ79jxrb8coipo74q7IUd2ZR34q1KZivm7zV4BR+mvONoxz7YLoRxsyUTC2tjU4hIgCD4StF5WaLzWEy90V5ZYwM6oBBhNTwSmQuQrcJqmhU2VDUIfVqKJZNi6PwYphq8R3ZluITESPYHjKLnDgz2G9eJnxKsBsK4fztMP8Ex6zdESfUgNobSyV+QLocq8NSObjUjyWTsYUnoAYL8YFmLGoEgJk9fggXhb3MgsZAFJoRI1OUJ2Ynzh6mYdJSrqAHmGMzB8yqLQ1IeqIjmiYl/Ipb35DvBpUK7SAXLLSTpiypGKYOCX1Ik6NsJjY8rgwWLuw5iL/a8XTOKz5DhbMp/9sdwzStQf61JlcKAiL29z0o1ZbWTd+mQog6y40ft0aUoGbyk2VkO4M1WhIQMn6WkgMEZn6k+7DG16J+IOzBlWa3BcZHvJlGVN7NAJhol2u323OukUV9ojWHIiTBQXmHb64LgLFwLgpkMSy1ssw2ZaRAzmViS880Z3uSOR/fsoIWv2+1PI50ZpDzGBHKCFkv5CSrHL1ifZty41kkljxflqtPqFkiYu8PSQ+9DW+jPMmT+gybtGpRNL5hxJYqw+x7+OhL/kaT8M0ZCiK1gn/c
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5146.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(1800799009)(186009)(451199024)(66446008)(54906003)(66556008)(66946007)(64756008)(9686003)(66476007)(76116006)(316002)(110136005)(8936002)(8676002)(4326008)(41300700001)(122000001)(478600001)(71200400001)(55016003)(7696005)(6506007)(53546011)(38100700002)(66574015)(2906002)(83380400001)(86362001)(38070700005)(5660300002)(26005)(33656002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MW90WUIxMEZjYklic2tKb2dLajMyR2pCQlVHOFowbVlIdUpvdkpzLzFqMGFx?=
- =?utf-8?B?RGtWNzdSbFNBTk5QUVN2MnR4SW9ScC84cFh5bE83K3NobnlvRCsyOTVOdk1Z?=
- =?utf-8?B?SWJOeFRCcWtGK1A5MFptcG1XbGp5aFBaZjA3bzdFb0pRaGUvTzd3MHdZaUxD?=
- =?utf-8?B?VWhXcWd2MnoxWndNRnVhOHB3OE5ETm1GYmtseTJTSjZlYWFKeTFiUWhrZlN0?=
- =?utf-8?B?SDJWMVFpWEVnMDFzTXgyNy81RzlHTXljOEh2YWt5SWNlK2R5N212YkR6cTRj?=
- =?utf-8?B?NkhLU3AwOUdObkY5SnVYVlhYU1NqNDlZWW5SUHZWWXpCS1hBTDgyVHVPYy9E?=
- =?utf-8?B?VmNWUUtYWXRma0xQNWYvVmFQTmFUbGdEbVhVUFdhRkJTMFgrRFpKOCs4WGND?=
- =?utf-8?B?dm8rdnNMYk1paDU1Y1VhemZxTmNENS9Mc0g3QmhqcnNpQ2lWSXREUWRBZUtW?=
- =?utf-8?B?cTg4NHFTV1poYWJpd29zRThRazIrZURBYm5HeCtrWlFrYVdwenZqQzRVbnN6?=
- =?utf-8?B?ZG10NU9xWHkybUJ5RzhKUUdBbHhnNlpsdFhoZVp4dlowenNzdjVNQi95RW1z?=
- =?utf-8?B?dGF2ekh5QzdzYWF2MitKQkhIanUvUkNEWml4d1FBVytuNkpaZFNXcForQ0Fk?=
- =?utf-8?B?RUFUMkJQWHhXY05hR01nK25KT3FDYVh3RnlhNzQrbkZJdDI2ZXg2Z1pzbUVq?=
- =?utf-8?B?SXBCN1hIQUdRdmNQOFE1MjhzSnVqOGg2NUl4c0tpd05sSUc2V2ZxTEY1NTdw?=
- =?utf-8?B?TjlPdFZhVXBBN0t6bTBFWStCZGgxeVBaK0dkMDBMUVhLYkNyWTdmeGIrRGFn?=
- =?utf-8?B?MnBSU2J1cnM3alhIclVGalJUZkpuVWxSZDE3WEg1SThwbkJPWWRzMU5mTkxp?=
- =?utf-8?B?VTlEUTFvRVVSeHE3ZU1qV25CcWRBeUNPNTljUmZ1TWhQZm0vV0JQK3hYR055?=
- =?utf-8?B?OWxUVjNDRDhoSFFJVTFnTjlaZDRkUzBrT0JzcmNDbkJHemkydFVvUVYyQnJo?=
- =?utf-8?B?dUFXWFRObEQvOHJpeDlrT2xvMm0xWEFRdVFhdDByMlhpTUNUNFNlTWZ4b08y?=
- =?utf-8?B?cm5tMllwV0FzaktSN1JmKys3M1pnMmpoMUJ2d0Jna1U5OFZESmhtVnh6QWNR?=
- =?utf-8?B?VVkrazVnN0RxQkRtUlhGRys5d214M09RTGM2dTZzK3pDQlVIYldPa3NTRVQ3?=
- =?utf-8?B?MFRPYXFPRThFajErak95TWhiNWorZGlBRUp2Uy9ZUjlyYXJjd0g5aFMxYzh4?=
- =?utf-8?B?VVBCeXFrcW9icE9xb1hDSTl5TEdSVEkzQUhHbzlDcjVveDhoNXpVbXhjTTRM?=
- =?utf-8?B?ME5iTEJGOSt5SHY0cEtLVUxrMVowOTNpSnJUeHVERWZhTk5rMHZvR0lxWHJB?=
- =?utf-8?B?MFBmTFVQbjhZLzBGNU1IWlVyVHBGQnVlcFFyVjh3U211dDYxUlpMWVYrTGF5?=
- =?utf-8?B?T010Mmt1Tm5McHl6MWZ3MlNNREY3bjRrbTJJVmY0REpNa2hKcVhqZkcwd2d6?=
- =?utf-8?B?RE5CYWE1SnlDRytjUDMvL0dDVFU5NVV6TmdFKzNuMkRtRWJZK1Z4dERaUVN2?=
- =?utf-8?B?SkdVd3lzT2ZkeFdQV21nTE1mQkJFdGZkdTZ0N2JtZjlMS0dSNW9SNFRPc0Fl?=
- =?utf-8?B?YUFNSHNyc3llUGZXNDFIblB0cnRLaFFPS3dsdis4SVNQZ2FMR3JyUE9NSzYy?=
- =?utf-8?B?aWcwM1NrNEVYK2t4eDgvR3NQbWI3UDFScmVMNkJUV016SE92VklKTlgwb1hs?=
- =?utf-8?B?dDRVVisrV2FjMGJtaWxhbCt1aWdlTEw2YnoyUms2MTh3c1hySWd0UWJwcDlt?=
- =?utf-8?B?ekhyN1hibk9xRmFBSytCTThWenJmSFVhRUpDNXExSGFabmlyaGJEcm1MY01K?=
- =?utf-8?B?U1pwVTJXQVpHTTcwOThBbWhwdDBZUGNvNlE5RzAyWEYrdWY3ZFF3aStyeDZh?=
- =?utf-8?B?Ly9aTDF2b2hCaUt0NlBNYkEwSUhJODNuNnFnNlpZbllERXVhZFZ6dDVUaVIr?=
- =?utf-8?B?MW44aDR2Rklid01nNmZtNGwwRkc2K2ZkZHV4dHJOTzU4NnMvYlVSekNXVlEx?=
- =?utf-8?B?UlB3SzBvQWpMYWlpMkt1RFl1RS80QVVzaHBJVVJOTzNDUWdwSXVnUmhGQVJ6?=
- =?utf-8?Q?cNvs=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 22 Aug 2023 11:41:17 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9FCCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:41:15 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79093c0c68bso164830539f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1692718874; x=1693323674;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=tn7nkSrWXbXku1ODgk8wfdLDeOTehgmcPalY1uMz8AY=;
+        b=gpug5IfgCivCUZsgAgdDuqCYvXDaVr401EXfkX7z6W1sqF7p6Ii8QNoT23dksDCYFI
+         kqz8y4nDEX65KHR2HaSvE2XiUlnaRDdyC/5tCk46Ox6TvC5mBVQ15D7v1C/6t2/3REmj
+         ZrfhtEskuEkx59PjPqNxKa3V5yl+tKoolqsW4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692718874; x=1693323674;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tn7nkSrWXbXku1ODgk8wfdLDeOTehgmcPalY1uMz8AY=;
+        b=bPh6Ow38O94EVDvhcXOFlQNRqwgdyMoTaWtD2VFfUnVk41kxXnwv6Qw+3m1F2QfWju
+         6CSEWVH/8aMwzUaSH8/OxJjEw0wVH5Qt76sqXD8veNdLgkuBc2oNzsqqRPKciXl/VcmR
+         x1AlsWNOQc+otn7JV6EfNaTAoQqlhEBfpRq1MzENFWWlksfdQqViz8djCZ+R3FJ0o15t
+         erPanGzMMZLOQwI3IyJCT3bCddfjLWvmdCtQntMfliAubtVrEBxAWHwSx0F6r3hwqWkF
+         PreNa2Dz3xotv+C80NoQof7Xn+9JfJ9hLzr5+X1Nyq/54dMJgC5gc7PRgDMNG8cM237V
+         Io7A==
+X-Gm-Message-State: AOJu0Yxb47FmylTrRz9iZJKNmX/US4ecFdpXqluXEvccfJoZMgojj2oS
+        BA33wv1QaWaaqCYsNf4MesPQqg==
+X-Google-Smtp-Source: AGHT+IGsdCfmdMIsALfUa907rbPCmZtSaf+HHNZgUKnCitrXcqrUq22DU6KhztevtOtu/EKXYx3xOw==
+X-Received: by 2002:a05:6602:2154:b0:787:1d0a:ce87 with SMTP id y20-20020a056602215400b007871d0ace87mr54898ioy.17.1692718874462;
+        Tue, 22 Aug 2023 08:41:14 -0700 (PDT)
+Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
+        by smtp.gmail.com with ESMTPSA id i6-20020a5e8506000000b00791e6ae3aa4sm3355099ioj.23.2023.08.22.08.41.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 08:41:14 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 15:41:13 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
+Message-ID: <20230822154113.GA74437@google.com>
+References: <20230821194122.695845670@linuxfoundation.org>
+ <20230821225853.GB651285@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5146.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a15e3079-7306-4238-78cd-08dba325fa14
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2023 15:39:30.7689
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6ql24c9fC1a+XMxfe+yHwDs+RPB2BWukf2YxrTz5ohIVSK8g6kKcGjWBaKLE9l5iMNJUYGQd/X8JTJme65wfGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9075
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230821225853.GB651285@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W1B1YmxpY10NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTYXNoYSBM
-ZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCAyMiwgMjAy
-MyA3OjM2IEFNDQo+IFRvOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBzdGFibGVAdmdl
-ci5rZXJuZWwub3JnDQo+IENjOiBEZXVjaGVyLCBBbGV4YW5kZXIgPEFsZXhhbmRlci5EZXVjaGVy
-QGFtZC5jb20+OyBLdWVobGluZywgRmVsaXgNCj4gPEZlbGl4Lkt1ZWhsaW5nQGFtZC5jb20+OyBL
-b2VuaWcsIENocmlzdGlhbiA8Q2hyaXN0aWFuLktvZW5pZ0BhbWQuY29tPjsNCj4gTWlrZSBMb3Ro
-aWFuIDxtaWtlQGZpcmVidXJuLmNvLnVrPjsgU2FzaGEgTGV2aW4gPHNhc2hhbEBrZXJuZWwub3Jn
-PjsgUGFuLA0KPiBYaW5odWkgPFhpbmh1aS5QYW5AYW1kLmNvbT47IGFpcmxpZWRAZ21haWwuY29t
-OyBkYW5pZWxAZmZ3bGwuY2g7IGFtZC0NCj4gZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZHJp
-LWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0ggQVVUT1NFTCA2
-LjQgMTEvMTFdIGRybS9hbWRrZmQ6IGRpc2FibGUgSU9NTVV2Mg0KPiBzdXBwb3J0IGZvciBSYXZl
-bg0KPg0KPiBGcm9tOiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+
-DQo+IFsgVXBzdHJlYW0gY29tbWl0IDA5MWFlNTQ3M2Y5NmNlZDg0NGFmNmJhMzliOTQ3NTczNTli
-MTIzNDggXQ0KPg0KPiBVc2UgdGhlIGRHUFUgcGF0aCBpbnN0ZWFkLiAgVGhlcmUgd2VyZSBhIGxv
-dCBvZiBwbGF0Zm9ybSBpc3N1ZXMgd2l0aCBJT01NVQ0KPiBpbiBnZW5lcmFsIG9uIHRoZXNlIGNo
-aXBzIGR1ZSB0byB3aW5kb3dzIG5vdCBlbmFibGluZyBJT01NVSBhdCB0aGUgdGltZS4NCj4gVGhl
-IGRHUFUgcGF0aCBoYXMgYmVlbiB1c2VkIGZvciBhIGxvbmcgdGltZSB3aXRoIG5ld2VyIEFQVXMg
-YW5kIHdvcmtzDQo+IGZpbmUuICBUaGlzIGFsc28gcGF2ZXMgdGhlIHdheSB0byBzaW1wbGlmeSB0
-aGUgZHJpdmVyIHNpZ25pZmljYW50bHkuDQoNClRoaXMgaXMgbm90IG5lZWRlZCBmb3Igc3RhYmxl
-Lg0KDQpBbGV4DQoNCj4NCj4gUmV2aWV3ZWQtYnk6IEZlbGl4IEt1ZWhsaW5nIDxGZWxpeC5LdWVo
-bGluZ0BhbWQuY29tPg0KPiBBY2tlZC1ieTogQ2hyaXN0aWFuIEvDtm5pZyA8Y2hyaXN0aWFuLmtv
-ZW5pZ0BhbWQuY29tPg0KPiBUZXN0ZWQtYnk6IE1pa2UgTG90aGlhbiA8bWlrZUBmaXJlYnVybi5j
-by51az4NCj4gU2lnbmVkLW9mZi1ieTogQWxleCBEZXVjaGVyIDxhbGV4YW5kZXIuZGV1Y2hlckBh
-bWQuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBTYXNoYSBMZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+
-DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX2RldmljZS5jIHwgNyAt
-LS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNyBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9kZXZpY2UuYw0KPiBiL2RyaXZlcnMv
-Z3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9kZXZpY2UuYw0KPiBpbmRleCA5YzgxOTc1NzNkZWU3Li4y
-MjRlMDU3ZDJkYmJmIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9r
-ZmRfZGV2aWNlLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX2Rldmlj
-ZS5jDQo+IEBAIC0xODUsMTEgKzE4NSw2IEBAIHN0YXRpYyB2b2lkIGtmZF9kZXZpY2VfaW5mb19p
-bml0KHN0cnVjdCBrZmRfZGV2ICprZmQsDQo+DQo+ICAgICAgICAgICAgICAga2ZkX2RldmljZV9p
-bmZvX3NldF9ldmVudF9pbnRlcnJ1cHRfY2xhc3Moa2ZkKTsNCj4NCj4gLSAgICAgICAgICAgICAv
-KiBSYXZlbiAqLw0KPiAtICAgICAgICAgICAgIGlmIChnY192ZXJzaW9uID09IElQX1ZFUlNJT04o
-OSwgMSwgMCkgfHwNCj4gLSAgICAgICAgICAgICAgICAgZ2NfdmVyc2lvbiA9PSBJUF9WRVJTSU9O
-KDksIDIsIDIpKQ0KPiAtICAgICAgICAgICAgICAgICAgICAga2ZkLT5kZXZpY2VfaW5mby5uZWVk
-c19pb21tdV9kZXZpY2UgPSB0cnVlOw0KPiAtDQo+ICAgICAgICAgICAgICAgaWYgKGdjX3ZlcnNp
-b24gPCBJUF9WRVJTSU9OKDExLCAwLCAwKSkgew0KPiAgICAgICAgICAgICAgICAgICAgICAgLyog
-TmF2aTJ4KywgTmF2aTF4KyAqLw0KPiAgICAgICAgICAgICAgICAgICAgICAgaWYgKGdjX3ZlcnNp
-b24gPT0gSVBfVkVSU0lPTigxMCwgMywgNikpIEBAIC0yODMsNw0KPiArMjc4LDYgQEAgc3RydWN0
-IGtmZF9kZXYgKmtnZDJrZmRfcHJvYmUoc3RydWN0IGFtZGdwdV9kZXZpY2UgKmFkZXYsDQo+IGJv
-b2wgdmYpDQo+ICAgICAgICAgICAgICAgICAgICAgICBnZnhfdGFyZ2V0X3ZlcnNpb24gPSA5MDAw
-MDsNCj4gICAgICAgICAgICAgICAgICAgICAgIGYyZyA9ICZnZnhfdjlfa2ZkMmtnZDsNCj4gICAg
-ICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiAtI2lmZGVmIEtGRF9TVVBQT1JUX0lPTU1VX1Yy
-DQo+ICAgICAgICAgICAgICAgLyogUmF2ZW4gKi8NCj4gICAgICAgICAgICAgICBjYXNlIElQX1ZF
-UlNJT04oOSwgMSwgMCk6DQo+ICAgICAgICAgICAgICAgY2FzZSBJUF9WRVJTSU9OKDksIDIsIDIp
-Og0KPiBAQCAtMjkxLDcgKzI4NSw2IEBAIHN0cnVjdCBrZmRfZGV2ICprZ2Qya2ZkX3Byb2JlKHN0
-cnVjdA0KPiBhbWRncHVfZGV2aWNlICphZGV2LCBib29sIHZmKQ0KPiAgICAgICAgICAgICAgICAg
-ICAgICAgaWYgKCF2ZikNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZjJnID0gJmdm
-eF92OV9rZmQya2dkOw0KPiAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+IC0jZW5kaWYN
-Cj4gICAgICAgICAgICAgICAvKiBWZWdhMTIgKi8NCj4gICAgICAgICAgICAgICBjYXNlIElQX1ZF
-UlNJT04oOSwgMiwgMSk6DQo+ICAgICAgICAgICAgICAgICAgICAgICBnZnhfdGFyZ2V0X3ZlcnNp
-b24gPSA5MDAwNDsNCj4gLS0NCj4gMi40MC4xDQoNCg==
+On Mon, Aug 21, 2023 at 10:58:53PM +0000, Joel Fernandes wrote:
+> On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 6.1.47 release.
+> > There are 194 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.47-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> For RCU,
+> Tested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+I am getting the following warning which started after my last
+successful 6.1.47-rc1 run. Looks like others already reported it, but
+I am just archiving my finding here:
+
+Thanks.
+
+[    2.169887] ------------[ cut here ]------------
+[    2.170593] missing return thunk: __alt_instructions_end+0x2256/0x227c-srso_untrain_ret+0x0/0x2: e9 c7 a0 ed fe
+[    2.171678] WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:572 apply_returns+0x1fb/0x230
+[    2.173592] Modules linked in:
+[    2.174625] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.1.47-rc1-g9beeea9636e6 #299
+[    2.175608] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[    2.176593] RIP: 0010:apply_returns+0x1fb/0x230
+[    2.177592] Code: a5 01 00 0f 85 ef fe ff ff 49 89 d8 b9 05 00 00 00 4c 89 f2 48 89 de 48 c7 c7 60 3e 9d ad c6 05 fa 2c a5 01 01 e8 45 2d 04 00 <0f> 0b e9 c7 fe ff ff c7 84 24 89 00 00 00 cc cc cc cc 42 c7 84 04
+[    2.179589] RSP: 0000:ffffffffadc03e28 EFLAGS: 00010286
+[    2.180592] RAX: 0000000000000000 RBX: ffffffffae5292f2 RCX: 0000000000000000
+[    2.181591] RDX: 0000000000000003 RSI: 0000000000000001 RDI: 00000000ffffffff
+[    2.182595] RBP: 0000000000000000 R08: 00000000ffffdfff R09: 00000000ffffdfff
+[    2.184589] R10: ffffffffadc574a0 R11: ffffffffadc574a0 R12: ffffffffadc03e40
+[    2.185591] R13: ffffffffae520414 R14: ffffffffad4033be R15: ffffffffae5203f0
+[    2.186650] FS:  0000000000000000(0000) GS:ffff953a5ca00000(0000) knlGS:0000000000000000
+[    2.187637] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.188592] CR2: ffff953a5fa01000 CR3: 000000001ee0c000 CR4: 00000000000006f0
+[    2.189639] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    2.191589] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    2.192593] Call Trace:
+[    2.194683]  <TASK>
+[    2.195595]  ? __warn+0x78/0xc0
+[    2.197592]  ? apply_returns+0x1fb/0x230
+[    2.198593]  ? report_bug+0xe6/0x170
+[    2.199592]  ? console_unlock+0x1a3/0x210
+[    2.200594]  ? handle_bug+0x3c/0x70
+[    2.201594]  ? exc_invalid_op+0x13/0x60
+[    2.202594]  ? asm_exc_invalid_op+0x16/0x20
+[    2.203595]  ? retbleed_return_thunk+0x7e/0x7e
+[    2.205593]  ? apply_returns+0x1fb/0x230
+[    2.206594]  ? apply_returns+0x1fb/0x230
+[    2.207596]  alternative_instructions+0x43/0xf2
+[    2.208672]  arch_cpu_finalize_init+0x28/0x47
+[    2.210595]  start_kernel+0x5f9/0x6a5
+[    2.211597]  secondary_startup_64_no_verify+0xe0/0xeb
+[    2.213649]  </TASK>> 
+
