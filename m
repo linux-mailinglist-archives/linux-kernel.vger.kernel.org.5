@@ -2,126 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA371783A45
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033DA783A49
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbjHVHFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43442 "EHLO
+        id S233151AbjHVHGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbjHVHFD (ORCPT
+        with ESMTP id S231978AbjHVHGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:05:03 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D970130;
-        Tue, 22 Aug 2023 00:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1692687901; x=1724223901;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mbSEUKxzfd+NdbCyXSlyZygqZr+zo6Ad1ijqItVCU3c=;
-  b=dOS7gX/8JgxcK1Wv/yuQChxxSEVKJbnPHvzWLNkX3lilgkj4zvz1tR1q
-   m1kfZJFAHW4Cg/Yf1WfjC3GFa5c2NmloQCukeprYM20IZQIc/BYyoqlv3
-   pOhTtq1uRjmtaWIULuqJdkXBT/WGV2daTH298C2Rm3NISjaehI6Q8EtM+
-   XofkDcUcHRR07WlN9cDec0T5AanYvqbsN58A5BJZrdtMo5huLExJfbho/
-   kMv9siqw6hbEjpMrF7BQmgH7V602pSI0Kaq19Kyt1Ird9sb9hpKw8oRu6
-   Wla8M8AcccFu6ve01pENjl99ggSNzUrSWSqF6ZFBKA+28Aa7jcdgsS0g9
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="608536"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 22 Aug 2023 00:04:58 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Tue, 22 Aug 2023 00:04:54 -0700
-Received: from che-lt-i63539.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Tue, 22 Aug 2023 00:04:50 -0700
-From:   Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-To:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@tuxon.dev>
-CC:     <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-Subject: [PATCH] pwm: atmel: add missing clk_disable_unprepare()
-Date:   Tue, 22 Aug 2023 12:34:41 +0530
-Message-ID: <20230822070441.22170-1-Hari.PrasathGE@microchip.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 22 Aug 2023 03:06:10 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9964130
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:06:08 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-407db3e9669so150461cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:06:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692687968; x=1693292768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V+BLM0MEGdVJh+GeM8RFbfl7FvS0GBuGY0HLrEk98+g=;
+        b=67ZpPxdZmKHU+iKIy/rCIH+0m4sPPbuLv3JEZOkQdtA2gwADZISSzgjyJbhJbp1wli
+         G/EUH+NnkpcYFhgkGACJYocyLocDqDOprM8a8om7B7RL0Sr+9V548YZFMk+xRSeavD9t
+         4WOooJ+EVxQgdQ/EnV4f2YRIXq0nqF4fkRHO11j9gKoUcSEUxU4E5Y0mW+lSfSU98db3
+         5XMD6rlglHsRS0sGcQpfymaPo6qEd+wSE70nHluvK2wU6g589BRkQ0vcFL9WYcVq9iAu
+         TZdRzHy9sho8jv4Mlv7KHSnxe2zT4QTsqXDQ9MkZVY3ZFytz38yoz3NZCYll7zAw5Ft0
+         UubQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692687968; x=1693292768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V+BLM0MEGdVJh+GeM8RFbfl7FvS0GBuGY0HLrEk98+g=;
+        b=VE1kqMOMUW8KBQTt7JDPTVSStq99rIW2mPubF7fL/TWOeL8iNVDMOcXOYheV3nAhrC
+         +TzNjL02JTjdJCSKt10oKBXCvXSNnpr/NdL9dmHqjwEQlqi9jghCe+Md3vDrsPSuLtpj
+         yE+HKtm/rCtzR6a3+wsFAESIRvZMNi7qbpL4gTHG+FcstkszCbKVqkUzII66gYQcRr6s
+         PzlecjnYSNd33w4vgufdfDDJ6/xUGkDkLBHB2j4MAXm3BVIdSDMp9PdqI5mZqHNFLBSD
+         /QuXSW0e0PSS0wFM04IVYIk4mlvKdmN2X5Qt7Sog7sV2rxBD7hW1eGxZXlmttbArNv1L
+         90Yg==
+X-Gm-Message-State: AOJu0Yyh733/k8fx8XhWqCKfYO4eQWwvQmYiBzo3h5AiQ+ITFsZhVEVn
+        FQO53VKA0u3pwp2Or7rE7jWaz5ULT4DXjfnTh09SaWsbuLmv9ayQUsi0xw==
+X-Google-Smtp-Source: AGHT+IEtr6/EVKNg+/y3fk4iAA9e3QLd3eUcYWapQqAXgr+9utt53HzxrVcvxexkPJCnIW4avRUN+C1IkvFlz38cUgU=
+X-Received: by 2002:a05:622a:144a:b0:3f2:2c89:f1ef with SMTP id
+ v10-20020a05622a144a00b003f22c89f1efmr99219qtx.5.1692687967985; Tue, 22 Aug
+ 2023 00:06:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230822065256.163660-1-denik@chromium.org>
+In-Reply-To: <20230822065256.163660-1-denik@chromium.org>
+From:   Fangrui Song <maskray@google.com>
+Date:   Tue, 22 Aug 2023 00:05:56 -0700
+Message-ID: <CAFP8O3J2pUddEfL+W2j=tpjdj1ufsQMJqjcARbYvY3+khtBPig@mail.gmail.com>
+Subject: Re: [PATCH] modpost: Skip .llvm.call-graph-profile section check
+To:     Denis Nikitin <denik@chromium.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the below smatch warning:
+On Mon, Aug 21, 2023 at 11:54=E2=80=AFPM Denis Nikitin <denik@chromium.org>=
+ wrote:
+>
+> .llvm.call-graph-profile section is added when the kernel is built with
+> profiles (e.g. -fprofile-sample-use=3D<llvm.profile>).
 
-drivers/pwm/pwm-atmel-hlcdc.c:167 atmel_hlcdc_pwm_apply() warn: 'new_clk' from clk_prepare_enable() not released on lines: 112,137,142,149.
+Right. .llvm.call-graph-profile may also be added when the kernel is
+built with clang -fprofile-use=3D (though instrumentation-based PGO
+support is not upstreamed yet).
 
-Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
----
- drivers/pwm/pwm-atmel-hlcdc.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+> The section holds
+> metadata for symbols beloning to other sections and hence doesn't need
+> modpost checks.
 
-diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hlcdc.c
-index 96a709a9d49a..ce46f6c74a14 100644
---- a/drivers/pwm/pwm-atmel-hlcdc.c
-+++ b/drivers/pwm/pwm-atmel-hlcdc.c
-@@ -108,8 +108,10 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 						 ATMEL_HLCDC_CFG(0),
- 						 ATMEL_HLCDC_CLKPWMSEL,
- 						 gencfg);
--			if (ret)
-+			if (ret) {
-+				clk_disable_unprepare(new_clk);
- 				return ret;
-+			}
- 		}
- 
- 		do_div(pwmcval, state->period);
-@@ -133,20 +135,27 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 					 ATMEL_HLCDC_PWMPS_MASK |
- 					 ATMEL_HLCDC_PWMPOL,
- 					 pwmcfg);
--		if (ret)
-+		if (ret) {
-+			clk_disable_unprepare(new_clk);
- 			return ret;
-+		}
- 
- 		ret = regmap_write(hlcdc->regmap, ATMEL_HLCDC_EN,
- 				   ATMEL_HLCDC_PWM);
--		if (ret)
-+		if (ret) {
-+			clk_disable_unprepare(new_clk);
- 			return ret;
-+		}
- 
- 		ret = regmap_read_poll_timeout(hlcdc->regmap, ATMEL_HLCDC_SR,
- 					       status,
- 					       status & ATMEL_HLCDC_PWM,
- 					       10, 0);
--		if (ret)
-+		if (ret) {
-+			clk_disable_unprepare(new_clk);
- 			return ret;
-+		}
-+
- 	} else {
- 		ret = regmap_write(hlcdc->regmap, ATMEL_HLCDC_DIS,
- 				   ATMEL_HLCDC_PWM);
--- 
-2.34.1
+Typo: belonging.
 
+.llvm.call-graph-profile contains edge information derived from text
+sections, so .llvm.call-graph-profile itself doesn't need more
+analysis as the text sections have been analyzed.
+
+> This change fixes the kernel build with sample profiles which fails
+> with:
+> "FATAL: modpost: Please add code to calculate addend for this architectur=
+e"
+>
+> Signed-off-by: Denis Nikitin <denik@chromium.org>
+> ---
+>  scripts/mod/modpost.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index b29b29707f10..64bd13f7199c 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -761,6 +761,7 @@ static const char *const section_white_list[] =3D
+>         ".fmt_slot*",                   /* EZchip */
+>         ".gnu.lto*",
+>         ".discard.*",
+> +       ".llvm.call-graph-profile",     /* call graph */
+>         NULL
+>  };
+>
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
+>
+>
+
+Otherwise the change looks good to me.
+
+
+--=20
+=E5=AE=8B=E6=96=B9=E7=9D=BF
