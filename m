@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EDB784537
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D59C78453E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbjHVPPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33198 "EHLO
+        id S236805AbjHVPRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235426AbjHVPPC (ORCPT
+        with ESMTP id S234758AbjHVPRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:15:02 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510C9CD1;
-        Tue, 22 Aug 2023 08:15:01 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MESt50032613;
-        Tue, 22 Aug 2023 15:14:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=DCzL2rOf3ZWAieTvicXD/r/QjZ/UbYLZSUsJnEGj1nM=;
- b=i5ojJ0U9dTKhK3sIHeAzsOaOUxCxqb8LDIHBPgaVQgyNanFRBRBcx8K+9Ky9jLZAWXEb
- SjtHjIvWTQFckep3bI982nKCf6MNnD7n/do/5C791cjcQ248yL3dhkznVy8qUUgdjbYy
- WRT4hVr2J7QwvnDxcUgpEws08/RhUdKxx744fE0LwVbz7U/tShpAYv2mqh3MZCRWf/Pf
- AXnX+iOccciZSBWk39BNJOWZaEWXppwvijX/HbJcdIPS29BbNoBB0kr5GDtqVViZjbeH
- WlV1bXg8HX9vSmUG50cWJiKuG1XuqQRZ0A1HQLXQzh/fT8DSNMOoNxK58lvMnkjz0uTI Pw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm6uuk9av-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 15:14:55 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MFEs2D004229
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 15:14:54 GMT
-Received: from [10.48.244.52] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 22 Aug
- 2023 08:14:53 -0700
-Message-ID: <c45b35cd-3906-442c-b99e-a6c06a0c5994@quicinc.com>
-Date:   Tue, 22 Aug 2023 08:14:51 -0700
+        Tue, 22 Aug 2023 11:17:53 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2059B1B9;
+        Tue, 22 Aug 2023 08:17:52 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d7481bc4d6fso2901203276.2;
+        Tue, 22 Aug 2023 08:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692717471; x=1693322271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=59M6Girki320TCTK1GyWKJa3E9zY7uihbSu4q2aKwv8=;
+        b=M0HbFKy4O6XJnnvgcsiUr3WQWaCGK0jJgxxyBqUljbHy5gRkZXo1jnol1t6qdS5eza
+         SMU1Rz68eXeScCdmKEiheiKJqFaAR1zrdwVdns9mXHxOSmrAHr2lGduMgetHV9RIf9nq
+         /qAEegcROwua3gko5uFO7kxSrLLt1TknV9QRkTOKVueyI/byPPJ4jSxXTN1f2ogQCdjh
+         1h+yhf+qXUuJ+Rc1HADdUK2U7ttaN9U2TVG9FzcYNEGtxCge5vDuqRsvI4DXNgEOXOeK
+         xaOLv392kS6rjGJQ1MjvZahrNsDpnj6CFHrh9ZSnSoS2DpR2QV5ap7ndX+OFYj+GCA7B
+         9Quw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692717471; x=1693322271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=59M6Girki320TCTK1GyWKJa3E9zY7uihbSu4q2aKwv8=;
+        b=SMfjIB3S1HK/hn6wahaSaxq3gPCY2ftLsEQEKKRhmxhB3fgYXxsH6+k4xug+7dIJF8
+         VsqiSWJnrBSoDScNSKroYRZLmhjGXvWXW6ULg16J/+b3E6GzsgzjLaHD7CHWAlOWnOji
+         fsfU/99XjRLTGQeuqoB9ZXUFwj5vpuM+Mz0tMJ6spIUCZkfIHDTxB+OTJSbLWv4suApY
+         t6pjmfBwGJrXbuNfdlAdGaAgJzrB+9M4tAg3Bs4VY2/KA8JLMxtSVquKRVR4gRTCQhv4
+         1X0pZPe3Q7FowZFTokTe+9UwZKyGYS7FwfWnlsWnWLGpSclOKa92SBmRl7wX5vTVCf81
+         56MA==
+X-Gm-Message-State: AOJu0YxJPcvqbbakdlcmCih1yK7/Edu/ae6SA+1yqfbBlnpsTmCZ2zUK
+        J6pSNcGnZc6PSeKWNJPRVkmobMMAaZXHx5iPmzs=
+X-Google-Smtp-Source: AGHT+IFqyQFOTQqanc1s2m4ocPbNu/JNaNBM8De7h2JFN7RA/p17xsGxfq78ecB2cFVwOd0FvKDTsunJ1fFEUTrfOW8=
+X-Received: by 2002:a25:d10a:0:b0:d62:b91b:10e3 with SMTP id
+ i10-20020a25d10a000000b00d62b91b10e3mr10507545ybg.48.1692717471336; Tue, 22
+ Aug 2023 08:17:51 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/1] soc: qcom: Add driver to read secondary
- bootloader (XBL) log
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Ninad Naik <quic_ninanaik@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>
-CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>
-References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
- <20230822121512.8631-2-quic_ninanaik@quicinc.com>
- <39ce6d07-7692-7194-b153-e73ba7fb687c@linaro.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <39ce6d07-7692-7194-b153-e73ba7fb687c@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zpEpkb6BQW6kFJyoWD3HR_XKeLLy1E-L
-X-Proofpoint-GUID: zpEpkb6BQW6kFJyoWD3HR_XKeLLy1E-L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 clxscore=1011 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 mlxscore=0 priorityscore=1501 phishscore=0 mlxlogscore=710
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308220117
+References: <20230822162333.752217fa@canb.auug.org.au> <CANiq72=DA1A5YyrWAPHEr+by_pac4R0-GemurbLWYNrSAUNSzw@mail.gmail.com>
+ <20230822222036.3462aa57@canb.auug.org.au>
+In-Reply-To: <20230822222036.3462aa57@canb.auug.org.au>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 22 Aug 2023 17:17:40 +0200
+Message-ID: <CANiq72nvbkYQ0bPb0aRs0jNZGgFwg8TMek4b0n3jrgxd2X4h3A@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the rust tree with the kunit-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/2023 5:43 AM, Bryan O'Donoghue wrote:
-> On 22/08/2023 13:15, Ninad Naik wrote:
-..snip..
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
->> + */
-> 
-> 2023
+On Tue, Aug 22, 2023 at 2:20=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+>
+> Thanks for the explanation.  I have updated my resolution for tomorrow.
 
-if this is derived work based upon existing downstream code then I 
-suspect the LF 2021 copyright is correct and should be maintained, and a 
-QuIC 2023 copyright should be added
+My pleasure & thanks!
 
+Cheers,
+Miguel
