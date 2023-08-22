@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5A3783A60
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F47783A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbjHVHKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58506 "EHLO
+        id S233238AbjHVHKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbjHVHJ7 (ORCPT
+        with ESMTP id S233233AbjHVHKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:09:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF102CC7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:09:51 -0700 (PDT)
+        Tue, 22 Aug 2023 03:10:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C2BCD4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 00:09:53 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A59164D4C
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5360C433CB;
-        Tue, 22 Aug 2023 07:09:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1EE3B64D18
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBA84C433C8;
+        Tue, 22 Aug 2023 07:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692688190;
-        bh=2ZHDvbq3+3zLWqFwJBCT9nsnQo0T+nMGUO9QmyxfUBo=;
+        s=k20201202; t=1692688192;
+        bh=YWcF5FYjmBa5ZzNhVXuTsMWow8CghL/K0RmXeemBMIU=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=SAmXAVz6nj0bs8b2qLxVSXEdd2MX/4RP2Ymem5Sq9Lp9T6soqnOby52kDxVxiqy7R
-         mt50w4imKBuCYRrMRYwD5F+zVH4q34tYlrPolxb7mV5Fq2sMY5s5P2pqS/aA5ybpXk
-         wM3PVFIRX3DVfK3bgjvtvelxRUeKy/kG4uNqY8p7EU0s7jDNpEWsRm8azeBfzI8iHq
-         YZ+ToT3ng98XIjC+9rm7J14qKZS3uxQJkIk2o0J8OiyIhV9biakXsIWBFDNr3vhMkg
-         4RaFjulGPKrTEtp2kkcQ/YTsDCONzVyoGv+YJjLoY1PFLzzUZWvY+uD7cjA0AUIXvK
-         HjV7qp1Dpx1uw==
+        b=TsjNsNl5KE+5gIEKx76Yi79TjlkLlVljlVzLJ1C6OlosqeY4UtLuH4PUIQSxLFBx4
+         xtrbP1+P2//22eYCRJllvW9ehshooGzcqQvEmaynmiSWhkLhQJ7Rq2L8EDdRwxRV0g
+         sZOtPpyR/Iy0W19Oc9jU+zaDldcF8sYRAv1H2WDJybUeX5QARjSDX5aGjc6f0T7xXx
+         kHJBizWvTGVPZPOBCzt92+8tKV/o13y0BN69X5aIWIzatdhjwpjbkVu50FIKeVVdde
+         2RskH8m58rXXPSiUM8jJX9cje+uQJetTmYZIrJcxcnBKAAIVZ60zPtVQeT8GGnGj80
+         Z07h9/4Q1a79g==
 From:   Michael Walle <mwalle@kernel.org>
-Date:   Tue, 22 Aug 2023 09:09:23 +0200
-Subject: [PATCH v2 07/41] mtd: spi-nor: store .n_banks in struct
- spi_nor_flash_parameter
+Date:   Tue, 22 Aug 2023 09:09:24 +0200
+Subject: [PATCH v2 08/41] mtd: spi-nor: default .n_banks to 1
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230807-mtd-flash-info-db-rework-v2-7-291a0f39f8d8@kernel.org>
+Message-Id: <20230807-mtd-flash-info-db-rework-v2-8-291a0f39f8d8@kernel.org>
 References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 In-Reply-To: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
 To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
@@ -51,8 +50,8 @@ To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
 Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
         Michael Walle <mwalle@kernel.org>
 X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,70 +59,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First, fixups might want to replace the n_banks parameter, thus we need
-it in the (writable) parameter struct. Secondly, this way we can have a
-default in the core and just skip setting the n_banks in the flash_info
-database. Most of the flashes doesn't have more than one bank.
+If .n_banks is not set in the flash_info database, the default value
+should be 1. This way, we don't have to always set the .n_banks
+parameter in flash_info.
 
 Signed-off-by: Michael Walle <mwalle@kernel.org>
 Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/spi-nor/core.c | 7 ++++---
- drivers/mtd/spi-nor/core.h | 2 ++
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/core.c   | 3 +--
+ drivers/mtd/spi-nor/core.h   | 8 ++++----
+ drivers/mtd/spi-nor/xilinx.c | 1 -
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index d27ad1295ee0..e27f1323fa0b 100644
+index e27f1323fa0b..68baf6032639 100644
 --- a/drivers/mtd/spi-nor/core.c
 +++ b/drivers/mtd/spi-nor/core.c
-@@ -2862,7 +2862,7 @@ static void spi_nor_init_flags(struct spi_nor *nor)
- 	if (flags & NO_CHIP_ERASE)
- 		nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
+@@ -2017,7 +2017,6 @@ static const struct spi_nor_manufacturer *manufacturers[] = {
  
--	if (flags & SPI_NOR_RWW && nor->info->n_banks > 1 &&
-+	if (flags & SPI_NOR_RWW && nor->params->n_banks > 1 &&
- 	    !nor->controller_ops)
- 		nor->flags |= SNOR_F_RWW;
- }
-@@ -2926,8 +2926,8 @@ static int spi_nor_late_init_params(struct spi_nor *nor)
- 	if (nor->flags & SNOR_F_HAS_LOCK && !nor->params->locking_ops)
- 		spi_nor_init_default_locking_ops(nor);
+ static const struct flash_info spi_nor_generic_flash = {
+ 	.name = "spi-nor-generic",
+-	.n_banks = 1,
+ 	.parse_sfdp = true,
+ };
  
--	if (nor->info->n_banks > 1)
--		params->bank_size = div64_u64(params->size, nor->info->n_banks);
-+	if (params->n_banks > 1)
-+		params->bank_size = div64_u64(params->size, params->n_banks);
- 
- 	return 0;
- }
-@@ -2997,6 +2997,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
+@@ -2997,7 +2996,7 @@ static void spi_nor_init_default_params(struct spi_nor *nor)
  	params->size = info->size;
  	params->bank_size = params->size;
  	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
-+	params->n_banks = info->n_banks;
+-	params->n_banks = info->n_banks;
++	params->n_banks = info->n_banks ?: SPI_NOR_DEFAULT_N_BANKS;
  
  	if (!(info->flags & SPI_NOR_NO_FR)) {
  		/* Default to Fast Read for DT and non-DT platform devices. */
 diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index 25bc18197614..2fc999f2787c 100644
+index 2fc999f2787c..8627d0b95be6 100644
 --- a/drivers/mtd/spi-nor/core.h
 +++ b/drivers/mtd/spi-nor/core.h
-@@ -358,6 +358,7 @@ struct spi_nor_otp {
-  *			in octal DTR mode.
-  * @rdsr_addr_nbytes:	dummy address bytes needed for Read Status Register
-  *			command in octal DTR mode.
-+ * @n_banks:		number of banks.
-  * @n_dice:		number of dice in the flash memory.
-  * @vreg_offset:	volatile register offset for each die.
-  * @hwcaps:		describes the read and page program hardware
-@@ -394,6 +395,7 @@ struct spi_nor_flash_parameter {
- 	u8				addr_mode_nbytes;
- 	u8				rdsr_dummy;
- 	u8				rdsr_addr_nbytes;
-+	u8				n_banks;
- 	u8				n_dice;
- 	u32				*vreg_offset;
+@@ -15,6 +15,7 @@
+  * have the page size defined within their SFDP tables.
+  */
+ #define SPI_NOR_DEFAULT_PAGE_SIZE 256
++#define SPI_NOR_DEFAULT_N_BANKS 1
  
+ /* Standard SPI NOR flash operations. */
+ #define SPI_NOR_READID_OP(naddr, ndummy, buf, len)			\
+@@ -453,7 +454,7 @@ struct spi_nor_fixups {
+  * @size:           the size of the flash in bytes.
+  * @sector_size:    the size listed here is what works with SPINOR_OP_SE, which
+  *                  isn't necessarily called a "sector" by the vendor.
+- * @n_banks:        the number of banks.
++ * @n_banks:        (optional) the number of banks. Defaults to 1.
+  * @page_size:      (optional) the flash's page size. Defaults to 256.
+  * @addr_nbytes:    number of address bytes to send.
+  *
+@@ -570,7 +571,7 @@ struct flash_info {
+ /* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+ 
+ #define INFOB(_jedec_id, _ext_id, _sector_size, _n_sectors, _n_banks)	\
+ 	SPI_NOR_ID((_jedec_id), (_ext_id)),				\
+@@ -578,13 +579,12 @@ struct flash_info {
+ 
+ #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors)		\
+ 	SPI_NOR_ID6((_jedec_id), (_ext_id)),				\
+-	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
++	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 0),
+ 
+ #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_nbytes)	\
+ 		.size = (_sector_size) * (_n_sectors),			\
+ 		.sector_size = (_sector_size),				\
+ 		.page_size = (_page_size),				\
+-		.n_banks = 1,						\
+ 		.addr_nbytes = (_addr_nbytes),				\
+ 		.flags = SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,		\
+ 
+diff --git a/drivers/mtd/spi-nor/xilinx.c b/drivers/mtd/spi-nor/xilinx.c
+index 284e2e4970ab..8d4539e32dfe 100644
+--- a/drivers/mtd/spi-nor/xilinx.c
++++ b/drivers/mtd/spi-nor/xilinx.c
+@@ -26,7 +26,6 @@
+ 		.size = 8 * (_page_size) * (_n_sectors),		\
+ 		.sector_size = (8 * (_page_size)),			\
+ 		.page_size = (_page_size),				\
+-		.n_banks = 1,						\
+ 		.flags = SPI_NOR_NO_FR
+ 
+ /* Xilinx S3AN share MFR with Atmel SPI NOR */
 
 -- 
 2.39.2
