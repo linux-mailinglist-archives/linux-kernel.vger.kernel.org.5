@@ -2,231 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E76783D8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD09783D90
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbjHVKGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
+        id S234613AbjHVKHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:07:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbjHVKGm (ORCPT
+        with ESMTP id S234404AbjHVKHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:06:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D14CD0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:05:58 -0700 (PDT)
+        Tue, 22 Aug 2023 06:07:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472E3CC1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:06:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692698757;
+        s=mimecast20190719; t=1692698790;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ljh8mgcq2yx3L1h9FQGeznUQ1rxHUXwLkH1HroGp6xY=;
-        b=NSohfqO7ttx3XK53sFCGHYT/SP9KeAFN91BCLQDBMLhKggSggcvM3JUTx9kDE8A391S6dD
-        slKQXHPkbLX/wYhqAS6IkHlPR8UWRT5pRlf6SaTRfNonkyDg3V6k6ir3G93efBABqNYI/6
-        6vn08S2N7uTQAXt/gVaDJdP1apZUCjM=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=DTCXOZTKWlBtgR3TiOF1G26BD/6V7FvJx/9Suzf/Oc8=;
+        b=jMRkZTkU+A9mBK6ugSTqP8Th5OoK4Ec4yW0Yw1xWYGBpbgnMu9afuF90Bz8QIUBn9RYNHe
+        Xa0iaQ8zWCbXY+/y4B8ETgz/m5Y3TJzBDhVH9TEn1nOFTIn9/T3zrgQ4oQgoNe2tNC2RQ3
+        inrVUk7Oje1VrAL6W5Ac9haMlAMl47M=
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
+ [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-394-U6Vs8cplNe2voNjOWhL9EA-1; Tue, 22 Aug 2023 06:05:56 -0400
-X-MC-Unique: U6Vs8cplNe2voNjOWhL9EA-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1c0888beb4bso2481045ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:05:55 -0700 (PDT)
+ us-mta-85-TUdZYefCMLCUPyRy9CQKWA-1; Tue, 22 Aug 2023 06:06:29 -0400
+X-MC-Unique: TUdZYefCMLCUPyRy9CQKWA-1
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26f49625bffso2378202a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:06:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692698754; x=1693303554;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ljh8mgcq2yx3L1h9FQGeznUQ1rxHUXwLkH1HroGp6xY=;
-        b=bVBOZjaTf8ZFXRM98Jox3+5PBmhzGarIzJ+CvfMkeCHpRmCJhIwQPtqFfHhpNa0T1O
-         zUpKmYODUUQOz6DsL7FBVFB89xlqel51wp6H3+ASMsXH52H9H9A54qerJMRQg09zVL61
-         3rGPEiGmb3loKwKqRBUOer1i6DVNdzV/rEPHF/NWFB4RY29Joa6wvNUtLFPwLcga4vZq
-         YkMTqIyKdZBqxfTY7cpFBYD1VyBLJk1eZp1T5th515OXPdwzT7G3kc8rzp+T44dqTaXG
-         OxzGv4oN3fl+bAp1unwTMCkUd+pWXYYYO6n2QfWwru+r65UjJjASvjej7YPlgf7sdlI4
-         7Y4Q==
-X-Gm-Message-State: AOJu0YxxOQ/RVnhBx4Xuo7qO+y8zuK1kVHSComk27bQaOkgSzRcGR7/2
-        wdnnKrN8U17/M0bXuRKfh3uzOux7geA7covihSLW5f8N/3AHbCiXJzlkm4Oyy4iXpKniLH2CmQ3
-        R56g3TQzSs9Xb5gDbPSDDbKBT
-X-Received: by 2002:a17:902:cecc:b0:1b3:ec39:f42c with SMTP id d12-20020a170902cecc00b001b3ec39f42cmr10623699plg.5.1692698754301;
-        Tue, 22 Aug 2023 03:05:54 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEBhn68XouwWIaKc08runbGqmfjkKyK5I3i4ktoUZ68HemKWF8GXSCA5juwTjuCj2HbOAuLAA==
-X-Received: by 2002:a17:902:cecc:b0:1b3:ec39:f42c with SMTP id d12-20020a170902cecc00b001b3ec39f42cmr10623682plg.5.1692698753973;
-        Tue, 22 Aug 2023 03:05:53 -0700 (PDT)
-Received: from [10.72.112.73] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id q4-20020a170902bd8400b001b9f032bb3dsm8603671pls.3.2023.08.22.03.05.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 03:05:52 -0700 (PDT)
-Message-ID: <1c6c07af-f6d0-89a6-1b7d-164ca100ac88@redhat.com>
-Date:   Tue, 22 Aug 2023 18:05:47 +0800
+        d=1e100.net; s=20221208; t=1692698788; x=1693303588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DTCXOZTKWlBtgR3TiOF1G26BD/6V7FvJx/9Suzf/Oc8=;
+        b=Ex3mSpitpQ70LxduQhkHVvckUDDv9FfzGZaWRBtLzDCTXgnDL5UQXuEpzSXeVO2yMS
+         PYvfFabPfDUuyVdrRZm5zCIbF2i2l5H4wP0Nuu7zwI1JyinSVOyptzCUixwp3j6wg3M+
+         GVK7eN1X+XEBqVlI5/NHeV2vAD3mIewsWcuXMGCAcdTzFX4c4pBIaBpkR2iDSNbbJTgr
+         J7fwyaP+d4Wm2GQZV7lkiQ5JdcC53P2auoK+QzIkzvMJUMJUNyxrAm5kwW/JDcpDHS7F
+         mCuSkrxqqdgFxPCdDsz2qAjAokaUw1rh1Ibq4/le3Oy7UJM7e4kGYsE4OU/jHQoR/1lh
+         G9pA==
+X-Gm-Message-State: AOJu0YykzTuRDLy+fZGCgQrOXFPxf/iVNVz7iEF6abzUiqswInsFRScm
+        8IrF7KQa8+1Dlfx0Wfsk12rsFB/Nfwpej1v6EagvYfFWk08RPQfCS0EjvGBkvkOsI71bRMsNtaU
+        cVZuFT6WHc8IlpUxPg6spBEOyZRFRIqHtDpgJ3kJ3
+X-Received: by 2002:a17:90a:6c01:b0:262:ba7f:30cd with SMTP id x1-20020a17090a6c0100b00262ba7f30cdmr5951019pjj.31.1692698788026;
+        Tue, 22 Aug 2023 03:06:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE1ih15dx7UEER54HYcyFQ/f5Z5OJgACYYaHpKoHSaIrCZPcA37bKoALopiqPe1QeOHVgAad4/1tZEZtdvbL2Y=
+X-Received: by 2002:a17:90a:6c01:b0:262:ba7f:30cd with SMTP id
+ x1-20020a17090a6c0100b00262ba7f30cdmr5950998pjj.31.1692698787718; Tue, 22 Aug
+ 2023 03:06:27 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v5 08/12] KVM: arm64: PMU: Allow userspace to limit
- PMCR_EL0.N for the guest
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-References: <20230817003029.3073210-1-rananta@google.com>
- <20230817003029.3073210-9-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230817003029.3073210-9-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230820090949.2874537-1-yukuai1@huaweicloud.com> <20230820090949.2874537-4-yukuai1@huaweicloud.com>
+In-Reply-To: <20230820090949.2874537-4-yukuai1@huaweicloud.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Tue, 22 Aug 2023 18:06:17 +0800
+Message-ID: <CALTww28ikBeeP+8Q=CS2iWd07rRM7QrvNk+yfE9OGV1De5=_Qw@mail.gmail.com>
+Subject: Re: [PATCH -next v3 3/7] md: delay choosing sync action to md_start_sync()
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     song@kernel.org, mariusz.tkaczyk@linux.intel.com,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Raghavendra,
-
-On 8/17/23 08:30, Raghavendra Rao Ananta wrote:
-> From: Reiji Watanabe <reijiw@google.com>
-> 
-> KVM does not yet support userspace modifying PMCR_EL0.N (With
-> the previous patch, KVM ignores what is written by upserspace).
-> Add support userspace limiting PMCR_EL0.N.
-> 
-> Disallow userspace to set PMCR_EL0.N to a value that is greater
-> than the host value (KVM_SET_ONE_REG will fail), as KVM doesn't
-> support more event counters than the host HW implements.
-> Although this is an ABI change, this change only affects
-> userspace setting PMCR_EL0.N to a larger value than the host.
-> As accesses to unadvertised event counters indices is CONSTRAINED
-> UNPREDICTABLE behavior, and PMCR_EL0.N was reset to the host value
-> on every vCPU reset before this series, I can't think of any
-> use case where a user space would do that.
-> 
-> Also, ignore writes to read-only bits that are cleared on vCPU reset,
-> and RES{0,1} bits (including writable bits that KVM doesn't support
-> yet), as those bits shouldn't be modified (at least with
-> the current KVM).
-> 
-> Signed-off-by: Reiji Watanabe <reijiw@google.com>
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+On Sun, Aug 20, 2023 at 5:13=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Before this patch, for read-write array:
+>
+> 1) md_check_recover() found that something need to be done, and it'll
+>    try to grab 'reconfig_mutex'. The case that md_check_recover() need
+>    to do something:
+>    - array is not suspend;
+>    - super_block need to be updated;
+>    - 'MD_RECOVERY_NEEDED' or ''MD_RECOVERY_DONE' is set;
+>    - unusual case related to safemode;
+>
+> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>    md_check_recover() will try to choose a sync action, and then queue a
+>    work md_start_sync().
+>
+> 3) md_start_sync() register sync_thread;
+>
+> After this patch,
+>
+> 1) is the same;
+> 2) if 'MD_RECOVERY_RUNNING' is not set, and 'MD_RECOVERY_NEEDED' is set,
+>    queue a work md_start_sync() directly;
+> 3) md_start_sync() will try to choose a sync action, and then register
+>    sync_thread();
+>
+> Because 'MD_RECOVERY_RUNNING' is cleared when sync_thread is done, 2)
+> and 3) and md_do_sync() is always ran in serial and they can never
+> concurrent, this change should not introduce any behavior change for now.
+>
+> Also fix a problem that md_start_sync() can clear 'MD_RECOVERY_RUNNING'
+> without protection in error path, which might affect the logical in
+> md_check_recovery().
+>
+> The advantage to change this is that array reconfiguration is
+> independent from daemon now, and it'll be much easier to synchronize it
+> with io, consider that io may rely on daemon thread to be done.
+>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->   arch/arm64/include/asm/kvm_host.h |  3 ++
->   arch/arm64/kvm/pmu-emul.c         |  1 +
->   arch/arm64/kvm/sys_regs.c         | 49 +++++++++++++++++++++++++++++--
->   3 files changed, 51 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 0f2dbbe8f6a7e..c15ec365283d1 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -259,6 +259,9 @@ struct kvm_arch {
->   	/* PMCR_EL0.N value for the guest */
->   	u8 pmcr_n;
->   
-> +	/* Limit value of PMCR_EL0.N for the guest */
-> +	u8 pmcr_n_limit;
+>  drivers/md/md.c | 73 ++++++++++++++++++++++++++-----------------------
+>  1 file changed, 39 insertions(+), 34 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 0cb9fa703a0c..561cac13ff96 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9293,6 +9293,22 @@ static bool md_choose_sync_action(struct mddev *md=
+dev, int *spares)
+>  static void md_start_sync(struct work_struct *ws)
+>  {
+>         struct mddev *mddev =3D container_of(ws, struct mddev, sync_work)=
+;
+> +       int spares =3D 0;
 > +
->   	/* Hypercall features firmware registers' descriptor */
->   	struct kvm_smccc_features smccc_feat;
->   	struct maple_tree smccc_filter;
-> diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-> index ce7de6bbdc967..39ad56a71ad20 100644
-> --- a/arch/arm64/kvm/pmu-emul.c
-> +++ b/arch/arm64/kvm/pmu-emul.c
-> @@ -896,6 +896,7 @@ int kvm_arm_set_vm_pmu(struct kvm *kvm, struct arm_pmu *arm_pmu)
->   	 * while the latter does not.
->   	 */
->   	kvm->arch.pmcr_n = arm_pmu->num_events - 1;
-> +	kvm->arch.pmcr_n_limit = arm_pmu->num_events - 1;
->   
->   	return 0;
->   }
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 2075901356c5b..c01d62afa7db4 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1086,6 +1086,51 @@ static int get_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->   	return 0;
->   }
->   
-> +static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
-> +		    u64 val)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +	u64 new_n, mutable_mask;
-> +	int ret = 0;
+> +       mddev_lock_nointr(mddev);
 > +
-> +	new_n = FIELD_GET(ARMV8_PMU_PMCR_N, val);
+> +       if (!md_choose_sync_action(mddev, &spares))
+> +               goto not_running;
 > +
-> +	mutex_lock(&kvm->arch.config_lock);
-> +	if (unlikely(new_n != kvm->arch.pmcr_n)) {
-> +		/*
-> +		 * The vCPU can't have more counters than the PMU
-> +		 * hardware implements.
-> +		 */
-> +		if (new_n <= kvm->arch.pmcr_n_limit)
-> +			kvm->arch.pmcr_n = new_n;
-> +		else
-> +			ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&kvm->arch.config_lock);
+> +       if (!mddev->pers->sync_request)
+> +               goto not_running;
+> +
+> +       /*
+> +        * We are adding a device or devices to an array which has the bi=
+tmap
+> +        * stored on all devices. So make sure all bitmap pages get writt=
+en.
+> +        */
+> +       if (spares)
+> +               md_bitmap_write_all(mddev->bitmap);
+>
+>         rcu_assign_pointer(mddev->sync_thread,
+>                            md_register_thread(md_do_sync, mddev, "resync"=
+));
+> @@ -9300,20 +9316,27 @@ static void md_start_sync(struct work_struct *ws)
+>                 pr_warn("%s: could not start resync thread...\n",
+>                         mdname(mddev));
+>                 /* leave the spares where they are, it shouldn't hurt */
+> -               clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
+> -               clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
+> -               clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> -               clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+> -               clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> -               wake_up(&resync_wait);
+> -               if (test_and_clear_bit(MD_RECOVERY_RECOVER,
+> -                                      &mddev->recovery))
+> -                       if (mddev->sysfs_action)
+> -                               sysfs_notify_dirent_safe(mddev->sysfs_act=
+ion);
+> -       } else
+> -               md_wakeup_thread(mddev->sync_thread);
+> +               goto not_running;
+> +       }
+> +
+> +       mddev_unlock(mddev);
+> +       md_wakeup_thread(mddev->sync_thread);
+>         sysfs_notify_dirent_safe(mddev->sysfs_action);
+>         md_new_event();
+> +       return;
+> +
+> +not_running:
+> +       clear_bit(MD_RECOVERY_SYNC, &mddev->recovery);
+> +       clear_bit(MD_RECOVERY_RESHAPE, &mddev->recovery);
+> +       clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+> +       clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+> +       clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+> +       mddev_unlock(mddev);
+> +
+> +       wake_up(&resync_wait);
+> +       if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
+> +           mddev->sysfs_action)
+> +               sysfs_notify_dirent_safe(mddev->sysfs_action);
+>  }
+>
+>  /*
+> @@ -9381,7 +9404,6 @@ void md_check_recovery(struct mddev *mddev)
+>                 return;
+>
+>         if (mddev_trylock(mddev)) {
+> -               int spares =3D 0;
+>                 bool try_set_sync =3D mddev->safemode !=3D 0;
+>
+>                 if (!mddev->external && mddev->safemode =3D=3D 1)
+> @@ -9468,31 +9490,14 @@ void md_check_recovery(struct mddev *mddev)
+>                 clear_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>                 clear_bit(MD_RECOVERY_DONE, &mddev->recovery);
+>
+> -               if (!test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recov=
+ery) ||
+> -                   test_bit(MD_RECOVERY_FROZEN, &mddev->recovery))
+> -                       goto not_running;
+> -               if (!md_choose_sync_action(mddev, &spares))
+> -                       goto not_running;
+> -               if (mddev->pers->sync_request) {
+> -                       if (spares) {
+> -                               /* We are adding a device or devices to a=
+n array
+> -                                * which has the bitmap stored on all dev=
+ices.
+> -                                * So make sure all bitmap pages get writ=
+ten
+> -                                */
+> -                               md_bitmap_write_all(mddev->bitmap);
+> -                       }
+> +               if (test_and_clear_bit(MD_RECOVERY_NEEDED, &mddev->recove=
+ry) &&
+> +                   !test_bit(MD_RECOVERY_FROZEN, &mddev->recovery)) {
+>                         queue_work(md_misc_wq, &mddev->sync_work);
+> -                       goto unlock;
+> -               }
+> -       not_running:
+> -               if (!mddev->sync_thread) {
+> +               } else {
+>                         clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+>                         wake_up(&resync_wait);
+> -                       if (test_and_clear_bit(MD_RECOVERY_RECOVER,
+> -                                              &mddev->recovery))
+> -                               if (mddev->sysfs_action)
+> -                                       sysfs_notify_dirent_safe(mddev->s=
+ysfs_action);
+>                 }
+> +
+>         unlock:
+>                 wake_up(&mddev->sb_wait);
+>                 mddev_unlock(mddev);
+> --
+> 2.39.2
+>
 
-Another thing I am just wonder is that should we block any modification 
-to the pmcr_n after vm start to run? Like add one more checking 
-kvm_vm_has_ran_once() at the beginning of the set_pmcr() function.
+I like the idea. Thanks for the effort.
 
-Thanks,
-Shaoqin
-
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Ignore writes to RES0 bits, read only bits that are cleared on
-> +	 * vCPU reset, and writable bits that KVM doesn't support yet.
-> +	 * (i.e. only PMCR.N and bits [7:0] are mutable from userspace)
-> +	 * The LP bit is RES0 when FEAT_PMUv3p5 is not supported on the vCPU.
-> +	 * But, we leave the bit as it is here, as the vCPU's PMUver might
-> +	 * be changed later (NOTE: the bit will be cleared on first vCPU run
-> +	 * if necessary).
-> +	 */
-> +	mutable_mask = (ARMV8_PMU_PMCR_MASK | ARMV8_PMU_PMCR_N);
-> +	val &= mutable_mask;
-> +	val |= (__vcpu_sys_reg(vcpu, r->reg) & ~mutable_mask);
-> +
-> +	/* The LC bit is RES1 when AArch32 is not supported */
-> +	if (!kvm_supports_32bit_el0())
-> +		val |= ARMV8_PMU_PMCR_LC;
-> +
-> +	__vcpu_sys_reg(vcpu, r->reg) = val;
-> +	return 0;
-> +}
-> +
->   /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
->   #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
->   	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
-> @@ -2147,8 +2192,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->   	{ SYS_DESC(SYS_CTR_EL0), access_ctr },
->   	{ SYS_DESC(SYS_SVCR), undef_access },
->   
-> -	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr,
-> -	  .reset = reset_pmcr, .reg = PMCR_EL0, .get_user = get_pmcr },
-> +	{ PMU_SYS_REG(PMCR_EL0), .access = access_pmcr, .reset = reset_pmcr,
-> +	  .reg = PMCR_EL0, .get_user = get_pmcr, .set_user = set_pmcr },
->   	{ PMU_SYS_REG(PMCNTENSET_EL0),
->   	  .access = access_pmcnten, .reg = PMCNTENSET_EL0 },
->   	{ PMU_SYS_REG(PMCNTENCLR_EL0),
-
--- 
-Shaoqin
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
