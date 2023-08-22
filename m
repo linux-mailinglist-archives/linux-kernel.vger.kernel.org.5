@@ -2,74 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12377783A14
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F14F783A96
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjHVGhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        id S233553AbjHVHMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:12:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbjHVGg4 (ORCPT
+        with ESMTP id S233366AbjHVHMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:36:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D25BC;
-        Mon, 21 Aug 2023 23:36:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692686210; x=1724222210;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=afCoa/ZZo8JlXd4rmTwsUfx9qsQ2KBQvigqx0/qmV5A=;
-  b=Hk2Zrynpe1injH8WsX1j9NKoM51q+fiWqySBUuHwnyo6zpyDDLE/QxGS
-   PT9c5qzTIa9HmQDRHYPZxvnQZPbnn2qH36Cm5RXaXDFH9/6cUMQYJqKOy
-   g/Bl7+uRS03TVUkYHJl/Ir3YF6ktu7ApYlNVJcVxadYx2xW5VQzzBrnLv
-   RI1APmzYwILIAdM5I64y1xC2YOsfutMQX8mJe7GFa7WWkhWI4Iyq6MK+g
-   XRYCVLnxBDGX7woziz4nyVEbcV+L7QqcZ2kOmWL4sll2fZjqc80c+OroK
-   fm2LIkAaNafuCNPHOCfhSk6f4xZMyNpBALFgPpYGT6Qzc+hrfCulMcEaT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="404795979"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="404795979"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 23:36:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801540554"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="801540554"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.252.189.107]) ([10.252.189.107])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 23:36:44 -0700
-Message-ID: <93811e0c-ff04-366d-493e-7186e4588359@linux.intel.com>
-Date:   Tue, 22 Aug 2023 14:36:40 +0800
+        Tue, 22 Aug 2023 03:12:00 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D0FCED;
+        Tue, 22 Aug 2023 00:11:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F66163B33;
+        Tue, 22 Aug 2023 07:11:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28C08C43140;
+        Tue, 22 Aug 2023 07:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692688268;
+        bh=OSFmIc6DjVqzpF68MG32L32Nfk/PkwF+T/iEcUfE7zI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yFhT1h6G7GQs4G8xdXWO83os1xmaegpIyyVgziAzY/RjT4jaPabj1XFXBMGL/iE0W
+         IHtR6aNZw4QOeK7FZqjtRLpC+fVw62vbtkU06cUtNIRZiBgB1yiGvLyyej+vglfWid
+         24ydufv4IeSFNst1ft204xjSah4Qbu3Wjk6I543w=
+Date:   Tue, 22 Aug 2023 08:39:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     Evan Quan <evan.quan@amd.com>, Andrew Lunn <andrew@lunn.ch>,
+        rafael@kernel.org, lenb@kernel.org, johannes@sipsolutions.net,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, alexander.deucher@amd.com,
+        rdunlap@infradead.org, quic_jjohnson@quicinc.com, horms@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [V9 1/9] drivers core: Add support for Wifi band RF mitigations
+Message-ID: <2023082247-synthesis-revenge-470d@gregkh>
+References: <20230818032619.3341234-1-evan.quan@amd.com>
+ <20230818032619.3341234-2-evan.quan@amd.com>
+ <2023081806-rounding-distract-b695@gregkh>
+ <2328cf53-849d-46a1-87e6-436e3a1f5fd8@amd.com>
+ <2023081919-mockup-bootleg-bdb9@gregkh>
+ <e5d153ed-df8a-4d6f-8222-18dfd97f6371@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/3] iommu: Make single-device group for PASID explicit
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230814011759.102089-1-baolu.lu@linux.intel.com>
- <20230814011759.102089-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276E3C3D99C2DFA963805C98C1BA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <51dfc143-aafd-fea2-26fe-e2e9025fcd21@linux.intel.com>
- <BN9PR11MB5276EBE5788713FBA99332F88C1EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276EBE5788713FBA99332F88C1EA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5d153ed-df8a-4d6f-8222-18dfd97f6371@amd.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,67 +63,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/21 14:33, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Monday, August 21, 2023 1:45 PM
->>
->> On 2023/8/18 11:56, Tian, Kevin wrote:
->>>> From: Lu Baolu <baolu.lu@linux.intel.com>
->>>> Sent: Monday, August 14, 2023 9:18 AM
->>>>
->>>> The PASID interfaces have always supported only single-device groups.
->>>> This was first introduced in commit 26b25a2b98e45 ("iommu: Bind
->> process
->>>> address spaces to devices"), and has been kept consistent in subsequent
->>>> commits.
->>>>
->>>> However, the core code doesn't explicitly check for this requirement
->>>> after commit 201007ef707a8 ("PCI: Enable PASID only when ACS RR & UF
->>>> enabled on upstream path"), which made this requirement implicit.
->>>>
->>>> Restore the check to make it explicit that the PASID interfaces only
->>>> support devices belonging to single-device groups.
->>>>
->>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>>> ---
->>>>    drivers/iommu/iommu.c | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->>>> index 71b9c41f2a9e..f1eba60e573f 100644
->>>> --- a/drivers/iommu/iommu.c
->>>> +++ b/drivers/iommu/iommu.c
->>>> @@ -3408,6 +3408,11 @@ int iommu_attach_device_pasid(struct
->>>> iommu_domain *domain,
->>>>    		return -ENODEV;
->>>>
->>>>    	mutex_lock(&group->mutex);
->>>> +	if (list_count_nodes(&group->devices) != 1) {
->>>> +		ret = -EINVAL;
->>>> +		goto out_unlock;
->>>> +	}
->>>> +
->>>
->>> I wonder whether we should also block adding new device to this
->>> group once the single-device has pasid enabled. Otherwise the
->>
->> This has been guaranteed by pci_enable_pasid():
->>
->>           if (!pci_acs_path_enabled(pdev, NULL, PCI_ACS_RR | PCI_ACS_UF))
->>                   return -EINVAL;
->>
-> 
-> well since you are adding generic core check then it's not good to
-> rely on the fact of a specific bus...
+On Mon, Aug 21, 2023 at 10:13:45PM -0500, Limonciello, Mario wrote:
+> So I wonder if the right answer is to put it in drivers/net/wireless
+> initially and if we come up with a need later for non wifi producers we can
+> discuss moving it at that time.
 
-We attempted to do this in the patch linked below.
+Please do so.
 
-https://lore.kernel.org/linux-iommu/20220705050710.2887204-5-baolu.lu@linux.intel.com/
+thanks,
 
-After long discussion, we decided to move it to the pci_enable_pasid()
-interface. The non-static single device group is only relevant to PCI
-fabrics that support hot-plugging without ACS support on the upstream
-path.
-
-Best regards,
-baolu
+greg k-h
