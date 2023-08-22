@@ -2,218 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E1B7847B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62C7E7847B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237877AbjHVQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58348 "EHLO
+        id S237850AbjHVQd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237872AbjHVQdj (ORCPT
+        with ESMTP id S237845AbjHVQd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:33:39 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F20CCE4;
-        Tue, 22 Aug 2023 09:33:27 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qYUJi-0000JD-2K;
-        Tue, 22 Aug 2023 16:33:18 +0000
-Date:   Tue, 22 Aug 2023 17:33:12 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next v3 4/4] net: ethernet: mtk_eth_soc: support 36-bit
- DMA addressing on MT7988
-Message-ID: <95b919c98876c9e49761e44662e7c937479eecb8.1692721443.git.daniel@makrotopia.org>
-References: <cover.1692721443.git.daniel@makrotopia.org>
+        Tue, 22 Aug 2023 12:33:28 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7C8CE8;
+        Tue, 22 Aug 2023 09:33:20 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2BDDA6280A;
+        Tue, 22 Aug 2023 16:33:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3DCDC433CC;
+        Tue, 22 Aug 2023 16:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692721999;
+        bh=6EN1+bzvU0PRrSawEYxSCt6PH7yPOcKdrg+qLuW4UjU=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=jxXm28tSe0hXslh+iHjFBt1+cypSMsYLjsU3XjJzgtZ83V0q32LR3iPOY4mg0rgaf
+         +JZ2ndWf+OBKxMXPllGvVxfRAwZG81eP6hdKTiBCiwS9+NnPDdVTtEEYbKwY4u5gc3
+         wucFT0LJu7J12GQ+x6ERrSojPDU6+5X23pfNg3eFGpSc4ahWHj/pBWNBavsjKxLuKU
+         5Cvy4fJHy56AwOa3WeR1zSctnETThfTLMD5yShD/rbU4FNFkyNwZme2rWHHS8IW1Jj
+         smBqGGAoaYuAyg+Zpj4hWQIQbpP27kiYHduyoshqiihqVI9ZiZz6915+JJdmgbvvZt
+         6+4qncIyhWmew==
+From:   Mark Brown <broonie@kernel.org>
+To:     lee@kernel.org, Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linus.walleij@linaro.org, vkoul@kernel.org,
+        lgirdwood@gmail.com, yung-chuan.liao@linux.intel.com,
+        sanyog.r.kale@intel.com, pierre-louis.bossart@linux.intel.com,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
+Subject: Re: (subset) [PATCH v7 0/6] Add cs42l43 PC focused SoundWire CODEC
+Message-Id: <169272199563.71502.1218576841128922238.b4-ty@kernel.org>
+Date:   Tue, 22 Aug 2023 17:33:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1692721443.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Systems having 4 GiB of RAM and more require DMA addressing beyond the
-current 32-bit limit. Starting from MT7988 the hardware now supports
-36-bit DMA addressing, let's use that new capability in the driver to
-avoid running into swiotlb on systems with 4 GiB of RAM or more.
+On Fri, 04 Aug 2023 11:45:56 +0100, Charles Keepax wrote:
+> This patch chain adds support for the Cirrus Logic cs42l43 PC focused
+> SoundWire CODEC. The chain is currently based of Lee's for-mfd-next
+> branch.
+> 
+> This series is mostly just a resend keeping pace with the kernel under
+> it, except for a minor fixup in the ASoC stuff.
+> 
+> [...]
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 30 +++++++++++++++++++--
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 22 +++++++++++++--
- 2 files changed, 48 insertions(+), 4 deletions(-)
+Applied to
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index ec6a251a0f026..6ad42e3b488f7 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1328,6 +1328,10 @@ static void mtk_tx_set_dma_desc_v2(struct net_device *dev, void *txd,
- 	data = TX_DMA_PLEN0(info->size);
- 	if (info->last)
- 		data |= TX_DMA_LS0;
-+
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+		data |= TX_DMA_PREP_ADDR64(info->addr);
-+
- 	WRITE_ONCE(desc->txd3, data);
- 
- 	 /* set forward port */
-@@ -1997,6 +2001,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 	bool xdp_flush = false;
- 	int idx;
- 	struct sk_buff *skb;
-+	u64 addr64 = 0;
- 	u8 *data, *new_data;
- 	struct mtk_rx_dma_v2 *rxd, trxd;
- 	int done = 0, bytes = 0;
-@@ -2112,7 +2117,10 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 				goto release_desc;
- 			}
- 
--			dma_unmap_single(eth->dma_dev, trxd.rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(trxd.rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)trxd.rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 
- 			skb = build_skb(data, ring->frag_size);
-@@ -2178,6 +2186,9 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		ring->calc_idx = idx;
- 		done++;
- 	}
-@@ -2670,6 +2681,9 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 		else
- 			rxd->rxd2 = RX_DMA_PREP_PLEN0(ring->buf_size);
- 
-+		if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+			rxd->rxd2 |= RX_DMA_PREP_ADDR64(dma_addr);
-+
- 		rxd->rxd3 = 0;
- 		rxd->rxd4 = 0;
- 		if (mtk_is_netsys_v2_or_greater(eth)) {
-@@ -2716,6 +2730,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
- 
- static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
- {
-+	u64 addr64 = 0;
- 	int i;
- 
- 	if (ring->data && ring->dma) {
-@@ -2729,7 +2744,10 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_
- 			if (!rxd->rxd1)
- 				continue;
- 
--			dma_unmap_single(eth->dma_dev, rxd->rxd1,
-+			if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA))
-+				addr64 = RX_DMA_GET_ADDR64(rxd->rxd2);
-+
-+			dma_unmap_single(eth->dma_dev, ((u64)rxd->rxd1 | addr64),
- 					 ring->buf_size, DMA_FROM_DEVICE);
- 			mtk_rx_put_buff(ring, ring->data[i], false);
- 		}
-@@ -4734,6 +4752,14 @@ static int mtk_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (MTK_HAS_CAPS(eth->soc->caps, MTK_36BIT_DMA)) {
-+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(36));
-+		if (err) {
-+			dev_err(&pdev->dev, "Wrong DMA config\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	spin_lock_init(&eth->page_lock);
- 	spin_lock_init(&eth->tx_irq_lock);
- 	spin_lock_init(&eth->rx_irq_lock);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 7e961fff94f35..403219d987eff 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -331,6 +331,14 @@
- #define TX_DMA_PLEN1(x)		((x) & eth->soc->txrx.dma_max_len)
- #define TX_DMA_SWC		BIT(14)
- #define TX_DMA_PQID		GENMASK(3, 0)
-+#define TX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#if IS_ENABLED(CONFIG_64BIT)
-+# define TX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(TX_DMA_ADDR64_MASK, (x))) << 32)
-+# define TX_DMA_PREP_ADDR64(x)	FIELD_PREP(TX_DMA_ADDR64_MASK, ((x) >> 32))
-+#else
-+# define TX_DMA_GET_ADDR64(x)	(0)
-+# define TX_DMA_PREP_ADDR64(x)	(0)
-+#endif
- 
- /* PDMA on MT7628 */
- #define TX_DMA_DONE		BIT(31)
-@@ -343,6 +351,14 @@
- #define RX_DMA_PREP_PLEN0(x)	(((x) & eth->soc->txrx.dma_max_len) << eth->soc->txrx.dma_len_offset)
- #define RX_DMA_GET_PLEN0(x)	(((x) >> eth->soc->txrx.dma_len_offset) & eth->soc->txrx.dma_max_len)
- #define RX_DMA_VTAG		BIT(15)
-+#define RX_DMA_ADDR64_MASK	GENMASK(3, 0)
-+#if IS_ENABLED(CONFIG_64BIT)
-+# define RX_DMA_GET_ADDR64(x)	(((u64)FIELD_GET(RX_DMA_ADDR64_MASK, (x))) << 32)
-+# define RX_DMA_PREP_ADDR64(x)	FIELD_PREP(RX_DMA_ADDR64_MASK, ((x) >> 32))
-+#else
-+# define RX_DMA_GET_ADDR64(x)	(0)
-+# define RX_DMA_PREP_ADDR64(x)	(0)
-+#endif
- 
- /* QDMA descriptor rxd3 */
- #define RX_DMA_VID(x)		((x) & VLAN_VID_MASK)
-@@ -942,6 +958,7 @@ enum mkt_eth_capabilities {
- 	MTK_RSTCTRL_PPE2_BIT,
- 	MTK_U3_COPHY_V2_BIT,
- 	MTK_SRAM_BIT,
-+	MTK_36BIT_DMA_BIT,
- 
- 	/* MUX BITS*/
- 	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
-@@ -978,6 +995,7 @@ enum mkt_eth_capabilities {
- #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
- #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
- #define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
-+#define MTK_36BIT_DMA	BIT_ULL(MTK_36BIT_DMA_BIT)
- 
- #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
- 	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
-@@ -1059,8 +1077,8 @@ enum mkt_eth_capabilities {
- 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
- 		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
- 
--#define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
--		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
-+#define MT7988_CAPS  (MTK_36BIT_DMA | MTK_GDM1_ESW | MTK_QDMA | \
-+		      MTK_RSTCTRL_PPE1 | MTK_RSTCTRL_PPE2 | MTK_SRAM)
- 
- struct mtk_tx_dma_desc_info {
- 	dma_addr_t	addr;
--- 
-2.41.0
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[6/6] ASoC: cs42l43: Add support for the cs42l43
+      commit: fc918cbe874eee0950b6425c1b30bcd4860dc076
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
