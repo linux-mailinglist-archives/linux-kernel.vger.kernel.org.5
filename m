@@ -2,100 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D79AA784072
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F4784075
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235601AbjHVMML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58488 "EHLO
+        id S235603AbjHVMND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbjHVMMK (ORCPT
+        with ESMTP id S232943AbjHVMNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:12:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010D5193;
-        Tue, 22 Aug 2023 05:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692706329; x=1724242329;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bMNqRaTXKeMhSmYsxEJBGG9KPMjo7EzITadHa8MbaRQ=;
-  b=mwKP9eQBpkfy6LXFVw0eAw3OvTFi8A5RqsxWoGU+/Nz2i6Y7/V7NSOEP
-   aT9Qyxe9qCg+xJXScuADSxAkZ0wWitEBi3jgS2bfFNF5oGYpy09upq0mH
-   vwGW/9u+Srt6j4dUyw9L57S6RWkd4CaPadrEBt3pKnLQgcnY10Lf/yPn2
-   SqTas2JV4q+BCfhK1Y+1ZsVVx8l5GvJR9Bpepan4b2qcb3CWgAisbuxyT
-   1JavzX3juWw1NECPnyeNyEItetoGLmIbN8XJKwjm8x+PmFVRD+YoGkXmx
-   HLA+N30EWauUnTq/MS3/SLNmugK5BHTfXxogcZSJ8ILdK2s2SiFPIqn7+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="371284424"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="371284424"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 05:12:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="739285939"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="739285939"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Aug 2023 05:12:05 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qYQEu-009akW-14;
-        Tue, 22 Aug 2023 15:12:04 +0300
-Date:   Tue, 22 Aug 2023 15:12:04 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/2] gpio: sim: dispose of irq mappings before destroying
- the irq_sim domain
-Message-ID: <ZOSmFGZHrLq3I+zF@smile.fi.intel.com>
-References: <20230822075122.6900-1-brgl@bgdev.pl>
+        Tue, 22 Aug 2023 08:13:02 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AAF193;
+        Tue, 22 Aug 2023 05:13:00 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVSr13fyWz1L9DH;
+        Tue, 22 Aug 2023 20:11:29 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 22 Aug 2023 20:12:56 +0800
+Message-ID: <7fff8202-0be1-4989-959f-8c0b14ca1236@huawei.com>
+Date:   Tue, 22 Aug 2023 20:12:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822075122.6900-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH rfc v2 05/10] powerpc: mm: use try_vma_locked_page_fault()
+Content-Language: en-US
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+CC:     "surenb@google.com" <surenb@google.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>
+References: <20230821123056.2109942-1-wangkefeng.wang@huawei.com>
+ <20230821123056.2109942-6-wangkefeng.wang@huawei.com>
+ <7eeed961-c2c0-2aeb-ff8c-3717de09d605@csgroup.eu>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <7eeed961-c2c0-2aeb-ff8c-3717de09d605@csgroup.eu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 09:51:21AM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+
+On 2023/8/22 17:38, Christophe Leroy wrote:
 > 
-> If a GPIO simulator device is unbound with interrupts still requested,
-> we will hit a use-after-free issue in __irq_domain_deactivate_irq(). The
-> owner of the irq domain must dispose of all mappings before destroying
-> the domain object.
+> 
+> Le 21/08/2023 à 14:30, Kefeng Wang a écrit :
+>> Use new try_vma_locked_page_fault() helper to simplify code.
+>> No functional change intended.
+> 
+> Does it really simplifies code ? It's 32 insertions versus 34 deletions
+> so only removing 2 lines.
 
-...
+Yes，it is unfriendly for powerpc as the arch's vma access check is much
+complex than other arch,
+> 
+> I don't like the struct vm_fault you are adding because when it was four
+> independant variables it was handled through local registers. Now that
+> it is a struct it has to go via the stack, leading to unnecessary memory
+> read and writes. And going back and forth between architecture code and
+> generic code may also be counter-performant.
 
-> +static void gpio_sim_dispose_mappings(void *data)
-> +{
-> +	struct gpio_sim_chip *chip = data;
-> +	unsigned int i, irq;
-> +
-> +	for (i = 0; i < chip->gc.ngpio; i++) {
-> +		irq = irq_find_mapping(chip->irq_sim, i);
+Because different arch has different var to check vma access, so the
+easy way to add them into vmf, I don' find a better way.
+> 
+> Did you make any performance analysis ? Page faults are really a hot
+> path when dealling with minor faults.
 
-> +		if (irq)
+no, this is only built and rfc to see the feedback about the conversion.
 
-This duplicates check in the following call.
+Thanks.
 
-> +			irq_dispose_mapping(irq);
-> +	}
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> 
+> Thanks
+> Christophe
+> 
+>>
+>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> ---
+>>    arch/powerpc/mm/fault.c | 66 ++++++++++++++++++++---------------------
+>>    1 file changed, 32 insertions(+), 34 deletions(-)
+>>
+>> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+>> index b1723094d464..52f9546e020e 100644
+>> --- a/arch/powerpc/mm/fault.c
+>> +++ b/arch/powerpc/mm/fault.c
+>> @@ -391,6 +391,22 @@ static int page_fault_is_bad(unsigned long err)
+>>    #define page_fault_is_bad(__err)	((__err) & DSISR_BAD_FAULT_32S)
+>>    #endif
+>>    
+>> +#ifdef CONFIG_PER_VMA_LOCK
+>> +bool arch_vma_access_error(struct vm_area_struct *vma, struct vm_fault *vmf)
+>> +{
+>> +	int is_exec = TRAP(vmf->regs) == INTERRUPT_INST_STORAGE;
+>> +	int is_write = page_fault_is_write(vmf->fault_code);
+>> +
+>> +	if (unlikely(access_pkey_error(is_write, is_exec,
+>> +				(vmf->fault_code & DSISR_KEYFAULT), vma)))
+>> +		return true;
+>> +
+>> +	if (unlikely(access_error(is_write, is_exec, vma)))
+>> +		return true;
+>> +	return false;
+>> +}
+>> +#endif
+>> +
+>>    /*
+>>     * For 600- and 800-family processors, the error_code parameter is DSISR
+>>     * for a data fault, SRR1 for an instruction fault.
+>> @@ -407,12 +423,18 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+>>    {
+>>    	struct vm_area_struct * vma;
+>>    	struct mm_struct *mm = current->mm;
+>> -	unsigned int flags = FAULT_FLAG_DEFAULT;
+>>    	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+>>    	int is_user = user_mode(regs);
+>>    	int is_write = page_fault_is_write(error_code);
+>>    	vm_fault_t fault, major = 0;
+>>    	bool kprobe_fault = kprobe_page_fault(regs, 11);
+>> +	struct vm_fault vmf = {
+>> +		.real_address = address,
+>> +		.fault_code = error_code,
+>> +		.regs = regs,
+>> +		.flags = FAULT_FLAG_DEFAULT,
+>> +	};
+>> +
+>>    
+>>    	if (unlikely(debugger_fault_handler(regs) || kprobe_fault))
+>>    		return 0;
+>> @@ -463,45 +485,21 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+>>    	 * mmap_lock held
+>>    	 */
+>>    	if (is_user)
+>> -		flags |= FAULT_FLAG_USER;
+>> +		vmf.flags |= FAULT_FLAG_USER;
+>>    	if (is_write)
+>> -		flags |= FAULT_FLAG_WRITE;
+>> +		vmf.flags |= FAULT_FLAG_WRITE;
+>>    	if (is_exec)
+>> -		flags |= FAULT_FLAG_INSTRUCTION;
+>> +		vmf.flags |= FAULT_FLAG_INSTRUCTION;
+>>    
+>> -	if (!(flags & FAULT_FLAG_USER))
+>> -		goto lock_mmap;
+>> -
+>> -	vma = lock_vma_under_rcu(mm, address);
+>> -	if (!vma)
+>> -		goto lock_mmap;
+>> -
+>> -	if (unlikely(access_pkey_error(is_write, is_exec,
+>> -				       (error_code & DSISR_KEYFAULT), vma))) {
+>> -		vma_end_read(vma);
+>> -		goto lock_mmap;
+>> -	}
+>> -
+>> -	if (unlikely(access_error(is_write, is_exec, vma))) {
+>> -		vma_end_read(vma);
+>> -		goto lock_mmap;
+>> -	}
+>> -
+>> -	fault = handle_mm_fault(vma, address, flags | FAULT_FLAG_VMA_LOCK, regs);
+>> -	if (!(fault & (VM_FAULT_RETRY | VM_FAULT_COMPLETED)))
+>> -		vma_end_read(vma);
+>> -
+>> -	if (!(fault & VM_FAULT_RETRY)) {
+>> -		count_vm_vma_lock_event(VMA_LOCK_SUCCESS);
+>> +	fault = try_vma_locked_page_fault(&vmf);
+>> +	if (fault == VM_FAULT_NONE)
+>> +		goto retry;
+>> +	if (!(fault & VM_FAULT_RETRY))
+>>    		goto done;
+>> -	}
+>> -	count_vm_vma_lock_event(VMA_LOCK_RETRY);
+>>    
+>>    	if (fault_signal_pending(fault, regs))
+>>    		return user_mode(regs) ? 0 : SIGBUS;
+>>    
+>> -lock_mmap:
+>> -
+>>    	/* When running in the kernel we expect faults to occur only to
+>>    	 * addresses in user space.  All other faults represent errors in the
+>>    	 * kernel and should generate an OOPS.  Unfortunately, in the case of an
+>> @@ -528,7 +526,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+>>    	 * make sure we exit gracefully rather than endlessly redo
+>>    	 * the fault.
+>>    	 */
+>> -	fault = handle_mm_fault(vma, address, flags, regs);
+>> +	fault = handle_mm_fault(vma, address, vmf.flags, regs);
+>>    
+>>    	major |= fault & VM_FAULT_MAJOR;
+>>    
+>> @@ -544,7 +542,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+>>    	 * case.
+>>    	 */
+>>    	if (unlikely(fault & VM_FAULT_RETRY)) {
+>> -		flags |= FAULT_FLAG_TRIED;
+>> +		vmf.flags |= FAULT_FLAG_TRIED;
+>>    		goto retry;
+>>    	}
+>>    
