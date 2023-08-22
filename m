@@ -2,118 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E74D7847C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E364B7847C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237892AbjHVQfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        id S237921AbjHVQfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237887AbjHVQfK (ORCPT
+        with ESMTP id S237891AbjHVQfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:35:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F53137;
-        Tue, 22 Aug 2023 09:35:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 22 Aug 2023 12:35:11 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488C6CF4;
+        Tue, 22 Aug 2023 09:35:03 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 05EE765CC9;
-        Tue, 22 Aug 2023 16:35:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2203DC433C9;
-        Tue, 22 Aug 2023 16:34:47 +0000 (UTC)
-Date:   Tue, 22 Aug 2023 17:34:38 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v4 18/36] arm64/gcs: Context switch GCS state for EL0
-Message-ID: <ZOTjnmwwZ+iMsi6Y@arm.com>
-References: <20230807-arm64-gcs-v4-0-68cfa37f9069@kernel.org>
- <20230807-arm64-gcs-v4-18-68cfa37f9069@kernel.org>
- <ZNZUerbrJmzqZzJw@arm.com>
- <28a61b5f-db65-427e-8e92-60dd61549da5@sirena.org.uk>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C1636200EB;
+        Tue, 22 Aug 2023 16:35:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1692722101; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qt0ZLoOqT9+wpCm2Ny+8HuPkuahGjnCugCYXd8XlMx4=;
+        b=Pax4caF2Ef7NBtayR04STCzFqckSNupMb66tw35QjhgWvF9+wKzVgjJBg9YlG0KcbLsLZ2
+        oCi24HsoJGkFuND2JYvuNfi4s3gIN/HH/BaylrFafuhYEdWG+9nZ1ta4ax3RchF+ksp0vy
+        C1CLitUshYgpH557xXomFZYOIxXdAA8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7A2CD13919;
+        Tue, 22 Aug 2023 16:35:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 9zIEHbXj5GRMXgAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Tue, 22 Aug 2023 16:35:01 +0000
+Date:   Tue, 22 Aug 2023 18:35:00 +0200
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] mm: memcg: add a helper for non-unified stats
+ flushing
+Message-ID: <5y3e32ek6owren3q5e3gzonzxzdhs53ihywj3mtbhz56hnizfy@fctafygsnfaq>
+References: <20230821205458.1764662-1-yosryahmed@google.com>
+ <20230821205458.1764662-3-yosryahmed@google.com>
+ <y7vvyndehadwy5ouounm5oyo52bqhsysiizuphzki2h3bwpdpc@3hvaq6sp6f4k>
+ <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7f63xjlvpzzrd5op"
 Content-Disposition: inline
-In-Reply-To: <28a61b5f-db65-427e-8e92-60dd61549da5@sirena.org.uk>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAJD7tkaVuiMU-ifJiyH5d_W1hi9DnAymYJxzBxEKCVX+tU=OCA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 16, 2023 at 07:15:53PM +0100, Mark Brown wrote:
-> On Fri, Aug 11, 2023 at 04:32:10PM +0100, Catalin Marinas wrote:
-> > On Mon, Aug 07, 2023 at 11:00:23PM +0100, Mark Brown wrote:
-> 
-> > > +		gcs_free(current);
-> > > +		current->thread.gcs_el0_mode = 0;
-> > > +		write_sysreg_s(0, SYS_GCSCRE0_EL1);
-> > > +		write_sysreg_s(0, SYS_GCSPR_EL0);
-> > > +	}
-> > > +}
-> 
-> > Do we need and isb() or there's one on this path? If it's only EL0
-> > making use of this register, we should be fine with the ERET before
-> > returning to user. Not sure whether the kernel uses this, GCSSTTR
-> > doesn't need it.
-> 
-> They're only used by EL0, at EL1 we do read GCSPR for signal handling
-> but AIUI that shouldn't be any more of an issue than it is for the
-> TPIDRs which we don't have a barrier for.  It's possible I'm
-> misunderstanding though.
 
-We should be alright without since we'll eventually have an ERET to EL0.
+--7f63xjlvpzzrd5op
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > > +	/*
-> > > +	 * Ensure that GCS changes are observable by/from other PEs in
-> > > +	 * case of migration.
-> > > +	 */
-> > > +	if (task_gcs_el0_enabled(current) || task_gcs_el0_enabled(next))
-> > > +		gcsb_dsync();
-> 
-> > What's this barrier for? The spec (at least the version I have) only
-> > talks about accesses, nothing to do with the registers that we context
-> > switch here.
-> 
-> Right, it's for the GCS memory rather than the registers.  I'm fairly
-> sure it's excessive but but was erring on the side of caution until I
-> have convinced myself that the interactions between GCS barriers and
-> regular barriers were doing the right thing, until we have physical
-> implementations to contend with I'd guess the practical impact will be
-> minimal.
+On Tue, Aug 22, 2023 at 09:00:06AM -0700, Yosry Ahmed <yosryahmed@google.com> wrote:
+> We can probably also kick FLUSH_TIME forward as well.
 
-Well, I'd say either we are clear about why it's (not) needed or we ask
-the architects to clarify the spec. I haven't checked your latest
-series but in principle I don't like adding barriers just because we are
-not sure they are needed (and I don't think having hardware eventually
-changes this).
+True, they guard same work.
 
--- 
-Catalin
+> Perhaps I can move both into do_stats_flush() then. If I understand
+> correctly this is what you mean?
+
+Yes.
+
+> What do you think?
+
+The latter is certainly better looking code.
+
+I wasn't sure at first about moving stats_flush_threshold reset before
+actual flush but on second thought it should not be a significant change
+- readers: may skip flushing, the values that they read should still be
+  below the error threshold,
+- writers: may be slowed down a bit (because of conditional atomic write
+  optimization in memcg_rstat_updates), presumably not on average
+  though.
+
+So the latter should work too.
+
+Michal
+
+--7f63xjlvpzzrd5op
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZOTjsgAKCRAGvrMr/1gc
+jnZMAP9j2epDKDEIrW1B1fJASKjVt5dkRJM2SCYyQNX6oNKqUAEAnUs7Pg88u8E/
+lU8WkkS7hOz1ZQ2abpo1AtoV7nqS6QU=
+=FEfo
+-----END PGP SIGNATURE-----
+
+--7f63xjlvpzzrd5op--
