@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44203783F2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A58DD783F08
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbjHVLd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        id S234911AbjHVLcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234995AbjHVLdv (ORCPT
+        with ESMTP id S234893AbjHVLcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:33:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9E8CEE;
-        Tue, 22 Aug 2023 04:33:32 -0700 (PDT)
+        Tue, 22 Aug 2023 07:32:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2BDCE6;
+        Tue, 22 Aug 2023 04:32:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 191D265264;
-        Tue, 22 Aug 2023 11:32:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 459CFC433C7;
-        Tue, 22 Aug 2023 11:32:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EEF7465273;
+        Tue, 22 Aug 2023 11:32:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAB4BC433BD;
+        Tue, 22 Aug 2023 11:32:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703931;
-        bh=GiTxZ4OKRVhHnF8rRs0NLEZCAYYMH0DjrFcqPcvbtwI=;
+        s=k20201202; t=1692703933;
+        bh=oR0TJJ3G6QJf2dQpg9USa2OeHz6GOmiHv3WGPjMrlEM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jx1v1cQkbNIGY1zZsVBFB0fzwj38k93G0SYDz/55d6qUJGd9oWv7+MfBvfzCNszsK
-         4WfD0da+af8sZEehtmmcRghHWU/zM76uaUyNhAzezu3jq2VoEmHh93WRYDpWl2BbMG
-         wqe+XV0GYU/i3COSosUwqU4pROcREQW7IoxpPbyXcx93oiZAEehFkIVBIbQ9vO8e3J
-         Q2bqJiD2M/AV2WvPT7YjLCf929inTvjRgf44epf6/2/Ab9wXb/EBGJTacBKeCaXLZJ
-         n214R2QkZWKMQUaUn5hbqITfNWWTny3VqzCMiqIaDr28MqCyJjmX1OgW7mcZbzLg3A
-         4u/Fg5UizRt1w==
+        b=FNbJKUfjv9dtCpY8wZtiPCYEUVRyqt58xvcmtPMaYiNNzfYncPapGXLqk8dYEBJz5
+         yS5d/Cy01vL36QP9NTkBa9wcjPUoIv8B89BPmgneOmxrGmj9KqmzlN2uYaSnA0Mpp0
+         oTzIxUroRnkS9vi1oqe8CR8myf0AspbWBoHN4cGQzB3YTo8QQ8ab7YNHOZroZNsugG
+         mCqU37w/T/vpyTiT1M1uhPDOCxKvpWqhuOv0M5vvF7ojQ0mzCRdU4iL48qMXQeE0zd
+         krTvUNAaavMX/lu3fKStmI+9mNk2FK2Ub0MRUvwDd09iwxehLt8BgQZ2AVw2DNcjnd
+         UQ8PEOZF0Rk2g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ani Sinha <anisinha@redhat.com>, Wei Liu <wei.liu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/4] vmbus_testing: fix wrong python syntax for integer value comparison
-Date:   Tue, 22 Aug 2023 07:32:04 -0400
-Message-Id: <20230822113207.3550238-2-sashal@kernel.org>
+Cc:     Martin Kohn <m.kohn@welotec.com>, Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, bjorn@mork.no,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 3/4] net: usb: qmi_wwan: add Quectel EM05GV2
+Date:   Tue, 22 Aug 2023 07:32:05 -0400
+Message-Id: <20230822113207.3550238-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230822113207.3550238-1-sashal@kernel.org>
 References: <20230822113207.3550238-1-sashal@kernel.org>
@@ -60,50 +60,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ani Sinha <anisinha@redhat.com>
+From: Martin Kohn <m.kohn@welotec.com>
 
-[ Upstream commit ed0cf84e9cc42e6310961c87709621f1825c2bb8 ]
+[ Upstream commit d4480c9bb9258db9ddf2e632f6ef81e96b41089c ]
 
-It is incorrect in python to compare integer values using the "is" keyword.
-The "is" keyword in python is used to compare references to two objects,
-not their values. Newer version of python3 (version 3.8) throws a warning
-when such incorrect comparison is made. For value comparison, "==" should
-be used.
+Add support for Quectel EM05GV2 (G=global) with vendor ID
+0x2c7c and product ID 0x030e
 
-Fix this in the code and suppress the following warning:
+Enabling DTR on this modem was necessary to ensure stable operation.
+Patch for usb: serial: option: is also in progress.
 
-/usr/sbin/vmbus_testing:167: SyntaxWarning: "is" with a literal. Did you mean "=="?
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2c7c ProdID=030e Rev= 3.18
+S:  Manufacturer=Quectel
+S:  Product=Quectel EM05-G
+C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=85(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=84(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=87(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+E:  Ad=89(I) Atr=03(Int.) MxPS=   8 Ivl=32ms
+E:  Ad=88(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-Signed-off-by: Ani Sinha <anisinha@redhat.com>
-Link: https://lore.kernel.org/r/20230705134408.6302-1-anisinha@redhat.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Signed-off-by: Martin Kohn <m.kohn@welotec.com>
+Link: https://lore.kernel.org/r/AM0PR04MB57648219DE893EE04FA6CC759701A@AM0PR04MB5764.eurprd04.prod.outlook.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/hv/vmbus_testing | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/usb/qmi_wwan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/hv/vmbus_testing b/tools/hv/vmbus_testing
-index e7212903dd1d9..4467979d8f699 100755
---- a/tools/hv/vmbus_testing
-+++ b/tools/hv/vmbus_testing
-@@ -164,7 +164,7 @@ def recursive_file_lookup(path, file_map):
- def get_all_devices_test_status(file_map):
- 
-         for device in file_map:
--                if (get_test_state(locate_state(device, file_map)) is 1):
-+                if (get_test_state(locate_state(device, file_map)) == 1):
-                         print("Testing = ON for: {}"
-                               .format(device.split("/")[5]))
-                 else:
-@@ -203,7 +203,7 @@ def write_test_files(path, value):
- def set_test_state(state_path, state_value, quiet):
- 
-         write_test_files(state_path, state_value)
--        if (get_test_state(state_path) is 1):
-+        if (get_test_state(state_path) == 1):
-                 if (not quiet):
-                         print("Testing = ON for device: {}"
-                               .format(state_path.split("/")[5]))
+diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+index de6c561535346..5cf7f389bf4ef 100644
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1351,6 +1351,7 @@ static const struct usb_device_id products[] = {
+ 	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0191, 4)},	/* Quectel EG91 */
+ 	{QMI_QUIRK_SET_DTR(0x2c7c, 0x0195, 4)},	/* Quectel EG95 */
+ 	{QMI_FIXED_INTF(0x2c7c, 0x0296, 4)},	/* Quectel BG96 */
++	{QMI_QUIRK_SET_DTR(0x2c7c, 0x030e, 4)},	/* Quectel EM05GV2 */
+ 	{QMI_QUIRK_SET_DTR(0x2cb7, 0x0104, 4)},	/* Fibocom NL678 series */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b4, 0)},	/* Foxconn T77W968 LTE */
+ 	{QMI_FIXED_INTF(0x0489, 0xe0b5, 0)},	/* Foxconn T77W968 LTE with eSIM support*/
 -- 
 2.40.1
 
