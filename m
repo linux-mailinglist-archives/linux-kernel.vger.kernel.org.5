@@ -2,263 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7AA78461B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03736784629
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237326AbjHVPru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48738 "EHLO
+        id S235016AbjHVPtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237306AbjHVPrs (ORCPT
+        with ESMTP id S231960AbjHVPtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:47:48 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 325B4CDD;
-        Tue, 22 Aug 2023 08:47:46 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1174)
-        id B72392126CC8; Tue, 22 Aug 2023 08:47:45 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B72392126CC8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1692719265;
-        bh=Ur4s42GMyhFhDgjdtd8dbqhqbn8vESDXXPu5a9l4KTQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bkN1XjbPqBqy8v7cSWpDWhGhvqbtggWtgzIbpV+kXg/WpNQ3luqAqVfrw68urN+Fs
-         ChE1KTsVk7gR0pWeXVVcI78rAX6F70cf1fx9FquItdEylhoJ20vZR1MHsFdRysU39J
-         oORGEm3UE6LUa2zV70WrwVYaRh+hvubcP23RP4j4=
-From:   sharmaajay@linuxonhyperv.com
-To:     Long Li <longli@microsoft.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Sharma <sharmaajay@microsoft.com>
-Subject: [Patch v4 4/4] RDMA/mana_ib : Query adapter capabilities
-Date:   Tue, 22 Aug 2023 08:47:35 -0700
-Message-Id: <1692719255-20183-5-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1692719255-20183-1-git-send-email-sharmaajay@linuxonhyperv.com>
-References: <1692719255-20183-1-git-send-email-sharmaajay@linuxonhyperv.com>
-X-Spam-Status: No, score=-9.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 11:49:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D57CDD;
+        Tue, 22 Aug 2023 08:48:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8FA3E65B4C;
+        Tue, 22 Aug 2023 15:48:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E44B9C43391;
+        Tue, 22 Aug 2023 15:48:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692719314;
+        bh=mOG/+66KxTcfBojWPpyVD5pQrjNxBpzS+okyAnYvOhI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RMwtPBi+aNn7cp8w/aGFDfqG6NU1afCWq9NeuhxyvuL0YnJ5qmP9hvg3nqpkrwlfv
+         MLiKP6+VyTvaE5oUOgm7/6RbIkHs8b8zsIFTwQAkL2yjz/cjp0nyaodlsMjyLd3jTL
+         kHnfDBcuRNt/OZF7vgfk8Sv73DOFiOAy+0NyUkSBE1QLgWWsOIbHIObsp94D2TKUXl
+         wa+hgUYFb/x4VA/gRNf2/nwNjL+mtfgG6Q9elltn0uqYlsEfS17xt6s41qa9M7MgP5
+         lB206F8y9HzRKmAjTxR9glqs7UhAyhx4JhON/6uVBTp2CqwUK4XS14Dq0ef3AS98m9
+         VniOQ7+nXhhDQ==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-52a23227567so118405a12.0;
+        Tue, 22 Aug 2023 08:48:34 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yw09OTEo+Xk87oAv8QKtueujmMeZg+1ThI8eKzVtRNaxeYJKRWX
+        /aQ0RagZZs9uqWeF1hMbpYUVP70hgNjejWzKW4k=
+X-Google-Smtp-Source: AGHT+IEb+fyp8wsZhGGi7e2oaZHQNn7ZYOvoNPReQ0KhOJmxYCFwwSXdD2Cd0VugXnk4oA+UyV6UTG/8PUsGA0uMxCk=
+X-Received: by 2002:a17:906:32d2:b0:99d:e8ac:e4f3 with SMTP id
+ k18-20020a17090632d200b0099de8ace4f3mr7285034ejk.64.1692719312945; Tue, 22
+ Aug 2023 08:48:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230822040248.329442-1-chenhuacai@loongson.cn> <20230822153416.GA72567@google.com>
+In-Reply-To: <20230822153416.GA72567@google.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 22 Aug 2023 23:48:21 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H75vwt5RPeE2uh1eK=0osepStq+j88BM9iEspSC1CvZTg@mail.gmail.com>
+Message-ID: <CAAhV-H75vwt5RPeE2uh1eK=0osepStq+j88BM9iEspSC1CvZTg@mail.gmail.com>
+Subject: Re: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajay Sharma <sharmaajay@microsoft.com>
+Hi, Joel,
 
-Query the adapter capabilities to expose to
-other clients and VF. This checks against
-the user supplied values and protects against
-overflows.
+On Tue, Aug 22, 2023 at 11:34=E2=80=AFPM Joel Fernandes <joel@joelfernandes=
+.org> wrote:
+>
+> On Tue, Aug 22, 2023 at 12:02:48PM +0800, Huacai Chen wrote:
+> > The KGDB initial breakpoint gets an rcu stall warning after commit
+> > a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+> > rcu_cpu_stall_reset()").
+> >
+> > [   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+> [...]
+> >
+> > [1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loong=
+son.cn/T/#t
+> >
+> > Cc: stable@vger.kernel.org
+> > Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detectio=
+n in rcu_cpu_stall_reset()")
+> > Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > ---
+> > V2: Use NMI safe functions.
+> > V3: Add comments to explain why.
+> >
+> >  kernel/rcu/tree_stall.h | 17 ++++++++++++++++-
+> >  1 file changed, 16 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index b10b8349bb2a..e4e53113d062 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -150,11 +150,26 @@ static void panic_on_rcu_stall(void)
+> >   * rcu_cpu_stall_reset - restart stall-warning timeout for current gra=
+ce period
+> >   *
+> >   * The caller must disable hard irqs.
+> > + *
+> > + * The jiffies updating may be delayed for a very long time due to tic=
+kless and
+> > + * irq disabled, especially in the KGDB case, so we need to add the de=
+layed time
+> > + * (delta) to rcu_state.jiffies_stall.
+> > + *
+> > + * This function may be called in NMI context, so we cannot use ktime_=
+get_ns()
+> > + * and ktime_get_coarse_ns(). Instead, we use their inaccurate but saf=
+e friends
+> > + * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cause r=
+cu_state.
+> > + * jiffies_stall to be a little large than expected (harmless and safe=
+r).
+> >   */
+> >  void rcu_cpu_stall_reset(void)
+> >  {
+> > +     u64 curr, last, delta;
+> > +
+> > +     curr =3D ktime_get_mono_fast_ns();
+> > +     last =3D ktime_get_seconds() * NSEC_PER_SEC;
+> > +     delta =3D nsecs_to_jiffies(curr - last);
+> > +
+> >       WRITE_ONCE(rcu_state.jiffies_stall,
+> > -                jiffies + rcu_jiffies_till_stall_check());
+> > +                jiffies + delta + rcu_jiffies_till_stall_check());
+> >  }
+>
+> I prefer the following diff on top of your patch to take advantage of UBS=
+AN
+> detecting overflows.
+>
+> If you take my diff, feel free to add:
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>
+> ---8<-----------------------
+>
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index 5e9e4779bdf1..3398cf2d19c5 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -162,14 +162,15 @@ static void panic_on_rcu_stall(void)
+>   */
+>  void rcu_cpu_stall_reset(void)
+>  {
+> -       u64 curr, last, delta;
+> +       ktime_t last, delta_ns;
+> +       u64 delta_jiff;
+>
+> -       curr =3D ktime_get_mono_fast_ns();
+>         last =3D ktime_get_seconds() * NSEC_PER_SEC;
+> -       delta =3D nsecs_to_jiffies(curr - last);
+> +       delta_ns =3D ktime_sub(ktime_get_mono_fast_ns(), last);
+Though ktime_t is the same as s64/u64 now, but I think we'd better to
+not mix them. Then, ktime_get() and ktime_get_coarse() return ktime_t;
+ktime_get_ns(), ktime_get_coarse_ns() and ktime_get_mono_fast_ns()
+return s64/u64 (means nanoseconds); ktime_get_seconds() returns
+seconds but ktime_get_seconds() * NSEC_PER_SEC is also nanoseconds.
+So, the type definition in your diff is not suitable,
+ktime_sub(ktime_get_mono_fast_ns(), last) is not suitable too.
 
-Signed-off-by: Ajay Sharma <sharmaajay@microsoft.com>
----
- drivers/infiniband/hw/mana/device.c  |  4 ++
- drivers/infiniband/hw/mana/main.c    | 67 ++++++++++++++++++++++------
- drivers/infiniband/hw/mana/mana_ib.h | 53 +++++++++++++++++++++-
- 3 files changed, 110 insertions(+), 14 deletions(-)
+Huacai
 
-diff --git a/drivers/infiniband/hw/mana/device.c b/drivers/infiniband/hw/mana/device.c
-index 4077e440657a..e15da43c73a0 100644
---- a/drivers/infiniband/hw/mana/device.c
-+++ b/drivers/infiniband/hw/mana/device.c
-@@ -97,6 +97,10 @@ static int mana_ib_probe(struct auxiliary_device *adev,
- 		goto free_error_eq;
- 	}
- 
-+	ret = mana_ib_query_adapter_caps(mib_dev);
-+	if (ret)
-+		ibdev_dbg(&mib_dev->ib_dev, "Failed to get caps, use defaults");
-+
- 	ret = ib_register_device(&mib_dev->ib_dev, "mana_%d",
- 				 mdev->gdma_context->dev);
- 	if (ret)
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-index 786c482f16cb..c167657bb63e 100644
---- a/drivers/infiniband/hw/mana/main.c
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -469,20 +469,15 @@ int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
- int mana_ib_query_device(struct ib_device *ibdev, struct ib_device_attr *props,
- 			 struct ib_udata *uhw)
- {
--	props->max_qp = MANA_MAX_NUM_QUEUES;
--	props->max_qp_wr = MAX_SEND_BUFFERS_PER_QUEUE;
-+	struct mana_ib_dev *mib_dev = container_of(ibdev,
-+			struct mana_ib_dev, ib_dev);
- 
--	/*
--	 * max_cqe could be potentially much bigger.
--	 * As this version of driver only support RAW QP, set it to the same
--	 * value as max_qp_wr
--	 */
--	props->max_cqe = MAX_SEND_BUFFERS_PER_QUEUE;
--
--	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
--	props->max_mr = MANA_IB_MAX_MR;
--	props->max_send_sge = MAX_TX_WQE_SGL_ENTRIES;
--	props->max_recv_sge = MAX_RX_WQE_SGL_ENTRIES;
-+	props->max_qp = mib_dev->adapter_caps.max_qp_count;
-+	props->max_qp_wr = mib_dev->adapter_caps.max_requester_sq_size;
-+	props->max_cqe = mib_dev->adapter_caps.max_requester_sq_size;
-+	props->max_mr = mib_dev->adapter_caps.max_mr_count;
-+	props->max_send_sge = mib_dev->adapter_caps.max_send_wqe_size;
-+	props->max_recv_sge = mib_dev->adapter_caps.max_recv_wqe_size;
- 
- 	return 0;
- }
-@@ -599,3 +594,49 @@ int mana_ib_create_error_eq(struct mana_ib_dev *mib_dev)
- 
- 	return 0;
- }
-+
-+static void assign_caps(struct mana_ib_adapter_caps *caps,
-+			struct mana_ib_query_adapter_caps_resp *resp)
-+{
-+	caps->max_sq_id = resp->max_sq_id;
-+	caps->max_rq_id = resp->max_rq_id;
-+	caps->max_cq_id = resp->max_cq_id;
-+	caps->max_qp_count = resp->max_qp_count;
-+	caps->max_cq_count = resp->max_cq_count;
-+	caps->max_mr_count = resp->max_mr_count;
-+	caps->max_pd_count = resp->max_pd_count;
-+	caps->max_inbound_read_limit = resp->max_inbound_read_limit;
-+	caps->max_outbound_read_limit = resp->max_outbound_read_limit;
-+	caps->mw_count = resp->mw_count;
-+	caps->max_srq_count = resp->max_srq_count;
-+	caps->max_requester_sq_size = resp->max_requester_sq_size;
-+	caps->max_responder_sq_size = resp->max_responder_sq_size;
-+	caps->max_requester_rq_size = resp->max_requester_rq_size;
-+	caps->max_responder_rq_size = resp->max_responder_rq_size;
-+	caps->max_send_wqe_size = resp->max_send_wqe_size;
-+	caps->max_recv_wqe_size = resp->max_recv_wqe_size;
-+	caps->max_inline_data_size = resp->max_inline_data_size;
-+}
-+
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev)
-+{
-+	struct mana_ib_query_adapter_caps_resp resp = {};
-+	struct mana_ib_query_adapter_caps_req req = {};
-+	int err;
-+
-+	mana_gd_init_req_hdr(&req.hdr, MANA_IB_GET_ADAPTER_CAP, sizeof(req),
-+			     sizeof(resp));
-+	req.hdr.resp.msg_version = MANA_IB_GET_ADAPTER_CAP_RESPONSE_V3;
-+	req.hdr.dev_id = mib_dev->gc->mana_ib.dev_id;
-+
-+	err = mana_gd_send_request(mib_dev->gc, sizeof(req), &req,
-+				   sizeof(resp), &resp);
-+
-+	if (err) {
-+		ibdev_err(&mib_dev->ib_dev, "Failed to query adapter caps err %d", err);
-+		return err;
-+	}
-+
-+	assign_caps(&mib_dev->adapter_caps, &resp);
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-index 8a652bccd978..6b9406738cb2 100644
---- a/drivers/infiniband/hw/mana/mana_ib.h
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -20,19 +20,41 @@
- 
- /* MANA doesn't have any limit for MR size */
- #define MANA_IB_MAX_MR_SIZE	U64_MAX
--
-+#define MANA_IB_GET_ADAPTER_CAP_RESPONSE_V3 3
- /*
-  * The hardware limit of number of MRs is greater than maximum number of MRs
-  * that can possibly represent in 24 bits
-  */
- #define MANA_IB_MAX_MR		0xFFFFFFu
- 
-+struct mana_ib_adapter_caps {
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+};
-+
- struct mana_ib_dev {
- 	struct ib_device ib_dev;
- 	struct gdma_dev *gdma_dev;
- 	struct gdma_context *gc;
- 	struct gdma_queue *fatal_err_eq;
- 	mana_handle_t adapter_handle;
-+	struct mana_ib_adapter_caps adapter_caps;
- };
- 
- struct mana_ib_wq {
-@@ -96,6 +118,7 @@ struct mana_ib_rwq_ind_table {
- };
- 
- enum mana_ib_command_code {
-+	MANA_IB_GET_ADAPTER_CAP = 0x30001,
- 	MANA_IB_CREATE_ADAPTER  = 0x30002,
- 	MANA_IB_DESTROY_ADAPTER = 0x30003,
- };
-@@ -120,6 +143,32 @@ struct mana_ib_destroy_adapter_resp {
- 	struct gdma_resp_hdr hdr;
- }; /* HW Data */
- 
-+struct mana_ib_query_adapter_caps_req {
-+	struct gdma_req_hdr hdr;
-+}; /*HW Data */
-+
-+struct mana_ib_query_adapter_caps_resp {
-+	struct gdma_resp_hdr hdr;
-+	u32 max_sq_id;
-+	u32 max_rq_id;
-+	u32 max_cq_id;
-+	u32 max_qp_count;
-+	u32 max_cq_count;
-+	u32 max_mr_count;
-+	u32 max_pd_count;
-+	u32 max_inbound_read_limit;
-+	u32 max_outbound_read_limit;
-+	u32 mw_count;
-+	u32 max_srq_count;
-+	u32 max_requester_sq_size;
-+	u32 max_responder_sq_size;
-+	u32 max_requester_rq_size;
-+	u32 max_responder_rq_size;
-+	u32 max_send_wqe_size;
-+	u32 max_recv_wqe_size;
-+	u32 max_inline_data_size;
-+}; /* HW Data */
-+
- int mana_ib_gd_create_dma_region(struct mana_ib_dev *mib_dev,
- 				 struct ib_umem *umem,
- 				 mana_handle_t *gdma_region);
-@@ -194,4 +243,6 @@ int mana_ib_create_adapter(struct mana_ib_dev *mib_dev);
- 
- int mana_ib_destroy_adapter(struct mana_ib_dev *mib_dev);
- 
-+int mana_ib_query_adapter_caps(struct mana_ib_dev *mib_dev);
-+
- #endif
--- 
-2.25.1
-
+> +       delta_jiff =3D nsecs_to_jiffies(delta_ns);
+>
+>         WRITE_ONCE(rcu_state.jiffies_stall,
+> -                  jiffies + delta + rcu_jiffies_till_stall_check());
+> +                  jiffies + delta_jiff + rcu_jiffies_till_stall_check())=
+;
+>  }
+>
+>  ////////////////////////////////////////////////////////////////////////=
+//////
