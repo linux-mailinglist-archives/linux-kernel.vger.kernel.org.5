@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C061783E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0088783E74
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjHVK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43790 "EHLO
+        id S234133AbjHVK6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234062AbjHVK6W (ORCPT
+        with ESMTP id S234062AbjHVK6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:58:22 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDACCD8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:08 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58f9db8bc1dso56380817b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:08 -0700 (PDT)
+        Tue, 22 Aug 2023 06:58:31 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C43E61
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:12 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7493fcd829so2918864276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692701888; x=1693306688;
+        d=google.com; s=20221208; t=1692701892; x=1693306692;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPo4bS6bgF3iXXZFHRw7dDnws1JAiCkzNYGL3i11bCA=;
-        b=G9KK9ylHQI5OWSDfOp+7cRr1Fivor9iPR8DIjXzyjBh044lMNgN1fqnAOfydp6Hhmw
-         kTncI4gWfYaJubVdTrkAK0lAzqIYbcwLYJ5Jn2LBO5EhgPMsU4Nj3H91PzOJRXPr52+T
-         5Sj2nysxAoFLiMLc/n9zevqR+3/RYVauTWETV9FWRAeIR2qwnyrVqB5wh43B1GqPl9iP
-         tX+ACphS8chVFv5ZnZ4LkuoVuivQmIySAmW4ghHjXZASRC88TJX5az/jegGpffuSHq7r
-         SU6o4J2Lm2nYNPs4qh5fN+XOhBbDWZko7TGPrVTj3I81cYkD9E5v4+LK5AR8RHvS3wgn
-         AORQ==
+        bh=jRWVgSqH/qYx1EjvX6UPDKu9s9iKlYb3v5piLi27lR0=;
+        b=HIihOmDUjCkJ4FIuOfQjpm0L5n7sFvAatpFN/o2lyC5EYUfoX/QGQPDFH15mia68s/
+         0G2KTXO1Hv2LM+jru5SEjiORwmtKXgjXOTNa3siYT8UFA2On4P1jIk9VSeh1ow9f7wF/
+         EzTEXI+OXPHEleaRFYC7gKPeKKZHCei/uIlzp/ITG82HZX4KUdywe79TfGjXaFoe5/Uf
+         e2bhK4CxcFZaqX71Oz6F2i5ZSisCHZ8zSlkcRrtcsSZ4tSIOucDXguJCOD9JTOEGZjbn
+         9iTDYVI34nH2cLi5X3NQDdsq4YuOgItEDoaDBTqnewov2StYL9yRXlY1DrZh+KXLFauy
+         eGIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692701888; x=1693306688;
+        d=1e100.net; s=20221208; t=1692701892; x=1693306692;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPo4bS6bgF3iXXZFHRw7dDnws1JAiCkzNYGL3i11bCA=;
-        b=hZL2mZaBfIt4A+27B2o6wvK8c8rL1u/L9dtdRk8LP0oDV+fjxpev+WsLHQlmLhgFlt
-         mvpAjm9vyCcRlcXeh0WYhLQ5gS/p6ZOFkAtxBv7nS6eUwI75/nICmcZazCiCLQ6oVwDV
-         1XIoblk6KwEmus1AVVSLC5kVVVRnZY6z0GHxOieLJZHbQL0p0OSEDthxc1Z1RFHVNKAK
-         1Xe7+Io8G3bFif3lfDapoSe2Doq/KhgHweAVS39F8uRfNGC1w6PzfpuLCOaK4OawezVn
-         XYzZRvBpN4XHPZEb8VQdlIX99Ftckl01Ie5wvLnZxysXtVKDNRA7G/K1Nt/1LgP4jbfV
-         aKJw==
-X-Gm-Message-State: AOJu0YxJRrzXDubWUFPail6j5lRVDxaAv6XoyIEKtgG9QQn7YQgFoFol
-        eauCo9d3IT6EhQd+tlEAu2xbHf38L1XO
-X-Google-Smtp-Source: AGHT+IGycL7gl1G8U6+jtg4VRe9A9eG9SI5H/YWMDuChD5JZkIw+01izdKdnZi/mhqaqG1fmzSy3xGc6ZnnE
+        bh=jRWVgSqH/qYx1EjvX6UPDKu9s9iKlYb3v5piLi27lR0=;
+        b=iXzgoa8vd08laFLjIHp4D1W7K9LjhLDQdERBY9qJR/tab/oR37cM+3HHqtFXb72rJ2
+         Y3mKeegmlFHrtNek3yzhaXuS6W3xFR7yAd/YboqB4PH9UOZtTsYblE0BvozkDV+c36gy
+         Z/GN11pao2yaz911ALPsGhc8DCdhLlDUtgQt2nS2PwMFF6H7N8QZvAdgSSDWInYlP4Mq
+         WvvRjG0YEZLoJhpjr+a9oFrzxT+7ohXLg2vD5uCtLMPvWYn33zvJPglXdW5u+wCv8vyY
+         Wo1Sv7foTRTh3x5yKfDMFSIdlNm6JB6aGTU6HZ4isI9pQxPRNmjFAkVD7DqoyZ9h49dv
+         VvjA==
+X-Gm-Message-State: AOJu0YzdYzuK+bpbWRiyQfuOsDw1TD3qhO6UAd2uvoPs2H2DJSLywEl5
+        R8iYlw7gkHvAtKhRsloWEeIL/MlFXfB9
+X-Google-Smtp-Source: AGHT+IG1FKVb5fA8cDC+NAqDiRTn0hkxABY2MLjyaXrgT5clKa5oN7sa2OLjSYQGfR8ScBmUEdZwtFSjQK3K
 X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:44ad:3968:8aaa:c4fe])
- (user=mshavit job=sendgmr) by 2002:a05:690c:368b:b0:589:dbc8:3d11 with SMTP
- id fu11-20020a05690c368b00b00589dbc83d11mr97018ywb.9.1692701888099; Tue, 22
- Aug 2023 03:58:08 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 18:57:01 +0800
+ (user=mshavit job=sendgmr) by 2002:a25:81c5:0:b0:d63:8364:328 with SMTP id
+ n5-20020a2581c5000000b00d6383640328mr77162ybm.5.1692701892264; Tue, 22 Aug
+ 2023 03:58:12 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 18:57:02 +0800
 In-Reply-To: <20230822105738.1607365-1-mshavit@google.com>
 Mime-Version: 1.0
 References: <20230822105738.1607365-1-mshavit@google.com>
 X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230822185632.RFC.v2.5.If0dc099688d13ce9e661a1e4a1339030f243ff39@changeid>
-Subject: [RFC PATCH v2 5/9] iommu/arm-smmu-v3: Alloc vmid from global pool
+Message-ID: <20230822185632.RFC.v2.6.I100c49a1e2ce915982965a065f95a494c2e9ad28@changeid>
+Subject: [RFC PATCH v2 6/9] iommu/arm-smmu-v3: check smmu compatibility on attach
 From:   Michael Shavit <mshavit@google.com>
 To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
@@ -75,90 +75,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consistent with how ASIDs are allocated, allocate VMIds from a global
-pool instead of a per-SMMU pool. This allows the domain to be attached
-onto multiple SMMUs.
+Verify a domain's compatibility with the smmu when it's being attached
+to a master belonging to a different smmu device.
 
 Signed-off-by: Michael Shavit <mshavit@google.com>
 ---
-As discussed in v1 RFC, an alternative would be to support assigning a
-different VMID/ASID to a domain for each SMMU that it is installed to.
-This is more flexible but will require more work to achieve.
 
-(no changes since v1)
+Changes in v2:
+- Access the pgtbl_cfg from the pgtable_ops instead of storing a copy in
+  the arm_smmu_domain.
 
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 10 +++-------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  1 -
- 2 files changed, 3 insertions(+), 8 deletions(-)
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 94 +++++++++++++++++----
+ 1 file changed, 79 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 1d072fd38a2d6..9adc2cedd487b 100644
+index 9adc2cedd487b..2f305037b9250 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -73,6 +73,7 @@ struct arm_smmu_option_prop {
- 
- DEFINE_XARRAY_ALLOC1(arm_smmu_asid_xa);
- DEFINE_MUTEX(arm_smmu_asid_lock);
-+DEFINE_IDA(arm_smmu_vmid_ida);
- 
- /*
-  * Special value used by SVA when a process dies, to quiesce a CD without
-@@ -2130,7 +2131,6 @@ static struct iommu_domain *arm_smmu_domain_alloc(unsigned type)
- static void arm_smmu_domain_free(struct iommu_domain *domain)
- {
- 	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
--	struct arm_smmu_device *smmu = smmu_domain->smmu;
- 
- 	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
- 
-@@ -2143,7 +2143,7 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
- 	} else {
- 		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
- 		if (cfg->vmid)
--			ida_free(&smmu->vmid_map, cfg->vmid);
-+			ida_free(&arm_smmu_vmid_ida, cfg->vmid);
- 	}
- 
- 	kfree(smmu_domain);
-@@ -2195,7 +2195,7 @@ static int arm_smmu_domain_finalise_s2(struct arm_smmu_domain *smmu_domain,
- 	typeof(&pgtbl_cfg->arm_lpae_s2_cfg.vtcr) vtcr;
- 
- 	/* Reserve VMID 0 for stage-2 bypass STEs */
--	vmid = ida_alloc_range(&smmu->vmid_map, 1, (1 << smmu->vmid_bits) - 1,
-+	vmid = ida_alloc_range(&arm_smmu_vmid_ida, 1, (1 << smmu->vmid_bits) - 1,
- 			       GFP_KERNEL);
- 	if (vmid < 0)
- 		return vmid;
-@@ -3169,9 +3169,6 @@ static int arm_smmu_init_strtab(struct arm_smmu_device *smmu)
- 	reg  = smmu->strtab_cfg.strtab_dma & STRTAB_BASE_ADDR_MASK;
- 	reg |= STRTAB_BASE_RA;
- 	smmu->strtab_cfg.strtab_base = reg;
--
--	ida_init(&smmu->vmid_map);
--
+@@ -2213,10 +2213,41 @@ static int arm_smmu_domain_finalise_s2(struct arm_smmu_domain *smmu_domain,
  	return 0;
  }
  
-@@ -3995,7 +3992,6 @@ static void arm_smmu_device_remove(struct platform_device *pdev)
- 	iommu_device_sysfs_remove(&smmu->iommu);
- 	arm_smmu_device_disable(smmu);
- 	iopf_queue_free(smmu->evtq.iopf);
--	ida_destroy(&smmu->vmid_map);
++static int arm_smmu_prepare_pgtbl_cfg(struct arm_smmu_device *smmu,
++				      enum arm_smmu_domain_stage stage,
++				      struct io_pgtable_cfg *pgtbl_cfg)
++{
++	unsigned long ias, oas;
++
++	switch (stage) {
++	case ARM_SMMU_DOMAIN_S1:
++		ias = (smmu->features & ARM_SMMU_FEAT_VAX) ? 52 : 48;
++		ias = min_t(unsigned long, ias, VA_BITS);
++		oas = smmu->ias;
++		break;
++	case ARM_SMMU_DOMAIN_NESTED:
++	case ARM_SMMU_DOMAIN_S2:
++		ias = smmu->ias;
++		oas = smmu->oas;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	*pgtbl_cfg = (struct io_pgtable_cfg) {
++		.pgsize_bitmap	= smmu->pgsize_bitmap,
++		.ias		= ias,
++		.oas		= oas,
++		.coherent_walk	= smmu->features & ARM_SMMU_FEAT_COHERENCY,
++		.tlb		= &arm_smmu_flush_ops,
++		.iommu_dev	= smmu->dev,
++	};
++	return 0;
++}
++
+ static int arm_smmu_domain_finalise(struct iommu_domain *domain)
+ {
+ 	int ret;
+-	unsigned long ias, oas;
+ 	enum io_pgtable_fmt fmt;
+ 	struct io_pgtable_cfg pgtbl_cfg;
+ 	struct io_pgtable_ops *pgtbl_ops;
+@@ -2238,16 +2269,11 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain)
+ 
+ 	switch (smmu_domain->stage) {
+ 	case ARM_SMMU_DOMAIN_S1:
+-		ias = (smmu->features & ARM_SMMU_FEAT_VAX) ? 52 : 48;
+-		ias = min_t(unsigned long, ias, VA_BITS);
+-		oas = smmu->ias;
+ 		fmt = ARM_64_LPAE_S1;
+ 		finalise_stage_fn = arm_smmu_domain_finalise_s1;
+ 		break;
+ 	case ARM_SMMU_DOMAIN_NESTED:
+ 	case ARM_SMMU_DOMAIN_S2:
+-		ias = smmu->ias;
+-		oas = smmu->oas;
+ 		fmt = ARM_64_LPAE_S2;
+ 		finalise_stage_fn = arm_smmu_domain_finalise_s2;
+ 		break;
+@@ -2255,14 +2281,9 @@ static int arm_smmu_domain_finalise(struct iommu_domain *domain)
+ 		return -EINVAL;
+ 	}
+ 
+-	pgtbl_cfg = (struct io_pgtable_cfg) {
+-		.pgsize_bitmap	= smmu->pgsize_bitmap,
+-		.ias		= ias,
+-		.oas		= oas,
+-		.coherent_walk	= smmu->features & ARM_SMMU_FEAT_COHERENCY,
+-		.tlb		= &arm_smmu_flush_ops,
+-		.iommu_dev	= smmu->dev,
+-	};
++	ret = arm_smmu_prepare_pgtbl_cfg(smmu, smmu_domain->stage, &pgtbl_cfg);
++	if (ret)
++		return ret;
+ 
+ 	pgtbl_ops = alloc_io_pgtable_ops(fmt, &pgtbl_cfg, smmu_domain);
+ 	if (!pgtbl_ops)
+@@ -2424,6 +2445,48 @@ static void arm_smmu_disable_pasid(struct arm_smmu_master *master)
+ 	pci_disable_pasid(pdev);
  }
  
- static void arm_smmu_device_shutdown(struct platform_device *pdev)
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index b0cf9c33e6bcd..1661d3252bac5 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -670,7 +670,6 @@ struct arm_smmu_device {
++static int
++arm_smmu_verify_domain_compatible(struct arm_smmu_device *smmu,
++				  struct arm_smmu_domain *smmu_domain)
++{
++	struct io_pgtable_cfg pgtbl_cfg;
++	struct io_pgtable_cfg *domain_pgtbl_cfg =
++		&io_pgtable_ops_to_pgtable(smmu_domain->pgtbl_ops)->cfg;
++	int ret;
++
++	if (smmu_domain->domain.type == IOMMU_DOMAIN_IDENTITY)
++		return 0;
++
++	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S2) {
++		if (!(smmu->features & ARM_SMMU_FEAT_TRANS_S2))
++			return -EINVAL;
++		if (smmu_domain->s2_cfg.vmid >> smmu->vmid_bits)
++			return -EINVAL;
++	} else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
++		if (!(smmu->features & ARM_SMMU_FEAT_TRANS_S1))
++			return -EINVAL;
++		if (smmu_domain->cd.asid >> smmu->asid_bits)
++			return -EINVAL;
++	}
++
++	ret = arm_smmu_prepare_pgtbl_cfg(smmu, smmu_domain->stage, &pgtbl_cfg);
++	if (ret)
++		return ret;
++
++	if (domain_pgtbl_cfg->ias > pgtbl_cfg.ias ||
++	    domain_pgtbl_cfg->oas > pgtbl_cfg.oas ||
++	    /*
++	     * The supported pgsize_bitmap must be a superset of the domain's
++	     * pgsize_bitmap.
++	     */
++	    (domain_pgtbl_cfg->pgsize_bitmap ^ pgtbl_cfg.pgsize_bitmap) &
++		    domain_pgtbl_cfg->pgsize_bitmap ||
++	    domain_pgtbl_cfg->coherent_walk != pgtbl_cfg.coherent_walk)
++		return -EINVAL;
++
++	return 0;
++}
++
+ static void arm_smmu_detach_dev(struct arm_smmu_master *master)
+ {
+ 	unsigned long flags;
+@@ -2505,7 +2568,8 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
+ 		ret = arm_smmu_domain_finalise(domain);
+ 		if (ret)
+ 			smmu_domain->smmu = NULL;
+-	} else if (smmu_domain->smmu != smmu)
++	} else if (smmu_domain->smmu != smmu ||
++		   !arm_smmu_verify_domain_compatible(smmu, smmu_domain))
+ 		ret = -EINVAL;
  
- #define ARM_SMMU_MAX_VMIDS		(1 << 16)
- 	unsigned int			vmid_bits;
--	struct ida			vmid_map;
- 
- 	unsigned int			ssid_bits;
- 	unsigned int			sid_bits;
+ 	mutex_unlock(&smmu_domain->init_mutex);
 -- 
 2.42.0.rc1.204.g551eb34607-goog
 
