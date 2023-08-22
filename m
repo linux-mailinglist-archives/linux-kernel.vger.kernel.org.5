@@ -2,66 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB1B784050
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CC3784060
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbjHVMHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
+        id S235558AbjHVMJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234883AbjHVMHE (ORCPT
+        with ESMTP id S234978AbjHVMJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:07:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D79B185;
-        Tue, 22 Aug 2023 05:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692706021; x=1724242021;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZfZXDD9camcZP605udnd7l1XfBjUoIwZIa4tOUjKwUU=;
-  b=RStfUyqtqx49zh/NEv9ZErimoarETD02dsFUQl7yyKFlUotIqHg+Ono8
-   9eo+8IVkJdgmaPXd5wOpSGmzYREoxOU/SabieeRIAmFP2BdlQ/c/bWj75
-   CCbGEwnSYJ+z0WTeLhtWAheiNMla/VBJDZwY5lbujn8MUrTPeUIaTdn48
-   VY08B1yP/o6QCrBwVmELsDbdUL892vMohX742PDjOb7uRWwOZq3QHe/kd
-   2DlQpE4iz+gWMv0GjP5QFIObD8K1+nGpEhvwNQZcp6qEgmmTSRe5EC0E/
-   NC0Z4TJ2BCiwX+3mN8zw0yJc7S57Tr+ETaLprWnRK5RzBPschWjSpz2Sx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="437781293"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="437781293"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 05:06:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801647323"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="801647323"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Aug 2023 05:06:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qYQ9h-009P1k-2P;
-        Tue, 22 Aug 2023 15:06:41 +0300
-Date:   Tue, 22 Aug 2023 15:06:41 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yann Sionneau <ysionneau@kalray.eu>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Julian Vetter <jvetter@kalrayinc.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] Currently if the SoC needs pinctrl to switch the SCL
- and SDA from the I2C function to GPIO function, the recovery won't work.
-Message-ID: <ZOSk0b1wKF/NzCzz@smile.fi.intel.com>
-References: <20230822091555.18015-1-ysionneau@kalray.eu>
- <ZOSj6C+4q/xUNyhA@smile.fi.intel.com>
+        Tue, 22 Aug 2023 08:09:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E0A185
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=Wx38bWn2ocEjXREWndy+Iq8q4fL7+b2AWpgeCOMij3E=; b=mdnvnBSKrWT9NQu05yJSdaK6Lf
+        h09L3l9tZUeHSdLb1I9X5AH5Xj2OK9d25guBD1XJjaQWpG5Fzm8BE+b0u82yeEnjFoC0+uoCIjlud
+        8sHnBy1OAdDViKXmXodzLH2FalQ/N5YNTWcBw6OfzCZyEmB7prkPXpzRA/CwR1WAi2MTOnduYzYXI
+        zqIZu+O5yA2GpMdwIfcChJnKXqKvuTD1U66/wq/xbgnLaCG2UC5Q+zPr7GQBboERcYeqA+LfjqEMP
+        VJI6i8PRCXY30S15lnmWmUwd+trCfW8HjNWm4mxJRKwfTXewHyVq2uXSim5J5iLvxUQw7eGXiG42i
+        ZKbUIKDw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qYQBo-00GEKP-Br; Tue, 22 Aug 2023 12:08:52 +0000
+Date:   Tue, 22 Aug 2023 13:08:52 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Tong Tiangen <tongtiangen@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Miaohe Lin <linmiaohe@huawei.com>, wangkefeng.wang@huawei.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: memory-failure: use rcu lock instead of
+ tasklist_lock when collect_procs()
+Message-ID: <ZOSlVGxcxT9JLoUv@casper.infradead.org>
+References: <20230821091312.2034844-1-tongtiangen@huawei.com>
+ <ZOOt6S+I9ywyNQjP@casper.infradead.org>
+ <0bbbb7d8-699b-30ac-9657-840112c41a78@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZOSj6C+4q/xUNyhA@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0bbbb7d8-699b-30ac-9657-840112c41a78@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,40 +55,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 03:02:48PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 22, 2023 at 11:15:55AM +0200, Yann Sionneau wrote:
-
-...
-
-> > +	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
-> > +	if (IS_ERR(rinfo->pinctrl)) {
-> > +		if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
-> > +			return PTR_ERR(rinfo->pinctrl);
-> > +
-> > +		rinfo->pinctrl = NULL;
-> > +		dev_err(dev->dev, "getting pinctrl info failed: bus recovery might not work\n");
-> > +	} else if (!rinfo->pinctrl) {
-> > +		dev_dbg(dev->dev, "pinctrl is disabled, bus recovery might not work\n");
-> > +	}
+On Tue, Aug 22, 2023 at 11:41:41AM +0800, Tong Tiangen wrote:
+> 在 2023/8/22 2:33, Matthew Wilcox 写道:
+> > On Mon, Aug 21, 2023 at 05:13:12PM +0800, Tong Tiangen wrote:
+> > > We can see that CPU1 waiting for CPU0 respond IPI，CPU0 waiting for CPU2
+> > > unlock tasklist_lock, CPU2 waiting for CPU1 unlock page->ptl. As a result,
+> > > softlockup is triggered.
+> > > 
+> > > For collect_procs_anon(), we will not modify the tasklist, but only perform
+> > > read traversal. Therefore, we can use rcu lock instead of spin lock
+> > > tasklist_lock, from this, we can break the softlock chain above.
+> > 
+> > The only thing that's giving me pause is that there's no discussion
+> > about why this is safe.  "We're not modifying it" isn't really enough
+> > to justify going from read_lock() to rcu_read_lock().  When you take a
+> > normal read_lock(), writers are not permitted and so you see an atomic
+> > snapshot of the list.  With rcu_read_lock() you can see inconsistencies.
 > 
-> A bit of bikeshedding, would the below be slightly better?
+> Hi Matthew:
 > 
-> 	rinfo->pinctrl = devm_pinctrl_get(dev->dev);
-> 	if (IS_ERR(rinfo->pinctrl)) {
-> 		if (PTR_ERR(rinfo->pinctrl) == -EPROBE_DEFER)
-> 			return PTR_ERR(rinfo->pinctrl);
+> When rcu_read_lock() is used, the task list can be modified during the
+> iteration, but cannot be seen during iteration. After the iteration is
+> complete, the task list can be updated in the RCU mechanism. Therefore, the
+> task list used by iteration can also be considered as a snapshot.
+
+No, that's not true!  You are not iterating a snapshot of the list,
+you're iterating the live list.  It will change under you.  RCU provides
+you with some guarantees about that list.  See Documentation/RCU/listRCU.rst
+
+> > For example, if new tasks can be added to the tasklist, they may not
+> > be seen by an iteration.  Is this OK?
 > 
-> 		rinfo->pinctrl = NULL;
-> 		dev_err(dev->dev, "getting pinctrl info failed, disabling...\n");
-> 	}
-> 	if (!rinfo->pinctrl)
-> 		dev_dbg(dev->dev, "pinctrl is disabled, bus recovery might not work\n");
+> The newly added tasks does not access the HWPoison page, because the
+> HWPoison page has been isolated from the
+> buddy(memory_failure()->take_page_off_buddy()). Therefore, it is safe to see
+> the newly added task during the iteration and not be seen by iteration.
+> 
+> Tasks may be removed from the
+> > tasklist after they have been seen by the iteration.  Is this OK?
+> 
+> Task be seen during iteration are deleted from the task list after
+> iteration, it's task_struct is not released because reference counting is
+> added in __add_to_kill(). Therefore, the subsequent processing of
+> kill_procs() is not affected (sending signals to the task deleted from task
+> list). so i think it's safe too.
 
-On the second thought they are on a different levels... Anyway, up to you,
-folks, what to do with that, I gave already my tag.
+I don't know this code, but it seems unsafe to me.  Look:
 
--- 
-With Best Regards,
-Andy Shevchenko
+collect_procs_anon:
+        for_each_process(tsk) {
+                struct task_struct *t = task_early_kill(tsk, force_early);
+                        add_to_kill_anon_file(t, page, vma, to_kill);
 
+add_to_kill_anon_file:
+        __add_to_kill(tsk, p, vma, to_kill, 0, FSDAX_INVALID_PGOFF);
 
+__add_to_kill:
+        get_task_struct(tsk);
+
+static inline struct task_struct *get_task_struct(struct task_struct *t)
+{
+        refcount_inc(&t->usage);
+        return t;
+}
+
+/**
+ * refcount_inc - increment a refcount
+ * @r: the refcount to increment
+ *
+ * Similar to atomic_inc(), but will saturate at REFCOUNT_SATURATED and WARN.
+ *
+ * Provides no memory ordering, it is assumed the caller already has a
+ * reference on the object.
+ *
+ * Will WARN if the refcount is 0, as this represents a possible use-after-free
+ * condition.
+ */
+
+I don't see anything that prevents that refcount_inc from seeing a zero
+refcount.  Usually that would be prevented by tasklist_lock, right?
+
+Andrew, I think this patch is bad and needs to be dropped.
