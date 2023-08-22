@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B0D783E77
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FE0783E73
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbjHVK67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S234144AbjHVK6d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 06:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234115AbjHVK65 (ORCPT
+        with ESMTP id S234115AbjHVK6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:58:57 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090E8196
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:31 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-268476c3b2aso6561292a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:58:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692701906; x=1693306706;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gv8qs8tb5+ht3xEXCO2MlfdAXc51HHEhUztVM4QYf7k=;
-        b=XxR0LNcd6ZMLLCXEsgVSgiM0m2dvGOpGJ0H2y2I3Ztbzt8plf5Zs/4VNYjeQOFpry+
-         PH2HqrjjVyT6YxZ0ZowGRVgJRmlhAZziZAfr8pHS5GaUhXmpfF+xIN8sFcmU+VoQt6jf
-         vg3KT/vuCq2HJIN/0b20FjE97XCf5ZOP7uVIA8O/OCVtNAP0HVbSntANTxWg/EcMcSxH
-         R2UP3T6vuQvik0z9gG1HI/Zbn+2pPHPvZv+kPu+c7PlQhUh/60zo8gc/U/LQaRzF5NLz
-         gJKIgjHkQfwHgvdR7MHN1Gw86BsVoxJ55knBkY5sEEGZdpPjIn/teqw7obJvPgVEFyXC
-         Op7Q==
+        Tue, 22 Aug 2023 06:58:30 -0400
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C20E5B;
+        Tue, 22 Aug 2023 03:58:11 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-570e8bee8b5so205521eaf.1;
+        Tue, 22 Aug 2023 03:58:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692701906; x=1693306706;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gv8qs8tb5+ht3xEXCO2MlfdAXc51HHEhUztVM4QYf7k=;
-        b=ak3rqvZW+xS4TDT+LO24DYP75rHZ7PVTymlF69c0/T6VWLqMPr0hxh+su0vzgkcphJ
-         XWWfJzhaj7+b0Mctxx3hZ185HrJRb2k2dFCg7LYn+2f9RjbKfvY38FSLikIP/hVUDGvz
-         kbsEC02kAauwS0tsZRipDhjFt2WEhc/qZaU3f3bTE4baahSRJw9/SymJtvCruB3ry19F
-         LSfQTcyj90J5W9q5KJt/9rG59dIvxSBfMyyhC2PydxYnqoM6cqCkApp91DJFlOshUcL2
-         HH5Trr1wz/6Fgm6t4khRuBmPfNqK3EUUeR0LDF/VnYYDTS/yOdw6wkuGxOEtBgcFenwQ
-         Ln0g==
-X-Gm-Message-State: AOJu0YyJeZq6tcjH0gM5wguGhkgzTOWISxUXit7/piy/Sak97XZLap0n
-        dyLGOxWQr8eh7tyc8WCbupnDb6Ax+YLz
-X-Google-Smtp-Source: AGHT+IHY7P3AGtuprqqUV/dDekDb2kOfyGnlyTzMrT8+CEylyDp3RWzdk6ztQiyu+b0tkcWobWMgKFfrKVgj
-X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:44ad:3968:8aaa:c4fe])
- (user=mshavit job=sendgmr) by 2002:a17:90a:a58f:b0:268:38e3:34f0 with SMTP id
- b15-20020a17090aa58f00b0026838e334f0mr1756657pjq.2.1692701906060; Tue, 22 Aug
- 2023 03:58:26 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 18:57:05 +0800
-In-Reply-To: <20230822105738.1607365-1-mshavit@google.com>
-Mime-Version: 1.0
-References: <20230822105738.1607365-1-mshavit@google.com>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-Message-ID: <20230822185632.RFC.v2.9.I5d374dbc818b209e911ef5fbf43de6df0d7ac40b@changeid>
-Subject: [RFC PATCH v2 9/9] iommu/arm-smmu-v3: allow multi-SMMU domain installs.
-From:   Michael Shavit <mshavit@google.com>
-To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     nicolinc@nvidia.com, tina.zhang@intel.com,
-        jean-philippe@linaro.org, will@kernel.org, robin.murphy@arm.com,
-        jgg@nvidia.com, Michael Shavit <mshavit@google.com>,
-        Dawei Li <set_pte_at@outlook.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>
+        d=1e100.net; s=20221208; t=1692701891; x=1693306691;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dzUMRMzjXb63NCDMZbdIbs0HqsTWUd8TxRKoGYC/IaU=;
+        b=SA1/EEI8E+9E+B4Y+4ExxCGl7lKmggpROuzE05MzpZ2E6XTP22ZtNsfkExrbQkSKu8
+         7ZVfBs8CIxSF7dwitfFiSKcm3dvGOmPwz4cStERfXYl6DvZPRpMg8ongm6uKdrP6/4kA
+         bGJU66llXQw+6zFK6tK5Re4fp8asVPw2G5qOPChHjlfdcJWBKuuTOjnHcpvRmpw7bJfa
+         Bx10PLgwFXiWnGD/EuMSbAGN99Za4TorK6Pb5zIpEdIrIyDBfkRudsl7qJx0XDUs1WoK
+         aj+GMQJS/xzA/KT/iy9Xr2fEtysQWM62oJXfMpj0Sbj3oA/JUJ0USUCZupuSvwh8HCty
+         tQVA==
+X-Gm-Message-State: AOJu0YxYganVjYnhBTKahMuhfS6xfshzLee3tQYe8cRrtjIPAc6fy6w0
+        SLp5uVfe24k9B3YeBfKv4+phEdLBdR4Cu12MoYmaZFqtpdI=
+X-Google-Smtp-Source: AGHT+IFqoo8tMg6z8+/ufGWKwwyt1Lcv5RFIHXJg9VhsKTc573xrc6Ub61TJlR3I7s7mvjs6O8FaiN7FWSl3Ed5+uzY=
+X-Received: by 2002:a4a:e882:0:b0:570:d852:f77f with SMTP id
+ g2-20020a4ae882000000b00570d852f77fmr4544769ooe.1.1692701891063; Tue, 22 Aug
+ 2023 03:58:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230703171502.44657-1-nfraprado@collabora.com>
+ <CAJZ5v0hiiiReiJBPZRCMs16E247GL-nJGjnwkiMCNq5q4VjkyQ@mail.gmail.com> <3bc5be02-4e05-4c5c-a247-58c4b862528d@notapiano>
+In-Reply-To: <3bc5be02-4e05-4c5c-a247-58c4b862528d@notapiano>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Aug 2023 12:57:59 +0200
+Message-ID: <CAJZ5v0gwgBmj0XaLhBz0puSOA_OYUy0oFEjoBVCWjT3XW+qZVg@mail.gmail.com>
+Subject: Re: [PATCH] thermal/core: Don't update trip points inside the
+ hysteresis range
+To:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the arm_smmu_domain->smmu handle now that a domain may be
-attached to devices with different upstream SMMUs.
+On Tue, Aug 22, 2023 at 12:25 AM Nícolas F. R. A. Prado
+<nfraprado@collabora.com> wrote:
+>
+> On Mon, Aug 21, 2023 at 11:10:27PM +0200, Rafael J. Wysocki wrote:
+> > On Mon, Jul 3, 2023 at 7:15 PM Nícolas F. R. A. Prado
+> > <nfraprado@collabora.com> wrote:
+> > >
+> > > When searching for the trip points that need to be set, the nearest trip
+> > > point's temperature is used for the high trip, while the nearest trip
+> > > point's temperature minus the hysteresis is used for the low trip. The
+> > > issue with this logic is that when the current temperature is inside a
+> > > trip point's hysteresis range, both high and low trips will come from
+> > > the same trip point. As a consequence instability can still occur like
+> > > this:
+> > > * the temperature rises slightly and enters the hysteresis range of a
+> > >   trip point
+> > > * polling happens and updates the trip points to the hysteresis range
+> > > * the temperature falls slightly, exiting the hysteresis range, crossing
+> > >   the trip point and triggering an IRQ, the trip points are updated
+> > > * repeat
+> > >
+> > > So even though the current hysteresis implementation prevents
+> > > instability from happening due to IRQs triggering on the same
+> > > temperature value, both ways, it doesn't prevent it from happening due
+> > > to an IRQ on one way and polling on the other.
+> > >
+> > > To properly implement a hysteresis behavior, when inside the hysteresis
+> > > range, don't update the trip points. This way, the previously set trip
+> > > points will stay in effect, which will in a way remember the previous
+> > > state (if the temperature signal came from above or below the range) and
+> > > therefore have the right trip point already set. The exception is if
+> > > there was no previous trip point set, in which case a previous state
+> > > doesn't exist, and so it's sensible to allow the hysteresis range as
+> > > trip points.
+> > >
+> > > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > >
+> > > ---
+> > >
+> > >  drivers/thermal/thermal_trip.c | 21 +++++++++++++++++++--
+> > >  1 file changed, 19 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/thermal/thermal_trip.c b/drivers/thermal/thermal_trip.c
+> > > index 907f3a4d7bc8..c386ac5d8bad 100644
+> > > --- a/drivers/thermal/thermal_trip.c
+> > > +++ b/drivers/thermal/thermal_trip.c
+> > > @@ -57,6 +57,7 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> > >  {
+> > >         struct thermal_trip trip;
+> > >         int low = -INT_MAX, high = INT_MAX;
+> > > +       int low_trip_id = -1, high_trip_id = -2;
+> > >         int i, ret;
+> > >
+> > >         lockdep_assert_held(&tz->lock);
+> > > @@ -73,18 +74,34 @@ void __thermal_zone_set_trips(struct thermal_zone_device *tz)
+> > >
+> > >                 trip_low = trip.temperature - trip.hysteresis;
+> > >
+> > > -               if (trip_low < tz->temperature && trip_low > low)
+> > > +               if (trip_low < tz->temperature && trip_low > low) {
+> > >                         low = trip_low;
+> > > +                       low_trip_id = i;
+> > > +               }
+> > >
+> >
+> > I think I get the idea, but wouldn't a similar effect be achieved by
+> > adding an "else" here?
+>
+> No. That would only fix the problem in one direction, namely, when the
+> temperature entered the hysteresis range from above. But when the temperature
+> entered the range from below, we'd need to check the high threshold first to
+> achieve the same result.
+>
+> The way I've implemented here is the simplest I could think of that works for
+> both directions.
 
-Signed-off-by: Michael Shavit <mshavit@google.com>
+Well, what about the replacement patch below (untested)?
+
 ---
+ drivers/thermal/thermal_trip.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-(no changes since v1)
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -55,6 +55,7 @@ void __thermal_zone_set_trips(struct the
+ {
+     struct thermal_trip trip;
+     int low = -INT_MAX, high = INT_MAX;
++    bool same_trip = false;
+     int i, ret;
 
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 10 +++-------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  3 +--
- 2 files changed, 4 insertions(+), 9 deletions(-)
+     lockdep_assert_held(&tz->lock);
+@@ -63,6 +64,7 @@ void __thermal_zone_set_trips(struct the
+         return;
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 9f8b701771fc3..55c0b8aecfb0a 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2564,13 +2564,9 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 
- 	mutex_lock(&smmu_domain->init_mutex);
- 
--	if (!smmu_domain->smmu) {
--		smmu_domain->smmu = smmu;
--		ret = arm_smmu_domain_finalise(domain, smmu);
--		if (ret)
--			smmu_domain->smmu = NULL;
--	} else if (smmu_domain->smmu != smmu ||
--		   !arm_smmu_verify_domain_compatible(smmu, smmu_domain))
-+	if (!smmu_domain->pgtbl_ops)
-+		ret = arm_smmu_domain_finalise(&smmu_domain->domain, smmu);
-+	else if (!arm_smmu_verify_domain_compatible(smmu, smmu_domain))
- 		ret = -EINVAL;
- 
- 	mutex_unlock(&smmu_domain->init_mutex);
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index 1661d3252bac5..fcf3845f4659c 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -716,8 +716,7 @@ enum arm_smmu_domain_stage {
- };
- 
- struct arm_smmu_domain {
--	struct arm_smmu_device		*smmu;
--	struct mutex			init_mutex; /* Protects smmu pointer */
-+	struct mutex			init_mutex; /* Protects pgtbl_ops pointer */
- 
- 	struct io_pgtable_ops		*pgtbl_ops;
- 	atomic_t			nr_ats_masters;
--- 
-2.42.0.rc1.204.g551eb34607-goog
+     for (i = 0; i < tz->num_trips; i++) {
++        bool low_set = false;
+         int trip_low;
 
+         ret = __thermal_zone_get_trip(tz, i , &trip);
+@@ -71,18 +73,31 @@ void __thermal_zone_set_trips(struct the
+
+         trip_low = trip.temperature - trip.hysteresis;
+
+-        if (trip_low < tz->temperature && trip_low > low)
++        if (trip_low < tz->temperature && trip_low > low) {
+             low = trip_low;
++            low_set = true;
++            same_trip = false;
++        }
+
+         if (trip.temperature > tz->temperature &&
+-            trip.temperature < high)
++            trip.temperature < high) {
+             high = trip.temperature;
++            same_trip = low_set;
++        }
+     }
+
+     /* No need to change trip points */
+     if (tz->prev_low_trip == low && tz->prev_high_trip == high)
+         return;
+
++    /*
++     * If "high" and "low" are the same, skip the change unless this is the
++     * first time.
++     */
++    if (same_trip && (tz->prev_low_trip != -INT_MAX ||
++        tz->prev_high_trip != INT_MAX))
++        return;
++
+     tz->prev_low_trip = low;
+     tz->prev_high_trip = high;
