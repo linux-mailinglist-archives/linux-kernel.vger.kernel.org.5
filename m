@@ -2,192 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 491E078465D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AD2784655
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237438AbjHVP4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:56:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
+        id S234685AbjHVPza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229830AbjHVP4A (ORCPT
+        with ESMTP id S234344AbjHVPz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:56:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFB910C1;
-        Tue, 22 Aug 2023 08:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692719738; x=1724255738;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=40Mvzn1ll4ExpoBioTZRPiAzse/XM+Dhq7IZWLopB5I=;
-  b=QQ9ocMXeY4chliJkR7WCg0eB0GkBuStNH3dDNX5Hen7hZ2nGJEWHEa1N
-   zgw2plAm7tkxfBpXXFtwXzD/5BgrI6yfF8K7a78hAuJU1tN3Pq5kPdSOR
-   N7aI8mQZ/qfe2EE0elmZAMVTXEP6YFd4xsccfktPsjKDzizuG6H6GcZOr
-   B1uFNNGI8xAUlorIeQs3QDK8L1FjFPifRUE7uTfDoT28IlcuMe9VAP6M4
-   8dHwLIrhha8xybbc2FHWEI0enuBdQqlNmDU2XcTUjNjO8s94Hj0kVvKgk
-   StXhxLGbVOz6PVVZeRMxJjzRc30Gbr2dv5owe9kqG8j8+DSunrZzHDODb
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="358907056"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="358907056"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 08:55:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="729849565"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="729849565"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 22 Aug 2023 08:55:33 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYTjA-0000JH-1l;
-        Tue, 22 Aug 2023 15:55:32 +0000
-Date:   Tue, 22 Aug 2023 23:54:32 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        manivannan.sadhasivam@linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, quic_parass@quicinc.com,
-        krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed
- dynamically
-Message-ID: <202308222302.9EPeENqh-lkp@intel.com>
-References: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
+        Tue, 22 Aug 2023 11:55:28 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C5EE7D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:54:55 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-48d1412c5c5so939597e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1692719684; x=1693324484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DyWiLtgW4rH+JKJqsR/UwcQBV8o5lraFKhrBSaT+Ps8=;
+        b=NT9JTOvtFdmhasmygeVtSzIJVN74iudjI0QTUJny3AeS7qeldGSDrv7oJDtSS3KAC9
+         0dFApr2PitMRVcwgdL32fVPDHnH8mUAFHixpqtY7+Zj25SkL0AnJQxTqWtRl2cuQ4X9F
+         Odv6PZizpLio4AtEU86+ByynRvlC2NaUeiQ3/Hu5fSOgwVcOc8d0LJBpfm32U9Vwjl9L
+         a5A4saVCGeMgKEIGWXSplEAvDvLFwZHagf3JryhKcg+TBRs+yjve7FL01ECAzu2PK7iV
+         QgYKnAvQDF4+JCzHTOY7KGQgGCsNGzwd78hQjM74mJ9v8RfYdaKIjSOUOsMiXMioPAY5
+         mhIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692719684; x=1693324484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DyWiLtgW4rH+JKJqsR/UwcQBV8o5lraFKhrBSaT+Ps8=;
+        b=j0Pe4T/mVuVEgvcnStJ0RynrDGK4aYPY3tOXqO5uNJUdj5yCw9hpDD2/0Si9jmdiPF
+         Cv/MloAJj5gPZFJR7i3mGRNGm0yfGqSOlHhNK/UHgo07qivzz3DjTzPR/3zkKXHIR6JN
+         6nRxDcAfYRfmRkcqh4z6JGt5R5evoDt3KrbJiLXCoxkjhF5BhaFEQunHuYV6n7JxnQLp
+         doc1QEn9ibyH7JQs6xHcTMtI9a3jtD91RZIWMe1HvIpVz/fU+Uy6FIivggZ8u4b4aCL6
+         ykJSPEjpjxVPJqHojeU2Z7p2EeLhGRhuNoCnG7U1qczcildzoysOPwm6ymOEWX9mn5Xv
+         ZFaQ==
+X-Gm-Message-State: AOJu0Yxuwxzfg/gYHszZWP3ciNbNnWN71gEFazd0a+9Wfggo+NQ36Qn+
+        yM2NXIKbuFD6mFPWIRJiEqMj6Q==
+X-Google-Smtp-Source: AGHT+IHm+ZQkZnfqa1opBR5Uh1UPr48byTq5NCF+mGziAzbMuhJCaJmtH8trQUCfo/FpvCkPMs7e+Q==
+X-Received: by 2002:a1f:4e45:0:b0:48d:189b:6f3b with SMTP id c66-20020a1f4e45000000b0048d189b6f3bmr5428427vkb.12.1692719684095;
+        Tue, 22 Aug 2023 08:54:44 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id c13-20020a0ce14d000000b006472b16d141sm1625144qvl.127.2023.08.22.08.54.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 08:54:43 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qYTiM-00FBsa-Rd;
+        Tue, 22 Aug 2023 12:54:42 -0300
+Date:   Tue, 22 Aug 2023 12:54:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     sharmaajay@linuxonhyperv.com
+Cc:     Long Li <longli@microsoft.com>, Leon Romanovsky <leon@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Subject: Re: [Patch v4 3/4] RDMA/mana_ib : Create adapter and Add error eq
+Message-ID: <ZOTaQt9Mdq4ncTtv@ziepe.ca>
+References: <1692719255-20183-1-git-send-email-sharmaajay@linuxonhyperv.com>
+ <1692719255-20183-4-git-send-email-sharmaajay@linuxonhyperv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1692239684-12697-1-git-send-email-quic_krichai@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1692719255-20183-4-git-send-email-sharmaajay@linuxonhyperv.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krishna,
+On Tue, Aug 22, 2023 at 08:47:34AM -0700, sharmaajay@linuxonhyperv.com wrote:
 
-kernel test robot noticed the following build errors:
+> +static void mana_ib_soc_event_handler(void *ctx, struct gdma_queue *queue,
+> +				      struct gdma_event *event)
+> +{
+> +	struct mana_ib_dev *mib_dev = (struct mana_ib_dev *)ctx;
+> +
+> +	switch (event->type) {
+> +	case GDMA_EQE_SOC_EVENT_NOTIFICATION:
+> +		ibdev_dbg(&mib_dev->ib_dev, "Received SOC Notification");
+> +		break;
+> +	case GDMA_EQE_SOC_EVENT_TEST:
+> +		ibdev_dbg(&mib_dev->ib_dev, "Received SoC Test");
+> +		break;
+> +	default:
+> +		ibdev_dbg(&mib_dev->ib_dev, "Received unsolicited evt %d",
+> +			  event->type);
+> +	}
+> +}
 
-[auto build test ERROR on pci/next]
-[also build test ERROR on pci/for-linus linus/master v6.5-rc7 next-20230822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Did I miss something? What is the point of all this? Please don't add
+test/dead code to the kernel. Come back when you have an actual use of
+events on this channel.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Krishna-chaitanya-chundru/PCI-qcom-Add-sysfs-entry-to-change-link-speed-dynamically/20230817-103734
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/1692239684-12697-1-git-send-email-quic_krichai%40quicinc.com
-patch subject: [PATCH v1] PCI: qcom: Add sysfs entry to change link speed dynamically
-config: loongarch-randconfig-r005-20230822 (https://download.01.org/0day-ci/archive/20230822/202308222302.9EPeENqh-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308222302.9EPeENqh-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308222302.9EPeENqh-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   loongarch64-linux-ld: drivers/pci/controller/dwc/pcie-qcom.o: in function `qcom_pcie_speed_change_store':
->> drivers/pci/controller/dwc/pcie-qcom.c:375:(.text+0xc14): undefined reference to `qcom_pcie_opp_update'
-
-
-vim +375 drivers/pci/controller/dwc/pcie-qcom.c
-
-   303	
-   304	static ssize_t qcom_pcie_speed_change_store(struct device *dev,
-   305				       struct device_attribute *attr,
-   306				       const char *buf,
-   307				       size_t count)
-   308	{
-   309		unsigned int current_speed, target_speed, max_speed;
-   310		struct qcom_pcie *pcie = dev_get_drvdata(dev);
-   311		struct pci_bus *child, *root_bus = NULL;
-   312		struct dw_pcie_rp *pp = &pcie->pci->pp;
-   313		struct dw_pcie *pci = pcie->pci;
-   314		struct pci_dev *pdev;
-   315		u16 offset;
-   316		u32 val;
-   317		int ret;
-   318	
-   319		list_for_each_entry(child, &pp->bridge->bus->children, node) {
-   320			if (child->parent == pp->bridge->bus) {
-   321				root_bus = child;
-   322				break;
-   323			}
-   324		}
-   325	
-   326		pdev = root_bus->self;
-   327	
-   328		offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
-   329	
-   330		val = readl(pci->dbi_base + offset + PCI_EXP_LNKCAP);
-   331		max_speed = FIELD_GET(PCI_EXP_LNKCAP_SLS, val);
-   332	
-   333		val = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-   334		current_speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, val);
-   335	
-   336		ret = kstrtouint(buf, 10, &target_speed);
-   337		if (ret)
-   338			return ret;
-   339	
-   340		if (target_speed > max_speed)
-   341			return -EINVAL;
-   342	
-   343		if (current_speed == target_speed)
-   344			return count;
-   345	
-   346		pci_walk_bus(pp->bridge->bus, qcom_pcie_disable_l0s, pcie);
-   347	
-   348		/* Disable L1 */
-   349		val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-   350		val &= ~(PCI_EXP_LNKCTL_ASPM_L1);
-   351		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-   352	
-   353		/* Set target GEN speed */
-   354		val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL2);
-   355		val &= ~PCI_EXP_LNKCTL2_TLS;
-   356		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL2, val | target_speed);
-   357	
-   358		ret = pcie_retrain_link(pdev, true);
-   359		if (ret)
-   360			dev_err(dev, "Link retrain failed %d\n", ret);
-   361	
-   362		/* Enable L1 */
-   363		val = dw_pcie_readl_dbi(pci, offset + PCI_EXP_LNKCTL);
-   364		val |= (PCI_EXP_LNKCTL_ASPM_L1);
-   365		dw_pcie_writel_dbi(pci, offset + PCI_EXP_LNKCTL, val);
-   366	
-   367		pcie->l0s_supported = true;
-   368		pci_walk_bus(pp->bridge->bus, qcom_pcie_check_l0s_support, pcie);
-   369	
-   370		if (pcie->l0s_supported)
-   371			pci_walk_bus(pp->bridge->bus, qcom_pcie_enable_l0s, pcie);
-   372	
-   373		qcom_pcie_icc_update(pcie);
-   374	
- > 375		qcom_pcie_opp_update(pcie);
-   376	
-   377		return count;
-   378	}
-   379	static DEVICE_ATTR_WO(qcom_pcie_speed_change);
-   380	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jason
