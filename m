@@ -2,115 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 268BC783A2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E81783A35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbjHVGw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S233121AbjHVGyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233147AbjHVGwg (ORCPT
+        with ESMTP id S233122AbjHVGyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:52:36 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901C719A;
-        Mon, 21 Aug 2023 23:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1692687134;
-        bh=tQ1co5z99/X+ABfdWW4NyqVShxtMELNEwRz5sOubfpE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=KlBG6EdUBmsV/rWVVIeJjOIz9NOO973JsdBNQefk05l4BzHNBLfxCr8ood2D2iK5Y
-         Pat+o6CTq+1i+TT8SgeOHpF7lWuPgarmXyVzKnlTQVzFdI7ccB3Zf/IIAsyStooVhH
-         Kxvbnf1/zLgk46MugFfRsUFo/zJvXU/CwuFA7ilA=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 22 Aug 2023 08:51:57 +0200
-Subject: [PATCH net-next] net: generalize calculation of skb extensions
- length
+        Tue, 22 Aug 2023 02:54:13 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6725A130
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:54:10 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf3a2f4528so29998845ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:54:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1692687250; x=1693292050;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ve676d4JygpyiEcrPI+SQ2vixWRAfUQkdAIluX+ykhQ=;
+        b=ebGYjVszLeF1umCyRN8bue0FD0Em8Za2f27t/3K0loeow5Jr/tJ/vfHVqXCOxPas/i
+         zK0DIDUsshJfYNZKsHiE6XhuT2GvkXFW01Ah4Jgkh5gxu9taufca8BsoEnZSxNwRjMPo
+         DKDA98HbHpWgAYP2Heckvb4ngKpcFbgYrr+FA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692687250; x=1693292050;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ve676d4JygpyiEcrPI+SQ2vixWRAfUQkdAIluX+ykhQ=;
+        b=Xjv+5AV45AzvUMjYDo4t3s5dOhI4ragPlYEHGQyAxMwAjuf4HfrrWid95zBBKuD3UZ
+         CeTr0/6gHBIBc4kE/L2SyDPDADrTmpZn3/8zCiHyOjpiWSEojYCGHfAtcnZgMLFhfg7/
+         ei3bczexbD0G+IaFkjbcMqAL1lmO+hTv0jTgpPS+tGeS8S5nLx07drXPNasjPB8G8GA2
+         6FHfnFmw/0Z63pNw9ckYKKnu8BKZwJbplrXqMaoTFjR+AUWxV5SEnp5q38sdbcdD8Y7r
+         3ZvzOQqsdyCB857ZXkw4wOdmNan+cVadO8KssatWQAVDv3PMv+6F2Azc5wpgZaV1H9+W
+         xmIQ==
+X-Gm-Message-State: AOJu0Ywu+kfxCLhOfFj9poWlvT5SWmHCveAhJMJdXcEBPqZDWcprzITD
+        MGbXNKnuLu/TfvVT529PqVMeng==
+X-Google-Smtp-Source: AGHT+IHyoDY2eU7axzNzBSKrXJY9J7Jjb+Z+v7SE8quHZ+O9dYs3Fz6aKcjheAS9j0V1v5qFdeJknQ==
+X-Received: by 2002:a17:903:44c:b0:1b9:e81f:fb08 with SMTP id iw12-20020a170903044c00b001b9e81ffb08mr8315927plb.55.1692687249792;
+        Mon, 21 Aug 2023 23:54:09 -0700 (PDT)
+Received: from localhost ([2620:15c:2d3:205:c79b:9f4c:f1d8:4659])
+        by smtp.gmail.com with UTF8SMTPSA id u7-20020a170902e80700b001bdd512df9csm8219663plg.74.2023.08.21.23.54.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Aug 2023 23:54:09 -0700 (PDT)
+From:   Denis Nikitin <denik@chromium.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     denik@chromium.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] modpost: Skip .llvm.call-graph-profile section check
+Date:   Mon, 21 Aug 2023 23:52:55 -0700
+Message-ID: <20230822065256.163660-1-denik@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230822-skb_ext-simplify-v1-1-9dd047340ab5@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAAxb5GQC/x2M0QqDMAwAf0XybMClOKy/MmSsNdWg66SR4ZD+u
- 2WPB3d3gnISVuirExJ/ReUTC9zqCvz8ihOjjIWBGjJNR4S6uCcfO6q8t1XCD81ojWdn23AnKNm
- WOMjxXz4g8o6x6DDkfAHh7YlnbAAAAA==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Robert Marko <robimarko@gmail.com>,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1692687132; l=1521;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=tQ1co5z99/X+ABfdWW4NyqVShxtMELNEwRz5sOubfpE=;
- b=nB1JA227gd9D7EIQ1Y4lAJ8e2tHkBI33b9Aqdnm3VtiTRNmmo0Qas2OWUuzXM8hPBYtIamIWa
- V750Wfu0R+sBsZYNOaGf2ry/6DkUIRlF1OqNiKUUDFPD7esPizdVYcc
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
-        T_SPF_HELO_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the necessity to modify skb_ext_total_length() when new extension
-types are added.
-Also reduces the line count a bit.
+.llvm.call-graph-profile section is added when the kernel is built with
+profiles (e.g. -fprofile-sample-use=<llvm.profile>). The section holds
+metadata for symbols beloning to other sections and hence doesn't need
+modpost checks.
 
-With optimizations enabled the function is folded down to a constant
-value as before.
+This change fixes the kernel build with sample profiles which fails
+with:
+"FATAL: modpost: Please add code to calculate addend for this architecture"
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Denis Nikitin <denik@chromium.org>
 ---
- net/core/skbuff.c | 24 +++++++-----------------
- 1 file changed, 7 insertions(+), 17 deletions(-)
+ scripts/mod/modpost.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index faa6c86da2a5..45707059082f 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4785,23 +4785,13 @@ static const u8 skb_ext_type_len[] = {
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index b29b29707f10..64bd13f7199c 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -761,6 +761,7 @@ static const char *const section_white_list[] =
+ 	".fmt_slot*",			/* EZchip */
+ 	".gnu.lto*",
+ 	".discard.*",
++	".llvm.call-graph-profile",	/* call graph */
+ 	NULL
+ };
  
- static __always_inline unsigned int skb_ext_total_length(void)
- {
--	return SKB_EXT_CHUNKSIZEOF(struct skb_ext) +
--#if IS_ENABLED(CONFIG_BRIDGE_NETFILTER)
--		skb_ext_type_len[SKB_EXT_BRIDGE_NF] +
--#endif
--#ifdef CONFIG_XFRM
--		skb_ext_type_len[SKB_EXT_SEC_PATH] +
--#endif
--#if IS_ENABLED(CONFIG_NET_TC_SKB_EXT)
--		skb_ext_type_len[TC_SKB_EXT] +
--#endif
--#if IS_ENABLED(CONFIG_MPTCP)
--		skb_ext_type_len[SKB_EXT_MPTCP] +
--#endif
--#if IS_ENABLED(CONFIG_MCTP_FLOWS)
--		skb_ext_type_len[SKB_EXT_MCTP] +
--#endif
--		0;
-+	unsigned int l = SKB_EXT_CHUNKSIZEOF(struct skb_ext);
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(skb_ext_type_len); i++)
-+		l += skb_ext_type_len[i];
-+
-+	return l;
- }
- 
- static void skb_extensions_init(void)
-
----
-base-commit: 90308679c297ffcbb317c715ef434e9fb3c881dc
-change-id: 20230822-skb_ext-simplify-3d93ceb95f62
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.42.0.rc1.204.g551eb34607-goog
 
