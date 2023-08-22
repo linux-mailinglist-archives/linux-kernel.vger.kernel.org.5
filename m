@@ -2,166 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF4E784872
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A837784874
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229672AbjHVRfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51048 "EHLO
+        id S229815AbjHVRgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjHVRfy (ORCPT
+        with ESMTP id S229599AbjHVRgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:35:54 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B8B241DC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:35:51 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so74910451fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1692725750; x=1693330550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=twBuWXcpeKseh33O2uRZCxjPfvxhPgWOIfaDx6iIFFg=;
-        b=JMBwuFf+eTpkQ//DsPnmN3MjwuC+S7NPLfzgQxu6E7e/Kj8n0G2FO+sEw1AwqyhQua
-         UDf3xM7uIV9jK4eU1CXZq/84y5w5MValxIh8kRp7R1VqExWWW/Llr3kyyrGGOyN6fb8+
-         x6jh9zLCbnYBgvXrYAQNKUKsYn7uGO/YVLLzs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692725750; x=1693330550;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=twBuWXcpeKseh33O2uRZCxjPfvxhPgWOIfaDx6iIFFg=;
-        b=XLxqvS5hsOqzBcgOYQhn5TjvMoBYZk4c61Da+JKZQUrvYjcqKmM+Et3ctlQ+D/m7NW
-         TL1FfgcxwLEKbYWnOlJwR9TkazL5LwRwKvJ/JDpS57uh8PEykG6O/38q2nGXCF0YsR3f
-         2Lk59mzUznJV4AjZDfQOoHNsJnjToPXZ4xes5SyyPIR3h2H2tkM2K8POKKn8zPQESO6q
-         xpyixiKfa8xpn3qDTNH1vo0uY7TFpHcvSDVZpbrFJoaszc9cJPeAHyK2HVxjjeFvIM4X
-         WRUvIonu+AJd0eQ150lUbaZPjxorJL3QVwYesjZ/Q+risL7Fg1MYqydyHcSP7DyEkDKi
-         hyiQ==
-X-Gm-Message-State: AOJu0YxZwPO/bFo9nwrSjW0PzJZdlXNo9p3UfAOSvrWGtcoQIaK5UOVl
-        mAJvxRUvSQISIocNH2jAYtCdDH8GTjBzItBIjtQ=
-X-Google-Smtp-Source: AGHT+IFvXWUExYuvw7mlEE2ICe2mtCEabGvWe6MqsrYRIEke4T8TzLyxsGrKr9zlN45+C3ZLmm4p/g==
-X-Received: by 2002:a2e:3801:0:b0:2bc:b29e:8fef with SMTP id f1-20020a2e3801000000b002bcb29e8fefmr6815139lja.34.1692725749866;
-        Tue, 22 Aug 2023 10:35:49 -0700 (PDT)
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
-        by smtp.gmail.com with ESMTPSA id r25-20020a170906a21900b00992f309cfe8sm8520162ejy.178.2023.08.22.10.35.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 10:35:48 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so645748266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:35:48 -0700 (PDT)
-X-Received: by 2002:a17:906:ef8c:b0:99b:bf8d:b7e1 with SMTP id
- ze12-20020a170906ef8c00b0099bbf8db7e1mr8141530ejb.17.1692725748394; Tue, 22
- Aug 2023 10:35:48 -0700 (PDT)
+        Tue, 22 Aug 2023 13:36:00 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2067.outbound.protection.outlook.com [40.107.237.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5606D5CA;
+        Tue, 22 Aug 2023 10:35:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IeryVAyumu7wFVuTuymN5sNy10HieC8e4hv5CJRQc1XIMyds0evWlRSElh4E9ctuYL+dgN9gPIGFH+bt6yMv/i5msWXYkUVrKKJ3Hr2eUf8Vie61IJaAca5p5ztpLYcXYzSBxql5+lUzRrD9un8/0kkmFhEcT18sfA+1KkthbfCnt4V7EjBSj9JWVxxsd0r0u1nPUDc5ZQIB1bgQIQPbJ25HKlPey4LLlQadVvU84bUgWGPUEZEGa8CaocuKXwa4j9JL2XjadIO9irK6NB8Gs4pz6tbRdPV0pv0WfcPt+rvxlDD3P+r5JmjSa0KomhymYqAE2oHw3gLBhTgcRVZH2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o23fC0Wia3kV6z8KEDFYbSrzdOvG+XfeOpbNyGOM/hs=;
+ b=NwE93TcDQuKQXq+qIYdZHLo5CvAOsmKEY4EnbmlwerJAnyTTgTKnUqtp4tPXpZZNksqf+TlmBlNgrV6nRQSZ5pPS36eWTTJ9kw/nAYpYuOw/7pyCsIu0q3nA2JNc/afxvXFPpJgpvuLfmPWaX87BY1lewYi4jWgT+PnRVKz5qqwn9S6swTDD9wsxpOSEuXlI8qD54SCEDAFY2+J0XMOSn2QslercFJWcWQXgxiDcpXYXu0tP4bESPwmwMvYGWIyVeFxkgDjJYTO7dJhB/8Best5O44rgNBON3y+LhQFNN2h9MHLAC2j1hqg0793Tkk5tbEVedwWHZH4+b5HIy5Q+Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o23fC0Wia3kV6z8KEDFYbSrzdOvG+XfeOpbNyGOM/hs=;
+ b=wC8H9Q8EGpltrBusVm6pvDJqYFf5h/+7lhRZj1FDMDOIm5xf3Py8iPv1MpthlzR75aOPMDvmJoS+begIRxz+VJ+DYr1ijQ5MyHFVaIzA4ebvP76wyP1UgJhur9E55HatgxUd+fRbe6nC3N/JmI5a8WcWtYPrSgKicIJ35z5i7Jk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+ by PH7PR12MB8795.namprd12.prod.outlook.com (2603:10b6:510:275::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 17:35:55 +0000
+Received: from CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b]) by CO6PR12MB5427.namprd12.prod.outlook.com
+ ([fe80::236b:d4e2:6fbf:6c2b%5]) with mapi id 15.20.6699.025; Tue, 22 Aug 2023
+ 17:35:55 +0000
+Message-ID: <2d7e2d96-69a8-4e7d-b914-8780343344ff@amd.com>
+Date:   Tue, 22 Aug 2023 13:35:49 -0400
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amd/display: register edp_backlight_control() for
+ DCN301
+To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     stable@vger.kernel.org, Swapnil Patel <swapnil.patel@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>,
+        Wenjing Liu <wenjing.liu@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230822170343.137958-1-hamza.mahfooz@amd.com>
+Content-Language: en-US
+From:   Harry Wentland <harry.wentland@amd.com>
+In-Reply-To: <20230822170343.137958-1-hamza.mahfooz@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR0101CA0280.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:68::29) To CO6PR12MB5427.namprd12.prod.outlook.com
+ (2603:10b6:5:358::13)
 MIME-Version: 1.0
-References: <01e3e09005e9434b8f558a893a47c053@AcuMS.aculab.com>
- <202308141416.89AC5C2@keescook> <2dd09c4033644239a314247e635fa735@AcuMS.aculab.com>
- <202308211113.4F49E73109@keescook>
-In-Reply-To: <202308211113.4F49E73109@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Aug 2023 10:35:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whwEAc22wm8h9FESPB5X+P4bLDgv0erBQMa1buTNQW7tA@mail.gmail.com>
-Message-ID: <CAHk-=whwEAc22wm8h9FESPB5X+P4bLDgv0erBQMa1buTNQW7tA@mail.gmail.com>
-Subject: Re: [PATCH next v3 0/5] minmax: Relax type checks in min() and max().
-To:     Kees Cook <keescook@chromium.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH7PR12MB8795:EE_
+X-MS-Office365-Filtering-Correlation-Id: b90e3551-f1ed-4051-695a-08dba3363cfa
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cHtWTZPTMrx3igfc5L8FxSVp0QEBKa0zccaA1z9wFfurjLA7VUzt4d/iLJZkHcwlWIZaDKdOb2OJZeuyJ4EFr7JrZXb40+w3jH8adrD8OOkBAOCx6XHRNaQb0bMDPzTBLE4sKg0PGr31y/GOEC7T4btHbtCP61P5ZewU585wqabjD+DQ4+Di5HZOH7yU7Ju4HNvDpPEd9t4rPLTGl/ckAHEjYiQm71yRKZR/9yc6lV2lvCrtG0CCzznkDyKsiiTvTkP0vzVuyH0UfjwRMtFdqomDVxHQtIYUwBmMFFqShN8KqpM/IJb9ufEEslTNQ2QI9TKPoBDAa8wopcIEYAIIhDQTWw+EZBzC99e/n1j42YALlPHlrZXkqMTx40gJrB5nRldkTcUNdLWbVsYzUwoh4Vom9ABLEy6+Rr5jBSVBILz7r04xEdc5fcTmOjnZ+M2SeFa6KgExChTVWww5geNjZ4+qD9aLIWZjZ9JzJdCjbeMcF1wsMVGENjMF/nzIIBkWPlg3WbWbQQ8wXh60FyGvEKBC3ACi8o/fnApnt/i/6hqhJh4XEGKmvflHFYQ4uCVrTGilUqSTPu9RmvBEfvyanvxEu8dTzZWD4to8eh01rPsKnprbOlIctZIkbdwkZLCIWjYF/t0V2cLl9AZDWzS3nQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(451199024)(186009)(1800799009)(2906002)(38100700002)(6506007)(53546011)(6486002)(83380400001)(5660300002)(44832011)(26005)(31696002)(31686004)(86362001)(8676002)(2616005)(8936002)(4326008)(966005)(316002)(66946007)(6512007)(54906003)(66556008)(66476007)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1QycGVYcFdzekJpOXRnSURmMVVwaGZkRWg1SXUwZm56bTM5OXFHejk0MEZO?=
+ =?utf-8?B?UUpWUjJ1YzUreVpHVFd3N1g2MCt0NWQvdlZsaXJDSXIzbmFzMUpzRFVmSlJZ?=
+ =?utf-8?B?TGJndWJ4ZkRvQ3ZMTG9yWWZ2dW5TNEFYaE52U1NPa1B5cE1oVmQ5WDl4b2VF?=
+ =?utf-8?B?b1NmVHlucUlsRzlxTVNlZ2Z0SnRJS0ZVamJPaVRiKyttWk9VQStjeHdsS29z?=
+ =?utf-8?B?K0IwN05TSEIzMWZubnd6SDQ3bTVhNVpmVFMzUTJKdmR1dlhjS2xWa282Y0xy?=
+ =?utf-8?B?WjZpTUl2YmVHUitjTnRNR0NMNHJFYW1DR29RMWxoeFNiL24rU1J5T2QzTlEw?=
+ =?utf-8?B?MldJS0xVcytaY0Yva0RPeldGUytYeTl3a0FQQ3VoUFFZeU10UEp6M2xXQzNj?=
+ =?utf-8?B?QVRZWFEyL3FzR3J0d09jb0cxWFdvMXpURnU0NkFQMXpJRmFwak1VenNmei9V?=
+ =?utf-8?B?dWxkS09VK3dDK3JTeVZIcUt0QWVON3AxZkRsRlhFcWNFQmZRTUpGTVE0clYy?=
+ =?utf-8?B?eGIxZjJFaFF1MjRTeEhmZmxKUzVMOFF4aU1RTTJ0SFRLOHdlOEJWbko0OHJE?=
+ =?utf-8?B?dnd0eUlSc3RJelNFUUg2RzhhUlhBeGFQa1NUcUh3S041RDQzbkpjemhHaUhk?=
+ =?utf-8?B?Rm1yMC8yUTlKbzNHVEdqNTRoQTJEZ3Yzdk1CZzJZbFZnQnRVbk9pWllRNTM0?=
+ =?utf-8?B?ZmRVTWVJZ1IveTQxZTd6bER6Ryt2WjBZb0VsWWJhdDFoVmRDS2g2eHBrZWow?=
+ =?utf-8?B?RmpBbFMxbjNNRXdzOFcwQlQ3VFBHdjlzOHVZOGdXZlA1OUpiaDc3dzJLYlBR?=
+ =?utf-8?B?YkZTOU9DQllsWC9TZ3dxOUY3ZFZsSmdnSHdvQy9ETVNKTFpDaWZ4UkNHbHdn?=
+ =?utf-8?B?Qm96YlF5WUEwNFZoUDUwQXpYNTd0R29XQ0RvMUVEY211ZExGcUdoSUh4RnA2?=
+ =?utf-8?B?MytmVE5aVTNKVEtkVVF2TCtsZG9YK0NHMDczL1BaQk02Ry91c3docWNRY2hi?=
+ =?utf-8?B?eHdtSll3bTMwT2dha3hTaXgwUUVvNSsvdVN1ZGR0UnBoUnlzMUlvMHNyTmdI?=
+ =?utf-8?B?cWdQUm1ISVAremhQM09oVUFtRFVWclNGaitjdTdERTAzV0F4Wnk1VER1TzFJ?=
+ =?utf-8?B?V3NvUVU4alJtbGhyR3h4TzNFUnQxZWpUZmQxbVhkWHQ3SGQ2UFFWUFpKeEJa?=
+ =?utf-8?B?c0hQUXFacEdPaWlOTExlb0k0Yk9uT0s0cEx1aHNxNCtwN3QwQWhyQzNqaVJy?=
+ =?utf-8?B?NzVMSVBJeWJOZkxDcE5DMXEzMytVbWZ0dVBUVmFyUzVPRFp6S001NVBETm5p?=
+ =?utf-8?B?SUltUzVzMTlmU3lGc1c0Ym0wYmQ1TktZTzRIVWpLUk9vYWU5TnROQXQ0UGY5?=
+ =?utf-8?B?QmRBSHZOTU9QNlluRjB1N3dIbENObjEwK2w1UHEvTURhTFk0RG1pVCtQblBv?=
+ =?utf-8?B?VU1VaTJrRWRBWWVsWFdIYVZVcE4xZDg4SEdxTlR1UVYxYzFoaHVtRDBOR3hV?=
+ =?utf-8?B?alFsMEdJMWljTTU1Nkd6UVk1eTFpdFpYdWpWNHpBelJqWWdVeEthUFUxVEs5?=
+ =?utf-8?B?WTBPTnk0ZHZRMzljcDZ1dExqdTJyN2hKdWNwN0FqRlpCLys4bGdKNFYvK1M0?=
+ =?utf-8?B?RWwrbEFxd1g0S3JPd0VDRzJnZXBaZ2pubG5QQlE5dlBlQWxRYjVkWTBDM0ds?=
+ =?utf-8?B?RHhZejBDT2hvZzNFY3B3amJEakVJbnFFTmN1QnBGQTc2emNraFdRaWtKekFh?=
+ =?utf-8?B?MGM2cHdzZGM5MUpwK0JmNWUzdE9QVGlpZVRoMDgxT0VRS1hKbEY4bmU2SE91?=
+ =?utf-8?B?alE5d241ampZdSt4TFFPeU8rWGhVQzZ1UStsT2NKQ3BXYjNVQmJlWm13T0Zv?=
+ =?utf-8?B?T3dCcXNoR2Z0bVVHNCtLZm92S0VzOG5INGc3U3ZlUlorb0c1N09pYXBlVE9n?=
+ =?utf-8?B?WiszR1VJdmJZUjB1cTVSeE5rVnViWng1T0Z6c09xMHhhSHZCRkFPc3RWTm8w?=
+ =?utf-8?B?SjdRVjREVndIWVFzNENzME4vUTVLYjFrTDRJNnp1V3dFYjd2VzRoR2MyYkNa?=
+ =?utf-8?B?cTIxajVOM2lvV0xZTU5pM1JMVGI1QzgySEF1NzFsYm91Rng1RDhFN3F5RmxQ?=
+ =?utf-8?Q?+gc+so7XtwcMhyP9esB/v4d9s?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b90e3551-f1ed-4051-695a-08dba3363cfa
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 17:35:55.2049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tT1RnLcVtYTGnJoPisWra8roBvKh5Wujo4X2s9YfdMnqc6COjqBn75I5BLdCPvXfZNVC+H5DbhVbyGTTq7OoYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8795
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Aug 2023 at 11:24, Kees Cook <keescook@chromium.org> wrote:
->
-> It seems like the foot-gun problems are when a value gets clamped by the
-> imposed type. Can't we just warn about those cases?
 
-I think that the problem with min_t() is that it is used as a random
-"when min() warns about different types", and that it basically just
-adds a cast without any semantic meaning.
 
-End result: we currently have 4500+ of those cases (and another 1300
-uses of 'max_t') and I bet that several of them are the narrowing
-kind. And some are probably valid.
+On 2023-08-22 13:03, Hamza Mahfooz wrote:
+> As made mention of in commit 099303e9a9bd ("drm/amd/display: eDP
+> intermittent black screen during PnP"), we need to turn off the
+> display's backlight before powering off an eDP display. Not doing so
+> will result in undefined behaviour according to the eDP spec. So, set
+> DCN301's edp_backlight_control() function pointer to
+> dce110_edp_backlight_control().
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2765
+> Fixes: 9c75891feef0 ("drm/amd/display: rework recent update PHY state commit")
+> Suggested-by: Swapnil Patel <swapnil.patel@amd.com>
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 
-And if we tighten up "min_t()" type rules, we'll just hit the *next*
-problem in the series, namely "what are people going to do now?"
+Reviewed-by: Harry Wentland <harry.wentland@amd.com>
 
-We don't want to just keep pushing the problem down.
+Harry
 
-So I actually mostly liked all the *other* patches in David's series:
-using 'min_unsigned()' and friends adds a nice *semantic* layer, not
-just a cast. And relaxing the checking of min/max doesn't cause the
-same the "push problems down" issue, as long as the relaxing is
-reasonable.
+> ---
+>  drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
+> index 257df8660b4c..61205cdbe2d5 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dcn301/dcn301_init.c
+> @@ -75,6 +75,7 @@ static const struct hw_sequencer_funcs dcn301_funcs = {
+>  	.get_hw_state = dcn10_get_hw_state,
+>  	.clear_status_bits = dcn10_clear_status_bits,
+>  	.wait_for_mpcc_disconnect = dcn10_wait_for_mpcc_disconnect,
+> +	.edp_backlight_control = dce110_edp_backlight_control,
+>  	.edp_power_control = dce110_edp_power_control,
+>  	.edp_wait_for_hpd_ready = dce110_edp_wait_for_hpd_ready,
+>  	.set_cursor_position = dcn10_set_cursor_position,
 
-(Side note: I'm not convinced 'min_unsigned()' is the right syntax.
-While I like the concept, I think 'min()' is often used as a part of
-other expressions, and 'min_unsigned()' ends up making for a very
-illegible long and complex thing. I think we might as well use
-'umin()/umax()', matching our type system).
-
-It's just that I very much don't think it's reasonable to relax "20u"
-(or - more commonly - sizeof) to be any random constant signed
-integer, and it should *not* compare well with signed integers and not
-silently become a signed compare.
-
-(But I do think that it's very ok to go the other way: compare a
-_unsigned_ value with a "signed" constant integer like 20. The two
-cases are not symmetrical: '20' can be a perfectly fine unsigned
-value, but '20u' cannot be treated signed).
-
-And while I don't like David's patch to silently turn unsigned
-constant signed, I do acknowledge that very often the *source* of the
-unsignedness is a 'sizeof()' expression, and then you have an integer
-that gets compared to a size, and you end up using 'min_t()'. But I do
-*NOT* want to fix those cases by ignoring the signedness.
-
-Just a quick grep of
-
-    git grep 'min_t(size_t' | wc
-
-shows that quite a lot of the 'min_t()' cases are this exact issue.
-But I absolutely do *not* think the solution is to relax 'min()'.
-
-I suspect the fix to those cases is to much more eagerly use
-'clamp()'. Almost every single time you do a "compare to a size", it
-really is "make sure the integer is within the size range". So while
-
-    int val
-   ...
-    x = min(val,sizeof(xyz));
-
-is horrendously wrong and *should* warn, I think doing
-
-   x = clamp(val, 0, sizeof(xyz));
-
-is a *much* nicer model, and should not warn even if "val" and the
-upper bound do not agree. In the above kind of situation, suddenly it
-*is* ok to treat the 'sizeof()' as a signed integer, but only because
-we have that explicit lower bound too.
-
-In other words: we should not "try to fix the types". That was what
-caused the problem in the first place, with "min_t()" just trying to
-fix the type mismatch with a cast. Casts are wrong, and we should have
-known that. The end result is horrendous, and I do agree with David on
-that too.
-
-I think we should strive to fix it with "semantic" fixes instead. Like
-the above "use clamp() instead of min(), and the fundamental
-signedness problem simply goes away because it has enough semantic
-meaning to be well-defined".
-
-Hmm?
-
-                  Linus
