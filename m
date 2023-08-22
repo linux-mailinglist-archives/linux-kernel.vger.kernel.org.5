@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25193784CFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEC3784D1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbjHVWwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58706 "EHLO
+        id S231604AbjHVXBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjHVWwt (ORCPT
+        with ESMTP id S231599AbjHVXBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:52:49 -0400
+        Tue, 22 Aug 2023 19:01:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0B7133;
-        Tue, 22 Aug 2023 15:52:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C409E45;
+        Tue, 22 Aug 2023 16:01:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B3C8B61C4A;
-        Tue, 22 Aug 2023 22:52:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D004CC433C7;
-        Tue, 22 Aug 2023 22:52:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF30E638D1;
+        Tue, 22 Aug 2023 23:01:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6F8AC433D9;
+        Tue, 22 Aug 2023 23:01:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692744767;
-        bh=yWNdNH98z11k2f6XrB1ayhOgAMMe6RDCicH8KsnHT7g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Hiu4BvHGryw/cf0SMNOnRqWCAk6pjbHNi/br7X+APUbz5YDCOHKRIeqsHDXaduB2O
-         k2EEdPgeoQAC0c4Sh2+/uGG32klYGK+SMSyfuEt7Vqlhy035HC68FgYlqED2SzFiNZ
-         ExvAvTZyAR3RsifUyNdSGZIxCh5/EIiMZewXp2glvf+m/bPvqDhmdI4ee2hAE8YR+z
-         uStNVtIgQzmlUrbMr+El1Fc2x1u+ZLxlts0MkOtDwN7Il0YHoB/KGa/sKfIHPfUvuV
-         hD4Dg2zGUAMmQWQnI7O8pQ1e17noooK3jqLhQS4OQJluHLIskNpCfic2E+zgOBjH6K
-         mZWKGQnHp6Vaw==
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        patches@lists.linux.dev,
-        Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH] clk: Cleanup devm_clk_match() wreckage
-Date:   Tue, 22 Aug 2023 15:52:42 -0700
-Message-ID: <20230822225245.3624370-1-sboyd@kernel.org>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+        s=k20201202; t=1692745306;
+        bh=5nZO/EA7xNC0zbfhm7E3kKtBi2sQs7kn8lqJX9i1moQ=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=kFfl8kbg4KZrdf2pK6oqno0lo1RVgBYPaJ1Ry7rEJ9uMjKXAx9MB/UJjCxwjzJALQ
+         +TJR+zwHTTmUxWnGdWIT4ef8SdHbpRLYrck6r7+hRLfGlbLe0A7HxHMk+ZCbTw4QZm
+         J6cauK3lLaooPguYa79+YfdehebtYPe1lBj9ViSkx55KLHcUsrJt+JUZhXr+fDtB2Y
+         fCrldC8dH8GeFYAS0JVNlgYsevE/DxAV8A5OhwJ9kC7wt5SQO0KLPGWbYOBr/XUXwO
+         MNi9GHujl40bkvfxlwevKlKa/zu70Frt82S8JiZBE4BXi8RHL4wXiAf+Xv6bBi/7E1
+         F60zLZ3oI2A6Q==
+Message-ID: <ff6a9b1567e0a36fd0a7ae628d2d92d4.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8cfd376d48d63670882b8079c411d605@208suo.com>
+References: <20230721011303.4303-1-xujianghui@cdjrlc.com> <8cfd376d48d63670882b8079c411d605@208suo.com>
+Subject: Re: [PATCH] clk: keystone: sci-clk: fix application of sizeof to pointer
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+To:     kristo@kernel.org, mturquette@baylibre.com, nm@ti.com,
+        ssantosh@kernel.org, sunran001@208suo.com
+Date:   Tue, 22 Aug 2023 16:01:43 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,52 +55,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'res' pointer passed to devm_clk_match() is a pointer to struct
-devm_clk_state after commit abae8e57e49a ("clk: generalize
-devm_clk_get() a bit"). Update the logic here to convert the void
-pointer to the right type so that this is cleaner. Note that this
-doesn't actually change anything due to how struct devm_clk_state is
-defined to have a struct clk pointer as the first member.
+Quoting sunran001@208suo.com (2023-07-20 18:14:19)
+> ./drivers/clk/keystone/sci-clk.c:390:8-14: ERROR: application of sizeof
+> to pointer
+>=20
+> Signed-off-by: Ran Sun <sunran001@208suo.com>
+> ---
+>   drivers/clk/keystone/sci-clk.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/keystone/sci-clk.c=20
+> b/drivers/clk/keystone/sci-clk.c
+> index 6c1df4f11536..2c68c1e09d1f 100644
+> --- a/drivers/clk/keystone/sci-clk.c
+> +++ b/drivers/clk/keystone/sci-clk.c
+> @@ -389,7 +389,7 @@ static struct clk_hw *sci_clk_get(struct=20
+> of_phandle_args *clkspec, void *data)
+>         key.clk_id =3D clkspec->args[1];
+>=20
+>         clk =3D bsearch(&key, provider->clocks, provider->num_clocks,
 
-Given we're cleaning things up, split the WARN_ON() into two different
-conditions to provide clarity about which condition is false. Also move
-the WARN_ON to the conditional so that the compiler is hinted that all
-this code is unlikely().
+Huh? I see 'provider->clocks' is struct sci_clk_provider::clocks which
+is of type 'struct sci_clk **'. It looks like each element in the array
+is a 'struct sci_clk *', so if we want to silence the coccinelle warning
+perhaps this should change to sizeof(*clk). Certainly we don't want to
+change it to be the sizeof(struct sci_clk) though. Does changing the
+sizeof() to deref the pointer work to silence the error?
 
-Cc: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- drivers/clk/clk-devres.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clk/clk-devres.c b/drivers/clk/clk-devres.c
-index 737aa70e2cb3..979562ee79ba 100644
---- a/drivers/clk/clk-devres.c
-+++ b/drivers/clk/clk-devres.c
-@@ -184,12 +184,14 @@ EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all);
- 
- static int devm_clk_match(struct device *dev, void *res, void *data)
- {
--	struct clk **c = res;
--	if (!c || !*c) {
--		WARN_ON(!c || !*c);
-+	struct devm_clk_state *state = res;
-+
-+	if (WARN_ON(!state))
- 		return 0;
--	}
--	return *c == data;
-+	if (WARN_ON(!state->clk))
-+		return 0;
-+
-+	return state->clk == data;
- }
- 
- void devm_clk_put(struct device *dev, struct clk *clk)
-
-base-commit: 66fbfb35da47f391bdadf9fa7ceb88af4faa9022
--- 
-https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
-https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
-
+> -                     sizeof(clk), _cmp_sci_clk);
+> +                     sizeof(**clk), _cmp_sci_clk);
