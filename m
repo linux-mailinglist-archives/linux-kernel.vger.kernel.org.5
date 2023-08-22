@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 540A6783D74
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A99783D7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbjHVKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51644 "EHLO
+        id S234537AbjHVKDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:03:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjHVKAZ (ORCPT
+        with ESMTP id S232517AbjHVKDf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:00:25 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B3D61B0;
-        Tue, 22 Aug 2023 03:00:23 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37MA07So000739;
-        Tue, 22 Aug 2023 05:00:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692698407;
-        bh=KFLxlOdqhAmvHU0Nwonb56jEgYiS3TxFagxKdHDOzIw=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=U4NqmDijOtPXzLWCQ8bfJwRYtFuJY2MWVKijKYXqVatsmC7RXqYjelZpfiHWXpaKD
-         ntV5/qi4KmL9GufdfNRKnN15PW/iO9mVgGnvnp1cC1ft4lP66S1Wulo8zMvEETfP0r
-         0HqRVQFjiEE+bi0djH28nIg27GiZ+xNBRDzFxGgE=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37MA06XD082829
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Aug 2023 05:00:07 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 22
- Aug 2023 05:00:05 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 22 Aug 2023 05:00:05 -0500
-Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37M9xwMt016465;
-        Tue, 22 Aug 2023 04:59:59 -0500
-Message-ID: <ef6b215b-3b60-f827-7ce8-708d00978490@ti.com>
-Date:   Tue, 22 Aug 2023 15:29:57 +0530
+        Tue, 22 Aug 2023 06:03:35 -0400
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD03A1B0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:03:32 -0700 (PDT)
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4RVQ0J1v80z9t1h;
+        Tue, 22 Aug 2023 12:03:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1692698608;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XjYJ8bmRgsu9whLXejnFW9sP9exyEiWtQpPu89Cp2vE=;
+        b=PE2dLjlVed0Ct3qKsbPam7mDvu94iDnt7GJ5uhVJ2MhUeqdKNOw2GAy4/CyiE4kBNn4GGt
+        SwiJoULl7oeIF3OZQHOki+pn6ZWIyNa/mDZsehWzTkPOVaHpV4x9vRVUMJKLqIUml/9tYg
+        0TPkhJx1zpzx2ysSlwD23NrNq57Qw3L/bQ+aV6dipwMUUL4HAE2crrEQW7XB3HQ10lc2CU
+        r0PRe8bXnNtsHdzUefeoARdtb4lsK4eAhn6eQL8Zti72+LMsN9LAOs/UTo1RpCjLb7WjUB
+        3kCBnGBOxuDcMrW4z4cfASSslglYm5GoJRJMRX2nFSp9VAEkGXn3UGOubEaoPA==
+Message-ID: <2a9e9d0b-3285-d9f7-be3e-37540c72df04@mailbox.org>
+Date:   Tue, 22 Aug 2023 12:03:25 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5 2/5] dt-bindings: net: Add IEP property in ICSSG DT
- binding
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>,
-        MD Danish Anwar <danishanwar@ti.com>,
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Content-Language: de-CH-frami, en-CA
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        kernel-dev@igalia.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
         Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-CC:     <nm@ti.com>, <srk@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230817114527.1585631-1-danishanwar@ti.com>
- <20230817114527.1585631-3-danishanwar@ti.com>
- <4e79fe7d5363e69ed116f440db162dcb41b54ecc.camel@redhat.com>
-From:   Md Danish Anwar <a0501179@ti.com>
-Organization: Texas Instruments
-In-Reply-To: <4e79fe7d5363e69ed116f440db162dcb41b54ecc.camel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        dri-devel@lists.freedesktop.org, alexander.deucher@amd.com,
+        joshua@froggi.es, hwentlan@amd.com, christian.koenig@amd.com
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+ <20230815185710.159779-7-andrealmeid@igalia.com>
+ <1b23576d-1649-ff5c-6273-b54729ea46d8@mailbox.org>
+ <d36ba832-3100-4a31-96a4-56e6e459b090@igalia.com>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <d36ba832-3100-4a31-96a4-56e6e459b090@igalia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-MBO-RS-ID: d4c5790f17af99201a3
+X-MBO-RS-META: um1mtj8ugou78wcfbp7gir8q1cirdpif
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/23 2:36 pm, Paolo Abeni wrote:
-> On Thu, 2023-08-17 at 17:15 +0530, MD Danish Anwar wrote:
->> Add IEP node in ICSSG driver DT binding document.
+On 8/21/23 22:02, André Almeida wrote:
+> Em 17/08/2023 07:37, Michel Dänzer escreveu:
+>> On 8/15/23 20:57, André Almeida wrote:
+>>> From: Pekka Paalanen <pekka.paalanen@collabora.com>
+>>>
+>>> Specify how the atomic state is maintained between userspace and
+>>> kernel, plus the special case for async flips.
+>>>
+>>> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+>>> Signed-off-by: André Almeida <andrealmeid@igalia.com>
 >>
->> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
->> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
->> ---
->>  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
->>  1 file changed, 7 insertions(+)
+>> [...]
 >>
->> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->> index 8ec30b3eb760..a736d1424ea4 100644
->> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
->> @@ -52,6 +52,12 @@ properties:
->>      description:
->>        phandle to MII_RT module's syscon regmap
->>  
->> +  ti,iep:
->> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->> +    maxItems: 2
->> +    description:
->> +      phandle to IEP (Industrial Ethernet Peripheral) for ICSSG driver
+>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+>>> +effectively change only the FB_ID property on any planes. No-operation changes
+>>> +are ignored as always. [...]
+>>
+>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
+>>
 > 
-> It looks like the feedback given by Rob on v2:
-> 
-> https://lore.kernel.org/all/20230821160120.GA1734560-robh@kernel.org/
-> 
-> still applies here, I guess you need to address it.
+> I believe the documentation already addresses that sending redundant information may not lead to the desired behavior during an async flip. Do you think adding a note about using the same FB_ID would be helpful?
 
-Sure, Paolo. I will address the feedback and post v6 soon.
+Maybe not.
 
-> 
-> Cheers,
-> 
-> Paolo
-> 
-> --
-> pw-bot: cr
-> 
 
 -- 
-Thanks and Regards,
-Danish.
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
