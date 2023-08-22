@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14719784ABB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D06784ACE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjHVTpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:45:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33062 "EHLO
+        id S230296AbjHVTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjHVTpO (ORCPT
+        with ESMTP id S229645AbjHVTsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:45:14 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F6ECCD0;
-        Tue, 22 Aug 2023 12:45:12 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so22322441fa.2;
-        Tue, 22 Aug 2023 12:45:12 -0700 (PDT)
+        Tue, 22 Aug 2023 15:48:47 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74088CCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:48:45 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-410a0af4a3cso11138851cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:48:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692733511; x=1693338311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JCEP1XtisWbLq7T9ufLUjbBdCtY2Ei6DbosMoAGMNy0=;
-        b=McY7tcvAUT4z+xHSADPJEb516Nmlm3hjRkSaoX+kvTHBZY7TR7nPTY0Ipdy7Shx3r7
-         D6v5b19PCycPwCYOpUgHEY16nmaBHdjVBylVnrZXNp5dvgI16YfpZTWE3qfnbahnaDNq
-         Ouuk9Akp3WoLIZrjUIQ1prvcUgwLCkSRoFZ3ovmROYdsGfb9/paKEbRIzxW0/SE4D3Xc
-         YrPhn97/LR+v5Ym7Mo+FrTXsgwj7VwqLWQZ5zGCExPuo1aqSOdsLVg+YgTvjAuj0FGpT
-         iniikJv7rN0MllFQrlT/bI/zhham8yooLeLEOWAQ0LrRVl7Lw5TELO8L5TnCWQCWs66g
-         pp0g==
+        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1692733724; x=1693338524;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JZwMs73L9GPVFSghvQPsoUG7Sx2i2yQItRQfIWeacjM=;
+        b=W4HoxWopD2hBY9n4p0llTM7KwBtYD0rVDad64IK2YljBCvh4ZZFnTulTjp6622taN7
+         UNwEj09gBSs/yYKco/7Jq4VBxCgzy/zo/cOses7N6NgkgEhOASkJGL7LtZ1PR5Tjnh0f
+         FFqQTS/gKgWZOiNjVbb79jLhsGXNSEJXb+8hUkh4Yj53HZ4hagLJjiuYRCSZKNtOLXKs
+         FaHnM1BpxnSo0gCgxmbYh2Dpa7/tj+e9m8C1FPt8us7d84VMnUtUmab8ptkDJMOghqQo
+         3bSd2fGUKQcqXhZEuYhEDhJ8QnH3blWU/lcAZzBs3ttjhoQO4RxDkM77PfYZQDmpKZRX
+         f3Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692733511; x=1693338311;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JCEP1XtisWbLq7T9ufLUjbBdCtY2Ei6DbosMoAGMNy0=;
-        b=Ff2p3paS1quZfmEKNRGJKJf8GUqnSYAjjKpOgPs8J2tatk5oXhln6TzVWTtDtx05XO
-         GvRuV4KdR0fAlh7tpnb39w7ZtGz5hVThjTTo74ciXmiI8Y2tZUt5+4GQhFnTZBmWP8cj
-         NXtV9cpeqL0A4cD62X8gdyuOD6JhkzTiZJ4ZAgrKnvLcTsx1XtpLaOAOg3YGVd6KfX65
-         f8NX97s9cgBzMXamRla6rfS5J2TP0/lCxcHitBG/pEfwMdz42KEi0hkA2EzurcSi//pt
-         mrxRaw3PF1qzyNsj7UkOGMc67kiqgqGXXYRY+TXvnU5yiUDog2xqXkY1E2+d5c+hU8KU
-         cszQ==
-X-Gm-Message-State: AOJu0Yx2w91J3jxgN1GNjSfoBtwmcqg58FlAhehQX7TUehnAEdJcfdCQ
-        hjck3PX/YckONuFRMLiwu9g=
-X-Google-Smtp-Source: AGHT+IEpehQ0KJYSqZ670d9aM3acrIuBj+shB2P6jYDVmfi5IWqV85CaKamnncU4W77uSinQ9rZVBg==
-X-Received: by 2002:a2e:9658:0:b0:2b6:c886:681 with SMTP id z24-20020a2e9658000000b002b6c8860681mr8149972ljh.6.1692733510586;
-        Tue, 22 Aug 2023 12:45:10 -0700 (PDT)
-Received: from gmail.com (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id l8-20020a2e7008000000b002bcd84dcb1fsm149649ljc.21.2023.08.22.12.45.09
+        d=1e100.net; s=20221208; t=1692733724; x=1693338524;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JZwMs73L9GPVFSghvQPsoUG7Sx2i2yQItRQfIWeacjM=;
+        b=d9LwLt68fkBl28pqnn/A/DEN9IC/Oh4QQVwSOJVqoB+ofupa/RC/KtihNbEjRHqtLy
+         VAXfmsuD8Q22WjX8RRcFVeCNmOM51vsAT1wk7pc+Z+BdEC9KSUdqmwDxzAIvlkrKi6YV
+         782GG44Q9W4tFM46FtmC/2yv2L9gD3WHqHy/TjQP6VT/pWaOKTClgPnhcU0Um7UVOyun
+         KP1nTlIQYAEL0vZJQO/Lf7vhpXbjWmjtlwOCOlN1jpA2rUpKL6BaFXQyYEZ+ua1v1dTT
+         oDQd/jSv/gtUNH9C8K9/zAxnsJ2cm/ewecfDpOIDnx2NM3OiAO9G+VNQb7gfGMc4KwtA
+         Dpbw==
+X-Gm-Message-State: AOJu0YzuV7f8LtIxdQ4tlGJeR/LClGAqal13sshSYgW7OzLWk5ZeL7uj
+        zGetZUp5izvg/TVFXZoHzf/3r2MIbGiqkuGtt0IP/Q==
+X-Google-Smtp-Source: AGHT+IGv0rYv5UfhFHx3uwlvRxfChSfhPyqbQZebTtcNl4f6ati86eWvrGHA3H+L3EKNx3W5kYdnSw==
+X-Received: by 2002:a05:622a:10e:b0:40f:e493:534d with SMTP id u14-20020a05622a010e00b0040fe493534dmr15230040qtw.43.1692733724575;
+        Tue, 22 Aug 2023 12:48:44 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
+        by smtp.gmail.com with ESMTPSA id c2-20020ae9e202000000b0076daaccb7f7sm1364829qkc.135.2023.08.22.12.48.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 12:45:09 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 21:47:35 +0200
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 6/6] iio: adc: mcp3911: add support for the whole
- MCP39xx family
-Message-ID: <ZOUQ1_UeCkQmnaIa@gmail.com>
-References: <20230822192259.1125792-1-marcus.folkesson@gmail.com>
- <20230822192259.1125792-7-marcus.folkesson@gmail.com>
+        Tue, 22 Aug 2023 12:48:44 -0700 (PDT)
+Message-ID: <7106092378907b360b75f5ffc1c5ecdeeba2d5b4.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: amphion: handle firmware debug message
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl
+Cc:     shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Date:   Tue, 22 Aug 2023 15:48:43 -0400
+In-Reply-To: <20230822055207.31575-1-ming.qian@nxp.com>
+References: <20230822055207.31575-1-ming.qian@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="36Sbbzb3fmGshIfb"
-Content-Disposition: inline
-In-Reply-To: <20230822192259.1125792-7-marcus.folkesson@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,51 +76,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---36Sbbzb3fmGshIfb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 22, 2023 at 09:22:59PM +0200, Marcus Folkesson wrote:
-> Microchip does have many similar chips, add support for those.
+Le mardi 22 ao=C3=BBt 2023 =C3=A0 13:52 +0800, Ming Qian a =C3=A9crit=C2=A0=
+:
+> decoder firmware may notify host some debug message,
+> it can help analyze the state of the firmware in case of error
 >=20
-> The new supported chips are:
->   - microchip,mcp3910
->   - microchip,mcp3912
->   - microchip,mcp3913
->   - microchip,mcp3914
->   - microchip,mcp3918
->   - microchip,mcp3919
+> Fixes: 9f599f351e86 ("media: amphion: add vpu core driver")
+> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> ---
+>  drivers/media/platform/amphion/vpu_defs.h    | 1 +
+>  drivers/media/platform/amphion/vpu_helpers.c | 1 +
+>  drivers/media/platform/amphion/vpu_malone.c  | 1 +
+>  drivers/media/platform/amphion/vpu_msgs.c    | 9 +++++++++
+>  4 files changed, 12 insertions(+)
 >=20
+> diff --git a/drivers/media/platform/amphion/vpu_defs.h b/drivers/media/pl=
+atform/amphion/vpu_defs.h
+> index 667637eedb5d..7320852668d6 100644
+> --- a/drivers/media/platform/amphion/vpu_defs.h
+> +++ b/drivers/media/platform/amphion/vpu_defs.h
+> @@ -71,6 +71,7 @@ enum {
+>  	VPU_MSG_ID_TIMESTAMP_INFO,
+>  	VPU_MSG_ID_FIRMWARE_XCPT,
+>  	VPU_MSG_ID_PIC_SKIPPED,
+> +	VPU_MSG_ID_DBG_MSG,
+>  };
+> =20
+>  enum VPU_ENC_MEMORY_RESOURSE {
+> diff --git a/drivers/media/platform/amphion/vpu_helpers.c b/drivers/media=
+/platform/amphion/vpu_helpers.c
+> index af3b336e5dc3..d12310af9ebc 100644
+> --- a/drivers/media/platform/amphion/vpu_helpers.c
+> +++ b/drivers/media/platform/amphion/vpu_helpers.c
+> @@ -489,6 +489,7 @@ const char *vpu_id_name(u32 id)
+>  	case VPU_MSG_ID_UNSUPPORTED: return "unsupported";
+>  	case VPU_MSG_ID_FIRMWARE_XCPT: return "exception";
+>  	case VPU_MSG_ID_PIC_SKIPPED: return "skipped";
+> +	case VPU_MSG_ID_DBG_MSG: return "debug msg";
+>  	}
+>  	return "<unknown>";
+>  }
+> diff --git a/drivers/media/platform/amphion/vpu_malone.c b/drivers/media/=
+platform/amphion/vpu_malone.c
+> index f771661980c0..d3425de7bccd 100644
+> --- a/drivers/media/platform/amphion/vpu_malone.c
+> +++ b/drivers/media/platform/amphion/vpu_malone.c
+> @@ -745,6 +745,7 @@ static struct vpu_pair malone_msgs[] =3D {
+>  	{VPU_MSG_ID_UNSUPPORTED, VID_API_EVENT_UNSUPPORTED_STREAM},
+>  	{VPU_MSG_ID_FIRMWARE_XCPT, VID_API_EVENT_FIRMWARE_XCPT},
+>  	{VPU_MSG_ID_PIC_SKIPPED, VID_API_EVENT_PIC_SKIPPED},
+> +	{VPU_MSG_ID_DBG_MSG, VID_API_EVENT_DBG_MSG_DEC},
+>  };
+> =20
+>  static void vpu_malone_pack_fs_alloc(struct vpu_rpc_event *pkt,
+> diff --git a/drivers/media/platform/amphion/vpu_msgs.c b/drivers/media/pl=
+atform/amphion/vpu_msgs.c
+> index d0ead051f7d1..999efeaebfd5 100644
+> --- a/drivers/media/platform/amphion/vpu_msgs.c
+> +++ b/drivers/media/platform/amphion/vpu_msgs.c
+> @@ -180,6 +180,14 @@ static void vpu_session_handle_pic_skipped(struct vp=
+u_inst *inst, struct vpu_rpc
+>  	vpu_inst_unlock(inst);
+>  }
+> =20
+> +static void vpu_session_handle_dbg_msg(struct vpu_inst *inst, struct vpu=
+_rpc_event *pkt)
+> +{
+> +	char *str =3D (char *)pkt->data;
+> +
+> +	if (strlen(str))
+> +		dev_info(inst->dev, "instance %d firmware dbg msg : %s\n", inst->id, s=
+tr);
 
+I'm always a bit worried when a string is assumed nul-terminated and it com=
+es
+from a third party software (firmware). Perhaps we force it to terminate
+somewhere already ? With this being verified (or corrected):
 
-Forgot to include the tag from Andy:
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
+> +}
+> +
+>  static struct vpu_msg_handler handlers[] =3D {
+>  	{VPU_MSG_ID_START_DONE, vpu_session_handle_start_done},
+>  	{VPU_MSG_ID_STOP_DONE, vpu_session_handle_stop_done},
+> @@ -196,6 +204,7 @@ static struct vpu_msg_handler handlers[] =3D {
+>  	{VPU_MSG_ID_UNSUPPORTED, vpu_session_handle_error},
+>  	{VPU_MSG_ID_FIRMWARE_XCPT, vpu_session_handle_firmware_xcpt},
+>  	{VPU_MSG_ID_PIC_SKIPPED, vpu_session_handle_pic_skipped},
+> +	{VPU_MSG_ID_DBG_MSG, vpu_session_handle_dbg_msg},
+>  };
+> =20
+>  static int vpu_session_handle_msg(struct vpu_inst *inst, struct vpu_rpc_=
+event *msg)
 
-
-/Marcus
-
---36Sbbzb3fmGshIfb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEBVGi6LZstU1kwSxliIBOb1ldUjIFAmTlENMACgkQiIBOb1ld
-UjIC9Q//cWnZSE/XDa0lxdHQvgdz+mZHP3NHipH3Uns7BO3WxLMqZXbFHjszC1uF
-wYjTZW1pbOYUtF7O9O/LZONz/1L8BVXLyKPDohFyl+XUTKbtuX2Qr+tPMv9KhLIZ
-J33Ar1/kZ1W19S6LEEjtpe0RXPtzPmOjzwOYy7SA8wv/jGkjEMxAH8iNEhl8P+1e
-AMXr+4xCTRjxPRsqJxRZ+LuJNYltlfHfE7tJo8dmH2bLMmYru5EJZ6iOBJtFzrr2
-bSYqRXcRiLE8cp2chdUk+ayE7h150FueKLSuqjDw/5lkmfMl9lCALaUjcw/z0K+K
-dSpMu5rWZ7qUkrlu/HIeaP11WGP9quBYPoNF9lIA/Q+AaDngsL+Qz0Opo52MhD2N
-xxyq2s6Qmz3vL7TkRPrdWZHlULD+yQXU2q2jHkZSMDuJljfEN1h+PGO3VeEiySBc
-/PL69/iFWP8nmPcf36cEM30dgzRT7nL9QitbPKZKZzqRPusG5geWl4me5m+/gO0M
-xtpk9b39rOvUYjyCfcHC6ENgpSfqAefZjb/PuJZ9HPqF+mgv2sNoR9Vpu3rEQ5/R
-LQiNuqUN4Wr+/xSgp5oMCXcAmK/vD7r/PwU7TJeKn4rotU6+fj4qpCiOGH7ZvCS5
-klMW6YEJUyCM0Ycs3xX9QzTlhtYSGCtSj1WyLaF1Wtga662egfg=
-=BWiQ
------END PGP SIGNATURE-----
-
---36Sbbzb3fmGshIfb--
