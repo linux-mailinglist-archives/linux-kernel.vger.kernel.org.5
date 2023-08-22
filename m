@@ -2,141 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09777837A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900E07837BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjHVBya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54812 "EHLO
+        id S232025AbjHVCHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232108AbjHVBy3 (ORCPT
+        with ESMTP id S232118AbjHVCHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:54:29 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D06113;
-        Mon, 21 Aug 2023 18:54:26 -0700 (PDT)
-Received: from dggpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RVC6K1X1rz1L9Kv;
-        Tue, 22 Aug 2023 09:52:57 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 22 Aug
- 2023 09:54:24 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <wangkefeng.wang@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH v2] mm: vmscan: reclaim anon pages if there are swapcache pages
-Date:   Tue, 22 Aug 2023 10:49:01 +0800
-Message-ID: <20230822024901.2412520-1-liushixin2@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 21 Aug 2023 22:07:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E401CD1;
+        Mon, 21 Aug 2023 19:07:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6674C632B3;
+        Tue, 22 Aug 2023 02:07:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3B89C433C8;
+        Tue, 22 Aug 2023 02:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692670054;
+        bh=BXif2ZDawun47IOKfLhj4S7BpMJpIaoTJhgi8oGmLek=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jV6fqwsp148gdiGN8tYn7z8S9oY70wEjuHPgKS2Cw5CBCy1doN13UZBv9hPBJKLBH
+         3cIq3CO3772DJZp766/VTIoKwvFjFWlGntWjVNyItRGgfdWrWAf3yVZXHKnmeDMuFz
+         bl0FMla3d6UCxJLCPu1JpYEHdwRUMkcpwFCUf5Oj5xvabz2NYP6cypU4w8P5/C+sNK
+         Eviz8uU3d3zfqGsAjDYV6dMCm3O4mM6izFfSswPj8S5+9F30v+WfclK5rUPtCi0hKf
+         ETDN1BmgYW7hLflr7ZTR8D0A4j3Hgp6KjeMHT4ggfmAQjXJkCmXJZ3YQSWS/FBnOwN
+         LgycsJPgIwxxQ==
+Date:   Mon, 21 Aug 2023 19:07:32 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v5 0/5] Introduce IEP driver and packet timestamping
+ support
+Message-ID: <20230821190732.62710f21@kernel.org>
+In-Reply-To: <20230817114527.1585631-1-danishanwar@ti.com>
+References: <20230817114527.1585631-1-danishanwar@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When spaces of swap devices are exhausted, only file pages can be reclaimed.
-But there are still some swapcache pages in anon lru list. This can lead
-to a premature out-of-memory.
+On Thu, 17 Aug 2023 17:15:22 +0530 MD Danish Anwar wrote:
+> This series introduces Industrial Ethernet Peripheral (IEP) driver to
+> support timestamping of ethernet packets and thus support PTP and PPS
+> for PRU ICSSG ethernet ports.
 
-This problem can be fixed by checking number of swapcache pages in
-can_reclaim_anon_pages(). For memcg v2, there are swapcache stat that can
-be used directly. For memcg v1, use total_swapcache_pages() instead, which
-may not accurate but can solve the problem.
-
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
----
- include/linux/swap.h |  6 ++++++
- mm/memcontrol.c      |  8 ++++++++
- mm/vmscan.c          | 12 ++++++++----
- 3 files changed, 22 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 456546443f1f..0318e918bfa4 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -669,6 +669,7 @@ static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_p
- }
- 
- extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
-+extern long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg);
- extern bool mem_cgroup_swap_full(struct folio *folio);
- #else
- static inline void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
-@@ -691,6 +692,11 @@ static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return get_nr_swap_pages();
- }
- 
-+static inline long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	return total_swapcache_pages();
-+}
-+
- static inline bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	return vm_swap_full();
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e8ca4bdcb03c..3e578f41023e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7567,6 +7567,14 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 	return nr_swap_pages;
- }
- 
-+long mem_cgroup_get_nr_swapcache_pages(struct mem_cgroup *memcg)
-+{
-+	if (mem_cgroup_disabled() || do_memsw_account())
-+		return total_swapcache_pages();
-+
-+	return memcg_page_state(memcg, NR_SWAPCACHE);
-+}
-+
- bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	struct mem_cgroup *memcg;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7c33c5b653ef..bcb6279cbae7 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -609,13 +609,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
- 	if (memcg == NULL) {
- 		/*
- 		 * For non-memcg reclaim, is there
--		 * space in any swap device?
-+		 * space in any swap device or swapcache pages?
- 		 */
--		if (get_nr_swap_pages() > 0)
-+		if (get_nr_swap_pages() + total_swapcache_pages() > 0)
- 			return true;
- 	} else {
--		/* Is the memcg below its swap limit? */
--		if (mem_cgroup_get_nr_swap_pages(memcg) > 0)
-+		/*
-+		 * Is the memcg below its swap limit or is there swapcache
-+		 * pages can be freed?
-+		 */
-+		if (mem_cgroup_get_nr_swap_pages(memcg) +
-+		    mem_cgroup_get_nr_swapcache_pages(memcg) > 0)
- 			return true;
- 	}
- 
--- 
-2.25.1
-
+Richard, let us know if you'd like to TAL or we're good to apply.
