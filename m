@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9250C783C5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F96783C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbjHVJBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:01:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
+        id S234144AbjHVJBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbjHVJBV (ORCPT
+        with ESMTP id S234140AbjHVJBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:01:21 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48991CE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:01:20 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40a47e8e38dso174451cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692694879; x=1693299679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MPEBgG45Y8MpD7W1zMd0c6pmHvwhLPDAtwYLm/BJKLA=;
-        b=3wrNqYQ+7EAzvkwTwoOwP0NDvTHC/mtkHpGRvM1waGeTAxTcMsI597HtzHK3NVJeKe
-         v3g6sa1Lekcr690elqNpaNVbJwkjTKKDWKJPAuSxOiWuZrWsXQQmPzabU8fkqV6w5zju
-         8KkZlp4uafNA4Q5e539gxHjvf9azY/2deX5Wm59wrKKJKg1hLOmAUwfSPeiBZ7PIdqoy
-         e+Vn47AaD5UNcfN4c3BGbHD3Wode0pTjL509WZW/PIZuYF5WPnAcQxnYAiamIFKbS1vo
-         XdyCR5GJZ/WUJXTay48jTg/yIxvkd8ObucBmq7c7rqSfL5Fmxo2o8WONU/25IojlaV3W
-         cJDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692694879; x=1693299679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MPEBgG45Y8MpD7W1zMd0c6pmHvwhLPDAtwYLm/BJKLA=;
-        b=MGxudZ6FQIDY8dFbAAn5W7m5Hw0Ql/2su6qBHMJZzwpQapE/h+ljkdbHaurHskitG6
-         qB6fQXmxXYHJQr4I33nXPybjhIIb2BRBozvym7DJsai27gwxr1rHdpg2Q7cfFdE1c47l
-         QNLNQcvZG3zn9JPno2Gg08KGL5lJPNNH9D1eQqke5thodQc3PzwLU2YsijOAvI1xanQC
-         akF9BBn1wsYUuuvoUwz/cga0l9q0NmkKJ3aQw9YN3RhDYBnVl3bBNnr5mRaMWDr8cTjX
-         DdPNujo7/KtezPBrSvZhc6UgZPMMxGZ5MD1t9iu7DSDpACULFBy5d3cBBjhJaZbYSlsX
-         +lEQ==
-X-Gm-Message-State: AOJu0Yw/GgxLpMaxqJXukKqKJv5H2vwM79WWK0CxZvsYI+tsL54ddj/P
-        uEO9C6klHhdsc0zCe1Z3WKXqb0/wMlmvrowLgcPlhrOJqidkGXgDaEw=
-X-Google-Smtp-Source: AGHT+IER7LvBvaYnM4J9NLx4oCGgsKlywejZtCh0hhgSSGgDbc6Ffd4NpqGPxGCFSJQihm++T/7jWu9jFFNA2O3Zfuw=
-X-Received: by 2002:ac8:5a47:0:b0:410:653f:90e8 with SMTP id
- o7-20020ac85a47000000b00410653f90e8mr148542qta.11.1692694879266; Tue, 22 Aug
- 2023 02:01:19 -0700 (PDT)
+        Tue, 22 Aug 2023 05:01:32 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC851B2;
+        Tue, 22 Aug 2023 02:01:30 -0700 (PDT)
+Received: from localhost.localdomain (unknown [39.45.215.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: usama.anjum)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 61634660723E;
+        Tue, 22 Aug 2023 10:01:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692694889;
+        bh=G+PYlsLKKNrAJfjnLhUkS/SXCH0SH1cJtUJtNZ50U6Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kGi7C/fwaHu5a8ZX9E0xrhwivYmQ9nFQV2i0aRhf5Ag1tBQKCdVCQ8QWyuBfMLDGJ
+         vellhOLG+C48tk8dXJIaNGg72aRZIMQEkcAtPe/aadZFvs5Z8EcyI37HGIfgu0fmq2
+         z4c+q2LjoTk0VX4ATRzVZ7YFGvyXwTMSvN3MRiHE2RKw1688gsYj2xOL7dibahaPJS
+         F+Thb9u6OnMLND1UZWr0mbOB7+DEUu/j7mF4C4r8HOMDhwxj+Ps5STxKK4zM+0UYyX
+         guQUetONQwfdps0WvR0oIwMC4nu2k99uWU1kVjqXknY0odpUoSgp4HUOUAcNfI/kWS
+         VQhWpiTqpYAnQ==
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        kernel@collabora.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH v2 RESEND] tty/sysrq: replace smp_processor_id() with get_cpu()
+Date:   Tue, 22 Aug 2023 14:01:11 +0500
+Message-Id: <20230822090112.2601273-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20230815152712.1760046-1-amitsinght@marvell.com>
-In-Reply-To: <20230815152712.1760046-1-amitsinght@marvell.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Tue, 22 Aug 2023 11:01:08 +0200
-Message-ID: <CALPaoCh9LsUDz9320i9tvgte2+DoRvnr-RiAMJiudAVFM6AUGA@mail.gmail.com>
-Subject: Re: [RFC 00/12] ARM: MPAM: add support for priority partitioning control
-To:     Amit Singh Tomar <amitsinght@marvell.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        fenghua.yu@intel.com, reinette.chatre@intel.com,
-        james.morse@arm.com, gcherian@marvell.com, robh@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Amit,
+The smp_processor_id() shouldn't be called from preemptible code.
+Instead use get_cpu() and put_cpu() which disables preemption in
+addition to getting the processor id. This fixes the following bug:
 
-On Tue, Aug 15, 2023 at 5:27=E2=80=AFPM Amit Singh Tomar <amitsinght@marvel=
-l.com> wrote:
-> As an example, "schemata" file under resource control group contains info=
-rmation about
-> cache portion bitmaps, and memory bandwidth allocation, and these are use=
-d to configure
-> Cache portion partition (CPOR), and MPAM bandwidth partitioning controls.
->
-> MB:0=3D0100
-> L3:0=3Dffff
->
-> But resctrl doesn't provide a way to set-up other control that ARM MPAM p=
-rovides
-> (For instance, Priority partitioning control as mentioned above). To supp=
-ort this,
-> James has suggested to use already existing schemata to be compatible wit=
-h
-> portable software, and this is the main idea behind this RFC is to have s=
-ome kind
-> of discussion on how resctrl can be extended to support priority partitio=
-ning control.
->
-> To support Priority partitioning control, "schemata" file is updated to a=
-ccommodate
-> priority field (upon priority partitioning capability detection), separat=
-ed from CPBM
-> using delimiter ",".
->
-> L3:0=3Dffff,f where f indicates downstream priority max value.
+[  119.143590] sysrq: Show backtrace of all active CPUs
+[  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
+[  119.144586] caller is debug_smp_processor_id+0x20/0x30
+[  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
+[  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
+[  119.145053] Call trace:
+[  119.145093]  dump_backtrace+0x0/0x1a0
+[  119.145122]  show_stack+0x18/0x70
+[  119.145141]  dump_stack+0xc4/0x11c
+[  119.145159]  check_preemption_disabled+0x100/0x110
+[  119.145175]  debug_smp_processor_id+0x20/0x30
+[  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
+[  119.145211]  __handle_sysrq+0x8c/0x1a0
+[  119.145227]  write_sysrq_trigger+0x94/0x12c
+[  119.145247]  proc_reg_write+0xa8/0xe4
+[  119.145266]  vfs_write+0xec/0x280
+[  119.145282]  ksys_write+0x6c/0x100
+[  119.145298]  __arm64_sys_write+0x20/0x30
+[  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
+[  119.145332]  do_el0_svc+0x24/0x8c
+[  119.145348]  el0_svc+0x10/0x20
+[  119.145364]  el0_sync_handler+0x134/0x140
+[  119.145381]  el0_sync+0x180/0x1c0
 
-Do we really have to mash two controls into the same schema? In the
-CDP example, the code/data controls are presented as multiple schema,
-for example: "L3CODE, L3DATA"
+Cc: stable@vger.kernel.org
+Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes since v1:
+- Add "Cc: stable@vger.kernel.org" tag
+---
+ drivers/tty/sysrq.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Especially when reading back the schemata file, it seems like it would
-be simpler for existing software to ignore unfamiliar schema lines in
-the schemata file than to overlook the introduction of a comma to the
-CBM in the existing "L3" schema.
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 23198e3f1461a..6b4a28bcf2f5f 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -262,13 +262,14 @@ static void sysrq_handle_showallcpus(u8 key)
+ 		if (in_hardirq())
+ 			regs = get_irq_regs();
+ 
+-		pr_info("CPU%d:\n", smp_processor_id());
++		pr_info("CPU%d:\n", get_cpu());
+ 		if (regs)
+ 			show_regs(regs);
+ 		else
+ 			show_stack(NULL, NULL, KERN_INFO);
+ 
+ 		schedule_work(&sysrq_showallcpus);
++		put_cpu();
+ 	}
+ }
+ 
+-- 
+2.40.1
 
-Thanks!
--Peter
