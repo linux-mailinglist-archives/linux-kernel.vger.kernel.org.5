@@ -2,172 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F83C783FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10846783FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235207AbjHVLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        id S235276AbjHVLsZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 07:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235194AbjHVLq4 (ORCPT
+        with ESMTP id S233277AbjHVLsZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:46:56 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B52E4D
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:46:30 -0700 (PDT)
-Received: from eldfell (unknown [194.136.85.206])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pq)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9AB71660722B;
-        Tue, 22 Aug 2023 12:45:38 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692704739;
-        bh=MiJSYH5aW1TpyRdaUDOPV16m9eaLpiLtrZPWgi287yk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RpVt+bSRSdhckPdWvAGEnbs9W/bbR3uDHl2LTJsedZInchLCm/QmsZgBLt3+mMEnf
-         jtVoec8DsojWdcLVcapjdcbRgSfXwZrbDvGDTLU9k78pU5L5GbbwQGrxC6s24PNUvR
-         h+atZn/jTBla3G76X05rjAEHrjwdviZ4KhanVaiDK9SUCAqq2On5m6ZHWLY34BEswQ
-         gBpnUnnbE72twMhnN2f7S+Ii2AePNzrySDbW325jNgSn1VFlJBTnzKnxcA3XDDbUIi
-         Xeu0TaLF6Zk9o/kXTc4LwJusgWxX2NCdM621kQ1l1BAyFNQKkT9tYs1MfXBdniEayc
-         tJApRTgSFUevw==
-Date:   Tue, 22 Aug 2023 14:45:35 +0300
-From:   Pekka Paalanen <pekka.paalanen@collabora.com>
-To:     Melissa Wen <mwen@igalia.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/34] drm/amd/display: document AMDGPU pre-defined
- transfer functions
-Message-ID: <20230822144535.2105ac46.pekka.paalanen@collabora.com>
-In-Reply-To: <20230810160314.48225-9-mwen@igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
-        <20230810160314.48225-9-mwen@igalia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Tue, 22 Aug 2023 07:48:25 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F5DCF4;
+        Tue, 22 Aug 2023 04:47:57 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6b9cd6876bbso1150850a34.1;
+        Tue, 22 Aug 2023 04:47:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692704775; x=1693309575;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g7u+tVATkyR9TopllPsPyWrgo7wbCnZAY5KeZRAKErs=;
+        b=fYBYZF+QBKTET8EU18hXhSHDRpACK/Y8laQ6cBMrjQJM7ZX/Sxo5heR8pp1HeQjIPT
+         HpVPuOrVo71kmj8lkfQu/cuXr4dhSUTWfNrcJyKKI6CHnm60xqpCxteh9i38Ejd1Yg+H
+         +kceec33utg8Nmc3zRsxmokDhKWR8V4iyHuq4Upks3nN8UhmQ8pfPDbIhMl8LxNM1O1d
+         pjgQ4koSJO7wVPGd5OYlzhRL8aQ4QsOwhVYJF8uzKJPAvEDERtcgicfR7kMCmJsInOYj
+         2+lXFPErfVxpTBUoaWgJW8W4R40aMUcZNRY/34Nyv2PZhL3efv3gUSPDkjd6/OWe1bxs
+         OgRg==
+X-Gm-Message-State: AOJu0YwtFGWspBTTWD0f/ZVEzwMbt3tQDqIIVOuvH1znNxHKSG5X4/GI
+        Nl4jYx3qoCkzLL8JIQcq45WLzFtYVc6iB5e5eplVB/8z
+X-Google-Smtp-Source: AGHT+IGWlZQ4G1HOEeubKL8xUdbNvbEszjfcNSDx8X+wo9LdrzY6RcILaZiAHAqd/iGYHo1AJ8ZpLt926DA/Tq/N9tY=
+X-Received: by 2002:a4a:e741:0:b0:56e:94ed:c098 with SMTP id
+ n1-20020a4ae741000000b0056e94edc098mr8769210oov.0.1692704775454; Tue, 22 Aug
+ 2023 04:46:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <001d01d9d3a7$71736f50$545a4df0$@telus.net>
+In-Reply-To: <001d01d9d3a7$71736f50$545a4df0$@telus.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Aug 2023 13:46:04 +0200
+Message-ID: <CAJZ5v0g=TEY0+dL9AGh1cYNnwQ=L6G8CRxXVD0AyWsaK5aDsdA@mail.gmail.com>
+Subject: Re: [PATCH v2] cpufreq: intel_pstate: set stale CPU frequency to minimum
+To:     Doug Smythies <dsmythies@telus.net>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, yang.jie@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        LOTS_OF_MONEY,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 15:02:48 -0100
-Melissa Wen <mwen@igalia.com> wrote:
-
-> Brief documentation about pre-defined transfer function usage on AMD
-> display driver and standardized EOTFs and inverse EOTFs.
-> 
-> Co-developed-by: Harry Wentland <harry.wentland@amd.com>
-> Signed-off-by: Harry Wentland <harry.wentland@amd.com>
-> Signed-off-by: Melissa Wen <mwen@igalia.com>
+On Sun, Aug 20, 2023 at 10:46 PM Doug Smythies <dsmythies@telus.net> wrote:
+>
+> The intel_pstate CPU frequency scaling driver does not
+> use policy->cur and it is 0.
+> When the CPU frequency is outdated arch_freq_get_on_cpu()
+> will default to the nominal clock frequency when its call to
+> cpufreq_quick_getpolicy_cur returns the never updated 0.
+> Thus, the listed frequency might be outside of currently
+> set limits. Some users are complaining about the high
+> reported frequency, albeit stale, when their system is
+> idle and/or it is above the reduced maximum they have set.
+>
+> This patch will maintain policy_cur for the intel_pstate
+> driver at the current minimum CPU frequency.
+>
+> Reported-by: Yang Jie <yang.jie@linux.intel.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217597
+> Signed-off-by: Doug Smythies <dsmythies@telus.net>
 > ---
->  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 39 +++++++++++++++++++
->  1 file changed, 39 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> index cc2187c0879a..7f13bcdaf016 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> @@ -85,6 +85,45 @@ void amdgpu_dm_init_color_mod(void)
->  }
->  
->  #ifdef AMD_PRIVATE_COLOR
-> +/* Pre-defined Transfer Functions (TF)
-> + *
-> + * AMD driver supports pre-defined mathematical functions for transferring
-> + * between encoded values and optical/linear space. Depending on HW color caps,
-> + * ROMs and curves built by the AMD color module support these transforms.
-> + *
-> + * The driver-specific color implementation exposes properties for pre-blending
-> + * degamma TF, shaper TF (before 3D LUT), and blend(dpp.ogam) TF and
-> + * post-blending regamma (mpc.ogam) TF. However, only pre-blending degamma
-> + * supports ROM curves. AMD color module uses pre-defined coefficients to build
-> + * curves for the other blocks. What can be done by each color block is
-> + * described by struct dpp_color_capsand struct mpc_color_caps.
-> + *
-> + * AMD driver-specific color API exposes the following pre-defined transfer
-> + * functions:
-> + *
-> + * - Linear/Unity: linear/identity relationship between pixel value and
-> + *   luminance value;
+>
+> v1 -> v2:
+>    * v1 was a completely different approach, programming around
+>      the issue rather than fixing it at the source.
+>      reference:
+>      https://patchwork.kernel.org/project/linux-pm/patch/006901d9be8c$f4439930$dccacb90$@telus.net/
+>    * v2 does not fix an issue with the intel_cpufreq CPU scaling
+>      driver (A.K.A. the intel_pstate driver in passive mode) and
+>      the schedutil CPU frequency scaling governor when HWP is enabled
+>      where limit changes are not reflected in the stale listed frequencies.
+>      A fix for that will be some future patch.
+>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index 8ca2bce4341a..08284dee583a 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -2609,6 +2609,11 @@ static int intel_pstate_set_policy(struct cpufreq_policy *policy)
+>                         intel_pstate_clear_update_util_hook(policy->cpu);
+>                 intel_pstate_hwp_set(policy->cpu);
+>         }
+> +       /* policy current is never updated with the intel_pstate driver
+> +        * but it is used as a stale frequency value. So, keep it within
+> +        * limits.
+> +        */
+> +       policy->cur = policy->min;
+>
+>         mutex_unlock(&intel_pstate_limits_lock);
+>
+> --
 
-I asked about linear/unity on the previous patch.
+Applied as 6.6 material, with some mailer-induced white space damage
+fixed and the new comment adjusted to the kernel coding style.
 
-> + * - Gamma 2.2, Gamma 2.4, Gamma 2.6: pure gamma functions;
-
-I'd explain these as pure power functions. Gamma function is
-something completely different:
-https://en.wikipedia.org/wiki/Gamma_function
-
-> + * - sRGB: 2.4 gamma with small initial linear section as standardized by IEC
-> + *   61966-2-1:1999;
-
-I'd leave out the mention of "2.4 gamma". Yes, the value of the gamma
-parameter is 2.4, but the curve is actually an approximation of the
-pure 2.2 power function suitable for integer arithmetic[1].
-
-One could call it "The piece-wise transfer function from IEC ...".
-
-[1] https://www.w3.org/Graphics/Color/sRGB.html
-
-> + * - BT.709 (BT.1886): 2.4 gamma with differences in the dark end of the scale.
-> + *   Used in HD-TV and standardized by ITU-R BT.1886;
-
-BT.1886 has two more parameters (a.k.a contrast and brightness). What
-are their values?
-
-It's also quite different from BT.709 inverse OETF. BT.1886 uses
-exponent 2.4 while inverse of BT.709 OETF has exponent approximately
-2.22. This difference is intentional and accounts for shooting vs.
-viewing environment differences.
-
-Either the curve comes from BT.709 or BT.1886. Which one is it?
-
-Would be nice to spell out the mathematical formula in these cases.
-
-> + * - PQ (Perceptual Quantizer): used for HDR display, allows luminance range
-> + *   capability of 0 to 10,000 nits; standardized by SMPTE ST 2084.
-
-Right, but since we are working on numbers here,
-is the PQ EOTF [0, 1] -> [0, 1] or [0, 10000]?
-
-
-Thanks,
-pq
-
-> + *
-> + * In the driver-specific API, color block names attached to TF properties
-> + * suggest the intention regarding non-linear encoding pixel's luminance
-> + * values. As some newer encodings don't use gamma curve, we make encoding and
-> + * decoding explicit by defining an enum list of transfer functions supported
-> + * in terms of EOTF and inverse EOTF, where:
-> + *
-> + * - EOTF (electro-optical transfer function): is the transfer function to go
-> + *   from the encoded value to an optical (linear) value. De-gamma functions
-> + *   traditionally do this.
-> + * - Inverse EOTF (simply the inverse of the EOTF): is usually intended to go
-> + *   from an optical/linear space (which might have been used for blending)
-> + *   back to the encoded values. Gamma functions traditionally do this. 
-> + */
->  static const char * const
->  amdgpu_transfer_function_names[] = {
->  	[AMDGPU_TRANSFER_FUNCTION_DEFAULT]		= "Default",
-
+Thanks!
