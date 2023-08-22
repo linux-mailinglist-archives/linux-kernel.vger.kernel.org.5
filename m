@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6FA783C77
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02720783C7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234188AbjHVJGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:06:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
+        id S234198AbjHVJHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:07:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjHVJGL (ORCPT
+        with ESMTP id S232203AbjHVJHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:06:11 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D88FCE;
-        Tue, 22 Aug 2023 02:06:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D31811F892;
-        Tue, 22 Aug 2023 09:06:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1692695164; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 22 Aug 2023 05:07:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEAF1AE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692695194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PjhH5JJ/uYj/hECeKPplzMxBqTx0eSMbwEKi7pYJDLA=;
-        b=m2Duffi8ECPm5ogSxiwZKOFctpoO5fB08TMKXwxMq8yjY4G+cG8jzdmMe/oms4pw/lNOlt
-        5w9rj/Ky0czINnSBLoieks0aLYxh9a2faKlXMdN9+A2q7jnnzFcmLEeyigE2twSMeg+g3G
-        KCx7Wi4jeTs0OyFj8UFIEZm2MZOm3kQ=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B41AD132B9;
-        Tue, 22 Aug 2023 09:06:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id IYKaKXx65GRcfAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 22 Aug 2023 09:06:04 +0000
-Date:   Tue, 22 Aug 2023 11:06:03 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZOR6eyYfJYlxdMet@dhcp22.suse.cz>
-References: <20230821205458.1764662-1-yosryahmed@google.com>
- <20230821205458.1764662-4-yosryahmed@google.com>
+        bh=zITVam9mib7MXNblWRDDnWwcdZNI0hXQ9sYLmaBnbrA=;
+        b=ILamFl2T3GyEjtHRIhaikRx6J8hG/N4783z9KFzzRbWQgUy4X16zJNOJv6uh7WnKCq4L3z
+        SpvO0pTKlPHYxU4qPGdju63usph1X7JjCw0CSozQ8HY4SJjAFnDKp8NATshAs9D2pMWIhI
+        ySZbHMnDvVc8OpmJGVbV6Ja4pY5pWl4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-227-pnLyxFdxOL-n7KTJChX9Ug-1; Tue, 22 Aug 2023 05:06:32 -0400
+X-MC-Unique: pnLyxFdxOL-n7KTJChX9Ug-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5222c47ab80so575501a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:06:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692695191; x=1693299991;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zITVam9mib7MXNblWRDDnWwcdZNI0hXQ9sYLmaBnbrA=;
+        b=dZsOSUDCCWIcZKKuwRCkG9YzH5lIfEATqIM/PpmqfrRqtlpEbT16mpyd15gq/tyLpp
+         EASAH6Tl07QHGDipeEo9nIokAovGi0mrXc4TlkRg2mvbUSQqd9hCvZG+d3Ks3cRrLii8
+         tpig7HXJNd/6YrcqniYYtMPN3gU4yZQGX2UTZ2jFVgSSZ6TxC2wiyyEW3yeq5l4eCle8
+         BwJv6GViwU9p9Kfzr0vzRrnvedw0qA40anoo9vY52LA2zPAf6GzhMAyi/cIqAd/Jyf64
+         9xPj5GKh/B8qMuznoyLpILA5OcLG2ppoLYSLX2DhGX1YVYdbqe0xT9j7/Ok8qGt4gbRz
+         GVKA==
+X-Gm-Message-State: AOJu0Yw2tZ7beKwYKeUaBifz/kbaxDaDX42MGwaqhqSPUO8ILEqmTYck
+        KQiHSaBmrxCnE0CByURkJljqjMDNud+YliZ10aoxNjICAmCS7WcHJG1Dk9rVIsxTxX/xV0ox1GF
+        JPV+K5vU+iiaJ5G+GpwDwwwXL
+X-Received: by 2002:a05:6402:1d4c:b0:51e:5dd8:fc59 with SMTP id dz12-20020a0564021d4c00b0051e5dd8fc59mr7217553edb.1.1692695191301;
+        Tue, 22 Aug 2023 02:06:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfZmPyXgiJ/NkAWWGBQMgHJy5FIu7B+DH5lu1nGvadCAiFsyleJ/rv4GEtyfZ7KoxM594bRw==
+X-Received: by 2002:a05:6402:1d4c:b0:51e:5dd8:fc59 with SMTP id dz12-20020a0564021d4c00b0051e5dd8fc59mr7217526edb.1.1692695191035;
+        Tue, 22 Aug 2023 02:06:31 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-241-4.dyn.eolo.it. [146.241.241.4])
+        by smtp.gmail.com with ESMTPSA id f4-20020a05640214c400b00528922bb53bsm675146edx.76.2023.08.22.02.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 02:06:30 -0700 (PDT)
+Message-ID: <4e79fe7d5363e69ed116f440db162dcb41b54ecc.camel@redhat.com>
+Subject: Re: [PATCH v5 2/5] dt-bindings: net: Add IEP property in ICSSG DT
+ binding
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     MD Danish Anwar <danishanwar@ti.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Simon Horman <simon.horman@corigine.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     nm@ti.com, srk@ti.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Date:   Tue, 22 Aug 2023 11:06:28 +0200
+In-Reply-To: <20230817114527.1585631-3-danishanwar@ti.com>
+References: <20230817114527.1585631-1-danishanwar@ti.com>
+         <20230817114527.1585631-3-danishanwar@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230821205458.1764662-4-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21-08-23 20:54:58, Yosry Ahmed wrote:
-> Unified flushing allows for great concurrency for paths that attempt to
-> flush the stats, at the expense of potential staleness and a single
-> flusher paying the extra cost of flushing the full tree.
-> 
-> This tradeoff makes sense for in-kernel flushers that may observe high
-> concurrency (e.g. reclaim, refault). For userspace readers, stale stats
-> may be unexpected and problematic, especially when such stats are used
-> for critical paths such as userspace OOM handling. Additionally, a
-> userspace reader will occasionally pay the cost of flushing the entire
-> hierarchy, which also causes problems in some cases [1].
-> 
-> Opt userspace reads out of unified flushing. This makes the cost of
-> reading the stats more predictable (proportional to the size of the
-> subtree), as well as the freshness of the stats. Since userspace readers
-> are not expected to have similar concurrency to in-kernel flushers,
-> serializing them among themselves and among in-kernel flushers should be
-> okay.
-> 
-> This was tested on a machine with 256 cpus by running a synthetic test
-> The script that creates 50 top-level cgroups, each with 5 children (250
-> leaf cgroups). Each leaf cgroup has 10 processes running that allocate
-> memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
-> unified flusher). Concurrently, one thread is spawned per-cgroup to read
-> the stats every second (including root, top-level, and leaf cgroups --
-> so total 251 threads). No regressions were observed in the total running
-> time; which means that non-unified userspace readers are not slowing
-> down in-kernel unified flushers:
+On Thu, 2023-08-17 at 17:15 +0530, MD Danish Anwar wrote:
+> Add IEP node in ICSSG driver DT binding document.
+>=20
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b=
+/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+> index 8ec30b3eb760..a736d1424ea4 100644
+> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+> @@ -52,6 +52,12 @@ properties:
+>      description:
+>        phandle to MII_RT module's syscon regmap
+> =20
+> +  ti,iep:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 2
+> +    description:
+> +      phandle to IEP (Industrial Ethernet Peripheral) for ICSSG driver
 
-I have to admit I am rather confused by cgroup_rstat_flush (and
-cgroup_rstat_flush_locked). The former says it can block but the later
-doesn't ever block and even if it drops the cgroup_rstat_lock it merely
-cond_rescheds or busy loops. How much of a contention and yielding can
-you see with this patch? What is the worst case? How bad a random user
-can make the situation by going crazy and trying to flush from many
-different contexts?
--- 
-Michal Hocko
-SUSE Labs
+It looks like the feedback given by Rob on v2:
+
+https://lore.kernel.org/all/20230821160120.GA1734560-robh@kernel.org/
+
+still applies here, I guess you need to address it.
+
+Cheers,
+
+Paolo
+
+--
+pw-bot: cr
+
