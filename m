@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACB578383C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 05:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC0C78383F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 05:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbjHVDAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 23:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
+        id S232413AbjHVDCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 23:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjHVDAl (ORCPT
+        with ESMTP id S232409AbjHVDCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 23:00:41 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B88C184;
-        Mon, 21 Aug 2023 20:00:40 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68a6cd7c6a6so254971b3a.1;
-        Mon, 21 Aug 2023 20:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692673240; x=1693278040;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9rfUX1u4J49X94MB9ALqEh64ViMp1rzQu7h3fdjufc=;
-        b=WbUmxXtLHsBzeFfjTvBbxz+tAqRHcV3W+q1fGCn04MOP2oOH7gu8NXS9fm5m0rctFH
-         55MwZP2fB3apWah2GE0IhbmmaqdhoU3s9CGH4bgN7XSp1tGMG8wiwZ6E6xmGjDSDaJNB
-         ovmsCyAvbQpCwrkeR+sMZvXnfmsuqsawvc/h4lLpYTNnmgF/KtN8ualZfvZMj3U6SSgn
-         7wY1CckLUMd1cngGqfvBmP1c6HRv3ybLZlFNfnt/bASraLPB1kde5/0+0t25R5uLTxZT
-         8Bm9jidqTEEMiVNO07Ka1/rFQnSsCI8L6XwoOtCeSJaJ+uPkcUJdWwNn3YdpssvbQKSA
-         efpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692673240; x=1693278040;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V9rfUX1u4J49X94MB9ALqEh64ViMp1rzQu7h3fdjufc=;
-        b=lswJIPvFFqxc5c1tedF36InpJy7/KrD64LyZvewZ6YOBfu2CwIixSQDVol4BBwMAup
-         3IUWE39+kBLa8hXYAkKLW1uek4WpkILm3MOvXXOyxInfgacUmwVXNQcw8VRBEd7gylDv
-         pdxECwvZB+CQrrBir8HppSigfPFSUhVUovEqJPBtpARjX06+WqYOkyrMRE7XhyxUOaTk
-         H2mY3+/SMol/yjdI47vN2jeNPUap5nHccomDzGAtSUNLmGHgS8ps1hBLGtcndsBEYjvq
-         6tsgAKEr4PNjjupImZtco1eAWEtjfij+z+r6biRSLK7sycjPNSLNk8ufRX1uFmASwajf
-         N1bw==
-X-Gm-Message-State: AOJu0Yz8PcfRSnYEMZpvlzMeNOL4kqVGKJLqqB9inlx6Sk4p/ialBKxw
-        gRxdAxKlRiOWbZodQoVhMtU=
-X-Google-Smtp-Source: AGHT+IEPUEaprDP/xtAgTBz3MFCvIwylRxhHji6XmYEcLC6SQBDdoIrJaM7ZgaMiruQBpHNqzWlcgA==
-X-Received: by 2002:a05:6a20:7488:b0:133:7ad8:712b with SMTP id p8-20020a056a20748800b001337ad8712bmr7912837pzd.52.1692673239808;
-        Mon, 21 Aug 2023 20:00:39 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170903234f00b001b9be3b94d3sm7744501plh.140.2023.08.21.20.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 20:00:39 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 5CFF080696E1; Tue, 22 Aug 2023 10:00:37 +0700 (WIB)
-Date:   Tue, 22 Aug 2023 10:00:37 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/194] 6.1.47-rc1 review
-Message-ID: <ZOQk1ethQ8mDedes@debian.me>
-References: <20230821194122.695845670@linuxfoundation.org>
+        Mon, 21 Aug 2023 23:02:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E752186
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 20:02:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692673322; x=1724209322;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DrGmF+TINNE7yZWn9DqTXRdXSL+bSJMmgxeURcbpU0E=;
+  b=GZ65t75EIxVQJrRN1RYEo+lQ5oB3w7c3jFx7unnZPV1KFJr8xX21DJXT
+   CUAoK1y/Ry7lbgp07ERNZiuIbgf1mWemGb3yTPhcc8yfEP2qvAkG8SyBq
+   2xM+5qqnaAIJGYpMTPNoTPTCDuTviMBEwwfKqIVzz5MhQt6afq/nxaaz6
+   oN2CrJp4Le6DTi5fmuFFn1CCWTBHgWHI2V0YOkk9x4Ucnfl8G6X/334aN
+   yephIckMx06NYIE4nFQRufaNHEnXhldMFYpR+12vHVemiPGUEmD5suv62
+   qBPo2Xgr4xY6A6JIx18qYVOP5r1oF1rDy0lwf6BxL3bfT8oWMY4QngqmQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="372657349"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="372657349"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 20:02:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801491059"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="801491059"
+Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 21 Aug 2023 20:01:57 -0700
+Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYHeW-0001H8-1e;
+        Tue, 22 Aug 2023 03:01:56 +0000
+Date:   Tue, 22 Aug 2023 11:01:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com
+Cc:     oe-kbuild-all@lists.linux.dev, nouveau@lists.freedesktop.org,
+        Danilo Krummrich <dakr@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <202308221050.kTj8uFMA-lkp@intel.com>
+References: <20230820215320.4187-3-dakr@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7uBiktEJ0pmNpR/L"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230821194122.695845670@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230820215320.4187-3-dakr@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Danilo,
 
---7uBiktEJ0pmNpR/L
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+kernel test robot noticed the following build warnings:
 
-On Mon, Aug 21, 2023 at 09:39:39PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.47 release.
-> There are 194 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+[auto build test WARNING on 25205087df1ffe06ccea9302944ed1f77dc68c6f]
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-drm_exec-build-always-builtin/20230821-123143
+base:   25205087df1ffe06ccea9302944ed1f77dc68c6f
+patch link:    https://lore.kernel.org/r/20230820215320.4187-3-dakr%40redhat.com
+patch subject: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize dma_resv/extobj handling and GEM validation
+config: arm-randconfig-r014-20230822 (https://download.01.org/0day-ci/archive/20230822/202308221050.kTj8uFMA-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230822/202308221050.kTj8uFMA-lkp@intel.com/reproduce)
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308221050.kTj8uFMA-lkp@intel.com/
 
---=20
-An old man doll... just what I always wanted! - Clara
+All warnings (new ones prefixed by >>):
 
---7uBiktEJ0pmNpR/L
-Content-Type: application/pgp-signature; name="signature.asc"
+>> drivers/gpu/drm/drm_gpuva_mgr.c:750:1: warning: no previous prototype for 'drm_gpuva_manager_prepare_objects' [-Wmissing-prototypes]
+     750 | drm_gpuva_manager_prepare_objects(struct drm_gpuva_manager *mgr,
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/drm_gpuva_mgr.c: In function '__drm_gpuva_sm_map':
+   drivers/gpu/drm/drm_gpuva_mgr.c:1744:39: warning: variable 'prev' set but not used [-Wunused-but-set-variable]
+    1744 |         struct drm_gpuva *va, *next, *prev = NULL;
+         |                                       ^~~~
+--
+>> drivers/gpu/drm/drm_gpuva_mgr.c:1091: warning: Function parameter or member '__vm_bo' not described in 'drm_gpuva_gem_obtain_prealloc'
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZOQk0AAKCRD2uYlJVVFO
-ozXzAQCZI/bgzdBJ0CLOqilgxE+g8kjNqp1WL/59lwKhjPBzsQD/Xz4v+bTAUVZs
-Tbg8aSt0obkISjlRGk5Oiupi++u5aA4=
-=C27w
------END PGP SIGNATURE-----
+vim +/drm_gpuva_manager_prepare_objects +750 drivers/gpu/drm/drm_gpuva_mgr.c
 
---7uBiktEJ0pmNpR/L--
+   734	
+   735	/**
+   736	 * drm_gpuva_manager_prepare_objects() - prepare all assoiciated BOs
+   737	 * @mgr: the &drm_gpuva_manager
+   738	 * @num_fences: the amount of &dma_fences to reserve
+   739	 *
+   740	 * Calls drm_exec_prepare_obj() for all &drm_gem_objects the given
+   741	 * &drm_gpuva_manager contains mappings of.
+   742	 *
+   743	 * Drivers can obtain the corresponding &drm_exec instance through
+   744	 * DRM_GPUVA_EXEC(). It is the drivers responsibility to call drm_exec_init()
+   745	 * and drm_exec_fini() accordingly.
+   746	 *
+   747	 * Returns: 0 on success, negative error code on failure.
+   748	 */
+   749	int
+ > 750	drm_gpuva_manager_prepare_objects(struct drm_gpuva_manager *mgr,
+   751					  unsigned int num_fences)
+   752	{
+   753		struct drm_exec *exec = DRM_GPUVA_EXEC(mgr);
+   754		MA_STATE(mas, &mgr->mt_ext, 0, 0);
+   755		union {
+   756			void *ptr;
+   757			uintptr_t cnt;
+   758		} ref;
+   759		int ret;
+   760	
+   761		ret = drm_exec_prepare_obj(exec, &mgr->d_obj, num_fences);
+   762		if (ret)
+   763			goto out;
+   764	
+   765		rcu_read_lock();
+   766		mas_for_each(&mas, ref.ptr, ULONG_MAX) {
+   767			struct drm_gem_object *obj;
+   768	
+   769			mas_pause(&mas);
+   770			rcu_read_unlock();
+   771	
+   772			obj = (struct drm_gem_object *)(uintptr_t)mas.index;
+   773			ret = drm_exec_prepare_obj(exec, obj, num_fences);
+   774			if (ret)
+   775				goto out;
+   776	
+   777			rcu_read_lock();
+   778		}
+   779		rcu_read_unlock();
+   780	
+   781	out:
+   782		return ret;
+   783	}
+   784	EXPORT_SYMBOL_GPL(drm_gpuva_manager_prepare_objects);
+   785	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
