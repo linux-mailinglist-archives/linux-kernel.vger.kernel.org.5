@@ -2,173 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D06784ACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E808784AD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbjHVTsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        id S230281AbjHVTtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:49:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjHVTsr (ORCPT
+        with ESMTP id S229514AbjHVTty (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:48:47 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74088CCB
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:48:45 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-410a0af4a3cso11138851cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:48:45 -0700 (PDT)
+        Tue, 22 Aug 2023 15:49:54 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4EFCCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:49:52 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68a3f1d8be2so2297526b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:49:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1692733724; x=1693338524;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JZwMs73L9GPVFSghvQPsoUG7Sx2i2yQItRQfIWeacjM=;
-        b=W4HoxWopD2hBY9n4p0llTM7KwBtYD0rVDad64IK2YljBCvh4ZZFnTulTjp6622taN7
-         UNwEj09gBSs/yYKco/7Jq4VBxCgzy/zo/cOses7N6NgkgEhOASkJGL7LtZ1PR5Tjnh0f
-         FFqQTS/gKgWZOiNjVbb79jLhsGXNSEJXb+8hUkh4Yj53HZ4hagLJjiuYRCSZKNtOLXKs
-         FaHnM1BpxnSo0gCgxmbYh2Dpa7/tj+e9m8C1FPt8us7d84VMnUtUmab8ptkDJMOghqQo
-         3bSd2fGUKQcqXhZEuYhEDhJ8QnH3blWU/lcAZzBs3ttjhoQO4RxDkM77PfYZQDmpKZRX
-         f3Jw==
+        d=gmail.com; s=20221208; t=1692733792; x=1693338592;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=poyvuz4d7dAHCrItBaYh47AoS5CadHl5LbM0lDfEjyk=;
+        b=fMwb16nauGn/DJmL0n4N3Np/PI2YaMt8COJh2lKCnojD+7Fniop5qct73rRH8NozAQ
+         y563nt+jmA6qf9wZbkJSRmNqd/+17t7m1ejHA9Jv+pfP+2kOli0ZttvG6yR9c7VMcvXM
+         15mdnHlEKbu2VxRj2lMiXGdzbAoYrpPfkKAZrOoHplqDpMSs5pThEWW5YtSvZXwlxUWv
+         7BB0Q/o+HjIQWY0oQ2rjOUMSCEA4pVrDKuWIISyQSx7+WQs9d2cz9RK84IHh6ME5vcSg
+         6yMWzBYUI45Q5CphCCbZD3Px8ItU4VaezOsb8r3JXTCHlpo3+TMruf9sLjQ6C+/JrBPl
+         TBiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692733724; x=1693338524;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JZwMs73L9GPVFSghvQPsoUG7Sx2i2yQItRQfIWeacjM=;
-        b=d9LwLt68fkBl28pqnn/A/DEN9IC/Oh4QQVwSOJVqoB+ofupa/RC/KtihNbEjRHqtLy
-         VAXfmsuD8Q22WjX8RRcFVeCNmOM51vsAT1wk7pc+Z+BdEC9KSUdqmwDxzAIvlkrKi6YV
-         782GG44Q9W4tFM46FtmC/2yv2L9gD3WHqHy/TjQP6VT/pWaOKTClgPnhcU0Um7UVOyun
-         KP1nTlIQYAEL0vZJQO/Lf7vhpXbjWmjtlwOCOlN1jpA2rUpKL6BaFXQyYEZ+ua1v1dTT
-         oDQd/jSv/gtUNH9C8K9/zAxnsJ2cm/ewecfDpOIDnx2NM3OiAO9G+VNQb7gfGMc4KwtA
-         Dpbw==
-X-Gm-Message-State: AOJu0YzuV7f8LtIxdQ4tlGJeR/LClGAqal13sshSYgW7OzLWk5ZeL7uj
-        zGetZUp5izvg/TVFXZoHzf/3r2MIbGiqkuGtt0IP/Q==
-X-Google-Smtp-Source: AGHT+IGv0rYv5UfhFHx3uwlvRxfChSfhPyqbQZebTtcNl4f6ati86eWvrGHA3H+L3EKNx3W5kYdnSw==
-X-Received: by 2002:a05:622a:10e:b0:40f:e493:534d with SMTP id u14-20020a05622a010e00b0040fe493534dmr15230040qtw.43.1692733724575;
-        Tue, 22 Aug 2023 12:48:44 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
-        by smtp.gmail.com with ESMTPSA id c2-20020ae9e202000000b0076daaccb7f7sm1364829qkc.135.2023.08.22.12.48.43
+        d=1e100.net; s=20221208; t=1692733792; x=1693338592;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=poyvuz4d7dAHCrItBaYh47AoS5CadHl5LbM0lDfEjyk=;
+        b=afp80KmNt1Hb1Za1RiRbxH01QOYQ17Ftg6l5PENZdlS0WzwhJPHzSeFsK+xBfK185K
+         9hoI3VmFTA14aSnkrbAh4JTSSK38527BmwJYbKx+LAwEFPAjyNcCUFc8PBzMxAGG3aZk
+         ATPnLtFj2GqCnnqgs4qSd2FtOtLoGbT3zNiX8H/PC+3qBiKYanPn+GXzIIssrvKCvlr2
+         P2OnhuUbb2j5boVHk5661v6OkImb7Y6r1hoVjhtk335tynhY9gUGmQpPPcbetDmHQdHk
+         6fRQxNruQc+5GkaOr3m85CCGEVwDJy3PHWcxREX9nWxrLe3KaMLEBv98mzxRVDK/Wl1J
+         oM3g==
+X-Gm-Message-State: AOJu0YwLIkdNZ02JqgJGUke6mf2mbSZLGfYHG92AtiYsvvXNc+twi+s2
+        m+AOlDmaETjrtAiD0K1jICXyrb8Fua0=
+X-Google-Smtp-Source: AGHT+IEItHCrIzWdBGFHJB4RoCk2XPY8yU0d8ykVbgPXPcaOyBZISzgSI1SsVorKp3y2XKQSBdOUog==
+X-Received: by 2002:a05:6a20:5489:b0:148:479a:eb7 with SMTP id i9-20020a056a20548900b00148479a0eb7mr14603099pzk.61.1692733792172;
+        Tue, 22 Aug 2023 12:49:52 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:8fa0])
+        by smtp.gmail.com with ESMTPSA id z7-20020a633307000000b005642314f05fsm8304091pgz.1.2023.08.22.12.49.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 12:48:44 -0700 (PDT)
-Message-ID: <7106092378907b360b75f5ffc1c5ecdeeba2d5b4.camel@ndufresne.ca>
-Subject: Re: [PATCH] media: amphion: handle firmware debug message
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl
-Cc:     shawnguo@kernel.org, robh+dt@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        xiahong.bao@nxp.com, eagle.zhou@nxp.com, tao.jiang_2@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Tue, 22 Aug 2023 15:48:43 -0400
-In-Reply-To: <20230822055207.31575-1-ming.qian@nxp.com>
-References: <20230822055207.31575-1-ming.qian@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 22 Aug 2023 12:49:51 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 22 Aug 2023 09:49:49 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Tio Zhang <tiozhang@didiglobal.com>
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        zyhtheonly@gmail.com, zyhtheonly@yeah.net
+Subject: Re: [PATCH v2] workqueue: let WORKER_CPU_INTENSIVE be included in
+ watchdog
+Message-ID: <ZOURXUD7EfO0JVFE@slm.duckdns.org>
+References: <202308142140.cf9be57a-oliver.sang@intel.com>
+ <20230822110609.GA3702@didi-ThinkCentre-M930t-N000>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822110609.GA3702@didi-ThinkCentre-M930t-N000>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 22, 2023 at 07:06:51PM +0800, Tio Zhang wrote:
+> When a pool has a worker with WORKER_CPU_INTENSIVE set but other workers
+> are not that busy, the pool->worklist will mostly be empty, which leads
+> the intensive work always having a chance of escaping from the watchdog's
+> check. This may cause watchdog miss finding out a forever running work
+> in WQ_CPU_INTENSIVE.
+> 
+> Also, after commit '616db8779b1e3f93075df691432cccc5ef3c3ba0',
+> workers with potentially intensive works will automatically be converted
+> into WORKER_CPU_INTENSIVE. This might let watchdog to miss all work
+> potentially running forever.
 
-Le mardi 22 ao=C3=BBt 2023 =C3=A0 13:52 +0800, Ming Qian a =C3=A9crit=C2=A0=
-:
-> decoder firmware may notify host some debug message,
-> it can help analyze the state of the firmware in case of error
->=20
-> Fixes: 9f599f351e86 ("media: amphion: add vpu core driver")
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
-> ---
->  drivers/media/platform/amphion/vpu_defs.h    | 1 +
->  drivers/media/platform/amphion/vpu_helpers.c | 1 +
->  drivers/media/platform/amphion/vpu_malone.c  | 1 +
->  drivers/media/platform/amphion/vpu_msgs.c    | 9 +++++++++
->  4 files changed, 12 insertions(+)
->=20
-> diff --git a/drivers/media/platform/amphion/vpu_defs.h b/drivers/media/pl=
-atform/amphion/vpu_defs.h
-> index 667637eedb5d..7320852668d6 100644
-> --- a/drivers/media/platform/amphion/vpu_defs.h
-> +++ b/drivers/media/platform/amphion/vpu_defs.h
-> @@ -71,6 +71,7 @@ enum {
->  	VPU_MSG_ID_TIMESTAMP_INFO,
->  	VPU_MSG_ID_FIRMWARE_XCPT,
->  	VPU_MSG_ID_PIC_SKIPPED,
-> +	VPU_MSG_ID_DBG_MSG,
->  };
-> =20
->  enum VPU_ENC_MEMORY_RESOURSE {
-> diff --git a/drivers/media/platform/amphion/vpu_helpers.c b/drivers/media=
-/platform/amphion/vpu_helpers.c
-> index af3b336e5dc3..d12310af9ebc 100644
-> --- a/drivers/media/platform/amphion/vpu_helpers.c
-> +++ b/drivers/media/platform/amphion/vpu_helpers.c
-> @@ -489,6 +489,7 @@ const char *vpu_id_name(u32 id)
->  	case VPU_MSG_ID_UNSUPPORTED: return "unsupported";
->  	case VPU_MSG_ID_FIRMWARE_XCPT: return "exception";
->  	case VPU_MSG_ID_PIC_SKIPPED: return "skipped";
-> +	case VPU_MSG_ID_DBG_MSG: return "debug msg";
->  	}
->  	return "<unknown>";
->  }
-> diff --git a/drivers/media/platform/amphion/vpu_malone.c b/drivers/media/=
-platform/amphion/vpu_malone.c
-> index f771661980c0..d3425de7bccd 100644
-> --- a/drivers/media/platform/amphion/vpu_malone.c
-> +++ b/drivers/media/platform/amphion/vpu_malone.c
-> @@ -745,6 +745,7 @@ static struct vpu_pair malone_msgs[] =3D {
->  	{VPU_MSG_ID_UNSUPPORTED, VID_API_EVENT_UNSUPPORTED_STREAM},
->  	{VPU_MSG_ID_FIRMWARE_XCPT, VID_API_EVENT_FIRMWARE_XCPT},
->  	{VPU_MSG_ID_PIC_SKIPPED, VID_API_EVENT_PIC_SKIPPED},
-> +	{VPU_MSG_ID_DBG_MSG, VID_API_EVENT_DBG_MSG_DEC},
->  };
-> =20
->  static void vpu_malone_pack_fs_alloc(struct vpu_rpc_event *pkt,
-> diff --git a/drivers/media/platform/amphion/vpu_msgs.c b/drivers/media/pl=
-atform/amphion/vpu_msgs.c
-> index d0ead051f7d1..999efeaebfd5 100644
-> --- a/drivers/media/platform/amphion/vpu_msgs.c
-> +++ b/drivers/media/platform/amphion/vpu_msgs.c
-> @@ -180,6 +180,14 @@ static void vpu_session_handle_pic_skipped(struct vp=
-u_inst *inst, struct vpu_rpc
->  	vpu_inst_unlock(inst);
->  }
-> =20
-> +static void vpu_session_handle_dbg_msg(struct vpu_inst *inst, struct vpu=
-_rpc_event *pkt)
-> +{
-> +	char *str =3D (char *)pkt->data;
-> +
-> +	if (strlen(str))
-> +		dev_info(inst->dev, "instance %d firmware dbg msg : %s\n", inst->id, s=
-tr);
+The watchdog is there to ensure forward progress. CPU_INTENSIVE work items
+don't block other work items, so I'm not sure why it should trigger the
+watchdog.
 
-I'm always a bit worried when a string is assumed nul-terminated and it com=
-es
-from a third party software (firmware). Perhaps we force it to terminate
-somewhere already ? With this being verified (or corrected):
+Thanks.
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-
-> +}
-> +
->  static struct vpu_msg_handler handlers[] =3D {
->  	{VPU_MSG_ID_START_DONE, vpu_session_handle_start_done},
->  	{VPU_MSG_ID_STOP_DONE, vpu_session_handle_stop_done},
-> @@ -196,6 +204,7 @@ static struct vpu_msg_handler handlers[] =3D {
->  	{VPU_MSG_ID_UNSUPPORTED, vpu_session_handle_error},
->  	{VPU_MSG_ID_FIRMWARE_XCPT, vpu_session_handle_firmware_xcpt},
->  	{VPU_MSG_ID_PIC_SKIPPED, vpu_session_handle_pic_skipped},
-> +	{VPU_MSG_ID_DBG_MSG, vpu_session_handle_dbg_msg},
->  };
-> =20
->  static int vpu_session_handle_msg(struct vpu_inst *inst, struct vpu_rpc_=
-event *msg)
-
+-- 
+tejun
