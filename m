@@ -2,447 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 915BB783D3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49523783D41
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbjHVJoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S234466AbjHVJpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234458AbjHVJog (ORCPT
+        with ESMTP id S234458AbjHVJpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:44:36 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE2BCD8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:44:33 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-26d466705c9so479109a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:44:33 -0700 (PDT)
+        Tue, 22 Aug 2023 05:45:15 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9461A1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:45:13 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6b9e478e122so3082691a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quanta-corp-partner-google-com.20221208.gappssmtp.com; s=20221208; t=1692697472; x=1693302272;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OEO7ywly+pEg7ngw7n4WmJbRL7FysUR8LPkLJc9qNck=;
-        b=wZEo29zaekpFT2PvsQm2uwZhNcdebaN9FpcytsbiSr5uTL1VSjQfUv8TZFTegHE8p6
-         Zu55Qpx4MHtaaiifQEkcGIhuV1jGuDS5i+w+Kyc83AxJmr2HgBLmMajb46Q21DC2D+mH
-         ocKcBspYu8KVSQyjydFO60IDGRqb3algyBfJ26SNRqiVd0SVkmr4KhM3PLmvCdJblbL4
-         +WgIQO+MlN0X09t4rVPMJiKoXU8EtnRpUyYf5jgVPDzgAByDKyDxIHOdVzYn9xmCqb5i
-         brytf86YD44xYMPHrOVwYbWy4L7XYI1gfE3xj4IXFlp6ZRX3l+fI9W+uJcDS2UJ8T2gW
-         cFTQ==
+        d=linaro.org; s=google; t=1692697512; x=1693302312;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9VfBCvp+lAdhb3vS0UcFySyoen6a3yAs2OXAZaKdJ+8=;
+        b=tx52sTenxUlwKNo0bL0jQLNA7dojDYxud0ywtmQOi6Wsa/LpFYFhGzcDQR/eEUiFP1
+         Kai5Bt5dm9cKZbQyLtvI5Nhgh9ai0vS1wWoDQ9+SmbQbKgp4gbVNLiYM3XYP5lKAQ7Tb
+         yDl/uMs2L4qE4evH0sF2ttPMXVZPohJhaCvNwsGNsEHim73wn87QoXHUsVGmX3h+S7nb
+         0Kp6vnn04bjxdN3NqB2slka9SQapzC7ic5tstRPXEVFb44VSGWtWj2+WxfH8xOz/RlHJ
+         pldgSZ7yyrE4+ZRUzqBljgCP56J0DCpXFE/WOCf/2m45Mi6ElQpkZu5xLadEvVzQAUU6
+         E2xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692697472; x=1693302272;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OEO7ywly+pEg7ngw7n4WmJbRL7FysUR8LPkLJc9qNck=;
-        b=KndNl3jemdoEzMFcVYXIiJgfuOjQn/Az1UbYsZX0P7iM1F+rFFiMBf53N5anjk39qR
-         gd/EJf+LyIVXYsi2B76oEUFPrT2FOnCJgtlsclotf64w249OKw9do3a+71pEJ9ZBDest
-         xEFyGFSpsoDizgQQMXiZi8dL/GJMvEfqCpfKV3zVN39CzTljYrWvBBxB9Y1P4dADWTeo
-         P9lfm0OjmAkrwxjfkfHCILvjsL+dJf8QaAGlNa5yqluQflMfM/iHFPPntm7UzHQ2DFEm
-         lvmMtw6GtCycYvDIfOxaVpeovNfAGkNMzttAmfp94U+Y9vmK0zbzAvh/b4PsRHPu2q15
-         lWaA==
-X-Gm-Message-State: AOJu0YxbIrX0Do/RD/REXOdrHRsqoGCKvZE+Y0VRo3XFsakVSwAACupG
-        ++0g/BZh8MoGz0GQV5xhGH3/j/1h47v6JhYpA1FYcg==
-X-Google-Smtp-Source: AGHT+IEiLhKDk6ipLdwNOMgN2ijkyljnLvywf2Hmgcwknv7F2OO5foFk/3TSCtZXKNUHJK6RRG3FqA==
-X-Received: by 2002:a17:90a:17ec:b0:268:38a7:842e with SMTP id q99-20020a17090a17ec00b0026838a7842emr8160963pja.2.1692697472584;
-        Tue, 22 Aug 2023 02:44:32 -0700 (PDT)
-Received: from liang-Predator-PH517-52.. (60-250-232-247.hinet-ip.hinet.net. [60.250.232.247])
-        by smtp.gmail.com with ESMTPSA id x33-20020a17090a6c2400b00267d9f4d340sm9976082pjj.44.2023.08.22.02.44.30
+        d=1e100.net; s=20221208; t=1692697512; x=1693302312;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9VfBCvp+lAdhb3vS0UcFySyoen6a3yAs2OXAZaKdJ+8=;
+        b=XJjVdpIImAk/DflVxbRssWy5Mj9mjOCApRBUFWbaUcKPPoZT73Bvt74GK/o4yozj49
+         D3RuL4p6fhygpnrUfngLL3Cso8EyFLgXudzKM+IKig7Jq2+jqiuV1uHW6A33apR5pA19
+         Eraq9W/20U3MEPWvdzccIO6N7NqxaPhVXH5Pzip0C8fBGgg3JT2zFsV+s5WWjhIoWQtA
+         6gOtrjEE5WoIZif8SgabxUxSy/suPhS1wUuNb/Pe4oV/ZjRwxqScFAZcp1R8FALj1mcP
+         1UJcIsoA+jqA/NjEG9I6W0n0RalA4g+PJFgpZSpdSe4OwAvbA9bg4Ae1vAkfeKC/RDqi
+         An/g==
+X-Gm-Message-State: AOJu0Yzjj0rhqKI+8c7+9BTfNvkfgvhn91dmJ5/BVuYumlTHvxdL6Eez
+        Dlt3RulLUH7q5R5t8HuI5AcJvA==
+X-Google-Smtp-Source: AGHT+IE+iHecosexqebaSGs2cp0IYCYy55vkn9aeuegJ7zhQLKrPZoKbcw/+cfe+SShEk+jeSVs9tw==
+X-Received: by 2002:a05:6870:a9a8:b0:1c1:2a3e:8e1f with SMTP id ep40-20020a056870a9a800b001c12a3e8e1fmr11554193oab.30.1692697512302;
+        Tue, 22 Aug 2023 02:45:12 -0700 (PDT)
+Received: from localhost ([122.172.87.195])
+        by smtp.gmail.com with ESMTPSA id x33-20020a17090a6c2400b00267d9f4d340sm9977765pjj.44.2023.08.22.02.45.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 02:44:32 -0700 (PDT)
-From:   Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org,
-        Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH v4 2/2] arm64: dts: qcom: sc7180: Add sku_id and board id for lazor/limozeen
-Date:   Tue, 22 Aug 2023 17:44:14 +0800
-Message-Id: <20230822174101.v4.2.I8f20fdfe34a2e8a38373bbd65587754b324f3dcb@changeid>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230822094414.123162-1-sheng-liang.pan@quanta.corp-partner.google.com>
-References: <20230822094414.123162-1-sheng-liang.pan@quanta.corp-partner.google.com>
+        Tue, 22 Aug 2023 02:45:11 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        =?UTF-8?q?Alex=20Benn=C3=A9e?= <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        Erik Schilling <erik.schilling@linaro.org>,
+        Manos Pitsidianakis <manos.pitsidianakis@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V5] xen: privcmd: Add support for irqfd
+Date:   Tue, 22 Aug 2023 15:15:07 +0530
+Message-Id: <8e724ac1f50c2bc1eb8da9b3ff6166f1372570aa.1692697321.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SKU ID 10: Lazor LTE+Wifi, no-esim (Strapped 0 X 0)
-SKU ID 15: Limozeen LTE+Wifi, TS, no esim (Strapped 1 X 0)
-SKU ID 18: Limozeen LTE+Wifi, no TS, no esim (Strapped X 0 0)
+Xen provides support for injecting interrupts to the guests via the
+HYPERVISOR_dm_op() hypercall. The same is used by the Virtio based
+device backend implementations, in an inefficient manner currently.
 
-Even though the "no esim" boards are strapped differently than
-ones that have an esim, the esim isn't represented in the
-device tree so the same device tree can be used for LTE w/ esim
-and LTE w/out esim.
+Generally, the Virtio backends are implemented to work with the Eventfd
+based mechanism. In order to make such backends work with Xen, another
+software layer needs to poll the Eventfds and raise an interrupt to the
+guest using the Xen based mechanism. This results in an extra context
+switch.
 
-add BRD_ID(0, Z, 0) = 10 for new board with ALC5682i-VS
+This is not a new problem in Linux though. It is present with other
+hypervisors like KVM, etc. as well. The generic solution implemented in
+the kernel for them is to provide an IOCTL call to pass the interrupt
+details and eventfd, which lets the kernel take care of polling the
+eventfd and raising of the interrupt, instead of handling this in user
+space (which involves an extra context switch).
 
-Changes in v4:
-- combine pathc2 and patch3
+This patch adds support to inject a specific interrupt to guest using
+the eventfd mechanism, by preventing the extra context switch.
 
-Changes in v3:
-- sort out the node order alphabetically
+Inspired by existing implementations for KVM, etc..
 
-Changes in v2:
-- add new entry rev9 with Parade bridge chip
-- correct newly create dts files
-
-Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
+V4->V5
+- Drop "default m" and update description in Kconfig.
+- Drop INIT_LIST_HEAD() for kirqfd->list.
+- Drop local "eventfd" variable.
+- Drop unnecessary !! usage.
 
- arch/arm64/boot/dts/qcom/Makefile             |  5 ++
- ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 40 +++++++++++++
- .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  4 +-
- .../sc7180-trogdor-lazor-limozeen-r10.dts     | 56 +++++++++++++++++++
- .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 34 +++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 38 +++++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 30 ++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
- .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
- 11 files changed, 213 insertions(+), 10 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
+V3->V4
+- Drop the imported definitions to hvm/dm_op.h.
+- Make the caller pass a pointer to pre-filled "struct xen_dm_op" instance and
+  get rid of irq and level fields.
+- Enable the irqfd feature under a new Kconfig entry.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 337abc4ceb17..73e745fb1ff0 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -109,11 +109,16 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-kb.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-kb.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r5.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-parade.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-ti.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-parade.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-new file mode 100644
-index 000000000000..bfeddd287aaf
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen without Touchscreen (rev10+)";
-+	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
-+};
-+
-+/delete-node/&ap_ts;
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	/delete-property/ VBAT-supply;
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&panel {
-+	compatible = "edp-panel";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-index 400f9e18977f..88451935174e 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
+V2->V3
+- Select EVENTFD from Kconfig
+
+V1->V2:
+- Improve error handling.
+- Remove the unnecessary usage of list_for_each_entry_safe().
+- Restrict the use of XEN_DMOP_set_irq_level to only ARM64.
+- Import definitions from Xen to hvm/dm_op.h.
+
+ drivers/xen/Kconfig        |   7 +
+ drivers/xen/privcmd.c      | 282 ++++++++++++++++++++++++++++++++++++-
+ include/uapi/xen/privcmd.h |  14 ++
+ 3 files changed, 301 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+index d5d7c402b651..d43153fec18e 100644
+--- a/drivers/xen/Kconfig
++++ b/drivers/xen/Kconfig
+@@ -269,6 +269,13 @@ config XEN_PRIVCMD
+ 	  disaggregated Xen setups this driver might be needed for other
+ 	  domains, too.
  
- / {
--	model = "Google Lazor Limozeen without Touchscreen (rev9+)";
--	compatible = "google,lazor-sku6", "qcom,sc7180";
-+	model = "Google Lazor Limozeen without Touchscreen (rev9)";
-+	compatible = "google,lazor-rev9-sku6", "google,lazor-rev9-sku18", "qcom,sc7180";
++config XEN_PRIVCMD_IRQFD
++	bool "Xen irqfd support"
++	depends on XEN_PRIVCMD && XEN_VIRTIO && EVENTFD
++	help
++	  Using the irqfd mechanism a virtio backend running in a daemon can
++	  speed up interrupt injection into a guest.
++
+ config XEN_ACPI_PROCESSOR
+ 	tristate "Xen ACPI processor"
+ 	depends on XEN && XEN_PV_DOM0 && X86 && ACPI_PROCESSOR && CPU_FREQ
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index e2f580e30a86..120af57999fc 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -9,11 +9,16 @@
+ 
+ #define pr_fmt(fmt) "xen:" KBUILD_MODNAME ": " fmt
+ 
++#include <linux/eventfd.h>
++#include <linux/file.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/poll.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
++#include <linux/workqueue.h>
+ #include <linux/errno.h>
+ #include <linux/mm.h>
+ #include <linux/mman.h>
+@@ -833,6 +838,263 @@ static long privcmd_ioctl_mmap_resource(struct file *file,
+ 	return rc;
+ }
+ 
++#ifdef CONFIG_XEN_PRIVCMD_IRQFD
++/* Irqfd support */
++static struct workqueue_struct *irqfd_cleanup_wq;
++static DEFINE_MUTEX(irqfds_lock);
++static LIST_HEAD(irqfds_list);
++
++struct privcmd_kernel_irqfd {
++	struct xen_dm_op_buf xbufs;
++	domid_t dom;
++	bool error;
++	struct eventfd_ctx *eventfd;
++	struct work_struct shutdown;
++	wait_queue_entry_t wait;
++	struct list_head list;
++	poll_table pt;
++};
++
++static void irqfd_deactivate(struct privcmd_kernel_irqfd *kirqfd)
++{
++	lockdep_assert_held(&irqfds_lock);
++
++	list_del_init(&kirqfd->list);
++	queue_work(irqfd_cleanup_wq, &kirqfd->shutdown);
++}
++
++static void irqfd_shutdown(struct work_struct *work)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(work, struct privcmd_kernel_irqfd, shutdown);
++	u64 cnt;
++
++	eventfd_ctx_remove_wait_queue(kirqfd->eventfd, &kirqfd->wait, &cnt);
++	eventfd_ctx_put(kirqfd->eventfd);
++	kfree(kirqfd);
++}
++
++static void irqfd_inject(struct privcmd_kernel_irqfd *kirqfd)
++{
++	u64 cnt;
++	long rc;
++
++	eventfd_ctx_do_read(kirqfd->eventfd, &cnt);
++
++	xen_preemptible_hcall_begin();
++	rc = HYPERVISOR_dm_op(kirqfd->dom, 1, &kirqfd->xbufs);
++	xen_preemptible_hcall_end();
++
++	/* Don't repeat the error message for consecutive failures */
++	if (rc && !kirqfd->error) {
++		pr_err("Failed to configure irq for guest domain: %d\n",
++		       kirqfd->dom);
++	}
++
++	kirqfd->error = rc;
++}
++
++static int
++irqfd_wakeup(wait_queue_entry_t *wait, unsigned int mode, int sync, void *key)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(wait, struct privcmd_kernel_irqfd, wait);
++	__poll_t flags = key_to_poll(key);
++
++	if (flags & EPOLLIN)
++		irqfd_inject(kirqfd);
++
++	if (flags & EPOLLHUP) {
++		mutex_lock(&irqfds_lock);
++		irqfd_deactivate(kirqfd);
++		mutex_unlock(&irqfds_lock);
++	}
++
++	return 0;
++}
++
++static void
++irqfd_poll_func(struct file *file, wait_queue_head_t *wqh, poll_table *pt)
++{
++	struct privcmd_kernel_irqfd *kirqfd =
++		container_of(pt, struct privcmd_kernel_irqfd, pt);
++
++	add_wait_queue_priority(wqh, &kirqfd->wait);
++}
++
++static int privcmd_irqfd_assign(struct privcmd_irqfd *irqfd)
++{
++	struct privcmd_kernel_irqfd *kirqfd, *tmp;
++	__poll_t events;
++	struct fd f;
++	void *dm_op;
++	int ret;
++
++	kirqfd = kzalloc(sizeof(*kirqfd) + irqfd->size, GFP_KERNEL);
++	if (!kirqfd)
++		return -ENOMEM;
++	dm_op = kirqfd + 1;
++
++	if (copy_from_user(dm_op, irqfd->dm_op, irqfd->size)) {
++		ret = -EFAULT;
++		goto error_kfree;
++	}
++
++	kirqfd->xbufs.size = irqfd->size;
++	set_xen_guest_handle(kirqfd->xbufs.h, dm_op);
++	kirqfd->dom = irqfd->dom;
++	INIT_WORK(&kirqfd->shutdown, irqfd_shutdown);
++
++	f = fdget(irqfd->fd);
++	if (!f.file) {
++		ret = -EBADF;
++		goto error_kfree;
++	}
++
++	kirqfd->eventfd = eventfd_ctx_fileget(f.file);
++	if (IS_ERR(kirqfd->eventfd)) {
++		ret = PTR_ERR(kirqfd->eventfd);
++		goto error_fd_put;
++	}
++
++	/*
++	 * Install our own custom wake-up handling so we are notified via a
++	 * callback whenever someone signals the underlying eventfd.
++	 */
++	init_waitqueue_func_entry(&kirqfd->wait, irqfd_wakeup);
++	init_poll_funcptr(&kirqfd->pt, irqfd_poll_func);
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry(tmp, &irqfds_list, list) {
++		if (kirqfd->eventfd == tmp->eventfd) {
++			ret = -EBUSY;
++			mutex_unlock(&irqfds_lock);
++			goto error_eventfd;
++		}
++	}
++
++	list_add_tail(&kirqfd->list, &irqfds_list);
++	mutex_unlock(&irqfds_lock);
++
++	/*
++	 * Check if there was an event already pending on the eventfd before we
++	 * registered, and trigger it as if we didn't miss it.
++	 */
++	events = vfs_poll(f.file, &kirqfd->pt);
++	if (events & EPOLLIN)
++		irqfd_inject(kirqfd);
++
++	/*
++	 * Do not drop the file until the kirqfd is fully initialized, otherwise
++	 * we might race against the EPOLLHUP.
++	 */
++	fdput(f);
++	return 0;
++
++error_eventfd:
++	eventfd_ctx_put(kirqfd->eventfd);
++
++error_fd_put:
++	fdput(f);
++
++error_kfree:
++	kfree(kirqfd);
++	return ret;
++}
++
++static int privcmd_irqfd_deassign(struct privcmd_irqfd *irqfd)
++{
++	struct privcmd_kernel_irqfd *kirqfd;
++	struct eventfd_ctx *eventfd;
++
++	eventfd = eventfd_ctx_fdget(irqfd->fd);
++	if (IS_ERR(eventfd))
++		return PTR_ERR(eventfd);
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry(kirqfd, &irqfds_list, list) {
++		if (kirqfd->eventfd == eventfd) {
++			irqfd_deactivate(kirqfd);
++			break;
++		}
++	}
++
++	mutex_unlock(&irqfds_lock);
++
++	eventfd_ctx_put(eventfd);
++
++	/*
++	 * Block until we know all outstanding shutdown jobs have completed so
++	 * that we guarantee there will not be any more interrupts once this
++	 * deassign function returns.
++	 */
++	flush_workqueue(irqfd_cleanup_wq);
++
++	return 0;
++}
++
++static long privcmd_ioctl_irqfd(struct file *file, void __user *udata)
++{
++	struct privcmd_data *data = file->private_data;
++	struct privcmd_irqfd irqfd;
++
++	if (copy_from_user(&irqfd, udata, sizeof(irqfd)))
++		return -EFAULT;
++
++	/* No other flags should be set */
++	if (irqfd.flags & ~PRIVCMD_IRQFD_FLAG_DEASSIGN)
++		return -EINVAL;
++
++	/* If restriction is in place, check the domid matches */
++	if (data->domid != DOMID_INVALID && data->domid != irqfd.dom)
++		return -EPERM;
++
++	if (irqfd.flags & PRIVCMD_IRQFD_FLAG_DEASSIGN)
++		return privcmd_irqfd_deassign(&irqfd);
++
++	return privcmd_irqfd_assign(&irqfd);
++}
++
++static int privcmd_irqfd_init(void)
++{
++	irqfd_cleanup_wq = alloc_workqueue("privcmd-irqfd-cleanup", 0, 0);
++	if (!irqfd_cleanup_wq)
++		return -ENOMEM;
++
++	return 0;
++}
++
++static void privcmd_irqfd_exit(void)
++{
++	struct privcmd_kernel_irqfd *kirqfd, *tmp;
++
++	mutex_lock(&irqfds_lock);
++
++	list_for_each_entry_safe(kirqfd, tmp, &irqfds_list, list)
++		irqfd_deactivate(kirqfd);
++
++	mutex_unlock(&irqfds_lock);
++
++	destroy_workqueue(irqfd_cleanup_wq);
++}
++#else
++static inline long privcmd_ioctl_irqfd(struct file *file, void __user *udata)
++{
++	return -EOPNOTSUPP;
++}
++
++static inline int privcmd_irqfd_init(void)
++{
++	return 0;
++}
++
++static inline void privcmd_irqfd_exit(void)
++{
++}
++#endif /* CONFIG_XEN_PRIVCMD_IRQFD */
++
+ static long privcmd_ioctl(struct file *file,
+ 			  unsigned int cmd, unsigned long data)
+ {
+@@ -868,6 +1130,10 @@ static long privcmd_ioctl(struct file *file,
+ 		ret = privcmd_ioctl_mmap_resource(file, udata);
+ 		break;
+ 
++	case IOCTL_PRIVCMD_IRQFD:
++		ret = privcmd_ioctl_irqfd(file, udata);
++		break;
++
+ 	default:
+ 		break;
+ 	}
+@@ -992,15 +1258,27 @@ static int __init privcmd_init(void)
+ 	err = misc_register(&xen_privcmdbuf_dev);
+ 	if (err != 0) {
+ 		pr_err("Could not register Xen hypercall-buf device\n");
+-		misc_deregister(&privcmd_dev);
+-		return err;
++		goto err_privcmdbuf;
++	}
++
++	err = privcmd_irqfd_init();
++	if (err != 0) {
++		pr_err("irqfd init failed\n");
++		goto err_irqfd;
+ 	}
+ 
+ 	return 0;
++
++err_irqfd:
++	misc_deregister(&xen_privcmdbuf_dev);
++err_privcmdbuf:
++	misc_deregister(&privcmd_dev);
++	return err;
+ }
+ 
+ static void __exit privcmd_exit(void)
+ {
++	privcmd_irqfd_exit();
+ 	misc_deregister(&privcmd_dev);
+ 	misc_deregister(&xen_privcmdbuf_dev);
+ }
+diff --git a/include/uapi/xen/privcmd.h b/include/uapi/xen/privcmd.h
+index d2029556083e..375718ba4ab6 100644
+--- a/include/uapi/xen/privcmd.h
++++ b/include/uapi/xen/privcmd.h
+@@ -98,6 +98,18 @@ struct privcmd_mmap_resource {
+ 	__u64 addr;
  };
  
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-new file mode 100644
-index 000000000000..7e22cec29ee9
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-@@ -0,0 +1,56 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
++/* For privcmd_irqfd::flags */
++#define PRIVCMD_IRQFD_FLAG_DEASSIGN (1 << 0)
 +
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen (rev10+)";
-+	compatible = "google,lazor-sku4", "google,lazor-sku15", "qcom,sc7180";
++struct privcmd_irqfd {
++	void __user *dm_op;
++	__u32 size; /* Size of structure pointed by dm_op */
++	__u32 fd;
++	__u32 flags;
++	domid_t dom;
++	__u8 pad[2];
 +};
 +
-+/delete-node/&ap_ts;
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	/delete-property/ VBAT-supply;
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&ap_ts_pen_1v8 {
-+	ap_ts: touchscreen@10 {
-+		compatible = "elan,ekth3500";
-+		reg = <0x10>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts_int_l>, <&ts_reset_l>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
-+
-+		vcc33-supply = <&pp3300_ts>;
-+
-+		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&panel {
-+	compatible = "auo,b116xa01";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-index 09a4ff13f072..76a76b8c0268 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
+ /*
+  * @cmd: IOCTL_PRIVCMD_HYPERCALL
+  * @arg: &privcmd_hypercall_t
+@@ -125,5 +137,7 @@ struct privcmd_mmap_resource {
+ 	_IOC(_IOC_NONE, 'P', 6, sizeof(domid_t))
+ #define IOCTL_PRIVCMD_MMAP_RESOURCE				\
+ 	_IOC(_IOC_NONE, 'P', 7, sizeof(struct privcmd_mmap_resource))
++#define IOCTL_PRIVCMD_IRQFD					\
++	_IOC(_IOC_NONE, 'P', 8, sizeof(struct privcmd_irqfd))
  
- / {
--	model = "Google Lazor Limozeen (rev9+)";
--	compatible = "google,lazor-sku4", "qcom,sc7180";
-+	model = "Google Lazor Limozeen (rev9)";
-+	compatible = "google,lazor-rev9-sku4", "google,lazor-rev9-sku15", "qcom,sc7180";
- };
- 
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-new file mode 100644
-index 000000000000..6e44e6e04144
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-@@ -0,0 +1,34 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+) with KB Backlight";
-+	compatible = "google,lazor-sku2", "qcom,sc7180";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	/delete-property/ VBAT-supply;
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-new file mode 100644
-index 000000000000..a79b7cc5bfb1
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+) with LTE";
-+	compatible = "google,lazor-sku0", "google,lazor-sku10", "qcom,sc7180";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	/delete-property/ VBAT-supply;
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-new file mode 100644
-index 000000000000..5a58e94c228e
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2023 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180-trogdor.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+)";
-+	compatible = "google,lazor", "qcom,sc7180";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	/delete-property/ VBAT-supply;
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-index 1c4f0773a242..cabe99c23a7c 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with KB Backlight";
--	compatible = "google,lazor-sku2", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with KB Backlight";
-+	compatible = "google,lazor-rev9-sku2", "qcom,sc7180";;
- };
- 
- &keyboard_backlight {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-index ec73943abc4c..d737fd0637fb 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-@@ -14,8 +14,8 @@
- #include "sc7180-trogdor-rt5682i-sku.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with LTE";
--	compatible = "google,lazor-sku0", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with LTE";
-+	compatible = "google,lazor-rev9-sku0", "google,lazor-rev9-sku10", "qcom,sc7180";
- };
- 
- &ap_sar_sensor_i2c {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-index 6cedc0ba9653..8daad32ff53b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-@@ -14,6 +14,6 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+)";
--	compatible = "google,lazor", "qcom,sc7180";
-+	model = "Google Lazor (rev9)";
-+	compatible = "google,lazor-rev9", "qcom,sc7180";
- };
+ #endif /* __LINUX_PUBLIC_PRIVCMD_H__ */
 -- 
-2.34.1
+2.31.1.272.g89b43f80a514
 
