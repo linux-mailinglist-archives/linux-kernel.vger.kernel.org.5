@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE73783CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3417783CDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234290AbjHVJ0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        id S234297AbjHVJ1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:27:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234285AbjHVJ0S (ORCPT
+        with ESMTP id S234283AbjHVJ1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:26:18 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E32F1A5;
-        Tue, 22 Aug 2023 02:26:16 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe2d152f62so6594143e87.0;
-        Tue, 22 Aug 2023 02:26:16 -0700 (PDT)
+        Tue, 22 Aug 2023 05:27:43 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED73F1A5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:27:41 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso28603075e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:27:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692696375; x=1693301175;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=snw1DaEvTLglNmKWe5Qce4LHWKg43CbSW3JkoNbMXJ0=;
-        b=XiXIuii02P5pSjXkR+wQ0pKRVSpsQstyOfKddLRnfUJb5HzDpWU0T9Lx/jHH+Qxkt2
-         oiBKZt4zdbBdH+qfbeMtvOpLZrTexyrebSfx57iVe94e9r2on2aP8OuwY21/rERQzQno
-         TzpqAik5K1Nkx0eiAxq8pkt9a+5Phv5o60UybgQz4bL3+dyFTpqTnXx9drjaCnvoKyVq
-         uNvwWoiJk5Msoi0M+Jz2pdqNV1vO3M3UUmn+SpKoCnh3v3vrtr3AoA/yi451f0c9Cxhl
-         RenI6d7gS3jTyvilxhrFMvR3iKeHkqZbyrA4VfcKENMamsXDepNeQh/cy+avNyR2gUJR
-         8Few==
+        d=linaro.org; s=google; t=1692696460; x=1693301260;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gj6YDqEmJFxlDCYwFjQm+tlJhG5zQx6RDzzZXcXA+Ik=;
+        b=eLpAt6XFcYBTtAB0Xldcl9vbJ0GRIwZOxfgRmnR2VCVvdYLz+FFCcW81o6XMBQgO09
+         UB3GI5I41xKxnvEY/qW78AEj2lF91MR7pP3WNcqKs73hFJgLEMv2GywrkV+A7KQRLGfa
+         zFfJW2RFmxBUA7/4CjiIvbE4jJZ1sxdYUBj3GFv6D8WcowCPqeVFhivpkVarVIHXvo72
+         DLtDiNsxtz0zFpaw/n6g/YfefQ4Jf8XF0nadpbR9DzuFC4v4jBKN64iShIjpyPSYCZ7f
+         ++eYglogDUBbSInWpZly7bR2BcJckt9aGRFX2yDK48LMwckZbQJ2+SIwwUyhLC++fFW2
+         chPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692696375; x=1693301175;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=snw1DaEvTLglNmKWe5Qce4LHWKg43CbSW3JkoNbMXJ0=;
-        b=Ol1/qY8FjMnPJ/sUo6UQQhVz73zK6Jm+Xuit+rZ9ZVOtNLq0Ik1QMZagwMci8NWoUm
-         d0ZZgPuAlSwZl+XfL1/aAuumrni8OJIizV+UewcqEgY4nr93wBIbWTVmKEgA6fXCedPL
-         Arm39CQQYKWyy/MbJSzWByfcDOh2PlffDJhfCBFfLGNodPwFG5K2xC1JJUhe0bzJPuyn
-         mGopHGoZuluT7vLDrAJARYCyJr0BI/PJ/QCquTRElREk3uAohhixLvLJIQATs5mHkf4d
-         EkHTZX1mO13qUcMQCW2L4Zeat93+HHJV9V4U6Y0kiA6R+eBfkoQ16vUgib53kz/IrX2P
-         9y2A==
-X-Gm-Message-State: AOJu0Yw1Yq/Eyffaa6MwEU0JG8KqxgVy3zJ1OclrKfBpHDwouXTFInQ+
-        L/nAZQeI4CBDKevUWDwE0dc=
-X-Google-Smtp-Source: AGHT+IH0eg8a5KtlFVvbBYLuL38D3pN+Vqfg1Lgf5Kl+i/B3hhTqgj1n3Ui4j6vOyIxo6gIttJrKVg==
-X-Received: by 2002:ac2:5f0a:0:b0:4fa:ad2d:6c58 with SMTP id 10-20020ac25f0a000000b004faad2d6c58mr5033971lfq.61.1692696374699;
-        Tue, 22 Aug 2023 02:26:14 -0700 (PDT)
-Received: from localhost ([2a05:3580:f312:6c00:826c:ae47:61a7:8af8])
-        by smtp.gmail.com with ESMTPSA id l14-20020ac24a8e000000b004ff8a466ed3sm2102918lfp.130.2023.08.22.02.26.13
+        d=1e100.net; s=20221208; t=1692696460; x=1693301260;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gj6YDqEmJFxlDCYwFjQm+tlJhG5zQx6RDzzZXcXA+Ik=;
+        b=h1cj9A1utFCa8MO5wAntOnrycnH9R+gae9LWUy4h6EpSlnrFRO5O+iE66mCY3MCumM
+         c8uGHFrWO2mQ7/hk9ZRJO+YCAldhWyoI0zifZmtw7w4j8ClDnu6AlJwTLJMCOvZXWHWf
+         CeSeKXrQAKIAWkIoKrg6HJGaGCOU6kS9cpwLzV3PooeRdbDPhHiL+khq7UFHnAirb5fb
+         lG66hXw3lmBCBhkca2Ni1wrNKinA+5x1T+pMN56h7tD98gJLOHCenDxbMrxNx9jEMmh9
+         dGqwT4u/xxza9EY+TTNv1WDfbez1ZctSfsAI46U71zM3YpWHjjP3l1W71aA9pzJG3/XI
+         9Ryg==
+X-Gm-Message-State: AOJu0YzHaPLFaSvTxEOJ/hz9DO17PqjMPPonAZlRCuW9tYxWV8MyZ9ED
+        bU+8zu7zMvvMpvBz3O9zivRKkQ==
+X-Google-Smtp-Source: AGHT+IGJx541TMwgMIPRY0Wk4ehe7vKuqAc4iq8OjG5/XVD35L5gHoDk2x62N1GBoCM36nd8+RGyYQ==
+X-Received: by 2002:a05:6000:234:b0:317:6623:e33f with SMTP id l20-20020a056000023400b003176623e33fmr8043510wrz.14.1692696460381;
+        Tue, 22 Aug 2023 02:27:40 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id p14-20020a5d638e000000b0031ae2a7adb5sm14746091wru.85.2023.08.22.02.27.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 02:26:14 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 12:26:13 +0300
-From:   Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Jarrah Gosbell <kernel@undef.tools>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH] arm64: dts: pinephone: Add pstore support for PinePhone
- A64
-Message-ID: <ZOR/NUuaEOpYMzVJ@skv.local>
-Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Jarrah Gosbell <kernel@undef.tools>,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-References: <20230724213457.24593-1-andrej.skvortzov@gmail.com>
- <20230821160817.GA2227@bug>
+        Tue, 22 Aug 2023 02:27:39 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Tue, 22 Aug 2023 11:27:37 +0200
+Subject: [PATCH] dt-bindings: regulator: qcom,rpmh-regulator: allow i and j
+ as RPMh resource name suffix
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230821160817.GA2227@bug>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-v1-1-23fda17f81f7@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAIh/5GQC/x2NQQrCMBAAv1L27EJcCbR+RTzUuGkXTBN2EymU/
+ t3gceYwc4CxChvchwOUv2KStw7XywBhnbeFUd6dgRzd3EiENRcJaGncvcNWrCrPCbWkFZWX9pl
+ rVrQWo+xIU6SJKPqXD9CLRbnr/+3xPM8feFFNIn0AAAA=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1175;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=6jcszLXeVQ9QQyGq+cnphMr3iteKd4Jca12wTycwDeA=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBk5H+KCGr8PSuxxtdXxCz1N09WuzDU/fvA/dH8UQwH
+ Nxlf1iaJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZOR/igAKCRB33NvayMhJ0RfuD/
+ 9XEheyKZhB1J5PRohKaAv4CXDR9yw3LSYm97EQdDRQAUun825O7hd2Z9Xl/zQ+2Ub0mDOFoQ5EK26s
+ rwtcJWgVPxRsYKhrGWGa1dNf384yhclzhqySTQ321gSLOb302VZ4YdcluntXOFDjaN//GDjc0djNIe
+ RSn25UKb8DIJnlhk8FMQc+5Itl5mqJktSf7f6dRyP2qtq49EHs5W6pQ73wLaZjcTd6ndDR3tyQsrRC
+ +7vk0ggZ+4IhE6LUJeHDg1HJmQM4DH8uRap1s45liQ+hWz/I/xMvixJxC+2hWbvsS47AlFIVgapZ7T
+ 2ys0/myk3i0dkoVVEgF8YPeNO+peSVmw/VAopzEpSguaIH9y9kwueuzAN5m2+kwZ+3aW9rP8mwpU4B
+ IbDP67Do+5pGtLooM4PVQ0y06CRd1KMuahDTJCsonpbQcZ8BHhzK4nlE3/9ceerKjBcVbvpHQ49H1k
+ +GbA+YjCDF3L0RrjWdbsUZ1JIARtU7aBEhLyBv0RoeQNioFTlrxVbBxZUkyTHY2Tbdo5ahtPm/Wwzv
+ 9BzylH1Ll/nNqFuDlaJfsuTwSdxWF4+Zes9jSGmW/O6kbdH3zjEnQ/kzHg2xzEOcNrTXoDBeRKBmEX
+ UBw5k1o80im4TMZ0eIqWKAy3M7b4n5w4f7ByH3heKFmynWx/ehukGosBA5Bw==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,52 +99,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+Add "i" and "j" to the allowed subffix list as they can be used as RPMh
+resource name suffixes on new platforms.
 
-On 23-08-21 18:08, Pavel Machek wrote:
-> Hi!
-> 
-> > This patch reserves some memory in the DTS and sets up a
-> > pstore device tree node to enable pstore support.
-> > 
-> > Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> > 
-> > Gbp-Pq: Topic pinephone
-> > Gbp-Pq: Name 0161-arm64-dts-pinephone-Add-pstore-support-for-PinePhone.patch
-> > ---
-> >  .../boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > index 87847116ab6d..84f9410b0b70 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> > @@ -19,6 +19,22 @@ aliases {
-> >  		serial0 = &uart0;
-> >  	};
-> >  
-> > +	reserved-memory {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <1>;
-> > +		ranges;
-> > +
-> > +		pstore_mem: ramoops@61000000 {
-> > +			compatible = "ramoops";
-> > +			reg = <0x61000000 0x100000>;
-> > +			record-size = <0x20000>;
-> > +			console-size = <0x20000>;
-> > +			ftrace-size = <0x20000>;
-> > +			pmsg-size = <0x20000>;
-> > +			ecc-size = <16>;
-> > +		};
-> > +	};
-> 
-> dts is supposed to be for hardware description, but this is really policy decision.
-> 
-> Should we have something like "any dram is suitable for pstore"....?
-Thanks for the review. I'll add into commit message more details why
-this address was picked.
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
+diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+index e758093365bc..7afffdb91581 100644
+--- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
++++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+@@ -92,7 +92,7 @@ properties:
+         RPMh resource name suffix used for the regulators found
+         on this PMIC.
+     $ref: /schemas/types.yaml#/definitions/string
+-    enum: [a, b, c, d, e, f, g, h, k]
++    enum: [a, b, c, d, e, f, g, h, i, j, k]
+ 
+   qcom,always-wait-for-ack:
+     description: |
+
+---
+base-commit: 28c736b0e92e11bfe2b9997688213dc43cb22182
+change-id: 20230822-topic-sm8x50-upstream-rpmh-regulator-suffix-29f2922f5b5c
+
 Best regards,
-Andrey Skvortsov
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
