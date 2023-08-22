@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7626578489D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F5B78489E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjHVRny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
+        id S229533AbjHVRoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjHVRnx (ORCPT
+        with ESMTP id S229510AbjHVRoy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:43:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72968E4A
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692726229; x=1724262229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wJtLwBBVNTYvFRL2hNbECv9mDay3Kw7ksqvfKpneZMI=;
-  b=ASY1nZQxFSGrUEGEAMEH56B3AwzJLX99XgyL5w/iMzBOT8g7jg360WOK
-   wwQSp4nzXl8qFOEByX2tzajVKaXHLPtmGKFa4edET1EPrNn3Pyq+sT7tw
-   PRlfJbyYnHfS07Zje3FUnvB++1ojhTs+zxxPUQIjAHgwA8c1FY/K8lj8s
-   4/3S7zmwuoVONK1kQI4OhJ1h7qkRpH7FzZrCbrNcL0aqO0z8LCZ5Omuwf
-   zZIAtruMQLZjxXMYR87NM3x6wzn8jPst7nu66qMzH460NsWzNu+/uPEHa
-   XLWQpU4Glqn0uHLhN9N8hLmdQEHMWR0mcmqmwdZrBgpL7HCrnPSsLQZXd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376687933"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="376687933"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 10:43:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="860014073"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="860014073"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 22 Aug 2023 10:43:46 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYVPt-0000No-1j;
-        Tue, 22 Aug 2023 17:43:45 +0000
-Date:   Wed, 23 Aug 2023 01:43:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Valentine Sinitsyn <valesini@yandex-team.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] PCI: Implement custom llseek for sysfs resource
- entries
-Message-ID: <202308230126.O8xXYkdt-lkp@intel.com>
-References: <20230822115455.310222-2-valesini@yandex-team.ru>
+        Tue, 22 Aug 2023 13:44:54 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8DB10B
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-68730bafa6bso3855440b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692726292; x=1693331092;
+        h=content-transfer-encoding:subject:from:reply-to:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D83pxoorKSMZ3KXT4tteloMjPSR576OWtj/BqTWoltc=;
+        b=VfouFOcEQm14bIP+hmAy9H5Cbv7pd8goiWgJvgc1/lWxlzx8olBW3oKzSwr9VnqdBi
+         plsJsRPUMXz4Ru4PwMrCp8aDdrOWhuSSnIDwGnUP7utY8nrhv5bXAZKjtoxpOs3IRcT7
+         U9wXwvDoj9coLJ+9yMf4iMbS9wKZ4ZxoM7D8k8xSlgYWlS/VtCgnOy9Tk9nxZ5r6nKX7
+         03DGfI9Q0eZ6mRNWgpH6ppeR+3UoBXmuuCDsj63/RyrVJzvmsxzgaEx9ZaFZi9TuUGVS
+         VtC7G+VBbngPYQTX0KFlorQMeFIm9skopJwZAwnQgZaJKA6LdrMC1srd+bEbmBtsaG+D
+         khag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692726292; x=1693331092;
+        h=content-transfer-encoding:subject:from:reply-to:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D83pxoorKSMZ3KXT4tteloMjPSR576OWtj/BqTWoltc=;
+        b=MpkwgvQYFVAvqNdd/FIUr068x8YaGRtxGjCyIbgYFd0KCYxjcZw5NELAm6f8Z505Rn
+         oikKpL+heYS6Ssl0M4L43WmF3/cfaKLRkEYceernndZlrojdMTFmq54rL0xH4INlu4zb
+         6QbzWQ9EWj0julp8mv/+LyESHjYRazDm2vtnaLvOLwOUhx/ph6pU9sC04OjWgN1Gr0iP
+         VKFDGjhY32+690chNfVWjxLyze99yuXlIxVghN5gvC2ccTJoZe94RdgLN/ydNaN1/YiC
+         4covwD104o5bd+/lo/F5fvFXKruU/gTl3ayB+8jtzsGxv+T+lTVSOIVfT8D2ESDMTphz
+         45lw==
+X-Gm-Message-State: AOJu0YxTjP4XSGe5njH6fV9vCz3SU5wJbkcCaQhu6hfAZ5qdDTDv1nKS
+        XF/0dBLJ0OY5sd54dLNc/Ho=
+X-Google-Smtp-Source: AGHT+IFKTE7SIbTMMWJAx0oW0kr9RcAgSRKog0enFdYErkO+dy/8hNTNi/3zJPYuYshsZtVCFglNpw==
+X-Received: by 2002:a05:6a20:1456:b0:13f:c159:63ec with SMTP id a22-20020a056a20145600b0013fc15963ecmr14333954pzi.24.1692726292148;
+        Tue, 22 Aug 2023 10:44:52 -0700 (PDT)
+Received: from [10.0.2.15] ([103.37.201.176])
+        by smtp.gmail.com with ESMTPSA id n15-20020aa78a4f000000b00682a27905b9sm4500417pfa.13.2023.08.22.10.44.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 10:44:51 -0700 (PDT)
+Message-ID: <f2b664d5-0710-67ae-fda8-d407af4df6fe@gmail.com>
+Date:   Tue, 22 Aug 2023 23:14:46 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230822115455.310222-2-valesini@yandex-team.ru>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     anton@tuxera.com, linkinjeon@kernel.org,
+        syzbot+ef50f8eb00b54feb7ba2@syzkaller.appspotmail.com
+Cc:     linux-ntfs-dev@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Linux-kernel-mentees@lists.linuxfoundation.org
+Reply-To: 000000000000aefc5005f5df169b@google.com
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+Subject: fs/ntfs : use-after-free Read in ntfs_attr_find
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentine,
+Hi,
 
-kernel test robot noticed the following build warnings:
+I was looking at this syzbot issue : 
+https://syzkaller.appspot.com/bug?extid=ef50f8eb00b54feb7ba2
 
-[auto build test WARNING on f7757129e3dea336c407551c98f50057c22bb266]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Valentine-Sinitsyn/PCI-Implement-custom-llseek-for-sysfs-resource-entries/20230822-205513
-base:   f7757129e3dea336c407551c98f50057c22bb266
-patch link:    https://lore.kernel.org/r/20230822115455.310222-2-valesini%40yandex-team.ru
-patch subject: [PATCH v4 2/2] PCI: Implement custom llseek for sysfs resource entries
-config: alpha-allnoconfig (https://download.01.org/0day-ci/archive/20230823/202308230126.O8xXYkdt-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230126.O8xXYkdt-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308230126.O8xXYkdt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pci/pci-sysfs.c:840:15: warning: 'pci_llseek_resource' used but never defined
-     840 | static loff_t pci_llseek_resource(struct file *filep,
-         |               ^~~~~~~~~~~~~~~~~~~
+While debugging I found that when we are traversing through the 
+attribute list, there is case when the next attribute is null (most 
+likely we are traversing out of the list) and thus there is this error. 
+I was wondering if we could add a size field to this attribute list. 
+This would fix this issue. Currently we are just parsing to the next 
+attribute using the length field.
 
 
-vim +/pci_llseek_resource +840 drivers/pci/pci-sysfs.c
-
-   839	
- > 840	static loff_t pci_llseek_resource(struct file *filep,
-   841					  struct kobject *kobj,
-   842					  struct bin_attribute *attr,
-   843					  loff_t offset, int whence);
-   844	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
