@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988F17837DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10127837E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjHVCWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38710 "EHLO
+        id S232218AbjHVCZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjHVCWf (ORCPT
+        with ESMTP id S232210AbjHVCY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:22:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F6BDB
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:22:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CBC54646F3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:22:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF53CC433C7;
-        Tue, 22 Aug 2023 02:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692670952;
-        bh=XPEg5hUhI7aGUhMtVHHgnDv/L9i0G9LNRyzRNkNkFdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hoWYIIbE+vK0DxVQ4dcG9LGDVUpnwr9HGaXmBDi/yhO9VB71fFJrYQeGbymbpZ4JA
-         /Kn75DtzlOoIF//ehC5WIxJ2O2AQqv/m4T2MPBLxZX2hgLo595E7JwvNcHDnYreIIE
-         C3EahmqtWp2fzqmAfYEfsFU+qrx9ndALzI/4mwTnd+82aOierotcTrPJx5mOhSH5nP
-         9GwKEfPE5eMJX7UNM0X07sR7Cjz2J2Nn/cP1n3MjfqPZvJLfeRZ9V3T5p4mqMDu3zl
-         8IyyOpj3lRduE3GoEFZqHR9p8e0U9+r+OuSqMeimNvNQuN0ht+seuT6JxqAaYJXJz6
-         0qgqkh2WA58iA==
-Date:   Mon, 21 Aug 2023 19:22:29 -0700
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
- overhead
-Message-ID: <20230822022229.xlctyccmgdxiy6ic@treble>
-References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
- <20230821112723.3995187-5-andrew.cooper3@citrix.com>
- <20230821151636.onk2e6tlhmjg5yz5@treble>
- <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+        Mon, 21 Aug 2023 22:24:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C6D180
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:24:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692671095; x=1724207095;
+  h=from:to:cc:subject:references:date:in-reply-to:
+   message-id:mime-version;
+  bh=UfbeD6FiU7aBNKvy5b/Ik04w1hbvhD6JT1uDE9UYhuI=;
+  b=M41C6O65w/6zzToKiDtI9+7FRUdDRI1La3faNaL70ScVUT28T0DpLVuU
+   1ynPqfcNBmGBmLzXo6YywlQgqOEUGyBjPwCFb5/xu0uOR04b+Qt6WsByi
+   /Y6dGj2xo3zrMQFjGvOtcC8Xw0Jsi5R6MLaWzLvO3HqfPpyQuWIARTDyO
+   pITXd/asl22mFB2jmt8HuilrGoJqtQaNjKg1kR6XBZ8nOKExlJFyTlMhz
+   64ECJyXo9UbeXsHqTkwsH/fE6hQYAOMTgO72yWzAOGZ2LvPJhpu350F7w
+   5ZpKGvRETYU0o4m7IqB9oVOGeNdG8YPcv4lh/uFkn+3SaaDF9tKk2a7ZX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354086241"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="354086241"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 19:24:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="859714072"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="859714072"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 19:24:52 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, <willy@infradead.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>, <hughd@google.com>
+Subject: Re: [PATCH v2 2/8] mm: migrate: remove THP mapcount check in
+ numamigrate_isolate_page()
+References: <20230821115624.158759-1-wangkefeng.wang@huawei.com>
+        <20230821115624.158759-3-wangkefeng.wang@huawei.com>
+Date:   Tue, 22 Aug 2023 10:22:46 +0800
+In-Reply-To: <20230821115624.158759-3-wangkefeng.wang@huawei.com> (Kefeng
+        Wang's message of "Mon, 21 Aug 2023 19:56:18 +0800")
+Message-ID: <87ttsrbytl.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+Content-Type: text/plain; charset=ascii
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 12:01:29AM +0100, Andrew Cooper wrote:
-> On 21/08/2023 4:16 pm, Josh Poimboeuf wrote:
-> > On Mon, Aug 21, 2023 at 12:27:23PM +0100, Andrew Cooper wrote:
-> >> The SRSO safety depends on having a CALL to an {ADD,LEA}/RET sequence which
-> >> has been made safe in the BTB.  Specifically, there needs to be no pertubance
-> >> to the RAS between a correctly predicted CALL and the subsequent RET.
-> >>
-> >> Use the new infrastructure to CALL to a return thunk.  Remove
-> >> srso_fam1?_safe_ret() symbols and point srso_fam1?_return_thunk().
-> >>
-> >> This removes one taken branch from every function return, which will reduce
-> >> the overhead of the mitigation.  It also removes one of three moving pieces
-> >> from the SRSO mess.
-> > So, the address of whatever instruction comes after the 'CALL
-> > srso_*_return_thunk' is added to the RSB/RAS, and that might be
-> > speculated to when the thunk returns.  Is that a concern?
-> 
-> That is very intentional, and key to the safety.
-> 
-> Replacing a RET with a CALL/{ADD,LEA}/RET sequence is a form of
-> retpoline thunk.  The only difference with regular retpolines is that
-> the intended target is already on the stack, and not in a GPR.
-> 
-> 
-> If the CALL mispredicts, it doesn't matter.  When decode catches up
-> (allegedly either instantaneously on Fam19h, or a few cycles late on
-> Fam17h), the top of the RAS is corrected will point at the INT3
-> following the CALL instruction.
+Kefeng Wang <wangkefeng.wang@huawei.com> writes:
 
-That's the thing though, at least with my kernel/compiler combo there's
-no INT3 after the JMP __x86_return_thunk, and there's no room to patch
-one in after the CALL, as the JMP and CALL are both 5 bytes.
+> The check of THP mapped by multiple processes was introduced by commit
+> 04fa5d6a6547 ("mm: migrate: check page_count of THP before migrating")
+> and refactor by commit 340ef3902cf2 ("mm: numa: cleanup flow of transhuge
+> page migration"), which is out of date, since migrate_misplaced_page()
+> is now using the standard migrate_pages() for small pages and THPs, the
+> reference count checking is in folio_migrate_mapping(), so let's remove
+> the special check for THP.
+>
+> Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
--- 
-Josh
+Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
+
+> ---
+>  mm/migrate.c | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 646d8ee7f102..f2d86dfd8423 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2483,10 +2483,6 @@ static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+>  	int nr_pages = thp_nr_pages(page);
+>  	int order = compound_order(page);
+>  
+> -	/* Do not migrate THP mapped by multiple processes */
+> -	if (PageTransHuge(page) && total_mapcount(page) > 1)
+> -		return 0;
+> -
+>  	/* Avoid migrating to a node that is nearly full */
+>  	if (!migrate_balanced_pgdat(pgdat, nr_pages)) {
+>  		int z;
