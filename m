@@ -2,144 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AE27847AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBD07847AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237839AbjHVQdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        id S237846AbjHVQdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237810AbjHVQdE (ORCPT
+        with ESMTP id S237810AbjHVQdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:33:04 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A75CDF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:32:57 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso7177079e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:32:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692721976; x=1693326776;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9rIoS0znE6oN/l/x3K7NnUf3Qklsrk/Ze3DzZn22wcY=;
-        b=HVVWAHjkZvxxFdpMClmqn8mJ73t0auaVoyFggAo5M5OGtyOocB8aTG6IK2xdb+4mkH
-         U9+yMWZJ2Mlc3nuIK83FDCWxFh2j249BtG6Dk4UdKSPrBi1o9/s/5Tt7GerCxc6+QnyD
-         nhozKGGnAfV2Y2NxYn7vWvDxVvC226qYPV++yH3KGXnOeqa5AOOruud2VELfVF9OoHOK
-         FAZ2BN/yPwUzeEIHSXbqPYwHS1vRwb+kBOQYg8dgxIwCZ0My7DWrnAjf0yMJdrt9EfJP
-         HOc4fXv6nD3HBAyT73nrvQpQI6vKx05qUsaJyrfUE0AyycdzA+qgeY6m+UyCF4fnSkuc
-         6OIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692721976; x=1693326776;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rIoS0znE6oN/l/x3K7NnUf3Qklsrk/Ze3DzZn22wcY=;
-        b=NeJfQ3OAr0C5nVU4UmwyZGT3vtacS9XNC9bm/7hPpQagWchTES+0KoO7QQv2SiNgo1
-         X3eA9N1GjbZ0QiFqdpza0vHzVj71q/DQSMsMUxmDBnKW03eEdukxo8rC7V3qrwX7dwzp
-         Ms9a8WXO5vUT61M9Ko6Km62VO7iSrRRH7xm6yRzoEV2sjjP7BEuq2fB8tBAoOiR3HeTg
-         gybnDeV6GMb+NnsPLruGomrpVRGCVlaiXMS5LcFxaktZQluVPdfn7G7CpUD0xYBSis3U
-         YjP9texdwKgac3hU8FmDd9IjixbNf9qRWJLGMoPTFSr9Nh0JA6noZXJs7UWOJYjTX1fS
-         A02A==
-X-Gm-Message-State: AOJu0Yz3tBUEFO8oiUvWp6T9P7yjSOIcOdSP5MX7XDdKIMclbTQMqWED
-        umLniCeEskCeKWP4P9kxwW8iyA==
-X-Google-Smtp-Source: AGHT+IGJBRiipWOU1uAjMDjYvT2rmEnNSJaWly8u7+15oUvz1XPHQzEY5hzGm1+H4GbQkRyn42i/Rw==
-X-Received: by 2002:a05:6512:4007:b0:4f8:5e49:c613 with SMTP id br7-20020a056512400700b004f85e49c613mr8650861lfb.43.1692721976079;
-        Tue, 22 Aug 2023 09:32:56 -0700 (PDT)
-Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
-        by smtp.gmail.com with ESMTPSA id f14-20020ac2532e000000b004fe4ba4cdc3sm2259782lfh.89.2023.08.22.09.32.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 09:32:55 -0700 (PDT)
-Message-ID: <5c917927-92ed-4139-a69f-95761ec63c83@linaro.org>
-Date:   Tue, 22 Aug 2023 18:32:54 +0200
+        Tue, 22 Aug 2023 12:33:13 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90A0137;
+        Tue, 22 Aug 2023 09:33:10 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qYUJQ-0000Ir-0m;
+        Tue, 22 Aug 2023 16:33:00 +0000
+Date:   Tue, 22 Aug 2023 17:32:54 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Daniel Golle <daniel@makrotopia.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH net-next v3 3/4] net: ethernet: mtk_eth_soc: add support for
+ in-SoC SRAM
+Message-ID: <e45e0f230c63ad58869e8fe35b95a2fb8925b625.1692721443.git.daniel@makrotopia.org>
+References: <cover.1692721443.git.daniel@makrotopia.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 8/9] media: qcom: camss: Fix set CSI2_RX_CFG1_VC_MODE
- when VC is greater than 3
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20230822161620.1915110-1-bryan.odonoghue@linaro.org>
- <20230822161620.1915110-9-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230822161620.1915110-9-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1692721443.git.daniel@makrotopia.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2023 18:16, Bryan O'Donoghue wrote:
-> VC_MODE = 0 implies a two bit VC address.
-> VC_MODE = 1 is required for VCs with a larger address than two bits.
-> 
-> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->  drivers/media/platform/qcom/camss/camss-csid-gen2.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> index 45c7986d4a8d0..140c584bfb8b1 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-> @@ -449,6 +449,8 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
->  	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG0);
->  
->  	val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
-> +	if (vc > 3)
-I hope you don't pull your hair out, but I think GENMASK(1,0) could be
-in order here with a comment about the bitlength requirements
+MT7981, MT7986 and MT7988 come with in-SoC SRAM dedicated for Ethernet
+DMA rings. Support using the SRAM without breaking existing device tree
+bindings, ie. only new SoC starting from MT7988 will have the SRAM
+declared as additional resource in device tree. For MT7981 and MT7986
+an offset on top of the main I/O base is used.
 
-Konrad
-> +		val |= 1 << CSI2_RX_CFG1_VC_MODE;
->  	val |= 1 << CSI2_RX_CFG1_MISR_EN;
->  	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1);
->  
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 88 ++++++++++++++++-----
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h | 12 ++-
+ 2 files changed, 78 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index 2482f47313085..ec6a251a0f026 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -1135,10 +1135,13 @@ static int mtk_init_fq_dma(struct mtk_eth *eth)
+ 	dma_addr_t dma_addr;
+ 	int i;
+ 
+-	eth->scratch_ring = dma_alloc_coherent(eth->dma_dev,
+-					       cnt * soc->txrx.txd_size,
+-					       &eth->phy_scratch_ring,
+-					       GFP_KERNEL);
++	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM))
++		eth->scratch_ring = eth->sram_base;
++	else
++		eth->scratch_ring = dma_alloc_coherent(eth->dma_dev,
++						       cnt * soc->txrx.txd_size,
++						       &eth->phy_scratch_ring,
++						       GFP_KERNEL);
+ 	if (unlikely(!eth->scratch_ring))
+ 		return -ENOMEM;
+ 
+@@ -2446,8 +2449,14 @@ static int mtk_tx_alloc(struct mtk_eth *eth)
+ 	if (!ring->buf)
+ 		goto no_tx_mem;
+ 
+-	ring->dma = dma_alloc_coherent(eth->dma_dev, ring_size * sz,
+-				       &ring->phys, GFP_KERNEL);
++	if (MTK_HAS_CAPS(soc->caps, MTK_SRAM)) {
++		ring->dma = eth->sram_base + ring_size * sz;
++		ring->phys = eth->phy_scratch_ring + ring_size * (dma_addr_t)sz;
++	} else {
++		ring->dma = dma_alloc_coherent(eth->dma_dev, ring_size * sz,
++					       &ring->phys, GFP_KERNEL);
++	}
++
+ 	if (!ring->dma)
+ 		goto no_tx_mem;
+ 
+@@ -2546,8 +2555,7 @@ static void mtk_tx_clean(struct mtk_eth *eth)
+ 		kfree(ring->buf);
+ 		ring->buf = NULL;
+ 	}
+-
+-	if (ring->dma) {
++	if (!MTK_HAS_CAPS(soc->caps, MTK_SRAM) && ring->dma) {
+ 		dma_free_coherent(eth->dma_dev,
+ 				  ring->dma_size * soc->txrx.txd_size,
+ 				  ring->dma, ring->phys);
+@@ -2566,9 +2574,14 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+ {
+ 	const struct mtk_reg_map *reg_map = eth->soc->reg_map;
+ 	struct mtk_rx_ring *ring;
+-	int rx_data_len, rx_dma_size;
++	int rx_data_len, rx_dma_size, tx_ring_size;
+ 	int i;
+ 
++	if (MTK_HAS_CAPS(eth->soc->caps, MTK_QDMA))
++		tx_ring_size = MTK_QDMA_RING_SIZE;
++	else
++		tx_ring_size = MTK_DMA_SIZE;
++
+ 	if (rx_flag == MTK_RX_FLAGS_QDMA) {
+ 		if (ring_no)
+ 			return -EINVAL;
+@@ -2603,9 +2616,20 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+ 		ring->page_pool = pp;
+ 	}
+ 
+-	ring->dma = dma_alloc_coherent(eth->dma_dev,
+-				       rx_dma_size * eth->soc->txrx.rxd_size,
+-				       &ring->phys, GFP_KERNEL);
++	if (!MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM) ||
++	    rx_flag != MTK_RX_FLAGS_NORMAL) {
++		ring->dma = dma_alloc_coherent(eth->dma_dev,
++					       rx_dma_size * eth->soc->txrx.rxd_size,
++					       &ring->phys, GFP_KERNEL);
++	} else {
++		struct mtk_tx_ring *tx_ring = &eth->tx_ring;
++
++		ring->dma = tx_ring->dma + tx_ring_size *
++			    eth->soc->txrx.txd_size * (ring_no + 1);
++		ring->phys = tx_ring->phys + tx_ring_size *
++			     eth->soc->txrx.txd_size * (ring_no + 1);
++	}
++
+ 	if (!ring->dma)
+ 		return -ENOMEM;
+ 
+@@ -2690,7 +2714,7 @@ static int mtk_rx_alloc(struct mtk_eth *eth, int ring_no, int rx_flag)
+ 	return 0;
+ }
+ 
+-static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring)
++static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring, bool in_sram)
+ {
+ 	int i;
+ 
+@@ -2713,7 +2737,7 @@ static void mtk_rx_clean(struct mtk_eth *eth, struct mtk_rx_ring *ring)
+ 		ring->data = NULL;
+ 	}
+ 
+-	if (ring->dma) {
++	if (!in_sram && ring->dma) {
+ 		dma_free_coherent(eth->dma_dev,
+ 				  ring->dma_size * eth->soc->txrx.rxd_size,
+ 				  ring->dma, ring->phys);
+@@ -3073,7 +3097,7 @@ static void mtk_dma_free(struct mtk_eth *eth)
+ 	for (i = 0; i < MTK_MAX_DEVS; i++)
+ 		if (eth->netdev[i])
+ 			netdev_reset_queue(eth->netdev[i]);
+-	if (eth->scratch_ring) {
++	if (!MTK_HAS_CAPS(soc->caps, MTK_SRAM) && eth->scratch_ring) {
+ 		dma_free_coherent(eth->dma_dev,
+ 				  MTK_QDMA_RING_SIZE * soc->txrx.txd_size,
+ 				  eth->scratch_ring, eth->phy_scratch_ring);
+@@ -3081,13 +3105,13 @@ static void mtk_dma_free(struct mtk_eth *eth)
+ 		eth->phy_scratch_ring = 0;
+ 	}
+ 	mtk_tx_clean(eth);
+-	mtk_rx_clean(eth, &eth->rx_ring[0]);
+-	mtk_rx_clean(eth, &eth->rx_ring_qdma);
++	mtk_rx_clean(eth, &eth->rx_ring[0], MTK_HAS_CAPS(soc->caps, MTK_SRAM));
++	mtk_rx_clean(eth, &eth->rx_ring_qdma, false);
+ 
+ 	if (eth->hwlro) {
+ 		mtk_hwlro_rx_uninit(eth);
+ 		for (i = 1; i < MTK_MAX_RX_RING_NUM; i++)
+-			mtk_rx_clean(eth, &eth->rx_ring[i]);
++			mtk_rx_clean(eth, &eth->rx_ring[i], false);
+ 	}
+ 
+ 	kfree(eth->scratch_head);
+@@ -4676,7 +4700,7 @@ static int mtk_sgmii_init(struct mtk_eth *eth)
+ 
+ static int mtk_probe(struct platform_device *pdev)
+ {
+-	struct resource *res = NULL;
++	struct resource *res = NULL, *res_sram;
+ 	struct device_node *mac_np;
+ 	struct mtk_eth *eth;
+ 	int err, i;
+@@ -4696,6 +4720,20 @@ static int mtk_probe(struct platform_device *pdev)
+ 	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SOC_MT7628))
+ 		eth->ip_align = NET_IP_ALIGN;
+ 
++	if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM)) {
++		/* SRAM is actual memory and supports transparent access just like DRAM.
++		 * Hence we don't require __iomem being set and don't need to use accessor
++		 * functions to read from or write to SRAM.
++		 */
++		if (mtk_is_netsys_v3_or_greater(eth)) {
++			eth->sram_base = (void __force *)devm_platform_ioremap_resource(pdev, 1);
++			if (IS_ERR(eth->sram_base))
++				return PTR_ERR(eth->sram_base);
++		} else {
++			eth->sram_base = (void __force *)eth->base + MTK_ETH_SRAM_OFFSET;
++		}
++	}
++
+ 	spin_lock_init(&eth->page_lock);
+ 	spin_lock_init(&eth->tx_irq_lock);
+ 	spin_lock_init(&eth->rx_irq_lock);
+@@ -4759,6 +4797,18 @@ static int mtk_probe(struct platform_device *pdev)
+ 			err = -EINVAL;
+ 			goto err_destroy_sgmii;
+ 		}
++		if (MTK_HAS_CAPS(eth->soc->caps, MTK_SRAM)) {
++			if (mtk_is_netsys_v3_or_greater(eth)) {
++				res_sram = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++				if (!res_sram) {
++					err = -EINVAL;
++					goto err_destroy_sgmii;
++				}
++				eth->phy_scratch_ring = res_sram->start;
++			} else {
++				eth->phy_scratch_ring = res->start + MTK_ETH_SRAM_OFFSET;
++			}
++		}
+ 	}
+ 
+ 	if (eth->soc->offload_version) {
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index cf9381a3d68b7..7e961fff94f35 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -139,6 +139,9 @@
+ #define MTK_GDMA_MAC_ADRH(x)	({ typeof(x) _x = (x); (_x == MTK_GMAC3_ID) ?	\
+ 				   0x54C : 0x50C + (_x * 0x1000); })
+ 
++/* Internal SRAM offset */
++#define MTK_ETH_SRAM_OFFSET	0x40000
++
+ /* FE global misc reg*/
+ #define MTK_FE_GLO_MISC         0x124
+ 
+@@ -938,6 +941,7 @@ enum mkt_eth_capabilities {
+ 	MTK_RSTCTRL_PPE1_BIT,
+ 	MTK_RSTCTRL_PPE2_BIT,
+ 	MTK_U3_COPHY_V2_BIT,
++	MTK_SRAM_BIT,
+ 
+ 	/* MUX BITS*/
+ 	MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT,
+@@ -973,6 +977,7 @@ enum mkt_eth_capabilities {
+ #define MTK_RSTCTRL_PPE1	BIT_ULL(MTK_RSTCTRL_PPE1_BIT)
+ #define MTK_RSTCTRL_PPE2	BIT_ULL(MTK_RSTCTRL_PPE2_BIT)
+ #define MTK_U3_COPHY_V2		BIT_ULL(MTK_U3_COPHY_V2_BIT)
++#define MTK_SRAM		BIT_ULL(MTK_SRAM_BIT)
+ 
+ #define MTK_ETH_MUX_GDM1_TO_GMAC1_ESW		\
+ 	BIT_ULL(MTK_ETH_MUX_GDM1_TO_GMAC1_ESW_BIT)
+@@ -1048,14 +1053,14 @@ enum mkt_eth_capabilities {
+ #define MT7981_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | MTK_GMAC2_GEPHY | \
+ 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+ 		      MTK_MUX_U3_GMAC2_TO_QPHY | MTK_U3_COPHY_V2 | \
+-		      MTK_RSTCTRL_PPE1)
++		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
+ 
+ #define MT7986_CAPS  (MTK_GMAC1_SGMII | MTK_GMAC2_SGMII | \
+ 		      MTK_MUX_GMAC12_TO_GEPHY_SGMII | MTK_QDMA | \
+-		      MTK_RSTCTRL_PPE1)
++		      MTK_RSTCTRL_PPE1 | MTK_SRAM)
+ 
+ #define MT7988_CAPS  (MTK_GDM1_ESW | MTK_QDMA | MTK_RSTCTRL_PPE1 | \
+-		      MTK_RSTCTRL_PPE2)
++		      MTK_RSTCTRL_PPE2 | MTK_SRAM)
+ 
+ struct mtk_tx_dma_desc_info {
+ 	dma_addr_t	addr;
+@@ -1215,6 +1220,7 @@ struct mtk_eth {
+ 	struct device			*dev;
+ 	struct device			*dma_dev;
+ 	void __iomem			*base;
++	void				*sram_base;
+ 	spinlock_t			page_lock;
+ 	spinlock_t			tx_irq_lock;
+ 	spinlock_t			rx_irq_lock;
+-- 
+2.41.0
