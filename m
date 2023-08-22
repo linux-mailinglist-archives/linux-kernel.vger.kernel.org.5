@@ -2,204 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 586DB7838D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE8627838E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjHVElU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 00:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S232448AbjHVEpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 00:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232291AbjHVElT (ORCPT
+        with ESMTP id S232291AbjHVEpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 00:41:19 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E68E184;
-        Mon, 21 Aug 2023 21:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692679277; x=1724215277;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/mW++4NuYxUUCVWxRmzU8pj9vbLZbaW01HUDQp7Dz94=;
-  b=W8QuQfS7ZRvKaCiL+p8H8vgZQ1kxoa0vtr9CkcTEtm7kQB+LqRiObMD4
-   cye8lwzKUUpkNb+d92++162I1a75t2xFbW6R/IPaDtLXaHRIOKaXZa1JY
-   GxcGvF92gSBYkkRch2zX9E6jeiJfrGjmA/H7bjnazie/zJJAp7OS4ZGw+
-   SHCSUUx7g+nAHztu1Yn8Q7YY+M/w7VgMXgqf7HAed4eGRdewyHTUnwhsR
-   HOmusku7r/xcJpPQIjYIq0v8kDBixF6ipToD8Ha1cIfUaPAvTw7CTPSM1
-   uX2g8mm2DNsY6kMXmUfnBsZNHCOiJyk2KLz6KbuD8RdWpRzsSC0qw+Fp6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354106888"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="354106888"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 21:41:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="736074473"
-X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
-   d="scan'208";a="736074473"
-Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 Aug 2023 21:41:12 -0700
-Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYJAT-0001Mt-1G;
-        Tue, 22 Aug 2023 04:39:29 +0000
-Date:   Tue, 22 Aug 2023 12:37:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wenhua lin <wenhua.lin1994@gmail.com>,
-        Wenhua Lin <Wenhua.Lin@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Zhaochen Su <Zhaochen.Su@unisoc.com>
-Subject: Re: [PATCH] tty/serial: Cancel work queue before closing uart
-Message-ID: <202308221254.RnJddA0P-lkp@intel.com>
-References: <20230818031532.15591-1-Wenhua.Lin@unisoc.com>
+        Tue, 22 Aug 2023 00:45:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72CE18B;
+        Mon, 21 Aug 2023 21:45:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F1D463434;
+        Tue, 22 Aug 2023 04:45:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A105CC433CA;
+        Tue, 22 Aug 2023 04:45:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692679500;
+        bh=yokCOAF46NkeXnzKzrkQWrUvo6uovD+L/nrinsM5GDg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J3AGPuuzsU5xfxgGD0xeMXAlwtNdVrpFfG7ZMGJa8L9qwftiMLSNKnzFQSVkw8lmj
+         /si9woX67hd97yLzt0m9i9ZjiIUWsyANaxTERK4xKK3Q8KNqpqoY4ZYCNyccYZBREL
+         McVnpTVx3qwzNAxGAI9qZwkKHkwEXhBcnNRgduB/g7cRN2h3agD0J5Rik1q4fq+eSj
+         AodcwiCKwhYbxE5NWRkPBsIf6ComhmA+3p+7AS1VHFlT2VXTDNjR4yVDY6paolyy7C
+         CmA3z/o4QV6Q34S+oTnlqt9i/xHF+DIg5CLgdqGRIIGNnA+80SoXtnUZPrH39jdwnQ
+         wEa3GJRM1OgCw==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-9a18a4136a9so278819166b.2;
+        Mon, 21 Aug 2023 21:45:00 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy7ILn39UAFijGXVKGqUaROB8fSXxhtjCdleKfLPSWJsFjdsAOe
+        uuGywWFVrY3m4SiKRq/TGkQ1/1VLKyq9qMFlg24=
+X-Google-Smtp-Source: AGHT+IHxrXK8Uj/TaMDUDhOIN7KBjt+OV9ngc6YJG/wIHinia3KIX6pSFc0u9/62N945j9OjUXam6FhWhcCmwBijRu0=
+X-Received: by 2002:a17:906:2215:b0:99b:d599:5085 with SMTP id
+ s21-20020a170906221500b0099bd5995085mr6461631ejs.64.1692679498790; Mon, 21
+ Aug 2023 21:44:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818031532.15591-1-Wenhua.Lin@unisoc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+In-Reply-To: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 22 Aug 2023 12:44:46 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5JpHwgcq7mPBOcAwy638VAQvNc2rkRNyWnBZ4sVdq8XQ@mail.gmail.com>
+Message-ID: <CAAhV-H5JpHwgcq7mPBOcAwy638VAQvNc2rkRNyWnBZ4sVdq8XQ@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Binbin Zhou <zhoubinbin@loongson.cn>
+Cc:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wenhua,
+Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on tty/tty-testing]
-[also build test ERROR on tty/tty-next tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus linus/master v6.5-rc7 next-20230821]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Wenhua-Lin/tty-serial-Cancel-work-queue-before-closing-uart/20230818-111905
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20230818031532.15591-1-Wenhua.Lin%40unisoc.com
-patch subject: [PATCH] tty/serial: Cancel work queue before closing uart
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20230822/202308221254.RnJddA0P-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308221254.RnJddA0P-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308221254.RnJddA0P-lkp@intel.com/
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wlc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_fo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ovf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblcr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_dh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_nq.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_twos.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ftp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_pe_sip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_defrag_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_reject_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_raw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/inet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tcp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/raw_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/unix/unix_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_raw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_defrag_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_reject_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bpfilter/bpfilter.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ar9331.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_brcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_dsa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_gswip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_hellcreek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ksz.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_lan9303.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_mtk.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_none.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot_8021q.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_qca.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl4_a.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl8_4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rzn1_a5psw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_sja1105.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_trailer.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_xrs700x.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xdp/xsk_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_crypto_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_token_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/nf_conntrack_bridge.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtables.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_broute.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_filter.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/sunrpc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/auth_rpcgss.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/rpcsec_gss_krb5.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/kcm/kcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sctp/sctp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/tipc/diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/smc/smc_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/chnl_net.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_usb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci_spi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nfc_digital.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/hsr/hsr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in arch/x86/video/fbdev.o
->> ERROR: modpost: "tty_buffer_cancel_work" [drivers/tty/serial/sprd_serial.ko] undefined!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On Mon, Aug 21, 2023 at 2:13=E2=80=AFPM Binbin Zhou <zhoubinbin@loongson.cn=
+> wrote:
+>
+> Since commit f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add
+> Loongson-2K1000 LIOINTC"), the loongson liointc supports configuring
+> routes for 64-bit interrupt sources.
+>
+> For liointc-2.0, we need to define two liointc nodes in dts, one for
+> "0-31" interrupt sources and the other for "32-63" interrupt sources.
+> This applies to mips Loongson-2K1000.
+>
+> Unfortunately, there are some warnings about "loongson,liointc-2.0":
+> 1. "interrupt-names" should be "required", the driver gets the parent
+> interrupts through it.
+>
+> 2. Since not all CPUs are multicore, e.g. Loongson-2K0500 is a
+> single-core CPU, there is no core1-related registers. So "reg" and
+> "reg-names" should be set to "minItems 2".
+>
+> 3. Routing interrupts from "int0" is a common solution in practice, but
+> theoretically there is no such requirement, as long as conflicts are
+> avoided. So "interrupt-names" should be defined by "pattern".
+>
+> This fixes dtbs_check warning:
+>
+> DTC_CHK arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb
+> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-contro=
+ller@1fe11440: interrupt-names:0: 'int0' was expected
+>       From schema: Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml
+> arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dtb: interrupt-contro=
+ller@1fe11440: Unevaluated properties are not allowed ('interrupt-names' wa=
+s unexpected)
+>       From schema: Documentation/devicetree/bindings/interrupt-controller=
+/loongson,liointc.yaml
+>
+> Fixes: f4dee5d8e1fa ("dt-bindings: interrupt-controller: Add Loongson-2K1=
+000 LIOINTC")
+> Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+> ---
+> V2:
+> 1. Update commit message;
+> 2. "interruprt-names" should be "required", the driver gets the parent
+> interrupts through it;
+> 3. Add more descriptions to explain the rationale for multiple nodes;
+> 4. Rewrite if-else statements.
+>
+> Link to V1:
+> https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongson.=
+cn/
+>
+>  .../loongson,liointc.yaml                     | 74 +++++++++----------
+>  1 file changed, 37 insertions(+), 37 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/loong=
+son,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/l=
+oongson,liointc.yaml
+> index 00b570c82903..f695d3a75ddf 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/loongson,lio=
+intc.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,lio=
+intc.yaml
+> @@ -11,11 +11,11 @@ maintainers:
+>
+>  description: |
+>    This interrupt controller is found in the Loongson-3 family of chips a=
+nd
+> -  Loongson-2K1000 chip, as the primary package interrupt controller whic=
+h
+> +  Loongson-2K series chips, as the primary package interrupt controller =
+which
+>    can route local I/O interrupt to interrupt lines of cores.
+> -
+> -allOf:
+> -  - $ref: /schemas/interrupt-controller.yaml#
+> +  In particular, the Loongson-2K1000/2K0500 has 64 interrupt sources tha=
+t we
+> +  need to describe with two dts nodes. One for interrupt sources "0-31" =
+and
+> +  the other for interrupt sources "32-63".
+>
+>  properties:
+>    compatible:
+> @@ -24,15 +24,9 @@ properties:
+>        - loongson,liointc-1.0a
+>        - loongson,liointc-2.0
+>
+> -  reg:
+> -    minItems: 1
+> -    maxItems: 3
+> +  reg: true
+>
+> -  reg-names:
+> -    items:
+> -      - const: main
+> -      - const: isr0
+> -      - const: isr1
+> +  reg-names: true
+>
+>    interrupt-controller: true
+>
+> @@ -45,11 +39,9 @@ properties:
+>    interrupt-names:
+>      description: List of names for the parent interrupts.
+>      items:
+> -      - const: int0
+> -      - const: int1
+> -      - const: int2
+> -      - const: int3
+> +      pattern: int[0-3]
+>      minItems: 1
+> +    maxItems: 4
+>
+>    '#interrupt-cells':
+>      const: 2
+> @@ -69,32 +61,41 @@ required:
+>    - compatible
+>    - reg
+>    - interrupts
+> +  - interrupt-names
+>    - interrupt-controller
+>    - '#interrupt-cells'
+>    - loongson,parent_int_map
+>
+> -
+>  unevaluatedProperties: false
+>
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        enum:
+> -          - loongson,liointc-2.0
+> -
+> -then:
+> -  properties:
+> -    reg:
+> -      minItems: 3
+> -
+> -  required:
+> -    - reg-names
+> -
+> -else:
+> -  properties:
+> -    reg:
+> -      maxItems: 1
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - loongson,liointc-2.0
+> +    then:
+> +      properties:
+> +        reg:
+> +          minItems: 2
+> +          items:
+> +            - description: Interrupt routing registers.
+> +            - description: Low/high 32-bit interrupt status routed to co=
+re0.
+> +            - description: Low/high 32-bit interrupt status routed to co=
+re1.
+> +        reg-names:
+> +          minItems: 2
+> +          items:
+> +            - const: main
+> +            - const: isr0
+> +            - const: isr1
+> +      required:
+> +        - reg-names
+> +    else:
+> +      properties:
+> +        reg:
+> +          maxItems: 1
+>
+>  examples:
+>    - |
+> @@ -113,7 +114,6 @@ examples:
+>                                  <0x0f000000>, /* int1 */
+>                                  <0x00000000>, /* int2 */
+>                                  <0x00000000>; /* int3 */
+> -
+>      };
+>
+>  ...
+> --
+> 2.39.3
+>
