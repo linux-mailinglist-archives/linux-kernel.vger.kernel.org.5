@@ -2,52 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E02784CE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D022784CEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbjHVWfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:35:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S231478AbjHVWix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:38:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231379AbjHVWfO (ORCPT
+        with ESMTP id S230187AbjHVWiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:35:14 -0400
+        Tue, 22 Aug 2023 18:38:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F130CF3;
-        Tue, 22 Aug 2023 15:35:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DECCDD;
+        Tue, 22 Aug 2023 15:38:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D048640C5;
-        Tue, 22 Aug 2023 22:35:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78BDEC433C8;
-        Tue, 22 Aug 2023 22:35:01 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 442E563D4B;
+        Tue, 22 Aug 2023 22:38:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3BACC433B6;
+        Tue, 22 Aug 2023 22:38:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692743701;
-        bh=4SThI4EuvWqgq7E+zQ8jIRtu4s3TqWYlc6rSEHWhW2A=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=jBpfAZt/tgAt+HicTIQMspA3O2cEENT8yfaXkJ+ffJEIJWl+thpOST8iijaIPUZ9c
-         Cdoz51qVhWp9xkpvGGvS+sEqccoAygqpo/KeR/sRg3ENglyFBV1+t6mWUIC6CSvcqo
-         6mqbBjGA216DZ1UDJwHjiuBtPpNsqeRs20/4TdTTUiTJIFmHHc1Che+sJrhZpOIH3M
-         oVQeIPG6a8jsb6wC2GwqxHBeiryZ36ggDHYrs21BnE2u1c8a6cs9kvEh1ph6v+3MH9
-         /yU4HWSUfP2ZK4UuT1kxxvJHINQiQc7vcH0G5hNQLUGJoIC+ea6oS1cbYxHZYz2iof
-         9Mv5xTVgDt3Vw==
-Message-ID: <a65a7d976be4212ef71fe32c4ed2dacb.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1692743929;
+        bh=U15eYY76gsnD/RHRrRp2WW4I4OCWvlLasJey1YPS3bA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jn4NXR0lfbWYS5Bph9NDsU+CUS6oKPixIBuJYm6y13c3Oey4zsZFxl5LEbilQxJik
+         FeYi4hk81hW93Pito7BlDOIWLAaYnB0RhnPhbkxJtYjIwxdi5/i0pNyJyNN/nCccuI
+         fmY+ssuFxpfa7I30gkLK8YDwU53i5SgxztwwtwOd89uEzAB/wmwwNcI4B7etE38nUX
+         1KT94QzqmI87253Kc52MD6Y8fou1jBGiX1pJkpWJMnTdedMpWf+KZdUDC39Y5QFc9X
+         pamJJqabcmOvoF7HZyud2tyJQOPli0tj7WP4SaXb0FkLx82tm9eotCxnMBwonE7SUu
+         gzqa24AIGrPmA==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so43872971fa.3;
+        Tue, 22 Aug 2023 15:38:49 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyZus2vU2dDMD/W5mtDf7ItNOiHAf94VYBt93eGRNIVi07Bba4y
+        YLO+AhO3AfymF9WV/yf61eGt2ld82IGHHHEKPA==
+X-Google-Smtp-Source: AGHT+IF0JLsyZnXZQBcgCFuF2kEmLMhxys3SoS78ueuZDPswTtorzz1H8NCRQqi/aO+jact/25/WQ07MKCBccdqUsKI=
+X-Received: by 2002:a2e:9919:0:b0:2bb:8d96:6041 with SMTP id
+ v25-20020a2e9919000000b002bb8d966041mr7975933lji.45.1692743927592; Tue, 22
+ Aug 2023 15:38:47 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230714175008.4064592-1-robh@kernel.org> <CAJZ5v0i-OByOSjpxrj5d9S9QHRySK-MEUo+bK_J_4ihsCBmnSg@mail.gmail.com>
+ <CAL_JsqLy22S5bTFu-ZKXhSMtMPPq9z1Gdb5kJMVmhui55miDsQ@mail.gmail.com> <CAJZ5v0hM63nVphwkYK1bL4uf_dXSew2+LBuG9kuhvvLdrhLxAw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hM63nVphwkYK1bL4uf_dXSew2+LBuG9kuhvvLdrhLxAw@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 22 Aug 2023 17:38:32 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJGoDPLKgu8awJfuWpqzg8HOuruDa1z4s-Swb7Cm5OaJw@mail.gmail.com>
+Message-ID: <CAL_JsqJGoDPLKgu8awJfuWpqzg8HOuruDa1z4s-Swb7Cm5OaJw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: Explicitly include correct DT includes
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Guillaume La Roque <glaroque@baylibre.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230819134147.456060-3-andreas@kemnade.info>
-References: <20230819134147.456060-1-andreas@kemnade.info> <20230819134147.456060-3-andreas@kemnade.info>
-Subject: Re: [PATCH 2/3] clk: twl: add clock driver for TWL6032
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     andreas@kemnade.info, bcousson@baylibre.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, tony@atomide.com
-Date:   Tue, 22 Aug 2023 15:34:59 -0700
-User-Agent: alot/0.10
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -58,239 +110,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andreas Kemnade (2023-08-19 06:41:46)
-> diff --git a/drivers/clk/clk-twl.c b/drivers/clk/clk-twl.c
-> new file mode 100644
-> index 0000000000000..deb5742393bac
-> --- /dev/null
-> +++ b/drivers/clk/clk-twl.c
-> @@ -0,0 +1,205 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Clock driver for twl device.
-> + *
-> + * inspired by the driver for the Palmas device
-> + */
-> +
-> +#include <linux/clk.h>
+On Thu, Jul 20, 2023 at 1:50=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.or=
+g> wrote:
+>
+> On Fri, Jul 14, 2023 at 9:53=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
+te:
+> >
+> > On Fri, Jul 14, 2023 at 12:54=E2=80=AFPM Rafael J. Wysocki <rafael@kern=
+el.org> wrote:
+> > >
+> > > On Fri, Jul 14, 2023 at 7:51=E2=80=AFPM Rob Herring <robh@kernel.org>=
+ wrote:
+> > > >
+> > > > The DT of_device.h and of_platform.h date back to the separate
+> > > > of_platform_bus_type before it as merged into the regular platform =
+bus.
+> > > > As part of that merge prepping Arm DT support 13 years ago, they
+> > > > "temporarily" include each other. They also include platform_device=
+.h
+> > > > and of.h. As a result, there's a pretty much random mix of those in=
+clude
+> > > > files used throughout the tree. In order to detangle these headers =
+and
+> > > > replace the implicit includes with struct declarations, users need =
+to
+> > > > explicitly include the correct includes.
+> > > >
+> > > > Signed-off-by: Rob Herring <robh@kernel.org>
+> > >
+> > > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > >
+> > > or please let me know if you want me to pick this up.
+> >
+> > Single patch in your subsystem with no dependencies. Please pick it up.
+>
+> Done, thanks!
 
-Is this include used? Hopefully not. Please drop.
+I'm not seeing this in linux-next.
 
-> +#include <linux/clk-provider.h>
-> +#include <linux/mfd/twl.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-
-Is this include used?
-
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +#define VREG_STATE              2
-> +#define TWL6030_CFG_STATE_OFF   0x00
-> +#define TWL6030_CFG_STATE_ON    0x01
-> +#define TWL6030_CFG_STATE_MASK  0x03
-> +
-> +struct twl_clk32k_desc {
-> +       const char *clk_name;
-> +       u8 base;
-> +};
-> +
-> +struct twl_clock_info {
-> +       struct device *dev;
-> +       struct clk_hw hw;
-> +       const struct twl_clk32k_desc *clk_desc;
-> +};
-> +
-> +static inline int
-> +twlclk_read(struct twl_clock_info *info, unsigned int slave_subgp,
-> +           unsigned int offset)
-> +{
-> +       u8 value;
-> +       int status;
-> +
-> +       status =3D twl_i2c_read_u8(slave_subgp, &value,
-> +                                info->clk_desc->base + offset);
-> +       return (status < 0) ? status : value;
-> +}
-> +
-> +static inline int
-> +twlclk_write(struct twl_clock_info *info, unsigned int slave_subgp,
-> +            unsigned int offset, u8 value)
-> +{
-> +       return twl_i2c_write_u8(slave_subgp, value,
-> +                               info->clk_desc->base + offset);
-> +}
-> +
-> +static inline struct twl_clock_info *to_twl_clks_info(struct clk_hw *hw)
-> +{
-> +       return container_of(hw, struct twl_clock_info, hw);
-> +}
-> +
-> +static unsigned long twl_clks_recalc_rate(struct clk_hw *hw,
-> +                                         unsigned long parent_rate)
-> +{
-> +       return 32768;
-> +}
-> +
-> +static int twl6032_clks_prepare(struct clk_hw *hw)
-> +{
-> +       struct twl_clock_info *cinfo =3D to_twl_clks_info(hw);
-> +       int ret;
-> +
-> +       ret =3D twlclk_write(cinfo, TWL_MODULE_PM_RECEIVER, VREG_STATE,
-> +                          TWL6030_CFG_STATE_ON);
-> +       if (ret < 0)
-> +               dev_err(cinfo->dev, "clk prepare failed\n");
-> +
-> +       return ret;
-> +}
-> +
-> +static void twl6032_clks_unprepare(struct clk_hw *hw)
-> +{
-> +       struct twl_clock_info *cinfo =3D to_twl_clks_info(hw);
-> +       int ret;
-> +
-> +       ret =3D twlclk_write(cinfo, TWL_MODULE_PM_RECEIVER, VREG_STATE,
-> +                          TWL6030_CFG_STATE_OFF);
-> +       if (ret < 0)
-> +               dev_err(cinfo->dev, "clk unprepare failed\n");
-> +}
-> +
-> +static int twl6032_clks_is_prepared(struct clk_hw *hw)
-> +{
-> +       struct twl_clock_info *cinfo =3D to_twl_clks_info(hw);
-> +       int val;
-> +
-> +       val =3D twlclk_read(cinfo, TWL_MODULE_PM_RECEIVER, VREG_STATE);
-> +       if (val < 0) {
-> +               dev_err(cinfo->dev, "clk read failed\n");
-> +               return val;
-> +       }
-> +
-> +       val &=3D TWL6030_CFG_STATE_MASK;
-> +
-> +       return val =3D=3D TWL6030_CFG_STATE_ON;
-> +}
-> +
-> +static const struct clk_ops twl6032_clks_ops =3D {
-> +       .prepare        =3D twl6032_clks_prepare,
-> +       .unprepare      =3D twl6032_clks_unprepare,
-> +       .is_prepared    =3D twl6032_clks_is_prepared,
-> +       .recalc_rate    =3D twl_clks_recalc_rate,
-> +};
-> +
-> +struct twl_clks_of_match_data {
-> +       struct clk_init_data init;
-> +       const struct twl_clk32k_desc desc;
-> +};
-> +
-> +static const struct twl_clks_of_match_data twl6032_of_clk32kg =3D {
-> +       .init =3D {
-> +               .name =3D "clk32kg",
-> +               .ops =3D &twl6032_clks_ops,
-> +               .flags =3D CLK_IGNORE_UNUSED,
-> +       },
-> +       .desc =3D {
-> +               .clk_name =3D "clk32kg",
-> +               .base =3D 0x8C,
-> +       },
-> +};
-> +
-> +static const struct twl_clks_of_match_data twl6032_of_clk32kaudio =3D {
-> +       .init =3D {
-> +               .name =3D "clk32kaudio",
-> +               .ops =3D &twl6032_clks_ops,
-> +               .flags =3D CLK_IGNORE_UNUSED,
-> +       },
-> +       .desc =3D {
-> +               .clk_name =3D "clk32kaudio",
-> +               .base =3D 0x8F,
-> +       },
-> +};
-> +
-> +static const struct of_device_id twl_clks_of_match[] =3D {
-> +       {
-> +               .compatible =3D "ti,twl6032-clk32kg",
-> +               .data =3D &twl6032_of_clk32kg,
-> +       },
-> +       {
-> +               .compatible =3D "ti,twl6032-clk32kaudio",
-> +               .data =3D &twl6032_of_clk32kaudio,
-> +       },
-> +       { },
-> +};
-> +MODULE_DEVICE_TABLE(of, twl_clks_of_match);
-
-This array can be moved next to the driver so that it isn't tempting to
-access the variable directly.
-
-> +
-> +static int twl_clks_probe(struct platform_device *pdev)
-> +{
-> +       struct device_node *node =3D pdev->dev.of_node;
-> +       const struct twl_clks_of_match_data *match_data;
-> +       struct twl_clock_info *cinfo;
-> +       int ret;
-> +
-> +       match_data =3D of_device_get_match_data(&pdev->dev);
-
-Use device_get_match_data() instead.
-
-> +       if (!match_data)
-> +               return 1;
-> +
-> +       cinfo =3D devm_kzalloc(&pdev->dev, sizeof(*cinfo), GFP_KERNEL);
-> +       if (!cinfo)
-> +               return -ENOMEM;
-> +
-> +       platform_set_drvdata(pdev, cinfo);
-> +
-> +       cinfo->dev =3D &pdev->dev;
-> +
-> +       cinfo->clk_desc =3D &match_data->desc;
-> +       cinfo->hw.init =3D &match_data->init;
-> +       ret =3D devm_clk_hw_register(&pdev->dev, &cinfo->hw);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "Fail to register clock %s, %d\n",
-> +                       match_data->desc.clk_name, ret);
-> +               return ret;
-> +       }
-> +
-> +       ret =3D of_clk_add_hw_provider(node, of_clk_hw_simple_get, &cinfo=
-->hw);
-
-Use devm?
-
-> +       if (ret < 0)
-> +               dev_err(&pdev->dev, "Fail to add clock driver, %d\n", ret=
-);
-> +       return ret;
-> +}
-> +
-> +static void twl_clks_remove(struct platform_device *pdev)
-> +{
-> +       of_clk_del_provider(pdev->dev.of_node);
-> +}
-
-And get rid of this entirely?
-
-> +
-> +static struct platform_driver twl_clks_driver =3D {
-> +       .driver =3D {
-> +               .name =3D "twl-clk",
-> +               .of_match_table =3D twl_clks_of_match,
-> +       },
-> +       .probe =3D twl_clks_probe,
-> +       .remove_new =3D twl_clks_remove,
-> +};
-> +
-> +module_platform_driver(twl_clks_driver);
-> +
-> +MODULE_DESCRIPTION("Clock driver for TWL Series Devices");
-> +MODULE_ALIAS("platform:twl-clk");
-
-This alias is unnecessary?
-
-> +MODULE_LICENSE("GPL");
+Rob
