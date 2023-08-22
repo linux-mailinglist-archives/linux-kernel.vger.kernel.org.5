@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9567846E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BB07846E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjHVQTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
+        id S237654AbjHVQUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234856AbjHVQS6 (ORCPT
+        with ESMTP id S237626AbjHVQUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:18:58 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B851CCF4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:18:52 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-79244dd2e49so36042939f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1692721132; x=1693325932;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SulyxFur075YhW3hAscwkd5r4FiasHvTrmXcovxkOoY=;
-        b=NODJe+35KV76IszU638IPl21pwzJOPZG4QIc7K4tcqVwvan4l3NbEl0Q9JGQJQ9Voo
-         Kx7BksaPUy5e5jj2z3g2c+6WeW1vqNSEckNS0XKCPNYw+3S3k1bosIt/86obRsKiia00
-         p+oyLPsKPXK7lY/6NIFK2vA0R7Jz2QUvYVyxQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692721132; x=1693325932;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SulyxFur075YhW3hAscwkd5r4FiasHvTrmXcovxkOoY=;
-        b=L5oQYg6PfWDkLIVyPugptOtFl5PWP6l0RRqXtJqb/o/zs9o9Qoa3RPLyy9O4aLb6Ld
-         bVUpDhnExlwVpQ0eKK7Q/GzHL21bC72yMNh1aPbeb4CLxH8pRodZygZqitFd/gL16npr
-         suELZg6zS1xiHnqbPoCN1x5Jmm7Q4PA2GRWJSf4dMy0/jKdb6Ji08cdgMVqhkLLz2zcm
-         wcupJXdrfHbLnZ/2zRdOCmBjDSrwaSJmkIRj9ZoQC5HSN9ENn29rH0nnwgCOxnmzXAJq
-         /l4VM9nga4LoPML0CQ+2IQCGKhCUq9O1jZIccSOGC60wfylUlRWXaulJqkKst6xbUwzx
-         t2GA==
-X-Gm-Message-State: AOJu0YzlqG7uxzFwjsZvpuX+kORnTGU0lhR06HWAxW6vzTJOf4MODDMc
-        zQn04XNUrAjAiVKgMEnAXzAkJPTNkicO5gmEhwk=
-X-Google-Smtp-Source: AGHT+IGtoYgpuSBlwU3oK2wWbcLMsHG7ycm346mQ9H6kR0VvrxjyU/tan1KIQGxT+qrWIyci4+dkbQ==
-X-Received: by 2002:a5e:c108:0:b0:786:2878:9593 with SMTP id v8-20020a5ec108000000b0078628789593mr237361iol.0.1692721131941;
-        Tue, 22 Aug 2023 09:18:51 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id q16-20020a02a310000000b0042b21e8853bsm3080471jai.36.2023.08.22.09.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 09:18:51 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 16:18:50 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: Question on __torture_rt_boost() else clause
-Message-ID: <20230822161850.GB74437@google.com>
-References: <1393d18f-4928-45da-b504-7e5b6a681e51@paulmck-laptop>
+        Tue, 22 Aug 2023 12:20:04 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FA0CE4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:20:02 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5A659899;
+        Tue, 22 Aug 2023 18:18:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1692721123;
+        bh=ag03oyDbmHdzswgBEwrUV7EhP85TJysi1yNOhgU1Bkc=;
+        h=From:Subject:Date:To:Cc:From;
+        b=EJe1V771TuAqggmH8jv9g/JhEFkzLwQNCpM66gw/t+TLLZmPORFSvRWXcRik1kpVc
+         7i21C7RH7k57SRmN7akkzULb32LWDh2j1lGoNPtltYyjRlstw7C8fp8ml2519F0DUf
+         QXGJwOCDfYGc4buVJrGeJx38xfRBMjOzQt369j2s=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH v3 00/12] drm/bridge: tc358768: Fixes and timings
+ improvements
+Date:   Tue, 22 Aug 2023 19:19:33 +0300
+Message-Id: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1393d18f-4928-45da-b504-7e5b6a681e51@paulmck-laptop>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABXg5GQC/22MsQ6DIBRFf8UwlwYeiNip/9F0AHlUhkoDhrQx/
+ nvRycHx3NxzFpIxBczk1iwkYQk5xKmCuDRkGM30QhpcZQIMBNNM0nkQre6UptyqXvboAYUj9f5
+ J6MN3Tz2elceQ55h+e7nwbT2JFE4Z5cY7KW2nQdl7cGhynGw0yV2H+CZbq8DB5+rgQ/VBgu1d6
+ zsmzIm/rusftJS01+cAAAA=
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Francesco Dolcini <francesco@dolcini.it>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2285;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=ag03oyDbmHdzswgBEwrUV7EhP85TJysi1yNOhgU1Bkc=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk5OAmznVyC23Pg5VTyH+et0kZyb3T0wfiCoI31
+ 3KJ9LcrgSOJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZOTgJgAKCRD6PaqMvJYe
+ 9dH7D/oDhr/9KV2z9LahVNgLlkuZV+1VbsCGJHHkx3xRryh0vpOhzKJGZUQFOLVARm6Qmh2J127
+ j8emwmrqty45Ens2FH7yqoHp2/mxB+Z7AAF65Qv+ycbmxBM5wZcbepbUELdEsadZ7LfEXm1ehyo
+ XGwGX62YYPHVhhXaPGIMsy1TY/pWQe1U7jNGjxMTeGGFv0Qdrspro+PQ3cBSFxUZF5U3XTDUo8g
+ f+yVvHb1w2MRwTq39Frj3zUV8thNjw8fAIzYesq4zRAZ3vPsyznr9lho+66XEW5I4wuu7PTeqq4
+ DrkPCJnXQwf+esEC7mQFnj/rTLncuePYEwUDaosqLwLZs9iN+eF/30usqixD6ePqc4mhKH6Uc82
+ wksy7dLtxfgt4nwArNbZGBWeB60SIY9qBCWYA+QTc7iXp2TUwZQAT99XwR8p3jUooSqv5/+SEQB
+ +AMRWPFg0Galwtka+hMYTTSFXECwz8V7P2u/lHYiIwVExT8wea3k5sxthmmHTAuOkGIa+LaFRRG
+ emtnnnKPWnW5z8K6ulf7K+qK2JBRzTGeDSZdGd/0Xznf2sBfQoXsJ5NscP4HIggyXQ+cUCrJ3DB
+ lSPQ/LmFkjqRCwvzsilt9SgwZ8ufcrBmHKSBLGQNujy/+82IMATknh2Hqt3QR8UrV+qV11DpipL
+ 4i/M4jQUFT7d52w==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,83 +81,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+This series contains various fixes and cleanups for TC358768. The target
+of this work is to get TC358768 working on Toradex's AM62 based board,
+which has the following display pipeline:
 
-On Mon, Aug 21, 2023 at 08:12:50PM -0700, Paul E. McKenney wrote:
-> Hello, Joel!
-> 
-> A quick question for you...
-> 
-> I am doing catch-up additions of locktorture module parameters
-> to kernel-parameters.txt, and came across rt_boost_factor.  The
-> multiplication by cxt.nrealwriters_stress in the !rt_task(current)
-> then-clause makes sense:  No matter how many writers you have, the
-> number of boost operations per unit time remains roughly constant.
+AM62 DPI -> TC358768 -> LT8912B -> HDMI connector
 
-> But I am having some difficulty rationalizing a similar multiplication
-> in the else-clause.  That would seem to leave boosting in effect for
-> longer times the more writers there were.
+The main thing the series does is to improve the DSI HSW, HFP and VSDly
+calculations.
 
-But the number of de-boost operations per-unit time should also remain a
-constant? I think you (or the original authors) wanted it to boost at every
-50k ops at deboost at 500k ops originally.
+ Tomi
 
-> Is that the intent?
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+Changes in v3:
+- Add Peter's reviewed-bys
+- Move "Default to positive h/v syncs" earlier in the series to avoid
+  regression in the middle of the series
+- Link to v2: https://lore.kernel.org/r/20230816-tc358768-v2-0-242b9d5f703a@ideasonboard.com
 
-The original change before my patch to make boosting possible for non-rtmutex
-types already had that multiplication, see below for diff from my patch. My
-patch just kept the same thing to make the logic consistent (i.e. deboost
-less often).
+Changes in v2:
+- Add "drm/tegra: rgb: Parameterize V- and H-sync polarities" so that
+  Tegra can configure the polarities correctly.
+- Add "drm/bridge: tc358768: Default to positive h/v syncs" as we don't
+  (necessarily) have the polarities set in the mode.
+- Drop "drm/bridge: tc358768: Add DRM_BRIDGE_ATTACH_NO_CONNECTOR
+  support" as it's not needed for DRM_BRIDGE_ATTACH_NO_CONNECTOR
+  support.
+- Link to v1: https://lore.kernel.org/r/20230804-tc358768-v1-0-1afd44b7826b@ideasonboard.com
 
-> Also, I am rationalizing the choice of 2 as default for rt_boost by
-> noting that "mutex" and "ww_mutex_lock" don't do boosting and that
-> preemption-disabling makes non-RT spinlocks immune from priority
-> inversion.  Is this what you had in mind, or am I off in the weeds here?
+---
+Thierry Reding (1):
+      drm/tegra: rgb: Parameterize V- and H-sync polarities
 
-The 2 was just to make sure that we don't deboost as often as we boost, which
-is also what the old logic was trying to do.
+Tomi Valkeinen (11):
+      drm/bridge: tc358768: Fix use of uninitialized variable
+      drm/bridge: tc358768: Default to positive h/v syncs
+      drm/bridge: tc358768: Fix bit updates
+      drm/bridge: tc358768: Cleanup PLL calculations
+      drm/bridge: tc358768: Use struct videomode
+      drm/bridge: tc358768: Print logical values, not raw register values
+      drm/bridge: tc358768: Use dev for dbg prints, not priv->dev
+      drm/bridge: tc358768: Rename dsibclk to hsbyteclk
+      drm/bridge: tc358768: Clean up clock period code
+      drm/bridge: tc358768: Fix tc358768_ns_to_cnt()
+      drm/bridge: tc358768: Attempt to fix DSI horizontal timings
 
-What is the drawback of keeping the boost active for longer than not? It will
-trigger the PI-boosting (and in the future proxy exec) more often.
+ drivers/gpu/drm/bridge/tc358768.c | 381 ++++++++++++++++++++++++++++----------
+ drivers/gpu/drm/tegra/rgb.c       |  16 +-
+ 2 files changed, 295 insertions(+), 102 deletions(-)
+---
+base-commit: 25205087df1ffe06ccea9302944ed1f77dc68c6f
+change-id: 20230804-tc358768-1b6949ef2e3d
 
-Also by making the factor configurable, I allow it to control how often we
-boost and deboost. IIRC, it was boosting much less often before I did that.
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-> I am putting my best guess in the patch, and am including you on CC.
-
-Ok, thanks,
-
- - Joel
-
-
--static void torture_rtmutex_boost(struct torture_random_state *trsp)
--{
--       const unsigned int factor = 50000; /* yes, quite arbitrary */
--
--       if (!rt_task(current)) {
--               /*
--                * Boost priority once every ~50k operations. When the
--                * task tries to take the lock, the rtmutex it will account
--                * for the new priority, and do any corresponding pi-dance.
--                */
--               if (trsp && !(torture_random(trsp) %
--                             (cxt.nrealwriters_stress * factor))) {
--                       sched_set_fifo(current);
--               } else /* common case, do nothing */
--                       return;
--       } else {
--               /*
--                * The task will remain boosted for another ~500k operations,
--                * then restored back to its original prio, and so forth.
--                *
--                * When @trsp is nil, we want to force-reset the task for
--                * stopping the kthread.
--                */
--               if (!trsp || !(torture_random(trsp) %
--                              (cxt.nrealwriters_stress * factor * 2))) {
--                       sched_set_normal(current, 0);
--               } else /* common case, do nothing */
--                       return;
--       }
--}
--
