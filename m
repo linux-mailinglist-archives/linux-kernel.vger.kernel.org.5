@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B79783C25
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C75783C24
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234042AbjHVIyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35674 "EHLO
+        id S233985AbjHVIyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233802AbjHVIyE (ORCPT
+        with ESMTP id S233704AbjHVIyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Aug 2023 04:54:04 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF5C51A5
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1F3B1B7
         for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:54:02 -0700 (PDT)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxV_Gpd+RkRdwaAA--.55336S3;
+        by gateway (Coremail) with SMTP id _____8CxtPCpd+RkRtwaAA--.55667S3;
         Tue, 22 Aug 2023 16:54:01 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM6ld+RkwS5gAA--.37979S4;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxvM6ld+RkwS5gAA--.37979S5;
         Tue, 22 Aug 2023 16:54:00 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>
 Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
         loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v4 2/3] LoongArch: Return earlier in die() if notify_die() returns NOTIFY_STOP
-Date:   Tue, 22 Aug 2023 16:53:56 +0800
-Message-Id: <1692694437-27077-3-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 3/3] LoongArch: Add identifier names to arguments of die() declaration
+Date:   Tue, 22 Aug 2023 16:53:57 +0800
+Message-Id: <1692694437-27077-4-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1692694437-27077-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1692694437-27077-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8CxvM6ld+RkwS5gAA--.37979S4
+X-CM-TRANSID: AQAAf8CxvM6ld+RkwS5gAA--.37979S5
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrKrWrur1xZF43CryfGF4rZwc_yoWDXrc_Gr
-        yIkw1DurW8Cw15Xw1UCayrWFyqgayjvF1ak3Z2krZ7CF98JrW5Gw4rX3WYkrWqqrZ5uwsx
-        Z3ykJ3yv9Fy2kosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Gr13ZryDCr4rXw4DCrW5twc_yoWkXFb_u3
+        W2yan5ur4xGrWrZ3Z8C34fJr4DG3y8WF93tF1xtFWxAasIvr4DCw48G3srAr4q9r4qvF45
+        CFyktr98AryS9osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
         s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
         cSsGvfJTRUUUb3AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
         vaj40_Wr0E3s1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
         W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
         6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
         xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q
@@ -58,39 +58,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the call to oops_exit(), it should not panic or execute
-the crash kernel if the oops is to be suppressed.
+Add identifier names to arguments of die() declaration in ptrace.h
+to fix the following checkpatch warnings:
 
-Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
+
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/loongarch/kernel/traps.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/loongarch/include/asm/ptrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
-index bbdfc5b..7d0ddd2 100644
---- a/arch/loongarch/kernel/traps.c
-+++ b/arch/loongarch/kernel/traps.c
-@@ -404,6 +404,9 @@ void die(const char *str, struct pt_regs *regs)
+diff --git a/arch/loongarch/include/asm/ptrace.h b/arch/loongarch/include/asm/ptrace.h
+index 164bc90..f3ddaed 100644
+--- a/arch/loongarch/include/asm/ptrace.h
++++ b/arch/loongarch/include/asm/ptrace.h
+@@ -162,7 +162,7 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long val
+ #define instruction_pointer(regs) ((regs)->csr_era)
+ #define profile_pc(regs) instruction_pointer(regs)
  
- 	oops_exit();
+-extern void die(const char *, struct pt_regs *);
++extern void die(const char *str, struct pt_regs *regs);
  
-+	if (ret == NOTIFY_STOP)
-+		return;
-+
- 	if (regs && kexec_should_crash(current))
- 		crash_kexec(regs);
- 
-@@ -413,8 +416,7 @@ void die(const char *str, struct pt_regs *regs)
- 	if (panic_on_oops)
- 		panic("Fatal exception");
- 
--	if (ret != NOTIFY_STOP)
--		make_task_dead(SIGSEGV);
-+	make_task_dead(SIGSEGV);
- }
- 
- static inline void setup_vint_size(unsigned int size)
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
+ {
 -- 
 2.1.0
 
