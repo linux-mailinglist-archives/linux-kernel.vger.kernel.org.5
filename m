@@ -2,63 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC56784229
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EECF78422A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234912AbjHVNf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 09:35:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S235320AbjHVNgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 09:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbjHVNf4 (ORCPT
+        with ESMTP id S230029AbjHVNgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 09:35:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCB6193;
-        Tue, 22 Aug 2023 06:35:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692711354; x=1724247354;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Rkqk5+j/XQXLyx73Oxvf1MyU2fTfCtcyasVG1GZmA1A=;
-  b=gtHmK75iuOQu2R6F9rKXUe6ET77u5e62e6gci4CHzMko+ZaRV/naEUyN
-   cjRbVNItBPUoz59bigUL9+J95JaINxbjDxN306S0SL1xR9vcLa+qG68m5
-   5A+q0TXzfFXqgZf9oo3wInY25JF6g+NO5F4+8y2hd1CJj+OYhjlPBZu3o
-   QO/plv4ByCI2u0PLmeSxE7WyKZKGUUKIWjZdfH0A9MisarhwkNh3dzszZ
-   MyX7PWxVEuLM3sHo+9wjonSiLH0LB8V+L3tDgbuqr8DdcmPZktInvl4sO
-   Tj4C84LLfs5QayLv570Sq7zfTWfk1RSof7lmf1yxlaQ2h3VBS6Vhwf/7l
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="358865256"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="358865256"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 06:35:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="686046940"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="686046940"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga003.jf.intel.com with ESMTP; 22 Aug 2023 06:35:49 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id B4A54D87; Tue, 22 Aug 2023 16:35:48 +0300 (EEST)
-Date:   Tue, 22 Aug 2023 16:35:48 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Yann Sionneau <ysionneau@kalray.eu>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Julian Vetter <jvetter@kalrayinc.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Currently if the SoC needs pinctrl to switch the SCL
- and SDA from the I2C function to GPI
-Message-ID: <20230822133548.GO3465@black.fi.intel.com>
-References: <20230822131123.5041-1-ysionneau@kalray.eu>
- <ZOS3cI7RL443mizj@smile.fi.intel.com>
+        Tue, 22 Aug 2023 09:36:02 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5367C184
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 06:36:00 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CBDAF1C0002;
+        Tue, 22 Aug 2023 13:35:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1692711358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YQhC2oeF//IEqu7mwmb78usJ0wdWGcj8FRhKl534ndU=;
+        b=Urgs5+raZ7GIN9HmsjJ2XCsMNojvcMCf0zDI1kG9e4FobGW3GfRpRPFYKx5Uf7eDl7f7k4
+        IyWIyB9D1JHAKC2jCk6/8W4gFeYp44woXXxY/xt26hpExAhySy8kqD34CWaHeYJYnZ8VDu
+        uIBZRIOSHnWFnpVFwBVlMetYMvYdN5SjKltLiyh9OF/rlyVHk8sa3t7iha6wrQ3znbkF/Y
+        1mhqkSvYQTviWAU5MnhLvqh7v/LpKBzsbWU8hNLBfG6r+avveXgdnNWPc9kUwMGqfPHmkR
+        49COpekj/f2nf7NPV5h5bNuGsXEeWEU5yWfRUG8JWvEyS0bv9Kk06MeRPpB+JA==
+Date:   Tue, 22 Aug 2023 15:35:56 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>
+Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
+Message-ID: <20230822153556.630e65b9@xps-13>
+In-Reply-To: <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
+References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+        <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZOS3cI7RL443mizj@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,32 +57,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 04:26:08PM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 22, 2023 at 03:11:23PM +0200, Yann Sionneau wrote:
-> > scl-gpio = <>;
-> > sda-gpio = <>;
-> > 
-> > Are not enough for some SoCs to have a working recovery.
-> > Some need:
-> > 
-> > scl-gpio = <>;
-> > sda-gpio = <>;
-> > pinctrl-names = "default", "recovery";
-> > pinctrl-0 = <&i2c_pins_hw>;
-> > pinctrl-1 = <&i2c_pins_gpio>;
-> > 
-> > The driver was not filling rinfo->pinctrl with the device node
-> > pinctrl data which is needed by generic recovery code.
-> > 
-> > Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
-> > ---
-> > V3 -> V4:
-> > * Replace `else if` by simply `if`.
-> 
-> You forgot my tag. Why?
-> Also I think this will generate more code and more noise in debug case.
-> So, I admit I gave a bad suggestion in previous round.
-> 
-> Please, go for v3 with my tag (as v5).
+Hi Martin,
 
-While there fix $subject to follow the convention used in the driver.
+mmkurbanov@sberdevices.ru wrote on Tue, 22 Aug 2023 15:25:34 +0300:
+
+> The first 4 bytes are reserved for bad block data.
+
+Are you sure about that? I've never seen 4-bytes BBM.
+
+> Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+> ---
+>  drivers/mtd/nand/spi/micron.c | 20 +++++++++++++++++---
+>  1 file changed, 17 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+> index 12601bc4227a..64b41c7c9cce 100644
+> --- a/drivers/mtd/nand/spi/micron.c
+> +++ b/drivers/mtd/nand/spi/micron.c
+> @@ -57,6 +57,20 @@ static SPINAND_OP_VARIANTS(x1_write_cache_variants,
+>  static SPINAND_OP_VARIANTS(x1_update_cache_variants,
+>  			   SPINAND_PROG_LOAD(false, 0, NULL, 0));
+> =20
+> +/*
+> + * OOB spare area map (128 and 256 bytes)
+> + *
+> + *           +-----+-----------------+-------------------+--------------=
+-------+
+> + *           | BBM |     Non ECC     |   ECC protected   |      ECC Area=
+       |
+> + *           |     | protected Area  |       Area        |              =
+       |
+> + * ----------+-----+-----------------+-------------------+--------------=
+-------+
+> + *  oobsize  | 0:3 | 4:31 (28 bytes) | 32:63 (32 bytes)  | 64:127 (64 by=
+tes)   |
+> + * 128 bytes |     |                 |                   |              =
+       |
+> + * ----------+-----+-----------------+-------------------+--------------=
+-------+
+> + *  oobsize  | 0:3 | 4:63 (60 bytes) | 64:127 (64 bytes) | 127:255 (128 =
+bytes) |
+> + * 256 bytes |     |                 |                   |              =
+       |
+> + * ----------+-----+-----------------+-------------------+--------------=
+-------+
+> + */
+>  static int micron_8_ooblayout_ecc(struct mtd_info *mtd, int section,
+>  				  struct mtd_oob_region *region)
+>  {
+> @@ -75,9 +89,9 @@ static int micron_8_ooblayout_free(struct mtd_info *mtd=
+, int section,
+>  	if (section)
+>  		return -ERANGE;
+> =20
+> -	/* Reserve 2 bytes for the BBM. */
+> -	region->offset =3D 2;
+> -	region->length =3D (mtd->oobsize / 2) - 2;
+> +	/* Reserve 4 bytes for the BBM. */
+> +	region->offset =3D 4;
+> +	region->length =3D (mtd->oobsize / 2) - 4;
+> =20
+>  	return 0;
+>  }
+
+
+Thanks,
+Miqu=C3=A8l
