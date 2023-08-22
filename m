@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C45783F68
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F09784026
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235037AbjHVLh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39232 "EHLO
+        id S235502AbjHVLyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235038AbjHVLhZ (ORCPT
+        with ESMTP id S235103AbjHVLyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:37:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799FEE51;
-        Tue, 22 Aug 2023 04:36:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 598C7628A7;
-        Tue, 22 Aug 2023 11:36:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9840BC433CD;
-        Tue, 22 Aug 2023 11:36:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692704161;
-        bh=Ym6qa0ZO8dJoVvGDoxNGVPBBoiW4ul0ekcw4PYRjNXQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r99IO3WissmJ3wmcuks7x6Vfl5dZD61jM6tT92aVUK4BceSwSQg+heSaOwab0P0/a
-         BKtp1bx0C92xcLXDx1CQwaBJAj2mM31gNME+yZa7us7MjIHzvyFeGhlQm87KjBv5lh
-         ckidKztJZryJxKFLf23VMXMM1KeGI4Kehn7K7NeePrz6H1waFhddYqCW8SL0LtDLvn
-         Yzi53tIv0UABmI8VoyUcgxPNhTlvYF5FKLyFxYPQHrWxqKMXZisNGux+aZ6YZjkpVa
-         TslKlXLL8OsTCAcpc3ND2JWH/tzj7aq0R+Si25AbPke0j5029JZyhpYtxW9n2KHfNy
-         UlUjPrObmTA2w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chengfeng Ye <dg573847474@gmail.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>, njavali@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 04/11] scsi: qedi: Fix potential deadlock on &qedi_percpu->p_work_lock
-Date:   Tue, 22 Aug 2023 07:35:46 -0400
-Message-Id: <20230822113553.3551206-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230822113553.3551206-1-sashal@kernel.org>
-References: <20230822113553.3551206-1-sashal@kernel.org>
+        Tue, 22 Aug 2023 07:54:18 -0400
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC52CE9;
+        Tue, 22 Aug 2023 04:53:59 -0700 (PDT)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1qYPg5-0006wL-27;
+        Tue, 22 Aug 2023 11:36:06 +0000
+Date:   Tue, 22 Aug 2023 12:35:47 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Kalle Valo <kvalo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH net-next v3 1/2] dt-bindings: mt76: support setting
+ per-band MAC address
+Message-ID: <ZOSdk6LyTlCayG4i@makrotopia.org>
+References: <d3130584b64309da28a04826100643ff6239f9ca.1690841657.git.daniel@makrotopia.org>
+ <20230811190944.GA3730441-robh@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.4.11
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230811190944.GA3730441-robh@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,65 +61,189 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengfeng Ye <dg573847474@gmail.com>
+On Fri, Aug 11, 2023 at 01:09:44PM -0600, Rob Herring wrote:
+> On Mon, Jul 31, 2023 at 11:23:16PM +0100, Daniel Golle wrote:
+> > Introduce support for setting individual per-band MAC addresses using
+> > NVMEM cells by adding a 'bands' object with enumerated child nodes
+> > representing the 2.4 GHz, 5 GHz and 6 GHz bands.
+> > 
+> > In case it is defined, call of_get_mac_address for the per-band child
+> > node, otherwise try with of_get_mac_address on the main device node and
+> > fall back to a random address like it used to be.
+> > 
+> > While at it, add MAC address related properties also for the main node.
+> > 
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > ---
+> > Changes since v2:
+> >  * drop items list with only a single item
+> > 
+> > Changes since v1:
+> >  * add dt-bindings
+> > 
+> >  .../bindings/net/wireless/mediatek,mt76.yaml  | 58 ++++++++++++++++++-
+> >  1 file changed, 57 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml b/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
+> > index 252207adbc54c..7eafed53da1de 100644
+> > --- a/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
+> > +++ b/Documentation/devicetree/bindings/net/wireless/mediatek,mt76.yaml
+> > @@ -37,6 +37,12 @@ properties:
+> >      description:
+> >        MT7986 should contain 3 regions consys, dcm, and sku, in this order.
+> >  
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> >    interrupts:
+> >      maxItems: 1
+> >  
+> > @@ -72,13 +78,23 @@ properties:
+> >  
+> >    ieee80211-freq-limit: true
+> >  
+> > +  address: true
+> 
+> What's this? Not a documented property.
 
-[ Upstream commit dd64f80587190265ca8a0f4be6c64c2fda6d3ac2 ]
+Maybe it should be documented then...?
+See
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/core/of_net.c#n140
 
-As &qedi_percpu->p_work_lock is acquired by hard IRQ qedi_msix_handler(),
-other acquisitions of the same lock under process context should disable
-IRQ, otherwise deadlock could happen if the IRQ preempts the execution
-while the lock is held in process context on the same CPU.
+```
+int of_get_mac_address(struct device_node *np, u8 *addr)
+{
+	int ret;
 
-qedi_cpu_offline() is one such function which acquires the lock in process
-context.
+	if (!np)
+		return -ENODEV;
 
-[Deadlock Scenario]
-qedi_cpu_offline()
-    ->spin_lock(&p->p_work_lock)
-        <irq>
-        ->qedi_msix_handler()
-        ->edi_process_completions()
-        ->spin_lock_irqsave(&p->p_work_lock, flags); (deadlock here)
+	ret = of_get_mac_addr(np, "mac-address", addr);
+	if (!ret)
+		return 0;
 
-This flaw was found by an experimental static analysis tool I am developing
-for IRQ-related deadlocks.
+	ret = of_get_mac_addr(np, "local-mac-address", addr);
+	if (!ret)
+		return 0;
 
-The tentative patch fix the potential deadlock by spin_lock_irqsave()
-under process context.
+	ret = of_get_mac_addr(np, "address", addr);
+	if (!ret)
+		return 0;
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-Link: https://lore.kernel.org/r/20230726125655.4197-1-dg573847474@gmail.com
-Acked-by: Manish Rangankar <mrangankar@marvell.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/qedi/qedi_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+	return of_get_mac_address_nvmem(np, addr);
+}
+EXPORT_SYMBOL(of_get_mac_address);
+```
 
-diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
-index ef62dbbc1868e..1106d26113888 100644
---- a/drivers/scsi/qedi/qedi_main.c
-+++ b/drivers/scsi/qedi/qedi_main.c
-@@ -1977,8 +1977,9 @@ static int qedi_cpu_offline(unsigned int cpu)
- 	struct qedi_percpu_s *p = this_cpu_ptr(&qedi_percpu);
- 	struct qedi_work *work, *tmp;
- 	struct task_struct *thread;
-+	unsigned long flags;
- 
--	spin_lock_bh(&p->p_work_lock);
-+	spin_lock_irqsave(&p->p_work_lock, flags);
- 	thread = p->iothread;
- 	p->iothread = NULL;
- 
-@@ -1989,7 +1990,7 @@ static int qedi_cpu_offline(unsigned int cpu)
- 			kfree(work);
- 	}
- 
--	spin_unlock_bh(&p->p_work_lock);
-+	spin_unlock_irqrestore(&p->p_work_lock, flags);
- 	if (thread)
- 		kthread_stop(thread);
- 	return 0;
--- 
-2.40.1
+> 
+> 
+> > +
+> > +  local-mac-address: true
+> > +
+> > +  mac-address: true
+> 
+> You really need a ref to the schema defining these. But first we need to 
+> split them out from ethernet-controller.yaml. Which I think there were 
+> patches for, but it stalled out.
+> 
 
+I understand, so have a schema to include whenever of_net.c is used to
+assign a MAC address, and then use that for ethernet-controller.yaml and
+in places such as here.
+
+If you point me to the existing patches I can pick them up and address
+whatever needs to be addressed to get them merged.
+
+> Anyways, it's fine for now if you're not up for that.
+
+So just remove the (supposedly deprecated) "address: true" for now and
+then create an of_net MAC-address related schema and move things there
+after that?
+
+> 
+> > +
+> >    nvmem-cells:
+> > +    minItems: 1
+> >      items:
+> >        - description: NVMEM cell with EEPROM
+> > +      - description: NVMEM cell with the MAC address
+> >  
+> >    nvmem-cell-names:
+> > +    minItems: 1
+> >      items:
+> >        - const: eeprom
+> > +      - const: mac-address
+> >  
+> >    mediatek,eeprom-data:
+> >      $ref: /schemas/types.yaml#/definitions/uint32-array
+> > @@ -213,6 +229,29 @@ properties:
+> >                      description:
+> >                        Half-dBm power delta for different numbers of antennas
+> >  
+> > +patternProperties:
+> > +  '^band@[0-2]+$':
+> > +    type: object
+> > +    additionalProperties: false
+> > +    properties:
+> > +      reg:
+> > +        maxItems: 1
+> > +
+> > +      address: true
+> > +      local-mac-address: true
+> > +      mac-address: true
+> > +
+> > +      nvmem-cells:
+> > +        description: NVMEM cell with the MAC address
+> > +
+> > +      nvmem-cell-names:
+> > +        const: mac-address
+> > +
+> > +    required:
+> > +      - reg
+> > +
+> > +    unevaluatedProperties: false
+> > +
+> >  required:
+> >    - compatible
+> >    - reg
+> > @@ -225,10 +264,13 @@ examples:
+> >        #address-cells = <3>;
+> >        #size-cells = <2>;
+> >        wifi@0,0 {
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> >          compatible = "mediatek,mt76";
+> >          reg = <0x0000 0 0 0 0>;
+> >          ieee80211-freq-limit = <5000000 6000000>;
+> > -        mediatek,mtd-eeprom = <&factory 0x8000>;
+> > +        nvmem-cells = <&factory_eeprom>;
+> > +        nvmem-cell-names = "eeprom";
+> >          big-endian;
+> >  
+> >          led {
+> > @@ -257,6 +299,20 @@ examples:
+> >               };
+> >            };
+> >          };
+> > +
+> > +        band@0 {
+> > +          /* 2.4 GHz */
+> > +          reg = <0>;
+> > +          nvmem-cells = <&macaddr 0x4>;
+> > +          nvmem-cell-names = "mac-address";
+> > +        };
+> > +
+> > +        band@1 {
+> > +          /* 5 GHz */
+> > +          reg = <1>;
+> > +          nvmem-cells = <&macaddr 0xa>;
+> > +          nvmem-cell-names = "mac-address";
+> > +        };
+> >        };
+> >      };
+> >  
+> > -- 
+> > 2.41.0
