@@ -2,99 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC667843B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:16:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80BA7843BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbjHVOQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S235973AbjHVORH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbjHVOQE (ORCPT
+        with ESMTP id S235697AbjHVORG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:16:04 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272C2CFC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:15:40 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-991c786369cso605088266b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692713701; x=1693318501;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D4DLw6XTDNAFhNatfRk3x0GOB+7FFuPg6TdBFTu2R8A=;
-        b=cDXis1/9H6ga7sfX51c8LBRsidPkDZkz1BEcyY8+qJTAK9S3d4wKzr4/c0cy/vz0OK
-         iEznciWJg79AlOYok0rFH+OJGQFoKVgsEnQN3ARU0z20D88z2342aIk1EmlbEW1SwyoN
-         bykzjZHwR4b/pOhGqUpcr4oc6QBqkFg7r5haNdmvKg0Vn/NZBZNa6a1jDyk+a9yUyxzq
-         ULV+8Eb2nvIxVqujpO75IZlmRsEPuBI/3fupDYmyZmnCULz9zcRnLcjyZZ/zwXjTr1GR
-         0sr7nhxBF/5hvEnVdQKSD/2nWm6K12Op6xvTJTIb9vOLD5JXqJYzKhqsG6ApXn913yys
-         VgAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692713701; x=1693318501;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D4DLw6XTDNAFhNatfRk3x0GOB+7FFuPg6TdBFTu2R8A=;
-        b=AFRzZq+8x0QhF4UDnUp9WQ/7Gz7oqe6mNSfdFNW+V0PsscLyrM/A1CBCCogugW0V4n
-         YxPzLg1/qxQrdQJVvtNGqPXimL8/hXySqsf6UhRBlDOV1gXS9Se33x/dJtM6aSRvyMQn
-         Hp6+KHcIGO+N32hawwqNE+UDBsCguglK/LOyWQaIvrVcaoyzBLPsqacH2MeQcAA4xKGI
-         OiDg7USf8FOy321dCSqDD48ec01R2lMyGvKQYaSlwbhDi9cBXzwGyZ9PLUu60+kZY2qf
-         Y0kqHux/Jj3oLF/pv2gbwdnJbq4dkmPXY26KBN0l5CLTQnP2xJvjjkYGD86o8Dz1SgbO
-         F1+g==
-X-Gm-Message-State: AOJu0YxYTTgD0Z6NVHFNU0HfJtROM/KTcFjyeAqWH+ovl3//YVcDiwh/
-        QhALMwiDGr7aTiR/BE3BEBZ9rw==
-X-Google-Smtp-Source: AGHT+IFpvCuJdRyZJXLEO9jFQ8C+LPqwdFfkcO2XBT81TVq+cEzqj96fiZjcq1dGZMebinCHVXfnjA==
-X-Received: by 2002:a17:906:8477:b0:993:dcca:9607 with SMTP id hx23-20020a170906847700b00993dcca9607mr7851132ejc.2.1692713700828;
-        Tue, 22 Aug 2023 07:15:00 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170906b19400b0098f33157e7dsm8246078ejy.82.2023.08.22.07.14.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 07:15:00 -0700 (PDT)
-Message-ID: <96750636-9159-5104-894a-8894a5f70b7a@linaro.org>
-Date:   Tue, 22 Aug 2023 16:14:59 +0200
-MIME-Version: 1.0
+        Tue, 22 Aug 2023 10:17:06 -0400
+Received: from smtpout30.security-mail.net (smtpout30.security-mail.net [85.31.212.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7641E50
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:16:43 -0700 (PDT)
+Received: from localhost (fx306.security-mail.net [127.0.0.1])
+        by fx306.security-mail.net (Postfix) with ESMTP id 9234C35CFAB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:15:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
+        s=sec-sig-email; t=1692713729;
+        bh=dPONjSDwyFdrZcd/ibZafq0Zw4s5J7evVM4mYa++PWg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=X3Yh20Rvsly+jZZBXvK1TF/fBffUiASrfdVtHOUDhc5roBgdph6qbtsddIP1DkOvw
+         iWaXenCbkrWevcoh85wUYZhkVXaLxAyD6xEYSB0VKu82XJTp5BIXtqzuDZ6JF2OIWR
+         z+ifLs4kEVirsjxAoxVI94Sf7fAt8Pj17sSasUio=
+Received: from fx306 (fx306.security-mail.net [127.0.0.1]) by
+ fx306.security-mail.net (Postfix) with ESMTP id 772C635CC5F; Tue, 22 Aug
+ 2023 16:15:29 +0200 (CEST)
+Received: from FRA01-MR2-obe.outbound.protection.outlook.com
+ (mail-mr2fra01on0104.outbound.protection.outlook.com [104.47.25.104]) by
+ fx306.security-mail.net (Postfix) with ESMTPS id 08F7835CFA1; Tue, 22 Aug
+ 2023 16:15:29 +0200 (CEST)
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
+ by PR0P264MB1833.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:16c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 14:15:27 +0000
+Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f704:3b18:55e0:64ca]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::f704:3b18:55e0:64ca%4]) with mapi id 15.20.6699.022; Tue, 22 Aug
+ 2023 14:15:27 +0000
+X-Virus-Scanned: E-securemail
+Secumail-id: <510e.64e4c301.7f9d.0>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L5EvTunH2Kyaf/Zqy9yCynk6QBKcMCycz1yXzpVd5cigpOXH5BuZHAAUvS9iwYMPMufJ3jiwPFzJProkyMWvkHVnHB8hIZfbzHXDI1y+7eadaZom5FUGxtQzHVCRyF5UWZ7oiBrQMf9hywH6qx1L0j++5Xa8dHvkt/xf9ASt5mMeoTBtMcq3+XD7LM4szFbpCJ/YTbxpSsYGS8JfzjhGIzOP8fhg821ogb5oTAb+WIOXo7PzE4sYaR2XbOV179KgbXy06RhoZvOIkYTWg3B7tuWM5rD1irLiWoju09Dmn2bPZnOEUMkIVgFg9bK/4c+X0PEG0OutS17ovcuFgZ7Pqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microsoft.com; s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tViEHBOliVysKJyIiyMWdEpZ76rH9YPiEXjY/46p/5g=;
+ b=CUArXPX5S1Q+ndj9sDECyUkog3hjtCv/PNeFbuSs6tMz4x1pD261RgFr2ZD2brNmj9xrcv9yXAbZbcgzgemAvOJg/ngCMA/uIE4e9Y9GfEIYVchrPczeGfZ0X7768qLMuVcubVjYneyuiVlFjNT6fVm0774GvypaK7n4sxCvchEkd7YuljBpCvwlxwAt4hgUM2nm64q0bzaw3L4w9ubUQpSbGSxlSd3/KSjz+TNl2c00anqK+U28DAFtOKzptrAlLdp8fFxbBfZOZYhDie7l7fER/cnhYof/ynatutpoOTMPmHMY1BQBWsvDPZXHIFQPey4vVHh49QUIv9EhboqXlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
+ header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tViEHBOliVysKJyIiyMWdEpZ76rH9YPiEXjY/46p/5g=;
+ b=C9mGDSbnaF3vmJ2LM+8h1riFyPVglEOOjG+LAGvqikhWa/ggdM6QDKt8N3ihz15MkcoSgGd81a5PISKNz0rENT+ZF7ptcEM0E5pXxoAhK9eZoqR9nOm0UOKe1RqtStXK/3X0Tl/7BHoFj1H5HPl7Bsoy5uk/Gsq9JnfMFI9La2wa1b5nLbAkr8LqQDJFqVc6t8huDuVHP80s4Fs2sgmEatAPTE4oqHVD8ENInryusN+926RW0Q66bszJ9cSpWoFbd5Yf8UEqoXASkv5K5uOayUat7Jcd7fn83bgskr7miQcl1I3FxqMctakeERWo2NNJpKmNZTdsCQJfagacJ7KcoQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kalrayinc.com;
+Message-ID: <b12f4f63-4504-e775-166d-9ea30dd97489@kalrayinc.com>
+Date:   Tue, 22 Aug 2023 16:15:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dt-bindings: crypto: qcom,prng: document SM8550
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230822-topic-sm8550-rng-v1-0-8e10055165d1@linaro.org>
- <20230822-topic-sm8550-rng-v1-1-8e10055165d1@linaro.org>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230822-topic-sm8550-rng-v1-1-8e10055165d1@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v4] Currently if the SoC needs pinctrl to switch the SCL
+ and SDA from the I2C function to GPI
+Content-Language: en-us
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yann Sionneau <ysionneau@kalray.eu>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230822131123.5041-1-ysionneau@kalray.eu>
+ <ZOS3cI7RL443mizj@smile.fi.intel.com>
+From:   Yann Sionneau <ysionneau@kalrayinc.com>
+In-Reply-To: <ZOS3cI7RL443mizj@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P265CA0030.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:2ae::15) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:13::5)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|PR0P264MB1833:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8c1e502e-2096-4e1f-eb14-08dba31a3bf8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7h5PWgX9wTGDqM4usJ90O9nbrm6kSLgDP0Y8DE5rWsC3dibLjKu7GDQqN9bIIc7bszObaSubEDQ7oQSkUF01HJLcjmHchNkdWNlkFn4pLuP8IIar9i+Km48KHV00PHPWUyA0mbHU9RVvNvH4BqZ/qz/1NAo3ckiSev2+tIDZpXX6DEha829yjZoct/JxSYQYvBxos1TGpzhKkAUEutW5qQHUm2m0gBuC6jP97DikJpwUa84eoNqCWMlojLNy3BFaWG7pK2kG00wX1jTasTjG2jWjqwlyxDddnAhobRE9S7KfVQHoveIzm28/ERNOqJspKiaLjIZ1D9MwWE7qH/4WoqGubTHgNaOXPxOQ51xZurOdd+L4zQo5e25+8c5mbnCQlxXsn18TD+DAeM6Xv4jhJBtE6aDiIXsOZcu2ZbS3FH/3VUlrpJVm5jOtUD5HgyOXmyFtb1FATZKIj3bs68keHOjPrMrTrv4Ba7GPCEb0jPaShNDzg3SZRm7o9kkc2KvrW7p+Pymiw9/7IBTnDgx9MSVTJ6ScHy3s5zF3OPl+hzjxG0N92xghI3Ghsk8ZLrcOS7Rfl3Dg//uSu08y9n3y0R+iLbPGlnflLQ0FKX/b0wN3BM3dnT+CDcVggZ9aX53+Uo5wYQuLPhgTe5fs+QVv3g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(346002)(366004)(1800799009)(186009)(451199024)(54906003)(66476007)(66556008)(6512007)(316002)(66946007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(38100700002)(6486002)(53546011)(6506007)(83380400001)(2906002)(31686004)(31696002)(86362001)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: DUOKcdvIBJib40/0EYd2NbGWpaIyPeRdy2gTE6YG8op0aMfZ0HJu3oi8qUaWCZe/MLyS9CF40P/wsDXHqijRz+M1uVA/1PkYgk/6QHUmEONpCq9j60u5CjC5suOh+UEAsERjy2HNIP2kEVyAQe3iYQzMwJ4kVsPTkcfMCjvBqLwmexHf3rSakMVOAjIAW1Ye0FFWY8s4OLRG/fc643c/4uNaDzgx2HBMDnh8Z6Ss6lEX9bKSQAvhHkVIBoNcMxFGaQokb6Hq7GjGRGQcvNCqhw3Ch9OJJ1kLqmnziYzopKtOMnl6aZgSjF9keH8Fu3hkdfLrCSpSlSR6FQoJppfIjBCfv6iiYCZkTAP9B+PXA7uYNuewJ+JqX0QJUjCv+9vzT5J5BLSDyawe04rE1rvMzrrt1x3f0kDCixkQSrkgtmADknFYU5Af3TP4NIec52vCmfkT3rHeOeqI4FnWRPK22Mf5a/qvYYZmzfWNv98LDW9DiEBi8Hb1jogcQHUtgWwAMJw7y0Qq67xOIQwNv9BI3hfR7L9OSHancbPeWEEwoAsot1LMGqGN/0uXv91yJC30dZ1nsHpEPfWB6LF65T2sUC1eFwMnjdvtOO70WnQmqI61YrEgYVxBUcYWLIVC83sSUqmM16h0H10t6NtPsRtuSP+2Dz9ZAIKH2lZKIsfECi/9muGW5c1arB2Js2QT08+qyl4+8gYZH7d3NBpw1YgCnJ9qUEcyOPp71ou8Vkw7uCIHH7OLsOnShFsqawmMqipnwBaHYFMf88vtnJZucg6MMxrybl/pidid3p7p5CR1cLnl/EuQRcvQCklISfZnO1+RG3LqXpjunPCd74umtzIj7GiNPoGygqhwdZcw0oXvQv9T1e3dNwdTlKPCDYm6rD/dJIWu3ALMrNs1kGr/7sZ/bvc54PlREeNvepVWXuaSIw5phcP0HFUXBwOlP6KKmuxL
+ agUK8AKztl7MoFWGa9IF03lcP0fiJaKbi8X9CFWz0Znx0rkjpUtqL8nYe9NRyZzel58XAUfSv2xMvq+vXUqwb64ggq437QOCAHI8cKJyRsytkyfFG5xLxe14WDOAK7wkhcsGGcQuPQNx+Hmk353WvlbMG8P5aeh66+UG563atLmPww/8qCmtW53Roit4LnR5gN+l4x/d2RIoWRWe1KVQTHXylCUTOhpVNeDHFpHhhRQicc6IlubciX73dvET15GgAem20GE8QGWQQnWjtnAUOYzfLxYaJBIFQQ/sXWmlbykLI5t/MCWJjevR6BH96yCftFnidTLcOu037VVx3XBh05pBNoDyv2T9skUfuKnxAfuPflFEi5RPiYS7SY9qWJEUtc2v7hghKyq15nHAFsBVo8mJYn74XCV4u7Tql58kpDQ7SsktA/f/7PkFPMWN5TMwZNmNyvby32jrwM9k/6iqPxZFencO/sN0NSjUCvZdkFRqhshpfOw0TlyGCiVYE2PKXKTPlSRv0vFZ+L61D8TiqLKu4ZxbnjVuor6jN5DOQHG5H+0dBQsBUPhMD0kKEiYi0ShC7t/ZcgdPMWrzbTzo8mT8zSsqV2QwdsWG6I+GCtLTO5fcff/7cB3M4uiA1FzYWJi6Qds/iFsI1Y5pDBn2Vw==
+X-OriginatorOrg: kalrayinc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c1e502e-2096-4e1f-eb14-08dba31a3bf8
+X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 14:15:27.5353
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4saZc4AFv3XlcmfDvZ5oc7CnRPOrfOZKXoFU5W+6oOEf4VDQ2V0e8qc54wGDAEesAOdQRLpmviBB3jssNxZIZA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB1833
+X-ALTERMIMEV2_out: done
 X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 16:11, Neil Armstrong wrote:
-> Document SM8550 compatible for Pseudo Random Generator,
-> like SM8450 doesn't require clocks setup done by the secure
-> firmware.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+Hi,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On 8/22/23 15:26, Andy Shevchenko wrote:
+> On Tue, Aug 22, 2023 at 03:11:23PM +0200, Yann Sionneau wrote:
+>> scl-gpio = <>;
+>> sda-gpio = <>;
+>>
+>> Are not enough for some SoCs to have a working recovery.
+>> Some need:
+>>
+>> scl-gpio = <>;
+>> sda-gpio = <>;
+>> pinctrl-names = "default", "recovery";
+>> pinctrl-0 = <&i2c_pins_hw>;
+>> pinctrl-1 = <&i2c_pins_gpio>;
+>>
+>> The driver was not filling rinfo->pinctrl with the device node
+>> pinctrl data which is needed by generic recovery code.
+>>
+>> Signed-off-by: Yann Sionneau <ysionneau@kalray.eu>
+>> ---
+>> V3 -> V4:
+>> * Replace `else if` by simply `if`.
+> You forgot my tag. Why?
+Woops sorry, I am not used to sending patches upstream. I didn't know I 
+had to add the ack tag. Will do it!
+> Also I think this will generate more code and more noise in debug case.
+> So, I admit I gave a bad suggestion in previous round.
+Ah yes you are right in case of dbg+CONFIG_PINCTRL not set it will print 
+both messages but just one is enough.
+>
+> Please, go for v3 with my tag (as v5).
+>
+Ok, I'll also add `i2c: designware: ` to $subject as Mika Westerberg 
+suggested.
 
-Best regards,
-Krzysztof
+Thanks,
+
+-- 
+
+Yann
+
+
+
+
+
 
