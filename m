@@ -2,167 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0B67845EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6EF7845F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:43:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237273AbjHVPmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        id S237309AbjHVPny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbjHVPmw (ORCPT
+        with ESMTP id S237302AbjHVPnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:42:52 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6858EE66;
-        Tue, 22 Aug 2023 08:42:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sgadn9vZAxo1mGT+cYYOjco1DW5JBS4v3ykamXwYf3RQS8dwghEsVKJotSdDeRHR40p9/Yd3/PAwontf9Ba8nkms4y5OKucggof6cGhkUFF6AvdaC+ncMrIaaNbjS7zBi5F+BDPp2YQxEXjb9Cb3YFHq4Y9gMIEJB6WJk8xp+EeQCHnqK93CNFRnKPODutculAWH6y7K9xRYPsHEIo7CF4s5vvy1h1iwd0P26newkxwmydpps/UzfcqD8MgzzRTNun8NW2HVLl+vP2mf5qFLY4cNoY3Bmt06QnZdARn6UuZqTj8U1KJvVXye492jE2JU8YswvLRdxw2+3LMlqxAwoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q8L5DvE871j3pfSVk5uwkV6MZboh468aXyeSwEG6Qf4=;
- b=EyJhNBJ81hOxDKDDF5ktcjrYq7QM1Paym7s6PUrjl5oXTxd4L7nN3AKIRJH6ka/VywkpPk2zoKkzHrczvjeLxPssc77gj0ntMRZN3G+/a1LnobdZcndReC1tUPQ6EEw/ha5D7fHeS3PYS7Tzxgsd5XVTyvVQ5+e3a4TRjEejH+0g3jepTeqqC9E4SoBhZDoT4Tk/i7jO1zf/c+eJbkxKEAaAHFXv9LI2PlXMluHmfiwb/qCFP1TaJVnlVJ83Mq2BXnXeGopgYU+3+6Js3SacW/M3GHP9L5/BBTlpsw4eMpiEW6hdLvgAUeR2d8v4qSqIuvwmAI3dbliBfb4ZlAHjVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q8L5DvE871j3pfSVk5uwkV6MZboh468aXyeSwEG6Qf4=;
- b=ceNKdkoivIy93u/hBGyeaSmeZnIE/+CVYkt9gpRapM3kQqchbcOtlA6E6zJN7MI6TaZ1lxZ8txT5IrFczXZYAQqRq4TzeoBBfi/l9f6LaKM7/FXK7HzsVgduR6fs9RNIos85JV/HgYNHSX9k2tcO6uFBmlwYrBPCnHIX9GW5HjA=
-Received: from BN9PR12MB5146.namprd12.prod.outlook.com (2603:10b6:408:137::16)
- by LV3PR12MB9188.namprd12.prod.outlook.com (2603:10b6:408:19b::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 15:41:58 +0000
-Received: from BN9PR12MB5146.namprd12.prod.outlook.com
- ([fe80::858f:e2c1:3f1e:fefe]) by BN9PR12MB5146.namprd12.prod.outlook.com
- ([fe80::858f:e2c1:3f1e:fefe%4]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
- 15:41:57 +0000
-From:   "Deucher, Alexander" <Alexander.Deucher@amd.com>
-To:     Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-CC:     "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Mike Lothian <mike@fireburn.co.uk>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: RE: [PATCH AUTOSEL 5.10 3/3] drm/amdkfd: ignore crat by default
-Thread-Topic: [PATCH AUTOSEL 5.10 3/3] drm/amdkfd: ignore crat by default
-Thread-Index: AQHZ1O0I1eo5JC1hBkypehDTQqHqCa/2dG5A
-Date:   Tue, 22 Aug 2023 15:41:57 +0000
-Message-ID: <BN9PR12MB514680D55C89BECDA7895348F71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
-References: <20230822113719.3551639-1-sashal@kernel.org>
- <20230822113719.3551639-3-sashal@kernel.org>
-In-Reply-To: <20230822113719.3551639-3-sashal@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ActionId=ea822615-2f3c-4fc9-8b5f-1e08bdbb5052;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_ContentBits=0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Enabled=true;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Method=Privileged;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_Name=Public-AIP
- 2.0;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SetDate=2023-08-22T15:41:48Z;MSIP_Label_d4243a53-6221-4f75-8154-e4b33a5707a1_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR12MB5146:EE_|LV3PR12MB9188:EE_
-x-ms-office365-filtering-correlation-id: a5de7e39-b2a8-4887-1dd1-08dba32651c4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: A6+9e3fDp6A97A2GE1GnP8VYANNG/PhCMeIoUmE62FRaWIx/qS8Ei/AI7EddwUo7LQNm1mO3cMG/H7ott+IeC/9d8cyWGoL0nzpWiCQ6RHe84wl63R9BXsjy82fK0etVr0gnNkgUs2pDHvCx5cnqOCIbEinH4XcAPXYDBm9DNPHwKm9WsdBogNqKcphp6MFKt02mtbISCdbFPq+qSZ4MrX68fwnq2/9R2F86WL6TwNOX8Hc6CkNEs+1LVwp9QIFLWTGmwc/51E/li1Xucge96QJo2COo8StXPayF3RwH/SQVk3Evkj4uDeuNOFWZwzs7psqhiZLZO9gqurk1Q/CDDM1pOVeGfbJC645dKvftxDZ2vl3ygsnGZjyKrACk2+wfXa26FJh4zkutrasJGASdElI0UfLwmnYYiUQZpXnnZHERycCVzVqzP5bYB6/BYhz867A/Qz2XWuJTcMYTeELzx5HWx/Q4LRsqKWw+qgiJcgsJ9/Wrr/uJuoDDPelkoedAnQkndyBv7r8zPwRpmq6Gcv5zqBAna3l/QdoqNbZR1W6iN90Gyde2yedm2fS6EmbyZmrYFUiGlsReFngfUtJc5cYhq3L2G+ARftFIXqcRgnfYX59Czp+YE/BXXcmwaYEF
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5146.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(346002)(366004)(39860400002)(1800799009)(186009)(451199024)(66446008)(54906003)(66476007)(64756008)(66556008)(76116006)(316002)(9686003)(110136005)(8676002)(4326008)(8936002)(41300700001)(122000001)(478600001)(55016003)(71200400001)(66946007)(38100700002)(53546011)(6506007)(66574015)(2906002)(83380400001)(86362001)(7696005)(38070700005)(5660300002)(26005)(33656002)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?YmtVY21zZFdjNjVRWEpkWG13Rk5ocVhDRWkvdGdYSW55bC9lL0w4V1dYWW44?=
- =?utf-8?B?bXk1QWs0ZDBFVnZCajZUUEYrOXZCazNmdHVwekxoM0lsbEd2T2NsMVlxRHh4?=
- =?utf-8?B?SEgzRit5N2lpZzUydmJoNHZoTnl0RVJ0U0pucEorWjBKM3RDeUd5WHRicVRs?=
- =?utf-8?B?bHFpVGZWdHdwczdZaWNVQkdYRzJ2WE0yK29KUnFha2dpMjhBQkQ0OFVwVWM1?=
- =?utf-8?B?MzNwS3hjLzlnSmJUUWN2NWdmSEdiM3l1T0JlWnF6dFBEYkpFQUZEamo3b0tN?=
- =?utf-8?B?NHJndktXN1ZkOGk2ZU5wQzhkYjZKV2dlVXlHcGphbTFXWjJvMnNpWmhZVTM1?=
- =?utf-8?B?T0ZOejUxNmpGck9URm8xdDVKQW05Mnh5QTRrUXkyckRGTnhIbXFVVmlWTjIy?=
- =?utf-8?B?L3N6eDF3VXdqM0I1ZktuQUVjNElEeG5tOXJTWForM2tPSUJ0LytJS2lGSU9U?=
- =?utf-8?B?NFhTTmJsaFZBRXJGR3RYblFwc2NYbmtubWVoZ2FBaDhGN09OWGhBdkh0V0Q2?=
- =?utf-8?B?b0RIaGp3cHZHaHRMczFyQVB2cE1EbEZ3Q3lyWHlTMUkvNWtJKzg2WXNyUk8y?=
- =?utf-8?B?OXVySkdXazNoSU5RL1lPUnhWQVg5UmJmVU9LWEpISzN1UzIxcmU4UUszL0ZL?=
- =?utf-8?B?QU85VjhmTlBzY0h1c0NIcVkrWEQwQ2xKTUtCbm1NQ0NNUzFRWSt3bVV6VWlP?=
- =?utf-8?B?QS9pZFl0amIxNFE1aGNDaExnWHRMMmxWYmIwYi83WHhBVDg4b28yVnoyMjN6?=
- =?utf-8?B?dVhDSGFLWEVQWGdmYzNKeXZDc09QZ0lTTkNqQld2c3lKZENhRTlMU2lPOU51?=
- =?utf-8?B?ZmlUOFN6NENIaGxlVEtqQVo4WnA2Sjg2UXRYblFxN1lNcnZnMmRmYzd6dysw?=
- =?utf-8?B?MG1aUXhpeWNmTkxNNGFRc3dTZytmNWZ2c0UwMEZaTTNsMGNRclNYWEk4enZP?=
- =?utf-8?B?aXZva1JFRk12WnNpSDBiWmlycmFySU5vU2QrVTJCc05MdWxTbkRpNm4zMGpG?=
- =?utf-8?B?MzEvd2FqNTdWa2NFVnFjNFJjVHBqUVVEa3JrcnMweDRqRmZmMGkxQkxNbWJL?=
- =?utf-8?B?TFU5L0VVb2VkblJIcnpMU3FPOXlmdUlmUHltTjRMUW5iUGVOMUNpSFJMK3Fo?=
- =?utf-8?B?TU9jK0wzaVY4amtTM3JweTFPbUpGYzAyTWliOUEzbmRWUWxVajB1azA2bWt4?=
- =?utf-8?B?T2szZklaOEZPMmlqV1JseUR1ZUFRVUFDdkxpZUJMWjJ1YkIvUDJKNFBOTGxw?=
- =?utf-8?B?dEk4TnVwcnBNaHo2ZEZBUHBWSHoyZ0ozVmJLNkRuNm5pWVdWenN6MWZmWFVZ?=
- =?utf-8?B?SUI0NmtBZFNYdXVteHM2dmJMT01tdG9CVFNPUW9nUTRNTTBBaU9WTzlzZTBv?=
- =?utf-8?B?bnFsY0tFaVV5VzJDZ0NYOWpza0svQlZ3aEowbFd6aVR5c2JWTEhZZUxVTmF3?=
- =?utf-8?B?TE0raVQ3KzB2L3lhams2U0d4NjlhS05Zb1R3ak1RdUF2Z3NjcVlYaDNjTWxp?=
- =?utf-8?B?T3gySlBWT2hSZGovZkExemF6em10bU1UMVlxLzFObHg5Sm5mcVZQaUhkMkJV?=
- =?utf-8?B?c1FzL1B4WnlkZDQwZ09XYXM0ZVNxUG5uRjU4Uit6dThNcGVoWWpGR1g0Nm9a?=
- =?utf-8?B?eGdTRHF5MUU2WjVodnNORTF6bHNZcTh1VExpS1dGWjR4dmFrcmdsODJpOU9E?=
- =?utf-8?B?V2UrbjUzQ1EzYy9WRjhNSFllWWVWeU4wczNSaXdaS3RBQUd5VTNTYUlqUWlo?=
- =?utf-8?B?c09iZHdtWHhDYnBTTGhPbTQzR2dmTGFqcGVVdVpTaVAxRFpHMW41akVlaGlm?=
- =?utf-8?B?SlZ1bmNnOUhsR1BuYXdIRjZqamgyeUtWSDNqdE5abStNYlFHVnp2SUprQXFD?=
- =?utf-8?B?Q2doQ25mcE1oc0V4K000ck1McjYzKytTZDhzUHhVbHJ3YzlqVytKM3JBckhy?=
- =?utf-8?B?amVKK2ZpN0NLVHl0QldGQWZtSVJTZmQ5bmE1V2szWGVkMGR6ZCszMU1YK0xN?=
- =?utf-8?B?NFhRS0V1cEhxdEdGSi9MTURSeEhyTkVkNXE1ZFU2YmRkVndqUGZKeFNEZmNr?=
- =?utf-8?B?d2Q2cEw3ek9HdTBlWlZmc0dzbjZYY2dSeVVUZ3djVStUVVhsWHNMS29JK0hM?=
- =?utf-8?Q?jYJc=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 22 Aug 2023 11:43:53 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE69CD5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:43:51 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so5592414a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:43:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692719030; x=1693323830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aHPwQRfzvw0kSRyeNQxBzdbaew4IqY6cIfInQbasrDQ=;
+        b=sEQshxKo1c53nQhGLbHCCdc+S2tBe70IsqZWr7uYwwq9MoMEMzlTYnO6hFGblId8HR
+         DzzXIr0Ng5kZ8/r2nmhyqI70Cd91DmIvGtUBCxTGKWkDWaAHPTwgsIY9Q8aM7BIQoe1N
+         AFJXDgT/DK9PdVByD6peAL9817rZ2/DecmzYDeKW4k8VYQFxiZvcB1tNj6kVv7l55IG/
+         R2ZX4wdjG0RXpwDlzSlIiiT17KUinChOvJXjhixzKBGtmb4QrfWMjNdC8QhiwnuOOQ5t
+         vhTR2MV2OtnpVDusGoen77jQIoKs6WbqROpZbkfQGnaroO2feltIB5XZ+bsfnT0OjlyD
+         MueQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692719030; x=1693323830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aHPwQRfzvw0kSRyeNQxBzdbaew4IqY6cIfInQbasrDQ=;
+        b=GYOFJgO+o3YpCTr/0g7sCCzAgUH4HXwJZbBhpfwIT00ISd49Rt+KoMREBBwQA+C3vY
+         a3ONfvFG4V2PX/qVNOFJtDfrm48Xru0HGeMOR0lUyiXySErdKiDtL80xiwfDwNUWY4Rt
+         cTTogZBcOD1bYQeMzeTD0R9ngHIvXvBnDHuxZAe1PisHrG1JR8I23mcaIv8gXwv3B/CE
+         /yMQ6k0BiYkxTDNuQ42MySItv1Dayi3gSEySpEUJTSMnDOr+FWk98y+EFzX08/DXxTHy
+         +EOKWZWZ6KpnrLrnsJ9aMZI3gQUnISz4Bh5grgaHbbn4bAwE6pqW+HGDGDFKgXxfyXEj
+         /Gsg==
+X-Gm-Message-State: AOJu0YwAwSZEetgHoyeJZXsue1lP5+4RVVQdisgY++IlU6aAgxFm1neX
+        HH+GC8JdTlaTOM3umKgNB85UAqpWtMFEILSlIknt7w==
+X-Google-Smtp-Source: AGHT+IHS97sSNWyiXgCNScdPoxBn0oRhZd31+T5kmk9JQHR1a3PFHWfxZOba5fcmlpUo/3o5Ke4/hjD+6EC5oavPmwY=
+X-Received: by 2002:a17:907:2c57:b0:98e:419b:4cc6 with SMTP id
+ hf23-20020a1709072c5700b0098e419b4cc6mr7061038ejc.70.1692719030006; Tue, 22
+ Aug 2023 08:43:50 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5146.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5de7e39-b2a8-4887-1dd1-08dba32651c4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Aug 2023 15:41:57.8565
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: VXaHqlr2nWK8Q95nKZsyjWKQO0x6lXcaNzFl4jMAdzkuNIX2Jtz9e5hcac3Qct63w3t56oMlfNZ/wIj4/quvXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9188
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20230821205458.1764662-1-yosryahmed@google.com> <a4opjlmm5it3ujoypcgjfljfamjvr7gu34sc7lrjldfbqzz4lj@6w4lqdcfd3zu>
+In-Reply-To: <a4opjlmm5it3ujoypcgjfljfamjvr7gu34sc7lrjldfbqzz4lj@6w4lqdcfd3zu>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 22 Aug 2023 08:43:13 -0700
+Message-ID: <CAJD7tkYrbs8Eqb-AbTmb5JeQb+KeLZrU4C2kJk8pjva-6p6bHQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] memcg: non-unified flushing for userspace stats
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W1B1YmxpY10NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBTYXNoYSBM
-ZXZpbiA8c2FzaGFsQGtlcm5lbC5vcmc+DQo+IFNlbnQ6IFR1ZXNkYXksIEF1Z3VzdCAyMiwgMjAy
-MyA3OjM3IEFNDQo+IFRvOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBzdGFibGVAdmdl
-ci5rZXJuZWwub3JnDQo+IENjOiBEZXVjaGVyLCBBbGV4YW5kZXIgPEFsZXhhbmRlci5EZXVjaGVy
-QGFtZC5jb20+OyBLdWVobGluZywgRmVsaXgNCj4gPEZlbGl4Lkt1ZWhsaW5nQGFtZC5jb20+OyBL
-b2VuaWcsIENocmlzdGlhbiA8Q2hyaXN0aWFuLktvZW5pZ0BhbWQuY29tPjsNCj4gTWlrZSBMb3Ro
-aWFuIDxtaWtlQGZpcmVidXJuLmNvLnVrPjsgU2FzaGEgTGV2aW4gPHNhc2hhbEBrZXJuZWwub3Jn
-PjsgUGFuLA0KPiBYaW5odWkgPFhpbmh1aS5QYW5AYW1kLmNvbT47IGFpcmxpZWRAZ21haWwuY29t
-OyBkYW5pZWxAZmZ3bGwuY2g7IGFtZC0NCj4gZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgZHJp
-LWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0KPiBTdWJqZWN0OiBbUEFUQ0ggQVVUT1NFTCA1
-LjEwIDMvM10gZHJtL2FtZGtmZDogaWdub3JlIGNyYXQgYnkgZGVmYXVsdA0KPg0KPiBGcm9tOiBB
-bGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+DQo+IFsgVXBzdHJlYW0g
-Y29tbWl0IGE2ZGVhMmQ2NGZmOTI4NTFlNjhjZDRlMjBhMzVmNjUzNDI4NmUwMTYgXQ0KPg0KPiBX
-ZSBhcmUgZHJvcHBpbmcgdGhlIElPTU1VdjIgcGF0aCwgc28gbm8gbmVlZCB0byBlbmFibGUgdGhp
-cy4NCj4gSXQncyBvZnRlbiBidWdneSBvbiBjb25zdW1lciBwbGF0Zm9ybXMgYW55d2F5Lg0KDQpU
-aGlzIGlzIG5vdCBuZWVkZWQgZm9yIHN0YWJsZS4NCg0KQWxleA0KDQo+DQo+IFJldmlld2VkLWJ5
-OiBGZWxpeCBLdWVobGluZyA8RmVsaXguS3VlaGxpbmdAYW1kLmNvbT4NCj4gQWNrZWQtYnk6IENo
-cmlzdGlhbiBLw7ZuaWcgPGNocmlzdGlhbi5rb2VuaWdAYW1kLmNvbT4NCj4gVGVzdGVkLWJ5OiBN
-aWtlIExvdGhpYW4gPG1pa2VAZmlyZWJ1cm4uY28udWs+DQo+IFNpZ25lZC1vZmYtYnk6IEFsZXgg
-RGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogU2Fz
-aGEgTGV2aW4gPHNhc2hhbEBrZXJuZWwub3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvZ3B1L2RybS9h
-bWQvYW1ka2ZkL2tmZF9jcmF0LmMgfCA0IC0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGRlbGV0
-aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2Zk
-X2NyYXQuYw0KPiBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9jcmF0LmMNCj4gaW5k
-ZXggODZiNGRhZGY3NzJlMy4uNjFmZWEwZDI2OGI5NiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9n
-cHUvZHJtL2FtZC9hbWRrZmQva2ZkX2NyYXQuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vYW1k
-L2FtZGtmZC9rZmRfY3JhdC5jDQo+IEBAIC03NDksMTEgKzc0OSw3IEBAIHN0YXRpYyBib29sIGtm
-ZF9pZ25vcmVfY3JhdCh2b2lkKQ0KPiAgICAgICBpZiAoaWdub3JlX2NyYXQpDQo+ICAgICAgICAg
-ICAgICAgcmV0dXJuIHRydWU7DQo+DQo+IC0jaWZuZGVmIEtGRF9TVVBQT1JUX0lPTU1VX1YyDQo+
-ICAgICAgIHJldCA9IHRydWU7DQo+IC0jZWxzZQ0KPiAtICAgICByZXQgPSBmYWxzZTsNCj4gLSNl
-bmRpZg0KPg0KPiAgICAgICByZXR1cm4gcmV0Ow0KPiAgfQ0KPiAtLQ0KPiAyLjQwLjENCg0K
+On Tue, Aug 22, 2023 at 6:01=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> Hello.
+>
+> On Mon, Aug 21, 2023 at 08:54:55PM +0000, Yosry Ahmed <yosryahmed@google.=
+com> wrote:
+> > For userspace reads, unified flushing leads to non-deterministic stats
+> > staleness and reading cost.
+>
+> I only skimed previous threads but I don't remember if it was resolved:
+> a) periodic flushing was too much spaced for user space readers (i.e. 2s
+>    delay is too much [1]),
+> b) periodic flushing didn't catch up (i.e. full tree flush can
+>    occassionaly take more than 2s) leading to extra staleness?
+
+The idea is that having stats anywhere between 0-2 seconds stale is
+inconsistent, especially when compared to other values (such as
+memory.usage_in_bytes), which can give an inconsistent and stale view
+of the system. For some readers, 2s is too spaced (we have readers
+that read every second). A time-only bound is scary because on large
+systems a lot can happen in a second. There will always be a delay
+anyway, but ideally we want to minimize it.
+
+I think 2s is also not a strict bound (e.g. flushing is taking a lot
+of time, a flush started but the cgroup you care about hasn't been
+flushed yet, etc).
+
+There is also the problem of variable cost of reading.
+
+>
+> [1] Assuming that nr_cpus*MEMCG_CHARGE_BATCH error bound is also too
+>     much for userspace readers, correct?
+
+I can't tell for sure to be honest, but given the continuously
+increased number of cpus on modern systems, and the fact that
+nr_cpus*MEMCG_CHARGE_BATCH can be localized in one cgroup or spread
+across the hierarchy, I think it's better if we drop it for userspace
+reads if possible.
+
+>
+> > The cost of userspace reads are now determinstic, and depend on the
+> > size of the subtree being read. This should fix both the *sometimes*
+> > expensive reads (due to flushing the entire tree) and occasional
+> > staless (due to skipping flushing).
+>
+> This is nice, thanks to the atomic removal in the commit 0a2dc6ac3329
+> ("cgroup: remove cgroup_rstat_flush_atomic()"). I think the smaller
+> chunks with yielding could be universally better (last words :-).
+
+I was hoping we can remove unified flushing completely, but stress
+testing with hundreds of concurrent reclaimers shows a lot of
+regression. Maybe it doesn't matter in practice, but I don't want to
+pull that trigger :)
+
+FWIW, with unified flushing we are getting great concurrency for
+in-kernel flushers like reclaim or refault, but at the expense of
+stats staleness. I really wonder what hidden cost we are paying due to
+the stale stats. I would imagine any problems that manifest from this
+would be difficult to tie back to the stale stats.
+
+>
+> Thanks,
+> Michal
+>
