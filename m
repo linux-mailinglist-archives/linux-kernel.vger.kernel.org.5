@@ -2,216 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A46C784081
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CD178408F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235456AbjHVMPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        id S235655AbjHVMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:17:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjHVMPh (ORCPT
+        with ESMTP id S235638AbjHVMRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:15:37 -0400
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A993193
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:15:35 -0700 (PDT)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-565e5961ddbso6151716a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:15:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692706535; x=1693311335;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A11YOkupM8IJbU9SaQPhsmn7gkacmQLBZxZUZfpi3gQ=;
-        b=CoqVadH+ShaVRmcbn3SCR3q7H2quwSveigpTAwBd9Qq2qR1TBdDuwqQk7YL2QmTRMB
-         NsWE6obx8Sl8udrHngKqV3nHt3IuLifp+HGbAaF2VaI5aR1LWKBg/Vn8n5vSbteSB4ul
-         FCEI2l9F2LoCIs8NwfhnXdWStYnF0tre5/GUq9+0fKP1mLWXnZqmwC16mUhTmp45dgaq
-         q+PJuun1zz+Lt4bRm8PKFYNJun3cv143yO+lROxCaIKP83EIJkHcWJevIQ+q35Fa4tva
-         hhLZuODIblpQ+cLeJeJ0/+RCvlA+mahxOstq6mTg0u1JuKMAsJ/hsU8++rBiZQBMjpcd
-         XkAw==
-X-Gm-Message-State: AOJu0YzzMkSy2g0Ak6P73pl16R3KLl1ILaaf5TTSboaPtel7rXQ7O4EJ
-        1PkN9cSquVAuvy9aaQfuxpPSi+X6vC3/M/fRqf1XVDx9jZz4
-X-Google-Smtp-Source: AGHT+IHgyt+3sNFDSzaR7NZ1fM9jyBzLm2GLj7lI3wYliFfJ80D0LHL2L32EmvgkKocGYT1KdBso5TXNm88I2+38oSVptLCCZu6t
+        Tue, 22 Aug 2023 08:17:15 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6E5CDA;
+        Tue, 22 Aug 2023 05:17:07 -0700 (PDT)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37M6nNZO003513;
+        Tue, 22 Aug 2023 14:16:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=8ENWQxVlfQr3qVTiWllxpoMpJhThCEawgKlW0Xs1aHo=; b=FV
+        k3OxfJT2GqTXmG4jDNDcDlucIRojpFKU0W4yTDnnhmsqaKTUhLYNVHkfsgvQF5Tl
+        Vv1kPjnoQLfm0+FdmxPP5i47EWnBmK5caaNZvrmnV2SaF8JGogytMZbXMCZ71HQo
+        B5AKbRW0csVo1bN2j+6kqMvEB9L4CZ/x0abU7i/P08zHzig0+jDbaYgzlrRXhY2S
+        XwbIISurqwVYRDO9BSIKKwu3EuMbL5vpEkwtCE0J4uti0qAT548ZyBPkouU8iVHh
+        TNjRAFP1Hhjrqju/ZMWqRU7fePRFXdvbPdEmfBqApJMzC+BMLcBdx7Ktn1x5MSl5
+        OjMpTHivZbh4c+iHy2Iw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3smbvub7ey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 14:16:42 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B3D8710004D;
+        Tue, 22 Aug 2023 14:16:39 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9D98726A825;
+        Tue, 22 Aug 2023 14:16:39 +0200 (CEST)
+Received: from [10.201.22.206] (10.201.22.206) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 22 Aug
+ 2023 14:16:36 +0200
+Message-ID: <a2de9e15-9640-9b72-9df4-7e1ee3054dd9@foss.st.com>
+Date:   Tue, 22 Aug 2023 14:16:35 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a63:7b15:0:b0:563:962e:e912 with SMTP id
- w21-20020a637b15000000b00563962ee912mr1627152pgc.0.1692706534808; Tue, 22 Aug
- 2023 05:15:34 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 05:15:34 -0700
-In-Reply-To: <20230822112701.2655-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b7617e060381f3ab@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Read in hci_send_acl
-From:   syzbot <syzbot+a0c80b06ae2cb8895bc4@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 2/2] remoteproc: imx_dsp_rproc: add module parameter to
+ ignore ready flag from remote processor
+Content-Language: en-US
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+CC:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "S.J. Wang" <shengjiu.wang@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Mpuaudiosw <Mpuaudiosw@nxp.com>, linux-imx <linux-imx@nxp.com>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        LnxRevLi <LnxRevLi@nxp.com>
+References: <20230712224251.26482-1-iuliana.prodan@oss.nxp.com>
+ <ZLV7q9ipDaw4b1Hi@p14s> <6fe5691f-67f4-ff70-8350-b4b6c08097b0@nxp.com>
+ <ZLa0MqKvg1W3mx/7@p14s> <86da3550-9711-6714-0857-2f7611dc9453@nxp.com>
+ <ZLgFiW+IH3m4MWLw@p14s>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Organization: STMicroelectronics
+In-Reply-To: <ZLgFiW+IH3m4MWLw@p14s>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.201.22.206]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_11,2023-08-22_01,2023-05-22_02
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Juliana
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in hci_send_acl
+On 7/19/23 17:47, Mathieu Poirier wrote:
+> On Tue, Jul 18, 2023 at 07:44:49PM +0300, Iuliana Prodan wrote:
+>> On 7/18/2023 6:48 PM, Mathieu Poirier wrote:
+>>> On Tue, Jul 18, 2023 at 11:30:43AM +0300, Iuliana Prodan wrote:
+>>>> Hi Mathieu,
+>>>>
+>>>> On 7/17/2023 8:34 PM, Mathieu Poirier wrote:
+>>>>> Hi Iuliana,
+>>>>>
+>>>>> On Thu, Jul 13, 2023 at 01:42:51AM +0300, Iuliana Prodan (OSS) wrote:
+>>>>>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
+>>>>>>
+>>>>>> There are cases when we want to test samples that do not
+>>>>>> reply with FW READY message, after fw is loaded and the
+>>>>>> remote processor started.
+>>>>> This seems like a bug to me - where is this FW comes from?
+>>>> The firmware is a generic sample from Zephyr repo: https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table
+>>>>
+>>>> There is no bug, this is how the application was written.
+>>> But how did it ever worked before?
+>>
+>> It never worked on this kind of samples (and it was never tested like this).
+>> We used only applications written by us (NXP) with the
+>> requirements/limitations we know we have.
+>> Now, we want to use also generic firmware/samples (from Zephyr) and we face
+>> other kind of limitations.
 
-==================================================================
-BUG: KASAN: slab-use-after-free in hci_send_acl+0xdf4/0xf30 net/bluetooth/hci_core.c:3228
-Read of size 8 at addr ffff888069713618 by task kworker/0:4/5435
+It makes sense to me to adapt the sample in Zephyr to add this synchronization
+under a config flag (I am the author of this sample).
 
-CPU: 0 PID: 5435 Comm: kworker/0:4 Not tainted 6.5.0-rc6-next-20230818-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: events l2cap_info_timeout
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- hci_send_acl+0xdf4/0xf30 net/bluetooth/hci_core.c:3228
- l2cap_send_cmd+0x6dd/0x920 net/bluetooth/l2cap_core.c:977
- l2cap_send_conn_req+0x1e5/0x260 net/bluetooth/l2cap_core.c:1286
- l2cap_start_connection+0x11e/0x420 net/bluetooth/l2cap_core.c:1514
- l2cap_conn_start+0x7ae/0xa40 net/bluetooth/l2cap_core.c:1661
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+FYI, this sample is currently only running on the STM32MP15 boards for
+communication with Linux. For these boards, there is no need for synchronization
+before starting the IPC communication.
+So extending the sample to support a second board will make it more generic :)
 
-Allocated by task 5466:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:600 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- hci_chan_create+0xa6/0x3a0 net/bluetooth/hci_conn.c:2691
- l2cap_conn_add.part.0+0x1a/0xdf0 net/bluetooth/l2cap_core.c:7839
- l2cap_conn_add include/net/bluetooth/l2cap.h:866 [inline]
- l2cap_chan_connect+0x15b9/0x2140 net/bluetooth/l2cap_core.c:8051
- bt_6lowpan_connect net/bluetooth/6lowpan.c:894 [inline]
- lowpan_control_write+0x3d6/0x730 net/bluetooth/6lowpan.c:1129
- full_proxy_write+0x124/0x190 fs/debugfs/file.c:236
- vfs_write+0x2a4/0xe40 fs/read_write.c:582
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Regards,
+Arnaud
 
-Freed by task 5045:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
- hci_chan_list_flush+0x81/0xf0 net/bluetooth/hci_conn.c:2731
- hci_conn_cleanup net/bluetooth/hci_conn.c:152 [inline]
- hci_conn_del+0x1fc/0xd10 net/bluetooth/hci_conn.c:1140
- hci_abort_conn_sync+0xacb/0xe20 net/bluetooth/hci_sync.c:5432
- abort_conn_sync+0x18e/0x3a0 net/bluetooth/hci_conn.c:2878
- hci_cmd_sync_work+0x1a4/0x3c0 net/bluetooth/hci_sync.c:306
- process_one_work+0x887/0x15d0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8bb/0x1290 kernel/workqueue.c:2784
- kthread+0x33a/0x430 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
-
-The buggy address belongs to the object at ffff888069713600
- which belongs to the cache kmalloc-128 of size 128
-The buggy address is located 24 bytes inside of
- freed 128-byte region [ffff888069713600, ffff888069713680)
-
-The buggy address belongs to the physical page:
-page:ffffea0001a5c4c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x69713
-flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012c418c0 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x112cc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY), pid 5400, tgid 5400 (syz-executor.0), ts 92397723620, free_ts 92397302327
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x10d7/0x31b0 mm/page_alloc.c:3219
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4475
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_slab_page mm/slub.c:1872 [inline]
- allocate_slab+0xa1/0x380 mm/slub.c:2017
- new_slab mm/slub.c:2070 [inline]
- ___slab_alloc+0x8be/0x1570 mm/slub.c:3223
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3322
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3517
- __do_kmalloc_node mm/slab_common.c:1003 [inline]
- __kmalloc_node+0x52/0x110 mm/slab_common.c:1011
- kmalloc_array_node include/linux/slab.h:698 [inline]
- kcalloc_node include/linux/slab.h:703 [inline]
- memcg_alloc_slab_cgroups+0xa9/0x170 mm/memcontrol.c:2895
- memcg_slab_post_alloc_hook+0xaa/0x390 mm/slab.h:530
- slab_post_alloc_hook mm/slab.h:770 [inline]
- slab_alloc_node mm/slub.c:3478 [inline]
- slab_alloc mm/slub.c:3486 [inline]
- __kmem_cache_alloc_lru mm/slub.c:3493 [inline]
- kmem_cache_alloc+0x1a7/0x3b0 mm/slub.c:3502
- prepare_creds+0x43/0x7b0 kernel/cred.c:263
- copy_creds+0xa7/0xe50 kernel/cred.c:368
- copy_process+0xeb6/0x7400 kernel/fork.c:2368
- kernel_clone+0xfd/0x930 kernel/fork.c:2916
- __do_sys_clone+0xba/0x100 kernel/fork.c:3059
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2348
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2441
- vfree+0x181/0x7a0 mm/vmalloc.c:2842
- __do_replace+0x7bf/0x9c0 net/ipv4/netfilter/arp_tables.c:937
- do_replace net/ipv6/netfilter/ip6_tables.c:1154 [inline]
- do_ip6t_set_ctl+0x93a/0xbd0 net/ipv6/netfilter/ip6_tables.c:1636
- nf_setsockopt+0x87/0xe0 net/netfilter/nf_sockopt.c:101
- ipv6_setsockopt+0x12b/0x190 net/ipv6/ipv6_sockglue.c:1017
- tcp_setsockopt+0x9d/0x100 net/ipv4/tcp.c:3677
- __sys_setsockopt+0x2cd/0x5b0 net/socket.c:2307
- __do_sys_setsockopt net/socket.c:2318 [inline]
- __se_sys_setsockopt net/socket.c:2315 [inline]
- __x64_sys_setsockopt+0xbd/0x150 net/socket.c:2315
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff888069713500: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
- ffff888069713580: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->ffff888069713600: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                            ^
- ffff888069713680: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888069713700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
-Tested on:
-
-commit:         7271b2a5 Add linux-next specific files for 20230818
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1555b1bba80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1766e9bba80000
-
+>>
+> 
+> Right, we can't expect firmware written for a totally different OS to work out
+> of the box on Linux, and vice versa.
+> 
+>>>   And how does having a module flag to
+>>> characterize each FW implementation that springs up in the field can scale (and
+>>> be maintainable)?
+>>
+>> I believe the FW_READY reply is a limitation introduced by imx_dsp_rproc.
+>> We cannot expect all firmware to give a FW_READY reply.
+>> So, to keep both usecases (internal firmware and generic sample) I added
+>> this flag.
+>>
+> 
+> What happens when a third, fourth and fifth protocol variation get introduced?
+> Adding flags just doesn't scale.
+> 
+>>>> Rather than modifying a generic sample for i.MX usecase, I prefer doing an
+>>>> "insmod imx_dsp_rproc.ko ignore_dsp_ready=1" just for this sample.
+>>> We already have a "no_mailbox" flag for cases where the FW doesn't need to
+>>> communicate with the main processor.
+>> "no_mailbox" - no IPC between cores;
+>> "ignore_dsp_ready" - we have IPC between cores, but the remote processor
+>> doesn't send a fw_ready reply
+>> These two can be combine, but for "no_mailbox" will do some useless memory
+>> allocations.
+>>
+>> When I added the "no_mailbox" flag, the problem was still FW_READY.
+>>>   What happens when some FW implementation
+>>> requires a three-way handshake?  How many flags do we spin off?
+>>>
+>>> As I said above this approach is not sustainable.  I suggest to either fix the
+>>> FW (it doesn't work with upstream in its present form anyway) or start using the
+>>> config space as described here [1] to dynamically probe the characteristics of
+>>> the FW being loaded.  Whichever option you chose, the FW needs to be updated and
+>>> the former is a lot more simple.
+>> I don't think I can modify a generic sample, used on other targets to send a
+>> FW_READY reply.
+>> How will it be handled on other platforms, if their *_rproc are not
+>> expecting this kind of message?
+>>
+> 
+> The only way forward is to come up with a standard specification to describe the
+> protocol to use, the same way it is done for virtIO for example.
+> 
+>> Thanks,
+>> Iulia
+>>
+>>> Thanks,
+>>> Mathieu
+>>>
+>>> [1]. https://elixir.bootlin.com/linux/latest/source/include/linux/remoteproc.h#L298
+>>>
+>>>> Thanks,
+>>>> Iulia
+>>>>
+>>>>>> In these cases, do not wait for a confirmation from the remote processor
+>>>>>> at start.
+>>>>>>
+>>>>>> Added "ignore_dsp_ready" flag while inserting the module to ignore
+>>>>>> remote processor reply after start.
+>>>>>> By default, this is off - do not ignore reply from rproc.
+>>>>>>
+>>>>>> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
+>>>>>>
+>>>>>> ---
+>>>>>> This was discovered while testing openamp_rsc_table sample from Zephyr
+>>>>>> repo (https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table).
+>>>>>>
+>>>>>> We have IPC, but the remote proc doesn't send a FW_READY reply.
+>>>>>> ---
+>>>>>>    drivers/remoteproc/imx_dsp_rproc.c | 15 +++++++++++++++
+>>>>>>    1 file changed, 15 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
+>>>>>> index b5634507d953..ed89de2f3b98 100644
+>>>>>> --- a/drivers/remoteproc/imx_dsp_rproc.c
+>>>>>> +++ b/drivers/remoteproc/imx_dsp_rproc.c
+>>>>>> @@ -36,7 +36,13 @@ module_param_named(no_mailboxes, no_mailboxes, int, 0644);
+>>>>>>    MODULE_PARM_DESC(no_mailboxes,
+>>>>>>    		 "There is no mailbox between cores, so ignore remote proc reply after start, default is 0 (off).");
+>>>>>> +static unsigned int imx_dsp_rproc_ignore_ready;
+>>>>>> +module_param_named(ignore_dsp_ready, imx_dsp_rproc_ignore_ready, int, 0644);
+>>>>>> +MODULE_PARM_DESC(ignore_dsp_ready,
+>>>>>> +		 "Ignore remote proc reply after start, default is 0 (off).");
+>>>>>> +
+>>>>>>    #define REMOTE_IS_READY				BIT(0)
+>>>>>> +#define REMOTE_IGNORE_READY_REPLY	BIT(1)
+>>>>>>    #define REMOTE_READY_WAIT_MAX_RETRIES		500
+>>>>>>    /* att flags */
+>>>>>> @@ -296,6 +302,12 @@ static int imx_dsp_rproc_ready(struct rproc *rproc)
+>>>>>>    	if (!priv->rxdb_ch)
+>>>>>>    		return 0;
+>>>>>> +	/*
+>>>>>> +	 * FW_READY reply is optional/ignored, so don't wait for it.
+>>>>>> +	 */
+>>>>>> +	if (priv->flags & REMOTE_IGNORE_READY_REPLY)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>>    	for (i = 0; i < REMOTE_READY_WAIT_MAX_RETRIES; i++) {
+>>>>>>    		if (priv->flags & REMOTE_IS_READY)
+>>>>>>    			return 0;
+>>>>>> @@ -1119,6 +1131,9 @@ static int imx_dsp_rproc_probe(struct platform_device *pdev)
+>>>>>>    	else
+>>>>>>    		imx_dsp_rproc_mbox_init = imx_dsp_rproc_mbox_alloc;
+>>>>>> +	if (imx_dsp_rproc_ignore_ready)
+>>>>>> +		priv->flags |= REMOTE_IGNORE_READY_REPLY;
+>>>>>> +
+>>>>>>    	dev_set_drvdata(dev, rproc);
+>>>>>>    	INIT_WORK(&priv->rproc_work, imx_dsp_rproc_vq_work);
+>>>>>> -- 
+>>>>>> 2.17.1
+>>>>>>
