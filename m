@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5590C78425B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 630F8784260
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 15:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbjHVNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 09:49:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S235899AbjHVNuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 09:50:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbjHVNt3 (ORCPT
+        with ESMTP id S235825AbjHVNuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 09:49:29 -0400
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D6618B
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 06:49:28 -0700 (PDT)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-268476c3b2aso6745895a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 06:49:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692712167; x=1693316967;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UZu7/0tQl9lJSJvWDtw8NuZa34ZIyovvFEjPAU3JiMs=;
-        b=b3MMLXqUOAQ4eOkN+Wve7m6VpNWN5w1LyyYmsHC3MyeThW1IFK+b+8T8fPkAbFGtfs
-         fBJB3SNVMRJLeLm9DLOQzC7TbHmBRYlAucCdsTXnQe7OHyEQFb7GULZtlw0I/1gszQ59
-         RRgOYUXl90h9DTxrt7NlIatjkjBApw0bmHVEaU1cAt5N0dWnJx2BZm3XBKgmkhxmkuPs
-         sutnFUcFV9ZtoBqrPJCPojrwKMYmlMHV7H6phajRBb/pZJTjZRTr1RBSyi+/2vtfdOO1
-         Rc21bL+9nkt1y4MdQ9ko4h8sOHKTAPAK9w9RfLrseQm4XknCJwIMZDgisnaRxmtxG08S
-         aJEQ==
-X-Gm-Message-State: AOJu0YyhayBqmsRcuJBXkYOhPAGhxdvZK4O3DMfeDE2RzsmJ3hfOq++C
-        6WFJCA/y7YZOKlnHKNg8ilpyGwyrTQGeRLwcbSYCvyK6rSw/
-X-Google-Smtp-Source: AGHT+IFBJCInUYeTJV4iHf6oBYzCaJYBguOBKf0nhcvaa2KWNn2PIGp447h2BGhAAw5ySboKC4nynpBfggMLkQJ4IgayD8witW3n
+        Tue, 22 Aug 2023 09:50:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBB518B
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 06:50:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D70A465708
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:50:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C35C433C9;
+        Tue, 22 Aug 2023 13:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692712210;
+        bh=mG6DXlXlMRPptfmTnxoYooQNKEhtfzz0atYYStvqRB8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YnpCwjuhNzcnP1gJuJEANGaPW8k2JZeXA6x5JfL+BafuNNupg0nhqvnTFr6d28zZD
+         3ErRk2mRknR8Tmil02SGqVVx4U6LFCRd+tD4n75o3WC0wm+rRdaVp1UBxj9DYyeX4E
+         tnV4umEySVSuVBky5FPelj9aWtGdn77scfoiksm0=
+Date:   Tue, 22 Aug 2023 15:50:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tree Davies <tdavies@darkphysics.net>
+Cc:     philipp.g.hortmann@gmail.com, anjan@momi.ca,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/16] Staging: rtl8192e: Rename variable pRxTs in
+ function rx_ts_delete_ba()
+Message-ID: <2023082245-undergrad-sly-4f27@gregkh>
+References: <20230820004744.278022-1-tdavies@darkphysics.net>
+ <20230820004744.278022-2-tdavies@darkphysics.net>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:a58f:b0:268:38e3:34f0 with SMTP id
- b15-20020a17090aa58f00b0026838e334f0mr1858244pjq.2.1692712167734; Tue, 22 Aug
- 2023 06:49:27 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 06:49:27 -0700
-In-Reply-To: <20230822115844.2776-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007706520603834323@google.com>
-Subject: Re: [syzbot] [input?] KASAN: slab-use-after-free Read in input_dev_uevent
-From:   syzbot <syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820004744.278022-2-tdavies@darkphysics.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 19, 2023 at 05:47:29PM -0700, Tree Davies wrote:
+> Rename variable pRxTs in function rx_ts_delete_ba() to ts
+> to fix checkpatch warning Avoid CamelCase.
+> 
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+> v3:Resend as 16 patch series - no longer throttled by email provider, fix commit msg
+> v2:Resending in smaller patch series
+>  drivers/staging/rtl8192e/rtl819x_BAProc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> index 0e3372868f97..da29163f3022 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> @@ -41,9 +41,9 @@ static u8 tx_ts_delete_ba(struct rtllib_device *ieee, struct tx_ts_record *pTxTs
+>  	return bSendDELBA;
+>  }
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+This patch series is named very strange.  Some commits have "v3", some
+have "v2" and some none at all.
 
-Reported-and-tested-by: syzbot+3a0ebe8a52b89c63739d@syzkaller.appspotmail.com
+A patchset itself is versioned, I can't keep track of which commit in
+the series is newer than which, sorry.  What would you do if you saw
+this email thread in your inbox to review?  :)
 
-Tested on:
+Can you resend the whole thing, as a v4 series, with the Tested-by tag
+added to the patches?
 
-commit:         7271b2a5 Add linux-next specific files for 20230818
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=145b7ab0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1936af09cdef7dd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=3a0ebe8a52b89c63739d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11501ecfa80000
+thanks,
 
-Note: testing is done by a robot and is best-effort only.
+greg k-h
