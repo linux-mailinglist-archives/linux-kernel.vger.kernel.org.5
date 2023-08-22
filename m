@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA6E784562
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F87784567
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237041AbjHVPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
+        id S237032AbjHVPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:24:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237028AbjHVPW5 (ORCPT
+        with ESMTP id S233532AbjHVPYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:22:57 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18A51B9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:22:54 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id ffacd0b85a97d-3159d5e409dso3600701f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1692717773; x=1693322573;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3iYVw+zE33iGEGgZkL2OTTW5qQuIEbe9J8maXgT3tvA=;
-        b=HRIuTNqwWahTO8wOvckmTC3bIz/O05jocYJ1geTY+ue/lTfEmxpr9oj/yISd4Y9m9O
-         Q4iyd0Ss3K4+MlQcwfeeBHDIyvFxZSEv6PWH760nCFonZh5qmrvVgarjbq24f2XUj5vG
-         fGieRLsVPfLaOnu0n4uDG6vc3hDKPF71IzKa0DmvBdIXouY9sL9neozx6R/RooGUlxQ6
-         JPBBXcWh1WSQaGmHXA68r4EDhQYwnCZ0/3uVZZVnlMIDLy3SERDws2B+wpM6mu4YZXC8
-         PJRRQBKziPSyuYA159UZAr/s5Gydb0PlxOoooMWefxdP7V2dxAhf7zSgviTDvL8KX9qi
-         /YYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692717773; x=1693322573;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3iYVw+zE33iGEGgZkL2OTTW5qQuIEbe9J8maXgT3tvA=;
-        b=TTrSJ+KNlr4bSLJZzbxJ8uc084yEn9jimYkSM3kSSogBJOM4sIWYbgp1IpfQA+nW+L
-         OX81asIBLzZo4HXwZcxUily5FWOKXEk4PgzQqpf8RtIBQX5yyap0AWcdA6xVYDTwS3Xd
-         Nvi9+lvv2+J0Rym+eLgXRFzXDqCkwA7Ww/hmbVi0mFFILnYgDjAY0/MkpVnQXrCauXme
-         2gMFuhpTIZRFAEQpzLjDswOzy8v8mfWfKqQZQ2ToSfFHZ11SYl718KYkgqbOWrkj9IVT
-         y4VwPQZpdgT1mvCmJs9jiQQRS1qPXAHS7G9mkjmeCun2q9Z/3BRw5wedr8rTfdWwvH2e
-         BXzw==
-X-Gm-Message-State: AOJu0Yx9ELmiXzbEWBRlY04aOKZH7aEBqlh17u7nE1KUQbqjfDdaGNyg
-        IFc74ksO2oIYgZmJqYVmeiGyEOS3nLYkA/oKdhjjT+0B
-X-Google-Smtp-Source: AGHT+IHTgHZKWR8m9u2lx0rcTpz+vGmzab0M/imuEXDxse1WPmxfU4cmlo1QRY52al01CRlGXI/Xfw==
-X-Received: by 2002:a5d:4b47:0:b0:317:417e:a467 with SMTP id w7-20020a5d4b47000000b00317417ea467mr6910866wrs.6.1692717773127;
-        Tue, 22 Aug 2023 08:22:53 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:ca21:e0f4:e967:fd3d])
-        by smtp.gmail.com with ESMTPSA id b14-20020a5d4b8e000000b0031434c08bb7sm16129920wrt.105.2023.08.22.08.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 08:22:52 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] HID: cp2112: make the irqchip immutable
-Date:   Tue, 22 Aug 2023 17:22:44 +0200
-Message-Id: <20230822152244.214394-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Tue, 22 Aug 2023 11:24:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886F8CD1;
+        Tue, 22 Aug 2023 08:24:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VmtAtCcHRfR32PnwuVa9rLL2uGT/TuCRRqTlgyU2vBA=; b=M/0/D5T3AyM8nE1eiuk7zbB7kQ
+        BJrm5LWDM76wZcpRlUeUCl5ar6M7LqHhjbON3vQMbyweMSxSFmB5OgRYyMzWmBnVFnL7cRXEIRI2k
+        +n31COizrjThN1j9n443LMvLNQLHJUILNsqHPwBiXGmJhYz9WMrndPhu2WLjej9VojPyBazd4IAPZ
+        3i2zAOqaXLdAgTzgiS0tE8XMBFu5jps70cx4hrqdbETII5iv5evh1/hveF6E8VBdkOPciXOwlGJeA
+        jaQxBw/pZbJCFwqisyevMFsMIrN1oQcerGvlcS3NpR38lQxo3TF10oJ//HmzjywWxjVjY6ifAcgqY
+        VYfbDqvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qYTDW-00H50z-QD; Tue, 22 Aug 2023 15:22:50 +0000
+Date:   Tue, 22 Aug 2023 16:22:50 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Xu <peterx@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Steven Price <steven.price@arm.com>,
+        SeongJae Park <sj@kernel.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Song Liu <song@kernel.org>,
+        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
+        Zach O'Keefe <zokeefe@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        sparclinux@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH mm-unstable] mm/khugepaged: fix collapse_pte_mapped_thp()
+ versus uffd
+Message-ID: <ZOTSyv6fuC1pkt76@casper.infradead.org>
+References: <4d31abf5-56c0-9f3d-d12f-c9317936691@google.com>
+ <CAG48ez1XAePj5MUG8AUmnTjRLcxKre-NGYV82kB68-X8Rh6fxA@mail.gmail.com>
+ <f2dc6d6b-c516-932-1598-a58e2afffe9a@google.com>
+ <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, Aug 22, 2023 at 04:39:43PM +0200, Jann Horn wrote:
+> > Perhaps something else will want that same behaviour in future (it's
+> > tempting, but difficult to guarantee correctness); for now, it is just
+> > userfaultfd (but by saying "_armed" rather than "_missing", I'm half-
+> > expecting uffd to add more such exceptional modes in future).
+> 
+> Hm, yeah, sounds okay. (I guess we'd also run into this if we ever
+> wanted to make it possible to reliably install PTE markers with
+> madvise() or something like that, which might be nice for allowing
+> userspace to create guard pages without unnecessary extra VMAs...)
 
-This make the GPIO irqchip exposed by the CP2112 driver use an immutable
-irq_chip struct thus addressing the following warning on probe:
-
-  (cp2112_gpio): not an immutable chip, please consider fixing it!
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/hid/hid-cp2112.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/hid/hid-cp2112.c b/drivers/hid/hid-cp2112.c
-index 27cadadda7c9..01f2a7211033 100644
---- a/drivers/hid/hid-cp2112.c
-+++ b/drivers/hid/hid-cp2112.c
-@@ -163,7 +163,6 @@ struct cp2112_device {
- 	atomic_t read_avail;
- 	atomic_t xfer_avail;
- 	struct gpio_chip gc;
--	struct irq_chip irq;
- 	u8 *in_out_buffer;
- 	struct mutex lock;
- 
-@@ -1082,6 +1081,7 @@ static void cp2112_gpio_irq_mask(struct irq_data *d)
- 	struct cp2112_device *dev = gpiochip_get_data(gc);
- 
- 	__clear_bit(d->hwirq, &dev->irq_mask);
-+	gpiochip_disable_irq(gc, irqd_to_hwirq(d));
- }
- 
- static void cp2112_gpio_irq_unmask(struct irq_data *d)
-@@ -1089,6 +1089,7 @@ static void cp2112_gpio_irq_unmask(struct irq_data *d)
- 	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
- 	struct cp2112_device *dev = gpiochip_get_data(gc);
- 
-+	gpiochip_enable_irq(gc, irqd_to_hwirq(d));
- 	__set_bit(d->hwirq, &dev->irq_mask);
- }
- 
-@@ -1228,6 +1229,18 @@ static int __maybe_unused cp2112_allocate_irq(struct cp2112_device *dev,
- 	return ret;
- }
- 
-+static const struct irq_chip cp2112_irq_chip = {
-+	.name		= "cp2112-gpio",
-+	.irq_startup	= cp2112_gpio_irq_startup,
-+	.irq_shutdown	= cp2112_gpio_irq_shutdown,
-+	.irq_ack	= cp2112_gpio_irq_ack,
-+	.irq_mask	= cp2112_gpio_irq_mask,
-+	.irq_unmask	= cp2112_gpio_irq_unmask,
-+	.irq_set_type	= cp2112_gpio_irq_type,
-+	.flags		= IRQCHIP_MASK_ON_SUSPEND | IRQCHIP_IMMUTABLE,
-+	GPIOCHIP_IRQ_RESOURCE_HELPERS,
-+};
-+
- static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
- {
- 	struct cp2112_device *dev;
-@@ -1337,17 +1350,8 @@ static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 	dev->gc.can_sleep		= 1;
- 	dev->gc.parent			= &hdev->dev;
- 
--	dev->irq.name = "cp2112-gpio";
--	dev->irq.irq_startup = cp2112_gpio_irq_startup;
--	dev->irq.irq_shutdown = cp2112_gpio_irq_shutdown;
--	dev->irq.irq_ack = cp2112_gpio_irq_ack;
--	dev->irq.irq_mask = cp2112_gpio_irq_mask;
--	dev->irq.irq_unmask = cp2112_gpio_irq_unmask;
--	dev->irq.irq_set_type = cp2112_gpio_irq_type;
--	dev->irq.flags = IRQCHIP_MASK_ON_SUSPEND;
--
- 	girq = &dev->gc.irq;
--	girq->chip = &dev->irq;
-+	gpio_irq_chip_set_chip(girq, &cp2112_irq_chip);
- 	/* The event comes from the outside so no parent handler */
- 	girq->parent_handler = NULL;
- 	girq->num_parents = 0;
--- 
-2.39.2
+I don't know what a userspace API for this would look like, but I have
+a dream of creating guard VMAs which only live in the maple tree and
+don't require the allocation of a struct VMA.  Use some magic reserved
+pointer value like XA_ZERO_ENTRY to represent them ... seems more
+robust than putting a PTE marker in the page tables?
 
