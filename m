@@ -2,196 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D52D784C11
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE47784BFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbjHVVbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S231268AbjHVV3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbjHVVbG (ORCPT
+        with ESMTP id S231199AbjHVV3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:31:06 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E54CFC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:30:57 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf7423ef3eso19276815ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692739857; x=1693344657;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P5gCGegQW5oGbMQ/BTeF2BnmDhxlWa9PqRY9ItnmdA4=;
-        b=i2j2emfnK5XP7t+5MPqLiRHwEldyIx58mwxs8qZCGbml5ejZ6JH7+3EA7zApwPx7Xp
-         DKzJZt+j4/BQ260X/yfDtcOiRK549Q7XtaY8dwyRKZzevzWXRbEs0+J82fq0ifmhegao
-         Q+N6UM9e5wW7FSXIc832M2QlxQB51Qtz5z/vA=
+        Tue, 22 Aug 2023 17:29:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202BECF8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:28:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692739705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KJIRzp140S4A9gJM0yxefcyxkEewcwkrzrbp9iHGj4s=;
+        b=PlvXz2qg4kBEiX0fyTR1kIcfI5icrVtmYN8Byl4dvDyx9IcGIDie4C3RMUnqtz8OenZQSg
+        vWCUH8ODU/5t/X2l7lrhHKL99WwOLK6nVWyBgkug6ke9KRp2CG0d5DcQ0g3TMNgOeia/Q7
+        E013233+jVdRF6pnl2Qf891PY9A+xzQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-b0g44_4JO1eLo-F13PLUrw-1; Tue, 22 Aug 2023 17:28:24 -0400
+X-MC-Unique: b0g44_4JO1eLo-F13PLUrw-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-40c10c73650so60681251cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:28:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692739857; x=1693344657;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P5gCGegQW5oGbMQ/BTeF2BnmDhxlWa9PqRY9ItnmdA4=;
-        b=kCwtKaoqvxqXDNjkad1Vn35oQFQQIauH/v+Cq2RbY0QlOR6k0O8PnqOLHf2kL02Cyc
-         MucqC2o5iMvp/myMWujWwLDxlnByrJWI8rioVjEGsa18rOjyfEeFvu5bWDWElKmk6I1e
-         paFYenBsjC2OdcozdZLqqlCJltqO/fM3bs2A+2AkcPBthntK7dk2wRaKcVzNEQnwFumH
-         biScpFaLN8crrNOzsWiEzU3+cTDyEa1+++JrCfjn5gJ7VoLhb1IJCzaLLQNy1WLQ0gwF
-         83ieY3/XdHQU4zsDs1I3kiDf6ONrO3AnzRBk/XM9dDO+ohnYL9Bq01HdT6Jhu6QGm3lj
-         SFOw==
-X-Gm-Message-State: AOJu0Yx6DKB/Qjh9oIJ0f56JdlBTNF5eZXpmiYgJzqniEKAxhadDy5G+
-        xkcsrjwh1IObiBqhOAjMDq0v9g==
-X-Google-Smtp-Source: AGHT+IHzEMJvwLDxrbrpnP1PL0V1S39JCggLWYRvJ4nQH33U88JSDAsszYF9eNIHgI3tAnb1soYQPw==
-X-Received: by 2002:a17:903:41cc:b0:1af:aafb:64c8 with SMTP id u12-20020a17090341cc00b001afaafb64c8mr8892237ple.21.1692739857271;
-        Tue, 22 Aug 2023 14:30:57 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:83f0:2bc5:38c4:a9de])
-        by smtp.gmail.com with ESMTPSA id t7-20020a170902e84700b001befac3b3cbsm9451475plg.290.2023.08.22.14.30.55
+        d=1e100.net; s=20221208; t=1692739703; x=1693344503;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KJIRzp140S4A9gJM0yxefcyxkEewcwkrzrbp9iHGj4s=;
+        b=aEUvKC/w5tBKaCDBB6yg8yMUfSFO5/tqnbsBdkNSy0bFj3Gt2wLu55JwKtQU+tFYP9
+         RScgySG5tjVcjx1CJV87DGQ89F+M/iZtsoAUG3dl1bYLGkCu8s5rLpaXPgdOj+scuCgt
+         xDHfmDQp8ajp1zn9hsBokjy/01YAYOqsgJjwe5+tkyuapu980UuxpjINfCYRkOSui495
+         Ue0qwzDN1+nsqgUrcFHafL3ETmpZ8yRFZ+5jKHQ+iRuxcF7dD7Udx7uTCJcx3vn6bI05
+         0fiWn9vaY+MKejWASUEu7lqElqdR2qOkkr11d5wDuxXm2t77hSS2Q/43BAmLWjvc4DR3
+         pGRQ==
+X-Gm-Message-State: AOJu0YyxcWmuK1SbcYvK2Yb5UB9c8UGEPlgwBgXoXrl8AIEFbJ2Kz7cg
+        pHDS+/Cn3iMHsp1YUSwt/ULOzuoGS2xBxaYEULKwoPwEH5h/vq75DW4yxj51Qh6QKE/+/SaenBU
+        HG9QZAhVuvENxRtglIHWIy/QCKxf8CgZE
+X-Received: by 2002:a05:622a:191:b0:410:443:221a with SMTP id s17-20020a05622a019100b004100443221amr13760005qtw.1.1692739703269;
+        Tue, 22 Aug 2023 14:28:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEE5pLXawKyyf/r7BStTu9VgH3N5jMnxDo3xdPUd6SDwQX9epXapbs9Md5/ogJTTsWK/tc7dw==
+X-Received: by 2002:a05:622a:191:b0:410:443:221a with SMTP id s17-20020a05622a019100b004100443221amr13759993qtw.1.1692739703023;
+        Tue, 22 Aug 2023 14:28:23 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id o10-20020ac872ca000000b004108fe9697asm2222555qtp.61.2023.08.22.14.28.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 14:30:56 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        kgdb-bugreport@lists.sourceforge.net, ito-yuichi@fujitsu.com,
-        Stephen Boyd <swboyd@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        D Scott Phillips <scott@os.amperecomputing.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v10 6/6] arm64: kgdb: Implement kgdb_roundup_cpus() to enable pseudo-NMI roundup
-Date:   Tue, 22 Aug 2023 14:27:01 -0700
-Message-ID: <20230822142644.v10.6.I2ef26d1b3bfbed2d10a281942b0da7d9854de05e@changeid>
-X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
-In-Reply-To: <20230822212927.249645-1-dianders@chromium.org>
-References: <20230822212927.249645-1-dianders@chromium.org>
+        Tue, 22 Aug 2023 14:28:22 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 14:28:21 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, stable@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tpm: Enable hwrng only for Pluton on AMD CPUs
+Message-ID: <ubwdpgalqja6c3ggp4rjapqhts7m3pxgrdvm7ytwxitaasbjhd@32tbbipd2vfn>
+References: <20230822203912.2256229-1-jarkko@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822203912.2256229-1-jarkko@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up until now we've been using the generic (weak) implementation for
-kgdb_roundup_cpus() when using kgdb on arm64. Let's move to a custom
-one. The advantage here is that, when pseudo-NMI is enabled on a
-device, we'll be able to round up CPUs using pseudo-NMI. This allows
-us to debug CPUs that are stuck with interrupts disabled. If
-pseudo-NMIs are not enabled then we'll fallback to just using an IPI,
-which is still slightly better than the generic implementation since
-it avoids the potential situation described in the generic
-kgdb_call_nmi_hook().
+On Tue, Aug 22, 2023 at 11:39:12PM +0300, Jarkko Sakkinen wrote:
+> The vendor check introduced by commit 554b841d4703 ("tpm: Disable RNG for
+> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  On the
+> reported systems the TPM doesn't reply at bootup and returns back the
+> command code. This makes the TPM fail probe.
+> 
+> Since only Microsoft Pluton is the only known combination of AMD CPU and
+> fTPM from other vendor, disable hwrng otherwise. In order to make sysadmin
+> aware of this, print also info message to the klog.
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> v2:
+> * CONFIG_X86
 
-Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-I debated whether this should be in "arch/arm64/kernel/smp.c" or if I
-should try to find a way for it to go into "arch/arm64/kernel/kgdb.c".
-In the end this is so little code that it didn't seem worth it to find
-a way to export the IPI defines or to otherwise come up with some API
-between kgdb.c and smp.c. If someone has strong feelings and wants
-this to change, please shout and give details of your preferred
-solution.
+Did you mean to wrap the crb_acpi_add chunk with CONFIG_X86?
 
-FWIW, it seems like ~half the other platforms put this in "smp.c" with
-an ifdef for KGDB and the other half put it in "kgdb.c" with an ifdef
-for SMP. :-P
-
-Changes in v10:
-- Don't allocate the cpumask on the stack; just iterate.
-- Moved kgdb calls to smp.c to avoid needing to export IPI info.
-- kgdb now has its own IPI.
-
-Changes in v9:
-- Remove fallback for when debug IPI isn't available.
-- Renamed "NMI IPI" to "debug IPI" since it might not be backed by NMI.
-
- arch/arm64/kernel/smp.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index c51d54019f5f..5ee6b69b4360 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -32,6 +32,7 @@
- #include <linux/irq_work.h>
- #include <linux/kernel_stat.h>
- #include <linux/kexec.h>
-+#include <linux/kgdb.h>
- #include <linux/kvm_host.h>
- #include <linux/nmi.h>
- 
-@@ -75,10 +76,11 @@ enum ipi_msg_type {
- 	IPI_IRQ_WORK,
- 	NR_IPI,
- 	/*
--	 * CPU_BACKTRACE is special and not included in NR_IPI
-+	 * CPU_BACKTRACE and KGDB_ROUNDUP are special and not included in NR_IPI
- 	 * or tracable with trace_ipi_*
- 	 */
- 	IPI_CPU_BACKTRACE = NR_IPI,
-+	IPI_KGDB_ROUNDUP,
- 	MAX_IPI
- };
- 
-@@ -868,6 +870,22 @@ void arch_trigger_cpumask_backtrace(const cpumask_t *mask, int exclude_cpu)
- 	nmi_trigger_cpumask_backtrace(mask, exclude_cpu, arm64_backtrace_ipi);
- }
- 
-+#ifdef CONFIG_KGDB
-+void kgdb_roundup_cpus(void)
-+{
-+	int this_cpu = raw_smp_processor_id();
-+	int cpu;
-+
-+	for_each_online_cpu(cpu) {
-+		/* No need to roundup ourselves */
-+		if (cpu == this_cpu)
-+			continue;
-+
-+		__ipi_send_single(ipi_desc[IPI_KGDB_ROUNDUP], cpu);
-+	}
-+}
-+#endif
-+
- /*
-  * Main handler for inter-processor interrupts
-  */
-@@ -919,6 +937,10 @@ static void do_handle_IPI(int ipinr)
- 		nmi_cpu_backtrace(get_irq_regs());
- 		break;
- 
-+	case IPI_KGDB_ROUNDUP:
-+		kgdb_nmicallback(cpu, get_irq_regs());
-+		break;
-+
- 	default:
- 		pr_crit("CPU%u: Unknown IPI message 0x%x\n", cpu, ipinr);
- 		break;
-@@ -949,6 +971,7 @@ static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
- 	case IPI_CPU_STOP:
- 	case IPI_CPU_CRASH_STOP:
- 	case IPI_CPU_BACKTRACE:
-+	case IPI_KGDB_ROUNDUP:
- 		return true;
- 	default:
- 		return false;
--- 
-2.42.0.rc1.204.g551eb34607-goog
+> * Removed "Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>"
+> * Removed "Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>"
+> ---
+>  drivers/char/tpm/tpm_crb.c | 31 ++++++-------------------------
+>  1 file changed, 6 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm_crb.c b/drivers/char/tpm/tpm_crb.c
+> index 65ff4d2fbe8d..28448bfd4062 100644
+> --- a/drivers/char/tpm/tpm_crb.c
+> +++ b/drivers/char/tpm/tpm_crb.c
+> @@ -463,28 +463,6 @@ static bool crb_req_canceled(struct tpm_chip *chip, u8 status)
+>  	return (cancel & CRB_CANCEL_INVOKE) == CRB_CANCEL_INVOKE;
+>  }
+>  
+> -static int crb_check_flags(struct tpm_chip *chip)
+> -{
+> -	u32 val;
+> -	int ret;
+> -
+> -	ret = crb_request_locality(chip, 0);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = tpm2_get_tpm_pt(chip, TPM2_PT_MANUFACTURER, &val, NULL);
+> -	if (ret)
+> -		goto release;
+> -
+> -	if (val == 0x414D4400U /* AMD */)
+> -		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
+> -
+> -release:
+> -	crb_relinquish_locality(chip, 0);
+> -
+> -	return ret;
+> -}
+> -
+>  static const struct tpm_class_ops tpm_crb = {
+>  	.flags = TPM_OPS_AUTO_STARTUP,
+>  	.status = crb_status,
+> @@ -827,9 +805,12 @@ static int crb_acpi_add(struct acpi_device *device)
+>  	if (rc)
+>  		goto out;
+>  
+> -	rc = crb_check_flags(chip);
+> -	if (rc)
+> -		goto out;
+> +	/* A quirk for https://www.amd.com/en/support/kb/faq/pa-410 */
+> +	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
+> +	    priv->sm != ACPI_TPM2_COMMAND_BUFFER_WITH_PLUTON) {
+> +		dev_info(dev, "Disabling hwrng\n");
+> +		chip->flags |= TPM_CHIP_FLAG_HWRNG_DISABLED;
+> +	}
+>  
+>  	rc = tpm_chip_register(chip);
+>  
+> -- 
+> 2.39.2
+> 
 
