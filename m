@@ -2,118 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3AF784B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DC4784B27
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 22:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbjHVUPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 16:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        id S229934AbjHVUJf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 16:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbjHVUPc (ORCPT
+        with ESMTP id S229516AbjHVUJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 16:15:32 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4D4E3CC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 13:15:30 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id YXfBq73trxiGYYXfBq9Cf4; Tue, 22 Aug 2023 22:07:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1692734868;
-        bh=BqANjHXG+mgSGlru4/suuPmjj23Toc5pJJs87UEpxT0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=W0x5NouoJPBOhf9VoR9+F8c8OqnbcQmsGnlc2eGqGkyTt9anehbOPWj/9KiGY4jwI
-         KumpSsCzE3WFtSn/xAYnna7HmkNbNWZF9o66ZEDarOuJMvmk26ij8G5w+ER/dB2YwV
-         cDa2WNLukRL9myM8zXzjKpb0r/7JvjxPEe58UaYWvwJ10r1Ta4rWpa12MEFd3aitXL
-         sENTMzMIbBulm6tDKhqVV530G/5dsOseyg2bcLIhX266XVVkpoGQiCmCBPbWjjguW6
-         y+djQaZlZrcYfcZfjenyaQHd40TGGHUOFTNxKde46Foa+J65Pmk3A7nb7gCQ6cOj1c
-         XYkRR9FXGP9Fg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 22 Aug 2023 22:07:47 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <49247018-20fe-8a04-75f2-dad4524aa3a3@wanadoo.fr>
-Date:   Tue, 22 Aug 2023 22:07:40 +0200
+        Tue, 22 Aug 2023 16:09:34 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36BD10CA;
+        Tue, 22 Aug 2023 13:09:14 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1bdb3ecd20dso8855065ad.0;
+        Tue, 22 Aug 2023 13:09:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692734927; x=1693339727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l6YwQR5cxz4EihrKcIMUeaFlqPXySrQcy+IZQv5pQoU=;
+        b=H17jVMf+GbSsSTArxsd/bw1gxi33jfuJiIuuBXAUXxYP1u5DDnAP0fanALaq7xHeLP
+         eMct5kQJiRm3Msoomo7SsLPz98hiM5FGwXxwlgTD7rrEqcsr9vY76ODvPALWYidM711X
+         p/W4N9Ye/1q/ve3zoMnkYEzSiG4ryr86MaCYgAdMZ2ceWL6JYyrxvZhGna4L0Jf1Ljdo
+         nJVA/0HfcJv4BOIaY/kxk1ehZVWvDVPHLnRkhOZsX2bs8OLgPhJ4EopXS5nXS5c2hNQX
+         Fvr6b5NGA9uCaoolXIsHG612g6HRGSlgiHIOdTxS8tsWtMxS04Qmgncqq9V+jmQty2Ml
+         tllQ==
+X-Gm-Message-State: AOJu0YzApeSXpeyjMuQWmWfBJWJjKFJmtpFBUNKFC/uH9n1KfRGbX7Gl
+        7evUALbVBj5716cnDJs8CX0HNBKzW/8Fv6k7vvzuaT+C
+X-Google-Smtp-Source: AGHT+IGuIs4VdgEB0UAz+cjFTXvcTdPa0uRUFsSTITaqRGzShMO2JghGVD1/90Pd4eVDpNXbpPkUQQiGm8E0xbQC0Ag=
+X-Received: by 2002:a17:90a:9e2:b0:26d:1eff:619f with SMTP id
+ 89-20020a17090a09e200b0026d1eff619fmr9483306pjo.2.1692734927088; Tue, 22 Aug
+ 2023 13:08:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ALSA: ac97: Fix possible NULL dereference in
- snd_ac97_mixer
-To:     Su Hui <suhui@nfschina.com>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, maciej.szmigiero@oracle.com,
-        yangyingliang@huawei.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20230615021732.1972194-1-suhui@nfschina.com>
-Content-Language: fr, en-US
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230615021732.1972194-1-suhui@nfschina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230813025220.1752489-1-rui.zhang@intel.com>
+In-Reply-To: <20230813025220.1752489-1-rui.zhang@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Aug 2023 22:08:35 +0200
+Message-ID: <CAJZ5v0gLnqxTPux9x=aGhLQoNAwkANPy4UoT0gYEchayE20=DQ@mail.gmail.com>
+Subject: Re: [PATCH V2] thermal: intel: intel_soc_dts_iosf: Remove redundant check
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     rafael.j.wysocki@intel.com, daniel.lezcano@linaro.or,
+        srinivas.pandruvada@intel.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 15/06/2023 à 04:17, Su Hui a écrit :
-> smatch error:
-> sound/pci/ac97/ac97_codec.c:2354 snd_ac97_mixer() error:
-> we previously assumed 'rac97' could be null (see line 2072)
-> 
-> remove redundant assignment, return error if rac97 is NULL.
-
-Hi,
-
-why is the assigment redundant?
-
-Should an error occur, the 'struct snd_ac97 **' parameter was garanted 
-to be set to NULL, now it is left as-is.
-
-I've checked all callers and apparently this is fine because the probes 
-fail if snd_ac97_mixer() returns an error.
-
-However, some drivers with several mixers seem to rely on the value 
-being NULL in case of error.
-
-See [1] as an example of such code that forces a NULL value on its own, 
-to be sure.
-
-So, wouldn't it be safer to leave a "*rac97 = NULL;" just after the 
-added sanity check?
-
-
-CJ
-
-
-[1]: 
-https://elixir.bootlin.com/linux/v6.5-rc7/source/sound/pci/atiixp.c#L1438
-
-> 
-> Fixes: da3cec35dd3c ("ALSA: Kill snd_assert() in sound/pci/*")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
+On Sun, Aug 13, 2023 at 4:52 AM Zhang Rui <rui.zhang@intel.com> wrote:
+>
+> Remove the redundant check in remove_dts_thermal_zone() because all of
+> its existing callers pass a valid pointer as the argument.
+>
+> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
 > ---
->   sound/pci/ac97/ac97_codec.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/pci/ac97/ac97_codec.c b/sound/pci/ac97/ac97_codec.c
-> index 9afc5906d662..80a65b8ad7b9 100644
-> --- a/sound/pci/ac97/ac97_codec.c
-> +++ b/sound/pci/ac97/ac97_codec.c
-> @@ -2069,8 +2069,8 @@ int snd_ac97_mixer(struct snd_ac97_bus *bus, struct snd_ac97_template *template,
->   		.dev_disconnect =	snd_ac97_dev_disconnect,
->   	};
->   
-> -	if (rac97)
-> -		*rac97 = NULL;
-> +	if (!rac97)
-> +		return -EINVAL;
->   	if (snd_BUG_ON(!bus || !template))
->   		return -EINVAL;
->   	if (snd_BUG_ON(template->num >= 4))
+>  drivers/thermal/intel/intel_soc_dts_iosf.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/thermal/intel/intel_soc_dts_iosf.c b/drivers/thermal/intel/intel_soc_dts_iosf.c
+> index db97499f4f0a..22fc2970c67d 100644
+> --- a/drivers/thermal/intel/intel_soc_dts_iosf.c
+> +++ b/drivers/thermal/intel/intel_soc_dts_iosf.c
+> @@ -245,11 +245,9 @@ static int soc_dts_enable(int id)
+>
+>  static void remove_dts_thermal_zone(struct intel_soc_dts_sensor_entry *dts)
+>  {
+> -       if (dts) {
+> -               iosf_mbi_write(BT_MBI_UNIT_PMC, MBI_REG_WRITE,
+> -                              SOC_DTS_OFFSET_ENABLE, dts->store_status);
+> -               thermal_zone_device_unregister(dts->tzone);
+> -       }
+> +       iosf_mbi_write(BT_MBI_UNIT_PMC, MBI_REG_WRITE,
+> +                      SOC_DTS_OFFSET_ENABLE, dts->store_status);
+> +       thermal_zone_device_unregister(dts->tzone);
+>  }
+>
+>  static int add_dts_thermal_zone(int id, struct intel_soc_dts_sensor_entry *dts,
+> --
 
+Applied as 6.6 material, thanks!
