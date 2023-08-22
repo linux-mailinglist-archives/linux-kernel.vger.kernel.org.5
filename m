@@ -2,34 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807A778493B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C6C78493D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229515AbjHVSGd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 14:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
+        id S229470AbjHVSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 14:07:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjHVSGb (ORCPT
+        with ESMTP id S229457AbjHVSH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 14:06:31 -0400
-Received: from 66-220-144-179.mail-mxout.facebook.com (66-220-144-179.mail-mxout.facebook.com [66.220.144.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621BCE74
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:06:13 -0700 (PDT)
-Received: by devbig1114.prn1.facebook.com (Postfix, from userid 425415)
-        id D6D9DA9FA88E; Tue, 22 Aug 2023 11:05:42 -0700 (PDT)
-From:   Stefan Roesch <shr@devkernel.io>
-To:     kernel-team@fb.com
-Cc:     shr@devkernel.io, akpm@linux-foundation.org, david@redhat.com,
-        linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
-        riel@surriel.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v4] proc/ksm: add ksm stats to /proc/pid/smaps
-Date:   Tue, 22 Aug 2023 11:05:39 -0700
-Message-Id: <20230822180539.1424843-1-shr@devkernel.io>
-X-Mailer: git-send-email 2.39.3
+        Tue, 22 Aug 2023 14:07:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFACD10D3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692727620; x=1724263620;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cwGhR5AwafMsuOw+p9j0rPog41N/qRISE816aZR6K+Q=;
+  b=AxUXRK62qXF6fifsYxuVz7m0srKo4J7rnQAyfmaBnfN3CSePp9riYvKI
+   Qe4ZjsFUlPcy7+PXHtttxSy8Bti0DgNo70NnYd4YiUUNdqzHr6PJVA5c1
+   A4/lm/QL0PhjDcNcL9Num0EM+Y8F78BWuqachHY5kksOTDIUwNNdQkPUV
+   dNoPHWKVEmgFIdEcC9nhP0Crh33Jj1Mn9ScK/Rcqd7YgkCayR2wqnEmB9
+   97hTM1e+RvQqOVs+RkIPFYQ/LREQhKqaScGYDYbiimhSajEnYYbKXqMaH
+   68r9LSg3QiFbb+ZicxX50vHu2iPsZY19ck8fDmsc/39Zoa5PS0KIsW/Fc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354291547"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="354291547"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 11:06:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801773724"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="801773724"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Aug 2023 11:06:48 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYVmB-0000PM-0w;
+        Tue, 22 Aug 2023 18:06:47 +0000
+Date:   Wed, 23 Aug 2023 02:06:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nick Hu <nick.hu@sifive.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        leyfoon.tan@starfivetech.com, mason.huo@starfivetech.com,
+        conor.dooley@microchip.com, jeeheng.sia@starfivetech.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zong.li@sifive.com
+Cc:     oe-kbuild-all@lists.linux.dev, Andy Chiu <andy.chiu@sifive.com>
+Subject: Re: [PATCH v2] riscv: suspend: Add syscore ops for suspend
+Message-ID: <202308230107.1L1ahyas-lkp@intel.com>
+References: <20230822054739.33552-1-nick.hu@sifive.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,RDNS_DYNAMIC,
-        SPF_HELO_PASS,SPF_NEUTRAL,TVD_RCVD_IP autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822054739.33552-1-nick.hu@sifive.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,162 +69,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With madvise and prctl KSM can be enabled for different VMA's. Once it
-is enabled we can query how effective KSM is overall. However we cannot
-easily query if an individual VMA benefits from KSM.
+Hi Nick,
 
-This commit adds a KSM section to the /prod/<pid>/smaps file. It reports
-how many of the pages are KSM pages. The returned value for KSM is
-independent of the use of the shared zeropage.
+kernel test robot noticed the following build warnings:
 
-Here is a typical output:
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.5-rc7 next-20230822]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-7f420a000000-7f421a000000 rw-p 00000000 00:00 0
-Size:             262144 kB
-KernelPageSize:        4 kB
-MMUPageSize:           4 kB
-Rss:               51212 kB
-Pss:                8276 kB
-Shared_Clean:        172 kB
-Shared_Dirty:      42996 kB
-Private_Clean:       196 kB
-Private_Dirty:      7848 kB
-Referenced:        15388 kB
-Anonymous:         51212 kB
-KSM:               41376 kB
-LazyFree:              0 kB
-AnonHugePages:         0 kB
-ShmemPmdMapped:        0 kB
-FilePmdMapped:         0 kB
-Shared_Hugetlb:        0 kB
-Private_Hugetlb:       0 kB
-Swap:             202016 kB
-SwapPss:            3882 kB
-Locked:                0 kB
-THPeligible:    0
-ProtectionKey:         0
-ksm_state:          0
-ksm_skip_base:      0
-ksm_skip_count:     0
-VmFlags: rd wr mr mw me nr mg anon
+url:    https://github.com/intel-lab-lkp/linux/commits/Nick-Hu/riscv-suspend-Add-syscore-ops-for-suspend/20230822-135024
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230822054739.33552-1-nick.hu%40sifive.com
+patch subject: [PATCH v2] riscv: suspend: Add syscore ops for suspend
+config: riscv-randconfig-r121-20230822 (https://download.01.org/0day-ci/archive/20230823/202308230107.1L1ahyas-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230107.1L1ahyas-lkp@intel.com/reproduce)
 
-This information also helps with the following workflow:
-- First enable KSM for all the VMA's of a process with prctl.
-- Then analyze with the above smaps report which VMA's benefit the most
-- Change the application (if possible) to add the corresponding madvise
-calls for the VMA's that benefit the most
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308230107.1L1ahyas-lkp@intel.com/
 
-Signed-off-by: Stefan Roesch <shr@devkernel.io>
----
- Documentation/filesystems/proc.rst |  4 ++++
- fs/proc/task_mmu.c                 | 16 +++++++++++-----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+All warnings (new ones prefixed by >>):
 
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesyste=
-ms/proc.rst
-index 7897a7dafcbc..d5bdfd59f5b0 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -461,6 +461,7 @@ Memory Area, or VMA) there is a series of lines such =
-as the following::
-     Private_Dirty:         0 kB
-     Referenced:          892 kB
-     Anonymous:             0 kB
-+    KSM:                   0 kB
-     LazyFree:              0 kB
-     AnonHugePages:         0 kB
-     ShmemPmdMapped:        0 kB
-@@ -501,6 +502,9 @@ accessed.
- a mapping associated with a file may contain anonymous pages: when MAP_P=
-RIVATE
- and a page is modified, the file page is replaced by a private anonymous=
- copy.
-=20
-+"KSM" shows the amount of anonymous memory that has been de-duplicated. =
-The
-+value is independent of the use of shared zeropage.
-+
- "LazyFree" shows the amount of memory which is marked by madvise(MADV_FR=
-EE).
- The memory isn't freed immediately with madvise(). It's freed in memory
- pressure if the memory is clean. Please note that the printed value migh=
-t
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 51315133cdc2..4532caa8011c 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -4,6 +4,7 @@
- #include <linux/hugetlb.h>
- #include <linux/huge_mm.h>
- #include <linux/mount.h>
-+#include <linux/ksm.h>
- #include <linux/seq_file.h>
- #include <linux/highmem.h>
- #include <linux/ptrace.h>
-@@ -396,6 +397,7 @@ struct mem_size_stats {
- 	unsigned long swap;
- 	unsigned long shared_hugetlb;
- 	unsigned long private_hugetlb;
-+	unsigned long ksm;
- 	u64 pss;
- 	u64 pss_anon;
- 	u64 pss_file;
-@@ -435,9 +437,9 @@ static void smaps_page_accumulate(struct mem_size_sta=
-ts *mss,
- 	}
- }
-=20
--static void smaps_account(struct mem_size_stats *mss, struct page *page,
--		bool compound, bool young, bool dirty, bool locked,
--		bool migration)
-+static void smaps_account(struct mem_size_stats *mss, pte_t *pte,
-+		struct page *page, bool compound, bool young, bool dirty,
-+		bool locked, bool migration)
- {
- 	int i, nr =3D compound ? compound_nr(page) : 1;
- 	unsigned long size =3D nr * PAGE_SIZE;
-@@ -452,6 +454,9 @@ static void smaps_account(struct mem_size_stats *mss,=
- struct page *page,
- 			mss->lazyfree +=3D size;
- 	}
-=20
-+	if (PageKsm(page) && (!pte || !is_ksm_zero_pte(*pte)))
-+		mss->ksm +=3D size;
-+
- 	mss->resident +=3D size;
- 	/* Accumulate the size in pages that have been accessed. */
- 	if (young || page_is_young(page) || PageReferenced(page))
-@@ -557,7 +562,7 @@ static void smaps_pte_entry(pte_t *pte, unsigned long=
- addr,
- 	if (!page)
- 		return;
-=20
--	smaps_account(mss, page, false, young, dirty, locked, migration);
-+	smaps_account(mss, pte, page, false, young, dirty, locked, migration);
- }
-=20
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-@@ -591,7 +596,7 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long=
- addr,
- 	else
- 		mss->file_thp +=3D HPAGE_PMD_SIZE;
-=20
--	smaps_account(mss, page, true, pmd_young(*pmd), pmd_dirty(*pmd),
-+	smaps_account(mss, NULL, page, true, pmd_young(*pmd), pmd_dirty(*pmd),
- 		      locked, migration);
- }
- #else
-@@ -822,6 +827,7 @@ static void __show_smap(struct seq_file *m, const str=
-uct mem_size_stats *mss,
- 	SEQ_PUT_DEC(" kB\nPrivate_Dirty:  ", mss->private_dirty);
- 	SEQ_PUT_DEC(" kB\nReferenced:     ", mss->referenced);
- 	SEQ_PUT_DEC(" kB\nAnonymous:      ", mss->anonymous);
-+	SEQ_PUT_DEC(" kB\nKSM:            ", mss->ksm);
- 	SEQ_PUT_DEC(" kB\nLazyFree:       ", mss->lazyfree);
- 	SEQ_PUT_DEC(" kB\nAnonHugePages:  ", mss->anonymous_thp);
- 	SEQ_PUT_DEC(" kB\nShmemPmdMapped: ", mss->shmem_thp);
+   arch/riscv/kernel/suspend.c: In function 'riscv_cpu_resume':
+>> arch/riscv/kernel/suspend.c:114:25: warning: unused variable 'regs' [-Wunused-variable]
+     114 |         struct pt_regs *regs = task_pt_regs(cur_task);
+         |                         ^~~~
 
-base-commit: f4a280e5bb4a764a75d3215b61bc0f02b4c26417
---=20
-2.39.3
 
+vim +/regs +114 arch/riscv/kernel/suspend.c
+
+   110	
+   111	static void riscv_cpu_resume(void)
+   112	{
+   113		struct task_struct *cur_task = get_current();
+ > 114		struct pt_regs *regs = task_pt_regs(cur_task);
+   115	
+   116		if (has_fpu())
+   117			fstate_restore(cur_task, regs);
+   118		if (has_vector())
+   119			riscv_v_vstate_restore(cur_task, regs);
+   120	}
+   121	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
