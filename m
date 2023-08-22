@@ -2,173 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA92783710
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 02:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF483783719
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 02:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbjHVAdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 20:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+        id S229513AbjHVApo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 20:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjHVAdN (ORCPT
+        with ESMTP id S231929AbjHVApj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 20:33:13 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2075.outbound.protection.outlook.com [40.107.223.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F456131;
-        Mon, 21 Aug 2023 17:33:11 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NDFvYS2IYI3truSqau8spx6+SLZ3CWWPaw0AizL9HFrbCB08Mp+rgyS5PGP8ALyDC5EyvLNGevJyG92CClYSRukOdi6npEMlivzOSpSbiOpC8yBi68i5WNKghVMpbVRds5vNBXsjKmKs6QP3ASgppbOId5uZGpyAsEtBtjkXwxuBqp5vOA0RyAlTLfatazNz7ykui4pkv0yiXJJf3nRS+6yu3BMAunzP0k8zfwuhsr5f7C3d0BvA1s8msrkWrDYBH8fcPgsRs53kq1yWv086ZGteS+GpoDAYEZnpyQn60cia1UDPNkMxfOLMFh2LkLw9n4785Iu5Otz5RqmqeTQK0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OHH/6BAaEUWdneh+NwQu95coB/MGMdgvlzUwEWZgCsc=;
- b=AXt+wF9kEu0CGRXgpeC3Bj7/g4GEH2xwa7J5fBZxI3cauY5iTD/PiDfSxV991OnDVCNO03HWhr7+KcdzP2JZ5VSSNsZQv3c+B64MWkSH/76J+TeAH8a/VAndUapyb6/DJOkJUXnNfcvllSyieVD6EDuL6nfc8AgulaMOXPOc7Why5oO/FMjIRplcpiuSRmA0ZbzyqkZAtlvQRJ8sgZ92HF2WnoHe2DtfRD4pOZ0fz2e6ufN72ZplvdICaJE7CxroGYUN71l/AamxFB5oF7/TCJ5FTIgz8/zaGf6PWnMLxBU3gJzS4Pt5hbjHUtXrwWVA0WV++3SAf96h0QFfMtKZAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OHH/6BAaEUWdneh+NwQu95coB/MGMdgvlzUwEWZgCsc=;
- b=ByYqdN5QTLv8ANIYltLYWSU0UXVwMNPyI8MXjlh0+420IgvXOYfBiwwkyiEOwAaKOXm8WNiJ2kk44bKHgE/iEZOBgOQ8nHLadDQ0rTmNnJvcWcxgVKk5PbcPpOE3Bcj/ewMCOMaA7A6m5h/px0j5HGKaItI9Z2m9MwH9TEyuqwo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB6420.namprd12.prod.outlook.com (2603:10b6:510:1fc::18)
- by DM8PR12MB5463.namprd12.prod.outlook.com (2603:10b6:8:27::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 00:33:09 +0000
-Received: from PH7PR12MB6420.namprd12.prod.outlook.com
- ([fe80::d44d:cf5:efcc:6681]) by PH7PR12MB6420.namprd12.prod.outlook.com
- ([fe80::d44d:cf5:efcc:6681%5]) with mapi id 15.20.6699.020; Tue, 22 Aug 2023
- 00:33:08 +0000
-Message-ID: <46208b55-1d8b-3280-f5e1-98138a809b6f@amd.com>
-Date:   Mon, 21 Aug 2023 20:33:03 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/4] drm/amdgpu: Explicitly add a flexible array at the
- end of 'struct amdgpu_bo_list' and simplify amdgpu_bo_list_create()
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Arunpravin.PaneerSelvam@amd.com,
-        "Prosyak, Vitaly" <Vitaly.Prosyak@amd.com>,
-        "Sharma, Shashank" <Shashank.Sharma@amd.com>
-Cc:     kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Felix.Kuehling@amd.com, daniel@ffwll.ch, airlied@gmail.com,
-        Xinhui.Pan@amd.com, alexander.deucher@amd.com
-References: <cover.1692524665.git.christophe.jaillet@wanadoo.fr>
- <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-Content-Language: en-US
-From:   vitaly prosyak <vprosyak@amd.com>
-In-Reply-To: <5d52550a-92a1-55e7-69ad-92f18330ff48@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQZPR01CA0041.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:86::13) To PH7PR12MB6420.namprd12.prod.outlook.com
- (2603:10b6:510:1fc::18)
+        Mon, 21 Aug 2023 20:45:39 -0400
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF724137;
+        Mon, 21 Aug 2023 17:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1692665133;
+        bh=U/NjBqs1v8LFkNfFExolNi+HeBdE24Ij+M+rdN9VbHs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Nle3/jj13wDafXCbcjwi65KkbMrj7dtxUsaqbZ64X4wYWymBcTSdVVy/Lamvqaz2s
+         9BFWE4wMU/AoRzddtDBVLxL1u5TMPnZraecY6ZLSi3U4Pm2mOziSqCIALN0AP6amuk
+         G77CeOfdO4GehWAEqk6VeXXp05YoAoLf0t8pYKXU=
+Received: from localhost.localdomain ([39.156.73.12])
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id 9BA2F6C7; Tue, 22 Aug 2023 08:38:58 +0800
+X-QQ-mid: xmsmtpt1692664738tvyavmkzo
+Message-ID: <tencent_492BE2E81E62BEC199106096C025954AFD06@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9EFx0+urXeihKshPwb5GrYYB+ECcAcv/KXsvNg/P9b8hPQP7Tqe
+         jU42kfKPnw4EOYlj4iw22YwDEIu5qrsFljhh+YiMFIe0Y+3QoCDclpXcLn0OiYM44zF1IRrGqOFF
+         R2K2P2ERPW0uWKJcTvmnWk4zJ+AHoMejKj3YJq/Ao7B53Qc1IpLnVA+Sql+rcQt/9UWSTaljz/Ou
+         BLtzYSrP1xqBlDQ+XgSZqvZeSpGtudlKwgK7thyMEjkLDiWsP4AkEsMpfAlZLg6D+KqS/+xqxoSZ
+         YiMrzivgyNVF4hhW/zLx7BPg7e6WReO0NNG5gp1KFcWVHxVWQWQ2n05uZJ0DM5+5hskZT6rCUGEn
+         cjD0/ChAusmG02ULDOO5hR48FrGNXlHrFTnKo8h9jBiQGHbRyDYjs8N7U6hHzBrQRJOQ/U+oDSG3
+         mxpGGUkHE/xRvdMWylqsjWbza8oYL1f5vzYQ5pRBdDlbuMfIDBh3wNfrEQEIA2ZbmZXCvRYf6Bdc
+         Myd2625ylY3HHKyZfIVQf0ahQuxRR705dmyVSa0iOlFYikX27s0scVplLE/+4JpsGutN/Tl0ilAL
+         g71QvgebjOYPjL2aJk9PQLZIunJcGleLUxQQwAW4yd82oF9gPrejz1L+opkpXOJ52ouPEnDKrn45
+         mBo/5IA9YE3YE5OaM5ClNA5IF4Oy26RP+KfNHFNyX+Pl11v4XA01H+Ye7xMsiFQtDuVpwuY1dFB7
+         bosjyFPU7ImDYcv0mA4L5l60HH5N3NsAPPArrWB4nvlsbHW1SN6CbUmgt5TENoHSCZf7WxYXp16t
+         mgoBgY1r26cn7FIKQ3CkzQODnL6EtUCyhEjkP4F0dgi3KCIwoTuV1zA+bX8nJ3+N/MoWv6Y0uchG
+         W0jSFf5Ym56Ym8f8yG3VUiDwRSewmM/k1LwD9xny3Yx0qZ4CQJER8g7qaoB1B4C3/Fy4s61/KbIY
+         btyIOrL284GrrUjkPVW1/vpK3WX9SHSfTalCix2GLmg2ejmwTx6jvV9nF/8HNtBKgr+bwBirs=
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+From:   Rong Tao <rtoax@foxmail.com>
+To:     olsajiri@gmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, martin.lau@linux.dev,
+        mykolal@fb.com, rongtao@cestc.cn, rtoax@foxmail.com,
+        sdf@google.com, shuah@kernel.org, song@kernel.org,
+        yonghong.song@linux.dev
+Subject: Re: [PATCH bpf-next v6] selftests/bpf: trace_helpers.c: optimize kallsyms cache
+Date:   Tue, 22 Aug 2023 08:38:58 +0800
+X-OQ-MSGID: <20230822003858.8886-1-rtoax@foxmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <ZOMiqE0QY2Lrw2UC@krava>
+References: <ZOMiqE0QY2Lrw2UC@krava>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB6420:EE_|DM8PR12MB5463:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2f74a816-0ca8-402b-2af3-08dba2a75bbc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wP3qhL6uQQTgttkO1eE6LtUuJ2lrLmdjyrx8bjbQCIoPWG8cZFOYs93J797nULtN4DrWAyJ9xwEslugVRAwliAIP9revxEJB2e1nfcZXQ/5RIXaMu80NwjnlC5hZGi1X+gvKpDvOM3YZOxc5NcZqIu+k/JbFomf44kquvmMdVAVbh+9lBiNxxdfBdPp20KuN2Q05jjqffYdYQFSIrnyB3fb5/f1JcVKMDh3dpufrQ2z4qGUupUmUqbFp202ixmmzPAS2d2+PSosC4o+ubPggGa/TVwq8APSFJco69uCkzRLZAtVSOG/kAX0GLmRJFIvz0YyPTFhWzmIzAmQEa9WxjCeaWUjegvj36BzrqeWY4VWxHRskanFHgDSMvYvvSOHIV5FoHkbeGLAHGJ36MKITb+UFi2GNyCbyEYc8/DeOHS+gVEeWZcISUNhuxZaj0LaY2CH0YGLTP4pvbwQN06pmzNpT5K/Tm43SdSHgV45ZKYPsKzbi+tYr9kxHclxbMOMPaCxMEZTOGtvm3+utdFgMFgebc/zAku1Sn+9a2KEGaZRK7oINZ1mza/d+CimELmr49XyO0Lt9hGSPzFvcT1WUJ1Dn2SghbojOcUx5YcAhAD4UHc1oW8Lhe9lD7KH22BHA7U676c3LgKW6JdTpPvGVJA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB6420.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(346002)(39860400002)(366004)(186009)(1800799009)(451199024)(6636002)(66476007)(66556008)(316002)(6512007)(66946007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(478600001)(6666004)(38100700002)(53546011)(6506007)(6486002)(83380400001)(2906002)(31686004)(31696002)(5660300002)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkhLdHR4bk82R0F5SjIxclFDM3dVK0pXRzdwenljT05qTDZCMWF2REo0aUpK?=
- =?utf-8?B?dzNUSGV0VUFsRzQvZUlRUDh3NE11dmNlMjZvbmlma093aDBqOVUvRFU3ZVlh?=
- =?utf-8?B?bkZrZUsvMVZoazVKSEo1WDIwZjg2ZDZDQWl0TlFKODJadU1NZnlYVTYvVWs2?=
- =?utf-8?B?L2FvNnV2T25ISHBaQXdsUFFMbDB4Q2dXd3hYalBvQnpOU2lWWGlIVzJjaVhv?=
- =?utf-8?B?ZWl3K1lNMzVidlFNSTQ3WDZPTHZLUlU4RlhvZ2pCSU9hTGNCSWsrSEJEemZ6?=
- =?utf-8?B?aVlJeS91VG9Ta1pNVkxkUXpNNExkY0FTOUNtcS9aTzVuV2MrQnJ0dElmb1dz?=
- =?utf-8?B?Y3o5cXgzMFFjTkhINEhxa0J0Qjk3N2NkWmQ3Q2poN0dHcXpMdnh0Q1NuQ1hP?=
- =?utf-8?B?bUdhYUlEZE1XSkNsNGV1SEJhd0FueHd6Rk42aUQxaFJZeWYzNXZLMlpxMFBn?=
- =?utf-8?B?dG4vcFhNbm41WjZCbmsyNkhmOUJxdHNIQU8vcFliMXU4eHJxTENJZ3ZHL1hD?=
- =?utf-8?B?QWsxeHdJaXhsQ2NUZ2FqY25ucGI1TTFUVTRFcG5zTURLWjI4cXk3WitZWCtZ?=
- =?utf-8?B?dzRneUN2M3JWTjlVNzhta3hTbGkzZmJKV2dBK3BKRCtENlBUMGFjelhHelVm?=
- =?utf-8?B?U3FtVng3c2NtTVVPVmJOcWtqb05BWEErTXB6VFFWbk52b2c0NzFicG5lcUgv?=
- =?utf-8?B?enRTNUZ4Si9LN0V2OStnZDRvWkRmc1JxUTZNVm12ajhpL2c1UVV5ZVU4aEo5?=
- =?utf-8?B?eE82YkxXL21Fc29rQUF5elRUclFXSUpTUkxaZ2wrOExzMkc5b0JycENaelhs?=
- =?utf-8?B?elZJVHo4MjlwTjIwalpGaVV1V1o2UnpRdnJPS2RaZ1Iva2Z4d0svSmRrV25z?=
- =?utf-8?B?TnVlcDJXdUZxRmFRNCs0NFZiN0xQaUtSM21sQklqaXIrQzVtWmVQVW1mL0Jh?=
- =?utf-8?B?UjQvWGhuaUhCOU9NOHBWSE9OdW9GL0VXalhHYjBNSys4eUFJUGVDQnZiTC96?=
- =?utf-8?B?MlhkcWJPTVl4dFFqek9iZEdPNVJFZHZsTGtFZXJwcFNUVWxhTmhvMGlCa0Na?=
- =?utf-8?B?YmdZbkdpNUVhUDBwQ0tKYXAyMmpzN084MkoyV0U2eFRnaWZzYUFIS3ZWWHFt?=
- =?utf-8?B?eE5XZ0xuYmJGN2JuNFNnaXJuSG44VVpFcVJVUVZyOXNtcDNKamdnOHZycm5Q?=
- =?utf-8?B?bllDS3FRNXMxSVVCazRDUEM1aGpHMHVVWUpPVkZCQnZhM2RIRTZpYTgvcmtD?=
- =?utf-8?B?UFNnNndiT09CalIrdnkzeXI4eWhyeWNrNENxVGl3cEdmTUFmUzY4YWlyKy95?=
- =?utf-8?B?TnZTaXBMUk5VUlR0NTJYOW5rN3VtYUtWY0VQOW9VRjA3cjduKzNjTGc4YjZa?=
- =?utf-8?B?YUs0SHcyQmpVZE1OLzNRaGhsbjFvcCtzTmNyczRHU1JoVW80UXlQK1ozdUtB?=
- =?utf-8?B?ZkNMSVNYbmtBUk1WUmRNZ0xUVTlBMXJOU1AyblNxMXBPZjFyMEpIem02Zjlr?=
- =?utf-8?B?am85cVhvaFlQQ3lKUDlvMlI5anZUcXEwcVJOdUQ5dEl0SWl5b0N0ZS9sTmJS?=
- =?utf-8?B?N1FuSFE1dmlxSXQ2TklQa1NRUGRTcXdDak9wbUFXcXZNVGpQTjJQTFBOM2pa?=
- =?utf-8?B?NVAxOGp3bnNHMittTVBGT291RkVZMXFXbVZZenBsZDhacEJXVTJubWVQUTdr?=
- =?utf-8?B?WS9JNzhKOHJBYXA1aWxPQUJxMXVrL3B2YitCV1ZsZHJKc3dhN3VhQlhaejM3?=
- =?utf-8?B?cmdVMWVxb2E4QVhabTE0OTZ0RWhrWWpmVFdGc1g4SFpvbjVHTUhJSE0zTlo1?=
- =?utf-8?B?WVhISHdjSmZETUczbjV4dDNnUmx2RVNNam0vMUNSTlNBWGhPQytBcVh2bzlG?=
- =?utf-8?B?aktMbldJUWdZNTAxMHZYelkvSDc1UXA1dmRxaDdIQVRPc0JYZWRjRWpScyts?=
- =?utf-8?B?aEtJd0lHeCsrS3hBR2VUMHYxS0pad3REZzErdFN6bk9INFYyL0dMVnMxYVFw?=
- =?utf-8?B?TE5hNnc2eTZPQTd0RURuWCtvNTArdDlBTlpRenlzUkNNZDFXZGdoZE80eUdm?=
- =?utf-8?B?dmFCT1dtamkwZVNlQ2phM01FUjhua3hvNWhsbXFKckQrTHUrY3FwSjBvR1hh?=
- =?utf-8?Q?r8R+WPYkPpYzbqGh++lEeDcIc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2f74a816-0ca8-402b-2af3-08dba2a75bbc
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB6420.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 00:33:08.8183
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: har8OUFA79h9S3T6ccTRSMLCR37YdiX7yEl+SQwzqbOCEgJC8jq9QVrsKnowgVFENs9//cK3TgVjrT3TUBo/QQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5463
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+> I think you need to fix this on samples/bpf side
+> 
+> I tried to play with the samples/bpf/ includes, but couldn't find a way to
+> make this work.. selftests base includes on tools/include, while samples
+> have $(objtree)/usr/include as first include and AFAICS the __must_check is
+> defined under __KERNEL__ ifdef
+> 
+> I guess the reason samples use $(objtree)/usr/include is to get some struct
+> definitions which are not in tools/include, but looks like some samples objects
+> already use vmlinux.h include, so that could be the way forward to fix that
 
+I tried the method you suggested, and some unexpected problems occurred. Maybe,
+we can apply v5 [0] first, and then solve this problem?
 
-On 2023-08-21 07:03, Christian König wrote:
-> Am 20.08.23 um 11:51 schrieb Christophe JAILLET:
->> This serie simplifies amdgpu_bo_list_create() and usage of the 'struct
->> amdgpu_bo_list'.
-> Oh, yes please. That's something I always wanted to cleanup as well.
->
->> It is compile tested only.
-> That bothers me a bit. Arun, Vitaly, Shashank can anybody with time run 
-> a quick test on this? Preferable the IGT tests,
+Best wishes,
+Rong Tao
 
-I applied the following 4 patches :
+[0] v5: https://lore.kernel.org/lkml/tencent_0E9E1A1C0981678D5E7EA9E4BDBA8EE2200A@qq.com/
 
-0001-drm-amdgpu-WIP-Explicitly-add-a-flexible-array-at-th.patch
-0002-drm-amdgpu-WIP-Remove-a-redundant-sanity-check.patch
-0003-drm-amdgpu-WIP-Use-kvzalloc-to-simplify-code.patch
-0004-drm-amdgpu-WIP-Remove-amdgpu_bo_list_array_entry.patch
-
-and all IGT tests were successful.
-
->  but this just some game 
-> should probably do as well.
->
-> Apart from that looks good to me,
-> Christian.
->
->> Christophe JAILLET (4):
->>    drm/amdgpu: Explicitly add a flexible array at the end of 'struct
->>      amdgpu_bo_list'
->>    drm/amdgpu: Remove a redundant sanity check
->>    drm/amdgpu: Remove amdgpu_bo_list_array_entry()
->>    drm/amdgpu: Use kvzalloc() to simplify code
->>
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c | 15 ++-------------
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.h | 18 ++++++------------
->>   2 files changed, 8 insertions(+), 25 deletions(-)
->>
-> Thanks, Vitaly
