@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E03BB7839BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2AF7839C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbjHVGHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
+        id S232954AbjHVGPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:15:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjHVGHF (ORCPT
+        with ESMTP id S230116AbjHVGPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:07:05 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B30E185
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:07:03 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E37861EC0103;
-        Tue, 22 Aug 2023 08:07:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1692684422;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=+f3OoNYZr5R+2gmWTYysQEDi/jCkwT5jgj4nIZaUJQs=;
-        b=ZHI6yeyl2dX2MQ0qOWmYE28slmNhFT9ABDedYEk2b1kni1ebZ+1jaarzGfuB+92dZb5j+9
-        2rD+39MHPiy2Uoz3WIlVrRe9TcOFaLyDV2uqhB5b7z+czaTmai9TZmkx2buVVPjQnCf+rA
-        qznLSk5i3C5P4+rqxXPbz52qBroGS34=
-Date:   Tue, 22 Aug 2023 08:07:06 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 04/22] x86/srso: Fix SBPB enablement for
- spec_rstack_overflow=off
-Message-ID: <20230822060706.GEZORQiq136ZR5Tnc0@fat_crate.local>
-References: <cover.1692580085.git.jpoimboe@kernel.org>
- <23a121e309d5e880eb35c441d9bdfa642d6d59f4.1692580085.git.jpoimboe@kernel.org>
- <20230821141619.GCZONxs5OdbbXFYSq2@fat_crate.local>
- <20230821163649.dyhxdeewlf6eerda@treble>
- <20230822055452.GDZORNrNdYc3OmGygU@fat_crate.local>
+        Tue, 22 Aug 2023 02:15:50 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A789111C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:15:46 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RVJxY10WMz9vw7;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UfYttzXdVmqA; Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RVJxY0Md1z9vw6;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 08C038B779;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id S6PYw4i-Ct8A; Tue, 22 Aug 2023 08:15:44 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.234.16])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C67EA8B766;
+        Tue, 22 Aug 2023 08:15:44 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37M67tfv824938
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 08:07:55 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37M67sLQ824905;
+        Tue, 22 Aug 2023 08:07:54 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] powerpc/64e: Fix circular dependency with CONFIG_SMP disabled
+Date:   Tue, 22 Aug 2023 08:07:50 +0200
+Message-ID: <5e0f97d5cbcd05238b56b4424ab096468296824d.1692684461.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230822055452.GDZORNrNdYc3OmGygU@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692684469; l=1823; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=cN7ysd0pEuTs9KetlOtchuamoQatSbRcFDq/YjZFQrM=; b=fqXeKHRuVI0KcphSDM0XEiLbGBkTtTQ4BrmIoMXVDZOAiUCIGv6E/KRXSAyhNPzSb+ZB36E99 AOvESC6Oo0ABaVQCfiHt/xo2cGR4/ZRV0sC1i8ZwzVI+ETch1cyfgNB
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 07:54:52AM +0200, Borislav Petkov wrote:
-> If you goto pred_cmd, you will overwrite it with PRED_CMD_SBPB here.
+asm/percpu.h includes asm/paca.h which needs struct tlb_core_data
+which is defined in mmu-e500.h
 
-Looking at this more:
+asm/percpu.h is included from asm/mmu.h in a #ifdef CONFIG_E500
+before the inclusion of mmu-e500.h
 
-"If SRSO mitigation is not required or is disabled, software may use
-SBPB on context/virtual machine switch to help protect against
-vulnerabilities like Spectre v2."
+To fix that, move the inclusion of asm/percpu.h into mmu-e500.h
+after the definition of struct tlb_core_data
 
-I think we actually want this overwrite to happen.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308220708.nRf5AUAe-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202308220857.uFq2oAxM-lkp@intel.com/
+Closes: https://lore.kernel.org/oe-kbuild-all/202308221055.lw3UzJIL-lkp@intel.com/
+Fixes: 3a24ea0df83e ("powerpc/kuap: Use ASM feature fixups instead of static branches")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/mmu.h             | 5 -----
+ arch/powerpc/include/asm/nohash/mmu-e500.h | 3 +++
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-But then if retbleed=ibpb, entry_ibpb() will do bit 0 unconditionally...
-
-Hmm, lemme talk to people.
-
+diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+index 82af2e2c5eca..52cc25864a1b 100644
+--- a/arch/powerpc/include/asm/mmu.h
++++ b/arch/powerpc/include/asm/mmu.h
+@@ -144,11 +144,6 @@
+ 
+ typedef pte_t *pgtable_t;
+ 
+-#ifdef CONFIG_PPC_E500
+-#include <asm/percpu.h>
+-DECLARE_PER_CPU(int, next_tlbcam_idx);
+-#endif
+-
+ enum {
+ 	MMU_FTRS_POSSIBLE =
+ #if defined(CONFIG_PPC_BOOK3S_604)
+diff --git a/arch/powerpc/include/asm/nohash/mmu-e500.h b/arch/powerpc/include/asm/nohash/mmu-e500.h
+index e43a418d3ccd..6ddced0415cb 100644
+--- a/arch/powerpc/include/asm/nohash/mmu-e500.h
++++ b/arch/powerpc/include/asm/nohash/mmu-e500.h
+@@ -319,6 +319,9 @@ extern int book3e_htw_mode;
+ 
+ #endif
+ 
++#include <asm/percpu.h>
++DECLARE_PER_CPU(int, next_tlbcam_idx);
++
+ #endif /* !__ASSEMBLY__ */
+ 
+ #endif /* _ASM_POWERPC_MMU_BOOK3E_H_ */
 -- 
-Regards/Gruss,
-    Boris.
+2.41.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
