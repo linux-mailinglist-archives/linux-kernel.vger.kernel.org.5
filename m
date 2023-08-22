@@ -2,153 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BE37844FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C473C7844FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbjHVPF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        id S236507AbjHVPGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234755AbjHVPF4 (ORCPT
+        with ESMTP id S236034AbjHVPGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:05:56 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2079.outbound.protection.outlook.com [40.107.20.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B60E198;
-        Tue, 22 Aug 2023 08:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
- b=KNOT4WQr2ip1eJmqTzufkPODbARBuwPqAGEyg6jwpkUvQuj4hpohkJYoQs4aBWGNs+kCbeSXxznfj+zGXGBCf8g7HLr3Enjotltdm9WrXEcSlyi/WfjklvG65BbEF8OcU8vJTeatsxO/PJ4bBqUjSnqV6qdc+zHyL2aebdW5uTM=
-Received: from DUZPR01CA0298.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:4b7::15) by AS8PR08MB8491.eurprd08.prod.outlook.com
- (2603:10a6:20b:566::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 15:05:49 +0000
-Received: from DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
- (2603:10a6:10:4b7:cafe::79) by DUZPR01CA0298.outlook.office365.com
- (2603:10a6:10:4b7::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.25 via Frontend
- Transport; Tue, 22 Aug 2023 15:05:49 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
- smtp.mailfrom=arm.com; dkim=pass (signature was verified)
- header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
-Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
- 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
- client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
- pr=C
-Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
- DBAEUR03FT036.mail.protection.outlook.com (100.127.142.193) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6723.15 via Frontend Transport; Tue, 22 Aug 2023 15:05:49 +0000
-Received: ("Tessian outbound 169aaa6bf2b7:v175"); Tue, 22 Aug 2023 15:05:49 +0000
-X-CheckRecipientChecked: true
-X-CR-MTA-CID: d37bb38f735fa9d8
-X-CR-MTA-TID: 64aa7808
-Received: from 44561ca60c7c.2
-        by 64aa7808-outbound-1.mta.getcheckrecipient.com id 31AF0FB9-91C9-4605-8271-7B75269EFF6E.1;
-        Tue, 22 Aug 2023 15:05:42 +0000
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
-    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 44561ca60c7c.2
-    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
-    Tue, 22 Aug 2023 15:05:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fLmSz49N4qNR5r0qm1oDSblwsc8ngBADluagQFCnQzg6tDu95KIShybBbukcLSpFGdJK+2kOsRVTFLOgSYqqzl0/gUxCEaG0Fpl2X5UShTkYZs30CnrvrV/elyUWl5QUhAi5XvE/ONduBFMRg3bpv5Zpj6lU5pb6D7qecDNUsa/RZuutI4kK6I3mlnJxqXjc7IlN/hKYdMLt0yESjnr1OvuHI9JSHb0Xak+FQUMr+qrL3he5uFk3JMp7jvDOdi9x+xceVRBSBqRdjpYIu/+eGowkzlXgtnAgxk+l5Xo/XLey+RcNN7NNFk8EdEjYO7wsH8sQsP08pOlgqIsl5GPWFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
- b=Ok8nPlgNTEmmtAwEG3R3clvatLK6DtXq5BTK43DZIYItmOAvdWWx1NuhwB/d5q1X8mv75I+2rwPKjF5qFuXqTdGiXYYnKvImc3kYeomlPznbW46YFDUCoWnOEth+x48Gb1d508XXW3+5dqfjExWnIdbUGGdvERB5lBaxFq10gxSuNRwu7gpDFCNmI9sLICYDUwHEWTdllKjQbIAh2UEwxHY6idVbEswpF2h8LVByveNYaoCUXIWssFzMY0DbPtxIvFXS7h9rYZ1+XPpJWkPiugiuJw04Hym8pllNokQmX4iMO26VMXI93/vN6NLU8NcfMYi9wMz7zVkAuJvruN4b2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
- header.d=arm.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
- s=selector2-armh-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BfrtkIHD41BdedViPMyVzl+Hx3DX+Q5alc3k43j05cI=;
- b=KNOT4WQr2ip1eJmqTzufkPODbARBuwPqAGEyg6jwpkUvQuj4hpohkJYoQs4aBWGNs+kCbeSXxznfj+zGXGBCf8g7HLr3Enjotltdm9WrXEcSlyi/WfjklvG65BbEF8OcU8vJTeatsxO/PJ4bBqUjSnqV6qdc+zHyL2aebdW5uTM=
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-Received: from DB9PR08MB7179.eurprd08.prod.outlook.com (2603:10a6:10:2cc::19)
- by AM8PR08MB5732.eurprd08.prod.outlook.com (2603:10a6:20b:1d4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
- 2023 15:05:39 +0000
-Received: from DB9PR08MB7179.eurprd08.prod.outlook.com
- ([fe80::adb0:61cb:8733:6db2]) by DB9PR08MB7179.eurprd08.prod.outlook.com
- ([fe80::adb0:61cb:8733:6db2%7]) with mapi id 15.20.6699.022; Tue, 22 Aug 2023
- 15:05:39 +0000
-Date:   Tue, 22 Aug 2023 16:05:15 +0100
-From:   Szabolcs Nagy <Szabolcs.Nagy@arm.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v5 04/37] arm64/gcs: Document the ABI for Guarded Control
- Stacks
-Message-ID: <ZOTOqxBFqselqN8U@arm.com>
-References: <20230822-arm64-gcs-v5-0-9ef181dd6324@kernel.org>
- <20230822-arm64-gcs-v5-4-9ef181dd6324@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230822-arm64-gcs-v5-4-9ef181dd6324@kernel.org>
-X-ClientProxiedBy: SN1PR12CA0070.namprd12.prod.outlook.com
- (2603:10b6:802:20::41) To DB9PR08MB7179.eurprd08.prod.outlook.com
- (2603:10a6:10:2cc::19)
+        Tue, 22 Aug 2023 11:06:22 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E381B9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:06:19 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31c66b7da88so55293f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692716777; x=1693321577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
+        b=EK/QqDRkxi36aIi0UBd9fmgJGjMU2iJAesESNS7RXj3CU+4OgQFnmS0DRe1Pjqt3Vj
+         aSNjrghPdOk8/h1SE6SKPJAzc5DqcD4+5PrMeavHJyeyp9S2zKh9XaOtlZn7mY5eYSD/
+         cm7wR5jRdkxFzEfC6rjLF6OrbpWnmsYdVYAbNFkRPqOaRDPsW+L2vGKCop7uzax2TDuC
+         euiDhxVc05SOEdjkhWgM5YYDIwbmQVLcQmKlNFbOLPaHYZPkGsrL6Tw3elinaF/uY5e/
+         yOhAj28EKnvg3I1Q1bZmpJZa6Itn2Tc0RfB8et8DvcNdvmh/azKkJDvWb84xZwElkzTw
+         kTWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692716777; x=1693321577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hiuif0UPEilRfTqfvjhgYV9OjFsrTUZzsOgS/HAy03Q=;
+        b=R0lHPJ5DXEDEFeZZoXJQfFGSLl6m340F0HO/J/uvtNuvzyIoYm5HwxEZi9mM7SfVgx
+         /lK/hT1/2ed0b2QKDTYYU/Hf+oxSGQ5/slcPlb8SHoTzG+tjFr82SJ8NNv6TuVeuU/pV
+         5+nV0leMsgRpqd3khQBetBizbqpYdszZHEiXqmbdfv9HPjOXoF7rwwOuQVbesyeUjjXp
+         YN6cp8yDJOS6Dak1Nc/QjhRVL8KhFpodbUTpyPUVUYP0fwaeFn7imPrRroSneabZ++Mu
+         1cgsRyCZyti4L/xTbAqO5TiUkvG1Z6M4oNFYTyfC+j8OcVF5l0U6No1yIukEg8+f+5GQ
+         SLXQ==
+X-Gm-Message-State: AOJu0YzqH/G9zLk8esc88YD1862W5HiW+NmJr18/5cCiW31wwi2ITkO0
+        RWwLZJzMzF1MduQVDyOlvCM=
+X-Google-Smtp-Source: AGHT+IG/WYaK4QKoY/sXJElN3HnYE35+BGE/wEL15yzukGUemxKM29AaJP9Afn93aZrjhi0CYRIJjg==
+X-Received: by 2002:adf:e710:0:b0:317:3d36:b2c1 with SMTP id c16-20020adfe710000000b003173d36b2c1mr8082225wrm.7.1692716776656;
+        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
+Received: from ivan-HLYL-WXX9.. ([141.136.93.153])
+        by smtp.gmail.com with ESMTPSA id p13-20020adff20d000000b0031c52e81490sm6619066wro.72.2023.08.22.08.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 08:06:16 -0700 (PDT)
+From:   Ivan Orlov <ivan.orlov0322@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com
+Cc:     Ivan Orlov <ivan.orlov0322@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: pcmtest: Add support for pcm pausing
+Date:   Tue, 22 Aug 2023 19:05:41 +0400
+Message-Id: <20230822150541.8450-1-ivan.orlov0322@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic: DB9PR08MB7179:EE_|AM8PR08MB5732:EE_|DBAEUR03FT036:EE_|AS8PR08MB8491:EE_
-X-MS-Office365-Filtering-Correlation-Id: c0698088-b06a-462f-86cb-08dba321456c
-x-checkrecipientrouted: true
-NoDisclaimer: true
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original: YcQqMwk4Dn5hMK+j4004Cs80OkhHHW6XQ7wOn41UvxizXAzqHevZO8vajBB9wd6zzuuO/XQSS10lQO09TMQVDfSDBHBMpeq2o9AcXLqwGMhvEe259I03oqU8PCZLDkXX7/q5VmGxHru6Ld/j3nQdfeSuVbb0v/VTe4Oel4cmS6F+InXhLkK/b7NTmpC8KttkbWlKmZqw2oVUOsEEqCrrtQEidefpZtXNy9KIpjRUeqSvWgHBPTG5Gi6fTShgUV9cDG9/fcX48UQWgPQEKZx4cw3Xm4STZn3TeyCdClt+bArIyIJjvq2HvPUugHEITSgPWmv4xqWU//JPcnpFnImaZkWXRUcM8HVs8sbB4DyljPhGEq2up1Q6LH+2jaWwxQ2WMp0gl9YjzDNvbOG8LmC1P+CSbh9Qcc7eJ1m3Eozz9YA34eQ3RIhTLhzbrwj8KQ5NBQSGflJATJtHpcqvxZE0j2J0Giy3lpuIkx/KGdBXOPWWhqaJXm6IYDh3OhS3lNHR+R90aZLBTTfQqmmMKnvBjSFYJbV/kf9nv7lPuPWQ1ET3jxTMhDbfJXF8/T8g/2buoK3RXkbc81lJdh/FBpyIgpbsuuRHu/CPZzRpVKK6CwQ=
-X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7179.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(376002)(39860400002)(346002)(366004)(1800799009)(186009)(451199024)(54906003)(66476007)(66556008)(6512007)(316002)(66946007)(110136005)(8676002)(8936002)(2616005)(4326008)(36756003)(41300700001)(921005)(478600001)(6666004)(38100700002)(6486002)(6506007)(4744005)(2906002)(7416002)(86362001)(5660300002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB5732
-Original-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=arm.com;
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped: DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs: d3ed07dc-d070-4514-981c-08dba3213f11
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2WOUFxXj/22wybnGSH9BkICb8ukXUpakkExclI8FkAE1klcazkDsigPO3nJfriBLll8Aaqj7pwEZ5todAAaFOF8ZCqhxJ4ht7o2vVxQumERQvYLaEhQBvqiJn5rZDKwTslZlp4qhJykWEEUb39o2CAJa9NKcYgsUNJkIfnli1oFz3gZ5s3HoyGwfM1bmUbv2JZ/dSE/7UdZXDdeT0vU2runKP9mJmhQdlCUthOfRBXjA8iCfSYgNsJ9vi1B+Zd5K3faAzFarZ17pbmFuCpTMMOyIKAN550VHB8++bD51Dt0kLjuKwHK/5ggFlC58BteF5A/OU+S8Vs1vndxtm6i5PAlbCpiHCjPPhrgBv8ugfFxktgDVqDABh8YYCxpdK4coHwdkwd4tRCGgSsinEc5tlNZEFloyixBsV4LPCaT47CvJE+ZU9CRn1fZtLji5Dd7qwf0iUeEKLJ5zRdCxsVN0YLTZBZ2lZKA0eJgT236f4syf/9jTyoycqYgbZnQWkkCe1e57xzev07UL63ZYCaiJDBDZqQ9RG1wN3MGY9A0RfI+wbON4vkwGBgr4Y8Oa+rPxuzvFjParO9cfFr6DPspTx+uu3Do6BuKKtoBUr5ZUBZeHIhewFBq6UoX+x0GlZKw162tEGE37DAunmKvUJ1OMnNKSnL430z8gjoC1YWVUc6/SwYmITpwAq+GBP1CkqJ77Jv0tri72F72U0gn2Uh9mGuRg1zE+r7DPlHj34Fx9O5qSkoGCn+aSNxCS6g4chmNv
-X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(376002)(39860400002)(346002)(1800799009)(186009)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(54906003)(6512007)(70586007)(316002)(70206006)(110136005)(450100002)(8676002)(8936002)(2616005)(107886003)(4326008)(36756003)(40460700003)(41300700001)(82740400003)(356005)(81166007)(921005)(478600001)(6666004)(6486002)(6506007)(40480700001)(4744005)(2906002)(47076005)(36860700001)(86362001)(336012)(5660300002)(26005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: arm.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 15:05:49.5952
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0698088-b06a-462f-86cb-08dba321456c
-X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
-X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT036.eop-EUR03.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB8491
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -156,26 +69,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-just nits.
+Add pause push/release support to the virtual PCM test driver. Add
+'suspend' boolean field to the pcmtst_buf_iter structure, so we can
+pause the timer without shutting it down. Update the trigger callback
+handler correspondingly. Extract buffer initialization to the
+'reset_buf_iterator' function since it is used in multiple places now.
 
-The 08/22/2023 14:56, Mark Brown wrote:
-> +3.  Allocation of Guarded Control Stacks
-> +----------------------------------------
-...
-> +* Stacks allocated using map_shadow_stack() must be larger than 8 bytes and
-> +  must be 8 bytes aligned.
+Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+---
+ sound/drivers/pcmtest.c | 49 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 41 insertions(+), 8 deletions(-)
 
-"the size must be multiple of 8 bytes."
+diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
+index 27cbb9d38f08..b59b78a09224 100644
+--- a/sound/drivers/pcmtest.c
++++ b/sound/drivers/pcmtest.c
+@@ -108,6 +108,7 @@ struct pcmtst_buf_iter {
+ 	size_t total_bytes;			// Total bytes read/written
+ 	size_t chan_block;			// Bytes in one channel buffer when non-interleaved
+ 	struct snd_pcm_substream *substream;
++	bool suspend;				// We need to pause timer without shutting it down
+ 	struct timer_list timer_instance;
+ };
+ 
+@@ -115,7 +116,8 @@ static struct snd_pcm_hardware snd_pcmtst_hw = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED |
+ 		 SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_NONINTERLEAVED |
+-		 SNDRV_PCM_INFO_MMAP_VALID),
++		 SNDRV_PCM_INFO_MMAP_VALID |
++		 SNDRV_PCM_INFO_PAUSE),
+ 	.formats =		SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE,
+ 	.rates =		SNDRV_PCM_RATE_8000_48000,
+ 	.rate_min =		8000,
+@@ -346,6 +348,9 @@ static void timer_timeout(struct timer_list *data)
+ 	v_iter = from_timer(v_iter, data, timer_instance);
+ 	substream = v_iter->substream;
+ 
++	if (v_iter->suspend)
++		return;
++
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK && !v_iter->is_buf_corrupted)
+ 		check_buf_block(v_iter, substream->runtime);
+ 	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+@@ -358,7 +363,9 @@ static void timer_timeout(struct timer_list *data)
+ 		v_iter->period_pos %= v_iter->period_bytes;
+ 		snd_pcm_period_elapsed(substream);
+ 	}
+-	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
++
++	if (!v_iter->suspend)
++		mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL + inject_delay);
+ }
+ 
+ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
+@@ -373,19 +380,15 @@ static int snd_pcmtst_pcm_open(struct snd_pcm_substream *substream)
+ 	if (!v_iter)
+ 		return -ENOMEM;
+ 
++	v_iter->substream = substream;
+ 	runtime->hw = snd_pcmtst_hw;
+ 	runtime->private_data = v_iter;
+-	v_iter->substream = substream;
+-	v_iter->buf_pos = 0;
+-	v_iter->is_buf_corrupted = false;
+-	v_iter->period_pos = 0;
+-	v_iter->total_bytes = 0;
+ 
+ 	playback_capture_test = 0;
+ 	ioctl_reset_test = 0;
+ 
+ 	timer_setup(&v_iter->timer_instance, timer_timeout, 0);
+-	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
++
+ 	return 0;
+ }
+ 
+@@ -400,10 +403,40 @@ static int snd_pcmtst_pcm_close(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
++static inline void reset_buf_iterator(struct pcmtst_buf_iter *v_iter)
++{
++	v_iter->buf_pos = 0;
++	v_iter->is_buf_corrupted = false;
++	v_iter->period_pos = 0;
++	v_iter->total_bytes = 0;
++}
++
++static inline void start_pcmtest_timer(struct pcmtst_buf_iter *v_iter)
++{
++	v_iter->suspend = false;
++	mod_timer(&v_iter->timer_instance, jiffies + TIMER_INTERVAL);
++}
++
+ static int snd_pcmtst_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
++	struct pcmtst_buf_iter *v_iter = substream->runtime->private_data;
++
+ 	if (inject_trigger_err)
+ 		return -EINVAL;
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		reset_buf_iterator(v_iter);
++		start_pcmtest_timer(v_iter);
++		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		start_pcmtest_timer(v_iter);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		// We can't call timer_shutdown_sync here, as it is forbidden to sleep here
++		v_iter->suspend = true;
++		break;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.34.1
 
-> +
-> +* An address can be specified to map_shadow_stack(), if one is provided then
-> +  it must be aligned to a page boundary.
-...
-> +5.  Signal return
-> +-----------------
-...
-> +
-> +7.  ptrace extensions
-> +---------------------
-
-section 6. is missing
