@@ -2,47 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7ECC78402E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:55:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C8578402C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbjHVLzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:55:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S235507AbjHVLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235511AbjHVLzc (ORCPT
+        with ESMTP id S234438AbjHVLza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:55:32 -0400
-Received: from forwardcorp1c.mail.yandex.net (forwardcorp1c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:df01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E97E7E
+        Tue, 22 Aug 2023 07:55:30 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA19CE2
         for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:55:07 -0700 (PDT)
-Received: from mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:6284:0:640:e19:0])
-        by forwardcorp1c.mail.yandex.net (Yandex) with ESMTP id 2FD7F6025B;
-        Tue, 22 Aug 2023 14:55:05 +0300 (MSK)
-Received: from valesini-ubuntu.yandex.net (unknown [2a02:6b8:82:604:f7ab:b25b:2f4e:2225])
-        by mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id usHYCO1OfGk0-8KlOOY66;
-        Tue, 22 Aug 2023 14:55:04 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1692705304; bh=Vi48MveDdAJaRZh1oBp7hBFV9uDod6uoeDC5f274xnU=;
-        h=Message-Id:Date:In-Reply-To:Cc:Subject:References:To:From;
-        b=PHBPZdmPYI7OV58JdJfrdlUnP1kvnC42+eWaoLePWOVPiFTkfMzMK193CXW7V+mG3
-         FqpIqrXIHspJxvyqa8byLoImEJRVaXUuZpskO6iSZCtXeXlvkBO4/vg0AA/tu5AVLR
-         rUhoNI4n0EPPdDFul9qx7FaPxmc2R6PFI3u2o7aA=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From:   Valentine Sinitsyn <valesini@yandex-team.ru>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+Received: from eldfell (unknown [194.136.85.206])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pq)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 7FC72660720C;
+        Tue, 22 Aug 2023 12:55:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692705304;
+        bh=rc4RZeWeRenqX67jr1ytBFPmAwa003ttuhCagDublUE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iAc84DiVtMtOtOr5hOeMBL52YF4J0od97uHsOwbyNwNVzqOwk82CH+i/V5pn8od3c
+         f4163qNDohHI3aJ8TL34sQ9LuI2OlBIin6x7RolaeDIgRS7h7Vm9JvEcivEDSBd7nc
+         kegBzMbJFqfKrqx65U9DbqrmQmAR05d3434mzDuE3yQkLntGPcXEOefdxor33j74WB
+         S10qpnJ1uDTEdQT9kvFWyF8qvMHDKF+5xutoYwIRimN3nQEfs322S6OtRJVtNV0eMG
+         YrrTtej2qfFKJUyNYQNqERacm+bgW2jhDw4I7aDSzpNxTMhGLd8ENzjQ4rJMeSyox7
+         cElNUmZeaFXvQ==
+Date:   Tue, 22 Aug 2023 14:54:59 +0300
+From:   Pekka Paalanen <pekka.paalanen@collabora.com>
+To:     Melissa Wen <mwen@igalia.com>
+Cc:     amd-gfx@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
+        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
+        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        Joshua Ashton <joshua@froggi.es>,
+        Sebastian Wick <sebastian.wick@redhat.com>,
+        Xaver Hugl <xaver.hugl@gmail.com>,
+        Shashank Sharma <Shashank.Sharma@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
+        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] PCI: Implement custom llseek for sysfs resource entries
-Date:   Tue, 22 Aug 2023 16:54:55 +0500
-Message-Id: <20230822115455.310222-2-valesini@yandex-team.ru>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230822075107.224512-2-valesini@yandex-team.ru>
-References: <20230822075107.224512-2-valesini@yandex-team.ru>
+Subject: Re: [PATCH v2 09/34] drm/amd/display: add plane HDR multiplier
+ driver-specific property
+Message-ID: <20230822145459.66b986ef.pekka.paalanen@collabora.com>
+In-Reply-To: <20230810160314.48225-10-mwen@igalia.com>
+References: <20230810160314.48225-1-mwen@igalia.com>
+        <20230810160314.48225-10-mwen@igalia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -53,112 +69,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 636b21b50152 ("PCI: Revoke mappings like devmem"), mmappable
-sysfs entries have started to receive their f_mapping from the iomem
-pseudo filesystem, so that CONFIG_IO_STRICT_DEVMEM is honored in sysfs
-(and procfs) as well as in /dev/[k]mem.
+On Thu, 10 Aug 2023 15:02:49 -0100
+Melissa Wen <mwen@igalia.com> wrote:
 
-This resulted in a userspace-visible regression:
+> From: Joshua Ashton <joshua@froggi.es>
+> 
+> Multiplier to 'gain' the plane. When PQ is decoded using the fixed func
+> transfer function to the internal FP16 fb, 1.0 -> 80 nits (on AMD at
+> least) When sRGB is decoded, 1.0 -> 1.0.  Therefore, 1.0 multiplier = 80
+> nits for SDR content. So if you want, 203 nits for SDR content, pass in
+> (203.0 / 80.0).
 
-1. Open a sysfs PCI resource file (eg. /sys/bus/pci/devices/*/resource0)
-2. Use lseek(fd, 0, SEEK_END) to determine its size
+Does this mean that the fixed-function PQ EOTF is
+actually [0, 128] -> [0, 10000]?
 
-Expected result: a PCI region size is returned.
-Actual result: 0 is returned.
+How do you decode an integer pixel format into [0, 128] so it can be
+fed through PQ EOTF?
 
-The reason is that PCI resource files residing in sysfs use
-generic_file_llseek(), which relies on f_mapping->host inode to get the
-file size. As f_mapping is now redefined, f_mapping->host points to an
-anonymous zero-sized iomem_inode which has nothing to do with sysfs file
-in question.
+And how do blocks after the PQ EOTF deal with the [0, 10000] domain,
+when any other EOTF would produce [0, 1]?
 
-Implement a custom llseek method for sysfs PCI resources, which is
-almost the same as proc_bus_pci_lseek() used for procfs entries.
 
-This makes sysfs and procfs entries consistent with regards to seeking,
-but also introduces userspace-visible changes to seeking PCI resources
-in sysfs:
+Thanks,
+pq
 
-- SEEK_DATA and SEEK_HOLE are no longer supported;
-- Seeking past the end of the file is prohibited while previously
-  offsets up to MAX_NON_LFS were accepted (reading from these offsets
-  was always invalid).
-
-Fixes: 636b21b50152 ("PCI: Revoke mappings like devmem")
-Cc: stable@vger.kernel.org
-Signed-off-by: Valentine Sinitsyn <valesini@yandex-team.ru>
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
----
- drivers/pci/pci-sysfs.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index ab32a91f287b..2b9d93f11dd1 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -836,6 +836,12 @@ static const struct attribute_group pci_dev_config_attr_group = {
- };
- 
- #ifdef HAVE_PCI_LEGACY
-+
-+static loff_t pci_llseek_resource(struct file *filep,
-+				  struct kobject *kobj,
-+				  struct bin_attribute *attr,
-+				  loff_t offset, int whence);
-+
- /**
-  * pci_read_legacy_io - read byte(s) from legacy I/O port space
-  * @filp: open sysfs file
-@@ -967,6 +973,8 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_io->attr.mode = 0600;
- 	b->legacy_io->read = pci_read_legacy_io;
- 	b->legacy_io->write = pci_write_legacy_io;
-+	/* See pci_create_attr() for motivation */
-+	b->legacy_io->llseek = pci_llseek_resource;
- 	b->legacy_io->mmap = pci_mmap_legacy_io;
- 	b->legacy_io->f_mapping = iomem_get_mapping;
- 	pci_adjust_legacy_attr(b, pci_mmap_io);
-@@ -981,6 +989,8 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_mem->size = 1024*1024;
- 	b->legacy_mem->attr.mode = 0600;
- 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
-+	/* See pci_create_attr() for motivation */
-+	b->legacy_io->llseek = pci_llseek_resource;
- 	b->legacy_mem->f_mapping = iomem_get_mapping;
- 	pci_adjust_legacy_attr(b, pci_mmap_mem);
- 	error = device_create_bin_file(&b->dev, b->legacy_mem);
-@@ -1138,6 +1148,14 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
- 	return pci_resource_io(filp, kobj, attr, buf, off, count, true);
- }
- 
-+static loff_t pci_llseek_resource(struct file *filep,
-+				  struct kobject *kobj __always_unused,
-+				  struct bin_attribute *attr,
-+				  loff_t offset, int whence)
-+{
-+	return fixed_size_llseek(filep, offset, whence, attr->size);
-+}
-+
- /**
-  * pci_remove_resource_files - cleanup resource files
-  * @pdev: dev to cleanup
-@@ -1195,8 +1213,15 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
- 			res_attr->mmap = pci_mmap_resource_uc;
- 		}
- 	}
--	if (res_attr->mmap)
-+	if (res_attr->mmap) {
- 		res_attr->f_mapping = iomem_get_mapping;
-+		/*
-+		 * generic_file_llseek() consults f_mapping->host to determine
-+		 * the file size. As iomem_inode knows nothing about the
-+		 * attribute, it's not going to work, so override it as well.
-+		 */
-+		res_attr->llseek = pci_llseek_resource;
-+	}
- 	res_attr->attr.name = res_attr_name;
- 	res_attr->attr.mode = 0600;
- 	res_attr->size = pci_resource_len(pdev, num);
--- 
-2.34.1
+> 
+> Signed-off-by: Joshua Ashton <joshua@froggi.es>
+> Co-developed-by: Melissa Wen <mwen@igalia.com>
+> Signed-off-by: Melissa Wen <mwen@igalia.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h           |  4 ++++
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h  | 14 ++++++++++++++
+>  .../drm/amd/display/amdgpu_dm/amdgpu_dm_color.c    |  6 ++++++
+>  .../drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c    | 13 +++++++++++++
+>  4 files changed, 37 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> index 6ef958a14e16..66bae0eed80c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+> @@ -359,6 +359,10 @@ struct amdgpu_mode_info {
+>  	 * to go from scanout/encoded values to linear values.
+>  	 */
+>  	struct drm_property *plane_degamma_tf_property;
+> +	/**
+> +	 * @plane_hdr_mult_property:
+> +	 */
+> +	struct drm_property *plane_hdr_mult_property;
+>  };
+>  
+>  #define AMDGPU_MAX_BL_LEVEL 0xFF
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> index f6251ed89684..44f17ac11a5f 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+> @@ -54,6 +54,9 @@
+>  #define HDMI_AMD_VENDOR_SPECIFIC_DATA_BLOCK_IEEE_REGISTRATION_ID 0x00001A
+>  #define AMD_VSDB_VERSION_3_FEATURECAP_REPLAYMODE 0x40
+>  #define HDMI_AMD_VENDOR_SPECIFIC_DATA_BLOCK_VERSION_3 0x3
+> +
+> +#define AMDGPU_HDR_MULT_DEFAULT (0x100000000LL)
+> +
+>  /*
+>  #include "include/amdgpu_dal_power_if.h"
+>  #include "amdgpu_dm_irq.h"
+> @@ -755,6 +758,17 @@ struct dm_plane_state {
+>  	 * linearize.
+>  	 */
+>  	enum amdgpu_transfer_function degamma_tf;
+> +	/**
+> +	 * @hdr_mult:
+> +	 *
+> +	 * Multiplier to 'gain' the plane.  When PQ is decoded using the fixed
+> +	 * func transfer function to the internal FP16 fb, 1.0 -> 80 nits (on
+> +	 * AMD at least). When sRGB is decoded, 1.0 -> 1.0, obviously.
+> +	 * Therefore, 1.0 multiplier = 80 nits for SDR content.  So if you
+> +	 * want, 203 nits for SDR content, pass in (203.0 / 80.0).  Format is
+> +	 * S31.32 sign-magnitude.
+> +	 */
+> +	__u64 hdr_mult;
+>  };
+>  
+>  struct dm_crtc_state {
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> index 7f13bcdaf016..b891aaf5f7c1 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
+> @@ -203,6 +203,12 @@ amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
+>  		return -ENOMEM;
+>  	adev->mode_info.plane_degamma_tf_property = prop;
+>  
+> +	prop = drm_property_create_range(adev_to_drm(adev),
+> +					 0, "AMD_PLANE_HDR_MULT", 0, U64_MAX);
+> +	if (!prop)
+> +		return -ENOMEM;
+> +	adev->mode_info.plane_hdr_mult_property = prop;
+> +
+>  	return 0;
+>  }
+>  #endif
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> index 0a955abb1abf..ab7f0332c431 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_plane.c
+> @@ -1331,6 +1331,7 @@ static void dm_drm_plane_reset(struct drm_plane *plane)
+>  
+>  	__drm_atomic_helper_plane_reset(plane, &amdgpu_state->base);
+>  	amdgpu_state->degamma_tf = AMDGPU_TRANSFER_FUNCTION_DEFAULT;
+> +	amdgpu_state->hdr_mult = AMDGPU_HDR_MULT_DEFAULT;
+>  }
+>  
+>  static struct drm_plane_state *
+> @@ -1354,6 +1355,7 @@ dm_drm_plane_duplicate_state(struct drm_plane *plane)
+>  		drm_property_blob_get(dm_plane_state->degamma_lut);
+>  
+>  	dm_plane_state->degamma_tf = old_dm_plane_state->degamma_tf;
+> +	dm_plane_state->hdr_mult = old_dm_plane_state->hdr_mult;
+>  
+>  	return &dm_plane_state->base;
+>  }
+> @@ -1450,6 +1452,10 @@ dm_atomic_plane_attach_color_mgmt_properties(struct amdgpu_display_manager *dm,
+>  					   dm->adev->mode_info.plane_degamma_tf_property,
+>  					   AMDGPU_TRANSFER_FUNCTION_DEFAULT);
+>  	}
+> +	/* HDR MULT is always available */
+> +	drm_object_attach_property(&plane->base,
+> +				   dm->adev->mode_info.plane_hdr_mult_property,
+> +				   AMDGPU_HDR_MULT_DEFAULT);
+>  }
+>  
+>  static int
+> @@ -1476,6 +1482,11 @@ dm_atomic_plane_set_property(struct drm_plane *plane,
+>  			dm_plane_state->degamma_tf = val;
+>  			dm_plane_state->base.color_mgmt_changed = 1;
+>  		}
+> +	} else if (property == adev->mode_info.plane_hdr_mult_property) {
+> +		if (dm_plane_state->hdr_mult != val) {
+> +			dm_plane_state->hdr_mult = val;
+> +			dm_plane_state->base.color_mgmt_changed = 1;
+> +		}
+>  	} else {
+>  		drm_dbg_atomic(plane->dev,
+>  			       "[PLANE:%d:%s] unknown property [PROP:%d:%s]]\n",
+> @@ -1501,6 +1512,8 @@ dm_atomic_plane_get_property(struct drm_plane *plane,
+>  			dm_plane_state->degamma_lut->base.id : 0;
+>  	} else if (property == adev->mode_info.plane_degamma_tf_property) {
+>  		*val = dm_plane_state->degamma_tf;
+> +	} else if (property == adev->mode_info.plane_hdr_mult_property) {
+> +		*val = dm_plane_state->hdr_mult;
+>  	} else {
+>  		return -EINVAL;
+>  	}
 
