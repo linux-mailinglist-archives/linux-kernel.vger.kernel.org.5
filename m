@@ -2,66 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BEB783E84
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9617F783E91
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbjHVLDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        id S234433AbjHVLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:05:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233459AbjHVLDC (ORCPT
+        with ESMTP id S232234AbjHVLFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:03:02 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AEFD1BE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:03:00 -0700 (PDT)
-Received: from eldfell (unknown [194.136.85.206])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pq)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B3AFE660716C;
-        Tue, 22 Aug 2023 12:02:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1692702178;
-        bh=UyunNXH6yKkBRuDdt6M7ZhaEIltdGhdy1lKxS6KpIOM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Z0uxHeKpZ/rm04D78lJJ1jd8/j2KyeoDzq5Cizt0ZFgU5uk2Jcqhi4Fo9r5ubhHwC
-         /sOhVFIe7HjMpASac9+AlikiC2Qnt6+VLTwkA9L+P0nrCw19rbNVO0bgzABBJN2qkA
-         FtS7ZTAY67vR6dmnl0axj01FHuQVL/Hg3Az1tD578/CfJUlcE27ixTxGL39Ad+6lr7
-         VTgKVXdi7vs/Na+tcDUUWFA/SMBygxvPSqLBPfcXhMOKBnaz01st5/TPUiIpfTqSZ6
-         C+lDAE+OgJ9j1wYUeT8cKoua5preu7r3AmCJb32RJogVXXR42xYVTtxf8JBgzfe4sM
-         vJPvu2RNK6Hnw==
-Date:   Tue, 22 Aug 2023 14:02:42 +0300
-From:   Pekka Paalanen <pekka.paalanen@collabora.com>
-To:     Melissa Wen <mwen@igalia.com>
-Cc:     amd-gfx@lists.freedesktop.org,
-        Harry Wentland <harry.wentland@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        sunpeng.li@amd.com, Alex Deucher <alexander.deucher@amd.com>,
-        dri-devel@lists.freedesktop.org, christian.koenig@amd.com,
-        Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        Joshua Ashton <joshua@froggi.es>,
-        Sebastian Wick <sebastian.wick@redhat.com>,
-        Xaver Hugl <xaver.hugl@gmail.com>,
-        Shashank Sharma <Shashank.Sharma@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        sungjoon.kim@amd.com, Alex Hung <alex.hung@amd.com>,
-        Simon Ser <contact@emersion.fr>, kernel-dev@igalia.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 07/34] drm/amd/display: explicitly define EOTF and
- inverse EOTF
-Message-ID: <20230822140242.162a843a.pekka.paalanen@collabora.com>
-In-Reply-To: <20230810160314.48225-8-mwen@igalia.com>
-References: <20230810160314.48225-1-mwen@igalia.com>
-        <20230810160314.48225-8-mwen@igalia.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.37; x86_64-pc-linux-gnu)
+        Tue, 22 Aug 2023 07:05:38 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7B81BE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:05:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VqMKLwI_1692702330;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0VqMKLwI_1692702330)
+          by smtp.aliyun-inc.com;
+          Tue, 22 Aug 2023 19:05:31 +0800
+From:   Jingbo Xu <jefflexu@linux.alibaba.com>
+To:     hsiangkao@linux.alibaba.com, chao@kernel.org,
+        linux-erofs@lists.ozlabs.org
+Cc:     huyue2@coolpad.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] erofs: release ztailpacking pclusters properly
+Date:   Tue, 22 Aug 2023 19:05:30 +0800
+Message-Id: <20230822110530.96831-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PZG.R8OI8.zo.YkIvbKeWBU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,210 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/PZG.R8OI8.zo.YkIvbKeWBU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Currently ztailpacking pclusters are chained with FOLLOWED_NOINPLACE and
+not recorded into the managed_pslots XArray.
 
-On Thu, 10 Aug 2023 15:02:47 -0100
-Melissa Wen <mwen@igalia.com> wrote:
+After commit 7674a42f35ea ("erofs: use struct lockref to replace
+handcrafted approach"), ztailpacking pclusters won't be freed with
+erofs_workgroup_put() anymore, which will cause the following issue:
 
-> Instead of relying on color block names to get the transfer function
-> intention regarding encoding pixel's luminance, define supported
-> Electro-Optical Transfer Functions (EOTFs) and inverse EOTFs, that
-> includes pure gamma or standardized transfer functions.
->=20
-> Suggested-by: Harry Wentland <harry.wentland@amd.com>
-> Signed-off-by: Melissa Wen <mwen@igalia.com>
-> ---
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 19 +++--
->  .../amd/display/amdgpu_dm/amdgpu_dm_color.c   | 69 +++++++++++++++----
->  2 files changed, 67 insertions(+), 21 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/=
-gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> index c749c9cb3d94..f6251ed89684 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-> @@ -718,14 +718,21 @@ extern const struct amdgpu_ip_block_version dm_ip_b=
-lock;
-> =20
->  enum amdgpu_transfer_function {
->  	AMDGPU_TRANSFER_FUNCTION_DEFAULT,
-> -	AMDGPU_TRANSFER_FUNCTION_SRGB,
-> -	AMDGPU_TRANSFER_FUNCTION_BT709,
-> -	AMDGPU_TRANSFER_FUNCTION_PQ,
-> +	AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_BT709_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_PQ_EOTF,
->  	AMDGPU_TRANSFER_FUNCTION_LINEAR,
->  	AMDGPU_TRANSFER_FUNCTION_UNITY,
-> -	AMDGPU_TRANSFER_FUNCTION_GAMMA22,
-> -	AMDGPU_TRANSFER_FUNCTION_GAMMA24,
-> -	AMDGPU_TRANSFER_FUNCTION_GAMMA26,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF,
-> +	AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF,
-> +        AMDGPU_TRANSFER_FUNCTION_COUNT
->  };
-> =20
->  struct dm_plane_state {
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c b/dr=
-ivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> index 56ce008b9095..cc2187c0879a 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_color.c
-> @@ -85,18 +85,59 @@ void amdgpu_dm_init_color_mod(void)
->  }
-> =20
->  #ifdef AMD_PRIVATE_COLOR
-> -static const struct drm_prop_enum_list amdgpu_transfer_function_enum_lis=
-t[] =3D {
-> -	{ AMDGPU_TRANSFER_FUNCTION_DEFAULT, "Default" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_SRGB, "sRGB" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_BT709, "BT.709" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_PQ, "PQ (Perceptual Quantizer)" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_LINEAR, "Linear" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_UNITY, "Unity" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA22, "Gamma 2.2" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA24, "Gamma 2.4" },
-> -	{ AMDGPU_TRANSFER_FUNCTION_GAMMA26, "Gamma 2.6" },
-> +static const char * const
-> +amdgpu_transfer_function_names[] =3D {
-> +	[AMDGPU_TRANSFER_FUNCTION_DEFAULT]		=3D "Default",
-> +	[AMDGPU_TRANSFER_FUNCTION_LINEAR]		=3D "Linear",
+BUG erofs_pcluster-1 (Tainted: G           OE     ): Objects remaining in erofs_pcluster-1 on __kmem_cache_shutdown()
 
-Hi,
+Use z_erofs_free_pcluster() directly to free ztailpacking pclusters.
 
-if the below is identity, then what is linear? Is there a coefficient
-(multiplier) somewhere? Offset?
+Fixes: 7674a42f35ea ("erofs: use struct lockref to replace handcrafted approach")
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+---
+ fs/erofs/zdata.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> +	[AMDGPU_TRANSFER_FUNCTION_UNITY]		=3D "Unity",
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index de4f12152b62..5419405cafb3 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -1410,7 +1410,10 @@ static void z_erofs_decompress_queue(const struct z_erofs_decompressqueue *io,
+ 		owned = READ_ONCE(be.pcl->next);
+ 
+ 		z_erofs_decompress_pcluster(&be, io->eio ? -EIO : 0);
+-		erofs_workgroup_put(&be.pcl->obj);
++		if (z_erofs_is_inline_pcluster(be.pcl))
++			z_erofs_free_pcluster(be.pcl);
++		else
++			erofs_workgroup_put(&be.pcl->obj);
+ 	}
+ }
+ 
+-- 
+2.19.1.6.gb485710b
 
-Should "Unity" be called "Identity"?
-
-Doesn't unity mean that the output is always 1.0 regardless of input?
-
-> +	[AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF]		=3D "sRGB EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_BT709_EOTF]		=3D "BT.709 EOTF",
-
-BT.709 says about "Overall opto-electronic transfer characteristics at
-source":
-
-	In typical production practice the encoding function of image
-	sources is adjusted so that the final picture has the desired
-	look, as viewed on a reference monitor having the reference
-	decoding function of Recommendation ITU-R BT.1886, in the
-	reference viewing environment defined in Recommendation ITU-R
-	BT.2035.
-
-IOW, typically people tweak the encoding function instead of using
-BT.709 OETF as is, which means that inverting the BT.709 OETF produces
-something slightly unknown. The note about BT.1886 means that that
-something is also not quite how it's supposed to be turned into light.
-
-Should this enum item be "BT.709 inverse OETF" and respectively below a
-"BT.709 OETF"?
-
-What curve does the hardware actually implement?
-
-The others seem fine to me.
-
-
-Thanks,
-pq
-
-> +	[AMDGPU_TRANSFER_FUNCTION_PQ_EOTF]		=3D "PQ EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF]		=3D "Gamma 2.2 EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF]		=3D "Gamma 2.4 EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF]		=3D "Gamma 2.6 EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_SRGB_INV_EOTF]	=3D "sRGB inv_EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_BT709_INV_EOTF]	=3D "BT.709 inv_EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_PQ_INV_EOTF]		=3D "PQ inv_EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA22_INV_EOTF]	=3D "Gamma 2.2 inv_EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA24_INV_EOTF]	=3D "Gamma 2.4 inv_EOTF",
-> +	[AMDGPU_TRANSFER_FUNCTION_GAMMA26_INV_EOTF]	=3D "Gamma 2.6 inv_EOTF",
->  };
-> =20
-> +static const u32 amdgpu_eotf =3D
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_SRGB_EOTF) |
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_BT709_EOTF) |
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_PQ_EOTF) |
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA22_EOTF) |
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA24_EOTF) |
-> +	BIT(AMDGPU_TRANSFER_FUNCTION_GAMMA26_EOTF);
-> +
-> +static struct drm_property *
-> +amdgpu_create_tf_property(struct drm_device *dev,
-> +			  const char *name,
-> +			  u32 supported_tf)
-> +{
-> +	u32 transfer_functions =3D supported_tf |
-> +				 BIT(AMDGPU_TRANSFER_FUNCTION_DEFAULT) |
-> +				 BIT(AMDGPU_TRANSFER_FUNCTION_LINEAR) |
-> +				 BIT(AMDGPU_TRANSFER_FUNCTION_UNITY);
-> +	struct drm_prop_enum_list enum_list[AMDGPU_TRANSFER_FUNCTION_COUNT];
-> +	int i, len;
-> +
-> +	len =3D 0;
-> +	for (i =3D 0; i < AMDGPU_TRANSFER_FUNCTION_COUNT; i++) {
-> +		if ((transfer_functions & BIT(i)) =3D=3D 0)
-> +			continue;
-> +
-> +		enum_list[len].type =3D i;
-> +		enum_list[len].name =3D amdgpu_transfer_function_names[i];
-> +		len++;
-> +	}
-> +
-> +	return drm_property_create_enum(dev, DRM_MODE_PROP_ENUM,
-> +					name, enum_list, len);
-> +}
-> +
->  int
->  amdgpu_dm_create_color_properties(struct amdgpu_device *adev)
->  {
-> @@ -116,11 +157,9 @@ amdgpu_dm_create_color_properties(struct amdgpu_devi=
-ce *adev)
->  		return -ENOMEM;
->  	adev->mode_info.plane_degamma_lut_size_property =3D prop;
-> =20
-> -	prop =3D drm_property_create_enum(adev_to_drm(adev),
-> -					DRM_MODE_PROP_ENUM,
-> -					"AMD_PLANE_DEGAMMA_TF",
-> -					amdgpu_transfer_function_enum_list,
-> -					ARRAY_SIZE(amdgpu_transfer_function_enum_list));
-> +	prop =3D amdgpu_create_tf_property(adev_to_drm(adev),
-> +					 "AMD_PLANE_DEGAMMA_TF",
-> +					 amdgpu_eotf);
->  	if (!prop)
->  		return -ENOMEM;
->  	adev->mode_info.plane_degamma_tf_property =3D prop;
-
-
---Sig_/PZG.R8OI8.zo.YkIvbKeWBU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmTkldIACgkQI1/ltBGq
-qqeZHBAAggmhp9b3YkDDkS5T4pQcYvtaav3vbIiRwMCOVugngwZHyJGQu+C98kul
-0SZgGPij759vtde+yShP3FMlaWC9q+Hq+MxFONFXQCfy/blJ4PT8R7lxkha2S9/A
-cwy9s9f4SoICFFDLhXC9PBlE6rmLtBXast0uCDIaKunhgvuoMbFGn0X37by67kf4
-27f3CKSzoZbwffBT5IiIqJSCzAps4T04Jn3GqhcBF+s0ANqOtU07xf5r7w9Tdbdf
-hvW9YMGk0jGlgtLHdmWBlvQcb08ZQBPaMwCGwaNdT35W+5QmkJV1ehfm8OU7p2vu
-gndToMgf6Wdm8LAKHgq9FhOBGFCZ0wQGIROaHGRW3xu7/f84QM8k6TwXLeNd4dQV
-IBXi6eY+wR14mA4EjiHAs5fjqYiHw/AI4TIMLr+PwoO5XeSMwTTzdjjOTk60MUft
-hcS6MoqN85wOC7JIgG2l6YFO3SLT1QVhA80WL9pQis1JNlADmtS6VhchVIQXJxtN
-0ucedOr8lOWzrDQsSbreyJyayRJCojjmGlUck2YzkfVwDCm/nTuF63qACZWk/nbW
-1fmfRla4UNf6ZB3zFTaEsdcCtGXHEVMs/goF8PVuLZ6Fvs/OPGCxY7i8D5+rQJv7
-3cRFuuIwYnY28FZ8PUgxtC4a5WltxXejasdA3GJ91nl9us1mLMc=
-=z/pU
------END PGP SIGNATURE-----
-
---Sig_/PZG.R8OI8.zo.YkIvbKeWBU--
