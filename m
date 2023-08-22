@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C6F783ECB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47794783EC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbjHVLbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S234744AbjHVLbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234749AbjHVLbE (ORCPT
+        with ESMTP id S234732AbjHVLbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:31:04 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ACACD2
+        Tue, 22 Aug 2023 07:31:02 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F57CD4
         for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 04:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
         s=smtpout1; t=1692703859;
-        bh=KkLV16+WkRX4ihKG1MjBEkAMOPnIqDOadaG9tU3jWvs=;
+        bh=v8MyPMO4Jmb5HBQwko1EVELi/LKGqwIlMqsnHcrxHJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ka3F30c7TJBavJcFaJoKngSLoAnnCWKn8YCFdzT1KAHqG2uk89jM3qgWiwmSg4bKF
-         UOhgR97ItliDUlvw/PWPl9MFMLsFos9w2NskeetwbqE30+CV5xETG5u2RwJwhfRIwM
-         TcIxfap1idsc4mf+iCezv2b6RUxPZpqVELWpZs86XBbBtqFsw20I+qiAVIFTqAbhLb
-         63nS7lWKlcDXdgfxKbNhnqIxz0I7Y5HXXLtt5wzu6JaFHYjm+TUDTqr3BpN3ZpbD/f
-         JDAPHX9l0HqcjWXCRWW1n2LPmfU78Hn7idzxBUETkZrOsp+bcJ8c/JGNXInoBhyXvJ
-         qiTW1F0JMoZRA==
+        b=LYhtNoBGAEy/YK6hmXvzCJeC8gcCB5epdPYJ/Id5AXi0n+oX60faMWuceYgh8vy2P
+         bG/EpqI1KlHejo2XDGXzOTcZ/a9/RV4j7irK5WAHNS2gMAGOdywy+taEbYBFgDRVvM
+         5SeHoXXwXZQ5H49rIsWHI1qdiTOI7GQ7DOFf+5hEsMw1Kneq2R40ntkCCpuA+3lrEw
+         bDY9S19odVwbfF298AFgCwF2Gr2OBcnufolaglnOPGnSstBKl+7+YsiwslLR65/Y63
+         VqtXEjMy8lpKZxESp3O7R5hqTIJ1h0FCTTxVNWiXUu70iKeth2k2zZa9L6CSJJBkQN
+         6KEImpbVTrW8A==
 Received: from thinkos.home (unknown [142.120.205.109])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RVRxH3H5dz1M2L;
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RVRxH4qKpz1M2M;
         Tue, 22 Aug 2023 07:30:59 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Peter Zijlstra <peterz@infradead.org>
@@ -42,27 +42,38 @@ Cc:     linux-kernel@vger.kernel.org,
         Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
         Aaron Lu <aaron.lu@intel.com>,
         Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
-Subject: [RFC PATCH v3 1/3] sched: Rename cpus_share_cache to cpus_share_llc
-Date:   Tue, 22 Aug 2023 07:31:31 -0400
-Message-Id: <20230822113133.643238-2-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH v3 2/3] sched: Introduce cpus_share_l2c
+Date:   Tue, 22 Aug 2023 07:31:32 -0400
+Message-Id: <20230822113133.643238-3-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
 References: <20230822113133.643238-1-mathieu.desnoyers@efficios.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for introducing cpus_share_l2c, rename cpus_share_cache
-to cpus_share_llc, to make it clear that it specifically groups CPUs by
-LLC.
+Introduce cpus_share_l2c to allow querying whether two logical CPUs
+share a common L2 cache.
 
+Considering a system like the AMD EPYC 9654 96-Core Processor, the L1
+cache has a latency of 4-5 cycles, the L2 cache has a latency of at
+least 14ns, whereas the L3 cache has a latency of 50ns [1]. Compared to
+this, I measured the RAM accesses to a latency around 120ns on my
+system [2]. So L3 really is only 2.4x faster than RAM accesses.
+Therefore, with this relatively slow access speed compared to L2, the
+scheduler will benefit from only considering CPUs sharing an L2 cache
+for the purpose of using remote runqueue locking rather than queued
+wakeups.
+
+Link: https://en.wikichip.org/wiki/amd/microarchitectures/zen_4 [1]
+Link: https://github.com/ChipsandCheese/MemoryLatencyTest [2]
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -78,123 +89,139 @@ Cc: Aaron Lu <aaron.lu@intel.com>
 Cc: Julien Desfossez <jdesfossez@digitalocean.com>
 Cc: x86@kernel.org
 ---
- block/blk-mq.c                 | 2 +-
- include/linux/sched/topology.h | 4 ++--
- kernel/sched/core.c            | 4 ++--
- kernel/sched/fair.c            | 8 ++++----
- kernel/sched/topology.c        | 2 +-
- 5 files changed, 10 insertions(+), 10 deletions(-)
+Changes since v1:
+- Fix l2c id for configurations where L2 have a single logical CPU:
+  use TOPOLOGY_CLUSTER_SYSFS to find out whether topology cluster is
+  implemented or if LLC should be used as fallback.
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index b9f454613989..ed1457ca2c6d 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1136,7 +1136,7 @@ static inline bool blk_mq_complete_need_ipi(struct request *rq)
- 	/* same CPU or cache domain?  Complete locally */
- 	if (cpu == rq->mq_ctx->cpu ||
- 	    (!test_bit(QUEUE_FLAG_SAME_FORCE, &rq->q->queue_flags) &&
--	     cpus_share_cache(cpu, rq->mq_ctx->cpu)))
-+	     cpus_share_llc(cpu, rq->mq_ctx->cpu)))
- 		return false;
- 
- 	/* don't try to IPI to an offline CPU */
+Changes since v2:
+- Reverse order of cpu_get_l2c_info() l2c_id and l2c_size output
+  arguments to match the caller.
+---
+ include/linux/sched/topology.h |  6 ++++++
+ kernel/sched/core.c            |  8 ++++++++
+ kernel/sched/sched.h           |  2 ++
+ kernel/sched/topology.c        | 32 +++++++++++++++++++++++++++++---
+ 4 files changed, 45 insertions(+), 3 deletions(-)
+
 diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index 816df6cc444e..7f9331f71260 100644
+index 7f9331f71260..c5fdee188bea 100644
 --- a/include/linux/sched/topology.h
 +++ b/include/linux/sched/topology.h
-@@ -178,7 +178,7 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+@@ -178,6 +178,7 @@ extern void partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
  cpumask_var_t *alloc_sched_domains(unsigned int ndoms);
  void free_sched_domains(cpumask_var_t doms[], unsigned int ndoms);
  
--bool cpus_share_cache(int this_cpu, int that_cpu);
-+bool cpus_share_llc(int this_cpu, int that_cpu);
++bool cpus_share_l2c(int this_cpu, int that_cpu);
+ bool cpus_share_llc(int this_cpu, int that_cpu);
  
  typedef const struct cpumask *(*sched_domain_mask_f)(int cpu);
- typedef int (*sched_domain_flags_f)(void);
-@@ -227,7 +227,7 @@ partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+@@ -227,6 +228,11 @@ partition_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
  {
  }
  
--static inline bool cpus_share_cache(int this_cpu, int that_cpu)
-+static inline bool cpus_share_llc(int this_cpu, int that_cpu)
++static inline bool cpus_share_l2c(int this_cpu, int that_cpu)
++{
++	return true;
++}
++
+ static inline bool cpus_share_llc(int this_cpu, int that_cpu)
  {
  	return true;
- }
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a68d1276bab0..d096ce815099 100644
+index d096ce815099..11e60a69ae31 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -3904,7 +3904,7 @@ void wake_up_if_idle(int cpu)
+@@ -3904,6 +3904,14 @@ void wake_up_if_idle(int cpu)
  	rcu_read_unlock();
  }
  
--bool cpus_share_cache(int this_cpu, int that_cpu)
-+bool cpus_share_llc(int this_cpu, int that_cpu)
++bool cpus_share_l2c(int this_cpu, int that_cpu)
++{
++	if (this_cpu == that_cpu)
++		return true;
++
++	return per_cpu(sd_l2c_id, this_cpu) == per_cpu(sd_l2c_id, that_cpu);
++}
++
+ bool cpus_share_llc(int this_cpu, int that_cpu)
  {
  	if (this_cpu == that_cpu)
- 		return true;
-@@ -3929,7 +3929,7 @@ static inline bool ttwu_queue_cond(struct task_struct *p, int cpu)
- 	 * If the CPU does not share cache, then queue the task on the
- 	 * remote rqs wakelist to avoid accessing remote data.
- 	 */
--	if (!cpus_share_cache(smp_processor_id(), cpu))
-+	if (!cpus_share_llc(smp_processor_id(), cpu))
- 		return true;
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 81ac605b9cd5..d93543db214c 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1828,6 +1828,8 @@ static inline struct sched_domain *lowest_flag_domain(int cpu, int flag)
+ 	return sd;
+ }
  
- 	if (cpu == smp_processor_id())
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4da5f3541762..680bbe0c7d7a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6626,7 +6626,7 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
- 	 * a cpufreq perspective, it's better to have higher utilisation
- 	 * on one CPU.
- 	 */
--	if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
-+	if (available_idle_cpu(this_cpu) && cpus_share_llc(this_cpu, prev_cpu))
- 		return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
- 
- 	if (sync && cpu_rq(this_cpu)->nr_running == 1)
-@@ -7146,7 +7146,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	/*
- 	 * If the previous CPU is cache affine and idle, don't be stupid:
- 	 */
--	if (prev != target && cpus_share_cache(prev, target) &&
-+	if (prev != target && cpus_share_llc(prev, target) &&
- 	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
- 		return prev;
-@@ -7172,7 +7172,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	p->recent_used_cpu = prev;
- 	if (recent_used_cpu != prev &&
- 	    recent_used_cpu != target &&
--	    cpus_share_cache(recent_used_cpu, target) &&
-+	    cpus_share_llc(recent_used_cpu, target) &&
- 	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
- 	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, recent_used_cpu)) {
-@@ -7206,7 +7206,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (sched_smt_active()) {
- 		has_idle_core = test_idle_cores(target);
- 
--		if (!has_idle_core && cpus_share_cache(prev, target)) {
-+		if (!has_idle_core && cpus_share_llc(prev, target)) {
- 			i = select_idle_smt(p, prev);
- 			if ((unsigned int)i < nr_cpumask_bits)
- 				return i;
++DECLARE_PER_CPU(int, sd_l2c_size);
++DECLARE_PER_CPU(int, sd_l2c_id);
+ DECLARE_PER_CPU(struct sched_domain __rcu *, sd_llc);
+ DECLARE_PER_CPU(int, sd_llc_size);
+ DECLARE_PER_CPU(int, sd_llc_id);
 diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 6682535e37c8..1ae2a0a1115a 100644
+index 1ae2a0a1115a..fadb66edcf5e 100644
 --- a/kernel/sched/topology.c
 +++ b/kernel/sched/topology.c
-@@ -661,7 +661,7 @@ static void destroy_sched_domains(struct sched_domain *sd)
+@@ -661,8 +661,11 @@ static void destroy_sched_domains(struct sched_domain *sd)
   *
   * Also keep a unique ID per domain (we use the first CPU number in
   * the cpumask of the domain), this allows us to quickly tell if
-- * two CPUs are in the same cache domain, see cpus_share_cache().
-+ * two CPUs are in the same cache domain, see cpus_share_llc().
+- * two CPUs are in the same cache domain, see cpus_share_llc().
++ * two CPUs are in the same cache domain, see cpus_share_l2c() and
++ * cpus_share_llc().
   */
++DEFINE_PER_CPU(int, sd_l2c_size);
++DEFINE_PER_CPU(int, sd_l2c_id);
  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_llc);
  DEFINE_PER_CPU(int, sd_llc_size);
+ DEFINE_PER_CPU(int, sd_llc_id);
+@@ -672,12 +675,27 @@ DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+ DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_cpucapacity);
+ DEFINE_STATIC_KEY_FALSE(sched_asym_cpucapacity);
+ 
++#ifdef TOPOLOGY_CLUSTER_SYSFS
++static int cpu_get_l2c_info(int cpu, int *l2c_size, int *l2c_id)
++{
++	const struct cpumask *cluster_mask = topology_cluster_cpumask(cpu);
++
++	*l2c_size = cpumask_weight(cluster_mask);
++	*l2c_id = cpumask_first(cluster_mask);
++	return 0;
++}
++#else
++static int cpu_get_l2c_info(int cpu, int *l2c_size, int *l2c_id)
++{
++	return -1;
++}
++#endif
++
+ static void update_top_cache_domain(int cpu)
+ {
+ 	struct sched_domain_shared *sds = NULL;
+ 	struct sched_domain *sd;
+-	int id = cpu;
+-	int size = 1;
++	int id = cpu, size = 1, l2c_id, l2c_size;
+ 
+ 	sd = highest_flag_domain(cpu, SD_SHARE_PKG_RESOURCES);
+ 	if (sd) {
+@@ -686,6 +704,14 @@ static void update_top_cache_domain(int cpu)
+ 		sds = sd->shared;
+ 	}
+ 
++	if (cpu_get_l2c_info(cpu, &l2c_size, &l2c_id)) {
++		/* Fallback on using LLC. */
++		l2c_size = size;
++		l2c_id = id;
++	}
++	per_cpu(sd_l2c_size, cpu) = l2c_size;
++	per_cpu(sd_l2c_id, cpu) = l2c_id;
++
+ 	rcu_assign_pointer(per_cpu(sd_llc, cpu), sd);
+ 	per_cpu(sd_llc_size, cpu) = size;
+ 	per_cpu(sd_llc_id, cpu) = id;
 -- 
 2.39.2
 
