@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 126297846FA
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD267846FB
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237748AbjHVQUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S237727AbjHVQUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237713AbjHVQU0 (ORCPT
+        with ESMTP id S237724AbjHVQU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Aug 2023 12:20:26 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9A5CF0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:20:12 -0700 (PDT)
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7431E4E
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:20:14 -0700 (PDT)
 Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id BB48F396B;
-        Tue, 22 Aug 2023 18:18:52 +0200 (CEST)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D9F0336B0;
+        Tue, 22 Aug 2023 18:18:53 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1692721133;
-        bh=dfvDuc3+OJeVTyiiwUXOv9K+PGAuzxd6tO3qEoOctDw=;
+        s=mail; t=1692721134;
+        bh=UQfbU8kmQ1NMbV6210va0bTKM4DlJntc4Wr7ZDriq80=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=X9hYlW9Xjwzwq7eUrYJUdv2nx73lICt9qbFKSviUXdrtQxWkZRWlhUU7eN6uTvs8q
-         Jo9rGSiDCNFP64aFiWBJrr82/y9F4RmOPh2n7r1UvlcufWbq1tK4p+g0Dn2mr0NgHJ
-         I5iCwglI204JlZsZVfqx4gCHTZMStNAL7dSoHFlY=
+        b=doP/yVgRkwP/1Jbnzf0ctCJUKWITMmRBv7kjRWotm8NXjLrbuyL+URW5F1p8eM1aI
+         5svFvlDinzCzjnJ49XZpnkwqnOK8k3l5EYxATv6uH0RXiyVoUjjtq9PUgsN5hBgPSM
+         UtNlfJ9ftw1ZaCIA+iX6UoY+0P19RHdPtevcitS4=
 From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Tue, 22 Aug 2023 19:19:42 +0300
-Subject: [PATCH v3 09/12] drm/bridge: tc358768: Rename dsibclk to hsbyteclk
+Date:   Tue, 22 Aug 2023 19:19:43 +0300
+Subject: [PATCH v3 10/12] drm/bridge: tc358768: Clean up clock period code
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230822-tc358768-v3-9-c82405dac0c1@ideasonboard.com>
+Message-Id: <20230822-tc358768-v3-10-c82405dac0c1@ideasonboard.com>
 References: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
 In-Reply-To: <20230822-tc358768-v3-0-c82405dac0c1@ideasonboard.com>
 To:     Andrzej Hajda <andrzej.hajda@intel.com>,
@@ -49,203 +49,189 @@ Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         Aradhya Bhatia <a-bhatia1@ti.com>,
         Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7362;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6559;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=dfvDuc3+OJeVTyiiwUXOv9K+PGAuzxd6tO3qEoOctDw=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk5OAt7iW4LNztF4KjC75OeOjaYehOdMGnRvedl
- KUHh+2ZEfqJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZOTgLQAKCRD6PaqMvJYe
- 9Q2ZD/49qnm8OXtFtT5rjgwLRzX9ldGBSxmibb655ooYOEcNpS34mbF9gPQXgJDNFY67/Cz7bQ9
- 6ou77Zy6+WedlkwwCPP/GJgzO0kQ6+7vyIRaL1QvURNgYwbCItvZE/phhsk0x4eK9D9NoeUsvqD
- NBd5Ejm+BZ+RHhTIbA7OxhHAU8L9ZuCszLy4IoTAh7Hu6yX/VNJyiNYePeY3OfihdW+xkjhUn4j
- QjnCfsr6A7ahZnkKrX9OcMgeX0uwEpgqIw2iVHk3PK1pc7p5wT1wWwIOg4fhBTByYHFsU+/BKTf
- eh6R5TnXhJcbWS4WGEdgbuapeS5OEF4ppNeVSKJqV0zrLR23aidy2WCoM273KhDAWu942cgxVOG
- KRLBO6IzCfbir+cQ9PvfndMtIoJFQkMGVCGsuU/z6iAGCpZdqIBBtZdZxGTXwFaGW/EulCg5hoJ
- h8aGstcfFQnxOBhZh5BdbjBPMu6HGPGs9URqSuJ9kDfwuG2bXrltdvqnp9zkJ4E9Y+3s/PE5jIX
- 6Czd98xnOpsvheZaHex97YSOq/oGJwk8VzWmu4ayugBrua+cnScPfd1zMQ0I52f2J0OETU8wGWv
- bcb22jSipHERvhL/lvxAe6kVr9iuOzOIFwOcfdf0p6IGpPxn8x4rNuZwFc7uHyWZ+VXeYNHUkbn
- NjVkkJs/kBa/oaQ==
+ bh=UQfbU8kmQ1NMbV6210va0bTKM4DlJntc4Wr7ZDriq80=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBk5OAuN8ne0D1+aW0NtJ5yYT7ESoXj2mJwaDJ7K
+ lg0E5jwV4yJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZOTgLgAKCRD6PaqMvJYe
+ 9casD/9QRxPXhZMK2eSaLMw26lLfc4RH2Y3zT2n6Xbfdvq9k7Omcq4SHH8UuxQ2Ra5PNNpbablM
+ g089d9QUrKHWR8I2mi+sbYNvnl2/bn4R/zfpKfAVXorF6PjM/XOGYrV9SlNhX20gc0HUNMyqm3o
+ xH6rjoYBMXpBpCE8gKfXU7A4G6/E2myRhm4U4TheohUfzahgJBgKNuFSHvScz0EaxJSCaFY8qnH
+ 2ZEDN0rF+XqmIQlbnlZYB7T2JHxgqpjmhWH8BZz9JbBBzcowevFWp0TL/gmJ41AuXDG9NfsalAc
+ LFON6dBDhQMeZO89XFjTs91TYOo1heouXhGYD0YVFUALVd/a2pxg+4c5JoPijEyjjWQ2fmi11fz
+ VMupbDy/s7KCilF3OrjpaV8shfIybHm5ehPenYvqd8Mh6rw2U653cZ/1CPzy+SCBRrtdw/J56/O
+ z23q2pHfseE+kr7dJs7Daltef7jackQloiGPvy7eZTOfNrrx2+puzkSNRoCfcg1jP3jY/fXiwvb
+ vK4RhyS6hDjtNLAZt9XXmU/R9BVKEpOPTzM4Fv6iJom3GIZg/66vqt2qTX7ZivDrUle430qauwC
+ vanQaTNHNuWSzZihSwGRq/S21nobCNVVHQsXVYaF8x7hK0EaQaXY5+0rYk8KdGrcckuquM4Gfyw
+ mhLfEJNqI6FsZGg==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Toshiba documentation talks about HSByteClk when referring to the
-DSI HS byte clock, whereas the driver uses 'dsibclk' name. Also, in a
-few places the driver calculates the byte clock from the DSI clock, even
-if the byte clock is already available in a variable.
+The driver defines TC358768_PRECISION as 1000, and uses "nsk" to refer
+to clock periods. The original author does not remember where all this
+came from. Effectively the driver is using picoseconds as the unit for
+clock periods, yet referring to them by "nsk".
 
-To align the driver with the documentation, change the 'dsibclk'
-variable to 'hsbyteclk'. This also make it easier to visually separate
-'dsibclk' and 'dsiclk' variables.
+Clean this up by just saying the periods are in picoseconds.
 
 Reviewed-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/gpu/drm/bridge/tc358768.c | 48 +++++++++++++++++++--------------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+ drivers/gpu/drm/bridge/tc358768.c | 60 +++++++++++++++++++--------------------
+ 1 file changed, 29 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index 6297d28250e9..0f117d673b14 100644
+index 0f117d673b14..9ce8d120b50c 100644
 --- a/drivers/gpu/drm/bridge/tc358768.c
 +++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -604,7 +604,7 @@ static int tc358768_setup_pll(struct tc358768_priv *priv,
+@@ -15,6 +15,7 @@
+ #include <linux/regmap.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
++#include <linux/units.h>
  
- 	dev_dbg(priv->dev, "PLL: refclk %lu, fbd %u, prd %u, frs %u\n",
- 		clk_get_rate(priv->refclk), fbd, prd, frs);
--	dev_dbg(priv->dev, "PLL: pll_clk: %u, DSIClk %u, DSIByteClk %u\n",
-+	dev_dbg(priv->dev, "PLL: pll_clk: %u, DSIClk %u, HSByteClk %u\n",
- 		priv->dsiclk * 2, priv->dsiclk, priv->dsiclk / 4);
- 	dev_dbg(priv->dev, "PLL: pclk %u (panel: %u)\n",
- 		tc358768_pll_to_pclk(priv, priv->dsiclk * 2),
-@@ -646,8 +646,8 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_drv.h>
+@@ -627,15 +628,14 @@ static int tc358768_setup_pll(struct tc358768_priv *priv,
+ 	return tc358768_clear_error(priv);
+ }
+ 
+-#define TC358768_PRECISION	1000
+-static u32 tc358768_ns_to_cnt(u32 ns, u32 period_nsk)
++static u32 tc358768_ns_to_cnt(u32 ns, u32 period_ps)
+ {
+-	return (ns * TC358768_PRECISION + period_nsk) / period_nsk;
++	return (ns * 1000 + period_ps) / period_ps;
+ }
+ 
+-static u32 tc358768_to_ns(u32 nsk)
++static u32 tc358768_ps_to_ns(u32 ps)
+ {
+-	return (nsk / TC358768_PRECISION);
++	return ps / 1000;
+ }
+ 
+ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+@@ -646,7 +646,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
  	u32 val, val2, lptxcnt, hact, data_type;
  	s32 raw_val;
  	const struct drm_display_mode *mode;
--	u32 dsibclk_nsk, dsiclk_nsk, ui_nsk;
--	u32 dsiclk, dsibclk, video_start;
-+	u32 hsbyteclk_nsk, dsiclk_nsk, ui_nsk;
-+	u32 dsiclk, hsbyteclk, video_start;
+-	u32 hsbyteclk_nsk, dsiclk_nsk, ui_nsk;
++	u32 hsbyteclk_ps, dsiclk_ps, ui_ps;
+ 	u32 dsiclk, hsbyteclk, video_start;
  	const u32 internal_delay = 40;
  	int ret, i;
- 	struct videomode vm;
-@@ -678,7 +678,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 	drm_display_mode_to_videomode(mode, &vm);
- 
- 	dsiclk = priv->dsiclk;
--	dsibclk = dsiclk / 4;
-+	hsbyteclk = dsiclk / 4;
- 
- 	/* Data Format Control Register */
- 	val = BIT(2) | BIT(1) | BIT(0); /* rdswap_en | dsitx_en | txdt_en */
-@@ -730,67 +730,67 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+@@ -730,67 +730,65 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
  		tc358768_write(priv, TC358768_D0W_CNTRL + i * 4, 0x0000);
  
  	/* DSI Timings */
--	dsibclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION,
--				  dsibclk);
-+	hsbyteclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION,
-+				  hsbyteclk);
- 	dsiclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION, dsiclk);
- 	ui_nsk = dsiclk_nsk / 2;
- 	dev_dbg(dev, "dsiclk_nsk: %u\n", dsiclk_nsk);
- 	dev_dbg(dev, "ui_nsk: %u\n", ui_nsk);
--	dev_dbg(dev, "dsibclk_nsk: %u\n", dsibclk_nsk);
-+	dev_dbg(dev, "hsbyteclk_nsk: %u\n", hsbyteclk_nsk);
+-	hsbyteclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION,
+-				  hsbyteclk);
+-	dsiclk_nsk = (u32)div_u64((u64)1000000000 * TC358768_PRECISION, dsiclk);
+-	ui_nsk = dsiclk_nsk / 2;
+-	dev_dbg(dev, "dsiclk_nsk: %u\n", dsiclk_nsk);
+-	dev_dbg(dev, "ui_nsk: %u\n", ui_nsk);
+-	dev_dbg(dev, "hsbyteclk_nsk: %u\n", hsbyteclk_nsk);
++	hsbyteclk_ps = (u32)div_u64(PICO, hsbyteclk);
++	dsiclk_ps = (u32)div_u64(PICO, dsiclk);
++	ui_ps = dsiclk_ps / 2;
++	dev_dbg(dev, "dsiclk: %u ps, ui %u ps, hsbyteclk %u ps\n", dsiclk_ps,
++		ui_ps, hsbyteclk_ps);
  
  	/* LP11 > 100us for D-PHY Rx Init */
--	val = tc358768_ns_to_cnt(100 * 1000, dsibclk_nsk) - 1;
-+	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_nsk) - 1;
+-	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_nsk) - 1;
++	val = tc358768_ns_to_cnt(100 * 1000, hsbyteclk_ps) - 1;
  	dev_dbg(dev, "LINEINITCNT: %u\n", val);
  	tc358768_write(priv, TC358768_LINEINITCNT, val);
  
  	/* LPTimeCnt > 50ns */
--	val = tc358768_ns_to_cnt(50, dsibclk_nsk) - 1;
-+	val = tc358768_ns_to_cnt(50, hsbyteclk_nsk) - 1;
+-	val = tc358768_ns_to_cnt(50, hsbyteclk_nsk) - 1;
++	val = tc358768_ns_to_cnt(50, hsbyteclk_ps) - 1;
  	lptxcnt = val;
  	dev_dbg(dev, "LPTXTIMECNT: %u\n", val);
  	tc358768_write(priv, TC358768_LPTXTIMECNT, val);
  
  	/* 38ns < TCLK_PREPARE < 95ns */
--	val = tc358768_ns_to_cnt(65, dsibclk_nsk) - 1;
-+	val = tc358768_ns_to_cnt(65, hsbyteclk_nsk) - 1;
+-	val = tc358768_ns_to_cnt(65, hsbyteclk_nsk) - 1;
++	val = tc358768_ns_to_cnt(65, hsbyteclk_ps) - 1;
  	dev_dbg(dev, "TCLK_PREPARECNT %u\n", val);
  	/* TCLK_PREPARE + TCLK_ZERO > 300ns */
- 	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
--				  dsibclk_nsk) - 2;
-+				  hsbyteclk_nsk) - 2;
+-	val2 = tc358768_ns_to_cnt(300 - tc358768_to_ns(2 * ui_nsk),
+-				  hsbyteclk_nsk) - 2;
++	val2 = tc358768_ns_to_cnt(300 - tc358768_ps_to_ns(2 * ui_ps),
++				  hsbyteclk_ps) - 2;
  	dev_dbg(dev, "TCLK_ZEROCNT %u\n", val2);
  	val |= val2 << 8;
  	tc358768_write(priv, TC358768_TCLK_HEADERCNT, val);
  
  	/* TCLK_TRAIL > 60ns AND TEOT <= 105 ns + 12*UI */
--	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), dsibclk_nsk) - 5;
-+	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), hsbyteclk_nsk) - 5;
+-	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(2 * ui_nsk), hsbyteclk_nsk) - 5;
++	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(2 * ui_ps), hsbyteclk_ps) - 5;
  	val = clamp(raw_val, 0, 127);
  	dev_dbg(dev, "TCLK_TRAILCNT: %u\n", val);
  	tc358768_write(priv, TC358768_TCLK_TRAILCNT, val);
  
  	/* 40ns + 4*UI < THS_PREPARE < 85ns + 6*UI */
- 	val = 50 + tc358768_to_ns(4 * ui_nsk);
--	val = tc358768_ns_to_cnt(val, dsibclk_nsk) - 1;
-+	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) - 1;
+-	val = 50 + tc358768_to_ns(4 * ui_nsk);
+-	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) - 1;
++	val = 50 + tc358768_ps_to_ns(4 * ui_ps);
++	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) - 1;
  	dev_dbg(dev, "THS_PREPARECNT %u\n", val);
  	/* THS_PREPARE + THS_ZERO > 145ns + 10*UI */
--	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), dsibclk_nsk) - 10;
-+	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), hsbyteclk_nsk) - 10;
+-	raw_val = tc358768_ns_to_cnt(145 - tc358768_to_ns(3 * ui_nsk), hsbyteclk_nsk) - 10;
++	raw_val = tc358768_ns_to_cnt(145 - tc358768_ps_to_ns(3 * ui_ps), hsbyteclk_ps) - 10;
  	val2 = clamp(raw_val, 0, 127);
  	dev_dbg(dev, "THS_ZEROCNT %u\n", val2);
  	val |= val2 << 8;
  	tc358768_write(priv, TC358768_THS_HEADERCNT, val);
  
  	/* TWAKEUP > 1ms in lptxcnt steps */
--	val = tc358768_ns_to_cnt(1020000, dsibclk_nsk);
-+	val = tc358768_ns_to_cnt(1020000, hsbyteclk_nsk);
+-	val = tc358768_ns_to_cnt(1020000, hsbyteclk_nsk);
++	val = tc358768_ns_to_cnt(1020000, hsbyteclk_ps);
  	val = val / (lptxcnt + 1) - 1;
  	dev_dbg(dev, "TWAKEUP: %u\n", val);
  	tc358768_write(priv, TC358768_TWAKEUP, val);
  
  	/* TCLK_POSTCNT > 60ns + 52*UI */
- 	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
--				 dsibclk_nsk) - 3;
-+				 hsbyteclk_nsk) - 3;
+-	val = tc358768_ns_to_cnt(60 + tc358768_to_ns(52 * ui_nsk),
+-				 hsbyteclk_nsk) - 3;
++	val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(52 * ui_ps),
++				 hsbyteclk_ps) - 3;
  	dev_dbg(dev, "TCLK_POSTCNT: %u\n", val);
  	tc358768_write(priv, TC358768_TCLK_POSTCNT, val);
  
  	/* max(60ns + 4*UI, 8*UI) < THS_TRAILCNT < 105ns + 12*UI */
- 	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
--				     dsibclk_nsk) - 4;
-+				     hsbyteclk_nsk) - 4;
+-	raw_val = tc358768_ns_to_cnt(60 + tc358768_to_ns(18 * ui_nsk),
+-				     hsbyteclk_nsk) - 4;
++	raw_val = tc358768_ns_to_cnt(60 + tc358768_ps_to_ns(18 * ui_ps),
++				     hsbyteclk_ps) - 4;
  	val = clamp(raw_val, 0, 15);
  	dev_dbg(dev, "THS_TRAILCNT: %u\n", val);
  	tc358768_write(priv, TC358768_THS_TRAILCNT, val);
-@@ -804,11 +804,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
+@@ -804,11 +802,11 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
  		       (mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) ? 0 : BIT(0));
  
  	/* TXTAGOCNT[26:16] RXTASURECNT[10:0] */
--	val = tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk * 4);
--	val = tc358768_ns_to_cnt(val, dsibclk_nsk) / 4 - 1;
-+	val = tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk * 4);
-+	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) / 4 - 1;
+-	val = tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk * 4);
+-	val = tc358768_ns_to_cnt(val, hsbyteclk_nsk) / 4 - 1;
++	val = tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps * 4);
++	val = tc358768_ns_to_cnt(val, hsbyteclk_ps) / 4 - 1;
  	dev_dbg(dev, "TXTAGOCNT: %u\n", val);
--	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * dsibclk_nsk),
--				  dsibclk_nsk) - 2;
-+	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk),
-+				  hsbyteclk_nsk) - 2;
+-	val2 = tc358768_ns_to_cnt(tc358768_to_ns((lptxcnt + 1) * hsbyteclk_nsk),
+-				  hsbyteclk_nsk) - 2;
++	val2 = tc358768_ns_to_cnt(tc358768_ps_to_ns((lptxcnt + 1) * hsbyteclk_ps),
++				  hsbyteclk_ps) - 2;
  	dev_dbg(dev, "RXTASURECNT: %u\n", val2);
  	val = val << 16 | val2;
  	tc358768_write(priv, TC358768_BTACNTRL1, val);
-@@ -831,13 +831,13 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 
- 		/* hsw * byteclk * ndl / pclk */
- 		val = (u32)div_u64(vm.hsync_len *
--				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
-+				   (u64)hsbyteclk * priv->dsi_lanes,
- 				   vm.pixelclock);
- 		tc358768_write(priv, TC358768_DSI_HSW, val);
- 
- 		/* hbp * byteclk * ndl / pclk */
- 		val = (u32)div_u64(vm.hback_porch *
--				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
-+				   (u64)hsbyteclk * priv->dsi_lanes,
- 				   vm.pixelclock);
- 		tc358768_write(priv, TC358768_DSI_HBPR, val);
- 	} else {
-@@ -856,7 +856,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
- 
- 		/* (hsw + hbp) * byteclk * ndl / pclk */
- 		val = (u32)div_u64((vm.hsync_len + vm.hback_porch) *
--				   ((u64)priv->dsiclk / 4) * priv->dsi_lanes,
-+				   (u64)hsbyteclk * priv->dsi_lanes,
- 				   vm.pixelclock);
- 		tc358768_write(priv, TC358768_DSI_HSW, val);
- 
 
 -- 
 2.34.1
