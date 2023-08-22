@@ -2,142 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E66227838AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5500A7838AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 06:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232520AbjHVECl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 00:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
+        id S232495AbjHVEDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 00:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbjHVECe (ORCPT
+        with ESMTP id S231326AbjHVEDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 00:02:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D408187;
-        Mon, 21 Aug 2023 21:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692676952; x=1724212952;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Np9K9D7gW60gwdVKyUbkrixG4oCRBzuj6aPMVEF47M8=;
-  b=mFS5vNrA741qCw3t13VCFtBgOuMOpPfl4g5Ot3ZHJIOuB0WNvo9mIRh4
-   vL+qEIFY2lmOs/cuChlpKR3xRITnC+S6k3PccAs064JNnAUuOUTfQFqy4
-   fxrgYrbm/gmOBPFqMN//iEsAP5Sk+cmh2T+HGNKnBHqFFdoL4n1dMTtIE
-   6pHamg2QB+AF0gjZN45/ceWw7oA6isTX1oStumZHRCzXb72pRtKYaUadV
-   bmIIiiKYR7yRw+XRuOsCKwrNvoO6fH+6lVU8/2gMcOoB4UcZJxmh4h9Gk
-   L7nnhNALntMIrhj5aTWP2afc19+eB1Is1zDDEaXSN8FQZhIkVcZiwOoH2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="376506626"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="376506626"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 21:02:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="771211418"
-X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
-   d="scan'208";a="771211418"
-Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 21 Aug 2023 21:02:26 -0700
-Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYIb3-0001KN-2y;
-        Tue, 22 Aug 2023 04:02:25 +0000
-Date:   Tue, 22 Aug 2023 12:01:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kartik <kkartik@nvidia.com>, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, sumitg@nvidia.com, arnd@arndb.de,
-        pshete@nvidia.co, andriy.shevchenko@linux.intel.com,
-        digetx@gmail.com, petlozup@nvidia.com, windhl@126.com,
-        frank.li@vivo.com, robh@kernel.org, stefank@nvidia.com,
-        pdeschrijver@nvidia.com, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 1/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
-Message-ID: <202308221124.bP9Do9ir-lkp@intel.com>
-References: <20230818093028.7807-2-kkartik@nvidia.com>
+        Tue, 22 Aug 2023 00:03:15 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF57196;
+        Mon, 21 Aug 2023 21:03:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 350A062F3D;
+        Tue, 22 Aug 2023 04:03:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4DA7C433C8;
+        Tue, 22 Aug 2023 04:03:00 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        chenhuacai@kernel.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
+        stable@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V3] rcu: Update jiffies locally in rcu_cpu_stall_reset()
+Date:   Tue, 22 Aug 2023 12:02:48 +0800
+Message-Id: <20230822040248.329442-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230818093028.7807-2-kkartik@nvidia.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,HEXHASH_WORD,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kartik,
+The KGDB initial breakpoint gets an rcu stall warning after commit
+a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in
+rcu_cpu_stall_reset()").
 
-kernel test robot noticed the following build errors:
+[   53.452051] rcu: INFO: rcu_preempt self-detected stall on CPU
+[   53.487950] rcu:     3-...0: (1 ticks this GP) idle=0e2c/1/0x4000000000000000 softirq=375/375 fqs=8
+[   53.528243] rcu:     (t=12297 jiffies g=-995 q=1 ncpus=4)
+[   53.564840] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   53.603005] Hardware name: Loongson Loongson-3A5000-HV-7A2000-1w-V0.1-CRB/Loongson-LS3A5000-7A2000-1w-CRB-V1.21, BIOS Loongson-UDK2018-V2.0.05099-beta8 08
+[   53.682062] pc 9000000000332100 ra 90000000003320f4 tp 90000001000a0000 sp 90000001000a3710
+[   53.724934] a0 9000000001d4b488 a1 0000000000000000 a2 0000000000000001 a3 0000000000000000
+[   53.768179] a4 9000000001d526c8 a5 90000001000a38f0 a6 000000000000002c a7 0000000000000000
+[   53.810751] t0 00000000000002b0 t1 0000000000000004 t2 900000000131c9c0 t3 fffffffffffffffa
+[   53.853249] t4 0000000000000080 t5 90000001002ac190 t6 0000000000000004 t7 9000000001912d58
+[   53.895684] t8 0000000000000000 u0 90000000013141a0 s9 0000000000000028 s0 9000000001d512f0
+[   53.937633] s1 9000000001d51278 s2 90000001000a3798 s3 90000000019fc410 s4 9000000001d4b488
+[   53.979486] s5 9000000001d512f0 s6 90000000013141a0 s7 0000000000000078 s8 9000000001d4b450
+[   54.021175]    ra: 90000000003320f4 kgdb_cpu_enter+0x534/0x640
+[   54.060150]   ERA: 9000000000332100 kgdb_cpu_enter+0x540/0x640
+[   54.098347]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
+[   54.136621]  PRMD: 0000000c (PPLV0 +PIE +PWE)
+[   54.172192]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+[   54.207838]  ECFG: 00071c1c (LIE=2-4,10-12 VS=7)
+[   54.242503] ESTAT: 00000800 [INT] (IS=11 ECode=0 EsubCode=0)
+[   54.277996]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000-HV)
+[   54.313544] CPU: 3 PID: 1 Comm: swapper/0 Not tainted 6.5.0-rc2+ #4848
+[   54.430170] Stack : 0072617764726148 0000000000000000 9000000000223504 90000001000a0000
+[   54.472308]         9000000100073a90 9000000100073a98 0000000000000000 9000000100073bd8
+[   54.514413]         9000000100073bd0 9000000100073bd0 9000000100073a00 0000000000000001
+[   54.556018]         0000000000000001 9000000100073a98 99828271f24e961a 90000001002810c0
+[   54.596924]         0000000000000001 0000000000010003 0000000000000000 0000000000000001
+[   54.637115]         ffff8000337cdb80 0000000000000001 0000000006360000 900000000131c9c0
+[   54.677049]         0000000000000000 0000000000000000 90000000017b4c98 9000000001912000
+[   54.716394]         9000000001912f68 9000000001913000 9000000001912f70 00000000000002b0
+[   54.754880]         90000000014a8840 0000000000000000 900000000022351c 0000000000000000
+[   54.792372]         00000000000002b0 000000000000000c 0000000000000000 0000000000071c1c
+[   54.829302]         ...
+[   54.859163] Call Trace:
+[   54.859165] [<900000000022351c>] show_stack+0x5c/0x180
+[   54.918298] [<90000000012f6100>] dump_stack_lvl+0x60/0x88
+[   54.949251] [<90000000012dd5d8>] rcu_dump_cpu_stacks+0xf0/0x148
+[   54.981116] [<90000000002d2fb8>] rcu_sched_clock_irq+0xb78/0xe60
+[   55.012744] [<90000000002e47cc>] update_process_times+0x6c/0xc0
+[   55.044169] [<90000000002f65d4>] tick_sched_timer+0x54/0x100
+[   55.075488] [<90000000002e5174>] __hrtimer_run_queues+0x154/0x240
+[   55.107347] [<90000000002e6288>] hrtimer_interrupt+0x108/0x2a0
+[   55.139112] [<9000000000226418>] constant_timer_interrupt+0x38/0x60
+[   55.170749] [<90000000002b3010>] __handle_irq_event_percpu+0x50/0x160
+[   55.203141] [<90000000002b3138>] handle_irq_event_percpu+0x18/0x80
+[   55.235064] [<90000000002b9d54>] handle_percpu_irq+0x54/0xa0
+[   55.266241] [<90000000002b2168>] generic_handle_domain_irq+0x28/0x40
+[   55.298466] [<9000000000aba95c>] handle_cpu_irq+0x5c/0xa0
+[   55.329749] [<90000000012f7270>] handle_loongarch_irq+0x30/0x60
+[   55.361476] [<90000000012f733c>] do_vint+0x9c/0x100
+[   55.391737] [<9000000000332100>] kgdb_cpu_enter+0x540/0x640
+[   55.422440] [<9000000000332b64>] kgdb_handle_exception+0x104/0x180
+[   55.452911] [<9000000000232478>] kgdb_loongarch_notify+0x38/0xa0
+[   55.481964] [<900000000026b4d4>] notify_die+0x94/0x100
+[   55.509184] [<90000000012f685c>] do_bp+0x21c/0x340
+[   55.562475] [<90000000003315b8>] kgdb_compiled_break+0x0/0x28
+[   55.590319] [<9000000000332e80>] kgdb_register_io_module+0x160/0x1c0
+[   55.618901] [<9000000000c0f514>] configure_kgdboc+0x154/0x1c0
+[   55.647034] [<9000000000c0f5e0>] kgdboc_probe+0x60/0x80
+[   55.674647] [<9000000000c96da8>] platform_probe+0x68/0x100
+[   55.702613] [<9000000000c938e0>] really_probe+0xc0/0x340
+[   55.730528] [<9000000000c93be4>] __driver_probe_device+0x84/0x140
+[   55.759615] [<9000000000c93cdc>] driver_probe_device+0x3c/0x120
+[   55.787990] [<9000000000c93e8c>] __device_attach_driver+0xcc/0x160
+[   55.817145] [<9000000000c91290>] bus_for_each_drv+0x90/0x100
+[   55.845654] [<9000000000c94328>] __device_attach+0xa8/0x1a0
+[   55.874145] [<9000000000c925f0>] bus_probe_device+0xb0/0xe0
+[   55.902572] [<9000000000c8ec7c>] device_add+0x65c/0x860
+[   55.930635] [<9000000000c96704>] platform_device_add+0x124/0x2c0
+[   55.959669] [<9000000001452b38>] init_kgdboc+0x58/0xa0
+[   55.987677] [<900000000022015c>] do_one_initcall+0x7c/0x1e0
+[   56.016134] [<9000000001420f1c>] kernel_init_freeable+0x22c/0x2a0
+[   56.045128] [<90000000012f923c>] kernel_init+0x20/0x124
 
-[auto build test ERROR on tegra/for-next]
-[also build test ERROR on soc/for-next linus/master v6.5-rc7 next-20230821]
-[cannot apply to tegra-drm/drm/tegra/for-next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Currently rcu_cpu_stall_reset() set rcu_state.jiffies_stall to one check
+period later, i.e. jiffies + rcu_jiffies_till_stall_check(). But jiffies
+is only updated in the timer interrupt, so when kgdb_cpu_enter() begins
+to run there may already be nearly one rcu check period after jiffies.
+Since all interrupts are disabled during kgdb_cpu_enter(), jiffies will
+not be updated. When kgdb_cpu_enter() returns, rcu_state.jiffies_stall
+maybe already gets timeout.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kartik/soc-tegra-fuse-Add-tegra_acpi_init_apbmisc/20230821-095539
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tegra/linux.git for-next
-patch link:    https://lore.kernel.org/r/20230818093028.7807-2-kkartik%40nvidia.com
-patch subject: [PATCH 1/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20230822/202308221124.bP9Do9ir-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230822/202308221124.bP9Do9ir-lkp@intel.com/reproduce)
+We can set rcu_state.jiffies_stall to two rcu check periods later, e.g.
+jiffies + (rcu_jiffies_till_stall_check() * 2) in rcu_cpu_stall_reset()
+to avoid this problem. But this isn't a complete solution because kgdb
+may take a very long time in irq disabled context.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308221124.bP9Do9ir-lkp@intel.com/
+Instead, update jiffies at the beginning of rcu_cpu_stall_reset() can
+solve all kinds of problems [1]. But this causes a new problem because
+updating jiffies is not NMI safe while rcu_cpu_stall_reset() may be used
+in NMI context.
 
-All errors (new ones prefixed by >>):
+So we don't update the global jiffies, but only add the time 'delta' to
+jiffies locally at the beginning of rcu_cpu_stall_reset() which has the
+same effect.
 
-   drivers/soc/tegra/fuse/tegra-apbmisc.c: In function 'tegra_acpi_init_apbmisc':
->> drivers/soc/tegra/fuse/tegra-apbmisc.c:268:18: error: implicit declaration of function 'acpi_dev_get_memory_resources'; did you mean 'acpi_get_event_resources'? [-Werror=implicit-function-declaration]
-     268 |         rcount = acpi_dev_get_memory_resources(adev, &resource_list);
-         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                  acpi_get_event_resources
->> drivers/soc/tegra/fuse/tegra-apbmisc.c:280:9: error: implicit declaration of function 'acpi_dev_free_resource_list' [-Werror=implicit-function-declaration]
-     280 |         acpi_dev_free_resource_list(&resource_list);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+[1] https://lore.kernel.org/rcu/20230814020045.51950-1-chenhuacai@loongson.cn/T/#t
 
+Cc: stable@vger.kernel.org
+Fixes: a80be428fbc1f1f3bc9ed924 ("rcu: Do not disable GP stall detection in rcu_cpu_stall_reset()")
+Reported-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+---
+V2: Use NMI safe functions.
+V3: Add comments to explain why.
 
-vim +268 drivers/soc/tegra/fuse/tegra-apbmisc.c
+ kernel/rcu/tree_stall.h | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-   253	
-   254	void tegra_acpi_init_apbmisc(void)
-   255	{
-   256		struct acpi_device *adev = NULL;
-   257		struct resource *apbmisc, *straps;
-   258		struct list_head resource_list;
-   259		struct resource_entry *rentry;
-   260		int rcount;
-   261	
-   262		adev = acpi_dev_get_first_match_dev(apbmisc_acpi_match[0].id, NULL, -1);
-   263		if (!adev)
-   264			return;
-   265	
-   266		INIT_LIST_HEAD(&resource_list);
-   267	
- > 268		rcount = acpi_dev_get_memory_resources(adev, &resource_list);
-   269		if (rcount != 2) {
-   270			pr_err("failed to get APBMISC memory resources");
-   271			return;
-   272		}
-   273	
-   274		rentry = list_first_entry(&resource_list, struct resource_entry, node);
-   275		apbmisc = rentry->res;
-   276		rentry = list_next_entry(rentry, node);
-   277		straps = rentry->res;
-   278	
-   279		tegra_init_apbmisc_base(apbmisc, straps);
- > 280		acpi_dev_free_resource_list(&resource_list);
-
+diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+index b10b8349bb2a..e4e53113d062 100644
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@ -150,11 +150,26 @@ static void panic_on_rcu_stall(void)
+  * rcu_cpu_stall_reset - restart stall-warning timeout for current grace period
+  *
+  * The caller must disable hard irqs.
++ *
++ * The jiffies updating may be delayed for a very long time due to tickless and
++ * irq disabled, especially in the KGDB case, so we need to add the delayed time
++ * (delta) to rcu_state.jiffies_stall.
++ *
++ * This function may be called in NMI context, so we cannot use ktime_get_ns()
++ * and ktime_get_coarse_ns(). Instead, we use their inaccurate but safe friends
++ * ktime_get_mono_fast_ns() and ktime_get_seconds() which will cause rcu_state.
++ * jiffies_stall to be a little large than expected (harmless and safer).
+  */
+ void rcu_cpu_stall_reset(void)
+ {
++	u64 curr, last, delta;
++
++	curr = ktime_get_mono_fast_ns();
++	last = ktime_get_seconds() * NSEC_PER_SEC;
++	delta = nsecs_to_jiffies(curr - last);
++
+ 	WRITE_ONCE(rcu_state.jiffies_stall,
+-		   jiffies + rcu_jiffies_till_stall_check());
++		   jiffies + delta + rcu_jiffies_till_stall_check());
+ }
+ 
+ //////////////////////////////////////////////////////////////////////////////
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
