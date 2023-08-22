@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F85784962
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE0E784965
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbjHVS0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 14:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
+        id S229806AbjHVS3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 14:29:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjHVS0I (ORCPT
+        with ESMTP id S229523AbjHVS3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 14:26:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3D1CCB;
-        Tue, 22 Aug 2023 11:26:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C8BC6467E;
-        Tue, 22 Aug 2023 18:26:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C9F6C433C8;
-        Tue, 22 Aug 2023 18:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692728765;
-        bh=AeTos3s1IeELRlejsHXMUFjs6Kv2rG5oazFaQ4BkAQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F4KvDRiCAFwEXz4j5AadWNqnDlsST7p6XnvBPGccVTe0ms8UofXi8sG+GIveQpQMr
-         f/FwSYIpnpYN5NCMMvdKQJnplEXfhAMBmDwPABmepj6x4hqjc2w9lYoTQEu7+BPzYY
-         1BkOqDMiUZIv0WP9fYhiPp5iB/mEh+p++NRNeUqtaf01PCwEx+b+2kFAxuXQUE+3d8
-         MwBbIBdVEqNAd1tEIVcZ9J4MUNZNTr2El6wZAMQDNd8yHlejl5yJuIxvxtfJY1wEdl
-         nU6DPxHpYVZDXiLQxjT2xMqixTk4rH1S3sXZmXR4oLXQ4I/gJoEsUkalHbMMAhEuyM
-         GPxSSmyAul06g==
-Date:   Tue, 22 Aug 2023 11:26:04 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the
- djw-vfs tree
-Message-ID: <20230822182604.GB11286@frogsfrogsfrogs>
-References: <20230822110551.6386dd5d@canb.auug.org.au>
- <20230822025120.GA11286@frogsfrogsfrogs>
- <20230822-turnus-quert-9b11d4e30dc9@brauner>
+        Tue, 22 Aug 2023 14:29:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A64CCB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:29:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=a15U4MejTFPZxXdAjLchlRcmwqjq8ec43bcazCol0I8=; b=ccrrsO6FaMUwmvMuoxI2mJa9/6
+        nGglbUdgn6XwvHEbUQ9rbGnJWCCX/W/SwJl7g/yxNVdUe3N4VyLMhkDdEeJb5hv4HpdPEiewDna+4
+        g0/P34NZgeERT8XmTOAk9J20tMvbE9E4j3tfaPUO9cH4Q+XD3NQ4WXGU7GDnDs7suQe0GF8D+1kHz
+        zQsuTqmuXsMcJ+tqDrTjWn16C3EjnfdDpHo8qYaD7h7MknHn/SIUBdyxFHuwoPstdKoG4Q1ufwCdt
+        VZdpSkkzwGHUj7vFLDQ3fCotCRWnAFndZI5yjSlSuCanY62XOG2eyEsfjV7JkcYXJGGKxilBt6uSA
+        P6ofLqSQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qYW73-000F0d-Gp; Tue, 22 Aug 2023 18:28:21 +0000
+Date:   Tue, 22 Aug 2023 19:28:21 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
+        david@redhat.com, linux-mm@kvack.org,
+        Namhyung Kim <namhyung@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        John Sperbeck <jsperbeck@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
+Message-ID: <ZOT+RYe22TkkqCgP@casper.infradead.org>
+References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
+ <20230821103225.qntnsotdzuthxn2y@techsingularity.net>
+ <CAF8kJuOsWo5RfDcfnWZfnqYXjf6bkkxdXG1JCwjaEZ1nn29AaA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230822-turnus-quert-9b11d4e30dc9@brauner>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF8kJuOsWo5RfDcfnWZfnqYXjf6bkkxdXG1JCwjaEZ1nn29AaA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 11:46:38AM +0200, Christian Brauner wrote:
-> > Christian: I've been planning to merge the {freeze,thaw}_super @who
-> > changes for 6.6; do you think more 'cooperating with the maintainer' is
-> > needed, or shall I simply push my branch to Linus with a note that
-> > s/down_write/super_lock_excl/ s/up_write/super_unlock_excl is needed to
-> > resolve the merge the conflict?
+On Tue, Aug 22, 2023 at 10:48:42AM -0700, Chris Li wrote:
+> Hi Mel,
 > 
-> Hm, that's not a pleasant merge conflict given that it's locking
-> changes. It would probably be fine to just bring it up the way it is but
-> it looks needlessly messy/uncoordinated. I'm wonder why this isn't just
-> all in vfs.super since it's core vfs infra change anyway. Maybe I just
-> missed the patches if so then sorry about that.
-
-Ah, I had wondered about that. :)
-
-> That's the two infrastructure patches in the kernel-fsfreeze
-> branch/kernel-fsfreeze_2023-07-27 tag?:
+> Adding Alexei to the discussion.
 > 
-> ad0164493b81 ("fs: distinguish between user initiated freeze and kernel initiated freeze")
-> 53f65fd7a3d5 ("fs: wait for partially frozen filesystemskernel-fsfreeze_2023-07-27kernel-fsfreeze")
+> On Mon, Aug 21, 2023 at 3:32 AM Mel Gorman <mgorman@techsingularity.net> wrote:
+> >
+> > On Thu, Aug 17, 2023 at 11:05:22PM -0700, Chris Li wrote:
+> > > In this patch series I want to safeguard
+> > > the free_pcppage_bulk against change in the
+> > > pcp->count outside of this function. e.g.
+> > > by BPF program inject on the function tracepoint.
+> > >
+> > > I break up the patches into two seperate patches
+> > > for the safeguard and clean up.
+> > >
+> > > Hopefully that is easier to review.
+> > >
+> > > Signed-off-by: Chris Li <chrisl@kernel.org>
+> >
+> > This sounds like a maintenance nightmare if internal state can be arbitrary
+> > modified by a BPF program and still expected to work properly in all cases.
+> > Every review would have to take into account "what if a BPF script modifies
+> > state behind our back?"
 > 
-> If you give me a tag with your description and just the two commits or I
-> just cherry pick them and cite your description in my pr that would be
-> my preferred solution. How do you feel about that?
+> Thanks for the feedback.
+> 
+> I agree that it is hard to support if we allow BPF to change any internal
+> stage as a rule.  That is why it is a RFC. Would you consider it case
+> by case basis?
+> The kernel panic is bad, the first patch is actually very small. I can
+> also change it
+> to generate warnings if we detect the inconsistent state.
 
-I'm happy to have you pull my xfs-linux tags into your vfs tree. :)
-
-Here's a tag with just the two vfs patches:
-https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/tag/?h=vfs-6.6-merge-2
-
-This second tag builds on that, by adding the first actual user of
-FREEZE_HOLDER_KERNEL:
-https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/tag/?h=vfs-6.6-merge-3
-
-There will be more for 6.7(+?) if Luis manages to get back to his
-auto-fsfreeze during suspend, or if Shiyang finishes the series to
-handle pmem media error reporting in xfs.
-
-Thanks!
---D
+We wouldn't allow C code that hooks spinlocks (eg lockdep) to allocate
+memory.  I don't understand why BPF code should allocate memory either.
