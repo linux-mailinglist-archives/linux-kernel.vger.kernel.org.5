@@ -2,157 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6213A784CA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01215784CAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 00:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbjHVWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 18:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        id S231535AbjHVWFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 18:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjHVWFA (ORCPT
+        with ESMTP id S229555AbjHVWFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 18:05:00 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4D311F;
-        Tue, 22 Aug 2023 15:04:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1692741895; x=1693346695; i=deller@gmx.de;
- bh=xY/2+QyySjuCzXpTOznTGPpaO1FAuAXckq+otWDEeRc=;
- h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:In-Reply-To;
- b=meesxSB46CrRLY9BxOovDIYo2YRRIJGmrq8c4Mn/YACOlv8SLaFu0xL77Tvwq6CcvmMl3FK
- qfLZmKHuXwB8I0oUtxEMzvf8zX8+ciEA74z05kizeYLFOgMRe6rp9KoXeulZ0HG9EVuXYa8g3
- cUVeRWNJsE22hjS9KEo368UFkCrM7E+K2JmjHHUfCHgSXpCRsx6d/Y5SHK9lpcZMK/o318jME
- hUsz35X0gtBYBGMfH8bEQ2DuZBw1Chk6L/A8uXKhATQ1TC1/vy3mPI3vpRinKpt+whYjZDQi2
- /e1hHNF+bqaqQYAkOMh6jkxapydHWxbOq3TUpLNPfweOipjJ+2Ag==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.154.33]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6Ue3-1qet1b3Tuj-006yac; Wed, 23
- Aug 2023 00:04:54 +0200
-Message-ID: <a1a19e05-0cfd-cae5-9edb-9d63e70ee06d@gmx.de>
-Date:   Wed, 23 Aug 2023 00:04:54 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] procfs: Fix /proc/self/maps output for 32-bit kernel
- and compat tasks
-Content-Language: en-US
-From:   Helge Deller <deller@gmx.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrei Vagin <avagin@openvz.org>,
-        linux-parisc <linux-parisc@vger.kernel.org>
-References: <ZOR95DiR8tdcHDfq@p100>
- <20230822113453.acc69f8540bed25cde79e675@linux-foundation.org>
- <8eb38faf-16a2-a538-b243-1b4706f73169@gmx.de>
-In-Reply-To: <8eb38faf-16a2-a538-b243-1b4706f73169@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JVY7fCK5v9wIrnBlZE4htJ33HQe7Ld+JMw3YMCTGofeBjCy3OgZ
- rTXx/E1wJNn79gz8MRdNvff7mqPJoKUIjNw8MCXIyGiV+6hWFRBniI7FLg9gcmLMfnSaksb
- sKKBkBNqEeBKYCDvBtgJdJgDASkArsTdP1lV6mRumtKCtVog4HEOiJXM2JrN5xk5nvWz+pv
- hiMGYC1sLRU432TNN20zg==
-UI-OutboundReport: notjunk:1;M01:P0:3C4JX0WuOeA=;DvqILYy0YE33/S8D4xbe+hBWs7q
- jK6K5mTdoZG1Femfk2n6BevtKXkb2O/4iPOdeYUlGtyl5CVel4QeHc9gUH7K7eLr6ln1xbDkc
- kcRpuba2zahxX4IhQ37cXSRIvI4d5qKV/xYB9SsXkT5ukrRp6cPiPTkURt4bXhOJiflqNnaCT
- Nhqz9pfMfxUEarrAslbTEoQb3P3sii8yibUJMgo15iJRibXjQlXixB2clVRXxCVYAxmyGQH6F
- luOTNqCYvW5ROw/6PTaIwG1G9KJIlbPlbbfdohjozLgmZrW1WPMJXcKH3pmSdrYMBDYgBF90b
- PJd6Ip4SbUuGK+VMYcrk5MhC6kL3EFDksBn7HKr+kcdyqW+0dSmKyOIavfSY4ngtxiVeiP/QZ
- 3tuHqbyObEKTHa+ZX77yQI2Yo4vp1JEHG+48j/35NR0BqjRd3a0xIb5IEFdFIj2gSgPoE9ipJ
- BCpzVKyFUKzl725Rl2h1IDIpycb4vArBFv9QodL3URgIs14I9lbUsSCcKPFoDmgVl40rV+k89
- 9VokyzyQIgwvLT2UI/MAfIafwcHlfg6diYRSUgWdVn6ph/QMqe6FjJ2OSEtGaOLe5nX89+ufB
- 4w+T8RNg84SkCVyaRVZ+Gj/FfWVy3TefGbqNcTpj/y1wjHv2jxqk2grhAmr3zNYI3yMtqcbPf
- Ph89IybQsT2smPLaGbuh/BC5TH3SW6rgKwc+xHjeJLaj3Z0xU0k4af9RXyPgcr8K9Z91TzOJh
- ybaUliMY1MOMzA/Uwrz/jivCf6W8SPM3CC83Ns5wN8CRfXkE5EowbPUZtyTLMNURS2fiLHEJd
- BIqpEu49BdUkUZ0p61/owNURVpGz0PbXWVyYkcqlHsVXCULZxcWJnSay+kClzJ5ZTky7Isfqp
- YahjHHkAvWYp3aS0TNxKPtr2say9YgH1e0dKhRRrizX9gBP9GZNMDECPRc/OqpnpXhGgF6mFb
- TIdSBO2geJO9OLtQSS/sfTD5+us=
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 22 Aug 2023 18:05:33 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA21CEB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:05:32 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58ee4df08fbso69554437b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 15:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692741931; x=1693346731;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kvfNAmaQkydKuK6ht78gS3RG+WyOgiqVP4AeurXmSVU=;
+        b=YurVokxypIFmdNON8ep9uamAlris/X4zsoEuaaroV7EPJxmx+G1qMnvW9BifErZ7Ys
+         5zE3J5jTO/J3KR3rPHz72d3FPwqGTPE0sQkhx3B4egJALdUC1L3kw063q/eWrB2MupcE
+         sjM7AG3epGtZpNARVuUgXwdsvckKwHy6AY7k8KVvEEPu3kW9sy7Q/nbp/LMc6H8g/w86
+         MbN6EMt/k5t8f5/3545gKucIkhtIjTY96at/vrz1VTNsvVM7X0N5SSTLiDkM+bgIZ64T
+         DEpk/3B4N6QIgGviUFKaWyy8VFwwZYfNwKIz+1lf2gzDkJDbkpk85UPqquCVPlcqYMgC
+         /u5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692741931; x=1693346731;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kvfNAmaQkydKuK6ht78gS3RG+WyOgiqVP4AeurXmSVU=;
+        b=hIuZxEZRZX09v1/ABanUCaubcH4Ue1XJUbOt+DVxVxKlJbfo0OUQPpNORCMzWZm8lk
+         2geIZ+UtsZb7SkTbqO0MZbKWj0YSi6JTL7TBQCFFhCvBCDWnCf7VOZ536q48vWVm8YCw
+         fpyZITUBOsH3ZpTVDS+PFLePAlpjkek66t03NS4tFiuEfbZrv4Mq1FGUS2CSffO23yaY
+         N3HXhTsR7MZYSLb0Gi7qE5GmiAxXtoZ/NT2fvgInlePUYhhAwvsyKJc7rRtCZxnVzo+3
+         CGkHitQ+AadVC3aW3ctLNe1ZeT7ijDRLSV+5zcmxhVpOrNrJ1Aeknwj8d20nijV1eWvo
+         RumA==
+X-Gm-Message-State: AOJu0YyzqitydRhvHhi8hZRXdopMakrpK/scxeVQn9Z3Iql2gGT1AacE
+        xqRGaYIFa319CFUnBZlLfhPNGuiFlHt0z4PzZQ==
+X-Google-Smtp-Source: AGHT+IE3B57XdbJQeeRxg6tfixLqzX6c6nh6PDYTDTOOozVZuiP29CWKkjiXnDbtOgadRu1V5u5FVV5tcubdZSVRtg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a81:7647:0:b0:586:4eae:b943 with SMTP
+ id j7-20020a817647000000b005864eaeb943mr140317ywk.8.1692741931359; Tue, 22
+ Aug 2023 15:05:31 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 22:05:30 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIACkx5WQC/x2N0QrCMAwAf2Xk2UAXmRR/RWTULHNBqSWdozL27
+ +t8Ou7lboUsppLh2qxgsmjWT6zSnhrgKcSnoA7VgRydnSfCPFvk9MNgPGHxF3yJRXljSMpY6ED /XfqC0rXifOjGBw9Qc8lk1PJf3e7btgNuSiRLegAAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692741930; l=2119;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=Y1vCgp5GYs4NsHT5r24HqojZFhU1daRE+/NKAA6CphQ=; b=Hi2h478Ff+VDwMs+vUBVNbhWGLJXHmI+lE2ifNg773E08iMLOxweArHLlRRxelq0JWloX12XL
+ tTzo4RTqpLLDlFI7D1ya9b2QD+lAjabmNXKoLbUNeVWHnv22G1AnXl3
+X-Mailer: b4 0.12.3
+Message-ID: <20230822-strncpy-arch-x86-kernel-apic-x2apic_uv_x-v1-1-91d681d0b3f3@google.com>
+Subject: [PATCH] x86/platform/uv: refactor deprecated strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/23 22:53, Helge Deller wrote:
-> On 8/22/23 20:34, Andrew Morton wrote:
->> On Tue, 22 Aug 2023 11:20:36 +0200 Helge Deller <deller@gmx.de> wrote:
->>
->>> On a 32-bit kernel addresses should be shown with 8 hex digits, e.g.:
->>>
->>> root@debian:~# cat /proc/self/maps
->>> 00010000-00019000 r-xp 00000000 08:05 787324=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/bin/cat
->>> 00019000-0001a000 rwxp 00009000 08:05 787324=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/bin/cat
->>> 0001a000-0003b000 rwxp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 [heap]
->>> f7551000-f770d000 r-xp 00000000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/libc.so.6
->>> f770d000-f770f000 r--p 001bc000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/libc.so.6
->>> f770f000-f7714000 rwxp 001be000 08:05 794765=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/libc.so.6
->>> f7d39000-f7d68000 r-xp 00000000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/ld.so.1
->>> f7d68000-f7d69000 r--p 0002f000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/ld.so.1
->>> f7d69000-f7d6d000 rwxp 00030000 08:05 794759=C2=A0=C2=A0=C2=A0=C2=A0 /=
-usr/lib/hppa-linux-gnu/ld.so.1
->>> f7ea9000-f7eaa000 r-xp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 [vdso]
->>> f8565000-f8587000 rwxp 00000000 00:00 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 [stack]
->>>
->>> But since commmit 0e3dc0191431 ("procfs: add seq_put_hex_ll to speed u=
-p
->>> /proc/pid/maps") even on native 32-bit kernels the output looks like t=
-his:
->>>
->>> root@debian:~# cat /proc/self/maps
->>> 0000000010000-0000000019000 r-xp 00000000 000000008:000000005 787324=
-=C2=A0 /usr/bin/cat
->>> 0000000019000-000000001a000 rwxp 000000009000 000000008:000000005 7873=
-24=C2=A0 /usr/bin/cat
->>> 000000001a000-000000003b000 rwxp 00000000 00:00 0=C2=A0 [heap]
->>> 00000000f73d1000-00000000f758d000 r-xp 00000000 000000008:000000005 79=
-4765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
->>> 00000000f758d000-00000000f758f000 r--p 000000001bc000 000000008:000000=
-005 794765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
->>> 00000000f758f000-00000000f7594000 rwxp 000000001be000 000000008:000000=
-005 794765=C2=A0 /usr/lib/hppa-linux-gnu/libc.so.6
->>> 00000000f7af9000-00000000f7b28000 r-xp 00000000 000000008:000000005 79=
-4759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
->>> 00000000f7b28000-00000000f7b29000 r--p 000000002f000 000000008:0000000=
-05 794759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
->>> 00000000f7b29000-00000000f7b2d000 rwxp 0000000030000 000000008:0000000=
-05 794759=C2=A0 /usr/lib/hppa-linux-gnu/ld.so.1
->>> 00000000f7e0c000-00000000f7e0d000 r-xp 00000000 00:00 0=C2=A0 [vdso]
->>> 00000000f9061000-00000000f9083000 rwxp 00000000 00:00 0=C2=A0 [stack]
->>>
->>> This patch brings back the old default 8-hex digit output for
->>> 32-bit kernels and compat tasks.
->>>
->>> Fixes: 0e3dc0191431 ("procfs: add seq_put_hex_ll to speed up /proc/pid=
-/maps")
->>
->> That was five years ago.=C2=A0 Given there is some risk of breaking exi=
-sting
->> parsers, is it worth fixing this?
->
-> Huh... that's right!
-> Nevertheless, kernel 6.1.45 has it right, which isn't 5 years old.
-> I don't see the reason for that change right now, so I'll need to figure=
- out what changed...
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-It seems to be due to a new bug in gcc's __builtin_clzll()
-function (at least on parisc), which seems to return values
-for "long" (32bit) instead for "long long" (64bit).
+A suitable replacement is `strscpy` [2] due to the fact that it
+guarantees NUL-termination on its destination buffer argument which is
+_not_ the case for `strncpy`!
 
-Please ignore this patch for now.
+In this case, it means we can drop the `...-1` from:
+|       strncpy(to, from, len-1);
 
-Thanks!
-Helge
+as well as remove the comment mentioning NUL-termination as `strscpy`
+implicitly grants us this behavior.
+
+There should be no functional change as I don't believe the padding from
+`strncpy` is needed here. If it turns out that the padding is necessary
+we should use `strscpy_pad` as a direct replacement.
+
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only
+---
+ arch/x86/kernel/apic/x2apic_uv_x.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
+index d9384d5b4b8e..b524dee1cbbb 100644
+--- a/arch/x86/kernel/apic/x2apic_uv_x.c
++++ b/arch/x86/kernel/apic/x2apic_uv_x.c
+@@ -294,8 +294,7 @@ static void __init early_get_apic_socketid_shift(void)
+ 
+ static void __init uv_stringify(int len, char *to, char *from)
+ {
+-	/* Relies on 'to' being NULL chars so result will be NULL terminated */
+-	strncpy(to, from, len-1);
++	strscpy(to, from, len);
+ 
+ 	/* Trim trailing spaces */
+ 	(void)strim(to);
+@@ -1013,7 +1012,7 @@ static void __init calc_mmioh_map(enum mmioh_arch index,
+ 
+ 	/* One (UV2) mapping */
+ 	if (index == UV2_MMIOH) {
+-		strncpy(id, "MMIOH", sizeof(id));
++		strscpy(id, "MMIOH", sizeof(id));
+ 		max_io = max_pnode;
+ 		mapped = 0;
+ 		goto map_exit;
+
+---
+base-commit: 706a741595047797872e669b3101429ab8d378ef
+change-id: 20230822-strncpy-arch-x86-kernel-apic-x2apic_uv_x-e51e08a5fbcd
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
