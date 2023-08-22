@@ -2,153 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32182784D3F
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79319784D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Aug 2023 01:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjHVXR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 19:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        id S231680AbjHVXRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 19:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbjHVXR1 (ORCPT
+        with ESMTP id S231678AbjHVXRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 19:17:27 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AFFCFC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:17:25 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bdc89af101so62203145ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:17:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692746245; x=1693351045;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFwVY5f5dTBaMzDscxqMGNrjI0xrE58qgkFcYAhYpMc=;
-        b=75CU7MMPm59DuVURW4I5Awl+gGVby465miL42+4YWEZODWWEL1GIFpxXTJekpZnNnl
-         N2+UnX2W4vOlRH75+HBCFSmi5KGyPUK+mTvBnhZwlFmzX9cCvSTIE7ZL1eAz9khnzhtP
-         rknG3bjV6rcHOM9m2TBB2RUQgzFIUj/yrDi0u9in7pP+Djas/sZ1r/Eb7aIR9uP5sx0B
-         hKeT31r+ZeTT5KpzX3mpjuNkpOeSLI6FVVRN8X1Q8PjrcDEOIGp6x27azlCmYj9H+sBZ
-         V4N/le27vTaBzt7aJ4R4VYM2mXzinjZXff2aSp37hu/O48S1EavfVsSROouHe2adoqLg
-         7g2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692746245; x=1693351045;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oFwVY5f5dTBaMzDscxqMGNrjI0xrE58qgkFcYAhYpMc=;
-        b=Bmn1JL7GvkCccHrF3miGqVhf7KlobarUqvKyrjq7WTLoqLpYHxrnuHr3Nm/+2abb0C
-         4UO4Jhk09AWpt4Dp7aGDu8MuTZzgyuNsnvS9ar4m21RgdYCQpcQwecapcILdHNKk5ZIJ
-         Ky2by2DiXncAKccx72qDlT+Lvb3QMcXI0pxeQNSwRvMGaLudWib5AUTksRkgUYRj4Wv7
-         1bEgfqEx9HbmgSRmNBtFGSq2GCT10IuVjzVnDawDAGnCGBysryHjB+POxU4UvBudxRSm
-         qGo04WEcmakwWZndcHgC2v6QVqekij/GYLJVAQPSs+9y8LCNQtjb3f7ccN5QF4oHpTbP
-         FMXQ==
-X-Gm-Message-State: AOJu0YyV764U97820Nw0gX+NdM6FSyzBSU/VTRqJeEs4COlzwrh/AcSa
-        6eRQtqse/UihvFcYhbT39zf6c5Ahaho=
-X-Google-Smtp-Source: AGHT+IH25EflXFYRsSAIONlQdF4yEYShAZMjZEb7bXaRk6krlSYytMpTmCeiKJi71iN2KbTqlbAvt/EfaUY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:fb03:b0:1bb:8c42:79f4 with SMTP id
- le3-20020a170902fb0300b001bb8c4279f4mr4246479plb.2.1692746245174; Tue, 22 Aug
- 2023 16:17:25 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 16:17:23 -0700
-In-Reply-To: <df49bbb2-92c0-7792-ab90-e748be570b5d@amd.com>
-Mime-Version: 1.0
-References: <cover.1692119201.git.isaku.yamahata@intel.com>
- <b37fb13a9aeb8683d5fdd5351cdc5034639eb2bb.1692119201.git.isaku.yamahata@intel.com>
- <ZN+whX3/lSBcZKUj@google.com> <52c6a8a6-3a0a-83ba-173d-0833e16b64fd@amd.com>
- <ZN/0aefp2gw5wDXk@google.com> <CAL715WL9TJzDxZE8_gfhUQFGtOAydG0kyuSbzkqWTs3pc57j7A@mail.gmail.com>
- <df49bbb2-92c0-7792-ab90-e748be570b5d@amd.com>
-Message-ID: <ZOVCAweRM8Es6rJ4@google.com>
-Subject: Re: [PATCH 4/8] KVM: gmem: protect kvm_mmu_invalidate_end()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Mingwei Zhang <mizhang@google.com>, Jacky Li <jackyli@google.com>,
-        isaku.yamahata@intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-        Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 19:17:34 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7185FE4D;
+        Tue, 22 Aug 2023 16:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1692746250;
+        bh=R5YB23V+48Wa69gXW1dOSK+mey4fsBVisc9o73Lrm4s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mkFkp2uOAq2XZAlT7Bd7BHhRPLddQ2cM0QhslujA24jWL8jGVdgLqXo/Q854jtHsr
+         gTDtZtMXwLLEhukGO9RDFFGUgPPubV+YULk9AC4mWSZQf6VQOaqG/qvZninlIzI+tw
+         6KNpq6SD4JobbDu6UvT/D6KpebM9/dK8kqY0p3TrFKmt9qdWJ/L+S5FqJzINFGrNDR
+         cCF65qW7QhV6yZfj61DcmZP5if2+2prsfgW7eO4XPtZLgDZbtCBoNgui8Ia3B7KkLz
+         EVD6AWFGqmT8ytRP+FOFy0lwuLNJZQth3kesyNOYHqSIuW4Dm8z0AJQs6vnaeKnNrk
+         Sou7c1KhoPsLw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RVlcS6y9Sz4wxQ;
+        Wed, 23 Aug 2023 09:17:28 +1000 (AEST)
+Date:   Wed, 23 Aug 2023 09:17:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>
+Cc:     ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the stm32 tree
+Message-ID: <20230823091726.21d6419c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/dWWIxtJuvZDrtRJJx0e.vtR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023, Ashish Kalra wrote:
-> Hello Mingwei & Sean,
-> 
-> On 8/18/2023 9:08 PM, Mingwei Zhang wrote:
-> The maximum hits are seen with shmem_fallocate and madvise, which we believe
-> are response to shared<->private
-> GHCB page-state-chage requests. discard=both handles discard both for
-> private and shared memory, so freeing shared memory
-> via fallocate(shared_memfd, FALLOC_FL_PUNCH_HOLE, ...) would trigger the
-> notifiers when freeing shared pages after guest converts a GPA to
-> private.
-> 
-> Now, as with SNP+guest_memfd, guest private memory is not mapped in host
-> anymore, so i added a generic fix (instead of Sean's proposed patch of
-> checking for SNP guest inside sev_guest_memory_reclaimed()):
-> 
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -593,6 +593,9 @@ static __always_inline int __kvm_handle_hva_range(struct
-> kvm *kvm,
->                         unsigned long hva_start, hva_end;
-> 
->                         slot = container_of(node, struct kvm_memory_slot,
-> hva_node[slots->node_idx]);
-> +                       if (kvm_slot_can_be_private(slot)) {
-> +                               continue;
-> +                       }
->                         hva_start = max(range->start, slot->userspace_addr);
->                         hva_end = min(range->end, slot->userspace_addr +
->                                                   (slot->npages <<
-> PAGE_SHIFT));
+--Sig_/dWWIxtJuvZDrtRJJx0e.vtR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-...
+Hi all,
 
-> As expected, the SEV hook is not invoked for the guest private memory pages
-> (no more invalidation from shmem_fallocate() + madvise()).
-> 
-> Isn't it better to skip invoking the KVM MMU invalidation notifier when the
-> invalidated range belongs to guest private memory ?
+The following commit is also in the arm-soc tree as a different commit
+(but the same patch):
 
-Oooh, you're running into problems where KVM blasts both the private and shared
-mappings even though invalidations from the mmu_notifier are shared-only by
-definition.
+  0b5198b3421d ("ARM: multi_v7_defconfig: Add SCMI regulator support")
 
-The answer is "yes", but simply skipping slots that _can_ be private is wrong,
-as KVM still needs to zap any shared mappings.  I have a plan[*], but I completely
-spaced on incorporating the idea into the gmem RFC.  I'll add that to the "list
-of todos for merging gmem", which I need to get sent out asap.
+This is commit
 
-https://lore.kernel.org/all/ZJX0hk+KpQP0KUyB@google.com
+  8d6b4927936d ("ARM: multi_v7_defconfig: Add SCMI regulator support")
 
-> > In fact, AFAIC, SNP VM does not track whether each page is previously
-> > shared, isn't it? If a page was previously shared and was written by the
-> > host kernel or devices before it was changed to private. No one tracks it
-> > and dirty caches are there!
-> 
-> The skipped invalidation here covered the case Mingwei mentioned above,
-> where the pages are changed from private->shared and subsequent freeing of
-> shared pages triggered the invalidation.
-> 
-> But, then why are we concerned about this, i thought we have concerns about
-> the case where the dirty cache lines contain encrypted guest data ?
+in the arm-soc tree.
 
-Yes, that's my understanding as well (assuming by "this" you mean the case where
-the CPU cache has dirty lines for _shared_ addresses).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dWWIxtJuvZDrtRJJx0e.vtR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTlQgYACgkQAVBC80lX
+0GzztQf+PflmHz3LRaJMwgPht960OpffE7ps7CoHAbQqF4pELUh+o1wBR5n/Tf9O
+TZsr2b8F0WLD9BT9klS/iqm2jehIgcDG9zuZVAO7O0TYB6IHtlDySUT6ftoLAID3
+vRzBYLaHl0xCPRxLdAuvmZFcik6gA9CRLo0/drYnFwIJdjTnJCq/7z5Qv45ST442
+2ia+Cf0mzRCVn1Rm69FNgs0yVXl03P+JTZ723PST142fV8U6/a9wiwHrgFCa1nzh
+lrT719bH+URW1bJBTwHf/qAUHLT07TMvCY7i2VPBpmfRpzLLujhn5zliV4F88H3K
+OLA4x42o4w/wdnOkCxVyCegOrqWZLQ==
+=iEtW
+-----END PGP SIGNATURE-----
+
+--Sig_/dWWIxtJuvZDrtRJJx0e.vtR--
