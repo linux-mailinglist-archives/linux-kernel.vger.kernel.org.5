@@ -2,159 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F4F7837CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B0D7837D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjHVCR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S231641AbjHVCTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbjHVCR5 (ORCPT
+        with ESMTP id S231344AbjHVCTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:17:57 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57159FD;
-        Mon, 21 Aug 2023 19:17:55 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.169])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RVCg26yFTz4f3pHZ;
-        Tue, 22 Aug 2023 10:17:50 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgDHoqXPGuRkmGYlBQ--.52936S3;
-        Tue, 22 Aug 2023 10:17:52 +0800 (CST)
-Subject: Re: [PATCH -next v3 6/7] md: factor out a helper rdev_addable() from
- remove_and_add_spares()
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, mariusz.tkaczyk@linux.intel.com,
-        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20230820090949.2874537-1-yukuai1@huaweicloud.com>
- <20230820090949.2874537-7-yukuai1@huaweicloud.com>
- <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <c7a82fb2-cf4b-2095-e813-84aed2418ff0@huaweicloud.com>
-Date:   Tue, 22 Aug 2023 10:17:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 21 Aug 2023 22:19:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4140818F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692670740; x=1724206740;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=59W+lMeV0W1rOuTl6I7R3yHzdGEmYFfi5zODViwOKR8=;
+  b=ChDq4RzswOmIXL8+bNStTbzPWSbW6gsgg/hUAkc/H6mWjhURVDhY2UT2
+   Qv7aQMeYQADA4myseHqPPxNry9Oxm/v550S+KS1sJemim+w/XjNAQR6oO
+   CqLVI3K67kv5BqPAdP7L5uhOXtMH9tGIrPW6uhBB89tey27VYGWOUTA6W
+   VN1uZU1G0LcUpvaoWxwKP+tlKmCVc/+NkJUqKOKnls0lVnpzPNWCz8665
+   qsIcvahaYujLZqByUUp9GjaFZ7cumr8S98d+F6+LyxPCoW7fd5itIO/5B
+   wMYhPxKU4kBLapaQD7P2fsJamhWq45CJ+loHhfewzhx9BvOA55YC00uIH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="372651396"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="372651396"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2023 19:18:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="826160291"
+X-IronPort-AV: E=Sophos;i="6.01,191,1684825200"; 
+   d="scan'208";a="826160291"
+Received: from lkp-server02.sh.intel.com (HELO 6809aa828f2a) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Aug 2023 19:18:55 -0700
+Received: from kbuild by 6809aa828f2a with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qYGys-0001E5-1U;
+        Tue, 22 Aug 2023 02:18:54 +0000
+Date:   Tue, 22 Aug 2023 10:18:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
+        daniel@ffwll.ch, matthew.brost@intel.com,
+        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
+        donald.robson@imgtec.com, boris.brezillon@collabora.com,
+        christian.koenig@amd.com, faith.ekstrand@collabora.com,
+        bskeggs@redhat.com, Liam.Howlett@oracle.com
+Cc:     oe-kbuild-all@lists.linux.dev, nouveau@lists.freedesktop.org,
+        Danilo Krummrich <dakr@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize
+ dma_resv/extobj handling and GEM validation
+Message-ID: <202308221021.jCZejWoy-lkp@intel.com>
+References: <20230820215320.4187-3-dakr@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW74MEFjNTNErYfOT1gX+BUdbDwaV1oTmmcz=_76Ym3ZuA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHoqXPGuRkmGYlBQ--.52936S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF4fuF43uF17Ar4xtw45Awb_yoW5Jw1Dpa
-        yrGFWakrWUAry3W3ZFqF18GFyYqF48trs7C34aka4fXas0vrn5Gw18KF98Wa4DAFWY9r4f
-        Zr1UJw4kCw1rKFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZa9
-        -UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820215320.4187-3-dakr@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Danilo,
 
-在 2023/08/22 7:22, Song Liu 写道:
-> On Sun, Aug 20, 2023 at 2:13 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> There are no functional changes, just to make the code simpler and
->> prepare to delay remove_and_add_spares() to md_start_sync().
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 28 ++++++++++++++++------------
->>   1 file changed, 16 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 11d27c934fdd..cdc361c521d4 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -9177,6 +9177,20 @@ static bool rdev_is_spare(struct md_rdev *rdev)
->>                 !test_bit(Faulty, &rdev->flags);
->>   }
->>
->> +static bool rdev_addable(struct md_rdev *rdev)
->> +{
->> +       if (test_bit(Candidate, &rdev->flags) || rdev->raid_disk >= 0 ||
->> +           test_bit(Faulty, &rdev->flags))
->> +               return false;
->> +
->> +       if (!test_bit(Journal, &rdev->flags) && !md_is_rdwr(rdev->mddev) &&
-> 
-> Instead of straightforward refactoring, I hope we can make these rdev_*
-> helpers more meaningful, and hopefullly reusable. For example, let's define
-> the meaning of "addable", and write the function to match that meaning. In
-> this case, I think we shouldn't check md_is_rdwr() inside rdev_addable().
-> 
-> Does this make sense?
+kernel test robot noticed the following build warnings:
 
-Yes, this make sense, rdev can be added to read-only array.
+[auto build test WARNING on 25205087df1ffe06ccea9302944ed1f77dc68c6f]
 
-There are total three callers of pers->hot_add_sisk, I'll try to find if
-they have common conditions.
+url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-drm_exec-build-always-builtin/20230821-123143
+base:   25205087df1ffe06ccea9302944ed1f77dc68c6f
+patch link:    https://lore.kernel.org/r/20230820215320.4187-3-dakr%40redhat.com
+patch subject: [PATCH drm-misc-next 2/3] drm/gpuva_mgr: generalize dma_resv/extobj handling and GEM validation
+config: sparc-randconfig-r022-20230822 (https://download.01.org/0day-ci/archive/20230822/202308221021.jCZejWoy-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230822/202308221021.jCZejWoy-lkp@intel.com/reproduce)
 
-Thanks,
-Kuai
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308221021.jCZejWoy-lkp@intel.com/
 
-> 
-> Thanks,
-> Song
-> 
-> 
->> +           !(rdev->saved_raid_disk >= 0 &&
->> +             !test_bit(Bitmap_sync, &rdev->flags)))
->> +               return false;
->> +
->> +       return true;
->> +}
->> +
->>   static int remove_and_add_spares(struct mddev *mddev,
->>                                   struct md_rdev *this)
->>   {
->> @@ -9227,20 +9241,10 @@ static int remove_and_add_spares(struct mddev *mddev,
->>                          continue;
->>                  if (rdev_is_spare(rdev))
->>                          spares++;
->> -               if (test_bit(Candidate, &rdev->flags))
->> +               if (!rdev_addable(rdev))
->>                          continue;
->> -               if (rdev->raid_disk >= 0)
->> -                       continue;
->> -               if (test_bit(Faulty, &rdev->flags))
->> -                       continue;
->> -               if (!test_bit(Journal, &rdev->flags)) {
->> -                       if (!md_is_rdwr(mddev) &&
->> -                           !(rdev->saved_raid_disk >= 0 &&
->> -                             !test_bit(Bitmap_sync, &rdev->flags)))
->> -                               continue;
->> -
->> +               if (!test_bit(Journal, &rdev->flags))
->>                          rdev->recovery_offset = 0;
->> -               }
->>                  if (mddev->pers->hot_add_disk(mddev, rdev) == 0) {
->>                          /* failure here is OK */
->>                          sysfs_link_rdev(mddev, rdev);
->> --
->> 2.39.2
->>
-> .
-> 
+All warnings (new ones prefixed by >>):
 
+>> drivers/gpu/drm/drm_gpuva_mgr.c:750:1: warning: no previous prototype for 'drm_gpuva_manager_prepare_objects' [-Wmissing-prototypes]
+     750 | drm_gpuva_manager_prepare_objects(struct drm_gpuva_manager *mgr,
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/gpu/drm/drm_gpuva_mgr.c: In function '__drm_gpuva_sm_map':
+   drivers/gpu/drm/drm_gpuva_mgr.c:1744:39: warning: variable 'prev' set but not used [-Wunused-but-set-variable]
+    1744 |         struct drm_gpuva *va, *next, *prev = NULL;
+         |                                       ^~~~
+
+
+vim +/drm_gpuva_manager_prepare_objects +750 drivers/gpu/drm/drm_gpuva_mgr.c
+
+   734	
+   735	/**
+   736	 * drm_gpuva_manager_prepare_objects() - prepare all assoiciated BOs
+   737	 * @mgr: the &drm_gpuva_manager
+   738	 * @num_fences: the amount of &dma_fences to reserve
+   739	 *
+   740	 * Calls drm_exec_prepare_obj() for all &drm_gem_objects the given
+   741	 * &drm_gpuva_manager contains mappings of.
+   742	 *
+   743	 * Drivers can obtain the corresponding &drm_exec instance through
+   744	 * DRM_GPUVA_EXEC(). It is the drivers responsibility to call drm_exec_init()
+   745	 * and drm_exec_fini() accordingly.
+   746	 *
+   747	 * Returns: 0 on success, negative error code on failure.
+   748	 */
+   749	int
+ > 750	drm_gpuva_manager_prepare_objects(struct drm_gpuva_manager *mgr,
+   751					  unsigned int num_fences)
+   752	{
+   753		struct drm_exec *exec = DRM_GPUVA_EXEC(mgr);
+   754		MA_STATE(mas, &mgr->mt_ext, 0, 0);
+   755		union {
+   756			void *ptr;
+   757			uintptr_t cnt;
+   758		} ref;
+   759		int ret;
+   760	
+   761		ret = drm_exec_prepare_obj(exec, &mgr->d_obj, num_fences);
+   762		if (ret)
+   763			goto out;
+   764	
+   765		rcu_read_lock();
+   766		mas_for_each(&mas, ref.ptr, ULONG_MAX) {
+   767			struct drm_gem_object *obj;
+   768	
+   769			mas_pause(&mas);
+   770			rcu_read_unlock();
+   771	
+   772			obj = (struct drm_gem_object *)(uintptr_t)mas.index;
+   773			ret = drm_exec_prepare_obj(exec, obj, num_fences);
+   774			if (ret)
+   775				goto out;
+   776	
+   777			rcu_read_lock();
+   778		}
+   779		rcu_read_unlock();
+   780	
+   781	out:
+   782		return ret;
+   783	}
+   784	EXPORT_SYMBOL_GPL(drm_gpuva_manager_prepare_objects);
+   785	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
