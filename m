@@ -2,99 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98777839C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5BF7839C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:15:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbjHVGMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:12:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        id S232964AbjHVGPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:15:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbjHVGMK (ORCPT
+        with ESMTP id S230116AbjHVGPx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:12:10 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03585186
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:12:09 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bc63ef9959so31999325ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1692684728; x=1693289528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w45Oqv9V+9GduMYZDVvpjOPvC6nIzmlSs0r5WVQ2Q5k=;
-        b=NRA3ibdjsNuRArDJbB+9n5vZjZxQGhFDqh2Cr9v17/iiJCG9qQo6bRiXx8hMPByy6O
-         wdAEn0XZi7zJASuTW9oGUjKm4QD2GkH6W5APo6rjGD5NDgjqrbxHF87+B3gitaeqCuCq
-         DwIu796zGkwCSTW+efq9ZxNNQczi0pIYy+/gg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692684728; x=1693289528;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w45Oqv9V+9GduMYZDVvpjOPvC6nIzmlSs0r5WVQ2Q5k=;
-        b=kuBZyqx3SVJjqrO/VRIKKgvuej2VjD1XKkYdpF397rui4oljj64eNYVLrj0uLOAuob
-         eHFcwbiFUsDjc63T6MFCDK3UQxMirryNUBUuwGKI098mZv0DEQizMY4bkFDQYmkaCXuc
-         kGfjcwxaKxbhoKfo0pTdvKnF7gz3SL+gcpQj9v4Fkhs4aLXmgdWPixZYqgGc8JDySZgW
-         7R2A+xD+tssWgH3m0DtC3ODFZlMy2yq1EzxztX/ryvVhbThyh17SeArghws/qlFU3WUP
-         dNI0JUX6E5P7g+y+wnkbumR3Pf92ps3ZOnEjCi9K86hxS9Jn4R6rdWUJUwicZGSn+jVa
-         KmXQ==
-X-Gm-Message-State: AOJu0Yz7i9OIODjhlxMMNOOWpY8MwvHoCQ3HslD6h5ekLsX3UCsk/gp+
-        SQBE/1I2o/cl2+jukMUnuOKldw==
-X-Google-Smtp-Source: AGHT+IHiuSHIk401989XjYLzZuT/i2ncQJKajBtdSdauDZOiU31hXa77jn81segf0rCj+wwJsWu52Q==
-X-Received: by 2002:a17:902:d4c9:b0:1b8:a88c:4dc6 with SMTP id o9-20020a170902d4c900b001b8a88c4dc6mr11451735plg.45.1692684728409;
-        Mon, 21 Aug 2023 23:12:08 -0700 (PDT)
-Received: from google.com ([2401:fa00:8f:203:f833:4d35:e744:4f9e])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170903230200b001b9ecee459csm8122816plh.34.2023.08.21.23.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Aug 2023 23:12:07 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 15:12:03 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Ying Sun <sunying@nj.iscas.ac.cn>,
-        Jesse T <mr.bossman075@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
-Message-ID: <20230822061203.GA610023@google.com>
-References: <20230817012007.131868-1-senozhatsky@chromium.org>
- <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
- <20230820024519.GK907732@google.com>
- <CAK7LNAS9KC1GjPgadMEivSpy4TMYU8mQ+BrtfJpNs2kvhK18yA@mail.gmail.com>
- <20230820072119.GM907732@google.com>
- <20230820073332.GN907732@google.com>
- <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
+        Tue, 22 Aug 2023 02:15:53 -0400
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD231187
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:15:51 -0700 (PDT)
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4RVJxZ61TPz9vw8;
+        Tue, 22 Aug 2023 08:15:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id I13ZQsdCp2iD; Tue, 22 Aug 2023 08:15:46 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4RVJxY2VGCz9vw6;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5212B8B779;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id RNf6ZCMML_nr; Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.234.16])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 11E498B766;
+        Tue, 22 Aug 2023 08:15:45 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 37M6DKw8825675
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 08:13:20 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 37M6DJ65825670;
+        Tue, 22 Aug 2023 08:13:19 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] powerpc/85xx: Mark some functions static and add missing includes to fix no previous prototype error
+Date:   Tue, 22 Aug 2023 08:13:13 +0200
+Message-ID: <c90780017b624b91771a3e4240dcbadc68137915.1692684784.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1692684792; l=9629; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=/MwMhKyCwtRgbWNMb9EDcEVmn0M3rv4Lr0EXwT/HClM=; b=NkMmGpAb5NKJrUbKzmee1MhhHiAWsbW6v3BTNts+UiI/RNKy6hWmRsmTMW6jsOTnOftdU7wc9 IH70UXDCBERAzam/9msGgsqPLRg97ad/ofEKYfqEGAn71OGuU8k6Kyo
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/21 21:27), Masahiro Yamada wrote:
-> 
-> My (original) hope was to add a single switch, KCONFIG_VERBOSE, to address both:
-> 
->   - A CONFIG option is hidden by unmet dependency (Ying Sun's case)
->   - A CONFIG option no longer exists  (your case)
->   - Anything else we need to be careful
+corenet{32/64}_smp_defconfig leads to:
 
-A quick question: is it too late to suggest an alternative name?
-Could KCONFIG_SANITY_CHECKS be a little cleaner? Because we basically
-run sanity checks on the config.
+  CC      arch/powerpc/sysdev/ehv_pic.o
+arch/powerpc/sysdev/ehv_pic.c:45:6: error: no previous prototype for 'ehv_pic_unmask_irq' [-Werror=missing-prototypes]
+   45 | void ehv_pic_unmask_irq(struct irq_data *d)
+      |      ^~~~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/ehv_pic.c:52:6: error: no previous prototype for 'ehv_pic_mask_irq' [-Werror=missing-prototypes]
+   52 | void ehv_pic_mask_irq(struct irq_data *d)
+      |      ^~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/ehv_pic.c:59:6: error: no previous prototype for 'ehv_pic_end_irq' [-Werror=missing-prototypes]
+   59 | void ehv_pic_end_irq(struct irq_data *d)
+      |      ^~~~~~~~~~~~~~~
+arch/powerpc/sysdev/ehv_pic.c:66:6: error: no previous prototype for 'ehv_pic_direct_end_irq' [-Werror=missing-prototypes]
+   66 | void ehv_pic_direct_end_irq(struct irq_data *d)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/ehv_pic.c:71:5: error: no previous prototype for 'ehv_pic_set_affinity' [-Werror=missing-prototypes]
+   71 | int ehv_pic_set_affinity(struct irq_data *d, const struct cpumask *dest,
+      |     ^~~~~~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/ehv_pic.c:112:5: error: no previous prototype for 'ehv_pic_set_irq_type' [-Werror=missing-prototypes]
+  112 | int ehv_pic_set_irq_type(struct irq_data *d, unsigned int flow_type)
+      |     ^~~~~~~~~~~~~~~~~~~~
+  CC      arch/powerpc/sysdev/fsl_rio.o
+arch/powerpc/sysdev/fsl_rio.c:102:5: error: no previous prototype for 'fsl_rio_mcheck_exception' [-Werror=missing-prototypes]
+  102 | int fsl_rio_mcheck_exception(struct pt_regs *regs)
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/fsl_rio.c:306:5: error: no previous prototype for 'fsl_map_inb_mem' [-Werror=missing-prototypes]
+  306 | int fsl_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
+      |     ^~~~~~~~~~~~~~~
+arch/powerpc/sysdev/fsl_rio.c:357:6: error: no previous prototype for 'fsl_unmap_inb_mem' [-Werror=missing-prototypes]
+  357 | void fsl_unmap_inb_mem(struct rio_mport *mport, dma_addr_t lstart)
+      |      ^~~~~~~~~~~~~~~~~
+arch/powerpc/sysdev/fsl_rio.c:445:5: error: no previous prototype for 'fsl_rio_setup' [-Werror=missing-prototypes]
+  445 | int fsl_rio_setup(struct platform_device *dev)
+      |     ^~~~~~~~~~~~~
+  CC      arch/powerpc/sysdev/fsl_rmu.o
+arch/powerpc/sysdev/fsl_rmu.c:362:6: error: no previous prototype for 'msg_unit_error_handler' [-Werror=missing-prototypes]
+  362 | void msg_unit_error_handler(void)
+      |      ^~~~~~~~~~~~~~~~~~~~~~
+  CC      arch/powerpc/platforms/85xx/corenet_generic.o
+arch/powerpc/platforms/85xx/corenet_generic.c:33:13: error: no previous prototype for 'corenet_gen_pic_init' [-Werror=missing-prototypes]
+   33 | void __init corenet_gen_pic_init(void)
+      |             ^~~~~~~~~~~~~~~~~~~~
+arch/powerpc/platforms/85xx/corenet_generic.c:51:13: error: no previous prototype for 'corenet_gen_setup_arch' [-Werror=missing-prototypes]
+   51 | void __init corenet_gen_setup_arch(void)
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+arch/powerpc/platforms/85xx/corenet_generic.c:104:12: error: no previous prototype for 'corenet_gen_publish_devices' [-Werror=missing-prototypes]
+  104 | int __init corenet_gen_publish_devices(void)
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+  CC      arch/powerpc/platforms/85xx/qemu_e500.o
+arch/powerpc/platforms/85xx/qemu_e500.c:28:13: error: no previous prototype for 'qemu_e500_pic_init' [-Werror=missing-prototypes]
+   28 | void __init qemu_e500_pic_init(void)
+      |             ^~~~~~~~~~~~~~~~~~
+  CC      arch/powerpc/kernel/pmc.o
+arch/powerpc/kernel/pmc.c:78:6: error: no previous prototype for 'power4_enable_pmcs' [-Werror=missing-prototypes]
+   78 | void power4_enable_pmcs(void)
+      |      ^~~~~~~~~~~~~~~~~~
 
-And one more question: those sanity checks seem very reasonable.
-Is there any reason we would not want to keep them ON by default?
-And those brave souls, that do not wish for the tool to very that
-the .config is sane and nothing will get downgraded/disabled, can
-always set KCONFIG_SANITY_CHECKS to 0.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/powerpc/kernel/pmc.c                     |  2 +-
+ arch/powerpc/platforms/85xx/corenet_generic.c |  6 +++---
+ arch/powerpc/platforms/85xx/qemu_e500.c       |  2 +-
+ arch/powerpc/sysdev/ehv_pic.c                 | 12 ++++++------
+ arch/powerpc/sysdev/fsl_rio.c                 |  9 +++++----
+ arch/powerpc/sysdev/fsl_rmu.c                 |  2 +-
+ 6 files changed, 17 insertions(+), 16 deletions(-)
+
+diff --git a/arch/powerpc/kernel/pmc.c b/arch/powerpc/kernel/pmc.c
+index 15414c8a2837..9fabb4d9235e 100644
+--- a/arch/powerpc/kernel/pmc.c
++++ b/arch/powerpc/kernel/pmc.c
+@@ -74,7 +74,7 @@ void release_pmc_hardware(void)
+ }
+ EXPORT_SYMBOL_GPL(release_pmc_hardware);
+ 
+-#ifdef CONFIG_PPC64
++#ifdef CONFIG_PPC_BOOK3S_64
+ void power4_enable_pmcs(void)
+ {
+ 	unsigned long hid0;
+diff --git a/arch/powerpc/platforms/85xx/corenet_generic.c b/arch/powerpc/platforms/85xx/corenet_generic.c
+index bfde391c42f4..645fcca77cde 100644
+--- a/arch/powerpc/platforms/85xx/corenet_generic.c
++++ b/arch/powerpc/platforms/85xx/corenet_generic.c
+@@ -30,7 +30,7 @@
+ #include "smp.h"
+ #include "mpc85xx.h"
+ 
+-void __init corenet_gen_pic_init(void)
++static void __init corenet_gen_pic_init(void)
+ {
+ 	struct mpic *mpic;
+ 	unsigned int flags = MPIC_BIG_ENDIAN | MPIC_SINGLE_DEST_CPU |
+@@ -48,7 +48,7 @@ void __init corenet_gen_pic_init(void)
+ /*
+  * Setup the architecture
+  */
+-void __init corenet_gen_setup_arch(void)
++static void __init corenet_gen_setup_arch(void)
+ {
+ 	mpc85xx_smp_init();
+ 
+@@ -101,7 +101,7 @@ static const struct of_device_id of_device_ids[] = {
+ 	{}
+ };
+ 
+-int __init corenet_gen_publish_devices(void)
++static int __init corenet_gen_publish_devices(void)
+ {
+ 	return of_platform_bus_probe(NULL, of_device_ids, NULL);
+ }
+diff --git a/arch/powerpc/platforms/85xx/qemu_e500.c b/arch/powerpc/platforms/85xx/qemu_e500.c
+index 6e4b1ddf292b..3cd2f3bd4223 100644
+--- a/arch/powerpc/platforms/85xx/qemu_e500.c
++++ b/arch/powerpc/platforms/85xx/qemu_e500.c
+@@ -25,7 +25,7 @@
+ #include "smp.h"
+ #include "mpc85xx.h"
+ 
+-void __init qemu_e500_pic_init(void)
++static void __init qemu_e500_pic_init(void)
+ {
+ 	struct mpic *mpic;
+ 	unsigned int flags = MPIC_BIG_ENDIAN | MPIC_SINGLE_DEST_CPU |
+diff --git a/arch/powerpc/sysdev/ehv_pic.c b/arch/powerpc/sysdev/ehv_pic.c
+index c7327b836d2b..040827671d21 100644
+--- a/arch/powerpc/sysdev/ehv_pic.c
++++ b/arch/powerpc/sysdev/ehv_pic.c
+@@ -42,33 +42,33 @@ static u32 __iomem *mpic_percpu_base_vaddr;
+  * Linux descriptor level callbacks
+  */
+ 
+-void ehv_pic_unmask_irq(struct irq_data *d)
++static void ehv_pic_unmask_irq(struct irq_data *d)
+ {
+ 	unsigned int src = virq_to_hw(d->irq);
+ 
+ 	ev_int_set_mask(src, 0);
+ }
+ 
+-void ehv_pic_mask_irq(struct irq_data *d)
++static void ehv_pic_mask_irq(struct irq_data *d)
+ {
+ 	unsigned int src = virq_to_hw(d->irq);
+ 
+ 	ev_int_set_mask(src, 1);
+ }
+ 
+-void ehv_pic_end_irq(struct irq_data *d)
++static void ehv_pic_end_irq(struct irq_data *d)
+ {
+ 	unsigned int src = virq_to_hw(d->irq);
+ 
+ 	ev_int_eoi(src);
+ }
+ 
+-void ehv_pic_direct_end_irq(struct irq_data *d)
++static void ehv_pic_direct_end_irq(struct irq_data *d)
+ {
+ 	out_be32(mpic_percpu_base_vaddr + MPIC_EOI / 4, 0);
+ }
+ 
+-int ehv_pic_set_affinity(struct irq_data *d, const struct cpumask *dest,
++static int ehv_pic_set_affinity(struct irq_data *d, const struct cpumask *dest,
+ 			 bool force)
+ {
+ 	unsigned int src = virq_to_hw(d->irq);
+@@ -109,7 +109,7 @@ static unsigned int ehv_pic_type_to_vecpri(unsigned int type)
+ 	}
+ }
+ 
+-int ehv_pic_set_irq_type(struct irq_data *d, unsigned int flow_type)
++static int ehv_pic_set_irq_type(struct irq_data *d, unsigned int flow_type)
+ {
+ 	unsigned int src = virq_to_hw(d->irq);
+ 	unsigned int vecpri, vold, vnew, prio, cpu_dest;
+diff --git a/arch/powerpc/sysdev/fsl_rio.c b/arch/powerpc/sysdev/fsl_rio.c
+index efd8f6291ea6..f9b214b299e7 100644
+--- a/arch/powerpc/sysdev/fsl_rio.c
++++ b/arch/powerpc/sysdev/fsl_rio.c
+@@ -33,6 +33,7 @@
+ #include <linux/io.h>
+ #include <linux/uaccess.h>
+ #include <asm/machdep.h>
++#include <asm/rio.h>
+ 
+ #include "fsl_rio.h"
+ 
+@@ -303,8 +304,8 @@ static void fsl_rio_inbound_mem_init(struct rio_priv *priv)
+ 		out_be32(&priv->inb_atmu_regs[i].riwar, 0);
+ }
+ 
+-int fsl_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
+-	u64 rstart, u64 size, u32 flags)
++static int fsl_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
++			   u64 rstart, u64 size, u32 flags)
+ {
+ 	struct rio_priv *priv = mport->priv;
+ 	u32 base_size;
+@@ -354,7 +355,7 @@ int fsl_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
+ 	return 0;
+ }
+ 
+-void fsl_unmap_inb_mem(struct rio_mport *mport, dma_addr_t lstart)
++static void fsl_unmap_inb_mem(struct rio_mport *mport, dma_addr_t lstart)
+ {
+ 	u32 win_start_shift, base_start_shift;
+ 	struct rio_priv *priv = mport->priv;
+@@ -442,7 +443,7 @@ static inline void fsl_rio_info(struct device *dev, u32 ccsr)
+  * master port with system-specific info, and registers the
+  * master port with the RapidIO subsystem.
+  */
+-int fsl_rio_setup(struct platform_device *dev)
++static int fsl_rio_setup(struct platform_device *dev)
+ {
+ 	struct rio_ops *ops;
+ 	struct rio_mport *port;
+diff --git a/arch/powerpc/sysdev/fsl_rmu.c b/arch/powerpc/sysdev/fsl_rmu.c
+index 58221b6e1465..f956591cb64e 100644
+--- a/arch/powerpc/sysdev/fsl_rmu.c
++++ b/arch/powerpc/sysdev/fsl_rmu.c
+@@ -359,7 +359,7 @@ fsl_rio_dbell_handler(int irq, void *dev_instance)
+ 	return IRQ_HANDLED;
+ }
+ 
+-void msg_unit_error_handler(void)
++static void msg_unit_error_handler(void)
+ {
+ 
+ 	/*XXX: Error recovery is not implemented, we just clear errors */
+-- 
+2.41.0
+
