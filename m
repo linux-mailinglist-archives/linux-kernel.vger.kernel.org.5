@@ -2,245 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CD178408F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58AD784088
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235655AbjHVMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        id S235628AbjHVMQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235638AbjHVMRP (ORCPT
+        with ESMTP id S235613AbjHVMQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:17:15 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E6E5CDA;
-        Tue, 22 Aug 2023 05:17:07 -0700 (PDT)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37M6nNZO003513;
-        Tue, 22 Aug 2023 14:16:42 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=8ENWQxVlfQr3qVTiWllxpoMpJhThCEawgKlW0Xs1aHo=; b=FV
-        k3OxfJT2GqTXmG4jDNDcDlucIRojpFKU0W4yTDnnhmsqaKTUhLYNVHkfsgvQF5Tl
-        Vv1kPjnoQLfm0+FdmxPP5i47EWnBmK5caaNZvrmnV2SaF8JGogytMZbXMCZ71HQo
-        B5AKbRW0csVo1bN2j+6kqMvEB9L4CZ/x0abU7i/P08zHzig0+jDbaYgzlrRXhY2S
-        XwbIISurqwVYRDO9BSIKKwu3EuMbL5vpEkwtCE0J4uti0qAT548ZyBPkouU8iVHh
-        TNjRAFP1Hhjrqju/ZMWqRU7fePRFXdvbPdEmfBqApJMzC+BMLcBdx7Ktn1x5MSl5
-        OjMpTHivZbh4c+iHy2Iw==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3smbvub7ey-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 14:16:42 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B3D8710004D;
-        Tue, 22 Aug 2023 14:16:39 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9D98726A825;
-        Tue, 22 Aug 2023 14:16:39 +0200 (CEST)
-Received: from [10.201.22.206] (10.201.22.206) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 22 Aug
- 2023 14:16:36 +0200
-Message-ID: <a2de9e15-9640-9b72-9df4-7e1ee3054dd9@foss.st.com>
-Date:   Tue, 22 Aug 2023 14:16:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] remoteproc: imx_dsp_rproc: add module parameter to
- ignore ready flag from remote processor
-Content-Language: en-US
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-CC:     "Iuliana Prodan (OSS)" <iuliana.prodan@oss.nxp.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        "S.J. Wang" <shengjiu.wang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mpuaudiosw <Mpuaudiosw@nxp.com>, linux-imx <linux-imx@nxp.com>,
-        <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        LnxRevLi <LnxRevLi@nxp.com>
-References: <20230712224251.26482-1-iuliana.prodan@oss.nxp.com>
- <ZLV7q9ipDaw4b1Hi@p14s> <6fe5691f-67f4-ff70-8350-b4b6c08097b0@nxp.com>
- <ZLa0MqKvg1W3mx/7@p14s> <86da3550-9711-6714-0857-2f7611dc9453@nxp.com>
- <ZLgFiW+IH3m4MWLw@p14s>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Organization: STMicroelectronics
-In-Reply-To: <ZLgFiW+IH3m4MWLw@p14s>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.22.206]
-X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_11,2023-08-22_01,2023-05-22_02
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 22 Aug 2023 08:16:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A3E198
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:16:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 06BA2654FF
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:16:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E82CC433C7;
+        Tue, 22 Aug 2023 12:16:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692706599;
+        bh=6XMjf+C4m4wP8MbAFKnHL/NuZkI92jUFLqpHVKBmErg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aImy2TutP43Bd0VZsbv36ecP7vPoIYe/Up6bTk3xvsLNnw6MhFkK8QT8tomBzAkD+
+         QSsgU55g0hRPyMPRbCpMAFycSI1VgggT2PGIMd4Qk1KUMWNSxAdjwCfibFTkvK2VYP
+         3g7WQ1YZ+Cr+1nhhOGdhCyTVVyVmsDrnNF+HbuPoNOEXJDaxD0ZxILyOTi97PRuClK
+         ac+gEpcE6k6MXMbpV3iIf365AOQentqEYTibsSUZl0NxytERLQjqJoHn4UIqqTaru7
+         US9U+0DqhkXjEUuf4AsqXrSEooXxf5DrwynUPliIgGCHrE7ttIf4+QBnBIB3Bkfs2H
+         HA8yC+eEdou+Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qYQJI-0071Mo-JJ;
+        Tue, 22 Aug 2023 13:16:36 +0100
+Date:   Tue, 22 Aug 2023 13:16:36 +0100
+Message-ID: <86il97ff17.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, eauger@redhat.com,
+        miguel.luis@oracle.com, darren@os.amperecomputing.com,
+        scott@os.amperecomputing.com,
+        Christoffer Dall <Christoffer.Dall@arm.com>
+Subject: Re: [PATCH 2/2] KVM: arm64: timers: Adjust CVAL of a ptimer across guest entry and exits
+In-Reply-To: <0c5fb304-8c69-80c3-6f1e-487828554244@os.amperecomputing.com>
+References: <20230817060314.535987-1-gankulkarni@os.amperecomputing.com>
+        <20230817060314.535987-3-gankulkarni@os.amperecomputing.com>
+        <87bkf6oyyt.wl-maz@kernel.org>
+        <0c5fb304-8c69-80c3-6f1e-487828554244@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, eauger@redhat.com, miguel.luis@oracle.com, darren@os.amperecomputing.com, scott@os.amperecomputing.com, Christoffer.Dall@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juliana
+On Thu, 17 Aug 2023 10:27:55 +0100,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+>=20
+>=20
+> Hi Marc,
+>=20
+> On 17-08-2023 01:57 pm, Marc Zyngier wrote:
+> > [Fixing Christoffer's email address]
+>=20
+> Thanks.
+> >=20
+> > On Thu, 17 Aug 2023 07:03:14 +0100,
+> > Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> >>=20
+> >> As per FEAT_ECV, when HCR_EL2.{E2H, TGE} =3D=3D {1, 1}, Enhanced Count=
+er
+> >> Virtualization functionality is disabled and CNTPOFF_EL2 value is trea=
+ted
+> >> as zero. On VHE host, E2H and TGE are set, hence it is required
+> >> to adjust CVAL by incrementing it by CNTPOFF_EL2 after guest
+> >> exit to avoid false physical timer interrupts and also
+> >> decrement/restore CVAL before the guest entry.
+> >=20
+> > No, this is wrong. Neither E2H nor TGE have any impact on writing to
+> > CNTPOFF_EL2, nor does it have an impact on CNTP_CVAL_EL0. Just read
+> > the pseudocode to convince yourself.
+> >=20
+> > CNTPOFF_EL2 is applied at exactly two points: when SW is reading
+> > CNTPCT_EL0 from EL1 while {E2H,TGE}=3D=3D{1, 0} and when the HW is
+> > comparing CNTPCT_EL0 with the CNTP_CVAL_EL0. In both cases the offset
+> > is subtracted from the counter. And that's the point where the running
+> > EL matters. Which means that CNTPOFF_EL2 behaves exactly like
+> > CNTVOFF_EL2. No ifs, no buts.
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D11-5989)
+> "When FEAT_ECV is implemented, the CNTPOFF_EL2 register allows an
+> offset to be applied to the physical counter, as viewed from EL1 and
+> EL0, and to the EL1 physical timer. The functionality of this 64-bit
+> register is affected by CNTHCTL_EL2.ECV."
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D19-7857)
+> "When HCR_EL2.{E2H, TGE} =3D=3D {1, 1} or SCR_EL3.{NS, EEL2} =3D=3D {0, 0=
+}, then
+> Enhanced Counter Virtualization functionality is disabled."
+>=20
+> "The EL1 physical timer interrupt is triggered when ((PCount<63:0> -
+> CNTPOFF_EL2<63:0>) - PCVal<63:0>) is greater than or equal to 0."
+>=20
+> As per ARM ARM (ARM DDI 0487J.a page D19-7938)
+> "When EL2 is implemented and enabled in the current Security state,
+> the physical counter uses a fixed physical offset of *zero* if any of
+> the following are true:
+> =E2=80=A2 CNTHCTL_EL2.ECV is 0.
+> =E2=80=A2 SCR_EL3.ECVEn is 0.
+> =E2=80=A2 HCR_EL2.{E2H, TGE} is {1, 1}."
+>=20
+> In VHE host hypervisor, E2H=3DTGE=3D1 hence ECV is disabled and Ptimer
+> interrupt is triggered based on PCount<63:0> - PCVal<63:0>
+>=20
+> Since cval is set by Guest as per offsetted PCounter value and pCount
+> is not subtracted by CNTPOFF when in VHE-L0, results in cval becoming
+> much lesser than physical counter(bumped up since CNTPOFF is zero) and
+> timer interrupt trigger condition is met falsely.
+>=20
+> There is no issue/impact on cval due to ECV, however it can be/is
+> manipulated to handle this on and off of CNTPOFF/ECV.
+>=20
+> IIUC, CNTPOFF and CNTVOFF are not same as per specification.
 
-On 7/19/23 17:47, Mathieu Poirier wrote:
-> On Tue, Jul 18, 2023 at 07:44:49PM +0300, Iuliana Prodan wrote:
->> On 7/18/2023 6:48 PM, Mathieu Poirier wrote:
->>> On Tue, Jul 18, 2023 at 11:30:43AM +0300, Iuliana Prodan wrote:
->>>> Hi Mathieu,
->>>>
->>>> On 7/17/2023 8:34 PM, Mathieu Poirier wrote:
->>>>> Hi Iuliana,
->>>>>
->>>>> On Thu, Jul 13, 2023 at 01:42:51AM +0300, Iuliana Prodan (OSS) wrote:
->>>>>> From: Iuliana Prodan <iuliana.prodan@nxp.com>
->>>>>>
->>>>>> There are cases when we want to test samples that do not
->>>>>> reply with FW READY message, after fw is loaded and the
->>>>>> remote processor started.
->>>>> This seems like a bug to me - where is this FW comes from?
->>>> The firmware is a generic sample from Zephyr repo: https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table
->>>>
->>>> There is no bug, this is how the application was written.
->>> But how did it ever worked before?
->>
->> It never worked on this kind of samples (and it was never tested like this).
->> We used only applications written by us (NXP) with the
->> requirements/limitations we know we have.
->> Now, we want to use also generic firmware/samples (from Zephyr) and we face
->> other kind of limitations.
+I owe you an apology. You are correct, and I was totally wrong.  I'm
+truly amazed how wrong we got this part of the architecture, but it is
+way too late for any change, and we'll have to live with it.
 
-It makes sense to me to adapt the sample in Zephyr to add this synchronization
-under a config flag (I am the author of this sample).
+Now, to the actual patch: I think the way you offset CVAL isn't
+great. You should never have to change it on entry, and you should
+instead read the correct value from memory. Then, save/restore of CVAL
+must be amended to always apply the offset. Can you give the hack
+below a go on your HW?
 
-FYI, this sample is currently only running on the STM32MP15 boards for
-communication with Linux. For these boards, there is no need for synchronization
-before starting the IPC communication.
-So extending the sample to support a second board will make it more generic :)
+Thanks,
 
-Regards,
-Arnaud
+	M.
 
->>
-> 
-> Right, we can't expect firmware written for a totally different OS to work out
-> of the box on Linux, and vice versa.
-> 
->>>   And how does having a module flag to
->>> characterize each FW implementation that springs up in the field can scale (and
->>> be maintainable)?
->>
->> I believe the FW_READY reply is a limitation introduced by imx_dsp_rproc.
->> We cannot expect all firmware to give a FW_READY reply.
->> So, to keep both usecases (internal firmware and generic sample) I added
->> this flag.
->>
-> 
-> What happens when a third, fourth and fifth protocol variation get introduced?
-> Adding flags just doesn't scale.
-> 
->>>> Rather than modifying a generic sample for i.MX usecase, I prefer doing an
->>>> "insmod imx_dsp_rproc.ko ignore_dsp_ready=1" just for this sample.
->>> We already have a "no_mailbox" flag for cases where the FW doesn't need to
->>> communicate with the main processor.
->> "no_mailbox" - no IPC between cores;
->> "ignore_dsp_ready" - we have IPC between cores, but the remote processor
->> doesn't send a fw_ready reply
->> These two can be combine, but for "no_mailbox" will do some useless memory
->> allocations.
->>
->> When I added the "no_mailbox" flag, the problem was still FW_READY.
->>>   What happens when some FW implementation
->>> requires a three-way handshake?  How many flags do we spin off?
->>>
->>> As I said above this approach is not sustainable.  I suggest to either fix the
->>> FW (it doesn't work with upstream in its present form anyway) or start using the
->>> config space as described here [1] to dynamically probe the characteristics of
->>> the FW being loaded.  Whichever option you chose, the FW needs to be updated and
->>> the former is a lot more simple.
->> I don't think I can modify a generic sample, used on other targets to send a
->> FW_READY reply.
->> How will it be handled on other platforms, if their *_rproc are not
->> expecting this kind of message?
->>
-> 
-> The only way forward is to come up with a standard specification to describe the
-> protocol to use, the same way it is done for virtIO for example.
-> 
->> Thanks,
->> Iulia
->>
->>> Thanks,
->>> Mathieu
->>>
->>> [1]. https://elixir.bootlin.com/linux/latest/source/include/linux/remoteproc.h#L298
->>>
->>>> Thanks,
->>>> Iulia
->>>>
->>>>>> In these cases, do not wait for a confirmation from the remote processor
->>>>>> at start.
->>>>>>
->>>>>> Added "ignore_dsp_ready" flag while inserting the module to ignore
->>>>>> remote processor reply after start.
->>>>>> By default, this is off - do not ignore reply from rproc.
->>>>>>
->>>>>> Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
->>>>>>
->>>>>> ---
->>>>>> This was discovered while testing openamp_rsc_table sample from Zephyr
->>>>>> repo (https://github.com/zephyrproject-rtos/zephyr/tree/main/samples/subsys/ipc/openamp_rsc_table).
->>>>>>
->>>>>> We have IPC, but the remote proc doesn't send a FW_READY reply.
->>>>>> ---
->>>>>>    drivers/remoteproc/imx_dsp_rproc.c | 15 +++++++++++++++
->>>>>>    1 file changed, 15 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/remoteproc/imx_dsp_rproc.c b/drivers/remoteproc/imx_dsp_rproc.c
->>>>>> index b5634507d953..ed89de2f3b98 100644
->>>>>> --- a/drivers/remoteproc/imx_dsp_rproc.c
->>>>>> +++ b/drivers/remoteproc/imx_dsp_rproc.c
->>>>>> @@ -36,7 +36,13 @@ module_param_named(no_mailboxes, no_mailboxes, int, 0644);
->>>>>>    MODULE_PARM_DESC(no_mailboxes,
->>>>>>    		 "There is no mailbox between cores, so ignore remote proc reply after start, default is 0 (off).");
->>>>>> +static unsigned int imx_dsp_rproc_ignore_ready;
->>>>>> +module_param_named(ignore_dsp_ready, imx_dsp_rproc_ignore_ready, int, 0644);
->>>>>> +MODULE_PARM_DESC(ignore_dsp_ready,
->>>>>> +		 "Ignore remote proc reply after start, default is 0 (off).");
->>>>>> +
->>>>>>    #define REMOTE_IS_READY				BIT(0)
->>>>>> +#define REMOTE_IGNORE_READY_REPLY	BIT(1)
->>>>>>    #define REMOTE_READY_WAIT_MAX_RETRIES		500
->>>>>>    /* att flags */
->>>>>> @@ -296,6 +302,12 @@ static int imx_dsp_rproc_ready(struct rproc *rproc)
->>>>>>    	if (!priv->rxdb_ch)
->>>>>>    		return 0;
->>>>>> +	/*
->>>>>> +	 * FW_READY reply is optional/ignored, so don't wait for it.
->>>>>> +	 */
->>>>>> +	if (priv->flags & REMOTE_IGNORE_READY_REPLY)
->>>>>> +		return 0;
->>>>>> +
->>>>>>    	for (i = 0; i < REMOTE_READY_WAIT_MAX_RETRIES; i++) {
->>>>>>    		if (priv->flags & REMOTE_IS_READY)
->>>>>>    			return 0;
->>>>>> @@ -1119,6 +1131,9 @@ static int imx_dsp_rproc_probe(struct platform_device *pdev)
->>>>>>    	else
->>>>>>    		imx_dsp_rproc_mbox_init = imx_dsp_rproc_mbox_alloc;
->>>>>> +	if (imx_dsp_rproc_ignore_ready)
->>>>>> +		priv->flags |= REMOTE_IGNORE_READY_REPLY;
->>>>>> +
->>>>>>    	dev_set_drvdata(dev, rproc);
->>>>>>    	INIT_WORK(&priv->rproc_work, imx_dsp_rproc_vq_work);
->>>>>> -- 
->>>>>> 2.17.1
->>>>>>
+diff --git a/arch/arm64/kvm/arch_timer.c b/arch/arm64/kvm/arch_timer.c
+index ea46b4e1e7a8..bb80fdd84676 100644
+--- a/arch/arm64/kvm/arch_timer.c
++++ b/arch/arm64/kvm/arch_timer.c
+@@ -55,11 +55,6 @@ static struct irq_ops arch_timer_irq_ops =3D {
+ 	.get_input_level =3D kvm_arch_timer_get_input_level,
+ };
+=20
+-static bool has_cntpoff(void)
+-{
+-	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
+-}
+-
+ static int nr_timers(struct kvm_vcpu *vcpu)
+ {
+ 	if (!vcpu_has_nv2(vcpu))
+@@ -180,7 +175,7 @@ u64 kvm_phys_timer_read(void)
+ 	return timecounter->cc->read(timecounter->cc);
+ }
+=20
+-static void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map)
++void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map)
+ {
+ 	if (vcpu_has_nv2(vcpu)) {
+ 		if (is_hyp_ctxt(vcpu)) {
+@@ -569,8 +564,7 @@ static void timer_save_state(struct arch_timer_context =
+*ctx)
+ 		timer_set_ctl(ctx, read_sysreg_el0(SYS_CNTP_CTL));
+ 		cval =3D read_sysreg_el0(SYS_CNTP_CVAL);
+=20
+-		if (!has_cntpoff())
+-			cval -=3D timer_get_offset(ctx);
++		cval -=3D timer_get_offset(ctx);
+=20
+ 		timer_set_cval(ctx, cval);
+=20
+@@ -657,8 +651,7 @@ static void timer_restore_state(struct arch_timer_conte=
+xt *ctx)
+ 		cval =3D timer_get_cval(ctx);
+ 		offset =3D timer_get_offset(ctx);
+ 		set_cntpoff(offset);
+-		if (!has_cntpoff())
+-			cval +=3D offset;
++		cval +=3D offset;
+ 		write_sysreg_el0(cval, SYS_CNTP_CVAL);
+ 		isb();
+ 		write_sysreg_el0(timer_get_ctl(ctx), SYS_CNTP_CTL);
+diff --git a/arch/arm64/kvm/hyp/vhe/switch.c b/arch/arm64/kvm/hyp/vhe/switc=
+h.c
+index 9611b4eaf661..6e3d3e16563f 100644
+--- a/arch/arm64/kvm/hyp/vhe/switch.c
++++ b/arch/arm64/kvm/hyp/vhe/switch.c
+@@ -90,6 +90,20 @@ static void __activate_traps(struct kvm_vcpu *vcpu)
+=20
+ 	___activate_traps(vcpu, hcr);
+=20
++	if (has_cntpoff()) {
++		struct timer_map map;
++
++		get_timer_map(vcpu, &map);
++
++		if (map.direct_ptimer =3D=3D vcpu_ptimer(vcpu))
++			val =3D __vcpu_sys_reg(vcpu, CNTP_CVAL_EL0);
++		else
++			val =3D __vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2);
++
++		isb();
++		write_sysreg_s(val, SYS_CNTP_CVAL_EL0);
++	}
++
+ 	val =3D read_sysreg(cpacr_el1);
+ 	val |=3D CPACR_ELx_TTA;
+ 	val &=3D ~(CPACR_EL1_ZEN_EL0EN | CPACR_EL1_ZEN_EL1EN |
+@@ -131,6 +145,23 @@ static void __deactivate_traps(struct kvm_vcpu *vcpu)
+=20
+ 	write_sysreg(HCR_HOST_VHE_FLAGS, hcr_el2);
+=20
++	if (has_cntpoff()) {
++		struct timer_map map;
++		u64 val, offset;
++
++		get_timer_map(vcpu, &map);
++
++		val =3D read_sysreg_s(SYS_CNTP_CVAL_EL0);
++		if (map.direct_ptimer =3D=3D vcpu_ptimer(vcpu))
++			__vcpu_sys_reg(vcpu, CNTP_CVAL_EL0) =3D val;
++		else
++			__vcpu_sys_reg(vcpu, CNTHP_CVAL_EL2) =3D val;
++
++		offset =3D read_sysreg_s(SYS_CNTPOFF_EL2);
++		write_sysreg_s(val + offset, SYS_CNTP_CVAL_EL0);
++		isb();
++	}
++
+ 	/*
+ 	 * ARM errata 1165522 and 1530923 require the actual execution of the
+ 	 * above before we can switch to the EL2/EL0 translation regime used by
+diff --git a/include/kvm/arm_arch_timer.h b/include/kvm/arm_arch_timer.h
+index ea77a569a907..86a73ad1446a 100644
+--- a/include/kvm/arm_arch_timer.h
++++ b/include/kvm/arm_arch_timer.h
+@@ -82,6 +82,8 @@ struct timer_map {
+ 	struct arch_timer_context *emul_ptimer;
+ };
+=20
++void get_timer_map(struct kvm_vcpu *vcpu, struct timer_map *map);
++
+ struct arch_timer_cpu {
+ 	struct arch_timer_context timers[NR_KVM_TIMERS];
+=20
+@@ -149,4 +151,9 @@ void kvm_timer_cpu_down(void);
+ /* CNTKCTL_EL1 valid bits as of DDI0476J.a */
+ #define CNTKCTL_VALID_BITS	(BIT(17) | GENMASK_ULL(9, 0))
+=20
++static inline bool has_cntpoff(void)
++{
++	return (has_vhe() && cpus_have_final_cap(ARM64_HAS_ECV_CNTPOFF));
++}
++
+ #endif
+
+--=20
+Without deviation from the norm, progress is not possible.
