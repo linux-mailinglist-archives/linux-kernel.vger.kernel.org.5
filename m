@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC81783D94
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 223E1783D97
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbjHVKJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S234637AbjHVKJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:09:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231998AbjHVKJ2 (ORCPT
+        with ESMTP id S233208AbjHVKJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:09:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A2018B;
-        Tue, 22 Aug 2023 03:09:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4CDFC6162C;
-        Tue, 22 Aug 2023 10:09:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F38CC433C8;
-        Tue, 22 Aug 2023 10:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692698965;
-        bh=CZDcapZMT6KJZ2xTcpV5wlhRFiE1a2rJHijUp7yyqtc=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=SCoSR3q4YigFszhIOZhnU6QugKeiGp5yxoh5i/Uma8Tp2su4Yto6tEO/faITsVBl7
-         UEEqG6HwNqk7cWp8XtNtvt3Jv37XYyZ7n7c0lR1EAOrlGh5aG5tt5w6TEfEkP+uc/1
-         Gwqvab7RWYFuRkBr4u8vcW279y7R4nTlB6BG+tjALZ+n3fG7dq943NQyzlXpu+suIX
-         ku5o2bf0jSX+eHAbbDEzyyE4gJJhqepeQiSKU2e4dzqUPGL8CqxExilfk+Mdc7ujmx
-         0eej6xkaHKalhPGHvdsI9p23EmtxRb6T10pRsqRgmLvREETndzPvsaRplyuhCRXQjK
-         5+P7VOZUSZX2Q==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 22 Aug 2023 13:09:22 +0300
-Message-Id: <CUYZPCDTQSRR.32LXC3ILC7JM5@suppilovahvero>
-Cc:     <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v3 4/9] selftests/sgx: Fix linker script asserts
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jo Van Bulck" <jo.vanbulck@cs.kuleuven.be>, <kai.huang@intel.com>,
-        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230819094332.8535-1-jo.vanbulck@cs.kuleuven.be>
- <20230819094332.8535-5-jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <20230819094332.8535-5-jo.vanbulck@cs.kuleuven.be>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 06:09:57 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC7B1B2;
+        Tue, 22 Aug 2023 03:09:55 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5694a117254so2956062a12.0;
+        Tue, 22 Aug 2023 03:09:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692698994; x=1693303794;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ciBMl2mGlvJS8T/gem3eugoi/TfUw2kLIEzMHtRsdoE=;
+        b=CSrMA5TOdHZkHbbFJxKNjMZAJ/XAcH1JNp5SJpTzrSbL73h6mK90JJ+7xI6yMh7IIL
+         6UfV+qMnUVXI54y1Qsk8umnSqXdXZpEqtNs4dUzcZwceALJkgcWsA8Us8hcgg13XWIOO
+         bwUzNj41EhBOgd1xNia+jJuylmvuHIFWPg70BlIkZyZRaXxxavqW72HzjQf19Bk2TIxh
+         ZK4wKz0AEi5bs2HK9bX0xPTaxWFzv+sy0S198Y2uYTgjdvdHSw1in7OGwPL45A6ZS6RJ
+         EJK2Yqf3xsy4j9fTUmWdfscQSscWtZJ5zp5wyD1PzEBc0Zg4zq8n/FRs5PkQ9t+4248G
+         U++Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692698994; x=1693303794;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ciBMl2mGlvJS8T/gem3eugoi/TfUw2kLIEzMHtRsdoE=;
+        b=kKMySRqJFRXbYiHCjlPwfEJg+bg1xCRZa/X9c0pcfrREiiqMEzzsGHXoI1VkP1Ek0I
+         xMTKo6d8YzXXFEPBAMpPrQrweNLIiLo8FxME1CI01CDUaKL+ASziSuAYvBTzbcWIK1eo
+         YamKXowsk1NxYOZeAvhPmkTWVo5eMfeF92idKpx2PWEJTi1im10vpDpD5qCT1/IZGSWW
+         birtIZQcf0727MTGkP7nwulMIcF7Ef36ACZP7/6oufGrN4Ewu3cKdF+Ke8heXxI8dAgD
+         GzP8RDhEv9mi90LALl3UR8ezkhLZhFOyVa1NUb8zg8VGmGdEWX35GxcFm8ZiaxDqmSLP
+         ZKpg==
+X-Gm-Message-State: AOJu0YwM3RXd4jql2EWs7uqWRWpPaDmE3xiVczvm99qjnI3+7PAS/3Fx
+        +dAHeQG3ZANugRyd0dGrucE=
+X-Google-Smtp-Source: AGHT+IGSerZFofQPgjY14zgyWFezCNbK6HY1sMG0ymXiakVVjmqX42aeOVMSfFL/pcbDq7QLWvB9Gw==
+X-Received: by 2002:a17:90a:34c9:b0:268:3ea0:7160 with SMTP id m9-20020a17090a34c900b002683ea07160mr7775296pjf.0.1692698994436;
+        Tue, 22 Aug 2023 03:09:54 -0700 (PDT)
+Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id s10-20020a17090a948a00b00263cca08d95sm9278975pjo.55.2023.08.22.03.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 03:09:53 -0700 (PDT)
+From:   Jacky Huang <ychuang570808@gmail.com>
+To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        mjchen@nuvoton.com, schung@nuvoton.com,
+        Jacky Huang <ychuang3@nuvoton.com>
+Subject: [PATCH v3 0/3] Add support for Nuvoton ma35d1 rtc controller
+Date:   Tue, 22 Aug 2023 10:09:45 +0000
+Message-Id: <20230822100948.1366487-1-ychuang570808@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Aug 19, 2023 at 12:43 PM EEST, Jo Van Bulck wrote:
-> DEFINED only considers symbols, not section names. Hence, replace the
-> check for .got.plt with the _GLOBAL_OFFSET_TABLE_ symbol and remove other
-> (non-essential) asserts.
->
-> Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-> ---
->  tools/testing/selftests/sgx/test_encl.lds | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/sgx/test_encl.lds b/tools/testing/se=
-lftests/sgx/test_encl.lds
-> index b86c86060..13144b045 100644
-> --- a/tools/testing/selftests/sgx/test_encl.lds
-> +++ b/tools/testing/selftests/sgx/test_encl.lds
-> @@ -37,8 +37,4 @@ SECTIONS
->  	}
->  }
-> =20
-> -ASSERT(!DEFINED(.altinstructions), "ALTERNATIVES are not supported in en=
-claves")
-> -ASSERT(!DEFINED(.altinstr_replacement), "ALTERNATIVES are not supported =
-in enclaves")
-> -ASSERT(!DEFINED(.discard.retpoline_safe), "RETPOLINE ALTERNATIVES are no=
-t supported in enclaves")
-> -ASSERT(!DEFINED(.discard.nospec), "RETPOLINE ALTERNATIVES are not suppor=
-ted in enclaves")
-> -ASSERT(!DEFINED(.got.plt), "Libcalls are not supported in enclaves")
-> +ASSERT(!DEFINED(_GLOBAL_OFFSET_TABLE_), "Libcalls through GOT are not su=
-pported in enclaves")
-> --=20
-> 2.25.1
+From: Jacky Huang <ychuang3@nuvoton.com>
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+This patch series adds the rtc driver for the nuvoton ma35d1 ARMv8 SoC.
+It includes DT binding documentation, the ma35d1 rtc driver, and device
+tree updates.
 
-BR, Jarkko
+The ma35d1 rtc controller provides real-time and calendar messaging
+capabilities. It supports programmable time tick and alarm match
+interrupts. The time and calendar messages are expressed in BCD format.
+
+This rtc driver has been tested on the ma35d1 som board with Linux 6.5-rc2.
+It passed the rtctest and rtc-range 2000 ~ 2099.
+
+v3:
+  - Update ma35d1 rtc driver
+    - Renamed "TICKIEN" to "UIEN" as their functional equivalence.
+    - Eliminated the usage of 'struct ma35_bcd_time' and associated
+      ma35d1 bcd functions; instead, opted to directly utilize the
+      "bin2bcd()" function
+    - Employed "ma35d1_alarm_irq_enable()" to accommodate the
+      "alrm->enabled" feature
+    - Revised the probe sequence and implemented a check to verify if
+      the rtc was initialized
+    - Other minor fixes
+
+v2:
+  - Updated nuvoton,ma35d1-rtc.yaml
+    - Modified patch title and fixed typo
+    - Added reference to rtc.yaml
+    - Used unevaluatedProperties instead of additionalProperties
+  - Modified rtc driver
+    - Used dev_err_probe()
+    - Removed ma35d1_rtc_remove()
+    - Made other minor fixes
+
+Jacky Huang (3):
+  dt-bindings: rtc: Add Nuvoton ma35d1 rtc
+  arm64: dts: nuvoton: Add rtc for ma35d1
+  rtc: Add driver for Nuvoton ma35d1 rtc controller
+
+ .../bindings/rtc/nuvoton,ma35d1-rtc.yaml      |  48 +++
+ .../boot/dts/nuvoton/ma35d1-iot-512m.dts      |   4 +
+ .../boot/dts/nuvoton/ma35d1-som-256m.dts      |   4 +
+ arch/arm64/boot/dts/nuvoton/ma35d1.dtsi       |   8 +
+ drivers/rtc/Kconfig                           |  11 +
+ drivers/rtc/Makefile                          |   1 +
+ drivers/rtc/rtc-ma35d1.c                      | 324 ++++++++++++++++++
+ 7 files changed, 400 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/rtc/nuvoton,ma35d1-rtc.yaml
+ create mode 100644 drivers/rtc/rtc-ma35d1.c
+
+-- 
+2.34.1
+
