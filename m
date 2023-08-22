@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89C3978393C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8444E783942
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbjHVF13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 01:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S232772AbjHVF1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 01:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232574AbjHVF11 (ORCPT
+        with ESMTP id S232599AbjHVF11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Aug 2023 01:27:27 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8806D133;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D4818F;
         Mon, 21 Aug 2023 22:27:24 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M4ooWf010499;
-        Tue, 22 Aug 2023 05:26:59 GMT
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37M4DRUD027808;
+        Tue, 22 Aug 2023 05:27:04 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=ayPRENeS0lneGuwXftRoGNXdX+YJCq8L1oNi3KSwavY=;
- b=NMww6yerf4ToxhImVzp+ZTZIDZlG8odoTwOPKD8UMgS26EUDqXuqHGxy3WW6ZsEE/2mv
- jiqEXstr6/bGVqLHAhrbOsffIxpf/0qEUWIi5RCin1KyDknf8JLEBOPgqyEXnr10EPGm
- DrwZHKlUsOwhs0zxYrkjJXKWgFdE+XnfxsN3JkcU3lMZMp+lKJqd6nnWszs37DkpO1AD
- KRtTFz6zHMxXoeClfbNZ8iEBJD+K1drSdsnqLPcsPq7YSPhUUB9vY9HyLYaht5RLDLAw
- EtE6EaKNh9x8wMBVW7+55Oi7vP/fmN7Q+hy9MgXiBsE8PaUz83JP1ZfeUf+XLAAn9NBa 4A== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm7jdhyvr-1
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=8I8dvjRKFxdYOty8DWONS1DQJCy1ikvW6teu8kFaMuY=;
+ b=NqEn8SZbR1RnhLZIUyUthZnEOa2TWNUC4YTIpOcxPavwlnv4jt+hDmiM37fIzwONplnb
+ PJe6zGZ1OhNpCATLJera3Py60xpRCc3xbevtWArDhw4tLM3eQYGX1aW2qVE2vGjod2SM
+ b28MKvMyjCK0ySgxVrzdUthpjhThEgGNDh+RIM/mltDJqnC6HjfR8SiajPs4IwcPH4PQ
+ 5RQjEuDWdLL8KTWAqYOx+SdxY3B8MhUdeZM8lGmqMVM5ZmPT0tFal+4QHlGjjE6hSXU5
+ Mu51Vpx9J+mRn+FwF2BHOGsWFybkehuZgMyX5ivEXNKEypsy1AEurVMlFSxu6ggZk5O2 iw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sm3xvak27-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 05:26:59 +0000
+        Tue, 22 Aug 2023 05:27:03 +0000
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37M5Qw4U027636
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37M5R3Zv010494
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 05:26:58 GMT
+        Tue, 22 Aug 2023 05:27:03 GMT
 Received: from taozha-gv.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 21 Aug 2023 22:26:53 -0700
+ 15.2.1118.30; Mon, 21 Aug 2023 22:26:58 -0700
 From:   Tao Zhang <quic_taozha@quicinc.com>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -59,29 +59,30 @@ CC:     Tao Zhang <quic_taozha@quicinc.com>,
         Trilok Soni <quic_tsoni@quicinc.com>,
         Hao Zhang <quic_hazha@quicinc.com>,
         <linux-arm-msm@vger.kernel.org>, <andersson@kernel.org>
-Subject: [PATCH v8 04/13] coresight-tpda: Add DSB dataset support
-Date:   Tue, 22 Aug 2023 13:26:04 +0800
-Message-ID: <1692681973-20764-5-git-send-email-quic_taozha@quicinc.com>
+Subject: [PATCH v8 05/13] coresight-tpdm: Initialize DSB subunit configuration
+Date:   Tue, 22 Aug 2023 13:26:05 +0800
+Message-ID: <1692681973-20764-6-git-send-email-quic_taozha@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
 References: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.80.80.8]
 X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: EYcnSk3OJ4sRhWa0K2OTlGK7hgl_2fXj
-X-Proofpoint-ORIG-GUID: EYcnSk3OJ4sRhWa0K2OTlGK7hgl_2fXj
+X-Proofpoint-GUID: Rl9FzhaxfQuegbuUnTpDvGovxCJUD91u
+X-Proofpoint-ORIG-GUID: Rl9FzhaxfQuegbuUnTpDvGovxCJUD91u
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-22_03,2023-08-18_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- phishscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308220043
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 adultscore=0 suspectscore=0
+ mlxlogscore=999 priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220043
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -92,199 +93,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Read the DSB element size from the device tree. Set the register
-bit that controls the DSB element size of the corresponding port.
+DSB is used for monitoring “events”. Events are something that
+occurs at some point in time. It could be a state decode, the
+act of writing/reading a particular address, a FIFO being empty,
+etc. This decoding of the event desired is done outside TPDM.
+DSB subunit need to be configured in enablement and disablement.
+A struct that specifics associated to dsb dataset is needed. It
+saves the configuration and parameters of the dsb datasets. This
+change is to add this struct and initialize the configuration of
+DSB subunit.
 
 Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
 ---
- drivers/hwtracing/coresight/coresight-tpda.c | 126 ++++++++++++++++++++++++---
- drivers/hwtracing/coresight/coresight-tpda.h |   2 +
- 2 files changed, 118 insertions(+), 10 deletions(-)
+ drivers/hwtracing/coresight/coresight-tpdm.c | 64 ++++++++++++++++++++++++----
+ drivers/hwtracing/coresight/coresight-tpdm.h | 18 ++++++++
+ 2 files changed, 74 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
-index 8d2b9d2..0f21cd1 100644
---- a/drivers/hwtracing/coresight/coresight-tpda.c
-+++ b/drivers/hwtracing/coresight/coresight-tpda.c
-@@ -21,6 +21,80 @@
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+index abaff0b..951ad4d 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.c
++++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+@@ -20,23 +20,57 @@
  
- DEFINE_CORESIGHT_DEVLIST(tpda_devs, "tpda");
+ DEFINE_CORESIGHT_DEVLIST(tpdm_devs, "tpdm");
  
-+static bool coresight_device_is_tpdm(struct coresight_device *csdev)
++static bool tpdm_has_dsb_dataset(struct tpdm_drvdata *drvdata)
 +{
-+	return (csdev->type == CORESIGHT_DEV_TYPE_SOURCE) &&
-+			(csdev->subtype.source_subtype ==
-+			CORESIGHT_DEV_SUBTYPE_SOURCE_TPDM);
++	return (drvdata->datasets & TPDM_PIDR0_DS_DSB);
 +}
 +
-+/*
-+ * Read the DSB element size from the TPDM device
-+ * Returns
-+ *    The dsb element size read from the devicetree if available.
-+ *    0 - Otherwise, with a warning once.
-+ */
-+static int tpdm_read_dsb_element_size(struct coresight_device *csdev)
++static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
 +{
-+	int rc = 0;
-+	u8 size = 0;
++	if (tpdm_has_dsb_dataset(drvdata)) {
++		memset(drvdata->dsb, 0, sizeof(struct dsb_dataset));
 +
-+	rc = fwnode_property_read_u8(dev_fwnode(csdev->dev.parent),
-+			"qcom,dsb-element-size", &size);
-+	if (rc)
-+		dev_warn_once(&csdev->dev,
-+			"Failed to read TPDM DSB Element size: %d\n", rc);
-+
-+	return size;
-+}
-+
-+/*
-+ * Search and read element data size from the TPDM node in
-+ * the devicetree. Each input port of TPDA is connected to
-+ * a TPDM. Different TPDM supports different types of dataset,
-+ * and some may support more than one type of dataset.
-+ * Parameter "inport" is used to pass in the input port number
-+ * of TPDA, and it is set to -1 in the recursize call.
-+ */
-+static int tpda_get_element_size(struct coresight_device *csdev,
-+								 int inport)
-+{
-+	int dsb_size = -ENOENT;
-+	int i, size;
-+	struct coresight_device *in;
-+
-+	for (i = 0; i < csdev->pdata->nr_inconns; i++) {
-+		in = csdev->pdata->in_conns[i]->src_dev;
-+		if (!in)
-+			continue;
-+
-+		/* Ignore the paths that do not match port */
-+		if (inport > 0 &&
-+			(csdev->pdata->in_conns[i]->dest_port != inport))
-+			continue;
-+
-+		if (coresight_device_is_tpdm(in)) {
-+			size = tpdm_read_dsb_element_size(in);
-+		} else {
-+			/* Recurse down the path */
-+			size = tpda_get_element_size(in, -1);
-+		}
-+
-+		if (size < 0)
-+			return size;
-+
-+		if (dsb_size < 0) {
-+			/* Found a size, save it. */
-+			dsb_size = size;
-+		} else {
-+			/* Found duplicate TPDMs */
-+			return -EEXIST;
-+		}
++		drvdata->dsb->trig_ts = true;
++		drvdata->dsb->trig_type = false;
 +	}
-+
-+	return dsb_size;
 +}
 +
- /* Settings pre enabling port control register */
- static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
- {
-@@ -32,26 +106,55 @@ static void tpda_enable_pre_port(struct tpda_drvdata *drvdata)
- 	writel_relaxed(val, drvdata->base + TPDA_CR);
- }
- 
--static void tpda_enable_port(struct tpda_drvdata *drvdata, int port)
-+static int tpda_enable_port(struct tpda_drvdata *drvdata, int port)
+ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
  {
  	u32 val;
-+	int size;
  
- 	val = readl_relaxed(drvdata->base + TPDA_Pn_CR(port));
-+	/*
-+	 * Configure aggregator port n DSB data set element size
-+	 * Set the bit to 0 if the size is 32
-+	 * Set the bit to 1 if the size is 64
-+	 */
-+	size = tpda_get_element_size(drvdata->csdev, port);
-+	switch (size) {
-+	case 32:
-+		val &= ~TPDA_Pn_CR_DSBSIZE;
-+		break;
-+	case 64:
-+		val |= TPDA_Pn_CR_DSBSIZE;
-+		break;
-+	case 0:
-+		return -EEXIST;
-+	case -EEXIST:
-+		dev_warn_once(&drvdata->csdev->dev,
-+			"Detected multiple TPDMs on port %d", -EEXIST);
-+		return -EEXIST;
-+	default:
-+		return -EINVAL;
-+	}
+-	/* Set the enable bit of DSB control register to 1 */
++	val = readl_relaxed(drvdata->base + TPDM_DSB_TIER);
++	/* Set trigger timestamp */
++	if (drvdata->dsb->trig_ts)
++		val |= TPDM_DSB_TIER_XTRIG_TSENAB;
++	else
++		val &= ~TPDM_DSB_TIER_XTRIG_TSENAB;
++	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
 +
- 	/* Enable the port */
- 	val |= TPDA_Pn_CR_ENA;
- 	writel_relaxed(val, drvdata->base + TPDA_Pn_CR(port));
+ 	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
++	/* Set trigger type */
++	if (drvdata->dsb->trig_type)
++		val |= TPDM_DSB_CR_TRIG_TYPE;
++	else
++		val &= ~TPDM_DSB_CR_TRIG_TYPE;
++	/* Set the enable bit of DSB control register to 1 */
+ 	val |= TPDM_DSB_CR_ENA;
+ 	writel_relaxed(val, drvdata->base + TPDM_DSB_CR);
+ }
+ 
+-/* TPDM enable operations */
++/*
++ * TPDM enable operations
++ * The TPDM or Monitor serves as data collection component for various
++ * dataset types. It covers Basic Counts(BC), Tenure Counts(TC),
++ * Continuous Multi-Bit(CMB), Multi-lane CMB(MCMB) and Discrete Single
++ * Bit(DSB). This function will initialize the configuration according
++ * to the dataset type supported by the TPDM.
++ */
+ static void __tpdm_enable(struct tpdm_drvdata *drvdata)
+ {
+ 	CS_UNLOCK(drvdata->base);
+ 
+-	/* Check if DSB datasets is present for TPDM. */
+-	if (drvdata->datasets & TPDM_PIDR0_DS_DSB)
++	if (tpdm_has_dsb_dataset(drvdata))
+ 		tpdm_enable_dsb(drvdata);
+ 
+ 	CS_LOCK(drvdata->base);
+@@ -76,8 +110,7 @@ static void __tpdm_disable(struct tpdm_drvdata *drvdata)
+ {
+ 	CS_UNLOCK(drvdata->base);
+ 
+-	/* Check if DSB datasets is present for TPDM. */
+-	if (drvdata->datasets & TPDM_PIDR0_DS_DSB)
++	if (tpdm_has_dsb_dataset(drvdata))
+ 		tpdm_disable_dsb(drvdata);
+ 
+ 	CS_LOCK(drvdata->base);
+@@ -110,13 +143,23 @@ static const struct coresight_ops tpdm_cs_ops = {
+ 	.source_ops	= &tpdm_source_ops,
+ };
+ 
+-static void tpdm_init_default_data(struct tpdm_drvdata *drvdata)
++static int tpdm_datasets_setup(struct tpdm_drvdata *drvdata)
+ {
+ 	u32 pidr;
+ 
+ 	/*  Get the datasets present on the TPDM. */
+ 	pidr = readl_relaxed(drvdata->base + CORESIGHT_PERIPHIDR0);
+ 	drvdata->datasets |= pidr & GENMASK(TPDM_DATASETS - 1, 0);
++
++	if (tpdm_has_dsb_dataset(drvdata) && (!drvdata->dsb)) {
++		drvdata->dsb = devm_kzalloc(drvdata->dev,
++						sizeof(*drvdata->dsb), GFP_KERNEL);
++		if (!drvdata->dsb)
++			return -ENOMEM;
++	}
++	tpdm_reset_datasets(drvdata);
 +
 +	return 0;
  }
  
--static void __tpda_enable(struct tpda_drvdata *drvdata, int port)
-+static int __tpda_enable(struct tpda_drvdata *drvdata, int port)
- {
-+	int ret;
-+
- 	CS_UNLOCK(drvdata->base);
- 
- 	if (!drvdata->csdev->enable)
- 		tpda_enable_pre_port(drvdata);
- 
--	tpda_enable_port(drvdata, port);
--
-+	ret = tpda_enable_port(drvdata, port);
- 	CS_LOCK(drvdata->base);
-+
-+	return ret;
- }
- 
- static int tpda_enable(struct coresight_device *csdev,
-@@ -59,16 +162,19 @@ static int tpda_enable(struct coresight_device *csdev,
- 		       struct coresight_connection *out)
- {
- 	struct tpda_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
+ /*
+@@ -179,6 +222,7 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
+ 	struct coresight_platform_data *pdata;
+ 	struct tpdm_drvdata *drvdata;
+ 	struct coresight_desc desc = { 0 };
 +	int ret;
  
- 	spin_lock(&drvdata->spinlock);
--	if (atomic_read(&in->dest_refcnt) == 0)
--		__tpda_enable(drvdata, in->dest_port);
-+	if (atomic_read(&in->dest_refcnt) == 0) {
-+		ret = __tpda_enable(drvdata, in->dest_port);
-+		if (!ret) {
-+			atomic_inc(&in->dest_refcnt);
-+			dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
-+		}
-+	}
+ 	pdata = coresight_get_platform_data(dev);
+ 	if (IS_ERR(pdata))
+@@ -198,6 +242,10 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
  
--	atomic_inc(&in->dest_refcnt);
- 	spin_unlock(&drvdata->spinlock);
--
--	dev_dbg(drvdata->dev, "TPDA inport %d enabled.\n", in->dest_port);
--	return 0;
-+	return ret;
- }
+ 	drvdata->base = base;
  
- static void __tpda_disable(struct tpda_drvdata *drvdata, int port)
-diff --git a/drivers/hwtracing/coresight/coresight-tpda.h b/drivers/hwtracing/coresight/coresight-tpda.h
-index 0399678..b3b38fd 100644
---- a/drivers/hwtracing/coresight/coresight-tpda.h
-+++ b/drivers/hwtracing/coresight/coresight-tpda.h
-@@ -10,6 +10,8 @@
- #define TPDA_Pn_CR(n)		(0x004 + (n * 4))
- /* Aggregator port enable bit */
- #define TPDA_Pn_CR_ENA		BIT(0)
-+/* Aggregator port DSB data set element size bit */
-+#define TPDA_Pn_CR_DSBSIZE		BIT(8)
++	ret = tpdm_datasets_setup(drvdata);
++	if (ret)
++		return ret;
++
+ 	/* Set up coresight component description */
+ 	desc.name = coresight_alloc_device_name(&tpdm_devs, dev);
+ 	if (!desc.name)
+@@ -214,7 +262,7 @@ static int tpdm_probe(struct amba_device *adev, const struct amba_id *id)
+ 		return PTR_ERR(drvdata->csdev);
  
- #define TPDA_MAX_INPORTS	32
+ 	spin_lock_init(&drvdata->spinlock);
+-	tpdm_init_default_data(drvdata);
++
+ 	/* Decrease pm refcount when probe is done.*/
+ 	pm_runtime_put(&adev->dev);
  
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
+index 5438540..f59e751 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.h
++++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+@@ -11,8 +11,14 @@
+ 
+ /* DSB Subunit Registers */
+ #define TPDM_DSB_CR		(0x780)
++#define TPDM_DSB_TIER		(0x784)
++
+ /* Enable bit for DSB subunit */
+ #define TPDM_DSB_CR_ENA		BIT(0)
++/* Enable bit for DSB subunit trigger type */
++#define TPDM_DSB_CR_TRIG_TYPE		BIT(12)
++/* Enable bit for DSB subunit trigger timestamp */
++#define TPDM_DSB_TIER_XTRIG_TSENAB		BIT(1)
+ 
+ /* TPDM integration test registers */
+ #define TPDM_ITATBCNTRL		(0xEF0)
+@@ -41,6 +47,16 @@
+ #define TPDM_PIDR0_DS_DSB	BIT(1)
+ 
+ /**
++ * struct dsb_dataset - specifics associated to dsb dataset
++ * @trig_ts:          Enable/Disable trigger timestamp.
++ * @trig_type:        Enable/Disable trigger type.
++ */
++struct dsb_dataset {
++	bool			trig_ts;
++	bool			trig_type;
++};
++
++/**
+  * struct tpdm_drvdata - specifics associated to an TPDM component
+  * @base:       memory mapped base address for this component.
+  * @dev:        The device entity associated to this component.
+@@ -48,6 +64,7 @@
+  * @spinlock:   lock for the drvdata value.
+  * @enable:     enable status of the component.
+  * @datasets:   The datasets types present of the TPDM.
++ * @dsb         Specifics associated to TPDM DSB.
+  */
+ 
+ struct tpdm_drvdata {
+@@ -57,6 +74,7 @@ struct tpdm_drvdata {
+ 	spinlock_t		spinlock;
+ 	bool			enable;
+ 	unsigned long		datasets;
++	struct dsb_dataset	*dsb;
+ };
+ 
+ #endif  /* _CORESIGHT_CORESIGHT_TPDM_H */
 -- 
 2.7.4
 
