@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149437837D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:20:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378127837E1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 04:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbjHVCU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 22:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        id S232125AbjHVCWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 22:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230230AbjHVCU1 (ORCPT
+        with ESMTP id S232109AbjHVCWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 22:20:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33EEFD
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:20:25 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B85F617CF
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:20:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BF374C433C9;
-        Tue, 22 Aug 2023 02:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692670824;
-        bh=WiuutlKZGSfnMqcEk2Hi4ACANiW2639zyoroXwPM8rY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qWwXRsyzXz/KvxTnNXQ9LEanWGs786Wm+OXoPuh2fuCHLLhwhBE8yyKxOB0xk3Wvj
-         qDfNH2UoUt2j0sAFtlNTwJZwF/2DBvjBgyf+4wpsO+ex5Jc2laV4fuPavls02355Ki
-         MTg6o6ODcPUVQm2aYtF6GXCB2zp2O9IXm2CzInxd0WO39M7KaIwsJ6TAJhh1jsgoIJ
-         yu3HQat2zAsLmpM1pA7v1MEC9nfyT85wY1PuueulyBpaDQC5S3lAAFxKSd7hImXWak
-         O5ShNTCb+xbbCva0BjuzdEWmYhIuyITcTiWUYgDWSVLl2SUB7KtpcuVMhosMCNMY/x
-         S6noww69Hm7vg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A0B5BE4EAFB;
-        Tue, 22 Aug 2023 02:20:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 21 Aug 2023 22:22:53 -0400
+Received: from out-55.mta1.migadu.com (out-55.mta1.migadu.com [95.215.58.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856D019A
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 19:22:47 -0700 (PDT)
+Message-ID: <d32276eb-12ee-ef4f-6bc8-2d4da7dbd7f1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1692670965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7RLg7ykW01vg91M1WmtoG8NsuuordehR3Hy/sGb60iw=;
+        b=HcuDOeA9A79AyJZYoWOn16f5GmQI5i7OoMI3RRrs2+Jna3j8ZiMdi/vDeSo4/sOYWIJDQv
+        bS3hLN8gCy6uj6epU+ttlU+c2J9Bs556lMgcr08M/cFLwA4t43tC7NQvlw9PbWEA6GA3zY
+        2dD5UBVf4CCC5WN5lLl2KDjUcuKl6nw=
+Date:   Tue, 22 Aug 2023 10:21:34 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/4] blk-mq-tag: support queue filter in bt_tags_iter()
+Content-Language: en-US
+To:     Bart Van Assche <bvanassche@acm.org>, axboe@kernel.dk,
+        ming.lei@redhat.com, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com
+References: <20230821073528.3469210-1-chengming.zhou@linux.dev>
+ <20230821073528.3469210-2-chengming.zhou@linux.dev>
+ <f3495925-d681-ba7f-5c2f-d2c19453b067@acm.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <f3495925-d681-ba7f-5c2f-d2c19453b067@acm.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: pcs: lynxi: implement pcs_disable op
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169267082465.27540.3832216650125518638.git-patchwork-notify@kernel.org>
-Date:   Tue, 22 Aug 2023 02:20:24 +0000
-References: <f23d1a60d2c9d2fb72e32dcb0eaa5f7e867a3d68.1692327891.git.daniel@makrotopia.org>
-In-Reply-To: <f23d1a60d2c9d2fb72e32dcb0eaa5f7e867a3d68.1692327891.git.daniel@makrotopia.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     lynxis@fe80.eu, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Fri, 18 Aug 2023 04:07:46 +0100 you wrote:
-> When switching from 10GBase-R/5GBase-R/USXGMII to one of the interface
-> modes provided by mtk-pcs-lynxi we need to make sure to always perform
-> a full configuration of the PHYA.
+On 2023/8/22 03:58, Bart Van Assche wrote:
+> On 8/21/23 00:35, chengming.zhou@linux.dev wrote:
+>> @@ -417,7 +425,23 @@ static void __blk_mq_all_tag_iter(struct blk_mq_tags *tags,
+>>   void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+>>           void *priv)
+>>   {
+>> -    __blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS);
+>> +    __blk_mq_all_tag_iter(tags, fn, priv, BT_TAG_ITER_STATIC_RQS, NULL);
+>> +}
+>> +
+>> +static void __blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>> +                      busy_tag_iter_fn *fn, void *priv,
+>> +                      struct request_queue *q)
+>> +{
+>> +    unsigned int flags = tagset->flags;
+>> +    int i, nr_tags;
+>> +
+>> +    nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
+>> +
+>> +    for (i = 0; i < nr_tags; i++) {
+>> +        if (tagset->tags && tagset->tags[i])
+>> +            __blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>> +                          BT_TAG_ITER_STARTED, q);
+>> +    }
+>>   }
+>>     /**
+>> @@ -436,16 +460,7 @@ void blk_mq_all_tag_iter(struct blk_mq_tags *tags, busy_tag_iter_fn *fn,
+>>   void blk_mq_tagset_busy_iter(struct blk_mq_tag_set *tagset,
+>>           busy_tag_iter_fn *fn, void *priv)
+>>   {
+>> -    unsigned int flags = tagset->flags;
+>> -    int i, nr_tags;
+>> -
+>> -    nr_tags = blk_mq_is_shared_tags(flags) ? 1 : tagset->nr_hw_queues;
+>> -
+>> -    for (i = 0; i < nr_tags; i++) {
+>> -        if (tagset->tags && tagset->tags[i])
+>> -            __blk_mq_all_tag_iter(tagset->tags[i], fn, priv,
+>> -                          BT_TAG_ITER_STARTED);
+>> -    }
+>> +    __blk_mq_tagset_busy_iter(tagset, fn, priv, NULL);
+>>   }
+>>   EXPORT_SYMBOL(blk_mq_tagset_busy_iter);
 > 
-> Implement pcs_disable op which resets the stored interface mode to
-> PHY_INTERFACE_MODE_NA to trigger a full reconfiguration once the LynxI
-> PCS driver had previously been deselected in favor of another PCS
-> driver such as the to-be-added driver for the USXGMII PCS found in
-> MT7988.
+> One change per patch please. I think the introduction of __blk_mq_tagset_busy_iter()
+> should be a separate patch instead of happening in this patch.
 > 
-> [...]
 
-Here is the summary with links:
-  - [net-next] net: pcs: lynxi: implement pcs_disable op
-    https://git.kernel.org/netdev/net-next/c/90308679c297
+Yes, it's better. I will put it in a separate patch.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks.
