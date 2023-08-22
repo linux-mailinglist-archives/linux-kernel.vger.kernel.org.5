@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE416783F40
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A17E783F81
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbjHVLgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        id S235232AbjHVLiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234729AbjHVLgY (ORCPT
+        with ESMTP id S235219AbjHVLht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:36:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D1ACF8;
-        Tue, 22 Aug 2023 04:35:59 -0700 (PDT)
+        Tue, 22 Aug 2023 07:37:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F22CF4;
+        Tue, 22 Aug 2023 04:37:25 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 902B264AA1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DE8046212E;
+        Tue, 22 Aug 2023 11:36:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ECAEC433C9;
         Tue, 22 Aug 2023 11:35:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9209BC433C7;
-        Tue, 22 Aug 2023 11:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692704158;
-        bh=S7/4s+iDxNxtTNGeDtAq1MLwAPIHwlcpSk7B6Czqm+0=;
+        s=k20201202; t=1692704160;
+        bh=pvJdUALjSZAnEbiVwlMc9LnquObyVPzOkzw0N12SH/M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HCi+FrcxnvIy6kMORZZZspKipvjpTZR8+K2Gq5o+OUN/olIGIBAiEfJg1AAFeVY/d
-         Miqj7b1IYbn5MIo7kfVAFpANalpNLfV26bj3KrzMClnNjzmXirMsmO0WTn4daOXVlA
-         Txz3VU5nC7yAMhhYKU9IQtrJk6dWQiHouEqmmY4ILlXfk3+vWIdJJ+lvzD5KHUWzRS
-         +y8tNkTNQqQ7xQtYV9k6jDmLZfaemwhRTUnHNhYD8zaVzlh2VkJOUgmydndUdzIVqL
-         ZzjXcvJ9RBFxhc2uqgGnlJLi7VurHFfygMrRvlJNQ8+v3n/fReISgzrsVZmsOQfec7
-         XVprUwhu75BZg==
+        b=UU13g76Sh1QRgxuGqO5E04rLmcTYeJopabNVYoDkB7IgEykNqZN+lQ3FUZCjFp5wf
+         Iy1kOe2ZUKjeLzjVEMMytBGvLpKHyabFy0EZxcpBJYCjprJsuugUW8R2pwGM44QVMU
+         oXDZ6UBwNjKddYtzoanD8rdGdUhf/o+nACGhmesphQkWae1zDlJWcZbDS9OIYPV3J3
+         mvhoGuXJ+fTEkeLrrRuNXrHXddaVt6IAL0QH6Vcpzrd0F10008H6HCcmW/Nh6p5Uo+
+         ZToscfJovnf/du7B4saAdPGe5OjsEPNU/TOC8aX06ZN1lZ/SuTV1TJUcPU0J59I0PM
+         oUvE6UNS4ZE7Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, Shyam-sundar.S-k@amd.com,
-        markgross@kernel.org, platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 02/11] platform/x86/amd/pmf: Fix unsigned comparison with less than zero
-Date:   Tue, 22 Aug 2023 07:35:44 -0400
-Message-Id: <20230822113553.3551206-2-sashal@kernel.org>
+Cc:     Justin Tee <justin.tee@broadcom.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>, james.smart@broadcom.com,
+        dick.kennedy@broadcom.com, jejb@linux.ibm.com,
+        linux-scsi@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 03/11] scsi: lpfc: Remove reftag check in DIF paths
+Date:   Tue, 22 Aug 2023 07:35:45 -0400
+Message-Id: <20230822113553.3551206-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230822113553.3551206-1-sashal@kernel.org>
 References: <20230822113553.3551206-1-sashal@kernel.org>
@@ -53,50 +53,114 @@ X-stable-base: Linux 6.4.11
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Justin Tee <justin.tee@broadcom.com>
 
-[ Upstream commit 785c00993dc4c4bb2f7b0f3a3f29c03a6f7aab2e ]
+[ Upstream commit 8eebf0e84f0614cebc7347f7bbccba4056d77d42 ]
 
-The return value from the call to amd_pmf_get_pprof_modes() is int.
-However, the return value is being assigned to an unsigned char
-variable 'mode', so making 'mode' an int.
+When preparing protection DIF I/O for DMA, the driver obtains reference
+tags from scsi_prot_ref_tag().  Previously, there was a wrong assumption
+that an all 0xffffffff value meant error and thus the driver failed the
+I/O.  This patch removes the evaluation code and accepts whatever the upper
+layer returns.
 
-silence the warning:
-./drivers/platform/x86/amd/pmf/sps.c:183:5-9: WARNING: Unsigned expression compared with zero: mode < 0
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=5995
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Link: https://lore.kernel.org/r/20230727014315.51375-1-yang.lee@linux.alibaba.com
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Link: https://lore.kernel.org/r/20230803211932.155745-1-justintee8345@gmail.com
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/amd/pmf/sps.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc_scsi.c | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/platform/x86/amd/pmf/sps.c b/drivers/platform/x86/amd/pmf/sps.c
-index fd448844de206..b2cf62937227c 100644
---- a/drivers/platform/x86/amd/pmf/sps.c
-+++ b/drivers/platform/x86/amd/pmf/sps.c
-@@ -121,7 +121,8 @@ int amd_pmf_get_pprof_modes(struct amd_pmf_dev *pmf)
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index e989f130434e4..e34a41fb3e1cb 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -109,8 +109,6 @@ lpfc_sli4_set_rsp_sgl_last(struct lpfc_hba *phba,
+ 	}
+ }
  
- int amd_pmf_power_slider_update_event(struct amd_pmf_dev *dev)
- {
--	u8 mode, flag = 0;
-+	u8 flag = 0;
-+	int mode;
- 	int src;
+-#define LPFC_INVALID_REFTAG ((u32)-1)
+-
+ /**
+  * lpfc_rampdown_queue_depth - Post RAMP_DOWN_QUEUE event to worker thread
+  * @phba: The Hba for which this call is being executed.
+@@ -978,8 +976,6 @@ lpfc_bg_err_inject(struct lpfc_hba *phba, struct scsi_cmnd *sc,
  
- 	mode = amd_pmf_get_pprof_modes(dev);
+ 	sgpe = scsi_prot_sglist(sc);
+ 	lba = scsi_prot_ref_tag(sc);
+-	if (lba == LPFC_INVALID_REFTAG)
+-		return 0;
+ 
+ 	/* First check if we need to match the LBA */
+ 	if (phba->lpfc_injerr_lba != LPFC_INJERR_LBA_OFF) {
+@@ -1560,8 +1556,6 @@ lpfc_bg_setup_bpl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 
+ 	/* extract some info from the scsi command for pde*/
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -1723,8 +1717,6 @@ lpfc_bg_setup_bpl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	/* extract some info from the scsi command */
+ 	blksize = scsi_prot_interval(sc);
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -1953,8 +1945,6 @@ lpfc_bg_setup_sgl(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 
+ 	/* extract some info from the scsi command for pde*/
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -2154,8 +2144,6 @@ lpfc_bg_setup_sgl_prot(struct lpfc_hba *phba, struct scsi_cmnd *sc,
+ 	/* extract some info from the scsi command */
+ 	blksize = scsi_prot_interval(sc);
+ 	reftag = scsi_prot_ref_tag(sc);
+-	if (reftag == LPFC_INVALID_REFTAG)
+-		goto out;
+ 
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+ 	rc = lpfc_bg_err_inject(phba, sc, &reftag, NULL, 1);
+@@ -2746,8 +2734,6 @@ lpfc_calc_bg_err(struct lpfc_hba *phba, struct lpfc_io_buf *lpfc_cmd)
+ 
+ 		src = (struct scsi_dif_tuple *)sg_virt(sgpe);
+ 		start_ref_tag = scsi_prot_ref_tag(cmd);
+-		if (start_ref_tag == LPFC_INVALID_REFTAG)
+-			goto out;
+ 		start_app_tag = src->app_tag;
+ 		len = sgpe->length;
+ 		while (src && protsegcnt) {
+@@ -3493,11 +3479,11 @@ lpfc_bg_scsi_prep_dma_buf_s4(struct lpfc_hba *phba,
+ 			     scsi_cmnd->sc_data_direction);
+ 
+ 	lpfc_printf_log(phba, KERN_ERR, LOG_TRACE_EVENT,
+-			"9084 Cannot setup S/G List for HBA"
+-			"IO segs %d/%d SGL %d SCSI %d: %d %d\n",
++			"9084 Cannot setup S/G List for HBA "
++			"IO segs %d/%d SGL %d SCSI %d: %d %d %d\n",
+ 			lpfc_cmd->seg_cnt, lpfc_cmd->prot_seg_cnt,
+ 			phba->cfg_total_seg_cnt, phba->cfg_sg_seg_cnt,
+-			prot_group_type, num_sge);
++			prot_group_type, num_sge, ret);
+ 
+ 	lpfc_cmd->seg_cnt = 0;
+ 	lpfc_cmd->prot_seg_cnt = 0;
 -- 
 2.40.1
 
