@@ -2,103 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63407783B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDA6783B11
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 09:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbjHVHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 03:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        id S233493AbjHVHiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 03:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbjHVHhL (ORCPT
+        with ESMTP id S233486AbjHVHir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 03:37:11 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B677A13D;
-        Tue, 22 Aug 2023 00:37:09 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26b5e737191so2218189a91.2;
-        Tue, 22 Aug 2023 00:37:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692689829; x=1693294629;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CgjddeGwQJa4U0Oo393Y2//7tcfoJ9+Z/llPTxQolg0=;
-        b=J9RtoThF7Au9NMK9qLNwGbp3Q4tSeT0VINMoSZwFFuPzmDE8tJ2Oz0tOl/JO8nMTe8
-         vp/3ldJi84QOZsfMRpBUvzRATf3uuWP5to2scNpnL4OibDzA9GQ5Wghwdbb6y24E6G2B
-         XJXVNeKj7h+48TWkOiCEWKUfId1v7SNWcE8Gtd42rD2jUDJw+6Krh/K+JxhZs5q84bSv
-         wxQKFpXRj+qqjiPQZWj4Zdv/0Vj5YB/86VPvQ3pErps3Urgc6efCadOxhHhXMbsnCeFf
-         YQ9stKW/TqsVEibyeeTy3rpZ26bDhhwsZ4J7NFjLA48ZrkfIUY5BP9CdwmnGOx3Gx2vy
-         1YKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692689829; x=1693294629;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CgjddeGwQJa4U0Oo393Y2//7tcfoJ9+Z/llPTxQolg0=;
-        b=Nlk4fZbGMRWswStnsZZESEq4UMfDwGBd21tuhF68UZDGHKRjWsdXvPlXs7f6yqHAT8
-         03kVbslb4rvV7SdrAhw0f450BreRNSnuHPVIqpU05174uHQoLx8h/87p/W7KGkDb95oD
-         f8lkfirSAXn54fRFBLjgzupwuNDDmtvonjd0zEhTmMvPpoTioKVBZgujL45Bmzc++HrV
-         uz2l+2QWdMPAiaZfFgDLeYkrfHrj2F3PctVmRVBnweTAHrpuPa8z8QzfHLkuqEdiNcuJ
-         mD+JYTafMvABGUqBkBtJki8jWl9HBjLR4cbUoA+lg4SWY/Q/GXD1uHAUELiQxhMSyPHo
-         uebA==
-X-Gm-Message-State: AOJu0YzErMqQSRWrZaDlVaNouc21OhFL5wqIlpbNQkHb88kcJMwhPPDS
-        yMvPGyLs2vU0HxaqHf/d5m9nBMuil+rk/2fQNsh87C0KD3c=
-X-Google-Smtp-Source: AGHT+IEo5f8lIMjnOK3meeILSBg4zCgZNvOITDPY9BTB8do/yt51c+jcGuNDFiOGme3fZPIi24XeU93KZ9+IeCqu8P4=
-X-Received: by 2002:a17:90a:88:b0:26d:2086:8c96 with SMTP id
- a8-20020a17090a008800b0026d20868c96mr5855867pja.43.1692689829054; Tue, 22 Aug
- 2023 00:37:09 -0700 (PDT)
+        Tue, 22 Aug 2023 03:38:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B7F180;
+        Tue, 22 Aug 2023 00:38:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8A58464E8B;
+        Tue, 22 Aug 2023 07:38:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0F27C433C7;
+        Tue, 22 Aug 2023 07:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692689924;
+        bh=MQApJLZQiaBacJ4HEhPwClptAaaYHhUax1QrCn1x/QU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=f4JjroqsUXa2UiQzAA75eu6sfBbBGSnL4i407W5Wi1jaPRIWtBP/i/iovGj52Gw22
+         0mtjsnnut5yKEkBPhTn7HO5x90LiFtiBgfdb0HN9bJgof1VK+l4H4M+60GR4dzsdN3
+         78W6jMp8AjWabTPjMyG+rOPN3dcIw37AVLrQL9aikpLefGzmVei9SJHBIKnYaT2dsT
+         WCDbUXEpkzsS8tyRPi+QahH0ZDmJveXTnk0W/0XI9aupZvHDLMMUNUYcnk4PjLffAn
+         06Ej3pV/XXPDrQPG6vKETeJViF44NY9llRbRn9Io0z/2r6/HjWu/0zTu9b3H7zghMZ
+         gCodYv9hfTtSg==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99bed101b70so537887966b.3;
+        Tue, 22 Aug 2023 00:38:44 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzAN6gvfI1Hs5k0uu+FiTww/eTVu0fMVDdbdx/amZkInwas/8P5
+        idsCXAoQcOsiGSO4ofpag112fVDzJOUNx7f5FuY=
+X-Google-Smtp-Source: AGHT+IFeQcZOpwE6raVQDpcJai88whutUSVSAJtQXW+xYm3E60ZUi/wwmbgZqJMrc3ZPiHkNvc06ZHSrWPKjGQLfkfo=
+X-Received: by 2002:a17:906:73dc:b0:9a1:bd82:de24 with SMTP id
+ n28-20020a17090673dc00b009a1bd82de24mr498348ejl.12.1692689922984; Tue, 22 Aug
+ 2023 00:38:42 -0700 (PDT)
 MIME-Version: 1.0
-From:   Z qiang <qiang.zhang1211@gmail.com>
-Date:   Tue, 22 Aug 2023 15:36:57 +0800
-Message-ID: <CALm+0cVvHb=Fe8kseVLesjS1d=579c7Bn5hxdiqyzBp5Z7SugA@mail.gmail.com>
-Subject: rcutorture: Can not Disable RT throttling
-To:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
+ <1692434183-2054-4-git-send-email-yangtiezhu@loongson.cn> <CAAhV-H5_3NeAEqiBgXqxwhUbTGRhEO0fL2bY4KCOJ6J=cf9Emw@mail.gmail.com>
+ <467fb231-4b0a-478e-0f68-358d0651fc05@loongson.cn>
+In-Reply-To: <467fb231-4b0a-478e-0f68-358d0651fc05@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 22 Aug 2023 15:38:30 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7KRGM-Aw9mNUxypE7RKLdK6HPh0fx4hg5bavL_CsFE_g@mail.gmail.com>
+Message-ID: <CAAhV-H7KRGM-Aw9mNUxypE7RKLdK6HPh0fx4hg5bavL_CsFE_g@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] MIPS: Return earlier in die() if notify_die()
+ returns NOTIFY_STOP
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running build-in rcutorture tests in 6.5.0-rc4-rt, and found that,
-although the value of /proc/sys/kernel/sched_rt_runtime_us is -1,
+On Mon, Aug 21, 2023 at 10:29=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongson.c=
+n> wrote:
+>
+>
+>
+> On 08/20/2023 04:53 PM, Huacai Chen wrote:
+> > Hi, Tiezhu,
+> >
+> > On Sun, Aug 20, 2023 at 7:21=E2=80=AFAM Tiezhu Yang <yangtiezhu@loongso=
+n.cn> wrote:
+> >>
+> >> After the call to oops_exit(), it should not panic or execute
+> >> the crash kernel if the oops is to be suppressed.
+> >>
+> >> Suggested-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> >> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> >> ---
+> >>  arch/mips/kernel/traps.c | 6 ++++--
+> >>  1 file changed, 4 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> >> index 8e528a8..fd770dc 100644
+> >> --- a/arch/mips/kernel/traps.c
+> >> +++ b/arch/mips/kernel/traps.c
+> >> @@ -412,6 +412,9 @@ void die(const char *str, struct pt_regs *regs)
+> >>
+> >>         oops_exit();
+> >>
+> >> +       if (ret =3D=3D NOTIFY_STOP)
+> >> +               return;
+> >> +
+> >>         if (in_interrupt())
+> >>                 panic("Fatal exception in interrupt");
+> >>
+> >> @@ -421,8 +424,7 @@ void die(const char *str, struct pt_regs *regs)
+> >>         if (regs && kexec_should_crash(current))
+> >>                 crash_kexec(regs);
+> >>
+> >> -       if (ret !=3D NOTIFY_STOP)
+> >> -               make_task_dead(SIGSEGV);
+> >> +       make_task_dead(SIGSEGV);
+> > Then you call make_task_dead() at the end unconditionally, and die()
+> > becomes a noreturn function again.
+>
+> No, it can return if (ret =3D=3D NOTIFY_STOP), so die() is a return
+> function now, please see objdump -d arch/mips/kernel/traps.o.
+Then should loongarch patches need to be updated, too?
 
-cat /sys/kernel/debug/sched/debug
-....
-rt_rq[6]:
-  .rt_nr_running                 : 4
-  .rt_nr_migratory               : 0
-  .rt_throttled                  : 0
-  .rt_time                       : 0.000000
-  .rt_runtime                    : 950.000000
-
-but the rt_runtime still is 950.000000.
-set sysctl_sched_rt_runtime in rcu_torture_disable_rt_throttle()
-does not disable rt-throttling.
-
-Currently I'm testing this way to disable rt-throttling:
-
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 338cd150973f..bb9fee51a476 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -22,7 +22,7 @@ unsigned int sysctl_sched_rt_period = 1000000;
-  * part of the period that we allow rt tasks to run in us.
-  * default: 0.95s
-  */
--int sysctl_sched_rt_runtime = 950000;
-+int sysctl_sched_rt_runtime = IS_BUILTIN(CONFIG_RCU_TORTURE_TEST) ?
--1 : 950000;
-
- #ifdef CONFIG_SYSCTL
- static int sysctl_sched_rr_timeslice = (MSEC_PER_SEC / HZ) * RR_TIMESLICE;
-
-
-Is there a better way to solve it?
-
-Thanks
-Zqiang
+Huacai
+>
+> Thanks,
+> Tiezhu
+>
