@@ -2,144 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F2B78468B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E2D784694
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:08:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbjHVQGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
+        id S237507AbjHVQIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237501AbjHVQGl (ORCPT
+        with ESMTP id S233210AbjHVQIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:06:41 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBD0CDA
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:06:39 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fe8c16c1b4so7133251e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:06:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692720397; x=1693325197;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PpBJCyJjwL1HKSi147CSvQWpQIM/xvoNSn2injxsavs=;
-        b=sTbLN7a++SCCUWYfOHNPKJogkH2wVKr121/fqqIqfK8l8vIkQwBFmOyyzdx0KxmeDS
-         LSIovN8eLBohxmA29jQ76shmM7rfrMnLVJOeQWr+47vQSMQzNSSLlMQ/1qaY7QwXlcIZ
-         s7M0lbMa6ZKQFYtiiy5englU5m+7WlzhdCCZD4g+q7YWi3NxWEBoMtyMBZ58rbOHTQg+
-         DYG6AI+vLT9BTMD7uQJPqGIUipK7plWFQQGFIAEg5WFd0nWS1/m6fsyEFaoeyMjrNLUh
-         SuySCeW0eJ/dqQTo6eWiV0MG03Swc6pU/Z5RB3p+mWH6oLZWjDXFHgce07340uC54IFi
-         AA8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692720397; x=1693325197;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PpBJCyJjwL1HKSi147CSvQWpQIM/xvoNSn2injxsavs=;
-        b=U8uZDyaFRB5VWcBDf9qQQcq4NjJcuxGx/i6GAjNwRtYLcvhYFZRsNM9FEQivoBrJ0c
-         RX/viKztFaAQ0VHty6yYsMEnxtHxtDjYfwSYWZwuMzo+MNwPSA0g6z+Xndqaw58MWohm
-         Crd+zxF3glE2RcEoJeoCtmNyvzuJVy6vButfXkOY53Yt12w0fiy7K6zxxDMTRF+UJoGz
-         AlH1UWL80cgJjrozyvC35gO5CCHGen167lKLRQXzc+ra3be2K/vaARvfIBgs5m6Xw9ao
-         DzLsf+FrppHJlo4OAfg+YY/Dk3i1MVWerRGZUOEPgbHkXNVmAoUzWzqnUjE5J838nJIB
-         4smQ==
-X-Gm-Message-State: AOJu0Yy+VX0G+31Ee7hKP1Vk2irk12q0grsxRlkCiwDl03XsMdpBJ07y
-        QZEuzjlW/+pfpPtYMk/bJNm+wQ==
-X-Google-Smtp-Source: AGHT+IEMiUmKMTDtG2l9Wy0OPnvFM+tCS4+I5U5ZfT82uZjhIGHrmHa21ZOC0v6UVQMc7gh+eDoXjg==
-X-Received: by 2002:a05:6512:45c:b0:4fa:6d62:9219 with SMTP id y28-20020a056512045c00b004fa6d629219mr6712194lfk.62.1692720397588;
-        Tue, 22 Aug 2023 09:06:37 -0700 (PDT)
-Received: from [192.168.1.101] (abyk189.neoplus.adsl.tpnet.pl. [83.9.30.189])
-        by smtp.gmail.com with ESMTPSA id r22-20020ac24d16000000b004fb745fd22fsm2245124lfi.32.2023.08.22.09.06.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 09:06:37 -0700 (PDT)
-Message-ID: <0d99dab6-492e-4cd8-9a1d-ab084db304b5@linaro.org>
-Date:   Tue, 22 Aug 2023 18:06:35 +0200
+        Tue, 22 Aug 2023 12:08:38 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03841113;
+        Tue, 22 Aug 2023 09:08:35 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MBOUX3020257;
+        Tue, 22 Aug 2023 16:08:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=kvyYZwAdpAQVDzlq8OLrapuXygrnT8Ss3tbbOi6PXAI=;
+ b=BVGJxpe3ntlw/K9CgHeqfq/c15YtjUS/LFFZREgPfFx6AuiYtKFeWw/uu2Q6Tn+j8zAK
+ cip+SRSTXmN5ZAR7VKlEPXh8GiYFFjeah1YsCCC45pkboX2/WcPaZHQnSXkCQLmJsrYT
+ hYbA/qD1b5lzFWXKHdoQRi35yjYY7QdjBbt50TbRqXCeKNogtm3+TDkBfP9+tCy0kmnX
+ K38FBLQPm8llEQw9CXZZEBFeehbIc55QTjGTQaUeeHnQwlIWK45yy0gjOnSRLFpvqvlw
+ aUpaQINRO0zV0FXAweb4FDcqPsfGrcVZst/zCoY2QhAzyPtV7I7U56aw54ny06raVFT0 Fg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smasmthn0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 16:08:31 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MG8Uk8027472
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Aug 2023 16:08:30 GMT
+Received: from [10.110.124.126] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 22 Aug
+ 2023 09:08:28 -0700
+Message-ID: <06cb9718-ed64-8604-0bde-fff6d56ef3dd@quicinc.com>
+Date:   Tue, 22 Aug 2023 09:08:27 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/4] dt-bindings: pci: qcom: Add opp table
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [RFC PATCH 1/1] soc: qcom: Add driver to read secondary
+ bootloader (XBL) log
+To:     Ninad Naik <quic_ninanaik@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>
+CC:     <psodagud@quicinc.com>, <quic_ppareek@quicinc.com>,
+        <quic_kprasan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>
+References: <20230822121512.8631-1-quic_ninanaik@quicinc.com>
+ <20230822121512.8631-2-quic_ninanaik@quicinc.com>
 Content-Language: en-US
-To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        manivannan.sadhasivam@linaro.org
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-References: <1692717141-32743-1-git-send-email-quic_krichai@quicinc.com>
- <1692717141-32743-2-git-send-email-quic_krichai@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1692717141-32743-2-git-send-email-quic_krichai@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <20230822121512.8631-2-quic_ninanaik@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: oaXcNXBegj_FiDR3dVqHU_Y3_9ZXXBX9
+X-Proofpoint-GUID: oaXcNXBegj_FiDR3dVqHU_Y3_9ZXXBX9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308220125
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.08.2023 17:12, Krishna chaitanya chundru wrote:
-> PCIe needs to choose the appropriate performance state of RPMH power
-> domain based upon the PCIe gen speed.
+On 8/22/2023 5:15 AM, Ninad Naik wrote:
+> Qualcomm secondary bootloader (XBL) boot log holds information to
+> identify various firmware configuration currently set on the SoC.
+> The XBL log is stored in a predefined reserved memory region.
+
+What does "X" stands for here? From what you have described above it 
+looks like SBL and not XBL.
+
 > 
-> Adding the Operating Performance Points table allows to adjust power domain
-> performance state, depending on the PCIe gen speed.
+> This drivers provides a way to print XBL logs on the console. To
+> do so, it provides a debugfs entry which captures the logs stored
+> in this reserved memory region. This entry can now be used to read
+> and print the XBL logs to console.
 > 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> User can use the below command to print XBL log to console:
+>          cat /sys/kernel/debug/xbl_log
+
+
+It is not clear to me why these patches are posted as RFC. Please 
+clarify. Are they not tested properly or just seeking some feedback and 
+driver is not ready w/ all the features?
+
+> 
+> Signed-off-by: Ninad Naik <quic_ninanaik@quicinc.com>
 > ---
-I only got patches 1, 2 and 4 of this series.
+>   drivers/soc/qcom/Kconfig        |  13 +++
+>   drivers/soc/qcom/Makefile       |   1 +
+>   drivers/soc/qcom/dump_xbl_log.c | 139 ++++++++++++++++++++++++++++++++
+>   3 files changed, 153 insertions(+)
+>   create mode 100644 drivers/soc/qcom/dump_xbl_log.c
+> 
+> diff --git a/drivers/soc/qcom/Kconfig b/drivers/soc/qcom/Kconfig
+> index 715348869d04..4489d37e924d 100644
+> --- a/drivers/soc/qcom/Kconfig
+> +++ b/drivers/soc/qcom/Kconfig
+> @@ -291,4 +291,17 @@ config QCOM_INLINE_CRYPTO_ENGINE
+>   	tristate
+>   	select QCOM_SCM
+>   
+> +config QCOM_DUMP_XBL_LOG
+> +	tristate "Qualcomm driver to print XBL logs on console from debugfs"
 
-Please consider using the b4 tool [1], which takes care of
-all of the sending shenanigans for you.
+Why you want to print these logs from the debugfs? What is the format of 
+the logs? Can you post an example log?
 
-Konrad
+> +	help
+> +	  This driver is used to capture secondary bootloader (xbl) log
+> +	  from a reserved memory region and provide a debugfs entry to read
+> +	  logs captured from this memory region and print them on console.
+> +	  User can use below command to print the xbl log on console:
+> +
+> +                cat /sys/kernel/debug/xbl_log
+> +
+> +	  These logs help to identify firmware configuration information on
+> +	  the SoC. The name of the built module will be dump_xbl_log
+> +
+>   endmenu
+> diff --git a/drivers/soc/qcom/Makefile b/drivers/soc/qcom/Makefile
+> index bbca2e1e55bb..aac088a1a0b6 100644
+> --- a/drivers/soc/qcom/Makefile
+> +++ b/drivers/soc/qcom/Makefile
+> @@ -32,3 +32,4 @@ obj-$(CONFIG_QCOM_KRYO_L2_ACCESSORS) +=	kryo-l2-accessors.o
+>   obj-$(CONFIG_QCOM_ICC_BWMON)	+= icc-bwmon.o
+>   qcom_ice-objs			+= ice.o
+>   obj-$(CONFIG_QCOM_INLINE_CRYPTO_ENGINE)	+= qcom_ice.o
+> +obj-$(CONFIG_QCOM_DUMP_XBL_LOG)	+= dump_xbl_log.o
+> diff --git a/drivers/soc/qcom/dump_xbl_log.c b/drivers/soc/qcom/dump_xbl_log.c
+> new file mode 100644
+> index 000000000000..ea335a5e660b
+> --- /dev/null
+> +++ b/drivers/soc/qcom/dump_xbl_log.c
+> @@ -0,0 +1,139 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2021, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/memblock.h>
+> +#include <linux/of_address.h>
+> +#include <linux/err.h>
+> +#include <linux/debugfs.h>
+> +
+> +struct xbl_log_data {
+> +	struct device *dev;
+> +	size_t buf_size;
+> +	void __iomem *xbl_buf;
+> +	struct dentry *dbg_file;
+> +	struct debugfs_blob_wrapper dbg_data;
+> +};
+> +
+> +static int map_addr_range(struct device_node **parent, const char *name,
+> +			  struct xbl_log_data *xbl_data)
+> +{
+> +	struct device_node *node;
+> +	struct resource res;
+> +	int ret;
+> +
+> +	node = of_find_node_by_name(*parent, name);
+> +	if (!node)
+> +		return -ENODEV;
+> +
+> +	ret = of_address_to_resource(node, 0, &res);
+> +	if (ret) {
+> +		dev_err(xbl_data->dev, "Failed to parse memory region\n");
+> +		return ret;
+> +	}
+> +	of_node_put(node);
+> +
+> +	if (!resource_size(&res)) {
+> +		dev_err(xbl_data->dev, "Failed to parse memory region size\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	xbl_data->buf_size = resource_size(&res) - 1;
+> +	xbl_data->xbl_buf = devm_memremap(xbl_data->dev, res.start,
+> +					  xbl_data->buf_size, MEMREMAP_WB);
+> +	if (!xbl_data->xbl_buf) {
+> +		dev_err(xbl_data->dev, "%s: memory remap failed\n", name);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int xbl_log_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct xbl_log_data *xbl_data;
+> +	struct device_node *parent;
+> +	int ret;
+> +
+> +	xbl_data = devm_kzalloc(dev, sizeof(*xbl_data), GFP_KERNEL);
+> +	if (!xbl_data)
+> +		return -ENOMEM;
+> +
+> +	xbl_data->dev = &pdev->dev;
+> +	platform_set_drvdata(pdev, xbl_data);
+> +
+> +	parent = of_find_node_by_path("/reserved-memory");
+> +	if (!parent) {
+> +		dev_err(xbl_data->dev, "reserved-memory node missing\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = map_addr_range(&parent, "uefi-log", xbl_data);
 
-[1] https://b4.docs.kernel.org/en/latest/index.html
+Here you are calling it as uefi-log. Is it xbl-log or uefi-log? Please 
+decide first.
+
+
+> +	if (ret)
+> +		goto put_node;
+> +
+> +	xbl_data->dbg_data.data = xbl_data->xbl_buf;
+> +	xbl_data->dbg_data.size = xbl_data->buf_size;
+> +	xbl_data->dbg_file = debugfs_create_blob("xbl_log", 0400, NULL,
+> +						 &xbl_data->dbg_data);
+> +	if (IS_ERR(xbl_data->dbg_file)) {
+> +		dev_err(xbl_data->dev, "failed to create debugfs entry\n");
+> +		ret = PTR_ERR(xbl_data->dbg_file);
+> +	}
+> +
+> +put_node:
+> +	of_node_put(parent);
+> +	return ret;
+> +}
+> +
+> +static int xbl_log_remove(struct platform_device *pdev)
+> +{
+> +	struct xbl_log_data *xbl_data = platform_get_drvdata(pdev);
+> +
+> +	debugfs_remove_recursive(xbl_data->dbg_file);
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver xbl_log_driver = {
+> +	.probe = xbl_log_probe,
+> +	.remove = xbl_log_remove,
+> +	.driver = {
+> +		   .name = "xbl-log",
+> +		   },
+> +};
+> +
+> +static struct platform_device xbl_log_device = {
+> +	.name = "xbl-log",
+> +};
+> +
+> +static int __init xbl_log_init(void)
+> +{
+> +	int ret = 0;
+> +
+> +	ret = platform_driver_register(&xbl_log_driver);
+> +	if (!ret) {
+> +		ret = platform_device_register(&xbl_log_device);
+
+I am puzzled here. Why?
+
+> +		if (ret)
+> +			platform_driver_unregister(&xbl_log_driver);
+> +	}
+> +	return ret;
+> +}
+> +
+> +static void __exit xbl_log_exit(void)
+> +{
+> +	platform_device_unregister(&xbl_log_device);
+> +	platform_driver_unregister(&xbl_log_driver);
+> +}
+> +
+> +module_init(xbl_log_init);
+> +module_exit(xbl_log_exit);
+> +
+> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) XBL log driver");
+> +MODULE_LICENSE("GPL");
+-- 
+---Trilok Soni
+
