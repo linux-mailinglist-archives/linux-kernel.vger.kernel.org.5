@@ -2,320 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ADD78481A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4860A78481C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 19:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbjHVRAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 13:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
+        id S237967AbjHVRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 13:01:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbjHVRAp (ORCPT
+        with ESMTP id S237962AbjHVRBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 13:00:45 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBBB1B0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:00:42 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99df11828c6so1205188966b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692723641; x=1693328441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JZUbfAzYGz3v36gjFaurJR1ubEKPGQnTkTa8Ar2a45A=;
-        b=4jRci1y6zV56tlbGQj++H4N/tMfMYeo2ZUkjZ14qcMQ7vkC9P2hTD4IPaFHUlD3AAh
-         EvzpVCoSREUfiEYuVJKI0DzzAFJ/Pr/ms4uacWVN50slkdF20vA6qZby/UhzWdDYDERl
-         7+iYP+SgrPkRWdc4Y4v8gODontaJK2CNI9ng8TyirwsXb3SR/fz5tGCmDyl55RsqVQJQ
-         vrQQVswoIUM2v7N5nkRoAmLjXYjy0XM328untXhHzz9Ix4QWUnGl224gZ8HNdsMD1+xH
-         5ZoIIjyyudAf+BtEd+S0I3hJl4/7PR9abCc/PbWNGHghKg58EqJcQRw4rfFVISjmtVC6
-         Oz8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692723641; x=1693328441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JZUbfAzYGz3v36gjFaurJR1ubEKPGQnTkTa8Ar2a45A=;
-        b=IyQyfDAYQH9DQ+ConsyMFkYQ1WLbw5JbExdgGICc+WLSgALFlTsK1BqqiSSXI2nUWp
-         67Vegtfw9sBXadfk/DVDC6vOUZDOXoiFzablTOXOWrkkaM9NIfA+vC/cV0xF0YToVtAT
-         ZanL+ghUoT1qJtiO8pDNCxTSBWTEPNwzKa/FQjlrfJtER0afB3v0wCXsS4h7cQfHCOjw
-         ZlNc8BbQ+VY/83zBaLSTvI1+5Mk5Zb2wj24HgGCfjvQIEV7rvmLoCIyPPyYr9jVfkvtv
-         o8uN0sKA1d9GB9HeKdfficpFZ7TxpdRA/ynhOlvBrCzcp1h4cG/JwQWhAmnh2KYFGSoZ
-         5ZBQ==
-X-Gm-Message-State: AOJu0Yycsr6FnVbWWo724v6TxWiCZ1Orm2xvgM/WDi30pdSaCVwVZuBy
-        c04MlUiUeBggVdh83Dh89gTpmkZrEYUIIyS1tfBCvA==
-X-Google-Smtp-Source: AGHT+IECpjSEhdUBwmCMsY3jOPY46f7tYrmZ9nJqd197KnPIyXeHnd1w5NuXfiXFAhAlTBsskMGCDfBvFk5nAZcvARY=
-X-Received: by 2002:a17:906:2249:b0:9a1:cbe5:758a with SMTP id
- 9-20020a170906224900b009a1cbe5758amr472967ejr.18.1692723641082; Tue, 22 Aug
- 2023 10:00:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230821160849.531668-1-david@redhat.com> <20230821160849.531668-2-david@redhat.com>
-In-Reply-To: <20230821160849.531668-2-david@redhat.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 10:00:04 -0700
-Message-ID: <CAJD7tkZNjwq6sWE5hCh6rYpSdD0quGFevXWq9eO_t3tHQBTNmA@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v1 1/4] mm/swap: stop using page->private on
- tail pages for THP_SWAP
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Peter Xu <peterx@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
+        Tue, 22 Aug 2023 13:01:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC742FB
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 10:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692723624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EC7QzeS5YIEVRAiRvU/kWl5xuWgV2otiD46TjhCIWcs=;
+        b=I7vkZ1DcEC503E99tKffLHNMZLUVkRjv/Cn4maPeBiXna4G4af2aqprqcaodVYLwNSxbRD
+        qgBA482XoDP0Wt/6JTfFpoRGmoym64glc72eUT6HmpQdlRQwTge9PunZpi22k0JXUPmz8J
+        vnmo+RWG5dndc9dGYLNU1kC1K8lNph8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-116-RrpXte3TMme6FeXGtQnB5Q-1; Tue, 22 Aug 2023 13:00:20 -0400
+X-MC-Unique: RrpXte3TMme6FeXGtQnB5Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A9E8D8022E4;
+        Tue, 22 Aug 2023 17:00:19 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.22.50.3])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 364AD492C14;
+        Tue, 22 Aug 2023 17:00:17 +0000 (UTC)
+Message-ID: <abc9d7abface4b9f651fc354ebaaf30ecf6e2783.camel@redhat.com>
+Subject: Re: [RFC] wifi: mwifiex: Asking for some light on this, please :)
+From:   Dan Williams <dcbw@redhat.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Date:   Tue, 22 Aug 2023 12:00:17 -0500
+In-Reply-To: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
+References: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 9:09=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> Let's stop using page->private on tail pages, making it possible to
-> just unconditionally reuse that field in the tail pages of large folios.
->
-> The remaining usage of the private field for THP_SWAP is in the THP
-> splitting code (mm/huge_memory.c), that we'll handle separately later.
->
-> Update the THP_SWAP documentation and sanity checks in mm_types.h and
-> __split_huge_page_tail().
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/arm64/mm/mteswap.c  |  5 +++--
->  include/linux/mm_types.h | 12 +-----------
->  include/linux/swap.h     |  9 +++++++++
->  mm/huge_memory.c         | 15 ++++++---------
->  mm/memory.c              |  2 +-
->  mm/rmap.c                |  2 +-
->  mm/swap_state.c          |  5 +++--
->  mm/swapfile.c            |  4 ++--
->  8 files changed, 26 insertions(+), 28 deletions(-)
->
-> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
-> index cd508ba80ab1..a31833e3ddc5 100644
-> --- a/arch/arm64/mm/mteswap.c
-> +++ b/arch/arm64/mm/mteswap.c
-> @@ -33,8 +33,9 @@ int mte_save_tags(struct page *page)
->
->         mte_save_page_tags(page_address(page), tag_storage);
->
-> -       /* page_private contains the swap entry.val set in do_swap_page *=
-/
-> -       ret =3D xa_store(&mte_pages, page_private(page), tag_storage, GFP=
-_KERNEL);
-> +       /* lookup the swap entry.val from the page */
-> +       ret =3D xa_store(&mte_pages, page_swap_entry(page).val, tag_stora=
-ge,
-> +                      GFP_KERNEL);
->         if (WARN(xa_is_err(ret), "Failed to store MTE tags")) {
->                 mte_free_tag_storage(tag_storage);
->                 return xa_err(ret);
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index b9b6c88875b9..61361f1750c3 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -333,11 +333,8 @@ struct folio {
->                         atomic_t _pincount;
->  #ifdef CONFIG_64BIT
->                         unsigned int _folio_nr_pages;
-> -                       /* 4 byte gap here */
-> -       /* private: the union with struct page is transitional */
-> -                       /* Fix THP_SWAP to not use tail->private */
-> -                       unsigned long _private_1;
->  #endif
-> +       /* private: the union with struct page is transitional */
->                 };
->                 struct page __page_1;
->         };
-> @@ -358,9 +355,6 @@ struct folio {
->         /* public: */
->                         struct list_head _deferred_list;
->         /* private: the union with struct page is transitional */
-> -                       unsigned long _avail_2a;
-> -                       /* Fix THP_SWAP to not use tail->private */
-> -                       unsigned long _private_2a;
->                 };
->                 struct page __page_2;
->         };
-> @@ -385,9 +379,6 @@ FOLIO_MATCH(memcg_data, memcg_data);
->                         offsetof(struct page, pg) + sizeof(struct page))
->  FOLIO_MATCH(flags, _flags_1);
->  FOLIO_MATCH(compound_head, _head_1);
-> -#ifdef CONFIG_64BIT
-> -FOLIO_MATCH(private, _private_1);
-> -#endif
->  #undef FOLIO_MATCH
->  #define FOLIO_MATCH(pg, fl)                                            \
->         static_assert(offsetof(struct folio, fl) =3D=3D                  =
-   \
-> @@ -396,7 +387,6 @@ FOLIO_MATCH(flags, _flags_2);
->  FOLIO_MATCH(compound_head, _head_2);
->  FOLIO_MATCH(flags, _flags_2a);
->  FOLIO_MATCH(compound_head, _head_2a);
-> -FOLIO_MATCH(private, _private_2a);
->  #undef FOLIO_MATCH
->
->  /**
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index bb5adc604144..84fe0e94f5cd 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -339,6 +339,15 @@ static inline swp_entry_t folio_swap_entry(struct fo=
-lio *folio)
->         return entry;
->  }
->
-> +static inline swp_entry_t page_swap_entry(struct page *page)
-> +{
-> +       struct folio *folio =3D page_folio(page);
-> +       swp_entry_t entry =3D folio_swap_entry(folio);
-> +
-> +       entry.val +=3D page - &folio->page;
+T24gVHVlLCAyMDIzLTA4LTE1IGF0IDE4OjUyIC0wNjAwLCBHdXN0YXZvIEEuIFIuIFNpbHZhIHdy
+b3RlOgo+IEhpIGFsbCwKPiAKPiBXaGlsZSB3b3JraW5nIG9uIGZsZXgtYXJyYXkgdHJhbnNmb3Jt
+YXRpb25zIEkgcmFuIGludG8gdGhlIGZvbGxvd2luZwo+IGltcGxlbWVudGF0aW9uOgo+IAo+IGRy
+aXZlcnMvbmV0L3dpcmVsZXNzL21hcnZlbGwvbXdpZmlleC9mdy5oOjc3NToKPiBzdHJ1Y3QgbXdp
+ZmlleF9pZV90eXBlc19yeGJhX3N5bmMgewo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgbXdpZmll
+eF9pZV90eXBlc19oZWFkZXIgaGVhZGVyOwo+IMKgwqDCoMKgwqDCoMKgwqB1OCBtYWNbRVRIX0FM
+RU5dOwo+IMKgwqDCoMKgwqDCoMKgwqB1OCB0aWQ7Cj4gwqDCoMKgwqDCoMKgwqDCoHU4IHJlc2Vy
+dmVkOwo+IMKgwqDCoMKgwqDCoMKgwqBfX2xlMTYgc2VxX251bTsKPiDCoMKgwqDCoMKgwqDCoMKg
+X19sZTE2IGJpdG1hcF9sZW47Cj4gwqDCoMKgwqDCoMKgwqDCoHU4IGJpdG1hcFsxXTsKPiB9IF9f
+cGFja2VkOwo+IAo+IGBiaXRtYXBgIGlzIGN1cnJlbnRseSBiZWluZyB1c2VkIGFzIGEgZmFrZS1m
+bGV4IGFycmF5IGFuZCB3ZSBzaG91bGQKPiB0cmFuc2Zvcm0gaXQgaW50byBhIHByb3BlciBmbGV4
+aWJsZS1hcnJheSBtZW1iZXIuCj4gCj4gSG93ZXZlciwgd2hpbGUgZG9pbmcgdGhhdCwgSSBub3Rp
+Y2VkIHNvbWV0aGluZyBpbiB0aGUgZm9sbG93aW5nIGZ1bmN0aW9uCj4gdGhhdCdzIG5vdCBjbGVh
+ciB0byBtZSBhbmQgSSB3YW50ZWQgdG8gYXNrIHlvdSBmb3IgZmVlZGJhY2s6Cj4gCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvbWFydmVsbC9td2lmaWV4LzExbl9yeHJlb3JkZXIuYzo5MDc6Cj4gdm9p
+ZCBtd2lmaWV4XzExbl9yeGJhX3N5bmNfZXZlbnQoc3RydWN0IG13aWZpZXhfcHJpdmF0ZSAqcHJp
+diwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHU4ICpldmVudF9idWYsIHUxNiBsZW4pCj4gewo+IMKgwqDCoMKgwqDCoMKg
+wqBzdHJ1Y3QgbXdpZmlleF9pZV90eXBlc19yeGJhX3N5bmMgKnRsdl9yeGJhID0gKHZvaWQgKill
+dmVudF9idWY7Cj4gwqDCoMKgwqDCoMKgwqDCoHUxNiB0bHZfdHlwZSwgdGx2X2xlbjsKPiDCoMKg
+wqDCoMKgwqDCoMKgc3RydWN0IG13aWZpZXhfcnhfcmVvcmRlcl90YmwgKnJ4X3Jlb3JfdGJsX3B0
+cjsKPiDCoMKgwqDCoMKgwqDCoMKgdTggaSwgajsKPiDCoMKgwqDCoMKgwqDCoMKgdTE2IHNlcV9u
+dW0sIHRsdl9zZXFfbnVtLCB0bHZfYml0bWFwX2xlbjsKPiDCoMKgwqDCoMKgwqDCoMKgaW50IHRs
+dl9idWZfbGVmdCA9IGxlbjsKPiDCoMKgwqDCoMKgwqDCoMKgaW50IHJldDsKPiDCoMKgwqDCoMKg
+wqDCoMKgdTggKnRtcDsKPiAKPiDCoMKgwqDCoMKgwqDCoMKgbXdpZmlleF9kYmdfZHVtcChwcml2
+LT5hZGFwdGVyLCBFVlRfRCwgIlJYQkFfU1lOQyBldmVudDoiLAo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBldmVudF9idWYsIGxlbik7Cj4gwqDCoMKg
+wqDCoMKgwqDCoHdoaWxlICh0bHZfYnVmX2xlZnQgPj0gc2l6ZW9mKCp0bHZfcnhiYSkpIHsKCj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0bHZfdHlwZSA9IGxlMTZfdG9fY3B1KHRs
+dl9yeGJhLT5oZWFkZXIudHlwZSk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0
+bHZfbGVuwqAgPSBsZTE2X3RvX2NwdSh0bHZfcnhiYS0+aGVhZGVyLmxlbik7Cgo+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHRsdl90eXBlICE9IFRMVl9UWVBFX1JYQkFfU1lO
+Qykgewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG13
+aWZpZXhfZGJnKHByaXYtPmFkYXB0ZXIsIEVSUk9SLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIldyb25nIFRM
+ViBpZD0weCV4XG4iLCB0bHZfdHlwZSk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgfQo+IAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdGx2X3NlcV9udW0gPSBs
+ZTE2X3RvX2NwdSh0bHZfcnhiYS0+c2VxX251bSk7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqB0bHZfYml0bWFwX2xlbiA9IGxlMTZfdG9fY3B1KHRsdl9yeGJhLT5iaXRtYXBfbGVu
+KTsKClRoaXMgc2VlbXMgc3VwZXJmbHVvdXMgc2luY2UgY291bGRuJ3QgdGhlIGJpdG1hcF9sZW4g
+YmUgY2FsY3VsYXRlZCBmcm9tCnRoZSB0bHZfbGVuIGFuZCBzaXplb2YoKnRsdl9yeGJhKT8gQnV0
+IHdoYXRldmVyLCBzdXJlLgoKU2VlbXMgbGlrZSB0aGVyZSBzaG91bGQgYmUgc29tZSBpbnB1dCB2
+YWxpZGF0aW9uIGhlcmUgdG8gZW5zdXJlIHRoYXQKdGx2X2JpdG1hcF9sZW4gYW5kIHRsdl9sZW4g
+ZG9uJ3Qgb3ZlcnJ1biBldmVudF9idWYncyBtZW1vcnkgdGhvdWdoLCBpZgp0aGUgZmlybXdhcmUg
+aXMgaG9zZWQgb3IgbWFsaWNpb3VzLgoKQnV0IHRoYXQncyBub3QgeW91ciBwcm9ibGVtIHNpbmNl
+IHlvdSdyZSBub3QgdG91Y2hpbmcgdGhpcyBjb2RlLgoKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoG13aWZpZXhfZGJnKHByaXYtPmFkYXB0ZXIsIElORk8sCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICIlcE0gdGlkPSVkIHNl
+cV9udW09JWQgYml0bWFwX2xlbj0lZFxuIiwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGx2X3J4YmEtPm1hYywgdGx2X3J4YmEtPnRpZCwg
+dGx2X3NlcV9udW0sCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHRsdl9iaXRtYXBfbGVuKTsKPiAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHJ4X3Jlb3JfdGJsX3B0ciA9Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgbXdpZmlleF8xMW5fZ2V0X3J4X3Jlb3JkZXJfdGJsKHByaXYs
+IHRsdl9yeGJhLT50aWQsCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHRsdl9yeGJhLT5tYWMpOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgaWYgKCFyeF9yZW9yX3RibF9wdHIpIHsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBtd2lmaWV4X2RiZyhwcml2LT5hZGFwdGVyLCBFUlJPUiwK
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgICJDYW4gbm90IGZpbmQgcnhfcmVvcmRlcl90YmwhIik7Cj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuOwo+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+IAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgZm9yIChpID0gMDsgaSA8IHRsdl9iaXRtYXBfbGVuOyBpKyspIHsKPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBmb3IgKGogPSAwIDsgaiA8
+IDg7IGorKykgewo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAodGx2X3J4YmEtPmJpdG1hcFtpXSAmICgxIDw8IGopKSB7
+Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBzZXFfbnVtID0gKE1BWF9USURfVkFMVUUgLSAxKSAm
+Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgKHRsdl9zZXFfbnVtICsg
+aSAqIDggKyBqKTsKPiAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG13aWZpZXhfZGJnKHByaXYt
+PmFkYXB0ZXIsIEVSUk9SLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAiZHJvcCBwYWNrZXQsc2VxPSVkXG4iLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzZXFfbnVtKTsKPiAKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHJldCA9IG13aWZpZXhfMTFuX3J4X3Jlb3JkZXJfcGt0Cj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAocHJpdiwgc2VxX251bSwgdGx2X3J4YmEtPnRpZCwKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB0bHZfcnhiYS0+bWFjLCAwLCBOVUxMKTsKPiAKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oGlmIChyZXQpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgbXdpZmll
+eF9kYmcocHJpdi0+YWRhcHRlciwKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEVSUk9SLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgIkZhaWwgdG8gZHJvcCBw
+YWNrZXQiKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoH0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiAKPiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHRsdl9idWZfbGVmdCAtPSAoc2l6ZW9mKCp0
+bHZfcnhiYSkgKyB0bHZfbGVuKTsKCk5vdyB3ZSBoYXZlIHRvIHN1YnRyYWN0IHRoZSBzaXplIG9m
+IHRoZSB3aG9sZSBUTFYgKGluY2x1ZGluZyB0aGUgaGVhZGVyCmFuZCBmbGV4YXJyYXkpIGZyb20g
+dGhlIHJlbWFpbmluZyBieXRlcyBpbiBldmVudF9idWYuCgpCdXQgdGhpcyBsb29rcyBwcmV0dHkg
+c2tldGNoeS4gTWFydmVsbCBUTFZzIGhhdmUgYSBoZWFkZXIgKHRoZSBUTCBvZgp0aGUgVExWKSBh
+bmQgaGVhZGVyLT5sZW4gc2F5cyBob3cgbG9uZyB0aGUgViBpcy4gTW9zdCBNYXJ2ZWxsIGtlcm5l
+bApkcml2ZXIgY29kZSAobXdpZmlleCwgbGliZXJ0YXMsIGV0YykgZG9lcyBzb21ldGhpbmcgbGlr
+ZSB0aGlzOgoKCXBvcyArPSBzc2lkX3Rsdi0+aGVhZGVyICsgc3NpZF90bHYtPmhlYWRlci5sZW47
+CgpidXQgdGx2X3J4YmEgaXMgbXVjaCBtb3JlIHRoYW4ganVzdCB0aGUgaGVhZGVyOyBJIHRoaW5r
+IHRoaXMgY29kZSBpcwpnb2luZyB0byAqb3ZlciogY291bnQgaG93IG1hbnkgYnl0ZXMgd2VyZSBq
+dXN0IGNvbnN1bWVkLgoKSSdtIG5vdCB0aGUgb25seSBvbmUgdGhpbmtpbmcgaXQncyBza2V0Y2h5
+OgoKaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvbGludXgtd2lyZWxlc3MvbXNnMTc0MjMx
+Lmh0bWwKCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0bXAgPSAodTggKil0bHZf
+cnhiYSArIHRsdl9sZW4gKyBzaXplb2YoKnRsdl9yeGJhKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoAo+IFdoYXQncyB0aGUgcmVsYXRpb24gYmV0d2VlbiB0bHZfbGVuLCBzaXpl
+b2YoKnRsdl9yeGJhKSBhbmQgdGx2X2JpdG1hcF9sZW4/Cj4gCj4gSXNuJ3QgYHNpemVvZigqdGx2
+X3J4YmEpICsgdGx2X2xlbmAgYW5kIGB0bHZfbGVuICsgc2l6ZW9mKCp0bHZfcnhiYSlgCj4gZG91
+YmxlLWNvdW50aW5nIHNvbWUgZmllbGRzIGluIGBzdHJ1Y3QgbXdpZmlleF9pZV90eXBlc19yeGJh
+X3N5bmNgPwo+IAo+IFNob3VsZG4ndCB0aGlzIGJlIHNvbWV0aGluZyBsaWtlIHRoaXMsIGluc3Rl
+YWQgKGJlZm9yZSB0aGUgZmxleC1hcnJheQo+IHRyYW5zZm9ybWF0aW9uLCBvZiBjb3Vyc2UpOgo+
+IAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRsdl9idWZfbGVmdCAtPSAoc2l6ZW9m
+KCp0bHZfcnhiYSkgKyB0bHZfbGVuKTsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0
+bXAgPSAodTggKil0bHZfcnhiYSArIHRsdl9sZW4gKyBzaXplb2YoKnRsdl9yeGJhKTsKPiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0bHZfYnVmX2xlZnQgLT0gKHNpemVvZigqdGx2X3J4
+YmEpICsgdGx2X2JpdG1hcF9sZW4gLSAxKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB0bXAgPSAodTggKil0bHZfcnhiYSArIHRsdl9iaXRtYXBfbGVuICsgc2l6ZW9mKCp0bHZfcnhi
+YSAtIDEpOwoKSWYgbXkgYXNzZXJ0aW9uIGFib3V0IHRsdi0+aGVhZGVyLmxlbiBpcyBjb3JyZWN0
+IHRoZW4gd2UgY2FuIGRvOgoKdGx2X2J1Zl9sZWZ0IC09IHNpemVvZih0bHZfcnhiYS0+aGVhZGVy
+KSArIHRsdl9sZW47CnRtcCA9ICh1OCAqKXRsdl9yeGJhICsgc2l6ZW9mKHRsdl9yeGJhLT5oZWFk
+ZXIpICsgdGx2X2xlbjsKCj4gCj4gCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0
+bHZfcnhiYSA9IChzdHJ1Y3QgbXdpZmlleF9pZV90eXBlc19yeGJhX3N5bmMgKil0bXA7CgpUaGlz
+IGlzIHNpbGx5OyBpbnN0ZWFkIG9mIHRtcCB3ZSBjb3VsZCBkbzoKCnUxNiBieXRlc191c2VkOwoK
+Li4uCgpieXRlc191c2VkID0gc2l6ZW9mKHRsdl9yeGJhLT5oZWFkZXIpICsgdGx2X2xlbjsKdGx2
+X2J1Zl9sZWZ0IC09IGJ5dGVzX3VzZWQ7CnRsdl9yeGJhICs9IGJ5dGVzX3VzZWQ7Cgood2l0aCBh
+cHByb3ByaWF0ZSBjYXN0aW5nKS4KCkRhbgoKPiDCoMKgwqDCoMKgwqDCoMKgfQo+IH0KPiAKPiBU
+aGFua3MgaW4gYWR2YW5jZSBmb3IgYW55IGZlZWRiYWNrIQo+IAo+IC0tCj4gR3VzdGF2bwo+IAoK
 
-Would it be better to use folio_page_idx() here?
 
-> +       return entry;
-> +}
-> +
->  static inline void folio_set_swap_entry(struct folio *folio, swp_entry_t=
- entry)
->  {
->         folio->private =3D (void *)entry.val;
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index cc2f65f8cc62..c04702ae71d2 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2446,18 +2446,15 @@ static void __split_huge_page_tail(struct page *h=
-ead, int tail,
->         page_tail->index =3D head->index + tail;
->
->         /*
-> -        * page->private should not be set in tail pages with the excepti=
-on
-> -        * of swap cache pages that store the swp_entry_t in tail pages.
-> -        * Fix up and warn once if private is unexpectedly set.
-> -        *
-> -        * What of 32-bit systems, on which folio->_pincount overlays
-> -        * head[1].private?  No problem: THP_SWAP is not enabled on 32-bi=
-t, and
-> -        * pincount must be 0 for folio_ref_freeze() to have succeeded.
-> +        * page->private should not be set in tail pages. Fix up and warn=
- once
-> +        * if private is unexpectedly set.
->          */
-> -       if (!folio_test_swapcache(page_folio(head))) {
-> -               VM_WARN_ON_ONCE_PAGE(page_tail->private !=3D 0, page_tail=
-);
-> +       if (unlikely(page_tail->private)) {
-> +               VM_WARN_ON_ONCE_PAGE(true, page_tail);
->                 page_tail->private =3D 0;
->         }
-> +       if (PageSwapCache(head))
-> +               set_page_private(page_tail, (unsigned long)head->private =
-+ tail);
->
->         /* Page flags must be visible before we make the page non-compoun=
-d. */
->         smp_wmb();
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d003076b218d..ff13242c1589 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3882,7 +3882,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->                  * changed.
->                  */
->                 if (unlikely(!folio_test_swapcache(folio) ||
-> -                            page_private(page) !=3D entry.val))
-> +                            page_swap_entry(page).val !=3D entry.val))
->                         goto out_page;
->
->                 /*
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 1f04debdc87a..ec7f8e6c9e48 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1647,7 +1647,7 @@ static bool try_to_unmap_one(struct folio *folio, s=
-truct vm_area_struct *vma,
->                          */
->                         dec_mm_counter(mm, mm_counter(&folio->page));
->                 } else if (folio_test_anon(folio)) {
-> -                       swp_entry_t entry =3D { .val =3D page_private(sub=
-page) };
-> +                       swp_entry_t entry =3D page_swap_entry(subpage);
->                         pte_t swp_pte;
->                         /*
->                          * Store the swap location in the pte.
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 01f15139b7d9..2f2417810052 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -100,6 +100,7 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
-t entry,
->
->         folio_ref_add(folio, nr);
->         folio_set_swapcache(folio);
-> +       folio_set_swap_entry(folio, entry);
->
->         do {
->                 xas_lock_irq(&xas);
-> @@ -113,7 +114,6 @@ int add_to_swap_cache(struct folio *folio, swp_entry_=
-t entry,
->                                 if (shadowp)
->                                         *shadowp =3D old;
->                         }
-> -                       set_page_private(folio_page(folio, i), entry.val =
-+ i);
->                         xas_store(&xas, folio);
->                         xas_next(&xas);
->                 }
-> @@ -154,9 +154,10 @@ void __delete_from_swap_cache(struct folio *folio,
->         for (i =3D 0; i < nr; i++) {
->                 void *entry =3D xas_store(&xas, shadow);
->                 VM_BUG_ON_PAGE(entry !=3D folio, entry);
-> -               set_page_private(folio_page(folio, i), 0);
->                 xas_next(&xas);
->         }
-> +       entry.val =3D 0;
-> +       folio_set_swap_entry(folio, entry);
->         folio_clear_swapcache(folio);
->         address_space->nrpages -=3D nr;
->         __node_stat_mod_folio(folio, NR_FILE_PAGES, -nr);
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index d46933adf789..bd9d904671b9 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -3369,7 +3369,7 @@ struct swap_info_struct *swp_swap_info(swp_entry_t =
-entry)
->
->  struct swap_info_struct *page_swap_info(struct page *page)
->  {
-> -       swp_entry_t entry =3D { .val =3D page_private(page) };
-> +       swp_entry_t entry =3D page_swap_entry(page);
->         return swp_swap_info(entry);
->  }
->
-> @@ -3384,7 +3384,7 @@ EXPORT_SYMBOL_GPL(swapcache_mapping);
->
->  pgoff_t __page_file_index(struct page *page)
->  {
-> -       swp_entry_t swap =3D { .val =3D page_private(page) };
-> +       swp_entry_t swap =3D page_swap_entry(page);
->         return swp_offset(swap);
->  }
->  EXPORT_SYMBOL_GPL(__page_file_index);
-> --
-> 2.41.0
->
->
