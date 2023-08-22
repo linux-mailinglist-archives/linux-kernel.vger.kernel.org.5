@@ -2,84 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3ABA78454D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB38784558
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236916AbjHVPUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:20:51 -0400
+        id S237025AbjHVPWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:22:06 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233491AbjHVPUu (ORCPT
+        with ESMTP id S237020AbjHVPWE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:20:50 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19340CD9;
-        Tue, 22 Aug 2023 08:20:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=j7dccOxm/oPivTdOBSmOXPPu0sVwTdHd1TVVg6mfImQ=; b=jtLyJAjm9RaGoQDTEOw/dfKFkT
-        6DW7BdJSJcJQUt4xUWRDvj7XoY2GOUltc9Th4srekp3SDPZeVRUW9GRQyyWm096X0Ya0EoCOye164
-        jJKhrXWzAtjxxqPDWdr0trqb4PFFaMKIHEzFpw5joJCtwj/AwtjpZUp/QatWKRs5EWtQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qYTBL-004nDz-T5; Tue, 22 Aug 2023 17:20:35 +0200
-Date:   Tue, 22 Aug 2023 17:20:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: Re: [PATCH v2 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
-Message-ID: <150ae6c1-8a2f-4fd7-b012-a53a909919d4@lunn.ch>
-References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
- <20230816111310.1656224-4-keguang.zhang@gmail.com>
- <c3454ad9-1874-4301-b1b1-4f76886802fb@lunn.ch>
- <CAJhJPsWVRJg7zNeXPDovkBM4pm7hD+RP21DRxt0726VXtzvCHw@mail.gmail.com>
+        Tue, 22 Aug 2023 11:22:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E8ACD1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1692717675;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K+4dLM+qjKpedR3SxcMNZWwteZnGWMqZ2x4IrF9xwmE=;
+        b=XhksWGvOujynlzvS4ImTi8AXCHbF/+RC2HFdzjfdePZw4G+w5BHMtkFUwC2tLgFIqeYnT/
+        raiaJsyAhEk3yuzXHlvDIMAQM7rZLKhzvyK+VaQ7zym6ealaHlpmGSX0kxVrYW5tJp7w90
+        Gb8MlHHpW9UMP8VW5d2D/KVOBmvQmPM=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-151-d-aBOqSXOqS7KA3FczXoiA-1; Tue, 22 Aug 2023 11:21:13 -0400
+X-MC-Unique: d-aBOqSXOqS7KA3FczXoiA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-31aca0c0d63so2748228f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:21:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692717672; x=1693322472;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=K+4dLM+qjKpedR3SxcMNZWwteZnGWMqZ2x4IrF9xwmE=;
+        b=M2lIBRSndaxqV1NUhFBBybSUEgh/Nm5dKjrRlBQvCqFsQo3o4Bh9ijP+Lu2gwIG2sV
+         bZatcXcVBQvP/M2JJJX2GBM1Qisee/aFL1yf9qQrxSkPGEvG3cTgFgtKnmO8MCYwBxzb
+         +AKbMCnIl9RWXxikb4BhU4bo/D20obFXIIwpNwe2SBRhg/9lL57VRviz55WAL3kOC8n2
+         Jhw030RbFzbX0Z00XPtX5pbpQc396Jmdhti9c887Ae0Xb4evEaEGKqswbMbFDeO73t1g
+         X519Z/us+3dNtrzJ81zMKAqwFhopDXuiSZ0/Q9J59MxxAUOIH1FLLAJZx2LpxbqAw7f7
+         ymKQ==
+X-Gm-Message-State: AOJu0YyAbqBTpPe+p10RxhlIfl0s/UYd9JRz7WiFLmOSzEanSGoFAk7l
+        qq7+R3lU46TdH6LQWwnab6pGX4p/0w0IOCJ4kMk/jCjbDHwgT3XEGsg4PrOFomsrt4ehI+IXWT2
+        F2XTIN5pugFvPYb/8jN2zBrIF
+X-Received: by 2002:a5d:4ccc:0:b0:314:1230:29b0 with SMTP id c12-20020a5d4ccc000000b00314123029b0mr6891002wrt.52.1692717672411;
+        Tue, 22 Aug 2023 08:21:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGvvahb1vrGoYIb2vzRiaZnzgGGGa/+gqBYlj1b7B5EZtm9phlubqZT0TsAOsELNEsT5eF4fQ==
+X-Received: by 2002:a5d:4ccc:0:b0:314:1230:29b0 with SMTP id c12-20020a5d4ccc000000b00314123029b0mr6890972wrt.52.1692717671988;
+        Tue, 22 Aug 2023 08:21:11 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c706:7400:83da:ebad:ba7f:c97c? (p200300cbc706740083daebadba7fc97c.dip0.t-ipconnect.de. [2003:cb:c706:7400:83da:ebad:ba7f:c97c])
+        by smtp.gmail.com with ESMTPSA id n4-20020a5d4204000000b0031c5dda3aedsm3811087wrq.95.2023.08.22.08.21.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 08:21:11 -0700 (PDT)
+Message-ID: <8f2cf5af-cad7-a69c-e8ec-39f48deae1cb@redhat.com>
+Date:   Tue, 22 Aug 2023 17:21:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhJPsWVRJg7zNeXPDovkBM4pm7hD+RP21DRxt0726VXtzvCHw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v5 11/37] mm: Define VM_SHADOW_STACK for arm64 when we
+ support GCS
+Content-Language: en-US
+To:     Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20230822-arm64-gcs-v5-0-9ef181dd6324@kernel.org>
+ <20230822-arm64-gcs-v5-11-9ef181dd6324@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230822-arm64-gcs-v5-11-9ef181dd6324@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > What about the other three RGMII modes? Plain rgmii is pretty unusual,
-> > rgmii-id is the most used.
-> >
-> According to the LS1B datasheet, only RGMII and MII are supported.
-> And I can confirm that MII mode does work for LS1B.
+On 22.08.23 15:56, Mark Brown wrote:
+> Use VM_HIGH_ARCH_5 for guarded control stack pages.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>   Documentation/filesystems/proc.rst |  2 +-
+>   fs/proc/task_mmu.c                 |  3 +++
+>   include/linux/mm.h                 | 12 +++++++++++-
+>   3 files changed, 15 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 6ccb57089a06..086a0408a4d7 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -566,7 +566,7 @@ encoded manner. The codes are the following:
+>       mt    arm64 MTE allocation tags are enabled
+>       um    userfaultfd missing tracking
+>       uw    userfaultfd wr-protect tracking
+> -    ss    shadow stack page
+> +    ss    shadow/guarded control stack page
+>       ==    =======================================
+>   
+>   Note that there is no guarantee that every flag and associated mnemonic will
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index cfab855fe7e9..e8c50848bb16 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -711,6 +711,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
+>   #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+>   #ifdef CONFIG_X86_USER_SHADOW_STACK
+>   		[ilog2(VM_SHADOW_STACK)] = "ss",
+> +#endif
+> +#ifdef CONFIG_ARM64_GCS
+> +		[ilog2(VM_SHADOW_STACK)] = "ss",
+>   #endif
 
-What does your device tree look like? What are you setting phy-mode to
-in the rgmii case? As i said, "rgmii" is pretty unusual, you normally
-need "rgmii-id".
+See my comment below.
 
-Something in the system needs to add 2ns delays to the RGMII clock
-lines. Generally in device tree you pass phy-mode = "rgmii-id"; The
-MAC configures itself for RGMII, and passes
-PHY_INTERFACE_MODE_RGMII_ID to the PHY when it is attached. The PHY
-then inserts the delays.
+>   	};
+>   	size_t i;
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 43fe625b85aa..3f939ae212e5 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -372,7 +372,17 @@ extern unsigned int kobjsize(const void *objp);
+>    * having a PAGE_SIZE guard gap.
+>    */
+>   # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
+> -#else
+> +#endif
+> +
+> +#if defined(CONFIG_ARM64_GCS)
+> +/*
+> + * arm64's Guarded Control Stack implements similar functionality and
+> + * has similar constraints to shadow stacks.
+> + */
+> +# define VM_SHADOW_STACK	VM_HIGH_ARCH_5
+> +#endif
 
-What is inserting the delays in your system?
 
-     Andrew
+Shouldn't that all just merged with the previous define(s)?
+
+Also, I wonder if we now want to have CONFIG_HAVE_ARCH_SHADOW_STACK or 
+similar.
+
+-- 
+Cheers,
+
+David / dhildenb
 
