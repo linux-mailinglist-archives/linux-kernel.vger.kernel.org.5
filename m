@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 399D0783CA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2583E783CAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234216AbjHVJNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S234223AbjHVJPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbjHVJNP (ORCPT
+        with ESMTP id S234202AbjHVJPj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:13:15 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02131113;
-        Tue, 22 Aug 2023 02:13:14 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68a410316a2so1340607b3a.0;
-        Tue, 22 Aug 2023 02:13:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692695593; x=1693300393;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=U9yX6cYGBTYDrrw3eT3TNHNu49Hy4xR5qN3oXqk/2ak=;
-        b=PSD6sek0w5RTtYlBigo10A3T1rqlWP0D94fcx1z7X6XpPgSMpbfezdq4lgC3PMboro
-         RkR23ekgIQMeZ9nIejoUvH3J2cWFi5FmiMh+VGLUMtlkZI76hJW5ilusF64hxvzOvNMf
-         0uwrX8CFAexzsFOafwPlXzRAQ9Yebwyn+8EXM1QkKjpmxUS4pLC3CQqcRXFqvAlGsdl2
-         v0z0phbjdCT+Lhz//KKKkZhpEOfvNMNjutd6f8l9/x3WpVkA6L3KDe/7RWMa1m6tUcoS
-         uU+6umerd2nlt4iTOrdch0pbTXWUzZ6FR3lvoWzaV70L1RHA/+7IDm1G8MHdm2mlmlf/
-         emsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692695593; x=1693300393;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U9yX6cYGBTYDrrw3eT3TNHNu49Hy4xR5qN3oXqk/2ak=;
-        b=EH17BysfZ8lP//Fhbda3DYZzcaK/Cb1mTYXZVoWCkeh0SMx+hVd6nCPrw9QHc/ZiXb
-         +GD4zfHNTVccrRR56IzHyvIy9VXHO+D1vvYUGIuP+R2ZeMii4LR+JxYQEjb3PXWN0Ei5
-         zWte3Yld2C/l4cThFHOtwrVsFAlSEf9iojSG53eOYUveG/ebAu1bBcqCSy7QLsTC1NAW
-         em5H96JK7rtkb46fJAhTRbn9/VP9juTyLDcWOW7Ipmc7oPSElr9d5XuDQDuNZtcDsver
-         negZsIpCuk2vIl4NYAZ5mIxZtKBXdOl6qwprWhzi3+VtLp+vT7EXdn4YKuZy6FPt1cu0
-         PR6A==
-X-Gm-Message-State: AOJu0YygkE7Dj/LbnGvOAHxIecAU02Llrp9qY03EAccxd36P0ayoI0Yr
-        kFJ9+tCwrviRwE1ejmM8ud4=
-X-Google-Smtp-Source: AGHT+IHJ8aNv+4keg5TNv8EzN6pl5nygo6QNTmhnOA3lkaQYnceuyV1udjXtXlHRW0R3n25ebS+qKw==
-X-Received: by 2002:a05:6a20:d4:b0:145:8e82:4eec with SMTP id 20-20020a056a2000d400b001458e824eecmr6352807pzh.37.1692695593333;
-        Tue, 22 Aug 2023 02:13:13 -0700 (PDT)
-Received: from XHD-CHAVAN-L1.amd.com ([149.199.50.128])
-        by smtp.gmail.com with ESMTPSA id j4-20020aa783c4000000b0068892c40253sm7360405pfn.216.2023.08.22.02.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 02:13:12 -0700 (PDT)
-From:   Rohit Chavan <roheetchavan@gmail.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rohit Chavan <roheetchavan@gmail.com>
-Subject: [PATCH] RDMA/rxe: Fix redundant break statement in switch-case.
-Date:   Tue, 22 Aug 2023 14:43:04 +0530
-Message-Id: <20230822091304.7312-1-roheetchavan@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 22 Aug 2023 05:15:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DC7113;
+        Tue, 22 Aug 2023 02:15:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1CC0F611BF;
+        Tue, 22 Aug 2023 09:15:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECD36C433C7;
+        Tue, 22 Aug 2023 09:15:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1692695737;
+        bh=NaYhwuuLQL7D2HhPJrC7Hc7Nb5lI7cYzmX+Szyowccg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zrs701lvRJ/UmAaj/jAYYQzjqsZ6Ms4zD3t2FMKHSbz0sfcg6LOnGQSHWRe9P2Afg
+         aKb1UC/hPXqwjVQOpho8UPGaYJOY0WNKI50NIdd9YUGzb/hsSQSWMfCwqNqw8ELS0i
+         Us4BrSzztpUOpKNSGFXiIj0XekUCawa+QWVNK2k0=
+Date:   Tue, 22 Aug 2023 11:15:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, Ingo Molnar <mingo@elte.hu>,
+        kernel@collabora.com, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] tty/sysrq: replace smp_processor_id() with
+ get_cpu()
+Message-ID: <2023082259-blazer-charity-b58f@gregkh>
+References: <20230822090112.2601273-1-usama.anjum@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230822090112.2601273-1-usama.anjum@collabora.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unreachable break statement after return.
+On Tue, Aug 22, 2023 at 02:01:11PM +0500, Muhammad Usama Anjum wrote:
+> The smp_processor_id() shouldn't be called from preemptible code.
+> Instead use get_cpu() and put_cpu() which disables preemption in
+> addition to getting the processor id. This fixes the following bug:
+> 
+> [  119.143590] sysrq: Show backtrace of all active CPUs
+> [  119.143902] BUG: using smp_processor_id() in preemptible [00000000] code: bash/873
+> [  119.144586] caller is debug_smp_processor_id+0x20/0x30
+> [  119.144827] CPU: 6 PID: 873 Comm: bash Not tainted 5.10.124-dirty #3
+> [  119.144861] Hardware name: QEMU QEMU Virtual Machine, BIOS 2023.05-1 07/22/2023
+> [  119.145053] Call trace:
+> [  119.145093]  dump_backtrace+0x0/0x1a0
+> [  119.145122]  show_stack+0x18/0x70
+> [  119.145141]  dump_stack+0xc4/0x11c
+> [  119.145159]  check_preemption_disabled+0x100/0x110
+> [  119.145175]  debug_smp_processor_id+0x20/0x30
+> [  119.145195]  sysrq_handle_showallcpus+0x20/0xc0
+> [  119.145211]  __handle_sysrq+0x8c/0x1a0
+> [  119.145227]  write_sysrq_trigger+0x94/0x12c
+> [  119.145247]  proc_reg_write+0xa8/0xe4
+> [  119.145266]  vfs_write+0xec/0x280
+> [  119.145282]  ksys_write+0x6c/0x100
+> [  119.145298]  __arm64_sys_write+0x20/0x30
+> [  119.145315]  el0_svc_common.constprop.0+0x78/0x1e4
+> [  119.145332]  do_el0_svc+0x24/0x8c
+> [  119.145348]  el0_svc+0x10/0x20
+> [  119.145364]  el0_sync_handler+0x134/0x140
+> [  119.145381]  el0_sync+0x180/0x1c0
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 47cab6a722d4 ("debug lockups: Improve lockup detection, fix generic arch fallback")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> Changes since v1:
+> - Add "Cc: stable@vger.kernel.org" tag
+> ---
 
-Signed-off-by: Rohit Chavan <roheetchavan@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 1 -
- 1 file changed, 1 deletion(-)
+This is not a resend, it is a new version, v3.  Otherwise I would be
+confused with the original v2 which is different than this one...
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 903f0b71447e..48f86839d36a 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -798,7 +798,6 @@ static int init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
- 			rxe_err_qp(qp, "unsupported wr opcode %d",
- 					wr->opcode);
- 			return -EINVAL;
--			break;
- 		}
- 	}
+thanks,
 
---
-2.30.2
-
+greg k-h
