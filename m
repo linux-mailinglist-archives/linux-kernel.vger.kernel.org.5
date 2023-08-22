@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C4F784C35
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0444784C36
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbjHVVpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S231416AbjHVVqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjHVVpq (ORCPT
+        with ESMTP id S230444AbjHVVq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:45:46 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A93F3;
-        Tue, 22 Aug 2023 14:45:44 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37MLjWxj104189;
-        Tue, 22 Aug 2023 16:45:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1692740732;
-        bh=WgxMkMmw9MOrsFk9lD2LlijbIfUF6n4I27Lk5tuXGOc=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=mIhnykcRhaZ+VOvhAeJpUOYjM4cerp3jvB9/BNDDCvJQxwZrVwWdl0uurlQo7CH49
-         7xMCJ1AJzm6JcVpbkfOejVHpLk0cpaTPNRVGSFabJSCVWxjIIGHBgLyiuMDCkTCV/s
-         9SSp00gRgvIZ6q0tZXu4CePui1nRdrXEObNLjeUc=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37MLjWDp024739
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Aug 2023 16:45:32 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 22
- Aug 2023 16:45:31 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 22 Aug 2023 16:45:31 -0500
-Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37MLjVri024318;
-        Tue, 22 Aug 2023 16:45:31 -0500
-Message-ID: <949a8814-2084-2636-7a1b-a9d1188a16f8@ti.com>
-Date:   Tue, 22 Aug 2023 16:45:31 -0500
+        Tue, 22 Aug 2023 17:46:29 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A591AF3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:46:26 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-565334377d0so3533412a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1692740786; x=1693345586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5MUJPUxcmVBLaTsgRdKXZfBt6MGT8IKSbca8jhVu0H8=;
+        b=BK9+Wr29EKwyTgCbAH6TYt3AcRs4x/XUqyjnbCXOowFeU6f8e4YjWTD0J17tl3fvFV
+         ijsHrtXjtkIvHOTdpmpQK2azcKdx58urLrRgotip/dmjXiCurUiRQBWYu6pQheQYeHFP
+         U7G8z63zQ1ELkz6KYu6/MPWa72Dh+7Aj7a6kszh5f2jKW2oiT5dYYRuWfy+vHDgX2HdL
+         VI3UKdE7U9biI76hKcGsVF7l12SgCNC6HQim5zXfw/JBw6f+61NhZi1jxJC+8UwDkMyl
+         f6PlWxkTDSDwZ4OZcB3tp7rpRiMBgHsZO1I5lZ7JbVKgEVNnKGtvVAxryhxwyc8V5L6Z
+         zewA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692740786; x=1693345586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5MUJPUxcmVBLaTsgRdKXZfBt6MGT8IKSbca8jhVu0H8=;
+        b=fbK911c/OocPN3S+0ZMazCVIcWsfOuMR045w+Pm8FmJVwv/tMSc34yH+edhiwAsYMl
+         Bxf0SBKIAQC4GS0fZ67DL36Q1gWHXWjdL7FIRHPS9S34jURFzfn5yZyf4J1sgtuxsyL3
+         /zNvspsok6hTORg92Zh8dZDbHFa0hbesUxopCTXxGvSu+iWoo54ovZ7yWAmLS1cHqbRo
+         B/EREYBg88sgcKVg5L8Wqrg5kmPu/bL014MLP9+HOBm1aGNra36D3VeLa1CHmFKDtkv6
+         YZQNgqIfyqkzhFjGC2sUhvdpRLdwVDPgEVFuFibcLXIQP7641t5qHU6qblbZx1zCICH7
+         DF1g==
+X-Gm-Message-State: AOJu0Yy2YJnizGOAppL2i/sEdvvIGQmEeIJ+WZ7prqfgxRXUQD1bJ4n8
+        7lyv7UMyoDZHOq6caXXaRsmVGMwYS3Xa4+BBDvbH6g==
+X-Google-Smtp-Source: AGHT+IEkmUBMh1jGZn1Usgdro918qJSGC6E5Yneo+/9vM4FTAUAx1UyRZ2pcZLap390DZPfpko6TJKuSq0Bcl8cr2H0=
+X-Received: by 2002:a17:90a:c68a:b0:26d:1e39:faae with SMTP id
+ n10-20020a17090ac68a00b0026d1e39faaemr9137213pjt.22.1692740785827; Tue, 22
+ Aug 2023 14:46:25 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] remoteproc: core: Honor device tree /alias entries when
- assigning IDs
-To:     Nishanth Menon <nm@ti.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Kevin Cahalan <kevinacahalan@gmail.com>
-References: <20230807140247.956255-1-nm@ti.com> <ZOULmFR51C+9kEhZ@p14s>
- <20230822201205.4csoj4kym2yhuyrf@decrease>
-Content-Language: en-US
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <20230822201205.4csoj4kym2yhuyrf@decrease>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
+References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
+ <20230821103225.qntnsotdzuthxn2y@techsingularity.net> <6a18b295-92ac-1633-0b79-6aaf18a8496d@huaweicloud.com>
+ <CAF8kJuNq2Y5AAAQn66bTEfjkQ8kfPokmGgBLDPwEWUC=MO9NcQ@mail.gmail.com>
+ <CAADnVQJNQ+9D+3y-jLh3KVczcSo_Piz2O9-V9Grh3c1NQZujsA@mail.gmail.com>
+ <CAF8kJuOT5cSQNqO6-gf=M+hFxb2-nHT1eZnEvqGYGGC8qHn39Q@mail.gmail.com> <CAADnVQK-xqJxqcfpje0fvBKADB-nd_hQFuyoMMwqajEVKBG7Ng@mail.gmail.com>
+In-Reply-To: <CAADnVQK-xqJxqcfpje0fvBKADB-nd_hQFuyoMMwqajEVKBG7Ng@mail.gmail.com>
+From:   Chris Li <chriscli@google.com>
+Date:   Tue, 22 Aug 2023 14:46:14 -0700
+Message-ID: <CAF8kJuM-sO3ouRcNCEhzz2ZmXiHvKs5LD_65zwOLwvPua6LT9Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Namhyung Kim <namhyung@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Sperbeck <jsperbeck@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,62 +85,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/22/23 3:12 PM, Nishanth Menon wrote:
-> On 13:25-20230822, Mathieu Poirier wrote:
->> Hi Nishanth,
->>
->> On Mon, Aug 07, 2023 at 09:02:47AM -0500, Nishanth Menon wrote:
->>> On many platforms, such as Beaglebone-AI64 with many remote
->>> processors, firmware configurations provided by the distributions can
->>> vary substantially depending on the distribution build's functionality
->>> and the specific remote cores enabled in that variant. Ensuring
->>> consistent udev rules mapping remoteproc nodes to constant remote
->>> proc device indices across distributions (yocto, ubuntu, debian and
->>> it's variants, ...) on a board basis can be challenging due to the
->>> various functions of these distributions. Varied device node paths
->>> create challenges for applications that operate on remote processors,
->>> especially in minimal embedded systems(initrd like) that may not
->>> have udev-like capabilities and rely on a more straightforward bare
->>> filesystem. This challenge is similar to that faced by I2C, RTC or the
->>> GPIO subsystems.
->>>
->>
->> I'm puzzled by this patch.  I can see how using an alias can help in boards with
->> various HW configuration.  That said, and as written above, FW files for remote
->> processors can vary based on the build's functionality.  As such "remoteproc3"
->> will reference the same HW device on all distributions but the functionality
->> enacted by the FW may be different.  As such I don't see how an alias can help
->> here.  Can you provide a concrete example that highlights the benefits?
-> 
-> Correct - *if* remoteproc3 is the constant node reference.
-> 
-> To take a trivial example: We ran into this issue with:
-> https://github.com/kaofishy/bbai64_cortex-r5_example/blob/main/Makefile#L28
-> 
-> remoteproc18 apparently changed numbering in a different build.
-> 
-> If remoteproc18 remained the same between different distro builds that
-> would have probably kept the userspace constant. but it does'nt. it
-> dependent purely on probe order, which does'nt let userspace remain
-> consistent.
-> 
-> Same reason and motivation to do the following:
-> https://git.beagleboard.org/beagleboard/repos-arm64/-/blob/main/bb-customizations/suite/bookworm/debian/86-remoteproc-noroot.rules
-> in one technique to do it - but that only works if all the distros
-> follow the same udev rules - and there is no reasonable way to enforce
-> that across distributions.
-> 
+On Tue, Aug 22, 2023 at 2:36=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Aug 22, 2023 at 2:29=E2=80=AFPM Chris Li <chrisl@kernel.org> wrot=
+e:
+> >
+> > On Tue, Aug 22, 2023 at 2:19=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > The execution sequence is like this:
+> > > >
+> > > >        count =3D min(pcp->count, count);
+> > > >
+> > > >         /* Ensure requested pindex is drained first. */
+> > > >         pindex =3D pindex - 1;
+> > > >         bpf_injected_spin_lock_irqsave {
+> > > >                  alloc_page();
+> > > >                  original spin_lock_irqsave(&zone->lock, flags) ;
+> > > >         }
+> > >
+> > > bpf doesn't call into alloc_page() or slab alloc or pcpu alloc from
+> > > tracing progs.
+> > > All memory is preallocated.
 
-Enforcing distros to behave the same isn't the job of Device Tree, udev
-rules seems like a reasonable place. Anyone dealing with Linux should know
-they should not rely on kernel provided device names/numbers
-(like with disks, network interfaces, etc.).
+That is good to know. Thanks.
 
-If you want to have a path that will always work you could use:
+> >
+> > Here is the other patch submission thread which have more detail of
+> > how to reproduce it:
+> > https://lore.kernel.org/linux-mm/20230817-free_pcppages_bulk-v1-1-c1457=
+4a9f80c@kernel.org/
+> >
+> > It is on older version of the kernel.
+>
+> Please demonstrate the issue on the latest kernel.
+> It's an unnecessary time sink for everyone to review patches
+> targeting an issue in the old kernel.
 
-/sys/devices/platform/bus@f4000/bus@f4000\:r5fss@78400000/78400000.r5f/remoteproc/
+Thanks, that is the answer I am looking for. That is why I tag it
+as RFC.
 
-for the same. I don't like that it makes an ABI out of node names,
-but better than putting any more Linux configuration in DT IMHO.
+>
+> > > Can you reproduce the issue on the latest upstream kernel?
+> >
+> > Hope, the fix on the BPF side went in as commit c66a36af7ba3a628.
+> > I am not aware of other cases.
+>
+> That was a temporary workaround on perf side.
+> bpf task local storage was properly fixed later.
 
-Andrew
+Ack.
+
+> > It seems the consensus is so far is that we don't support BPF doing
+> > nested allocation on spin locks.
+> > That will implite any function called under the spinlocks as well.
+>
+> We're still talking past each other. bpf uses preallocated memory.
+> It might look like bpf prog is allocating, but it's actually
+> not calling into slab.
+
+Ack.
+
+
+> > Do we care about adding more warnings on this kind of allocation at all=
+?
+>
+> bpf doesn't mess with mm state.
+> If you somehow managed to cause mm splat with bpf prog talk to bpf folks =
+first.
+> It's a bug somewhere in bpf. Not with mm.
+
+Noted. It started as a MM clean up patch. Should include you earlier.
+
+I will spit out the part 2 of the patch as clean up without touching
+pcp->count then.
+
+Chris
