@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA0F789671
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 14:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BA67896E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Aug 2023 15:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232724AbjHZMCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Aug 2023 08:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        id S232446AbjHZN31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Aug 2023 09:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232571AbjHZMBz (ORCPT
+        with ESMTP id S230085AbjHZN3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Aug 2023 08:01:55 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5502106
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:01:52 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso15573825e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 05:01:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693051311; x=1693656111;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RO8Yyz2oHTR16ECZ9Rr/IoSLhSOOtJfBRk2Q+FHvz2I=;
-        b=UNgdJXuoBfk2mYXCWlsSN5/r0eXptoM2PMRb1lUyw92Ix1ueZgrbEQHPWckg0BW6ZT
-         zCbNu30hdb70ynY2kz95DF9fX7Ly3O7fZLcEtUkj18rnQcqa41u5YXBYezH9SNjWviAF
-         DFA65k2ni2+XrwK/GUAOKk/YJcu93EugffqezHYqsPC41e8FkJRaZ1KUn1lmrcudkxKi
-         lO78+v3s+XsjMehk3mHl9yCRVrg8TRT27xSilthVNlQ7hOYiH8dMq3EI2lhtFlSn3+fv
-         /N27dFaMmSoL52GTo77dcoTeoT9b8KtJL7eelpsOlkh/Z7+AzeI3XHUGhI6ckNsgAadV
-         QLYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693051311; x=1693656111;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RO8Yyz2oHTR16ECZ9Rr/IoSLhSOOtJfBRk2Q+FHvz2I=;
-        b=L1IeAZqGG9eYYXHiHFHEELnbWgi5Q8DUWL6mHpHapRfm/JbGy2VIO+oyuawxzWnxsj
-         5d10kFkh1MM4GKlocnSTKUMppZhOEMqxsWP+Y2EGlZlCzbyuc5m/6ctYIrlODVynLeFL
-         bP8mk7GMbMa4iG78fZ5xHKKyB8Nc2LbaDMXHnFfd5phWtDJHgqcyjHGx+w7HWeUewrRS
-         cCK0OCUAmO2FG8XfS1U5WLdocuG6iJxnbilR/6EKkSkdUwgCr/9uFmQm9sUfYF93uLlF
-         T/RcidBd9n44BsEHQiYF1MWgPNRX8zFedKHjlRh940yDJ0r5T1Zh76qzokt5ByneUMJ+
-         OkEg==
-X-Gm-Message-State: AOJu0Yxjj3teLPBqvu4a4OO4vN5wWJ/QuGOGeGHYSLO4h5U7YtC92j0V
-        jBnRzRO0SCgv5VtKO2wUNrd42g==
-X-Google-Smtp-Source: AGHT+IGfg0YU6vo3D5Gw6EI77NS2wTCFEgGf6amHUaQ6pN1e8MMnuBSRUFaaQTjlcDA6wKnEA9S4nw==
-X-Received: by 2002:a05:600c:ad2:b0:401:aa8f:7562 with SMTP id c18-20020a05600c0ad200b00401aa8f7562mr5271832wmr.11.1693051311340;
-        Sat, 26 Aug 2023 05:01:51 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id x7-20020a1c7c07000000b003ffca80edb8sm4854067wmc.15.2023.08.26.05.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Aug 2023 05:01:50 -0700 (PDT)
-Message-ID: <50b9d9f5-0433-2d7d-71af-10f4b3b8e448@linaro.org>
-Date:   Sat, 26 Aug 2023 13:01:49 +0100
+        Sat, 26 Aug 2023 09:29:10 -0400
+X-Greylist: delayed 15486 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 26 Aug 2023 06:29:07 PDT
+Received: from server.dsmega.com (server.dsmega.com [185.186.208.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0894A2110
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Aug 2023 06:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=remzavod.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=thoNrXbQv25mMK/3RviWbIqjmSGPAZCcCyNvsgRjrpM=; b=HI8YtdFxgKDmhBTBaCsGktBNGd
+        bFNqz16ASeKRYlybxboCsmkyoKSQmSrCy01QGlcl7iZ89mrpEpzFlG8ie5DN/4ucB4hI5YLgkovSZ
+        2Ojyg4j+Na4+bY5eI13tY3UdVASaxLEKN0qVe1dJoGN7fec84s2ogr2AT9y7s0eWX+L70qmlDx9uW
+        eCzNAr06RoJVTpxhSIqmoSinocpVFN0I+RH776IriisBV2XOToMFEceqAtQ9ThP3Xbes9j0fJG+Qr
+        ThuBYueyE1yHogPjPw468gHUKrqp7peT5PwJkFsAu2ZBu6p85wK+QERKysx2Ltwv1+EvoYvNgz5RR
+        5DF7OTGQ==;
+Received: from [85.195.105.114] (port=63093 helo=remzavod.com)
+        by server.dsmega.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <info@remzavod.com>)
+        id 1qYOGC-0000rq-Gx
+        for linux-kernel@vger.kernel.org; Tue, 22 Aug 2023 13:05:16 +0300
+Reply-To: robert.helmut@selectlaboratoriesltd.co.uk
+From:   info@remzavod.com
+To:     linux-kernel@vger.kernel.org
+Subject: Re: Contract Supply
+Date:   22 Aug 2023 03:05:16 -0700
+Message-ID: <20230822030514.385F155101E055C0@remzavod.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v3 09/15] media: qcom: camss: Improve error printout on
- icc_get fail
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
-        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
-        andrey.konovalov@linaro.org
-Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
- <20230823104444.1954663-10-bryan.odonoghue@linaro.org>
- <92e864cd-b98f-45d1-a46e-e5bfc52b4b08@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <92e864cd-b98f-45d1-a46e-e5bfc52b4b08@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server.dsmega.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - remzavod.com
+X-Get-Message-Sender-Via: server.dsmega.com: authenticated_id: info@remzavod.com
+X-Authenticated-Sender: server.dsmega.com: info@remzavod.com
+X-Spam-Status: No, score=4.0 required=5.0 tests=BAYES_50,DATE_IN_PAST_96_XX,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/08/2023 11:05, Konrad Dybcio wrote:
-> On 23.08.2023 12:44, Bryan O'Donoghue wrote:
->> If icc_get() fails print the name of the failing path.
->>
->> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> ---
-> Aren't the return messages propagated from
-> 
-> * of_icc_get()
-> 	|_ of_icc_get_by_index()
-> 
-> enough here?
-> 
-> Perhaps we should use dev_err_probe in camss too
-> 
-> Konrad
+Greetings,
 
-IDK, I will check
+I have a business plan that will benefit you from my company
+where i work as the head of research and dev. Contact me through
+my company provided email addresss and i will give you details of
+my intent for your consideration.
+
+Sincerely
+Robert Helmut
+Research & Dev Dept.
+Select Pharma Lab. Ltd .UK
+---------------------------------
+Email: robert.helmut@selectlaboratoriesltd.co.uk
+Select Pharma Lab. Ltd .UK
+First Floor, Quay 2, 139 Fountain bridge, Edinburgh, EH3 9QG,
+United Kingdom
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3DDISCLAIMER NOTICE=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+The content of this message is confidential. If you have received=20
+it by mistake, please inform us by an email reply and then delete=20
+the message. It is forbidden to copy, forward, or in any way=20
+reveal the contents of this message to anyone. The integrity and=20
+security of this email cannot be guaranteed over the Internet.=20
+Therefore, the sender will not be held liable for any damage=20
+caused by the message.
+
+=C2=A9 Copyright 2023 Select Pharma Lab. Ltd. All Right Reserved.
+
+
