@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6C78493D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9567278493F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 20:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229470AbjHVSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 14:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S229532AbjHVSIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 14:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjHVSH3 (ORCPT
+        with ESMTP id S229512AbjHVSIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 14:07:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFACD10D3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692727620; x=1724263620;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cwGhR5AwafMsuOw+p9j0rPog41N/qRISE816aZR6K+Q=;
-  b=AxUXRK62qXF6fifsYxuVz7m0srKo4J7rnQAyfmaBnfN3CSePp9riYvKI
-   Qe4ZjsFUlPcy7+PXHtttxSy8Bti0DgNo70NnYd4YiUUNdqzHr6PJVA5c1
-   A4/lm/QL0PhjDcNcL9Num0EM+Y8F78BWuqachHY5kksOTDIUwNNdQkPUV
-   dNoPHWKVEmgFIdEcC9nhP0Crh33Jj1Mn9ScK/Rcqd7YgkCayR2wqnEmB9
-   97hTM1e+RvQqOVs+RkIPFYQ/LREQhKqaScGYDYbiimhSajEnYYbKXqMaH
-   68r9LSg3QiFbb+ZicxX50vHu2iPsZY19ck8fDmsc/39Zoa5PS0KIsW/Fc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="354291547"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="354291547"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 11:06:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="801773724"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="801773724"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Aug 2023 11:06:48 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qYVmB-0000PM-0w;
-        Tue, 22 Aug 2023 18:06:47 +0000
-Date:   Wed, 23 Aug 2023 02:06:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nick Hu <nick.hu@sifive.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu,
-        leyfoon.tan@starfivetech.com, mason.huo@starfivetech.com,
-        conor.dooley@microchip.com, jeeheng.sia@starfivetech.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com
-Cc:     oe-kbuild-all@lists.linux.dev, Andy Chiu <andy.chiu@sifive.com>
-Subject: Re: [PATCH v2] riscv: suspend: Add syscore ops for suspend
-Message-ID: <202308230107.1L1ahyas-lkp@intel.com>
-References: <20230822054739.33552-1-nick.hu@sifive.com>
+        Tue, 22 Aug 2023 14:08:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA1ECC
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 11:08:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EEA3063C4C
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 18:08:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB04DC433C8;
+        Tue, 22 Aug 2023 18:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692727707;
+        bh=J7lgKhJFr4zPVnWVn7o3RjxykfQYKFNZkD4U5iqX6sU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O9tYJVhMgRrfwbK2yQfxv9HXnWt2d7fmbF1UObXbXAFPXl0LxQGzfJbBtzv1eLr/o
+         VIhpSoTBBFL/hPYktBdrD76nry+27Mz8ceDzGaL8x5NeeNsg+dPYnw7AEtyBhqAPqh
+         MxUHbgw+/aiIS9R6qMysqkoEVrJDN55JXrmqPKxg1zEYyQc8zqgbmagS6LcJhHHLQl
+         6CJpRWh8eam1RS5LyLlPsSbFtBCb94d5K/NDocCxNEoKrMDl5Gscga/D/O0gzE1YMo
+         HlEFSiVdnBsdFn4dVbVdQHsmNuXwqcd1RmU3BRKlIu176hIcHJyWMZQrovhwYtiyI8
+         aIirbdrM4+2Tg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5B99E40722; Tue, 22 Aug 2023 15:08:24 -0300 (-03)
+Date:   Tue, 22 Aug 2023 15:08:24 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] perf bpf_skel augmented_raw_syscalls: Cap the
+ socklen parameter using &= sizeof(saddr)
+Message-ID: <ZOT5mK2MgQXTx75w@kernel.org>
+References: <ZN1ELw41wQE5zDrK@kernel.org>
+ <CAP-5=fVU07VHcQE6r9k7aEV+xM3_HFcgY+5Y8N7qVvsZD3V9vg@mail.gmail.com>
+ <ZONpMu2/tQvZgM/S@kernel.org>
+ <CAP-5=fX_DdDV8CVWvcRCP9iWwZAmGYBdi5_RRczB3HQUuRdrOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230822054739.33552-1-nick.hu@sifive.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fX_DdDV8CVWvcRCP9iWwZAmGYBdi5_RRczB3HQUuRdrOw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,52 +65,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+Em Mon, Aug 21, 2023 at 07:52:46AM -0700, Ian Rogers escreveu:
+> On Mon, Aug 21, 2023 at 6:40 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Wed, Aug 16, 2023 at 03:10:00PM -0700, Ian Rogers escreveu:
+> > > On Wed, Aug 16, 2023 at 2:48 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > > >   R2 min value is negative, either use unsigned or 'var &= const'
+> > > >   processed 22 insns (limit 1000000) max_states_per_insn 0 total_states 1 peak_states 1 mark_read 1
+> > > >   -- END PROG LOAD LOG --
+> > > >   libbpf: prog 'sys_enter_sendto': failed to load: -13
+> > > >   libbpf: failed to load object 'augmented_raw_syscalls_bpf'
+> > > >   libbpf: failed to load BPF skeleton 'augmented_raw_syscalls_bpf': -13
+> > > >
+> > > > So use the suggested &= variant since sizeof(saddr) == 128 bytes.
+> > >
+> > > Could this be an assert?
+> >
+> > you mean (removing the change to saddr to make it trigger):
+> 
+> I was more meaning that doing sizeof(x) -1 and assuming that x is a
+> power of two should really have an assert that sizeof(x) is a power of
 
-kernel test robot noticed the following build warnings:
+Right, that was my understanding, and that is what:
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.5-rc7 next-20230822]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+_Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two")
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nick-Hu/riscv-suspend-Add-syscore-ops-for-suspend/20230822-135024
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230822054739.33552-1-nick.hu%40sifive.com
-patch subject: [PATCH v2] riscv: suspend: Add syscore ops for suspend
-config: riscv-randconfig-r121-20230822 (https://download.01.org/0day-ci/archive/20230823/202308230107.1L1ahyas-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230823/202308230107.1L1ahyas-lkp@intel.com/reproduce)
+Does, right?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308230107.1L1ahyas-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   arch/riscv/kernel/suspend.c: In function 'riscv_cpu_resume':
->> arch/riscv/kernel/suspend.c:114:25: warning: unused variable 'regs' [-Wunused-variable]
-     114 |         struct pt_regs *regs = task_pt_regs(cur_task);
-         |                         ^~~~
+- Arnaldo
 
 
-vim +/regs +114 arch/riscv/kernel/suspend.c
+> 2. Using 127 and asserting sizeof(x)==128 also works.
 
-   110	
-   111	static void riscv_cpu_resume(void)
-   112	{
-   113		struct task_struct *cur_task = get_current();
- > 114		struct pt_regs *regs = task_pt_regs(cur_task);
-   115	
-   116		if (has_fpu())
-   117			fstate_restore(cur_task, regs);
-   118		if (has_vector())
-   119			riscv_v_vstate_restore(cur_task, regs);
-   120	}
-   121	
+
+> Thanks,
+> Ian
+> 
+> > diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > index 9c1d0b271b20f693..521ce2d7357d983c 100644
+> > --- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > @@ -10,6 +10,16 @@
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <linux/limits.h>
+> >
+> > +/**
+> > + * is_power_of_2() - check if a value is a power of two
+> > + * @n: the value to check
+> > + *
+> > + * Determine whether some value is a power of two, where zero is *not*
+> > + * considered a power of two.  Return: true if @n is a power of 2, otherwise
+> > + * false.
+> > + */
+> > +#define is_power_of_2(n) (n != 0 && ((n & (n - 1)) == 0))
+> > +
+> >  #define MAX_CPUS  4096
+> >
+> >  // FIXME: These should come from system headers
+> > @@ -112,7 +122,10 @@ struct augmented_args_payload {
+> >                 struct {
+> >                         struct augmented_arg arg, arg2;
+> >                 };
+> > -               struct sockaddr_storage saddr;
+> > +               struct {
+> > +                       struct sockaddr_storage real_saddr;
+> > +                       char padding;
+> > +               } saddr;
+> >                 char   __data[sizeof(struct augmented_arg)];
+> >         };
+> >  };
+> > @@ -187,6 +200,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
+> >          if (augmented_args == NULL)
+> >                  return 1; /* Failure: don't filter */
+> >
+> > +       _Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
+> >         socklen &= sizeof(augmented_args->saddr) - 1;
+> >
+> >         bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+> >
+> >
+> > --------------------------------
+> >
+> >   CLANG   /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
+> > util/bpf_skel/augmented_raw_syscalls.bpf.c:203:2: error: static_assert failed due to requirement 'sizeof (augmented_args->saddr) != 0 && ((sizeof (augmented_args->saddr) & (sizeof (augmented_args->saddr) - 1)) == 0)' "sizeof(augmented_args->saddr) needs to be a power of two"
+> >         _Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
+> >         ^              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > 1 error generated.
+> > make[2]: *** [Makefile.perf:1104: /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o] Error 1
+> > make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> > make: *** [Makefile:113: install-bin] Error 2
+> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> >
+> > And here the assert being satisfied:
+> >
+> > ⬢[acme@toolbox perf-tools-next]$ git diff
+> > diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > index 9c1d0b271b20f693..43549b63b433d81e 100644
+> > --- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+> > @@ -10,6 +10,16 @@
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <linux/limits.h>
+> >
+> > +/**
+> > + * is_power_of_2() - check if a value is a power of two
+> > + * @n: the value to check
+> > + *
+> > + * Determine whether some value is a power of two, where zero is *not*
+> > + * considered a power of two.  Return: true if @n is a power of 2, otherwise
+> > + * false.
+> > + */
+> > +#define is_power_of_2(n) (n != 0 && ((n & (n - 1)) == 0))
+> > +
+> >  #define MAX_CPUS  4096
+> >
+> >  // FIXME: These should come from system headers
+> > @@ -187,6 +197,7 @@ int sys_enter_connect(struct syscall_enter_args *args)
+> >          if (augmented_args == NULL)
+> >                  return 1; /* Failure: don't filter */
+> >
+> > +       _Static_assert(is_power_of_2(sizeof(augmented_args->saddr)), "sizeof(augmented_args->saddr) needs to be a power of two");
+> >         socklen &= sizeof(augmented_args->saddr) - 1;
+> >
+> >         bpf_probe_read(&augmented_args->saddr, socklen, sockaddr_arg);
+> > ⬢[acme@toolbox perf-tools-next]$ m
+> > make: Entering directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> >   BUILD:   Doing 'make -j32' parallel build
+> >   INSTALL libsubcmd_headers
+> >   INSTALL libperf_headers
+> >   INSTALL libapi_headers
+> >   INSTALL libbpf_headers
+> >   CLANG   /tmp/build/perf-tools-next/util/bpf_skel/.tmp/augmented_raw_syscalls.bpf.o
+> >   GENSKEL /tmp/build/perf-tools-next/util/bpf_skel/augmented_raw_syscalls.skel.h
+> >   INSTALL libsymbol_headers
+> >   CC      /tmp/build/perf-tools-next/builtin-trace.o
+> >   LD      /tmp/build/perf-tools-next/perf-in.o
+> >   LINK    /tmp/build/perf-tools-next/perf
+> >   INSTALL binaries
+> >   INSTALL tests
+> >   INSTALL libperf-jvmti.so
+> >   INSTALL libexec
+> >   INSTALL perf-archive
+> >   INSTALL perf-iostat
+> >   INSTALL strace/groups
+> >   INSTALL perl-scripts
+> >   INSTALL python-scripts
+> >   INSTALL dlfilters
+> >   INSTALL perf_completion-script
+> >   INSTALL perf-tip
+> > make: Leaving directory '/var/home/acme/git/perf-tools-next/tools/perf'
+> > ⬢[acme@toolbox perf-tools-next]$
+> >
+> >
+> >
+> >
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+- Arnaldo
