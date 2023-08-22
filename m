@@ -2,74 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6EF7845F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AFC78460F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 17:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237309AbjHVPny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 11:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
+        id S237295AbjHVPrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 11:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237302AbjHVPnx (ORCPT
+        with ESMTP id S231487AbjHVPrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 11:43:53 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE69CD5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:43:51 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so5592414a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:43:51 -0700 (PDT)
+        Tue, 22 Aug 2023 11:47:15 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D11FCD1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:47:14 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-79df1303d01so1511441241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 08:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692719030; x=1693323830;
+        d=google.com; s=20221208; t=1692719233; x=1693324033;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aHPwQRfzvw0kSRyeNQxBzdbaew4IqY6cIfInQbasrDQ=;
-        b=sEQshxKo1c53nQhGLbHCCdc+S2tBe70IsqZWr7uYwwq9MoMEMzlTYnO6hFGblId8HR
-         DzzXIr0Ng5kZ8/r2nmhyqI70Cd91DmIvGtUBCxTGKWkDWaAHPTwgsIY9Q8aM7BIQoe1N
-         AFJXDgT/DK9PdVByD6peAL9817rZ2/DecmzYDeKW4k8VYQFxiZvcB1tNj6kVv7l55IG/
-         R2ZX4wdjG0RXpwDlzSlIiiT17KUinChOvJXjhixzKBGtmb4QrfWMjNdC8QhiwnuOOQ5t
-         vhTR2MV2OtnpVDusGoen77jQIoKs6WbqROpZbkfQGnaroO2feltIB5XZ+bsfnT0OjlyD
-         MueQ==
+        bh=HYNvV23/sQh2KUeEtBQywg5ma3vCxQAqr4Fitqyx0c4=;
+        b=UN77YUOelf5sJQMuE+614A5Z84E2e6FM84c3z6tTCr6fuXnbnqGlC4ndp0jdFNAtHk
+         MqVEHFAGNEBE57eFoVnRrvGC6tw1cyDaceDUw2Q5XzhsWU3I75Nz+p/HgJaJUnDj0oLj
+         C0ouC1ra3gvDQ5hhAmIA9MmPYICUNSJgL+Wl2xt7Mt/zFVJ4E5wJnlUnkdVL8lU+RlFM
+         MSWyZXsKWxc9ossbSLXVPY/mGxsQEe3/Cq1O02zt/qxIoDoJ5HGP9axj+xvWuJCYdJBi
+         PTE3Eq8dg0BPPpZ8BSjUtqxRPTT8iI/ZA9muVe8V3uEVr5t1Bjqo8voB435c6gsuRh7N
+         YMOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692719030; x=1693323830;
+        d=1e100.net; s=20221208; t=1692719233; x=1693324033;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aHPwQRfzvw0kSRyeNQxBzdbaew4IqY6cIfInQbasrDQ=;
-        b=GYOFJgO+o3YpCTr/0g7sCCzAgUH4HXwJZbBhpfwIT00ISd49Rt+KoMREBBwQA+C3vY
-         a3ONfvFG4V2PX/qVNOFJtDfrm48Xru0HGeMOR0lUyiXySErdKiDtL80xiwfDwNUWY4Rt
-         cTTogZBcOD1bYQeMzeTD0R9ngHIvXvBnDHuxZAe1PisHrG1JR8I23mcaIv8gXwv3B/CE
-         /yMQ6k0BiYkxTDNuQ42MySItv1Dayi3gSEySpEUJTSMnDOr+FWk98y+EFzX08/DXxTHy
-         +EOKWZWZ6KpnrLrnsJ9aMZI3gQUnISz4Bh5grgaHbbn4bAwE6pqW+HGDGDFKgXxfyXEj
-         /Gsg==
-X-Gm-Message-State: AOJu0YwAwSZEetgHoyeJZXsue1lP5+4RVVQdisgY++IlU6aAgxFm1neX
-        HH+GC8JdTlaTOM3umKgNB85UAqpWtMFEILSlIknt7w==
-X-Google-Smtp-Source: AGHT+IHS97sSNWyiXgCNScdPoxBn0oRhZd31+T5kmk9JQHR1a3PFHWfxZOba5fcmlpUo/3o5Ke4/hjD+6EC5oavPmwY=
-X-Received: by 2002:a17:907:2c57:b0:98e:419b:4cc6 with SMTP id
- hf23-20020a1709072c5700b0098e419b4cc6mr7061038ejc.70.1692719030006; Tue, 22
- Aug 2023 08:43:50 -0700 (PDT)
+        bh=HYNvV23/sQh2KUeEtBQywg5ma3vCxQAqr4Fitqyx0c4=;
+        b=SzyhR0zt3F+Z3vUQ6QR3cM07OwclK+Okm4Rsd6CfrXa8HEcYZDz/VjYUXlsiJizzva
+         j5iQiP1Ww40sQTh1pf5esVYCXypYYWVZLKkUwt9uJOvoCd7WPcqBYGn8Z0cToP0dF49g
+         lUpt4yqdWla2nOlXTJg8SrLtVDtbX9gkHm/46bkWtkJM/OCiN9brp7YtDrndu+ZnNl9+
+         BFWXXLImsSrhyKXM41di7uYDjVsvYRbRDH0JTLuj6GIQxGVAqGha4BIgOK7yneoMjOST
+         y7gZ8cSplojR1m2EzjpRjtOfec3CK6R9aHxjpRG6UEV7qQ2Mp2KXePulLufTbdHSOFgY
+         5GsQ==
+X-Gm-Message-State: AOJu0YzLIUd+Ko7aZqJW7NaoK0Wr7lC/1vpF9GEune3UG37Zfx14ojJe
+        bClY8TYW9EwHoGBKJ1IBoILC7/jI0z9Eu7swnjrWAA==
+X-Google-Smtp-Source: AGHT+IGObL+V0/ELRu9qQaqOGv9Tp3eKDjtfRuftO2ZQwK2jpACBoKq2mdTSjTDQSxxhDvDhAGyMDcJJCgF8fGBxxk0=
+X-Received: by 2002:a67:b34b:0:b0:440:b7df:767b with SMTP id
+ b11-20020a67b34b000000b00440b7df767bmr8953767vsm.11.1692719233347; Tue, 22
+ Aug 2023 08:47:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230821205458.1764662-1-yosryahmed@google.com> <a4opjlmm5it3ujoypcgjfljfamjvr7gu34sc7lrjldfbqzz4lj@6w4lqdcfd3zu>
-In-Reply-To: <a4opjlmm5it3ujoypcgjfljfamjvr7gu34sc7lrjldfbqzz4lj@6w4lqdcfd3zu>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 22 Aug 2023 08:43:13 -0700
-Message-ID: <CAJD7tkYrbs8Eqb-AbTmb5JeQb+KeLZrU4C2kJk8pjva-6p6bHQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] memcg: non-unified flushing for userspace stats
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20230822065256.163660-1-denik@chromium.org>
+In-Reply-To: <20230822065256.163660-1-denik@chromium.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 22 Aug 2023 08:47:02 -0700
+Message-ID: <CAKwvOdmvUCKDk0kU0DVywRRPS9qT09PsQ435GzzuinHkBcRZ0w@mail.gmail.com>
+Subject: Re: [PATCH] modpost: Skip .llvm.call-graph-profile section check
+To:     Denis Nikitin <denik@chromium.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,68 +73,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 6:01=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Mon, Aug 21, 2023 at 11:54=E2=80=AFPM Denis Nikitin <denik@chromium.org>=
+ wrote:
 >
-> Hello.
+> .llvm.call-graph-profile section is added when the kernel is built with
+> profiles (e.g. -fprofile-sample-use=3D<llvm.profile>). The section holds
+> metadata for symbols beloning to other sections and hence doesn't need
+> modpost checks.
 >
-> On Mon, Aug 21, 2023 at 08:54:55PM +0000, Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > For userspace reads, unified flushing leads to non-deterministic stats
-> > staleness and reading cost.
+> This change fixes the kernel build with sample profiles which fails
+> with:
+> "FATAL: modpost: Please add code to calculate addend for this architectur=
+e"
 >
-> I only skimed previous threads but I don't remember if it was resolved:
-> a) periodic flushing was too much spaced for user space readers (i.e. 2s
->    delay is too much [1]),
-> b) periodic flushing didn't catch up (i.e. full tree flush can
->    occassionaly take more than 2s) leading to extra staleness?
+> Signed-off-by: Denis Nikitin <denik@chromium.org>
 
-The idea is that having stats anywhere between 0-2 seconds stale is
-inconsistent, especially when compared to other values (such as
-memory.usage_in_bytes), which can give an inconsistent and stale view
-of the system. For some readers, 2s is too spaced (we have readers
-that read every second). A time-only bound is scary because on large
-systems a lot can happen in a second. There will always be a delay
-anyway, but ideally we want to minimize it.
+Thanks for the patch. If you send a v2 with Fangrui's suggested
+changes+additions, feel free to carry forward my reviewed by tag.
 
-I think 2s is also not a strict bound (e.g. flushing is taking a lot
-of time, a flush started but the cgroup you care about hasn't been
-flushed yet, etc).
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-There is also the problem of variable cost of reading.
-
+> ---
+>  scripts/mod/modpost.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> [1] Assuming that nr_cpus*MEMCG_CHARGE_BATCH error bound is also too
->     much for userspace readers, correct?
-
-I can't tell for sure to be honest, but given the continuously
-increased number of cpus on modern systems, and the fact that
-nr_cpus*MEMCG_CHARGE_BATCH can be localized in one cgroup or spread
-across the hierarchy, I think it's better if we drop it for userspace
-reads if possible.
-
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index b29b29707f10..64bd13f7199c 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -761,6 +761,7 @@ static const char *const section_white_list[] =3D
+>         ".fmt_slot*",                   /* EZchip */
+>         ".gnu.lto*",
+>         ".discard.*",
+> +       ".llvm.call-graph-profile",     /* call graph */
+>         NULL
+>  };
 >
-> > The cost of userspace reads are now determinstic, and depend on the
-> > size of the subtree being read. This should fix both the *sometimes*
-> > expensive reads (due to flushing the entire tree) and occasional
-> > staless (due to skipping flushing).
+> --
+> 2.42.0.rc1.204.g551eb34607-goog
 >
-> This is nice, thanks to the atomic removal in the commit 0a2dc6ac3329
-> ("cgroup: remove cgroup_rstat_flush_atomic()"). I think the smaller
-> chunks with yielding could be universally better (last words :-).
 
-I was hoping we can remove unified flushing completely, but stress
-testing with hundreds of concurrent reclaimers shows a lot of
-regression. Maybe it doesn't matter in practice, but I don't want to
-pull that trigger :)
 
-FWIW, with unified flushing we are getting great concurrency for
-in-kernel flushers like reclaim or refault, but at the expense of
-stats staleness. I really wonder what hidden cost we are paying due to
-the stale stats. I would imagine any problems that manifest from this
-would be difficult to tie back to the stale stats.
-
->
-> Thanks,
-> Michal
->
+--=20
+Thanks,
+~Nick Desaulniers
