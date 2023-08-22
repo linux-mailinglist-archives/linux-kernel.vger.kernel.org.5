@@ -2,247 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113D7783B7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB086783B84
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 10:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbjHVIOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 04:14:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
+        id S233717AbjHVIOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 04:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjHVIOC (ORCPT
+        with ESMTP id S233721AbjHVIOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 04:14:02 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B19F19A;
-        Tue, 22 Aug 2023 01:14:00 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26f38171174so1661461a91.3;
-        Tue, 22 Aug 2023 01:14:00 -0700 (PDT)
+        Tue, 22 Aug 2023 04:14:45 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B89196
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:14:43 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99d937b83efso537465066b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 01:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692692040; x=1693296840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BwxiBeDcoEfjxHyLx/YtIfeLMp3A+ec/F6ReskGMLXc=;
-        b=HThE9kN+7jf8RJfftViPpYzqQ8ngRWyzTx/TGqSavkIrwNwXJjw7G80N9aJjuDw8Ba
-         5omVwMciJhjb4xAQgzCvNnnXA37RXjKKOEC3KEHo7jAvU1OTWiF4RbHUFbkTQ6nWd4BW
-         UlIjTeI8kx2Gy27+trg/UQ1lJihrrD08bfl6pCKxyY/d8dyUTjHP2tXuTe8Q+4EC6EM6
-         tfNp+1nZnLXclDyiubLY6B2YU/7wMJO1ND3nzhVa7aWw19NDt+m4YkATePqOyOzDUUMq
-         6UlaPKJYKwcuvtQO0XFhgroezzOzdofRZOsRZF9JP0Adp0Dj8Y0WxZ8U7XhZ4C0cjzLX
-         RE5w==
+        d=linaro.org; s=google; t=1692692082; x=1693296882;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UcevB7am2pXeP5lqY50CZLpg9C14+QBxX9cH++gplMk=;
+        b=ulHC1p5RFSlmcCJ/iqa2uNeOtQCu/getFfhJm7Zc/LHNNdL4h+XXi8GFR5Ed3OCtGZ
+         1kNb8rNkW0DOHkrk0Rz8KTOiVyg2B0fdzw5OjbtKrQOO4J7iQAiiGzdngEijHAkB7z90
+         YR7FKFsT+wn1cM8K7DGdTMZ4iKt7eX1bIunvf6XQeNaYT2FqI762hBjpGamvzfWtRcPC
+         yK6JMZM2OIxjdREEkPqVN7JGCKjuXL7puf3OOUz6M61Xb+DlKhHQcTd5jFJ5WB8U5AM8
+         JPim9SByzY/xbnd5RhYxMY/g5vg/JTaHE34CczXh0s1L3V9ggG3kpwvl6GrNjPwsd9wT
+         RQnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692692040; x=1693296840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BwxiBeDcoEfjxHyLx/YtIfeLMp3A+ec/F6ReskGMLXc=;
-        b=gr9TrInnVik0RmfXvVx/pIwn/Ll/JzAdSDG2BZq5hJ6i0nQoKf6vsYxWZcifXQpF86
-         zjtY0oeiSwt0BIO9rnpfSxidKpG2FQ3k6gcli2HH22s2aXV9ojE7vG/i2CTT+oDqCCid
-         L6BBN/6YfDR1mkOTOA1rQXly2T23W+KU9SLmORsixYq2hchOPUkXpjVw4A4+H4vARSNh
-         0YKV1YbgIopR/5mZkWQKGD8WBvcsmsMG89LSN4wXUpwtVc5TYEjn6z5QCjhWwYDelKlr
-         VC+wV5JifgAhb1gdiXFnWFuDEkY8248+iAQ+1qIdMQLRwMVp+7TRi5HKtXVFCTCe0pJ0
-         u6MQ==
-X-Gm-Message-State: AOJu0Ywe1LdxLOOeON7T+9rRdBmnT8/3qhUESOlnPInWEhhf+nSOPfC4
-        1bXqp/gZxKYapHBvbL5Hv2UEwaDhuG75hzuA2xc=
-X-Google-Smtp-Source: AGHT+IGOVXKDbj5W9DpLYjMonS6xODRpZvmTPWASdKq2gj/glZLPLyPpr5nC7uv4B1DL1sLt8thrH5LwCa2okSOpbvQ=
-X-Received: by 2002:a17:90a:4ec2:b0:268:f987:305f with SMTP id
- v2-20020a17090a4ec200b00268f987305fmr8157642pjl.46.1692692039649; Tue, 22 Aug
- 2023 01:13:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1692692082; x=1693296882;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UcevB7am2pXeP5lqY50CZLpg9C14+QBxX9cH++gplMk=;
+        b=dHoULYNeIqJxyUhkQmsnXmyIW0AlxDRxSr8HgqmiDOCiw0wYHdxur5q3cmn+Td1UE9
+         /NpvNJrBbvdS1l9pHehie0n+DBP1r3MSQ1qs+BbLWAOJ4tTCLJANvRctZqTtTCwLAgyz
+         YKTypisp3PQiiyE76wq6qZK3d/6yj8aBrDNSw/SM03AhdU7ApOXHVF4mlLoD+giYA2hc
+         kKWZFAq5/uy2jiaP8x62tAiEveZE3hv6L87U3zziTE45rHZE4OzrzNsiwuiGS6saMsQn
+         z2k6zSYXOdKYb5aOj8VEjIW49MYN0VY6OHfWgVOvN3fQgUu75gAh+LAfbeYFWAjmgQ6F
+         JMGA==
+X-Gm-Message-State: AOJu0YyIQiP0uia257kpSJ34RVkVv5+iCBVJYZlXO9JMvnkXNZbBTKeg
+        0kUvEPn1AYsVphhhCmaJVTgTbA==
+X-Google-Smtp-Source: AGHT+IGtKfT4WD2eA78KlisViKcPwv4slLcoTtQRurM0VXYw54htN9Rs67jp21lp8SezCPKmCqgnyA==
+X-Received: by 2002:a17:906:3017:b0:9a1:649b:46f9 with SMTP id 23-20020a170906301700b009a1649b46f9mr6558539ejz.74.1692692081945;
+        Tue, 22 Aug 2023 01:14:41 -0700 (PDT)
+Received: from [192.168.0.22] ([77.252.47.198])
+        by smtp.gmail.com with ESMTPSA id m7-20020a17090679c700b009875a6d28b0sm7748312ejo.51.2023.08.22.01.14.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 01:14:41 -0700 (PDT)
+Message-ID: <063c70e6-8ee4-eac9-e0ce-7fc460d58c1f@linaro.org>
+Date:   Tue, 22 Aug 2023 10:14:39 +0200
 MIME-Version: 1.0
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
- <20230818101630.000027f4@linux.intel.com> <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
- <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com> <20230822083923.00007fb6@linux.intel.com>
-In-Reply-To: <20230822083923.00007fb6@linux.intel.com>
-From:   AceLan Kao <acelan@gmail.com>
-Date:   Tue, 22 Aug 2023 16:13:46 +0800
-Message-ID: <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-To:     Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-Cc:     Song Liu <song@kernel.org>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] dt-bindings: spi: Convert sprd spi bindings to yaml
+Content-Language: en-US
+To:     Jiansheng Wu <jiansheng.wu@unisoc.com>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yongzhi.chen@unisoc.com, xiaoqing.wu@unisoc.com,
+        jinfeng.lin1@unisoc.com, jianshengwu16@gmail.com
+References: <20230822075113.25506-1-jiansheng.wu@unisoc.com>
+ <20230822075113.25506-2-jiansheng.wu@unisoc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230822075113.25506-2-jiansheng.wu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com> =E6=96=BC 2023=E5=B9=B48=
-=E6=9C=8822=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=882:39=E5=AF=AB=E9=
-=81=93=EF=BC=9A
->
-> On Mon, 21 Aug 2023 23:17:54 -0700
-> Song Liu <song@kernel.org> wrote:
->
-> > On Mon, Aug 21, 2023 at 8:51=E2=80=AFPM Guoqing Jiang <guoqing.jiang@li=
-nux.dev> wrote:
-> > >
-> > >
-> > >
-> > > On 8/18/23 16:16, Mariusz Tkaczyk wrote:
-> > > > On Wed, 16 Aug 2023 16:37:26 +0700
-> > > > Bagas Sanjaya<bagasdotme@gmail.com>  wrote:
-> > > >
-> > > >> Hi,
-> > > >>
-> > > >> I notice a regression report on Bugzilla [1]. Quoting from it:
-> > > >>
-> > > >>> It needs to build at least 2 different RAIDs(eg. RAID0 and RAID10=
-, RAID5
-> > > >>> and RAID10) and then you will see below error repeatly(need to us=
-e
-> > > >>> serial console to see it)
-> > > >>>
-> > > >>> [ 205.360738] systemd-shutdown[1]: Stopping MD devices.
-> > > >>> [ 205.366384] systemd-shutdown[1]: sd-device-enumerator: Scan all=
- dirs
-> > > >>> [ 205.373327] systemd-shutdown[1]: sd-device-enumerator: Scanning
-> > > >>> /sys/bus [ 205.380427] systemd-shutdown[1]: sd-device-enumerator:
-> > > >>> Scanning /sys/class [ 205.388257] systemd-shutdown[1]: Stopping M=
-D
-> > > >>> /dev/md127 (9:127). [ 205.394880] systemd-shutdown[1]: Failed to =
-sync
-> > > >>> MD block device /dev/md127, ignoring: Input/output error [ 205.40=
-4975]
-> > > >>> md: md127 stopped. [ 205.470491] systemd-shutdown[1]: Stopping MD
-> > > >>> /dev/md126 (9:126). [ 205.770179] md: md126: resync interrupted.
-> > > >>> [ 205.776258] md126: detected capacity change from 1900396544 to =
-0
-> > > >>> [ 205.783349] md: md126 stopped.
-> > > >>> [ 205.862258] systemd-shutdown[1]: Stopping MD /dev/md125 (9:125)=
-.
-> > > >>> [ 205.862435] md: md126 stopped.
-> > > >>> [ 205.868376] systemd-shutdown[1]: Failed to sync MD block device
-> > > >>> /dev/md125, ignoring: Input/output error [ 205.872845] block devi=
-ce
-> > > >>> autoloading is deprecated and will be removed. [ 205.880955] md: =
-md125
-> > > >>> stopped. [ 205.934349] systemd-shutdown[1]: Stopping MD /dev/md12=
-4p2
-> > > >>> (259:7). [ 205.947707] systemd-shutdown[1]: Could not stop MD
-> > > >>> /dev/md124p2: Device or resource busy [ 205.957004]
-> > > >>> systemd-shutdown[1]: Stopping MD /dev/md124p1 (259:6). [ 205.9641=
-77]
-> > > >>> systemd-shutdown[1]: Could not stop MD /dev/md124p1: Device or re=
-source
-> > > >>> busy [ 205.973155] systemd-shutdown[1]: Stopping MD /dev/md124 (9=
-:124).
-> > > >>> [ 205.979789] systemd-shutdown[1]: Could not stop MD /dev/md124: =
-Device
-> > > >>> or resource busy [ 205.988475] systemd-shutdown[1]: Not all MD de=
-vices
-> > > >>> stopped, 4 left.
-> > > >> See Bugzilla for the full thread and attached full journalctl log.
-> > > >>
-> > > >> Anyway, I'm adding this regression to be tracked by regzbot:
-> > > >>
-> > > >> #regzbot introduced: 12a6caf273240a
-> > > >> https://bugzilla.kernel.org/show_bug.cgi?id=3D217798  #regzbot tit=
-le:
-> > > >> systemd shutdown hang on machine with different RAID levels
-> > > >>
-> > > >> Thanks.
-> > > >>
-> > > >> [1]:https://bugzilla.kernel.org/show_bug.cgi?id=3D217798
-> > > >>
-> > > > Hello,
-> > > > The issue is reproducible with IMSM metadata too, around 20% of reb=
-oot
-> > > > hangs. I will try to raise the priority in the bug because it is va=
-lid
-> > > > high- the base functionality of the system is affected.
-> > >
-> > > Since it it reproducible from your side, is it possible to turn the
-> > > reproduce steps into a test case
-> > > given the importance?
->
-> I didn't try to reproduce it locally yet because customer was able to
-> bisect the regression and it pointed them to the same patch so I connecte=
-d it
-> and asked author to take a look first. At a first glance, I wanted to get
-> community voice to see if it is not something obvious.
->
-> So far I know, customer is creating 3 IMSM raid arrays, one is the system
-> volume and do a reboot and it sporadically fails (around 20%). That is al=
-l.
->
-> > >
-> > > I guess If all arrays are set with MD_DELETED flag, then reboot might
-> > > hang, not sure whether
-> > > below (maybe need to flush wq as well  before list_del) helps or not,
-> > > just FYI.
-> > >
-> > > @@ -9566,8 +9566,10 @@ static int md_notify_reboot(struct notifier_bl=
-ock
-> > > *this,
-> > >
-> > >          spin_lock(&all_mddevs_lock);
-> > >          list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) =
-{
-> > > -               if (!mddev_get(mddev))
-> > > +               if (!mddev_get(mddev)) {
-> > > +                       list_del(&mddev->all_mddevs);
-> > >                          continue;
-> > > +               }
-> >
-> > I am still not able to reproduce this, probably due to differences in t=
-he
-> > timing. Maybe we only need something like:
-> >
-> > diff --git i/drivers/md/md.c w/drivers/md/md.c
-> > index 5c3c19b8d509..ebb529b0faf8 100644
-> > --- i/drivers/md/md.c
-> > +++ w/drivers/md/md.c
-> > @@ -9619,8 +9619,10 @@ static int md_notify_reboot(struct notifier_bloc=
-k
-> > *this,
-> >
-> >         spin_lock(&all_mddevs_lock);
-> >         list_for_each_entry_safe(mddev, n, &all_mddevs, all_mddevs) {
-> > -               if (!mddev_get(mddev))
-> > +               if (!mddev_get(mddev)) {
-> > +                       need_delay =3D 1;
-> >                         continue;
-> > +               }
-> >                 spin_unlock(&all_mddevs_lock);
-> >                 if (mddev_trylock(mddev)) {
-> >                         if (mddev->pers)
-> >
-> >
-> > Thanks,
-> > Song
->
-> I will try to reproduce issue at Intel lab to check this.
->
-> Thanks,
-> Mariusz
-Hi Guoqing,
+On 22/08/2023 09:51, Jiansheng Wu wrote:
+> Convert sprd,sc27xx-pmic.txt to yaml, and add UMP962x series PMICs.
+> 
+> Signed-off-by: Jiansheng Wu <jiansheng.wu@unisoc.com>
 
-Here is the command how I trigger the issue, have to do it around 10
-times to make sure the issue is reproducible
+Subject is bogus. This is not SPI.
 
-echo "repair" | sudo tee /sys/class/block/md12?/md/sync_action && sudo
-grub-reboot "Advanced options for Ubuntu>Ubuntu, with Linux 6.5.0-rc77
-06a74159504-dirty" && head -c 1G < /dev/urandom > myfile1 && sleep 180
-&& head -c 1G < /dev/urandom > myfile2 && sleep 1 && cat /proc/mdstat
-&& sleep 1 && rm myfile1 &&
-sudo reboot
+> ---
+>  .../bindings/mfd/sprd,sc27xx-pmic.txt         | 40 ---------
+>  .../bindings/mfd/sprd,sc27xx-pmic.yaml        | 84 +++++++++++++++++++
+>  2 files changed, 84 insertions(+), 40 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.txt
+>  create mode 100644 Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.txt b/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.txt
+> deleted file mode 100644
+> index 21b9a897fca5..000000000000
+> --- a/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.txt
+> +++ /dev/null
+> @@ -1,40 +0,0 @@
+> -Spreadtrum SC27xx Power Management Integrated Circuit (PMIC)
+> -
+> -The Spreadtrum SC27xx series PMICs contain SC2720, SC2721, SC2723, SC2730
+> -and SC2731. The Spreadtrum PMIC belonging to SC27xx series integrates all
+> -mobile handset power management, audio codec, battery management and user
+> -interface support function in a single chip. It has 6 major functional
+> -blocks:
+> -- DCDCs to support CPU, memory.
+> -- LDOs to support both internal and external requirement.
+> -- Battery management system, such as charger, fuel gauge.
+> -- Audio codec.
+> -- User interface function, such as indicator, flash LED and so on.
+> -- IC level interface, such as power on/off control, RTC and typec and so on.
+> -
+> -Required properties:
+> -- compatible: Should be one of the following:
+> -	"sprd,sc2720"
+> -	"sprd,sc2721"
+> -	"sprd,sc2723"
+> -	"sprd,sc2730"
+> -	"sprd,sc2731"
+> -- reg: The address of the device chip select, should be 0.
+> -- spi-max-frequency: Typically set to 26000000.
+> -- interrupts: The interrupt line the device is connected to.
+> -- interrupt-controller: Marks the device node as an interrupt controller.
+> -- #interrupt-cells: The number of cells to describe an PMIC IRQ, must be 2.
+> -- #address-cells: Child device offset number of cells, must be 1.
+> -- #size-cells: Child device size number of cells, must be 0.
+> -
+> -Example:
+> -pmic@0 {
+> -	compatible = "sprd,sc2731";
+> -	reg = <0>;
+> -	spi-max-frequency = <26000000>;
+> -	interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+> -	interrupt-controller;
+> -	#interrupt-cells = <2>;
+> -	#address-cells = <1>;
+> -	#size-cells = <0>;
+> -};
+> diff --git a/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.yaml b/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.yaml
+> new file mode 100644
+> index 000000000000..590970a17143
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/sprd,sc27xx-pmic.yaml
+> @@ -0,0 +1,84 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/sprd,sc27xx-pmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: |
+> +  Spreadtrum SC27xx and UMP96xx Power Management Integrated Circuit (PMIC)
+> +
+> +maintainers:
+> +  - Orson Zhai <orsonzhai@gmail.com>
+> +  - Baolin Wang <baolin.wang7@gmail.com>
+> +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> +
+> +description: |
+> +  The Spreadtrum SC27xx series PMICs contain SC2720, SC2721, SC2723, SC2730, SC2731
+> +  and UMP96xx series PMICs contain ump9620, ump962 and ump9622. The Spreadtrum PMIC
+> +  belonging to SC27xx series and ump962x series integrates all mobile handset power
+> +  management, audio codec, battery management and user interface support function in
+> +  a single chip. It has 6 major functional.
+> +
+> +blocks:
 
-And the patch to add need_delay doesn't work.
+Please don't use confusing YAML syntax.
 
+> +  - DCDCs to support CPU, memory.
+> +  - LDOs to support both internal and external requirement.
+> +  - Battery management system, such as charger, fuel gauge.
+> +  - Audio codec.
+> +  - User interface function, such as indicator, flash LED and so on.
+> +  - IC level interface, such as power on/off control, RTC and typec and so on.
+> +
+> +allOf:
+> +  - $ref: /schemas/spi/sprd,spi-adi.yaml#
 
+This is confusing. How is this device a SPI controller? You have
+entirely different compatibles, so no, it's wrong. Missing ref to
+spi-peripheral properties. See other bindings.
 
---
-Chia-Lin Kao(AceLan)
-http://blog.acelan.idv.tw/
-E-Mail: acelan.kaoATcanonical.com (s/AT/@/)
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - sprd,sc2720
+> +      - sprd,sc2721
+> +      - sprd,sc2723
+> +      - sprd,sc2730
+> +      - sprd,sc2731
+> +      - sprd,ump9620
+> +      - sprd,ump9621
+> +      - sprd,ump9622
+
+This does not match your previous bindings and nothing is explained in
+commit msg.
+
+> +
+> +  reg:
+> +    maxItems: 7
+> +    description: The address of the device chip select
+
+7 items? No way.
+
+> +
+> +  spi-max-frequency:
+> +    default: 26000000
+> +
+> +  interrupts: true
+
+You need constraints.
+
+> +
+> +  interrupt-controller:
+> +    description: Marks the device node as an interrupt controller.
+
+Drop description. ": true" instead
+
+> +
+> +  interrupt-cells:
+> +    const: 2
+> +    description: The number of cells to describe an PMIC IRQ, must be 2.
+
+You did not test it.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - spi-max-frequency
+> +  - '#address-cells' # Child device offset number of cells, must be 1.
+
+??
+
+> +  - '#size-cells' # Child device size number of cells, must be 0.
+
+?? No way. You do not have any children. Drop bogus properties and
+explain it in commit msg.
+
+> +
+> +unevaluatedProperties: false
+> +
+> +Example:
+> +  - |
+> +    adi_bus {
+
+No underscores in node names, generic node names, whatever this supposed
+to be. I guess spi...
+
+> +        pmic@0 {
+> +            compatible = "sprd,sc2731";
+> +            reg = <0>;
+> +            spi-max-frequency = <26000000>;
+> +            interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+> +            interrupt-controller;
+> +            #interrupt-cells = <2>;
+
+Test your bindings...
+
+> +...
+
+Best regards,
+Krzysztof
+
