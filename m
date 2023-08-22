@@ -2,117 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 629737840AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B017840B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235709AbjHVMYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
+        id S235738AbjHVM0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235707AbjHVMY3 (ORCPT
+        with ESMTP id S235607AbjHVM0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:24:29 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E151B2;
-        Tue, 22 Aug 2023 05:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1692707068; x=1724243068;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=4ryzTupPnh+ZQLrgFqYzTeGOebt/s18d4PhChUNyUEs=;
-  b=D9SFhy1a03Hl/COejV3eIRVjRrWL44gwfAuXygQXyTi5qeCGcsPpThbq
-   l5PQXQxv+z8mSKjGoJtZe00rHPnVpy0bpDRXB6seDPy1G2kr3e7Fy1uUW
-   SSQnBF+s7QkDVmNpVlj1rVkvwirOMdo4jpLVxU2EYPvGDy0AxNaRtyjhZ
-   pr6NCO30rLt/213hHW5K1D4Qn2YJK3HG5ZxgM1IALCmXom7gJdpRR8CAf
-   674nUirP7epTfVnMptN4TYtm5ZOqO0JikYTzbS9NabJrypnfrYlbHUeTc
-   1+PE7j+RPKCDMFCb/xsvuaJW1Aca6nuWA+8v8c9ZTDsPMojurJKAViy/4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="404866058"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="404866058"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 05:24:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="739288155"
-X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
-   d="scan'208";a="739288155"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP; 22 Aug 2023 05:24:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qYQQq-00A0n7-1A;
-        Tue, 22 Aug 2023 15:24:24 +0300
-Date:   Tue, 22 Aug 2023 15:24:24 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 1/2] gpio: sim: dispose of irq mappings before destroying
- the irq_sim domain
-Message-ID: <ZOSo+CVYuOxYCNPZ@smile.fi.intel.com>
-References: <20230822075122.6900-1-brgl@bgdev.pl>
- <ZOSmFGZHrLq3I+zF@smile.fi.intel.com>
- <CAMRc=MenZDhrVb9BgJ3R+NqyvoHJR2stjeXouSRWTkecgo160g@mail.gmail.com>
+        Tue, 22 Aug 2023 08:26:00 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6C61BE
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:25:57 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 5491A12000C;
+        Tue, 22 Aug 2023 15:25:54 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5491A12000C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1692707154;
+        bh=DBRyrqGlJ2TH4ASNAwlWnFX5atmr+4R7MtVFb9QXKEg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=aq9MI2KDf6Y+rNJHBLIuFxmdSQ4x7QXjUOUk/os+o8Ene88wPrL4ds4wdxoSUYQ/3
+         +snAgBghQ+QPcCsa1STHUqkvHnI26TBzNFdOGEvdo04ZTQQygsXpW0YujYmd0YFI6h
+         6kGl24wmdwLD4Gx4Y/hfFZPdlmlo6drrVlF1OVhpotqugpxNx5ifz5W1Sg+yfkCYz7
+         z3pk//EH7rI6LbWWk2uKsroQZIKMcDkeWU1fTDT1MKenS54/qFzgPeCwCL77JMDJKg
+         +L+zEXhGQ9QWFPiQQNkmqusCKAt1m/qCgTg7R7MIdD5EGqm1xxheGiylGImYjotpve
+         pijBLMm2W8Q2A==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue, 22 Aug 2023 15:25:54 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 22 Aug 2023 15:25:52 +0300
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>,
+        Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Subject: [PATCH v2 0/2] mtd: spinand: micron: correct parameters
+Date:   Tue, 22 Aug 2023 15:25:32 +0300
+Message-ID: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MenZDhrVb9BgJ3R+NqyvoHJR2stjeXouSRWTkecgo160g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179374 [Aug 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 527 527 5bb611be2ca2baa31d984ccbf4ef4415504fc308, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;sberdevices.ru:5.0.1,7.1.1;lore.kernel.org:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/08/22 10:39:00
+X-KSMG-LinksScanning: Clean, bases: 2023/08/22 10:39:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/22 09:22:00 #21674243
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 02:16:44PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Aug 22, 2023 at 2:12 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Tue, Aug 22, 2023 at 09:51:21AM +0200, Bartosz Golaszewski wrote:
+This patchset includes following fixes:
+  1. Correct bitmask for ecc status.
+  2. Fix oob layout: the first 4 bytes are reserved for bad block data.
 
-...
+Changes v2 since v1 at [1]:
+  - Split into two individual patches.
+  - Remove the fix for using only non-protected ECC bytes from OOB area.
 
-> > > +static void gpio_sim_dispose_mappings(void *data)
-> > > +{
-> > > +     struct gpio_sim_chip *chip = data;
-> > > +     unsigned int i, irq;
-> > > +
-> > > +     for (i = 0; i < chip->gc.ngpio; i++) {
-> > > +             irq = irq_find_mapping(chip->irq_sim, i);
-> >
-> > > +             if (irq)
-> >
-> > This duplicates check in the following call.
-> >
-> 
-> Ah so it can be a direct call:
-> 
->     irq_dispose_mapping(irq_find_mapping(chip->irq_sim, i));
-> 
-> ?
+Links:
+  [1] https://lore.kernel.org/all/20230815161024.810729-1-mmkurbanov@sberdevices.ru/
 
-Hehe, seems yes and no. According to the code — yes, but code seems buggy,
-and compiler may effectively drop the check (haven't checked this, though).
+Martin Kurbanov (2):
+  mtd: spinand: micron: correct bitmask for ecc status
+  mtd: spinand: micron: fixing the offset for OOB
 
-OTOH, the problem may appear if and only if we have no sparse IRQ configuration
-which is probably rare.
+ drivers/mtd/nand/spi/micron.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-That said, I will go without check, it's not your issue.
-And I found other places in IRQ framework that misses that check.
-
-> > > +                     irq_dispose_mapping(irq);
-> > > +     }
-> > > +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+--
+2.40.0
 
