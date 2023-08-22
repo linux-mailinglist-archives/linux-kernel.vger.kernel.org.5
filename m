@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8FA7840B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D3E7840D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 14:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235717AbjHVMZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 08:25:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
+        id S235358AbjHVMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 08:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232856AbjHVMZy (ORCPT
+        with ESMTP id S235314AbjHVMbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 08:25:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A76199;
-        Tue, 22 Aug 2023 05:25:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB97760C56;
-        Tue, 22 Aug 2023 12:25:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFF5C433C8;
-        Tue, 22 Aug 2023 12:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1692707152;
-        bh=8eUEWJPTSeLQx03vuAPCyuAPr8wQILlpjH22aTpmHjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QjWw1AroDZC+blk+bVJ/Wub/9AcH2Fg1/1G3AKK+vV0hWW/99iUyCzY52D5R0+a5B
-         r7O7/ADAwr+u3bFe493brSNtQa5W4FYi9T0Fuq4nkUQFRiU5utX7aw/HR6DDSkYy4u
-         abPMxW7jxySC2xDFcjbuHOfzCr0SQBHEXYTQgQ4U=
-Date:   Tue, 22 Aug 2023 14:25:49 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: usb: samsung,exynos-dwc3: Fix Exynos5433
- compatible
-Message-ID: <2023082243-quickness-pacifier-a958@gregkh>
-References: <20230816201123.3530-1-semen.protsenko@linaro.org>
- <acec7eb3-92b5-e431-f84c-500f07a2dd14@linaro.org>
+        Tue, 22 Aug 2023 08:31:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C4119A
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 05:31:10 -0700 (PDT)
+Received: from kwepemm600007.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RVTD55d6wzTmKf;
+        Tue, 22 Aug 2023 20:28:53 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 22 Aug 2023 20:31:07 +0800
+From:   Jijie Shao <shaojijie@huawei.com>
+To:     <will@kernel.org>, <jonathan.cameron@huawei.com>,
+        <mark.rutland@arm.com>, <yangyicong@huawei.com>
+CC:     <chenhao418@huawei.com>, <shaojijie@huawei.com>,
+        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
+        <liuyonglong@huawei.com>, <hejunhao3@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH drivers/perf: hisi:] drivers/perf: hisi: Update email addresses of HISILICON_PMU driver maintainers.
+Date:   Tue, 22 Aug 2023 20:28:12 +0800
+Message-ID: <20230822122812.2384393-1-shaojijie@huawei.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acec7eb3-92b5-e431-f84c-500f07a2dd14@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.2]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 11:52:15AM +0200, Krzysztof Kozlowski wrote:
-> On 16/08/2023 22:11, Sam Protsenko wrote:
-> > The correct compatible for Exynos5433 is "samsung,exynos5433-dwusb3".
-> > Fix the typo in its usage.
-> > 
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > Fixes: 949ea75b7ba4 ("dt-bindings: usb: samsung,exynos-dwc3: convert to dtsche
-> 
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Greg,
-> I assume this one is for you.
+Since Guangbin and Shaokun have left HiSilicon and will no longer
+maintain the drivers, update the maintainer information and
+thanks for their work.
 
-Great, I'll take it, thanks.
+Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-greg k-h
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4171d3a102a9..a3109267a411 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9305,7 +9305,7 @@ F:	drivers/crypto/hisilicon/hpre/hpre_crypto.c
+ F:	drivers/crypto/hisilicon/hpre/hpre_main.c
+ 
+ HISILICON HNS3 PMU DRIVER
+-M:	Guangbin Huang <huangguangbin2@huawei.com>
++M:	Jijie Shao <shaojijie@huawei.com>
+ S:	Supported
+ F:	Documentation/admin-guide/perf/hns3-pmu.rst
+ F:	drivers/perf/hisilicon/hns3_pmu.c
+@@ -9343,7 +9343,7 @@ F:	Documentation/devicetree/bindings/net/hisilicon*.txt
+ F:	drivers/net/ethernet/hisilicon/
+ 
+ HISILICON PMU DRIVER
+-M:	Shaokun Zhang <zhangshaokun@hisilicon.com>
++M:	Yicong Yang <yangyicong@hisilicon.com>
+ M:	Jonathan Cameron <jonathan.cameron@huawei.com>
+ S:	Supported
+ W:	http://www.hisilicon.com
+-- 
+2.30.0
+
