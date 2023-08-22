@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6A378387B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 05:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FF4783890
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 05:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbjHVD2C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Aug 2023 23:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
+        id S232425AbjHVDcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 23:32:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232479AbjHVD2B (ORCPT
+        with ESMTP id S230169AbjHVDcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 23:28:01 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99BB1CCA;
-        Mon, 21 Aug 2023 20:27:47 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 37M3R5TO0001870, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 37M3R5TO0001870
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Aug 2023 11:27:05 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 22 Aug 2023 11:26:28 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 22 Aug 2023 11:26:28 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Tue, 22 Aug 2023 11:26:28 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek automotive PCIe driver code
-Thread-Topic: [PATCH net-next v3 1/2] net/ethernet/realtek: Add Realtek
- automotive PCIe driver code
-Thread-Index: AQHZz4Ya38d07ViN20S7bf3O9T4Qta/q9pcAgAMgk2D//87KAIABzfpQ///CfgCABJnu0IAALOEAgACljtD//5/vgAAlziXA
-Date:   Tue, 22 Aug 2023 03:26:28 +0000
-Message-ID: <e4f258b5e3d14a04a841d9d2b2ac82ef@realtek.com>
-References: <20230815143756.106623-1-justinlai0215@realtek.com>
- <20230815143756.106623-2-justinlai0215@realtek.com>
- <95f079a4-19f9-4501-90d9-0bcd476ce68d@lunn.ch>
- <4955506dbf6b4ebdb67cbb738750fbc8@realtek.com>
- <eb245c85-0909-4a75-830d-afb96ccd5d38@lunn.ch>
- <4951391892534eaeb2da96f052364e4c@realtek.com>
- <4b630aeb-3098-4108-b8dc-7da6e55a7cf1@lunn.ch>
- <6d35d56f78b7452b9330c3257748fa3c@realtek.com>
- <97f3744d-afbf-4562-9168-5b9e211fac1f@lunn.ch>
- <4db3248874d64418b63fdf5c5e8a0f79@realtek.com>
- <3e5b2f0a-3661-4147-bc4e-784eecf41364@lunn.ch>
-In-Reply-To: <3e5b2f0a-3661-4147-bc4e-784eecf41364@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 21 Aug 2023 23:32:50 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC162186;
+        Mon, 21 Aug 2023 20:32:46 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 1630424E2DD;
+        Tue, 22 Aug 2023 11:32:44 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 22 Aug
+ 2023 11:32:44 +0800
+Received: from [192.168.125.128] (113.72.145.205) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 22 Aug
+ 2023 11:32:43 +0800
+Message-ID: <07ddac3c-eb6e-d187-b942-102f117f8d13@starfivetech.com>
+Date:   Tue, 22 Aug 2023 11:27:45 +0800
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] clk: starfive: jh7110-sys: Fix lower rate of CPUfreq
+ by setting PLL0 rate to 1.5GHz
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Conor Dooley <conor@kernel.org>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+References: <20230821152915.208366-1-xingyu.wu@starfivetech.com>
+ <CAJM55Z_XxHeC-X2d4qcsRK6THLyqWV4SsSW3S+cC8yszpPD9Og@mail.gmail.com>
+Content-Language: en-US
+From:   Xingyu Wu <xingyu.wu@starfivetech.com>
+In-Reply-To: <CAJM55Z_XxHeC-X2d4qcsRK6THLyqWV4SsSW3S+cC8yszpPD9Og@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [113.72.145.205]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > But I2C, SPI, MDIO are connected to the SoC through this chip's
-> > external pins, not on the PCIe bus.
+On 2023/8/21 23:38, Emil Renner Berthing wrote:
+> On Mon, 21 Aug 2023 at 17:29, Xingyu Wu <xingyu.wu@starfivetech.com> wrote:
+>>
+>> CPUfreq supports 4 cpu frequency loads on 375/500/750/1500MHz.
+>> But now PLL0 rate is 1GHz and the cpu frequency loads become
+>> 333/500/500/1000MHz in fact.
+>>
+>> So PLL0 rate should be set to 1.5GHz. Change the parent of cpu_root clock
+>> and the divider of cpu_core before the setting.
+>>
+>> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
+>> Fixes: e2c510d6d630 ("riscv: dts: starfive: Add cpu scaling for JH7110 SoC")
+>> Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
+>> ---
+>>
+>> Hi Stephen and Emil,
+>>
+>> This patch fixes the issue about lower rate of CPUfreq[1]
+>> and sets PLL0 rate to 1.5GHz. In order not to affect the cpu
+>> operation, the cpu_root's parent clock should be changed first.
+>> And the divider of the cpu_core clock should be set to 2 so they
+>> won't crash when setting 1.5GHz without voltage regulation.
 > 
-> Thanks, that was the information i was trying to get at.
+> Hi Xingyu,
 > 
-> > Actually, there is the other function in the PCIe GMAC(Multiple
-> > function) to manage the registers of Switch Core.  Should they be
-> > integrated into the MFD driver?
+> It sounds like this is something the driver should handle
+> automatically whenever clk_set_rate() is called on the PLL0 clock.
+> Then we should be able to use regular assigned-clocks /
+> assigned-clock-rates stanzas in the device tree instead of having this
+> 1.5GHz rate hard-coded in the driver.
 > 
-> Can you cleanly attach another PCI driver to those functions?
+> /Emil
 
-Yes, they could be attached individually
+Hi Emil,
 
-> You need to use an MFD when there is a single top level addressable block of
-> hardware which has multiple functions. Thank of an I2C device, which has a
-> single address on the bus, but multiple functions.
-> Access to that one address needs to be shared via multiple drivers. The MFD
-> framework provides the glue to share access to the hardware.
+The frequency of PLL0 is set according to this process to avoid crash:
+1. The divider of the cpu_core clock should be set to 2 if PLL0 is set to 1.5GHz.
+2. The parent of cpu_root is changed from pll0 to osc.
+3. The PLL0 is set to 1.5GHz.
+4. The parent of cpu_root is changed from osc to pll0 back.
+I don't think assigned-clock-rates/assigned-clock-parents can do such a complicated job.
+
+Best regards,
+Xingyu Wu
+
 > 
-> However, PCI identification and addressing is more flexible. So long as they are
-> separate PCI functions, you should be able to load two drivers and not have
-> problems. Then you don't need an MFD.
+>> [1]: https://github.com/starfive-tech/VisionFive2/issues/55
+>>
+>> This patch is based on linux-next(20230818) which has merge PLL driver
+>> on the StarFive JH7110 SoC.
+>>
+>> Thanks,
+>> Xingyu Wu
+>>
+>> ---
+>>  .../clk/starfive/clk-starfive-jh7110-sys.c    | 47 ++++++++++++++++++-
+>>  1 file changed, 46 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/clk/starfive/clk-starfive-jh7110-sys.c b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+>> index 3884eff9fe93..b6b9e967dfc7 100644
+>> --- a/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+>> +++ b/drivers/clk/starfive/clk-starfive-jh7110-sys.c
+>> @@ -501,7 +501,52 @@ static int __init jh7110_syscrg_probe(struct platform_device *pdev)
+>>         if (ret)
+>>                 return ret;
+>>
+>> -       return jh7110_reset_controller_register(priv, "rst-sys", 0);
+>> +       ret = jh7110_reset_controller_register(priv, "rst-sys", 0);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       /*
+>> +        * Set PLL0 rate to 1.5GHz
+>> +        * In order to not affect the cpu when the PLL0 rate is changing,
+>> +        * we need to switch the parent of cpu_root clock to osc clock first,
+>> +        * and then switch back after setting the PLL0 rate.
+>> +        */
+>> +       pllclk = clk_get(priv->dev, "pll0_out");
+>> +       if (!IS_ERR(pllclk)) {
+>> +               struct clk *osc = clk_get(&pdev->dev, "osc");
+>> +               struct clk *cpu_root = priv->reg[JH7110_SYSCLK_CPU_ROOT].hw.clk;
+>> +               struct clk *cpu_core = priv->reg[JH7110_SYSCLK_CPU_CORE].hw.clk;
+>> +
+>> +               if (IS_ERR(osc)) {
+>> +                       clk_put(pllclk);
+>> +                       return PTR_ERR(osc);
+>> +               }
+>> +
+>> +               /*
+>> +                * CPU need voltage regulation by CPUfreq if set 1.5GHz.
+>> +                * So in this driver, cpu_core need to be set the divider to be 2 first
+>> +                * and will be 750M after setting parent.
+>> +                */
+>> +               ret = clk_set_rate(cpu_core, clk_get_rate(cpu_core) / 2);
+>> +               if (ret)
+>> +                       goto failed_set;
+>> +
+>> +               ret = clk_set_parent(cpu_root, osc);
+>> +               if (ret)
+>> +                       goto failed_set;
+>> +
+>> +               ret = clk_set_rate(pllclk, 1500000000);
+>> +               if (ret)
+>> +                       goto failed_set;
+>> +
+>> +               ret = clk_set_parent(cpu_root, pllclk);
+>> +
+>> +failed_set:
+>> +               clk_put(pllclk);
+>> +               clk_put(osc);
+>> +       }
+>> +
+>> +       return ret;
+>>  }
+>>
+>>  static const struct of_device_id jh7110_syscrg_match[] = {
+>> --
+>> 2.25.1
+>>
 
-Thank you very much for your comments and time for review. 
