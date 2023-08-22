@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D539F784384
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E232D78437C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbjHVOKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59646 "EHLO
+        id S236559AbjHVOJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234851AbjHVOKa (ORCPT
+        with ESMTP id S233879AbjHVOJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:10:30 -0400
-Received: from mx0a-00230701.pphosted.com (mx0a-00230701.pphosted.com [148.163.156.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E31CCFE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:10:04 -0700 (PDT)
-Received: from pps.filterd (m0297266.ppops.net [127.0.0.1])
-        by mx0a-00230701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MAnDcL007836;
-        Tue, 22 Aug 2023 07:08:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pfptdkimsnps;
- bh=O01Fjm0nuNX4nF4tWJIpk4drtMKpsLoHfJL9kDZeqv4=;
- b=E9qKbgWevjvLQBq8YVGKjjkCX0luATRqyne+KQrjx3P8NpqSzDO374VjgjkaV3kAo8lB
- i6IS0LYcm94sAUCoOZITnorJF/pJzQkUl1Mzo9iTzzEsNM8sxhuox+sftx+A/klijB1F
- 9BE5/YnfbRZ3mkIkoPwtwP489W9toMf6+uDcqbl+L2vHnXNbTmzRTPNgaOnnbClTNCfE
- UBQelhM4dOHv5/bnEtnfl4GtKbUm3OfstSt9bli8bfaLDcRETvb3RjS0K0XTWsK2N1Pf
- Abp0hH50Jq26NrTMocpadTzTLrYmnk9TNsIr6PEVQiBD2EYCubb/T4V4Eu98zbTJae2x WA== 
-Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.87.133])
-        by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3sjw05au5e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 07:08:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1692713321; bh=YYCuT1jfJo/0YPDBGcwDg/fGNFucp1OBH1HG1BdnSi0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WV2n68PCsoaTkIGl+spOCLBRxqjKD8OeWWOdGHF0r7rKENciXIudicltuzIGaL0d2
-         5ydQ/i/gF+V38+R8Jh+no3Id3Ffb0fFNYWlUJ/SFTga3SGvLS01RKppkqBG6LAQ/zB
-         u7EcBFd87xTYcnDQMD05aqk5indRa4f0JXNvQ1ikcJjh9r08YqeFhRFyLIlapGKSs4
-         yUgKFGdmYHKhTsHotVhrMLMOtOcnX9HES4aXyMaewVf6Q3EM7tCgiMtasDYYFolwwn
-         l4UmAxHAtk4ZVIcHORNCngokuw5SVe4F8fxWGpl+ekmuZlj7RaxIqPSUzX9cxfstGw
-         bu0DBgtgo+4Yw==
-Received: from mailhost.synopsys.com (sv2-mailhost2.synopsys.com [10.205.2.134])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits)
-         client-signature RSA-PSS (2048 bits))
-        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 02D5F40352;
-        Tue, 22 Aug 2023 14:08:39 +0000 (UTC)
-Received: from SNPS-o0WHuHJU73.internal.synopsys.com (snps-o0whuhju73.internal.synopsys.com [10.116.105.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by mailhost.synopsys.com (Postfix) with ESMTPSA id 9C296A007B;
-        Tue, 22 Aug 2023 14:08:36 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Pavel Kozlov <Pavel.Kozlov@synopsys.com>
-To:     Vineet Gupta <vgupta@kernel.org>,
-        linux-snps-arc@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org,
-        Shahab Vahedi <Shahab.Vahedi@synopsys.com>,
-        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
-        Pavel Kozlov <Pavel.Kozlov@synopsys.com>
-Subject: Re: [PATCH 00/20] ARC updates
-Date:   Tue, 22 Aug 2023 18:07:25 +0400
-Message-Id: <20230822140725.8383-1-kozlov@synopsys.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230815004813.555115-1-vgupta@kernel.org>
-References: <20230815004813.555115-1-vgupta@kernel.org>
+        Tue, 22 Aug 2023 10:09:37 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F38E4D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:11 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34bb33a3cf4so2414045ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:09:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1692713254; x=1693318054;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NBfudvUcA90EgP90c3v1NclyXmUuNio5tYlPAp81Sm8=;
+        b=Kk7aV1ur7Cvckuz/Bd9P4BhKHhmQAiMPV+fMlwGEi+SxBO46i1nlYevp+ubhEycSuA
+         MftJWe25tMghZ2NeR2w/i5uPhANZRgn6QJ1N99FBB4+97S2f3O1NXPtmADQ8xwvxoTJa
+         9XQvFibSYrNXk207p0x1xJLA3Ag+gyyUta74c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692713254; x=1693318054;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NBfudvUcA90EgP90c3v1NclyXmUuNio5tYlPAp81Sm8=;
+        b=UK7dlYjdL5U6UvyAjrw0XFhKK6u9n57wFLPPdR7NZqOGaJWiZHrgmFJfxXXnL0dMbv
+         7HOaO4vPI/JESP02IHUurMAKEQow/xfHmrYM1eL0p9tBb9WmcgZQxrHXpv/npdD8/FcL
+         k8+/2gVsaw4Pveiuipj/T038eGq+xpUzc0k5v4Tx6IZDN4sQq0PdxUZrf1sufrOcjIH5
+         7zZlMQ1qkJQFjD0LbBRcFhnS4ItG/4DPKm4TvFgMcZ6Ye+GIWPzSi9vA3zxgri1vm3Of
+         I6/2/+L8R9De1VnMcJxn+Fe3K+PWu9cfEooK6qtAsyxkQwzBoT/6eaNhFvJwJg59zak5
+         ys3Q==
+X-Gm-Message-State: AOJu0YxKNOgYK+AfMHBpPnb7hCi3STZjTqw5hdOIUgL/DdQ4x80JRFKe
+        9zYTGP/i+aZXtl06cTCFKvxi2A==
+X-Google-Smtp-Source: AGHT+IFqxwZ6HMNcGjtgurzjJ9aQjSGsn+IK8C6z2Ox189KEayPWkHyTWSET4e2Tn+VGomzJbkvxaQ==
+X-Received: by 2002:a92:c6c7:0:b0:345:bdc2:eb42 with SMTP id v7-20020a92c6c7000000b00345bdc2eb42mr10961930ilm.3.1692713254147;
+        Tue, 22 Aug 2023 07:07:34 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id e4-20020a926904000000b0032b72b5c1c3sm3137113ilc.9.2023.08.22.07.07.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 07:07:33 -0700 (PDT)
+Message-ID: <362a75b9-4790-e7f0-fe13-4685e04cdecb@linuxfoundation.org>
+Date:   Tue, 22 Aug 2023 08:07:32 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: rN4Z24ujRaGrQh-Knoq9EhoUbhWvimCL
-X-Proofpoint-ORIG-GUID: rN4Z24ujRaGrQh-Knoq9EhoUbhWvimCL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
- mlxscore=0 phishscore=0 impostorscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 mlxlogscore=529 clxscore=1015 spamscore=0
- malwarescore=0 bulkscore=0 priorityscore=1501 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308220107
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.4 000/234] 6.4.12-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230821194128.754601642@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230821194128.754601642@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hi,
+On 8/21/23 13:39, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.12 release.
+> There are 234 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This is a pile of miscll improvements/updates sitting in one of my local trees.
-> Given the recent warning fix, we coudl also push them out.
-> @Alexey, @Shahab: care to give these a spin on hsdk (and test ARC700 build/boot on nSIM if possible).
+> Responses should be made by Wed, 23 Aug 2023 19:40:45 +0000.
+> Anything received after that time might be too late.
 > 
-> Thx,
-> -Vineet
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-The entire "ARC updates" patch series (with all subsequent patches with updates)
-has been tested on the HSDK borard for ARCv2 using the glibc and ksefltest test 
-framworks and on nSIM for ARCompact using the uclibc tests. No regressions found.
+Compiled and booted on my test system. No dmesg regressions.
 
-Tested-by: Pavel Kozlov <Pavel.Kozlov@synopsys.com>
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Regards,
-Pavel
+thanks,
+-- Shuah
