@@ -2,144 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF75B783799
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A353778379B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 03:52:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjHVBvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Aug 2023 21:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
+        id S232144AbjHVBwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Aug 2023 21:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjHVBv3 (ORCPT
+        with ESMTP id S232157AbjHVBwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Aug 2023 21:51:29 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFAD131;
-        Mon, 21 Aug 2023 18:51:26 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31c615eb6feso140518f8f.3;
-        Mon, 21 Aug 2023 18:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692669085; x=1693273885;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uiFpBHoaEuu/0InEgqXHitiB2+iHl6O899b6CViVW50=;
-        b=TisyrKIPpKr49QCb0EWTaAOvkXrkg9JM5UPqbUMcC5PMPWq/PxdWIiwoiuSQ2k16NG
-         au/d1ODbzpAfp+9gQ3rFZA93Da24vUYXg27GrEY3gU0ozmSMk0BOMxwaztAddPhQzvBp
-         yjVyXEF/ZfNTaqXg1KtXUPc8tuBi295zGbEGpK0nJmsILJBHlxKt6vKs9Zb8HR1EvqD4
-         wTSXFiNZE+XgMjq28TxTSAop2I3LfUpXFEzxeaKZrEDYqEoU3l1/HJu3D+HjSTE/RQRl
-         SZ3RueFGdUE1V61syIM2nVZENWVUQ+RIeFQTvnl7PXIZmMaybIErXZYYzrrdeIAMi0nK
-         +vmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692669085; x=1693273885;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uiFpBHoaEuu/0InEgqXHitiB2+iHl6O899b6CViVW50=;
-        b=heWzwnNgrRIkdQ74Pw/18JAk+BqzAc4bJ1JFhYauto/gzwQNLUNaVOlXWuFRMoIwI7
-         niQIPKX1lDQRpkQcBVu5lEpjKpClRbaFJkSt+dhnMFkJ6SL0vFeY3W26u1TKQioOF2Ny
-         bq5rJvwy0r0wBNsz55DJCIEMKW1CKpgw07WKCieV673AByydpcKONpLUbcuDo109+x4A
-         Qk0pfkR6H+TvxH4f4vWkngU5GQneQi587Wrq4rCh9fy0vshzESeE3M+1yYJ7UzAk1b0B
-         dC9WZ2HdC44BkXAKAGWsQ4E5Riic4CQkgHoHWo03UW7l3PvqSie+CraqSlTnyC6xfJTW
-         fucg==
-X-Gm-Message-State: AOJu0Yw0LkkD2L/59ek2Oqovw0lkYteG3LHszoJkDsDh00Nn9o+rV77L
-        PWT+n/4UoNznCbvNKARZsb6GELxO48Hge0nm0x0=
-X-Google-Smtp-Source: AGHT+IEaJsn0RNiLuyt8jjfxcA/GDJ7kaqfzFB+enHSSlkMp2DPufNWbajHVNFtgxafxrQ6qHYwzipJiLcUX7L08138=
-X-Received: by 2002:adf:fa47:0:b0:319:6e74:1637 with SMTP id
- y7-20020adffa47000000b003196e741637mr5406224wrr.27.1692669085108; Mon, 21 Aug
- 2023 18:51:25 -0700 (PDT)
+        Mon, 21 Aug 2023 21:52:17 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4CB186
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 18:52:01 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RVC573G2sz4f3jXL
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:51:55 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP3 (Coremail) with SMTP id _Ch0CgAnQ7u9FORkwSbVBA--.33851S2;
+        Tue, 22 Aug 2023 09:51:58 +0800 (CST)
+Subject: Re: [PATCH 6/9] mm/compaction: rename is_via_compact_memory to
+ compaction_with_allocation_order
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, david@redhat.com
+References: <20230805110711.2975149-1-shikemeng@huaweicloud.com>
+ <20230805110711.2975149-7-shikemeng@huaweicloud.com>
+ <111c3142-e20b-3e3c-f107-cbb64a16c2b0@linux.alibaba.com>
+ <d28fc70d-ea1e-4c27-a206-6c276e6e020e@huaweicloud.com>
+ <bf23350e-45cc-17ef-ac2c-9efff4a70172@linux.alibaba.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <1b4fd28b-96e6-ce58-3752-759a8539c6cc@huaweicloud.com>
+Date:   Tue, 22 Aug 2023 09:51:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Tue, 22 Aug 2023 09:51:13 +0800
-Message-ID: <CAPm50aL0Dv13EAUx3QAdVAv+Ucq2QqtVgGGnEC6t07FDn4+n5g@mail.gmail.com>
-Subject: [PATCH] KVM: X86: Reduce size of kvm_vcpu_arch structure when CONFIG_KVM_XEN=n
-To:     pbonzini@redhat.com
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <bf23350e-45cc-17ef-ac2c-9efff4a70172@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _Ch0CgAnQ7u9FORkwSbVBA--.33851S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw13Kw4UXFW7Jr1xtr43Wrg_yoWrWrWkpF
+        10yFy7Za45XF1fGr1Ig3W8Xa4Utw4xK3WUJr1vvF18XwnIk3WF9F1qqFyY9ryUX39ayw4j
+        qFWUKF17ZasrA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Hao <flyingpeng@tencent.com>
 
-When CONFIG_KVM_XEN=n, the size of kvm_vcpu_arch can be reduced
-from 5100+ to 4400+ by adding macro control.
 
-Signed-off-by: Peng Hao <flyingpeng@tencent.com>
----
- arch/x86/include/asm/kvm_host.h | 5 ++++-
- arch/x86/kvm/cpuid.c            | 2 ++
- arch/x86/kvm/x86.c              | 2 ++
- 3 files changed, 8 insertions(+), 1 deletion(-)
+on 8/19/2023 8:14 PM, Baolin Wang wrote:
+> 
+> 
+> On 8/15/2023 8:04 PM, Kemeng Shi wrote:
+>>
+>>
+>> on 8/15/2023 4:58 PM, Baolin Wang wrote:
+>>>
+>>>
+>>> On 8/5/2023 7:07 PM, Kemeng Shi wrote:
+>>>> We have order = -1 via proactive compaction, the is_via_compact_memory is
+>>>> not proper name anymore.
+>>>> As cc->order informs the compaction to satisfy a allocation with that
+>>>> order, so rename it to compaction_with_allocation_order.
+>>>>
+>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>> ---
+>>>>    mm/compaction.c | 11 +++++------
+>>>>    1 file changed, 5 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>> index d8416d3dd445..b5a699ed526b 100644
+>>>> --- a/mm/compaction.c
+>>>> +++ b/mm/compaction.c
+>>>> @@ -2055,12 +2055,11 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>>>>    }
+>>>>      /*
+>>>> - * order == -1 is expected when compacting via
+>>>> - * /proc/sys/vm/compact_memory
+>>>> + * compact to satisfy allocation with target order
+>>>>     */
+>>>> -static inline bool is_via_compact_memory(int order)
+>>>> +static inline bool compaction_with_allocation_order(int order)
+>>>
+>>> I know naming is hard, but this name is not good enough that can show the compaction mode. But the original one could.
+>>>
+>> Yes, I agree with this, but name and comment of is_via_compact_memory may
+>> mislead reader that order == -1 is equivalent to compaction from
+>> /proc/sys/vm/compact_memory.
+>> Actually, we have several approaches to trigger compaction with order == -1:
+>> 1. via /proc/sys/vm/compact_memory
+>> 2. via /sys/devices/system/node/nodex/compact
+>> 3. via proactive compact
+> 
+> They can all be called proactive compaction.
+I have considered rename to is_proactive_compaction. But "proactive compaction"
+in comments of compaction.c mostly implies to compaction triggerred from
+/proc/sys/vm/compaction_proactiveness. So "proactive compaction" itself looks
+ambiguous...
+> 
+>>
+>> Instead of indicate compaction is tirggerred by compact_memocy or anything,
+>> order == -1 implies if compaction is triggerrred to meet allocation with high
+>> order and we will stop compaction if allocation with target order will success.
+> 
+> IMO, the is_via_compact_memory() function helps people better distinguish the compaction logic we have under direct compaction or kcompactd compaction, while proactive compaction does not concern itself with these details. But compaction_with_allocation_order() will make me just wonder why we should compare with -1. So I don't think this patch is worth it, but as you said above, we can add more comments to make it more clear.
+> 
+Sure, no insistant on this.
+Is it looks good to you just change comment of is_via_compact_memory to:
+We need do compaction proactively with order == -1
+order == -1 is expected for proactive compaction via:
+1. via /proc/sys/vm/compact_memory
+2. via /sys/devices/system/node/nodex/compact
+3. /proc/sys/vm/compaction_proactiveness
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 3bc146dfd38d..7e85016a8a0d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -680,6 +680,7 @@ struct kvm_hypervisor_cpuid {
-        u32 limit;
- };
+>>>>    {
+>>>> -    return order == -1;
+>>>> +    return order != -1;
+>>>>    }
+>>>>      /*
+>>>> @@ -2200,7 +2199,7 @@ static enum compact_result __compact_finished(struct compact_control *cc)
+>>>>            goto out;
+>>>>        }
+>>>>    -    if (is_via_compact_memory(cc->order))
+>>>> +    if (!compaction_with_allocation_order(cc->order))
+>>>>            return COMPACT_CONTINUE;
+>>>>          /*
+>>>> @@ -2390,7 +2389,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+>>>>          cc->migratetype = gfp_migratetype(cc->gfp_mask);
+>>>>    -    if (!is_via_compact_memory(cc->order)) {
+>>>> +    if (compaction_with_allocation_order(cc->order)) {
+>>>>            unsigned long watermark;
+>>>>              /* Allocation can already succeed, nothing to do */
+>>>
+> 
+> 
 
-+#ifdef CONFIG_KVM_XEN
- /* Xen HVM per vcpu emulation context */
- struct kvm_vcpu_xen {
-        u64 hypercall_rip;
-@@ -702,6 +703,7 @@ struct kvm_vcpu_xen {
-        struct timer_list poll_timer;
-        struct kvm_hypervisor_cpuid cpuid;
- };
-+#endif
-
- struct kvm_queued_exception {
-        bool pending;
-@@ -912,8 +914,9 @@ struct kvm_vcpu_arch {
-
-        bool hyperv_enabled;
-        struct kvm_vcpu_hv *hyperv;
-+#ifdef CONFIG_KVM_XEN
-        struct kvm_vcpu_xen xen;
--
-+#endif
-        cpumask_var_t wbinvd_dirty_mask;
-
-        unsigned long last_retry_eip;
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 7f4d13383cf2..f70a5e7db123 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -422,7 +422,9 @@ static int kvm_set_cpuid(struct kvm_vcpu *vcpu,
-struct kvm_cpuid_entry2 *e2,
-        vcpu->arch.cpuid_nent = nent;
-
-        vcpu->arch.kvm_cpuid = kvm_get_hypervisor_cpuid(vcpu, KVM_SIGNATURE);
-+#ifdef CONFIG_KVM_XEN
-        vcpu->arch.xen.cpuid = kvm_get_hypervisor_cpuid(vcpu, XEN_SIGNATURE);
-+#endif
-        kvm_vcpu_after_set_cpuid(vcpu);
-
-        return 0;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 278dbd37dab2..f5238b2e6cb8 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3231,11 +3231,13 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
-
-        if (vcpu->pv_time.active)
-                kvm_setup_guest_pvclock(v, &vcpu->pv_time, 0);
-+#ifdef CONFIG_KVM_XEN
-        if (vcpu->xen.vcpu_info_cache.active)
-                kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_info_cache,
-                                        offsetof(struct
-compat_vcpu_info, time));
-        if (vcpu->xen.vcpu_time_info_cache.active)
-                kvm_setup_guest_pvclock(v, &vcpu->xen.vcpu_time_info_cache, 0);
-+#endif
-        kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
-        return 0;
- }
---
-2.31.1
