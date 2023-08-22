@@ -2,181 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E3A784489
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5403A78448C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236873AbjHVOkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36360 "EHLO
+        id S236876AbjHVOlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236872AbjHVOkY (ORCPT
+        with ESMTP id S234889AbjHVOlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:40:24 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E80F1BE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:40:22 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5232ce75e26so10943a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:40:22 -0700 (PDT)
+        Tue, 22 Aug 2023 10:41:23 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE1510B
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:41:22 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f13c41c957so1609906e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692715221; x=1693320021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1C3quYQxeFIPsrSFnkoQ66g6yHaIAyBnzAc9BMpYipc=;
-        b=OIlW5unFzV7NWOV6TmLpbogd3cj66r1HwrEAEgnOF/ZkPVlYd9eVUxDfxmFaXHg08Z
-         +WZDP1byYy7Gdu80MZ3Qu2k2pNdEoCOyB6ATO//CRJGvDD5AorBPal+hvU31QZLFCMBJ
-         6e4zzSDy/w4RB03LeKCvDfLUw5YRCZ28WtCzWt2Vbng2AJDEzISlqMA6jYWoMUXyaL1K
-         qPhxmkouE6NH0WXVEhbblWYZd/uH//lE0dz/pdeDr5wClUDPBLh7bplFMBpzoPs4OvzL
-         8leJoRVtJ826ssAKqPLkH9r1rGZxyXZwvlP1wBqLPNiDz5aY4+PZ0CiZ1yMzuJTRBRsk
-         3e/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692715221; x=1693320021;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=ffwll.ch; s=google; t=1692715280; x=1693320080;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1C3quYQxeFIPsrSFnkoQ66g6yHaIAyBnzAc9BMpYipc=;
-        b=XAJYCm/k5igD0Goykum2SVSMkiljhuVEkAG//s2yafz0NYzczHEtzCNAw8CUFKzeUZ
-         JWAwQecjXqM8T7W2iV4D0svEACFkw6EbH5q6Enw1Dj+ivwqCg66qGjVG3Z9C+gmeZp5X
-         NHXftmhOuoBkUnpZcu0MFqGc08euxThGiGtgIy6RoiWYHUzaPeCS0aU/SAYCC+vXRNaY
-         3s7XXVzSXIUbTjErtULYP7r8Pogjsgp5nMNGoGN4075hcJeCTjh3ChznUz1/tlHyO9rH
-         Exjb9WivFa3BA+TG8Kt3j3BYjG7qc7SOsAmest3Hhk50MLJSZ+GcH6+xlA+7Sad3inzk
-         hblQ==
-X-Gm-Message-State: AOJu0Yze1VFVaN+6LDbBDiYp5VGNQmggGvbKBv2Bo71e+5uF97HnQ/0N
-        lByS6EdZLpgjn9qq6BfvPqKHKjyavdcqq1RKGYA7CQ==
-X-Google-Smtp-Source: AGHT+IF6H9w5RaJ7PE+MBKpDky923+JUzdrwmx+So9M6hSjxTrf0I+zQW7oUyRqPX7VRVw66ynmMZa9PJ/Zeqq91bQo=
-X-Received: by 2002:a50:f690:0:b0:523:d5bc:8424 with SMTP id
- d16-20020a50f690000000b00523d5bc8424mr108311edn.5.1692715220567; Tue, 22 Aug
- 2023 07:40:20 -0700 (PDT)
+        bh=DjPSXU9vRFZmzcE0RnI7FKpj3y4XibRxN7JQdeXEp4M=;
+        b=U8lomFMdmh65X/Z05DVugAI/HIW2IZ6SA+VXKoHhtWkeaJ4IWbZlj8hRRlolIc9PVq
+         ex/kzt5kWAX6N7iAyuwdPzdGy8F714BPwcduqQg8KsJ5MVwFZBkNMCfS958BGWNOQfz3
+         azTD7cTawpFksFrO9XajyOMn16GCyFNqpZYCA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692715280; x=1693320080;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DjPSXU9vRFZmzcE0RnI7FKpj3y4XibRxN7JQdeXEp4M=;
+        b=FcszKmvDeNXPT+rScfK9dKsMQSRZ6VDse3RqtdoJ//ecyKfr+XXg5KZY9952hOO0bN
+         c2Imv1mmApAUjkzN0WRUR6++387OB/7icjUWK/VcSbNN/NLxRkaqDdBKT3dlbxCOSyqK
+         aPya2HfTm67rF/WYpq6SiBIMNmt/6ENt3KF657WkLvgyXywV0ak1hGolS6iCImsjTsvg
+         +wCQcLwVy0ObxHXk8wBxGxuzsLnxqcKtPJhkm5PNpGHjorkN++wEWDjnV/H79qJWPRjx
+         ofto+XVLD1ngaUJ4sf4EN+JSgkRnexpeSVb+8h+rdSp1aB3AG6j5drnChn2MCB+LCL+j
+         IcLg==
+X-Gm-Message-State: AOJu0YzTiYON5q0zQ0sF1d9nZAR8f6wdhU047QJvUO/4SADZVgWKcpvj
+        HyQ0PWQiMLBwortfyP1qa3jeTw==
+X-Google-Smtp-Source: AGHT+IGWAYDi69QV43DfY/Bg0MVqNhkMQYtcGEEfawQ6qCRP6mHqo370ttAQV/MSmDAFTYOpZIboWA==
+X-Received: by 2002:a19:c512:0:b0:4fd:d0f7:5b90 with SMTP id w18-20020a19c512000000b004fdd0f75b90mr6247947lfe.4.1692715280130;
+        Tue, 22 Aug 2023 07:41:20 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id d19-20020a056402517300b005272523b162sm7603460ede.69.2023.08.22.07.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 07:41:19 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 16:41:17 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Emma Anholt <emma@anholt.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC 00/13] drm/connector: Create HDMI Connector
+ infrastructure
+Message-ID: <ZOTJDXQMc0+h8nWt@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Emma Anholt <emma@anholt.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
+ <ZOTDKHxn2bOg+Xmg@phenom.ffwll.local>
+ <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
 MIME-Version: 1.0
-References: <4d31abf5-56c0-9f3d-d12f-c9317936691@google.com>
- <CAG48ez1XAePj5MUG8AUmnTjRLcxKre-NGYV82kB68-X8Rh6fxA@mail.gmail.com> <f2dc6d6b-c516-932-1598-a58e2afffe9a@google.com>
-In-Reply-To: <f2dc6d6b-c516-932-1598-a58e2afffe9a@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 22 Aug 2023 16:39:43 +0200
-Message-ID: <CAG48ez0S-RjAapaDiJ+oZXpn1vs9niWx54iqzusUScS-BYu0hw@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable] mm/khugepaged: fix collapse_pte_mapped_thp()
- versus uffd
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Peter Xu <peterx@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Steven Price <steven.price@arm.com>,
-        SeongJae Park <sj@kernel.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Zack Rusin <zackr@vmware.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pasha Tatashin <pasha.tatashin@soleen.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Song Liu <song@kernel.org>,
-        Thomas Hellstrom <thomas.hellstrom@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Zi Yan <ziy@nvidia.com>,
-        "Zach O'Keefe" <zokeefe@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        sparclinux@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
+X-Operating-System: Linux phenom 6.3.0-2-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 4:51=E2=80=AFAM Hugh Dickins <hughd@google.com> wro=
-te:
-> On Mon, 21 Aug 2023, Jann Horn wrote:
-> > On Mon, Aug 21, 2023 at 9:51=E2=80=AFPM Hugh Dickins <hughd@google.com>=
- wrote:
-> > > Just for this case, take the pmd_lock() two steps earlier: not becaus=
-e
-> > > it gives any protection against this case itself, but because ptlock
-> > > nests inside it, and it's the dropping of ptlock which let the bug in=
-.
-> > > In other cases, continue to minimize the pmd_lock() hold time.
+On Tue, Aug 22, 2023 at 04:35:55PM +0200, Maxime Ripard wrote:
+> Hi,
+> 
+> On Tue, Aug 22, 2023 at 04:16:08PM +0200, Daniel Vetter wrote:
+> > On Mon, Aug 14, 2023 at 03:56:12PM +0200, Maxime Ripard wrote:
+> > > Here's a series that creates a subclass of drm_connector specifically
+> > > targeted at HDMI controllers.
+> > > 
+> > > The idea behind this series came from a recent discussion on IRC during
+> > > which we discussed infoframes generation of i915 vs everything else. 
+> > > 
+> > > Infoframes generation code still requires some decent boilerplate, with
+> > > each driver doing some variation of it.
+> > > 
+> > > In parallel, while working on vc4, we ended up converting a lot of i915
+> > > logic (mostly around format / bpc selection, and scrambler setup) to
+> > > apply on top of a driver that relies only on helpers.
+> > > 
+> > > While currently sitting in the vc4 driver, none of that logic actually
+> > > relies on any driver or hardware-specific behaviour.
+> > > 
+> > > The only missing piec to make it shareable are a bunch of extra
+> > > variables stored in a state (current bpc, format, RGB range selection,
+> > > etc.).
+> > > 
+> > > Thus, I decided to create some generic subclass of drm_connector to
+> > > address HDMI connectors, with a bunch of helpers that will take care of
+> > > all the "HDMI Spec" related code. Scrambler setup is missing at the
+> > > moment but can easily be plugged in.
+> > > 
+> > > Last week, Hans Verkuil also expressed interest in retrieving the
+> > > infoframes generated from userspace to create an infoframe-decode tool.
+> > > This series thus leverages the infoframe generation code to expose it
+> > > through debugfs.
+> > > 
+> > > This entire series is only build-tested at the moment. Let me know what
+> > > you think,
 > >
-> > Special-casing userfaultfd like this makes me a bit uncomfortable; but
-> > I also can't find anything other than userfaultfd that would insert
-> > pages into regions that are khugepaged-compatible, so I guess this
-> > works?
->
-> I'm as sure as I can be that it's solely because userfaultfd breaks
-> the usual rules here (and in fairness, IIRC Andrea did ask my permission
-> before making it behave that way on shmem, COWing without a source page).
->
-> Perhaps something else will want that same behaviour in future (it's
-> tempting, but difficult to guarantee correctness); for now, it is just
-> userfaultfd (but by saying "_armed" rather than "_missing", I'm half-
-> expecting uffd to add more such exceptional modes in future).
+> > I think the idea overall makes sense, we we probably need it to roll out
+> > actual hdmi support to all the hdmi drivers we have. But there's the
+> > eternal issue of "C sucks at multiple inheritance".
+> > 
+> > Which means if you have a driver that subclasses drm_connector already for
+> > it's driver needs it defacto cannot, or only under some serious pains, use
+> > this.
+> 
+> That's what vc4 is doing, and it went fine I think? it was mostly a
+> matter of subclassing drm_hdmi_connector instead of drm_connector, and
+> adjusting the various pointers and accessors here and there.
+> 
+> It does create a fairly big diffstat, but nothing too painful.
 
-Hm, yeah, sounds okay. (I guess we'd also run into this if we ever
-wanted to make it possible to reliably install PTE markers with
-madvise() or something like that, which might be nice for allowing
-userspace to create guard pages without unnecessary extra VMAs...)
+Yeah it's the massive churn that's the pain for refactoring existing
+bigger drivers.
 
-> > I guess an alternative would be to use a spin_trylock() instead of the
-> > current pmd_lock(), and if that fails, temporarily drop the page table
-> > lock and then restart from step 2 with both locks held - and at that
-> > point the page table scan should be fast since we expect it to usually
-> > be empty.
->
-> That's certainly a good idea, if collapse on userfaultfd_armed private
-> is anything of a common case (I doubt, but I don't know).  It may be a
-> better idea anyway (saving a drop and retake of ptlock).
+Plus what do you do when you both need a hdmi connector and a dp connector
+(or a writeback connector).
 
-I was thinking it also has the advantage that it would still perform
-okay if we got rid of the userfaultfd_armed() condition at some point
-- though I realize that designing too much for hypothetical future
-features is an antipattern.
+> > Which is kinda why in practice we tend to not subclass, but stuff
+> > subclass fields into a name sub-structure. So essentially struct
+> > drm_connector.hdmi and struct drm_connector_state.hdmi instead of
+> > drm_hdmi_connector and drm_hdmi_connector_state. The helper functions to
+> > set it all up would all still be the same roughly. It's less typesafe but
+> > I think the gain in practical use (like you could make i915 use the
+> > helpers probably, which with this approach here is practically
+> > impossible).
+> 
+> Ack.
+> 
+> > The only other nit is that we probably want to put some of the hdmi
+> > properties into struct drm_mode_config because there's no reason to have
+> > per-connector valid values.
+> 
+> What property would you want to move?
 
-> I gave it a try, expecting to end up with something that would lead
-> me to say "I tried it, but it didn't work out well"; but actually it
-> looks okay to me.  I wouldn't say I prefer it, but it seems reasonable,
-> and no more complicated (as Peter rightly observes) than the original.
->
-> It's up to you and Peter, and whoever has strong feelings about it,
-> to choose between them: I don't mind (but I shall be sad if someone
-> demands that I indent that comment deeper - I'm not a fan of long
-> multi-line comments near column 80).
+The rgb broadcast property looked very much like it's connector invariant.
+Just the one I noticed, I didn't check all the others.
 
-I prefer this version because it would make it easier to remove the
-"userfaultfd_armed()" check in the future if we have to, but I guess
-we could also always change it later if that becomes necessary, so I
-don't really have strong feelings on it at this point.
+> > Also, it might be really good if you can find a co-conspirator who also
+> > wants to use this in their driver, then with some i915 extracting we'd
+> > have three, which should ensure the helper api is solid.
+> 
+> I can convert sunxi (old) HDMI driver if needed. I'm not sure how
+> helpful it would be since it doesn't support bpc > 8, but it could be a
+> nice showcase still for "simple" HDMI controllers.
+
+Yeah that might be good. Or perhaps poke Rob Clark whether msm is
+interested and someone could do a conversion for dpu5 or so?
+
+Cheers, Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
