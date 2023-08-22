@@ -2,76 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C107844B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D910C7844BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236951AbjHVOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        id S236978AbjHVOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233126AbjHVOvD (ORCPT
+        with ESMTP id S235762AbjHVOv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:51:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE661BE;
-        Tue, 22 Aug 2023 07:51:00 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37MCi54I015178;
-        Tue, 22 Aug 2023 14:50:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=bHpBcfydAA/FQ9/KVYQ/NasYt+qP7kxdQqF/eVbjYUU=;
- b=cJ9F8pSII3hb5Dk3KG42O16La/vSp6Oj23Ydp/j3adEeB/qXrBA/GCAj5WWRrHRQ9Gd5
- IGrCyiyLd7Hf8u3MyMzL7VkEDMWRD16mEFFNMDbwJw+ZX1Fv1Om0z1TjlR5qrnauDyvp
- 0B+qAYjMFGU2rxD4SPcfdpGVRl/lONmBRYBLNM+KhIjEDN5b9fwKxSZo/MllCYGZCg/R
- H6O1YB89RduD6k1nqebwLyo6wisOnMnGzxQkV6zEnTzBEC21gHZMaPP5V2+5SNNFW0OC
- FHT3rpE+1OTVR73KgCaJ9JtvTouPAEo8SYJHCj6DJaYMCOsS1Wj4uOPNjnaNxBxjXKV9 Lw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3smasmt8v9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 14:50:52 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37MEop3i023950
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Aug 2023 14:50:51 GMT
-Received: from hu-jjohnson-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 22 Aug 2023 07:50:51 -0700
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-Date:   Tue, 22 Aug 2023 07:50:50 -0700
-Subject: [PATCH 3/3] wifi: ath12k: Fix a few spelling errors
+        Tue, 22 Aug 2023 10:51:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6F7CDA
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:51:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692715905; x=1724251905;
+  h=from:to:subject:in-reply-to:references:date:message-id:
+   mime-version;
+  bh=OX7Pj2Q2LK76Q8Stxn/xyJU6l2MEuoC2QmDhxxoblig=;
+  b=gADo1f8BYtKtbuIFfC1EtCHgNwH/JTRP37J7Odzbph3hEC9M+zIcgfU4
+   yfUZQx5okD5gGeQqMxvugee6g1J4WTeBf4T1mqpUut5Rg+uznZ18Xdg1n
+   +twlREEkCN1gqKw7qUBq6D6v0i1/bwgZAugMnjYsd91gsAKKbxh6eMtbU
+   Uhp8KbzWK3jQu46Rc0WSr3Mng+j8gLOK7N5ifgtvdkqF9MZ+2y79MystO
+   /PEMHfsLZAi2BcI26EN8E+51TZMFF9W6FDMm7BCnW6EyjByv25awZQ0P1
+   PieYNZdyDWxNHxSZcbGrZDg8Vieop6Hy9qlSBQgJGQCrnVVkTmcnG8hPm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="353468278"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="353468278"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 07:51:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="739330839"
+X-IronPort-AV: E=Sophos;i="6.01,193,1684825200"; 
+   d="scan'208";a="739330839"
+Received: from kainaats-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.42.230])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 07:51:42 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Emma Anholt <emma@anholt.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH RFC 00/13] drm/connector: Create HDMI Connector
+ infrastructure
+In-Reply-To: <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
+ <ZOTDKHxn2bOg+Xmg@phenom.ffwll.local>
+ <sh3f7nuks7cww43ajz2iwrgzkxbqpk7752iu4pj4vtwaiv76x4@itnf6f2mnbgn>
+Date:   Tue, 22 Aug 2023 17:51:39 +0300
+Message-ID: <87pm3f5dvo.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230822-ath_spelling-v1-3-8e2698759564@quicinc.com>
-References: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
-In-Reply-To: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
-To:     Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-CC:     <ath10k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ath11k@lists.infradead.org>,
-        <ath12k@lists.infradead.org>
-X-Mailer: b4 0.12.3
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: yo4smiRTOXq6dKysmvE0qQ9peD9y3ebO
-X-Proofpoint-GUID: yo4smiRTOXq6dKysmvE0qQ9peD9y3ebO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-22_13,2023-08-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- bulkscore=0 clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308220112
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,83 +68,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a few issues flagged by 'codespell'.
+On Tue, 22 Aug 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> Hi,
+>
+> On Tue, Aug 22, 2023 at 04:16:08PM +0200, Daniel Vetter wrote:
+>> On Mon, Aug 14, 2023 at 03:56:12PM +0200, Maxime Ripard wrote:
+>> > Here's a series that creates a subclass of drm_connector specifically
+>> > targeted at HDMI controllers.
+>> > 
+>> > The idea behind this series came from a recent discussion on IRC during
+>> > which we discussed infoframes generation of i915 vs everything else. 
+>> > 
+>> > Infoframes generation code still requires some decent boilerplate, with
+>> > each driver doing some variation of it.
+>> > 
+>> > In parallel, while working on vc4, we ended up converting a lot of i915
+>> > logic (mostly around format / bpc selection, and scrambler setup) to
+>> > apply on top of a driver that relies only on helpers.
+>> > 
+>> > While currently sitting in the vc4 driver, none of that logic actually
+>> > relies on any driver or hardware-specific behaviour.
+>> > 
+>> > The only missing piec to make it shareable are a bunch of extra
+>> > variables stored in a state (current bpc, format, RGB range selection,
+>> > etc.).
+>> > 
+>> > Thus, I decided to create some generic subclass of drm_connector to
+>> > address HDMI connectors, with a bunch of helpers that will take care of
+>> > all the "HDMI Spec" related code. Scrambler setup is missing at the
+>> > moment but can easily be plugged in.
+>> > 
+>> > Last week, Hans Verkuil also expressed interest in retrieving the
+>> > infoframes generated from userspace to create an infoframe-decode tool.
+>> > This series thus leverages the infoframe generation code to expose it
+>> > through debugfs.
+>> > 
+>> > This entire series is only build-tested at the moment. Let me know what
+>> > you think,
+>>
+>> I think the idea overall makes sense, we we probably need it to roll out
+>> actual hdmi support to all the hdmi drivers we have. But there's the
+>> eternal issue of "C sucks at multiple inheritance".
+>> 
+>> Which means if you have a driver that subclasses drm_connector already for
+>> it's driver needs it defacto cannot, or only under some serious pains, use
+>> this.
+>
+> That's what vc4 is doing, and it went fine I think? it was mostly a
+> matter of subclassing drm_hdmi_connector instead of drm_connector, and
+> adjusting the various pointers and accessors here and there.
+>
+> It does create a fairly big diffstat, but nothing too painful.
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- drivers/net/wireless/ath/ath12k/dp.h      | 2 +-
- drivers/net/wireless/ath/ath12k/dp_rx.c   | 2 +-
- drivers/net/wireless/ath/ath12k/dp_tx.c   | 2 +-
- drivers/net/wireless/ath/ath12k/mac.c     | 2 +-
- drivers/net/wireless/ath/ath12k/rx_desc.h | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+The main pain point is not the diffstat per se, but that *all* casts to
+subclass need to check what the connector type is before doing
+so. You'll also get fun NULL conditions that you need to check and
+handle if the type isn't what you'd like it to be.
 
-diff --git a/drivers/net/wireless/ath/ath12k/dp.h b/drivers/net/wireless/ath/ath12k/dp.h
-index 7c5dafce5a68..6e7b7281d549 100644
---- a/drivers/net/wireless/ath/ath12k/dp.h
-+++ b/drivers/net/wireless/ath/ath12k/dp.h
-@@ -712,7 +712,7 @@ enum htt_stats_internal_ppdu_frametype {
-  *          b'24    - status_swap: 1 is to swap status TLV
-  *          b'25    - pkt_swap:  1 is to swap packet TLV
-  *          b'26:31 - rsvd1:  reserved for future use
-- * dword1 - b'0:16  - ring_buffer_size: size of bufferes referenced by rx ring,
-+ * dword1 - b'0:16  - ring_buffer_size: size of buffers referenced by rx ring,
-  *                    in byte units.
-  *                    Valid only for HW_TO_SW_RING and SW_TO_HW_RING
-  *        - b'16:31 - rsvd2: Reserved for future use
-diff --git a/drivers/net/wireless/ath/ath12k/dp_rx.c b/drivers/net/wireless/ath/ath12k/dp_rx.c
-index 67f8c140840f..e6e64d437c47 100644
---- a/drivers/net/wireless/ath/ath12k/dp_rx.c
-+++ b/drivers/net/wireless/ath/ath12k/dp_rx.c
-@@ -3027,7 +3027,7 @@ static int ath12k_dp_rx_h_defrag_reo_reinject(struct ath12k *ar,
- 					desc_info->cookie,
- 					HAL_RX_BUF_RBM_SW3_BM);
- 
--	/* Fill mpdu details into reo entrace ring */
-+	/* Fill mpdu details into reo entrance ring */
- 	srng = &ab->hal.srng_list[dp->reo_reinject_ring.ring_id];
- 
- 	spin_lock_bh(&srng->lock);
-diff --git a/drivers/net/wireless/ath/ath12k/dp_tx.c b/drivers/net/wireless/ath/ath12k/dp_tx.c
-index d661fe586651..8874c815d7fa 100644
---- a/drivers/net/wireless/ath/ath12k/dp_tx.c
-+++ b/drivers/net/wireless/ath/ath12k/dp_tx.c
-@@ -301,7 +301,7 @@ int ath12k_dp_tx(struct ath12k *ar, struct ath12k_vif *arvif,
- 		spin_unlock_bh(&tcl_ring->lock);
- 		ret = -ENOMEM;
- 
--		/* Checking for available tcl descritors in another ring in
-+		/* Checking for available tcl descriptors in another ring in
- 		 * case of failure due to full tcl ring now, is better than
- 		 * checking this ring earlier for each pkt tx.
- 		 * Restart ring selection if some rings are not checked yet.
-diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
-index 0f2af2f14ef7..dbaf033c2527 100644
---- a/drivers/net/wireless/ath/ath12k/mac.c
-+++ b/drivers/net/wireless/ath/ath12k/mac.c
-@@ -6771,7 +6771,7 @@ ath12k_mac_op_reconfig_complete(struct ieee80211_hw *hw,
- 			/* After trigger disconnect, then upper layer will
- 			 * trigger connect again, then the PN number of
- 			 * upper layer will be reset to keep up with AP
--			 * side, hence PN number mis-match will not happened.
-+			 * side, hence PN number mismatch will not happened.
- 			 */
- 			if (arvif->is_up &&
- 			    arvif->vdev_type == WMI_VDEV_TYPE_STA &&
-diff --git a/drivers/net/wireless/ath/ath12k/rx_desc.h b/drivers/net/wireless/ath/ath12k/rx_desc.h
-index f99556a253e5..bfa87cb8d021 100644
---- a/drivers/net/wireless/ath/ath12k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath12k/rx_desc.h
-@@ -221,7 +221,7 @@ struct rx_mpdu_start_qcn9274 {
-  *		PPE routing even if RXOLE CCE or flow search indicate 'Use_PPE'
-  *		This is set by SW for peers which are being handled by a
-  *		host SW/accelerator subsystem that also handles packet
-- *		uffer management for WiFi-to-PPE routing.
-+ *		buffer management for WiFi-to-PPE routing.
-  *
-  *		This is cleared by SW for peers which are being handled
-  *		by a different subsystem, completely disabling WiFi-to-PPE
+Currently i915 can just assume all drm_connectors it encounters are
+intel_connectors that it created, always.
+
+Basically this has blocked the writeback connector stuff for a few years
+now in i915, because writeback forces a different subclassing, and what
+should be a small change in i915 turns into huge churn.
+
+BR,
+Jani.
+
+
+>
+>> Which is kinda why in practice we tend to not subclass, but stuff
+>> subclass fields into a name sub-structure. So essentially struct
+>> drm_connector.hdmi and struct drm_connector_state.hdmi instead of
+>> drm_hdmi_connector and drm_hdmi_connector_state. The helper functions to
+>> set it all up would all still be the same roughly. It's less typesafe but
+>> I think the gain in practical use (like you could make i915 use the
+>> helpers probably, which with this approach here is practically
+>> impossible).
+>
+> Ack.
+>
+>> The only other nit is that we probably want to put some of the hdmi
+>> properties into struct drm_mode_config because there's no reason to have
+>> per-connector valid values.
+>
+> What property would you want to move?
+>
+>> Also, it might be really good if you can find a co-conspirator who also
+>> wants to use this in their driver, then with some i915 extracting we'd
+>> have three, which should ensure the helper api is solid.
+>
+> I can convert sunxi (old) HDMI driver if needed. I'm not sure how
+> helpful it would be since it doesn't support bpc > 8, but it could be a
+> nice showcase still for "simple" HDMI controllers.
+>
+> Maxime
 
 -- 
-2.25.1
-
+Jani Nikula, Intel Open Source Graphics Center
