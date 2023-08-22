@@ -2,100 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0C57847B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4997847B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 18:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237862AbjHVQde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 12:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58222 "EHLO
+        id S237869AbjHVQdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 12:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237858AbjHVQdc (ORCPT
+        with ESMTP id S237860AbjHVQde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 12:33:32 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DFCE52
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:33:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4ff9abf18f9so7132496e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692722001; x=1693326801;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2xSrhz5Us97Qf9+7A783D7YhpLpwN4x1lqakquu3VGg=;
-        b=tiEBp3JL4YsbBo0QBtgI3BmQCPsYGmzCdpu19U5Nd41sv+ssgGLIFtY5a1xz0xtsP/
-         BKPV24/E5/rZr1hm9Q31b6qODcKiXkchKBWAx4wxEzP+sIwra+poInZczv74sJUEnrvW
-         suDXeUnVmclfMTBeErpwG3IQKd89egEpnhRv8CuJBKLaiW+YaczEgROWpPB8YPuczdGt
-         Cd1gB5TRwa48+WR33V341n6aJiGfIUhWkWOCEHwSlblbZkDmMzV4ork+r5tBySfvhwbY
-         kKuuBtulfExcTuvOKdTUoQgBewgcUPZUDiJ9ofZhY0gNyPk+XIYeRlet7T3VAfOD3z35
-         X/eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692722001; x=1693326801;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2xSrhz5Us97Qf9+7A783D7YhpLpwN4x1lqakquu3VGg=;
-        b=R+NlTt910v8Z6xqKleoACAbZXr0kXyoOXI4D01Q8L40yTBV/GWVfqhnPElKsD/dufI
-         sX7pfjNK4OJTaeI0JpimIOfdoaMw+2ZyDTAhuBnyLAepLocPxdV10tQPSxcgrQ7Gc2Kp
-         CTdJd+KyEqHndEINfqNoI6SSSLW3kriBVcIITDGLWfAf+s49T26BspwhnKAO/D6dE4GU
-         fj6XMiDaj8ZPgJSyYShtEEoByL2+1qtYlC7h0dRzdJLL3QoVhYJLUsBi1oqot50Ah5OI
-         hOlPtGFRsHpG41wIo6vDhvh1n5NJ8YDezeJ7vrGngfQ1UZuPmO0k0S/XHc/Zi6Qaioo6
-         go1g==
-X-Gm-Message-State: AOJu0Yw1BClwM5JniuUrQXiKc+K2sZUSf53Asu3aG5uD0hjOccr389Qh
-        jAyrnRef12uTui1TySrGQKPrtg==
-X-Google-Smtp-Source: AGHT+IFS5+pN89cVqDrLU2XMxBLLm1IgGNr/2RbOgFBpign6kDrEGDdwUp0uhR5vmCE6wdyEgQI7Kw==
-X-Received: by 2002:a05:6512:1584:b0:4f8:711b:18b0 with SMTP id bp4-20020a056512158400b004f8711b18b0mr8883753lfb.3.1692722000583;
-        Tue, 22 Aug 2023 09:33:20 -0700 (PDT)
-Received: from [192.168.0.22] ([77.252.47.198])
-        by smtp.gmail.com with ESMTPSA id w17-20020aa7d291000000b0050488d1d376sm7750157edq.0.2023.08.22.09.33.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Aug 2023 09:33:20 -0700 (PDT)
-Message-ID: <1c812715-731e-18fe-e431-311f18af1bb5@linaro.org>
-Date:   Tue, 22 Aug 2023 18:33:18 +0200
+        Tue, 22 Aug 2023 12:33:34 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A113BE56
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 09:33:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2760F65CB2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 16:33:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C34BC433C9;
+        Tue, 22 Aug 2023 16:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692722003;
+        bh=87Mt00iuVTM5oBM4ntFY2pK6S9pr01eqEEsQVkUzh8E=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Nuh5uCsDO9R/DtXYTMX63zubV2lzP8jnU3eOXWGXARVvhis3XHzGU9x7HtJ4HTKQz
+         s8QDSv9q0d/jFxuY33aTr8+ya3Fes5dCMNaJxa7h/2oeTAR55HdjzkVUNurXWHuqxn
+         iQoGQNR+WOeszWXaJ4oQPStBGK22d3ZT//ugbZLS5/aaO35nqxJqCVPxYithan4bf3
+         rdChqRb414U0Hw5GU1pgmi1pTDUjdyEiTvY5DoFmKck7bIJ1owK4FKF+Ws38+GLFB5
+         F6omuXur0HQFYGVDP33l9Pe95XlTdcUurY65JIwp6CQRJJ14RuxJghyJp7H03H20sM
+         +dS9bv1VYmofg==
+From:   Mark Brown <broonie@kernel.org>
+To:     oder_chiou@realtek.com,
+        Senhong Liu <liusenhong2022@email.szu.edu.cn>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230819133345.39961-1-liusenhong2022@email.szu.edu.cn>
+References: <20230819133345.39961-1-liusenhong2022@email.szu.edu.cn>
+Subject: Re: [PATCH] sound/soc/codecs/rt5640.c: fix typos
+Message-Id: <169272200183.71502.12839834978316716379.b4-ty@kernel.org>
+Date:   Tue, 22 Aug 2023 17:33:21 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V10 2/4] dt-bindings: clock: document Amlogic S4 SoC
- peripherals clock controller
-Content-Language: en-US
-To:     Yu Tu <yu.tu@amlogic.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     kelvin.zhang@amlogic.com, qi.duan@amlogic.com
-References: <20230822082750.27633-1-yu.tu@amlogic.com>
- <20230822082750.27633-3-yu.tu@amlogic.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230822082750.27633-3-yu.tu@amlogic.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 10:27, Yu Tu wrote:
-> Add the S4 peripherals clock controller dt-bindings in the S4 SoC
-> family.
+On Sat, 19 Aug 2023 06:33:45 -0700, Senhong Liu wrote:
+> I noticed typos and i fixed them.
 > 
-> Signed-off-by: Yu Tu <yu.tu@amlogic.com>
-> ---
+> 
 
-As well ignored email from v8 and v7 and earlier versions.
+Applied to
 
-Best regards,
-Krzysztof
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] sound/soc/codecs/rt5640.c: fix typos
+      commit: 8e6657159131f90b746572f6a5bd622b3ccac82d
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
