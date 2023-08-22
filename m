@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 641287849FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FA3784A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjHVTK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:10:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56582 "EHLO
+        id S230057AbjHVTLW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Aug 2023 15:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbjHVTKy (ORCPT
+        with ESMTP id S229462AbjHVTLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:10:54 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC77CD1;
-        Tue, 22 Aug 2023 12:10:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D9A3C6235C;
-        Tue, 22 Aug 2023 19:10:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B69E6C433C7;
-        Tue, 22 Aug 2023 19:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692731452;
-        bh=nr4GjTppWgFW9yVzV6ogm5jejxBqzeEjyQ/mmPg7ulM=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Iz566OCHSbLw3VM4P7vq7Fm1TDtZBmofK6vRl/IpLuSGhx2AUYPn/lT2kKfGWGcBN
-         /hDiBfPSXCfQo+c3a8Zg5RQ6kKgF/5reMx7136YY87GnpSjVE/fEa3VaDGXTO5o35W
-         kY1YjAW0yPnxsHXKp/sA7IDwtaHodn4188umUrevKX0ZTCpowonW2fLQ5AVpyKsZW2
-         i50Xt56Q6K28J2inoQ9QA8iUAIp/wPg5GAbubfhAbEL0XwPBACLt/RCJ7ke6owZbWi
-         K02rVDiHHxjMJjJig0iGylQhyBIW40PAgJPwRZE6Uzgi7IZG0V5Any/uJnu5d28AS7
-         9k427Nh6gRpNg==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, <ath10k@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ath11k@lists.infradead.org>, <ath12k@lists.infradead.org>
-Subject: Re: [PATCH 3/3] wifi: ath12k: Fix a few spelling errors
-References: <20230822-ath_spelling-v1-0-8e2698759564@quicinc.com>
-        <20230822-ath_spelling-v1-3-8e2698759564@quicinc.com>
-        <768de9a1-b186-c296-e9b9-d83cee1997a6@infradead.org>
-        <1a9f7b7b-6e99-4cbb-a2e1-c76ed6b90a1d@quicinc.com>
-Date:   Tue, 22 Aug 2023 22:10:48 +0300
-In-Reply-To: <1a9f7b7b-6e99-4cbb-a2e1-c76ed6b90a1d@quicinc.com> (Jeff
-        Johnson's message of "Tue, 22 Aug 2023 09:43:08 -0700")
-Message-ID: <87y1i2hozr.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Tue, 22 Aug 2023 15:11:20 -0400
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6651CCFC;
+        Tue, 22 Aug 2023 12:11:12 -0700 (PDT)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-68bbd45d0d5so106543b3a.1;
+        Tue, 22 Aug 2023 12:11:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692731472; x=1693336272;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lz2e1mvvdxZXFPReu3GXvWGTqdMFsbCnxoB/bFwtJmM=;
+        b=XggKg1hbxtVzHL5dwBiPoQPo4nqKfL4feJRLEphFo7VVoJxIhUCRnQZISqMduTp7Eb
+         XY3JJswhySuX1E7v+i/tBkeVYAxcTCap+N0ZtiVbabGGkUx+m1r9XXsCmTvxQL9PhKEr
+         euqxSH0PjJnnJQH7bvhQei2vjUZ0aYg7sQ61VR+3RYpMVOB9QxchZqwJMRgwnVYeRZ5o
+         xg7/YQv3BKK2KGVrskI0UBOZw0lD9PnChQte61GyRC9TTn6YSvDf/OR33My5JPRHxrvQ
+         ptOSUOe4wbI+Nx+og79CIyEyGhalSwNGv/njo9PY88PQR8mPwDtg/ebt5zLkfZC63Z1k
+         B+Xw==
+X-Gm-Message-State: AOJu0Yz+iBrUeB2Q65HCvS5I9JEbVNWd5mcOYLLZPT7ldKsHFBj8dlYI
+        j33hRlqaDlZdQAc257pWTC6+iI1co/X+C8biGjg=
+X-Google-Smtp-Source: AGHT+IFFwXVB1r7EoBPbnbE8ziIOn0Iod0CU42evFU9L9K0QWS8YN4WX5qd1mD8B7zlzI3lKExZ/BFDmsJgDqK14NoA=
+X-Received: by 2002:a05:6a00:1892:b0:68a:61fb:8025 with SMTP id
+ x18-20020a056a00189200b0068a61fb8025mr4451893pfh.1.1692731471673; Tue, 22 Aug
+ 2023 12:11:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230719011636.2893238-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20230719011636.2893238-1-peng.fan@oss.nxp.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Aug 2023 21:10:59 +0200
+Message-ID: <CAJZ5v0hH29C3_XQGt+ndb9dxgc3JZXYfwaN_5qXS0sVPY1xhig@mail.gmail.com>
+Subject: Re: [PATCH 1/2] thermal/core: fix potential memory leak
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     rafael@kernel.org, daniel.lezcano@linaro.org, amitk@kernel.org,
+        rui.zhang@intel.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeff Johnson <quic_jjohnson@quicinc.com> writes:
-
-> On 8/22/2023 9:18 AM, Randy Dunlap wrote:
+On Wed, Jul 19, 2023 at 3:12 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
 >
->> Hi--
->> On 8/22/23 07:50, Jeff Johnson wrote:
->>> Fix a few issues flagged by 'codespell'.
->>>
->>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
->>> ---
->>>   drivers/net/wireless/ath/ath12k/dp.h      | 2 +-
->>>   drivers/net/wireless/ath/ath12k/dp_rx.c   | 2 +-
->>>   drivers/net/wireless/ath/ath12k/dp_tx.c   | 2 +-
->>>   drivers/net/wireless/ath/ath12k/mac.c     | 2 +-
->>>   drivers/net/wireless/ath/ath12k/rx_desc.h | 2 +-
->>>   5 files changed, 5 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/net/wireless/ath/ath12k/mac.c b/drivers/net/wireless/ath/ath12k/mac.c
->>> index 0f2af2f14ef7..dbaf033c2527 100644
->>> --- a/drivers/net/wireless/ath/ath12k/mac.c
->>> +++ b/drivers/net/wireless/ath/ath12k/mac.c
->>> @@ -6771,7 +6771,7 @@ ath12k_mac_op_reconfig_complete(struct ieee80211_hw *hw,
->>>   			/* After trigger disconnect, then upper layer will
->>>   			 * trigger connect again, then the PN number of
->>>   			 * upper layer will be reset to keep up with AP
->>> -			 * side, hence PN number mis-match will not happened.
->>> +			 * side, hence PN number mismatch will not happened.
->> The fix is good, but preferably also s/happened/happen/.
+> From: Peng Fan <peng.fan@nxp.com>
 >
-> Kalle, can you apply that when it goes to -pending?
+> thermal_set_governor may allocate memory for tz->governor_data, so
+> need free it in failure handling path.
+>
+> Addresses-Coverity: 25777220 ("Memory leak")
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/thermal/thermal_core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 842f678c1c3e..f633924406ad 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -1355,6 +1355,9 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
+>         return tz;
+>
+>  unregister:
+> +       if (tz->governor && tz->governor->unbind_from_tz)
+> +               tz->governor->unbind_from_tz(tz);
 
-Yes, did that now:
+It looks like thermal_governor_lock should be held around this, shouldn't it?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=212796e28fe44c0a4956c797d8b685b905784cd6
-
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> +
+>         device_del(&tz->device);
+>  release_device:
+>         put_device(&tz->device);
+> --
+> 2.37.1
+>
