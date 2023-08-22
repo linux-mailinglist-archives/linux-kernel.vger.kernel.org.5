@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF86783E66
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C53783E6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbjHVK4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36832 "EHLO
+        id S233783AbjHVK5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233652AbjHVK4M (ORCPT
+        with ESMTP id S229637AbjHVK5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:56:12 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5723ECCA
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:56:10 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bdba622d1cso500941a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:56:10 -0700 (PDT)
+        Tue, 22 Aug 2023 06:57:47 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADD7196
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:45 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7494be34f8so3034606276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 03:57:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1692701769; x=1693306569;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7gmbZKg8MO0Caap6tnCCUDBVYQhIxs2ct9dxwNPhfJ8=;
-        b=HFzZ/XXKeXpwjt82B0mHZZG9JKd6iIY4ybXgnQTjEt4HKwvapq/RCvE2f60dmd+BtX
-         qR7RQ5hyVVRD0Dd8h2DQsbfm66JefEkz44PWjkzcmV0xCYCYDr/7YZO5XNrdzNjEs5nD
-         0YxF0MXW452u/h7z/H0eO25m6+tHTijDgiYfLTmkCNYX7+XKKKmKmaBFvo/s71QTmhXH
-         G6hALlUeB01GA8vjdpiks5zjQIZhEEBbuxzLz9YliCJMdInzekL2/B7VNKKCGYO8DDm9
-         sfx9FgnPtqtIq6+ixjtyIXFzi1LY1VmNYGVVCa5pbwyk8QdTyCGoybPLRcoGlaOtSr7I
-         GWhw==
+        d=google.com; s=20221208; t=1692701865; x=1693306665;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yaIwxFy9mjgti4zQ5aoiFMHcHMhpN0UMC2eNirEVgXw=;
+        b=U+QLIzfY85x7N5zJe55CYeVHa7UA1i+UczMg9dvYKujxPDNarCECMejcMxSLbPpNtF
+         kfNPsaorMLHV6QSsWX4k1hHPDIK+6lZwcXKoxgiQmhQ5pkiOyE+rZ96LyYZImVi0KHlR
+         07Kzd3d+99w+4X64z0/wt61ExkCswDlRf6KK2aosHRwbKHoueV1Fd/BhD9cKK/FK8enX
+         rwWUDfiRRKxVWQzOaTReSWOqZaaAjSSKnQUTrFwJ3Eb1wG3aSMIlcJYB0icM5qgYsnEr
+         e/Bnna+Rba0XEju0E6lsUmNppvsfWkoB2CbgwxjV6ZbXDbri1uTuFMQOdXdBChlCmxBV
+         Q04Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692701769; x=1693306569;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7gmbZKg8MO0Caap6tnCCUDBVYQhIxs2ct9dxwNPhfJ8=;
-        b=QVVhaDvTPqWckpspAr2swzTqFjZSEXtTryi9f0ZsH52Vwk5lOEZvJYxVzI1xaHUx+x
-         yNmCPtXwy7Xv6qT9mqsc3O3LYBipvgUSqsdCe7cdSr/IypYD3WQ22FMGj9qVpoRn3Mf3
-         HmEcm+PmGgViw3Y1KgEjMSXWv4XNC7itTgBmHoN4TkDa+wVKYEz41f7KWszIBmdsroDC
-         q3ZPH/oLzTzfUj5H2MgCUgfOuVs1qGP4w0bDiQxA5UzSTtVf89b7t9fix2l1DviK+KkA
-         QoStb0S7B9WYXP9ZTY6ZEzL+JjEz4Teh8wkfH0u+7x94Uvoe3b+hYZv+CgRTFLyWR3YQ
-         P7Rg==
-X-Gm-Message-State: AOJu0Yw8KSSF/97PVz43Db5tnoHJPJbQzxY/o5qoPFp2zNmzTblkKxhF
-        gCyZJyPkwqbY/8klfNvlp2TjIE2nYd10iJ8rk8SO8g==
-X-Google-Smtp-Source: AGHT+IHRpjn+Tn5STuiluP/0dZcO+kQ0j7tCK8/nXpSRwA5NzJZfFnhty39Igkdoef8Hg8QvdY5b0Y2Ut+Iz5kCQ/U8=
-X-Received: by 2002:a05:6358:9889:b0:134:dee2:8c18 with SMTP id
- q9-20020a056358988900b00134dee28c18mr8946835rwa.27.1692701769535; Tue, 22 Aug
- 2023 03:56:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1692699472.git.quic_varada@quicinc.com> <6d1638daf9b0616816fdecb529df86a394db7942.1692699472.git.quic_varada@quicinc.com>
-In-Reply-To: <6d1638daf9b0616816fdecb529df86a394db7942.1692699472.git.quic_varada@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 22 Aug 2023 13:55:58 +0300
-Message-ID: <CAA8EJpryKOzGd42NjG470D9jGr1Huv5D-F-NqaTo-0EJeFUr+A@mail.gmail.com>
-Subject: Re: [PATCH v9 1/4] phy: qcom: m31: Fix indentation issues
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        vkoul@kernel.org, kishon@kernel.org, arnd@arndb.de,
-        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
-        peng.fan@nxp.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org
+        d=1e100.net; s=20221208; t=1692701865; x=1693306665;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yaIwxFy9mjgti4zQ5aoiFMHcHMhpN0UMC2eNirEVgXw=;
+        b=DLRmlkNHPVp6QbcuCPI+Zr6cVBh8+qWHlY7h34nHOh0EBrKVge7vH0WNvYhRvKyXf5
+         Nl5AmO2hCS6JrxtDajZPpz30GsaJlAtzPNKVkt2P75FiTQfYEYdAZypPOC2aptrE73E7
+         HRLVvkzZF1QT4pVVh+6U8A9Bm+URKACDWk5vnw232TgIWS2j5Haf47W9PwAjrSg9Oq4j
+         Y+fNKtGcbhMYg5NB0giZPY1qFCOBv+nL8HHlQNEgIS3nBXwkc82rvviDhlzVbsqezX8J
+         fapiuZUv/Pg2bl78z4wn0u7iJvyK/6RjaSCMdksgxBmSoXK1M0v2caAG7auDUGb8v5gl
+         6//w==
+X-Gm-Message-State: AOJu0YxZ8go7HGFjSpwexBG1GTHlNLnFqIL6C5Rf8JlFfGkNIHC76w+b
+        A86DOKB0mIsaE6A4vLfGc8IudBzhExOz
+X-Google-Smtp-Source: AGHT+IE2hoZFp+1ccggEqlGvc9+61aaUJAGlZBTA9JoRO68qaIvofVbP/HhsQ2nzuG0YqKQPJfEEdWb0DB20
+X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:44ad:3968:8aaa:c4fe])
+ (user=mshavit job=sendgmr) by 2002:a05:6902:1141:b0:d58:6cea:84de with SMTP
+ id p1-20020a056902114100b00d586cea84demr113941ybu.11.1692701865015; Tue, 22
+ Aug 2023 03:57:45 -0700 (PDT)
+Date:   Tue, 22 Aug 2023 18:56:56 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc1.204.g551eb34607-goog
+Message-ID: <20230822105738.1607365-1-mshavit@google.com>
+Subject: [RFC PATCH v2 0/9] Install domain onto multiple smmus
+From:   Michael Shavit <mshavit@google.com>
+To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     nicolinc@nvidia.com, tina.zhang@intel.com,
+        jean-philippe@linaro.org, will@kernel.org, robin.murphy@arm.com,
+        jgg@nvidia.com, Michael Shavit <mshavit@google.com>,
+        Dawei Li <set_pte_at@outlook.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <joro@8bytes.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 at 13:31, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> * Fix indentation
-> * Drop simple success messages
->
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-> v9:
->         Fix line break alignment
->         Remove register success print
->         v8 version of the driver has been picked up for merge.
->         (https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
-> v8:
->         Change commit subject and message per review comments
->         Don't include of_platform.h
->         Change struct init coding style
->         GENMASK -> BIT for one define
-> v6:
->         Kconfig:Add COMPILE_TEST and remove USB_GADGET from 'depends'
->                 Change 'selects' USB_PHY -> GENERIC_PHY
->         Driver: Use correct headers
->                 const int -> unsigned int for 'nregs' in private data
->                 Use generic names for clk, phy in m31 phy structure
->                 Init register details directly instead of using macro
->                 Use dev_err_probe in the error paths of driver probe
-> v5:
->         Kconfig and Makefile:- place snippet according to sorted order
->         Use generic phy instead of usb-phy
->         Use ARRAY_SIZE for reg init instead of blank last entry
->         Fix copyright year
->
-> v4:
->         Remove unused enum
->         Error handling for devm_clk_get
-> v1:
->         Combine driver, makefile and kconfig into 1 patch
->         Remove 'qscratch' region and its usage. The controller driver takes care
->         of those settings
->         Use compatible/data to handle ipq5332 init
->         Drop the default case
->         Get resources by index instead of name as there is only one resource
->         Add clock
->         Fix review comments in the driver
-> ---
->  drivers/phy/qualcomm/phy-qcom-m31.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/phy/qualcomm/phy-qcom-m31.c b/drivers/phy/qualcomm/phy-qcom-m31.c
-> index ed08072..ea79c18 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-m31.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-m31.c
-> @@ -242,7 +242,7 @@ static int m31usb_phy_probe(struct platform_device *pdev)
->         qphy->clk = devm_clk_get(dev, NULL);
->         if (IS_ERR(qphy->clk))
->                 return dev_err_probe(dev, PTR_ERR(qphy->clk),
-> -                                               "failed to get clk\n");
-> +                                    "failed to get clk\n");
 
-But why are you trying to fix this? aligning next line to the opening
-bracket is perfectly fine (and is one of the endorsed styles).
+Hi all,
 
->
->         data = of_device_get_match_data(dev);
->         qphy->regs              = data->regs;
-> @@ -252,18 +252,16 @@ static int m31usb_phy_probe(struct platform_device *pdev)
->         qphy->phy = devm_phy_create(dev, NULL, &m31usb_phy_gen_ops);
->         if (IS_ERR(qphy->phy))
->                 return dev_err_probe(dev, PTR_ERR(qphy->phy),
-> -                                               "failed to create phy\n");
-> +                                    "failed to create phy\n");
->
->         qphy->vreg = devm_regulator_get(dev, "vdda-phy");
->         if (IS_ERR(qphy->vreg))
->                 return dev_err_probe(dev, PTR_ERR(qphy->phy),
-> -                                               "failed to get vreg\n");
-> +                                    "failed to get vreg\n");
->
->         phy_set_drvdata(qphy->phy, qphy);
->
->         phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> -       if (!IS_ERR(phy_provider))
-> -               dev_info(dev, "Registered M31 USB phy\n");
+This series refactors the arm-smmu-v3 driver to support attaching
+domains onto masters belonging to different smmu devices.
 
-This is irrelevant to the indentation.
+The main objective of this series is allow further refactorings of
+arm-smmu-v3-sva. Specifically, we'd like to reach the state where:
+1. A single SVA domain is allocated per MM/ASID
+2. arm-smmu-v3-sva's set_dev_pasid implementation directly attaches that
+   SVA domain to different masters, regardless of whether those masters
+   belong to different smmus.
 
->
->         return PTR_ERR_OR_ZERO(phy_provider);
->  }
-> --
-> 2.7.4
->
+If armm-smmu-v3-sva is handed iommu_domains that have a 1:1 relationship
+with an MM struct, then it won't have to share a CD with multiple
+domains (or arm_smmu_mmu_notifiers). But to get there, the arm-smmu-v3
+driver must first support domains installed on multiple SMMU devices.
+
+This series depends on the CD table ownership refactor: https://lore.kernel.org/all/20230816131925.2521220-1-mshavit@google.com/
+as well as the VMID IDA patch: https://lore.kernel.org/all/169087904450.1290857.11726985177314533259.b4-ty@kernel.org/#r
+
+Thanks,
+Michael Shavit
+
+Changes in v2:
+- Moved the ARM_SMMU_FEAT_BTM changes into a new prepatory commit
+- Access the pgtbl_cfg from the pgtable_ops instead of storing a copy in
+  the arm_smmu_domain.
+- Remove arm_smmu_installed_smmu structure, instead grouping masters
+  attached to the same SMMU together in the smmu_domain->devices list.
+- Add a parameter to arm_smmu_tlb_inv_range_asid to make skipping of BTM
+  capable devices explicit.
+- Moved VMID allocator to a global allocator instead of per-SMMU
+- Link to v1: https://lore.kernel.org/all/20230817182055.1770180-1-mshavit@google.com/
+
+Michael Shavit (9):
+  iommu/arm-smmu-v3: group attached devices by smmu
+  iommu/arm-smmu-v3-sva: Move SVA optimization into
+    arm_smmu_tlb_inv_range_asid
+  iommu/arm-smmu-v3: Issue invalidations commands to multiple SMMUs
+  iommu/arm-smmu-v3-sva: Allocate new ASID from installed_smmus
+  iommu/arm-smmu-v3: Alloc vmid from global pool
+  iommu/arm-smmu-v3: check smmu compatibility on attach
+  iommu/arm-smmu-v3: Add arm_smmu_device as a parameter to
+    domain_finalise
+  iommu/arm-smmu-v3: check for domain initialization using pgtbl_ops
+  iommu/arm-smmu-v3: allow multi-SMMU domain installs.
+
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  34 ++-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 277 +++++++++++++-----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |   7 +-
+ 3 files changed, 237 insertions(+), 81 deletions(-)
 
 
+base-commit: 6eaae198076080886b9e7d57f4ae06fa782f90ef
+prerequisite-patch-id: f701e5ac2cce085366342edff287a35d1cb82b9c
+prerequisite-patch-id: c8d21ff19c2c1dd18799a6b83f483add654d187e
+prerequisite-patch-id: 6ebba95cb12a723645843b4bd1bc45c94779d853
+prerequisite-patch-id: 3f767e1c37d2996323c4f6d2a2d1912ab75281f7
+prerequisite-patch-id: 5a4109fa3e22e2399ad064951c2ca1aeba4a68f7
+prerequisite-patch-id: c4b3bd34b8be7afebd3e44bc4ec218d74753ce77
+prerequisite-patch-id: 6d89e53518d25ac983ac99786950ee1a558c271f
+prerequisite-patch-id: 447219e565cadc34b03db05dad58d8e5c4b5a382
+prerequisite-patch-id: 63adb2c3f97d4948d96a0d5960184f5ac814d7f7
+prerequisite-patch-id: e71195fcf1aa56d8ef9d7403b9e4492c17b8fb84
+prerequisite-patch-id: ba82add44850bf8fb271292020edb746aef93a65
 -- 
-With best wishes
-Dmitry
+2.42.0.rc1.204.g551eb34607-goog
+
