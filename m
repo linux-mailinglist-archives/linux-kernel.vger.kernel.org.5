@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BDF784BEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB401784BEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbjHVVTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
+        id S231218AbjHVVTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHVVTI (ORCPT
+        with ESMTP id S231214AbjHVVTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:19:08 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AC5187;
-        Tue, 22 Aug 2023 14:19:06 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1c11d53221cso3211929fac.2;
-        Tue, 22 Aug 2023 14:19:06 -0700 (PDT)
+        Tue, 22 Aug 2023 17:19:31 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97523CF1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:19:28 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so23541911fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:19:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692739146; x=1693343946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+QhSveUjFRzvbJU6tcbAhse1vUw7fPnNXtA2uAa/rMA=;
-        b=qIUyYszHLUZcW2OKsfDF+dzMqEhUCeh80QBC3PMO7XI7SNozglQEm5xcI2ZeEldTAv
-         qDl4Fh1AFGQZRoqz0xRf1e34ExTn3vnOc1OviGk+Zxj8Yp2u1exYErEmKwkVayQql9hC
-         is6OEY3HcbSYjIKXWzEibfmJfW4od51K2+LWYbjGEXjfp1i2CVMfZKFY7Aoa7yVCLbo7
-         hMV0Eo060XabIUg+s5bApOrxFXJbRYp5mYzWugANFlShkROofqlrGOKhhgMlla0S6k9q
-         fYH0O8OMtAmmnYO28eEcRvwtKZYaqT6u659DZtakBdY5Be9Z3N3CSx+w5D/uFrapJrfl
-         2I7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692739146; x=1693343946;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1692739167; x=1693343967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+QhSveUjFRzvbJU6tcbAhse1vUw7fPnNXtA2uAa/rMA=;
-        b=lt9UyoDO3CSTzf5zUtMB0bmzxuvwd8Sp9ImazcTKguAgFECvTdu+ZUdFPU2HI8iRlF
-         jWVJ+zFAdKLtowu2xVGz7xMuiokQMx3FJX0zlIPU5RTY9iaSVpu7Sa9fX1/ywb/7A0jG
-         JtueVWMT1eIxunws670FbBgWKcsRcd6eMfqeVTh05cOKEhd+rsj+pwc7pC+3TFAPwT3u
-         gJn2708oHn2/Ncs/RizUWgZfZ+PhGYHLr0suvjQIJxhQy6D36jGs/E0FXfMOdh/ehGHm
-         Q0OcWgAlwutPbvQx1o6rmueLCJeHXSUkWWZiYr8zsJUpPlAb/R14KOmpj/hFi9LfGiHp
-         k7Xg==
-X-Gm-Message-State: AOJu0YyCge3JK6PUUBU5gGI6yipAgb5OUTEY9MCpkarHEMw6S95Z59vJ
-        PGkt82nNCACuWHP+qtBgv94=
-X-Google-Smtp-Source: AGHT+IH9ARwrK7Hw//4wT+MQqCnHM3I0jA6XZg97anoJAG2e950XptF80owYzz3XYMGYzqQ7X6J85Q==
-X-Received: by 2002:a05:6870:f10f:b0:1be:e066:acc with SMTP id k15-20020a056870f10f00b001bee0660accmr13068411oac.50.1692739145693;
-        Tue, 22 Aug 2023 14:19:05 -0700 (PDT)
-Received: from debian.org ([168.227.196.240])
-        by smtp.gmail.com with ESMTPSA id c5-20020a05687091c500b001b03e0c0970sm6125210oaf.2.2023.08.22.14.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 14:19:04 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 18:19:14 -0300
-From:   Ricardo Marliere <rbmarliere@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: alsa: make LDLIBS consistent
-Message-ID: <20230822211914.nxc3fzxcpgpxyepg@debian.org>
-References: <20230822131544.38152-1-rbmarliere@gmail.com>
- <2fd85cbe-9909-4200-be38-450d4c57425b@sirena.org.uk>
+        bh=O+POAfsybIPLiBgKZtn0Nj8S1fkvlWy6/FL0w0TknP8=;
+        b=XYUj9hDT18p54NiVX6dY6Q/kb9npv9lr7YQyNUXVkOSmJP0uDBmLgP50m0fZC31/nG
+         //QGb6plAVSeyVru4kYATLT0UfRmE9Eq0MfxsO1opbe8RYPlgQy40R1MgMoUSnNQe3Oy
+         gCQ9xQkiL2JYIavjPx/JmylnrdLmNmDYMglxYZBKzB7jxSH27/alSGcnF5iJ5mNaUuLP
+         kWh2voZ/6jhJ8or8S8xSnqlFiHM7NUa1FMwSXvDsYeJRwLMpm8npB4KHWcCRCo8Fli0L
+         GsfGaV6ui/AOnl99P58MbCR4JOuMj4dwWUwu7hwjAPLUP6SoX8oDRuC31IAa+9fDPwsJ
+         JVBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692739167; x=1693343967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O+POAfsybIPLiBgKZtn0Nj8S1fkvlWy6/FL0w0TknP8=;
+        b=hBFcNS2J0YCBk/o7tbV+yPJkAcAadl/sFaYBQaFwQuJ/LGLMhHQo1Zd2priGmawZ9s
+         FukEp2Qg5BFqoCBZzf/p4+nJ/YGApt+4h2wDi8TvAu8yR0Td4b4g4JGBfT+IYdJBiwMa
+         R3LbF7rR3UhXMitdPD1aQSvFkztyDh43KHyLLVAo+3UDoRSlE1c5XX+oR41VrWOJKnnX
+         MOlJMcP/TqLnBbme+4aj38iQdZ/dHK3v+19jktINIVSjpQbgwMCGG1Iigtu9uHx1YimF
+         PKdiI0/kPU29mUSwnPvDJrsAiWkqU/cajQuzxxaLbcor0xbYNKd3UTlRfGrOSEYdwz14
+         4tLQ==
+X-Gm-Message-State: AOJu0YwpyiLKbjHK9f1xMkmVTdHhkiJAxpduoL3uRdfT4N5VOXJkdSMM
+        I2vA1WnxxqKFbEHauWAH3rdajILx9RanoApD6WI=
+X-Google-Smtp-Source: AGHT+IGuuXsfBiKhX0YrrEA6ZHzNGqpj5f3hU51bESjED5b/pmZUSywadug8X+MmPO0dsHYB4kL3S8gEwr54IdX0xSM=
+X-Received: by 2002:a2e:9ec3:0:b0:2b6:fa3f:9230 with SMTP id
+ h3-20020a2e9ec3000000b002b6fa3f9230mr7051208ljk.46.1692739166546; Tue, 22 Aug
+ 2023 14:19:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tbfghwmrzlagbpi6"
-Content-Disposition: inline
-In-Reply-To: <2fd85cbe-9909-4200-be38-450d4c57425b@sirena.org.uk>
+References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
+ <20230821103225.qntnsotdzuthxn2y@techsingularity.net> <6a18b295-92ac-1633-0b79-6aaf18a8496d@huaweicloud.com>
+ <CAF8kJuNq2Y5AAAQn66bTEfjkQ8kfPokmGgBLDPwEWUC=MO9NcQ@mail.gmail.com>
+In-Reply-To: <CAF8kJuNq2Y5AAAQn66bTEfjkQ8kfPokmGgBLDPwEWUC=MO9NcQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 22 Aug 2023 14:19:15 -0700
+Message-ID: <CAADnVQJNQ+9D+3y-jLh3KVczcSo_Piz2O9-V9Grh3c1NQZujsA@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
+To:     Chris Li <chrisl@kernel.org>
+Cc:     Kemeng Shi <shikemeng@huaweicloud.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Namhyung Kim <namhyung@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Sperbeck <jsperbeck@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 22, 2023 at 2:15=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote:
+>
+> Hi Kemeng,
+>
+> On Mon, Aug 21, 2023 at 6:27=E2=80=AFPM Kemeng Shi <shikemeng@huaweicloud=
+.com> wrote:
+> > >
+> > Agreed. We assume pcp->count is protected by pcp->lock. Instead of make=
+ code
+> > work in case pcp->count could be changed without lock held, it's more r=
+easonble
+> > to modify pcp->count with pcp->lock held in BPF program.
+>
+> The lock is holded when pcp->count is modified. It is going through
+> the kernel page
+> allocation API. The issue is nest memory allocation inside spin_lock()
+> introduced by BPF.
+>
+> The execution sequence is like this:
+>
+>        count =3D min(pcp->count, count);
+>
+>         /* Ensure requested pindex is drained first. */
+>         pindex =3D pindex - 1;
+>         bpf_injected_spin_lock_irqsave {
+>                  alloc_page();
+>                  original spin_lock_irqsave(&zone->lock, flags) ;
+>         }
 
---tbfghwmrzlagbpi6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Aug 22, 2023 at 03:05:27PM +0100, Mark Brown wrote:
-> This seems like an undocumented bodge for whatever limitation the
-> checker script has.  If nothing else someone might come along later and
-> switch back to using the standard variable name, and TBH it does feel
-> like it'd be better to teach the checker to understand the pkg-config
-> idiom here.
-
-I agree, I submitted a patch to fix the checker script.
-
-Thank you Mark
-
-
---=20
-Ricardo Marliere	    https://marliere.net/
-030A 8E9E 424E E3C0 6557 87E1 C90B 8A7C 6386 58A6
-
---tbfghwmrzlagbpi6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEAwqOnkJO48BlV4fhyQuKfGOGWKYFAmTlJk8ACgkQyQuKfGOG
-WKYb7hAAqwAsFLsCv615f3KEbWQXUkDllrKdvhGip1ZKDOJWtjA0k+GomFgO3VaG
-zdoswCgIzbaCPPI7AO/CtCqFJrFZOTx9/23FLOC6XKgAxGOZMJaoWeg/D+1DeFkw
-nnT6UJJDEsQ15KnNMGhJnXOskVnKWdG1pVrq6O+16Tk71oWJnLB07SFLKFCbsySB
-21LDe+FGDia5xzUbD7Y8vC5QI+2OLPWb1dIViJVWao3do6sGsOJnSACRp1G+MpFs
-qqYf69M/tD1VoPzpEBTUfrjHXCWFrZJizoOgzLFrZDexZIg672GyG0QX8Bs/HAUu
-KU4LIRMGBstygvLiEzk+5B+1hBt6Q9H1HtqTo7MKetTL7BQG+r8QHGHILuldT8kb
-CbH+JcQSsSNPUPlGc288MI7PL60iF0tH0nqzyb3wGlJ8zEOlhCWNTH55f1+3L5JA
-7R1142H5g/V2IkDkAeakvrTWYa06pzrfYk61l4mOBerxaMHr6snWaVsIBnVVrUv/
-SRKE4JoXnS5s+nDrfghI6TqRGKViSqVBQ5kcmjRiVhrB43/doOXjaAwK+n5BxgtN
-kxxEtB/faMTQqOkDUU9lOaGL0KPTP2CmC1Cw4imEueteHI47EhYoDMEFDy3TSln4
-N/ltUZ9jhuODs4g0zR7YdbIClaZGgsIUW6tfDeQ5OzIbHKhdWX0=
-=tALc
------END PGP SIGNATURE-----
-
---tbfghwmrzlagbpi6--
+bpf doesn't call into alloc_page() or slab alloc or pcpu alloc from
+tracing progs.
+All memory is preallocated.
+Can you reproduce the issue on the latest upstream kernel?
