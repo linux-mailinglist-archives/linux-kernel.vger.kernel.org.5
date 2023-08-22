@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A01D783EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4664783EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbjHVLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S234863AbjHVLcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234842AbjHVLcT (ORCPT
+        with ESMTP id S234678AbjHVLcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:32:19 -0400
+        Tue, 22 Aug 2023 07:32:20 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D05E6D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3720E66;
         Tue, 22 Aug 2023 04:32:02 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BB91C65247;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3700D65265;
+        Tue, 22 Aug 2023 11:31:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A441C433CA;
         Tue, 22 Aug 2023 11:31:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13005C433CB;
-        Tue, 22 Aug 2023 11:31:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703895;
-        bh=GiTxZ4OKRVhHnF8rRs0NLEZCAYYMH0DjrFcqPcvbtwI=;
+        s=k20201202; t=1692703896;
+        bh=QkC640psDqZzHVrH2pj1SLaMBwAO0XRqN6ukHG1V6ZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C+dz+OrRzrFog36SBIkFus9Mjj9aU89NcgEX9zt8qmw+l2toAiE2psRao/6yrPJue
-         l/UMFbi2gfL5FCHL8iIX17AzGF6tdHjglOryAq8dlzVVd0M1E64DBjf7/xsj8RQpik
-         pysBIAtF0TQgf7oocvbW5ZoPPbQyonRLfFWUW2fUB4QO+Y7fGaAUG2H2rFpJYdc3Bp
-         sUJPTSYwKx2DPC9o0CaN/6kWXHNHxjDD8pOQ0GqfOhPIDMp4EeHT//jY9tM7emZk9M
-         9rxNK1BR+wTKCyw0DRi62s7ECvj7hhBy2O0Le0ZTiJ5GfwX9BinMxVC4WICBqPml/s
-         BHuVonzRCwprg==
+        b=Zia2jntrOru3nmrVkXTk3r2b1V+L4sDABlDSp3bKDJhNooHAP81otgxiJjv28Mpvq
+         5cG/WZ7gimdp6VyO/HjSLC/uXAo3y6TObzNy4r0khQhGDMC+hbaHrpv1U18V5QQdlE
+         OyBxeIi6CJESqZ8l6v2xxEjhQSswadwPucCe5i3tUSahaZC0aT0XAMnAidjIk0qw/Z
+         nNgHILI78/XBM8ELiQxZ6xFhxQC6Zq3yzsqzusdGlGyuSW3M50OOQDreqWvbTxEdR4
+         3OQ7oc1IV8NdBpWMwozRRSE/+UQjiHZPjW6zIPtQ01iciRuDSbfhz+UWx8+JciEwpn
+         D9WSNIggZ2moA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ani Sinha <anisinha@redhat.com>, Wei Liu <wei.liu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 2/9] vmbus_testing: fix wrong python syntax for integer value comparison
-Date:   Tue, 22 Aug 2023 07:31:23 -0400
-Message-Id: <20230822113130.3550050-2-sashal@kernel.org>
+Cc:     Kalle Valo <quic_kvalo@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, quic_jjohnson@quicinc.com,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 3/9] Revert "wifi: ath11k: Enable threaded NAPI"
+Date:   Tue, 22 Aug 2023 07:31:24 -0400
+Message-Id: <20230822113130.3550050-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230822113130.3550050-1-sashal@kernel.org>
 References: <20230822113130.3550050-1-sashal@kernel.org>
@@ -60,50 +59,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ani Sinha <anisinha@redhat.com>
+From: Kalle Valo <quic_kvalo@quicinc.com>
 
-[ Upstream commit ed0cf84e9cc42e6310961c87709621f1825c2bb8 ]
+[ Upstream commit d265ebe41c911314bd273c218a37088835959fa1 ]
 
-It is incorrect in python to compare integer values using the "is" keyword.
-The "is" keyword in python is used to compare references to two objects,
-not their values. Newer version of python3 (version 3.8) throws a warning
-when such incorrect comparison is made. For value comparison, "==" should
-be used.
+This reverts commit 13aa2fb692d3717767303817f35b3e650109add3.
 
-Fix this in the code and suppress the following warning:
+This commit broke QCN9074 initialisation:
 
-/usr/sbin/vmbus_testing:167: SyntaxWarning: "is" with a literal. Did you mean "=="?
+[  358.960477] ath11k_pci 0000:04:00.0: ce desc not available for wmi command 36866
+[  358.960481] ath11k_pci 0000:04:00.0: failed to send WMI_STA_POWERSAVE_PARAM_CMDID
+[  358.960484] ath11k_pci 0000:04:00.0: could not set uapsd params -105
 
-Signed-off-by: Ani Sinha <anisinha@redhat.com>
-Link: https://lore.kernel.org/r/20230705134408.6302-1-anisinha@redhat.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+As there's no fix available let's just revert it to get QCN9074 working again.
+
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217536
+Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
+Signed-off-by: Kalle Valo <kvalo@kernel.org>
+Link: https://lore.kernel.org/r/20230720151444.2016637-1-kvalo@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/hv/vmbus_testing | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath11k/ahb.c  | 1 -
+ drivers/net/wireless/ath/ath11k/pcic.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/tools/hv/vmbus_testing b/tools/hv/vmbus_testing
-index e7212903dd1d9..4467979d8f699 100755
---- a/tools/hv/vmbus_testing
-+++ b/tools/hv/vmbus_testing
-@@ -164,7 +164,7 @@ def recursive_file_lookup(path, file_map):
- def get_all_devices_test_status(file_map):
+diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
+index 76f275ca53e9c..ff8c0274dde8c 100644
+--- a/drivers/net/wireless/ath/ath11k/ahb.c
++++ b/drivers/net/wireless/ath/ath11k/ahb.c
+@@ -361,7 +361,6 @@ static void ath11k_ahb_ext_irq_enable(struct ath11k_base *ab)
+ 		struct ath11k_ext_irq_grp *irq_grp = &ab->ext_irq_grp[i];
  
-         for device in file_map:
--                if (get_test_state(locate_state(device, file_map)) is 1):
-+                if (get_test_state(locate_state(device, file_map)) == 1):
-                         print("Testing = ON for: {}"
-                               .format(device.split("/")[5]))
-                 else:
-@@ -203,7 +203,7 @@ def write_test_files(path, value):
- def set_test_state(state_path, state_value, quiet):
+ 		if (!irq_grp->napi_enabled) {
+-			dev_set_threaded(&irq_grp->napi_ndev, true);
+ 			napi_enable(&irq_grp->napi);
+ 			irq_grp->napi_enabled = true;
+ 		}
+diff --git a/drivers/net/wireless/ath/ath11k/pcic.c b/drivers/net/wireless/ath/ath11k/pcic.c
+index 380f9d37b6449..3c095f986f4dd 100644
+--- a/drivers/net/wireless/ath/ath11k/pcic.c
++++ b/drivers/net/wireless/ath/ath11k/pcic.c
+@@ -459,7 +459,6 @@ void ath11k_pcic_ext_irq_enable(struct ath11k_base *ab)
+ 		struct ath11k_ext_irq_grp *irq_grp = &ab->ext_irq_grp[i];
  
-         write_test_files(state_path, state_value)
--        if (get_test_state(state_path) is 1):
-+        if (get_test_state(state_path) == 1):
-                 if (not quiet):
-                         print("Testing = ON for device: {}"
-                               .format(state_path.split("/")[5]))
+ 		if (!irq_grp->napi_enabled) {
+-			dev_set_threaded(&irq_grp->napi_ndev, true);
+ 			napi_enable(&irq_grp->napi);
+ 			irq_grp->napi_enabled = true;
+ 		}
 -- 
 2.40.1
 
