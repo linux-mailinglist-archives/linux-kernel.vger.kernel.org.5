@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57746784C03
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FE9784C16
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbjHVV3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S231348AbjHVVdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbjHVV3t (ORCPT
+        with ESMTP id S230516AbjHVVdf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:29:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D771ACEC
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:29:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7327864784
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 21:29:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD6E7C433A9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 21:29:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692739783;
-        bh=+E/v1Yg2nZID3Pl0uyib8D26RMJvBa7TzNDSOx1oSPg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uimEdM7vXwYpRzna3gxTOky9Det48dCxMOcfkB7cROuFOXUE2Q67pdlbzhK1mni21
-         u8TCHipG8NnnwAGr8fTDHq9itfTa+obTLhVBEDyFnnwSmLs+yxF4a4dk/F4c+XmcSo
-         CuBtx/oLfaxdEkKiZOu4YEuUTgLA/0zxE5pA50Yd8gy6pwuuBJFSnVYHF3Fd9sWIFj
-         /xgExlZk19+tuAgQfSl/P/Tghf7Nog565u+3ts5wQsOFEUJowsniV5ECI1bE+BIRZ9
-         Ihh6S9WrQZSShGsSVgTZf7jDw+sda8cPvqK0VyrfUluquszxJW/FIECZrtABnsTfGd
-         s7HBOvJ9p9uPQ==
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-56b0c5a140dso2118528a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:29:43 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzXUISZFu0H/m4XfalV0wRwBmTFOuD4fYhgiSEy8ZZ273CVJPUa
-        JM99tS04CClBcfbb+1rBLL2brDrVWBIxjI+4V9WMhg==
-X-Google-Smtp-Source: AGHT+IFIB0swyM8xpWhGkUVLGS7gqygBk2T2nO7KRZ+WwvtmrgSp7uuvmlZuRqTG2CCPsbQMfQOIk22cdDciqnH1Q9o=
-X-Received: by 2002:a17:90b:14d:b0:262:f449:4497 with SMTP id
- em13-20020a17090b014d00b00262f4494497mr10119014pjb.2.1692739783071; Tue, 22
- Aug 2023 14:29:43 -0700 (PDT)
+        Tue, 22 Aug 2023 17:33:35 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D93CDF;
+        Tue, 22 Aug 2023 14:33:32 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1cc69d1f9b1so389028fac.1;
+        Tue, 22 Aug 2023 14:33:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692740012; x=1693344812;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=INI5oiFH+66CehZMbF3pmu6G1MXsfiESDSRSKZHLaRY=;
+        b=fgqVrynvkq6uP08BaXCnNWw/p06D/4o+QC336L0CUsEz6UD+oH/Vd4n0c1wMnzIUhF
+         vUgxAe4dYrQz9skKsjzGsWzOCr31RfbD11PENfLsAgUCuUPlZmu3mRJ2xKBb9jkF1O8j
+         sDzgCt4LBN11ek0r5qJNa1aXnACy7u45hPSIsubH2c86OBOsqxKpVxNFu1FyrNDrDtWO
+         RjX/vugFLc52L+h0NDjP7saPh9TmmXhVVLLkScpi8WCx3zgJCk9vGhv+zWWfPo/UaAUd
+         7LGrT6f7NVCH4g/1U4hQYDInBbYQ1AzaJSW114/jcURPz4LR7IWv4of2UuD0BtURJwyE
+         Td8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692740012; x=1693344812;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=INI5oiFH+66CehZMbF3pmu6G1MXsfiESDSRSKZHLaRY=;
+        b=NuloRnzIiVY2yofWCvZGIGjVD+PCz1y6J8F2FCInyyGiVaHNz2kBomVJNZSKDPxrh8
+         B/qqpfeDPPIoQqyFTUz/sm4b7nIfJJDBcbjS9rfRa/KluSdECQJoI0DmjZjtgI03zUii
+         +FBBX6ccrKGLLm9Df6FTinErysG5UmS0fDPgf1HKON9QhDjeQB2zQDJ0o63zqmACu8F8
+         k+gB0Nzdny4ResfppTOccpQRjRGZ0KDQOy7bqHAQ2rC3j3OSMX4aOoZOBzsSkhSKS8Ze
+         uRHU2SqrR5a4qrWt83nafFhBhROPMaMS9eEcp5SQhr5i36+Z06zoGF7+D5zg5HFWDhkl
+         jxqQ==
+X-Gm-Message-State: AOJu0YwOJ4s6LYRU1I5/bV0ay1qx8UFexXYmITvdscgdZDkpgAM2mOUX
+        RfnNs4Knm3JFMsUOU1KSank=
+X-Google-Smtp-Source: AGHT+IGdU9WK6dn0/CXstsASCTDYl3IpbJI/A3uatHo8Wxh/zd0fX94yR6UvkFhzl1DJF/dXvby6yg==
+X-Received: by 2002:a05:6808:1599:b0:3a8:7446:7aba with SMTP id t25-20020a056808159900b003a874467abamr97745oiw.5.1692740011888;
+        Tue, 22 Aug 2023 14:33:31 -0700 (PDT)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:1bf5:f5af:8849:83c8])
+        by smtp.gmail.com with ESMTPSA id r2-20020a056870878200b001c4b473581fsm6081220oam.12.2023.08.22.14.33.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Aug 2023 14:33:31 -0700 (PDT)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     robh+dt@kernel.org
+Cc:     linux-doc@vger.kernel.org, giometti@enneenne.com,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@denx.de>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] MAINTAINERS: pps: Update pps-gpio bindings location
+Date:   Tue, 22 Aug 2023 18:33:17 -0300
+Message-Id: <20230822213317.60798-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230817-free_pcppages_bulk-v1-0-c14574a9f80c@kernel.org>
- <20230821103225.qntnsotdzuthxn2y@techsingularity.net> <6a18b295-92ac-1633-0b79-6aaf18a8496d@huaweicloud.com>
- <CAF8kJuNq2Y5AAAQn66bTEfjkQ8kfPokmGgBLDPwEWUC=MO9NcQ@mail.gmail.com> <CAADnVQJNQ+9D+3y-jLh3KVczcSo_Piz2O9-V9Grh3c1NQZujsA@mail.gmail.com>
-In-Reply-To: <CAADnVQJNQ+9D+3y-jLh3KVczcSo_Piz2O9-V9Grh3c1NQZujsA@mail.gmail.com>
-From:   Chris Li <chrisl@kernel.org>
-Date:   Tue, 22 Aug 2023 14:29:31 -0700
-X-Gmail-Original-Message-ID: <CAF8kJuOT5cSQNqO6-gf=M+hFxb2-nHT1eZnEvqGYGGC8qHn39Q@mail.gmail.com>
-Message-ID: <CAF8kJuOT5cSQNqO6-gf=M+hFxb2-nHT1eZnEvqGYGGC8qHn39Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/2] mm/page_alloc: free_pcppages_bulk safeguard
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kemeng Shi <shikemeng@huaweicloud.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        baolin.wang@linux.alibaba.com, Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-mm <linux-mm@kvack.org>,
-        Namhyung Kim <namhyung@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Sperbeck <jsperbeck@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 2:19=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> >
-> > The execution sequence is like this:
-> >
-> >        count =3D min(pcp->count, count);
-> >
-> >         /* Ensure requested pindex is drained first. */
-> >         pindex =3D pindex - 1;
-> >         bpf_injected_spin_lock_irqsave {
-> >                  alloc_page();
-> >                  original spin_lock_irqsave(&zone->lock, flags) ;
-> >         }
->
-> bpf doesn't call into alloc_page() or slab alloc or pcpu alloc from
-> tracing progs.
-> All memory is preallocated.
+From: Fabio Estevam <festevam@denx.de>
 
-Here is the other patch submission thread which have more detail of
-how to reproduce it:
-https://lore.kernel.org/linux-mm/20230817-free_pcppages_bulk-v1-1-c14574a9f=
-80c@kernel.org/
+The pps-gpio bindings have been converted to yaml.
 
-It is on older version of the kernel.
-> Can you reproduce the issue on the latest upstream kernel?
+Update the file path accordingly.
 
-Hope, the fix on the BPF side went in as commit c66a36af7ba3a628.
-I am not aware of other cases.
+Fixes: 7ceb60ece856 ("dt-bindings: pps: pps-gpio: Convert to yaml")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308230517.n0rrszYH-lkp@intel.com/
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It seems the consensus is so far is that we don't support BPF doing
-nested allocation on spin locks.
-That will implite any function called under the spinlocks as well.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cf8dd33048ba..afde89d9b7ff 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17132,7 +17132,7 @@ L:	linuxpps@ml.enneenne.com (subscribers-only)
+ S:	Maintained
+ W:	http://wiki.enneenne.com/index.php/LinuxPPS_support
+ F:	Documentation/ABI/testing/sysfs-pps
+-F:	Documentation/devicetree/bindings/pps/pps-gpio.txt
++F:	Documentation/devicetree/bindings/pps/pps-gpio.yaml
+ F:	Documentation/driver-api/pps.rst
+ F:	drivers/pps/
+ F:	include/linux/pps*.h
+-- 
+2.34.1
 
-Do we care about adding more warnings on this kind of allocation at all?
-
-Chris
