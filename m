@@ -2,224 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7679C783A1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD09783A1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 08:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbjHVGm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 02:42:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50212 "EHLO
+        id S232989AbjHVGpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 02:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232502AbjHVGm4 (ORCPT
+        with ESMTP id S232296AbjHVGpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 02:42:56 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EEEC412C;
-        Mon, 21 Aug 2023 23:42:52 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 756332F4;
-        Mon, 21 Aug 2023 23:43:33 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.3.221])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9C2863F740;
-        Mon, 21 Aug 2023 23:42:49 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 07:42:47 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        linux-perf-users@vger.kernel.org, ito-yuichi@fujitsu.com,
-        Chen-Yu Tsai <wens@csie.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
+        Tue, 22 Aug 2023 02:45:17 -0400
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2043.outbound.protection.outlook.com [40.107.8.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC09E9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 23:45:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V7DHBKzobbFxNAPuUNr+iLLl2UMgw9vLUtObj99ggbIEYaMngNsQmUy2I+2b9l/8XGcYPpziNrRcZj920WEScu1xCyiLY3jb/os0Rkh1JokIwVIAehfFlEbt5F8atDF1mzFqydMT6OtPOV/ehgZlzeK7dd4jXkclqsXsxqXPddmpq7SPZdLDO5gBdU6L04lNBMMlGUeI51XfUw6KyJbNG6c2E2B8rIC5CbsgU5BdYfRPE/+g4KXb4D0M0YKG+VxCAXbomJkCtK6zyXKkyYoTCs+ph86J4Iz75LJ0LzpL/Tmxauq3RMigx/77opRNYX40qval6TVuxE6HnhlLZpFyzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PEiZbvlOEKBi8v9zwRHPNNEURqqM7bVsIa7tLsWSK5g=;
+ b=bQiM54eYyohRcamfa7HEHXZOe0k/8TAvmPNDjtmoBXS/sw1v3CW6OI02x2Id6dRsVkh+5Qso8WDe0cJJEJ0kdtcuh7sYZnphJ/XgiG3vSMpi3EGnoW1NR73FRcRh01qST2tHkTMEcGSHBTrrcX5Wb+XFDzPFsIbDMqPOKU9XurIAqQ5Mee8tJmj/nqLfGO1KjW97WHT0GkF3evEro947p6f2cU4ndhQxehkRZAOiF7nzXsIobuIi4sZwZCVY0/TmOX44OkKdHnwGJJZyzFTN9VFTBC3QaXHFRY1zviLYy69n6/DQkfIfz7NHyitJexWElMq6pWIV3KbOlALVv7HMgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PEiZbvlOEKBi8v9zwRHPNNEURqqM7bVsIa7tLsWSK5g=;
+ b=0RByKFGwXzlHaueEiHYQMeBskiV09qiKYFwpdGyakYrLj6zOlCdcONKg8br+UJ0T0zyViCxYKHaYBDYjFsrqL3WHEOyvWdfe0inHfDjeqrODsO2S6zVfcoU5J5Y9WXPxPJIW+lBIRZ853R2QLmLNmttSHssJnTyxrUD0R6pnJYvaCxQ7datwjEJzfrgAvf1sFRcMQfTqIVsR/TfLnzd1TlkyI1WCic7eI4YF80YqITqAQ3BwdmwIRouTgE1bouNlR2lS/bI1EyqleZvMQbZoT64CZwzEiCJI5OaVnZEfulCuTCEFCoai41E7O732d1m74BVQ4ESaSfLv/Buj7PxWxw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
+ by AS8PR04MB8514.eurprd04.prod.outlook.com (2603:10a6:20b:341::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.24; Tue, 22 Aug
+ 2023 06:45:10 +0000
+Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
+ ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6699.020; Tue, 22 Aug 2023
+ 06:45:10 +0000
+Message-ID: <9565380a-4654-f267-c8ac-a4d6ab81156a@suse.com>
+Date:   Tue, 22 Aug 2023 09:45:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Borislav Petkov <bp@alien8.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        kgdb-bugreport@lists.sourceforge.net,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 3/7] arm64: Add framework for a debug IPI
-Message-ID: <ZORY51mF4alI41G1@FVFF77S0Q05N>
-References: <20230601213440.2488667-1-dianders@chromium.org>
- <20230601143109.v9.3.Ie6c132b96ebbbcddbf6954b9469ed40a6960343c@changeid>
- <ZNDDgRuNGzovddaO@FVFF77S0Q05N.cambridge.arm.com>
- <CAD=FV=VVJsJSc=uQWad4x0EV2-iROFcueW_=4VbM+0N0+aD96g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Babu Moger <babu.moger@amd.com>, David.Kaplan@amd.com,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+References: <20230821112723.3995187-1-andrew.cooper3@citrix.com>
+ <20230821112723.3995187-5-andrew.cooper3@citrix.com>
+ <20230821151636.onk2e6tlhmjg5yz5@treble>
+ <810fa94b-9417-0076-1232-d263ef882027@citrix.com>
+ <20230822022229.xlctyccmgdxiy6ic@treble>
+From:   Nikolay Borisov <nik.borisov@suse.com>
+Subject: Re: [PATCH RFC 4/4] x86/srso: Use CALL-based return thunks to reduce
+ overhead
+In-Reply-To: <20230822022229.xlctyccmgdxiy6ic@treble>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=VVJsJSc=uQWad4x0EV2-iROFcueW_=4VbM+0N0+aD96g@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: VI1PR0102CA0066.eurprd01.prod.exchangelabs.com
+ (2603:10a6:803::43) To PA4PR04MB7790.eurprd04.prod.outlook.com
+ (2603:10a6:102:cc::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|AS8PR04MB8514:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6df0484b-69dd-41ef-e84c-08dba2db549f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jab+AKN6c20DCaTqKVydIZn7nlKcJxDcTQn7Bn1qPBRFGIggTnY/wpJ/HRZ3kZ6ot503oj86bZ+EAT3Gbj4nc4jOFQ0JSw5+FtALDVahKKQT3pK3v7HnpZdAW14DD/UimixR61BcPLBfGEb6eYWcAMAwFxMQWAkyW7fQ8qzovFTQu+b6BJyBxQS7VAM/50ogjrgYfUSVLMaBh9yJHesenVGpFqks5sFdDx19CzIZ5R9g3skoPOqL8vKrsjy3bFvhsFCCKHChBPFP3ml4fzf35aNvXypUeTA8TX71lG4e6srRqtWfC/oUsOEQfLZjTNS34YUNlWYO9bwkQ3g/fCiATjji0x66wUHC4sWAW1hU6me7ywA7/UPrWw2M/eZfPnBzfrIqmxhOeI9UX5j+29rIono3qCKGpP0VWjbpm8z7C7DbcYNFonc9fq4reo9M8V7AQNiXv4myPDLjDYbU5PhoQ/ypY4AwUAugMhj5UrNGZY++HhLc8EaocJdfuWx3EJ1ntCeNyEMJ8FxMtytwo6fEcv6suBz72BZmvinYM1Gnp8wT8ljVvIKTxETxX/zin6H6L9i6q9ZVIQybOEpRd/EZcRnfo+TXR2WBFKVYcJgWwH+gVvo5N/85Ckh/qdkLFJ4C
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(346002)(396003)(39860400002)(136003)(451199024)(1800799009)(186009)(2906002)(7416002)(53546011)(38100700002)(6486002)(6506007)(5660300002)(26005)(86362001)(31686004)(31696002)(8676002)(2616005)(8936002)(4326008)(316002)(6512007)(66946007)(54906003)(66556008)(66476007)(110136005)(966005)(478600001)(6666004)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXVzMGNqU0hTQlVEM1BkT3lLV2lVWTV1Y0ZIaUZDdnJ2djJvRHU2VFdkYW1w?=
+ =?utf-8?B?eGI1NEJaei9wS052b1ZsZUhTQUNZUDJpbVc3UHZhSm1ncHhSNElvaDJoMith?=
+ =?utf-8?B?bGxwaHpTeGRZdXJKSUF0NGpJQ2NWbnZodlR4NWN5VXhXQ0hDOUpxV2FxbHFh?=
+ =?utf-8?B?WlZnaTZIL3M4YmZKVXVnb2J5L056NzRiTUx5Yk85RGVwc1V0L3lMNUlpa1JN?=
+ =?utf-8?B?c2VQY29vSWlIQ2QwV2N2eTc1bnppbEFuOHI0NTZoS0w1SVlMM1pRRDZhSE5l?=
+ =?utf-8?B?WTQrVHgzalFxYWN1TTJudnVMdnFOMWJ5dExIYlh6akNTcG1keGJremRyQkJo?=
+ =?utf-8?B?ZTAxU0VESVowN1l3UE43RmhaU2V2NGhXYVlqZ2QvMEpLak9TZ1daQkhnaFdL?=
+ =?utf-8?B?TWhmTk5sUmphQ0xkUFRLOHF5TmdmdW9SbzQ3dWc2N2hNOHRTOHljM0Vlcjdy?=
+ =?utf-8?B?MGkwQVEzc1I1WSs1am5YTnNMUTc5bThMdm1CL1Q1NDRaejErTEtTTGRBRlgz?=
+ =?utf-8?B?MEdRSm9tYkFKQ3F5dVRTcStxZWtnTDdTcTRiMWNlYm54bzBGSTZSNVRQNG1r?=
+ =?utf-8?B?UXFCLy9OaVVxUERLSWpRdzZWVFA2UDZIbWduK2Z5MnpGQmVES2pabyt3NGFL?=
+ =?utf-8?B?eDhMUnY2TjlIaHpGVmtkRW1MZXJUQS9OSVQ1a0FzaDI3L3NBUUFFL3RUODcr?=
+ =?utf-8?B?NmpleC9QSExNYTA5SG5oZzIzZjNEY0tzOHVrN25DYm4xbTVDeWlxemI0Z1R1?=
+ =?utf-8?B?YjFSM3pnNDB0TThRNFc0L2dFS1VSUWZ0OUpUWUVjcU9WdEFHQmVIRitnekFp?=
+ =?utf-8?B?elROWXdNTmlobEtGVms3OUYzVlJDT3RuOWJVNHF1bVVUMFFFYU1SbUFxbWdC?=
+ =?utf-8?B?cFFFNUpJSnFwenFFSGhtUjJjM1JkMXQxaWNVMGtpWXQ4aFN1UVhjUlNSZE9I?=
+ =?utf-8?B?TGM4UGZJVGw2NHBqaXQ5M09lTWdncXEyOFpCNG5BTHdIa0pOdnMzN3U1aHZL?=
+ =?utf-8?B?Yk1VUWh1TkllcWt2aFB0LzBuVEhQOFdSUkRBK2lSYUVMdmp3SGdCQXpORG9W?=
+ =?utf-8?B?d2RBb24rakgvZ1VqNVNRZXBJUUxJUGU0L2hteGYyT3RSblRYcTEyWFVYWE9U?=
+ =?utf-8?B?ZmZveTljNFVwbTF5RzFxOFpMVTYzL1FqZ2tVcVJQbnVvc1ZxdElIZURRd1U4?=
+ =?utf-8?B?cnRWbmY1SzE2eUROU0didDFiVU1nK2lscFpQYVRHaEpNOFdmNklVVmNqWUk4?=
+ =?utf-8?B?ZlY2VzdVQlNSdnBhNEU5UUFMTHJIVGtKSmI3Ri9GMFBEUmZqY1JWUkxCbjBm?=
+ =?utf-8?B?N3FPOHRhVGE4ZHZrQW9hcTNuRjZLemhuQ1p0dm1tOVZ2ZlRDaXBhYXF2UFo5?=
+ =?utf-8?B?Qm5RRjBzZTRhREg0VXFZUmN5NG16bXFvVnBNenRSZTNyVjN4VTFsR3JmVmZj?=
+ =?utf-8?B?a3FkbzY2ZnJRMG1HbGZqbklITVFrNzJzQVlFY3JBRVVDbmRiNzBnQ2xIc0tU?=
+ =?utf-8?B?dkFlUmN6SlRwdkpWZDNMeWNkdzV4ZmlkcEZPRnZOd2Q3cWV4RG9HaktjNzEw?=
+ =?utf-8?B?U3ZNR0FKOE55dkVyRExXbE1wZTdzZnpVK3JvK0hCcWVHK2ppejI0VHZwUVQx?=
+ =?utf-8?B?SUo2VVVSWGNPVEcwWmtxL3NLdGRlTmhVUW5YN2cxekpiRVRiV21XRmNZTVlS?=
+ =?utf-8?B?ellZejZzZGdad3ZVbHVTaDNqYTJBZTJmdzJ3MkFSZzI1dnZGUldybVp2V3Zt?=
+ =?utf-8?B?SDV4N3ZBUGxET3RCN09nbVZRNDBQM294cVBRa2xyeXNxTDJHd3VaaE9mUGpP?=
+ =?utf-8?B?alhyWkxweGs0N0JSNm9OVncycENacVZ1VGt1d0NKdlZVdzN2dk4rRTZ4STJW?=
+ =?utf-8?B?Z1gyTnJ3KzFuM1NnZXN0Ujd3Z1NXVmRvTEVINUFQSUFuV2VFVVh6OGNjbFYw?=
+ =?utf-8?B?ZlBSdkRmSmUvUHVVd1VaRzJLZ3k0T1BjVml4SThBZVZ2WGJPMldyMi9FRVJZ?=
+ =?utf-8?B?L1pxU1NTZmdseW9Ba3VnQnVEZEtkYTdkYXlXbkZiU1hDeWwrcTF2Y2J4djE4?=
+ =?utf-8?B?bmJEZXNtU3Zua25VSnBxMkR0NVpCcDB0RGNLUzNxdU4vcCtDcUR3M0dyenNi?=
+ =?utf-8?Q?jltbLjSfXJtDJK48Uht6e18Rl?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6df0484b-69dd-41ef-e84c-08dba2db549f
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Aug 2023 06:45:10.5125
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: f5up/5RksCFpxBHa6tNxOdXwIuofSv7B4Jles5TWOSgIYVoB5yKGIOXm+A7psbqbbINvamIoG7Oz5cSOkiPIFQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8514
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 03:16:56PM -0700, Doug Anderson wrote:
-> Hi,
+
+
+On 22.08.23 г. 5:22 ч., Josh Poimboeuf wrote:
+> On Tue, Aug 22, 2023 at 12:01:29AM +0100, Andrew Cooper wrote:
+>> On 21/08/2023 4:16 pm, Josh Poimboeuf wrote:
+>>> On Mon, Aug 21, 2023 at 12:27:23PM +0100, Andrew Cooper wrote:
+>>>> The SRSO safety depends on having a CALL to an {ADD,LEA}/RET sequence which
+>>>> has been made safe in the BTB.  Specifically, there needs to be no pertubance
+>>>> to the RAS between a correctly predicted CALL and the subsequent RET.
+>>>>
+>>>> Use the new infrastructure to CALL to a return thunk.  Remove
+>>>> srso_fam1?_safe_ret() symbols and point srso_fam1?_return_thunk().
+>>>>
+>>>> This removes one taken branch from every function return, which will reduce
+>>>> the overhead of the mitigation.  It also removes one of three moving pieces
+>>>> from the SRSO mess.
+>>> So, the address of whatever instruction comes after the 'CALL
+>>> srso_*_return_thunk' is added to the RSB/RAS, and that might be
+>>> speculated to when the thunk returns.  Is that a concern?
+>>
+>> That is very intentional, and key to the safety.
+>>
+>> Replacing a RET with a CALL/{ADD,LEA}/RET sequence is a form of
+>> retpoline thunk.  The only difference with regular retpolines is that
+>> the intended target is already on the stack, and not in a GPR.
+>>
+>>
+>> If the CALL mispredicts, it doesn't matter.  When decode catches up
+>> (allegedly either instantaneously on Fam19h, or a few cycles late on
+>> Fam17h), the top of the RAS is corrected will point at the INT3
+>> following the CALL instruction.
 > 
-> On Mon, Aug 7, 2023 at 3:12 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Thu, Jun 01, 2023 at 02:31:47PM -0700, Douglas Anderson wrote:
-> > > From: Sumit Garg <sumit.garg@linaro.org>
-> > >
-> > > Introduce a framework for an IPI that will be used for debug
-> > > purposes. The primary use case of this IPI will be to generate stack
-> > > crawls on other CPUs, but it will also be used to round up CPUs for
-> > > kgdb.
-> > >
-> > > When possible, we try to allocate this debug IPI as an NMI (or a
-> > > pseudo NMI). If that fails (due to CONFIG, an incompatible interrupt
-> > > controller, a quirk, missing the "irqchip.gicv3_pseudo_nmi=1" kernel
-> > > parameter, etc) we fall back to a normal IPI.
-> > >
-> > > NOTE: hooking this up for CPU backtrace / kgdb will happen in a future
-> > > patch, this just adds the framework.
-> > >
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> >
-> > I think that we shouldn't add a framework in a separate file for this:
-> >
-> > * This is very similar to our existing IPI management in smp.c, so it feels
-> >   like duplication, or at least another thing we'd like to keep in-sync.
-> >
-> > * We're going to want an NMI backtrace regardless of KGDB
-> >
-> > * We're going to want the IPI_CPU_STOP and IPI_CRASH_CPU_STOP IPIs to be NMIs
-> >   too.
-> >
-> > I reckon it'd be better to extend the existing IPI logic in smp.c to allow IPIs
-> > to be requested as NMIs, e.g.
-> >
-> > ----
-> > diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-> > index edd63894d61e8..48e6aa62c473e 100644
-> > --- a/arch/arm64/kernel/smp.c
-> > +++ b/arch/arm64/kernel/smp.c
-> > @@ -33,6 +33,7 @@
-> >  #include <linux/kernel_stat.h>
-> >  #include <linux/kexec.h>
-> >  #include <linux/kvm_host.h>
-> > +#include <linux/nmi.h>
-> >
-> >  #include <asm/alternative.h>
-> >  #include <asm/atomic.h>
-> > @@ -926,6 +927,21 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
-> >         __ipi_send_mask(ipi_desc[ipinr], target);
-> >  }
-> >
-> > +static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
-> > +{
-> > +       if (!system_uses_irq_prio_masking())
-> > +               return false;
-> > +
-> > +       switch (ipi) {
-> > +       /*
-> > +        * TODO: select NMI IPIs here
-> > +        */
-> > +               return true;
-> > +       default:
-> > +               return false;
-> > +       }
-> > +}
-> > +
-> >  static void ipi_setup(int cpu)
-> >  {
-> >         int i;
-> > @@ -933,8 +949,14 @@ static void ipi_setup(int cpu)
-> >         if (WARN_ON_ONCE(!ipi_irq_base))
-> >                 return;
-> >
-> > -       for (i = 0; i < nr_ipi; i++)
-> > -               enable_percpu_irq(ipi_irq_base + i, 0);
-> > +       for (i = 0; i < nr_ipi; i++) {
-> > +               if (ipi_should_be_nmi(i)) {
-> > +                       prepare_percpu_nmi(ipi_irq_base + i);
-> > +                       enable_percpu_nmi(ipi_irq_base + i, 0);
-> > +               } else {
-> > +                       enable_percpu_irq(ipi_irq_base + i, 0);
-> > +               }
-> > +       }
-> >  }
-> >
-> >  #ifdef CONFIG_HOTPLUG_CPU
-> > @@ -945,8 +967,14 @@ static void ipi_teardown(int cpu)
-> >         if (WARN_ON_ONCE(!ipi_irq_base))
-> >                 return;
-> >
-> > -       for (i = 0; i < nr_ipi; i++)
-> > -               disable_percpu_irq(ipi_irq_base + i);
-> > +       for (i = 0; i < nr_ipi; i++) {
-> > +               if (ipi_should_be_nmi(i)) {
-> > +                       disable_percpu_nmi(ipi_irq_base + i);
-> > +                       teardown_percpu_nmi(ipi_irq_base + i);
-> > +               } else {
-> > +                       disable_percpu_irq(ipi_irq_base + i);
-> > +               }
-> > +       }
-> >  }
-> >  #endif
-> >
-> > @@ -958,11 +986,19 @@ void __init set_smp_ipi_range(int ipi_base, int n)
-> >         nr_ipi = min(n, NR_IPI);
-> >
-> >         for (i = 0; i < nr_ipi; i++) {
-> > -               int err;
-> > -
-> > -               err = request_percpu_irq(ipi_base + i, ipi_handler,
-> > -                                        "IPI", &cpu_number);
-> > -               WARN_ON(err);
-> > +               int err = -EINVAL;
-> > +
-> > +               if (ipi_should_be_nmi(i)) {
-> > +                       err = request_percpu_nmi(ipi_base + i, ipi_handler,
-> > +                                                "IPI", &cpu_number);
-> > +                       WARN(err, "Could not request IPI %d as NMI, err=%d\n",
-> > +                            i, err);
-> > +               } else {
-> > +                       err = request_percpu_irq(ipi_base + i, ipi_handler,
-> > +                                                "IPI", &cpu_number);
-> > +                       WARN(err, "Could not request IPI %d as IRQ, err=%d\n",
-> > +                            i, err);
-> > +               }
-> >
-> >                 ipi_desc[i] = irq_to_desc(ipi_base + i);
-> >                 irq_set_status_flags(ipi_base + i, IRQ_HIDDEN);
-> > ----
-> >
-> > ... and then if we need an IPI for KGDB, we can add that to the existing list
-> > of IPIs, and have it requested/enabled/disabled as usual.
+> That's the thing though, at least with my kernel/compiler combo there's
+> no INT3 after the JMP __x86_return_thunk, and there's no room to patch
+> one in after the CALL, as the JMP and CALL are both 5 bytes.
+
+FWIW gcc's mfunction-return=thunk-return only ever generates a jmp, 
+thunk/thunk-inline OTOH generates a "full fledged" thunk with all the 
+necessary speculation catching tricks.
+
+For reference:
+
+https://godbolt.org/z/M1avYc63b
 > 
-> Sounds good. I'm starting to work on v10 incorporating your feedback.
-> A few quick questions:
-> 
-> 1. If I mostly take your patch above verbatim, do you have any
-> suggested tags for Author/Signed-off-by? I'd tend to set you as the
-> author but I can't do that because you didn't provide a
-> Signed-off-by...
-
-Sorry about that. For the above:
-
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-
-If squashed into another patch, then feel free to use:
-
-Co-developed-by: Mark Rutland <mark.rutland@arm.com>
-
-> 2. Would you prefer this patch on its own, or would you rather it be
-> squashed with the first user ("backtrace")? On its own, I think I have
-> to get rid of the "switch" statement in ipi_should_be_nmi() and just
-> return false;
-
-I reckon it makes sense to squash it with the first user.
-
-Thanks,
-Mark.
