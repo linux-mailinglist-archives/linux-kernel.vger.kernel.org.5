@@ -2,54 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6DB783932
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83000783935
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 07:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbjHVFX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 01:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        id S232553AbjHVF1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 01:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbjHVFX2 (ORCPT
+        with ESMTP id S230527AbjHVF1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 01:23:28 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91FDA133
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:23:25 -0700 (PDT)
-Received: from nazgul.tnic (unknown [78.130.214.203])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 22 Aug 2023 01:27:14 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3087712C
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Aug 2023 22:27:11 -0700 (PDT)
+Received: from workpc.. (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AA26C1EC0105;
-        Tue, 22 Aug 2023 07:23:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1692681803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XPMFThk9PKdFJoPKLkA8jQSGy3/DrDz71v2fkoZzRJ0=;
-        b=W0W21L/BsDXKtj3SMby0g+TXP7O4s2zzxuIM9zz4OZETN9q78ixSZeclqwjsPULRnv525Q
-        lUKkTHr26uotfWVEwYzAXqyHNftd8Wn+AiM5Bd4DyjRSKF5xIpgfPseaotqAM8bjLgxaBF
-        EYGvrRgfsuWdDAS8JTVVUnZ+RmPq6ow=
-Date:   Tue, 22 Aug 2023 07:23:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 01/22] x86/srso: Fix srso_show_state() side effect
-Message-ID: <20230822052326.GAZORGTrM6N7+6l+sl@fat_crate.local>
-References: <cover.1692580085.git.jpoimboe@kernel.org>
- <fc64c4e5749d10b398c86b60902d6f9394eb5012.1692580085.git.jpoimboe@kernel.org>
- <20230821060416.GBZOL+YJeVj4tbkT78@fat_crate.local>
- <20230821161706.s62ecp7zhiunt5oy@treble>
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A138C66071F1;
+        Tue, 22 Aug 2023 06:27:08 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1692682029;
+        bh=GZc7OnE1X25837fvDc8typekPC+hVGKVoNYuBk86UiM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cRB7hdc1Em+J4DZo3c19REuE+kV773zKIozmX2yPQn0WqkkR1hig+HTRxCnEF+o3h
+         K1MAXirBqda/Y9KHA45gmbMFo0Wngp3vIe640oj45ZH3Yu58yKsFrnGC3eW+sezbLS
+         lWntrjo+1FjSIDmZxUWsH1ed+6XVv/G+6MEUpsyIupD/hk3TePYH1VsJM6nyc1sHsU
+         onbOIwLPFQ6lYcA1arzpAdw7vis2TP0RToY0IA9+AQFC+BJPFTbYYjYvvOUtxURu+7
+         R6yugKSphC+7D84/UXUSv+58gq75YwUoM19ohBmEgoJcqmvVa2hsmZj4lhpirVw3X5
+         XXYhYHT/iyABw==
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+Subject: [PATCH v2] MAINTAINERS: Add Boris Brezillon as Panfrost driver maintainer
+Date:   Tue, 22 Aug 2023 08:25:55 +0300
+Message-ID: <20230822052555.538110-1-dmitry.osipenko@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230821161706.s62ecp7zhiunt5oy@treble>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
@@ -60,23 +55,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 09:17:06AM -0700, Josh Poimboeuf wrote:
-> I could do that, but this check ends up getting replaced by a later
-> patch anyway.
-> 
-> Would you want this comment in srso_select_mitigation()?  After the next
-> patch it has:
-> 
->   bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
-> 
-> Though that seems clear to me already.
+Add Boris Brezillon as Panfrost driver maintainer. Boris is a new lead
+developer of the Panfrost Mesa driver and main developer behind the
+upcoming Panthor kernel driver that will serve next-gen Mali GPUs.
 
-Ok, good enough.
+Remove Tomeu and Alyssa, who left Collabora and stepped down from working
+on Panfrost.
 
-Thx.
+Acked-by: Boris Brezillon <boris.brezillon@collabora.com>
+Acked-by: Tomeu Vizoso <tomeu.vizoso@tomeuvizoso.net>
+Acked-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+---
 
+Changelog:
+
+v2: - Added acks from Boris, Alyssa and Tomeu. Tomeu answered with ack
+      to the v1 email, though he answered to me only and not "to all",
+      so it's not visible on the ML.
+
+    - Made Boris' entry first as was requested by Rob Herring.
+
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index cd882b87a3c6..b2fc771e1f2d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1614,10 +1614,9 @@ F:	drivers/gpu/drm/arm/display/include/
+ F:	drivers/gpu/drm/arm/display/komeda/
+ 
+ ARM MALI PANFROST DRM DRIVER
++M:	Boris Brezillon <boris.brezillon@collabora.com>
+ M:	Rob Herring <robh@kernel.org>
+-M:	Tomeu Vizoso <tomeu.vizoso@collabora.com>
+ R:	Steven Price <steven.price@arm.com>
+-R:	Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
 -- 
-Regards/Gruss,
-    Boris.
+2.41.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
