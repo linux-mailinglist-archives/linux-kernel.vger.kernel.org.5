@@ -2,760 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E636784A4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208CC784A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 21:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229818AbjHVTVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 15:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        id S229762AbjHVTXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 15:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjHVTVC (ORCPT
+        with ESMTP id S229555AbjHVTXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 15:21:02 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAE5CED;
-        Tue, 22 Aug 2023 12:20:54 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe61ae020bso7405977e87.2;
-        Tue, 22 Aug 2023 12:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692732052; x=1693336852;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q+xyfraavtp5GN648zay5Vayg6dQ2G8OSTE7HoMPsKs=;
-        b=o76/LAyQjq480Eeq/yJxQYee14J3KjEGugLcWvNt82wPO792gRMoYKDAZCEjnTmSFl
-         l9a2UzDP7xEDvhL8F7ZxhRUbZ5p7Yt8VZiY63Yqveuv1lWRGLCMGBU/x+l1d/8KLq55y
-         M2qxyrsCdTCR5PaM9wKbnE8gNqO2HUC3fIeEA7pWK9a+XeGpyuSTcHl/0RhHIJC52eWu
-         V4VMKJBeFRySw0hzAJsoeXK6q60tWeuWH8Z6HXRdydbxEWKQRFbgHEUcKmQUD0tpbnAT
-         LDbF2oE+kV2Q/oWTRYWzdLA3iNnOZFRaquRY3B5P7mlzMAeTPbMctxml26Z22ZMcdA0J
-         c/dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692732052; x=1693336852;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q+xyfraavtp5GN648zay5Vayg6dQ2G8OSTE7HoMPsKs=;
-        b=PpWnuchoN0QETqGoWAlEdMguzxFBtvqcVTZ2htlsI/K06UYNAN5Wg+wc1hMLihbtge
-         9hfECdXgHXyS7gP2AegUkLMaOOLi2m5DvTe7oSGpGOGvVWEtxEna7RcdJBMQnx3w/qmL
-         NFnUD7F93jrgmWpjKNXl6/OP187N/zmUq2PTmX9JTWh1umuw7mbYzgXTjxbf4VucQkq6
-         qCGOj0lFir65LE1AFmiDJjzAunYZj5RdrGJgSBI1lopqXBZMoA0mI5kZMhdnDiUn28LJ
-         sB517qlMNDIX7SAXJ8TV7q2oE8GGUfChWo7VH5FiQhGcFyAbIrmwOjsRi5dqtIq+8lBd
-         9LGg==
-X-Gm-Message-State: AOJu0Yyoxxe67tEQy5tsLJ0l/uSB26aTqUEQmOgXowbo0VF7MktAbqce
-        R9sl9MYbb95LKP2s8jxWkaw=
-X-Google-Smtp-Source: AGHT+IHuA5IDlpyaxgp2Q2OMluhCzpA8CQJefBWxNrduV4NBcB7t0oIncCB2yXlcFUW1sfccWrhy9w==
-X-Received: by 2002:a05:6512:368e:b0:500:79a9:d714 with SMTP id d14-20020a056512368e00b0050079a9d714mr5220668lfs.65.1692732052269;
-        Tue, 22 Aug 2023 12:20:52 -0700 (PDT)
-Received: from localhost.localdomain (83-233-6-197.cust.bredband2.com. [83.233.6.197])
-        by smtp.gmail.com with ESMTPSA id b12-20020ac2410c000000b004fe89735f1asm450586lfi.34.2023.08.22.12.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 12:20:51 -0700 (PDT)
-From:   Marcus Folkesson <marcus.folkesson@gmail.com>
-To:     Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Kent Gustavsson <kent@minoris.se>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Ramona Bolboaca <ramona.bolboaca@analog.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        William Breathitt Gray <william.gray@linaro.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 6/6] iio: adc: mcp3911: add support for the whole MCP39xx family
-Date:   Tue, 22 Aug 2023 21:22:59 +0200
-Message-ID: <20230822192259.1125792-7-marcus.folkesson@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230822192259.1125792-1-marcus.folkesson@gmail.com>
-References: <20230822192259.1125792-1-marcus.folkesson@gmail.com>
+        Tue, 22 Aug 2023 15:23:16 -0400
+Received: from omta36.uswest2.a.cloudfilter.net (omta36.uswest2.a.cloudfilter.net [35.89.44.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5E8E7D
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 12:22:54 -0700 (PDT)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+        by cmsmtp with ESMTP
+        id YEgHqVB5SEoVsYWxfq75F9; Tue, 22 Aug 2023 19:22:44 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id YWxeqbbqEgfmkYWxfqPNHo; Tue, 22 Aug 2023 19:22:43 +0000
+X-Authority-Analysis: v=2.4 cv=e/wV9Il/ c=1 sm=1 tr=0 ts=64e50b03
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=CGo6wCm4IADRok0f:21 a=IkcTkHD0fZMA:10 a=UttIx32zK-AA:10 a=wYkD_t78qR0A:10
+ a=OLL_FvSJAAAA:8 a=KglALiZi9yS_aej7KwsA:9 a=QEXdDO2ut3YA:10 a=_-8_qfib8kIA:10
+ a=brCE4AJZ6IkA:10 a=oIrB72frpwYPwTMnlWqB:22 a=tNK2v2ls7fuFGmW9SST8:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yTwFwQLON/mCOJCuD4xBpsbxIm/xROwU5APzBlzHzhQ=; b=btcbHZwh8ORAtplat9BcZlX++x
+        /5+fnkFmJHhNW+7wPEP8vkT5Ok1o2LR0ZYGLflFlNc4u+OEB2qETt8dwwGLgpbhBA8uSaUc4hmwm4
+        ApovrGgdcMweb0IL3Nkvuw2AUIhryYbJahrAb4zbk0YmAcr7dSd6pOPkmeXyy5L5R11NcB/lx/eUX
+        IkkwIPo1bixl4yXpHfQyVO1MeYgXhOyRN4JXJFv/IRgoHgkFcI25+tuu6A7BKWBVBkpmL5+abQ+nH
+        mLDClRZtoBkVk4bZyXbCRtl9SPMFx98CA+i5CNn+u5CmkW9Q+dGqsd3oTFritB2IkGk7RUXHP8LNL
+        1DOhPx2g==;
+Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:52038 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qYWxe-003lKS-0I;
+        Tue, 22 Aug 2023 14:22:42 -0500
+Message-ID: <3837e9ad-4d3b-40ae-a2f8-a051973ca3e5@embeddedor.com>
+Date:   Tue, 22 Aug 2023 13:23:39 -0600
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC] wifi: mwifiex: Asking for some light on this, please :)
+To:     Dan Williams <dcbw@redhat.com>,
+        Brian Norris <briannorris@chromium.org>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+References: <6e3fddfe-2d31-72fa-ac2b-3b7fa4e6fe08@embeddedor.com>
+ <abc9d7abface4b9f651fc354ebaaf30ecf6e2783.camel@redhat.com>
+Content-Language: en-US
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <abc9d7abface4b9f651fc354ebaaf30ecf6e2783.camel@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.21.192
+X-Source-L: No
+X-Exim-ID: 1qYWxe-003lKS-0I
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.8]) [187.162.21.192]:52038
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 3
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLz3rtuZ80DMnDlLqSWGBo85l0UGGFLRY8Qg+w57mqSePwxD52r+UJWzq499+dVq8afuGdWVec6uCRYJGeFtQ0oepXEvJCciH0kCyF+Ltk8QRTV/qea1
+ Br5nAsRH2M2LkbAOsPTnrnRVZz8BfwW4z4xPHRd1Et9rieK9b3IBiOafx5360T9jBmP2vlyBAZvU6h/yK4pVKfikpIvgZwiF7Fi7pbI0SmVu64P4lCVc6SiJ
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Microchip does have many similar chips, add support for those.
+Hi Dan,
 
-The new supported chips are:
-  - microchip,mcp3910
-  - microchip,mcp3912
-  - microchip,mcp3913
-  - microchip,mcp3914
-  - microchip,mcp3918
-  - microchip,mcp3919
+Thanks a lot for the feedback!
 
-Signed-off-by: Marcus Folkesson <marcus.folkesson@gmail.com>
----
+Please, see my comments below.
 
-Notes:
-    v2:
-        - Use callbacks rather than matching against enum for determine chip variants
-    v3:
-        - Fix cosmetics
-    v4:
-        - Do not pollute output variable upon error in *_get_osr() functions.
-        - Fix cosmetics
-    v5:
-        - Reorder text in Kconfig
-        - change val to u32 for *_get_osr(), *_set_osr() and *_set_scale()
-        - avoid ambiguity parameters in macro
-    v6:
-        - cosmetics
-        - Return on dev_err_probe()
-    v7:
-        - cosmetics
-        - introduce _enable_offset()
-    v8:
-        - Make osr unsigned
-        - Simplify enable_offset functions
+On 8/22/23 11:00, Dan Williams wrote:
+> On Tue, 2023-08-15 at 18:52 -0600, Gustavo A. R. Silva wrote:
+>> Hi all,
+>>
+>> While working on flex-array transformations I ran into the following
+>> implementation:
+>>
+>> drivers/net/wireless/marvell/mwifiex/fw.h:775:
+>> struct mwifiex_ie_types_rxba_sync {
+>>          struct mwifiex_ie_types_header header;
+>>          u8 mac[ETH_ALEN];
+>>          u8 tid;
+>>          u8 reserved;
+>>          __le16 seq_num;
+>>          __le16 bitmap_len;
+>>          u8 bitmap[1];
+>> } __packed;
+>>
+>> `bitmap` is currently being used as a fake-flex array and we should
+>> transform it into a proper flexible-array member.
+>>
+>> However, while doing that, I noticed something in the following function
+>> that's not clear to me and I wanted to ask you for feedback:
+>>
+>> drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:907:
+>> void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+>>                                   u8 *event_buf, u16 len)
+>> {
+>>          struct mwifiex_ie_types_rxba_sync *tlv_rxba = (void *)event_buf;
+>>          u16 tlv_type, tlv_len;
+>>          struct mwifiex_rx_reorder_tbl *rx_reor_tbl_ptr;
+>>          u8 i, j;
+>>          u16 seq_num, tlv_seq_num, tlv_bitmap_len;
+>>          int tlv_buf_left = len;
+>>          int ret;
+>>          u8 *tmp;
+>>
+>>          mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+>>                           event_buf, len);
+>>          while (tlv_buf_left >= sizeof(*tlv_rxba)) {
+> 
+>>                  tlv_type = le16_to_cpu(tlv_rxba->header.type);
+>>                  tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+> 
+>>                  if (tlv_type != TLV_TYPE_RXBA_SYNC) {
+>>                          mwifiex_dbg(priv->adapter, ERROR,
+>>                                      "Wrong TLV id=0x%x\n", tlv_type);
+>>                          return;
+>>                  }
+>>
+>>                  tlv_seq_num = le16_to_cpu(tlv_rxba->seq_num);
+>>                  tlv_bitmap_len = le16_to_cpu(tlv_rxba->bitmap_len);
+> 
+> This seems superfluous since couldn't the bitmap_len be calculated from
+> the tlv_len and sizeof(*tlv_rxba)? But whatever, sure.
+> 
+> Seems like there should be some input validation here to ensure that
+> tlv_bitmap_len and tlv_len don't overrun event_buf's memory though, if
+> the firmware is hosed or malicious.
+> 
+> But that's not your problem since you're not touching this code.
+> 
+>>                  mwifiex_dbg(priv->adapter, INFO,
+>>                              "%pM tid=%d seq_num=%d bitmap_len=%d\n",
+>>                              tlv_rxba->mac, tlv_rxba->tid, tlv_seq_num,
+>>                              tlv_bitmap_len);
+>>
+>>                  rx_reor_tbl_ptr =
+>>                          mwifiex_11n_get_rx_reorder_tbl(priv, tlv_rxba->tid,
+>>                                                         tlv_rxba->mac);
+>>                  if (!rx_reor_tbl_ptr) {
+>>                          mwifiex_dbg(priv->adapter, ERROR,
+>>                                      "Can not find rx_reorder_tbl!");
+>>                          return;
+>>                  }
+>>
+>>                  for (i = 0; i < tlv_bitmap_len; i++) {
+>>                          for (j = 0 ; j < 8; j++) {
+>>                                  if (tlv_rxba->bitmap[i] & (1 << j)) {
+>>                                          seq_num = (MAX_TID_VALUE - 1) &
+>>                                                  (tlv_seq_num + i * 8 + j);
+>>
+>>                                          mwifiex_dbg(priv->adapter, ERROR,
+>>                                                      "drop packet,seq=%d\n",
+>>                                                      seq_num);
+>>
+>>                                          ret = mwifiex_11n_rx_reorder_pkt
+>>                                          (priv, seq_num, tlv_rxba->tid,
+>>                                           tlv_rxba->mac, 0, NULL);
+>>
+>>                                          if (ret)
+>>                                                  mwifiex_dbg(priv->adapter,
+>>                                                              ERROR,
+>>                                                              "Fail to drop packet");
+>>                                  }
+>>                          }
+>>                  }
+>>
+>>                  tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
+> 
+> Now we have to subtract the size of the whole TLV (including the header
+> and flexarray) from the remaining bytes in event_buf.
+> 
+> But this looks pretty sketchy. Marvell TLVs have a header (the TL of
+> the TLV) and header->len says how long the V is. Most Marvell kernel
+> driver code (mwifiex, libertas, etc) does something like this:
+> 
+> 	pos += ssid_tlv->header + ssid_tlv->header.len;
+> 
+> but tlv_rxba is much more than just the header; I think this code is
+> going to *over* count how many bytes were just consumed.
+> 
+> I'm not the only one thinking it's sketchy:
+> 
+> https://www.spinics.net/lists/linux-wireless/msg174231.html
+> 
+>>                  tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
+>>                  
+>> What's the relation between tlv_len, sizeof(*tlv_rxba) and tlv_bitmap_len?
+>>
+>> Isn't `sizeof(*tlv_rxba) + tlv_len` and `tlv_len + sizeof(*tlv_rxba)`
+>> double-counting some fields in `struct mwifiex_ie_types_rxba_sync`?
 
- drivers/iio/adc/Kconfig   |   6 +-
- drivers/iio/adc/mcp3911.c | 466 +++++++++++++++++++++++++++++++++-----
- 2 files changed, 415 insertions(+), 57 deletions(-)
+OK. So, based on your feedback, it seems that my assumptions were correct.
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index dc14bde31ac1..c25285b09dbb 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -785,8 +785,10 @@ config MCP3911
- 	select IIO_BUFFER
- 	select IIO_TRIGGERED_BUFFER
- 	help
--	  Say yes here to build support for Microchip Technology's MCP3911
--	  analog to digital converter.
-+	  Say yes here to build support for one of the following
-+	  Microchip Technology's analog to digital converters:
-+	  MCP3910, MCP3911, MCP3912, MCP3913, MCP3914,
-+	  MCP3918 and MCP3919.
- 
- 	  This driver can also be built as a module. If so, the module will be
- 	  called mcp3911.
-diff --git a/drivers/iio/adc/mcp3911.c b/drivers/iio/adc/mcp3911.c
-index 281cc1211fd6..d864558bc087 100644
---- a/drivers/iio/adc/mcp3911.c
-+++ b/drivers/iio/adc/mcp3911.c
-@@ -61,12 +61,56 @@
- #define MCP3911_REG_WRITE(reg, id)	((((reg) << 1) | ((id) << 6) | (0 << 0)) & 0xff)
- #define MCP3911_REG_MASK		GENMASK(4, 1)
- 
--#define MCP3911_NUM_CHANNELS		2
- #define MCP3911_NUM_SCALES		6
- 
-+/* Registers compatible with MCP3910 */
-+#define MCP3910_REG_STATUSCOM		0x0c
-+#define MCP3910_STATUSCOM_READ		GENMASK(23, 22)
-+#define MCP3910_STATUSCOM_DRHIZ		BIT(20)
-+
-+#define MCP3910_REG_GAIN		0x0b
-+
-+#define MCP3910_REG_CONFIG0		0x0d
-+#define MCP3910_CONFIG0_EN_OFFCAL	BIT(23)
-+#define MCP3910_CONFIG0_OSR		GENMASK(15, 13)
-+
-+#define MCP3910_REG_CONFIG1		0x0e
-+#define MCP3910_CONFIG1_CLKEXT		BIT(6)
-+#define MCP3910_CONFIG1_VREFEXT		BIT(7)
-+
-+#define MCP3910_REG_OFFCAL_CH0		0x0f
-+#define MCP3910_OFFCAL(ch)		(MCP3910_REG_OFFCAL_CH0 + (ch) * 6)
-+
-+/* Maximal number of channels used by the MCP39XX family */
-+#define MCP39XX_MAX_NUM_CHANNELS	8
-+
- static const int mcp3911_osr_table[] = { 32, 64, 128, 256, 512, 1024, 2048, 4096 };
- static u32 mcp3911_scale_table[MCP3911_NUM_SCALES][2];
- 
-+enum mcp3911_id {
-+	MCP3910,
-+	MCP3911,
-+	MCP3912,
-+	MCP3913,
-+	MCP3914,
-+	MCP3918,
-+	MCP3919,
-+};
-+
-+struct mcp3911;
-+struct mcp3911_chip_info {
-+	const struct iio_chan_spec *channels;
-+	unsigned int num_channels;
-+
-+	int (*config)(struct mcp3911 *adc);
-+	int (*get_osr)(struct mcp3911 *adc, u32 *val);
-+	int (*set_osr)(struct mcp3911 *adc, u32 val);
-+	int (*enable_offset)(struct mcp3911 *adc, bool enable);
-+	int (*get_offset)(struct mcp3911 *adc, int channel, int *val);
-+	int (*set_offset)(struct mcp3911 *adc, int channel, int val);
-+	int (*set_scale)(struct mcp3911 *adc, int channel, u32 val);
-+};
-+
- struct mcp3911 {
- 	struct spi_device *spi;
- 	struct mutex lock;
-@@ -74,14 +118,15 @@ struct mcp3911 {
- 	struct clk *clki;
- 	u32 dev_addr;
- 	struct iio_trigger *trig;
--	u32 gain[MCP3911_NUM_CHANNELS];
-+	u32 gain[MCP39XX_MAX_NUM_CHANNELS];
-+	const struct mcp3911_chip_info *chip;
- 	struct {
--		u32 channels[MCP3911_NUM_CHANNELS];
-+		u32 channels[MCP39XX_MAX_NUM_CHANNELS];
- 		s64 ts __aligned(8);
- 	} scan;
- 
- 	u8 tx_buf __aligned(IIO_DMA_MINALIGN);
--	u8 rx_buf[MCP3911_NUM_CHANNELS * 3];
-+	u8 rx_buf[MCP39XX_MAX_NUM_CHANNELS * 3];
- };
- 
- static int mcp3911_read(struct mcp3911 *adc, u8 reg, u32 *val, u8 len)
-@@ -125,6 +170,112 @@ static int mcp3911_update(struct mcp3911 *adc, u8 reg, u32 mask, u32 val, u8 len
- 	return mcp3911_write(adc, reg, val, len);
- }
- 
-+static int mcp3910_enable_offset(struct mcp3911 *adc, bool enable)
-+{
-+	unsigned int mask = MCP3910_CONFIG0_EN_OFFCAL;
-+	unsigned int value = enable ? mask : 0;
-+
-+	return mcp3911_update(adc, MCP3910_REG_CONFIG0, mask, value, 3);
-+}
-+
-+static int mcp3910_get_offset(struct mcp3911 *adc, int channel, int *val)
-+{
-+	return mcp3911_read(adc, MCP3910_OFFCAL(channel), val, 3);
-+}
-+
-+static int mcp3910_set_offset(struct mcp3911 *adc, int channel, int val)
-+{
-+	int ret;
-+
-+	ret = mcp3911_write(adc, MCP3910_OFFCAL(channel), val, 3);
-+	if (ret)
-+		return ret;
-+
-+	return adc->chip->enable_offset(adc, 1);
-+}
-+
-+static int mcp3911_enable_offset(struct mcp3911 *adc, bool enable)
-+{
-+	unsigned int mask = MCP3911_STATUSCOM_EN_OFFCAL;
-+	unsigned int value = enable ? mask : 0;
-+
-+	return mcp3911_update(adc, MCP3911_REG_STATUSCOM, mask, value, 2);
-+}
-+
-+static int mcp3911_get_offset(struct mcp3911 *adc, int channel, int *val)
-+{
-+	return mcp3911_read(adc, MCP3911_OFFCAL(channel), val, 3);
-+}
-+
-+static int mcp3911_set_offset(struct mcp3911 *adc, int channel, int val)
-+{
-+	int ret;
-+
-+	ret = mcp3911_write(adc, MCP3911_OFFCAL(channel), val, 3);
-+	if (ret)
-+		return ret;
-+
-+	return adc->chip->enable_offset(adc, 1);
-+}
-+
-+static int mcp3910_get_osr(struct mcp3911 *adc, u32 *val)
-+{
-+	int ret;
-+	unsigned int osr;
-+
-+	ret = mcp3911_read(adc, MCP3910_REG_CONFIG0, val, 3);
-+	if (ret)
-+		return ret;
-+
-+	osr = FIELD_GET(MCP3910_CONFIG0_OSR, *val);
-+	*val = 32 << osr;
-+	return 0;
-+}
-+
-+static int mcp3910_set_osr(struct mcp3911 *adc, u32 val)
-+{
-+	unsigned int osr = FIELD_PREP(MCP3910_CONFIG0_OSR, val);
-+	unsigned int mask = MCP3910_CONFIG0_OSR;
-+
-+	return mcp3911_update(adc, MCP3910_REG_CONFIG0, mask, osr, 3);
-+}
-+
-+static int mcp3911_set_osr(struct mcp3911 *adc, u32 val)
-+{
-+	unsigned int osr = FIELD_PREP(MCP3911_CONFIG_OSR, val);
-+	unsigned int mask = MCP3911_CONFIG_OSR;
-+
-+	return mcp3911_update(adc, MCP3911_REG_CONFIG, mask, osr, 2);
-+}
-+
-+static int mcp3911_get_osr(struct mcp3911 *adc, u32 *val)
-+{
-+	int ret;
-+	unsigned int osr;
-+
-+	ret = mcp3911_read(adc, MCP3911_REG_CONFIG, val, 2);
-+	if (ret)
-+		return ret;
-+
-+	osr = FIELD_GET(MCP3911_CONFIG_OSR, *val);
-+	*val = 32 << osr;
-+	return ret;
-+}
-+
-+static int mcp3910_set_scale(struct mcp3911 *adc, int channel, u32 val)
-+{
-+	return mcp3911_update(adc, MCP3910_REG_GAIN,
-+			      MCP3911_GAIN_MASK(channel),
-+			      MCP3911_GAIN_VAL(channel, val), 3);
-+}
-+
-+static int mcp3911_set_scale(struct mcp3911 *adc, int channel, u32 val)
-+{
-+	return mcp3911_update(adc, MCP3911_REG_GAIN,
-+			      MCP3911_GAIN_MASK(channel),
-+			      MCP3911_GAIN_VAL(channel, val), 1);
-+}
-+
- static int mcp3911_write_raw_get_fmt(struct iio_dev *indio_dev,
- 				     struct iio_chan_spec const *chan,
- 				     long mask)
-@@ -181,20 +332,18 @@ static int mcp3911_read_raw(struct iio_dev *indio_dev,
- 		break;
- 
- 	case IIO_CHAN_INFO_OFFSET:
--		ret = mcp3911_read(adc,
--				   MCP3911_OFFCAL(channel->channel), val, 3);
-+
-+		ret = adc->chip->get_offset(adc, channel->channel, val);
- 		if (ret)
- 			goto out;
- 
- 		ret = IIO_VAL_INT;
- 		break;
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
--		ret = mcp3911_read(adc, MCP3911_REG_CONFIG, val, 2);
-+		ret = adc->chip->get_osr(adc, val);
- 		if (ret)
- 			goto out;
- 
--		*val = FIELD_GET(MCP3911_CONFIG_OSR, *val);
--		*val = 32 << *val;
- 		ret = IIO_VAL_INT;
- 		break;
- 
-@@ -225,9 +374,7 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			    val2 == mcp3911_scale_table[i][1]) {
- 
- 				adc->gain[channel->channel] = BIT(i);
--				ret = mcp3911_update(adc, MCP3911_REG_GAIN,
--						     MCP3911_GAIN_MASK(channel->channel),
--						     MCP3911_GAIN_VAL(channel->channel, i), 1);
-+				ret = adc->chip->set_scale(adc, channel->channel, i);
- 			}
- 		}
- 		break;
-@@ -237,24 +384,13 @@ static int mcp3911_write_raw(struct iio_dev *indio_dev,
- 			goto out;
- 		}
- 
--		/* Write offset */
--		ret = mcp3911_write(adc, MCP3911_OFFCAL(channel->channel), val,
--				    3);
--		if (ret)
--			goto out;
--
--		/* Enable offset*/
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM,
--				     MCP3911_STATUSCOM_EN_OFFCAL,
--				     MCP3911_STATUSCOM_EN_OFFCAL, 2);
-+		ret = adc->chip->set_offset(adc, channel->channel, val);
- 		break;
- 
- 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
- 		for (int i = 0; i < ARRAY_SIZE(mcp3911_osr_table); i++) {
- 			if (val == mcp3911_osr_table[i]) {
--				val = FIELD_PREP(MCP3911_CONFIG_OSR, i);
--				ret = mcp3911_update(adc, MCP3911_REG_CONFIG, MCP3911_CONFIG_OSR,
--						     val, 2);
-+				ret = adc->chip->set_osr(adc, i);
- 				break;
- 			}
- 		}
-@@ -323,12 +459,60 @@ static int mcp3911_calc_scale_table(struct mcp3911 *adc)
- 		},						\
- }
- 
-+static const struct iio_chan_spec mcp3910_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	IIO_CHAN_SOFT_TIMESTAMP(2),
-+};
-+
- static const struct iio_chan_spec mcp3911_channels[] = {
- 	MCP3911_CHAN(0),
- 	MCP3911_CHAN(1),
- 	IIO_CHAN_SOFT_TIMESTAMP(2),
- };
- 
-+static const struct iio_chan_spec mcp3912_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	IIO_CHAN_SOFT_TIMESTAMP(4),
-+};
-+
-+static const struct iio_chan_spec mcp3913_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	MCP3911_CHAN(4),
-+	MCP3911_CHAN(5),
-+	IIO_CHAN_SOFT_TIMESTAMP(6),
-+};
-+
-+static const struct iio_chan_spec mcp3914_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	MCP3911_CHAN(3),
-+	MCP3911_CHAN(4),
-+	MCP3911_CHAN(5),
-+	MCP3911_CHAN(6),
-+	MCP3911_CHAN(7),
-+	IIO_CHAN_SOFT_TIMESTAMP(8),
-+};
-+
-+static const struct iio_chan_spec mcp3918_channels[] = {
-+	MCP3911_CHAN(0),
-+	IIO_CHAN_SOFT_TIMESTAMP(1),
-+};
-+
-+static const struct iio_chan_spec mcp3919_channels[] = {
-+	MCP3911_CHAN(0),
-+	MCP3911_CHAN(1),
-+	MCP3911_CHAN(2),
-+	IIO_CHAN_SOFT_TIMESTAMP(3),
-+};
-+
- static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
- {
- 	struct iio_poll_func *pf = p;
-@@ -341,7 +525,7 @@ static irqreturn_t mcp3911_trigger_handler(int irq, void *p)
- 			.len = 1,
- 		}, {
- 			.rx_buf = adc->rx_buf,
--			.len = sizeof(adc->rx_buf),
-+			.len = (adc->chip->num_channels - 1) * 3,
- 		},
- 	};
- 	int scan_index;
-@@ -384,21 +568,6 @@ static int mcp3911_config(struct mcp3911 *adc)
- 	u32 regval;
- 	int ret;
- 
--	ret = device_property_read_u32(dev, "microchip,device-addr", &adc->dev_addr);
--
--	/*
--	 * Fallback to "device-addr" due to historical mismatch between
--	 * dt-bindings and implementation
--	 */
--	if (ret)
--		device_property_read_u32(dev, "device-addr", &adc->dev_addr);
--	if (adc->dev_addr > 3) {
--		return dev_err_probe(dev, -EINVAL,
--				     "invalid device address (%i). Must be in range 0-3.\n",
--				     adc->dev_addr);
--	}
--	dev_dbg(dev, "use device address %i\n", adc->dev_addr);
--
- 	ret = mcp3911_read(adc, MCP3911_REG_CONFIG, &regval, 2);
- 	if (ret)
- 		return ret;
-@@ -433,7 +602,97 @@ static int mcp3911_config(struct mcp3911 *adc)
- 	regval &= ~MCP3911_STATUSCOM_READ;
- 	regval |= FIELD_PREP(MCP3911_STATUSCOM_READ, 0x02);
- 
--	return  mcp3911_write(adc, MCP3911_REG_STATUSCOM, regval, 2);
-+	regval &= ~MCP3911_STATUSCOM_DRHIZ;
-+	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
-+		regval |= FIELD_PREP(MCP3911_STATUSCOM_DRHIZ, 0);
-+	else
-+		regval |= FIELD_PREP(MCP3911_STATUSCOM_DRHIZ, 1);
-+
-+	/* Disable offset to ignore any old values in offset register */
-+	regval &= ~MCP3911_STATUSCOM_EN_OFFCAL;
-+
-+	ret =  mcp3911_write(adc, MCP3911_REG_STATUSCOM, regval, 2);
-+	if (ret)
-+		return ret;
-+
-+	/* Set gain to 1 for all channels */
-+	ret = mcp3911_read(adc, MCP3911_REG_GAIN, &regval, 1);
-+	if (ret)
-+		return ret;
-+
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
-+		adc->gain[i] = 1;
-+		regval &= ~MCP3911_GAIN_MASK(i);
-+	}
-+
-+	return mcp3911_write(adc, MCP3911_REG_GAIN, regval, 1);
-+}
-+
-+static int mcp3910_config(struct mcp3911 *adc)
-+{
-+	struct device *dev = &adc->spi->dev;
-+	u32 regval;
-+	int ret;
-+
-+	ret = mcp3911_read(adc, MCP3910_REG_CONFIG1, &regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	regval &= ~MCP3910_CONFIG1_VREFEXT;
-+	if (adc->vref) {
-+		dev_dbg(dev, "use external voltage reference\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_VREFEXT, 1);
-+	} else {
-+		dev_dbg(dev, "use internal voltage reference (1.2V)\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_VREFEXT, 0);
-+	}
-+
-+	regval &= ~MCP3910_CONFIG1_CLKEXT;
-+	if (adc->clki) {
-+		dev_dbg(dev, "use external clock as clocksource\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_CLKEXT, 1);
-+	} else {
-+		dev_dbg(dev, "use crystal oscillator as clocksource\n");
-+		regval |= FIELD_PREP(MCP3910_CONFIG1_CLKEXT, 0);
-+	}
-+
-+	ret = mcp3911_write(adc, MCP3910_REG_CONFIG1, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	ret = mcp3911_read(adc, MCP3910_REG_STATUSCOM, &regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Address counter incremented, cycle through register types */
-+	regval &= ~MCP3910_STATUSCOM_READ;
-+	regval |= FIELD_PREP(MCP3910_STATUSCOM_READ, 0x02);
-+
-+	regval &= ~MCP3910_STATUSCOM_DRHIZ;
-+	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
-+		regval |= FIELD_PREP(MCP3910_STATUSCOM_DRHIZ, 0);
-+	else
-+		regval |= FIELD_PREP(MCP3910_STATUSCOM_DRHIZ, 1);
-+
-+	ret = mcp3911_write(adc, MCP3910_REG_STATUSCOM, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Set gain to 1 for all channels */
-+	ret = mcp3911_read(adc, MCP3910_REG_GAIN, &regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
-+		adc->gain[i] = 1;
-+		regval &= ~MCP3911_GAIN_MASK(i);
-+	}
-+	ret = mcp3911_write(adc, MCP3910_REG_GAIN, regval, 3);
-+	if (ret)
-+		return ret;
-+
-+	/* Disable offset to ignore any old values in offset register */
-+	return adc->chip->enable_offset(adc, 0);
- }
- 
- static void mcp3911_cleanup_regulator(void *vref)
-@@ -471,6 +730,7 @@ static int mcp3911_probe(struct spi_device *spi)
- 
- 	adc = iio_priv(indio_dev);
- 	adc->spi = spi;
-+	adc->chip = spi_get_device_match_data(spi);
- 
- 	adc->vref = devm_regulator_get_optional(dev, "vref");
- 	if (IS_ERR(adc->vref)) {
-@@ -499,16 +759,21 @@ static int mcp3911_probe(struct spi_device *spi)
- 		}
- 	}
- 
--	ret = mcp3911_config(adc);
-+	/*
-+	 * Fallback to "device-addr" due to historical mismatch between
-+	 * dt-bindings and implementation.
-+	 */
-+	ret = device_property_read_u32(dev, "microchip,device-addr", &adc->dev_addr);
- 	if (ret)
--		return ret;
-+		device_property_read_u32(dev, "device-addr", &adc->dev_addr);
-+	if (adc->dev_addr > 3) {
-+		return dev_err_probe(dev, -EINVAL,
-+				     "invalid device address (%i). Must be in range 0-3.\n",
-+				     adc->dev_addr);
-+	}
-+	dev_dbg(dev, "use device address %i\n", adc->dev_addr);
- 
--	if (device_property_read_bool(dev, "microchip,data-ready-hiz"))
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				     0, 2);
--	else
--		ret = mcp3911_update(adc, MCP3911_REG_STATUSCOM, MCP3911_STATUSCOM_DRHIZ,
--				     MCP3911_STATUSCOM_DRHIZ, 2);
-+	ret = adc->chip->config(adc);
- 	if (ret)
- 		return ret;
- 
-@@ -517,7 +782,7 @@ static int mcp3911_probe(struct spi_device *spi)
- 		return ret;
- 
- 	/* Set gain to 1 for all channels */
--	for (int i = 0; i < MCP3911_NUM_CHANNELS; i++) {
-+	for (int i = 0; i < adc->chip->num_channels - 1; i++) {
- 		adc->gain[i] = 1;
- 		ret = mcp3911_update(adc, MCP3911_REG_GAIN,
- 				     MCP3911_GAIN_MASK(i),
-@@ -531,8 +796,8 @@ static int mcp3911_probe(struct spi_device *spi)
- 	indio_dev->info = &mcp3911_info;
- 	spi_set_drvdata(spi, indio_dev);
- 
--	indio_dev->channels = mcp3911_channels;
--	indio_dev->num_channels = ARRAY_SIZE(mcp3911_channels);
-+	indio_dev->channels = adc->chip->channels;
-+	indio_dev->num_channels = adc->chip->num_channels;
- 
- 	mutex_init(&adc->lock);
- 
-@@ -568,14 +833,105 @@ static int mcp3911_probe(struct spi_device *spi)
- 	return devm_iio_device_register(dev, indio_dev);
- }
- 
-+static const struct mcp3911_chip_info mcp3911_chip_info[] = {
-+	[MCP3910] = {
-+		.channels = mcp3910_channels,
-+		.num_channels = ARRAY_SIZE(mcp3910_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3911] = {
-+		.channels = mcp3911_channels,
-+		.num_channels = ARRAY_SIZE(mcp3911_channels),
-+		.config = mcp3911_config,
-+		.get_osr = mcp3911_get_osr,
-+		.set_osr = mcp3911_set_osr,
-+		.enable_offset = mcp3911_enable_offset,
-+		.get_offset = mcp3911_get_offset,
-+		.set_offset = mcp3911_set_offset,
-+		.set_scale = mcp3911_set_scale,
-+	},
-+	[MCP3912] = {
-+		.channels = mcp3912_channels,
-+		.num_channels = ARRAY_SIZE(mcp3912_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3913] = {
-+		.channels = mcp3913_channels,
-+		.num_channels = ARRAY_SIZE(mcp3913_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3914] = {
-+		.channels = mcp3914_channels,
-+		.num_channels = ARRAY_SIZE(mcp3914_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3918] = {
-+		.channels = mcp3918_channels,
-+		.num_channels = ARRAY_SIZE(mcp3918_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+	[MCP3919] = {
-+		.channels = mcp3919_channels,
-+		.num_channels = ARRAY_SIZE(mcp3919_channels),
-+		.config = mcp3910_config,
-+		.get_osr = mcp3910_get_osr,
-+		.set_osr = mcp3910_set_osr,
-+		.enable_offset = mcp3910_enable_offset,
-+		.get_offset = mcp3910_get_offset,
-+		.set_offset = mcp3910_set_offset,
-+		.set_scale = mcp3910_set_scale,
-+	},
-+};
- static const struct of_device_id mcp3911_dt_ids[] = {
--	{ .compatible = "microchip,mcp3911" },
-+	{ .compatible = "microchip,mcp3910", .data = &mcp3911_chip_info[MCP3910] },
-+	{ .compatible = "microchip,mcp3911", .data = &mcp3911_chip_info[MCP3911] },
-+	{ .compatible = "microchip,mcp3912", .data = &mcp3911_chip_info[MCP3912] },
-+	{ .compatible = "microchip,mcp3913", .data = &mcp3911_chip_info[MCP3913] },
-+	{ .compatible = "microchip,mcp3914", .data = &mcp3911_chip_info[MCP3914] },
-+	{ .compatible = "microchip,mcp3918", .data = &mcp3911_chip_info[MCP3918] },
-+	{ .compatible = "microchip,mcp3919", .data = &mcp3911_chip_info[MCP3919] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mcp3911_dt_ids);
- 
- static const struct spi_device_id mcp3911_id[] = {
--	{ "mcp3911", 0 },
-+	{ "mcp3910", (kernel_ulong_t)&mcp3911_chip_info[MCP3910] },
-+	{ "mcp3911", (kernel_ulong_t)&mcp3911_chip_info[MCP3911] },
-+	{ "mcp3912", (kernel_ulong_t)&mcp3911_chip_info[MCP3912] },
-+	{ "mcp3913", (kernel_ulong_t)&mcp3911_chip_info[MCP3913] },
-+	{ "mcp3914", (kernel_ulong_t)&mcp3911_chip_info[MCP3914] },
-+	{ "mcp3918", (kernel_ulong_t)&mcp3911_chip_info[MCP3918] },
-+	{ "mcp3919", (kernel_ulong_t)&mcp3911_chip_info[MCP3919] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, mcp3911_id);
--- 
-2.41.0
+So, first I'll send the following fix:
 
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+index 391793a16adc..9eade3aa2918 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+@@ -965,8 +965,8 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+                         }
+                 }
+
+-               tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
+-               tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
++               tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
++               tmp = (u8 *)tlv_rxba + tlv_len + sizeof(tlv_rxba->header);
+                 tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
+         }
+  }
+
+Then, I'll do the flex-array transformation on top of the fix above:
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+index 9eade3aa2918..cb5a399cd56a 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+@@ -918,7 +918,7 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+
+         mwifiex_dbg_dump(priv->adapter, EVT_D, "RXBA_SYNC event:",
+                          event_buf, len);
+-       while (tlv_buf_left >= sizeof(*tlv_rxba)) {
++       while (tlv_buf_left > sizeof(*tlv_rxba)) {
+                 tlv_type = le16_to_cpu(tlv_rxba->header.type);
+                 tlv_len  = le16_to_cpu(tlv_rxba->header.len);
+                 if (tlv_type != TLV_TYPE_RXBA_SYNC) {
+diff --git a/drivers/net/wireless/marvell/mwifiex/fw.h b/drivers/net/wireless/marvell/mwifiex/fw.h
+index f2168fac95ed..8e6db904e5b2 100644
+--- a/drivers/net/wireless/marvell/mwifiex/fw.h
++++ b/drivers/net/wireless/marvell/mwifiex/fw.h
+@@ -779,7 +779,7 @@ struct mwifiex_ie_types_rxba_sync {
+         u8 reserved;
+         __le16 seq_num;
+         __le16 bitmap_len;
+-       u8 bitmap[1];
++       u8 bitmap[];
+  } __packed;
+
+  struct chan_band_param_set {
+
+This happilly results in no binary output differences before/after changes. :)
+
+Finally, to top it off, I can send this sanity check:
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+index cb5a399cd56a..237d0ee3573f 100644
+--- a/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
++++ b/drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c
+@@ -929,6 +929,13 @@ void mwifiex_11n_rxba_sync_event(struct mwifiex_private *priv,
+
+                 tlv_seq_num = le16_to_cpu(tlv_rxba->seq_num);
+                 tlv_bitmap_len = le16_to_cpu(tlv_rxba->bitmap_len);
++               if (sizeof(*tlv_rxba) + tlv_bitmap_len > tlv_buf_left) {
++                      mwifiex_dbg(priv->adapter, ERROR,
++                                   "TLV size (%ld) overflows event_buf (%d)\n",
++                                  sizeof(*tlv_rxba) + tlv_bitmap_len,
++                                  tlv_buf_left);
++                       return;
++               }
+                 mwifiex_dbg(priv->adapter, INFO,
+                             "%pM tid=%d seq_num=%d bitmap_len=%d\n",
+                             tlv_rxba->mac, tlv_rxba->tid, tlv_seq_num,
+
+I wanted to used `sizeof(*tlv_rxba) + tlv_bitmap_len` here instead of
+`sizeof(tlv_rxba->header) + tlv_len` to avoid any issues in case there
+is any (buggy) discrepancy between `tlv_len` and `tlv_bitmap_len`.
+This is when for some (weird) reason
+	`tlv_len - (sizeof(*tlv_rxba) - sizeof(tlv_rxba->header)) != tlv_bitmap_len`
+
+What do you think?
+
+Thanks!
+--
+Gustavo
+
+
+>>
+>> Shouldn't this be something like this, instead (before the flex-array
+>> transformation, of course):
+>>
+>> -               tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
+>> -               tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
+>> +               tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_bitmap_len - 1);
+>> +               tmp = (u8 *)tlv_rxba + tlv_bitmap_len + sizeof(*tlv_rxba - 1);
+> 
+> If my assertion about tlv->header.len is correct then we can do:
+> 
+> tlv_buf_left -= sizeof(tlv_rxba->header) + tlv_len;
+> tmp = (u8 *)tlv_rxba + sizeof(tlv_rxba->header) + tlv_len;
+> 
+>>
+>>
+>>                  tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
+> 
+> This is silly; instead of tmp we could do:
+> 
+> u16 bytes_used;
+> 
+> ...
+> 
+> bytes_used = sizeof(tlv_rxba->header) + tlv_len;
+> tlv_buf_left -= bytes_used;
+> tlv_rxba += bytes_used;
+> 
+> (with appropriate casting).
+> 
+> Dan
+> 
+>>          }
+>> }
+>>
+>> Thanks in advance for any feedback!
+>>
+>> --
+>> Gustavo
+>>
+> 
