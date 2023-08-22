@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E051C783DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20150783DBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 12:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbjHVKOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 06:14:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
+        id S234716AbjHVKO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 06:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229938AbjHVKOO (ORCPT
+        with ESMTP id S229938AbjHVKO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 06:14:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88831B2;
-        Tue, 22 Aug 2023 03:14:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 77EAC6514A;
-        Tue, 22 Aug 2023 10:14:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A00C433C8;
-        Tue, 22 Aug 2023 10:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692699251;
-        bh=PqdHrHoIJUKKi76bc5MopZSXWD7BLlEuyV79H/yi/l4=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=UfGhZKuiHLSEhNzyPafWMAQ3qsjJ4UcY2pmsUlFoSQYlPVo+Zv1lcJJ3XosTgm/T7
-         m35r9VsD+NeY9+/NNnxIDtBKldgIEWC1jJOgsc2cnYGLMjUHNyJdiVl7qyjxGnsCPd
-         ji3tFE/vBG6ydlHYCKbGT44rrko4Gct0UXqE+1K8M/lVZkjCg6IMyhWNx4Cev+XvWe
-         T81AtEc4yP1qoccgaiBPJ30rUrW2RkYeiKfOqSf/1AgIRVNiOysR3M8NGA/47NloFx
-         00fl1BcLF2/jzgFepMaPp4dzmNKDC5xVNoYWqB1mZpoblxfky/lPRzpls+5GJWEwPp
-         KHC6ditaZX3CA==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 22 Aug 2023 13:14:09 +0300
-Message-Id: <CUYZSZWSDUHC.2QB1Z9GD76HF6@suppilovahvero>
-Cc:     <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v3 9/9] selftests/sgx: Specify freestanding environment
- for enclave compilation
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Jo Van Bulck" <jo.vanbulck@cs.kuleuven.be>, <kai.huang@intel.com>,
-        <linux-sgx@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.14.0
-References: <20230819094332.8535-1-jo.vanbulck@cs.kuleuven.be>
- <20230819094332.8535-10-jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <20230819094332.8535-10-jo.vanbulck@cs.kuleuven.be>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 22 Aug 2023 06:14:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47707CC1;
+        Tue, 22 Aug 2023 03:14:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692699294; x=1724235294;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=v3kCkqaI1EHggZDLHMlxLe8djfBcWc9iGWYm8Tx2+zo=;
+  b=dHgb0FIHD0DOdxziutaik3sWmyWj7EsFeoDPlL5qULlmo7doqF10WlLl
+   GTBvqafF0vZ38nfQGEfEpkEBZEzNpE5hoXjK4Rhh+GVOjMq9rjiFgBUb2
+   TsytFxFeaO7GEEJX03r34Z+qNkb5nS4uCuoIKkgHS329hZcYss6nHd5fq
+   5b6BUXoMrRxjIbtM3VpqihCtpo8kRFe5+ALj4OCIFUX/tGtPEn7rC2jEP
+   GigvMJyIlXdicwme0lSxpw4Q04cvpUhxzhuHKvoGG1FvD7t0FX8CnCXZj
+   hjAz2XaAdVWe/GnAj1tLlOreiFj5CHom/Dsdn96PxpwxkR+EcPdp+zwPg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="460206939"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="460206939"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Aug 2023 03:14:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10809"; a="736159070"
+X-IronPort-AV: E=Sophos;i="6.01,192,1684825200"; 
+   d="scan'208";a="736159070"
+Received: from mylly.fi.intel.com (HELO [10.237.72.67]) ([10.237.72.67])
+  by orsmga002.jf.intel.com with ESMTP; 22 Aug 2023 03:14:46 -0700
+Message-ID: <2f215e0f-c2ed-4300-8b75-1949f17cdf1c@linux.intel.com>
+Date:   Tue, 22 Aug 2023 13:14:45 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] i2c: designware: fix __i2c_dw_disable() in case master
+ is holding SCL low
+Content-Language: en-US
+To:     Yann Sionneau <ysionneau@kalray.eu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Julian Vetter <jvetter@kalrayinc.com>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Borne <jborne@kalray.eu>
+References: <20230822090233.14885-1-ysionneau@kalray.eu>
+From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
+In-Reply-To: <20230822090233.14885-1-ysionneau@kalray.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Aug 19, 2023 at 12:43 PM EEST, Jo Van Bulck wrote:
-> Use -ffreestanding to assert the enclave compilation targets a
-> freestanding environment (i.e., without "main" or standard libraries).
-> This fixes clang reporting "undefined reference to `memset'" after
-> erroneously optimizing away the provided memset/memcpy implementations.
->
-> Signed-off-by: Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-> ---
->  tools/testing/selftests/sgx/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftes=
-ts/sgx/Makefile
-> index 2de970f72..19a07e890 100644
-> --- a/tools/testing/selftests/sgx/Makefile
-> +++ b/tools/testing/selftests/sgx/Makefile
-> @@ -14,8 +14,8 @@ endif
->  INCLUDES :=3D -I$(top_srcdir)/tools/include
->  HOST_CFLAGS :=3D -Wall -Werror -g $(INCLUDES) -fPIC
->  HOST_LDFLAGS :=3D -z noexecstack -lcrypto
-> -ENCL_CFLAGS :=3D -Wall -Werror -static-pie -nostdlib -nostartfiles -fPIE=
- \
-> -	       -fno-stack-protector -mrdrnd $(INCLUDES)
-> +ENCL_CFLAGS :=3D -Wall -Werror -static-pie -nostdlib -ffreestanding -fPI=
-E \
-> +		-nostartfiles -fno-stack-protector -mrdrnd $(INCLUDES)
->  ENCL_LDFLAGS :=3D -Wl,-T,test_encl.lds,--build-id=3Dnone
-> =20
->  TEST_CUSTOM_PROGS :=3D $(OUTPUT)/test_sgx
-> --=20
-> 2.25.1
+Hi
 
-Do you still need nostdfiles and nostartfiles with freestanding?
+On 8/22/23 12:02, Yann Sionneau wrote:
+> The DesignWare IP can be synthesized with the IC_EMPTYFIFO_HOLD_MASTER_EN
+> parameter.
+> In this case, when the TX FIFO gets empty and the last command didn't have
+> the STOP bit (IC_DATA_CMD[9]), the controller will hold SCL low until
+> a new command is pushed into the TX FIFO or the transfer is aborted.
+> 
+> When the controller is holding SCL low, it cannot be disabled.
+> The transfer must first be aborted.
+> Also, the bus recovery won't work because SCL is held low by the master.
+> 
+> Check if the master is holding SCL low in __i2c_dw_disable() before trying
+> to disable the controller. If SCL is held low, an abort is initiated.
+> When the abort is done, then proceed with disabling the controller.
+> 
+> This whole situation can happen for instance during SMBus read data block
+> if the slave just responds with "byte count == 0".
+> This puts the driver in an unrecoverable state, because the controller is
+> holding SCL low and the current __i2c_dw_disable() procedure is not
+> working. In this situation only a SoC reset can fix the i2c bus.
+> 
+Is this fixed already by the commit 69f035c480d7 ("i2c: designware: 
+Handle invalid SMBus block data response length value")?
 
-BR, Jarkko
+https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git/commit/?h=i2c/for-next&id=69f035c480d76f12bf061148ccfd578e1099e5fc
