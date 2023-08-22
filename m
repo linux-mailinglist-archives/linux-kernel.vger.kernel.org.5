@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F6C6784C2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C4F784C35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 23:45:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbjHVVm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 17:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45556 "EHLO
+        id S231407AbjHVVpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 17:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjHVVmZ (ORCPT
+        with ESMTP id S230444AbjHVVpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 17:42:25 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08EDD3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:42:23 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7921006459cso134735539f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 14:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1692740543; x=1693345343;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7Ow6pCM+QP20h9g5N2QdjyOQ38DqfmJbWYeM8K1qy+4=;
-        b=i20RSApAOKJ8ir/jJsfJdPMau9sFLKKFzH6B+BHHpOzr48x9Zyv+B6H0aUTWLLFJn0
-         TQtaVX0uIct/8a1ZutlOlFnoEpaaK64QVZl3G+2gFh3n+5V6C3O+1rmk9dCprwmkZ0Lm
-         9SCcXovO4dPpCvNpEh+Kzh9kxr9GAtWoK8gjmIK0mVdNv63/2XNH0+qqezIC8GVfrbdw
-         HD/oK2+U/wtoZYACKCJQfjQ0yba40qV0dUGopakg+QC2VpErWjmHWIilptZDH7h/jqzI
-         Hg+BY/D0UekKBcXqLmnnfO10+/0SJ34wzRZwUBXnzinSseqm1iOoSdsgpBRw/cazEEtu
-         QOdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692740543; x=1693345343;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Ow6pCM+QP20h9g5N2QdjyOQ38DqfmJbWYeM8K1qy+4=;
-        b=Zy42EPnMfUuXOEWFERmmZJEfJdhcmtTvq55cHkKc2MkCu1xTu9tEK3K9sCr6XBRdyW
-         MAVw1j5qdI3JEjvuQ9DQyZCBPp8nSM1zfGxFGBXo5t0kV5IlcpAG8cagGLknct3jM5i6
-         meh6mOsIJHyoqXuZ8ZIoCEP0mRzNxUPY86yrRxKAPVzmZtREU2SKAtscCpW+TFWFkKW3
-         hIqh+ow3agIVGGRVlu76HxfoJJ9xlmjf2D+Dr/r0kOoj4mXoAaxz2hH5fS5f3Kpa8ZKm
-         39H++y96QVD9uj4UI3fCOkJVb63nOFCH1PXAskbi+s8Fv/Bmr0mKqujvAcX4OP/eF1mh
-         kpDw==
-X-Gm-Message-State: AOJu0Yx7u+yCAs4ZOmDzGZsUZc+jMXyfkb7i6A5lbdc4RBWOCph/u4i1
-        HotVu7McqmdFl9Id61g1yLerqA==
-X-Google-Smtp-Source: AGHT+IEcpbrFTOH03Us9iPSIjiXeODFg/lzJ/XzgUDSbSKxU/6ulWFVq80iXoxB8Lz7Yq2tK3/gcOg==
-X-Received: by 2002:a5e:c102:0:b0:788:2eaf:46ce with SMTP id v2-20020a5ec102000000b007882eaf46cemr1048760iol.9.1692740543076;
-        Tue, 22 Aug 2023 14:42:23 -0700 (PDT)
-Received: from google.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id 3-20020a5ea503000000b0078714764ca0sm2930223iog.40.2023.08.22.14.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 14:42:22 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 21:42:20 +0000
-From:   Justin Stitt <justinstitt@google.com>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        linux-input@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@google.com>
-Subject: Re: selftests: hid: trouble building with clang due to missing header
-Message-ID: <20230822214220.jjx3srik4mteeond@google.com>
-References: <CAFhGd8ryUcu2yPC+dFyDKNuVFHxT-=iayG+n2iErotBxgd0FVw@mail.gmail.com>
- <CAKwvOd=p_7gWwBnR_RHUPukkG1A25GQy6iOnX_eih7u65u=oxw@mail.gmail.com>
- <CAO-hwJLio2dWs01VAhCgmub5GVxRU-3RFQifviOL0OTaqj9Ktg@mail.gmail.com>
- <CAFhGd8qmXD6VN+nuXKtV_Uz14gzY1Kqo7tmOAhgYpTBdCnoJRQ@mail.gmail.com>
- <CAO-hwJJ_ipXwLjyhGC6_4r-uZ-sDbrb_W7um6F2vgws0d-hvTQ@mail.gmail.com>
- <CAO-hwJ+DTPXWbpNaBDvCkyAsWZHbeLiBwYo4k93ZW79Jt-HAkg@mail.gmail.com>
- <CAFhGd8pVjUPpukHxxbQCEnmgDUqy-tgBa7POkmgrYyFXVRAMEw@mail.gmail.com>
- <CAO-hwJJntQTzcJH5nf9RM1bVWGVW1kb28rJ3tgew1AEH00PmJQ@mail.gmail.com>
- <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
+        Tue, 22 Aug 2023 17:45:46 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A93F3;
+        Tue, 22 Aug 2023 14:45:44 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37MLjWxj104189;
+        Tue, 22 Aug 2023 16:45:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1692740732;
+        bh=WgxMkMmw9MOrsFk9lD2LlijbIfUF6n4I27Lk5tuXGOc=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=mIhnykcRhaZ+VOvhAeJpUOYjM4cerp3jvB9/BNDDCvJQxwZrVwWdl0uurlQo7CH49
+         7xMCJ1AJzm6JcVpbkfOejVHpLk0cpaTPNRVGSFabJSCVWxjIIGHBgLyiuMDCkTCV/s
+         9SSp00gRgvIZ6q0tZXu4CePui1nRdrXEObNLjeUc=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37MLjWDp024739
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 22 Aug 2023 16:45:32 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 22
+ Aug 2023 16:45:31 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 22 Aug 2023 16:45:31 -0500
+Received: from [10.250.38.120] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37MLjVri024318;
+        Tue, 22 Aug 2023 16:45:31 -0500
+Message-ID: <949a8814-2084-2636-7a1b-a9d1188a16f8@ti.com>
+Date:   Tue, 22 Aug 2023 16:45:31 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFhGd8rgdszt5vgWuGKkcpTZbKvihGCJXRKKq7RP17+71dTYww@mail.gmail.com>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] remoteproc: core: Honor device tree /alias entries when
+ assigning IDs
+To:     Nishanth Menon <nm@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Kevin Cahalan <kevinacahalan@gmail.com>
+References: <20230807140247.956255-1-nm@ti.com> <ZOULmFR51C+9kEhZ@p14s>
+ <20230822201205.4csoj4kym2yhuyrf@decrease>
+Content-Language: en-US
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20230822201205.4csoj4kym2yhuyrf@decrease>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,101 +72,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 02:38:29PM -0700, Justin Stitt wrote:
-> On Tue, Aug 22, 2023 at 2:36 PM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Tue, Aug 22, 2023 at 11:26 PM Justin Stitt <justinstitt@google.com> wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 2:15 PM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > On Tue, Aug 22, 2023 at 11:06 PM Benjamin Tissoires
-> > > > <benjamin.tissoires@redhat.com> wrote:
-> > > > >
-> > > > > On Tue, Aug 22, 2023 at 10:57 PM Justin Stitt <justinstitt@google.com> wrote:
-> > > > > >
-> > > > > [...]
-> > > > > > > > > Here's the invocation I am running to build kselftest:
-> > > > > > > > > `$ make LLVM=1 ARCH=x86_64 mrproper headers && make LLVM=1 ARCH=x86_64
-> > > > > > > > > -j128 V=1 -C tools/testing/selftests`
-> > > > > > >
-> > > > > > > I think I fixed the same issue in the script I am running to launch
-> > > > > > > those tests in a VM. This was in commit
-> > > > > > > f9abdcc617dad5f14bbc2ebe96ee99f3e6de0c4e (in the v6.5-rc+ series).
-> > > > > > >
-> > > > > > > And in the commit log, I wrote:
-> > > > > > > ```
-> > > > > > > According to commit 01d6c48a828b ("Documentation: kselftest:
-> > > > > > > "make headers" is a prerequisite"), running the kselftests requires
-> > > > > > > to run "make headers" first.
-> > > > > > > ```
-> > > > > > >
-> > > > > > > So my assumption is that you also need to run "make headers" with the
-> > > > > > > proper flags before compiling the selftests themselves (I might be
-> > > > > > > wrong but that's how I read the commit).
-> > > > > >
-> > > > > > In my original email I pasted the invocation I used which includes the
-> > > > > > headers target. What are the "proper flags" in this case?
-> > > > > >
-> > > > >
-> > > > > "make LLVM=1 ARCH=x86_64 headers" no?
-> > > > >
-> > > > > But now I'm starting to wonder if that was not the intent of your
-> > > > > combined "make mrproper headers". I honestly never tried to combine
-> > > > > the 2. It's worth a try to split them I would say.
-> > > >
-> > > > Apologies, I just tested it, and it works (combining the 2).
-> > > >
-> > > > Which kernel are you trying to test?
-> > > > I tested your 2 commands on v6.5-rc7 and it just works.
-> > >
-> > > I'm also on v6.5-rc7 (706a741595047797872e669b3101429ab8d378ef)
-> > >
-> > > I ran these exact commands:
-> > > |    $ make mrproper
-> > > |    $ make LLVM=1 ARCH=x86_64 headers
-> > > |    $ make LLVM=1 ARCH=x86_64 -j128 -C tools/testing/selftests
-> > > TARGETS=hid &> out
-> > >
-> > > and here's the contents of `out` (still warnings/errors):
-> > > https://gist.github.com/JustinStitt/d0c30180a2a2e046c32d5f0ce5f59c6d
-> > >
-> > > I have a feeling I'm doing something fundamentally incorrectly. Any ideas?
-> >
-> > Sigh... there is a high chance my Makefile is not correct and uses the
-> > installed headers (I was running the exact same commands, but on a
-> > v6.4-rc7+ kernel).
-> >
-> > But sorry, it will have to wait for tomorrow if you want me to have a
-> > look at it. It's 11:35 PM here, and I need to go to bed
-> Take it easy. Thanks for the prompt responses here! I'd like to get
-> the entire kselftest make target building with Clang so that we can
-> close [1].
->
-> >
-> > Cheers,
-> > Benjamin
-> >
-> > >
-> > > To be clear, I can build the Kernel itself just fine across many
-> > > configs and architectures. I have, at the very least, the dependencies
-> > > required to accomplish that.
-> > >
-> > > >
-> > > > FTR:
-> > > > $> git checkout v6.5-rc7
-> > > > $> make LLVM=1 ARCH=x86_64 mrproper headers
-> > > > $> make LLVM=1 ARCH=x86_64 -j8 -C tools/testing/selftests TARGETS=hid
-> > > >
-> > > > ->   BINARY   hid_bpf
-> > > >
-> > > > Cheers,
-> > > > Benjamin
-> > > >
-> > >
-> >
->
-> [1]: https://github.com/ClangBuiltLinux/linux/issues/1910
+On 8/22/23 3:12 PM, Nishanth Menon wrote:
+> On 13:25-20230822, Mathieu Poirier wrote:
+>> Hi Nishanth,
+>>
+>> On Mon, Aug 07, 2023 at 09:02:47AM -0500, Nishanth Menon wrote:
+>>> On many platforms, such as Beaglebone-AI64 with many remote
+>>> processors, firmware configurations provided by the distributions can
+>>> vary substantially depending on the distribution build's functionality
+>>> and the specific remote cores enabled in that variant. Ensuring
+>>> consistent udev rules mapping remoteproc nodes to constant remote
+>>> proc device indices across distributions (yocto, ubuntu, debian and
+>>> it's variants, ...) on a board basis can be challenging due to the
+>>> various functions of these distributions. Varied device node paths
+>>> create challenges for applications that operate on remote processors,
+>>> especially in minimal embedded systems(initrd like) that may not
+>>> have udev-like capabilities and rely on a more straightforward bare
+>>> filesystem. This challenge is similar to that faced by I2C, RTC or the
+>>> GPIO subsystems.
+>>>
+>>
+>> I'm puzzled by this patch.  I can see how using an alias can help in boards with
+>> various HW configuration.  That said, and as written above, FW files for remote
+>> processors can vary based on the build's functionality.  As such "remoteproc3"
+>> will reference the same HW device on all distributions but the functionality
+>> enacted by the FW may be different.  As such I don't see how an alias can help
+>> here.  Can you provide a concrete example that highlights the benefits?
+> 
+> Correct - *if* remoteproc3 is the constant node reference.
+> 
+> To take a trivial example: We ran into this issue with:
+> https://github.com/kaofishy/bbai64_cortex-r5_example/blob/main/Makefile#L28
+> 
+> remoteproc18 apparently changed numbering in a different build.
+> 
+> If remoteproc18 remained the same between different distro builds that
+> would have probably kept the userspace constant. but it does'nt. it
+> dependent purely on probe order, which does'nt let userspace remain
+> consistent.
+> 
+> Same reason and motivation to do the following:
+> https://git.beagleboard.org/beagleboard/repos-arm64/-/blob/main/bb-customizations/suite/bookworm/debian/86-remoteproc-noroot.rules
+> in one technique to do it - but that only works if all the distros
+> follow the same udev rules - and there is no reasonable way to enforce
+> that across distributions.
+> 
 
-Erhm, I meant [1]: https://github.com/ClangBuiltLinux/linux/issues/1698
+Enforcing distros to behave the same isn't the job of Device Tree, udev
+rules seems like a reasonable place. Anyone dealing with Linux should know
+they should not rely on kernel provided device names/numbers
+(like with disks, network interfaces, etc.).
+
+If you want to have a path that will always work you could use:
+
+/sys/devices/platform/bus@f4000/bus@f4000\:r5fss@78400000/78400000.r5f/remoteproc/
+
+for the same. I don't like that it makes an ABI out of node names,
+but better than putting any more Linux configuration in DT IMHO.
+
+Andrew
