@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DAD783ED2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7518E783ED5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 13:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbjHVLbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 07:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S233273AbjHVLbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 07:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234757AbjHVLbM (ORCPT
+        with ESMTP id S234757AbjHVLbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 07:31:12 -0400
+        Tue, 22 Aug 2023 07:31:23 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74906CF1;
-        Tue, 22 Aug 2023 04:31:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D4EE4C;
+        Tue, 22 Aug 2023 04:31:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0224F633D7;
-        Tue, 22 Aug 2023 11:31:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 503CDC433C9;
-        Tue, 22 Aug 2023 11:31:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 072F86361C;
+        Tue, 22 Aug 2023 11:31:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A81B1C433C8;
+        Tue, 22 Aug 2023 11:31:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1692703867;
-        bh=ClUbNh5Ba5Ijk1bbKYM7eB7v7clusIUN0C4gBbPZPDg=;
+        s=k20201202; t=1692703872;
+        bh=BrBQtiNIqOrM7b9cP7Tksks7Q1e/7X1t5PRWBq99mHc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gfp9XaCwnP76zzJNmcmmEERnOZp5wb7aUyJ4dCINIpwE6aC1QlTiujZao070najm0
-         es9nk1ttwJNWAonWlA+2jDhTiD8QctUCMRM0TqlhlzOv2IQs0aHloxl4jRgBmd7F11
-         nOFjSqkdpRw/J4zaK3ob4u5L9LaM9gCxUjv54KCAq5noTVsdsEeGuL/EQfsV1kxQr1
-         5ZcVnzD0EjySmNup2+WEucpJTij+4xrc+RTgVYS5Rbx+Dqa0hJK6qBRJx5guFiGhqL
-         IEqV6afVquJSeIQKU9FIziWcW4dnU5/pG0CQE+Fr7OXUqp8pMZYsw9l+AW1a38nSYE
-         ES2QnTbFQeKJQ==
+        b=Vg4gXAVQ56Yc+BCCqHC55kN7kJ0yPEDJuHIMcy4MtAzm/EmYNOn2dCDJwjjKE0Ezq
+         dWlwfgKGmQH0xGohzJvMGXjhmmu5I6am8I2jYKGovUS0P33qEJrnP9vM17peSNXW/T
+         tJ6ImLTn4s4IG3vYJDxQg4WyZn38Eipt8JHzg+2LmqOpUo6+f8TprM3X7S+BguyKdl
+         LenPkwnvGlrh37M/0BqW8O8DFlWVJJ40AVrw4Vw4kl1owqqvxZQXchHtP2loi05oQG
+         RhRNebMswloJlGjqAqUOK8LPjaNalPzUqFsxaOnGkvT14mzAed04CtHCDfq85j9hb7
+         zMEf2gV4ZYPmg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kalle Valo <quic_kvalo@quicinc.com>, Kalle Valo <kvalo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, quic_jjohnson@quicinc.com,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.4 03/10] Revert "wifi: ath11k: Enable threaded NAPI"
-Date:   Tue, 22 Aug 2023 07:30:53 -0400
-Message-Id: <20230822113101.3549915-3-sashal@kernel.org>
+Cc:     Kalle Valo <kvalo@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.4 04/10] Revert "wifi: ath6k: silence false positive -Wno-dangling-pointer warning on GCC 12"
+Date:   Tue, 22 Aug 2023 07:30:54 -0400
+Message-Id: <20230822113101.3549915-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230822113101.3549915-1-sashal@kernel.org>
 References: <20230822113101.3549915-1-sashal@kernel.org>
@@ -59,54 +58,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kalle Valo <quic_kvalo@quicinc.com>
+From: Kalle Valo <kvalo@kernel.org>
 
-[ Upstream commit d265ebe41c911314bd273c218a37088835959fa1 ]
+[ Upstream commit a1ce186db7f0e449f35d12fb55ae0da2a1b400e2 ]
 
-This reverts commit 13aa2fb692d3717767303817f35b3e650109add3.
+This reverts commit bd1d129daa3ede265a880e2c6a7f91eab0f4dc62.
 
-This commit broke QCN9074 initialisation:
+The dangling-pointer warnings were disabled kernel-wide by commit 49beadbd47c2
+("gcc-12: disable '-Wdangling-pointer' warning for now") for v5.19. So this
+hack in ath6kl is not needed anymore.
 
-[  358.960477] ath11k_pci 0000:04:00.0: ce desc not available for wmi command 36866
-[  358.960481] ath11k_pci 0000:04:00.0: failed to send WMI_STA_POWERSAVE_PARAM_CMDID
-[  358.960484] ath11k_pci 0000:04:00.0: could not set uapsd params -105
-
-As there's no fix available let's just revert it to get QCN9074 working again.
-
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217536
-Signed-off-by: Kalle Valo <quic_kvalo@quicinc.com>
 Signed-off-by: Kalle Valo <kvalo@kernel.org>
-Link: https://lore.kernel.org/r/20230720151444.2016637-1-kvalo@kernel.org
+Link: https://lore.kernel.org/r/20230724100823.2948804-1-kvalo@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/ahb.c  | 1 -
- drivers/net/wireless/ath/ath11k/pcic.c | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/net/wireless/ath/ath6kl/Makefile | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index 396548e57022f..88aeb36ab2e79 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -376,7 +376,6 @@ static void ath11k_ahb_ext_irq_enable(struct ath11k_base *ab)
- 		struct ath11k_ext_irq_grp *irq_grp = &ab->ext_irq_grp[i];
+diff --git a/drivers/net/wireless/ath/ath6kl/Makefile b/drivers/net/wireless/ath/ath6kl/Makefile
+index a75bfa9fd1cfd..dc2b3b46781e1 100644
+--- a/drivers/net/wireless/ath/ath6kl/Makefile
++++ b/drivers/net/wireless/ath/ath6kl/Makefile
+@@ -36,11 +36,6 @@ ath6kl_core-y += wmi.o
+ ath6kl_core-y += core.o
+ ath6kl_core-y += recovery.o
  
- 		if (!irq_grp->napi_enabled) {
--			dev_set_threaded(&irq_grp->napi_ndev, true);
- 			napi_enable(&irq_grp->napi);
- 			irq_grp->napi_enabled = true;
- 		}
-diff --git a/drivers/net/wireless/ath/ath11k/pcic.c b/drivers/net/wireless/ath/ath11k/pcic.c
-index 30d66147223f4..a8bcffcf2e813 100644
---- a/drivers/net/wireless/ath/ath11k/pcic.c
-+++ b/drivers/net/wireless/ath/ath11k/pcic.c
-@@ -466,7 +466,6 @@ void ath11k_pcic_ext_irq_enable(struct ath11k_base *ab)
- 		struct ath11k_ext_irq_grp *irq_grp = &ab->ext_irq_grp[i];
+-# FIXME: temporarily silence -Wdangling-pointer on non W=1+ builds
+-ifndef KBUILD_EXTRA_WARN
+-CFLAGS_htc_mbox.o += $(call cc-disable-warning, dangling-pointer)
+-endif
+-
+ ath6kl_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
+ ath6kl_core-$(CONFIG_ATH6KL_TRACING) += trace.o
  
- 		if (!irq_grp->napi_enabled) {
--			dev_set_threaded(&irq_grp->napi_ndev, true);
- 			napi_enable(&irq_grp->napi);
- 			irq_grp->napi_enabled = true;
- 		}
 -- 
 2.40.1
 
