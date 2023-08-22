@@ -2,183 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 995647843BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1ED87843C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 16:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235630AbjHVOQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 10:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        id S233289AbjHVOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 10:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235537AbjHVOQi (ORCPT
+        with ESMTP id S231965AbjHVOTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 10:16:38 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 646F5E47
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:16:16 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-529c706ba0aso1005536a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 07:16:16 -0700 (PDT)
+        Tue, 22 Aug 2023 10:19:02 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C136CEC;
+        Tue, 22 Aug 2023 07:18:53 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565e395e7a6so2272122a12.0;
+        Tue, 22 Aug 2023 07:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1692713770; x=1693318570;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g+SKjmXyjgW8f0jHgaxs5wpqMPdIa4R/pbZOYFHEPPA=;
-        b=SpnoVaRonUjrgyDJXIvwvFu13QgmHtL/ixGxOgt80D1bodvpJetwRJQx4BWvNcGCq4
-         aefsFgsXAIZlZ1QZIPoDATj2xL21rgM8MXxFxymaqAbFkJGEfAuWGg+IV5m6zOxhyD+c
-         B+63hHB9SZHpsDpaFr7tiepBRRWAMnlkwGP6E=
+        d=gmail.com; s=20221208; t=1692713932; x=1693318732;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wto+R/pwAtZu+OAScHxoYW4hGhVsJhO4pIWd7518M1Q=;
+        b=l5QtfNZ6Z8FTVUTOWi3QXpSmkPogCFuhWE6Z3hn5zWiR9wj7Z5Wj/ygvTdIJsr4PEq
+         G7bgcyULDSd8NeCioQj7LGXJUYx5b03fi7ePwRTcgY359HeJleTzcpNeaa3OeV/URsf/
+         ZAcPGhk/z+vHUYT9EawP5L/YlYGcXVkkBnHsinKGOpc1QBLgTW8Nryb+hpkFKw4V7h9v
+         hbpLK5REmmyuW70S6GFX1eblaOh0iaZM+5cCCFa/yU+lxhQ3GzY5+PGuKSXo8nrWYSUS
+         +M5LtPkKHeu/hCZpwzr3m1WmQLb3KiXq55AIdoEr1I88EsXnhCNud+cWBHRHtz5kdry2
+         H9gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692713770; x=1693318570;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g+SKjmXyjgW8f0jHgaxs5wpqMPdIa4R/pbZOYFHEPPA=;
-        b=ZJ42KbFW7WPuyr2KllEQQ3icBkGeOF81n92Oemcph82aMKY5tGr8uZqY1aPXMp6MZs
-         spmyuY4bANMlPWVKt8WNyjx22gKQN9q53cB3HYU6bt6R1VJhmEXkAaboktowmbhrDYwj
-         oeILntxpXfZVoOY3wqONRMx+oZF50obaeQCNymMRBk19TrgByVkpBwznzz1d4E8K6v/5
-         OcIPdnk9tJUJl3tD+cPsPiVLsxyONKuMIqg0JqgUIujKsznouDgmv0Gl43KbbKNf4JJT
-         X8UyyavInELn5EzNurrdN3aiE4ASnzjZ13z98hYd320TuLz1eD11RZbFFoSAgp6HziRk
-         +OCQ==
-X-Gm-Message-State: AOJu0YzU8e7EE1wKF3yDVDyCHodW9hO9jcnieyLjlRmZowizMJqbgeL0
-        gtvTEXIl5VPu8T9TgOocx5/v/g==
-X-Google-Smtp-Source: AGHT+IFtzxGQWngpXbT1IIq1urWfPMwb8J4VPPTf913Ygr9DTCR03kQ4lnOqbph9Vi8HtttHNrZ3Qw==
-X-Received: by 2002:a05:6402:518f:b0:523:4069:182c with SMTP id q15-20020a056402518f00b005234069182cmr6322721edd.2.1692713770660;
-        Tue, 22 Aug 2023 07:16:10 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q1-20020aa7da81000000b0052237dfa82fsm7627876eds.64.2023.08.22.07.16.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 07:16:10 -0700 (PDT)
-Date:   Tue, 22 Aug 2023 16:16:08 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH RFC 00/13] drm/connector: Create HDMI Connector
- infrastructure
-Message-ID: <ZOTDKHxn2bOg+Xmg@phenom.ffwll.local>
-Mail-Followup-To: Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Emma Anholt <emma@anholt.net>,
-        Hans Verkuil <hverkuil@xs4all.nl>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
+        d=1e100.net; s=20221208; t=1692713932; x=1693318732;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Wto+R/pwAtZu+OAScHxoYW4hGhVsJhO4pIWd7518M1Q=;
+        b=GeTXgxhsPvrfsfiLLk9mE1qzhGZjUiOVxZvQmjsN3f6oRvOfBt5E8Xz7yS98YyfmpN
+         AGAEDwY6+cEpP+OV9KmqwuFeb76WN1zkPDW6rK0jA/7gDz8GmYPqzL1DYj8AzXePS9hf
+         pZ/Uc3yFOsfxIhVJwT2M0KYZxNpqPcqOFQ1AaLu8Zk4t75wufJKfkXLE5C8+Tb0ZRVKo
+         QA24lCqddVSwy3Twi063oXoC2nv10OuUak3f/n+WRY6xygzwgtFXxDuhcpmVjtyZlgD6
+         fs1QqUU0VOL6T+inOcHRL/7Eq/sec3YIZKBpUxHWwrWyIApBcSaJI6cXmQfwOffwRn/4
+         Osfw==
+X-Gm-Message-State: AOJu0YxhiWea3h0x0xspbAGePRaW8R9RKuOXvK0hqxd0Lp+7kSs7Jd9A
+        QU+pEDYHpwSP1wo4sNUNsBg=
+X-Google-Smtp-Source: AGHT+IE9KwhpwrFbIukPEqvcbgOjh7c0pPMFqq/gj/IcafR6fmndFP8nyetCpeh57XjcUBT2zkF4Wg==
+X-Received: by 2002:a17:90a:f3cf:b0:268:d716:4b62 with SMTP id ha15-20020a17090af3cf00b00268d7164b62mr6502213pjb.0.1692713932406;
+        Tue, 22 Aug 2023 07:18:52 -0700 (PDT)
+Received: from ?IPV6:2404:f801:0:5:8000::75b? ([2404:f801:9000:1a:efea::75b])
+        by smtp.gmail.com with ESMTPSA id s2-20020a17090a764200b002630c9d78aasm7839481pjl.5.2023.08.22.07.18.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Aug 2023 07:18:51 -0700 (PDT)
+Message-ID: <c06aa27a-54b6-877b-224e-b0da615f4b55@gmail.com>
+Date:   Tue, 22 Aug 2023 22:18:38 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org>
-X-Operating-System: Linux phenom 6.3.0-2-amd64 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/9] x86/hyperv: Add hv_isolation_type_tdx() to detect TDX
+ guests
+To:     Dexuan Cui <decui@microsoft.com>, ak@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, brijesh.singh@amd.com,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, haiyangz@microsoft.com, hpa@zytor.com,
+        jane.chu@oracle.com, kirill.shutemov@linux.intel.com,
+        kys@microsoft.com, linux-hyperv@vger.kernel.org, luto@kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rostedt@goodmis.org,
+        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
+        tglx@linutronix.de, tony.luck@intel.com, wei.liu@kernel.org,
+        Jason@zx2c4.com, nik.borisov@suse.com, mikelley@microsoft.com
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, Tianyu.Lan@microsoft.com,
+        rick.p.edgecombe@intel.com, andavis@redhat.com, mheslin@redhat.com,
+        vkuznets@redhat.com, xiaoyao.li@intel.com
+References: <20230811221851.10244-1-decui@microsoft.com>
+ <20230811221851.10244-2-decui@microsoft.com>
+From:   Tianyu Lan <ltykernel@gmail.com>
+In-Reply-To: <20230811221851.10244-2-decui@microsoft.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 03:56:12PM +0200, Maxime Ripard wrote:
-> Hi,
+On 8/12/2023 6:18 AM, Dexuan Cui wrote:
+> No logic change to SNP/VBS guests.
 > 
-> Here's a series that creates a subclass of drm_connector specifically
-> targeted at HDMI controllers.
+> hv_isolation_type_tdx() will be used to instruct a TDX guest on Hyper-V to
+> do some TDX-specific operations, e.g. for a fully enlightened TDX guest
+> (i.e. without the paravisor), hv_do_hypercall() should use
+> __tdx_hypercall() and such a guest on Hyper-V should handle the Hyper-V
+> Event/Message/Monitor pages specially.
 > 
-> The idea behind this series came from a recent discussion on IRC during
-> which we discussed infoframes generation of i915 vs everything else. 
-> 
-> Infoframes generation code still requires some decent boilerplate, with
-> each driver doing some variation of it.
-> 
-> In parallel, while working on vc4, we ended up converting a lot of i915
-> logic (mostly around format / bpc selection, and scrambler setup) to
-> apply on top of a driver that relies only on helpers.
-> 
-> While currently sitting in the vc4 driver, none of that logic actually
-> relies on any driver or hardware-specific behaviour.
-> 
-> The only missing piec to make it shareable are a bunch of extra
-> variables stored in a state (current bpc, format, RGB range selection,
-> etc.).
-> 
-> Thus, I decided to create some generic subclass of drm_connector to
-> address HDMI connectors, with a bunch of helpers that will take care of
-> all the "HDMI Spec" related code. Scrambler setup is missing at the
-> moment but can easily be plugged in.
-> 
-> Last week, Hans Verkuil also expressed interest in retrieving the
-> infoframes generated from userspace to create an infoframe-decode tool.
-> This series thus leverages the infoframe generation code to expose it
-> through debugfs.
-> 
-> This entire series is only build-tested at the moment. Let me know what
-> you think,
-> Maxime
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-I think the idea overall makes sense, we we probably need it to roll out
-actual hdmi support to all the hdmi drivers we have. But there's the
-eternal issue of "C sucks at multiple inheritance".
+Reviewed-by: Tianyu Lan <tiala@microsoft.com>
 
-Which means if you have a driver that subclasses drm_connector already for
-it's driver needs it defacto cannot, or only under some serious pains, use
-this. Which is kinda why in practice we tend to not subclass, but stuff
-subclass fields into a name sub-structure. So essentially struct
-drm_connector.hdmi and struct drm_connector_state.hdmi instead of
-drm_hdmi_connector and drm_hdmi_connector_state. The helper functions to
-set it all up would all still be the same roughly. It's less typesafe but
-I think the gain in practical use (like you could make i915 use the
-helpers probably, which with this approach here is practically
-impossible).
-
-The only other nit is that we probably want to put some of the hdmi
-properties into struct drm_mode_config because there's no reason to have
-per-connector valid values.
-
-Also, it might be really good if you can find a co-conspirator who also
-wants to use this in their driver, then with some i915 extracting we'd
-have three, which should ensure the helper api is solid.
-
-Cheers, Sima
-
-
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
 > ---
-> Maxime Ripard (13):
->       drm/connector: Introduce an HDMI connector
->       drm/connector: hdmi: Create a custom state
->       drm/connector: hdmi: Add Broadcast RGB property
->       drm/connector: hdmi: Add helper to get the RGB range
->       drm/connector: hdmi: Add output BPC to the connector state
->       drm/connector: hdmi: Add support for output format
->       drm/connector: hdmi: Calculate TMDS character rate
->       drm/connector: hdmi: Add custom hook to filter TMDS character rate
->       drm/connector: hdmi: Compute bpc and format automatically
->       drm/connector: hdmi: Add Infoframes generation
->       drm/connector: hdmi: Create Infoframe DebugFS entries
->       drm/vc4: hdmi: Create destroy state implementation
->       drm/vc4: hdmi: Switch to HDMI connector
+>   arch/x86/hyperv/ivm.c              | 9 +++++++++
+>   arch/x86/include/asm/hyperv-tlfs.h | 3 ++-
+>   arch/x86/include/asm/mshyperv.h    | 3 +++
+>   arch/x86/kernel/cpu/mshyperv.c     | 2 ++
+>   drivers/hv/hv_common.c             | 6 ++++++
+>   include/asm-generic/mshyperv.h     | 1 +
+>   6 files changed, 23 insertions(+), 1 deletion(-)
 > 
->  drivers/gpu/drm/Makefile             |    1 +
->  drivers/gpu/drm/drm_hdmi_connector.c | 1112 ++++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/vc4/vc4_hdmi.c       |  720 ++++------------------
->  drivers/gpu/drm/vc4/vc4_hdmi.h       |   37 +-
->  drivers/gpu/drm/vc4/vc4_hdmi_phy.c   |    4 +-
->  include/drm/drm_connector.h          |  256 ++++++++
->  6 files changed, 1508 insertions(+), 622 deletions(-)
-> ---
-> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-> change-id: 20230814-kms-hdmi-connector-state-616787e67927
-> 
-> Best regards,
-> -- 
-> Maxime Ripard <mripard@kernel.org>
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
+> index ee08a0cd6da38..d4aafe8b6b50d 100644
+> --- a/arch/x86/hyperv/ivm.c
+> +++ b/arch/x86/hyperv/ivm.c
+> @@ -524,3 +524,12 @@ bool hv_isolation_type_en_snp(void)
+>   	return static_branch_unlikely(&isolation_type_en_snp);
+>   }
+>   
+> +DEFINE_STATIC_KEY_FALSE(isolation_type_tdx);
+> +/*
+> + * hv_isolation_type_tdx - Check if the system runs in an Intel TDX based
+> + * isolated VM.
+> + */
+> +bool hv_isolation_type_tdx(void)
+> +{
+> +	return static_branch_unlikely(&isolation_type_tdx);
+> +}
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 4bf0b315b0ce9..2ff26f53cd624 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -169,7 +169,8 @@
+>   enum hv_isolation_type {
+>   	HV_ISOLATION_TYPE_NONE	= 0,
+>   	HV_ISOLATION_TYPE_VBS	= 1,
+> -	HV_ISOLATION_TYPE_SNP	= 2
+> +	HV_ISOLATION_TYPE_SNP	= 2,
+> +	HV_ISOLATION_TYPE_TDX	= 3
+>   };
+>   
+>   /* Hyper-V specific model specific registers (MSRs) */
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
+> index 0b0d1eb249d0a..83fc3a79f1557 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -27,6 +27,7 @@ union hv_ghcb;
+>   
+>   DECLARE_STATIC_KEY_FALSE(isolation_type_snp);
+>   DECLARE_STATIC_KEY_FALSE(isolation_type_en_snp);
+> +DECLARE_STATIC_KEY_FALSE(isolation_type_tdx);
+>   
+>   typedef int (*hyperv_fill_flush_list_func)(
+>   		struct hv_guest_mapping_flush_list *flush,
+> @@ -59,6 +60,8 @@ int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
+>   int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
+>   int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags);
+>   
+> +bool hv_isolation_type_tdx(void);
+> +
+>   static inline u64 hv_do_hypercall(u64 control, void *input, void *output)
+>   {
+>   	u64 input_address = input ? virt_to_phys(input) : 0;
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index b7d73f3107c63..a50fd3650ea9b 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -418,6 +418,8 @@ static void __init ms_hyperv_init_platform(void)
+>   			static_branch_enable(&isolation_type_en_snp);
+>   		} else if (hv_get_isolation_type() == HV_ISOLATION_TYPE_SNP) {
+>   			static_branch_enable(&isolation_type_snp);
+> +		} else if (hv_get_isolation_type() == HV_ISOLATION_TYPE_TDX) {
+> +			static_branch_enable(&isolation_type_tdx);
+>   		}
+>   	}
+>   
+> diff --git a/drivers/hv/hv_common.c b/drivers/hv/hv_common.c
+> index 2d43ba2bc925d..da3307533f4d7 100644
+> --- a/drivers/hv/hv_common.c
+> +++ b/drivers/hv/hv_common.c
+> @@ -521,6 +521,12 @@ bool __weak hv_isolation_type_en_snp(void)
+>   }
+>   EXPORT_SYMBOL_GPL(hv_isolation_type_en_snp);
+>   
+> +bool __weak hv_isolation_type_tdx(void)
+> +{
+> +	return false;
+> +}
+> +EXPORT_SYMBOL_GPL(hv_isolation_type_tdx);
+> +
+>   void __weak hv_setup_vmbus_handler(void (*handler)(void))
+>   {
+>   }
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyperv.h
+> index efd0d2aedad39..c5e657c3cdf4c 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -66,6 +66,7 @@ extern u64 hv_do_hypercall(u64 control, void *inputaddr, void *outputaddr);
+>   extern u64 hv_do_fast_hypercall8(u16 control, u64 input8);
+>   extern bool hv_isolation_type_snp(void);
+>   extern bool hv_isolation_type_en_snp(void);
+> +extern bool hv_isolation_type_tdx(void);
+>   
+>   /* Helper functions that provide a consistent pattern for checking Hyper-V hypercall status. */
+>   static inline int hv_result(u64 status)
