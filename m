@@ -2,132 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02720783C7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C66783C88
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Aug 2023 11:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234198AbjHVJHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Aug 2023 05:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49162 "EHLO
+        id S234181AbjHVJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Aug 2023 05:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232203AbjHVJHR (ORCPT
+        with ESMTP id S234075AbjHVJKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Aug 2023 05:07:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEAF1AE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1692695194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zITVam9mib7MXNblWRDDnWwcdZNI0hXQ9sYLmaBnbrA=;
-        b=ILamFl2T3GyEjtHRIhaikRx6J8hG/N4783z9KFzzRbWQgUy4X16zJNOJv6uh7WnKCq4L3z
-        SpvO0pTKlPHYxU4qPGdju63usph1X7JjCw0CSozQ8HY4SJjAFnDKp8NATshAs9D2pMWIhI
-        ySZbHMnDvVc8OpmJGVbV6Ja4pY5pWl4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-227-pnLyxFdxOL-n7KTJChX9Ug-1; Tue, 22 Aug 2023 05:06:32 -0400
-X-MC-Unique: pnLyxFdxOL-n7KTJChX9Ug-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5222c47ab80so575501a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Aug 2023 02:06:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692695191; x=1693299991;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zITVam9mib7MXNblWRDDnWwcdZNI0hXQ9sYLmaBnbrA=;
-        b=dZsOSUDCCWIcZKKuwRCkG9YzH5lIfEATqIM/PpmqfrRqtlpEbT16mpyd15gq/tyLpp
-         EASAH6Tl07QHGDipeEo9nIokAovGi0mrXc4TlkRg2mvbUSQqd9hCvZG+d3Ks3cRrLii8
-         tpig7HXJNd/6YrcqniYYtMPN3gU4yZQGX2UTZ2jFVgSSZ6TxC2wiyyEW3yeq5l4eCle8
-         BwJv6GViwU9p9Kfzr0vzRrnvedw0qA40anoo9vY52LA2zPAf6GzhMAyi/cIqAd/Jyf64
-         9xPj5GKh/B8qMuznoyLpILA5OcLG2ppoLYSLX2DhGX1YVYdbqe0xT9j7/Ok8qGt4gbRz
-         GVKA==
-X-Gm-Message-State: AOJu0Yw2tZ7beKwYKeUaBifz/kbaxDaDX42MGwaqhqSPUO8ILEqmTYck
-        KQiHSaBmrxCnE0CByURkJljqjMDNud+YliZ10aoxNjICAmCS7WcHJG1Dk9rVIsxTxX/xV0ox1GF
-        JPV+K5vU+iiaJ5G+GpwDwwwXL
-X-Received: by 2002:a05:6402:1d4c:b0:51e:5dd8:fc59 with SMTP id dz12-20020a0564021d4c00b0051e5dd8fc59mr7217553edb.1.1692695191301;
-        Tue, 22 Aug 2023 02:06:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfZmPyXgiJ/NkAWWGBQMgHJy5FIu7B+DH5lu1nGvadCAiFsyleJ/rv4GEtyfZ7KoxM594bRw==
-X-Received: by 2002:a05:6402:1d4c:b0:51e:5dd8:fc59 with SMTP id dz12-20020a0564021d4c00b0051e5dd8fc59mr7217526edb.1.1692695191035;
-        Tue, 22 Aug 2023 02:06:31 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-241-4.dyn.eolo.it. [146.241.241.4])
-        by smtp.gmail.com with ESMTPSA id f4-20020a05640214c400b00528922bb53bsm675146edx.76.2023.08.22.02.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Aug 2023 02:06:30 -0700 (PDT)
-Message-ID: <4e79fe7d5363e69ed116f440db162dcb41b54ecc.camel@redhat.com>
-Subject: Re: [PATCH v5 2/5] dt-bindings: net: Add IEP property in ICSSG DT
- binding
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     MD Danish Anwar <danishanwar@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     nm@ti.com, srk@ti.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date:   Tue, 22 Aug 2023 11:06:28 +0200
-In-Reply-To: <20230817114527.1585631-3-danishanwar@ti.com>
-References: <20230817114527.1585631-1-danishanwar@ti.com>
-         <20230817114527.1585631-3-danishanwar@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 22 Aug 2023 05:10:16 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6384A1BE;
+        Tue, 22 Aug 2023 02:10:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E6B2E64FE4;
+        Tue, 22 Aug 2023 09:10:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B12BC433C7;
+        Tue, 22 Aug 2023 09:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1692695412;
+        bh=pQisISmZ66AdEx39jJ4009uh0Yx/8HETEG0JPihLCHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dt1q16xZ4wVawYqxKyc7pTbYu+xIoHKLpdt4WziTYiykP4mBCSsx9VyKV3nGdWZuB
+         CGlsfHp0LveeO9NIsm2e6txPBhrMJk1AjqMm2owxcsfgIRV8U6Tt291oP3dqGDBQwG
+         gDHLPYuO5I1KGNzPSmFaAQ13Ck4sdojjeTz3R2DLhRG6otJRWx1AbClFee5WLwQArS
+         PEQ+W/rcU+hY/C9pH9HW980wqKbHfsBj2syDGyGfJ4KcbpYfg7B6yf6QcxIUaEjVGF
+         QYWB8QtIcGfFThWJC6mqnrDF7sLKwARR06oIWqrbVYOF+L5uhBGCzY8GFgI7AqFe2D
+         prG6ZSWsJIrdA==
+Date:   Tue, 22 Aug 2023 11:10:06 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>, Jeff Xu <jeffxu@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        stable@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] memfd: improve userspace warnings for missing
+ exec-related flags
+Message-ID: <20230822-seenotrettung-bungalow-a4ea576f6f85@brauner>
+References: <20230814-memfd-vm-noexec-uapi-fixes-v2-0-7ff9e3e10ba6@cyphar.com>
+ <20230814-memfd-vm-noexec-uapi-fixes-v2-3-7ff9e3e10ba6@cyphar.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230814-memfd-vm-noexec-uapi-fixes-v2-3-7ff9e3e10ba6@cyphar.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-08-17 at 17:15 +0530, MD Danish Anwar wrote:
-> Add IEP node in ICSSG driver DT binding document.
->=20
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+On Mon, Aug 14, 2023 at 06:40:59PM +1000, Aleksa Sarai wrote:
+> In order to incentivise userspace to switch to passing MFD_EXEC and
+> MFD_NOEXEC_SEAL, we need to provide a warning on each attempt to call
+> memfd_create() without the new flags. pr_warn_once() is not useful
+> because on most systems the one warning is burned up during the boot
+> process (on my system, systemd does this within the first second of
+> boot) and thus userspace will in practice never see the warnings to push
+> them to switch to the new flags.
+> 
+> The original patchset[1] used pr_warn_ratelimited(), however there were
+> concerns about the degree of spam in the kernel log[2,3]. The resulting
+> inability to detect every case was flagged as an issue at the time[4].
+> 
+> While we could come up with an alternative rate-limiting scheme such as
+> only outputting the message if vm.memfd_noexec has been modified, or
+> only outputting the message once for a given task, these alternatives
+> have downsides that don't make sense given how low-stakes a single
+> kernel warning message is. Switching to pr_info_ratelimited() instead
+> should be fine -- it's possible some monitoring tool will be unhappy
+> with a stream of warning-level messages but there's already plenty of
+> info-level message spam in dmesg.
+> 
+> [1]: https://lore.kernel.org/20221215001205.51969-4-jeffxu@google.com/
+> [2]: https://lore.kernel.org/202212161233.85C9783FB@keescook/
+> [3]: https://lore.kernel.org/Y5yS8wCnuYGLHMj4@x1n/
+> [4]: https://lore.kernel.org/f185bb42-b29c-977e-312e-3349eea15383@linuxfoundation.org/
+> 
+> Cc: stable@vger.kernel.org # v6.3+
+> Fixes: 105ff5339f49 ("mm/memfd: add MFD_NOEXEC_SEAL and MFD_EXEC")
+> Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
 > ---
->  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b=
-/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-> index 8ec30b3eb760..a736d1424ea4 100644
-> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
-> @@ -52,6 +52,12 @@ properties:
->      description:
->        phandle to MII_RT module's syscon regmap
-> =20
-> +  ti,iep:
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    maxItems: 2
-> +    description:
-> +      phandle to IEP (Industrial Ethernet Peripheral) for ICSSG driver
 
-It looks like the feedback given by Rob on v2:
-
-https://lore.kernel.org/all/20230821160120.GA1734560-robh@kernel.org/
-
-still applies here, I guess you need to address it.
-
-Cheers,
-
-Paolo
-
---
-pw-bot: cr
-
+Reviewed-by: Christian Brauner <brauner@kernel.org>
